@@ -1,0 +1,705 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;">
+	<title>Form</title>
+	
+	<link type="text/css" rel="stylesheet" href="styles/common.css">
+	
+	<script type="text/javascript" src="scripts/common.js"></script>
+	<script type="text/javascript" src="scripts/useragent.js"></script>
+	<script type="text/javascript" src="scripts/select.js"></script>
+	<script type="text/javascript" src="scripts/datepicker.js"></script>
+	<script type="text/javascript">
+		cm.onload(function(){
+			var element;
+			// Useragent
+			Useragent.setBrowserClass();
+			// Selects
+			Com.SelectCollector();
+			// Datepicker
+			new Com.Datepicker({'input' : cm.getEl('datepicker')});
+			new Com.Datepicker({'input' : cm.getEl('datepicker-r'), 'showClearButton' : true});
+			new Com.Datepicker({'input' : cm.getEl('datepicker2')});
+			new Com.Datepicker({'input' : cm.getEl('datepicker3')});
+			new Com.Datepicker({'input' : cm.getEl('datepicker4')});
+		});
+	</script>
+</head>
+
+<body>
+
+<form action="" class="form">
+	<dl>
+		<dt><label for="input1">Input text: <span class="required">*</span></label></dt>
+		<dd>
+			<input type="text" id="input1" placeholder="Placeholder test" />
+		</dd>
+	</dl>
+	<dl>
+		<dt><label>Input password:</label></dt>
+		<dd><input type="password" value="Sample" /></dd>
+	</dl>
+	<dl>
+		<dt><label>Select:</label></dt>
+		<dd>
+			<select data-someattr="123">
+				<option>One</option>
+				<option>Two</option>
+				<option>Three</option>
+			</select>
+		</dd>
+	</dl>
+	<dl>
+		<dt><label>Select Multiple:</label></dt>
+		<dd>
+			<select multiple>
+				<option>1</option>
+				<option>2</option>
+				<option>3</option>
+				<option>4</option>
+				<option>1</option>
+				<option>2</option>
+				<option>3</option>
+				<option>4</option>
+			</select>
+		</dd>
+	</dl>
+	<dl>
+		<dt><label>Textarea:</label></dt>
+		<dd><textarea></textarea></dd>
+	</dl>
+	<hr>
+	<dl>
+		<dt><label>Check boxes:</label></dt>
+		<dd>
+			<div class="check-line">
+				<input id="ch1" type="checkbox" />
+				<label for="ch1">Check 1</label>
+				<input id="ch2" type="checkbox" />
+				<label for="ch2">Check 2</label>
+			</div>
+		</dd>
+	</dl>
+	<dl>
+		<dt>
+			<label>Check boxes:</label>
+			<div class="hint">(1 row)</div>
+		</dt>
+		<dd>
+			<div class="check-line">
+				<input id="ch3" type="checkbox" />
+				<label for="ch3">Check line #3</label>
+			</div>
+			<div class="check-line">
+				<input id="ch4" type="checkbox" />
+				<label for="ch4">Check line #4</label>
+			</div>
+		</dd>
+	</dl>
+	<dl>
+		<dt>
+			<label>Check boxes:</label>
+			<div class="hint">(1 row, outside)</div>
+		</dt>
+		<dd>
+			<div class="check-line outside">
+				<input type="checkbox" />
+				<label>Check line</label>
+			</div>
+			<div class="check-line outside">
+				<input type="checkbox" />
+				<label>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sit amet ipsum lectus, eu pellentesque risus. Phasellus a mi at sem mattis porta. Duis turpis tellus, rhoncus a pharetra ut, faucibus a ante. Pellentesque interdum malesuada sem eleifend commodo. Praesent sed leo at libero consequat sagittis.</label>
+			</div>
+			<div class="check-line outside">
+				<input type="checkbox" />
+				<label>Phasellus sit amet ipsum lectus, eu pellentesque risus. Phasellus a mi at sem mattis porta. Duis turpis tellus, rhoncus a pharetra ut, faucibus a ante. Pellentesque interdum malesuada sem eleifend commodo. Praesent sed leo at libero consequat sagittis.</label>
+			</div>
+		</dd>
+	</dl>
+	<dl>
+		<dt><label>Radio:</label></dt>
+		<dd>
+			<div class="check-line">
+				<input id="r1" type="radio" name="r1" />
+				<label for="r1">Radio 1</label>
+				<input id="r2" type="radio" name="r1" />
+				<label for="r2">Radio 2</label>
+			</div>
+		</dd>
+	</dl>
+	<dl>
+		<dt><label>Radio Unveil:</label></dt>
+		<dd>
+			<div class="check-line">
+				<input id="r3" type="radio" name="r2" />
+				<label for="r3">Radio</label>
+			</div>
+			<div class="check-line">
+				<input id="r4" type="radio" name="r2" checked />
+				<label for="r4">Radio with unveil</label>
+				<div class="unveil">
+					<dl class="form-box">
+						<dt>Input:</dt>
+						<dd>
+							<input type="text" />
+						</dd>
+					</dl>
+				</div>
+			</div>
+		</dd>
+	</dl>
+	<hr>
+	<dl>
+		<dt><label>Input file:</label></dt>
+		<dd>
+			<div class="browse-button">
+				<input type="button" value="Browse" />
+				<div class="inner">
+					<input type="file" />
+				</div>
+			</div>
+		</dd>
+	</dl>
+	<dl>
+		<dt>Date picker:</dt>
+		<dd>
+			<input type="text" id="datepicker" name="datepicker" data-placeholder="Expires date" readonly>
+		</dd>
+	</dl>
+	<dl>
+		<dt>Date picker:</dt>
+		<dd>
+			<input type="text" id="datepicker-r" name="datepicker" data-placeholder="Expires date" readonly>
+		</dd>
+	</dl>
+	<dl>
+		<dt>Time picker:</dt>
+		<dd>
+			<div class="time clear">
+				<select>
+					<option>12</option>
+				</select>
+				<span>:</span>
+				<select>
+					<option>00</option>
+				</select>
+			</div>
+		</dd>
+	</dl>
+	<dl>
+		<dt>Birthdate:</dt>
+		<dd>
+			<div class="birth clear">
+				<input class="placeholder" data-placeholder="Year" name="year" type="text" />
+				<div>/</div>
+				<input class="placeholder" data-placeholder="Month" name="month" type="text" />
+				<div>/</div>
+				<input class="placeholder" data-placeholder="Day" name="day" type="text" />
+			</div>
+		</dd>
+	</dl>
+	<hr>
+	<dl>
+		<dt>Image:</dt>
+		<dd>
+			<div class="form-image-box clear">
+				<div class="l">
+					<img src="images/components/form-no-image.png" alt="">
+				</div>
+				<div class="r">
+					<div class="browse-button">
+						<input type="button" value="Upload" />
+						<div class="inner">
+							<input type="file" />
+						</div>
+					</div>
+					<input type="button" value="Remove">
+					<div class="hint">100px x 100px (.jpf, .png, .gif)</div>
+				</div>
+			</div>
+		</dd>
+	</dl>
+	<dl>
+		<dt>Image:</dt>
+		<dd>
+			<div class="form-image-box style2 clear">
+				<div class="l">
+					<img src="images/components/form-no-image.png" alt="">
+				</div>
+				<div class="r">
+					<div class="browse-button">
+						<input type="button" value="Upload" />
+						<div class="inner">
+							<input type="file" />
+						</div>
+					</div>
+					<input type="button" value="Remove">
+					<div class="hint">100px x 100px (.jpf, .png, .gif)</div>
+				</div>
+			</div>
+		</dd>
+	</dl>
+	<hr>
+	<dl>
+		<dt>Single File:</dt>
+		<dd>
+			<div class="single-file clear">
+				<div class="browse-button">
+					<input type="button" value="Browse" />
+					<div class="inner">
+						<input type="file" />
+					</div>
+				</div>
+				<div class="text">lorem_ipsum_filename.3gp</div>
+			</div>
+		</dd>
+	</dl>
+	<hr>
+	<dl>
+		<dt>Files List:</dt>
+		<dd>
+			<div class="files-list">
+				<ul>
+					<li>
+						<input type="button" value="Remove">
+						<div class="text">photo_with_me_and_headcrab.jpg</div>
+					</li>
+					<li>
+						<input type="button" value="Remove">
+						<div class="text">photo_with_me_and_g-man.jpg</div>
+					</li>
+					<li>
+						<input type="button" value="Remove">
+						<div class="text">photo_with_me_and_headcrab.jpg</div>
+					</li>
+					<li>
+						<input type="button" value="Remove">
+						<div class="text">photo_with_me_and_g-man.jpg</div>
+					</li>
+					<li>
+						<input type="button" value="Remove">
+						<div class="text">photo_with_me_and_headcrab.jpg</div>
+					</li>
+					<li>
+						<input type="button" value="Remove">
+						<div class="text">photo_with_me_and_g-man.jpg</div>
+					</li>
+					<li>
+						<input type="button" value="Remove">
+						<div class="text">photo_with_me_and_headcrab.jpg</div>
+					</li>
+				</ul>
+				<div class="browse-button">
+					<input type="button" value="Browse" />
+					<div class="inner">
+						<input type="file" />
+					</div>
+				</div>
+			</div>
+		</dd>
+	</dl>
+	<hr>
+	<dl>
+		<dt><label>Input text (hint):</label></dt>
+		<dd>
+			<input id="input1" type="text" />
+			<div class="hint">( Some hint text )</div>
+		</dd>
+	</dl>
+	<dl>
+		<dt><label>Input text (hint):</label></dt>
+		<dd><input class="placeholder" type="text" data-placeholder="Some hint text" /></dd>
+	</dl>
+	<hr/>
+	<dl class="ok">
+		<dt><label>Input Ok:</label></dt>
+		<dd>
+			<input type="text" />
+			<div class="hint">( Some hint done text )</div>
+		</dd>
+	</dl>
+	<dl class="error">
+		<dt><label>Input Error:</label></dt>
+		<dd>
+			<input type="text" />
+			<ul class="hint">
+				<li>You have some unknown errors. Fix it!</li>
+				<li>Field looks like broken.</li>
+				<li>Ti kto takoy? Davay, dosvidanie!</li>
+			</ul>
+		</dd>
+	</dl>
+	<hr/>
+	<dl>
+		<dt><label>Two-columns:</label></dt>
+		<dd>
+			<div class="cols two clear">
+				<div class="col"><input type="text" /></div>
+				<div class="col"><input type="text" /></div>
+			</div>
+		</dd>
+	</dl>
+	<dl>
+		<dt><label>Three-columns:</label></dt>
+		<dd>
+			<div class="cols three clear">
+				<div class="col"><input type="text" /></div>
+				<div class="col"><input type="text" /></div>
+				<div class="col"><input type="text" /></div>
+			</div>
+		</dd>
+	</dl>
+	<hr>
+	<dl>
+		<dt><label>Filter:</label></dt>
+		<dd>
+			<div class="check-line filter">
+				<input type="radio" />
+			</div>
+			<div class="check-line filter">
+				<input type="radio" />
+				<div class="field">
+					<input type="text" />
+				</div>
+			</div>
+		</dd>
+	</dl>
+	<dl>
+		<dt><label>Filter:</label></dt>
+		<dd>
+			<div class="check-line filter">
+				<input type="radio" />
+			</div>
+			<div class="check-line filter">
+				<input type="radio" />
+				<div class="field">
+					<div class="cols two clear">
+						<div class="col"><input type="text" /></div>
+						<div class="col"><input type="text" /></div>
+					</div>
+				</div>
+			</div>
+		</dd>
+	</dl>
+	<hr/>
+	<dl>
+		<dd>
+			<div class="check-line validate">
+				<input id="ch6" type="checkbox" />
+				<label for="ch6">Confirm Rules</label>
+			</div>
+		</dd>
+	</dl>
+	<dl class="error">
+		<dd>
+			<div class="check-line validate">
+				<input id="ch7" type="checkbox" />
+				<label for="ch7">Confirm Rules</label>
+			</div>
+		</dd>
+	</dl>
+	<hr/>
+	<div class="btn-wrap">
+		<input type="submit" value="Submit" />
+		<input type="reset" value="Clear" />
+		<div class="hint">Some submit text</div>
+	</div>
+	<hr/>
+	<div class="btn-wrap error">
+		<input type="submit" value="Submit" />
+		<input type="reset" value="Clear" />
+		<div class="hint">Some submit error text</div>
+	</div>
+	<hr/>
+	<div class="btn-wrap ok">
+		<input type="submit" value="Submit" />
+		<input type="reset" value="Clear" />
+		<div class="hint">Some submit done text</div>
+	</div>
+	<hr/>
+	<div class="btn-wrap">
+		<input type="submit" value="Submit" />
+		<input class="left" type="button" value="Cancel" />
+		<div class="hint">Some submit text</div>
+	</div>
+	<hr/>
+	<div class="btn-wrap centered">
+		<input type="reset" value="Clear" />
+		<input type="submit" value="Submit" />
+	</div>
+	<hr/>
+	<dl class="ok">
+		<dd>
+			<ul class="hint">
+				<li>You have some unknown errors. Fix it!</li>
+				<li>Field looks like broken.</li>
+				<li>Ti kto takoy? Davay, dosvidanie!</li>
+			</ul>
+		</dd>
+	</dl>
+	<dl class="error">
+		<dd>
+			<ul class="hint">
+				<li>You have some unknown errors. Fix it!</li>
+				<li>Field looks like broken.</li>
+				<li>Ti kto takoy? Davay, dosvidanie!</li>
+			</ul>
+		</dd>
+	</dl>
+	
+	<hr>
+	
+	<div class="has-icons-outside-1">
+		<dl>
+			<dt>Input with icon:</dt>
+			<dd>
+				<input type="text">
+				<div class="form-icons-outside">
+					<div class="icon add" title="Add"></div>
+				</div>
+			</dd>
+		</dl>
+		<dl>
+			<dt>Input with icon:</dt>
+			<dd>
+				<input type="text">
+				<div class="form-icons-outside">
+					<div class="icon add" title="Add"></div>
+				</div>
+			</dd>
+		</dl>
+	</div>
+	
+	<div class="has-icons-outside-2">
+		<dl>
+			<dt>Input with 2 icons:</dt>
+			<dd>
+				<input type="text">
+				<div class="form-icons-outside">
+					<div class="icon add" title="Add"></div>
+					<div class="icon edit" title="Edit"></div>
+				</div>
+			</dd>
+		</dl>
+		<dl>
+			<dt>Input with 2 icons:</dt>
+			<dd>
+				<input type="text">
+				<div class="form-icons-outside">
+					<div class="icon add" title="Add"></div>
+					<div class="icon edit" title="Edit"></div>
+				</div>
+			</dd>
+		</dl>
+	</div>
+	
+	<div class="has-icons-outside-3">
+		<dl>
+			<dt>Input with 3 icons:</dt>
+			<dd>
+				<input type="text">
+				<div class="form-icons-outside">
+					<div class="icon add" title="Add"></div>
+					<div class="icon edit" title="Edit"></div>
+					<div class="icon remove" title="Remove"></div>
+				</div>
+			</dd>
+		</dl>
+		<dl>
+			<dt>Input with 3 icons:</dt>
+			<dd>
+				<input type="text">
+				<div class="form-icons-outside">
+					<div class="icon add" title="Add"></div>
+					<div class="icon edit" title="Edit"></div>
+					<div class="icon remove" title="Remove"></div>
+				</div>
+			</dd>
+		</dl>
+	</div>
+	
+	<div class="has-icons-outside-4">
+		<dl>
+			<dt>Input with 4 icons:</dt>
+			<dd>
+				<input type="text">
+				<div class="form-icons-outside">
+					<div class="icon add" title="Add"></div>
+					<div class="icon edit" title="Edit"></div>
+					<div class="icon settings" title="Settings"></div>
+					<div class="icon remove" title="Remove"></div>
+				</div>
+			</dd>
+		</dl>
+		<dl>
+			<dt>Input with 4 icons:</dt>
+			<dd>
+				<input type="text">
+				<div class="form-icons-outside">
+					<div class="icon add" title="Add"></div>
+					<div class="icon edit" title="Edit"></div>
+					<div class="icon settings" title="Settings"></div>
+					<div class="icon remove" title="Remove"></div>
+				</div>
+			</dd>
+		</dl>
+	</div>
+	
+	<hr>
+	
+	<dl class="form-field">
+		<dt>Form Fields:</dt>
+		<dd class="controls">
+			<div class="icon remove"></div>
+		</dd>
+		<dd class="descr">
+			<div class="cols three clear">
+				<div class="col">
+					<select>
+						<option>Field</option>
+					</select>
+				</div>
+				<div class="col">
+					<select>
+						<option>Field</option>
+					</select>
+				</div>
+				<div class="col">
+					<select>
+						<option>Field</option>
+					</select>
+				</div>
+			</div>
+		</dd>
+	</dl>
+	<dl class="form-field">
+		<dd class="controls">
+			<div class="icon remove"></div>
+		</dd>
+		<dd class="descr">
+			<div class="cols three clear">
+				<div class="col">
+					<select>
+						<option>Field</option>
+					</select>
+				</div>
+				<div class="col">
+					<select>
+						<option>Field</option>
+					</select>
+				</div>
+				<div class="col">
+					<input type="text" data-placeholder="Field">
+				</div>
+			</div>
+		</dd>
+	</dl>
+	<dl class="form-field">
+		<dd class="controls">
+			<div class="icon remove"></div>
+		</dd>
+		<dd class="descr">
+			<div class="cols three clear">
+				<div class="col">
+					<select>
+						<option>Field</option>
+					</select>
+				</div>
+				<div class="col">
+					<select>
+						<option>Field</option>
+					</select>
+				</div>
+				<div class="col">
+					<input type="text" id="datepicker2" data-placeholder="Field">
+				</div>
+			</div>
+		</dd>
+	</dl>
+	<dl class="form-field">
+		<dd class="controls">
+			<div class="icon add"></div>
+		</dd>
+	</dl>
+	
+	<hr/>
+	
+	<dl class="form-box">
+		<dt>Form-box input</dt>
+		<dd>
+			<input type="text">
+		</dd>
+	</dl>
+	<dl class="form-box error">
+		<dt>Form-box input</dt>
+		<dd>
+			<input type="text">
+		</dd>
+	</dl>
+	<dl class="form-box ok">
+		<dt>Form-box input</dt>
+		<dd>
+			<input type="text">
+		</dd>
+	</dl>
+	
+	<hr>
+	
+	<div class="form-filter-fromto clear">
+		<dl class="form-box">
+			<dt>From:</dt>
+			<dd><input type="text" id="datepicker3"></dd>
+		</dl>
+	
+		<dl class="form-box">
+			<dt>To:</dt>
+			<dd><input type="text" id="datepicker4"></dd>
+		</dl>
+	
+		<div class="buttons">
+			<input type="button" value="Search">
+			<input type="button" value="View All">
+		</div>
+	</div>
+	
+	<hr/>
+	
+	<fieldset>
+		<legend>Some legend</legend>
+		<dl>
+			<dt><label>Input text (hint):</label></dt>
+			<dd><input class="placeholder" type="text" value="Some hint text" /></dd>
+		</dl>
+		<dl>
+			<dt><label>Input password:</label></dt>
+			<dd><input type="password" value="Sample" /></dd>
+		</dl>
+	</fieldset>
+	<fieldset class="error">
+		<legend>Some legend</legend>
+		<dl>
+			<dt><label>Input text (hint):</label></dt>
+			<dd><input class="placeholder" type="text" value="Some hint text" /></dd>
+		</dl>
+		<dl>
+			<dt><label>Input password:</label></dt>
+			<dd><input type="password" value="Sample" /></dd>
+		</dl>
+	</fieldset>
+	<fieldset class="ok">
+		<legend>Some legend</legend>
+		<dl>
+			<dt><label>Input text (hint):</label></dt>
+			<dd><input class="placeholder" type="text" value="Some hint text" /></dd>
+		</dl>
+		<dl>
+			<dt><label>Input password:</label></dt>
+			<dd><input type="password" value="Sample" /></dd>
+		</dl>
+	</fieldset>
+</form>
+
+</body>
+</html>
