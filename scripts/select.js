@@ -57,11 +57,7 @@ Com['Select'] = function(o){
 		);
 		/* *** ATTRIBUTES *** */
 		// Set select width
-		if(config['select'].offsetWidth == 0){
-			width = 'auto'
-		}else if(config['select'].offsetWidth == config['select'].parentNode.offsetWidth){
-			width = 'auto'
-		}else{
+		if(config['select'].offsetWidth && config['select'].offsetWidth != config['select'].parentNode.offsetWidth){
 			width = config['select'].offsetWidth + 'px';
 		}
 		nodes['container'].style.width = width;

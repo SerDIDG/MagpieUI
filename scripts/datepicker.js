@@ -1,7 +1,14 @@
+Com.Elements['Datepicker'] = {};
+
+Com['GetDatepicker'] = function(id){
+    return Com.Elements.Datepicker[id] || null;
+};
+
 Com['Datepicker'] = function(o){
 	var that = this,
 		config = cm.merge({
 			'input' : cm.Node('input', {'type' : 'text'}),
+            'placeholder' : '',
 			'format' : '%F %j, %Y',
 			'saveFormat' : '%Y-%m-%d',
 			'startYear' : 1900,
@@ -21,7 +28,7 @@ Com['Datepicker'] = function(o){
 				'todayButton' : 'Today'
 			}
 		}, o),
-		placeholder = config['input'].getAttribute('data-placeholder') || config['input'].getAttribute('placeholder'),
+        dataAttributes = ['placeholder', 'showPlaceholder', 'showTodayButton', 'showClearButton', 'startYear', 'endYear'],
 		nodes = {},
 		selects = {},
 		isHide = true,
@@ -36,10 +43,22 @@ Com['Datepicker'] = function(o){
 		startDay;
 		
 	var init = function(){
+        processDataAttributes();
 		render();
 		setMiscEvents();
 		set(config['input'].value);
 	};
+
+    var processDataAttributes = function(){
+        dataAttributes.forEach(function(item){
+            switch(item){
+                case 'placeholder':
+                    config[item] = config['input'].getAttribute(item) || config[item];
+                    break;
+            }
+            config[item] = config['input'].getAttribute(['data', item].join('-')) || config[item];
+        })
+    };
 	
 	var render = function(){
 		// Structure
@@ -84,8 +103,8 @@ Com['Datepicker'] = function(o){
 		nodes['hidden'].setAttribute('name', config['input'].getAttribute('name'));
 		nodes['hidden'].id = config['input'].id;
 		// Placeholder
-		if(config['showPlaceholder'] && placeholder){
-			nodes['input'].setAttribute('placeholder', placeholder);
+		if(config['showPlaceholder'] && config['placeholder']){
+			nodes['input'].setAttribute('placeholder', config['placeholder']);
 		}
 		// Clear Butoon
 		if(config['showClearButton']){
@@ -93,25 +112,12 @@ Com['Datepicker'] = function(o){
 			nodes['container'].appendChild(
 				nodes['clearButton'] = cm.Node('div', {'class' : 'icon remove', 'title' : config['langs']['clearButtonTitle']})
 			);
-			cm.addEvent(nodes['clearButton'], 'click', function(){
-				set(0);
-				hideMenu();
-			});
 		}
 		// Today Button
 		if(config['showTodayButton']){
 			nodes['menuInner'].appendChild(
 				nodes['todayButton'] = cm.Node('div', {'class' : 'button today'}, config['langs']['todayButton'])
 			);
-			cm.addEvent(nodes['todayButton'], 'click', function(){
-				set(today);
-				hideMenu();
-				// Events
-				config['events']['onSelect'](that, active);
-				if(!oldActive || (active.toString() !== oldActive.toString())){
-					config['events']['onChange'](that, active);
-				}
-			});
 		}
 		// Append
 		cm.insertBefore(nodes['container'], config['input']);
@@ -129,6 +135,25 @@ Com['Datepicker'] = function(o){
 				return false;
 			}
 		};
+        // Clear Butoon
+        if(config['showClearButton']){
+            cm.addEvent(nodes['clearButton'], 'click', function(){
+                set(0);
+                hideMenu();
+            });
+        }
+        // Today Button
+        if(config['showTodayButton']){
+            cm.addEvent(nodes['todayButton'], 'click', function(){
+                set(today);
+                hideMenu();
+                // Events
+                config['events']['onSelect'](that, active);
+                if(!oldActive || (active.toString() !== oldActive.toString())){
+                    config['events']['onChange'](that, active);
+                }
+            });
+        }
 		// Init custom selects
 		selects['months'] = new Com.Select({'select' : nodes['months']})
 			.set(today.getMonth())
@@ -227,7 +252,6 @@ Com['Datepicker'] = function(o){
 				active = new Date(str[0], (parseInt(str[1], 10) - 1), str[2]);
 			}
 			nodes['input'].value = cm.dateFormat(active, config['format'], config['langs']);
-			cm.removeClass(nodes['input'], 'placeholder');
 			nodes['hidden'].value = cm.dateFormat(active, config['saveFormat'], config['langs']);
 			selects['years'].set(active.getFullYear());
 			selects['months'].set(active.getMonth());
@@ -332,4 +356,34 @@ Com['Datepicker'] = function(o){
 	init();
 };
 
+Com['DatepickerCollector'] = function(node){
+    var that = this,
+        datepickers,
+        id,
+        datepicker;
 
+    var init = function(node){
+        if(!node){
+            render(document.body);
+        }else if(node.constructor == Array){
+            cm.forEach(node, function(item){
+                render(item);
+            });
+        }else{
+            render(node);
+        }
+    };
+
+    var render = function(node){
+        datepickers = cm.getByAttr('data-datepicker', 'true', node);
+        // Render datepickers
+        cm.forEach(datepickers, function(item){
+            datepicker = new Com.Datepicker({'input' : item});
+            if(id = item.id){
+                Com.Elements.Datepicker[id] = datepicker;
+            }
+        });
+    };
+
+    init(node);
+};

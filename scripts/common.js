@@ -136,7 +136,8 @@ cm.forEach = function(o, handler){
 		case Array:
 			o.forEach(handler);
 		break;
-		case HTMLCollection:
+        case HTMLCollection:
+        case NodeList:
 			Array.prototype.forEach.call(o, handler);
 		break;
 	}

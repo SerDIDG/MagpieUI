@@ -314,6 +314,14 @@ ul.indent {
 .form > dl:first-child {
 	margin-top: 0;
 }
+.form dl:after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+}
 .form dt {
 	width: 150px;
 	min-height: 22px;
@@ -395,13 +403,14 @@ ul.indent {
 .form dl .time input,
 .form dl .time select,
 .form dl .time .cm-select {
-	width: 60px;
+	width: 55px;
 	float: left;
 }
-.form dl .time span {
-	margin: 0 4px;
+.form dl .time > span {
+    width: 12px;
 	display: block;
 	float: left;
+    text-align: center;
 }
 
 .browse-button {
@@ -436,11 +445,11 @@ ul.indent {
 .form dl .birth {
 }
 .form dl .birth input {
-	width: 30%;
+	width: 55px;
 	float: left;
 }
 .form dl .birth div {
-	width: 5%;
+	width: 12px;
 	float: left;
 	overflow: hidden;
 	text-align: center;
@@ -453,20 +462,42 @@ ul.indent {
 }
 .form .cols .col {
 	float: left;
+    margin-left: 2%;
+}
+.form .cols.one .col {
+    width: 100%;
 }
 .form .cols.two .col {
 	width: 49%;
-	margin-left: 2%;
-}
-.form .cols.two .col:first-child {
-	margin-left: 0;
 }
 .form .cols.three .col {
 	width: 32%;
-	margin-left: 2%;
 }
-.form .cols.three .col:first-child {
-	margin-left: 0;
+.form .cols.four .col {
+    width: 23.5%;
+}
+.form .cols.five .col {
+    width: 18.4%;
+}
+.form .cols.six .col {
+    width: 15%;
+}
+.form .cols.seven .col {
+    width: 13%;
+    margin-left: 1.5%;
+}
+.form .cols.eight .col {
+    width: 10.75%;
+}
+.form .cols.nine .col {
+    width: 9.6%;
+    margin-left: 1.7%;
+}
+.form .cols.ten .col {
+    width: 8.2%;
+}
+.form .cols .col:first-child {
+    margin-left: 0;
 }
 .form .cols .col > dl:first-child {
 	margin-top: 0;
@@ -855,6 +886,9 @@ ul.has-icons-outside-three li {
 .form-filter-fromto .buttons {
 	float: left;
 	margin: 26px 0 0 0;
+}
+.form-filter-fromto.simple .buttons {
+    margin:  0;
 }
 
 /* Input */
@@ -2441,14 +2475,17 @@ select[multiple]{
 	
 	.form .cols .col,
 	.form .cols.two .col,
-	.form .cols.three .col {
+	.form .cols.three .col,
+    .form .cols.four .col,
+    .form .cols.five .col,
+    .form .cols.six .col,
+    .form .cols.seven .col,
+    .form .cols.eight .col,
+    .form .cols.nine .col,
+    .form .cols.ten .col {
 		width: auto;
 		float: none;
 		margin: 16px 0 0 0;
-	}
-	.form .cols .col:first-child,
-	.form .cols.two .col:first-child,
-	.form .cols.three .col:first-child {
 	}
 	.form-filter-fromto .form-box {
 		margin-right: 6%;
@@ -2496,6 +2533,9 @@ select[multiple]{
 	.form-filter-fromto .form-box:first-child {
 		margin: 0;
 	}
+    .form-filter-fromto.simple .buttons {
+        margin: 26px 0 0 0;
+    }
 		
 	/* Gallery */
 	
