@@ -7,6 +7,7 @@ Com['GetDatepicker'] = function(id){
 Com['Datepicker'] = function(o){
 	var that = this,
 		config = cm.merge({
+            'container' : cm.Node('div'),
 			'input' : cm.Node('input', {'type' : 'text'}),
             'placeholder' : '',
 			'format' : '%F %j, %Y',
@@ -17,10 +18,7 @@ Com['Datepicker'] = function(o){
 			'showTodayButton' : true,
 			'showClearButton' : false,
 			'menuMargin' : 3,
-			'events' : {
-				'onSelect' : function(datepicker, active){},
-				'onChange' : function(datepicker, active){}
-			},
+			'events' : {},                                      // Deprecated, use addEvent method
 			'langs' : {
 				'days' : ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
 				'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
@@ -29,6 +27,10 @@ Com['Datepicker'] = function(o){
 			}
 		}, o),
         dataAttributes = ['placeholder', 'showPlaceholder', 'showTodayButton', 'showClearButton', 'startYear', 'endYear'],
+        API = {
+            'onSelect' : [],
+            'onChange' : []
+        },
 		nodes = {},
 		selects = {},
 		isHide = true,
@@ -43,9 +45,13 @@ Com['Datepicker'] = function(o){
 		startDay;
 		
 	var init = function(){
+        // Legacy: Convert events to API Events
+        convertEvents(config['events']);
+        // Merge data-attributes with config. Data-attributes have higher priority.
         processDataAttributes();
 		render();
 		setMiscEvents();
+        // Set selected date
 		set(config['input'].value);
 	};
 
@@ -61,7 +67,7 @@ Com['Datepicker'] = function(o){
     };
 	
 	var render = function(){
-		// Structure
+        /* *** RENDER STRUCTURE *** */
 		nodes['container'] = cm.Node('div', {'class' : 'datepicker-input'},
 			nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
 			nodes['input'] = cm.Node('input', {'type' : 'text'}),
@@ -88,7 +94,7 @@ Com['Datepicker'] = function(o){
 				cm.Node('th', item)
 			);
 		});
-		// Render selects
+		// Render selects options
 		config['langs']['months'].forEach(function(item, i){
 			nodes['months'].appendChild(
 				cm.Node('option', {'value' : i}, item)
@@ -99,9 +105,15 @@ Com['Datepicker'] = function(o){
 				cm.Node('option', {'value' : i}, i)
 			);
 		}
+        /* *** ATTRIBUTES *** */
+        // ID
+        if(config['input'].id){
+            nodes['container'].id = config['input'].id;
+        }
 		// Set hidden input attributes
-		nodes['hidden'].setAttribute('name', config['input'].getAttribute('name'));
-		nodes['hidden'].id = config['input'].id;
+        if(config['input'].getAttribute('name')){
+            nodes['hidden'].setAttribute('name', config['input'].getAttribute('name'));
+        }
 		// Placeholder
 		if(config['showPlaceholder'] && config['placeholder']){
 			nodes['input'].setAttribute('placeholder', config['placeholder']);
@@ -119,8 +131,12 @@ Com['Datepicker'] = function(o){
 				nodes['todayButton'] = cm.Node('div', {'class' : 'button today'}, config['langs']['todayButton'])
 			);
 		}
-		// Append
-		cm.insertBefore(nodes['container'], config['input']);
+        /* *** APPENDCHILD NEW DATEPICKER *** */
+        if(cm.inDOM(config['input'])){
+            cm.insertBefore(nodes['container'], config['input']);
+        }else{
+            config['container'].appendChild(nodes['container']);
+        }
 		cm.remove(config['input']);
 	};
     
@@ -131,6 +147,8 @@ Com['Datepicker'] = function(o){
 			cm.preventDefault(e);
 			if(e.keyCode == 8){
 				set(0);
+                /* *** EXECUTE API EVENTS *** */
+                executeEvent('onChange');
 			}else{
 				return false;
 			}
@@ -140,18 +158,15 @@ Com['Datepicker'] = function(o){
             cm.addEvent(nodes['clearButton'], 'click', function(){
                 set(0);
                 hideMenu();
+                /* *** EXECUTE API EVENTS *** */
+                executeEvent('onChange');
             });
         }
         // Today Button
         if(config['showTodayButton']){
             cm.addEvent(nodes['todayButton'], 'click', function(){
-                set(today);
+                set(today, true);
                 hideMenu();
-                // Events
-                config['events']['onSelect'](that, active);
-                if(!oldActive || (active.toString() !== oldActive.toString())){
-                    config['events']['onChange'](that, active);
-                }
             });
         }
 		// Init custom selects
@@ -224,18 +239,13 @@ Com['Datepicker'] = function(o){
 			// Onclick set selected date
 			div.onclick = function(){
 				selected.setDate(day);
-				set(selected);
+				set(selected, true);
 				hideMenu();
-				// Events
-				config['events']['onSelect'](that, active);
-				if(!oldActive || (active.toString() !== oldActive.toString())){
-					config['events']['onChange'](that, active);
-				}
 			};
 		}
 	};
 	
-	var set = function(str){
+	var set = function(str, execute){
 		oldActive = active;
 		if(!str || new RegExp(cm.dateFormat(false, config['saveFormat'], config['langs'])).test(str)){
 			active = null;
@@ -256,7 +266,40 @@ Com['Datepicker'] = function(o){
 			selects['years'].set(active.getFullYear());
 			selects['months'].set(active.getMonth());
 		}
+        if(execute){
+            /* *** EXECUTE API EVENTS *** */
+            executeEvent('onSelect');
+            executeEvent('onChange');
+        }
 	};
+
+    var executeEvent = function(event){
+        var handler = function(){
+            API[event].forEach(function(item){;
+                item(that, active);
+            });
+        };
+
+        switch(event){
+            case 'onChange':
+                if(!oldActive || (!active && oldActive) || (active.toString() !== oldActive.toString())){
+                    handler();
+                }
+                break;
+
+            default:
+                handler();
+                break;
+        }
+    };
+
+    var convertEvents = function(o){
+        cm.foreach(o, function(key, item){
+            if(API[key] && typeof item == 'function'){
+                API[key].push(item);
+            }
+        });
+    };
 	
 	var bodyClick = function(e){
 		if(nodes && !isHide){
@@ -332,24 +375,40 @@ Com['Datepicker'] = function(o){
 	};
 	
 	that.set = function(str){
-		set(str);
+		set(str, true);
 		return that;
 	};
 	
 	that.getDate = function(){
 		return active || '';
 	};
+
+    that.addEvent = function(event, handler){
+        if(API[event] && typeof handler == 'function'){
+            API[event].push(handler);
+        }
+        return that;
+    }
+
+    that.removeEvent = function(event, handler){
+        if(API[event] && typeof handler == 'function'){
+            API[event] = API[event].filter(function(item){
+                return item != handler;
+            });
+        }
+        return that;
+    };
+
+    that.parseDate = function(o, format){
+        return cm.dateFormat(o, (format || config['saveFormat']), config['langs']);
+    };
+
+    that.getNodes = function(key){
+        return nodes[key] || nodes;
+    };
 	
-	that.parseDate = function(o, format){
-		return cm.dateFormat(o, (format || config['saveFormat']), config['langs']);
-	};
-	
-	that.getNodes = function(key){
-		return nodes[key] || nodes;
-	};
-	
-	that.addEvents = function(o){
-		config['events'] = cm.merge(config['events'], o);
+	that.addEvents = function(o){       // Deprecated
+        o && convertEvents(o);
 		return that;
 	};
 	

@@ -7,9 +7,10 @@ Com['GetSelect'] = function(id){
 Com['Select'] = function(o){
 	var that = this,
 		config = cm.merge({
+            'container' : cm.Node('div'),
 			'select' : cm.Node('select'),
 			'menuMargin' : 3,
-			'events' : {}					// Legacy mode, use addEvent method
+			'events' : {}					// Deprecated, use addEvent method
 		}, o),
 		API = {
 			'onSelect' : [],
@@ -34,12 +35,15 @@ Com['Select'] = function(o){
 		// Render
 		render();
 		setMiscEvents();
+        // Set selected option
+        set(options[config['select'].value]);
 	};
 	
 	var render = function(){
 		var width, position, tabindex;
 		/* *** RENDER STRUCTURE *** */
 		nodes['container'] = cm.Node('div', {'class':'cm-select'},
+            nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
 			nodes['input'] = cm.Node('div', {'class':'cm-select-input clear'},
 				cm.Node('div', {'class':'cm-select-inner'},
 					nodes['arrow'] = cm.Node('div', {'class':'cm-select-arrow'}),
@@ -79,16 +83,22 @@ Com['Select'] = function(o){
 				nodes['container'].setAttribute(item.name, item.value);
 			}
 		});
+        // Set hidden input attributes
+        if(config['select'].getAttribute('name')){
+            nodes['hidden'].setAttribute('name', config['select'].getAttribute('name'));
+        }
 		/* *** RENDER OPTIONS *** */
 		for(var i = 0, l = config['select'].options.length; i < l; i++){
 			var option = config['select'].options[i];
 			// Item
 			renderOption(option.value, option.innerHTML);
-			// Set active
-			option.selected && set(options[option.value]);
 		}
 		/* *** APPENDCHILD NEW SELECT *** */
-		cm.insertBefore(nodes['container'], config['select']);
+        if(cm.inDOM(config['select'])){
+		    cm.insertBefore(nodes['container'], config['select']);
+        }else{
+            config['container'].appendChild(nodes['container']);
+        }
 		cm.remove(config['select']);
 	};
 	
@@ -99,22 +109,12 @@ Com['Select'] = function(o){
 		}
 		// Config
 		var item = {
+            'node' : nodes['items'].appendChild(cm.Node('li', {'innerHTML' : text})),
 			'value' : value,
 			'text' : text
 		};
-		// Structure
-		item['item'] = nodes['items'].appendChild(cm.Node('li',
-			item['radio'] = cm.Node('input', {
-				'type' : 'radio',
-				'name' : config['select'].name,
-				'value' : item['value']
-			}),
-			item['label'] = cm.Node('label', {
-				'innerHTML' : item['text']
-			})
-		));
 		// Label onlick event
-		item['label'].onclick = function(){
+		item['node'].onclick = function(){
 			set(item, true);
 			hideMenu();
 		};
@@ -129,7 +129,7 @@ Com['Select'] = function(o){
 			set(optionsList[0], true);
 		}
 		// Remove option from list and array
-		cm.remove(option['item']);
+		cm.remove(option['node']);
 		optionsList = optionsList.filter(function(item){
 			return option != item;
 		});
@@ -176,21 +176,21 @@ Com['Select'] = function(o){
 	};
 	
 	var set = function(option, execute){
-		oldActive = active;
-		active = option['value'];
-		optionsList.forEach(function(item){
-			cm.removeClass(item['item'], 'active');
-		});
-		cm.clearNode(nodes['text']).appendChild(
-			cm.Node('span', {'innerHTML': option['text']})
-		);
-		option['radio'].checked = true;
-		cm.addClass(option['item'], 'active');
-		/* *** EXECUTE API EVENTS *** */
-		if(execute){
-			executeEvent('onSelect');
-			executeEvent('onChange');
-		}
+        oldActive = active;
+        active = option['value'];
+        optionsList.forEach(function(item){
+            cm.removeClass(item['node'], 'active');
+        });
+        cm.clearNode(nodes['text']).appendChild(
+            cm.Node('span', {'innerHTML': option['text']})
+        );
+        nodes['hidden'].value = active;
+        cm.addClass(option['node'], 'active');
+        /* *** EXECUTE API EVENTS *** */
+        if(execute){
+            executeEvent('onSelect');
+            executeEvent('onChange');
+        }
 	};
 	
 	var executeEvent = function(event){
@@ -275,7 +275,7 @@ Com['Select'] = function(o){
 		nodes['menu'].style.display = 'block';
 		// Scroll to active element
 		if(active && options[active]){
-			nodes['scroll'].scrollTop = options[active]['item'].offsetTop - nodes['scroll'].offsetTop;
+			nodes['scroll'].scrollTop = options[active]['node'].offsetTop - nodes['scroll'].offsetTop;
 		}
 		// Check position
 		checkInt = setInterval(getPosition, 5);
@@ -316,14 +316,11 @@ Com['Select'] = function(o){
 		return active;
 	};
 	
-	that.getNodes = function(key){
-		return nodes[key] || nodes;
-	};
-	
 	that.set = function(value){
-		if(value && options[value]){
-			set(options[value], true);
-		}
+        // Select option and execute events
+        if(value && options[value]){
+		    set(options[value], true);
+        }
 		return that;
 	};
 	
@@ -343,11 +340,6 @@ Com['Select'] = function(o){
 		return that;
 	};
 	
-	that.addEvents = function(o){		// Legacy mode
-		o && convertEvents(o);
-		return that;
-	};
-	
 	that.addOption = function(value, text){
 		renderOption(value, text);
 		return that;
@@ -359,6 +351,15 @@ Com['Select'] = function(o){
 		}
 		return that;
 	};
+
+    that.getNodes = function(key){
+        return nodes[key] || nodes;
+    };
+
+    that.addEvents = function(o){		// Deprecated
+        o && convertEvents(o);
+        return that;
+    };
 	
 	init();
 };

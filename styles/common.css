@@ -1132,6 +1132,7 @@ select[multiple]{
 }
 .cm-select-menu ul li {
 	margin-top: 1px;
+    padding: 2px 4px;
 	background-color: #fff;
 	line-height: 16px;
 	font-size: 12px;
@@ -1159,16 +1160,6 @@ select[multiple]{
 }
 .cm-select-menu ul li.hr {
 	display: none;
-}
-.cm-select-menu ul li input[type="radio"] {
-	display: none;
-}
-.cm-select-menu ul li label {
-	min-height: 16px;
-	display: block;
-	cursor: pointer;
-	overflow: hidden;
-	padding: 2px 4px;
 }
 .cm-select-scroll {
 	max-height: 188px;
