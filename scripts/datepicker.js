@@ -192,7 +192,7 @@ Com['Datepicker'] = function(o){
 		var year = selects['years'].get(),
 			month = selects['months'].get();
 		// Get current date
-		today = new Date(),
+		today = new Date();
 		// Set selected
 		selected = new Date(year, month, 1);
 		// Clear container year nad month
@@ -275,7 +275,7 @@ Com['Datepicker'] = function(o){
 
     var executeEvent = function(event){
         var handler = function(){
-            API[event].forEach(function(item){;
+            API[event].forEach(function(item){
                 item(that, active);
             });
         };
@@ -323,7 +323,7 @@ Com['Datepicker'] = function(o){
 			winHeight = cm.getPageSize('winHeight');
 			height = nodes['menu'].offsetHeight;
 			top = getTop();
-			containerHeight = nodes['container'].offsetHeight,
+			containerHeight = nodes['container'].offsetHeight;
 			position = (top + height > winHeight? (top - height - containerHeight - config['menuMargin']) : (top + config['menuMargin']));
 			
 			if(position != nodes['menu'].offsetTop){
@@ -347,7 +347,7 @@ Com['Datepicker'] = function(o){
 		// Hide menu on window resize
 		cm.addEvent(window, 'resize', hideMenu);
 		// Hide menu by click on another object
-		cm.addEvent(document.body, 'click', bodyClick);
+		cm.addEvent(document, 'click', bodyClick);
 		// Animate
 		anim.go({'style' : {'opacity' : 1}, 'duration' : 100});
 	};
@@ -359,7 +359,7 @@ Com['Datepicker'] = function(o){
 		// Remove event - Hide menu on resize
 		cm.removeEvent(window, 'resize', getPosition);
 		// Remove event - Hide menu by click on another object
-		cm.removeEvent(document.body, 'click', bodyClick);
+		cm.removeEvent(document, 'click', bodyClick);
 		// Animate
 		anim.go({'style' : {'opacity' : 0}, 'duration' : (now? 0 : 100), 'onStop' : function(){
 			// Append child menu in select container
@@ -388,7 +388,7 @@ Com['Datepicker'] = function(o){
             API[event].push(handler);
         }
         return that;
-    }
+    };
 
     that.removeEvent = function(event, handler){
         if(API[event] && typeof handler == 'function'){

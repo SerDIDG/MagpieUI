@@ -166,7 +166,7 @@ tbody, thead, td, th, tr {
 	height: 1%;
 }
 .display-none {
-	display: none;
+	display: none !important;
 }
 .margin-none {
 	margin: 0 !important;
@@ -439,7 +439,7 @@ ul.indent {
 }
 .ie7 .browse-button input[type="file"],
 .ie8 .browse-button input[type="file"] {
-	filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
 }
 
 .form dl .birth {
@@ -1745,7 +1745,7 @@ select[multiple]{
 }
 .ie7 .cm-overlay,
 .ie8 .cm-overlay {
-	filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
 }
 .cm-overlay > .bg {
 	width: 100%;
@@ -1797,8 +1797,8 @@ select[multiple]{
 	        transition: all 0.1s ease-in-out;
 }
 .datepicker-input > .icon.datepicker {
-	top: 0px;
-	right: 0px;
+	top: 0;
+	right: 0;
 }
 .datepicker-input > .icon.close {
 	top: 6px;
