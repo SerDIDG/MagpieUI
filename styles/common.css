@@ -46,6 +46,10 @@ tbody, thead, td, th, tr {
 	margin: 0;
 	padding: 0;
 }
+code {
+    display: block;
+    white-space: pre-wrap;
+}
 
 /* ******* ICONS ******* */
 
@@ -1427,6 +1431,9 @@ select[multiple]{
 }
 .tabset-content > ul > li {
 	display: none;
+}
+.tabset-content-ul > li {
+    display: none;
 }
 
 /* Breadcrumbs */

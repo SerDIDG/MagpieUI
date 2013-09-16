@@ -124,23 +124,32 @@ cm.forEach = function(o, handler){
 	if(!o || !handler){
 		return null;
 	}
-	switch(o.constructor){
-		case Object:
-			for(var key in o){
-				if(o.hasOwnProperty(key)){
-					handler(o[key], key);
-				}
-			}
-		    break;
-		case Array:
-			o.forEach(handler);
-		    break;
-        case HTMLCollection:
-        case HTMLOptionsCollection:
-        case NodeList:
-			Array.prototype.forEach.call(o, handler);
-		    break;
-	}
+    switch(o.constructor){
+        case Object:
+            for(var key in o){
+                if(o.hasOwnProperty(key)){
+                    handler(o[key], key);
+                }
+            }
+            break;
+        case Array:
+            o.forEach(handler);
+            break;
+        default:
+            try{
+                Array.prototype.forEach.call(o, handler);
+            }catch(e){
+                try{
+                    for(var i = 0, l = o.length; i < l; i++){
+                        (function(){
+                            var z = i;
+                            handler(o[z], z);
+                        })();
+                    }
+                }catch(e){}
+            }
+            break;
+    }
 	return o;
 };
 

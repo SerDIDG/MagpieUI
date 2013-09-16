@@ -41,7 +41,7 @@ Com['Select'] = function(o){
 	};
 	
 	var render = function(){
-		var width, tabindex;
+		var tabindex;
 		/* *** RENDER STRUCTURE *** */
 		nodes['container'] = cm.Node('div', {'class':'cm-select'},
             nodes['hidden'] = cm.Node('select', {'class' : 'display-none'}),
@@ -63,9 +63,8 @@ Com['Select'] = function(o){
 		/* *** ATTRIBUTES *** */
 		// Set select width
 		if(config['select'].offsetWidth && config['select'].offsetWidth != config['select'].parentNode.offsetWidth){
-			width = config['select'].offsetWidth + 'px';
+            nodes['container'].style.width = config['select'].offsetWidth + 'px';
 		}
-		nodes['container'].style.width = width;
 		// Add class name
 		if(config['select'].className){
 			cm.addClass(nodes['container'], config['select'].className);
@@ -180,16 +179,18 @@ Com['Select'] = function(o){
 	};
 	
 	var set = function(option, execute){
-        oldActive = active;
-        active = option['value'];
-        optionsList.forEach(function(item){
-            cm.removeClass(item['node'], 'active');
-        });
-        cm.clearNode(nodes['text']).appendChild(
-            cm.Node('span', {'innerHTML': option['text']})
-        );
-        option['option'].selected = true;
-        cm.addClass(option['node'], 'active');
+        if(option){
+            oldActive = active;
+            active = option['value'] || option['text'];
+            optionsList.forEach(function(item){
+                cm.removeClass(item['node'], 'active');
+            });
+            cm.clearNode(nodes['text']).appendChild(
+                cm.Node('span', {'innerHTML': option['text']})
+            );
+            option['option'].selected = true;
+            cm.addClass(option['node'], 'active');
+        }
         /* *** EXECUTE API EVENTS *** */
         if(execute){
             executeEvent('onSelect');
@@ -384,9 +385,9 @@ Com['SelectCollector'] = function(node){
 		if(!node){
 			render(document.body);
 		}else if(node.constructor == Array){
-			for(var i = 0, l = node.length; i < l; i++){
-				render(node[i]);
-			}
+            cm.forEach(node, function(item){
+                render(item);
+            });
 		}else{
 			render(node);
 		}

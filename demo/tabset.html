@@ -1,0 +1,124 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;">
+    <title>Tabset</title>
+
+    <link type="text/css" rel="stylesheet" href="../styles/common.css">
+    <link type="text/css" rel="stylesheet" href="../themes/screensider/common.css">
+    <link type="text/css" rel="stylesheet" href="styles/main.css">
+
+    <script type="text/javascript" src="../scripts/common.js"></script>
+    <script type="text/javascript" src="../scripts/useragent.js"></script>
+    <script type="text/javascript" src="../scripts/select.js"></script>
+    <script type="text/javascript" src="../scripts/datepicker.js"></script>
+    <script type="text/javascript" src="../scripts/tabset.js"></script>
+
+    <script type="text/javascript">
+        cm.onload(function(){
+            var element;
+            // Useragent
+            Useragent.setBrowserClass();
+            // Selects
+            Com.SelectCollector();
+            // Datepickers
+            Com.DatepickerCollector();
+            // Tabset
+            Com.TabsetCollector();
+            Com.GetTabset('tabset4').setEvents({
+                'second' : {
+                    'onShow' : function(tabs, tab){
+                        alert('Example of onShow event');
+                    },
+                    'onHide' : function(tabs, tab){
+                        alert('Example of onHide event');
+                    }
+                }
+            }).render();
+        });
+    </script>
+</head>
+
+<body>
+
+<h1>Tabset with onHashChange event:</h1>
+
+<ul class="tabset-content-ul" id="tabset1" data-tabset="true">
+    <li data-tabset-id="first" data-tabset-title="First"></li>
+    <li data-tabset-id="second" data-tabset-title="Second"></li>
+    <li data-tabset-id="third" data-tabset-title="Third"></li>
+</ul>
+
+<h1>Tabset without onHashChange event:</h1>
+<p>
+    <b>You can set this attribute in different ways:</b><br>
+    in javascript:
+    <code>new Com.Tabset({'toggleOnHashChange' : false});</code>
+    or just add "data-toggleOnHashChange" attribute in html:
+    <code>&lt;ul class="tabset-content-ul" data-tabset="true" data-toggleOnHashChange="false"&gt;&lt;/ul&gt;</code>
+</p>
+
+<ul class="tabset-content-ul" id="tabset2" data-tabset="true" data-toggleOnHashChange="false">
+    <li data-tabset-id="first" data-tabset-title="First"></li>
+    <li data-tabset-id="second" data-tabset-title="Second"></li>
+    <li data-tabset-id="third" data-tabset-title="Third"></li>
+</ul>
+
+<h1>Tabset without onHashChange event and with active tab:</h1>
+<p>
+    <b>You can set this attribute by just adding "data-active" attribute in html:</b>
+    <code>&lt;ul class="tabset-content-ul" data-tabset="true" data-toggleOnHashChange="false" data-active="second"&gt;&lt;/ul&gt;</code>
+</p>
+
+<ul class="tabset-content-ul" id="tabset3" data-tabset="true" data-toggleOnHashChange="false" data-active="second">
+    <li data-tabset-id="first" data-tabset-title="First"></li>
+    <li data-tabset-id="second" data-tabset-title="Second"></li>
+    <li data-tabset-id="third" data-tabset-title="Third"></li>
+</ul>
+
+<h1>Tabset with events:</h1>
+<p>
+    <b>1. Disable tabset rendering by adding "data-renderOnInit" attribute in html</b><br>
+    <code>&lt;ul class="tabset-content-ul" data-tabset="true" data-toggleOnHashChange="false" data-renderOnInit="false"&gt;&lt;/ul&gt;</code>
+    <b>2. Set id attribute on tabset in html</b><br>
+    <b>3. Now you can add events in javascript</b><br>
+    <b>3.1 Use Com.GetTabset('id'); function for getting tabset by id.</b><br>
+    <code>Com.GetTabset('id');</code>
+    <b>3.2 Add Events:</b>
+    <code>Com.GetTabset('id').setEvents({
+    'tabId' : {
+        'onShow' : function(tabs, tab){
+            alert('Example of onShow event');
+        },
+        'onHide' : function(tabs, tab){
+            alert('Example of onHide event');
+        }
+    }
+});</code>
+    <b>3.3 Render tabset</b>
+    <code>Com.GetTabset('id').render();</code>
+</p>
+
+<ul class="tabset-content-ul" id="tabset4" data-tabset="true" data-renderOnInit="false" data-toggleOnHashChange="false">
+    <li data-tabset-id="first" data-tabset-title="First"></li>
+    <li data-tabset-id="second" data-tabset-title="Second"></li>
+    <li data-tabset-id="third" data-tabset-title="Third"></li>
+</ul>
+
+<h1>Tabset in tabset:</h1>
+
+<ul class="tabset-content-ul" id="tabset5" data-tabset="true" data-toggleOnHashChange="false">
+    <li data-tabset-id="first" data-tabset-title="First">
+        <ul class="tabset-content-ul" id="tabset6" data-tabset="true" data-toggleOnHashChange="false">
+            <li data-tabset-id="first" data-tabset-title="First"></li>
+            <li data-tabset-id="second" data-tabset-title="Second"></li>
+            <li data-tabset-id="third" data-tabset-title="Third"></li>
+        </ul>
+    </li>
+    <li data-tabset-id="second" data-tabset-title="Second"></li>
+    <li data-tabset-id="third" data-tabset-title="Third"></li>
+</ul>
+
+</body>
+</html>
