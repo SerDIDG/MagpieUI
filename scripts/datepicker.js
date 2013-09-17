@@ -26,7 +26,7 @@ Com['Datepicker'] = function(o){
 				'todayButton' : 'Today'
 			}
 		}, o),
-        dataAttributes = ['placeholder', 'showPlaceholder', 'showTodayButton', 'showClearButton', 'startYear', 'endYear'],
+        dataAttributes = ['placeholder', 'showPlaceholder', 'showTodayButton', 'showClearButton', 'startYear', 'endYear', 'format', 'saveFormat'],
         API = {
             'onSelect' : [],
             'onChange' : []
@@ -56,14 +56,23 @@ Com['Datepicker'] = function(o){
 	};
 
     var processDataAttributes = function(){
-        dataAttributes.forEach(function(item){
+        var value;
+        cm.forEach(dataAttributes, function(item){
+            value = config['input'].getAttribute(['data', item].join('-'));
             switch(item){
-                case 'placeholder':
-                    config[item] = config['input'].getAttribute(item) || config[item];
+                case 'showPlaceholder':
+                case 'showTodayButton':
+                case 'showClearButton':
+                    value = value? (value == 'true') : config[item];
                     break;
+                case 'placeholder':
+                    config[item] = config['input'].getAttribute(item) || value || config[item];
+                default:
+                    value = value || config[item];
+                    break
             }
-            config[item] = config['input'].getAttribute(['data', item].join('-')) || config[item];
-        })
+            config[item] = value;
+        });
     };
 	
 	var render = function(){

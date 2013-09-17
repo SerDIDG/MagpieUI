@@ -95,7 +95,7 @@ Com['Tabset'] = function(o){
             renderTab(item);
         });
         /* *** APPENDCHILD NEW TABSET *** */
-        if(config['tabset']&& cm.inDOM(config['tabset'])){
+        if(config['tabset'] && cm.inDOM(config['tabset'])){
             cm.insertBefore(nodes['container'], config['tabset']);
         }else{
             config['container'].appendChild(nodes['container']);
