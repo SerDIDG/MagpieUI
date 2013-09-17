@@ -416,7 +416,7 @@ ul.indent {
 	float: left;
 }
 .form dl .time > span {
-    width: 12px;
+    width: 14px;
 	display: block;
 	float: left;
     text-align: center;
@@ -454,11 +454,15 @@ ul.indent {
 .form dl .birth {
 }
 .form dl .birth input {
-	width: 55px;
+	width: 58px;
 	float: left;
 }
+.form dl .birth input.month,
+.form dl .birth input.day {
+    width: 46px;
+}
 .form dl .birth div {
-	width: 12px;
+	width: 20px;
 	float: left;
 	overflow: hidden;
 	text-align: center;

@@ -85,12 +85,26 @@
                 <dt>Time picker:</dt>
                 <dd>
                     <div class="time clear">
-                        <select>
-                            <option>12</option>
+                        <select name="time-picker-hours">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12" selected>12</option>
                         </select>
                         <span>:</span>
-                        <select>
-                            <option>00</option>
+                        <select name="time-picker-minutes">
+                            <option value="00">00</option>
+                            <option value="15">15</option>
+                            <option value="30" selected>30</option>
+                            <option value="45">45</option>
                         </select>
                     </div>
                 </dd>
@@ -99,11 +113,11 @@
                 <dt>Birthdate:</dt>
                 <dd>
                     <div class="birth clear">
-                        <input placeholder="Year" name="year" type="text">
+                        <input placeholder="YYYY" name="year" type="text" class="year" maxlength="4">
                         <div>/</div>
-                        <input placeholder="Month" name="month" type="text">
+                        <input placeholder="MM" name="month" type="text" class="month" maxlength="2">
                         <div>/</div>
-                        <input placeholder="Day" name="day" type="text">
+                        <input placeholder="DD" name="day" type="text" class="day" maxlength="2">
                     </div>
                 </dd>
             </dl>
