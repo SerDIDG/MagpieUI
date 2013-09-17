@@ -66,11 +66,11 @@ Com['Datepicker'] = function(o){
                     value = value? (value == 'true') : config[item];
                     break;
                 case 'placeholder':
-                    config[item] = config['input'].getAttribute(item) || value || config[item];
+                    value = config['input'].getAttribute(item) || value || config[item];
                     break;
                 default:
                     value = value || config[item];
-                    break
+                    break;
             }
             config[item] = value;
         });
