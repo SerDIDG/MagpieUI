@@ -10,9 +10,11 @@ Com['Tabset'] = function(o){
 			'container' : cm.Node('div'),
             'tabset' : false,
             'toggleOnHashChange' : true,
-			'renderOnInit' : true
+			'renderOnInit' : true,
+            'active' : false,
+            'tabs' : []
 		}, o),
-        dataAttributes = ['toggleOnHashChange', 'renderOnInit'],
+        dataAttributes = ['active', 'toggleOnHashChange', 'renderOnInit'],
 		nodes = {},
 		ids = [],
 		tabs = {},
@@ -30,7 +32,7 @@ Com['Tabset'] = function(o){
 
     var processDataAttributes = function(){
         var value;
-        dataAttributes.forEach(function(item){
+        cm.forEach(dataAttributes, function(item){
             value = config['tabset'].getAttribute(['data', item].join('-'));
             switch(item){
                 case 'toggleOnHashChange':
@@ -42,11 +44,27 @@ Com['Tabset'] = function(o){
                     break
             }
             config[item] = value;
-        })
+        });
+    };
+
+    var render = function(){
+        var id = config['active'];
+        if(config['toggleOnHashChange']){
+            // Init hash change handler
+            initHashChange();
+            // Set first active tab
+            if(id && tabs[id]){
+                set(id);
+            }else{
+                hashHandler();
+            }
+        }else{
+            set(id && tabs[id]? id : ids[0])
+        }
     };
 
     var renderView = function(){
-		var tabsLI, tab, id, title, a, content;
+		var tabsLI;
 		/* *** STRUCTURE *** */
         nodes['container'] = cm.Node('div', {'class' : 'tabset'},
             nodes['header'] = cm.Node('div', {'class' : 'tabset-head clear'},
@@ -61,48 +79,21 @@ Com['Tabset'] = function(o){
             tabsLI = Array.prototype.filter.call(config['tabset'].childNodes, function(node){
                 return node.nodeType == 1 && node.tagName.toLowerCase() == 'li';
             });
-            cm.forEach(tabsLI, function(tabContent, i){
-                id = tabContent.getAttribute('data-tabset-id');
-                title = tabContent.getAttribute('data-tabset-title');
-                // Remove active tab class if exists
-                cm.removeClass(tabContent, 'active');
-                // Hide content
-                tabContent.style.display = 'none';
-                // Render tab
-                tab = cm.Node('li',
-                    a = cm.Node('a', title)
-                );
-                if(config['toggleOnHashChange']){
-                    a.setAttribute('href', [window.location.href.split('#')[0], id].join('#'));
-                }else{
-                    a.setAttribute('href', 'javascript:void(0);');
-                    a.onclick = (function(){
-                        var tid = id;
-                        return function(){
-                            set(tid);
-                        };
-                    })();
-                }
-                // Insert into array
-                ids.push(id);
-                tabs[id] = {
-                    'id' : id,
-                    'tab' : tab,
-                    'link' : a,
-                    'content' : tabContent,
-                    'isHide' : true,
-                    'onShow' : function(){},
-                    'onHide' : function(){}
-                };
-                // Append tab
-                nodes['contentUL'].appendChild(tabContent);
-                nodes['headerUL'].appendChild(tab);
+            cm.forEach(tabsLI, function(tabContent){
+                renderTab({
+                    'id' : tabContent.getAttribute('data-tabset-id'),
+                    'title' : tabContent.getAttribute('data-tabset-title'),
+                    'content' : tabContent
+                });
             });
             // ID
             if(config['tabset'].id){
                 nodes['container'].id = config['tabset'].id;
             }
         }
+        cm.forEach(config['tabs'], function(item){
+            renderTab(item);
+        });
         /* *** APPENDCHILD NEW TABSET *** */
         if(config['tabset']&& cm.inDOM(config['tabset'])){
             cm.insertBefore(nodes['container'], config['tabset']);
@@ -111,10 +102,81 @@ Com['Tabset'] = function(o){
         }
         cm.remove(config['tabset']);
 	};
+
+    var renderTab = function(item){
+        // Check for exists
+        if(tabs[item['id']]){
+            removeTab(tabs[item['id']]);
+        }
+        // Config
+        item = cm.merge({
+            'id' : '',
+            'title' : '',
+            'content' : cm.Node('li'),
+            'tab' : cm.Node('li'),
+            'a' : cm.Node('a', item['title']),
+            'isHide' : true,
+            'onShow' : function(){},
+            'onHide' : function(){}
+        }, item);
+        // Remove active tab class if exists
+        cm.removeClass(item['content'], 'active');
+        // Hide content
+        item['content'].style.display = 'none';
+        // Add click event
+        if(config['toggleOnHashChange']){
+            item['a'].setAttribute('href', [window.location.href.split('#')[0], item['id']].join('#'));
+        }else{
+            item['a'].setAttribute('href', 'javascript:void(0);');
+            item['a'].onclick = function(){
+                 set(item['id']);
+            };
+        }
+        // Append tab
+        item['tab'].appendChild(item['a']);
+        nodes['headerUL'].appendChild(item['tab']);
+        nodes['contentUL'].appendChild(item['content']);
+        // Push
+        ids.push(item['id']);
+        tabs[item['id']] = item;
+    };
+
+    var removeTab = function(item){
+        // Set new active tab, if current active is nominated for remove
+        if(item['id'] === active){
+            set(ids[0]);
+        }
+        // Remove tab from list and array
+        cm.remove(item['tab']);
+        cm.remove(item['content']);
+        ids = ids.filter(function(item){
+            return item['id'] != item;
+        });
+        delete tabs[item['id']];
+    };
+
+    var set = function(id){
+        // Hide previous active tab
+        if(active && tabs[active]){
+            // onHide event
+            tabs[active]['onHide'](that, tabs[active]);
+            tabs[active]['isHide'] = true;
+            // Hide
+            cm.removeClass(tabs[active]['tab'], 'active');
+            tabs[active]['content'].style.display = 'none';
+        }
+        // Show current tab
+        active = id;
+        // Show
+        cm.addClass(tabs[active]['tab'], 'active');
+        tabs[active]['content'].style.display = 'block';
+        // onShow event
+        tabs[active]['onShow'](that, tabs[active]);
+        tabs[active]['isHide'] = false;
+    };
 	
 	var initHashChange = function(){
-		var hash, id;
-		
+		var hash;
 		if("onhashchange" in window && !is('IE7')){
 			cm.addEvent(window, 'hashchange', hashHandler);
 		}else{
@@ -122,8 +184,7 @@ Com['Tabset'] = function(o){
 			hashInterval = setInterval(function(){
 				if(hash != window.location.hash){
 					hash = window.location.hash;
-					id = hash.replace('#', '');
-					set(id);
+                    hashHandler();
 				}
 			}, 25);
 		}
@@ -131,58 +192,48 @@ Com['Tabset'] = function(o){
 	
 	var hashHandler = function(){
 		var id = window.location.hash.replace('#', '');
-		set(id);
+		set(id && tabs[id]? id : ids[0]);
 	};
 	
 	/* Main */
 	
-	var render = that.render = function(){
-        if(config['toggleOnHashChange']){
-            // Init hash change handler
-            initHashChange();
-            // Set first active tab
-            hashHandler();
-        }else{
-            set(config['tabset'].getAttribute('data-active') || ids[0])
-        }
+	that.render = function(){
+        render();
+        return that;
 	};
 	
-	var set = that.set = function(id){
-		var id = id && tabs[id]? id : ids[0];
-		// Hide previous active tab
-		if(active && tabs[active]){
-			// onHide event
-			tabs[active]['onHide'](that, tabs[active]);
-			tabs[active]['isHide'] = true;
-			// Hide
-			cm.removeClass(tabs[active]['tab'], 'active');
-			tabs[active]['content'].style.display = 'none';
-		}
-		// Show current tab
-		active = id;
-		// Show
-		cm.addClass(tabs[active]['tab'], 'active');
-		tabs[active]['content'].style.display = 'block';
-		// onShow event
-		tabs[active]['onShow'](that, tabs[active]);
-		tabs[active]['isHide'] = false;
-			
+	that.set = function(id){
+        if(id && tabs[id]){
+            set(tabs[id]);
+        }
 		return that;
 	};
+
+    that.addTab = function(item){
+        if(item && item['id']){
+            renderTab(item);
+        }
+        return that;
+    };
+
+    that.removeTab = function(id){
+        if(id && tabs[id]){
+            removeTab(tabs[id]);
+        }
+        return that;
+    };
 	
-	var setEvents = that.setEvents = function(o){
+	that.setEvents = function(o){
 		if(o){
 			tabs = cm.merge(tabs, o);
 		}
-		
 		return that;
 	};
 	
-	var remove = that.remove = function(){
+	that.remove = function(){
 		cm.removeEvent(window, 'hashchange', hashHandler);
 		hashInterval && clearInterval(hashInterval);
 		cm.remove(nodes['container']);
-		
 		return that;
 	};
 	
