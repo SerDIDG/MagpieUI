@@ -49,6 +49,11 @@ tbody, thead, td, th, tr {
 code {
     display: block;
     white-space: pre-wrap;
+    padding: 8px 12px;
+    margin: 4px 0;
+    background: #ffffff;
+    border: 1px dashed #999999;
+    border-radius: 4px;
 }
 
 /* ******* ICONS ******* */
@@ -951,6 +956,8 @@ button,
 	padding: 0 10px;
 	position: relative;
 	vertical-align: top;
+    -moz-box-sizing: border-box;
+         box-sizing: border-box;
 	-webkit-background-clip: border-box;
 	   -moz-background-clip: border-box;
 	        background-clip: border-box;
