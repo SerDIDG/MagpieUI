@@ -1,0 +1,106 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;">
+    <title>Gallery</title>
+
+    <link type="text/css" rel="stylesheet" href="../styles/common.css">
+    <link type="text/css" rel="stylesheet" href="../themes/screensider/common.css">
+    <link type="text/css" rel="stylesheet" href="styles/main.css">
+
+    <script type="text/javascript" src="../scripts/common.js"></script>
+    <script type="text/javascript" src="../scripts/useragent.js"></script>
+    <script type="text/javascript" src="../scripts/select.js"></script>
+    <script type="text/javascript" src="../scripts/datepicker.js"></script>
+    <script type="text/javascript" src="../scripts/tabset.js"></script>
+    <script type="text/javascript" src="../scripts/gallery.js"></script>
+
+    <script type="text/javascript">
+        cm.onload(function(){
+            var element;
+            // Useragent
+            Useragent.setBrowserClass();
+            // Selects
+            Com.SelectCollector();
+            // Datepickers
+            Com.DatepickerCollector();
+            // Tabset
+            Com.TabsetCollector();
+            // Gallery
+            Com.GalleryCollector();
+        });
+    </script>
+</head>
+
+<body>
+
+<h1>Gallery listing with rendered html structure:</h1>
+
+<div class="gallery-listing cols-6" data-gallery="true">
+    <ul>
+        <li>
+            <a href="images/gallery/1.jpg" data-image="true">
+                <img src="images/gallery/1-th.jpg" alt="Sample 1" title="Sample 1">
+            </a>
+        </li>
+        <li>
+            <a href="images/gallery/2.jpg" data-image="true">
+                <img src="images/gallery/2-th.jpg" alt="Sample 2" title="Sample 2">
+            </a>
+        </li>
+        <li>
+            <a href="images/gallery/3.jpg" data-image="true">
+                <img src="images/gallery/3-th.jpg" alt="Sample 3" title="Sample 3">
+            </a>
+        </li>
+        <li>
+            <a href="images/gallery/4.jpg" data-image="true">
+                <img src="images/gallery/4-th.jpg" alt="Sample 4" title="Sample 4">
+            </a>
+        </li>
+        <li>
+            <a href="images/gallery/1.jpg" data-image="true">
+                <img src="images/gallery/1-th.jpg" alt="Sample 5" title="Sample 5">
+            </a>
+        </li>
+        <li>
+            <a href="images/gallery/2.jpg" data-image="true">
+                <img src="images/gallery/2-th.jpg" alt="Sample 6" title="Sample 6">
+            </a>
+        </li>
+        <li>
+            <a href="images/gallery/3.jpg" data-image="true">
+                <img src="images/gallery/3-th.jpg" alt="Sample 7" title="Sample 7">
+            </a>
+        </li>
+        <li>
+            <a href="images/gallery/4.jpg" data-image="true">
+                <img src="images/gallery/4-th.jpg" alt="Sample 8" title="Sample 8">
+            </a>
+        </li>
+        <li>
+            <a href="images/gallery/1.jpg" data-image="true">
+                <img src="images/gallery/1-th.jpg" alt="Sample 9" title="Sample 9">
+            </a>
+        </li>
+        <li>
+            <a href="images/gallery/2.jpg" data-image="true">
+                <img src="images/gallery/2-th.jpg" alt="Sample 10" title="Sample 10">
+            </a>
+        </li>
+        <li>
+            <a href="images/gallery/3.jpg" data-image="true">
+                <img src="images/gallery/3-th.jpg" alt="Sample 11" title="Sample 11">
+            </a>
+        </li>
+        <li>
+            <a href="images/gallery/4.jpg" data-image="true">
+                <img src="images/gallery/4-th.jpg" alt="Sample 12" title="Sample 12">
+            </a>
+        </li>
+    </ul>
+</div>
+
+</body>
+</html>

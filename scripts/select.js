@@ -378,8 +378,9 @@ Com['Select'] = function(o){
 
 Com['SelectCollector'] = function(node){
 	var that = this,
-		selectsNodes,
-		selects;
+		selects,
+        id,
+		select;
 		
 	var init = function(node){
 		if(!node){
@@ -392,24 +393,19 @@ Com['SelectCollector'] = function(node){
 			render(node);
 		}
 	};
-	
-	var render = function(node){
-		selectsNodes = node.getElementsByTagName('select');
-		selects = [];
-		for(var i = 0, l = selectsNodes.length; i < l; i++){
-			selects.push(selectsNodes[i]);
-		}
-		// Render custom selects
-		selects.forEach(function(item){
-			if(!item.multiple && item.getAttribute('data-select') != 'norender'  &&  item.style.display != 'none'){
-				var id = item.id,
-					sel = new Com.Select({'select' : item});
-				if(id){
-					Com.Elements.Selects[id] = sel;
-				}
-			}
-		});
-	};
+
+    var render = function(node){
+        selects = (node.nodeType == 1 && node.tagName.toLowerCase() == 'select') ? [node] : node.getElementsByTagName('select');
+        // Render datepickers
+        cm.forEach(selects, function(item){
+            if(!item.multiple && item.getAttribute('data-select') != 'norender'){
+                select = new Com.Select({'select' : item});
+                if(id = item.id){
+                    Com.Elements.Selects[id] = select;
+                }
+            }
+        });
+    };
 	
 	init(node);
 };

@@ -2149,13 +2149,9 @@ select[multiple]{
 
 /* ******* GALLERY ******* */
 
-.com-gallery-embeded {
-	position: relative;
-}
-
 /* Overlay */
 
-.com-gallery-overlay {
+.gallery-overlay {
 	width: 100%;
 	height: 100%;
 	position: fixed;
@@ -2165,7 +2161,7 @@ select[multiple]{
 	opacity: 0;
 	cursor: default;
 }
-.com-gallery-overlay > .bg {
+.gallery-overlay > .bg {
 	width: 100%;
 	height: 100%;
 	background-color: #1e1e1e;
@@ -2175,7 +2171,7 @@ select[multiple]{
 	left: 0;
 	z-index: 1;
 }
-.com-gallery-overlay .window {
+.gallery-overlay .window {
 	position: absolute;
 	z-index: 2;
 	left: 50%;
@@ -2184,11 +2180,11 @@ select[multiple]{
 	text-transform: uppercase;
 	font-size: 16px;
 }
-.com-gallery-overlay .window > .inner {
+.gallery-overlay .window > .inner {
 	position: relative;
 	z-index: 2;
 }
-.com-gallery-overlay .window .top {
+.gallery-overlay .window .top {
 	position: absolute;
 	top: -40px;
 	left: 0;
@@ -2197,14 +2193,14 @@ select[multiple]{
 	color: #fff;
 	white-space: nowrap;
 }
-.com-gallery-overlay .window .album {
+.gallery-overlay .window .title {
 	margin: 0 25px 0 0;
 	display: inline;
 }
-.com-gallery-overlay .window .counter {
+.gallery-overlay .window .counter {
 	display: inline;
 }
-.com-gallery-overlay .window .close {
+.gallery-overlay .window .close {
 	height: 20px;
 	position: absolute;
 	top: -40px;
@@ -2221,7 +2217,7 @@ select[multiple]{
 	     -o-transition: opacity 0.3s ease-in-out;
 	        transition: opacity 0.3s ease-in-out;
 }
-.com-gallery-overlay .window .close:hover {
+.gallery-overlay .window .close:hover {
 	opacity: 0.7;
 	-webkit-transition: opacity 0.1s ease-in-out;
 	   -moz-transition: opacity 0.1s ease-in-out;
@@ -2232,18 +2228,18 @@ select[multiple]{
 
 /* Viewer */
 
-.com-gallery-viewer {
+.gallery-viewer {
 	background: #292829;
 	border: 1px solid #666666;
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	user-select: none;
 }
-.com-gallery-viewer > .inner {
+.gallery-viewer > .inner {
 	position: relative;
 	overflow: hidden;
 }
-.com-gallery-viewer .item {
+.gallery-viewer .item {
 	width: 100%;
 	height: 100%;
 	background-color: #292829;
@@ -2252,17 +2248,11 @@ select[multiple]{
 	top: 0;
 	left: 0;
 }
-.com-gallery-viewer .item img {
+.gallery-viewer .item img {
 	display: block;
 	border: 0;
 }
-
-.com-gallery-viewer .item.video {
-	background-color: #000;
-	opacity: 1;
-	overflow: hidden;
-}
-.com-gallery-viewer > .inner .bar {
+.gallery-viewer > .inner .bar {
 	width: 100%;
 	height: 100%;
 	opacity: 0;
@@ -2275,17 +2265,18 @@ select[multiple]{
 	     -o-transition: opacity 0.3s ease-in-out;
 	        transition: opacity 0.3s ease-in-out;
 }
-.com-gallery-viewer > .inner:hover .bar {
+.gallery-viewer > .inner:hover .bar {
 	opacity: 1;
 }
-.com-gallery-viewer .loader {
+.gallery-viewer .loader {
 	width: 100%;
 	height: 100%;
+    display: none;
 	position: absolute;
 	z-index: 5;
 	opacity: 0;
 }
-.com-gallery-viewer .loader-icon {
+.gallery-viewer .loader-icon {
 	width: 16px;
 	height: 11px;
 	background: url(../images/components/loader.gif);
@@ -2295,7 +2286,7 @@ select[multiple]{
 	margin: -8px 0 0 -5px;
 	z-index: 2;
 }
-.com-gallery-viewer .loader-bg {
+.gallery-viewer .loader-bg {
 	width: 100%;
 	height: 100%;
 	background: #292829;
@@ -2303,53 +2294,74 @@ select[multiple]{
 	z-index: 1;
 	opacity: 0.6;
 }
+.gallery-viewer .dimmer {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 5;
+    display: none;
+}
 
 /* List */
 
-.com-gallery-list {
+.gallery-listing {
+    margin: 0 0 22px;
 }
-.com-gallery-list .item {
+.gallery-listing > ul {
+    margin: -8px;
+    padding: 0;
+    list-style: none;
+    font-size: 0;
+    word-spacing: 0;
+}
+.gallery-listing > ul > li {
 	width: 25%;
-	float: left;
+    display: inline-block;
 	overflow: hidden;
-	padding: 0 8px 16px;
+	padding: 8px;
+    vertical-align: top;
 	-moz-box-sizing: border-box;
 	     box-sizing: border-box;
 }
-.com-gallery-list .item .inner {
-	position: relative;
-	background: #fff;
-	background: -webkit-linear-gradient(top, #fff, rgb(240,240,240));
-	background:     -ms-linear-gradient(top, #fff, rgb(240,240,240));
-	background:         linear-gradient(top, #fff, rgb(240,240,240));
-	border: 1px solid #9e9e9e;
-	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) inset;
+.gallery-listing > ul > li a {
+    display: block;
+    position: relative;
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
 }
-.com-gallery-list .item img {
+.gallery-listing > ul > li img {
 	width: 100%;
 	display: block;
 	cursor: pointer;
-	opacity: 0;
 	-webkit-transition: opacity 0.3s ease-in-out;
 	   -moz-transition: opacity 0.3s ease-in-out;
 	     -o-transition: opacity 0.3s ease-in-out;
 	        transition: opacity 0.3s ease-in-out;
 }
-.com-gallery-list .item.loaded .inner {
-	box-shadow: none;
-	background: #fff;
-}
-.com-gallery-list .item.loaded img {
-	opacity: 1;
-}
-.com-gallery-list .item.loaded img:hover {
+.gallery-listing > ul > li img:hover {
 	opacity: 0.5;
+    -webkit-transition: opacity 0.1s ease-in-out;
+       -moz-transition: opacity 0.1s ease-in-out;
+         -o-transition: opacity 0.1s ease-in-out;
+            transition: opacity 0.1s ease-in-out;
 }
+
+.gallery-listing.cols-1  > ul > li { width: 100%;     }
+.gallery-listing.cols-2  > ul > li { width: 50%;      }
+.gallery-listing.cols-3  > ul > li { width: 33.33%;   }
+.gallery-listing.cols-4  > ul > li { width: 25%;      }
+.gallery-listing.cols-5  > ul > li { width: 20%;      }
+.gallery-listing.cols-6  > ul > li { width: 16.66%;   }
+.gallery-listing.cols-7  > ul > li { width: 14.28%;   }
+.gallery-listing.cols-8  > ul > li { width: 12.5%;    }
+.gallery-listing.cols-9  > ul > li { width: 11.11%;   }
+.gallery-listing.cols-10 > ul > li { width: 10%;      }
 
 /* Arrows */
 
-.com-gallery-viewer .arrows-next,
-.com-gallery-viewer .arrows-prev {
+.gallery-viewer .arrows-next,
+.gallery-viewer .arrows-prev {
 	width: 50%;
 	height: 100%;
 	display: block;
@@ -2363,77 +2375,79 @@ select[multiple]{
 	     -o-transition: opacity 0.2s ease-in-out;
 	        transition: opacity 0.2s ease-in-out;
 }
-.com-gallery-viewer .arrows-next {
+.gallery-viewer .arrows-next {
 	right: 0;
 }
-.com-gallery-viewer .arrows-prev {
+.gallery-viewer .arrows-prev {
 	left: 0;
 }
-.com-gallery-viewer .arrows-next .icon,
-.com-gallery-viewer .arrows-prev .icon {
+.gallery-viewer .arrows-next .icon,
+.gallery-viewer .arrows-prev .icon {
 	width: 27px;
 	height: 50px;
 	position: absolute;
 	top: 50%;
 	margin: -25px 0 0 0;
 }
-.com-gallery-viewer .arrows-next .icon {
+.gallery-viewer .arrows-next .icon {
 	background: url(../images/components/gallery-arrow-next.png) 0 0 no-repeat;
 	right: 10px;
 }
-.com-gallery-viewer .arrows-prev .icon {
+.gallery-viewer .arrows-prev .icon {
 	background: url(../images/components/gallery-arrow-prev.png) 0 0 no-repeat;
 	left: 10px;
 }
-.com-gallery-viewer .arrows-next:hover,
-.com-gallery-viewer .arrows-prev:hover {
+.gallery-viewer .arrows-next:hover,
+.gallery-viewer .arrows-prev:hover {
 	opacity: 1;
 }
 
-.ie8 .com-gallery-overlay,
-.ie7 .com-gallery-overlay {
+.ie7 .gallery-listing > ul > li {
+    display: block;
+    zoom: 1;
+}
+.ie8 .gallery-overlay,
+.ie7 .gallery-overlay {
+    filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+}
+.ie8 .gallery-overlay > .bg,
+.ie7 .gallery-overlay > .bg {
+    filter: progid:DXImageTransform.Microsoft.Alpha(opacity=90);
+}
+.ie8 .gallery-viewer .item,
+.ie7 .gallery-viewer .item {
 	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
 }
-.ie8 .com-gallery-overlay > .bg,
-.ie7 .com-gallery-overlay > .bg {
-	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=50);
-}
-
-.ie8 .com-gallery-viewer .item,
-.ie7 .com-gallery-viewer .item {
-	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
-}
-.ie8 .com-gallery-viewer .item.video,
-.ie7 .com-gallery-viewer .item.video {
+.ie8 .gallery-viewer .item.video,
+.ie7 .gallery-viewer .item.video {
 	filter: none;
 }
-
-.ie8 .com-gallery-viewer > .inner .bar,
-.ie7 .com-gallery-viewer > .inner .bar {
+.ie8 .gallery-viewer > .inner .bar,
+.ie7 .gallery-viewer > .inner .bar {
 	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
 }
-.ie8 .com-gallery-viewer > .inner:hover .bar,
-.ie7 .com-gallery-viewer > .inner:hover .bar {
+.ie8 .gallery-viewer > .inner:hover .bar,
+.ie7 .gallery-viewer > .inner:hover .bar {
 	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=100);
 }
-.ie8 .com-gallery-viewer .bar .bar-item,
-.ie7 .com-gallery-viewer .bar .bar-item {
+.ie8 .gallery-viewer .bar .bar-item,
+.ie7 .gallery-viewer .bar .bar-item {
 	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=40);
 }
-.ie7 .com-gallery-viewer .bar .bar-item {
+.ie7 .gallery-viewer .bar .bar-item {
 	display: inline;
 	zoom: 1;
 }
-.ie8 .com-gallery-viewer .bar .bar-item:hover,
-.ie7 .com-gallery-viewer .bar .bar-item:hover {
+.ie8 .gallery-viewer .bar .bar-item:hover,
+.ie7 .gallery-viewer .bar .bar-item:hover {
 	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=100);
 }
-.ie8 .com-gallery-viewer .loader,
-.ie7 .com-gallery-viewer .loader {
+.ie8 .gallery-viewer .loader,
+.ie7 .gallery-viewer .loader {
 	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
 }
-.ie8 .com-gallery-viewer .loader-bg,
-.ie7 .com-gallery-viewer .loader-bg {
+.ie8 .gallery-viewer .loader-bg,
+.ie7 .gallery-viewer .loader-bg {
 	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=60);
 }
 
@@ -2502,14 +2516,14 @@ select[multiple]{
 	
 	/* Gallery */
 	
-	.com-gallery-overlay .window .top {
+	.gallery-overlay .window .top {
 		position: static;
 		left: auto;
 		top: auto;
 		right: auto;
 		margin: 0 0 12px;
 	}
-	.com-gallery-overlay .window .close {
+	.gallery-overlay .window .close {
 		width: 21px;
 		padding: 0;
 		top: 0;
@@ -2547,8 +2561,18 @@ select[multiple]{
     }
 		
 	/* Gallery */
-	
-	.com-gallery-list .item {
+
+    .gallery-listing > ul > li,
+    .gallery-listing.cols-1 > ul > li,
+    .gallery-listing.cols-2 > ul > li,
+    .gallery-listing.cols-3 > ul > li,
+    .gallery-listing.cols-4 > ul > li,
+    .gallery-listing.cols-5 > ul > li,
+    .gallery-listing.cols-6 > ul > li,
+    .gallery-listing.cols-7 > ul > li,
+    .gallery-listing.cols-8 > ul > li,
+    .gallery-listing.cols-9 > ul > li,
+    .gallery-listing.cols-10 > ul > li {
 		width: 50%;
 	}
 	

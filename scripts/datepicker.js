@@ -444,7 +444,7 @@ Com['DatepickerCollector'] = function(node){
     };
 
     var render = function(node){
-        datepickers = cm.getByAttr('data-datepicker', 'true', node);
+        datepickers = (node.getAttribute('data-datepicker') == 'true') ? [node] : cm.getByAttr('data-datepicker', 'true', node);
         // Render datepickers
         cm.forEach(datepickers, function(item){
             datepicker = new Com.Datepicker({'input' : item});
