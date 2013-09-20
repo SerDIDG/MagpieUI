@@ -36,6 +36,20 @@
 <body>
 
 <h1>Gallery listing with rendered html structure:</h1>
+<p>
+    <b>1. Add "data-gallery" attribute on node, and "data-image" on links with thumbnails.</b><br>
+    1.1 For adding overlay title, add title attribute on thumbnail.<br>
+    1.2 To specify the count of columns, set class name from "cols-1" to "cols-10".
+    <code>&lt;div class="gallery-listing cols-6" data-gallery="true"&gt;
+    &lt;ul&gt;
+        &lt;a href="images/gallery/1.jpg" data-image="true"&gt;
+            &lt;img src="images/gallery/1-th.jpg" alt="Sample 1" title="Sample 1"&gt;
+        &lt;/a&gt;
+    &lt;/ul&gt;
+&lt;/div&gt;</code>
+    <b>2. Init gallery collector:</b>
+    <code>Com.GalleryCollector();</code>
+</p>
 
 <div class="gallery-listing cols-6" data-gallery="true">
     <ul>

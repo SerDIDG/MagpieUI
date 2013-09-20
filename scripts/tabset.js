@@ -23,7 +23,7 @@ Com['Tabset'] = function(o){
 		
 	var init = function(){
         // Merge data-attributes with config. Data-attributes have higher priority.
-        processDataAttributes();
+        config['tabset'] && processDataAttributes();
         // Render tabset view
         renderView();
         // Render active tab
@@ -250,9 +250,7 @@ Com['TabsetCollector'] = function(node){
         if(!node){
             render(document.body);
         }else if(node.constructor == Array){
-            cm.forEach(node, function(item){
-                render(item);
-            });
+            cm.forEach(node, render);
         }else{
             render(node);
         }

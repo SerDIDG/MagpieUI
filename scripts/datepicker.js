@@ -435,9 +435,7 @@ Com['DatepickerCollector'] = function(node){
         if(!node){
             render(document.body);
         }else if(node.constructor == Array){
-            cm.forEach(node, function(item){
-                render(item);
-            });
+            cm.forEach(node, render);
         }else{
             render(node);
         }

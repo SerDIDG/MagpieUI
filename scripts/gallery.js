@@ -12,7 +12,11 @@ Com['Gallery'] = function(o){
             'minHeight' : 400,
             'openTime' : 300,
             'margin' : 70,
+            'marginMobile' : 10,
             'slideChangeTime' : 300,
+            'showArrowTitles' : false,
+            'showTitle' : true,
+            'showCounter' : true,
             'langs' : {
                 'next' : 'Next',
                 'prev' : 'Previous',
@@ -21,6 +25,7 @@ Com['Gallery'] = function(o){
                 'counter' : '%item% / %items%'
             }
         }, o),
+        dataAttributes = ['showArrowTitles'],
         API = {
             'onOpen' : [],
             'onClose' : [],
@@ -35,6 +40,8 @@ Com['Gallery'] = function(o){
 
     var init = function(){
         var itemsNodes;
+        // Merge data-attributes with config. Data-attributes have higher priority.
+        config['gallery'] && processDataAttributes();
         // Render overlay
         render();
         // Collect items
@@ -44,6 +51,24 @@ Com['Gallery'] = function(o){
         }
     };
 
+    var processDataAttributes = function(){
+        var value;
+        cm.forEach(dataAttributes, function(item){
+            value = config['gallery'].getAttribute(['data', item].join('-'));
+            switch(item){
+                case 'showArrowTitles':
+                case 'showTitle':
+                case 'showCounter':
+                    value = value? (value == 'true') : config[item];
+                    break;
+                default:
+                    value = value || config[item];
+                    break;
+            }
+            config[item] = value;
+        });
+    };
+
     var render = function(){
         // Structure
         nodes['container'] = cm.Node('div', {'class' : 'gallery-overlay'},
@@ -51,33 +76,48 @@ Com['Gallery'] = function(o){
             nodes['window'] = cm.Node('div', {'class' : 'window'},
                 nodes['inner'] = cm.Node('div', {'class' : 'inner'},
                     nodes['top'] = cm.Node('div', {'class' : 'top'},
-                        nodes['title'] = cm.Node('div', {'class' : 'title'}),
-                        nodes['counter'] = cm.Node('div', {'class' : 'counter'})
+                        nodes['close'] = cm.Node('div', {'class' : 'close'}, config['langs']['close'])
                     ),
-                    nodes['close'] = cm.Node('div', {'class' : 'close'}, config['langs']['close']),
                     nodes['viewer'] = cm.Node('div', {'class' : 'gallery-viewer'},
-                        nodes['viewerInner'] = cm.Node('div', {'class' : 'inner'},
-                            nodes['bar'] = cm.Node('div', {'class' : 'bar'},
-                                nodes['next'] = cm.Node('div', {'class' : 'bar-item arrows-next', 'title' : config['langs']['next']},
-                                    cm.Node('div', {'class' : 'icon'})
-                                ),
-                                nodes['prev'] = cm.Node('div', {'class' : 'bar-item arrows-prev', 'title' : config['langs']['prev']},
-                                    cm.Node('div', {'class' : 'icon'})
-                                )
+                        nodes['bar'] = cm.Node('div', {'class' : 'bar'},
+                            nodes['next'] = cm.Node('div', {'class' : 'bar-item arrows-next'},
+                                cm.Node('div', {'class' : 'icon'})
                             ),
-                            nodes['dimmer'] = cm.Node('div', {'class' : 'dimmer'}),
-                            nodes['loader'] = cm.Node('div', {'class' : 'loader'},
-                                cm.Node('div', {'class' : 'loader-bg'}),
-                                cm.Node('div', {'class' : 'loader-icon'})
+                            nodes['prev'] = cm.Node('div', {'class' : 'bar-item arrows-prev', 'title' : config['langs']['prev']},
+                                cm.Node('div', {'class' : 'icon'})
                             )
+                        ),
+                        nodes['dimmer'] = cm.Node('div', {'class' : 'dimmer'}),
+                        nodes['loader'] = cm.Node('div', {'class' : 'loader'},
+                            cm.Node('div', {'class' : 'loader-bg'}),
+                            cm.Node('div', {'class' : 'loader-icon'})
                         )
                     )
                 )
             )
         );
+        // Arrow titles
+        if(config['showArrowTitles']){
+            nodes['next'].setAttribute('title', config['langs']['next']);
+            nodes['prev'].setAttribute('title', config['langs']['prev']);
+        }
+        // Overlay counter
+        if(config['showCounter']){
+            cm.insertFirst(
+                nodes['counter'] = cm.Node('div', {'class' : 'counter'}),
+                nodes['top']
+            );
+        }
+        // Overlay title
+        if(config['showTitle']){
+            cm.insertFirst(
+                nodes['title'] = cm.Node('div', {'class' : 'title'}),
+                nodes['top']
+            );
+        }
         // Set minimal dimensions of viewer
-        nodes['viewerInner'].style.width = [config['minWidth'], 'px'].join('');
-        nodes['viewerInner'].style.height = [config['minHeight'], 'px'].join('');
+        nodes['window'].style.width = [config['minWidth'], 'px'].join('');
+        nodes['window'].style.height = [config['minHeight'], 'px'].join('');
         // Set events
         cm.addEvent(nodes['bg'], 'click', close);
         cm.addEvent(nodes['close'], 'click', close);
@@ -86,7 +126,6 @@ Com['Gallery'] = function(o){
         // Init animation
         anim['container'] = new cm.Animation(nodes['container']);
         anim['window'] = new cm.Animation(nodes['window']);
-        anim['viewerInner'] = new cm.Animation(nodes['viewerInner']);
         anim['loader'] = new cm.Animation(nodes['loader']);
     };
 
@@ -187,15 +226,18 @@ Com['Gallery'] = function(o){
         var item = items[i],
             itemOld = items[active];
         if(!isDimmer){
+            // If current active item not equal new item - process with new item, else redraw window alignment and dimensions
             if(i != active){
                 // Set dimmer
                 nodes['dimmer'].style.display = 'block';
                 isDimmer = true;
                 // Set overlays info
-                nodes['title'].innerHTML = item['title'];
-                nodes['counter'].innerHTML = config['langs']['counter']
-                    .replace('%item%', (i + 1))
-                    .replace('%items%', items.length);
+                if(config['showTitle']){
+                    nodes['title'].innerHTML = item['title'];
+                }
+                if(config['showCounter']){
+                    nodes['counter'].innerHTML = config['langs']['counter'].replace('%item%', (i + 1)).replace('%items%', items.length);
+                }
                 // Check if is image load
                 if(!item['isLoad']){
                     // Show loader
@@ -225,11 +267,11 @@ Com['Gallery'] = function(o){
         // Set new active
         active = i;
         // Insert image into overlay
-        nodes['viewerInner'].appendChild(item['node']);
+        item['node'].style.zIndex = 2;
+        nodes['viewer'].appendChild(item['node']);
         // Redraw overlay dimensions and position
         setImageDimension();
         // Animate
-        item['node'].style.zIndex = 2;
         item['anim'].go({'style' : {'opacity' : 1}, 'anim' : 'smooth', 'duration' : config['slideChangeTime'], 'onStop' : function(){
             // IE filter fix
             if(is('IE') && isVersion() < 9){
@@ -264,7 +306,7 @@ Com['Gallery'] = function(o){
             item['img'].style.display = 'block';
         }
         // Capture outer overlay offset
-        overlayOffset = pageSize['winWidth'] <= 600? 10 : config['margin'];
+        overlayOffset = pageSize['winWidth'] <= 640? config['marginMobile'] : config['margin'];
         // Restore original dimensions of viewer new item
         item['img'].style.width = 'auto';
         item['img'].style.height = 'auto';
@@ -309,13 +351,10 @@ Com['Gallery'] = function(o){
         // Set new dimensions of viewer item
         item['img'].style.width = '100%';
         item['img'].style.height = '100%';
-        // Set new dimensions of viewer
-        anim['viewerInner'].go({'anim' : 'smooth', 'duration' : config['slideChangeTime'], 'style' : {
-            'height' : [newHeight - overlayInnerOffsetHeight, 'px'].join(''),
-            'width' : [newWidth - overlayInnerOffsetWidth, 'px'].join('')
-        }});
         // Animate and align center overlay
         anim['window'].go({'anim' : 'smooth', 'duration' : config['slideChangeTime'], 'style' : {
+            'height' : [newHeight - overlayInnerOffsetHeight, 'px'].join(''),
+            'width' : [newWidth - overlayInnerOffsetWidth, 'px'].join(''),
             'marginLeft' : [-Math.floor((newWidth)/2), 'px'].join(''),
             'marginTop' : [-Math.floor((newHeight)/2), 'px'].join('')
         }});
