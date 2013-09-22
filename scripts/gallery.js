@@ -21,11 +21,10 @@ Com['Gallery'] = function(o){
                 'next' : 'Next',
                 'prev' : 'Previous',
                 'close' : 'Close',
-                'thumb' : 'Thumb',
                 'counter' : '%item% / %items%'
             }
         }, o),
-        dataAttributes = ['showArrowTitles'],
+        dataAttributes = ['showArrowTitles', 'showTitle', 'showCounter'],
         API = {
             'onOpen' : [],
             'onClose' : [],
@@ -55,15 +54,10 @@ Com['Gallery'] = function(o){
         var value;
         cm.forEach(dataAttributes, function(item){
             value = config['gallery'].getAttribute(['data', item].join('-'));
-            switch(item){
-                case 'showArrowTitles':
-                case 'showTitle':
-                case 'showCounter':
-                    value = value? (value == 'true') : config[item];
-                    break;
-                default:
-                    value = value || config[item];
-                    break;
+            if(/^false|true$/.test(value)){
+                value = value? (value == 'true') : config[item];
+            }else{
+                value = value || config[item];
             }
             config[item] = value;
         });

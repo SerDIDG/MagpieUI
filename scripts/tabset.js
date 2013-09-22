@@ -34,14 +34,10 @@ Com['Tabset'] = function(o){
         var value;
         cm.forEach(dataAttributes, function(item){
             value = config['tabset'].getAttribute(['data', item].join('-'));
-            switch(item){
-                case 'toggleOnHashChange':
-                case 'renderOnInit':
-                    value = value? (value == 'true') : config[item];
-                    break;
-                default:
-                    value = value || config[item];
-                    break
+            if(/^false|true$/.test(value)){
+                value = value? (value == 'true') : config[item];
+            }else{
+                value = value || config[item];
             }
             config[item] = value;
         });
@@ -116,12 +112,14 @@ Com['Tabset'] = function(o){
             'id' : '',
             'title' : '',
             'content' : cm.Node('li'),
-            'tab' : cm.Node('li'),
-            'a' : cm.Node('a', item['title']),
             'isHide' : true,
-            'onShow' : function(){},
-            'onHide' : function(){}
+            'onShow' : function(that, tab){},
+            'onHide' : function(that, tab){}
         }, item);
+        // Structure
+        item['tab'] = cm.Node('li',
+            item['a'] = cm.Node('a', item['title'])
+        );
         // Remove active tab class if exists
         cm.removeClass(item['content'], 'active');
         // Hide content
@@ -136,7 +134,6 @@ Com['Tabset'] = function(o){
             };
         }
         // Append tab
-        item['tab'].appendChild(item['a']);
         nodes['headerUL'].appendChild(item['tab']);
         nodes['contentUL'].appendChild(item['content']);
         // Push

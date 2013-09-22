@@ -42,82 +42,183 @@
 
 <body>
 
-<h1>Tabset with onHashChange event:</h1>
+<h1>Tabset</h1>
 
-<ul class="tabset-content-ul" id="tabset1" data-tabset="true">
-    <li data-tabset-id="first" data-tabset-title="First"></li>
-    <li data-tabset-id="second" data-tabset-title="Second"></li>
-    <li data-tabset-id="third" data-tabset-title="Third"></li>
-</ul>
+<ul class="tabset-content-ul" id="tabset" data-tabset="true" data-toggleOnHashChange="false">
+    <li data-tabset-id="overview" data-tabset-title="Overview">
+        <h2>Initialize in Java-Script:</h2>
+        <code>new Com.Tabset(o);</code>
+        <br>
+        <b>Attributes:</b>
+        <ul>
+            <li><b>container</b> <i>[HTML Node]</i> - container for tabset, when tabset rendered through java-script, <i>default: cm.Node('div')</i>;</li>
+            <li><b>tabset</b> <i>[HTML Node]</i> - node, that contains tabset, <i>default: false</i>;</li>
+            <li><b>toggleOnHashChange</b> <i>[Boolean]</i> - use hash change event for toggle tabs, <i>default: true</i>;</li>
+            <li><b>renderOnInit</b> <i>[Boolean]</i> - render and toggle tabs on his init, <i>default: true</i>;</li>
+            <li><b>active</b> <i>[String]</i> - id of active tab, <i>default: false</i>;</li>
+            <li><b>tabs</b> <i>[Array]</i> - listing of tabs, for rendering through java-script;</li>
+        </ul>
 
-<h1>Tabset without onHashChange event:</h1>
-<p>
-    <b>You can set this attribute in different ways:</b><br>
-    in javascript:
-    <code>new Com.Tabset({'toggleOnHashChange' : false});</code>
-    or just add "data-toggleOnHashChange" attribute in html:
-    <code>&lt;ul class="tabset-content-ul" data-tabset="true" data-toggleOnHashChange="false"&gt;&lt;/ul&gt;</code>
-</p>
+        <h2>Initialize in HTML:</h2>
+        <code>&lt;ul class="tabset-content-ul" data-tabset="true"&gt;
+    &lt;li data-tabset-id="tab-id" data-tabset-title="Tab Title"&gt;&lt;/li&gt;
+&lt;/ul&gt;</code>
+        <br>
+        <b>Attributes:</b>
+        <ul>
+            <li><b>data-tabset="true"</b> - mark as tabset;</li>
+            <li><b>data-active="id"</b> - id of active tab;</li>
+            <li><b>data-toggleOnHashChange="true|false"</b> - use hash change event for toggle tabs;</li>
+            <li><b>data-renderOnInit="true|false"</b> - render and toggle tabs on his init;</li>
+            <li><b>data-tabset-id="id"</b> - tab item id;</li>
+            <li><b>data-tabset-title="title"</b> - tab item title;</li>
+        </ul>
 
-<ul class="tabset-content-ul" id="tabset2" data-tabset="true" data-toggleOnHashChange="false">
-    <li data-tabset-id="first" data-tabset-title="First"></li>
-    <li data-tabset-id="second" data-tabset-title="Second"></li>
-    <li data-tabset-id="third" data-tabset-title="Third"></li>
-</ul>
+        <h2>Render tabs through Java-Script:</h2>
+        <code>new Com.Tabset({'tabs' : [o]});</code>
+        or
+        <code>tabset.addTab(o);</code>
+        or
+        <code>Com.GetTabset(id).addTab(o);</code>
+        <br>
+        <b>Attributes:</b>
+        <ul>
+            <li><b>id</b> <i>[String]</i> - tab id, <i>default: empty</i>;</li>
+            <li><b>title</b> <i>[String]</i> - tab title, <i>default: empty</i>;</li>
+            <li><b>content</b> <i>[HTML Node]</i> - tab content, must be an li tag, <i>default: cm.Node('li')</i>;</li>
+            <li><b>onShow</b> <i>[Function]</i> - event triggered on tab show, <i>default: empty</i>;</li>
+            <li><b>onHide</b> <i>[Function]</i> - event triggered on tab hide, <i>default: empty</i>;</li>
+        </ul>
+    </li>
 
-<h1>Tabset without onHashChange event and with active tab:</h1>
-<p>
-    <b>You can set this attribute by just adding "data-active" attribute in html:</b>
-    <code>&lt;ul class="tabset-content-ul" data-tabset="true" data-toggleOnHashChange="false" data-active="second"&gt;&lt;/ul&gt;</code>
-</p>
+    <li data-tabset-id="methods" data-tabset-title="Methods">
+        <h2>Get tabset by id:</h2>
+        <code>Com.GetTabset('id');</code>
+        <p>Return a class of tabset.</p>
 
-<ul class="tabset-content-ul" id="tabset3" data-tabset="true" data-toggleOnHashChange="false" data-active="second">
-    <li data-tabset-id="first" data-tabset-title="First"></li>
-    <li data-tabset-id="second" data-tabset-title="Second"></li>
-    <li data-tabset-id="third" data-tabset-title="Third"></li>
-</ul>
+        <h2>Render tabset:</h2>
+        Render a tabset when he was init with disabled "renderOnInit" attribute.
+        <code>tabset.render();</code>
+        <p>Return a class of tabset.</p>
 
-<h1>Tabset with events:</h1>
-<p>
-    <b>1. Disable tabset rendering by adding "data-renderOnInit" attribute in html</b><br>
-    <code>&lt;ul class="tabset-content-ul" data-tabset="true" data-toggleOnHashChange="false" data-renderOnInit="false"&gt;&lt;/ul&gt;</code>
-    <b>2. Set id attribute on tabset in html</b><br>
-    <b>3. Now you can add events in javascript</b><br>
-    <b>3.1 Use Com.GetTabset('id'); function for getting tabset by id.</b><br>
-    <code>Com.GetTabset('id');</code>
-    <b>3.2 Add Events:</b>
-    <code>Com.GetTabset('id').setEvents({
+        <h2>Set active tab by id:</h2>
+        <code>tabset.set(id);</code>
+        <p>Return a class of tabset.</p>
+
+        <h2>Render tab:</h2>
+        <code>tabset.addTab(o);</code>
+        <br>
+        <b>Attributes:</b>
+        <ul>
+            <li><b>id</b> <i>[String]</i> - tab id, <i>default: empty</i>;</li>
+            <li><b>title</b> <i>[String]</i> - tab title, <i>default: empty</i>;</li>
+            <li><b>content</b> <i>[HTML Node]</i> - tab content, must be an li tag, <i>default: cm.Node('li')</i>;</li>
+            <li><b>onShow</b> <i>[Function]</i> - event triggered on tab show, <i>default: empty</i>;</li>
+            <li><b>onHide</b> <i>[Function]</i> - event triggered on tab hide, <i>default: empty</i>;</li>
+        </ul>
+        <p>Return a class of tabset.</p>
+
+        <h2>Remove tab by id:</h2>
+        <code>tabset.removeTab(id);</code>
+        <p>Return a class of tabset.</p>
+
+        <h2>Set events on tabs:</h2>
+        <code>Com.GetTabset('id').setEvents({
     'tabId' : {
-        'onShow' : function(tabs, tab){
+        'onShow' : function(tabset, tab){
             alert('Example of onShow event');
         },
-        'onHide' : function(tabs, tab){
+        'onHide' : function(tabset, tab){
             alert('Example of onHide event');
         }
     }
 });</code>
-    <b>3.3 Render tabset</b>
-    <code>Com.GetTabset('id').render();</code>
-</p>
+        <p>Remove tabset.</p>
 
-<ul class="tabset-content-ul" id="tabset4" data-tabset="true" data-renderOnInit="false" data-toggleOnHashChange="false">
-    <li data-tabset-id="first" data-tabset-title="First"></li>
-    <li data-tabset-id="second" data-tabset-title="Second"></li>
-    <li data-tabset-id="third" data-tabset-title="Third"></li>
-</ul>
+        <h2>Remove tab by id:</h2>
+        <code>tabset.remove();</code>
+        <p>Return a class of tabset.</p>
+    </li>
 
-<h1>Tabset in tabset:</h1>
+    <li data-tabset-id="examples" data-tabset-title="Examples">
+        <h2>Tabset with onHashChange event:</h2>
 
-<ul class="tabset-content-ul" id="tabset5" data-tabset="true" data-toggleOnHashChange="false">
-    <li data-tabset-id="first" data-tabset-title="First">
-        <ul class="tabset-content-ul" id="tabset6" data-tabset="true" data-toggleOnHashChange="false">
+        <ul class="tabset-content-ul" id="tabset1" data-tabset="true">
             <li data-tabset-id="first" data-tabset-title="First"></li>
             <li data-tabset-id="second" data-tabset-title="Second"></li>
             <li data-tabset-id="third" data-tabset-title="Third"></li>
         </ul>
+
+        <h2>Tabset without onHashChange event:</h2>
+        <p>
+            <b>You can set this attribute in different ways:</b><br>
+            in javascript:
+            <code>new Com.Tabset({'toggleOnHashChange' : false});</code>
+            or just add "data-toggleOnHashChange" attribute in html:
+            <code>&lt;ul class="tabset-content-ul" data-tabset="true" data-toggleOnHashChange="false"&gt;&lt;/ul&gt;</code>
+        </p>
+
+        <ul class="tabset-content-ul" id="tabset2" data-tabset="true" data-toggleOnHashChange="false">
+            <li data-tabset-id="first" data-tabset-title="First"></li>
+            <li data-tabset-id="second" data-tabset-title="Second"></li>
+            <li data-tabset-id="third" data-tabset-title="Third"></li>
+        </ul>
+
+        <h2>Tabset without onHashChange event and with active tab:</h2>
+        <p>
+            <b>You can set this attribute by just adding "data-active" attribute in html:</b>
+            <code>&lt;ul class="tabset-content-ul" data-tabset="true" data-toggleOnHashChange="false" data-active="second"&gt;&lt;/ul&gt;</code>
+        </p>
+
+        <ul class="tabset-content-ul" id="tabset3" data-tabset="true" data-toggleOnHashChange="false" data-active="second">
+            <li data-tabset-id="first" data-tabset-title="First"></li>
+            <li data-tabset-id="second" data-tabset-title="Second"></li>
+            <li data-tabset-id="third" data-tabset-title="Third"></li>
+        </ul>
+
+        <h2>Tabset with events:</h2>
+        <p>
+            <b>1. Disable tabset rendering by adding "data-renderOnInit" attribute in html</b><br>
+            <code>&lt;ul class="tabset-content-ul" data-tabset="true" data-toggleOnHashChange="false" data-renderOnInit="false"&gt;&lt;/ul&gt;</code>
+            <b>2. Set id attribute on tabset in html</b><br>
+            <b>3. Now you can add events in javascript</b><br>
+            <b>3.1 Use Com.GetTabset('id'); function for getting tabset by id.</b><br>
+            <code>Com.GetTabset('id');</code>
+            <b>3.2 Add Events:</b>
+            <code>Com.GetTabset('id').setEvents({
+    'tabId' : {
+        'onShow' : function(tabset, tab){
+            alert('Example of onShow event');
+        },
+        'onHide' : function(tabset, tab){
+            alert('Example of onHide event');
+        }
+    }
+});</code>
+            <b>3.3 Render tabset</b>
+            <code>Com.GetTabset('id').render();</code>
+        </p>
+
+        <ul class="tabset-content-ul" id="tabset4" data-tabset="true" data-renderOnInit="false" data-toggleOnHashChange="false">
+            <li data-tabset-id="first" data-tabset-title="First"></li>
+            <li data-tabset-id="second" data-tabset-title="Second"></li>
+            <li data-tabset-id="third" data-tabset-title="Third"></li>
+        </ul>
+
+        <h2>Tabset in tabset:</h2>
+
+        <ul class="tabset-content-ul" id="tabset5" data-tabset="true" data-toggleOnHashChange="false">
+            <li data-tabset-id="first" data-tabset-title="First">
+                <ul class="tabset-content-ul" id="tabset6" data-tabset="true" data-toggleOnHashChange="false">
+                    <li data-tabset-id="first" data-tabset-title="First"></li>
+                    <li data-tabset-id="second" data-tabset-title="Second"></li>
+                    <li data-tabset-id="third" data-tabset-title="Third"></li>
+                </ul>
+            </li>
+            <li data-tabset-id="second" data-tabset-title="Second"></li>
+            <li data-tabset-id="third" data-tabset-title="Third"></li>
+        </ul>
     </li>
-    <li data-tabset-id="second" data-tabset-title="Second"></li>
-    <li data-tabset-id="third" data-tabset-title="Third"></li>
 </ul>
 
 </body>

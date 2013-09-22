@@ -59,18 +59,12 @@ Com['Datepicker'] = function(o){
         var value;
         cm.forEach(dataAttributes, function(item){
             value = config['input'].getAttribute(['data', item].join('-'));
-            switch(item){
-                case 'showPlaceholder':
-                case 'showTodayButton':
-                case 'showClearButton':
-                    value = value? (value == 'true') : config[item];
-                    break;
-                case 'placeholder':
-                    value = config['input'].getAttribute(item) || value || config[item];
-                    break;
-                default:
-                    value = value || config[item];
-                    break;
+            if(item == 'placeholder'){
+                value = config['input'].getAttribute(item) || value;
+            }else if(/^false|true$/.test(value)){
+                value = value? (value == 'true') : config[item];
+            }else{
+                value = value || config[item];
             }
             config[item] = value;
         });
