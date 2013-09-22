@@ -1382,6 +1382,7 @@ select[multiple]{
 .tabset-head {
 	position: relative;
 	bottom: -1px;
+    z-index: 2;
 }
 .tabset-head ul {
 	margin: 0;
@@ -1420,6 +1421,24 @@ select[multiple]{
 	text-shadow: 0 1px 0 rgba(255,255,255,0.7);
 	text-decoration: none;
 }
+.tabset-head-title {
+    height: 29px;
+    display: none;
+    overflow: hidden;
+    padding: 0 20px;
+    background: #ffffff;
+    border: 1px solid #CBCBCB;
+    border-bottom-color: #fff;
+    border-radius: 5px 5px 0 0;
+    white-space: nowrap;
+    text-align: center;
+    text-overflow: ellipsis;
+    line-height: 30px;
+    font-weight: bold;
+    font-size: 13px;
+    color: #202020;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.7);
+}
 .tabset-head p {
 	 margin: 0;
 	 line-height: 30px;
@@ -1430,6 +1449,8 @@ select[multiple]{
 	border-bottom-color: #fff;
 }
 .tabset-content {
+    position: relative;
+    z-index: 1;
 	padding: 24px;
 	background: #fff;
 	border: 1px solid #CBCBCB;
@@ -2532,6 +2553,67 @@ select[multiple]{
         right: 0;
         left: 0;
         background: rgba(0,0,0,0.7);
+    }
+
+    /* Tabs */
+
+    .tabset-head-button {
+        width: 40px;
+        height: 29px;
+        margin: 0 0 0 4px;
+        position: relative;
+        float: right;
+        background: #E5E5E5 url(../images/icons/menu.png) center 10px no-repeat;
+        border: 1px solid #CBCBCB;
+        border-radius: 5px 5px 0 0;
+        cursor: pointer;
+        -webkit-transition: all 0.3s ease-in-out;
+           -moz-transition: all 0.3s ease-in-out;
+             -o-transition: all 0.3s ease-in-out;
+                transition: all 0.3s ease-in-out;
+    }
+    .tabset-head-button:hover {
+        background-color: #fff;
+        -webkit-transition: all 0.1s ease-in-out;
+           -moz-transition: all 0.1s ease-in-out;
+             -o-transition: all 0.1s ease-in-out;
+                transition: all 0.1s ease-in-out;
+    }
+    .tabset-head-button ul {
+        display:  none;
+        position: absolute;
+        top: 100%;
+        right: -1px;
+        background-color: #FFFFFF;
+        border: 1px solid #B6BCC1;
+        box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
+        padding: 3px;
+    }
+    .tabset-head-button:hover ul {
+        display: block;
+    }
+    .tabset-head-button ul li {
+        height: 30px;
+        float: none;
+        margin: 1px 0 0 0;
+        background: #fff;
+        border: none;
+        border-radius: 0;
+    }
+    .tabset-head-button ul li:first-child {
+        margin: 0;
+    }
+    .tabset-head-button ul li.active {
+        background: #DFDFDF;
+    }
+    .tabset-head-button ul li:hover {
+        background: #F0F0F0;
+    }
+    .tabset-content {
+        border-radius: 0 0 5px 5px;
+    }
+    .tabset-head-title {
+        display: block;
     }
 	
 }

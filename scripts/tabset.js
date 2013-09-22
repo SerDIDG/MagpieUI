@@ -68,7 +68,10 @@ Com['Tabset'] = function(o){
 		/* *** STRUCTURE *** */
         nodes['container'] = cm.Node('div', {'class' : 'tabset'},
             nodes['header'] = cm.Node('div', {'class' : 'tabset-head clear'},
-                nodes['headerUL'] = cm.Node('ul')
+                nodes['header-button'] = cm.Node('div', {'class' : 'tabset-head-button'},
+                    nodes['headerUL'] = cm.Node('ul')
+                ),
+                nodes['header-title'] = cm.Node('div', {'class' : 'tabset-head-title'})
             ),
             nodes['content'] = cm.Node('div', {'class' : 'tabset-content clear'},
                 nodes['contentUL'] = cm.Node('ul')
@@ -170,6 +173,7 @@ Com['Tabset'] = function(o){
         // Show
         cm.addClass(tabs[active]['tab'], 'active');
         tabs[active]['content'].style.display = 'block';
+        nodes['header-title'].innerHTML = tabs[active]['title'];
         // onShow event
         tabs[active]['onShow'](that, tabs[active]);
         tabs[active]['isHide'] = false;

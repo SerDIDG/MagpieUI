@@ -299,7 +299,7 @@ Com['Gallery'] = function(o){
     var setImageDimension = function(){
         var item = items[active],
             pageSize = cm.getPageSize(),
-            width, height, prevWidth, prevHeight, overlayOffset, overlayInnerOffsetWidth, overlayInnerOffsetHeight, spaceWidth, spaceHeight, newWidth, newHeight, ratio;
+            width, height, overlayOffset, spaceWidth, spaceHeight, newWidth, newHeight, ratio;
         // Ugly IE fix
         if(is('IE') && isVersion() < 9){
             item['img'].style.display = 'none';
@@ -310,12 +310,6 @@ Com['Gallery'] = function(o){
         // Restore original dimensions of viewer new item
         item['img'].style.width = 'auto';
         item['img'].style.height = 'auto';
-        // Capture previous viewer dimensions
-        prevWidth = nodes['inner'].offsetWidth;
-        prevHeight = nodes['inner'].offsetHeight;
-        // Capture inner offset of overlay
-        overlayInnerOffsetWidth = nodes['window'].offsetWidth - prevWidth;
-        overlayInnerOffsetHeight = nodes['window'].offsetHeight - prevHeight;
         // Calculate actual free space for overlay
         spaceWidth = (pageSize['winWidth'] - overlayOffset * 2);
         spaceHeight = (pageSize['winHeight'] - overlayOffset * 2);
@@ -323,9 +317,9 @@ Com['Gallery'] = function(o){
         width = item['img'].offsetWidth;
         height = item['img'].offsetHeight;
         // Calculate actual dimensions of new viewer item
-        if(width + overlayInnerOffsetWidth < spaceWidth && height + overlayInnerOffsetHeight < spaceHeight){
-            newWidth = width + overlayInnerOffsetWidth;
-            newHeight = height + overlayInnerOffsetHeight;
+        if(width < spaceWidth && height < spaceHeight){
+            newWidth = width;
+            newHeight = height;
         }else{
             ratio = width / height;
             if(ratio > 1){
@@ -353,8 +347,8 @@ Com['Gallery'] = function(o){
         item['img'].style.height = '100%';
         // Animate and align center overlay
         anim['window'].go({'anim' : 'smooth', 'duration' : config['slideChangeTime'], 'style' : {
-            'height' : [newHeight - overlayInnerOffsetHeight, 'px'].join(''),
-            'width' : [newWidth - overlayInnerOffsetWidth, 'px'].join(''),
+            'height' : [newHeight, 'px'].join(''),
+            'width' : [newWidth, 'px'].join(''),
             'marginLeft' : [-Math.floor((newWidth)/2), 'px'].join(''),
             'marginTop' : [-Math.floor((newHeight)/2), 'px'].join('')
         }});
@@ -409,8 +403,7 @@ Com['Gallery'] = function(o){
 };
 
 Com['GalleryCollector'] = function(node){
-    var that = this,
-        galleries,
+    var galleries,
         id,
         gallery;
 
