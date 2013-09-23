@@ -44,7 +44,7 @@ Com['Select'] = function(o){
 		var tabindex;
 		/* *** RENDER STRUCTURE *** */
 		nodes['container'] = cm.Node('div', {'class':'cm-select'},
-            nodes['hidden'] = cm.Node('select', {'class' : 'display-none'}),
+            nodes['hidden'] = cm.Node('select', {'data-select' : 'false', 'class' : 'display-none'}),
 			nodes['input'] = cm.Node('div', {'class':'cm-select-input clear'},
 				cm.Node('div', {'class':'cm-select-inner'},
 					nodes['arrow'] = cm.Node('div', {'class':'cm-select-arrow'}),
@@ -118,7 +118,7 @@ Com['Select'] = function(o){
 		// Label onlick event
 		item['node'].onclick = function(){
 			set(item, true);
-			hideMenu();
+			hideMenu(false);
 		};
 		// Push
 		optionsList.push(options[value] = item);
@@ -143,8 +143,8 @@ Com['Select'] = function(o){
 	var setMiscEvents = function(){
 		// Switch items on arrows press
 		cm.addEvent(nodes['container'], 'keydown', function(e){
-			var e = cm.getEvent(e),
-				item = options[active],
+			e = cm.getEvent(e);
+			var item = options[active],
 				index = optionsList.indexOf(item);
 			if(e.keyCode == 38){
 				if(index - 1 >= 0){
@@ -171,7 +171,7 @@ Com['Select'] = function(o){
 			if(isHide){
 				showMenu();
 			}else{
-				hideMenu();
+				hideMenu(false);
 			}
 		};
 		// Init animation
@@ -226,17 +226,16 @@ Com['Select'] = function(o){
 	
 	var bodyClick = function(e){
 		if(nodes && !isHide){
-			var e = cm.getEvent(e),
-				target = cm.getEventTarget(e);
-			
+			e = cm.getEvent(e);
+		    var target = cm.getEventTarget(e);
 			if(!cm.isParent(nodes['menu'], target) && !cm.isParent(nodes['container'], target)){
-				hideMenu();
+				hideMenu(false);
 			}
 		}
 	};
 	
 	var blockDocumentArrows = function(e){
-		var e = cm.getEvent(e);
+		e = cm.getEvent(e);
 		if(e.keyCode == 38 || e.keyCode == 40){
 			if(e.preventDefault){ 
 				e.preventDefault(); 
@@ -377,8 +376,7 @@ Com['Select'] = function(o){
 };
 
 Com['SelectCollector'] = function(node){
-	var that = this,
-		selects,
+	var selects,
         id,
 		select;
 		
@@ -396,7 +394,7 @@ Com['SelectCollector'] = function(node){
         selects = (node.nodeType == 1 && node.tagName.toLowerCase() == 'select') ? [node] : node.getElementsByTagName('select');
         // Render datepickers
         cm.forEach(selects, function(item){
-            if(!item.multiple && item.getAttribute('data-select') != 'norender'){
+            if(!item.multiple && !/^norender|false$/.test(item.getAttribute('data-select'))){
                 select = new Com.Select({'select' : item});
                 if(id = item.id){
                     Com.Elements.Selects[id] = select;

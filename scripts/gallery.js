@@ -398,6 +398,8 @@ Com['Gallery'] = function(o){
 
 Com['GalleryCollector'] = function(node){
     var galleries,
+        renderedGalleries = [],
+        isParent = false,
         id,
         gallery;
 
@@ -415,9 +417,15 @@ Com['GalleryCollector'] = function(node){
         galleries = (node.getAttribute('data-gallery') == 'true') ? [node] : cm.getByAttr('data-gallery', 'true', node);
         // Render galleries
         cm.forEach(galleries, function(item){
-            gallery = new Com.Gallery({'gallery' : item});
-            if(id = item.id){
-                Com.Elements.Gallery[id] = gallery;
+            cm.forEach(renderedGalleries, function(parent){
+                isParent = cm.isParent(parent, item);
+            });
+            if(!isParent){
+                renderedGalleries.push(item);
+                gallery = new Com.Gallery({'gallery' : item});
+                if(id = item.id){
+                    Com.Elements.Gallery[id] = gallery;
+                }
             }
         });
     };
