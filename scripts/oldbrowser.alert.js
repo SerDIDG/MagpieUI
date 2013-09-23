@@ -58,9 +58,15 @@ Com['OldBrowserAlert'] = function(o){
 			)
 		);
 		// Init dialog 
-		dialog = new Com.Dialog({'title' : config['langs']['title'], 'content' : nodes['container'], 'autoOpen' : false, 'width' : 500, 'onClose' : function(){
-			cm.cookieSet('comOldBrowserAlert', '1');
-		}});
+		dialog = new Com.Dialog({
+            'title' : config['langs']['title'],
+            'content' : nodes['container'],
+            'autoOpen' : false,
+            'width' : 500,
+            'onClose' : function(){
+			    cm.cookieSet('comOldBrowserAlert', '1');
+		    }
+        });
 		// Add event on continue button
 		nodes['button'].onclick = dialog.close;
 		// Open dialog

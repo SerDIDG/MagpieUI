@@ -1,4 +1,4 @@
-var TextStreaming = function(o){
+Com['TextStreaming'] = function(o){
 	var that = this,
 		config = cm.merge({
 			'node' : cm.Node('div'),
@@ -16,9 +16,9 @@ var TextStreaming = function(o){
 		if(nodes['scroll']){
 			nodes['items'] = nodes['scroll'].getElementsByTagName('li');
 			itemsCount = nodes['items'].length;
-			for(var i = 0; i < itemsCount; i++){
-				items.push(nodes['items'][i]);
-			}
+			cm.forEach(nodes['items'], function(item){
+				items.push(item);
+			});
 			// Start Animation
 			anim = new cm.Animation(config['node']);
 			(function animate(){
@@ -50,27 +50,24 @@ var TextStreaming = function(o){
 	init();
 };
 
-var TextStreamingCollector = function(node){
-	var that = this,
-		elements;
+Com['TextStreamingCollector'] = function(node){
+	var elements;
 	
 	var init = function(node){
 		if(!node){
 			render(document.body);
 		}else if(node.constructor == Array){
-			for(var i = 0, l = node.length; i < l; i++){
-				render(node[i]);
-			}
+            cm.forEach(item, render);
 		}else{
 			render(node);
 		}
 	};
 	
 	var render = function(node){
-		elements = cm.getByAttr('data-streaming-text', 'true', node);
-		for(var i = 0, l = elements.length; i < l; i++){
-			new TextStreaming({'node' : elements[i]});
-		}
+		elements = (node.getAttribute('data-streaming-text') == 'true') ? [node] : cm.getByAttr('data-streaming-text', 'true', node);
+		cm.forEach(elements, function(item){
+			new Com.TextStreaming({'node' : item});
+		});
 	};
 	
 	init(node);
