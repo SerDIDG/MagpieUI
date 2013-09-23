@@ -64,6 +64,20 @@ code {
 	margin: 0 4px;
 	vertical-align: middle;
 }
+.icon.linked {
+    cursor: pointer;
+    -webkit-transition: opacity 0.3s ease-in-out;
+       -moz-transition: opacity 0.3s ease-in-out;
+         -o-transition: opacity 0.3s ease-in-out;
+            transition: opacity 0.3s ease-in-out;
+}
+.icon.linked:hover {
+    opacity: 0.7;
+    -webkit-transition: opacity 0.1s ease-in-out;
+       -moz-transition: opacity 0.1s ease-in-out;
+         -o-transition: opacity 0.1s ease-in-out;
+            transition: opacity 0.1s ease-in-out;
+}
 .icon.arrow.asc {
 	width: 10px;
 	height: 6px;
@@ -149,6 +163,11 @@ code {
 	width: 16px;
 	height: 16px;
 	background: url(../images/icons/fail.png);
+}
+.icon.help {
+    width: 16px;
+    height: 16px;
+    background: url(../images/icons/help.png);
 }
 .icon.arrow-priority-down {
 	width: 16px;
@@ -966,7 +985,8 @@ button,
 	   -moz-background-clip: border-box;
 	        background-clip: border-box;
 	text-align: center;
-	line-height: 22px;
+    line-height: 22px;
+    font-size: 12px;
 	cursor: pointer;
 }
 a.button,
@@ -1213,6 +1233,7 @@ select[multiple]{
 .gridlist th {
 	background-color: #ffffff;
 	font-weight: bold;
+    color: #333333;
 }
 .gridlist th.sort {
 	-webkit-transition: background-color 0.3s ease-in-out;
@@ -1266,6 +1287,9 @@ select[multiple]{
 	word-wrap: normal;
 	text-decoration: none;
 	cursor: pointer;
+}
+.gridlist th > .inner {
+    color: #333333;
 }
 
 .gridlist-link {

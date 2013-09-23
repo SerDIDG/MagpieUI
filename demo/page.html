@@ -1,0 +1,127 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;">
+    <title>Page</title>
+
+    <link type="text/css" rel="stylesheet" href="../styles/common.css">
+    <link type="text/css" rel="stylesheet" href="../themes/screensider/common.css">
+    <link type="text/css" rel="stylesheet" href="styles/main.css">
+
+    <script type="text/javascript" src="../scripts/common.js"></script>
+    <script type="text/javascript" src="../scripts/useragent.js"></script>
+    <script type="text/javascript" src="../scripts/select.js"></script>
+    <script type="text/javascript" src="../scripts/datepicker.js"></script>
+    <script type="text/javascript" src="../scripts/tabset.js"></script>
+
+    <script type="text/javascript">
+        cm.onload(function(){
+            var element;
+            // Useragent
+            Useragent.setBrowserClass();
+            // Selects
+            Com.SelectCollector();
+            // Datepickers
+            Com.DatepickerCollector();
+            // Tabset
+            Com.TabsetCollector();
+        });
+    </script>
+</head>
+
+<body>
+
+<div class="flash-notification">
+    <ul>
+        <li class="ok">
+            <div class="close">Close</div>
+            <div class="descr">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+        </li>
+        <li class="error">
+            <div class="close">Close</div>
+            <div class="descr">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+        </li>
+        <li class="notice">
+            <div class="close">Close</div>
+            <div class="descr">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+        </li>
+    </ul>
+</div>
+
+<div class="breadcrumbs">
+    <ul>
+        <li><a href="#">Home</a></li>
+        <li class="sep">&raquo;</li>
+        <li><a href="#">Modules</a></li>
+        <li class="sep">&raquo;</li>
+        <li><a href="#">Slider</a></li>
+        <li class="sep">&raquo;</li>
+        <li>Home</li>
+    </ul>
+</div>
+
+<h1>Page title</h1>
+
+<div class="buttons">
+    <a class="button" href="#">Add new item</a>
+    <a class="button" href="#">Other tool</a>
+    <a class="button" href="#">Open Dialog</a>
+</div>
+
+<div class="gridlist gridlist-font-11">
+    <table>
+        <thead>
+        <tr>
+            <th width="20%" class="sort">
+                <a href="javascipt:void(0);" class="inner">
+                    <span>Name</span>
+                    <div class="icon arrow desc"></div>
+                </a>
+            </th>
+            <th>Description</th>
+            <th width="50"></th>
+            <th width="60"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Canada</td>
+            <td>Canada is a North American country consisting of ten provinces and three territories. Located in the northern part of the continent, it extends from the Atlantic to the Pacific and northward into the Arctic Ocean. Canada is the world's second-largest country by total area, and its common border with the United States is the world's longest land border.</td>
+            <td><a class="gridlist-link" href="#">Edit</a></td>
+            <td><a class="gridlist-link" href="#">Remove</a></td>
+        </tr>
+        <tr>
+            <td>Canada</td>
+            <td>Canada is a North American country consisting of ten provinces and three territories. Located in the northern part of the continent, it extends from the Atlantic to the Pacific and northward into the Arctic Ocean. Canada is the world's second-largest country by total area, and its common border with the United States is the world's longest land border.</td>
+            <td><a class="gridlist-link" href="#">Edit</a></td>
+            <td><a class="gridlist-link" href="#">Remove</a></td>
+        </tr>
+        <tr>
+            <td>Canada</td>
+            <td>Canada is a North American country consisting of ten provinces and three territories. Located in the northern part of the continent, it extends from the Atlantic to the Pacific and northward into the Arctic Ocean. Canada is the world's second-largest country by total area, and its common border with the United States is the world's longest land border.</td>
+            <td><a class="gridlist-link" href="#">Edit</a></td>
+            <td><a class="gridlist-link" href="#">Remove</a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="pagination bottom">
+    <ul>
+        <li class="prev"><a href="#">&lt;</a></li>
+        <li><a href="#">1</a></li>
+        <li class="points">...</li>
+        <li><a href="#">5</a></li>
+        <li><a href="#">6</a></li>
+        <li class="active"><a href="#">7</a></li>
+        <li><a href="#">8</a></li>
+        <li><a href="#">9</a></li>
+        <li class="points">...</li>
+        <li><a href="#">12</a></li>
+        <li class="next"><a href="#">&gt;</a></li>
+    </ul>
+</div>
+
+</body>
+</html>

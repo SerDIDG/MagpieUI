@@ -63,6 +63,9 @@
         <code>&lt;ul class="tabset-content-ul" data-tabset="true"&gt;
     &lt;li data-tabset-id="tab-id" data-tabset-title="Tab Title"&gt;&lt;/li&gt;
 &lt;/ul&gt;</code>
+        <code>cm.onload(function(){
+    Com.TabsetCollector();
+});</code>
         <br>
         <b>Attributes:</b>
         <ul>
@@ -85,7 +88,7 @@
         <ul>
             <li><b>id</b> <i>[String]</i> - tab id, <i>default: empty</i>;</li>
             <li><b>title</b> <i>[String]</i> - tab title, <i>default: empty</i>;</li>
-            <li><b>content</b> <i>[HTML Node]</i> - tab content, must be an li tag, <i>default: cm.Node('li')</i>;</li>
+            <li><b>content</b> <i>[HTML Node]</i> - tab content, must be a li tag, <i>default: cm.Node('li')</i>;</li>
             <li><b>onShow</b> <i>[Function]</i> - event triggered on tab show, <i>default: empty</i>;</li>
             <li><b>onHide</b> <i>[Function]</i> - event triggered on tab hide, <i>default: empty</i>;</li>
         </ul>
@@ -112,7 +115,7 @@
         <ul>
             <li><b>id</b> <i>[String]</i> - tab id, <i>default: empty</i>;</li>
             <li><b>title</b> <i>[String]</i> - tab title, <i>default: empty</i>;</li>
-            <li><b>content</b> <i>[HTML Node]</i> - tab content, must be an li tag, <i>default: cm.Node('li')</i>;</li>
+            <li><b>content</b> <i>[HTML Node]</i> - tab content, must be a li tag, <i>default: cm.Node('li')</i>;</li>
             <li><b>onShow</b> <i>[Function]</i> - event triggered on tab show, <i>default: empty</i>;</li>
             <li><b>onHide</b> <i>[Function]</i> - event triggered on tab hide, <i>default: empty</i>;</li>
         </ul>
