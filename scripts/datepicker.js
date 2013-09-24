@@ -36,14 +36,14 @@ Com['Datepicker'] = function(o){
 		isHide = true,
 		checkInt,
 		anim,
-		
+
 		today = new Date(),
 		active,
 		oldActive,
 		selected,
 		monthDays,
 		startDay;
-		
+
 	var init = function(){
         // Legacy: Convert events to API Events
         convertEvents(config['events']);
@@ -69,14 +69,14 @@ Com['Datepicker'] = function(o){
             config[item] = value;
         });
     };
-	
+
 	var render = function(){
         /* *** RENDER STRUCTURE *** */
 		nodes['container'] = cm.Node('div', {'class' : 'datepicker-input'},
 			nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
 			nodes['input'] = cm.Node('input', {'type' : 'text'}),
 			nodes['icon'] = cm.Node('div', {'class' : 'icon datepicker'}),
-			
+
 			nodes['menu'] = cm.Node('div', {'class' : 'datepicker-menu'},
 				nodes['menuInner'] = cm.Node('div', {'class' : 'inner'},
 					cm.Node('div', {'class' : 'selects'},
@@ -143,11 +143,11 @@ Com['Datepicker'] = function(o){
         }
 		cm.remove(config['input']);
 	};
-    
+
 	var setMiscEvents = function(){
 		// Add events on input to makes him clear himself when user whants that
 		nodes['input'].onkeydown = function(e){
-			var e = cm.getEvent(e);
+			e = cm.getEvent(e);
 			cm.preventDefault(e);
 			if(e.keyCode == 8){
 				set(0);
@@ -161,7 +161,7 @@ Com['Datepicker'] = function(o){
         if(config['showClearButton']){
             cm.addEvent(nodes['clearButton'], 'click', function(){
                 set(0);
-                hideMenu();
+                hideMenu(false);
                 /* *** EXECUTE API EVENTS *** */
                 executeEvent('onChange');
             });
@@ -170,7 +170,7 @@ Com['Datepicker'] = function(o){
         if(config['showTodayButton']){
             cm.addEvent(nodes['todayButton'], 'click', function(){
                 set(today, true);
-                hideMenu();
+                hideMenu(false);
             });
         }
 		// Init custom selects
@@ -185,13 +185,13 @@ Com['Datepicker'] = function(o){
 			if(isHide){
 				showMenu();
 			}else{
-				hideMenu();
+				hideMenu(false);
 			}
 		};
 		// Init animation
 		anim = new cm.Animation(nodes['menu']);
 	};
-	
+
 	var renderView = function(){
 		var year = selects['years'].get(),
 			month = selects['months'].get();
@@ -210,7 +210,7 @@ Com['Datepicker'] = function(o){
 			renderRow(i);
 		}
 	};
-	
+
 	var renderRow = function(i){
 		var start = (i * 7) + 1 - startDay,
 			tr = nodes['dates'].appendChild(cm.Node('tr'));
@@ -218,7 +218,7 @@ Com['Datepicker'] = function(o){
 			renderCell(tr, d, start);
 		}
 	};
-	
+
 	var renderCell = function(tr, d, start){
 		var day = start + d,
 			td,
@@ -244,11 +244,11 @@ Com['Datepicker'] = function(o){
 			div.onclick = function(){
 				selected.setDate(day);
 				set(selected, true);
-				hideMenu();
+				hideMenu(false);
 			};
 		}
 	};
-	
+
 	var set = function(str, execute){
 		oldActive = active;
 		if(!str || new RegExp(cm.dateFormat(false, config['saveFormat'], config['langs'])).test(str)){
@@ -304,39 +304,39 @@ Com['Datepicker'] = function(o){
             }
         });
     };
-	
+
 	var bodyClick = function(e){
 		if(nodes && !isHide){
-			var e = cm.getEvent(e),
-				target = cm.getEventTarget(e);
-			
+			e = cm.getEvent(e);
+			var target = cm.getEventTarget(e);
+
 			if(!cm.isParent(nodes['menu'], target) &&!cm.isParent(nodes['container'], target) && !cm.isParent(selects['months'].getNodes('menu'), target) && !cm.isParent(selects['years'].getNodes('menu'), target)){
-				hideMenu();
+				hideMenu(false);
 			}
 		}
 	};
-	
+
 	var getTop = function(){
 		return nodes['container'].offsetHeight + cm.getRealY(nodes['container']);
 	};
-	
+
 	var getPosition = (function(){
 		var top, height, winHeight, containerHeight, position;
-		
+
 		return function(){
 			winHeight = cm.getPageSize('winHeight');
 			height = nodes['menu'].offsetHeight;
 			top = getTop();
 			containerHeight = nodes['container'].offsetHeight;
 			position = (top + height > winHeight? (top - height - containerHeight - config['menuMargin']) : (top + config['menuMargin']));
-			
+
 			if(position != nodes['menu'].offsetTop){
 				nodes['menu'].style.top =  [position, 'px'].join('');
 				nodes['menu'].style.left = [cm.getX(nodes['container']), 'px'].join('');
 			}
 		};
 	})();
-	
+
 	var showMenu = function(){
 		isHide = false;
 		// Render dates
@@ -355,7 +355,7 @@ Com['Datepicker'] = function(o){
 		// Animate
 		anim.go({'style' : {'opacity' : 1}, 'duration' : 100});
 	};
-	
+
 	var hideMenu = function(now){
 		isHide = true;
 		// Remove event - Check position
@@ -371,18 +371,18 @@ Com['Datepicker'] = function(o){
 			nodes['menu'].style.display = 'none';
 		}});
 	};
-	
+
 	/* Main */
-	
+
 	that.get = function(format){
 		return cm.dateFormat(active, (format || config['saveFormat']), config['langs']);
 	};
-	
+
 	that.set = function(str){
 		set(str, true);
 		return that;
 	};
-	
+
 	that.getDate = function(){
 		return active || '';
 	};
@@ -410,18 +410,17 @@ Com['Datepicker'] = function(o){
     that.getNodes = function(key){
         return nodes[key] || nodes;
     };
-	
+
 	that.addEvents = function(o){       // Deprecated
         o && convertEvents(o);
 		return that;
 	};
-	
+
 	init();
 };
 
 Com['DatepickerCollector'] = function(node){
-    var that = this,
-        datepickers,
+    var datepickers,
         id,
         datepicker;
 
@@ -436,7 +435,7 @@ Com['DatepickerCollector'] = function(node){
     };
 
     var render = function(node){
-        datepickers = (node.getAttribute('data-datepicker') == 'true') ? [node] : cm.getByAttr('data-datepicker', 'true', node);
+        datepickers = cm.clone((node.getAttribute('data-datepicker') == 'true') ? [node] : cm.getByAttr('data-datepicker', 'true', node));
         // Render datepickers
         cm.forEach(datepickers, function(item){
             datepicker = new Com.Datepicker({'input' : item});

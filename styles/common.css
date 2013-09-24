@@ -1208,6 +1208,54 @@ select[multiple]{
 	color: #a6a6a6;
 }
 
+/* Select Multiple */
+
+.cm-multiselect {
+}
+.cm-multiselect .inner {
+    padding: 4px;
+    background: #fff;
+    border: 1px solid #595959;
+}
+.cm-multiselect .scroll {
+    max-height: 114px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.cm-multiselect ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.cm-multiselect li {
+    min-height: 18px;
+    margin-top: 1px;
+    padding: 2px 4px;
+    line-height: 18px;
+    text-shadow: 0 1px 0 #fff;
+    cursor: pointer;
+    -webkit-transition: all 0.3s ease-in-out;
+       -moz-transition: all 0.3s ease-in-out;
+         -o-transition: all 0.3s ease-in-out;
+            transition: all 0.3s ease-in-out;
+}
+.cm-multiselect li:first-child {
+    margin-top: 0;
+}
+.cm-multiselect li.active {
+     background-color: #dfdfdf;
+ }
+.cm-multiselect li:hover {
+    background-color: #F0F0F0;
+    -webkit-transition: all 0.1s ease-in-out;
+       -moz-transition: all 0.1s ease-in-out;
+         -o-transition: all 0.1s ease-in-out;
+            transition: all 0.1s ease-in-out;
+}
+.cm-multiselect li.active:hover {
+    background-color: #F0F0F0;
+}
+
 /* Grid List */
 
 .gridlist {

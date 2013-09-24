@@ -414,7 +414,7 @@ Com['GalleryCollector'] = function(node){
     };
 
     var render = function(node){
-        galleries = (node.getAttribute('data-gallery') == 'true') ? [node] : cm.getByAttr('data-gallery', 'true', node);
+        galleries = cm.clone((node.getAttribute('data-gallery') == 'true') ? [node] : cm.getByAttr('data-gallery', 'true', node));
         // Render galleries
         cm.forEach(galleries, function(item){
             cm.forEach(renderedGalleries, function(parent){

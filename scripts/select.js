@@ -9,6 +9,7 @@ Com['Select'] = function(o){
 		config = cm.merge({
             'container' : cm.Node('div'),
 			'select' : cm.Node('select'),
+            'multiple' : false,
 			'menuMargin' : 3,
             'options' : [],
 			'events' : {}					// Deprecated, use addEvent method
@@ -37,29 +38,24 @@ Com['Select'] = function(o){
 		render();
 		setMiscEvents();
         // Set selected option
-        set(options[config['select'].value]);
+        if(config['multiple']){
+            active = [];
+            cm.forEach(config['select'].options, function(item){
+                item.selected && set(options[item.value]);
+            });
+        }else{
+            set(options[config['select'].value]);
+        }
 	};
-	
-	var render = function(){
+
+    var render = function(){
 		var tabindex;
 		/* *** RENDER STRUCTURE *** */
-		nodes['container'] = cm.Node('div', {'class':'cm-select'},
-            nodes['hidden'] = cm.Node('select', {'data-select' : 'false', 'class' : 'display-none'}),
-			nodes['input'] = cm.Node('div', {'class':'cm-select-input clear'},
-				cm.Node('div', {'class':'cm-select-inner'},
-					nodes['arrow'] = cm.Node('div', {'class':'cm-select-arrow'}),
-					nodes['text'] = cm.Node('div', {'class':'cm-select-text'})
-				)
-			),
-			
-			nodes['menu'] = cm.Node('div', {'class':'cm-select-menu'},
-				cm.Node('div', {'class':'cm-select-inner'},
-					nodes['scroll'] = cm.Node('div', {'class':'cm-select-scroll'},
-						nodes['items'] = cm.Node('ul')
-					)
-				)
-			)
-		);
+		if(config['multiple']){
+            renderMultiple();
+        }else{
+            renderSingle();
+        }
 		/* *** ATTRIBUTES *** */
 		// Set select width
 		if(config['select'].offsetWidth && config['select'].offsetWidth != config['select'].parentNode.offsetWidth){
@@ -102,6 +98,37 @@ Com['Select'] = function(o){
         }
 		cm.remove(config['select']);
 	};
+
+    var renderSingle = function(){
+        nodes['container'] = cm.Node('div', {'class':'cm-select'},
+            nodes['hidden'] = cm.Node('select', {'data-select' : 'false', 'class' : 'display-none'}),
+            nodes['input'] = cm.Node('div', {'class':'cm-select-input clear'},
+                cm.Node('div', {'class':'cm-select-inner'},
+                    nodes['arrow'] = cm.Node('div', {'class':'cm-select-arrow'}),
+                    nodes['text'] = cm.Node('div', {'class':'cm-select-text'})
+                )
+            ),
+
+            nodes['menu'] = cm.Node('div', {'class':'cm-select-menu'},
+                cm.Node('div', {'class':'cm-select-inner'},
+                    nodes['scroll'] = cm.Node('div', {'class':'cm-select-scroll'},
+                        nodes['items'] = cm.Node('ul')
+                    )
+                )
+            )
+        );
+    };
+
+    var renderMultiple = function(){
+        nodes['container'] = cm.Node('div', {'class' : 'cm-multiselect'},
+            nodes['hidden'] = cm.Node('select', {'data-select' : 'false', 'class' : 'display-none', 'multiple' : true}),
+            nodes['inner'] = cm.Node('div', {'class' : 'inner'},
+                nodes['scroll'] = cm.Node('div', {'class' : 'scroll'},
+                    nodes['items'] = cm.Node('ul')
+                )
+            )
+        );
+    };
 	
 	var renderOption = function(value, text){
 		// Check for exists
@@ -112,13 +139,14 @@ Com['Select'] = function(o){
 		var item = {
             'node' : nodes['items'].appendChild(cm.Node('li', {'innerHTML' : text})),
             'option' : nodes['hidden'].appendChild(cm.Node('option', {'value' : value, 'innerHTML' : text})),
+            'selected' : false,
 			'value' : value,
 			'text' : text
 		};
 		// Label onlick event
 		item['node'].onclick = function(){
 			set(item, true);
-			hideMenu(false);
+            !config['multiple'] && hideMenu(false);
 		};
 		// Push
 		optionsList.push(options[value] = item);
@@ -126,10 +154,17 @@ Com['Select'] = function(o){
 	};
 	
 	var removeOption = function(option){
+        var value = option['value'] || option['text'];
 		// Set new active option, if current active is nominated for remove
-		if(option['value'] === active){
-			set(optionsList[0], true);
-		}
+        if(config['multiple']){
+            active = active.filter(function(item){
+                return value != item;
+            });
+        }else{
+            if(value === active){
+                set(optionsList[0], true);
+            }
+        }
 		// Remove option from list and array
 		cm.remove(option['node']);
         cm.remove(option['option']);
@@ -166,30 +201,27 @@ Com['Select'] = function(o){
 		cm.addEvent(nodes['container'], 'blur', function(){
 			cm.removeEvent(document.body, 'keydown', blockDocumentArrows)
 		});
-		// Show / hide on click
-		nodes['input'].onclick = function(){
-			if(isHide){
-				showMenu();
-			}else{
-				hideMenu(false);
-			}
-		};
-		// Init animation
-		anim = new cm.Animation(nodes['menu']);
+        if(!config['multiple']){
+            // Show / hide on click
+            nodes['input'].onclick = function(){
+                if(isHide){
+                    showMenu();
+                }else{
+                    hideMenu(false);
+                }
+            };
+            // Init animation
+            anim = new cm.Animation(nodes['menu']);
+        }
 	};
 	
 	var set = function(option, execute){
         if(option){
-            oldActive = active;
-            active = option['value'] || option['text'];
-            optionsList.forEach(function(item){
-                cm.removeClass(item['node'], 'active');
-            });
-            cm.clearNode(nodes['text']).appendChild(
-                cm.Node('span', {'innerHTML': option['text']})
-            );
-            option['option'].selected = true;
-            cm.addClass(option['node'], 'active');
+            if(config['multiple']){
+                setMultiple(option);
+            }else{
+                setSingle(option);
+            }
         }
         /* *** EXECUTE API EVENTS *** */
         if(execute){
@@ -197,6 +229,36 @@ Com['Select'] = function(o){
             executeEvent('onChange');
         }
 	};
+
+    var setMultiple = function(option){
+        var value = option['value'] || option['text'];
+        if(option['selected']){
+            active = active.filter(function(item){
+                return value != item;
+            });
+            option['option'].selected = false;
+            option['selected'] = false;
+            cm.removeClass(option['node'], 'active');
+        }else{
+            active.push(value);
+            option['option'].selected = true;
+            option['selected'] = true;
+            cm.addClass(option['node'], 'active');
+        }
+    };
+
+    var setSingle = function(option){
+        oldActive = active;
+        active = option['value'] || option['text'];
+        optionsList.forEach(function(item){
+            cm.removeClass(item['node'], 'active');
+        });
+        cm.clearNode(nodes['text']).appendChild(
+            cm.Node('span', {'innerHTML': option['text']})
+        );
+        option['option'].selected = true;
+        cm.addClass(option['node'], 'active');
+    };
 	
 	var executeEvent = function(event){
 		var handler = function(){
@@ -207,7 +269,11 @@ Com['Select'] = function(o){
 		
 		switch(event){
 			case 'onChange':
-				active != oldActive && handler();
+                if(config['multiple']){
+                    handler();
+                }else{
+                    active != oldActive && handler();
+                }
 			break;
 			
 			default:
@@ -294,24 +360,24 @@ Com['Select'] = function(o){
 	};
 	
 	var hideMenu = function(now){
-		isHide = true;
-		// Remove event - Check position
-		checkInt && clearInterval(checkInt);
-		// Remove event - Hide menu on resize
-		cm.removeEvent(window, 'resize', getPosition);
-		// Remove event - Hide menu by click on another object
-		cm.removeEvent(document, 'click', bodyClick);
-		// Remove classes
-		cm.removeClass(nodes['input'], 'hidden');
-		cm.removeClass(nodes['container'], 'active');
-		// Animate
-		anim.go({'style' : {'opacity' : 0}, 'duration' : (now? 0 : 100), 'onStop' : function(){
-			// Append child menu in select container
-			nodes['container'].appendChild(nodes['menu']);
-			nodes['menu'].style.display = 'none';
-			/* *** EXECUTE API EVENTS *** */
-			executeEvent('onBlur');
-		}});
+        isHide = true;
+        // Remove event - Check position
+        checkInt && clearInterval(checkInt);
+        // Remove event - Hide menu on resize
+        cm.removeEvent(window, 'resize', getPosition);
+        // Remove event - Hide menu by click on another object
+        cm.removeEvent(document, 'click', bodyClick);
+        // Remove classes
+        cm.removeClass(nodes['input'], 'hidden');
+        cm.removeClass(nodes['container'], 'active');
+        // Animate
+        anim.go({'style' : {'opacity' : 0}, 'duration' : (now? 0 : 100), 'onStop' : function(){
+            // Append child menu in select container
+            nodes['container'].appendChild(nodes['menu']);
+            nodes['menu'].style.display = 'none';
+            /* *** EXECUTE API EVENTS *** */
+            executeEvent('onBlur');
+        }});
 	};
 	
 	/* *** MAIN *** */
@@ -322,8 +388,16 @@ Com['Select'] = function(o){
 	
 	that.set = function(value){
         // Select option and execute events
-        if(value && options[value]){
-		    set(options[value], true);
+        if(value){
+            if(cm.isArray(value)){
+                cm.forEach(value, function(item){
+                    if(options[item]){
+                        set(options[item], true);
+                    }
+                });
+            }else if(options[value]){
+                set(options[value], true);
+            }
         }
 		return that;
 	};
@@ -391,11 +465,14 @@ Com['SelectCollector'] = function(node){
 	};
 
     var render = function(node){
-        selects = (node.nodeType == 1 && node.tagName.toLowerCase() == 'select') ? [node] : node.getElementsByTagName('select');
+        selects = cm.clone((node.nodeType == 1 && node.tagName.toLowerCase() == 'select') ? [node] : node.getElementsByTagName('select'));
         // Render datepickers
         cm.forEach(selects, function(item){
-            if(!item.multiple && !/^norender|false$/.test(item.getAttribute('data-select'))){
-                select = new Com.Select({'select' : item});
+            if(!/^norender|false$/.test(item.getAttribute('data-select'))){
+                select = new Com.Select({
+                    'select' : item,
+                    'multiple' : item.multiple
+                });
                 if(id = item.id){
                     Com.Elements.Selects[id] = select;
                 }
