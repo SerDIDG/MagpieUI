@@ -1172,6 +1172,7 @@ select[multiple]{
 	line-height: 16px;
 	font-size: 12px;
 	color: #333333;
+    text-shadow: 0 1px 0 #fff;
 	cursor: pointer;
 	-webkit-transition: all 0.3s ease-in-out;
 	   -moz-transition: all 0.3s ease-in-out;
@@ -1213,12 +1214,12 @@ select[multiple]{
 .cm-multiselect {
 }
 .cm-multiselect .inner {
-    padding: 4px;
+    padding: 3px;
     background: #fff;
     border: 1px solid #595959;
 }
 .cm-multiselect .scroll {
-    max-height: 114px;
+    max-height: 104px;
     overflow-x: hidden;
     overflow-y: auto;
 }
@@ -1228,10 +1229,9 @@ select[multiple]{
     list-style: none;
 }
 .cm-multiselect li {
-    min-height: 18px;
     margin-top: 1px;
     padding: 2px 4px;
-    line-height: 18px;
+    line-height: 16px;
     text-shadow: 0 1px 0 #fff;
     cursor: pointer;
     -webkit-transition: all 0.3s ease-in-out;
