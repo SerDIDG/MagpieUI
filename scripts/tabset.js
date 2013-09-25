@@ -13,9 +13,10 @@ Com['Tabset'] = function(o){
 			'renderOnInit' : true,
             'active' : false,
             'tabsPosition' : 'top',         // top | bottom
+            'showTabs' : true,
             'tabs' : []
 		}, o),
-        dataAttributes = ['active', 'toggleOnHashChange', 'renderOnInit', 'tabsPosition'],
+        dataAttributes = ['active', 'toggleOnHashChange', 'renderOnInit', 'tabsPosition', 'showTabs'],
 		nodes = {},
 		ids = [],
 		tabs = {},
@@ -76,6 +77,10 @@ Com['Tabset'] = function(o){
                 nodes['contentUL'] = cm.Node('ul')
             )
         );
+        // Show tabs
+        if(!config['showTabs']){
+            nodes['header'].style.display = 'none';
+        }
         // Tabs position
         if(config['tabsPosition'] == 'bottom'){
             cm.addClass(nodes['container'], 'bottom');
