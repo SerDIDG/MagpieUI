@@ -12,9 +12,10 @@ Com['Tabset'] = function(o){
             'toggleOnHashChange' : true,
 			'renderOnInit' : true,
             'active' : false,
+            'tabsPosition' : 'top',         // top | bottom
             'tabs' : []
 		}, o),
-        dataAttributes = ['active', 'toggleOnHashChange', 'renderOnInit'],
+        dataAttributes = ['active', 'toggleOnHashChange', 'renderOnInit', 'tabsPosition'],
 		nodes = {},
 		ids = [],
 		tabs = {},
@@ -36,6 +37,8 @@ Com['Tabset'] = function(o){
             value = config['tabset'].getAttribute(['data', item].join('-'));
             if(/^false|true$/.test(value)){
                 value = value? (value == 'true') : config[item];
+            }else if(item == 'tabsPosition'){
+                value = ['top', 'bottom'].indexOf(value) != -1? value : config[item];
             }else{
                 value = value || config[item];
             }
@@ -73,6 +76,13 @@ Com['Tabset'] = function(o){
                 nodes['contentUL'] = cm.Node('ul')
             )
         );
+        // Tabs position
+        if(config['tabsPosition'] == 'bottom'){
+            cm.addClass(nodes['container'], 'bottom');
+            nodes['container'].appendChild(nodes['header']);
+        }else{
+            cm.addClass(nodes['container'], 'top');
+        }
         /* *** RENDER TABS *** */
         if(config['tabset']){
             tabsLI = Array.prototype.filter.call(config['tabset'].childNodes, function(node){

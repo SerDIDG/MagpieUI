@@ -1500,8 +1500,6 @@ select[multiple]{
     padding: 0 20px;
     background: #ffffff;
     border: 1px solid #CBCBCB;
-    border-bottom-color: #fff;
-    border-radius: 5px 5px 0 0;
     white-space: nowrap;
     text-align: center;
     text-overflow: ellipsis;
@@ -1518,7 +1516,6 @@ select[multiple]{
 }
 .tabset-head ul li.active {
 	background: #fff;
-	border-bottom-color: #fff;
 }
 .tabset-content {
     position: relative;
@@ -1538,6 +1535,32 @@ select[multiple]{
 }
 .tabset-content-ul > li {
     display: none;
+}
+
+.tabset.top > .tabset-head ul li.active {
+    border-bottom-color: #ffffff;
+}
+.tabset.top > .tabset-head .tabset-head-title {
+    border-bottom-color: #fff;
+    border-radius: 5px 5px 0 0;
+}
+
+.tabset.bottom > .tabset-head {
+    bottom: auto;
+    top: -1px;
+}
+.tabset.bottom > .tabset-head ul li {
+    border-radius: 0 0 5px 5px;
+}
+.tabset.bottom > .tabset-head ul li.active {
+    border-top-color: #fff;
+}
+.tabset.bottom > .tabset-content {
+    border-radius: 5px 5px 5px 0;
+}
+.tabset.bottom > .tabset-head .tabset-head-title {
+    border-radius: 0 0 5px 5px;
+    border-top-color: #fff;
 }
 
 /* Breadcrumbs */
@@ -2631,7 +2654,7 @@ select[multiple]{
 
     /* Tabs */
 
-    .tabset-head-button {
+    .tabset .tabset-head-button {
         width: 40px;
         height: 29px;
         margin: 0 0 0 4px;
@@ -2646,6 +2669,9 @@ select[multiple]{
              -o-transition: all 0.3s ease-in-out;
                 transition: all 0.3s ease-in-out;
     }
+    .tabset.bottom .tabset-head-button {
+        border-radius: 0 0 5px 5px;
+    }
     .tabset-head-button:hover {
         background-color: #fff;
         -webkit-transition: all 0.1s ease-in-out;
@@ -2653,7 +2679,7 @@ select[multiple]{
              -o-transition: all 0.1s ease-in-out;
                 transition: all 0.1s ease-in-out;
     }
-    .tabset-head-button ul {
+    .tabset .tabset-head-button ul {
         display:  none;
         position: absolute;
         top: 100%;
@@ -2663,10 +2689,15 @@ select[multiple]{
         box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
         padding: 3px;
     }
-    .tabset-head-button:hover ul {
+    .tabset.bottom .tabset-head-button ul {
+        top: auto;
+        bottom: 100%;
+    }
+    .tabset .tabset-head-button:hover ul {
         display: block;
     }
-    .tabset-head-button ul li {
+    .tabset.top .tabset-head-button ul li,
+    .tabset.bottom .tabset-head-button ul li{
         height: 30px;
         float: none;
         margin: 1px 0 0 0;
@@ -2674,19 +2705,22 @@ select[multiple]{
         border: none;
         border-radius: 0;
     }
-    .tabset-head-button ul li:first-child {
+    .tabset .tabset-head-button ul li:first-child {
         margin: 0;
     }
-    .tabset-head-button ul li.active {
+    .tabset .tabset-head-button ul li.active {
         background: #DFDFDF;
     }
-    .tabset-head-button ul li:hover {
+    .tabset .tabset-head-button ul li:hover {
         background: #F0F0F0;
     }
-    .tabset-content {
+    .tabset.top > .tabset-content {
         border-radius: 0 0 5px 5px;
     }
-    .tabset-head-title {
+    .tabset.bottom > .tabset-content {
+        border-radius: 5px 5px 0 0;
+    }
+    .tabset .tabset-head-title {
         display: block;
     }
 	
