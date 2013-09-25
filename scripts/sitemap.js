@@ -1,4 +1,4 @@
-var initSiteMap = function(o){
+Com['SiteMap'] = function(o){
 	var that = this,
 		config = cm.merge({
 			'button' : cm.Node('div'),
@@ -22,10 +22,11 @@ var initSiteMap = function(o){
 			cm.addClass(config['button'], 'open');
 			// Map
 			config['map'].style.height = 'auto';
-			height = config['map'].offsetHeight+'px';
+			height = [config['map'].offsetHeight, 'px'].join('');
 			config['map'].style.height = 0;
 			anim.go({'style' : {'height' : height}, 'anim' : 'smooth', 'duration' : config['time'], 'onStop' : function(){
 				config['map'].style.height = 'auto';
+                config['map'].style.overflow = 'visible';
 			}});
 			// Scroll to document bottom
 			config['scroll'] && new cm.Animation(document.body).go({'style' : {'docScrollTop' : cm.getPageSize('height')}, 'anim' : 'smooth', 'duration' : config['time']});
@@ -34,6 +35,7 @@ var initSiteMap = function(o){
 			text.innerHTML = config['langs']['open'];
 			cm.removeClass(config['button'], 'open');
 			// Map
+            config['map'].style.overflow = 'hidden';
 			anim.go({'style' : {'height' : '0px'}, 'anim' : 'acceleration', 'duration' : config['time']});
 		}
 		isOpen = !isOpen;
