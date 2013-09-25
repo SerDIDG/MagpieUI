@@ -230,6 +230,13 @@ Com['Tabset'] = function(o){
 		return that;
 	};
 
+    that.get = function(id){
+        if(id && tabs[id]){
+            return tabs[id];
+        }
+        return null;
+    };
+
     that.addTab = function(item){
         if(item && item['id']){
             renderTab(item);
@@ -257,6 +264,10 @@ Com['Tabset'] = function(o){
 		cm.remove(nodes['container']);
 		return that;
 	};
+
+    that.getNodes = function(key){
+        return nodes[key] || nodes;
+    };
 	
 	init();
 };

@@ -103,16 +103,20 @@
     <li data-tabset-id="methods" data-tabset-title="Methods">
         <h2>Get tabset by id:</h2>
         <code>Com.GetTabset('id');</code>
-        <p>Return a class of tabset.</p>
+        <p>Returns a class of tabset.</p>
 
         <h2>Render tabset:</h2>
         Render a tabset when he was init with disabled "renderOnInit" attribute.
         <code>tabset.render();</code>
-        <p>Return a class of tabset.</p>
+        <p>Returns a class of tabset.</p>
 
         <h2>Set active tab by id:</h2>
         <code>tabset.set(id);</code>
-        <p>Return a class of tabset.</p>
+        <p>Returns a class of tabset.</p>
+
+        <h2>Get tab by id:</h2>
+        <code>tabset.get(id);</code>
+        <p>Returns tab object.</p>
 
         <h2>Render tab:</h2>
         <code>tabset.addTab(o);</code>
@@ -125,11 +129,11 @@
             <li><b>onShow</b> <i>[Function]</i> - event triggered on tab show, <i>default: empty</i>;</li>
             <li><b>onHide</b> <i>[Function]</i> - event triggered on tab hide, <i>default: empty</i>;</li>
         </ul>
-        <p>Return a class of tabset.</p>
+        <p>Returns a class of tabset.</p>
 
         <h2>Remove tab by id:</h2>
         <code>tabset.removeTab(id);</code>
-        <p>Return a class of tabset.</p>
+        <p>Returns a class of tabset.</p>
 
         <h2>Set events on tabs:</h2>
         <code>Com.GetTabset('id').setEvents({
@@ -142,11 +146,15 @@
         }
     }
 });</code>
-        <p>Remove tabset.</p>
+        <p>Returns a class of tabset.</p>
 
-        <h2>Remove tab by id:</h2>
+        <h2>Remove tabset:</h2>
         <code>tabset.remove();</code>
-        <p>Return a class of tabset.</p>
+        <p>Returns a class of tabset.</p>
+
+        <h2>Get list of tabset nodes:</h2>
+        <code>tabset.getNodes(key);</code>
+        <p>Returns object of nodes, or node if key is specified.</p>
     </li>
 
     <li data-tabset-id="examples" data-tabset-title="Examples">

@@ -1184,7 +1184,7 @@ select[multiple]{
 	margin-top: 0;
 }
 .cm-select-menu ul li.active {
-	background-color: #dfdfdf;
+    background-color: #d9eafb;
 }
 .cm-select-menu ul li:hover {
 	background-color: #f0f0f0;
@@ -1193,6 +1193,9 @@ select[multiple]{
 	    -ms-transition: all 0.1s ease-in-out;
 	     -o-transition: all 0.1s ease-in-out;
 	        transition: all 0.1s ease-in-out;
+}
+.cm-select-menu ul li.active:hover {
+    background-color: #bdd8f3;
 }
 .cm-select-menu ul li.hr {
 	display: none;
@@ -1243,8 +1246,8 @@ select[multiple]{
     margin-top: 0;
 }
 .cm-multiselect li.active {
-     background-color: #dfdfdf;
- }
+    background-color: #d9eafb;
+}
 .cm-multiselect li:hover {
     background-color: #F0F0F0;
     -webkit-transition: all 0.1s ease-in-out;
@@ -1253,7 +1256,7 @@ select[multiple]{
             transition: all 0.1s ease-in-out;
 }
 .cm-multiselect li.active:hover {
-    background-color: #F0F0F0;
+    background-color: #bdd8f3;
 }
 
 /* Grid List */

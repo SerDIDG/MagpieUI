@@ -1,0 +1,159 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;">
+    <title>Select</title>
+
+    <link type="text/css" rel="stylesheet" href="../styles/common.css">
+    <link type="text/css" rel="stylesheet" href="../themes/screensider/common.css">
+    <link type="text/css" rel="stylesheet" href="styles/main.css">
+
+    <script type="text/javascript" src="../scripts/common.js"></script>
+    <script type="text/javascript" src="../scripts/useragent.js"></script>
+    <script type="text/javascript" src="../scripts/select.js"></script>
+    <script type="text/javascript" src="../scripts/datepicker.js"></script>
+    <script type="text/javascript" src="../scripts/tabset.js"></script>
+    <script type="text/javascript" src="../scripts/gallery.js"></script>
+
+    <script type="text/javascript">
+        cm.onload(function(){
+            var element;
+            // Useragent
+            Useragent.setBrowserClass();
+            // Selects
+            Com.SelectCollector();
+            // Datepickers
+            Com.DatepickerCollector();
+            // Tabset
+            Com.TabsetCollector();
+            // Gallery
+            Com.GalleryCollector();
+        });
+    </script>
+</head>
+
+<body>
+
+<h1>Select</h1>
+
+<ul class="tabset-content-ul" id="tabset" data-tabset="true" data-toggleOnHashChange="false">
+    <li data-tabset-id="overview" data-tabset-title="Overview">
+        <h2>Initialize in Java-Script:</h2>
+        <code>new Com.Select(o);</code>
+        <br>
+        <b>Attributes:</b>
+        <ul>
+            <li><b>container</b> <i>[HTML Node]</i> - container for select, when select rendered through java-script, <i>default: cm.Node('div')</i>;</li>
+            <li><b>select</b> <i>[HTML Node]</i> - select html node, <i>default: cm.Node('select')</i>;</li>
+            <li><b>multiple</b> <i>[Boolean]</i> - use multiple select, <i>default: false</i>;</li>
+            <li><b>menuMargin</b> <i>[Number]</i> - outer margin of select menu, <i>default: 3</i>;</li>
+            <li><b>options</b> <i>[Array]</i> - listing of options, for rendering through java-script;</li>
+        </ul>
+
+        <h2>Initialize in HTML:</h2>
+        <code>cm.onload(function(){
+    Com.SelectCollector();
+});</code>
+        <br>
+        <b>Attributes:</b>
+        <ul>
+            <li><b>multiple</b> - use multiple select;</li>
+            <li><b>data-select="true|false"</b> - if false select will not be rendered;</li>
+        </ul>
+
+        <h2>Render options through Java-Script:</h2>
+        <code>new Com.Select({'options' : [{'value' : '', 'text' : ''}]});</code>
+        or
+        <code>select.addOption(value, text)</code>
+        or
+        <code>select.addOptions([{'value' : '', 'text' : ''}]);</code>
+        or
+        <code>Com.GetSelect(id).addOption(value, text);</code>
+        or
+        <code>Com.GetSelects(id).addOptions([{'value' : '', 'text' : ''}]);</code>
+    </li>
+
+    <li data-tabset-id="methods" data-tabset-title="Methods">
+        <h2>Get select by id:</h2>
+        <code>Com.GetSelect('id');</code>
+        <p>Returns a class of select.</p>
+
+        <h2>Get selected option value:</h2>
+        <code>select.get();</code>
+        <p>Returns selected option value, or array of values if select is multiple.</p>
+
+        <h2>Select option value (set active option):</h2>
+        <code>select.set(value);</code>
+        <p>Set active option value, or array of values if select is multiple.<br>Returns a class of select.</p>
+
+        <h2>Set event:</h2>
+        <code>select.addEvent(event, handler);</code>
+        <p>Available events: onSelect, onChange, onFocus, onBlur.<br>Returns a class of select.</p>
+
+        <h2>Remove event:</h2>
+        <code>select.removeEvent(event, handler);</code>
+        <p>Available events: onSelect, onChange, onFocus, onBlur.<br>Returns a class of select.</p>
+
+        <h2>Add option:</h2>
+        <code>select.addOption(value, text);</code>
+        <p>Returns a class of select.</p>
+
+        <h2>Remove option:</h2>
+        <code>select.removeOption(value);</code>
+        <p>Returns a class of select.</p>
+
+        <h2>Add options:</h2>
+        <code>select.addOptions([{'value' : '', 'text' : ''}]);</code>
+        <p>Returns a class of select.</p>
+
+        <h2>Get list of select nodes:</h2>
+        <code>select.getNodes(key);</code>
+        <p>Returns object of nodes, or node if key is specified.</p>
+    </li>
+
+    <li data-tabset-id="examples" data-tabset-title="Examples">
+        <h2>Single select:</h2>
+        <div class="form">
+            <dl>
+                <dd>
+                    <select name="select1">
+                        <option value="1">One</option>
+                        <option value="2" selected>Two</option>
+                        <option value="3">Three</option>
+                        <option value="4">Four</option>
+                        <option value="5">Five</option>
+                        <option value="6">Six</option>
+                        <option value="7">Seven</option>
+                        <option value="8">Eight</option>
+                        <option value="9">Nine</option>
+                        <option value="10">Ten</option>
+                    </select>
+                </dd>
+            </dl>
+        </div>
+        <br>
+        <h2>Multiple select:</h2>
+        <div class="form">
+            <dl>
+                <dd>
+                    <select multiple name="select2">
+                        <option value="1" selected>One</option>
+                        <option value="2" selected>Two</option>
+                        <option value="3">Three</option>
+                        <option value="4">Four</option>
+                        <option value="5">Five</option>
+                        <option value="6">Six</option>
+                        <option value="7" selected>Seven</option>
+                        <option value="8">Eight</option>
+                        <option value="9">Nine</option>
+                        <option value="10">Ten</option>
+                    </select>
+                </dd>
+            </dl>
+        </div>
+    </li>
+</ul>
+
+</body>
+</html>

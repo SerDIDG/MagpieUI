@@ -287,12 +287,6 @@ button:active,
 .cm-multiselect:hover .inner {
     background-color: #fff;
 }
-.cm-multiselect li.active {
-    background-color: #d9eafb;
-}
-.cm-multiselect li.active:hover {
-    background-color: #bdd8f3;
-}
 
 /* Datepicker */
 
