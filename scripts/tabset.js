@@ -242,8 +242,7 @@ Com['Tabset'] = function(o){
 };
 
 Com['TabsetCollector'] = function(node){
-    var that = this,
-        tabsets,
+    var tabsets,
         id,
         tabset;
 

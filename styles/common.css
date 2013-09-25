@@ -2081,6 +2081,7 @@ select[multiple]{
 	z-index: 1;
 	display: inline-block;
 	cursor: text;
+    vertical-align: top;
 }
 .cm-editable > .border {
 	position: absolute;
@@ -2116,6 +2117,7 @@ select[multiple]{
 	display: inline-block;
 	position: relative;
 	z-index: 2;
+    vertical-align: top;
 }
 .cm-editable > .menu {
 	position: absolute;
