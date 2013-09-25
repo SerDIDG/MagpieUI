@@ -1486,6 +1486,9 @@ select[multiple]{
 	height: 29px;
 	display: block;
 	padding: 0 20px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 	line-height: 30px;
 	font-weight: normal;
 	font-size: 13px;
@@ -2654,7 +2657,7 @@ select[multiple]{
 
     /* Tabs */
 
-    .tabset .tabset-head-button {
+    .tabset.is-adaptive .tabset-head-button {
         width: 40px;
         height: 29px;
         margin: 0 0 0 4px;
@@ -2669,17 +2672,17 @@ select[multiple]{
              -o-transition: all 0.3s ease-in-out;
                 transition: all 0.3s ease-in-out;
     }
-    .tabset.bottom .tabset-head-button {
+    .tabset.bottom.is-adaptive .tabset-head-button {
         border-radius: 0 0 5px 5px;
     }
-    .tabset-head-button:hover {
+    .tabset.is-adaptive .tabset-head-button:hover {
         background-color: #fff;
         -webkit-transition: all 0.1s ease-in-out;
            -moz-transition: all 0.1s ease-in-out;
              -o-transition: all 0.1s ease-in-out;
                 transition: all 0.1s ease-in-out;
     }
-    .tabset .tabset-head-button ul {
+    .tabset.is-adaptive .tabset-head-button ul {
         display:  none;
         position: absolute;
         top: 100%;
@@ -2689,15 +2692,15 @@ select[multiple]{
         box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
         padding: 3px;
     }
-    .tabset.bottom .tabset-head-button ul {
+    .tabset.bottom.is-adaptive .tabset-head-button ul {
         top: auto;
         bottom: 100%;
     }
-    .tabset .tabset-head-button:hover ul {
+    .tabset.is-adaptive .tabset-head-button:hover ul {
         display: block;
     }
-    .tabset.top .tabset-head-button ul li,
-    .tabset.bottom .tabset-head-button ul li{
+    .tabset.top.is-adaptive .tabset-head-button ul li,
+    .tabset.bottom.is-adaptive .tabset-head-button ul li{
         height: 30px;
         float: none;
         margin: 1px 0 0 0;
@@ -2705,22 +2708,22 @@ select[multiple]{
         border: none;
         border-radius: 0;
     }
-    .tabset .tabset-head-button ul li:first-child {
+    .tabset.is-adaptive .tabset-head-button ul li:first-child {
         margin: 0;
     }
-    .tabset .tabset-head-button ul li.active {
+    .tabset.is-adaptive .tabset-head-button ul li.active {
         background: #DFDFDF;
     }
-    .tabset .tabset-head-button ul li:hover {
+    .tabset.is-adaptive .tabset-head-button ul li:hover {
         background: #F0F0F0;
     }
-    .tabset.top > .tabset-content {
+    .tabset.top.is-adaptive > .tabset-content {
         border-radius: 0 0 5px 5px;
     }
-    .tabset.bottom > .tabset-content {
+    .tabset.bottom.is-adaptive > .tabset-content {
         border-radius: 5px 5px 0 0;
     }
-    .tabset .tabset-head-title {
+    .tabset.is-adaptive .tabset-head-title {
         display: block;
     }
 	
