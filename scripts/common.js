@@ -642,6 +642,11 @@ cm.insertFirst = function(node, target){
 	return node;
 };
 
+cm.appendChild = function(node, target){
+    target.appendChild(node);
+    return node;
+};
+
 cm.insertBefore = function(el, target){
 	target.parentNode.insertBefore(el, target);
 	return el;
@@ -1104,19 +1109,34 @@ cm.getY = function(o){
     return y;
 };
 
-cm.getRealY = function(o){
-	var y = cm.getY(o),
+cm.getRealX = function(o){
+	var x = cm.getX(o),
 		bodyScroll = false;
 	while(o){
 		if(o.tagName){
 			bodyScroll = cm.getCSSStyle(o, 'position') == 'fixed' || bodyScroll;
 			if(!/body|html/gi.test(o.tagName)){
-				y -= (o.scrollTop || 0);
+				x -= (o.scrollLeft || 0);
 			}
 		}
 		o = o.parentNode;
 	}
-	return y - (!bodyScroll? cm.getBodyScrollTop() : 0);
+	return x - (!bodyScroll? cm.getBodyScrollLeft() : 0);
+};
+
+cm.getRealY = function(o){
+    var y = cm.getY(o),
+        bodyScroll = false;
+    while(o){
+        if(o.tagName){
+            bodyScroll = cm.getCSSStyle(o, 'position') == 'fixed' || bodyScroll;
+            if(!/body|html/gi.test(o.tagName)){
+                y -= (o.scrollTop || 0);
+            }
+        }
+        o = o.parentNode;
+    }
+    return y - (!bodyScroll? cm.getBodyScrollTop() : 0);
 };
 
 cm.addStyles = function(node, str){

@@ -169,8 +169,8 @@ Com['Tabset'] = function(o){
         // Remove tab from list and array
         cm.remove(item['tab']);
         cm.remove(item['content']);
-        ids = ids.filter(function(item){
-            return item['id'] != item;
+        ids = ids.filter(function(id){
+            return item['id'] != id;
         });
         delete tabs[item['id']];
     };
