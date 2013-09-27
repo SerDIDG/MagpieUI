@@ -169,6 +169,18 @@ Com['Draganddrop'] = function(o){
             y = e.clientY,
             areaNode,
             currentHeight;
+        // Calculate last draggable element position
+        if(currentArea){
+            areaNode = currentArea['node'].appendChild(cm.Node('div'));
+            currentArea['y3'] = cm.getRealY(areaNode);
+            cm.remove(areaNode);
+            if(y < currentArea['y3']){
+                currentAreaPosition = 'top';
+            }else{
+                currentAreaPosition = 'bottom';
+            }
+        }
+        // Drop
         if(currentAbove){
             // Animate chassis blocks
             current['node'].style.width = [currentAbove['width'], 'px'].join('');
@@ -204,16 +216,7 @@ Com['Draganddrop'] = function(o){
                     removeDraggable();
                 }
             });
-        }else if(current && currentArea && currentArea['node'] != current['parent']['node']){
-            // Calculate last draggable element position
-            areaNode = currentArea['node'].appendChild(cm.Node('div'));
-            currentArea['y3'] = cm.getRealY(areaNode);
-            cm.remove(areaNode);
-            if(y < currentArea['y3']){
-                currentAreaPosition = 'top';
-            }else{
-                currentAreaPosition = 'bottom';
-            }
+        }else if(current && currentArea && (currentArea['node'] != current['parent']['node'] || currentAreaPosition == 'bottom')){
             current['draggableAnim'].go({
                 'duration' : 400,
                 'anim' : 'smooth',
@@ -299,7 +302,9 @@ Com['Draganddrop'] = function(o){
         clone.style.overflow = 'hidden';
         cm.insertBefore(clone, current['node']);
         cm.remove(current['node']);
-        new cm.Animation(clone).go({'style' : {'height' : '0px', 'opacity' : 0}, 'anim' : 'smooth', 'duration' : 400})
+        new cm.Animation(clone).go({'style' : {'height' : '0px', 'opacity' : 0}, 'anim' : 'smooth', 'duration' : 400, 'onStop' : function(){
+            cm.remove(clone);
+        }});
     };
 
     var resetItemArea = function(){
@@ -327,6 +332,22 @@ Com['Draganddrop'] = function(o){
     };
 
     /* *** MAIN *** */
+
+    that.addEvent = function(event, handler){
+        if(API[event] && typeof handler == 'function'){
+            API[event].push(handler);
+        }
+        return that;
+    };
+
+    that.removeEvent = function(event, handler){
+        if(API[event] && typeof handler == 'function'){
+            API[event] = API[event].filter(function(item){
+                return item != handler;
+            });
+        }
+        return that;
+    };
 
     init();
 };
