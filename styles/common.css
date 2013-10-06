@@ -1,5 +1,11 @@
 /* ******* TAGS ******* */
 
+body {
+    cursor: default;
+}
+a {
+    outline: none;
+}
 img {
 	border: none;
 }
@@ -63,6 +69,14 @@ code {
 .icon.inline {
 	margin: 0 4px;
 	vertical-align: middle;
+}
+.icon.dummy {
+    width: 16px;
+    height: 16px;
+}
+.icon.dummy.medium {
+    width: 24px;
+    height: 24px;
 }
 .icon.linked {
     cursor: pointer;
@@ -240,6 +254,18 @@ ul.indent {
 .ie7 .inline {
 	display: inline;
 	zoom: 1;
+}
+.mark-new {
+    display: inline-block;
+    position: relative;
+    top: -5px;
+    color: #f88f16;
+    font-size: 8px;
+    text-transform: uppercase;
+}
+.ie7 .mark-new {
+    display: inline;
+    zoom: 1;
 }
 
 /* Content Buttons Line */
@@ -1263,84 +1289,94 @@ select[multiple]{
 
 .gridlist {
 	margin: 0 0 24px;
-	padding: 1px;
-	border: 1px solid #CACACA;
-	background-clip: padding-box;
-	border-radius: 5px;
 	overflow: hidden;
-}
-.gridlist.error {
-	border-color: #df3e3e;
 }
 .gridlist table {
 	width: 100%;
 	table-layout: fixed;
+    border-collapse: separate;
 }
 .gridlist td,
 .gridlist th {
 	text-align: left;
 	padding: 6px;
 }
+.gridlist th > .inner,
+.gridlist td > .inner {
+    display: block;
+    overflow: hidden;
+    position: relative;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-wrap: normal;
+    text-decoration: none;
+    cursor: pointer;
+}
+.gridlist thead {
+    background: -webkit-linear-gradient(top, #ffffff, #f0f0f0);
+    background:    -moz-linear-gradient(top, #ffffff, #f0f0f0);
+    background:     -ms-linear-gradient(top, #ffffff, #f0f0f0);
+    background:      -o-linear-gradient(top, #ffffff, #f0f0f0);
+    background:         linear-gradient(to bottom, #ffffff, #f0f0f0);
+}
 .gridlist th {
-	background-color: #ffffff;
-	font-weight: bold;
+    border-top: 1px solid #CACACA;
+    border-bottom: 1px solid #CACACA;
+    line-height: 14px;
+    font-weight: bold;
     color: #333333;
 }
+.gridlist th:first-child {
+    border-left: 1px solid #CACACA;
+    border-radius: 3px 0 0 3px;
+}
+.gridlist th:last-child {
+    border-right: 1px solid #CACACA;
+    border-radius: 0 3px 3px 0;
+}
 .gridlist th.sort {
-	-webkit-transition: background-color 0.3s ease-in-out;
-	   -moz-transition: background-color 0.3s ease-in-out;
-	     -o-transition: background-color 0.3s ease-in-out;
-	        transition: background-color 0.3s ease-in-out;
+    -webkit-transition: background-color 0.3s ease-in-out;
+       -moz-transition: background-color 0.3s ease-in-out;
+         -o-transition: background-color 0.3s ease-in-out;
+            transition: background-color 0.3s ease-in-out;
 }
 .gridlist th.sort:hover {
-	background-color: #e9e9e9;
-	-webkit-transition: background-color 0.1s ease-in-out;
-	   -moz-transition: background-color 0.1s ease-in-out;
-	     -o-transition: background-color 0.1s ease-in-out;
-	        transition: background-color 0.1s ease-in-out;
+    background: #f0f0f0;
+    -webkit-transition: background-color 0.1s ease-in-out;
+       -moz-transition: background-color 0.1s ease-in-out;
+         -o-transition: background-color 0.1s ease-in-out;
+            transition: background-color 0.1s ease-in-out;
 }
-.gridlist th.sort div {
-	cursor: pointer;
-}
-.gridlist th.sort span {
-	cursor: pointer;
+.gridlist th.sort .inner {
+    display: block;
+    margin: -6px;
+    padding: 6px 20px 6px 6px;
+    color: #333333;
+    cursor: pointer;
 }
 .gridlist th .arrow {
 	width: 10px;
 	height: 10px;
-	display: inline-block;
-	vertical-align: middle;
-	margin: 0 0 0 4px;
+	display: block;
+    position: absolute;
+    top: 50%;
+    right: 6px;
+	margin: -3px 0 0 0;
 }
 .gridlist td {
-	background-color: #F3F3F3;
 	vertical-align: top;
 	word-wrap: break-word;
-}
-.gridlist tr:nth-child(2n) td {
-	background-color: #ffffff;
-}
-.ie8 .gridlist td,
-.ie7 .gridlist td {
-	background-color: #ffffff;
+    -webkit-transition: background-color 0.3s ease-in-out;
+       -moz-transition: background-color 0.3s ease-in-out;
+         -o-transition: background-color 0.3s ease-in-out;
+            transition: background-color 0.3s ease-in-out;
 }
 .gridlist tr:hover td {
-	background-color: #E6E6E6;
-}
-
-.gridlist th > .inner,
-.gridlist td > .inner {
-	display: block;
-	overflow: hidden;
-	position: relative;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	word-wrap: normal;
-	text-decoration: none;
-	cursor: pointer;
-}
-.gridlist th > .inner {
-    color: #333333;
+	background-color: #f0f0f0;
+    -webkit-transition: background-color 0.1s ease-in-out;
+       -moz-transition: background-color 0.1s ease-in-out;
+         -o-transition: background-color 0.1s ease-in-out;
+            transition: background-color 0.1s ease-in-out;
 }
 
 .gridlist-link {
@@ -1357,6 +1393,9 @@ select[multiple]{
 .gridlist .expired {
 	color: #DF3E3E;
 	font-weight: bold;
+}
+.gridlist.error th {
+    border-color: #df3e3e;
 }
 
 .gridlist-links {
@@ -1377,6 +1416,20 @@ select[multiple]{
 .gridlist-links li:first-child:before {
 	content: normal;
 	margin: 0;
+}
+.gridlist-links.style2 {
+}
+.gridlist-links.style2 li {
+    display: block;
+}
+.gridlist-links.style2 li:before {
+    content: normal;
+    margin: 0;
+}
+
+.gridlist-middle td,
+.gridlist-middle th {
+    vertical-align: middle;
 }
 
 .gridlist-font-11 {
@@ -2279,10 +2332,16 @@ select[multiple]{
        -moz-user-select: none;
             user-select: none;
 }
-.cm-draganddrop-clone {
+.cm-draganddrop-helper {
     position: fixed;
-    opacity: 0.7;
     z-index: 9000;
+    -webkit-user-select: none;
+       -moz-user-select: none;
+            user-select: none;
+}
+.gridlist .cm-draganddrop-helper {
+    display: table;
+    table-layout: fixed;
 }
 .cm-draganddrop-chassis {
     height: 0;

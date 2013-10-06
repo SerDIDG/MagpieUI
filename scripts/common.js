@@ -27,6 +27,7 @@ cm.isFileReader = (function(){ return 'FileReader' in window; })();
 cm.isHistoryAPI = !!(window.history && history.pushState);
 cm.isLocalStorage = (function(){ try{ return 'localStorage' in window && window['localStorage'] !== null; }catch(e){ return false; } })();
 cm.isCanvas = !!document.createElement("canvas").getContext;
+cm.isTouch = 'ontouchstart' in document.documentElement || !!window.navigator.msPointerEnabled;
 
 /* ******* COMPATIBILITY ******* */
 
@@ -328,16 +329,33 @@ cm.getObjFromEvent = cm.getEventObject = cm.getEventTarget = function(e){
 	return  e.target || e.srcElement;
 };
 
+cm.crossEvents = function(key){
+    var events = {
+        'mousedown' : 'touchstart',
+        'mouseup' : 'touchend',
+        'mousemove' : 'touchmove'
+    };
+    return  events[key] || events;
+};
+
 cm.addEvent = function(elem, type, handler, bubbling){
+    // Process touch events
+    if(cm.isTouch && cm.crossEvents(type)){
+        elem.addEventListener(cm.crossEvents(type), handler, typeof(bubbling) == 'undefined'? true : bubbling);
+    }
 	try{
 		elem.addEventListener(type, handler, typeof(bubbling) == 'undefined'? true : bubbling);
 	}catch(e){
 		elem.attachEvent("on"+type, handler);
 	}
 };
-cm.removeEvent = function(elem, type, handler){
+cm.removeEvent = function(elem, type, handler, bubbling){
+    // Process touch events
+    if(cm.isTouch && cm.crossEvents(type)){
+        elem.removeEventListener(cm.crossEvents(type), handler, typeof(bubbling) == 'undefined'? true : bubbling);
+    }
 	try{
-		elem.removeEventListener(type, handler, true);
+		elem.removeEventListener(type, handler, typeof(bubbling) == 'undefined'? true : bubbling);
 	}catch(e){
 		elem.detachEvent("on"+type, handler);
 	}
@@ -1084,11 +1102,15 @@ cm.setOpacity = function(node, value){
 };
 
 cm.getX = function(o){
-	var x = 0;
+	var x = 0,
+        p = o;
     try{
-        while(o){
-            x += o.offsetLeft;
-            o = o.offsetParent;
+        while(p){
+            x += p.offsetLeft;
+            if(p != o){
+                x += cm.getStyle(p, 'borderLeftWidth', true) || 0;
+            }
+            p = p.offsetParent;
         }
     }catch(e){
         return x;
@@ -1097,11 +1119,15 @@ cm.getX = function(o){
 };
 
 cm.getY = function(o){
-	var y = 0;
+	var y = 0,
+        p = o;
     try{
-        while(o){
-            y += o.offsetTop;
-            o = o.offsetParent;
+        while(p){
+            y += p.offsetTop;
+            if(p != o){
+                y += cm.getStyle(p, 'borderTopWidth', true) || 0;
+            }
+            p = p.offsetParent;
         }
     }catch(e){
         return y;
@@ -1210,6 +1236,18 @@ cm.getBodyScrollTop = function(){
 		document.body.scrollTop,
 		0
 	);
+};
+
+cm.getSupportedStyle = function(style){
+    var upper = style.replace(style.charAt(0), style.charAt(0).toUpperCase()),
+        styles = [style, ['Webkit', upper].join(''), ['Moz', upper].join(''), ['O', upper].join(''), ['ms', upper].join('')],
+        style = false;
+    cm.forEach(styles, function(item){
+        if(typeof document.createElement('div').style[item] != undefined && !style) {
+            style = item;
+        }
+    });
+    return style;
 };
 
 /* ******* ANIMATION ******* */

@@ -16,6 +16,7 @@
     <script type="text/javascript" src="../scripts/tabset.js"></script>
     <script type="text/javascript" src="../scripts/gallery.js"></script>
     <script type="text/javascript" src="../scripts/toggle.box.js"></script>
+    <script type="text/javascript" src="../scripts/draganddrop.js"></script>
 
     <script type="text/javascript">
         cm.onload(function(){
@@ -30,6 +31,8 @@
             Com.TabsetCollector();
             // Gallery
             Com.GalleryCollector();
+            // Drag&Drop
+            Com.DraganddropCollector();
             // *** Togglebox
             new Com.ToggleBoxGridlist({
                 'node' : cm.getEl('gridlist'),
@@ -47,7 +50,7 @@
 
 <h1>Gridlist</h1>
 
-<ul class="tabset-content-ul" id="tabset" data-tabset="true" data-toggleOnHashChange="false" data-active="examples">
+<ul class="tabset-content-ul" id="tabset" data-tabset="true" data-toggleOnHashChange="false" data-active="development">
     <li data-tabset-id="overview" data-tabset-title="Overview">
     </li>
 
@@ -326,6 +329,61 @@
                         </ul>
                     </td>
                 </tr>
+                </tbody>
+            </table>
+        </div>
+    </li>
+
+    <li data-tabset-id="development" data-tabset-title="Development">
+        <div class="gridlist gridlist-font-11" data-draganddrop="true" data-chassisTag="tr" data-direction="vertical" data-helperContainer="false">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="40"></th>
+                        <th width="20%" class="sort">
+                            <div class="inner">
+                                <span>Name</span>
+                                <div class="icon arrow desc"></div>
+                            </div>
+                        </th>
+                        <th>Description</th>
+                        <th width="50"></th>
+                    </tr>
+                </thead>
+                <tbody data-area="true">
+                    <tr data-draganddrop-draggable="true">
+                        <td width="40" data-draganddrop-drag="true"></td>
+                        <td width="20%">Canada 1</td>
+                        <td>Canada is a North American country consisting of ten provinces and three territories.</td>
+                        <td width="50">
+                            <div class="form-icons-inside">
+                                <div class="icon edit" title="Edit"></div>
+                                <div class="icon remove" title="Remove"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr data-draganddrop-draggable="true">
+                        <td width="40" data-draganddrop-drag="true"></td>
+                        <td width="20%">Canada 2</td>
+                        <td>Canada is a North American country consisting of ten provinces and three territories.</td>
+                        <td width="50">
+                            <div class="form-icons-inside">
+                                <div class="icon edit" title="Edit"></div>
+                                <div class="icon remove" title="Remove"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr data-draganddrop-draggable="true">
+                        <td width="40" data-draganddrop-drag="true"></td>
+                        <td width="20%">Canada 3</td>
+                        <td>Canada is a North American country consisting of ten provinces and three territories.</td>
+                        <td width="50">
+                            <div class="form-icons-inside">
+                                <div class="icon edit" title="Edit"></div>
+                                <div class="icon remove" title="Remove"></div>
+                            </div>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
