@@ -5,6 +5,7 @@ body {
 }
 a {
     outline: none;
+    cursor: pointer;
 }
 img {
 	border: none;
@@ -182,6 +183,16 @@ code {
     width: 16px;
     height: 16px;
     background: url(../images/icons/help.png);
+}
+.icon.certificate {
+    width: 16px;
+    height: 16px;
+    background: url(../images/icons/certificate.png);
+}
+.icon.draggable {
+    width: 24px;
+    height: 14px;
+    background: url(../images/icons/draggable.png) 0 0 no-repeat;
 }
 .icon.arrow-priority-down {
 	width: 16px;
@@ -1366,6 +1377,7 @@ select[multiple]{
 .gridlist td {
 	vertical-align: top;
 	word-wrap: break-word;
+    background-color: transparent;
     -webkit-transition: background-color 0.3s ease-in-out;
        -moz-transition: background-color 0.3s ease-in-out;
          -o-transition: background-color 0.3s ease-in-out;
@@ -2343,8 +2355,17 @@ select[multiple]{
     display: table;
     table-layout: fixed;
 }
+.gridlist tr.cm-draganddrop-helper td {
+    background-color: #D9EAFB;
+}
 .cm-draganddrop-chassis {
     height: 0;
+}
+.icon.draggable[data-draganddrop-drag="true"] {
+    cursor: move;
+}
+.icon.draggable[data-draganddrop-drag="false"] {
+    cursor: default;
 }
 
 /* ******* GALLERY ******* */

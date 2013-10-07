@@ -335,11 +335,11 @@
     </li>
 
     <li data-tabset-id="development" data-tabset-title="Development">
-        <div class="gridlist gridlist-font-11" data-draganddrop="true" data-chassisTag="tr" data-direction="vertical" data-helperContainer="false">
+        <div class="gridlist gridlist-font-11 margin-none" id="gridlist-drag" data-draganddrop="true" data-chassisTag="tr" data-direction="vertical" data-limiter="true" data-helperContainer="false">
             <table>
                 <thead>
                     <tr>
-                        <th width="40"></th>
+                        <th width="24"></th>
                         <th width="20%" class="sort">
                             <div class="inner">
                                 <span>Name</span>
@@ -351,8 +351,10 @@
                     </tr>
                 </thead>
                 <tbody data-area="true">
-                    <tr data-draganddrop-draggable="true">
-                        <td width="40" data-draganddrop-drag="true"></td>
+                    <tr data-draganddrop-draggable="true" data-id="1">
+                        <td width="24" class="control">
+                            <div data-draganddrop-drag="true" class="icon draggable"></div>
+                        </td>
                         <td width="20%">Canada 1</td>
                         <td>Canada is a North American country consisting of ten provinces and three territories.</td>
                         <td width="50">
@@ -362,8 +364,10 @@
                             </div>
                         </td>
                     </tr>
-                    <tr data-draganddrop-draggable="true">
-                        <td width="40" data-draganddrop-drag="true"></td>
+                    <tr data-draganddrop-draggable="true" data-id="2">
+                        <td width="24" class="control">
+                            <div data-draganddrop-drag="true" class="icon draggable"></div>
+                        </td>
                         <td width="20%">Canada 2</td>
                         <td>Canada is a North American country consisting of ten provinces and three territories.</td>
                         <td width="50">
@@ -373,9 +377,37 @@
                             </div>
                         </td>
                     </tr>
-                    <tr data-draganddrop-draggable="true">
-                        <td width="40" data-draganddrop-drag="true"></td>
+                    <tr data-draganddrop-draggable="true" data-id="3">
+                        <td width="24" class="control">
+                            <div data-draganddrop-drag="true" class="icon draggable"></div>
+                        </td>
                         <td width="20%">Canada 3</td>
+                        <td>Canada is a North American country consisting of ten provinces and three territories.</td>
+                        <td width="50">
+                            <div class="form-icons-inside">
+                                <div class="icon edit" title="Edit"></div>
+                                <div class="icon remove" title="Remove"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr data-draganddrop-draggable="true" data-id="4">
+                        <td width="24" class="control">
+                            <div data-draganddrop-drag="true" class="icon draggable"></div>
+                        </td>
+                        <td width="20%">Canada 4</td>
+                        <td>Canada is a North American country consisting of ten provinces and three territories.</td>
+                        <td width="50">
+                            <div class="form-icons-inside">
+                                <div class="icon edit" title="Edit"></div>
+                                <div class="icon remove" title="Remove"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr data-draganddrop-draggable="true" data-id="5">
+                        <td width="24" class="control">
+                            <div data-draganddrop-drag="true" class="icon draggable"></div>
+                        </td>
+                        <td width="20%">Canada 5</td>
                         <td>Canada is a North American country consisting of ten provinces and three territories.</td>
                         <td width="50">
                             <div class="form-icons-inside">

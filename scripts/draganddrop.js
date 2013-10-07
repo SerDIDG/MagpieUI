@@ -11,9 +11,10 @@ Com['Draganddrop'] = function(o){
             'chassisTag' : 'div',
             'helperContainer' : document.body,
             'showOrdering' : false,
+            'limiter' : false,              // Limiter works only on draggable widget's area, and with vertical direction
             'direction' : 'both'            // both | vertical | horizontal
         }, o),
-        dataAttributes = ['chassisTag', 'direction', 'helperContainer', 'showOrdering'],
+        dataAttributes = ['chassisTag', 'direction', 'helperContainer', 'showOrdering', 'limiter'],
         API = {
             'onInit' : [],
             'onDrop' : []
@@ -59,7 +60,7 @@ Com['Draganddrop'] = function(o){
     var initArea = function(node, i){
         var area = {
             'node' : node,
-            'id' : node.id || i,
+            'id' : node.getAttribute('data-id') || i,
             'items' : [],
             'chassis' : []
         };
@@ -76,7 +77,7 @@ Com['Draganddrop'] = function(o){
     var initDraggable = function(node, area){
         var draggable = {
             'node' : node,
-            'id' : node.id,
+            'id' : node.getAttribute('data-id'),
             'drag' : cm.getByAttr('data-draganddrop-drag', 'true', node)[0],
             'anim' : new cm.Animation(node),
             'area' : area,
@@ -158,8 +159,13 @@ Com['Draganddrop'] = function(o){
         });
         // If current draggable not above other elements
         if(!tempCurrentAbove){
-            tempCurrentAbove = current['area']['items'][current['area']['items'].length - 1];
-            tempCurrentAbovePosition = 'bottom';
+            if(y < current['area']['y1']){
+                tempCurrentAbove = current['area']['items'][0];
+                tempCurrentAbovePosition = 'top';
+            }else{
+                tempCurrentAbove = current['area']['items'][current['area']['items'].length - 1];
+                tempCurrentAbovePosition = 'bottom';
+            }
         }
         if(tempCurrentAbove){
             tempCurrentAbove['chassis'][tempCurrentAbovePosition]['node'].style.height = [current['height'], 'px'].join('');
@@ -180,24 +186,37 @@ Com['Draganddrop'] = function(o){
         e = cm.getEvent(e);
         var x = e.clientX,
             y = e.clientY,
-            tempCurrentArea, tempCurrentAbove, tempCurrentAbovePosition;
+            posY, posX, tempCurrentArea, tempCurrentAbove, tempCurrentAbovePosition;
         if(cm.isTouch && e.touches){
             e.preventDefault();
             x = e.touches[0].clientX;
             y = e.touches[0].clientY;
         }
         // Set new position
+        posY = y - current['offsetY'];
+        posX = x - current['offsetX'];
+
         with(current['node'].style){
             switch(config['direction']){
                 case 'both':
-                    top = [y - current['offsetY'], 'px'].join('');
-                    left = [x - current['offsetX'], 'px'].join('');
+                    top = [posY, 'px'].join('');
+                    left = [posX, 'px'].join('');
                     break;
                 case 'vertical':
-                    top = [y - current['offsetY'], 'px'].join('');
+                    if(config['limiter']){
+                        if(posY < current['area']['y1']){
+                            top = [current['area']['y1'], 'px'].join('');
+                        }else if(posY > current['area']['y2']){
+                            top = [current['area']['y2'], 'px'].join('');
+                        }else{
+                            top = [y - current['offsetY'], 'px'].join('');
+                        }
+                    }else{
+                        top = [posY, 'px'].join('');
+                    }
                     break;
                 case 'horizontal':
-                    left = [x - current['offsetX'], 'px'].join('');
+                    left = [posX, 'px'].join('');
                     break;
             }
         }
@@ -224,8 +243,13 @@ Com['Draganddrop'] = function(o){
             if(!tempCurrentArea){
                 tempCurrentArea = current['area'];
             }
-            tempCurrentAbove = tempCurrentArea['items'][tempCurrentArea['items'].length - 1];
-            tempCurrentAbovePosition = 'bottom';
+            if(y < current['area']['y1']){
+                tempCurrentAbove = tempCurrentArea['items'][0];
+                tempCurrentAbovePosition = 'top';
+            }else{
+                tempCurrentAbove = tempCurrentArea['items'][tempCurrentArea['items'].length - 1];
+                tempCurrentAbovePosition = 'bottom';
+            }
         }
         // Reset chassis
         if(currentAbove && tempCurrentAbove && currentAbove['chassis'][currentAbovePosition] != tempCurrentAbove['chassis'][tempCurrentAbovePosition]){
@@ -396,8 +420,8 @@ Com['Draganddrop'] = function(o){
         // Reset draggable block styles
         with(current['node'].style){
             width = 'auto';
-            left = 'auto'
-            top = 'auto'
+            left = 'auto';
+            top = 'auto';
         }
         cm.removeClass(current['node'], 'cm-draganddrop-helper');
         // Set ordering
@@ -427,8 +451,36 @@ Com['Draganddrop'] = function(o){
 
     /* *** MAIN *** */
 
-    that.get = function(){
-        return areas;
+    that.getOrderingNodes = function(){
+        var results = [],
+            arr;
+        cm.forEach(areas, function(area){
+            arr = {
+                'area' : area['node'],
+                'items' : []
+            };
+            cm.forEach(area['items'], function(item){
+                arr['items'].push(item['node']);
+            });
+            results.push(arr);
+        });
+        return areas.length == 1 ? arr['items'] : results;
+    };
+
+    that.getOrderingIDs = function(){
+        var results = {},
+            arr;
+        cm.forEach(areas, function(area){
+            arr = {};
+            cm.forEach(area['items'], function(item, i){
+                if(!item['id']){
+                    throw new Error('Attribute "data-id" not specified on item node.');
+                }
+                arr[item['id']] = i;
+            });
+            results[area['id']] = arr;
+        });
+        return areas.length == 1 ? arr : results;
     };
 
     that.addEvent = function(event, handler){
