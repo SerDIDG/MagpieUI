@@ -12,6 +12,7 @@ Com['Select'] = function(o){
             'multiple' : false,
 			'menuMargin' : 3,
             'options' : [],
+			'selected' : 0,
 			'events' : {}					// Deprecated, use addEvent method
 		}, o),
 		API = {
@@ -40,11 +41,25 @@ Com['Select'] = function(o){
         // Set selected option
         if(config['multiple']){
             active = [];
-            cm.forEach(config['select'].options, function(item){
-                item.selected && set(options[item.value]);
-            });
+			if(config['selected'] && cm.isArray(config['selected'])){
+                cm.forEach(config['selected'], function(item){
+                    if(options[item]){
+                        set(options[item], true);
+                    }
+                });
+			}else{
+				cm.forEach(config['select'].options, function(item){
+					item.selected && set(options[item.value]);
+				});
+			}
         }else{
-            set(options[config['select'].value]);
+			if(config['selected'] && options[config['selected']]){
+				set(options[config['selected']]);
+			}else if(config['select'].value){
+				set(options[config['select'].value]);
+			}else{
+				set(optionsList[0]);
+			}
         }
 	};
 

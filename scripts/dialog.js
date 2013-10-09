@@ -23,6 +23,8 @@ Com['Dialog'] = function(o){
 		config = cm.merge({
 			'id' : null,
 			'width' : 700,
+            'minHeight' : 0,
+            'maxHeight' : 'auto',
 			'position' : 'fixed',
 			'container' : document.body,
 			'content' : cm.Node('div'),
@@ -32,6 +34,7 @@ Com['Dialog'] = function(o){
 			'openTime' : 200,
 			'autoOpen' : true,
 			'removeOnClose' : true,
+            'scroll' : true,
 			'onOpen' : function(dialog){},
 			'onClose' : function(dialog){},
 			'langs' : {
@@ -65,7 +68,7 @@ Com['Dialog'] = function(o){
 		if(config['closeButton']){
 			nodes['window'].appendChild(
 				nodes['close'] = cm.Node('div', {'class' : 'close'}, config['langs']['close'])
-			)
+			);
 			if(config['closeTitle']){
 				nodes['close'].title = config['langs']['closeTitle'];
 			}
@@ -75,7 +78,7 @@ Com['Dialog'] = function(o){
 		nodes['container'].style.position = config['position'];
 		nodes['window'].style.width = config['width'] + 'px';
 		// Init animation
-		anim['container'] = new cm.animation(nodes['container']);
+		anim['container'] = new cm.Animation(nodes['container']);
 		// Auto open
 		config['autoOpen'] && open();
 	};
@@ -94,13 +97,21 @@ Com['Dialog'] = function(o){
 	
 	var renderContent = function(node){
 		if(!nodes['descr']){
-			nodes['window'].appendChild(
-				nodes['descr'] = cm.Node('div', {'class' : 'descr'}, 
-					nodes['scroll'] = cm.Node('div', {'class' : 'scroll'},
-						nodes['inner'] = cm.Node('div', {'class' : 'inner'})
-					)
-				)
-			);
+            if(config['scroll']){
+                nodes['window'].appendChild(
+                    nodes['descr'] = cm.Node('div', {'class' : 'descr'},
+                        nodes['scroll'] = cm.Node('div', {'class' : 'scroll'},
+                            nodes['inner'] = cm.Node('div', {'class' : 'inner'})
+                        )
+                    )
+                );
+            }else{
+                nodes['window'].appendChild(
+                    nodes['descr'] = cm.Node('div', {'class' : 'descr'},
+                        nodes['scroll'] = nodes['inner'] = cm.Node('div', {'class' : 'inner'})
+                    )
+                );
+            }
 		}
 		if(node){
 			cm.clearNode(nodes['inner']).appendChild(node);
@@ -113,15 +124,16 @@ Com['Dialog'] = function(o){
 			winWidth = nodes['container'].offsetWidth - overlayPadding,
 			freeHeight = winHeight - (nodes['title'] && nodes['title'].offsetHeight || 0) - cm.getStyle(nodes['descr'], 'paddingTop', true) - cm.getStyle(nodes['descr'], 'paddingBottom', true),
 			insetHeight = nodes['inner'].offsetHeight,
-			setHeight = Math.min(insetHeight, freeHeight),
+            maxHeight = !config['maxHeight'] || config['maxHeight'] == 'auto' ? insetHeight : Math.min(config['maxHeight'], insetHeight),
+			setHeight = Math.min(Math.max(maxHeight, config['minHeight']), freeHeight),
 			windowHeight = nodes['window'].offsetHeight,
-			windowWidth = nodes['window'].offsetWidth;
+			windowWidth = nodes['window'].offsetWidth,
 			setWidth = Math.min(config['width'], winWidth);
 		// Set or remove scroll if needs
 		if(innerHeight != setHeight){
 			innerHeight = setHeight;
 			nodes['scroll'].style.height = [innerHeight, 'px'].join('');
-			if(insetHeight <= freeHeight){
+			if(maxHeight <= freeHeight && insetHeight <= maxHeight){
 				cm.removeClass(nodes['scroll'], 'isScroll');
 			}else{
 				cm.addClass(nodes['scroll'], 'isScroll');

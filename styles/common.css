@@ -1898,10 +1898,14 @@ select[multiple]{
 	position: relative;
 	z-index: 1;
 }
+.dialog > .window > .descr > .inner {
+    position: relative;
+}
 .dialog > .window > .descr > .scroll {
 	position: relative;
 }
 .dialog > .window > .descr > .scroll > .inner {
+    position: relative;
 	word-wrap: break-word;
 	padding: 14px;
 }
