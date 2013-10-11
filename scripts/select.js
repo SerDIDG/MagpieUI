@@ -10,11 +10,14 @@ Com['Select'] = function(o){
             'container' : cm.Node('div'),
 			'select' : cm.Node('select'),
             'multiple' : false,
+            'showTitleTag' : true,
+            'title' : false,
 			'menuMargin' : 3,
             'options' : [],
 			'selected' : 0,
 			'events' : {}					// Deprecated, use addEvent method
 		}, o),
+        dataAttributes = ['title', 'showTitleTag', 'multiple'],
 		API = {
 			'onSelect' : [],
 			'onChange' : [],
@@ -35,6 +38,8 @@ Com['Select'] = function(o){
 	var init = function(){
 		// Legacy: Convert events to API Events
 		convertEvents(config['events']);
+        // Merge data-attributes with config. Data-attributes have higher priority.
+        processDataAttributes();
 		// Render
 		render();
 		setMiscEvents();
@@ -63,6 +68,23 @@ Com['Select'] = function(o){
         }
 	};
 
+    var processDataAttributes = function(){
+        var value;
+        cm.forEach(dataAttributes, function(item){
+            value = config['select'].getAttribute(['data', item].join('-'));
+            if(item == 'title'){
+                value = config['select'].getAttribute(item) || value;
+            }else if(item == 'multiple'){
+                value = config['select'].multiple;
+            }else if(/^false|true$/.test(value)){
+                value = value? (value == 'true') : config[item];
+            }else{
+                value = value || config[item];
+            }
+            config[item] = value;
+        });
+    };
+
     var render = function(){
 		var tabindex;
 		/* *** RENDER STRUCTURE *** */
@@ -80,6 +102,10 @@ Com['Select'] = function(o){
 		if(config['select'].className){
 			cm.addClass(nodes['container'], config['select'].className);
 		}
+        // Title
+        if(config['showTitleTag'] && config['title']){
+            nodes['container'].title = config['title'];
+        }
 		// Tabindex
 		if(tabindex = config['select'].getAttribute('tabindex')){
 			nodes['container'].setAttribute('tabindex', tabindex);
@@ -484,10 +510,7 @@ Com['SelectCollector'] = function(node){
         // Render datepickers
         cm.forEach(selects, function(item){
             if(!/^norender|false$/.test(item.getAttribute('data-select'))){
-                select = new Com.Select({
-                    'select' : item,
-                    'multiple' : item.multiple
-                });
+                select = new Com.Select({'select' : item});
                 if(id = item.id){
                     Com.Elements.Selects[id] = select;
                 }

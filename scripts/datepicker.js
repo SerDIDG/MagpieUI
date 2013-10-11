@@ -17,6 +17,8 @@ Com['Datepicker'] = function(o){
 			'showPlaceholder' : true,
 			'showTodayButton' : true,
 			'showClearButton' : false,
+            'showTitleTag' : true,
+            'title' : false,
 			'menuMargin' : 3,
 			'events' : {},                                      // Deprecated, use addEvent method
 			'langs' : {
@@ -26,7 +28,7 @@ Com['Datepicker'] = function(o){
 				'todayButton' : 'Today'
 			}
 		}, o),
-        dataAttributes = ['placeholder', 'showPlaceholder', 'showTodayButton', 'showClearButton', 'startYear', 'endYear', 'format', 'saveFormat'],
+        dataAttributes = ['placeholder', 'showPlaceholder', 'showTodayButton', 'showClearButton', 'startYear', 'endYear', 'format', 'saveFormat', 'showTitleTag', 'title'],
         API = {
             'onSelect' : [],
             'onChange' : []
@@ -60,6 +62,8 @@ Com['Datepicker'] = function(o){
         cm.forEach(dataAttributes, function(item){
             value = config['input'].getAttribute(['data', item].join('-'));
             if(item == 'placeholder'){
+                value = config['input'].getAttribute(item) || value;
+            }else if(item == 'title'){
                 value = config['input'].getAttribute(item) || value;
             }else if(/^false|true$/.test(value)){
                 value = value? (value == 'true') : config[item];
@@ -110,6 +114,10 @@ Com['Datepicker'] = function(o){
 			);
 		}
         /* *** ATTRIBUTES *** */
+        // Title
+        if(config['showTitleTag'] && config['title']){
+            nodes['container'].title = config['title'];
+        }
         // ID
         if(config['input'].id){
             nodes['container'].id = config['input'].id;

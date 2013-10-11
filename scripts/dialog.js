@@ -26,6 +26,7 @@ Com['Dialog'] = function(o){
             'minHeight' : 0,
             'maxHeight' : 'auto',
 			'position' : 'fixed',
+            'margin' : 10,
 			'container' : document.body,
 			'content' : cm.Node('div'),
 			'title' : '',
@@ -42,7 +43,6 @@ Com['Dialog'] = function(o){
 				'close' : 'x'
 			}
 		},o),
-		overlayPadding = 10,
 		height,
 		width,
 		innerHeight,
@@ -120,8 +120,8 @@ Com['Dialog'] = function(o){
 	
 	var resizeHandler = function(){
 		// Set scroll height if dialog height > window height
-		var winHeight = nodes['container'].offsetHeight - overlayPadding,
-			winWidth = nodes['container'].offsetWidth - overlayPadding,
+		var winHeight = nodes['container'].offsetHeight - config['margin'],
+			winWidth = nodes['container'].offsetWidth - config['margin'],
 			freeHeight = winHeight - (nodes['title'] && nodes['title'].offsetHeight || 0) - cm.getStyle(nodes['descr'], 'paddingTop', true) - cm.getStyle(nodes['descr'], 'paddingBottom', true),
 			insetHeight = nodes['inner'].offsetHeight,
             maxHeight = !config['maxHeight'] || config['maxHeight'] == 'auto' ? insetHeight : Math.min(config['maxHeight'], insetHeight),

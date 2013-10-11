@@ -268,9 +268,10 @@ ul.indent {
 }
 .mark-new {
     display: inline-block;
+    margin: 0 0 0 6px;
     position: relative;
     top: -5px;
-    color: #f88f16;
+    color: #f8504b;
     font-size: 8px;
     text-transform: uppercase;
 }
@@ -359,6 +360,9 @@ ul.indent {
 .form {
 	line-height: 22px;
 	cursor: default;
+}
+.form.in-content {
+    margin: 0 0 24px;
 }
 .form .title {
 	font-size: 14px;
@@ -937,6 +941,23 @@ ul.has-icons-outside-three li {
 .form-icons-inside .text:first-child,
 .form-icons-outside .text:first-child {
 	margin: 0;
+}
+
+/* Form Filter */
+
+.form-filter {
+    width: 30%;
+}
+.form-filter.right {
+    float: right;
+}
+.form-filter.right dt {
+    width: auto;
+    margin: 0 20px 0 0;
+}
+.form-filter.right dd {
+    margin-left: 0;
+    overflow:  hidden;
 }
 
 /* Form Filter From-To */
@@ -1898,14 +1919,10 @@ select[multiple]{
 	position: relative;
 	z-index: 1;
 }
-.dialog > .window > .descr > .inner {
-    position: relative;
-}
 .dialog > .window > .descr > .scroll {
 	position: relative;
 }
 .dialog > .window > .descr > .scroll > .inner {
-    position: relative;
 	word-wrap: break-word;
 	padding: 14px;
 }
@@ -2723,6 +2740,26 @@ select[multiple]{
 	}
 	
 	/* Forms */
+
+    .form dl dt {
+        width: auto;
+        float: none;
+        font-weight: bold;
+    }
+    .form dl dd {
+        margin: 8px 0 0 0;
+    }
+
+    .form-filter.right,
+    .form-filter {
+        width: auto;
+        float: none;
+    }
+    .form-filter.right dt,
+    .form-filter dt {
+        float: none;
+        margin: 0;
+    }
 	
 	.form .cols .col,
 	.form .cols.two .col,
@@ -2833,15 +2870,7 @@ select[multiple]{
 	
 }
 @media only screen and (max-width : 480px) {
-	
-	.form dl dt {
-		width: auto;
-		float: none;
-		font-weight: bold;
-	}
-	.form dl dd {
-		margin: 8px 0 0 0;
-	}
+
 	dl.form-field dt {
 		margin: 0 0 8px;
 	}
