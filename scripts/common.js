@@ -1050,24 +1050,25 @@ cm.removeClass = function(o, str){
 	return o;
 };
 
-cm.replaceClass = function(o, oldClass, newClass){
-	if(!o){
+cm.replaceClass = function(node, oldClass, newClass){
+	if(!node){
 		return null;
 	}
-	return cm.addClass(cm.removeClass(o, oldClass), newClass);
+	return cm.addClass(cm.removeClass(node, oldClass), newClass);
 };
 
-cm.isClass = function(o, str){
-	if(!o){
+cm.hasClass = cm.isClass = function(node, className){
+	if(!node){
 		return false;
 	}
-	var classes = o && o.className? o.className.split(/\s+/) : [];
-	for(var i = 0, l = classes.length; i < l; i++){
-		if(classes[i] == str){
-			return true;
-		}
-	}
-	return false;
+	var classes = node.className? node.className.split(/\s+/) : [],
+        hasClass = false;
+    cm.forEach(classes, function(item){
+        if(item == className){
+            hasClass = true;
+        }
+    });
+	return hasClass;
 };
 
 cm.getPageSize = function(key){

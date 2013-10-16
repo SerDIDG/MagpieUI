@@ -55,14 +55,17 @@
         </ul>
 
         <h2>Initialize in HTML:</h2>
+        <code>&lt;select&gt;&lt;/select&gt;</code>
         <code>cm.onload(function(){
     Com.SelectCollector();
 });</code>
         <br>
         <b>Attributes:</b>
         <ul>
-            <li><b>multiple</b> - use multiple select;</li>
-            <li><b>data-select="true|false"</b> - if false select will not be rendered;</li>
+            <li><b>data-select="true|false"</b> - mark as select, if false - select will not render;</li>
+            <li><b>data-multiple</b> or <b>multiple</b> - use multiple select;</li>
+            <li><b>data-title</b> or <b>title</b> - title text;</li>
+            <li><b>data-showTitleTag="true|false"</b> - show title on hover;</li>
         </ul>
 
         <h2>Render options through Java-Script:</h2>
