@@ -119,7 +119,8 @@ if(!Date.now){
 
 /* ******* OBJECTS AND ARRAYS ******* */
 
-cm.isArray = Array.isArray || function(obj){ return (obj)? obj.constructor == Array : false; };
+cm.isArray = Array.isArray || function(a){ return (a)? a.constructor == Array : false; };
+cm.isObject = function(o){ return (o)? o.constructor == Object : false; };
 
 cm.forEach = function(o, handler){
 	if(!o || !handler){
@@ -135,6 +136,11 @@ cm.forEach = function(o, handler){
             break;
         case Array:
             o.forEach(handler);
+            break;
+        case Number:
+            for(var i = 0; i < o; i++){
+                handler(i);
+            }
             break;
         default:
             try{
