@@ -73,13 +73,13 @@
                 temp;
             cm.forEach(i, function(){
                 arr = {
-                    'name' : ['Title Name #', cm.rand2(0, 10000)].join(' '),
+                    'name' : ['Title Name', cm.rand2(0, 10000)].join(' # '),
                     'trs' : []
                 };
                 cm.forEach(trs,  function(){
                     arr['trs'].push({
-                        'name' : ['Name #', cm.rand2(0, 10000)].join(' '),
-                        'text' : ['Text #', cm.rand2(0, 10000)].join(' ')
+                        'name' : ['Name', cm.rand2(0, 10000)].join(' # '),
+                        'text' : ['Text', cm.rand2(0, 10000)].join(' # ')
                     });
                 });
                 data['nodes'].push(arr);

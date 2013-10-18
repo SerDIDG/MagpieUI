@@ -37,8 +37,10 @@ Com['Template'] = function(html, data, lang){
             currentKey;
         cm.forEach(data, function(value, key){
             currentKey = [dataKey, key].join('.');
-            nodes = cm.getByAttr('cmt-key', currentKey, node);
-            if(cm.isArray(value)){
+            if(cm.isObject(value)){
+                parseData(node, value, currentKey);
+            }else if(cm.isArray(value)){
+                nodes = cm.getByAttr('cmt-key', currentKey, node);
                 cm.forEach(nodes, function(item){
                     item.removeAttribute('cmt-key');
                     cm.forEach(value, function(foreachValue){
@@ -47,6 +49,7 @@ Com['Template'] = function(html, data, lang){
                     cm.remove(item);
                 });
             }else{
+                nodes = cm.getByAttr('cmt-key', currentKey, node);
                 cm.forEach(nodes, function(item){
                     item.removeAttribute('cmt-key');
                     item.appendChild(
