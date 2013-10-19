@@ -1,21 +1,37 @@
-Com['Template'] = function(html, data, lang){
+Com['Template'] = function(o){
     var that = this,
+        config = cm.merge({
+            'html' : '',
+            'data' : {},
+            'lang' : {},
+            'container' : cm.Node('div'),
+            'render' : true,
+            'parseNodesName' : false,
+        }, o),
         mainNode = cm.Node('div'),
-        fragment,
-        namedNodes;
+        namedNodes,
+        isRender = false;
 
     var init = function(){
         // Parse HTML string to DOM object
-        mainNode.insertAdjacentHTML('beforeend', html);
+        mainNode.insertAdjacentHTML('beforeend', config['html']);
         // Find lang strings
-        parseLang(mainNode, lang, 'lang');
+        parseLang(mainNode, config['lang'], 'lang');
         // Find data attributes
-        parseData(mainNode, data, 'data');
+        parseData(mainNode, config['data'], 'data');
+        // Find nodes
+        config['parseNodesName'] && parseNodes();
+        // Embed into DOM
+        config['render'] && render();
+    };
+
+    var render = function(){
+        config['container'].appendChild(mainNode);
+        isRender = true;
     };
 
     var parseLang = function(node, lang, langKey){
-        var nodes,
-            currentKey;
+        var nodes, currentKey;
         cm.forEach(lang, function(value, key){
             currentKey = [langKey, key].join('.');
             if(cm.isObject(value)){
@@ -33,8 +49,7 @@ Com['Template'] = function(html, data, lang){
     };
 
     var parseData = function(node, data, dataKey){
-        var nodes,
-            currentKey;
+        var nodes, currentKey;
         cm.forEach(data, function(value, key){
             currentKey = [dataKey, key].join('.');
             if(cm.isObject(value)){
@@ -60,35 +75,80 @@ Com['Template'] = function(html, data, lang){
         });
     };
 
+    var parseNodes = function(){
+        namedNodes = {};
+        /// Find nodes in cycles
+        parseNodesCycles(mainNode, namedNodes);
+        // Find other left nodes
+        parseNodesOther();
+    };
+
+    var parseNodesCycles = function(mainNode, namedNodes){
+        var nodes, cycles, cAttr, cName, attr, o;
+        cycles = mainNode.querySelectorAll('[cmt-node-foreach]');
+        cm.forEach(cycles, function(cycle){
+            if(cAttr = cycle.getAttribute('cmt-node-foreach')){
+                cycle.removeAttribute('cmt-node-foreach');
+                if(!namedNodes[cAttr]){
+                    namedNodes[cAttr] = [];
+                }
+                o = {};
+                namedNodes[cAttr].push(o);
+                // Find child nodes
+                nodes = cycle.querySelectorAll('[cmt-node]');
+                // Add cycle in array, if he have node name
+                if(cName = cycle.getAttribute('cmt-node')){
+                    cycle.removeAttribute('cmt-node');
+                    o[cName] = cycle;
+                }
+                // Add child nodes in array
+                cm.forEach(nodes, function(node){
+                    // Find cycles inside node
+                    parseNodesCycles(cycle, o);
+                    if(attr = node.getAttribute('cmt-node')){
+                        node.removeAttribute('cmt-node');
+                        o[attr] = node;
+                    }
+                });
+            }
+        });
+    };
+
+    var parseNodesOther = function(){
+        var nodes, attr, names, namesLength, o;
+        nodes = mainNode.querySelectorAll('[cmt-node]');
+        cm.forEach(nodes, function(node){
+            attr = node.getAttribute('cmt-node');
+            names = attr.split('.');
+            namesLength = names.length;
+            o = namedNodes;
+            cm.forEach(names, function(name, i){
+                if(i == namesLength - 1){
+                    o[name] = node;
+                }
+                if(!o[name]){
+                    o[name] = {};
+                }
+                o = o[name];
+            });
+            node.removeAttribute('cmt-node');
+        });
+    };
+
     /* Main **/
 
-    that.get = function(){
-        if(!fragment){
-            fragment = document.createDocumentFragment();
-            // Insert nodes into fragment
-            while(mainNode.childNodes.length){
-                fragment.appendChild(mainNode.childNodes[0]);
-            }
+    that.render = function(){
+        if(!isRender){
+            render();
         }
-        return fragment;
+        return that;
     };
 
     that.getNodes = function(){
-        var attr,
-            nodes;
         if(!namedNodes){
-            // Find nodes
-            namedNodes = {};
-            nodes = cm.getByAttr('cmt-node', 'true', mainNode);
-            cm.forEach(nodes, function(item){
-                if(attr = item.getAttribute('cmt-name')){
-                    namedNodes[attr] = item;
-                }
-                item.removeAttribute('cmt-name');
-                item.removeAttribute('cmt-node');
-            });
+            parseNodes();
         }
-        return namedNodes
+        return namedNodes;
     };
 
     init();

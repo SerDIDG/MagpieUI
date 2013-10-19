@@ -28,10 +28,13 @@
             // Tabset
             Com.TabsetCollector();
             // Template Tests
-            var str =   '<h1 cmt-key="data.name"></h1>' +
-                        '<div cmt-key="data.nodes">' +
-                            '<h2 cmt-key="data.nodes.name"></h2>' +
-                            '<div class="gridlist">' +
+            var str =   '<h1 cmt-node="title">' +
+                            '<span cmt-key="data.name" cmt-node="some.node"></span>' +
+                            '<span cmt-key="data.some.name"></span>' +
+                        '</h1>' +
+                        '<div cmt-key="data.nodes" cmt-node-foreach="blocks">' +
+                            '<h2 cmt-key="data.nodes.name" cmt-node="h2"></h2>' +
+                            '<div class="gridlist" cmt-node="grid">' +
                                 '<table>' +
                                     '<thead>' +
                                         '<tr>' +
@@ -47,9 +50,9 @@
                                         '</tr>' +
                                     '</thead>' +
                                     '<tbody>' +
-                                        '<tr cmt-key="data.nodes.trs">' +
-                                            '<td cmt-key="data.nodes.trs.name"></td>' +
-                                            '<td cmt-key="data.nodes.trs.text"></td>' +
+                                        '<tr cmt-key="data.nodes.trs" cmt-node-foreach="trs" cmt-node="container">' +
+                                            '<td cmt-key="data.nodes.trs.name" cmt-node="name"></td>' +
+                                            '<td cmt-key="data.nodes.trs.text" cmt-node="descr"></td>' +
                                             '<td><a class="gridlist-link" href="#">Edit</a></td>' +
                                             '<td><a class="gridlist-link" href="#">Remove</a></td>' +
                                         '</tr>' +
@@ -58,14 +61,17 @@
                             '</div>' +
                         '</div>';
             // Create test data object
-            var i = 100,
+            var i = 10,
                 trs = 10,
                 lang = {
                     'name' : 'Name:',
                     'description' : 'Description:'
                 },
                 data = {
-                    'name' : 'Template Test',
+                    'name' : 'Template Test: ',
+                    'some' : {
+                        'name' : cm.rand2(0, 10000)
+                    },
                     'nodes' : []
                 },
                 arr,
@@ -86,10 +92,13 @@
             });
             // Test
             date = new Date();
-            temp = new Com.Template(str, data, lang);
-            //cm.log(temp.get());
-            //cm.log(temp.getNodes());
-            document.body.appendChild(temp.get());
+            temp = new Com.Template({
+                'html' : str,
+                'data' : data,
+                'lang' : lang,
+                'container' : document.body
+            });
+            //cm.log(temp.render());
             cm.log(new Date() - date);
         });
     </script>

@@ -460,6 +460,11 @@ cm.onImageLoad = function(src, handler, delay){
 
 /* ******* NODES ******* */
 
+
+cm.isNode = function(node){
+    return node && 'nodeType' in node;
+};
+
 cm.getEl = function(str){
 	return document.getElementById(str);
 };
