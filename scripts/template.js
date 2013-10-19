@@ -6,7 +6,7 @@ Com['Template'] = function(o){
             'lang' : {},
             'container' : cm.Node('div'),
             'render' : true,
-            'parseNodesName' : false,
+            'parseNodesName' : false
         }, o),
         mainNode = cm.Node('div'),
         namedNodes,
@@ -135,7 +135,7 @@ Com['Template'] = function(o){
         });
     };
 
-    /* Main **/
+    /* Main */
 
     that.render = function(){
         if(!isRender){
