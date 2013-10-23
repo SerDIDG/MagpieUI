@@ -1993,6 +1993,36 @@ select[multiple]{
 	background: url(../images/components/ajax-loader.gif);
 }
 
+/* Tooltip */
+
+.cm-tooltip {
+    position: fixed;
+    display: none;
+    left: 0;
+    top: 0;
+    z-index: 1001;
+    opacity: 0;
+}
+.cm-tooltip > .inner {
+    background: #fff;
+    border: 1px solid #CDCDCD;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    padding: 4px;
+}
+.cm-tooltip > .inner > .title {
+    margin: 0 0 8px;
+}
+.cm-tooltip > .inner > .title:last-child {
+    margin: 0;
+}
+.cm-tooltip > .inner > .title h3 {
+    margin: 0;
+}
+.cm-tooltip > .inner > .scroll {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
 /* Datepicker */
 
 .datepicker-input {
@@ -2117,6 +2147,109 @@ select[multiple]{
 	margin: 4px 0 0 0;
 }
 
+/* Calendar */
+
+.cm-calendar {
+}
+.cm-calendar .selects {
+    height: 22px;
+}
+.cm-calendar .months {
+    width: 49% !important;
+    float: left;
+}
+.cm-calendar .years {
+    width: 49% !important;
+    margin-left: 2%;
+    float: left;
+}
+.cm-calendar table {
+    width: 100%;
+    border: none;
+    border-collapse: collapse;
+    table-layout: fixed;
+    margin-top: 8px;
+}
+.cm-calendar table th {
+    padding-bottom: 2px;
+    text-align: center;
+    font-size: 10px;
+    line-height: 14px;
+    color: #646464;
+}
+.cm-calendar table td {
+    height: 21px;
+    padding: 1px;
+}
+.cm-calendar table td div {
+    text-align: center;
+    line-height: 19px;
+    font-size: 11px;
+    text-shadow: 0 1px 0 #fff;
+}
+.cm-calendar table td.in div {
+    background-color: #FAFAFA;
+    border: 1px solid #E6E6E6;
+    border-radius: 2px;
+    cursor: pointer;
+    -webkit-transition: all 0.3s ease-in-out;
+            transition: all 0.3s ease-in-out;
+}
+.cm-calendar table td.weekend div {
+    background-color: #F0F0F0;
+}
+.cm-calendar table td div.active,
+.cm-calendar table td.selected div {
+    background-color: #d9eafb;
+    border-color: #6eb2f2;
+}
+.cm-calendar table td.today div {
+    border: 2px solid #6eb2f2;
+    line-height: 17px;
+}
+.cm-calendar table td.in div:hover {
+    background-color: #E6E6E6;
+    border-color: #D2D2D2;
+    -webkit-transition: all 0.1s ease-in-out;
+            transition: all 0.1s ease-in-out;
+}
+.cm-calendar table td.today div:hover {
+    border-color: #6eb2f2;
+}
+.cm-calendar table td div.active:hover,
+.cm-calendar table td.selected div:hover {
+    background-color: #d9eafb;
+    border-color: #6eb2f2;
+}
+
+/* Calendar of Events */
+
+.cm-calendar-events-tooltip {
+    width: 200px;
+}
+.cm-calendar-events-tooltip > .inner {
+    padding: 10px;
+}
+.cm-calendar-events-tooltip > .inner > .scroll {
+    max-height: 300px;
+}
+.cm-calendar-events-listing {
+}
+.cm-calendar-events-listing ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.cm-calendar-events-listing ul li {
+    margin: 4px 0 0 0;
+}
+.cm-calendar-events-listing ul li:first-child {
+    margin: 0;
+}
+.cm-calendar-events-listing h4 {
+    margin: 0;
+}
+
 /* Old Browser Alert */
 
 .oldbrowser-alert {
@@ -2226,6 +2359,12 @@ select[multiple]{
 	   -moz-transition: all 0.1s ease-in-out;
 	     -o-transition: all 0.1s ease-in-out;
 	        transition: all 0.1s ease-in-out;
+}
+.dialog .cm-editable:hover > .border {
+    top: -8px;
+    right: -8px;
+    bottom: -8px;
+    left: -8px;
 }
 .cm-editable > .text {
 	width: 100%;

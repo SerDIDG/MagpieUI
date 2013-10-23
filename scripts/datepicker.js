@@ -44,7 +44,7 @@ Com['Datepicker'] = function(o){
 		oldActive,
 		selected,
 		monthDays,
-		startDay;
+        startDay;
 
 	var init = function(){
         // Legacy: Convert events to API Events
@@ -143,13 +143,13 @@ Com['Datepicker'] = function(o){
 				nodes['todayButton'] = cm.Node('div', {'class' : 'button today'}, config['langs']['todayButton'])
 			);
 		}
-        /* *** APPENDCHILD NEW DATEPICKER *** */
-        if(cm.inDOM(config['input'])){
-            cm.insertBefore(nodes['container'], config['input']);
-        }else{
+        /* *** INSERT INTO DOM *** */
+        if(config['container']){
             config['container'].appendChild(nodes['container']);
+        }else if(config['input'].parentNode){
+            cm.insertBefore(nodes['container'], config['input']);
         }
-		cm.remove(config['input']);
+        cm.remove(config['input']);
 	};
 
 	var setMiscEvents = function(){

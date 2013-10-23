@@ -7,7 +7,7 @@ Com['GetSelect'] = function(id){
 Com['Select'] = function(o){
 	var that = this,
 		config = cm.merge({
-            'container' : cm.Node('div'),
+            'container' : false,
 			'select' : cm.Node('select'),
             'multiple' : false,
             'showTitleTag' : true,
@@ -131,11 +131,11 @@ Com['Select'] = function(o){
         cm.forEach(config['options'], function(item){
             renderOption(item.value, item.text);
         });
-		/* *** APPENDCHILD NEW SELECT *** */
-        if(cm.inDOM(config['select'])){
-		    cm.insertBefore(nodes['container'], config['select']);
-        }else{
+		/* *** INSERT INTO DOM *** */
+        if(config['container']){
             config['container'].appendChild(nodes['container']);
+        }else if(config['select'].parentNode){
+		    cm.insertBefore(nodes['container'], config['select']);
         }
 		cm.remove(config['select']);
 	};
@@ -429,13 +429,16 @@ Com['Select'] = function(o){
 	
 	that.set = function(value){
         // Select option and execute events
-        if(value){
+        if(typeof value != 'undefined'){
             if(cm.isArray(value)){
                 cm.forEach(value, function(item){
                     if(options[item]){
-                        set(options[item], true);
+                        set(options[item] );
                     }
                 });
+                /* *** EXECUTE API EVENTS *** */
+                executeEvent('onSelect');
+                executeEvent('onChange');
             }else if(options[value]){
                 set(options[value], true);
             }
