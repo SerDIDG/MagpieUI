@@ -18,7 +18,9 @@ Com['Calendar'] = function(o){
             'onDayClick' : [],
             'onMonthRender' : []
         },
-        nodes = {},
+        nodes = {
+            'selects' : {}
+        },
         selects = {},
         today = new Date(),
         current = {
@@ -82,6 +84,9 @@ Com['Calendar'] = function(o){
         selects['months'] = new Com.Select({'select' : nodes['months']})
             .set(current['month'])
             .addEvent('onChange', renderView);
+
+        nodes['selects']['years'] = selects['years'].getNodes();
+        nodes['selects']['months'] = selects['months'].getNodes();
     };
 
     var renderView = function(){
@@ -212,6 +217,17 @@ Com['Calendar'] = function(o){
 
     /* Main */
 
+    that.set = function(year, month){
+        if(
+            year >= config['startYear'] && year <= config['endYear'] &&
+            month >= 0 && month <= 11
+        ){
+            selects['years'].set(year);
+            selects['months'].set(month);
+        }
+        return that;
+    };
+
     that.renderMonth = function(){
         renderView();
         return that;
@@ -251,6 +267,10 @@ Com['Calendar'] = function(o){
             });
         }
         return that;
+    };
+
+    that.getNodes = function(key){
+        return nodes[key] || nodes;
     };
 
     init();

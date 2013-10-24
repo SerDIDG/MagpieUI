@@ -7,7 +7,7 @@ Com['GetTabset'] = function(id){
 Com['Tabset'] = function(o){
 	var that = this,
 		config = cm.merge({
-			'container' : cm.Node('div'),
+			'container' : false,
             'tabset' : false,
             'toggleOnHashChange' : true,
 			'renderOnInit' : true,
@@ -113,11 +113,11 @@ Com['Tabset'] = function(o){
         cm.forEach(config['tabs'], function(item){
             renderTab(item);
         });
-        /* *** APPENDCHILD NEW TABSET *** */
-        if(config['tabset'] && cm.inDOM(config['tabset'])){
-            cm.insertBefore(nodes['container'], config['tabset']);
-        }else{
+        /* *** INSERT INTO DOM *** */
+        if(config['container']){
             config['container'].appendChild(nodes['container']);
+        }else if(config['tabset'].parentNode){
+            cm.insertBefore(nodes['container'], config['tabset']);
         }
         cm.remove(config['tabset']);
 	};

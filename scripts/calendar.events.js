@@ -55,7 +55,8 @@ Com['CalendarEvents'] = function(o){
             'renderMonthOnInit' : false,
             'startYear' : config['startYear'],
             'endYear' : config['endYear'],
-            'startWeekDay' : config['startWeekDay']
+            'startWeekDay' : config['startWeekDay'],
+            'langs' : config['langs']
         });
         // Insert into DOM
         config['container'].appendChild(nodes['container']);

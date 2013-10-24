@@ -7,20 +7,21 @@ Com['GetDatepicker'] = function(id){
 Com['Datepicker'] = function(o){
 	var that = this,
 		config = cm.merge({
-            'container' : cm.Node('div'),
+            'container' : false,
 			'input' : cm.Node('input', {'type' : 'text'}),
             'placeholder' : '',
 			'format' : '%F %j, %Y',
 			'saveFormat' : '%Y-%m-%d',
 			'startYear' : 1900,
 			'endYear' : new Date().getFullYear(),
+            'startWeekDay' : 0,
 			'showPlaceholder' : true,
 			'showTodayButton' : true,
 			'showClearButton' : false,
             'showTitleTag' : true,
             'title' : false,
 			'menuMargin' : 3,
-			'events' : {},                                      // Deprecated, use addEvent method
+			'events' : {},
 			'langs' : {
 				'days' : ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
 				'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
@@ -28,23 +29,22 @@ Com['Datepicker'] = function(o){
 				'todayButton' : 'Today'
 			}
 		}, o),
-        dataAttributes = ['placeholder', 'showPlaceholder', 'showTodayButton', 'showClearButton', 'startYear', 'endYear', 'format', 'saveFormat', 'showTitleTag', 'title'],
+        dataAttributes = ['placeholder', 'showPlaceholder', 'showTodayButton', 'showClearButton', 'startYear', 'endYear', 'startWeekDay', 'format', 'saveFormat', 'showTitleTag', 'title'],
         API = {
             'onSelect' : [],
             'onChange' : []
         },
-		nodes = {},
-		selects = {},
+		nodes = {
+            'calendar' : {}
+        },
+        components = {},
 		isHide = true,
 		checkInt,
 		anim,
 
-		today = new Date(),
-		active,
-		oldActive,
-		selected,
-		monthDays,
-        startDay;
+        today = new Date(),
+		currentSelectedDate,
+		previousSelectedDate;
 
 	var init = function(){
         // Legacy: Convert events to API Events
@@ -83,36 +83,10 @@ Com['Datepicker'] = function(o){
 
 			nodes['menu'] = cm.Node('div', {'class' : 'datepicker-menu'},
 				nodes['menuInner'] = cm.Node('div', {'class' : 'inner'},
-					cm.Node('div', {'class' : 'selects'},
-						nodes['months'] = cm.Node('select', {'class' : 'select months'}),
-						nodes['years'] = cm.Node('select', {'class' : 'select years'})
-					),
-					cm.Node('table', {'cellcpacing' : '0', 'cellpadding' : '0'},
-						cm.Node('thead',
-							nodes['days'] = cm.Node('tr')
-						),
-						nodes['dates'] = cm.Node('tbody')
-					)
-				)
+                    nodes['calendarContainer'] = cm.Node('div', {'class' : 'cm-datepicker-calendar'})
+                )
 			)
 		);
-		// Render days
-		config['langs']['days'].forEach(function(item){
-			nodes['days'].appendChild(
-				cm.Node('th', item)
-			);
-		});
-		// Render selects options
-		config['langs']['months'].forEach(function(item, i){
-			nodes['months'].appendChild(
-				cm.Node('option', {'value' : i}, item)
-			);
-		});
-		for(var i = config['endYear']; i >= config['startYear']; i--){
-			nodes['years'].appendChild(
-				cm.Node('option', {'value' : i}, i)
-			);
-		}
         /* *** ATTRIBUTES *** */
         // Title
         if(config['showTitleTag'] && config['title']){
@@ -161,8 +135,6 @@ Com['Datepicker'] = function(o){
 				set(0);
                 /* *** EXECUTE API EVENTS *** */
                 executeEvent('onChange');
-			}else{
-				return false;
 			}
 		};
         // Clear Butoon
@@ -181,13 +153,6 @@ Com['Datepicker'] = function(o){
                 hideMenu(false);
             });
         }
-		// Init custom selects
-		selects['months'] = new Com.Select({'select' : nodes['months']})
-			.set(today.getMonth())
-			.addEvent('onChange', renderView);
-		selects['years'] = new Com.Select({'select' : nodes['years']})
-			.set(today.getFullYear())
-			.addEvent('onChange', renderView);
 		// Show / hide on click
 		nodes['icon'].onclick = function(){
 			if(isHide){
@@ -196,87 +161,38 @@ Com['Datepicker'] = function(o){
 				hideMenu(false);
 			}
 		};
+        // Render calendar
+        components['calendar'] = new Com.Calendar({
+            'container' : nodes['calendarContainer'],
+            'startYear' : config['startYear'],
+            'endYear' : config['endYear'],
+            'startWeekDay' : config['startWeekDay'],
+            'langs' : config['langs'],
+            'renderMonthOnInit' : false
+        }).addEvent('onDayClick', function(calendar, params){
+            set(params['date'], true);
+            hideMenu(false);
+        }).addEvent('onMonthRender', markSelectedDay);
+        nodes['calendar'] = components['calendar'].getNodes();
 		// Init animation
 		anim = new cm.Animation(nodes['menu']);
 	};
 
-	var renderView = function(){
-		var year = selects['years'].get(),
-			month = selects['months'].get();
-		// Get current date
-		today = new Date();
-		// Set selected
-		selected = new Date(year, month, 1);
-		// Clear container year nad month
-		cm.clearNode(nodes['dates']);
-		// Get month's day count and start day
-		monthDays = 32 - new Date(year, month, 32).getDate();
-		startDay = selected.getDay();
-		// Render row
-		var rows = Math.ceil((monthDays + startDay) / 7);
-		for(var i = 0; i < rows; i++){
-			renderRow(i);
-		}
-	};
-
-	var renderRow = function(i){
-		var start = (i * 7) + 1 - startDay,
-			tr = nodes['dates'].appendChild(cm.Node('tr'));
-		for(var d = 0; d < 7; d++){
-			renderCell(tr, d, start);
-		}
-	};
-
-	var renderCell = function(tr, d, start){
-		var day = start + d,
-			td,
-			div;
-		tr.appendChild(
-			td = cm.Node('td')
-		);
-		// Render day
-		if(day > 0 && day <= monthDays){
-			td.appendChild(
-				div = cm.Node('div', day)
-			);
-			if(active && active.getFullYear() == selected.getFullYear() && active.getMonth() == selected.getMonth() && day == active.getDate()){
-				cm.addClass(td, 'selected');
-			}
-			if(today.getFullYear() == selected.getFullYear() && today.getMonth() == selected.getMonth() && day == today.getDate()){
-				cm.addClass(td, 'today');
-			}
-			if(/0|6/.test(d)){
-				cm.addClass(td, 'weekend');
-			}
-			// Onclick set selected date
-			div.onclick = function(){
-				selected.setDate(day);
-				set(selected, true);
-				hideMenu(false);
-			};
-		}
-	};
-
 	var set = function(str, execute){
-		oldActive = active;
+        previousSelectedDate = currentSelectedDate;
 		if(!str || new RegExp(cm.dateFormat(false, config['saveFormat'], config['langs'])).test(str)){
-			active = null;
-			selected = today;
+            currentSelectedDate = null;
 			nodes['input'].value = '';
 			nodes['hidden'].value = cm.dateFormat(false, config['saveFormat'], config['langs']);
-			selects['years'].set(selected.getFullYear());
-			selects['months'].set(selected.getMonth());
 		}else{
 			if(typeof str == 'object'){
-				active = str;
+                currentSelectedDate = str;
 			}else{
 				str = str.split(' ')[0].split('-');
-				active = new Date(str[0], (parseInt(str[1], 10) - 1), str[2]);
+                currentSelectedDate = new Date(str[0], (parseInt(str[1], 10) - 1), str[2]);
 			}
-			nodes['input'].value = cm.dateFormat(active, config['format'], config['langs']);
-			nodes['hidden'].value = cm.dateFormat(active, config['saveFormat'], config['langs']);
-			selects['years'].set(active.getFullYear());
-			selects['months'].set(active.getMonth());
+			nodes['input'].value = cm.dateFormat(currentSelectedDate, config['format'], config['langs']);
+			nodes['hidden'].value = cm.dateFormat(currentSelectedDate, config['saveFormat'], config['langs']);
 		}
         if(execute){
             /* *** EXECUTE API EVENTS *** */
@@ -285,16 +201,26 @@ Com['Datepicker'] = function(o){
         }
 	};
 
+    var markSelectedDay = function(calendar, params){
+        if(
+            currentSelectedDate &&
+            params['year'] == currentSelectedDate.getFullYear() &&
+            params['month'] == currentSelectedDate.getMonth()
+        ){
+            cm.addClass(params['days'][currentSelectedDate.getDate()]['node'], 'selected');
+        }
+    };
+
     var executeEvent = function(event){
         var handler = function(){
             API[event].forEach(function(item){
-                item(that, active);
+                item(that, currentSelectedDate);
             });
         };
 
         switch(event){
             case 'onChange':
-                if(!oldActive || (!active && oldActive) || (active.toString() !== oldActive.toString())){
+                if(!previousSelectedDate || (!currentSelectedDate && previousSelectedDate) || (currentSelectedDate.toString() !== previousSelectedDate.toString())){
                     handler();
                 }
                 break;
@@ -317,9 +243,13 @@ Com['Datepicker'] = function(o){
 		if(nodes && !isHide){
 			e = cm.getEvent(e);
 			var target = cm.getEventTarget(e);
-
-			if(!cm.isParent(nodes['menu'], target) &&!cm.isParent(nodes['container'], target) && !cm.isParent(selects['months'].getNodes('menu'), target) && !cm.isParent(selects['years'].getNodes('menu'), target)){
-				hideMenu(false);
+			if(
+                !cm.isParent(nodes['menu'], target) &&
+                !cm.isParent(nodes['container'], target) &&
+                !cm.isParent(nodes['calendar']['selects']['months']['menu'], target) &&
+                !cm.isParent(nodes['calendar']['selects']['years']['menu'], target)
+            ){
+                hideMenu(false);
 			}
 		}
 	};
@@ -329,26 +259,36 @@ Com['Datepicker'] = function(o){
 	};
 
 	var getPosition = (function(){
-		var top, height, winHeight, containerHeight, position;
+		var top, left, height, winHeight, containerHeight, position;
 
 		return function(){
 			winHeight = cm.getPageSize('winHeight');
 			height = nodes['menu'].offsetHeight;
 			top = getTop();
+            left = cm.getRealX(nodes['container']);
 			containerHeight = nodes['container'].offsetHeight;
 			position = (top + height > winHeight? (top - height - containerHeight - config['menuMargin']) : (top + config['menuMargin']));
 
-			if(position != nodes['menu'].offsetTop){
+			if(position != nodes['menu'].offsetTop || left != nodes['menu'].offsetLeft){
 				nodes['menu'].style.top =  [position, 'px'].join('');
-				nodes['menu'].style.left = [cm.getX(nodes['container']), 'px'].join('');
+				nodes['menu'].style.left = [left, 'px'].join('');
 			}
 		};
 	})();
 
 	var showMenu = function(){
 		isHide = false;
-		// Render dates
-		renderView();
+        // Render calendar month
+        if(!currentSelectedDate){
+            today = new Date();
+            components['calendar']
+                .set(today.getFullYear(), today.getMonth())
+                .renderMonth();
+        }else{
+            components['calendar']
+                .set(currentSelectedDate.getFullYear(), currentSelectedDate.getMonth())
+                .renderMonth();
+        }
 		// Append child menu in body and set position
 		document.body.appendChild(nodes['menu']);
 		getPosition();
@@ -383,7 +323,7 @@ Com['Datepicker'] = function(o){
 	/* Main */
 
 	that.get = function(format){
-		return cm.dateFormat(active, (format || config['saveFormat']), config['langs']);
+		return cm.dateFormat(currentSelectedDate, (format || config['saveFormat']), config['langs']);
 	};
 
 	that.set = function(str){
@@ -392,7 +332,7 @@ Com['Datepicker'] = function(o){
 	};
 
 	that.getDate = function(){
-		return active || '';
+		return currentSelectedDate || '';
 	};
 
     that.addEvent = function(event, handler){

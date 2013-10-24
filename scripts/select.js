@@ -357,18 +357,19 @@ Com['Select'] = function(o){
 	};
 	
 	var getPosition = (function(){
-		var top, height, winHeight, containerHeight, position;
+		var top, left, height, winHeight, containerHeight, position;
 		
 		return function(){
 			winHeight = cm.getPageSize('winHeight');
 			height = nodes['menu'].offsetHeight;
 			top = getTop();
+            left = cm.getRealX(nodes['container']);
 			containerHeight = nodes['container'].offsetHeight;
 			position = (top + height > winHeight? (top - height - containerHeight - config['menuMargin']) : (top + config['menuMargin']));
 			
-			if(position != nodes['menu'].offsetTop){
+			if(position != nodes['menu'].offsetTop || left != nodes['menu'].offsetLeft){
 				nodes['menu'].style.top =  [position, 'px'].join('');
-				nodes['menu'].style.left = [cm.getX(nodes['container']), 'px'].join('');
+				nodes['menu'].style.left = [left, 'px'].join('');
 				nodes['menu'].style.width = [nodes['container'].offsetWidth, 'px'].join('');
 			}
 		};
