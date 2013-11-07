@@ -191,7 +191,7 @@ cm.merge = function(o1, o2){
 	});
 	return o1;
 };
-
+/*
 cm.clone = function(obj, type){
     var o;
 	if(!obj){
@@ -210,7 +210,6 @@ cm.clone = function(obj, type){
 	}else if(obj.nodeType){
 		o = obj;
 	}else{
-		o = {};
 		cm.forEach(obj, function(item, key){
 			if(typeof item == 'object'){
 				o[key] = cm.clone(item);
@@ -220,6 +219,53 @@ cm.clone = function(obj, type){
 		});
 	}
 	return o;
+};
+*/
+cm.clone = function(o, type){
+    var newO;
+    if(!o){
+        return o;
+    }
+    // Support method of old clone function
+    if(type && type == 'array'){
+        newO = [];
+        cm.forEach(o, function(item){
+            newO.push(cm.clone(item));
+        });
+        return newO;
+    }
+    // GO
+    switch(o.constructor){
+        case Function:
+        case String:
+        case Number:
+        case RegExp:
+            newO = o;
+            break;
+        case Array:
+            newO = [];
+            cm.forEach(o, function(item){
+                newO.push(cm.clone(item));
+            });
+            break;
+        case Object:
+            newO = {};
+            cm.forEach(o, function(item, key){
+                newO[key] = cm.clone(item);
+            });
+            break;
+        default:
+            if(o.nodeType){
+                newO = o;
+            }else{
+                newO = [];
+                cm.forEach(o, function(item){
+                    newO.push(item);
+                });
+            }
+            break;
+    }
+    return newO;
 };
 
 cm.getLength = function(o){
