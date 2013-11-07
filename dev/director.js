@@ -131,7 +131,7 @@ var Director = function(o){
 	};
 	
 	var setNav = function(i){
-		cm.foreach(nodes['nav']['items'], function(key, item){
+		cm.forEach(nodes['nav']['items'], function(item, key){
 			if(key <= i){
 				cm.addClass(item['node'], 'active');
 			}else{

@@ -195,7 +195,7 @@ Com['Calendar'] = function(o){
 
     var executeEvent = function(event, params){
         var handler = function(){
-            API[event].forEach(function(item){
+            cm.forEach(API[event], function(item){
                 item(that, params || {});
             });
         };
@@ -208,7 +208,7 @@ Com['Calendar'] = function(o){
     };
 
     var convertEvents = function(o){
-        cm.foreach(o, function(key, item){
+        cm.forEach(o, function(item, key){
             if(API[key] && typeof item == 'function'){
                 API[key].push(item);
             }

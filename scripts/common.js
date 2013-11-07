@@ -160,15 +160,6 @@ cm.forEach = function(o, handler){
 	return o;
 };
 
-// Deprecated
-cm.foreach = function(o, handler){
-	for(var key in o){
-		if(o.hasOwnProperty(key)){
-			handler(key, o[key]);
-		}
-	}
-};
-
 cm.merge = function(o1, o2){
 	var o1;
 	if(!o1 || typeof o1 == 'string' || typeof o1 == 'number'){
@@ -191,36 +182,7 @@ cm.merge = function(o1, o2){
 	});
 	return o1;
 };
-/*
-cm.clone = function(obj, type){
-    var o;
-	if(!obj){
-		o = obj;
-	}else if(cm.isArray(obj) || (type && type == 'array')){
-		o = [];
-		obj.forEach(function(item){
-			if(typeof item == 'object'){
-				o.push(cm.clone(item));
-			}else{
-				o.push(item);
-			}
-		});
-	}else if(cm.isRegExp(obj)){
-		o = obj;
-	}else if(obj.nodeType){
-		o = obj;
-	}else{
-		cm.forEach(obj, function(item, key){
-			if(typeof item == 'object'){
-				o[key] = cm.clone(item);
-			}else{
-				o[key] = item;
-			}
-		});
-	}
-	return o;
-};
-*/
+
 cm.clone = function(o, type){
     var newO;
     if(!o){
