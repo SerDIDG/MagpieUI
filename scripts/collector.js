@@ -3,10 +3,9 @@ Com['Collector'] = function(o){
         config = cm.merge({
             'attribute' : 'data-element'
         }, o),
-        parentNode,
         stuck = {};
 
-    var constructItem = function(item, name){
+    var constructItem = function(item, name, parentNode){
         var nodes;
         // Search for nodes in specified node or document's body
         nodes = cm.clone(cm.getByAttr(config['attribute'], name, parentNode));
@@ -24,7 +23,7 @@ Com['Collector'] = function(o){
         item['nodes'] = item['nodes'].concat(nodes);
     };
 
-    var destructItem = function(item, name){
+    var destructItem = function(item, name, parentNode){
         var nodes, inArray;
         if(parentNode){
             // Search for nodes in specified node
@@ -96,21 +95,25 @@ Com['Collector'] = function(o){
     };
 
     that.construct = function(node, name){
-        parentNode = node || document.body;
+        node = node || document.body;
         if(name && stuck[name]){
-            constructItem(stuck[name], name);
+            constructItem(stuck[name], name, node);
         }else{
-            cm.forEach(stuck, constructItem);
+            cm.forEach(stuck, function(item, name){
+                constructItem(item, name, node);
+            });
         }
         return that;
     };
 
     that.destruct = function(node, name){
-        parentNode = node || null;
+        node = node || null;
         if(name && stuck[name]){
-            destructItem(stuck[name], name);
+            destructItem(stuck[name], name, node);
         }else{
-            cm.forEach(stuck, destructItem);
+            cm.forEach(stuck, function(item, name){
+                destructItem(item, name, node);
+            });
         }
         return that;
     };

@@ -60,7 +60,9 @@ Com['Tabset'] = function(o){
                 hashHandler();
             }
         }else{
-            set(id && tabs[id]? id : ids[0])
+            if(id = id && tabs[id]? id : ids[0]){
+                set(id);
+            }
         }
     };
 
@@ -148,7 +150,7 @@ Com['Tabset'] = function(o){
         if(config['toggleOnHashChange']){
             item['a'].setAttribute('href', [window.location.href.split('#')[0], item['id']].join('#'));
         }else{
-            item['a'].setAttribute('href', 'javascript:void(0);');
+            //item['a'].setAttribute('href', 'javascript:void(0);');
             item['a'].onclick = function(){
                  set(item['id']);
             };
@@ -213,7 +215,9 @@ Com['Tabset'] = function(o){
 	
 	var hashHandler = function(){
 		var id = window.location.hash.replace('#', '');
-		set(id && tabs[id]? id : ids[0]);
+        if(id = id && tabs[id]? id : ids[0]){
+            set(id);
+        }
 	};
 	
 	/* Main */
@@ -225,7 +229,7 @@ Com['Tabset'] = function(o){
 	
 	that.set = function(id){
         if(id && tabs[id]){
-            set(tabs[id]);
+            set(id);
         }
 		return that;
 	};

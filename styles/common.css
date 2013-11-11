@@ -1319,6 +1319,9 @@ select[multiple]{
 
 /* Grid List */
 
+.gridlist-counter {
+    margin: 0 0 12px
+}
 .gridlist {
 	margin: 0 0 24px;
 	overflow: hidden;
@@ -1342,7 +1345,6 @@ select[multiple]{
     white-space: nowrap;
     word-wrap: normal;
     text-decoration: none;
-    cursor: pointer;
 }
 .gridlist thead {
     background: -webkit-linear-gradient(top, #ffffff, #f0f0f0);

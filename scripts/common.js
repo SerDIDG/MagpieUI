@@ -554,12 +554,14 @@ cm.node = cm.Node = function(){
 	}else{
 		i = 1;
 	}
-	for(var ln = arguments.length; i < ln; i++)	{
-		if(typeof arguments[i] == 'string' || typeof arguments[i] == 'number')
-			el.appendChild(document.createTextNode(arguments[i]));
-		else{
-			el.appendChild(arguments[i]);
-		}
+	for(var ln = args.length; i < ln; i++){
+        if(arguments[i]){
+            if(typeof arguments[i] == 'string' || typeof args[i] == 'number')
+                el.appendChild(document.createTextNode(args[i]));
+            else{
+                el.appendChild(args[i]);
+            }
+        }
 	}
 	return el;
 };
