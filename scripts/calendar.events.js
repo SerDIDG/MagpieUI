@@ -58,6 +58,10 @@ Com['CalendarEvents'] = function(o){
             'startWeekDay' : config['startWeekDay'],
             'langs' : config['langs']
         });
+        // Render tooltip
+        components['tooltip'] = new Com.Tooltip({
+            'className' : 'cm-calendar-events-tooltip'
+        });
         // Insert into DOM
         config['container'].appendChild(nodes['container']);
     };
@@ -83,54 +87,12 @@ Com['CalendarEvents'] = function(o){
 
     var renderTooltip = function(calendar, params){
         var data,
-            checkInt,
-            anim,
             myNodes = {};
-
-        var getPosition = function(){
-            var top = cm.getRealY(params['node']),
-                left = cm.getRealX(params['node']),
-                height = myNodes['container'].offsetHeight,
-                width = myNodes['container'].offsetWidth,
-                pageSize = cm.getPageSize(),
-                positionTop = (top + height > pageSize['winHeight']? (top - height + params['node'].offsetHeight) : top),
-                positionLeft = (left + width > pageSize['winWidth']? (left - width + params['node'].offsetWidth) : left);
-
-            if(positionTop != myNodes['container'].offsetTop || positionLeft != myNodes['container'].offsetLeft){
-                myNodes['container'].style.top =  [positionTop, 'px'].join('');
-                myNodes['container'].style.left = [positionLeft, 'px'].join('');
-            }
-        };
-
-        var bodyEvent = function(e){
-            e = cm.getEvent(e);
-            var target = cm.getEventTarget(e);
-            if(!cm.isParent(myNodes['container'], target) && !cm.isParent(params['node'], target)){
-                // Remove event - Check position
-                checkInt && clearInterval(checkInt);
-                // Remove mouseout event
-                cm.removeEvent(document, 'mouseover', bodyEvent);
-                // Animate
-                anim.go({'style' : {'opacity' : 0}, 'duration' : 100, 'onStop' : function(){
-                    myNodes['container'].style.display = 'none';
-                    cm.remove(myNodes['container']);
-                }});
-            }
-        };
 
         if((data = config['data'][params['year']]) && (data = data[(params['month'] + 1)]) && (data = data[params['day']])){
             // Structure
-            myNodes['container'] = cm.Node('div', {'class' : 'cm-tooltip cm-calendar-events-tooltip'},
-                cm.Node('div', {'class' : 'inner'},
-                    cm.Node('div', {'class' : 'title'},
-                        cm.Node('h3', cm.dateFormat(params['date'], config['format'], config['langs']))
-                    ),
-                    cm.Node('div', {'class' : 'scroll'},
-                        cm.Node('div', {'class' : 'cm-calendar-events-listing'},
-                            myNodes['list'] = cm.Node('ul')
-                        )
-                    )
-                )
+            myNodes['content'] = cm.Node('div', {'class' : 'cm-calendar-events-listing'},
+                myNodes['list'] = cm.Node('ul')
             );
             // Foreach events
             cm.forEach(data, function(value){
@@ -142,23 +104,28 @@ Com['CalendarEvents'] = function(o){
                     )
                 );
             });
-            // Init animation
-            anim = new cm.Animation(myNodes['container']);
-            // Append child tooltip into body and set position
-            document.body.appendChild(myNodes['container']);
-            getPosition();
             // Show tooltip
-            myNodes['container'].style.display = 'block';
-            // Check position
-            checkInt = setInterval(getPosition, 5);
-            // Animate
-            anim.go({'style' : {'opacity' : 1}, 'duration' : 100});
-            // Add mouseout event
-            cm.addEvent(document, 'mouseover', bodyEvent);
+            components['tooltip']
+                .setTarget(params['node'])
+                .setTitle(cm.dateFormat(params['date'], config['format'], config['langs']))
+                .setContent(myNodes['content'])
+                .show();
         }
     };
 
     /* Main */
+
+    that.addData = function(data){
+        config['data'] = cm.merge(config['data'], data);
+        components['calendar'].renderMonth();
+        return that;
+    };
+
+    that.replaceData = function(data){
+        config['data'] = data;
+        components['calendar'].renderMonth();
+        return that;
+    };
 
     init();
 };

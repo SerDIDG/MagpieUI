@@ -27,6 +27,7 @@ Com['Dialog'] = function(o){
             'maxHeight' : 'auto',
 			'position' : 'fixed',
             'margin' : 10,
+            'className' : '',
 			'container' : document.body,
 			'content' : cm.Node('div'),
 			'title' : '',
@@ -36,6 +37,7 @@ Com['Dialog'] = function(o){
 			'autoOpen' : true,
 			'removeOnClose' : true,
             'scroll' : true,
+            'onOpenStart' : function(dialog){},
 			'onOpen' : function(dialog){},
 			'onClose' : function(dialog){},
 			'langs' : {
@@ -57,16 +59,20 @@ Com['Dialog'] = function(o){
 		config['container'].appendChild(
 			nodes['container'] = cm.Node('div', {'class' : 'dialog'},
 				nodes['bg'] = cm.Node('div', {'class' : 'bg'}),
-				nodes['window'] = cm.Node('div', {'class' : 'window'})
+                nodes['window'] = cm.Node('div', {'class' : 'window'},
+                    nodes['windowInner'] = cm.Node('div', {'class' : 'inner'})
+                )
 			)
 		);
+        // Add CSS class
+        !cm.isEmpty(config['className']) && cm.addClass(nodes['container'], config['className']);
 		// Set title
 		renderTitle(config['title']);
 		// Embed content
 		renderContent(config['content']);
 		// Render close button
 		if(config['closeButton']){
-			nodes['window'].appendChild(
+            nodes['windowInner'].appendChild(
 				nodes['close'] = cm.Node('div', {'class' : 'close'}, config['langs']['close'])
 			);
 			if(config['closeTitle']){
@@ -91,14 +97,14 @@ Com['Dialog'] = function(o){
 			nodes['title'] = cm.Node('div', {'class' : 'title'}, 
 				cm.Node('h1', title)
 			);
-			cm.insertFirst(nodes['title'], nodes['window']);
+			cm.insertFirst(nodes['title'], nodes['windowInner']);
 		}
 	};
 	
 	var renderContent = function(node){
 		if(!nodes['descr']){
             if(config['scroll']){
-                nodes['window'].appendChild(
+                nodes['windowInner'].appendChild(
                     nodes['descr'] = cm.Node('div', {'class' : 'descr'},
                         nodes['scroll'] = cm.Node('div', {'class' : 'scroll'},
                             nodes['inner'] = cm.Node('div', {'class' : 'inner'})
@@ -106,7 +112,7 @@ Com['Dialog'] = function(o){
                     )
                 );
             }else{
-                nodes['window'].appendChild(
+                nodes['windowInner'].appendChild(
                     nodes['descr'] = cm.Node('div', {'class' : 'descr'},
                         nodes['scroll'] = nodes['inner'] = cm.Node('div', {'class' : 'inner'})
                     )
@@ -122,7 +128,9 @@ Com['Dialog'] = function(o){
 		// Set scroll height if dialog height > window height
 		var winHeight = nodes['container'].offsetHeight - config['margin'],
 			winWidth = nodes['container'].offsetWidth - config['margin'],
-			freeHeight = winHeight - (nodes['title'] && nodes['title'].offsetHeight || 0) - cm.getStyle(nodes['descr'], 'paddingTop', true) - cm.getStyle(nodes['descr'], 'paddingBottom', true),
+            freeHeight = winHeight - (nodes['title'] && nodes['title'].offsetHeight || 0) -
+                cm.getStyle(nodes['descr'], 'paddingTop', true) -
+                cm.getStyle(nodes['descr'], 'paddingBottom', true),
 			insetHeight = nodes['inner'].offsetHeight,
             maxHeight = !config['maxHeight'] || config['maxHeight'] == 'auto' ? insetHeight : Math.min(config['maxHeight'], insetHeight),
 			setHeight = Math.min(Math.max(maxHeight, config['minHeight']), freeHeight),
@@ -158,7 +166,7 @@ Com['Dialog'] = function(o){
 	
 	/* Main */
 	
-	var set = that.set = function(title, content){
+	that.set = function(title, content){
 		renderTitle(title);
 		renderContent(content);
 		
@@ -177,7 +185,8 @@ Com['Dialog'] = function(o){
 			// Open Event
 			config['onOpen'](that);
 		}});
-		
+        // Open Event
+        config['onOpenStart'](that);
 		return that;
 	};
 	

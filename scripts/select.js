@@ -62,8 +62,8 @@ Com['Select'] = function(o){
 				set(options[config['selected']]);
 			}else if(config['select'].value){
 				set(options[config['select'].value]);
-			}else{
-				set(optionsList[0]);
+			}else if(optionsList.length){
+				set();
 			}
         }
 	};
@@ -196,16 +196,6 @@ Com['Select'] = function(o){
 	
 	var removeOption = function(option){
         var value = option['value'] || option['text'];
-		// Set new active option, if current active is nominated for remove
-        if(config['multiple']){
-            active = active.filter(function(item){
-                return value != item;
-            });
-        }else{
-            if(value === active){
-                set(optionsList[0], true);
-            }
-        }
 		// Remove option from list and array
 		cm.remove(option['node']);
         cm.remove(option['option']);
@@ -214,27 +204,44 @@ Com['Select'] = function(o){
 		});
 		optionsLength = optionsList.length;
 		delete options[option['value']];
+        // Set new active option, if current active is nominated for remove
+        if(config['multiple']){
+            active = active.filter(function(item){
+                return value != item;
+            });
+        }else{
+            if(value === active){
+                if(optionsList.length){
+                    set(optionsList[0], true);
+                }else{
+                    active = null;
+                    cm.clearNode(nodes['text']);
+                }
+            }
+        }
 	};
 	
 	var setMiscEvents = function(){
 		// Switch items on arrows press
 		cm.addEvent(nodes['container'], 'keydown', function(e){
 			e = cm.getEvent(e);
-			var item = options[active],
-				index = optionsList.indexOf(item);
-			if(e.keyCode == 38){
-				if(index - 1 >= 0){
-					set(optionsList[index - 1], true);
-				}else{
-					set(optionsList[optionsLength - 1], true);
-				}
-			}else if(e.keyCode == 40){
-				if(index + 1 < optionsLength){
-					set(optionsList[index + 1], true);
-				}else{
-					set(optionsList[0], true);
-				}
-			}
+            if(optionsList.length){
+                var item = options[active],
+                    index = optionsList.indexOf(item);
+                if(e.keyCode == 38){
+                    if(index - 1 >= 0){
+                        set(optionsList[index - 1], true);
+                    }else{
+                        set(optionsList[optionsLength - 1], true);
+                    }
+                }else if(e.keyCode == 40){
+                    if(index + 1 < optionsLength){
+                        set(optionsList[index + 1], true);
+                    }else{
+                        set(optionsList[0], true);
+                    }
+                }
+            }
 		});
 		cm.addEvent(nodes['container'], 'focus', function(){
 			cm.addEvent(document.body, 'keydown', blockDocumentArrows)
@@ -245,7 +252,7 @@ Com['Select'] = function(o){
         if(!config['multiple']){
             // Show / hide on click
             nodes['input'].onclick = function(){
-                if(isHide){
+                if(isHide && optionsList.length){
                     showMenu();
                 }else{
                     hideMenu(false);
@@ -478,6 +485,13 @@ Com['Select'] = function(o){
     that.addOptions = function(arr){
         cm.forEach(arr, function(item){
             renderOption(item.value, item.text);
+        });
+        return that;
+    };
+
+    that.removeOptionsAll = function(){
+        cm.forEach(options, function(item){
+            removeOption(item);
         });
         return that;
     };
