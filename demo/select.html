@@ -11,6 +11,7 @@
 
     <script type="text/javascript" src="../scripts/common.js"></script>
     <script type="text/javascript" src="../scripts/useragent.js"></script>
+    <script type="text/javascript" src="../scripts/tooltip.js"></script>
     <script type="text/javascript" src="../scripts/select.js"></script>
     <script type="text/javascript" src="../scripts/datepicker.js"></script>
     <script type="text/javascript" src="../scripts/tabset.js"></script>
@@ -113,6 +114,10 @@
         <code>select.addOptions([{'value' : '', 'text' : ''}]);</code>
         <p>Returns a class of select.</p>
 
+        <h2>Remove all options:</h2>
+        <code>select.removeOptionAll();</code>
+        <p>Returns a class of select.</p>
+
         <h2>Get list of select nodes:</h2>
         <code>select.getNodes(key);</code>
         <p>Returns object of nodes, or node if key is specified.</p>
@@ -123,7 +128,7 @@
         <div class="form">
             <dl>
                 <dd>
-                    <select name="select1">
+                    <select name="select1" id="select1">
                         <option value="1">One</option>
                         <option value="2" selected>Two</option>
                         <option value="3">Three</option>
@@ -143,7 +148,7 @@
         <div class="form">
             <dl>
                 <dd>
-                    <select multiple name="select2">
+                    <select multiple name="select2" id="select2">
                         <option value="1" selected>One</option>
                         <option value="2" selected>Two</option>
                         <option value="3">Three</option>

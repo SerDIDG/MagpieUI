@@ -2,6 +2,7 @@ Com['Calendar'] = function(o){
     var that = this,
         config = cm.merge({
             'container' : cm.Node('div'),
+            'className' : '',
             'startYear' : 1900,
             'endYear' : new Date().getFullYear(),
             'renderMonthOnInit' : true,
@@ -53,6 +54,8 @@ Com['Calendar'] = function(o){
                 nodes['dates'] = cm.Node('tbody')
             )
         );
+        // Add css class
+        !cm.isEmpty(config['className']) && cm.addClass(nodes['container'], config['className']);
         // Render days
         cm.forEach(7, function(i){
             weekday = i + config['startWeekDay'];

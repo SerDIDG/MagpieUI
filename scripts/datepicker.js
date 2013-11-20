@@ -35,12 +35,10 @@ Com['Datepicker'] = function(o){
             'onChange' : []
         },
 		nodes = {
-            'calendar' : {}
+            'calendar' : {},
+            'menu' : {}
         },
         components = {},
-		isHide = true,
-		checkInt,
-		anim,
 
         today = new Date(),
 		currentSelectedDate,
@@ -80,12 +78,9 @@ Com['Datepicker'] = function(o){
 			nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
 			nodes['input'] = cm.Node('input', {'type' : 'text'}),
 			nodes['icon'] = cm.Node('div', {'class' : 'icon datepicker'}),
-
-			nodes['menu'] = cm.Node('div', {'class' : 'datepicker-menu'},
-				nodes['menuInner'] = cm.Node('div', {'class' : 'inner'},
-                    nodes['calendarContainer'] = cm.Node('div', {'class' : 'cm-datepicker-calendar'})
-                )
-			)
+			nodes['menuContainer'] = cm.Node('div',
+                nodes['calendarContainer'] = cm.Node('div')
+            )
 		);
         /* *** ATTRIBUTES *** */
         // Title
@@ -113,7 +108,7 @@ Com['Datepicker'] = function(o){
 		}
 		// Today Button
 		if(config['showTodayButton']){
-			nodes['menuInner'].appendChild(
+            nodes['menuContainer'].appendChild(
 				nodes['todayButton'] = cm.Node('div', {'class' : 'button today'}, config['langs']['todayButton'])
 			);
 		}
@@ -133,6 +128,7 @@ Com['Datepicker'] = function(o){
 			cm.preventDefault(e);
 			if(e.keyCode == 8){
 				set(0);
+                components['menu'].hide(false);
                 /* *** EXECUTE API EVENTS *** */
                 executeEvent('onChange');
 			}
@@ -141,7 +137,7 @@ Com['Datepicker'] = function(o){
         if(config['showClearButton']){
             cm.addEvent(nodes['clearButton'], 'click', function(){
                 set(0);
-                hideMenu(false);
+                components['menu'].hide(false);
                 /* *** EXECUTE API EVENTS *** */
                 executeEvent('onChange');
             });
@@ -150,33 +146,87 @@ Com['Datepicker'] = function(o){
         if(config['showTodayButton']){
             cm.addEvent(nodes['todayButton'], 'click', function(){
                 set(today, true);
-                hideMenu(false);
+                components['menu'].hide(false);
             });
         }
-		// Show / hide on click
-		nodes['icon'].onclick = function(){
-			if(isHide){
-				showMenu();
-			}else{
-				hideMenu(false);
-			}
-		};
+        // Show / hide menu on click
+        nodes['icon'].onclick = function(){
+            if(components['menu'].isHide()){
+                components['menu'].show();
+            }else{
+                components['menu'].hide(false);
+            }
+        };
+        // Render tooltip
+        components['menu'] = new Com.Tooltip({
+            'className' : 'cm-datepicker-tooltip',
+            'width' : 'targetWidth',
+            'top' : ['targetHeight', config['menuMargin']].join('+'),
+            'content' : nodes['menuContainer'],
+            'target' : nodes['container'],
+            'targetEvent' : 'none',
+            'events' : {
+                'onShow' : show,
+                'onHide' : hide
+            }
+        });
+        nodes['menu'] = components['menu'].getNodes();
         // Render calendar
         components['calendar'] = new Com.Calendar({
             'container' : nodes['calendarContainer'],
+            'className' : 'cm-datepicker-calendar',
             'startYear' : config['startYear'],
             'endYear' : config['endYear'],
             'startWeekDay' : config['startWeekDay'],
             'langs' : config['langs'],
-            'renderMonthOnInit' : false
-        }).addEvent('onDayClick', function(calendar, params){
-            set(params['date'], true);
-            hideMenu(false);
-        }).addEvent('onMonthRender', markSelectedDay);
+            'renderMonthOnInit' : false,
+            'events' : {
+                'onMonthRender' : markSelectedDay,
+                'onDayClick' : function(calendar, params){
+                    set(params['date'], true);
+                    components['menu'].hide(false);
+                }
+            }
+        });
         nodes['calendar'] = components['calendar'].getNodes();
-		// Init animation
-		anim = new cm.Animation(nodes['menu']);
 	};
+
+    var show = function(){
+        // Render calendar month
+        if(!currentSelectedDate){
+            today = new Date();
+            components['calendar']
+                .set(today.getFullYear(), today.getMonth())
+                .renderMonth();
+        }else{
+            components['calendar']
+                .set(currentSelectedDate.getFullYear(), currentSelectedDate.getMonth())
+                .renderMonth();
+        }
+        // Add document target event
+        cm.addEvent(document, 'click', bodyEvent);
+    };
+
+    var hide = function(){
+        // Remove document target event
+        cm.addEvent(document, 'click', bodyEvent);
+    };
+
+    var bodyEvent = function(e){
+        if(!components['menu'].isHide()){
+            e = cm.getEvent(e);
+            var target = cm.getEventTarget(e);
+            if(
+                !cm.isParent(nodes['container'], target, true) &&
+                !cm.isParent(nodes['menu']['container'], target, true) &&
+                !cm.isParent(nodes['menu']['container'], target, true) &&
+                !cm.isParent(nodes['calendar']['selects']['months']['menu']['container'], target, true) &&
+                !cm.isParent(nodes['calendar']['selects']['years']['menu']['container'], target, true)
+            ){
+                components['menu'].hide(false);
+            }
+        }
+    };
 
 	var set = function(str, execute){
         previousSelectedDate = currentSelectedDate;
@@ -238,87 +288,6 @@ Com['Datepicker'] = function(o){
             }
         });
     };
-
-	var bodyClick = function(e){
-		if(nodes && !isHide){
-			e = cm.getEvent(e);
-			var target = cm.getEventTarget(e);
-			if(
-                !cm.isParent(nodes['menu'], target) &&
-                !cm.isParent(nodes['container'], target) &&
-                !cm.isParent(nodes['calendar']['selects']['months']['menu'], target) &&
-                !cm.isParent(nodes['calendar']['selects']['years']['menu'], target)
-            ){
-                hideMenu(false);
-			}
-		}
-	};
-
-	var getTop = function(){
-		return nodes['container'].offsetHeight + cm.getRealY(nodes['container']);
-	};
-
-	var getPosition = (function(){
-		var top, left, height, winHeight, containerHeight, position;
-
-		return function(){
-			winHeight = cm.getPageSize('winHeight');
-			height = nodes['menu'].offsetHeight;
-			top = getTop();
-            left = cm.getRealX(nodes['container']);
-			containerHeight = nodes['container'].offsetHeight;
-			position = (top + height > winHeight? (top - height - containerHeight - config['menuMargin']) : (top + config['menuMargin']));
-
-			if(position != nodes['menu'].offsetTop || left != nodes['menu'].offsetLeft){
-				nodes['menu'].style.top =  [position, 'px'].join('');
-				nodes['menu'].style.left = [left, 'px'].join('');
-			}
-		};
-	})();
-
-	var showMenu = function(){
-		isHide = false;
-        // Render calendar month
-        if(!currentSelectedDate){
-            today = new Date();
-            components['calendar']
-                .set(today.getFullYear(), today.getMonth())
-                .renderMonth();
-        }else{
-            components['calendar']
-                .set(currentSelectedDate.getFullYear(), currentSelectedDate.getMonth())
-                .renderMonth();
-        }
-		// Append child menu in body and set position
-		document.body.appendChild(nodes['menu']);
-		getPosition();
-		// Show menu
-		nodes['menu'].style.display = 'block';
-		// Check position
-		checkInt = setInterval(getPosition, 5);
-		// Hide menu on window resize
-		cm.addEvent(window, 'resize', hideMenu);
-		// Hide menu by click on another object
-		cm.addEvent(document, 'click', bodyClick);
-		// Animate
-		anim.go({'style' : {'opacity' : 1}, 'duration' : 100});
-	};
-
-	var hideMenu = function(now){
-		isHide = true;
-		// Remove event - Check position
-		checkInt && clearInterval(checkInt);
-		// Remove event - Hide menu on resize
-		cm.removeEvent(window, 'resize', getPosition);
-		// Remove event - Hide menu by click on another object
-		cm.removeEvent(document, 'click', bodyClick);
-		// Animate
-		anim.go({'style' : {'opacity' : 0}, 'duration' : (now? 0 : 100), 'onStop' : function(){
-			// Append child menu in select container
-			nodes['container'].appendChild(nodes['menu']);
-			nodes['menu'].style.display = 'none';
-		}});
-	};
 
 	/* Main */
 

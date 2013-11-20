@@ -1107,7 +1107,7 @@ select[multiple] {
 
 /* ******* COMPONENTS ******* */
 
-/* Files list */
+/* *** Files list *** */
 
 .files-list {
 }
@@ -1150,7 +1150,7 @@ select[multiple] {
 	word-break: normal;
 }
 
-/* Select */
+/* *** Select *** */
 
 .cm-select {
 	height: 22px;
@@ -1188,33 +1188,27 @@ select[multiple] {
 	word-break: normal;
 	padding: 0 6px;
 }
-.cm-select-menu {
-	position: fixed;
-	display: none;
-	left: 0;
-	top: 0;
-	z-index: 1002;
-	opacity: 0;
+.cm-select.disabled .cm-select-input .cm-select-inner {
+    background: #f5f5f5;
 }
-.ie7 .cm-select-menu,
-.ie8 .cm-select-menu {
-	filter: alpha(opacity=0);
+.cm-select.disabled .cm-select-text {
+    color: #a6a6a6;
 }
-.cm-select-menu .cm-select-inner {
-	box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
-	background-color: #ffffff;
-	border: 1px solid #b6bcc1;
-	padding: 3px;
+
+.cm-select-tooltip > .inner > .scroll {
+    max-height: 188px;
 }
-.cm-select-menu ul {
+
+/* Listing */
+
+.cm-select-listing ul {
 	margin: 0;
 	padding: 0;
 	list-style-type: none;
 }
-.cm-select-menu ul li {
+.cm-select-listing ul li {
 	margin-top: 1px;
     padding: 2px 4px;
-	background-color: #fff;
 	line-height: 16px;
 	font-size: 12px;
 	color: #333333;
@@ -1223,33 +1217,19 @@ select[multiple] {
 	-webkit-transition: all 0.3s ease-in-out;
 	        transition: all 0.3s ease-in-out;
 }
-.cm-select-menu ul li:first-child {
+.cm-select-listing ul li:first-child {
 	margin-top: 0;
 }
-.cm-select-menu ul li.active {
+.cm-select-listing ul li.active {
     background-color: #d9eafb;
 }
-.cm-select-menu ul li:hover {
+.cm-select-listing ul li:hover {
 	background-color: #f0f0f0;
 	-webkit-transition: all 0.1s ease-in-out;
 	        transition: all 0.1s ease-in-out;
 }
-.cm-select-menu ul li.active:hover {
+.cm-select-listing ul li.active:hover {
     background-color: #bdd8f3;
-}
-.cm-select-menu ul li.hr {
-	display: none;
-}
-.cm-select-scroll {
-	max-height: 188px;
-	overflow-x: hidden;
-	overflow-y: auto;
-}
-.cm-select.disabled .cm-select-input .cm-select-inner {
-	background: #f5f5f5;
-}
-.cm-select.disabled .cm-select-text {
-	color: #a6a6a6;
 }
 
 /* Select Multiple */
@@ -1257,45 +1237,18 @@ select[multiple] {
 .cm-multiselect {
 }
 .cm-multiselect .inner {
+    min-height: 14px;
     padding: 3px;
     background: #fff;
     border: 1px solid #595959;
 }
-.cm-multiselect .scroll {
+.cm-multiselect .cm-select-listing {
     max-height: 104px;
     overflow-x: hidden;
     overflow-y: auto;
 }
-.cm-multiselect ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-.cm-multiselect li {
-    margin-top: 1px;
-    padding: 2px 4px;
-    line-height: 16px;
-    text-shadow: 0 1px 0 #fff;
-    cursor: pointer;
-    -webkit-transition: all 0.3s ease-in-out;
-            transition: all 0.3s ease-in-out;
-}
-.cm-multiselect li:first-child {
-    margin-top: 0;
-}
-.cm-multiselect li.active {
-    background-color: #d9eafb;
-}
-.cm-multiselect li:hover {
-    background-color: #F0F0F0;
-    -webkit-transition: all 0.1s ease-in-out;
-            transition: all 0.1s ease-in-out;
-}
-.cm-multiselect li.active:hover {
-    background-color: #bdd8f3;
-}
 
-/* Grid List */
+/* *** Grid List *** */
 
 .gridlist-counter {
     margin: 0 0 12px
@@ -1501,7 +1454,7 @@ select[multiple] {
 	padding-left: 40px;
 }
 
-/* Tabs */
+/* *** Tabs *** */
 
 .tabset {
 	margin: 0 0 24px;
@@ -1617,7 +1570,7 @@ select[multiple] {
     border-top-color: #fff;
 }
 
-/* Breadcrumbs */
+/* *** Breadcrumbs *** */
 
 .breadcrumbs {
 	margin: 0 0 24px;
@@ -1641,7 +1594,7 @@ select[multiple] {
 	margin: 0 4px;
 }
 
-/* Pagination */
+/* *** Pagination *** */
 
 .pagination {
 	margin: 0 0 24px;
@@ -1736,7 +1689,7 @@ select[multiple] {
 	text-align: left;
 }
 
-/* Flash Notification */
+/* *** Flash Notification *** */
 
 .flash-notification {
 	margin: 0 0 24px;
@@ -1802,7 +1755,7 @@ select[multiple] {
 	border-color: #d2a323;
 }
 
-/* Dialog */
+/* *** Dialog *** */
 
 .dialog {
 	width: 100%;
@@ -1917,7 +1870,7 @@ select[multiple] {
 	width: 70px;
 }
 
-/* Overlay */
+/* *** Overlay *** */
 
 .cm-overlay {
 	width: 100%;
@@ -1953,7 +1906,7 @@ select[multiple] {
 	background: url(../images/components/ajax-loader.gif);
 }
 
-/* Tooltip */
+/* *** Tooltip *** */
 
 .cm-tooltip {
     position: fixed;
@@ -1983,7 +1936,7 @@ select[multiple] {
     overflow-y: auto;
 }
 
-/* Calendar */
+/* *** Calendar *** */
 
 .cm-calendar {
 }
@@ -2058,7 +2011,7 @@ select[multiple] {
     border-color: #6eb2f2;
 }
 
-/* Calendar of Events */
+/* *** Calendar of Events *** */
 
 .cm-calendar-events-tooltip {
     width: 200px;
@@ -2086,7 +2039,7 @@ select[multiple] {
     margin: 0;
 }
 
-/* Datepicker */
+/* *** Datepicker *** */
 
 .datepicker-input {
     max-width: 190px;
@@ -2124,20 +2077,14 @@ select[multiple] {
     right: -26px;
     top: 4px;
 }
-.datepicker-menu {
-    width: 190px;
-    position: fixed;
-    display: none;
-    left: 0;
-    top: 0;
-    z-index: 1001;
-    opacity: 0;
+
+.cm-datepicker-tooltip > .inner > .scroll {
+    overflow: visible;
 }
-.datepicker-menu > .inner {
-    background: #fff;
-    border: 1px solid #CDCDCD;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-    padding: 4px;
+.cm-datepicker-tooltip .button.today {
+    width: 100%;
+    padding: 0;
+    margin: 4px 0 0 0;
 }
 .cm-datepicker-calendar .months {
     width: 104px !important;
@@ -2147,11 +2094,6 @@ select[multiple] {
     width: 72px !important;
     margin-left: 4px;
     float: left;
-}
-.datepicker-menu .button.today {
-    width: 100%;
-    padding: 0;
-    margin: 4px 0 0 0;
 }
 
 /* Old Browser Alert */

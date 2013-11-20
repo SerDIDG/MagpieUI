@@ -15,7 +15,7 @@ Com['Select'] = function(o){
 			'menuMargin' : 3,
             'options' : [],
 			'selected' : 0,
-			'events' : {}					// Deprecated, use addEvent method
+			'events' : {}
 		}, o),
         dataAttributes = ['title', 'showTitleTag', 'multiple'],
 		API = {
@@ -24,19 +24,19 @@ Com['Select'] = function(o){
 			'onFocus' : [],
 			'onBlur' : []
 		},
-		nodes = {},
+		nodes = {
+            'menu' : {}
+        },
+        components = {},
 		options = {},
 		optionsList = [],
 		optionsLength,
-		isHide = true,
-		checkInt,
-		anim,
 		
 		oldActive,
 		active;
 	
 	var init = function(){
-		// Legacy: Convert events to API Events
+		// Convert events to API Events
 		convertEvents(config['events']);
         // Merge data-attributes with config. Data-attributes have higher priority.
         processDataAttributes();
@@ -62,7 +62,7 @@ Com['Select'] = function(o){
 				set(options[config['selected']]);
 			}else if(config['select'].value){
 				set(options[config['select'].value]);
-			}else if(optionsList.length){
+			}else if(optionsLength){
 				set();
 			}
         }
@@ -149,13 +149,8 @@ Com['Select'] = function(o){
                     nodes['text'] = cm.Node('div', {'class':'cm-select-text'})
                 )
             ),
-
-            nodes['menu'] = cm.Node('div', {'class':'cm-select-menu'},
-                cm.Node('div', {'class':'cm-select-inner'},
-                    nodes['scroll'] = cm.Node('div', {'class':'cm-select-scroll'},
-                        nodes['items'] = cm.Node('ul')
-                    )
-                )
+            nodes['scroll'] = cm.Node('div', {'class':'cm-select-listing'},
+                nodes['items'] = cm.Node('ul')
             )
         );
     };
@@ -164,7 +159,7 @@ Com['Select'] = function(o){
         nodes['container'] = cm.Node('div', {'class' : 'cm-multiselect'},
             nodes['hidden'] = cm.Node('select', {'data-select' : 'false', 'class' : 'display-none', 'multiple' : true}),
             nodes['inner'] = cm.Node('div', {'class' : 'inner'},
-                nodes['scroll'] = cm.Node('div', {'class' : 'scroll'},
+                nodes['scroll'] = cm.Node('div', {'class' : 'cm-select-listing'},
                     nodes['items'] = cm.Node('ul')
                 )
             )
@@ -187,7 +182,7 @@ Com['Select'] = function(o){
 		// Label onlick event
 		item['node'].onclick = function(){
 			set(item, true);
-            !config['multiple'] && hideMenu(false);
+            !config['multiple'] && components['menu'].hide(false);
 		};
 		// Push
 		optionsList.push(options[value] = item);
@@ -211,7 +206,7 @@ Com['Select'] = function(o){
             });
         }else{
             if(value === active){
-                if(optionsList.length){
+                if(optionsLength){
                     set(optionsList[0], true);
                 }else{
                     active = null;
@@ -225,7 +220,7 @@ Com['Select'] = function(o){
 		// Switch items on arrows press
 		cm.addEvent(nodes['container'], 'keydown', function(e){
 			e = cm.getEvent(e);
-            if(optionsList.length){
+            if(optionsLength){
                 var item = options[active],
                     index = optionsList.indexOf(item);
                 if(e.keyCode == 38){
@@ -249,19 +244,45 @@ Com['Select'] = function(o){
 		cm.addEvent(nodes['container'], 'blur', function(){
 			cm.removeEvent(document.body, 'keydown', blockDocumentArrows)
 		});
+
         if(!config['multiple']){
-            // Show / hide on click
-            nodes['input'].onclick = function(){
-                if(isHide && optionsList.length){
-                    showMenu();
-                }else{
-                    hideMenu(false);
+            // Render tooltip
+            components['menu'] = new Com.Tooltip({
+                'className' : 'cm-select-tooltip',
+                'width' : 'targetWidth',
+                'top' : ['targetHeight', config['menuMargin']].join('+'),
+                'content' : nodes['scroll'],
+                'target' : nodes['input'],
+                'targetEvent' : 'click',
+                'hideOnReClick' : true,
+                'events' : {
+                    'onShow' : show,
+                    'onHide' : hide
                 }
-            };
-            // Init animation
-            anim = new cm.Animation(nodes['menu']);
+            });
+            nodes['menu'] = components['menu'].getNodes();
         }
 	};
+
+    var show = function(){
+        // Set classes
+        cm.addClass(nodes['input'], 'hidden');
+        cm.addClass(nodes['container'], 'active');
+        // Scroll to active element
+        if(active && options[active]){
+            nodes['menu']['content'].scrollTop = options[active]['node'].offsetTop - nodes['menu']['content'].offsetTop;
+        }
+        /* *** EXECUTE API EVENTS *** */
+        executeEvent('onFocus');
+    };
+
+    var hide = function(){
+        // Remove classes
+        cm.removeClass(nodes['input'], 'hidden');
+        cm.removeClass(nodes['container'], 'active');
+        /* *** EXECUTE API EVENTS *** */
+        executeEvent('onBlur');
+    };
 	
 	var set = function(option, execute){
         if(option){
@@ -338,95 +359,11 @@ Com['Select'] = function(o){
 		});
 	};
 	
-	var bodyClick = function(e){
-		if(nodes && !isHide){
-			e = cm.getEvent(e);
-		    var target = cm.getEventTarget(e);
-			if(!cm.isParent(nodes['menu'], target) && !cm.isParent(nodes['container'], target)){
-				hideMenu(false);
-			}
-		}
-	};
-	
 	var blockDocumentArrows = function(e){
 		e = cm.getEvent(e);
 		if(e.keyCode == 38 || e.keyCode == 40){
-			if(e.preventDefault){ 
-				e.preventDefault(); 
-			}else{
-				e.returnValue = false;
-			}
+            cm.preventDefault(e);
 		}
-	};
-	
-	var getTop = function(){
-		return nodes['container'].offsetHeight + cm.getRealY(nodes['container']);
-	};
-	
-	var getPosition = (function(){
-		var top, left, height, winHeight, containerHeight, position;
-		
-		return function(){
-			winHeight = cm.getPageSize('winHeight');
-			height = nodes['menu'].offsetHeight;
-			top = getTop();
-            left = cm.getRealX(nodes['container']);
-			containerHeight = nodes['container'].offsetHeight;
-			position = (top + height > winHeight? (top - height - containerHeight - config['menuMargin']) : (top + config['menuMargin']));
-			
-			if(position != nodes['menu'].offsetTop || left != nodes['menu'].offsetLeft){
-				nodes['menu'].style.top =  [position, 'px'].join('');
-				nodes['menu'].style.left = [left, 'px'].join('');
-				nodes['menu'].style.width = [nodes['container'].offsetWidth, 'px'].join('');
-			}
-		};
-	})();
-	
-	var showMenu = function(){
-		isHide = false;
-		// Set classes
-		cm.addClass(nodes['input'], 'hidden');
-		cm.addClass(nodes['container'], 'active');
-		// Append child menu in body and set position
-		document.body.appendChild(nodes['menu']);
-		getPosition();
-		// Show menu
-		nodes['menu'].style.display = 'block';
-		// Scroll to active element
-		if(active && options[active]){
-			nodes['scroll'].scrollTop = options[active]['node'].offsetTop - nodes['scroll'].offsetTop;
-		}
-		// Check position
-		checkInt = setInterval(getPosition, 5);
-		// Hide menu on window resize
-		cm.addEvent(window, 'resize', hideMenu);
-		// Hide menu by click on another object
-		cm.addEvent(document, 'click', bodyClick);
-		// Animate
-		anim.go({'style' : {'opacity' : 1}, 'duration' : 100});
-		/* *** EXECUTE API EVENTS *** */
-		executeEvent('onFocus');
-	};
-	
-	var hideMenu = function(now){
-        isHide = true;
-        // Remove event - Check position
-        checkInt && clearInterval(checkInt);
-        // Remove event - Hide menu on resize
-        cm.removeEvent(window, 'resize', getPosition);
-        // Remove event - Hide menu by click on another object
-        cm.removeEvent(document, 'click', bodyClick);
-        // Remove classes
-        cm.removeClass(nodes['input'], 'hidden');
-        cm.removeClass(nodes['container'], 'active');
-        // Animate
-        anim.go({'style' : {'opacity' : 0}, 'duration' : (now? 0 : 100), 'onStop' : function(){
-            // Append child menu in select container
-            nodes['container'].appendChild(nodes['menu']);
-            nodes['menu'].style.display = 'none';
-            /* *** EXECUTE API EVENTS *** */
-            executeEvent('onBlur');
-        }});
 	};
 	
 	/* *** MAIN *** */

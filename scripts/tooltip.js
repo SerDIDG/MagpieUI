@@ -2,9 +2,11 @@ Com['Tooltip'] = function(o){
     var that = this,
         config = cm.merge({
             'target' : cm.Node('div'),
-            'targetEvent' : 'hover',    // hover
-            'top' : 0,                  // Supported properties: targetHeight
-            'left' : 0,                 // Supported properties: targetWidth
+            'targetEvent' : 'hover',        // hover | click | none
+            'hideOnReClick' : false,        // Hide tooltip when re-clicking on the target, requires setting value 'targetEvent' : 'click'
+            'top' : 0,                      // Supported properties: targetHeight
+            'left' : 0,                     // Supported properties: targetWidth
+            'width' : 'auto',               // Supported properties: targetWidth | auto
             'className' : '',
             'title' : '',
             'content' : cm.Node('div'),
@@ -63,12 +65,35 @@ Com['Tooltip'] = function(o){
         // Init animation
         anim = new cm.Animation(nodes['container']);
         // Add target event
+        setTargetEvent();
+    };
+
+    var targetEvent = function(){
+        if(!isHide && config['targetEvent'] == 'click' && config['hideOnReClick']){
+            hide(false);
+        }else{
+            show();
+        }
+    };
+
+    var setTargetEvent = function(){
         switch(config['targetEvent']){
             case 'hover' :
-                cm.addEvent(config['target'], 'mouseover', show);
+                cm.addEvent(config['target'], 'mouseover', targetEvent);
                 break;
             case 'click' :
-                cm.addEvent(config['target'], 'click', show);
+                cm.addEvent(config['target'], 'click', targetEvent);
+                break;
+        }
+    };
+
+    var removeTargetEvent = function(){
+        switch(config['targetEvent']){
+            case 'hover' :
+                cm.removeEvent(config['target'], 'mouseover', targetEvent);
+                break;
+            case 'click' :
+                cm.removeEvent(config['target'], 'click', targetEvent);
                 break;
         }
     };
@@ -124,27 +149,46 @@ Com['Tooltip'] = function(o){
     };
 
     var getPosition = function(){
-        var top = cm.getRealY(config['target']),
-            topAdd = eval(config['top'].toString().replace('targetHeight', config['target'].offsetHeight)),
-            left =  cm.getRealX(config['target']),
-            leftAdd = eval(config['left'].toString().replace('targetWidth', config['target'].offsetHeight)),
-            height = nodes['container'].offsetHeight,
-            width = nodes['container'].offsetWidth,
-            pageSize = cm.getPageSize(),
-            positionTop = (top + topAdd + height > pageSize['winHeight']? (top - topAdd- height + config['target'].offsetHeight) : top + topAdd),
-            positionLeft = (left + leftAdd + width > pageSize['winWidth']? (left - leftAdd - width + config['target'].offsetWidth) : left + leftAdd);
+        var targetWidth =  config['target'].offsetWidth,
+            targetHeight = config['target'].offsetHeight,
+            pageSize = cm.getPageSize();
+        // Calculate size
+        (function(){
+            if(config['width'] != 'auto'){
+                var width = eval(config['width'].toString().replace('targetWidth', targetWidth));
 
-        if(positionTop != nodes['container'].offsetTop || positionLeft != nodes['container'].offsetLeft){
-            nodes['container'].style.top =  [positionTop, 'px'].join('');
-            nodes['container'].style.left = [positionLeft, 'px'].join('');
-        }
+                if(width != nodes['container'].offsetWidth){
+                    nodes['container'].style.width =  [width, 'px'].join('');
+                }
+            }
+        })();
+        // Calculate position
+        (function(){
+            var top = cm.getRealY(config['target']),
+                topAdd = eval(config['top'].toString().replace('targetHeight', targetHeight)),
+                left =  cm.getRealX(config['target']),
+                leftAdd = eval(config['left'].toString().replace('targetWidth', targetWidth)),
+                height = nodes['container'].offsetHeight,
+                width = nodes['container'].offsetWidth,
+                positionTop = (top + topAdd + height > pageSize['winHeight']? (top - topAdd- height + targetHeight) : top + topAdd),
+                positionLeft = (left + leftAdd + width > pageSize['winWidth']? (left - leftAdd - width + targetWidth) : left + leftAdd);
+
+            if(positionTop != nodes['container'].offsetTop){
+                nodes['container'].style.top =  [positionTop, 'px'].join('');
+            }
+            if(positionLeft != nodes['container'].offsetLeft){
+                nodes['container'].style.left = [positionLeft, 'px'].join('');
+            }
+        })();
     };
 
     var bodyEvent = function(e){
-        e = cm.getEvent(e);
-        var target = cm.getEventTarget(e);
-        if(!cm.isParent(nodes['container'], target, true) && !cm.isParent(config['target'], target)){
-            hide(false);
+        if(!isHide){
+            e = cm.getEvent(e);
+            var target = cm.getEventTarget(e);
+            if(!cm.isParent(nodes['container'], target, true) && !cm.isParent(config['target'], target, true)){
+                hide(false);
+            }
         }
     };
 
@@ -183,7 +227,9 @@ Com['Tooltip'] = function(o){
     };
 
     that.setTarget = function(node){
+        removeTargetEvent();
         config['target'] = node || cm.Node('div');
+        setTargetEvent();
         return that;
     };
 
@@ -195,6 +241,10 @@ Com['Tooltip'] = function(o){
     that.hide = function(immediately){
         hide(immediately);
         return that;
+    };
+
+    that.isHide = function(){
+        return isHide;
     };
 
     that.addEvent = function(event, handler){
@@ -210,6 +260,16 @@ Com['Tooltip'] = function(o){
                 return item != handler;
             });
         }
+        return that;
+    };
+
+    that.getNodes = function(key){
+        return nodes[key] || nodes;
+    };
+
+    that.remove = function(){
+        hide(true);
+        removeTargetEvent();
         return that;
     };
 
