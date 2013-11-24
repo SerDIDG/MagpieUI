@@ -63,7 +63,7 @@ Com['Select'] = function(o){
 			}else if(config['select'].value){
 				set(options[config['select'].value]);
 			}else if(optionsLength){
-				set();
+				set(optionsList[0]);
 			}
         }
 	};
@@ -265,12 +265,16 @@ Com['Select'] = function(o){
 	};
 
     var show = function(){
-        // Set classes
-        cm.addClass(nodes['input'], 'hidden');
-        cm.addClass(nodes['container'], 'active');
-        // Scroll to active element
-        if(active && options[active]){
-            nodes['menu']['content'].scrollTop = options[active]['node'].offsetTop - nodes['menu']['content'].offsetTop;
+        if(!optionsLength){
+            components['menu'].hide();
+        }else{
+            // Set classes
+            cm.addClass(nodes['input'], 'hidden');
+            cm.addClass(nodes['container'], 'active');
+            // Scroll to active element
+            if(active && options[active]){
+                nodes['menu']['content'].scrollTop = options[active]['node'].offsetTop - nodes['menu']['content'].offsetTop;
+            }
         }
         /* *** EXECUTE API EVENTS *** */
         executeEvent('onFocus');
@@ -378,7 +382,7 @@ Com['Select'] = function(o){
             if(cm.isArray(value)){
                 cm.forEach(value, function(item){
                     if(options[item]){
-                        set(options[item] );
+                        set(options[item]);
                     }
                 });
                 /* *** EXECUTE API EVENTS *** */
