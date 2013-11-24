@@ -155,8 +155,7 @@ cm.forEach = function(o, handler){
                     for(var i = 0, l = o.length; i < l; i++){
                         handler(o[i], i);
                     }
-                }catch(e){
-                }
+                }catch(e){}
             }
             break;
     }
@@ -164,7 +163,6 @@ cm.forEach = function(o, handler){
 };
 
 cm.merge = function(o1, o2){
-    var o1;
     if(!o1 || typeof o1 == 'string' || typeof o1 == 'number'){
         o1 = {}
     }else{
@@ -1563,7 +1561,9 @@ cm.bezier = function(x1, y1, x2, y2, epsilon){
             t2 = t2 - x2 / d2;
         }
 
-        t0 = 0, t1 = 1, t2 = x;
+        t0 = 0;
+        t1 = 1;
+        t2 = x;
 
         if(t2 < t0){
             return curveY(t0);
