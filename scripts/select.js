@@ -5,7 +5,8 @@ Com['GetSelect'] = function(id){
 };
 
 Com['Select'] = function(o){
-    var that = this, config = cm.merge({
+    var that = this,
+        config = cm.merge({
             'container' : false,
             'select' : cm.Node('select'),
             'multiple' : false,
@@ -139,11 +140,29 @@ Com['Select'] = function(o){
     };
 
     var renderSingle = function(){
-        nodes['container'] = cm.Node('div', {'class' : 'cm-select'}, nodes['hidden'] = cm.Node('select', {'data-select' : 'false', 'class' : 'display-none'}), nodes['input'] = cm.Node('div', {'class' : 'cm-select-input clear'}, cm.Node('div', {'class' : 'cm-select-inner'}, nodes['arrow'] = cm.Node('div', {'class' : 'cm-select-arrow'}), nodes['text'] = cm.Node('div', {'class' : 'cm-select-text'}))), nodes['scroll'] = cm.Node('div', {'class' : 'cm-select-listing'}, nodes['items'] = cm.Node('ul')));
+        nodes['container'] = cm.Node('div', {'class' : 'cm-select'},
+            nodes['hidden'] = cm.Node('select', {'data-select' : 'false', 'class' : 'display-none'}),
+            nodes['input'] = cm.Node('div', {'class' : 'cm-select-input clear'},
+                cm.Node('div', {'class' : 'cm-select-inner'},
+                    nodes['arrow'] = cm.Node('div', {'class' : 'cm-select-arrow'}),
+                    nodes['text'] = cm.Node('div', {'class' : 'cm-select-text'})
+                )
+            ),
+            nodes['scroll'] = cm.Node('div', {'class' : 'cm-select-listing'},
+                nodes['items'] = cm.Node('ul')
+            )
+        );
     };
 
     var renderMultiple = function(){
-        nodes['container'] = cm.Node('div', {'class' : 'cm-multiselect'}, nodes['hidden'] = cm.Node('select', {'data-select' : 'false', 'class' : 'display-none', 'multiple' : true}), nodes['inner'] = cm.Node('div', {'class' : 'inner'}, nodes['scroll'] = cm.Node('div', {'class' : 'cm-select-listing'}, nodes['items'] = cm.Node('ul'))));
+        nodes['container'] = cm.Node('div', {'class' : 'cm-multiselect'},
+            nodes['hidden'] = cm.Node('select', {'data-select' : 'false', 'class' : 'display-none', 'multiple' : true}),
+            nodes['inner'] = cm.Node('div', {'class' : 'inner'},
+                nodes['scroll'] = cm.Node('div', {'class' : 'cm-select-listing'},
+                    nodes['items'] = cm.Node('ul')
+                )
+            )
+        );
     };
 
     var renderOption = function(value, text){
@@ -201,7 +220,8 @@ Com['Select'] = function(o){
         cm.addEvent(nodes['container'], 'keydown', function(e){
             e = cm.getEvent(e);
             if(optionsLength){
-                var item = options[active], index = optionsList.indexOf(item);
+                var item = options[active],
+                    index = optionsList.indexOf(item);
                 if(e.keyCode == 38){
                     if(index - 1 >= 0){
                         set(optionsList[index - 1], true);
@@ -440,8 +460,7 @@ Com['SelectCollector'] = function(node){
     };
 
     var render = function(node){
-        selects = cm.clone((node.nodeType == 1 && node.tagName.toLowerCase() == 'select') ?
-            [node] : node.getElementsByTagName('select'));
+        selects = cm.clone((node.nodeType == 1 && node.tagName.toLowerCase() == 'select') ? [node] : node.getElementsByTagName('select'));
         // Render datepickers
         cm.forEach(selects, function(item){
             if(!/^norender|false$/.test(item.getAttribute('data-select'))){
