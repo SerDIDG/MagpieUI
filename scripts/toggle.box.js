@@ -237,7 +237,7 @@ Com['ToggleBoxGridlist'] = function(o){
 			'button' : button,
 			'blocks' : blocks,
 			'subs' : subs,
-			'isHide' : blocks[0].offsetHeight === 0
+			'isHide' : cm.isClass(blocks[0], 'display-none')
 		};
 	};
 	
