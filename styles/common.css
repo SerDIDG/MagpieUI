@@ -2366,11 +2366,14 @@ select[multiple] {
     margin: 0 0 22px;
 }
 .gallery-listing > ul {
-    margin: -8px;
+    margin: 8px -8px -8px;
     padding: 0;
     list-style: none;
     font-size: 0;
     word-spacing: 0;
+}
+.gallery-listing > ul:first-child {
+    margin: -8px;
 }
 .gallery-listing > ul > li {
     width: 25%;
@@ -2733,6 +2736,13 @@ select[multiple] {
 	.form-filter-fromto .form-box {
 		margin-right: 6%;
 	}
+
+    /* Editable Area */
+
+    .cm-editable > .border,
+    .cm-editable > .menu {
+        display: none;
+    }
 	
 	/* Gallery */
 
@@ -2853,7 +2863,7 @@ select[multiple] {
     .gallery-listing.cols-8 > ul > li,
     .gallery-listing.cols-9 > ul > li,
     .gallery-listing.cols-10 > ul > li {
-		width: 50%;
+		width: 100%;
 	}
 	
 }

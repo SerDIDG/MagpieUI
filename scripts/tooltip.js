@@ -4,10 +4,12 @@ Com['Tooltip'] = function(o){
             'target' : cm.Node('div'),
             'targetEvent' : 'hover',        // hover | click | none
             'hideOnReClick' : false,        // Hide tooltip when re-clicking on the target, requires setting value 'targetEvent' : 'click'
-            'top' : 0,                      // Supported properties: targetHeight
-            'left' : 0,                     // Supported properties: targetWidth
+            'preventClickEvent' : false,    // Prevent default click event on the target, requires setting value 'targetEvent' : 'click'
+            'top' : 0,                      // Supported properties: targetHeight, selfWidth
+            'left' : 0,                     // Supported properties: targetWidth, selfWidth
             'width' : 'auto',               // Supported properties: targetWidth | auto
             'className' : '',
+            'adaptive' : true,
             'title' : '',
             'content' : cm.Node('div'),
             'events' : {}
@@ -65,6 +67,12 @@ Com['Tooltip'] = function(o){
         // Init animation
         anim = new cm.Animation(nodes['container']);
         // Add target event
+        if(config['preventClickEvent']){
+            config['target'].onclick = function(e){
+                e = cm.getEvent(e);
+                cm.preventDefault(e);
+            };
+        }
         setTargetEvent();
     };
 
@@ -116,7 +124,7 @@ Com['Tooltip'] = function(o){
                     cm.addEvent(document, 'mouseover', bodyEvent);
                     break;
                 case 'click' :
-                    cm.addEvent(document, 'click', bodyEvent);
+                    cm.addEvent(document, 'mousedown', bodyEvent);
                     break;
             }
             /* *** EXECUTE API EVENTS *** */
@@ -135,7 +143,7 @@ Com['Tooltip'] = function(o){
                     cm.removeEvent(document, 'mouseover', bodyEvent);
                     break;
                 case 'click' :
-                    cm.removeEvent(document, 'click', bodyEvent);
+                    cm.removeEvent(document, 'mousedown', bodyEvent);
                     break;
             }
             // Animate
@@ -151,13 +159,15 @@ Com['Tooltip'] = function(o){
     var getPosition = function(){
         var targetWidth =  config['target'].offsetWidth,
             targetHeight = config['target'].offsetHeight,
+            selfHeight = nodes['container'].offsetHeight,
+            selfWidth = nodes['container'].offsetWidth,
             pageSize = cm.getPageSize();
         // Calculate size
         (function(){
             if(config['width'] != 'auto'){
                 var width = eval(config['width'].toString().replace('targetWidth', targetWidth));
 
-                if(width != nodes['container'].offsetWidth){
+                if(width != selfWidth){
                     nodes['container'].style.width =  [width, 'px'].join('');
                 }
             }
@@ -165,13 +175,25 @@ Com['Tooltip'] = function(o){
         // Calculate position
         (function(){
             var top = cm.getRealY(config['target']),
-                topAdd = eval(config['top'].toString().replace('targetHeight', targetHeight)),
+                topAdd = eval(
+                    config['top']
+                        .toString()
+                        .replace('targetHeight', targetHeight)
+                        .replace('selfHeight', selfHeight)
+                ),
                 left =  cm.getRealX(config['target']),
-                leftAdd = eval(config['left'].toString().replace('targetWidth', targetWidth)),
-                height = nodes['container'].offsetHeight,
-                width = nodes['container'].offsetWidth,
-                positionTop = (top + topAdd + height > pageSize['winHeight']? (top - topAdd- height + targetHeight) : top + topAdd),
-                positionLeft = (left + leftAdd + width > pageSize['winWidth']? (left - leftAdd - width + targetWidth) : left + leftAdd);
+                leftAdd = eval(
+                    config['left']
+                        .toString()
+                        .replace('targetWidth', targetWidth)
+                        .replace('selfWidth', selfWidth)
+                ),
+                positionTop = (config['adaptive'] && top + topAdd + selfHeight > pageSize['winHeight']?
+                    (top - topAdd - selfHeight + targetHeight) : top + topAdd
+                ),
+                positionLeft = (config['adaptive'] && left + leftAdd + selfWidth > pageSize['winWidth']?
+                    (left - leftAdd - selfWidth + targetWidth) : left + leftAdd
+                );
 
             if(positionTop != nodes['container'].offsetTop){
                 nodes['container'].style.top =  [positionTop, 'px'].join('');
@@ -195,7 +217,7 @@ Com['Tooltip'] = function(o){
     var executeEvent = function(event){
         var handler = function(){
             cm.forEach(API[event], function(item){
-                item(that, nodes['content']);
+                item(that);
             });
         };
 

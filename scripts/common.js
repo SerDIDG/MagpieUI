@@ -113,7 +113,7 @@ if(!Date.now){
             return eval('(' + str + ')');
         };
         JSON.stringify = function(){
-            return alert('!JSON');
+            throw new Error('JSON.stringify is not supported by this browser.');
         };
     }
 })();
@@ -206,10 +206,7 @@ cm.clone = function(o, type){
             newO = o;
             break;
         case Array:
-            newO = [];
-            cm.forEach(o, function(item){
-                newO.push(cm.clone(item));
-            });
+            newO = o.slice();
             break;
         case Object:
             newO = {};
