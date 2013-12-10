@@ -293,7 +293,7 @@ Com['TabsetCollector'] = function(node){
 
     var render = function(node){
         tabsets = cm.clone((node.getAttribute('data-tabset') == 'true') ? [node] : cm.getByAttr('data-tabset', 'true', node));
-        // Render datepickers
+        // Render tabsets
         cm.forEach(tabsets, function(item){
             tabset = new Com.Tabset({'tabset' : item});
             if(id = item.id){

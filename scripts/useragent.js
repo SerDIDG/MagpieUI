@@ -205,7 +205,11 @@ var Useragent = {
 		if(user['hash']){
 			cm.addClass(document.getElementsByTagName('html')[0], user['hash']+' '+user['hash']+user['short_version']);
 		}
-	}
+	},
+    'setEngineClass' : function(){
+        var user = Useragent.get();
+        cm.addClass(document.getElementsByTagName('html')[0], user['engine'].toLowerCase());
+    }
 };
 
 var is = function(str){

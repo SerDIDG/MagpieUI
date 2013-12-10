@@ -1,0 +1,75 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;">
+    <title>Columns</title>
+
+    <link type="text/css" rel="stylesheet" href="../styles/common.css">
+    <link type="text/css" rel="stylesheet" href="../themes/screensider/common.css">
+    <link type="text/css" rel="stylesheet" href="styles/main.css">
+
+    <script type="text/javascript" src="../scripts/common.js"></script>
+    <script type="text/javascript" src="../scripts/useragent.js"></script>
+    <script type="text/javascript" src="../scripts/tabset.js"></script>
+    <script type="text/javascript" src="../scripts/columns.js"></script>
+
+    <script type="text/javascript">
+        cm.onload(function(){
+            // Useragent
+            Useragent.setBrowserClass();
+            // Tabset
+            Com.TabsetCollector();
+            // Collumns
+            Com.ColumnsCollector();
+        });
+    </script>
+</head>
+
+<body>
+
+<h1>Columns</h1>
+
+<ul class="tabset-content-ul" id="tabset" data-tabset="true" data-toggleOnHashChange="false" data-active="development">
+    <li data-tabset-id="overview" data-tabset-title="Overview"></li>
+
+    <li data-tabset-id="methods" data-tabset-title="Methods"></li>
+
+    <li data-tabset-id="examples" data-tabset-title="Examples"></li>
+
+    <li data-tabset-id="development" data-tabset-title="Development">
+
+        <div class="com-columns" data-com-columns="true">
+            <div class="inner">
+                <div class="container">
+                    <div class="com-column" style="width: 33.33%;">
+                        <div class="outer">123</div>
+                    </div>
+                    <div class="com-column" style="width: 33.34%;">
+                        <div class="outer">345</div>
+                    </div>
+                    <div class="com-column" style="width: 33.33%;">
+                        <div class="outer">
+                            <div class="com-columns" data-com-columns="true">
+                                <div class="inner">
+                                    <div class="container">
+                                        <div class="com-column" style="width: 60%;">
+                                            <div class="outer">123</div>
+                                        </div>
+                                        <div class="com-column" style="width: 40%;">
+                                            <div class="outer">345</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </li>
+</ul>
+
+</body>
+</html>

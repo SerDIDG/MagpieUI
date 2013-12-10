@@ -115,7 +115,7 @@ Com['Draganddrop'] = function(o){
             x = e.touches[0].clientX;
             y = e.touches[0].clientY;
         }else{
-            // If not left mouse button, or current draggable is exist, don't duplicate drag event
+            // If not left mouse button, don't duplicate drag event
             if((is('IE') && isVersion() < 9 && e.button != 1) || (!is('IE') && e.button)){
                 return;
             }

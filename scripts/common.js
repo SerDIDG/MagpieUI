@@ -339,6 +339,9 @@ cm.preventDefault = function(e){
 cm.getObjFromEvent = cm.getEventObject = cm.getEventTarget = function(e){
     return  e.target || e.srcElement;
 };
+cm.getObjToEvent = cm.getRelatedTarget = function(e){
+    return e.relatedTarget || e.srcElement;
+};
 
 cm.crossEvents = function(key){
     var events = {
@@ -908,7 +911,7 @@ cm.isRegExp = function(obj){
     return obj.constructor == RegExp;
 };
 cm.toFixed = function(n, x){
-    return    parseFloat(n).toFixed(x);
+    return parseFloat(n).toFixed(x);
 };
 cm.toNumber = function(str){
     return parseInt(str.replace(/\s+/, ''));
@@ -965,10 +968,10 @@ cm.addLeadZero = function(x){
 
 cm.onTextChange = function(node, handler){
     var u = Useragent.get(), f = function(e){
-            setTimeout(function(){
-                handler(e);
-            }, 5);
-        }, e = (/IE|Chrome|Safari/.test(u.browser)) ? 'keydown' : 'keypress';
+        setTimeout(function(){
+            handler(e);
+        }, 5);
+    }, e = (/IE|Chrome|Safari/.test(u.browser)) ? 'keydown' : 'keypress';
     cm.addEvent(node, e, f);
     return node;
 };
@@ -978,11 +981,11 @@ cm.onTextChange = function(node, handler){
 cm.getCurrentDate = function(){
     var date = new Date();
     return date.getFullYear() + '-' +
-           ((date.getMonth() < 9) ? '0' : '') + (date.getMonth() + 1) + '-' +
-           ((date.getDate() < 9) ? '0' : '') + (date.getDate()) + ' ' +
-           ((date.getHours() < 10) ? '0' : '') + date.getHours() + ':' +
-           ((date.getMinutes() < 10) ? '0' : '') + date.getMinutes() + ':' +
-           ((date.getSeconds() < 10) ? '0' : '') + date.getSeconds();
+        ((date.getMonth() < 9) ? '0' : '') + (date.getMonth() + 1) + '-' +
+        ((date.getDate() < 9) ? '0' : '') + (date.getDate()) + ' ' +
+        ((date.getHours() < 10) ? '0' : '') + date.getHours() + ':' +
+        ((date.getMinutes() < 10) ? '0' : '') + date.getMinutes() + ':' +
+        ((date.getSeconds() < 10) ? '0' : '') + date.getSeconds();
 };
 cm.dateFormat = function(date, format, langs){
     var str = format,
@@ -1036,12 +1039,12 @@ cm.addClass = function(o, str){
         return null;
     }
     if(o.classList){
-        for(var classes = str.split(' '), ln = classes.length; ln-- > 0;){
-            o.classList.add(classes[ln]);
-        }
+        cm.forEach(str.split(' '), function(item){
+            o.classList.add(item);
+        });
     }else{
-        var add = cm.arrayToObject(typeof(str) == 'object' ? str : str.split(/\s+/));
-        var current = cm.arrayToObject(o && o.className ? o.className.split(/\s+/) : []);
+        var add = cm.arrayToObject(typeof(str) == 'object' ? str : str.split(/\s+/)),
+            current = cm.arrayToObject(o && o.className ? o.className.split(/\s+/) : []);
         current = cm.merge(current, add);
         o.className = cm.objectToArray(current).join(' ');
     }
@@ -1053,13 +1056,13 @@ cm.removeClass = function(o, str){
         return null;
     }
     if(o.classList){
-        for(var classes = str.split(' '), ln = classes.length; ln-- > 0;){
-            o.classList.remove(classes[ln]);
-        }
+        cm.forEach(str.split(' '), function(item){
+            o.classList.remove(item);
+        });
     }else{
-        var remove = cm.arrayToObject(typeof(str) == 'object' ? str : str.split(/\s+/));
-        var current = o && o.className ? o.className.split(/\s+/) : [];
-        var ready = [];
+        var remove = cm.arrayToObject(typeof(str) == 'object' ? str : str.split(/\s+/)),
+            current = o && o.className ? o.className.split(/\s+/) : [],
+            ready = [];
         current.forEach(function(item){
             if(!remove[item]){
                 ready.push(item);
@@ -1077,17 +1080,23 @@ cm.replaceClass = function(node, oldClass, newClass){
     return cm.addClass(cm.removeClass(node, oldClass), newClass);
 };
 
-cm.hasClass = cm.isClass = function(node, className){
+cm.hasClass = cm.isClass = function(node, cssClass){
+    var hasClass, classes;
     if(!node){
         return false;
     }
-    var classes = node.className ? node.className.split(/\s+/) : [], hasClass = false;
-    cm.forEach(classes, function(item){
-        if(item == className){
-            hasClass = true;
-        }
-    });
-    return hasClass;
+    if(node.classList){
+        return node.classList.contains(cssClass);
+    }else{
+        classes = node.className ? node.className.split(/\s+/) : [];
+        hasClass = false;
+        cm.forEach(classes, function(item){
+            if(item == cssClass){
+                hasClass = true;
+            }
+        });
+        return hasClass;
+    }
 };
 
 cm.getPageSize = function(key){
@@ -1241,11 +1250,19 @@ cm.setBodyScrollTop = function(num){
 };
 
 cm.getBodyScrollLeft = function(){
-    return Math.max(document.documentElement.scrollLeft, document.body.scrollLeft, 0);
+    return Math.max(
+        document.documentElement.scrollLeft,
+        document.body.scrollLeft,
+        0
+    );
 };
 
 cm.getBodyScrollTop = function(){
-    return Math.max(document.documentElement.scrollTop, document.body.scrollTop, 0);
+    return Math.max(
+        document.documentElement.scrollTop,
+        document.body.scrollTop,
+        0
+    );
 };
 
 cm.getSupportedStyle = function(style){
@@ -1270,13 +1287,13 @@ cm.getSupportedStyle = function(style){
 
 var animFrame = (function(){
     return  window.requestAnimationFrame ||
-            window.webkitRequestAnimationFrame ||
-            window.mozRequestAnimationFrame ||
-            window.oRequestAnimationFrame ||
-            window.msRequestAnimationFrame ||
-            function(callback, element){
-                return window.setTimeout(callback, 1000 / 60);
-            };
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback, element){
+            return window.setTimeout(callback, 1000 / 60);
+        };
 })();
 
 cm.animation = cm.Animation = function(o){
@@ -1675,13 +1692,13 @@ cm.cookieDate = function(num){
 
 cm.ajax = cm.altReq = function(){
     var o = cm.merge({
-            'type' : 'xml',
-            'method' : 'post',
-            'params' : '',
-            'url' : '',
-            'httpRequestObject' : false
-        },
-        arguments[0]),
+                'type' : 'xml',
+                'method' : 'post',
+                'params' : '',
+                'url' : '',
+                'httpRequestObject' : false
+            },
+            arguments[0]),
         type = (o.type && o.type.toLowerCase() == 'text') ? 'responseText' : 'responseXML',
         method = o.method || 'post',
         params = o.params || '',
