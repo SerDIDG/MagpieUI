@@ -11,6 +11,7 @@ Com['Tooltip'] = function(o){
             'className' : '',
             'adaptive' : true,
             'title' : '',
+            'titleTag' : 'h3',
             'content' : cm.Node('div'),
             'events' : {}
         }, o),
@@ -50,7 +51,7 @@ Com['Tooltip'] = function(o){
         cm.remove(nodes['title']);
         if(!cm.isEmpty(title)){
             nodes['title'] = cm.Node('div', {'class' : 'title'},
-                cm.Node('h3', title)
+                cm.Node(config['titleTag'], title)
             );
             cm.insertFirst(nodes['title'], nodes['inner']);
         }
