@@ -116,11 +116,7 @@ Com['Slider'] = function(o){
 		slide['node'] = item;
 		slide['node'].style.display = 'none';
 		slide['node'].style.zIndex = '1';
-		if(cm.IE6 || cm.IE7 || cm.IE8){
-			slide['node'].style.filter = 'alpha(opacity=0)';
-		}else{
-			slide['node'].style.opacity = '0'; 
-		}
+        cm.setOpacity(slide['node'], 0);
 		slide['anim'] = new cm.Animation(slide['node']);
 	};
 	
@@ -238,11 +234,7 @@ Com['Slider'] = function(o){
 	var hide = function(slide){
 		if(slide != current){
 			slides[slide]['node'].style.display = 'none';
-			if(cm.IE6 || cm.IE7 || cm.IE8){
-				slides[slide]['node'].style.filter = 'alpha(opacity=0)';
-			}else{
-				slides[slide]['node'].style.opacity = '0'; 
-			}
+            cm.setOpacity(slides[slide]['node'], 0)
 		}
 	};
 	
