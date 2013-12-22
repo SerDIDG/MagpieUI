@@ -216,14 +216,23 @@ code {
 .margin-none {
 	margin: 0 !important;
 }
+.align-left {
+    text-align: left !important;
+}
 .align-center {
 	text-align: center !important;
 }
 .align-right {
 	text-align: right !important;
 }
+.valign-top {
+    vertical-align: top !important;
+}
 .valign-middle {
-	vertical-align: middle !important;
+    vertical-align: middle !important;
+}
+.valign-bottom {
+    vertical-align: bottom !important;
 }
 .inner-link {
 	text-decoration: none;
@@ -267,9 +276,14 @@ ul.indent {
     font-size: 8px;
     text-transform: uppercase;
 }
-.ie7 .mark-new {
-    display: inline;
-    zoom: 1;
+
+/* Content Table */
+
+.content-table {
+
+}
+.content-table td {
+    vertical-align: top;
 }
 
 /* Content Buttons Line */
@@ -350,7 +364,6 @@ ul.indent {
 /* ******* FORM ******* */
 
 .form {
-	line-height: 22px;
 	cursor: default;
 }
 .form.in-content {
@@ -366,7 +379,6 @@ ul.indent {
 	font-style: italic !important;
 }
 .form dl {
-	min-height: 22px;
 	margin: 10px 0 0 0;
 	padding: 0;
 	display: block;
@@ -385,11 +397,9 @@ ul.indent {
 }
 .form dt {
 	width: 150px;
-	min-height: 22px;
 	float: left;
 	display: block;
 	margin: 0;
-	padding: 0;
 }
 .form dl.error dt {
 	font-weight: bold;
@@ -401,7 +411,7 @@ ul.indent {
 }
 .form dd {
 	display: block;
-	margin: 0 0 0 150px;
+	margin: 0 0 0 160px;
 	padding: 0;
 	position: relative;
 }
@@ -479,10 +489,6 @@ ul.indent {
 	position: relative;
 	cursor: pointer;
 }
-.ie7 .browse-button {
-	display: inline;
-	zoom: 1;
-}
 .browse-button > .inner {
 	width: 100%;
 	height: 100%;
@@ -498,7 +504,6 @@ ul.indent {
 	opacity: 0;
 	cursor: pointer;
 }
-.ie7 .browse-button input[type="file"],
 .ie8 .browse-button input[type="file"] {
 	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
 }
@@ -578,8 +583,6 @@ ul.indent {
 	clear: both;
 }
 .form .btn-wrap {
-	height: 22px;
-	line-height: 22px;
 	margin-top: 20px;
 }
 .form .btn-wrap .button,
@@ -604,7 +607,6 @@ ul.indent {
 	overflow: hidden;
 	text-align: right;
 	font-size: 12px;
-	line-height: 22px;
 	padding: 0 8px 0 0;
 }
 .form .btn-wrap.error .hint {
@@ -623,11 +625,6 @@ ul.indent {
 }
 .form .btn-wrap.centered input:first-child {
 	margin: 0;
-}
-.ie6 .form .btn-wrap input,
-.ie7 .form .btn-wrap input {
-	display: inline;
-	zoom: 1;
 }
 .form fieldset {
 	border-radius: 5px;
@@ -674,16 +671,15 @@ ul.indent {
 }
 
 .check-line {
-	min-height: 22px;
-	line-height: 22px;
 	margin-top: 4px;
 }
 .check-line:first-child {
 	margin: 0;
 }
+.form dd > input[type="checkbox"],
 .check-line input[type="radio"],
 .check-line input[type="checkbox"] {
-	margin: 5px 0 0 0;
+	margin: 4px 0 5px 0;
 	vertical-align: top;
 	padding: 0;
 	cursor: pointer;
@@ -692,7 +688,6 @@ ul.indent {
 	margin-top: 4px;
 }
 .check-line label {
-	line-height: 16px;
 	padding: 3px 20px 3px 6px;
 	cursor: pointer;
 	vertical-align: baseline;
@@ -707,9 +702,7 @@ ul.indent {
 }
 .check-line.outside label {
 	display: block;
-	margin: 0 0 0 24px;
-	line-height: inherit;
-	padding: 0;
+	margin: 0 0 0 16px;
 }
 
 .check-line.filter > input {
@@ -816,6 +809,17 @@ ul.indent {
 }
 .form-image-box.flat > .r {
 	float: none;
+}
+
+
+/* Captcha */
+
+.form .captcha img {
+    display: block;
+    margin: 0 0 10px;
+}
+.form .captcha {
+    display: inline-block;
 }
 
 /* Outside Icons */
@@ -1461,10 +1465,6 @@ select[multiple] {
 	-webkit-transition: opacity 0.3s ease-in-out;
 	        transition: opacity 0.3s ease-in-out;
 }
-.ie7 .gridlist .control .icon {
-	display: inline;
-	zoom: 1;
-}
 .gridlist .control .icon:hover {
 	opacity: 0.7;
 	-webkit-transition: opacity 0.1s ease-in-out;
@@ -1639,10 +1639,6 @@ select[multiple] {
 	font-size: 12px;
 	vertical-align: top;
 }
-.ie7 .breadcrumbs ul li {
-	display: inline;
-	zoom: 1;
-}
 .breadcrumbs ul li.sep {
 	margin: 0 4px;
 }
@@ -1670,10 +1666,6 @@ select[multiple] {
 }
 .pagination ul li:first-child {
 	margin-left: 0;
-}
-.ie7 .pagination ul li {
-	display: inline;
-	zoom: 1;
 }
 .pagination ul li a {
 	min-width: 10px;
@@ -1725,10 +1717,6 @@ select[multiple] {
 	margin: 0 0 0 24px;
 	text-align: center;
 	font-size: 18px;
-}
-.ie7 .pagination-arrowed .item {
-	display: inline;
-	zoom: 1;
 }
 .pagination-arrowed .item:first-child {
 	margin: 0;
@@ -1994,7 +1982,6 @@ select[multiple] {
 .cm-calendar {
 }
 .cm-calendar .selects {
-    height: 22px;
 }
 .cm-calendar .months {
     width: 49% !important;
@@ -2128,7 +2115,6 @@ select[multiple] {
 .datepicker-input > .icon.remove {
     position: absolute;
     right: -26px;
-    top: 4px;
 }
 
 .cm-datepicker-tooltip > .inner > .scroll {
@@ -2725,6 +2711,43 @@ select[multiple] {
 	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=60);
 }
 
+/* ******* GENERAL VARIABLE STYLING ******* */
+
+/* Form line-height dependents on input \ button height */
+
+.form .btn-wrap,
+.form .btn-wrap .hint,
+.single-file .text,
+.files-list ul li,
+.form-field dd.controls,
+.form-icons-outside,
+.check-line,
+.check-line .field {
+    line-height: 22px;
+}
+
+/* Form height dependents on input \ button height */
+
+.check-line {
+    min-height: 22px;
+}
+.cm-calendar .selects,
+.form .btn-wrap {
+    height: 22px;
+}
+
+/* Padding dependents on document line-height */
+
+.form dt {
+    padding: 3px 0;
+}
+
+/* Icon position on input \ button height  */
+
+.datepicker-input > .icon.remove {
+    top: 4px;
+}
+
 /* ******* ADAPTIVE ******* */
 
 @media only screen and (max-width : 640px) {
@@ -2774,6 +2797,7 @@ select[multiple] {
         width: auto;
         float: none;
         font-weight: bold;
+        padding: 0;
     }
     .form dl dd {
         margin: 8px 0 0 0;
@@ -2804,6 +2828,9 @@ select[multiple] {
 		float: none;
 		margin: 16px 0 0 0;
 	}
+    .form .cols .col:first-child {
+        margin-top: 0;
+    }
 	.form-filter-fromto .form-box {
 		margin-right: 6%;
 	}
@@ -2937,6 +2964,10 @@ select[multiple] {
 	}
     .form-filter-fromto.simple .buttons {
         margin: 26px 0 0 0;
+    }
+    .form-image-box.style2 .browse-button {
+        display: block;
+        margin: 0 0 8px;
     }
 		
 	/* Gallery */
