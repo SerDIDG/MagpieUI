@@ -303,7 +303,8 @@ Com['Select'] = function(o){
     };
 
     var setMultiple = function(option){
-        var value = option['value'] || option['text'];
+        var value = typeof option['value'] != 'undefined'? option['value'] : option['text'];
+
         if(option['selected']){
             active = active.filter(function(item){
                 return value != item;
@@ -321,7 +322,7 @@ Com['Select'] = function(o){
 
     var setSingle = function(option){
         oldActive = active;
-        active = option['value'] || option['text'];
+        active = typeof option['value'] != 'undefined'? option['value'] : option['text'];
         optionsList.forEach(function(item){
             cm.removeClass(item['node'], 'active');
         });
@@ -432,6 +433,17 @@ Com['Select'] = function(o){
             removeOption(item);
         });
         return that;
+    };
+
+    that.getAllOptions = function(){
+        var result = [];
+        cm.forEach(optionsList, function(item){
+            result.push({
+                'text' : item['text'],
+                'value' : item['value']
+            });
+        });
+        return result;
     };
 
     that.getNodes = function(key){

@@ -1266,15 +1266,15 @@ cm.getBodyScrollTop = function(){
 };
 
 cm.getSupportedStyle = function(style){
-    var upper = style.replace(style.charAt(0), style.charAt(0).toUpperCase()),
+    var upper = cm.styleHash(style).replace(style.charAt(0), style.charAt(0).toUpperCase()),
         styles = [
-            style,
+            cm.styleHash(style),
             ['Webkit', upper].join(''),
             ['Moz', upper].join(''),
             ['O', upper].join(''),
             ['ms', upper].join('')
-        ],
-        style = false;
+        ];
+    style = false;
     cm.forEach(styles, function(item){
         if(typeof document.createElement('div').style[item] != 'undefined' && !style){
             style = item;

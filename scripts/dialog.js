@@ -39,6 +39,7 @@ Com['Dialog'] = function(o){
             'scroll' : true,
             'onOpenStart' : function(dialog){},
 			'onOpen' : function(dialog){},
+            'onCloseStart' : function(dialog){},
 			'onClose' : function(dialog){},
 			'langs' : {
 				'closeTitle' : 'Close',
@@ -176,8 +177,10 @@ Com['Dialog'] = function(o){
 	var open = that.open = function(){
 		nodes['container'].style.display = 'block';
 		// Set window position
+        /*
 		nodes['window'].style.marginTop = -(nodes['window'].offsetHeight / 2) + 'px';
 		nodes['window'].style.marginLeft = -(config['width'] / 2) + 'px';
+		*/
 		// Resize interval, removed on close
 		resizeInt = setInterval(resizeHandler, 5);
 		// Animate
@@ -201,7 +204,8 @@ Com['Dialog'] = function(o){
 			// Remove Window
 			config['removeOnClose'] && remove();
 		}});
-		
+        // Close Event
+        config['onCloseStart'](that);
 		return that;
 	};
 	
