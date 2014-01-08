@@ -2722,7 +2722,8 @@ select[multiple] {
 .form-field dd.controls,
 .form-icons-outside,
 .check-line,
-.check-line .field {
+.check-line .field,
+.form dl .birth {
     line-height: 22px;
 }
 
