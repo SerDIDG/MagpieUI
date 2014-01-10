@@ -189,7 +189,7 @@ Com['Select'] = function(o){
     };
 
     var removeOption = function(option){
-        var value = option['value'] || option['text'];
+        var value = typeof option['value'] != 'undefined'? option['value'] : option['text'];
         // Remove option from list and array
         cm.remove(option['node']);
         cm.remove(option['option']);
