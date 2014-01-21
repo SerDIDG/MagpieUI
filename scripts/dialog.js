@@ -1,61 +1,61 @@
-Com.Elements['Dialog'] = {}; 
- 
-Com['GetDialog'] = function(id){  
-	return Com.Elements.Dialog[id] || null; 
-}; 
- 
-Com['SetDialog'] = function(id, dialog){  
-	if(id && dialog){
-		Com.Elements.Dialog[id] = dialog; 
-		return dialog;
-	}
-	return false;
+Com.Elements['Dialog'] = {};
+
+Com['GetDialog'] = function(id){
+    return Com.Elements.Dialog[id] || null;
 };
 
-Com['RemoveDialog'] = function(id){  
-	if(Com.Elements.Dialog[id]){
-		delete Com.Elements.Dialog[id]; 
-	}
+Com['SetDialog'] = function(id, dialog){
+    if(id && dialog){
+        Com.Elements.Dialog[id] = dialog;
+        return dialog;
+    }
+    return false;
+};
+
+Com['RemoveDialog'] = function(id){
+    if(Com.Elements.Dialog[id]){
+        delete Com.Elements.Dialog[id];
+    }
 };
 
 Com['Dialog'] = function(o){
-	var that = this,
-		config = cm.merge({
-			'id' : null,
-			'width' : 700,
+    var that = this,
+        config = cm.merge({
+            'id' : null,
+            'width' : 700,
             'minHeight' : 0,
             'maxHeight' : 'auto',
-			'position' : 'fixed',
+            'position' : 'fixed',
             'margin' : 10,
             'className' : '',
-			'container' : document.body,
-			'content' : cm.Node('div'),
-			'title' : '',
-			'closeButton' : true,
-			'closeTitle' : true,
-			'openTime' : 200,
-			'autoOpen' : true,
-			'removeOnClose' : true,
+            'container' : document.body,
+            'content' : cm.Node('div'),
+            'title' : '',
+            'closeButton' : true,
+            'closeTitle' : true,
+            'openTime' : 200,
+            'autoOpen' : true,
+            'removeOnClose' : true,
             'scroll' : true,
-			'clickEventName' : 'click',
+            'clickEventName' : 'click',
             'events' : {},
-			'langs' : {
-				'closeTitle' : 'Close',
-				'close' : 'x'
-			}
-		},o),
+            'langs' : {
+                'closeTitle' : 'Close',
+                'close' : 'x'
+            }
+        }, o),
         API = {
             'onOpenStart' : [],
             'onOpen' : [],
             'onCloseStart' : [],
             'onClose' : []
         },
-		height,
-		width,
-		innerHeight,
-		resizeInt,
-		nodes = {},
-		anim = {};
+        height,
+        width,
+        innerHeight,
+        resizeInt,
+        nodes = {},
+        anim = {};
 
     var init = function(){
         // Convert events and deprecated event model
@@ -70,19 +70,19 @@ Com['Dialog'] = function(o){
         // Open
         config['autoOpen'] && open();
     };
-		
-	var render = function(){
-		// Add to global array
-		Com['SetDialog'](config['id'], that);
-		// Structure
-		config['container'].appendChild(
-			nodes['container'] = cm.Node('div', {'class' : 'dialog'},
-				nodes['bg'] = cm.Node('div', {'class' : 'bg'}),
+
+    var render = function(){
+        // Add to global array
+        Com['SetDialog'](config['id'], that);
+        // Structure
+        config['container'].appendChild(
+            nodes['container'] = cm.Node('div', {'class' : 'dialog'},
+                nodes['bg'] = cm.Node('div', {'class' : 'bg'}),
                 nodes['window'] = cm.Node('div', {'class' : 'window'},
                     nodes['windowInner'] = cm.Node('div', {'class' : 'inner'})
                 )
-			)
-		);
+            )
+        );
         // Set config styles
         nodes['container'].style.position = config['position'];
         nodes['window'].style.width = config['width'] + 'px';
@@ -91,32 +91,34 @@ Com['Dialog'] = function(o){
         // Render close button
         if(config['closeButton']){
             nodes['windowInner'].appendChild(
-                nodes['close'] = cm.Node('div', {'class' : 'close'}, config['langs']['close'])
+                nodes['close'] = cm.Node('div', {'class' : 'close'},
+                    config['langs']['close']
+                )
             );
             if(config['closeTitle']){
                 nodes['close'].title = config['langs']['closeTitle'];
             }
         }
-		// Set title
-		renderTitle(config['title']);
-		// Embed content
-		renderContent(config['content']);
-	};
-	
-	var renderTitle = function(title){
-		if(!cm.isEmpty(title)){
-			// Remove old nodes
-			cm.remove(nodes['title']);
-			// Render new nodes
-			nodes['title'] = cm.Node('div', {'class' : 'title'}, 
-				cm.Node('h1', title)
-			);
-			cm.insertFirst(nodes['title'], nodes['windowInner']);
-		}
-	};
-	
-	var renderContent = function(node){
-		if(!nodes['descr']){
+        // Set title
+        renderTitle(config['title']);
+        // Embed content
+        renderContent(config['content']);
+    };
+
+    var renderTitle = function(title){
+        if(!cm.isEmpty(title)){
+            // Remove old nodes
+            cm.remove(nodes['title']);
+            // Render new nodes
+            nodes['title'] = cm.Node('div', {'class' : 'title'},
+                cm.Node('h1', title)
+            );
+            cm.insertFirst(nodes['title'], nodes['windowInner']);
+        }
+    };
+
+    var renderContent = function(node){
+        if(!nodes['descr']){
             if(config['scroll']){
                 nodes['windowInner'].appendChild(
                     nodes['descr'] = cm.Node('div', {'class' : 'descr'},
@@ -132,11 +134,11 @@ Com['Dialog'] = function(o){
                     )
                 );
             }
-		}
-		if(node){
-			cm.clearNode(nodes['inner']).appendChild(node);
-		}
-	};
+        }
+        if(node){
+            cm.clearNode(nodes['inner']).appendChild(node);
+        }
+    };
 
     var setMiscEvents = function(){
         // Close button
@@ -146,46 +148,47 @@ Com['Dialog'] = function(o){
         // Init animation
         anim['container'] = new cm.Animation(nodes['container']);
     };
-	
-	var resizeHandler = function(){
-		// Set scroll height if dialog height > window height
-		var winHeight = nodes['container'].offsetHeight - config['margin'],
-			winWidth = nodes['container'].offsetWidth - config['margin'],
-            freeHeight = winHeight - (nodes['title'] && nodes['title'].offsetHeight || 0) -
-                cm.getStyle(nodes['descr'], 'paddingTop', true) -
-                cm.getStyle(nodes['descr'], 'paddingBottom', true),
-			insetHeight = nodes['inner'].offsetHeight,
+
+    var resizeHandler = function(){
+        // Set scroll height if dialog height > window height
+        var winHeight = nodes['container'].offsetHeight - config['margin'],
+            winWidth = nodes['container'].offsetWidth - config['margin'],
+            freeHeight = winHeight
+                        - (nodes['title'] && nodes['title'].offsetHeight || 0)
+                        - cm.getStyle(nodes['descr'], 'paddingTop', true)
+                        - cm.getStyle(nodes['descr'], 'paddingBottom', true),
+            insetHeight = nodes['inner'].offsetHeight,
             maxHeight = !config['maxHeight'] || config['maxHeight'] == 'auto' ? insetHeight : Math.min(config['maxHeight'], insetHeight),
-			setHeight = Math.min(Math.max(maxHeight, config['minHeight']), freeHeight),
-			windowHeight = nodes['window'].offsetHeight,
-			windowWidth = nodes['window'].offsetWidth,
-			setWidth = Math.min(config['width'], winWidth);
-		// Set or remove scroll if needs
-		if(innerHeight != setHeight){
-			innerHeight = setHeight;
-			nodes['scroll'].style.height = [innerHeight, 'px'].join('');
-			if(maxHeight <= freeHeight && insetHeight <= maxHeight){
-				cm.removeClass(nodes['scroll'], 'isScroll');
-			}else{
-				cm.addClass(nodes['scroll'], 'isScroll');
-			}
-			windowHeight = nodes['window'].offsetHeight;
-		}
-		// Set window width
-		if(windowWidth != setWidth){
-			windowWidth = setWidth;
-			nodes['window'].style.width = [setWidth, 'px'].join('')
-		}
-		// Set new align if needs
-		if(height != windowHeight){
-			height = windowHeight;
-			nodes['window'].style.marginTop = [-(windowHeight / 2), 'px'].join('');
-		}
-		if(width != windowWidth){
-			width = windowWidth;
-			nodes['window'].style.marginLeft = [-(windowWidth / 2), 'px'].join('');
-		}
-	};
+            setHeight = Math.min(Math.max(maxHeight, config['minHeight']), freeHeight),
+            windowHeight = nodes['window'].offsetHeight,
+            windowWidth = nodes['window'].offsetWidth,
+            setWidth = Math.min(config['width'], winWidth);
+        // Set or remove scroll if needs
+        if(innerHeight != setHeight){
+            innerHeight = setHeight;
+            nodes['scroll'].style.height = [innerHeight, 'px'].join('');
+            if(maxHeight <= freeHeight && insetHeight <= maxHeight){
+                cm.removeClass(nodes['scroll'], 'isScroll');
+            }else{
+                cm.addClass(nodes['scroll'], 'isScroll');
+            }
+            windowHeight = nodes['window'].offsetHeight;
+        }
+        // Set window width
+        if(windowWidth != setWidth){
+            windowWidth = setWidth;
+            nodes['window'].style.width = [setWidth, 'px'].join('')
+        }
+        // Set new align if needs
+        if(height != windowHeight){
+            height = windowHeight;
+            nodes['window'].style.marginTop = [-(windowHeight / 2), 'px'].join('');
+        }
+        if(width != windowWidth){
+            width = windowWidth;
+            nodes['window'].style.marginLeft = [-(windowWidth / 2), 'px'].join('');
+        }
+    };
 
     var open = function(){
         nodes['container'].style.display = 'block';
@@ -245,29 +248,29 @@ Com['Dialog'] = function(o){
             }
         });
     };
-	
-	/* *** MAIN *** */
-	
-	that.set = function(title, content){
-		renderTitle(title);
-		renderContent(content);
-		return that;
-	};
-	
-	that.open = function(){
-		open();
-		return that;
-	};
-	
-	that.close = function(){
-		close();
-		return that;
-	};
-	
-	that.remove = function(){
-		remove();
-		return that;
-	};
+
+    /* *** MAIN *** */
+
+    that.set = function(title, content){
+        renderTitle(title);
+        renderContent(content);
+        return that;
+    };
+
+    that.open = function(){
+        open();
+        return that;
+    };
+
+    that.close = function(){
+        close();
+        return that;
+    };
+
+    that.remove = function(){
+        remove();
+        return that;
+    };
 
     that.addEvent = function(event, handler){
         if(API[event] && typeof handler == 'function'){
@@ -284,12 +287,10 @@ Com['Dialog'] = function(o){
         }
         return that;
     };
-	
-	that.getNodes = function(key){
-		return nodes[key] || nodes;
-	};
-	
-	init();
+
+    that.getNodes = function(key){
+        return nodes[key] || nodes;
+    };
+
+    init();
 };
-
-
