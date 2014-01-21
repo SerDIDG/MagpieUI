@@ -129,7 +129,7 @@ Com['Columns'] = function(o){
             return false;
         }
         // If not left mouse button, don't duplicate drag event
-        if((is('IE') && isVersion() < 9 && e.button != 1) || (!is('IE') && e.button)){
+        if((cm.is('IE') && cm.isVersion() < 9 && e.button != 1) || (!cm.is('IE') && e.button)){
             return false;
         }
         // Current
@@ -153,8 +153,8 @@ Com['Columns'] = function(o){
         // Add move event on document
         cm.addClass(nodes['container'], 'is-active');
         cm.addClass(document.body, 'com-columns-body');
-        cm.addEvent((is('IE') && isVersion() < 9? document.body : window), 'mousemove', move);
-        cm.addEvent((is('IE') && isVersion() < 9? document.body : window), 'mouseup', stop);
+        cm.addEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mousemove', move);
+        cm.addEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mouseup', stop);
         return true;
     };
 
@@ -182,8 +182,8 @@ Com['Columns'] = function(o){
         // Remove move event from document
         cm.removeClass(nodes['container'], 'is-active');
         cm.removeClass(document.body, 'com-columns-body');
-        cm.removeEvent((is('IE') && isVersion() < 9? document.body : window), 'mousemove', move);
-        cm.removeEvent((is('IE') && isVersion() < 9? document.body : window), 'mouseup', stop);
+        cm.removeEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mousemove', move);
+        cm.removeEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mouseup', stop);
     };
 
     /* *** Main *** */

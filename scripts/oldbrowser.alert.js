@@ -20,7 +20,7 @@ Com['OldBrowserAlert'] = function(o){
 		
 	var init = function(){
 		cm.forEach(config['versions'], function(version, browser){
-			if(is(browser) && isVersion() < version){
+			if(cm.is(browser) && cm.isVersion() < version){
 				// Parse description string, insert browser name and verison
 				config['langs']['descr'] =	config['langs']['descr'].replace(/%browser%/g, useragent['full_name'])
 																	.replace(/%version%/g, useragent['full_version'])

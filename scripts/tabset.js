@@ -200,7 +200,7 @@ Com['Tabset'] = function(o){
 	
 	var initHashChange = function(){
 		var hash;
-		if("onhashchange" in window && !is('IE7')){
+		if("onhashchange" in window && !cm.is('IE7')){
 			cm.addEvent(window, 'hashchange', hashHandler);
 		}else{
 			hash = window.location.hash;

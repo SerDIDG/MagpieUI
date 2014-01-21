@@ -166,7 +166,7 @@ Com['Gallery'] = function(o){
         // Animate
         anim['container'].go({'style' : {'opacity' : 1}, 'anim' : 'smooth', 'duration' : config['openTime'], 'onStop' : function(){
             // IE filter fix
-            if(is('IE') && isVersion() < 9){
+            if(cm.is('IE') && cm.isVersion() < 9){
                 nodes['container'].style.filter = '';
             }
             /* *** EXECUTE API EVENTS *** */
@@ -268,13 +268,13 @@ Com['Gallery'] = function(o){
         // Animate
         item['anim'].go({'style' : {'opacity' : 1}, 'anim' : 'smooth', 'duration' : config['slideChangeTime'], 'onStop' : function(){
             // IE filter fix
-            if(is('IE') && isVersion() < 9){
+            if(cm.is('IE') && cm.isVersion() < 9){
                 item['node'].style.filter = '';
             }
             // Remove old item
             if(itemOld){
                 cm.remove(itemOld['node']);
-                if(is('IE') && isVersion() < 9){
+                if(cm.is('IE') && cm.isVersion() < 9){
                     itemOld['node'].style.filter = '';
                 }else{
                     itemOld['node'].style.opacity = 0;
@@ -295,7 +295,7 @@ Com['Gallery'] = function(o){
             pageSize = cm.getPageSize(),
             width, height, overlayOffset, spaceWidth, spaceHeight, newWidth, newHeight, ratio;
         // Ugly IE fix
-        if(is('IE') && isVersion() < 9){
+        if(cm.is('IE') && cm.isVersion() < 9){
             item['img'].style.display = 'none';
             item['img'].style.display = 'block';
         }

@@ -37,23 +37,41 @@ Com['Dialog'] = function(o){
 			'autoOpen' : true,
 			'removeOnClose' : true,
             'scroll' : true,
-            'onOpenStart' : function(dialog){},
-			'onOpen' : function(dialog){},
-            'onCloseStart' : function(dialog){},
-			'onClose' : function(dialog){},
+			'clickEventName' : 'click',
+            'events' : {},
 			'langs' : {
 				'closeTitle' : 'Close',
 				'close' : 'x'
 			}
 		},o),
+        API = {
+            'onOpenStart' : [],
+            'onOpen' : [],
+            'onCloseStart' : [],
+            'onClose' : []
+        },
 		height,
 		width,
 		innerHeight,
 		resizeInt,
 		nodes = {},
 		anim = {};
+
+    var init = function(){
+        // Convert events and deprecated event model
+        convertEvents(config['events']);
+        that.addEvent('onOpenStart', config['onOpenStart']);
+        that.addEvent('onOpen', config['onOpen']);
+        that.addEvent('onCloseStart', config['onCloseStart']);
+        that.addEvent('onClose', config['onClose']);
+        // Render
+        render();
+        setMiscEvents();
+        // Open
+        config['autoOpen'] && open();
+    };
 		
-	var init = function(){
+	var render = function(){
 		// Add to global array
 		Com['SetDialog'](config['id'], that);
 		// Structure
@@ -65,29 +83,24 @@ Com['Dialog'] = function(o){
                 )
 			)
 		);
+        // Set config styles
+        nodes['container'].style.position = config['position'];
+        nodes['window'].style.width = config['width'] + 'px';
         // Add CSS class
         !cm.isEmpty(config['className']) && cm.addClass(nodes['container'], config['className']);
+        // Render close button
+        if(config['closeButton']){
+            nodes['windowInner'].appendChild(
+                nodes['close'] = cm.Node('div', {'class' : 'close'}, config['langs']['close'])
+            );
+            if(config['closeTitle']){
+                nodes['close'].title = config['langs']['closeTitle'];
+            }
+        }
 		// Set title
 		renderTitle(config['title']);
 		// Embed content
 		renderContent(config['content']);
-		// Render close button
-		if(config['closeButton']){
-            nodes['windowInner'].appendChild(
-				nodes['close'] = cm.Node('div', {'class' : 'close'}, config['langs']['close'])
-			);
-			if(config['closeTitle']){
-				nodes['close'].title = config['langs']['closeTitle'];
-			}
-			nodes['close'].onclick = close;
-		}
-		// Set window dimention and position
-		nodes['container'].style.position = config['position'];
-		nodes['window'].style.width = config['width'] + 'px';
-		// Init animation
-		anim['container'] = new cm.Animation(nodes['container']);
-		// Auto open
-		config['autoOpen'] && open();
 	};
 	
 	var renderTitle = function(title){
@@ -124,6 +137,15 @@ Com['Dialog'] = function(o){
 			cm.clearNode(nodes['inner']).appendChild(node);
 		}
 	};
+
+    var setMiscEvents = function(){
+        // Close button
+        if(config['closeButton']){
+            cm.addEvent(nodes['close'], config['clickEventName'], close);
+        }
+        // Init animation
+        anim['container'] = new cm.Animation(nodes['container']);
+    };
 	
 	var resizeHandler = function(){
 		// Set scroll height if dialog height > window height
@@ -164,63 +186,107 @@ Com['Dialog'] = function(o){
 			nodes['window'].style.marginLeft = [-(windowWidth / 2), 'px'].join('');
 		}
 	};
+
+    var open = function(){
+        nodes['container'].style.display = 'block';
+        // Resize interval, will be removed on close
+        resizeInt = setInterval(resizeHandler, 5);
+        // Animate
+        anim['container'].go({'style' : {'opacity' : '1'}, 'duration' : config['openTime'], 'onStop' : function(){
+            // Open Event
+            executeEvent('onOpen');
+        }});
+        // Open Event
+        executeEvent('onOpenStart');
+    };
+
+    var close = function(){
+        // Remove resize interval
+        resizeInt && clearInterval(resizeInt);
+        // Animate
+        anim['container'].go({'style' : {'opacity' : '0'}, 'duration' : config['openTime'], 'onStop' : function(){
+            nodes['container'].style.display = 'none';
+            // Close Event
+            executeEvent('onClose');
+            // Remove Window
+            config['removeOnClose'] && remove();
+        }});
+        // Close Event
+        executeEvent('onCloseStart');
+    };
+
+    var remove = function(){
+        // Remove resize interval
+        resizeInt && clearInterval(resizeInt);
+        // Remove dialog container node
+        cm.remove(nodes['container']);
+        // Remove dialog from global array
+        Com['RemoveDialog'](config['id']);
+    };
+
+    var executeEvent = function(event){
+        var handler = function(){
+            cm.forEach(API[event], function(item){
+                item(that);
+            });
+        };
+
+        switch(event){
+            default:
+                handler();
+                break;
+        }
+    };
+
+    var convertEvents = function(o){
+        cm.forEach(o, function(item, key){
+            if(API[key] && typeof item == 'function'){
+                API[key].push(item);
+            }
+        });
+    };
 	
-	/* Main */
+	/* *** MAIN *** */
 	
 	that.set = function(title, content){
 		renderTitle(title);
 		renderContent(content);
-		
 		return that;
 	};
 	
-	var open = that.open = function(){
-		nodes['container'].style.display = 'block';
-		// Set window position
-        /*
-		nodes['window'].style.marginTop = -(nodes['window'].offsetHeight / 2) + 'px';
-		nodes['window'].style.marginLeft = -(config['width'] / 2) + 'px';
-		*/
-		// Resize interval, removed on close
-		resizeInt = setInterval(resizeHandler, 5);
-		// Animate
-		anim['container'].go({'style' : {'opacity' : '1'}, 'duration' : config['openTime'], 'onStop' : function(){
-			// Open Event
-			config['onOpen'](that);
-		}});
-        // Open Event
-        config['onOpenStart'](that);
+	that.open = function(){
+		open();
 		return that;
 	};
 	
-	var close = that.close = function(){
-		// Remove resize interval
-		resizeInt && clearInterval(resizeInt);
-		// Animate
-		anim['container'].go({'style' : {'opacity' : '0'}, 'duration' : config['openTime'], 'onStop' : function(){
-			nodes['container'].style.display = 'none';
-			// Close Event
-			config['onClose'](that);
-			// Remove Window
-			config['removeOnClose'] && remove();
-		}});
-        // Close Event
-        config['onCloseStart'](that);
+	that.close = function(){
+		close();
 		return that;
 	};
 	
-	var remove = that.remove = function(){
-		// Remove resize interval
-		resizeInt && clearInterval(resizeInt);
-		// Remove dialog container node
-		cm.remove(nodes['container']);
-		// Remove dialog from global array
-		Com['RemoveDialog'](config['id']);
+	that.remove = function(){
+		remove();
 		return that;
 	};
+
+    that.addEvent = function(event, handler){
+        if(API[event] && typeof handler == 'function'){
+            API[event].push(handler);
+        }
+        return that;
+    };
+
+    that.removeEvent = function(event, handler){
+        if(API[event] && typeof handler == 'function'){
+            API[event] = API[event].filter(function(item){
+                return item != handler;
+            });
+        }
+        return that;
+    };
 	
-	that.getNodes = function(){
-		return nodes;
+	that.getNodes = function(key){
+		return nodes[key] || nodes;
 	};
 	
 	init();

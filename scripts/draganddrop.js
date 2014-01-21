@@ -116,7 +116,7 @@ Com['Draganddrop'] = function(o){
             y = e.touches[0].clientY;
         }else{
             // If not left mouse button, don't duplicate drag event
-            if((is('IE') && isVersion() < 9 && e.button != 1) || (!is('IE') && e.button)){
+            if((cm.is('IE') && cm.isVersion() < 9 && e.button != 1) || (!cm.is('IE') && e.button)){
                 return;
             }
         }
@@ -178,8 +178,8 @@ Com['Draganddrop'] = function(o){
         checkInt = setInterval(checkPosition, 5);
         // Add move event on document
         cm.addClass(document.body, 'cm-draganddrop-body');
-        cm.addEvent((is('IE') && isVersion() < 9? document.body : window), 'mousemove', move);
-        cm.addEvent((is('IE') && isVersion() < 9? document.body : window), 'mouseup', stop);
+        cm.addEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mousemove', move);
+        cm.addEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mouseup', stop);
     };
 
     var move = function(e){
@@ -286,8 +286,8 @@ Com['Draganddrop'] = function(o){
         checkInt && clearInterval(checkInt);
         // Remove move event on document
         cm.removeClass(document.body, 'cm-draganddrop-body');
-        cm.removeEvent((is('IE') && isVersion() < 9? document.body : window), 'mousemove', move);
-        cm.removeEvent((is('IE') && isVersion() < 9? document.body : window), 'mouseup', stop);
+        cm.removeEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mousemove', move);
+        cm.removeEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mouseup', stop);
 
         if(currentAbove){
             // Animate chassis blocks

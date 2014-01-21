@@ -382,7 +382,7 @@ cm.onload = function(handler){
 };
 
 cm.isCenterButton = function(e){
-    return e.button == ((is('IE') && isVersion() < 9) ? 4 : 1);
+    return e.button == ((cm.is('IE') && cm.isVersion() < 9) ? 4 : 1);
 };
 
 cm.debounce = function(func, wait, immediate){
@@ -917,6 +917,24 @@ cm.toNumber = function(str){
     return parseInt(str.replace(/\s+/, ''));
 };
 
+cm.is = function(str){
+    if(typeof Useragent == 'undefined'){
+        throw new Error('Error. useragent.js is not exists or not loaded.');
+    }
+    var ver = str.replace(/[^0-9\.\,]/g,''),
+        app = Useragent.hash[str.replace(/[0-9\.\,\s]/g,'').toLowerCase()],
+        user = Useragent.get();
+    return (app == user.browser && ((ver && ver.length > 0)? parseFloat(ver) == parseFloat(user.version) : true));
+};
+
+cm.isVersion = function(){
+    if(typeof Useragent == 'undefined'){
+        throw new Error('Error. useragent.js is not exists or not loaded.');
+    }
+    var user = Useragent.get();
+    return parseFloat(user.version);
+};
+
 cm.decode = (function(){
     var node = document.createElement('textarea');
     return function(str){
@@ -1121,7 +1139,7 @@ cm.getPageSize = function(key){
 
 cm.setOpacity = function(node, value){
     if(node){
-        if(is('ie') && isVersion() < 9){
+        if(cm.is('ie') && cm.isVersion() < 9){
             node.style.filter = "alpha(opacity=" + (Math.floor(value * 100)) + ")";
         }else{
             node.style.opacity = value;
@@ -1450,7 +1468,7 @@ cm.animation = cm.Animation = function(o){
                 return obj['offset' + Name];
                 break;
             case 'opacity':
-                if(is('ie') && isVersion() < 9){
+                if(cm.is('ie') && cm.isVersion() < 9){
                     var reg = /alpha\(opacity=(.*)\)/;
                     var res = reg.exec(obj.style.filter || cm.getCSSStyle(obj, 'filter'));
                     return (res) ? res[1] / 100 : 1;
@@ -1505,13 +1523,13 @@ cm.transition = function(o){
     styles = styles.join(', ');
     // Start
     setTimeout(function(){
-        if(is('opera')){
+        if(cm.is('opera')){
             // Presto
             config['node'].style.OTransition = styles;
-        }else if(is('ff') && isVersion() < 16){
+        }else if(cm.is('ff') && cm.isVersion() < 16){
             // Gecko
             config['node'].style.MozTransition = styles;
-        }else if(is('chrome') || is('safari')){
+        }else if(cm.is('chrome') || cm.is('safari')){
             // Webkit
             config['node'].style.webkitTransition = styles;
         }
@@ -1525,13 +1543,13 @@ cm.transition = function(o){
     // End
     setTimeout(function(){
         if(config['clear']){
-            if(is('opera')){
+            if(cm.is('opera')){
                 // Presto
                 config['node'].style.OTransition = 'none 0s';
-            }else if(is('ff') && isVersion() < 16){
+            }else if(cm.is('ff') && cm.isVersion() < 16){
                 // Gecko
                 config['node'].style.MozTransition = 'none 0s';
-            }else if(is('chrome') || is('safari')){
+            }else if(cm.is('chrome') || cm.is('safari')){
                 // Webkit
                 config['node'].style.webkitTransition = 'none 0s';
             }

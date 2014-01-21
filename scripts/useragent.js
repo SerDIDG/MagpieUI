@@ -212,14 +212,12 @@ var Useragent = {
     }
 };
 
+/* Deprecated */
+
 var is = function(str){
-	var ver = str.replace(/[^0-9\.\,]/g,''),
-		app = Useragent.hash[str.replace(/[0-9\.\,\s]/g,'').toLowerCase()],
-		user = Useragent.get();
-	return (app == user.browser && ((ver && ver.length > 0)? parseFloat(ver) == parseFloat(user.version) : true));
+	return cm.is(str);
 };
 
 var isVersion = function(){
-	var user = Useragent.get();	
-	return parseFloat(user.version);
+	return cm.isVersion();
 };

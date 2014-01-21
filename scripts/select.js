@@ -423,7 +423,7 @@ Com['Select'] = function(o){
 
     that.addOptions = function(arr){
         cm.forEach(arr, function(item){
-            renderOption(item.value, item.text);
+            renderOption(item['value'], item['text']);
         });
         return that;
     };
