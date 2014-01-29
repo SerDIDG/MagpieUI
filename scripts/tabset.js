@@ -12,12 +12,13 @@ Com['Tabset'] = function(o){
             'toggleOnHashChange' : true,
 			'renderOnInit' : true,
             'active' : false,
+            'className' : '',
             'isAdaptive' : true,
             'tabsPosition' : 'top',         // top | bottom
             'showTabs' : true,
             'tabs' : []
 		}, o),
-        dataAttributes = ['active', 'isAdaptive', 'toggleOnHashChange', 'renderOnInit', 'tabsPosition', 'showTabs'],
+        dataAttributes = ['active', 'className', 'isAdaptive', 'toggleOnHashChange', 'renderOnInit', 'tabsPosition', 'showTabs'],
 		nodes = {},
 		ids = [],
 		tabs = {},
@@ -80,6 +81,8 @@ Com['Tabset'] = function(o){
                 nodes['contentUL'] = cm.Node('ul')
             )
         );
+        // Add CSS class
+        !cm.isEmpty(config['className']) && cm.addClass(nodes['container'], config['className']);
         // Adaptive
         if(config['isAdaptive']){
             cm.addClass(nodes['container'], 'is-adaptive');

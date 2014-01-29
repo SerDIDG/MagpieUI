@@ -325,6 +325,16 @@ cm.log = function(){
     }
 };
 
+cm.dump = function(o){
+    var node = cm.Node('div');
+    for(var i in o){
+        node.appendChild(
+            cm.Node('div', [i, o[i]].join(': '))
+        )
+    }
+    return node;
+};
+
 cm.getEvent = function(e){
     return e || window.event;
 };
@@ -347,32 +357,98 @@ cm.crossEvents = function(key){
     var events = {
         'mousedown' : 'touchstart',
         'mouseup' : 'touchend',
-        'mousemove' : 'touchmove'
+        'mousemove' : 'touchmove',
+        'click' : 'tap'
     };
     return  events[key] || events;
 };
 
-cm.addEvent = function(elem, type, handler, bubbling){
-    // Process touch events
+cm.addEvent = function(el, type, handler, useCapture, preventDefault){
+    useCapture = typeof(useCapture) == 'undefined' ? true : useCapture;
+
     if(cm.isTouch && cm.crossEvents(type)){
-        elem.addEventListener(cm.crossEvents(type), handler, typeof(bubbling) == 'undefined' ? true : bubbling);
+        if(/tap/.test(cm.crossEvents(type))){
+            cm.addCustomEvent(el, cm.crossEvents(type), handler, useCapture, preventDefault);
+            return el;
+        }else{
+            el.addEventListener(cm.crossEvents(type), handler, useCapture);
+        }
     }
     try{
-        elem.addEventListener(type, handler, typeof(bubbling) == 'undefined' ? true : bubbling);
+        el.addEventListener(type, handler, useCapture);
     }catch(e){
-        elem.attachEvent("on" + type, handler);
+        el.attachEvent("on" + type, handler);
+    }
+    return el;
+};
+
+cm.removeEvent = function(el, type, handler, useCapture){
+    useCapture = typeof(useCapture) == 'undefined' ? true : useCapture;
+    // Process touch events
+    if(cm.isTouch && cm.crossEvents(type)){
+        if(/tap/.test(cm.crossEvents(type))){
+            cm.removeCustomEvent(el, cm.crossEvents(type), handler, useCapture);
+            return el;
+        }else{
+            el.removeEventListener(cm.crossEvents(type), handler, useCapture);
+        }
+    }
+    try{
+        el.removeEventListener(type, handler, useCapture);
+    }catch(e){
+        el.detachEvent("on" + type, handler);
+    }
+    return el;
+};
+
+cm.customEventsStack = [];
+
+cm.addCustomEvent = function(el, type, handler, useCapture, preventDefault){
+    var onTap = function(){
+        useCapture = typeof(useCapture) == 'undefined' ? true : useCapture;
+        preventDefault = typeof(preventDefault) == 'undefined' ? false : preventDefault;
+        var x = 0,
+            fault = 4,
+            y = 0,
+            isTap = false;
+        el.addEventListener('touchstart', function(e){
+            isTap = true;
+            x = e.changedTouches[0].screenX;
+            y = e.changedTouches[0].screenY;
+            if(preventDefault){
+                e.preventDefault();
+            }
+        }, useCapture);
+        el.addEventListener('touchend', function(e){
+            setTimeout(function(){
+                isTap = false;
+            }, 400);
+            if(
+                Math.abs(e.changedTouches[0].screenX - x) > fault
+                    || Math.abs(e.changedTouches[0].screenY - y) > fault
+                ){
+                return;
+            }
+            if(preventDefault){
+                e.preventDefault();
+            }
+            handler(e);
+        }, useCapture);
+        el.addEventListener('click', function(e){
+            if(!isTap){
+                handler(e);
+            }
+        }, useCapture);
+    };
+
+    switch(type){
+        case 'tap':
+            onTap();
     }
 };
-cm.removeEvent = function(elem, type, handler, bubbling){
-    // Process touch events
-    if(cm.isTouch && cm.crossEvents(type)){
-        elem.removeEventListener(cm.crossEvents(type), handler, typeof(bubbling) == 'undefined' ? true : bubbling);
-    }
-    try{
-        elem.removeEventListener(type, handler, typeof(bubbling) == 'undefined' ? true : bubbling);
-    }catch(e){
-        elem.detachEvent("on" + type, handler);
-    }
+
+cm.removeCustomEvent = function(el, type, handler, useCapture){
+
 };
 
 cm.onload = function(handler){

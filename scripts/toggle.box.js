@@ -1,42 +1,63 @@
 Com['ToggleBox'] = function(o){
 	var that = this,
 		config = cm.merge({
+            'node' : cm.Node('div'),
 			'button' : cm.Node('div'),
 			'block' : cm.Node('div'),
 			'onShow' : function(){},
 			'onHide' : function(){},
 			'time' : 500,
-			'useLangs' : false,
+			'useLangs' : false,             // If true - will be changes titles
 			'titleNode' : false,			// If 'false' - script uses DT tag element, else - put title's dom node
+            'events' : {},
 			'langs' : {
 				'showTitle' : 'Show',
 				'hideTitle' : 'Hide'
 			}
 		},o),
+        API = {
+            'onShowStart' : [],
+            'onShow' : [],
+            'onHideStart' : [],
+            'onHide' : []
+        },
 		anim,
-		isHide;
+		isHide,
+        isProcess;
 		
 	var init = function(){
-		anim = new cm.Animation(config['block']);
-		isHide = config['block'].offsetHeight === 0;
-		
-		cm.addEvent(config['button'], 'click', function(){
-			if(isHide){
-				show();
-				isHide = false;
-			}else{
-				hide();
-				isHide = true;
-			}
-		});
-		
+        // Convert events and deprecated event model
+        convertEvents(config['events']);
+        that.addEvent('onShowStart', config['onShowStart']);
+        that.addEvent('onShow', config['onShow']);
+        that.addEvent('onHideStart', config['onHideStart']);
+        that.addEvent('onHide', config['onHide']);
+        // Add events
+        setMiscEvents();
 	};
+
+    var setMiscEvents = function(){
+        var isHideTemp;
+        anim = new cm.Animation(config['block']);
+        cm.addEvent(config['button'], 'click', function(){
+            isHideTemp = config['block'].offsetHeight === 0;
+            isHide = !(!isHideTemp && (!isProcess || isProcess == 'show'));
+
+            if(isHide){
+                show();
+            }else{
+                hide();
+            }
+        });
+    };
 	
-	var show = that.show = function(){
+	var show = function(){
 		if(isHide){
 			var height,
 				currentHeight;
 			isHide = false;
+            isProcess = 'show';
+            cm.addClass(config['node'], 'is-show');
 			// Set title
 			if(config['useLangs']){
 				if(config['titleNode']){
@@ -45,8 +66,6 @@ Com['ToggleBox'] = function(o){
 					config['button'].innerHTML = config['langs']['hideTitle'];
 				}
 			}
-			// Event
-			config['onShow'](that);
 			// Get real block height
 			currentHeight =  config['block'].offsetHeight + 'px';
 			config['block'].style.height = 'auto';
@@ -54,16 +73,22 @@ Com['ToggleBox'] = function(o){
 			config['block'].style.height = currentHeight;
 			// Animate
 			anim.go({'style' : {'height' : height}, 'anim' : 'smooth', 'duration' : config['time'], 'onStop' : function(){
+                isProcess = false;
 				config['block'].style.height = 'auto';
 				config['block'].style.overflow = 'visible';
+                // Show Event
+                executeEvent('onShow');
 			}});
+            // On Show Start Event
+            executeEvent('onShowStart');
 		}
-		return that;
 	};
 	
-	var hide = that.hide = function(){
+	var hide = function(){
 		if(!isHide){
 			isHide = true;
+            isProcess = 'hide';
+            cm.removeClass(config['node'], 'is-show');
 			// Set title
 			if(config['useLangs']){
 				if(config['titleNode']){
@@ -72,21 +97,73 @@ Com['ToggleBox'] = function(o){
 					config['button'].innerHTML = config['langs']['showTitle'];
 				}
 			}
-			// Event
-			config['onHide'](that);
 			// Animate
 			config['block'].style.overflow = 'hidden';
-			anim.go({'style' : {'height' : '0px'}, 'anim' : 'smooth', 'duration' : config['time']});
+			anim.go({'style' : {'height' : '0px'}, 'anim' : 'smooth', 'duration' : config['time'], 'onStop' : function(){
+                isProcess = false;
+                // Hide Event
+                executeEvent('onHide');
+            }});
+            // On Hide Start Event
+            executeEvent('onHideStart');
 		}
-		return that;
 	};
+
+    var executeEvent = function(event){
+        var handler = function(){
+            cm.forEach(API[event], function(item){
+                item(that);
+            });
+        };
+
+        switch(event){
+            default:
+                handler();
+                break;
+        }
+    };
+
+    var convertEvents = function(o){
+        cm.forEach(o, function(item, key){
+            if(API[key] && typeof item == 'function'){
+                API[key].push(item);
+            }
+        });
+    };
+
+    /* *** MAIN *** */
+
+    that.show = function(){
+        show();
+        return that;
+    };
+
+    that.hide = function(){
+        hide();
+        return that;
+    };
+
+    that.addEvent = function(event, handler){
+        if(API[event] && typeof handler == 'function'){
+            API[event].push(handler);
+        }
+        return that;
+    };
+
+    that.removeEvent = function(event, handler){
+        if(API[event] && typeof handler == 'function'){
+            API[event] = API[event].filter(function(item){
+                return item != handler;
+            });
+        }
+        return that;
+    };
 	
 	init();
 };
 
 Com['ToggleBoxWidget'] = function(o){
-	var that = this,
-		config = cm.merge({
+	var config = cm.merge({
 			'node' : cm.Node('div'),
 			'onShow' : function(){},
 			'onHide' : function(){},
@@ -99,7 +176,7 @@ Com['ToggleBoxWidget'] = function(o){
 		}, o);
 		
 	var init = function(){
-		config['button'] = config['node'].getElementsByTagName('dt')[0],
+		config['button'] = config['node'].getElementsByTagName('dt')[0];
 		config['block'] = config['node'].getElementsByTagName('dd')[0];
 		config['titleNode'] = cm.getByAttr('data-togglebox-titlenode', 'true', config['node'])[0];
 		
@@ -112,93 +189,95 @@ Com['ToggleBoxWidget'] = function(o){
 };
 
 Com['ToggleBoxCollector'] = function(node){
-	var that = this;
-	
-	var init = function(){
-		if(!node){
-			render(document.body);
-		}else if(node.constructor == Array){
-			for(var i = 0, l = node.length; i < l; i++){
-				render(node[i]);
-			}
-		}else{
-			render(node);
-		}
-	};
+    var toggleboxes,
+        togglebox,
+        langShow,
+        langHide;
+
+    var init = function(node){
+        if(!node){
+            render(document.body);
+        }else if(node.constructor == Array){
+            cm.forEach(node, render);
+        }else{
+            render(node);
+        }
+    };
 	
 	var render = function(node){
-		var nodes = cm.getByAttr('data-togglebox', 'true', node);
-		for(var i = 0, l = nodes.length; i < l; i++){
-			var langShow = nodes[i].getAttribute('data-togglebox-show'),
-				langHide = nodes[i].getAttribute('data-togglebox-hide');
-				
+        toggleboxes = cm.clone((node.getAttribute('data-togglebox') == 'true') ? [node] : cm.getByAttr('data-togglebox', 'true', node));
+        cm.forEach(toggleboxes, function(item){
+			langShow = item.getAttribute('data-togglebox-show');
+			langHide = item.getAttribute('data-togglebox-hide');
+		    // Render toggleboxes
 			new Com.ToggleBox({
-				'button' : nodes[i].getElementsByTagName('dt')[0],
-				'block' : nodes[i].getElementsByTagName('dd')[0],
-				'titleNode' : cm.getByAttr('data-togglebox-titlenode', 'true', nodes[i])[0],
+                'node' : item,
+				'button' : item.getElementsByTagName('dt')[0],
+				'block' : item.getElementsByTagName('dd')[0],
+				'titleNode' : cm.getByAttr('data-togglebox-titlenode', 'true', item)[0],
 				'useLangs' : langShow && langHide,
 				'langs' : {
 					'showTitle' : langShow,
 					'hideTitle' : langHide
 				}
 			});
-		}
+		});
 	};
 	
 	init(node);
 };
 
 Com['ToggleBoxAccordion'] = function(node){
-	var that = this,
-		boxes = [];
-	
-	var init = function(){
-		if(!node){
-			render(document.body);
-		}else if(node.constructor == Array){
-			for(var i = 0, l = node.length; i < l; i++){
-				render(node[i]);
-			}
-		}else{
-			render(node);
-		}
-	};
+	var boxes = [],
+        toggleboxes,
+        togglebox;
+
+    var init = function(node){
+        if(!node){
+            render(document.body);
+        }else if(node.constructor == Array){
+            cm.forEach(node, render);
+        }else{
+            render(node);
+        }
+    };
 	
 	var render = function(node){
-		var nodes = cm.getByAttr('data-togglebox', 'true', node);
-		
-		for(var i = 0, l = nodes.length; i < l; i++){
-			var langShow = nodes[i].getAttribute('data-togglebox-show'),
-				langHide = nodes[i].getAttribute('data-togglebox-hide');
-				
-			new Com.ToggleBox({
-				'button' : nodes[i].getElementsByTagName('dt')[0],
-				'block' : nodes[i].getElementsByTagName('dd')[0],
-				'onShow' : hide,
-				'titleNode' : cm.getByAttr('data-togglebox-titlenode', 'true', nodes[i])[0],
-				'useLangs' : langShow && langHide,
-				'langs' : {
-					'showTitle' : langShow,
-					'hideTitle' : langHide
-				}
-			});
-		}
+        toggleboxes = cm.clone((node.getAttribute('data-togglebox') == 'true') ? [node] : cm.getByAttr('data-togglebox', 'true', node));
+        cm.forEach(toggleboxes, function(item){
+            var langShow = item.getAttribute('data-togglebox-show'),
+                langHide = item.getAttribute('data-togglebox-hide');
+            // Init togglebox and push to array
+            togglebox = new Com.ToggleBox({
+                'button' : item.getElementsByTagName('dt')[0],
+                'block' : item.getElementsByTagName('dd')[0],
+                'titleNode' : cm.getByAttr('data-togglebox-titlenode', 'true', item)[0],
+                'useLangs' : langShow && langHide,
+                'langs' : {
+                    'showTitle' : langShow,
+                    'hideTitle' : langHide
+                },
+                'events' : {
+                    'onShowStart' : hide
+                }
+            });
+            boxes.push(togglebox);
+        });
 	};
 	
 	var hide = function(me){
-		boxes.forEach(function(item){
+		cm.forEach(boxes, function(item){
 			if(me !== item){
 				item.hide();
 			}
 		});
 	};
 	
-	init();
+	init(node);
 };
 
 Com['ToggleBoxGridlist'] = function(o){
-	var that = this,
-		config = cm.merge({
+	var config = cm.merge({
 			'node' : cm.Node('div'),
 			'useLangs' : false,
 			'langs' : {
@@ -256,17 +335,17 @@ Com['ToggleBoxGridlist'] = function(o){
 	var hide = function(id){
 		boxes[id]['isHide'] = true;
 		if(boxes[id]['subs']){
-			for(var i = 0, l = boxes[id]['subs'].length; i < l; i++){
-				var subId = boxes[id]['subs'][i].getAttribute('data-gridlist-id');
-				if(subId != id){
-					hide(subId);
-				}
-			}
+            cm.forEach(boxes[id]['subs'], function(item){
+                var subId = item.getAttribute('data-gridlist-id');
+                if(subId != id){
+                    hide(subId);
+                }
+            });
 		}
-		for(var i = 0, l = boxes[id]['blocks'].length; i < l; i++){
-			cm.addClass(boxes[id]['blocks'][i], 'display-none');
-			cm.removeClass(boxes[id]['blocks'][i], 'gridlist-grey');
-		}
+        cm.forEach(boxes[id]['blocks'], function(item){
+            cm.addClass(item, 'display-none');
+            cm.removeClass(item, 'gridlist-grey');
+        });
 		cm.removeClass(boxes[id]['item'], 'gridlist-grey');
 		if(config['useLangs']){
 			boxes[id]['button'].innerHTML = config['langs']['showTitle'];
