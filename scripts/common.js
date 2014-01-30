@@ -346,9 +346,11 @@ cm.stopPropagation = function(e){
 cm.preventDefault = function(e){
     return e.preventDefault ? e.preventDefault() : e.returnValue = false;
 };
+
 cm.getObjFromEvent = cm.getEventObject = cm.getEventTarget = function(e){
     return  e.target || e.srcElement;
 };
+
 cm.getObjToEvent = cm.getRelatedTarget = function(e){
     return e.relatedTarget || e.srcElement;
 };
@@ -401,57 +403,83 @@ cm.removeEvent = function(el, type, handler, useCapture){
     return el;
 };
 
-cm.customEventsStack = [];
+cm.customEventsStack = [
+    /* {'el' : node, 'type' : 'customEventType', 'handler' : function, 'misc' : {'eventType' : [function]}} */
+];
 
 cm.addCustomEvent = function(el, type, handler, useCapture, preventDefault){
-    var onTap = function(){
-        useCapture = typeof(useCapture) == 'undefined' ? true : useCapture;
-        preventDefault = typeof(preventDefault) == 'undefined' ? false : preventDefault;
-        var x = 0,
-            fault = 4,
-            y = 0,
-            isTap = false;
-        el.addEventListener('touchstart', function(e){
-            isTap = true;
-            x = e.changedTouches[0].screenX;
-            y = e.changedTouches[0].screenY;
-            if(preventDefault){
-                e.preventDefault();
-            }
-        }, useCapture);
-        el.addEventListener('touchend', function(e){
-            setTimeout(function(){
-                isTap = false;
-            }, 400);
-            if(
-                Math.abs(e.changedTouches[0].screenX - x) > fault
-                    || Math.abs(e.changedTouches[0].screenY - y) > fault
-                ){
-                return;
-            }
-            if(preventDefault){
-                e.preventDefault();
-            }
-            handler(e);
-        }, useCapture);
-        el.addEventListener('mousedown', handler, useCapture);
-    };
+    var events = {
+        'tap' : function(){
+            useCapture = typeof(useCapture) == 'undefined' ? true : useCapture;
+            preventDefault = typeof(preventDefault) == 'undefined' ? false : preventDefault;
 
-    switch(type){
-        case 'tap':
-            onTap();
+            var x = 0,
+                fault = 4,
+                y = 0;
+            // Generate events
+            return {
+                'touchstart' : [
+                    function(e){
+                        x = e.changedTouches[0].screenX;
+                        y = e.changedTouches[0].screenY;
+                        if(preventDefault){
+                            e.preventDefault();
+                        }
+                    }
+                ],
+                'touchend' : [
+                    function(e){
+                        if(
+                            Math.abs(e.changedTouches[0].screenX - x) > fault ||
+                            Math.abs(e.changedTouches[0].screenY - y) > fault
+                        ){
+                            return;
+                        }
+                        if(preventDefault){
+                            e.preventDefault();
+                        }
+                        handler(e);
+                    }
+                ],
+                'mouseup' : [
+                    handler
+                ]
+            };
+        }
+    };
+    // Process custom event
+    if(events[type]){
+        var miscEvents = events[type]();
+        // Push generated events to stack
+        cm.customEventsStack.push({
+            'el' : el,
+            'type' : type,
+            'handler' : handler,
+            'misc' : miscEvents
+        });
+        // Bind generated events
+        cm.forEach(miscEvents, function(miscFunctions, eventType){
+            cm.forEach(miscFunctions, function(miscFunction){
+                el.addEventListener(eventType, miscFunction, useCapture);
+            });
+        });
     }
+    return el;
 };
 
 cm.removeCustomEvent = function(el, type, handler, useCapture){
-    var onTap = function(){
-        el.removeEventListener('mousedown', handler, useCapture);
-    };
-
-    switch(type){
-        case 'tap':
-            onTap();
-    }
+    cm.customEventsStack = cm.customEventsStack.filter(function(item){
+        if(item['el'] === el && item['type'] == type && item['handler'] === handler){
+            cm.forEach(item['misc'], function(miscFunctions, eventType){
+                cm.forEach(miscFunctions, function(miscFunction){
+                    el.removeEventListener(eventType, miscFunction, useCapture);
+                });
+            });
+            return false;
+        }
+        return true;
+    });
+    return el;
 };
 
 cm.onload = function(handler){
