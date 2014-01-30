@@ -32,7 +32,8 @@ Com['Select'] = function(o){
         optionsList = [],
         optionsLength,
 
-        oldActive, active;
+        oldActive,
+        active;
 
     var init = function(){
         // Convert events to API Events
@@ -114,7 +115,7 @@ Com['Select'] = function(o){
             nodes['container'].id = config['select'].id;
         }
         // Data
-        Array.prototype.forEach.call(config['select'].attributes, function(item){
+        cm.forEach(config['select'].attributes, function(item){
             if(/^data-/.test(item.name)){
                 nodes['container'].setAttribute(item.name, item.value);
             }
@@ -306,12 +307,7 @@ Com['Select'] = function(o){
         var value = typeof option['value'] != 'undefined'? option['value'] : option['text'];
 
         if(option['selected']){
-            active = active.filter(function(item){
-                return value != item;
-            });
-            option['option'].selected = false;
-            option['selected'] = false;
-            cm.removeClass(option['node'], 'active');
+            deselectMultiple(option);
         }else{
             active.push(value);
             option['option'].selected = true;
@@ -329,6 +325,17 @@ Com['Select'] = function(o){
         cm.clearNode(nodes['text']).appendChild(cm.Node('span', {'innerHTML' : option['text']}));
         option['option'].selected = true;
         cm.addClass(option['node'], 'active');
+    };
+
+    var deselectMultiple = function(option){
+        var value = typeof option['value'] != 'undefined'? option['value'] : option['text'];
+
+        active = active.filter(function(item){
+            return value != item;
+        });
+        option['option'].selected = false;
+        option['selected'] = false;
+        cm.removeClass(option['node'], 'active');
     };
 
     var executeEvent = function(event){
@@ -393,6 +400,27 @@ Com['Select'] = function(o){
         return that;
     };
 
+    that.selectAll = function(){
+        if(config['multiple']){
+            cm.forEach(options, deselectMultiple);
+            cm.forEach(options, setMultiple);
+            /* *** EXECUTE API EVENTS *** */
+            executeEvent('onSelect');
+            executeEvent('onChange');
+        }
+        return that;
+    };
+
+    that.deselectAll = function(){
+        if(config['multiple']){
+            cm.forEach(options, deselectMultiple);
+            /* *** EXECUTE API EVENTS *** */
+            executeEvent('onSelect');
+            executeEvent('onChange');
+        }
+        return that;
+    };
+
     that.addEvent = function(event, handler){
         if(API[event] && typeof handler == 'function'){
             API[event].push(handler);
@@ -435,7 +463,7 @@ Com['Select'] = function(o){
         return that;
     };
 
-    that.getAllOptions = function(){
+    that.getOptionsAll = that.getAllOptions = function(){
         var result = [];
         cm.forEach(optionsList, function(item){
             result.push({

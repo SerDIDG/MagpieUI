@@ -434,11 +434,7 @@ cm.addCustomEvent = function(el, type, handler, useCapture, preventDefault){
             }
             handler(e);
         }, useCapture);
-        el.addEventListener('click', function(e){
-            if(!isTap){
-                handler(e);
-            }
-        }, useCapture);
+        el.addEventListener('mousedown', handler, useCapture);
     };
 
     switch(type){
@@ -448,7 +444,14 @@ cm.addCustomEvent = function(el, type, handler, useCapture, preventDefault){
 };
 
 cm.removeCustomEvent = function(el, type, handler, useCapture){
+    var onTap = function(){
+        el.removeEventListener('mousedown', handler, useCapture);
+    };
 
+    switch(type){
+        case 'tap':
+            onTap();
+    }
 };
 
 cm.onload = function(handler){
