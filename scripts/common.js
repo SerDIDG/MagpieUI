@@ -367,7 +367,7 @@ cm.crossEvents = function(key){
 
 cm.addEvent = function(el, type, handler, useCapture, preventDefault){
     useCapture = typeof(useCapture) == 'undefined' ? true : useCapture;
-
+    // Process touch events
     if(cm.isTouch && cm.crossEvents(type)){
         if(/tap/.test(cm.crossEvents(type))){
             cm.addCustomEvent(el, cm.crossEvents(type), handler, useCapture, preventDefault);
