@@ -3,16 +3,16 @@
 /*
 
  Objects and Arrays:			121
- Events:						259
- Nodes:							339
- Forms:							595
- Strings:						770
- Date and Time:					837
- Styles:						890
- Animation:						1078
- Cookie and Local Storage:		1377
- Ajax:							1442
- Hash (?):						1559
+ Events:						305
+ Nodes:							577
+ Forms:							842
+ Strings:						1015
+ Date and Time:					1104
+ Styles:						1160
+ Animation:						1411
+ Cookie and Local Storage:		1749
+ Ajax:							1816
+ Hash (?):						1951
 
  */
 
@@ -418,6 +418,17 @@ cm.addCustomEvent = function(el, type, handler, useCapture, preventDefault){
                 y = 0;
             // Generate events
             return {
+                'mouseup' : [
+                    function(e){
+                        if(/iPad|iPhone/.test(Useragent.get()['os'])){
+                            return;
+                        }
+                        if(preventDefault){
+                            e.preventDefault();
+                        }
+                        handler(e);
+                    }
+                ],
                 'touchstart' : [
                     function(e){
                         x = e.changedTouches[0].screenX;
@@ -440,9 +451,6 @@ cm.addCustomEvent = function(el, type, handler, useCapture, preventDefault){
                         }
                         handler(e);
                     }
-                ],
-                'mouseup' : [
-                    handler
                 ]
             };
         }
@@ -1516,6 +1524,8 @@ cm.animation = cm.Animation = function(o){
                     obj.style[properties[i]['name']] = cm.rgb2hex(r, g, b);
                 }else if(/scrollLeft|scrollTop/.test(item['name'])){
                     obj[item['name']] = val;
+                }else if(/x1|x2|y1|y2/.test(item['name'])){
+                    obj.setAttribute(item['name'], Math.round(val));
                 }else if(item['name'] == 'docScrollTop'){
                     cm.setBodyScrollTop(val);
                 }else{
@@ -1531,6 +1541,8 @@ cm.animation = cm.Animation = function(o){
                 obj.style[item['name']] = cm.rgb2hex(item['new'][0], item['new'][1], item['new'][2]);
             }else if(/scrollLeft|scrollTop/.test(item['name'])){
                 obj[item['name']] = item['new'];
+            }else if(/x1|x2|y1|y2/.test(item['name'])){
+                obj.setAttribute(item['name'], item['new']);
             }else if(item['name'] == 'docScrollTop'){
                 cm.setBodyScrollTop(item['new']);
             }else{
@@ -1599,6 +1611,12 @@ cm.animation = cm.Animation = function(o){
             case 'scrollLeft':
             case 'scrollTop':
                 return obj[name];
+                break;
+            case 'x1':
+            case 'x2':
+            case 'y1':
+            case 'y2':
+                return parseInt(obj.getAttribute(name));
                 break;
             default:
                 return cm.getCSSStyle(obj, name, true) || 0;
@@ -1968,8 +1986,14 @@ cm.reloadHashData = function(){
     return true;
 };
 
+/* ******* GRAPHICS ******* */
+
+cm.createSvg = function(){
+    var node = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    node.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    node.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
+    node.setAttribute('version', '1.1');
+    return node;
+};
+
 /* ******* OTHER ******* */
-
-
-
-
