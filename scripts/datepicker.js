@@ -166,8 +166,8 @@ Com['Datepicker'] = function(o){
             'target' : nodes['container'],
             'targetEvent' : 'none',
             'events' : {
-                'onShow' : show,
-                'onHide' : hide
+                'onShowStart' : show,
+                'onHideStart' : hide
             }
         });
         nodes['menu'] = components['menu'].getNodes();

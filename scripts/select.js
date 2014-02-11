@@ -256,8 +256,8 @@ Com['Select'] = function(o){
                 'targetEvent' : 'click',
                 'hideOnReClick' : true,
                 'events' : {
-                    'onShow' : show,
-                    'onHide' : hide
+                    'onShowStart' : show,
+                    'onHideStart' : hide
                 }
             });
             nodes['menu'] = components['menu'].getNodes();

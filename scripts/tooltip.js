@@ -16,7 +16,9 @@ Com['Tooltip'] = function(o){
             'events' : {}
         }, o),
         API = {
+            'onShowStart' : [],
             'onShow' : [],
+            'onHideStart' : [],
             'onHide' : []
         },
         checkInt,
@@ -118,7 +120,10 @@ Com['Tooltip'] = function(o){
             // Check position
             checkInt = setInterval(getPosition, 5);
             // Animate
-            anim.go({'style' : {'opacity' : 1}, 'duration' : 100});
+            anim.go({'style' : {'opacity' : 1}, 'duration' : 100, 'onStop' : function(){
+                /* *** EXECUTE API EVENTS *** */
+                executeEvent('onShow');
+            }});
             // Add document target event
             switch(config['targetEvent']){
                 case 'hover' :
@@ -129,7 +134,7 @@ Com['Tooltip'] = function(o){
                     break;
             }
             /* *** EXECUTE API EVENTS *** */
-            executeEvent('onShow');
+            executeEvent('onShowStart');
         }
     };
 
@@ -154,6 +159,8 @@ Com['Tooltip'] = function(o){
                 /* *** EXECUTE API EVENTS *** */
                 executeEvent('onHide');
             }});
+            /* *** EXECUTE API EVENTS *** */
+            executeEvent('onHideStart');
         }
     };
 

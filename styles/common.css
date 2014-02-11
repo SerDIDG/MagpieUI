@@ -197,6 +197,18 @@ code {
 	background: url(../images/icons/arrow-priority-up.png);
 }
 
+/* Editor */
+
+.icon.editor-bold {
+    background: url(../images/common/editor/bold.png);
+}
+.icon.editor-italic {
+    background: url(../images/common/editor/italic.png);
+}
+.icon.editor-underline {
+    background: url(../images/common/editor/underline.png);
+}
+
 /* ******* STATIC CLASSES ******* */
 
 .clear:after {
@@ -1037,6 +1049,14 @@ button,
     font-size: 12px;
 	cursor: pointer;
 }
+input[type="button"].transparent,
+input[type="submit"].transparent,
+input[type="reset"].transparent,
+button.transparent,
+.button.transparent {
+    background: none;
+    border: none;
+}
 a.button,
 div.button {
 	display: inline-block;
@@ -1221,13 +1241,13 @@ select[multiple] {
 .cm-select-input .cm-select-inner {
 	height: 20px;
 	background: #fff;
-	border: 1px solid #595959;
+	border: 1px solid #CBCBCB;
 }
 .cm-select-arrow {
 	width: 20px;
 	height: 20px;
 	background: #f0f0f0 url(../images/components/select-arrow.png) center center no-repeat;
-	border-left: 1px solid #DEDEDE;
+	border-left: 1px solid #CBCBCB;
 	float: right;
 	cursor: pointer;
 	-webkit-transition: background-color 0.1s ease-in-out;
@@ -1238,12 +1258,13 @@ select[multiple] {
 	background-color: rgba(255,255,255,0.5);
 }
 .cm-select-text {
+    padding: 0 6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-break: normal;
 	line-height: 20px;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	word-break: normal;
-	padding: 0 6px;
+    color: #202020;
 }
 .cm-select.disabled .cm-select-input .cm-select-inner {
     background: #f5f5f5;
@@ -1268,8 +1289,7 @@ select[multiple] {
     padding: 2px 4px;
 	line-height: 16px;
 	font-size: 12px;
-	color: #333333;
-    text-shadow: 0 1px 0 #fff;
+	color: #202020;
 	cursor: pointer;
 	-webkit-transition: all 0.3s ease-in-out;
 	        transition: all 0.3s ease-in-out;
@@ -1297,7 +1317,7 @@ select[multiple] {
     min-height: 14px;
     padding: 3px;
     background: #fff;
-    border: 1px solid #595959;
+    border: 1px solid #CBCBCB;
 }
 .cm-multiselect .cm-select-listing {
     max-height: 104px;
@@ -1335,26 +1355,14 @@ select[multiple] {
     text-decoration: none;
 }
 .gridlist thead {
-    background: -webkit-linear-gradient(top, #ffffff, #f0f0f0);
-    background:    -moz-linear-gradient(top, #ffffff, #f0f0f0);
-    background:     -ms-linear-gradient(top, #ffffff, #f0f0f0);
-    background:      -o-linear-gradient(top, #ffffff, #f0f0f0);
-    background:         linear-gradient(to bottom, #ffffff, #f0f0f0);
 }
 .gridlist th {
-    border-top: 1px solid #CACACA;
-    border-bottom: 1px solid #CACACA;
     line-height: 14px;
     font-weight: bold;
-    color: #333333;
 }
 .gridlist th:first-child {
-    border-left: 1px solid #CACACA;
-    border-radius: 3px 0 0 3px;
 }
 .gridlist th:last-child {
-    border-right: 1px solid #CACACA;
-    border-radius: 0 3px 3px 0;
 }
 .gridlist th.sort {
     -webkit-transition: background-color 0.3s ease-in-out;
@@ -1550,7 +1558,6 @@ select[multiple] {
 	font-weight: normal;
 	font-size: 13px;
 	color: #202020;
-	text-shadow: 0 1px 0 rgba(255,255,255,0.7);
 	text-decoration: none;
 }
 .tabset-head-title {
@@ -1841,7 +1848,7 @@ select[multiple] {
 }
 .dialog > .window > .inner {
     background-color: #ffffff;
-    border-radius: 8px;
+    border-radius: 3px;
 }
 .dialog > .window > .inner > .close {
 	position: absolute;
@@ -1977,6 +1984,45 @@ select[multiple] {
     overflow-y: auto;
 }
 
+/* *** Toolbar *** */
+
+.cm-toolbar {
+    white-space: nowrap;
+}
+.cm-toolbar .group {
+    margin: 0 0 0 16px;
+    padding: 0;
+    display: inline-block;
+    vertical-align: top;
+    list-style: none;
+}
+.cm-toolbar .group:first-child {
+    margin: 0;
+}
+.cm-toolbar .group > li {
+    display: inline-block;
+    vertical-align: top;
+    margin: 0 0 0 4px;
+}
+.cm-toolbar .group > li:first-child {
+    margin: 0;
+}
+.cm-toolbar .group > li.is-icon {
+    width: 30px;
+    padding: 0;
+}
+.cm-toolbar .group > li.is-icon .icon {
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    margin: 0;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+.cm-toolbar .editor-select {
+    width: 140px;
+}
+
 /* *** Calendar *** */
 
 .cm-calendar {
@@ -2082,7 +2128,7 @@ select[multiple] {
 /* *** Datepicker *** */
 
 .datepicker-input {
-    max-width: 190px;
+    max-width: 200px;
     position: relative;
     z-index: 1;
     outline: none;
@@ -2126,16 +2172,16 @@ select[multiple] {
     margin: 4px 0 0 0;
 }
 .cm-datepicker-calendar .months {
-    width: 104px !important;
+    width: 111px !important;
     float: left;
 }
 .cm-datepicker-calendar .years {
-    width: 72px !important;
+    width: 75px !important;
     margin-left: 4px;
     float: left;
 }
 
-/* Old Browser Alert */
+/* *** Old Browser Alert *** */
 
 .oldbrowser-alert {
 }
@@ -2172,7 +2218,7 @@ select[multiple] {
 	margin-top: 0;
 }
 
-/* Glossary */
+/* *** Glossary *** */
 
 .com-glossary-word {
 	position: relative;
@@ -2224,7 +2270,7 @@ select[multiple] {
     margin: 0;
 }
 
-/* Editable Area */
+/* *** Editable Area *** */
 
 .cm-editable {
 	width: 100%;
@@ -2383,7 +2429,7 @@ select[multiple] {
 	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=100);
 }
 
-/* Drag and Drop */
+/* *** Drag and Drop *** */
 
 .cm-draganddrop-body {
     cursor: move;
@@ -2415,7 +2461,7 @@ select[multiple] {
     cursor: default;
 }
 
-/* ******* GALLERY ******* */
+/* *** GALLERY *** */
 
 /* List */
 
