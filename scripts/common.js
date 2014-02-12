@@ -2,19 +2,19 @@
 
 /*
 
- Objects and Arrays:			121
- Events:						305
- Nodes:							577
- Forms:							842
- Strings:						1015
- Date and Time:					1104
- Styles:						1160
- Animation:						1411
- Cookie and Local Storage:		1749
- Ajax:							1816
- Hash (?):						1951
+    Objects and Arrays:             121
+    Events:                         305
+    Nodes:                          577
+    Forms:                          842
+    Strings:                        1015
+    Date and Time:                  1104
+    Styles:                         1160
+    Animation:                      1411
+    Cookie and Local Storage:       1749
+    Ajax:                           1816
+    Hash (?):                       1951
 
- */
+*/
 
 var cm = common = _ = {},
     Com = {

@@ -13,6 +13,7 @@ Com['Tooltip'] = function(o){
             'title' : '',
             'titleTag' : 'h3',
             'content' : cm.Node('div'),
+            'container' : document.body,
             'events' : {}
         }, o),
         API = {
@@ -113,7 +114,7 @@ Com['Tooltip'] = function(o){
         if(isHide){
             isHide = false;
             // Append child tooltip into body and set position
-            document.body.appendChild(nodes['container']);
+            config['container'].appendChild(nodes['container']);
             getPosition();
             // Show tooltip
             nodes['container'].style.display = 'block';

@@ -7,6 +7,7 @@ Com['Calendar'] = function(o){
             'endYear' : new Date().getFullYear(),
             'renderMonthOnInit' : true,
             'startWeekDay' : 0,
+            'renderSelectsInBody' : true,
             'events' : {},
             'langs' : {
                 'days' : ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
@@ -81,10 +82,16 @@ Com['Calendar'] = function(o){
 
     var setMiscEvents = function(){
         // Init custom selects
-        selects['years'] = new Com.Select({'select' : nodes['years']})
+        selects['years'] = new Com.Select({
+                'select' : nodes['years'],
+                'renderInBody' : config['renderSelectsInBody']
+            })
             .set(current['year'])
             .addEvent('onChange', renderView);
-        selects['months'] = new Com.Select({'select' : nodes['months']})
+        selects['months'] = new Com.Select({
+                'select' : nodes['months'],
+                'renderInBody' : config['renderSelectsInBody']
+            })
             .set(current['month'])
             .addEvent('onChange', renderView);
 

@@ -199,13 +199,13 @@ code {
 
 /* Editor */
 
-.icon.editor-bold {
+.icon.toolbar-bold {
     background: url(../images/common/editor/bold.png);
 }
-.icon.editor-italic {
+.icon.toolbar-italic {
     background: url(../images/common/editor/italic.png);
 }
-.icon.editor-underline {
+.icon.toolbar-underline {
     background: url(../images/common/editor/underline.png);
 }
 
@@ -486,7 +486,7 @@ ul.indent {
 .form dl .time input,
 .form dl .time select,
 .form dl .time .cm-select {
-	width: 55px;
+	width: 58px;
 	float: left;
 }
 .form dl .time > span {
@@ -523,12 +523,12 @@ ul.indent {
 .form dl .birth {
 }
 .form dl .birth input {
-	width: 58px;
+	width: 60px;
 	float: left;
 }
 .form dl .birth input.month,
 .form dl .birth input.day {
-    width: 46px;
+    width: 50px;
 }
 .form dl .birth div {
 	width: 20px;
@@ -594,50 +594,6 @@ ul.indent {
 	display: block;
 	clear: both;
 }
-.form .btn-wrap {
-	margin-top: 20px;
-}
-.form .btn-wrap .button,
-.form .btn-wrap button,
-.form .btn-wrap input[type="button"],
-.form .btn-wrap input[type="reset"],
-.form .btn-wrap input[type="submit"] {
-	float: right;
-	margin: 0 0 0 8px;
-	cursor: pointer;
-}
-.form .btn-wrap .button.left,
-.form .btn-wrap button.left,
-.form .btn-wrap input[type="button"].left,
-.form .btn-wrap input[type="reset"].left,
-.form .btn-wrap input[type="submit"].left {
-	float: left;
-	margin: 0 8px 0 0;
-}
-.form .btn-wrap .hint {
-	font-style: italic;
-	overflow: hidden;
-	text-align: right;
-	font-size: 12px;
-	padding: 0 8px 0 0;
-}
-.form .btn-wrap.error .hint {
-	color: #C00;
-}
-.form .btn-wrap.ok .hint {
-	color: #090;
-}
-.form .btn-wrap.centered {
-	text-align: center;
-}
-.form .btn-wrap.centered input {
-	float: none;
-	display: inline-block;
-	margin: 0 0 0 8px;
-}
-.form .btn-wrap.centered input:first-child {
-	margin: 0;
-}
 .form fieldset {
 	border-radius: 5px;
 	border: 1px solid #ccc;
@@ -681,6 +637,55 @@ ul.indent {
 	color: #090;
 	font-weight: bold;
 }
+
+/* Buttons Container */
+
+.btn-wrap {
+    margin-top: 20px;
+}
+.btn-wrap .button,
+.btn-wrap button,
+.btn-wrap input[type="button"],
+.btn-wrap input[type="reset"],
+.btn-wrap input[type="submit"] {
+    float: right;
+    margin: 0 0 0 8px;
+    cursor: pointer;
+}
+.btn-wrap .button.left,
+.btn-wrap button.left,
+.btn-wrap input[type="button"].left,
+.btn-wrap input[type="reset"].left,
+.btn-wrap input[type="submit"].left {
+    float: left;
+    margin: 0 8px 0 0;
+}
+.btn-wrap .hint {
+    font-style: italic;
+    overflow: hidden;
+    text-align: right;
+    font-size: 12px;
+    padding: 0 8px 0 0;
+}
+.btn-wrap.error .hint {
+    color: #C00;
+}
+.btn-wrap.ok .hint {
+    color: #090;
+}
+.btn-wrap.centered {
+    text-align: center;
+}
+.btn-wrap.centered input {
+    float: none;
+    display: inline-block;
+    margin: 0 0 0 8px;
+}
+.btn-wrap.centered input:first-child {
+    margin: 0;
+}
+
+/* Check Line */
 
 .check-line {
 	margin-top: 4px;
@@ -2019,7 +2024,7 @@ select[multiple] {
     background-repeat: no-repeat;
     background-position: center center;
 }
-.cm-toolbar .editor-select {
+.cm-toolbar .toolbar-select {
     width: 140px;
 }
 
@@ -2214,7 +2219,7 @@ select[multiple] {
 .oldbrowser-alert .browsers li a:hover {
 	opacity: 0.7;
 }
-.oldbrowser-alert .form .btn-wrap {
+.oldbrowser-alert .btn-wrap {
 	margin-top: 0;
 }
 
@@ -2268,6 +2273,41 @@ select[multiple] {
 }
 .com-glossary-text p {
     margin: 0;
+}
+
+/* *** Selectable Node *** */
+
+.cm-selectable {
+    position: relative;
+    border-radius: 3px;
+    cursor: pointer;
+}
+.cm-selectable:before {
+    display: block;
+    position: absolute;
+    z-index: -1;
+    top: -6px;
+    right: -6px;
+    bottom: -6px;
+    left: -6px;
+    content: '';
+    border: 2px solid transparent;
+    border-radius: 3px;
+    -webkit-transition: border-color 0.3s ease-in-out,
+                        background-color 0.3s ease-in-out;
+            transition: border-color 0.3s ease-in-out,
+                        background-color 0.3s ease-in-out;
+}
+.cm-selectable:hover:before {
+    background-color: #f0f0f0;
+    -webkit-transition: background-color 0.1s ease-in-out,
+                        border-color 0.1s ease-in-out;
+            transition: background-color 0.1s ease-in-out,
+                        border-color 0.1s ease-in-out;
+}
+.cm-selectable.active:before {
+    background-color: #ffffff;
+    border-color: #D9EAFB;
 }
 
 /* *** Editable Area *** */
@@ -2761,15 +2801,16 @@ select[multiple] {
 
 /* Form line-height dependents on input \ button height */
 
-.form .btn-wrap,
-.form .btn-wrap .hint,
+.btn-wrap,
+.btn-wrap .hint,
 .single-file .text,
 .files-list ul li,
 .form-field dd.controls,
 .form-icons-outside,
 .check-line,
 .check-line .field,
-.form dl .birth {
+.form dl .birth,
+.form dl .time {
     line-height: 22px;
 }
 
@@ -2779,7 +2820,7 @@ select[multiple] {
     min-height: 22px;
 }
 .cm-calendar .selects,
-.form .btn-wrap {
+.btn-wrap {
     height: 22px;
 }
 

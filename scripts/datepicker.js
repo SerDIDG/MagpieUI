@@ -9,6 +9,7 @@ Com['Datepicker'] = function(o){
 		config = cm.merge({
             'container' : false,
 			'input' : cm.Node('input', {'type' : 'text'}),
+            'renderInBody' : true,
             'placeholder' : '',
 			'format' : '%F %j, %Y',
 			'saveFormat' : '%Y-%m-%d',
@@ -29,7 +30,7 @@ Com['Datepicker'] = function(o){
 				'todayButton' : 'Today'
 			}
 		}, o),
-        dataAttributes = ['placeholder', 'showPlaceholder', 'showTodayButton', 'showClearButton', 'startYear', 'endYear', 'startWeekDay', 'format', 'saveFormat', 'showTitleTag', 'title'],
+        dataAttributes = ['renderInBody', 'placeholder', 'showPlaceholder', 'showTodayButton', 'showClearButton', 'startYear', 'endYear', 'startWeekDay', 'format', 'saveFormat', 'showTitleTag', 'title'],
         API = {
             'onSelect' : [],
             'onChange' : []
@@ -149,22 +150,16 @@ Com['Datepicker'] = function(o){
                 components['menu'].hide(false);
             });
         }
-        // Show / hide menu on click
-        nodes['icon'].onclick = function(){
-            if(components['menu'].isHide()){
-                components['menu'].show();
-            }else{
-                components['menu'].hide(false);
-            }
-        };
         // Render tooltip
         components['menu'] = new Com.Tooltip({
+            'container' : config['renderInBody']? document.body : nodes['container'],
             'className' : 'cm-datepicker-tooltip',
             'width' : 'targetWidth',
             'top' : ['targetHeight', config['menuMargin']].join('+'),
             'content' : nodes['menuContainer'],
             'target' : nodes['container'],
-            'targetEvent' : 'none',
+            'targetEvent' : 'click',
+            'hideOnReClick' : true,
             'events' : {
                 'onShowStart' : show,
                 'onHideStart' : hide
@@ -174,6 +169,7 @@ Com['Datepicker'] = function(o){
         // Render calendar
         components['calendar'] = new Com.Calendar({
             'container' : nodes['calendarContainer'],
+            'renderSelectsInBody' : false,
             'className' : 'cm-datepicker-calendar',
             'startYear' : config['startYear'],
             'endYear' : config['endYear'],
@@ -188,7 +184,6 @@ Com['Datepicker'] = function(o){
                 }
             }
         });
-        nodes['calendar'] = components['calendar'].getNodes();
 	};
 
     var show = function(){
@@ -203,29 +198,9 @@ Com['Datepicker'] = function(o){
                 .set(currentSelectedDate.getFullYear(), currentSelectedDate.getMonth())
                 .renderMonth();
         }
-        // Add document target event
-        cm.addEvent(document, 'click', bodyEvent);
     };
 
     var hide = function(){
-        // Remove document target event
-        cm.addEvent(document, 'click', bodyEvent);
-    };
-
-    var bodyEvent = function(e){
-        if(!components['menu'].isHide()){
-            e = cm.getEvent(e);
-            var target = cm.getEventTarget(e);
-            if(
-                !cm.isParent(nodes['container'], target, true) &&
-                !cm.isParent(nodes['menu']['container'], target, true) &&
-                !cm.isParent(nodes['menu']['container'], target, true) &&
-                !cm.isParent(nodes['calendar']['selects']['months']['menu']['container'], target, true) &&
-                !cm.isParent(nodes['calendar']['selects']['years']['menu']['container'], target, true)
-            ){
-                components['menu'].hide(false);
-            }
-        }
     };
 
 	var set = function(str, execute){

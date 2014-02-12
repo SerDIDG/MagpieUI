@@ -9,6 +9,7 @@ Com['Select'] = function(o){
         config = cm.merge({
             'container' : false,
             'select' : cm.Node('select'),
+            'renderInBody' : true,
             'multiple' : false,
             'showTitleTag' : true,
             'title' : false,
@@ -17,7 +18,7 @@ Com['Select'] = function(o){
             'selected' : 0,
             'events' : {}
         }, o),
-        dataAttributes = ['title', 'showTitleTag', 'multiple'],
+        dataAttributes = ['title', 'showTitleTag', 'multiple', 'renderInBody'],
         API = {
             'onSelect' : [],
             'onChange' : [],
@@ -248,6 +249,7 @@ Com['Select'] = function(o){
         if(!config['multiple']){
             // Render tooltip
             components['menu'] = new Com.Tooltip({
+                'container' : config['renderInBody']? document.body : nodes['container'],
                 'className' : 'cm-select-tooltip',
                 'width' : 'targetWidth',
                 'top' : ['targetHeight', config['menuMargin']].join('+'),
