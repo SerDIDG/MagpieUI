@@ -58,6 +58,11 @@ code {
     border: 1px dashed #999999;
     border-radius: 4px;
 }
+iframe {
+    width: 100%;
+    display: block;
+    border: none;
+}
 
 /* ******* ICONS ******* */
 
