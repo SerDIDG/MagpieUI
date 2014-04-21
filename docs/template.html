@@ -1,0 +1,115 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Template</title>
+
+    <link type="text/css" rel="stylesheet" href="css/index.css">
+
+    <script type="text/javascript" src="../js/common.js"></script>
+    <script type="text/javascript" src="../js/useragent.js"></script>
+    <script type="text/javascript" src="../js/tooltip.js"></script>
+    <script type="text/javascript" src="../js/select.js"></script>
+    <script type="text/javascript" src="../js/calendar.js"></script>
+    <script type="text/javascript" src="../js/datepicker.js"></script>
+    <script type="text/javascript" src="../js/calendar.events.js"></script>
+    <script type="text/javascript" src="../js/tabset.js"></script>
+    <script type="text/javascript" src="../js/dialog.js"></script>
+    <script type="text/javascript" src="../js/gallery.js"></script>
+    <script type="text/javascript" src="../js/collector.js"></script>
+    <script type="text/javascript" src="../js/columns.js"></script>
+    <script type="text/javascript" src="../js/template.js"></script>
+
+    <script type="text/javascript">
+        cm.onload(function(){
+            var element;
+            // Useragent
+            Com.UA.setBrowserClass();
+            // Selects
+            Com.SelectCollector();
+            // Datepickers
+            Com.DatepickerCollector();
+            // Tabset
+            Com.TabsetCollector();
+            // Template Tests
+            var str =   '<h1 cmt-node="title">' +
+                            '<span cmt-key="data.name" cmt-node="some.node"></span>' +
+                            '<span cmt-key="data.some.name"></span>' +
+                        '</h1>' +
+                        '<div cmt-key="data.nodes" cmt-node-foreach="blocks">' +
+                            '<h2 cmt-key="data.nodes.name" cmt-node="h2"></h2>' +
+                            '<div class="com-gridlist" cmt-node="grid">' +
+                                '<table>' +
+                                    '<thead>' +
+                                        '<tr>' +
+                                            '<th width="20%" class="sort">' +
+                                                '<div class="inner">' +
+                                                    '<span cmt-key="lang.name"></span>' +
+                                                    '<div class="icon arrow desc"></div>' +
+                                                '</div>' +
+                                            '</th>' +
+                                            '<th cmt-key="lang.description"></th>' +
+                                            '<th width="50"></th>' +
+                                            '<th width="60"></th>' +
+                                        '</tr>' +
+                                    '</thead>' +
+                                    '<tbody>' +
+                                        '<tr cmt-key="data.nodes.trs" cmt-node-foreach="trs" cmt-node="container">' +
+                                            '<td cmt-key="data.nodes.trs.name" cmt-node="name"></td>' +
+                                            '<td cmt-key="data.nodes.trs.text" cmt-node="descr"></td>' +
+                                            '<td><a class="com-gridlist-link" href="#">Edit</a></td>' +
+                                            '<td><a class="com-gridlist-link" href="#">Remove</a></td>' +
+                                        '</tr>' +
+                                    '</tbody>' +
+                                '</table>' +
+                            '</div>' +
+                        '</div>';
+            // Create test data object
+            var i = 10,
+                trs = 10,
+                lang = {
+                    'name' : 'Name:',
+                    'description' : 'Description:'
+                },
+                data = {
+                    'name' : 'Template Test: ',
+                    'some' : {
+                        'name' : cm.rand2(0, 10000)
+                    },
+                    'nodes' : []
+                },
+                arr,
+                date;
+            cm.forEach(i, function(){
+                arr = {
+                    'name' : ['Title Name', cm.rand2(0, 10000)].join(' # '),
+                    'trs' : []
+                };
+                cm.forEach(trs,  function(){
+                    arr['trs'].push({
+                        'name' : ['Name', cm.rand2(0, 10000)].join(' # '),
+                        'text' : ['Text', cm.rand2(0, 10000)].join(' # ')
+                    });
+                });
+                data['nodes'].push(arr);
+            });
+            // Test
+            date = new Date();
+            new Com.Template(str)
+                .setData(data)
+                .setLang(lang)
+                .appendTo(cm.getEl('node'));
+            //cm.log(temp.getNodes());
+            cm.log(new Date() - date);
+        });
+    </script>
+</head>
+
+<body>
+
+<div class="cm-block-padding" id="node"></div>
+
+</body>
+
+</html>

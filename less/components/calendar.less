@@ -1,0 +1,87 @@
+/* ******* CALENDAR ******* */
+
+.com-calendar {
+
+    .selects {
+        height: @cm-form-field-height;
+
+        .months {
+            width: 49%;
+            float: left;
+        }
+
+        .years {
+            width: 49%;
+            margin-left: 2%;
+            float: left;
+        }
+    }
+
+    table {
+        width: 100%;
+        border: none;
+        border-collapse: collapse;
+        table-layout: fixed;
+        margin-top: 8px;
+
+        th {
+            padding-bottom: 2px;
+            text-align: center;
+            font-size: 10px;
+            line-height: 14px;
+            color: #646464;
+        }
+
+        td {
+            height: 21px;
+            padding: 1px;
+
+            div {
+                text-align: center;
+                line-height: 19px;
+                font-size: 11px;
+                text-shadow: 0 1px 0 #fff;
+            }
+
+            &.in div {
+                background-color: #FAFAFA;
+                border: 1px solid #E6E6E6;
+                border-radius: 2px;
+                cursor: pointer;
+                -webkit-transition: all 0.3s ease-in-out;
+                        transition: all 0.3s ease-in-out;
+
+                &:hover {
+                    background-color: #E6E6E6;
+                    border-color: #D2D2D2;
+                    -webkit-transition: all 0.1s ease-in-out;
+                            transition: all 0.1s ease-in-out;
+                }
+            }
+
+            &.weekend div {
+                background-color: #F0F0F0;
+            }
+
+            &.today div {
+                border: 2px solid #6eb2f2;
+                line-height: 17px;
+
+                &:hover {
+                    border-color: #6eb2f2;
+                }
+            }
+
+            &.active div,
+            &.selected div {
+                background-color: #d9eafb;
+                border-color: #6eb2f2;
+
+                &:hover {
+                    background-color: #d9eafb;
+                    border-color: #6eb2f2;
+                }
+            }
+        }
+    }
+}

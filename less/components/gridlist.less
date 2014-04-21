@@ -1,0 +1,225 @@
+/* ******* GRIDLIST ******* */
+
+.com-gridlist-counter {
+    margin: 0 0 @cm-block-margin;
+}
+
+.com-gridlist {
+    margin: 0 0 @cm-block-margin;
+    overflow: hidden;
+    font-size: @com-gridlist-font-size;
+
+    table {
+        width: 100%;
+        table-layout: fixed;
+        border-collapse: separate;
+
+        td, th {
+            text-align: left;
+            padding: @com-gridlist-padding-inner;
+
+            > .inner {
+                display: block;
+                overflow: hidden;
+                position: relative;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                word-wrap: normal;
+                text-decoration: none;
+            }
+        }
+
+        th {
+            line-height: 14px;
+            font-weight: bold;
+
+            &.sort {
+                .cm-transition(background-color 0.3s ease-in-out);
+
+                &:hover {
+                    background: @cm-base-color-secondary;
+                    .cm-transition(background-color 0.1s ease-in-out);
+                }
+
+                .inner {
+                    display: block;
+                    margin: -@com-gridlist-padding-inner;
+                    padding: @com-gridlist-padding-inner 20px @com-gridlist-padding-inner @com-gridlist-padding-inner;
+                    cursor: pointer;
+                }
+
+                .arrow {
+                    display: block;
+                    position: absolute;
+                    top: 50%;
+                    right: @com-gridlist-padding-inner;
+                    margin: -3px 0 0 0;
+                }
+            }
+        }
+
+        tr {
+            td {
+                vertical-align: top;
+                word-wrap: break-word;
+                .cm-transition(background-color 0.3s ease-in-out);
+            }
+
+            &:hover td {
+                background-color: @cm-base-color-secondary;
+                .cm-transition(background-color 0.1s ease-in-out);
+            }
+        }
+
+        .is-show td {
+            background: #F5F5F5;
+        }
+    }
+
+    .expire {
+        color: #D2A323;
+        font-weight: bold;
+    }
+
+    .expired {
+        color: #DF3E3E;
+        font-weight: bold;
+    }
+
+    &.error {
+        th {
+            border-color: #df3e3e;
+        }
+    }
+}
+
+.com-gridlist-indent {
+    padding: 0 0 0 (@cm-block-padding - @com-gridlist-padding-inner);
+}
+
+.com-gridlist-middle {
+    table {
+        td, th {
+            vertical-align: middle;
+        }
+    }
+}
+
+/* *** LINKS *** */
+
+.com-gridlist-link {
+    margin: 0 0 0 @com-gridlist-link-indent;
+
+    &:first-child {
+        margin: 0;
+    }
+}
+
+.com-gridlist-links {
+    margin: 0;
+    padding: 0;
+    font-size: 0;
+    list-style: none;
+
+    li {
+        display: inline-block;
+        vertical-align: middle;
+        font-size: @com-gridlist-font-size;
+
+        &:before {
+            content: '|';
+            margin: 0 @com-gridlist-link-indent;
+        }
+
+        &:first-child:before {
+            content: normal;
+            margin: 0;
+        }
+    }
+
+    &.style2 {
+        li {
+            display: block;
+
+            &:before {
+                content: normal;
+                margin: 0;
+            }
+        }
+    }
+}
+
+/* *** CONTROLS *** */
+
+.com-gridlist .control {
+    .icon {
+        display: inline-block;
+        vertical-align: middle;
+        cursor: pointer;
+    }
+
+    input[type="checkbox"],
+    input[type="radio"] {
+        vertical-align: middle;
+        margin: 0;
+    }
+}
+
+/* ******* COMPONENTS IN GRIDLIST ******* */
+
+/* *** DRAG'n'DROP *** */
+
+.com-gridlist {
+    .cm-draganddrop-helper {
+        display: table;
+        table-layout: fixed;
+    }
+
+    table {
+        tbody.cm-draganddrop-area {
+            &.is-active {
+                background: transparent;
+            }
+        }
+
+        tr.cm-draganddrop-helper {
+            td {
+                background-color: #D9EAFB;
+            }
+        }
+    }
+}
+
+/* *** TOGGLE BOX *** */
+
+.com-gridlist {
+    .slide-tr {
+        > td {
+            border-top: 1px solid #FFFFFF;
+            border-bottom: 1px solid #FFFFFF;
+            padding: 0;
+        }
+
+        &:hover > td {
+            background-color: #fff;
+        }
+
+        .slide-box {
+            height: 0;
+            overflow: hidden;
+            position: relative;
+
+            > .inner {
+                padding: 6px;
+            }
+        }
+    }
+
+    .has-padding tr td:first-child {
+        padding-left: 20px;
+    }
+
+    .has-padding-two tr td:first-child {
+        padding-left: 40px;
+    }
+}

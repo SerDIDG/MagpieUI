@@ -1,0 +1,157 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Datepicker</title>
+
+    <link type="text/css" rel="stylesheet" href="css/index.css">
+
+    <script type="text/javascript" src="../js/common.js"></script>
+    <script type="text/javascript" src="../js/useragent.js"></script>
+    <script type="text/javascript" src="../js/tooltip.js"></script>
+    <script type="text/javascript" src="../js/select.js"></script>
+    <script type="text/javascript" src="../js/calendar.js"></script>
+    <script type="text/javascript" src="../js/datepicker.js"></script>
+    <script type="text/javascript" src="../js/calendar.events.js"></script>
+    <script type="text/javascript" src="../js/tabset.js"></script>
+    <script type="text/javascript" src="../js/dialog.js"></script>
+    <script type="text/javascript" src="../js/gallery.js"></script>
+    <script type="text/javascript" src="../js/collector.js"></script>
+    <script type="text/javascript" src="../js/columns.js"></script>
+
+    <script type="text/javascript">
+        cm.onload(function(){
+            var element;
+            // Useragent
+            Com.UA.setBrowserClass();
+            // Selects
+            Com.SelectCollector();
+            // Datepickers
+            Com.DatepickerCollector();
+            // Tabset
+            Com.TabsetCollector();
+            // Gallery
+            Com.GalleryCollector();
+        });
+    </script>
+</head>
+
+<body>
+
+<div class="cm-block-padding">
+    <h1>Datepicker</h1>
+
+    <ul class="com-tabset-content-ul" id="tabset" data-tabset="true" data-toggleOnHashChange="false">
+        <li data-tabset-id="overview" data-tabset-title="Overview">
+            <h2>Initialize in Java-Script:</h2>
+            <code>new Com.Datepicker(o);</code>
+            <br>
+            <b>Attributes:</b>
+            <ul>
+                <li><b>container</b> <i>[HTML Node]</i> - container for select, when select rendered through java-script, <i>default: cm.Node('div')</i>;</li>
+                <li><b>input</b> <i>[HTML Node]</i> - input type text html node, <i>default: cm.Node('input', {'type' : 'text'})</i>;</li>
+                <li><b>placeholder</b> <i>[String]</i> - placeholder text, <i>default: empty</i>;</li>
+                <li><b>format</b> <i>[String]</i> - date format for displays in input, <i>default: '%F %j, %Y'</i>;</li>
+                <li><b>saveFormat</b> <i>[String]</i> - date format for saving on the server, <i>default: '%Y-%m-%d'</i>;</li>
+                <li><b>startYear</b> <i>[Number]</i> - minimal year that is displays in datepicker, <i>default: 1900</i>;</li>
+                <li><b>endYear</b> <i>[Number]</i> - maximal year that is displays in datepicker, <i>default: current</i>;</li>
+                <li><b>startWeekDay</b> <i>[Number]</i> - specify the day which the week starts, <i>default: 0</i>;</li>
+                <li><b>showPlaceholder</b> <i>[Boolean]</i> - show placeholder text, when date not specified, <i>default: true</i>;</li>
+                <li><b>showTodayButton</b> <i>[Boolean]</i> - display a button that sets the current date, <i>default: true</i>;</li>
+                <li><b>showClearButton</b> <i>[Boolean]</i> - display a icon outside the input, that is clear input, <i>default: false</i>;</li>
+                <li><b>showTitleTag</b> <i>[Boolean]</i> - show title on hover, <i>default: true</i>;</li>
+                <li><b>title</b> <i>[String]</i> - title text, <i>default: false</i>;</li>
+                <li><b>menuMargin</b> <i>[Number]</i> - outer margin of datepicker window, <i>default: 3</i>;</li>
+                <li><b>langs</b> <i>[Object]</i> - object of lang strings;
+                    <ul>
+                        <li><b>days</b> <i>[Array]</i> - abbreviation of days, <i>default: ['S', 'M', 'T', 'W', 'T', 'F', 'S']</i>;</li>
+                        <li><b>months</b> <i>[Array]</i> - name of months, <i>default: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']</i>;</li>
+                        <li><b>clearButtonTitle</b> <i>[String]</i> - title tag, that is displays on hover clear button, <i>default: 'Clear datepicker'</i>;</li>
+                        <li><b>todayButton</b> <i>[String]</i> - text, that is displays on today button, <i>default: 'Today'</i>;</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h2>Initialize in HTML:</h2>
+            <code>&lt;input type="text" data-datepicker="true"&gt;</code>
+            <code>cm.onload(function(){
+                Com.DatepickerCollector();
+                });</code>
+            <br>
+            <b>Attributes:</b>
+            <ul>
+
+                <li><b>data-datepicker="true|false"</b> - mark as datepicker, if false - datepicker will not render;</li>
+                <li><b>data-title</b> or <b>title</b> - title text;</li>
+                <li><b>data-showTitleTag="true|false"</b> - show title on hover;</li>
+                <li><b>data-placeholder</b> or <b>placeholder</b> - placeholder text;</li>
+                <li><b>data-showPlaceholder="true|false"</b> - show placeholder text, when date not specified;</li>
+                <li><b>data-showTodayButton="true|false"</b> - display a button that sets the current date;</li>
+                <li><b>data-showClearButton="true|false"</b> - display a icon outside the input, that is clear input;</li>
+                <li><b>data-startYear</b> - minimal year that is displays in datepicker;</li>
+                <li><b>data-endYear</b> - maximal year that is displays in datepicker;</li>
+                <li><b>data-startWeekDay</b> - specify the day which the week starts;</li>
+                <li><b>data-format</b> - date format for displays in input;</li>
+                <li><b>data-saveFormat</b> - date format for saving on the server;</li>
+            </ul>
+        </li>
+
+        <li data-tabset-id="methods" data-tabset-title="Methods">
+            <h2>Get datepicker by id:</h2>
+            <code>Com.GetDatepicker('id');</code>
+            <p>Returns a class of datepicker.</p>
+
+            <h2>Get selected date string in save format:</h2>
+            <code>datepicker.get(format);</code>
+            <p>Returns selected date string in save (server) format, or in specified format.</p>
+
+            <h2>Set date:</h2>
+            <code>datepicker.set(date);</code>
+            <p>Set date by specify date string in save (server) format or date object.<br>Returns a class of datepicker.</p>
+
+            <h2>Get selected date object:</h2>
+            <code>datepicker.getDate();</code>
+            <p>Returns selected date object.</p>
+
+            <h2>Set event:</h2>
+            <code>datepicker.addEvent(event, handler);</code>
+            <p>Available events: onSelect, onChange.<br>Returns a class of datepicker.</p>
+
+            <h2>Remove event:</h2>
+            <code>datepicker.removeEvent(event, handler);</code>
+            <p>Available events: onSelect, onChange.<br>Returns a class of datepicker.</p>
+
+            <h2>Convert date object to date string:</h2>
+            <code>datepicker.parseDate(o, format);</code>
+            <p>Returns date string in save (server) format, or in specified format.</p>
+
+            <h2>Get list of datepicker nodes:</h2>
+            <code>datepicker.getNodes(key);</code>
+            <p>Returns object of nodes, or node if key is specified.</p>
+        </li>
+
+        <li data-tabset-id="examples" data-tabset-title="Examples">
+            <h2>Default Datepicker:</h2>
+            <div class="form">
+                <dl>
+                    <dd>
+                        <input name="datepicker1" type="text" data-datepicker="true">
+                    </dd>
+                </dl>
+            </div>
+            <br>
+            <h2>Datepicker with placeholder and clear button:</h2>
+            <div class="form">
+                <dl>
+                    <dd>
+                        <input name="datepicker2" type="text" data-datepicker="true" data-showClearButton="true" placeholder="Specify date">
+                    </dd>
+                </dl>
+            </div>
+        </li>
+    </ul>
+</div>
+
+</body>
+</html>

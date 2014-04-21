@@ -1,0 +1,307 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;">
+    <title>Gridlist</title>
+
+    <link type="text/css" rel="stylesheet" href="css/index.css">
+
+    <script type="text/javascript" src="../js/common.js"></script>
+    <script type="text/javascript" src="../js/useragent.js"></script>
+    <script type="text/javascript" src="../js/tooltip.js"></script>
+    <script type="text/javascript" src="../js/select.js"></script>
+    <script type="text/javascript" src="../js/calendar.js"></script>
+    <script type="text/javascript" src="../js/datepicker.js"></script>
+    <script type="text/javascript" src="../js/calendar.events.js"></script>
+    <script type="text/javascript" src="../js/tabset.js"></script>
+    <script type="text/javascript" src="../js/dialog.js"></script>
+    <script type="text/javascript" src="../js/gallery.js"></script>
+    <script type="text/javascript" src="../js/collector.js"></script>
+    <script type="text/javascript" src="../js/columns.js"></script>
+    <script type="text/javascript" src="../js/glossary.js"></script>
+    <script type="text/javascript" src="../js/draganddrop.js"></script>
+    <script type="text/javascript" src="../js/toggle.box.js"></script>
+
+    <script type="text/javascript">
+        cm.onload(function(){
+            var element;
+            // Useragent
+            Com.UA.setBrowserClass();
+            // Selects
+            Com.SelectCollector();
+            // Datepickers
+            Com.DatepickerCollector();
+            // Tabset
+            Com.TabsetCollector();
+            // *** Togglebox
+            new Com.ToggleBoxGridlist({
+                'node' : cm.getEl('gridlist'),
+                'useLangs' : true,
+                'langs' : {
+                    'showTitle' : 'Show',
+                    'hideTitle' : 'Hide'
+                }
+            });
+        });
+    </script>
+</head>
+
+<body>
+
+<div class="cm-block-padding">
+    <h1>Gridlist</h1>
+
+    <ul class="com-tabset-content-ul" id="tabset" data-tabset="true" data-toggleOnHashChange="false" data-active="examples">
+        <li data-tabset-id="overview" data-tabset-title="Overview">
+        </li>
+
+        <li data-tabset-id="methods" data-tabset-title="Methods">
+        </li>
+
+        <li data-tabset-id="examples" data-tabset-title="Examples">
+            <h2>Default:</h2>
+            <div class="com-gridlist">
+                <table>
+                    <thead>
+                    <tr>
+                        <th width="20%" class="sort">
+                            <div class="inner">
+                                <span>Name</span>
+                                <div class="icon arrow desc"></div>
+                            </div>
+                        </th>
+                        <th>Description</th>
+                        <th width="60">Order</th>
+                        <th width="70"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Canada</td>
+                        <td>Canada is a North American country consisting of ten provinces and three territories.</td>
+                        <td>
+                            <div class="form-icons-inside left">
+                                <div class="text">1</div>
+                                <div class="icon small arrow-priority-up linked hidden"></div>
+                                <div class="icon small arrow-priority-down linked"></div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-icons-inside">
+                                <div class="icon small add linked" title="Add"></div>
+                                <div class="icon small edit linked" title="Edit"></div>
+                                <div class="icon small remove linked" title="Remove"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Canada</td>
+                        <td>Canada is a North American country consisting of ten provinces and three territories.</td>
+                        <td>
+                            <div class="form-icons-inside left">
+                                <div class="text">2</div>
+                                <div class="icon small arrow-priority-up linked"></div>
+                                <div class="icon small arrow-priority-down linked"></div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-icons-inside">
+                                <div class="icon small add linked" title="Add"></div>
+                                <div class="icon small edit linked" title="Edit"></div>
+                                <div class="icon small remove linked" title="Remove"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Canada</td>
+                        <td>Canada is a North American country consisting of ten provinces and three territories.</td>
+                        <td>
+                            <div class="form-icons-inside left">
+                                <div class="text">3</div>
+                                <div class="icon small arrow-priority-up linked"></div>
+                                <div class="icon small arrow-priority-down linked hidden"></div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-icons-inside">
+                                <div class="icon small add linked" title="Add"></div>
+                                <div class="icon small edit linked" title="Edit"></div>
+                                <div class="icon small remove linked" title="Remove"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <hr>
+
+            <h2>Small with toggle boxes and elements:</h2>
+            <div class="com-gridlist" id="gridlist">
+                <table>
+                    <thead>
+                    <tr>
+                        <th width="10%">Name</th>
+                        <th>Description</th>
+                        <th width="9%">Progress Tracker</th>
+                        <th width="6%" class="align-center">Active</th>
+                        <th width="6%" class="align-center">Settings</th>
+                        <th width="9%">Status</th>
+                        <th width="140">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody data-gridlist-item="1">
+                    <tr>
+                        <td>
+                            Canada
+                            <span class="link" data-gridlist-for="1" data-togglebox-button="true">Show</span>
+                        </td>
+                        <td>Canada is a North American country consisting of ten provinces and three territories.</td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="inner green" style="width: 85%;"></div>
+                            </div>
+                        </td>
+                        <td class="align-center control">
+                            <input type="checkbox">
+                        </td>
+                        <td class="align-center control">
+                            <div class="icon small settings linked"></div>
+                        </td>
+                        <td>
+                            Passed 85%
+                            <div class="icon small done inline"></div>
+                        </td>
+                        <td>
+                            <ul class="com-gridlist-links">
+                                <li><a href="#">Add</a></li>
+                                <li><a href="#">Edit</a></li>
+                                <li><a href="#">Remove</a></li>
+                            </ul>
+                        </td>
+                    </tr>
+                    </tbody>
+                    <tbody class="display-none has-padding" data-gridlist-id="1">
+                    <tr>
+                        <td>
+                            Canada
+                            <span class="link" data-gridlist-for="3" data-togglebox-button="true">Show</span>
+                        </td>
+                        <td>Canada is a North American country consisting of ten provinces and three territories.</td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="inner green" style="width: 85%;"></div>
+                            </div>
+                        </td>
+                        <td class="align-center control">
+                            <input type="checkbox">
+                        </td>
+                        <td class="align-center control">
+                            <div class="icon small settings linked"></div>
+                        </td>
+                        <td>
+                            Passed 85%
+                            <div class="icon small done inline"></div>
+                        </td>
+                        <td>
+                            <ul class="com-gridlist-links">
+                                <li><a href="#">Add</a></li>
+                                <li><a href="#">Edit</a></li>
+                                <li><a href="#">Remove</a></li>
+                            </ul>
+                        </td>
+                    </tr>
+                    </tbody>
+                    <tbody class="display-none has-padding-two" data-gridlist-id="3" data-gridlist-parent-id="1">
+                    <tr>
+                        <td>Canada</td>
+                        <td>Canada is a North American country consisting of ten provinces and three territories.</td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="inner green" style="width: 85%;"></div>
+                            </div>
+                        </td>
+                        <td class="align-center control">
+                            <input type="checkbox">
+                        </td>
+                        <td class="align-center control">
+                            <div class="icon small settings linked"></div>
+                        </td>
+                        <td>
+                            Passed 85%
+                            <div class="icon small done inline"></div>
+                        </td>
+                        <td>
+                            <ul class="com-gridlist-links">
+                                <li><a href="#">Add</a></li>
+                                <li><a href="#">Edit</a></li>
+                                <li><a href="#">Remove</a></li>
+                            </ul>
+                        </td>
+                    </tr>
+                    </tbody>
+                    <tbody>
+                    <tr>
+                        <td>Canada</td>
+                        <td>Canada is a North American country consisting of ten provinces and three territories.</td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="inner orange" style="width: 40%;"></div>
+                            </div>
+                        </td>
+                        <td class="align-center control">
+                            <input type="checkbox">
+                        </td>
+                        <td class="align-center control">
+                            <div class="icon small settings linked"></div>
+                        </td>
+                        <td>
+                            Passed 85%
+                            <div class="icon small done inline"></div>
+                        </td>
+                        <td>
+                            <ul class="com-gridlist-links">
+                                <li><a href="#">Add</a></li>
+                                <li><a href="#">Edit</a></li>
+                                <li><a href="#">Remove</a></li>
+                            </ul>
+                        </td>
+                    </tr>
+                    </tbody>
+                    <tbody>
+                    <tr>
+                        <td>Canada</td>
+                        <td>Canada is a North American country consisting of ten provinces and three territories.</td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="inner red" style="width: 15%;"></div>
+                            </div>
+                        </td>
+                        <td class="align-center control">
+                            <input type="checkbox">
+                        </td>
+                        <td class="align-center control">
+                            <div class="icon small settings linked"></div>
+                        </td>
+                        <td>
+                            Passed 15%
+                            <div class="icon small fail inline"></div>
+                        </td>
+                        <td>
+                            <ul class="com-gridlist-links">
+                                <li><a href="#">Add</a></li>
+                                <li><a href="#">Edit</a></li>
+                                <li><a href="#">Remove</a></li>
+                            </ul>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </li>
+    </ul>
+</div>
+
+</body>
+</html>

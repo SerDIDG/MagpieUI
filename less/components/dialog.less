@@ -1,0 +1,157 @@
+/* ******* DIALOG ******* */
+
+.com-dialog {
+    width: 100%;
+    height: 100%;
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    opacity: 0;
+
+    > .bg {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        background-color: #000000;
+        opacity: 0.6;
+    }
+
+    > .window {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: 2;
+
+        > .inner {
+            background-color: #ffffff;
+            border-radius: 3px;
+
+            > .close {
+                position: absolute;
+                top: 4px;
+                right: 9px;
+                z-index: 2;
+                font-family: Verdana, Geneva, sans-serif;
+                font-size: 20px;
+                font-weight: bold;
+                line-height: 18px;
+                cursor: pointer;
+
+                &:hover {
+                    opacity: 0.6;
+                }
+            }
+
+            > .title {
+                padding: 16px 0 0;
+                margin: 0 @cm-block-padding;
+                line-height: 24px;
+                font-size: 24px;
+                font-weight: bold;
+                color: #015696;
+
+                h1 {
+                    margin: 0;
+                }
+            }
+
+            > .descr {
+                padding: 8px;
+                position: relative;
+                z-index: 1;
+
+                > .scroll {
+                    position: relative;
+
+                    > .inner {
+                        word-wrap: break-word;
+                        padding: @cm-block-padding - 8;
+                    }
+                }
+
+                > .scroll.isScroll {
+                    overflow-x: hidden;
+                    overflow-y: auto;
+
+                    > .inner {
+                        padding-right: @cm-block-padding;
+                    }
+                }
+
+                &.no-scroll {
+                    padding: @cm-block-padding;
+                }
+            }
+
+            > .descr:first-child {
+                padding: 32px 8px 8px;
+
+                > .scroll > .inner {
+                    padding: @cm-block-padding - 8;
+                    padding-top: 0;
+                }
+
+                > .scroll.isScroll > .inner {
+                    padding-right: @cm-block-padding;
+                }
+            }
+        }
+    }
+}
+
+/* IE Opacity */
+
+.ie6 .com-dialog,
+.ie7 .com-dialog,
+.ie8 .com-dialog {
+    .cm-opacity-ie(0);
+}
+
+.ie6 .com-dialog > .bg,
+.ie7 .com-dialog > .bg,
+.ie8 .com-dialog > .bg {
+    .cm-opacity-ie(60);
+}
+
+.ie6 .com-dialog > .window
+.ie7 .com-dialog > .window,
+.ie8 .com-dialog > .window {
+    .cm-opacity-ie(100);
+}
+
+/* Confirmation Dialog */
+
+.com-dialog-confirm {
+    padding: 14px 0 0;
+
+    > .title {
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .button-box {
+        margin-top: 20px;
+
+        input {
+            width: 70px;
+        }
+    }
+}
+
+/* ******* COMPONENTS IN DIALOG ******* */
+
+/* *** EDITABLE AREA *** */
+
+.com-dialog {
+    .cm-editable:hover > .border {
+        top: -8px;
+        right: -8px;
+        bottom: -8px;
+        left: -8px;
+    }
+}

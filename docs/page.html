@@ -1,0 +1,147 @@
+<!DOCTYPE HTML>
+<html class="is-adaptive">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Page</title>
+
+    <link type="text/css" rel="stylesheet" href="css/index.css">
+
+    <script type="text/javascript" src="../js/common.js"></script>
+    <script type="text/javascript" src="../js/useragent.js"></script>
+    <script type="text/javascript" src="../js/tooltip.js"></script>
+    <script type="text/javascript" src="../js/select.js"></script>
+    <script type="text/javascript" src="../js/calendar.js"></script>
+    <script type="text/javascript" src="../js/datepicker.js"></script>
+    <script type="text/javascript" src="../js/calendar.events.js"></script>
+    <script type="text/javascript" src="../js/tabset.js"></script>
+    <script type="text/javascript" src="../js/dialog.js"></script>
+    <script type="text/javascript" src="../js/gallery.js"></script>
+    <script type="text/javascript" src="../js/collector.js"></script>
+    <script type="text/javascript" src="../js/columns.js"></script>
+
+    <script type="text/javascript">
+        cm.onload(function(){
+            // Useragent
+            Com.UA.setBrowserClass();
+            // Selects
+            Com.SelectCollector();
+            // Datepickers
+            Com.DatepickerCollector();
+            // Tabset
+            Com.TabsetCollector();
+        });
+    </script>
+</head>
+
+<body>
+
+<div class="cm-block-padding">
+    <div class="flash-notification">
+        <ul>
+            <li class="ok">
+                <div class="close">Close</div>
+                <div class="descr">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+            </li>
+            <li class="error">
+                <div class="close">Close</div>
+                <div class="descr">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+            </li>
+            <li class="notice">
+                <div class="close">Close</div>
+                <div class="descr">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="breadcrumbs">
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li class="sep">&raquo;</li>
+            <li><a href="#">Modules</a></li>
+            <li class="sep">&raquo;</li>
+            <li><a href="#">Slider</a></li>
+            <li class="sep">&raquo;</li>
+            <li>Home</li>
+        </ul>
+    </div>
+
+    <h1>Page title</h1>
+
+    <div class="buttons">
+        <a class="button" href="#">Add new item</a>
+        <a class="button" href="#">Other tool</a>
+        <a class="button" href="#">Open Dialog</a>
+    </div>
+
+    <div class="com-gridlist com-gridlist-font-11">
+        <table>
+            <thead>
+                <tr>
+                    <th width="20%" class="sort">
+                        <a class="inner">
+                            <span>Name</span>
+                            <div class="icon arrow desc"></div>
+                        </a>
+                    </th>
+                    <th>Description</th>
+                    <th width="140"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Canada</td>
+                    <td>Canada is a North American country consisting of ten provinces and three territories. Located in the northern part of the continent, it extends from the Atlantic to the Pacific and northward into the Arctic Ocean. Canada is the world's second-largest country by total area, and its common border with the United States is the world's longest land border.</td>
+                    <td>
+                        <ul class="com-gridlist-links">
+                            <li><a href="#">Add</a></li>
+                            <li><a href="#">Edit</a></li>
+                            <li><a href="#">Remove</a></li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Canada</td>
+                    <td>Canada is a North American country consisting of ten provinces and three territories. Located in the northern part of the continent, it extends from the Atlantic to the Pacific and northward into the Arctic Ocean. Canada is the world's second-largest country by total area, and its common border with the United States is the world's longest land border.</td>
+                    <td>
+                        <ul class="com-gridlist-links">
+                            <li><a href="#">Add</a></li>
+                            <li><a href="#">Edit</a></li>
+                            <li><a href="#">Remove</a></li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Canada</td>
+                    <td>Canada is a North American country consisting of ten provinces and three territories. Located in the northern part of the continent, it extends from the Atlantic to the Pacific and northward into the Arctic Ocean. Canada is the world's second-largest country by total area, and its common border with the United States is the world's longest land border.</td>
+                    <td>
+                        <ul class="com-gridlist-links">
+                            <li><a href="#">Add</a></li>
+                            <li><a href="#">Edit</a></li>
+                            <li><a href="#">Remove</a></li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="cm-pagination bottom">
+        <ul>
+            <li class="prev"><a>&lt;</a></li>
+            <li><a>1</a></li>
+            <li class="points">...</li>
+            <li><a>5</a></li>
+            <li><a>6</a></li>
+            <li class="active"><a>7</a></li>
+            <li><a>8</a></li>
+            <li><a>9</a></li>
+            <li class="points">...</li>
+            <li><a>12</a></li>
+            <li><a href="#">&gt;</a></li>
+        </ul>
+    </div>
+</div>
+
+</body>
+</html>

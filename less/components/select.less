@@ -1,0 +1,47 @@
+/* ******* SELECT ******* */
+
+.com-select {
+    position: relative;
+    z-index: 1;
+    outline: none;
+
+    .form-field {
+        .icon {
+            -webkit-transition+: -webkit-transform 0.3s ease-in-out;
+                -ms-transition+:     -ms-transform 0.3s ease-in-out;
+                    transition+:         transform 0.3s ease-in-out;
+        }
+    }
+
+    &:focus,
+    &.active {
+        .form-field {
+            .icon {
+                -webkit-transform: rotate(180deg);
+                    -ms-transform: rotate(180deg);
+                        transform: rotate(180deg);
+            }
+        }
+    }
+}
+
+/* Tooltip */
+
+.com-select-tooltip > .inner > .scroll {
+    max-height: @cm-select-list-count * (@cm-base-line-height + @cm-items-list-indent + @cm-items-list-padding-y * 2) - @cm-items-list-indent;
+}
+
+/* Select Multiple */
+
+.com-multiselect {
+    .inner {
+        #cm > .input;
+        height: auto;
+        min-height: @cm-form-field-height;
+        padding: @cm-block-padding-small;
+    }
+
+    .cm-items-list > ul {
+        max-height: @cm-multiselect-list-count * (@cm-base-line-height + @cm-items-list-indent + @cm-items-list-padding-y * 2) - @cm-items-list-indent;
+    }
+}

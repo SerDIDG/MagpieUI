@@ -1,0 +1,44 @@
+/* ******* OLD BROWSERS ALERT ******* */
+
+.com-oldbrowser-alert {
+
+    .descr {
+        margin: 0 0 32px;
+
+        p {
+            margin: 0;
+        }
+    }
+
+    .browsers {
+        margin: 0 0 40px;
+        padding: 0;
+        list-style: none;
+        white-space: nowrap;
+        font-size: 0;
+        text-align: center;
+
+        li {
+            display: inline-block;
+
+            a {
+                display: block;
+                cursor: pointer;
+
+                &:hover {
+                    opacity: 0.7;
+                }
+            }
+        }
+    }
+
+    .btn-wrap {
+        margin-top: 0;
+    }
+}
+
+.ie6 .com-oldbrowser-alert .browsers li,
+.ie7 .com-oldbrowser-alert .browsers li {
+    display: inline;
+    zoom: 1;
+}
