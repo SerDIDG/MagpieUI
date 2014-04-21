@@ -1144,6 +1144,7 @@ ul.has-icons-outside-three li {
   overflow-x: hidden;
   padding: 0;
   margin: 0 0 8px 0;
+  list-style: none;
 }
 .files-list ul li {
   height: 28px;
