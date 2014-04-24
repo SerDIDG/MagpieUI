@@ -357,22 +357,20 @@ cm.crossEvents = function(key){
         'mousemove' : 'touchmove',
         'click' : 'tap'
     };
-    return  events[key] || events;
+    return events[key];
 };
 
 cm.addEvent = function(el, type, handler, useCapture, preventDefault){
     useCapture = typeof(useCapture) == 'undefined' ? true : useCapture;
+    preventDefault = typeof(preventDefault) == 'undefined' ? false : preventDefault;
     // Process touch events
     if(cm.isTouch && cm.crossEvents(type)){
         if(/tap/.test(cm.crossEvents(type))){
             cm.addCustomEvent(el, cm.crossEvents(type), handler, useCapture, preventDefault);
-            return el;
         }else{
             el.addEventListener(cm.crossEvents(type), handler, useCapture);
-            if(/iPad|iPhone/.test(Com.UA.get()['os'])){
-                return el;
-            }
         }
+        return el;
     }
     try{
         el.addEventListener(type, handler, useCapture);
@@ -388,13 +386,10 @@ cm.removeEvent = function(el, type, handler, useCapture){
     if(cm.isTouch && cm.crossEvents(type)){
         if(/tap/.test(cm.crossEvents(type))){
             cm.removeCustomEvent(el, cm.crossEvents(type), handler, useCapture);
-            return el;
         }else{
             el.removeEventListener(cm.crossEvents(type), handler, useCapture);
-            if(/iPad|iPhone/.test(Com.UA.get()['os'])){
-                return el;
-            }
         }
+        return el;
     }
     try{
         el.removeEventListener(type, handler, useCapture);
@@ -409,11 +404,11 @@ cm.customEventsStack = [
 ];
 
 cm.addCustomEvent = function(el, type, handler, useCapture, preventDefault){
+    useCapture = typeof(useCapture) == 'undefined' ? true : useCapture;
+    preventDefault = typeof(preventDefault) == 'undefined' ? false : preventDefault;
+
     var events = {
         'tap' : function(){
-            useCapture = typeof(useCapture) == 'undefined' ? true : useCapture;
-            preventDefault = typeof(preventDefault) == 'undefined' ? false : preventDefault;
-
             var x = 0,
                 fault = 4,
                 y = 0;
@@ -424,17 +419,6 @@ cm.addCustomEvent = function(el, type, handler, useCapture, preventDefault){
                         if(preventDefault){
                             e.preventDefault();
                         }
-                    }
-                ],
-                'mouseup' : [
-                    function(e){
-                        if(/iPad|iPhone/.test(Com.UA.get()['os'])){
-                            return;
-                        }
-                        if(preventDefault){
-                            e.preventDefault();
-                        }
-                        handler(e);
                     }
                 ],
                 'touchstart' : [
@@ -1044,26 +1028,21 @@ cm.is = function(str){
     if(typeof Com.UA == 'undefined'){
         throw new Error('Error. useragent.js is not exists or not loaded.');
     }
-    var ver = str.replace(/[^0-9\.\,]/g,''),
-        app = Com.UA.hash[str.replace(/[0-9\.\,\s]/g,'').toLowerCase()],
-        user = Com.UA.get();
-    return (app == user.browser && ((ver && ver.length > 0)? parseFloat(ver) == parseFloat(user.version) : true));
+    return Com.UA.is(str);
 };
 
 cm.isVersion = function(){
     if(typeof Com.UA == 'undefined'){
         throw new Error('Error. useragent.js is not exists or not loaded.');
     }
-    var user = Com.UA.get();
-    return parseFloat(user.version);
+    return Com.UA.isVersion();
 };
 
 cm.isMobile = function(){
     if(typeof Com.UA == 'undefined'){
         throw new Error('Error. useragent.js is not exists or not loaded.');
     }
-    var user = Com.UA.get();
-    return user['os_type'] == 'mobile';
+    return Com.UA.isMobile();
 };
 
 cm.decode = (function(){

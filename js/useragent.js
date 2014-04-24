@@ -247,15 +247,32 @@ Com['UA'] = {
     'setEngineClass' : function(){
         var user = Com.UA.get();
         cm.addClass(document.getElementsByTagName('html')[0], user['engine'].toLowerCase());
+    },
+    'is' : function(str){
+        var that = this,
+            ver = str.replace(/[^0-9\.\,]/g,''),
+            app = that.hash[str.replace(/[0-9\.\,\s]/g,'').toLowerCase()],
+            user = that.get();
+        return (app == user.browser && ((ver && ver.length > 0)? parseFloat(ver) == parseFloat(user.version) : true));
+    },
+    'isVersion' : function(){
+        var that = this,
+            user = that.get();
+        return parseFloat(user.version);
+    },
+    'isMobile' : function(){
+        var that = this,
+            user = that.get();
+        return user['os_type'] == 'mobile';
     }
 };
 
 /* Deprecated */
 
 var is = function(str){
-	return cm.is(str);
+	return Com.UA.is(str);
 };
 
 var isVersion = function(){
-	return cm.isVersion();
+	return Com.UA.isVersion();
 };

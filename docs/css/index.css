@@ -489,6 +489,11 @@ ul.indent {
 .cm-block-padding {
   padding: 24px;
 }
+.cm-scroll-y {
+  -webkit-overflow-scrolling: touch;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
 /* ******* FORM ******* */
 .form {
   cursor: default;

@@ -1,0 +1,201 @@
+#cm () {
+    .base-font {
+        font: @cm-base-font-weight ~'@{cm-base-font-size}/@{cm-base-line-height}' @cm-base-font-family;
+        color: @cm-base-font-color;
+    }
+
+    .link {
+        text-decoration: underline;
+        color: @cm-base-color;
+
+        &:hover {
+            text-decoration: none;
+            color: @cm-base-color;
+        }
+    }
+
+    .hr {
+        height: 0;
+        overflow: hidden;
+        border: none;
+        border-top: 1px dotted @cm-border-color;
+        margin: @cm-base-line-height 0;
+        padding: 0;
+        display: block;
+        clear: both;
+    }
+
+    // /* *** INPUT *** */
+
+    .input {
+        @padding: (@cm-form-field-height - @cm-base-line-height) / 2;
+
+        width: 100%;
+        height: @cm-form-field-height;
+        padding: @padding 6px;
+        margin: 0;
+        vertical-align: top;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        background: #fff;
+        border: 1px solid @cm-border-color;
+        border-radius: @cm-border-radius;
+        cursor: text;
+
+        &:focus {
+            background: #fdffff;
+            border-color: @cm-border-color-hover;
+        }
+    }
+
+    .textarea {
+        height: 100px;
+        min-height: @cm-form-field-height;
+        padding: 6px;
+        resize: vertical;
+
+        &[disabled] {
+            background-color: @cm-base-color-secondary;
+        }
+    }
+
+    // /* *** BUTTONS *** */
+
+    .button {
+        height: @cm-form-field-height;
+        margin: 0;
+        padding: 0 (@cm-form-field-height / 2);
+        position: relative;
+        display: inline-block;
+        vertical-align: top;
+        -webkit-appearance: none;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        -webkit-background-clip: border-box;
+        -moz-background-clip: border-box;
+        background-clip: border-box;
+        background: @cm-base-color;
+        border: none;
+        border-radius: @cm-border-radius;
+        text-align: center;
+        text-decoration: none;
+        line-height: @cm-form-field-height;
+        font-size: @cm-base-font-size;
+        color: #fff;
+        cursor: pointer;
+        .cm-transition(background-color @cm-transition-duration ease-in-out);
+        .cm-transition(color @cm-transition-duration ease-in-out);
+        .cm-transition(box-shadow @cm-transition-duration ease-in-out);
+
+        &.wide {
+            width: 100%;
+            padding: 0;
+            margin: 0;
+        }
+
+        .browse-button:hover &,
+        &:hover {
+            text-decoration: none;
+            .cm-transition(background-color @cm-transition-duration-reverse ease-in-out);
+            .cm-transition(color @cm-transition-duration-reverse ease-in-out);
+            .cm-transition(box-shadow @cm-transition-duration-reverse ease-in-out);
+            box-shadow: 0 0 10px fadeout(@cm-base-color, 25%);
+        }
+
+        &.secondary {
+            background: @cm-base-color-secondary;
+            box-shadow: none;
+            color: @cm-base-color;
+
+            &:hover {
+                background: @cm-base-color-secondary-hover;
+            }
+        }
+
+        &.transparent {
+            background: none;
+            box-shadow: none;
+            border: none;
+            color: @cm-base-color;
+
+            &:hover {
+                background: @cm-base-color-secondary;
+            }
+        }
+    }
+
+    // /* *** DROPDOWN MENU *** */
+
+    .menu {
+        display: block;
+        visibility: hidden;
+        position: absolute;
+        top: 0;
+        left: 0;
+        margin: 0;
+        padding: 4px 0;
+        background: #fff;
+        box-shadow: 0 0 2px rgba(0,0,0,0.2);
+        border: @cm-border-style;
+        border-radius: @cm-border-radius;
+        list-style: none;
+        opacity: 0;
+        .cm-transition(all @cm-transition-duration-reverse ease-in-out);
+
+        li {
+            position: relative;
+
+            a {
+                #cm > .link;
+                display: block;
+                padding: 2px @cm-block-padding / 2;
+                #cm > .base-font;
+                line-height: 18px;
+                text-decoration: none;
+                white-space: nowrap;
+
+                &:hover {
+                    color: @cm-base-color;
+                    text-decoration: none;
+                }
+            }
+
+            ul {
+                top: -1px;
+                left: 100%;
+            }
+
+            &.sep {
+                display: none;
+                height: 0;
+                margin: 0 @cm-block-padding / 2;
+                overflow: hidden;
+                border-top: @cm-border-style;
+            }
+
+            &:before {
+                display: block;
+                height: 0;
+                margin: 0 @cm-block-padding / 2;
+                overflow: hidden;
+                border-top: @cm-border-style;
+                content: '';
+            }
+
+            &:first-child:before {
+                display: none;
+            }
+
+            &:hover {
+                > ul {
+                    display: block;
+                }
+            }
+        }
+    }
+
+    .menu-hover {
+        visibility: visible;
+        opacity: 1;
+    }
+}
