@@ -35,6 +35,10 @@ textarea {
   color: #666666;
   outline: none;
 }
+input[type="file"] {
+  width: 100%;
+  cursor: pointer;
+}
 input[type="text"],
 input[type="email"],
 input[type="number"],
@@ -120,7 +124,19 @@ button:hover,
   text-decoration: none;
   -webkit-transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
   transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
-  box-shadow: 0 0 10px rgba(48, 140, 232, 0.75);
+  background-color: #1773cf;
+}
+input[type="button"]:active,
+input[type="submit"]:active,
+input[type="reset"]:active,
+button:active,
+.button:active,
+input[type="button"].active,
+input[type="submit"].active,
+input[type="reset"].active,
+button.active,
+.button.active {
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.4) inset;
 }
 input[type="button"].secondary,
 input[type="submit"].secondary,
@@ -138,6 +154,18 @@ button.secondary:hover,
 .button.secondary:hover {
   background: #fafafa;
 }
+input[type="button"].secondary:active,
+input[type="submit"].secondary:active,
+input[type="reset"].secondary:active,
+button.secondary:active,
+.button.secondary:active,
+input[type="button"].secondary.active,
+input[type="submit"].secondary.active,
+input[type="reset"].secondary.active,
+button.secondary.active,
+.button.secondary.active {
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2) inset;
+}
 input[type="button"].transparent,
 input[type="submit"].transparent,
 input[type="reset"].transparent,
@@ -154,6 +182,18 @@ input[type="reset"].transparent:hover,
 button.transparent:hover,
 .button.transparent:hover {
   background: #f2f2f2;
+}
+input[type="button"].transparent:active,
+input[type="submit"].transparent:active,
+input[type="reset"].transparent:active,
+button.transparent:active,
+.button.transparent:active,
+input[type="button"].transparent.active,
+input[type="submit"].transparent.active,
+input[type="reset"].transparent.active,
+button.transparent.active,
+.button.transparent.active {
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2) inset;
 }
 .btn-wrap input[type="button"],
 .btn-wrap input[type="submit"],
@@ -200,6 +240,16 @@ input[type="radio"],
 input[type="checkbox"],
 select {
   cursor: pointer;
+}
+select {
+  width: 100%;
+  height: 28px;
+  padding: 5px 5px 5px 6px;
+  vertical-align: top;
+}
+select[multiple] {
+  height: 100px;
+  padding: 0;
 }
 h1,
 h2,
@@ -501,21 +551,6 @@ ul.indent {
 .form.in-content {
   margin: 0 0 24px;
 }
-/* *** INPUTS *** */
-/* Select */
-select {
-  width: 100%;
-  height: 28px;
-  vertical-align: top;
-}
-select[multiple] {
-  height: 100px;
-}
-/* File */
-.form input[type="file"] {
-  width: 100%;
-  cursor: pointer;
-}
 /* *** BASIC FIELD *** */
 .form dl {
   margin: 16px 0 0 0;
@@ -630,6 +665,7 @@ select[multiple] {
   overflow: hidden;
 }
 .browse-button input[type="file"] {
+  width: auto;
   height: 100%;
   position: absolute;
   top: 0;

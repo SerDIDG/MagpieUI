@@ -99,7 +99,12 @@
             .cm-transition(background-color @cm-transition-duration-reverse ease-in-out);
             .cm-transition(color @cm-transition-duration-reverse ease-in-out);
             .cm-transition(box-shadow @cm-transition-duration-reverse ease-in-out);
-            box-shadow: 0 0 10px fadeout(@cm-base-color, 25%);
+            background-color: darken(@cm-base-color, 10%);
+        }
+
+        &:active,
+        &.active {
+            box-shadow: 0 3px 3px rgba(0,0,0,0.4) inset;
         }
 
         &.secondary {
@@ -109,6 +114,11 @@
 
             &:hover {
                 background: @cm-base-color-secondary-hover;
+            }
+
+            &:active,
+            &.active {
+                box-shadow: 0 2px 2px rgba(0,0,0,0.2) inset;
             }
         }
 
@@ -120,6 +130,11 @@
 
             &:hover {
                 background: @cm-base-color-secondary;
+            }
+
+            &:active,
+            &.active {
+                box-shadow: 0 2px 2px rgba(0,0,0,0.2) inset;
             }
         }
     }

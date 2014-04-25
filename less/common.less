@@ -93,6 +93,11 @@ input, select, textarea {
     outline: none;
 }
 
+input[type="file"] {
+    width: 100%;
+    cursor: pointer;
+}
+
 input[type="text"],
 input[type="email"],
 input[type="number"],
@@ -117,6 +122,20 @@ input[type="radio"],
 input[type="checkbox"],
 select {
     cursor: pointer;
+}
+
+select {
+    @padding: (@cm-form-field-height - @cm-base-line-height) / 2;
+
+    width: 100%;
+    height: @cm-form-field-height;
+    padding: @padding @padding @padding 6px;
+    vertical-align: top;
+}
+
+select[multiple] {
+    height: 100px;
+    padding: 0;
 }
 
 h1, h2, h3, h4, h5, h6, p, ul, ol {
@@ -477,27 +496,6 @@ ul.indent {
     margin: 0 0 @cm-block-margin;
 }
 
-/* *** INPUTS *** */
-
-/* Select */
-
-select {
-    width: 100%;
-    height: @cm-form-field-height;
-    vertical-align: top;
-}
-
-select[multiple] {
-    height: 100px;
-}
-
-/* File */
-
-.form input[type="file"] {
-    width: 100%;
-    cursor: pointer;
-}
-
 /* *** BASIC FIELD *** */
 
 .form dl {
@@ -638,6 +636,7 @@ select[multiple] {
     }
 
     input[type="file"] {
+        width: auto;
         height: 100%;
         position: absolute;
         top: 0;
