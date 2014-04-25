@@ -1,4 +1,7 @@
 #cm () {
+
+    // /* ******* STATIC CLASSES ******* */
+
     .base-font {
         font: @cm-base-font-weight ~'@{cm-base-font-size}/@{cm-base-line-height}' @cm-base-font-family;
         color: @cm-base-font-color;
@@ -25,6 +28,8 @@
         clear: both;
     }
 
+    // /* ******* FORM ELEMENTS ******* */
+
     // /* *** INPUT *** */
 
     .input {
@@ -47,6 +52,8 @@
             border-color: @cm-border-color-hover;
         }
     }
+
+    // /* *** TEXTAREA *** */
 
     .textarea {
         height: 100px;
@@ -102,6 +109,7 @@
             background-color: darken(@cm-base-color, 10%);
         }
 
+        .browse-button:active &,
         &:active,
         &.active {
             box-shadow: 0 3px 3px rgba(0,0,0,0.4) inset;
@@ -139,20 +147,30 @@
         }
     }
 
+    // /* ******* COMPONENTS ******* */
+
+    // /* *** BOX *** */
+
+    .box {
+        padding: @cm-block-padding-small;
+        background: #fff;
+        border: @cm-border-style;
+        border-radius: @cm-border-radius;
+        box-shadow: 0 0 2px rgba(0,0,0,0.2);
+    }
+
     // /* *** DROPDOWN MENU *** */
 
     .menu {
+        #cm > .box;
         display: block;
         visibility: hidden;
         position: absolute;
         top: 0;
         left: 0;
         margin: 0;
-        padding: 4px 0;
-        background: #fff;
-        box-shadow: 0 0 2px rgba(0,0,0,0.2);
-        border: @cm-border-style;
-        border-radius: @cm-border-radius;
+        padding-left: 0;
+        padding-right: 0;
         list-style: none;
         opacity: 0;
         .cm-transition(all @cm-transition-duration-reverse ease-in-out);

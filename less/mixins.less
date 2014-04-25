@@ -1,0 +1,57 @@
+.cm-opacity-ie (@opacity) {
+    filter: ~"progid:DXImageTransform.Microsoft.Alpha(opacity=@{opacity})";
+}
+
+.cm-user-select (@value) {
+    -webkit-user-select: @value;
+    -moz-user-select: @value;
+    user-select: @value;
+}
+
+.cm-position (@top: auto, @right: auto, @bottom: auto, @left: auto) {
+    top: @top;
+    right: @right;
+    bottom: @bottom;
+    left: @left;
+}
+
+.cm-transition (@properties: none) {
+    -webkit-transition+: @properties;
+    transition+: @properties;
+}
+
+.cm-linear-gradient (@params) {
+    background-image: -webkit-linear-gradient(@params);
+    background-image: linear-gradient(@params);
+}
+
+.cm-placeholder (@color) {
+    &::-webkit-input-placeholder {
+        opacity: 1;
+        color: @color;
+    }
+    &:-moz-placeholder {
+        opacity: 1;
+        color: @color;
+    }
+    &::-moz-placeholder {
+        opacity: 1;
+        color: @color;
+    }
+    &:-ms-input-placeholder {
+        opacity: 1;
+        color: @color;
+    }
+}
+
+// /* *** FOREACH by https://github.com/seven-phases-max ***/
+
+.for(@i, @n) {.-each(@i)}
+.for(@n)     when (isnumber(@n)) {.for(1, @n)}
+.for(@i, @n) when not (@i = @n)  {
+    .for((@i + (@n - @i) / abs(@n - @i)), @n);
+}
+
+.for(@array)   when (default()) {.for-impl_(length(@array))}
+.for-impl_(@i) when (@i > 1)    {.for-impl_((@i - 1))}
+.for-impl_(@i)                  {.-each(extract(@array, @i))}

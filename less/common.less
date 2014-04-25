@@ -1,65 +1,5 @@
 /* ************ COMMON STYLES ************ */
 
-// /* ******* MIXINS ******* */
-
-.cm-opacity-ie (@opacity) {
-    filter: ~"progid:DXImageTransform.Microsoft.Alpha(opacity=@{opacity})";
-}
-
-.cm-user-select (@value) {
-    -webkit-user-select: @value;
-       -moz-user-select: @value;
-            user-select: @value;
-}
-
-.cm-position (@top: auto, @right: auto, @bottom: auto, @left: auto) {
-    top: @top;
-    right: @right;
-    bottom: @bottom;
-    left: @left;
-}
-
-.cm-transition (@properties: none) {
-    -webkit-transition+: @properties;
-            transition+: @properties;
-}
-
-.cm-linear-gradient (@params) {
-    background-image: -webkit-linear-gradient(@params);
-    background-image: linear-gradient(@params);
-}
-
-.cm-placeholder (@color) {
-    &::-webkit-input-placeholder {
-        opacity: 1;
-        color: @color;
-    }
-    &:-moz-placeholder {
-        opacity: 1;
-        color: @color;
-    }
-    &::-moz-placeholder {
-        opacity: 1;
-        color: @color;
-    }
-    &:-ms-input-placeholder {
-        opacity: 1;
-        color: @color;
-    }
-}
-
-// /* *** FOREACH by https://github.com/seven-phases-max ***/
-
-.for(@i, @n) {.-each(@i)}
-.for(@n)     when (isnumber(@n)) {.for(1, @n)}
-.for(@i, @n) when not (@i = @n)  {
-    .for((@i + (@n - @i) / abs(@n - @i)), @n);
-}
-
-.for(@array)   when (default()) {.for-impl_(length(@array))}
-.for-impl_(@i) when (@i > 1)    {.for-impl_((@i - 1))}
-.for-impl_(@i)                  {.-each(extract(@array, @i))}
-
 /* ******* TAGS ******* */
 
 body {
@@ -91,6 +31,7 @@ input, select, textarea {
     margin: 0;
     #cm > .base-font;
     outline: none;
+    .cm-placeholder(@cm-placeholder-color);
 }
 
 input[type="file"] {
@@ -496,6 +437,11 @@ ul.indent {
     margin: 0 0 @cm-block-margin;
 }
 
+.form .required {
+    color: @cm-base-color-error;
+    font-weight: bold;
+}
+
 /* *** BASIC FIELD *** */
 
 .form dl {
@@ -874,57 +820,38 @@ ul.indent {
 /* *** FIELDSET *** */
 
 .form fieldset {
-    border-radius: 5px;
-    border: 1px solid #cccccc;
     padding: 0 @cm-block-padding @cm-block-padding @cm-block-padding;
     margin: @cm-form-field-indent 0 0 0;
-}
+    border: @cm-border-style;
+    border-radius: @cm-border-radius;
 
-.form fieldset:first-child {
-    margin: 0;
-}
+    &:first-child {
+        margin: 0;
+    }
 
-.form fieldset legend {
-    font-size: 12px;
-    line-height: 15px;
-    color: #333333;
-}
+    dl {
+        &:first-child {
+            margin-top: @cm-block-padding;
+        }
+    }
 
-.form fieldset dl:first-child {
-    margin-top: @cm-block-padding;
-}
+    &.error {
+        border-color: @cm-base-color-error;
 
-.form fieldset.error {
-    border-color: #cc0000;
-}
+        legend {
+            color: @cm-base-color-error;
+            font-weight: bold;
+        }
+    }
 
-.form fieldset.error legend {
-    color: #cc0000;
-    font-weight: bold;
-}
+    &.ok {
+        border-color: #009900;
 
-.form fieldset.ok {
-    border-color: #009900;
-}
-
-.form fieldset.ok legend {
-    color: #009900;
-    font-weight: bold;
-}
-
-.form span.required {
-    color: #ff4b33;
-    font-weight: bold;
-}
-
-.form dl.error .validate {
-    color: #cc0000;
-    font-weight: bold;
-}
-
-.form dl.ok .validate {
-    color: #009900;
-    font-weight: bold;
+        legend {
+            color: #009900;
+            font-weight: bold;
+        }
+    }
 }
 
 /* ** MULTI FIELD  *** */
@@ -958,53 +885,64 @@ ul.indent {
 /* *** IMAGE LOADER *** */
 
 .form-image-box {
+    > .l {
+        float: left;
+        margin: 0 @cm-form-field-indent 0 0;
+
+        img {
+            width: 80px;
+            height: 80px;
+            display: block;
+        }
+    }
+
+    > .r {
+        float: left;
+        font-size: 0;
+
+        .hint {
+            margin: 6px 0 0 0;
+        }
+    }
+
+    .browse-button {
+        width: @cm-image-loader-button-width;
+        display: block;
+        margin: 0 0 @cm-button-indent 0;
+    }
+
+    &.style2 {
+        .browse-button {
+            display: inline-block;
+            margin: 0 @cm-button-indent 0 0;
+        }
+    }
+
+    &.flat {
+        > .l {
+            float: none;
+            margin: 0 0 12px;
+
+            img {
+                width: auto;
+                height: auto;
+            }
+        }
+
+        > .r {
+            float: none;
+        }
+    }
 }
 
-.form-image-box > .l {
-    float: left;
-    margin: 0 @cm-form-field-indent 0 0;
-}
+/* Add To Bundle */
 
-.form-image-box > .l img {
-    width: 80px;
-    height: 80px;
-    display: block;
-}
-
-.form-image-box > .r {
-    float: left;
-}
-
-.form-image-box > .r .hint {
-    margin: 6px 0 0 0;
-}
-
-.form-image-box .browse-button {
-    display: block;
-    margin: 0 0 @cm-button-indent 0;
-}
-
-.form-image-box input[type="button"] {
-    width: 100px;
-}
-
-.form-image-box.style2 .browse-button {
-    display: inline-block;
-    margin: 0 @cm-button-indent 0 0;
-}
-
-.form-image-box.flat > .l {
-    float: none;
-    margin: 0 0 12px;
-}
-
-.form-image-box.flat > .l img {
-    width: auto;
-    height: auto;
-}
-
-.form-image-box.flat > .r {
-    float: none;
+#cm () {
+    .button {
+        .form-image-box & {
+            width: @cm-image-loader-button-width;
+        }
+    }
 }
 
 /* *** CAPTCHA *** */
@@ -1095,6 +1033,16 @@ ul.indent {
 
 .form dl.ok .hint {
     color: #009900;
+}
+
+.form dl.error .validate {
+    color: #cc0000;
+    font-weight: bold;
+}
+
+.form dl.ok .validate {
+    color: #009900;
+    font-weight: bold;
 }
 
 /* *** ICONS *** */
@@ -1360,7 +1308,6 @@ ul.has-icons-outside-three li {
 /* *** ITEMS LIST *** */
 
 .cm-items-list {
-
     ul {
         max-height: 188px;
         margin: 0;
@@ -1401,30 +1348,30 @@ ul.has-icons-outside-three li {
     }
 }
 
-/* *** Breadcrumbs *** */
+/* *** BREADCRUMBS *** */
 
 .breadcrumbs {
-    margin: 0 0 24px;
+    margin: 0 0 @cm-block-margin;
+
+    ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        font-size: 0;
+
+        li {
+            display: inline-block;
+            font-size: 12px;
+            vertical-align: top;
+
+            &.sep {
+                margin: 0 4px;
+            }
+        }
+    }
 }
 
-.breadcrumbs ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    font-size: 0;
-}
-
-.breadcrumbs ul li {
-    display: inline-block;
-    font-size: 12px;
-    vertical-align: top;
-}
-
-.breadcrumbs ul li.sep {
-    margin: 0 4px;
-}
-
-/* *** Pagination *** */
+/* *** PAGINATION *** */
 
 .cm-pagination {
     margin: 0 0 @cm-block-margin;
@@ -1532,7 +1479,7 @@ ul.has-icons-outside-three li {
 /* *** Flash Notification *** */
 
 .flash-notification {
-    margin: 0 0 24px;
+    margin: 0 0 @cm-block-margin;
 }
 
 .flash-notification ul {
@@ -1617,34 +1564,36 @@ ul.has-icons-outside-three li {
     top: 0;
     left: 0;
     opacity: 0;
+
+    > .bg {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        background-color: #ffffff;
+    }
+
+    > .inner {
+        width: 32px;
+        height: 32px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: 2;
+        margin: -16px 0 0 -16px;
+        background: url("@{cm-image-path}/components/ajax-loader.gif");
+    }
+
+    .ie8 &,
+    .ie7 &,
+    .ie6 & {
+        .cm-opacity-ie(0)
+    }
 }
 
-.ie8 .cm-overlay {
-    .cm-opacity-ie(0)
-}
-
-.cm-overlay > .bg {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1;
-    background-color: #ffffff;
-}
-
-.cm-overlay > .inner {
-    width: 32px;
-    height: 32px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    z-index: 2;
-    margin: -16px 0 0 -16px;
-    background: url("@{cm-image-path}/components/ajax-loader.gif");
-}
-
-/* *** Scrollable Layout *** */
+/* *** SCROLLABLE LAYOUT *** */
 
 .cm-scrollable-layout {
     width: 100%;
@@ -1714,7 +1663,7 @@ ul.has-icons-outside-three li {
     }
 }
 
-/* *** Toolbar *** */
+/* *** TOOLBAR *** */
 
 .cm-toolbar {
     white-space: nowrap;
@@ -2063,7 +2012,7 @@ ul.has-icons-outside-three li {
 
 /* ******* ADAPTIVE ******* */
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: @cm-mobile-screen) {
 
     /* *** FORM *** */
 
