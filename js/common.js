@@ -2,21 +2,24 @@
 
 /*
 
-    Objects and Arrays:             121
-    Events:                         305
-    Nodes:                          577
-    Forms:                          842
-    Strings:                        1015
-    Date and Time:                  1104
-    Styles:                         1160
-    Animation:                      1411
-    Cookie and Local Storage:       1749
-    Ajax:                           1816
-    Hash (?):                       1951
+    Objects and Arrays:             123
+    Events:                         303
+    Nodes:                          580
+    Forms:                          845
+    Strings:                        1018
+    Date and Time:                  1110
+    Styles:                         1166
+    Animation:                      1437
+    Cookie and Local Storage:       1785
+    Ajax:                           1852
+    Hash (?):                       1986
+    Graphics:                       2006
 
 */
 
-var cm = common = _ = {},
+var cm = {
+        'version' : '2.0.6'
+    },
     Com = {
         'Elements' : {}
     };

@@ -27,58 +27,6 @@ dl, dt, dd, canvas, iframe, form {
     text-indent: 0;
 }
 
-input, select, textarea {
-    margin: 0;
-    #cm > .base-font;
-    outline: none;
-    .cm-placeholder(@cm-placeholder-color);
-}
-
-input[type="file"] {
-    width: 100%;
-    cursor: pointer;
-}
-
-input[type="text"],
-input[type="email"],
-input[type="number"],
-input[type="password"],
-textarea {
-    #cm > .input;
-}
-
-textarea {
-    #cm > .textarea;
-}
-
-input[type="button"],
-input[type="submit"],
-input[type="reset"],
-button,
-.button {
-    #cm > .button;
-}
-
-input[type="radio"],
-input[type="checkbox"],
-select {
-    cursor: pointer;
-}
-
-select {
-    @padding: (@cm-form-field-height - @cm-base-line-height) / 2;
-
-    width: 100%;
-    height: @cm-form-field-height;
-    padding: @padding @padding @padding 6px;
-    vertical-align: top;
-}
-
-select[multiple] {
-    height: 100px;
-    padding: 0;
-}
-
 h1, h2, h3, h4, h5, h6, p, ul, ol {
     margin: 0 0 @cm-base-line-height;
     padding: 0;
@@ -133,6 +81,60 @@ iframe {
     width: 100%;
     display: block;
     border: none;
+}
+
+/* *** FORM ELEMENTS *** */
+
+input, select, textarea {
+    margin: 0;
+    #cm > .base-font;
+    outline: none;
+    .cm-placeholder(@cm-placeholder-color);
+}
+
+input[type="file"] {
+    width: 100%;
+    cursor: pointer;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="password"],
+textarea {
+    #cm > .input;
+}
+
+textarea {
+    #cm > .textarea;
+}
+
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+button,
+.button {
+    #cm > .button;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+    cursor: pointer;
+}
+
+select {
+    @padding: (@cm-form-field-height - @cm-base-line-height) / 2;
+
+    width: 100%;
+    height: @cm-form-field-height;
+    padding: @padding @padding @padding 6px;
+    vertical-align: top;
+    cursor: pointer;
+}
+
+select[multiple] {
+    height: 100px;
+    padding: 0;
 }
 
 /* ******* ICONS ******* */

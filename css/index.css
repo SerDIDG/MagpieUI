@@ -27,6 +27,78 @@ form {
   display: block;
   text-indent: 0;
 }
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul,
+ol {
+  margin: 0 0 18px;
+  padding: 0;
+}
+p,
+ul,
+ol {
+  font: normal 13px/18px arial, helvetica, sans-serif;
+  color: #666666;
+}
+ul,
+ol {
+  padding: 0 0 0 18px;
+}
+hr {
+  height: 0;
+  overflow: hidden;
+  border: none;
+  border-top: 1px dotted #cbcbcb;
+  margin: 18px 0;
+  padding: 0;
+  display: block;
+  clear: both;
+}
+br {
+  height: 18px;
+  line-height: 18px;
+}
+table {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+tbody,
+thead,
+tr {
+  width: 100%;
+}
+tbody,
+thead,
+td,
+th,
+tr {
+  margin: 0;
+  padding: 0;
+}
+code {
+  display: block;
+  white-space: pre-wrap;
+  padding: 8px 12px;
+  margin: 4px 0;
+  background: #ffffff;
+  border: 1px dashed #999999;
+  border-radius: 4px;
+}
+iframe {
+  width: 100%;
+  display: block;
+  border: none;
+}
+/* *** FORM ELEMENTS *** */
 input,
 select,
 textarea {
@@ -273,8 +345,7 @@ button.transparent.active,
   width: 100px;
 }
 input[type="radio"],
-input[type="checkbox"],
-select {
+input[type="checkbox"] {
   cursor: pointer;
 }
 select {
@@ -282,81 +353,11 @@ select {
   height: 28px;
   padding: 5px 5px 5px 6px;
   vertical-align: top;
+  cursor: pointer;
 }
 select[multiple] {
   height: 100px;
   padding: 0;
-}
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-ul,
-ol {
-  margin: 0 0 18px;
-  padding: 0;
-}
-p,
-ul,
-ol {
-  font: normal 13px/18px arial, helvetica, sans-serif;
-  color: #666666;
-}
-ul,
-ol {
-  padding: 0 0 0 18px;
-}
-hr {
-  height: 0;
-  overflow: hidden;
-  border: none;
-  border-top: 1px dotted #cbcbcb;
-  margin: 18px 0;
-  padding: 0;
-  display: block;
-  clear: both;
-}
-br {
-  height: 18px;
-  line-height: 18px;
-}
-table {
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  border: none;
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-tbody,
-thead,
-tr {
-  width: 100%;
-}
-tbody,
-thead,
-td,
-th,
-tr {
-  margin: 0;
-  padding: 0;
-}
-code {
-  display: block;
-  white-space: pre-wrap;
-  padding: 8px 12px;
-  margin: 4px 0;
-  background: #ffffff;
-  border: 1px dashed #999999;
-  border-radius: 4px;
-}
-iframe {
-  width: 100%;
-  display: block;
-  border: none;
 }
 /* ******* ICONS ******* */
 .icon {
