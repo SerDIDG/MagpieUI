@@ -83,6 +83,10 @@ iframe {
     border: none;
 }
 
+header, main, aside, footer, section {
+    display: block;
+}
+
 /* *** FORM ELEMENTS *** */
 
 input, select, textarea {
@@ -148,8 +152,15 @@ select[multiple] {
     }
 
     &.dummy {
-        width: 16px;
-        height: 16px;
+        &.x-small {
+            width: 12px;
+            height: 12px;
+        }
+
+        &.small {
+            width: 16px;
+            height: 16px;
+        }
 
         &.medium {
             width: 24px;
@@ -175,6 +186,13 @@ select[multiple] {
 
     &.draggable[data-draganddrop-drag="false"] {
         cursor: default;
+    }
+
+    // /* X-Small */
+
+    &.x-small {
+        width: 12px;
+        height: 12px;
     }
 
     // /* Small */
@@ -419,6 +437,12 @@ ul.indent {
     display: block;
 }
 
+.cm-text-overflow {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
 .cm-block-padding {
     padding: @cm-block-padding;
 }
@@ -427,6 +451,11 @@ ul.indent {
     -webkit-overflow-scrolling: touch;
     overflow-x: hidden;
     overflow-y: scroll;
+}
+
+.cm-scroll-a-y {
+    .cm-scroll-y;
+    overflow-y: auto;
 }
 
 /* ******* FORM ******* */
