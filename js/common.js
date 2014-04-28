@@ -18,7 +18,7 @@
 */
 
 var cm = {
-        'version' : '2.0.7'
+        'version' : '2.0.8'
     },
     Com = {
         'Elements' : {}
