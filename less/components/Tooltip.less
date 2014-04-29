@@ -1,0 +1,43 @@
+/* ******* TOOLTIP ******* */
+
+.com-tooltip {
+    position: fixed;
+    display: none;
+    left: 0;
+    top: 0;
+    z-index: 1001;
+    opacity: 0;
+
+    > .inner {
+        #cm > .box;
+
+        > .title {
+            margin: 0 0 8px;
+
+            &:last-child {
+                margin: 0;
+            }
+
+            h3 {
+                margin: 0;
+            }
+        }
+
+        > .scroll {
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+    }
+}
+
+/* ******* COMPONENTS IN TOOLTIP ******* */
+
+/* *** Items List *** */
+
+.com-tooltip {
+    .cm-items-list {
+        ul {
+            max-height: none;
+        }
+    }
+}

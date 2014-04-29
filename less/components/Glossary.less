@@ -1,0 +1,51 @@
+/* ******* GLOSSARY ******* */
+
+.com-glossary-word {
+    position: relative;
+    z-index: 1;
+    color: #005897;
+    border-bottom: 1px dotted #005897;
+    white-space: nowrap;
+}
+.com-glossary-word:hover {
+    border: none;
+    z-index: 2;
+}
+.com-glossary-title {
+    color: #005897;
+}
+.com-glossary-word .com-glossary-popup {
+    min-width: 250px;
+    padding: 38px 16px 16px;
+    display: none;
+    overflow: hidden;
+    position: absolute;
+    top: -16px;
+    left: -16px;
+    right: -16px;
+    z-index: -1;
+    background-color: #fff;
+    border: 1px solid #dedede;
+    font-size: 11px;
+    line-height: 16px;
+    white-space: normal;
+    color: #595959;
+}
+.com-glossary-word:hover .com-glossary-popup {
+    display: block;
+}
+
+.com-glossary-tooltip {
+    width: 300px;
+}
+.com-glossary-tooltip > .inner {
+    padding: 12px 16px 16px;
+}
+.com-glossary-tooltip > .inner > .scroll {
+    max-height: 300px;
+}
+.com-glossary-text {
+}
+.com-glossary-text p {
+    margin: 0;
+}
