@@ -9,6 +9,7 @@
 
     <script type="text/javascript" src="../js/common.js"></script>
     <script type="text/javascript" src="../js/useragent.js"></script>
+    <script type="text/javascript" src="../js/columns.js"></script>
     <script type="text/javascript" src="../js/tooltip.js"></script>
     <script type="text/javascript" src="../js/select.js"></script>
     <script type="text/javascript" src="../js/calendar.js"></script>
@@ -18,7 +19,7 @@
     <script type="text/javascript" src="../js/dialog.js"></script>
     <script type="text/javascript" src="../js/gallery.js"></script>
     <script type="text/javascript" src="../js/collector.js"></script>
-    <script type="text/javascript" src="../js/columns.js"></script>
+    <script type="text/javascript" src="../js/components/TagsInput.js"></script>
 
 	<script type="text/javascript">
 		cm.onload(function(){
@@ -30,6 +31,14 @@
             Com.DatepickerCollector();
             // Tabset
             Com.TabsetCollector();
+
+            new Com.Collector()
+                    .add('tags', function(node){
+                        new Com.TagsInput({
+                            'input' : node
+                        });
+                    })
+                    .construct();
 		});
 	</script>
 </head>
@@ -101,6 +110,15 @@
                     <dt>Datepicker with clear button:</dt>
                     <dd>
                         <input type="text" id="datepicker2" name="datepicker2" data-datepicker="true" data-showClearButton="true" placeholder="Expires date" readonly>
+                    </dd>
+                </dl>
+
+                <hr>
+
+                <dl>
+                    <dt>Tags:</dt>
+                    <dd>
+                        <input type="text" data-element="tags" value="tag1, tag2">
                     </dd>
                 </dl>
 

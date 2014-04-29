@@ -1,0 +1,54 @@
+.com-tags-input {
+    > .inner {
+        font-size: 0;
+
+        .item {
+            height: @cm-form-field-height;
+            margin: 0 @ComTagsInput-itemIndent 0 0;
+            display: inline-block;
+            vertical-align: top;
+            white-space: nowrap;
+
+            .text {
+                max-width: @ComTagsInput-itemWidth;
+                display: inline-block;
+                vertical-align: top;
+                #cm >.base-font;
+                line-height: @cm-form-field-height;
+                .cm-text-overflow;
+            }
+
+            .icon {
+                width: @cm-form-field-height;
+                height: @cm-form-field-height;
+                margin: 0 0 0 @cm-button-indent-small;
+                display: inline-block;
+                vertical-align: top;
+
+                &:first-child {
+                    margin: 0;
+                }
+            }
+
+            .input {
+                width: @ComTagsInput-inputWidth;
+                margin: 0;
+            }
+
+            &.closed,
+            &.adder {
+                width: 0;
+                opacity: 0;
+                overflow: hidden;
+            }
+
+            &.adder {
+                text-overflow: clip;
+            }
+
+            &:last-child {
+                margin: 0;
+            }
+        }
+    }
+}

@@ -101,6 +101,12 @@ if(!Array.prototype.indexOf){
     };
 }
 
+if(!String.prototype.trim) {
+    String.prototype.trim = function(){
+        return this.replace(/^\s+|\s+$/g, '');
+    };
+}
+
 if(!Date.now){
     Date.now = function now(){
         return new Date().getTime();
@@ -1118,6 +1124,7 @@ cm.getCurrentDate = function(){
         ((date.getMinutes() < 10) ? '0' : '') + date.getMinutes() + ':' +
         ((date.getSeconds() < 10) ? '0' : '') + date.getSeconds();
 };
+
 cm.dateFormat = function(date, format, langs){
     var str = format,
         langs = cm.merge({
@@ -1329,6 +1336,26 @@ cm.getRealY = function(o){
         o = o.parentNode;
     }
     return y - (!bodyScroll ? cm.getBodyScrollTop() : 0);
+};
+
+cm.getRealWidth = function(node){
+    var nodeWidth = 0,
+        width = 0;
+    nodeWidth = node.offsetWidth;
+    node.style.width = 'auto';
+    width = node.offsetWidth;
+    node.style.width = [nodeWidth, 'px'].join('');
+    return width;
+};
+
+cm.getRealHeight = function(node){
+    var nodeHeight = 0,
+        height = 0;
+    nodeHeight = node.offsetHeight;
+    node.style.height = 'auto';
+    height = node.offsetHeight;
+    node.style.height = [nodeHeight, 'px'].join('');
+    return height;
 };
 
 cm.addStyles = function(node, str){

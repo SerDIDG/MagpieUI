@@ -2282,6 +2282,53 @@ ul.has-icons-outside-three li {
 .com-calendar-events-listing h4 {
   margin: 0;
 }
+.com-tags-input > .inner {
+  font-size: 0;
+}
+.com-tags-input > .inner .item {
+  height: 28px;
+  margin: 0 8px 0 0;
+  display: inline-block;
+  vertical-align: top;
+  white-space: nowrap;
+}
+.com-tags-input > .inner .item .text {
+  max-width: 250px;
+  display: inline-block;
+  vertical-align: top;
+  font: normal 13px/18px arial, helvetica, sans-serif;
+  color: #666666;
+  line-height: 28px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.com-tags-input > .inner .item .icon {
+  width: 28px;
+  height: 28px;
+  margin: 0 0 0 4px;
+  display: inline-block;
+  vertical-align: top;
+}
+.com-tags-input > .inner .item .icon:first-child {
+  margin: 0;
+}
+.com-tags-input > .inner .item .input {
+  width: 150px;
+  margin: 0;
+}
+.com-tags-input > .inner .item.closed,
+.com-tags-input > .inner .item.adder {
+  width: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+.com-tags-input > .inner .item.adder {
+  text-overflow: clip;
+}
+.com-tags-input > .inner .item:last-child {
+  margin: 0;
+}
 /* ******* DIALOG ******* */
 .com-dialog {
   width: 100%;
