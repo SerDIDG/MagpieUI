@@ -1,69 +1,5 @@
 /* ******* GALLERY ******* */
 
-/* List */
-
-.com-gallery-listing {
-    margin: 0 0 22px;
-
-    > ul {
-        margin: 8px -8px -8px;
-        padding: 0;
-        list-style: none;
-        font-size: 0;
-        word-spacing: 0;
-
-        &:first-child {
-            margin: -8px;
-        }
-
-        > li {
-            width: 25%;
-            display: inline-block;
-            overflow: hidden;
-            padding: 8px;
-            vertical-align: top;
-            -moz-box-sizing: border-box;
-            box-sizing: border-box;
-
-            img {
-                width: 100%;
-                display: block;
-                position: relative;
-                cursor: pointer;
-                -webkit-transform: translateZ(0px);
-                -webkit-transition: opacity 0.3s ease-in-out;
-                        transition: opacity 0.3s ease-in-out;
-            }
-
-            a {
-                display: block;
-                background: #fff;
-                box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
-                cursor: pointer;
-
-                &:hover {
-                    img {
-                        opacity: 0.5;
-                        -webkit-transition: opacity 0.1s ease-in-out;
-                                transition: opacity 0.1s ease-in-out;
-                    }
-                }
-            }
-        }
-    }
-
-    &.cols-1  > ul > li { width: 100%;     }
-    &.cols-2  > ul > li { width: 50%;      }
-    &.cols-3  > ul > li { width: 33.33%;   }
-    &.cols-4  > ul > li { width: 25%;      }
-    &.cols-5  > ul > li { width: 20%;      }
-    &.cols-6  > ul > li { width: 16.66%;   }
-    &.cols-7  > ul > li { width: 14.28%;   }
-    &.cols-8  > ul > li { width: 12.5%;    }
-    &.cols-9  > ul > li { width: 11.11%;   }
-    &.cols-10 > ul > li { width: 10%;      }
-}
-
 /* Overlay */
 
 .com-gallery-overlay {
@@ -276,7 +212,7 @@
 
 /* *** ADAPTIVE *** */
 
-@media only screen and (max-width : 640px) {
+@media only screen and (max-width : @cm-mobile-screen) {
 
     .com-gallery-overlay {
         > .bg {
@@ -294,25 +230,6 @@
                 left: 0;
                 background: rgba(0,0,0,0.7);
             }
-        }
-    }
-
-}
-@media only screen and (max-width : 480px) {
-
-    .com-gallery-listing {
-        > ul > li,
-        &.cols-1 > ul > li,
-        &.cols-2 > ul > li,
-        &.cols-3 > ul > li,
-        &.cols-4 > ul > li,
-        &.cols-5 > ul > li,
-        &.cols-6 > ul > li,
-        &.cols-7 > ul > li,
-        &.cols-8 > ul > li,
-        &.cols-9 > ul > li,
-        &.cols-10 > ul > li {
-            width: 100%;
         }
     }
 

@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html>
+<html class="is-adaptive">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width; initial-scale=1.0, maximum-scale=1.0">
@@ -70,8 +70,8 @@
             </ul>
             <h2>Image item html structure:</h2>
             <code>&lt;a href="images/gallery/1.jpg" data-image="true"&gt;
-        &lt;img src="images/gallery/1-th.jpg" alt="Sample 1" title="Sample 1"&gt;
-    &lt;/a&gt;</code>
+    &lt;img src="images/gallery/1-th.jpg" alt="Sample 1" title="Sample 1"&gt;
+&lt;/a&gt;</code>
             <br>
             <b>Attributes:</b>
             <ul>
@@ -80,18 +80,18 @@
                 <li><b>title</b> - image caption for overlay title;</li>
             </ul>
             <h2>Initialize in HTML:</h2>
-            <code>&lt;div class="com-gallery-listing cols-6" data-gallery="true"&gt;
-        &lt;ul&gt;
-            &lt;li&gt;
-                &lt;a href="images/gallery/1.jpg" data-image="true"&gt;
-                    &lt;img src="images/gallery/1-th.jpg" alt="Sample 1" title="Sample 1"&gt;
-                &lt;/a&gt;
-            &lt;/li&gt;
-        &lt;/ul&gt;
-    &lt;/div&gt;</code>
+            <code>&lt;div class="cm-grid cols-6" data-gallery="true"&gt;
+    &lt;ul&gt;
+        &lt;li&gt;
+            &lt;a href="images/gallery/1.jpg" data-image="true"&gt;
+                &lt;img src="images/gallery/1-th.jpg" alt="Sample 1" title="Sample 1"&gt;
+            &lt;/a&gt;
+        &lt;/li&gt;
+    &lt;/ul&gt;
+&lt;/div&gt;</code>
             <code>cm.onload(function(){
-        Com.GalleryCollector();
-    });</code>
+    Com.GalleryCollector();
+});</code>
             <br>
             <b>Attributes:</b>
             <ul>
@@ -99,7 +99,7 @@
                 <li><b>data-showArrowTitles="true|false"</b> - show overlay arrows titles on hover;</li>
                 <li><b>data-showTitle="true|false"</b> - show images captions into overlay title;</li>
                 <li><b>data-showCounter="true|false"</b> - show images counter into overlay title;</li>
-                <li><b>class="gallery-listing cols-x"</b> - where x = from 1 to 10, number of columns;</li>
+                <li><b>class="cm-grid cols-x"</b> - where x = from 1 to 10, number of columns;</li>
             </ul>
         </li>
 
@@ -147,7 +147,7 @@
                 <code>Com.GalleryCollector();</code>
             </p>
 
-            <div class="com-gallery-listing cols-6" data-gallery="true">
+            <div class="cm-grid col-6 bottom" data-gallery="true">
                 <ul>
                     <li>
                         <a href="images/gallery/1.jpg" data-image="true">

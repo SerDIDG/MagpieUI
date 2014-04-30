@@ -1,0 +1,124 @@
+<!DOCTYPE HTML>
+<html class="is-adaptive">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0, maximum-scale=1.0">
+    <title>Gallery</title>
+
+    <link type="text/css" rel="stylesheet" href="../css/index.css">
+
+    <script type="text/javascript" src="../js/common.js"></script>
+    <script type="text/javascript" src="../js/useragent.js"></script>
+    <script type="text/javascript" src="../js/tooltip.js"></script>
+    <script type="text/javascript" src="../js/select.js"></script>
+    <script type="text/javascript" src="../js/calendar.js"></script>
+    <script type="text/javascript" src="../js/datepicker.js"></script>
+    <script type="text/javascript" src="../js/calendar.events.js"></script>
+    <script type="text/javascript" src="../js/tabset.js"></script>
+    <script type="text/javascript" src="../js/dialog.js"></script>
+    <script type="text/javascript" src="../js/gallery.js"></script>
+    <script type="text/javascript" src="../js/collector.js"></script>
+    <script type="text/javascript" src="../js/columns.js"></script>
+
+    <script type="text/javascript">
+        cm.onload(function(){
+            var element;
+            // Useragent
+            Com.UA.setBrowserClass();
+            // Selects
+            Com.SelectCollector();
+            // Datepickers
+            Com.DatepickerCollector();
+            // Tabset
+            Com.TabsetCollector();
+        });
+    </script>
+</head>
+
+<body>
+
+<div class="cm-block-padding">
+    <h1>Gallery</h1>
+
+    <ul class="com-tabset-content-ul" id="tabset" data-tabset="true" data-toggleOnHashChange="false">
+        <li data-tabset-id="checkboxes" data-tabset-title="Grid with checkboxes">
+            <div class="cm-grid col-5 bottom" data-gallery="true">
+                <ul>
+                    <li>
+                        <div class="cm-checkable active">
+                            <div class="inner">
+                                <img class="cm-image-resizable" src="images/gallery/1-th.jpg" alt="">
+                            </div>
+                            <label for="image1"></label>
+                            <div class="pull top-left">
+                                <input type="checkbox" id="image1" checked>
+                            </div>
+                            <div class="pull top-right">
+                                <div class="icon small remove linked"></div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="cm-checkable">
+                            <div class="inner">
+                                <img class="cm-image-resizable" src="images/gallery/2-th.jpg" alt="">
+                            </div>
+                            <label for="image2"></label>
+                            <div class="pull top-left">
+                                <input type="checkbox" id="image2" checked>
+                            </div>
+                            <div class="pull top-right">
+                                <div class="icon small remove linked"></div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="cm-checkable">
+                            <div class="inner">
+                                <img class="cm-image-resizable" src="images/gallery/3-th.jpg" alt="">
+                            </div>
+                            <label for="image3"></label>
+                            <div class="pull top-left">
+                                <input type="checkbox" id="image3" checked>
+                            </div>
+                            <div class="pull top-right">
+                                <div class="icon small remove linked"></div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="cm-checkable">
+                            <div class="inner">
+                                <img class="cm-image-resizable" src="images/gallery/4-th.jpg" alt="">
+                            </div>
+                            <label for="image4"></label>
+                            <div class="pull top-left">
+                                <input type="checkbox" id="image4" checked>
+                            </div>
+                            <div class="pull top-right">
+                                <div class="icon small remove linked"></div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="cm-checkable">
+                            <div class="inner">
+                                <img class="cm-image-resizable" src="images/gallery/1-th.jpg" alt="">
+                            </div>
+                            <label for="image5"></label>
+                            <div class="pull top-left">
+                                <input type="checkbox" id="image5" checked>
+                            </div>
+                            <div class="pull top-right">
+                                <div class="icon small remove linked"></div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </li>
+    </ul>
+</div>
+
+</body>
+</html>

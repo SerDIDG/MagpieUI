@@ -231,4 +231,20 @@
         visibility: visible;
         opacity: 1;
     }
+
+    // /* *** GRID *** */
+
+    .grid-indent (@indent: @cm-grid-item-indent) {
+        > ul {
+            margin: @indent -@indent -@indent;
+
+            &:first-child {
+                margin: -@indent;
+            }
+
+            > li {
+                padding: @indent;
+            }
+        }
+    }
 }

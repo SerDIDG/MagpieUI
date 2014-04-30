@@ -1,7 +1,7 @@
 /* ******* TABSET ******* */
 
 .com-tabset {
-    margin: 0 0 24px;
+    margin: 0 0 @cm-block-margin;
 }
 
 .com-tabset-head {
@@ -20,11 +20,11 @@
             background: @com-tabset-tabs-background;
             border: 1px solid @com-tabset-border-color;
             border-radius: @com-tabset-border-radius @com-tabset-border-radius 0 0;
-            .cm-transition(all 0.3s ease-in-out);
+            .cm-transition(all @cm-transition-duration ease-in-out);
 
             &:hover {
                 background: @com-tabset-tabs-background-hover;
-                .cm-transition(all 0.1s ease-in-out);
+                .cm-transition(all @cm-transition-duration-reverse ease-in-out);
             }
 
             &:first-child {
@@ -38,9 +38,7 @@
             a {
                 display: block;
                 padding: 0 20px;
-                overflow: hidden;
-                white-space: nowrap;
-                text-overflow: ellipsis;
+                .cm-text-overflow;
                 line-height: @com-tabset-tabs-height;
                 font-size: @com-tabset-tabs-font-size;
                 font-weight: normal;
@@ -48,12 +46,6 @@
                 text-decoration: none;
             }
         }
-    }
-
-    p {
-        margin: 0;
-        line-height: 30px;
-        color: #202020;
     }
 }
 
@@ -124,7 +116,7 @@
 
 /* *** ADAPTIVE *** */
 
-@media only screen and (max-width : 640px) {
+@media only screen and (max-width : @cm-mobile-screen) {
 
     .com-tabset.is-adaptive .com-tabset-head-button {
         width: 40px;
@@ -132,7 +124,7 @@
         margin: 0 0 0 @com-tabset-tabs-indent;
         position: relative;
         float: right;
-        background: #E5E5E5 url(../../img/icons/menu.png) center 10px no-repeat;
+        background: #E5E5E5 url('@{cm-image-path}/icons/menu.png') center 10px no-repeat;
         border: 1px solid @com-tabset-border-color;
         border-radius: @com-tabset-border-radius @com-tabset-border-radius 0 0;
         cursor: pointer;
