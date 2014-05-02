@@ -458,6 +458,13 @@ Com['Select'] = function(o){
         return that;
     };
 
+    that.triggerEvent = function(event){
+        if(API[event]){
+            executeEvent(event);
+        }
+        return that;
+    };
+
     that.addOption = function(value, text){
         renderOption(value, text);
         return that;
