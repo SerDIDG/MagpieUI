@@ -14,7 +14,8 @@ Com['Columns'] = function(o){
         }, o),
         API = {
             'onAdd' : [],
-            'onRemove' : []
+            'onRemove' : [],
+            'onResize' : []
         },
         nodes = {},
         items = [],
@@ -74,7 +75,8 @@ Com['Columns'] = function(o){
     var collectColumn = function(container){
         var item = {
             'container' : container,
-            'inner' : cm.getByAttr('data-com-columns', 'column-inner', container)[0] || cm.Node('div')
+            'inner' : cm.getByAttr('data-com-columns', 'column-inner', container)[0] || cm.Node('div'),
+            'width' : container.style.width
         };
         // Push to items array
         items.push(item);
@@ -82,6 +84,7 @@ Com['Columns'] = function(o){
 
     var renderColumn = function(item, execute){
         item = cm.merge({
+            'width' : '0%'
         }, item);
         // Structure
         item['container'] = cm.Node('div', {'class' : 'com-column'},
@@ -124,8 +127,11 @@ Com['Columns'] = function(o){
             width = (100 / itemsLength).toFixed(2);
 
         cm.forEach(items, function(item){
-            item['container'].style.width = [width, '%'].join('');
+            item['width'] = [width, '%'].join('');
+            item['container'].style.width = item['width'];
         });
+        // API onResize event
+        executeEvent('onResize', items);
     };
 
     /* *** CHASSIS METHODS *** */
@@ -220,13 +226,18 @@ Com['Columns'] = function(o){
         rightWidth = current['right']['offset'] - x;
         // Apply sizes and positions
         if(leftWidth > config['minColumnWidth'] && rightWidth > config['minColumnWidth']){
-            current['left']['column']['container'].style.width = [(leftWidth / current['ratio']).toFixed(2), '%'].join('');
-            current['right']['column']['container'].style.width = [(rightWidth / current['ratio']).toFixed(2), '%'].join('');
+            current['left']['column']['width'] = [(leftWidth / current['ratio']).toFixed(2), '%'].join('');
+            current['right']['column']['width'] = [(rightWidth / current['ratio']).toFixed(2), '%'].join('');
+
+            current['left']['column']['container'].style.width = current['left']['column']['width'];
+            current['right']['column']['container'].style.width = current['right']['column']['width'];
             current['chassis']['node'].style.left = [((x - current['offset']) / current['ratio']).toFixed(2), '%'].join('');
         }
     };
 
     var stop = function(){
+        // API onResize event
+        executeEvent('onResize', items);
         // Remove move event from document
         cm.removeClass(nodes['container'], 'is-active');
         cm.removeClass(current['chassis']['node'], 'is-active');
@@ -265,6 +276,10 @@ Com['Columns'] = function(o){
         setEqualDimensions();
         updateChassis();
         return that;
+    };
+
+    that.get = function(){
+        return items;
     };
 
     that.addEvent = function(event, handler){

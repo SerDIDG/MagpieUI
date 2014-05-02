@@ -26,8 +26,17 @@
             Com.UA.setBrowserClass();
             // Tabset
             Com.TabsetCollector();
-            // Collumns
-            Com.ColumnsCollector();
+            // Components
+            new Com.Collector()
+                .add('columns', function(node){
+                    new Com.Columns({
+                            'columns' : node
+                        })
+                        .addEvent('onResize', function(columns, data){
+                            cm.log(data);
+                        });
+                })
+                .construct();
         });
     </script>
 </head>
@@ -46,7 +55,7 @@
 
         <li data-tabset-id="development" data-tabset-title="Development">
 
-            <div class="com-columns" data-com-columns="true">
+            <div class="com-columns" data-element="columns">
                 <div class="inner" data-com-columns="inner">
                     <div class="container" data-com-columns="holder">
                         <div class="com-column" data-com-columns="column" style="width: 33.33%;">
