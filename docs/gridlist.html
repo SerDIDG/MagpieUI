@@ -198,6 +198,25 @@
                 </li>
                 <li><b>Com.Pagination</b> <i>[Object]</i> - specific configuration of pagination component, <i>default: {}</i>.</li>
             </ul>
+
+            <hr>
+
+            <h2>Rendering custom nodes in gridlist cells:</h2>
+            <p>
+                1. Add to column <b>onRender</b> event handler:
+                <code>new Com.Gridlist({
+    'cols' : [
+        {'onRender' : myOnCellRenderHandler}
+    ]
+});</code>
+                2. Function will be have some useful arguments: function(Object {Gridlist}, Object {'nodes' : Object, 'col' : Object, 'row' : Object}).<br>
+                3. Build what are you want:
+                <code>myOnCellRenderHandler(gridlist, data){
+    data['nodes']['inner'].appendChild(
+        cm.Node('input', {'type' : 'text'})
+    );
+};</code>
+            </p>
         </li>
 
         <li data-tabset-id="methods" data-tabset-title="Methods">
