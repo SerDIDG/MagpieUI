@@ -219,6 +219,7 @@ input[type="reset"]:hover,
 button:hover,
 .button:hover {
   background-color: #1773cf;
+  color: #fff;
 }
 input[type="button"]:active,
 input[type="submit"]:active,
@@ -264,6 +265,7 @@ input[type="reset"].secondary:hover,
 button.secondary:hover,
 .button.secondary:hover {
   background: #fafafa;
+  color: #308ce8;
 }
 input[type="button"].secondary:active,
 input[type="submit"].secondary:active,
@@ -293,6 +295,7 @@ input[type="reset"].transparent:hover,
 button.transparent:hover,
 .button.transparent:hover {
   background: #f2f2f2;
+  color: #308ce8;
 }
 input[type="button"].transparent:active,
 input[type="submit"].transparent:active,
@@ -360,6 +363,7 @@ button.transparent.active,
 .browse-button:hover button,
 .browse-button:hover .button {
   background-color: #1773cf;
+  color: #fff;
 }
 .browse-button:active input[type="button"],
 .browse-button:active input[type="submit"],
@@ -783,6 +787,7 @@ ul.style-none {
 }
 .browse-button:hover .button {
   background-color: #1773cf;
+  color: #fff;
 }
 .browse-button:active .button {
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.4) inset;
@@ -2528,6 +2533,7 @@ ul.has-icons-outside-three li {
 }
 .com-pagination ul li a:hover {
   background-color: #1773cf;
+  color: #fff;
 }
 .com-pagination ul li a:active,
 .com-pagination ul li a.active {
@@ -2549,6 +2555,7 @@ ul.has-icons-outside-three li {
 }
 .com-pagination ul li a.secondary:hover {
   background: #fafafa;
+  color: #308ce8;
 }
 .com-pagination ul li a.secondary:active,
 .com-pagination ul li a.secondary.active {
@@ -2562,6 +2569,7 @@ ul.has-icons-outside-three li {
 }
 .com-pagination ul li a.transparent:hover {
   background: #f2f2f2;
+  color: #308ce8;
 }
 .com-pagination ul li a.transparent:active,
 .com-pagination ul li a.transparent.active {
@@ -2593,6 +2601,7 @@ ul.has-icons-outside-three li {
 }
 .com-pagination ul li a:hover {
   background: #fafafa;
+  color: #308ce8;
 }
 .com-pagination ul li a:active,
 .com-pagination ul li a.active {
@@ -2605,6 +2614,7 @@ ul.has-icons-outside-three li {
 }
 .com-pagination ul li.active a:hover {
   background-color: #1773cf;
+  color: #fff;
 }
 .com-pagination ul li.active a:active,
 .com-pagination ul li.active a.active {
@@ -2622,6 +2632,7 @@ ul.has-icons-outside-three li {
 .com-pagination ul li.prev a:hover,
 .com-pagination ul li.next a:hover {
   background: #f2f2f2;
+  color: #308ce8;
 }
 .com-pagination ul li.prev a:active,
 .com-pagination ul li.next a:active,

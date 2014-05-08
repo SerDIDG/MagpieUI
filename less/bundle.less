@@ -79,10 +79,10 @@
         vertical-align: top;
         -webkit-appearance: none;
         -moz-box-sizing: border-box;
-             box-sizing: border-box;
+        box-sizing: border-box;
         -webkit-background-clip: border-box;
-           -moz-background-clip: border-box;
-                background-clip: border-box;
+        -moz-background-clip: border-box;
+        background-clip: border-box;
         border: none;
         border-radius: @cm-border-radius;
         text-align: center;
@@ -110,7 +110,7 @@
         }
 
         &.transparent {
-           #cm > .button-transparent;
+            #cm > .button-transparent;
         }
     }
 
@@ -137,6 +137,7 @@
 
     .button-primary-hover {
         background-color: darken(@cm-base-color, 10%);
+        color: #fff;
     }
 
     .button-primary-active {
@@ -159,6 +160,7 @@
 
     .button-secondary-hover {
         background: @cm-base-color-secondary-hover;
+        color: @cm-base-color;
     }
 
     .button-secondary-active {
@@ -183,6 +185,7 @@
 
     .button-transparent-hover {
         background: @cm-base-color-secondary;
+        color: @cm-base-color;
     }
 
     .button-transparent-active {
