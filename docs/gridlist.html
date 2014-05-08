@@ -211,7 +211,7 @@
 });</code>
                 2. Function will be have some useful arguments: function(Object {Gridlist}, Object {'nodes' : Object, 'col' : Object, 'row' : Object}).<br>
                 3. Build what are you want:
-                <code>myOnCellRenderHandler(gridlist, data){
+                <code>var myOnCellRenderHandler = function(gridlist, data){
     data['nodes']['inner'].appendChild(
         cm.Node('input', {'type' : 'text'})
     );
