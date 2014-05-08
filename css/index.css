@@ -52,7 +52,7 @@ ol {
 }
 ul,
 ol {
-  padding: 0 0 0 18px;
+  padding: 0 0 0 24px;
 }
 hr {
   height: 0;
@@ -585,16 +585,6 @@ select[multiple] {
 .inherit-link:hover {
   text-decoration: underline;
 }
-ul.decimal {
-  list-style: decimal;
-}
-ul.none {
-  list-style: none;
-  padding-left: 0;
-}
-ul.indent {
-  list-style: none;
-}
 .inline {
   display: inline-block;
 }
@@ -630,6 +620,25 @@ ul.indent {
   overflow-x: hidden;
   overflow-y: scroll;
   overflow-y: auto;
+}
+ul.none {
+  list-style: none;
+  padding-left: 0;
+}
+ul.decimal {
+  list-style: decimal;
+}
+ul.style-none {
+  list-style: none;
+}
+.cm-list {
+  list-style: disc;
+}
+.cm-list ul {
+  list-style: circle;
+}
+.cm-list ul ul {
+  list-style: disc;
 }
 /* ******* FORM ******* */
 .form {

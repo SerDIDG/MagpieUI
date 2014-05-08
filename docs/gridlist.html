@@ -119,14 +119,122 @@
 <div class="cm-block-padding">
     <h1>Gridlist</h1>
 
-    <ul class="com-tabset-content-ul" id="tabset" data-tabset="true" data-toggleOnHashChange="false" data-active="dynamic-examples">
+    <ul class="com-tabset-content-ul" id="tabset" data-tabset="true">
         <li data-tabset-id="overview" data-tabset-title="Overview">
+            <h2>Initialize in Java-Script:</h2>
+            <code>new Com.Gridlist(o);</code>
+            <br>
+            <b>Attributes:</b>
+            <ul class="cm-list">
+                <li><b>container</b> <i>[HTML Node]</i> - container node for gridlist, <i>default: cm.Node('div')</i>;</li>
+                <li><b>data</b> <i>[Array]</i> - array of data, <i>default: []</i>:
+                    <ul class="margin-none">
+                        <li><b>_checked</b> <i>[Boolean]</i> - mark column as checked, using with column's <b>type</b> = <b>checkbox</b>, <i>default: undefined (false)</i>;</li>
+                    </ul>
+                </li>
+                <li><b>cols</b> <i>[Array]</i> - array of columns, <i>default: []</i>:
+                    <ul class="margin-none">
+                        <li><b>width</b> <i>[String/Number]</i> - width of column, can be number or percentage or 'auto', <i>default: 'auto'</i>;</li>
+                        <li><b>access</b> <i>[Boolean]</i> - toggle column rendering, if false, column will not be rendered, <i>default: true</i>;</li>
+                        <li><b>type</b> <i>[String]</i> - type of column content, needs to be specified for properly sorting and displaying, <i>default: 'text'</i>:
+                            <ul class="margin-none">
+                                <li><b>text</b> - for text rendering;</li>
+                                <li><b>number</b> - for number rendering;</li>
+                                <li><b>url</b> - for links rendering;</li>
+                                <li><b>date</b> - for date rendering;</li>
+                                <li><b>icon</b> - for rendering icon node, sorting not available;</li>
+                                <li><b>checkbox</b> - for rendering checkbox node, sorting not available;</li>
+                                <li><b>empty</b> - for rendering empty content cells, sorting not available;</li>
+                            </ul>
+                        </li>
+                        <li><b>key</b> <i>[String]</i> - key of data array, all cells of this column will be display content by this key, <i>default: empty</i>;</li>
+                        <li><b>title</b> <i>[Title]</i> - table column th title, <i>default: empty</i>;</li>
+                        <li><b>sort</b> <i>[Boolean]</i> - is column sortable, <i>default: dependence of class config <b>sort</b> attribute</i>;</li>
+                        <li><b>textOverflow</b> <i>[Boolean]</i> - wrap cell content to single line, and overflow it, <i>default: false</i>;</li>
+                        <li><b>class</b> <i>[String]</i> - css class for icon node, when column <b>type</b> is <b>icon</b>, <i>default: empty</i>;</li>
+                        <li><b>target</b> <i>[String]</i> - link opening target, when column <b>type</b> is <b>url</b>, <i>default: '_blank'</i>;</li>
+                        <li><b>showTitle</b> <i>[Boolean]</i> - show title on hover, by default using content of data <b>key</b>, <i>default: false</i>;</li>
+                        <li><b>titleText</b> <i>[String]</i> - alternative title text on hover, prevent default, <i>default: empty</i>;</li>
+                        <li><b>onClick</b> <i>[Function]</i> - on cell click event handler, when <b>type</b> is <b>icon</b> <b>url</b> <b>checkbox</b>, event will be bind on this nodes, <i>default: false</i>:
+                            <ul class="margin-none">
+                                <li><i>Return attributes: [Object {Gridlist}, Object {'index' : Number, 'data' : Object, 'isChecked' : Boolean, 'nodes' : Object}];</i></li>
+                            </ul>
+                        </li>
+                        <li><b>onRender</b> <i>[Function]</i> - on cell render event handler, <i>default: false</i>:
+                            <ul class="margin-none">
+                                <li><i>Return attributes: [Object {Gridlist}, Object {'nodes' : Object, 'col' : Object, 'row' : Object}];</i></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li><b>sort</b> <i>[Boolean]</i> - is table sortable, <i>default: true</i>;</li>
+                <li><b>sortBy</b> <i>[String]</i> - which what keys needs to sort the table by default, <i>default: 'id'</i>;</li>
+                <li><b>orderBy</b> <i>[String]</i> - which what ordering direction needs to sort the table by default, <i>default: 'ASC'</i>;</li>
+                <li><b>pagination</b> <i>[Boolean]</i> - use pagination in gridlist, <i>default: true</i>;</li>
+                <li><b>perPage</b> <i>[Number]</i> - display rows per page when gridlist using pagination, <i>default: 25</i>;</li>
+                <li><b>showCounter</b> <i>[Boolean]</i> - display data's length counter at top of the table, <i>default: false</i>;</li>
+                <li><b>dateFormat</b> <i>[Boolean]</i> - input date format when column's <b>type</b> is <b>date</b>, needs to properly sorting, <i>default: '%Y-%m-%d %H:%i:%s'</i>;</li>
+                <li><b>langs</b> <i>[Object]</i> - object of lang strings:
+                    <ul class="margin-none">
+                        <li><b>counter</b> <i>[String]</i> - data's length counter title, <i>default: 'Count: '</i>;</li>
+                        <li><b>check-all</b> <i>[String]</i> - table th title checkbox title on hover, <i>default: 'Check all'</i>;</li>
+                        <li><b>uncheck-all</b> <i>[String]</i> - table th title checkbox title on hover, <i>default: 'Uncheck all'</i>;</li>
+                    </ul>
+                </li>
+                <li><b>icons</b> <i>[Object]</i> - object of icons css classes:
+                    <ul class="margin-none">
+                        <li><b>arrows</b> <i>[Object]</i> - object of sorting arrows icons css classes:
+                            <ul class="margin-none">
+                                <li><i>'desc' : 'icon arrow desc'</i>;</li>
+                                <li><i>'asc' : 'icon arrow asc'</i>;</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li><b>events</b> <i>[Object]</i> - object of events handlers:
+                    <ul class="margin-none">
+                        <li><i>Available events: onSort, onCheckAll, onUnCheckAll, onCheck, onUnCheck</i>;</li>
+                    </ul>
+                </li>
+                <li><b>Com.Pagination</b> <i>[Object]</i> - specific configuration of pagination component, <i>default: {}</i>.</li>
+            </ul>
         </li>
 
         <li data-tabset-id="methods" data-tabset-title="Methods">
+            <h2>Add event:</h2>
+            <code>gridlist.addEvent(event, handler);</code>
+            <p>Available events: onSort, onCheckAll, onUnCheckAll, onCheck, onUnCheck.<br>Returns a class of select.</p>
+
+            <h2>Remove event:</h2>
+            <code>gridlist.removeEvent(event, handler);</code>
+            <p>Available events: onSort, onCheckAll, onUnCheckAll, onCheck, onUnCheck.<br>Returns a class of select.</p>
+
+            <h2>Check row:</h2>
+            <code>gridlist.check(index);</code>
+            <p><b>index</b> <i>[Nubmer]</i> - index of row in data.<br>Trigger <b>onCheck</b> event, which returns: [Object {Gridlist}, Object {row}].<br>Returns a class of select.</p>
+
+            <h2>Uncheck row:</h2>
+            <code>gridlist.unCheck(index);</code>
+            <p><b>index</b> <i>[Nubmer]</i> - index of row in data.<br>Trigger <b>onUnCheck</b> event, which returns: [Object {Gridlist}, Object {row}].<br>Returns a class of select.</p>
+
+            <h2>Check all rows:</h2>
+            <code>gridlist.checkAll();</code>
+            <p>Trigger <b>onCheckAll</b> event, which returns: [Object {Gridlist}, Object {data}].<br>Returns a class of select.</p>
+
+            <h2>Uncheck all rows:</h2>
+            <code>gridlist.unCheckAll();</code>
+            <p>Trigger <b>onUnCheckAll</b> event, which returns: [Object {Gridlist}, Object {data}].<br>Returns a class of select.</p>
+
+            <h2>Get checked rows from rendered rows:</h2>
+            <code>gridlist.getChecked();</code>
+            <p>Returns the object of rows.</p>
+
+            <h2>Get checked rows from data:</h2>
+            <code>gridlist.getCheckedData();</code>
+            <p>Returns the object of data rows.</p>
         </li>
 
-        <li data-tabset-id="static-examples" data-tabset-title="Static Examples">
+        <li data-tabset-id="examples" data-tabset-title="Examples">
             <h2>Default:</h2>
             <div class="com-gridlist">
                 <table>
@@ -366,10 +474,10 @@
                     </tbody>
                 </table>
             </div>
-        </li>
 
-        <li data-tabset-id="dynamic-examples" data-tabset-title="Dynamic Examples">
-            <h2>Dynamic gridlist</h2>
+            <hr>
+
+            <h2>Dynamic gridlist:</h2>
             <div data-element="gridlist"></div>
         </li>
     </ul>

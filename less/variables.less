@@ -8,6 +8,17 @@
 
 // /* ******* STYLING ******* */
 
+// /* Colors */
+
+@cm-base-color: hsl(210, 80%, 55%);
+@cm-base-color-active: lighten(saturate(@cm-base-color, 2%), 37%);
+@cm-base-color-active-hover: darken(@cm-base-color-active, 5%);
+@cm-base-color-error: hsl(0, 80%, 50%);
+@cm-base-color-secondary: hsl(0, 0, 95%);
+@cm-base-color-secondary-hover: lighten(@cm-base-color-secondary, 3%);
+
+// /* Font */
+
 @cm-base-line-height: 18px;
 @cm-base-font-size: 13px;
 @cm-base-font-color: #666666;
@@ -17,26 +28,25 @@
 @cm-base-link-color: @cm-base-font-color;
 @cm-base-link-color-hover: @cm-base-font-color;
 
-@cm-base-color: hsl(210, 80%, 55%);
-@cm-base-color-active: lighten(saturate(@cm-base-color, 2%), 37%);
-@cm-base-color-active-hover: darken(@cm-base-color-active, 5%);
-@cm-base-color-error: hsl(0, 80%, 50%);
-@cm-base-color-secondary: hsl(0, 0, 95%);
-@cm-base-color-secondary-hover: lighten(@cm-base-color-secondary, 3%);
+// /* Border */
 
 @cm-border-color: #CBCBCB;
+@cm-border-radius: 3px;
 @cm-border-style: 1px solid @cm-border-color;
 @cm-border-editable: 1px dashed @cm-base-color;
 @cm-border-color-hover: @cm-base-color-active-hover;
 @cm-box-border: 2px solid @cm-border-color;
 @cm-box-border-active: 2px solid @cm-base-color-active;
 
-@cm-block-padding: 24px;
-@cm-block-margin: @cm-block-padding;
-@cm-block-padding-small: 4px;
-@cm-border-radius: 3px;
+// /* Indent, Padding, Margin */
 
-@cm-ui-margin: 12px;
+@cm-block-indent: 24px;
+@cm-block-indent-small: 4px;
+@cm-ui-indent: 12px;
+@cm-button-indent: 8px;
+@cm-button-indent-small: 4px;
+
+// /* Animation */
 
 @cm-transition-duration: 0.3s;
 @cm-transition-duration-reverse: 0.1s;
@@ -47,8 +57,6 @@
 @cm-form-field-indent: 16px;
 @cm-form-dt-width: 150px;
 @cm-form-inner-indent: @cm-form-field-indent / 2;
-@cm-button-indent: 8px;
-@cm-button-indent-small: 4px;
 
 // /* *** COLUMNS *** */
 
@@ -72,7 +80,7 @@
 
 // /* *** GRID *** */
 
-@cm-grid-item-indent: @cm-block-margin / 2;
+@cm-grid-item-indent: @cm-block-indent / 2;
 
 // /* *** SELECTABLE*** */
 
@@ -95,7 +103,7 @@
 
 // /* *** DRAG AND DROP *** */
 
-@cm-draganddrop-area-padding: @cm-ui-margin;
+@cm-draganddrop-area-padding: @cm-ui-indent;
 @cm-draganddrop-area-border-radius: @cm-border-radius;
 @cm-draganddrop-area-background-active: @cm-base-color-active;
 
@@ -114,7 +122,7 @@
 
 // /* *** COLUMNS *** */
 
-@com-columns-indent: @cm-block-margin;
+@com-columns-indent: @cm-block-indent;
 @com-columns-min-height: 64px;
 @com-columns-background-hover: @cm-base-color-secondary-hover;
 

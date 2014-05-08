@@ -35,7 +35,7 @@ p, ul, ol {
 }
 
 ul, ol {
-    padding: 0 0 0 @cm-base-line-height;
+    padding: 0 0 0 @cm-block-indent;
 }
 
 hr {
@@ -397,11 +397,11 @@ select[multiple] {
 .inner-link {
     text-decoration: none;
     border-bottom: 1px dashed;
-}
 
-.inner-link:hover {
-    text-decoration: none;
-    border-bottom-color: transparent;
+    &:hover {
+        text-decoration: none;
+        border-bottom-color: transparent;
+    }
 }
 
 .inherit-link {
@@ -412,19 +412,6 @@ select[multiple] {
 
 .inherit-link:hover {
     text-decoration: underline;
-}
-
-ul.decimal {
-    list-style: decimal;
-}
-
-ul.none {
-    list-style: none;
-    padding-left: 0;
-}
-
-ul.indent {
-    list-style: none;
 }
 
 .inline {
@@ -454,7 +441,7 @@ ul.indent {
 }
 
 .cm-block-padding {
-    padding: @cm-block-padding;
+    padding: @cm-block-indent;
 }
 
 .cm-scroll-y {
@@ -468,6 +455,33 @@ ul.indent {
     overflow-y: auto;
 }
 
+ul {
+    &.none {
+        list-style: none;
+        padding-left: 0;
+    }
+
+    &.decimal {
+        list-style: decimal;
+    }
+
+    &.style-none {
+        list-style: none;
+    }
+}
+
+.cm-list {
+    list-style: disc;
+
+    ul {
+        list-style: circle;
+
+        ul {
+            list-style: disc;
+        }
+    }
+}
+
 /* ******* FORM ******* */
 
 .form {
@@ -475,7 +489,7 @@ ul.indent {
 }
 
 .form.in-content {
-    margin: 0 0 @cm-block-margin;
+    margin: 0 0 @cm-block-indent;
 }
 
 .form .required {
@@ -656,7 +670,7 @@ ul.indent {
 
 .btn-wrap {
     height: @cm-form-field-height;
-    margin-top: @cm-block-margin;
+    margin-top: @cm-block-indent;
     line-height: @cm-form-field-height;
 
     .hint {
@@ -873,7 +887,7 @@ ul.indent {
 /* *** FIELDSET *** */
 
 .form fieldset {
-    padding: 0 @cm-block-padding @cm-block-padding @cm-block-padding;
+    padding: 0 @cm-block-indent @cm-block-indent @cm-block-indent;
     margin: @cm-form-field-indent 0 0 0;
     border: @cm-border-style;
     border-radius: @cm-border-radius;
@@ -884,7 +898,7 @@ ul.indent {
 
     dl {
         &:first-child {
-            margin-top: @cm-block-padding;
+            margin-top: @cm-block-indent;
         }
     }
 
@@ -1032,7 +1046,7 @@ ul.indent {
 /* *** FILTER FROM - TO *** */
 
 .form-filter-fromto {
-    margin: 0 0 @cm-block-margin 0;
+    margin: 0 0 @cm-block-indent 0;
 
     dl {
         float: left;
@@ -1041,7 +1055,7 @@ ul.indent {
 
     .form-box {
         width: 200px;
-        margin: 0 @cm-block-margin 0 0;
+        margin: 0 @cm-block-indent 0 0;
     }
 
     .buttons {
@@ -1221,7 +1235,7 @@ ul.has-icons-outside-three li {
 /* *** CONTENT BUTTONS LINE *** */
 
 .buttons {
-    margin: 0 0 @cm-block-margin 0;
+    margin: 0 0 @cm-block-indent 0;
     font-size: 0;
 }
 
@@ -1368,7 +1382,7 @@ ul.has-icons-outside-three li {
 /* *** GRID *** */
 
 .cm-grid {
-    margin: 0 0 @cm-block-margin;
+    margin: 0 0 @cm-block-indent;
 
     &.bottom {
         margin: 0;
@@ -1476,7 +1490,7 @@ ul.has-icons-outside-three li {
 /* *** BREADCRUMBS *** */
 
 .breadcrumbs {
-    margin: 0 0 @cm-block-margin;
+    margin: 0 0 @cm-block-indent;
 
     ul {
         margin: 0;
@@ -1499,7 +1513,7 @@ ul.has-icons-outside-three li {
 /* *** FLASH NOTIFICATION *** */
 
 .flash-notification {
-    margin: 0 0 @cm-block-margin;
+    margin: 0 0 @cm-block-indent;
 }
 
 .flash-notification ul {
@@ -1653,32 +1667,32 @@ ul.has-icons-outside-three li {
 
     &.has-padding {
         .cm-scrollable-content {
-            padding: @cm-block-padding;
+            padding: @cm-block-indent;
         }
 
         .cm-scrollable-buttons {
-            padding: @cm-block-padding;
-            padding-top: @cm-block-margin;
+            padding: @cm-block-indent;
+            padding-top: @cm-block-indent;
         }
     }
 
     &.has-toolbar {
         .cm-scrollable-content {
             padding-top: 0;
-            top: @cm-form-field-height + @cm-block-margin;
+            top: @cm-form-field-height + @cm-block-indent;
         }
     }
 
     &.has-buttons {
         .cm-scrollable-content {
             padding-bottom: 0;
-            bottom: @cm-form-field-height + @cm-block-margin;
+            bottom: @cm-form-field-height + @cm-block-indent;
         }
     }
 
     &.has-padding.has-buttons {
         .cm-scrollable-content {
-            bottom: @cm-form-field-height + @cm-block-margin + @cm-block-padding;
+            bottom: @cm-form-field-height + @cm-block-indent + @cm-block-indent;
         }
     }
 }
@@ -1687,7 +1701,7 @@ ul.has-icons-outside-three li {
 
 .cm-toolbar {
     white-space: nowrap;
-    margin: 0 0 @cm-block-margin 0;
+    margin: 0 0 @cm-block-indent 0;
     font-size: 0;
 
     &.bottom {
@@ -1851,19 +1865,19 @@ ul.has-icons-outside-three li {
         z-index: 3;
 
         &.top-right {
-            .cm-position(@cm-ui-margin, @cm-ui-margin, auto, auto);
+            .cm-position(@cm-ui-indent, @cm-ui-indent, auto, auto);
         }
 
         &.top-left {
-            .cm-position(@cm-ui-margin, auto, auto, @cm-ui-margin);
+            .cm-position(@cm-ui-indent, auto, auto, @cm-ui-indent);
         }
 
         &.bottom-right {
-            .cm-position(auto, @cm-ui-margin, @cm-ui-margin, auto);
+            .cm-position(auto, @cm-ui-indent, @cm-ui-indent, auto);
         }
 
         &.bottom-left {
-            .cm-position(auto, auto, @cm-ui-margin, @cm-ui-margin);
+            .cm-position(auto, auto, @cm-ui-indent, @cm-ui-indent);
         }
 
         input[type="checkbox"],
@@ -2187,7 +2201,7 @@ ul.has-icons-outside-three li {
             td {
                 width: 100% !important;
                 display: block;
-                margin: @cm-block-margin 0 0 0;
+                margin: @cm-block-indent 0 0 0;
 
                 &:first-child {
                     margin: 0;

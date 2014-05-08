@@ -31,14 +31,14 @@
             Com.DatepickerCollector();
             // Tabset
             Com.TabsetCollector();
-
+            // Components
             new Com.Collector()
-                    .add('tags', function(node){
-                        new Com.TagsInput({
-                            'input' : node
-                        });
-                    })
-                    .construct();
+                .add('tags', function(node){
+                    new Com.TagsInput({
+                        'input' : node
+                    });
+                })
+                .construct();
 		});
 	</script>
 </head>
