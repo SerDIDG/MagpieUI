@@ -18,7 +18,9 @@
 */
 
 var cm = {
-        'version' : '2.0.11'
+        '_version' : '2.0.12',
+        '_debug' : true,
+        '_debugAlert' : false
     },
     Com = {
         'Elements' : {}
@@ -308,26 +310,23 @@ cm.sort = function(o){
 
 /* ******* EVENTS ******* */
 
-cm.log = function(){
-    var args = arguments, results = [];
-
-    var log = function(){
-        for(var i = 0, l = args.length; i < l; i++){
-            results.push(args[i]);
-        }
-        alert(results.join(', '));
-    };
-
-    try{
-        if("console" in window){
-            console.log.apply(console.log, args);
-        }else{
-            log();
-        }
-    }catch(e){
-        log();
+cm.log = (function(){
+    var results = [];
+    if(cm._debug && window.console){
+        return function(){
+            console.log.apply(console, arguments);
+        };
+    }else if(cm._debug && cm._debugAlert){
+        return function(){
+            cm.forEach(arguments, function(arg){
+                results.push(arg);
+            });
+            alert(results.join(', '));
+        };
+    }else{
+        return function(){}
     }
-};
+})();
 
 cm.dump = function(o){
     var node = cm.Node('div');
@@ -1127,22 +1126,10 @@ cm.getCurrentDate = function(){
 
 cm.dateFormat = function(date, format, langs){
     var str = format,
-        langs = cm.merge({
-            'months' : [
-                'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September',
-                'October', 'November', 'December'
-            ]
-        }, langs),
         formats = function(date){
             return {
-                '%d' : function(){
-                    return date ? cm.addLeadZero(date.getDate()) : '00';
-                },
-                '%j' : function(){
-                    return date ? date.getDate() : '00';
-                },
-                '%F' : function(){
-                    return date ? langs['months'][date.getMonth()] : '00';
+                '%Y' : function(){
+                    return date ? date.getFullYear() : '0000';
                 },
                 '%m' : function(){
                     return date ? cm.addLeadZero(date.getMonth() + 1) : '00';
@@ -1150,8 +1137,14 @@ cm.dateFormat = function(date, format, langs){
                 '%n' : function(){
                     return date ? (date.getMonth() + 1) : '00';
                 },
-                '%Y' : function(){
-                    return date ? date.getFullYear() : '0000';
+                '%F' : function(){
+                    return date ? langs['months'][date.getMonth()] : '00';
+                },
+                '%d' : function(){
+                    return date ? cm.addLeadZero(date.getDate()) : '00';
+                },
+                '%j' : function(){
+                    return date ? date.getDate() : '00';
                 },
                 '%H' : function(){
                     return date ? cm.addLeadZero(date.getHours()) : '00';
@@ -1164,10 +1157,70 @@ cm.dateFormat = function(date, format, langs){
                 }
             }
         };
+
+    langs = cm.merge({
+        'months' : [
+            'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'
+        ]
+    }, langs);
+
     cm.forEach(formats(date), function(item, key){
         str = str.replace(key, item);
     });
     return str;
+};
+
+cm.parseDate = function(str, format){
+    if(!str){
+        return null;
+    }
+
+    var date = new Date('0000-00-00'),
+        convertFormats = {
+            '%Y' : 'YYYY',
+            '%m' : 'mm',
+            '%d' : 'dd',
+            '%H' : 'HH',
+            '%i' : 'ii',
+            '%s' : 'ss'
+        },
+        formats = {
+            'YYYY' : function(value){
+                date.setFullYear(value);
+            },
+            'mm' : function(value){
+                date.setMonth(value);
+            },
+            'dd' : function(value){
+                date.setDate(value);
+            },
+            'HH' : function(value){
+                date.setHours(value);
+            },
+            'ii' : function(value){
+                date.setMinutes(value);
+            },
+            'ss' : function(value){
+                date.setSeconds(value);
+            }
+        },
+        fromIndex = 0;
+
+    format = format || '%Y-%m-%d %H:%i:%s';
+
+    cm.forEach(convertFormats, function(item, key){
+        format = format.replace(key, item);
+    });
+
+    cm.forEach(formats, function(item, key){
+        fromIndex = format.indexOf(key);
+        while(fromIndex != -1){
+            item(str.substr(fromIndex, key.length));
+            fromIndex = format.indexOf(key, fromIndex + 1);
+        }
+    });
+
+    return date;
 };
 
 /* ******* STYLES ******* */

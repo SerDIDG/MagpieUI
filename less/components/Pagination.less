@@ -1,0 +1,109 @@
+/* ******* PAGINATION ******* */
+
+.com-pagination {
+    margin: 0 0 @cm-block-margin;
+    line-height: @cm-form-field-height;
+    .cm-user-select(none);
+
+    ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        font-size: 0;
+        text-align: left;
+
+        li {
+            display: inline-block;
+            margin-left: @cm-button-indent-small;
+            vertical-align: top;
+            line-height: @cm-form-field-height;
+            font-size: @cm-base-font-size;
+
+            &:first-child {
+                margin-left: 0;
+            }
+
+            a {
+                #cm > .button;
+                #cm > .button-secondary;
+                min-width: @cm-form-field-height;
+                padding: 0 6px;
+            }
+
+            &.active a {
+                #cm > .button-primary;
+                padding: 0 6px;
+            }
+
+            &.prev a,
+            &.next a {
+                #cm > .button-transparent;
+                padding: 0 6px;
+                font-weight: bold;
+            }
+
+            &.points {
+                width: @cm-form-field-height;
+                font-weight: normal;
+                text-align: center;
+            }
+        }
+    }
+
+    &.centered {
+        ul {
+            text-align: center;
+        }
+    }
+
+    &.right {
+        ul {
+            text-align: right;
+        }
+    }
+
+    &.bottom {
+        margin: 0;
+    }
+}
+
+.com-pagination-container {
+    margin: 0 0 @cm-block-margin;
+
+    &.bottom {
+        margin: 0;
+    }
+
+    > .com-pagination {
+        margin: 0;
+    }
+}
+
+.com-pagination-content {
+    margin: @cm-block-margin 0;
+    position: relative;
+
+    &:first-child {
+        margin-top: 0;
+    }
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+
+    > div {
+        width: 100%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        background-color: #FFFFFF;
+        opacity: 0;
+        z-index: 2;
+
+        &:first-child {
+            opacity: 1;
+            position: relative;
+            z-index: 1;
+        }
+    }
+}

@@ -9,11 +9,13 @@
 
     .link {
         text-decoration: underline;
-        color: @cm-base-color;
+        color: @cm-base-link-color;
+        outline: none;
+        cursor: pointer;
 
         &:hover {
             text-decoration: none;
-            color: @cm-base-color;
+            color: @cm-base-link-color-hover;
         }
     }
 
@@ -77,19 +79,18 @@
         vertical-align: top;
         -webkit-appearance: none;
         -moz-box-sizing: border-box;
-        box-sizing: border-box;
+             box-sizing: border-box;
         -webkit-background-clip: border-box;
-        -moz-background-clip: border-box;
-        background-clip: border-box;
-        background: @cm-base-color;
+           -moz-background-clip: border-box;
+                background-clip: border-box;
         border: none;
         border-radius: @cm-border-radius;
         text-align: center;
         text-decoration: none;
         line-height: @cm-form-field-height;
         font-size: @cm-base-font-size;
-        color: #fff;
         cursor: pointer;
+        #cm > .button-primary;
         .cm-transition(background-color @cm-transition-duration ease-in-out);
         .cm-transition(color @cm-transition-duration ease-in-out);
         .cm-transition(box-shadow @cm-transition-duration ease-in-out);
@@ -100,51 +101,92 @@
             margin: 0;
         }
 
-        .browse-button:hover &,
         &:hover {
-            text-decoration: none;
-            .cm-transition(background-color @cm-transition-duration-reverse ease-in-out);
-            .cm-transition(color @cm-transition-duration-reverse ease-in-out);
-            .cm-transition(box-shadow @cm-transition-duration-reverse ease-in-out);
-            background-color: darken(@cm-base-color, 10%);
-        }
-
-        .browse-button:active &,
-        &:active,
-        &.active {
-            box-shadow: 0 3px 3px rgba(0,0,0,0.4) inset;
+            #cm > .button-hover;
         }
 
         &.secondary {
-            background: @cm-base-color-secondary;
-            box-shadow: none;
-            color: @cm-base-color;
-
-            &:hover {
-                background: @cm-base-color-secondary-hover;
-            }
-
-            &:active,
-            &.active {
-                box-shadow: 0 2px 2px rgba(0,0,0,0.2) inset;
-            }
+            #cm > .button-secondary;
         }
 
         &.transparent {
-            background: none;
-            box-shadow: none;
-            border: none;
-            color: @cm-base-color;
-
-            &:hover {
-                background: @cm-base-color-secondary;
-            }
-
-            &:active,
-            &.active {
-                box-shadow: 0 2px 2px rgba(0,0,0,0.2) inset;
-            }
+           #cm > .button-transparent;
         }
+    }
+
+    .button-hover {
+        text-decoration: none;
+        .cm-transition(background-color @cm-transition-duration-reverse ease-in-out);
+        .cm-transition(color @cm-transition-duration-reverse ease-in-out);
+        .cm-transition(box-shadow @cm-transition-duration-reverse ease-in-out);
+    }
+
+    .button-primary {
+        background: @cm-base-color;
+        color: #fff;
+
+        &:hover {
+            #cm > .button-primary-hover;
+        }
+
+        &:active,
+        &.active {
+            #cm > .button-primary-active;
+        }
+    }
+
+    .button-primary-hover {
+        background-color: darken(@cm-base-color, 10%);
+    }
+
+    .button-primary-active {
+        box-shadow: 0 3px 3px rgba(0,0,0,0.4) inset;
+    }
+
+    .button-secondary {
+        background: @cm-base-color-secondary;
+        color: @cm-base-color;
+
+        &:hover {
+            #cm > .button-secondary-hover;
+        }
+
+        &:active,
+        &.active {
+            #cm > .button-secondary-active;
+        }
+    }
+
+    .button-secondary-hover {
+        background: @cm-base-color-secondary-hover;
+    }
+
+    .button-secondary-active {
+        box-shadow: 0 2px 2px rgba(0,0,0,0.2) inset;
+    }
+
+    .button-transparent {
+        background: none;
+        box-shadow: none;
+        border: none;
+        color: @cm-base-color;
+
+        &:hover {
+            #cm > .button-transparent-hover;
+        }
+
+        &:active,
+        &.active {
+            #cm > .button-transparent-active;
+        }
+    }
+
+    .button-transparent-hover {
+        background: @cm-base-color-secondary;
+    }
+
+    .button-transparent-active {
+        box-shadow: 0 2px 2px rgba(0,0,0,0.2) inset;
     }
 
     // /* ******* COMPONENTS ******* */

@@ -9,6 +9,10 @@
     overflow: hidden;
     font-size: @com-gridlist-font-size;
 
+    &.bottom {
+        margin: 0;
+    }
+
     table {
         width: 100%;
         table-layout: fixed;
@@ -20,10 +24,8 @@
 
             > .inner {
                 display: block;
-                overflow: hidden;
                 position: relative;
-                text-overflow: ellipsis;
-                white-space: nowrap;
+                .cm-text-overflow;
                 word-wrap: normal;
                 text-decoration: none;
             }
@@ -32,6 +34,7 @@
         th {
             line-height: 14px;
             font-weight: bold;
+            .cm-user-select(none);
 
             &.sort {
                 .cm-transition(background-color 0.3s ease-in-out);
@@ -85,11 +88,17 @@
         color: #DF3E3E;
         font-weight: bold;
     }
+}
 
-    &.error {
-        th {
-            border-color: #df3e3e;
-        }
+.com-gridlist-container {
+    margin: 0 0 @cm-block-margin;
+
+    &.bottom {
+        margin: 0;
+    }
+
+    > .com-pagination-container {
+        margin: 0;
     }
 }
 
@@ -166,29 +175,6 @@
 }
 
 /* ******* COMPONENTS IN GRIDLIST ******* */
-
-/* *** DRAG'n'DROP *** */
-
-.com-gridlist {
-    .cm-draganddrop-helper {
-        display: table;
-        table-layout: fixed;
-    }
-
-    table {
-        tbody.cm-draganddrop-area {
-            &.is-active {
-                background: transparent;
-            }
-        }
-
-        tr.cm-draganddrop-helper {
-            td {
-                background-color: #D9EAFB;
-            }
-        }
-    }
-}
 
 /* *** TOGGLE BOX *** */
 
