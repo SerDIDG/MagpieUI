@@ -110,6 +110,9 @@ footer,
 section {
   display: block;
 }
+b {
+  font-weight: bold;
+}
 /* *** FORM ELEMENTS *** */
 input,
 select,
