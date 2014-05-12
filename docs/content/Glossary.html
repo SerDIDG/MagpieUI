@@ -5,21 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>Glossary</title>
 
-    <link type="text/css" rel="stylesheet" href="../css/index.css">
+    <link type="text/css" rel="stylesheet" href="../../css/index.css">
 
-    <script type="text/javascript" src="../js/common.js"></script>
-    <script type="text/javascript" src="../js/useragent.js"></script>
-    <script type="text/javascript" src="../js/tooltip.js"></script>
-    <script type="text/javascript" src="../js/select.js"></script>
-    <script type="text/javascript" src="../js/calendar.js"></script>
-    <script type="text/javascript" src="../js/datepicker.js"></script>
-    <script type="text/javascript" src="../js/calendar.events.js"></script>
-    <script type="text/javascript" src="../js/tabset.js"></script>
-    <script type="text/javascript" src="../js/dialog.js"></script>
-    <script type="text/javascript" src="../js/gallery.js"></script>
-    <script type="text/javascript" src="../js/collector.js"></script>
-    <script type="text/javascript" src="../js/columns.js"></script>
-    <script type="text/javascript" src="../js/glossary.js"></script>
+    <script type="text/javascript" src="../../js/common.js"></script>
+    <script type="text/javascript" src="../../js/polyfill.js"></script>
+    <script type="text/javascript" src="../../js/components/UA.js"></script>
+    <script type="text/javascript" src="../../js/components/Tooltip.js"></script>
+    <script type="text/javascript" src="../../js/components/Select.js"></script>
+    <script type="text/javascript" src="../../js/components/Calendar.js"></script>
+    <script type="text/javascript" src="../../js/components/Datepicker.js"></script>
+    <script type="text/javascript" src="../../js/components/CalendarEvents.js"></script>
+    <script type="text/javascript" src="../../js/components/Tabset.js"></script>
+    <script type="text/javascript" src="../../js/components/Dialog.js"></script>
+    <script type="text/javascript" src="../../js/components/Gallery.js"></script>
+    <script type="text/javascript" src="../../js/components/Collector.js"></script>
+    <script type="text/javascript" src="../../js/components/Columns.js"></script>
+    <script type="text/javascript" src="../../js/components/Glossary.js"></script>
 
     <script type="text/javascript">
         cm.onload(function(){
@@ -38,10 +39,10 @@
 <div class="cm-block-padding">
     <h1>Glossary</h1>
 
-    <ul class="com-tabset-content-ul" id="tabset" data-tabset="true" data-toggleOnHashChange="false">
+    <ul class="com-tabset-content-ul" id="tabset" data-tabset="true">
         <li data-tabset-id="overview" data-tabset-title="Overview">
             <h2>Initialize in Java-Script:</h2>
-            <code>new Com.Glossary(o);</code>
+            <pre class="cm-codebox">new Com.Glossary(o);</pre>
             <br>
             <b>Attributes:</b>
             <ul>
@@ -49,13 +50,13 @@
             </ul>
 
             <h2>Initialize in HTML:</h2>
-            <code>&lt;span class="com-glossary-word" data-com-glossary="true"&gt;
-        &lt;span class="com-glossary-title"&gt;Glossary Word&lt;/span&gt;
-        &lt;span class="com-glossary-popup"&gt;Glossary Description&lt;/span&gt;
-    &lt;/span&gt;</code>
-            <code>cm.onload(function(){
-        Com.GlossaryCollector(/* container, attribute, value */);
-    });</code>
+            <pre class="cm-codebox">&lt;span class="com-glossary-word" data-com-glossary="true"&gt;
+    &lt;span class="com-glossary-title"&gt;Glossary Word&lt;/span&gt;
+    &lt;span class="com-glossary-popup"&gt;Glossary Description&lt;/span&gt;
+&lt;/span&gt;</pre>
+        <pre class="cm-codebox">cm.onload(function(){
+    Com.GlossaryCollector(/* container, attribute, value */);
+});</pre>
             <br>
             <b>HTML Attributes:</b>
             <ul>
@@ -65,11 +66,11 @@
 
         <li data-tabset-id="methods" data-tabset-title="Methods">
             <h2>Get glossary by id:</h2>
-            <code>Com.GetGlossary('id');</code>
+            <pre class="cm-codebox">Com.GetGlossary('id');</pre>
             <p>Returns a class of glossary.</p>
 
             <h2>Unlink and destroy glossary class:</h2>
-            <code>glossary.remove();</code>
+            <pre class="cm-codebox">glossary.remove();</pre>
             <p>Returns a class of glossary.</p>
         </li>
 

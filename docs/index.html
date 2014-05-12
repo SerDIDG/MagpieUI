@@ -1,0 +1,249 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>FioraUI Docs</title>
+
+    <link type="text/css" rel="stylesheet" href="../css/index.css">
+
+    <script type="text/javascript" src="../js/polyfill.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>
+    <script type="text/javascript" src="../js/components/UA.js"></script>
+    <script type="text/javascript" src="../js/components/Collector.js"></script>
+    <script type="text/javascript" src="../js/components/CollapsibleLayout.js"></script>
+    <script type="text/javascript" src="../js/components/ToggleBox.js"></script>
+
+    <script type="text/javascript">
+        cm.onload(function(){
+            var element;
+            // Useragent
+            Com.UA.setBrowserClass();
+            // Components
+            new Com.Collector()
+                    .add('collapsible-layout', function(node){
+                        new Com.CollapsibleLayout({
+                            'node' : node
+                        });
+                    })
+                    .add('togglebox-widget', function(node){
+                        new Com.ToggleBoxWidget({
+                            'node' : node
+                        });
+                    })
+                    .construct();
+        });
+    </script>
+</head>
+
+<body>
+
+<div class="com-collapsible-layout" data-element="collapsible-layout">
+    <div class="sidebar left">
+        <div class="inner">
+            <div class="title">
+                <span class="icon medium linked arrow-left" data-com-collapsible-layout="sidebar-left-button"></span>
+                FioraUI Docs
+            </div>
+            <div class="descr">
+                <dl class="com-togglebox is-show" data-element="togglebox-widget">
+                    <dt>
+                        <span class="icon small arrow-right"></span>
+                        Common Functions
+                    </dt>
+                    <dd>
+                        <div class="cm-items-list auto">
+                            <ul>
+                                <li>
+                                    <a href="content/Common.html#support" target="content"><b>Support</b></a>
+                                </li>
+                                <li>
+                                    <a href="content/Common.html#cm.isCanvas" target="content">» cm.isCanvas</a>
+                                </li>
+                                <li>
+                                    <a href="content/Common.html#cm.isFileReader" target="content">» cm.isFileReader</a>
+                                </li>
+                                <li>
+                                    <a href="content/Common.html#cm.isHistoryAPI" target="content">» cm.isHistoryAPI</a>
+                                </li>
+                                <li>
+                                    <a href="content/Common.html#cm.isLocalStorage" target="content">» cm.isLocalStorage</a>
+                                </li>
+                                <li>
+                                    <a href="content/Common.html#cm.isTouch" target="content">» cm.isTouch</a>
+                                </li>
+                                <li>
+                                    <a href="content/Common.html#arrays" target="content"><b>Array</b></a>
+                                </li>
+                                <li>
+                                    <a href="content/Common.html#cm.forEach" target="content">» cm.forEach()</a>
+                                </li>
+                                <li>
+                                    <a href="content/Common.html#cm.isArray" target="content">» cm.isArray()</a>
+                                </li>
+                                <li>
+                                    <a href="content/Common.html#cm.isObject" target="content">» cm.isObject()</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </dd>
+                </dl>
+
+                <dl class="com-togglebox is-hide" data-element="togglebox-widget">
+                    <dt>
+                        <span class="icon small arrow-right"></span>
+                        Elements
+                    </dt>
+                    <dd>
+                        <div class="cm-items-list auto">
+                            <ul>
+                                <li>
+                                    <a href="content/Form.html" target="content"><b>Form Elements</b></a>
+                                </li>
+                                <li>
+                                    <a href="content/Form.html#inputs" target="content">» Inputs</a>
+                                </li>
+                                <li>
+                                    <a href="content/Form.html#selects" target="content">» Selects</a>
+                                </li>
+                                <li>
+                                    <a href="content/Form.html#checkboxes" target="content">» Checkboxes</a>
+                                </li>
+                                <li>
+                                    <a href="content/Form.html#buttons" target="content">» Buttons</a>
+                                </li>
+                                <li>
+                                    <a href="content/Form.html#fieldsets" target="content">» Fieldsets</a>
+                                </li>
+                                <li>
+                                    <a href="content/Form.html#columns" target="content">» Columns</a>
+                                </li>
+                                <li>
+                                    <a href="content/Form.html#toolbars" target="content">» Toolbars</a>
+                                </li>
+                                <li>
+                                    <a href="content/Form.html#other" target="content">» Other</a>
+                                </li>
+                                <li><b>Layouts</b></li>
+                                <li>
+                                    <a href="content/Collapsible.html" target="content">» Collapsible</a>
+                                </li>
+                                <li>
+                                    <a href="content/Grid.html" target="content">» Grid</a>
+                                </li>
+                                <li>
+                                    <a href="content/Page.html" target="content">» Page</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </dd>
+                </dl>
+
+                <dl class="com-togglebox is-hide" data-element="togglebox-widget">
+                    <dt>
+                        <span class="icon small arrow-right"></span>
+                        Components
+                    </dt>
+                    <dd>
+                        <div class="cm-items-list auto">
+                            <ul>
+                                <li>
+                                    <a href="content/CalendarEvents.html" target="content"><b>Calendar of Events</b></a>
+                                </li>
+                                <li>
+                                    <a href="content/CalendarEvents.html#examples" target="content">» Examples</a>
+                                </li>
+                                <li>
+                                    <a href="content/Columns.html" target="content"><b>Columns</b></a>
+                                </li>
+                                <li>
+                                    <a href="content/Columns.html#examples" target="content">» Examples</a>
+                                </li>
+                                <li>
+                                    <a href="content/Datepicker.html" target="content"><b>Datepicker</b></a>
+                                </li>
+                                <li>
+                                    <a href="content/Datepicker.html#overview" target="content">» Overview</a>
+                                </li>
+                                <li>
+                                    <a href="content/Datepicker.html#methods" target="content">» Methods</a>
+                                </li>
+                                <li>
+                                    <a href="content/Datepicker.html#examples" target="content">» Examples</a>
+                                </li>
+                                <li>
+                                    <a href="content/Gallery.html" target="content"><b>Gallery</b></a>
+                                </li>
+                                <li>
+                                    <a href="content/Gallery.html#overview" target="content">» Overview</a>
+                                </li>
+                                <li>
+                                    <a href="content/Gallery.html#methods" target="content">» Methods</a>
+                                </li>
+                                <li>
+                                    <a href="content/Gallery.html#examples" target="content">» Examples</a>
+                                </li>
+                                <li>
+                                    <a href="content/Glossary.html" target="content"><b>Glossary</b></a>
+                                </li>
+                                <li>
+                                    <a href="content/Glossary.html#overview" target="content">» Overview</a>
+                                </li>
+                                <li>
+                                    <a href="content/Glossary.html#methods" target="content">» Methods</a>
+                                </li>
+                                <li>
+                                    <a href="content/Glossary.html#examples" target="content">» Examples</a>
+                                </li>
+                                <li>
+                                    <a href="content/Gridlist.html" target="content"><b>Gridlist</b></a>
+                                </li>
+                                <li>
+                                    <a href="content/Gridlist.html#overview" target="content">» Overview</a>
+                                </li>
+                                <li>
+                                    <a href="content/Gridlist.html#methods" target="content">» Methods</a>
+                                </li>
+                                <li>
+                                    <a href="content/Gridlist.html#examples" target="content">» Examples</a>
+                                </li>
+                                <li>
+                                    <a href="content/Select.html" target="content"><b>Select</b></a>
+                                </li>
+                                <li>
+                                    <a href="content/Select.html#overview" target="content">» Overview</a>
+                                </li>
+                                <li>
+                                    <a href="content/Select.html#methods" target="content">» Methods</a>
+                                </li>
+                                <li>
+                                    <a href="content/Select.html#examples" target="content">» Examples</a>
+                                </li>
+                                <li>
+                                    <a href="content/Tabset.html" target="content"><b>Tabset</b></a>
+                                </li>
+                                <li>
+                                    <a href="content/Tabset.html#overview" target="content">» Overview</a>
+                                </li>
+                                <li>
+                                    <a href="content/Tabset.html#methods" target="content">» Methods</a>
+                                </li>
+                                <li>
+                                    <a href="content/Tabset.html#examples" target="content">» Examples</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <div class="inner">
+        <iframe name="content" src="content/Common.html"></iframe>
+    </div>
+</div>
+
+</body>
+
+</html>

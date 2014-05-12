@@ -1,5 +1,9 @@
 /* ************ COMMON STYLES ************ */
 
+/* ******* FONTS ******* */
+
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,300,700,600);
+
 /* ******* TAGS ******* */
 
 body {
@@ -25,9 +29,21 @@ dl, dt, dd, canvas, iframe, form {
     text-indent: 0;
 }
 
+dl {
+    margin: 0 0 @cm-base-line-height;
+
+    dd {
+        padding: 0 0 0 @cm-base-line-height;
+    }
+}
+
 h1, h2, h3, h4, h5, h6, p, ul, ol {
     margin: 0 0 @cm-base-line-height;
     padding: 0;
+}
+
+h3 {
+    margin: 0 0 @cm-base-line-height/2;
 }
 
 p, ul, ol {
@@ -63,16 +79,6 @@ tbody, thead, tr {
 tbody, thead, td, th, tr {
     margin: 0;
     padding: 0;
-}
-
-code {
-    display: block;
-    white-space: pre-wrap;
-    padding: 8px 12px;
-    margin: 4px 0;
-    background: #ffffff;
-    border: 1px dashed #999999;
-    border-radius: 4px;
 }
 
 iframe {
@@ -161,23 +167,6 @@ select[multiple] {
         vertical-align: middle;
     }
 
-    &.dummy {
-        &.x-small {
-            width: 12px;
-            height: 12px;
-        }
-
-        &.small {
-            width: 16px;
-            height: 16px;
-        }
-
-        &.medium {
-            width: 24px;
-            height: 24px;
-        }
-    }
-
     &.linked {
         cursor: pointer;
         .cm-transition(opacity @cm-transition-duration ease-in-out);
@@ -211,72 +200,48 @@ select[multiple] {
         width: 16px;
         height: 16px;
 
-        &.settings {
-            background-image: url("@{cm-image-path}/icons/settings.png");
-        }
-
-        &.add {
-            background-image: url("@{cm-image-path}/icons/add.png");
-        }
-
-        &.edit {
-            background-image: url("@{cm-image-path}/icons/edit.png");
-        }
-
-        &.remove {
-            background-image: url("@{cm-image-path}/icons/remove.png");
-        }
-
-        &.view {
-            background-image: url("@{cm-image-path}/icons/view.png");
-        }
-
-        &.copy {
-            background-image: url("@{cm-image-path}/icons/copy.png");
-        }
-
-        &.done {
-            background-image: url("@{cm-image-path}/icons/done.png");
-        }
-
-        &.fail {
-            background-image: url("@{cm-image-path}/icons/fail.png");
-        }
-
-        &.help {
-            background-image: url("@{cm-image-path}/icons/help.png");
-        }
-
-        &.arrow-priority-down {
-            background-image: url("@{cm-image-path}/icons/arrow-priority-down.png");
-        }
-
-        &.arrow-priority-up {
-            background-image: url("@{cm-image-path}/icons/arrow-priority-up.png");
+        .for(add arrow-priority-down arrow-priority-up arrow-right copy done edit fail help remove settings view); .-each(@name) {
+            &.@{name} {
+                background-image: url("@{cm-image-path}/icons/small/@{name}.png");
+            }
         }
     }
+
+    // /* Medium */
 
     &.medium {
         width: 24px;
         height: 24px;
 
-        &.datepicker {
-            background-image: url("@{cm-image-path}/icons/calendar.png");
-        }
-
-        &.select-arrow {
-            background-image: url("@{cm-image-path}/icons/select-arrow.png");
+        .for(arrow-left arrow-right datepicker select-arrow); .-each(@name) {
+            &.@{name} {
+                background-image: url("@{cm-image-path}/icons/medium/@{name}.png");
+            }
         }
     }
+
+    // /* Large */
 
     &.large {
         width: 32px;
         height: 32px;
     }
 
+    // /* X-Large */
+
     &.x-large {
         width: 48px;
         height: 48px;
+    }
+
+    // /* Toolbar */
+
+    &.toolbar {
+        .for(bold italic underline); .-each(@name) {
+            &.@{name} {
+                background-image: url("@{cm-image-path}/icons/toolbar/@{name}.png");
+            }
+        }
     }
 
     // /* Other */
@@ -309,45 +274,25 @@ select[multiple] {
     &.firefox,
     &.msie,
     &.safari {
+        width: 100px;
+        height: 76px;
         background: url("@{cm-image-path}/icons/browsers.png");
     }
 
     &.chrome {
-        width: 100px;
-        height: 76px;
         background-position: -200px 0;
     }
 
     &.firefox {
-        width: 100px;
-        height: 76px;
         background-position: -100px 0;
     }
 
     &.msie {
-        width: 100px;
-        height: 76px;
         background-position: -300px 0;
     }
 
     &.safari {
-        width: 100px;
-        height: 76px;
         background-position: -400px 0;
-    }
-
-    // /* Toolbar */
-
-    &.toolbar-bold {
-        background: url("@{cm-image-path}/icons/toolbar/bold.png");
-    }
-
-    &.toolbar-italic {
-        background: url("@{cm-image-path}/icons/toolbar/italic.png");
-    }
-
-    &.toolbar-underline {
-        background: url("@{cm-image-path}/icons/toolbar/underline.png");
     }
 }
 
@@ -430,6 +375,16 @@ select[multiple] {
     color: #f8504b;
     font-size: 8px;
     text-transform: uppercase;
+}
+
+.cm-codebox {
+    display: block;
+    white-space: pre-wrap;
+    margin: 4px 0;
+    padding: 8px 12px;
+    background: #ffffff;
+    border: 1px dashed @cm-border-color;
+    border-radius: @cm-border-radius;
 }
 
 .cm-image-resizable {
@@ -1471,6 +1426,8 @@ ul.has-icons-outside-three li {
             }
 
             a {
+                display: block;
+                line-height: @cm-base-line-height;
                 font-weight: normal;
                 text-decoration: none;
             }
@@ -1487,6 +1444,12 @@ ul.has-icons-outside-three li {
             &.active:hover {
                 background-color: @cm-items-list-background-active-hover;
             }
+        }
+    }
+
+    &.auto {
+        ul {
+            max-height: none;
         }
     }
 }

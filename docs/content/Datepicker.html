@@ -5,20 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>Datepicker</title>
 
-    <link type="text/css" rel="stylesheet" href="../css/index.css">
+    <link type="text/css" rel="stylesheet" href="../../css/index.css">
 
-    <script type="text/javascript" src="../js/common.js"></script>
-    <script type="text/javascript" src="../js/useragent.js"></script>
-    <script type="text/javascript" src="../js/tooltip.js"></script>
-    <script type="text/javascript" src="../js/select.js"></script>
-    <script type="text/javascript" src="../js/calendar.js"></script>
-    <script type="text/javascript" src="../js/datepicker.js"></script>
-    <script type="text/javascript" src="../js/calendar.events.js"></script>
-    <script type="text/javascript" src="../js/tabset.js"></script>
-    <script type="text/javascript" src="../js/dialog.js"></script>
-    <script type="text/javascript" src="../js/gallery.js"></script>
-    <script type="text/javascript" src="../js/collector.js"></script>
-    <script type="text/javascript" src="../js/columns.js"></script>
+    <script type="text/javascript" src="../../js/common.js"></script>
+    <script type="text/javascript" src="../../js/polyfill.js"></script>
+    <script type="text/javascript" src="../../js/components/UA.js"></script>
+    <script type="text/javascript" src="../../js/components/Tooltip.js"></script>
+    <script type="text/javascript" src="../../js/components/Select.js"></script>
+    <script type="text/javascript" src="../../js/components/Calendar.js"></script>
+    <script type="text/javascript" src="../../js/components/Datepicker.js"></script>
+    <script type="text/javascript" src="../../js/components/CalendarEvents.js"></script>
+    <script type="text/javascript" src="../../js/components/Tabset.js"></script>
+    <script type="text/javascript" src="../../js/components/Dialog.js"></script>
+    <script type="text/javascript" src="../../js/components/Gallery.js"></script>
+    <script type="text/javascript" src="../../js/components/Collector.js"></script>
+    <script type="text/javascript" src="../../js/components/Columns.js"></script>
 
     <script type="text/javascript">
         cm.onload(function(){
@@ -42,10 +43,10 @@
 <div class="cm-block-padding">
     <h1>Datepicker</h1>
 
-    <ul class="com-tabset-content-ul" id="tabset" data-tabset="true" data-toggleOnHashChange="false">
+    <ul class="com-tabset-content-ul" id="tabset" data-tabset="true">
         <li data-tabset-id="overview" data-tabset-title="Overview">
             <h2>Initialize in Java-Script:</h2>
-            <code>new Com.Datepicker(o);</code>
+            <pre class="cm-codebox">new Com.Datepicker(o);</pre>
             <br>
             <b>Attributes:</b>
             <ul>
@@ -74,10 +75,10 @@
             </ul>
 
             <h2>Initialize in HTML:</h2>
-            <code>&lt;input type="text" data-datepicker="true"&gt;</code>
-            <code>cm.onload(function(){
-                Com.DatepickerCollector();
-                });</code>
+            <pre class="cm-codebox">&lt;input type="text" data-datepicker="true"&gt;</pre>
+            <pre class="cm-codebox">cm.onload(function(){
+    Com.DatepickerCollector();
+});</pre>
             <br>
             <b>Attributes:</b>
             <ul>
@@ -99,35 +100,35 @@
 
         <li data-tabset-id="methods" data-tabset-title="Methods">
             <h2>Get datepicker by id:</h2>
-            <code>Com.GetDatepicker('id');</code>
+            <pre class="cm-codebox">Com.GetDatepicker('id');</pre>
             <p>Returns a class of datepicker.</p>
 
             <h2>Get selected date string in save format:</h2>
-            <code>datepicker.get(format);</code>
+            <pre class="cm-codebox">datepicker.get(format);</pre>
             <p>Returns selected date string in save (server) format, or in specified format.</p>
 
             <h2>Set date:</h2>
-            <code>datepicker.set(date);</code>
+            <pre class="cm-codebox">datepicker.set(date);</pre>
             <p>Set date by specify date string in save (server) format or date object.<br>Returns a class of datepicker.</p>
 
             <h2>Get selected date object:</h2>
-            <code>datepicker.getDate();</code>
+            <pre class="cm-codebox">datepicker.getDate();</pre>
             <p>Returns selected date object.</p>
 
             <h2>Set event:</h2>
-            <code>datepicker.addEvent(event, handler);</code>
+            <pre class="cm-codebox">datepicker.addEvent(event, handler);</pre>
             <p>Available events: onSelect, onChange.<br>Returns a class of datepicker.</p>
 
             <h2>Remove event:</h2>
-            <code>datepicker.removeEvent(event, handler);</code>
+            <pre class="cm-codebox">datepicker.removeEvent(event, handler);</pre>
             <p>Available events: onSelect, onChange.<br>Returns a class of datepicker.</p>
 
             <h2>Convert date object to date string:</h2>
-            <code>datepicker.parseDate(o, format);</code>
+            <pre class="cm-codebox">datepicker.parseDate(o, format);</pre>
             <p>Returns date string in save (server) format, or in specified format.</p>
 
             <h2>Get list of datepicker nodes:</h2>
-            <code>datepicker.getNodes(key);</code>
+            <pre class="cm-codebox">datepicker.getNodes(key);</pre>
             <p>Returns object of nodes, or node if key is specified.</p>
         </li>
 

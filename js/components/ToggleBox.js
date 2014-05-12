@@ -4,8 +4,6 @@ Com['ToggleBox'] = function(o){
             'node' : cm.Node('div'),
 			'button' : cm.Node('div'),
 			'block' : cm.Node('div'),
-			'onShow' : function(){},
-			'onHide' : function(){},
 			'time' : 500,
 			'useLangs' : false,             // If true - will be changes titles
 			'titleNode' : false,			// If 'false' - script uses DT tag element, else - put title's dom node
@@ -26,7 +24,7 @@ Com['ToggleBox'] = function(o){
         isProcess;
 		
 	var init = function(){
-        // Convert events and deprecated event model
+        // Convert events to API events
         convertEvents(config['events']);
         that.addEvent('onShowStart', config['onShowStart']);
         that.addEvent('onShow', config['onShow']);
@@ -53,11 +51,10 @@ Com['ToggleBox'] = function(o){
 	
 	var show = function(){
 		if(isHide){
-			var height,
-				currentHeight;
 			isHide = false;
             isProcess = 'show';
-            cm.addClass(config['node'], 'is-show');
+            cm.getRealHeight(config['block']);
+            cm.replaceClass(config['node'], 'is-hide', 'is-show');
 			// Set title
 			if(config['useLangs']){
 				if(config['titleNode']){
@@ -66,13 +63,9 @@ Com['ToggleBox'] = function(o){
 					config['button'].innerHTML = config['langs']['hideTitle'];
 				}
 			}
-			// Get real block height
-			currentHeight =  config['block'].offsetHeight + 'px';
-			config['block'].style.height = 'auto';
-			height = config['block'].offsetHeight + 'px';
-			config['block'].style.height = currentHeight;
 			// Animate
-			anim.go({'style' : {'height' : height}, 'anim' : 'smooth', 'duration' : config['time'], 'onStop' : function(){
+            config['block'].style.overflow = 'hidden';
+			anim.go({'style' : {'height' : [cm.getRealHeight(config['block']), 'px'].join('')}, 'anim' : 'smooth', 'duration' : config['time'], 'onStop' : function(){
                 isProcess = false;
 				config['block'].style.height = 'auto';
 				config['block'].style.overflow = 'visible';
@@ -88,7 +81,8 @@ Com['ToggleBox'] = function(o){
 		if(!isHide){
 			isHide = true;
             isProcess = 'hide';
-            cm.removeClass(config['node'], 'is-show');
+            cm.getRealHeight(config['block']);
+            cm.replaceClass(config['node'], 'is-show', 'is-hide');
 			// Set title
 			if(config['useLangs']){
 				if(config['titleNode']){
@@ -163,29 +157,16 @@ Com['ToggleBox'] = function(o){
 };
 
 Com['ToggleBoxWidget'] = function(o){
-	var config = cm.merge({
-			'node' : cm.Node('div'),
-			'onShow' : function(){},
-			'onHide' : function(){},
-			'time' : 500,
-			'useLangs' : false,
-			'langs' : {
-				'showTitle' : 'Show',
-				'hideTitle' : 'Hide'
-			}
-		}, o);
-		
-	var init = function(){
-		config['button'] = config['node'].getElementsByTagName('dt')[0];
-		config['block'] = config['node'].getElementsByTagName('dd')[0];
-		config['titleNode'] = cm.getByAttr('data-togglebox-titlenode', 'true', config['node'])[0];
-		
-		if(config['button'] && config['block']){
-			new Com.ToggleBox(config);
-		}
-	};
-	
-	init();
+    var config = cm.merge({
+			'node' : cm.Node('div')
+		}, o),
+        component = false;
+
+    config['button'] = config['node'].getElementsByTagName('dt')[0] || cm.Node('dt');
+    config['block'] = config['node'].getElementsByTagName('dd')[0] || cm.Node('dd');
+    config['titleNode'] = cm.getByAttr('data-togglebox-titlenode', 'true', config['node'])[0];
+    component = new Com.ToggleBox(config);
+    return component;
 };
 
 Com['ToggleBoxCollector'] = function(node){

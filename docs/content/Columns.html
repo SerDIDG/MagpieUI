@@ -5,20 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>Columns</title>
 
-    <link type="text/css" rel="stylesheet" href="../css/index.css">
+    <link type="text/css" rel="stylesheet" href="../../css/index.css">
 
-    <script type="text/javascript" src="../js/common.js"></script>
-    <script type="text/javascript" src="../js/useragent.js"></script>
-    <script type="text/javascript" src="../js/tooltip.js"></script>
-    <script type="text/javascript" src="../js/select.js"></script>
-    <script type="text/javascript" src="../js/calendar.js"></script>
-    <script type="text/javascript" src="../js/datepicker.js"></script>
-    <script type="text/javascript" src="../js/calendar.events.js"></script>
-    <script type="text/javascript" src="../js/tabset.js"></script>
-    <script type="text/javascript" src="../js/dialog.js"></script>
-    <script type="text/javascript" src="../js/gallery.js"></script>
-    <script type="text/javascript" src="../js/collector.js"></script>
-    <script type="text/javascript" src="../js/columns.js"></script>
+    <script type="text/javascript" src="../../js/common.js"></script>
+    <script type="text/javascript" src="../../js/polyfill.js"></script>
+    <script type="text/javascript" src="../../js/components/UA.js"></script>
+    <script type="text/javascript" src="../../js/components/Tooltip.js"></script>
+    <script type="text/javascript" src="../../js/components/Select.js"></script>
+    <script type="text/javascript" src="../../js/components/Calendar.js"></script>
+    <script type="text/javascript" src="../../js/components/Datepicker.js"></script>
+    <script type="text/javascript" src="../../js/components/CalendarEvents.js"></script>
+    <script type="text/javascript" src="../../js/components/Tabset.js"></script>
+    <script type="text/javascript" src="../../js/components/Dialog.js"></script>
+    <script type="text/javascript" src="../../js/components/Gallery.js"></script>
+    <script type="text/javascript" src="../../js/components/Collector.js"></script>
+    <script type="text/javascript" src="../../js/components/Columns.js"></script>
 
     <script type="text/javascript">
         cm.onload(function(){
@@ -46,16 +47,14 @@
 <div class="cm-block-padding">
     <h1>Columns</h1>
 
-    <ul class="com-tabset-content-ul" id="tabset" data-tabset="true" data-toggleOnHashChange="false" data-active="development">
+    <ul class="com-tabset-content-ul" id="tabset" data-tabset="true">
         <li data-tabset-id="overview" data-tabset-title="Overview"></li>
 
         <li data-tabset-id="methods" data-tabset-title="Methods"></li>
 
-        <li data-tabset-id="examples" data-tabset-title="Examples"></li>
+        <li data-tabset-id="examples" data-tabset-title="Examples">
 
-        <li data-tabset-id="development" data-tabset-title="Development">
-
-            <div class="com-columns" data-element="columns">
+            <div class="com-columns bottom" data-element="columns">
                 <div class="inner" data-com-columns="inner">
                     <div class="container" data-com-columns="holder">
                         <div class="com-column" data-com-columns="column" style="width: 33.33%;">

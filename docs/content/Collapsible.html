@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html class="is-adaptive">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Collapsible Layout</title>
+
+    <link type="text/css" rel="stylesheet" href="../../css/index.css">
+
+    <script type="text/javascript" src="../../js/polyfill.js"></script>
+    <script type="text/javascript" src="../../js/common.js"></script>
+    <script type="text/javascript" src="../../js/components/UA.js"></script>
+    <script type="text/javascript" src="../../js/components/Collector.js"></script>
+    <script type="text/javascript" src="../../js/components/CollapsibleLayout.js"></script>
+
+    <script type="text/javascript">
+        cm.onload(function(){
+            var element;
+            // Useragent
+            Com.UA.setBrowserClass();
+            // Components
+            new Com.Collector()
+                .add('collapsible-layout', function(node){
+                    new Com.CollapsibleLayout({
+                        'node' : node
+                    });
+                })
+                .construct();
+        });
+    </script>
+</head>
+
+<body>
+
+<div class="com-collapsible-layout" data-element="collapsible-layout">
+    <div class="sidebar left">
+        <div class="inner">
+            <div class="title">
+                <span class="icon medium linked arrow-left" data-com-collapsible-layout="sidebar-left-button"></span>
+                Left
+            </div>
+            <div class="descr"></div>
+        </div>
+    </div>
+
+    <div class="sidebar right">
+        <div class="inner">
+            <div class="title">
+                <span class="icon medium linked arrow-right" data-com-collapsible-layout="sidebar-right-button"></span>
+                Right
+            </div>
+            <div class="descr"></div>
+        </div>
+    </div>
+
+    <div class="inner">
+        <div class="cm-block-padding">
+            <h1>Collapsible Layout</h1>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

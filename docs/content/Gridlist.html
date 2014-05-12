@@ -5,26 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>Gridlist</title>
 
-    <link type="text/css" rel="stylesheet" href="../css/index.css">
+    <link type="text/css" rel="stylesheet" href="../../css/index.css">
 
-    <script type="text/javascript" src="../js/common.js"></script>
-    <script type="text/javascript" src="../js/useragent.js"></script>
-    <script type="text/javascript" src="../js/tooltip.js"></script>
-    <script type="text/javascript" src="../js/select.js"></script>
-    <script type="text/javascript" src="../js/calendar.js"></script>
-    <script type="text/javascript" src="../js/datepicker.js"></script>
-    <script type="text/javascript" src="../js/calendar.events.js"></script>
-    <script type="text/javascript" src="../js/tabset.js"></script>
-    <script type="text/javascript" src="../js/dialog.js"></script>
-    <script type="text/javascript" src="../js/gallery.js"></script>
-    <script type="text/javascript" src="../js/collector.js"></script>
-    <script type="text/javascript" src="../js/columns.js"></script>
-    <script type="text/javascript" src="../js/glossary.js"></script>
-    <script type="text/javascript" src="../js/draganddrop.js"></script>
-    <script type="text/javascript" src="../js/toggle.box.js"></script>
-
-    <script type="text/javascript" src="../js/components/Gridlist.js"></script>
-    <script type="text/javascript" src="../js/components/Pagination.js"></script>
+    <script type="text/javascript" src="../../js/common.js"></script>
+    <script type="text/javascript" src="../../js/polyfill.js"></script>
+    <script type="text/javascript" src="../../js/components/UA.js"></script>
+    <script type="text/javascript" src="../../js/components/Tooltip.js"></script>
+    <script type="text/javascript" src="../../js/components/Select.js"></script>
+    <script type="text/javascript" src="../../js/components/Calendar.js"></script>
+    <script type="text/javascript" src="../../js/components/Datepicker.js"></script>
+    <script type="text/javascript" src="../../js/components/CalendarEvents.js"></script>
+    <script type="text/javascript" src="../../js/components/Tabset.js"></script>
+    <script type="text/javascript" src="../../js/components/Dialog.js"></script>
+    <script type="text/javascript" src="../../js/components/Gallery.js"></script>
+    <script type="text/javascript" src="../../js/components/Collector.js"></script>
+    <script type="text/javascript" src="../../js/components/Columns.js"></script>
+    <script type="text/javascript" src="../../js/components/Glossary.js"></script>
+    <script type="text/javascript" src="../../js/components/Draganddrop.js"></script>
+    <script type="text/javascript" src="../../js/components/ToggleBox.js"></script>
+    <script type="text/javascript" src="../../js/components/Gridlist.js"></script>
+    <script type="text/javascript" src="../../js/components/Pagination.js"></script>
 
     <script type="text/javascript">
         cm.onload(function(){
@@ -122,7 +122,7 @@
     <ul class="com-tabset-content-ul" id="tabset" data-tabset="true">
         <li data-tabset-id="overview" data-tabset-title="Overview">
             <h2>Initialize in Java-Script:</h2>
-            <code>new Com.Gridlist(o);</code>
+            <pre class="cm-codebox">new Com.Gridlist(o);</pre>
             <br>
             <b>Attributes:</b>
             <ul class="cm-list">
@@ -202,54 +202,56 @@
             <hr>
 
             <h2>Rendering custom nodes in gridlist cells:</h2>
-            <p>
+            <p class="margin-none">
                 1. Add to column <b>onRender</b> event handler:
-                <code>new Com.Gridlist({
+			</p>
+			<pre class="cm-codebox">new Com.Gridlist({
     'cols' : [
         {'onRender' : myOnCellRenderHandler}
     ]
-});</code>
+});</pre>
+			<p class="margin-none">
                 2. Function will be have some useful arguments: function(Object {Gridlist}, Object {'nodes' : Object, 'col' : Object, 'row' : Object}).<br>
                 3. Build what are you want:
-                <code>var myOnCellRenderHandler = function(gridlist, data){
+            </p>
+                <pre class="cm-codebox">var myOnCellRenderHandler = function(gridlist, data){
     data['nodes']['inner'].appendChild(
         cm.Node('input', {'type' : 'text'})
     );
-};</code>
-            </p>
+};</pre>
         </li>
 
         <li data-tabset-id="methods" data-tabset-title="Methods">
             <h2>Add event:</h2>
-            <code>gridlist.addEvent(event, handler);</code>
+            <pre class="cm-codebox">gridlist.addEvent(event, handler);</pre>
             <p>Available events: onSort, onCheckAll, onUnCheckAll, onCheck, onUnCheck.<br>Returns a class of select.</p>
 
             <h2>Remove event:</h2>
-            <code>gridlist.removeEvent(event, handler);</code>
+            <pre class="cm-codebox">gridlist.removeEvent(event, handler);</pre>
             <p>Available events: onSort, onCheckAll, onUnCheckAll, onCheck, onUnCheck.<br>Returns a class of select.</p>
 
             <h2>Check row:</h2>
-            <code>gridlist.check(index);</code>
+            <pre class="cm-codebox">gridlist.check(index);</pre>
             <p><b>index</b> <i>[Nubmer]</i> - index of row in data.<br>Trigger <b>onCheck</b> event, which returns: [Object {Gridlist}, Object {row}].<br>Returns a class of select.</p>
 
             <h2>Uncheck row:</h2>
-            <code>gridlist.unCheck(index);</code>
+            <pre class="cm-codebox">gridlist.unCheck(index);</pre>
             <p><b>index</b> <i>[Nubmer]</i> - index of row in data.<br>Trigger <b>onUnCheck</b> event, which returns: [Object {Gridlist}, Object {row}].<br>Returns a class of select.</p>
 
             <h2>Check all rows:</h2>
-            <code>gridlist.checkAll();</code>
+            <pre class="cm-codebox">gridlist.checkAll();</pre>
             <p>Trigger <b>onCheckAll</b> event, which returns: [Object {Gridlist}, Object {data}].<br>Returns a class of select.</p>
 
             <h2>Uncheck all rows:</h2>
-            <code>gridlist.unCheckAll();</code>
+            <pre class="cm-codebox">gridlist.unCheckAll();</pre>
             <p>Trigger <b>onUnCheckAll</b> event, which returns: [Object {Gridlist}, Object {data}].<br>Returns a class of select.</p>
 
             <h2>Get checked rows from rendered rows:</h2>
-            <code>gridlist.getChecked();</code>
+            <pre class="cm-codebox">gridlist.getChecked();</pre>
             <p>Returns the object of rows.</p>
 
             <h2>Get checked rows from data:</h2>
-            <code>gridlist.getCheckedData();</code>
+            <pre class="cm-codebox">gridlist.getCheckedData();</pre>
             <p>Returns the object of data rows.</p>
         </li>
 

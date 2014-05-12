@@ -34,101 +34,6 @@ cm.isLocalStorage = (function(){try{return 'localStorage' in window && window['l
 cm.isCanvas = !!document.createElement("canvas").getContext;
 cm.isTouch = 'ontouchstart' in document.documentElement || !!window.navigator.msMaxTouchPoints;
 
-/* ******* COMPATIBILITY ******* */
-
-if(!Array.prototype.forEach){
-    Array.prototype.forEach = function(fn, scope){
-        for(var i = 0, len = this.length; i < len; ++i){
-            fn.call(scope || this, this[i], i, this);
-        }
-    }
-}
-
-if(!Array.prototype.filter){
-    Array.prototype.filter = function(fun /*, thisp */){
-        "use strict";
-
-        if(this == null){
-            throw new TypeError();
-        }
-        var t = Object(this);
-        var len = t.length >>> 0;
-        if(typeof fun != "function"){
-            throw new TypeError();
-        }
-        var res = [];
-        var thisp = arguments[1];
-        for(var i = 0; i < len; i++){
-            if(i in t){
-                var val = t[i]; // in case fun mutates this
-                if(fun.call(thisp, val, i, t)){
-                    res.push(val);
-                }
-            }
-        }
-        return res;
-    };
-}
-
-if(!Array.prototype.indexOf){
-    Array.prototype.indexOf = function(searchElement /*, fromIndex */){
-        "use strict";
-        if(this == null){
-            throw new TypeError();
-        }
-        var t = Object(this);
-        var len = t.length >>> 0;
-        if(len === 0){
-            return -1;
-        }
-        var n = 0;
-        if(arguments.length > 1){
-            n = Number(arguments[1]);
-            if(n != n){ // shortcut for verifying if it's NaN
-                n = 0;
-            }else if(n != 0 && n != Infinity && n != -Infinity){
-                n = (n > 0 || -1) * Math.floor(Math.abs(n));
-            }
-        }
-        if(n >= len){
-            return -1;
-        }
-        var k = n >= 0 ? n : Math.max(len - Math.abs(n), 0);
-        for(; k < len; k++){
-            if(k in t && t[k] === searchElement){
-                return k;
-            }
-        }
-        return -1;
-    };
-}
-
-if(!String.prototype.trim) {
-    String.prototype.trim = function(){
-        return this.replace(/^\s+|\s+$/g, '');
-    };
-}
-
-if(!Date.now){
-    Date.now = function now(){
-        return new Date().getTime();
-    };
-}
-
-(function(){
-    if('undefined' == typeof JSON){
-        window.JSON = {};
-    }
-    if(!JSON.parse || !JSON.stringify){
-        JSON.parse = function(str){
-            return eval('(' + str + ')');
-        };
-        JSON.stringify = function(){
-            throw new Error('JSON.stringify is not supported by this browser.');
-        };
-    }
-})();
-
 /* ******* OBJECTS AND ARRAYS ******* */
 
 cm.isArray = Array.isArray || function(a){
@@ -138,33 +43,33 @@ cm.isObject = function(o){
     return (o) ? o.constructor == Object : false;
 };
 
-cm.forEach = function(o, handler){
-    if(!o || !handler){
+cm.forEach = function(o, callback){
+    if(!o || !callback){
         return null;
     }
     switch(o.constructor){
         case Object:
             for(var key in o){
                 if(o.hasOwnProperty(key)){
-                    handler(o[key], key);
+                    callback(o[key], key);
                 }
             }
             break;
         case Array:
-            o.forEach(handler);
+            o.forEach(callback);
             break;
         case Number:
             for(var i = 0; i < o; i++){
-                handler(i);
+                callback(i);
             }
             break;
         default:
             try{
-                Array.prototype.forEach.call(o, handler);
+                Array.prototype.forEach.call(o, callback);
             }catch(e){
                 try{
                     for(var i = 0, l = o.length; i < l; i++){
-                        handler(o[i], i);
+                        callback(o[i], i);
                     }
                 }catch(e){}
             }
@@ -1034,21 +939,21 @@ cm.toNumber = function(str){
 
 cm.is = function(str){
     if(typeof Com.UA == 'undefined'){
-        throw new Error('Error. useragent.js is not exists or not loaded.');
+        throw new Error('Error. UA.js is not exists or not loaded.');
     }
     return Com.UA.is(str);
 };
 
 cm.isVersion = function(){
     if(typeof Com.UA == 'undefined'){
-        throw new Error('Error. useragent.js is not exists or not loaded.');
+        throw new Error('Error. UA.js is not exists or not loaded.');
     }
     return Com.UA.isVersion();
 };
 
 cm.isMobile = function(){
     if(typeof Com.UA == 'undefined'){
-        throw new Error('Error. useragent.js is not exists or not loaded.');
+        throw new Error('Error. UA.js is not exists or not loaded.');
     }
     return Com.UA.isMobile();
 };

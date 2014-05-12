@@ -1,0 +1,48 @@
+/* ******* TOGGLE BOX ******* */
+
+.com-togglebox {
+    margin: 0 0 @cm-block-indent 0;
+
+    > dt {
+        position: relative;
+        line-height: 38px;
+        font-size: 30px;
+        font-weight: 300;
+        cursor: pointer;
+        .cm-transition(color 0.3s ease-in-out);
+
+        .icon {
+            position: absolute;
+            top: 12px;
+            right: 0;
+            -webkit-transition: -webkit-transform 0.3s ease-in-out;
+            -ms-transition:     -ms-transform 0.3s ease-in-out;
+            transition:         transform 0.3s ease-in-out;
+        }
+
+        &:hover {
+            color: @cm-base-color;
+        }
+    }
+
+    > dd {
+        padding: 0;
+    }
+
+    &.is-hide {
+        > dd {
+            height: 0;
+            overflow: hidden;
+        }
+    }
+
+    &.is-show {
+        > dt {
+            .icon {
+                -webkit-transform: rotate(90deg);
+                -ms-transform: rotate(90deg);
+                transform: rotate(90deg);
+            }
+        }
+    }
+}

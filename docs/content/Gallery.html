@@ -5,20 +5,21 @@
     <meta name="viewport" content="width=device-width; initial-scale=1.0, maximum-scale=1.0">
     <title>Gallery</title>
 
-    <link type="text/css" rel="stylesheet" href="../css/index.css">
+    <link type="text/css" rel="stylesheet" href="../../css/index.css">
 
-    <script type="text/javascript" src="../js/common.js"></script>
-    <script type="text/javascript" src="../js/useragent.js"></script>
-    <script type="text/javascript" src="../js/tooltip.js"></script>
-    <script type="text/javascript" src="../js/select.js"></script>
-    <script type="text/javascript" src="../js/calendar.js"></script>
-    <script type="text/javascript" src="../js/datepicker.js"></script>
-    <script type="text/javascript" src="../js/calendar.events.js"></script>
-    <script type="text/javascript" src="../js/tabset.js"></script>
-    <script type="text/javascript" src="../js/dialog.js"></script>
-    <script type="text/javascript" src="../js/gallery.js"></script>
-    <script type="text/javascript" src="../js/collector.js"></script>
-    <script type="text/javascript" src="../js/columns.js"></script>
+    <script type="text/javascript" src="../../js/common.js"></script>
+    <script type="text/javascript" src="../../js/polyfill.js"></script>
+    <script type="text/javascript" src="../../js/components/UA.js"></script>
+    <script type="text/javascript" src="../../js/components/Tooltip.js"></script>
+    <script type="text/javascript" src="../../js/components/Select.js"></script>
+    <script type="text/javascript" src="../../js/components/Calendar.js"></script>
+    <script type="text/javascript" src="../../js/components/Datepicker.js"></script>
+    <script type="text/javascript" src="../../js/components/CalendarEvents.js"></script>
+    <script type="text/javascript" src="../../js/components/Tabset.js"></script>
+    <script type="text/javascript" src="../../js/components/Dialog.js"></script>
+    <script type="text/javascript" src="../../js/components/Gallery.js"></script>
+    <script type="text/javascript" src="../../js/components/Collector.js"></script>
+    <script type="text/javascript" src="../../js/components/Columns.js"></script>
 
     <script type="text/javascript">
         cm.onload(function(){
@@ -42,13 +43,13 @@
 <div class="cm-block-padding">
     <h1>Gallery</h1>
 
-    <ul class="com-tabset-content-ul" id="tabset" data-tabset="true" data-toggleOnHashChange="false">
+    <ul class="com-tabset-content-ul" id="tabset" data-tabset="true">
         <li data-tabset-id="overview" data-tabset-title="Overview">
             <h2>Initialize in Java-Script:</h2>
-            <code>new Com.Gallery(o);</code>
+            <pre class="cm-codebox">new Com.Gallery(o);</pre>
             <br>
             <b>Attributes:</b>
-            <ul>
+            <ul class="cm-list">
                 <li><b>gallery</b> <i>[HTML Node]</i> - node, that contains links with thumbnails, <i>default: false</i>;</li>
                 <li><b>minWidth</b> <i>[Number]</i> - default overlay width in px, <i>default: 400</i>;</li>
                 <li><b>minHeight</b> <i>[Number]</i> - default overlay height in px, <i>default: 400</i>;</li>
@@ -60,7 +61,7 @@
                 <li><b>showTitle</b> <i>[Boolean]</i> - show images captions into overlay title, <i>default: true</i>;</li>
                 <li><b>showCounter</b> <i>[Boolean]</i> - show images counter into overlay title, <i>default: true</i>;</li>
                 <li><b>langs</b> <i>[Object]</i> - object of lang strings;
-                    <ul>
+                    <ul class="margin-none">
                         <li><b>next</b> <i>[String]</i> - overlay right arrow title, <i>default: 'Next'</i>;</li>
                         <li><b>prev</b> <i>[String]</i> - overlay left arrow title, <i>default: 'Previous'</i>;</li>
                         <li><b>close</b> <i>[String]</i> - overlay close title, <i>default: 'Close'</i>;</li>
@@ -69,18 +70,18 @@
                 </li>
             </ul>
             <h2>Image item html structure:</h2>
-            <code>&lt;a href="images/gallery/1.jpg" data-image="true"&gt;
+            <pre class="cm-codebox">&lt;a href="images/gallery/1.jpg" data-image="true"&gt;
     &lt;img src="images/gallery/1-th.jpg" alt="Sample 1" title="Sample 1"&gt;
-&lt;/a&gt;</code>
+&lt;/a&gt;</pre>
             <br>
             <b>Attributes:</b>
-            <ul>
+            <ul class="cm-list">
                 <li><b>data-image="true"</b> - mark as gallery item;</li>
                 <li><b>href</b> - src of full size image;</li>
                 <li><b>title</b> - image caption for overlay title;</li>
             </ul>
             <h2>Initialize in HTML:</h2>
-            <code>&lt;div class="cm-grid cols-6" data-gallery="true"&gt;
+            <pre class="cm-codebox">&lt;div class="cm-grid cols-6" data-gallery="true"&gt;
     &lt;ul&gt;
         &lt;li&gt;
             &lt;a href="images/gallery/1.jpg" data-image="true"&gt;
@@ -88,13 +89,13 @@
             &lt;/a&gt;
         &lt;/li&gt;
     &lt;/ul&gt;
-&lt;/div&gt;</code>
-            <code>cm.onload(function(){
+&lt;/div&gt;</pre>
+            <pre class="cm-codebox">cm.onload(function(){
     Com.GalleryCollector();
-});</code>
+});</pre>
             <br>
             <b>Attributes:</b>
-            <ul>
+            <ul class="cm-list">
                 <li><b>data-gallery="true"</b> - mark as gallery album;</li>
                 <li><b>data-showArrowTitles="true|false"</b> - show overlay arrows titles on hover;</li>
                 <li><b>data-showTitle="true|false"</b> - show images captions into overlay title;</li>
@@ -105,35 +106,35 @@
 
         <li data-tabset-id="methods" data-tabset-title="Methods">
             <h2>Get gallery by id:</h2>
-            <code>Com.GetGallery('id');</code>
+            <pre class="cm-codebox">Com.GetGallery('id');</pre>
             <p>Return a class of gallery.</p>
 
             <h2>Open gallery overlay:</h2>
-            <code>gallery.open();</code>
+            <pre class="cm-codebox">gallery.open();</pre>
             <p>Return a class of gallery.</p>
 
             <h2>Close gallery overlay:</h2>
-            <code>gallery.close();</code>
+            <pre class="cm-codebox">gallery.close();</pre>
             <p>Return a class of gallery.</p>
 
             <h2>Set gallery overlay active image:</h2>
-            <code>gallery.set(i);</code>
+            <pre class="cm-codebox">gallery.set(i);</pre>
             <p>Return a class of gallery.</p>
 
             <h2>Set next active gallery overlay image:</h2>
-            <code>gallery.next();</code>
+            <pre class="cm-codebox">gallery.next();</pre>
             <p>Return a class of gallery.</p>
 
             <h2>Set previous active gallery overlay image:</h2>
-            <code>gallery.prev();</code>
+            <pre class="cm-codebox">gallery.prev();</pre>
             <p>Return a class of gallery.</p>
 
             <h2>Add event:</h2>
-            <code>gallery.addEvent(event, handler);</code>
+            <pre class="cm-codebox">gallery.addEvent(event, handler);</pre>
             <p>Available events: onOpen, onClose, onImageLoad<br>Return a class of gallery.</p>
 
             <h2>Remove event:</h2>
-            <code>gallery.removeEvent(event, handler);</code>
+            <pre class="cm-codebox">gallery.removeEvent(event, handler);</pre>
             <p>Available events: onOpen, onClose, onImageLoad<br>Return a class of gallery.</p>
         </li>
 
@@ -144,69 +145,69 @@
                 1.1 For adding overlay title, add title attribute on thumbnail.<br>
                 1.2 To specify the count of columns, set class name from "cols-1" to "cols-10".<br>
                 <b>2. Init gallery collector:</b>
-                <code>Com.GalleryCollector();</code>
+                <pre class="cm-codebox">Com.GalleryCollector();</pre>
             </p>
 
             <div class="cm-grid col-6 bottom" data-gallery="true">
                 <ul>
                     <li>
-                        <a href="images/gallery/1.jpg" data-image="true">
-                            <img src="images/gallery/1-th.jpg" alt="Sample 1" title="Sample 1">
+                        <a href="../images/gallery/1.jpg" data-image="true">
+                            <img src="../images/gallery/1-th.jpg" alt="Sample 1" title="Sample 1">
                         </a>
                     </li>
                     <li>
-                        <a href="images/gallery/2.jpg" data-image="true">
-                            <img src="images/gallery/2-th.jpg" alt="Sample 2" title="Sample 2">
+                        <a href="../images/gallery/2.jpg" data-image="true">
+                            <img src="../images/gallery/2-th.jpg" alt="Sample 2" title="Sample 2">
                         </a>
                     </li>
                     <li>
-                        <a href="images/gallery/3.jpg" data-image="true">
-                            <img src="images/gallery/3-th.jpg" alt="Sample 3" title="Sample 3">
+                        <a href="../images/gallery/3.jpg" data-image="true">
+                            <img src="../images/gallery/3-th.jpg" alt="Sample 3" title="Sample 3">
                         </a>
                     </li>
                     <li>
-                        <a href="images/gallery/4.jpg" data-image="true">
-                            <img src="images/gallery/4-th.jpg" alt="Sample 4" title="Sample 4">
+                        <a href="../images/gallery/4.jpg" data-image="true">
+                            <img src="../images/gallery/4-th.jpg" alt="Sample 4" title="Sample 4">
                         </a>
                     </li>
                     <li>
-                        <a href="images/gallery/1.jpg" data-image="true">
-                            <img src="images/gallery/1-th.jpg" alt="Sample 5" title="Sample 5">
+                        <a href="../images/gallery/1.jpg" data-image="true">
+                            <img src="../images/gallery/1-th.jpg" alt="Sample 5" title="Sample 5">
                         </a>
                     </li>
                     <li>
-                        <a href="images/gallery/2.jpg" data-image="true">
-                            <img src="images/gallery/2-th.jpg" alt="Sample 6" title="Sample 6">
+                        <a href="../images/gallery/2.jpg" data-image="true">
+                            <img src="../images/gallery/2-th.jpg" alt="Sample 6" title="Sample 6">
                         </a>
                     </li>
                     <li>
-                        <a href="images/gallery/3.jpg" data-image="true">
-                            <img src="images/gallery/3-th.jpg" alt="Sample 7" title="Sample 7">
+                        <a href="../images/gallery/3.jpg" data-image="true">
+                            <img src="../images/gallery/3-th.jpg" alt="Sample 7" title="Sample 7">
                         </a>
                     </li>
                     <li>
-                        <a href="images/gallery/4.jpg" data-image="true">
-                            <img src="images/gallery/4-th.jpg" alt="Sample 8" title="Sample 8">
+                        <a href="../images/gallery/4.jpg" data-image="true">
+                            <img src="../images/gallery/4-th.jpg" alt="Sample 8" title="Sample 8">
                         </a>
                     </li>
                     <li>
-                        <a href="images/gallery/1.jpg" data-image="true">
-                            <img src="images/gallery/1-th.jpg" alt="Sample 9" title="Sample 9">
+                        <a href="../images/gallery/1.jpg" data-image="true">
+                            <img src="../images/gallery/1-th.jpg" alt="Sample 9" title="Sample 9">
                         </a>
                     </li>
                     <li>
-                        <a href="images/gallery/2.jpg" data-image="true">
-                            <img src="images/gallery/2-th.jpg" alt="Sample 10" title="Sample 10">
+                        <a href="../images/gallery/2.jpg" data-image="true">
+                            <img src="../images/gallery/2-th.jpg" alt="Sample 10" title="Sample 10">
                         </a>
                     </li>
                     <li>
-                        <a href="images/gallery/3.jpg" data-image="true">
-                            <img src="images/gallery/3-th.jpg" alt="Sample 11" title="Sample 11">
+                        <a href="../images/gallery/3.jpg" data-image="true">
+                            <img src="../images/gallery/3-th.jpg" alt="Sample 11" title="Sample 11">
                         </a>
                     </li>
                     <li>
-                        <a href="images/gallery/4.jpg" data-image="true">
-                            <img src="images/gallery/4-th.jpg" alt="Sample 12" title="Sample 12">
+                        <a href="../images/gallery/4.jpg" data-image="true">
+                            <img src="../images/gallery/4-th.jpg" alt="Sample 12" title="Sample 12">
                         </a>
                     </li>
                 </ul>

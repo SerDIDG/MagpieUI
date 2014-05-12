@@ -5,20 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>Select</title>
 
-    <link type="text/css" rel="stylesheet" href="../css/index.css">
+    <link type="text/css" rel="stylesheet" href="../../css/index.css">
 
-    <script type="text/javascript" src="../js/common.js"></script>
-    <script type="text/javascript" src="../js/useragent.js"></script>
-    <script type="text/javascript" src="../js/tooltip.js"></script>
-    <script type="text/javascript" src="../js/select.js"></script>
-    <script type="text/javascript" src="../js/calendar.js"></script>
-    <script type="text/javascript" src="../js/datepicker.js"></script>
-    <script type="text/javascript" src="../js/calendar.events.js"></script>
-    <script type="text/javascript" src="../js/tabset.js"></script>
-    <script type="text/javascript" src="../js/dialog.js"></script>
-    <script type="text/javascript" src="../js/gallery.js"></script>
-    <script type="text/javascript" src="../js/collector.js"></script>
-    <script type="text/javascript" src="../js/columns.js"></script>
+    <script type="text/javascript" src="../../js/common.js"></script>
+    <script type="text/javascript" src="../../js/polyfill.js"></script>
+    <script type="text/javascript" src="../../js/components/UA.js"></script>
+    <script type="text/javascript" src="../../js/components/Tooltip.js"></script>
+    <script type="text/javascript" src="../../js/components/Select.js"></script>
+    <script type="text/javascript" src="../../js/components/Calendar.js"></script>
+    <script type="text/javascript" src="../../js/components/Datepicker.js"></script>
+    <script type="text/javascript" src="../../js/components/CalendarEvents.js"></script>
+    <script type="text/javascript" src="../../js/components/Tabset.js"></script>
+    <script type="text/javascript" src="../../js/components/Dialog.js"></script>
+    <script type="text/javascript" src="../../js/components/Gallery.js"></script>
+    <script type="text/javascript" src="../../js/components/Collector.js"></script>
+    <script type="text/javascript" src="../../js/components/Columns.js"></script>
 
     <script type="text/javascript">
         cm.onload(function(){
@@ -42,10 +43,10 @@
 <div class="cm-block-padding">
     <h1>Select</h1>
 
-    <ul class="com-tabset-content-ul" id="tabset" data-tabset="true" data-toggleOnHashChange="false">
+    <ul class="com-tabset-content-ul" id="tabset" data-tabset="true">
         <li data-tabset-id="overview" data-tabset-title="Overview">
             <h2>Initialize in Java-Script:</h2>
-            <code>new Com.Select(o);</code>
+            <pre class="cm-codebox">new Com.Select(o);</pre>
             <br>
             <b>Attributes:</b>
             <ul>
@@ -60,10 +61,10 @@
             </ul>
 
             <h2>Initialize in HTML:</h2>
-            <code>&lt;select&gt;&lt;/select&gt;</code>
-            <code>cm.onload(function(){
+            <pre class="cm-codebox">&lt;select&gt;&lt;/select&gt;</pre>
+            <pre class="cm-codebox">cm.onload(function(){
     Com.SelectCollector();
-});</code>
+});</pre>
             <br>
             <b>Attributes:</b>
             <ul>
@@ -74,60 +75,60 @@
             </ul>
 
             <h2>Render options through Java-Script:</h2>
-            <code>new Com.Select({'options' : [{'value' : '', 'text' : ''}]});</code>
+            <pre class="cm-codebox">new Com.Select({'options' : [{'value' : '', 'text' : ''}]});</pre>
             or
-            <code>select.addOption(value, text)</code>
+            <pre class="cm-codebox">select.addOption(value, text)</pre>
             or
-            <code>select.addOptions([{'value' : '', 'text' : ''}]);</code>
+            <pre class="cm-codebox">select.addOptions([{'value' : '', 'text' : ''}]);</pre>
             or
-            <code>Com.GetSelect(id).addOption(value, text);</code>
+            <pre class="cm-codebox">Com.GetSelect(id).addOption(value, text);</pre>
             or
-            <code>Com.GetSelects(id).addOptions([{'value' : '', 'text' : ''}]);</code>
+            <pre class="cm-codebox">Com.GetSelects(id).addOptions([{'value' : '', 'text' : ''}]);</pre>
         </li>
 
         <li data-tabset-id="methods" data-tabset-title="Methods">
             <h2>Get select by id:</h2>
-            <code>Com.GetSelect('id');</code>
+            <pre class="cm-codebox">Com.GetSelect('id');</pre>
             <p>Returns a class of select.</p>
 
             <h2>Get selected option value:</h2>
-            <code>select.get();</code>
+            <pre class="cm-codebox">select.get();</pre>
             <p>Returns selected option value, or array of values if select is multiple.</p>
 
             <h2>Select option value (set active option):</h2>
-            <code>select.set(value);</code>
+            <pre class="cm-codebox">select.set(value);</pre>
             <p>Set active option value, or array of values if select is multiple.<br>Returns a class of select.</p>
 
             <h2>Set event:</h2>
-            <code>select.addEvent(event, handler);</code>
+            <pre class="cm-codebox">select.addEvent(event, handler);</pre>
             <p>Available events: onSelect, onChange, onFocus, onBlur.<br>Returns a class of select.</p>
 
             <h2>Remove event:</h2>
-            <code>select.removeEvent(event, handler);</code>
+            <pre class="cm-codebox">select.removeEvent(event, handler);</pre>
             <p>Available events: onSelect, onChange, onFocus, onBlur.<br>Returns a class of select.</p>
 
             <h2>Trigger event:</h2>
-            <code>select.triggerEvent(event);</code>
+            <pre class="cm-codebox">select.triggerEvent(event);</pre>
             <p>Available events: onSelect, onChange, onFocus, onBlur.<br>Returns a class of select.</p>
 
             <h2>Add option:</h2>
-            <code>select.addOption(value, text);</code>
+            <pre class="cm-codebox">select.addOption(value, text);</pre>
             <p>Returns a class of select.</p>
 
             <h2>Remove option:</h2>
-            <code>select.removeOption(value);</code>
+            <pre class="cm-codebox">select.removeOption(value);</pre>
             <p>Returns a class of select.</p>
 
             <h2>Add options:</h2>
-            <code>select.addOptions([{'value' : '', 'text' : ''}]);</code>
+            <pre class="cm-codebox">select.addOptions([{'value' : '', 'text' : ''}]);</pre>
             <p>Returns a class of select.</p>
 
             <h2>Remove all options:</h2>
-            <code>select.removeOptionAll();</code>
+            <pre class="cm-codebox">select.removeOptionAll();</pre>
             <p>Returns a class of select.</p>
 
             <h2>Get list of select nodes:</h2>
-            <code>select.getNodes(key);</code>
+            <pre class="cm-codebox">select.getNodes(key);</pre>
             <p>Returns object of nodes, or node if key is specified.</p>
         </li>
 
