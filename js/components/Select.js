@@ -484,6 +484,23 @@ Com['Select'] = function(o){
         return that;
     };
 
+    that.getOption = function(value){
+        if(value && options[value]){
+            return options[value];
+        }
+        return null;
+    };
+
+    that.getOptions = function(arr){
+        var optionsArr = [];
+        cm.forEach(arr, function(item){
+            if(options[item]){
+                optionsArr.push(options[item]);
+            }
+        });
+        return optionsArr;
+    };
+
     that.removeOptionsAll = function(){
         cm.forEach(options, function(item){
             removeOption(item);
