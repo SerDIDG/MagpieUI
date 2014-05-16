@@ -12,7 +12,7 @@
         position: relative;
         overflow: hidden;
         background: #ffffff;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+        box-shadow: @cm-ui-shadow;
         .cm-transition(width @com-collapsible-layout-duration ease-in-out);
 
         > .inner {
@@ -24,9 +24,8 @@
                 position: absolute;
                 .cm-position(0, 0, auto, 0);
                 background: #ffffff;
-                line-height: 38px;
-                font-weight: 300;
-                font-size: 30px;
+                .cm-user-select(none);
+                #cm > .title-font;
 
                 .icon {
                     position: absolute;

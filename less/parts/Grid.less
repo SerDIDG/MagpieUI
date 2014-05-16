@@ -1,0 +1,93 @@
+/* ******* GRID ******* */
+
+.cm-grid {
+    margin: 0 0 @cm-block-indent;
+    overflow: hidden;
+
+    &.bottom {
+        margin: 0;
+    }
+
+    > ul {
+        padding: 0;
+        list-style: none;
+        font-size: 0;
+        word-spacing: 0;
+
+        > li {
+            width: 100%;
+            display: inline-block;
+            overflow: hidden;
+            vertical-align: top;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+
+            > a {
+                display: block;
+                cursor: pointer;
+
+                > img {
+                    width: 100%;
+                    display: block;
+                    position: relative;
+                    cursor: pointer;
+                    -webkit-transform: translateZ(0px);
+                    .cm-transition(opacity @cm-transition-duration ease-in-out);
+                }
+
+                &:hover {
+                    > img {
+                        opacity: @cm-ui-fadeout;
+                        .cm-transition(opacity @cm-transition-duration-reverse ease-in-out);
+                    }
+                }
+            }
+        }
+    }
+
+    &.is-inline {
+        > ul {
+            white-space: nowrap;
+        }
+    }
+
+    &.is-inrow {
+        height: 100%;
+    }
+
+    // /* Build columns styles */
+
+    .loop(@counter) when (@counter > 0) {
+        .loop((@counter - 1));
+
+        @size: 100% / @counter;
+
+        &.col-@{counter} > ul > li {
+            width: @size;
+        }
+    }
+
+    .loop(12);
+
+    // /* Set grid items indent */
+
+    #cm > .grid-indent(@cm-grid-item-indent);
+}
+
+// /* *** ADAPTIVE *** */
+
+@media only screen and (max-width: @cm-mobile-screen) {
+
+    .is-adaptive .cm-grid {
+        .loop(@counter) when (@counter > 0) {
+            .loop((@counter - 1));
+
+            &.col-@{counter} > ul > li {
+                width: 100%;
+            }
+        }
+
+        .loop(12);
+    }
+
+}

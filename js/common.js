@@ -752,6 +752,58 @@ cm.showSpecialTags = function(){
     }
 };
 
+cm.getNodes = function(container, marker){
+    container = container || document.body;
+    marker = marker || 'data-node';
+    var nodes = {},
+        processedNodes = [];
+    var find = function(container, obj){
+        var sourceNodes = container.querySelectorAll('[' + marker +']'),
+            attr,
+            attr2,
+            arr;
+        cm.forEach(sourceNodes, function(node){
+            if(!cm.inArray(processedNodes, node)){
+                attr = node.getAttribute(marker).split(':') || [];
+                if(attr.length == 1){
+                    attr2 = attr[0].split('.') || [];
+                    if(attr2.length == 1){
+                        obj[attr2[0]] = node;
+                    }else{
+                        if(!obj[attr2[0]]){
+                            obj[attr2[0]] = {};
+                        }
+                        obj[attr2[0]][attr2[1]] = node;
+                    }
+                }else if(attr.length == 2 || attr.length == 3){
+                    if(attr[1] == '[]'){
+                        if(!obj[attr[0]]){
+                            obj[attr[0]] = [];
+                        }
+                        arr = {};
+                        if(attr[2]){
+                            arr[attr[2]] = node;
+                        }
+                        find(node, arr);
+                        obj[attr[0]].push(arr);
+                    }else if(attr[1] == '{}'){
+                        if(!obj[attr[0]]){
+                            obj[attr[0]] = {};
+                        }
+                        if(attr[2]){
+                            obj[attr[0]][attr[2]] = node;
+                        }
+                        find(node, obj[attr[0]]);
+                    }
+                }
+                processedNodes.push(node);
+            }
+        });
+    };
+    find(container, nodes);
+    return nodes;
+};
+
 /* ******* FORM ******* */
 
 cm.setFDO = function(o, form){
@@ -1296,23 +1348,24 @@ cm.getRealY = function(o){
     return y - (!bodyScroll ? cm.getBodyScrollTop() : 0);
 };
 
-cm.getRealWidth = function(node){
+cm.getRealWidth = function(node, applyHeight){
     var nodeWidth = 0,
         width = 0;
     nodeWidth = node.offsetWidth;
     node.style.width = 'auto';
     width = node.offsetWidth;
-    node.style.width = [nodeWidth, 'px'].join('');
+    node.style.width = applyHeight || [nodeWidth, 'px'].join('');
     return width;
 };
 
-cm.getRealHeight = function(node){
+cm.getRealHeight = function(node, applyHeight){
     var nodeHeight = 0,
-        height = 0;
+        height = 0,
+        parentNode;
     nodeHeight = node.offsetHeight;
     node.style.height = 'auto';
     height = node.offsetHeight;
-    node.style.height = [nodeHeight, 'px'].join('');
+    node.style.height = applyHeight || [nodeHeight, 'px'].join('');
     return height;
 };
 

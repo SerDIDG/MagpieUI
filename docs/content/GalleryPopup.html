@@ -1,0 +1,277 @@
+<!DOCTYPE HTML>
+<html class="is-adaptive">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Gallery Popup</title>
+
+    <link type="text/css" rel="stylesheet" href="../../css/index.css">
+
+    <script type="text/javascript" src="../../js/polyfill.js"></script>
+    <script type="text/javascript" src="../../js/common.js"></script>
+    <script type="text/javascript" src="../../js/components/UA.js"></script>
+    <script type="text/javascript" src="../../js/components/Collector.js"></script>
+    <script type="text/javascript" src="../../js/components/Tabset.js"></script>
+    <script type="text/javascript" src="../../js/components/Gallery.js"></script>
+    <script type="text/javascript" src="../../js/components/GalleryPopup.js"></script>
+
+    <script type="text/javascript">
+        cm.onload(function(){
+            var element;
+            // Useragent
+            Com.UA.setBrowserClass();
+            // Tabset
+            Com.TabsetCollector();
+            // Components
+            new Com.Collector()
+                .add('gallery-popup', function(node){
+                    new Com.GalleryPopup({
+                        'node' : node
+                    });
+                })
+                .construct();
+        });
+    </script>
+</head>
+
+<body>
+
+<div class="cm-block-padding">
+    <h1>Gallery Popup</h1>
+
+    <ul class="com-tabset-content-ul" id="tabset" data-tabset="true">
+        <li data-tabset-id="overview" data-tabset-title="Overview">
+            <h2>Initialize in Java-Script:</h2>
+            <pre class="cm-codebox">new Com.GalleryPopup(o);</pre>
+            <br>
+            <b>Parameters:</b>
+            <ul class="cm-list">
+                <li><b>node</b> <i>[HTML Node]</i> - node, where gallery contains, <i>default: cm.Node('div')</i>;</li>
+                <li><b>duration</b> <i>[Number]</i> - duration of popup opening, <i>default: 300</i>;</li>
+                <li><b>showCaption</b> <i>[Boolean]</i> - show images caption, <i>default: true</i>;</li>
+                <li><b>icons</b> <i>[Object]</i> - object of icons css classes;
+                    <ul class="margin-none">
+                        <li><b>close</b> <i>[String]</i> - css class of close button, <i>default: 'icon medium close-white linked'</i>;</li>
+                    </ul>
+                </li>
+                <li><b>langs</b> <i>[Object]</i> - object of lang strings;
+                    <ul class="margin-none">
+                        <li><b>close</b> <i>[String]</i> - popup close title, <i>default: 'Close'</i>;</li>
+                    </ul>
+                </li>
+                <li><b>Com.Gallery</b> <i>[Object]</i> - Com.Gallery class configuration;
+            </ul>
+            <h2>Simple item html structure:</h2>
+            <pre class="cm-codebox">&lt;a data-node="items:{}:link" href="images/gallery/1.jpg" title="Sample 1"&gt;
+    &lt;img src="images/gallery/1-th.jpg" alt=""&gt;
+&lt;/a&gt;</pre>
+            <br>
+            <b>Parameters:</b>
+            <ul class="cm-list">
+                <li><b>data-node="items:{}:link"</b> - mark item to process by gallery;</li>
+                <li><b>href</b> - src of full size image / video;</li>
+                <li><b>title</b> - caption displayed on popup title;</li>
+            </ul>
+            <h2>Initialize in HTML:</h2>
+            <pre class="cm-codebox">&lt;div class="cm-grid cols-5" data-element="gallery-popup" data-config='{}'&gt;
+    &lt;ul&gt;
+        &lt;li&gt;
+            &lt;div class="cm-imagebox"&gt;
+                &lt;a data-node="items:{}:link" class="inner" href="images/gallery/1.jpg" title="Sample 1"&gt;
+                    &lt;img class="descr" src="images/gallery/1-th.jpg" alt="" &gt;
+                    &lt;div class="title"&gt;
+                        &lt;div class="inner"&gt;Sample 1&lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/a&gt;
+            &lt;/div&gt;
+        &lt;/li&gt;
+    &lt;/ul&gt;
+&lt;/div&gt;</pre>
+            <pre class="cm-codebox">var components = new Com.Collector();
+components.add('gallery-popup', function(node){
+    new Com.GalleryPopup({'node' : node});
+});
+components.construct();</pre>
+            <br>
+            <b>Parameters:</b>
+            <ul class="cm-list">
+                <li><b>data-element="gallery-popup"</b> - mark node of gallery container;</li>
+                <li><b>data-config='{}'</b> - gallery configuration, must be in JSON format.;</li>
+                <li><b>class="cm-grid cols-x"</b> - where x = from 1 to 12, number of columns;</li>
+            </ul>
+        </li>
+
+        <li data-tabset-id="methods" data-tabset-title="Methods">
+            <h2>Open popup:</h2>
+            <pre class="cm-codebox">gallery.open();</pre>
+            <p>Returns a class of gallery popup.</p>
+
+            <h2>Close popup:</h2>
+            <pre class="cm-codebox">gallery.close();</pre>
+            <p>Returns a class of gallery popup.</p>
+
+            <h2>Set gallery popup active image:</h2>
+            <pre class="cm-codebox">gallery.set(i);</pre>
+            <p>Returns a class of gallery popup.</p>
+
+            <h2>Set next active gallery popup image:</h2>
+            <pre class="cm-codebox">gallery.next();</pre>
+            <p>Returns a class of gallery popup.</p>
+
+            <h2>Set previous active gallery popup image:</h2>
+            <pre class="cm-codebox">gallery.prev();</pre>
+            <p>Returns a class of gallery popup.</p>
+
+            <h2>Add event:</h2>
+            <pre class="cm-codebox">gallery.addEvent(event, handler);</pre>
+            <p>Available events: onOpen, onClose, onChange<br>Returns a class of gallery popup.</p>
+
+            <h2>Remove event:</h2>
+            <pre class="cm-codebox">gallery.removeEvent(event, handler);</pre>
+            <p>Available events: onOpen, onClose, onChange<br>Returns a class of gallery popup.</p>
+        </li>
+
+        <li data-tabset-id="examples" data-tabset-title="Examples">
+            <h2>Gallery listing with rendered html structure:</h2>
+            <p class="margin-none">
+                1. Add <b>data-element="gallery-popup"</b> attribute on node where gallery contains.<br>
+                2. Add <b>data-node="items:[]:link"</b> attribute on each thumbnail link.<br>
+                3. To specify popup item title, add <b>title</b> attribute to thumbnail link.<br>
+                4. To specify the count of columns, set class name from "<b>cols-1</b>" to "<b>cols-12</b>" on <b>cm-grid</b> node.<br>
+                5. To specify gallery configuration, add <b>data-config='{}'</b> attribute on node where you set <b>data-element="gallery-popup"</b> attribute. Configuration must be in JSON format.<br>
+                6. Add <b>Com.GalleryPopup</b> class to <b>Collector</b>:
+            </p>
+            <pre class="cm-codebox">var components = new Com.Collector();
+components.add('gallery-popup', function(node){
+    new Com.GalleryPopup({'node' : node});
+});
+components.construct();</pre>
+            <br>
+            <div class="cm-grid col-5" data-element="gallery-popup">
+                <ul>
+                    <li>
+                        <div class="cm-imagebox">
+                            <a data-node="items:[]:link" class="inner" href="../images/gallery/1.jpg" target="_blank" title="Blossom">
+                                <img class="descr" src="../images/gallery/1-th.jpg" alt="">
+                                <div class="title">
+                                    <div class="inner">Blossom</div>
+                                </div>
+                            </a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="cm-imagebox">
+                            <a data-node="items:[]:link" class="inner" href="../images/gallery/2.jpg" target="_blank" title="Flowers">
+                                <img class="descr" src="../images/gallery/2-th.jpg" alt="">
+                                <div class="title">
+                                    <div class="inner">Flowers</div>
+                                </div>
+                            </a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="cm-imagebox">
+                            <a data-node="items:[]:link" class="inner" href="../images/gallery/3.jpg" target="_blank" title="Axe">
+                                <img class="descr" src="../images/gallery/3-th.jpg" alt="">
+                                <div class="title">
+                                    <div class="inner">Axe</div>
+                                </div>
+                            </a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="cm-imagebox">
+                            <a data-node="items:[]:link" class="inner" href="../images/gallery/4.jpg" target="_blank" title="Viburnum">
+                                <img class="descr" src="../images/gallery/4-th.jpg" alt="">
+                                <div class="title">
+                                    <div class="inner">Viburnum</div>
+                                </div>
+                            </a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="cm-imagebox">
+                            <a data-node="items:[]:link" class="inner" href="../images/gallery/5.jpg" target="_blank" title="Bench">
+                                <img class="descr" src="../images/gallery/5-th.jpg" alt="">
+                                <div class="title">
+                                    <div class="inner">Bench</div>
+                                </div>
+                            </a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="cm-imagebox">
+                            <a data-node="items:[]:link" class="inner" href="../images/gallery/6.jpg" target="_blank" title="Bubbles">
+                                <img class="descr" src="../images/gallery/6-th.jpg" alt="">
+                                <div class="title">
+                                    <div class="inner">Bubbles</div>
+                                </div>
+                            </a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="cm-imagebox">
+                            <a data-node="items:[]:link" class="inner" href="../images/gallery/7.jpg" target="_blank" title="Knobs">
+                                <img class="descr" src="../images/gallery/7-th.jpg" alt="">
+                                <div class="title">
+                                    <div class="inner">Knobs</div>
+                                </div>
+                            </a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="cm-imagebox">
+                            <a data-node="items:[]:link" class="inner" href="../images/gallery/8.jpg" target="_blank" title="Blossom">
+                                <img class="descr" src="../images/gallery/8-th.jpg" alt="">
+                                <div class="title">
+                                    <div class="inner">Blossom</div>
+                                </div>
+                            </a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="cm-imagebox">
+                            <a data-node="items:[]:link" class="inner" href="../images/gallery/2.jpg" target="_blank" title="Flowers">
+                                <img class="descr" src="../images/gallery/2-th.jpg" alt="">
+                                <div class="title">
+                                    <div class="inner">Flowers</div>
+                                </div>
+                            </a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="cm-imagebox">
+                            <a data-node="items:[]:link" class="inner" href="../images/gallery/1.jpg" target="_blank" title="Blossom">
+                                <img class="descr" src="../images/gallery/1-th.jpg" alt="">
+                                <div class="title">
+                                    <div class="inner">Blossom</div>
+                                </div>
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <hr>
+            <h2>Gallery listing with video:</h2>
+            <div class="cm-grid col-5 bottom" data-element="gallery-popup">
+                <ul>
+                    <li>
+                        <div class="cm-imagebox">
+                            <a data-node="items:[]:link" class="inner" href="http://www.youtube.com/embed/hEfT3MJ4lKc" target="_blank" title="corals @ red sea, sharm el-sheikh, egypt'14">
+                                <img class="descr" src="../images/gallery/9-th.jpg" alt="">
+                                <div class="icon x-large play centered"></div>
+                                <div class="title">
+                                    <div class="inner">corals @ red sea, sharm el-sheikh, egypt'14</div>
+                                </div>
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </li>
+    </ul>
+</div>
+
+</body>
+</html>

@@ -7,6 +7,11 @@
         color: @cm-base-font-color;
     }
 
+    .title-font {
+        font: 300 30px/38px @cm-base-font-family;
+        color: @cm-base-font-color;
+    }
+
     .link {
         text-decoration: underline;
         color: @cm-base-link-color;
@@ -28,6 +33,14 @@
         padding: 0;
         display: block;
         clear: both;
+    }
+
+    .box {
+        padding: @cm-block-indent-small;
+        background: #fff;
+        border: @cm-border-style;
+        border-radius: @cm-border-radius;
+        box-shadow: 0 0 2px rgba(0,0,0,0.2);
     }
 
     // /* ******* FORM ELEMENTS ******* */
@@ -193,16 +206,6 @@
     }
 
     // /* ******* COMPONENTS ******* */
-
-    // /* *** BOX *** */
-
-    .box {
-        padding: @cm-block-indent-small;
-        background: #fff;
-        border: @cm-border-style;
-        border-radius: @cm-border-radius;
-        box-shadow: 0 0 2px rgba(0,0,0,0.2);
-    }
 
     // /* *** DROPDOWN MENU *** */
 

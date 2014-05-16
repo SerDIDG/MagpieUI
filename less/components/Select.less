@@ -27,13 +27,19 @@
 
 /* Tooltip */
 
-.com-select-tooltip > .inner > .scroll {
-    max-height: @cm-select-list-count * (@cm-base-line-height + @cm-items-list-indent + @cm-items-list-padding-y * 2) - @cm-items-list-indent;
+.com-select-tooltip {
+    .cm-user-select(none);
+
+    > .inner > .scroll {
+        max-height: @cm-select-list-count * (@cm-base-line-height + @cm-items-list-indent + @cm-items-list-padding-y * 2) - @cm-items-list-indent;
+    }
 }
 
 /* Select Multiple */
 
 .com-multiselect {
+    .cm-user-select(none);
+
     .inner {
         #cm > .input;
         height: auto;

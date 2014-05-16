@@ -3,9 +3,7 @@ Com['CollapsibleLayout'] = function(o){
         config = cm.merge({
             'node' : cm.Node('div'),
             'events' : {},
-            'nodes' : {
-                'com-collapsible-layout' : {}
-            }
+            'nodes' : {}
         }, o),
         API = {
             'onRender' : [],
@@ -13,24 +11,22 @@ Com['CollapsibleLayout'] = function(o){
             'onExpand' : [],
             'onChange' : []
         },
-        privateConfig = {
-            'nodes' : {
-                'com-collapsible-layout' : ['sidebar-left-button', 'sidebar-right-button']
-            }
-        },
-        nodes = {};
+        nodes = {
+            'left-button' : cm.Node('div'),
+            'right-button': cm.Node('div')
+        };
 
     /* *** CLASS FUNCTIONS *** */
 
     var init = function(){
         convertEvents(config['events']);
-        getNodes(config['node']);
+        getNodes(config['node'], 'ComCollapsibleLayout');
         render();
     };
 
     var render = function(){
         // Left Sidebar
-        cm.addEvent(nodes['com-collapsible-layout']['sidebar-left-button'], 'click', function(){
+        cm.addEvent(nodes['left-button'], 'click', function(){
             if(cm.isClass(config['node'], 'is-sidebar-left-collapsed')){
                 cm.removeClass(config['node'], 'is-sidebar-left-collapsed');
                 // API onExpand event
@@ -47,7 +43,7 @@ Com['CollapsibleLayout'] = function(o){
             });
         });
         // Right sidebar
-        cm.addEvent(nodes['com-collapsible-layout']['sidebar-right-button'], 'click', function(){
+        cm.addEvent(nodes['right-button'], 'click', function(){
             if(cm.isClass(config['node'], 'is-sidebar-right-collapsed')){
                 cm.removeClass(config['node'], 'is-sidebar-right-collapsed');
                 // API onExpand event
@@ -77,15 +73,16 @@ Com['CollapsibleLayout'] = function(o){
         });
     };
 
-    var getNodes = function(container){
-        // Get nodes
-        cm.forEach(privateConfig['nodes'], function(item, key){
-            nodes[key] = {};
-            cm.forEach(item, function(value){
-                nodes[key][value] = cm.getByAttr(['data', key].join('-'), value, container)[0] || cm.Node('div')
-            });
-        });
-        // Merge collected nodes with each defined in config
+    var getNodes = function(container, marker){
+        if(container){
+            var sourceNodes = {};
+            if(marker){
+                sourceNodes = cm.getNodes(container)[marker] || {};
+            }else{
+                sourceNodes = cm.getNodes(container);
+            }
+            nodes = cm.merge(nodes, sourceNodes);
+        }
         nodes = cm.merge(nodes, config['nodes']);
     };
 

@@ -1,0 +1,177 @@
+/* ******* EDITABLE AREA ******* */
+
+#cm-editable-bundle () {
+    .normal {
+        width: 100%;
+        position: relative;
+        z-index: 1;
+        display: inline-block;
+        cursor: text;
+        vertical-align: top;
+
+        > .border {
+            position: absolute;
+            z-index: 1;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            border: @cm-border-editable;
+            border-radius: @cm-border-radius;
+            opacity: 0;
+            .cm-transition(all @cm-transition-duration ease-in-out);
+        }
+
+        > .inner {
+            width: 100%;
+            display: inline-block;
+            position: relative;
+            z-index: 2;
+            vertical-align: top;
+
+            &:hover {
+                z-index: 5;
+            }
+        }
+
+        > .drag {
+            width: 80px;
+            height: 24px;
+            margin: 0 0 0 -40px;
+            position: absolute;
+            z-index: 3;
+            top: -12px;
+            left: 50%;
+            opacity: 0;
+            background: @cm-base-color-secondary;
+            border: @cm-border-editable;
+            border-radius: @cm-border-radius;
+            cursor: move;
+            .cm-transition(all @cm-transition-duration ease-in-out);
+
+            .icon {
+                width: 34px;
+                height: 6px;
+                margin: 9px auto;
+                display: block;
+            }
+
+            &:hover {
+                background: @cm-base-color-secondary-hover;
+                .cm-transition(all @cm-transition-duration-reverse ease-in-out);
+            }
+        }
+
+        > .menu {
+            position: absolute;
+            z-index: 4;
+            top: -12px;
+            right: -12px;
+            opacity: 0;
+            cursor: pointer;
+            .cm-transition(all @cm-transition-duration ease-in-out);
+
+            .icon {
+                width: 20px;
+                height: 20px;
+                padding: 2px;
+                display: block;
+                position: relative;
+                z-index: 2;
+                background-color: @cm-base-color-secondary;
+                border: @cm-border-editable;
+                border-radius: @cm-border-radius;
+            }
+
+            ul {
+                .cm-position(12px, 12px, auto, auto);
+                z-index: 1;
+            }
+
+            &:hover {
+                z-index: 14;
+
+                .icon {
+                    background-color: @cm-base-color-secondary-hover;;
+                }
+            }
+        }
+
+        .ie8 & {
+            > .border,
+            > .drag,
+            > .menu,
+            .com-tooltip {
+                .cm-opacity-ie(0);
+            }
+        }
+    }
+
+    .hover {
+        > .border {
+            top: -16px;
+            right: -16px;
+            bottom: -16px;
+            left: -16px;
+            opacity: 1;
+            background: #ffffff;
+            .cm-transition(all @cm-transition-duration-reverse ease-in-out);
+        }
+
+        > .drag {
+            opacity: 1;
+            top: -28px;
+            .cm-transition(all @cm-transition-duration-reverse ease-in-out);
+        }
+
+        > .menu {
+            top: -28px;
+            right: -28px;
+            opacity: 1;
+            .cm-transition(all @cm-transition-duration-reverse ease-in-out);
+        }
+
+        .ie8 & {
+            > .border,
+            > .drag,
+            > .menu,
+            > .menu:hover .com-tooltip {
+                .cm-opacity-ie(100);
+            }
+        }
+    }
+
+    .active {
+        > .drag {
+            background-color: @cm-base-color-active;
+        }
+    }
+}
+
+.cm-editable {
+    #cm-editable-bundle > .normal;
+
+    &.is-active,
+    &.cm-draganddrop-helper,
+    &:hover {
+        #cm-editable-bundle > .hover;
+    }
+
+    &.is-active,
+    &.cm-draganddrop-helper {
+        #cm-editable-bundle > .active;
+    }
+}
+
+// /* *** ADAPTIVE *** */
+
+@media only screen and (max-width: @cm-mobile-screen) {
+
+    .is-active .cm-editable {
+        > .border,
+        > .menu {
+            display: none;
+        }
+    }
+
+}

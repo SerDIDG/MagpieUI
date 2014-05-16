@@ -5,10 +5,9 @@
 
     > dt {
         position: relative;
-        line-height: 38px;
-        font-size: 30px;
-        font-weight: 300;
         cursor: pointer;
+        .cm-user-select(none);
+        #cm > .title-font;
         .cm-transition(color 0.3s ease-in-out);
 
         .icon {
@@ -16,8 +15,8 @@
             top: 12px;
             right: 0;
             -webkit-transition: -webkit-transform 0.3s ease-in-out;
-            -ms-transition:     -ms-transform 0.3s ease-in-out;
-            transition:         transform 0.3s ease-in-out;
+                -ms-transition:     -ms-transform 0.3s ease-in-out;
+                    transition:         transform 0.3s ease-in-out;
         }
 
         &:hover {
@@ -40,8 +39,8 @@
         > dt {
             .icon {
                 -webkit-transform: rotate(90deg);
-                -ms-transform: rotate(90deg);
-                transform: rotate(90deg);
+                    -ms-transform: rotate(90deg);
+                        transform: rotate(90deg);
             }
         }
     }

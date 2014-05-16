@@ -9,9 +9,10 @@
 body {
     margin: 0;
     padding: 0;
-    -webkit-text-size-adjust: 100%;
     #cm > .base-font;
     cursor: default;
+    -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: subpixel-antialiased;
 }
 
 a {
@@ -20,6 +21,10 @@ a {
 
 img {
     border: none;
+    -webkit-transform: translateZ(0px);
+    -webkit-backface-visibility: hidden;
+       -moz-backface-visibility: hidden;
+            backface-visibility: hidden;
 }
 
 dl, dt, dd, canvas, iframe, form {
@@ -167,6 +172,12 @@ select[multiple] {
         vertical-align: middle;
     }
 
+    &.centered {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+    }
+
     &.linked {
         cursor: pointer;
         .cm-transition(opacity @cm-transition-duration ease-in-out);
@@ -192,6 +203,10 @@ select[multiple] {
     &.x-small {
         width: 12px;
         height: 12px;
+
+        &.centered {
+            margin: -6px 0 0 -6px;
+        }
     }
 
     // /* Small */
@@ -200,9 +215,21 @@ select[multiple] {
         width: 16px;
         height: 16px;
 
-        .for(add arrow-priority-down arrow-priority-up arrow-right copy done edit fail help remove settings view); .-each(@name) {
+        &.centered {
+            margin: -8px 0 0 -8px;
+        }
+
+        .for(add arrow-priority-down arrow-priority-up arrow-left arrow-right arrow-top arrow-bottom copy done edit fail help remove settings view); .-each(@name) {
             &.@{name} {
                 background-image: url("@{cm-image-path}/icons/small/@{name}.png");
+            }
+        }
+    }
+
+    &.small {
+        .for(loader); .-each(@name) {
+            &.@{name} {
+                background-image: url("@{cm-image-path}/icons/small/@{name}.gif");
             }
         }
     }
@@ -213,7 +240,11 @@ select[multiple] {
         width: 24px;
         height: 24px;
 
-        .for(arrow-left arrow-right datepicker select-arrow); .-each(@name) {
+        &.centered {
+            margin: -12px 0 0 -12px;
+        }
+
+        .for(arrow-left arrow-right arrow-white-left arrow-white-right arrow-white-top arrow-white-bottom datepicker select-arrow close close-white); .-each(@name) {
             &.@{name} {
                 background-image: url("@{cm-image-path}/icons/medium/@{name}.png");
             }
@@ -225,6 +256,10 @@ select[multiple] {
     &.large {
         width: 32px;
         height: 32px;
+
+        &.centered {
+            margin: -16px 0 0 -16px;
+        }
     }
 
     // /* X-Large */
@@ -232,6 +267,16 @@ select[multiple] {
     &.x-large {
         width: 48px;
         height: 48px;
+
+        &.centered {
+            margin: -24px 0 0 -24px;
+        }
+
+        .for(play); .-each(@name) {
+            &.@{name} {
+                background-image: url("@{cm-image-path}/icons/x-large/@{name}.png");
+            }
+        }
     }
 
     // /* Toolbar */
@@ -1338,71 +1383,6 @@ ul.has-icons-outside-three li {
     }
 }
 
-/* *** GRID *** */
-
-.cm-grid {
-    margin: 0 0 @cm-block-indent;
-
-    &.bottom {
-        margin: 0;
-    }
-
-    > ul {
-        padding: 0;
-        list-style: none;
-        font-size: 0;
-        word-spacing: 0;
-
-        > li {
-            width: 100%;
-            display: inline-block;
-            overflow: hidden;
-            vertical-align: top;
-            -moz-box-sizing: border-box;
-                 box-sizing: border-box;
-
-            > a {
-                display: block;
-                cursor: pointer;
-
-                > img {
-                    width: 100%;
-                    display: block;
-                    position: relative;
-                    cursor: pointer;
-                    -webkit-transform: translateZ(0px);
-                    .cm-transition(opacity @cm-transition-duration ease-in-out);
-                }
-
-                &:hover {
-                    > img {
-                        opacity: 0.5;
-                        .cm-transition(opacity @cm-transition-duration-reverse ease-in-out);
-                    }
-                }
-            }
-        }
-    }
-
-    // /* Build columns styles */
-
-    .loop(@counter) when (@counter > 0) {
-        .loop((@counter - 1));
-
-        @size: 100% / @counter;
-
-        &.col-@{counter} > ul > li {
-            width: @size;
-        }
-    }
-
-    .loop(10);
-
-    // /* Set grid items indent */
-
-    #cm > .grid-indent(@cm-grid-item-indent);
-}
-
 /* *** ITEMS LIST *** */
 
 .cm-items-list {
@@ -1807,233 +1787,6 @@ ul.has-icons-outside-three li {
     }
 }
 
-/* *** CHECKABLE *** */
-
-.cm-checkable {
-    position: relative;
-    border: @cm-box-border;
-    .cm-user-select(none);
-    .cm-transition(border-color @cm-transition-duration ease-in-out);
-
-    > .inner {
-        position: relative;
-        z-index: 1;
-    }
-
-    > label {
-        position: absolute;
-        z-index: 2;
-        .cm-position(0,0,0,0);
-        background: linear-gradient(to bottom, #FFFFFF 0px, rgba(255, 255, 255, 0.1) 50%);
-    }
-
-    > .pull {
-        position: absolute;
-        z-index: 3;
-
-        &.top-right {
-            .cm-position(@cm-ui-indent, @cm-ui-indent, auto, auto);
-        }
-
-        &.top-left {
-            .cm-position(@cm-ui-indent, auto, auto, @cm-ui-indent);
-        }
-
-        &.bottom-right {
-            .cm-position(auto, @cm-ui-indent, @cm-ui-indent, auto);
-        }
-
-        &.bottom-left {
-            .cm-position(auto, auto, @cm-ui-indent, @cm-ui-indent);
-        }
-
-        input[type="checkbox"],
-        input[type="radio"] {
-            display: block;
-        }
-
-        .icon {
-            float: left;
-            margin: 0 0 0 @cm-button-indent;
-
-            &:first-child {
-                margin: 0;
-            }
-        }
-    }
-
-    &:hover,
-    &.active {
-        border: @cm-box-border-active;
-        .cm-transition(border-color @cm-transition-duration-reverse ease-in-out);
-    }
-}
-
-/* *** EDITABLE AREA *** */
-
-#cm-editable-bundle () {
-    .normal {
-        width: 100%;
-        position: relative;
-        z-index: 1;
-        display: inline-block;
-        cursor: text;
-        vertical-align: top;
-
-        > .border {
-            position: absolute;
-            z-index: 1;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            border: @cm-border-editable;
-            border-radius: @cm-border-radius;
-            opacity: 0;
-            .cm-transition(all @cm-transition-duration ease-in-out);
-        }
-
-        > .inner {
-            width: 100%;
-            display: inline-block;
-            position: relative;
-            z-index: 2;
-            vertical-align: top;
-
-            &:hover {
-                z-index: 5;
-            }
-        }
-
-        > .drag {
-            width: 80px;
-            height: 24px;
-            margin: 0 0 0 -40px;
-            position: absolute;
-            z-index: 3;
-            top: -12px;
-            left: 50%;
-            opacity: 0;
-            background: @cm-base-color-secondary;
-            border: @cm-border-editable;
-            border-radius: @cm-border-radius;
-            cursor: move;
-            .cm-transition(all @cm-transition-duration ease-in-out);
-
-            .icon {
-                width: 34px;
-                height: 6px;
-                margin: 9px auto;
-                display: block;
-            }
-
-            &:hover {
-                background: @cm-base-color-secondary-hover;
-                .cm-transition(all @cm-transition-duration-reverse ease-in-out);
-            }
-        }
-
-        > .menu {
-            position: absolute;
-            z-index: 4;
-            top: -12px;
-            right: -12px;
-            opacity: 0;
-            cursor: pointer;
-            .cm-transition(all @cm-transition-duration ease-in-out);
-
-            .icon {
-                width: 20px;
-                height: 20px;
-                padding: 2px;
-                display: block;
-                position: relative;
-                z-index: 2;
-                background-color: @cm-base-color-secondary;
-                border: @cm-border-editable;
-                border-radius: @cm-border-radius;
-            }
-
-            ul {
-                .cm-position(12px, 12px, auto, auto);
-                z-index: 1;
-            }
-
-            &:hover {
-                z-index: 14;
-
-                .icon {
-                    background-color: @cm-base-color-secondary-hover;;
-                }
-            }
-        }
-
-        .ie8 & {
-            > .border,
-            > .drag,
-            > .menu,
-            .com-tooltip {
-                .cm-opacity-ie(0);
-            }
-        }
-    }
-
-    .hover {
-        > .border {
-            top: -16px;
-            right: -16px;
-            bottom: -16px;
-            left: -16px;
-            opacity: 1;
-            background: #ffffff;
-            .cm-transition(all @cm-transition-duration-reverse ease-in-out);
-        }
-
-        > .drag {
-            opacity: 1;
-            top: -28px;
-            .cm-transition(all @cm-transition-duration-reverse ease-in-out);
-        }
-
-        > .menu {
-            top: -28px;
-            right: -28px;
-            opacity: 1;
-            .cm-transition(all @cm-transition-duration-reverse ease-in-out);
-        }
-
-        .ie8 & {
-            > .border,
-            > .drag,
-            > .menu,
-            > .menu:hover .com-tooltip {
-                .cm-opacity-ie(100);
-            }
-        }
-    }
-
-    .active {
-        > .drag {
-            background-color: @cm-base-color-active;
-        }
-    }
-}
-
-.cm-editable {
-    #cm-editable-bundle > .normal;
-
-    &.is-active,
-    &.cm-draganddrop-helper,
-    &:hover {
-        #cm-editable-bundle > .hover;
-    }
-
-    &.is-active,
-    &.cm-draganddrop-helper {
-        #cm-editable-bundle > .active;
-    }
-}
-
 /* *** DRAG AND DROP *** */
 
 .cm-draganddrop-body {
@@ -2147,20 +1900,6 @@ ul.has-icons-outside-three li {
 
     /* *** COMPONENTS *** */
 
-    /* Grid */
-
-    .is-adaptive .cm-grid {
-        .loop(@counter) when (@counter > 0) {
-            .loop((@counter - 1));
-
-            &.col-@{counter} > ul > li {
-                width: 100%;
-            }
-        }
-
-        .loop(10);
-    }
-
     /* Content Table */
 
     .is-adaptive .content-table {
@@ -2175,13 +1914,6 @@ ul.has-icons-outside-three li {
                 }
             }
         }
-    }
-
-    /* Editable Area */
-
-    .cm-editable > .border,
-    .cm-editable > .menu {
-        display: none;
     }
 
 }

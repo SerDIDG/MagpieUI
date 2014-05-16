@@ -1,0 +1,42 @@
+/* ******* GALLERY POPUP ******* */
+
+.com-gallery-popup {
+    position: fixed;
+    z-index: 1004;
+    .cm-position(0,0,0,0);
+    opacity: 0;
+    background: @ComGallery-background;
+
+    > .title {
+        position: absolute;
+        z-index: 2;
+        .cm-position(@cm-ui-indent, @ComGalleryPopup-indentTop, auto, @cm-block-indent);
+
+        .caption {
+            #cm > .title-font;
+            .cm-text-overflow;
+            color: #ffffff;
+        }
+
+        * {
+            color: #ffffff;
+        }
+    }
+
+    > .icon {
+        position: absolute;
+        .cm-position(@cm-block-indent, @cm-block-indent, auto, auto);
+    }
+
+    > .descr {
+        position: absolute;
+        z-index: 2;
+        .cm-position(@ComGalleryPopup-indentTop, @cm-block-indent, @cm-block-indent, @cm-block-indent);
+    }
+
+    .com-gallery {
+        width: 100%;
+        height: 100%;
+        position: relative;
+    }
+}

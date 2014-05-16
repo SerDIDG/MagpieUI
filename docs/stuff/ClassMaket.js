@@ -1,26 +1,25 @@
 Com['ClassName'] = function(o){
     var that = this,
         config = cm.merge({
+            'node' : cm.Node('div'),
+            'nodes' : {},
             'events' : {},
-            'nodes' : {
-                'com-classname' : {}
-            }
+            'langs' : {}
         }, o),
         API = {
             'onRender' : []
         },
-        privateConfig = {
-            'nodes' : {
-                'com-classname' : ['container', 'button']
-            }
-        },
-        nodes = {};
+        nodes = {
+            'container' : cm.Node('div'),
+            'button' : cm.Node('div')
+        };
 
     /* *** CLASS FUNCTIONS *** */
 
     var init = function(){
         convertEvents(config['events']);
-        getNodes(null);
+        getNodes(config['node']);
+        getConfig(config['node']);
         render();
     };
 
@@ -39,16 +38,34 @@ Com['ClassName'] = function(o){
         });
     };
 
-    var getNodes = function(container){
-        // Get nodes
-        cm.forEach(privateConfig['nodes'], function(item, key){
-            nodes[key] = {};
-            cm.forEach(item, function(value){
-                nodes[key][value] = cm.getByAttr(['data', key].join('-'), value, container)[0] || cm.Node('div')
-            });
-        });
-        // Merge collected nodes with each defined in config
+    var getNodes = function(container, marker){
+        if(container){
+            var sourceNodes = {};
+            if(marker){
+                sourceNodes = cm.getNodes(container)[marker] || {};
+            }else{
+                sourceNodes = cm.getNodes(container);
+            }
+            nodes = cm.merge(nodes, sourceNodes);
+        }
         nodes = cm.merge(nodes, config['nodes']);
+    };
+
+    var getConfig = function(container, marker){
+        if(container){
+            marker = marker || 'data-config';
+            var sourceConfig = container.getAttribute(marker);
+            if(sourceConfig){
+                config = cm.merge(config, JSON.parse(sourceConfig));
+            }
+        }
+    };
+
+    var lang = function(str){
+        if(!config['langs'][str]){
+            config['langs'][str] = str;
+        }
+        return config['langs'][str];
     };
 
     var executeEvent = function(event, params){
