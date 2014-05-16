@@ -770,10 +770,10 @@ cm.getNodes = function(container, marker){
                     if(attr2.length == 1){
                         obj[attr2[0]] = node;
                     }else{
-                        if(!obj[attr2[0]]){
-                            obj[attr2[0]] = {};
+                        if(!nodes[attr2[0]]){
+                            nodes[attr2[0]] = {};
                         }
-                        obj[attr2[0]][attr2[1]] = node;
+                        nodes[attr2[0]][attr2[1]] = node;
                     }
                 }else if(attr.length == 2 || attr.length == 3){
                     if(attr[1] == '[]'){
