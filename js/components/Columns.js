@@ -301,8 +301,6 @@ Com['Columns'] = function(o){
     init();
 };
 
-var testCol;
-
 Com['ColumnsCollector'] = function(node){
     var allColumns,
         id,
@@ -322,7 +320,7 @@ Com['ColumnsCollector'] = function(node){
         allColumns = cm.clone((node.getAttribute('data-com-columns') == 'true') ? [node] : cm.getByAttr('data-com-columns', 'true', node));
         // Render columns
         cm.forEach(allColumns, function(item){
-            columns = testCol = new Com.Columns({'columns' : item});
+            columns = new Com.Columns({'columns' : item});
             if(id = item.id){
                 Com.Elements.Columns[id] = columns;
             }
