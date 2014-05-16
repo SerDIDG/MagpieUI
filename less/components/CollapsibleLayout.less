@@ -7,16 +7,16 @@
     .cm-position(0,0,0,0);
 
     > .sidebar {
-        width: @com-collapsible-layout-sidebar-width;
+        width: @ComCollapsibleLayout-sidebarWidth;
         height: 100%;
         position: relative;
         overflow: hidden;
         background: #ffffff;
         box-shadow: @cm-ui-shadow;
-        .cm-transition(width @com-collapsible-layout-duration ease-in-out);
+        .cm-transition(width @ComCollapsibleLayout-duration ease-in-out);
 
         > .inner {
-            width: @com-collapsible-layout-sidebar-width;
+            width: @ComCollapsibleLayout-sidebarWidth;
             position: absolute;
 
             > .title {
@@ -31,9 +31,9 @@
                     position: absolute;
                     top: 14px;
                     cursor: pointer;
-                    -webkit-transition: -webkit-transform @com-collapsible-layout-duration ease-in-out;
-                        -ms-transition:     -ms-transform @com-collapsible-layout-duration ease-in-out;
-                            transition:         transform @com-collapsible-layout-duration ease-in-out;
+                    -webkit-transition: -webkit-transform @ComCollapsibleLayout-duration ease-in-out;
+                        -ms-transition:     -ms-transform @ComCollapsibleLayout-duration ease-in-out;
+                            transition:         transform @ComCollapsibleLayout-duration ease-in-out;
                 }
             }
 
@@ -43,7 +43,7 @@
                 position: absolute;
                 .cm-position(50px, 0, 0, 0);
                 background: #ffffff;
-                .cm-transition(opacity @com-collapsible-layout-duration ease-in-out);
+                .cm-transition(opacity @ComCollapsibleLayout-duration ease-in-out);
             }
         }
 
