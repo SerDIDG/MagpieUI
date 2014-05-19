@@ -777,7 +777,11 @@ ul.style-none {
 .form-field .icon {
   width: 28px !important;
   height: 28px !important;
+  padding: 0;
   position: absolute;
+  background-color: transparent;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
 }
 .form-field.has-icon-left .icon {
   top: 0;
