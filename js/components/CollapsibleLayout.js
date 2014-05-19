@@ -12,8 +12,8 @@ Com['CollapsibleLayout'] = function(o){
             'onChange' : []
         },
         nodes = {
-            'left-button' : cm.Node('div'),
-            'right-button': cm.Node('div')
+            'leftButton' : cm.Node('div'),
+            'rightButton': cm.Node('div')
         };
 
     /* *** CLASS FUNCTIONS *** */
@@ -26,7 +26,7 @@ Com['CollapsibleLayout'] = function(o){
 
     var render = function(){
         // Left Sidebar
-        cm.addEvent(nodes['left-button'], 'click', function(){
+        cm.addEvent(nodes['leftButton'], 'click', function(){
             if(cm.isClass(config['node'], 'is-sidebar-left-collapsed')){
                 cm.removeClass(config['node'], 'is-sidebar-left-collapsed');
                 // API onExpand event
@@ -43,7 +43,7 @@ Com['CollapsibleLayout'] = function(o){
             });
         });
         // Right sidebar
-        cm.addEvent(nodes['right-button'], 'click', function(){
+        cm.addEvent(nodes['rightButton'], 'click', function(){
             if(cm.isClass(config['node'], 'is-sidebar-right-collapsed')){
                 cm.removeClass(config['node'], 'is-sidebar-right-collapsed');
                 // API onExpand event
