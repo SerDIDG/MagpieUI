@@ -482,6 +482,9 @@ select[multiple] {
 .icon.small.view {
   background-image: url("../img/icons/small/view.png");
 }
+.icon.small.search {
+  background-image: url("../img/icons/small/search.png");
+}
 .icon.small.loader {
   background-image: url("../img/icons/small/loader.gif");
 }
@@ -521,6 +524,9 @@ select[multiple] {
 }
 .icon.medium.close-white {
   background-image: url("../img/icons/medium/close-white.png");
+}
+.icon.medium.menu {
+  background-image: url("../img/icons/medium/menu.png");
 }
 .icon.large {
   width: 32px;
