@@ -44,9 +44,13 @@ cm.isObject = function(o){
 };
 
 cm.forEach = function(o, callback){
-    if(!o || !callback){
+    if(!o){
         return null;
     }
+    if(!callback){
+        return o;
+    }
+    var i, l;
     switch(o.constructor){
         case Object:
             for(var key in o){
@@ -59,7 +63,7 @@ cm.forEach = function(o, callback){
             o.forEach(callback);
             break;
         case Number:
-            for(var i = 0; i < o; i++){
+            for(i = 0; i < o; i++){
                 callback(i);
             }
             break;
@@ -68,7 +72,7 @@ cm.forEach = function(o, callback){
                 Array.prototype.forEach.call(o, callback);
             }catch(e){
                 try{
-                    for(var i = 0, l = o.length; i < l; i++){
+                    for(i = 0, l = o.length; i < l; i++){
                         callback(o[i], i);
                     }
                 }catch(e){}
@@ -232,16 +236,6 @@ cm.log = (function(){
         return function(){}
     }
 })();
-
-cm.dump = function(o){
-    var node = cm.Node('div');
-    for(var i in o){
-        node.appendChild(
-            cm.Node('div', [i, o[i]].join(': '))
-        )
-    }
-    return node;
-};
 
 cm.getEvent = function(e){
     return e || window.event;
@@ -455,12 +449,12 @@ cm.onScrollEnd = function(node, handler){
 };
 
 cm.onImageLoad = function(src, handler, delay){
+    delay = delay || 0;
     var nodes = [],
         isMany = cm.isArray(src),
         images = isMany ? src : [src],
         imagesLength = images.length,
         isLoad = 0,
-        delay = delay || 0,
         timeStart = Date.now(),
         timePassed = 0;
 
@@ -498,7 +492,7 @@ cm.getEl = function(str){
 };
 
 cm.getByClass = function(str, node){
-    var node = node || document;
+    node = node || document;
     if(node.getElementsByClassName){
         return node.getElementsByClassName(str);
     }
@@ -958,7 +952,7 @@ cm.setSelect = function(o, value){
 };
 
 cm.toggleRadio = function(name, value, node){
-    var node = node || document.body;
+    node = node || document.body;
     var els = cm.getByName(name, node);
     for(var i = 0; i < els.length; i++){
         if(els[i].value == value){
@@ -968,7 +962,9 @@ cm.toggleRadio = function(name, value, node){
 };
 
 cm.getValue = function(name, node){
-    var node = node || document.body, nodes = cm.getByName(name, node), value;
+    node = node || document.body;
+    var nodes = cm.getByName(name, node),
+        value;
     for(var i = 0, l = nodes.length; i < l; i++){
         if(nodes[i].checked){
             value = nodes[i].value;
@@ -991,21 +987,24 @@ cm.toNumber = function(str){
 
 cm.is = function(str){
     if(typeof Com.UA == 'undefined'){
-        throw new Error('Error. UA.js is not exists or not loaded.');
+        cm.log('Error. UA.js is not exists or not loaded. Method "cm.is()" returns false.');
+        return false;
     }
     return Com.UA.is(str);
 };
 
 cm.isVersion = function(){
     if(typeof Com.UA == 'undefined'){
-        throw new Error('Error. UA.js is not exists or not loaded.');
+        cm.log('Error. UA.js is not exists or not loaded. Method "cm.isVersion()" returns null.');
+        return null;
     }
     return Com.UA.isVersion();
 };
 
 cm.isMobile = function(){
     if(typeof Com.UA == 'undefined'){
-        throw new Error('Error. UA.js is not exists or not loaded.');
+        cm.log('Error. UA.js is not exists or not loaded. Method "cm.isMobile()" returns false.');
+        return false;
     }
     return Com.UA.isMobile();
 };
