@@ -751,50 +751,58 @@ cm.getNodes = function(container, marker){
     marker = marker || 'data-node';
     var nodes = {},
         processedNodes = [];
-    var find = function(container, obj){
-        var sourceNodes = container.querySelectorAll('[' + marker +']'),
-            attr,
+
+    var process = function(node, obj){
+        var attr0 =  node.getAttribute(marker),
+            attr = attr0? attr0.split(':') : [],
             attr2,
             arr;
+        if(attr.length == 1){
+            attr2 = attr[0].split('.') || [];
+            if(attr2.length == 1){
+                obj[attr2[0]] = node;
+            }else{
+                if(!nodes[attr2[0]]){
+                    nodes[attr2[0]] = {};
+                }
+                nodes[attr2[0]][attr2[1]] = node;
+            }
+        }else if(attr.length == 2 || attr.length == 3){
+            if(attr[1] == '[]'){
+                if(!obj[attr[0]]){
+                    obj[attr[0]] = [];
+                }
+                arr = {};
+                if(attr[2]){
+                    arr[attr[2]] = node;
+                }
+                find(node, arr);
+                obj[attr[0]].push(arr);
+            }else if(attr[1] == '{}'){
+                if(!obj[attr[0]]){
+                    obj[attr[0]] = {};
+                }
+                if(attr[2]){
+                    obj[attr[0]][attr[2]] = node;
+                }
+                find(node, obj[attr[0]]);
+            }
+        }
+        processedNodes.push(node);
+    };
+
+    var find = function(container, obj){
+        var sourceNodes = container.querySelectorAll('[' + marker +']');
         cm.forEach(sourceNodes, function(node){
             if(!cm.inArray(processedNodes, node)){
-                attr = node.getAttribute(marker).split(':') || [];
-                if(attr.length == 1){
-                    attr2 = attr[0].split('.') || [];
-                    if(attr2.length == 1){
-                        obj[attr2[0]] = node;
-                    }else{
-                        if(!nodes[attr2[0]]){
-                            nodes[attr2[0]] = {};
-                        }
-                        nodes[attr2[0]][attr2[1]] = node;
-                    }
-                }else if(attr.length == 2 || attr.length == 3){
-                    if(attr[1] == '[]'){
-                        if(!obj[attr[0]]){
-                            obj[attr[0]] = [];
-                        }
-                        arr = {};
-                        if(attr[2]){
-                            arr[attr[2]] = node;
-                        }
-                        find(node, arr);
-                        obj[attr[0]].push(arr);
-                    }else if(attr[1] == '{}'){
-                        if(!obj[attr[0]]){
-                            obj[attr[0]] = {};
-                        }
-                        if(attr[2]){
-                            obj[attr[0]][attr[2]] = node;
-                        }
-                        find(node, obj[attr[0]]);
-                    }
-                }
-                processedNodes.push(node);
+                process(node, obj);
             }
         });
     };
+
+    process(container, nodes);
     find(container, nodes);
+
     return nodes;
 };
 
