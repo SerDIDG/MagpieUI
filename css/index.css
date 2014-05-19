@@ -2410,6 +2410,7 @@ ul.has-icons-outside-three li {
   width: 350px;
   height: 100%;
   position: relative;
+  z-index: 2;
   overflow: hidden;
   background: #ffffff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
@@ -2488,6 +2489,8 @@ ul.has-icons-outside-three li {
 }
 .com-collapsible-layout > .inner {
   height: 100%;
+  position: relative;
+  z-index: 1;
   -webkit-overflow-scrolling: touch;
   overflow-x: hidden;
   overflow-y: scroll;

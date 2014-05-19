@@ -10,6 +10,7 @@
         width: @ComCollapsibleLayout-sidebarWidth;
         height: 100%;
         position: relative;
+        z-index: 2;
         overflow: hidden;
         background: #ffffff;
         box-shadow: @cm-ui-shadow;
@@ -82,6 +83,8 @@
 
     > .inner {
         height: 100%;
+        position: relative;
+        z-index: 1;
         .cm-scroll-a-y;
 
         > iframe {
