@@ -1406,6 +1406,7 @@ ul.has-icons-outside-three li {
 .cm-menu .cm-menu-dropdown {
   padding: 4px;
   background: #fff;
+  background-clip: padding-box;
   border: 1px solid #cbcbcb;
   border-radius: 3px;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
@@ -2537,6 +2538,7 @@ ul.has-icons-outside-three li {
 .com-tooltip > .inner {
   padding: 4px;
   background: #fff;
+  background-clip: padding-box;
   border: 1px solid #cbcbcb;
   border-radius: 3px;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
