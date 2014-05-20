@@ -48,6 +48,7 @@
             border-radius: @cm-border-radius;
             cursor: move;
             .cm-transition(all @cm-transition-duration ease-in-out);
+            visibility: hidden;
 
             .icon {
                 width: 34px;
@@ -96,15 +97,6 @@
                 }
             }
         }
-
-        .ie8 & {
-            > .border,
-            > .drag,
-            > .menu,
-            .com-tooltip {
-                .cm-opacity-ie(0);
-            }
-        }
     }
 
     .hover {
@@ -122,6 +114,7 @@
             opacity: 1;
             top: -28px;
             .cm-transition(all @cm-transition-duration-reverse ease-in-out);
+            visibility: visible;
         }
 
         > .menu {
@@ -129,15 +122,6 @@
             right: -28px;
             opacity: 1;
             .cm-transition(all @cm-transition-duration-reverse ease-in-out);
-        }
-
-        .ie8 & {
-            > .border,
-            > .drag,
-            > .menu,
-            > .menu:hover .com-tooltip {
-                .cm-opacity-ie(100);
-            }
         }
     }
 

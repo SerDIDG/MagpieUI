@@ -2008,6 +2008,7 @@ ul.has-icons-outside-three li {
   cursor: move;
   -webkit-transition: all 0.3s ease-in-out;
   transition: all 0.3s ease-in-out;
+  visibility: hidden;
 }
 .cm-editable > .drag .icon {
   width: 34px;
@@ -2054,12 +2055,6 @@ ul.has-icons-outside-three li {
 .cm-editable > .menu:hover .icon {
   background-color: #fafafa;
 }
-.ie8 .cm-editable > .border,
-.ie8 .cm-editable > .drag,
-.ie8 .cm-editable > .menu,
-.ie8 .cm-editable .com-tooltip {
-  filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
-}
 .cm-editable.is-active > .border,
 .cm-editable.cm-draganddrop-helper > .border,
 .cm-editable:hover > .border {
@@ -2079,6 +2074,7 @@ ul.has-icons-outside-three li {
   top: -28px;
   -webkit-transition: all 0.1s ease-in-out;
   transition: all 0.1s ease-in-out;
+  visibility: visible;
 }
 .cm-editable.is-active > .menu,
 .cm-editable.cm-draganddrop-helper > .menu,
@@ -2088,20 +2084,6 @@ ul.has-icons-outside-three li {
   opacity: 1;
   -webkit-transition: all 0.1s ease-in-out;
   transition: all 0.1s ease-in-out;
-}
-.ie8 .cm-editable.is-active > .border,
-.ie8 .cm-editable.cm-draganddrop-helper > .border,
-.ie8 .cm-editable:hover > .border,
-.ie8 .cm-editable.is-active > .drag,
-.ie8 .cm-editable.cm-draganddrop-helper > .drag,
-.ie8 .cm-editable:hover > .drag,
-.ie8 .cm-editable.is-active > .menu,
-.ie8 .cm-editable.cm-draganddrop-helper > .menu,
-.ie8 .cm-editable:hover > .menu,
-.ie8 .cm-editable.is-active > .menu:hover .com-tooltip,
-.ie8 .cm-editable.cm-draganddrop-helper > .menu:hover .com-tooltip,
-.ie8 .cm-editable:hover > .menu:hover .com-tooltip {
-  filter: progid:DXImageTransform.Microsoft.Alpha(opacity=100);
 }
 .cm-editable.is-active > .drag,
 .cm-editable.cm-draganddrop-helper > .drag {
