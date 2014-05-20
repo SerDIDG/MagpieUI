@@ -8,6 +8,7 @@ Com['Draganddrop'] = function(o){
             'useCSSAnimation' : false,
             'useGracefulDegradation' : true,
             'dropDuration' : 400,
+            'highlightRemoveZones' : true,               // highlight remove zone on drag start
             'classes' : {
                 'area' : null
             }
@@ -25,6 +26,7 @@ Com['Draganddrop'] = function(o){
         filteredAvailableAreas = [],
         checkInt,
         isGracefulDegradation = false,
+        isHighlightedRemoveZones = false,
 
         current,
         currentAboveItem,
@@ -172,6 +174,10 @@ Com['Draganddrop'] = function(o){
             'node' : draggable['node'],
             'from' : draggable['area']
         });
+        // Highlight Remove Zones
+        if(config['highlightRemoveZones']){
+            toggleHighlightRemoveZones();
+        }
         // Filter areas
         filteredAvailableAreas = areas.filter(function(area){
             // Filter out locked areas and inner areas
@@ -387,6 +393,10 @@ Com['Draganddrop'] = function(o){
         // Unset active area classname
         if(currentArea){
             cm.removeClass(currentArea['node'], 'is-active');
+        }
+        // Un Highlight Remove Zones
+        if(config['highlightRemoveZones']){
+            toggleHighlightRemoveZones();
         }
     };
 
@@ -660,7 +670,7 @@ Com['Draganddrop'] = function(o){
     /* *** AREA FUNCTIONS *** */
 
     var getFilteredAreas = function(){
-        var filteredAreas = areas.filter(function(area){
+        return areas.filter(function(area){
             // Filter out locked areas and inner areas
             if(area['isTemporary'] || area['isSystem']){
                 return false;
@@ -668,7 +678,27 @@ Com['Draganddrop'] = function(o){
             // True - pass area
             return true;
         });
-        return filteredAreas;
+    };
+
+    var getRemoveZones = function(){
+        return areas.filter(function(area){
+            return area['isRemoveZone'];
+        });
+    };
+
+    var toggleHighlightRemoveZones = function(){
+        var removeZones = getRemoveZones();
+        if(isHighlightedRemoveZones){
+            isHighlightedRemoveZones = false;
+            cm.forEach(removeZones, function(area){
+                cm.removeClass(area['node'], 'is-highlight');
+            });
+        }else{
+            isHighlightedRemoveZones = true;
+            cm.forEach(removeZones, function(area){
+                cm.addClass(area['node'], 'is-highlight');
+            });
+        }
     };
 
     /* *** EVENTS HANDLERS *** */
