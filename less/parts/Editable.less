@@ -9,7 +9,16 @@
         cursor: text;
         vertical-align: top;
 
+        > .border,
+        > .drag,
+        > .menu {
+            display: none;
+        }
+    }
+
+    .editable {
         > .border {
+            display: block;
             position: absolute;
             z-index: 1;
             top: 0;
@@ -38,6 +47,7 @@
             width: 80px;
             height: 24px;
             margin: 0 0 0 -40px;
+            display: block;
             position: absolute;
             z-index: 3;
             top: -12px;
@@ -64,6 +74,7 @@
         }
 
         > .menu {
+            display: block;
             position: absolute;
             z-index: 4;
             top: -12px;
@@ -132,6 +143,8 @@
     }
 }
 
+/*
+
 .cm-editable {
     #cm-editable-bundle > .normal;
 
@@ -147,8 +160,6 @@
     }
 }
 
-// /* *** ADAPTIVE *** */
-
 @media only screen and (max-width: @cm-mobile-screen) {
 
     .is-active .cm-editable {
@@ -159,3 +170,5 @@
     }
 
 }
+
+*/

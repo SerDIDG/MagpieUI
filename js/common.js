@@ -641,6 +641,10 @@ cm.getChilds = function(parent, handler){
     }
 };
 
+cm.getTextValue = cm.getTxtVal = function(o){
+    return o.nodeType == 1 && o.firstChild ? o.firstChild.nodeValue : '';
+};
+
 cm.getTextNodes = function(parent, handler){
     if(parent && handler){
         var els = parent.childNodes;
@@ -744,6 +748,15 @@ cm.showSpecialTags = function(){
             }
         });
     }
+};
+
+cm.strToHTML = function(str){
+    if(!str){
+        return null;
+    }
+    var node = cm.Node('div');
+    node.insertAdjacentHTML('beforeend', str);
+    return node.childNodes.length == 1? node.firstChild : node.childNodes;
 };
 
 cm.getNodes = function(container, marker){
@@ -1998,10 +2011,6 @@ cm.responseInArray = function(xmldoc){
         data.push(tmp);
     }
     return data;
-};
-
-cm.getTxtVal = function(o){
-    return o.nodeType == 1 && o.firstChild ? o.firstChild.nodeValue : '';
 };
 
 cm.createXmlHttpRequestObject = function(){

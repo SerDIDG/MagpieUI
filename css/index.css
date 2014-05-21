@@ -1962,139 +1962,35 @@ ul.has-icons-outside-three li {
 }
 /* ************ COMMON PARTS ************ */
 /* ******* EDITABLE AREA ******* */
+/*
+
 .cm-editable {
-  width: 100%;
-  position: relative;
-  z-index: 1;
-  display: inline-block;
-  cursor: text;
-  vertical-align: top;
+    #cm-editable-bundle > .normal;
+
+    &.is-active,
+    &.cm-draganddrop-helper,
+    &:hover {
+        #cm-editable-bundle > .hover;
+    }
+
+    &.is-active,
+    &.cm-draganddrop-helper {
+        #cm-editable-bundle > .active;
+    }
 }
-.cm-editable > .border {
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  border: 1px dashed #308ce8;
-  border-radius: 3px;
-  opacity: 0;
-  -webkit-transition: all 0.3s ease-in-out;
-  transition: all 0.3s ease-in-out;
+
+@media only screen and (max-width: @cm-mobile-screen) {
+
+    .is-active .cm-editable {
+        > .border,
+        > .menu {
+            display: none;
+        }
+    }
+
 }
-.cm-editable > .inner {
-  width: 100%;
-  display: inline-block;
-  position: relative;
-  z-index: 2;
-  vertical-align: top;
-}
-.cm-editable > .inner:hover {
-  z-index: 5;
-}
-.cm-editable > .drag {
-  width: 80px;
-  height: 24px;
-  margin: 0 0 0 -40px;
-  position: absolute;
-  z-index: 3;
-  top: -12px;
-  left: 50%;
-  opacity: 0;
-  background: #f2f2f2;
-  border: 1px dashed #308ce8;
-  border-radius: 3px;
-  cursor: move;
-  -webkit-transition: all 0.3s ease-in-out;
-  transition: all 0.3s ease-in-out;
-  visibility: hidden;
-}
-.cm-editable > .drag .icon {
-  width: 34px;
-  height: 6px;
-  margin: 9px auto;
-  display: block;
-}
-.cm-editable > .drag:hover {
-  background: #fafafa;
-  -webkit-transition: all 0.1s ease-in-out;
-  transition: all 0.1s ease-in-out;
-}
-.cm-editable > .menu {
-  position: absolute;
-  z-index: 4;
-  top: -12px;
-  right: -12px;
-  opacity: 0;
-  cursor: pointer;
-  -webkit-transition: all 0.3s ease-in-out;
-  transition: all 0.3s ease-in-out;
-}
-.cm-editable > .menu .icon {
-  width: 20px;
-  height: 20px;
-  padding: 2px;
-  display: block;
-  position: relative;
-  z-index: 2;
-  background-color: #f2f2f2;
-  border: 1px dashed #308ce8;
-  border-radius: 3px;
-}
-.cm-editable > .menu ul {
-  top: 12px;
-  right: 12px;
-  bottom: auto;
-  left: auto;
-  z-index: 1;
-}
-.cm-editable > .menu:hover {
-  z-index: 14;
-}
-.cm-editable > .menu:hover .icon {
-  background-color: #fafafa;
-}
-.cm-editable.is-active > .border,
-.cm-editable.cm-draganddrop-helper > .border,
-.cm-editable:hover > .border {
-  top: -16px;
-  right: -16px;
-  bottom: -16px;
-  left: -16px;
-  opacity: 1;
-  background: #ffffff;
-  -webkit-transition: all 0.1s ease-in-out;
-  transition: all 0.1s ease-in-out;
-}
-.cm-editable.is-active > .drag,
-.cm-editable.cm-draganddrop-helper > .drag,
-.cm-editable:hover > .drag {
-  opacity: 1;
-  top: -28px;
-  -webkit-transition: all 0.1s ease-in-out;
-  transition: all 0.1s ease-in-out;
-  visibility: visible;
-}
-.cm-editable.is-active > .menu,
-.cm-editable.cm-draganddrop-helper > .menu,
-.cm-editable:hover > .menu {
-  top: -28px;
-  right: -28px;
-  opacity: 1;
-  -webkit-transition: all 0.1s ease-in-out;
-  transition: all 0.1s ease-in-out;
-}
-.cm-editable.is-active > .drag,
-.cm-editable.cm-draganddrop-helper > .drag {
-  background-color: #daebfb;
-}
-@media only screen and (max-width: 600px) {
-  .is-active .cm-editable > .border,
-  .is-active .cm-editable > .menu {
-    display: none;
-  }
-}
+
+*/
 /* ******* GRID ******* */
 .cm-grid {
   margin: 0 0 24px;
@@ -3987,6 +3883,7 @@ ul.has-icons-outside-three li {
 }
 .com-columns-chassis {
   width: 10px;
+  display: none;
   position: absolute;
   top: 0;
   bottom: 0;
@@ -4064,12 +3961,15 @@ ul.has-icons-outside-three li {
   -webkit-flex-direction: row;
   flex-direction: row;
 }
-.com-columns.is-active > .inner > .com-columns-chassis,
-.com-columns:hover > .inner > .com-columns-chassis {
+.com-columns.is-editable > .inner .com-columns-chassis {
+  display: block;
+}
+.com-columns.is-editable.is-active > .inner > .com-columns-chassis,
+.com-columns.is-editable:hover > .inner > .com-columns-chassis {
   opacity: 1;
 }
-.com-columns.is-active > .inner > .container > .com-column > .inner,
-.com-columns:hover > .inner > .container > .com-column > .inner {
+.com-columns.is-editable.is-active > .inner > .container > .com-column > .inner,
+.com-columns.is-editable:hover > .inner > .container > .com-column > .inner {
   background: #fafafa;
 }
 .ie8 .com-columns > .inner > .container,
@@ -4077,6 +3977,7 @@ ul.has-icons-outside-three li {
   display: table;
   table-layout: fixed;
 }
+.com-columns-body,
 .com-columns-body * {
   cursor: col-resize !important;
   -webkit-user-select: none;
