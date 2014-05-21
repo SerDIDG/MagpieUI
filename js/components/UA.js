@@ -24,7 +24,11 @@ Com['UA'] = {
             arr['browser'] = 'MSIE';
             arr['hash'] = 'ie';
             arr['engine'] = 'Trident';
-            arr['full_version'] = str.replace(/^(?:.+)(?:MSIE)(?:[\s\/]{0,})([0-9\.]{1,})(?:.+)$/, '$1');
+            if(str.indexOf('MSIE') > -1){
+                arr['full_version'] = str.replace(/^(?:.+)(?:MSIE)(?:[\s\/]{0,})([0-9\.]{1,})(?:.+)$/, '$1');
+            }else{
+                arr['full_version'] = str.replace(/^(?:.+)(?:rv:)(?:[\s\/]{0,})([0-9\.]{1,})(?:.+)$/, '$1');
+            }
             var sp = arr['full_version'].toString().split('.');
             arr['version'] = sp[0]+((sp[1])? '.'+sp[1].slice(0, 1) : '');
             arr['short_version'] = sp[0];

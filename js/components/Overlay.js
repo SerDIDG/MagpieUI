@@ -22,7 +22,7 @@ Com['Overlay'] = function(o){
 		// Set opacity
 		cm.setOpacity(nodes['bg'], config['opacity']);
 		// Init animation
-		anim = new cm.animation(nodes['container']);
+		anim = new cm.Animation(nodes['container']);
 		// Auto Open
 		config['autoOpen'] && open();
 	};
