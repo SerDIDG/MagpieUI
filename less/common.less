@@ -1790,45 +1790,6 @@ ul.has-icons-outside-three li {
     }
 }
 
-/* *** DRAG AND DROP *** */
-
-.cm-draganddrop-body {
-    cursor: move !important;
-    .cm-user-select(none);
-}
-
-.cm-draganddrop-helper {
-    position: fixed;
-    z-index: 9000;
-    .cm-user-select(none);
-}
-
-.cm-draganddrop-chassis {
-    height: 0;
-    .cm-transition(height 0s linear);
-}
-
-.cm-draganddrop-removable {
-    overflow: hidden;
-}
-
-.cm-draganddrop-area {
-    padding: @cm-draganddrop-area-padding;
-
-    &.is-available {
-        border-radius: @cm-draganddrop-area-border-radius;
-        .cm-transition(background-color @cm-transition-duration ease-in-out);
-
-        &.is-active {
-            background-color: @cm-draganddrop-area-background-active;
-
-            .cm-draganddrop-area {
-                background-color: rgba(255,255,255,0.4);
-            }
-        }
-    }
-}
-
 /* ******* ADAPTIVE ******* */
 
 @media only screen and (max-width: @cm-mobile-screen) {

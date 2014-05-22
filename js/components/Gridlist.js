@@ -129,6 +129,7 @@ Com['Gridlist'] = function(o){
             'target' : '_blank',        // Link target, for type="url"
             'showTitle' : false,        // Show title on hover
             'titleText' : '',           // Alternative title text, if not specified - will be shown key text
+            'altText' : '',             // Alternative column text
             'onClick' : false,          // Cell click handler
             'onRender' : false          // Cell onRender handler
         }, item);
@@ -242,7 +243,7 @@ Com['Gridlist'] = function(o){
                 case 'url' :
                     text = cm.decode(text);
                     myNodes['inner'].appendChild(
-                        myNodes['node'] = cm.Node('a', {'target' : col['target'], 'href' : text}, text)
+                        myNodes['node'] = cm.Node('a', {'target' : col['target'], 'href' : text}, !cm.isEmpty(col['altText'])? col['altText'] : text)
                     );
                     break;
 

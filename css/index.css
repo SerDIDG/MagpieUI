@@ -1796,42 +1796,6 @@ ul.has-icons-outside-three li {
   background-color: #ffffff;
   border-color: #daebfb;
 }
-/* *** DRAG AND DROP *** */
-.cm-draganddrop-body {
-  cursor: move !important;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
-}
-.cm-draganddrop-helper {
-  position: fixed;
-  z-index: 9000;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
-}
-.cm-draganddrop-chassis {
-  height: 0;
-  -webkit-transition: height 0s linear;
-  transition: height 0s linear;
-}
-.cm-draganddrop-removable {
-  overflow: hidden;
-}
-.cm-draganddrop-area {
-  padding: 12px;
-}
-.cm-draganddrop-area.is-available {
-  border-radius: 3px;
-  -webkit-transition: background-color 0.3s ease-in-out;
-  transition: background-color 0.3s ease-in-out;
-}
-.cm-draganddrop-area.is-available.is-active {
-  background-color: #daebfb;
-}
-.cm-draganddrop-area.is-available.is-active .cm-draganddrop-area {
-  background-color: rgba(255, 255, 255, 0.4);
-}
 /* ******* ADAPTIVE ******* */
 @media only screen and (max-width: 600px) {
   /* *** FORM *** */
@@ -1961,6 +1925,44 @@ ul.has-icons-outside-three li {
   }
 }
 /* ************ COMMON PARTS ************ */
+/* ******* DRAG AND DROP ******* */
+.cm-draganddrop-body,
+.cm-draganddrop-body * {
+  cursor: move !important;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+.cm-draganddrop-helper {
+  position: fixed;
+  z-index: 9000;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+.cm-draganddrop-chassis {
+  height: 0;
+  -webkit-transition: height 0s linear;
+  transition: height 0s linear;
+}
+.cm-draganddrop-removable {
+  overflow: hidden;
+}
+.cm-draganddrop-area {
+  min-height: 24px;
+  padding: 12px;
+}
+.cm-draganddrop-area.is-available {
+  border-radius: 3px;
+  -webkit-transition: background-color 0.3s ease-in-out;
+  transition: background-color 0.3s ease-in-out;
+}
+.cm-draganddrop-area.is-available.is-active {
+  background-color: #daebfb;
+}
+.cm-draganddrop-area.is-available.is-active .cm-draganddrop-area {
+  background-color: rgba(255, 255, 255, 0.4);
+}
 /* ******* EDITABLE AREA ******* */
 /*
 

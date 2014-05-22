@@ -75,6 +75,7 @@
                                 {'key' : 'name', 'type' : 'number', 'width' : '10%', 'title' : 'Name'},
                                 {'key' : 'descr', 'type' : 'text', 'width' : 'auto', 'title' : 'Description'},
                                 {'key' : 'url', 'type' : 'url', 'width' : '15%', 'title' : 'Link'},
+                                {'key' : 'url', 'type' : 'url', 'width' : '15%', 'title' : 'Alternative Text Link', 'altText' : 'Link'},
                                 {'type' : 'empty', 'width' : '150', 'title' : 'Custom nodes', 'onRender' : function(gridlist, data){
                                     //cm.log(data);
                                     data['nodes']['inner'].appendChild(
@@ -154,6 +155,7 @@
                         <li><b>target</b> <i>[String]</i> - link opening target, when column <b>type</b> is <b>url</b>, <i>default: '_blank'</i>;</li>
                         <li><b>showTitle</b> <i>[Boolean]</i> - show title on hover, by default using content of data <b>key</b>, <i>default: false</i>;</li>
                         <li><b>titleText</b> <i>[String]</i> - alternative title text on hover, prevent default, <i>default: empty</i>;</li>
+                        <li><b>altText</b> <i>[String]</i> - alternative column data text, prevent default, <i>default: empty</i>;</li>
                         <li><b>onClick</b> <i>[Function]</i> - on cell click event handler, when <b>type</b> is <b>icon</b> <b>url</b> <b>checkbox</b>, event will be bind on this nodes, <i>default: false</i>:
                             <ul class="margin-none">
                                 <li><i>Return attributes: [Object {Gridlist}, Object {'index' : Number, 'data' : Object, 'isChecked' : Boolean, 'nodes' : Object}];</i></li>
