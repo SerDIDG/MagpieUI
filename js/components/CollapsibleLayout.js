@@ -28,11 +28,11 @@ Com['CollapsibleLayout'] = function(o){
         // Left Sidebar
         cm.addEvent(nodes['leftButton'], 'click', function(){
             if(cm.isClass(config['node'], 'is-sidebar-left-collapsed')){
-                cm.removeClass(config['node'], 'is-sidebar-left-collapsed');
+                cm.removeClass(config['node'], 'is-sidebar-left-collapsed', true);
                 // API onExpand event
                 executeEvent('onExpand', {'sidebar' : 'left'});
             }else{
-                cm.addClass(config['node'], 'is-sidebar-left-collapsed');
+                cm.addClass(config['node'], 'is-sidebar-left-collapsed', true);
                 // API onCollapse event
                 executeEvent('onCollapse', {'sidebar' : 'left'});
             }
@@ -45,11 +45,11 @@ Com['CollapsibleLayout'] = function(o){
         // Right sidebar
         cm.addEvent(nodes['rightButton'], 'click', function(){
             if(cm.isClass(config['node'], 'is-sidebar-right-collapsed')){
-                cm.removeClass(config['node'], 'is-sidebar-right-collapsed');
+                cm.removeClass(config['node'], 'is-sidebar-right-collapsed', true);
                 // API onExpand event
                 executeEvent('onExpand', {'sidebar' : 'right'});
             }else{
-                cm.addClass(config['node'], 'is-sidebar-right-collapsed');
+                cm.addClass(config['node'], 'is-sidebar-right-collapsed', true);
                 // API onCollapse event
                 executeEvent('onCollapse', {'sidebar' : 'right'});
             }
