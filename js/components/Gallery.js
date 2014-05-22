@@ -178,6 +178,10 @@ Com['Gallery'] = function(o){
         // API onImageSetStart
         executeEvent('onItemLoad', item);
         // Embed item content
+        if(itemOld){
+            itemOld['nodes']['container'].style.zIndex = 1;
+            item['nodes']['container'].style.zIndex = 2;
+        }
         if(item['type'] == 'image'){
             nodes['holder'].appendChild(item['nodes']['container']);
         }
