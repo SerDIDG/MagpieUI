@@ -44,6 +44,16 @@
         box-shadow: @cm-ui-shadowLight;
     }
 
+    .box-border {
+        padding: @cm-indentXSmall;
+        border: @cm-borderBox;
+        .cm-transition(border-color @cm-transitionDuration ease-in-out);
+
+        &.active {
+            border: @cm-borderBoxActive;
+        }
+    }
+
     // /* ******* FORM ELEMENTS ******* */
 
     // /* *** INPUT *** */

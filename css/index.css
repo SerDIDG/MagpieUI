@@ -508,6 +508,15 @@ select[multiple] {
   border-radius: 3px;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
 }
+.cm-box-border {
+  padding: 12px;
+  border: 2px solid #cbcbcb;
+  -webkit-transition: border-color 0.3s ease-in-out;
+  transition: border-color 0.3s ease-in-out;
+}
+.cm-box-border.active {
+  border: 2px solid #daebfb;
+}
 .cm-codebox {
   display: block;
   white-space: pre-wrap;
