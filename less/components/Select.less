@@ -31,7 +31,7 @@
     .cm-user-select(none);
 
     > .inner > .scroll {
-        max-height: @cm-select-list-count * (@cm-base-line-height + @cm-items-list-indent + @cm-items-list-padding-y * 2) - @cm-items-list-indent;
+        max-height: @ComSelect-listCount * (@cm-lineHeight + @CmItemsList-indent + @CmItemsList-padding-y * 2) - @CmItemsList-indent;
     }
 }
 
@@ -43,11 +43,11 @@
     .inner {
         #cm > .input;
         height: auto;
-        min-height: @cm-form-field-height;
-        padding: @cm-block-indent-small;
+        min-height: @CmForm-fieldHeight;
+        padding: @cm-indentXXXSmall;
     }
 
     .cm-items-list > ul {
-        max-height: @cm-multiselect-list-count * (@cm-base-line-height + @cm-items-list-indent + @cm-items-list-padding-y * 2) - @cm-items-list-indent;
+        max-height: @ComSelect-multiListCount * (@cm-lineHeight + @CmItemsList-indent + @CmItemsList-padding-y * 2) - @CmItemsList-indent;
     }
 }

@@ -18,13 +18,8 @@
         background-color: @ComGallery-background;
         position: absolute;
         .cm-position(0,0,0,0);
-        z-index: 2;
+        z-index: 1;
         opacity: 0;
-
-        &:first-child {
-            position: relative;
-            z-index: 1;
-        }
     }
 
     > .loader {
@@ -48,58 +43,6 @@
         }
     }
 
-    // /* ** Bar *** */
-
-    > .bar {
-        position: absolute;
-        .cm-position(0,0,0,0);
-        opacity: 0;
-        z-index: 3;
-        .cm-transition(opacity @cm-transition-duration ease-in-out);
-
-        .bar-arrow {
-            width: 50%;
-            height: 100%;
-            display: block;
-            margin: 0;
-            position: absolute;
-            top: 0;
-            opacity: 0.3;
-            cursor: pointer;
-            .cm-transition(opacity @cm-transition-duration ease-in-out);
-
-            .icon {
-                width: 27px;
-                height: 50px;
-                position: absolute;
-                top: 50%;
-                margin: -25px 0 0 0;
-            }
-
-            &.next {
-                right: 0;
-
-                .icon {
-                    background: url('@{cm-image-path}/components/gallery-arrow-next.png') 0 0 no-repeat;
-                    right: 10px;
-                }
-            }
-
-            &.prev {
-                left: 0;
-
-                .icon {
-                    background: url('@{cm-image-path}/components/gallery-arrow-prev.png') 0 0 no-repeat;
-                    left: 10px;
-                }
-            }
-
-            &:hover {
-                opacity: 1;
-            }
-        }
-    }
-
     &.has-iframe {
         > .holder {
             z-index: 5;
@@ -111,9 +54,8 @@
             .cm-imagebox-title-hover;
         }
 
-        > .bar {
+        > .com-gallery-controls {
             opacity: 1;
-            .cm-transition(opacity @cm-transition-duration-reverse ease-in-out);
         }
     }
 }

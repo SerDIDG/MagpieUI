@@ -1,7 +1,7 @@
 /* ******* TABSET ******* */
 
 .com-tabset {
-    margin: 0 0 @cm-block-indent;
+    margin: 0 0 @cm-indentMedium;
 }
 
 .com-tabset-head {
@@ -15,16 +15,16 @@
         list-style: none;
 
         li {
-            margin: 0 0 0 @com-tabset-tabs-indent;
+            margin: 0 0 0 @ComTabset-tabsIndent;
             float: left;
-            background: @com-tabset-tabs-background;
-            border: 1px solid @com-tabset-border-color;
-            border-radius: @com-tabset-border-radius @com-tabset-border-radius 0 0;
-            .cm-transition(all @cm-transition-duration ease-in-out);
+            background: @ComTabset-tabsBackground;
+            border: 1px solid @ComTabset-borderColor;
+            border-radius: @ComTabset-borderRadius @ComTabset-borderRadius 0 0;
+            .cm-transition(all @cm-transitionDuration ease-in-out);
 
             &:hover {
-                background: @com-tabset-tabs-background-hover;
-                .cm-transition(all @cm-transition-duration-reverse ease-in-out);
+                background: @ComTabset-tabsBackgroundHover;
+                .cm-transition(all @cm-transitionDurationReverse ease-in-out);
             }
 
             &:first-child {
@@ -32,17 +32,14 @@
             }
 
             &.active {
-                background: @com-tabset-tabs-background-active;
+                background: @ComTabset-tabsBackgroundActive;
             }
 
             a {
                 display: block;
-                padding: 0 20px;
+                padding: 0 @cm-indentXSmall;
                 .cm-text-overflow;
-                line-height: @com-tabset-tabs-height;
-                font-size: @com-tabset-tabs-font-size;
-                font-weight: normal;
-                color: @com-tabset-tabs-font-color;
+                line-height: @ComTabset-tabsHeight;
                 text-decoration: none;
             }
         }
@@ -54,22 +51,20 @@
     overflow: hidden;
     padding: 0 20px;
     background: #ffffff;
-    border: 1px solid @com-tabset-border-color;
+    border: 1px solid @ComTabset-borderColor;
     white-space: nowrap;
     text-align: center;
     text-overflow: ellipsis;
-    line-height: @com-tabset-tabs-height;
-    font-size: @com-tabset-tabs-font-size;
-    color: @com-tabset-tabs-font-color;
+    line-height: @ComTabset-tabsHeight;
 }
 
 .com-tabset-content {
     position: relative;
     z-index: 1;
-    padding: @cm-block-indent;
+    padding: @cm-indentMedium;
     background: #fff;
-    border: 1px solid @com-tabset-border-color;
-    border-radius: 0 @com-tabset-border-radius @com-tabset-border-radius @com-tabset-border-radius;
+    border: 1px solid @ComTabset-borderColor;
+    border-radius: 0 @ComTabset-borderRadius @ComTabset-borderRadius @ComTabset-borderRadius;
 
     > ul {
         margin: 0;
@@ -93,7 +88,7 @@
 }
 .com-tabset.top > .com-tabset-head .com-tabset-head-title {
     border-bottom-color: #fff;
-    border-radius: @com-tabset-border-radius @com-tabset-border-radius 0 0;
+    border-radius: @ComTabset-borderRadius @ComTabset-borderRadius 0 0;
 }
 
 .com-tabset.bottom > .com-tabset-head {
@@ -101,38 +96,38 @@
     top: -1px;
 }
 .com-tabset.bottom > .com-tabset-head ul li {
-    border-radius: 0 0 @com-tabset-border-radius @com-tabset-border-radius;
+    border-radius: 0 0 @ComTabset-borderRadius @ComTabset-borderRadius;
 }
 .com-tabset.bottom > .com-tabset-head ul li.active {
     border-top-color: #fff;
 }
 .com-tabset.bottom > .com-tabset-content {
-    border-radius: @com-tabset-border-radius @com-tabset-border-radius @com-tabset-border-radius 0;
+    border-radius: @ComTabset-borderRadius @ComTabset-borderRadius @ComTabset-borderRadius 0;
 }
 .com-tabset.bottom > .com-tabset-head .com-tabset-head-title {
-    border-radius: 0 0 @com-tabset-border-radius @com-tabset-border-radius;
+    border-radius: 0 0 @ComTabset-borderRadius @ComTabset-borderRadius;
     border-top-color: #fff;
 }
 
 /* *** ADAPTIVE *** */
 
-@media only screen and (max-width : @cm-mobile-screen) {
+@media only screen and (max-width : @cm-mobileScreen) {
 
     .com-tabset.is-adaptive .com-tabset-head-button {
         width: 40px;
         height: 29px;
-        margin: 0 0 0 @com-tabset-tabs-indent;
+        margin: 0 0 0 @ComTabset-tabsIndent;
         position: relative;
         float: right;
-        background: #E5E5E5 url('@{cm-image-path}/icons/menu.png') center 10px no-repeat;
-        border: 1px solid @com-tabset-border-color;
-        border-radius: @com-tabset-border-radius @com-tabset-border-radius 0 0;
+        background: #E5E5E5 url('@{CmPath-image}/icons/medium/menu.png') center 10px no-repeat;
+        border: 1px solid @ComTabset-borderColor;
+        border-radius: @ComTabset-borderRadius @ComTabset-borderRadius 0 0;
         cursor: pointer;
         -webkit-transition: all 0.3s ease-in-out;
                 transition: all 0.3s ease-in-out;
     }
     .com-tabset.bottom.is-adaptive .com-tabset-head-button {
-        border-radius: 0 0 @com-tabset-border-radius @com-tabset-border-radius;
+        border-radius: 0 0 @ComTabset-borderRadius @ComTabset-borderRadius;
     }
     .com-tabset.is-adaptive .com-tabset-head-button:hover {
         background-color: #fff;

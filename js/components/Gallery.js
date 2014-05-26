@@ -12,6 +12,10 @@ Com['Gallery'] = function(o){
             'langs' : {
                 'next' : 'Next',
                 'prev' : 'Previous'
+            },
+            'icons' : {
+                'prev' : 'icon xx-large arrow-white-left centered',
+                'next' : 'icon xx-large arrow-white-right centered'
             }
         }, o),
         API = {
@@ -42,12 +46,14 @@ Com['Gallery'] = function(o){
         // Structure
         nodes['container'] = cm.Node('div', {'class' : 'com-gallery'},
             nodes['holder'] = cm.Node('div', {'class' : 'holder'}),
-            nodes['bar'] = cm.Node('div', {'class' : 'bar'},
-                nodes['next'] = cm.Node('div', {'class' : 'bar-arrow next'},
-                    cm.Node('div', {'class' : 'icon'})
-                ),
-                nodes['prev'] = cm.Node('div', {'class' : 'bar-arrow prev'},
-                    cm.Node('div', {'class' : 'icon'})
+            nodes['bar'] = cm.Node('div', {'class' : 'com-gallery-controls'},
+                cm.Node('div', {'class' : 'inner'},
+                    nodes['prev'] = cm.Node('div', {'class' : 'bar-arrow prev'},
+                        cm.Node('div', {'class' : config['icons']['prev']})
+                    ),
+                    nodes['next'] = cm.Node('div', {'class' : 'bar-arrow next'},
+                        cm.Node('div', {'class' : config['icons']['next']})
+                    )
                 )
             ),
             nodes['loader'] = cm.Node('div', {'class' : 'loader'},

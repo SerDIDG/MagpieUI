@@ -1,7 +1,7 @@
 /* ******* IMAGE BOX ******* */
 
 .cm-imagebox {
-    @title-bottom: (@cm-imagebox-title-padding-top * 2) + @cm-base-line-height;
+    @title-bottom: (@CmImagebox-titlePaddingTop * 2) + @cm-lineHeight;
 
     position: relative;
     .cm-user-select(none);
@@ -16,7 +16,7 @@
             position: relative;
             z-index: 1;
             .cm-image-resizable;
-            .cm-transition(opacity @cm-transition-duration ease-in-out);
+            .cm-transition(opacity @cm-transitionDuration ease-in-out);
         }
 
         > iframe.descr {
@@ -35,14 +35,14 @@
             .cm-position(auto,0,-@title-bottom,0);
             background: rgba(0,0,0,0.7);
             opacity: 0;
-            .cm-transition(bottom @cm-transition-duration ease-in-out);
-            .cm-transition(opacity @cm-transition-duration ease-in-out);
+            .cm-transition(bottom @cm-transitionDuration ease-in-out);
+            .cm-transition(opacity @cm-transitionDuration ease-in-out);
 
             .inner {
-                padding: @cm-imagebox-title-padding-top 8px;
+                padding: @CmImagebox-titlePaddingTop 8px;
                 .cm-text-overflow;
                 #cm > .base-font;
-                font-weight: @cm-bold-weight;
+                font-weight: @cm-boldWeight;
                 color: #fff;
 
                 & * {
@@ -63,19 +63,19 @@
         z-index: 3;
 
         &.top-right {
-            .cm-position(@cm-ui-indent, @cm-ui-indent, auto, auto);
+            .cm-position(@cm-indentXSmall, @cm-indentXSmall, auto, auto);
         }
 
         &.top-left {
-            .cm-position(@cm-ui-indent, auto, auto, @cm-ui-indent);
+            .cm-position(@cm-indentXSmall, auto, auto, @cm-indentXSmall);
         }
 
         &.bottom-right {
-            .cm-position(auto, @cm-ui-indent, @cm-ui-indent, auto);
+            .cm-position(auto, @cm-indentXSmall, @cm-indentXSmall, auto);
         }
 
         &.bottom-left {
-            .cm-position(auto, auto, @cm-ui-indent, @cm-ui-indent);
+            .cm-position(auto, auto, @cm-indentXSmall, @cm-indentXSmall);
         }
 
         input[type="checkbox"],
@@ -85,7 +85,7 @@
 
         .icon {
             float: left;
-            margin: 0 0 0 @cm-button-indent;
+            margin: 0 0 0 @cm-indentXXSmall;
 
             &:first-child {
                 margin: 0;
@@ -100,7 +100,7 @@
             > .inner {
                 > .descr {
                     opacity: @cm-ui-fadeout;
-                    .cm-transition(opacity @cm-transition-duration-reverse ease-in-out);
+                    .cm-transition(opacity @cm-transitionDurationReverse ease-in-out);
                 }
             }
         }
@@ -115,7 +115,7 @@
         > .inner {
             > .descr {
                 opacity: @cm-ui-fadeout;
-                .cm-transition(opacity @cm-transition-duration ease-in-out);
+                .cm-transition(opacity @cm-transitionDuration ease-in-out);
             }
         }
 
@@ -127,6 +127,12 @@
                     opacity: 1;
                 }
             }
+        }
+    }
+
+    &.is-resizeble {
+        > .inner {
+            > .descr:extend(.cm-image-resizable all) {}
         }
     }
 
@@ -165,8 +171,8 @@
         > .title {
             bottom: 0;
             opacity: 1;
-            .cm-transition(top @cm-transition-duration-reverse ease-in-out);
-            .cm-transition(opacity @cm-transition-duration-reverse ease-in-out);
+            .cm-transition(top @cm-transitionDurationReverse ease-in-out);
+            .cm-transition(opacity @cm-transitionDurationReverse ease-in-out);
         }
     }
 }

@@ -26,10 +26,10 @@
             right: 0;
             bottom: 0;
             left: 0;
-            border: @cm-border-editable;
-            border-radius: @cm-border-radius;
+            border: @cm-borderEditable;
+            border-radius: @cm-borderRadius;
             opacity: 0;
-            .cm-transition(all @cm-transition-duration ease-in-out);
+            .cm-transition(all @cm-transitionDuration ease-in-out);
         }
 
         > .inner {
@@ -54,11 +54,11 @@
             top: -12px;
             left: 50%;
             opacity: 0;
-            background: @cm-base-color-secondary;
-            border: @cm-border-editable;
-            border-radius: @cm-border-radius;
+            background: @cm-colorSecondary;
+            border: @cm-borderEditable;
+            border-radius: @cm-borderRadius;
             cursor: move;
-            .cm-transition(all @cm-transition-duration ease-in-out);
+            .cm-transition(all @cm-transitionDuration ease-in-out);
             visibility: hidden;
 
             .icon {
@@ -69,8 +69,8 @@
             }
 
             &:hover {
-                background: @cm-base-color-secondary-hover;
-                .cm-transition(all @cm-transition-duration-reverse ease-in-out);
+                background: @cm-colorSecondaryHover;
+                .cm-transition(all @cm-transitionDurationReverse ease-in-out);
             }
         }
 
@@ -82,7 +82,7 @@
             right: -12px;
             opacity: 0;
             cursor: pointer;
-            .cm-transition(all @cm-transition-duration ease-in-out);
+            .cm-transition(all @cm-transitionDuration ease-in-out);
 
             .icon {
                 width: 20px;
@@ -91,9 +91,9 @@
                 display: block;
                 position: relative;
                 z-index: 2;
-                background-color: @cm-base-color-secondary;
-                border: @cm-border-editable;
-                border-radius: @cm-border-radius;
+                background-color: @cm-colorSecondary;
+                border: @cm-borderEditable;
+                border-radius: @cm-borderRadius;
             }
 
             ul {
@@ -105,7 +105,7 @@
                 z-index: 14;
 
                 .icon {
-                    background-color: @cm-base-color-secondary-hover;;
+                    background-color: @cm-colorSecondaryHover;;
                 }
             }
         }
@@ -119,13 +119,13 @@
             left: -16px;
             opacity: 1;
             background: #ffffff;
-            .cm-transition(all @cm-transition-duration-reverse ease-in-out);
+            .cm-transition(all @cm-transitionDurationReverse ease-in-out);
         }
 
         > .drag {
             opacity: 1;
             top: -28px;
-            .cm-transition(all @cm-transition-duration-reverse ease-in-out);
+            .cm-transition(all @cm-transitionDurationReverse ease-in-out);
             visibility: visible;
         }
 
@@ -133,13 +133,13 @@
             top: -28px;
             right: -28px;
             opacity: 1;
-            .cm-transition(all @cm-transition-duration-reverse ease-in-out);
+            .cm-transition(all @cm-transitionDurationReverse ease-in-out);
         }
     }
 
     .active {
         > .drag {
-            background-color: @cm-base-color-active;
+            background-color: @cm-colorActive;
         }
     }
 }
@@ -161,7 +161,7 @@
     }
 }
 
-@media only screen and (max-width: @cm-mobile-screen) {
+@media only screen and (max-width: @cm-mobileScreen) {
 
     .is-active .cm-editable {
         > .border,

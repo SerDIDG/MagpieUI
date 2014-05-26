@@ -22,15 +22,15 @@
 }
 
 .cm-draganddrop-area {
-    min-height: @cm-block-indent;
-    padding: @cm-draganddrop-area-padding;
+    min-height: @cm-indentMedium;
+    padding: @CmDraganddrop-areaPadding;
 
     &.is-available {
-        border-radius: @cm-draganddrop-area-border-radius;
-        .cm-transition(background-color @cm-transition-duration ease-in-out);
+        border-radius: @CmDraganddrop-areaBorderRadius;
+        .cm-transition(background-color @cm-transitionDuration ease-in-out);
 
         &.is-active {
-            background-color: @cm-draganddrop-area-background-active;
+            background-color: @CmDraganddrop-areaBackgroundActive;
 
             .cm-draganddrop-area {
                 background-color: rgba(255,255,255,0.4);

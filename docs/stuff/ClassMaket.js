@@ -2,6 +2,8 @@ Com['ClassName'] = function(o){
     var that = this,
         config = cm.merge({
             'node' : cm.Node('div'),
+            'nodesMarker' : 'ClassName',
+            'configMarker' : 'data-config',
             'nodes' : {},
             'events' : {},
             'langs' : {}
@@ -18,8 +20,8 @@ Com['ClassName'] = function(o){
 
     var init = function(){
         convertEvents(config['events']);
-        getNodes(config['node']);
-        getConfig(config['node']);
+        getNodes(config['node'], config['nodesMarker']);
+        getConfig(config['node'], config['configMarker']);
         render();
     };
 

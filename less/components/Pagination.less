@@ -1,8 +1,8 @@
 /* ******* PAGINATION ******* */
 
 .com-pagination {
-    margin: 0 0 @cm-block-indent;
-    line-height: @cm-form-field-height;
+    margin: 0 0 @cm-indentMedium;
+    line-height: @CmForm-fieldHeight;
     .cm-user-select(none);
 
     ul {
@@ -14,10 +14,10 @@
 
         li {
             display: inline-block;
-            margin-left: @cm-button-indent-small;
+            margin-left: @cm-indentXXXSmall;
             vertical-align: top;
-            line-height: @cm-form-field-height;
-            font-size: @cm-base-font-size;
+            line-height: @CmForm-fieldHeight;
+            font-size: @cm-fontSize;
 
             &:first-child {
                 margin-left: 0;
@@ -26,7 +26,7 @@
             a {
                 #cm > .button;
                 #cm > .button-secondary;
-                min-width: @cm-form-field-height;
+                min-width: @CmForm-fieldHeight;
                 padding: 0 6px;
             }
 
@@ -39,11 +39,11 @@
             &.next a {
                 #cm > .button-transparent;
                 padding: 0 6px;
-                font-weight: @cm-bold-weight;
+                font-weight: @cm-boldWeight;
             }
 
             &.points {
-                width: @cm-form-field-height;
+                width: @CmForm-fieldHeight;
                 font-weight: normal;
                 text-align: center;
             }
@@ -68,7 +68,7 @@
 }
 
 .com-pagination-container {
-    margin: 0 0 @cm-block-indent;
+    margin: 0 0 @cm-indentMedium;
 
     &.bottom {
         margin: 0;
@@ -80,7 +80,7 @@
 }
 
 .com-pagination-content {
-    margin: @cm-block-indent 0;
+    margin: @cm-indentMedium 0;
     position: relative;
 
     &:first-child {

@@ -1,122 +1,143 @@
 // /* ******* PATH ******* */
 
-@cm-image-path: '../img';
+@CmPath-image: '../img';
 
 // /* ******* VARIABLES ******* */
 
-@cm-mobile-screen: 600px;
+@cm-mobileScreen: 600px;
 
-// /* ******* STYLING ******* */
+// /* *** SIZES *** */
 
-// /* Colors */
+@cm-XXXSmall: 4px;
+@cm-XXSmall: 8px;
+@cm-XSmall: 12px;
+@cm-Small: 16px;
+@cm-Medium: 24px;
+@cm-Large: 32px;
+@cm-XLarge: 48px;
+@cm-XXLarge: 64px;
 
-@cm-base-color: hsl(210, 80%, 55%);
-@cm-base-color-active: lighten(saturate(@cm-base-color, 2%), 37%);
-@cm-base-color-active-hover: darken(@cm-base-color-active, 5%);
-@cm-base-color-error: hsl(0, 80%, 50%);
-@cm-base-color-secondary: hsl(0, 0, 95%);
-@cm-base-color-secondary-hover: lighten(@cm-base-color-secondary, 3%);
+// /* *** COLORS *** */
 
-// /* Font */
+@cm-color: hsl(210, 80%, 55%);
+@cm-colorFont: #666666;
+@cm-colorPlaceholder: #b7b7b7;
+@cm-colorLink: @cm-colorFont;
+@cm-colorLinkHover: @cm-colorLink;
+@cm-colorError: hsl(0, 80%, 50%);
 
-@cm-base-line-height: 18px;
-@cm-base-font-size: 13px;
-@cm-base-font-color: #666666;
-@cm-base-font-family: 'Open Sans', arial, helvetica, sans-serif;
-@cm-base-font-weight: normal;
-@cm-placeholder-color: #b7b7b7;
-@cm-base-link-color: @cm-base-font-color;
-@cm-base-link-color-hover: @cm-base-link-color;
-@cm-bold-weight: 600;
+@cm-colorActive: lighten(saturate(@cm-color, 2%), 37%);
+@cm-colorActiveHover: darken(@cm-colorActive, 5%);
+@cm-colorSecondary: hsl(0, 0, 95%);
+@cm-colorSecondaryHover: lighten(@cm-colorSecondary, 3%);
 
-// /* Border */
+@cm-colorBorder: #CBCBCB;
+@cm-colorBorderHover: @cm-colorActiveHover;
 
-@cm-border-color: #CBCBCB;
-@cm-border-radius: 3px;
-@cm-border-style: 1px solid @cm-border-color;
-@cm-border-editable: 1px dashed @cm-base-color;
-@cm-border-color-hover: @cm-base-color-active-hover;
-@cm-box-border: 2px solid @cm-border-color;
-@cm-box-border-active: 2px solid @cm-base-color-active;
+// /* *** FONT *** */
 
-// /* Indent, Padding, Margin */
+@cm-lineHeight: 18px;
+@cm-fontSize: 13px;
+@cm-fontFamily: 'Open Sans', arial, helvetica, sans-serif;
+@cm-fontWeight: normal;
+@cm-boldWeight: 600;
 
-@cm-block-indent: 24px;
-@cm-block-indent-small: 4px;
-@cm-button-indent: 8px;
-@cm-button-indent-small: 4px;
+// /* *** BORDER *** */
 
-// /* Animation */
+@cm-borderRadius: 3px;
+@cm-borderStyle: 1px solid @cm-colorBorder;
+@cm-borderEditable: 1px dashed @cm-color;
+@cm-borderBox: 2px solid @cm-colorBorder;
+@cm-borderBoxActive: 2px solid @cm-colorActive;
 
-@cm-transition-duration: 0.3s;
-@cm-transition-duration-reverse: 0.1s;
+// /* *** INDENT *** */
 
-// /* UI */
+@cm-indentXXXSmall: @cm-XXXSmall;
+@cm-indentXXSmall: @cm-XXSmall;
+@cm-indentXSmall: @cm-XSmall;
+@cm-indentSmall: @cm-Small;
+@cm-indentMedium: @cm-Medium;
+@cm-indentLarge: @cm-Large;
+@cm-indentXLarge: @cm-XLarge;
+@cm-indentXXLarge: @cm-XXLarge;
 
-@cm-ui-indent: 12px;
+// /* *** ANIMATION *** */
+
+@cm-transitionDuration: 0.3s;
+@cm-transitionDurationReverse: 0.1s;
+
+// /* *** UI *** */
+
+@cm-ui-shadowLight: 0 0 2px rgba(0,0,0,0.2);
 @cm-ui-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
 @cm-ui-fadeout: 0.5;
 
 // /* ******* FORM ******* */
 
-@cm-form-field-height: 28px;
-@cm-form-field-indent: 16px;
-@cm-form-dt-width: 150px;
-@cm-form-inner-indent: @cm-form-field-indent / 2;
-
-// /* *** COLUMNS *** */
-
-@cm-cols-names: one two three four five six seven eight nine ten;
-@cm-cols-indent: 2%;
-
-// /* *** IMAGE LOADER ****/
-
-@cm-image-loader-button-width: 100px;
-
-// /* ******* PARTS ******* */
-
-// /* *** ITEMS LIST *** */
-
-@cm-items-list-count: 10;
-@cm-items-list-background-hover: @cm-base-color-secondary;
-@cm-items-list-background-active: @cm-base-color-active;
-@cm-items-list-background-active-hover: @cm-base-color-active-hover;
-@cm-items-list-padding-y: 2px;
-@cm-items-list-indent: 1px;
-
-// /* *** GRID *** */
-
-@cm-grid-item-indent: @cm-block-indent / 2;
-
-// /* *** SELECTABLE*** */
-
-@cm-selectable-background-hover: @cm-base-color-secondary;
-@cm-selectable-border-color-active: @cm-base-color-active;
-
-// /* *** FILES LIST *** */
-
-@cm-files-list-count: 3;
-
-// /* *** TOOLBAR *** */
-
-@cm-toolbar-group-indent: @cm-form-field-indent;
-@cm-toolbar-item-indent: 4px;
-@cm-toolbar-x-small: 70px;
-@cm-toolbar-small: 100px;
-@cm-toolbar-medium: 150px;
-@cm-toolbar-large: 250px;
-@cm-toolbar-x-large: 350px;
-
-// /* *** DRAG AND DROP *** */
-
-@cm-draganddrop-area-padding: @cm-ui-indent;
-@cm-draganddrop-area-border-radius: @cm-border-radius;
-@cm-draganddrop-area-background-active: @cm-base-color-active;
-@ComDraganddrop-dropDuration: 400ms;
+@CmForm-fieldHeight: 28px;
+@CmForm-fieldIndent: 16px;
+@CmForm-fieldTitleWidth: 150px;
+@CmForm-fieldInnerIndent: @CmForm-fieldIndent / 2;
+@CmForm-buttonsIndent: @cm-indentXXSmall;
 
 // /* *** IMAGE BOX *** */
 
-@cm-imagebox-title-padding-top: 4px;
+@CmForm-imageBox-buttonWidth: 100px;
+
+// /* *** COLUMNS *** */
+
+@CmForm-cols-names: one two three four five six seven eight nine ten;
+@CmForm-cols-indent: 2%;
+
+// /* ******* PARTS ******* */
+
+// /* *** MENU *** */
+
+@CmMenu-indent: @cm-indentXXXSmall;
+
+// /* *** ITEMS LIST *** */
+
+@CmItemsList-count: 10;
+@CmItemsList-background-hover: @cm-colorSecondary;
+@CmItemsList-background-active: @cm-colorActive;
+@CmItemsList-background-active-hover: @cm-colorActiveHover;
+@CmItemsList-padding-y: 2px;
+@CmItemsList-indent: 1px;
+
+// /* *** GRID *** */
+
+@CmGrid-itemIndent: @cm-indentMedium / 2;
+
+// /* *** SELECTABLE*** */
+
+@cm-selectable-background-hover: @cm-colorSecondary;
+@cm-selectable-border-color-active: @cm-colorActive;
+
+// /* *** FILES LIST *** */
+
+@CmFilesList-count: 3;
+
+// /* *** TOOLBAR *** */
+
+@CmToolbar-groupIndent: @CmForm-fieldIndent;
+@CmToolbar-itemIndent: 4px;
+@CmToolbar-XSmall: 70px;
+@CmToolbar-Small: 100px;
+@CmToolbar-Medium: 150px;
+@CmToolbar-Large: 250px;
+@CmToolbar-XLarge: 350px;
+
+// /* *** IMAGE BOX *** */
+
+@CmImagebox-titlePaddingTop: 4px;
+
+
+// /* *** DRAG AND DROP *** */
+
+@CmDraganddrop-areaPadding: @cm-indentXSmall;
+@CmDraganddrop-areaBorderRadius: @cm-borderRadius;
+@CmDraganddrop-areaBackgroundActive: @cm-colorActive;
+@CmDraganddrop-dropDuration: 400ms;
 
 // /* ******* COMPONENTS ******* */
 
@@ -127,42 +148,40 @@
 
 // /* *** DATEPICKER *** */
 
-@com-datepicker-width: 210px;
-@com-datepicker-tooltip-width: @com-datepicker-width;
+@ComDatepicker-width: 210px;
+@ComDatepicker-tooltipWidth: @ComDatepicker-width;
 
 // /* *** GRIDLIST *** */
 
-@com-gridlist-font-size: 11px;
-@com-gridlist-padding-inner: 6px;
-@com-gridlist-link-indent: 6px;
+@ComGridlist-fontSize: 11px;
+@ComGridlist-paddingInner: 6px;
+@ComGridlist-linkIndent: 6px;
 
 // /* *** COLUMNS *** */
 
-@ComColumns-mobileScreen: @cm-mobile-screen;
-@ComColumns-indent: @cm-block-indent;
+@ComColumns-mobileScreen: @cm-mobileScreen;
+@ComColumns-indent: @cm-indentMedium;
 @ComColumns-minHeight: 64px;
-@ComColumns-backgroundHover: @cm-base-color-secondary-hover;
+@ComColumns-backgroundHover: @cm-colorSecondaryHover;
 
 // /* *** TABSET *** */
 
-@com-tabset-border-color: @cm-border-color;
-@com-tabset-border-radius: @cm-border-radius;
-@com-tabset-tabs-height: @cm-form-field-height;
-@com-tabset-tabs-indent: @cm-button-indent-small;
-@com-tabset-tabs-background: @cm-base-color-secondary;
-@com-tabset-tabs-background-hover: #ffffff;
-@com-tabset-tabs-background-active: #ffffff;
-@com-tabset-tabs-font-size: @cm-base-font-size;
-@com-tabset-tabs-font-color: @cm-base-font-color;
+@ComTabset-borderColor: @cm-colorBorder;
+@ComTabset-borderRadius: @cm-borderRadius;
+@ComTabset-tabsHeight: @CmForm-fieldHeight;
+@ComTabset-tabsIndent: @cm-indentXXXSmall;
+@ComTabset-tabsBackground: @cm-colorSecondary;
+@ComTabset-tabsBackgroundHover: #ffffff;
+@ComTabset-tabsBackgroundActive: #ffffff;
 
 // /* *** SELECT *** */
 
-@cm-select-list-count: 7;
-@cm-multiselect-list-count: 5;
+@ComSelect-listCount: 7;
+@ComSelect-multiListCount: 5;
 
 // /* *** TAGS INPUT *** */
 
-@ComTagsInput-itemIndent: @cm-button-indent;
+@ComTagsInput-itemIndent: @CmForm-buttonsIndent;
 @ComTagsInput-itemWidth: 250px;
 @ComTagsInput-inputWidth: 150px;
 
@@ -170,11 +189,14 @@
 
 @ComGallery-background: #000000;
 
+// /* *** GALLERY CONTROLS *** */
+
+@ComGalleryControls-buttonSize: @cm-XSmall;
+
 // /* *** GALLERY LAYOUT *** */
 
-@ComGalleryLayout-arrowWidth: @cm-block-indent;
-@ComGalleryLayout-barVerticalWidth: 20%;
-@ComGalleryLayout-sizeCount: 12;
+@ComGalleryLayout-arrowWidth: @cm-indentMedium;
+@ComGalleryLayout-sizesCount: 12;
 
 // /* *** GALLERY POPUP *** */
 

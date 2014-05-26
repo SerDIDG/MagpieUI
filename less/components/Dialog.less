@@ -38,7 +38,7 @@
                 z-index: 2;
                 font-family: Verdana, Geneva, sans-serif;
                 font-size: 20px;
-                font-weight: @cm-bold-weight;
+                font-weight: @cm-boldWeight;
                 line-height: 18px;
                 cursor: pointer;
 
@@ -49,10 +49,10 @@
 
             > .title {
                 padding: 16px 0 0;
-                margin: 0 @cm-block-indent;
+                margin: 0 @cm-indentMedium;
                 line-height: 24px;
                 font-size: 24px;
-                font-weight: @cm-bold-weight;
+                font-weight: @cm-boldWeight;
                 color: #015696;
 
                 h1 {
@@ -70,7 +70,7 @@
 
                     > .inner {
                         word-wrap: break-word;
-                        padding: @cm-block-indent - 8;
+                        padding: @cm-indentMedium - 8;
                     }
                 }
 
@@ -79,12 +79,12 @@
                     overflow-y: auto;
 
                     > .inner {
-                        padding-right: @cm-block-indent;
+                        padding-right: @cm-indentMedium;
                     }
                 }
 
                 &.no-scroll {
-                    padding: @cm-block-indent;
+                    padding: @cm-indentMedium;
                 }
             }
 
@@ -92,12 +92,12 @@
                 padding: 32px 8px 8px;
 
                 > .scroll > .inner {
-                    padding: @cm-block-indent - 8;
+                    padding: @cm-indentMedium - 8;
                     padding-top: 0;
                 }
 
                 > .scroll.isScroll > .inner {
-                    padding-right: @cm-block-indent;
+                    padding-right: @cm-indentMedium;
                 }
             }
         }
@@ -131,7 +131,7 @@
 
     > .title {
         text-align: center;
-        font-weight: @cm-bold-weight;
+        font-weight: @cm-boldWeight;
     }
 
     .button-box {

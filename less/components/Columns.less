@@ -8,11 +8,11 @@
     > .inner {
         -webkit-flex: 1;
                 flex: 1;
-        min-height: @ComColumns-minHeight + (@cm-draganddrop-area-padding * 2);
+        min-height: @ComColumns-minHeight + (@CmDraganddrop-areaPadding * 2);
         margin: 0 (@ComColumns-indent / 2);
         -moz-box-sizing: border-box;
              box-sizing: border-box;
-        .cm-transition(background-color @cm-transition-duration ease-in-out);
+        .cm-transition(background-color @cm-transitionDuration ease-in-out);
     }
 
     &:first-child > .inner {
@@ -42,7 +42,7 @@
     margin: 0 0 0 -5px;
     opacity: 0;
     cursor: col-resize;
-    .cm-transition(opacity @cm-transition-duration ease-in-out);
+    .cm-transition(opacity @cm-transitionDuration ease-in-out);
 
     .drag {
         width: 6px;
@@ -51,11 +51,11 @@
         .cm-position(50%, auto, auto, 50%);
         margin: -16px 0 0 -8px;
         padding: 8px 4px;
-        background: @cm-base-color-secondary;
-        border: 1px solid @cm-border-color;
-        border-radius: @cm-border-radius;
-        .cm-transition(background-color @cm-transition-duration ease-in-out);
-        .cm-transition(border-color @cm-transition-duration ease-in-out);
+        background: @cm-colorSecondary;
+        border: 1px solid @cm-colorBorder;
+        border-radius: @cm-borderRadius;
+        .cm-transition(background-color @cm-transitionDuration ease-in-out);
+        .cm-transition(border-color @cm-transitionDuration ease-in-out);
 
         .icon {
             width: 6px;
@@ -71,36 +71,36 @@
         margin: 0 0 0 -1px;
         display: block;
         content: '';
-        background: @cm-base-color-secondary;
-        .cm-transition(background-color @cm-transition-duration ease-in-out);
+        background: @cm-colorSecondary;
+        .cm-transition(background-color @cm-transitionDuration ease-in-out);
     }
 
     &:hover {
         .drag {
-            background: @cm-base-color-secondary-hover;
-            .cm-transition(background-color @cm-transition-duration-reverse ease-in-out);
-            .cm-transition(border-color @cm-transition-duration-reverse ease-in-out);
+            background: @cm-colorSecondaryHover;
+            .cm-transition(background-color @cm-transitionDurationReverse ease-in-out);
+            .cm-transition(border-color @cm-transitionDurationReverse ease-in-out);
         }
 
         &:after {
-            .cm-transition(background-color @cm-transition-duration-reverse ease-in-out);
+            .cm-transition(background-color @cm-transitionDurationReverse ease-in-out);
         }
     }
 
     &.is-active {
         .drag {
-            background: @cm-base-color-active;
-            border-color: @cm-base-color;
+            background: @cm-colorActive;
+            border-color: @cm-color;
         }
 
         &:after {
-            background: @cm-base-color-active;
+            background: @cm-colorActive;
         }
     }
 }
 
 .com-columns {
-    margin: 0 0 @cm-block-indent;
+    margin: 0 0 @cm-indentMedium;
 
     &.bottom {
         margin: 0;

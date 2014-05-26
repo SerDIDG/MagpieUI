@@ -10,7 +10,7 @@
     > .title {
         position: absolute;
         z-index: 2;
-        .cm-position(@cm-ui-indent, @ComGalleryPopup-indentTop, auto, @cm-block-indent);
+        .cm-position(@cm-indentXSmall, @ComGalleryPopup-indentTop, auto, @cm-indentMedium);
 
         .caption {
             #cm > .title-font;
@@ -25,13 +25,13 @@
 
     > .icon {
         position: absolute;
-        .cm-position(@cm-block-indent, @cm-block-indent, auto, auto);
+        .cm-position(@cm-indentMedium, @cm-indentMedium, auto, auto);
     }
 
     > .descr {
         position: absolute;
         z-index: 2;
-        .cm-position(@ComGalleryPopup-indentTop, @cm-block-indent, @cm-block-indent, @cm-block-indent);
+        .cm-position(@ComGalleryPopup-indentTop, @cm-indentMedium, @cm-indentMedium, @cm-indentMedium);
     }
 
     .com-gallery {

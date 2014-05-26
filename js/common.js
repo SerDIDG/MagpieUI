@@ -115,6 +115,7 @@ cm.clone = function(o){
         case String:
         case Number:
         case RegExp:
+        case Boolean:
             newO = o;
             break;
         case Array:
@@ -1064,10 +1065,7 @@ cm.splitNumber = function(str){
 };
 
 cm.rand = function(min, max){
-    return Math.floor(Math.random() * (min - max)) + min;
-};
-cm.rand2 = function(min, max){
-    return Math.floor(Math.random() * (max - min) + min);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
 cm.isEven = function(num){
@@ -1543,7 +1541,7 @@ cm.animation = cm.Animation = function(o){
                 }
             }, arguments[0]),
             pId = 'animation_process_' + Math.random(),
-            delta = cm.easing(args.anim, args['duration']) || animationMethod[args.anim] || animationMethod['simple'],
+            delta = animationMethod[args.anim] || animationMethod['simple'],
             properties = [];
 
         for(var name in args.style){
@@ -1761,85 +1759,6 @@ cm.transition = function(o){
     }, (config['delayIn'] + config['duration'] + config['delayOut']));
 };
 
-// Bezier by Copyright (c) 2013 Arian Stolwijk https://github.com/arian/cubic-bezier
-
-cm.bezier = function(x1, y1, x2, y2, epsilon){
-    var curveX = function(t){
-        var v = 1 - t;
-        return 3 * v * v * t * x1 + 3 * v * t * t * x2 + t * t * t;
-    };
-
-    var curveY = function(t){
-        var v = 1 - t;
-        return 3 * v * v * t * y1 + 3 * v * t * t * y2 + t * t * t;
-    };
-
-    var derivativeCurveX = function(t){
-        var v = 1 - t;
-        return 3 * (2 * (t - 1) * t + v * v) * x1 + 3 * (-t * t * t + 2 * v * t) * x2;
-    };
-
-    return function(t){
-        var x = t, t0, t1, t2, x2, d2, i;
-        // First try a few iterations of Newton's method -- normally very fast.
-        for(t2 = x, i = 0; i < 8; i++){
-            x2 = curveX(t2) - x;
-            if(Math.abs(x2) < epsilon){
-                return curveY(t2);
-            }
-            d2 = derivativeCurveX(t2);
-            if(Math.abs(d2) < 1e-6){
-                break;
-            }
-            t2 = t2 - x2 / d2;
-        }
-
-        t0 = 0;
-        t1 = 1;
-        t2 = x;
-
-        if(t2 < t0){
-            return curveY(t0);
-        }
-        if(t2 > t1){
-            return curveY(t1);
-        }
-
-        // Fallback to the bisection method for reliability.
-        while(t0 < t1){
-            x2 = curveX(t2);
-            if(Math.abs(x2 - x) < epsilon){
-                return curveY(t2);
-            }
-            if(x > x2){
-                t0 = t2;
-            }else{
-                t1 = t2;
-            }
-            t2 = (t1 - t0) * .5 + t0;
-        }
-
-        // Failure
-        return curveY(t2);
-    };
-};
-
-cm.easing = function(type, duration){
-    var epsilon = (1000 / 60 / duration) / 4,
-        types = {
-            'easeIn' : function(progress){
-                return Math.pow(progress, 3);
-            },
-            'easeOut' : function(progress){
-                return 1 - types['easeIn'](1 - progress);
-            },
-            'easeInQuint' : cm.bezier(0.755, 0.05, 0.855, 0.06, epsilon),
-            'easeInOutCubic' : cm.bezier(.64, .05, .35, 1, epsilon),
-            'easeInOutQuart' : cm.bezier(0.77, 0, 0.175, 1, epsilon)
-        };
-    return types[type] || false;
-};
-
 /* ******* COOKIE & LOCAL STORAGE ******* */
 
 cm.storageSet = function(key, value, cookie){
@@ -1949,7 +1868,8 @@ cm.parseJSON = function(str){
 cm.obj2URI = function(obj, prefix){
     var str = [];
     cm.forEach(obj, function(item, key){
-        var k = prefix ? prefix + "[" + key + "]" : key, v = item;
+        var k = prefix ? prefix + "[" + key + "]" : key,
+            v = item;
         str.push(typeof v == "object" ? cm.obj2URI(v, k) : k + "=" + encodeURIComponent(v));
     });
     return str.join("&");

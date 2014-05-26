@@ -1,7 +1,7 @@
 /* ******* GRID ******* */
 
 .cm-grid {
-    margin: 0 0 @cm-block-indent;
+    margin: 0 0 @cm-indentMedium;
     overflow: hidden;
 
     &.bottom {
@@ -32,13 +32,13 @@
                     position: relative;
                     cursor: pointer;
                     -webkit-transform: translateZ(0px);
-                    .cm-transition(opacity @cm-transition-duration ease-in-out);
+                    .cm-transition(opacity @cm-transitionDuration ease-in-out);
                 }
 
                 &:hover {
                     > img {
                         opacity: @cm-ui-fadeout;
-                        .cm-transition(opacity @cm-transition-duration-reverse ease-in-out);
+                        .cm-transition(opacity @cm-transitionDurationReverse ease-in-out);
                     }
                 }
             }
@@ -71,12 +71,12 @@
 
     // /* Set grid items indent */
 
-    #cm > .grid-indent(@cm-grid-item-indent);
+    #cm > .grid-indent(@CmGrid-itemIndent);
 }
 
 // /* *** ADAPTIVE *** */
 
-@media only screen and (max-width: @cm-mobile-screen) {
+@media only screen and (max-width: @cm-mobileScreen) {
 
     .is-adaptive .cm-grid {
         .loop(@counter) when (@counter > 0) {

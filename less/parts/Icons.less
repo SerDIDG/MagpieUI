@@ -1,0 +1,201 @@
+/* ******* ICONS ******* */
+
+.icon {
+    background: transparent center center no-repeat;
+
+    // /* *** PARAMETERS *** */
+
+    &.inline {
+        margin: 0 4px;
+        vertical-align: middle;
+    }
+
+    &.centered {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+    }
+
+    &.linked {
+        cursor: pointer;
+        .cm-transition(opacity @cm-transitionDuration ease-in-out);
+
+        &:hover {
+            opacity: 0.7;
+            .cm-transition(opacity @cm-transitionDurationReverse ease-in-out);
+        }
+    }
+
+    &.draggable[data-draganddrop-drag="true"] {
+        cursor: move;
+    }
+
+    &.draggable[data-draganddrop-drag="false"] {
+        cursor: default;
+    }
+
+    // /* *** X SMALL *** */
+
+    &.x-small {
+        width: @cm-XSmall;
+        height: @cm-XSmall;
+
+        &.centered {
+            @margin: @cm-XSmall / 2;
+            margin: -@margin 0 0 -@margin;
+        }
+    }
+
+    // /* *** SMALL *** */
+
+    &.small {
+        width: @cm-Small;
+        height: @cm-Small;
+
+        &.centered {
+            @margin: @cm-Small / 2;
+            margin: -@margin 0 0 -@margin;
+        }
+
+        .for(add arrow-priority-down arrow-priority-up arrow-left arrow-right arrow-top arrow-bottom copy done edit fail help remove settings view search arrow-white-left arrow-white-right arrow-white-top arrow-white-bottom); .-each(@name) {
+            &.@{name} {
+                background-image: url("@{CmPath-image}/icons/small/@{name}.png");
+            }
+        }
+    }
+
+    &.small {
+        .for(loader); .-each(@name) {
+            &.@{name} {
+                background-image: url("@{CmPath-image}/icons/small/@{name}.gif");
+            }
+        }
+    }
+
+    // /* *** MEDIUM *** */
+
+    &.medium {
+        width: @cm-Medium;
+        height: @cm-Medium;
+
+        &.centered {
+            @margin: @cm-Medium / 2;
+            margin: -@margin 0 0 -@margin;
+        }
+
+        .for(arrow-left arrow-right arrow-white-left arrow-white-right arrow-white-top arrow-white-bottom datepicker select-arrow close close-white menu); .-each(@name) {
+            &.@{name} {
+                background-image: url("@{CmPath-image}/icons/medium/@{name}.png");
+            }
+        }
+    }
+
+    // /* *** LARGE *** */
+
+    &.large {
+        width: @cm-Large;
+        height: @cm-Large;
+
+        &.centered {
+            @margin: @cm-Large / 2;
+            margin: -@margin 0 0 -@margin;
+        }
+    }
+
+    // /* *** X-LARGE *** */
+
+    &.x-large {
+        width: @cm-XLarge;
+        height: @cm-XLarge;
+
+        &.centered {
+            @margin: @cm-XLarge / 2;
+            margin: -@margin 0 0 -@margin;
+        }
+
+        .for(play); .-each(@name) {
+            &.@{name} {
+                background-image: url("@{CmPath-image}/icons/x-large/@{name}.png");
+            }
+        }
+    }
+
+    // /* *** XX-LARGE *** */
+
+    &.xx-large {
+        width: @cm-XXLarge;
+        height: @cm-XXLarge;
+
+        &.centered {
+            @margin: @cm-XXLarge / 2;
+            margin: -@margin 0 0 -@margin;
+        }
+
+        .for(arrow-left arrow-right arrow-white-left arrow-white-right); .-each(@name) {
+            &.@{name} {
+                background-image: url("@{CmPath-image}/icons/xx-large/@{name}.png");
+            }
+        }
+    }
+
+    // /* *** TOOLBAR *** */
+
+    &.toolbar {
+        .for(bold italic underline); .-each(@name) {
+            &.@{name} {
+                background-image: url("@{CmPath-image}/icons/toolbar/@{name}.png");
+            }
+        }
+    }
+
+    // /* *** OTHER *** */
+
+    &.arrow {
+        &.asc {
+            width: 10px;
+            height: 6px;
+            background-image: url("@{CmPath-image}/icons/arrow-asc.png");
+        }
+
+        &.desc {
+            width: 10px;
+            height: 6px;
+            background-image: url("@{CmPath-image}/icons/arrow-desc.png");
+        }
+    }
+
+    &.editable-icon {
+        background-image: url("@{CmPath-image}/icons/editable.png");
+    }
+
+    &.draggable {
+        background: url("@{CmPath-image}/icons/draggable.png") 0 0 repeat;
+    }
+
+    // /* *** BROWSER ICONS *** */
+
+    &.chrome,
+    &.firefox,
+    &.msie,
+    &.safari {
+        width: 100px;
+        height: 76px;
+        background: url("@{CmPath-image}/icons/browsers.png");
+    }
+
+    &.chrome {
+        background-position: -200px 0;
+    }
+
+    &.firefox {
+        background-position: -100px 0;
+    }
+
+    &.msie {
+        background-position: -300px 0;
+    }
+
+    &.safari {
+        background-position: -400px 0;
+    }
+}

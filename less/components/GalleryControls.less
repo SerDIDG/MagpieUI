@@ -1,0 +1,111 @@
+/* ******* GALLERY CONTROLS ******* */
+
+.com-gallery-controls {
+    position: absolute;
+    .cm-position(0,0,0,0);
+    z-index: 2;
+    opacity: 0;
+    .cm-user-select(none);
+    .cm-transition(opacity @cm-transitionDuration ease-in-out);
+
+    .bar-arrow {
+        width: 50%;
+        position: absolute;
+        .cm-position(0, auto, 0, auto);
+        z-index: 1;
+        opacity: 1;
+        .cm-transition(opacity @cm-transitionDuration ease-in-out);
+        cursor: pointer;
+
+        .icon {
+            margin-left: 0;
+            left: auto;
+            opacity: 0.3;
+            .cm-transition(opacity @cm-transitionDuration ease-in-out);
+        }
+
+        &.next {
+            right: 0;
+            .cm-linear-gradient(~"to left, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0) 50%");
+
+            .icon {
+                right: @cm-indentXSmall;
+
+                &.xx-large {
+                    right: 0;
+                }
+            }
+        }
+
+        &.prev {
+            left: 0;
+            .cm-linear-gradient(~"to right, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0) 50%");
+
+            .icon {
+                left: @cm-indentXSmall;
+
+                &.xx-large {
+                    left: 0;
+                }
+            }
+        }
+
+        &:hover {
+            .icon {
+                opacity: 1;
+            }
+        }
+    }
+
+    .bar-buttons {
+        margin: 0 50%;
+        position: absolute;
+        .cm-position(auto, auto, @cm-indentXSmall, auto);
+        z-index: 2;
+        font-size: 0;
+        white-space: nowrap;
+        text-align: center;
+
+        ul {
+            margin: 0 0 0 -50%;
+            padding: 0;
+            display: block;
+            list-style: none;
+            line-height: @ComGalleryControls-buttonSize;
+
+            li {
+                width: @ComGalleryControls-buttonSize;
+                height: @ComGalleryControls-buttonSize;
+                display: inline-block;
+                margin: 0 0 0 @cm-indentXXSmall;
+                vertical-align: top;
+                -moz-box-sizing: border-box;
+                     box-sizing: border-box;
+                background-color: @cm-colorSecondary;
+                border: 2px solid @cm-colorSecondary;
+                border-radius: @ComGalleryControls-buttonSize;
+                cursor: pointer;
+                .cm-transition(all @cm-transitionDuration ease-in-out);
+
+                &:first-child {
+                    margin: 0;
+                }
+
+                &:hover {
+                    border-color: @cm-color;
+                    .cm-transition(all @cm-transitionDurationReverse ease-in-out);
+                }
+
+                &.active {
+                    border-color: @cm-color;
+                    background-color: @cm-color;
+                }
+            }
+        }
+    }
+
+    &.is-small {
+        height: @cm-indentXSmall * 2 + @ComGalleryControls-buttonSize;
+        top: auto;
+    }
+}

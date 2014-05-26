@@ -3,24 +3,24 @@
     // /* ******* STATIC CLASSES ******* */
 
     .base-font {
-        font: @cm-base-font-weight ~'@{cm-base-font-size}/@{cm-base-line-height}' @cm-base-font-family;
-        color: @cm-base-font-color;
+        font: @cm-fontWeight ~'@{cm-fontSize}/@{cm-lineHeight}' @cm-fontFamily;
+        color: @cm-colorFont;
     }
 
     .title-font {
-        font: 300 30px/38px @cm-base-font-family;
-        color: @cm-base-font-color;
+        font: 300 30px/38px @cm-fontFamily;
+        color: @cm-colorFont;
     }
 
     .link {
         text-decoration: underline;
-        color: @cm-base-link-color;
+        color: @cm-colorLink;
         outline: none;
         cursor: pointer;
 
         &:hover {
             text-decoration: none;
-            color: @cm-base-link-color-hover;
+            color: @cm-colorLinkHover;
         }
     }
 
@@ -28,20 +28,20 @@
         height: 0;
         overflow: hidden;
         border: none;
-        border-top: 1px dotted @cm-border-color;
-        margin: @cm-base-line-height 0;
+        border-top: 1px dotted @cm-colorBorder;
+        margin: @cm-lineHeight 0;
         padding: 0;
         display: block;
         clear: both;
     }
 
     .box {
-        padding: @cm-block-indent-small;
+        padding: @cm-indentXXXSmall;
         background: #fff;
         background-clip: padding-box;
-        border: @cm-border-style;
-        border-radius: @cm-border-radius;
-        box-shadow: 0 0 2px rgba(0,0,0,0.2);
+        border: @cm-borderStyle;
+        border-radius: @cm-borderRadius;
+        box-shadow: @cm-ui-shadowLight;
     }
 
     // /* ******* FORM ELEMENTS ******* */
@@ -49,23 +49,23 @@
     // /* *** INPUT *** */
 
     .input {
-        @padding: (@cm-form-field-height - @cm-base-line-height) / 2;
+        @padding: (@CmForm-fieldHeight - @cm-lineHeight) / 2;
 
         width: 100%;
-        height: @cm-form-field-height;
+        height: @CmForm-fieldHeight;
         padding: @padding 6px;
         margin: 0;
         vertical-align: top;
         -moz-box-sizing: border-box;
         box-sizing: border-box;
         background: #fff;
-        border: 1px solid @cm-border-color;
-        border-radius: @cm-border-radius;
+        border: 1px solid @cm-colorBorder;
+        border-radius: @cm-borderRadius;
         cursor: text;
 
         &:focus {
             background: #fdffff;
-            border-color: @cm-border-color-hover;
+            border-color: @cm-colorBorderHover;
         }
     }
 
@@ -73,41 +73,41 @@
 
     .textarea {
         height: 100px;
-        min-height: @cm-form-field-height;
+        min-height: @CmForm-fieldHeight;
         padding: 6px;
         resize: vertical;
 
         &[disabled] {
-            background-color: @cm-base-color-secondary;
+            background-color: @cm-colorSecondary;
         }
     }
 
     // /* *** BUTTONS *** */
 
     .button {
-        height: @cm-form-field-height;
+        height: @CmForm-fieldHeight;
         margin: 0;
-        padding: 0 (@cm-form-field-height / 2);
+        padding: 0 @cm-indentXSmall;
         position: relative;
         display: inline-block;
         vertical-align: top;
         -webkit-appearance: none;
         -moz-box-sizing: border-box;
-        box-sizing: border-box;
+             box-sizing: border-box;
         -webkit-background-clip: border-box;
-        -moz-background-clip: border-box;
-        background-clip: border-box;
+           -moz-background-clip: border-box;
+                background-clip: border-box;
         border: none;
-        border-radius: @cm-border-radius;
+        border-radius: @cm-borderRadius;
         text-align: center;
         text-decoration: none;
-        line-height: @cm-form-field-height;
-        font-size: @cm-base-font-size;
+        line-height: @CmForm-fieldHeight;
+        font-size: @cm-fontSize;
         cursor: pointer;
         #cm > .button-primary;
-        .cm-transition(background-color @cm-transition-duration ease-in-out);
-        .cm-transition(color @cm-transition-duration ease-in-out);
-        .cm-transition(box-shadow @cm-transition-duration ease-in-out);
+        .cm-transition(background-color @cm-transitionDuration ease-in-out);
+        .cm-transition(color @cm-transitionDuration ease-in-out);
+        .cm-transition(box-shadow @cm-transitionDuration ease-in-out);
 
         &.wide {
             width: 100%;
@@ -123,6 +123,10 @@
             #cm > .button-secondary;
         }
 
+        &.error {
+            #cm > .button-error;
+        }
+
         &.transparent {
             #cm > .button-transparent;
         }
@@ -130,13 +134,13 @@
 
     .button-hover {
         text-decoration: none;
-        .cm-transition(background-color @cm-transition-duration-reverse ease-in-out);
-        .cm-transition(color @cm-transition-duration-reverse ease-in-out);
-        .cm-transition(box-shadow @cm-transition-duration-reverse ease-in-out);
+        .cm-transition(background-color @cm-transitionDurationReverse ease-in-out);
+        .cm-transition(color @cm-transitionDurationReverse ease-in-out);
+        .cm-transition(box-shadow @cm-transitionDurationReverse ease-in-out);
     }
 
     .button-primary {
-        background: @cm-base-color;
+        background: @cm-color;
         color: #fff;
 
         &:hover {
@@ -150,7 +154,7 @@
     }
 
     .button-primary-hover {
-        background-color: darken(@cm-base-color, 10%);
+        background-color: darken(@cm-color, 10%);
         color: #fff;
     }
 
@@ -159,33 +163,56 @@
     }
 
     .button-secondary {
-        background: @cm-base-color-secondary;
-        color: @cm-base-color;
+         background: @cm-colorSecondary;
+         color: @cm-color;
 
-        &:hover {
-            #cm > .button-secondary-hover;
-        }
+         &:hover {
+             #cm > .button-secondary-hover;
+         }
 
-        &:active,
-        &.active {
-            #cm > .button-secondary-active;
-        }
-    }
+         &:active,
+         &.active {
+             #cm > .button-secondary-active;
+         }
+     }
 
     .button-secondary-hover {
-        background: @cm-base-color-secondary-hover;
-        color: @cm-base-color;
+        background: @cm-colorSecondaryHover;
+        color: @cm-color;
     }
 
     .button-secondary-active {
         box-shadow: 0 2px 2px rgba(0,0,0,0.2) inset;
     }
 
+    .button-error {
+        background: @cm-colorError;
+        color: #ffffff;
+
+        &:hover {
+            #cm > .button-error-hover;
+        }
+
+        &:active,
+        &.active {
+            #cm > .button-error-active;
+        }
+    }
+
+    .button-error-hover {
+        background: darken(@cm-colorError, 10%);
+        color: #ffffff;
+    }
+
+    .button-error-active {
+        box-shadow: 0 3px 3px rgba(0,0,0,0.4) inset;
+    }
+
     .button-transparent {
         background: none;
         box-shadow: none;
         border: none;
-        color: @cm-base-color;
+        color: @cm-color;
 
         &:hover {
             #cm > .button-transparent-hover;
@@ -198,15 +225,15 @@
     }
 
     .button-transparent-hover {
-        background: @cm-base-color-secondary;
-        color: @cm-base-color;
+        background: @cm-colorSecondary;
+        color: @cm-color;
     }
 
     .button-transparent-active {
         box-shadow: 0 2px 2px rgba(0,0,0,0.2) inset;
     }
 
-    // /* ******* COMPONENTS ******* */
+    // /* ******* PARTS ******* */
 
     // /* *** DROPDOWN MENU *** */
 
@@ -215,14 +242,13 @@
         display: block;
         visibility: hidden;
         position: absolute;
-        top: 0;
+        top: 100%;
         left: 0;
         margin: 0;
-        padding-left: 0;
-        padding-right: 0;
+        padding: @CmMenu-indent 0;
         list-style: none;
         opacity: 0;
-        .cm-transition(all @cm-transition-duration-reverse ease-in-out);
+        .cm-transition(all @cm-transitionDurationReverse ease-in-out);
 
         li {
             position: relative;
@@ -230,37 +256,37 @@
             a {
                 #cm > .link;
                 display: block;
-                padding: 2px @cm-block-indent / 2;
+                padding: 2px @cm-indentXSmall;
                 #cm > .base-font;
                 line-height: 18px;
                 text-decoration: none;
                 white-space: nowrap;
 
                 &:hover {
-                    color: @cm-base-color;
+                    color: @cm-color;
                     text-decoration: none;
                 }
             }
 
             ul {
-                top: -1px;
+                top: -(1px + @CmMenu-indent);
                 left: 100%;
             }
 
             &.sep {
                 display: none;
                 height: 0;
-                margin: 0 @cm-block-indent / 2;
+                margin: 0 @cm-indentMedium / 2;
                 overflow: hidden;
-                border-top: @cm-border-style;
+                border-top: @cm-borderStyle;
             }
 
             &:before {
                 display: block;
                 height: 0;
-                margin: 0 @cm-block-indent / 2;
+                margin: 0 @cm-indentMedium / 2;
                 overflow: hidden;
-                border-top: @cm-border-style;
+                border-top: @cm-borderStyle;
                 content: '';
             }
 
@@ -283,7 +309,7 @@
 
     // /* *** GRID *** */
 
-    .grid-indent (@indent: @cm-grid-item-indent) {
+    .grid-indent (@indent: @CmGrid-itemIndent) {
         > ul {
             margin: @indent -@indent -@indent;
 

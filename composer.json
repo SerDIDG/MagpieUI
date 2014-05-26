@@ -1,14 +1,14 @@
 {
     "name": "SerDIDG/FioraUI",
-    "version": "2.0.12",
+    "version": "2.0.13",
     "license": "MIT",
     "type": "library",
-    "homepage": "https://github.com/SerDIDG/FioraUI",
+    "homepage": "http://serdidg.github.io/FioraUI/",
     "authors": [
         {
             "name": "Serhio Magpie",
             "email": "serdidg@gmail.com",
-            "homepage": "https://github.com/SerDIDG/FioraUI",
+            "homepage": "https://github.com/SerDIDG",
             "role": "Developer"
         }
     ],

@@ -1,0 +1,201 @@
+<!DOCTYPE HTML>
+<html class="is-adaptive">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Slider</title>
+
+    <link type="text/css" rel="stylesheet" href="../../css/index.css">
+
+    <script type="text/javascript" src="../../js/polyfill.js"></script>
+    <script type="text/javascript" src="../../js/common.js"></script>
+    <script type="text/javascript" src="../../js/components/UA.js"></script>
+    <script type="text/javascript" src="../../js/components/Collector.js"></script>
+    <script type="text/javascript" src="../../js/components/Tabset.js"></script>
+    <script type="text/javascript" src="../../js/components/Slider.js"></script>
+
+    <script type="text/javascript">
+        cm.onload(function(){
+            // Useragent
+            Com.UA.setBrowserClass();
+            // Tabset
+            Com.TabsetCollector();
+            // Components
+            new Com.Collector()
+                .add('slider', function(node){
+                    new Com.Slider({
+                        'node' : node
+                    });
+                })
+                .construct();
+        });
+    </script>
+</head>
+
+<body>
+
+<div class="cm-block-padding">
+    <h1>Slider</h1>
+
+    <ul class="com-tabset-content-ul" data-tabset="true">
+        <li data-tabset-id="overview" data-tabset-title="Overview"></li>
+
+        <li data-tabset-id="methods" data-tabset-title="Methods"></li>
+
+        <li data-tabset-id="examples" data-tabset-title="Examples">
+            <h2>Default slider:</h2>
+            <div style="max-width: 1000px">
+                <div class="com-slider" data-element="slider" data-node="ComSlider:{}:container" data-config='{}'>
+                    <div class="inner">
+                        <div class="size">
+                            <img src="../images/parts/slider-size.png" alt="">
+                        </div>
+                        <div class="slides" data-node="slides">
+                            <ul data-node="slidesInner">
+                                <li data-node="items:[]:container">
+                                    <div class="image">
+                                        <img src="../images/slider/1.jpg" alt="">
+                                    </div>
+                                </li>
+                                <li data-node="items:[]:container">
+                                    <div class="image">
+                                        <img src="../images/slider/2.jpg" alt="">
+                                    </div>
+                                </li>
+                                <li data-node="items:[]:container">
+                                    <div class="image">
+                                        <img src="../images/slider/3.jpg" alt="">
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="com-gallery-controls">
+                            <div class="inner">
+                                <div class="bar-arrow prev" data-node="prev">
+                                    <div class="icon xx-large arrow-white-left centered"></div>
+                                </div>
+                                <div class="bar-arrow next" data-node="next">
+                                    <div class="icon xx-large arrow-white-right centered"></div>
+                                </div>
+                                <div class="bar-buttons">
+                                    <ul data-node="buttons"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+
+            <h2>Slider with borders, without buttons, animation effect - push:</h2>
+            <div style="max-width: 1000px">
+                <div class="com-slider has-border" data-element="slider" data-node="ComSlider:{}:container" data-config='{"buttons" : false, "effect" : "push"}'>
+                    <div class="inner">
+                        <div class="size">
+                            <img src="../images/parts/slider-size.png" alt="">
+                        </div>
+                        <div class="slides" data-node="slides">
+                            <ul data-node="slidesInner">
+                                <li data-node="items:[]:container">
+                                    <div class="image">
+                                        <img src="../images/slider/1.jpg" alt="">
+                                    </div>
+                                </li>
+                                <li data-node="items:[]:container">
+                                    <div class="image">
+                                        <img src="../images/slider/2.jpg" alt="">
+                                    </div>
+                                </li>
+                                <li data-node="items:[]:container">
+                                    <div class="image">
+                                        <img src="../images/slider/3.jpg" alt="">
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="com-gallery-controls">
+                            <div class="inner">
+                                <div class="bar-arrow prev" data-node="prev">
+                                    <div class="icon xx-large arrow-white-left centered"></div>
+                                </div>
+                                <div class="bar-arrow next" data-node="next">
+                                    <div class="icon xx-large arrow-white-right centered"></div>
+                                </div>
+                                <div class="bar-buttons">
+                                    <ul data-node="buttons"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+
+            <h2>Slider with slide icons and small controls bar:</h2>
+            <div style="max-width: 1000px">
+                <div class="com-slider bottom" data-element="slider" data-node="ComSlider:{}:container" data-config='{}'>
+                    <div class="inner">
+                        <div class="size">
+                            <img src="../images/parts/slider-size.png" alt="">
+                        </div>
+                        <div class="slides" data-node="slides">
+                            <ul data-node="slidesInner">
+                                <li data-node="items:[]:container">
+                                    <div class="cm-imagebox is-resizeble is-checkable active">
+                                        <div class="inner">
+                                            <img class="descr" src="../images/slider/1.jpg" alt="">
+                                        </div>
+                                        <div class="pull top-right">
+                                            <div class="icon small edit linked"></div>
+                                            <div class="icon small remove linked"></div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li data-node="items:[]:container">
+                                    <div class="cm-imagebox is-resizeble is-checkable active">
+                                        <div class="inner">
+                                            <img class="descr" src="../images/slider/2.jpg" alt="">
+                                        </div>
+                                        <div class="pull top-right">
+                                            <div class="icon small edit linked"></div>
+                                            <div class="icon small remove linked"></div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li data-node="items:[]:container">
+                                    <div class="cm-imagebox is-resizeble is-checkable active">
+                                        <div class="inner">
+                                            <img class="descr" src="../images/slider/3.jpg" alt="">
+                                        </div>
+                                        <div class="pull top-right">
+                                            <div class="icon small edit linked"></div>
+                                            <div class="icon small remove linked"></div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="com-gallery-controls is-small">
+                            <div class="inner">
+                                <div class="bar-arrow prev" data-node="prev">
+                                    <div class="icon small arrow-white-left centered"></div>
+                                </div>
+                                <div class="bar-arrow next" data-node="next">
+                                    <div class="icon small arrow-white-right centered"></div>
+                                </div>
+                                <div class="bar-buttons">
+                                    <ul data-node="buttons"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
+
+</body>
+</html>
