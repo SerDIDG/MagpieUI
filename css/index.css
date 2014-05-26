@@ -3404,6 +3404,7 @@ ul.has-icons-outside-three li {
   right: 12px;
   bottom: 12px;
   left: 12px;
+  z-index: 2;
   overflow: hidden;
 }
 .com-slider > .inner > .slides.effect-fade > ul > li {
