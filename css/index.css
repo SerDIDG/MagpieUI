@@ -1547,6 +1547,9 @@ ul.has-icons-outside-three li {
 .icon.x-small.centered {
   margin: -6px 0 0 -6px;
 }
+.icon.x-small.search {
+  background-image: url("../img/icons/x-small/search.png");
+}
 .icon.small {
   width: 16px;
   height: 16px;
@@ -2323,7 +2326,7 @@ ul.has-icons-outside-three li {
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
-  font: 300 30px/38px 'Open Sans', arial, helvetica, sans-serif;
+  font: 300 30px/38px 'Open Sans', 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
 }
 .com-collapsible-layout > .sidebar > .inner > .title .icon {
@@ -3343,7 +3346,7 @@ ul.has-icons-outside-three li {
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
-  font: 300 30px/38px 'Open Sans', arial, helvetica, sans-serif;
+  font: 300 30px/38px 'Open Sans', 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
   -webkit-transition: color 0.3s ease-in-out;
   transition: color 0.3s ease-in-out;
@@ -4005,7 +4008,7 @@ ul.has-icons-outside-three li {
   left: 24px;
 }
 .com-gallery-popup > .title .caption {
-  font: 300 30px/38px 'Open Sans', arial, helvetica, sans-serif;
+  font: 300 30px/38px 'Open Sans', 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
   overflow: hidden;
   white-space: nowrap;
