@@ -9,7 +9,7 @@ Com['Columns'] = function(o){
         config = cm.merge({
             'container' : cm.Node('div'),
             'columns' : false,
-            'minColumnWidth' : 100,      // in px
+            'minColumnWidth' : 12,      // in px
             'data' : []
         }, o),
         API = {

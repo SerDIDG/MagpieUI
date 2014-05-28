@@ -671,6 +671,7 @@ ul.style-none {
   font-size: 11px;
   line-height: 15px;
   color: #999999;
+  text-transform: none;
   font-style: italic;
   padding: 2px 0;
 }
