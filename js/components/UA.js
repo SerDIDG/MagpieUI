@@ -192,7 +192,7 @@ Com['UA'] = {
     'setBrowserClass' : function(){
         var user = Com.UA.get();
         if(user['hash']){
-            cm.addClass(document.getElementsByTagName('html')[0], user['hash']+' '+user['hash']+user['short_version']);
+            cm.addClass(document.getElementsByTagName('html')[0], [user['engine'].toLowerCase(), user['hash'], user['hash']+user['short_version']].join(' '));
         }
     },
     'setEngineClass' : function(){
