@@ -35,7 +35,7 @@
                         position: relative;
                         z-index: 1;
 
-                        img:extend(.cm-image-resizable all) {}
+                        img:extend(.cm-image-flexible all) {}
                     }
 
                     > .text {
@@ -91,5 +91,45 @@
     &.has-border {
         padding: @cm-indentXSmall;
         border: @cm-borderBox;
+    }
+
+    &.aspect-4x3 {
+        > .inner {
+            > .size {
+                padding-bottom: 75%;
+            }
+        }
+    }
+
+    &.aspect-3x2 {
+        > .inner {
+            > .size {
+                padding-bottom: 66.66%;
+            }
+        }
+    }
+
+    &.aspect-16x10 {
+        > .inner {
+            > .size {
+                padding-bottom: 62.5%;
+            }
+        }
+    }
+
+    &.aspect-16x9 {
+        > .inner {
+            > .size {
+                padding-bottom: 56.25%;
+            }
+        }
+    }
+
+    &.aspect-21x9 {
+        > .inner {
+            > .size {
+                padding-bottom: 42.85%;
+            }
+        }
     }
 }
