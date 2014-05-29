@@ -118,6 +118,7 @@ Com['Draganddrop'] = function(o){
         var draggable = cm.merge({
             'node' : node,
             'type' : 'item',
+            'dragOnlyInParentArea' : node.getAttribute('data-drag-only-area'),
             'chassis' : {
                 'top' : null,
                 'bottom' : null
@@ -181,7 +182,13 @@ Com['Draganddrop'] = function(o){
         // Filter areas
         filteredAvailableAreas = areas.filter(function(area){
             // Filter out locked areas and inner areas
+            if(area['isRemoveZone']){
+                return true;
+            }
             if(cm.isParent(draggable['node'], area['node']) || area['isLocked']){
+                return false;
+            }
+            if(draggable['dragOnlyInParentArea'] == 'true' && draggable['area'] != area){
                 return false;
             }
             // True - pass area
@@ -212,8 +219,7 @@ Com['Draganddrop'] = function(o){
         }
         getPosition(current);
         cm.addClass(current['node'], 'cm-draganddrop-helper');
-        hack = current['node'].clientHeight;
-        cm.addClass(current['node'], 'is-active');
+        cm.addClass(current['node'], 'is-active', true);
         // Calculate elements position and dimension
         getPositions(areas);
         cm.forEach(areas, function(area){
@@ -461,6 +467,8 @@ Com['Draganddrop'] = function(o){
                     left = 'auto';
                     top = 'auto';
                 }
+                // Set index of draggable item in new area
+                area['items'].splice(params['index'], 0, draggable);
                 // API onDrop Event
                 executeEvent('onDrop', {
                     'item' : draggable,
@@ -469,8 +477,6 @@ Com['Draganddrop'] = function(o){
                     'from' : draggable['area'],
                     'index' : params['index']
                 });
-                // Set index of draggable item in new area
-                area['items'].splice(params['index'], 0, draggable);
                 // Set draggable new area
                 draggable['area'] = area;
                 // System onStop event
