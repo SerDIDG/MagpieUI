@@ -20,6 +20,7 @@
 // /* *** COLORS *** */
 
 @cm-color: hsl(210, 80%, 55%);
+@cm-colorLighten: lighten(@cm-color, 40%);
 @cm-colorFont: #666666;
 @cm-colorPlaceholder: #b7b7b7;
 @cm-colorHint: #999999;
@@ -138,7 +139,10 @@
 
 @CmDraganddrop-areaPadding: @cm-indentXSmall;
 @CmDraganddrop-areaBorderRadius: @cm-borderRadius;
-@CmDraganddrop-areaBackgroundActive: @cm-colorActive;
+@CmDraganddrop-areaBackgroundActive: fade(@cm-color, 12%);
+@CmDraganddrop-areaBackgroundHighlight: fade(@cm-color, 5%);
+@CmDraganddrop-areaActiveBorder: 1px dashed @cm-color;
+@CmDraganddrop-areaHighlightBorder: 1px dashed fade(@cm-color, 30%);
 @CmDraganddrop-dropDuration: 400ms;
 
 // /* ******* COMPONENTS ******* */

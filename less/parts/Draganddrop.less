@@ -24,13 +24,35 @@
 .cm-draganddrop-area {
     min-height: @cm-indentMedium;
     padding: @CmDraganddrop-areaPadding;
+    position: relative;
 
     &.is-available {
         border-radius: @CmDraganddrop-areaBorderRadius;
         .cm-transition(background-color @cm-transitionDuration ease-in-out);
+        .cm-transition(border-color @cm-transitionDuration ease-in-out);
+
+        &.is-highlight {
+            background-color: @CmDraganddrop-areaBackgroundHighlight;
+
+            &:before {
+                position: absolute;
+                .cm-position(-1px,-1px,-1px,-1px);
+                display: block;
+                content: '';
+                border: @CmDraganddrop-areaHighlightBorder;
+            }
+        }
 
         &.is-active {
             background-color: @CmDraganddrop-areaBackgroundActive;
+
+            &:before {
+                position: absolute;
+                .cm-position(-1px,-1px,-1px,-1px);
+                display: block;
+                content: '';
+                border: @CmDraganddrop-areaActiveBorder;
+            }
 
             .cm-draganddrop-area {
                 background-color: rgba(255,255,255,0.4);

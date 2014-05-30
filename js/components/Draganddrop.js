@@ -8,7 +8,7 @@ Com['Draganddrop'] = function(o){
             'useCSSAnimation' : false,
             'useGracefulDegradation' : true,
             'dropDuration' : 400,
-            'highlightRemoveZones' : true,               // highlight remove zone on drag start
+            'highlightAreas' : true,                     // highlight areas on drag start
             'classes' : {
                 'area' : null
             }
@@ -27,6 +27,7 @@ Com['Draganddrop'] = function(o){
         checkInt,
         isGracefulDegradation = false,
         isHighlightedRemoveZones = false,
+        isHighlightedAreas = false,
 
         current,
         currentAboveItem,
@@ -174,10 +175,6 @@ Com['Draganddrop'] = function(o){
             'node' : draggable['node'],
             'from' : draggable['area']
         });
-        // Highlight Remove Zones
-        if(config['highlightRemoveZones']){
-            toggleHighlightRemoveZones();
-        }
         // Filter areas
         filteredAvailableAreas = areas.filter(function(area){
             // Filter out locked areas and inner areas
@@ -187,6 +184,10 @@ Com['Draganddrop'] = function(o){
             // True - pass area
             return true;
         });
+        // Highlight Areas
+        if(config['highlightAreas']){
+            toggleHighlightAreas();
+        }
         // Get position and dimension of current draggable item
         getPosition(draggable);
         // Get offset position relative to touch point (cursor or finger position)
@@ -234,7 +235,7 @@ Com['Draganddrop'] = function(o){
         });
         // If current current draggable not above other draggable items
         if(!tempCurrentAboveItem && current['area']['items'].length){
-            if(y < current['area']['dimensions']['innerY1']){
+            if(y < current['area']['dimensions']['y1']){
                 tempCurrentAboveItem = current['area']['items'][0];
                 tempCurrentPosition = 'top';
             }else{
@@ -286,7 +287,7 @@ Com['Draganddrop'] = function(o){
         }
         // Find above area
         cm.forEach(filteredAvailableAreas, function(area){
-            if(x >= area['dimensions']['innerX1'] && x < area['dimensions']['innerX2'] && y >= area['dimensions']['innerY1'] && y <= area['dimensions']['innerY2']){
+            if(x >= area['dimensions']['x1'] && x < area['dimensions']['x2'] && y >= area['dimensions']['y1'] && y <= area['dimensions']['y2']){
                 if(!tempCurrentArea){
                     tempCurrentArea = area;
                 }else if(area['dimensions']['width'] < tempCurrentArea['dimensions']['width'] || area['dimensions']['height'] < tempCurrentArea['dimensions']['height']){
@@ -393,9 +394,9 @@ Com['Draganddrop'] = function(o){
         if(currentArea){
             cm.removeClass(currentArea['node'], 'is-active');
         }
-        // Un Highlight Remove Zones
-        if(config['highlightRemoveZones']){
-            toggleHighlightRemoveZones();
+        // Un Highlight Areas
+        if(config['highlightAreas']){
+            toggleHighlightAreas();
         }
     };
 
@@ -685,18 +686,19 @@ Com['Draganddrop'] = function(o){
         });
     };
 
-    var toggleHighlightRemoveZones = function(){
-        var removeZones = getRemoveZones();
-        if(isHighlightedRemoveZones){
-            isHighlightedRemoveZones = false;
-            cm.forEach(removeZones, function(area){
-                cm.removeClass(area['node'], 'is-highlight');
-            });
-        }else{
-            isHighlightedRemoveZones = true;
-            cm.forEach(removeZones, function(area){
-                cm.addClass(area['node'], 'is-highlight');
-            });
+    var toggleHighlightAreas = function(){
+        if(filteredAvailableAreas){
+            if(isHighlightedAreas){
+                isHighlightedAreas = false;
+                cm.forEach(filteredAvailableAreas, function(area){
+                    cm.removeClass(area['node'], 'is-highlight');
+                });
+            }else{
+                isHighlightedAreas = true;
+                cm.forEach(filteredAvailableAreas, function(area){
+                    cm.addClass(area['node'], 'is-highlight');
+                });
+            }
         }
     };
 
