@@ -853,7 +853,7 @@ cm.setFDO = function(o, form){
 };
 
 cm.getFDO = function(o, chbx){
-    var data = [],
+    var data = {},
         elements = [
             o.getElementsByTagName('input'),
             o.getElementsByTagName('textarea'),

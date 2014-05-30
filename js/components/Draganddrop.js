@@ -118,7 +118,6 @@ Com['Draganddrop'] = function(o){
         var draggable = cm.merge({
             'node' : node,
             'type' : 'item',
-            'dragOnlyInParentArea' : node.getAttribute('data-drag-only-area'),
             'chassis' : {
                 'top' : null,
                 'bottom' : null
@@ -182,13 +181,7 @@ Com['Draganddrop'] = function(o){
         // Filter areas
         filteredAvailableAreas = areas.filter(function(area){
             // Filter out locked areas and inner areas
-            if(area['isRemoveZone']){
-                return true;
-            }
             if(cm.isParent(draggable['node'], area['node']) || area['isLocked']){
-                return false;
-            }
-            if(draggable['dragOnlyInParentArea'] == 'true' && draggable['area'] != area){
                 return false;
             }
             // True - pass area

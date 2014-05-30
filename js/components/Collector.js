@@ -6,9 +6,17 @@ Com['Collector'] = function(o){
         stuck = {};
 
     var constructItem = function(item, name, parentNode){
-        var nodes;
-        // Search for nodes in specified node or document's body
-        nodes = cm.clone(cm.getByAttr(config['attribute'], name, parentNode));
+        var nodes = [];
+        // Find element in specified node
+        if(parentNode.getAttribute(config['attribute']) == name){
+            nodes.push(parentNode)
+        }
+        // Search for nodes in specified node
+        nodes = nodes.concat(
+            cm.clone(
+                cm.getByAttr(config['attribute'], name, parentNode)
+            )
+        );
         // Filter off existing nodes
         nodes = nodes.filter(function(node){
             return !cm.inArray(item['nodes'], node);
@@ -24,10 +32,19 @@ Com['Collector'] = function(o){
     };
 
     var destructItem = function(item, name, parentNode){
-        var nodes, inArray;
+        var nodes = [],
+            inArray;
         if(parentNode){
+            // Find element in specified node
+            if(parentNode.getAttribute(config['attribute']) == name){
+                nodes.push(parentNode)
+            }
             // Search for nodes in specified node
-            nodes = cm.clone(cm.getByAttr(config['attribute'], name, parentNode));
+            nodes = nodes.concat(
+                cm.clone(
+                    cm.getByAttr(config['attribute'], name, parentNode)
+                )
+            );
             // Filter off not existing nodes and remove existing from global array
             nodes = nodes.filter(function(node){
                 if(inArray = cm.inArray(item['nodes'], node)){

@@ -19,6 +19,20 @@
             .cm-transition(opacity @cm-transitionDuration ease-in-out);
         }
 
+        > .text {
+            padding: @cm-indentMedium;
+            position: absolute;
+            z-index: 2;
+            .cm-position(0,0,0,0);
+            overflow: hidden;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.35);
+            .cm-user-select(text);
+
+            * {
+                color: #fff;
+            }
+        }
+
         > iframe.descr {
             width: 100%;
             height: 100%;
@@ -130,12 +144,6 @@
         }
     }
 
-    &.is-resizeble {
-        > .inner {
-            > .descr:extend(.cm-image-resizable all) {}
-        }
-    }
-
     &.is-centered {
         > .inner {
             height: 100%;
@@ -162,6 +170,18 @@
                 width: 100%;
                 height: 100%;
             }
+        }
+    }
+
+    &.is-resizeble {
+        > .inner {
+            > .descr:extend(.cm-image-resizable all) {}
+        }
+    }
+
+    &.is-flexible {
+        > .inner {
+            > .descr:extend(.cm-image-flexible all) {}
         }
     }
 }
