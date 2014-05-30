@@ -2004,14 +2004,38 @@ ul.has-icons-outside-three li {
 .cm-draganddrop-area {
   min-height: 24px;
   padding: 12px;
+  position: relative;
 }
 .cm-draganddrop-area.is-available {
   border-radius: 3px;
-  -webkit-transition: background-color 0.3s ease-in-out;
-  transition: background-color 0.3s ease-in-out;
+  -webkit-transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+  transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+}
+.cm-draganddrop-area.is-available.is-highlight {
+  background-color: rgba(48, 140, 232, 0.05);
+}
+.cm-draganddrop-area.is-available.is-highlight:before {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  bottom: -1px;
+  left: -1px;
+  display: block;
+  content: '';
+  border: 1px dashed rgba(48, 140, 232, 0.3);
 }
 .cm-draganddrop-area.is-available.is-active {
-  background-color: #daebfb;
+  background-color: rgba(48, 140, 232, 0.12);
+}
+.cm-draganddrop-area.is-available.is-active:before {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  bottom: -1px;
+  left: -1px;
+  display: block;
+  content: '';
+  border: 1px dashed #308ce8;
 }
 .cm-draganddrop-area.is-available.is-active .cm-draganddrop-area {
   background-color: rgba(255, 255, 255, 0.4);
