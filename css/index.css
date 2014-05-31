@@ -3492,6 +3492,11 @@ ul.has-icons-outside-three li {
   width: 100%;
   height: 100%;
 }
+.com-slider > .inner > .slides > ul > li > .cm-imagebox > .pull {
+  opacity: 0;
+  -webkit-transition: opacity 0.3s ease-in-out;
+  transition: opacity 0.3s ease-in-out;
+}
 .com-slider > .inner > .slides > ul > li > .image {
   width: 100%;
   height: 100%;
@@ -3542,6 +3547,9 @@ ul.has-icons-outside-three li {
   vertical-align: top;
 }
 .com-slider:hover > .inner > .com-gallery-controls {
+  opacity: 1;
+}
+.com-slider:hover > .inner > .slides > ul > li > .cm-imagebox > .pull {
   opacity: 1;
 }
 .com-slider.has-border {
