@@ -1,5 +1,6 @@
 Com['Slider'] = function(o){
-    var that = this, config = cm.merge({
+    var that = this,
+        config = cm.merge({
             'node' : cm.Node('div'),
             'nodesMarker' : 'ComSlider',
             'configMarker' : 'data-config',
@@ -174,7 +175,8 @@ Com['Slider'] = function(o){
         // Renew slideshow delay
         config['slideshow'] && renewSlideshow();
         // Set current active slide
-        var current = items[index], previous = items[that.current];
+        var current = items[index],
+            previous = items[that.current];
         that.previous = that.current;
         that.current = index;
         // API onChangeStart event
