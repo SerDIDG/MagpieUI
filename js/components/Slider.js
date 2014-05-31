@@ -1,24 +1,23 @@
 Com['Slider'] = function(o){
-	var that = this,
-		config = cm.merge({
-			'node' : cm.Node('div'),
+    var that = this, config = cm.merge({
+            'node' : cm.Node('div'),
             'nodesMarker' : 'ComSlider',
             'configMarker' : 'data-config',
             'nodes' : {},
             'events' : {},
-			'time' : 500,					// Fade time
-			'delay' : 4000,                 // Delay before slide will be changed
+            'time' : 500,					// Fade time
+            'delay' : 4000,                 // Delay before slide will be changed
             'slideshow' : true,             // Turn on / off slideshow
             'direction' : 'forward',        // Slideshow direction: forward | backward | random
-			'pauseOnHover' : true,
-			'fadePrevious' : false,			// Fade out previous slide, needed when using transparency slides
-			'buttons' : true,               // Display buttons, can hide exists buttons
-			'numericButtons' : false,		// Render slide index on button
-			'arrows' : true,                // Display arrows, can hide exists arrows
+            'pauseOnHover' : true,
+            'fadePrevious' : false,			// Fade out previous slide, needed when using transparency slides
+            'buttons' : true,               // Display buttons, can hide exists buttons
+            'numericButtons' : false,		// Render slide index on button
+            'arrows' : true,                // Display arrows, can hide exists arrows
             'effect' : 'fade',              // fade | push
             'transition' : 'smooth'         // smooth | simple | acceleration | inhibition
-		}, o),
-		nodes = {
+        }, o),
+        nodes = {
             'container' : cm.Node('div'),
             'slides' : cm.Node('div'),
             'slidesInner' : cm.Node('ul'),
@@ -33,7 +32,7 @@ Com['Slider'] = function(o){
             'onPause' : [],
             'onUnPause' : []
         },
-		items = [],
+        items = [],
         anims = {},
         slideshowInt;
 
@@ -41,20 +40,20 @@ Com['Slider'] = function(o){
     that.current = null;
     that.previous = null;
     that.paused = false;
-		
-	var init = function(){
+
+    var init = function(){
         convertEvents(config['events']);
         getNodes(config['node'], config['nodesMarker']);
         getConfig(config['node'], config['configMarker']);
         // Validate configuration parameters and check supported values
         validateConfig();
-		// Render slider
-		render();
-		// Set first active slide
+        // Render slider
+        render();
+        // Set first active slide
         items[0] && set(0);
-	};
-	
-	var render = function(){
+    };
+
+    var render = function(){
         // Set class on slides container dependence of animation effect
         cm.addClass(nodes['slides'], ['effect', config['effect']].join('-'));
         // Collect items
@@ -95,7 +94,7 @@ Com['Slider'] = function(o){
         // Init animations
         anims['slides'] = new cm.Animation(nodes['slides']);
         anims['slidesInner'] = new cm.Animation(nodes['slidesInner']);
-	};
+    };
 
     var collectItem = function(item){
         // Configuration
@@ -105,8 +104,8 @@ Com['Slider'] = function(o){
         // Process item
         processItem(item);
     };
-	
-	var processItem = function(item){
+
+    var processItem = function(item){
         // Configuration
         item = cm.merge({
             'index' : items.length,
@@ -118,7 +117,7 @@ Com['Slider'] = function(o){
         item['anim'] = new cm.Animation(item['nodes']['container']);
         // Push to items array
         items.push(item);
-	};
+    };
 
     var renderButton = function(item){
         // Structure
@@ -170,13 +169,12 @@ Com['Slider'] = function(o){
             anims['slidesInner'].go({'style' : {'scrollLeft' : left}, 'duration' : config['time'], 'anim' : config['transition'], 'onStop' : callback});
         }
     };
-	
-	var set = function(index){
+
+    var set = function(index){
         // Renew slideshow delay
         config['slideshow'] && renewSlideshow();
         // Set current active slide
-        var current = items[index],
-            previous = items[that.current];
+        var current = items[index], previous = items[that.current];
         that.previous = that.current;
         that.current = index;
         // API onChangeStart event
@@ -190,10 +188,10 @@ Com['Slider'] = function(o){
                 cm.removeClass(previous['nodes']['button'], 'active');
             }
         }
-		// Set active slide
-		if(config['buttons']){
-			cm.addClass(current['nodes']['button'], 'active');
-		}
+        // Set active slide
+        if(config['buttons']){
+            cm.addClass(current['nodes']['button'], 'active');
+        }
         // Transition effect and callback
         effects[config['effect']](current, previous, function(){
             // API onChange event
@@ -202,7 +200,7 @@ Com['Slider'] = function(o){
                 'previous' : previous
             });
         });
-	};
+    };
 
     /* *** SLIDESHOW *** */
 
@@ -213,9 +211,11 @@ Com['Slider'] = function(o){
                 case 'random':
                     set(cm.rand(0, (items.length - 1)));
                     break;
+
                 case 'backward':
                     that.prev();
                     break;
+
                 case 'forward':
                     that.next();
                     break;
@@ -291,14 +291,14 @@ Com['Slider'] = function(o){
 
     that.next = function(){
         that.direction = 'next';
-        var i = ((that.current + 1) == items.length)? 0 : (that.current + 1);
+        var i = ((that.current + 1) == items.length) ? 0 : (that.current + 1);
         set(i);
         return that;
     };
 
     that.prev = function(){
         that.direction = 'prev';
-        var i = (that.current == 0)? (items.length - 1) : (that.current - 1);
+        var i = (that.current == 0) ? (items.length - 1) : (that.current - 1);
         set(i);
         return that;
     };
@@ -332,6 +332,6 @@ Com['Slider'] = function(o){
         }
         return that;
     };
-	
-	init();
+
+    init();
 };
