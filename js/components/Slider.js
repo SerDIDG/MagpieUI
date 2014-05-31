@@ -5,14 +5,14 @@ Com['Slider'] = function(o){
             'configMarker' : 'data-config',
             'nodes' : {},
             'events' : {},
-            'time' : 500,					// Fade time
+            'time' : 500,                   // Fade time
             'delay' : 4000,                 // Delay before slide will be changed
             'slideshow' : true,             // Turn on / off slideshow
             'direction' : 'forward',        // Slideshow direction: forward | backward | random
             'pauseOnHover' : true,
-            'fadePrevious' : false,			// Fade out previous slide, needed when using transparency slides
+            'fadePrevious' : false,         // Fade out previous slide, needed when using transparency slides
             'buttons' : true,               // Display buttons, can hide exists buttons
-            'numericButtons' : false,		// Render slide index on button
+            'numericButtons' : false,       // Render slide index on button
             'arrows' : true,                // Display arrows, can hide exists arrows
             'effect' : 'fade',              // fade | push
             'transition' : 'smooth'         // smooth | simple | acceleration | inhibition
