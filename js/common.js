@@ -18,7 +18,7 @@
 */
 
 var cm = {
-        '_version' : '2.0.12',
+        '_version' : '2.0.13',
         '_debug' : true,
         '_debugAlert' : false
     },
@@ -1521,13 +1521,13 @@ cm.getSupportedStyle = function(style){
 
 var animFrame = (function(){
     return  window.requestAnimationFrame ||
-        window.webkitRequestAnimationFrame ||
-        window.mozRequestAnimationFrame ||
-        window.oRequestAnimationFrame ||
-        window.msRequestAnimationFrame ||
-        function(callback, element){
-            return window.setTimeout(callback, 1000 / 60);
-        };
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame ||
+            window.oRequestAnimationFrame ||
+            window.msRequestAnimationFrame ||
+            function(callback, element){
+                return window.setTimeout(callback, 1000 / 60);
+            };
 })();
 
 cm.animation = cm.Animation = function(o){
@@ -1884,7 +1884,7 @@ cm.ajax = cm.altReq = function(o){
         config['httpRequestObject'].setRequestHeader("Content-Type", "application/x-www-form-urlencoded;");
         config['httpRequestObject'].onreadystatechange = function(){
             if(config['httpRequestObject'].readyState == 4){
-                    responce = config['httpRequestObject'][responceType];
+                responce = config['httpRequestObject'][responceType];
                 if(config['type'] == 'json'){
                     responce = cm.parseJSON(responce);
                 }
