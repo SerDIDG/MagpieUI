@@ -764,7 +764,7 @@ ul.style-none {
   line-height: 28px;
 }
 .check-line .checkbox {
-  margin: 8px 0 8px 0;
+  margin: 7px 0 7px 0;
   vertical-align: top;
   padding: 0;
   cursor: pointer;
@@ -780,7 +780,7 @@ ul.style-none {
 }
 .check-line input[type="radio"],
 .check-line input[type="checkbox"] {
-  margin: 8px 0 8px 0;
+  margin: 7px 0 7px 0;
   vertical-align: top;
   padding: 0;
   cursor: pointer;
@@ -824,7 +824,7 @@ ul.style-none {
   display: block;
 }
 .form dd > input[type="checkbox"] {
-  margin: 8px 0 8px 0;
+  margin: 7px 0 7px 0;
   vertical-align: top;
   padding: 0;
   cursor: pointer;

@@ -21,6 +21,7 @@ Com['RemoveDialog'] = function(id){
 Com['Dialog'] = function(o){
     var that = this,
         config = cm.merge({
+            'configMarker' : 'data-config',
             'id' : null,
             'width' : 700,
             'minHeight' : 0,
@@ -64,6 +65,8 @@ Com['Dialog'] = function(o){
         that.addEvent('onOpen', config['onOpen']);
         that.addEvent('onCloseStart', config['onCloseStart']);
         that.addEvent('onClose', config['onClose']);
+        // Get data config
+        getConfig(config['content'], config['configMarker']);
         // Render
         render();
         setMiscEvents();
@@ -226,6 +229,18 @@ Com['Dialog'] = function(o){
         cm.remove(nodes['container']);
         // Remove dialog from global array
         Com['RemoveDialog'](config['id']);
+    };
+
+    /* *** MISC FUNCTION *** */
+
+    var getConfig = function(container, marker){
+        if(container){
+            marker = marker || 'data-config';
+            var sourceConfig = container.getAttribute(marker);
+            if(sourceConfig){
+                config = cm.merge(config, JSON.parse(sourceConfig));
+            }
+        }
     };
 
     var executeEvent = function(event){
