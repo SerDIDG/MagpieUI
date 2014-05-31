@@ -20,11 +20,28 @@
 var cm = {
         '_version' : '2.0.13',
         '_debug' : true,
-        '_debugAlert' : false
+        '_debugAlert' : false,
+        '_config' : {
+            'common' : {
+                'dateTimeFormat' : '%Y-%m-%d %H:%i:%s'
+            }
+        }
     },
     Com = {
         'Elements' : {}
     };
+
+/* ******* COMMON ******* */
+
+cm.config = function(str){
+    // This function in pre-alpha stage.
+    var s = str.split(':');
+    if(s.length == 1){
+        return cm._config.common[str] || null;
+    }else{
+        return true;
+    }
+};
 
 /* ******* CHECK SUPPORT ******* */
 
@@ -1116,14 +1133,9 @@ cm.onTextChange = function(node, handler){
 
 /* ******* DATE AND TIME ******* */
 
-cm.getCurrentDate = function(){
-    var date = new Date();
-    return date.getFullYear() + '-' +
-        ((date.getMonth() < 9) ? '0' : '') + (date.getMonth() + 1) + '-' +
-        ((date.getDate() < 9) ? '0' : '') + (date.getDate()) + ' ' +
-        ((date.getHours() < 10) ? '0' : '') + date.getHours() + ':' +
-        ((date.getMinutes() < 10) ? '0' : '') + date.getMinutes() + ':' +
-        ((date.getSeconds() < 10) ? '0' : '') + date.getSeconds();
+cm.getCurrentDate = function(format){
+    format = format || cm.config('dateTimeFormat');
+    return cm.dateFormat(new Date(), format);
 };
 
 cm.dateFormat = function(date, format, langs){
@@ -1208,7 +1220,7 @@ cm.parseDate = function(str, format){
         },
         fromIndex = 0;
 
-    format = format || '%Y-%m-%d %H:%i:%s';
+    format = format || cm.config('dateTimeFormat');
 
     cm.forEach(convertFormats, function(item, key){
         format = format.replace(key, item);
