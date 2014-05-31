@@ -104,6 +104,22 @@ cm.merge = function(o1, o2){
     return o1;
 };
 
+cm.extend = function(o1, o2){
+    if(!o1){
+        return null;
+    }
+    if(!o2){
+        return o1;
+    }
+    var o;
+    switch(o1.constructor){
+        case Array:
+            o = o1.concat(o2);
+            break;
+    }
+    return o;
+};
+
 cm.clone = function(o){
     var newO;
     if(!o){
@@ -683,6 +699,17 @@ cm.prevEl = function(node){
 cm.nextEl = function(node){
     node = node.nextSibling;
     if(node && node.nodeType && node.nodeType != 1){
+        node = cm.nextEl(node);
+    }
+    return node;
+};
+
+cm.firstEl = function(node){
+    if(!node || !node.firstChild){
+        return null;
+    }
+    node = node.firstChild;
+    if(node.nodeType != 1){
         node = cm.nextEl(node);
     }
     return node;
@@ -1828,30 +1855,51 @@ cm.cookieDate = function(num){
 
 /* ******* AJAX ******* */
 
-cm.ajax = cm.altReq = function(){
-    var o = cm.merge({
-                'type' : 'xml',
-                'method' : 'post',
-                'params' : '',
-                'url' : '',
-                'httpRequestObject' : false
-            },
-            arguments[0]),
-        type = (o.type && o.type.toLowerCase() == 'text') ? 'responseText' : 'responseXML',
-        method = o.method || 'post',
-        params = o.params || '',
-        url = (method.toLowerCase() == 'post') ? o.url : o.url + params,
-        httpRequestObject = o.httpRequestObject ? o.httpRequestObject : cm.createXmlHttpRequestObject();
+cm.ajax = cm.altReq = function(o){
+    var config = cm.merge({
+            'type' : 'xml',                                         // text | xml | json
+            'method' : 'post',                                      // post | get
+            'params' : '',
+            'url' : '',
+            'httpRequestObject' : cm.createXmlHttpRequestObject(),
+            'handler' : function(){}
+        }, o),
+        responceType,
+        responce;
 
-    httpRequestObject.open(method, url, true);
-    httpRequestObject.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;");
-    httpRequestObject.onreadystatechange = (o.handler) ? function(){
-        if(httpRequestObject.readyState == 4){
-            o.handler(httpRequestObject[type], httpRequestObject.status)
+    var init = function(){
+        validate();
+        send();
+    };
+
+    var validate = function(){
+        config['type'] = config['type'].toLocaleLowerCase();
+        responceType =  /text|json/.test(config['type']) ? 'responseText' : 'responseXML';
+        config['method'] = config['method'].toLocaleLowerCase();
+        config['url'] = config['method'] == 'post' ? config['url'] : config['url'] + config['params']
+    };
+
+    var send = function(){
+        config['httpRequestObject'].open(config['method'], config['url'], true);
+        config['httpRequestObject'].setRequestHeader("Content-Type", "application/x-www-form-urlencoded;");
+        config['httpRequestObject'].onreadystatechange = function(){
+            if(config['httpRequestObject'].readyState == 4){
+                    responce = config['httpRequestObject'][responceType];
+                if(config['type'] == 'json'){
+                    responce = cm.parseJSON(responce);
+                }
+                config['handler'](responce, config['httpRequestObject'].status)
+            }
+        };
+        if(config['method'] == 'post'){
+            config['httpRequestObject'].send(config['params']);
+        }else{
+            config['httpRequestObject'].send(null);
         }
-    } : null;
-    (method.toLowerCase() == 'post') ? httpRequestObject.send(params) : httpRequestObject.send(null);
-    return httpRequestObject;
+    };
+
+    init();
+    return config['httpRequestObject'];
 };
 
 cm.parseJSON = function(str){
