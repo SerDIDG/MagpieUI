@@ -3050,7 +3050,6 @@ ul.has-icons-outside-three li {
   left: 0;
   z-index: 1;
   background: rgba(0, 0, 0, 0.7);
-  cursor: pointer;
 }
 .com-dialog > .bg > .icon {
   position: fixed;
@@ -3135,6 +3134,9 @@ ul.has-icons-outside-three li {
 }
 .com-dialog > .window > .inner > .buttons .btn-wrap {
   margin: 0;
+}
+.com-dialog.has-close-background > .bg {
+  cursor: pointer;
 }
 .com-dialog.has-close-inside > .window > .inner > .title {
   padding-right: 72px;
