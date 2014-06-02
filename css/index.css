@@ -3049,8 +3049,23 @@ ul.has-icons-outside-three li {
   top: 0;
   left: 0;
   z-index: 1;
-  background-color: #000000;
-  opacity: 0.6;
+  background: rgba(0, 0, 0, 0.7);
+  cursor: pointer;
+}
+.com-dialog > .bg > .icon {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  bottom: auto;
+  left: auto;
+  z-index: 2;
+  font-size: 0;
+  opacity: 0.4;
+  -webkit-transition: opacity 0.3s ease-in-out;
+  transition: opacity 0.3s ease-in-out;
+}
+.com-dialog > .bg:hover > .icon {
+  opacity: 1;
 }
 .com-dialog > .window {
   position: absolute;
@@ -3058,37 +3073,36 @@ ul.has-icons-outside-three li {
   left: 50%;
   z-index: 2;
 }
+.com-dialog > .window > .icon {
+  position: absolute;
+  z-index: 4;
+  right: 24px;
+}
+.com-dialog > .window > .icon.x-small {
+  top: 25px;
+}
+.com-dialog > .window > .icon.small {
+  top: 23px;
+}
+.com-dialog > .window > .icon.medium {
+  top: 19px;
+}
+.com-dialog > .window > .icon.large {
+  top: 15px;
+}
 .com-dialog > .window > .inner {
   background-color: #ffffff;
   border-radius: 3px;
-}
-.com-dialog > .window > .inner > .close {
-  position: absolute;
-  top: 4px;
-  right: 9px;
-  z-index: 2;
-  font-family: Verdana, Geneva, sans-serif;
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 18px;
-  cursor: pointer;
-}
-.com-dialog > .window > .inner > .close:hover {
-  opacity: 0.6;
+  overflow: hidden;
 }
 .com-dialog > .window > .inner > .title {
-  padding: 16px 0 0;
-  margin: 0 24px;
-  line-height: 24px;
-  font-size: 24px;
-  font-weight: 600;
-  color: #015696;
-}
-.com-dialog > .window > .inner > .title h1 {
-  margin: 0;
+  position: relative;
+  z-index: 2;
+  padding: 12px 24px;
+  font: 300 30px/38px 'Open Sans', 'Open Sans', arial, helvetica, sans-serif;
+  color: #666666;
 }
 .com-dialog > .window > .inner > .descr {
-  padding: 8px;
   position: relative;
   z-index: 1;
 }
@@ -3096,28 +3110,37 @@ ul.has-icons-outside-three li {
   position: relative;
 }
 .com-dialog > .window > .inner > .descr > .scroll > .inner {
-  word-wrap: break-word;
-  padding: 16px;
+  padding: 0 24px;
 }
 .com-dialog > .window > .inner > .descr > .scroll.isScroll {
   overflow-x: hidden;
   overflow-y: auto;
 }
-.com-dialog > .window > .inner > .descr > .scroll.isScroll > .inner {
-  padding-right: 24px;
-}
 .com-dialog > .window > .inner > .descr.no-scroll {
+  padding: 0 24px;
+}
+.com-dialog > .window > .inner > .descr:first-child > .scroll > .inner,
+.com-dialog > .window > .inner > .descr:first-child.no-scroll {
+  padding-top: 24px;
+}
+.com-dialog > .window > .inner > .descr:last-child > .scroll > .inner,
+.com-dialog > .window > .inner > .descr:last-child.no-scroll {
+  padding-bottom: 24px;
+}
+.com-dialog > .window > .inner > .buttons {
+  position: relative;
+  z-index: 3;
   padding: 24px;
+  margin: 0;
 }
-.com-dialog > .window > .inner > .descr:first-child {
-  padding: 32px 8px 8px;
+.com-dialog > .window > .inner > .buttons .btn-wrap {
+  margin: 0;
 }
-.com-dialog > .window > .inner > .descr:first-child > .scroll > .inner {
-  padding: 16px;
-  padding-top: 0;
+.com-dialog.has-close-inside > .window > .inner > .title {
+  padding-right: 72px;
 }
-.com-dialog > .window > .inner > .descr:first-child > .scroll.isScroll > .inner {
-  padding-right: 24px;
+.com-dialog.has-close-inside > .window > .inner > .descr:first-child {
+  padding-top: 62px;
 }
 /* IE Opacity */
 .ie6 .com-dialog,
@@ -3134,13 +3157,12 @@ ul.has-icons-outside-three li {
 .ie8 .com-dialog > .window {
   filter: progid:DXImageTransform.Microsoft.Alpha(opacity=100);
 }
-/* Confirmation Dialog */
+/* Confirmation Dialog. Deprecated. */
 .com-dialog-confirm {
   padding: 14px 0 0;
 }
 .com-dialog-confirm > .title {
   text-align: center;
-  font-weight: 600;
 }
 .com-dialog-confirm .button-box {
   margin-top: 20px;

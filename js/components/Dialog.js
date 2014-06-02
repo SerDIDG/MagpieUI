@@ -27,11 +27,14 @@ Com['Dialog'] = function(o){
             'minHeight' : 0,
             'maxHeight' : 'auto',
             'position' : 'fixed',
-            'margin' : 24,
+            'indentY' : 24,
+            'indentX' : 24,
             'className' : '',
             'container' : document.body,
             'content' : cm.Node('div'),
             'title' : '',
+            'buttons' : false,
+            'closeButtonOutside' : false,
             'closeButton' : true,
             'closeTitle' : true,
             'openTime' : 200,
@@ -40,9 +43,13 @@ Com['Dialog'] = function(o){
             'scroll' : true,
             'clickEventName' : 'click',
             'events' : {},
+            'icons' : {
+                'close-outside' : 'icon medium close-white',
+                'close-inside' : 'icon medium close linked'
+            },
             'langs' : {
                 'closeTitle' : 'Close',
-                'close' : 'x'
+                'close' : ''
             }
         }, o),
         API = {
@@ -69,7 +76,6 @@ Com['Dialog'] = function(o){
         getConfig(config['content'], config['configMarker']);
         // Render
         render();
-        setMiscEvents();
         // Open
         config['autoOpen'] && open();
     };
@@ -92,20 +98,38 @@ Com['Dialog'] = function(o){
         // Add CSS class
         !cm.isEmpty(config['className']) && cm.addClass(nodes['container'], config['className']);
         // Render close button
+        if(config['closeTitle']){
+            nodes['bg'].title = config['langs']['closeTitle'];
+        }
+        if(config['closeButtonOutside']){
+            nodes['bg'].appendChild(
+                nodes['closeOutside'] = cm.Node('div', {'class' : config['icons']['close-outside']},
+                    config['langs']['close']
+                )
+            );
+            cm.addEvent(nodes['closeOutside'], config['clickEventName'], close);
+        }
         if(config['closeButton']){
-            nodes['windowInner'].appendChild(
-                nodes['close'] = cm.Node('div', {'class' : 'close'},
+            cm.addClass(nodes['container'], 'has-close-inside');
+            nodes['window'].appendChild(
+                nodes['closeInside'] = cm.Node('div', {'class' : config['icons']['close-inside']},
                     config['langs']['close']
                 )
             );
             if(config['closeTitle']){
-                nodes['close'].title = config['langs']['closeTitle'];
+                nodes['closeInside'].title = config['langs']['closeTitle'];
             }
+            cm.addEvent(nodes['closeInside'], config['clickEventName'], close);
         }
+        cm.addEvent(nodes['bg'], config['clickEventName'], close);
         // Set title
         renderTitle(config['title']);
         // Embed content
         renderContent(config['content']);
+        // Embed buttons
+        renderButtons(config['buttons']);
+        // Init animation
+        anim['container'] = new cm.Animation(nodes['container']);
     };
 
     var renderTitle = function(title){
@@ -113,9 +137,7 @@ Com['Dialog'] = function(o){
             // Remove old nodes
             cm.remove(nodes['title']);
             // Render new nodes
-            nodes['title'] = cm.Node('div', {'class' : 'title'},
-                cm.Node('h1', title)
-            );
+            nodes['title'] = cm.Node('div', {'class' : 'title'}, title);
             cm.insertFirst(nodes['title'], nodes['windowInner']);
         }
     };
@@ -123,41 +145,46 @@ Com['Dialog'] = function(o){
     var renderContent = function(node){
         if(!nodes['descr']){
             if(config['scroll']){
-                nodes['windowInner'].appendChild(
-                    nodes['descr'] = cm.Node('div', {'class' : 'descr'},
-                        nodes['scroll'] = cm.Node('div', {'class' : 'scroll'},
-                            nodes['inner'] = cm.Node('div', {'class' : 'inner'})
-                        )
+                nodes['descr'] = cm.Node('div', {'class' : 'descr'},
+                    nodes['scroll'] = cm.Node('div', {'class' : 'scroll'},
+                        nodes['inner'] = cm.Node('div', {'class' : 'inner'})
                     )
                 );
             }else{
-                nodes['windowInner'].appendChild(
-                    nodes['descr'] = cm.Node('div', {'class' : 'descr no-scroll'},
-                        nodes['scroll'] = nodes['inner'] = cm.Node('div', {'class' : 'inner'})
-                    )
+                nodes['descr'] = cm.Node('div', {'class' : 'descr no-scroll'},
+                    nodes['scroll'] = nodes['inner'] = cm.Node('div', {'class' : 'inner'})
                 );
             }
+            if(nodes['title']){
+                cm.insertAfter(nodes['descr'], nodes['title']);
+            }else if(nodes['buttons']){
+                cm.insertBefore(nodes['descr'], nodes['buttons']);
+            }else{
+                cm.insertLast(nodes['descr'], nodes['windowInner']);
+            }
         }
-        if(node){
+        if(cm.isNode(node)){
             cm.clearNode(nodes['inner']).appendChild(node);
         }
     };
 
-    var setMiscEvents = function(){
-        // Close button
-        if(config['closeButton']){
-            cm.addEvent(nodes['close'], config['clickEventName'], close);
+    var renderButtons = function(node){
+        if(cm.isNode(node)){
+            // Remove old nodes
+            cm.remove(nodes['buttons']);
+            // Render new nodes
+            nodes['buttons'] = cm.Node('div', {'class' : 'buttons'}, node);
+            cm.insertLast(nodes['buttons'], nodes['windowInner']);
         }
-        // Init animation
-        anim['container'] = new cm.Animation(nodes['container']);
     };
 
     var resizeHandler = function(){
         // Set scroll height if dialog height > window height
-        var winHeight = nodes['container'].offsetHeight - (config['margin'] * 2),
-            winWidth = nodes['container'].offsetWidth - (config['margin'] * 2),
+        var winHeight = nodes['container'].offsetHeight - (config['indentY'] * 2),
+            winWidth = nodes['container'].offsetWidth - (config['indentX'] * 2),
             freeHeight = winHeight
                         - (nodes['title'] && nodes['title'].offsetHeight || 0)
+                        - (nodes['buttons'] && nodes['buttons'].offsetHeight || 0)
                         - cm.getStyle(nodes['descr'], 'paddingTop', true)
                         - cm.getStyle(nodes['descr'], 'paddingBottom', true),
             insetHeight = nodes['inner'].offsetHeight,
@@ -198,6 +225,8 @@ Com['Dialog'] = function(o){
         nodes['container'].style.display = 'block';
         // Resize interval, will be removed on close
         resizeInt = setInterval(resizeHandler, 5);
+        // Add close event on Esc press
+        cm.addEvent(window, 'keypress', windowClickEvent);
         // Animate
         anim['container'].go({'style' : {'opacity' : '1'}, 'duration' : config['openTime'], 'onStop' : function(){
             // Open Event
@@ -210,6 +239,8 @@ Com['Dialog'] = function(o){
     var close = function(){
         // Remove resize interval
         resizeInt && clearInterval(resizeInt);
+        // Remove close event on Esc press
+        cm.removeEvent(window, 'keypress', windowClickEvent);
         // Animate
         anim['container'].go({'style' : {'opacity' : '0'}, 'duration' : config['openTime'], 'onStop' : function(){
             nodes['container'].style.display = 'none';
@@ -229,6 +260,13 @@ Com['Dialog'] = function(o){
         cm.remove(nodes['container']);
         // Remove dialog from global array
         Com['RemoveDialog'](config['id']);
+    };
+
+    var windowClickEvent = function(e){
+        e = cm.getEvent(e);
+        if(e.keyCode == 27){
+            close();
+        }
     };
 
     /* *** MISC FUNCTION *** */
@@ -267,9 +305,25 @@ Com['Dialog'] = function(o){
 
     /* *** MAIN *** */
 
-    that.set = function(title, content){
+    that.set = function(title, content, buttons){
         renderTitle(title);
         renderContent(content);
+        renderButtons(buttons);
+        return that;
+    };
+
+    that.setTitle = function(title){
+        renderTitle(title);
+        return that;
+    };
+
+    that.setContent = function(content){
+        renderContent(content);
+        return that;
+    };
+
+    that.setButtons = function(buttons){
+        renderButtons(buttons);
         return that;
     };
 

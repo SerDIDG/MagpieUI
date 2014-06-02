@@ -1,6 +1,8 @@
 /* ******* DIALOG ******* */
 
 .com-dialog {
+    @titleHeight: @ComDialog-titleIndent * 2 + @cm-lineHeightTitle;
+
     width: 100%;
     height: 100%;
     display: none;
@@ -17,8 +19,23 @@
         top: 0;
         left: 0;
         z-index: 1;
-        background-color: #000000;
-        opacity: 0.6;
+        background: rgba(0,0,0,0.7);
+        cursor: pointer;
+
+        > .icon {
+            position: fixed;
+            .cm-position(@cm-indentMedium, @cm-indentMedium, auto, auto);
+            z-index: 2;
+            font-size: 0;
+            opacity: 0.4;
+            .cm-transition(opacity @cm-transitionDuration ease-in-out);
+        }
+
+        &:hover {
+            > .icon {
+                opacity: 1;
+            }
+        }
     }
 
     > .window {
@@ -27,41 +44,41 @@
         left: 50%;
         z-index: 2;
 
-        > .inner {
-            background-color: #ffffff;
-            border-radius: 3px;
+        > .icon {
+            position: absolute;
+            z-index: 4;
+            right: @ComDialog-indent;
 
-            > .close {
-                position: absolute;
-                top: 4px;
-                right: 9px;
-                z-index: 2;
-                font-family: Verdana, Geneva, sans-serif;
-                font-size: 20px;
-                font-weight: @cm-boldWeight;
-                line-height: 18px;
-                cursor: pointer;
-
-                &:hover {
-                    opacity: 0.6;
-                }
+            &.x-small {
+                top: (@titleHeight - @cm-XSmall) / 2;
             }
 
-            > .title {
-                padding: 16px 0 0;
-                margin: 0 @cm-indentMedium;
-                line-height: 24px;
-                font-size: 24px;
-                font-weight: @cm-boldWeight;
-                color: #015696;
+            &.small {
+                top: (@titleHeight - @cm-Small) / 2;
+            }
 
-                h1 {
-                    margin: 0;
-                }
+            &.medium {
+                top: (@titleHeight - @cm-Medium) / 2;
+            }
+
+            &.large {
+                top: (@titleHeight - @cm-Large) / 2;
+            }
+        }
+
+        > .inner {
+            background-color: #ffffff;
+            border-radius: @cm-borderRadius;
+            overflow: hidden;
+
+            > .title {
+                position: relative;
+                z-index: 2;
+                padding: @ComDialog-titleIndent @ComDialog-indent;
+                #cm > .title-font;
             }
 
             > .descr {
-                padding: 8px;
                 position: relative;
                 z-index: 1;
 
@@ -69,35 +86,58 @@
                     position: relative;
 
                     > .inner {
-                        word-wrap: break-word;
-                        padding: @cm-indentMedium - 8;
+                        padding: 0 @ComDialog-indent;
                     }
-                }
 
-                > .scroll.isScroll {
-                    overflow-x: hidden;
-                    overflow-y: auto;
-
-                    > .inner {
-                        padding-right: @cm-indentMedium;
+                    &.isScroll {
+                        overflow-x: hidden;
+                        overflow-y: auto;
                     }
                 }
 
                 &.no-scroll {
-                    padding: @cm-indentMedium;
+                    padding: 0 @ComDialog-indent;
+                }
+
+                &:first-child {
+                    > .scroll > .inner,
+                    &.no-scroll {
+                        padding-top: @ComDialog-indent
+                    }
+                }
+
+                &:last-child {
+                    > .scroll > .inner,
+                    &.no-scroll {
+                        padding-bottom: @ComDialog-indent
+                    }
                 }
             }
 
-            > .descr:first-child {
-                padding: 32px 8px 8px;
+            > .buttons {
+                position: relative;
+                z-index: 3;
+                padding: @ComDialog-indent;
+                margin: 0;
 
-                > .scroll > .inner {
-                    padding: @cm-indentMedium - 8;
-                    padding-top: 0;
+                .btn-wrap {
+                    margin: 0;
+                }
+            }
+        }
+    }
+
+    &.has-close-inside {
+        > .window {
+            > .inner {
+                > .title {
+                    padding-right: @ComDialog-indent * 2 + @cm-Medium;
                 }
 
-                > .scroll.isScroll > .inner {
-                    padding-right: @cm-indentMedium;
+                > .descr {
+                    &:first-child {
+                        padding-top: @titleHeight;
+                    }
                 }
             }
         }
@@ -124,14 +164,13 @@
     .cm-opacity-ie(100);
 }
 
-/* Confirmation Dialog */
+/* Confirmation Dialog. Deprecated. */
 
 .com-dialog-confirm {
     padding: 14px 0 0;
 
     > .title {
         text-align: center;
-        font-weight: @cm-boldWeight;
     }
 
     .button-box {

@@ -741,7 +741,7 @@ cm.insertFirst = function(node, target){
     return node;
 };
 
-cm.appendChild = function(node, target){
+cm.insertLast = cm.appendChild = function(node, target){
     target.appendChild(node);
     return node;
 };
