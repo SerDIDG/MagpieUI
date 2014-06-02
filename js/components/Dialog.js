@@ -123,6 +123,7 @@ Com['Dialog'] = function(o){
             cm.addEvent(nodes['closeInside'], config['clickEventName'], close);
         }
         if(config['closeOnBackground']){
+            cm.addClass(nodes['container'], 'has-close-background');
             cm.addEvent(nodes['bg'], config['clickEventName'], close);
             if(config['closeTitle']){
                 nodes['bg'].title = config['langs']['closeTitle'];
