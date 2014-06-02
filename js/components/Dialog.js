@@ -37,6 +37,7 @@ Com['Dialog'] = function(o){
             'closeButtonOutside' : false,
             'closeButton' : true,
             'closeTitle' : true,
+            'closeOnBackground' : false,
             'openTime' : 200,
             'autoOpen' : true,
             'removeOnClose' : true,
@@ -98,15 +99,15 @@ Com['Dialog'] = function(o){
         // Add CSS class
         !cm.isEmpty(config['className']) && cm.addClass(nodes['container'], config['className']);
         // Render close button
-        if(config['closeTitle']){
-            nodes['bg'].title = config['langs']['closeTitle'];
-        }
         if(config['closeButtonOutside']){
             nodes['bg'].appendChild(
                 nodes['closeOutside'] = cm.Node('div', {'class' : config['icons']['close-outside']},
                     config['langs']['close']
                 )
             );
+            if(config['closeTitle']){
+                nodes['closeOutside'].title = config['langs']['closeTitle'];
+            }
             cm.addEvent(nodes['closeOutside'], config['clickEventName'], close);
         }
         if(config['closeButton']){
@@ -121,7 +122,12 @@ Com['Dialog'] = function(o){
             }
             cm.addEvent(nodes['closeInside'], config['clickEventName'], close);
         }
-        cm.addEvent(nodes['bg'], config['clickEventName'], close);
+        if(config['closeOnBackground']){
+            cm.addEvent(nodes['bg'], config['clickEventName'], close);
+            if(config['closeTitle']){
+                nodes['bg'].title = config['langs']['closeTitle'];
+            }
+        }
         // Set title
         renderTitle(config['title']);
         // Embed content
