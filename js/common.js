@@ -1867,13 +1867,18 @@ cm.cookieDate = function(num){
 
 /* ******* AJAX ******* */
 
-cm.ajax = cm.altReq = function(o){
+cm.ajax = function(o){
     var config = cm.merge({
             'type' : 'xml',                                         // text | xml | json
             'method' : 'post',                                      // post | get
             'params' : '',
             'url' : '',
             'httpRequestObject' : cm.createXmlHttpRequestObject(),
+            'headers' : {
+                'Content-Type' : 'application/x-www-form-urlencoded',
+                'X-Requested-With' : 'XMLHttpRequest'
+            },
+            'beforeSend' : function(){},
             'handler' : function(){}
         }, o),
         responceType,
@@ -1893,16 +1898,23 @@ cm.ajax = cm.altReq = function(o){
 
     var send = function(){
         config['httpRequestObject'].open(config['method'], config['url'], true);
-        config['httpRequestObject'].setRequestHeader("Content-Type", "application/x-www-form-urlencoded;");
+        // Set Headers
+        cm.forEach(config['headers'], function(value, name){
+            config['httpRequestObject'].setRequestHeader(name, value);
+        });
+        // Add response events
         config['httpRequestObject'].onreadystatechange = function(){
             if(config['httpRequestObject'].readyState == 4){
                 responce = config['httpRequestObject'][responceType];
                 if(config['type'] == 'json'){
                     responce = cm.parseJSON(responce);
                 }
-                config['handler'](responce, config['httpRequestObject'].status)
+                config['handler'](responce, config['httpRequestObject'].status, config['httpRequestObject']);
             }
         };
+        // Before send events
+        config['beforeSend'](config['httpRequestObject']);
+        // Send
         if(config['method'] == 'post'){
             config['httpRequestObject'].send(config['params']);
         }else{
