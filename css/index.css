@@ -551,6 +551,14 @@ select[multiple] {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+.cm-font-base {
+  font: normal 13px/18px 'Open Sans', arial, helvetica, sans-serif;
+  color: #666666;
+}
+.cm-font-title {
+  font: 300 30px/38px 'Open Sans', 'Open Sans', arial, helvetica, sans-serif;
+  color: #666666;
+}
 .cm-block-padding {
   padding: 24px;
 }
@@ -2365,6 +2373,16 @@ ul.has-icons-outside-three li {
 .cm-imagebox.is-centered > .inner > iframe.descr {
   width: 100%;
   height: 100%;
+}
+.cm-imagebox.has-aspect {
+  position: relative;
+}
+.cm-imagebox.has-aspect > .inner {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 .cm-imagebox-title-hover > .inner > .title {
   bottom: 0;

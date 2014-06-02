@@ -184,6 +184,15 @@
             > .descr:extend(.cm-image-flexible all) {}
         }
     }
+
+    &.has-aspect {
+        position: relative;
+
+        > .inner {
+            position: absolute;
+            .cm-position(0,0,0,0);
+        }
+    }
 }
 
 .cm-imagebox-title-hover {
