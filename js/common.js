@@ -149,6 +149,7 @@ cm.clone = function(o){
         case Number:
         case RegExp:
         case Boolean:
+        case XMLHttpRequest:
             newO = o;
             break;
         case Array:
