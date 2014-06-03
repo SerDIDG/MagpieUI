@@ -53,6 +53,19 @@ b {
 
 ul, ol {
     padding: 0 0 0 @cm-indentMedium;
+
+    &.none {
+        list-style: none;
+        padding-left: 0;
+    }
+
+    &.decimal {
+        list-style: decimal;
+    }
+
+    &.style-none {
+        list-style: none;
+    }
 }
 
 dl {
@@ -170,12 +183,14 @@ select[multiple] {
     height: 0;
 }
 
+/* *** INLINE STYLES *** */
+
 .display-none {
     display: none !important;
 }
 
-.link {
-    #cm > .link;
+.inline {
+    display: inline-block;
 }
 
 .margin-none {
@@ -206,6 +221,12 @@ select[multiple] {
     vertical-align: bottom !important;
 }
 
+/* *** *** */
+
+.link {
+    #cm > .link;
+}
+
 .inner-link {
     text-decoration: none;
     border-bottom: 1px dashed;
@@ -226,10 +247,6 @@ select[multiple] {
     text-decoration: underline;
 }
 
-.inline {
-    display: inline-block;
-}
-
 .mark-new {
     display: inline-block;
     margin: 0 0 0 6px;
@@ -240,12 +257,27 @@ select[multiple] {
     text-transform: uppercase;
 }
 
+/* *** BUNDLE *** */
+
 .cm-box {
     #cm > .box;
 }
 
 .cm-box-border {
     #cm > .box-border;
+}
+
+.cm-counter {
+    height: @CmCounter-size;
+    padding: 0 5px;
+    background-color: @cm-color;
+    border-radius: @CmCounter-radius;
+    text-align: center;
+    line-height: @CmCounter-size;
+    font-size: @CmCounter-fontSize;
+    font-weight: @cm-fontWeight;
+    color: @CmCounter-color;
+    .cm-transition(all @cm-transitionDuration ease-in-out);
 }
 
 .cm-codebox {
@@ -306,23 +338,23 @@ select[multiple] {
     overflow-y: auto;
 }
 
-ul {
-    &.none {
-        list-style: none;
-        padding-left: 0;
-    }
-
-    &.decimal {
-        list-style: decimal;
-    }
-
-    &.style-none {
-        list-style: none;
-    }
-}
-
 .cm-list {
+    margin: 0 0 @cm-indentMedium;
     list-style: disc;
+
+    &.bottom {
+        margin: 0;
+    }
+
+    &.has-indent {
+        ul, li {
+            margin: @cm-indentXXSmall 0 0 0;
+
+            &:first-child {
+                margin: 0;
+            }
+        }
+    }
 
     ul {
         list-style: circle;

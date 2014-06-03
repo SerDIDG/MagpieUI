@@ -22,11 +22,13 @@
 @cm-color: hsl(210, 80%, 55%);
 @cm-colorLighten: lighten(@cm-color, 40%);
 @cm-colorFont: #666666;
+@cm-colorFontMedium: #999999;
 @cm-colorFontTitle: #666666;
 @cm-colorPlaceholder: #b7b7b7;
 @cm-colorHint: #999999;
 @cm-colorLink: @cm-colorFont;
 @cm-colorLinkHover: @cm-colorLink;
+@cm-colorLinkVisited: #8a156d;
 @cm-colorError: hsl(0, 80%, 50%);
 
 @cm-colorActive: lighten(saturate(@cm-color, 2%), 37%);
@@ -97,6 +99,13 @@
 
 // /* ******* PARTS ******* */
 
+// /* *** COUNTER *** */
+
+@CmCounter-size: @cm-Small;
+@CmCounter-radius: @CmCounter-size;
+@CmCounter-fontSize: 11px;
+@CmCounter-color: #ffffff;
+
 // /* *** MENU *** */
 
 @CmMenu-indent: @cm-indentXXXSmall;
@@ -109,6 +118,11 @@
 @CmItemsList-background-active-hover: @cm-colorActiveHover;
 @CmItemsList-padding-y: 2px;
 @CmItemsList-indent: 1px;
+
+// /* *** LIST COUNTED *** */
+
+@CmListCounted-indent: @cm-indentXXXSmall;
+@CmListCounted-height: @cm-Medium;
 
 // /* *** GRID *** */
 
@@ -175,8 +189,9 @@
 
 @ComColumns-mobileScreen: @cm-mobileScreen;
 @ComColumns-indent: @cm-indentMedium;
+@ComColumns-indents: @cm-indentXXXSmall @cm-indentXXSmall @cm-indentXSmall @cm-indentSmall @cm-indentMedium @cm-indentLarge @cm-indentXLarge @cm-indentXXLarge;
 @ComColumns-minHeight: 64px;
-@ComColumns-backgroundHover: @cm-colorSecondaryHover;
+@ComColumns-backgroundHover: rgba(0, 0, 0, 0.01);
 
 // /* *** TABSET *** */
 

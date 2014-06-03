@@ -15,14 +15,6 @@
         .cm-transition(background-color @cm-transitionDuration ease-in-out);
     }
 
-    &:first-child > .inner {
-        margin-left: 0;
-    }
-
-    &:last-child > .inner {
-        margin-right: 0;
-    }
-
     .ie8 &,
     .ie9 & {
         display: table-cell;
@@ -119,9 +111,27 @@
         }
     }
 
+    .for(@ComColumns-indents); .-each(@name) {
+        &.indent-@{name} {
+            .com-column > .inner {
+                margin: 0 (@name / 2);
+            }
+        }
+    }
+
+    .com-column {
+        &:first-child > .inner {
+            margin-left: 0;
+        }
+
+        &:last-child > .inner {
+            margin-right: 0;
+        }
+    }
+
     &.is-editable {
         > .inner {
-            .com-columns-chassis {
+            > .com-columns-chassis {
                 display: block;
             }
         }
@@ -165,31 +175,38 @@
 
 @media only screen and (max-width : @ComColumns-mobileScreen) {
 
-    .com-column {
-        width: auto !important;
-        height: auto;
-        display: block;
-        margin: @ComColumns-indent 0 0 0;
-
-        &:first-child {
-            margin: 0;
+    .is-adaptive {
+        .com-column {
+            width: auto !important;
+            height: auto;
+            display: block;
         }
 
-        > .inner {
-            margin: 0;
-        }
-    }
+        .com-columns {
+            > .inner {
+                > .container {
+                    display: block;
+                }
+            }
 
-    .com-columns {
-        > .inner {
-            > .container {
-                display: block;
+            &.is-editable {
+                .com-columns-chassis {
+                    display: none;
+                }
+            }
+
+            .com-column {
+                margin: @ComColumns-indent 0 0 0;
+
+                &:first-child {
+                    margin: 0;
+                }
+
+                > .inner {
+                    margin: 0;
+                }
             }
         }
-    }
-
-    .com-columns-chassis {
-        display: none;
     }
 
 }

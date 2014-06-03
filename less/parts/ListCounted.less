@@ -1,0 +1,51 @@
+.cm-list-counted {
+    .cm-counter {
+        margin: ((@CmListCounted-height - @CmCounter-size) / 2) 0 0 0;
+        display: inline-block;
+        vertical-align: top;
+    }
+
+    .label:extend(.cm-text-overflow){}
+
+    ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+
+        li {
+            position: relative;
+            cursor: pointer;
+            line-height: @CmListCounted-height;
+
+            .r {
+                float: right;
+                margin: 0 0 0 @cm-indentXSmall;
+                text-align: right;
+            }
+
+            .l {
+                overflow: hidden;
+            }
+
+            &:first-child {
+                margin: 0;
+            }
+
+            &:hover {
+                .label {
+                    text-decoration: underline;
+                }
+
+                .cm-counter {
+                    background-color: @cm-colorActive;
+                }
+            }
+
+            &.active {
+                .label {
+                    font-weight: @cm-boldWeight;
+                }
+            }
+        }
+    }
+}
