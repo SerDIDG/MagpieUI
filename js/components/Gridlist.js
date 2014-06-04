@@ -120,7 +120,7 @@ Com['Gridlist'] = function(o){
         item = config['cols'][i] = cm.merge({
             'width' : 'auto',           // number | % | auto
             'access' : true,            // Render column if is accessible
-            'type' : 'text',		    // text | number | url | date | icon | checkbox | empty
+            'type' : 'text',		    // text | number | url | date | html | icon | checkbox | empty
             'key' : '',                 // Data array key
             'title' : '',               // Table th title
             'sort' : config['sort'],    // Sort this column or not
@@ -318,6 +318,14 @@ Com['Gridlist'] = function(o){
                 textA = a[key];
                 textB = b[key];
                 switch(item['type']){
+                    case 'html':
+                        t1 = cm.getTextNodesStr(cm.strToHTML(textA));
+                        t2 = cm.getTextNodesStr(cm.strToHTML(textB));
+                        value = (t1 < t2)? -1 : ((t1 > t2)? 1 : 0);
+                        return (orderBy == 'ASC')? value : (-1 * value);
+                        break;
+                        break;
+
                     case 'date':
                         t1 = cm.parseDate(textA, config['dateFormat']);
                         t2 = cm.parseDate(textB, config['dateFormat']);

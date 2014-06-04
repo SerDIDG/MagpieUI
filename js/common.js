@@ -693,6 +693,28 @@ cm.getTextNodes = function(parent, handler){
     }
 };
 
+cm.getTextNodesStr = function(node){
+    var str = '',
+        childs;
+    if(node){
+        if(cm.isArray(node)){
+            cm.forEach(node, function(child){
+                str += cm.getTextNodesStr(child);
+            });
+        }else if(cm.isNode(node)){
+            childs = node.childNodes;
+            cm.forEach(childs, function(child){
+                if(child.nodeType == 1){
+                    str += cm.getTextNodesStr(child);
+                }else{
+                    str += child.nodeValue;
+                }
+            });
+        }
+    }
+    return str;
+};
+
 cm.remove = function(node){
     if(node && node.parentNode){
         node.parentNode.removeChild(node);
