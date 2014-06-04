@@ -324,7 +324,6 @@ Com['Gridlist'] = function(o){
                         value = (t1 < t2)? -1 : ((t1 > t2)? 1 : 0);
                         return (orderBy == 'ASC')? value : (-1 * value);
                         break;
-                        break;
 
                     case 'date':
                         t1 = cm.parseDate(textA, config['dateFormat']);
