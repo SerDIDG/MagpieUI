@@ -1,43 +1,39 @@
 /* ******* TOOLBAR ********** */
 
 .cm-toolbar {
-    white-space: nowrap;
-    margin: 0 0 @cm-indentMedium 0;
     font-size: 0;
-
-    &.bottom {
-        margin: 0;
-    }
-
-    > .left {
-        float: left;
-    }
-
-    > .right {
-        float: right;
-    }
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: wrap;
+            flex-wrap: wrap;
 
     .group {
-        margin: 0 0 0 @CmToolbar-groupIndent;
+        max-width: 100%;
+        margin: 0 @CmToolbar-groupIndent 0 0;
         padding: 0;
         display: inline-block;
         vertical-align: top;
         list-style: none;
         font-size: 0;
 
-        &:first-child {
-            margin: 0;
+        &:last-child {
+            margin-right: 0;
         }
 
         > li {
+            max-width: 100%;
             display: inline-block;
             vertical-align: top;
-            margin: 0 0 0 @CmToolbar-itemIndent;
+            margin: 0 @CmToolbar-itemIndent @cm-indentMedium 0;
             line-height: @CmForm-fieldHeight;
             font-size: @cm-fontSize;
 
-            &:first-child {
-                margin: 0;
+            &:last-child {
+                margin-right: 0;
+            }
+
+            &.label {
+                margin-right: @cm-indentXXSmall;
             }
 
             &.is-icon {
@@ -105,4 +101,71 @@
             }
         }
     }
+
+    > .left {
+        flex: auto;
+        float: left;
+    }
+
+    > .right {
+        float: right;
+    }
+
+    &.is-adaptive {
+        -webkit-flex-wrap: nowrap;
+                flex-wrap: nowrap;
+
+        .group {
+            display: -webkit-flex;
+            display: flex;
+        }
+    }
+
+    &.bottom {
+        .group {
+            > li {
+                margin-bottom: 0;
+            }
+        }
+    }
+}
+
+/* *** ADAPTIVE *** */
+
+@media only screen and (max-width : @cm-mobileScreen) {
+
+    .is-adaptive {
+        .cm-toolbar {
+            .group {
+                > li {
+                    &.label {
+                        display: block;
+                        margin: 0;
+                    }
+
+                    &.is-field {
+                        width: 100%;
+                    }
+                }
+            }
+
+            > .left,
+            > .right {
+                width: 100%;
+                float: none;
+            }
+
+            &.is-adaptive {
+                display: block;
+
+                .group,
+                .group > li {
+                    display: block;
+                    margin-left: 0;
+                    margin-right: 0;
+                }
+            }
+        }
+    }
+
 }

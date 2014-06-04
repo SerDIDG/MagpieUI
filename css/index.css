@@ -1935,39 +1935,37 @@ ul.has-icons-outside-three li {
 }
 /* ******* TOOLBAR ********** */
 .cm-toolbar {
-  white-space: nowrap;
-  margin: 0 0 24px 0;
   font-size: 0;
-}
-.cm-toolbar.bottom {
-  margin: 0;
-}
-.cm-toolbar > .left {
-  float: left;
-}
-.cm-toolbar > .right {
-  float: right;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
 }
 .cm-toolbar .group {
-  margin: 0 0 0 16px;
+  max-width: 100%;
+  margin: 0 16px 0 0;
   padding: 0;
   display: inline-block;
   vertical-align: top;
   list-style: none;
   font-size: 0;
 }
-.cm-toolbar .group:first-child {
-  margin: 0;
+.cm-toolbar .group:last-child {
+  margin-right: 0;
 }
 .cm-toolbar .group > li {
+  max-width: 100%;
   display: inline-block;
   vertical-align: top;
-  margin: 0 0 0 4px;
+  margin: 0 4px 24px 0;
   line-height: 28px;
   font-size: 13px;
 }
-.cm-toolbar .group > li:first-child {
-  margin: 0;
+.cm-toolbar .group > li:last-child {
+  margin-right: 0;
+}
+.cm-toolbar .group > li.label {
+  margin-right: 8px;
 }
 .cm-toolbar .group > li.is-icon {
   width: 30px;
@@ -2017,6 +2015,48 @@ ul.has-icons-outside-three li {
 .cm-toolbar .group.is-merged > li.button:active,
 .cm-toolbar .group.is-merged > li.button.active {
   z-index: 2;
+}
+.cm-toolbar > .left {
+  flex: auto;
+  float: left;
+}
+.cm-toolbar > .right {
+  float: right;
+}
+.cm-toolbar.is-adaptive {
+  -webkit-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+}
+.cm-toolbar.is-adaptive .group {
+  display: -webkit-flex;
+  display: flex;
+}
+.cm-toolbar.bottom .group > li {
+  margin-bottom: 0;
+}
+/* *** ADAPTIVE *** */
+@media only screen and (max-width: 600px) {
+  .is-adaptive .cm-toolbar .group > li.label {
+    display: block;
+    margin: 0;
+  }
+  .is-adaptive .cm-toolbar .group > li.is-field {
+    width: 100%;
+  }
+  .is-adaptive .cm-toolbar > .left,
+  .is-adaptive .cm-toolbar > .right {
+    width: 100%;
+    float: none;
+  }
+  .is-adaptive .cm-toolbar.is-adaptive {
+    display: block;
+  }
+  .is-adaptive .cm-toolbar.is-adaptive .group,
+  .is-adaptive .cm-toolbar.is-adaptive .group > li {
+    display: block;
+    margin-left: 0;
+    margin-right: 0;
+  }
 }
 /* ******* DRAG AND DROP ******* */
 .cm-draganddrop-body,
