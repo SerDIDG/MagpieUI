@@ -17,9 +17,6 @@ a {
   outline: none;
   cursor: pointer;
 }
-a:visited {
-  color: #8a156d;
-}
 a:hover {
   text-decoration: none;
   color: #666666;
@@ -488,9 +485,6 @@ select[multiple] {
   color: #666666;
   outline: none;
   cursor: pointer;
-}
-.link:visited {
-  color: #8a156d;
 }
 .link:hover {
   text-decoration: none;
@@ -1861,9 +1855,6 @@ ul.has-icons-outside-three li {
   line-height: 18px;
   text-decoration: none;
   white-space: nowrap;
-}
-.cm-menu .cm-menu-dropdown li a:visited {
-  color: #8a156d;
 }
 .cm-menu .cm-menu-dropdown li a:hover {
   text-decoration: none;
