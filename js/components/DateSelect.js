@@ -12,7 +12,7 @@ Com['DateSelect'] = function(o){
             'langs' : {
                 'day' : 'Day',
                 'month' : 'Month',
-                'year' : 'Years',
+                'year' : 'Year',
                 'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
             }
         }, o),
@@ -46,9 +46,9 @@ Com['DateSelect'] = function(o){
             cm.Node('div', {'class' : 'cm-toolbar bottom'},
                 cm.Node('div', {'class' : 'inner clear'},
                     cm.Node('ul', {'class' : 'group'},
-                        nodes['day'] = cm.Node('li', {'class' : 'is-field x-small'}),
+                        nodes['year'] = cm.Node('li', {'class' : 'is-field small'}),
                         nodes['month'] = cm.Node('li', {'class' : 'is-field medium'}),
-                        nodes['year'] = cm.Node('li', {'class' : 'is-field small'})
+                        nodes['day'] = cm.Node('li', {'class' : 'is-field x-small'})
                     )
                 )
             )
