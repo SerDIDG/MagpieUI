@@ -1740,6 +1740,12 @@ ul.has-icons-outside-three li {
 .icon.medium.menu {
   background-image: url("../img/icons/medium/menu.png");
 }
+.icon.medium.settings {
+  background-image: url("../img/icons/medium/settings.png");
+}
+.icon.medium.settings-white {
+  background-image: url("../img/icons/medium/settings-white.png");
+}
 .icon.large {
   width: 32px;
   height: 32px;
