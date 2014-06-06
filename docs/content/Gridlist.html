@@ -196,7 +196,7 @@
                 </li>
                 <li><b>events</b> <i>[Object]</i> - object of events handlers:
                     <ul class="margin-none">
-                        <li><i>Available events: onSort, onCheckAll, onUnCheckAll, onCheck, onUnCheck</i>;</li>
+                        <li><i>Available events: onSort, onCheckAll, onUnCheckAll, onCheck, onUnCheck, onRenderStart, onRenderEnd</i>;</li>
                     </ul>
                 </li>
                 <li><b>Com.Pagination</b> <i>[Object]</i> - specific configuration of pagination component, <i>default: {}</i>.</li>
@@ -227,11 +227,11 @@
         <li data-tabset-id="methods" data-tabset-title="Methods">
             <h2>Add event:</h2>
             <pre class="cm-codebox">gridlist.addEvent(event, handler);</pre>
-            <p>Available events: onSort, onCheckAll, onUnCheckAll, onCheck, onUnCheck.<br>Returns a class of select.</p>
+            <p>Available events: onSort, onCheckAll, onUnCheckAll, onCheck, onUnCheck, onRenderStart, onRenderEnd.<br>Returns a class of select.</p>
 
             <h2>Remove event:</h2>
             <pre class="cm-codebox">gridlist.removeEvent(event, handler);</pre>
-            <p>Available events: onSort, onCheckAll, onUnCheckAll, onCheck, onUnCheck.<br>Returns a class of select.</p>
+            <p>Available events: onSort, onCheckAll, onUnCheckAll, onCheck, onUnCheck, onRenderStart, onRenderEnd.<br>Returns a class of select.</p>
 
             <h2>Check row:</h2>
             <pre class="cm-codebox">gridlist.check(index);</pre>

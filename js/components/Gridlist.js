@@ -30,7 +30,9 @@ Com['Gridlist'] = function(o){
             'onCheckAll' : [],
             'onUnCheckAll' : [],
             'onCheck' : [],
-            'onUnCheck' : []
+            'onUnCheck' : [],
+            'onRenderStart' : [],
+            'onRenderEnd' : []
         },
         nodes = {},
         coms = {},
@@ -89,6 +91,11 @@ Com['Gridlist'] = function(o){
         if(!config['pagination']){
             cm.remove(nodes['table']);
         }
+        // API onRenderEnd event
+        executeEvent('onRenderStart', {
+            'container' : container,
+            'page' : page
+        });
         // Render Table
         nodes['table'] = cm.Node('div', {'class' : 'com-gridlist bottom'},
             cm.Node('table',
@@ -113,6 +120,12 @@ Com['Gridlist'] = function(o){
         }
         // Append
         container.appendChild(nodes['table']);
+        // API onRenderEnd event
+        executeEvent('onRenderEnd', {
+            'container' : container,
+            'page' : page,
+            'rows' : rows
+        });
     };
 
     var renderTh = function(item, i){
