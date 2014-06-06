@@ -2828,6 +2828,9 @@ ul.has-icons-outside-three li {
 .com-columns.is-editable:hover > .inner > .container > .com-column > .inner {
   background: rgba(0, 0, 0, 0.01);
 }
+.com-columns.is-editable.is-chassis-visible > .inner .com-columns-chassis {
+  opacity: 1;
+}
 .ie8 .com-columns > .inner > .container,
 .ie9 .com-columns > .inner > .container {
   display: table;
