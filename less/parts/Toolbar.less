@@ -1,11 +1,29 @@
 /* ******* TOOLBAR ********** */
 
 .cm-toolbar {
-    font-size: 0;
-    display: -webkit-flex;
-    display: flex;
-    -webkit-flex-wrap: wrap;
-            flex-wrap: wrap;
+    margin: 0 0 @cm-indentMedium;
+
+    &.bottom {
+        margin: 0;
+    }
+
+    > .inner {
+        margin: 0 0 -@cm-indentMedium;
+        font-size: 0;
+        display: -webkit-flex;
+        display: flex;
+        -webkit-flex-wrap: wrap;
+                 flex-wrap: wrap;
+
+        > .left {
+            flex: auto;
+            float: left;
+        }
+
+        > .right {
+            float: right;
+        }
+    }
 
     .group {
         max-width: 100%;
@@ -102,30 +120,15 @@
         }
     }
 
-    > .left {
-        flex: auto;
-        float: left;
-    }
-
-    > .right {
-        float: right;
-    }
-
     &.is-adaptive {
-        -webkit-flex-wrap: nowrap;
-                flex-wrap: nowrap;
+        > .inner {
+            -webkit-flex-wrap: nowrap;
+                    flex-wrap: nowrap;
+        }
 
         .group {
             display: -webkit-flex;
             display: flex;
-        }
-    }
-
-    &.bottom {
-        .group {
-            > li {
-                margin-bottom: 0;
-            }
         }
     }
 }
@@ -136,11 +139,21 @@
 
     .is-adaptive {
         .cm-toolbar {
+            > .inner {
+                > .left,
+                > .right {
+                    width: 100%;
+                    float: none;
+                }
+            }
+
             .group {
+                margin-top: 0;
                 > li {
                     &.label {
                         display: block;
-                        margin: 0;
+                        margin-right: 0;
+                        margin-bottom: 0;
                     }
 
                     &.is-field {
@@ -149,14 +162,10 @@
                 }
             }
 
-            > .left,
-            > .right {
-                width: 100%;
-                float: none;
-            }
-
             &.is-adaptive {
-                display: block;
+                > .inner {
+                    display: block;
+                }
 
                 .group,
                 .group > li {

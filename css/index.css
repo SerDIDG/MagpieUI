@@ -1935,11 +1935,25 @@ ul.has-icons-outside-three li {
 }
 /* ******* TOOLBAR ********** */
 .cm-toolbar {
+  margin: 0 0 24px;
+}
+.cm-toolbar.bottom {
+  margin: 0;
+}
+.cm-toolbar > .inner {
+  margin: 0 0 -24px;
   font-size: 0;
   display: -webkit-flex;
   display: flex;
   -webkit-flex-wrap: wrap;
   flex-wrap: wrap;
+}
+.cm-toolbar > .inner > .left {
+  flex: auto;
+  float: left;
+}
+.cm-toolbar > .inner > .right {
+  float: right;
 }
 .cm-toolbar .group {
   max-width: 100%;
@@ -2016,14 +2030,7 @@ ul.has-icons-outside-three li {
 .cm-toolbar .group.is-merged > li.button.active {
   z-index: 2;
 }
-.cm-toolbar > .left {
-  flex: auto;
-  float: left;
-}
-.cm-toolbar > .right {
-  float: right;
-}
-.cm-toolbar.is-adaptive {
+.cm-toolbar.is-adaptive > .inner {
   -webkit-flex-wrap: nowrap;
   flex-wrap: nowrap;
 }
@@ -2031,24 +2038,25 @@ ul.has-icons-outside-three li {
   display: -webkit-flex;
   display: flex;
 }
-.cm-toolbar.bottom .group > li {
-  margin-bottom: 0;
-}
 /* *** ADAPTIVE *** */
 @media only screen and (max-width: 600px) {
+  .is-adaptive .cm-toolbar > .inner > .left,
+  .is-adaptive .cm-toolbar > .inner > .right {
+    width: 100%;
+    float: none;
+  }
+  .is-adaptive .cm-toolbar .group {
+    margin-top: 0;
+  }
   .is-adaptive .cm-toolbar .group > li.label {
     display: block;
-    margin: 0;
+    margin-right: 0;
+    margin-bottom: 0;
   }
   .is-adaptive .cm-toolbar .group > li.is-field {
     width: 100%;
   }
-  .is-adaptive .cm-toolbar > .left,
-  .is-adaptive .cm-toolbar > .right {
-    width: 100%;
-    float: none;
-  }
-  .is-adaptive .cm-toolbar.is-adaptive {
+  .is-adaptive .cm-toolbar.is-adaptive > .inner {
     display: block;
   }
   .is-adaptive .cm-toolbar.is-adaptive .group,

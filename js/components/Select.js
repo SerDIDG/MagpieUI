@@ -14,7 +14,7 @@ Com['Select'] = function(o){
             'showTitleTag' : true,
             'title' : false,
             'menuMargin' : 3,
-            'options' : [],
+            'options' : [],                 // [{'value' : '', 'text' : ''}]
             'selected' : 0,
             'icons' : {
                 'arrow' : 'icon medium select-arrow linked'
@@ -402,7 +402,8 @@ Com['Select'] = function(o){
         return active;
     };
 
-    that.set = function(value){
+    that.set = function(value, execute){
+        execute = typeof execute == 'undefined'? true : execute;
         // Select option and execute events
         if(typeof value != 'undefined'){
             if(cm.isArray(value)){
@@ -412,10 +413,12 @@ Com['Select'] = function(o){
                     }
                 });
                 /* *** EXECUTE API EVENTS *** */
-                executeEvent('onSelect');
-                executeEvent('onChange');
+                if(execute){
+                    executeEvent('onSelect');
+                    executeEvent('onChange');
+                }
             }else if(options[value]){
-                set(options[value], true);
+                set(options[value], execute);
             }
         }
         return that;

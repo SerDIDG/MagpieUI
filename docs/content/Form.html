@@ -15,6 +15,7 @@
     <script type="text/javascript" src="../../js/components/Select.js"></script>
     <script type="text/javascript" src="../../js/components/Calendar.js"></script>
     <script type="text/javascript" src="../../js/components/Datepicker.js"></script>
+    <script type="text/javascript" src="../../js/components/DateSelect.js"></script>
     <script type="text/javascript" src="../../js/components/CalendarEvents.js"></script>
     <script type="text/javascript" src="../../js/components/Tabset.js"></script>
     <script type="text/javascript" src="../../js/components/Dialog.js"></script>
@@ -35,6 +36,11 @@
             new Com.Collector()
                 .add('tags', function(node){
                     new Com.TagsInput({
+                        'input' : node
+                    });
+                })
+                .add('date-select', function(node){
+                    new Com.DateSelect({
                         'input' : node
                     });
                 })
@@ -110,6 +116,12 @@
                     <dt>Datepicker with clear button:</dt>
                     <dd>
                         <input type="text" id="datepicker2" name="datepicker2" data-datepicker="true" data-showClearButton="true" placeholder="Expires date" readonly>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>Date Select:</dt>
+                    <dd>
+                        <input type="text" readonly data-element="date-select" value="0000-00-00">
                     </dd>
                 </dl>
 
@@ -637,146 +649,154 @@
 
         <li data-tabset-id="toolbars" data-tabset-title="Toolbars">
             <h2>Inputs and Selects sizes:</h2>
-            <div class="cm-toolbar is-adaptive clear">
-                <ul class="group">
-                    <li class="is-field x-small">
-                        <input type="text" placeholder="X-Small" readonly>
-                    </li>
-                </ul>
-                <ul class="group">
-                    <li class="is-field small">
-                        <input type="text" placeholder="Small" readonly>
-                    </li>
-                </ul>
-                <ul class="group">
-                    <li class="is-field medium">
-                        <input type="text" placeholder="Medium" readonly>
-                    </li>
-                </ul>
-                <ul class="group">
-                    <li class="is-field large">
-                        <input type="text" placeholder="Large" readonly>
-                    </li>
-                </ul>
-                <ul class="group">
-                    <li class="is-field x-large">
-                        <input type="text" placeholder="X-Large" readonly>
-                    </li>
-                </ul>
+            <div class="cm-toolbar is-adaptive">
+                <div class="inner clear">
+                    <ul class="group">
+                        <li class="is-field x-small">
+                            <input type="text" placeholder="X-Small" readonly>
+                        </li>
+                    </ul>
+                    <ul class="group">
+                        <li class="is-field small">
+                            <input type="text" placeholder="Small" readonly>
+                        </li>
+                    </ul>
+                    <ul class="group">
+                        <li class="is-field medium">
+                            <input type="text" placeholder="Medium" readonly>
+                        </li>
+                    </ul>
+                    <ul class="group">
+                        <li class="is-field large">
+                            <input type="text" placeholder="Large" readonly>
+                        </li>
+                    </ul>
+                    <ul class="group">
+                        <li class="is-field x-large">
+                            <input type="text" placeholder="X-Large" readonly>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
             <hr>
 
             <h2>Grouped buttons:</h2>
-            <div class="cm-toolbar clear">
-                <div class="left">
-                    <ul class="group">
-                        <li class="button">Left positioned buttons</li>
-                    </ul>
+            <div class="cm-toolbar">
+                <div class="inner clear">
+                    <div class="left">
+                        <ul class="group">
+                            <li class="button">Left positioned buttons</li>
+                        </ul>
 
-                    <ul class="group">
-                        <li class="button">Item 1</li>
-                        <li class="button">Item 2</li>
-                        <li class="button">Item 3</li>
-                    </ul>
-                </div>
+                        <ul class="group">
+                            <li class="button">Item 1</li>
+                            <li class="button">Item 2</li>
+                            <li class="button">Item 3</li>
+                        </ul>
+                    </div>
 
-                <div class="right">
-                    <ul class="group">
-                        <li class="button">Item 1</li>
-                        <li class="button">Item 2</li>
-                        <li class="button">Item 3</li>
-                    </ul>
+                    <div class="right">
+                        <ul class="group">
+                            <li class="button">Item 1</li>
+                            <li class="button">Item 2</li>
+                            <li class="button">Item 3</li>
+                        </ul>
 
-                    <ul class="group">
-                        <li class="button">Right positioned buttons</li>
-                    </ul>
+                        <ul class="group">
+                            <li class="button">Right positioned buttons</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
 
             <hr>
 
             <h2>Sample filter:</h2>
-            <div class="cm-toolbar clear">
-                <div class="left">
-                    <ul class="group">
-                        <li class="label">Keyword:</li>
-                        <li class="is-field large">
-                            <div class="form-field has-icon-right">
-                                <input type="text">
-                                <div class="icon small remove linked"></div>
-                            </div>
-                        </li>
-                    </ul>
-                    <ul class="group">
-                        <li class="label">Type:</li>
-                        <li class="is-field medium">
-                            <select>
-                                <option>Author</option>
-                                <option>File</option>
-                                <option>Event</option>
-                            </select>
-                        </li>
-                    </ul>
-                    <ul class="group">
-                        <li class="label">Sort by:</li>
-                        <li class="is-field medium">
-                            <select>
-                                <option>Date</option>
-                                <option>Name</option>
-                                <option>Description</option>
-                            </select>
-                        </li>
-                    </ul>
-                </div>
+            <div class="cm-toolbar">
+                <div class="inner clear">
+                    <div class="left">
+                        <ul class="group">
+                            <li class="label">Keyword:</li>
+                            <li class="is-field large">
+                                <div class="form-field has-icon-right">
+                                    <input type="text">
+                                    <div class="icon small remove linked"></div>
+                                </div>
+                            </li>
+                        </ul>
+                        <ul class="group">
+                            <li class="label">Type:</li>
+                            <li class="is-field medium">
+                                <select>
+                                    <option>Author</option>
+                                    <option>File</option>
+                                    <option>Event</option>
+                                </select>
+                            </li>
+                        </ul>
+                        <ul class="group">
+                            <li class="label">Sort by:</li>
+                            <li class="is-field medium">
+                                <select>
+                                    <option>Date</option>
+                                    <option>Name</option>
+                                    <option>Description</option>
+                                </select>
+                            </li>
+                        </ul>
+                    </div>
 
-                <div class="right">
-                    <ul class="group">
-                        <li class="label">Per page:</li>
-                        <li class="is-field x-small">
-                            <select>
-                                <option>10</option>
-                                <option>25</option>
-                                <option>50</option>
-                                <option>100</option>
-                                <option>All</option>
-                            </select>
-                        </li>
-                    </ul>
+                    <div class="right">
+                        <ul class="group">
+                            <li class="label">Per page:</li>
+                            <li class="is-field x-small">
+                                <select>
+                                    <option>10</option>
+                                    <option>25</option>
+                                    <option>50</option>
+                                    <option>100</option>
+                                    <option>All</option>
+                                </select>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
 
             <hr>
 
             <h2>Text editor toolbar:</h2>
-            <div class="cm-toolbar clear">
-                <ul class="group">
-                    <li class="button is-icon secondary"><span class="icon toolbar bold"></span></li>
-                    <li class="button is-icon secondary active"><span class="icon toolbar italic"></span></li>
-                    <li class="button is-icon secondary"><span class="icon toolbar underline"></span></li>
-                </ul>
-                <ul class="group">
-                    <li class="is-field medium">
-                        <select>
-                            <option>Font</option>
-                        </select>
-                    </li>
-                    <li class="is-field medium">
-                        <select>
-                            <option>Size</option>
-                        </select>
-                    </li>
-                    <li class="is-field medium">
-                        <select>
-                            <option>Color</option>
-                        </select>
-                    </li>
-                    <li class="is-field medium">
-                        <select>
-                            <option>Style</option>
-                        </select>
-                    </li>
-                </ul>
+            <div class="cm-toolbar bottom">
+                <div class="inner clear">
+                    <ul class="group">
+                        <li class="button is-icon secondary"><span class="icon toolbar bold"></span></li>
+                        <li class="button is-icon secondary active"><span class="icon toolbar italic"></span></li>
+                        <li class="button is-icon secondary"><span class="icon toolbar underline"></span></li>
+                    </ul>
+                    <ul class="group">
+                        <li class="is-field medium">
+                            <select>
+                                <option>Font</option>
+                            </select>
+                        </li>
+                        <li class="is-field medium">
+                            <select>
+                                <option>Size</option>
+                            </select>
+                        </li>
+                        <li class="is-field medium">
+                            <select>
+                                <option>Color</option>
+                            </select>
+                        </li>
+                        <li class="is-field medium">
+                            <select>
+                                <option>Style</option>
+                            </select>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </li>
 
