@@ -443,12 +443,14 @@ select[multiple] {
   padding: 0;
 }
 /* ******* STATIC CLASSES ******* */
-.clear:after {
+.clear:after,
+.form dl:after {
   content: ".";
   display: block;
   clear: both;
   visibility: hidden;
   line-height: 0;
+  font-size: 0;
   height: 0;
 }
 /* *** INLINE STYLES *** */
@@ -644,14 +646,6 @@ select[multiple] {
 }
 .form > dl:first-child {
   margin-top: 0;
-}
-.form dl:after {
-  content: ".";
-  display: block;
-  clear: both;
-  visibility: hidden;
-  line-height: 0;
-  height: 0;
 }
 .form dt {
   width: 150px;
