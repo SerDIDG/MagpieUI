@@ -2687,7 +2687,9 @@ ul.has-icons-outside-three li {
 .com-column {
   vertical-align: top;
   display: -webkit-flex;
+  display: -ms-flexbox;
   display: flex;
+  -ms-flex-pack: center;
 }
 .com-column > .inner {
   -webkit-flex: 1;
@@ -2784,9 +2786,9 @@ ul.has-icons-outside-three li {
   width: 100%;
   height: 100%;
   display: -ms-flexbox;
-  -ms-flex-pack: center;
   display: -webkit-flex;
   display: flex;
+  -ms-flex-pack: center;
   -webkit-flex-direction: row;
   -ms-flex-direction: row;
   flex-direction: row;
