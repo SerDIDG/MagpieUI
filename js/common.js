@@ -27,6 +27,7 @@ var cm = {
             }
         }
     },
+    Mod = {},
     Com = {
         'Elements' : {}
     };
