@@ -665,33 +665,19 @@ cm.isParentByClass = function(parentClass, o){
     return false;
 };
 
-cm.getChilds = function(parent, handler){
-    if(parent && handler){
-        var els = parent.childNodes;
-        for(var i = 0, l = els.length; i < l; i++){
-            if(els[i] && els[i].nodeType == 1){
-                handler(els[i]);
-                cm.getChilds(els[i], handler);
-            }
-        }
+cm.getData = function(node, name){
+    if(!node){
+        return null;
+    }
+    if(node.dataset){
+        return node.dataset[name];
+    }else{
+        return node.getAttribute(['data', name].join('-'));
     }
 };
 
 cm.getTextValue = cm.getTxtVal = function(o){
     return o.nodeType == 1 && o.firstChild ? o.firstChild.nodeValue : '';
-};
-
-cm.getTextNodes = function(parent, handler){
-    if(parent && handler){
-        var els = parent.childNodes;
-        for(var i = 0, l = els.length; i < l; i++){
-            if(els[i].nodeType == 1){
-                cm.getTextNodes(els[i], handler);
-            }else if(els[i].nodeType == 3){
-                handler(els[i]);
-            }
-        }
-    }
 };
 
 cm.getTextNodesStr = function(node){
