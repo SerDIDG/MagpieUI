@@ -2183,8 +2183,8 @@ ul.has-icons-outside-three li {
   background-color: #daebfb;
 }
 @media only screen and (max-width: 600px) {
-  .is-adaptive .is-active .cm-editable > .border,
-  .is-adaptive .is-active .cm-editable > .menu {
+  .is-adaptive .cm-editable > .border,
+  .is-adaptive .cm-editable > .menu {
     display: none;
   }
 }
