@@ -1714,9 +1714,6 @@ ul.has-icons-outside-three li {
   height: 6px;
   background-image: url("../img/icons/arrow-desc.png");
 }
-.icon.editable-icon {
-  background-image: url("../img/icons/editable.png");
-}
 .icon.draggable {
   background: url("../img/icons/draggable.png") 0 0 repeat;
 }
@@ -2048,35 +2045,149 @@ ul.has-icons-outside-three li {
   background-color: rgba(255, 255, 255, 0.4);
 }
 /* ******* EDITABLE AREA ******* */
-/*
-
 .cm-editable {
-    #cm-editable-bundle > .normal;
-
-    &.is-active,
-    &.cm-draganddrop-helper,
-    &:hover {
-        #cm-editable-bundle > .hover;
-    }
-
-    &.is-active,
-    &.cm-draganddrop-helper {
-        #cm-editable-bundle > .active;
-    }
+  margin: 0 0 24px;
+  width: 100%;
+  position: relative;
+  z-index: 1;
 }
-
-@media only screen and (max-width: @cm-mobileScreen) {
-
-    .is-active .cm-editable {
-        > .border,
-        > .menu {
-            display: none;
-        }
-    }
-
+.cm-editable.bottom {
+  margin: 0;
 }
-
-*/
+.cm-editable > .border,
+.cm-editable > .drag,
+.cm-editable > .menu {
+  display: none;
+}
+.cm-editable.is-editable {
+  display: inline-block;
+  cursor: text;
+  vertical-align: top;
+}
+.cm-editable.is-editable > .border {
+  display: block;
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border: 1px dashed #308ce8;
+  border-radius: 3px;
+  opacity: 0;
+  -webkit-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+.cm-editable.is-editable > .inner {
+  width: 100%;
+  display: inline-block;
+  position: relative;
+  z-index: 2;
+  vertical-align: top;
+}
+.cm-editable.is-editable > .inner:hover {
+  z-index: 5;
+}
+.cm-editable.is-editable > .drag {
+  width: 80px;
+  height: 24px;
+  margin: 0 0 0 -40px;
+  display: block;
+  position: absolute;
+  z-index: 3;
+  top: -12px;
+  left: 50%;
+  opacity: 0;
+  background: #f2f2f2;
+  background-clip: border-box;
+  border: 1px dashed #308ce8;
+  border-radius: 3px;
+  cursor: move;
+  -webkit-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  visibility: hidden;
+}
+.cm-editable.is-editable > .drag .icon {
+  width: 34px;
+  height: 6px;
+  margin: 9px auto;
+  display: block;
+}
+.cm-editable.is-editable > .drag:hover {
+  background: #fafafa;
+  -webkit-transition: all 0.1s ease-in-out;
+  transition: all 0.1s ease-in-out;
+}
+.cm-editable.is-editable > .menu {
+  display: block;
+  position: absolute;
+  z-index: 4;
+  top: -12px;
+  right: -12px;
+  opacity: 0;
+  cursor: pointer;
+  -webkit-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+.cm-editable.is-editable > .menu .icon {
+  width: 24px;
+  height: 24px;
+  display: block;
+  position: relative;
+  z-index: 2;
+  background-color: #f2f2f2;
+  border: 1px dashed #308ce8;
+  border-radius: 3px;
+}
+.cm-editable.is-editable > .menu ul {
+  top: 12px;
+  right: 12px;
+  bottom: auto;
+  left: auto;
+  z-index: 1;
+}
+.cm-editable.is-editable > .menu:hover {
+  z-index: 14;
+}
+.cm-editable.is-editable > .menu:hover .icon {
+  background-color: #fafafa;
+}
+.cm-editable.is-active > .border,
+.cm-editable:hover > .border {
+  top: -16px;
+  right: -16px;
+  bottom: -16px;
+  left: -16px;
+  opacity: 1;
+  background: #ffffff;
+  -webkit-transition: all 0.1s ease-in-out;
+  transition: all 0.1s ease-in-out;
+}
+.cm-editable.is-active > .drag,
+.cm-editable:hover > .drag {
+  opacity: 1;
+  top: -28px;
+  -webkit-transition: all 0.1s ease-in-out;
+  transition: all 0.1s ease-in-out;
+  visibility: visible;
+}
+.cm-editable.is-active > .menu,
+.cm-editable:hover > .menu {
+  top: -28px;
+  right: -28px;
+  opacity: 1;
+  -webkit-transition: all 0.1s ease-in-out;
+  transition: all 0.1s ease-in-out;
+}
+.cm-editable.is-active > .drag {
+  background-color: #daebfb;
+}
+@media only screen and (max-width: 600px) {
+  .is-adaptive .is-active .cm-editable > .border,
+  .is-adaptive .is-active .cm-editable > .menu {
+    display: none;
+  }
+}
 /* ******* GRID ******* */
 .cm-grid {
   margin: 0 0 24px;

@@ -86,9 +86,8 @@
             .cm-transition(all @cm-transitionDuration ease-in-out);
 
             .icon {
-                width: 20px;
-                height: 20px;
-                padding: 2px;
+                width: 24px;
+                height: 24px;
                 display: block;
                 position: relative;
                 z-index: 2;
@@ -145,32 +144,38 @@
     }
 }
 
-/*
-
 .cm-editable {
+    margin: 0 0 @cm-indentMedium;
+
+    &.bottom {
+        margin: 0;
+    }
+
     #cm-editable-bundle > .normal;
 
+    &.is-editable {
+        #cm-editable-bundle > .editable;
+    }
+
     &.is-active,
-    &.cm-draganddrop-helper,
     &:hover {
         #cm-editable-bundle > .hover;
     }
 
-    &.is-active,
-    &.cm-draganddrop-helper {
+    &.is-active {
         #cm-editable-bundle > .active;
     }
 }
 
 @media only screen and (max-width: @cm-mobileScreen) {
 
-    .is-active .cm-editable {
-        > .border,
-        > .menu {
-            display: none;
+    .is-adaptive {
+        .is-active .cm-editable {
+            > .border,
+            > .menu {
+                display: none;
+            }
         }
     }
 
 }
-
-*/
