@@ -809,6 +809,9 @@ Com['Draganddrop'] = function(o){
             cm.insertAfter(newDraggableNode, oldDraggableNode);
             // Remove old draggable
             removeDraggable(oldDraggable, params);
+            // Register new draggable
+            newDraggable = initDraggable(newDraggableNode, area);
+            area['items'].splice(index, 0, newDraggable);
             // Animate new draggable
             widgetHeight = cm.getRealHeight(widgetNode, 0);
             widgetAnim = new cm.Animation(widgetNode);
@@ -816,9 +819,6 @@ Com['Draganddrop'] = function(o){
                 cm.removeClass(widgetNode, 'is-hide');
                 widgetNode.style.height = 'auto';
                 widgetNode.style.opacity = '';
-                // Register new draggable
-                newDraggable = initDraggable(newDraggableNode, area);
-                area['items'].splice(index, 0, newDraggable);
                 // API onEmbed event
                 executeEvent('onReplace', {
                     'item' : newDraggable,
