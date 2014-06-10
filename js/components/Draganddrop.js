@@ -17,7 +17,8 @@ Com['Draganddrop'] = function(o){
             'onInit' : [],
             'onDragStart' : [],
             'onDrop' : [],
-            'onRemove' : []
+            'onRemove' : [],
+            'onReplace' : []
         },
         nodes = {},
         areas = [],
@@ -788,7 +789,8 @@ Com['Draganddrop'] = function(o){
     };
 
     that.replaceDraggable = function(oldDraggableNode, newDraggableNode, params){
-        var oldDraggable, newDraggable;
+        var oldDraggable,
+            newDraggable;
         // Find draggable item
         cm.forEach(draggableList, function(item){
             if(item['node'] === oldDraggableNode){
@@ -798,14 +800,31 @@ Com['Draganddrop'] = function(o){
         if(oldDraggable){
             // Find old draggable area and index in area
             var area = oldDraggable['area'],
-                index = area['items'].indexOf(oldDraggableNode);
+                index = area['items'].indexOf(oldDraggableNode),
+                widgetNode = cm.getByClass('app-widget', newDraggableNode)[0],
+                widgetHeight,
+                widgetAnim;
             // Append new draggable into DOM
+            cm.addClass(newDraggableNode, 'is-hide');
             cm.insertAfter(newDraggableNode, oldDraggableNode);
             // Remove old draggable
             removeDraggable(oldDraggable, params);
-            // Register new draggable
-            newDraggable = initDraggable(newDraggableNode, area);
-            area['items'].splice(index, 0, newDraggable);
+            // Animate new draggable
+            widgetHeight = cm.getRealHeight(widgetNode, 0);
+            widgetAnim = new cm.Animation(widgetNode);
+            widgetAnim.go({'style' : {'height' : [widgetHeight, 'px'].join(''), 'opacity' : 1}, 'duration' : 300, 'anim' : 'simple', 'onStop' : function(){
+                cm.removeClass(widgetNode, 'is-hide');
+                widgetNode.style.height = 'auto';
+                // Register new draggable
+                newDraggable = initDraggable(newDraggableNode, area);
+                area['items'].splice(index, 0, newDraggable);
+                // API onEmbed event
+                executeEvent('onReplace', {
+                    'item' : newDraggable,
+                    'node' : newDraggable['node'],
+                    'to' : newDraggable['to']
+                });
+            }});
         }
         return that;
     };

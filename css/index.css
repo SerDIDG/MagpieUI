@@ -626,6 +626,10 @@ select[multiple] {
 .cm-list ul ul {
   list-style: disc;
 }
+.cm-transition-none {
+  -webkit-transition: none;
+  transition: none;
+}
 /* ******* FORM ******* */
 .form {
   cursor: default;
