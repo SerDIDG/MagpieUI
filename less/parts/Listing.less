@@ -1,0 +1,58 @@
+.cm-listing {
+    margin: 0 0 @cm-indentMedium;
+
+    &.bottom {
+        margin: 0;
+    }
+
+    .block {
+        margin: @cm-indentMedium 0 0 0;
+
+        &:first-child {
+            margin: 0;
+        }
+
+        dt {
+            margin: 0 0 @cm-indentXXXSmall;
+            color: @CmListing-stuffColor;
+            font-weight: @CmListing-stuffFontWeight;
+        }
+
+        dd {
+            padding: 0;
+        }
+    }
+
+    .list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+
+        > li {
+            margin: @cm-indentXXSmall 0 0 0;
+
+            &:first-child {
+                margin: 0;
+            }
+
+            * {
+                margin: 0;
+            }
+        }
+    }
+
+    .stuff {
+        margin: 0;
+        padding: 0;
+        font-size: 0;
+        list-style: none;
+
+        > li {
+            margin: 0 @cm-indentXXXSmall 0 0;
+            display: inline-block;
+            vertical-align: top;
+            color: @CmListing-stuffColor;
+            font-size: @CmListing-stuffFontSize;
+        }
+    }
+}
