@@ -815,6 +815,7 @@ Com['Draganddrop'] = function(o){
             widgetAnim.go({'style' : {'height' : [widgetHeight, 'px'].join(''), 'opacity' : 1}, 'duration' : 300, 'anim' : 'simple', 'onStop' : function(){
                 cm.removeClass(widgetNode, 'is-hide');
                 widgetNode.style.height = 'auto';
+                widgetNode.style.opacity = '';
                 // Register new draggable
                 newDraggable = initDraggable(newDraggableNode, area);
                 area['items'].splice(index, 0, newDraggable);
