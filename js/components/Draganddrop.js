@@ -490,11 +490,13 @@ Com['Draganddrop'] = function(o){
             });
             unsetDraggableFromArea(draggable);
             // API onRemove Event
-            executeEvent('onRemove', {
-                'item' : draggable,
-                'node' : draggable['node'],
-                'from' : draggable['area']
-            });
+            if(!params['noEvent']){
+                executeEvent('onRemove', {
+                    'item' : draggable,
+                    'node' : draggable['node'],
+                    'from' : draggable['area']
+                });
+            }
             // System onStop event
             params['onStop']();
         };
@@ -751,6 +753,10 @@ Com['Draganddrop'] = function(o){
         return draggable;
     };
 
+    that.getDraggableList = function(){
+        return draggableList;
+    };
+
     that.registerDraggable = function(node, areaNode, params){
         var draggable, area, newDraggable, index, childNodes, draggableNodes = [];
         // Find draggable item by node
@@ -781,7 +787,7 @@ Com['Draganddrop'] = function(o){
         return that;
     };
 
-    that.replaceDraggable = function(oldDraggableNode, newDraggableNode){
+    that.replaceDraggable = function(oldDraggableNode, newDraggableNode, params){
         var oldDraggable, newDraggable;
         // Find draggable item
         cm.forEach(draggableList, function(item){
@@ -796,7 +802,7 @@ Com['Draganddrop'] = function(o){
             // Append new draggable into DOM
             cm.insertAfter(newDraggableNode, oldDraggableNode);
             // Remove old draggable
-            removeDraggable(oldDraggable, {});
+            removeDraggable(oldDraggable, params);
             // Register new draggable
             newDraggable = initDraggable(newDraggableNode, area);
             area['items'].splice(index, 0, newDraggable);
