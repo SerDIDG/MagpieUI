@@ -1,0 +1,26 @@
+/* ******* BREADCRUMBS ******* */
+
+.com-breadcrumbs {
+    margin: 0 0 @cm-indentMedium;
+
+    &.bottom {
+        margin: 0;
+    }
+
+    ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        font-size: 0;
+
+        li {
+            display: inline-block;
+            font-size: @cm-fontSizeUI;
+            vertical-align: top;
+
+            &.sep {
+                margin: 0 @cm-indentXXXSmall;
+            }
+        }
+    }
+}
