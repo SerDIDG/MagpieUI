@@ -36,6 +36,7 @@
 @cm-colorSecondary: hsl(0, 0, 95%);
 @cm-colorSecondaryHover: lighten(@cm-colorSecondary, 3%);
 
+@cm-colorGalleryBackground: #111111;
 @cm-colorBorder: #CBCBCB;
 @cm-colorBorderHover: @cm-colorActiveHover;
 
@@ -151,6 +152,7 @@
 
 // /* *** IMAGE BOX *** */
 
+@CmImagebox-background: @cm-colorGalleryBackground;
 @CmImagebox-titlePaddingTop: 4px;
 
 // /* *** DRAG AND DROP *** */
@@ -224,7 +226,7 @@
 
 // /* *** GALLERY *** */
 
-@ComGallery-background: #000000;
+@ComGallery-background: @cm-colorGalleryBackground;
 
 // /* *** GALLERY CONTROLS *** */
 

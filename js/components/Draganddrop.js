@@ -801,24 +801,19 @@ Com['Draganddrop'] = function(o){
             // Find old draggable area and index in area
             var area = oldDraggable['area'],
                 index = area['items'].indexOf(oldDraggableNode),
-                widgetNode = cm.getByClass('app-widget', newDraggableNode)[0],
-                widgetHeight,
-                widgetAnim;
+                node = cm.wrap(cm.Node('div', {'class' : 'cm-draganddrop-removable'}), newDraggableNode),
+                anim = new cm.Animation(node);
             // Append new draggable into DOM
-            cm.addClass(newDraggableNode, 'is-hide');
-            cm.insertAfter(newDraggableNode, oldDraggableNode);
+            cm.insertAfter(node, oldDraggableNode);
             // Remove old draggable
             removeDraggable(oldDraggable, params);
-            // Register new draggable
-            newDraggable = initDraggable(newDraggableNode, area);
-            area['items'].splice(index, 0, newDraggable);
             // Animate new draggable
-            widgetHeight = cm.getRealHeight(widgetNode, 0);
-            widgetAnim = new cm.Animation(widgetNode);
-            widgetAnim.go({'style' : {'height' : [widgetHeight, 'px'].join(''), 'opacity' : 1}, 'duration' : 300, 'anim' : 'simple', 'onStop' : function(){
-                cm.removeClass(widgetNode, 'is-hide');
-                widgetNode.style.height = 'auto';
-                widgetNode.style.opacity = '';
+            anim.go({'style' : {'height' : [cm.getRealHeight(node, 0), 'px'].join(''), 'opacity' : 1}, 'duration' : 300, 'anim' : 'simple', 'onStop' : function(){
+                cm.insertAfter(newDraggableNode, node);
+                cm.remove(node);
+                // Register new draggable
+                newDraggable = initDraggable(newDraggableNode, area);
+                area['items'].splice(index, 0, newDraggable);
                 // API onEmbed event
                 executeEvent('onReplace', {
                     'item' : newDraggable,

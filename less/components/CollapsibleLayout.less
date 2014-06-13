@@ -94,6 +94,24 @@
         }
     }
 
+    &.is-immediately {
+        > .sidebar {
+            .cm-transition-none;
+
+            > .inner {
+                > .title {
+                    .icon {
+                        .cm-transition-none;
+                    }
+                }
+
+                > .descr {
+                    .cm-transition-none;
+                }
+            }
+        }
+    }
+
     &.is-sidebar-left-collapsed {
         > .sidebar.left {
             width: @width-hide;

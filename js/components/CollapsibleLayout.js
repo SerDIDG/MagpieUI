@@ -1,114 +1,146 @@
-Com['CollapsibleLayout'] = function(o){
-    var that = this,
-        config = cm.merge({
-            'node' : cm.Node('div'),
-            'events' : {},
-            'nodes' : {}
-        }, o),
-        API = {
-            'onRender' : [],
-            'onCollapse' : [],
-            'onExpand' : [],
-            'onChange' : []
-        },
-        nodes = {
-            'leftButton' : cm.Node('div'),
-            'rightButton': cm.Node('div')
-        };
+cm.define('Com.CollapsibleLayout', {
+    'modules' : [
+        'Events',
+        'DataConfig',
+        'DataNodes',
+        'Storage'
+    ],
+    'events' : [
+        'onRender',
+        'onCollapseLeft',
+        'onExpandLeft',
+        'onCollapseRight',
+        'onExpandRight'
+    ],
+    'params' : {
+        'node' : cm.Node('div'),
+        'remember' : false
+    }
+},
+function(params){
+    var that = this;
+
+    that.nodes = {
+        'leftButton' : cm.Node('div'),
+        'rightButton': cm.Node('div')
+    };
+
+    that.isLeftCollapsed = false;
+    that.isRightCollapsed = false;
 
     /* *** CLASS FUNCTIONS *** */
 
     var init = function(){
-        convertEvents(config['events']);
-        getNodes(config['node'], 'ComCollapsibleLayout');
+        that.setParams(params);
+        that.convertEvents(that.params['events']);
+        that.getDataNodes(that.params['node']);
+        that.getDataConfig(that.params['node']);
         render();
     };
 
     var render = function(){
+        that.isLeftCollapsed = cm.isClass(that.params['node'], 'is-sidebar-left-collapsed');
+        that.isRightCollapsed = cm.isClass(that.params['node'], 'is-sidebar-right-collapsed');
         // Left Sidebar
-        cm.addEvent(nodes['leftButton'], 'click', function(){
-            if(cm.isClass(config['node'], 'is-sidebar-left-collapsed')){
-                cm.removeClass(config['node'], 'is-sidebar-left-collapsed', true);
-                // API onExpand event
-                executeEvent('onExpand', {'sidebar' : 'left'});
-            }else{
-                cm.addClass(config['node'], 'is-sidebar-left-collapsed', true);
-                // API onCollapse event
-                executeEvent('onCollapse', {'sidebar' : 'left'});
-            }
-            // API onChange event
-            executeEvent('onChange', {
-                'sidebar' : 'left',
-                'isCollapsed' : cm.isClass(config['node'], 'is-sidebar-left-collapsed')
-            });
-        });
+        cm.addEvent(that.nodes['leftButton'], 'click', toggleLeft);
         // Right sidebar
-        cm.addEvent(nodes['rightButton'], 'click', function(){
-            if(cm.isClass(config['node'], 'is-sidebar-right-collapsed')){
-                cm.removeClass(config['node'], 'is-sidebar-right-collapsed', true);
-                // API onExpand event
-                executeEvent('onExpand', {'sidebar' : 'right'});
+        cm.addEvent(that.nodes['rightButton'], 'click', toggleRight);
+        // Check storage
+        if(that.params['remember']){
+            if(that.storageRead('isLeftCollapsed')){
+                that.collapseLeft(true);
             }else{
-                cm.addClass(config['node'], 'is-sidebar-right-collapsed', true);
-                // API onCollapse event
-                executeEvent('onCollapse', {'sidebar' : 'right'});
+                that.expandLeft(true);
             }
-            // API onChange event
-            executeEvent('onChange', {
-                'sidebar' : 'right',
-                'isCollapsed' : cm.isClass(config['node'], 'is-sidebar-right-collapsed')
-            });
-        });
-        // API onRender event
-        executeEvent('onRender');
-    };
-
-    /* *** MISC FUNCTIONS *** */
-
-    var convertEvents = function(o){
-        cm.forEach(o, function(item, key){
-            if(API[key] && typeof item == 'function'){
-                API[key].push(item);
-            }
-        });
-    };
-
-    var getNodes = function(container, marker){
-        if(container){
-            var sourceNodes = {};
-            if(marker){
-                sourceNodes = cm.getNodes(container)[marker] || {};
+            if(that.storageRead('isRightCollapsed')){
+                that.collapseRight(true);
             }else{
-                sourceNodes = cm.getNodes(container);
+                that.expandRight(true);
             }
-            nodes = cm.merge(nodes, sourceNodes);
+        }else{
+            if(that.isLeftCollapsed){
+                that.collapseLeft(true);
+            }else{
+                that.expandLeft(true);
+            }
+            if(that.isRightCollapsed){
+                that.collapseRight(true);
+            }else{
+                that.expandRight(true);
+            }
         }
-        nodes = cm.merge(nodes, config['nodes']);
+        that.triggerEvent('onRender');
     };
 
-    var executeEvent = function(event, params){
-        API[event].forEach(function(item){
-            item(that, params || {});
-        });
+   var toggleRight = function(){
+        if(that.isRightCollapsed){
+            that.expandRight();
+        }else{
+            that.collapseRight();
+        }
+    };
+
+    var toggleLeft = function(){
+        if(that.isLeftCollapsed){
+            that.expandLeft();
+        }else{
+            that.collapseLeft();
+        }
     };
 
     /* ******* MAIN ******* */
 
-    that.addEvent = function(event, handler){
-        if(API[event] && typeof handler == 'function'){
-            API[event].push(handler);
+    that.collapseLeft = function(isImmediately){
+        that.isLeftCollapsed = true;
+        isImmediately && cm.addClass(that.params['node'], 'is-immediately');
+        cm.addClass(that.params['node'], 'is-sidebar-left-collapsed', true);
+        isImmediately && cm.removeClass(that.params['node'], 'is-immediately');
+        // Write storage
+        if(that.params['remember']){
+            that.storageWrite('isLeftCollapsed', true);
         }
+        that.triggerEvent('onCollapseLeft');
         return that;
     };
 
-    that.removeEvent = function(event, handler){
-        if(API[event] && typeof handler == 'function'){
-            API[event] = API[event].filter(function(item){
-                return item != handler;
-            });
+    that.expandLeft = function(isImmediately){
+        that.isLeftCollapsed = false;
+        isImmediately && cm.addClass(that.params['node'], 'is-immediately');
+        cm.removeClass(that.params['node'], 'is-sidebar-left-collapsed', true);
+        isImmediately && cm.removeClass(that.params['node'], 'is-immediately');
+        // Write storage
+        if(that.params['remember']){
+            that.storageWrite('isLeftCollapsed', false);
         }
+        that.triggerEvent('onExpandLeft');
+        return that;
+    };
+
+    that.collapseRight = function(isImmediately){
+        that.isRightCollapsed = true;
+        isImmediately && cm.addClass(that.params['node'], 'is-immediately');
+        cm.addClass(that.params['node'], 'is-sidebar-right-collapsed', true);
+        isImmediately && cm.removeClass(that.params['node'], 'is-immediately');
+        // Write storage
+        if(that.params['remember']){
+            that.storageWrite('isRightCollapsed', true);
+        }
+        that.triggerEvent('onCollapseRight');
+        return that;
+    };
+
+    that.expandRight = function(isImmediately){
+        that.isRightCollapsed = false;
+        isImmediately && cm.addClass(that.params['node'], 'is-immediately');
+        cm.removeClass(that.params['node'], 'is-sidebar-right-collapsed', true);
+        isImmediately && cm.removeClass(that.params['node'], 'is-immediately');
+        // Write storage
+        if(that.params['remember']){
+            that.storageWrite('isRightCollapsed', false);
+        }
+        that.triggerEvent('onExpandRight');
         return that;
     };
 
     init();
-};
+});

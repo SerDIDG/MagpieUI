@@ -9,36 +9,36 @@
 
     <script type="text/javascript" src="../js/polyfill.js"></script>
     <script type="text/javascript" src="../js/common.js"></script>
+    <script type="text/javascript" src="../js/modules.js"></script>
     <script type="text/javascript" src="../js/components/UA.js"></script>
     <script type="text/javascript" src="../js/components/Collector.js"></script>
     <script type="text/javascript" src="../js/components/CollapsibleLayout.js"></script>
     <script type="text/javascript" src="../js/components/ToggleBox.js"></script>
 
     <script type="text/javascript">
-        cm.onload(function(){
-            var element;
+        cm.onReady(function(){
             // Useragent
             Com.UA.setBrowserClass();
             // Components
             new Com.Collector()
-                    .add('collapsible-layout', function(node){
-                        new Com.CollapsibleLayout({
-                            'node' : node
-                        });
-                    })
-                    .add('togglebox-widget', function(node){
-                        new Com.ToggleBoxWidget({
-                            'node' : node
-                        });
-                    })
-                    .construct();
+                .add('sidebar', function(node){
+                    new Com.CollapsibleLayout({
+                        'node' : node
+                    });
+                })
+                .add('togglebox-widget', function(node){
+                    new Com.ToggleBoxWidget({
+                        'node' : node
+                    });
+                })
+                .construct();
         });
     </script>
 </head>
 
 <body>
 
-<div class="com-collapsible-layout" data-element="collapsible-layout">
+<div class="com-collapsible-layout" data-element="sidebar" data-config='{"name" : "docs-sidebar", "remember" : true}'>
     <div class="sidebar left">
         <div class="inner">
             <div class="title">
@@ -98,7 +98,7 @@
                         <div class="cm-items-list auto">
                             <ul>
                                 <li>
-                                    <a href="content/Form.html" target="content"><b>Form Elements</b></a>
+                                    <a href="content/Form.html" target="content"><b>Form</b></a>
                                 </li>
                                 <li>
                                     <a href="content/Form.html#inputs" target="content">» Inputs</a>
@@ -135,13 +135,16 @@
                                     <a href="content/LayoutPage.html" target="content">» Page</a>
                                 </li>
                                 <li>
-                                    <a href="content/Parts.html" target="content"><b>Parts</b></a>
+                                    <b>Parts</b>
                                 </li>
                                 <li>
-                                    <a href="content/Parts.html#editable" target="content">» Editable Zone</a>
+                                    <a href="content/PartImagebox.html" target="content">» Image Box</a>
                                 </li>
                                 <li>
-                                    <a href="content/Parts.html#listing" target="content">» Listing</a>
+                                    <a href="content/PartEditable.html" target="content">» Editable Zone</a>
+                                </li>
+                                <li>
+                                    <a href="content/PartListing.html" target="content">» Listing</a>
                                 </li>
                             </ul>
                         </div>
@@ -266,7 +269,10 @@
                         <div class="cm-items-list auto">
                             <ul>
                                 <li>
-                                    <a href="stuff/ClassMaket.js" target="content">Maket of JS Class</a>
+                                    <a href="stuff/ClassMaket.js" target="content">Maket of JS Class. Fabric.</a>
+                                </li>
+                                <li>
+                                    <a href="stuff/ClassMaket.old.js" target="content">Maket of JS Class. Native.</a>
                                 </li>
                             </ul>
                         </div>

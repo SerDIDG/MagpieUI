@@ -19,30 +19,17 @@
 
 var cm = {
         '_version' : '2.0.13',
+        '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
         '_config' : {
-            'common' : {
-                'dateTimeFormat' : '%Y-%m-%d %H:%i:%s'
-            }
+            'dateTimeFormat' : '%Y-%m-%d %H:%i:%s'
         }
     },
     Mod = {},
     Com = {
         'Elements' : {}
     };
-
-/* ******* COMMON ******* */
-
-cm.config = function(str){
-    // This function in pre-alpha stage.
-    var s = str.split(':');
-    if(s.length == 1){
-        return cm._config.common[str] || null;
-    }else{
-        return true;
-    }
-};
 
 /* ******* CHECK SUPPORT ******* */
 
@@ -273,6 +260,25 @@ cm.log = (function(){
     }
 })();
 
+cm.errorLog = function(o){
+    var config = cm.merge({
+            'type' : 'error',
+            'name' : '',
+            'message' : '',
+            'langs' : {
+                'error' : 'Error!',
+                'attention' : 'Attention!',
+                'common' : 'Common'
+            }
+        }, o),
+        str = [
+            config['langs'][config['type']],
+            config['name'],
+            config['message']
+        ];
+    cm.log(str.join(' > '));
+};
+
 cm.getEvent = function(e){
     return e || window.event;
 };
@@ -425,10 +431,49 @@ cm.removeCustomEvent = function(el, type, handler, useCapture){
     return el;
 };
 
-cm.onload = function(handler){
+cm.onLoad = function(handler, called){
+    var that = this;
+    that.called = false;
+    that.called = typeof called == 'undefined' ? that.called : called;
+
+    var execute = function(){
+        if(that.called){
+            return;
+        }
+        that.called = true;
+        cm.errorLog({
+            'type' : 'common',
+            'name' : 'cm.onLoad',
+            'message' : ['Load time', (Date.now() - cm._loadTime), 'ms.'].join(' ')
+        });
+        handler();
+    };
+
     try{
-        cm.addEvent(window, 'load', handler);
+        cm.addEvent(window, 'load', execute);
     }catch(e){}
+};
+
+cm.onReady = function(handler, called){
+    var that = this;
+    that.called = false;
+    that.called = typeof called == 'undefined' ? that.called : called;
+
+    var execute = function(){
+        if(that.called){
+            return;
+        }
+        that.called = true;
+        cm.errorLog({
+            'type' : 'common',
+            'name' : 'cm.onReady',
+            'message' : ['Ready time', (Date.now() - cm._loadTime), 'ms.'].join(' ')
+        });
+        handler();
+    };
+
+    cm.addEvent(document, 'DOMContentLoaded', execute);
+    cm.onLoad.call(that, handler);
 };
 
 cm.isCenterButton = function(e){
@@ -1098,6 +1143,10 @@ cm.decode = (function(){
     };
 })();
 
+cm.strWrap = function(str, symbol){
+    return ['', str, ''].join(symbol);
+};
+
 cm.reduceText = function(str, length, points){
     if(str.length > length){
         return str.slice(0, length) + ((points) ? '...' : '');
@@ -1144,7 +1193,7 @@ cm.onTextChange = function(node, handler){
 /* ******* DATE AND TIME ******* */
 
 cm.getCurrentDate = function(format){
-    format = format || cm.config('dateTimeFormat');
+    format = format || cm._config['dateTimeFormat'];
     return cm.dateFormat(new Date(), format);
 };
 
@@ -1230,7 +1279,7 @@ cm.parseDate = function(str, format){
         },
         fromIndex = 0;
 
-    format = format || cm.config('dateTimeFormat');
+    format = format || cm._config['dateTimeFormat'];
 
     cm.forEach(convertFormats, function(item, key){
         format = format.replace(key, item);
@@ -1415,24 +1464,23 @@ cm.getRealY = function(o){
     return y - (!bodyScroll ? cm.getBodyScrollTop() : 0);
 };
 
-cm.getRealWidth = function(node, applyHeight){
+cm.getRealWidth = function(node, applyWidth){
     var nodeWidth = 0,
         width = 0;
     nodeWidth = node.offsetWidth;
     node.style.width = 'auto';
     width = node.offsetWidth;
-    node.style.width = applyHeight || [nodeWidth, 'px'].join('');
+    node.style.width = typeof applyWidth == 'undefined' ? [nodeWidth, 'px'].join('') : applyWidth;
     return width;
 };
 
 cm.getRealHeight = function(node, applyHeight){
     var nodeHeight = 0,
-        height = 0,
-        parentNode;
+        height = 0;
     nodeHeight = node.offsetHeight;
     node.style.height = 'auto';
     height = node.offsetHeight;
-    node.style.height = applyHeight || [nodeHeight, 'px'].join('');
+    node.style.height = typeof applyHeight == 'undefined' ? [nodeHeight, 'px'].join('') : applyHeight;
     return height;
 };
 
@@ -2070,4 +2118,56 @@ cm.createSvg = function(){
     return node;
 };
 
-/* ******* OTHER ******* */
+/* ******* CLASS FABRIC ******* */
+
+cm.define = function(name, data, handler){
+    var that = this;
+
+    that.data = cm.merge({
+        'modules' : [],
+        'params' : {},
+        'events' : []
+    }, data);
+
+    that.className = name;
+    that.name = that.className.split('.');
+
+    // Define default methods
+
+    that.extendObject = {
+        'params' : that.data['params'],
+        'className' : that.className,
+        'setParams' : function(params){
+            var that = this;
+            that.params = cm.merge(that.params, params);
+            return that;
+        }
+    };
+
+    // Extend class
+
+    cm.forEach(that.data['modules'], function(module){
+        if(Mod[module]){
+            cm.forEach(Mod[module], function(item, key){
+                if(key === '_define'){
+                    item(that);
+                }else{
+                    that.extendObject[key] = item;
+                }
+            });
+        }
+    });
+
+    handler.prototype = that.extendObject;
+
+    // Build class
+
+    if(that.name.length == 1){
+        window[that.name[0]] = handler;
+    }else{
+        if(!window[that.name[0]]){
+            window[that.name[0]] = {};
+        }
+        window[that.name[0]][that.name[1]] = handler;
+    }
+};

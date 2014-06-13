@@ -12,8 +12,7 @@
     <script type="text/javascript" src="../../js/components/UA.js"></script>
 
     <script type="text/javascript">
-        cm.onload(function(){
-            var element;
+        cm.onReady(function(){
             // Useragent
             Com.UA.setBrowserClass();
         });
@@ -24,13 +23,12 @@
 
 <div class="cm-block-padding">
     <h1>Common Functions Reference</h1>
-    <br>
-
     <hr>
+    <br><br>
+
     <a name="support"></a>
     <h1>Support</h1>
     <hr>
-    <br><br>
 
     <a name="cm.isCanvas"></a>
     <h2>cm.isCanvas</h2>
@@ -57,11 +55,9 @@
     <p>Variable, boolean. Check device for supporting touch events.<br><a href="https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Touch_events" target="_blank">Touch events guide</a>.</p>
     <br><br>
 
-    <hr>
     <a name="arrays"></a>
     <h1>Array</h1>
     <hr>
-    <br><br>
 
     <a name="cm.forEach"></a>
     <h2>cm.forEach(obj, callback)</h2>

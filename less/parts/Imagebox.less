@@ -11,11 +11,11 @@
         position: relative;
         z-index: 1;
         overflow: hidden;
+        font-size: 0;
 
-        > .descr {
+        > .descr:extend(.cm-image-resizable all) {
             position: relative;
             z-index: 1;
-            .cm-image-resizable;
             .cm-transition(opacity @cm-transitionDuration ease-in-out);
         }
 
@@ -25,8 +25,14 @@
             z-index: 2;
             .cm-position(0,0,0,0);
             overflow: hidden;
-            text-shadow: 0 1px 4px rgba(0,0,0,0.35);
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
             .cm-user-select(text);
+
+            > .inner {
+                height: 100%;
+                position: relative;
+                overflow: hidden;
+            }
 
             * {
                 color: #fff;
@@ -70,6 +76,7 @@
         position: absolute;
         z-index: 2;
         .cm-position(0,0,0,0);
+        cursor: pointer;
     }
 
     > .pull {
@@ -145,6 +152,8 @@
     }
 
     &.is-centered {
+        background-color: @cm-colorGalleryBackground;
+
         > .inner {
             height: 100%;
             text-align: center;
@@ -173,9 +182,9 @@
         }
     }
 
-    &.is-resizeble {
+    &.is-adaptive {
         > .inner {
-            > .descr:extend(.cm-image-resizable all) {}
+            > .descr:extend(.cm-image-adaptive all) {}
         }
     }
 
@@ -186,8 +195,6 @@
     }
 
     &.has-aspect {
-        position: relative;
-
         > .inner {
             position: absolute;
             .cm-position(0,0,0,0);
