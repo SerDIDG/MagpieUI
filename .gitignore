@@ -1,6 +1,6 @@
-/.idea
+.idea/
 .git
-/_dev
-/_old
-/js/components/old
-/js/components/dev
+_dev/
+_old/
+js/components/old/
+js/components/dev/
