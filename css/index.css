@@ -2510,6 +2510,10 @@ ul.has-icons-outside-three li {
   width: 100%;
   height: 100%;
 }
+.cm-imagebox.is-origin > .inner > .descr {
+  width: auto;
+  height: auto;
+}
 .cm-imagebox.has-aspect > .inner {
   position: absolute;
   top: 0;

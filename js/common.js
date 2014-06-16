@@ -432,15 +432,12 @@ cm.removeCustomEvent = function(el, type, handler, useCapture){
 };
 
 cm.onLoad = function(handler, called){
-    var that = this;
-    that.called = false;
-    that.called = typeof called == 'undefined' ? that.called : called;
-
+    called = typeof called == 'undefined' ? false : called;
     var execute = function(){
-        if(that.called){
+        if(called){
             return;
         }
-        that.called = true;
+        called = true;
         cm.errorLog({
             'type' : 'common',
             'name' : 'cm.onLoad',
@@ -448,22 +445,18 @@ cm.onLoad = function(handler, called){
         });
         handler();
     };
-
     try{
         cm.addEvent(window, 'load', execute);
     }catch(e){}
 };
 
 cm.onReady = function(handler, called){
-    var that = this;
-    that.called = false;
-    that.called = typeof called == 'undefined' ? that.called : called;
-
+    called = typeof called == 'undefined' ? false : called;
     var execute = function(){
-        if(that.called){
+        if(called){
             return;
         }
-        that.called = true;
+        called = true;
         cm.errorLog({
             'type' : 'common',
             'name' : 'cm.onReady',
@@ -471,9 +464,10 @@ cm.onReady = function(handler, called){
         });
         handler();
     };
-
     cm.addEvent(document, 'DOMContentLoaded', execute);
-    cm.onLoad.call(that, handler);
+    try{
+        cm.addEvent(window, 'load', execute);
+    }catch(e){}
 };
 
 cm.isCenterButton = function(e){
