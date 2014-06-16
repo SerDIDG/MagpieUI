@@ -184,6 +184,8 @@ Com['Columns'] = function(o){
         if(current){
             return false;
         }
+        e = cm.getEvent(e);
+        cm.preventDefault(e);
         // If not left mouse button, don't duplicate drag event
         if((cm.is('IE') && cm.isVersion() < 9 && e.button != 1) || (!cm.is('IE') && e.button)){
             return false;
@@ -218,9 +220,9 @@ Com['Columns'] = function(o){
     var move = function(e){
         var leftWidth, rightWidth;
         e = cm.getEvent(e);
+        cm.preventDefault(e);
         var x = e.clientX;
         if(cm.isTouch && e.touches){
-            e.preventDefault();
             x = e.touches[0].clientX;
         }
         // Calculate sizes and positions

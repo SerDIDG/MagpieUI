@@ -1828,6 +1828,18 @@ ul.has-icons-outside-three li {
   visibility: visible;
   opacity: 1;
 }
+/* *** ADAPTIVE *** */
+@media only screen and (max-width: 1024px) {
+  html.is-adaptive .cm-menu .cm-menu-dropdown {
+    display: none;
+    visibility: visible;
+    opacity: 1;
+  }
+  html.is-adaptive .cm-menu:hover > .cm-menu-dropdown,
+  html.is-adaptive .cm-menu:active > .cm-menu-dropdown {
+    display: block;
+  }
+}
 /* ******* ITEMS LIST ******* */
 .cm-items-list ul {
   max-height: 229px;
@@ -2748,6 +2760,21 @@ ul.has-icons-outside-three li {
 .com-collapsible-layout.is-sidebar-right-collapsed > .sidebar.right > .inner > .descr {
   opacity: 0;
   filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+}
+/* *** ADAPTIVE *** */
+@media only screen and (max-width: 1024px) {
+  html.is-adaptive .com-collapsible-layout > .sidebar {
+    -webkit-transition: none;
+    transition: none;
+  }
+  html.is-adaptive .com-collapsible-layout > .sidebar > .inner > .title .icon {
+    -webkit-transition: none;
+    transition: none;
+  }
+  html.is-adaptive .com-collapsible-layout > .sidebar > .inner > .descr {
+    -webkit-transition: none;
+    transition: none;
+  }
 }
 /* ******* SCROLLABLE LAYOUT ******* */
 .cm-scrollable-layout {

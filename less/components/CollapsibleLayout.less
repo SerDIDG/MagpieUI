@@ -154,3 +154,29 @@
         }
     }
 }
+
+/* *** ADAPTIVE *** */
+
+@media only screen and (max-width : @cm-screenTablet) {
+
+    html.is-adaptive {
+        .com-collapsible-layout {
+            > .sidebar {
+                .cm-transition-none;
+
+                > .inner {
+                    > .title {
+                        .icon {
+                            .cm-transition-none;
+                        }
+                    }
+
+                    > .descr {
+                        .cm-transition-none;
+                    }
+                }
+            }
+        }
+    }
+
+}
