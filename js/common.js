@@ -95,15 +95,20 @@ cm.forEach = function(o, callback){
 };
 
 cm.merge = function(o1, o2){
-    if(!o1 || typeof o1 == 'string' || typeof o1 == 'number'){
+    if(!o2){
+        return o1;
+    }
+    if(!o1){
         o1 = {}
-    }else{
+    }else if(cm.isObject(o1)){
         o1 = cm.clone(o1);
+    }else{
+        return o2;
     }
     cm.forEach(o2, function(item, key){
         if(item != null){
             try{
-                if(item.constructor == Object){
+                if(cm.isObject(item)){
                     o1[key] = cm.merge(o1[key], item);
                 }else{
                     o1[key] = item;
@@ -132,12 +137,11 @@ cm.extend = function(o1, o2){
     return o;
 };
 
-cm.clone = function(o){
+cm.clone = function(o, cloneNode){
     var newO;
     if(!o){
         return o;
     }
-    // GO
     switch(o.constructor){
         case Function:
         case String:
@@ -148,24 +152,31 @@ cm.clone = function(o){
             newO = o;
             break;
         case Array:
-            newO = o.slice();
+            newO = [];
+            cm.forEach(o, function(item){
+                newO.push(cm.clone(item, cloneNode));
+            });
             break;
         case Object:
             newO = {};
             cm.forEach(o, function(item, key){
-                newO[key] = cm.clone(item);
+                newO[key] = cm.clone(item, cloneNode);
             });
             break;
         default:
             // Exceptions
-            if(o.nodeType){
-                newO = o;
+            if(cm.isNode(o)){
+                if(cloneNode){
+                    newO = o.cloneNode(true);
+                }else{
+                    newO = o;
+                }
             }else if(Object.prototype.toString.call(o) == '[object Object]' && o.constructor != Object){
                 newO = o;
             }else{
                 newO = [];
                 cm.forEach(o, function(item){
-                    newO.push(item);
+                    newO.push(cm.clone(item, cloneNode));
                 });
             }
             break;
@@ -572,7 +583,7 @@ cm.onImageLoad = function(src, handler, delay){
 /* ******* NODES ******* */
 
 cm.isNode = function(node){
-    return node && 'nodeType' in node;
+    return node && node.nodeType;
 };
 
 cm.getEl = function(str){
