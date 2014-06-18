@@ -102,7 +102,7 @@ Mod['Langs'] = {
 
 Mod['DataConfig'] = {
     '_define' : function(definer){
-        if(!definer.data['params']['configDataMarker']){
+        if(typeof definer.data['params']['configDataMarker'] == 'undefined'){
             definer.data['params']['configDataMarker'] = 'data-config';
         }
     },
@@ -127,10 +127,10 @@ Mod['DataNodes'] = {
         if(!definer.data['params']['nodes']){
             definer.data['params']['nodes'] = {};
         }
-        if(!definer.data['params']['nodesDataMarker']){
+        if(typeof definer.data['params']['nodesDataMarker'] == 'undefined'){
             definer.data['params']['nodesDataMarker'] = 'data-node';
         }
-        if(!definer.data['params']['nodesMarker']){
+        if(typeof definer.data['params']['nodesMarker'] == 'undefined'){
             definer.data['params']['nodesMarker'] = definer.name.join('');
         }
         if(!definer.extendObject['nodes']){
@@ -140,9 +140,10 @@ Mod['DataNodes'] = {
     'getDataNodes' : function(container, dataMarker, className){
         var that = this,
             sourceNodes = {};
+        container = typeof container == 'undefined'? document.body : container;
         if(container){
-            dataMarker = dataMarker || that.params['nodesDataMarker'];
-            className = className || that.params['nodesMarker'];
+            dataMarker = typeof dataMarker == 'undefined'? that.params['nodesDataMarker'] : dataMarker;
+            className = typeof className == 'undefined'? that.params['nodesMarker'] : className;
             if(className){
                 sourceNodes = cm.getNodes(container, dataMarker)[className] || {};
             }else{

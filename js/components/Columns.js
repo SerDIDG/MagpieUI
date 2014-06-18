@@ -57,7 +57,7 @@ Com['Columns'] = function(o){
         nodes['inner'] = cm.getByAttr('data-com-columns', 'inner', nodes['container'])[0];
         nodes['holder'] = cm.getByAttr('data-com-columns', 'holder', nodes['container'])[0];
         // Set editable class
-        cm.addClass(nodes['container'], 'is-editable');
+        //cm.addClass(nodes['container'], 'is-editable');
         // Collect only first child columns
         columns = cm.clone(cm.getByAttr('data-com-columns', 'column', nodes['holder']) || []);
         columns = columns.filter(function(item){

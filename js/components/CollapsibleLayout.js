@@ -1,4 +1,4 @@
-cm.define('Com.CollapsibleLayout', {
+new cm.Define('Com.CollapsibleLayout', {
     'modules' : [
         'Events',
         'DataConfig',
@@ -22,7 +22,9 @@ function(params){
 
     that.nodes = {
         'leftButton' : cm.Node('div'),
-        'rightButton': cm.Node('div')
+        'leftContainer' : cm.Node('div'),
+        'rightButton': cm.Node('div'),
+        'rightContainer' : cm.Node('div')
     };
 
     that.isLeftCollapsed = false;
@@ -39,35 +41,31 @@ function(params){
     };
 
     var render = function(){
-        that.isLeftCollapsed = cm.isClass(that.params['node'], 'is-sidebar-left-collapsed');
-        that.isRightCollapsed = cm.isClass(that.params['node'], 'is-sidebar-right-collapsed');
         // Left Sidebar
         cm.addEvent(that.nodes['leftButton'], 'click', toggleLeft);
         // Right sidebar
         cm.addEvent(that.nodes['rightButton'], 'click', toggleRight);
+        // Check toggle class
+        that.isLeftCollapsed = cm.isClass(that.params['node'], 'is-sidebar-left-collapsed');
+        that.isRightCollapsed = cm.isClass(that.params['node'], 'is-sidebar-right-collapsed');
         // Check storage
         if(that.params['remember']){
-            if(that.storageRead('isLeftCollapsed')){
-                that.collapseLeft(true);
-            }else{
-                that.expandLeft(true);
-            }
-            if(that.storageRead('isRightCollapsed')){
-                that.collapseRight(true);
-            }else{
-                that.expandRight(true);
-            }
+            that.isLeftCollapsed = that.storageRead('isLeftCollapsed');
+            that.isRightCollapsed = that.storageRead('isRightCollapsed');
+        }
+        // Check sidebars visibility
+        that.isLeftCollapsed = cm.getStyle(that.nodes['leftContainer'], 'display') == 'none'? true : that.isLeftCollapsed;
+        that.isRightCollapsed = cm.getStyle(that.nodes['rightContainer'], 'display') == 'none'? true : that.isRightCollapsed;
+        // Trigger events
+        if(that.isLeftCollapsed){
+            that.collapseLeft(true);
         }else{
-            if(that.isLeftCollapsed){
-                that.collapseLeft(true);
-            }else{
-                that.expandLeft(true);
-            }
-            if(that.isRightCollapsed){
-                that.collapseRight(true);
-            }else{
-                that.expandRight(true);
-            }
+            that.expandLeft(true);
+        }
+        if(that.isRightCollapsed){
+            that.collapseRight(true);
+        }else{
+            that.expandRight(true);
         }
         that.triggerEvent('onRender');
     };

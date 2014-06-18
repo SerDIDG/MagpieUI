@@ -22,11 +22,18 @@ var cm = {
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
+        '_deviceType' : 'desktop',
+        '_deviceOrientation' : 'landscape',
         '_config' : {
+            'screenTablet' : 1024,
+            'screenTabletPortrait' : 768,
+            'screenMobile' : 640,
+            'screenMobilePortrait' : 480,
             'dateTimeFormat' : '%Y-%m-%d %H:%i:%s'
         }
     },
     Mod = {},
+    Part = {},
     Com = {
         'Elements' : {}
     };
@@ -431,18 +438,21 @@ cm.removeCustomEvent = function(el, type, handler, useCapture){
     return el;
 };
 
-cm.onLoad = function(handler, called){
-    called = typeof called == 'undefined' ? false : called;
+cm.onLoad = function(handler, isMessage){
+    isMessage = typeof isMessage == 'undefined'? true : isMessage;
+    var called = false;
     var execute = function(){
         if(called){
             return;
         }
         called = true;
-        cm.errorLog({
-            'type' : 'common',
-            'name' : 'cm.onLoad',
-            'message' : ['Load time', (Date.now() - cm._loadTime), 'ms.'].join(' ')
-        });
+        if(isMessage){
+            cm.errorLog({
+                'type' : 'common',
+                'name' : 'cm.onLoad',
+                'message' : ['Load time', (Date.now() - cm._loadTime), 'ms.'].join(' ')
+            });
+        }
         handler();
     };
     try{
@@ -450,18 +460,21 @@ cm.onLoad = function(handler, called){
     }catch(e){}
 };
 
-cm.onReady = function(handler, called){
-    called = typeof called == 'undefined' ? false : called;
+cm.onReady = function(handler, isMessage){
+    isMessage = typeof isMessage == 'undefined'? true : isMessage;
+    var called = false;
     var execute = function(){
         if(called){
             return;
         }
         called = true;
-        cm.errorLog({
-            'type' : 'common',
-            'name' : 'cm.onReady',
-            'message' : ['Ready time', (Date.now() - cm._loadTime), 'ms.'].join(' ')
-        });
+        if(isMessage){
+            cm.errorLog({
+                'type' : 'common',
+                'name' : 'cm.onReady',
+                'message' : ['Ready time', (Date.now() - cm._loadTime), 'ms.'].join(' ')
+            });
+        }
         handler();
     };
     cm.addEvent(document, 'DOMContentLoaded', execute);
@@ -859,13 +872,21 @@ cm.getNodes = function(container, marker){
     var nodes = {},
         processedNodes = [];
 
-    var process = function(node, obj){
-        var attr0 =  node.getAttribute(marker),
-            attr = attr0? attr0.split(':') : [],
+    var separation = function(node, obj){
+        var attrData = node.getAttribute(marker);
+        var separators = attrData? attrData.split('|') : [];
+
+        cm.forEach(separators, function(separator){
+            process(node, separator, obj);
+        });
+    };
+
+    var process = function(node, attr, obj){
+        var separator = attr? attr.split(':') : [],
             attr2,
             arr;
-        if(attr.length == 1){
-            attr2 = attr[0].split('.') || [];
+        if(separator.length == 1){
+            attr2 = separator[0].split('.') || [];
             if(attr2.length == 1){
                 obj[attr2[0]] = node;
             }else{
@@ -874,25 +895,25 @@ cm.getNodes = function(container, marker){
                 }
                 nodes[attr2[0]][attr2[1]] = node;
             }
-        }else if(attr.length == 2 || attr.length == 3){
-            if(attr[1] == '[]'){
-                if(!obj[attr[0]]){
-                    obj[attr[0]] = [];
+        }else if(separator.length == 2 || separator.length == 3){
+            if(separator[1] == '[]'){
+                if(!obj[separator[0]]){
+                    obj[separator[0]] = [];
                 }
                 arr = {};
-                if(attr[2]){
-                    arr[attr[2]] = node;
+                if(separator[2]){
+                    arr[separator[2]] = node;
                 }
                 find(node, arr);
-                obj[attr[0]].push(arr);
-            }else if(attr[1] == '{}'){
-                if(!obj[attr[0]]){
-                    obj[attr[0]] = {};
+                obj[separator[0]].push(arr);
+            }else if(separator[1] == '{}'){
+                if(!obj[separator[0]]){
+                    obj[separator[0]] = {};
                 }
-                if(attr[2]){
-                    obj[attr[0]][attr[2]] = node;
+                if(separator[2]){
+                    obj[separator[0]][separator[2]] = node;
                 }
-                find(node, obj[attr[0]]);
+                find(node, obj[separator[0]]);
             }
         }
         processedNodes.push(node);
@@ -902,12 +923,12 @@ cm.getNodes = function(container, marker){
         var sourceNodes = container.querySelectorAll('[' + marker +']');
         cm.forEach(sourceNodes, function(node){
             if(!cm.inArray(processedNodes, node)){
-                process(node, obj);
+                separation(node, obj);
             }
         });
     };
 
-    process(container, nodes);
+    separation(container, nodes);
     find(container, nodes);
 
     return nodes;
@@ -1594,7 +1615,7 @@ var animFrame = (function(){
             };
 })();
 
-cm.animation = cm.Animation = function(o){
+ cm.Animation = function(o){
     var that = this,
         obj = o,
         processes = [],
@@ -2114,7 +2135,7 @@ cm.createSvg = function(){
 
 /* ******* CLASS FABRIC ******* */
 
-cm.define = function(name, data, handler){
+cm.Define = function(name, data, handler){
     var that = this;
 
     that.data = cm.merge({

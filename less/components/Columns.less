@@ -187,9 +187,9 @@
 
 /* *** ADAPTIVE *** */
 
-@media only screen and (max-width : @ComColumns-mobileScreen) {
+@media only screen and (max-width : @ComColumns-adaptiveFrom) {
 
-    .is-adaptive {
+    html.is-adaptive {
         .com-column {
             width: auto !important;
             height: auto;
@@ -210,7 +210,7 @@
             }
 
             .com-column {
-                margin: @ComColumns-indent 0 0 0;
+                margin: @cm-indentMedium 0 0 0;
 
                 &:first-child {
                     margin: 0;

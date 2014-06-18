@@ -461,13 +461,23 @@ select[multiple] {
     position: relative;
 
     .icon {
-        width: @CmForm-fieldHeight !important;
-        height: @CmForm-fieldHeight !important;
+        width: @CmForm-fieldHeight;
+        height: @CmForm-fieldHeight;
         padding: 0;
         position: absolute;
         background-color: transparent;
         background-position: 50% 50%;
         background-repeat: no-repeat;
+
+        &.xxx-small,
+        &.xx-small,
+        &.x-small,
+        &.small,
+        &.medium,
+        &.large {
+            width: @CmForm-fieldHeight;
+            height: @CmForm-fieldHeight;
+        }
     }
 
     &.has-icon-left {
