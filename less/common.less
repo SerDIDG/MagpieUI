@@ -840,7 +840,7 @@ select[multiple] {
     }
 }
 
-/* ** MULTI FIELD  *** */
+/* *** MULTI FIELD  *** */
 
 .form-multifield-line {
     dd {
@@ -1037,114 +1037,61 @@ select[multiple] {
     font-weight: @cm-boldWeight;
 }
 
-/* *** ICONS *** */
+/* *** ICONS OUTSIDE *** */
 
-.has-icons-outside-1,
-.has-icons-outside-one {
-    padding-right: 25px;
-}
-
-.has-icons-outside-2,
-.has-icons-outside-two {
-    padding-right: 50px;
-}
-
-.has-icons-outside-3,
-.has-icons-outside-three {
-    padding-right: 75px;
-}
-
-.has-icons-outside-4 {
-    padding-right: 100px;
-}
-
-.has-icons-outside-5 {
-    padding-right: 125px;
-}
-
-ul.has-icons-outside-1 li,
-ul.has-icons-outside-2 li,
-ul.has-icons-outside-3 li,
-ul.has-icons-outside-4 li,
-ul.has-icons-outside-5 li,
-ul.has-icons-outside-one li,
-ul.has-icons-outside-two li,
-ul.has-icons-outside-three li {
+.cm-form-icons {
     position: relative;
+
+    .loop(@counter) when (@counter > 0) {
+        .loop((@counter - 1));
+
+        &.count-@{counter} {
+            @x-small: @counter * (@cm-XSmall + @CmForm-iconsOutside-indent);
+            @small: @counter * (@cm-Small + @CmForm-iconsOutside-indent);
+            @medium: @counter * (@cm-Medium + @CmForm-iconsOutside-indent);
+
+            &.x-small {
+                margin-right: @x-small;
+
+                .cm-form-icons-outside {
+                    width: @x-small;
+                    right: -@x-small;
+                }
+            }
+            &.small {
+                margin-right: @small;
+
+                .cm-form-icons-outside {
+                    width: @small;
+                    right: -@small;
+                }
+            }
+            &.medium {
+                margin-right: @medium;
+
+                .cm-form-icons-outside {
+                    width: @medium;
+                    right: -@medium;
+                }
+            }
+        }
+    }
+
+    .loop(5);
 }
 
-.form-icons-inside,
-.form-icons-outside {
-    text-align: right;
-    white-space: nowrap;
-    font-size: 0;
-}
-
-.form-icons-outside {
-    padding: 0 0 0 8px;
+.cm-form-icons-outside {
     position: absolute;
     top: 0;
-    left: 100%;
     line-height: @CmForm-fieldHeight;
-}
-
-.form-icons-inside.left,
-.form-icons-outside.left {
+    font-size: 0;
     text-align: left;
-}
 
-.has-icons-outside-1 .form-icons-outside,
-.has-icons-outside-one .form-icons-outside {
-    width: 16px;
-}
-
-.has-icons-outside-2 .form-icons-outside,
-.has-icons-outside-two .form-icons-outside {
-    width: 40px;
-}
-
-.has-icons-outside-3 .form-icons-outside,
-.has-icons-outside-three .form-icons-outside {
-    width: 64px;
-}
-
-.has-icons-outside-4 .form-icons-outside {
-    width: 88px;
-}
-
-.has-icons-outside-5 .form-icons-outside {
-    width: 112px;
-}
-
-.form-icons-inside .icon,
-.form-icons-outside .icon {
-    display: inline-block;
-    cursor: pointer;
-    vertical-align: middle;
-    margin: 0 0 0 8px;
-}
-
-.form-icons-inside .icon.hidden,
-.form-icons-outside .icon.hidden {
-    visibility: hidden;
-}
-
-.form-icons-inside .icon:first-child,
-.form-icons-outside .icon:first-child {
-    margin: 0;
-}
-
-.form-icons-inside .text,
-.form-icons-outside .text {
-    display: inline-block;
-    vertical-align: middle;
-    margin: 0 0 0 8px;
-    font-size: 13px;
-}
-
-.form-icons-inside .text:first-child,
-.form-icons-outside .text:first-child {
-    margin: 0;
+    .icon {
+        display: inline-block;
+        margin: 0 0 0 @CmForm-iconsOutside-indent;
+        vertical-align: middle;
+    }
 }
 
 /* ******* COMPONENTS ******* */
@@ -1328,87 +1275,107 @@ ul.has-icons-outside-three li {
 
 @media only screen and (max-width: @cm-screenMobile) {
 
-    /* *** FORM *** */
+    html.is-adaptive {
 
-    .form {
-        dl {
-            dt {
-                width: auto;
-                float: none;
-            }
+        /* *** FORM *** */
 
-            dd {
-                margin: 0 0 @CmForm-fieldInnerIndent;
+        .form {
+            dl {
+                dt {
+                    width: auto;
+                    float: none;
+                }
 
-                &:last-child {
-                    margin: 0;
+                dd {
+                    margin: 0 0 @CmForm-fieldInnerIndent;
+
+                    &:last-child {
+                        margin: 0;
+                    }
                 }
             }
         }
-    }
 
-    .form-filter.right,
-    .form-filter {
-        width: auto;
-        float: none;
-    }
+        .form-filter.right,
+        .form-filter {
+            width: auto;
+            float: none;
+        }
 
-    .form-filter.right dt,
-    .form-filter dt {
-        float: none;
-        margin: 0;
-    }
+        .form-filter.right dt,
+        .form-filter dt {
+            float: none;
+            margin: 0;
+        }
 
-    /* COLUMNS */
+        /* COLUMNS */
 
-    .form .cols {
-        .col {
-            &:first-child {
-                margin-top: 0;
+        .form .cols {
+            .col {
+                &:first-child {
+                    margin-top: 0;
+                }
+            }
+
+            .for(@CmForm-cols-names); .-each(@name) {
+                &.@{name} .col {
+                    width: auto;
+                    float: none;
+                    margin: @CmForm-fieldInnerIndent 0 0 0;
+                }
             }
         }
 
-        .for(@CmForm-cols-names); .-each(@name) {
-        &.@{name} .col {
-            width: auto;
-            float: none;
-            margin: @CmForm-fieldInnerIndent 0 0 0;
-        }
-    }
-    }
+        /* FILTER FROM - TO */
 
-    /* FILTER FROM - TO */
-
-    .form-filter-fromto {
-        .form-box {
-            width: auto;
-            float: none;
-            margin: @CmForm-fieldIndent 0 0 0;
-
-            &:first-child {
-                margin: 0;
-            }
-        }
-
-        .buttons,
-        &.simple .buttons {
-            margin: @CmForm-fieldIndent 0 0 0;
-        }
-    }
-
-    /* *** COMPONENTS *** */
-
-    /* Content Table */
-
-    .is-adaptive .content-table {
-        &.adaptive {
-            td {
-                width: 100% !important;
-                display: block;
-                margin: @cm-indentMedium 0 0 0;
+        .form-filter-fromto {
+            .form-box {
+                width: auto;
+                float: none;
+                margin: @CmForm-fieldIndent 0 0 0;
 
                 &:first-child {
                     margin: 0;
+                }
+            }
+
+            .buttons,
+            &.simple .buttons {
+                margin: @CmForm-fieldIndent 0 0 0;
+            }
+        }
+
+        /* MULTI FIELD */
+
+        .form-multifield-line {
+            dt {
+                margin: 0 0 @CmForm-fieldInnerIndent;
+            }
+
+            dd {
+                margin: 0;
+
+                &.descr,
+                &.descr:last-child {
+                    margin-right: 32px;
+                }
+            }
+        }
+
+        /* *** COMPONENTS *** */
+
+        /* Content Table */
+
+        .content-table {
+            &.adaptive {
+                td {
+                    width: 100% !important;
+                    display: block;
+                    margin: @cm-indentMedium 0 0 0;
+
+                    &:first-child {
+                        margin: 0;
+                    }
                 }
             }
         }
@@ -1416,47 +1383,38 @@ ul.has-icons-outside-three li {
 
 }
 
-@media only screen and (max-width: 480px) {
+@media only screen and (max-width: @cm-screenMobilePortrait) {
 
-    /* *** FORM *** */
+    html.is-adaptive {
 
-    /* MULTI FIELD */
+        /* *** FORM *** */
 
-    dl.form-multifield-line {
-        dt {
-            margin: 0 0 @CmForm-fieldInnerIndent;
-        }
+        /* FILTER FROM - TO */
 
-        dd {
-            margin: 0;
-        }
-    }
+        .form-filter-fromto {
+            .form-box {
+                width: auto;
+                float: none;
+                margin: 16px 0 0 0;
 
-    /* FILTER FROM - TO */
+                &:first-child {
+                    margin: 0;
+                }
+            }
 
-    .form-filter-fromto {
-        .form-box {
-            width: auto;
-            float: none;
-            margin: 16px 0 0 0;
-
-            &:first-child {
-                margin: 0;
+            &.simple {
+                .buttons {
+                    margin: 26px 0 0 0;
+                }
             }
         }
 
-        &.simple {
-            .buttons {
-                margin: 26px 0 0 0;
-            }
+        /* IMAGE LOADER */
+
+        .form-image-box.style2 .browse-button {
+            display: block;
+            margin: 0 0 8px;
         }
-    }
-
-    /* IMAGE LOADER */
-
-    .form-image-box.style2 .browse-button {
-        display: block;
-        margin: 0 0 8px;
     }
 
 }
