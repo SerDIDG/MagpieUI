@@ -22,6 +22,9 @@
         background: rgba(0,0,0,0.7);
 
         > .icon {
+            .icon.medium.close-white;
+            width: @cm-Medium;
+            height: @cm-Medium;
             position: fixed;
             .cm-position(@cm-indentMedium, @cm-indentMedium, auto, auto);
             z-index: 2;
@@ -44,25 +47,13 @@
         z-index: 2;
 
         > .icon {
+            .icon.medium.close;
+            width: @cm-Medium;
+            height: @cm-Medium;
             position: absolute;
             z-index: 4;
             right: @ComDialog-indent;
-
-            &.x-small {
-                top: (@titleHeight - @cm-XSmall) / 2;
-            }
-
-            &.small {
-                top: (@titleHeight - @cm-Small) / 2;
-            }
-
-            &.medium {
-                top: (@titleHeight - @cm-Medium) / 2;
-            }
-
-            &.large {
-                top: (@titleHeight - @cm-Large) / 2;
-            }
+            top: (@titleHeight - @cm-Medium) / 2;
         }
 
         > .inner {

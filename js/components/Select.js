@@ -16,9 +16,6 @@ Com['Select'] = function(o){
             'menuMargin' : 3,
             'options' : [],                 // [{'value' : '', 'text' : ''}]
             'selected' : 0,
-            'icons' : {
-                'arrow' : 'icon medium select-arrow linked'
-            },
             'events' : {}
         }, o),
         dataAttributes = ['title', 'showTitleTag', 'multiple', 'renderInBody'],
@@ -148,7 +145,7 @@ Com['Select'] = function(o){
         nodes['container'] = cm.Node('div', {'class' : 'com-select'},
             nodes['hidden'] = cm.Node('select', {'data-select' : 'false', 'class' : 'display-none'}),
             cm.Node('div', {'class' : 'form-field has-icon-right'},
-                nodes['arrow'] = cm.Node('div', {'class' : config['icons']['arrow']}),
+                nodes['arrow'] = cm.Node('div', {'class' : 'icon linked'}),
                 nodes['text'] = cm.Node('input', {'type' : 'text', 'readOnly' : 'true'})
             ),
             nodes['scroll'] = cm.Node('div', {'class' : 'cm-items-list'},

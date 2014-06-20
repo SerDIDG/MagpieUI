@@ -3103,6 +3103,7 @@ select[multiple] {
   outline: none;
 }
 .com-select .form-field .icon {
+  background-image: url("../img/icons/medium/select-arrow.png");
   -webkit-transition: -webkit-transform 0.3s ease-in-out;
   -ms-transition: -ms-transform 0.3s ease-in-out;
   transition: transform 0.3s ease-in-out;
@@ -3409,6 +3410,9 @@ select[multiple] {
   background: rgba(0, 0, 0, 0.7);
 }
 .com-dialog > .bg > .icon {
+  background-image: url("../img/icons/medium/close-white.png");
+  width: 24px;
+  height: 24px;
   position: fixed;
   top: 24px;
   right: 24px;
@@ -3430,21 +3434,13 @@ select[multiple] {
   z-index: 2;
 }
 .com-dialog > .window > .icon {
+  background-image: url("../img/icons/medium/close.png");
+  width: 24px;
+  height: 24px;
   position: absolute;
   z-index: 4;
   right: 24px;
-}
-.com-dialog > .window > .icon.x-small {
-  top: 25px;
-}
-.com-dialog > .window > .icon.small {
-  top: 23px;
-}
-.com-dialog > .window > .icon.medium {
   top: 19px;
-}
-.com-dialog > .window > .icon.large {
-  top: 15px;
 }
 .com-dialog > .window > .inner {
   background-color: #ffffff;
