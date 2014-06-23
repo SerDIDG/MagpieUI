@@ -1,4 +1,4 @@
-new cm.Define('Com.CollapsibleLayout', {
+cm.define('Com.CollapsibleLayout', {
     'modules' : [
         'Events',
         'DataConfig',

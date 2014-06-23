@@ -1,4 +1,4 @@
-new cm.Define('Com.ClassMaket', {
+cm.define('Com.ClassMaket', {
     'modules' : [
         'Events',
         'Langs',

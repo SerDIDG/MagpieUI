@@ -1,15 +1,16 @@
 /* ******* EVENTS ******* */
 
 Mod['Events'] = {
-    '_define' : function(definer){
-        if(!definer.data['params']['events']){
-            definer.data['params']['events'] = {};
+    '_define' : function(){
+        var that = this;
+        if(!that.data['params']['events']){
+            that.data['params']['events'] = {};
         }
-        definer.extendObject['eventsList'] = definer.data['events'];
-        definer.extendObject['events'] = {};
-        cm.forEach(definer.data['events'], function(item){
-            definer.extendObject['events'][item] = [];
-            definer.extendObject[item] = function(handler){
+        that.extendObject['eventsList'] = that.data['events'];
+        that.extendObject['events'] = {};
+        cm.forEach(that.data['events'], function(item){
+            that.extendObject['events'][item] = [];
+            that.extendObject[item] = function(handler){
                 var that = this;
                 that.addEvent(item, handler);
                 return that;
@@ -84,9 +85,10 @@ Mod['Events'] = {
 /* ******* LANGS ******* */
 
 Mod['Langs'] = {
-    '_define' : function(definer){
-        if(!definer.data['params']['langs']){
-            definer.data['params']['langs'] = {};
+    '_define' : function(){
+        var that = this;
+        if(!that.data['params']['langs']){
+            that.data['params']['langs'] = {};
         }
     },
     'lang' : function(str){
@@ -101,9 +103,10 @@ Mod['Langs'] = {
 /* ******* DATA CONFIG ******* */
 
 Mod['DataConfig'] = {
-    '_define' : function(definer){
-        if(typeof definer.data['params']['configDataMarker'] == 'undefined'){
-            definer.data['params']['configDataMarker'] = 'data-config';
+    '_define' : function(){
+        var that = this;
+        if(typeof that.data['params']['configDataMarker'] == 'undefined'){
+            that.data['params']['configDataMarker'] = 'data-config';
         }
     },
     'getDataConfig' : function(container, dataMarker){
@@ -123,18 +126,19 @@ Mod['DataConfig'] = {
 /* ******* DATA NODES ******* */
 
 Mod['DataNodes'] = {
-    '_define' : function(definer){
-        if(!definer.data['params']['nodes']){
-            definer.data['params']['nodes'] = {};
+    '_define' : function(){
+        var that = this;
+        if(!that.data['params']['nodes']){
+            that.data['params']['nodes'] = {};
         }
-        if(typeof definer.data['params']['nodesDataMarker'] == 'undefined'){
-            definer.data['params']['nodesDataMarker'] = 'data-node';
+        if(typeof that.data['params']['nodesDataMarker'] == 'undefined'){
+            that.data['params']['nodesDataMarker'] = 'data-node';
         }
-        if(typeof definer.data['params']['nodesMarker'] == 'undefined'){
-            definer.data['params']['nodesMarker'] = definer.name.join('');
+        if(typeof that.data['params']['nodesMarker'] == 'undefined'){
+            that.data['params']['nodesMarker'] = that.name.join('');
         }
-        if(!definer.extendObject['nodes']){
-            definer.extendObject['nodes'] = {};
+        if(!that.extendObject['nodes']){
+            that.extendObject['nodes'] = {};
         }
     },
     'getDataNodes' : function(container, dataMarker, className){
@@ -159,9 +163,10 @@ Mod['DataNodes'] = {
 /* ******* LOCAL STORAGE ******* */
 
 Mod['Storage'] = {
-    '_define' : function(definer){
-        if(!definer.data['params']['name']){
-            definer.data['params']['name'] = '';
+    '_define' : function(){
+        var that = this;
+        if(!that.data['params']['name']){
+            that.data['params']['name'] = '';
         }
     },
     'storageRead' : function(key){

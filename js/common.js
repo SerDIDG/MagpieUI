@@ -261,10 +261,12 @@ cm.sort = function(o){
 /* ******* EVENTS ******* */
 
 cm.log = (function(){
-    var results = [];
-    if(cm._debug && window.console){
+    var results = [],
+        log;
+    if(cm._debug && Function.prototype.bind && window.console){
+        log = Function.prototype.bind.call(console.log, console);
         return function(){
-            console.log.apply(console, arguments);
+            log.apply(console, arguments);
         };
     }else if(cm._debug && cm._debugAlert){
         return function(){
@@ -2146,7 +2148,7 @@ cm.createSvg = function(){
 
 /* ******* CLASS FABRIC ******* */
 
-cm.Define = function(name, data, handler){
+cm.defineHelper = function(name, data, handler){
     var that = this;
 
     that.data = cm.merge({
@@ -2176,7 +2178,7 @@ cm.Define = function(name, data, handler){
         if(Mod[module]){
             cm.forEach(Mod[module], function(item, key){
                 if(key === '_define'){
-                    item(that);
+                    item.call(that);
                 }else{
                     that.extendObject[key] = item;
                 }
@@ -2197,3 +2199,10 @@ cm.Define = function(name, data, handler){
         window[that.name[0]][that.name[1]] = handler;
     }
 };
+
+cm.define = (function(){
+    var definer = Function.prototype.call.bind(cm.defineHelper, arguments);
+    return function(){
+        definer.apply(cm.defineHelper, arguments);
+    };
+})();
