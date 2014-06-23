@@ -890,43 +890,53 @@ cm.getNodes = function(container, marker){
         var separators = attrData? attrData.split('|') : [];
 
         cm.forEach(separators, function(separator){
-            process(node, separator, obj);
+            if(separator.indexOf('.') == -1){
+                process(node, separator, obj);
+            }else{
+                pathway(node, separator);
+            }
+        });
+    };
+
+    var pathway = function(node, attr){
+        var separators = attr? attr.split('.') : [],
+            obj = nodes;
+        cm.forEach(separators, function(separator, i){
+            if((i + 1) == separators.length){
+                process(node, separator, obj);
+            }else{
+                if(!obj[separator]){
+                    obj[separator] = {};
+                }
+                obj = obj[separator];
+            }
         });
     };
 
     var process = function(node, attr, obj){
-        var separator = attr? attr.split(':') : [],
-            attr2,
+        var separators = attr? attr.split(':') : [],
             arr;
-        if(separator.length == 1){
-            attr2 = separator[0].split('.') || [];
-            if(attr2.length == 1){
-                obj[attr2[0]] = node;
-            }else{
-                if(!nodes[attr2[0]]){
-                    nodes[attr2[0]] = {};
-                }
-                nodes[attr2[0]][attr2[1]] = node;
-            }
-        }else if(separator.length == 2 || separator.length == 3){
-            if(separator[1] == '[]'){
-                if(!obj[separator[0]]){
-                    obj[separator[0]] = [];
+        if(separators.length == 1){
+            obj[separators[0]] = node;
+        }else if(separators.length == 2 || separators.length == 3){
+            if(separators[1] == '[]'){
+                if(!obj[separators[0]]){
+                    obj[separators[0]] = [];
                 }
                 arr = {};
-                if(separator[2]){
-                    arr[separator[2]] = node;
+                if(separators[2]){
+                    arr[separators[2]] = node;
                 }
                 find(node, arr);
-                obj[separator[0]].push(arr);
-            }else if(separator[1] == '{}'){
-                if(!obj[separator[0]]){
-                    obj[separator[0]] = {};
+                obj[separators[0]].push(arr);
+            }else if(separators[1] == '{}'){
+                if(!obj[separators[0]]){
+                    obj[separators[0]] = {};
                 }
-                if(separator[2]){
-                    obj[separator[0]][separator[2]] = node;
+                if(separators[2]){
+                    obj[separators[0]][separators[2]] = node;
                 }
-                find(node, obj[separator[0]]);
+                find(node, obj[separators[0]]);
             }
         }
         processedNodes.push(node);

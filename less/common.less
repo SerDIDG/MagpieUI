@@ -55,7 +55,10 @@ h2 {
 h3 {
     font-size: 20px;
     line-height: 22px;
-    margin: 0 0 @cm-lineHeight/2;
+}
+
+h4 {
+    font-size: 18px;
 }
 
 p, ul, ol, dl {
@@ -306,6 +309,14 @@ select[multiple] {
     background: #ffffff;
     border: 1px dashed @cm-colorBorder;
     border-radius: @cm-borderRadius;
+    font-family: "Courier New", Courier, monospace;
+}
+
+.cm-autoresize {
+    height: 0;
+    min-height: @CmForm-fieldHeight;
+    overflow: hidden;
+    resize: none;
 }
 
 .cm-image-resizable {
