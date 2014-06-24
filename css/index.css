@@ -1147,7 +1147,7 @@ select[multiple] {
   color: #009900;
   font-weight: 600;
 }
-/* *** ICONS OUTSIDE *** */
+/* *** FORM ICONS *** */
 .cm-form-icons {
   position: relative;
 }
@@ -1267,6 +1267,34 @@ select[multiple] {
   display: inline-block;
   margin: 0 0 0 8px;
   vertical-align: middle;
+}
+.cm-form-icons-inside {
+  text-align: right;
+  white-space: nowrap;
+  font-size: 0;
+}
+.cm-form-icons-inside.left {
+  text-align: left;
+}
+.cm-form-icons-inside .icon,
+.cm-form-icons-inside .icon.inline {
+  display: inline-block;
+  margin: 0 0 0 8px;
+  vertical-align: middle;
+}
+.cm-form-icons-inside .icon:first-child,
+.cm-form-icons-inside .icon.inline:first-child {
+  margin: 0;
+}
+.cm-form-icons-inside .text {
+  font: normal 13px/18px 'Open Sans', arial, helvetica, sans-serif;
+  color: #666666;
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 0 0 8px;
+}
+.cm-form-icons-inside .text:first-child {
+  margin: 0;
 }
 /* ******* COMPONENTS ******* */
 /* *** CONTENT TABLE *** */
@@ -4087,6 +4115,10 @@ select[multiple] {
 .com-gridlist .control input[type="radio"] {
   vertical-align: middle;
   margin: 0;
+}
+/* *** ICONS *** */
+.com-gridlist .cm-form-icons-inside .text {
+  font-size: 11px;
 }
 /* ******* COMPONENTS IN GRIDLIST ******* */
 /* *** TOGGLE BOX *** */

@@ -1048,7 +1048,7 @@ select[multiple] {
     font-weight: @cm-boldWeight;
 }
 
-/* *** ICONS OUTSIDE *** */
+/* *** FORM ICONS *** */
 
 .cm-form-icons {
     position: relative;
@@ -1057,9 +1057,9 @@ select[multiple] {
         .loop((@counter - 1));
 
         &.count-@{counter} {
-            @x-small: @counter * (@cm-XSmall + @CmForm-iconsOutside-indent);
-            @small: @counter * (@cm-Small + @CmForm-iconsOutside-indent);
-            @medium: @counter * (@cm-Medium + @CmForm-iconsOutside-indent);
+            @x-small: @counter * (@cm-XSmall + @CmForm-iconsIndent);
+            @small: @counter * (@cm-Small + @CmForm-iconsIndent);
+            @medium: @counter * (@cm-Medium + @CmForm-iconsIndent);
 
             &.x-small {
                 margin-right: @x-small;
@@ -1100,8 +1100,40 @@ select[multiple] {
 
     .icon {
         display: inline-block;
-        margin: 0 0 0 @CmForm-iconsOutside-indent;
+        margin: 0 0 0 @CmForm-iconsIndent;
         vertical-align: middle;
+    }
+}
+
+.cm-form-icons-inside {
+    text-align: right;
+    white-space: nowrap;
+    font-size: 0;
+
+    &.left {
+        text-align: left;
+    }
+
+    .icon,
+    .icon.inline {
+        display: inline-block;
+        margin: 0 0 0 @CmForm-iconsIndent;
+        vertical-align: middle;
+
+        &:first-child {
+            margin: 0;
+        }
+    }
+
+    .text {
+        .cm-font-base;
+        display: inline-block;
+        vertical-align: middle;
+        margin: 0 0 0 @CmForm-iconsIndent;
+
+        &:first-child {
+            margin: 0;
+        }
     }
 }
 
