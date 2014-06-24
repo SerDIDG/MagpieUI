@@ -39,30 +39,34 @@ Part['Autoresize'] = (function(){
         nodes;
 
     var process = function(node){
-        var resizeInt,
-            rows,
-            oldRows,
-            matches,
-            lineHeight = cm.getStyle(node, 'lineHeight', true),
-            padding = cm.getStyle(node, 'paddingTop', true)
-                    + cm.getStyle(node, 'paddingBottom', true)
-                    + cm.getStyle(node, 'borderTopWidth', true)
-                    + cm.getStyle(node, 'borderBottomWidth', true);
-        cm.addEvent(node, 'scroll', function(){
-            node.scrollTop = 0;
-        });
-        resizeInt = setInterval(function(){
-            if(!node || !cm.inDOM(node)){
-                clearInterval(resizeInt);
+        if(!cm.inArray(processedNodes, node)){
+            if(cm.isNode(node) && node.tagName.toLowerCase() == 'textarea'){
+                var resizeInt,
+                    rows,
+                    oldRows,
+                    matches,
+                    lineHeight = cm.getStyle(node, 'lineHeight', true),
+                    padding = cm.getStyle(node, 'paddingTop', true)
+                        + cm.getStyle(node, 'paddingBottom', true)
+                        + cm.getStyle(node, 'borderTopWidth', true)
+                        + cm.getStyle(node, 'borderBottomWidth', true);
+                cm.addEvent(node, 'scroll', function(){
+                    node.scrollTop = 0;
+                });
+                resizeInt = setInterval(function(){
+                    if(!node || !cm.inDOM(node)){
+                        clearInterval(resizeInt);
+                    }
+                    oldRows = rows;
+                    matches = node.value.match(/\n/g);
+                    rows = matches? matches.length : 0;
+                    if(rows !== oldRows){
+                        node.style.height = [(rows + 1) * lineHeight + padding, 'px'].join('');
+                    }
+                }, 5);
             }
-            oldRows = rows;
-            matches = node.value.match(/\n/g);
-            rows = matches? matches.length : 0;
-            if(rows !== oldRows){
-                node.style.height = [(rows + 1) * lineHeight + padding, 'px'].join('');
-            }
-        }, 5);
-        processedNodes.push(node);
+            processedNodes.push(node);
+        }
     };
 
     return function(container){
