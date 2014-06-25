@@ -3,6 +3,7 @@
 .com-datepicker-input {
     @clear-button-indent: @CmForm-fieldHeight + @CmForm-fieldInnerIndent;
 
+    width: 100%;
     max-width: @ComDatepicker-width;
     display: inline-block;
     vertical-align: top;
@@ -14,13 +15,22 @@
         padding: 0 @clear-button-indent 0 0;
     }
 
+    .form-field {
+        .icon {
+            &.default {
+                .icon.medium.datepicker;
+            }
+        }
+    }
+
     > .icon {
         width: @CmForm-fieldHeight;
         height: @CmForm-fieldHeight;
         position: absolute;
+        .cm-position(0, 0, auto, auto);
 
-        &.remove {
-            .cm-position(0, 0, auto, auto);
+        &.default {
+            .icon.small.remove;
         }
     }
 }

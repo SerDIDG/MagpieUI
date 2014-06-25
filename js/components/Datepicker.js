@@ -23,8 +23,8 @@ Com['Datepicker'] = function(o){
             'menuMargin' : 3,
             'events' : {},
             'icons' : {
-                'datepicker' : 'icon medium datepicker linked',
-                'clear' : 'icon small remove linked'
+                'datepicker' : 'icon default linked',
+                'clear' : 'icon default linked'
             },
             'langs' : {
                 'days' : ['S', 'M', 'T', 'W', 'T', 'F', 'S'],

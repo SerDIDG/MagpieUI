@@ -22,7 +22,6 @@
         background: rgba(0,0,0,0.7);
 
         > .icon {
-            .icon.medium.close-white;
             width: @cm-Medium;
             height: @cm-Medium;
             position: fixed;
@@ -31,6 +30,10 @@
             font-size: 0;
             opacity: 0.4;
             .cm-transition(opacity @cm-transitionDuration ease-in-out);
+
+            &.default {
+                .icon.medium.close-white;
+            }
         }
 
         &:hover {
@@ -47,13 +50,16 @@
         z-index: 2;
 
         > .icon {
-            .icon.medium.close;
             width: @cm-Medium;
             height: @cm-Medium;
             position: absolute;
             z-index: 4;
             right: @ComDialog-indent;
             top: (@titleHeight - @cm-Medium) / 2;
+
+            &.default {
+                .icon.medium.close;
+            }
         }
 
         > .inner {

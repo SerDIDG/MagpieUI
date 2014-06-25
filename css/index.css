@@ -1104,7 +1104,7 @@ select[multiple] {
   clear: none;
 }
 .form-filter-fromto .form-box {
-  width: 200px;
+  width: 210px;
   margin: 0 24px 0 0;
 }
 .form-filter-fromto .buttons {
@@ -1649,6 +1649,9 @@ select[multiple] {
 }
 .icon.x-small.search {
   background-image: url("../img/icons/x-small/search.png");
+}
+.icon.x-small.search-white {
+  background-image: url("../img/icons/x-small/search-white.png");
 }
 .icon.small {
   width: 16px;
@@ -3140,10 +3143,12 @@ select[multiple] {
   outline: none;
 }
 .com-select .form-field .icon {
-  background-image: url("../img/icons/medium/select-arrow.png");
   -webkit-transition: -webkit-transform 0.3s ease-in-out;
   -ms-transition: -ms-transform 0.3s ease-in-out;
   transition: transform 0.3s ease-in-out;
+}
+.com-select .form-field .icon.default {
+  background-image: url("../img/icons/medium/select-arrow.png");
 }
 .com-select:focus .form-field .icon,
 .com-select.active .form-field .icon {
@@ -3314,6 +3319,7 @@ select[multiple] {
 }
 /* ******* DATEPICKER ******* */
 .com-datepicker-input {
+  width: 100%;
   max-width: 210px;
   display: inline-block;
   vertical-align: top;
@@ -3324,16 +3330,20 @@ select[multiple] {
 .com-datepicker-input.has-clear-button {
   padding: 0 36px 0 0;
 }
+.com-datepicker-input .form-field .icon.default {
+  background-image: url("../img/icons/medium/datepicker.png");
+}
 .com-datepicker-input > .icon {
   width: 28px;
   height: 28px;
   position: absolute;
-}
-.com-datepicker-input > .icon.remove {
   top: 0;
   right: 0;
   bottom: auto;
   left: auto;
+}
+.com-datepicker-input > .icon.default {
+  background-image: url("../img/icons/small/remove.png");
 }
 /* Tooltip */
 .com-datepicker-tooltip {
@@ -3407,8 +3417,14 @@ select[multiple] {
   display: inline-block;
   vertical-align: top;
 }
+.com-tags-input > .inner .item .icon.default {
+  background-image: url("../img/icons/small/remove.png");
+}
 .com-tags-input > .inner .item .icon:first-child {
   margin: 0;
+}
+.com-tags-input > .inner .item .icon:first-child.default {
+  background-image: url("../img/icons/small/add.png");
 }
 .com-tags-input > .inner .item .input {
   width: 150px;
@@ -3447,7 +3463,6 @@ select[multiple] {
   background: rgba(0, 0, 0, 0.7);
 }
 .com-dialog > .bg > .icon {
-  background-image: url("../img/icons/medium/close-white.png");
   width: 24px;
   height: 24px;
   position: fixed;
@@ -3461,6 +3476,9 @@ select[multiple] {
   -webkit-transition: opacity 0.3s ease-in-out;
   transition: opacity 0.3s ease-in-out;
 }
+.com-dialog > .bg > .icon.default {
+  background-image: url("../img/icons/medium/close-white.png");
+}
 .com-dialog > .bg:hover > .icon {
   opacity: 1;
 }
@@ -3471,13 +3489,15 @@ select[multiple] {
   z-index: 2;
 }
 .com-dialog > .window > .icon {
-  background-image: url("../img/icons/medium/close.png");
   width: 24px;
   height: 24px;
   position: absolute;
   z-index: 4;
   right: 24px;
   top: 19px;
+}
+.com-dialog > .window > .icon.default {
+  background-image: url("../img/icons/medium/close.png");
 }
 .com-dialog > .window > .inner {
   background-color: #ffffff;

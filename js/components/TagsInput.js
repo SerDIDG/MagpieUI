@@ -6,8 +6,8 @@ Com['TagsInput'] = function(o){
             'tags' : [],
             'maxSingleTagLength': 255,
             'icons' : {
-                'add' : 'icon small add linked',
-                'remove' : 'icon small remove linked'
+                'add' : 'icon default linked',
+                'remove' : 'icon default linked'
             },
             'langs' : {
                 'tags' : 'Tags',

@@ -27,8 +27,16 @@
                 display: inline-block;
                 vertical-align: top;
 
+                &.default {
+                    .icon.small.remove;
+                }
+
                 &:first-child {
                     margin: 0;
+
+                    &.default {
+                        .icon.small.add;
+                    }
                 }
             }
 

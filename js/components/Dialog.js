@@ -44,6 +44,10 @@ Com['Dialog'] = function(o){
             'scroll' : true,
             'clickEventName' : 'click',
             'events' : {},
+            'icons' : {
+                'closeInside' : 'icon default linked',
+                'closeOutside' : 'icon default linked'
+            },
             'langs' : {
                 'closeTitle' : 'Close',
                 'close' : ''
@@ -97,7 +101,7 @@ Com['Dialog'] = function(o){
         // Render close button
         if(config['closeButtonOutside']){
             nodes['bg'].appendChild(
-                nodes['closeOutside'] = cm.Node('div', {'class' : 'icon linked'}, config['langs']['close'])
+                nodes['closeOutside'] = cm.Node('div', {'class' : config['icons']['closeOutside']}, config['langs']['close'])
             );
             if(config['closeTitle']){
                 nodes['closeOutside'].title = config['langs']['closeTitle'];
@@ -107,7 +111,7 @@ Com['Dialog'] = function(o){
         if(config['closeButton']){
             cm.addClass(nodes['container'], 'has-close-inside');
             nodes['window'].appendChild(
-                nodes['closeInside'] = cm.Node('div', {'class' : 'icon linked'},
+                nodes['closeInside'] = cm.Node('div', {'class' : config['icons']['closeInside']},
                     config['langs']['close']
                 )
             );
