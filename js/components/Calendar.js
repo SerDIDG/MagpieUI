@@ -3,8 +3,8 @@ Com['Calendar'] = function(o){
         config = cm.merge({
             'container' : cm.Node('div'),
             'className' : '',
-            'startYear' : 1900,
-            'endYear' : new Date().getFullYear(),
+            'startYear' : 1950,
+            'endYear' : new Date().getFullYear() + 10,
             'renderMonthOnInit' : true,
             'startWeekDay' : 0,
             'renderSelectsInBody' : true,

@@ -28,60 +28,82 @@
         th {
             padding-bottom: 2px;
             text-align: center;
-            font-size: 10px;
             line-height: 14px;
-            color: #646464;
+            font-size: 10px;
+            color: @cm-colorFont;
         }
 
         td {
-            height: 21px;
             padding: 1px;
 
             div {
+                height: @ComCalendar-cellHeight;
+                -moz-box-sizing: border-box;
+                     box-sizing: border-box;
+                background-color: @ComCalendar-outer-background;
+                border: @ComCalendar-outer-borderSize solid @ComCalendar-outer-border;
+                border-radius: @ComCalendar-cellBorderRadius;
                 text-align: center;
-                line-height: 19px;
-                font-size: 11px;
-                text-shadow: 0 1px 0 #fff;
+                line-height: @ComCalendar-cellHeight - (@ComCalendar-outer-borderSize * 2);
+                font-size: @cm-fontSizeUI;
+                cursor: pointer;
+                .cm-transition(all @cm-transitionDuration ease-in-out);
+
+                &:hover {
+                    .cm-transition(all @cm-transitionDurationReverse ease-in-out);
+                }
             }
 
             &.in div {
-                background-color: #FAFAFA;
-                border: 1px solid #E6E6E6;
-                border-radius: 2px;
-                cursor: pointer;
-                -webkit-transition: all 0.3s ease-in-out;
-                        transition: all 0.3s ease-in-out;
+                background-color: @ComCalendar-inner-background;
+                border-width: @ComCalendar-inner-borderSize;
+                border-color: @ComCalendar-inner-border;
+                line-height: @ComCalendar-cellHeight - (@ComCalendar-inner-borderSize * 2);
 
                 &:hover {
-                    background-color: #E6E6E6;
-                    border-color: #D2D2D2;
-                    -webkit-transition: all 0.1s ease-in-out;
-                            transition: all 0.1s ease-in-out;
+                    background-color: @ComCalendar-inner-backgroundHover;
+                    border-color: @ComCalendar-inner-borderHover;
                 }
             }
 
             &.weekend div {
-                background-color: #F0F0F0;
+                background-color: @ComCalendar-weekend-background;
+                border-width: @ComCalendar-weekend-borderSize;
+                border-color: @ComCalendar-weekend-border;
+                line-height: @ComCalendar-cellHeight - (@ComCalendar-weekend-borderSize * 2);
+
+                &:hover {
+                    background-color: @ComCalendar-weekend-backgroundHover;
+                    border-color: @ComCalendar-weekend-borderHover;
+                }
             }
 
             &.today div {
-                border: 2px solid #6eb2f2;
-                line-height: 17px;
+                background-color: @ComCalendar-today-background;
+                border-color: @ComCalendar-today-border;
 
                 &:hover {
-                    border-color: #6eb2f2;
+                    background-color: @ComCalendar-today-backgroundHover;
+                    border-color: @ComCalendar-today-borderHover;
                 }
             }
 
             &.active div,
             &.selected div {
-                background-color: #d9eafb;
-                border-color: #6eb2f2;
+                background-color: @ComCalendar-active-background;
+                border-width: @ComCalendar-active-borderSize;
+                border-color: @ComCalendar-active-border;
+                line-height: @ComCalendar-cellHeight - (@ComCalendar-active-borderSize * 2);
 
                 &:hover {
-                    background-color: #d9eafb;
-                    border-color: #6eb2f2;
+                    background-color: @ComCalendar-active-backgroundHover;
+                    border-color: @ComCalendar-active-borderHover;
                 }
+            }
+
+            &.today div {
+                border-width: @ComCalendar-today-borderSize;
+                line-height: @ComCalendar-cellHeight - (@ComCalendar-today-borderSize * 2);
             }
         }
     }

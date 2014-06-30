@@ -10,13 +10,16 @@ Com['CalendarEvents'] = function(o){
             'container' : cm.Node('div'),
             'data' : {},
             'format' : '%F %j, %Y',
-            'startYear' : 1900,
-            'endYear' : new Date().getFullYear(),
+            'startYear' : 1950,
+            'endYear' : new Date().getFullYear() + 10,
             'startWeekDay' : 0,
             'target' : '_blank',
             'langs' : {
                 'days' : ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
                 'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+            },
+            'Com.Tooltip' : {
+                'className' : 'com-calendar-events-tooltip'
             }
         }, o),
         dataAttributes = ['data', 'format', 'startYear', 'endYear', 'startWeekDay', 'target'],
@@ -59,9 +62,7 @@ Com['CalendarEvents'] = function(o){
             'langs' : config['langs']
         });
         // Render tooltip
-        components['tooltip'] = new Com.Tooltip({
-            'className' : 'com-calendar-events-tooltip'
-        });
+        components['tooltip'] = new Com.Tooltip(config['Com.Tooltip']);
         // Insert into DOM
         config['container'].appendChild(nodes['container']);
     };
@@ -91,16 +92,14 @@ Com['CalendarEvents'] = function(o){
 
         if((data = config['data'][params['year']]) && (data = data[(params['month'] + 1)]) && (data = data[params['day']])){
             // Structure
-            myNodes['content'] = cm.Node('div', {'class' : 'com-calendar-events-listing'},
-                myNodes['list'] = cm.Node('ul')
+            myNodes['content'] = cm.Node('div', {'class' : 'cm-listing com-calendar-events-listing'},
+                myNodes['list'] = cm.Node('ul', {'class' : 'list'})
             );
             // Foreach events
             cm.forEach(data, function(value){
                 myNodes['list'].appendChild(
                     cm.Node('li',
-                        cm.Node('h4',
-                            cm.Node('a', {'href' : value['url'], 'target' : config['target']}, value['title'])
-                        )
+                        cm.Node('a', {'href' : value['url'], 'target' : config['target']}, value['title'])
                     )
                 );
             });

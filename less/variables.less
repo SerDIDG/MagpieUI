@@ -21,9 +21,6 @@
 @cm-XXLarge: 64px;
 
 // /* *** COLORS *** */
-
-@cm-color: hsl(210, 80%, 55%);
-@cm-colorLighten: lighten(@cm-color, 40%);
 @cm-colorFont: #666666;
 @cm-colorFontMedium: #999999;
 @cm-colorFontTitle: #666666;
@@ -34,10 +31,21 @@
 @cm-colorLinkVisited: #8a156d;
 @cm-colorError: hsl(0, 80%, 50%);
 
+@cm-color: hsl(210, 80%, 55%);
+@cm-colorLighten: lighten(@cm-color, 40%);
 @cm-colorActive: lighten(saturate(@cm-color, 2%), 37%);
 @cm-colorActiveHover: darken(@cm-colorActive, 5%);
 @cm-colorSecondary: hsl(0, 0, 95%);
 @cm-colorSecondaryHover: lighten(@cm-colorSecondary, 3%);
+
+@cm-colorLight-background: #fafafa;
+@cm-colorLight-backgroundHover: #e6e6e6;
+@cm-colorLight-backgroundDisabled: #f0f0f0;
+@cm-colorLight-backgroundDisabledHover: @cm-colorLight-backgroundHover;
+@cm-colorLight-border: #e6e6e6;
+@cm-colorLight-borderHover: #d2d2d2;
+@cm-colorLight-borderDisabled: @cm-colorLight-border;
+@cm-colorLight-borderDisabledHover: @cm-colorLight-borderHover;
 
 @cm-colorGalleryBackground: #111111;
 @cm-colorBorder: #CBCBCB;
@@ -184,6 +192,43 @@
 
 @ComCollapsibleLayout-sidebarWidth: 350px;
 @ComCollapsibleLayout-duration: 500ms;
+
+// /* *** CALENDAR *** */
+
+@ComCalendar-cellHeight: 21px;
+@ComCalendar-cellBorderSize: 1px;
+@ComCalendar-cellBorderRadius: min(@cm-borderRadius, 2px);
+@ComCalendar-todayBorderSize: 2px;
+
+@ComCalendar-outer-background: transparent;
+@ComCalendar-outer-backgroundHover: transparent;
+@ComCalendar-outer-borderSize: 0;
+@ComCalendar-outer-border: transparent;
+@ComCalendar-outer-borderHover: transparent;
+
+@ComCalendar-inner-background: @cm-colorLight-background;
+@ComCalendar-inner-backgroundHover: @cm-colorLight-backgroundHover;
+@ComCalendar-inner-borderSize: 1px;
+@ComCalendar-inner-border: @cm-colorLight-border;
+@ComCalendar-inner-borderHover: @cm-colorLight-borderHover;
+
+@ComCalendar-weekend-background: @cm-colorLight-backgroundDisabled;
+@ComCalendar-weekend-backgroundHover: @cm-colorLight-backgroundDisabledHover;
+@ComCalendar-weekend-borderSize: @ComCalendar-inner-borderSize;
+@ComCalendar-weekend-border: @cm-colorLight-borderDisabled;
+@ComCalendar-weekend-borderHover: @cm-colorLight-borderDisabledHover;
+
+@ComCalendar-today-background: '';
+@ComCalendar-today-backgroundHover: @cm-colorActive;
+@ComCalendar-today-borderSize: 2px;
+@ComCalendar-today-border: @cm-color;
+@ComCalendar-today-borderHover: @cm-color;
+
+@ComCalendar-active-background: @cm-colorActive;
+@ComCalendar-active-backgroundHover: @cm-colorActiveHover;
+@ComCalendar-active-borderSize: @ComCalendar-inner-borderSize;
+@ComCalendar-active-border: @cm-color;
+@ComCalendar-active-borderHover: @cm-color;
 
 // /* *** DATEPICKER *** */
 

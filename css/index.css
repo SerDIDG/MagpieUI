@@ -3269,53 +3269,74 @@ select[multiple] {
 .com-calendar table th {
   padding-bottom: 2px;
   text-align: center;
-  font-size: 10px;
   line-height: 14px;
-  color: #646464;
+  font-size: 10px;
+  color: #666666;
 }
 .com-calendar table td {
-  height: 21px;
   padding: 1px;
 }
 .com-calendar table td div {
-  text-align: center;
-  line-height: 19px;
-  font-size: 11px;
-  text-shadow: 0 1px 0 #fff;
-}
-.com-calendar table td.in div {
-  background-color: #FAFAFA;
-  border: 1px solid #E6E6E6;
+  height: 21px;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  background-color: transparent;
+  border: 0 solid transparent;
   border-radius: 2px;
+  text-align: center;
+  line-height: 21px;
+  font-size: 11px;
   cursor: pointer;
   -webkit-transition: all 0.3s ease-in-out;
   transition: all 0.3s ease-in-out;
 }
-.com-calendar table td.in div:hover {
-  background-color: #E6E6E6;
-  border-color: #D2D2D2;
+.com-calendar table td div:hover {
   -webkit-transition: all 0.1s ease-in-out;
   transition: all 0.1s ease-in-out;
 }
+.com-calendar table td.in div {
+  background-color: #fafafa;
+  border-width: 1px;
+  border-color: #e6e6e6;
+  line-height: 19px;
+}
+.com-calendar table td.in div:hover {
+  background-color: #e6e6e6;
+  border-color: #d2d2d2;
+}
 .com-calendar table td.weekend div {
-  background-color: #F0F0F0;
+  background-color: #f0f0f0;
+  border-width: 1px;
+  border-color: #e6e6e6;
+  line-height: 19px;
+}
+.com-calendar table td.weekend div:hover {
+  background-color: #e6e6e6;
+  border-color: #d2d2d2;
 }
 .com-calendar table td.today div {
-  border: 2px solid #6eb2f2;
-  line-height: 17px;
+  background-color: '';
+  border-color: #308ce8;
 }
 .com-calendar table td.today div:hover {
-  border-color: #6eb2f2;
+  background-color: #daebfb;
+  border-color: #308ce8;
 }
 .com-calendar table td.active div,
 .com-calendar table td.selected div {
-  background-color: #d9eafb;
-  border-color: #6eb2f2;
+  background-color: #daebfb;
+  border-width: 1px;
+  border-color: #308ce8;
+  line-height: 19px;
 }
 .com-calendar table td.active div:hover,
 .com-calendar table td.selected div:hover {
-  background-color: #d9eafb;
-  border-color: #6eb2f2;
+  background-color: #c3def9;
+  border-color: #308ce8;
+}
+.com-calendar table td.today div {
+  border-width: 2px;
+  line-height: 17px;
 }
 /* ******* DATEPICKER ******* */
 .com-datepicker-input {
@@ -3366,7 +3387,7 @@ select[multiple] {
 }
 /* ******* CALENDAR OF EVENTS ******* */
 .com-calendar-events-tooltip {
-  width: 200px;
+  width: 250px;
 }
 .com-calendar-events-tooltip > .inner {
   padding: 10px;
@@ -3374,18 +3395,7 @@ select[multiple] {
 .com-calendar-events-tooltip > .inner > .scroll {
   max-height: 300px;
 }
-.com-calendar-events-listing ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.com-calendar-events-listing ul li {
-  margin: 4px 0 0 0;
-}
-.com-calendar-events-listing ul li:first-child {
-  margin: 0;
-}
-.com-calendar-events-listing h4 {
+.com-calendar-events-listing {
   margin: 0;
 }
 /* ******* TAGS INPUT ******* */
