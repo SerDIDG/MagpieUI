@@ -5,9 +5,9 @@ Com['Tooltip'] = function(o){
             'targetEvent' : 'hover',        // hover | click | none
             'hideOnReClick' : false,        // Hide tooltip when re-clicking on the target, requires setting value 'targetEvent' : 'click'
             'preventClickEvent' : false,    // Prevent default click event on the target, requires setting value 'targetEvent' : 'click'
-            'top' : 0,                      // Supported properties: targetHeight, selfWidth
-            'left' : 0,                     // Supported properties: targetWidth, selfWidth
-            'width' : 'auto',               // Supported properties: targetWidth | auto
+            'top' : 0,                      // Supported properties: targetHeight, selfHeight, number
+            'left' : 0,                     // Supported properties: targetWidth, selfWidth, number
+            'width' : 'auto',               // Supported properties: targetWidth, auto, number
             'className' : '',
             'adaptive' : true,
             'title' : '',
@@ -174,7 +174,11 @@ Com['Tooltip'] = function(o){
         // Calculate size
         (function(){
             if(config['width'] != 'auto'){
-                var width = eval(config['width'].toString().replace('targetWidth', targetWidth));
+                var width = eval(
+                    config['width']
+                        .toString()
+                        .replace('targetWidth', targetWidth)
+                );
 
                 if(width != selfWidth){
                     nodes['container'].style.width =  [width, 'px'].join('');
@@ -197,18 +201,40 @@ Com['Tooltip'] = function(o){
                         .replace('targetWidth', targetWidth)
                         .replace('selfWidth', selfWidth)
                 ),
-                positionTop = (config['adaptive'] && top + topAdd + selfHeight > pageSize['winHeight']?
-                    (top - topAdd - selfHeight + targetHeight) : top + topAdd
-                ),
-                positionLeft = (config['adaptive'] && left + leftAdd + selfWidth > pageSize['winWidth']?
-                    (left - leftAdd - selfWidth + targetWidth) : left + leftAdd
+                positionTop,
+                positionLeft;
+            // Adaptive or static position
+            if(config['adaptive']){
+                positionTop = Math.max(
+                    Math.min(
+                        ((top + topAdd + selfHeight > pageSize['winHeight'])
+                            ? (top - topAdd - selfHeight + targetHeight)
+                            : (top + topAdd)
+                        ),
+                        (pageSize['winHeight'] - selfHeight)
+                    ),
+                    0
                 );
-
+                positionLeft = Math.max(
+                    Math.min(
+                        ((left + leftAdd + selfWidth > pageSize['winWidth'])
+                            ? (left - leftAdd - selfWidth + targetWidth)
+                            : (left + leftAdd)
+                        ),
+                        (pageSize['winWidth'] - selfWidth)
+                    ),
+                    0
+                );
+            }else{
+                positionTop = top + topAdd;
+                positionLeft = left + leftAdd;
+            }
+            // Apply styles
             if(positionTop != nodes['container'].offsetTop){
-                nodes['container'].style.top =  [Math.max(positionTop, 0), 'px'].join('');
+                nodes['container'].style.top =  [positionTop, 'px'].join('');
             }
             if(positionLeft != nodes['container'].offsetLeft){
-                nodes['container'].style.left = [Math.max(positionLeft, 0), 'px'].join('');
+                nodes['container'].style.left = [positionLeft, 'px'].join('');
             }
         })();
     };
