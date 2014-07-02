@@ -1,4 +1,8 @@
 cm.init = function(){
+    // Set browser class
+    if(typeof Com.UA != 'undefined'){
+        Com.UA.setBrowserClass();
+    }
     // Check device type
     var checkDeviceType = function(){
         var sizes = cm.getPageSize(),

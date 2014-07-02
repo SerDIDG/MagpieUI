@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html>
+<html class="is-adaptive">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
@@ -7,30 +7,27 @@
 
     <link type="text/css" rel="stylesheet" href="../../css/index.css">
 
-    <script type="text/javascript" src="../../js/common.js"></script>
     <script type="text/javascript" src="../../js/polyfill.js"></script>
+    <script type="text/javascript" src="../../js/common.js"></script>
+    <script type="text/javascript" src="../../js/modules.js"></script>
+    <script type="text/javascript" src="../../js/parts.js"></script>
+    <script type="text/javascript" src="../../js/init.js"></script>
     <script type="text/javascript" src="../../js/components/UA.js"></script>
+    <script type="text/javascript" src="../../js/components/Collector.js"></script>
     <script type="text/javascript" src="../../js/components/Tooltip.js"></script>
     <script type="text/javascript" src="../../js/components/Select.js"></script>
-    <script type="text/javascript" src="../../js/components/Calendar.js"></script>
-    <script type="text/javascript" src="../../js/components/Datepicker.js"></script>
-    <script type="text/javascript" src="../../js/components/CalendarEvents.js"></script>
     <script type="text/javascript" src="../../js/components/Tabset.js"></script>
-    <script type="text/javascript" src="../../js/components/Dialog.js"></script>
-    <script type="text/javascript" src="../../js/components/Collector.js"></script>
-    <script type="text/javascript" src="../../js/components/Columns.js"></script>
 
     <script type="text/javascript">
-        cm.onLoad(function(){
-            var element;
-            // Useragent
-            Com.UA.setBrowserClass();
-            // Selects
-            Com.SelectCollector();
-            // Datepickers
-            Com.DatepickerCollector();
+        cm.onReady(function(){
             // Tabset
             Com.TabsetCollector();
+            // Components
+            new Com.Collector()
+                .add('select', function(node){
+                    new Com.Select({'select' : node})
+                })
+                .construct()
         });
     </script>
 </head>
@@ -45,17 +42,56 @@
             <h2>Initialize in Java-Script:</h2>
             <pre class="cm-codebox">new Com.Select(o);</pre>
             <br>
-            <b>Attributes:</b>
-            <ul>
-                <li><b>container</b> <i>[HTML Node]</i> - container for select, when select rendered through java-script, <i>default: cm.Node('div')</i>;</li>
-                <li><b>select</b> <i>[HTML Node]</i> - select html node, <i>default: cm.Node('select')</i>;</li>
-                <li><b>multiple</b> <i>[Boolean]</i> - use multiple select, <i>default: false</i>;</li>
-                <li><b>showTitleTag</b> <i>[Boolean]</i> - show title on hover, <i>default: true</i>;</li>
-                <li><b>title</b> <i>[String]</i> - title text, <i>default: false</i>;</li>
-                <li><b>menuMargin</b> <i>[Number]</i> - outer margin of select menu, <i>default: 3</i>;</li>
-                <li><b>options</b> <i>[Array]</i> - listing of options, for rendering through java-script;</li>
-                <li><b>selected</b> <i>[String/Array]</i> - id / array of selected item / items, <i>default: 0</i>;</li>
-            </ul>
+
+            <h2>Parameters:</h2>
+            <dl>
+                <dt>
+                    <code><b>container</b></code>
+                </dt>
+                <dd><i>[HTML Node]</i> - container for select, when select rendered through java-script. <i>Default: cm.Node('div')</i>;</dd>
+            </dl>
+            <dl>
+                <dt>
+                    <code><b>select</b></code>
+                </dt>
+                <dd><i>[HTML Node]</i> - select html node. <i>Default: cm.Node('select')</i>;</dd>
+            </dl>
+            <dl>
+                <dt>
+                    <code><b>multiple</b></code>
+                </dt>
+                <dd><i>[Boolean]</i> - use multiple select. <i>Default: false</i>;</dd>
+            </dl>
+            <dl>
+                <dt>
+                    <code><b>showTitleTag</b></code>
+                </dt>
+                <dd><i>[Boolean]</i> - show title on hover. <i>Default: true</i>;</dd>
+            </dl>
+            <dl>
+                <dt>
+                    <code><b>title</b></code>
+                </dt>
+                <dd><i>[String]</i> - title text. <i>Default: false</i>;</dd>
+            </dl>
+            <dl>
+                <dt>
+                    <code><b>menuMargin</b></code>
+                </dt>
+                <dd><i>[Number]</i> - outer margin of select menu. <i>Default: 3</i>;</dd>
+            </dl>
+            <dl>
+                <dt>
+                    <code><b>options</b></code>
+                </dt>
+                <dd><i>[Array]</i> - listing of options, for rendering through java-script;</dd>
+            </dl>
+            <dl>
+                <dt>
+                    <code><b>selected</b></code>
+                </dt>
+                <dd><i>[String/Array]</i> - id / array of selected item / items. <i>Default: 0</i>;</dd>
+            </dl>
 
             <h2>Initialize in HTML:</h2>
             <pre class="cm-codebox">&lt;select&gt;&lt;/select&gt;</pre>
@@ -64,7 +100,7 @@
 });</pre>
             <br>
             <b>Attributes:</b>
-            <ul>
+            <ul class="cm-list">
                 <li><b>data-select="true|false"</b> - mark as select, if false - select will not render;</li>
                 <li><b>data-multiple</b> or <b>multiple</b> - use multiple select;</li>
                 <li><b>data-title</b> or <b>title</b> - title text;</li>
@@ -142,7 +178,7 @@
             <div class="form">
                 <dl>
                     <dd>
-                        <select name="select1" id="select1">
+                        <select name="select-1" data-element="select">
                             <option value="0" selected>Zero</option>
                             <option value="1">One</option>
                             <option value="2">Two</option>
@@ -158,12 +194,39 @@
                     </dd>
                 </dl>
             </div>
-            <br>
+            <hr>
+
+            <h2>Select with optgroup:</h2>
+            <div class="form">
+                <dl>
+                    <dd>
+                        <select name="select-2" data-element="select">
+                            <option value="0" selected>Zero</option>
+                            <optgroup label="Group 1">
+                                <option value="1">One</option>
+                                <option value="2">Two</option>
+                                <option value="3">Three</option>
+                            </optgroup>
+                            <optgroup label="Group 2">
+                                <option value="4">Four</option>
+                                <option value="5">Five</option>
+                                <option value="6">Six</option>
+                                <option value="7">Seven</option>
+                                <option value="8">Eight</option>
+                                <option value="9">Nine</option>
+                                <option value="10">Ten</option>
+                            </optgroup>
+                        </select>
+                    </dd>
+                </dl>
+            </div>
+            <hr>
+
             <h2>Multiple select:</h2>
             <div class="form">
                 <dl>
                     <dd>
-                        <select multiple name="select2" id="select2">
+                        <select name="select-3" data-element="select" multiple>
                             <option value="0" selected>Zero</option>
                             <option value="1" selected>One</option>
                             <option value="2" selected>Two</option>
