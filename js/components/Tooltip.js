@@ -205,10 +205,10 @@ Com['Tooltip'] = function(o){
                 );
 
             if(positionTop != nodes['container'].offsetTop){
-                nodes['container'].style.top =  [positionTop, 'px'].join('');
+                nodes['container'].style.top =  [Math.max(positionTop, 0), 'px'].join('');
             }
             if(positionLeft != nodes['container'].offsetLeft){
-                nodes['container'].style.left = [positionLeft, 'px'].join('');
+                nodes['container'].style.left = [Math.max(positionLeft, 0), 'px'].join('');
             }
         })();
     };
