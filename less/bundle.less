@@ -2,17 +2,24 @@
 
     // /* ******* STATIC CLASSES ******* */
 
-    .base-font {
+    /* *** FONT *** */
+
+    .font-base {
         font: @cm-fontWeight ~'@{cm-fontSize}/@{cm-lineHeight}' @cm-fontFamily;
         color: @cm-colorFont;
     }
 
-    .title-font {
-        font: 300 ~'@{cm-fontSizeTitle}/@{cm-lineHeightTitle}' 'Open Sans',@cm-fontFamily;
+    .font-title {
+        font: 300 ~'@{cm-fontSizeTitle}/@{cm-lineHeightTitle}' 'Open Sans', @cm-fontFamily;
         color: @cm-colorFontTitle;
     }
 
-    .link {
+    .font-title-medium {
+        font: 300 ~'@{cm-fontSizeTitleMedium}/@{cm-lineHeightTitleMedium}' 'Open Sans', @cm-fontFamily;
+        color: @cm-colorFontTitle;
+    }
+
+    .font-link {
         text-decoration: underline;
         color: @cm-colorLink;
         outline: none;
@@ -23,6 +30,8 @@
             color: @cm-colorLinkHover;
         }
     }
+
+    /* *** ELEMENTS *** */
 
     .hr {
         height: 0;
@@ -264,10 +273,10 @@
             position: relative;
 
             a {
-                #cm > .link;
+                #cm > .font-link;
                 display: block;
                 padding: 2px @cm-indentXSmall;
-                #cm > .base-font;
+                #cm > .font-base;
                 line-height: 18px;
                 text-decoration: none;
                 white-space: nowrap;

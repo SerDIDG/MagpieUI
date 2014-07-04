@@ -65,13 +65,24 @@ Com['ToggleBox'] = function(o){
 			}
 			// Animate
             config['block'].style.overflow = 'hidden';
-			anim.go({'style' : {'height' : [cm.getRealHeight(config['block']), 'px'].join('')}, 'anim' : 'smooth', 'duration' : config['time'], 'onStop' : function(){
-                isProcess = false;
-				config['block'].style.height = 'auto';
-				config['block'].style.overflow = 'visible';
-                // Show Event
-                executeEvent('onShow');
-			}});
+            if(!config['block'].style.opacity){
+                config['block'].style.opacity = 0;
+            }
+			anim.go({
+                'style' : {
+                    'height' : [cm.getRealHeight(config['block']), 'px'].join(''),
+                    'opacity' : 1
+                },
+                'anim' : 'smooth',
+                'duration' : config['time'],
+                'onStop' : function(){
+                    isProcess = false;
+                    config['block'].style.height = 'auto';
+                    config['block'].style.overflow = 'visible';
+                    // Show Event
+                    executeEvent('onShow');
+                }
+            });
             // On Show Start Event
             executeEvent('onShowStart');
 		}
@@ -93,11 +104,22 @@ Com['ToggleBox'] = function(o){
 			}
 			// Animate
 			config['block'].style.overflow = 'hidden';
-			anim.go({'style' : {'height' : '0px'}, 'anim' : 'smooth', 'duration' : config['time'], 'onStop' : function(){
-                isProcess = false;
-                // Hide Event
-                executeEvent('onHide');
-            }});
+            if(!config['block'].style.opacity){
+                config['block'].style.opacity = 1;
+            }
+			anim.go({
+                'style' : {
+                    'height' : '0px',
+                    'opacity' : 0
+                },
+                'anim' : 'smooth',
+                'duration' : config['time'],
+                'onStop' : function(){
+                    isProcess = false;
+                    // Hide Event
+                    executeEvent('onHide');
+                }
+            });
             // On Hide Start Event
             executeEvent('onHideStart');
 		}

@@ -3,11 +3,10 @@
 .com-togglebox {
     margin: 0 0 @cm-indentMedium 0;
 
-    > dt {
+    > dt:extend(.cm-font-title) {
         position: relative;
         cursor: pointer;
         .cm-user-select(none);
-        #cm > .title-font;
         .cm-transition(color 0.3s ease-in-out);
 
         .icon {
@@ -26,12 +25,22 @@
 
     > dd {
         padding: 0;
+        opacity: 1;
+    }
+
+    &.is-medium {
+        > dt:extend(.cm-font-title-medium) {
+            .icon {
+                top: 4px;
+            }
+        }
     }
 
     &.is-hide {
         > dd {
             height: 0;
             overflow: hidden;
+            opacity: 0;
         }
     }
 

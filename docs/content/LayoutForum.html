@@ -1,0 +1,148 @@
+<!DOCTYPE HTML>
+<html class="is-adaptive">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Forum Layout</title>
+
+    <link type="text/css" rel="stylesheet" href="../../css/index.css">
+
+    <script type="text/javascript" src="../../js/polyfill.js"></script>
+    <script type="text/javascript" src="../../js/common.js"></script>
+    <script type="text/javascript" src="../../js/parts.js"></script>
+    <script type="text/javascript" src="../../js/modules.js"></script>
+    <script type="text/javascript" src="../../js/init.js"></script>
+    <script type="text/javascript" src="../../js/components/UA.js"></script>
+    <script type="text/javascript" src="../../js/components/Collector.js"></script>
+    <script type="text/javascript" src="../../js/components/Tabset.js"></script>
+    <script type="text/javascript" src="../../js/components/ToggleBox.js"></script>
+
+    <script type="text/javascript">
+        cm.onReady(function(){
+            // Components
+            new Com.Collector()
+                .add('tabset', function(node){
+                    new Com.Tabset({'tabset' : node});
+                })
+                .add('togglebox-widget', function(node){
+                    new Com.ToggleBoxWidget({
+                        'node' : node
+                    });
+                })
+                .construct();
+        });
+    </script>
+</head>
+
+<body>
+
+<div class="cm-block-padding">
+    <h1>Forum Layout</h1>
+
+    <ul class="com-tabset-content-ul" data-element="tabset">
+        <li data-tabset-id="main" data-tabset-title="Main">
+
+            <div class="com-forum com-forum-main">
+                <dl class="com-togglebox is-medium is-show" data-element="togglebox-widget">
+                    <dt>
+                        <span class="icon small arrow-right"></span>
+                        <a>Countries</a>
+                    </dt>
+                    <dd>
+                        <div class="com-gridlist bottom">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th class="com-forum-cell-icon"></th>
+                                        <th class="com-forum-cell-title">Forums</th>
+                                        <th class="com-forum-cell-counter">Topics</th>
+                                        <th class="com-forum-cell-counter">Posts</th>
+                                        <th class="com-forum-cell-last">Last Post</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="com-forum-cell-icon"></td>
+                                        <td class="com-forum-cell-title">
+                                            <div class="title">
+                                                <a>Ukraine</a>
+                                            </div>
+                                            <div class="descr">Ukraine is a country in Eastern Europe. It has an area of 603,628 km2 (233,062 sq mi), making it the largest country entirely within Europe. Ukraine borders Russia to the east and northeast, Belarus to the northwest, Poland, Slovakia and Hungary to the west, Romania and Moldova to the southwest, and the Black Sea and Sea of Azov to the south and southeast, respectively.</div>
+                                        </td>
+                                        <td class="com-forum-cell-counter">1 234</td>
+                                        <td class="com-forum-cell-counter">5 678</td>
+                                        <td class="com-forum-cell-last"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="com-forum-cell-icon"></td>
+                                        <td class="com-forum-cell-title">
+                                            <div class="title">
+                                                <a>Canada</a>
+                                            </div>
+                                            <div class="descr">Canada is a country in North America consisting of 10 provinces and 3 territories. Located in the northern part of the continent, it extends from the Atlantic to the Pacific and northward into the Arctic Ocean. At 9.98 million square kilometres in total, Canada is the world's second-largest country by total area and the fourth-largest country by land area. Its common border with the United States is the world's longest land border shared by the same two countries.</div>
+                                        </td>
+                                        <td class="com-forum-cell-counter">9 000</td>
+                                        <td class="com-forum-cell-counter">100 500</td>
+                                        <td class="com-forum-cell-last"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </dd>
+                </dl>
+
+                <dl class="com-togglebox is-medium is-show" data-element="togglebox-widget">
+                    <dt>
+                        <span class="icon small arrow-right"></span>
+                        <a>Cities</a>
+                    </dt>
+                    <dd>
+                        <div class="com-gridlist bottom">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th class="com-forum-cell-icon"></th>
+                                        <th class="com-forum-cell-title">Forums</th>
+                                        <th class="com-forum-cell-counter">Topics</th>
+                                        <th class="com-forum-cell-counter">Posts</th>
+                                        <th class="com-forum-cell-last">Last Post</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="com-forum-cell-icon"></td>
+                                        <td class="com-forum-cell-title">
+                                            <div class="title">
+                                                <a>Ottawa</a>
+                                            </div>
+                                            <div class="descr">Ottawa is the capital of Canada, and the fourth largest city in the country. The city stands on the south bank of the Ottawa River in the eastern portion of Southern Ontario. Ottawa borders Gatineau, Quebec, and together they form the National Capital Region (NCR).</div>
+                                        </td>
+                                        <td class="com-forum-cell-counter">1 234</td>
+                                        <td class="com-forum-cell-counter">5 678</td>
+                                        <td class="com-forum-cell-last"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="com-forum-cell-icon"></td>
+                                        <td class="com-forum-cell-title">
+                                            <div class="title">
+                                                <a>Mykolaiv</a>
+                                            </div>
+                                            <div class="descr">Mykolaiv is a city in southern Ukraine, administrative center of the Mykolaiv Oblast. Mykolaiv is arguably the main ship building center of Black Sea. Aside of its three shipyards within the city is located number of research centers specializing in shipbuilding such as the State Research and Design Shipbuilding Center, Zoria-Mashproekt, and others.</div>
+                                        </td>
+                                        <td class="com-forum-cell-counter">9 000</td>
+                                        <td class="com-forum-cell-counter">100 500</td>
+                                        <td class="com-forum-cell-last"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </dd>
+                </dl>
+            </div>
+
+        </li>
+    </ul>
+</div>
+
+</body>
+</html>
