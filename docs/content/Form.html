@@ -7,8 +7,11 @@
 
     <link type="text/css" rel="stylesheet" href="../../css/index.css">
 
-    <script type="text/javascript" src="../../js/common.js"></script>
     <script type="text/javascript" src="../../js/polyfill.js"></script>
+    <script type="text/javascript" src="../../js/common.js"></script>
+    <script type="text/javascript" src="../../js/parts.js"></script>
+    <script type="text/javascript" src="../../js/modules.js"></script>
+    <script type="text/javascript" src="../../js/init.js"></script>
     <script type="text/javascript" src="../../js/components/UA.js"></script>
     <script type="text/javascript" src="../../js/components/Columns.js"></script>
     <script type="text/javascript" src="../../js/components/Tooltip.js"></script>
@@ -23,11 +26,7 @@
     <script type="text/javascript" src="../../js/components/TagsInput.js"></script>
 
 	<script type="text/javascript">
-		cm.onLoad(function(){
-			// Useragent
-			Com.UA.setBrowserClass();
-			// Selects
-			Com.SelectCollector();
+		cm.onReady(function(){
 			// Datepickers
             Com.DatepickerCollector();
             // Tabset
@@ -38,6 +37,9 @@
                     new Com.TagsInput({
                         'input' : node
                     });
+                })
+                .add('select', function(node){
+                    new Com.Select({'select' : node})
                 })
                 .add('date-select', function(node){
                     new Com.DateSelect({
@@ -140,7 +142,7 @@
                     <dt>Time picker:</dt>
                     <dd>
                         <div class="time clear">
-                            <select name="time-picker-hours">
+                            <select name="time-picker-hours" data-element="select">
                                 <option value="1">1</option>
                                 <option value="2">2</option>
                                 <option value="3">3</option>
@@ -155,7 +157,7 @@
                                 <option value="12" selected>12</option>
                             </select>
                             <span>:</span>
-                            <select name="time-picker-minutes">
+                            <select name="time-picker-minutes" data-element="select">
                                 <option value="00">00</option>
                                 <option value="15">15</option>
                                 <option value="30" selected>30</option>
@@ -238,7 +240,7 @@
                 <dl>
                     <dt>Select:</dt>
                     <dd>
-                        <select data-someattr="123" id="select1" name="select1">
+                        <select data-someattr="123" name="select1" data-element="select">
                             <option value="1">One</option>
                             <option value="2" selected>Two</option>
                             <option value="3">Three</option>
@@ -255,7 +257,7 @@
                 <dl>
                     <dt>Select Multiple:</dt>
                     <dd>
-                        <select multiple id="select2" name="select2">
+                        <select multiple name="select2"  data-element="select">
                             <option value="1" selected>One</option>
                             <option value="2" selected>Two</option>
                             <option value="3">Three</option>
@@ -728,7 +730,7 @@
                         <ul class="group">
                             <li class="label">Type:</li>
                             <li class="is-field medium">
-                                <select>
+                                <select data-element="select">
                                     <option>Author</option>
                                     <option>File</option>
                                     <option>Event</option>
@@ -738,7 +740,7 @@
                         <ul class="group">
                             <li class="label">Sort by:</li>
                             <li class="is-field medium">
-                                <select>
+                                <select data-element="select">
                                     <option>Date</option>
                                     <option>Name</option>
                                     <option>Description</option>
@@ -751,7 +753,7 @@
                         <ul class="group">
                             <li class="label">Per page:</li>
                             <li class="is-field x-small">
-                                <select>
+                                <select data-element="select">
                                     <option>10</option>
                                     <option>25</option>
                                     <option>50</option>
@@ -776,22 +778,22 @@
                     </ul>
                     <ul class="group">
                         <li class="is-field medium">
-                            <select>
+                            <select data-element="select">
                                 <option>Font</option>
                             </select>
                         </li>
                         <li class="is-field medium">
-                            <select>
+                            <select data-element="select">
                                 <option>Size</option>
                             </select>
                         </li>
                         <li class="is-field medium">
-                            <select>
+                            <select data-element="select">
                                 <option>Color</option>
                             </select>
                         </li>
                         <li class="is-field medium">
-                            <select>
+                            <select data-element="select">
                                 <option>Style</option>
                             </select>
                         </li>
@@ -999,17 +1001,17 @@
                     <dd class="descr">
                         <div class="cols three clear">
                             <div class="col">
-                                <select>
+                                <select data-element="select">
                                     <option>Field</option>
                                 </select>
                             </div>
                             <div class="col">
-                                <select>
+                                <select data-element="select">
                                     <option>Field</option>
                                 </select>
                             </div>
                             <div class="col">
-                                <select>
+                                <select data-element="select">
                                     <option>Field</option>
                                 </select>
                             </div>
@@ -1023,12 +1025,12 @@
                     <dd class="descr">
                         <div class="cols three clear">
                             <div class="col">
-                                <select>
+                                <select data-element="select">
                                     <option>Field</option>
                                 </select>
                             </div>
                             <div class="col">
-                                <select>
+                                <select data-element="select">
                                     <option>Field</option>
                                 </select>
                             </div>
@@ -1045,12 +1047,12 @@
                     <dd class="descr">
                         <div class="cols three clear">
                             <div class="col">
-                                <select>
+                                <select data-element="select">
                                     <option>Field</option>
                                 </select>
                             </div>
                             <div class="col">
-                                <select>
+                                <select data-element="select">
                                     <option>Field</option>
                                 </select>
                             </div>

@@ -7,8 +7,11 @@
 
     <link type="text/css" rel="stylesheet" href="../../css/index.css">
 
-    <script type="text/javascript" src="../../js/common.js"></script>
     <script type="text/javascript" src="../../js/polyfill.js"></script>
+    <script type="text/javascript" src="../../js/common.js"></script>
+    <script type="text/javascript" src="../../js/parts.js"></script>
+    <script type="text/javascript" src="../../js/modules.js"></script>
+    <script type="text/javascript" src="../../js/init.js"></script>
     <script type="text/javascript" src="../../js/components/UA.js"></script>
     <script type="text/javascript" src="../../js/components/Tooltip.js"></script>
     <script type="text/javascript" src="../../js/components/Select.js"></script>
@@ -21,9 +24,7 @@
     <script type="text/javascript" src="../../js/components/Columns.js"></script>
 
     <script type="text/javascript">
-        cm.onLoad(function(){
-            // Useragent
-            Com.UA.setBrowserClass();
+        cm.onReady(function(){
             // Tabset
             Com.TabsetCollector();
             // Components

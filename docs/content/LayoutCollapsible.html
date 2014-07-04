@@ -9,15 +9,15 @@
 
     <script type="text/javascript" src="../../js/polyfill.js"></script>
     <script type="text/javascript" src="../../js/common.js"></script>
+    <script type="text/javascript" src="../../js/parts.js"></script>
     <script type="text/javascript" src="../../js/modules.js"></script>
+    <script type="text/javascript" src="../../js/init.js"></script>
     <script type="text/javascript" src="../../js/components/UA.js"></script>
     <script type="text/javascript" src="../../js/components/Collector.js"></script>
     <script type="text/javascript" src="../../js/components/CollapsibleLayout.js"></script>
 
     <script type="text/javascript">
-        cm.onLoad(function(){
-            // Useragent
-            Com.UA.setBrowserClass();
+        cm.onReady(function(){
             // Components
             new Com.Collector()
                 .add('collapsible-layout', function(node){

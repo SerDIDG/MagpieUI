@@ -37,6 +37,13 @@ Mod['Events'] = {
         }
         return that;
     },
+    'addEvents' : function(o){
+        var that = this;
+        if(o){
+            that.convertEvents(o);
+        }
+        return that;
+    },
     'removeEvent' : function(event, handler){
         var that = this;
         that.events = cm.clone(that.events);
@@ -135,7 +142,7 @@ Mod['DataNodes'] = {
             that.data['params']['nodesDataMarker'] = 'data-node';
         }
         if(typeof that.data['params']['nodesMarker'] == 'undefined'){
-            that.data['params']['nodesMarker'] = that.name.join('');
+            that.data['params']['nodesMarker'] = that.classNameShort;
         }
         if(!that.extendObject['nodes']){
             that.extendObject['nodes'] = {};

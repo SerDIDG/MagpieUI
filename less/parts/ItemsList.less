@@ -13,8 +13,6 @@
             margin-top: @CmItemsList-indent;
             padding: @CmItemsList-padding-y 4px;
             line-height: @cm-lineHeight;
-            cursor: pointer;
-            .cm-transition(all 0.3s ease-in-out);
 
             &:first-child {
                 margin-top: 0;
@@ -27,17 +25,36 @@
                 text-decoration: none;
             }
 
-            &:hover {
-                background-color: @CmItemsList-background-hover;
-                .cm-transition(all 0.1s ease-in-out);
+            .title {
+                font-weight: @cm-boldWeight;
             }
 
-            &.active {
-                background-color: @CmItemsList-background-active;
+            &.group {
+                .cm-items-list {
+                    margin: @CmItemsList-padding-y + @CmItemsList-indent 0 0 @cm-indentXSmall;
+
+                    &:first-child {
+                        margin-top: 0;
+                    }
+                }
             }
 
-            &.active:hover {
-                background-color: @CmItemsList-background-active-hover;
+            &:not(.group) {
+                cursor: pointer;
+                .cm-transition(all 0.3s ease-in-out);
+
+                &:hover {
+                    background-color: @CmItemsList-background-hover;
+                    .cm-transition(all 0.1s ease-in-out);
+                }
+
+                &.active {
+                    background-color: @CmItemsList-background-active;
+                }
+
+                &.active:hover {
+                    background-color: @CmItemsList-background-active-hover;
+                }
             }
         }
     }

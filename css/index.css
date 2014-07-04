@@ -1936,9 +1936,6 @@ select[multiple] {
   margin-top: 1px;
   padding: 2px 4px;
   line-height: 18px;
-  cursor: pointer;
-  -webkit-transition: all 0.3s ease-in-out;
-  transition: all 0.3s ease-in-out;
 }
 .cm-items-list ul li:first-child {
   margin-top: 0;
@@ -1949,15 +1946,29 @@ select[multiple] {
   font-weight: normal;
   text-decoration: none;
 }
-.cm-items-list ul li:hover {
+.cm-items-list ul li .title {
+  font-weight: 600;
+}
+.cm-items-list ul li.group .cm-items-list {
+  margin: 3px 0 0 12px;
+}
+.cm-items-list ul li.group .cm-items-list:first-child {
+  margin-top: 0;
+}
+.cm-items-list ul li:not(.group) {
+  cursor: pointer;
+  -webkit-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+.cm-items-list ul li:not(.group):hover {
   background-color: #f2f2f2;
   -webkit-transition: all 0.1s ease-in-out;
   transition: all 0.1s ease-in-out;
 }
-.cm-items-list ul li.active {
+.cm-items-list ul li:not(.group).active {
   background-color: #daebfb;
 }
-.cm-items-list ul li.active:hover {
+.cm-items-list ul li:not(.group).active:hover {
   background-color: #c3def9;
 }
 .cm-items-list.auto ul {
@@ -3132,7 +3143,7 @@ select[multiple] {
   overflow-y: auto;
 }
 /* ******* COMPONENTS IN TOOLTIP ******* */
-/* *** Items List *** */
+/* *** ITEMS LIST *** */
 .com-tooltip .cm-items-list ul {
   max-height: none;
 }

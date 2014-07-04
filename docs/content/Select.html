@@ -9,8 +9,8 @@
 
     <script type="text/javascript" src="../../js/polyfill.js"></script>
     <script type="text/javascript" src="../../js/common.js"></script>
-    <script type="text/javascript" src="../../js/modules.js"></script>
     <script type="text/javascript" src="../../js/parts.js"></script>
+    <script type="text/javascript" src="../../js/modules.js"></script>
     <script type="text/javascript" src="../../js/init.js"></script>
     <script type="text/javascript" src="../../js/components/UA.js"></script>
     <script type="text/javascript" src="../../js/components/Collector.js"></script>
@@ -24,6 +24,9 @@
             Com.TabsetCollector();
             // Components
             new Com.Collector()
+                .addEvent('onConstruct', function(collector, data){
+                    Part.Autoresize(data['node']);
+                })
                 .add('select', function(node){
                     new Com.Select({'select' : node})
                 })
@@ -39,209 +42,286 @@
 
     <ul class="com-tabset-content-ul" id="tabset" data-tabset="true">
         <li data-tabset-id="overview" data-tabset-title="Overview">
-            <h2>Initialize in Java-Script:</h2>
+            <h2>Overview</h2>
+            <p>This component decorate html select node.</p>
+            <p>Embedded modules: <code>Events</code>, <code>Data Config</code>.</p>
+
+            <h2>Initialize</h2>
             <pre class="cm-codebox">new Com.Select(o);</pre>
             <br>
+            <p>or</p>
+            <textarea class="cm-codebox cm-autoresize" readonly>
+<script type="text/javascript">
+    cm.onReady(function(){
+        new Com.Collector()
+            .add('select', function(node){
+                new Com.Select({'select' : node})
+            })
+            .construct()
+    });
+</script>
 
-            <h2>Parameters:</h2>
+<select name="foobar" data-element="select"></select></textarea>
+            <br>
+
+            <h2>Parameters</h2>
             <dl>
                 <dt>
                     <code><b>container</b></code>
                 </dt>
-                <dd><i>[HTML Node]</i> - container for select, when select rendered through java-script. <i>Default: cm.Node('div')</i>;</dd>
+                <dd><code>HTML Node</code>. Component container that is required in case content is rendered without available select. Default: <code>false</code>.</dd>
             </dl>
             <dl>
                 <dt>
                     <code><b>select</b></code>
                 </dt>
-                <dd><i>[HTML Node]</i> - select html node. <i>Default: cm.Node('select')</i>;</dd>
+                <dd><code>HTML Node</code>. Html select node. Default: <code>cm.Node('select')</code>.</dd>
+            </dl>
+            <dl>
+                <dt>
+                    <code><b>renderInBody</b></code>
+                </dt>
+                <dd><code>Boolean</code>. Render dropdowns in document.body, else they will be rendrered in component container. Default: <code>true</code>.</dd>
             </dl>
             <dl>
                 <dt>
                     <code><b>multiple</b></code>
                 </dt>
-                <dd><i>[Boolean]</i> - use multiple select. <i>Default: false</i>;</dd>
+                <dd><code>Boolean</code>. Render multiple select. Default: <code>false</code>.</dd>
             </dl>
             <dl>
                 <dt>
                     <code><b>showTitleTag</b></code>
                 </dt>
-                <dd><i>[Boolean]</i> - show title on hover. <i>Default: true</i>;</dd>
+                <dd><code>Boolean</code>. Copy title from available select node to component container. Will be shown on hover. Default: <code>true</code>.</dd>
             </dl>
             <dl>
                 <dt>
                     <code><b>title</b></code>
                 </dt>
-                <dd><i>[String]</i> - title text. <i>Default: false</i>;</dd>
+                <dd><code>String</code>. Title text. Will be shown on hover. Default: <code>false</code>.</dd>
             </dl>
             <dl>
                 <dt>
                     <code><b>menuMargin</b></code>
                 </dt>
-                <dd><i>[Number]</i> - outer margin of select menu. <i>Default: 3</i>;</dd>
+                <dd><code>Number</code>. Outer margin from component container to dropdown. Default: <code>3</code>.</dd>
             </dl>
             <dl>
                 <dt>
                     <code><b>options</b></code>
                 </dt>
-                <dd><i>[Array]</i> - listing of options, for rendering through java-script;</dd>
+                <dd><code>Array</code>. Listing of options, for rendering through java-script. Example: <code>[{'value' : 'foo', 'text' : 'Bar'}]</code>.</dd>
             </dl>
             <dl>
                 <dt>
                     <code><b>selected</b></code>
                 </dt>
-                <dd><i>[String/Array]</i> - id / array of selected item / items. <i>Default: 0</i>;</dd>
+                <dd><code>String/Array</code>. Id / array of selected items. Default: <code>0</code>.</dd>
             </dl>
-
-            <h2>Initialize in HTML:</h2>
-            <pre class="cm-codebox">&lt;select&gt;&lt;/select&gt;</pre>
-            <pre class="cm-codebox">cm.onLoad(function(){
-    Com.SelectCollector();
-});</pre>
-            <br>
-            <b>Attributes:</b>
-            <ul class="cm-list">
-                <li><b>data-select="true|false"</b> - mark as select, if false - select will not render;</li>
-                <li><b>data-multiple</b> or <b>multiple</b> - use multiple select;</li>
-                <li><b>data-title</b> or <b>title</b> - title text;</li>
-                <li><b>data-showTitleTag="true|false"</b> - show title on hover;</li>
-            </ul>
-
-            <h2>Render options through Java-Script:</h2>
-            <pre class="cm-codebox">new Com.Select({'options' : [{'value' : '', 'text' : ''}]});</pre>
-            or
-            <pre class="cm-codebox">select.addOption(value, text)</pre>
-            or
-            <pre class="cm-codebox">select.addOptions([{'value' : '', 'text' : ''}]);</pre>
-            or
-            <pre class="cm-codebox">Com.GetSelect(id).addOption(value, text);</pre>
-            or
-            <pre class="cm-codebox">Com.GetSelects(id).addOptions([{'value' : '', 'text' : ''}]);</pre>
+            <dl>
+                <dt>
+                    <code><b>events</b></code>
+                </dt>
+                <dd><code>Object</code>. Object of events. Available events: <code>onSelect</code>, <code>onChange</code>, <code>onFocus</code>, <code>onBlur</code>.</dd>
+            </dl>
+            <dl>
+                <dt>
+                    <code><b>icons</b></code>
+                </dt>
+                <dd>
+                    <p><code>Object</code>. Object of icons CSS class names.</p>
+                    <dl>
+                        <dt>
+                            <code><b>arrow</b></code>
+                        </dt>
+                        <dd><code>String</code>. Select arrow CSS class name. Default: <code>icon default linked</code>.</dd>
+                    </dl>
+                </dd>
+            </dl>
         </li>
 
         <li data-tabset-id="methods" data-tabset-title="Methods">
             <h2>Get select by id:</h2>
             <pre class="cm-codebox">Com.GetSelect('id');</pre>
-            <p>Returns a class of select.</p>
+            <br>
+            <p> Returns class of select component.</p>
 
             <h2>Get selected option value:</h2>
             <pre class="cm-codebox">select.get();</pre>
+            <br>
             <p>Returns selected option value, or array of values if select is multiple.</p>
 
-            <h2>Select option value (set active option):</h2>
+            <h2>Set active option:</h2>
             <pre class="cm-codebox">select.set(value);</pre>
-            <p>Set active option value, or array of values if select is multiple.<br>Returns a class of select.</p>
+            <br>
+            <p>Set active option value, or array of values if select is multiple.  Returns class of select component.</p>
+
+            <h2>Select all options:</h2>
+            <pre class="cm-codebox">select.selectAll();</pre>
+            <br>
+            <p>Select all options in multiple select.  Returns class of select component.</p>
+
+            <h2>Deselect all options:</h2>
+            <pre class="cm-codebox">select.deselectAll();</pre>
+            <br>
+            <p>Deselect all options in multiple select.  Returns class of select component.</p>
 
             <h2>Set event:</h2>
             <pre class="cm-codebox">select.addEvent(event, handler);</pre>
-            <p>Available events: onSelect, onChange, onFocus, onBlur.<br>Returns a class of select.</p>
+            <br>
+            <p>Available events: onSelect, onChange, onFocus, onBlur.  Returns class of select component.</p>
+
+            <h2>Set events:</h2>
+            <pre class="cm-codebox">select.addEvents(o);</pre>
+            <br>
+            <p>Example: <code>{'onChange' : function(){}}</code>. Available events: onSelect, onChange, onFocus, onBlur.  Returns class of select component.</p>
 
             <h2>Remove event:</h2>
             <pre class="cm-codebox">select.removeEvent(event, handler);</pre>
-            <p>Available events: onSelect, onChange, onFocus, onBlur.<br>Returns a class of select.</p>
+            <br>
+            <p>Available events: onSelect, onChange, onFocus, onBlur.  Returns class of select component.</p>
 
             <h2>Trigger event:</h2>
             <pre class="cm-codebox">select.triggerEvent(event);</pre>
-            <p>Available events: onSelect, onChange, onFocus, onBlur.<br>Returns a class of select.</p>
+            <br>
+            <p>Available events: onSelect, onChange, onFocus, onBlur.  Returns class of select component.</p>
 
             <h2>Add option:</h2>
             <pre class="cm-codebox">select.addOption(value, text);</pre>
-            <p>Returns a class of select.</p>
+            <br>
+            <p>Returns class of select component.</p>
+
+            <h2>Add options:</h2>
+            <pre class="cm-codebox">select.addOptions(arr);</pre>
+            <br>
+            <p>Example: <code>[{'value' : 'foo', 'text' : 'Bar'}]</code>.  Returns class of select component.</p>
+
+            <h2>Edit option text:</h2>
+            <pre class="cm-codebox">select.editOption(value, text);</pre>
+            <br>
+            <p>Returns class of select component.</p>
 
             <h2>Remove option:</h2>
             <pre class="cm-codebox">select.removeOption(value);</pre>
-            <p>Returns a class of select.</p>
-
-            <h2>Get option:</h2>
-            <pre class="cm-codebox">select.getOption(value);</pre>
-            <p>Returns option object.</p>
-
-            <h2>Add options:</h2>
-            <pre class="cm-codebox">select.addOptions([{'value' : '', 'text' : ''}]);</pre>
-            <p>Returns a class of select.</p>
-
-            <h2>Get options:</h2>
-            <pre class="cm-codebox">select.getOption(arr);</pre>
-            <p>Returns array of option objects.</p>
+            <br>
+            <p> Returns class of select component.</p>
 
             <h2>Remove all options:</h2>
             <pre class="cm-codebox">select.removeOptionAll();</pre>
-            <p>Returns a class of select.</p>
+            <br>
+            <p> Returns class of select component.</p>
+
+            <h2>Get option:</h2>
+            <pre class="cm-codebox">select.getOption(value);</pre>
+            <br>
+            <p>Returns option object.</p>
+
+            <h2>Get options:</h2>
+            <pre class="cm-codebox">select.getOption(arr);</pre>
+            <br>
+            <p>Returns array of options.</p>
+
+            <h2>Get all options:</h2>
+            <pre class="cm-codebox">select.getOptionsAll();</pre>
+            <br>
+            <p>Returns array of options.</p>
 
             <h2>Get list of select nodes:</h2>
             <pre class="cm-codebox">select.getNodes(key);</pre>
+            <br>
             <p>Returns object of nodes, or node if key is specified.</p>
         </li>
 
         <li data-tabset-id="examples" data-tabset-title="Examples">
             <h2>Single select:</h2>
-            <div class="form">
-                <dl>
-                    <dd>
-                        <select name="select-1" data-element="select">
-                            <option value="0" selected>Zero</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
-                            <option value="4">Four</option>
-                            <option value="5">Five</option>
-                            <option value="6">Six</option>
-                            <option value="7">Seven</option>
-                            <option value="8">Eight</option>
-                            <option value="9">Nine</option>
-                            <option value="10">Ten</option>
-                        </select>
-                    </dd>
-                </dl>
-            </div>
+            <select name="select-1" data-element="select">
+                <option value="0" selected>Zero</option>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+                <option value="4">Four</option>
+                <option value="5">Five</option>
+                <option value="6">Six</option>
+                <option value="7">Seven</option>
+                <option value="8">Eight</option>
+                <option value="9">Nine</option>
+                <option value="10">Ten</option>
+            </select>
             <hr>
 
             <h2>Select with optgroup:</h2>
-            <div class="form">
-                <dl>
-                    <dd>
-                        <select name="select-2" data-element="select">
-                            <option value="0" selected>Zero</option>
-                            <optgroup label="Group 1">
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
-                            </optgroup>
-                            <optgroup label="Group 2">
-                                <option value="4">Four</option>
-                                <option value="5">Five</option>
-                                <option value="6">Six</option>
-                                <option value="7">Seven</option>
-                                <option value="8">Eight</option>
-                                <option value="9">Nine</option>
-                                <option value="10">Ten</option>
-                            </optgroup>
-                        </select>
-                    </dd>
-                </dl>
-            </div>
+            <select name="select-2" data-element="select">
+                <option value="0" selected>Zero</option>
+                <optgroup label="Group 1">
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                </optgroup>
+                <optgroup label="Group 2">
+                    <option value="4">Four</option>
+                    <option value="5">Five</option>
+                    <option value="6">Six</option>
+                    <option value="7">Seven</option>
+                    <option value="8">Eight</option>
+                    <option value="9">Nine</option>
+                    <option value="10">Ten</option>
+                </optgroup>
+            </select>
+            <hr>
+
+            <h2>Empty select:</h2>
+            <select name="select-3" data-element="select"></select>
             <hr>
 
             <h2>Multiple select:</h2>
-            <div class="form">
-                <dl>
-                    <dd>
-                        <select name="select-3" data-element="select" multiple>
-                            <option value="0" selected>Zero</option>
-                            <option value="1" selected>One</option>
-                            <option value="2" selected>Two</option>
-                            <option value="3">Three</option>
-                            <option value="4">Four</option>
-                            <option value="5">Five</option>
-                            <option value="6">Six</option>
-                            <option value="7" selected>Seven</option>
-                            <option value="8">Eight</option>
-                            <option value="9">Nine</option>
-                            <option value="10">Ten</option>
-                        </select>
-                    </dd>
-                </dl>
-            </div>
+            <select name="select-4" data-element="select" multiple>
+                <option value="0" selected>Zero</option>
+                <option value="1" selected>One</option>
+                <option value="2" selected>Two</option>
+                <option value="3">Three</option>
+                <option value="4">Four</option>
+                <option value="5">Five</option>
+                <option value="6">Six</option>
+                <option value="7" selected>Seven</option>
+                <option value="8">Eight</option>
+                <option value="9">Nine</option>
+                <option value="10">Ten</option>
+            </select>
+            <hr>
+
+            <h2>Add options through java-script</h2>
+            <textarea class="cm-codebox cm-autoresize" readonly>
+new Com.Select({
+    'options' : [
+        {'value' : 'foo', 'text' : 'Bar'}
+    ]
+});</textarea>
+            <br>
+            <p>or</p>
+            <pre class="cm-codebox">select.addOption(value, text)</pre>
+            <br>
+            <p>or</p>
+            <textarea class="cm-codebox cm-autoresize" readonly>
+select.addOptions([
+    {'value' : 'foo', 'text' : 'Bar'}
+]);</textarea>
+            <br>
+            <p>or</p>
+            <textarea class="cm-codebox cm-autoresize" readonly>
+<select data-element="select" data-config='{"options" : [{"value" : "foo", "text" : "Bar"}]}'></select></textarea>
+            <hr>
+
+            <h2>Set config through data attribute</h2>
+            <p>Value in data attribute must be in JSON format.</p>
+            <textarea class="cm-codebox cm-autoresize" readonly>
+<select data-element="select" data-config='{"title" : "Foobar", "options" : [{"value" : "foo", "text" : "Bar"}]}'>
+    <option value="bar">Foo</option>
+</select></textarea>
+            <br>
+            <select name="select-5" data-element="select" data-config='{"title" : "Foobar", "options" : [{"value" : "foo", "text" : "Bar"}]}'>
+                <option value="bar">Foo</option>
+            </select>
         </li>
     </ul>
 </div>

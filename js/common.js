@@ -96,19 +96,21 @@ cm.forEach = function(o, callback){
 
 cm.merge = function(o1, o2){
     if(!o2){
-        return o1;
+        o2 = {};
     }
     if(!o1){
         o1 = {}
-    }else if(cm.isObject(o1)){
+    }else if(cm.isObject(o1) || cm.isArray(o1)){
         o1 = cm.clone(o1);
     }else{
-        return o2;
+        return cm.clone(o2);
     }
     cm.forEach(o2, function(item, key){
         if(item != null){
             try{
-                if(cm.isObject(item)){
+                if(Object.prototype.toString.call(item) == '[object Object]' && item.constructor != Object){
+                    o1[key] = item;
+                }else if(cm.isObject(item)){
                     o1[key] = cm.merge(o1[key], item);
                 }else{
                     o1[key] = item;
@@ -123,7 +125,7 @@ cm.merge = function(o1, o2){
 
 cm.extend = function(o1, o2){
     if(!o1){
-        return null;
+        return o2;
     }
     if(!o2){
         return o1;
@@ -132,6 +134,15 @@ cm.extend = function(o1, o2){
     switch(o1.constructor){
         case Array:
             o = o1.concat(o2);
+            break;
+        case Object:
+            o = {};
+            cm.forEach(o1, function(item, key){
+                o[key] = item;
+            });
+            cm.forEach(o2, function(item, key){
+                o[key] = item;
+            });
             break;
     }
     return o;
@@ -586,6 +597,14 @@ cm.onImageLoad = function(src, handler, delay){
 
 cm.isNode = function(node){
     return node && node.nodeType;
+};
+
+cm.isTextNode = function(node){
+    return node && node.nodeType && node.nodeType == 3;
+};
+
+cm.isElementNode = function(node){
+    return node && node.nodeType && node.nodeType == 1;
 };
 
 cm.getEl = function(str){
@@ -2175,6 +2194,7 @@ cm.defineHelper = function(name, data, handler){
     }, data);
 
     that.className = name;
+    that.classNameShort = that.className.replace('.', '');
     that.name = that.className.split('.');
 
     // Define default methods
@@ -2182,6 +2202,7 @@ cm.defineHelper = function(name, data, handler){
     that.extendObject = {
         'params' : that.data['params'],
         'className' : that.className,
+        'classNameShort' : that.classNameShort,
         'setParams' : function(params){
             var that = this;
             that.params = cm.merge(that.params, params);

@@ -4,30 +4,34 @@ Com['GetSelect'] = function(id){
     return Com.Elements.Selects[id] || null;
 };
 
-Com['Select'] = function(o){
+cm.define('Com.Select', {
+    'modules' : [
+        'Events',
+        'DataConfig'
+    ],
+    'events' : [
+        'onSelect',
+        'onChange',
+        'onFocus',
+        'onBlur'
+    ],
+    'params' : {
+        'container' : false,                    // Component container that is required in case content is rendered without available select.
+        'select' : cm.Node('select'),           // Html select node to decorate.
+        'renderInBody' : true,                  // Render dropdowns in document.body, else they will be rendrered in component container.
+        'multiple' : false,                     // Render multiple select.
+        'showTitleTag' : true,                  // Copy title from available select node to component container. Will be shown on hover.
+        'title' : false,                        // Title text. Will be shown on hover.
+        'menuMargin' : 3,                       // Outer margin from component container to dropdown.
+        'options' : [],                         // Listing of options, for rendering through java-script. Example: [{'value' : 'foo', 'text' : 'Bar'}].
+        'selected' : 0,                         // Option value / array of option values.
+        'icons' : {
+            'arrow' : 'icon default linked'
+        }
+    }
+},
+function(params){
     var that = this,
-        config = cm.merge({
-            'container' : false,
-            'select' : cm.Node('select'),
-            'renderInBody' : true,
-            'multiple' : false,
-            'showTitleTag' : true,
-            'title' : false,
-            'menuMargin' : 3,
-            'options' : [],                 // [{'value' : '', 'text' : ''}]
-            'selected' : 0,
-            'events' : {},
-            'icons' : {
-                'arrow' : 'icon default linked'
-            }
-        }, o),
-        dataAttributes = ['title', 'showTitleTag', 'multiple', 'renderInBody'],
-        API = {
-            'onSelect' : [],
-            'onChange' : [],
-            'onFocus' : [],
-            'onBlur' : []
-        },
         nodes = {
             'menu' : {}
         },
@@ -35,120 +39,110 @@ Com['Select'] = function(o){
         options = {},
         optionsList = [],
         optionsLength,
+        groups = [],
 
         oldActive,
         active;
 
+    /* *** CLASS FUNCTIONS *** */
+
     var init = function(){
-        // Convert events to API Events
-        convertEvents(config['events']);
-        // Merge data-attributes with config. Data-attributes have higher priority.
-        processDataAttributes();
-        // Render
+        that.setParams(params);
+        that.convertEvents(that.params['events']);
+        that.getDataConfig(that.params['select']);
+        validateParams();
         render();
         setMiscEvents();
         // Set selected option
-        if(config['multiple']){
+        if(that.params['multiple']){
             active = [];
-            if(config['selected'] && cm.isArray(config['selected'])){
-                cm.forEach(config['selected'], function(item){
+            if(that.params['selected'] && cm.isArray(that.params['selected'])){
+                cm.forEach(that.params['selected'], function(item){
                     if(options[item]){
                         set(options[item], true);
                     }
                 });
             }else{
-                cm.forEach(config['select'].options, function(item){
+                cm.forEach(that.params['select'].options, function(item){
                     item.selected && set(options[item.value]);
                 });
             }
         }else{
-            if(config['selected'] && options[config['selected']]){
-                set(options[config['selected']]);
-            }else if(config['select'].value){
-                set(options[config['select'].value]);
+            if(that.params['selected'] && options[that.params['selected']]){
+                set(options[that.params['selected']]);
+            }else if(that.params['select'].value){
+                set(options[that.params['select'].value]);
             }else if(optionsLength){
                 set(optionsList[0]);
             }
         }
     };
 
-    var processDataAttributes = function(){
-        var value;
-        cm.forEach(dataAttributes, function(item){
-            value = config['select'].getAttribute(['data', item].join('-'));
-            if(item == 'title'){
-                value = config['select'].getAttribute(item) || value;
-            }else if(item == 'multiple'){
-                value = config['select'].multiple;
-            }else if(/^false|true$/.test(value)){
-                value = value ? (value == 'true') : config[item];
-            }else{
-                value = value || config[item];
-            }
-            config[item] = value;
-        });
+    var validateParams = function(){
+        if(cm.isNode(that.params['select']) && cm.inDOM(that.params['select'])){
+            that.params['multiple'] = that.params['select'].multiple;
+            that.params['title'] = that.params['select'].getAttribute('title') || that.params['title'];
+        }
     };
 
     var render = function(){
         var tabindex;
         /* *** RENDER STRUCTURE *** */
-        if(config['multiple']){
+        if(that.params['multiple']){
             renderMultiple();
         }else{
             renderSingle();
         }
         /* *** ATTRIBUTES *** */
         // Set select width
-        if(config['select'].offsetWidth && config['select'].offsetWidth != config['select'].parentNode.offsetWidth){
-            nodes['container'].style.width = config['select'].offsetWidth + 'px';
+        if(that.params['select'].offsetWidth && that.params['select'].offsetWidth != that.params['select'].parentNode.offsetWidth){
+            nodes['container'].style.width = that.params['select'].offsetWidth + 'px';
         }
         // Add class name
-        if(config['select'].className){
-            cm.addClass(nodes['container'], config['select'].className);
+        if(that.params['select'].className){
+            cm.addClass(nodes['container'], that.params['select'].className);
         }
         // Title
-        if(config['showTitleTag'] && config['title']){
-            nodes['container'].title = config['title'];
+        if(that.params['showTitleTag'] && that.params['title']){
+            nodes['container'].title = that.params['title'];
         }
         // Tabindex
-        if(tabindex = config['select'].getAttribute('tabindex')){
+        if(tabindex = that.params['select'].getAttribute('tabindex')){
             nodes['container'].setAttribute('tabindex', tabindex);
         }
         // ID
-        if(config['select'].id){
-            nodes['container'].id = config['select'].id;
+        if(that.params['select'].id){
+            nodes['container'].id = that.params['select'].id;
         }
         // Data
-        cm.forEach(config['select'].attributes, function(item){
+        cm.forEach(that.params['select'].attributes, function(item){
             if(/^data-/.test(item.name)){
                 nodes['container'].setAttribute(item.name, item.value);
             }
         });
         // Set hidden input attributes
-        if(config['select'].getAttribute('name')){
-            nodes['hidden'].setAttribute('name', config['select'].getAttribute('name'));
+        if(that.params['select'].getAttribute('name')){
+            nodes['hidden'].setAttribute('name', that.params['select'].getAttribute('name'));
         }
         /* *** RENDER OPTIONS *** */
-        cm.forEach(config['select'].options, function(item){
-            renderOption(item.value, item.innerHTML);
-        });
-        cm.forEach(config['options'], function(item){
+        collectSelectOptions();
+        cm.forEach(that.params['options'], function(item){
             renderOption(item.value, item.text);
         });
         /* *** INSERT INTO DOM *** */
-        if(config['container']){
-            config['container'].appendChild(nodes['container']);
-        }else if(config['select'].parentNode){
-            cm.insertBefore(nodes['container'], config['select']);
+        if(that.params['container']){
+            that.params['container'].appendChild(nodes['container']);
+        }else if(that.params['select'].parentNode){
+            cm.insertBefore(nodes['container'], that.params['select']);
         }
-        cm.remove(config['select']);
+        cm.remove(that.params['select']);
     };
 
     var renderSingle = function(){
         nodes['container'] = cm.Node('div', {'class' : 'com-select'},
             nodes['hidden'] = cm.Node('select', {'data-select' : 'false', 'class' : 'display-none'}),
             cm.Node('div', {'class' : 'form-field has-icon-right'},
-                nodes['arrow'] = cm.Node('div', {'class' : config['icons']['arrow']}),
+                nodes['arrow'] = cm.Node('div', {'class' : that.params['icons']['arrow']}),
                 nodes['text'] = cm.Node('input', {'type' : 'text', 'readOnly' : 'true'})
             ),
             nodes['scroll'] = cm.Node('div', {'class' : 'cm-items-list'},
@@ -168,58 +162,8 @@ Com['Select'] = function(o){
         );
     };
 
-    var renderOption = function(value, text){
-        // Check for exists
-        if(options[value]){
-            removeOption(options[value]);
-        }
-        // Config
-        var item = {
-            'node' : nodes['items'].appendChild(cm.Node('li', {'innerHTML' : text})),
-            'option' : nodes['hidden'].appendChild(cm.Node('option', {'value' : value, 'innerHTML' : text})),
-            'selected' : false,
-            'value' : value,
-            'text' : text
-        };
-        // Label onlick event
-        item['node'].onclick = function(){
-            set(item, true);
-            !config['multiple'] && components['menu'].hide(false);
-        };
-        // Push
-        optionsList.push(options[value] = item);
-        optionsLength = optionsList.length;
-    };
-
-    var removeOption = function(option){
-        var value = typeof option['value'] != 'undefined'? option['value'] : option['text'];
-        // Remove option from list and array
-        cm.remove(option['node']);
-        cm.remove(option['option']);
-        optionsList = optionsList.filter(function(item){
-            return option != item;
-        });
-        optionsLength = optionsList.length;
-        delete options[option['value']];
-        // Set new active option, if current active is nominated for remove
-        if(config['multiple']){
-            active = active.filter(function(item){
-                return value != item;
-            });
-        }else{
-            if(value === active){
-                if(optionsLength){
-                    set(optionsList[0], true);
-                }else{
-                    active = null;
-                    nodes['text'].value = ''
-                }
-            }
-        }
-    };
-
     var setMiscEvents = function(){
-        if(!config['multiple']){
+        if(!that.params['multiple']){
             // Switch items on arrows press
             cm.addEvent(nodes['container'], 'keydown', function(e){
                 e = cm.getEvent(e);
@@ -264,10 +208,10 @@ Com['Select'] = function(o){
             });
             // Render tooltip
             components['menu'] = new Com.Tooltip({
-                'container' : config['renderInBody']? document.body : nodes['container'],
+                'container' : that.params['renderInBody']? document.body : nodes['container'],
                 'className' : 'com-select-tooltip',
                 'width' : 'targetWidth',
-                'top' : ['targetHeight', config['menuMargin']].join('+'),
+                'top' : ['targetHeight', that.params['menuMargin']].join('+'),
                 'content' : nodes['scroll'],
                 'target' : nodes['container'],
                 'targetEvent' : 'click',
@@ -281,46 +225,141 @@ Com['Select'] = function(o){
         }
     };
 
-    var scrollToItem = function(option){
-        nodes['menu']['content'].scrollTop = option['node'].offsetTop - nodes['menu']['content'].offsetTop;
+    /* *** COLLECTORS *** */
+
+    var collectSelectOptions = function(){
+        var myChildes = that.params['select'].childNodes,
+            myOptionsNodes,
+            myOptions;
+        cm.forEach(myChildes, function(myChild){
+            if(cm.isElementNode(myChild)){
+                if(myChild.tagName.toLowerCase() == 'optgroup'){
+                     myOptionsNodes = myChild.querySelectorAll('option');
+                     myOptions = [];
+                     cm.forEach(myOptionsNodes, function(optionNode){
+                         myOptions.push({
+                            'value' : optionNode.value,
+                            'text' : optionNode.innerHTML
+                         });
+                     });
+                     renderGroup(myChild.getAttribute('label'), myOptions);
+                }else if(myChild.tagName.toLowerCase() == 'option'){
+                     renderOption(myChild.value, myChild.innerHTML);
+                }
+            }
+        });
     };
 
-    var show = function(){
-        if(!optionsLength){
-            components['menu'].hide();
+    /* *** GROUPS *** */
+
+    var renderGroup = function(myName, myOptions){
+        // Config
+        var item = {
+            'name' : myName,
+            'options' : myOptions
+        };
+        // Structure
+        item['optgroup'] = cm.Node('optgroup', {'label' : myName});
+        item['container'] = cm.Node('li', {'class' : 'group'},
+            cm.Node('div', {'class' : 'title', 'innerHTML' : myName}),
+            item['items'] = cm.Node('ul', {'class' : 'cm-items-list'})
+        );
+        // Render options
+        cm.forEach(myOptions, function(myOption){
+            renderOption(myOption.value, myOption.text, item);
+        });
+        // Append
+        nodes['items'].appendChild(item['container']);
+        nodes['hidden'].appendChild(item['optgroup']);
+        // Push to groups array
+        groups.push(item);
+    };
+
+    /* *** OPTIONS *** */
+
+    var renderOption = function(value, text, group){
+        // Check for exists
+        if(options[value]){
+            removeOption(options[value]);
+        }
+        // Config
+        var item = {
+            'selected' : false,
+            'value' : value,
+            'text' : text
+        };
+        // Structure
+        item['node'] = cm.Node('li', {'innerHTML' : text});
+        item['option'] = cm.Node('option', {'value' : value, 'innerHTML' : text});
+        // Label onlick event
+        cm.addEvent(item['node'], 'click', function(){
+            set(item, true);
+            !that.params['multiple'] && components['menu'].hide(false);
+        });
+        // Append
+        if(group){
+            group['items'].appendChild(item['node']);
+            group['optgroup'].appendChild(item['option']);
         }else{
-            // Set classes
-            cm.addClass(nodes['container'], 'active');
-            nodes['text'].focus();
-            // Scroll to active element
-            if(active && options[active]){
-                scrollToItem(options[active]);
+            nodes['items'].appendChild(item['node']);
+            nodes['hidden'].appendChild(item['option']);
+        }
+        // Push
+        optionsList.push(options[value] = item);
+        optionsLength = optionsList.length;
+    };
+
+    var editOption = function(option, text){
+        var value = typeof option['value'] != 'undefined'? option['value'] : option['text'];
+        option['text'] = text;
+        option['node'].innerHTML = text;
+        option['option'].innerHTML = text;
+
+        if(!that.params['multiple'] && value === active){
+            nodes['text'].value = cm.decode(text);
+        }
+    };
+
+    var removeOption = function(option){
+        var value = typeof option['value'] != 'undefined'? option['value'] : option['text'];
+        // Remove option from list and array
+        cm.remove(option['node']);
+        cm.remove(option['option']);
+        optionsList = optionsList.filter(function(item){
+            return option != item;
+        });
+        optionsLength = optionsList.length;
+        delete options[option['value']];
+        // Set new active option, if current active is nominated for remove
+        if(that.params['multiple']){
+            active = active.filter(function(item){
+                return value != item;
+            });
+        }else{
+            if(value === active){
+                if(optionsLength){
+                    set(optionsList[0], true);
+                }else{
+                    active = null;
+                    nodes['text'].value = ''
+                }
             }
         }
-        /* *** EXECUTE API EVENTS *** */
-        executeEvent('onFocus');
     };
 
-    var hide = function(){
-        // Remove classes
-        cm.removeClass(nodes['container'], 'active');
-        nodes['text'].blur();
-        /* *** EXECUTE API EVENTS *** */
-        executeEvent('onBlur');
-    };
+    /* *** SETTERS *** */
 
     var set = function(option, execute){
         if(option){
-            if(config['multiple']){
+            if(that.params['multiple']){
                 setMultiple(option);
             }else{
                 setSingle(option);
             }
         }
-        /* *** EXECUTE API EVENTS *** */
         if(execute){
-            executeEvent('onSelect');
-            executeEvent('onChange');
+            that.triggerEvent('onSelect');
+            onChange();
         }
     };
 
@@ -359,35 +398,42 @@ Com['Select'] = function(o){
         cm.removeClass(option['node'], 'active');
     };
 
-    var executeEvent = function(event){
-        var handler = function(){
-            cm.forEach(API[event], function(item){
-                item(that, active);
-            });
-        };
-
-        switch(event){
-            case 'onChange':
-                if(config['multiple']){
-                    handler();
-                }else{
-                    active != oldActive && handler();
-                }
-                break;
-
-            default:
-                handler();
-                break;
+    var onChange = function(){
+        if(that.params['multiple'] || active != oldActive){
+            that.triggerEvent('onChange');
         }
     };
 
-    var convertEvents = function(o){
-        cm.forEach(o, function(item, key){
-            if(API[key] && typeof item == 'function'){
-                API[key].push(item);
+    /* *** DROPDOWN *** */
+
+    var show = function(){
+        if(!optionsLength){
+            components['menu'].hide();
+        }else{
+            // Set classes
+            cm.addClass(nodes['container'], 'active');
+            nodes['text'].focus();
+            // Scroll to active element
+            if(active && options[active]){
+                scrollToItem(options[active]);
             }
-        });
+        }
+        that.triggerEvent('onFocus');
     };
+
+    var hide = function(){
+        // Remove classes
+        cm.removeClass(nodes['container'], 'active');
+        nodes['text'].blur();
+        /* *** EXECUTE API EVENTS *** */
+        that.triggerEvent('onBlur');
+    };
+
+    var scrollToItem = function(option){
+        nodes['menu']['content'].scrollTop = option['node'].offsetTop - nodes['menu']['content'].offsetTop;
+    };
+
+    /* *** HELPERS *** */
 
     var blockDocumentArrows = function(e){
         e = cm.getEvent(e);
@@ -396,7 +442,7 @@ Com['Select'] = function(o){
         }
     };
 
-    /* *** MAIN *** */
+    /* ******* MAIN ******* */
 
     that.get = function(){
         return active;
@@ -414,8 +460,8 @@ Com['Select'] = function(o){
                 });
                 /* *** EXECUTE API EVENTS *** */
                 if(execute){
-                    executeEvent('onSelect');
-                    executeEvent('onChange');
+                    that.triggerEvent('onSelect');
+                    that.triggerEvent('onChange');
                 }
             }else if(options[value]){
                 set(options[value], execute);
@@ -425,51 +471,40 @@ Com['Select'] = function(o){
     };
 
     that.selectAll = function(){
-        if(config['multiple']){
+        if(that.params['multiple']){
             cm.forEach(options, deselectMultiple);
             cm.forEach(options, setMultiple);
-            /* *** EXECUTE API EVENTS *** */
-            executeEvent('onSelect');
-            executeEvent('onChange');
+            that.triggerEvent('onSelect');
+            onChange();
         }
         return that;
     };
 
     that.deselectAll = function(){
-        if(config['multiple']){
+        if(that.params['multiple']){
             cm.forEach(options, deselectMultiple);
-            /* *** EXECUTE API EVENTS *** */
-            executeEvent('onSelect');
-            executeEvent('onChange');
-        }
-        return that;
-    };
-
-    that.addEvent = function(event, handler){
-        if(API[event] && typeof handler == 'function'){
-            API[event].push(handler);
-        }
-        return that;
-    };
-
-    that.removeEvent = function(event, handler){
-        if(API[event] && typeof handler == 'function'){
-            API[event] = API[event].filter(function(item){
-                return item != handler;
-            });
-        }
-        return that;
-    };
-
-    that.triggerEvent = function(event){
-        if(API[event]){
-            executeEvent(event);
+            that.triggerEvent('onSelect');
+            onChange();
         }
         return that;
     };
 
     that.addOption = function(value, text){
         renderOption(value, text);
+        return that;
+    };
+
+    that.addOptions = function(arr){
+        cm.forEach(arr, function(item){
+            renderOption(item['value'], item['text']);
+        });
+        return that;
+    };
+
+    that.editOption = function(value, text){
+        if(value && options[value]){
+            editOption(options[value], text);
+        }
         return that;
     };
 
@@ -480,9 +515,9 @@ Com['Select'] = function(o){
         return that;
     };
 
-    that.addOptions = function(arr){
-        cm.forEach(arr, function(item){
-            renderOption(item['value'], item['text']);
+    that.removeOptionsAll = function(){
+        cm.forEach(options, function(item){
+            removeOption(item);
         });
         return that;
     };
@@ -504,13 +539,6 @@ Com['Select'] = function(o){
         return optionsArr;
     };
 
-    that.removeOptionsAll = function(){
-        cm.forEach(options, function(item){
-            removeOption(item);
-        });
-        return that;
-    };
-
     that.getOptionsAll = that.getAllOptions = function(){
         var result = [];
         cm.forEach(optionsList, function(item){
@@ -526,39 +554,5 @@ Com['Select'] = function(o){
         return nodes[key] || nodes;
     };
 
-    that.addEvents = function(o){		// Deprecated
-        o && convertEvents(o);
-        return that;
-    };
-
     init();
-};
-
-Com['SelectCollector'] = function(node){
-    var selects, id, select;
-
-    var init = function(node){
-        if(!node){
-            render(document.body);
-        }else if(node.constructor == Array){
-            cm.forEach(node, render);
-        }else{
-            render(node);
-        }
-    };
-
-    var render = function(node){
-        selects = cm.clone((node.nodeType == 1 && node.tagName.toLowerCase() == 'select') ? [node] : node.getElementsByTagName('select'));
-        // Render datepickers
-        cm.forEach(selects, function(item){
-            if(!/^norender|false$/.test(item.getAttribute('data-select'))){
-                select = new Com.Select({'select' : item});
-                if(id = item.id){
-                    Com.Elements.Selects[id] = select;
-                }
-            }
-        });
-    };
-
-    init(node);
-};
+});
