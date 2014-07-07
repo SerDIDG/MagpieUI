@@ -1,5 +1,27 @@
 /* ******* FORUM ******* */
 
+.com-forum {
+    .com-togglebox {
+
+        > dt {
+            padding: 0 @ComGridlist-paddingInner;
+            background: @cm-colorLight-backgroundDisabled;
+        }
+
+        > dd {
+            background: @cm-colorLight-background;
+        }
+    }
+
+    .com-gridlist {
+        tr {
+            td, th {
+                border-top: 1px solid #ffffff;
+            }
+        }
+    }
+}
+
 .com-forum-cell-icon {
     width: 24px;
 }
@@ -14,11 +36,33 @@
 }
 
 .com-forum-cell-title {
+    * {
+        margin: 0;
+    }
+
+    h3 {
+        margin: 0 0 @cm-indentXXSmall;
+    }
+
     .title {
         font-weight: @cm-boldWeight;
     }
 
     .descr {
 
+    }
+}
+
+.com-forum-cell-last {
+    .title:extend(.cm-text-overflow) {
+        font-weight: @cm-boldWeight;
+    }
+
+    .author:extend(.cm-text-overflow) {
+
+    }
+
+    .date:extend(.cm-text-overflow) {
+        color: @cm-colorFontMedium;
     }
 }

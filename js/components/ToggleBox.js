@@ -1,235 +1,182 @@
-Com['ToggleBox'] = function(o){
-	var that = this,
-		config = cm.merge({
-            'node' : cm.Node('div'),
-			'button' : cm.Node('div'),
-			'block' : cm.Node('div'),
-			'time' : 500,
-			'useLangs' : false,             // If true - will be changes titles
-			'titleNode' : false,			// If 'false' - script uses DT tag element, else - put title's dom node
-            'events' : {},
-			'langs' : {
-				'showTitle' : 'Show',
-				'hideTitle' : 'Hide'
-			}
-		},o),
-        API = {
-            'onShowStart' : [],
-            'onShow' : [],
-            'onHideStart' : [],
-            'onHide' : []
-        },
-		anim,
-		isHide,
-        isProcess;
-		
-	var init = function(){
-        // Convert events to API events
-        convertEvents(config['events']);
-        that.addEvent('onShowStart', config['onShowStart']);
-        that.addEvent('onShow', config['onShow']);
-        that.addEvent('onHideStart', config['onHideStart']);
-        that.addEvent('onHide', config['onHide']);
-        // Add events
-        setMiscEvents();
-	};
-
-    var setMiscEvents = function(){
-        var isHideTemp;
-        anim = new cm.Animation(config['block']);
-        cm.addEvent(config['button'], 'click', function(){
-            isHideTemp = config['block'].offsetHeight === 0;
-            isHide = !(!isHideTemp && (!isProcess || isProcess == 'show'));
-
-            if(isHide){
-                show();
-            }else{
-                hide();
-            }
-        });
-    };
-	
-	var show = function(){
-		if(isHide){
-			isHide = false;
-            isProcess = 'show';
-            cm.getRealHeight(config['block']);
-            cm.replaceClass(config['node'], 'is-hide', 'is-show');
-			// Set title
-			if(config['useLangs']){
-				if(config['titleNode']){
-					config['titleNode'].innerHTML = config['langs']['hideTitle'];
-				}else{
-					config['button'].innerHTML = config['langs']['hideTitle'];
-				}
-			}
-			// Animate
-            config['block'].style.overflow = 'hidden';
-            if(!config['block'].style.opacity){
-                config['block'].style.opacity = 0;
-            }
-			anim.go({
-                'style' : {
-                    'height' : [cm.getRealHeight(config['block']), 'px'].join(''),
-                    'opacity' : 1
-                },
-                'anim' : 'smooth',
-                'duration' : config['time'],
-                'onStop' : function(){
-                    isProcess = false;
-                    config['block'].style.height = 'auto';
-                    config['block'].style.overflow = 'visible';
-                    // Show Event
-                    executeEvent('onShow');
-                }
-            });
-            // On Show Start Event
-            executeEvent('onShowStart');
-		}
-	};
-	
-	var hide = function(){
-		if(!isHide){
-			isHide = true;
-            isProcess = 'hide';
-            cm.getRealHeight(config['block']);
-            cm.replaceClass(config['node'], 'is-show', 'is-hide');
-			// Set title
-			if(config['useLangs']){
-				if(config['titleNode']){
-					config['titleNode'].innerHTML = config['langs']['showTitle'];
-				}else{
-					config['button'].innerHTML = config['langs']['showTitle'];
-				}
-			}
-			// Animate
-			config['block'].style.overflow = 'hidden';
-            if(!config['block'].style.opacity){
-                config['block'].style.opacity = 1;
-            }
-			anim.go({
-                'style' : {
-                    'height' : '0px',
-                    'opacity' : 0
-                },
-                'anim' : 'smooth',
-                'duration' : config['time'],
-                'onStop' : function(){
-                    isProcess = false;
-                    // Hide Event
-                    executeEvent('onHide');
-                }
-            });
-            // On Hide Start Event
-            executeEvent('onHideStart');
-		}
-	};
-
-    var executeEvent = function(event){
-        var handler = function(){
-            cm.forEach(API[event], function(item){
-                item(that);
-            });
-        };
-
-        switch(event){
-            default:
-                handler();
-                break;
+cm.define('Com.ToggleBox', {
+    'modules' : [
+        'Events',
+        'Langs',
+        'DataConfig',
+        'DataNodes',
+        'Storage'
+    ],
+    'events' : [
+        'onRender',
+        'onShowStart',
+        'onShow',
+        'onHideStart',
+        'onHide'
+    ],
+    'params' : {
+        'node' : cm.Node('div'),
+        'duration' : 500,
+        'toggleTitle' : false,          // Change title on toggle
+        'remember' : false,             // Remember toggle state
+        'langs' : {
+            'show' : 'Show',
+            'hide' : 'Hide'
         }
+    }
+},
+function(params){
+    var that = this,
+        anim;
+
+    that.nodes = {
+        'button': cm.Node('div'),
+        'target': cm.Node('div'),
+        'title': cm.Node('div')
     };
 
-    var convertEvents = function(o){
-        cm.forEach(o, function(item, key){
-            if(API[key] && typeof item == 'function'){
-                API[key].push(item);
-            }
-        });
+    that.isCollapsed = false;
+    that.isProcess = false;
+
+    var init = function(){
+        that.setParams(params);
+        that.convertEvents(that.params['events']);
+        that.getDataNodes(that.params['node']);
+        that.getDataConfig(that.params['node']);
+        render();
     };
 
-    /* *** MAIN *** */
-
-    that.show = function(){
-        show();
-        return that;
-    };
-
-    that.hide = function(){
-        hide();
-        return that;
-    };
-
-    that.addEvent = function(event, handler){
-        if(API[event] && typeof handler == 'function'){
-            API[event].push(handler);
+    var render = function(){
+        anim = new cm.Animation(that.nodes['target']);
+        cm.addEvent(that.nodes['button'], 'click', that.toggle);
+        // Check toggle class
+        that.isCollapsed = cm.isClass(that.params['node'], 'is-hide') || !cm.isClass(that.params['node'], 'is-show');
+        // Check storage
+        if(that.params['remember']){
+            that.isCollapsed = that.storageRead('isCollapsed');
         }
-        return that;
-    };
-
-    that.removeEvent = function(event, handler){
-        if(API[event] && typeof handler == 'function'){
-            API[event] = API[event].filter(function(item){
-                return item != handler;
-            });
-        }
-        return that;
-    };
-	
-	init();
-};
-
-Com['ToggleBoxWidget'] = function(o){
-    var config = cm.merge({
-			'node' : cm.Node('div')
-		}, o),
-        component = false;
-
-    config['button'] = config['node'].getElementsByTagName('dt')[0] || cm.Node('dt');
-    config['block'] = config['node'].getElementsByTagName('dd')[0] || cm.Node('dd');
-    config['titleNode'] = cm.getByAttr('data-togglebox-titlenode', 'true', config['node'])[0];
-    component = new Com.ToggleBox(config);
-    return component;
-};
-
-Com['ToggleBoxCollector'] = function(node){
-    var toggleboxes,
-        togglebox,
-        langShow,
-        langHide;
-
-    var init = function(node){
-        if(!node){
-            render(document.body);
-        }else if(node.constructor == Array){
-            cm.forEach(node, render);
+        // Trigger events
+        if(that.isCollapsed){
+            that.collapse(true);
         }else{
-            render(node);
+            that.expand(true);
+        }
+
+        var isHideTemp;
+        /*
+        cm.addEvent(that.nodes['button'], 'click', function(){
+            isHideTemp = that.nodes['target'].offsetHeight === 0;
+            that.isHide = !(!isHideTemp && (!that.isProcess || that.isProcess == 'show'));
+
+            if(that.isHide){
+                that.show();
+            }else{
+                that.hide();
+            }
+        });
+        */
+        that.triggerEvent('onRender', {});
+    };
+
+    var expandEnd = function(){
+        that.isProcess = false;
+        that.nodes['target'].style.opacity = 1;
+        that.nodes['target'].style.height = 'auto';
+        that.nodes['target'].style.overflow = 'visible';
+        that.triggerEvent('onShow');
+    };
+
+    var collapseEnd = function(){
+        that.isProcess = false;
+        that.nodes['target'].style.opacity = 0;
+        that.nodes['target'].style.height = 0;
+        that.triggerEvent('onHide');
+    };
+
+    /* ******* MAIN ******* */
+
+    that.toggle = function(){
+        if(that.isCollapsed){
+            that.expand();
+        }else{
+            that.collapse();
         }
     };
-	
-	var render = function(node){
-        toggleboxes = cm.clone((node.getAttribute('data-togglebox') == 'true') ? [node] : cm.getByAttr('data-togglebox', 'true', node));
-        cm.forEach(toggleboxes, function(item){
-			langShow = item.getAttribute('data-togglebox-show');
-			langHide = item.getAttribute('data-togglebox-hide');
-		    // Render toggleboxes
-			new Com.ToggleBox({
-                'node' : item,
-				'button' : item.getElementsByTagName('dt')[0],
-				'block' : item.getElementsByTagName('dd')[0],
-				'titleNode' : cm.getByAttr('data-togglebox-titlenode', 'true', item)[0],
-				'useLangs' : langShow && langHide,
-				'langs' : {
-					'showTitle' : langShow,
-					'hideTitle' : langHide
-				}
-			});
-		});
-	};
-	
-	init(node);
-};
 
+    that.expand = function(isImmediately){
+        if(isImmediately || that.isCollapsed){
+            that.isCollapsed = false;
+            that.isProcess = 'show';
+            that.triggerEvent('onShowStart');
+            // Write storage
+            if(that.params['remember']){
+                that.storageWrite('isCollapsed', false);
+            }
+            cm.replaceClass(that.params['node'], 'is-hide', 'is-show');
+            // Set title
+            if(that.params['toggleTitle']){
+                that.nodes['title'].innerHTML = that.lang('hide');
+            }
+            // Animate
+            if(isImmediately){
+                expandEnd();
+            }
+            else{
+                that.nodes['target'].style.overflow = 'hidden';
+                if(!that.nodes['target'].style.opacity){
+                    that.nodes['target'].style.opacity = 0;
+                }
+                anim.go({
+                    'style' : {
+                        'height' : [cm.getRealHeight(that.nodes['target']), 'px'].join(''),
+                        'opacity' : 1
+                    },
+                    'anim' : 'smooth',
+                    'duration' : that.params['duration'],
+                    'onStop' : expandEnd
+                });
+            }
+        }
+    };
+
+    that.collapse = function(isImmediately){
+        if(isImmediately || !that.isHide){
+            that.isCollapsed = true;
+            that.isProcess = 'hide';
+            that.triggerEvent('onHideStart');
+            // Write storage
+            if(that.params['remember']){
+                that.storageWrite('isCollapsed', true);
+            }
+            cm.replaceClass(that.params['node'], 'is-show', 'is-hide');
+            // Set title
+            if(that.params['toggleTitle']){
+                that.nodes['title'].innerHTML = that.lang('show');
+            }
+            // Animate
+            that.nodes['target'].style.overflow = 'hidden';
+            if(!that.nodes['target'].style.opacity){
+                that.nodes['target'].style.opacity = 1;
+            }
+            if(isImmediately){
+                collapseEnd();
+            }else{
+                anim.go({
+                    'style' : {
+                        'height' : '0px',
+                        'opacity' : 0
+                    },
+                    'anim' : 'smooth',
+                    'duration' : that.params['duration'],
+                    'onStop' : collapseEnd
+                });
+            }
+        }
+    };
+
+    init();
+});
+
+/*
 Com['ToggleBoxAccordion'] = function(node){
 	var boxes = [],
         toggleboxes,
@@ -278,6 +225,7 @@ Com['ToggleBoxAccordion'] = function(node){
 	
 	init(node);
 };
+*/
 
 Com['ToggleBoxGridlist'] = function(o){
 	var config = cm.merge({

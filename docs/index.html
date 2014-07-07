@@ -28,10 +28,8 @@
                         'node' : node
                     });
                 })
-                .add('togglebox-widget', function(node){
-                    new Com.ToggleBoxWidget({
-                        'node' : node
-                    });
+                .add('togglebox', function(node){
+                    new Com.ToggleBox({'node' : node});
                 })
                 .construct();
         });
@@ -48,12 +46,12 @@
                 FioraUI Docs
             </div>
             <div class="descr">
-                <dl class="com-togglebox is-show" data-element="togglebox-widget">
-                    <dt>
+                <dl class="com-togglebox is-show" data-element="togglebox">
+                    <dt data-node="ComToggleBox.button">
                         <span class="icon small arrow-right"></span>
-                        Common Functions
+                        Functions
                     </dt>
-                    <dd>
+                    <dd data-node="ComToggleBox.target">
                         <div class="cm-items-list auto">
                             <ul>
                                 <li>
@@ -97,12 +95,12 @@
                     </dd>
                 </dl>
 
-                <dl class="com-togglebox is-hide" data-element="togglebox-widget">
-                    <dt>
+                <dl class="com-togglebox is-hide" data-element="togglebox">
+                    <dt data-node="ComToggleBox.button">
                         <span class="icon small arrow-right"></span>
                         Elements
                     </dt>
-                    <dd>
+                    <dd data-node="ComToggleBox.target">
                         <div class="cm-items-list auto">
                             <ul>
                                 <li>
@@ -162,12 +160,12 @@
                     </dd>
                 </dl>
 
-                <dl class="com-togglebox is-hide" data-element="togglebox-widget">
-                    <dt>
+                <dl class="com-togglebox is-hide" data-element="togglebox">
+                    <dt data-node="ComToggleBox.button">
                         <span class="icon small arrow-right"></span>
                         Components
                     </dt>
-                    <dd>
+                    <dd data-node="ComToggleBox.target">
                         <div class="cm-items-list auto">
                             <ul>
                                 <li>
@@ -271,12 +269,12 @@
                     </dd>
                 </dl>
 
-                <dl class="com-togglebox is-hide" data-element="togglebox-widget">
-                    <dt>
+                <dl class="com-togglebox is-hide" data-element="togglebox">
+                    <dt data-node="ComToggleBox.button">
                         <span class="icon small arrow-right"></span>
                         Stuff
                     </dt>
-                    <dd>
+                    <dd data-node="ComToggleBox.target">
                         <div class="cm-items-list auto">
                             <ul>
                                 <li>

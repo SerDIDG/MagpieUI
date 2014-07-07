@@ -3,19 +3,27 @@
 .com-togglebox {
     margin: 0 0 @cm-indentMedium 0;
 
-    > dt:extend(.cm-font-title) {
+    > dt {
         position: relative;
         cursor: pointer;
+        .cm-font-title;
         .cm-user-select(none);
         .cm-transition(color 0.3s ease-in-out);
+        line-height: @ComToggleBox-size;
 
-        .icon {
-            position: absolute;
-            top: 12px;
-            right: 0;
-            -webkit-transition: -webkit-transform 0.3s ease-in-out;
-                -ms-transition:     -ms-transform 0.3s ease-in-out;
-                    transition:         transform 0.3s ease-in-out;
+        .icon,
+        .icon:hover {
+            height: @ComToggleBox-size;
+            float: right;
+            margin: 0 0 0 @cm-indentXSmall;
+            background-position: 100% 50%;
+            -webkit-transition: -webkit-transform @cm-transitionDuration ease-in-out;
+                -ms-transition:     -ms-transform @cm-transitionDuration ease-in-out;
+                    transition:         transform @cm-transitionDuration ease-in-out;
+        }
+
+        .title:extend(.cm-text-overflow) {
+
         }
 
         &:hover {
@@ -28,10 +36,31 @@
         opacity: 1;
     }
 
+    &.has-hover-icon {
+        > dt {
+            cursor: default;
+        }
+    }
+
     &.is-medium {
-        > dt:extend(.cm-font-title-medium) {
+        > dt {
+            .cm-font-title-medium;
+            line-height: @ComToggleBox-sizeMedium;
+
             .icon {
-                top: 4px;
+                height: @ComToggleBox-sizeMedium;
+            }
+        }
+    }
+
+    &.is-ui {
+        > dt {
+            .cm-font-ui;
+            font-weight: @cm-boldWeight;
+            line-height: @ComToggleBox-sizeUI;
+
+            .icon {
+                height: @ComToggleBox-sizeUI;
             }
         }
     }

@@ -24,17 +24,15 @@
                 .add('tabset', function(node){
                     new Com.Tabset({'tabset' : node});
                 })
-                .add('togglebox-widget', function(node){
-                    new Com.ToggleBoxWidget({
-                        'node' : node
-                    });
+                .add('togglebox', function(node){
+                    new Com.ToggleBox({'node' : node});
                 })
                 .construct();
         });
     </script>
 </head>
 
-<body>
+<body class="cm-scroll-y">
 
 <div class="cm-block-padding">
     <h1>Forum Layout</h1>
@@ -43,12 +41,14 @@
         <li data-tabset-id="main" data-tabset-title="Main">
 
             <div class="com-forum com-forum-main">
-                <dl class="com-togglebox is-medium is-show" data-element="togglebox-widget">
+                <dl class="com-togglebox has-hover-icon is-ui is-show" data-element="togglebox" data-config='{"name" : "app-forum-1", "remember" : true}'>
                     <dt>
-                        <span class="icon small arrow-right"></span>
-                        <a>Countries</a>
+                        <span class="icon small linked arrow-right" data-node="ComToggleBox.button"></span>
+                        <div class="title">
+                            <a>Countries</a>
+                        </div>
                     </dt>
-                    <dd>
+                    <dd data-node="ComToggleBox.target">
                         <div class="com-gridlist bottom">
                             <table>
                                 <thead>
@@ -71,7 +71,11 @@
                                         </td>
                                         <td class="com-forum-cell-counter">1 234</td>
                                         <td class="com-forum-cell-counter">5 678</td>
-                                        <td class="com-forum-cell-last"></td>
+                                        <td class="com-forum-cell-last">
+                                            <div class="title"><a>Why i love my beautiful country of all world!</a></div>
+                                            <div class="author">By <a>User Userberg</a></div>
+                                            <div class="date">07/07/2014</div>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td class="com-forum-cell-icon"></td>
@@ -83,7 +87,11 @@
                                         </td>
                                         <td class="com-forum-cell-counter">9 000</td>
                                         <td class="com-forum-cell-counter">100 500</td>
-                                        <td class="com-forum-cell-last"></td>
+                                        <td class="com-forum-cell-last">
+                                            <div class="title"><a>Why i love my beautiful country of all world!</a></div>
+                                            <div class="author">By <a>User Userberg</a></div>
+                                            <div class="date">07/07/2014</div>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -91,12 +99,14 @@
                     </dd>
                 </dl>
 
-                <dl class="com-togglebox is-medium is-show" data-element="togglebox-widget">
+                <dl class="com-togglebox has-hover-icon is-ui is-show" data-element="togglebox" data-config='{"name" : "app-forum-2", "remember" : true}'>
                     <dt>
-                        <span class="icon small arrow-right"></span>
-                        <a>Cities</a>
+                        <span class="icon small linked arrow-right" data-node="ComToggleBox.button"></span>
+                        <div class="title">
+                            <a>Cities</a>
+                        </div>
                     </dt>
-                    <dd>
+                    <dd data-node="ComToggleBox.target">
                         <div class="com-gridlist bottom">
                             <table>
                                 <thead>
@@ -119,7 +129,11 @@
                                         </td>
                                         <td class="com-forum-cell-counter">1 234</td>
                                         <td class="com-forum-cell-counter">5 678</td>
-                                        <td class="com-forum-cell-last"></td>
+                                        <td class="com-forum-cell-last">
+                                            <div class="title"><a>Why i love my beautiful country of all world!</a></div>
+                                            <div class="author">By <a>User Userberg</a></div>
+                                            <div class="date">07/07/2014</div>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td class="com-forum-cell-icon"></td>
@@ -131,7 +145,11 @@
                                         </td>
                                         <td class="com-forum-cell-counter">9 000</td>
                                         <td class="com-forum-cell-counter">100 500</td>
-                                        <td class="com-forum-cell-last"></td>
+                                        <td class="com-forum-cell-last">
+                                            <div class="title"><a>Why i love my beautiful country of all world!</a></div>
+                                            <div class="author">By <a>User Userberg</a></div>
+                                            <div class="date">07/07/2014</div>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
