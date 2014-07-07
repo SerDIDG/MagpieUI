@@ -1326,7 +1326,7 @@ cm.parseDate = function(str, format){
                 date.setFullYear(value);
             },
             'mm' : function(value){
-                date.setMonth(value);
+                date.setMonth(value - 1);
             },
             'dd' : function(value){
                 date.setDate(value);
