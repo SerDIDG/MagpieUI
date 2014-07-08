@@ -358,7 +358,7 @@ function(params){
             }
         }
         if(execute){
-            that.triggerEvent('onSelect');
+            that.triggerEvent('onSelect', active);
             onChange();
         }
     };
@@ -400,7 +400,7 @@ function(params){
 
     var onChange = function(){
         if(that.params['multiple'] || active != oldActive){
-            that.triggerEvent('onChange');
+            that.triggerEvent('onChange', active);
         }
     };
 
@@ -418,7 +418,7 @@ function(params){
                 scrollToItem(options[active]);
             }
         }
-        that.triggerEvent('onFocus');
+        that.triggerEvent('onFocus', active);
     };
 
     var hide = function(){
@@ -426,7 +426,7 @@ function(params){
         cm.removeClass(nodes['container'], 'active');
         nodes['text'].blur();
         /* *** EXECUTE API EVENTS *** */
-        that.triggerEvent('onBlur');
+        that.triggerEvent('onBlur', active);
     };
 
     var scrollToItem = function(option){
@@ -460,8 +460,8 @@ function(params){
                 });
                 /* *** EXECUTE API EVENTS *** */
                 if(execute){
-                    that.triggerEvent('onSelect');
-                    that.triggerEvent('onChange');
+                    that.triggerEvent('onSelect', active);
+                    that.triggerEvent('onChange', active);
                 }
             }else if(options[value]){
                 set(options[value], execute);
@@ -474,7 +474,7 @@ function(params){
         if(that.params['multiple']){
             cm.forEach(options, deselectMultiple);
             cm.forEach(options, setMultiple);
-            that.triggerEvent('onSelect');
+            that.triggerEvent('onSelect', active);
             onChange();
         }
         return that;
@@ -483,7 +483,7 @@ function(params){
     that.deselectAll = function(){
         if(that.params['multiple']){
             cm.forEach(options, deselectMultiple);
-            that.triggerEvent('onSelect');
+            that.triggerEvent('onSelect', active);
             onChange();
         }
         return that;
