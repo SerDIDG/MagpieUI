@@ -1023,17 +1023,6 @@ cm.getFDO = function(o, chbx){
             o.getElementsByTagName('select')
         ];
 
-    var getMultiplySelect = function(o){
-        var opts = o.getElementsByTagName('option');
-        var val = [];
-        for(var i in opts){
-            if(opts[i].selected){
-                val.push(opts[i].value);
-            }
-        }
-        return val;
-    };
-
     var setValue = function(name, value){
         if(/\[.*\]$/.test(name)){
             var indexes = [];
@@ -1050,7 +1039,7 @@ cm.getFDO = function(o, chbx){
                     if(obj && obj instanceof Array){
                         obj.push(next ? arguments.callee(i + 1, obj) : value);
                     }else{
-                        obj = next ? [arguments.callee(i + 1, obj)] : value;//obj = [next? arguments.callee(i+1, obj) : value]
+                        obj = [next? arguments.callee(i+1, obj) : value];
                     }
                 }else{
                     if(!obj || !(obj instanceof Object)){
@@ -1099,7 +1088,16 @@ cm.getFDO = function(o, chbx){
 
                 case 'textarea':
                 case 'select':
-                    setValue(elements[d][i].name, (elements[d][i].multiple) ? getMultiplySelect(elements[d][i]) : elements[d][i].value);
+                    if(elements[d][i].multiple){
+                        var opts = elements[d][i].getElementsByTagName('option');
+                        for(var j in opts){
+                            if(opts[j].selected){
+                                setValue(elements[d][i].name, opts[j].value);
+                            }
+                        }
+                    }else{
+                        setValue(elements[d][i].name, elements[d][i].value);
+                    }
                     break;
             }
         }
