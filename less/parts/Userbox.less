@@ -12,4 +12,32 @@
     .date:extend(.cm-text-overflow) {
         color: @cm-colorFontMedium;
     }
+
+    .image {
+        .no-image {
+            width: 80px;
+            height: 80px;
+            background: url('@{CmPath-image}/parts/no-image-80.png');
+        }
+
+        img {
+            width: 80px;
+            height: 80px;
+            display: block;
+        }
+    }
+
+    &.is-centered {
+        text-align: center;
+
+        .image {
+            float: none;
+            margin: 0 0 @cm-indentXSmall;
+
+            .no-image,
+            img {
+                margin: 0 auto;
+            }
+        }
+    }
 }
