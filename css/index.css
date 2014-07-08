@@ -1567,6 +1567,7 @@ select[multiple] {
 }
 /* *** FORM ICONS *** */
 .cm-form-icons {
+  min-height: 28px;
   position: relative;
 }
 .cm-form-icons.count-1.x-small {
@@ -1755,6 +1756,18 @@ select[multiple] {
   text-overflow: ellipsis;
   word-break: normal;
   line-height: 28px;
+}
+/* *** MULTI FIELD *** */
+.cm-multifield > ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cm-multifield > ul > li {
+  margin: 8px 0 0 0;
+}
+.cm-multifield > ul > li:first-child {
+  margin: 0;
 }
 /* ******* ADAPTIVE ******* */
 @media only screen and (max-width: 640px) {

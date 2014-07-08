@@ -650,6 +650,7 @@
 /* *** FORM ICONS *** */
 
 .cm-form-icons {
+    min-height: @CmForm-fieldHeight;
     position: relative;
 
     .loop(@counter) when (@counter > 0) {
@@ -788,6 +789,24 @@
         text-overflow: ellipsis;
         word-break: normal;
         line-height: @CmForm-fieldHeight;
+    }
+}
+
+/* *** MULTI FIELD *** */
+
+.cm-multifield {
+    > ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+
+        > li {
+            margin: @CmForm-fieldInnerIndent 0 0 0;
+
+            &:first-child {
+                margin: 0;
+            }
+        }
     }
 }
 
