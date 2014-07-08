@@ -1,38 +1,78 @@
 /* ******* FORUM ******* */
 
-.com-forum {
+.com-forum:extend(.cm-font-base) {
     .com-togglebox {
 
         > dt {
             padding: 0 @ComGridlist-paddingInner;
             background: @cm-colorLight-backgroundDisabled;
+            border-radius: @cm-borderRadius;
         }
 
         > dd {
-            background: @cm-colorLight-background;
         }
     }
 
+    .com-forum-empty,
     .com-gridlist {
+        margin: 1px 0 0 0;
+        background: @cm-colorLight-background;
+        border-radius: @cm-borderRadius;
+
         tr {
-            td, th {
-                border-top: 1px solid #ffffff;
+            td {
+                padding: @cm-indentXXSmall;
+                border-top: @ComForum-cellBorder;
+            }
+
+            &:first-child {
+                td {
+                    border: none;
+                }
             }
         }
     }
 }
 
+.com-forum-empty:extend(.cm-font-ui-cursive) {
+    padding: @cm-indentXSmall;
+    text-align: center;
+    color: @cm-colorFontMedium;
+}
+
 .com-forum-cell-icon {
-    width: 24px;
+    width: 32px;
+
+    .icon {
+        display: block;
+
+        &.default {
+            .icon.large;
+            .icon.large.message;
+        }
+
+        &.default-page {
+            .icon.large;
+            .icon.large.page;
+        }
+    }
 }
 
 .com-forum-cell-counter {
-    width: 100px;
-    vertical-align: middle;
-}
+    width: 120px;
 
-.com-forum-cell-last {
-    width: 20%;
+    .line:extend(.clear all) {
+        text-align: right;
+    }
+
+    .title {
+        float: right;
+        margin: 0 0 0 @cm-indentXXXSmall;
+    }
+
+    .descr {
+        float: right;
+    }
 }
 
 .com-forum-cell-title {
@@ -54,15 +94,33 @@
 }
 
 .com-forum-cell-last {
-    .title:extend(.cm-text-overflow) {
-        font-weight: @cm-boldWeight;
+    width: 20%;
+}
+
+/* *** ADAPTIVE *** */
+
+@media only screen and (max-width : @ComForum-adaptiveFrom) {
+
+    html.is-adaptive {
+        .com-gridlist {
+            tr {
+                td {
+                    width: auto;
+                    display: block;
+                    border: none;
+
+                    &:first-child {
+                        border-top: @ComForum-cellBorder;
+                    }
+                }
+
+                &:first-child {
+                    td {
+                        border: none;
+                    }
+                }
+            }
+        }
     }
 
-    .author:extend(.cm-text-overflow) {
-
-    }
-
-    .date:extend(.cm-text-overflow) {
-        color: @cm-colorFontMedium;
-    }
 }

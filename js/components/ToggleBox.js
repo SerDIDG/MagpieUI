@@ -60,20 +60,6 @@ function(params){
         }else{
             that.expand(true);
         }
-
-        var isHideTemp;
-        /*
-        cm.addEvent(that.nodes['button'], 'click', function(){
-            isHideTemp = that.nodes['target'].offsetHeight === 0;
-            that.isHide = !(!isHideTemp && (!that.isProcess || that.isProcess == 'show'));
-
-            if(that.isHide){
-                that.show();
-            }else{
-                that.hide();
-            }
-        });
-        */
         that.triggerEvent('onRender', {});
     };
 
@@ -228,82 +214,82 @@ Com['ToggleBoxAccordion'] = function(node){
 */
 
 Com['ToggleBoxGridlist'] = function(o){
-	var config = cm.merge({
-			'node' : cm.Node('div'),
-			'useLangs' : false,
-			'langs' : {
-				'showTitle' : 'Show',
-				'hideTitle' : 'Hide'
-			}
-		}, o),
-		buttons = [],
-		boxes = {};
-		
-	var init = function(){
-		// Get buttons
-		buttons = cm.getByAttr('data-togglebox-button', 'true', config['node']);
-		// Get blocks
-		for(var i = 0, l = buttons.length; i < l; i++){
-			renderItem(buttons[i]);
-		}
-	};
-	
-	var renderItem = function(button){
-		var id = button.getAttribute('data-gridlist-for'),
-			blocks = cm.getByAttr('data-gridlist-id', id, config['node']),
-			subs = cm.getByAttr('data-gridlist-parent-id', id, config['node']);
-		// Add event
-		cm.addEvent(button, 'click', function(){
-			if(boxes[id]['isHide']){
-				show(id);
-			}else{
-				hide(id);
-			}
-		});
-		// Collect
-		boxes[id] = {
-			'id' : id,
-			'item' : cm.getByAttr('data-gridlist-item', id, config['node'])[0],
-			'button' : button,
-			'blocks' : blocks,
-			'subs' : subs,
-			'isHide' : cm.isClass(blocks[0], 'display-none')
-		};
-	};
-	
-	var show = function(id){
-		boxes[id]['isHide'] = false;
-		for(var i = 0, l = boxes[id]['blocks'].length; i < l; i++){
-			cm.removeClass(boxes[id]['blocks'][i], 'display-none');
-			cm.addClass(boxes[id]['blocks'][i], 'is-show');
-		}
-		cm.addClass(boxes[id]['item'], 'is-show');
-		if(config['useLangs']){
-			boxes[id]['button'].innerHTML = config['langs']['hideTitle'];
-		}
-	};
-	
-	var hide = function(id){
-		boxes[id]['isHide'] = true;
-		if(boxes[id]['subs']){
+    var config = cm.merge({
+            'node' : cm.Node('div'),
+            'useLangs' : false,
+            'langs' : {
+                'showTitle' : 'Show',
+                'hideTitle' : 'Hide'
+            }
+        }, o),
+        buttons = [],
+        boxes = {};
+
+    var init = function(){
+        // Get buttons
+        buttons = cm.getByAttr('data-togglebox-button', 'true', config['node']);
+        // Get blocks
+        for(var i = 0, l = buttons.length; i < l; i++){
+            renderItem(buttons[i]);
+        }
+    };
+
+    var renderItem = function(button){
+        var id = button.getAttribute('data-gridlist-for'),
+            blocks = cm.getByAttr('data-gridlist-id', id, config['node']),
+            subs = cm.getByAttr('data-gridlist-parent-id', id, config['node']);
+        // Add event
+        cm.addEvent(button, 'click', function(){
+            if(boxes[id]['isHide']){
+                show(id);
+            }else{
+                hide(id);
+            }
+        });
+        // Collect
+        boxes[id] = {
+            'id' : id,
+            'item' : cm.getByAttr('data-gridlist-item', id, config['node'])[0],
+            'button' : button,
+            'blocks' : blocks,
+            'subs' : subs,
+            'isHide' : cm.isClass(blocks[0], 'display-none')
+        };
+    };
+
+    var show = function(id){
+        boxes[id]['isHide'] = false;
+        for(var i = 0, l = boxes[id]['blocks'].length; i < l; i++){
+            cm.removeClass(boxes[id]['blocks'][i], 'display-none');
+            cm.addClass(boxes[id]['blocks'][i], 'is-show');
+        }
+        cm.addClass(boxes[id]['item'], 'is-show');
+        if(config['useLangs']){
+            boxes[id]['button'].innerHTML = config['langs']['hideTitle'];
+        }
+    };
+
+    var hide = function(id){
+        boxes[id]['isHide'] = true;
+        if(boxes[id]['subs']){
             cm.forEach(boxes[id]['subs'], function(item){
                 var subId = item.getAttribute('data-gridlist-id');
                 if(subId != id){
                     hide(subId);
                 }
             });
-		}
+        }
         cm.forEach(boxes[id]['blocks'], function(item){
             cm.addClass(item, 'display-none');
             cm.removeClass(item, 'is-show');
         });
-		cm.removeClass(boxes[id]['item'], 'is-show');
-		if(config['useLangs']){
-			boxes[id]['button'].innerHTML = config['langs']['showTitle'];
-		}
-	};
-	
-	init();
+        cm.removeClass(boxes[id]['item'], 'is-show');
+        if(config['useLangs']){
+            boxes[id]['button'].innerHTML = config['langs']['showTitle'];
+        }
+    };
+
+    init();
 };
 
 

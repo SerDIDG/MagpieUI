@@ -11,19 +11,22 @@
         .cm-transition(color 0.3s ease-in-out);
         line-height: @ComToggleBox-size;
 
-        .icon,
-        .icon:hover {
+        .icon {
             height: @ComToggleBox-size;
             float: right;
             margin: 0 0 0 @cm-indentXSmall;
             background-position: 100% 50%;
-            -webkit-transition: -webkit-transform @cm-transitionDuration ease-in-out;
-                -ms-transition:     -ms-transform @cm-transitionDuration ease-in-out;
-                    transition:         transform @cm-transitionDuration ease-in-out;
+
+            &.default {
+                .icon.small.arrow-right;
+                width: @cm-Small;
+                -webkit-transition: -webkit-transform @cm-transitionDuration ease-in-out;
+                    -ms-transition:     -ms-transform @cm-transitionDuration ease-in-out;
+                        transition:         transform @cm-transitionDuration ease-in-out;
+            }
         }
 
         .title:extend(.cm-text-overflow) {
-
         }
 
         &:hover {
@@ -76,9 +79,11 @@
     &.is-show {
         > dt {
             .icon {
-                -webkit-transform: rotate(90deg);
-                    -ms-transform: rotate(90deg);
-                        transform: rotate(90deg);
+                &.default {
+                    -webkit-transform: rotate(90deg);
+                        -ms-transform: rotate(90deg);
+                            transform: rotate(90deg);
+                }
             }
         }
     }
