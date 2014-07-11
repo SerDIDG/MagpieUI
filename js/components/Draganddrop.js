@@ -4,6 +4,8 @@ Com['Draganddrop'] = function(o){
             'container' : cm.Node('div'),
             'chassisTag' : 'div',
             'draggableContainer' : document.body,
+            'scrollNode' : document.body,
+            'scrollSpeed' : 1,                          // ms per 1px
             'renderTemporaryAria' : false,
             'useCSSAnimation' : false,
             'useGracefulDegradation' : true,
@@ -21,13 +23,15 @@ Com['Draganddrop'] = function(o){
             'onReplace' : []
         },
         nodes = {},
+        anims = {},
         areas = [],
         areasList = [],
         draggableList = [],
         filteredAvailableAreas = [],
         checkInt,
+        pageSize,
+        isScrollProccess = false,
         isGracefulDegradation = false,
-        isHighlightedRemoveZones = false,
         isHighlightedAreas = false,
 
         current,
@@ -46,6 +50,8 @@ Com['Draganddrop'] = function(o){
             if(config['useGracefulDegradation'] && ((cm.is('IE') && cm.isVersion() < 9) || cm.isMobile())){
                 isGracefulDegradation = true;
             }
+            // Init misc
+            anims['scroll'] = new cm.Animation(config['scrollNode']);
             // Render temporary area
             if(config['renderTemporaryAria']){
                 nodes['temporaryArea'] = cm.Node('div');
@@ -170,6 +176,7 @@ Com['Draganddrop'] = function(o){
                 return;
             }
         }
+        pageSize = cm.getPageSize();
         // API onDragStart Event
         executeEvent('onDragStart', {
             'item' : draggable,
@@ -285,6 +292,14 @@ Com['Draganddrop'] = function(o){
         with(current['node'].style){
             top = [posY, 'px'].join('');
             left = [posX, 'px'].join('');
+        }
+        // Scroll node
+        if(posY + current['dimensions']['height'] > pageSize['winHeight']){
+            toggleScroll(1);
+        }else if(posY < 0){
+            toggleScroll(-1);
+        }else{
+            toggleScroll(0);
         }
         // Find above area
         cm.forEach(filteredAvailableAreas, function(area){
@@ -702,6 +717,31 @@ Com['Draganddrop'] = function(o){
                     cm.addClass(area['node'], 'is-highlight');
                 });
             }
+        }
+    };
+
+    /* *** HELPERS *** */
+
+    var toggleScroll = function(speed){
+        var scrollRemaining,
+            duration;
+
+        if(speed == 0){
+            isScrollProccess = false;
+            anims['scroll'].stop();
+        }else if(speed < 0 && !isScrollProccess){
+            isScrollProccess = true;
+            duration = config['scrollNode'].scrollTop * config['scrollSpeed'];
+            anims['scroll'].go({'style' : {'scrollTop' : 0}, 'duration' : duration, 'onStop' : function(){
+                isScrollProccess = false;
+            }});
+        }else if(speed > 0 && !isScrollProccess){
+            isScrollProccess = true;
+            scrollRemaining = config['scrollNode'].scrollHeight - pageSize['winHeight'];
+            duration = scrollRemaining * config['scrollSpeed'];
+            anims['scroll'].go({'style' : {'scrollTop' : scrollRemaining}, 'duration' : duration, 'onStop' : function(){
+                isScrollProccess = false;
+            }});
         }
     };
 
