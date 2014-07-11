@@ -1127,11 +1127,14 @@ cm.clearForm = function(o){
 };
 
 cm.setSelect = function(o, value){
-    var options = o.getElementsByTagName('option');
-    for(var k = 0, ln = options.length; k < ln; k++){
-        options[k].selected = (typeof(value) == 'object' ? cm.inArray(options[k++].value, value) : options[k++].value == value);
+    if(!o || !cm.isNode(o)){
+        return null;
     }
-    return true;
+    var options = o.getElementsByTagName('option');
+    cm.forEach(options, function(node){
+        node.selected = (typeof value == 'object'? cm.inArray(node.value, value) : node.value == value);
+    });
+    return o;
 };
 
 cm.toggleRadio = function(name, value, node){
@@ -2013,7 +2016,7 @@ cm.ajax = function(o){
         config['type'] = config['type'].toLocaleLowerCase();
         responceType =  /text|json/.test(config['type']) ? 'responseText' : 'responseXML';
         config['method'] = config['method'].toLocaleLowerCase();
-        config['url'] = config['method'] == 'post' ? config['url'] : config['url'] + config['params']
+        config['url'] = config['method'] == 'post' ? config['url'] : [config['url'], config['params']].join('?');
     };
 
     var send = function(){
