@@ -2016,7 +2016,7 @@ cm.ajax = function(o){
         config['type'] = config['type'].toLocaleLowerCase();
         responceType =  /text|json/.test(config['type']) ? 'responseText' : 'responseXML';
         config['method'] = config['method'].toLocaleLowerCase();
-        config['url'] = config['method'] == 'post' ? config['url'] : [config['url'], config['params']].join('?');
+        config['url'] = config['method'] == 'post' ? config['url'] : [config['url'], config['params']].join('');
     };
 
     var send = function(){
