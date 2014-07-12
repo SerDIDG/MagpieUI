@@ -272,7 +272,7 @@ Com['Gridlist'] = function(o){
 
                 case 'url' :
                     text = cm.decode(text);
-                    href = col['urlKey'] && item[col['urlKey']]? cm.decode(item[col['urlKey']]) : text;
+                    href = col['urlKey'] && item['data'][col['urlKey']]? cm.decode(item['data'][col['urlKey']]) : text;
                     myNodes['inner'].appendChild(
                         myNodes['node'] = cm.Node('a', {'target' : col['target'], 'href' : href}, !cm.isEmpty(col['altText'])? col['altText'] : text)
                     );
