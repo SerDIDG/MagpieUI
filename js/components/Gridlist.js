@@ -5,12 +5,14 @@ Com['Gridlist'] = function(o){
             'data' : [],
             'cols' : [],
             'sort' : true,
-            'sortBy' : 'id',                        // default sort by key in array
+            'sortBy' : 'id',                                    // default sort by key in array
             'orderBy' : 'ASC',
             'pagination' : true,
             'perPage' : 25,
             'showCounter' : false,
-            'dateFormat' : '%Y-%m-%d %H:%i:%s',     // input date format
+            'className' : '',
+            'dateFormat' : cm._config['dateTimeFormat'],        // input date format
+            'visibleDateFormat' : cm._config['dateTimeFormat'], // render date format
             'langs' : {
                 'counter' : 'Count: ',
                 'check-all' : 'Check all',
@@ -55,6 +57,8 @@ Com['Gridlist'] = function(o){
         config['container'].appendChild(
             nodes['container'] = cm.Node('div', {'class' : 'com-gridlist-container'})
         );
+        // Add css class
+        !cm.isEmpty(config['className']) && cm.addClass(nodes['container'], config['className']);
         // Counter
         if(config['showCounter']){
             nodes['container'].appendChild(
@@ -143,6 +147,7 @@ Com['Gridlist'] = function(o){
             'showTitle' : false,        // Show title on hover
             'titleText' : '',           // Alternative title text, if not specified - will be shown key text
             'altText' : '',             // Alternative column text
+            'urlKey' : false,           // Alternative link href, for type="url"
             'onClick' : false,          // Cell click handler
             'onRender' : false          // Cell onRender handler
         }, item);
@@ -224,7 +229,8 @@ Com['Gridlist'] = function(o){
     var renderCell = function(col, item){
         var myNodes = {},
             text,
-            title;
+            title,
+            href;
         // Check access
         if(col['access']){
             text = typeof item['data'][col['key']] == 'undefined'? '' : item['data'][col['key']];
@@ -246,6 +252,17 @@ Com['Gridlist'] = function(o){
                     myNodes['inner'].innerHTML = cm.splitNumber(text);
                     break;
 
+                case 'date' :
+                    if(config['dateFormat'] != config['visibleDateFormat']){
+                        myNodes['inner'].innerHTML = cm.dateFormat(
+                            cm.parseDate(text, config['dateFormat']),
+                            config['visibleDateFormat']
+                        );
+                    }else{
+                        myNodes['inner'].innerHTML = text;
+                    }
+                    break;
+
                 case 'icon' :
                     myNodes['inner'].appendChild(
                         myNodes['node'] = cm.Node('div', {'class' : col['class']})
@@ -255,8 +272,9 @@ Com['Gridlist'] = function(o){
 
                 case 'url' :
                     text = cm.decode(text);
+                    href = col['urlKey'] && item[col['urlKey']]? cm.decode(item[col['urlKey']]) : text;
                     myNodes['inner'].appendChild(
-                        myNodes['node'] = cm.Node('a', {'target' : col['target'], 'href' : text}, !cm.isEmpty(col['altText'])? col['altText'] : text)
+                        myNodes['node'] = cm.Node('a', {'target' : col['target'], 'href' : href}, !cm.isEmpty(col['altText'])? col['altText'] : text)
                     );
                     break;
 

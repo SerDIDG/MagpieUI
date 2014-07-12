@@ -4115,6 +4115,9 @@ select[multiple] {
 .com-gridlist-counter {
   margin: 0 0 24px;
 }
+.com-gridlist-counter.bottom {
+  margin: 0;
+}
 .com-gridlist {
   margin: 0 0 24px;
   overflow: hidden;
