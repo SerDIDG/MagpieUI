@@ -534,6 +534,9 @@ select[multiple] {
   font-size: 8px;
   text-transform: uppercase;
 }
+.cm-mark {
+  background: #fdf6ad;
+}
 /* *** BUNDLE *** */
 .cm-box {
   padding: 4px;
