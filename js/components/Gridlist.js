@@ -62,7 +62,7 @@ Com['Gridlist'] = function(o){
         // Counter
         if(config['showCounter']){
             nodes['container'].appendChild(
-                cm.Node('div', {'class' : 'gridlist-counter'}, lang('counter') + config['data'].length)
+                cm.Node('div', {'class' : 'com-gridlist-counter'}, lang('counter') + config['data'].length)
             );
         }
         // Sort data array for first time
