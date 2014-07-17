@@ -4,133 +4,127 @@ Com['GetTabset'] = function(id){
     return Com.Elements.Tabset[id] || null;
 };
 
-Com['Tabset'] = function(o){
-	var that = this,
-		config = cm.merge({
-			'container' : false,
-            'tabset' : false,
-            'toggleOnHashChange' : true,
-			'renderOnInit' : true,
-            'active' : false,
-            'className' : '',
-            'isAdaptive' : true,
-            'tabsPosition' : 'top',         // top | bottom
-            'showTabs' : true,
-            'tabs' : []
-		}, o),
-        dataAttributes = ['active', 'className', 'isAdaptive', 'toggleOnHashChange', 'renderOnInit', 'tabsPosition', 'showTabs'],
-		nodes = {},
-		ids = [],
-		tabs = {},
-		active,
-		hashInterval;
-		
-	var init = function(){
-        // Merge data-attributes with config. Data-attributes have higher priority.
-        config['tabset'] && processDataAttributes();
+cm.define('Com.Tabset', {
+    'modules' : [
+        'Events',
+        'DataConfig',
+        'DataNodes'
+    ],
+    'events' : [
+        'onRender',
+        'onTabShow',
+        'onTabHide'
+    ],
+    'params' : {
+        'node' : cm.Node('div'),        // tabs contained node
+        'container' : false,
+        'toggleOnHashChange' : true,
+        'renderOnInit' : true,
+        'active' : null,
+        'className' : '',
+        'tabsPosition' : 'top',         // top | bottom
+        'showTabs' : true,
+        'tabs' : []
+    }
+},
+function(params){
+    var that = this,
+        hashInterval;
+    
+    that.nodes = {
+        'tabs' : []
+    };
+    that.tabs = {};
+    that.tabsListing = [];
+    that.active = null;
+    
+    var init = function(){
+        that.setParams(params);
+        that.convertEvents(that.params['events']);
+        that.getDataNodes(that.params['node'], that.params['nodesDataMarker'], false);
+        that.getDataConfig(that.params['node']);
         // Render tabset view
         renderView();
         // Render active tab
-        config['renderOnInit'] && render();
-    };
-
-    var processDataAttributes = function(){
-        var value;
-        cm.forEach(dataAttributes, function(item){
-            value = config['tabset'].getAttribute(['data', item].join('-'));
-            if(/^false|true$/.test(value)){
-                value = value? (value == 'true') : config[item];
-            }else if(item == 'tabsPosition'){
-                value = ['top', 'bottom'].indexOf(value) != -1? value : config[item];
-            }else{
-                value = value || config[item];
-            }
-            config[item] = value;
-        });
+        that.params['renderOnInit'] && render();
     };
 
     var render = function(){
-        var id = config['active'];
-        if(config['toggleOnHashChange']){
+        var id = that.params['active'];
+        if(that.params['toggleOnHashChange']){
             // Init hash change handler
             initHashChange();
             // Set first active tab
-            if(id && tabs[id]){
+            if(id && that.tabs[id]){
                 set(id);
             }else{
                 hashHandler();
             }
         }else{
-            if(id = id && tabs[id]? id : ids[0]){
+            if(id = getValidID(id)){
                 set(id);
             }
         }
     };
 
     var renderView = function(){
-		var tabsLI;
-		/* *** STRUCTURE *** */
-        nodes['container'] = cm.Node('div', {'class' : 'com-tabset'},
-            nodes['header'] = cm.Node('div', {'class' : 'com-tabset-head clear'},
-                nodes['header-button'] = cm.Node('div', {'class' : 'com-tabset-head-button'},
-                    nodes['headerUL'] = cm.Node('ul')
-                ),
-                nodes['header-title'] = cm.Node('div', {'class' : 'com-tabset-head-title'})
-            ),
-            nodes['content'] = cm.Node('div', {'class' : 'com-tabset-content clear'},
-                nodes['contentUL'] = cm.Node('ul')
+        /* *** STRUCTURE *** */
+        that.nodes['container'] = cm.Node('div', {'class' : 'com-tabset'},
+            that.nodes['content'] = cm.Node('div', {'class' : 'com-tabset-content clear'},
+                that.nodes['contentUL'] = cm.Node('ul')
             )
         );
-        // Add CSS class
-        !cm.isEmpty(config['className']) && cm.addClass(nodes['container'], config['className']);
-        // Adaptive
-        if(config['isAdaptive']){
-            cm.addClass(nodes['container'], 'is-adaptive');
-        }
+        that.nodes['header'] = cm.Node('div', {'class' : 'com-tabset-head clear'},
+            that.nodes['header-button'] = cm.Node('div', {'class' : 'com-tabset-head-button'},
+                that.nodes['headerUL'] = cm.Node('ul')
+            ),
+            that.nodes['header-title'] = cm.Node('div', {'class' : 'com-tabset-head-title'})
+        );
         // Show tabs
-        if(!config['showTabs']){
-            nodes['header'].style.display = 'none';
+        if(!that.params['showTabs']){
+            that.nodes['header'].style.display = 'none';
         }
         // Tabs position
-        if(config['tabsPosition'] == 'bottom'){
-            cm.addClass(nodes['container'], 'bottom');
-            nodes['container'].appendChild(nodes['header']);
+        if(that.params['tabsPosition'] == 'bottom'){
+            cm.addClass(that.nodes['container'], 'is-tabs-bottom');
+            cm.insertAfter(that.nodes['header'], that.nodes['content']);
         }else{
-            cm.addClass(nodes['container'], 'top');
+            cm.addClass(that.nodes['container'], 'is-tabs-top');
+            cm.insertBefore(that.nodes['header'], that.nodes['content']);
         }
         /* *** RENDER TABS *** */
-        if(config['tabset']){
-            tabsLI = Array.prototype.filter.call(config['tabset'].childNodes, function(node){
-                return node.nodeType == 1 && node.tagName.toLowerCase() == 'li';
-            });
-            cm.forEach(tabsLI, function(tabContent){
-                renderTab({
-                    'id' : tabContent.getAttribute('data-tabset-id'),
-                    'title' : tabContent.getAttribute('data-tabset-title'),
-                    'content' : tabContent
-                });
-            });
-            // ID
-            if(config['tabset'].id){
-                nodes['container'].id = config['tabset'].id;
-            }
-        }
-        cm.forEach(config['tabs'], function(item){
+        cm.forEach(that.nodes['tabs'], function(item){
+            renderTab(
+                cm.merge({'content' : item['container']}, that.getNodeDataConfig(item['container']))
+            );
+        });
+        cm.forEach(that.params['tabs'], function(item){
             renderTab(item);
         });
-        /* *** INSERT INTO DOM *** */
-        if(config['container']){
-            config['container'].appendChild(nodes['container']);
-        }else if(config['tabset'].parentNode){
-            cm.insertBefore(nodes['container'], config['tabset']);
+        /* *** ATTRIBUTES *** */
+        // CSS
+        if(!cm.isEmpty(that.params['className'])){
+            cm.addClass(that.nodes['container'], that.params['className']);
         }
-        cm.remove(config['tabset']);
-	};
+        // ID
+        if(that.params['node'].id){
+            that.nodes['container'].id = that.params['node'].id;
+        }
+        /* *** INSERT INTO DOM *** */
+        if(that.params['container']){
+            that.params['container'].appendChild(that.nodes['container']);
+        }else if(that.params['node'].parentNode){
+            cm.insertBefore(that.nodes['container'], that.params['node']);
+        }
+        cm.remove(that.params['node']);
+        /* *** EVENTS *** */
+        that.triggerEvent('onRender');
+    };
 
     var renderTab = function(item){
         // Check for exists
-        if(tabs[item['id']]){
-            removeTab(tabs[item['id']]);
+        if(that.tabs[item['id']]){
+            removeTab(that.tabs[item['id']]);
         }
         // Config
         item = cm.merge({
@@ -150,96 +144,103 @@ Com['Tabset'] = function(o){
         // Hide content
         item['content'].style.display = 'none';
         // Add click event
-        if(config['toggleOnHashChange']){
+        if(that.params['toggleOnHashChange']){
             item['a'].setAttribute('href', [window.location.href.split('#')[0], item['id']].join('#'));
         }else{
-            //item['a'].setAttribute('href', 'javascript:void(0);');
-            item['a'].onclick = function(){
-                 set(item['id']);
+            item['a'].onclick = function(e){
+                cm.getEvent(e);
+                cm.preventDefault(e);
+                set(item['id']);
             };
         }
         // Append tab
-        nodes['headerUL'].appendChild(item['tab']);
-        nodes['contentUL'].appendChild(item['content']);
+        that.nodes['headerUL'].appendChild(item['tab']);
+        that.nodes['contentUL'].appendChild(item['content']);
         // Push
-        ids.push(item['id']);
-        tabs[item['id']] = item;
+        that.tabsListing.push(item);
+        that.tabs[item['id']] = item;
     };
 
     var removeTab = function(item){
         // Set new active tab, if current active is nominated for remove
-        if(item['id'] === active){
-            set(ids[0]);
+        if(item['id'] === that.active){
+            set(that.tabsListing[0]);
         }
         // Remove tab from list and array
         cm.remove(item['tab']);
         cm.remove(item['content']);
-        ids = ids.filter(function(id){
-            return item['id'] != id;
+        that.tabsListing = that.tabsListing.filter(function(tab){
+            return item['id'] != tab['id'];
         });
-        delete tabs[item['id']];
+        delete that.tabs[item['id']];
     };
 
     var set = function(id){
         // Hide previous active tab
-        if(active && tabs[active]){
+        if(that.active && that.tabs[that.active]){
             // onHide event
-            tabs[active]['onHide'](that, tabs[active]);
-            tabs[active]['isHide'] = true;
+            that.tabs[that.active]['isHide'] = true;
+            that.tabs[that.active]['onHide'](that, that.tabs[that.active]);
+            that.triggerEvent('onTabHide', that.tabs[that.active]);
             // Hide
-            cm.removeClass(tabs[active]['tab'], 'active');
-            tabs[active]['content'].style.display = 'none';
+            cm.removeClass(that.tabs[that.active]['tab'], 'active');
+            that.tabs[that.active]['content'].style.display = 'none';
         }
         // Show current tab
-        active = id;
+        that.active = id;
         // Show
-        cm.addClass(tabs[active]['tab'], 'active');
-        tabs[active]['content'].style.display = 'block';
-        nodes['header-title'].innerHTML = tabs[active]['title'];
+        cm.addClass(that.tabs[that.active]['tab'], 'active');
+        that.tabs[that.active]['content'].style.display = 'block';
+        that.nodes['header-title'].innerHTML = that.tabs[that.active]['title'];
         // onShow event
-        tabs[active]['onShow'](that, tabs[active]);
-        tabs[active]['isHide'] = false;
+        that.tabs[that.active]['isHide'] = false;
+        that.tabs[that.active]['onShow'](that, that.tabs[that.active]);
+        that.triggerEvent('onTabShow', that.tabs[that.active]);
     };
-	
-	var initHashChange = function(){
-		var hash;
-		if("onhashchange" in window && !cm.is('IE7')){
-			cm.addEvent(window, 'hashchange', hashHandler);
-		}else{
-			hash = window.location.hash;
-			hashInterval = setInterval(function(){
-				if(hash != window.location.hash){
-					hash = window.location.hash;
+
+    var initHashChange = function(){
+        var hash;
+        if("onhashchange" in window && !cm.is('IE7')){
+            cm.addEvent(window, 'hashchange', hashHandler);
+        }else{
+            hash = window.location.hash;
+            hashInterval = setInterval(function(){
+                if(hash != window.location.hash){
+                    hash = window.location.hash;
                     hashHandler();
-				}
-			}, 25);
-		}
-	};
-	
-	var hashHandler = function(){
-		var id = window.location.hash.replace('#', '');
-        if(id = id && tabs[id]? id : ids[0]){
+                }
+            }, 25);
+        }
+    };
+
+    var hashHandler = function(){
+        var id = window.location.hash.replace('#', '');
+        if(id = getValidID(id)){
             set(id);
         }
-	};
-	
-	/* Main */
-	
-	that.render = function(){
+    };
+
+    var getValidID = function(id){
+        return id && that.tabs[id]? id : that.tabsListing[0]['id'];
+    };
+    
+    /* ******* MAIN ******* */
+
+    that.render = function(){
         render();
         return that;
-	};
-	
-	that.set = function(id){
-        if(id && tabs[id]){
+    };
+
+    that.set = function(id){
+        if(id && that.tabs[id]){
             set(id);
         }
-		return that;
-	};
+        return that;
+    };
 
     that.get = function(id){
-        if(id && tabs[id]){
-            return tabs[id];
+        if(id && that.tabs[id]){
+            return that.tabs[id];
         }
         return null;
     };
@@ -252,58 +253,30 @@ Com['Tabset'] = function(o){
     };
 
     that.removeTab = function(id){
-        if(id && tabs[id]){
-            removeTab(tabs[id]);
+        if(id && that.tabs[id]){
+            removeTab(that.tabs[id]);
         }
         return that;
     };
-	
-	that.setEvents = function(o){
-		if(o){
-			tabs = cm.merge(tabs, o);
-		}
-		return that;
-	};
-	
-	that.remove = function(){
-		cm.removeEvent(window, 'hashchange', hashHandler);
-		hashInterval && clearInterval(hashInterval);
-		cm.remove(nodes['container']);
-		return that;
-	};
+
+    that.setEvents = function(o){
+        if(o){
+            that.tabs = cm.merge(that.tabs, o);
+        }
+        return that;
+    };
+
+    that.remove = function(){
+        cm.removeEvent(window, 'hashchange', hashHandler);
+        hashInterval && clearInterval(hashInterval);
+        cm.remove(that.nodes['container']);
+        return that;
+    };
 
     that.getNodes = function(key){
-        return nodes[key] || nodes;
-    };
-	
-	init();
-};
-
-Com['TabsetCollector'] = function(node){
-    var tabsets,
-        id,
-        tabset;
-
-    var init = function(node){
-        if(!node){
-            render(document.body);
-        }else if(node.constructor == Array){
-            cm.forEach(node, render);
-        }else{
-            render(node);
-        }
+        return that.nodes[key] || that.nodes;
     };
 
-    var render = function(node){
-        tabsets = cm.clone((node.getAttribute('data-tabset') == 'true') ? [node] : cm.getByAttr('data-tabset', 'true', node));
-        // Render tabsets
-        cm.forEach(tabsets, function(item){
-            tabset = new Com.Tabset({'tabset' : item});
-            if(id = item.id){
-                Com.Elements.Tabset[id] = tabset;
-            }
-        });
-    };
-
-    init(node);
-};
+    init();
+    
+});

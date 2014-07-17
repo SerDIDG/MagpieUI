@@ -2,6 +2,10 @@
 
 .com-tabset {
     margin: 0 0 @cm-indentMedium;
+
+    &.bottom {
+        margin: 0;
+    }
 }
 
 .com-tabset-head {
@@ -78,106 +82,143 @@
     }
 }
 
-.com-tabset-content-ul > li {
-    display: none;
+.com-tabset-content-ul {
+    > li {
+        display: none;
+    }
 }
 
 /* Tabs Position */
 
-.com-tabset.top > .com-tabset-head ul li.active {
-    border-bottom-color: #ffffff;
-}
-.com-tabset.top > .com-tabset-head .com-tabset-head-title {
-    border-bottom-color: #fff;
-    border-radius: @ComTabset-borderRadius @ComTabset-borderRadius 0 0;
-}
+.com-tabset {
+    &.is-tabs-top {
+        .com-tabset-head-title {
+            border-bottom-color: #fff;
+            border-radius: @ComTabset-borderRadius @ComTabset-borderRadius 0 0;
+        }
 
-.com-tabset.bottom > .com-tabset-head {
-    bottom: auto;
-    top: -1px;
-}
-.com-tabset.bottom > .com-tabset-head ul li {
-    border-radius: 0 0 @ComTabset-borderRadius @ComTabset-borderRadius;
-}
-.com-tabset.bottom > .com-tabset-head ul li.active {
-    border-top-color: #fff;
-}
-.com-tabset.bottom > .com-tabset-content {
-    border-radius: @ComTabset-borderRadius @ComTabset-borderRadius @ComTabset-borderRadius 0;
-}
-.com-tabset.bottom > .com-tabset-head .com-tabset-head-title {
-    border-radius: 0 0 @ComTabset-borderRadius @ComTabset-borderRadius;
-    border-top-color: #fff;
+        > .com-tabset-head {
+            ul {
+                li {
+                    &.active {
+                        border-bottom-color: #ffffff;
+                    }
+                }
+            }
+        }
+    }
+
+    &.is-tabs-bottom {
+        .com-tabset-head-title {
+            border-radius: 0 0 @ComTabset-borderRadius @ComTabset-borderRadius;
+            border-top-color: #fff;
+        }
+
+        > .com-tabset-head {
+            bottom: auto;
+            top: -1px;
+
+            ul {
+                li {
+                    border-radius: 0 0 @ComTabset-borderRadius @ComTabset-borderRadius;
+
+                    &.active {
+                        border-top-color: #fff;
+                    }
+                }
+            }
+        }
+
+        > .com-tabset-content {
+            border-radius: @ComTabset-borderRadius @ComTabset-borderRadius @ComTabset-borderRadius 0;
+        }
+    }
 }
 
 /* *** ADAPTIVE *** */
 
 @media only screen and (max-width : @cm-screenMobile) {
 
-    .com-tabset.is-adaptive .com-tabset-head-button {
-        width: 40px;
-        height: 29px;
-        margin: 0 0 0 @ComTabset-tabsIndent;
-        position: relative;
-        float: right;
-        background: #E5E5E5 url('@{CmPath-image}/icons/medium/menu.png') center 10px no-repeat;
-        border: 1px solid @ComTabset-borderColor;
-        border-radius: @ComTabset-borderRadius @ComTabset-borderRadius 0 0;
-        cursor: pointer;
-        -webkit-transition: all 0.3s ease-in-out;
-                transition: all 0.3s ease-in-out;
-    }
-    .com-tabset.bottom.is-adaptive .com-tabset-head-button {
-        border-radius: 0 0 @ComTabset-borderRadius @ComTabset-borderRadius;
-    }
-    .com-tabset.is-adaptive .com-tabset-head-button:hover {
-        background-color: #fff;
-        -webkit-transition: all 0.1s ease-in-out;
+    html.is-adaptive {
+        .com-tabset-head-button {
+            width: 40px;
+            height: 29px;
+            margin: 0 0 0 @ComTabset-tabsIndent;
+            display: block;
+            position: relative;
+            float: right;
+            background: #E5E5E5 url('@{CmPath-image}/icons/medium/menu.png') center 10px no-repeat;
+            border: 1px solid @ComTabset-borderColor;
+            border-radius: @ComTabset-borderRadius @ComTabset-borderRadius 0 0;
+            cursor: pointer;
+            -webkit-transition: all 0.3s ease-in-out;
+            transition: all 0.3s ease-in-out;
+
+            &:hover {
+                background-color: #fff;
+                -webkit-transition: all 0.1s ease-in-out;
                 transition: all 0.1s ease-in-out;
-    }
-    .com-tabset.is-adaptive .com-tabset-head-button ul {
-        display:  none;
-        position: absolute;
-        top: 100%;
-        right: -1px;
-        background-color: #FFFFFF;
-        border: 1px solid #B6BCC1;
-        box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
-        padding: 3px;
-    }
-    .com-tabset.bottom.is-adaptive .com-tabset-head-button ul {
-        top: auto;
-        bottom: 100%;
-    }
-    .com-tabset.is-adaptive .com-tabset-head-button:hover ul {
-        display: block;
-    }
-    .com-tabset.top.is-adaptive .com-tabset-head-button ul li,
-    .com-tabset.bottom.is-adaptive .com-tabset-head-button ul li{
-        height: 30px;
-        float: none;
-        margin: 1px 0 0 0;
-        background: #fff;
-        border: none;
-        border-radius: 0;
-    }
-    .com-tabset.is-adaptive .com-tabset-head-button ul li:first-child {
-        margin: 0;
-    }
-    .com-tabset.is-adaptive .com-tabset-head-button ul li.active {
-        background: #DFDFDF;
-    }
-    .com-tabset.is-adaptive .com-tabset-head-button ul li:hover {
-        background: #F0F0F0;
-    }
-    .com-tabset.top.is-adaptive > .com-tabset-content {
-        border-radius: 0 0 5px 5px;
-    }
-    .com-tabset.bottom.is-adaptive > .com-tabset-content {
-        border-radius: 5px 5px 0 0;
-    }
-    .com-tabset.is-adaptive .com-tabset-head-title {
-        display: block;
+            }
+
+            ul {
+                display:  none;
+                position: absolute;
+                top: 100%;
+                right: -1px;
+                background-color: #FFFFFF;
+                border: 1px solid #B6BCC1;
+                box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
+                padding: 3px;
+
+                li{
+                    height: 30px;
+                    float: none;
+                    margin: 1px 0 0 0;
+                    background: #fff;
+                    border: none;
+                    border-radius: 0;
+
+                    &:first-child {
+                        margin: 0;
+                    }
+
+                    &.active {
+                        background: #DFDFDF;
+                    }
+
+                    &:hover {
+                        background: #F0F0F0;
+                    }
+                }
+            }
+        }
+
+        .com-tabset {
+            &.is-tabs-top {
+                > .com-tabset-content {
+                    border-radius: 0 0 5px 5px;
+                }
+            }
+
+            &.is-tabs-bottom {
+                .com-tabset-head-button {
+                    border-radius: 0 0 @ComTabset-borderRadius @ComTabset-borderRadius;
+
+                    ul {
+                        top: auto;
+                        bottom: 100%;
+                    }
+
+                    &:hover ul {
+                        display: block;
+                    }
+                }
+
+                > .com-tabset-content {
+                    border-radius: 5px 5px 0 0;
+                }
+            }
+        }
     }
 
 }

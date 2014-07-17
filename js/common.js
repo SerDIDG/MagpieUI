@@ -2205,6 +2205,7 @@ cm.defineHelper = function(name, data, handler){
     // Define default methods
 
     that.extendObject = {
+        'modules' : that.data['modules'],
         'params' : that.data['params'],
         'className' : that.className,
         'classNameShort' : that.classNameShort,

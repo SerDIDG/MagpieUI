@@ -6,10 +6,10 @@ Mod['Events'] = {
         if(!that.data['params']['events']){
             that.data['params']['events'] = {};
         }
-        that.extendObject['eventsList'] = that.data['events'];
-        that.extendObject['events'] = {};
+        that.extendObject['events'] = that.data['events'];
+        that.extendObject['eventsStack'] = {};
         cm.forEach(that.data['events'], function(item){
-            that.extendObject['events'][item] = [];
+            that.extendObject['eventsStack'][item] = [];
             that.extendObject[item] = function(handler){
                 var that = this;
                 that.addEvent(item, handler);
@@ -19,10 +19,10 @@ Mod['Events'] = {
     },
     'addEvent' : function(event, handler){
         var that = this;
-        that.events = cm.clone(that.events);
-        if(that.events[event]){
+        that.eventsStack = cm.clone(that.eventsStack);
+        if(that.eventsStack[event]){
             if(typeof handler == 'function'){
-                that.events[event].push(handler);
+                that.eventsStack[event].push(handler);
             }else{
                 cm.errorLog({
                     'name' : that.className,
@@ -46,10 +46,10 @@ Mod['Events'] = {
     },
     'removeEvent' : function(event, handler){
         var that = this;
-        that.events = cm.clone(that.events);
-        if(that.events[event]){
+        that.eventsStack = cm.clone(that.eventsStack);
+        if(that.eventsStack[event]){
             if(typeof handler == 'function'){
-                that.events[event] = that.events[event].filter(function(item){
+                that.eventsStack[event] = that.eventsStack[event].filter(function(item){
                     return item != handler;
                 });
             }else{
@@ -68,8 +68,8 @@ Mod['Events'] = {
     },
     'triggerEvent' : function(event, params){
         var that = this;
-        if(that.events[event]){
-            cm.forEach(that.events[event], function(item){
+        if(that.eventsStack[event]){
+            cm.forEach(that.eventsStack[event], function(item){
                 item(that, params || {});
             });
         }else{
@@ -119,7 +119,7 @@ Mod['DataConfig'] = {
     'getDataConfig' : function(container, dataMarker){
         var that = this,
             sourceConfig;
-        if(container){
+        if(cm.isNode(container)){
             dataMarker = dataMarker || that.params['configDataMarker'];
             sourceConfig = container.getAttribute(dataMarker);
             if(sourceConfig && (sourceConfig = JSON.parse(sourceConfig))){
@@ -127,6 +127,18 @@ Mod['DataConfig'] = {
             }
         }
         return that;
+    },
+    'getNodeDataConfig' : function(node, dataMarker){
+        var that = this,
+            sourceConfig;
+        if(cm.isNode(node)){
+            dataMarker = dataMarker || that.params['configDataMarker'];
+            sourceConfig = node.getAttribute(dataMarker);
+            if(sourceConfig && (sourceConfig = JSON.parse(sourceConfig))){
+                return cm.merge(that.params, sourceConfig);
+            }
+        }
+        return {};
     }
 };
 

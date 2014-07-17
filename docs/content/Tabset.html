@@ -25,21 +25,11 @@
 
     <script type="text/javascript">
         cm.onReady(function(){
-            var element;
-            // Datepickers
-            Com.DatepickerCollector();
-            // Tabset
-            Com.TabsetCollector();
-            Com.GetTabset('tabset4').setEvents({
-                'second' : {
-                    'onShow' : function(tabs, tab){
-                        alert('Example of onShow event');
-                    },
-                    'onHide' : function(tabs, tab){
-                        alert('Example of onHide event');
-                    }
-                }
-            }).render();
+            new Com.Collector()
+                .add('tabset', function(node){
+                    new Com.Tabset({'node' : node});
+                })
+                .construct();
         });
     </script>
 </head>
@@ -49,10 +39,10 @@
 <div class="cm-block-padding">
     <h1>Tabset</h1>
 
-    <ul class="com-tabset-content-ul" id="tabset" data-tabset="true">
-        <li data-tabset-id="overview" data-tabset-title="Overview">
+    <ul class="com-tabset-content-ul" data-element="tabset">
+        <li data-node="tabs:[]:container" data-config='{"id" : "overview", "title" : "Overview"}'>
             <h2>Initialize in Java-Script:</h2>
-            <pre class="cm-codebox">new Com.com-tabset(o);</pre>
+            <pre class="cm-codebox">new Com.Tabset(o);</pre>
             <br>
             <b>Attributes:</b>
             <ul>
@@ -105,7 +95,7 @@
             </ul>
         </li>
 
-        <li data-tabset-id="methods" data-tabset-title="Methods">
+        <li data-node="tabs:[]:container" data-config='{"id" : "methods", "title" : "Methods"}'>
             <h2>Get tabset by id:</h2>
             <pre class="cm-codebox">Com.GetTabset('id');</pre>
             <p>Returns a class of tabset.</p>
@@ -162,7 +152,7 @@
             <p>Returns object of nodes, or node if key is specified.</p>
         </li>
 
-        <li data-tabset-id="examples" data-tabset-title="Examples">
+        <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
             <h2>Tabset without onHashChange event:</h2>
             <p>
                 <b>You can set this attribute in different ways:</b><br>
@@ -172,7 +162,7 @@
                 <pre class="cm-codebox">&lt;ul class="com-tabset-content-ul" data-tabset="true" data-toggleOnHashChange="false"&gt;&lt;/ul&gt;</pre>
             </p>
 
-            <ul class="com-tabset-content-ul" id="tabset2" data-tabset="true" data-toggleOnHashChange="false">
+            <ul class="com-tabset-content-ul">
                 <li data-tabset-id="first" data-tabset-title="First"></li>
                 <li data-tabset-id="second" data-tabset-title="Second"></li>
                 <li data-tabset-id="third" data-tabset-title="Third"></li>
@@ -213,10 +203,10 @@
                 <pre class="cm-codebox">Com.GetTabset('id').render();</pre>
             </p>
 
-            <ul class="com-tabset-content-ul" id="tabset4" data-tabset="true" data-renderOnInit="false" data-toggleOnHashChange="false">
-                <li data-tabset-id="first" data-tabset-title="First"></li>
-                <li data-tabset-id="second" data-tabset-title="Second"></li>
-                <li data-tabset-id="third" data-tabset-title="Third"></li>
+            <ul class="com-tabset-content-ul" data-element="tabset" data-config='{"toggleOnHashChange" : false}'>
+                <li data-node="tabs:[]:container" data-config='{"id" : "first", "title" : "First"}'>
+                <li data-node="tabs:[]:container" data-config='{"id" : "second", "title" : "Second"}'>
+                <li data-node="tabs:[]:container" data-config='{"id" : "third", "title" : "Third"}'>
             </ul>
 
             <h2>Tabset with bottom tabs position:</h2>
