@@ -24,7 +24,10 @@ cm.define('Com.Tabset', {
         'className' : '',
         'tabsPosition' : 'top',         // top | bottom
         'showTabs' : true,
-        'tabs' : []
+        'tabs' : [],
+        'icons' : {
+            'menu' : 'icon default linked'
+        }
     }
 },
 function(params){
@@ -75,10 +78,14 @@ function(params){
             )
         );
         that.nodes['header'] = cm.Node('div', {'class' : 'com-tabset-head clear'},
-            that.nodes['header-button'] = cm.Node('div', {'class' : 'com-tabset-head-button'},
+            cm.Node('div', {'class' : 'com-tabset-head-tabs'},
                 that.nodes['headerUL'] = cm.Node('ul')
             ),
-            that.nodes['header-title'] = cm.Node('div', {'class' : 'com-tabset-head-title'})
+            that.nodes['header-title'] = cm.Node('div', {'class' : 'com-tabset-head-title'}),
+            cm.Node('div', {'class' : 'com-tabset-head-menu cm-menu'},
+                cm.Node('div', {'class' : that.params['icons']['menu']}),
+                that.nodes['headerMenuUL'] = cm.Node('ul', {'class' : 'cm-menu-dropdown'})
+            )
         );
         // Show tabs
         if(!that.params['showTabs']){
@@ -118,6 +125,7 @@ function(params){
         }
         cm.remove(that.params['node']);
         /* *** EVENTS *** */
+        Part.Menu();
         that.triggerEvent('onRender');
     };
 
@@ -136,29 +144,38 @@ function(params){
             'onHide' : function(that, tab){}
         }, item);
         // Structure
-        item['tab'] = cm.Node('li',
-            item['a'] = cm.Node('a', item['title'])
-        );
+        item['tab'] = renderTabLink(item);
+        item['menu'] = renderTabLink(item);
         // Remove active tab class if exists
         cm.removeClass(item['content'], 'active');
         // Hide content
         item['content'].style.display = 'none';
-        // Add click event
-        if(that.params['toggleOnHashChange']){
-            item['a'].setAttribute('href', [window.location.href.split('#')[0], item['id']].join('#'));
-        }else{
-            item['a'].onclick = function(e){
-                cm.getEvent(e);
-                cm.preventDefault(e);
-                set(item['id']);
-            };
-        }
         // Append tab
-        that.nodes['headerUL'].appendChild(item['tab']);
+        that.nodes['headerUL'].appendChild(item['tab']['container']);
+        that.nodes['headerMenuUL'].appendChild(item['menu']['container']);
         that.nodes['contentUL'].appendChild(item['content']);
         // Push
         that.tabsListing.push(item);
         that.tabs[item['id']] = item;
+    };
+
+    var renderTabLink = function(tab){
+        var item = {};
+        // Structure
+        item['container'] = cm.Node('li',
+            item['a'] = cm.Node('a', tab['title'])
+        );
+        // Add click event
+        if(that.params['toggleOnHashChange']){
+            item['a'].setAttribute('href', [window.location.href.split('#')[0], tab['id']].join('#'));
+        }else{
+            item['a'].onclick = function(e){
+                cm.getEvent(e);
+                cm.preventDefault(e);
+                set(tab['id']);
+            };
+        }
+        return item;
     };
 
     var removeTab = function(item){
@@ -167,7 +184,8 @@ function(params){
             set(that.tabsListing[0]);
         }
         // Remove tab from list and array
-        cm.remove(item['tab']);
+        cm.remove(item['tab']['container']);
+        cm.remove(item['menu']['container']);
         cm.remove(item['content']);
         that.tabsListing = that.tabsListing.filter(function(tab){
             return item['id'] != tab['id'];
@@ -183,13 +201,15 @@ function(params){
             that.tabs[that.active]['onHide'](that, that.tabs[that.active]);
             that.triggerEvent('onTabHide', that.tabs[that.active]);
             // Hide
-            cm.removeClass(that.tabs[that.active]['tab'], 'active');
+            cm.removeClass(that.tabs[that.active]['tab']['container'], 'active');
+            cm.removeClass(that.tabs[that.active]['menu']['container'], 'active');
             that.tabs[that.active]['content'].style.display = 'none';
         }
         // Show current tab
         that.active = id;
         // Show
-        cm.addClass(that.tabs[that.active]['tab'], 'active');
+        cm.addClass(that.tabs[that.active]['tab']['container'], 'active');
+        cm.addClass(that.tabs[that.active]['menu']['container'], 'active');
         that.tabs[that.active]['content'].style.display = 'block';
         that.nodes['header-title'].innerHTML = that.tabs[that.active]['title'];
         // onShow event

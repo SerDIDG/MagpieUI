@@ -16,16 +16,21 @@
     <script type="text/javascript" src="../../js/components/Collector.js"></script>
     <script type="text/javascript" src="../../js/components/Tabset.js"></script>
     <script type="text/javascript" src="../../js/components/ToggleBox.js"></script>
+    <script type="text/javascript" src="../../js/components/Tooltip.js"></script>
+    <script type="text/javascript" src="../../js/components/Select.js"></script>
 
     <script type="text/javascript">
         cm.onReady(function(){
             // Components
             new Com.Collector()
                 .add('tabset', function(node){
-                    new Com.Tabset({'tabset' : node});
+                    new Com.Tabset({'node' : node});
                 })
                 .add('togglebox', function(node){
                     new Com.ToggleBox({'node' : node});
+                })
+                .add('select', function(node){
+                    new Com.Select({'select' : node});
                 })
                 .construct();
         });
@@ -38,7 +43,7 @@
     <h1>Forum Layout</h1>
 
     <ul class="com-tabset-content-ul" data-element="tabset">
-        <li data-tabset-id="main" data-tabset-title="Main">
+        <li data-node="tabs:[]:container" data-config='{"id" : "main", "title" : "Main"}'>
 
             <div class="com-forum com-forum-main">
                 <h1>Forum</h1>
@@ -203,7 +208,7 @@
 
         </li>
 
-        <li data-tabset-id="category" data-tabset-title="Category">
+        <li data-node="tabs:[]:container" data-config='{"id" : "category", "title" : "Category"}'>
 
             <div class="com-forum com-forum-category">
                 <h1>Countries</h1>
@@ -280,6 +285,7 @@
                     </dd>
                 </dl>
 
+
                 <dl class="com-togglebox has-hover-icon is-ui is-show" data-element="togglebox" data-config='{"name" : "com-forum-1-topics", "remember" : true}'>
                     <dt>
                         <span class="icon default linked" data-node="ComToggleBox.button"></span>
@@ -288,6 +294,24 @@
                         </div>
                     </dt>
                     <dd data-node="ComToggleBox.target">
+
+                        <div class="cm-toolbar">
+                            <div class="inner clear">
+                                <div class="left">
+                                    <ul class="group">
+                                        <li class="label">Filter by:</li>
+                                        <li class="is-field large">
+                                            <select data-element="select">
+                                                <option>New</option>
+                                                <option>Most commented</option>
+                                                <option>Most viewed</option>
+                                            </select>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="com-gridlist bottom">
                             <table>
                                 <tbody>
@@ -327,7 +351,7 @@
 
         </li>
 
-        <li data-tabset-id="topic" data-tabset-title="Topic">
+        <li data-node="tabs:[]:container" data-config='{"id" : "topic", "title" : "Topic"}'>
             <div class="com-forum com-forum-topic">
                 <h1>Canada</h1>
 

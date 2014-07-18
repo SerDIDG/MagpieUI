@@ -42,10 +42,15 @@
     <h1>Select</h1>
 
     <ul class="com-tabset-content-ul" data-element="tabset">
-        <li data-tabset-id="overview" data-tabset-title="Overview">
+        <li data-node="tabs:[]:container" data-config='{"id" : "overview", "title" : "Overview"}'>
             <h2>Overview</h2>
             <p>This component decorate html select node.</p>
-            <p>Embedded modules: <code>Events</code>, <code>Data Config</code>.</p>
+
+            <h4>Embedded Modules</h4>
+            <ul class="cm-list">
+                <li><code>Events</code></li>
+                <li><code>DataConfig</code></li>
+            </ul>
 
             <h2>Initialize</h2>
             <pre class="cm-codebox">new Com.Select(o);</pre>
@@ -124,7 +129,15 @@
                 <dt>
                     <code><b>events</b></code>
                 </dt>
-                <dd><code>Object</code>. Object of events. Available events: <code>onSelect</code>, <code>onChange</code>, <code>onFocus</code>, <code>onBlur</code>.</dd>
+                <dd>
+                    <p><code>Object</code>. Object of events. Available events: <code>onSelect</code>, <code>onChange</code>, <code>onFocus</code>, <code>onBlur</code>. Example:</p>
+                    <textarea class="cm-codebox cm-autoresize" readonly>
+new Com.Select({
+    'events' : {
+        'onChange' : function(select, active){}
+    }
+});</textarea>
+                </dd>
             </dl>
             <dl>
                 <dt>
@@ -142,11 +155,11 @@
             </dl>
         </li>
 
-        <li data-tabset-id="methods" data-tabset-title="Methods">
+        <li data-node="tabs:[]:container" data-config='{"id" : "methods", "title" : "Methods"}'>
             <h2>Get select by id:</h2>
             <pre class="cm-codebox">Com.GetSelect('id');</pre>
             <br>
-            <p> Returns class of select component.</p>
+            <p>Returns class of select component.</p>
 
             <h2>Get selected option value:</h2>
             <pre class="cm-codebox">select.get();</pre>
@@ -234,7 +247,7 @@
             <p>Returns object of nodes, or node if key is specified.</p>
         </li>
 
-        <li data-tabset-id="examples" data-tabset-title="Examples">
+        <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
             <h2>Single select:</h2>
             <select name="select-1" data-element="select">
                 <option value="0" selected>Zero</option>
