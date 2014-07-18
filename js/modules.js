@@ -135,7 +135,7 @@ Mod['DataConfig'] = {
             dataMarker = dataMarker || that.params['configDataMarker'];
             sourceConfig = node.getAttribute(dataMarker);
             if(sourceConfig && (sourceConfig = JSON.parse(sourceConfig))){
-                return cm.merge(that.params, sourceConfig);
+                return sourceConfig;
             }
         }
         return {};
