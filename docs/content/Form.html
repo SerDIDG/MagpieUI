@@ -13,6 +13,8 @@
     <script type="text/javascript" src="../../js/modules.js"></script>
     <script type="text/javascript" src="../../js/init.js"></script>
     <script type="text/javascript" src="../../js/components/UA.js"></script>
+    <script type="text/javascript" src="../../js/components/Collector.js"></script>
+    <script type="text/javascript" src="../../js/components/Tabset.js"></script>
     <script type="text/javascript" src="../../js/components/Columns.js"></script>
     <script type="text/javascript" src="../../js/components/Tooltip.js"></script>
     <script type="text/javascript" src="../../js/components/Select.js"></script>
@@ -20,23 +22,27 @@
     <script type="text/javascript" src="../../js/components/Datepicker.js"></script>
     <script type="text/javascript" src="../../js/components/DateSelect.js"></script>
     <script type="text/javascript" src="../../js/components/CalendarEvents.js"></script>
-    <script type="text/javascript" src="../../js/components/Tabset.js"></script>
     <script type="text/javascript" src="../../js/components/Dialog.js"></script>
-    <script type="text/javascript" src="../../js/components/Collector.js"></script>
     <script type="text/javascript" src="../../js/components/TagsInput.js"></script>
 
 	<script type="text/javascript">
 		cm.onReady(function(){
-			// Datepickers
-            Com.DatepickerCollector();
-            // Tabset
-            Com.TabsetCollector();
             // Components
             new Com.Collector()
+                .addEvent('onConstruct', function(collector, data){
+                    Part.Menu();
+                    Part.Autoresize(data['node']);
+                })
+                .add('tabset', function(node){
+                    new Com.Tabset({'node' : node});
+                })
                 .add('tags', function(node){
                     new Com.TagsInput({
                         'input' : node
                     });
+                })
+                .add('datepicker', function(node){
+                    new Com.Datepicker({'input' : node});
                 })
                 .add('select', function(node){
                     new Com.Select({'select' : node})
@@ -56,8 +62,8 @@
 <div class="cm-block-padding">
     <h1>Form Elements</h1>
 
-    <ul class="com-tabset-content-ul" data-tabset="true">
-        <li data-tabset-id="inputs" data-tabset-title="Inputs">
+    <ul class="com-tabset-content-ul" data-element="tabset">
+        <li data-node="tabs:[]:container" data-config='{"id" : "inputs", "title" : "Inputs"}'>
             <div class="form">
                 <dl>
                     <dt>Text:</dt>
@@ -111,13 +117,13 @@
                 <dl>
                     <dt>Datepicker:</dt>
                     <dd>
-                        <input type="text" id="datepicker1" name="datepicker1" placeholder="Expires date" data-datepicker="true" readonly>
+                        <input type="text" id="datepicker1" name="datepicker1" placeholder="Expires date" data-element="datepicker" readonly>
                     </dd>
                 </dl>
                 <dl>
                     <dt>Datepicker with clear button:</dt>
                     <dd>
-                        <input type="text" id="datepicker2" name="datepicker2" data-datepicker="true" data-showClearButton="true" placeholder="Expires date" readonly>
+                        <input type="text" id="datepicker2" name="datepicker2" data-element="datepicker" data-showClearButton="true" placeholder="Expires date" readonly>
                     </dd>
                 </dl>
                 <dl>
@@ -235,7 +241,7 @@
             </div>
         </li>
 
-        <li data-tabset-id="selects" data-tabset-title="Selects">
+        <li data-node="tabs:[]:container" data-config='{"id" : "selects", "title" : "Selects"}'>
             <div class="form">
                 <dl>
                     <dt>Select:</dt>
@@ -274,7 +280,7 @@
             </div>
         </li>
 
-        <li data-tabset-id="checkboxes" data-tabset-title="Checkboxes">
+        <li data-node="tabs:[]:container" data-config='{"id" : "checkboxes", "title" : "Checkboxes"}'>
             <div class="form">
                 <dl>
                     <dt>Checkboxes single:</dt>
@@ -425,7 +431,7 @@
             </div>
         </li>
 
-        <li data-tabset-id="buttons" data-tabset-title="Buttons">
+        <li data-node="tabs:[]:container" data-config='{"id" : "buttons", "title" : "Buttons"}'>
              <div class="form">
                  <div class="btn-wrap left">
                      <input type="submit" value="Primary">
@@ -481,7 +487,7 @@
              </div>
         </li>
 
-        <li data-tabset-id="fieldsets" data-tabset-title="Fieldsets">
+        <li data-node="tabs:[]:container" data-config='{"id" : "fieldsets", "title" : "Fieldsets"}'>
             <div class="form">
                 <fieldset>
                     <legend>Normal</legend>
@@ -519,7 +525,7 @@
             </div>
         </li>
 
-        <li data-tabset-id="columns" data-tabset-title="Columns">
+        <li data-node="tabs:[]:container" data-config='{"id" : "columns", "title" : "Columns"}'>
             <div class="form">
                 <dl>
                     <dt>One:</dt>
@@ -649,7 +655,7 @@
             </div>
         </li>
 
-        <li data-tabset-id="toolbars" data-tabset-title="Toolbars">
+        <li data-node="tabs:[]:container" data-config='{"id" : "toolbars", "title" : "Toolbars"}'>
             <h2>Inputs and Selects sizes:</h2>
             <div class="cm-toolbar is-adaptive">
                 <div class="inner clear">
@@ -802,7 +808,7 @@
             </div>
         </li>
 
-        <li data-tabset-id="multi" data-tabset-title="Multi Fields">
+        <li data-node="tabs:[]:container" data-config='{"id" : "multi", "title" : "Multi Fields"}'>
             <div class="form">
                 <dl>
                     <dt>Single line:</dt>
@@ -922,7 +928,7 @@
                                 </select>
                             </div>
                             <div class="col">
-                                <input type="text" placeholder="Field" data-datepicker="true">
+                                <input type="text" placeholder="Field" data-element="datepicker">
                             </div>
                         </div>
                     </dd>
@@ -935,7 +941,7 @@
             </div>
         </li>
 
-        <li data-tabset-id="other" data-tabset-title="Other">
+        <li data-node="tabs:[]:container" data-config='{"id" : "other", "title" : "Other"}'>
             <div class="form">
                 <dl>
                     <dt>Image Style 1:</dt>
@@ -1046,12 +1052,12 @@
                 <div class="form-filter-fromto clear">
                     <dl class="form-box">
                         <dt>From:</dt>
-                        <dd><input type="text" data-datepicker="true"></dd>
+                        <dd><input type="text" data-element="datepicker"></dd>
                     </dl>
 
                     <dl class="form-box">
                         <dt>To:</dt>
-                        <dd><input type="text" data-datepicker="true"></dd>
+                        <dd><input type="text" data-element="datepicker"></dd>
                     </dl>
 
                     <div class="buttons">
@@ -1062,11 +1068,11 @@
 
                 <div class="form-filter-fromto simple clear">
                     <dl class="form-box">
-                        <dd><input type="text" data-datepicker="true" placeholder="From"></dd>
+                        <dd><input type="text" data-element="datepicker" placeholder="From"></dd>
                     </dl>
 
                     <dl class="form-box">
-                        <dd><input type="text" data-datepicker="true" placeholder="To"></dd>
+                        <dd><input type="text" data-element="datepicker" placeholder="To"></dd>
                     </dl>
 
                     <div class="buttons">

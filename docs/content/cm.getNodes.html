@@ -24,7 +24,7 @@
                     Part.Autoresize(data['node']);
                 })
                 .add('tabset', function(node){
-                    new Com.Tabset({'tabset' : node});
+                    new Com.Tabset({'node' : node});
                 })
                 .construct();
         });
@@ -36,7 +36,7 @@
 <div class="cm-block-padding">
     <h1>cm.getNodes()</h1>
     <ul class="com-tabset-content-ul" data-element="tabset">
-        <li data-tabset-id="overview" data-tabset-title="Overview">
+        <li data-node="tabs:[]:container" data-config='{"id" : "overview", "title" : "Overview"}'>
             <h2>Overview</h2>
             <p>The function collect nodes, that have <code>data-node</code> attribute. Returns object of collected nodes.</p>
             <h2>Parameters</h2>
@@ -49,7 +49,8 @@
                 <dd>String. Name of the attribute on which will be collect nodes. Default: data-node.</dd>
             </dl>
         </li>
-        <li data-tabset-id="examples" data-tabset-title="Examples">
+
+        <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
             <h2>Simple collect nodes</h2>
             <textarea readonly class="cm-codebox cm-autoresize">
 <div data-node="foo"></div>

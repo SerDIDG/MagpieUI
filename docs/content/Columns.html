@@ -13,22 +13,21 @@
     <script type="text/javascript" src="../../js/modules.js"></script>
     <script type="text/javascript" src="../../js/init.js"></script>
     <script type="text/javascript" src="../../js/components/UA.js"></script>
-    <script type="text/javascript" src="../../js/components/Tooltip.js"></script>
-    <script type="text/javascript" src="../../js/components/Select.js"></script>
-    <script type="text/javascript" src="../../js/components/Calendar.js"></script>
-    <script type="text/javascript" src="../../js/components/Datepicker.js"></script>
-    <script type="text/javascript" src="../../js/components/CalendarEvents.js"></script>
-    <script type="text/javascript" src="../../js/components/Tabset.js"></script>
-    <script type="text/javascript" src="../../js/components/Dialog.js"></script>
     <script type="text/javascript" src="../../js/components/Collector.js"></script>
+    <script type="text/javascript" src="../../js/components/Tabset.js"></script>
     <script type="text/javascript" src="../../js/components/Columns.js"></script>
 
     <script type="text/javascript">
         cm.onReady(function(){
-            // Tabset
-            Com.TabsetCollector();
             // Components
             new Com.Collector()
+                .addEvent('onConstruct', function(collector, data){
+                    Part.Menu();
+                    Part.Autoresize(data['node']);
+                })
+                .add('tabset', function(node){
+                    new Com.Tabset({'node' : node});
+                })
                 .add('columns', function(node){
                     new Com.Columns({
                             'columns' : node
@@ -47,12 +46,12 @@
 <div class="cm-block-padding">
     <h1>Columns</h1>
 
-    <ul class="com-tabset-content-ul" id="tabset" data-tabset="true">
-        <li data-tabset-id="overview" data-tabset-title="Overview"></li>
+    <ul class="com-tabset-content-ul" data-element="tabset">
+        <li data-node="tabs:[]:container" data-config='{"id" : "overview", "title" : "Overview"}'></li>
 
-        <li data-tabset-id="methods" data-tabset-title="Methods"></li>
+        <li data-node="tabs:[]:container" data-config='{"id" : "methods", "title" : "Methods"}'></li>
 
-        <li data-tabset-id="examples" data-tabset-title="Examples">
+        <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
             <h2>Default Columns:</h2>
 
             <div class="com-columns is-editable" data-element="columns">

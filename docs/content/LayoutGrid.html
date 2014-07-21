@@ -25,10 +25,15 @@
 
     <script type="text/javascript">
         cm.onReady(function(){
-            // Datepickers
-            Com.DatepickerCollector();
-            // Tabset
-            Com.TabsetCollector();
+            new Com.Collector()
+                .addEvent('onConstruct', function(collector, data){
+                    Part.Menu();
+                    Part.Autoresize(data['node']);
+                })
+                .add('tabset', function(node){
+                    new Com.Tabset({'node' : node});
+                })
+                .construct();
         });
     </script>
 </head>
@@ -38,8 +43,8 @@
 <div class="cm-block-padding">
     <h1>Grid Layout</h1>
 
-    <ul class="com-tabset-content-ul" id="tabset" data-tabset="true" data-toggleOnHashChange="false">
-        <li data-tabset-id="image-boxes" data-tabset-title="Grid with image boxes">
+    <ul class="com-tabset-content-ul" data-element="tabset">
+        <li data-node="tabs:[]:container" data-config='{"id" : "image-boxes", "title" : "Grid with image boxes"}'>
             <div class="cm-grid col-5 bottom">
                 <ul>
                     <li>
@@ -96,7 +101,7 @@
             </div>
         </li>
 
-        <li data-tabset-id="image-boxes-fixed-titles" data-tabset-title="Grid with image boxes and fixed titles">
+        <li data-node="tabs:[]:container" data-config='{"id" : "image-boxes-fixed-titles", "title" : "Grid with image boxes and fixed titles"}'>
             <div class="cm-grid col-5 bottom">
                 <ul>
                     <li>
@@ -153,7 +158,7 @@
             </div>
         </li>
 
-        <li data-tabset-id="checkable-image-boxes" data-tabset-title="Grid with checkable image boxes">
+        <li data-node="tabs:[]:container" data-config='{"id" : "checkable-image-boxes", "title" : "Grid with checkable image boxes"}'>
             <div class="cm-grid col-5 bottom">
                 <ul>
                     <li>

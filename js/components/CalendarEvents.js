@@ -1,75 +1,59 @@
-Com.Elements['CalendarEvents'] = {};
+cm.define('Com.CalendarEvents', {
+    'modules' : [
+        'DataConfig'
+    ],
+    'params' : {
+        'node' : cm.Node('div'),
+        'data' : {},
+        'format' : '%F %j, %Y',
+        'startYear' : 1950,
+        'endYear' : new Date().getFullYear() + 10,
+        'startWeekDay' : 0,
+        'target' : '_blank',
+        'langs' : {
+            'days' : ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+            'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+        },
+        'Com.Tooltip' : {
+            'className' : 'com-calendar-events-tooltip'
+        }
+    }
+},
+function(params){
+    var that = this;
 
-Com['GetCalendarEvents'] = function(id){
-    return Com.Elements.CalendarEvents[id] || null;
-};
-
-Com['CalendarEvents'] = function(o){
-    var that = this,
-        config = cm.merge({
-            'container' : cm.Node('div'),
-            'data' : {},
-            'format' : '%F %j, %Y',
-            'startYear' : 1950,
-            'endYear' : new Date().getFullYear() + 10,
-            'startWeekDay' : 0,
-            'target' : '_blank',
-            'langs' : {
-                'days' : ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
-                'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-            },
-            'Com.Tooltip' : {
-                'className' : 'com-calendar-events-tooltip'
-            }
-        }, o),
-        dataAttributes = ['data', 'format', 'startYear', 'endYear', 'startWeekDay', 'target'],
-        nodes = {},
-        components = {};
+    that.nodes = {};
+    that.components = {};
 
     var init = function(){
-        // Merge data-attributes with config. Data-attributes have higher priority.
-        processDataAttributes();
+        that.setParams(params);
+        that.getDataConfig(that.params['node']);
         // Render
         render();
         setMiscEvents();
     };
 
-    var processDataAttributes = function(){
-        var value;
-        cm.forEach(dataAttributes, function(item){
-            value = config['container'].getAttribute(['data', item].join('-'));
-            if(item == 'data'){
-                value = value? JSON.parse(value) : config[item];
-            }else if(/^false|true$/.test(value)){
-                value = value? (value == 'true') : config[item];
-            }else{
-                value = value || config[item];
-            }
-            config[item] = value;
-        });
-    };
-
     var render = function(){
         // Structure
-        nodes['container'] = cm.Node('div', {'class' : 'com-calendar-events'});
+        that.nodes['container'] = cm.Node('div', {'class' : 'com-calendar-events'});
         // Render calendar
-        components['calendar'] = new Com.Calendar({
-            'container' : nodes['container'],
+        that.components['calendar'] = new Com.Calendar({
+            'container' : that.nodes['container'],
             'renderMonthOnInit' : false,
-            'startYear' : config['startYear'],
-            'endYear' : config['endYear'],
-            'startWeekDay' : config['startWeekDay'],
-            'langs' : config['langs']
+            'startYear' : that.params['startYear'],
+            'endYear' : that.params['endYear'],
+            'startWeekDay' : that.params['startWeekDay'],
+            'langs' : that.params['langs']
         });
         // Render tooltip
-        components['tooltip'] = new Com.Tooltip(config['Com.Tooltip']);
+        that.components['tooltip'] = new Com.Tooltip(that.params['Com.Tooltip']);
         // Insert into DOM
-        config['container'].appendChild(nodes['container']);
+        that.params['node'].appendChild(that.nodes['container']);
     };
 
     var setMiscEvents = function(){
         // Add events on calendars day
-        components['calendar']
+        that.components['calendar']
             .addEvent('onDayOver', renderTooltip)
             .addEvent('onMonthRender', markMonthDays)
             .renderMonth();
@@ -77,7 +61,7 @@ Com['CalendarEvents'] = function(o){
 
     var markMonthDays = function(calendar, params){
         var data, day;
-        if((data = config['data'][params['year']]) && (data = data[(params['month'] + 1)])){
+        if((data = that.params['data'][params['year']]) && (data = data[(params['month'] + 1)])){
             cm.forEach(data, function(value, key){
                 if(day = params['days'][key]){
                     cm.addClass(day['container'], 'active');
@@ -90,7 +74,7 @@ Com['CalendarEvents'] = function(o){
         var data,
             myNodes = {};
 
-        if((data = config['data'][params['year']]) && (data = data[(params['month'] + 1)]) && (data = data[params['day']])){
+        if((data = that.params['data'][params['year']]) && (data = data[(params['month'] + 1)]) && (data = data[params['day']])){
             // Structure
             myNodes['content'] = cm.Node('div', {'class' : 'cm-listing com-calendar-events-listing'},
                 myNodes['list'] = cm.Node('ul', {'class' : 'list'})
@@ -99,59 +83,32 @@ Com['CalendarEvents'] = function(o){
             cm.forEach(data, function(value){
                 myNodes['list'].appendChild(
                     cm.Node('li',
-                        cm.Node('a', {'href' : value['url'], 'target' : config['target']}, value['title'])
+                        cm.Node('a', {'href' : value['url'], 'target' : that.params['target']}, value['title'])
                     )
                 );
             });
             // Show tooltip
-            components['tooltip']
+            that.components['tooltip']
                 .setTarget(params['node'])
-                .setTitle(cm.dateFormat(params['date'], config['format'], config['langs']))
+                .setTitle(cm.dateFormat(params['date'], that.params['format'], that.params['langs']))
                 .setContent(myNodes['content'])
                 .show();
         }
     };
 
-    /* Main */
+    /* ******* MAIN ******* */
 
     that.addData = function(data){
-        config['data'] = cm.merge(config['data'], data);
-        components['calendar'].renderMonth();
+        that.params['data'] = cm.merge(that.params['data'], data);
+        that.components['calendar'].renderMonth();
         return that;
     };
 
     that.replaceData = function(data){
-        config['data'] = data;
-        components['calendar'].renderMonth();
+        that.params['data'] = data;
+        that.components['calendar'].renderMonth();
         return that;
     };
 
     init();
-};
-
-Com['CalendarEventsCollector'] = function(node){
-    var calendars, id, calendar;
-
-    var init = function(node){
-        if(!node){
-            render(document.body);
-        }else if(node.constructor == Array){
-            cm.forEach(node, render);
-        }else{
-            render(node);
-        }
-    };
-
-    var render = function(node){
-        calendars = cm.clone((node.getAttribute('data-calendar-events') == 'true') ? [node] : cm.getByAttr('data-calendar-events', 'true', node));
-        // Render calendars
-        cm.forEach(calendars, function(item){
-            calendar = new Com.CalendarEvents({'container' : item});
-            if(id = item.id){
-                Com.Elements.CalendarEvents[id] = calendar;
-            }
-        });
-    };
-
-    init(node);
-};
+});

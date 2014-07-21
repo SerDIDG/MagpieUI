@@ -23,6 +23,10 @@
         cm.onReady(function(){
             // Components
             new Com.Collector()
+                .addEvent('onConstruct', function(collector, data){
+                    Part.Menu();
+                    Part.Autoresize(data['node']);
+                })
                 .add('tabset', function(node){
                     new Com.Tabset({'node' : node});
                 })

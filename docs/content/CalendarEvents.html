@@ -13,86 +13,27 @@
     <script type="text/javascript" src="../../js/modules.js"></script>
     <script type="text/javascript" src="../../js/init.js"></script>
     <script type="text/javascript" src="../../js/components/UA.js"></script>
+    <script type="text/javascript" src="../../js/components/Collector.js"></script>
+    <script type="text/javascript" src="../../js/components/Tabset.js"></script>
     <script type="text/javascript" src="../../js/components/Tooltip.js"></script>
     <script type="text/javascript" src="../../js/components/Select.js"></script>
     <script type="text/javascript" src="../../js/components/Calendar.js"></script>
-    <script type="text/javascript" src="../../js/components/Datepicker.js"></script>
     <script type="text/javascript" src="../../js/components/CalendarEvents.js"></script>
-    <script type="text/javascript" src="../../js/components/Tabset.js"></script>
-    <script type="text/javascript" src="../../js/components/Dialog.js"></script>
-    <script type="text/javascript" src="../../js/components/Collector.js"></script>
-    <script type="text/javascript" src="../../js/components/Columns.js"></script>
 
     <script type="text/javascript">
         cm.onReady(function(){
-            // Datepickers
-            Com.DatepickerCollector();
-            // Tabset
-            Com.TabsetCollector();
-            // Calendar
-            Com.CalendarEventsCollector();
-            Com.GetCalendarEvents('calendar').addData({
-                '2014' : {
-                    '6' : {
-                        '7' : [
-                            {
-                                'title' : 'Franz Liszt, Hungarian pianist and composer',
-                                'url' : 'http://en.wikipedia.org/wiki/Franz_Liszt'
-                            }
-                        ],
-                        '21' : [
-                            {
-                                'title' : 'Franz Liszt, Hungarian pianist and composer',
-                                'url' : 'http://en.wikipedia.org/wiki/Franz_Liszt'
-                            }
-                        ]
-                    },
-                    '7' : {
-                        '7' : [
-                            {
-                                'title' : 'Franz Liszt, Hungarian pianist and composer 1',
-                                'url' : 'http://en.wikipedia.org/wiki/Franz_Liszt'
-                            }
-                        ],
-                        '14' : [
-                            {
-                                'title' : 'Franz Liszt, Hungarian pianist and composer 1',
-                                'url' : 'http://en.wikipedia.org/wiki/Franz_Liszt'
-                            },{
-                                 'title' : 'Franz Liszt, Hungarian pianist and composer 2',
-                                 'url' : 'http://en.wikipedia.org/wiki/Franz_Liszt'
-                            },{
-                                 'title' : 'Franz Liszt, Hungarian pianist and composer 3',
-                                 'url' : 'http://en.wikipedia.org/wiki/Franz_Liszt'
-                            },{
-                                'title' : 'Franz Liszt, Hungarian pianist and composer 2',
-                                'url' : 'http://en.wikipedia.org/wiki/Franz_Liszt'
-                            },{
-                                'title' : 'Franz Liszt, Hungarian pianist and composer 3',
-                                'url' : 'http://en.wikipedia.org/wiki/Franz_Liszt'
-                            },{
-                                'title' : 'Franz Liszt, Hungarian pianist and composer 2',
-                                'url' : 'http://en.wikipedia.org/wiki/Franz_Liszt'
-                            },{
-                                'title' : 'Franz Liszt, Hungarian pianist and composer 3',
-                                'url' : 'http://en.wikipedia.org/wiki/Franz_Liszt'
-                            },{
-                                'title' : 'Franz Liszt, Hungarian pianist and composer 2',
-                                'url' : 'http://en.wikipedia.org/wiki/Franz_Liszt'
-                            },{
-                                'title' : 'Franz Liszt, Hungarian pianist and composer 3',
-                                'url' : 'http://en.wikipedia.org/wiki/Franz_Liszt'
-                            }
-                        ],
-                        '3' : [
-                            {
-                                'title' : 'Franz Liszt, Hungarian pianist and composer',
-                                'url' : 'http://en.wikipedia.org/wiki/Franz_Liszt'
-                            }
-                        ]
-                    }
-                }
-            });
+            new Com.Collector()
+                .addEvent('onConstruct', function(collector, data){
+                    Part.Menu();
+                    Part.Autoresize(data['node']);
+                })
+                .add('tabset', function(node){
+                    new Com.Tabset({'node' : node});
+                })
+                .add('calendar-events', function(node){
+                    new Com.CalendarEvents({'node' : node});
+                })
+                .construct();
         });
     </script>
 </head>
@@ -102,14 +43,13 @@
 <div class="cm-block-padding">
     <h1>Calendar of Events</h1>
 
-    <ul class="com-tabset-content-ul" id="tabset" data-tabset="true">
-        <li data-tabset-id="overview" data-tabset-title="Overview"></li>
+    <ul class="com-tabset-content-ul" data-element="tabset">
+        <li data-node="tabs:[]:container" data-config='{"id" : "overview", "title" : "Overview"}'></li>
 
-        <li data-tabset-id="methods" data-tabset-title="Methods"></li>
+        <li data-node="tabs:[]:container" data-config='{"id" : "methods", "title" : "Methods"}'></li>
 
-        <li data-tabset-id="examples" data-tabset-title="Examples">
-            <!-- <div style="width: 300px;" data-calendar-events="true" data-data='{"2013":{"1":{"5":[{"title":"Franz Liszt, Hungarian pianist and composer","url":"http://en.wikipedia.org/wiki/Franz_Liszt"}],"29":[{"title":"Franz Liszt, Hungarian pianist and composer","url":"http://en.wikipedia.org/wiki/Franz_Liszt"}]},"11":{"2":[{"title":"Franz Liszt, Hungarian pianist and composer","url":"http://en.wikipedia.org/wiki/Franz_Liszt"}],"22":[{"title":"Franz Liszt, Hungarian pianist and composer 1","url":"http://en.wikipedia.org/wiki/Franz_Liszt"},{"title":"Franz Liszt, Hungarian pianist and composer 2","url":"http://en.wikipedia.org/wiki/Franz_Liszt"},{"title":"1234567","url":"http://en.wikipedia.org/wiki/Franz_Liszt"}]}}}'></div> -->
-            <div style="width: 300px;" data-calendar-events="true" id="calendar"></div>
+        <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
+            <div style="width: 300px;" data-element="calendar-events" data-config='{"data" : {"2014":{"7":{"5":[{"title":"Franz Liszt, Hungarian pianist and composer","url":"http://en.wikipedia.org/wiki/Franz_Liszt"}],"29":[{"title":"Franz Liszt, Hungarian pianist and composer","url":"http://en.wikipedia.org/wiki/Franz_Liszt"}]},"11":{"2":[{"title":"Franz Liszt, Hungarian pianist and composer","url":"http://en.wikipedia.org/wiki/Franz_Liszt"}],"22":[{"title":"Franz Liszt, Hungarian pianist and composer 1","url":"http://en.wikipedia.org/wiki/Franz_Liszt"},{"title":"Franz Liszt, Hungarian pianist and composer 2","url":"http://en.wikipedia.org/wiki/Franz_Liszt"},{"title":"1234567","url":"http://en.wikipedia.org/wiki/Franz_Liszt"}]}}}}'></div>
         </li>
     </ul>
 </div>

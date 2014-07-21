@@ -260,7 +260,7 @@ Com['Datepicker'] = function(o){
         });
     };
 
-    /* Main */
+    /* ******* MAIN ******* */
 
     that.get = function(format){
         return cm.dateFormat(currentSelectedDate, (format || config['saveFormat']), config['langs']);
@@ -299,37 +299,10 @@ Com['Datepicker'] = function(o){
         return nodes[key] || nodes;
     };
 
-    that.addEvents = function(o){       // Deprecated
+    that.addEvents = function(o){
         o && convertEvents(o);
         return that;
     };
 
     init();
-};
-
-Com['DatepickerCollector'] = function(node){
-    var datepickers, id, datepicker;
-
-    var init = function(node){
-        if(!node){
-            render(document.body);
-        }else if(node.constructor == Array){
-            cm.forEach(node, render);
-        }else{
-            render(node);
-        }
-    };
-
-    var render = function(node){
-        datepickers = cm.clone((node.getAttribute('data-datepicker') == 'true') ? [node] : cm.getByAttr('data-datepicker', 'true', node));
-        // Render datepickers
-        cm.forEach(datepickers, function(item){
-            datepicker = new Com.Datepicker({'input' : item});
-            if(id = item.id){
-                Com.Elements.Datepicker[id] = datepicker;
-            }
-        });
-    };
-
-    init(node);
 };

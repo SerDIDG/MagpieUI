@@ -20,10 +20,14 @@
 
     <script type="text/javascript">
         cm.onReady(function(){
-            // Tabset
-            Com.TabsetCollector();
-            // Components
             new Com.Collector()
+                .addEvent('onConstruct', function(collector, data){
+                    Part.Menu();
+                    Part.Autoresize(data['node']);
+                })
+                .add('tabset', function(node){
+                    new Com.Tabset({'node' : node});
+                })
                 .add('gallery-popup', function(node){
                     new Com.GalleryPopup({
                         'node' : node
@@ -39,8 +43,8 @@
 <div class="cm-block-padding">
     <h1>Gallery Popup</h1>
 
-    <ul class="com-tabset-content-ul" id="tabset" data-tabset="true">
-        <li data-tabset-id="overview" data-tabset-title="Overview">
+    <ul class="com-tabset-content-ul" data-element="tabset">
+        <li data-node="tabs:[]:container" data-config='{"id" : "overview", "title" : "Overview"}'>
             <h2>Initialize in Java-Script:</h2>
             <pre class="cm-codebox">new Com.GalleryPopup(o);</pre>
             <br>
@@ -101,7 +105,7 @@ components.construct();</pre>
             </ul>
         </li>
 
-        <li data-tabset-id="methods" data-tabset-title="Methods">
+        <li data-node="tabs:[]:container" data-config='{"id" : "methods", "title" : "Methods"}'>
             <h2>Open popup:</h2>
             <pre class="cm-codebox">gallery.open();</pre>
             <p>Returns a class of gallery popup.</p>
@@ -131,7 +135,7 @@ components.construct();</pre>
             <p>Available events: onOpen, onClose, onChange<br>Returns a class of gallery popup.</p>
         </li>
 
-        <li data-tabset-id="examples" data-tabset-title="Examples">
+        <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
             <h2>Gallery listing with rendered html structure:</h2>
             <p class="margin-none">
                 1. Add <b>data-element="gallery-popup"</b> attribute on node where gallery contains.<br>

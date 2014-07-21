@@ -13,22 +13,27 @@
     <script type="text/javascript" src="../../js/modules.js"></script>
     <script type="text/javascript" src="../../js/init.js"></script>
     <script type="text/javascript" src="../../js/components/UA.js"></script>
+    <script type="text/javascript" src="../../js/components/Collector.js"></script>
+    <script type="text/javascript" src="../../js/components/Tabset.js"></script>
     <script type="text/javascript" src="../../js/components/Tooltip.js"></script>
     <script type="text/javascript" src="../../js/components/Select.js"></script>
     <script type="text/javascript" src="../../js/components/Calendar.js"></script>
     <script type="text/javascript" src="../../js/components/Datepicker.js"></script>
-    <script type="text/javascript" src="../../js/components/CalendarEvents.js"></script>
-    <script type="text/javascript" src="../../js/components/Tabset.js"></script>
-    <script type="text/javascript" src="../../js/components/Dialog.js"></script>
-    <script type="text/javascript" src="../../js/components/Collector.js"></script>
-    <script type="text/javascript" src="../../js/components/Columns.js"></script>
 
     <script type="text/javascript">
         cm.onReady(function(){
-            // Datepickers
-            Com.DatepickerCollector();
-            // Tabset
-            Com.TabsetCollector();
+            new Com.Collector()
+                .addEvent('onConstruct', function(collector, data){
+                    Part.Menu();
+                    Part.Autoresize(data['node']);
+                })
+                .add('tabset', function(node){
+                    new Com.Tabset({'node' : node});
+                })
+                .add('datepicker', function(node){
+                    new Com.Datepicker({'input' : node});
+                })
+                .construct();
         });
     </script>
 </head>
@@ -38,8 +43,8 @@
 <div class="cm-block-padding">
     <h1>Datepicker</h1>
 
-    <ul class="com-tabset-content-ul" id="tabset" data-tabset="true">
-        <li data-tabset-id="overview" data-tabset-title="Overview">
+    <ul class="com-tabset-content-ul" data-element="tabset">
+        <li data-node="tabs:[]:container" data-config='{"id" : "overview", "title" : "Overview"}'>
             <h2>Initialize in Java-Script:</h2>
             <pre class="cm-codebox">new Com.Datepicker(o);</pre>
             <br>
@@ -70,10 +75,18 @@
             </ul>
 
             <h2>Initialize in HTML:</h2>
-            <pre class="cm-codebox">&lt;input type="text" data-datepicker="true"&gt;</pre>
-            <pre class="cm-codebox">cm.onLoad(function(){
-    Com.DatepickerCollector();
-});</pre>
+            <textarea class="cm-codebox cm-autoresize" readonly>
+<script type="text/javascript">
+    cm.onReady(function(){
+        new Com.Collector()
+            .add('datepicker', function(node){
+                new Com.Datepicker({'input' : node})
+            })
+            .construct()
+    });
+</script>
+
+<input type="text" name="foobar" data-element="datepicker"></textarea>
             <br>
             <b>Attributes:</b>
             <ul>
@@ -93,7 +106,7 @@
             </ul>
         </li>
 
-        <li data-tabset-id="methods" data-tabset-title="Methods">
+        <li data-node="tabs:[]:container" data-config='{"id" : "methods", "title" : "Methods"}'>
             <h2>Get datepicker by id:</h2>
             <pre class="cm-codebox">Com.GetDatepicker('id');</pre>
             <p>Returns a class of datepicker.</p>
@@ -127,12 +140,12 @@
             <p>Returns object of nodes, or node if key is specified.</p>
         </li>
 
-        <li data-tabset-id="examples" data-tabset-title="Examples">
+        <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
             <h2>Default Datepicker:</h2>
             <div class="form">
                 <dl>
                     <dd>
-                        <input name="datepicker1" type="text" data-datepicker="true">
+                        <input name="datepicker1" type="text" data-element="datepicker">
                     </dd>
                 </dl>
             </div>
@@ -141,7 +154,7 @@
             <div class="form">
                 <dl>
                     <dd>
-                        <input name="datepicker2" type="text" data-datepicker="true" data-showClearButton="true" placeholder="Specify date">
+                        <input name="datepicker2" type="text" data-element="datepicker" data-showClearButton="true" placeholder="Specify date">
                     </dd>
                 </dl>
             </div>
