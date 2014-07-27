@@ -29,7 +29,9 @@ var cm = {
             'screenTabletPortrait' : 768,
             'screenMobile' : 640,
             'screenMobilePortrait' : 480,
-            'dateTimeFormat' : '%Y-%m-%d %H:%i:%s'
+            'dateFormat' : '%Y-%m-%d',
+            'dateTimeFormat' : '%Y-%m-%d %H:%i:%s',
+            'displayDateFormat' : '%F %j, %Y'
         }
     },
     Mod = {},
@@ -2208,12 +2210,7 @@ cm.defineHelper = function(name, data, handler){
         'modules' : that.data['modules'],
         'params' : that.data['params'],
         'className' : that.className,
-        'classNameShort' : that.classNameShort,
-        'setParams' : function(params){
-            var that = this;
-            that.params = cm.merge(that.params, params);
-            return that;
-        }
+        'classNameShort' : that.classNameShort
     };
 
     // Extend class

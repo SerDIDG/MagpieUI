@@ -6,10 +6,12 @@ Com['GetSelect'] = function(id){
 
 cm.define('Com.Select', {
     'modules' : [
+        'Params',
         'Events',
         'DataConfig'
     ],
     'events' : [
+        'onRender',
         'onSelect',
         'onChange',
         'onFocus',
@@ -94,10 +96,6 @@ function(params){
             renderSingle();
         }
         /* *** ATTRIBUTES *** */
-        // Set select width
-        if(that.params['select'].offsetWidth && that.params['select'].offsetWidth != that.params['select'].parentNode.offsetWidth){
-            nodes['container'].style.width = that.params['select'].offsetWidth + 'px';
-        }
         // Add class name
         if(that.params['select'].className){
             cm.addClass(nodes['container'], that.params['select'].className);
@@ -223,6 +221,8 @@ function(params){
             });
             nodes['menu'] = components['menu'].getNodes();
         }
+        // Trigger events
+        that.triggerEvent('onRender', active);
     };
 
     /* *** COLLECTORS *** */

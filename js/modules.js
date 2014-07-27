@@ -1,3 +1,35 @@
+/* ******* PARAMS ******* */
+
+Mod['Params'] = {
+    '_define' : function(){
+        var that = this;
+        if(!that.extendObject['params']){
+            that.extendObject['params'] = {};
+        }
+    },
+    'setParams' : function(params){
+        var that = this;
+        that.params = cm.merge(that.params, params);
+        // Validate params
+        cm.forEach(that.params, function(item, key){
+            switch(item){
+                case 'document.html':
+                    that.params[key] = document.documentElement;
+                    break;
+
+                case 'document.body':
+                    that.params[key] = document.body;
+                    break;
+
+                case 'document.head':
+                    that.params[key] = document.getElementsByTagName('head')[0];
+                    break;
+            }
+        });
+        return that;
+    }
+};
+
 /* ******* EVENTS ******* */
 
 Mod['Events'] = {
@@ -104,6 +136,13 @@ Mod['Langs'] = {
             that.params['langs'][str] = str;
         }
         return that.params['langs'][str];
+    },
+    'setLangs' : function(o){
+        var that = this;
+        if(cm.isObject(o)){
+            that.params['langs'] = cm.merge(that.params['langs'], o);
+        }
+        return that;
     }
 };
 

@@ -6,6 +6,7 @@ Com['GetTabset'] = function(id){
 
 cm.define('Com.Tabset', {
     'modules' : [
+        'Params',
         'Events',
         'DataConfig',
         'DataNodes'

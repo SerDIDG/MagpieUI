@@ -461,6 +461,7 @@ select[multiple] {
 /* ******* STATIC CLASSES ******* */
 .clear:after,
 .form dl:after,
+.com-timeselect > .inner:after,
 .com-forum-cell-counter .line:after {
   content: ".";
   display: block;
@@ -616,7 +617,8 @@ select[multiple] {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.cm-font-base {
+.cm-font-base,
+.com-timeselect > .inner > .sep {
   font: normal 13px/18px 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
 }
@@ -1324,21 +1326,6 @@ select[multiple] {
 }
 .form dd > input[type="checkbox"]:checked + label + .unveil {
   display: block;
-}
-/* *** TIME PICKER *** */
-.form dl .time {
-  line-height: 28px;
-}
-.form dl .time select,
-.form dl .time .com-select {
-  width: 64px;
-  float: left;
-}
-.form dl .time > span {
-  width: 20px;
-  display: block;
-  float: left;
-  text-align: center;
 }
 /* *** BIRTHDAY PICKER *** */
 .form dl .birth {
@@ -3424,6 +3411,20 @@ select[multiple] {
   border-width: 2px;
   line-height: 17px;
 }
+/* ******* CALENDAR OF EVENTS ******* */
+.com-calendar-events-tooltip {
+  width: 250px;
+}
+.com-calendar-events-tooltip > .inner .title {
+  padding: 4px 8px 0;
+}
+.com-calendar-events-tooltip > .inner > .scroll {
+  max-height: 300px;
+}
+.com-calendar-events-listing {
+  margin: 0;
+  padding: 0 8px 8px;
+}
 /* ******* DATEPICKER ******* */
 .com-datepicker-input {
   width: 100%;
@@ -3471,19 +3472,40 @@ select[multiple] {
 .com-datepicker-calendar .selects .years {
   width: 38%;
 }
-/* ******* CALENDAR OF EVENTS ******* */
-.com-calendar-events-tooltip {
-  width: 250px;
+/* ******* TIME SELECT ******* */
+.com-timeselect {
+  width: 100%;
+  max-width: 210px;
+  display: inline-block;
+  vertical-align: top;
 }
-.com-calendar-events-tooltip > .inner .title {
-  padding: 4px 8px 0;
+.com-timeselect > .inner {
+  position: relative;
 }
-.com-calendar-events-tooltip > .inner > .scroll {
-  max-height: 300px;
+.com-timeselect > .inner > .field {
+  width: 50%;
+  height: 28px;
+  float: left;
+  padding: 0 12px;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
-.com-calendar-events-listing {
-  margin: 0;
-  padding: 0 8px 8px;
+.com-timeselect > .inner > .field:first-child {
+  padding-left: 0;
+}
+.com-timeselect > .inner > .field:last-child {
+  padding-right: 0;
+}
+.com-timeselect > .inner > .sep {
+  width: 24px;
+  position: absolute;
+  top: 0;
+  right: auto;
+  bottom: 0;
+  left: 50%;
+  margin: 0 0 0 -12px;
+  text-align: center;
+  line-height: 28px;
 }
 /* ******* TAGS INPUT ******* */
 .com-tags-input > .inner {
@@ -3549,6 +3571,13 @@ select[multiple] {
   left: 0;
   z-index: 1000;
   opacity: 0;
+  text-align: center;
+}
+.com-dialog:before {
+  height: 100%;
+  display: inline-block;
+  vertical-align: middle;
+  content: '';
 }
 .com-dialog > .bg {
   width: 100%;
@@ -3580,10 +3609,11 @@ select[multiple] {
   opacity: 1;
 }
 .com-dialog > .window {
-  position: absolute;
-  top: 50%;
-  left: 50%;
+  position: relative;
   z-index: 2;
+  display: inline-block;
+  text-align: left;
+  vertical-align: middle;
 }
 .com-dialog > .window > .icon {
   width: 24px;

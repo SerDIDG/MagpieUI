@@ -1,11 +1,12 @@
 cm.define('Com.CalendarEvents', {
     'modules' : [
+        'Params',
         'DataConfig'
     ],
     'params' : {
         'node' : cm.Node('div'),
         'data' : {},
-        'format' : '%F %j, %Y',
+        'format' : cm._config['displayDateFormat'],
         'startYear' : 1950,
         'endYear' : new Date().getFullYear() + 10,
         'startWeekDay' : 0,

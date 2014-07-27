@@ -1,5 +1,6 @@
 cm.define('Com.ClassMaket', {
     'modules' : [
+        'Params',
         'Events',
         'Langs',
         'DataConfig',

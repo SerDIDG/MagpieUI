@@ -25,6 +25,11 @@
     background-image: linear-gradient(@params);
 }
 
+.cm-box-sizing (@value: border-box) {
+    -moz-box-sizing: @value;
+         box-sizing: @value;
+}
+
 .cm-placeholder (@color) {
     &::-webkit-input-placeholder {
         opacity: 1;

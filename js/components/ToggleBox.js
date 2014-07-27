@@ -1,5 +1,6 @@
 cm.define('Com.ToggleBox', {
     'modules' : [
+        'Params',
         'Events',
         'Langs',
         'DataConfig',

@@ -1,5 +1,6 @@
 cm.define('Com.CollapsibleLayout', {
     'modules' : [
+        'Params',
         'Events',
         'DataConfig',
         'DataNodes',

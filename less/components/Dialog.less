@@ -11,6 +11,14 @@
     left: 0;
     z-index: 1000;
     opacity: 0;
+    text-align: center;
+
+    &:before {
+        height: 100%;
+        display: inline-block;
+        vertical-align: middle;
+        content: '';
+    }
 
     > .bg {
         width: 100%;
@@ -44,10 +52,11 @@
     }
 
     > .window {
-        position: absolute;
-        top: 50%;
-        left: 50%;
+        position: relative;
         z-index: 2;
+        display: inline-block;
+        text-align: left;
+        vertical-align: middle;
 
         > .icon {
             width: @cm-Medium;
