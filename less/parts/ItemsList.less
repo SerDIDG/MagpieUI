@@ -39,7 +39,11 @@
                 }
             }
 
-            &:not(.group) {
+            &.title {
+                font-weight: @cm-boldWeight;
+            }
+
+            &:not(.group):not(.title) {
                 cursor: pointer;
                 .cm-transition(all 0.3s ease-in-out);
 

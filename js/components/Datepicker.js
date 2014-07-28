@@ -75,7 +75,7 @@ function(params){
     };
 
     var validateParams = function(){
-        if(cm.isNode(that.params['input']) && cm.inDOM(that.params['input'])){
+        if(cm.isNode(that.params['input'])){
             that.params['placeholder'] = that.params['input'].getAttribute('placeholder') || that.params['placeholder'];
             that.params['title'] = that.params['input'].getAttribute('title') || that.params['title'];
         }

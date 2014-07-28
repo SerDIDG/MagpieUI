@@ -22,6 +22,7 @@ cm.define('Com.Select', {
         'select' : cm.Node('select'),           // Html select node to decorate.
         'renderInBody' : true,                  // Render dropdowns in document.body, else they will be rendrered in component container.
         'multiple' : false,                     // Render multiple select.
+        'placeholder' : '',
         'showTitleTag' : true,                  // Copy title from available select node to component container. Will be shown on hover.
         'title' : false,                        // Title text. Will be shown on hover.
         'menuMargin' : 3,                       // Outer margin from component container to dropdown.
@@ -81,7 +82,8 @@ function(params){
     };
 
     var validateParams = function(){
-        if(cm.isNode(that.params['select']) && cm.inDOM(that.params['select'])){
+        if(cm.isNode(that.params['select'])){
+            that.params['placeholder'] = that.params['select'].getAttribute('placeholder') || that.params['placeholder'];
             that.params['multiple'] = that.params['select'].multiple;
             that.params['title'] = that.params['select'].getAttribute('title') || that.params['title'];
         }
@@ -121,6 +123,12 @@ function(params){
         // Set hidden input attributes
         if(that.params['select'].getAttribute('name')){
             nodes['hidden'].setAttribute('name', that.params['select'].getAttribute('name'));
+        }
+        // Placeholder
+        if(!cm.isEmpty(that.params['placeholder'])){
+            nodes['items'].appendChild(
+                nodes['placeholder'] = cm.Node('li', {'class' : 'title'}, that.params['placeholder'])
+            );
         }
         /* *** RENDER OPTIONS *** */
         collectSelectOptions();

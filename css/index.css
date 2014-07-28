@@ -1989,20 +1989,23 @@ select[multiple] {
 .cm-items-list ul li.group .cm-items-list:first-child {
   margin-top: 0;
 }
-.cm-items-list ul li:not(.group) {
+.cm-items-list ul li.title {
+  font-weight: 600;
+}
+.cm-items-list ul li:not(.group):not(.title) {
   cursor: pointer;
   -webkit-transition: all 0.3s ease-in-out;
   transition: all 0.3s ease-in-out;
 }
-.cm-items-list ul li:not(.group):hover {
+.cm-items-list ul li:not(.group):not(.title):hover {
   background-color: #f2f2f2;
   -webkit-transition: all 0.1s ease-in-out;
   transition: all 0.1s ease-in-out;
 }
-.cm-items-list ul li:not(.group).active {
+.cm-items-list ul li:not(.group):not(.title).active {
   background-color: #daebfb;
 }
-.cm-items-list ul li:not(.group).active:hover {
+.cm-items-list ul li:not(.group):not(.title).active:hover {
   background-color: #c3def9;
 }
 .cm-items-list.auto ul {

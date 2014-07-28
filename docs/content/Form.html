@@ -21,6 +21,7 @@
     <script type="text/javascript" src="../../js/components/Calendar.js"></script>
     <script type="text/javascript" src="../../js/components/Datepicker.js"></script>
     <script type="text/javascript" src="../../js/components/DateSelect.js"></script>
+    <script type="text/javascript" src="../../js/components/TimeSelect.js"></script>
     <script type="text/javascript" src="../../js/components/CalendarEvents.js"></script>
     <script type="text/javascript" src="../../js/components/Dialog.js"></script>
     <script type="text/javascript" src="../../js/components/TagsInput.js"></script>
@@ -37,9 +38,7 @@
                     new Com.Tabset({'node' : node});
                 })
                 .add('tags', function(node){
-                    new Com.TagsInput({
-                        'input' : node
-                    });
+                    new Com.TagsInput({'input' : node});
                 })
                 .add('datepicker', function(node){
                     new Com.Datepicker({'input' : node});
@@ -48,9 +47,10 @@
                     new Com.Select({'select' : node})
                 })
                 .add('date-select', function(node){
-                    new Com.DateSelect({
-                        'input' : node
-                    });
+                    new Com.DateSelect({'input' : node});
+                })
+                .add('time-select', function(node){
+                    new Com.TimeSelect({'input' : node});
                 })
                 .construct();
 		});
@@ -132,6 +132,12 @@
                         <input type="text" readonly data-element="date-select">
                     </dd>
                 </dl>
+                <dl>
+                    <dt>Time Select:</dt>
+                    <dd>
+                        <input type="text" readonly data-element="time-select">
+                    </dd>
+                </dl>
 
                 <hr>
 
@@ -139,55 +145,6 @@
                     <dt>Tags:</dt>
                     <dd>
                         <input type="text" data-element="tags" value="tag1, tag2">
-                    </dd>
-                </dl>
-
-                <hr>
-
-                <dl>
-                    <dt>Time picker:</dt>
-                    <dd>
-                        <div class="com-timeselect">
-                            <div class="inner">
-                                <div class="field">
-                                    <select name="time-picker-hours" data-element="select">
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                        <option value="6">6</option>
-                                        <option value="7">7</option>
-                                        <option value="8">8</option>
-                                        <option value="9">9</option>
-                                        <option value="10">10</option>
-                                        <option value="11">11</option>
-                                        <option value="12" selected>12</option>
-                                    </select>
-                                </div>
-                                <div class="sep">:</div>
-                                <div class="field">
-                                    <select name="time-picker-minutes" data-element="select">
-                                        <option value="00">00</option>
-                                        <option value="15">15</option>
-                                        <option value="30" selected>30</option>
-                                        <option value="45">45</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </dd>
-                </dl>
-                <dl>
-                    <dt>Birthdate:</dt>
-                    <dd>
-                        <div class="birth clear">
-                            <input placeholder="YYYY" name="year" type="text" class="year" maxlength="4">
-                            <div>/</div>
-                            <input placeholder="MM" name="month" type="text" class="month" maxlength="2">
-                            <div>/</div>
-                            <input placeholder="DD" name="day" type="text" class="day" maxlength="2">
-                        </div>
                     </dd>
                 </dl>
 

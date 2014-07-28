@@ -31,7 +31,9 @@ var cm = {
             'screenMobilePortrait' : 480,
             'dateFormat' : '%Y-%m-%d',
             'dateTimeFormat' : '%Y-%m-%d %H:%i:%s',
-            'displayDateFormat' : '%F %j, %Y'
+            'timeFormat' : '%H:%i',
+            'displayDateFormat' : '%F %j, %Y',
+            'displayDateTimeFormat' : '%F %j, %Y %H:%i'
         }
     },
     Mod = {},
@@ -692,7 +694,7 @@ cm.node = cm.Node = function(){
         i = 1;
     }
     for(var ln = args.length; i < ln; i++){
-        if(arguments[i]){
+        if(typeof arguments[i] != 'undefined'){
             if(typeof arguments[i] == 'string' || typeof args[i] == 'number'){
                 el.appendChild(document.createTextNode(args[i]));
             }else{
@@ -1315,7 +1317,7 @@ cm.parseDate = function(str, format){
         return null;
     }
 
-    var date = new Date('0000-00-00'),
+    var date = new Date(),
         convertFormats = {
             '%Y' : 'YYYY',
             '%m' : 'mm',

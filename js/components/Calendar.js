@@ -88,15 +88,13 @@ Com['Calendar'] = function(o){
             })
             .set(current['year'])
             .addEvent('onChange', renderView);
+
         selects['months'] = new Com.Select({
                 'select' : nodes['months'],
                 'renderInBody' : config['renderSelectsInBody']
             })
             .set(current['month'])
             .addEvent('onChange', renderView);
-
-        nodes['selects']['years'] = selects['years'].getNodes();
-        nodes['selects']['months'] = selects['months'].getNodes();
     };
 
     var renderView = function(){
