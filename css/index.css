@@ -1327,24 +1327,6 @@ select[multiple] {
 .form dd > input[type="checkbox"]:checked + label + .unveil {
   display: block;
 }
-/* *** BIRTHDAY PICKER *** */
-.form dl .birth {
-  line-height: 28px;
-}
-.form dl .birth input {
-  width: 64px;
-  float: left;
-}
-.form dl .birth input.month,
-.form dl .birth input.day {
-  width: 50px;
-}
-.form dl .birth div {
-  width: 20px;
-  float: left;
-  overflow: hidden;
-  text-align: center;
-}
 /* *** COLUMNS *** */
 .form .cols {
   margin: 10px 0 0;
@@ -3463,10 +3445,19 @@ select[multiple] {
 .com-datepicker-tooltip > .inner > .scroll {
   overflow: visible;
 }
+.com-datepicker-tooltip .time-holder {
+  padding: 0 0 8px;
+  margin: 8px 0 0 0;
+  border-bottom: 1px dotted #cbcbcb;
+  border-top: 1px dotted #cbcbcb;
+}
+.com-datepicker-tooltip .time-holder dl {
+  margin: 0;
+}
 .com-datepicker-tooltip .button.today {
   width: 100%;
   padding: 0;
-  margin: 4px 0 0 0;
+  margin: 8px 0 0 0;
 }
 /* Calendar */
 .com-datepicker-calendar .selects .months {

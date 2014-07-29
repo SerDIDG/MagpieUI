@@ -24,6 +24,12 @@ Mod['Params'] = {
                 case 'document.head':
                     that.params[key] = document.getElementsByTagName('head')[0];
                     break;
+
+                default:
+                    if(/cm._config./i.test(item)){
+                        that.params[key] = cm._config[item.replace('cm._config.', '')];
+                    }
+                    break
             }
         });
         return that;
@@ -132,6 +138,9 @@ Mod['Langs'] = {
     },
     'lang' : function(str){
         var that = this;
+        if(cm.isEmpty(str)){
+            return that.params['langs'];
+        }
         if(!that.params['langs'][str]){
             that.params['langs'][str] = str;
         }
@@ -162,7 +171,7 @@ Mod['DataConfig'] = {
             dataMarker = dataMarker || that.params['configDataMarker'];
             sourceConfig = container.getAttribute(dataMarker);
             if(sourceConfig && (sourceConfig = JSON.parse(sourceConfig))){
-                that.params = cm.merge(that.params, sourceConfig);
+                that.setParams(sourceConfig);
             }
         }
         return that;

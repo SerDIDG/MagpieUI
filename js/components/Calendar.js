@@ -97,7 +97,8 @@ Com['Calendar'] = function(o){
             .addEvent('onChange', renderView);
     };
 
-    var renderView = function(){
+    var renderView = function(triggerEvents){
+        triggerEvents = typeof triggerEvents != 'undefined'? triggerEvents : true;
         var date;
         // Get new today date
         today = new Date();
@@ -116,8 +117,10 @@ Com['Calendar'] = function(o){
         cm.clearNode(nodes['dates']);
         // Render rows
         cm.forEach(6, renderRow);
-        /* *** EXECUTE API EVENTS *** */
-        executeEvent('onMonthRender', current);
+        // Trigger events
+        if(triggerEvents){
+            executeEvent('onMonthRender', current);
+        }
     };
 
     var renderRow = function(i){
@@ -175,15 +178,12 @@ Com['Calendar'] = function(o){
             }
             // Add events
             cm.addEvent(div, 'mouseover', function(){
-                /* *** EXECUTE API EVENTS *** */
                 executeEvent('onDayOver', params);
             });
             cm.addEvent(div, 'mouseout', function(){
-                /* *** EXECUTE API EVENTS *** */
                 executeEvent('onDayOut', params);
             });
             cm.addEvent(div, 'click', function(){
-                /* *** EXECUTE API EVENTS *** */
                 executeEvent('onDayClick', params);
             });
             // Add to array
@@ -224,16 +224,35 @@ Com['Calendar'] = function(o){
         });
     };
 
-    /* Main */
+    /* *** MAIN *** */
 
-    that.set = function(year, month){
+    that.getFullYear = function(){
+        return current['year'];
+    };
+
+    that.getMonth = function(){
+        return current['month'];
+    };
+
+    that.set = function(year, month, triggerEvents){
+        triggerEvents = typeof triggerEvents != 'undefined'? triggerEvents : true;
         if(
-            year >= config['startYear'] && year <= config['endYear'] &&
-            month >= 0 && month <= 11
+            year >= config['startYear'] && year <= config['endYear']
+            && month >= 0 && month <= 11
         ){
-            selects['years'].set(year);
-            selects['months'].set(month);
+            selects['years'].set(year, false);
+            selects['months'].set(month, false);
+            renderView(triggerEvents);
         }
+        return that;
+    };
+
+    that.clear = function(triggerEvents){
+        triggerEvents = typeof triggerEvents != 'undefined'? triggerEvents : true;
+        var date = new Date();
+        selects['years'].set(date.getFullYear(), false);
+        selects['months'].set(date.getMonth(), false);
+        renderView(triggerEvents);
         return that;
     };
 
@@ -248,18 +267,32 @@ Com['Calendar'] = function(o){
 
     that.nextMonth = function(){
         if(next['year'] <= config['endYear']){
-            selects['years'].set(next['year']);
-            selects['months'].set(next['month']);
+            selects['years'].set(next['year'], false);
+            selects['months'].set(next['month'], false);
+            renderView();
         }
         return that;
     };
 
     that.prevMonth = function(){
         if(previous['year'] >= config['startYear']){
-            selects['years'].set(previous['year']);
-            selects['months'].set(previous['month']);
+            selects['years'].set(previous['year'], false);
+            selects['months'].set(previous['month'], false);
+            renderView();
         }
         return that;
+    };
+
+    that.selectDay = function(date){
+        if(date && current['year'] == date.getFullYear() && current['month'] == date.getMonth()){
+            cm.addClass(current['days'][date.getDate()]['container'], 'selected');
+        }
+    };
+
+    that.unSelectDay = function(date){
+        if(date && current['year'] == date.getFullYear() && current['month'] == date.getMonth()){
+            cm.removeClass(current['days'][date.getDate()]['container'], 'selected');
+        }
     };
 
     that.addEvent = function(event, handler){

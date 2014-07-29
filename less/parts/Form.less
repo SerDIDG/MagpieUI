@@ -15,7 +15,7 @@
 
 /* *** BASIC FIELD *** */
 
-.form dl {
+.form dl:extend(.clear all) {
     margin: @CmForm-fieldIndent 0 0 0;
     padding: 0;
     display: block;
@@ -25,8 +25,6 @@
 .form > dl:first-child {
     margin-top: 0;
 }
-
-.form dl:extend(.clear all) {}
 
 .form dt {
     width: @CmForm-fieldTitleWidth;
@@ -333,29 +331,6 @@
 
 .form dd > input[type="checkbox"] {
     .check-line > .checkbox;
-}
-
-/* *** BIRTHDAY PICKER *** */
-
-.form dl .birth {
-    line-height: @CmForm-fieldHeight;
-}
-
-.form dl .birth input {
-    width: 64px;
-    float: left;
-}
-
-.form dl .birth input.month,
-.form dl .birth input.day {
-    width: 50px;
-}
-
-.form dl .birth div {
-    width: 20px;
-    float: left;
-    overflow: hidden;
-    text-align: center;
 }
 
 /* *** COLUMNS *** */

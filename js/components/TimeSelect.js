@@ -8,13 +8,14 @@ cm.define('Com.TimeSelect', {
     'events' : [
         'onRender',
         'onSelect',
-        'onChange'
+        'onChange',
+        'onClear'
     ],
     'params' : {
         'container' : false,
         'input' : cm.Node('input', {'type' : 'text'}),
-        'renderInBody' : true,
-        'format' : cm._config['timeFormat'],
+        'renderSelectsInBody' : true,
+        'format' : 'cm._config.timeFormat',
         'showTitleTag' : true,
         'title' : false,
         'minutesInterval' : 0,
@@ -29,9 +30,9 @@ cm.define('Com.TimeSelect', {
 function(params){
     var that = this,
         nodes = {},
-        components = {},
-        date = new Date();
+        components = {};
 
+    that.date = new Date();
     that.value = 0;
     that.previousValue = 0;
 
@@ -129,9 +130,9 @@ function(params){
 
     var set = function(triggerEvents){
         that.previousValue = that.value;
-        date.setHours(components['selectHours'].get());
-        date.setMinutes(components['selectMinutes'].get());
-        that.value = cm.dateFormat(date, that.params['format']);
+        that.date.setHours(components['selectHours'].get());
+        that.date.setMinutes(components['selectMinutes'].get());
+        that.value = cm.dateFormat(that.date, that.params['format']);
         nodes['hidden'].value = that.value;
         // Trigger events
         if(triggerEvents){
@@ -149,20 +150,59 @@ function(params){
     /* ******* MAIN ******* */
 
     that.set = function(str, format, triggerEvents){
-        if(!cm.isEmpty(str)){
-            format = typeof format != 'undefined'? format : that.params['format'];
-            triggerEvents = typeof triggerEvents != 'undefined'? triggerEvents : true;
-
-            date = cm.parseDate(str, format);
-            components['selectHours'].set(date.getHours(), false);
-            components['selectMinutes'].set(date.getMinutes(), false);
-            set(triggerEvents);
+        format = typeof format != 'undefined'? format : that.params['format'];
+        triggerEvents = typeof triggerEvents != 'undefined'? triggerEvents : true;
+        // Get time
+        if(cm.isEmpty(str) || new RegExp(cm.dateFormat(false, that.params['format'])).test(str)){
+            that.clear();
+            return that;
+        }else{
+            if(typeof str == 'object'){
+                that.date = str;
+            }else{
+                that.date = cm.parseDate(str, format);
+            }
         }
+        // Set components
+        components['selectHours'].set(that.date.getHours(), false);
+        components['selectMinutes'].set(that.date.getMinutes(), false);
+        // Set time
+        set(triggerEvents);
         return that;
     };
 
     that.get = function(){
         return that.value;
+    };
+
+    that.getDate = function(){
+        return that.date;
+    };
+
+    that.getHours = function(){
+        return that.date.getHours();
+    };
+
+    that.getMinutes = function(){
+        return that.date.getMinutes();
+    };
+
+    that.clear = function(triggerEvents){
+        triggerEvents = typeof triggerEvents != 'undefined'? triggerEvents : true;
+        // Clear time
+        that.date.setHours(0);
+        that.date.setMinutes(0);
+        // Clear components
+        components['selectHours'].set(that.date.getHours(), false);
+        components['selectMinutes'].set(that.date.getMinutes(), false);
+        // Set time
+        set(false);
+        // Trigger events
+        if(triggerEvents){
+            that.triggerEvent('onClear', that.value);
+            onChange();
+        }
+        return that;
     };
 
     init();

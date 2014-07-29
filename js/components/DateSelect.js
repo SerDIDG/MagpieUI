@@ -4,7 +4,7 @@ Com['DateSelect'] = function(o){
             'configDataMarker' : 'data-config',
             'container' : false,
             'input' : cm.Node('input', {'type' : 'text'}),
-            'saveFormat' : '%Y-%m-%d',
+            'format' : cm._config['dateFormat'],
             'startYear' : 1950,
             'endYear' : new Date().getFullYear() + 10,
             'renderSelectsInBody' : true,
@@ -177,7 +177,7 @@ Com['DateSelect'] = function(o){
                 }
             },
             fromIndex = 0;
-        format = format || config['saveFormat'];
+        format = format || config['format'];
         // Parse
         cm.forEach(convertFormats, function(item, key){
             format = format.replace(key, item);
@@ -193,7 +193,7 @@ Com['DateSelect'] = function(o){
     };
 
     var toStr = function(o, format){
-        var str = format || config['saveFormat'],
+        var str = format || config['format'],
             formats = function(o){
                 return {
                     '%Y' : function(){
@@ -249,8 +249,12 @@ Com['DateSelect'] = function(o){
     /* ******* MAIN ******* */
 
     that.get = function(format){
-        format = format || config['saveFormat'];
+        format = format || config['format'];
         return toStr(that.selected, format);
+    };
+
+    that.getDate = function(){
+        return that.selected;
     };
 
     that.set = function(str){

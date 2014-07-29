@@ -15,6 +15,7 @@ cm.define('Com.Datepicker', {
         'onRender',
         'onSelect',
         'onChange',
+        'onClear',
         'onFocus',
         'onBlur'
     ],
@@ -23,8 +24,12 @@ cm.define('Com.Datepicker', {
         'input' : cm.Node('input', {'type' : 'text'}),
         'renderInBody' : true,
         'placeholder' : '',
-        'format' : cm._config['displayDateFormat'],
-        'saveFormat' : cm._config['dateFormat'],
+        'format' : 'cm._config.dateFormat',
+        'displayFormat' : 'cm._config.displayDateFormat',
+        'isDateTime' : false,
+        'dateTimeFormat' : 'cm._config.dateTimeFormat',
+        'displayDateTimeFormat' : 'cm._config.displayDateTimeFormat',
+        'minutesInterval' : 1,
         'startYear' : 1950,
         'endYear' : new Date().getFullYear() + 10,
         'startWeekDay' : 0,
@@ -42,22 +47,23 @@ cm.define('Com.Datepicker', {
         'langs' : {
             'days' : ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
             'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-            'clearButtonTitle' : 'Clear datepicker',
-            'todayButton' : 'Today'
+            'Clear date' : 'Clear date',
+            'Today' : 'Today',
+            'Now' : 'Now',
+            'Time' : 'Time:'
         }
     }
 },
 function(params){
     var that = this,
-        nodes = {
-            'calendar' : {},
-            'menu' : {}
-        },
-        components = {},
-        
-        today = new Date(),
-        currentSelectedDate,
-        previousSelectedDate;
+        nodes = {},
+        components = {};
+
+    that.date = null;
+    that.value = null;
+    that.previousValue = null;
+    that.format = null;
+    that.displayFormat = null;
 
     var init = function(){
         that.setParams(params);
@@ -68,9 +74,9 @@ function(params){
         setMiscEvents();
         // Set selected date
         if(that.params['selected']){
-            set(that.params['selected']);
+            that.set(that.params['selected'], that.format, false);
         }else{
-            set(that.params['input'].value);
+            that.set(that.params['input'].value, that.format, false);
         }
     };
 
@@ -79,6 +85,8 @@ function(params){
             that.params['placeholder'] = that.params['input'].getAttribute('placeholder') || that.params['placeholder'];
             that.params['title'] = that.params['input'].getAttribute('title') || that.params['title'];
         }
+        that.format = that.params['isDateTime']? that.params['dateTimeFormat'] : that.params['format'];
+        that.displayFormat = that.params['isDateTime']? that.params['displayDateTimeFormat'] : that.params['displayFormat'];
     };
 
     var render = function(){
@@ -89,7 +97,7 @@ function(params){
                 nodes['input'] = cm.Node('input', {'type' : 'text'}),
                 nodes['icon'] = cm.Node('div', {'class' : that.params['icons']['datepicker']})
             ),
-            nodes['menuContainer'] = cm.Node('div',
+            nodes['menuContainer'] = cm.Node('div', {'class' : 'form'},
                 nodes['calendarContainer'] = cm.Node('div')
             )
         );
@@ -114,14 +122,24 @@ function(params){
         if(that.params['showClearButton']){
             cm.addClass(nodes['container'], 'has-clear-button');
             nodes['container'].appendChild(
-                nodes['clearButton'] = cm.Node('div', {'class' : that.params['icons']['clear'], 'title' : that.params['langs']['clearButtonTitle']})
+                nodes['clearButton'] = cm.Node('div', {'class' : that.params['icons']['clear'], 'title' : that.lang('Clear date')})
             );
         }
-        // Today Button
+        // Today / Now Button
         if(that.params['showTodayButton']){
             nodes['menuContainer'].appendChild(
-                nodes['todayButton'] = cm.Node('div', {'class' : 'button today'}, that.params['langs']['todayButton'])
+                nodes['todayButton'] = cm.Node('div', {'class' : 'button today'}, that.lang(that.params['isDateTime']? 'Now' : 'Today'))
             );
+        }
+        // Time Select
+        if(that.params['isDateTime']){
+            nodes['timeHolder'] = cm.Node('div', {'class' : 'time-holder'},
+                cm.Node('dl', {'class' : 'form-box'},
+                    cm.Node('dt', that.lang('Time')),
+                    nodes['timeContainer'] = cm.Node('dd')
+                )
+            );
+            cm.insertAfter(nodes['timeHolder'], nodes['calendarContainer']);
         }
         /* *** INSERT INTO DOM *** */
         if(that.params['container']){
@@ -138,23 +156,21 @@ function(params){
             e = cm.getEvent(e);
             cm.preventDefault(e);
             if(e.keyCode == 8){
-                set(0);
+                that.clear();
                 components['menu'].hide(false);
-                onChange();
             }
         });
         // Clear Button
         if(that.params['showClearButton']){
             cm.addEvent(nodes['clearButton'], 'click', function(){
-                set(0);
+                that.clear();
                 components['menu'].hide(false);
-                onChange();
             });
         }
-        // Today Button
+        // Today / Now Button
         if(that.params['showTodayButton']){
             cm.addEvent(nodes['todayButton'], 'click', function(){
-                set(today, true);
+                that.set(new Date());
                 components['menu'].hide(false);
             });
         }
@@ -168,11 +184,9 @@ function(params){
             'targetEvent' : 'click',
             'hideOnReClick' : true,
             'events' : {
-                'onShowStart' : show,
-                'onHideStart' : hide
+                'onShowStart' : show
             }
         });
-        nodes['menu'] = components['menu'].getNodes();
         // Render calendar
         components['calendar'] = new Com.Calendar({
             'container' : nodes['calendarContainer'],
@@ -184,81 +198,158 @@ function(params){
             'langs' : that.params['langs'],
             'renderMonthOnInit' : false,
             'events' : {
-                'onMonthRender' : markSelectedDay,
+                'onMonthRender' : function(){
+                    if(that.date){
+                        components['calendar'].selectDay(that.date);
+                    }
+                },
                 'onDayClick' : function(calendar, params){
-                    set(params['date'], true);
-                    components['menu'].hide(false);
+                    if(!that.date){
+                        that.date = new Date();
+                    }
+                    components['calendar'].unSelectDay(that.date);
+                    that.date.setDate(params['day']);
+                    components['calendar'].selectDay(that.date);
+                    set(true);
+                    if(!that.params['isDateTime']){
+                        components['menu'].hide(false);
+                    }
                 }
             }
         });
+        // Render Time Select
+        if(that.params['isDateTime']){
+            components['time'] = new Com.TimeSelect({
+                    'container' : nodes['timeContainer'],
+                    'renderSelectsInBody' : false,
+                    'minutesInterval' : that.params['minutesInterval']
+                })
+                .onChange(function(){
+                    if(!that.date){
+                        that.date = new Date();
+                    }
+                    components['calendar'].set(that.date.getFullYear(), that.date.getMonth(), false);
+                    components['calendar'].selectDay(that.date);
+                    set(true);
+                });
+        }
         // Trigger events
-        that.triggerEvent('onRender', currentSelectedDate);
+        that.triggerEvent('onRender', that.value);
     };
 
     var show = function(){
         // Render calendar month
-        if(!currentSelectedDate){
-            today = new Date();
-            components['calendar'].set(today.getFullYear(), today.getMonth()).renderMonth();
-        }else{
-            components['calendar'].set(currentSelectedDate.getFullYear(), currentSelectedDate.getMonth()).renderMonth();
+        if(that.date){
+            components['calendar'].set(that.date.getFullYear(), that.date.getMonth())
         }
+        components['calendar'].renderMonth();
     };
 
-    var hide = function(){
-    };
-
-    var set = function(str, execute){
-        previousSelectedDate = currentSelectedDate;
-        if(!str || new RegExp(cm.dateFormat(false, that.params['saveFormat'], that.params['langs'])).test(str)){
-            currentSelectedDate = null;
-            nodes['input'].value = '';
-            nodes['hidden'].value = cm.dateFormat(false, that.params['saveFormat'], that.params['langs']);
-        }else{
-            if(typeof str == 'object'){
-                currentSelectedDate = str;
-            }else{
-                str = str.split(' ')[0].split('-');
-                currentSelectedDate = new Date(str[0], (parseInt(str[1], 10) - 1), str[2]);
+    var set = function(triggerEvents){
+        that.previousValue = that.value;
+        if(that.date){
+            // Set date
+            that.date.setFullYear(components['calendar'].getFullYear());
+            that.date.setMonth(components['calendar'].getMonth());
+            // Set time
+            if(that.params['isDateTime']){
+                that.date.setHours(components['time'].getHours());
+                that.date.setMinutes(components['time'].getMinutes());
             }
-            nodes['input'].value = cm.dateFormat(currentSelectedDate, that.params['format'], that.params['langs']);
-            nodes['hidden'].value = cm.dateFormat(currentSelectedDate, that.params['saveFormat'], that.params['langs']);
+            // Set value
+            that.value = cm.dateFormat(that.date, that.format, that.lang());
+            nodes['input'].value = cm.dateFormat(that.date, that.displayFormat, that.lang());
+            nodes['hidden'].value = that.value;
+        }else{
+            that.value = cm.dateFormat(false, that.format, that.lang());
+            nodes['input'].value = '';
+            nodes['hidden'].value = cm.dateFormat(false, that.format, that.lang());
         }
-        if(execute){
-            that.triggerEvent('onSelect', currentSelectedDate);
+        // Trigger events
+        if(triggerEvents){
+            that.triggerEvent('onSelect', that.value);
             onChange();
-        }
-    };
-
-    var markSelectedDay = function(calendar, params){
-        if(currentSelectedDate && params['year'] == currentSelectedDate.getFullYear() && params['month'] == currentSelectedDate.getMonth()){
-            cm.addClass(params['days'][currentSelectedDate.getDate()]['container'], 'selected');
         }
     };
     
     var onChange = function(){
-        if(!previousSelectedDate || (!currentSelectedDate && previousSelectedDate) || (currentSelectedDate.toString() !== previousSelectedDate.toString())){
-            that.triggerEvent('onChange', currentSelectedDate);
+        if(!that.previousValue || (!that.value && that.previousValue) || (that.value != that.previousValue)){
+            that.triggerEvent('onChange', that.value);
         }
     };
 
     /* ******* MAIN ******* */
 
     that.get = function(format){
-        return cm.dateFormat(currentSelectedDate, (format || that.params['saveFormat']), that.params['langs']);
-    };
-
-    that.set = function(str){
-        set(str, true);
-        return that;
+        format = typeof format != 'undefined'? format : that.format;
+        return cm.dateFormat(that.date, format, that.lang());
     };
 
     that.getDate = function(){
-        return currentSelectedDate || '';
+        return that.date;
     };
 
-    that.parseDate = function(o, format){
-        return cm.dateFormat(o, (format || that.params['saveFormat']), that.params['langs']);
+    that.getFullYear = function(){
+        return that.date? that.date.getFullYear() : null;
+    };
+
+    that.getMonth = function(){
+        return that.date? that.date.getMonth() : null;
+    };
+
+    that.getDay = function(){
+        return that.date? that.date.getDate() : null;
+    };
+
+    that.getHours = function(){
+        return that.date? that.date.getHours() : null;
+    };
+
+    that.getMinutes = function(){
+        return that.date? that.date.getMinutes() : null;
+    };
+
+    that.set = function(str, format, triggerEvents){
+        format = typeof format != 'undefined'? format : that.format;
+        triggerEvents = typeof triggerEvents != 'undefined'? triggerEvents : true;
+        // Get date
+        if(cm.isEmpty(str) || new RegExp(cm.dateFormat(false, format, that.lang())).test(str)){
+            that.clear();
+            return that;
+        }else{
+            if(typeof str == 'object'){
+                that.date = str;
+            }else{
+                that.date = cm.parseDate(str, format);
+            }
+        }
+        // Set parameters into components
+        components['calendar'].set(that.date.getFullYear(), that.date.getMonth(), false);
+        if(that.params['isDateTime']){
+            components['time'].set(that.date, false);
+        }
+        // Set date
+        set(triggerEvents);
+        return that;
+    };
+
+    that.clear = function(triggerEvents){
+        triggerEvents = typeof triggerEvents != 'undefined'? triggerEvents : true;
+        // Clear date
+        that.date = null;
+        // Clear components
+        components['calendar'].clear(false);
+        if(that.params['isDateTime']){
+            components['time'].clear(false);
+        }
+        // Set date
+        set(false);
+        // Trigger events
+        if(triggerEvents){
+            that.triggerEvent('onClear', that.value);
+            onChange();
+        }
+        return that;
     };
 
     that.getNodes = function(key){
