@@ -99,12 +99,6 @@
             </dl>
             <dl>
                 <dt>
-                    <code><b>placeholder</b></code>
-                </dt>
-                <dd><code>String</code>. Placeholder text. Default: <code>empty</code>.</dd>
-            </dl>
-            <dl>
-                <dt>
                     <code><b>showTitleTag</b></code>
                 </dt>
                 <dd><code>Boolean</code>. Copy title from available select node to component container. Will be shown on hover. Default: <code>true</code>.</dd>
@@ -114,6 +108,12 @@
                     <code><b>title</b></code>
                 </dt>
                 <dd><code>String</code>. Title text. Will be shown on hover. Default: <code>false</code>.</dd>
+            </dl>
+            <dl>
+                <dt>
+                    <code><b>placeholder</b></code>
+                </dt>
+                <dd><code>String</code>. Placeholder text. Default: <code>empty</code>.</dd>
             </dl>
             <dl>
                 <dt>
@@ -161,6 +161,15 @@ new Com.Select({
                     </dl>
                 </dd>
             </dl>
+
+            <hr>
+
+            <h2>Set parameters in html through data attribute</h2>
+            <p>Value in data attribute must be in JSON format. Example:</p>
+            <textarea class="cm-codebox cm-autoresize" readonly>
+<select data-element="select" data-config='{"title" : "Foobar", "options" : [{"value" : "foo", "text" : "Bar"}]}'>
+    <option value="bar">Foo</option>
+</select></textarea>
         </li>
 
         <li data-node="tabs:[]:container" data-config='{"id" : "methods", "title" : "Methods"}'>
@@ -340,18 +349,6 @@ select.addOptions([
             <p>or</p>
             <textarea class="cm-codebox cm-autoresize" readonly>
 <select data-element="select" data-config='{"options" : [{"value" : "foo", "text" : "Bar"}]}'></select></textarea>
-            <hr>
-
-            <h2>Set config through data attribute</h2>
-            <p>Value in data attribute must be in JSON format.</p>
-            <textarea class="cm-codebox cm-autoresize" readonly>
-<select data-element="select" data-config='{"title" : "Foobar", "options" : [{"value" : "foo", "text" : "Bar"}]}'>
-    <option value="bar">Foo</option>
-</select></textarea>
-            <br>
-            <select name="select-6" data-element="select" data-config='{"title" : "Foobar", "options" : [{"value" : "foo", "text" : "Bar"}]}'>
-                <option value="bar">Foo</option>
-            </select>
         </li>
     </ul>
 </div>

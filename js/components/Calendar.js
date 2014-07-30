@@ -10,7 +10,8 @@ Com['Calendar'] = function(o){
             'renderSelectsInBody' : true,
             'events' : {},
             'langs' : {
-                'days' : ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+                'daysAbbr' : ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+                'days' : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
                 'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
             }
         }, o),
@@ -62,7 +63,7 @@ Com['Calendar'] = function(o){
             weekday = i + config['startWeekDay'];
             weekday = weekday > 6? Math.abs(6 - (weekday - 1)) : weekday;
             nodes['days'].appendChild(
-                cm.Node('th', config['langs']['days'][weekday])
+                cm.Node('th', config['langs']['daysAbbr'][weekday])
             );
         });
         // Render selects options

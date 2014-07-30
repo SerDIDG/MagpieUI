@@ -33,7 +33,7 @@ var cm = {
             'dateTimeFormat' : '%Y-%m-%d %H:%i:%s',
             'timeFormat' : '%H:%i',
             'displayDateFormat' : '%F %j, %Y',
-            'displayDateTimeFormat' : '%F %j, %Y %H:%i'
+            'displayDateTimeFormat' : '%F %j, %Y, %H:%i'
         }
     },
     Mod = {},
@@ -1288,6 +1288,24 @@ cm.dateFormat = function(date, format, langs){
                 '%j' : function(){
                     return date ? date.getDate() : '00';
                 },
+                '%l' : function(){
+                    return date ? langs['days'][date.getDay()] : '00';
+                },
+                '%a' : function(){
+                    return date ? (date.getHours() >= 12? 'pm' : 'am') : '';
+                },
+                '%A' : function(){
+                    return date ? (date.getHours() >= 12? 'PM' : 'AM') : '';
+                },
+                '%g' : function(){
+                    return date ? (date.getHours() % 12 || 12) : '00';
+                },
+                '%G' : function(){
+                    return date ? date.getHours() : '00';
+                },
+                '%h' : function(){
+                    return date ? cm.addLeadZero(date.getHours() % 12 || 12) : '00';
+                },
                 '%H' : function(){
                     return date ? cm.addLeadZero(date.getHours()) : '00';
                 },
@@ -1303,6 +1321,9 @@ cm.dateFormat = function(date, format, langs){
     langs = cm.merge({
         'months' : [
             'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'
+        ],
+        'days' : [
+            'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
         ]
     }, langs);
 

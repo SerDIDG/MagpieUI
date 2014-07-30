@@ -23,7 +23,6 @@ cm.define('Com.Datepicker', {
         'container' : false,
         'input' : cm.Node('input', {'type' : 'text'}),
         'renderInBody' : true,
-        'placeholder' : '',
         'format' : 'cm._config.dateFormat',
         'displayFormat' : 'cm._config.displayDateFormat',
         'isDateTime' : false,
@@ -33,19 +32,21 @@ cm.define('Com.Datepicker', {
         'startYear' : 1950,
         'endYear' : new Date().getFullYear() + 10,
         'startWeekDay' : 0,
-        'showPlaceholder' : true,
         'showTodayButton' : true,
         'showClearButton' : false,
-        'showTitleTag' : true,
-        'title' : false,
+        'showTitleTooltip' : true,
+        'showPlaceholder' : true,
+        'title' : '',
+        'placeholder' : '',
         'menuMargin' : 3,
-        'selected' : 0,
+        'value' : 0,
         'icons' : {
             'datepicker' : 'icon default linked',
             'clear' : 'icon default linked'
         },
         'langs' : {
-            'days' : ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+            'daysAbbr' : ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+            'days' : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
             'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
             'Clear date' : 'Clear date',
             'Today' : 'Today',
@@ -73,8 +74,8 @@ function(params){
         render();
         setMiscEvents();
         // Set selected date
-        if(that.params['selected']){
-            that.set(that.params['selected'], that.format, false);
+        if(that.params['value']){
+            that.set(that.params['value'], that.format, false);
         }else{
             that.set(that.params['input'].value, that.format, false);
         }
@@ -84,6 +85,9 @@ function(params){
         if(cm.isNode(that.params['input'])){
             that.params['placeholder'] = that.params['input'].getAttribute('placeholder') || that.params['placeholder'];
             that.params['title'] = that.params['input'].getAttribute('title') || that.params['title'];
+        }
+        if(that.params['value'] == 'now'){
+            that.params['value'] = new Date();
         }
         that.format = that.params['isDateTime']? that.params['dateTimeFormat'] : that.params['format'];
         that.displayFormat = that.params['isDateTime']? that.params['displayDateTimeFormat'] : that.params['displayFormat'];
@@ -103,7 +107,7 @@ function(params){
         );
         /* *** ATTRIBUTES *** */
         // Title
-        if(that.params['showTitleTag'] && that.params['title']){
+        if(that.params['showTitleTooltip'] && !cm.isEmpty(that.params['title'])){
             nodes['container'].title = that.params['title'];
         }
         // ID
@@ -115,7 +119,7 @@ function(params){
             nodes['hidden'].setAttribute('name', that.params['input'].getAttribute('name'));
         }
         // Placeholder
-        if(that.params['showPlaceholder'] && that.params['placeholder']){
+        if(that.params['showPlaceholder'] && !cm.isEmpty(that.params['placeholder'])){
             nodes['input'].setAttribute('placeholder', that.params['placeholder']);
         }
         // Clear Button
