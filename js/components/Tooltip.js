@@ -27,6 +27,8 @@ Com['Tooltip'] = function(o){
         isHide = true,
         nodes = {};
 
+    that.disabled = false;
+
     var init = function(){
         // Convert events to API Events
         convertEvents(config['events']);
@@ -81,10 +83,12 @@ Com['Tooltip'] = function(o){
     };
 
     var targetEvent = function(){
-        if(!isHide && config['targetEvent'] == 'click' && config['hideOnReClick']){
-            hide(false);
-        }else{
-            show();
+        if(!that.disabled){
+            if(!isHide && config['targetEvent'] == 'click' && config['hideOnReClick']){
+                hide(false);
+            }else{
+                show();
+            }
         }
     };
 
@@ -317,6 +321,16 @@ Com['Tooltip'] = function(o){
                 return item != handler;
             });
         }
+        return that;
+    };
+
+    that.disable = function(){
+        that.disabled = true;
+        return that;
+    };
+
+    that.enable = function(){
+        that.disabled = false;
         return that;
     };
 

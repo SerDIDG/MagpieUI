@@ -90,11 +90,28 @@
         border: 1px solid @cm-colorBorder;
         border-radius: @cm-borderRadius;
         cursor: text;
+        .cm-transition(background-color @cm-transitionDuration ease-in-out);
+        .cm-transition(border-color @cm-transitionDuration ease-in-out);
+        .cm-transition(color @cm-transitionDuration ease-in-out);
+        .cm-transition(box-shadow @cm-transitionDuration ease-in-out);
 
         &:focus {
-            background: #fdffff;
-            border-color: @cm-colorBorderHover;
+            #cm > .input-focus;
         }
+
+        &[disabled] {
+            #cm > .input-disabled;
+        }
+    }
+
+    .input-focus {
+        background-color: #fdffff;
+        border-color: @cm-colorBorderHover;
+    }
+
+    .input-disabled {
+        background-color: @cm-colorLight-background;
+        border-color: @cm-colorLight-border;
     }
 
     // /* *** TEXTAREA *** */
@@ -104,10 +121,6 @@
         min-height: @CmForm-fieldHeight;
         padding: 6px;
         resize: vertical;
-
-        &[disabled] {
-            background-color: @cm-colorSecondary;
-        }
     }
 
     // /* *** BUTTONS *** */

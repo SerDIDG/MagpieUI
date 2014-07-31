@@ -40,6 +40,7 @@ cm.define('Com.Datepicker', {
         'placeholder' : '',
         'menuMargin' : 3,
         'value' : 0,
+        'disabled' : false,
         'icons' : {
             'datepicker' : 'icon default linked',
             'clear' : 'icon default linked'
@@ -65,6 +66,7 @@ function(params){
     that.previousValue = null;
     that.format = null;
     that.displayFormat = null;
+    that.disabled = false;
 
     var init = function(){
         that.setParams(params);
@@ -85,12 +87,14 @@ function(params){
         if(cm.isNode(that.params['input'])){
             that.params['placeholder'] = that.params['input'].getAttribute('placeholder') || that.params['placeholder'];
             that.params['title'] = that.params['input'].getAttribute('title') || that.params['title'];
+            that.params['disabled'] = that.params['input'].disabled || that.params['disabled'];
         }
         if(that.params['value'] == 'now'){
             that.params['value'] = new Date();
         }
         that.format = that.params['isDateTime']? that.params['dateTimeFormat'] : that.params['format'];
         that.displayFormat = that.params['isDateTime']? that.params['displayDateTimeFormat'] : that.params['displayFormat'];
+        that.disabled = that.params['disabled'];
     };
 
     var render = function(){
@@ -188,7 +192,8 @@ function(params){
             'targetEvent' : 'click',
             'hideOnReClick' : true,
             'events' : {
-                'onShowStart' : show
+                'onShowStart' : show,
+                'onHideStart' : hide
             }
         });
         // Render calendar
@@ -237,6 +242,13 @@ function(params){
                     set(true);
                 });
         }
+
+        // Enable / Disable
+        if(that.disabled){
+            that.disable();
+        }else{
+            that.enable();
+        }
         // Trigger events
         that.triggerEvent('onRender', that.value);
     };
@@ -247,6 +259,15 @@ function(params){
             components['calendar'].set(that.date.getFullYear(), that.date.getMonth())
         }
         components['calendar'].renderMonth();
+        // Set classes
+        cm.addClass(nodes['container'], 'active');
+        that.triggerEvent('onFocus', that.value);
+    };
+
+    var hide = function(){
+        // Remove classes
+        cm.removeClass(nodes['container'], 'active');
+        that.triggerEvent('onBlur', that.value);
     };
 
     var set = function(triggerEvents){
@@ -353,6 +374,22 @@ function(params){
             that.triggerEvent('onClear', that.value);
             onChange();
         }
+        return that;
+    };
+
+    that.disable = function(){
+        that.disabled = true;
+        cm.addClass(nodes['container'], 'disabled');
+        nodes['input'].disabled = true;
+        components['menu'].disable();
+        return that;
+    };
+
+    that.enable = function(){
+        that.disabled = false;
+        cm.removeClass(nodes['container'], 'disabled');
+        nodes['input'].disabled = false;
+        components['menu'].enable();
         return that;
     };
 

@@ -28,6 +28,7 @@ cm.define('Com.Select', {
         'menuMargin' : 3,                       // Outer margin from component container to dropdown.
         'options' : [],                         // Listing of options, for rendering through java-script. Example: [{'value' : 'foo', 'text' : 'Bar'}].
         'selected' : 0,                         // Option value / array of option values.
+        'disabled' : false,
         'icons' : {
             'arrow' : 'icon default linked'
         }
@@ -46,6 +47,8 @@ function(params){
 
         oldActive,
         active;
+
+    that.disabled = false;
 
     /* *** CLASS FUNCTIONS *** */
 
@@ -86,7 +89,9 @@ function(params){
             that.params['placeholder'] = that.params['select'].getAttribute('placeholder') || that.params['placeholder'];
             that.params['multiple'] = that.params['select'].multiple;
             that.params['title'] = that.params['select'].getAttribute('title') || that.params['title'];
+            that.params['disabled'] = that.params['select'].disabled || that.params['disabled'];
         }
+        that.disabled = that.params['disabled'];
     };
 
     var render = function(){
@@ -146,7 +151,7 @@ function(params){
 
     var renderSingle = function(){
         nodes['container'] = cm.Node('div', {'class' : 'com-select'},
-            nodes['hidden'] = cm.Node('select', {'data-select' : 'false', 'class' : 'display-none'}),
+            nodes['hidden'] = cm.Node('select', {'class' : 'display-none'}),
             cm.Node('div', {'class' : 'form-field has-icon-right'},
                 nodes['arrow'] = cm.Node('div', {'class' : that.params['icons']['arrow']}),
                 nodes['text'] = cm.Node('input', {'type' : 'text', 'readOnly' : 'true'})
@@ -159,7 +164,7 @@ function(params){
 
     var renderMultiple = function(){
         nodes['container'] = cm.Node('div', {'class' : 'com-multiselect'},
-            nodes['hidden'] = cm.Node('select', {'data-select' : 'false', 'class' : 'display-none', 'multiple' : true}),
+            nodes['hidden'] = cm.Node('select', {'class' : 'display-none', 'multiple' : true}),
             nodes['inner'] = cm.Node('div', {'class' : 'inner'},
                 nodes['scroll'] = cm.Node('div', {'class' : 'cm-items-list'},
                     nodes['items'] = cm.Node('ul')
@@ -228,6 +233,12 @@ function(params){
                 }
             });
             nodes['menu'] = components['menu'].getNodes();
+        }
+        // Enable / Disable
+        if(that.disabled){
+            that.disable();
+        }else{
+            that.enable();
         }
         // Trigger events
         that.triggerEvent('onRender', active);
@@ -301,7 +312,9 @@ function(params){
         item['option'] = cm.Node('option', {'value' : value, 'innerHTML' : text});
         // Label onlick event
         cm.addEvent(item['node'], 'click', function(){
-            set(item, true);
+            if(!that.disabled){
+                set(item, true);
+            }
             !that.params['multiple'] && components['menu'].hide(false);
         });
         // Append
@@ -556,6 +569,28 @@ function(params){
             });
         });
         return result;
+    };
+
+    that.disable = function(){
+        that.disabled = true;
+        cm.addClass(nodes['container'], 'disabled');
+        cm.addClass(nodes['scroll'], 'disabled');
+        if(!that.params['multiple']){
+            nodes['text'].disabled = true;
+            components['menu'].disable();
+        }
+        return that;
+    };
+
+    that.enable = function(){
+        that.disabled = false;
+        cm.removeClass(nodes['container'], 'disabled');
+        cm.removeClass(nodes['scroll'], 'disabled');
+        if(!that.params['multiple']){
+            nodes['text'].disabled = false;
+            components['menu'].enable();
+        }
+        return that;
     };
 
     that.getNodes = function(key){

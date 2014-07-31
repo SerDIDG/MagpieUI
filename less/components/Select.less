@@ -54,4 +54,11 @@
     .cm-items-list > ul {
         max-height: @ComSelect-multiListCount * (@cm-lineHeight + @CmItemsList-indent + @CmItemsList-padding-y * 2) - @CmItemsList-indent;
     }
+
+    &.disabled {
+        .inner {
+            #cm > .input-disabled;
+            cursor: default;
+        }
+    }
 }

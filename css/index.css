@@ -201,23 +201,30 @@ textarea {
   border: 1px solid #cbcbcb;
   border-radius: 3px;
   cursor: text;
+  -webkit-transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out, color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out, color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 input[type="text"]:focus,
 input[type="email"]:focus,
 input[type="number"]:focus,
 input[type="password"]:focus,
 textarea:focus {
-  background: #fdffff;
+  background-color: #fdffff;
   border-color: #c3def9;
+}
+input[type="text"][disabled],
+input[type="email"][disabled],
+input[type="number"][disabled],
+input[type="password"][disabled],
+textarea[disabled] {
+  background-color: #fafafa;
+  border-color: #e6e6e6;
 }
 textarea {
   height: 100px;
   min-height: 28px;
   padding: 6px;
   resize: vertical;
-}
-textarea[disabled] {
-  background-color: #f2f2f2;
 }
 input[type="button"],
 input[type="submit"],
@@ -1974,24 +1981,30 @@ select[multiple] {
 .cm-items-list ul li.title {
   font-weight: 600;
 }
-.cm-items-list ul li:not(.group):not(.title) {
+.cm-items-list ul li:not(.group):not(.title):not(.disabled) {
   cursor: pointer;
   -webkit-transition: all 0.3s ease-in-out;
   transition: all 0.3s ease-in-out;
 }
-.cm-items-list ul li:not(.group):not(.title):hover {
+.cm-items-list ul li:not(.group):not(.title):not(.disabled):hover {
   background-color: #f2f2f2;
   -webkit-transition: all 0.1s ease-in-out;
   transition: all 0.1s ease-in-out;
 }
-.cm-items-list ul li:not(.group):not(.title).active {
+.cm-items-list ul li:not(.group):not(.title):not(.disabled).active {
   background-color: #daebfb;
 }
-.cm-items-list ul li:not(.group):not(.title).active:hover {
+.cm-items-list ul li:not(.group):not(.title):not(.disabled).active:hover {
   background-color: #c3def9;
 }
 .cm-items-list.auto ul {
   max-height: none;
+}
+.cm-items-list.disabled ul li {
+  cursor: default !important;
+}
+.cm-items-list.disabled ul li a {
+  cursor: default;
 }
 /* ******* TOOLBAR ********** */
 .cm-toolbar {
@@ -3241,16 +3254,27 @@ select[multiple] {
   border: 1px solid #cbcbcb;
   border-radius: 3px;
   cursor: text;
+  -webkit-transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out, color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out, color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
   height: auto;
   min-height: 28px;
   padding: 4px;
 }
 .com-multiselect .inner:focus {
-  background: #fdffff;
+  background-color: #fdffff;
   border-color: #c3def9;
+}
+.com-multiselect .inner[disabled] {
+  background-color: #fafafa;
+  border-color: #e6e6e6;
 }
 .com-multiselect .cm-items-list > ul {
   max-height: 114px;
+}
+.com-multiselect.disabled .inner {
+  background-color: #fafafa;
+  border-color: #e6e6e6;
+  cursor: default;
 }
 /* ******* GLOSSARY ******* */
 .com-glossary-word {

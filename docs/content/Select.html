@@ -135,6 +135,12 @@
             </dl>
             <dl>
                 <dt>
+                    <code><b>disabled</b></code>
+                </dt>
+                <dd><code>Boolean</code>. Is select disabled. Default: <code>false</code>.</dd>
+            </dl>
+            <dl>
+                <dt>
                     <code><b>events</b></code>
                 </dt>
                 <dd>
@@ -258,6 +264,16 @@ new Com.Select({
             <br>
             <p>Returns array of options.</p>
 
+            <h2>Disable:</h2>
+            <pre class="cm-codebox">select.disable();</pre>
+            <br>
+            <p> Returns class of select component.</p>
+
+            <h2>Enable:</h2>
+            <pre class="cm-codebox">select.enable();</pre>
+            <br>
+            <p> Returns class of select component.</p>
+
             <h2>Get list of select nodes:</h2>
             <pre class="cm-codebox">select.getNodes(key);</pre>
             <br>
@@ -313,8 +329,16 @@ new Com.Select({
             <select name="select-4" data-element="select"></select>
             <hr>
 
+            <h2>Disabled select:</h2>
+            <select name="select-5" data-element="select" disabled>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+            </select>
+            <hr>
+
             <h2>Multiple select:</h2>
-            <select name="select-5" data-element="select" multiple>
+            <select name="select-6" data-element="select" multiple>
                 <option value="0" selected>Zero</option>
                 <option value="1" selected>One</option>
                 <option value="2" selected>Two</option>

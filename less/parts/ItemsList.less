@@ -43,7 +43,7 @@
                 font-weight: @cm-boldWeight;
             }
 
-            &:not(.group):not(.title) {
+            &:not(.group):not(.title):not(.disabled) {
                 cursor: pointer;
                 .cm-transition(all 0.3s ease-in-out);
 
@@ -66,6 +66,18 @@
     &.auto {
         ul {
             max-height: none;
+        }
+    }
+
+    &.disabled {
+        ul {
+            li {
+                cursor: default !important;
+
+                a {
+                    cursor: default;
+                }
+            }
         }
     }
 }
