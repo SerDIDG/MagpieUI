@@ -206,6 +206,12 @@
             </dl>
             <dl>
                 <dt>
+                    <code><b>disabled</b></code>
+                </dt>
+                <dd><code>Boolean</code>. Is datepicker disabled. Default: <code>false</code>.</dd>
+            </dl>
+            <dl>
+                <dt>
                     <code><b>events</b></code>
                 </dt>
                 <dd>
@@ -318,6 +324,16 @@ new Com.Datepicker({
             <pre class="cm-codebox">datepicker.triggerEvent(event);</pre>
             <br>
             <p>Available events: <code>onRender</code>, <code>onSelect</code>, <code>onChange</code>, <code>onClear</code>, <code>onFocus</code>, <code>onBlur</code>.  Returns class of datepicker component.</p>
+
+            <h2>Disable:</h2>
+            <pre class="cm-codebox">datepicker.disable();</pre>
+            <br>
+            <p> Returns class of datepicker component.</p>
+
+            <h2>Enable:</h2>
+            <pre class="cm-codebox">datepicker.enable();</pre>
+            <br>
+            <p> Returns class of datepicker component.</p>
 
             <h2>Get list of datepicker nodes:</h2>
             <pre class="cm-codebox">datepicker.getNodes(key);</pre>
