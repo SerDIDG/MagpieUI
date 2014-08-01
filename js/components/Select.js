@@ -212,10 +212,10 @@ function(params){
                 }
             });
             cm.addEvent(nodes['container'], 'focus', function(){
-                cm.addEvent(document.body, 'keydown', blockDocumentArrows)
+                cm.addEvent(document.body, 'keydown', blockDocumentArrows);
             });
             cm.addEvent(nodes['container'], 'blur', function(){
-                cm.removeEvent(document.body, 'keydown', blockDocumentArrows)
+                cm.removeEvent(document.body, 'keydown', blockDocumentArrows);
             });
             // Render tooltip
             components['menu'] = new Com.Tooltip({

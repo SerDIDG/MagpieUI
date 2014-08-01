@@ -250,7 +250,7 @@ function(params){
         // Set window height
         if(windowHeight != setHeight + NAHeight || contentHeight != insetHeight){
             contentHeight = insetHeight;
-            if(insetHeight < setHeight){
+            if(insetHeight <= setHeight){
                 cm.removeClass(nodes['scroll'], 'isScroll');
             }else{
                 cm.addClass(nodes['scroll'], 'isScroll');
@@ -342,6 +342,26 @@ function(params){
 
     that.close = function(){
         close();
+        return that;
+    };
+
+    that.setWidth = function(width){
+        that.params['width'] = width;
+        return that;
+    };
+
+    that.setHeight = function(height){
+        that.params['height'] = height;
+        return that;
+    };
+
+    that.setMinHeight = function(height){
+        that.params['minHeight'] = height;
+        return that;
+    };
+
+    that.setMaxHeight = function(height){
+        that.params['maxHeight'] = height;
         return that;
     };
 

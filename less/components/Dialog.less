@@ -52,11 +52,13 @@
     }
 
     > .window {
+        max-width: 100%;
         position: relative;
         z-index: 2;
         display: inline-block;
         text-align: left;
         vertical-align: middle;
+        //.cm-transition(width @cm-transitionDuration ease-in-out);
 
         > .icon {
             width: @cm-Medium;
@@ -89,6 +91,8 @@
 
                 > .scroll {
                     position: relative;
+                    overflow: hidden;
+                    //.cm-transition(height @cm-transitionDuration ease-in-out);
 
                     > .inner {
                         padding: 0 @ComDialog-indent;
