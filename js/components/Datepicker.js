@@ -280,6 +280,7 @@ function(params){
             if(that.params['isDateTime']){
                 that.date.setHours(components['time'].getHours());
                 that.date.setMinutes(components['time'].getMinutes());
+                that.date.setSeconds(0);
             }
             // Set value
             that.value = cm.dateFormat(that.date, that.format, that.lang());
