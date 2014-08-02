@@ -242,6 +242,9 @@ function(params){
     };
 
     var getValidID = function(id){
+        if(cm.isEmpty(that.tabsListing) || cm.isEmpty(that.tabs)){
+            return null;
+        }
         return id && that.tabs[id]? id : that.tabsListing[0]['id'];
     };
     
