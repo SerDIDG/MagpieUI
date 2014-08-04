@@ -4126,6 +4126,12 @@ select[multiple] {
   -ms-transition: -ms-transform 0.3s ease-in-out;
   transition: transform 0.3s ease-in-out;
 }
+.com-togglebox > dt .cm-title-editable .cm-links > ul {
+  line-height: inherit;
+}
+.com-togglebox > dt .cm-title-editable .cm-links > ul > li {
+  line-height: inherit;
+}
 .com-togglebox > dt:hover {
   color: #308ce8;
 }
