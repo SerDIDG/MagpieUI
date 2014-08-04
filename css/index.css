@@ -615,9 +615,14 @@ select[multiple] {
   display: block;
 }
 .cm-text-overflow,
+.cm-itembox .title,
 .cm-userbox .title,
+.cm-itembox .author,
 .cm-userbox .author,
+.cm-itembox .date,
 .cm-userbox .date,
+.cm-itembox .count,
+.cm-userbox .count,
 .cm-list-counted .label,
 .com-togglebox > dt .title,
 .com-togglebox > dt .cm-title-editable > .l,
@@ -2403,6 +2408,8 @@ select[multiple] {
   display: inline-block;
   overflow: hidden;
   vertical-align: top;
+  font: normal 13px/18px 'Open Sans', arial, helvetica, sans-serif;
+  color: #666666;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
@@ -2705,62 +2712,83 @@ select[multiple] {
   transition: top 0.1s ease-in-out, opacity 0.1s ease-in-out;
 }
 /* ******* PART: USER BOX ******* */
+.cm-itembox .title,
 .cm-userbox .title {
   font-weight: 600;
 }
+.cm-itembox .date,
 .cm-userbox .date {
   color: #999999;
 }
+.cm-itembox .count,
+.cm-userbox .count {
+  color: #999999;
+}
+.cm-itembox .descr,
+.cm-userbox .descr {
+  margin: 4px 0 0 0;
+}
+.cm-itembox > .l,
 .cm-userbox > .l {
   float: left;
   margin: 0 12px 0 0;
 }
+.cm-itembox > .r,
 .cm-userbox > .r {
   overflow: hidden;
 }
+.cm-itembox .image .no-image,
 .cm-userbox .image .no-image {
   width: 80px;
   height: 80px;
   background: url('../img/parts/no-image-80.png');
 }
+.cm-itembox .image img,
 .cm-userbox .image img {
   width: 80px;
   height: 80px;
   display: block;
 }
-.cm-userbox .cm-imagebox {
-  width: 80px;
-  height: 80px;
-}
+.cm-itembox.size-50 .image .no-image,
 .cm-userbox.size-50 .image .no-image,
+.cm-itembox.size-50 .image img,
 .cm-userbox.size-50 .image img {
   width: 50px;
   height: 50px;
 }
+.cm-itembox.size-50 .cm-imagebox,
 .cm-userbox.size-50 .cm-imagebox {
   width: 50px;
   height: 50px;
 }
+.cm-itembox.size-80 .image .no-image,
 .cm-userbox.size-80 .image .no-image,
+.cm-itembox.size-80 .image img,
 .cm-userbox.size-80 .image img {
   width: 80px;
   height: 80px;
 }
+.cm-itembox.size-80 .cm-imagebox,
 .cm-userbox.size-80 .cm-imagebox {
   width: 80px;
   height: 80px;
 }
+.cm-itembox.is-centered,
 .cm-userbox.is-centered {
   text-align: center;
 }
+.cm-itembox.is-centered .cm-imagebox,
 .cm-userbox.is-centered .cm-imagebox {
   margin: 0 auto 12px;
 }
+.cm-itembox.is-centered .image,
 .cm-userbox.is-centered .image {
   float: none;
   margin: 0 0 12px;
 }
+.cm-itembox.is-centered .image .no-image,
 .cm-userbox.is-centered .image .no-image,
+.cm-itembox.is-centered .image img,
 .cm-userbox.is-centered .image img {
   margin: 0 auto;
 }

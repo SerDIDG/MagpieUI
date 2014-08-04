@@ -1,5 +1,6 @@
 /* ******* PART: USER BOX ******* */
 
+.cm-itembox,
 .cm-userbox {
     .title:extend(.cm-text-overflow) {
         font-weight: @cm-boldWeight;
@@ -11,6 +12,14 @@
 
     .date:extend(.cm-text-overflow) {
         color: @cm-colorFontMedium;
+    }
+
+    .count:extend(.cm-text-overflow) {
+        color: @cm-colorFontMedium;
+    }
+
+    .descr {
+        margin: @cm-indentXXXSmall 0 0 0;
     }
 
     > .l {
@@ -34,11 +43,6 @@
             height: 80px;
             display: block;
         }
-    }
-
-    .cm-imagebox {
-        width: 80px;
-        height: 80px;
     }
 
     &.size-50 {
