@@ -1109,7 +1109,7 @@ select[multiple] {
 }
 .cm-links > ul > li {
   display: inline-block;
-  vertical-align: middle;
+  vertical-align: top;
   font: normal 11px/18px 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
 }
