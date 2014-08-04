@@ -1,181 +1,112 @@
-Com['GalleryPopup'] = function(o){
-    var that = this,
-        config = cm.merge({
-            'node' : cm.Node('div'),
-            'duration' : 300,
-            'showCaption' : true,
-            'icons' : {
-                'close' : 'icon medium close-white linked'
-            },
-            'langs' : {
-                'close' : 'Close'
-            },
-            'Com.Gallery' : {
-                'showCaption' : false
-            }
-        }, o),
-        API = {
-            'onOpen' : [],
-            'onClose' : [],
-            'onChange' : []
+cm.define('Com.GalleryPopup', {
+    'modules' : [
+        'Params',
+        'DataConfig',
+        'Events'
+    ],
+    'events' : [
+        'onOpen',
+        'onClose',
+        'onChange'
+    ],
+    'params' : {
+        'node' : cm.Node('div'),
+        'duration' : 300,
+        'width' : 'contain',                            // number | percentage | contains
+        'showTitle' : true,
+        'aspectRatio' : '16x9',                         // auto | 4x3 | 3x2 | 16x10 | 16x9 | 21x9 | 35x10 | 3x4 | 2x3 | 10x16 | 9x16
+        'icons' : {
+            'close' : 'icon medium close-white linked'
         },
+        'Com.Dialog' : {
+            'autoOpen' : false,
+            'removeOnClose' : false,
+            'titleOverflow' : true
+        },
+        'Com.Gallery' : {
+            'showCaption' : false
+        }
+    }
+},
+function(params){
+    var that = this,
         nodes = {},
-        coms = {},
-        anim = {},
-        isOpen = false;
+        components = {};
 
     var init = function(){
-        getConfig(config['node']);
+        that.setParams(params);
+        that.convertEvents(that.params['events']);
+        that.getDataConfig(that.params['node']);
         render();
     };
 
     var render = function(){
         // Structure
-        nodes['container'] = cm.Node('div', {'class' : 'com-gallery-popup'},
-            nodes['title'] = cm.Node('div', {'class' : 'title'}),
-            nodes['descr'] = cm.Node('div', {'class' : 'descr'}),
-            nodes['close'] = cm.Node('div', {'class' : config['icons']['close'], 'title' : lang('close')})
+        nodes['container'] = cm.Node('div', {'class' : 'com-gallery-preview bottom'},
+            nodes['galleryContainer'] = cm.Node('div', {'class' : 'inner'})
         );
-        // Overlay title
-        if(config['showCaption']){
-            nodes['title'].appendChild(
-                nodes['caption'] = cm.Node('div', {'class' : 'caption'})
-            );
+        // Set aspect ration
+        if(/^(4x3|3x2|16x10|16x9|21x9|35x10|3x4|2x3|10x16|9x16)$/.test(that.params['aspectRatio'])){
+            cm.addClass(nodes['container'], ['cm-aspect', that.params['aspectRatio']].join('-'))
         }
-        // Gallery
-        coms['gallery'] = new Com.Gallery(
-                cm.merge(config['Com.Gallery'], {
-                    'node' : config['node'],
-                    'container' : nodes['descr']
+        // Calculate dialog dimensions
+        // Dialogue
+        components['dialog'] = new Com.Dialog(
+                cm.merge(that.params['Com.Dialog'], {
+                    'content' : nodes['container']
                 })
             )
-            .addEvent('onSet', open)
+            .addEvent('onOpen', function(){
+                that.triggerEvent('onOpen');
+            })
+            .addEvent('onClose', function(){
+                that.triggerEvent('onClose');
+            });
+        // Gallery
+        components['gallery'] = new Com.Gallery(
+                cm.merge(that.params['Com.Gallery'], {
+                    'node' : that.params['node'],
+                    'container' : nodes['galleryContainer']
+                })
+            )
+            .addEvent('onSet', components['dialog'].open)
             .addEvent('onChange', onChange);
-        // Set events
-        cm.addEvent(nodes['close'], 'click', close);
-        // Init animation
-        anim['container'] = new cm.Animation(nodes['container']);
     };
 
     var onChange = function(gallery, data){
         // Set caption
-        if(config['showCaption']){
-            nodes['caption'].innerHTML = data['current']['title'];
+        if(that.params['showTitle']){
+            components['dialog'].setTitle(data['current']['title']);
         }
-        // API onChange event
-        executeEvent('onChange');
-    };
-
-    /* *** POPUP *** */
-
-    var open = function(){
-        if(!isOpen){
-            isOpen = true;
-            // Add close event on Esc press
-            cm.addEvent(document.body, 'keypress', windowClickEvent);
-            // Hide iframes and flash
-            cm.hideSpecialTags();
-            // Embed gallery
-            document.body.appendChild(nodes['container']);
-            // Animate
-            anim['container'].go({'style' : {'opacity' : 1}, 'anim' : 'smooth', 'duration' : config['duration'], 'onStop' : function(){
-                // API onOpen event
-                executeEvent('onOpen');
-            }});
-        }
-    };
-
-    var close = function(){
-        if(isOpen){
-            // Remove close event on Esc press
-            cm.removeEvent(document.body, 'keypress', windowClickEvent);
-            // Animate
-            anim['container'].go({'style' : {'opacity' : 0}, 'anim' : 'smooth', 'duration' : config['duration'], 'onStop' : function(){
-                isOpen = false;
-                // Show iframes and flash
-                cm.showSpecialTags();
-                // Remove from DOM
-                cm.remove(nodes['container']);
-                // API onClose event
-                executeEvent('onClose');
-            }});
-        }
-    };
-
-    var windowClickEvent = function(e){
-        e = cm.getEvent(e);
-        if(e.keyCode == 27){
-            close();
-        }
-    };
-
-    /* *** MISC FUNCTIONS *** */
-
-    var getConfig = function(container, marker){
-        if(container){
-            marker = marker || 'data-config';
-            var sourceConfig = container.getAttribute(marker);
-            if(sourceConfig){
-                config = cm.merge(config, JSON.parse(sourceConfig));
-            }
-        }
-    };
-
-    var lang = function(str){
-        if(!config['langs'][str]){
-            config['langs'][str] = str;
-        }
-        return config['langs'][str];
-    };
-
-    var executeEvent = function(event, params){
-        API[event].forEach(function(item){
-            item(that, params || {});
-        });
+        that.triggerEvent('onChange');
     };
 
     /* ******* MAIN ******* */
 
     that.open = function(){
-        open();
+        components['dialog'].open();
         return that;
     };
 
     that.close = function(){
-        close();
+        components['dialog'].close();
         return that;
     };
 
     that.set = function(i){
-        coms['gallery'].set(i);
+        components['gallery'].set(i);
         return that;
     };
 
     that.next = function(){
-        coms['gallery'].next();
+        components['gallery'].next();
         return that;
     };
 
     that.prev = function(){
-        coms['gallery'].prev();
-        return that;
-    };
-
-    that.addEvent = function(event, handler){
-        if(API[event] && typeof handler == 'function'){
-            API[event].push(handler);
-        }
-        return that;
-    };
-
-    that.removeEvent = function(event, handler){
-        if(API[event] && typeof handler == 'function'){
-            API[event] = API[event].filter(function(item){
-                return item != handler;
-            });
-        }
+        components['gallery'].prev();
         return that;
     };
 
     init();
-};
+});

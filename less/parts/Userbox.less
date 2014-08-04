@@ -1,4 +1,4 @@
-/* ******* USER BOX ******* */
+/* ******* PART: USER BOX ******* */
 
 .cm-userbox {
     .title:extend(.cm-text-overflow) {
@@ -11,6 +11,15 @@
 
     .date:extend(.cm-text-overflow) {
         color: @cm-colorFontMedium;
+    }
+
+    > .l {
+        float: left;
+        margin: 0 @cm-indentXSmall 0 0;
+    }
+
+    > .r {
+        overflow: hidden;
     }
 
     .image {
@@ -27,8 +36,47 @@
         }
     }
 
+    .cm-imagebox {
+        width: 80px;
+        height: 80px;
+    }
+
+    &.size-50 {
+        .image {
+            .no-image,
+            img {
+                width: 50px;
+                height: 50px;
+            }
+        }
+
+        .cm-imagebox {
+            width: 50px;
+            height: 50px;
+        }
+    }
+
+    &.size-80 {
+        .image {
+            .no-image,
+            img {
+                width: 80px;
+                height: 80px;
+            }
+        }
+
+        .cm-imagebox {
+            width: 80px;
+            height: 80px;
+        }
+    }
+
     &.is-centered {
         text-align: center;
+
+        .cm-imagebox {
+            margin: 0 auto @cm-indentXSmall;
+        }
 
         .image {
             float: none;

@@ -45,6 +45,7 @@ cm.define('Com.Dialog', {
         'className' : '',
         'content' : cm.Node('div'),
         'title' : '',
+        'titleOverflow' : false,
         'buttons' : false,
         'closeButtonOutside' : false,
         'closeButton' : true,
@@ -147,23 +148,20 @@ function(params){
             cm.remove(nodes['title']);
             // Render new nodes
             nodes['title'] = cm.Node('div', {'class' : 'title'}, title);
+            if(that.params['titleOverflow']){
+                cm.addClass(nodes['title'], 'cm-text-overflow');
+            }
             cm.insertFirst(nodes['title'], nodes['windowInner']);
         }
     };
 
     var renderContent = function(node){
         if(!nodes['descr']){
-            if(that.params['scroll']){
-                nodes['descr'] = cm.Node('div', {'class' : 'descr'},
-                    nodes['scroll'] = cm.Node('div', {'class' : 'scroll'},
-                        nodes['inner'] = cm.Node('div', {'class' : 'inner'})
-                    )
-                );
-            }else{
-                nodes['descr'] = cm.Node('div', {'class' : 'descr no-scroll'},
-                    nodes['scroll'] = nodes['inner'] = cm.Node('div', {'class' : 'inner'})
-                );
-            }
+            nodes['descr'] = cm.Node('div', {'class' : 'descr'},
+                nodes['scroll'] = cm.Node('div', {'class' : 'scroll'},
+                    nodes['inner'] = cm.Node('div', {'class' : 'inner'})
+                )
+            );
             if(nodes['title']){
                 cm.insertAfter(nodes['descr'], nodes['title']);
             }else if(nodes['buttons']){
@@ -251,9 +249,9 @@ function(params){
         if(windowHeight != setHeight + NAHeight || contentHeight != insetHeight){
             contentHeight = insetHeight;
             if(insetHeight <= setHeight){
-                cm.removeClass(nodes['scroll'], 'isScroll');
-            }else{
-                cm.addClass(nodes['scroll'], 'isScroll');
+                cm.removeClass(nodes['scroll'], 'is-scroll');
+            }else if(that.params['scroll']){
+                cm.addClass(nodes['scroll'], 'is-scroll');
             }
             nodes['scroll'].style.height = [setHeight, 'px'].join('');
         }

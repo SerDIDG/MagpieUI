@@ -14,7 +14,7 @@
         .icon {
             height: @ComToggleBox-size;
             float: right;
-            margin: 0 0 0 @cm-indentXSmall;
+            margin: 0 0 0 @cm-indentMedium;
             background-position: 100% 50%;
 
             &.default {
@@ -26,7 +26,10 @@
             }
         }
 
-        .title:extend(.cm-text-overflow) {
+        .title:extend(.cm-text-overflow) {}
+
+        .cm-title-editable {
+            > .l:extend(.cm-text-overflow) {}
         }
 
         &:hover {

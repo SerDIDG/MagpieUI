@@ -468,6 +468,7 @@ select[multiple] {
 /* ******* STATIC CLASSES ******* */
 .clear:after,
 .form dl:after,
+.cm-title-editable:after,
 .com-timeselect > .inner:after,
 .com-forum-cell-counter .line:after {
   content: ".";
@@ -619,6 +620,7 @@ select[multiple] {
 .cm-userbox .date,
 .cm-list-counted .label,
 .com-togglebox > dt .title,
+.com-togglebox > dt .cm-title-editable > .l,
 .com-tabset-head-title {
   overflow: hidden;
   white-space: nowrap;
@@ -1084,6 +1086,26 @@ select[multiple] {
 }
 .icon.safari {
   background-position: -400px 0;
+}
+/* ******* PART: LINKS ******* */
+.cm-links > ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cm-links > ul > li {
+  display: inline-block;
+  vertical-align: middle;
+  font: normal 11px/18px 'Open Sans', arial, helvetica, sans-serif;
+  color: #666666;
+}
+.cm-links > ul > li:before {
+  content: '|';
+  margin: 0 4px;
+}
+.cm-links > ul > li:first-child:before {
+  content: normal;
+  margin: 0;
 }
 /* ******* FORM ******* */
 .form {
@@ -1946,6 +1968,14 @@ select[multiple] {
   visibility: visible;
   opacity: 1;
 }
+/* ******* PART: TITLE EDITABLE ******* */
+.cm-title-editable > .r {
+  float: right;
+  margin: 0 0 0 24px;
+}
+.cm-title-editable > .l {
+  overflow: hidden;
+}
 /* ******* ITEMS LIST ******* */
 .cm-items-list ul {
   max-height: 229px;
@@ -2381,7 +2411,7 @@ select[multiple] {
   transition: opacity 0.3s ease-in-out;
 }
 .cm-grid > ul > li > a:hover > img {
-  opacity: 0.5;
+  opacity: 0.7;
   -webkit-transition: opacity 0.1s ease-in-out;
   transition: opacity 0.1s ease-in-out;
 }
@@ -2474,7 +2504,7 @@ select[multiple] {
     width: 100%;
   }
 }
-/* ******* IMAGE BOX ******* */
+/* ******* PART: IMAGE BOX ******* */
 .cm-imagebox {
   position: relative;
   -webkit-user-select: none;
@@ -2601,7 +2631,7 @@ select[multiple] {
   cursor: pointer;
 }
 .cm-imagebox:not(.is-no-hover):hover > .inner > .descr {
-  opacity: 0.5;
+  opacity: 0.7;
   -webkit-transition: opacity 0.1s ease-in-out;
   transition: opacity 0.1s ease-in-out;
 }
@@ -2613,7 +2643,7 @@ select[multiple] {
   transition: top 0.1s ease-in-out, opacity 0.1s ease-in-out;
 }
 .cm-imagebox.is-checkable > .inner > .descr {
-  opacity: 0.5;
+  opacity: 0.7;
   -webkit-transition: opacity 0.3s ease-in-out;
   transition: opacity 0.3s ease-in-out;
 }
@@ -2665,12 +2695,19 @@ select[multiple] {
   -webkit-transition: top 0.1s ease-in-out, opacity 0.1s ease-in-out;
   transition: top 0.1s ease-in-out, opacity 0.1s ease-in-out;
 }
-/* ******* USER BOX ******* */
+/* ******* PART: USER BOX ******* */
 .cm-userbox .title {
   font-weight: 600;
 }
 .cm-userbox .date {
   color: #999999;
+}
+.cm-userbox > .l {
+  float: left;
+  margin: 0 12px 0 0;
+}
+.cm-userbox > .r {
+  overflow: hidden;
 }
 .cm-userbox .image .no-image {
   width: 80px;
@@ -2682,8 +2719,33 @@ select[multiple] {
   height: 80px;
   display: block;
 }
+.cm-userbox .cm-imagebox {
+  width: 80px;
+  height: 80px;
+}
+.cm-userbox.size-50 .image .no-image,
+.cm-userbox.size-50 .image img {
+  width: 50px;
+  height: 50px;
+}
+.cm-userbox.size-50 .cm-imagebox {
+  width: 50px;
+  height: 50px;
+}
+.cm-userbox.size-80 .image .no-image,
+.cm-userbox.size-80 .image img {
+  width: 80px;
+  height: 80px;
+}
+.cm-userbox.size-80 .cm-imagebox {
+  width: 80px;
+  height: 80px;
+}
 .cm-userbox.is-centered {
   text-align: center;
+}
+.cm-userbox.is-centered .cm-imagebox {
+  margin: 0 auto 12px;
 }
 .cm-userbox.is-centered .image {
   float: none;
@@ -3668,7 +3730,7 @@ select[multiple] {
 .com-dialog > .window > .inner > .descr > .scroll > .inner {
   padding: 0 24px;
 }
-.com-dialog > .window > .inner > .descr > .scroll.isScroll {
+.com-dialog > .window > .inner > .descr > .scroll.is-scroll {
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -4017,7 +4079,7 @@ select[multiple] {
 .com-togglebox > dt .icon {
   height: 38px;
   float: right;
-  margin: 0 0 0 12px;
+  margin: 0 0 0 24px;
   background-position: 100% 50%;
 }
 .com-togglebox > dt .icon.default {
@@ -4269,7 +4331,7 @@ select[multiple] {
 }
 /* *** LINKS *** */
 .com-gridlist-link {
-  margin: 0 0 0 6px;
+  margin: 0 0 0 4px;
 }
 .com-gridlist-link:first-child {
   margin: 0;
@@ -4287,7 +4349,7 @@ select[multiple] {
 }
 .com-gridlist-links li:before {
   content: '|';
-  margin: 0 6px;
+  margin: 0 4px;
 }
 .com-gridlist-links li:first-child:before {
   content: normal;
@@ -4919,7 +4981,7 @@ select[multiple] {
 }
 /* *** PREVIEW *** */
 .com-gallery-preview {
-  margin: 0 0 0 24px;
+  margin: 0 0 24px 0;
   position: relative;
 }
 .com-gallery-preview.bottom {

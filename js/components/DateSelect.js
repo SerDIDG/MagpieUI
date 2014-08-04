@@ -1,42 +1,49 @@
-Com['DateSelect'] = function(o){
+cm.define('Com.DateSelect', {
+    'modules' : [
+        'Params',
+        'DataConfig',
+        'Langs',
+        'Events'
+    ],
+    'events' : [
+        'onSelect',
+        'onChange'
+    ],
+    'params' : {
+        'container' : false,
+        'input' : cm.Node('input', {'type' : 'text'}),
+        'format' : 'cm._config.dateFormat',
+        'startYear' : 1950,
+        'endYear' : new Date().getFullYear() + 10,
+        'renderSelectsInBody' : true,
+        'langs' : {
+            'Day' : 'Day',
+            'Month' : 'Month',
+            'Year' : 'Year',
+            'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+        }
+    }
+},
+function(params){
     var that = this,
-        config = cm.merge({
-            'configDataMarker' : 'data-config',
-            'container' : false,
-            'input' : cm.Node('input', {'type' : 'text'}),
-            'format' : cm._config['dateFormat'],
-            'startYear' : 1950,
-            'endYear' : new Date().getFullYear() + 10,
-            'renderSelectsInBody' : true,
-            'events' : {},
-            'langs' : {
-                'day' : 'Day',
-                'month' : 'Month',
-                'year' : 'Year',
-                'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-            }
-        }, o),
-        API = {
-            'onSelect' : [],
-            'onChange' : []
-        },
         nodes = {},
-        coms = {},
+        components = {},
         defaultDate = {
             'day' : '00',
             'month' : '00',
             'year' : '0000'
         };
-
+    
     that.previous = cm.clone(defaultDate);
     that.selected = cm.clone(defaultDate);
 
     var init = function(){
-        convertEvents(config['events']);
-        getConfig(config['input'], config['configDataMarker']);
+        that.setParams(params);
+        that.convertEvents(that.params['events']);
+        that.getDataConfig(that.params['node']);
         render();
         // Set selected date
-        set(config['input'].value);
+        set(that.params['input'].value);
     };
 
     var render = function(){
@@ -56,31 +63,31 @@ Com['DateSelect'] = function(o){
         renderSelects();
         /* *** ATTRIBUTES *** */
         // Set hidden input attributes
-        if(config['input'].getAttribute('name')){
-            nodes['hidden'].setAttribute('name', config['input'].getAttribute('name'));
+        if(that.params['input'].getAttribute('name')){
+            nodes['hidden'].setAttribute('name', that.params['input'].getAttribute('name'));
         }
         /* *** INSERT INTO DOM *** */
-        if(config['container']){
-            config['container'].appendChild(nodes['container']);
-        }else if(config['input'].parentNode){
-            cm.insertBefore(nodes['container'], config['input']);
+        if(that.params['container']){
+            that.params['container'].appendChild(nodes['container']);
+        }else if(that.params['input'].parentNode){
+            cm.insertBefore(nodes['container'], that.params['input']);
         }
-        cm.remove(config['input']);
+        cm.remove(that.params['input']);
     };
 
     var renderSelects = function(){
         var data, i;
         // Days
         data = [
-            {'value' : '00', 'text' : lang('day')}
+            {'value' : '00', 'text' : that.lang('Day')}
         ];
         for(i = 1; i <= 31; i++){
             data.push({'value' : cm.addLeadZero(i), 'text' : i});
         }
-        coms['day'] = new Com.Select({
+        components['day'] = new Com.Select({
             'container' : nodes['day'],
             'options' : data,
-            'renderInBody' : config['renderSelectsInBody'],
+            'renderInBody' : that.params['renderSelectsInBody'],
             'events' : {
                 'onChange' :  function(select, item){
                     that.previous = cm.clone(that.selected);
@@ -91,15 +98,15 @@ Com['DateSelect'] = function(o){
         });
         // Months
         data = [
-            {'value' : '00', 'text' : lang('month')}
+            {'value' : '00', 'text' : that.lang('Month')}
         ];
-        cm.forEach(config['langs']['months'], function(month, i){
+        cm.forEach(that.params['langs']['months'], function(month, i){
             data.push({'value' : cm.addLeadZero(parseInt(i + 1)), 'text' : month});
         });
-        coms['month'] = new Com.Select({
+        components['month'] = new Com.Select({
             'container' : nodes['month'],
             'options' : data,
-            'renderInBody' : config['renderSelectsInBody'],
+            'renderInBody' : that.params['renderSelectsInBody'],
             'events' : {
                 'onChange' : function(select, item){
                     that.previous = cm.clone(that.selected);
@@ -110,15 +117,15 @@ Com['DateSelect'] = function(o){
         });
         // Years
         data = [
-            {'value' : '0000', 'text' : lang('year')}
+            {'value' : '0000', 'text' : that.lang('Year')}
         ];
-        for(i = config['endYear']; i >= config['startYear']; i--){
+        for(i = that.params['endYear']; i >= that.params['startYear']; i--){
             data.push({'value' : i, 'text' : i});
         }
-        coms['year'] = new Com.Select({
+        components['year'] = new Com.Select({
             'container' : nodes['year'],
             'options' : data,
-            'renderInBody' : config['renderSelectsInBody'],
+            'renderInBody' : that.params['renderSelectsInBody'],
             'events' : {
                 'onChange' : function(select, item){
                     that.previous = cm.clone(that.selected);
@@ -140,9 +147,9 @@ Com['DateSelect'] = function(o){
                 that.selected = fromStr(str);
             }
         }
-        coms['day'].set(that.selected['day'], false);
-        coms['month'].set(that.selected['month'], false);
-        coms['year'].set(that.selected['year'], false);
+        components['day'].set(that.selected['day'], false);
+        components['month'].set(that.selected['month'], false);
+        components['year'].set(that.selected['year'], false);
         setMisc(execute);
     };
 
@@ -150,10 +157,10 @@ Com['DateSelect'] = function(o){
         nodes['hidden'].value = toStr(that.selected);
         if(execute){
             // API onSelect event
-            executeEvent('onSelect', toStr(that.selected));
+            that.triggerEvent('onSelect', toStr(that.selected));
             // API onChange event
             if(toStr(that.selected) != toStr(that.previous)){
-                executeEvent('onChange', toStr(that.selected));
+                that.triggerEvent('onChange', toStr(that.selected));
             }
         }
     };
@@ -177,7 +184,7 @@ Com['DateSelect'] = function(o){
                 }
             },
             fromIndex = 0;
-        format = format || config['format'];
+        format = format || that.params['format'];
         // Parse
         cm.forEach(convertFormats, function(item, key){
             format = format.replace(key, item);
@@ -193,7 +200,7 @@ Com['DateSelect'] = function(o){
     };
 
     var toStr = function(o, format){
-        var str = format || config['format'],
+        var str = format || that.params['format'],
             formats = function(o){
                 return {
                     '%Y' : function(){
@@ -213,43 +220,10 @@ Com['DateSelect'] = function(o){
         return str;
     };
 
-    /* ******* MISC FUNCTIONS ******* */
-
-    var convertEvents = function(o){
-        cm.forEach(o, function(item, key){
-            if(API[key] && typeof item == 'function'){
-                API[key].push(item);
-            }
-        });
-    };
-
-    var lang = function(str){
-        if(!config['langs'][str]){
-            config['langs'][str] = str;
-        }
-        return config['langs'][str];
-    };
-
-    var getConfig = function(container, marker){
-        if(container){
-            marker = marker || 'data-config';
-            var sourceConfig = container.getAttribute(marker);
-            if(sourceConfig){
-                config = cm.merge(config, JSON.parse(sourceConfig));
-            }
-        }
-    };
-
-    var executeEvent = function(event, params){
-        API[event].forEach(function(item){
-            item(that, params || {});
-        });
-    };
-
     /* ******* MAIN ******* */
 
     that.get = function(format){
-        format = format || config['format'];
+        format = format || that.params['format'];
         return toStr(that.selected, format);
     };
 
@@ -262,21 +236,5 @@ Com['DateSelect'] = function(o){
         return that;
     };
 
-    that.addEvent = function(event, handler){
-        if(API[event] && typeof handler == 'function'){
-            API[event].push(handler);
-        }
-        return that;
-    };
-
-    that.removeEvent = function(event, handler){
-        if(API[event] && typeof handler == 'function'){
-            API[event] = API[event].filter(function(item){
-                return item != handler;
-            });
-        }
-        return that;
-    };
-
     init();
-};
+});

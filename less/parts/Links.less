@@ -1,0 +1,25 @@
+/* ******* PART: LINKS ******* */
+
+.cm-links {
+    > ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+
+        > li {
+            display: inline-block;
+            vertical-align: middle;
+            .cm-font-ui;
+
+            &:before {
+                content: '|';
+                margin: 0 @CmLinks-indent;
+            }
+
+            &:first-child:before {
+                content: normal;
+                margin: 0;
+            }
+        }
+    }
+}
