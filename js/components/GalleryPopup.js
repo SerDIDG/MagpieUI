@@ -14,14 +14,15 @@ cm.define('Com.GalleryPopup', {
         'duration' : 300,
         'width' : 'contain',                            // number | percentage | contains
         'showTitle' : true,
-        'aspectRatio' : '16x9',                         // auto | 4x3 | 3x2 | 16x10 | 16x9 | 21x9 | 35x10 | 3x4 | 2x3 | 10x16 | 9x16
+        'aspectRatio' : '16x9',                         // auto | 1x1 | 4x3 | 3x2 | 16x10 | 16x9 | 2x1 | 21x9 | 35x10 | 3x4 | 2x3 | 10x16 | 9x16 | 1x2
         'icons' : {
             'close' : 'icon medium close-white linked'
         },
         'Com.Dialog' : {
             'autoOpen' : false,
             'removeOnClose' : false,
-            'titleOverflow' : true
+            'titleOverflow' : true,
+            'closeOnBackground' : true
         },
         'Com.Gallery' : {
             'showCaption' : false
@@ -46,7 +47,7 @@ function(params){
             nodes['galleryContainer'] = cm.Node('div', {'class' : 'inner'})
         );
         // Set aspect ration
-        if(/^(4x3|3x2|16x10|16x9|21x9|35x10|3x4|2x3|10x16|9x16)$/.test(that.params['aspectRatio'])){
+        if(/^(1x1|4x3|3x2|16x10|16x9|2x1|21x9|35x10|3x4|2x3|10x16|9x16|1x2)$/.test(that.params['aspectRatio'])){
             cm.addClass(nodes['container'], ['cm-aspect', that.params['aspectRatio']].join('-'))
         }
         // Calculate dialog dimensions

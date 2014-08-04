@@ -807,6 +807,9 @@ select[multiple] {
 }
 /* ************ COMMON PARTS ************ */
 /* ******* ASPECT RATIO ******* */
+.cm-aspect-1x1 {
+  padding-bottom: 100%;
+}
 /* Landscape */
 .cm-aspect-4x3 {
   padding-bottom: 75%;
@@ -819,6 +822,9 @@ select[multiple] {
 }
 .cm-aspect-16x9 {
   padding-bottom: 56.25%;
+}
+.cm-aspect-2x1 {
+  padding-bottom: 50%;
 }
 .cm-aspect-21x9 {
   padding-bottom: 42.85%;
@@ -838,6 +844,9 @@ select[multiple] {
 }
 .cm-aspect-9x16 {
   padding-bottom: 177.77%;
+}
+.cm-aspect-1x2 {
+  padding-bottom: 200%;
 }
 /* ******* ICONS ******* */
 .icon {
