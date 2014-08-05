@@ -2669,7 +2669,7 @@ select[multiple] {
   opacity: 1;
 }
 .cm-imagebox.is-centered {
-  background-color: #111111;
+  background-color: #fafafa;
 }
 .cm-imagebox.is-centered > .inner {
   height: 100%;
