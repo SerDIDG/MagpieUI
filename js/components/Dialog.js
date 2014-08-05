@@ -35,6 +35,7 @@ cm.define('Com.Dialog', {
     'params' : {
         'container' : 'document.body',
         'id' : null,
+        'size' : 'auto',                // auto | fullscreen
         'width' : 700,                  // number, %
         'height' : 'auto',              // number, %, auto
         'minHeight' : 0,                // number, %, auto, not applicable when using height
@@ -42,11 +43,12 @@ cm.define('Com.Dialog', {
         'position' : 'fixed',
         'indentY' : 24,
         'indentX' : 24,
-        'className' : '',
+        'theme' : 'theme-default',      // theme css class name, default: theme-default
+        'className' : '',               // custom css class name
         'content' : cm.Node('div'),
         'title' : '',
-        'titleOverflow' : false,
         'buttons' : false,
+        'titleOverflow' : false,
         'closeButtonOutside' : false,
         'closeButton' : true,
         'closeTitle' : true,
@@ -78,12 +80,21 @@ function(params){
         that.setParams(params);
         that.convertEvents(that.params['events']);
         that.getDataConfig(that.params['content']);
-        // Render
+        validateParams();
         render();
         // Add to global array
         Com['SetDialog'](that.params['id'], that);
         // Open
         that.params['autoOpen'] && open();
+    };
+    
+    var validateParams = function(){
+        if(that.params['size'] == 'fullscreen'){
+            that.params['width'] = '100%';
+            that.params['height'] = '100%';
+            that.params['indentX'] = 0;
+            that.params['indentY'] = 0;
+        }
     };
 
     var render = function(){
@@ -99,8 +110,12 @@ function(params){
         // Set that.params styles
         nodes['container'].style.position = that.params['position'];
         nodes['window'].style.width = that.params['width'] + 'px';
-        // Add CSS class
+        // Add CSS Classes
+        !cm.isEmpty(that.params['theme']) && cm.addClass(nodes['container'], that.params['theme']);
         !cm.isEmpty(that.params['className']) && cm.addClass(nodes['container'], that.params['className']);
+        if(that.params['size'] == 'fullscreen'){
+            cm.addClass(nodes['container'], 'is-fullscreen');
+        }
         // Render close button
         if(that.params['closeButtonOutside']){
             nodes['bg'].appendChild(
@@ -185,7 +200,7 @@ function(params){
         }
     };
 
-    var resizeHandler = function(){
+    var resize = function(){
         var winHeight = nodes['container'].offsetHeight - (that.params['indentY'] * 2),
             winWidth = nodes['container'].offsetWidth - (that.params['indentX'] * 2),
             windowHeight = nodes['window'].offsetHeight,
@@ -204,8 +219,8 @@ function(params){
         AHeight = winHeight
                 - (nodes['title'] && nodes['title'].offsetHeight || 0)
                 - (nodes['buttons'] && nodes['buttons'].offsetHeight || 0)
-                - cm.getStyle(nodes['descr'], 'paddingTop', true)
-                - cm.getStyle(nodes['descr'], 'paddingBottom', true);
+                - cm.getIndentY(nodes['windowInner'])
+                - cm.getIndentY(nodes['descr']);
         NAHeight = winHeight - AHeight;
         AWidth = winWidth;
         // Calculate min / max height
@@ -264,7 +279,7 @@ function(params){
     var open = function(){
         nodes['container'].style.display = 'block';
         // Resize interval, will be removed on close
-        resizeInt = setInterval(resizeHandler, 5);
+        resizeInt = setInterval(resize, 5);
         // Add close event on Esc press
         cm.addEvent(window, 'keypress', windowClickEvent);
         // Animate

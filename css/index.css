@@ -2708,7 +2708,7 @@ select[multiple] {
   -webkit-transition: top 0.1s ease-in-out, opacity 0.1s ease-in-out;
   transition: top 0.1s ease-in-out, opacity 0.1s ease-in-out;
 }
-/* ******* PART: USER BOX ******* */
+/* ******* PART: ITEM BOX ******* */
 .cm-itembox .title {
   font-weight: 600;
 }
@@ -3665,7 +3665,7 @@ select[multiple] {
 .com-tags-input > .inner .item:last-child {
   margin: 0;
 }
-/* ******* DIALOG ******* */
+/* ******* COMPONENTS: DIALOG ******* */
 .com-dialog {
   width: 100%;
   height: 100%;
@@ -3690,27 +3690,11 @@ select[multiple] {
   top: 0;
   left: 0;
   z-index: 1;
-  background: rgba(0, 0, 0, 0.7);
 }
 .com-dialog > .bg > .icon {
-  width: 24px;
-  height: 24px;
   position: fixed;
-  top: 24px;
-  right: 24px;
-  bottom: auto;
-  left: auto;
   z-index: 2;
   font-size: 0;
-  opacity: 0.4;
-  -webkit-transition: opacity 0.3s ease-in-out;
-  transition: opacity 0.3s ease-in-out;
-}
-.com-dialog > .bg > .icon.default {
-  background-image: url("../img/icons/medium/close-white.png");
-}
-.com-dialog > .bg:hover > .icon {
-  opacity: 1;
 }
 .com-dialog > .window {
   max-width: 100%;
@@ -3721,27 +3705,15 @@ select[multiple] {
   vertical-align: middle;
 }
 .com-dialog > .window > .icon {
-  width: 24px;
-  height: 24px;
   position: absolute;
   z-index: 4;
-  right: 24px;
-  top: 19px;
-}
-.com-dialog > .window > .icon.default {
-  background-image: url("../img/icons/medium/close.png");
 }
 .com-dialog > .window > .inner {
-  background-color: #ffffff;
-  border-radius: 3px;
   overflow: hidden;
 }
 .com-dialog > .window > .inner > .title {
   position: relative;
   z-index: 2;
-  padding: 12px 24px;
-  font: 300 30px/38px 'Open Sans', 'Open Sans', arial, helvetica, sans-serif;
-  color: #666666;
 }
 .com-dialog > .window > .inner > .descr {
   position: relative;
@@ -3751,28 +3723,13 @@ select[multiple] {
   position: relative;
   overflow: hidden;
 }
-.com-dialog > .window > .inner > .descr > .scroll > .inner {
-  padding: 0 24px;
-}
 .com-dialog > .window > .inner > .descr > .scroll.is-scroll {
   overflow-x: hidden;
   overflow-y: auto;
 }
-.com-dialog > .window > .inner > .descr.no-scroll {
-  padding: 0 24px;
-}
-.com-dialog > .window > .inner > .descr:first-child > .scroll > .inner,
-.com-dialog > .window > .inner > .descr:first-child.no-scroll {
-  padding-top: 24px;
-}
-.com-dialog > .window > .inner > .descr:last-child > .scroll > .inner,
-.com-dialog > .window > .inner > .descr:last-child.no-scroll {
-  padding-bottom: 24px;
-}
 .com-dialog > .window > .inner > .buttons {
   position: relative;
   z-index: 3;
-  padding: 24px;
   margin: 0;
 }
 .com-dialog > .window > .inner > .buttons .btn-wrap {
@@ -3780,12 +3737,6 @@ select[multiple] {
 }
 .com-dialog.has-close-background > .bg {
   cursor: pointer;
-}
-.com-dialog.has-close-inside > .window > .inner > .title {
-  padding-right: 72px;
-}
-.com-dialog.has-close-inside > .window > .inner > .descr:first-child {
-  padding-top: 62px;
 }
 /* IE Opacity */
 .ie6 .com-dialog,
@@ -3815,13 +3766,102 @@ select[multiple] {
 .com-dialog-confirm .button-box input {
   width: 70px;
 }
-/* ******* COMPONENTS IN DIALOG ******* */
+/* ******* COMPONENT: DIALOG: STUFF ******* */
 /* *** EDITABLE AREA *** */
 .com-dialog .cm-editable:hover > .border {
   top: -8px;
   right: -8px;
   bottom: -8px;
   left: -8px;
+}
+/* ******* COMPONENT: DIALOG: THEMES ******* */
+.com-dialog {
+  /* *** DEFAULT *** */
+  /* *** BLACK *** */
+}
+.com-dialog.theme-default > .bg,
+.com-dialog.theme-black > .bg {
+  background: rgba(0, 0, 0, 0.7);
+}
+.com-dialog.theme-default > .bg > .icon,
+.com-dialog.theme-black > .bg > .icon {
+  width: 24px;
+  height: 24px;
+  top: 24px;
+  right: 24px;
+  bottom: auto;
+  left: auto;
+  font-size: 0;
+  opacity: 0.4;
+  -webkit-transition: opacity 0.3s ease-in-out;
+  transition: opacity 0.3s ease-in-out;
+}
+.com-dialog.theme-default > .bg > .icon.default,
+.com-dialog.theme-black > .bg > .icon.default {
+  background-image: url("../img/icons/medium/close-white.png");
+}
+.com-dialog.theme-default > .bg:hover > .icon,
+.com-dialog.theme-black > .bg:hover > .icon {
+  opacity: 1;
+}
+.com-dialog.theme-default > .window > .icon,
+.com-dialog.theme-black > .window > .icon {
+  width: 24px;
+  height: 24px;
+  right: 24px;
+  top: 19px;
+}
+.com-dialog.theme-default > .window > .icon.default,
+.com-dialog.theme-black > .window > .icon.default {
+  background-image: url("../img/icons/medium/close.png");
+}
+.com-dialog.theme-default > .window > .inner,
+.com-dialog.theme-black > .window > .inner {
+  background-color: #ffffff;
+  border-radius: 3px;
+}
+.com-dialog.theme-default > .window > .inner > .title,
+.com-dialog.theme-black > .window > .inner > .title {
+  padding: 12px 24px;
+  font: 300 30px/38px 'Open Sans', 'Open Sans', arial, helvetica, sans-serif;
+  color: #666666;
+}
+.com-dialog.theme-default > .window > .inner > .descr > .scroll > .inner,
+.com-dialog.theme-black > .window > .inner > .descr > .scroll > .inner {
+  padding: 0 24px;
+}
+.com-dialog.theme-default > .window > .inner > .descr:first-child > .scroll > .inner,
+.com-dialog.theme-black > .window > .inner > .descr:first-child > .scroll > .inner {
+  padding-top: 24px;
+}
+.com-dialog.theme-default > .window > .inner > .descr:last-child > .scroll > .inner,
+.com-dialog.theme-black > .window > .inner > .descr:last-child > .scroll > .inner {
+  padding-bottom: 24px;
+}
+.com-dialog.theme-default > .window > .inner > .buttons,
+.com-dialog.theme-black > .window > .inner > .buttons {
+  padding: 24px;
+}
+.com-dialog.theme-default.is-fullscreen > .window > .inner,
+.com-dialog.theme-black.is-fullscreen > .window > .inner {
+  border-radius: 0;
+}
+.com-dialog.theme-default.has-close-inside > .window > .inner > .title,
+.com-dialog.theme-black.has-close-inside > .window > .inner > .title {
+  padding-right: 72px;
+}
+.com-dialog.theme-default.has-close-inside > .window > .inner > .descr:first-child,
+.com-dialog.theme-black.has-close-inside > .window > .inner > .descr:first-child {
+  padding-top: 62px;
+}
+.com-dialog.theme-black > .window > .icon.default {
+  background-image: url("../img/icons/medium/close-white.png");
+}
+.com-dialog.theme-black > .window > .inner {
+  background-color: #111111;
+}
+.com-dialog.theme-black > .window > .inner > .title {
+  color: #ffffff;
 }
 /* ******* OVERLAY ******* */
 .cm-overlay {
@@ -4859,55 +4899,16 @@ select[multiple] {
   height: 36px;
   top: auto;
 }
-/* ******* GALLERY POPUP ******* */
-.com-gallery-popup {
-  position: fixed;
-  z-index: 1004;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  opacity: 0;
-  background: #111111;
-}
-.com-gallery-popup > .title {
-  position: absolute;
-  z-index: 2;
-  top: 12px;
-  right: 72px;
-  bottom: auto;
-  left: 24px;
-}
-.com-gallery-popup > .title .caption {
-  font: 300 30px/38px 'Open Sans', 'Open Sans', arial, helvetica, sans-serif;
-  color: #666666;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  color: #ffffff;
-}
-.com-gallery-popup > .title * {
-  color: #ffffff;
-}
-.com-gallery-popup > .icon {
-  position: absolute;
-  top: 24px;
-  right: 24px;
-  bottom: auto;
-  left: auto;
-}
-.com-gallery-popup > .descr {
-  position: absolute;
-  z-index: 2;
-  top: 72px;
-  right: 24px;
-  bottom: 24px;
-  left: 24px;
-}
-.com-gallery-popup .com-gallery {
+/* ******* COMPONENT: GALLERY POPUP ******* */
+.com-gallery-popup .com-gallery-preview {
   width: 100%;
   height: 100%;
   position: relative;
+}
+.com-gallery-popup.is-fullscreen > .window > .inner > .descr > .scroll > .inner {
+  height: 100%;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 /* ******* GALLERY LAYOUT ******* */
 /* *** BAR *** */

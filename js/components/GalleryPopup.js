@@ -12,17 +12,20 @@ cm.define('Com.GalleryPopup', {
     'params' : {
         'node' : cm.Node('div'),
         'duration' : 300,
-        'width' : 'contain',                            // number | percentage | contains
+        'size' : 'fullscreen',                   // fullscreen | auto
+        'aspectRatio' : 'auto',                  // auto | 1x1 | 4x3 | 3x2 | 16x10 | 16x9 | 2x1 | 21x9 | 35x10 | 3x4 | 2x3 | 10x16 | 9x16 | 1x2
+        'theme' : 'theme-black',
         'showTitle' : true,
-        'aspectRatio' : '16x9',                         // auto | 1x1 | 4x3 | 3x2 | 16x10 | 16x9 | 2x1 | 21x9 | 35x10 | 3x4 | 2x3 | 10x16 | 9x16 | 1x2
         'icons' : {
             'close' : 'icon medium close-white linked'
         },
         'Com.Dialog' : {
+            'width' : '700',
             'autoOpen' : false,
             'removeOnClose' : false,
             'titleOverflow' : true,
-            'closeOnBackground' : true
+            'closeOnBackground' : true,
+            'className' : 'com-gallery-popup'
         },
         'Com.Gallery' : {
             'showCaption' : false
@@ -39,6 +42,7 @@ function(params){
         that.convertEvents(that.params['events']);
         that.getDataConfig(that.params['node']);
         render();
+        setLogic();
     };
 
     var render = function(){
@@ -47,14 +51,18 @@ function(params){
             nodes['galleryContainer'] = cm.Node('div', {'class' : 'inner'})
         );
         // Set aspect ration
-        if(/^(1x1|4x3|3x2|16x10|16x9|2x1|21x9|35x10|3x4|2x3|10x16|9x16|1x2)$/.test(that.params['aspectRatio'])){
+        if(that.params['aspectRatio'] != 'auto'){
             cm.addClass(nodes['container'], ['cm-aspect', that.params['aspectRatio']].join('-'))
         }
-        // Calculate dialog dimensions
+    };
+
+    var setLogic = function(){
         // Dialogue
         components['dialog'] = new Com.Dialog(
                 cm.merge(that.params['Com.Dialog'], {
-                    'content' : nodes['container']
+                    'content' : nodes['container'],
+                    'theme' : that.params['theme'],
+                    'size' : that.params['size']
                 })
             )
             .addEvent('onOpen', function(){

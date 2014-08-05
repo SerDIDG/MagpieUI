@@ -1527,7 +1527,8 @@ cm.getY = function(o){
 };
 
 cm.getRealX = function(o){
-    var x = cm.getX(o), bodyScroll = false;
+    var x = cm.getX(o),
+        bodyScroll = false;
     while(o){
         if(o.tagName){
             bodyScroll = cm.getCSSStyle(o, 'position') == 'fixed' || bodyScroll;
@@ -1541,7 +1542,8 @@ cm.getRealX = function(o){
 };
 
 cm.getRealY = function(o){
-    var y = cm.getY(o), bodyScroll = false;
+    var y = cm.getY(o),
+        bodyScroll = false;
     while(o){
         if(o.tagName){
             bodyScroll = cm.getCSSStyle(o, 'position') == 'fixed' || bodyScroll;
@@ -1574,8 +1576,29 @@ cm.getRealHeight = function(node, applyHeight){
     return height;
 };
 
+cm.getIndentX = function(node){
+    if(!node){
+        return null;
+    }
+    return cm.getStyle(node, 'paddingLeft', true)
+         + cm.getStyle(node, 'paddingRight', true)
+         + cm.getStyle(node, 'borderLeftWidth', true)
+         + cm.getStyle(node, 'borderRightWidth', true);
+};
+
+cm.getIndentY = function(node){
+    if(!node){
+        return null;
+    }
+    return cm.getStyle(node, 'paddingTop', true)
+         + cm.getStyle(node, 'paddingBottom', true)
+         + cm.getStyle(node, 'borderTopWidth', true)
+         + cm.getStyle(node, 'borderBottomWidth', true);
+};
+
 cm.addStyles = function(node, str){
-    var arr = str.replace(/\s/g, '').split(';'), style;
+    var arr = str.replace(/\s/g, '').split(';'),
+        style;
 
     arr.forEach(function(item){
         if(item.length > 0){
