@@ -469,6 +469,7 @@ select[multiple] {
 .clear:after,
 .form dl:after,
 .cm-title-editable:after,
+.cm-itembox:after,
 .com-timeselect > .inner:after,
 .com-forum-cell-counter .line:after {
   content: ".";
@@ -616,13 +617,9 @@ select[multiple] {
 }
 .cm-text-overflow,
 .cm-itembox .title,
-.cm-userbox .title,
 .cm-itembox .author,
-.cm-userbox .author,
 .cm-itembox .date,
-.cm-userbox .date,
 .cm-itembox .count,
-.cm-userbox .count,
 .cm-list-counted .label,
 .com-togglebox > dt .title,
 .com-togglebox > dt .cm-title-editable > .l,
@@ -637,7 +634,7 @@ select[multiple] {
   color: #666666;
 }
 .cm-font-ui,
-.com-forum-post .cm-userbox,
+.com-forum-post .cm-itembox,
 .com-forum-post .date {
   font: normal 11px/18px 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
@@ -2712,84 +2709,74 @@ select[multiple] {
   transition: top 0.1s ease-in-out, opacity 0.1s ease-in-out;
 }
 /* ******* PART: USER BOX ******* */
-.cm-itembox .title,
-.cm-userbox .title {
+.cm-itembox .title {
   font-weight: 600;
 }
-.cm-itembox .date,
-.cm-userbox .date {
+.cm-itembox .date {
   color: #999999;
 }
-.cm-itembox .count,
-.cm-userbox .count {
+.cm-itembox .count {
   color: #999999;
 }
-.cm-itembox .descr,
-.cm-userbox .descr {
+.cm-itembox .descr {
   margin: 4px 0 0 0;
 }
-.cm-itembox > .l,
-.cm-userbox > .l {
+.cm-itembox > .l {
   float: left;
   margin: 0 12px 0 0;
 }
-.cm-itembox > .r,
-.cm-userbox > .r {
+.cm-itembox > .r {
   overflow: hidden;
 }
-.cm-itembox .image .no-image,
-.cm-userbox .image .no-image {
+.cm-itembox .image .no-image {
   width: 80px;
   height: 80px;
   background: url('../img/parts/no-image-80.png');
 }
-.cm-itembox .image img,
-.cm-userbox .image img {
+.cm-itembox .image img {
   width: 80px;
   height: 80px;
   display: block;
 }
 .cm-itembox.size-50 .image .no-image,
-.cm-userbox.size-50 .image .no-image,
-.cm-itembox.size-50 .image img,
-.cm-userbox.size-50 .image img {
+.cm-itembox.size-50 .image img {
   width: 50px;
   height: 50px;
 }
-.cm-itembox.size-50 .cm-imagebox,
-.cm-userbox.size-50 .cm-imagebox {
+.cm-itembox.size-50 .cm-imagebox {
   width: 50px;
   height: 50px;
 }
 .cm-itembox.size-80 .image .no-image,
-.cm-userbox.size-80 .image .no-image,
-.cm-itembox.size-80 .image img,
-.cm-userbox.size-80 .image img {
+.cm-itembox.size-80 .image img {
   width: 80px;
   height: 80px;
 }
-.cm-itembox.size-80 .cm-imagebox,
-.cm-userbox.size-80 .cm-imagebox {
+.cm-itembox.size-80 .cm-imagebox {
   width: 80px;
   height: 80px;
 }
-.cm-itembox.is-centered,
-.cm-userbox.is-centered {
+.cm-itembox.size-150 .image .no-image,
+.cm-itembox.size-150 .image img {
+  width: 150px;
+  height: 150px;
+}
+.cm-itembox.size-150 .cm-imagebox {
+  width: 150px;
+  height: 150px;
+}
+.cm-itembox.is-centered {
   text-align: center;
 }
-.cm-itembox.is-centered .cm-imagebox,
-.cm-userbox.is-centered .cm-imagebox {
+.cm-itembox.is-centered .cm-imagebox {
   margin: 0 auto 12px;
 }
-.cm-itembox.is-centered .image,
-.cm-userbox.is-centered .image {
+.cm-itembox.is-centered .image {
   float: none;
   margin: 0 0 12px;
 }
 .cm-itembox.is-centered .image .no-image,
-.cm-userbox.is-centered .image .no-image,
-.cm-itembox.is-centered .image img,
-.cm-userbox.is-centered .image img {
+.cm-itembox.is-centered .image img {
   margin: 0 auto;
 }
 .cm-listing {

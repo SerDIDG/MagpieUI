@@ -1,7 +1,6 @@
 /* ******* PART: USER BOX ******* */
 
-.cm-itembox,
-.cm-userbox {
+.cm-itembox:extend(.clear all) {
     .title:extend(.cm-text-overflow) {
         font-weight: @cm-boldWeight;
     }
@@ -72,6 +71,21 @@
         .cm-imagebox {
             width: 80px;
             height: 80px;
+        }
+    }
+
+    &.size-150 {
+        .image {
+            .no-image,
+            img {
+                width: 150px;
+                height: 150px;
+            }
+        }
+
+        .cm-imagebox {
+            width: 150px;
+            height: 150px;
         }
     }
 
