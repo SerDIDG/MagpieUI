@@ -121,7 +121,7 @@ function(params){
         }
         // Data
         cm.forEach(that.params['select'].attributes, function(item){
-            if(/^data-/.test(item.name)){
+            if(/^data-/.test(item.name) && item.name != 'data-element'){
                 nodes['container'].setAttribute(item.name, item.value);
             }
         });

@@ -153,15 +153,13 @@ function(params){
         format = typeof format != 'undefined'? format : that.params['format'];
         triggerEvents = typeof triggerEvents != 'undefined'? triggerEvents : true;
         // Get time
-        if(cm.isEmpty(str) || new RegExp(cm.dateFormat(false, that.params['format'])).test(str)){
+        if(cm.isEmpty(str) || typeof str == 'string' && new RegExp(cm.dateFormat(false, that.params['format'])).test(str)){
             that.clear();
             return that;
+        }else if(typeof str == 'object'){
+            that.date = str;
         }else{
-            if(typeof str == 'object'){
-                that.date = str;
-            }else{
-                that.date = cm.parseDate(str, format);
-            }
+            that.date = cm.parseDate(str, format);
         }
         // Set components
         components['selectHours'].set(that.date.getHours(), false);

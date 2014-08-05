@@ -339,20 +339,18 @@ function(params){
         format = typeof format != 'undefined'? format : that.format;
         triggerEvents = typeof triggerEvents != 'undefined'? triggerEvents : true;
         // Get date
-        if(cm.isEmpty(str) || new RegExp(cm.dateFormat(false, format, that.lang())).test(str)){
+        if(cm.isEmpty(str) || typeof str == 'string' && new RegExp(cm.dateFormat(false, format, that.lang())).test(str)){
             that.clear();
             return that;
+        }else if(typeof str == 'object'){
+            that.date = str;
         }else{
-            if(typeof str == 'object'){
-                that.date = str;
-            }else{
-                that.date = cm.parseDate(str, format);
-            }
+            that.date = cm.parseDate(str, format);
         }
         // Set parameters into components
         components['calendar'].set(that.date.getFullYear(), that.date.getMonth(), false);
         if(that.params['isDateTime']){
-            components['time'].set(that.date, false);
+            components['time'].set(that.date, null, false);
         }
         // Set date
         set(triggerEvents);
