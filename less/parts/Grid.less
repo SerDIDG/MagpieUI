@@ -72,22 +72,26 @@
     // /* Set grid items indent */
 
     #cm > .grid-indent(@CmGrid-itemIndent);
+
+    .for(@ComGrid-indents); .-each(@name) {
+        &.indent-@{name} {
+            #cm > .grid-indent(@name);
+        }
+    }
 }
 
 // /* *** ADAPTIVE *** */
 
 @media only screen and (max-width: @cm-screenMobile) {
 
-    .is-adaptive .cm-grid {
-        .loop(@counter) when (@counter > 0) {
-            .loop((@counter - 1));
-
-            &.col-@{counter} > ul > li {
-                width: 100%;
+    html.is-adaptive {
+        .cm-grid {
+            &:not(.is-not-adaptive) {
+                > ul > li {
+                    width: 100%;
+                }
             }
         }
-
-        .loop(12);
     }
 
 }

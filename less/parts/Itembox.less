@@ -1,25 +1,6 @@
 /* ******* PART: ITEM BOX ******* */
 
 .cm-itembox:extend(.clear all) {
-    .title:extend(.cm-text-overflow) {
-        font-weight: @cm-boldWeight;
-    }
-
-    .author:extend(.cm-text-overflow) {
-
-    }
-
-    .date:extend(.cm-text-overflow) {
-        color: @cm-colorFontMedium;
-    }
-
-    .count:extend(.cm-text-overflow) {
-        color: @cm-colorFontMedium;
-    }
-
-    .descr {
-        margin: @cm-indentXXXSmall 0 0 0;
-    }
 
     > .l {
         float: left;
@@ -30,29 +11,39 @@
         overflow: hidden;
     }
 
-    .image {
-        .no-image {
-            width: 80px;
-            height: 80px;
-            background: url('@{CmPath-image}/parts/no-image-80.png');
-        }
+    .title {
+        font-weight: @cm-boldWeight;
+    }
 
-        img {
-            width: 80px;
-            height: 80px;
-            display: block;
-        }
+    .author {
+
+    }
+
+    .date:extend(.cm-font-ui) {
+        color: @cm-colorFontMedium;
+    }
+
+    .count:extend(.cm-font-ui) {
+        color: @cm-colorFontMedium;
+    }
+
+    .status:extend(.cm-font-ui) {
+        color: @cm-colorFontMedium;
+    }
+
+    .descr {
+        margin: @cm-indentXXXSmall 0 0 0;
+    }
+
+    &:not(.is-no-overflow){
+        .title:extend(.cm-text-overflow) {}
+        .author:extend(.cm-text-overflow) {}
+        .date:extend(.cm-text-overflow) {}
+        .count:extend(.cm-text-overflow) {}
+        .status:extend(.cm-text-overflow) {}
     }
 
     &.size-50 {
-        .image {
-            .no-image,
-            img {
-                width: 50px;
-                height: 50px;
-            }
-        }
-
         .cm-imagebox {
             width: 50px;
             height: 50px;
@@ -60,14 +51,6 @@
     }
 
     &.size-80 {
-        .image {
-            .no-image,
-            img {
-                width: 80px;
-                height: 80px;
-            }
-        }
-
         .cm-imagebox {
             width: 80px;
             height: 80px;
@@ -75,17 +58,20 @@
     }
 
     &.size-150 {
-        .image {
-            .no-image,
-            img {
-                width: 150px;
-                height: 150px;
-            }
-        }
-
         .cm-imagebox {
             width: 150px;
             height: 150px;
+        }
+    }
+
+    > .cm-imagebox {
+        margin-bottom: @cm-indentXSmall;
+    }
+
+    &.is-image-centered {
+        .cm-imagebox {
+            margin-left: auto;
+            margin-right: auto;
         }
     }
 
@@ -93,17 +79,8 @@
         text-align: center;
 
         .cm-imagebox {
-            margin: 0 auto @cm-indentXSmall;
-        }
-
-        .image {
-            float: none;
-            margin: 0 0 @cm-indentXSmall;
-
-            .no-image,
-            img {
-                margin: 0 auto;
-            }
+            margin-left: auto;
+            margin-right: auto;
         }
     }
 }
