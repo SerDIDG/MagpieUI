@@ -428,6 +428,23 @@ button.transparent.active,
 .btn-wrap.centered .button:first-child {
   margin: 0;
 }
+.btn-wrap.is-block input[type="button"],
+.btn-wrap.is-block input[type="submit"],
+.btn-wrap.is-block input[type="reset"],
+.btn-wrap.is-block button,
+.btn-wrap.is-block .button {
+  width: 100%;
+  display: block;
+  margin: 8px 0 0 0;
+  float: none;
+}
+.btn-wrap.is-block input[type="button"]:first-child,
+.btn-wrap.is-block input[type="submit"]:first-child,
+.btn-wrap.is-block input[type="reset"]:first-child,
+.btn-wrap.is-block button:first-child,
+.btn-wrap.is-block .button:first-child {
+  margin: 0;
+}
 .form-image-box input[type="button"],
 .form-image-box input[type="submit"],
 .form-image-box input[type="reset"],
@@ -1304,6 +1321,9 @@ select[multiple] {
 }
 .btn-wrap.centered {
   text-align: center;
+}
+.btn-wrap.is-block {
+  height: auto;
 }
 /* Add To Bundle */
 /* *** CHECKBOX / RADIO LINE *** */
@@ -4075,6 +4095,15 @@ select[multiple] {
   margin: 0 0 0 8px;
 }
 .btn-wrap.centered .com-pagination ul li a:first-child {
+  margin: 0;
+}
+.btn-wrap.is-block .com-pagination ul li a {
+  width: 100%;
+  display: block;
+  margin: 8px 0 0 0;
+  float: none;
+}
+.btn-wrap.is-block .com-pagination ul li a:first-child {
   margin: 0;
 }
 .form-image-box .com-pagination ul li a {

@@ -215,6 +215,10 @@
     &.centered {
         text-align: center;
     }
+
+    &.is-block {
+        height: auto;
+    }
 }
 
 /* Add To Bundle */
@@ -246,6 +250,18 @@
             float: none;
             display: inline-block;
             margin: 0 0 0 @CmForm-buttonsIndent;
+
+            &:first-child {
+                margin: 0;
+            }
+        }
+
+        .btn-wrap.is-block & {
+            width: 100%;
+            display: block;
+            margin: @CmForm-buttonsIndent 0 0 0;
+            float: none;
+            .cm-text-overflow;
 
             &:first-child {
                 margin: 0;
