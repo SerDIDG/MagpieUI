@@ -1483,6 +1483,11 @@ select[multiple] {
   height: 80px;
   background: url('../img/parts/no-image-80.png');
 }
+.form-image-box > .l .no-avatar {
+  width: 80px;
+  height: 80px;
+  background: url('../img/parts/no-avatar-80.png');
+}
 .form-image-box > .l img {
   width: 80px;
   height: 80px;
