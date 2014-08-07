@@ -1,0 +1,44 @@
+/* ******* PART: BOX ******* */
+
+.cm-box {
+    #cm > .box;
+}
+
+.cm-box-border {
+    #cm > .box-border;
+}
+
+.cm-box-flat {
+    #cm > .box-flat;
+    margin: 0 0 @cm-indentMedium;
+
+    &:last-child {
+        margin: 0;
+    }
+}
+
+.cm-box-content {
+    margin: 0 0 @cm-indentXLarge;
+
+    &:last-child {
+        margin: 0;
+    }
+}
+
+.cm-box-info {
+    margin: 0 0 @cm-indentMedium;
+
+    dl {
+        dt {
+            font-weight: bold;
+        }
+
+        &:last-child {
+            margin: 0;
+        }
+    }
+
+    &:last-child {
+        margin: 0;
+    }
+}

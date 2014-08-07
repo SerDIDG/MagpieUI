@@ -33,6 +33,10 @@
 
     .descr {
         margin: @cm-indentXXXSmall 0 0 0;
+
+        &:first-child {
+            margin: 0;
+        }
     }
 
     &:not(.is-no-overflow){
@@ -43,29 +47,12 @@
         .status:extend(.cm-text-overflow) {}
     }
 
-    &.size-50 {
-        .cm-imagebox {
-            width: 50px;
-            height: 50px;
-        }
-    }
-
-    &.size-80 {
-        .cm-imagebox {
-            width: 80px;
-            height: 80px;
-        }
-    }
-
-    &.size-150 {
-        .cm-imagebox {
-            width: 150px;
-            height: 150px;
-        }
-    }
-
     > .cm-imagebox {
         margin-bottom: @cm-indentXSmall;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
     }
 
     &.is-image-centered {
@@ -83,4 +70,16 @@
             margin-right: auto;
         }
     }
+
+    // /* Sizes */
+
+    .for(@CmItemBox-sizes); .-each(@name) {
+        &.size-@{name} {
+            .cm-imagebox {
+                width: unit(@name, px);
+                height: unit(@name, px);
+            }
+        }
+    }
+
 }

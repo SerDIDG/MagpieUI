@@ -55,6 +55,7 @@ dl {
   padding: 0;
 }
 h1 {
+  margin: 0 0 24px;
   font-size: 34px;
   line-height: 40px;
   font-weight: 600;
@@ -437,6 +438,9 @@ button.transparent.active,
   display: block;
   margin: 8px 0 0 0;
   float: none;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .btn-wrap.is-block input[type="button"]:first-child,
 .btn-wrap.is-block input[type="submit"]:first-child,
@@ -488,7 +492,8 @@ select[multiple] {
 .cm-title-editable:after,
 .cm-itembox:after,
 .com-timeselect > .inner:after,
-.com-forum-cell-counter .line:after {
+.com-forum-cell-counter .line:after,
+.com-profile > .inner:after {
   content: ".";
   display: block;
   clear: both;
@@ -1127,6 +1132,34 @@ select[multiple] {
 }
 .icon.safari {
   background-position: -400px 0;
+}
+/* ******* PART: BOX ******* */
+.cm-box-flat {
+  padding: 12px;
+  background: #fafafa;
+  border-radius: 3px;
+  margin: 0 0 24px;
+}
+.cm-box-flat:last-child {
+  margin: 0;
+}
+.cm-box-content {
+  margin: 0 0 48px;
+}
+.cm-box-content:last-child {
+  margin: 0;
+}
+.cm-box-info {
+  margin: 0 0 24px;
+}
+.cm-box-info dl dt {
+  font-weight: bold;
+}
+.cm-box-info dl:last-child {
+  margin: 0;
+}
+.cm-box-info:last-child {
+  margin: 0;
 }
 /* ******* PART: LINKS ******* */
 .cm-links > ul {
@@ -2817,20 +2850,14 @@ select[multiple] {
 .cm-itembox .descr {
   margin: 4px 0 0 0;
 }
-.cm-itembox.size-50 .cm-imagebox {
-  width: 50px;
-  height: 50px;
-}
-.cm-itembox.size-80 .cm-imagebox {
-  width: 80px;
-  height: 80px;
-}
-.cm-itembox.size-150 .cm-imagebox {
-  width: 150px;
-  height: 150px;
+.cm-itembox .descr:first-child {
+  margin: 0;
 }
 .cm-itembox > .cm-imagebox {
   margin-bottom: 12px;
+}
+.cm-itembox > .cm-imagebox:last-child {
+  margin-bottom: 0;
 }
 .cm-itembox.is-image-centered .cm-imagebox {
   margin-left: auto;
@@ -2843,6 +2870,20 @@ select[multiple] {
   margin-left: auto;
   margin-right: auto;
 }
+.cm-itembox.size-50 .cm-imagebox {
+  width: 50px;
+  height: 50px;
+}
+.cm-itembox.size-80 .cm-imagebox {
+  width: 80px;
+  height: 80px;
+}
+.cm-itembox.size-150 .cm-imagebox {
+  width: 150px;
+  height: 150px;
+}
+/* ******* PART: LISTING ******* */
+/* *** LISTING CONTENT *** */
 .cm-listing {
   margin: 0 0 24px;
 }
@@ -2889,6 +2930,24 @@ select[multiple] {
   vertical-align: top;
   color: #999999;
   font-size: 11px;
+}
+/* *** DEFAULT *** */
+.cm-listing-default {
+  margin: 0 0 24px;
+}
+.cm-listing-default.bottom {
+  margin: 0;
+}
+.cm-listing-default > ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cm-listing-default > ul > li {
+  margin: 12px 0 0 0;
+}
+.cm-listing-default > ul > li:first-child {
+  margin: 0;
 }
 .cm-list-counted .cm-counter {
   margin: 4px 0 0 0;
@@ -4102,6 +4161,9 @@ select[multiple] {
   display: block;
   margin: 8px 0 0 0;
   float: none;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .btn-wrap.is-block .com-pagination ul li a:first-child {
   margin: 0;
@@ -5450,5 +5512,30 @@ select[multiple] {
   }
   html.is-adaptive .com-forum-post > .inner > .r {
     margin: 24px 0 0 0;
+  }
+}
+/* ******* COMPONENT: PROFILE ******* */
+.com-profile > .inner > .l {
+  float: left;
+  margin: 0 48px 0 0;
+}
+.com-profile > .inner > .l .cm-box-flat {
+  width: 150px;
+}
+.com-profile > .inner > .r {
+  overflow: hidden;
+}
+/* ******* COMPONENT: PROFILE: ADAPTIVE ******* */
+@media only screen and (max-width: 640px) {
+  html.is-adaptive .com-profile > .inner > .l {
+    width: auto;
+    float: none;
+    margin: 0 0 48px;
+  }
+  html.is-adaptive .com-profile > .inner > .l .cm-box-flat {
+    width: auto;
+  }
+  html.is-adaptive .com-profile-members .cm-grid > ul > li {
+    width: 33.33%;
   }
 }
