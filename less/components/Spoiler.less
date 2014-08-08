@@ -1,0 +1,26 @@
+/* ******* COMPONENT: SPOILER ****** */
+
+.com-spoiler {
+    > dt {
+        padding: 0 @cm-indentXXSmall;
+        background-color: @cm-colorLight-background;
+        border-radius: @cm-borderRadius;
+        .cm-transition(background-color @cm-transitionDuration ease-in-out);
+
+        &:hover {
+            background-color: @cm-colorLight-backgroundDisabled;
+            .cm-transition(background-color @cm-transitionDurationReverse ease-in-out);
+        }
+
+        &:active {
+            background-color: @cm-colorActive;
+            .cm-transition(background-color @cm-transitionDurationReverse ease-in-out);
+        }
+    }
+
+    > dd {
+        > .inner {
+            padding: @cm-indentXSmall 0 0 0;
+        }
+    }
+}

@@ -1,0 +1,85 @@
+<!DOCTYPE HTML>
+<html class="is-adaptive">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Spoliler</title>
+
+    <link type="text/css" rel="stylesheet" href="../../css/index.css">
+
+    <script type="text/javascript" src="../../js/polyfill.js"></script>
+    <script type="text/javascript" src="../../js/common.js"></script>
+    <script type="text/javascript" src="../../js/parts.js"></script>
+    <script type="text/javascript" src="../../js/modules.js"></script>
+    <script type="text/javascript" src="../../js/init.js"></script>
+    <script type="text/javascript" src="../../js/components/UA.js"></script>
+    <script type="text/javascript" src="../../js/components/Collector.js"></script>
+    <script type="text/javascript" src="../../js/components/ToggleBox.js"></script>
+
+    <script type="text/javascript">
+        cm.onReady(function(){
+            // Components
+            new Com.Collector()
+                .addEvent('onConstruct', function(collector, data){
+                    Part.Menu();
+                    Part.Autoresize(data['node']);
+                })
+                .add('togglebox', function(node){
+                    new Com.ToggleBox({'node' : node});
+                })
+                .construct();
+        });
+    </script>
+</head>
+
+<body>
+
+<div class="cm-block-padding">
+    <h1>Spoiler</h1>
+
+    <div class="cm-box-content">
+        <h2>Initialize</h2>
+        <textarea class="cm-codebox cm-autoresize" readonly>
+<script type="text/javascript">
+    cm.onReady(function(){
+        new Com.Collector()
+            .add('togglebox', function(node){
+                new Com.ToggleBox({'node' : node});
+            })
+            .construct();
+    });
+</script>
+
+<dl class="com-togglebox com-spoiler is-ui is-hide" data-element="togglebox" data-config='{"remember" : false}'>
+    <dt data-node="ComToggleBox.button">
+        <span class="icon default linked"></span>
+        <div class="title">
+            <a>Spoiler</a>
+        </div>
+    </dt>
+    <dd data-node="ComToggleBox.target">
+        <div class="inner"></div>
+    </dd>
+</dl></textarea>
+    </div>
+
+    <div class="cm-box-content">
+        <h2>Example</h2>
+        <dl class="com-togglebox com-spoiler is-ui is-hide" data-element="togglebox" data-config='{"remember" : false}'>
+            <dt data-node="ComToggleBox.button">
+                <span class="icon default linked"></span>
+                <div class="title">
+                    <a>Spoiler</a>
+                </div>
+            </dt>
+            <dd data-node="ComToggleBox.target">
+                <div class="inner">
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean in eros fermentum, hendrerit sem ut, lacinia nisl. Aenean cursus interdum elit, ut porttitor urna tempus eu. Vivamus eget augue id metus laoreet dictum id a libero. Etiam laoreet tristique lorem, hendrerit aliquet dolor cursus eget. Donec ultrices sodales quam pellentesque malesuada. Morbi vitae porta velit. Etiam pellentesque sagittis enim sed dapibus. In et sem vel eros placerat suscipit a non massa. Nulla eget nibh velit. Vestibulum id metus nec sapien euismod commodo. Vestibulum molestie tortor purus, at iaculis lectus luctus ac. Suspendisse sodales lectus et tortor dapibus volutpat. In in leo id eros convallis sollicitudin. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Sed et elementum diam. Nulla massa purus, iaculis eget venenatis nec, adipiscing at arcu.</p>
+                </div>
+            </dd>
+        </dl>
+    </div>
+</div>
+
+</body>
+</html>

@@ -570,28 +570,6 @@ select[multiple] {
   background: #fdf6ad;
 }
 /* *** BUNDLE *** */
-.cm-box {
-  padding: 4px;
-  background: #fff;
-  background-clip: padding-box;
-  border: 1px solid #cbcbcb;
-  border-radius: 3px;
-  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
-}
-.cm-box-flat {
-  padding: 12px;
-  background: #fafafa;
-  border-radius: 3px;
-}
-.cm-box-border {
-  padding: 12px;
-  border: 2px solid #cbcbcb;
-  -webkit-transition: border-color 0.3s ease-in-out;
-  transition: border-color 0.3s ease-in-out;
-}
-.cm-box-border.active {
-  border: 2px solid #daebfb;
-}
 .cm-counter {
   height: 16px;
   padding: 0 5px;
@@ -1134,6 +1112,23 @@ select[multiple] {
   background-position: -400px 0;
 }
 /* ******* PART: BOX ******* */
+.cm-box {
+  padding: 4px;
+  background: #fff;
+  background-clip: padding-box;
+  border: 1px solid #cbcbcb;
+  border-radius: 3px;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+}
+.cm-box-border {
+  padding: 12px;
+  border: 2px solid #cbcbcb;
+  -webkit-transition: border-color 0.3s ease-in-out;
+  transition: border-color 0.3s ease-in-out;
+}
+.cm-box-border.active {
+  border: 2px solid #daebfb;
+}
 .cm-box-flat {
   padding: 12px;
   background: #fafafa;
@@ -4330,6 +4325,27 @@ select[multiple] {
   -webkit-transform: rotate(90deg);
   -ms-transform: rotate(90deg);
   transform: rotate(90deg);
+}
+/* ******* COMPONENT: SPOILER ****** */
+.com-spoiler > dt {
+  padding: 0 8px;
+  background-color: #fafafa;
+  border-radius: 3px;
+  -webkit-transition: background-color 0.3s ease-in-out;
+  transition: background-color 0.3s ease-in-out;
+}
+.com-spoiler > dt:hover {
+  background-color: #f0f0f0;
+  -webkit-transition: background-color 0.1s ease-in-out;
+  transition: background-color 0.1s ease-in-out;
+}
+.com-spoiler > dt:active {
+  background-color: #daebfb;
+  -webkit-transition: background-color 0.1s ease-in-out;
+  transition: background-color 0.1s ease-in-out;
+}
+.com-spoiler > dd > .inner {
+  padding: 12px 0 0 0;
 }
 /* ******* SLIDER ******* */
 .com-slider {
