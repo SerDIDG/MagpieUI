@@ -1,53 +1,8 @@
-/* ******* FORUM ******* */
+/* ******* COMPONENT: FORUM ******* */
 
 /* *** MAIN *** */
 
 .com-forum {
-    .com-togglebox {
-
-        > dt {
-            padding: 0 @ComGridlist-paddingInner;
-            background: @ComForum-cellBackgroundTitle;
-            border-radius: @cm-borderRadius;
-        }
-
-        > dd {
-            .cm-toolbar {
-                margin: 1px 0 0 0;
-                padding: @cm-indentXXSmall;
-                background: @ComForum-cellBackground;
-                border-radius: @cm-borderRadius;
-            }
-        }
-    }
-
-    .com-forum-empty,
-    .com-gridlist {
-        margin: 1px 0 0 0;
-        background: @ComForum-cellBackground;
-        border-radius: @cm-borderRadius;
-    }
-
-    .com-gridlist {
-        tr {
-            td {
-                padding: @cm-indentXXSmall;
-                border-top: @ComForum-cellBorder;
-            }
-
-            &:first-child {
-                td {
-                    border: none;
-                }
-            }
-        }
-    }
-}
-
-.com-forum-empty:extend(.cm-font-ui-cursive) {
-    padding: @cm-indentXSmall;
-    text-align: center;
-    color: @cm-colorFontMedium;
 }
 
 .com-forum-cell-icon {
@@ -98,10 +53,6 @@
     .title {
         font-weight: @cm-boldWeight;
     }
-
-    .descr {
-
-    }
 }
 
 .com-forum-cell-last {
@@ -134,12 +85,10 @@
 }
 
 .com-forum-post {
-    background: @ComForum-cellBackground;
+    background: @ComForum-postBackground;
     border-radius: @cm-borderRadius;
 
-    .cm-itembox:extend(.cm-font-ui){
-
-    }
+    .cm-itembox:extend(.cm-font-ui){}
 
     .date:extend(.cm-font-ui) {
         color: @cm-colorFontMedium;
@@ -160,7 +109,7 @@
             padding: @cm-indentXSmall;
             display: table-cell;
             vertical-align: top;
-            background: @ComForum-cellBackgroundTitle;
+            background: @ComForum-postTitleBackground;
             border-radius: @cm-borderRadius;
 
             &:after {
@@ -172,7 +121,7 @@
                 content: '';
                 border-style: solid;
                 border-width: 8px 12px 8px 0;
-                border-color: transparent @ComForum-cellBackground transparent transparent;
+                border-color: transparent @ComForum-postBackground transparent transparent;
             }
         }
 
@@ -184,33 +133,11 @@
     }
 }
 
-/* *** ADAPTIVE *** */
+/* ******* COMPONENT: FORUM: ADAPTIVE ******* */
 
 @media only screen and (max-width : @ComForum-adaptiveFrom) {
 
     html.is-adaptive {
-        .com-forum {
-            .com-gridlist {
-                tr {
-                    td {
-                        width: auto;
-                        display: block;
-                        border: none;
-
-                        &:first-child {
-                            border-top: @ComForum-cellBorder;
-                        }
-                    }
-
-                    &:first-child {
-                        td {
-                            border: none;
-                        }
-                    }
-                }
-            }
-        }
-
         .com-forum-post {
             > .inner {
                 width: auto;
@@ -225,6 +152,21 @@
                 > .r {
                     margin: @cm-indentMedium 0 0 0;
                 }
+            }
+        }
+
+        .com-forum-cell-counter {
+            .line {
+                text-align: left;
+            }
+
+            .title {
+                float: left;
+                margin: 0 @cm-indentXXXSmall 0 0;
+            }
+            
+            .descr {
+                float: left;
             }
         }
     }

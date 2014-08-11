@@ -1,7 +1,11 @@
-/* ******* TOGGLE BOX ******* */
+/* ******* COMPONENT: TOGGLE BOX ******* */
 
 .com-togglebox {
     margin: 0 0 @cm-indentMedium 0;
+
+    &.bottom {
+        margin: 0;
+    }
 
     > dt {
         position: relative;
@@ -50,11 +54,54 @@
     > dd {
         padding: 0;
         opacity: 1;
+
+        > .inner {
+            padding: @cm-indentXSmall 0 0 0;
+        }
     }
 
     &.has-hover-icon {
         > dt {
             cursor: default;
+        }
+    }
+
+    &.has-title-bg {
+        > dt {
+            padding: 0 @cm-indentXXSmall;
+            background: @ComToggleBox-titleBackground;
+            border-radius: @cm-borderRadius;
+        }
+    }
+
+    &.has-content-bg {
+        > dd {
+            .com-togglebox-empty,
+            .com-gridlist,
+            .cm-toolbar {
+                margin: 1px 0 0 0;
+                background: @ComToggleBox-contentBackground;
+                border-radius: @cm-borderRadius;
+            }
+
+            .cm-toolbar {
+                padding: @cm-indentXXSmall;
+            }
+
+            .com-gridlist {
+                tr {
+                    td {
+                        padding: @cm-indentXXSmall;
+                        border-top: @ComToggleBox-contentBorder;
+                    }
+
+                    &:first-child {
+                        td {
+                            border: none;
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -100,4 +147,52 @@
             }
         }
     }
+}
+
+.com-togglebox-empty:extend(.cm-font-ui-cursive) {
+    padding: @cm-indentXSmall;
+    text-align: center;
+    color: @cm-colorFontMedium;
+}
+
+/* ******* COMPONENT: TOGGLE BOX: ADAPTIVE ******* */
+
+@media only screen and (max-width : @ComToggleBox-adaptiveFrom) {
+
+    html.is-adaptive {
+        .com-togglebox {
+            > dd {
+                .com-gridlist {
+                    tr {
+                        td {
+                            width: auto;
+                            display: block;
+                            border: none;
+                        }
+                    }
+                }
+            }
+
+            &.has-content-bg {
+                > dd {
+                    .com-gridlist {
+                        tr {
+                            td {
+                                &:first-child {
+                                    border-top: @ComToggleBox-contentBorder;
+                                }
+                            }
+
+                            &:first-child {
+                                td {
+                                    border: none;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }

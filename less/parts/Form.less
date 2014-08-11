@@ -205,11 +205,11 @@
     }
 
     &.error .hint {
-        color: #cc0000;
+        color: @cm-colorError;
     }
 
     &.ok .hint {
-        color: #009900;
+        color: @cm-colorValid;
     }
 
     &.centered {
@@ -413,10 +413,10 @@
     }
 
     &.ok {
-        border-color: #009900;
+        border-color: @cm-colorValid;
 
         legend {
-            color: #009900;
+            color: @cm-colorValid;
             font-weight: @cm-boldWeight;
         }
     }
@@ -612,16 +612,16 @@
 }
 
 .form dl.ok .hint {
-    color: #009900;
+    color: @cm-colorValid;
 }
 
 .form dl.error .validate {
-    color: #cc0000;
+    color: @cm-colorError;
     font-weight: @cm-boldWeight;
 }
 
 .form dl.ok .validate {
-    color: #009900;
+    color: @cm-colorValid;
     font-weight: @cm-boldWeight;
 }
 

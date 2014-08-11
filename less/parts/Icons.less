@@ -82,6 +82,14 @@
         }
     }
 
+    &.small {
+        .for(archive default doc exe flash image movie music pdf pps ttf txt xls); .-each(@name) {
+            &.file-@{name} {
+                background-image: url("@{CmPath-image}/icons/small/files/@{name}.gif");
+            }
+        }
+    }
+
     // /* *** MEDIUM *** */
 
     &.medium {

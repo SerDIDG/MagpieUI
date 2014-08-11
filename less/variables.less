@@ -32,6 +32,7 @@
 @cm-colorLinkHover: @cm-colorLink;
 @cm-colorLinkVisited: #8a156d;
 @cm-colorError: hsl(0, 80%, 50%);
+@cm-colorValid: #009900;
 
 @cm-color: hsl(210, 80%, 55%);
 @cm-colorLighten: lighten(@cm-color, 40%);
@@ -269,7 +270,7 @@
 
 @ComGridlist-fontSize: @cm-fontSizeUI;
 @ComGridlist-paddingInner: 6px;
-@ComGridlist-linkIndent: @cm-indentXXXSmall;
+@ComGridlist-linkIndent: @CmLinks-indent;
 
 // /* *** COLUMNS *** */
 
@@ -294,9 +295,13 @@
 
 // /* *** TOGGLE BOX *** */
 
+@ComToggleBox-adaptiveFrom: @cm-screenMobile;
 @ComToggleBox-size: @cm-lineHeightTitle;
 @ComToggleBox-sizeMedium: @cm-Medium;
 @ComToggleBox-sizeUI: @cm-Medium;
+@ComToggleBox-contentBorder: 1px solid #ffffff;
+@ComToggleBox-contentBackground: @cm-colorLight-background;
+@ComToggleBox-titleBackground: @cm-colorLight-backgroundDisabled;
 
 // /* *** SELECT *** */
 
@@ -329,9 +334,8 @@
 // /* *** FORUM *** */
 
 @ComForum-adaptiveFrom: @cm-screenMobile;
-@ComForum-cellBorder: 1px solid #ffffff;
-@ComForum-cellBackground: @cm-colorLight-background;
-@ComForum-cellBackgroundTitle: @cm-colorLight-backgroundDisabled;
+@ComForum-postBackground: @cm-colorLight-background;
+@ComForum-postTitleBackground: @cm-colorLight-backgroundDisabled;
 @ComForum-postLeftColumnSize: 150px;
 
 // /* *** PROFILE *** */
