@@ -2409,7 +2409,6 @@ select[multiple] {
   display: block;
   position: absolute;
   z-index: 3;
-  top: -12px;
   left: 50%;
   opacity: 0;
   background: #f2f2f2;
@@ -2431,6 +2430,12 @@ select[multiple] {
   background: #fafafa;
   -webkit-transition: all 0.1s ease-in-out;
   transition: all 0.1s ease-in-out;
+}
+.cm-editable.is-editable > .drag:not(.is-bottom) {
+  top: -12px;
+}
+.cm-editable.is-editable > .drag.is-bottom {
+  bottom: -12px;
 }
 .cm-editable.is-editable > .menu {
   display: block;
@@ -2480,10 +2485,17 @@ select[multiple] {
 .cm-editable.is-active > .drag,
 .cm-editable:hover > .drag {
   opacity: 1;
-  top: -28px;
   -webkit-transition: all 0.1s ease-in-out;
   transition: all 0.1s ease-in-out;
   visibility: visible;
+}
+.cm-editable.is-active > .drag:not(.is-bottom),
+.cm-editable:hover > .drag:not(.is-bottom) {
+  top: -28px;
+}
+.cm-editable.is-active > .drag.is-bottom,
+.cm-editable:hover > .drag.is-bottom {
+  bottom: -28px;
 }
 .cm-editable.is-active > .menu,
 .cm-editable:hover > .menu {
@@ -3265,6 +3277,7 @@ select[multiple] {
   width: 10px;
   display: none;
   position: absolute;
+  z-index: 2;
   top: 0;
   bottom: 0;
   margin: 0 0 0 -5px;
@@ -3336,6 +3349,8 @@ select[multiple] {
 .com-columns > .inner > .container {
   width: 100%;
   height: 100%;
+  position: relative;
+  z-index: 1;
   display: -ms-flexbox;
   display: -webkit-flex;
   display: flex;
