@@ -51,7 +51,6 @@
             display: block;
             position: absolute;
             z-index: 3;
-            top: -12px;
             left: 50%;
             opacity: 0;
             background: @cm-colorSecondary;
@@ -72,6 +71,14 @@
             &:hover {
                 background: @cm-colorSecondaryHover;
                 .cm-transition(all @cm-transitionDurationReverse ease-in-out);
+            }
+
+            &:not(.is-bottom) {
+                top: -12px;
+            }
+
+            &.is-bottom {
+                bottom: -12px;
             }
         }
 
@@ -124,9 +131,16 @@
 
         > .drag {
             opacity: 1;
-            top: -28px;
             .cm-transition(all @cm-transitionDurationReverse ease-in-out);
             visibility: visible;
+
+            &:not(.is-bottom) {
+                top: -28px;
+            }
+
+            &.is-bottom {
+                bottom: -28px;
+            }
         }
 
         > .menu {

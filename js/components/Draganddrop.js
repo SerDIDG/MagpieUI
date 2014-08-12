@@ -147,11 +147,17 @@ Com['Draganddrop'] = function(o){
     var initDraggableDrag = function(draggable){
         var dragNode;
         draggable['drag'] = cm.getByAttr('data-com-draganddrop', 'drag', draggable['node'])[0];
+        draggable['drag-bottom'] = cm.getByAttr('data-com-draganddrop', 'drag-bottom', draggable['node'])[0];
         // Set draggable event on element
         dragNode = draggable['drag'] || draggable['node'];
         cm.addEvent(dragNode, 'mousedown', function(e){
             start(e, draggable);
         });
+        if(draggable['drag-bottom']){
+            cm.addEvent(draggable['drag-bottom'], 'mousedown', function(e){
+                start(e, draggable);
+            });
+        }
     };
 
     /* *** DRAG AND DROP PROCESS ** */
