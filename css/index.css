@@ -4452,23 +4452,6 @@ select[multiple] {
   }
 }
 /* ******* COMPONENT: SPOILER ****** */
-.com-spoiler > dt {
-  padding: 0 8px;
-  background-color: #fafafa;
-  border-radius: 3px;
-  -webkit-transition: background-color 0.3s ease-in-out;
-  transition: background-color 0.3s ease-in-out;
-}
-.com-spoiler > dt:hover {
-  background-color: #f0f0f0;
-  -webkit-transition: background-color 0.1s ease-in-out;
-  transition: background-color 0.1s ease-in-out;
-}
-.com-spoiler > dt:active {
-  background-color: #daebfb;
-  -webkit-transition: background-color 0.1s ease-in-out;
-  transition: background-color 0.1s ease-in-out;
-}
 /* ******* SLIDER ******* */
 .com-slider {
   margin: 0 0 24px 0;
