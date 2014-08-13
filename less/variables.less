@@ -51,6 +51,8 @@
 @cm-colorLight-borderDisabledHover: @cm-colorLight-borderHover;
 
 @cm-colorGalleryBackground: #111111;
+@cm-colorContentBackgroundLight: @cm-colorLight-background;
+@cm-colorContentBackgroundDark: @cm-colorLight-backgroundDisabled;
 @cm-colorBorder: #CBCBCB;
 @cm-colorBorderHover: @cm-colorActiveHover;
 
@@ -181,7 +183,7 @@
 
 // /* *** IMAGE BOX *** */
 
-@CmImagebox-background: @cm-colorLight-background;
+@CmImagebox-background: @cm-colorContentBackgroundLight;
 @CmImagebox-titlePaddingTop: 4px;
 
 // /* *** DRAG AND DROP *** */
@@ -301,9 +303,9 @@
 @ComToggleBox-sizeMedium: @cm-Medium;
 @ComToggleBox-sizeUI: @cm-Medium;
 @ComToggleBox-contentBorder: 1px solid #ffffff;
-@ComToggleBox-contentBackground: @cm-colorLight-background;
+@ComToggleBox-contentBackground: @cm-colorContentBackgroundLight;
 @ComToggleBox-contentSpaceBorder: @ComToggleBox-contentBorder;
-@ComToggleBox-titleBackground: @cm-colorLight-backgroundDisabled;
+@ComToggleBox-titleBackground: @cm-colorContentBackgroundDark;
 
 // /* *** SELECT *** */
 
@@ -336,8 +338,8 @@
 // /* *** FORUM *** */
 
 @ComForum-adaptiveFrom: @cm-screenMobile;
-@ComForum-postBackground: @cm-colorLight-background;
-@ComForum-postTitleBackground: @cm-colorLight-backgroundDisabled;
+@ComForum-postBackground: @cm-colorContentBackgroundLight;
+@ComForum-postTitleBackground: @cm-colorContentBackgroundDark;
 @ComForum-postLeftColumnSize: 150px;
 
 // /* *** PROFILE *** */

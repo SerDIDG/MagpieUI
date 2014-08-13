@@ -4392,6 +4392,7 @@ select[multiple] {
   margin: 0;
   border-top: 1px solid #ffffff;
   background: #fafafa;
+  background-clip: padding-box;
   border-radius: 3px;
 }
 .com-togglebox.has-content-bg > dd .cm-toolbar {
