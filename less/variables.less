@@ -73,9 +73,10 @@
 // /* *** BORDER *** */
 
 @cm-borderRadius: 3px;
-@cm-borderStyle: 1px solid @cm-colorBorder;
-@cm-borderSeparator: 1px dotted @cm-colorBorder;
-@cm-borderEditable: 1px dashed @cm-color;
+@cm-borderWidth: 1px;
+@cm-borderStyle: @cm-borderWidth solid @cm-colorBorder;
+@cm-borderSeparator: @cm-borderWidth dotted @cm-colorBorder;
+@cm-borderEditable: @cm-borderWidth dashed @cm-color;
 @cm-borderBox: 2px solid @cm-colorBorder;
 @cm-borderBoxActive: 2px solid @cm-colorActive;
 
@@ -135,6 +136,8 @@
 // /* *** MENU *** */
 
 @CmMenu-indent: @cm-indentXXXSmall;
+@CmMenu-itemIndentY: 2px;
+@CmMenu-itemIndentX: @cm-indentXSmall;
 
 // /* *** LINKS *** */
 

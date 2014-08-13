@@ -302,7 +302,7 @@
             a {
                 #cm > .font-link;
                 display: block;
-                padding: 2px @cm-indentXSmall;
+                padding: @CmMenu-itemIndentY @CmMenu-itemIndentX;
                 #cm > .font-base;
                 line-height: 18px;
                 text-decoration: none;
@@ -315,7 +315,7 @@
             }
 
             ul {
-                top: -(1px + @CmMenu-indent);
+                top: -(@cm-borderWidth + @CmMenu-indent);
                 left: 100%;
             }
 
@@ -336,8 +336,10 @@
                 content: '';
             }
 
-            &:first-child:before {
-                display: none;
+            &:first-child{
+                &:before {
+                    display: none;
+                }
             }
 
             &:hover {
