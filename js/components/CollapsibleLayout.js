@@ -92,7 +92,7 @@ function(params){
     that.collapseLeft = function(isImmediately){
         that.isLeftCollapsed = true;
         isImmediately && cm.addClass(that.params['node'], 'is-immediately');
-        cm.addClass(that.params['node'], 'is-sidebar-left-collapsed', true);
+        cm.replaceClass(that.params['node'], 'is-sidebar-left-expanded', 'is-sidebar-left-collapsed', true);
         isImmediately && cm.removeClass(that.params['node'], 'is-immediately');
         // Write storage
         if(that.params['remember']){
@@ -105,7 +105,7 @@ function(params){
     that.expandLeft = function(isImmediately){
         that.isLeftCollapsed = false;
         isImmediately && cm.addClass(that.params['node'], 'is-immediately');
-        cm.removeClass(that.params['node'], 'is-sidebar-left-collapsed', true);
+        cm.replaceClass(that.params['node'], 'is-sidebar-left-collapsed', 'is-sidebar-left-expanded', true);
         isImmediately && cm.removeClass(that.params['node'], 'is-immediately');
         // Write storage
         if(that.params['remember']){
@@ -118,7 +118,7 @@ function(params){
     that.collapseRight = function(isImmediately){
         that.isRightCollapsed = true;
         isImmediately && cm.addClass(that.params['node'], 'is-immediately');
-        cm.addClass(that.params['node'], 'is-sidebar-right-collapsed', true);
+        cm.replaceClass(that.params['node'], 'is-sidebar-right-expanded', 'is-sidebar-right-collapsed', true);
         isImmediately && cm.removeClass(that.params['node'], 'is-immediately');
         // Write storage
         if(that.params['remember']){
@@ -131,7 +131,7 @@ function(params){
     that.expandRight = function(isImmediately){
         that.isRightCollapsed = false;
         isImmediately && cm.addClass(that.params['node'], 'is-immediately');
-        cm.removeClass(that.params['node'], 'is-sidebar-right-collapsed', true);
+        cm.replaceClass(that.params['node'], 'is-sidebar-right-collapsed', 'is-sidebar-right-expanded', true);
         isImmediately && cm.removeClass(that.params['node'], 'is-immediately');
         // Write storage
         if(that.params['remember']){

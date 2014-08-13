@@ -1437,11 +1437,11 @@ cm.removeClass = function(node, str, useHack){
     return node;
 };
 
-cm.replaceClass = function(node, oldClass, newClass){
+cm.replaceClass = function(node, oldClass, newClass, useHack){
     if(!node){
         return null;
     }
-    return cm.addClass(cm.removeClass(node, oldClass), newClass);
+    return cm.addClass(cm.removeClass(node, oldClass, useHack), newClass, useHack);
 };
 
 cm.hasClass = cm.isClass = function(node, cssClass){

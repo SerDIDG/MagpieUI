@@ -492,6 +492,7 @@ select[multiple] {
 .cm-title-editable:after,
 .cm-itembox:after,
 .com-timeselect > .inner:after,
+.com-togglebox > dd:after,
 .com-forum-cell-counter .line:after,
 .com-profile > .inner:after {
   content: ".";
@@ -641,6 +642,16 @@ select[multiple] {
 .cm-font-base,
 .com-timeselect > .inner > .sep {
   font: normal 13px/18px 'Open Sans', arial, helvetica, sans-serif;
+  color: #666666;
+}
+.cm-font-link {
+  text-decoration: underline;
+  color: #666666;
+  outline: none;
+  cursor: pointer;
+}
+.cm-font-link:hover {
+  text-decoration: none;
   color: #666666;
 }
 .cm-font-ui,
@@ -4378,7 +4389,8 @@ select[multiple] {
 .com-togglebox.has-content-bg > dd .com-togglebox-empty,
 .com-togglebox.has-content-bg > dd .com-gridlist,
 .com-togglebox.has-content-bg > dd .cm-toolbar {
-  margin: 1px 0 0 0;
+  margin: 0;
+  border-top: 1px solid #ffffff;
   background: #fafafa;
   border-radius: 3px;
 }

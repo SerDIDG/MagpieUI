@@ -51,7 +51,7 @@
         }
     }
 
-    > dd {
+    > dd:extend(.clear all) {
         padding: 0;
         opacity: 1;
 
@@ -79,7 +79,8 @@
             .com-togglebox-empty,
             .com-gridlist,
             .cm-toolbar {
-                margin: 1px 0 0 0;
+                margin: 0;
+                border-top: @ComToggleBox-contentSpaceBorder;
                 background: @ComToggleBox-contentBackground;
                 border-radius: @cm-borderRadius;
             }
