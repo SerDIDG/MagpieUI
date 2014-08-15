@@ -94,9 +94,7 @@
     background: @ComForum-postBackground;
     border-radius: @cm-borderRadius;
 
-    .cm-itembox:extend(.cm-font-ui){}
-
-    .date:extend(.cm-font-ui) {
+    .date:extend(.cm-font-hint) {
         color: @cm-colorFontMedium;
     }
 
@@ -135,6 +133,18 @@
             padding: @cm-indentXSmall;
             display: table-cell;
             vertical-align: top;
+        }
+    }
+
+    &.is-featured {
+        background: @ComForum-postBackgroundFeatured;
+
+        > .inner {
+            > .l {
+                &:after {
+                    border-color: transparent @ComForum-postBackgroundFeatured transparent transparent;
+                }
+            }
         }
     }
 }

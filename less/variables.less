@@ -36,10 +36,12 @@
 
 @cm-color: hsl(210, 80%, 55%);
 @cm-colorLighten: lighten(@cm-color, 40%);
-@cm-colorActive: lighten(saturate(@cm-color, 2%), 37%);
+@cm-colorActive: lighten(desaturate(@cm-color, 2%), 37%);
 @cm-colorActiveHover: darken(@cm-colorActive, 5%);
 @cm-colorSecondary: hsl(0, 0, 95%);
 @cm-colorSecondaryHover: lighten(@cm-colorSecondary, 3%);
+
+@cm-colorThemeLight-background: lighten(@cm-color, 42%);
 
 @cm-colorLight-background: #fafafa;
 @cm-colorLight-backgroundHover: #e6e6e6;
@@ -53,6 +55,7 @@
 @cm-colorGalleryBackground: #111111;
 @cm-colorContentBackgroundLight: @cm-colorLight-background;
 @cm-colorContentBackgroundDark: @cm-colorLight-backgroundDisabled;
+@cm-colorContentThemeBackgroundLight: @cm-colorThemeLight-background;
 @cm-colorBorder: #CBCBCB;
 @cm-colorBorderHover: @cm-colorActiveHover;
 
@@ -65,7 +68,7 @@
 @cm-fontSizeUI: 11px;
 @cm-fontSizeTitle: 30px;
 @cm-fontSizeTitleMedium: 16px;
-@cm-fontSizeHint: @cm-fontSizeUI;
+@cm-fontSizeHint: 11px;
 @cm-fontFamily: 'Open Sans', arial, helvetica, sans-serif;
 @cm-fontWeight: normal;
 @cm-boldWeight: 600;
@@ -342,6 +345,7 @@
 
 @ComForum-adaptiveFrom: @cm-screenMobile;
 @ComForum-postBackground: @cm-colorContentBackgroundLight;
+@ComForum-postBackgroundFeatured: @cm-colorContentThemeBackgroundLight;
 @ComForum-postTitleBackground: @cm-colorContentBackgroundDark;
 @ComForum-postLeftColumnSize: 150px;
 

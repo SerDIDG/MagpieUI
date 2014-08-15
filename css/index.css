@@ -211,7 +211,7 @@ input[type="number"]:focus,
 input[type="password"]:focus,
 textarea:focus {
   background-color: #fdffff;
-  border-color: #c3def9;
+  border-color: #c4def8;
 }
 input[type="text"][disabled],
 input[type="email"][disabled],
@@ -654,12 +654,7 @@ select[multiple] {
   text-decoration: none;
   color: #666666;
 }
-.cm-font-ui,
-.cm-itembox .date,
-.cm-itembox .count,
-.cm-itembox .status,
-.com-forum-post .cm-itembox,
-.com-forum-post .date {
+.cm-font-ui {
   font: normal 11px/18px 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
 }
@@ -676,6 +671,13 @@ select[multiple] {
 .cm-font-title-medium {
   font: 300 16px/24px 'Open Sans', 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
+}
+.cm-font-hint,
+.cm-itembox .date,
+.cm-itembox .count,
+.cm-itembox .status,
+.com-forum-post .date {
+  font: normal 11px/18px 'Open Sans', arial, helvetica, sans-serif;
 }
 .cm-block-padding {
   padding: 24px;
@@ -814,7 +816,7 @@ select[multiple] {
 }
 .cm-selectable.active:before {
   background-color: #ffffff;
-  border-color: #daebfb;
+  border-color: #dbebfb;
 }
 /* ******* ADAPTIVE ******* */
 @media only screen and (max-width: 640px) {
@@ -1187,7 +1189,7 @@ select[multiple] {
   transition: border-color 0.3s ease-in-out;
 }
 .cm-box-border.active {
-  border: 2px solid #daebfb;
+  border: 2px solid #dbebfb;
 }
 .cm-box-flat {
   padding: 12px;
@@ -1209,6 +1211,9 @@ select[multiple] {
 }
 .cm-box-info dl dt {
   font-weight: bold;
+}
+.cm-box-info dl dd {
+  padding: 0;
 }
 .cm-box-info dl:last-child {
   margin: 0;
@@ -2163,10 +2168,10 @@ select[multiple] {
   transition: all 0.1s ease-in-out;
 }
 .cm-items-list ul li:not(.group):not(.title):not(.disabled).active {
-  background-color: #daebfb;
+  background-color: #dbebfb;
 }
 .cm-items-list ul li:not(.group):not(.title):not(.disabled).active:hover {
-  background-color: #c3def9;
+  background-color: #c4def8;
 }
 .cm-items-list.auto ul {
   max-height: none;
@@ -2520,7 +2525,7 @@ select[multiple] {
   transition: all 0.1s ease-in-out;
 }
 .cm-editable.is-active > .drag {
-  background-color: #daebfb;
+  background-color: #dbebfb;
 }
 @media only screen and (max-width: 640px) {
   .is-adaptive .cm-editable > .border,
@@ -3050,7 +3055,7 @@ select[multiple] {
   text-decoration: underline;
 }
 .cm-list-counted ul li:hover .cm-counter {
-  background-color: #daebfb;
+  background-color: #dbebfb;
 }
 .cm-list-counted ul li.active .label {
   font-weight: 600;
@@ -3345,11 +3350,11 @@ select[multiple] {
   transition: background-color 0.1s ease-in-out;
 }
 .com-columns-chassis.is-active .drag {
-  background: #daebfb;
+  background: #dbebfb;
   border-color: #308ce8;
 }
 .com-columns-chassis.is-active:after {
-  background: #daebfb;
+  background: #dbebfb;
 }
 .com-columns {
   margin: 0 0 24px;
@@ -3545,7 +3550,7 @@ select[multiple] {
 }
 .com-multiselect .inner:focus {
   background-color: #fdffff;
-  border-color: #c3def9;
+  border-color: #c4def8;
 }
 .com-multiselect .inner[disabled] {
   background-color: #fafafa;
@@ -3684,19 +3689,19 @@ select[multiple] {
   border-color: #308ce8;
 }
 .com-calendar table td.today div:hover {
-  background-color: #daebfb;
+  background-color: #dbebfb;
   border-color: #308ce8;
 }
 .com-calendar table td.active div,
 .com-calendar table td.selected div {
-  background-color: #daebfb;
+  background-color: #dbebfb;
   border-width: 1px;
   border-color: #308ce8;
   line-height: 19px;
 }
 .com-calendar table td.active div:hover,
 .com-calendar table td.selected div:hover {
-  background-color: #c3def9;
+  background-color: #c4def8;
   border-color: #308ce8;
 }
 .com-calendar table td.today div {
@@ -5606,6 +5611,12 @@ select[multiple] {
   padding: 12px;
   display: table-cell;
   vertical-align: top;
+}
+.com-forum-post.is-featured {
+  background: #f1f7fd;
+}
+.com-forum-post.is-featured > .inner > .l:after {
+  border-color: transparent #f1f7fd transparent transparent;
 }
 /* ******* COMPONENT: FORUM: ADAPTIVE ******* */
 @media only screen and (max-width: 640px) {
