@@ -5478,14 +5478,14 @@ select[multiple] {
   padding: 0;
   list-style: none;
 }
+.com-comments .comment-list.replies {
+  margin: 24px 0 0 24px;
+}
 .com-comments .comment-list > li {
   margin: 24px 0 0 0;
 }
 .com-comments .comment-list > li:first-child {
   margin-top: 0;
-}
-.com-comments .comment-list > li.replies {
-  margin-left: 24px;
 }
 .com-comments .comment-list > li > ul {
   margin: 0;
