@@ -1,0 +1,90 @@
+/* ******* COMPONENT: COMMENTS ******* */
+
+.com-comments {
+    margin: 0 0 @cm-indentMedium;
+
+    &.bottom {
+        margin: 0;
+    }
+
+    .comment-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+
+        > li {
+            margin: @cm-indentMedium 0 0 0;
+
+            &:first-child {
+                margin-top: 0;
+            }
+
+            &.replies {
+                margin-left: @cm-indentMedium;
+            }
+
+            > ul {
+                margin: 0;
+                padding: 0;
+                list-style: none;
+            }
+        }
+    }
+
+    .comment-info,
+    .comment-text,
+    .comment-actions {
+        margin: @cm-indentXXXSmall 0 0 0;
+        .clear;
+
+        &:first-child {
+            margin: 0;
+        }
+    }
+
+    .comment-info {
+        .author,
+        .date,
+        .hash {
+            float: left;
+            margin: 0 @cm-indentXXSmall 0 0;
+            .cm-font-hint;
+            line-height: 12px;
+
+            &:last-child {
+                margin: 0;
+            }
+        }
+
+        .author {
+            font-weight: @cm-boldWeight;
+        }
+    }
+
+    .comment-text {
+        h1, h2, h3, h4, h5, h6, p, ul, ol {
+            margin: 0;
+        }
+    }
+
+    .comment-actions {
+        .cm-font-hint;
+        line-height: 12px;
+
+        .cm-links {
+            > ul {
+                line-height: inherit;
+                > li {
+                    .cm-font-hint;
+                    line-height: inherit;
+                }
+            }
+        }
+    }
+}
+
+.com-comment-editor {
+    textarea {
+        min-height: 50px;
+    }
+}

@@ -3277,7 +3277,6 @@ select[multiple] {
   -webkit-flex: 1;
   -ms-flex: 1;
   flex: 1;
-  min-height: 88px;
   margin: 0 12px;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -3413,6 +3412,9 @@ select[multiple] {
 }
 .com-columns.is-editable > .inner > .com-columns-chassis {
   display: block;
+}
+.com-columns.is-editable > .inner > .container > .com-column > .inner {
+  min-height: 88px;
 }
 .com-columns.is-editable.is-active > .inner > .com-columns-chassis,
 .com-columns.is-editable:hover > .inner > .com-columns-chassis {
@@ -5463,6 +5465,94 @@ select[multiple] {
 .com-gallery-layout.has-border {
   padding: 12px;
   border: 2px solid #cbcbcb;
+}
+/* ******* COMPONENT: COMMENTS ******* */
+.com-comments {
+  margin: 0 0 24px;
+}
+.com-comments.bottom {
+  margin: 0;
+}
+.com-comments .comment-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.com-comments .comment-list > li {
+  margin: 24px 0 0 0;
+}
+.com-comments .comment-list > li:first-child {
+  margin-top: 0;
+}
+.com-comments .comment-list > li.replies {
+  margin-left: 24px;
+}
+.com-comments .comment-list > li > ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.com-comments .comment-info,
+.com-comments .comment-text,
+.com-comments .comment-actions {
+  margin: 4px 0 0 0;
+}
+.com-comments .comment-info:after,
+.com-comments .comment-text:after,
+.com-comments .comment-actions:after {
+  content: ".";
+  display: block;
+  clear: both;
+  visibility: hidden;
+  line-height: 0;
+  font-size: 0;
+  height: 0;
+}
+.com-comments .comment-info:first-child,
+.com-comments .comment-text:first-child,
+.com-comments .comment-actions:first-child {
+  margin: 0;
+}
+.com-comments .comment-info .author,
+.com-comments .comment-info .date,
+.com-comments .comment-info .hash {
+  float: left;
+  margin: 0 8px 0 0;
+  font: normal 11px/18px 'Open Sans', arial, helvetica, sans-serif;
+  line-height: 12px;
+}
+.com-comments .comment-info .author:last-child,
+.com-comments .comment-info .date:last-child,
+.com-comments .comment-info .hash:last-child {
+  margin: 0;
+}
+.com-comments .comment-info .author {
+  font-weight: 600;
+}
+.com-comments .comment-text h1,
+.com-comments .comment-text h2,
+.com-comments .comment-text h3,
+.com-comments .comment-text h4,
+.com-comments .comment-text h5,
+.com-comments .comment-text h6,
+.com-comments .comment-text p,
+.com-comments .comment-text ul,
+.com-comments .comment-text ol {
+  margin: 0;
+}
+.com-comments .comment-actions {
+  font: normal 11px/18px 'Open Sans', arial, helvetica, sans-serif;
+  line-height: 12px;
+}
+.com-comments .comment-actions .cm-links > ul {
+  line-height: inherit;
+}
+.com-comments .comment-actions .cm-links > ul > li {
+  font: normal 11px/18px 'Open Sans', arial, helvetica, sans-serif;
+  line-height: inherit;
+}
+.com-comment-editor textarea {
+  min-height: 50px;
 }
 /* ******* COMPONENT: FORUM ******* */
 /* *** MAIN *** */
