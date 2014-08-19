@@ -424,18 +424,14 @@ select[multiple] {
 .buttons {
     margin: 0 0 @cm-indentMedium 0;
     font-size: 0;
-}
 
-.buttons.bottom {
-    margin: 0;
-}
+    &.bottom {
+        margin: 0;
+    }
 
-.buttons input[type="button"],
-.buttons input[type="submit"],
-.buttons input[type="reset"],
-.buttons button,
-.buttons .button {
-    margin-right: 8px;
+    .cm-button {
+        margin-right: @CmForm-buttonsIndent;
+    }
 }
 
 /* *** PROGRESS BAR *** */
