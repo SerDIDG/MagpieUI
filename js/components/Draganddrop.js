@@ -300,9 +300,9 @@ Com['Draganddrop'] = function(o){
             left = [posX, 'px'].join('');
         }
         // Scroll node
-        if(posY + current['dimensions']['height'] > pageSize['winHeight']){
+        if(y + 48 > pageSize['winHeight']){
             toggleScroll(1);
-        }else if(posY < 0){
+        }else if(y - 48 < 0){
             toggleScroll(-1);
         }else{
             toggleScroll(0);
