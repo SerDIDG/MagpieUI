@@ -31,6 +31,13 @@
 
     .font-hint {
         font: @cm-fontWeight ~'@{cm-fontSizeHint}/@{cm-lineHeight}' @cm-fontFamily;
+        color: @cm-colorFont;
+    }
+
+    .font-hint-cursive {
+        #cm > .font-hint;
+        font-style: italic;
+        color: @cm-colorHint;
     }
 
     .font-link {

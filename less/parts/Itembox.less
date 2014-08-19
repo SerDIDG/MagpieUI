@@ -39,6 +39,20 @@
         }
     }
 
+    .btn-wrap {
+        margin: @cm-indentXXSmall 0 ;
+
+        &:first-child {
+            margin-top: 0;
+        }
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    .hint:extend(.cm-font-hint-cursive) {}
+
     &:not(.is-no-overflow){
         .title:extend(.cm-text-overflow) {}
         .author:extend(.cm-text-overflow) {}

@@ -2,10 +2,10 @@
 
 .form {
     cursor: default;
-}
 
-.form.in-content {
-    margin: 0 0 @cm-indentMedium;
+    &.in-content {
+        margin: 0 0 @cm-indentMedium;
+    }
 }
 
 .form .required {
@@ -111,13 +111,8 @@
 
 /* *** HINT ***  */
 
-.form .hint {
-    font-size: @cm-fontSizeHint;
-    line-height: 15px;
-    color: @cm-colorHint;
+.form .hint:extend(.cm-font-hint-cursive) {
     text-transform: none;
-    font-style: italic;
-    padding: 2px 0;
 }
 
 .form ul.hint {
@@ -174,6 +169,10 @@
         }
     }
 
+    .button {
+        margin: 0 !important;
+    }
+
     &:hover {
         .button {
             #cm > .button-primary-hover;
@@ -204,49 +203,48 @@
         font-size: 12px;
     }
 
-    &.error .hint {
-        color: @cm-colorError;
-    }
+    .button,
+    .browse-button {
+        float: right;
+        margin: 0 0 0 @CmForm-buttonsIndent;
 
-    &.ok .hint {
-        color: @cm-colorValid;
-    }
-
-    &.centered {
-        text-align: center;
-    }
-
-    &.is-block {
-        height: auto;
-    }
-}
-
-/* Add To Bundle */
-
-#cm () {
-    .button {
-        .btn-wrap & {
-            float: right;
-            margin: 0 0 0 @CmForm-buttonsIndent;
-
-            &.left {
-                float: left;
-                margin: 0 @CmForm-buttonsIndent 0 0;
-            }
-
-            &.wide {
-                width: 100%;
-                float: none;
-                margin: 0;
-            }
-        }
-
-        .btn-wrap.left & {
+        &.left {
             float: left;
             margin: 0 @CmForm-buttonsIndent 0 0;
         }
 
-        .btn-wrap.centered & {
+        &.wide {
+            width: 100%;
+            float: none;
+            margin: 0;
+        }
+    }
+
+    &.error {
+        .hint {
+            color: @cm-colorError;
+        }
+    }
+
+    &.ok {
+        .hint {
+            color: @cm-colorValid;
+        }
+    }
+
+    &.left {
+        .button,
+        .browse-button {
+            float: left;
+            margin: 0 @CmForm-buttonsIndent 0 0;
+        }
+    }
+
+    &.centered {
+        text-align: center;
+
+        .button,
+        .browse-button {
             float: none;
             display: inline-block;
             margin: 0 0 0 @CmForm-buttonsIndent;
@@ -255,8 +253,13 @@
                 margin: 0;
             }
         }
+    }
 
-        .btn-wrap.is-block & {
+    &.is-block {
+        height: auto;
+
+        .button,
+        .browse-button {
             width: 100%;
             display: block;
             margin: @CmForm-buttonsIndent 0 0 0;
@@ -455,7 +458,7 @@
 .form-image-box {
     > .l {
         float: left;
-        margin: 0 @CmForm-fieldIndent 0 0;
+        margin: 0 @cm-indentXSmall 0 0;
 
         .no-image {
             width: 80px;
@@ -481,10 +484,11 @@
         font-size: 0;
 
         .hint {
-            margin: 6px 0 0 0;
+            margin: @cm-indentXXSmall 0 0 0;
         }
     }
 
+    .button,
     .browse-button {
         width: @CmForm-imageBox-buttonWidth;
         display: block;
@@ -492,6 +496,7 @@
     }
 
     &.style2 {
+        .button,
         .browse-button {
             display: inline-block;
             margin: 0 @CmForm-buttonsIndent 0 0;
@@ -511,16 +516,6 @@
 
         > .r {
             float: none;
-        }
-    }
-}
-
-/* Add To Bundle */
-
-#cm () {
-    .button {
-        .form-image-box & {
-            width: @CmForm-imageBox-buttonWidth;
         }
     }
 }
@@ -731,9 +726,9 @@
             margin: @CmForm-fieldInnerIndent 0 0 0;
             line-height: @CmForm-fieldHeight;
 
-            input {
+            .button {
                 float: left;
-                margin: 0 @CmForm-fieldIndent 0 0;
+                margin: 0 @cm-indentXSmall 0 0;
             }
 
             .text {
@@ -758,7 +753,7 @@
     .browse-button {
         display: block;
         float: left;
-        margin: 0 @CmForm-fieldIndent 0 0;
+        margin: 0 @cm-indentXSmall 0 0;
     }
 
     .text {
