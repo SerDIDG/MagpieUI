@@ -815,6 +815,39 @@ button.transparent.active,
 .cm-aspect-1x2 {
   padding-bottom: 200%;
 }
+/* ******* PART: SIZE ******* */
+.cm-size-xxx-small {
+  width: 4px;
+  height: 4px;
+}
+.cm-size-xx-small {
+  width: 8px;
+  height: 8px;
+}
+.cm-size-x-small {
+  width: 12px;
+  height: 12px;
+}
+.cm-size-small {
+  width: 16px;
+  height: 16px;
+}
+.cm-size-medium {
+  width: 24px;
+  height: 24px;
+}
+.cm-size-large {
+  width: 32px;
+  height: 32px;
+}
+.cm-size-x-large {
+  width: 48px;
+  height: 48px;
+}
+.cm-size-xx-large {
+  width: 64px;
+  height: 64px;
+}
 /* ******* ICONS ******* */
 .icon {
   background: transparent center center no-repeat;
@@ -5591,53 +5624,17 @@ button.transparent.active,
   height: 32px;
   background-image: url("../img/icons/large/message.png");
 }
-.com-forum-cell-icon .icon.default.centered {
-  margin: -16px 0 0 -16px;
-}
-.com-forum-cell-icon .icon.default.message {
-  background-image: url("../img/icons/large/message.png");
-}
-.com-forum-cell-icon .icon.default.page {
-  background-image: url("../img/icons/large/page.png");
-}
-.com-forum-cell-icon .icon.default.page-featured {
-  background-image: url("../img/icons/large/page-featured.png");
-}
 .com-forum-cell-icon .icon.default-page {
   width: 32px;
   height: 32px;
   background-image: url("../img/icons/large/page.png");
   margin: 3px 0 0 0;
 }
-.com-forum-cell-icon .icon.default-page.centered {
-  margin: -16px 0 0 -16px;
-}
-.com-forum-cell-icon .icon.default-page.message {
-  background-image: url("../img/icons/large/message.png");
-}
-.com-forum-cell-icon .icon.default-page.page {
-  background-image: url("../img/icons/large/page.png");
-}
-.com-forum-cell-icon .icon.default-page.page-featured {
-  background-image: url("../img/icons/large/page-featured.png");
-}
 .com-forum-cell-icon .icon.default-featured {
   width: 32px;
   height: 32px;
   background-image: url("../img/icons/large/page-featured.png");
   margin: 3px 0 0 0;
-}
-.com-forum-cell-icon .icon.default-featured.centered {
-  margin: -16px 0 0 -16px;
-}
-.com-forum-cell-icon .icon.default-featured.message {
-  background-image: url("../img/icons/large/message.png");
-}
-.com-forum-cell-icon .icon.default-featured.page {
-  background-image: url("../img/icons/large/page.png");
-}
-.com-forum-cell-icon .icon.default-featured.page-featured {
-  background-image: url("../img/icons/large/page-featured.png");
 }
 .com-forum-cell-counter {
   width: 120px;
