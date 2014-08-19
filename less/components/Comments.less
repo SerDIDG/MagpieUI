@@ -45,15 +45,31 @@
     .comment-info {
         .author,
         .date,
-        .hash {
+        .hash,
+        .status {
             float: left;
             margin: 0 @cm-indentXXSmall 0 0;
             .cm-font-hint;
+            color: inherit;
             line-height: 12px;
 
             &:last-child {
                 margin: 0;
             }
+        }
+
+        .status {
+            &.error {
+                color: @cm-colorError;
+            }
+
+            &.valid {
+                color: @cm-colorValid;
+            }
+        }
+
+        .date {
+            color: @cm-colorFontMedium;
         }
 
         .author {

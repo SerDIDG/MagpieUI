@@ -432,6 +432,8 @@ select[multiple] {
 .cm-itembox .date,
 .cm-itembox .count,
 .cm-itembox .status,
+.cm-itembox .status.error,
+.cm-itembox .status.valid,
 .com-forum-post .date {
   font: normal 11px/18px 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
@@ -3008,6 +3010,12 @@ button.transparent.active,
 .cm-itembox .status {
   color: #999999;
 }
+.cm-itembox .status.error {
+  color: #e61919;
+}
+.cm-itembox .status.valid {
+  color: #009900;
+}
 .cm-itembox .descr {
   margin: 4px 0 0 0;
 }
@@ -4073,10 +4081,6 @@ button.transparent.active,
   left: -8px;
 }
 /* ******* COMPONENT: DIALOG: THEMES ******* */
-.com-dialog {
-  /* *** DEFAULT *** */
-  /* *** BLACK *** */
-}
 .com-dialog.theme-default > .bg,
 .com-dialog.theme-black > .bg {
   background: rgba(0, 0, 0, 0.7);
@@ -5569,17 +5573,29 @@ button.transparent.active,
 }
 .com-comments .comment-info .author,
 .com-comments .comment-info .date,
-.com-comments .comment-info .hash {
+.com-comments .comment-info .hash,
+.com-comments .comment-info .status {
   float: left;
   margin: 0 8px 0 0;
   font: normal 11px/18px 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
+  color: inherit;
   line-height: 12px;
 }
 .com-comments .comment-info .author:last-child,
 .com-comments .comment-info .date:last-child,
-.com-comments .comment-info .hash:last-child {
+.com-comments .comment-info .hash:last-child,
+.com-comments .comment-info .status:last-child {
   margin: 0;
+}
+.com-comments .comment-info .status.error {
+  color: #e61919;
+}
+.com-comments .comment-info .status.valid {
+  color: #009900;
+}
+.com-comments .comment-info .date {
+  color: #999999;
 }
 .com-comments .comment-info .author {
   font-weight: 600;
