@@ -247,6 +247,7 @@ select[multiple] {
 .form dl:after,
 .cm-title-editable:after,
 .cm-itembox:after,
+.cm-list-counted.is-inline ul:after,
 .com-timeselect > .inner:after,
 .com-togglebox > dd:after,
 .com-forum-cell-counter .line:after,
@@ -3161,6 +3162,17 @@ button.transparent.active,
 }
 .cm-list-counted ul li.active .label {
   font-weight: 600;
+}
+.cm-list-counted.is-inline ul li {
+  float: left;
+  margin: 0 24px 0 0;
+}
+.cm-list-counted.is-inline ul li:last-child {
+  margin: 0;
+}
+.cm-list-counted.is-inline ul li .r,
+.cm-list-counted.is-inline ul li .l {
+  float: left;
 }
 /* ************ COMMON COMPONENTS ************ */
 /* ******* COLLAPSIBLE LAYOUT ******* */
