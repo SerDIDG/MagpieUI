@@ -48,4 +48,21 @@
             }
         }
     }
+
+    &.is-inline {
+        ul:extend(.clear all) {
+            li {
+                float: left;
+                margin: 0 @cm-indentMedium 0 0;
+
+                &:last-child {
+                    margin: 0;
+                }
+
+                .r, .l {
+                    float: left;
+                }
+            }
+        }
+    }
 }
