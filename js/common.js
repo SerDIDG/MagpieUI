@@ -71,7 +71,7 @@ cm.forEach = function(o, callback){
         case Object:
             for(var key in o){
                 if(o.hasOwnProperty(key)){
-                    callback(o[key], key);
+                    callback(o[key], key, o);
                 }
             }
             break;
@@ -89,7 +89,7 @@ cm.forEach = function(o, callback){
             }catch(e){
                 try{
                     for(i = 0, l = o.length; i < l; i++){
-                        callback(o[i], i);
+                        callback(o[i], i, o);
                     }
                 }catch(e){}
             }

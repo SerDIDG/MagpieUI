@@ -32,14 +32,14 @@ Com['Collector'] = function(o){
         nodes = nodes.filter(function(node){
             return !cm.inArray(item['nodes'], node);
         });
+        // Push new nodes in constructed nodes array
+        item['nodes'] = item['nodes'].concat(nodes);
         // Construct
         cm.forEach(nodes, function(node){
             cm.forEach(item['construct'], function(handler){
                 handler(node);
             });
         });
-        // Push new nodes in constructed nodes array
-        item['nodes'] = item['nodes'].concat(nodes);
     };
 
     var destructItem = function(item, name, parentNode){
