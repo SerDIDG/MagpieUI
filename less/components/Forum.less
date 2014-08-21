@@ -133,6 +133,10 @@
             padding: @cm-indentXSmall;
             display: table-cell;
             vertical-align: top;
+
+            .cm-title-editable {
+                margin: 0;
+            }
         }
     }
 
@@ -165,8 +169,10 @@
                     display: block;
                 }
 
-                > .r {
-                    margin: @cm-indentMedium 0 0 0;
+                > .l {
+                    &:after {
+                        display: none;
+                    }
                 }
             }
         }

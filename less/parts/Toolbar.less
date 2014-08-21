@@ -137,7 +137,7 @@
 
 @media only screen and (max-width : @cm-screenMobile) {
 
-    .is-adaptive {
+    html.is-adaptive {
         .cm-toolbar {
             > .inner {
                 > .left,
@@ -149,6 +149,7 @@
 
             .group {
                 margin-top: 0;
+
                 > li {
                     &.label {
                         display: block;
@@ -160,10 +161,30 @@
                         width: 100%;
                     }
                 }
+
+                &.is-adaptive {
+                    display: block;
+                    margin-left: 0;
+                    margin-right: 0;
+
+                    .cm-button {
+                        display: block;
+                    }
+
+                    > li {
+                        display: block;
+                        margin-left: 0;
+                        margin-right: 0;
+                    }
+                }
             }
 
             &.is-adaptive {
                 > .inner {
+                    display: block;
+                }
+
+                .cm-button {
                     display: block;
                 }
 

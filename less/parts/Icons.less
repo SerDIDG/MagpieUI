@@ -1,7 +1,7 @@
 /* ******* ICONS ******* */
 
 .icon {
-    background: transparent center center no-repeat;
+    background: transparent 50% 50% no-repeat;
 
     // /* *** PARAMETERS *** */
 
@@ -14,6 +14,10 @@
         position: absolute;
         top: 50%;
         left: 50%;
+    }
+
+    &.has-caption {
+        background-position: 0 50%;
     }
 
     &.hidden {
@@ -48,6 +52,12 @@
             margin: -@margin 0 0 -@margin;
         }
 
+        &.has-caption {
+            width: auto;
+            padding-left: @cm-XSmall + @cm-indentXXXSmall;
+            line-height: @cm-XSmall;
+        }
+
         .for(search search-white); .-each(@name) {
             &.@{name} {
                 background-image: url("@{CmPath-image}/icons/x-small/@{name}.png");
@@ -65,7 +75,13 @@
             margin: -@margin 0 0 -@margin;
         }
 
-        .for(add arrow-priority-down arrow-priority-up arrow-left arrow-right arrow-top arrow-bottom copy done edit fail help remove settings view search arrow-white-left arrow-white-right arrow-white-top arrow-white-bottom); .-each(@name) {
+        &.has-caption {
+            width: auto;
+            padding-left: @cm-Small + @cm-indentXXXSmall;
+            line-height: @cm-Small;
+        }
+
+        .for(add arrow-priority-down arrow-priority-up arrow-left arrow-right arrow-top arrow-bottom copy done edit fail help remove settings settings-white view search arrow-white-left arrow-white-right arrow-white-top arrow-white-bottom); .-each(@name) {
             &.@{name} {
                 background-image: url("@{CmPath-image}/icons/small/@{name}.png");
             }
@@ -98,6 +114,12 @@
             margin: -@margin 0 0 -@margin;
         }
 
+        &.has-caption {
+            width: auto;
+            padding-left: @cm-Medium + @cm-indentXXXSmall;
+            line-height: @cm-Medium;
+        }
+
         .for(arrow-left arrow-right arrow-white-left arrow-white-right arrow-white-top arrow-white-bottom datepicker select-arrow close close-white menu menu-white settings settings-white); .-each(@name) {
             &.@{name} {
                 background-image: url("@{CmPath-image}/icons/medium/@{name}.png");
@@ -113,6 +135,12 @@
         &.centered {
             @margin: @cm-Large / 2;
             margin: -@margin 0 0 -@margin;
+        }
+
+        &.has-caption {
+            width: auto;
+            padding-left: @cm-Large + @cm-indentXXXSmall;
+            line-height: @cm-Large;
         }
 
         .for(message page page-featured); .-each(@name) {
@@ -132,6 +160,12 @@
             margin: -@margin 0 0 -@margin;
         }
 
+        &.has-caption {
+            width: auto;
+            padding-left: @cm-XLarge + @cm-indentXXXSmall;
+            line-height: @cm-XLarge;
+        }
+
         .for(play); .-each(@name) {
             &.@{name} {
                 background-image: url("@{CmPath-image}/icons/x-large/@{name}.png");
@@ -147,6 +181,12 @@
         &.centered {
             @margin: @cm-XXLarge / 2;
             margin: -@margin 0 0 -@margin;
+        }
+
+        &.has-caption {
+            width: auto;
+            padding-left: @cm-XXLarge + @cm-indentXXXSmall;
+            line-height: @cm-XXLarge;
         }
 
         .for(arrow-left arrow-right arrow-white-left arrow-white-right); .-each(@name) {

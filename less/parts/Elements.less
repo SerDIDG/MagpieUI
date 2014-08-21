@@ -1,9 +1,141 @@
 /* ******* PART: ELEMENTS ******* */
 
+/* *** CONTENT TAGS *** */
+
+.cm-content-tags {
+    #cm > .font-base;
+    margin: 0 0 @cm-lineHeight;
+    padding: 0;
+}
+
+h1:extend(.cm-content-tags all),
+h2:extend(.cm-content-tags all),
+h3:extend(.cm-content-tags all),
+h4:extend(.cm-content-tags all),
+h5:extend(.cm-content-tags all),
+h6:extend(.cm-content-tags all),
+p:extend(.cm-content-tags all),
+dl:extend(.cm-content-tags all),
+ul:extend(.cm-content-tags all),
+ol:extend(.cm-content-tags all) {
+
+}
+
+h1 {
+    margin: 0 0 @cm-indentMedium;
+    font-size: 34px;
+    line-height: 40px;
+    font-weight: @cm-boldWeight;
+}
+
+h2 {
+    font-size: 24px;
+    line-height: 28px;
+    font-weight: @cm-boldWeight;
+}
+
+h3 {
+    font-size: 20px;
+    line-height: 22px;
+}
+
+h4 {
+    font-size: 18px;
+}
+
+b {
+    font-weight: @cm-boldWeight;
+}
+
+ul, ol {
+    padding: 0 0 0 @cm-indentMedium;
+
+    &.none {
+        list-style: none;
+        padding-left: 0;
+    }
+
+    &.decimal {
+        list-style: decimal;
+    }
+
+    &.style-none {
+        list-style: none;
+    }
+}
+
+dl {
+    dd {
+        padding: 0 0 0 @cm-lineHeight;
+    }
+}
+
+hr {
+    #cm > .hr;
+}
+
+br {
+    height: @cm-lineHeight;
+    line-height: @cm-lineHeight;
+}
+
+iframe {
+    width: 100%;
+    display: block;
+    border: none;
+}
+
+header, main, aside, footer, section {
+    display: block;
+}
+
+/* *** TABLE *** */
+
+table {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+tbody, thead, tr {
+    width: 100%;
+}
+
+tbody, thead, td, th, tr {
+    margin: 0;
+    padding: 0;
+}
+
 /* *** BUTTONS *** */
 
 .cm-button {
     #cm > .button;
+
+    &.has-icon {
+        padding-left: 0;
+
+        .icon {
+            display: block;
+            float: left;
+            position: relative;
+            top: 50%;
+        }
+    }
+
+    &.has-icon-medium {
+        .icon {
+            margin: -(@cm-Medium / 2) round((@CmForm-fieldHeight - @cm-Medium) / 2) 0;
+        }
+    }
+
+    &.has-icon-small {
+        .icon {
+            margin: -(@cm-Small / 2) round((@CmForm-fieldHeight - @cm-Small) / 2) 0;
+        }
+    }
 }
 
 input[type="button"]:extend(.cm-button all),

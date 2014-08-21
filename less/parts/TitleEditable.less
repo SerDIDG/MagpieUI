@@ -1,12 +1,41 @@
 /* ******* PART: TITLE EDITABLE ******* */
 
 .cm-title-editable:extend(.clear all) {
+    margin: 0 0 @cm-indentMedium;
+
+    &.bottom {
+        margin: 0;
+    }
+
     > .r {
         float: right;
         margin: 0 0 0 @cm-indentMedium;
+
+        .cm-toolbar {
+            margin-bottom: 0;
+        }
     }
 
     > .l {
         overflow: hidden;
+
+        .cm-content-tags {
+            margin-bottom: 0;
+        }
     }
+}
+
+/* ******* PART: TITLE EDITABLE: ADAPTIVE ******* */
+
+@media only screen and (max-width: @cm-screenMobile) {
+
+    html.is-adaptive {
+        .cm-title-editable {
+            > .l, > .r {
+                float: none;
+                margin: 0;
+            }
+        }
+    }
+
 }

@@ -34,102 +34,6 @@ dl, dt, dd, canvas, iframe, form {
     text-indent: 0;
 }
 
-h1, h2, h3, h4, h5, h6, p, ul, ol, dl {
-    #cm > .font-base;
-    margin: 0 0 @cm-lineHeight;
-    padding: 0;
-}
-
-h1 {
-    margin: 0 0 @cm-indentMedium;
-    font-size: 34px;
-    line-height: 40px;
-    font-weight: @cm-boldWeight;
-}
-
-h2 {
-    font-size: 24px;
-    line-height: 28px;
-    font-weight: @cm-boldWeight;
-}
-
-h3 {
-    font-size: 20px;
-    line-height: 22px;
-}
-
-h4 {
-    font-size: 18px;
-}
-
-p, ul, ol, dl {
-    #cm > .font-base;
-}
-
-b {
-    font-weight: @cm-boldWeight;
-}
-
-ul, ol {
-    padding: 0 0 0 @cm-indentMedium;
-
-    &.none {
-        list-style: none;
-        padding-left: 0;
-    }
-
-    &.decimal {
-        list-style: decimal;
-    }
-
-    &.style-none {
-        list-style: none;
-    }
-}
-
-dl {
-    dd {
-        padding: 0 0 0 @cm-lineHeight;
-    }
-}
-
-hr {
-    #cm > .hr;
-}
-
-br {
-    height: @cm-lineHeight;
-    line-height: @cm-lineHeight;
-}
-
-table {
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    border: none;
-    border-collapse: collapse;
-    border-spacing: 0;
-}
-
-tbody, thead, tr {
-    width: 100%;
-}
-
-tbody, thead, td, th, tr {
-    margin: 0;
-    padding: 0;
-}
-
-iframe {
-    width: 100%;
-    display: block;
-    border: none;
-}
-
-header, main, aside, footer, section {
-    display: block;
-}
-
 /* *** FORM ELEMENTS *** */
 
 input, select, textarea {
@@ -227,7 +131,43 @@ select[multiple] {
     vertical-align: bottom !important;
 }
 
-/* *** *** */
+/* *** FONT *** */
+
+.cm-font-base {
+    #cm > .font-base;
+}
+
+.cm-font-link {
+    #cm > .font-link;
+}
+
+.cm-font-ui {
+    #cm > .font-ui;
+}
+
+.cm-font-ui-cursive {
+    #cm > .font-ui-cursive;
+}
+
+.cm-font-title {
+    #cm > .font-title;
+}
+
+.cm-font-title-medium {
+    #cm > .font-title-medium;
+}
+
+.cm-font-hint {
+    #cm > .font-hint;
+}
+
+.cm-font-hint-cursive {
+    #cm > .font-hint-cursive;
+}
+
+.cm-block-padding {
+    padding: @cm-indentMedium;
+}
 
 .link {
     #cm > .font-link;
@@ -328,42 +268,6 @@ select[multiple] {
 .cm-view-all {
     margin: @cm-indentMedium 0 0 0;
     text-align: right;
-}
-
-.cm-font-base {
-    #cm > .font-base;
-}
-
-.cm-font-link {
-    #cm > .font-link;
-}
-
-.cm-font-ui {
-    #cm > .font-ui;
-}
-
-.cm-font-ui-cursive {
-    #cm > .font-ui-cursive;
-}
-
-.cm-font-title {
-    #cm > .font-title;
-}
-
-.cm-font-title-medium {
-    #cm > .font-title-medium;
-}
-
-.cm-font-hint {
-    #cm > .font-hint;
-}
-
-.cm-font-hint-cursive {
-    #cm > .font-hint-cursive;
-}
-
-.cm-block-padding {
-    padding: @cm-indentMedium;
 }
 
 .cm-scroll-y {
