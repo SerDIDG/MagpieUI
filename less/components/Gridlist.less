@@ -225,3 +225,23 @@
         padding-left: 40px;
     }
 }
+
+/* ******* COMPONENT: GRIDLIST: ADAPTIVE ******* */
+
+@media only screen and (max-width : @ComGridlist-adaptiveFrom) {
+
+    html.is-adaptive {
+        .com-gridlist {
+            &.is-adaptive {
+                tr {
+                    td {
+                        width: auto;
+                        display: block;
+                        border: none;
+                    }
+                }
+            }
+        }
+    }
+
+}

@@ -4938,6 +4938,14 @@ button.has-icon-small .icon,
 .com-gridlist .has-padding-two tr td:first-child {
   padding-left: 40px;
 }
+/* ******* COMPONENT: GRIDLIST: ADAPTIVE ******* */
+@media only screen and (max-width: 640px) {
+  html.is-adaptive .com-gridlist.is-adaptive tr td {
+    width: auto;
+    display: block;
+    border: none;
+  }
+}
 /* ******* TABSET ******* */
 .com-tabset {
   margin: 0 0 24px;
@@ -5924,7 +5932,7 @@ button.has-icon-small .icon,
   font-weight: 600;
 }
 .com-filesgridlist-cell-date {
-  width: 100px;
+  width: 120px;
 }
 .com-filesgridlist-cell-status {
   width: 100px;
