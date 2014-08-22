@@ -2197,11 +2197,11 @@ cm.createXmlHttpRequestObject = function(){
             "MSXML2.XMLHTTP",
             "Microsoft.XMLHTTP"
         ];
-        for(var i = 0; i < XmlHttpVersions.length && !xmlHttp; i++){
+        cm.forEach(XmlHttpVersions, function(item){
             try{
-                xmlHttp = new ActiveXObject(XmlHttpVersions[i]);
+                xmlHttp = new ActiveXObject(item);
             }catch(e){}
-        }
+        });
     }
     if(!xmlHttp){
         return null;
