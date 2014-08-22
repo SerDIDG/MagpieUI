@@ -4940,10 +4940,13 @@ button.has-icon-small .icon,
 }
 /* ******* COMPONENT: GRIDLIST: ADAPTIVE ******* */
 @media only screen and (max-width: 640px) {
-  html.is-adaptive .com-gridlist.is-adaptive tr td {
+  html.is-adaptive .com-gridlist.is-adaptive tr td,
+  html.is-adaptive .com-gridlist.is-adaptive tr th {
     width: auto;
     display: block;
-    border: none;
+  }
+  html.is-adaptive .com-gridlist.is-adaptive tr td:first-child {
+    border-top: 1px solid #cbcbcb;
   }
 }
 /* ******* TABSET ******* */

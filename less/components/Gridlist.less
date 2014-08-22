@@ -234,10 +234,12 @@
         .com-gridlist {
             &.is-adaptive {
                 tr {
-                    td {
+                    td, th {
                         width: auto;
                         display: block;
-                        border: none;
+                    }
+                    td:first-child {
+                        border-top: 1px solid @cm-colorBorder;
                     }
                 }
             }
