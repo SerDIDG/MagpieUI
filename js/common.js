@@ -2075,7 +2075,9 @@ cm.ajax = function(o){
     var send = function(){
         config['httpRequestObject'].open(config['method'], config['url'], true);
         // Set Headers
-        config['httpRequestObject'].withCredentials = config['withCredentials'];
+        if('withCredentials' in config['httpRequestObject']){
+            config['httpRequestObject'].withCredentials = config['withCredentials'];
+        }
         cm.forEach(config['headers'], function(value, name){
             config['httpRequestObject'].setRequestHeader(name, value);
         });
@@ -2184,27 +2186,23 @@ cm.responseInArray = function(xmldoc){
 
 cm.createXmlHttpRequestObject = function(){
     var xmlHttp;
-    if(window.XMLHttpRequest) {
-        xmlHttp = new window.XMLHttpRequest();
-        if('withCredentials' in xmlHttp){
-            return xmlHttp;
-        }else if(window.XDomainRequest){
-            return new XDomainRequest();
+    try{
+        xmlHttp = new XMLHttpRequest();
+    }catch(e){
+        var XmlHttpVersions = [
+            "MSXML2.XMLHTTP.6.0",
+            "MSXML2.XMLHTTP.5.0",
+            "MSXML2.XMLHTTP.4.0",
+            "MSXML2.XMLHTTP.3.0",
+            "MSXML2.XMLHTTP",
+            "Microsoft.XMLHTTP"
+        ];
+        for(var i = 0; i < XmlHttpVersions.length && !xmlHttp; i++){
+            try{
+                xmlHttp = new ActiveXObject(XmlHttpVersions[i]);
+            }catch(e){}
         }
     }
-    var XmlHttpVersions = [
-        "MSXML2.XMLHTTP.6.0",
-        "MSXML2.XMLHTTP.5.0",
-        "MSXML2.XMLHTTP.4.0",
-        "MSXML2.XMLHTTP.3.0",
-        "MSXML2.XMLHTTP",
-        "Microsoft.XMLHTTP"
-    ];
-    cm.forEach(XmlHttpVersions, function(item){
-        try{
-            xmlHttp = new ActiveXObject(item);
-        }catch(e){}
-    });
     if(!xmlHttp){
         return null;
     }
