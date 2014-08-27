@@ -1,153 +1,4 @@
-/* ******* GALLERY LAYOUT ******* */
-
-/* *** BAR *** */
-
-.com-gallery-bar {
-    position: relative;
-    .cm-user-select(none);
-
-    .bar-arrow {
-        position: absolute;
-        z-index: 2;
-        opacity: 0;
-        cursor: pointer;
-        .cm-transition(opacity @cm-transitionDuration ease-in-out);
-    }
-
-    .cm-grid {
-        margin: 0;
-        position: relative;
-        z-index: 1;
-        #cm > .grid-indent(@cm-indentXSmall / 2);
-
-        > ul {
-            overflow: hidden;
-        }
-    }
-
-    &.is-arrow-inside {
-        .bar-arrow {
-            background-color: rgba(255,255,255,0.7);
-            .cm-transition(background-color @cm-transitionDuration ease-in-out);
-            .cm-transition(opacity @cm-transitionDuration ease-in-out);
-
-            &:hover {
-                background-color: rgba(255,255,255,0.9);
-            }
-        }
-    }
-
-    &.is-horizontal {
-        .cm-grid {
-            > ul {
-                white-space: nowrap;
-            }
-        }
-
-        .bar-arrow {
-            width: @ComGalleryLayout-arrowWidth;
-            .cm-position(0, auto, 0, auto);
-        }
-
-        &.is-arrow-inside {
-            .bar-arrow {
-                &.prev {
-                    left: 0;
-                }
-
-                &.next {
-                    right: 0;
-                }
-            }
-        }
-
-        &.is-arrow-outside {
-            .bar-arrow {
-                &.prev {
-                    left: -@ComGalleryLayout-arrowWidth;
-                }
-
-                &.next {
-                    right: -@ComGalleryLayout-arrowWidth;
-                }
-            }
-        }
-    }
-
-    &.is-vertical {
-        > .inner {
-            height: 100%;
-            position: relative;
-        }
-
-        .cm-grid {
-            height: 100%;
-
-            > ul {
-                position: absolute;
-                .cm-position(0,0,0,0);
-            }
-        }
-
-        .bar-arrow {
-            width: 100%;
-            height: @ComGalleryLayout-arrowWidth;
-            .cm-position(auto, 0, auto, 0);
-        }
-
-        &.is-arrow-inside {
-            .bar-arrow {
-                &.prev {
-                    top: 0;
-                }
-
-                &.next {
-                    bottom: 0;
-                }
-            }
-        }
-
-        &.is-arrow-outside {
-            .bar-arrow {
-                &.prev {
-                    top: -@ComGalleryLayout-arrowWidth;
-                }
-
-                &.next {
-                    bottom: -@ComGalleryLayout-arrowWidth;
-                }
-            }
-        }
-    }
-
-    &:hover {
-        .bar-arrow {
-            opacity: 1;
-        }
-    }
-}
-
-/* *** PREVIEW *** */
-
-.com-gallery-preview {
-    margin: 0 0 @cm-indentMedium 0;
-    // padding: 0 0 66.4%;
-    position: relative;
-
-    &.bottom {
-        margin: 0;
-    }
-
-    > .inner {
-        position: absolute;
-        .cm-position(0,0,0,0);
-    }
-
-    .com-gallery {
-        width: 100%;
-        height: 100%;
-    }
-}
+/* ******* COMPONENT: GALLERY: LAYOUT ******* */
 
 /* *** LAYOUT *** */
 
@@ -191,8 +42,8 @@
             .com-gallery-bar {
                 width: @size;
 
-                .cm-grid > ul > li {
-                    width: @size;
+                .cm-grid {
+                    #cm > .grid-size(@counter);
                 }
             }
         }
@@ -202,8 +53,9 @@
 
     // /* Bar Horizontal */
 
-    &.is-top,
-    &.is-bottom {
+    &.is-bar-top,
+    &.is-bar-bottom,
+    &.is-bar-none {
         > .inner {
             padding: 0;
         }
@@ -213,10 +65,16 @@
         }
     }
 
+    &.is-bar-none {
+        .com-gallery-preview {
+            margin: 0;
+        }
+    }
+
     // /* Bar vertical */
 
-    &.is-left,
-    &.is-right {
+    &.is-bar-left,
+    &.is-bar-right {
         .com-gallery-preview {
             margin: 0;
         }
@@ -233,7 +91,7 @@
         }
     }
 
-    &.is-left {
+    &.is-bar-left {
         > .inner {
             padding-right: 0;
         }
@@ -244,7 +102,7 @@
         }
     }
 
-    &.is-right {
+    &.is-bar-right {
         > .inner {
             padding-left: 0;
         }

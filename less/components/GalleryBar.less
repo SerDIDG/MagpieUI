@@ -1,0 +1,88 @@
+/* ******* COMPONENT: GALLERY: BAR ******* */
+
+.com-gallery-bar {
+    position: relative;
+    .cm-user-select(none);
+
+    .bar-arrow {
+        position: absolute;
+        z-index: 2;
+        opacity: 0;
+        cursor: pointer;
+        background-color: rgba(255,255,255,0.7);
+        .cm-transition(background-color @cm-transitionDuration ease-in-out);
+        .cm-transition(opacity @cm-transitionDuration ease-in-out);
+
+        &:hover {
+            background-color: rgba(255,255,255,0.9);
+        }
+    }
+
+    .cm-grid {
+        margin: 0;
+        position: relative;
+        z-index: 1;
+        #cm > .grid-indent(@cm-indentXSmall / 2);
+
+        > ul {
+            overflow: hidden;
+        }
+    }
+
+    &.is-horizontal {
+        .cm-grid {
+            > ul {
+                white-space: nowrap;
+            }
+        }
+
+        .bar-arrow {
+            width: @ComGalleryLayout-arrowWidth;
+            .cm-position(0, auto, 0, auto);
+
+            &.prev {
+                left: 0;
+            }
+
+            &.next {
+                right: 0;
+            }
+        }
+    }
+
+    &.is-vertical {
+        > .inner {
+            height: 100%;
+            position: relative;
+        }
+
+        .cm-grid {
+            height: 100%;
+
+            > ul {
+                position: absolute;
+                .cm-position(0,0,0,0);
+            }
+        }
+
+        .bar-arrow {
+            width: 100%;
+            height: @ComGalleryLayout-arrowWidth;
+            .cm-position(auto, 0, auto, 0);
+
+            &.prev {
+                top: 0;
+            }
+
+            &.next {
+                bottom: 0;
+            }
+        }
+    }
+
+    &:hover {
+        .bar-arrow {
+            opacity: 1;
+        }
+    }
+}

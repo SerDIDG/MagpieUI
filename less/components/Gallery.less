@@ -1,4 +1,6 @@
-/* ******* GALLERY ******* */
+/* ******* COMPONENT: GALLERY ******* */
+
+/* *** CORE *** */
 
 .com-gallery {
     position: relative;
@@ -43,12 +45,6 @@
         }
     }
 
-    &.has-iframe {
-        > .holder {
-            z-index: 5;
-        }
-    }
-
     &:hover {
         .cm-imagebox {
             .cm-imagebox-title-hover;
@@ -57,5 +53,32 @@
         > .com-gallery-controls {
             opacity: 1;
         }
+    }
+}
+
+/* *** DUMMY *** */
+
+.com-gallery-dummy {
+    display: none;
+}
+
+/* *** PREVIEW *** */
+
+.com-gallery-preview {
+    margin: 0 0 @cm-indentMedium 0;
+    position: relative;
+
+    &.bottom {
+        margin: 0;
+    }
+
+    > .inner {
+        position: absolute;
+        .cm-position(0,0,0,0);
+    }
+
+    .com-gallery {
+        width: 100%;
+        height: 100%;
     }
 }

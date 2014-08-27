@@ -47,6 +47,7 @@
 
     &.is-inline {
         > ul {
+            overflow: hidden;
             white-space: nowrap;
         }
     }
@@ -60,10 +61,8 @@
     .loop(@counter) when (@counter > 0) {
         .loop((@counter - 1));
 
-        @size: 100% / @counter;
-
-        &.col-@{counter} > ul > li {
-            width: @size;
+        &.col-@{counter} {
+            #cm > .grid-size(@counter);
         }
     }
 

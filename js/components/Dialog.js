@@ -277,6 +277,9 @@ function(params){
     };
 
     var open = function(){
+        if(!cm.inDOM(nodes['container'])){
+            that.params['container'].appendChild(nodes['container']);
+        }
         nodes['container'].style.display = 'block';
         // Resize interval, will be removed on close
         resizeInt = setInterval(resize, 5);
@@ -313,8 +316,6 @@ function(params){
         resizeInt && clearInterval(resizeInt);
         // Remove dialog container node
         cm.remove(nodes['container']);
-        // Remove dialog from global array
-        Com['RemoveDialog'](that.params['id']);
     };
 
     var windowClickEvent = function(e){
