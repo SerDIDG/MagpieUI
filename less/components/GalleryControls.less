@@ -95,6 +95,7 @@
         .cm-position(0, 0, 0, 0);
 
         .bar-arrow {
+            z-index: 1;
             width: 50%;
 
             .icon {
@@ -121,6 +122,10 @@
             &.prev {
                 .cm-linear-gradient(~"to right, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0) 50%");
             }
+        }
+
+        .bar-buttons {
+            z-index: 2;
         }
     }
 

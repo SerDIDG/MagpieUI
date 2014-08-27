@@ -5466,6 +5466,7 @@ button.has-icon-small .icon,
   left: 0;
 }
 .com-gallery-controls.is-full .bar-arrow {
+  z-index: 1;
   width: 50%;
 }
 .com-gallery-controls.is-full .bar-arrow .icon.default {
@@ -5488,6 +5489,9 @@ button.has-icon-small .icon,
 .com-gallery-controls.is-full .bar-arrow.prev {
   background-image: -webkit-linear-gradient(to right, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0) 50%);
   background-image: linear-gradient(to right, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0) 50%);
+}
+.com-gallery-controls.is-full .bar-buttons {
+  z-index: 2;
 }
 .com-gallery-controls.is-partial {
   position: static;
