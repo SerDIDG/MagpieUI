@@ -4858,7 +4858,10 @@ button.has-icon-small .icon,
   margin: 0;
 }
 .com-gridlist-indent {
-  padding: 0 0 0 18px;
+  width: 12px;
+  display: inline-block;
+  vertical-align: top;
+  text-align: left;
 }
 .com-gridlist-middle table td,
 .com-gridlist-middle table th {
