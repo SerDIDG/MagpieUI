@@ -523,14 +523,14 @@ function(params){
     };
 
     that.editOption = function(value, text){
-        if(value && options[value]){
+        if(typeof value != 'undefined' && options[value]){
             editOption(options[value], text);
         }
         return that;
     };
 
     that.removeOption = function(value){
-        if(value && options[value]){
+        if(typeof value != 'undefined' && options[value]){
             removeOption(options[value]);
         }
         return that;
@@ -544,7 +544,7 @@ function(params){
     };
 
     that.getOption = function(value){
-        if(value && options[value]){
+        if(typeof value != 'undefined' && options[value]){
             return options[value];
         }
         return null;
