@@ -33,6 +33,8 @@
 @cm-colorLinkVisited: #8a156d;
 @cm-colorError: hsl(0, 80%, 50%);
 @cm-colorValid: #009900;
+@cm-colorPending: #ffa200;
+@cm-colorPendingLight: #fff9ef;
 
 @cm-color: hsl(210, 80%, 55%);
 @cm-colorLighten: lighten(@cm-color, 40%);
@@ -41,7 +43,8 @@
 @cm-colorSecondary: hsl(0, 0, 95%);
 @cm-colorSecondaryHover: lighten(@cm-colorSecondary, 3%);
 
-@cm-colorThemeLight-background: lighten(@cm-color, 42%);
+@cm-colorBorder: #CBCBCB;
+@cm-colorBorderHover: @cm-colorActiveHover;
 
 @cm-colorLight-background: #fafafa;
 @cm-colorLight-backgroundHover: #e6e6e6;
@@ -52,12 +55,11 @@
 @cm-colorLight-borderDisabled: @cm-colorLight-border;
 @cm-colorLight-borderDisabledHover: @cm-colorLight-borderHover;
 
-@cm-colorGalleryBackground: #111111;
-@cm-colorContentBackgroundLight: @cm-colorLight-background;
-@cm-colorContentBackgroundDark: @cm-colorLight-backgroundDisabled;
-@cm-colorContentThemeBackgroundLight: @cm-colorThemeLight-background;
-@cm-colorBorder: #CBCBCB;
-@cm-colorBorderHover: @cm-colorActiveHover;
+@cm-background-light: @cm-colorLight-background;
+@cm-background-dark: @cm-colorLight-backgroundDisabled;
+@cm-background-themeLight: lighten(@cm-color, 42%);
+@cm-background-gallery: #111111;
+@cm-background-pendingLight: @cm-colorPendingLight;
 
 // /* *** FONT *** */
 
@@ -193,7 +195,7 @@
 
 // /* *** IMAGE BOX *** */
 
-@CmImagebox-background: @cm-colorContentBackgroundLight;
+@CmImagebox-background: @cm-background-light;
 @CmImagebox-titlePaddingTop: 4px;
 
 // /* *** DRAG AND DROP *** */
@@ -276,7 +278,7 @@
 @ComDialog-indent: @cm-indentMedium;
 @ComDialog-titleIndent: @cm-indentXSmall;
 
-@ComDialog-themeBlack-background: @cm-colorGalleryBackground;
+@ComDialog-themeBlack-background: @cm-background-gallery;
 @ComDialog-themeBlack-titleColor: #ffffff;
 
 // /* *** GRIDLIST *** */
@@ -314,9 +316,9 @@
 @ComToggleBox-sizeMedium: @cm-Medium;
 @ComToggleBox-sizeUI: @cm-Medium;
 @ComToggleBox-contentBorder: 1px solid #ffffff;
-@ComToggleBox-contentBackground: @cm-colorContentBackgroundLight;
+@ComToggleBox-contentBackground: @cm-background-light;
 @ComToggleBox-contentSpaceBorder: @ComToggleBox-contentBorder;
-@ComToggleBox-titleBackground: @cm-colorContentBackgroundDark;
+@ComToggleBox-titleBackground: @cm-background-dark;
 
 // /* *** SELECT *** */
 
@@ -331,7 +333,7 @@
 
 // /* *** GALLERY *** */
 
-@ComGallery-background: @cm-colorGalleryBackground;
+@ComGallery-background: @cm-background-gallery;
 
 // /* *** GALLERY CONTROLS *** */
 
@@ -349,9 +351,9 @@
 // /* *** FORUM *** */
 
 @ComForum-adaptiveFrom: @cm-screenMobile;
-@ComForum-postBackground: @cm-colorContentBackgroundLight;
-@ComForum-postBackgroundFeatured: @cm-colorContentThemeBackgroundLight;
-@ComForum-postTitleBackground: @cm-colorContentBackgroundDark;
+@ComForum-postBackground: @cm-background-light;
+@ComForum-postBackgroundFeatured: @cm-background-themeLight;
+@ComForum-postTitleBackground: @cm-background-dark;
 @ComForum-postLeftColumnSize: 150px;
 
 // /* *** PROFILE *** */

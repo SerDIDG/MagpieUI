@@ -1,35 +1,9 @@
 /* ******* COMPONENT: COMMENTS ******* */
 
-.com-comments {
-    margin: 0 0 @cm-indentMedium;
+/* *** COMMENT *** */
 
-    &.bottom {
-        margin: 0;
-    }
-
-    .comment-list {
-        margin: 0;
-        padding: 0;
-        list-style: none;
-
-        &.replies {
-            margin: @cm-indentMedium 0 0 @cm-indentMedium;
-        }
-
-        > li {
-            margin: @cm-indentMedium 0 0 0;
-
-            &:first-child {
-                margin-top: 0;
-            }
-
-            > ul {
-                margin: 0;
-                padding: 0;
-                list-style: none;
-            }
-        }
-    }
+.com-comment {
+    position: relative;
 
     .comment-info,
     .comment-text,
@@ -43,6 +17,10 @@
     }
 
     .comment-info {
+        &:first-child {
+            margin: -2px 0 0 0;
+        }
+
         .author,
         .date,
         .hash,
@@ -51,7 +29,7 @@
             margin: 0 @cm-indentXXSmall 0 0;
             .cm-font-hint;
             color: inherit;
-            line-height: 12px;
+            line-height: 14px;
 
             &:last-child {
                 margin: 0;
@@ -65,6 +43,10 @@
 
             &.valid {
                 color: @cm-colorValid;
+            }
+
+            &.pending {
+                color: @cm-colorPending;
             }
         }
 
@@ -97,7 +79,55 @@
             }
         }
     }
+
+    &.is-pending {
+        &:before {
+            position: absolute;
+            .cm-position(-@cm-indentXSmall, -@cm-indentXSmall, -@cm-indentXSmall, -@cm-indentXSmall);
+            display: block;
+            z-index: -1;
+            content: '';
+            background-color: @cm-background-pendingLight;
+            border-radius: @cm-borderRadius;
+        }
+    }
 }
+
+/* *** COMMENT LIST *** */
+
+.com-comments {
+    margin: 0 0 @cm-indentMedium;
+
+    &.bottom {
+        margin: 0;
+    }
+
+    .comment-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+
+        &.replies {
+            margin: @cm-indentMedium 0 0 @cm-indentMedium;
+        }
+
+        > li {
+            margin: @cm-indentMedium 0 0 0;
+
+            &:first-child {
+                margin-top: 0;
+            }
+
+            > ul {
+                margin: 0;
+                padding: 0;
+                list-style: none;
+            }
+        }
+    }
+}
+
+/* *** COMMENT EDITOR *** */
 
 .com-comment-editor {
     textarea {
