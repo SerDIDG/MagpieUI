@@ -1,0 +1,35 @@
+/* ******* COMPONENT: TAGS ******* */
+
+.com-tags {
+    > .inner:extend(.clear all) {
+        > .l {
+            float: left;
+            margin: 0 @cm-indentXXSmall 0 0;
+            line-height: @cm-lineHeight;
+
+            .icon {
+                display: inline-block;
+                vertical-align: middle;
+            }
+        }
+
+        > .r {
+            overflow: hidden;
+
+            ul {
+                margin: 0;
+                padding: 0;
+                list-style: none;
+
+                li {
+                    margin: 0 @cm-indentXXSmall 0 0;
+                    float: left;
+
+                    &:last-child {
+                        margin: 0;
+                    }
+                }
+            }
+        }
+    }
+}
