@@ -9,9 +9,26 @@
         margin: 0 0 @cm-indentXXXSmall;
     }
 
+    .post-info,
+    .post-tags {
+        .cm-font-hint;
+
+        .com-tags,
+        .cm-links {
+            ul {
+                line-height: inherit;
+                font-size: inherit;
+
+                li {
+                    line-height: inherit;
+                    font-size: inherit;
+                }
+            }
+        }
+    }
+
     .post-info:extend(.clear all) {
         margin: 0 0 @cm-indentXSmall;
-        .cm-font-hint;
 
         .category,
         .author,
@@ -41,25 +58,21 @@
             }
         }
 
-        .cm-links {
-            > ul {
-                line-height: inherit;
-                font-size: inherit;
+        .date {
+            color: @cm-colorFontMedium;
+        }
 
-                > li {
-                    line-height: inherit;
-                    font-size: inherit;
-                }
-            }
+        .author {
+            font-weight: @cm-boldWeight;
+        }
+
+        &.is-bottom {
+            margin: @cm-indentXSmall 0 0 0;
         }
     }
 
     .post-abstract {
         margin: 0;
-    }
-
-    .post-actions {
-        margin: @cm-indentXSmall 0 0 0;
     }
 
     .post-tags {
@@ -94,6 +107,10 @@
     &.is-entry {
         .post-info {
             margin: 0 0 @cm-indentMedium;
+
+            &.is-bottom {
+                margin: @cm-indentMedium 0 0 0;
+            }
         }
 
         .post-tags {

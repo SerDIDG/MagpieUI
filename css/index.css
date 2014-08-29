@@ -142,6 +142,7 @@ select[multiple] {
 .com-togglebox > dd:after,
 .com-tags > .inner:after,
 .com-blogpost .post-info:after,
+.com-blogpost .post-info.is-bottom:after,
 .com-forum-cell-counter .line:after,
 .com-profile > .inner:after {
   content: ".";
@@ -5817,11 +5818,11 @@ button.has-icon-small .icon,
   color: #666666;
   line-height: 12px;
 }
-.com-comment .comment-actions .cm-links > ul {
+.com-comment .comment-actions .cm-links ul {
   line-height: inherit;
   font-size: inherit;
 }
-.com-comment .comment-actions .cm-links > ul > li {
+.com-comment .comment-actions .cm-links ul li {
   line-height: inherit;
   font-size: inherit;
 }
@@ -5906,10 +5907,27 @@ button.has-icon-small .icon,
 .com-blogpost .post-title {
   margin: 0 0 4px;
 }
-.com-blogpost .post-info {
-  margin: 0 0 12px;
+.com-blogpost .post-info,
+.com-blogpost .post-tags {
   font: normal 11px/18px 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
+}
+.com-blogpost .post-info .com-tags ul,
+.com-blogpost .post-tags .com-tags ul,
+.com-blogpost .post-info .cm-links ul,
+.com-blogpost .post-tags .cm-links ul {
+  line-height: inherit;
+  font-size: inherit;
+}
+.com-blogpost .post-info .com-tags ul li,
+.com-blogpost .post-tags .com-tags ul li,
+.com-blogpost .post-info .cm-links ul li,
+.com-blogpost .post-tags .cm-links ul li {
+  line-height: inherit;
+  font-size: inherit;
+}
+.com-blogpost .post-info {
+  margin: 0 0 12px;
 }
 .com-blogpost .post-info .category,
 .com-blogpost .post-info .author,
@@ -5937,19 +5955,17 @@ button.has-icon-small .icon,
 .com-blogpost .post-info .status.pending {
   color: #ffa200;
 }
-.com-blogpost .post-info .cm-links > ul {
-  line-height: inherit;
-  font-size: inherit;
+.com-blogpost .post-info .date {
+  color: #999999;
 }
-.com-blogpost .post-info .cm-links > ul > li {
-  line-height: inherit;
-  font-size: inherit;
+.com-blogpost .post-info .author {
+  font-weight: 600;
+}
+.com-blogpost .post-info.is-bottom {
+  margin: 12px 0 0 0;
 }
 .com-blogpost .post-abstract {
   margin: 0;
-}
-.com-blogpost .post-actions {
-  margin: 12px 0 0 0;
 }
 .com-blogpost .post-tags {
   margin: 12px 0 0 0;
@@ -5975,6 +5991,9 @@ button.has-icon-small .icon,
 }
 .com-blogpost.is-entry .post-info {
   margin: 0 0 24px;
+}
+.com-blogpost.is-entry .post-info.is-bottom {
+  margin: 24px 0 0 0;
 }
 .com-blogpost.is-entry .post-tags {
   margin: 24px 0 0 0;
