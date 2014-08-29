@@ -137,6 +137,7 @@ select[multiple] {
 .form dl:after,
 .cm-title-editable:after,
 .cm-itembox:after,
+.cm-listing .stuff:after,
 .cm-list-counted.is-inline ul:after,
 .com-timeselect > .inner:after,
 .com-togglebox > dd:after,
@@ -3234,15 +3235,42 @@ button.has-icon-small .icon,
 .cm-listing .stuff {
   margin: 0;
   padding: 0;
-  font-size: 0;
   list-style: none;
+  font: normal 11px/18px 'Open Sans', arial, helvetica, sans-serif;
+  color: #666666;
 }
-.cm-listing .stuff > li {
-  margin: 0 4px 0 0;
-  display: inline-block;
-  vertical-align: top;
+.cm-listing .stuff .category,
+.cm-listing .stuff .author,
+.cm-listing .stuff .date,
+.cm-listing .stuff .hash,
+.cm-listing .stuff .links,
+.cm-listing .stuff .status {
+  float: left;
+  margin: 0 12px 0 0;
+}
+.cm-listing .stuff .category:last-child,
+.cm-listing .stuff .author:last-child,
+.cm-listing .stuff .date:last-child,
+.cm-listing .stuff .hash:last-child,
+.cm-listing .stuff .links:last-child,
+.cm-listing .stuff .status:last-child {
+  margin: 0;
+}
+.cm-listing .stuff .com-tags ul,
+.cm-listing .stuff .cm-links ul {
+  line-height: inherit;
+  font-size: inherit;
+}
+.cm-listing .stuff .com-tags ul li,
+.cm-listing .stuff .cm-links ul li {
+  line-height: inherit;
+  font-size: inherit;
+}
+.cm-listing .stuff .date {
   color: #999999;
-  font-size: 11px;
+}
+.cm-listing .stuff .author {
+  font-weight: 600;
 }
 /* *** DEFAULT *** */
 .cm-listing-default {

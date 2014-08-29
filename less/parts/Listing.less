@@ -45,18 +45,45 @@
         }
     }
 
-    .stuff {
+    .stuff:extend(.clear all) {
         margin: 0;
         padding: 0;
-        font-size: 0;
         list-style: none;
+        .cm-font-hint;
 
-        > li {
-            margin: 0 @cm-indentXXXSmall 0 0;
-            display: inline-block;
-            vertical-align: top;
-            color: @CmListing-stuffColor;
-            font-size: @CmListing-stuffFontSize;
+        .category,
+        .author,
+        .date,
+        .hash,
+        .links,
+        .status {
+            float: left;
+            margin: 0 @cm-indentXSmall 0 0;
+
+            &:last-child {
+                margin: 0;
+            }
+        }
+
+        .com-tags,
+        .cm-links {
+            ul {
+                line-height: inherit;
+                font-size: inherit;
+
+                li {
+                    line-height: inherit;
+                    font-size: inherit;
+                }
+            }
+        }
+
+        .date {
+            color: @cm-colorFontMedium;
+        }
+
+        .author {
+            font-weight: @cm-boldWeight;
         }
     }
 }
