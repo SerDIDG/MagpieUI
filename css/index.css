@@ -5819,11 +5819,11 @@ button.has-icon-small .icon,
 }
 .com-comment .comment-actions .cm-links > ul {
   line-height: inherit;
+  font-size: inherit;
 }
 .com-comment .comment-actions .cm-links > ul > li {
-  font: normal 11px/18px 'Open Sans', arial, helvetica, sans-serif;
-  color: #666666;
   line-height: inherit;
+  font-size: inherit;
 }
 .com-comment.is-pending:before {
   position: absolute;
@@ -5936,6 +5936,14 @@ button.has-icon-small .icon,
 }
 .com-blogpost .post-info .status.pending {
   color: #ffa200;
+}
+.com-blogpost .post-info .cm-links > ul {
+  line-height: inherit;
+  font-size: inherit;
+}
+.com-blogpost .post-info .cm-links > ul > li {
+  line-height: inherit;
+  font-size: inherit;
 }
 .com-blogpost .post-abstract {
   margin: 0;
