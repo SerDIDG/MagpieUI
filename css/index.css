@@ -5889,8 +5889,14 @@ button.has-icon-small .icon,
   margin: 0 8px 0 0;
   float: left;
 }
+.com-tags > .inner > .r ul li:after {
+  content: ',';
+}
 .com-tags > .inner > .r ul li:last-child {
   margin: 0;
+}
+.com-tags > .inner > .r ul li:last-child:after {
+  content: normal;
 }
 /* ******* COMPONENT: BLOG ******* */
 /* *** POST *** */
