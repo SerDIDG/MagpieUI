@@ -12,58 +12,16 @@
     .post-info,
     .post-tags {
         .cm-font-hint;
-
-        .com-tags,
-        .cm-links {
-            ul {
-                line-height: inherit;
-                font-size: inherit;
-
-                li {
-                    line-height: inherit;
-                    font-size: inherit;
-                }
-            }
-        }
     }
 
-    .post-info:extend(.clear all) {
-        margin: 0 0 @cm-indentXSmall;
+    .post-info {
+        .cm-line-info {
+            margin: 0;
 
-        .category,
-        .author,
-        .date,
-        .hash,
-        .links,
-        .status {
-            float: left;
-            margin: 0 @cm-indentXSmall 0 0;
-
-            &:last-child {
-                margin: 0;
+            * {
+                line-height: inherit;
+                font-size: inherit;
             }
-        }
-
-        .status {
-            &.error {
-                color: @cm-colorError;
-            }
-
-            &.valid {
-                color: @cm-colorValid;
-            }
-
-            &.pending {
-                color: @cm-colorPending;
-            }
-        }
-
-        .date {
-            color: @cm-colorFontMedium;
-        }
-
-        .author {
-            font-weight: @cm-boldWeight;
         }
 
         &.is-bottom {
@@ -71,10 +29,9 @@
         }
     }
 
-    .post-abstract {
-        margin: 0;
-    }
-
+    .cm-toolbar,
+    .post-abstract,
+    .post-entry,
     .post-tags {
         margin: @cm-indentXSmall 0 0 0;
     }
@@ -105,14 +62,10 @@
     }
 
     &.is-entry {
-        .post-info {
-            margin: 0 0 @cm-indentMedium;
-
-            &.is-bottom {
-                margin: @cm-indentMedium 0 0 0;
-            }
-        }
-
+        .post-info.is-bottom,
+        .cm-toolbar,
+        .post-entry,
+        .post-abstract,
         .post-tags {
             margin: @cm-indentMedium 0 0 0;
         }

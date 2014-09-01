@@ -94,10 +94,6 @@
     background: @ComForum-postBackground;
     border-radius: @cm-borderRadius;
 
-    .date:extend(.cm-font-hint) {
-        color: @cm-colorFontMedium;
-    }
-
     .entry {
         margin: @cm-indentXSmall 0 0;
     }
@@ -134,7 +130,23 @@
             display: table-cell;
             vertical-align: top;
 
+            .cm-title-editable,
+            .date {
+                .cm-font-hint;
+                color: @cm-colorFontMedium;
+            }
+
             .cm-title-editable {
+                margin: 0;
+            }
+        }
+    }
+
+    .post-share {
+        .cm-line-share {
+            margin: @cm-indentMedium 0 0 0;
+
+            &:first-child {
                 margin: 0;
             }
         }

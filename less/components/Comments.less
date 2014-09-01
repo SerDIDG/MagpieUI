@@ -17,45 +17,15 @@
     }
 
     .comment-info {
+        .cm-font-hint;
+        line-height: 14px;
+
+        .cm-line-info {
+            margin: 0;
+        }
+
         &:first-child {
             margin: -2px 0 0 0;
-        }
-
-        .author,
-        .date,
-        .hash,
-        .status {
-            float: left;
-            margin: 0 @cm-indentXXSmall 0 0;
-            .cm-font-hint;
-            color: inherit;
-            line-height: 14px;
-
-            &:last-child {
-                margin: 0;
-            }
-        }
-
-        .status {
-            &.error {
-                color: @cm-colorError;
-            }
-
-            &.valid {
-                color: @cm-colorValid;
-            }
-
-            &.pending {
-                color: @cm-colorPending;
-            }
-        }
-
-        .date {
-            color: @cm-colorFontMedium;
-        }
-
-        .author {
-            font-weight: @cm-boldWeight;
         }
     }
 

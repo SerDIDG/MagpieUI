@@ -19,17 +19,14 @@
 
     }
 
-    .date:extend(.cm-font-hint) {
+    .date,
+    .count,
+    .status {
+        font-size: @cm-fontSizeHint;
         color: @cm-colorFontMedium;
     }
 
-    .count:extend(.cm-font-hint) {
-        color: @cm-colorFontMedium;
-    }
-
-    .status:extend(.cm-font-hint) {
-        color: @cm-colorFontMedium;
-
+    .status {
         &.error {
             color: @cm-colorError;
         }
