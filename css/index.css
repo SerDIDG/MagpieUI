@@ -39,99 +39,6 @@ form {
   display: block;
   text-indent: 0;
 }
-/* *** FORM ELEMENTS *** */
-input,
-select,
-textarea {
-  margin: 0;
-  font: normal 13px/18px 'Open Sans', arial, helvetica, sans-serif;
-  color: #666666;
-  outline: none;
-}
-input::-webkit-input-placeholder,
-select::-webkit-input-placeholder,
-textarea::-webkit-input-placeholder {
-  opacity: 1;
-  color: #b7b7b7;
-}
-input:-moz-placeholder,
-select:-moz-placeholder,
-textarea:-moz-placeholder {
-  opacity: 1;
-  color: #b7b7b7;
-}
-input::-moz-placeholder,
-select::-moz-placeholder,
-textarea::-moz-placeholder {
-  opacity: 1;
-  color: #b7b7b7;
-}
-input:-ms-input-placeholder,
-select:-ms-input-placeholder,
-textarea:-ms-input-placeholder {
-  opacity: 1;
-  color: #b7b7b7;
-}
-input[type="file"] {
-  width: 100%;
-  cursor: pointer;
-}
-input[type="text"],
-input[type="email"],
-input[type="number"],
-input[type="password"],
-textarea {
-  width: 100%;
-  height: 28px;
-  padding: 5px 6px;
-  margin: 0;
-  vertical-align: top;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  background: #fff;
-  border: 1px solid #cbcbcb;
-  border-radius: 3px;
-  cursor: text;
-  -webkit-transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out, color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-  transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out, color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-}
-input[type="text"]:focus,
-input[type="email"]:focus,
-input[type="number"]:focus,
-input[type="password"]:focus,
-textarea:focus {
-  background-color: #fdffff;
-  border-color: #c4def8;
-}
-input[type="text"][disabled],
-input[type="email"][disabled],
-input[type="number"][disabled],
-input[type="password"][disabled],
-textarea[disabled] {
-  background-color: #fafafa;
-  border-color: #e6e6e6;
-}
-textarea {
-  height: 100px;
-  min-height: 28px;
-  padding: 6px;
-  resize: vertical;
-}
-input[type="radio"],
-input[type="checkbox"] {
-  cursor: pointer;
-}
-select {
-  width: 100%;
-  height: 28px;
-  padding: 5px 5px 5px 6px;
-  vertical-align: top;
-  cursor: pointer;
-}
-select[multiple] {
-  height: 100px;
-  padding: 0;
-}
 /* ******* STATIC CLASSES ******* */
 .clear:after,
 .cm-line-info:after,
@@ -601,6 +508,100 @@ th,
 tr {
   margin: 0;
   padding: 0;
+}
+/* *** INPUTS *** */
+.cm-input,
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="password"],
+textarea,
+select {
+  width: 100%;
+  height: 28px;
+  padding: 5px 6px;
+  margin: 0;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  vertical-align: top;
+  background: #fff;
+  border: 1px solid #cbcbcb;
+  border-radius: 3px;
+  cursor: text;
+  -webkit-transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out, color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out, color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+.cm-input:focus,
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="number"]:focus,
+input[type="password"]:focus,
+textarea:focus,
+select:focus {
+  background-color: #fdffff;
+  border-color: #c4def8;
+}
+.cm-input[disabled],
+input[type="text"][disabled],
+input[type="email"][disabled],
+input[type="number"][disabled],
+input[type="password"][disabled],
+textarea[disabled],
+select[disabled] {
+  background-color: #fafafa;
+  border-color: #e6e6e6;
+}
+.cm-textarea,
+textarea {
+  height: 100px;
+  min-height: 28px;
+  padding: 6px;
+  resize: vertical;
+}
+.cm-select[multiple],
+select[multiple] {
+  height: 128px;
+  padding: 0;
+}
+input,
+select,
+textarea {
+  margin: 0;
+  font: normal 13px/18px 'Open Sans', arial, helvetica, sans-serif;
+  color: #666666;
+  outline: none;
+}
+input::-webkit-input-placeholder,
+select::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+  opacity: 1;
+  color: #b7b7b7;
+}
+input:-moz-placeholder,
+select:-moz-placeholder,
+textarea:-moz-placeholder {
+  opacity: 1;
+  color: #b7b7b7;
+}
+input::-moz-placeholder,
+select::-moz-placeholder,
+textarea::-moz-placeholder {
+  opacity: 1;
+  color: #b7b7b7;
+}
+input:-ms-input-placeholder,
+select:-ms-input-placeholder,
+textarea:-ms-input-placeholder {
+  opacity: 1;
+  color: #b7b7b7;
+}
+input[type="file"] {
+  width: 100%;
+  cursor: pointer;
+}
+input[type="radio"],
+input[type="checkbox"] {
+  cursor: pointer;
 }
 /* *** BUTTONS *** */
 .cm-button,
@@ -3947,9 +3948,9 @@ button.has-icon-small .icon,
   height: 28px;
   padding: 5px 6px;
   margin: 0;
-  vertical-align: top;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+  vertical-align: top;
   background: #fff;
   border: 1px solid #cbcbcb;
   border-radius: 3px;

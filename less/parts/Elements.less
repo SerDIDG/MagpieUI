@@ -109,6 +109,57 @@ tbody, thead, td, th, tr {
     padding: 0;
 }
 
+/* *** INPUTS *** */
+
+.cm-input {
+    #cm > .input;
+}
+
+.cm-textarea {
+    #cm > .textarea;
+}
+
+.cm-select {
+    &[multiple] {
+        height: @CmForm-select-size * @cm-lineHeight + @cm-borderWidth * 2;
+        padding: 0;
+    }
+}
+
+input, select, textarea {
+    margin: 0;
+    #cm > .font-base;
+    outline: none;
+    .cm-placeholder(@cm-colorPlaceholder);
+}
+
+input[type="file"] {
+    width: 100%;
+    cursor: pointer;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+    cursor: pointer;
+}
+
+input[type="text"]:extend(.cm-input all),
+input[type="email"]:extend(.cm-input all),
+input[type="number"]:extend(.cm-input all),
+input[type="password"]:extend(.cm-input all),
+textarea:extend(.cm-input all),
+select:extend(.cm-input all) {
+
+}
+
+textarea:extend(.cm-textarea all) {
+
+}
+
+select:extend(.cm-select all) {
+
+}
+
 /* *** BUTTONS *** */
 
 .cm-button {

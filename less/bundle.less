@@ -99,12 +99,12 @@
 
         width: 100%;
         height: @CmForm-fieldHeight;
-        padding: @padding 6px;
+        padding: @padding @CmForm-input-padding;
         margin: 0;
-        vertical-align: top;
         .cm-box-sizing();
+        vertical-align: top;
         background: #fff;
-        border: 1px solid @cm-colorBorder;
+        border: @cm-borderStyle;
         border-radius: @cm-borderRadius;
         cursor: text;
         .cm-transition(background-color @cm-transitionDuration ease-in-out);
@@ -134,9 +134,9 @@
     // /* *** TEXTAREA *** */
 
     .textarea {
-        height: 100px;
+        height: @CmForm-textarea-height;
         min-height: @CmForm-fieldHeight;
-        padding: 6px;
+        padding: @CmForm-input-padding;
         resize: vertical;
     }
 

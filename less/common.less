@@ -34,51 +34,6 @@ dl, dt, dd, canvas, iframe, form {
     text-indent: 0;
 }
 
-/* *** FORM ELEMENTS *** */
-
-input, select, textarea {
-    margin: 0;
-    #cm > .font-base;
-    outline: none;
-    .cm-placeholder(@cm-colorPlaceholder);
-}
-
-input[type="file"] {
-    width: 100%;
-    cursor: pointer;
-}
-
-input[type="text"],
-input[type="email"],
-input[type="number"],
-input[type="password"],
-textarea {
-    #cm > .input;
-}
-
-textarea {
-    #cm > .textarea;
-}
-
-input[type="radio"],
-input[type="checkbox"] {
-    cursor: pointer;
-}
-
-select {
-    @padding: (@CmForm-fieldHeight - @cm-lineHeight) / 2;
-    width: 100%;
-    height: @CmForm-fieldHeight;
-    padding: @padding @padding @padding 6px;
-    vertical-align: top;
-    cursor: pointer;
-}
-
-select[multiple] {
-    height: 100px;
-    padding: 0;
-}
-
 /* ******* STATIC CLASSES ******* */
 
 .clear {
