@@ -1,4 +1,4 @@
-/* ******* DATEPICKER ******* */
+/* ******* COMPONENT: DATEPICKER ******* */
 
 .com-datepicker-input {
     @clear-button-indent: @CmForm-fieldHeight + @CmForm-fieldInnerIndent;
@@ -74,4 +74,17 @@
             width: 38%;
         }
     }
+}
+
+/* ******* COMPONENT: DATEPICKER: ADAPTIVE ******* */
+
+@media only screen and (max-width: @cm-screenMobile) {
+
+    html.is-adaptive {
+        .com-datepicker-input {
+            max-width: none;
+            display: block;
+        }
+    }
+
 }

@@ -1433,7 +1433,7 @@ button.has-icon-small .icon,
   content: normal;
   margin: 0;
 }
-/* ******* FORM ******* */
+/* ******* PART: FORM ******* */
 .form {
   cursor: default;
 }
@@ -1444,7 +1444,7 @@ button.has-icon-small .icon,
   color: #e61919;
   font-weight: 600;
 }
-/* *** BASIC FIELD *** */
+/* *** FIELD *** */
 .form dl {
   margin: 16px 0 0 0;
   padding: 0;
@@ -2213,12 +2213,12 @@ button.has-icon-small .icon,
   list-style: none;
 }
 .cm-multifield > ul > li {
-  margin: 8px 0 0 0;
+  margin: 16px 0 0 0;
 }
 .cm-multifield > ul > li:first-child {
   margin: 0;
 }
-/* ******* ADAPTIVE ******* */
+/* ******* PART: FORM: ADAPTIVE ******* */
 @media only screen and (max-width: 640px) {
   html.is-adaptive {
     /* COLUMNS */
@@ -2647,6 +2647,7 @@ button.has-icon-small .icon,
   html.is-adaptive .cm-toolbar .group.is-adaptive input[type="reset"],
   html.is-adaptive .cm-toolbar .group.is-adaptive button,
   html.is-adaptive .cm-toolbar .group.is-adaptive .button {
+    width: 100%;
     display: block;
   }
   html.is-adaptive .cm-toolbar .group.is-adaptive > li {
@@ -2663,6 +2664,7 @@ button.has-icon-small .icon,
   html.is-adaptive .cm-toolbar.is-adaptive input[type="reset"],
   html.is-adaptive .cm-toolbar.is-adaptive button,
   html.is-adaptive .cm-toolbar.is-adaptive .button {
+    width: 100%;
     display: block;
   }
   html.is-adaptive .cm-toolbar.is-adaptive .group,
@@ -4132,7 +4134,7 @@ button.has-icon-small .icon,
   margin: 0;
   padding: 0 8px 8px;
 }
-/* ******* DATEPICKER ******* */
+/* ******* COMPONENT: DATEPICKER ******* */
 .com-datepicker-input {
   width: 100%;
   max-width: 210px;
@@ -4187,6 +4189,13 @@ button.has-icon-small .icon,
 }
 .com-datepicker-calendar .selects .years {
   width: 38%;
+}
+/* ******* COMPONENT: DATEPICKER: ADAPTIVE ******* */
+@media only screen and (max-width: 640px) {
+  html.is-adaptive .com-datepicker-input {
+    max-width: none;
+    display: block;
+  }
 }
 /* ******* TIME SELECT ******* */
 .com-timeselect {
@@ -4913,6 +4922,7 @@ button.has-icon-small .icon,
   font-size: 0;
 }
 .com-slider > .inner > .slides.effect-push > ul > li {
+  width: 100%;
   height: 100%;
   display: inline-block;
   position: relative;

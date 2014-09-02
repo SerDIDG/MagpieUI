@@ -1,4 +1,4 @@
-/* ******* FORM ******* */
+/* ******* PART: FORM ******* */
 
 .form {
     cursor: default;
@@ -6,44 +6,46 @@
     &.in-content {
         margin: 0 0 @cm-indentMedium;
     }
+
+    .required {
+        color: @cm-colorError;
+        font-weight: @cm-boldWeight;
+    }
 }
 
-.form .required {
-    color: @cm-colorError;
-    font-weight: @cm-boldWeight;
-}
+/* *** FIELD *** */
 
-/* *** BASIC FIELD *** */
+.form {
+    dl:extend(.clear all) {
+        margin: @CmForm-fieldIndent 0 0 0;
+        padding: 0;
+        display: block;
+        clear: both;
+    }
 
-.form dl:extend(.clear all) {
-    margin: @CmForm-fieldIndent 0 0 0;
-    padding: 0;
-    display: block;
-    clear: both;
-}
+    > dl:first-child {
+        margin-top: 0;
+    }
 
-.form > dl:first-child {
-    margin-top: 0;
-}
+    dt {
+        width: @CmForm-fieldTitleWidth;
+        display: block;
+        margin: 0;
+        padding: ((@CmForm-fieldHeight - @cm-lineHeight) / 2) 0;
+        float: left;
+        line-height: @cm-lineHeight;
+    }
 
-.form dt {
-    width: @CmForm-fieldTitleWidth;
-    display: block;
-    margin: 0;
-    padding: ((@CmForm-fieldHeight - @cm-lineHeight) / 2) 0;
-    float: left;
-    line-height: @cm-lineHeight;
-}
+    dd {
+        display: block;
+        margin: 0 0 0 (@CmForm-fieldTitleWidth + @CmForm-fieldIndent);
+        padding: 0;
+        position: relative;
 
-.form dd {
-    display: block;
-    margin: 0 0 0 (150px + @CmForm-fieldIndent);
-    padding: 0;
-    position: relative;
-}
-
-.form dd:first-child {
-    margin: 0;
+        &:first-child {
+            margin: 0;
+        }
+    }
 }
 
 /* *** FIELD BOX *** */
@@ -591,7 +593,7 @@
 .form dl.ok input[type="password"],
 .form dl.ok textarea,
 .form dl.ok select {
-    border: 1px solid #009900;
+    border: 1px solid @cm-colorValid;
 }
 
 .form dl.error dt {
@@ -599,7 +601,7 @@
 }
 
 .form dl.ok dt {
-    color: #009900;
+    color: @cm-colorValid;
 }
 
 .form dl.error .hint {
@@ -774,7 +776,7 @@
         list-style: none;
 
         > li {
-            margin: @CmForm-fieldInnerIndent 0 0 0;
+            margin: @CmForm-fieldIndent 0 0 0;
 
             &:first-child {
                 margin: 0;
@@ -783,7 +785,7 @@
     }
 }
 
-/* ******* ADAPTIVE ******* */
+/* ******* PART: FORM: ADAPTIVE ******* */
 
 @media only screen and (max-width: @cm-screenMobile) {
 
