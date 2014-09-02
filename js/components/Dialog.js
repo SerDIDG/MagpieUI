@@ -284,7 +284,7 @@ function(params){
         // Resize interval, will be removed on close
         resizeInt = setInterval(resize, 5);
         // Add close event on Esc press
-        cm.addEvent(window, 'keypress', windowClickEvent);
+        cm.addEvent(window, 'keydown', windowClickEvent);
         // Animate
         anim['container'].go({'style' : {'opacity' : '1'}, 'duration' : that.params['openTime'], 'onStop' : function(){
             // Open Event
@@ -298,7 +298,7 @@ function(params){
         // Remove resize interval
         resizeInt && clearInterval(resizeInt);
         // Remove close event on Esc press
-        cm.removeEvent(window, 'keypress', windowClickEvent);
+        cm.removeEvent(window, 'keydown', windowClickEvent);
         // Animate
         anim['container'].go({'style' : {'opacity' : '0'}, 'duration' : that.params['openTime'], 'onStop' : function(){
             nodes['container'].style.display = 'none';
