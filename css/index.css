@@ -5913,6 +5913,9 @@ button.has-icon-small .icon,
 .com-filesgridlist-cell-links {
   width: 100px;
 }
+.com-filesgridlist-cell-size {
+  width: 80px;
+}
 /* ******* COMPONENT: PROFILE ******* */
 .com-profile > .inner > .l {
   float: left;
