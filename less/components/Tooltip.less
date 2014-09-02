@@ -1,4 +1,4 @@
-/* ******* TOOLTIP ******* */
+/* ******* COMPONENT: TOOLTIP ******* */
 
 .com-tooltip {
     position: fixed;
@@ -9,8 +9,6 @@
     opacity: 0;
 
     > .inner {
-        #cm > .box;
-
         > .title {
             margin: 0 0 8px;
 
@@ -30,7 +28,17 @@
     }
 }
 
-/* ******* COMPONENTS IN TOOLTIP ******* */
+/* ******* COMPONENT: TOOLTIP: THEMES ******* */
+
+.com-tooltip {
+    &.theme-default {
+        > .inner {
+            #cm > .box;
+        }
+    }
+}
+
+/* ******* COMPONENT: TOOLTIP: INNER COMPONENTS ******* */
 
 /* *** ITEMS LIST *** */
 

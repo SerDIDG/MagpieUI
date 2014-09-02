@@ -9,6 +9,7 @@ Com['Tooltip'] = function(o){
             'left' : 0,                     // Supported properties: targetWidth, selfWidth, number
             'width' : 'auto',               // Supported properties: targetWidth, auto, number
             'className' : '',
+            'theme' : 'theme-default',
             'adaptive' : true,
             'title' : '',
             'titleTag' : 'h3',
@@ -44,6 +45,8 @@ Com['Tooltip'] = function(o){
                 nodes['content'] = cm.Node('div', {'class' : 'scroll'})
             )
         );
+        // Add theme css class
+        !cm.isEmpty(config['theme']) && cm.addClass(nodes['container'], config['theme']);
         // Add css class
         !cm.isEmpty(config['className']) && cm.addClass(nodes['container'], config['className']);
         // Set title

@@ -25,6 +25,7 @@
     <script type="text/javascript" src="../../js/components/CalendarEvents.js"></script>
     <script type="text/javascript" src="../../js/components/Dialog.js"></script>
     <script type="text/javascript" src="../../js/components/TagsInput.js"></script>
+    <script type="text/javascript" src="../../js/components/ActionMenu.js"></script>
 
 	<script type="text/javascript">
 		cm.onReady(function(){
@@ -51,6 +52,11 @@
                 })
                 .add('time-select', function(node){
                     new Com.TimeSelect({'input' : node});
+                })
+                .add('action-menu', function(node){
+                    new Com.ActionMenu({
+                        'node' : node
+                    });
                 })
                 .construct();
 		});
@@ -403,6 +409,19 @@
         <li data-node="tabs:[]:container" data-config='{"id" : "buttons", "title" : "Buttons"}'>
              <div class="form">
                  <div class="btn-wrap left">
+                     <div class="com-action-menu" data-element="action-menu">
+                         <div class="button has-icon has-icon-small" data-node="ComActionMenu.button">
+                             <div class="icon small settings-white"></div>Actions
+                         </div>
+                         <div class="cm-menu" data-node="ComActionMenu.target">
+                             <ul class="cm-menu-dropdown">
+                                 <li><a>Edit Properties</a></li>
+                                 <li><a>Edit Content</a></li>
+                                 <li><a>Dublicate</a></li>
+                                 <li><a>Delete</a></li>
+                             </ul>
+                         </div>
+                     </div>
                      <input type="submit" value="Primary">
                      <input type="button" value="Error" class="error">
                      <input type="button" value="Secondary" class="secondary">
