@@ -37,28 +37,30 @@
 
 /* Tooltip */
 
-.com-datepicker-tooltip {
-    width: @ComDatepicker-tooltipWidth;
+.com-tooltip {
+    &.com-datepicker-tooltip {
+        width: @ComDatepicker-tooltipWidth;
 
-    > .inner > .scroll {
-        overflow: visible;
-    }
-
-    .time-holder {
-        padding: 0 0 @cm-indentXXSmall;
-        margin: @cm-indentXXSmall 0 0 0;
-        border-bottom: @cm-borderSeparator;
-        border-top: @cm-borderSeparator;
-
-        dl {
-            margin: 0;
+        > .inner > .scroll {
+            overflow: visible;
         }
-    }
 
-    .button.today {
-        width: 100%;
-        padding: 0;
-        margin: @cm-indentXXSmall 0 0 0;
+        .time-holder {
+            padding: 0 0 @cm-indentXXSmall;
+            margin: @cm-indentXXSmall 0 0 0;
+            border-bottom: @cm-borderSeparator;
+            border-top: @cm-borderSeparator;
+
+            dl {
+                margin: 0;
+            }
+        }
+
+        .button.today {
+            width: 100%;
+            padding: 0;
+            margin: @cm-indentXXSmall 0 0 0;
+        }
     }
 }
 

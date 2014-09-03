@@ -31,11 +31,13 @@
 
 /* Tooltip */
 
-.com-select-tooltip {
-    .cm-user-select(none);
+.com-tooltip {
+    &.com-select-tooltip {
+        .cm-user-select(none);
 
-    > .inner > .scroll {
-        max-height: @ComSelect-listCount * (@cm-lineHeight + @CmItemsList-indent + @CmItemsList-padding-y * 2) - @CmItemsList-indent;
+        > .inner > .scroll {
+            max-height: @ComSelect-listCount * (@cm-lineHeight + @CmItemsList-indent + @CmItemsList-padding-y * 2) - @CmItemsList-indent;
+        }
     }
 }
 

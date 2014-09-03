@@ -35,17 +35,22 @@
     display: block;
 }
 
-.com-glossary-tooltip {
-    width: 300px;
-}
-.com-glossary-tooltip > .inner {
-    padding: 12px 16px 16px;
-}
-.com-glossary-tooltip > .inner > .scroll {
-    max-height: 300px;
-}
-.com-glossary-text {
-}
-.com-glossary-text p {
-    margin: 0;
+/* *** TOOLTIP *** */
+
+.com-tooltip {
+    &.com-glossary-tooltip {
+        width: 300px;
+
+        > .inner {
+            padding: 12px 16px 16px;
+
+            > .scroll {
+                max-height: 300px;
+            }
+        }
+
+        .com-glossary-text p {
+            margin: 0;
+        }
+    }
 }

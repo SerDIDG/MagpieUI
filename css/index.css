@@ -3540,12 +3540,12 @@ button.has-icon-small .icon,
   transform: rotate(180deg);
 }
 /* Tooltip */
-.com-select-tooltip {
+.com-tooltip.com-select-tooltip {
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
 }
-.com-select-tooltip > .inner > .scroll {
+.com-tooltip.com-select-tooltip > .inner > .scroll {
   max-height: 160px;
 }
 /* Select Multiple */
@@ -3623,16 +3623,17 @@ button.has-icon-small .icon,
 .com-glossary-word:hover .com-glossary-popup {
   display: block;
 }
-.com-glossary-tooltip {
+/* *** TOOLTIP *** */
+.com-tooltip.com-glossary-tooltip {
   width: 300px;
 }
-.com-glossary-tooltip > .inner {
+.com-tooltip.com-glossary-tooltip > .inner {
   padding: 12px 16px 16px;
 }
-.com-glossary-tooltip > .inner > .scroll {
+.com-tooltip.com-glossary-tooltip > .inner > .scroll {
   max-height: 300px;
 }
-.com-glossary-text p {
+.com-tooltip.com-glossary-tooltip .com-glossary-text p {
   margin: 0;
 }
 /* ******* COMPONENTS: ACTION MENU ******* */
@@ -3645,10 +3646,10 @@ button.has-icon-small .icon,
   margin: 0 !important;
 }
 /* *** TOOLTIP *** */
-.com-action-menu-tooltip > .inner > .scroll {
+.com-tooltip.com-action-menu-tooltip > .inner > .scroll {
   overflow: visible;
 }
-.com-action-menu-tooltip .cm-menu .cm-menu-dropdown {
+.com-tooltip.com-action-menu-tooltip .cm-menu .cm-menu-dropdown {
   visibility: visible;
   opacity: 1;
   position: static;
@@ -3751,13 +3752,13 @@ button.has-icon-small .icon,
   line-height: 17px;
 }
 /* ******* CALENDAR OF EVENTS ******* */
-.com-calendar-events-tooltip {
+.com-tooltip.com-calendar-events-tooltip {
   width: 250px;
 }
-.com-calendar-events-tooltip > .inner .title {
+.com-tooltip.com-calendar-events-tooltip > .inner .title {
   padding: 4px 8px 0;
 }
-.com-calendar-events-tooltip > .inner > .scroll {
+.com-tooltip.com-calendar-events-tooltip > .inner > .scroll {
   max-height: 300px;
 }
 .com-calendar-events-listing {
@@ -3793,22 +3794,22 @@ button.has-icon-small .icon,
   background-image: url("../img/icons/small/remove.png");
 }
 /* Tooltip */
-.com-datepicker-tooltip {
+.com-tooltip.com-datepicker-tooltip {
   width: 210px;
 }
-.com-datepicker-tooltip > .inner > .scroll {
+.com-tooltip.com-datepicker-tooltip > .inner > .scroll {
   overflow: visible;
 }
-.com-datepicker-tooltip .time-holder {
+.com-tooltip.com-datepicker-tooltip .time-holder {
   padding: 0 0 8px;
   margin: 8px 0 0 0;
   border-bottom: 1px dotted #cbcbcb;
   border-top: 1px dotted #cbcbcb;
 }
-.com-datepicker-tooltip .time-holder dl {
+.com-tooltip.com-datepicker-tooltip .time-holder dl {
   margin: 0;
 }
-.com-datepicker-tooltip .button.today {
+.com-tooltip.com-datepicker-tooltip .button.today {
   width: 100%;
   padding: 0;
   margin: 8px 0 0 0;
