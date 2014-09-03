@@ -55,8 +55,12 @@ function(params){
             that.isRightCollapsed = that.storageRead('isRightCollapsed');
         }
         // Check sidebars visibility
-        that.isLeftCollapsed = cm.getStyle(that.nodes['leftContainer'], 'display') == 'none'? true : that.isLeftCollapsed;
-        that.isRightCollapsed = cm.getStyle(that.nodes['rightContainer'], 'display') == 'none'? true : that.isRightCollapsed;
+        if(!cm.inDOM(that.nodes['leftContainer']) || cm.getStyle(that.nodes['leftContainer'], 'display') == 'none'){
+            that.isLeftCollapsed = true;
+        }
+        if(!cm.inDOM(that.nodes['rightContainer']) || cm.getStyle(that.nodes['rightContainer'], 'display') == 'none'){
+            that.isRightCollapsed = true;
+        }
         // Trigger events
         if(that.isLeftCollapsed){
             that.collapseLeft(true);
@@ -106,7 +110,9 @@ function(params){
         that.isLeftCollapsed = false;
         isImmediately && cm.addClass(that.params['node'], 'is-immediately');
         cm.replaceClass(that.params['node'], 'is-sidebar-left-collapsed', 'is-sidebar-left-expanded', true);
-        isImmediately && cm.removeClass(that.params['node'], 'is-immediately');
+        setTimeout(function(){
+            isImmediately && cm.removeClass(that.params['node'], 'is-immediately');
+        }, 5);
         // Write storage
         if(that.params['remember']){
             that.storageWrite('isLeftCollapsed', false);
@@ -119,7 +125,9 @@ function(params){
         that.isRightCollapsed = true;
         isImmediately && cm.addClass(that.params['node'], 'is-immediately');
         cm.replaceClass(that.params['node'], 'is-sidebar-right-expanded', 'is-sidebar-right-collapsed', true);
-        isImmediately && cm.removeClass(that.params['node'], 'is-immediately');
+        setTimeout(function(){
+            isImmediately && cm.removeClass(that.params['node'], 'is-immediately');
+        }, 5);
         // Write storage
         if(that.params['remember']){
             that.storageWrite('isRightCollapsed', true);
