@@ -41,6 +41,7 @@ form {
 }
 /* ******* STATIC CLASSES ******* */
 .clear:after,
+.cm-box-content:after,
 .cm-line-info:after,
 .form dl:after,
 .cm-title-editable:after,
@@ -5700,6 +5701,12 @@ button.has-icon-small .icon,
 }
 .com-blogpost .post-info.is-bottom {
   margin: 12px 0 0 0;
+}
+.com-blogpost .post-share .cm-line-share {
+  margin: 24px 0 0 0;
+}
+.com-blogpost .post-share .cm-line-share:first-child {
+  margin: 0;
 }
 .com-blogpost .cm-toolbar,
 .com-blogpost .post-abstract,
