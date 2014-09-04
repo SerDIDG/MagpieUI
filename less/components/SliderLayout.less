@@ -1,128 +1,13 @@
 /* ******* COMPONENT: SLIDER: LAYOUT ******* */
 
 .com-slider-layout {
-    margin: 0 0 @cm-indentMedium 0;
-
-    &.bottom {
-        margin: 0;
-    }
-
-    > .inner {
-        position: relative;
-    }
-
     .com-slider {
         margin: 0;
     }
 
-    // /* Preview */
-
     .com-gallery-preview {
-        margin: @cm-indentXSmall 0;
-
         > .inner {
             position: relative;
         }
-
-        &:first-child {
-            margin-top: 0;
-        }
-
-        &:last-child {
-            margin-bottom: 0;
-        }
-    }
-
-    // /* Set sizes */
-
-    .loop(@counter) when (@counter > 0) {
-        .loop((@counter - 1));
-
-        @size: 100% / @counter;
-
-        &.size-@{counter} {
-            > .inner {
-                padding: 0 @size;
-            }
-
-            .com-gallery-bar {
-                width: @size;
-
-                .cm-grid {
-                    #cm > .grid-size(@counter);
-                }
-            }
-        }
-    }
-
-    .loop(@ComGalleryLayout-sizesCount);
-
-    // /* Bar Horizontal */
-
-    &.is-bar-top,
-    &.is-bar-bottom,
-    &.is-bar-none {
-        > .inner {
-            padding: 0;
-        }
-
-        .com-gallery-bar {
-            width: auto;
-        }
-    }
-
-    &.is-bar-none {
-        .com-gallery-preview {
-            margin: 0;
-        }
-    }
-
-    // /* Bar vertical */
-
-    &.is-bar-left,
-    &.is-bar-right {
-        .com-gallery-preview {
-            margin: 0;
-        }
-
-        .com-gallery-bar {
-            position: absolute;
-            .cm-position(0, auto, 0, auto);
-            -moz-box-sizing: border-box;
-            box-sizing: border-box;
-
-            .cm-grid > ul > li {
-                width: 100%;
-            }
-        }
-    }
-
-    &.is-bar-left {
-        > .inner {
-            padding-right: 0;
-        }
-
-        .com-gallery-bar {
-            padding: 0 @cm-indentXSmall 0 0;
-            left: 0;
-        }
-    }
-
-    &.is-bar-right {
-        > .inner {
-            padding-left: 0;
-        }
-
-        .com-gallery-bar {
-            padding: 0 0 0 @cm-indentXSmall;
-            right: 0;
-        }
-    }
-
-    // /* Border */
-
-    &.has-border {
-        padding: @cm-indentXSmall;
-        border: @cm-borderBox;
     }
 }
