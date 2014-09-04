@@ -29,8 +29,9 @@ cm.define('Com.Gallery', {
 function(params){
     var that = this,
         items = [],
-        anim = {},
-        active;
+        anim = {};
+
+    that.value = null;
 
     that.nodes = {
         'items' : []
@@ -145,14 +146,14 @@ function(params){
 
     var set = function(i){
         var item = items[i],
-            itemOld = items[active];
+            itemOld = items[that.value];
         // API onSet
         that.triggerEvent('onSet', {
             'current' : item,
             'previous' : itemOld
         });
         // If current active item not equal new item - process with new item, else redraw window alignment and dimensions
-        if(i != active){
+        if(i != that.value){
             // API onSet
             that.triggerEvent('onChange', {
                 'current' : item,
@@ -199,7 +200,7 @@ function(params){
 
     var setItem = function(i, item, itemOld){
         // Set new active
-        active = i;
+        that.value = i;
         item['isLoad'] = true;
         // API onImageSetStart
         that.triggerEvent('onItemLoad', item);
@@ -224,11 +225,11 @@ function(params){
     };
 
     var next = function(){
-        set((active == items.length - 1)? 0 : active + 1);
+        set((that.value == items.length - 1)? 0 : that.value + 1);
     };
 
     var prev = function(){
-        set((active == 0)? items.length - 1 : active - 1);
+        set((that.value == 0)? items.length - 1 : that.value - 1);
     };
 
     /* ******* MAIN ******* */
