@@ -20,9 +20,7 @@ cm.define('Com.GalleryLayout', {
         }
     }
 },
-
-
-Com['GalleryLayout'] = function(params){
+function(params){
     var that = this,
         components = {},
         items = [];

@@ -31,12 +31,7 @@
                 })
                 .add('gallery-layout', function(node){
                     new Com.GalleryLayout({
-                        'node' : node,
-                        'events' : {
-                            'onChange' : function(gallery, data){
-                                cm.log(data);
-                            }
-                        }
+                        'node' : node
                     });
                 })
                 .construct();

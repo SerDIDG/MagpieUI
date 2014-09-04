@@ -1,41 +1,57 @@
-Com['Slider'] = function(o){
+cm.define('Com.Slider', {
+    'modules' : [
+        'Params',
+        'Events',
+        'DataConfig',
+        'DataNodes'
+    ],
+    'events' : [
+        'onRender',
+        'onChangeStart',
+        'onChange',
+        'onPause',
+        'onUnPause'
+    ],
+    'params' : {
+        'node' : cm.Node('div'),
+        'time' : 500,                   // Fade time
+        'delay' : 4000,                 // Delay before slide will be changed
+        'slideshow' : true,             // Turn on / off slideshow
+        'direction' : 'forward',        // Slideshow direction: forward | backward | random
+        'pauseOnHover' : true,
+        'fadePrevious' : false,         // Fade out previous slide, needed when using transparency slides
+        'buttons' : true,               // Display buttons, can hide exists buttons
+        'numericButtons' : false,       // Render slide index on button
+        'arrows' : true,                // Display arrows, can hide exists arrows
+        'effect' : 'fade',              // fade | push
+        'transition' : 'smooth',        // smooth | simple | acceleration | inhibition,
+        'hasBar' : false,
+        'barDirection' : 'horizontal',  // horizontal | vertical
+        'Com.Scroll' : {
+            'step' : 25,
+            'time' : 25
+        }
+    }
+},
+function(params){
     var that = this,
-        config = cm.merge({
-            'node' : cm.Node('div'),
-            'nodesMarker' : 'ComSlider',
-            'configMarker' : 'data-config',
-            'nodes' : {},
-            'events' : {},
-            'time' : 500,                   // Fade time
-            'delay' : 4000,                 // Delay before slide will be changed
-            'slideshow' : true,             // Turn on / off slideshow
-            'direction' : 'forward',        // Slideshow direction: forward | backward | random
-            'pauseOnHover' : true,
-            'fadePrevious' : false,         // Fade out previous slide, needed when using transparency slides
-            'buttons' : true,               // Display buttons, can hide exists buttons
-            'numericButtons' : false,       // Render slide index on button
-            'arrows' : true,                // Display arrows, can hide exists arrows
-            'effect' : 'fade',              // fade | push
-            'transition' : 'smooth'         // smooth | simple | acceleration | inhibition
-        }, o),
-        nodes = {
-            'container' : cm.Node('div'),
-            'slides' : cm.Node('div'),
-            'slidesInner' : cm.Node('ul'),
-            'next' : cm.Node('div'),
-            'prev' : cm.Node('div'),
-            'buttons' : cm.Node('ul'),
-            'items' : []
-        },
-        API = {
-            'onChangeStart' : [],
-            'onChange' : [],
-            'onPause' : [],
-            'onUnPause' : []
-        },
         items = [],
+        components = {},
         anims = {},
         slideshowInt;
+    
+    that.nodes = {
+        'container' : cm.Node('div'),
+        'slides' : cm.Node('div'),
+        'slidesInner' : cm.Node('ul'),
+        'next' : cm.Node('div'),
+        'prev' : cm.Node('div'),
+        'buttons' : cm.Node('ul'),
+        'items' : [],
+        'layoutInner' : cm.Node('div'),
+        'bar-inner' : cm.Node('div'),
+        'bar-items' : []
+    };
 
     that.direction = 'next';
     that.current = null;
@@ -43,65 +59,95 @@ Com['Slider'] = function(o){
     that.paused = false;
 
     var init = function(){
-        convertEvents(config['events']);
-        getNodes(config['node'], config['nodesMarker']);
-        getConfig(config['node'], config['configMarker']);
-        // Validate configuration parameters and check supported values
-        validateConfig();
-        // Render slider
-        render();
-        // Set first active slide
+        that.setParams(params);
+        that.convertEvents(that.params['events']);
+        that.getDataNodes(that.params['node']);
+        that.getDataConfig(that.params['node']);
+
+        validateParams();
+        renderSlider();
+        renderLayout();
+        afterRender();
         items[0] && set(0);
     };
 
-    var render = function(){
+    var validateParams = function(){
+        that.params['direction'] = {'forward' : 1, 'backward' : 1, 'random' : 1}[that.params['direction']] ? that.params['direction'] : 'forward';
+        that.params['effect'] = {'push' : 1, 'fade' : 1}[that.params['effect']] ? that.params['effect'] : 'fade';
+        that.params['transition'] = {'smooth' : 1, 'simple' : 1, 'acceleration' : 1, 'inhibition' : 1}[that.params['transition']] ? that.params['transition'] : 'smooth';
+    };
+
+    var renderSlider = function(){
         // Set class on slides container dependence of animation effect
-        cm.addClass(nodes['slides'], ['effect', config['effect']].join('-'));
+        cm.addClass(that.nodes['slides'], ['effect', that.params['effect']].join('-'));
         // Collect items
-        cm.forEach(nodes['items'], collectItem);
+        cm.forEach(that.nodes['items'], collectItem);
         // Arrows
-        if(config['arrows']){
-            cm.addEvent(nodes['next'], 'click', that.next);
-            cm.addEvent(nodes['prev'], 'click', that.prev);
+        if(that.params['arrows']){
+            cm.addEvent(that.nodes['next'], 'click', that.next);
+            cm.addEvent(that.nodes['prev'], 'click', that.prev);
         }
-        if(!config['arrows'] || items.length < 2){
-            nodes['next'].style.display = 'none';
-            nodes['prev'].style.display = 'none';
+        if(!that.params['arrows'] || items.length < 2){
+            that.nodes['next'].style.display = 'none';
+            that.nodes['prev'].style.display = 'none';
         }
         // Buttons
-        if(config['buttons']){
+        if(that.params['buttons']){
             cm.forEach(items, renderButton);
         }
-        if(!config['buttons'] || items.length < 2){
-            nodes['buttons'].style.display = 'none';
+        if(!that.params['buttons'] || items.length < 2){
+            that.nodes['buttons'].style.display = 'none';
         }
         // Pause slider when it hovered
-        if(config['slideshow'] && config['pauseOnHover']){
-            cm.addEvent(nodes['container'], 'mouseover', function(e){
+        if(that.params['slideshow'] && that.params['pauseOnHover']){
+            cm.addEvent(that.nodes['container'], 'mouseover', function(e){
                 e = cm.getEvent(e);
                 var target = cm.getObjToEvent(e);
-                if(!cm.isParent(nodes['container'], target, true)){
+                if(!cm.isParent(that.nodes['container'], target, true)){
                     that.pause();
                 }
             });
-            cm.addEvent(nodes['container'], 'mouseout', function(e){
+            cm.addEvent(that.nodes['container'], 'mouseout', function(e){
                 e = cm.getEvent(e);
                 var target = cm.getObjToEvent(e);
-                if(!cm.isParent(nodes['container'], target, true)){
+                if(!cm.isParent(that.nodes['container'], target, true)){
                     that.unpause();
                 }
             });
         }
         // Init animations
-        anims['slides'] = new cm.Animation(nodes['slides']);
-        anims['slidesInner'] = new cm.Animation(nodes['slidesInner']);
+        anims['slides'] = new cm.Animation(that.nodes['slides']);
+        anims['slidesInner'] = new cm.Animation(that.nodes['slidesInner']);
     };
 
-    var collectItem = function(item){
+    var renderLayout = function(){
+        if(that.params['hasBar']){
+            that.nodes['ComScroll'] = cm.getNodes(that.params['node'])['ComScroll'];
+
+            components['scroll'] = new Com.Scroll(
+                cm.merge(that.params['Com.Scroll'], {
+                    'nodes' : that.nodes['ComScroll']
+                })
+            );
+        }
+    };
+
+    var afterRender = function(){
+        that.triggerEvent('onRender');
+    };
+
+    var collectItem = function(item, i){
         // Configuration
         item = {
+            'index' : i,
             'nodes' : item
         };
+        // Bar
+        if(that.params['hasBar']){
+            item['bar'] = that.nodes['bar-items'][i];
+            item['bar']['title'] = item['bar']['link']? item['bar']['link'].getAttribute('title') || '' : '';
+            item['bar']['src'] = item['bar']['link']? item['bar']['link'].getAttribute('href') || '' : '';
+        }
         // Process item
         processItem(item);
     };
@@ -114,6 +160,15 @@ Com['Slider'] = function(o){
                 'container' : cm.Node('li')
             }
         }, item);
+        // Bar
+        if(that.params['hasBar']){
+            // Set image on thumb click
+            cm.addEvent(item['bar']['link'], 'click', function(e){
+                e = cm.getEvent(e);
+                cm.preventDefault(e);
+                set(item['index']);
+            }, true, true);
+        }
         // Init animation
         item['anim'] = new cm.Animation(item['nodes']['container']);
         // Push to items array
@@ -122,10 +177,10 @@ Com['Slider'] = function(o){
 
     var renderButton = function(item){
         // Structure
-        nodes['buttons'].appendChild(
+        that.nodes['buttons'].appendChild(
             item['nodes']['button'] = cm.Node('li')
         );
-        if(config['numericButtons']){
+        if(that.params['numericButtons']){
             item['nodes']['button'].innerHTML = item['index'] + 1;
         }
         // Event
@@ -140,14 +195,14 @@ Com['Slider'] = function(o){
             var fadeOut = function(item){
                 if(item){
                     item['nodes']['container'].style.zIndex = 1;
-                    if(config['fadePrevious']){
-                        item['anim'].go({'style' : {'opacity' : 0}, 'duration' : config['time'], 'anim' : config['transition'], 'onStop' : function(){
+                    if(that.params['fadePrevious']){
+                        item['anim'].go({'style' : {'opacity' : 0}, 'duration' : that.params['time'], 'anim' : that.params['transition'], 'onStop' : function(){
                             hide(item);
                         }});
                     }else{
                         setTimeout(function(){
                             hide(item);
-                        }, config['time']);
+                        }, that.params['time']);
                     }
                 }
             };
@@ -162,46 +217,68 @@ Com['Slider'] = function(o){
             // Set visible new slide and animate it
             current['nodes']['container'].style.zIndex = 2;
             current['nodes']['container'].style.display = 'block';
-            current['anim'].go({'style' : {'opacity' : 1}, 'duration' : config['time'], 'anim' : config['transition'], 'onStop' : callback});
+            current['anim'].go({'style' : {'opacity' : 1}, 'duration' : that.params['time'], 'anim' : that.params['transition'], 'onStop' : callback});
         },
 
         'push' : function(current, previous, callback){
             var left = current['nodes']['container'].offsetLeft;
-            anims['slidesInner'].go({'style' : {'scrollLeft' : left}, 'duration' : config['time'], 'anim' : config['transition'], 'onStop' : callback});
+            anims['slidesInner'].go({'style' : {'scrollLeft' : left}, 'duration' : that.params['time'], 'anim' : that.params['transition'], 'onStop' : callback});
         }
     };
 
     var set = function(index){
         // Renew slideshow delay
-        config['slideshow'] && renewSlideshow();
+        that.params['slideshow'] && renewSlideshow();
         // Set current active slide
         var current = items[index],
             previous = items[that.current];
         that.previous = that.current;
         that.current = index;
         // API onChangeStart event
-        executeEvent('onChangeStart', {
+        that.triggerEvent('onChangeStart', {
             'current' : current,
             'previous' : previous
         });
         // Reset active slide
         if(previous){
-            if(config['buttons']){
+            if(that.params['buttons']){
                 cm.removeClass(previous['nodes']['button'], 'active');
             }
         }
         // Set active slide
-        if(config['buttons']){
+        if(that.params['buttons']){
             cm.addClass(current['nodes']['button'], 'active');
         }
         // Transition effect and callback
-        effects[config['effect']](current, previous, function(){
+        effects[that.params['effect']](current, previous, function(){
             // API onChange event
-            executeEvent('onChange', {
+            that.triggerEvent('onChange', {
                 'current' : current,
                 'previous' : previous
             });
         });
+        // Set bar item
+        if(that.params['hasBar']){
+            setBarItem(current, previous);
+        }
+    };
+
+    var setBarItem = function(current, previous){
+        var left,
+            top;
+        // Thumbs classes
+        if(previous){
+            cm.removeClass(previous['bar']['container'], 'active');
+        }
+        cm.addClass(current['bar']['container'], 'active');
+        // Move bar
+        if(that.params['barDirection'] == 'vertical'){
+            top = current['bar']['container'].offsetTop - (that.nodes['layoutInner'].offsetHeight / 2) + (current['bar']['container'].offsetHeight / 2);
+            components['scroll'].scrollY(top);
+        }else{
+            left = current['bar']['container'].offsetLeft - (that.nodes['layoutInner'].offsetWidth / 2) + (current['bar']['container'].offsetWidth / 2);
+            components['scroll'].scrollX(left);
+        }
     };
 
     /* *** SLIDESHOW *** */
@@ -209,7 +286,7 @@ Com['Slider'] = function(o){
     var startSlideshow = function(){
         that.paused = false;
         slideshowInt = setTimeout(function(){
-            switch(config['direction']){
+            switch(that.params['direction']){
                 case 'random':
                     set(cm.rand(0, (items.length - 1)));
                     break;
@@ -222,7 +299,7 @@ Com['Slider'] = function(o){
                     that.next();
                     break;
             }
-        }, config['delay']);
+        }, that.params['delay']);
     };
 
     var stopSlideshow = function(){
@@ -236,52 +313,7 @@ Com['Slider'] = function(o){
             startSlideshow();
         }
     };
-
-    /* *** MISC FUNCTIONS *** */
-
-    var convertEvents = function(o){
-        cm.forEach(o, function(item, key){
-            if(API[key] && typeof item == 'function'){
-                API[key].push(item);
-            }
-        });
-    };
-
-    var validateConfig = function(){
-        config['direction'] = {'forward' : 1, 'backward' : 1, 'random' : 1}[config['direction']] ? config['direction'] : 'forward';
-        config['effect'] = {'push' : 1, 'fade' : 1}[config['effect']] ? config['effect'] : 'fade';
-        config['transition'] = {'smooth' : 1, 'simple' : 1, 'acceleration' : 1, 'inhibition' : 1}[config['transition']] ? config['transition'] : 'smooth';
-    };
-
-    var getNodes = function(container, marker){
-        if(container){
-            var sourceNodes = {};
-            if(marker){
-                sourceNodes = cm.getNodes(container)[marker] || {};
-            }else{
-                sourceNodes = cm.getNodes(container);
-            }
-            nodes = cm.merge(nodes, sourceNodes);
-        }
-        nodes = cm.merge(nodes, config['nodes']);
-    };
-
-    var getConfig = function(container, marker){
-        if(container){
-            marker = marker || 'data-config';
-            var sourceConfig = container.getAttribute(marker);
-            if(sourceConfig){
-                config = cm.merge(config, JSON.parse(sourceConfig));
-            }
-        }
-    };
-
-    var executeEvent = function(event, params){
-        API[event].forEach(function(item){
-            item(that, params || {});
-        });
-    };
-
+    
     /* ******* MAIN ******* */
 
     that.set = function(index){
@@ -308,32 +340,16 @@ Com['Slider'] = function(o){
     that.pause = function(){
         stopSlideshow();
         // API onPause event
-        executeEvent('onPause');
+        that.triggerEvent('onPause');
         return that;
     };
 
     that.unpause = function(){
         startSlideshow();
         // API onUnPause event
-        executeEvent('onUnPause');
-        return that;
-    };
-
-    that.addEvent = function(event, handler){
-        if(API[event] && typeof handler == 'function'){
-            API[event].push(handler);
-        }
-        return that;
-    };
-
-    that.removeEvent = function(event, handler){
-        if(API[event] && typeof handler == 'function'){
-            API[event] = API[event].filter(function(item){
-                return item != handler;
-            });
-        }
+        that.triggerEvent('onUnPause');
         return that;
     };
 
     init();
-};
+});

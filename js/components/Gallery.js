@@ -31,7 +31,8 @@ function(params){
         items = [],
         anim = {};
 
-    that.value = null;
+    that.current = null;
+    that.previous = null;
 
     that.nodes = {
         'items' : []
@@ -146,14 +147,14 @@ function(params){
 
     var set = function(i){
         var item = items[i],
-            itemOld = items[that.value];
+            itemOld = items[that.current];
         // API onSet
         that.triggerEvent('onSet', {
             'current' : item,
             'previous' : itemOld
         });
         // If current active item not equal new item - process with new item, else redraw window alignment and dimensions
-        if(i != that.value){
+        if(i != that.current){
             // API onSet
             that.triggerEvent('onChange', {
                 'current' : item,
@@ -200,7 +201,8 @@ function(params){
 
     var setItem = function(i, item, itemOld){
         // Set new active
-        that.value = i;
+        that.previous = that.current;
+        that.current = i;
         item['isLoad'] = true;
         // API onImageSetStart
         that.triggerEvent('onItemLoad', item);
@@ -225,11 +227,11 @@ function(params){
     };
 
     var next = function(){
-        set((that.value == items.length - 1)? 0 : that.value + 1);
+        set((that.current == items.length - 1)? 0 : that.current + 1);
     };
 
     var prev = function(){
-        set((that.value == 0)? items.length - 1 : that.value - 1);
+        set((that.current == 0)? items.length - 1 : that.current - 1);
     };
 
     /* ******* MAIN ******* */
