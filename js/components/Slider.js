@@ -48,7 +48,7 @@ function(params){
         'prev' : cm.Node('div'),
         'buttons' : cm.Node('ul'),
         'items' : [],
-        'layoutInner' : cm.Node('div'),
+        'layout-inner' : cm.Node('div'),
         'bar-inner' : cm.Node('div'),
         'bar-items' : []
     };
@@ -273,10 +273,10 @@ function(params){
         cm.addClass(current['bar']['container'], 'active');
         // Move bar
         if(that.params['barDirection'] == 'vertical'){
-            top = current['bar']['container'].offsetTop - (that.nodes['layoutInner'].offsetHeight / 2) + (current['bar']['container'].offsetHeight / 2);
+            top = current['bar']['container'].offsetTop - (that.nodes['layout-inner'].offsetHeight / 2) + (current['bar']['container'].offsetHeight / 2);
             components['scroll'].scrollY(top);
         }else{
-            left = current['bar']['container'].offsetLeft - (that.nodes['layoutInner'].offsetWidth / 2) + (current['bar']['container'].offsetWidth / 2);
+            left = current['bar']['container'].offsetLeft - (that.nodes['layout-inner'].offsetWidth / 2) + (current['bar']['container'].offsetWidth / 2);
             components['scroll'].scrollX(left);
         }
     };
