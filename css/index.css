@@ -2487,10 +2487,12 @@ button.has-icon-small .icon,
   line-height: 18px;
   font-weight: normal;
   text-decoration: none;
+  color: #666666;
   -webkit-transition: all 0.3s ease-in-out;
   transition: all 0.3s ease-in-out;
 }
 .cm-items-list ul li a:hover {
+  text-decoration: none;
   background-color: #f2f2f2;
   -webkit-transition: all 0.1s ease-in-out;
   transition: all 0.1s ease-in-out;
