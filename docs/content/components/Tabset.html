@@ -1,0 +1,382 @@
+<!DOCTYPE HTML>
+<html class="is-adaptive">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Components: Tabset</title>
+
+    <link type="text/css" rel="stylesheet" href="../../../css/index.css">
+    <link type="text/css" rel="stylesheet" href="../../styles/index.css">
+
+    <script type="text/javascript" src="../../../js/polyfill.js"></script>
+    <script type="text/javascript" src="../../../js/common.js"></script>
+    <script type="text/javascript" src="../../../js/parts.js"></script>
+    <script type="text/javascript" src="../../../js/modules.js"></script>
+    <script type="text/javascript" src="../../../js/init.js"></script>
+    <script type="text/javascript" src="../../../js/components/UA.js"></script>
+    <script type="text/javascript" src="../../../js/components/Tooltip.js"></script>
+    <script type="text/javascript" src="../../../js/components/Select.js"></script>
+    <script type="text/javascript" src="../../../js/components/Calendar.js"></script>
+    <script type="text/javascript" src="../../../js/components/Datepicker.js"></script>
+    <script type="text/javascript" src="../../../js/components/CalendarEvents.js"></script>
+    <script type="text/javascript" src="../../../js/components/Tabset.js"></script>
+    <script type="text/javascript" src="../../../js/components/Dialog.js"></script>
+    <script type="text/javascript" src="../../../js/components/Collector.js"></script>
+    <script type="text/javascript" src="../../../js/components/Columns.js"></script>
+
+    <script type="text/javascript">
+        cm.onReady(function(){
+            new Com.Collector()
+                .addEvent('onConstruct', function(collector, data){
+                    Part.Menu();
+                    Part.Autoresize(data['node']);
+                })
+                .add('tabset', function(node){
+                    new Com.Tabset({'node' : node});
+                })
+                .construct();
+        });
+    </script>
+</head>
+
+<body>
+
+<h1 class="cm-page-title">Components: Tabset</h1>
+
+<ul class="com-tabset-content-ul" data-element="tabset">
+    <li data-node="tabs:[]:container" data-config='{"id" : "overview", "title" : "Overview"}'>
+        <h2>Overview</h2>
+        <p>This component render tabset.</p>
+        <dl>
+            <dd></dd>
+        </dl>
+        <h4>Embedded Modules</h4>
+        <ul class="cm-list">
+            <li><code>Params</code></li>
+            <li><code>Events</code></li>
+            <li><code>DataConfig</code></li>
+            <li><code>DataNodes</code></li>
+        </ul>
+        <h4>Required Parts</h4>
+        <ul class="cm-list">
+            <li><code>Part.Menu</code></li>
+        </ul>
+
+        <h2>Initialize</h2>
+        <pre class="cm-codebox">new Com.Tabset(o);</pre>
+        <br>
+        <p>or</p>
+        <textarea class="cm-codebox cm-autoresize" readonly>
+<script type="text/javascript">
+    cm.onReady(function(){
+        new Com.Collector()
+            .add('tabset', function(node){
+                new Com.Tabset({'node' : node})
+            })
+            .construct();
+    });
+</script>
+
+<ul class="com-tabset-content-ul" data-element="tabset" data-config='{"toggleOnHashChange" : false}'>
+    <li data-node="tabs:[]:container" data-config='{"id" : "foo", "title" : "Foo"}'>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    </li>
+    <li data-node="tabs:[]:container" data-config='{"id" : "bar", "title" : "Bar"}'>
+        <p>Pellentesque vel velit sit amet libero tincidunt mattis faucibus sit amet velit.</p>
+    </li>
+</ul></textarea>
+        <br>
+        <ul class="com-tabset-content-ul" data-element="tabset" data-config='{"toggleOnHashChange" : false}'>
+            <li data-node="tabs:[]:container" data-config='{"id" : "foo", "title" : "Foo"}'>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </li>
+            <li data-node="tabs:[]:container" data-config='{"id" : "bar", "title" : "Bar"}'>
+                <p>Pellentesque vel velit sit amet libero tincidunt mattis faucibus sit amet velit.</p>
+            </li>
+        </ul>
+
+        <h2>Parameters:</h2>
+
+        <dl>
+            <dt>
+                <code><b>container</b></code>
+            </dt>
+            <dd><code>HTML Node</code>. Component container that is required in case content is rendered without available tabset node. Default: <code>false</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>node</b></code>
+            </dt>
+            <dd><code>HTML Node</code>. Html node that contains tabs. Default: <code>cm.Node('div')</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>toggleOnHashChange</b></code>
+            </dt>
+            <dd><code>Boolean</code>. Add address bar listener to change tab on hash change. Default: <code>true</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>renderOnInit</b></code>
+            </dt>
+            <dd><code>Boolean</code>. After rendering view of tabs, set active tab. Default: <code>true</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>active</b></code>
+            </dt>
+            <dd><code>String</code>. Id of tab to be set after rendering view. Default: <code>null</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>className</b></code>
+            </dt>
+            <dd><code>String</code>. Add css class to tabset container. Default: <code>empty</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>showTabs</b></code>
+            </dt>
+            <dd><code>Boolean</code>. Show tabset header. Default: <code>true</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>tabsPosition</b></code>
+            </dt>
+            <dd><code>String</code>. Tabset header position. Available: top, bottom. Default: <code>top</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>tabs</b></code>
+            </dt>
+            <dd>
+                <p><code>Array</code>. Listing of tabs, for rendering through java-script. Example:</p>
+                <textarea class="cm-codebox cm-autoresize" readonly>
+new Com.Tabset({
+    'tabs' : [{
+        'id' : 'foo',
+        'title' : 'Foo',
+        'content' : cm.Node('li'),
+        'onShow' : function(tabset, tab){},
+        'onHide' : function(tabset, tab){}
+    }]
+});</textarea>
+            </dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>events</b></code>
+            </dt>
+            <dd>
+                <p><code>Object</code>. Object of events. Available events: <code>onRender</code>, <code>onTabShow</code>, <code>onTabHide</code>. Example:</p>
+                <textarea class="cm-codebox cm-autoresize" readonly>
+new Com.Tabset({
+    'events' : {
+        'onTabShow' : function(tabset, tab){}
+    }
+});</textarea>
+            </dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>icons</b></code>
+            </dt>
+            <dd>
+                <p><code>Object</code>. Object of icons CSS class names.</p>
+                <dl>
+                    <dt>
+                        <code><b>menu</b></code>
+                    </dt>
+                    <dd><code>String</code>. Menu icon CSS class name. Default: <code>icon default linked</code>.</dd>
+                </dl>
+            </dd>
+        </dl>
+    </li>
+
+    <li data-node="tabs:[]:container" data-config='{"id" : "methods", "title" : "Methods"}'>
+        <h2>Get tabset by id:</h2>
+        <pre class="cm-codebox">Com.GetTabset(id);</pre>
+        <br>
+        <p>Returns class of tabset component.</p>
+
+        <h2>Render tabset:</h2>
+        <p>This method will be init tabset misc helpers and set active tab. Must be called only when parameter <code>renderOnInit</code> is <code>false</code>.</p>
+        <pre class="cm-codebox">tabset.render();</pre>
+        <br>
+        <p>Returns a class of tabset.</p>
+
+        <h2>Set active tab by id:</h2>
+        <pre class="cm-codebox">tabset.set(id);</pre>
+        <br>
+        <p>Returns class of tabset component.</p>
+
+        <h2>Get tab by id:</h2>
+        <pre class="cm-codebox">tabset.get(id);</pre>
+        <br>
+        <p>Returns specified tab object.</p>
+
+        <h2>Add tab:</h2>
+        <pre class="cm-codebox">tabset.addTab(o);</pre>
+        <br>
+        <p>Example:</p>
+        <textarea class="cm-codebox cm-autoresize" readonly>
+tabset.addTab({
+    'id' : 'foo',
+    'title' : 'Foo',
+    'content' : cm.Node('li'),
+    'onShow' : function(tabset, tab){},
+    'onHide' : function(tabset, tab){}
+});</textarea>
+        <br>
+        <p>Returns class of tabset component.</p>
+
+        <h2>Remove tab by id:</h2>
+        <pre class="cm-codebox">tabset.removeTab(id);</pre>
+        <br>
+        <p>Returns class of tabset component.</p>
+
+        <h2>Set events on tabs:</h2>
+        <pre class="cm-codebox">tabset.setEvents(o);</pre>
+        <br>
+        <p>Example:</p>
+        <textarea class="cm-codebox cm-autoresize" readonly>
+tabset.setEvents({
+    'foo' : {
+        'onShow' : function(tabset, tab){},
+        'onHide' : function(tabset, tab){}
+    }
+});</textarea>
+        <br>
+        <p>Returns class of tabset component.</p>
+
+        <h2>Set event:</h2>
+        <pre class="cm-codebox">tabset.addEvent(event, handler);</pre>
+        <br>
+        <p>Available events: <code>onRender</code>, <code>onTabShow</code>, <code>onTabHide</code>.  Returns class of tabset component.</p>
+
+        <h2>Set events:</h2>
+        <pre class="cm-codebox">tabset.addEvents(o);</pre>
+        <br>
+        <p>Example: <code>{'onTabShow' : function(tabset, tab){}}</code>. Available events: <code>onRender</code>, <code>onTabShow</code>, <code>onTabHide</code>.  Returns class of tabset component.</p>
+
+        <h2>Remove event:</h2>
+        <pre class="cm-codebox">tabset.removeEvent(event, handler);</pre>
+        <br>
+        <p>Available events: <code>onRender</code>, <code>onTabShow</code>, <code>onTabHide</code>.  Returns class of tabset component.</p>
+
+        <h2>Trigger event:</h2>
+        <pre class="cm-codebox">tabset.triggerEvent(event);</pre>
+        <br>
+        <p>Available events: <code>onRender</code>, <code>onTabShow</code>, <code>onTabHide</code>.  Returns class of tabset component.</p>
+
+        <h2>Remove tabset:</h2>
+        <p>This method will be stop all misc helpers and remove tabset html node.</p>
+        <pre class="cm-codebox">tabset.remove();</pre>
+        <br>
+        <p>Returns class of tabset component.</p>
+
+        <h2>Get list of tabset nodes:</h2>
+        <pre class="cm-codebox">tabset.getNodes(key);</pre>
+        <br>
+        <p>Returns object of nodes, or node if key is specified.</p>
+    </li>
+
+    <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
+        <h2>Specify active tab:</h2>
+        <textarea class="cm-codebox cm-autoresize" readonly>
+new Com.Tabset({
+    'active' : 'bar'
+});</textarea>
+        <br>
+        <p>or</p>
+        <textarea class="cm-codebox cm-autoresize" readonly>
+<script type="text/javascript">
+    cm.onReady(function(){
+        new Com.Collector()
+            .add('tabset', function(node){
+                new Com.Tabset({'node' : node})
+            })
+            .construct();
+    });
+</script>
+
+<ul class="com-tabset-content-ul" data-element="tabset" data-config='{"toggleOnHashChange" : false, "active" : "bar"}'>
+    <li data-node="tabs:[]:container" data-config='{"id" : "foo", "title" : "Foo"}'>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    </li>
+    <li data-node="tabs:[]:container" data-config='{"id" : "bar", "title" : "Bar"}'>
+        <p>Pellentesque vel velit sit amet libero tincidunt mattis faucibus sit amet velit.</p>
+    </li>
+</ul></textarea>
+        <br>
+        <ul class="com-tabset-content-ul" data-element="tabset" data-config='{"toggleOnHashChange" : false, "active" : "bar"}'>
+            <li data-node="tabs:[]:container" data-config='{"id" : "foo", "title" : "Foo"}'>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </li>
+            <li data-node="tabs:[]:container" data-config='{"id" : "bar", "title" : "Bar"}'>
+                <p>Pellentesque vel velit sit amet libero tincidunt mattis faucibus sit amet velit.</p>
+            </li>
+        </ul>
+
+        <hr>
+
+        <h2>Set tab position:</h2>
+        <textarea class="cm-codebox cm-autoresize" readonly>
+new Com.Tabset({
+    'tabsPosition' : 'bottom'
+});</textarea>
+        <br>
+        <p>or</p>
+        <textarea class="cm-codebox cm-autoresize" readonly>
+<script type="text/javascript">
+    cm.onReady(function(){
+        new Com.Collector()
+            .add('tabset', function(node){
+                new Com.Tabset({'node' : node})
+            })
+            .construct();
+    });
+</script>
+
+<ul class="com-tabset-content-ul" data-element="tabset" data-config='{"toggleOnHashChange" : false, "tabsPosition" : "bottom"}'>
+    <li data-node="tabs:[]:container" data-config='{"id" : "foo", "title" : "Foo"}'>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    </li>
+    <li data-node="tabs:[]:container" data-config='{"id" : "bar", "title" : "Bar"}'>
+        <p>Pellentesque vel velit sit amet libero tincidunt mattis faucibus sit amet velit.</p>
+    </li>
+</ul></textarea>
+        <br>
+        <ul class="com-tabset-content-ul" data-element="tabset" data-config='{"toggleOnHashChange" : false, "tabsPosition" : "bottom"}'>
+            <li data-node="tabs:[]:container" data-config='{"id" : "foo", "title" : "Foo"}'>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </li>
+            <li data-node="tabs:[]:container" data-config='{"id" : "bar", "title" : "Bar"}'>
+                <p>Pellentesque vel velit sit amet libero tincidunt mattis faucibus sit amet velit.</p>
+            </li>
+        </ul>
+
+        <hr>
+
+        <h2>Tabset in tabset:</h2>
+
+        <ul class="com-tabset-content-ul" data-element="tabset" data-config='{"toggleOnHashChange" : false, "className" : "bottom"}'>
+            <li data-node="tabs:[]:container" data-config='{"id" : "foo", "title" : "Foo"}'>
+                <ul class="com-tabset-content-ul" data-element="tabset" data-config='{"toggleOnHashChange" : false, "className" : "bottom"}'>
+                    <li data-node="tabs:[]:container" data-config='{"id" : "foo", "title" : "Foo"}'>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                    </li>
+                    <li data-node="tabs:[]:container" data-config='{"id" : "bar", "title" : "Bar"}'>
+                        <p>Pellentesque vel velit sit amet libero tincidunt mattis faucibus sit amet velit.</p>
+                    </li>
+                </ul>
+            </li>
+            <li data-node="tabs:[]:container" data-config='{"id" : "bar", "title" : "Bar"}'>
+                <p>Pellentesque vel velit sit amet libero tincidunt mattis faucibus sit amet velit.</p>
+            </li>
+        </ul>
+    </li>
+</ul>
+
+</body>
+</html>

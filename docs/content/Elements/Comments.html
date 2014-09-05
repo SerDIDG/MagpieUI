@@ -1,0 +1,382 @@
+<!DOCTYPE HTML>
+<html class="is-adaptive">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Elements: Comments</title>
+
+    <link type="text/css" rel="stylesheet" href="../../../css/index.css">
+    <link type="text/css" rel="stylesheet" href="../../styles/index.css">
+
+    <script type="text/javascript" src="../../../js/polyfill.js"></script>
+    <script type="text/javascript" src="../../../js/common.js"></script>
+    <script type="text/javascript" src="../../../js/parts.js"></script>
+    <script type="text/javascript" src="../../../js/modules.js"></script>
+    <script type="text/javascript" src="../../../js/init.js"></script>
+    <script type="text/javascript" src="../../../js/components/UA.js"></script>
+    <script type="text/javascript" src="../../../js/components/Collector.js"></script>
+
+    <script type="text/javascript">
+        cm.onReady(function(){
+            // Components
+            new Com.Collector()
+                .addEvent('onConstruct', function(collector, data){
+                    Part.Menu();
+                    Part.Autoresize(data['node']);
+                })
+                .construct();
+        });
+    </script>
+</head>
+
+<body>
+
+<h1 class="cm-page-title">Elements: Comments</h1>
+<hr>
+
+<div class="cm-box-content">
+    <h2>Comments:</h2>
+    <div class="com-comments">
+        <div class="inner">
+            <ul class="comment-list">
+                <li>
+                    <div class="com-comment">
+                        <div class="inner">
+                            <div class="cm-itembox size-50">
+                                <div class="l">
+                                    <div class="cm-imagebox is-centered">
+                                        <div class="inner">
+                                            <img class="descr" alt="" src="../../../img/parts/no-avatar-50.png">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="r">
+                                    <div class="comment-info">
+                                        <div class="cm-line-info">
+                                            <div class="author"><a>User Userberg</a></div>
+                                            <div class="date">July 8, 2014 at 20:20</div>
+                                            <div class="hash"><a>#</a></div>
+                                            <div class="status error">Approve</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="comment-text">
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam sagittis nisl vitae eros convallis sit amet cursus felis feugiat. Aenean quis interdum risus.</p>
+                                    </div>
+
+                                    <div class="comment-actions">
+                                        <div class="cm-links">
+                                            <ul>
+                                                <li>
+                                                    <a>Reply</a>
+                                                </li>
+                                                <li>
+                                                    <a>Edit</a>
+                                                </li>
+                                                <li>
+                                                    <a>Delete</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <ul class="comment-list replies">
+                        <li>
+                            <div class="com-comment">
+                                <div class="inner">
+                                    <div class="cm-itembox size-50">
+                                        <div class="l">
+                                            <div class="cm-imagebox is-centered">
+                                                <div class="inner">
+                                                    <img class="descr" alt="" src="../../../img/parts/no-avatar-50.png">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="r">
+                                            <div class="com-comment-editor">
+                                                <form class="form">
+                                                    <dl class="form-box">
+                                                        <dd>
+                                                            <textarea class="cm-autoresize" name="content"></textarea>
+                                                        </dd>
+                                                    </dl>
+                                                    <div class="btn-wrap">
+                                                        <input class="left" type="submit" value="Post">
+                                                        <input class="left" type="button" value="Cancel">
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="com-comment">
+                                <div class="inner">
+                                    <div class="cm-itembox size-50">
+                                        <div class="l">
+                                            <div class="cm-imagebox is-centered">
+                                                <div class="inner">
+                                                    <img class="descr" alt="" src="../../../img/parts/no-avatar-50.png">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="r">
+                                            <div class="comment-info">
+                                                <div class="cm-line-info">
+                                                    <div class="author"><a>User Userberg</a></div>
+                                                    <div class="date">July 8, 2014 at 20:20</div>
+                                                    <div class="hash"><a>#</a></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="comment-text">
+                                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam sagittis nisl vitae eros convallis sit amet cursus felis feugiat. Aenean quis interdum risus.</p>
+                                            </div>
+
+                                            <div class="comment-actions">
+                                                <div class="cm-links">
+                                                    <ul>
+                                                        <li>
+                                                            <a>Reply</a>
+                                                        </li>
+                                                        <li>
+                                                            <a>Edit</a>
+                                                        </li>
+                                                        <li>
+                                                            <a>Delete</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <div class="com-comment is-pending">
+                        <div class="inner">
+                            <div class="cm-itembox size-50">
+                                <div class="l">
+                                    <div class="cm-imagebox is-centered">
+                                        <div class="inner">
+                                            <img class="descr" alt="" src="../../../img/parts/no-avatar-50.png">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="r">
+                                    <div class="comment-info">
+                                        <div class="cm-line-info">
+                                            <div class="author"><a>User Userberg</a></div>
+                                            <div class="date">July 8, 2014 at 20:20</div>
+                                            <div class="hash"><a>#</a></div>
+                                            <div class="status pending">Pending</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="comment-text">
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam sagittis nisl vitae eros convallis sit amet cursus felis feugiat. Aenean quis interdum risus.</p>
+                                    </div>
+
+                                    <div class="comment-actions">
+                                        <div class="cm-links">
+                                            <ul>
+                                                <li>
+                                                    <a>Reply</a>
+                                                </li>
+                                                <li>
+                                                    <a>Edit</a>
+                                                </li>
+                                                <li>
+                                                    <a>Delete</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <ul class="comment-list replies">
+                        <li>
+                            <div class="com-comment">
+                                <div class="inner">
+                                    <div class="cm-itembox size-50">
+                                        <div class="l">
+                                            <div class="cm-imagebox is-centered">
+                                                <div class="inner">
+                                                    <img class="descr" alt="" src="../../../img/parts/no-avatar-50.png">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="r">
+                                            <div class="comment-info">
+                                                <div class="cm-line-info">
+                                                    <div class="author"><a>User Userberg</a></div>
+                                                    <div class="date">July 8, 2014 at 20:20</div>
+                                                    <div class="hash"><a>#</a></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="comment-text">
+                                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam sagittis nisl vitae eros convallis sit amet cursus felis feugiat. Aenean quis interdum risus.</p>
+                                            </div>
+
+                                            <div class="comment-actions">
+                                                <div class="cm-links">
+                                                    <ul>
+                                                        <li>
+                                                            <a>Reply</a>
+                                                        </li>
+                                                        <li>
+                                                            <a>Edit</a>
+                                                        </li>
+                                                        <li>
+                                                            <a>Delete</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <ul class="comment-list replies">
+                                <li>
+                                    <div class="com-comment">
+                                        <div class="inner">
+                                            <div class="cm-itembox size-50">
+                                                <div class="l">
+                                                    <div class="cm-imagebox is-centered">
+                                                        <div class="inner">
+                                                            <img class="descr" alt="" src="../../../img/parts/no-avatar-50.png">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="r">
+                                                    <div class="comment-info">
+                                                        <div class="cm-line-info">
+                                                            <div class="author"><a>User Userberg</a></div>
+                                                            <div class="date">July 8, 2014 at 20:20</div>
+                                                            <div class="hash"><a>#</a></div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="comment-text">
+                                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam sagittis nisl vitae eros convallis sit amet cursus felis feugiat. Aenean quis interdum risus.</p>
+                                                    </div>
+
+                                                    <div class="comment-actions">
+                                                        <div class="cm-links">
+                                                            <ul>
+                                                                <li>
+                                                                    <a>Reply</a>
+                                                                </li>
+                                                                <li>
+                                                                    <a>Edit</a>
+                                                                </li>
+                                                                <li>
+                                                                    <a>Delete</a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <div class="com-comment">
+                        <div class="inner">
+                            <div class="cm-itembox size-50">
+                                <div class="l">
+                                    <div class="cm-imagebox is-centered">
+                                        <div class="inner">
+                                            <img class="descr" alt="" src="../../../img/parts/no-avatar-50.png">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="r">
+                                    <div class="comment-info">
+                                        <div class="cm-line-info">
+                                            <div class="author"><a>User Userberg</a></div>
+                                            <div class="date">July 8, 2014 at 20:20</div>
+                                            <div class="hash"><a>#</a></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="comment-text">
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam sagittis nisl vitae eros convallis sit amet cursus felis feugiat. Aenean quis interdum risus.</p>
+                                    </div>
+
+                                    <div class="comment-actions">
+                                        <div class="cm-links">
+                                            <ul>
+                                                <li>
+                                                    <a>Reply</a>
+                                                </li>
+                                                <li>
+                                                    <a>Edit</a>
+                                                </li>
+                                                <li>
+                                                    <a>Delete</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="cm-box-content">
+    <h2>Leave a Comment:</h2>
+    <div class="com-comment">
+        <div class="inner">
+            <div class="cm-itembox size-50">
+                <div class="l">
+                    <div class="cm-imagebox is-centered">
+                        <div class="inner">
+                            <img class="descr" alt="" src="../../../img/parts/no-avatar-50.png">
+                        </div>
+                    </div>
+                </div>
+                <div class="r">
+                    <div class="com-comment-editor">
+                        <form class="form">
+                            <dl class="form-box">
+                                <dd>
+                                    <textarea class="cm-autoresize" name="content"></textarea>
+                                </dd>
+                            </dl>
+                            <div class="btn-wrap">
+                                <input class="left" type="submit" value="Post">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>

@@ -2477,44 +2477,39 @@ button.has-icon-small .icon,
 }
 .cm-items-list ul li {
   margin-top: 1px;
-  padding: 2px 4px;
-  line-height: 18px;
 }
 .cm-items-list ul li:first-child {
   margin-top: 0;
 }
 .cm-items-list ul li a {
   display: block;
+  padding: 2px 4px;
   line-height: 18px;
   font-weight: normal;
   text-decoration: none;
-}
-.cm-items-list ul li .title {
-  font-weight: 600;
-}
-.cm-items-list ul li.group .cm-items-list {
-  margin: 3px 0 0 12px;
-}
-.cm-items-list ul li.group .cm-items-list:first-child {
-  margin-top: 0;
-}
-.cm-items-list ul li.title {
-  font-weight: 600;
-}
-.cm-items-list ul li:not(.group):not(.title):not(.disabled) {
-  cursor: pointer;
   -webkit-transition: all 0.3s ease-in-out;
   transition: all 0.3s ease-in-out;
 }
-.cm-items-list ul li:not(.group):not(.title):not(.disabled):hover {
+.cm-items-list ul li a:hover {
   background-color: #f2f2f2;
   -webkit-transition: all 0.1s ease-in-out;
   transition: all 0.1s ease-in-out;
 }
-.cm-items-list ul li:not(.group):not(.title):not(.disabled).active {
+.cm-items-list ul li .title {
+  padding: 2px 4px;
+  line-height: 18px;
+  font-weight: 600;
+}
+.cm-items-list ul li .cm-items-list {
+  margin: 1px 0 0 12px;
+}
+.cm-items-list ul li .cm-items-list:first-child {
+  margin-top: 0;
+}
+.cm-items-list ul li.active a {
   background-color: #dbebfb;
 }
-.cm-items-list ul li:not(.group):not(.title):not(.disabled).active:hover {
+.cm-items-list ul li.active a:hover {
   background-color: #c4def8;
 }
 .cm-items-list.auto ul {
@@ -5684,6 +5679,9 @@ button.has-icon-small .icon,
 }
 .com-tags > .inner > .r ul li:last-child:after {
   content: normal;
+}
+.com-tags.is-editable > .inner > .l {
+  line-height: 28px;
 }
 /* ******* COMPONENT: BLOG ******* */
 /* *** POST *** */

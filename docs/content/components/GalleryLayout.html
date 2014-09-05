@@ -1,0 +1,655 @@
+<!DOCTYPE HTML>
+<html class="is-adaptive">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Components: Gallery Layout</title>
+
+    <link type="text/css" rel="stylesheet" href="../../../css/index.css">
+    <link type="text/css" rel="stylesheet" href="../../styles/index.css">
+
+    <script type="text/javascript" src="../../../js/polyfill.js"></script>
+    <script type="text/javascript" src="../../../js/common.js"></script>
+    <script type="text/javascript" src="../../../js/parts.js"></script>
+    <script type="text/javascript" src="../../../js/modules.js"></script>
+    <script type="text/javascript" src="../../../js/init.js"></script>
+    <script type="text/javascript" src="../../../js/components/UA.js"></script>
+    <script type="text/javascript" src="../../../js/components/Collector.js"></script>
+    <script type="text/javascript" src="../../../js/components/Tabset.js"></script>
+    <script type="text/javascript" src="../../../js/components/Scroll.js"></script>
+    <script type="text/javascript" src="../../../js/components/Gallery.js"></script>
+    <script type="text/javascript" src="../../../js/components/GalleryLayout.js"></script>
+
+    <script type="text/javascript">
+        cm.onReady(function(){
+            new Com.Collector()
+                .addEvent('onConstruct', function(collector, data){
+                    Part.Menu();
+                    Part.Autoresize(data['node']);
+                })
+                .add('tabset', function(node){
+                    new Com.Tabset({'node' : node});
+                })
+                .add('gallery-layout', function(node){
+                    new Com.GalleryLayout({
+                        'node' : node
+                    });
+                })
+                .construct();
+        });
+    </script>
+</head>
+
+<body>
+
+<h1 class="cm-page-title">Components: Gallery Layout</h1>
+
+<ul class="com-tabset-content-ul" data-element="tabset">
+    <li data-node="tabs:[]:container" data-config='{"id" : "overview", "title" : "Overview"}'>
+        <h2>Overview</h2>
+        <p>This component process server side rendered thumbnails ans embed gallery preview component. Supported image files: .jpg, .png, .gif, .jpeg, .bmp, .tga; and video from third-party sites that will be embed in iframe.</p>
+
+        <h4>Embedded Modules</h4>
+        <ul class="cm-list">
+            <li><code>Params</code></li>
+            <li><code>Events</code></li>
+            <li><code>DataConfig</code></li>
+            <li><code>DataNodes</code></li>
+        </ul>
+
+        <h4>Required Components</h4>
+        <ul class="cm-list">
+            <li><code>Com.Gallery</code></li>
+            <li><code>Com.Scroll</code></li>
+        </ul>
+
+        <h2>Initialize</h2>
+        <textarea class="cm-codebox cm-autoresize" readonly>
+<script type="text/javascript">
+    cm.onReady(function(){
+        new Com.Collector()
+            .add('gallery-layout', function(node){
+                new Com.GalleryLayout({
+                    'node' : node
+                });
+            })
+            .construct()
+    });
+</script></textarea>
+        <br>
+
+        <h2>Parameters</h2>
+        <dl>
+            <dt>
+                <code><b>node</b></code>
+            </dt>
+            <dd><code>HTML Node</code>. Html node that contains gallery. Default: <code>cm.Node('div')</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>barDirection</b></code>
+            </dt>
+            <dd><code>String</code>. Scroll direction of thumbnails bar. Available: horizontal, vertical. Default: <code>horizontal</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>hasBar</b></code>
+            </dt>
+            <dd><code>Boolean</code>. If gallery has thumbnails bar, this parameter must be enabled. Default: <code>true</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>events</b></code>
+            </dt>
+            <dd>
+                <p><code>Object</code>. Object of events. Available events: <code>onRender</code>, <code>onChange</code>. Example:</p>
+                <textarea class="cm-codebox cm-autoresize" readonly>
+new Com.GalleryLayout({
+    'events' : {
+        'onChange' : function(gallery, data){}
+    }
+});</textarea>
+            </dd>
+        </dl>
+    </li>
+
+    <li data-node="tabs:[]:container" data-config='{"id" : "methods", "title" : "Methods"}'>
+        <h2>Set event:</h2>
+        <pre class="cm-codebox">gallery.addEvent(event, handler);</pre>
+        <br>
+        <p>Available events: <code>onRender</code>, <code>onChange</code>.<br>Returns class of gallery layout component.</p>
+
+        <h2>Set events:</h2>
+        <pre class="cm-codebox">gallery.addEvents(o);</pre>
+        <br>
+        <p>Example: <code>{'onChange' : function(){}}</code>. Available events: <code>onRender</code>, <code>onChange</code>.<br>Returns class of gallery layout component.</p>
+
+        <h2>Remove event:</h2>
+        <pre class="cm-codebox">gallery.removeEvent(event, handler);</pre>
+        <br>
+        <p>Available events: <code>onRender</code>, <code>onChange</code>.<br>Returns class of gallery layout component.</p>
+
+        <h2>Trigger event:</h2>
+        <pre class="cm-codebox">gallery.triggerEvent(event);</pre>
+        <br>
+        <p>Available events: <code>onRender</code>, <code>onChange</code>.<br>Returns class of gallery layout component.</p>
+    </li>
+
+    <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
+        <h2>Gallery with bottom bar and video:</h2>
+        <div style="max-width: 600px;">
+            <div class="com-gallery-layout size-5 is-bar-bottom" data-element="gallery-layout" data-config='{"barDirection" : "horizontal"}'>
+                <div class="inner" data-node="inner">
+                    <div class="com-gallery-preview cm-aspect-3x2">
+                        <div class="inner" data-node="preview-inner"></div>
+                    </div>
+
+                    <div class="com-gallery-bar is-horizontal">
+                        <div class="inner"  data-node="bar-inner">
+                            <div class="bar-arrow prev" data-node="ComScroll.left">
+                                <div class="icon small arrow-left centered"></div>
+                            </div>
+                            <div class="bar-arrow next" data-node="ComScroll.right">
+                                <div class="icon small arrow-right centered"></div>
+                            </div>
+
+                            <div class="cm-grid">
+                                <ul data-node="ComScroll.scroll">
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="http://www.youtube.com/embed/hEfT3MJ4lKc" target="_blank" title="corals @ red sea, sharm el-sheikh, egypt'14">
+                                                <img class="descr" src="../../images/gallery/9-th.jpg" alt="">
+                                                <div class="icon x-large play centered"></div>
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/1.jpg" target="_blank" title="Blossom">
+                                                <img class="descr" src="../../images/gallery/1-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/2.jpg" target="_blank" title="Flowers">
+                                                <img class="descr" src="../../images/gallery/2-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/3.jpg" target="_blank" title="Axe">
+                                                <img class="descr" src="../../images/gallery/3-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/4.jpg" target="_blank" title="Viburnum">
+                                                <img class="descr" src="../../images/gallery/4-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/5.jpg" target="_blank" title="Bench">
+                                                <img class="descr" src="../../images/gallery/5-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/6.jpg" target="_blank" title="Bubbles">
+                                                <img class="descr" src="../../images/gallery/6-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/7.jpg" target="_blank" title="Knobs">
+                                                <img class="descr" src="../../images/gallery/7-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/8.jpg" target="_blank" title="Blossom">
+                                                <img class="descr" src="../../images/gallery/8-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>Gallery with top bar:</h2>
+        <div style="max-width: 600px;">
+            <div class="com-gallery-layout size-5 is-bar-top" data-element="gallery-layout" data-config='{"barDirection" : "horizontal"}'>
+                <div class="inner" data-node="inner">
+                    <div class="com-gallery-bar is-horizontal">
+                        <div class="inner" data-node="bar-inner">
+                            <div class="bar-arrow prev" data-node="ComScroll.left">
+                                <div class="icon small arrow-left centered"></div>
+                            </div>
+                            <div class="bar-arrow next" data-node="ComScroll.right">
+                                <div class="icon small arrow-right centered"></div>
+                            </div>
+
+                            <div class="cm-grid">
+                                <ul data-node="ComScroll.scroll">
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/1.jpg" target="_blank" title="Blossom">
+                                                <img class="descr" src="../../images/gallery/1-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/2.jpg" target="_blank" title="Flowers">
+                                                <img class="descr" src="../../images/gallery/2-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/3.jpg" target="_blank" title="Axe">
+                                                <img class="descr" src="../../images/gallery/3-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/4.jpg" target="_blank" title="Viburnum">
+                                                <img class="descr" src="../../images/gallery/4-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/5.jpg" target="_blank" title="Bench">
+                                                <img class="descr" src="../../images/gallery/5-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/6.jpg" target="_blank" title="Bubbles">
+                                                <img class="descr" src="../../images/gallery/6-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/7.jpg" target="_blank" title="Knobs">
+                                                <img class="descr" src="../../images/gallery/7-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/8.jpg" target="_blank" title="Blossom">
+                                                <img class="descr" src="../../images/gallery/8-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="com-gallery-preview cm-aspect-3x2">
+                        <div class="inner" data-node="preview-inner"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>Gallery with right bar:</h2>
+        <div style="max-width: 600px;">
+            <div class="com-gallery-layout size-5 is-bar-right" data-element="gallery-layout" data-config='{"barDirection" : "vertical"}'>
+                <div class="inner" data-node="inner">
+                    <div class="com-gallery-preview cm-aspect-3x2">
+                        <div class="inner" data-node="preview-inner"></div>
+                    </div>
+
+                    <div class="com-gallery-bar is-vertical">
+                        <div class="inner" data-node="bar-inner">
+                            <div class="bar-arrow prev" data-node="ComScroll.up">
+                                <div class="icon small arrow-top centered"></div>
+                            </div>
+                            <div class="bar-arrow next" data-node="ComScroll.down">
+                                <div class="icon small arrow-bottom centered"></div>
+                            </div>
+
+                            <div class="cm-grid">
+                                <ul data-node="ComScroll.scroll">
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/1.jpg" target="_blank" title="Blossom">
+                                                <img class="descr" src="../../images/gallery/1-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/2.jpg" target="_blank" title="Flowers">
+                                                <img class="descr" src="../../images/gallery/2-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/3.jpg" target="_blank" title="Axe">
+                                                <img class="descr" src="../../images/gallery/3-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/4.jpg" target="_blank" title="Viburnum">
+                                                <img class="descr" src="../../images/gallery/4-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/5.jpg" target="_blank" title="Bench">
+                                                <img class="descr" src="../../images/gallery/5-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/6.jpg" target="_blank" title="Bubbles">
+                                                <img class="descr" src="../../images/gallery/6-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/7.jpg" target="_blank" title="Knobs">
+                                                <img class="descr" src="../../images/gallery/7-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/8.jpg" target="_blank" title="Blossom">
+                                                <img class="descr" src="../../images/gallery/8-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>Gallery with left bar:</h2>
+        <div style="max-width: 600px;">
+            <div class="com-gallery-layout size-5 is-bar-left" data-element="gallery-layout" data-config='{"barDirection" : "vertical"}'>
+                <div class="inner" data-node="inner">
+                    <div class="com-gallery-preview cm-aspect-3x2">
+                        <div class="inner" data-node="preview-inner"></div>
+                    </div>
+
+                    <div class="com-gallery-bar is-vertical">
+                        <div class="inner" data-node="bar-inner">
+                            <div class="bar-arrow prev" data-node="ComScroll.up">
+                                <div class="icon small arrow-top centered"></div>
+                            </div>
+                            <div class="bar-arrow next" data-node="ComScroll.down">
+                                <div class="icon small arrow-bottom centered"></div>
+                            </div>
+
+                            <div class="cm-grid">
+                                <ul data-node="ComScroll.scroll">
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/1.jpg" target="_blank" title="Blossom">
+                                                <img class="descr" src="../../images/gallery/1-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/2.jpg" target="_blank" title="Flowers">
+                                                <img class="descr" src="../../images/gallery/2-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/3.jpg" target="_blank" title="Axe">
+                                                <img class="descr" src="../../images/gallery/3-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/4.jpg" target="_blank" title="Viburnum">
+                                                <img class="descr" src="../../images/gallery/4-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/5.jpg" target="_blank" title="Bench">
+                                                <img class="descr" src="../../images/gallery/5-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/6.jpg" target="_blank" title="Bubbles">
+                                                <img class="descr" src="../../images/gallery/6-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/7.jpg" target="_blank" title="Knobs">
+                                                <img class="descr" src="../../images/gallery/7-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/8.jpg" target="_blank" title="Blossom">
+                                                <img class="descr" src="../../images/gallery/8-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>Gallery without bar:</h2>
+        <div style="max-width: 600px;">
+            <div class="com-gallery-layout size-5 is-bar-none" data-element="gallery-layout" data-config='{"hasBar" : false}'>
+                <div class="inner" data-node="inner">
+                    <div class="com-gallery-preview cm-aspect-3x2">
+                        <div class="inner" data-node="preview-inner"></div>
+                    </div>
+
+                    <div class="com-gallery-dummy">
+                        <ul>
+                            <li data-node="bar-items:[]:container">
+                                <div class="cm-imagebox is-checkable">
+                                    <a class="inner" data-node="link" href="http://www.youtube.com/embed/hEfT3MJ4lKc" target="_blank" title="corals @ red sea, sharm el-sheikh, egypt'14">
+                                        <img class="descr" src="../../images/gallery/9-th.jpg" alt="">
+                                        <div class="icon x-large play centered"></div>
+                                    </a>
+                                </div>
+                            </li>
+                            <li data-node="bar-items:[]:container">
+                                <div class="cm-imagebox is-checkable">
+                                    <a class="inner" data-node="link" href="../../images/gallery/1.jpg" target="_blank" title="Blossom">
+                                        <img class="descr" src="../../images/gallery/1-th.jpg" alt="">
+                                    </a>
+                                </div>
+                            </li>
+                            <li data-node="bar-items:[]:container">
+                                <div class="cm-imagebox is-checkable">
+                                    <a class="inner" data-node="link" href="../../images/gallery/2.jpg" target="_blank" title="Flowers">
+                                        <img class="descr" src="../../images/gallery/2-th.jpg" alt="">
+                                    </a>
+                                </div>
+                            </li>
+                            <li data-node="bar-items:[]:container">
+                                <div class="cm-imagebox is-checkable">
+                                    <a class="inner" data-node="link" href="../../images/gallery/3.jpg" target="_blank" title="Axe">
+                                        <img class="descr" src="../../images/gallery/3-th.jpg" alt="">
+                                    </a>
+                                </div>
+                            </li>
+                            <li data-node="bar-items:[]:container">
+                                <div class="cm-imagebox is-checkable">
+                                    <a class="inner" data-node="link" href="../../images/gallery/4.jpg" target="_blank" title="Viburnum">
+                                        <img class="descr" src="../../images/gallery/4-th.jpg" alt="">
+                                    </a>
+                                </div>
+                            </li>
+                            <li data-node="bar-items:[]:container">
+                                <div class="cm-imagebox is-checkable">
+                                    <a class="inner" data-node="link" href="../../images/gallery/5.jpg" target="_blank" title="Bench">
+                                        <img class="descr" src="../../images/gallery/5-th.jpg" alt="">
+                                    </a>
+                                </div>
+                            </li>
+                            <li data-node="bar-items:[]:container">
+                                <div class="cm-imagebox is-checkable">
+                                    <a class="inner" data-node="link" href="../../images/gallery/6.jpg" target="_blank" title="Bubbles">
+                                        <img class="descr" src="../../images/gallery/6-th.jpg" alt="">
+                                    </a>
+                                </div>
+                            </li>
+                            <li data-node="bar-items:[]:container">
+                                <div class="cm-imagebox is-checkable">
+                                    <a class="inner" data-node="link" href="../../images/gallery/7.jpg" target="_blank" title="Knobs">
+                                        <img class="descr" src="../../images/gallery/7-th.jpg" alt="">
+                                    </a>
+                                </div>
+                            </li>
+                            <li data-node="bar-items:[]:container">
+                                <div class="cm-imagebox is-checkable">
+                                    <a class="inner" data-node="link" href="../../images/gallery/8.jpg" target="_blank" title="Blossom">
+                                        <img class="descr" src="../../images/gallery/8-th.jpg" alt="">
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>Gallery with border:</h2>
+        <div style="max-width: 600px;">
+            <div class="com-gallery-layout size-5 has-border is-bar-bottom" data-element="gallery-layout" data-config='{"barDirection" : "horizontal"}'>
+                <div class="inner" data-node="inner">
+                    <div class="com-gallery-preview cm-aspect-3x2">
+                        <div class="inner" data-node="preview-inner"></div>
+                    </div>
+
+                    <div class="com-gallery-bar is-horizontal">
+                        <div class="inner" data-node="bar-inner">
+                            <div class="bar-arrow prev" data-node="ComScroll.left">
+                                <div class="icon small arrow-left centered"></div>
+                            </div>
+                            <div class="bar-arrow next" data-node="ComScroll.right">
+                                <div class="icon small arrow-right centered"></div>
+                            </div>
+
+                            <div class="cm-grid">
+                                <ul data-node="ComScroll.scroll">
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/1.jpg" target="_blank" title="Blossom">
+                                                <img class="descr" src="../../images/gallery/1-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/2.jpg" target="_blank" title="Flowers">
+                                                <img class="descr" src="../../images/gallery/2-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/3.jpg" target="_blank" title="Axe">
+                                                <img class="descr" src="../../images/gallery/3-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/4.jpg" target="_blank" title="Viburnum">
+                                                <img class="descr" src="../../images/gallery/4-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/5.jpg" target="_blank" title="Bench">
+                                                <img class="descr" src="../../images/gallery/5-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/6.jpg" target="_blank" title="Bubbles">
+                                                <img class="descr" src="../../images/gallery/6-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/7.jpg" target="_blank" title="Knobs">
+                                                <img class="descr" src="../../images/gallery/7-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li data-node="bar-items:[]:container">
+                                        <div class="cm-imagebox is-checkable">
+                                            <a class="inner" data-node="link" href="../../images/gallery/8.jpg" target="_blank" title="Blossom">
+                                                <img class="descr" src="../../images/gallery/8-th.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </li>
+</ul>
+
+</body>
+</html>

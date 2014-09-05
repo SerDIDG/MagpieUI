@@ -308,7 +308,9 @@ function(params){
             'text' : text
         };
         // Structure
-        item['node'] = cm.Node('li', {'innerHTML' : text});
+        item['node'] = cm.Node('li',
+            cm.Node('a', {'innerHTML' : text})
+        );
         item['option'] = cm.Node('option', {'value' : value, 'innerHTML' : text});
         // Label onlick event
         cm.addEvent(item['node'], 'click', function(){

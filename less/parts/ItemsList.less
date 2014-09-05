@@ -11,8 +11,6 @@
 
         li {
             margin-top: @CmItemsList-indent;
-            padding: @CmItemsList-padding-y 4px;
-            line-height: @cm-lineHeight;
 
             &:first-child {
                 margin-top: 0;
@@ -20,44 +18,39 @@
 
             a {
                 display: block;
+                padding: @CmItemsList-padding-y 4px;
                 line-height: @cm-lineHeight;
                 font-weight: normal;
                 text-decoration: none;
-            }
-
-            .title {
-                font-weight: @cm-boldWeight;
-            }
-
-            &.group {
-                .cm-items-list {
-                    margin: @CmItemsList-padding-y + @CmItemsList-indent 0 0 @cm-indentXSmall;
-
-                    &:first-child {
-                        margin-top: 0;
-                    }
-                }
-            }
-
-            &.title {
-                font-weight: @cm-boldWeight;
-            }
-
-            &:not(.group):not(.title):not(.disabled) {
-                cursor: pointer;
                 .cm-transition(all 0.3s ease-in-out);
 
                 &:hover {
                     background-color: @CmItemsList-background-hover;
                     .cm-transition(all 0.1s ease-in-out);
                 }
+            }
 
-                &.active {
-                    background-color: @CmItemsList-background-active;
+            .title {
+                padding: @CmItemsList-padding-y 4px;
+                line-height: @cm-lineHeight;
+                font-weight: @cm-boldWeight;
+            }
+
+            .cm-items-list {
+                margin: @CmItemsList-indent 0 0 @cm-indentXSmall;
+
+                &:first-child {
+                    margin-top: 0;
                 }
+            }
 
-                &.active:hover {
-                    background-color: @CmItemsList-background-active-hover;
+            &.active {
+                a {
+                    background-color: @CmItemsList-background-active;
+
+                    &:hover {
+                        background-color: @CmItemsList-background-active-hover;
+                    }
                 }
             }
         }
