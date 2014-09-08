@@ -1,3 +1,4 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,300,700,600);
 @charset "UTF-8";
 /*!
 Animate.css - http://daneden.me/animate
@@ -3157,7 +3158,6 @@ Copyright (c) 2014 Daniel Eden
           animation-name: slideOutUp;
 }
 
-@import url(http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,300,700,600);
 /* ************ COMMON STYLES ************ */
 /* ******* TAGS ******* */
 body {
