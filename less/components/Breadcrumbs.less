@@ -8,18 +8,20 @@
     }
 
     ul {
-        margin: 0;
+        margin: 0 0 -@cm-indentXXSmall 0;
         padding: 0;
         list-style: none;
         font-size: 0;
 
         li {
+            margin: 0 @cm-indentXXSmall @cm-indentXXSmall 0;
             display: inline-block;
             font-size: @cm-fontSizeUI;
             vertical-align: top;
 
-            &.sep {
-                margin: 0 @cm-indentXXXSmall;
+            &.back {
+                margin-right: @cm-indentMedium;
+                font-weight: @cm-boldWeight;
             }
         }
     }

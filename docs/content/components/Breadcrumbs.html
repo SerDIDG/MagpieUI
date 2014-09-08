@@ -1,0 +1,67 @@
+<!DOCTYPE HTML>
+<html class="is-adaptive">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Components: Breadcrumbs</title>
+
+    <link type="text/css" rel="stylesheet" href="../../../css/index.css">
+    <link type="text/css" rel="stylesheet" href="../../styles/index.css">
+
+    <script type="text/javascript" src="../../../js/polyfill.js"></script>
+    <script type="text/javascript" src="../../../js/common.js"></script>
+    <script type="text/javascript" src="../../../js/parts.js"></script>
+    <script type="text/javascript" src="../../../js/modules.js"></script>
+    <script type="text/javascript" src="../../../js/init.js"></script>
+    <script type="text/javascript" src="../../../js/components/UA.js"></script>
+    <script type="text/javascript" src="../../../js/components/Collector.js"></script>
+    <script type="text/javascript" src="../../../js/components/Tabset.js"></script>
+    <script type="text/javascript" src="../../../js/components/TagsInput.js"></script>
+
+    <script type="text/javascript">
+        cm.onReady(function(){
+            // Components
+            new Com.Collector()
+                .addEvent('onConstruct', function(collector, data){
+                    Part.Menu();
+                    Part.Autoresize(data['node']);
+                })
+                .add('tabset', function(node){
+                    new Com.Tabset({'node' : node});
+                })
+                .add('tags', function(node){
+                    new Com.TagsInput({'input' : node});
+                })
+                .construct();
+        });
+    </script>
+</head>
+
+<body>
+
+<h1 class="cm-page-title">Components: Breadcrumbs</h1>
+<hr>
+
+<div class="com-breadcrumbs">
+    <ul>
+        <li class="back">
+            <a>&laquo; Back</a>
+        </li>
+        <li>
+            <a>Home</a>
+        </li>
+        <li class="sep">&raquo;</li>
+        <li>
+            <a>Components</a>
+        </li>
+        <li class="sep">&raquo;</li>
+        <li>
+            <a>Breadcrumbs</a>
+        </li>
+        <li class="sep">&raquo;</li>
+        <li>Examples</li>
+    </ul>
+</div>
+
+</body>
+</html>

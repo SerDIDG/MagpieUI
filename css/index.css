@@ -4899,18 +4899,20 @@ button.has-icon-small .icon,
   margin: 0;
 }
 .com-breadcrumbs ul {
-  margin: 0;
+  margin: 0 0 -8px 0;
   padding: 0;
   list-style: none;
   font-size: 0;
 }
 .com-breadcrumbs ul li {
+  margin: 0 8px 8px 0;
   display: inline-block;
   font-size: 11px;
   vertical-align: top;
 }
-.com-breadcrumbs ul li.sep {
-  margin: 0 4px;
+.com-breadcrumbs ul li.back {
+  margin-right: 24px;
+  font-weight: 600;
 }
 /* ******* COMPONENT: GALLERY: BAR ******* */
 .com-gallery-bar {
