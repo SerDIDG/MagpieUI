@@ -14,9 +14,16 @@
     <script type="text/javascript" src="../../../js/modules.js"></script>
     <script type="text/javascript" src="../../../js/init.js"></script>
     <script type="text/javascript" src="../../../js/components/UA.js"></script>
+    <script type="text/javascript" src="../../../js/components/Collector.js"></script>
+    <script type="text/javascript" src="../../../js/components/Tabset.js"></script>
 
     <script type="text/javascript">
         cm.onReady(function(){
+            new Com.Collector()
+                .add('tabset', function(node){
+                    new Com.Tabset({'node' : node});
+                })
+                .construct();
         });
     </script>
 </head>
@@ -24,151 +31,238 @@
 <body>
 
 <h1 class="cm-page-title">Parts: Image Box</h1>
-<hr>
 
-<h2>Resizable Image Box</h2>
-<p>Image is resized by available parent block width preserving own aspect ratio.</p>
-<div style="max-width: 500px">
-    <div class="cm-imagebox">
-        <div class="inner">
-            <img class="descr" src="../../images/gallery/1.jpg" alt="">
-        </div>
-    </div>
-</div>
-<hr>
-
-<h2>Adaptive Image Box</h2>
-<p>Image is resized by available parent block width but not more than its own width preserving own aspect ratio.</p>
-<div style="max-width: 500px">
-    <div class="cm-imagebox is-adaptive">
-        <div class="inner">
-            <img class="descr" src="../../images/gallery/2-th.jpg" alt="">
-        </div>
-    </div>
-</div>
-<hr>
-
-<h2>Flexible Image Box</h2>
-<p>Image is resized by available parent block width and height. For example was set parent block aspect ratio 4x3.</p>
-<p>Available Aspect Ratios. Landscape: 4x3, 3x2, 16x10, 16x9, 21x9, 35x10. Portrait: 3x4, 2x3, 10x16, 9x16.</p>
-<div style="max-width: 500px">
-    <div class="cm-imagebox is-flexible has-aspect cm-aspect-4x3">
-        <div class="inner">
-            <img class="descr" src="../../images/slider/3.jpg" alt="">
-        </div>
-    </div>
-</div>
-<hr>
-
-<h2>Centered Image Box</h2>
-<p>Image is resized by available parent block width and height but not more than its own width and height preserving own aspect ratio and align center of parent block. For example was set parent block aspect ration 4x3.</p>
-<p>Available Aspect Ratios. Landscape: 4x3, 3x2, 16x10, 16x9, 21x9, 35x10. Portrait: 3x4, 2x3, 10x16, 9x16.</p>
-<div style="max-width: 500px">
-    <div class="cm-imagebox is-flexible is-centered has-aspect cm-aspect-4x3">
-        <div class="inner">
-            <img class="descr" src="../../images/gallery/3-th.jpg" alt="">
-        </div>
-    </div>
-</div>
-<hr>
-
-<h2>Image Box without hover</h2>
-<div style="max-width: 500px">
-    <div class="cm-imagebox is-no-hover">
-        <div class="inner">
-            <img class="descr" src="../../images/gallery/8.jpg" alt="">
-        </div>
-    </div>
-</div>
-<hr>
-
-<h2>Image Box with Caption</h2>
-<div style="max-width: 500px">
-    <div class="cm-imagebox">
-        <div class="inner">
-            <img class="descr" src="../../images/gallery/4.jpg" alt="">
-            <div class="title">
-                <div class="inner">Viburnum</div>
-            </div>
-        </div>
-    </div>
-</div>
-<hr>
-
-<h2>Image Box with Fixed Caption</h2>
-<div style="max-width: 500px">
-    <div class="cm-imagebox is-fixed-title">
-        <div class="inner">
-            <img class="descr" src="../../images/gallery/5.jpg" alt="">
-            <div class="title">
-                <div class="inner">Viburnum</div>
-            </div>
-        </div>
-    </div>
-</div>
-<hr>
-
-<h2>Image Box with Text</h2>
-<div style="max-width: 500px">
-    <div class="cm-imagebox">
-        <div class="inner">
-            <img class="descr" src="../../images/gallery/6.jpg" alt="">
-            <div class="text">
+<ul class="com-tabset-content-ul" data-element="tabset">
+    <li data-node="tabs:[]:container" data-config='{"id" : "default", "title" : "Default"}'>
+        <h2>Resizable Image Box</h2>
+        <p>Image is resized by available parent block width preserving own aspect ratio.</p>
+        <div style="max-width: 500px">
+            <div class="cm-imagebox">
                 <div class="inner">
-                    <h1>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</h1>
-                    <p>Praesent suscipit lorem nec elit rutrum tincidunt porta et ipsum. Pellentesque aliquam arcu lectus, non tempus diam fermentum vitae. Duis vulputate pharetra eleifend. Nulla est mauris, convallis vel ipsum sit amet, vulputate vulputate lectus. Cras malesuada, mi sed suscipit imperdiet, justo orci molestie augue, id rutrum enim orci ut risus. Mauris viverra porta varius. Etiam imperdiet aliquet odio, in facilisis ligula elementum et. Integer imperdiet metus at justo eleifend, et aliquet justo sodales.</p>
-                    <p>Cras ultrices ultricies rutrum. Duis feugiat lacus eget sem lobortis auctor. Mauris sit amet augue mauris. Aliquam placerat vulputate pellentesque. Praesent ligula leo, vulputate eu ligula ut, eleifend consectetur mauris. Vivamus nunc turpis, cursus eget facilisis non, tempus sit amet purus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris bibendum elementum mollis. Cras ac felis tempus, congue massa quis, elementum lorem. Nunc consequat congue gravida. Vivamus tempus purus quam, eu varius diam tristique eget. Aliquam nec euismod arcu, in euismod augue. Integer vel pellentesque ante. Integer egestas imperdiet pharetra. Integer odio arcu, hendrerit a nisi eu, pretium eleifend quam.</p>
-                    <p>Suspendisse a lacus id augue ultricies ornare non vitae neque. Phasellus blandit quam sit amet sapien condimentum, sed semper sem vulputate. Pellentesque a metus at mi porta adipiscing et eu dui. Curabitur at molestie sem. Quisque quis purus scelerisque, condimentum metus ut, sollicitudin mauris. Nulla et condimentum tellus, quis congue felis. Etiam scelerisque ut felis eget posuere. Curabitur blandit elit in orci iaculis, eu pellentesque turpis viverra.</p>
+                    <img class="descr" src="../../images/gallery/1.jpg" alt="">
                 </div>
             </div>
         </div>
-    </div>
-</div>
-<hr>
+        <hr>
 
-<h2>Image Box with Checkbox and Controls</h2>
-<div style="max-width: 500px">
-    <div class="cm-imagebox is-checkable">
-        <div class="inner">
-            <img class="descr" src="../../images/gallery/7.jpg" alt="">
+        <h2>Adaptive Image Box</h2>
+        <p>Image is resized by available parent block width but not more than its own width preserving own aspect ratio.</p>
+        <div style="max-width: 500px">
+            <div class="cm-imagebox is-adaptive">
+                <div class="inner">
+                    <img class="descr" src="../../images/gallery/2-th.jpg" alt="">
+                </div>
+            </div>
         </div>
-        <label for="image1"></label>
-        <div class="pull top-left">
-            <input id="image1" type="checkbox">
-        </div>
-        <div class="pull top-right">
-            <div class="icon small remove linked"></div>
-        </div>
-        <div class="pull bottom-right">
-            <div class="icon small edit linked"></div>
-        </div>
-        <div class="pull bottom-left">
-            <div class="icon small add linked"></div>
-        </div>
-    </div>
-</div>
-<hr>
+        <hr>
 
-<h2>Active Image Box with Checkboxes</h2>
-<div style="max-width: 500px">
-    <div class="cm-imagebox is-checkable active">
-        <div class="inner">
-            <img class="descr" src="../../images/gallery/7.jpg" alt="">
+        <h2>Flexible Image Box</h2>
+        <p>Image is resized by available parent block width and height. For example was set parent block aspect ratio 4x3.</p>
+        <p>Available Aspect Ratios. Landscape: 4x3, 3x2, 16x10, 16x9, 21x9, 35x10. Portrait: 3x4, 2x3, 10x16, 9x16.</p>
+        <div style="max-width: 500px">
+            <div class="cm-imagebox is-flexible has-aspect cm-aspect-4x3">
+                <div class="inner">
+                    <img class="descr" src="../../images/slider/3.jpg" alt="">
+                </div>
+            </div>
         </div>
-        <div class="pull top-left">
-            <input id="image2-1" type="checkbox" >
+        <hr>
+
+        <h2>Centered Image Box</h2>
+        <p>Image is resized by available parent block width and height but not more than its own width and height preserving own aspect ratio and align center of parent block. For example was set parent block aspect ration 4x3.</p>
+        <p>Available Aspect Ratios. Landscape: 4x3, 3x2, 16x10, 16x9, 21x9, 35x10. Portrait: 3x4, 2x3, 10x16, 9x16.</p>
+        <div style="max-width: 500px">
+            <div class="cm-imagebox is-flexible is-centered has-aspect cm-aspect-4x3">
+                <div class="inner">
+                    <img class="descr" src="../../images/gallery/3-th.jpg" alt="">
+                </div>
+            </div>
         </div>
-        <div class="pull top-right">
-            <input id="image2-2" type="checkbox">
+        <hr>
+
+        <h2>Image Box without hover</h2>
+        <div style="max-width: 500px">
+            <div class="cm-imagebox is-no-hover">
+                <div class="inner">
+                    <img class="descr" src="../../images/gallery/8.jpg" alt="">
+                </div>
+            </div>
         </div>
-        <div class="pull bottom-right">
-            <input id="image2-3" type="checkbox">
+        <hr>
+
+        <h2>Image Box with Caption</h2>
+        <div style="max-width: 500px">
+            <div class="cm-imagebox">
+                <div class="inner">
+                    <img class="descr" src="../../images/gallery/4.jpg" alt="">
+                    <div class="title">
+                        <div class="inner">Viburnum</div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="pull bottom-left">
-            <input id="image2-4" type="checkbox">
+        <hr>
+
+        <h2>Image Box with Fixed Caption</h2>
+        <div style="max-width: 500px">
+            <div class="cm-imagebox is-fixed-title">
+                <div class="inner">
+                    <img class="descr" src="../../images/gallery/5.jpg" alt="">
+                    <div class="title">
+                        <div class="inner">Viburnum</div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
+        <hr>
+
+        <h2>Image Box with Text</h2>
+        <div style="max-width: 500px">
+            <div class="cm-imagebox">
+                <div class="inner">
+                    <img class="descr" src="../../images/gallery/6.jpg" alt="">
+                    <div class="text">
+                        <div class="inner">
+                            <h1>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</h1>
+                            <p>Praesent suscipit lorem nec elit rutrum tincidunt porta et ipsum. Pellentesque aliquam arcu lectus, non tempus diam fermentum vitae. Duis vulputate pharetra eleifend. Nulla est mauris, convallis vel ipsum sit amet, vulputate vulputate lectus. Cras malesuada, mi sed suscipit imperdiet, justo orci molestie augue, id rutrum enim orci ut risus. Mauris viverra porta varius. Etiam imperdiet aliquet odio, in facilisis ligula elementum et. Integer imperdiet metus at justo eleifend, et aliquet justo sodales.</p>
+                            <p>Cras ultrices ultricies rutrum. Duis feugiat lacus eget sem lobortis auctor. Mauris sit amet augue mauris. Aliquam placerat vulputate pellentesque. Praesent ligula leo, vulputate eu ligula ut, eleifend consectetur mauris. Vivamus nunc turpis, cursus eget facilisis non, tempus sit amet purus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris bibendum elementum mollis. Cras ac felis tempus, congue massa quis, elementum lorem. Nunc consequat congue gravida. Vivamus tempus purus quam, eu varius diam tristique eget. Aliquam nec euismod arcu, in euismod augue. Integer vel pellentesque ante. Integer egestas imperdiet pharetra. Integer odio arcu, hendrerit a nisi eu, pretium eleifend quam.</p>
+                            <p>Suspendisse a lacus id augue ultricies ornare non vitae neque. Phasellus blandit quam sit amet sapien condimentum, sed semper sem vulputate. Pellentesque a metus at mi porta adipiscing et eu dui. Curabitur at molestie sem. Quisque quis purus scelerisque, condimentum metus ut, sollicitudin mauris. Nulla et condimentum tellus, quis congue felis. Etiam scelerisque ut felis eget posuere. Curabitur blandit elit in orci iaculis, eu pellentesque turpis viverra.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+
+        <h2>Image Box with Checkbox and Controls</h2>
+        <div style="max-width: 500px">
+            <div class="cm-imagebox is-checkable">
+                <div class="inner">
+                    <img class="descr" src="../../images/gallery/7.jpg" alt="">
+                </div>
+                <label for="image1"></label>
+                <div class="pull top-left">
+                    <input id="image1" type="checkbox">
+                </div>
+                <div class="pull top-right">
+                    <div class="icon small remove linked"></div>
+                </div>
+                <div class="pull bottom-right">
+                    <div class="icon small edit linked"></div>
+                </div>
+                <div class="pull bottom-left">
+                    <div class="icon small add linked"></div>
+                </div>
+            </div>
+        </div>
+        <hr>
+
+        <h2>Active Image Box with Checkboxes</h2>
+        <div style="max-width: 500px">
+            <div class="cm-imagebox is-checkable active">
+                <div class="inner">
+                    <img class="descr" src="../../images/gallery/7.jpg" alt="">
+                </div>
+                <div class="pull top-left">
+                    <input id="image2-1" type="checkbox" >
+                </div>
+                <div class="pull top-right">
+                    <input id="image2-2" type="checkbox">
+                </div>
+                <div class="pull bottom-right">
+                    <input id="image2-3" type="checkbox">
+                </div>
+                <div class="pull bottom-left">
+                    <input id="image2-4" type="checkbox">
+                </div>
+            </div>
+        </div>
+    </li>
+
+    <li data-node="tabs:[]:container" data-config='{"id" : "animated", "title" : "Animated"}'>
+        <h2>Fade In</h2>
+        <div style="width: 320px">
+            <div class="cm-imagebox cm-animated cm-animated--fade-in" data-element="animated">
+                <a class="inner">
+                    <img class="descr" src="../../images/gallery/1.jpg" alt="">
+                    <div class="title">
+                        <div class="inner">Some title text</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>Fade In Up</h2>
+        <div style="width: 320px">
+            <div class="cm-imagebox cm-animated cm-animated--fade-in-up" data-element="animated">
+                <a class="inner">
+                    <img class="descr" src="../../images/gallery/1.jpg" alt="">
+                    <div class="title">
+                        <div class="inner">Some title text</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>Fade In Down</h2>
+        <div style="width: 320px">
+            <div class="cm-imagebox cm-animated cm-animated--fade-in-down" data-element="animated">
+                <a class="inner">
+                    <img class="descr" src="../../images/gallery/1.jpg" alt="">
+                    <div class="title">
+                        <div class="inner">Some title text</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>Shake</h2>
+        <div style="width: 320px">
+            <div class="cm-imagebox cm-animated cm-animated--bounce" data-element="animated">
+                <a class="inner">
+                    <img class="descr" src="../../images/gallery/1.jpg" alt="">
+                    <div class="title">
+                        <div class="inner">Some title text</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>Pull Right</h2>
+        <div style="width: 320px">
+            <div class="cm-imagebox cm-animated cm-animated--fade-pull-right" data-element="animated">
+                <a class="inner">
+                    <img class="descr" src="../../images/gallery/1.jpg" alt="">
+                    <div class="title">
+                        <div class="inner">Some title text</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>Pull Left</h2>
+        <div style="width: 320px">
+            <div class="cm-imagebox cm-animated cm-animated--fade-pull-left" data-element="animated">
+                <a class="inner">
+                    <img class="descr" src="../../images/gallery/1.jpg" alt="">
+                    <div class="title">
+                        <div class="inner">Some title text</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </li>
+</ul>
 
 </body>
 </html>
