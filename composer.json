@@ -1,6 +1,6 @@
 {
     "name": "SerDIDG/FioraUI",
-    "version": "2.0.13",
+    "version": "2.0.14",
     "license": "MIT",
     "type": "library",
     "homepage": "http://serdidg.github.io/FioraUI/",
@@ -17,5 +17,8 @@
             "type": "vcs",
             "url": "https://github.com/SerDIDG/FioraUI"
         }
-    ]
+    ],
+    "require": {
+        "daneden/animate.css": "master"
+    }
 }
