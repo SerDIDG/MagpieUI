@@ -41,21 +41,21 @@
                 content: '';
                 border: @CmDraganddrop-areaHighlightBorder;
             }
-        }
 
-        &.is-active {
-            background-color: @CmDraganddrop-areaBackgroundActive;
+            &.is-active {
+                background-color: @CmDraganddrop-areaBackgroundActive;
 
-            &:before {
-                position: absolute;
-                .cm-position(-1px,-1px,-1px,-1px);
-                display: block;
-                content: '';
-                border: @CmDraganddrop-areaActiveBorder;
-            }
+                &:before {
+                    position: absolute;
+                    .cm-position(-1px,-1px,-1px,-1px);
+                    display: block;
+                    content: '';
+                    border: @CmDraganddrop-areaActiveBorder;
+                }
 
-            .cm-draganddrop-area {
-                background-color: rgba(255,255,255,0.4);
+                .cm-draganddrop-area {
+                    background-color: rgba(255,255,255,0.4);
+                }
             }
         }
     }

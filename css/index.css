@@ -4192,6 +4192,9 @@ button.has-icon-small .icon,
 .icon.small.arrow-white-bottom {
   background-image: url("../img/icons/small/arrow-white-bottom.png");
 }
+.icon.small.drag-vertical {
+  background-image: url("../img/icons/small/drag-vertical.png");
+}
 .icon.small.loader {
   background-image: url("../img/icons/small/loader.gif");
 }
@@ -5389,15 +5392,38 @@ button.has-icon-small .icon,
 }
 /* *** MULTI FIELD *** */
 .cm-multifield > ul {
-  margin: 0;
+  margin: 0 0 24px 0;
   padding: 0;
   list-style: none;
 }
-.cm-multifield > ul > li {
-  margin: 16px 0 0 0;
+.cm-multifield > ul:last-child {
+  margin-bottom: 0;
 }
-.cm-multifield > ul > li:first-child {
-  margin: 0;
+.cm-multifield > ul > li {
+  margin: 0 0 16px 0;
+  position: relative;
+}
+.cm-multifield > ul > li:last-child {
+  margin-bottom: 0;
+}
+.cm-multifield > ul > li.is-sortable {
+  padding-left: 28px;
+}
+.cm-multifield > ul > li.is-sortable > .icon {
+  width: 28px;
+  height: 28px;
+  position: absolute;
+  top: 0;
+  right: auto;
+  bottom: 0;
+  left: 0;
+  cursor: move;
+}
+.cm-multifield > ul > li.is-sortable > .icon.default {
+  background-image: url("../img/icons/small/drag-vertical.png");
+}
+.cm-multifield > ul > li.cm-draganddrop-helper {
+  position: fixed;
 }
 /* ******* PART: FORM: ADAPTIVE ******* */
 @media only screen and (max-width: 640px) {
@@ -5898,10 +5924,10 @@ button.has-icon-small .icon,
   content: '';
   border: 1px dashed rgba(48, 140, 232, 0.3);
 }
-.cm-draganddrop-area.is-available.is-active {
+.cm-draganddrop-area.is-available.is-highlight.is-active {
   background-color: rgba(48, 140, 232, 0.12);
 }
-.cm-draganddrop-area.is-available.is-active:before {
+.cm-draganddrop-area.is-available.is-highlight.is-active:before {
   position: absolute;
   top: -1px;
   right: -1px;
@@ -5911,7 +5937,7 @@ button.has-icon-small .icon,
   content: '';
   border: 1px dashed #308ce8;
 }
-.cm-draganddrop-area.is-available.is-active .cm-draganddrop-area {
+.cm-draganddrop-area.is-available.is-highlight.is-active .cm-draganddrop-area {
   background-color: rgba(255, 255, 255, 0.4);
 }
 /* ******* EDITABLE AREA ******* */

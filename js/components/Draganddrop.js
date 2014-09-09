@@ -1,27 +1,36 @@
-Com['Draganddrop'] = function(o){
+cm.define('Com.Draganddrop', {
+    'modules' : [
+        'Params',
+        'Events'
+    ],
+    'events' : [
+        'onRender',
+        'onInit',
+        'onDragStart',
+        'onDrop',
+        'onRemove',
+        'onReplace'
+    ],
+    'params' : {
+        'container' : cm.Node('div'),
+        'chassisTag' : 'div',
+        'draggableContainer' : 'document.body',       // HTML node | selfParent
+        'scrollNode' : 'document.body',
+        'scrollSpeed' : 1,                          // ms per 1px
+        'renderTemporaryAria' : false,
+        'useCSSAnimation' : true,
+        'useGracefulDegradation' : true,
+        'dropDuration' : 400,
+        'direction' : 'both',                        // both | vertical | horizontal
+        'limit' : false,
+        'highlightAreas' : true,                     // highlight areas on drag start
+        'classes' : {
+            'area' : null
+        }
+    }
+},
+function(params){
     var that = this,
-        config = cm.merge({
-            'container' : cm.Node('div'),
-            'chassisTag' : 'div',
-            'draggableContainer' : document.body,
-            'scrollNode' : document.body,
-            'scrollSpeed' : 1,                          // ms per 1px
-            'renderTemporaryAria' : false,
-            'useCSSAnimation' : false,
-            'useGracefulDegradation' : true,
-            'dropDuration' : 400,
-            'highlightAreas' : true,                     // highlight areas on drag start
-            'classes' : {
-                'area' : null
-            }
-        }, o),
-        API = {
-            'onInit' : [],
-            'onDragStart' : [],
-            'onDrop' : [],
-            'onRemove' : [],
-            'onReplace' : []
-        },
         nodes = {},
         anims = {},
         areas = [],
@@ -44,29 +53,33 @@ Com['Draganddrop'] = function(o){
 
     var init = function(){
         var areasNodes;
+        
+        that.setParams(params);
+        that.convertEvents(that.params['events']);
 
-        if(config['container']){
+        if(that.params['container']){
             // Check Graceful Degradation, and turn it to mobile and old ie.
-            if(config['useGracefulDegradation'] && ((cm.is('IE') && cm.isVersion() < 9) || cm.isMobile())){
+            if(that.params['useGracefulDegradation'] && ((cm.is('IE') && cm.isVersion() < 9) || cm.isMobile())){
                 isGracefulDegradation = true;
             }
             // Init misc
-            anims['scroll'] = new cm.Animation(config['scrollNode']);
+            anims['scroll'] = new cm.Animation(that.params['scrollNode']);
             // Render temporary area
-            if(config['renderTemporaryAria']){
+            if(that.params['renderTemporaryAria']){
                 nodes['temporaryArea'] = cm.Node('div');
                 initArea(nodes['temporaryArea'], {
                     'isTemporary' : true
                 });
             }
             // Find drop areas
-            areasNodes = cm.getByAttr('data-com-draganddrop', 'area', config['container']);
+            areasNodes = cm.getByAttr('data-com-draganddrop', 'area', that.params['container']);
             // Init areas
             cm.forEach(areasNodes, function(area){
                 initArea(area, {});
             });
             /* *** EXECUTE API EVENTS *** */
-            executeEvent('onInit', {});
+            that.triggerEvent('onInit', {});
+            that.triggerEvent('onRender', {});
         }
     };
 
@@ -92,7 +105,7 @@ Com['Draganddrop'] = function(o){
             childNodes;
         // Add mark classes
         cm.addClass(area['node'], 'cm-draganddrop-area');
-        cm.addClass(area['node'], config['classes']['area']);
+        cm.addClass(area['node'], that.params['classes']['area']);
         if(area['isLocked']){
             cm.addClass(area['node'], 'is-locked');
         }else{
@@ -184,7 +197,7 @@ Com['Draganddrop'] = function(o){
         }
         pageSize = cm.getPageSize();
         // API onDragStart Event
-        executeEvent('onDragStart', {
+        that.triggerEvent('onDragStart', {
             'item' : draggable,
             'node' : draggable['node'],
             'from' : draggable['area']
@@ -199,14 +212,14 @@ Com['Draganddrop'] = function(o){
             return true;
         });
         // Highlight Areas
-        if(config['highlightAreas']){
+        if(that.params['highlightAreas']){
             toggleHighlightAreas();
         }
         // Get position and dimension of current draggable item
         getPosition(draggable);
         // Get offset position relative to touch point (cursor or finger position)
-        draggable['dimensions']['offsetX'] = x - draggable['dimensions']['x1'];
-        draggable['dimensions']['offsetY'] = y - draggable['dimensions']['y1'];
+        draggable['dimensions']['offsetX'] = x - draggable['dimensions']['absoluteX1'];
+        draggable['dimensions']['offsetY'] = y - draggable['dimensions']['absoluteY1'];
         // Set draggable item to current
         if(draggable['area']['cloneDraggable']){
             current = cloneDraggable(draggable);
@@ -215,15 +228,15 @@ Com['Draganddrop'] = function(o){
         }
         // Set position and dimension to current draggable node, before we insert it to draggableContainer
         with(current['node'].style){
-            top = [current['dimensions']['y1'], 'px'].join('');
-            left = [current['dimensions']['x1'], 'px'].join('');
+            top = [current['dimensions']['absoluteY1'], 'px'].join('');
+            left = [current['dimensions']['absoluteX1'], 'px'].join('');
             width = [current['dimensions']['innerWidth'], 'px'].join('');
         }
         // Unset area from draggable item
         unsetDraggableFromArea(current);
         // Insert draggable element to body
-        if(config['draggableContainer']){
-            config['draggableContainer'].appendChild(current['node']);
+        if(that.params['draggableContainer'] && that.params['draggableContainer'] != 'selfParent'){
+            that.params['draggableContainer'].appendChild(current['node']);
         }
         getPosition(current);
         cm.addClass(current['node'], 'cm-draganddrop-helper');
@@ -295,9 +308,30 @@ Com['Draganddrop'] = function(o){
         // Set new position
         posY = y - current['dimensions']['offsetY'];
         posX = x - current['dimensions']['offsetX'];
+        // Drag directions
         with(current['node'].style){
-            top = [posY, 'px'].join('');
-            left = [posX, 'px'].join('');
+            switch(that.params['direction']){
+                case 'both':
+                    top = [posY, 'px'].join('');
+                    left = [posX, 'px'].join('');
+                    break;
+                case 'vertical':
+                    if(that.params['limit']){
+                        if(posY < current['area']['dimensions']['y1']){
+                            top = [current['area']['dimensions']['y1'], 'px'].join('');
+                        }else if(posY > current['area']['dimensions']['y2']){
+                            top = [current['area']['dimensions']['y2'], 'px'].join('');
+                        }else{
+                            top = [posY, 'px'].join('');
+                        }
+                    }else{
+                        top = [posY, 'px'].join('');
+                    }
+                    break;
+                case 'horizontal':
+                    left = [posX, 'px'].join('');
+                    break;
+            }
         }
         // Scroll node
         if(y + 48 > pageSize['winHeight']){
@@ -390,7 +424,7 @@ Com['Draganddrop'] = function(o){
         if(currentAboveItem){
             // Animate chassis blocks
             if(currentHeight != currentAboveItem['chassis'][currentPosition]['node'].offsetHeight){
-                animateChassis(currentAboveItem['chassis'][currentPosition], currentHeight, config['dropDuration']);
+                animateChassis(currentAboveItem['chassis'][currentPosition], currentHeight, that.params['dropDuration']);
             }
             // Drop Item to Area
             dropDraggableToArea(current, currentArea, {
@@ -406,7 +440,7 @@ Com['Draganddrop'] = function(o){
             });
         }else{
             // Animate chassis blocks
-            animateChassis(currentArea['chassis'][0], currentHeight, config['dropDuration']);
+            animateChassis(currentArea['chassis'][0], currentHeight, that.params['dropDuration']);
             // Drop Item to Area
             dropDraggableToArea(current, currentArea, {
                 'onStop' : unsetCurrentDraggable
@@ -417,7 +451,7 @@ Com['Draganddrop'] = function(o){
             cm.removeClass(currentArea['node'], 'is-active');
         }
         // Un Highlight Areas
-        if(config['highlightAreas']){
+        if(that.params['highlightAreas']){
             toggleHighlightAreas();
         }
     };
@@ -426,7 +460,7 @@ Com['Draganddrop'] = function(o){
 
     var cloneDraggable = function(draggable){
         var clonedNode = draggable['node'].cloneNode(true),
-            area = config['renderTemporaryAria']? areas[0] : draggable['area'],
+            area = that.params['renderTemporaryAria']? areas[0] : draggable['area'],
             clonedDraggable = initDraggable(clonedNode, area, {});
 
         clonedDraggable['dimensions'] = cm.clone(draggable['dimensions']);
@@ -450,7 +484,7 @@ Com['Draganddrop'] = function(o){
         params['onStart']();
         // Animate draggable item, like it drops in area
         draggable['anim'].go({
-            'duration' : config['dropDuration'],
+            'duration' : that.params['dropDuration'],
             'anim' : 'smooth',
             'style' : {
                 'top' : params['top'],
@@ -486,7 +520,7 @@ Com['Draganddrop'] = function(o){
                 // Set index of draggable item in new area
                 area['items'].splice(params['index'], 0, draggable);
                 // API onDrop Event
-                executeEvent('onDrop', {
+                that.triggerEvent('onDrop', {
                     'item' : draggable,
                     'node' : draggable['node'],
                     'to' : area,
@@ -513,7 +547,7 @@ Com['Draganddrop'] = function(o){
             unsetDraggableFromArea(draggable);
             // API onRemove Event
             if(!params['noEvent']){
-                executeEvent('onRemove', {
+                that.triggerEvent('onRemove', {
                     'item' : draggable,
                     'node' : draggable['node'],
                     'from' : draggable['area']
@@ -551,7 +585,7 @@ Com['Draganddrop'] = function(o){
             }
             // Animate draggable, like it disappear
             anim.go({
-                'duration' : config['dropDuration'],
+                'duration' : that.params['dropDuration'],
                 'anim' : 'smooth',
                 'style' : style,
                 'onStop' : handler
@@ -609,7 +643,7 @@ Com['Draganddrop'] = function(o){
     };
 
     var renderChassis = function(){
-        var node = cm.Node(config['chassisTag'], {'class' : 'cm-draganddrop-chassis'});
+        var node = cm.Node(that.params['chassisTag'], {'class' : 'cm-draganddrop-chassis'});
         return {
             'node' : node,
             'anim' : new cm.Animation(node),
@@ -629,7 +663,7 @@ Com['Draganddrop'] = function(o){
     var animateChassis = function(chassis, height, duration) {
         var style;
         height = [height, 'px'].join('');
-        if(config['useCSSAnimation'] || isGracefulDegradation){
+        if(that.params['useCSSAnimation'] || isGracefulDegradation){
             if(!isGracefulDegradation && (style = cm.getSupportedStyle('transition-duration'))){
                 chassis['node'].style[style] = [duration, 'ms'].join('');
             }
@@ -737,26 +771,18 @@ Com['Draganddrop'] = function(o){
             anims['scroll'].stop();
         }else if(speed < 0 && !isScrollProccess){
             isScrollProccess = true;
-            duration = config['scrollNode'].scrollTop * config['scrollSpeed'];
+            duration = that.params['scrollNode'].scrollTop * that.params['scrollSpeed'];
             anims['scroll'].go({'style' : {'scrollTop' : 0}, 'duration' : duration, 'onStop' : function(){
                 isScrollProccess = false;
             }});
         }else if(speed > 0 && !isScrollProccess){
             isScrollProccess = true;
-            scrollRemaining = config['scrollNode'].scrollHeight - pageSize['winHeight'];
-            duration = scrollRemaining * config['scrollSpeed'];
+            scrollRemaining = that.params['scrollNode'].scrollHeight - pageSize['winHeight'];
+            duration = scrollRemaining * that.params['scrollSpeed'];
             anims['scroll'].go({'style' : {'scrollTop' : scrollRemaining}, 'duration' : duration, 'onStop' : function(){
                 isScrollProccess = false;
             }});
         }
-    };
-
-    /* *** EVENTS HANDLERS *** */
-
-    var executeEvent = function(event, params){
-        API[event].forEach(function(item){
-            item(that, params || {});
-        });
     };
 
     /* ******* MAIN ******* */
@@ -861,7 +887,7 @@ Com['Draganddrop'] = function(o){
                 newDraggable = initDraggable(newDraggableNode, area);
                 area['items'].splice(index, 0, newDraggable);
                 // API onEmbed event
-                executeEvent('onReplace', {
+                that.triggerEvent('onReplace', {
                     'item' : newDraggable,
                     'node' : newDraggable['node'],
                     'to' : newDraggable['to']
@@ -921,22 +947,6 @@ Com['Draganddrop'] = function(o){
         });
         return filteredAreas.length == 1 ? arr : results;
     };
-
-    that.addEvent = function(event, handler){
-        if(API[event] && typeof handler == 'function'){
-            API[event].push(handler);
-        }
-        return that;
-    };
-
-    that.removeEvent = function(event, handler){
-        if(API[event] && typeof handler == 'function'){
-            API[event] = API[event].filter(function(item){
-                return item != handler;
-            });
-        }
-        return that;
-    };
-
+    
     init();
-};
+});
