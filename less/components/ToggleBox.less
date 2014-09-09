@@ -87,6 +87,18 @@
                     td {
                         padding: @cm-indentXXSmall;
                         border-top: @ComToggleBox-contentBorder;
+
+                        &.sort {
+                            .inner {
+                                margin: -@cm-indentXXSmall;
+                                padding: @cm-indentXXSmall 22px @cm-indentXXSmall @cm-indentXXSmall;
+                            }
+                        }
+                    }
+
+                    th {
+                        padding: @cm-indentXXSmall;
+                        border-bottom: @ComToggleBox-contentBorder;
                     }
 
                     &:first-child {
@@ -158,6 +170,10 @@
             > dd {
                 .com-gridlist {
                     tr {
+                        th {
+                            display: none;
+                        }
+
                         td {
                             width: auto;
                             display: block;

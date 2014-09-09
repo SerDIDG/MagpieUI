@@ -7612,6 +7612,14 @@ button.has-icon-small .icon,
   padding: 8px;
   border-top: 1px solid #ffffff;
 }
+.com-togglebox.has-content-bg > dd .com-gridlist tr td.sort .inner {
+  margin: -8px;
+  padding: 8px 22px 8px 8px;
+}
+.com-togglebox.has-content-bg > dd .com-gridlist tr th {
+  padding: 8px;
+  border-bottom: 1px solid #ffffff;
+}
 .com-togglebox.has-content-bg > dd .com-gridlist tr:first-child td {
   border: none;
 }
@@ -7649,6 +7657,9 @@ button.has-icon-small .icon,
 }
 /* ******* COMPONENT: TOGGLE BOX: ADAPTIVE ******* */
 @media only screen and (max-width: 640px) {
+  html.is-adaptive .com-togglebox > dd .com-gridlist tr th {
+    display: none;
+  }
   html.is-adaptive .com-togglebox > dd .com-gridlist tr td {
     width: auto;
     display: block;
@@ -7698,7 +7709,6 @@ button.has-icon-small .icon,
   text-decoration: none;
 }
 .com-gridlist table th {
-  line-height: 14px;
   font-weight: 600;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -9106,13 +9116,10 @@ button.has-icon-small .icon,
 }
 /* ******* COMPONENT: FILES GRIDLIST ******* */
 .com-filesgridlist-cell-icon {
-  width: 16px;
+  width: 40px;
 }
 .com-filesgridlist-cell-icon .icon {
   display: block;
-}
-.com-filesgridlist-cell-title {
-  font-weight: 600;
 }
 .com-filesgridlist-cell-date {
   width: 120px;
