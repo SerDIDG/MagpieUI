@@ -5907,12 +5907,16 @@ button.has-icon-small .icon,
   position: relative;
 }
 .cm-draganddrop-area.is-available {
-  border-radius: 3px;
-  -webkit-transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
-  transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+  -webkit-transition: background-color 0.3s ease-in-out;
+  transition: background-color 0.3s ease-in-out;
+}
+.cm-draganddrop-area.is-available:before {
+  -webkit-transition: border-color 0.3s ease-in-out;
+  transition: border-color 0.3s ease-in-out;
 }
 .cm-draganddrop-area.is-available.is-highlight {
   background-color: rgba(48, 140, 232, 0.05);
+  border-radius: 3px;
 }
 .cm-draganddrop-area.is-available.is-highlight:before {
   position: absolute;
@@ -5923,18 +5927,12 @@ button.has-icon-small .icon,
   display: block;
   content: '';
   border: 1px dashed rgba(48, 140, 232, 0.3);
+  border-radius: 3px;
 }
 .cm-draganddrop-area.is-available.is-highlight.is-active {
   background-color: rgba(48, 140, 232, 0.12);
 }
 .cm-draganddrop-area.is-available.is-highlight.is-active:before {
-  position: absolute;
-  top: -1px;
-  right: -1px;
-  bottom: -1px;
-  left: -1px;
-  display: block;
-  content: '';
   border: 1px dashed #308ce8;
 }
 .cm-draganddrop-area.is-available.is-highlight.is-active .cm-draganddrop-area {
