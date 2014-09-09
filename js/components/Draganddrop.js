@@ -18,7 +18,7 @@ cm.define('Com.Draganddrop', {
         'scrollNode' : 'document.body',
         'scrollSpeed' : 1,                          // ms per 1px
         'renderTemporaryAria' : false,
-        'useCSSAnimation' : true,
+        'useCSSAnimation' : false,
         'useGracefulDegradation' : true,
         'dropDuration' : 400,
         'direction' : 'both',                        // both | vertical | horizontal
