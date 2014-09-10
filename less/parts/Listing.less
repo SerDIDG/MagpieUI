@@ -45,46 +45,11 @@
         }
     }
 
-    .stuff:extend(.clear all) {
+    .stuff:extend(.cm-line-info all) {
         margin: 0;
         padding: 0;
         list-style: none;
         .cm-font-hint;
-
-        .category,
-        .author,
-        .date,
-        .hash,
-        .links,
-        .status {
-            float: left;
-            margin: 0 @cm-indentXSmall 0 0;
-
-            &:last-child {
-                margin: 0;
-            }
-        }
-
-        .com-tags,
-        .cm-links {
-            ul {
-                line-height: inherit;
-                font-size: inherit;
-
-                li {
-                    line-height: inherit;
-                    font-size: inherit;
-                }
-            }
-        }
-
-        .date {
-            color: @cm-colorFontMedium;
-        }
-
-        .author {
-            font-weight: @cm-boldWeight;
-        }
     }
 }
 
@@ -103,10 +68,10 @@
         list-style: none;
 
         > li {
-            margin: @cm-indentXSmall 0 0 0;
+            margin: 0 0 @cm-indentXSmall 0;
 
-            &:first-child {
-                margin: 0;
+            &:last-child {
+                margin-bottom: 0;
             }
         }
     }

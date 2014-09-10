@@ -1,0 +1,169 @@
+<!DOCTYPE HTML>
+<html class="is-adaptive">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Elements: FAQ</title>
+
+    <link type="text/css" rel="stylesheet" href="../../../css/index.css">
+    <link type="text/css" rel="stylesheet" href="../../styles/index.css">
+
+    <script type="text/javascript" src="../../../js/polyfill.js"></script>
+    <script type="text/javascript" src="../../../js/common.js"></script>
+    <script type="text/javascript" src="../../../js/parts.js"></script>
+    <script type="text/javascript" src="../../../js/modules.js"></script>
+    <script type="text/javascript" src="../../../js/init.js"></script>
+    <script type="text/javascript" src="../../../js/components/UA.js"></script>
+    <script type="text/javascript" src="../../../js/components/Collector.js"></script>
+    <script type="text/javascript" src="../../../js/components/ToggleBox.js"></script>
+
+    <script type="text/javascript">
+        cm.onReady(function(){
+            // Components
+            new Com.Collector()
+                .addEvent('onConstruct', function(collector, data){
+                    Part.Menu();
+                    Part.Autoresize(data['node']);
+                })
+
+                .add('togglebox', function(node){
+                    new Com.ToggleBox({'node' : node});
+                })
+                .construct();
+        });
+    </script>
+</head>
+
+<body>
+
+<div class="com-faq">
+    <h1>FAQ Module Title</h1>
+
+    <div class="cm-box-content">
+        <div class="cm-listing">
+            <ul class="list">
+                <li>
+                    <a href="#category-1">Main Questions</a>
+                </li>
+                <li>
+                    <a href="#category-2">Countries</a>
+                </li>
+                <li>
+                    <a href="#category-3">Developers Category</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="cm-box-content">
+        <a name="category-1"></a>
+        <h2>Main Questions</h2>
+
+        <div class="cm-listing-default com-faq__questions">
+            <ul>
+                <li>
+                    <dl class="com-togglebox has-title-bg is-ui is-hide" data-element="togglebox" data-config='{"remember" : false}'>
+                        <dt data-node="ComToggleBox.button">
+                            <span class="icon default linked"></span>
+                            <span class="title">1. What is the main question?</span>
+                        </dt>
+                        <dd data-node="ComToggleBox.target">
+                            <div class="inner">
+                                <p>Answer is 4.3</p>
+                            </div>
+                        </dd>
+                    </dl>
+                </li>
+                <li>
+                    <dl class="com-togglebox has-title-bg is-ui is-hide" data-element="togglebox" data-config='{"remember" : false}'>
+                        <dt data-node="ComToggleBox.button">
+                            <span class="icon default linked"></span>
+                            <span class="title">2. What is the mind?</span>
+                        </dt>
+                        <dd data-node="ComToggleBox.target">
+                            <div class="inner">
+                                <p>A mind is the set of cognitive faculties that enables consciousness, perception, thinking, judgement, and memory—a characteristic of humans, but which also may apply to other life forms.</p>
+                            </div>
+                        </dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="cm-box-content">
+        <a name="category-2"></a>
+        <h2>Countries</h2>
+
+        <div class="cm-listing-default com-faq__questions">
+            <ul>
+                <li>
+                    <dl class="com-togglebox com-spoiler has-title-bg is-ui is-hide" data-element="togglebox" data-config='{"remember" : false}'>
+                        <dt data-node="ComToggleBox.button">
+                            <span class="icon default linked"></span>
+                            <span class="title">1. What can you say about Canada?</span>
+                        </dt>
+                        <dd data-node="ComToggleBox.target">
+                            <div class="inner">
+                                <p>Canada is a country in North America consisting of ten provinces and three territories. Located in the northern part of the continent, it extends from the Atlantic to the Pacific and northward into the Arctic Ocean. At 9.98 million square kilometres in total, Canada is the world's second-largest country by total area and the fourth-largest country by land area. Its common border with the United States is the world's longest land border shared by the same two countries.</p>
+                            </div>
+                        </dd>
+                    </dl>
+                </li>
+                <li>
+                    <dl class="com-togglebox com-spoiler has-title-bg is-ui is-hide" data-element="togglebox" data-config='{"remember" : false}'>
+                        <dt data-node="ComToggleBox.button">
+                            <span class="icon default linked"></span>
+                            <span class="title">2. What can you say about Ukraine?</span>
+                        </dt>
+                        <dd data-node="ComToggleBox.target">
+                            <div class="inner">
+                                <p>Ukraine is a country in Eastern Europe. It has an area of 603,628 km2 (233,062 sq mi), making it the largest country entirely within Europe. Ukraine borders Russia to the east and northeast, Belarus to the northwest, Poland, Slovakia and Hungary to the west, Romania and Moldova to the southwest, and the Black Sea and Sea of Azov to the south and southeast, respectively.</p>
+                            </div>
+                        </dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="cm-box-content">
+        <a name="category-3"></a>
+        <h2>Developers Category</h2>
+
+        <div class="cm-listing-default com-faq__questions">
+            <ul>
+                <li>
+                    <dl class="com-togglebox com-spoiler has-title-bg is-ui is-hide" data-element="togglebox" data-config='{"remember" : false}'>
+                        <dt data-node="ComToggleBox.button">
+                            <span class="icon default linked"></span>
+                            <span class="title">1. Are modules needs to be wrapped?</span>
+                        </dt>
+                        <dd data-node="ComToggleBox.target">
+                            <div class="inner">
+                                <p>Yes. Modules must be wrapped in div class="app-module app-module-default". Pages must be wrapped in div class="app-page app-page-default".</p>
+                            </div>
+                        </dd>
+                    </dl>
+                </li>
+                <li>
+                    <dl class="com-togglebox com-spoiler has-title-bg is-ui is-hide" data-element="togglebox" data-config='{"remember" : false}'>
+                        <dt data-node="ComToggleBox.button">
+                            <span class="icon default linked"></span>
+                            <span class="title">2. Can i use this library in my projects?</span>
+                        </dt>
+                        <dd data-node="ComToggleBox.target">
+                            <div class="inner">
+                                <p>Yes. This library licenced by MIT license.</p>
+                            </div>
+                        </dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>
