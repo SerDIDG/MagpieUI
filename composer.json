@@ -16,9 +16,21 @@
         {
             "type": "vcs",
             "url": "https://github.com/SerDIDG/FioraUI"
-        }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "daneden/animate.css",
+                "version": "dev-master",
+                "source": {
+                    "url": "https://github.com/daneden/animate.css.git",
+                    "type": "git",
+                    "reference": "origin/master"
+                }
+            }
+        },
     ],
     "require": {
-        "daneden/animate.css": "master"
+        "daneden/animate.css": "dev-master"
     }
 }
