@@ -28,7 +28,7 @@
                     "reference": "origin/master"
                 }
             }
-        },
+        }
     ],
     "require": {
         "daneden/animate.css": "dev-master"
