@@ -16,12 +16,16 @@
     <script type="text/javascript" src="../../../js/components/UA.js"></script>
     <script type="text/javascript" src="../../../js/components/Collector.js"></script>
     <script type="text/javascript" src="../../../js/components/Tabset.js"></script>
+    <script type="text/javascript" src="../../../js/components/ImageBox.js"></script>
 
     <script type="text/javascript">
         cm.onReady(function(){
             new Com.Collector()
                 .add('tabset', function(node){
                     new Com.Tabset({'node' : node});
+                })
+                .add('imagebox', function(node){
+                    new Com.ImageBox({'node' : node});
                 })
                 .construct();
         });
@@ -182,7 +186,7 @@
     <li data-node="tabs:[]:container" data-config='{"id" : "animated", "title" : "Animated"}'>
         <h2>Fade In</h2>
         <div style="width: 320px">
-            <div class="cm-imagebox cm-animate animated fadeIn" data-element="animated">
+            <div class="cm-imagebox cm-animate" data-element="imagebox" data-config='{"animated" : true, "effect" : "fadeIn"}'>
                 <a class="inner">
                     <img class="descr" src="../../images/gallery/1.jpg" alt="">
                     <div class="title">
@@ -196,7 +200,7 @@
 
         <h2>Fade In Up</h2>
         <div style="width: 320px">
-            <div class="cm-imagebox cm-animate animated fadeInUp" data-element="animated">
+            <div class="cm-imagebox cm-animate" data-element="imagebox" data-config='{"animated" : true, "effect" : "fadeInUp"}'>
                 <a class="inner">
                     <img class="descr" src="../../images/gallery/1.jpg" alt="">
                     <div class="title">
@@ -210,7 +214,7 @@
 
         <h2>Fade In Down</h2>
         <div style="width: 320px">
-            <div class="cm-imagebox cm-animate animated fadeInDown" data-element="animated">
+            <div class="cm-imagebox cm-animate" data-element="imagebox" data-config='{"animated" : true, "effect" : "fadeInDown"}'>
                 <a class="inner">
                     <img class="descr" src="../../images/gallery/1.jpg" alt="">
                     <div class="title">
@@ -222,9 +226,9 @@
 
         <hr>
 
-        <h2>Shake</h2>
+        <h2>Bounce</h2>
         <div style="width: 320px">
-            <div class="cm-imagebox cm-animate animated bounce" data-element="animated">
+            <div class="cm-imagebox cm-animate" data-element="imagebox" data-config='{"animated" : true, "effect" : "bounce"}'>
                 <a class="inner">
                     <img class="descr" src="../../images/gallery/1.jpg" alt="">
                     <div class="title">
@@ -238,7 +242,7 @@
 
         <h2>Pull Right</h2>
         <div style="width: 320px">
-            <div class="cm-imagebox cm-animate animated fadeInRightBig" data-element="animated">
+            <div class="cm-imagebox cm-animate" data-element="imagebox" data-config='{"animated" : true, "effect" : "fadeInRightBig"}'>
                 <a class="inner">
                     <img class="descr" src="../../images/gallery/1.jpg" alt="">
                     <div class="title">
@@ -252,7 +256,7 @@
 
         <h2>Pull Left</h2>
         <div style="width: 320px">
-            <div class="cm-imagebox cm-animate animated fadeInLeftBig" data-element="animated">
+            <div class="cm-imagebox cm-animate" data-element="imagebox" data-config='{"animated" : true, "effect" : "fadeInLeftBig"}'>
                 <a class="inner">
                     <img class="descr" src="../../images/gallery/1.jpg" alt="">
                     <div class="title">
