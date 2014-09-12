@@ -13,6 +13,10 @@ Mod['Params'] = {
         // Validate params
         cm.forEach(that.params, function(item, key){
             switch(item){
+                case 'document.window':
+                    that.params[key] = window;
+                    break;
+
                 case 'document.html':
                     that.params[key] = document.documentElement;
                     break;

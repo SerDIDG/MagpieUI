@@ -3601,6 +3601,10 @@ button.has-icon-small .icon,
 .cm-animate {
   visibility: hidden;
 }
+.cm-animate.pre-bounce,
+.cm-animate.pre-tada {
+  visibility: visible;
+}
 .cm-animate.animated {
   visibility: visible;
 }

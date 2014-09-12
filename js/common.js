@@ -188,6 +188,8 @@ cm.clone = function(o, cloneNode){
                 }
             }else if(Object.prototype.toString.call(o) == '[object Object]' && o.constructor != Object){
                 newO = o;
+            }else if(o == window){
+                newO = o;
             }else{
                 newO = [];
                 cm.forEach(o, function(item){

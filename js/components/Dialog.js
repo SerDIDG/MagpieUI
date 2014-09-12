@@ -57,8 +57,6 @@ cm.define('Com.Dialog', {
         'autoOpen' : true,
         'removeOnClose' : true,
         'scroll' : true,
-        'clickEventName' : 'click',
-        'events' : {},
         'icons' : {
             'closeInside' : 'icon default linked',
             'closeOutside' : 'icon default linked'
@@ -124,7 +122,7 @@ function(params){
             if(that.params['closeTitle']){
                 nodes['closeOutside'].title = that.params['langs']['closeTitle'];
             }
-            cm.addEvent(nodes['closeOutside'], that.params['clickEventName'], close);
+            cm.addEvent(nodes['closeOutside'], 'click', close);
         }
         if(that.params['closeButton']){
             cm.addClass(nodes['container'], 'has-close-inside');
@@ -136,11 +134,11 @@ function(params){
             if(that.params['closeTitle']){
                 nodes['closeInside'].title = that.params['langs']['closeTitle'];
             }
-            cm.addEvent(nodes['closeInside'], that.params['clickEventName'], close);
+            cm.addEvent(nodes['closeInside'], 'click', close);
         }
         if(that.params['closeOnBackground']){
             cm.addClass(nodes['container'], 'has-close-background');
-            cm.addEvent(nodes['bg'], that.params['clickEventName'], close);
+            cm.addEvent(nodes['bg'], 'click', close);
             if(that.params['closeTitle']){
                 nodes['bg'].title = that.params['langs']['closeTitle'];
             }
