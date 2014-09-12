@@ -24,6 +24,11 @@
                 .add('tabset', function(node){
                     new Com.Tabset({'node' : node});
                 })
+                .construct();
+        });
+
+        cm.onLoad(function(){
+            new Com.Collector()
                 .add('imagebox', function(node){
                     new Com.ImageBox({'node' : node});
                 })

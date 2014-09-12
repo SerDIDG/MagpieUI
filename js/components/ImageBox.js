@@ -19,7 +19,7 @@ function(params){
         dimensions = {},
         pageDimensions = {};
 
-    that.procced = false;
+    that.processed = false;
 
     var init = function(){
         that.setParams(params);
@@ -38,7 +38,7 @@ function(params){
     };
 
     var process = function(){
-        if(!that.procced){
+        if(!that.processed){
             getDimensions();
             getPageDimensions();
             // Rules for different block sizes.
@@ -63,7 +63,7 @@ function(params){
     };
 
     var doProcess = function(){
-        that.procced = true;
+        that.processed = true;
         cm.addClass(that.params['node'], ['animated', that.params['effect']].join(' '));
     };
     
