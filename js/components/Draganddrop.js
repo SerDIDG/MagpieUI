@@ -14,9 +14,9 @@ cm.define('Com.Draganddrop', {
     'params' : {
         'container' : cm.Node('div'),
         'chassisTag' : 'div',
-        'draggableContainer' : 'document.body',       // HTML node | selfParent
-        'scrollNode' : 'document.body',
-        'scrollSpeed' : 1,                          // ms per 1px
+        'draggableContainer' : 'document.body',      // HTML node | selfParent
+        'scrollNode' : 'document.window',
+        'scrollSpeed' : 1,                           // ms per 1px
         'renderTemporaryAria' : false,
         'useCSSAnimation' : false,
         'useGracefulDegradation' : true,
