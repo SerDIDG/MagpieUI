@@ -764,22 +764,35 @@ function(params){
 
     var toggleScroll = function(speed){
         var scrollRemaining,
-            duration;
+            duration,
+            styles = {};
 
         if(speed == 0){
             isScrollProccess = false;
             anims['scroll'].stop();
         }else if(speed < 0 && !isScrollProccess){
             isScrollProccess = true;
-            duration = that.params['scrollNode'].scrollTop * that.params['scrollSpeed'];
-            anims['scroll'].go({'style' : {'scrollTop' : 0}, 'duration' : duration, 'onStop' : function(){
+            if(that.params['scrollNode'] == document.body || that.params['scrollNode'] == document.documentElement){
+                styles['docScrollTop'] = 0;
+                duration = cm.getBodyScrollTop() * that.params['scrollSpeed'];
+            }else{
+                styles['scrollTop'] = 0;
+                duration = that.params['scrollNode'].scrollTop * that.params['scrollSpeed'];
+            }
+            anims['scroll'].go({'style' : styles, 'duration' : duration, 'onStop' : function(){
                 isScrollProccess = false;
             }});
         }else if(speed > 0 && !isScrollProccess){
             isScrollProccess = true;
-            scrollRemaining = that.params['scrollNode'].scrollHeight - pageSize['winHeight'];
+            if(that.params['scrollNode'] == document.body || that.params['scrollNode'] == document.documentElement){
+                scrollRemaining = cm.getBodyScrollHeight() - pageSize['winHeight'];
+                styles['docScrollTop'] = scrollRemaining;
+            }else{
+                scrollRemaining = that.params['scrollNode'].scrollHeight - pageSize['winHeight'];
+                styles['scrollTop'] = scrollRemaining;
+            }
             duration = scrollRemaining * that.params['scrollSpeed'];
-            anims['scroll'].go({'style' : {'scrollTop' : scrollRemaining}, 'duration' : duration, 'onStop' : function(){
+            anims['scroll'].go({'style' : styles, 'duration' : duration, 'onStop' : function(){
                 isScrollProccess = false;
             }});
         }

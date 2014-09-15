@@ -1684,6 +1684,14 @@ cm.getBodyScrollTop = function(){
     );
 };
 
+cm.getBodyScrollHeight = function(){
+    return Math.max(
+        document.documentElement.scrollHeight,
+        document.body.scrollHeight,
+        0
+    );
+};
+
 cm.getSupportedStyle = function(style){
     var upper = cm.styleHash(style).replace(style.charAt(0), style.charAt(0).toUpperCase()),
         styles = [
