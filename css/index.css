@@ -3178,8 +3178,18 @@ button.has-icon-small .icon,
   position: relative;
   overflow: hidden;
 }
-.cm-imagebox > .inner > .text * {
-  color: #fff;
+.cm-imagebox > .inner > .text .cm-content-tags,
+.cm-imagebox > .inner > .text h1,
+.cm-imagebox > .inner > .text h2,
+.cm-imagebox > .inner > .text h3,
+.cm-imagebox > .inner > .text h4,
+.cm-imagebox > .inner > .text h5,
+.cm-imagebox > .inner > .text h6,
+.cm-imagebox > .inner > .text p,
+.cm-imagebox > .inner > .text dl,
+.cm-imagebox > .inner > .text ul,
+.cm-imagebox > .inner > .text ol {
+  color: #ffffff;
 }
 .cm-imagebox > .inner > iframe.descr {
   width: 100%;

@@ -58,6 +58,8 @@ function(params){
     that.previous = null;
     that.paused = false;
 
+    that.isProcess = false;
+
     var init = function(){
         that.setParams(params);
         that.convertEvents(that.params['events']);
@@ -227,39 +229,43 @@ function(params){
     };
 
     var set = function(index){
-        // Renew slideshow delay
-        that.params['slideshow'] && renewSlideshow();
-        // Set current active slide
-        var current = items[index],
-            previous = items[that.current];
-        that.previous = that.current;
-        that.current = index;
-        // API onChangeStart event
-        that.triggerEvent('onChangeStart', {
-            'current' : current,
-            'previous' : previous
-        });
-        // Reset active slide
-        if(previous){
-            if(that.params['buttons']){
-                cm.removeClass(previous['nodes']['button'], 'active');
-            }
-        }
-        // Set active slide
-        if(that.params['buttons']){
-            cm.addClass(current['nodes']['button'], 'active');
-        }
-        // Transition effect and callback
-        effects[that.params['effect']](current, previous, function(){
-            // API onChange event
-            that.triggerEvent('onChange', {
+        if(!that.isProcess){
+            that.isProcess = true;
+            // Renew slideshow delay
+            that.params['slideshow'] && renewSlideshow();
+            // Set current active slide
+            var current = items[index],
+                previous = items[that.current];
+            that.previous = that.current;
+            that.current = index;
+            // API onChangeStart event
+            that.triggerEvent('onChangeStart', {
                 'current' : current,
                 'previous' : previous
             });
-        });
-        // Set bar item
-        if(that.params['hasBar']){
-            setBarItem(current, previous);
+            // Reset active slide
+            if(previous){
+                if(that.params['buttons']){
+                    cm.removeClass(previous['nodes']['button'], 'active');
+                }
+            }
+            // Set active slide
+            if(that.params['buttons']){
+                cm.addClass(current['nodes']['button'], 'active');
+            }
+            // Set bar item
+            if(that.params['hasBar']){
+                setBarItem(current, previous);
+            }
+            // Transition effect and callback
+            effects[that.params['effect']](current, previous, function(){
+                that.isProcess = false;
+                // API onChange event
+                that.triggerEvent('onChange', {
+                    'current' : current,
+                    'previous' : previous
+                });
+            });
         }
     };
 
