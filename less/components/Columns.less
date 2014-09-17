@@ -1,4 +1,4 @@
-/* ******* COLUMNS ******* */
+/* ******* COMPONENT: COLUMNS ******* */
 
 .com-column {
     vertical-align: top;
@@ -11,7 +11,6 @@
         -webkit-flex: 1;
             -ms-flex: 1;
                 flex: 1;
-        margin: 0 (@ComColumns-indent / 2);
         -moz-box-sizing: border-box;
              box-sizing: border-box;
         .cm-transition(background-color @cm-transitionDuration ease-in-out);
@@ -119,24 +118,6 @@
         }
     }
 
-    .for(@ComColumns-indents); .-each(@name) {
-        &.indent-@{name} {
-            .com-column > .inner {
-                margin: 0 (@name / 2);
-            }
-        }
-    }
-
-    .com-column {
-        &:first-child > .inner {
-            margin-left: 0;
-        }
-
-        &:last-child > .inner {
-            margin-right: 0;
-        }
-    }
-
     &.is-editable {
         > .inner {
             > .com-columns-chassis {
@@ -178,6 +159,18 @@
         }
     }
 
+    // /* Set columns indent */
+
+    #cm > .columns-indent(@ComColumns-indent);
+
+    .for(@ComColumns-indents); .-each(@name) {
+        &.indent-@{name} {
+            #cm > .columns-indent(@name);
+        }
+    }
+
+    // /* Legacy */
+
     .ie8 &,
     .ie9 & {
         > .inner {
@@ -189,13 +182,29 @@
     }
 }
 
+/* *** HELPERS *** */
+
 .com-columns-body,
 .com-columns-body * {
     cursor: col-resize !important;
     .cm-user-select(none);
 }
 
-/* *** ADAPTIVE *** */
+/* ******* COMPONENT: COLUMNS: BUNDLE ******* */
+
+#cm() {
+    .columns-indent (@indent: @ComColumns-indent) {
+        > .inner {
+            margin: 0 -(@indent / 2);
+        }
+
+        .com-column > .inner {
+            margin: 0 (@indent / 2);
+        }
+    }
+}
+
+/* ******* COMPONENT: COLUMNS: ADAPTIVE ******* */
 
 @media only screen and (max-width : @ComColumns-adaptiveFrom) {
 
