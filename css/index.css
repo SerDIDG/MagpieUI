@@ -4126,13 +4126,13 @@ button.has-icon-small .icon,
 .com-dialog.theme-black.is-fullscreen > .window > .inner {
   border-radius: 0;
 }
+.com-dialog.theme-default.is-title-reserve > .window > .inner > .descr:first-child,
+.com-dialog.theme-black.is-title-reserve > .window > .inner > .descr:first-child {
+  padding-top: 62px;
+}
 .com-dialog.theme-default.has-close-inside > .window > .inner > .title,
 .com-dialog.theme-black.has-close-inside > .window > .inner > .title {
   padding-right: 72px;
-}
-.com-dialog.theme-default.has-close-inside > .window > .inner > .descr:first-child,
-.com-dialog.theme-black.has-close-inside > .window > .inner > .descr:first-child {
-  padding-top: 62px;
 }
 .com-dialog.theme-black > .window > .icon.default {
   background-image: url("../img/icons/medium/close-white.png");
