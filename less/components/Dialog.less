@@ -221,17 +221,23 @@
             }
         }
 
+        &.is-title-reserve {
+            > .window {
+                > .inner {
+                    > .descr {
+                        &:first-child {
+                            padding-top: @titleHeight;
+                        }
+                    }
+                }
+            }
+        }
+
         &.has-close-inside {
             > .window {
                 > .inner {
                     > .title {
                         padding-right: @ComDialog-indent * 2 + @cm-Medium;
-                    }
-
-                    > .descr {
-                        &:first-child {
-                            padding-top: @titleHeight;
-                        }
                     }
                 }
             }

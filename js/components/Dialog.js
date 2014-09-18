@@ -49,6 +49,7 @@ cm.define('Com.Dialog', {
         'title' : '',
         'buttons' : false,
         'titleOverflow' : false,
+        'titleReserve': true,
         'closeButtonOutside' : false,
         'closeButton' : true,
         'closeTitle' : true,
@@ -113,6 +114,9 @@ function(params){
         !cm.isEmpty(that.params['className']) && cm.addClass(nodes['container'], that.params['className']);
         if(that.params['size'] == 'fullscreen'){
             cm.addClass(nodes['container'], 'is-fullscreen');
+        }
+        if(that.params['titleReserve']){
+            cm.addClass(nodes['container'], 'is-title-reserve');
         }
         // Render close button
         if(that.params['closeButtonOutside']){
