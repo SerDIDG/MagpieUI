@@ -166,6 +166,29 @@ dl, dt, dd, canvas, iframe, form {
 
 /* *** BUNDLE *** */
 
+.cm-ul-inline {
+    text-align: left;
+    font-size: 0;
+
+    > li {
+        &:extend(.font-base);
+
+        display: inline-block;
+        vertical-align: top;
+    }
+}
+
+.cm-ul-clear {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    > li {
+        margin: 0;
+        padding: 0;
+    }
+}
+
 .cm-counter {
     height: @CmCounter-size;
     padding: 0 5px;

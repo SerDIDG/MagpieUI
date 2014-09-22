@@ -181,6 +181,23 @@ form {
   margin: 0 0 24px;
 }
 /* *** BUNDLE *** */
+.cm-ul-inline {
+  text-align: left;
+  font-size: 0;
+}
+.cm-ul-inline > li {
+  display: inline-block;
+  vertical-align: top;
+}
+.cm-ul-clear {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cm-ul-clear > li {
+  margin: 0;
+  padding: 0;
+}
 .cm-counter {
   height: 16px;
   padding: 0 5px;
