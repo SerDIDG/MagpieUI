@@ -8,20 +8,22 @@
     padding: 0;
 }
 
+.cm-content-tags--title {
+}
+
 .cm-content-tags--base {
 }
 
-h1:extend(.cm-content-tags all),
-h2:extend(.cm-content-tags all),
-h3:extend(.cm-content-tags all),
-h4:extend(.cm-content-tags all),
-h5:extend(.cm-content-tags all),
-h6:extend(.cm-content-tags all),
-p:extend(.cm-content-tags all, .cm-content-tags--base all),
-dl:extend(.cm-content-tags all, .cm-content-tags--base all),
-ul:extend(.cm-content-tags all, .cm-content-tags--base all),
-ol:extend(.cm-content-tags all, .cm-content-tags--base all) {
+h1, h2, h3, h4, h5, h6, p, dl, ul, ol {
+    &:extend(.cm-content-tags all);
+}
 
+h1, h2, h3, h4, h5, h6 {
+    &:extend(.cm-content-tags--title all);
+}
+
+p, dl, ul, ol {
+    &:extend(.cm-content-tags--base all);
 }
 
 h1 {
