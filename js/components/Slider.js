@@ -25,6 +25,7 @@ cm.define('Com.Slider', {
         'arrows' : true,                // Display arrows, can hide exists arrows
         'effect' : 'fade',              // fade | push
         'transition' : 'smooth',        // smooth | simple | acceleration | inhibition,
+        'calculateMaxHeight' : false,
         'hasBar' : false,
         'barDirection' : 'horizontal',  // horizontal | vertical
         'Com.Scroll' : {
@@ -42,6 +43,7 @@ function(params){
     
     that.nodes = {
         'container' : cm.Node('div'),
+        'inner' : cm.Node('div'),
         'slides' : cm.Node('div'),
         'slidesInner' : cm.Node('ul'),
         'next' : cm.Node('div'),
@@ -100,6 +102,10 @@ function(params){
         if(!that.params['buttons'] || items.length < 2){
             that.nodes['buttons'].style.display = 'none';
         }
+        // Parameters
+        if(that.params['calculateMaxHeight']){
+            calculateMaxHeight();
+        }
         // Pause slider when it hovered
         if(that.params['slideshow'] && that.params['pauseOnHover']){
             cm.addEvent(that.nodes['container'], 'mouseover', function(e){
@@ -136,6 +142,14 @@ function(params){
 
     var afterRender = function(){
         that.triggerEvent('onRender');
+    };
+
+    var calculateMaxHeight = function(){
+        var height = 0;
+        cm.forEach(items, function(item){
+            height = Math.max(height, cm.getRealHeight(item.nodes['container'], 'offsetRelative'));
+        });
+        that.nodes['inner'].style.height = [height, 'px'].join('');
     };
 
     var collectItem = function(item, i){

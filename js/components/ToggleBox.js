@@ -114,7 +114,7 @@ function(params){
                 }
                 anim.go({
                     'style' : {
-                        'height' : [cm.getRealHeight(that.nodes['target']), 'px'].join(''),
+                        'height' : [cm.getRealHeight(that.nodes['target'], 'offset', 'current'), 'px'].join(''),
                         'opacity' : 1
                     },
                     'anim' : 'smooth',

@@ -886,14 +886,14 @@ function(params){
             // Find old draggable area and index in area
             var area = oldDraggable['area'],
                 index = area['items'].indexOf(oldDraggableNode),
-                node = cm.wrap(cm.Node('div', {'class' : 'cm-draganddrop-removable'}), newDraggableNode),
+                node = cm.wrap(cm.Node('div', {'class' : 'cm-draganddrop-removable', 'style' : 'height: 0px;'}), newDraggableNode),
                 anim = new cm.Animation(node);
             // Append new draggable into DOM
             cm.insertAfter(node, oldDraggableNode);
             // Remove old draggable
             removeDraggable(oldDraggable, params);
             // Animate new draggable
-            anim.go({'style' : {'height' : [cm.getRealHeight(node, 0), 'px'].join(''), 'opacity' : 1}, 'duration' : 300, 'anim' : 'simple', 'onStop' : function(){
+            anim.go({'style' : {'height' : [cm.getRealHeight(node, 'offset', 0), 'px'].join(''), 'opacity' : 1}, 'duration' : 300, 'anim' : 'simple', 'onStop' : function(){
                 cm.insertAfter(newDraggableNode, node);
                 cm.remove(node);
                 // Register new draggable

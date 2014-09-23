@@ -707,15 +707,15 @@ cm.node = cm.Node = function(){
     return el;
 };
 
-cm.wrap = function(node, target){
+cm.wrap = function(target, node){
     if(!target || !node){
         return null;
     }
-    if(target.parentNode){
-        cm.insertBefore(node, target);
+    if(node.parentNode){
+        cm.insertBefore(target, node);
     }
-    node.appendChild(target);
-    return node;
+    target.appendChild(node);
+    return target;
 };
 
 cm.inDOM = function(o){
@@ -1568,14 +1568,47 @@ cm.getRealWidth = function(node, applyWidth){
     return width;
 };
 
-cm.getRealHeight = function(node, applyHeight){
-    var nodeHeight = 0,
-        height = 0;
-    nodeHeight = node.offsetHeight;
+
+cm.getRealHeight = function(node, type, applyType){
+    var types = ['self', 'current', 'offset', 'offsetRelative'],
+        height = {},
+        styles;
+    // Check parameters
+    if(!node || !cm.isNode(node)){
+        return 0;
+    }
+    type = typeof type == 'undefined' || !cm.inArray(types, type)? 'offset' : type;
+    applyType = typeof applyType == 'undefined' || !cm.inArray(types, applyType) ? false : applyType;
+    cm.forEach(types, function(type){
+        height[type] = 0;
+    });
+    // Get inline styles
+    styles = {
+        'display': node.style.display,
+        'height': node.style.height,
+        'position' : node.style.position
+    };
+    node.style.display = 'block';
+    height['current'] = node.offsetHeight;
     node.style.height = 'auto';
-    height = node.offsetHeight;
-    node.style.height = typeof applyHeight == 'undefined' ? [nodeHeight, 'px'].join('') : applyHeight;
-    return height;
+
+    height['offset'] = node.offsetHeight;
+    height['self'] = height['offset']
+                     - cm.getStyle(node, 'borderTopWidth', true)
+                     - cm.getStyle(node, 'borderBottomWidth', true)
+                     - cm.getStyle(node, 'paddingTop', true)
+                     - cm.getStyle(node, 'paddingBottom', true);
+
+    node.style.position = 'relative';
+    height['offsetRelative'] = node.offsetHeight;
+    // Set default styles
+    node.style.display = styles['display'];
+    node.style.height = styles['height'];
+    node.style.position = styles['position'];
+    if(applyType){
+        node.style.height = [height[applyType], 'px'].join('');
+    }
+    return height[type];
 };
 
 cm.getIndentX = function(node){
