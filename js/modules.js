@@ -174,7 +174,7 @@ Mod['DataConfig'] = {
         if(cm.isNode(container)){
             dataMarker = dataMarker || that.params['configDataMarker'];
             sourceConfig = container.getAttribute(dataMarker);
-            if(sourceConfig && (sourceConfig = JSON.parse(sourceConfig))){
+            if(sourceConfig && (sourceConfig = cm.parseJSON(sourceConfig))){
                 that.setParams(sourceConfig);
             }
         }
@@ -186,7 +186,7 @@ Mod['DataConfig'] = {
         if(cm.isNode(node)){
             dataMarker = dataMarker || that.params['configDataMarker'];
             sourceConfig = node.getAttribute(dataMarker);
-            if(sourceConfig && (sourceConfig = JSON.parse(sourceConfig))){
+            if(sourceConfig && (sourceConfig = cm.parseJSON(sourceConfig))){
                 return sourceConfig;
             }
         }
