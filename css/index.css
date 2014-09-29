@@ -90,7 +90,9 @@ form {
 }
 /* *** FONT *** */
 .cm-font-base,
-.com-timeselect > .inner > .sep {
+.cm-ul-inline > li,
+.com-timeselect > .inner > .sep,
+.com-slider > .inner > .slides.effect-push > ul > li {
   font: normal 13px/18px 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
 }
@@ -181,20 +183,24 @@ form {
   margin: 0 0 24px;
 }
 /* *** BUNDLE *** */
-.cm-ul-inline {
+.cm-ul-inline,
+.com-slider > .inner > .slides.effect-push > ul {
   text-align: left;
   font-size: 0;
 }
-.cm-ul-inline > li {
+.cm-ul-inline > li,
+.com-slider > .inner > .slides.effect-push > ul > li {
   display: inline-block;
   vertical-align: top;
 }
-.cm-ul-clear {
+.cm-ul-clear,
+.com-slider > .inner > .slides > ul {
   margin: 0;
   padding: 0;
   list-style: none;
 }
-.cm-ul-clear > li {
+.cm-ul-clear > li,
+.com-slider > .inner > .slides > ul > li {
   margin: 0;
   padding: 0;
 }
@@ -1304,12 +1310,41 @@ button.has-icon-small .icon,
 .cm-box-flat:last-child {
   margin: 0;
 }
+/* *** CONTENT *** */
 .cm-box-content {
   margin: 0 0 48px;
+}
+.cm-box-content.indent-0px {
+  margin: 0 0 0px;
+}
+.cm-box-content.indent-4px {
+  margin: 0 0 4px;
+}
+.cm-box-content.indent-8px {
+  margin: 0 0 8px;
+}
+.cm-box-content.indent-12px {
+  margin: 0 0 12px;
+}
+.cm-box-content.indent-16px {
+  margin: 0 0 16px;
+}
+.cm-box-content.indent-24px {
+  margin: 0 0 24px;
+}
+.cm-box-content.indent-32px {
+  margin: 0 0 32px;
+}
+.cm-box-content.indent-48px {
+  margin: 0 0 48px;
+}
+.cm-box-content.indent-64px {
+  margin: 0 0 64px;
 }
 .cm-box-content:last-child {
   margin: 0;
 }
+/* *** INFO *** */
 .cm-box-info {
   margin: 0 0 24px;
 }
@@ -2511,6 +2546,19 @@ button.has-icon-small .icon,
 .cm-title-editable.bottom {
   margin: 0;
 }
+.cm-title-editable .cm-content-tags,
+.cm-title-editable h1,
+.cm-title-editable h2,
+.cm-title-editable h3,
+.cm-title-editable h4,
+.cm-title-editable h5,
+.cm-title-editable h6,
+.cm-title-editable p,
+.cm-title-editable dl,
+.cm-title-editable ul,
+.cm-title-editable ol {
+  margin-bottom: 0;
+}
 .cm-title-editable > .r {
   float: right;
   margin: 0 0 0 24px;
@@ -2520,19 +2568,6 @@ button.has-icon-small .icon,
 }
 .cm-title-editable > .l {
   overflow: hidden;
-}
-.cm-title-editable > .l .cm-content-tags,
-.cm-title-editable > .l h1,
-.cm-title-editable > .l h2,
-.cm-title-editable > .l h3,
-.cm-title-editable > .l h4,
-.cm-title-editable > .l h5,
-.cm-title-editable > .l h6,
-.cm-title-editable > .l p,
-.cm-title-editable > .l dl,
-.cm-title-editable > .l ul,
-.cm-title-editable > .l ol {
-  margin-bottom: 0;
 }
 /* ******* PART: TITLE EDITABLE: ADAPTIVE ******* */
 @media only screen and (max-width: 640px) {
@@ -5522,15 +5557,12 @@ button.has-icon-small .icon,
   z-index: 1;
 }
 .com-slider > .inner > .slides > ul {
-  margin: 0;
-  padding: 0;
   overflow: hidden;
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
-  list-style: none;
 }
 .com-slider > .inner > .slides > ul > li > .cm-imagebox {
   width: 100%;
@@ -5566,18 +5598,28 @@ button.has-icon-small .icon,
   -moz-user-select: text;
   user-select: text;
 }
-.com-slider > .inner > .slides > ul > li > .text * {
+.com-slider > .inner > .slides > ul > li > .text .cm-content-tags,
+.com-slider > .inner > .slides > ul > li > .text h1,
+.com-slider > .inner > .slides > ul > li > .text h2,
+.com-slider > .inner > .slides > ul > li > .text h3,
+.com-slider > .inner > .slides > ul > li > .text h4,
+.com-slider > .inner > .slides > ul > li > .text h5,
+.com-slider > .inner > .slides > ul > li > .text h6,
+.com-slider > .inner > .slides > ul > li > .text p,
+.com-slider > .inner > .slides > ul > li > .text dl,
+.com-slider > .inner > .slides > ul > li > .text ul,
+.com-slider > .inner > .slides > ul > li > .text ol {
   color: #fff;
 }
 .com-slider > .inner > .slides.effect-fade > ul > li {
   display: none;
   position: absolute;
+  z-index: 1;
+  opacity: 0;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 1;
-  opacity: 0;
 }
 .com-slider > .inner > .slides.effect-fade > ul > li:first-child {
   display: block;
@@ -5586,14 +5628,11 @@ button.has-icon-small .icon,
 }
 .com-slider > .inner > .slides.effect-push > ul {
   white-space: nowrap;
-  font-size: 0;
 }
 .com-slider > .inner > .slides.effect-push > ul > li {
   width: 100%;
   height: 100%;
-  display: inline-block;
   position: relative;
-  vertical-align: top;
 }
 .com-slider:hover > .inner > .com-gallery-controls {
   opacity: 1;

@@ -76,7 +76,7 @@ function(params){
         }else{
             if(that.params['selected'] && options[that.params['selected']]){
                 set(options[that.params['selected']]);
-            }else if(that.params['select'].value){
+            }else if(options[that.params['select'].value]){
                 set(options[that.params['select'].value]);
             }else if(optionsLength){
                 set(optionsList[0]);

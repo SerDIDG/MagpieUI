@@ -17,13 +17,33 @@
     }
 }
 
-.cm-box-content:extend(.clear all) {
-    margin: 0 0 @cm-indentXLarge;
+/* *** CONTENT *** */
+
+.cm-box-content {
+    &:extend(.clear all);
+
+    // /* Set grid items indent */
+
+    #cm > .box-content__indent(@CmBoxContent-Indent);
+
+    .for(@CmBoxContent-Indents); .-each(@name) {
+        &.indent-@{name} {
+            #cm > .box-content__indent(@name);
+        }
+    }
 
     &:last-child {
         margin: 0;
     }
 }
+
+#cm () {
+    .box-content__indent (@indent: @CmBoxContent-Indent){
+        margin: 0 0 @indent;
+    }
+}
+
+/* *** INFO *** */
 
 .cm-box-info {
     margin: 0 0 @cm-indentMedium;

@@ -85,6 +85,7 @@
 @cm-borderEditable: @cm-borderWidth dashed @cm-color;
 @cm-borderBox: @cm-borderBoxWidth solid @cm-colorBorder;
 @cm-borderBoxActive: @cm-borderBoxWidth solid @cm-colorActive;
+@cm-borderBoxSelected: @cm-borderBoxWidth solid @cm-color;
 
 // /* *** INDENT *** */
 
@@ -116,7 +117,7 @@
 // /* ******* FORM ******* */
 
 @CmForm-fieldHeight: 28px;
-@CmForm-fieldIndent: 16px;
+@CmForm-fieldIndent: @cm-indentSmall;
 @CmForm-fieldTitleWidth: 150px;
 @CmForm-fieldInnerIndent: @CmForm-fieldIndent / 2;
 @CmForm-buttonsIndent: @cm-indentXXSmall;
@@ -226,6 +227,11 @@
 // /* *** SHARE LINE *** */
 
 @CmShareLine-iconSize: @cm-Large;
+
+// /* *** BOX *** */
+
+@CmBoxContent-Indent: @cm-indentXLarge;
+@CmBoxContent-Indents: 0px @cm-indentXXXSmall @cm-indentXXSmall @cm-indentXSmall @cm-indentSmall @cm-indentMedium @cm-indentLarge @cm-indentXLarge @cm-indentXXLarge;
 
 // /* ******* COMPONENTS ******* */
 
