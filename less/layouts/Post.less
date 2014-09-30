@@ -1,8 +1,8 @@
-/* ******* COMPONENT: BLOG ******* */
+/* ******* LAYOUT: POST ******* */
 
 /* *** POST *** */
 
-.com-blogpost {
+.lt__post {
     position: relative;
 
     .post-title {
@@ -36,6 +36,12 @@
             &:first-child {
                 margin: 0;
             }
+        }
+    }
+
+    .post-abstract {
+        .cm-content-tags {
+            margin: 0;
         }
     }
 
@@ -84,8 +90,8 @@
 
 /* *** POSTS *** */
 
-.com-blog-posts {
-    .com-blogpost {
+.lt__posts {
+    .lt__post {
         margin: @cm-indentLarge 0 0;
 
         &:first-child {

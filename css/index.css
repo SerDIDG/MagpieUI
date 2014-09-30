@@ -272,6 +272,15 @@ form {
   margin: 24px 0 0 0;
   text-align: right;
 }
+.cm-view-all.pull-left {
+  text-align: left;
+}
+.cm-view-all.pull-center {
+  text-align: center;
+}
+.cm-view-all.pull-right {
+  text-align: right;
+}
 .cm-scroll-y {
   -webkit-overflow-scrolling: touch;
   overflow-x: hidden;
@@ -625,220 +634,6 @@ input[type="file"] {
 input[type="radio"],
 input[type="checkbox"] {
   cursor: pointer;
-}
-/* *** BUTTONS *** */
-.cm-button,
-input[type="button"],
-input[type="submit"],
-input[type="reset"],
-button,
-.button {
-  height: 28px;
-  margin: 0;
-  padding: 0 12px;
-  position: relative;
-  display: inline-block;
-  vertical-align: top;
-  -webkit-appearance: none;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  -webkit-background-clip: border-box;
-  -moz-background-clip: border-box;
-  background-clip: border-box;
-  border: none;
-  border-radius: 3px;
-  text-align: center;
-  text-decoration: none;
-  line-height: 28px;
-  font-size: 13px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  cursor: pointer;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
-  background: #308ce8;
-  color: #fff;
-  -webkit-transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-}
-.cm-button:hover,
-input[type="button"]:hover,
-input[type="submit"]:hover,
-input[type="reset"]:hover,
-button:hover,
-.button:hover {
-  background-color: #1773cf;
-  color: #fff;
-}
-.cm-button:active,
-.cm-button.active,
-input[type="button"]:active,
-input[type="button"].active,
-input[type="submit"]:active,
-input[type="submit"].active,
-input[type="reset"]:active,
-input[type="reset"].active,
-button:active,
-button.active,
-.button:active,
-.button.active {
-  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.4) inset;
-}
-.cm-button.wide,
-input[type="button"].wide,
-input[type="submit"].wide,
-input[type="reset"].wide,
-button.wide,
-.button.wide {
-  width: 100%;
-  padding: 0;
-  margin: 0;
-  display: block;
-}
-.cm-button:hover,
-input[type="button"]:hover,
-input[type="submit"]:hover,
-input[type="reset"]:hover,
-button:hover,
-.button:hover {
-  text-decoration: none;
-  -webkit-transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
-  transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
-}
-.cm-button.secondary,
-input[type="button"].secondary,
-input[type="submit"].secondary,
-input[type="reset"].secondary,
-button.secondary,
-.button.secondary {
-  background: #f2f2f2;
-  color: #308ce8;
-}
-.cm-button.secondary:hover,
-input[type="button"].secondary:hover,
-input[type="submit"].secondary:hover,
-input[type="reset"].secondary:hover,
-button.secondary:hover,
-.button.secondary:hover {
-  background: #fafafa;
-  color: #308ce8;
-}
-.cm-button.secondary:active,
-.cm-button.secondary.active,
-input[type="button"].secondary:active,
-input[type="button"].secondary.active,
-input[type="submit"].secondary:active,
-input[type="submit"].secondary.active,
-input[type="reset"].secondary:active,
-input[type="reset"].secondary.active,
-button.secondary:active,
-button.secondary.active,
-.button.secondary:active,
-.button.secondary.active {
-  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2) inset;
-}
-.cm-button.error,
-input[type="button"].error,
-input[type="submit"].error,
-input[type="reset"].error,
-button.error,
-.button.error {
-  background: #e61919;
-  color: #ffffff;
-}
-.cm-button.error:hover,
-input[type="button"].error:hover,
-input[type="submit"].error:hover,
-input[type="reset"].error:hover,
-button.error:hover,
-.button.error:hover {
-  background: #b81414;
-  color: #ffffff;
-}
-.cm-button.error:active,
-.cm-button.error.active,
-input[type="button"].error:active,
-input[type="button"].error.active,
-input[type="submit"].error:active,
-input[type="submit"].error.active,
-input[type="reset"].error:active,
-input[type="reset"].error.active,
-button.error:active,
-button.error.active,
-.button.error:active,
-.button.error.active {
-  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.4) inset;
-}
-.cm-button.transparent,
-input[type="button"].transparent,
-input[type="submit"].transparent,
-input[type="reset"].transparent,
-button.transparent,
-.button.transparent {
-  background: none;
-  box-shadow: none;
-  border: none;
-  color: #308ce8;
-}
-.cm-button.transparent:hover,
-input[type="button"].transparent:hover,
-input[type="submit"].transparent:hover,
-input[type="reset"].transparent:hover,
-button.transparent:hover,
-.button.transparent:hover {
-  background: #f2f2f2;
-  color: #308ce8;
-}
-.cm-button.transparent:active,
-.cm-button.transparent.active,
-input[type="button"].transparent:active,
-input[type="button"].transparent.active,
-input[type="submit"].transparent:active,
-input[type="submit"].transparent.active,
-input[type="reset"].transparent:active,
-input[type="reset"].transparent.active,
-button.transparent:active,
-button.transparent.active,
-.button.transparent:active,
-.button.transparent.active {
-  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2) inset;
-}
-.cm-button.has-icon,
-input[type="button"].has-icon,
-input[type="submit"].has-icon,
-input[type="reset"].has-icon,
-button.has-icon,
-.button.has-icon {
-  padding-left: 0;
-}
-.cm-button.has-icon .icon,
-input[type="button"].has-icon .icon,
-input[type="submit"].has-icon .icon,
-input[type="reset"].has-icon .icon,
-button.has-icon .icon,
-.button.has-icon .icon {
-  display: block;
-  float: left;
-  position: relative;
-  top: 50%;
-}
-.cm-button.has-icon-medium .icon,
-input[type="button"].has-icon-medium .icon,
-input[type="submit"].has-icon-medium .icon,
-input[type="reset"].has-icon-medium .icon,
-button.has-icon-medium .icon,
-.button.has-icon-medium .icon {
-  margin: -12px 2px 0;
-}
-.cm-button.has-icon-small .icon,
-input[type="button"].has-icon-small .icon,
-input[type="submit"].has-icon-small .icon,
-input[type="reset"].has-icon-small .icon,
-button.has-icon-small .icon,
-.button.has-icon-small .icon {
-  margin: -8px 6px 0;
 }
 /* ******* PART: ANIMATE ******* */
 /**
@@ -1283,6 +1078,361 @@ button.has-icon-small .icon,
 .cm-color-error {
   color: #e61919;
 }
+/* *** PARTS: BUTTONS *** */
+.cm-button,
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+button,
+.button {
+  height: 28px;
+  margin: 0;
+  padding: 0 12px;
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+  -webkit-appearance: none;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-background-clip: border-box;
+  -moz-background-clip: border-box;
+  background-clip: border-box;
+  border: none;
+  border-radius: 3px;
+  text-align: center;
+  text-decoration: none;
+  line-height: 28px;
+  font-size: 13px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  background: #308ce8;
+  color: #fff;
+  -webkit-transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+.cm-button:hover,
+input[type="button"]:hover,
+input[type="submit"]:hover,
+input[type="reset"]:hover,
+button:hover,
+.button:hover {
+  background-color: #1773cf;
+  color: #fff;
+}
+.cm-button:active,
+.cm-button.active,
+input[type="button"]:active,
+input[type="button"].active,
+input[type="submit"]:active,
+input[type="submit"].active,
+input[type="reset"]:active,
+input[type="reset"].active,
+button:active,
+button.active,
+.button:active,
+.button.active {
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.4) inset;
+}
+.cm-button.wide,
+input[type="button"].wide,
+input[type="submit"].wide,
+input[type="reset"].wide,
+button.wide,
+.button.wide {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  display: block;
+}
+.cm-button:hover,
+input[type="button"]:hover,
+input[type="submit"]:hover,
+input[type="reset"]:hover,
+button:hover,
+.button:hover {
+  text-decoration: none;
+  -webkit-transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+  transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+}
+.cm-button.secondary,
+input[type="button"].secondary,
+input[type="submit"].secondary,
+input[type="reset"].secondary,
+button.secondary,
+.button.secondary {
+  background: #f2f2f2;
+  color: #308ce8;
+}
+.cm-button.secondary:hover,
+input[type="button"].secondary:hover,
+input[type="submit"].secondary:hover,
+input[type="reset"].secondary:hover,
+button.secondary:hover,
+.button.secondary:hover {
+  background: #fafafa;
+  color: #308ce8;
+}
+.cm-button.secondary:active,
+.cm-button.secondary.active,
+input[type="button"].secondary:active,
+input[type="button"].secondary.active,
+input[type="submit"].secondary:active,
+input[type="submit"].secondary.active,
+input[type="reset"].secondary:active,
+input[type="reset"].secondary.active,
+button.secondary:active,
+button.secondary.active,
+.button.secondary:active,
+.button.secondary.active {
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2) inset;
+}
+.cm-button.error,
+input[type="button"].error,
+input[type="submit"].error,
+input[type="reset"].error,
+button.error,
+.button.error {
+  background: #e61919;
+  color: #ffffff;
+}
+.cm-button.error:hover,
+input[type="button"].error:hover,
+input[type="submit"].error:hover,
+input[type="reset"].error:hover,
+button.error:hover,
+.button.error:hover {
+  background: #b81414;
+  color: #ffffff;
+}
+.cm-button.error:active,
+.cm-button.error.active,
+input[type="button"].error:active,
+input[type="button"].error.active,
+input[type="submit"].error:active,
+input[type="submit"].error.active,
+input[type="reset"].error:active,
+input[type="reset"].error.active,
+button.error:active,
+button.error.active,
+.button.error:active,
+.button.error.active {
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.4) inset;
+}
+.cm-button.transparent,
+input[type="button"].transparent,
+input[type="submit"].transparent,
+input[type="reset"].transparent,
+button.transparent,
+.button.transparent {
+  background: none;
+  box-shadow: none;
+  border: none;
+  color: #308ce8;
+}
+.cm-button.transparent:hover,
+input[type="button"].transparent:hover,
+input[type="submit"].transparent:hover,
+input[type="reset"].transparent:hover,
+button.transparent:hover,
+.button.transparent:hover {
+  background: #f2f2f2;
+  color: #308ce8;
+}
+.cm-button.transparent:active,
+.cm-button.transparent.active,
+input[type="button"].transparent:active,
+input[type="button"].transparent.active,
+input[type="submit"].transparent:active,
+input[type="submit"].transparent.active,
+input[type="reset"].transparent:active,
+input[type="reset"].transparent.active,
+button.transparent:active,
+button.transparent.active,
+.button.transparent:active,
+.button.transparent.active {
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2) inset;
+}
+.cm-button.has-icon,
+input[type="button"].has-icon,
+input[type="submit"].has-icon,
+input[type="reset"].has-icon,
+button.has-icon,
+.button.has-icon {
+  padding-left: 0;
+}
+.cm-button.has-icon .icon,
+input[type="button"].has-icon .icon,
+input[type="submit"].has-icon .icon,
+input[type="reset"].has-icon .icon,
+button.has-icon .icon,
+.button.has-icon .icon {
+  display: block;
+  float: left;
+  position: relative;
+  top: 50%;
+}
+.cm-button.has-icon-medium .icon,
+input[type="button"].has-icon-medium .icon,
+input[type="submit"].has-icon-medium .icon,
+input[type="reset"].has-icon-medium .icon,
+button.has-icon-medium .icon,
+.button.has-icon-medium .icon {
+  margin: -12px 2px 0;
+}
+.cm-button.has-icon-small .icon,
+input[type="button"].has-icon-small .icon,
+input[type="submit"].has-icon-small .icon,
+input[type="reset"].has-icon-small .icon,
+button.has-icon-small .icon,
+.button.has-icon-small .icon {
+  margin: -8px 6px 0;
+}
+/* *** BUTTONS CONTAINER *** */
+.btn-wrap {
+  height: 28px;
+  margin-top: 24px;
+  line-height: 28px;
+}
+.btn-wrap .hint {
+  padding: 0 8px 0 0;
+  font-style: italic;
+  overflow: hidden;
+  text-align: right;
+  line-height: 28px;
+  font-size: 12px;
+}
+.btn-wrap .cm-button,
+.btn-wrap .browse-button,
+.btn-wrap .com-action-menu,
+.btn-wrap input[type="button"],
+.btn-wrap input[type="submit"],
+.btn-wrap input[type="reset"],
+.btn-wrap button,
+.btn-wrap .button {
+  float: right;
+  margin: 0 0 0 8px;
+}
+.btn-wrap .cm-button.left,
+.btn-wrap .browse-button.left,
+.btn-wrap .com-action-menu.left,
+.btn-wrap input[type="button"].left,
+.btn-wrap input[type="submit"].left,
+.btn-wrap input[type="reset"].left,
+.btn-wrap button.left,
+.btn-wrap .button.left {
+  float: left;
+  margin: 0 8px 0 0;
+}
+.btn-wrap .cm-button.wide,
+.btn-wrap .browse-button.wide,
+.btn-wrap .com-action-menu.wide,
+.btn-wrap input[type="button"].wide,
+.btn-wrap input[type="submit"].wide,
+.btn-wrap input[type="reset"].wide,
+.btn-wrap button.wide,
+.btn-wrap .button.wide {
+  width: 100%;
+  float: none;
+  margin: 0;
+}
+.btn-wrap.error .hint {
+  color: #e61919;
+}
+.btn-wrap.ok .hint {
+  color: #009900;
+}
+.btn-wrap.left .cm-button,
+.btn-wrap.left .browse-button,
+.btn-wrap.left .com-action-menu,
+.btn-wrap.left input[type="button"],
+.btn-wrap.left input[type="submit"],
+.btn-wrap.left input[type="reset"],
+.btn-wrap.left button,
+.btn-wrap.left .button {
+  float: left;
+  margin: 0 8px 0 0;
+}
+.btn-wrap.centered {
+  text-align: center;
+}
+.btn-wrap.centered .cm-button,
+.btn-wrap.centered .browse-button,
+.btn-wrap.centered .com-action-menu,
+.btn-wrap.centered input[type="button"],
+.btn-wrap.centered input[type="submit"],
+.btn-wrap.centered input[type="reset"],
+.btn-wrap.centered button,
+.btn-wrap.centered .button {
+  float: none;
+  display: inline-block;
+  margin: 0 0 0 8px;
+}
+.btn-wrap.centered .cm-button:first-child,
+.btn-wrap.centered .browse-button:first-child,
+.btn-wrap.centered .com-action-menu:first-child,
+.btn-wrap.centered input[type="button"]:first-child,
+.btn-wrap.centered input[type="submit"]:first-child,
+.btn-wrap.centered input[type="reset"]:first-child,
+.btn-wrap.centered button:first-child,
+.btn-wrap.centered .button:first-child {
+  margin: 0;
+}
+.btn-wrap.is-block {
+  height: auto;
+}
+.btn-wrap.is-block .cm-button,
+.btn-wrap.is-block .browse-button,
+.btn-wrap.is-block .com-action-menu,
+.btn-wrap.is-block input[type="button"],
+.btn-wrap.is-block input[type="submit"],
+.btn-wrap.is-block input[type="reset"],
+.btn-wrap.is-block button,
+.btn-wrap.is-block .button {
+  width: 100%;
+  display: block;
+  margin: 8px 0 0 0;
+  float: none;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.btn-wrap.is-block .cm-button:first-child,
+.btn-wrap.is-block .browse-button:first-child,
+.btn-wrap.is-block .com-action-menu:first-child,
+.btn-wrap.is-block input[type="button"]:first-child,
+.btn-wrap.is-block input[type="submit"]:first-child,
+.btn-wrap.is-block input[type="reset"]:first-child,
+.btn-wrap.is-block button:first-child,
+.btn-wrap.is-block .button:first-child {
+  margin: 0;
+}
+.btn-wrap.is-flexible {
+  -ms-flex-pack: center;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+}
+.btn-wrap.is-flexible .cm-button,
+.btn-wrap.is-flexible .browse-button,
+.btn-wrap.is-flexible .com-action-menu,
+.btn-wrap.is-flexible input[type="button"],
+.btn-wrap.is-flexible input[type="submit"],
+.btn-wrap.is-flexible input[type="reset"],
+.btn-wrap.is-flexible button,
+.btn-wrap.is-flexible .button {
+  float: none;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+}
 /* ******* PART: BOX ******* */
 .cm-box {
   padding: 4px;
@@ -1689,125 +1839,6 @@ button.has-icon-small .icon,
 .browse-button:active button,
 .browse-button:active .button {
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.4) inset;
-}
-/* *** BUTTON CONTAINER *** */
-.btn-wrap {
-  height: 28px;
-  margin-top: 24px;
-  line-height: 28px;
-}
-.btn-wrap .hint {
-  padding: 0 8px 0 0;
-  font-style: italic;
-  overflow: hidden;
-  text-align: right;
-  line-height: 28px;
-  font-size: 12px;
-}
-.btn-wrap .cm-button,
-.btn-wrap .browse-button,
-.btn-wrap .com-action-menu,
-.btn-wrap input[type="button"],
-.btn-wrap input[type="submit"],
-.btn-wrap input[type="reset"],
-.btn-wrap button,
-.btn-wrap .button {
-  float: right;
-  margin: 0 0 0 8px;
-}
-.btn-wrap .cm-button.left,
-.btn-wrap .browse-button.left,
-.btn-wrap .com-action-menu.left,
-.btn-wrap input[type="button"].left,
-.btn-wrap input[type="submit"].left,
-.btn-wrap input[type="reset"].left,
-.btn-wrap button.left,
-.btn-wrap .button.left {
-  float: left;
-  margin: 0 8px 0 0;
-}
-.btn-wrap .cm-button.wide,
-.btn-wrap .browse-button.wide,
-.btn-wrap .com-action-menu.wide,
-.btn-wrap input[type="button"].wide,
-.btn-wrap input[type="submit"].wide,
-.btn-wrap input[type="reset"].wide,
-.btn-wrap button.wide,
-.btn-wrap .button.wide {
-  width: 100%;
-  float: none;
-  margin: 0;
-}
-.btn-wrap.error .hint {
-  color: #e61919;
-}
-.btn-wrap.ok .hint {
-  color: #009900;
-}
-.btn-wrap.left .cm-button,
-.btn-wrap.left .browse-button,
-.btn-wrap.left .com-action-menu,
-.btn-wrap.left input[type="button"],
-.btn-wrap.left input[type="submit"],
-.btn-wrap.left input[type="reset"],
-.btn-wrap.left button,
-.btn-wrap.left .button {
-  float: left;
-  margin: 0 8px 0 0;
-}
-.btn-wrap.centered {
-  text-align: center;
-}
-.btn-wrap.centered .cm-button,
-.btn-wrap.centered .browse-button,
-.btn-wrap.centered .com-action-menu,
-.btn-wrap.centered input[type="button"],
-.btn-wrap.centered input[type="submit"],
-.btn-wrap.centered input[type="reset"],
-.btn-wrap.centered button,
-.btn-wrap.centered .button {
-  float: none;
-  display: inline-block;
-  margin: 0 0 0 8px;
-}
-.btn-wrap.centered .cm-button:first-child,
-.btn-wrap.centered .browse-button:first-child,
-.btn-wrap.centered .com-action-menu:first-child,
-.btn-wrap.centered input[type="button"]:first-child,
-.btn-wrap.centered input[type="submit"]:first-child,
-.btn-wrap.centered input[type="reset"]:first-child,
-.btn-wrap.centered button:first-child,
-.btn-wrap.centered .button:first-child {
-  margin: 0;
-}
-.btn-wrap.is-block {
-  height: auto;
-}
-.btn-wrap.is-block .cm-button,
-.btn-wrap.is-block .browse-button,
-.btn-wrap.is-block .com-action-menu,
-.btn-wrap.is-block input[type="button"],
-.btn-wrap.is-block input[type="submit"],
-.btn-wrap.is-block input[type="reset"],
-.btn-wrap.is-block button,
-.btn-wrap.is-block .button {
-  width: 100%;
-  display: block;
-  margin: 8px 0 0 0;
-  float: none;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-.btn-wrap.is-block .cm-button:first-child,
-.btn-wrap.is-block .browse-button:first-child,
-.btn-wrap.is-block .com-action-menu:first-child,
-.btn-wrap.is-block input[type="button"]:first-child,
-.btn-wrap.is-block input[type="submit"]:first-child,
-.btn-wrap.is-block input[type="reset"]:first-child,
-.btn-wrap.is-block button:first-child,
-.btn-wrap.is-block .button:first-child {
-  margin: 0;
 }
 /* *** CHECKBOX / RADIO LINE *** */
 .check-line {
@@ -3565,6 +3596,77 @@ button.has-icon-small .icon,
 .cm-list-counted.is-inline ul li .r,
 .cm-list-counted.is-inline ul li .l {
   float: left;
+}
+/* ************ FIORA UI: LAYOUTS ************ */
+/* ******* LAYOUT: POST ******* */
+/* *** POST *** */
+.lt__post {
+  position: relative;
+}
+.lt__post .post-title {
+  margin: 0 0 4px;
+}
+.lt__post .post-info,
+.lt__post .post-tags {
+  font: normal 11px/18px 'Open Sans', arial, helvetica, sans-serif;
+  color: #666666;
+}
+.lt__post .post-info .cm-line-info,
+.lt__post .post-info .cm-listing .stuff {
+  margin: 0;
+}
+.lt__post .post-info .cm-line-info *,
+.lt__post .post-info .cm-listing .stuff * {
+  line-height: inherit;
+  font-size: inherit;
+}
+.lt__post .post-info.is-bottom {
+  margin: 12px 0 0 0;
+}
+.lt__post .post-share .cm-line-share {
+  margin: 24px 0 0 0;
+}
+.lt__post .post-share .cm-line-share:first-child {
+  margin: 0;
+}
+.lt__post .cm-toolbar,
+.lt__post .post-abstract,
+.lt__post .post-entry,
+.lt__post .post-tags {
+  margin: 12px 0 0 0;
+}
+.lt__post.is-pending:before,
+.lt__post.is-featured:before {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  bottom: -8px;
+  left: -8px;
+  display: block;
+  z-index: -1;
+  content: '';
+  background-color: #fff9ef;
+  border-radius: 3px;
+}
+.lt__post.is-featured:before {
+  background-color: #f1f7fd;
+}
+.lt__post.is-pending:before {
+  background-color: #fff9ef;
+}
+.lt__post.is-entry .post-info.is-bottom,
+.lt__post.is-entry .cm-toolbar,
+.lt__post.is-entry .post-entry,
+.lt__post.is-entry .post-abstract,
+.lt__post.is-entry .post-tags {
+  margin: 24px 0 0 0;
+}
+/* *** POSTS *** */
+.lt__posts .lt__post {
+  margin: 32px 0 0;
+}
+.lt__posts .lt__post:first-child {
+  margin: 0;
 }
 /* ************ FIORA UI: COMPONENTS ************ */
 /* ******* COMPONENT: TOOLTIP ******* */
@@ -5791,76 +5893,6 @@ button.has-icon-small .icon,
 .com-tags.is-editable > .inner > .l {
   line-height: 28px;
 }
-/* ******* COMPONENT: BLOG ******* */
-/* *** POST *** */
-.com-blogpost {
-  position: relative;
-}
-.com-blogpost .post-title {
-  margin: 0 0 4px;
-}
-.com-blogpost .post-info,
-.com-blogpost .post-tags {
-  font: normal 11px/18px 'Open Sans', arial, helvetica, sans-serif;
-  color: #666666;
-}
-.com-blogpost .post-info .cm-line-info,
-.com-blogpost .post-info .cm-listing .stuff {
-  margin: 0;
-}
-.com-blogpost .post-info .cm-line-info *,
-.com-blogpost .post-info .cm-listing .stuff * {
-  line-height: inherit;
-  font-size: inherit;
-}
-.com-blogpost .post-info.is-bottom {
-  margin: 12px 0 0 0;
-}
-.com-blogpost .post-share .cm-line-share {
-  margin: 24px 0 0 0;
-}
-.com-blogpost .post-share .cm-line-share:first-child {
-  margin: 0;
-}
-.com-blogpost .cm-toolbar,
-.com-blogpost .post-abstract,
-.com-blogpost .post-entry,
-.com-blogpost .post-tags {
-  margin: 12px 0 0 0;
-}
-.com-blogpost.is-pending:before,
-.com-blogpost.is-featured:before {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  bottom: -8px;
-  left: -8px;
-  display: block;
-  z-index: -1;
-  content: '';
-  background-color: #fff9ef;
-  border-radius: 3px;
-}
-.com-blogpost.is-featured:before {
-  background-color: #f1f7fd;
-}
-.com-blogpost.is-pending:before {
-  background-color: #fff9ef;
-}
-.com-blogpost.is-entry .post-info.is-bottom,
-.com-blogpost.is-entry .cm-toolbar,
-.com-blogpost.is-entry .post-entry,
-.com-blogpost.is-entry .post-abstract,
-.com-blogpost.is-entry .post-tags {
-  margin: 24px 0 0 0;
-}
-/* *** POSTS *** */
-.com-blog-posts .com-blogpost {
-  margin: 32px 0 0;
-}
-.com-blog-posts .com-blogpost:first-child {
-  margin: 0;
-}
 /* ******* COMPONENT: FORUM ******* */
 /* *** MAIN *** */
 .com-forum-cell-icon {
@@ -6476,6 +6508,9 @@ button.has-icon-small .icon,
     width: auto !important;
     height: auto;
     display: block;
+  }
+  html.is-adaptive .com-columns > .inner {
+    margin: 0;
   }
   html.is-adaptive .com-columns > .inner > .container {
     display: block;
