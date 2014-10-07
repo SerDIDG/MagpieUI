@@ -89,55 +89,6 @@ form {
   vertical-align: bottom !important;
 }
 /* *** FONT *** */
-.cm-font-base,
-.cm-ul-inline > li,
-.com-timeselect > .inner > .sep,
-.com-slider > .inner > .slides.effect-push > ul > li {
-  font: normal 13px/18px 'Open Sans', arial, helvetica, sans-serif;
-  color: #666666;
-}
-.cm-font-link {
-  text-decoration: underline;
-  color: #666666;
-  outline: none;
-  cursor: pointer;
-}
-.cm-font-link:hover {
-  text-decoration: none;
-  color: #666666;
-}
-.cm-font-ui,
-.cm-line-share .label,
-.cm-line-share .count {
-  font: normal 11px/18px 'Open Sans', arial, helvetica, sans-serif;
-  color: #666666;
-}
-.cm-font-ui-cursive,
-.com-togglebox-empty {
-  font: normal 11px/18px 'Open Sans', arial, helvetica, sans-serif;
-  color: #666666;
-  font-style: italic;
-}
-.cm-font-title {
-  font: 300 30px/38px 'Open Sans', 'Open Sans', arial, helvetica, sans-serif;
-  color: #666666;
-}
-.cm-font-title-medium {
-  font: 300 16px/24px 'Open Sans', 'Open Sans', arial, helvetica, sans-serif;
-  color: #666666;
-}
-.cm-font-hint {
-  font: normal 11px/18px 'Open Sans', arial, helvetica, sans-serif;
-  color: #666666;
-}
-.cm-font-hint-cursive,
-.form .hint,
-.cm-itembox .hint {
-  font: normal 11px/18px 'Open Sans', arial, helvetica, sans-serif;
-  color: #666666;
-  font-style: italic;
-  color: #999999;
-}
 .cm-block-padding {
   padding: 24px;
 }
@@ -214,8 +165,8 @@ form {
   font-size: 11px;
   font-weight: normal;
   color: #ffffff;
-  -webkit-transition: all 0.3s ease-in-out;
-  transition: all 0.3s ease-in-out;
+  -webkit-transition: all 300ms ease-in-out;
+  transition: all 300ms ease-in-out;
 }
 .cm-codebox {
   display: block;
@@ -286,10 +237,10 @@ form {
   overflow-x: hidden;
   overflow-y: scroll;
 }
+.cm-scroll-y-a,
 .cm-scroll-a-y {
   -webkit-overflow-scrolling: touch;
   overflow-x: hidden;
-  overflow-y: scroll;
   overflow-y: auto;
 }
 .cm-list {
@@ -349,8 +300,8 @@ form {
   position: absolute;
   left: 0;
   top: 0;
-  -webkit-transition: width 0.3s ease-in-out, background-color 0.3s ease-in-out;
-  transition: width 0.3s ease-in-out, background-color 0.3s ease-in-out;
+  -webkit-transition: width 300ms ease-in-out, background-color 300ms ease-in-out;
+  transition: width 300ms ease-in-out, background-color 300ms ease-in-out;
 }
 .com-gridlist .cm-progress-bar {
   width: 100%;
@@ -434,6 +385,56 @@ form {
   }
 }
 /* ************ COMMON PARTS ************ */
+/* ******* PARTS: FONT ******* */
+.cm-font-base,
+.cm-ul-inline > li,
+.com-timeselect > .inner > .sep,
+.com-slider > .inner > .slides.effect-push > ul > li {
+  font: normal 13px/18px 'Open Sans', arial, helvetica, sans-serif;
+  color: #666666;
+}
+.cm-font-link {
+  text-decoration: underline;
+  color: #666666;
+  outline: none;
+  cursor: pointer;
+}
+.cm-font-link:hover {
+  text-decoration: none;
+  color: #666666;
+}
+.cm-font-ui,
+.cm-line-share .label,
+.cm-line-share .count {
+  font: normal 11px/18px 'Open Sans', arial, helvetica, sans-serif;
+  color: #666666;
+}
+.cm-font-ui-cursive,
+.com-togglebox-empty {
+  font: normal 11px/18px 'Open Sans', arial, helvetica, sans-serif;
+  color: #666666;
+  font-style: italic;
+}
+.cm-font-title {
+  font: 300 30px/38px 'Open Sans', 'Open Sans', arial, helvetica, sans-serif;
+  color: #666666;
+}
+.cm-font-title-medium {
+  font: 300 16px/24px 'Open Sans', 'Open Sans', arial, helvetica, sans-serif;
+  color: #666666;
+}
+.cm-font-hint {
+  font: normal 11px/18px 'Open Sans', arial, helvetica, sans-serif;
+  color: #666666;
+}
+.cm-font-hint-cursive,
+.form .hint,
+.cm-itembox .hint {
+  font: normal 11px/18px 'Open Sans', arial, helvetica, sans-serif;
+  color: #666666;
+  font-style: italic;
+  color: #999999;
+}
 /* ******* PART: ELEMENTS ******* */
 /* *** CONTENT TAGS *** */
 .cm-content-tags,
@@ -560,8 +561,8 @@ select {
   border: 1px solid #cbcbcb;
   border-radius: 3px;
   cursor: text;
-  -webkit-transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out, color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-  transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out, color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  -webkit-transition: background-color 300ms ease-in-out, border-color 300ms ease-in-out, color 300ms ease-in-out, box-shadow 300ms ease-in-out;
+  transition: background-color 300ms ease-in-out, border-color 300ms ease-in-out, color 300ms ease-in-out, box-shadow 300ms ease-in-out;
 }
 .cm-input:focus,
 input[type="text"]:focus,
@@ -745,13 +746,13 @@ input[type="checkbox"] {
 }
 .icon.linked {
   cursor: pointer;
-  -webkit-transition: opacity 0.3s ease-in-out;
-  transition: opacity 0.3s ease-in-out;
+  -webkit-transition: opacity 300ms ease-in-out;
+  transition: opacity 300ms ease-in-out;
 }
 .icon.linked:hover {
   opacity: 0.7;
-  -webkit-transition: opacity 0.1s ease-in-out;
-  transition: opacity 0.1s ease-in-out;
+  -webkit-transition: opacity 100ms ease-in-out;
+  transition: opacity 100ms ease-in-out;
 }
 .icon.draggable[data-draganddrop-drag="true"] {
   cursor: move;
@@ -1112,8 +1113,8 @@ button,
   user-select: none;
   background: #308ce8;
   color: #fff;
-  -webkit-transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  -webkit-transition: background-color 300ms ease-in-out, color 300ms ease-in-out, box-shadow 300ms ease-in-out;
+  transition: background-color 300ms ease-in-out, color 300ms ease-in-out, box-shadow 300ms ease-in-out;
 }
 .cm-button:hover,
 input[type="button"]:hover,
@@ -1156,8 +1157,8 @@ input[type="reset"]:hover,
 button:hover,
 .button:hover {
   text-decoration: none;
-  -webkit-transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
-  transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+  -webkit-transition: background-color 100ms ease-in-out, color 100ms ease-in-out, box-shadow 100ms ease-in-out;
+  transition: background-color 100ms ease-in-out, color 100ms ease-in-out, box-shadow 100ms ease-in-out;
 }
 .cm-button.secondary,
 input[type="button"].secondary,
@@ -1437,16 +1438,24 @@ button.has-icon-small .icon,
 .cm-box {
   padding: 4px;
   background: #fff;
-  background-clip: padding-box;
   border: 1px solid #cbcbcb;
   border-radius: 3px;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+}
+.cm-box--clear {
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
 }
 .cm-box-border {
   padding: 12px;
   border: 2px solid #cbcbcb;
-  -webkit-transition: border-color 0.3s ease-in-out;
-  transition: border-color 0.3s ease-in-out;
+  -webkit-transition: border-color 300ms ease-in-out;
+  transition: border-color 300ms ease-in-out;
 }
 .cm-box-border.active {
   border: 2px solid #dbebfb;
@@ -1592,14 +1601,14 @@ button.has-icon-small .icon,
 }
 .cm-line-share li a:hover .icon.default {
   opacity: 0.7;
-  -webkit-transition: opacity 0.1s ease-in-out;
-  transition: opacity 0.1s ease-in-out;
+  -webkit-transition: opacity 100ms ease-in-out;
+  transition: opacity 100ms ease-in-out;
 }
 .cm-line-share li a:hover .label,
 .cm-line-share li a:hover .count {
   background-color: #e6e6e6;
-  -webkit-transition: background 0.1s ease-in-out;
-  transition: background 0.1s ease-in-out;
+  -webkit-transition: background 100ms ease-in-out;
+  transition: background 100ms ease-in-out;
 }
 .cm-line-share li a:hover .label {
   background-color: #dbebfb;
@@ -1620,8 +1629,8 @@ button.has-icon-small .icon,
 .cm-line-share .icon.default {
   width: 32px;
   height: 32px;
-  -webkit-transition: opacity 0.3s ease-in-out;
-  transition: opacity 0.3s ease-in-out;
+  -webkit-transition: opacity 300ms ease-in-out;
+  transition: opacity 300ms ease-in-out;
 }
 .cm-line-share .icon.default.facebook {
   background-image: url("../img/icons/large/facebook.png");
@@ -1641,8 +1650,8 @@ button.has-icon-small .icon,
   vertical-align: top;
   padding: 0 12px;
   line-height: 32px;
-  -webkit-transition: background 0.3s ease-in-out;
-  transition: background 0.3s ease-in-out;
+  -webkit-transition: background 300ms ease-in-out;
+  transition: background 300ms ease-in-out;
 }
 .cm-line-share .label {
   background: #e6e6e6;
@@ -2497,14 +2506,16 @@ button.has-icon-small .icon,
     margin: 0 0 8px;
   }
 }
-/* ******* MENU ******* */
-.cm-menu .cm-menu-dropdown {
+/* ******* PARTS: MENU ******* */
+/* *** DROPDOWN *** */
+.cm-menu-dropdown--base {
   padding: 4px;
   background: #fff;
-  background-clip: padding-box;
   border: 1px solid #cbcbcb;
   border-radius: 3px;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
   display: block;
   visibility: hidden;
   position: absolute;
@@ -2514,44 +2525,44 @@ button.has-icon-small .icon,
   padding: 4px 0;
   list-style: none;
   opacity: 0;
-  -webkit-transition: all 0.1s ease-in-out;
-  transition: all 0.1s ease-in-out;
+  -webkit-transition: all 100ms ease-in-out;
+  transition: all 100ms ease-in-out;
 }
-.cm-menu .cm-menu-dropdown li {
+.cm-menu-dropdown--base li {
   position: relative;
 }
-.cm-menu .cm-menu-dropdown li a {
+.cm-menu-dropdown--base li a {
   text-decoration: underline;
   outline: none;
   cursor: pointer;
-  display: block;
-  padding: 2px 12px;
   font: normal 13px/18px 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
+  display: block;
+  padding: 2px 12px;
   line-height: 18px;
   text-decoration: none;
   white-space: nowrap;
 }
-.cm-menu .cm-menu-dropdown li a:hover {
+.cm-menu-dropdown--base li a:hover {
   text-decoration: none;
   color: #666666;
 }
-.cm-menu .cm-menu-dropdown li a:hover {
+.cm-menu-dropdown--base li a:hover {
   color: #308ce8;
   text-decoration: none;
 }
-.cm-menu .cm-menu-dropdown li ul {
+.cm-menu-dropdown--base li ul {
   top: -5px;
   left: 100%;
 }
-.cm-menu .cm-menu-dropdown li.sep {
+.cm-menu-dropdown--base li.sep {
   display: none;
   height: 0;
   margin: 0 12px;
   overflow: hidden;
   border-top: 1px solid #cbcbcb;
 }
-.cm-menu .cm-menu-dropdown li:before {
+.cm-menu-dropdown--base li:before {
   display: block;
   height: 0;
   margin: 0 12px;
@@ -2559,12 +2570,24 @@ button.has-icon-small .icon,
   border-top: 1px solid #cbcbcb;
   content: '';
 }
-.cm-menu .cm-menu-dropdown li:first-child:before {
+.cm-menu-dropdown--base li:first-child:before {
   display: none;
 }
-.cm-menu .cm-menu-dropdown li:hover > ul {
+.cm-menu-dropdown--base li:hover > ul {
   display: block;
 }
+.cm-menu-dropdown--clear {
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+.cm-menu-dropdown--active {
+  visibility: visible;
+  opacity: 1;
+}
+/* *** MENU *** */
 .cm-menu:hover > .cm-menu-dropdown,
 .cm-menu.is-show > .cm-menu-dropdown {
   visibility: visible;
@@ -2855,12 +2878,12 @@ button.has-icon-small .icon,
   position: relative;
 }
 .cm-draganddrop-area.is-available {
-  -webkit-transition: background-color 0.3s ease-in-out;
-  transition: background-color 0.3s ease-in-out;
+  -webkit-transition: background-color 300ms ease-in-out;
+  transition: background-color 300ms ease-in-out;
 }
 .cm-draganddrop-area.is-available:before {
-  -webkit-transition: border-color 0.3s ease-in-out;
-  transition: border-color 0.3s ease-in-out;
+  -webkit-transition: border-color 300ms ease-in-out;
+  transition: border-color 300ms ease-in-out;
 }
 .cm-draganddrop-area.is-available.is-highlight {
   background-color: rgba(48, 140, 232, 0.05);
@@ -2917,8 +2940,8 @@ button.has-icon-small .icon,
   border: 1px dashed #308ce8;
   border-radius: 3px;
   opacity: 0;
-  -webkit-transition: all 0.3s ease-in-out;
-  transition: all 0.3s ease-in-out;
+  -webkit-transition: all 300ms ease-in-out;
+  transition: all 300ms ease-in-out;
 }
 .cm-editable.is-editable > .inner {
   width: 100%;
@@ -2944,9 +2967,9 @@ button.has-icon-small .icon,
   border: 1px dashed #308ce8;
   border-radius: 3px;
   cursor: move;
-  -webkit-transition: all 0.3s ease-in-out;
-  transition: all 0.3s ease-in-out;
   visibility: hidden;
+  -webkit-transition: all 300ms ease-in-out;
+  transition: all 300ms ease-in-out;
 }
 .cm-editable.is-editable > .drag .icon {
   width: 34px;
@@ -2956,8 +2979,8 @@ button.has-icon-small .icon,
 }
 .cm-editable.is-editable > .drag:hover {
   background: #fafafa;
-  -webkit-transition: all 0.1s ease-in-out;
-  transition: all 0.1s ease-in-out;
+  -webkit-transition: all 100ms ease-in-out;
+  transition: all 100ms ease-in-out;
 }
 .cm-editable.is-editable > .drag:not(.is-bottom) {
   top: -12px;
@@ -2973,8 +2996,8 @@ button.has-icon-small .icon,
   right: -12px;
   opacity: 0;
   cursor: pointer;
-  -webkit-transition: all 0.3s ease-in-out;
-  transition: all 0.3s ease-in-out;
+  -webkit-transition: all 300ms ease-in-out;
+  transition: all 300ms ease-in-out;
 }
 .cm-editable.is-editable > .menu .icon {
   width: 24px;
@@ -2987,11 +3010,77 @@ button.has-icon-small .icon,
   border-radius: 3px;
 }
 .cm-editable.is-editable > .menu ul {
+  padding: 4px;
+  background: #fff;
+  border: 1px solid #cbcbcb;
+  border-radius: 3px;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  display: block;
+  visibility: hidden;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+  opacity: 0;
+  -webkit-transition: all 100ms ease-in-out;
+  transition: all 100ms ease-in-out;
+  z-index: 1;
   top: 12px;
   right: 12px;
   bottom: auto;
   left: auto;
-  z-index: 1;
+}
+.cm-editable.is-editable > .menu ul li {
+  position: relative;
+}
+.cm-editable.is-editable > .menu ul li a {
+  text-decoration: underline;
+  outline: none;
+  cursor: pointer;
+  font: normal 13px/18px 'Open Sans', arial, helvetica, sans-serif;
+  color: #666666;
+  display: block;
+  padding: 2px 12px;
+  line-height: 18px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.cm-editable.is-editable > .menu ul li a:hover {
+  text-decoration: none;
+  color: #666666;
+}
+.cm-editable.is-editable > .menu ul li a:hover {
+  color: #308ce8;
+  text-decoration: none;
+}
+.cm-editable.is-editable > .menu ul li ul {
+  top: -5px;
+  left: 100%;
+}
+.cm-editable.is-editable > .menu ul li.sep {
+  display: none;
+  height: 0;
+  margin: 0 12px;
+  overflow: hidden;
+  border-top: 1px solid #cbcbcb;
+}
+.cm-editable.is-editable > .menu ul li:before {
+  display: block;
+  height: 0;
+  margin: 0 12px;
+  overflow: hidden;
+  border-top: 1px solid #cbcbcb;
+  content: '';
+}
+.cm-editable.is-editable > .menu ul li:first-child:before {
+  display: none;
+}
+.cm-editable.is-editable > .menu ul li:hover > ul {
+  display: block;
 }
 .cm-editable.is-editable > .menu:hover {
   z-index: 14;
@@ -3007,15 +3096,15 @@ button.has-icon-small .icon,
   left: -16px;
   opacity: 1;
   background: #ffffff;
-  -webkit-transition: all 0.1s ease-in-out;
-  transition: all 0.1s ease-in-out;
+  -webkit-transition: all 100ms ease-in-out;
+  transition: all 100ms ease-in-out;
 }
 .cm-editable.is-active > .drag,
 .cm-editable:hover > .drag {
   opacity: 1;
-  -webkit-transition: all 0.1s ease-in-out;
-  transition: all 0.1s ease-in-out;
   visibility: visible;
+  -webkit-transition: all 100ms ease-in-out;
+  transition: all 100ms ease-in-out;
 }
 .cm-editable.is-active > .drag:not(.is-bottom),
 .cm-editable:hover > .drag:not(.is-bottom) {
@@ -3030,8 +3119,8 @@ button.has-icon-small .icon,
   top: -28px;
   right: -28px;
   opacity: 1;
-  -webkit-transition: all 0.1s ease-in-out;
-  transition: all 0.1s ease-in-out;
+  -webkit-transition: all 100ms ease-in-out;
+  transition: all 100ms ease-in-out;
 }
 .cm-editable.is-active > .drag {
   background-color: #dbebfb;
@@ -3076,13 +3165,13 @@ button.has-icon-small .icon,
   position: relative;
   cursor: pointer;
   -webkit-transform: translateZ(0px);
-  -webkit-transition: opacity 0.3s ease-in-out;
-  transition: opacity 0.3s ease-in-out;
+  -webkit-transition: opacity 300ms ease-in-out;
+  transition: opacity 300ms ease-in-out;
 }
 .cm-grid > ul > li > a:hover > img {
   opacity: 0.7;
-  -webkit-transition: opacity 0.1s ease-in-out;
-  transition: opacity 0.1s ease-in-out;
+  -webkit-transition: opacity 100ms ease-in-out;
+  transition: opacity 100ms ease-in-out;
 }
 .cm-grid.is-inline > ul {
   overflow: hidden;
@@ -3239,8 +3328,8 @@ button.has-icon-small .icon,
 .cm-imagebox > .inner > .descr {
   position: relative;
   z-index: 1;
-  -webkit-transition: opacity 0.3s ease-in-out;
-  transition: opacity 0.3s ease-in-out;
+  -webkit-transition: opacity 300ms ease-in-out;
+  transition: opacity 300ms ease-in-out;
 }
 .cm-imagebox > .inner > .text {
   padding: 24px;
@@ -3291,8 +3380,8 @@ button.has-icon-small .icon,
   left: 0;
   background: rgba(0, 0, 0, 0.7);
   opacity: 0;
-  -webkit-transition: bottom 0.3s ease-in-out, opacity 0.3s ease-in-out;
-  transition: bottom 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  -webkit-transition: bottom 300ms ease-in-out, opacity 300ms ease-in-out;
+  transition: bottom 300ms ease-in-out, opacity 300ms ease-in-out;
 }
 .cm-imagebox > .inner > .title .inner {
   padding: 4px 8px;
@@ -3360,20 +3449,20 @@ button.has-icon-small .icon,
 }
 .cm-imagebox:not(.is-no-hover):hover > .inner > .descr {
   opacity: 0.7;
-  -webkit-transition: opacity 0.1s ease-in-out;
-  transition: opacity 0.1s ease-in-out;
+  -webkit-transition: opacity 100ms ease-in-out;
+  transition: opacity 100ms ease-in-out;
 }
 .cm-imagebox:hover > .inner > .title,
 .cm-imagebox.is-fixed-title > .inner > .title {
   bottom: 0;
   opacity: 1;
-  -webkit-transition: top 0.1s ease-in-out, opacity 0.1s ease-in-out;
-  transition: top 0.1s ease-in-out, opacity 0.1s ease-in-out;
+  -webkit-transition: top 100ms ease-in-out, opacity 100ms ease-in-out;
+  transition: top 100ms ease-in-out, opacity 100ms ease-in-out;
 }
 .cm-imagebox.is-checkable > .inner > .descr {
   opacity: 0.7;
-  -webkit-transition: opacity 0.3s ease-in-out;
-  transition: opacity 0.3s ease-in-out;
+  -webkit-transition: opacity 300ms ease-in-out;
+  transition: opacity 300ms ease-in-out;
 }
 .cm-imagebox.is-checkable:hover > .inner > .descr,
 .cm-imagebox.is-checkable.active > .inner > .descr,
@@ -3420,8 +3509,8 @@ button.has-icon-small .icon,
 .cm-imagebox-title-hover > .inner > .title {
   bottom: 0;
   opacity: 1;
-  -webkit-transition: top 0.1s ease-in-out, opacity 0.1s ease-in-out;
-  transition: top 0.1s ease-in-out, opacity 0.1s ease-in-out;
+  -webkit-transition: top 100ms ease-in-out, opacity 100ms ease-in-out;
+  transition: top 100ms ease-in-out, opacity 100ms ease-in-out;
 }
 /* ******* PART: ITEM BOX ******* */
 .cm-itembox > .l {
@@ -3629,6 +3718,19 @@ button.has-icon-small .icon,
 .lt__post .post-share .cm-line-share:first-child {
   margin: 0;
 }
+.lt__post .post-abstract .cm-content-tags,
+.lt__post .post-abstract h1,
+.lt__post .post-abstract h2,
+.lt__post .post-abstract h3,
+.lt__post .post-abstract h4,
+.lt__post .post-abstract h5,
+.lt__post .post-abstract h6,
+.lt__post .post-abstract p,
+.lt__post .post-abstract dl,
+.lt__post .post-abstract ul,
+.lt__post .post-abstract ol {
+  margin: 0;
+}
 .lt__post .cm-toolbar,
 .lt__post .post-abstract,
 .lt__post .post-entry,
@@ -3695,10 +3797,11 @@ button.has-icon-small .icon,
 .com-tooltip.theme-default > .inner {
   padding: 4px;
   background: #fff;
-  background-clip: padding-box;
   border: 1px solid #cbcbcb;
   border-radius: 3px;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
 }
 /* ******* COMPONENT: TOOLTIP: INNER COMPONENTS ******* */
 /* *** ITEMS LIST *** */
@@ -3752,8 +3855,8 @@ button.has-icon-small .icon,
   border: 1px solid #cbcbcb;
   border-radius: 3px;
   cursor: text;
-  -webkit-transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out, color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-  transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out, color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  -webkit-transition: background-color 300ms ease-in-out, border-color 300ms ease-in-out, color 300ms ease-in-out, box-shadow 300ms ease-in-out;
+  transition: background-color 300ms ease-in-out, border-color 300ms ease-in-out, color 300ms ease-in-out, box-shadow 300ms ease-in-out;
   height: auto;
   min-height: 28px;
   padding: 4px;
@@ -3836,9 +3939,75 @@ button.has-icon-small .icon,
   overflow: visible;
 }
 .com-tooltip.com-action-menu-tooltip .cm-menu .cm-menu-dropdown {
+  padding: 4px;
+  background: #fff;
+  border: 1px solid #cbcbcb;
+  border-radius: 3px;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  display: block;
+  visibility: hidden;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+  opacity: 0;
+  -webkit-transition: all 100ms ease-in-out;
+  transition: all 100ms ease-in-out;
   visibility: visible;
   opacity: 1;
   position: static;
+}
+.com-tooltip.com-action-menu-tooltip .cm-menu .cm-menu-dropdown li {
+  position: relative;
+}
+.com-tooltip.com-action-menu-tooltip .cm-menu .cm-menu-dropdown li a {
+  text-decoration: underline;
+  outline: none;
+  cursor: pointer;
+  font: normal 13px/18px 'Open Sans', arial, helvetica, sans-serif;
+  color: #666666;
+  display: block;
+  padding: 2px 12px;
+  line-height: 18px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.com-tooltip.com-action-menu-tooltip .cm-menu .cm-menu-dropdown li a:hover {
+  text-decoration: none;
+  color: #666666;
+}
+.com-tooltip.com-action-menu-tooltip .cm-menu .cm-menu-dropdown li a:hover {
+  color: #308ce8;
+  text-decoration: none;
+}
+.com-tooltip.com-action-menu-tooltip .cm-menu .cm-menu-dropdown li ul {
+  top: -5px;
+  left: 100%;
+}
+.com-tooltip.com-action-menu-tooltip .cm-menu .cm-menu-dropdown li.sep {
+  display: none;
+  height: 0;
+  margin: 0 12px;
+  overflow: hidden;
+  border-top: 1px solid #cbcbcb;
+}
+.com-tooltip.com-action-menu-tooltip .cm-menu .cm-menu-dropdown li:before {
+  display: block;
+  height: 0;
+  margin: 0 12px;
+  overflow: hidden;
+  border-top: 1px solid #cbcbcb;
+  content: '';
+}
+.com-tooltip.com-action-menu-tooltip .cm-menu .cm-menu-dropdown li:first-child:before {
+  display: none;
+}
+.com-tooltip.com-action-menu-tooltip .cm-menu .cm-menu-dropdown li:hover > ul {
+  display: block;
 }
 /* ******* CALENDAR ******* */
 .com-calendar {
@@ -3886,12 +4055,12 @@ button.has-icon-small .icon,
   line-height: 21px;
   font-size: 11px;
   cursor: pointer;
-  -webkit-transition: all 0.3s ease-in-out;
-  transition: all 0.3s ease-in-out;
+  -webkit-transition: all 300ms ease-in-out;
+  transition: all 300ms ease-in-out;
 }
 .com-calendar table td div:hover {
-  -webkit-transition: all 0.1s ease-in-out;
-  transition: all 0.1s ease-in-out;
+  -webkit-transition: all 100ms ease-in-out;
+  transition: all 100ms ease-in-out;
 }
 .com-calendar table td.in div {
   background-color: #fafafa;
@@ -4227,8 +4396,8 @@ button.has-icon-small .icon,
   left: auto;
   font-size: 0;
   opacity: 0.4;
-  -webkit-transition: opacity 0.3s ease-in-out;
-  transition: opacity 0.3s ease-in-out;
+  -webkit-transition: opacity 300ms ease-in-out;
+  transition: opacity 300ms ease-in-out;
 }
 .com-dialog.theme-default > .bg > .icon.default,
 .com-dialog.theme-black > .bg > .icon.default {
@@ -4385,8 +4554,8 @@ button.has-icon-small .icon,
   user-select: none;
   background: #308ce8;
   color: #fff;
-  -webkit-transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  -webkit-transition: background-color 300ms ease-in-out, color 300ms ease-in-out, box-shadow 300ms ease-in-out;
+  transition: background-color 300ms ease-in-out, color 300ms ease-in-out, box-shadow 300ms ease-in-out;
   background: #f2f2f2;
   color: #308ce8;
   min-width: 28px;
@@ -4408,8 +4577,8 @@ button.has-icon-small .icon,
 }
 .com-pagination ul li a:hover {
   text-decoration: none;
-  -webkit-transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
-  transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+  -webkit-transition: background-color 100ms ease-in-out, color 100ms ease-in-out, box-shadow 100ms ease-in-out;
+  transition: background-color 100ms ease-in-out, color 100ms ease-in-out, box-shadow 100ms ease-in-out;
 }
 .com-pagination ul li a.secondary {
   background: #f2f2f2;
@@ -4565,9 +4734,9 @@ button.has-icon-small .icon,
 .com-togglebox > dt .icon.default {
   background-image: url("../img/icons/small/arrow-right.png");
   width: 16px;
-  -webkit-transition: -webkit-transform 0.3s ease-in-out;
-  -ms-transition: -ms-transform 0.3s ease-in-out;
-  transition: transform 0.3s ease-in-out;
+  -webkit-transition: -webkit-transform 300ms ease-in-out;
+  -ms-transition: -ms-transform 300ms ease-in-out;
+  transition: transform 300ms ease-in-out;
 }
 .com-togglebox > dt .title {
   display: block;
@@ -4883,13 +5052,13 @@ button.has-icon-small .icon,
   background: #f2f2f2;
   border: 1px solid #cbcbcb;
   border-radius: 3px 3px 0 0;
-  -webkit-transition: all 0.3s ease-in-out;
-  transition: all 0.3s ease-in-out;
+  -webkit-transition: all 300ms ease-in-out;
+  transition: all 300ms ease-in-out;
 }
 .com-tabset-head-tabs ul li:hover {
   background: #ffffff;
-  -webkit-transition: all 0.1s ease-in-out;
-  transition: all 0.1s ease-in-out;
+  -webkit-transition: all 100ms ease-in-out;
+  transition: all 100ms ease-in-out;
 }
 .com-tabset-head-tabs ul li:first-child {
   margin: 0;
@@ -5128,8 +5297,8 @@ button.has-icon-small .icon,
   opacity: 0;
   cursor: pointer;
   background-color: rgba(255, 255, 255, 0.7);
-  -webkit-transition: background-color 0.3s ease-in-out, opacity 0.3s ease-in-out;
-  transition: background-color 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  -webkit-transition: background-color 300ms ease-in-out, opacity 300ms ease-in-out;
+  transition: background-color 300ms ease-in-out, opacity 300ms ease-in-out;
 }
 .com-gallery-bar .bar-arrow:hover {
   background-color: rgba(255, 255, 255, 0.9);
@@ -5206,8 +5375,8 @@ button.has-icon-small .icon,
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
-  -webkit-transition: opacity 0.3s ease-in-out;
-  transition: opacity 0.3s ease-in-out;
+  -webkit-transition: opacity 300ms ease-in-out;
+  transition: opacity 300ms ease-in-out;
 }
 .com-gallery-controls .bar-arrow {
   position: absolute;
@@ -5217,16 +5386,16 @@ button.has-icon-small .icon,
   left: auto;
   z-index: 2;
   opacity: 1;
-  -webkit-transition: opacity 0.3s ease-in-out;
-  transition: opacity 0.3s ease-in-out;
+  -webkit-transition: opacity 300ms ease-in-out;
+  transition: opacity 300ms ease-in-out;
   cursor: pointer;
 }
 .com-gallery-controls .bar-arrow .icon {
   position: absolute;
   top: 0;
   opacity: 0.3;
-  -webkit-transition: opacity 0.3s ease-in-out;
-  transition: opacity 0.3s ease-in-out;
+  -webkit-transition: opacity 300ms ease-in-out;
+  transition: opacity 300ms ease-in-out;
 }
 .com-gallery-controls .bar-arrow.next {
   right: 0;
@@ -5273,16 +5442,16 @@ button.has-icon-small .icon,
   border: 2px solid #f2f2f2;
   border-radius: 12px;
   cursor: pointer;
-  -webkit-transition: all 0.3s ease-in-out;
-  transition: all 0.3s ease-in-out;
+  -webkit-transition: all 300ms ease-in-out;
+  transition: all 300ms ease-in-out;
 }
 .com-gallery-controls .bar-buttons ul li:first-child {
   margin: 0;
 }
 .com-gallery-controls .bar-buttons ul li:hover {
   border-color: #308ce8;
-  -webkit-transition: all 0.1s ease-in-out;
-  transition: all 0.1s ease-in-out;
+  -webkit-transition: all 100ms ease-in-out;
+  transition: all 100ms ease-in-out;
 }
 .com-gallery-controls .bar-buttons ul li.active {
   border-color: #308ce8;
@@ -5424,8 +5593,8 @@ button.has-icon-small .icon,
 .com-gallery:hover .cm-imagebox > .inner > .title {
   bottom: 0;
   opacity: 1;
-  -webkit-transition: top 0.1s ease-in-out, opacity 0.1s ease-in-out;
-  transition: top 0.1s ease-in-out, opacity 0.1s ease-in-out;
+  -webkit-transition: top 100ms ease-in-out, opacity 100ms ease-in-out;
+  transition: top 100ms ease-in-out, opacity 100ms ease-in-out;
 }
 .com-gallery:hover > .com-gallery-controls {
   opacity: 1;
@@ -5676,8 +5845,8 @@ button.has-icon-small .icon,
 }
 .com-slider > .inner > .slides > ul > li > .cm-imagebox > .pull {
   opacity: 0;
-  -webkit-transition: opacity 0.3s ease-in-out;
-  transition: opacity 0.3s ease-in-out;
+  -webkit-transition: opacity 300ms ease-in-out;
+  transition: opacity 300ms ease-in-out;
 }
 .com-slider > .inner > .slides > ul > li > .image {
   width: 100%;
@@ -5690,15 +5859,15 @@ button.has-icon-small .icon,
   padding: 24px;
   position: absolute;
   z-index: 2;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
   overflow: hidden;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
   -webkit-user-select: text;
   -moz-user-select: text;
   user-select: text;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 .com-slider > .inner > .slides > ul > li > .text .cm-content-tags,
 .com-slider > .inner > .slides > ul > li > .text h1,
@@ -6191,7 +6360,6 @@ button.has-icon-small .icon,
   z-index: 1;
   -webkit-overflow-scrolling: touch;
   overflow-x: hidden;
-  overflow-y: scroll;
   overflow-y: auto;
 }
 .com-collapsible-layout > .inner > iframe {
@@ -6314,8 +6482,8 @@ button.has-icon-small .icon,
   flex: 1;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  -webkit-transition: background-color 0.3s ease-in-out;
-  transition: background-color 0.3s ease-in-out;
+  -webkit-transition: background-color 300ms ease-in-out;
+  transition: background-color 300ms ease-in-out;
 }
 .ie8 .com-column,
 .ie9 .com-column {
@@ -6335,8 +6503,8 @@ button.has-icon-small .icon,
   margin: 0 0 0 -5px;
   opacity: 0;
   cursor: col-resize;
-  -webkit-transition: opacity 0.3s ease-in-out;
-  transition: opacity 0.3s ease-in-out;
+  -webkit-transition: opacity 300ms ease-in-out;
+  transition: opacity 300ms ease-in-out;
 }
 .com-columns-chassis .drag {
   width: 6px;
@@ -6351,8 +6519,8 @@ button.has-icon-small .icon,
   background: #f2f2f2;
   border: 1px solid #cbcbcb;
   border-radius: 3px;
-  -webkit-transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
-  transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+  -webkit-transition: background-color 300ms ease-in-out, border-color 300ms ease-in-out;
+  transition: background-color 300ms ease-in-out, border-color 300ms ease-in-out;
 }
 .com-columns-chassis .drag .icon {
   width: 6px;
@@ -6370,17 +6538,17 @@ button.has-icon-small .icon,
   display: block;
   content: '';
   background: #f2f2f2;
-  -webkit-transition: background-color 0.3s ease-in-out;
-  transition: background-color 0.3s ease-in-out;
+  -webkit-transition: background-color 300ms ease-in-out;
+  transition: background-color 300ms ease-in-out;
 }
 .com-columns-chassis:hover .drag {
   background: #fafafa;
-  -webkit-transition: background-color 0.1s ease-in-out, border-color 0.1s ease-in-out;
-  transition: background-color 0.1s ease-in-out, border-color 0.1s ease-in-out;
+  -webkit-transition: background-color 100ms ease-in-out, border-color 100ms ease-in-out;
+  transition: background-color 100ms ease-in-out, border-color 100ms ease-in-out;
 }
 .com-columns-chassis:hover:after {
-  -webkit-transition: background-color 0.1s ease-in-out;
-  transition: background-color 0.1s ease-in-out;
+  -webkit-transition: background-color 100ms ease-in-out;
+  transition: background-color 100ms ease-in-out;
 }
 .com-columns-chassis.is-active .drag {
   background: #dbebfb;
