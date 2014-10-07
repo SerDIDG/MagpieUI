@@ -86,38 +86,6 @@ dl, dt, dd, canvas, iframe, form {
 
 /* *** FONT *** */
 
-.cm-font-base {
-    #cm > .font-base;
-}
-
-.cm-font-link {
-    #cm > .font-link;
-}
-
-.cm-font-ui {
-    #cm > .font-ui;
-}
-
-.cm-font-ui-cursive {
-    #cm > .font-ui-cursive;
-}
-
-.cm-font-title {
-    #cm > .font-title;
-}
-
-.cm-font-title-medium {
-    #cm > .font-title-medium;
-}
-
-.cm-font-hint {
-    #cm > .font-hint;
-}
-
-.cm-font-hint-cursive {
-    #cm > .font-hint-cursive;
-}
-
 .cm-block-padding {
     padding: @cm-indentMedium;
 }
@@ -199,7 +167,7 @@ dl, dt, dd, canvas, iframe, form {
     font-size: @CmCounter-fontSize;
     font-weight: @cm-fontWeight;
     color: @CmCounter-color;
-    .cm-transition(all @cm-transitionDuration ease-in-out);
+    .cm-transition(all @CM-Transition-Duration ease-in-out);
 }
 
 .cm-codebox {
@@ -268,8 +236,10 @@ dl, dt, dd, canvas, iframe, form {
     overflow-y: scroll;
 }
 
+.cm-scroll-y-a,
 .cm-scroll-a-y {
-    .cm-scroll-y;
+    -webkit-overflow-scrolling: touch;
+    overflow-x: hidden;
     overflow-y: auto;
 }
 
@@ -342,8 +312,8 @@ dl, dt, dd, canvas, iframe, form {
         position: absolute;
         left: 0;
         top: 0;
-        .cm-transition(width @cm-transitionDuration ease-in-out);
-        .cm-transition(background-color @cm-transitionDuration ease-in-out);
+        .cm-transition(width @CM-Transition-Duration ease-in-out);
+        .cm-transition(background-color @CM-Transition-Duration ease-in-out);
     }
 
     .com-gridlist & {

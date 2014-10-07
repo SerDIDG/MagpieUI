@@ -30,6 +30,11 @@
          box-sizing: @value;
 }
 
+.cm-background-clip (@value: border-box) {
+    -webkit-background-clip: @value;
+                background-clip: @value;
+}
+
 .cm-placeholder (@color) {
     &::-webkit-input-placeholder {
         opacity: 1;

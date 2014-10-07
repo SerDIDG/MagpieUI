@@ -12,12 +12,14 @@ Part['Menu'] = (function(){
                 cm.addEvent(node, 'mousedown', function(e){
                     e = cm.getEvent(e);
                     target = cm.getObjFromEvent(e);
-                    if(!cm.isParent(drop, target, true)){
-                        if(cm.isClass(node, 'is-show')){
-                            cm.removeClass(node, 'is-show');
-                        }else{
-                            cm.preventDefault(e);
-                            cm.addClass(node, 'is-show');
+                    if(cm.getStyle(drop, 'visibility') == 'hidden' && !cm.isClass(node, 'is-show')){
+                        if(!cm.isParent(drop, target, true)){
+                            if(cm.isClass(node, 'is-show')){
+                                cm.removeClass(node, 'is-show');
+                            }else{
+                                cm.preventDefault(e);
+                                cm.addClass(node, 'is-show');
+                            }
                         }
                     }
                 });

@@ -73,14 +73,14 @@
 
             &:hover {
                 .icon.default {
-                    opacity: @cm-opacityLinkHover;
-                    .cm-transition(opacity @cm-transitionDurationReverse ease-in-out);
+                    opacity: @CM-Opacity-Hover;
+                    .cm-transition(opacity @CM-Transition-DurationReverse ease-in-out);
                 }
 
                 .label,
                 .count {
                     background-color: @cm-colorLight-backgroundHover;
-                    .cm-transition(background @cm-transitionDurationReverse ease-in-out);
+                    .cm-transition(background @CM-Transition-DurationReverse ease-in-out);
                 }
 
                 .label {
@@ -109,7 +109,7 @@
         &.default {
             width: @CmShareLine-iconSize;
             height: @CmShareLine-iconSize;
-            .cm-transition(opacity @cm-transitionDuration ease-in-out);
+            .cm-transition(opacity @CM-Transition-Duration ease-in-out);
 
             &.facebook {
                 .icon.large.facebook;
@@ -135,7 +135,7 @@
         vertical-align: top;
         padding: 0 @cm-indentXSmall;
         line-height: @CmShareLine-iconSize;
-        .cm-transition(background @cm-transitionDuration ease-in-out);
+        .cm-transition(background @CM-Transition-Duration ease-in-out);
     }
 
     .label {

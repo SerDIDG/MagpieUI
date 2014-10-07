@@ -29,7 +29,7 @@
             border: @cm-borderEditable;
             border-radius: @cm-borderRadius;
             opacity: 0;
-            .cm-transition(all @cm-transitionDuration ease-in-out);
+            .cm-transition(all @CM-Transition-Duration ease-in-out);
         }
 
         > .inner {
@@ -58,8 +58,8 @@
             border: @cm-borderEditable;
             border-radius: @cm-borderRadius;
             cursor: move;
-            .cm-transition(all @cm-transitionDuration ease-in-out);
             visibility: hidden;
+            .cm-transition(all @CM-Transition-Duration ease-in-out);
 
             .icon {
                 width: 34px;
@@ -70,7 +70,7 @@
 
             &:hover {
                 background: @cm-colorSecondaryHover;
-                .cm-transition(all @cm-transitionDurationReverse ease-in-out);
+                .cm-transition(all @CM-Transition-DurationReverse ease-in-out);
             }
 
             &:not(.is-bottom) {
@@ -90,7 +90,7 @@
             right: -12px;
             opacity: 0;
             cursor: pointer;
-            .cm-transition(all @cm-transitionDuration ease-in-out);
+            .cm-transition(all @CM-Transition-Duration ease-in-out);
 
             .icon {
                 width: 24px;
@@ -104,15 +104,16 @@
             }
 
             ul {
-                .cm-position(12px, 12px, auto, auto);
+                .cm-menu-dropdown--base;
                 z-index: 1;
+                .cm-position(12px, 12px, auto, auto);
             }
 
             &:hover {
                 z-index: 14;
 
                 .icon {
-                    background-color: @cm-colorSecondaryHover;;
+                    background-color: @cm-colorSecondaryHover;
                 }
             }
         }
@@ -126,13 +127,13 @@
             left: -16px;
             opacity: 1;
             background: #ffffff;
-            .cm-transition(all @cm-transitionDurationReverse ease-in-out);
+            .cm-transition(all @CM-Transition-DurationReverse ease-in-out);
         }
 
         > .drag {
             opacity: 1;
-            .cm-transition(all @cm-transitionDurationReverse ease-in-out);
             visibility: visible;
+            .cm-transition(all @CM-Transition-DurationReverse ease-in-out);
 
             &:not(.is-bottom) {
                 top: -28px;
@@ -147,7 +148,7 @@
             top: -28px;
             right: -28px;
             opacity: 1;
-            .cm-transition(all @cm-transitionDurationReverse ease-in-out);
+            .cm-transition(all @CM-Transition-DurationReverse ease-in-out);
         }
     }
 

@@ -1,7 +1,20 @@
 /* ******* PART: BOX ******* */
 
 .cm-box {
-    #cm > .box;
+    padding: @cm-indentXXXSmall;
+    background: #fff;
+    border: @cm-borderStyle;
+    border-radius: @cm-borderRadius;
+    box-shadow: @cm-ui-shadowLight;
+    .cm-background-clip(padding-box);
+}
+
+.cm-box--clear {
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
 }
 
 .cm-box-border {

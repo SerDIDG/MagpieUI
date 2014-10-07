@@ -5,21 +5,21 @@
     z-index: 2;
     opacity: 0;
     .cm-user-select(none);
-    .cm-transition(opacity @cm-transitionDuration ease-in-out);
+    .cm-transition(opacity @CM-Transition-Duration ease-in-out);
 
     .bar-arrow {
         position: absolute;
         .cm-position(0, auto, 0, auto);
         z-index: 2;
         opacity: 1;
-        .cm-transition(opacity @cm-transitionDuration ease-in-out);
+        .cm-transition(opacity @CM-Transition-Duration ease-in-out);
         cursor: pointer;
 
         .icon {
             position: absolute;
             top: 0;
             opacity: 0.3;
-            .cm-transition(opacity @cm-transitionDuration ease-in-out);
+            .cm-transition(opacity @CM-Transition-Duration ease-in-out);
         }
 
         &.next {
@@ -72,7 +72,7 @@
                 border: 2px solid @cm-colorSecondary;
                 border-radius: @ComGalleryControls-buttonSize;
                 cursor: pointer;
-                .cm-transition(all @cm-transitionDuration ease-in-out);
+                .cm-transition(all @CM-Transition-Duration ease-in-out);
 
                 &:first-child {
                     margin: 0;
@@ -80,7 +80,7 @@
 
                 &:hover {
                     border-color: @cm-color;
-                    .cm-transition(all @cm-transitionDurationReverse ease-in-out);
+                    .cm-transition(all @CM-Transition-DurationReverse ease-in-out);
                 }
 
                 &.active {

@@ -65,15 +65,6 @@
         clear: both;
     }
 
-    .box {
-        padding: @cm-indentXXXSmall;
-        background: #fff;
-        background-clip: padding-box;
-        border: @cm-borderStyle;
-        border-radius: @cm-borderRadius;
-        box-shadow: @cm-ui-shadowLight;
-    }
-
     .box-flat {
         padding: @cm-indentXSmall;
         background: @cm-background-light;
@@ -83,7 +74,7 @@
     .box-border {
         padding: @cm-indentXSmall;
         border: @cm-borderBox;
-        .cm-transition(border-color @cm-transitionDuration ease-in-out);
+        .cm-transition(border-color @CM-Transition-Duration ease-in-out);
 
         &.active {
             border: @cm-borderBoxActive;
@@ -107,10 +98,10 @@
         border: @cm-borderStyle;
         border-radius: @cm-borderRadius;
         cursor: text;
-        .cm-transition(background-color @cm-transitionDuration ease-in-out);
-        .cm-transition(border-color @cm-transitionDuration ease-in-out);
-        .cm-transition(color @cm-transitionDuration ease-in-out);
-        .cm-transition(box-shadow @cm-transitionDuration ease-in-out);
+        .cm-transition(background-color @CM-Transition-Duration ease-in-out);
+        .cm-transition(border-color @CM-Transition-Duration ease-in-out);
+        .cm-transition(color @CM-Transition-Duration ease-in-out);
+        .cm-transition(box-shadow @CM-Transition-Duration ease-in-out);
 
         &:focus {
             #cm > .input-focus;
@@ -165,9 +156,9 @@
         cursor: pointer;
         .cm-user-select();
         #cm > .button-primary;
-        .cm-transition(background-color @cm-transitionDuration ease-in-out);
-        .cm-transition(color @cm-transitionDuration ease-in-out);
-        .cm-transition(box-shadow @cm-transitionDuration ease-in-out);
+        .cm-transition(background-color @CM-Transition-Duration ease-in-out);
+        .cm-transition(color @CM-Transition-Duration ease-in-out);
+        .cm-transition(box-shadow @CM-Transition-Duration ease-in-out);
 
         &.wide {
             width: 100%;
@@ -195,9 +186,9 @@
 
     .button-hover {
         text-decoration: none;
-        .cm-transition(background-color @cm-transitionDurationReverse ease-in-out);
-        .cm-transition(color @cm-transitionDurationReverse ease-in-out);
-        .cm-transition(box-shadow @cm-transitionDurationReverse ease-in-out);
+        .cm-transition(background-color @CM-Transition-DurationReverse ease-in-out);
+        .cm-transition(color @CM-Transition-DurationReverse ease-in-out);
+        .cm-transition(box-shadow @CM-Transition-DurationReverse ease-in-out);
     }
 
     .button-primary {
@@ -295,80 +286,6 @@
     }
 
     // /* ******* PARTS ******* */
-
-    // /* *** DROPDOWN MENU *** */
-
-    .menu {
-        #cm > .box;
-        display: block;
-        visibility: hidden;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        margin: 0;
-        padding: @CmMenu-indent 0;
-        list-style: none;
-        opacity: 0;
-        .cm-transition(all @cm-transitionDurationReverse ease-in-out);
-
-        li {
-            position: relative;
-
-            a {
-                #cm > .font-link;
-                display: block;
-                padding: @CmMenu-itemIndentY @CmMenu-itemIndentX;
-                #cm > .font-base;
-                line-height: 18px;
-                text-decoration: none;
-                white-space: nowrap;
-
-                &:hover {
-                    color: @cm-color;
-                    text-decoration: none;
-                }
-            }
-
-            ul {
-                top: -(@cm-borderWidth + @CmMenu-indent);
-                left: 100%;
-            }
-
-            &.sep {
-                display: none;
-                height: 0;
-                margin: 0 @cm-indentMedium / 2;
-                overflow: hidden;
-                border-top: @cm-borderStyle;
-            }
-
-            &:before {
-                display: block;
-                height: 0;
-                margin: 0 @cm-indentMedium / 2;
-                overflow: hidden;
-                border-top: @cm-borderStyle;
-                content: '';
-            }
-
-            &:first-child{
-                &:before {
-                    display: none;
-                }
-            }
-
-            &:hover {
-                > ul {
-                    display: block;
-                }
-            }
-        }
-    }
-
-    .menu-hover {
-        visibility: visible;
-        opacity: 1;
-    }
 
     // /* *** GRID *** */
 

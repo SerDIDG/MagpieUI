@@ -32,13 +32,13 @@
                     position: relative;
                     cursor: pointer;
                     -webkit-transform: translateZ(0px);
-                    .cm-transition(opacity @cm-transitionDuration ease-in-out);
+                    .cm-transition(opacity @CM-Transition-Duration ease-in-out);
                 }
 
                 &:hover {
                     > img {
-                        opacity: @cm-ui-fadeout;
-                        .cm-transition(opacity @cm-transitionDurationReverse ease-in-out);
+                        opacity: @CM-Opacity-Hover;
+                        .cm-transition(opacity @CM-Transition-DurationReverse ease-in-out);
                     }
                 }
             }
