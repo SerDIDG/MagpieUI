@@ -15,6 +15,7 @@ cm.define('Com.Draganddrop', {
         'container' : cm.Node('div'),
         'chassisTag' : 'div',
         'draggableContainer' : 'document.body',      // HTML node | selfParent
+        'scroll' : true,
         'scrollNode' : 'document.html',
         'scrollSpeed' : 1,                           // ms per 1px
         'renderTemporaryAria' : false,
@@ -334,12 +335,14 @@ function(params){
             }
         }
         // Scroll node
-        if(y + 48 > pageSize['winHeight']){
-            toggleScroll(1);
-        }else if(y - 48 < 0){
-            toggleScroll(-1);
-        }else{
-            toggleScroll(0);
+        if(that.params['scroll']){
+            if(y + 48 > pageSize['winHeight']){
+                toggleScroll(1);
+            }else if(y - 48 < 0){
+                toggleScroll(-1);
+            }else{
+                toggleScroll(0);
+            }
         }
         // Find above area
         cm.forEach(filteredAvailableAreas, function(area){

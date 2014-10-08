@@ -4,10 +4,12 @@ Com['Tooltip'] = function(o){
             'target' : cm.Node('div'),
             'targetEvent' : 'hover',        // hover | click | none
             'hideOnReClick' : false,        // Hide tooltip when re-clicking on the target, requires setting value 'targetEvent' : 'click'
+            'hideOnOut' : true,
             'preventClickEvent' : false,    // Prevent default click event on the target, requires setting value 'targetEvent' : 'click'
             'top' : 0,                      // Supported properties: targetHeight, selfHeight, number
             'left' : 0,                     // Supported properties: targetWidth, selfWidth, number
             'width' : 'auto',               // Supported properties: targetWidth, auto, number
+            'duration' : 150,
             'className' : '',
             'theme' : 'theme-default',
             'adaptive' : true,
@@ -25,9 +27,9 @@ Com['Tooltip'] = function(o){
         },
         checkInt,
         anim,
-        isHide = true,
         nodes = {};
 
+    that.isShow = false;
     that.disabled = false;
 
     var init = function(){
@@ -87,7 +89,7 @@ Com['Tooltip'] = function(o){
 
     var targetEvent = function(){
         if(!that.disabled){
-            if(!isHide && config['targetEvent'] == 'click' && config['hideOnReClick']){
+            if(that.isShow && config['targetEvent'] == 'click' && config['hideOnReClick']){
                 hide(false);
             }else{
                 show();
@@ -117,9 +119,9 @@ Com['Tooltip'] = function(o){
         }
     };
 
-    var show = function(){
-        if(isHide){
-            isHide = false;
+    var show = function(immediately){
+        if(!that.isShow){
+            that.isShow = true;
             // Append child tooltip into body and set position
             config['container'].appendChild(nodes['container']);
             getPosition();
@@ -128,18 +130,21 @@ Com['Tooltip'] = function(o){
             // Check position
             checkInt = setInterval(getPosition, 5);
             // Animate
-            anim.go({'style' : {'opacity' : 1}, 'duration' : 100, 'onStop' : function(){
+            anim.go({'style' : {'opacity' : 1}, 'duration' : immediately? 0 : config['duration'], 'onStop' : function(){
                 /* *** EXECUTE API EVENTS *** */
                 executeEvent('onShow');
             }});
             // Add document target event
-            switch(config['targetEvent']){
-                case 'hover' :
-                    cm.addEvent(document, 'mouseover', bodyEvent);
-                    break;
-                case 'click' :
-                    cm.addEvent(document, 'mousedown', bodyEvent);
-                    break;
+            if(config['hideOnOut']){
+                switch(config['targetEvent']){
+                    case 'hover' :
+                        cm.addEvent(document, 'mouseover', bodyEvent);
+                        break;
+                    case 'click' :
+                    default :
+                        cm.addEvent(document, 'mousedown', bodyEvent);
+                        break;
+                }
             }
             /* *** EXECUTE API EVENTS *** */
             executeEvent('onShowStart');
@@ -147,21 +152,24 @@ Com['Tooltip'] = function(o){
     };
 
     var hide = function(immediately){
-        if(!isHide){
-            isHide = true;
+        if(that.isShow){
+            that.isShow = false;
             // Remove event - Check position
             checkInt && clearInterval(checkInt);
             // Remove document target event
-            switch(config['targetEvent']){
-                case 'hover' :
-                    cm.removeEvent(document, 'mouseover', bodyEvent);
-                    break;
-                case 'click' :
-                    cm.removeEvent(document, 'mousedown', bodyEvent);
-                    break;
+            if(config['hideOnOut']){
+                switch(config['targetEvent']){
+                    case 'hover' :
+                        cm.removeEvent(document, 'mouseover', bodyEvent);
+                        break;
+                    case 'click' :
+                    default :
+                        cm.removeEvent(document, 'mousedown', bodyEvent);
+                        break;
+                }
             }
             // Animate
-            anim.go({'style' : {'opacity' : 0}, 'duration' : immediately? 0 : 100, 'onStop' : function(){
+            anim.go({'style' : {'opacity' : 0}, 'duration' : immediately? 0 : config['duration'], 'onStop' : function(){
                 nodes['container'].style.display = 'none';
                 cm.remove(nodes['container']);
                 /* *** EXECUTE API EVENTS *** */
@@ -247,7 +255,7 @@ Com['Tooltip'] = function(o){
     };
 
     var bodyEvent = function(e){
-        if(!isHide){
+        if(that.isShow){
             e = cm.getEvent(e);
             var target = cm.getEventTarget(e);
             if(!cm.isParent(nodes['container'], target, true) && !cm.isParent(config['target'], target, true)){
@@ -297,18 +305,14 @@ Com['Tooltip'] = function(o){
         return that;
     };
 
-    that.show = function(){
-        show();
+    that.show = function(immediately){
+        show(immediately);
         return that;
     };
 
     that.hide = function(immediately){
         hide(immediately);
         return that;
-    };
-
-    that.isHide = function(){
-        return isHide;
     };
 
     that.addEvent = function(event, handler){

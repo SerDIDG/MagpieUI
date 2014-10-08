@@ -1251,16 +1251,6 @@ cm.addLeadZero = function(x){
     return x < 10 ? '0' + x : x;
 };
 
-cm.onTextChange = function(node, handler){
-    var u = Com.UA.get(), f = function(e){
-        setTimeout(function(){
-            handler(e);
-        }, 5);
-    }, e = (/IE|Chrome|Safari/.test(u.browser)) ? 'keydown' : 'keypress';
-    cm.addEvent(node, e, f);
-    return node;
-};
-
 /* ******* DATE AND TIME ******* */
 
 cm.getCurrentDate = function(format){

@@ -4905,13 +4905,9 @@ button.has-icon-small .icon,
 .com-gridlist table tr td {
   vertical-align: top;
   word-wrap: break-word;
-  -webkit-transition: background-color 0.3s ease-in-out;
-  transition: background-color 0.3s ease-in-out;
 }
 .com-gridlist table tr:hover td {
   background-color: #f2f2f2;
-  -webkit-transition: background-color 0.1s ease-in-out;
-  transition: background-color 0.1s ease-in-out;
 }
 .com-gridlist table .is-show td {
   background: #F5F5F5;
