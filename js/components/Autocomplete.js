@@ -65,7 +65,20 @@ function(params){
         );
         // Add events
         cm.addEvent(that.params['input'], 'input', requestHelper);
+        cm.addEvent(that.params['input'], 'keydown', inputHelper);
         that.triggerEvent('onRender');
+    };
+
+    var inputHelper = function(e){
+        e = cm.getEvent(e);
+
+        switch(e.keyCode){
+            // Enter and Tab keys of keyboard
+            case 9:
+            case 13:
+                that.hide();
+                break;
+        }
     };
 
     var requestHelper = function(){
