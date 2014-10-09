@@ -39,7 +39,9 @@ form {
   text-indent: 0;
 }
 /* ******* STATIC CLASSES ******* */
+.clearfix:after,
 .clear:after,
+.btn-wrap:after,
 .cm-box-content:after,
 .cm-line-info:after,
 .form dl:after,
@@ -1160,103 +1162,187 @@ button:hover,
   -webkit-transition: background-color 100ms ease-in-out, color 100ms ease-in-out, box-shadow 100ms ease-in-out;
   transition: background-color 100ms ease-in-out, color 100ms ease-in-out, box-shadow 100ms ease-in-out;
 }
+.cm-button.button-secondary,
 .cm-button.secondary,
+input[type="button"].button-secondary,
 input[type="button"].secondary,
+input[type="submit"].button-secondary,
 input[type="submit"].secondary,
+input[type="reset"].button-secondary,
 input[type="reset"].secondary,
+button.button-secondary,
 button.secondary,
+.button.button-secondary,
 .button.secondary {
   background: #f2f2f2;
   color: #308ce8;
 }
+.cm-button.button-secondary:hover,
 .cm-button.secondary:hover,
+input[type="button"].button-secondary:hover,
 input[type="button"].secondary:hover,
+input[type="submit"].button-secondary:hover,
 input[type="submit"].secondary:hover,
+input[type="reset"].button-secondary:hover,
 input[type="reset"].secondary:hover,
+button.button-secondary:hover,
 button.secondary:hover,
+.button.button-secondary:hover,
 .button.secondary:hover {
   background: #fafafa;
   color: #308ce8;
 }
+.cm-button.button-secondary:active,
 .cm-button.secondary:active,
+.cm-button.button-secondary.active,
 .cm-button.secondary.active,
+input[type="button"].button-secondary:active,
 input[type="button"].secondary:active,
+input[type="button"].button-secondary.active,
 input[type="button"].secondary.active,
+input[type="submit"].button-secondary:active,
 input[type="submit"].secondary:active,
+input[type="submit"].button-secondary.active,
 input[type="submit"].secondary.active,
+input[type="reset"].button-secondary:active,
 input[type="reset"].secondary:active,
+input[type="reset"].button-secondary.active,
 input[type="reset"].secondary.active,
+button.button-secondary:active,
 button.secondary:active,
+button.button-secondary.active,
 button.secondary.active,
+.button.button-secondary:active,
 .button.secondary:active,
+.button.button-secondary.active,
 .button.secondary.active {
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2) inset;
 }
+.cm-button.button-error,
 .cm-button.error,
+input[type="button"].button-error,
 input[type="button"].error,
+input[type="submit"].button-error,
 input[type="submit"].error,
+input[type="reset"].button-error,
 input[type="reset"].error,
+button.button-error,
 button.error,
+.button.button-error,
 .button.error {
   background: #e61919;
   color: #ffffff;
 }
+.cm-button.button-error:hover,
 .cm-button.error:hover,
+input[type="button"].button-error:hover,
 input[type="button"].error:hover,
+input[type="submit"].button-error:hover,
 input[type="submit"].error:hover,
+input[type="reset"].button-error:hover,
 input[type="reset"].error:hover,
+button.button-error:hover,
 button.error:hover,
+.button.button-error:hover,
 .button.error:hover {
   background: #b81414;
   color: #ffffff;
 }
+.cm-button.button-error:active,
 .cm-button.error:active,
+.cm-button.button-error.active,
 .cm-button.error.active,
+input[type="button"].button-error:active,
 input[type="button"].error:active,
+input[type="button"].button-error.active,
 input[type="button"].error.active,
+input[type="submit"].button-error:active,
 input[type="submit"].error:active,
+input[type="submit"].button-error.active,
 input[type="submit"].error.active,
+input[type="reset"].button-error:active,
 input[type="reset"].error:active,
+input[type="reset"].button-error.active,
 input[type="reset"].error.active,
+button.button-error:active,
 button.error:active,
+button.button-error.active,
 button.error.active,
+.button.button-error:active,
 .button.error:active,
+.button.button-error.active,
 .button.error.active {
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.4) inset;
 }
+.cm-button.button-transparent,
 .cm-button.transparent,
+input[type="button"].button-transparent,
 input[type="button"].transparent,
+input[type="submit"].button-transparent,
 input[type="submit"].transparent,
+input[type="reset"].button-transparent,
 input[type="reset"].transparent,
+button.button-transparent,
 button.transparent,
+.button.button-transparent,
 .button.transparent {
   background: none;
   box-shadow: none;
   border: none;
   color: #308ce8;
 }
+.cm-button.button-transparent:hover,
 .cm-button.transparent:hover,
+input[type="button"].button-transparent:hover,
 input[type="button"].transparent:hover,
+input[type="submit"].button-transparent:hover,
 input[type="submit"].transparent:hover,
+input[type="reset"].button-transparent:hover,
 input[type="reset"].transparent:hover,
+button.button-transparent:hover,
 button.transparent:hover,
+.button.button-transparent:hover,
 .button.transparent:hover {
   background: #f2f2f2;
   color: #308ce8;
 }
+.cm-button.button-transparent:active,
 .cm-button.transparent:active,
+.cm-button.button-transparent.active,
 .cm-button.transparent.active,
+input[type="button"].button-transparent:active,
 input[type="button"].transparent:active,
+input[type="button"].button-transparent.active,
 input[type="button"].transparent.active,
+input[type="submit"].button-transparent:active,
 input[type="submit"].transparent:active,
+input[type="submit"].button-transparent.active,
 input[type="submit"].transparent.active,
+input[type="reset"].button-transparent:active,
 input[type="reset"].transparent:active,
+input[type="reset"].button-transparent.active,
 input[type="reset"].transparent.active,
+button.button-transparent:active,
 button.transparent:active,
+button.button-transparent.active,
 button.transparent.active,
+.button.button-transparent:active,
 .button.transparent:active,
+.button.button-transparent.active,
 .button.transparent.active {
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2) inset;
+}
+.cm-button.button-clear,
+input[type="button"].button-clear,
+input[type="submit"].button-clear,
+input[type="reset"].button-clear,
+button.button-clear,
+.button.button-clear {
+  background: none;
+  box-shadow: none;
+  border: none;
+  color: #308ce8;
+  cursor: default;
 }
 .cm-button.has-icon,
 input[type="button"].has-icon,
@@ -1295,9 +1381,7 @@ button.has-icon-small .icon,
 }
 /* *** BUTTONS CONTAINER *** */
 .btn-wrap {
-  height: 28px;
   margin-top: 24px;
-  line-height: 28px;
 }
 .btn-wrap .hint {
   padding: 0 8px 0 0;
@@ -1347,39 +1431,64 @@ button.has-icon-small .icon,
 .btn-wrap.ok .hint {
   color: #009900;
 }
+.btn-wrap.pull-left .cm-button,
 .btn-wrap.left .cm-button,
+.btn-wrap.pull-left .browse-button,
 .btn-wrap.left .browse-button,
+.btn-wrap.pull-left .com-action-menu,
 .btn-wrap.left .com-action-menu,
+.btn-wrap.pull-left input[type="button"],
 .btn-wrap.left input[type="button"],
+.btn-wrap.pull-left input[type="submit"],
 .btn-wrap.left input[type="submit"],
+.btn-wrap.pull-left input[type="reset"],
 .btn-wrap.left input[type="reset"],
+.btn-wrap.pull-left button,
 .btn-wrap.left button,
+.btn-wrap.pull-left .button,
 .btn-wrap.left .button {
   float: left;
   margin: 0 8px 0 0;
 }
+.btn-wrap.pull-center,
 .btn-wrap.centered {
   text-align: center;
 }
+.btn-wrap.pull-center .cm-button,
 .btn-wrap.centered .cm-button,
+.btn-wrap.pull-center .browse-button,
 .btn-wrap.centered .browse-button,
+.btn-wrap.pull-center .com-action-menu,
 .btn-wrap.centered .com-action-menu,
+.btn-wrap.pull-center input[type="button"],
 .btn-wrap.centered input[type="button"],
+.btn-wrap.pull-center input[type="submit"],
 .btn-wrap.centered input[type="submit"],
+.btn-wrap.pull-center input[type="reset"],
 .btn-wrap.centered input[type="reset"],
+.btn-wrap.pull-center button,
 .btn-wrap.centered button,
+.btn-wrap.pull-center .button,
 .btn-wrap.centered .button {
   float: none;
   display: inline-block;
   margin: 0 0 0 8px;
 }
+.btn-wrap.pull-center .cm-button:first-child,
 .btn-wrap.centered .cm-button:first-child,
+.btn-wrap.pull-center .browse-button:first-child,
 .btn-wrap.centered .browse-button:first-child,
+.btn-wrap.pull-center .com-action-menu:first-child,
 .btn-wrap.centered .com-action-menu:first-child,
+.btn-wrap.pull-center input[type="button"]:first-child,
 .btn-wrap.centered input[type="button"]:first-child,
+.btn-wrap.pull-center input[type="submit"]:first-child,
 .btn-wrap.centered input[type="submit"]:first-child,
+.btn-wrap.pull-center input[type="reset"]:first-child,
 .btn-wrap.centered input[type="reset"]:first-child,
+.btn-wrap.pull-center button:first-child,
 .btn-wrap.centered button:first-child,
+.btn-wrap.pull-center .button:first-child,
 .btn-wrap.centered .button:first-child {
   margin: 0;
 }
@@ -3877,6 +3986,16 @@ button.has-icon-small .icon,
   border-color: #e6e6e6;
   cursor: default;
 }
+/* ******* COMPONENTS: AUTOCOMPLETE ******* */
+/* *** TOOLTIP *** */
+.com-tooltip.com__autocomplete-tooltip {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+.com-tooltip.com__autocomplete-tooltip > .inner > .scroll {
+  max-height: 256px;
+}
 /* ******* GLOSSARY ******* */
 .com-glossary-word {
   position: relative;
@@ -4580,43 +4699,62 @@ button.has-icon-small .icon,
   -webkit-transition: background-color 100ms ease-in-out, color 100ms ease-in-out, box-shadow 100ms ease-in-out;
   transition: background-color 100ms ease-in-out, color 100ms ease-in-out, box-shadow 100ms ease-in-out;
 }
+.com-pagination ul li a.button-secondary,
 .com-pagination ul li a.secondary {
   background: #f2f2f2;
   color: #308ce8;
 }
+.com-pagination ul li a.button-secondary:hover,
 .com-pagination ul li a.secondary:hover {
   background: #fafafa;
   color: #308ce8;
 }
+.com-pagination ul li a.button-secondary:active,
 .com-pagination ul li a.secondary:active,
+.com-pagination ul li a.button-secondary.active,
 .com-pagination ul li a.secondary.active {
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2) inset;
 }
+.com-pagination ul li a.button-error,
 .com-pagination ul li a.error {
   background: #e61919;
   color: #ffffff;
 }
+.com-pagination ul li a.button-error:hover,
 .com-pagination ul li a.error:hover {
   background: #b81414;
   color: #ffffff;
 }
+.com-pagination ul li a.button-error:active,
 .com-pagination ul li a.error:active,
+.com-pagination ul li a.button-error.active,
 .com-pagination ul li a.error.active {
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.4) inset;
 }
+.com-pagination ul li a.button-transparent,
 .com-pagination ul li a.transparent {
   background: none;
   box-shadow: none;
   border: none;
   color: #308ce8;
 }
+.com-pagination ul li a.button-transparent:hover,
 .com-pagination ul li a.transparent:hover {
   background: #f2f2f2;
   color: #308ce8;
 }
+.com-pagination ul li a.button-transparent:active,
 .com-pagination ul li a.transparent:active,
+.com-pagination ul li a.button-transparent.active,
 .com-pagination ul li a.transparent.active {
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2) inset;
+}
+.com-pagination ul li a.button-clear {
+  background: none;
+  box-shadow: none;
+  border: none;
+  color: #308ce8;
+  cursor: default;
 }
 .com-pagination ul li a:hover {
   background: #fafafa;

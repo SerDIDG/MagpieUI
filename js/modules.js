@@ -312,3 +312,15 @@ Mod['Storage'] = {
         return storage[that.params['name']];
     }
 };
+
+/* ******* CALLBACKS ******* */
+
+Mod['Callbacks'] = {
+    '_define' : function(){
+        var that = this;
+        if(!that.data['params']['callbacks']){
+            that.data['params']['callbacks'] = {};
+        }
+        that.extendObject['callbacks'] = {};
+    }
+};
