@@ -171,16 +171,23 @@
             #cm > .button-hover;
         }
 
+        &.button-secondary,
         &.secondary {
             #cm > .button-secondary;
         }
 
+        &.button-error,
         &.error {
             #cm > .button-error;
         }
 
+        &.button-transparent,
         &.transparent {
             #cm > .button-transparent;
+        }
+
+        &.button-clear {
+            #cm > .button-clear;
         }
     }
 
@@ -283,6 +290,14 @@
 
     .button-transparent-active {
         box-shadow: 0 2px 2px rgba(0,0,0,0.2) inset;
+    }
+
+    .button-clear {
+        background: none;
+        box-shadow: none;
+        border: none;
+        color: @cm-color;
+        cursor: default;
     }
 
     // /* ******* PARTS ******* */

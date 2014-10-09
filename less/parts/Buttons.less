@@ -27,20 +27,20 @@
     }
 }
 
-input[type="button"]:extend(.cm-button all),
-input[type="submit"]:extend(.cm-button all),
-input[type="reset"]:extend(.cm-button all),
-button:extend(.cm-button all),
-.button:extend(.cm-button all) {
-
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+button,
+.button {
+    &:extend(.cm-button all);
 }
 
 /* *** BUTTONS CONTAINER *** */
 
 .btn-wrap {
-    height: @CmForm-fieldHeight;
+    &:extend(.clearfix all);
+
     margin-top: @cm-indentMedium;
-    line-height: @CmForm-fieldHeight;
 
     .hint {
         padding: 0 @CmForm-buttonsIndent 0 0;
@@ -81,6 +81,7 @@ button:extend(.cm-button all),
         }
     }
 
+    &.pull-left,
     &.left {
         .cm-button,
         .browse-button,
@@ -90,6 +91,7 @@ button:extend(.cm-button all),
         }
     }
 
+    &.pull-center,
     &.centered {
         text-align: center;
 
