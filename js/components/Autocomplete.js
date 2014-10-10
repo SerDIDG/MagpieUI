@@ -69,6 +69,7 @@ function(params){
         // Add events
         cm.addEvent(that.params['input'], 'input', requestHelper);
         cm.addEvent(that.params['input'], 'keydown', inputHelper);
+        cm.addEvent(that.params['input'], 'blur', blurHandler);
         that.triggerEvent('onRender');
     };
 
@@ -77,8 +78,7 @@ function(params){
         e = cm.getEvent(e);
 
         switch(e.keyCode){
-            // Enter and Tab keys of keyboard
-            case 9:
+            // Enter
             case 13:
                 set(that.selectedItemIndex);
                 that.hide();
@@ -112,6 +112,11 @@ function(params){
                 }
                 break;
         }
+    };
+
+    var blurHandler = function(){
+        set(that.selectedItemIndex);
+        that.hide();
     };
 
     var requestHelper = function(){
