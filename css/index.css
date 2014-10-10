@@ -554,7 +554,7 @@ textarea,
 select {
   width: 100%;
   height: 28px;
-  padding: 5px 6px;
+  padding: 4px 6px;
   margin: 0;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -3118,7 +3118,7 @@ button.has-icon-small .icon,
   border: 1px dashed #308ce8;
   border-radius: 3px;
 }
-.cm-editable.is-editable > .menu ul {
+.cm-editable.is-editable > .menu .cm-menu-dropdown {
   padding: 4px;
   background: #fff;
   border: 1px solid #cbcbcb;
@@ -3143,10 +3143,10 @@ button.has-icon-small .icon,
   bottom: auto;
   left: auto;
 }
-.cm-editable.is-editable > .menu ul li {
+.cm-editable.is-editable > .menu .cm-menu-dropdown li {
   position: relative;
 }
-.cm-editable.is-editable > .menu ul li a {
+.cm-editable.is-editable > .menu .cm-menu-dropdown li a {
   text-decoration: underline;
   outline: none;
   cursor: pointer;
@@ -3158,26 +3158,26 @@ button.has-icon-small .icon,
   text-decoration: none;
   white-space: nowrap;
 }
-.cm-editable.is-editable > .menu ul li a:hover {
+.cm-editable.is-editable > .menu .cm-menu-dropdown li a:hover {
   text-decoration: none;
   color: #666666;
 }
-.cm-editable.is-editable > .menu ul li a:hover {
+.cm-editable.is-editable > .menu .cm-menu-dropdown li a:hover {
   color: #308ce8;
   text-decoration: none;
 }
-.cm-editable.is-editable > .menu ul li ul {
+.cm-editable.is-editable > .menu .cm-menu-dropdown li ul {
   top: -5px;
   left: 100%;
 }
-.cm-editable.is-editable > .menu ul li.sep {
+.cm-editable.is-editable > .menu .cm-menu-dropdown li.sep {
   display: none;
   height: 0;
   margin: 0 12px;
   overflow: hidden;
   border-top: 1px solid #cbcbcb;
 }
-.cm-editable.is-editable > .menu ul li:before {
+.cm-editable.is-editable > .menu .cm-menu-dropdown li:before {
   display: block;
   height: 0;
   margin: 0 12px;
@@ -3185,10 +3185,10 @@ button.has-icon-small .icon,
   border-top: 1px solid #cbcbcb;
   content: '';
 }
-.cm-editable.is-editable > .menu ul li:first-child:before {
+.cm-editable.is-editable > .menu .cm-menu-dropdown li:first-child:before {
   display: none;
 }
-.cm-editable.is-editable > .menu ul li:hover > ul {
+.cm-editable.is-editable > .menu .cm-menu-dropdown li:hover > ul {
   display: block;
 }
 .cm-editable.is-editable > .menu:hover {
@@ -3196,6 +3196,10 @@ button.has-icon-small .icon,
 }
 .cm-editable.is-editable > .menu:hover .icon {
   background-color: #fafafa;
+}
+.cm-editable.is-editable > .menu:hover .cm-menu-dropdown {
+  visibility: visible;
+  opacity: 1;
 }
 .cm-editable.is-active > .border,
 .cm-editable:hover > .border {
@@ -3233,12 +3237,6 @@ button.has-icon-small .icon,
 }
 .cm-editable.is-active > .drag {
   background-color: #dbebfb;
-}
-@media only screen and (max-width: 640px) {
-  .is-adaptive .cm-editable > .border,
-  .is-adaptive .cm-editable > .menu {
-    display: none;
-  }
 }
 /* ******* GRID ******* */
 .cm-grid {
@@ -3955,7 +3953,7 @@ button.has-icon-small .icon,
 .com-multiselect .inner {
   width: 100%;
   height: 28px;
-  padding: 5px 6px;
+  padding: 4px 6px;
   margin: 0;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -3988,13 +3986,13 @@ button.has-icon-small .icon,
 }
 /* ******* COMPONENTS: AUTOCOMPLETE ******* */
 /* *** TOOLTIP *** */
-.com-tooltip.com__autocomplete-tooltip {
+.com-tooltip.com__ac-tooltip {
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
 }
-.com-tooltip.com__autocomplete-tooltip > .inner > .scroll {
-  max-height: 256px;
+.com-tooltip.com__ac-tooltip > .inner > .scroll {
+  max-height: 160px;
 }
 /* ******* GLOSSARY ******* */
 .com-glossary-word {

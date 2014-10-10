@@ -1,10 +1,14 @@
 /* ******* PARAMS ******* */
 
 Mod['Params'] = {
+    '_config' : {
+        'extend' : true,
+        'self' : false
+    },
     '_define' : function(){
         var that = this;
-        if(!that.extendObject['params']){
-            that.extendObject['params'] = {};
+        if(!that.build['params']){
+            that.build['params'] = {};
         }
     },
     'setParams' : function(params){
@@ -43,16 +47,19 @@ Mod['Params'] = {
 /* ******* EVENTS ******* */
 
 Mod['Events'] = {
+    '_config' : {
+        'extend' : true,
+        'self' : false
+    },
     '_define' : function(){
         var that = this;
-        if(!that.data['params']['events']){
-            that.data['params']['events'] = {};
+        if(!that.build['params']['events']){
+            that.build['params']['events'] = {};
         }
-        that.extendObject['events'] = that.data['events'];
-        that.extendObject['eventsStack'] = {};
-        cm.forEach(that.data['events'], function(item){
-            that.extendObject['eventsStack'][item] = [];
-            that.extendObject[item] = function(handler){
+        that.build['events'] = {};
+        cm.forEach(that.build._raw['events'], function(item){
+            that.build['events'][item] = [];
+            that.build[item] = function(handler){
                 var that = this;
                 that.addEvent(item, handler);
                 return that;
@@ -61,19 +68,19 @@ Mod['Events'] = {
     },
     'addEvent' : function(event, handler){
         var that = this;
-        that.eventsStack = cm.clone(that.eventsStack);
-        if(that.eventsStack[event]){
+        that.events = cm.clone(that.events);
+        if(that.events[event]){
             if(typeof handler == 'function'){
-                that.eventsStack[event].push(handler);
+                that.events[event].push(handler);
             }else{
                 cm.errorLog({
-                    'name' : that.className,
+                    'name' : that._name['full'],
                     'message' : ['Handler of event', cm.strWrap(event, '"'), 'must be a function.'].join(' ')
                 });
             }
         }else{
             cm.errorLog({
-                'name' : that.className,
+                'name' : that._name['full'],
                 'message' : [cm.strWrap(event, '"'), 'does not exists.'].join(' ')
             });
         }
@@ -88,21 +95,21 @@ Mod['Events'] = {
     },
     'removeEvent' : function(event, handler){
         var that = this;
-        that.eventsStack = cm.clone(that.eventsStack);
-        if(that.eventsStack[event]){
+        that.events = cm.clone(that.events);
+        if(that.events[event]){
             if(typeof handler == 'function'){
-                that.eventsStack[event] = that.eventsStack[event].filter(function(item){
+                that.events[event] = that.events[event].filter(function(item){
                     return item != handler;
                 });
             }else{
                 cm.errorLog({
-                    'name' : that.className,
+                    'name' : that._name['full'],
                     'message' : ['Handler of event', cm.strWrap(event, '"'), 'must be a function.'].join(' ')
                 });
             }
         }else{
             cm.errorLog({
-                'name' : that.className,
+                'name' : that._name['full'],
                 'message' : [cm.strWrap(event, '"'), 'does not exists.'].join(' ')
             });
         }
@@ -110,13 +117,13 @@ Mod['Events'] = {
     },
     'triggerEvent' : function(event, params){
         var that = this;
-        if(that.eventsStack[event]){
-            cm.forEach(that.eventsStack[event], function(item){
+        if(that.events[event]){
+            cm.forEach(that.events[event], function(item){
                 item(that, params || {});
             });
         }else{
             cm.errorLog({
-                'name' : that.className,
+                'name' : that._name['full'],
                 'message' : [cm.strWrap(event, '"'), 'does not exists.'].join(' ')
             });
         }
@@ -134,10 +141,14 @@ Mod['Events'] = {
 /* ******* LANGS ******* */
 
 Mod['Langs'] = {
+    '_config' : {
+        'extend' : true,
+        'self' : false
+    },
     '_define' : function(){
         var that = this;
-        if(!that.data['params']['langs']){
-            that.data['params']['langs'] = {};
+        if(!that.build['params']['langs']){
+            that.build['params']['langs'] = {};
         }
     },
     'lang' : function(str){
@@ -162,10 +173,14 @@ Mod['Langs'] = {
 /* ******* DATA CONFIG ******* */
 
 Mod['DataConfig'] = {
+    '_config' : {
+        'extend' : true,
+        'self' : false
+    },
     '_define' : function(){
         var that = this;
-        if(typeof that.data['params']['configDataMarker'] == 'undefined'){
-            that.data['params']['configDataMarker'] = 'data-config';
+        if(typeof that.build['params']['configDataMarker'] == 'undefined'){
+            that.build['params']['configDataMarker'] = 'data-config';
         }
     },
     'getDataConfig' : function(container, dataMarker){
@@ -197,19 +212,23 @@ Mod['DataConfig'] = {
 /* ******* DATA NODES ******* */
 
 Mod['DataNodes'] = {
+    '_config' : {
+        'extend' : true,
+        'self' : false
+    },
     '_define' : function(){
         var that = this;
-        if(!that.data['params']['nodes']){
-            that.data['params']['nodes'] = {};
+        if(!that.build['params']['nodes']){
+            that.build['params']['nodes'] = {};
         }
-        if(typeof that.data['params']['nodesDataMarker'] == 'undefined'){
-            that.data['params']['nodesDataMarker'] = 'data-node';
+        if(typeof that.build['params']['nodesDataMarker'] == 'undefined'){
+            that.build['params']['nodesDataMarker'] = 'data-node';
         }
-        if(typeof that.data['params']['nodesMarker'] == 'undefined'){
-            that.data['params']['nodesMarker'] = that.classNameShort;
+        if(typeof that.build['params']['nodesMarker'] == 'undefined'){
+            that.build['params']['nodesMarker'] = that.build._name['short'];
         }
-        if(!that.extendObject['nodes']){
-            that.extendObject['nodes'] = {};
+        if(!that.build['nodes']){
+            that.build['nodes'] = {};
         }
     },
     'getDataNodes' : function(container, dataMarker, className){
@@ -234,18 +253,23 @@ Mod['DataNodes'] = {
 /* ******* LOCAL STORAGE ******* */
 
 Mod['Storage'] = {
+    '_config' : {
+        'extend' : true,
+        'self' : false
+    },
     '_define' : function(){
         var that = this;
-        if(!that.data['params']['name']){
-            that.data['params']['name'] = '';
+        if(!that.build['params']['name']){
+            that.build['params']['name'] = '';
         }
     },
     'storageRead' : function(key){
         var that = this,
-            storage = JSON.parse(cm.storageGet(that.className)) || {};
+            storage = JSON.parse(cm.storageGet(that._name['full'])) || {};
         if(cm.isEmpty(that.params['name'])){
             cm.errorLog({
-                'name' : that.className,
+                'type' : 'error',
+                'name' : that._name['full'],
                 'message' : 'Storage cannot be read because "name" parameter not provided.'
             });
             return null;
@@ -253,7 +277,7 @@ Mod['Storage'] = {
         if(!storage[that.params['name']] || typeof storage[that.params['name']][key] == 'undefined'){
             cm.errorLog({
                 'type' : 'attention',
-                'name' : that.className,
+                'name' : that._name['full'],
                 'message' : ['Parameter', cm.strWrap(key, '"'), 'does not exist or is not set.'].join(' ')
             });
             return null;
@@ -262,10 +286,11 @@ Mod['Storage'] = {
     },
     'storageReadAll' : function(){
         var that = this,
-            storage = JSON.parse(cm.storageGet(that.className)) || {};
+            storage = JSON.parse(cm.storageGet(that._name['full'])) || {};
         if(cm.isEmpty(that.params['name'])){
             cm.errorLog({
-                'name' : that.className,
+                'type' : 'error',
+                'name' : that._name['full'],
                 'message' : 'Storage cannot be read because "name" parameter not provided.'
             });
             return {};
@@ -273,7 +298,7 @@ Mod['Storage'] = {
         if(!storage[that.params['name']]){
             cm.errorLog({
                 'type' : 'attention',
-                'name' : that.className,
+                'name' : that._name['full'],
                 'message' : 'Storage is empty.'
             });
             return {};
@@ -282,10 +307,11 @@ Mod['Storage'] = {
     },
     'storageWrite' : function(key, value){
         var that = this,
-            storage = JSON.parse(cm.storageGet(that.className)) || {};
+            storage = JSON.parse(cm.storageGet(that._name['full'])) || {};
         if(cm.isEmpty(that.params['name'])){
             cm.errorLog({
-                'name' : that.className,
+                'type' : 'error',
+                'name' : that._name['full'],
                 'message' : 'Storage cannot be written because "name" parameter not provided.'
             });
             return {};
@@ -294,21 +320,22 @@ Mod['Storage'] = {
             storage[that.params['name']] = {};
         }
         storage[that.params['name']][key] = value;
-        cm.storageSet(that.className, JSON.stringify(storage));
+        cm.storageSet(that._name['full'], JSON.stringify(storage));
         return storage[that.params['name']];
     },
     'storageWriteAll' : function(data){
         var that = this,
-            storage = JSON.parse(cm.storageGet(that.className)) || {};
+            storage = JSON.parse(cm.storageGet(that._name['full'])) || {};
         if(cm.isEmpty(that.params['name'])){
             cm.errorLog({
-                'name' : that.className,
+                'type' : 'error',
+                'name' : that._name['full'],
                 'message' : 'Storage cannot be written because "name" parameter not provided.'
             });
             return {};
         }
         storage[that.params['name']] = data;
-        cm.storageSet(that.className, JSON.stringify(storage));
+        cm.storageSet(that._name['full'], JSON.stringify(storage));
         return storage[that.params['name']];
     }
 };
@@ -316,11 +343,35 @@ Mod['Storage'] = {
 /* ******* CALLBACKS ******* */
 
 Mod['Callbacks'] = {
+    '_config' : {
+        'extend' : true,
+        'self' : false
+    },
     '_define' : function(){
         var that = this;
-        if(!that.data['params']['callbacks']){
-            that.data['params']['callbacks'] = {};
+        if(!that.build['params']['callbacks']){
+            that.build['params']['callbacks'] = {};
         }
-        that.extendObject['callbacks'] = {};
-    }
+        that.build['callbacks'] = {};
+        that.build['_callbacks'] = {};
+    },
+    'callbacksProcess' : function(){
+        var that = this;
+        // Save default callbacks
+        cm.forEach(that.callbacks, function(callback, name){
+            that._callbacks[name] = callback;
+        });
+        // Replace callbacks
+        cm.forEach(that.params['callbacks'], function(callback, name){
+            that.callbacks[name] = callback;
+        });
+        return that;
+    },
+    'callbacksRestore' : function(){
+        var that = this;
+        cm.forEach(that._callbacks, function(callback, name){
+            that.callbacks[name] = callback;
+        });
+        return that;
+    },
 };

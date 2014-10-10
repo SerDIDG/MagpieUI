@@ -2276,51 +2276,70 @@ cm.createSvg = function(){
 
 cm.defineHelper = function(name, data, handler){
     var that = this;
-
-    that.data = cm.merge({
+    // Process config
+    data = cm.merge({
         'modules' : [],
         'params' : {},
         'events' : []
     }, data);
-
-    that.className = name;
-    that.classNameShort = that.className.replace('.', '');
-    that.name = that.className.split('.');
-
-    // Define default methods
-
-    that.extendObject = {
-        'modules' : that.data['modules'],
-        'params' : that.data['params'],
-        'className' : that.className,
-        'classNameShort' : that.classNameShort
+    // Create class extend object
+    that.build = {
+        '_raw' : data,
+        '_name' : {
+            'full' : name,
+            'short' : name.replace('.', ''),
+            'split' : name.split('.')
+        },
+        'params' : data['params']
     };
-
     // Extend class
-
-    cm.forEach(that.data['modules'], function(module){
+    cm.forEach(that.build._raw['modules'], function(module){
         if(Mod[module]){
-            cm.forEach(Mod[module], function(item, key){
-                if(key === '_define'){
-                    item.call(that);
-                }else{
-                    that.extendObject[key] = item;
-                }
+            // Process module config
+            Mod[module]._config = cm.merge({
+                'extend' : false,
+                'self' : false
+            }, Mod[module]._config);
+            // Extend class object
+            if(Mod[module]._config['extend']){
+                cm.forEach(Mod[module], function(item, key){
+                    if(!/_define|_config/.test(key)){
+                        that.build[key] = item;
+                    }
+                });
+            }
+            // Extend modules object
+            if(Mod[module]._config['self']){
+                that.build[module] = Mod[module];
+            }
+            // Construct module
+            if(typeof Mod[module]._define == 'function'){
+                Mod[module]._define.call(that);
+            }else{
+                cm.errorLog({
+                    'type' : 'error',
+                    'name' : that.build._name['full'],
+                    'message' : ['Module', cm.strWrap(module, '"'), 'does not have "_define" method.'].join(' ')
+                });
+            }
+        }else{
+            cm.errorLog({
+                'type' : 'error',
+                'name' : that.build._name['full'],
+                'message' : ['Module', cm.strWrap(module, '"'), 'does not exists.'].join(' ')
             });
         }
     });
-
-    handler.prototype = that.extendObject;
-
-    // Build class
-
-    if(that.name.length == 1){
-        window[that.name[0]] = handler;
+    // Prototype class
+    handler.prototype = that.build;
+    // Extend Window object
+    if(that.build._name['split'].length == 1){
+        window[that.build._name['split'][0]] = handler;
     }else{
-        if(!window[that.name[0]]){
-            window[that.name[0]] = {};
+        if(!window[that.build._name['split'][0]]){
+            window[that.build._name['split'][0]] = {};
         }
-        window[that.name[0]][that.name[1]] = handler;
+        window[that.build._name['split'][0]][that.build._name['split'][1]] = handler;
     }
 };
 

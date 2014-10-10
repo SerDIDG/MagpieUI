@@ -31,7 +31,31 @@
                     new Com.Tabset({'node' : node});
                 })
                 .add('autocomplete', function(node){
-                    new Com.Autocomplete({'input' : node});
+                    var callbacks = {
+                        'render' : function(that, items){
+                            if(items.length){
+                                // Render List Nodes
+                                that.callbacks.renderList(that, items);
+                                // Show menu
+                                that.show();
+                            }else{
+                                that.hide();
+                            }
+                            console.dir(that.registeredItems);
+                        }
+                    };
+                    var data = [
+                        {"value" : "1", "text" : "Sponge Bob"},
+                        {"value" : "2", "text" : "User Userberg"},
+                        {"value" : "3", "text" : "User Userbergovich"},
+                        {"value" : "4", "text" : "User Userbergini"},
+                        {"value" : "5", "text" : "User Userbergovski"},
+                        {"value" : "6", "text" : "User Userbergoff"},
+                        {"value" : "7", "text" : "User Userberegovoy"},
+                        {"value" : "8", "text" : "User Userbergosyan"},
+                        {"value" : "9", "text" : "User Userbergovenko"}
+                    ];
+                    new Com.Autocomplete({'input' : node, 'callbacks' : callbacks, 'data' : data});
                 })
                 .construct();
         });
@@ -49,7 +73,7 @@
 
     <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
         <h2>Input Autocomplete with Preloaded Data</h2>
-        <input type="text" data-element="autocomplete" data-config='{"data" : [{"value" : "1", "text" : "test"}, {"value" : "2", "text" : "Sponge Bob"}]}'>
+        <input type="text" name="users" data-element="autocomplete">
     </li>
 </ul>
 

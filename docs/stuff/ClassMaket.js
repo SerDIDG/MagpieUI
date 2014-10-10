@@ -5,7 +5,8 @@ cm.define('Com.ClassMaket', {
         'Langs',
         'DataConfig',
         'DataNodes',
-        'Storage'
+        'Storage',
+        'Callbacks'
     ],
     'events' : [
         'onRender'
@@ -22,6 +23,7 @@ function(params){
         that.convertEvents(that.params['events']);
         that.getDataNodes(that.params['node']);
         that.getDataConfig(that.params['node']);
+        that.callbacksProcess();
         render();
     };
 

@@ -15,19 +15,19 @@ cm.define('Com.Autocomplete', {
     ],
     'params' : {
         'input' : cm.Node('input', {'type' : 'text'}),      // HTML input node
-        'target' : null,                                    // HTML node
+        'target' : false,                                   // HTML node
         'container' : 'document.body',
         'minLength' : 3,
         'delay' : 300,
         'data' : [],                                        // Example: [{'value' : 'foo', 'text' : 'Bar'}].
-        'url' : null,                                       // Request URL.
+        'url' : false,                                      // Request URL.
         'urlParams' : {
 
         },
         'Com.Tooltip' : {
             'hideOnOut' : true,
             'targetEvent' : 'none',
-            'className' : 'com__autocomplete-tooltip',
+            'className' : 'com__ac-tooltip',
             'width' : 'targetWidth',
             'top' : 'targetHeight + 3'
         }
@@ -39,12 +39,14 @@ function(params){
 
     that.isAjax = false;
     that.components = {};
+    that.registeredItems = [];
+    that.selectedItemIndex = null;
 
     var init = function(){
         that.setParams(params);
         that.convertEvents(that.params['events']);
-        //that.modules.Callback.process(that.params['input']);
         that.getDataConfig(that.params['input']);
+        that.callbacksProcess();
         validateParams();
         render();
     };
@@ -71,27 +73,80 @@ function(params){
     };
 
     var inputHelper = function(e){
+        var listLength, listIndex;
         e = cm.getEvent(e);
 
         switch(e.keyCode){
             // Enter and Tab keys of keyboard
             case 9:
             case 13:
+                set(that.selectedItemIndex);
                 that.hide();
+                break;
+            // Arrow Up
+            case 38:
+                listLength = that.registeredItems.length;
+                if(listLength){
+                    if(that.selectedItemIndex == null){
+                        that.selectedItemIndex = listLength - 1;
+                    }else if(that.selectedItemIndex - 1 >= 0){
+                        listIndex = that.selectedItemIndex - 1;
+                    }else{
+                        listIndex = listLength - 1;
+                    }
+                    setListItem(listIndex);
+                }
+                break;
+            // Arrow Down
+            case 40:
+                listLength = that.registeredItems.length;
+                if(listLength){
+                    if(that.selectedItemIndex == null){
+                        listIndex = 0;
+                    }else if(that.selectedItemIndex + 1 < listLength){
+                        listIndex = that.selectedItemIndex + 1;
+                    }else{
+                        listIndex = 0;
+                    }
+                    setListItem(listIndex);
+                }
                 break;
         }
     };
 
     var requestHelper = function(){
+        // Clear tooltip ajax/static delay and filtered items list
+        that.selectedItemIndex = null;
+        that.registeredItems = [];
         requestDelay && clearTimeout(requestDelay);
-        var request = that.params['input'].value;
 
+        var request = that.params['input'].value;
         if(request.length >= that.params['minLength']){
             requestDelay = setTimeout(function(){
                 that.callbacks.response(that, that.params['data']);
             }, that.params['delay']);
         }else{
             that.hide();
+        }
+    };
+
+    var setListItem = function(index){
+        var previousItem = that.registeredItems[that.selectedItemIndex],
+            item = that.registeredItems[index];
+        if(previousItem){
+            cm.removeClass(previousItem['node'], 'active');
+        }
+        if(item){
+            cm.addClass(item['node'], 'active');
+            that.components['tooltip'].scrollToNode(item['node']);
+        }
+        that.selectedItemIndex = index;
+    };
+
+    var set = function(index){
+        var item = that.registeredItems[index];
+        if(item){
+            that.setRegistered(item, true);
         }
     };
 
@@ -141,22 +196,28 @@ function(params){
     };
 
     that.callbacks.renderItem = function(that, container, item, i){
-        item['nodes'] = {};
+        var nodes = {};
         // Render Structure of List Item
-        item['nodes']['container'] = cm.Node('li',
-            item['nodes']['link'] = cm.Node('a', {'innerHTML' : item['text']})
+        nodes['container'] = cm.Node('li',
+            cm.Node('a', {'innerHTML' : item['text']})
         );
         // Register item
-        that.callbacks.registerItem(that, item['nodes']['container'], item, i);
+        that.callbacks.registerItem(that, nodes['container'], item, i);
         // Embed List Item to List
-        cm.appendChild(item['nodes']['container'], container);
+        cm.appendChild(nodes['container'], container);
     };
 
-    that.callbacks.registerItem = function(that, node, item, i, execute){
-        cm.addEvent(node, 'click', function(){
-            that.set(item, execute);
+    that.callbacks.registerItem = function(that, node, item, i){
+        var regItem = {
+            'data' : item,
+            'node' : node,
+            'i' : i
+        };
+        cm.addEvent(regItem['node'], 'click', function(){
+            that.setRegistered(regItem);
             that.hide();
         });
+        that.registeredItems.push(regItem);
     };
 
     that.callbacks.setTooltip = function(that, container){
@@ -168,6 +229,11 @@ function(params){
     that.set = function(item, execute){
         execute = typeof execute == 'undefined'? true : execute;
         that.params['input'].value = item['text'];
+    };
+
+    that.setRegistered = function(item, execute){
+        execute = typeof execute == 'undefined'? true : execute;
+        that.params['input'].value = item['data']['text'];
     };
 
     that.show = function(){

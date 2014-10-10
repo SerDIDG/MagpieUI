@@ -103,7 +103,7 @@
                 border-radius: @cm-borderRadius;
             }
 
-            ul {
+            .cm-menu-dropdown {
                 .cm-menu-dropdown--base;
                 z-index: 1;
                 .cm-position(12px, 12px, auto, auto);
@@ -114,6 +114,10 @@
 
                 .icon {
                     background-color: @cm-colorSecondaryHover;
+                }
+
+                .cm-menu-dropdown {
+                    .cm-menu-dropdown--active;
                 }
             }
         }
@@ -180,17 +184,4 @@
     &.is-active {
         #cm-editable-bundle > .active;
     }
-}
-
-@media only screen and (max-width: @cm-screenMobile) {
-
-    .is-adaptive {
-        .cm-editable {
-            > .border,
-            > .menu {
-                display: none;
-            }
-        }
-    }
-
 }

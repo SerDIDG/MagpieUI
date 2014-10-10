@@ -341,6 +341,13 @@ Com['Tooltip'] = function(o){
         return that;
     };
 
+    that.scrollToNode = function(node){
+        if(cm.isNode(node) && cm.isParent(nodes['content'], node)){
+            nodes['content'].scrollTop = node.offsetTop - nodes['content'].offsetTop;
+        }
+        return that;
+    };
+
     that.getNodes = function(key){
         return nodes[key] || nodes;
     };
