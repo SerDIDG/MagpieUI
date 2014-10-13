@@ -340,22 +340,16 @@ cm.crossEvents = function(key){
     var events = {
         'mousedown' : 'touchstart',
         'mouseup' : 'touchend',
-        'mousemove' : 'touchmove',
-        'click' : 'tap'
+        'mousemove' : 'touchmove'
     };
     return events[key];
 };
 
-cm.addEvent = function(el, type, handler, useCapture, preventDefault){
+cm.addEvent = function(el, type, handler, useCapture){
     useCapture = typeof(useCapture) == 'undefined' ? true : useCapture;
-    preventDefault = typeof(preventDefault) == 'undefined' ? false : preventDefault;
     // Process touch events
     if(cm.isTouch && cm.crossEvents(type)){
-        if(/tap/.test(cm.crossEvents(type))){
-            cm.addCustomEvent(el, cm.crossEvents(type), handler, useCapture, preventDefault);
-        }else{
-            el.addEventListener(cm.crossEvents(type), handler, useCapture);
-        }
+        el.addEventListener(cm.crossEvents(type), handler, useCapture);
         return el;
     }
     try{
@@ -370,11 +364,7 @@ cm.removeEvent = function(el, type, handler, useCapture){
     useCapture = typeof(useCapture) == 'undefined' ? true : useCapture;
     // Process touch events
     if(cm.isTouch && cm.crossEvents(type)){
-        if(/tap/.test(cm.crossEvents(type))){
-            cm.removeCustomEvent(el, cm.crossEvents(type), handler, useCapture);
-        }else{
-            el.removeEventListener(cm.crossEvents(type), handler, useCapture);
-        }
+        el.removeEventListener(cm.crossEvents(type), handler, useCapture);
         return el;
     }
     try{
