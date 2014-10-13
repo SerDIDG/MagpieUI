@@ -147,12 +147,14 @@ form {
   vertical-align: top;
 }
 .cm-ul-clear,
+.com-tabset-head-tabs ul,
 .com-slider > .inner > .slides > ul {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 .cm-ul-clear > li,
+.com-tabset-head-tabs ul > li,
 .com-slider > .inner > .slides > ul > li {
   margin: 0;
   padding: 0;
@@ -562,6 +564,7 @@ select {
   background: #fff;
   border: 1px solid #cbcbcb;
   border-radius: 3px;
+  box-shadow: none;
   cursor: text;
   -webkit-transition: background-color 300ms ease-in-out, border-color 300ms ease-in-out, color 300ms ease-in-out, box-shadow 300ms ease-in-out;
   transition: background-color 300ms ease-in-out, border-color 300ms ease-in-out, color 300ms ease-in-out, box-shadow 300ms ease-in-out;
@@ -3961,6 +3964,7 @@ button.has-icon-small .icon,
   background: #fff;
   border: 1px solid #cbcbcb;
   border-radius: 3px;
+  box-shadow: none;
   cursor: text;
   -webkit-transition: background-color 300ms ease-in-out, border-color 300ms ease-in-out, color 300ms ease-in-out, box-shadow 300ms ease-in-out;
   transition: background-color 300ms ease-in-out, border-color 300ms ease-in-out, color 300ms ease-in-out, box-shadow 300ms ease-in-out;
@@ -5170,16 +5174,10 @@ button.has-icon-small .icon,
 }
 .com-tabset-head {
   position: relative;
-  bottom: -1px;
   z-index: 2;
 }
-.com-tabset-head-tabs ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
 .com-tabset-head-tabs ul li {
-  margin: 0 0 0 4px;
+  margin: 0 4px -1px 0;
   float: left;
   background: #f2f2f2;
   border: 1px solid #cbcbcb;
@@ -5192,8 +5190,8 @@ button.has-icon-small .icon,
   -webkit-transition: all 100ms ease-in-out;
   transition: all 100ms ease-in-out;
 }
-.com-tabset-head-tabs ul li:first-child {
-  margin: 0;
+.com-tabset-head-tabs ul li:last-child {
+  margin-right: 0;
 }
 .com-tabset-head-tabs ul li.active {
   background: #ffffff;
@@ -5212,8 +5210,9 @@ button.has-icon-small .icon,
   display: none;
   overflow: hidden;
   padding: 0 24px;
-  background: #f2f2f2;
   border: 1px solid #cbcbcb;
+  border-bottom: none;
+  background: #f2f2f2;
   line-height: 28px;
 }
 .com-tabset-head-menu {

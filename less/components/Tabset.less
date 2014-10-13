@@ -10,21 +10,18 @@
 
 .com-tabset-head {
     position: relative;
-    bottom: -1px;
     z-index: 2;
 }
 
 .com-tabset-head-tabs {
     ul {
-        margin: 0;
-        padding: 0;
-        list-style: none;
+        &:extend(.cm-ul-clear all);
 
         li {
-            margin: 0 0 0 @ComTabset-tabsIndent;
+            margin: 0 @ComTabset-tabsIndent -@cm-borderWidth 0;
             float: left;
             background: @ComTabset-tabsBackground;
-            border: 1px solid @ComTabset-borderColor;
+            border: @cm-borderStyle;
             border-radius: @ComTabset-borderRadius @ComTabset-borderRadius 0 0;
             .cm-transition(all @CM-Transition-Duration ease-in-out);
 
@@ -33,8 +30,8 @@
                 .cm-transition(all @CM-Transition-DurationReverse ease-in-out);
             }
 
-            &:first-child {
-                margin: 0;
+            &:last-child {
+                margin-right: 0;
             }
 
             &.active {
@@ -53,12 +50,14 @@
     }
 }
 
-.com-tabset-head-title:extend(.cm-text-overflow) {
+.com-tabset-head-title {
+    &:extend(.cm-text-overflow);
     display: none;
     overflow: hidden;
     padding: 0 @cm-indentMedium;
+    border: @cm-borderStyle;
+    border-bottom: none;
     background: @ComTabset-tabsTitle;
-    border: 1px solid @ComTabset-borderColor;
     line-height: @ComTabset-tabsHeight;
 }
 
@@ -67,7 +66,7 @@
     height: @ComTabset-tabsHeight;
     display: none;
     position: absolute;
-    .cm-position(1px, 1px, 1px, auto);
+    .cm-position(@cm-borderWidth, @cm-borderWidth, @cm-borderWidth, auto);
 
     .icon {
         width: @ComTabset-tabsHeight;
@@ -81,7 +80,7 @@
     .cm-menu-dropdown {
         .cm-menu-dropdown--base;
         left: auto;
-        right: -1px;
+        right: -@cm-borderWidth;
     }
 }
 
@@ -90,7 +89,7 @@
     z-index: 1;
     padding: @cm-indentMedium;
     background: #fff;
-    border: 1px solid @ComTabset-borderColor;
+    border: @cm-borderStyle;
     border-radius: 0 @ComTabset-borderRadius @ComTabset-borderRadius @ComTabset-borderRadius;
 
     > ul {

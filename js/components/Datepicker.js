@@ -102,7 +102,7 @@ function(params){
         nodes['container'] = cm.Node('div', {'class' : 'com-datepicker-input'},
             nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
             cm.Node('div', {'class' : 'form-field has-icon-right'},
-                nodes['input'] = cm.Node('input', {'type' : 'text'}),
+                nodes['input'] = cm.Node('input', {'type' : 'text', 'readOnly' : 'true'}),
                 nodes['icon'] = cm.Node('div', {'class' : that.params['icons']['datepicker']})
             ),
             nodes['menuContainer'] = cm.Node('div', {'class' : 'form'},
