@@ -960,6 +960,9 @@ input[type="checkbox"] {
 .icon.medium.settings-white {
   background-image: url("../img/icons/medium/settings-white.png");
 }
+.icon.medium.plus-white {
+  background-image: url("../img/icons/medium/plus-white.png");
+}
 .icon.large {
   width: 32px;
   height: 32px;
@@ -2651,7 +2654,6 @@ button.has-icon-small .icon,
   color: #666666;
   display: block;
   padding: 2px 12px;
-  line-height: 18px;
   text-decoration: none;
   white-space: nowrap;
 }
@@ -3157,7 +3159,6 @@ button.has-icon-small .icon,
   color: #666666;
   display: block;
   padding: 2px 12px;
-  line-height: 18px;
   text-decoration: none;
   white-space: nowrap;
 }
@@ -4093,7 +4094,6 @@ button.has-icon-small .icon,
   color: #666666;
   display: block;
   padding: 2px 12px;
-  line-height: 18px;
   text-decoration: none;
   white-space: nowrap;
 }
@@ -5265,7 +5265,6 @@ button.has-icon-small .icon,
   color: #666666;
   display: block;
   padding: 2px 12px;
-  line-height: 18px;
   text-decoration: none;
   white-space: nowrap;
 }
