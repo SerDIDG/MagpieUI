@@ -300,30 +300,4 @@
         color: @cm-color;
         cursor: default;
     }
-
-    // /* ******* PARTS ******* */
-
-    // /* *** GRID *** */
-
-    .grid-size (@count: 1) {
-        @size: 100% / @count;
-
-        > ul > li {
-            width: @size;
-        }
-    }
-
-    .grid-indent (@indent: @CmGrid-itemIndent) {
-        > ul {
-            margin: @indent -@indent -@indent;
-
-            &:first-child {
-                margin: -@indent;
-            }
-
-            > li {
-                padding: @indent;
-            }
-        }
-    }
 }

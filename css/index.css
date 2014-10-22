@@ -137,16 +137,19 @@ form {
 }
 /* *** BUNDLE *** */
 .cm-ul-inline,
+.cm-grid > ul,
 .com-slider > .inner > .slides.effect-push > ul {
   text-align: left;
   font-size: 0;
 }
 .cm-ul-inline > li,
+.cm-grid > ul > li,
 .com-slider > .inner > .slides.effect-push > ul > li {
   display: inline-block;
   vertical-align: top;
 }
 .cm-ul-clear,
+.cm-grid > ul,
 .com-tabset-head-tabs ul,
 .com-slider > .inner > .slides > ul {
   margin: 0;
@@ -154,6 +157,7 @@ form {
   list-style: none;
 }
 .cm-ul-clear > li,
+.cm-grid > ul > li,
 .com-tabset-head-tabs ul > li,
 .com-slider > .inner > .slides > ul > li {
   margin: 0;
@@ -393,6 +397,7 @@ form {
 .cm-font-base,
 .cm-ul-inline > li,
 .com-timeselect > .inner > .sep,
+.cm-grid > ul > li,
 .com-slider > .inner > .slides.effect-push > ul > li {
   font: normal 13px/18px 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
@@ -3242,7 +3247,7 @@ button.has-icon-small .icon,
 .cm-editable.is-active > .drag {
   background-color: #dbebfb;
 }
-/* ******* GRID ******* */
+/* ******* PARTS: GRID ******* */
 .cm-grid {
   margin: 0 0 24px;
   overflow: hidden;
@@ -3251,18 +3256,13 @@ button.has-icon-small .icon,
   margin: 0;
 }
 .cm-grid > ul {
-  padding: 0;
-  list-style: none;
-  font-size: 0;
   word-spacing: 0;
 }
 .cm-grid > ul > li {
-  width: 100%;
-  display: inline-block;
-  overflow: hidden;
-  vertical-align: top;
   font: normal 13px/18px 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
+  width: 100%;
+  overflow: hidden;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
@@ -3275,7 +3275,6 @@ button.has-icon-small .icon,
   display: block;
   position: relative;
   cursor: pointer;
-  -webkit-transform: translateZ(0px);
   -webkit-transition: opacity 300ms ease-in-out;
   transition: opacity 300ms ease-in-out;
 }
@@ -3290,6 +3289,31 @@ button.has-icon-small .icon,
 }
 .cm-grid.is-inrow {
   height: 100%;
+}
+.cm-grid.pull-left > ul {
+  text-align: left;
+}
+.cm-grid.pull-center > ul {
+  text-align: center;
+}
+.cm-grid.pull-right > ul {
+  text-align: right;
+}
+.cm-grid.is-justify > ul > li {
+  text-align: center;
+}
+.cm-grid.is-justify > ul > li:first-child {
+  text-align: left;
+}
+.cm-grid.is-justify > ul > li:last-child {
+  text-align: right;
+}
+.cm-grid.is-adaptive {
+  overflow: visible;
+}
+.cm-grid.is-adaptive > ul > li {
+  width: auto;
+  overflow: visible;
 }
 .cm-grid.col-1 > ul > li {
   width: 100%;
@@ -3422,6 +3446,7 @@ button.has-icon-small .icon,
     width: 100%;
   }
 }
+/* ******* PARTS: GRID: BUNDLE ******* */
 /* ******* PART: IMAGE BOX ******* */
 .cm-imagebox {
   position: relative;

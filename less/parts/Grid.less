@@ -1,4 +1,4 @@
-/* ******* GRID ******* */
+/* ******* PARTS: GRID ******* */
 
 .cm-grid {
     margin: 0 0 @cm-indentMedium;
@@ -9,17 +9,13 @@
     }
 
     > ul {
-        padding: 0;
-        list-style: none;
-        font-size: 0;
+        &:extend(.cm-ul-clear all, .cm-ul-inline all);
         word-spacing: 0;
 
         > li {
-            width: 100%;
-            display: inline-block;
-            overflow: hidden;
-            vertical-align: top;
             .cm-font-base;
+            width: 100%;
+            overflow: hidden;
             .cm-box-sizing();
 
             > a {
@@ -31,7 +27,6 @@
                     display: block;
                     position: relative;
                     cursor: pointer;
-                    -webkit-transform: translateZ(0px);
                     .cm-transition(opacity @CM-Transition-Duration ease-in-out);
                 }
 
@@ -56,13 +51,58 @@
         height: 100%;
     }
 
+    &.pull-left {
+        > ul {
+            text-align: left;
+        }
+    }
+
+    &.pull-center {
+        > ul {
+            text-align: center;
+        }
+    }
+
+    &.pull-right {
+        > ul {
+            text-align: right;
+        }
+    }
+
+    &.is-justify {
+        > ul {
+            > li {
+                text-align: center;
+
+                &:first-child {
+                    text-align: left;
+                }
+
+                &:last-child {
+                    text-align: right;
+                }
+            }
+        }
+    }
+
+    &.is-adaptive {
+        overflow: visible;
+
+        > ul {
+            > li {
+                width: auto;
+                overflow: visible;
+            }
+        }
+    }
+
     // /* Build columns styles */
 
     .loop(@counter) when (@counter > 0) {
         .loop((@counter - 1));
 
         &.col-@{counter} {
-            #cm > .grid-size(@counter);
+            #cm > .cm-grid__size(@counter);
         }
     }
 
@@ -70,16 +110,16 @@
 
     // /* Set grid items indent */
 
-    #cm > .grid-indent(@CmGrid-itemIndent);
+    #cm > .cm-grid__indent(@CmGrid-itemIndent);
 
     .for(@ComGrid-indents); .-each(@name) {
         &.indent-@{name} {
-            #cm > .grid-indent(@name);
+            #cm > .cm-grid__indent(@name);
         }
     }
 }
 
-// /* *** ADAPTIVE *** */
+// /* ******* PARTS: GRID: ADAPTIVE ******* */
 
 @media only screen and (max-width: @cm-screenMobile) {
 
@@ -93,4 +133,30 @@
         }
     }
 
+}
+
+/* ******* PARTS: GRID: BUNDLE ******* */
+
+#cm () {
+    .cm-grid__size (@count: 1) {
+        @size: 100% / @count;
+
+        > ul > li {
+            width: @size;
+        }
+    }
+
+    .cm-grid__indent (@indent: @CmGrid-itemIndent) {
+        > ul {
+            margin: @indent -@indent -@indent;
+
+            &:first-child {
+                margin: -@indent;
+            }
+
+            > li {
+                padding: @indent;
+            }
+        }
+    }
 }
