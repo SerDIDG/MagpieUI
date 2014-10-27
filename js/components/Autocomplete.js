@@ -11,7 +11,10 @@ cm.define('Com.Autocomplete', {
         'Com.Tooltip'
     ],
     'events' : [
-        'onRender'
+        'onRender',
+        'onClear',
+        'onSelect',
+        'onChange'
     ],
     'params' : {
         'input' : cm.Node('input', {'type' : 'text'}),      // HTML input node
@@ -19,8 +22,9 @@ cm.define('Com.Autocomplete', {
         'container' : 'document.body',
         'minLength' : 3,
         'delay' : 300,
+        'clearOnEmpty' : true,
         'data' : [],                                        // Example: [{'value' : 'foo', 'text' : 'Bar'}].
-        'url' : false,                                      // Request URL.
+        'url' : null,                                      // Request URL.
         'urlParams' : {
 
         },
@@ -41,6 +45,8 @@ function(params){
     that.components = {};
     that.registeredItems = [];
     that.selectedItemIndex = null;
+    that.value = null;
+    that.previousValue = null;
 
     var init = function(){
         that.setParams(params);
@@ -80,7 +86,7 @@ function(params){
         switch(e.keyCode){
             // Enter
             case 13:
-                set(that.selectedItemIndex);
+                clear();
                 that.hide();
                 break;
             // Arrow Up
@@ -115,20 +121,20 @@ function(params){
     };
 
     var blurHandler = function(){
-        set(that.selectedItemIndex);
+        clear();
         that.hide();
     };
 
     var requestHelper = function(){
+        var request = that.params['input'].value;
         // Clear tooltip ajax/static delay and filtered items list
         that.selectedItemIndex = null;
         that.registeredItems = [];
         requestDelay && clearTimeout(requestDelay);
 
-        var request = that.params['input'].value;
         if(request.length >= that.params['minLength']){
             requestDelay = setTimeout(function(){
-                that.callbacks.response(that, that.params['data']);
+                that.callbacks.response(that, request, that.params['data']);
             }, that.params['delay']);
         }else{
             that.hide();
@@ -146,6 +152,8 @@ function(params){
             that.components['tooltip'].scrollToNode(item['node']);
         }
         that.selectedItemIndex = index;
+        // Set input data
+        set(that.selectedItemIndex);
     };
 
     var set = function(index){
@@ -155,11 +163,26 @@ function(params){
         }
     };
 
+    var clear = function(){
+        var item;
+        if(that.params['clearOnEmpty']){
+            item = that.getRegisteredItem(that.value);
+            if(!item || item['data']['text'] != that.params['input'].value){
+                that.clear();
+            }
+        }
+    };
+
+    var onChange = function(){
+        if(that.value != that.previousValue){
+            that.triggerEvent('onChange', that.value);
+        }
+    };
+
     /* ******* CALLBACKS ******* */
 
-    that.callbacks.response = function(that, items){
-        var request = that.params['input'].value,
-            filteredItems;
+    that.callbacks.response = function(that, request, items){
+        var filteredItems;
         // Filter Items
         if(that.isAjax){
             filteredItems = items;
@@ -206,6 +229,11 @@ function(params){
         nodes['container'] = cm.Node('li',
             cm.Node('a', {'innerHTML' : item['text']})
         );
+        // Highlight selected option
+        if(that.value == item['value']){
+            cm.addClass(nodes['container'], 'active');
+            that.selectedItemIndex = i;
+        }
         // Register item
         that.callbacks.registerItem(that, nodes['container'], item, i);
         // Embed List Item to List
@@ -219,7 +247,7 @@ function(params){
             'i' : i
         };
         cm.addEvent(regItem['node'], 'click', function(){
-            that.setRegistered(regItem);
+            that.setRegistered(regItem, true);
             that.hide();
         });
         that.registeredItems.push(regItem);
@@ -231,14 +259,64 @@ function(params){
 
     /* ******* MAIN ******* */
 
-    that.set = function(item, execute){
-        execute = typeof execute == 'undefined'? true : execute;
+    that.set = function(item, triggerEvents){
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        that.previousValue = that.value;
+        that.value = typeof item['value'] != 'undefined'? item['value'] : item['text'];
         that.params['input'].value = item['text'];
+        // Trigger events
+        if(triggerEvents){
+            that.triggerEvent('onSelect', that.value);
+            onChange();
+        }
+        return that;
     };
 
-    that.setRegistered = function(item, execute){
-        execute = typeof execute == 'undefined'? true : execute;
-        that.params['input'].value = item['data']['text'];
+    that.setRegistered = function(item, triggerEvents){
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        that.set(item['data'], triggerEvents);
+        return that;
+    };
+
+    that.get = function(){
+        return that.value;
+    };
+
+    that.getItem = function(value){
+        var item;
+        if(value){
+            cm.forEach(that.params['data'], function(dataItem){
+                if(dataItem['value'] == value){
+                    item = dataItem;
+                }
+            });
+        }
+        return item;
+    };
+
+    that.getRegisteredItem = function(value){
+        var item;
+        if(value){
+            cm.forEach(that.registeredItems, function(regItem){
+                if(regItem['data']['value'] == value){
+                    item = regItem;
+                }
+            });
+        }
+        return item;
+    };
+
+    that.clear = function(triggerEvents){
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        that.previousValue = that.value;
+        that.value = null;
+        that.params['input'].value = '';
+        // Trigger events
+        if(triggerEvents){
+            that.triggerEvent('onClear', that.value);
+            onChange();
+        }
+        return that;
     };
 
     that.show = function(){
