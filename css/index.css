@@ -3831,6 +3831,9 @@ button.has-icon-small .icon,
 .lt__post .post-title {
   margin: 0 0 4px;
 }
+.lt__post .post-title .cm-title-editable {
+  margin: 0;
+}
 .lt__post .post-info,
 .lt__post .post-tags {
   font: normal 11px/18px 'Open Sans', arial, helvetica, sans-serif;
