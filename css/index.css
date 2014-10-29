@@ -12,13 +12,13 @@ body {
 }
 a {
   text-decoration: underline;
-  color: #666666;
+  color: #308ce8;
   outline: none;
   cursor: pointer;
 }
 a:hover {
   text-decoration: none;
-  color: #666666;
+  color: #308ce8;
 }
 img {
   border: none;
@@ -96,17 +96,25 @@ form {
 }
 .link {
   text-decoration: underline;
-  color: #666666;
+  color: #308ce8;
   outline: none;
   cursor: pointer;
 }
 .link:hover {
   text-decoration: none;
-  color: #666666;
+  color: #308ce8;
 }
 .inner-link {
+  text-decoration: underline;
+  color: #308ce8;
+  outline: none;
+  cursor: pointer;
   text-decoration: none;
   border-bottom: 1px dashed;
+}
+.inner-link:hover {
+  text-decoration: none;
+  color: #308ce8;
 }
 .inner-link:hover {
   text-decoration: none;
@@ -404,13 +412,13 @@ form {
 }
 .cm-font-link {
   text-decoration: underline;
-  color: #666666;
+  color: #308ce8;
   outline: none;
   cursor: pointer;
 }
 .cm-font-link:hover {
   text-decoration: none;
-  color: #666666;
+  color: #308ce8;
 }
 .cm-font-ui,
 .cm-line-share .label,
@@ -2653,6 +2661,7 @@ button.has-icon-small .icon,
 }
 .cm-menu-dropdown--base li a {
   text-decoration: underline;
+  color: #308ce8;
   outline: none;
   cursor: pointer;
   font: normal 13px/18px 'Open Sans', arial, helvetica, sans-serif;
@@ -2664,7 +2673,7 @@ button.has-icon-small .icon,
 }
 .cm-menu-dropdown--base li a:hover {
   text-decoration: none;
-  color: #666666;
+  color: #308ce8;
 }
 .cm-menu-dropdown--base li a:hover {
   color: #308ce8;
@@ -3158,6 +3167,7 @@ button.has-icon-small .icon,
 }
 .cm-editable.is-editable > .menu .cm-menu-dropdown li a {
   text-decoration: underline;
+  color: #308ce8;
   outline: none;
   cursor: pointer;
   font: normal 13px/18px 'Open Sans', arial, helvetica, sans-serif;
@@ -3169,7 +3179,7 @@ button.has-icon-small .icon,
 }
 .cm-editable.is-editable > .menu .cm-menu-dropdown li a:hover {
   text-decoration: none;
-  color: #666666;
+  color: #308ce8;
 }
 .cm-editable.is-editable > .menu .cm-menu-dropdown li a:hover {
   color: #308ce8;
@@ -4027,53 +4037,35 @@ button.has-icon-small .icon,
 .com-tooltip.com__ac-tooltip > .inner > .scroll {
   max-height: 160px;
 }
-/* ******* GLOSSARY ******* */
-.com-glossary-word {
-  position: relative;
-  z-index: 1;
-  color: #005897;
-  border-bottom: 1px dotted #005897;
-  white-space: nowrap;
+/* ******* COMPONENTS: GLOSSARY ******* */
+.com__glossary .com__glossary__title {
+  text-decoration: underline;
+  color: #308ce8;
+  outline: none;
+  cursor: pointer;
+  text-decoration: none;
+  border-bottom: 1px dashed;
 }
-.com-glossary-word:hover {
-  border: none;
-  z-index: 2;
+.com__glossary .com__glossary__title:hover {
+  text-decoration: none;
+  color: #308ce8;
 }
-.com-glossary-title {
-  color: #005897;
+.com__glossary .com__glossary__title:hover {
+  text-decoration: none;
+  border-bottom-color: transparent;
 }
-.com-glossary-word .com-glossary-popup {
-  min-width: 250px;
-  padding: 38px 16px 16px;
+.com__glossary .com__glossary__content {
   display: none;
-  overflow: hidden;
-  position: absolute;
-  top: -16px;
-  left: -16px;
-  right: -16px;
-  z-index: -1;
-  background-color: #fff;
-  border: 1px solid #dedede;
-  font-size: 11px;
-  line-height: 16px;
-  white-space: normal;
-  color: #595959;
-}
-.com-glossary-word:hover .com-glossary-popup {
-  display: block;
 }
 /* *** TOOLTIP *** */
-.com-tooltip.com-glossary-tooltip {
-  width: 300px;
+.com-tooltip.com__glossary__tooltip {
+  width: 320px;
 }
-.com-tooltip.com-glossary-tooltip > .inner {
+.com-tooltip.com__glossary__tooltip > .inner {
   padding: 12px 16px 16px;
 }
-.com-tooltip.com-glossary-tooltip > .inner > .scroll {
-  max-height: 300px;
-}
-.com-tooltip.com-glossary-tooltip .com-glossary-text p {
-  margin: 0;
+.com-tooltip.com__glossary__tooltip > .inner > .scroll {
+  max-height: 320px;
 }
 /* ******* COMPONENTS: ACTION MENU ******* */
 .com-action-menu .cm-button,
@@ -4116,6 +4108,7 @@ button.has-icon-small .icon,
 }
 .com-tooltip.com-action-menu-tooltip .cm-menu .cm-menu-dropdown li a {
   text-decoration: underline;
+  color: #308ce8;
   outline: none;
   cursor: pointer;
   font: normal 13px/18px 'Open Sans', arial, helvetica, sans-serif;
@@ -4127,7 +4120,7 @@ button.has-icon-small .icon,
 }
 .com-tooltip.com-action-menu-tooltip .cm-menu .cm-menu-dropdown li a:hover {
   text-decoration: none;
-  color: #666666;
+  color: #308ce8;
 }
 .com-tooltip.com-action-menu-tooltip .cm-menu .cm-menu-dropdown li a:hover {
   color: #308ce8;
@@ -5287,6 +5280,7 @@ button.has-icon-small .icon,
 }
 .com-tabset-head-menu .cm-menu-dropdown li a {
   text-decoration: underline;
+  color: #308ce8;
   outline: none;
   cursor: pointer;
   font: normal 13px/18px 'Open Sans', arial, helvetica, sans-serif;
@@ -5298,7 +5292,7 @@ button.has-icon-small .icon,
 }
 .com-tabset-head-menu .cm-menu-dropdown li a:hover {
   text-decoration: none;
-  color: #666666;
+  color: #308ce8;
 }
 .com-tabset-head-menu .cm-menu-dropdown li a:hover {
   color: #308ce8;
