@@ -2063,7 +2063,7 @@ cm.cookieDate = function(num){
 
 cm.ajax = function(o){
     var config = cm.merge({
-            'type' : 'xml',                                         // text | xml | json
+            'type' : 'xml',                                         // text | xml | json | jsonp
             'method' : 'post',                                      // post | get
             'params' : '',
             'url' : '',
@@ -2077,17 +2077,33 @@ cm.ajax = function(o){
             'handler' : function(){}
         }, o),
         responceType,
-        responce;
+        responce,
+        callbackName,
+        scriptNode,
+        returnObject;
 
     var init = function(){
         validate();
-        send();
+        if(config['type'] == 'jsonp'){
+            returnObject = {
+                'stop' : removeJSONP
+            };
+            sendJSONP();
+        }else{
+            returnObject = config['httpRequestObject'];
+            send();
+        }
     };
 
     var validate = function(){
         config['type'] = config['type'].toLocaleLowerCase();
         responceType =  /text|json/.test(config['type']) ? 'responseText' : 'responseXML';
         config['method'] = config['method'].toLocaleLowerCase();
+        // Convert params object to URI string
+        if(cm.isObject(config['params'])){
+            config['params'] = cm.obj2URI(config['params']);
+        }
+        // Build request link
         if(config['method'] != 'post'){
             if(!cm.isEmpty(config['params'])){
                 config['url'] = [config['url'], config['params']].join('?');
@@ -2124,8 +2140,31 @@ cm.ajax = function(o){
         }
     };
 
+    var sendJSONP = function(){
+        // Before send events
+        config['beforeSend']();
+        // Generate unique callback name
+        callbackName = ['cmAjaxJSONP', Date.now()].join('');
+        window[callbackName] = function(responce){
+            config['handler'](responce);
+            removeJSONP();
+        };
+        // Prepare url
+        config['url'] = config['url']
+            .replace('%callback%', callbackName)
+            .replace('%25callback%25', callbackName);
+        scriptNode = cm.Node('script', {'type' : 'application/javascript', 'src' : config['url']});
+        // Embed
+        document.getElementsByTagName('head')[0].appendChild(scriptNode);
+    };
+
+    var removeJSONP = function(){
+        cm.remove(scriptNode);
+        delete window[callbackName];
+    };
+
     init();
-    return config['httpRequestObject'];
+    return returnObject;
 };
 
 cm.parseJSON = function(str){
