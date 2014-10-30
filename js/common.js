@@ -2145,8 +2145,8 @@ cm.ajax = function(o){
         config['beforeSend']();
         // Generate unique callback name
         callbackName = ['cmAjaxJSONP', Date.now()].join('');
-        window[callbackName] = function(responce){
-            config['handler'](responce);
+        window[callbackName] = function(){
+            config['handler'].apply(config['handler'], arguments);
             removeJSONP();
         };
         // Prepare url
