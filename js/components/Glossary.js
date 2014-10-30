@@ -13,6 +13,7 @@ cm.define('Com.Glossary', {
     ],
     'params' : {
         'node' : cm.Node('div'),
+        'showTitle' : true,
         'Com.Tooltip' : {
             'className' : 'com__glossary__tooltip',
             'targetEvent' : 'hover'
@@ -43,7 +44,7 @@ function(params){
             cm.merge(that.params['Com.Tooltip'], {
                 'target' : that.nodes['container'],
                 'content' : that.nodes['content'],
-                'title' : that.nodes['title'].cloneNode(true)
+                'title' : that.params['showTitle']? that.nodes['title'].cloneNode(true) : ''
             })
         );
         that.triggerEvent('onRender', {});
