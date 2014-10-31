@@ -4,8 +4,8 @@
 
 .cm-user-select (@value: none) {
     -webkit-user-select: @value;
-    -moz-user-select: @value;
-    user-select: @value;
+       -moz-user-select: @value;
+            user-select: @value;
 }
 
 .cm-position (@top: auto, @right: auto, @bottom: auto, @left: auto) {
@@ -32,7 +32,7 @@
 
 .cm-background-clip (@value: border-box) {
     -webkit-background-clip: @value;
-                background-clip: @value;
+            background-clip: @value;
 }
 
 .cm-placeholder (@color) {
@@ -52,6 +52,12 @@
         opacity: 1;
         color: @color;
     }
+}
+
+.cm-flex (@value: auto) {
+    -webkit-flex: @value;
+        -ms-flex: @value;
+            flex: @value;
 }
 
 // /* *** FOREACH by https://github.com/seven-phases-max ***/
