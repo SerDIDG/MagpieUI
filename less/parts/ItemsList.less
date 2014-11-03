@@ -25,6 +25,16 @@
                 color: @cm-colorFont;
                 .cm-transition(all 0.3s ease-in-out);
 
+                .icon {
+                    display: inline-block;
+                    vertical-align: top;
+                    margin: 0 @cm-indentXXSmall 0 0;
+
+                    &.small {
+                        margin-top: (@cm-lineHeight - @cm-Small) / 2;
+                    }
+                }
+
                 &:hover {
                     text-decoration: none;
                     background-color: @CmItemsList-background-hover;

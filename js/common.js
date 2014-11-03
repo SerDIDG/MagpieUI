@@ -2086,7 +2086,7 @@ cm.ajax = function(o){
         validate();
         if(config['type'] == 'jsonp'){
             returnObject = {
-                'stop' : removeJSONP
+                'abort' : abortJSONP
             };
             sendJSONP();
         }else{
@@ -2161,6 +2161,12 @@ cm.ajax = function(o){
     var removeJSONP = function(){
         cm.remove(scriptNode);
         delete window[callbackName];
+    };
+
+    var abortJSONP = function(){
+        window[callbackName] = function(){
+            removeJSONP();
+        };
     };
 
     init();

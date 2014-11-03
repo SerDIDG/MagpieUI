@@ -32,16 +32,23 @@
                 })
                 .add('autocomplete', function(node){
                     var callbacks = {
-                        'render' : function(that, items){
-                            if(items.length){
-                                // Render List Nodes
-                                that.callbacks.renderList(that, items);
-                                // Show menu
-                                that.show();
-                            }else{
-                                that.hide();
+                        'response' : function(that, query, config, responce){
+                            var items = [],
+                                item;
+                            if(responce){
+                                if(/json|jsonp/i.test(config['type'])){
+                                    if(responce['data']){
+                                        cm.forEach(responce['data']['items'], function(dataItem){
+                                            item = {
+                                                'value' : dataItem['video']['id'],
+                                                'text' : dataItem['video']['title']
+                                            };
+                                            items.push(item);
+                                        });
+                                        that.callbacks.render(that, that.callbacks.filter(that, query, items));
+                                    }
+                                }
                             }
-                            console.dir(that.registeredItems);
                         }
                     };
                     var data = [
@@ -55,7 +62,15 @@
                         {"value" : "8", "text" : "User Userbergosyan"},
                         {"value" : "9", "text" : "User Userbergovenko"}
                     ];
-                    new Com.Autocomplete({'input' : node, 'callbacks' : callbacks, 'data' : data});
+                    new Com.Autocomplete({
+                        'input' : node,
+                        'callbacks' : callbacks,
+                        'data' : data,
+                        'ajax' : {
+                            'type' : 'jsonp',
+                            'url' : 'http://gdata.youtube.com/feeds/api/playlists/PL164841586808EE79?v=2&alt=jsonc&&max-results=25&callback=%callback%'
+                        }
+                    });
                 })
                 .construct();
         });

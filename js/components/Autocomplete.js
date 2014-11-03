@@ -23,10 +23,13 @@ cm.define('Com.Autocomplete', {
         'minLength' : 3,
         'delay' : 300,
         'clearOnEmpty' : true,
+        'showLoader' : true,
         'data' : [],                                        // Example: [{'value' : 'foo', 'text' : 'Bar'}].
-        'url' : null,                                      // Request URL.
-        'urlParams' : {
-
+        'ajax' : {
+            'type' : 'json',
+            'method' : 'get',
+            'url' : '',                                     // Request URL, Variables: %query%, %callback%
+            'params' : ''                                   // Params string or object
         },
         'Com.Tooltip' : {
             'hideOnOut' : true,
@@ -34,12 +37,16 @@ cm.define('Com.Autocomplete', {
             'className' : 'com__ac-tooltip',
             'width' : 'targetWidth',
             'top' : 'targetHeight + 3'
+        },
+        'langs' : {
+            'loader' : 'Searching for: %query%.'
         }
     }
 },
 function(params){
     var that = this,
-        requestDelay;
+        requestDelay,
+        ajaxHandler;
 
     that.isAjax = false;
     that.components = {};
@@ -61,7 +68,12 @@ function(params){
         if(!that.params['target']){
             that.params['target'] = that.params['input'];
         }
-        that.isAjax = !cm.isEmpty(that.params['url']);
+        // If URL parameter exists, use ajax data
+        that.isAjax = !cm.isEmpty(that.params['ajax']['url']);
+        // Convert params object to URI string
+        if(cm.isObject(that.params['ajax']['params'])){
+            that.params['ajax']['params'] = cm.obj2URI(that.params['ajax']['params']);
+        }
     };
 
     var render = function(){
@@ -126,15 +138,23 @@ function(params){
     };
 
     var requestHelper = function(){
-        var request = that.params['input'].value;
+        var query = that.params['input'].value;
         // Clear tooltip ajax/static delay and filtered items list
         that.selectedItemIndex = null;
         that.registeredItems = [];
         requestDelay && clearTimeout(requestDelay);
+        that.callbacks.abort(that, ajaxHandler);
 
-        if(request.length >= that.params['minLength']){
+        if(query.length >= that.params['minLength']){
             requestDelay = setTimeout(function(){
-                that.callbacks.response(that, request, that.params['data']);
+                if(that.isAjax){
+                    if(that.params['showLoader']){
+                        that.callbacks.loader(that, query);
+                    }
+                    ajaxHandler = that.callbacks.request(that, query, that.params['ajax']);
+                }else{
+                    that.callbacks.data(that, query, that.params['data']);
+                }
             }, that.params['delay']);
         }else{
             that.hide();
@@ -165,6 +185,10 @@ function(params){
 
     var clear = function(){
         var item;
+        // Kill timeout interval and ajax request
+        requestDelay && clearTimeout(requestDelay);
+        that.callbacks.abort(that, ajaxHandler);
+        // Clear input
         if(that.params['clearOnEmpty']){
             item = that.getRegisteredItem(that.value);
             if(!item || item['data']['text'] != that.params['input'].value){
@@ -181,21 +205,79 @@ function(params){
 
     /* ******* CALLBACKS ******* */
 
-    that.callbacks.response = function(that, request, items){
-        var filteredItems;
-        // Filter Items
-        if(that.isAjax){
-            filteredItems = items;
-        }else{
-            filteredItems = [];
-            cm.forEach(items, function(item){
-                if(item['text'].toLowerCase().indexOf(request.toLowerCase()) > -1){
-                    filteredItems.push(item);
+    /* *** AJAX *** */
+
+    that.callbacks.prepare = function(that, query, config){
+        config['url'] = config['url'].replace('%query%', query);
+        config['params'] = config['params'].replace('%query%', query);
+        return config;
+    };
+
+    that.callbacks.request = function(that, query, config){
+        config = that.callbacks.prepare(that, query, config);
+        // Return ajax handler (XMLHttpRequest) to providing abort method.
+        return cm.ajax(
+            cm.merge(config, {
+                'handler' : function(response){
+                    that.callbacks.response(that, query, config, response);
                 }
-            });
+            })
+        );
+    };
+
+    that.callbacks.response = function(that, query, config, response){
+        if(response){
+            if(/json|jsonp/i.test(config['type'])){
+                if(response['data']){
+                    that.callbacks.render(that, response['data']);
+                }
+            }
         }
-        // Render Items
-        that.callbacks.render(that, filteredItems);
+    };
+
+    that.callbacks.abort = function(that, ajaxHandler){
+        if(ajaxHandler && ajaxHandler.abort){
+            ajaxHandler.abort();
+        }
+        return ajaxHandler;
+    };
+
+    that.callbacks.loader = function(that, query){
+        var nodes = {};
+        // Render Structure
+        nodes['container'] = cm.Node('div', {'class' : 'cm-items-list disabled'},
+            cm.Node('ul',
+                cm.Node('li',
+                    cm.Node('a',
+                        cm.Node('span', {'class' : 'icon small loader-circle'}),
+                        cm.Node('span', that.lang('loader').replace('%query%', query))
+                    )
+                )
+            )
+        );
+        // Embed nodes to Tooltip
+        that.callbacks.embed(that, nodes['container']);
+        // Show Tooltip
+        that.show();
+    };
+
+    /* *** STATIC DATA *** */
+
+    that.callbacks.data = function(that, query, items){
+        items = that.callbacks.filter(that, query, items);
+        that.callbacks.render(that, items);
+    };
+
+    /* *** HELPERS *** */
+
+    that.callbacks.filter = function(that, query, items){
+        var filteredItems = [];
+        cm.forEach(items, function(item){
+            if(item['text'].toLowerCase().indexOf(query.toLowerCase()) > -1){
+                filteredItems.push(item);
+            }
+        });
+        return filteredItems;
     };
 
     that.callbacks.render = function(that, items){
@@ -220,7 +302,7 @@ function(params){
             that.callbacks.renderItem(that, nodes['items'], item, i);
         });
         // Embed nodes to Tooltip
-        that.callbacks.setTooltip(that, nodes['container']);
+        that.callbacks.embed(that, nodes['container']);
     };
 
     that.callbacks.renderItem = function(that, container, item, i){
@@ -236,7 +318,7 @@ function(params){
         }
         // Register item
         that.callbacks.registerItem(that, nodes['container'], item, i);
-        // Embed List Item to List
+        // Embed Item to List
         cm.appendChild(nodes['container'], container);
     };
 
@@ -253,7 +335,7 @@ function(params){
         that.registeredItems.push(regItem);
     };
 
-    that.callbacks.setTooltip = function(that, container){
+    that.callbacks.embed = function(that, container){
         that.components['tooltip'].setContent(container);
     };
 

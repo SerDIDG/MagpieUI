@@ -880,6 +880,9 @@ input[type="checkbox"] {
 .icon.small.loader {
   background-image: url("../img/icons/small/loader.gif");
 }
+.icon.small.loader-circle {
+  background-image: url("../img/icons/small/loader-circle.gif");
+}
 .icon.small.file-archive {
   background-image: url("../img/icons/small/files/archive.gif");
 }
@@ -1011,6 +1014,9 @@ input[type="checkbox"] {
 }
 .icon.large.favorite {
   background-image: url("../img/icons/large/favorite.png");
+}
+.icon.large.loader-circle {
+  background-image: url("../img/icons/large/loader-circle.gif");
 }
 .icon.x-large {
   width: 48px;
@@ -2783,6 +2789,14 @@ button.has-icon-small .icon,
   color: #666666;
   -webkit-transition: all 0.3s ease-in-out;
   transition: all 0.3s ease-in-out;
+}
+.cm-items-list ul li a .icon {
+  display: inline-block;
+  vertical-align: top;
+  margin: 0 8px 0 0;
+}
+.cm-items-list ul li a .icon.small {
+  margin-top: 1px;
 }
 .cm-items-list ul li a:hover {
   text-decoration: none;

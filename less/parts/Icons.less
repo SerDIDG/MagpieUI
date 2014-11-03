@@ -89,7 +89,7 @@
     }
 
     &.small {
-        .for(loader); .-each(@name) {
+        .for(loader loader-circle); .-each(@name) {
             &.@{name} {
                 background-image: url("@{CmPath-image}/icons/small/@{name}.gif");
             }
@@ -146,6 +146,14 @@
         .for(message page page-featured google linkedin twitter facebook favorite); .-each(@name) {
             &.@{name} {
                 background-image: url("@{CmPath-image}/icons/large/@{name}.png");
+            }
+        }
+    }
+
+    &.large {
+        .for(loader-circle); .-each(@name) {
+            &.@{name} {
+                background-image: url("@{CmPath-image}/icons/large/@{name}.gif");
             }
         }
     }
