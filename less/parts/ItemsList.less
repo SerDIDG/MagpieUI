@@ -1,4 +1,4 @@
-/* ******* ITEMS LIST ******* */
+/* ******* PARTS: ITEMS LIST ******* */
 
 .cm-items-list {
     ul {
@@ -37,7 +37,6 @@
 
                 &:hover {
                     text-decoration: none;
-                    background-color: @CmItemsList-background-hover;
                     .cm-transition(all 0.1s ease-in-out);
                 }
             }
@@ -59,10 +58,36 @@
             &.active {
                 a {
                     background-color: @CmItemsList-background-active;
+                }
+            }
+        }
+    }
 
+    &:not(.disabled) {
+        ul {
+            li {
+                a {
                     &:hover {
-                        background-color: @CmItemsList-background-active-hover;
+                        background-color: @CmItemsList-background-hover;
                     }
+                }
+
+                &.active {
+                    a {
+                        &:hover {
+                            background-color: @CmItemsList-background-active-hover;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    &.disabled {
+        ul {
+            li {
+                a {
+                    cursor: default;
                 }
             }
         }
@@ -71,18 +96,6 @@
     &.auto {
         ul {
             max-height: none;
-        }
-    }
-
-    &.disabled {
-        ul {
-            li {
-                cursor: default !important;
-
-                a {
-                    cursor: default;
-                }
-            }
         }
     }
 }

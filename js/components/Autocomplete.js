@@ -17,8 +17,8 @@ cm.define('Com.Autocomplete', {
         'onChange'
     ],
     'params' : {
-        'input' : cm.Node('input', {'type' : 'text'}),      // HTML input node
-        'target' : false,                                   // HTML node
+        'input' : cm.Node('input', {'type' : 'text'}),      // HTML input node.
+        'target' : false,                                   // HTML node.
         'container' : 'document.body',
         'minLength' : 3,
         'delay' : 300,
@@ -28,8 +28,11 @@ cm.define('Com.Autocomplete', {
         'ajax' : {
             'type' : 'json',
             'method' : 'get',
-            'url' : '',                                     // Request URL, Variables: %query%, %callback%
-            'params' : ''                                   // Params string or object
+            'url' : '',                                     // Request URL. Variables: %query%, %callback%.
+            'params' : ''                                   // Params string or object. Variables: %query%, %callback%.
+        },
+        'langs' : {
+            'loader' : 'Searching for: %query%.'
         },
         'Com.Tooltip' : {
             'hideOnOut' : true,
@@ -37,9 +40,6 @@ cm.define('Com.Autocomplete', {
             'className' : 'com__ac-tooltip',
             'width' : 'targetWidth',
             'top' : 'targetHeight + 3'
-        },
-        'langs' : {
-            'loader' : 'Searching for: %query%.'
         }
     }
 },
@@ -84,14 +84,12 @@ function(params){
                 'target' : that.params['target']
             })
         );
-        // Add events
-        cm.addEvent(that.params['input'], 'input', requestHelper);
-        cm.addEvent(that.params['input'], 'keydown', inputHelper);
-        cm.addEvent(that.params['input'], 'blur', blurHandler);
+        // Set input
+        that.setInput(that.params['input']);
         that.triggerEvent('onRender');
     };
 
-    var inputHelper = function(e){
+    var inputHandler = function(e){
         var listLength, listIndex;
         e = cm.getEvent(e);
 
@@ -137,7 +135,7 @@ function(params){
         that.hide();
     };
 
-    var requestHelper = function(){
+    var requestHandler = function(){
         var query = that.params['input'].value;
         // Clear tooltip ajax/static delay and filtered items list
         that.selectedItemIndex = null;
@@ -250,7 +248,7 @@ function(params){
                 cm.Node('li',
                     cm.Node('a',
                         cm.Node('span', {'class' : 'icon small loader-circle'}),
-                        cm.Node('span', that.lang('loader').replace('%query%', query))
+                        cm.Node('span', that.lang('loader', {'%query%' : query}))
                     )
                 )
             )
@@ -357,6 +355,24 @@ function(params){
     that.setRegistered = function(item, triggerEvents){
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
         that.set(item['data'], triggerEvents);
+        return that;
+    };
+
+    that.setInput = function(node){
+        if(cm.isNode(node)){
+            that.params['input'] = node;
+            cm.addEvent(that.params['input'], 'input', requestHandler);
+            cm.addEvent(that.params['input'], 'keydown', inputHandler);
+            cm.addEvent(that.params['input'], 'blur', blurHandler);
+        }
+        return that;
+    };
+
+    that.setTarget = function(node){
+        if(cm.isNode(node)){
+            that.params['target'] = node;
+            that.components['tooltip'].setTarget(node);
+        }
         return that;
     };
 

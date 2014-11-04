@@ -2771,7 +2771,7 @@ button.has-icon-small .icon,
     margin: 0;
   }
 }
-/* ******* ITEMS LIST ******* */
+/* ******* PARTS: ITEMS LIST ******* */
 .cm-items-list ul {
   max-height: 229px;
   margin: 0;
@@ -2806,7 +2806,6 @@ button.has-icon-small .icon,
 }
 .cm-items-list ul li a:hover {
   text-decoration: none;
-  background-color: #f2f2f2;
   -webkit-transition: all 0.1s ease-in-out;
   transition: all 0.1s ease-in-out;
 }
@@ -2824,17 +2823,17 @@ button.has-icon-small .icon,
 .cm-items-list ul li.active a {
   background-color: #dbebfb;
 }
-.cm-items-list ul li.active a:hover {
+.cm-items-list:not(.disabled) ul li a:hover {
+  background-color: #f2f2f2;
+}
+.cm-items-list:not(.disabled) ul li.active a:hover {
   background-color: #c4def8;
-}
-.cm-items-list.auto ul {
-  max-height: none;
-}
-.cm-items-list.disabled ul li {
-  cursor: default !important;
 }
 .cm-items-list.disabled ul li a {
   cursor: default;
+}
+.cm-items-list.auto ul {
+  max-height: none;
 }
 /* ******* TOOLBAR ********** */
 .cm-toolbar {
@@ -4419,7 +4418,7 @@ button.has-icon-small .icon,
   background-image: url("../img/icons/small/add.png");
 }
 .com-tags-input > .inner .item .input {
-  width: 150px;
+  width: 200px;
   margin: 0;
 }
 .com-tags-input > .inner .item.closed,

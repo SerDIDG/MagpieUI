@@ -151,15 +151,23 @@ Mod['Langs'] = {
             that.build['params']['langs'] = {};
         }
     },
-    'lang' : function(str){
-        var that = this;
-        if(cm.isEmpty(str)){
-            return that.params['langs'];
+    'lang' : function(str, vars){
+        var that = this,
+            langStr;
+        if(!str || cm.isEmpty(str)){
+            return '';
         }
         if(!that.params['langs'][str]){
             that.params['langs'][str] = str;
         }
-        return that.params['langs'][str];
+        langStr = that.params['langs'][str];
+        // Process variables
+        if(vars && cm.isObject(vars)){
+            cm.forEach(vars, function(item, key){
+                langStr = langStr.replace(key, item);
+            });
+        }
+        return langStr;
     },
     'setLangs' : function(o){
         var that = this;
