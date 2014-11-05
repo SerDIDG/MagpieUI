@@ -53,6 +53,16 @@
                             });
                             break;
 
+                        case 'flat':
+                            var data = ["Sponge Bob", "User Userberg", "User Userbergovich", "User Userbergini", "User Userbergovski", "User Userbergoff", "User Userberegovoy", "User Userbergosyan", "User Userbergovenko"];
+
+                            new Com.Autocomplete({
+                                'input' : node,
+                                'data' : data,
+                                'clearOnEmpty' : false
+                            });
+                            break;
+
                         case 'youtube' :
                             var callbacks = {
                                 'response' : function(that, query, config, responce){
@@ -126,6 +136,33 @@
     new Com.Autocomplete({
         'input' : node,
         'data' : data
+    });
+</script></textarea>
+
+        <hr>
+
+        <h2>Input Autocomplete with static flat data</h2>
+        <input type="text" name="flat" data-element="autocomplete">
+        <br>
+        <br>
+        <textarea class="cm-codebox cm-autoresize" readonly>
+<script type="text/javascript">
+    var data = [
+        "Sponge Bob",
+        "User Userberg",
+        "User Userbergovich",
+        "User Userbergini",
+        "User Userbergovski",
+        "User Userbergoff",
+        "User Userberegovoy",
+        "User Userbergosyan",
+        "User Userbergovenko"
+    ];
+
+    new Com.Autocomplete({
+        'input' : node,
+        'data' : data,
+        'clearOnEmpty' : false
     });
 </script></textarea>
 

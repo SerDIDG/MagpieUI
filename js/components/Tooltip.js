@@ -315,22 +315,6 @@ Com['Tooltip'] = function(o){
         return that;
     };
 
-    that.addEvent = function(event, handler){
-        if(API[event] && typeof handler == 'function'){
-            API[event].push(handler);
-        }
-        return that;
-    };
-
-    that.removeEvent = function(event, handler){
-        if(API[event] && typeof handler == 'function'){
-            API[event] = API[event].filter(function(item){
-                return item != handler;
-            });
-        }
-        return that;
-    };
-
     that.disable = function(){
         that.disabled = true;
         return that;
@@ -348,6 +332,10 @@ Com['Tooltip'] = function(o){
         return that;
     };
 
+    that.isOwnNode = function(node){
+        return cm.isParent(nodes['container'], node, true);
+    };
+
     that.getNodes = function(key){
         return nodes[key] || nodes;
     };
@@ -355,6 +343,22 @@ Com['Tooltip'] = function(o){
     that.remove = function(){
         hide(true);
         removeTargetEvent();
+        return that;
+    };
+
+    that.addEvent = function(event, handler){
+        if(API[event] && typeof handler == 'function'){
+            API[event].push(handler);
+        }
+        return that;
+    };
+
+    that.removeEvent = function(event, handler){
+        if(API[event] && typeof handler == 'function'){
+            API[event] = API[event].filter(function(item){
+                return item != handler;
+            });
+        }
         return that;
     };
 

@@ -21,7 +21,9 @@ cm.define('Com.TagsInput', {
         'container' : false,
         'data' : [],
         'maxSingleTagLength': 255,
-        'autocomplete' : {},                                // All parameters what uses in Com.Autocomplete
+        'autocomplete' : {                              // All parameters what uses in Com.Autocomplete
+            'clearOnEmpty' : false
+        },
         'icons' : {
             'add' : 'icon default linked',
             'remove' : 'icon default linked'
@@ -45,13 +47,14 @@ function(params){
 
     var init = function(){
         var sourceTags;
+        preValidateParams();
         // Init modules
         that.setParams(params);
         that.convertEvents(that.params['events']);
         that.getDataConfig(that.params['input']);
-        validateParams();
         // Render
         render();
+        setLogic();
         // Set tags
         sourceTags = that.params['data'].concat(
             that.params['input'].value.split(',')
@@ -61,9 +64,9 @@ function(params){
         });
     };
 
-    var validateParams = function(){
+    var preValidateParams = function(){
         // Check for autocomplete
-        that.isAutocomplete = !cm.isEmpty(that.params['autocomplete']);
+        that.isAutocomplete = !(!cm.isEmpty(params['autocomplete']) && !that.getNodeDataConfig(that.params['input'])['autocomplete']);
     };
 
     var render = function(){
@@ -86,11 +89,21 @@ function(params){
             cm.insertBefore(nodes['container'], that.params['input']);
         }
         cm.remove(that.params['input']);
-        /* *** MISC *** */
-        if(that.isAutocomplete){
-            that.components['autocomplete'] = new Com.Autocomplete(that.params['autocomplete']);
-        }
-        that.triggerEvent('onRender', {});
+
+    };
+
+    var setLogic = function(){
+        // Autocomplete
+        that.components['autocomplete'] = new Com.Autocomplete(
+            cm.merge(that.params['autocomplete'], {
+                'events' : {
+                    'onClickSelect' : function(){
+                        addAdderTags(true);
+                    }
+                }
+            })
+        );
+        that.triggerEvent('onRender');
     };
 
     var renderAddButton = function(){
@@ -130,8 +143,8 @@ function(params){
                 e = cm.getEvent(e);
                 if(e.keyCode == 13 || e.charCode == 44){
                     cm.preventDefault(e);
-                    addTags(true);
-                    item['input'].value = '';
+                    addAdderTags(true);
+                    that.components['autocomplete'].hide();
                 }
             });
             // Hide adder on document click
@@ -139,9 +152,7 @@ function(params){
             // Add to nodes array
             nodes['adder'] = item;
         }else{
-            addTags(true);
-            nodes['adder']['input'].value = '';
-            nodes['adder']['input'].focus();
+            addAdderTags(true);
         }
     };
 
@@ -155,6 +166,16 @@ function(params){
             // API onClose Event
             that.triggerEvent('onClose');
         }});
+    };
+
+    var addAdderTags = function(execute){
+        var sourceTags = nodes['adder']['input'].value.split(',');
+        cm.forEach(sourceTags, function(tag){
+            addTag(tag, execute);
+        });
+        nodes['adder']['input'].value = '';
+        nodes['adder']['input'].focus();
+        that.components['autocomplete'].clear();
     };
 
     var addTag = function(tag, execute){
@@ -196,6 +217,9 @@ function(params){
         }
         // Add click event on "Remove Tag" button
         cm.addEvent(item['button'], 'click', function(){
+            if(isOpen){
+                nodes['adder']['input'].focus();
+            }
             removeTag(item);
         });
         // Push to global array
@@ -232,18 +256,11 @@ function(params){
         if(isOpen){
             e = cm.getEvent(e);
             var target = cm.getEventTarget(e);
-            if(!cm.isParent(nodes['container'], target, true)){
-                addTags(true);
+            if(!cm.isParent(nodes['container'], target, true) && !that.components['autocomplete'].isOwnNode(target)){
+                addAdderTags(true);
                 closeAdder(nodes['adder']);
             }
         }
-    };
-
-    var addTags = function(execute){
-        var sourceTags = nodes['adder']['input'].value.split(',');
-        cm.forEach(sourceTags, function(tag){
-            addTag(tag, execute);
-        });
     };
 
     /* ******* MAIN ******* */

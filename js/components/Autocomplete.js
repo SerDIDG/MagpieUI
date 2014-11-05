@@ -14,7 +14,8 @@ cm.define('Com.Autocomplete', {
         'onRender',
         'onClear',
         'onSelect',
-        'onChange'
+        'onChange',
+        'onClickSelect'
     ],
     'params' : {
         'input' : cm.Node('input', {'type' : 'text'}),      // HTML input node.
@@ -22,9 +23,9 @@ cm.define('Com.Autocomplete', {
         'container' : 'document.body',
         'minLength' : 3,
         'delay' : 300,
-        'clearOnEmpty' : true,
-        'showLoader' : true,
-        'data' : [],                                        // Example: [{'value' : 'foo', 'text' : 'Bar'}].
+        'clearOnEmpty' : true,                              // Clear input and value if item didn't selected from tooltip
+        'showLoader' : true,                                // Show ajax spinner in tooltip, for ajax mode only.
+        'data' : [],                                        // Examples: [{'value' : 'foo', 'text' : 'Bar'}] or ['Foo', 'Bar'].
         'ajax' : {
             'type' : 'json',
             'method' : 'get',
@@ -32,7 +33,7 @@ cm.define('Com.Autocomplete', {
             'params' : ''                                   // Params string or object. Variables: %query%, %callback%.
         },
         'langs' : {
-            'loader' : 'Searching for: %query%.'
+            'loader' : 'Searching for: %query%.'            // Variable: %query%.
         },
         'Com.Tooltip' : {
             'hideOnOut' : true,
@@ -48,6 +49,7 @@ function(params){
         requestDelay,
         ajaxHandler;
 
+    that.isOpen = false;
     that.isAjax = false;
     that.components = {};
     that.registeredItems = [];
@@ -74,6 +76,8 @@ function(params){
         if(cm.isObject(that.params['ajax']['params'])){
             that.params['ajax']['params'] = cm.obj2URI(that.params['ajax']['params']);
         }
+        // Prepare data
+        that.params['data'] = that.convertData(that.params['data']);
     };
 
     var render = function(){
@@ -81,7 +85,17 @@ function(params){
         that.components['tooltip'] = new Com.Tooltip(
             cm.merge(that.params['Com.Tooltip'], {
                 'container' : that.params['container'],
-                'target' : that.params['target']
+                'target' : that.params['target'],
+                'events' : {
+                    'onShowStart' : function(){
+                        that.isOpen = true;
+                        cm.addEvent(document, 'mousedown', bodyEvent);
+                    },
+                    'onHideStart' : function(){
+                        that.isOpen = false;
+                        cm.removeEvent(document, 'mousedown', bodyEvent);
+                    }
+                }
             })
         );
         // Set input
@@ -90,7 +104,8 @@ function(params){
     };
 
     var inputHandler = function(e){
-        var listLength, listIndex;
+        var listLength,
+            listIndex;
         e = cm.getEvent(e);
 
         switch(e.keyCode){
@@ -131,16 +146,17 @@ function(params){
     };
 
     var blurHandler = function(){
-        clear();
-        that.hide();
+        if(!that.isOpen){
+            clear();
+        }
     };
 
     var requestHandler = function(){
         var query = that.params['input'].value;
         // Clear tooltip ajax/static delay and filtered items list
+        requestDelay && clearTimeout(requestDelay);
         that.selectedItemIndex = null;
         that.registeredItems = [];
-        requestDelay && clearTimeout(requestDelay);
         that.callbacks.abort(that, ajaxHandler);
 
         if(query.length >= that.params['minLength']){
@@ -201,6 +217,15 @@ function(params){
         }
     };
 
+    var bodyEvent = function(e){
+        e = cm.getEvent(e);
+        var target = cm.getEventTarget(e);
+        if(!that.isOwnNode(target)){
+            clear();
+            that.hide();
+        }
+    };
+
     /* ******* CALLBACKS ******* */
 
     /* *** AJAX *** */
@@ -227,7 +252,7 @@ function(params){
         if(response){
             if(/json|jsonp/i.test(config['type'])){
                 if(response['data']){
-                    that.callbacks.render(that, response['data']);
+                    that.callbacks.render(that, that.covertData(response['data']));
                 }
             }
         }
@@ -262,6 +287,7 @@ function(params){
     /* *** STATIC DATA *** */
 
     that.callbacks.data = function(that, query, items){
+        // Filter data
         items = that.callbacks.filter(that, query, items);
         that.callbacks.render(that, items);
     };
@@ -328,6 +354,7 @@ function(params){
         };
         cm.addEvent(regItem['node'], 'click', function(){
             that.setRegistered(regItem, true);
+            that.triggerEvent('onClickSelect', that.value);
             that.hide();
         });
         that.registeredItems.push(regItem);
@@ -404,11 +431,24 @@ function(params){
         return item;
     };
 
+    that.convertData = function(data){
+        var newData = data.map(function(item){
+            if(!cm.isObject(item)){
+                return {'text' : item, 'value' : item};
+            }else{
+                return item;
+            }
+        });
+        return newData;
+    };
+
     that.clear = function(triggerEvents){
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
         that.previousValue = that.value;
         that.value = null;
-        that.params['input'].value = '';
+        if(that.params['clearOnEmpty']){
+            that.params['input'].value = '';
+        }
         // Trigger events
         if(triggerEvents){
             that.triggerEvent('onClear', that.value);
@@ -425,6 +465,10 @@ function(params){
     that.hide = function(){
         that.components['tooltip'].hide();
         return that;
+    };
+
+    that.isOwnNode = function(node){
+        return that.components['tooltip'].isOwnNode(node);
     };
 
     init();
