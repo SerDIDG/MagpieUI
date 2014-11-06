@@ -1,0 +1,28 @@
+/* ******* COMPONENTS: COLOR PALETTE ****** */
+
+.com__palette {
+    > .inner {
+        &:extend(.clearfix all);
+    }
+
+    .b-palette,
+    .b-range {
+        height: @ComColorPalette-Size;
+        float: left;
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+    }
+
+    .b-palette {
+        width: @ComColorPalette-Size;
+        margin: 0 @cm-indentMedium 0 0;
+    }
+
+    .b-range {
+        width: @cm-Large;
+    }
+}

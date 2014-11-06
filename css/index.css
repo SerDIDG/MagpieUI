@@ -49,6 +49,7 @@ form {
 .cm-itembox:after,
 .cm-list-counted.is-inline ul:after,
 .com-timeselect > .inner:after,
+.com__palette > .inner:after,
 .com-togglebox > dd:after,
 .com-tags > .inner:after,
 .com-forum-cell-counter .line:after,
@@ -4432,6 +4433,25 @@ button.has-icon-small .icon,
 }
 .com-tags-input > .inner .item:last-child {
   margin: 0;
+}
+/* ******* COMPONENTS: COLOR PALETTE ****** */
+.com__palette .b-palette,
+.com__palette .b-range {
+  height: 250px;
+  float: left;
+}
+.com__palette .b-palette canvas,
+.com__palette .b-range canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.com__palette .b-palette {
+  width: 250px;
+  margin: 0 24px 0 0;
+}
+.com__palette .b-range {
+  width: 32px;
 }
 /* ******* COMPONENTS: DIALOG ******* */
 .com-dialog {
