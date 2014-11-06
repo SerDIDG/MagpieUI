@@ -4438,6 +4438,7 @@ button.has-icon-small .icon,
 .com__palette .b-palette,
 .com__palette .b-range {
   height: 250px;
+  border: 2px solid #cbcbcb;
   float: left;
 }
 .com__palette .b-palette canvas,
@@ -4448,10 +4449,10 @@ button.has-icon-small .icon,
 }
 .com__palette .b-palette {
   width: 250px;
-  margin: 0 24px 0 0;
+  margin: 0 12px 0 0;
 }
 .com__palette .b-range {
-  width: 32px;
+  width: 24px;
 }
 /* ******* COMPONENTS: DIALOG ******* */
 .com-dialog {
