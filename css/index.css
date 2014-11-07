@@ -4437,9 +4437,13 @@ button.has-icon-small .icon,
 /* ******* COMPONENTS: COLOR PALETTE ****** */
 .com__palette .b-palette,
 .com__palette .b-range {
-  height: 250px;
-  border: 2px solid #cbcbcb;
   float: left;
+  border: 2px solid #cbcbcb;
+}
+.com__palette .b-palette > .inner,
+.com__palette .b-range > .inner {
+  height: 250px;
+  position: relative;
 }
 .com__palette .b-palette canvas,
 .com__palette .b-range canvas {
@@ -4448,11 +4452,43 @@ button.has-icon-small .icon,
   display: block;
 }
 .com__palette .b-palette {
-  width: 250px;
   margin: 0 12px 0 0;
 }
-.com__palette .b-range {
+.com__palette .b-palette > .inner {
+  width: 250px;
+  overflow: hidden;
+  cursor: crosshair;
+}
+.com__palette .b-palette .drag {
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  margin: -8px 0 0 -8px;
+  border: 2px solid #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+}
+.com__palette .b-range > .inner {
   width: 24px;
+  cursor: row-resize;
+}
+.com__palette .b-range .drag {
+  height: 2px;
+  position: absolute;
+  margin: -3px -4px 0;
+  border: 2px solid #ffffff;
+  border-radius: 3px;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+  top: 0;
+  right: 0;
+  bottom: auto;
+  left: 0;
+}
+.com__palette__body,
+.com__palette__body * {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
 }
 /* ******* COMPONENTS: DIALOG ******* */
 .com-dialog {

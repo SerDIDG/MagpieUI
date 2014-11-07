@@ -7,9 +7,13 @@
 
     .b-palette,
     .b-range {
-        height: @ComColorPalette-Size;
-        border: @cm-borderBox;
         float: left;
+        border: @cm-borderBox;
+
+        > .inner {
+            height: @ComColorPalette-Size;
+            position: relative;
+        }
 
         canvas {
             width: 100%;
@@ -19,11 +23,44 @@
     }
 
     .b-palette {
-        width: @ComColorPalette-Size;
         margin: 0 @cm-indentXSmall 0 0;
+
+         > .inner {
+             width: @ComColorPalette-Size;
+             overflow: hidden;
+             cursor: crosshair;
+         }
+
+        .drag {
+            width: 12px;
+            height: 12px;
+            position: absolute;
+            margin: -(16px / 2) 0 0 -(16px / 2);
+            border: 2px solid #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+        }
     }
 
     .b-range {
-        width: @cm-Medium;
+        > .inner {
+            width: @cm-Medium;
+            cursor: row-resize;
+        }
+
+        .drag {
+            height: 2px;
+            position: absolute;
+            margin: -3px -4px 0;
+            border: 2px solid #ffffff;
+            border-radius: 3px;
+            box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+            .cm-position(0, 0, auto, 0);
+        }
     }
+}
+
+.com__palette__body,
+.com__palette__body * {
+    .cm-user-select(none);
 }

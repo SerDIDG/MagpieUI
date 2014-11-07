@@ -1611,6 +1611,46 @@ cm.getIndentY = function(node){
          + cm.getStyle(node, 'borderBottomWidth', true);
 };
 
+cm.getDimensions = function(node){
+    if(!node){
+        return null;
+    }
+    var dimensions = {};
+    dimensions['width'] = node.offsetWidth;
+    dimensions['height'] = node.offsetHeight;
+    dimensions['x1'] = cm.getRealX(node);
+    dimensions['y1'] = cm.getRealY(node);
+    dimensions['x2'] = dimensions['x1'] + dimensions['width'];
+    dimensions['y2'] = dimensions['y1'] + dimensions['height'];
+    // Calculate Padding and Inner Dimensions
+    dimensions['padding'] = {
+        'top' : cm.getCSSStyle(node, 'paddingTop', true),
+        'right' : cm.getCSSStyle(node, 'paddingRight', true),
+        'bottom' : cm.getCSSStyle(node, 'paddingBottom', true),
+        'left' : cm.getCSSStyle(node, 'paddingLeft', true)
+    };
+    dimensions['innerWidth'] = dimensions['width'] - dimensions['padding']['left'] - dimensions['padding']['right'];
+    dimensions['innerHeight'] = dimensions['height'] - dimensions['padding']['top'] - dimensions['padding']['bottom'];
+    dimensions['innerX1'] = dimensions['x1'] + dimensions['padding']['left'];
+    dimensions['innerY1'] = dimensions['y1'] + dimensions['padding']['top'];
+    dimensions['innerX2'] = dimensions['innerX1'] + dimensions['innerWidth'];
+    dimensions['innerY2'] = dimensions['innerY1'] + dimensions['innerHeight'];
+    // Calculate Margin and Absolute Dimensions
+    dimensions['margin'] = {
+        'top' : cm.getCSSStyle(node, 'marginTop', true),
+        'right' : cm.getCSSStyle(node, 'marginRight', true),
+        'bottom' : cm.getCSSStyle(node, 'marginBottom', true),
+        'left' : cm.getCSSStyle(node, 'marginLeft', true)
+    };
+    dimensions['absoluteWidth'] = dimensions['width'] + dimensions['margin']['left'] + dimensions['margin']['right'];
+    dimensions['absoluteHeight'] = dimensions['height'] + dimensions['margin']['top'] + dimensions['margin']['bottom'];
+    dimensions['absoluteX1'] = dimensions['x1'] - dimensions['margin']['left'];
+    dimensions['absoluteY1'] = dimensions['y1'] - dimensions['margin']['top'];
+    dimensions['absoluteX2'] = dimensions['x2'] + dimensions['margin']['right'];
+    dimensions['absoluteY2'] = dimensions['y2'] + dimensions['margin']['bottom'];
+    return dimensions;
+};
+
 cm.addStyles = function(node, str){
     var arr = str.replace(/\s/g, '').split(';'),
         style;
