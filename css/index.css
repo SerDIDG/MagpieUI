@@ -6556,6 +6556,9 @@ button.has-icon-small .icon,
   }
 }
 /* ******* COMPONENT: FAQ ******* */
+.com-faq__questions:last-child {
+  margin: 0;
+}
 .com-faq__questions .com-togglebox {
   margin: 0;
 }
