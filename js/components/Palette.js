@@ -13,7 +13,11 @@ cm.define('Com.Palette', {
         'onRender'
     ],
     'params' : {
-        'container' : cm.Node('div')
+        'container' : cm.Node('div'),
+        'langs' : {
+            'new' : 'new',
+            'previous' : 'previous'
+        }
     }
 },
 function(params){
@@ -23,13 +27,27 @@ function(params){
 
     that.nodes = {};
     that.componnets = {};
+    that.value = {
+        'h' : 0,
+        's' : 1,
+        'v' : 1
+    };
 
     var init = function(){
         that.setParams(params);
         that.convertEvents(that.params['events']);
         that.getDataConfig(that.params['node']);
-        render();
-        afterRender();
+
+        if(typeof window.tinycolor == 'undefined'){
+            cm.errorLog({
+                'type' : 'error',
+                'name' : that._name['full'],
+                'message' : 'Library "tinycolor" not defined.'
+            });
+        }else{
+            render();
+            afterRender();
+        }
     };
 
     var render = function(){
@@ -47,6 +65,18 @@ function(params){
                         that.nodes['rangeDrag'] = cm.Node('div', {'class' : 'drag'}),
                         that.nodes['rangeCanvas'] = cm.Node('canvas', {'width' : '100%', 'height' : '100%'})
                     )
+                ),
+                cm.Node('div', {'class' : 'b-stuff'},
+                    cm.Node('div', {'class' : 'b-top'},
+                        cm.Node('div', {'class' : 'b-color-preview'},
+                            cm.Node('div', {'class' : 'b-title'}, that.lang('new')),
+                            cm.Node('div', {'class' : 'b-colors'},
+                                that.nodes['colorNew'] = cm.Node('div', {'class' : 'b-color'}),
+                                that.nodes['colorPrev'] = cm.Node('div', {'class' : 'b-color'})
+                            ),
+                            cm.Node('div', {'class' : 'b-title'}, that.lang('previous'))
+                        )
+                    )
                 )
             )
         );
@@ -58,7 +88,15 @@ function(params){
         that.componnets['paletteDrag'] = new Com.Draggable({
             'target' : that.nodes['paletteZone'],
             'node' : that.nodes['paletteDrag'],
-            'limiter' : that.nodes['paletteZone']
+            'limiter' : that.nodes['paletteZone'],
+            'events' : {
+                'onSet' : function(my, data){
+                    var dimensions = my.getDimensions();
+                    that.value['v'] = cm.toFixed((100 - (100 / dimensions['limiter']['absoluteHeight']) * data['posY']) / 100, 2);
+                    that.value['s'] = cm.toFixed(((100 / dimensions['limiter']['absoluteWidth']) * data['posX']) / 100, 2);
+                    renderColorNew();
+                }
+            }
         });
         that.componnets['rangeDrag'] = new Com.Draggable({
             'target' : that.nodes['rangeZone'],
@@ -67,9 +105,10 @@ function(params){
             'direction' : 'vertical',
             'events' : {
                 'onSet' : function(my, data){
-                    var dimensions = my.getDimensions(),
-                        hue = 360 - (360 / 100) * ((100 / dimensions['limiter']['absoluteHeight']) * data['posY']);
-                    renderPalette(hue);
+                    var dimensions = my.getDimensions();
+                    that.value['h'] = Math.floor(360 - (360 / 100) * ((100 / dimensions['limiter']['absoluteHeight']) * data['posY']));
+                    renderPalette();
+                    renderColorNew();
                 }
             }
         });
@@ -78,8 +117,38 @@ function(params){
     };
 
     var afterRender = function(){
-        setHue(0);
+        renderColorPrev();
+        setColor();
         that.triggerEvent('onRender');
+    };
+
+    /* *** COLORS *** */
+
+    var setColor = function(){
+        setRange();
+        setPalette();
+    };
+
+    var setRange = function(){
+        var dimensions = that.componnets['rangeDrag'].getDimensions(),
+            posY;
+        if(that.value['h'] == 0){
+            posY = 0;
+        }else if(that.value['h'] == 360){
+            posY = dimensions['limiter']['absoluteHeight'];
+        }else{
+            posY = dimensions['limiter']['absoluteHeight'] - (dimensions['limiter']['absoluteHeight'] / 100) * ((100 / 360) * that.value['h']);
+        }
+        that.componnets['rangeDrag'].setPosition(0, posY);
+    };
+
+    var setPalette = function(){
+        var dimensions = that.componnets['paletteDrag'].getDimensions(),
+            posY,
+            posX;
+        posY = dimensions['limiter']['absoluteHeight'] - (dimensions['limiter']['absoluteHeight'] / 100) * (that.value['v'] * 100);
+        posX = (dimensions['limiter']['absoluteWidth'] / 100) * (that.value['s'] * 100);
+        that.componnets['paletteDrag'].setPosition(posX, posY);
     };
 
     /* *** CANVAS *** */
@@ -97,13 +166,11 @@ function(params){
         rangeContext.fillRect(0, 0, 100, 100);
     };
 
-    var renderPalette = function(hue){
+    var renderPalette = function(){
         var gradient;
-        hue = Math.floor(hue);
-        // Set drag position
         // Fill color
         paletteContext.rect(0, 0, 100, 100);
-        paletteContext.fillStyle = 'hsl('+hue+', 100%, 50%)';
+        paletteContext.fillStyle = 'hsl('+that.value['h']+', 100%, 50%)';
         paletteContext.fill();
         // Fill saturation
         gradient = paletteContext.createLinearGradient(0, 0, 100, 0);
@@ -119,18 +186,14 @@ function(params){
         paletteContext.fillRect(0, 0, 100, 100);
     };
 
-    var setHue = function(hue){
-        hue = Math.floor(hue);
-        var dimensions = that.componnets['rangeDrag'].getDimensions(),
-            posY;
-        if(hue == 0){
-            posY = 0;
-        }else if(hue == 360){
-            posY = dimensions['limiter']['absoluteHeight'];
-        }else{
-            posY = dimensions['limiter']['absoluteHeight'] - (dimensions['limiter']['absoluteHeight'] / 100) * ((100 / 360) * hue);
-        }
-        that.componnets['rangeDrag'].setPosition(0, posY);
+    var renderColorNew = function(){
+        var color = tinycolor(cm.clone(that.value));
+        that.nodes['colorNew'].style.backgroundColor = color.toHslString();
+    };
+
+    var renderColorPrev = function(){
+        var color = tinycolor(cm.clone(that.value));
+        that.nodes['colorPrev'].style.backgroundColor = color.toHslString();
     };
 
     /* ******* MAIN ******* */

@@ -49,7 +49,7 @@ form {
 .cm-itembox:after,
 .cm-list-counted.is-inline ul:after,
 .com-timeselect > .inner:after,
-.com__palette > .inner:after,
+.com__palette .b-stuff .b-top:after,
 .com-togglebox > dd:after,
 .com-tags > .inner:after,
 .com-forum-cell-counter .line:after,
@@ -4441,10 +4441,19 @@ button.has-icon-small .icon,
   margin: 0;
 }
 /* ******* COMPONENTS: COLOR PALETTE ****** */
+.com__palette > .inner {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+}
+html.ie9 .com__palette > .inner {
+  display: block;
+}
 .com__palette .b-palette,
 .com__palette .b-range {
-  float: left;
-  border: 2px solid #cbcbcb;
+  border: 1px solid #cbcbcb;
+  border-radius: 3px;
 }
 .com__palette .b-palette > .inner,
 .com__palette .b-range > .inner {
@@ -4456,6 +4465,11 @@ button.has-icon-small .icon,
   width: 100%;
   height: 100%;
   display: block;
+  border-radius: 3px;
+}
+html.ie9 .com__palette .b-palette,
+html.ie9 .com__palette .b-range {
+  float: left;
 }
 .com__palette .b-palette {
   margin: 0 12px 0 0;
@@ -4472,23 +4486,50 @@ button.has-icon-small .icon,
   margin: -8px 0 0 -8px;
   border: 2px solid #ffffff;
   border-radius: 12px;
-  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3), inset 0 0 2px rgba(0, 0, 0, 0.3);
+}
+.com__palette .b-range {
+  margin: 0 24px 0 0;
 }
 .com__palette .b-range > .inner {
   width: 24px;
   cursor: row-resize;
 }
 .com__palette .b-range .drag {
-  height: 2px;
+  height: 6px;
   position: absolute;
   margin: -3px -4px 0;
-  border: 2px solid #ffffff;
+  background: #fff;
   border-radius: 3px;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
   top: 0;
   right: 0;
   bottom: auto;
   left: 0;
+}
+.com__palette .b-stuff {
+  -webkit-flex: auto;
+  -ms-flex: auto;
+  flex: auto;
+}
+html.ie9 .com__palette .b-stuff {
+  overflow: hidden;
+}
+.com__palette .b-color-preview {
+  width: 72px;
+}
+.com__palette .b-color-preview .b-title {
+  font: normal 11px/18px 'Open Sans', arial, helvetica, sans-serif;
+  color: #666666;
+  text-align: center;
+}
+.com__palette .b-color-preview .b-colors {
+  overflow: hidden;
+  border: 1px solid #cbcbcb;
+  border-radius: 3px;
+}
+.com__palette .b-color-preview .b-colors .b-color {
+  padding-bottom: 50%;
 }
 .com__palette__body,
 .com__palette__body * {
