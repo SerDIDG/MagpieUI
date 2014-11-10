@@ -2190,10 +2190,15 @@ cm.ajax = function(o){
             removeJSONP();
         };
         // Prepare url
-        config['url'] = config['url']
-            .replace('%callback%', callbackName)
-            .replace('%25callback%25', callbackName);
-        scriptNode = cm.Node('script', {'type' : 'application/javascript', 'src' : config['url']});
+        scriptNode = cm.Node('script', {'type' : 'application/javascript'});
+        if(/%callback%|%25callback%25/.test(config['url'])){
+            config['url'] = config['url']
+                .replace('%callback%', callbackName)
+                .replace('%25callback%25', callbackName);
+        }else{
+            cm.addEvent(scriptNode, 'load', window[callbackName]);
+        }
+        scriptNode.setAttribute('src', config['url']);
         // Embed
         document.getElementsByTagName('head')[0].appendChild(scriptNode);
     };
