@@ -2204,6 +2204,7 @@ cm.ajax = function(o){
     };
 
     var removeJSONP = function(){
+        cm.removeEvent(scriptNode, 'load', window[callbackName]);
         cm.remove(scriptNode);
         delete window[callbackName];
     };
