@@ -2259,37 +2259,43 @@ button.has-icon-small .icon,
   margin: 0;
 }
 /* *** ERRORS *** */
-.form dl.error input[type="text"],
-.form dl.error input[type="password"],
-.form dl.error textarea,
-.form dl.error select {
-  border: 1px solid #e61919;
-}
-.form dl.ok input[type="text"],
-.form dl.ok input[type="password"],
-.form dl.ok textarea,
-.form dl.ok select {
-  border: 1px solid #009900;
-}
 .form dl.error dt {
   color: #e61919;
 }
-.form dl.ok dt {
-  color: #009900;
-}
 .form dl.error .hint {
   color: #e61919;
-}
-.form dl.ok .hint {
-  color: #009900;
 }
 .form dl.error .validate {
   color: #e61919;
   font-weight: 600;
 }
+.form dl.error .cm-input,
+.form dl.error input[type="text"],
+.form dl.error input[type="email"],
+.form dl.error input[type="number"],
+.form dl.error input[type="password"],
+.form dl.error textarea,
+.form dl.error select {
+  border: 1px solid #e61919;
+}
+.form dl.ok dt {
+  color: #009900;
+}
+.form dl.ok .hint {
+  color: #009900;
+}
 .form dl.ok .validate {
   color: #009900;
   font-weight: 600;
+}
+.form dl.ok .cm-input,
+.form dl.ok input[type="text"],
+.form dl.ok input[type="email"],
+.form dl.ok input[type="number"],
+.form dl.ok input[type="password"],
+.form dl.ok textarea,
+.form dl.ok select {
+  border: 1px solid #009900;
 }
 /* *** FORM ICONS *** */
 .cm-form-icons {

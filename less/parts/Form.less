@@ -495,44 +495,44 @@
 
 /* *** ERRORS *** */
 
-.form dl.error input[type="text"],
-.form dl.error input[type="password"],
-.form dl.error textarea,
-.form dl.error select {
-    border: 1px solid @cm-colorError;
-}
+.form dl {
+    &.error {
+        dt {
+            color: @cm-colorError;
+        }
 
-.form dl.ok input[type="text"],
-.form dl.ok input[type="password"],
-.form dl.ok textarea,
-.form dl.ok select {
-    border: 1px solid @cm-colorValid;
-}
+        .hint {
+            color: @cm-colorError;
+        }
 
-.form dl.error dt {
-    color: @cm-colorError;
-}
+        .validate {
+            color: @cm-colorError;
+            font-weight: @cm-boldWeight;
+        }
 
-.form dl.ok dt {
-    color: @cm-colorValid;
-}
+        .cm-input {
+            border: 1px solid @cm-colorError;
+        }
+    }
 
-.form dl.error .hint {
-    color: @cm-colorError;
-}
+    &.ok {
+        dt {
+            color: @cm-colorValid;
+        }
 
-.form dl.ok .hint {
-    color: @cm-colorValid;
-}
+        .hint {
+            color: @cm-colorValid;
+        }
 
-.form dl.error .validate {
-    color: @cm-colorError;
-    font-weight: @cm-boldWeight;
-}
+        .validate {
+            color: @cm-colorValid;
+            font-weight: @cm-boldWeight;
+        }
 
-.form dl.ok .validate {
-    color: @cm-colorValid;
-    font-weight: @cm-boldWeight;
+        .cm-input {
+            border: 1px solid @cm-colorValid;
+        }
+    }
 }
 
 /* *** FORM ICONS *** */
