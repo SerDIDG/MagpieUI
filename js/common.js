@@ -2360,6 +2360,7 @@ cm.defineHelper = function(name, data, handler){
     // Process config
     data = cm.merge({
         'modules' : [],
+        'require' : [],
         'params' : {},
         'events' : []
     }, data);
@@ -2373,6 +2374,21 @@ cm.defineHelper = function(name, data, handler){
         },
         'params' : data['params']
     };
+    // Check requires
+    cm.forEach(that.build._raw['require'], function(name){
+        var str = name.split('.'),
+            method = window;
+        cm.forEach(str, function(item){
+            method = method[item];
+        });
+        if(typeof method == 'undefined'){
+            cm.errorLog({
+                'type' : 'error',
+                'name' : that.build._name['full'],
+                'message' : ['Library', cm.strWrap(name, '"'), 'not defined.'].join(' ')
+            });
+        }
+    });
     // Extend class
     cm.forEach(that.build._raw['modules'], function(module){
         if(Mod[module]){

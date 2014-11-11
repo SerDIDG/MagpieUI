@@ -7,7 +7,8 @@ cm.define('Com.Palette', {
         'Storage'
     ],
     'require' : [
-        'Com.Draggable'
+        'Com.Draggable',
+        'tinycolor'
     ],
     'events' : [
         'onRender'
@@ -38,16 +39,8 @@ function(params){
         that.convertEvents(that.params['events']);
         that.getDataConfig(that.params['node']);
 
-        if(typeof window.tinycolor == 'undefined'){
-            cm.errorLog({
-                'type' : 'error',
-                'name' : that._name['full'],
-                'message' : 'Library "tinycolor" not defined.'
-            });
-        }else{
-            render();
-            afterRender();
-        }
+        render();
+        afterRender();
     };
 
     var render = function(){
@@ -96,7 +89,7 @@ function(params){
                     that.value['v'] = cm.toFixed((100 - (100 / dimensions['limiter']['absoluteHeight']) * data['posY']) / 100, 2);
                     that.value['s'] = cm.toFixed(((100 / dimensions['limiter']['absoluteWidth']) * data['posX']) / 100, 2);
                     renderColorNew();
-                    setHex();
+                    renderHex();
                 }
             }
         });
@@ -111,23 +104,25 @@ function(params){
                     that.value['h'] = Math.floor(360 - (360 / 100) * ((100 / dimensions['limiter']['absoluteHeight']) * data['posY']));
                     renderPalette();
                     renderColorNew();
-                    setHex();
+                    renderHex();
                 }
             }
         });
+        // Add events
+        cm.addEvent(that.nodes['hex'], 'input', setHex);
         // Embed
         that.params['container'].appendChild(that.nodes['container']);
     };
 
     var afterRender = function(){
         renderColorPrev();
-        setColor();
+        renderColor();
         that.triggerEvent('onRender');
     };
 
     /* *** COLORS *** */
 
-    var setColor = function(){
+    var renderColor = function(){
         setRange();
         setPalette();
     };
@@ -152,6 +147,26 @@ function(params){
         posY = dimensions['limiter']['absoluteHeight'] - (dimensions['limiter']['absoluteHeight'] / 100) * (that.value['v'] * 100);
         posX = (dimensions['limiter']['absoluteWidth'] / 100) * (that.value['s'] * 100);
         that.componnets['paletteDrag'].setPosition(posX, posY);
+    };
+
+    var setHex = function(){
+        var color = that.nodes['hex'].value;
+        that.set(color);
+    };
+
+    var renderColorNew = function(){
+        var color = tinycolor(cm.clone(that.value));
+        that.nodes['colorNew'].style.backgroundColor = color.toHslString();
+    };
+
+    var renderColorPrev = function(){
+        var color = tinycolor(cm.clone(that.value));
+        that.nodes['colorPrev'].style.backgroundColor = color.toHslString();
+    };
+
+    var renderHex = function(){
+        var color = tinycolor(cm.clone(that.value));
+        that.nodes['hex'].value = color.toHexString();
     };
 
     /* *** CANVAS *** */
@@ -189,22 +204,21 @@ function(params){
         paletteContext.fillRect(0, 0, 100, 100);
     };
 
-    var renderColorNew = function(){
-        var color = tinycolor(cm.clone(that.value));
-        that.nodes['colorNew'].style.backgroundColor = color.toHslString();
-    };
-
-    var renderColorPrev = function(){
-        var color = tinycolor(cm.clone(that.value));
-        that.nodes['colorPrev'].style.backgroundColor = color.toHslString();
-    };
-
-    var setHex = function(){
-        var color = tinycolor(cm.clone(that.value));
-        that.nodes['hex'].value = color.toHexString();
-    };
-
     /* ******* MAIN ******* */
+
+    that.set = function(color){
+        if(cm.isEmpty(color)){
+            that.value = {
+                'h' : 0,
+                's' : 0,
+                'v' : 0
+            }
+        }else{
+            that.value = tinycolor(color).toHsv();
+        }
+        renderColor();
+        return that;
+    };
 
     init();
 });
