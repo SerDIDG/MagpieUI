@@ -2375,6 +2375,7 @@ cm.defineHelper = function(name, data, handler){
         'params' : data['params']
     };
     // Check requires
+    /*
     cm.forEach(that.build._raw['require'], function(name){
         var str = name.split('.'),
             method = window;
@@ -2389,6 +2390,7 @@ cm.defineHelper = function(name, data, handler){
             });
         }
     });
+    */
     // Extend class
     cm.forEach(that.build._raw['modules'], function(module){
         if(Mod[module]){
