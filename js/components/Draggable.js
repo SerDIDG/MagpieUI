@@ -108,18 +108,33 @@ function(params){
 
     var setPosition = function(x, y){
         var posY =  y - that.dimensions['target']['absoluteY1'],
-            posX = x - that.dimensions['target']['absoluteX1'],
-            nodePosY,
+            posX = x - that.dimensions['target']['absoluteX1'];
+        that.setPosition(posX, posY, true);
+    };
+
+    /* ******* MAIN ******* */
+
+    that.getDimensions = function(){
+        that.dimensions['target'] = cm.getDimensions(that.params['target']);
+        that.dimensions['node'] = cm.getDimensions(that.params['node']);
+        that.dimensions['limiter'] = cm.getDimensions(that.params['limiter']);
+        return that.dimensions;
+    };
+
+    that.setPosition = function(posX, posY, triggerEvents){
+        var nodePosY,
             nodePosX;
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        // Check limit
         if(that.params['limiter']){
-            if(y < that.dimensions['limiter']['absoluteY1']){
+            if(posY < 0){
                 posY = 0;
-            }else if(y > that.dimensions['limiter']['absoluteY2']){
+            }else if(posY > that.dimensions['limiter']['absoluteHeight']){
                 posY = that.dimensions['limiter']['absoluteHeight'];
             }
-            if(x < that.dimensions['limiter']['absoluteX1']){
+            if(posX < 0){
                 posX = 0;
-            }else if(x > that.dimensions['limiter']['absoluteX2']){
+            }else if(posX > that.dimensions['limiter']['absoluteWidth']){
                 posX = that.dimensions['limiter']['absoluteWidth'];
             }
         }
@@ -144,34 +159,7 @@ function(params){
                 break;
         }
         // Trigger Event
-        that.triggerEvent('onSet', {
-            'posY' : posY,
-            'posX' : posX,
-            'nodePosY' : nodePosY,
-            'nodePosX' : nodePosX
-        });
-    };
-
-    /* ******* MAIN ******* */
-
-    that.getDimensions = function(){
-        that.dimensions['target'] = cm.getDimensions(that.params['target']);
-        that.dimensions['node'] = cm.getDimensions(that.params['node']);
-        that.dimensions['limiter'] = cm.getDimensions(that.params['limiter']);
-        return that.dimensions;
-    };
-
-    that.setPosition = function(posX, posY, trigger){
-        trigger = typeof trigger == 'undefined'? true : trigger;
-        var nodePosY = posY,
-            nodePosX = posX;
-        if(that.params['alignNode']){
-            nodePosY -= (that.dimensions['node']['absoluteHeight'] / 2);
-            nodePosX -= (that.dimensions['node']['absoluteWidth'] / 2);
-        }
-        that.params['node'].style.top = [nodePosY, 'px'].join('');
-        that.params['node'].style.left = [nodePosX, 'px'].join('');
-        if(trigger){
+        if(triggerEvents){
             that.triggerEvent('onSet', {
                 'posY' : posY,
                 'posX' : posX,
