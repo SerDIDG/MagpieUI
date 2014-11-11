@@ -75,7 +75,8 @@ function(params){
                                 that.nodes['colorPrev'] = cm.Node('div', {'class' : 'b-color'})
                             ),
                             cm.Node('div', {'class' : 'b-title'}, that.lang('previous'))
-                        )
+                        ),
+                        that.nodes['hex'] = cm.Node('input', {'type' : 'text', 'maxlength' : 7})
                     )
                 )
             )
@@ -95,6 +96,7 @@ function(params){
                     that.value['v'] = cm.toFixed((100 - (100 / dimensions['limiter']['absoluteHeight']) * data['posY']) / 100, 2);
                     that.value['s'] = cm.toFixed(((100 / dimensions['limiter']['absoluteWidth']) * data['posX']) / 100, 2);
                     renderColorNew();
+                    setHex();
                 }
             }
         });
@@ -109,6 +111,7 @@ function(params){
                     that.value['h'] = Math.floor(360 - (360 / 100) * ((100 / dimensions['limiter']['absoluteHeight']) * data['posY']));
                     renderPalette();
                     renderColorNew();
+                    setHex();
                 }
             }
         });
@@ -194,6 +197,11 @@ function(params){
     var renderColorPrev = function(){
         var color = tinycolor(cm.clone(that.value));
         that.nodes['colorPrev'].style.backgroundColor = color.toHslString();
+    };
+
+    var setHex = function(){
+        var color = tinycolor(cm.clone(that.value));
+        that.nodes['hex'].value = color.toHexString();
     };
 
     /* ******* MAIN ******* */

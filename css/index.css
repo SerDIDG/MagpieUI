@@ -4512,11 +4512,14 @@ html.ie9 .com__palette .b-range {
   -ms-flex: auto;
   flex: auto;
 }
+.com__palette .b-stuff .b-top {
+  width: 72px;
+}
 html.ie9 .com__palette .b-stuff {
   overflow: hidden;
 }
 .com__palette .b-color-preview {
-  width: 72px;
+  margin: 0 0 12px;
 }
 .com__palette .b-color-preview .b-title {
   font: normal 11px/18px 'Open Sans', arial, helvetica, sans-serif;
