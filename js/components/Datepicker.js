@@ -74,7 +74,7 @@ function(params){
         that.getDataConfig(that.params['input']);
         validateParams();
         render();
-        setMiscEvents();
+        setLogic();
         // Set selected date
         if(that.params['value']){
             that.set(that.params['value'], that.format, false);
@@ -158,7 +158,7 @@ function(params){
         cm.remove(that.params['input']);
     };
 
-    var setMiscEvents = function(){
+    var setLogic = function(){
         // Add events on input to makes him clear himself when user wants that
         cm.addEvent(nodes['input'], 'keydown', function(e){
             e = cm.getEvent(e);

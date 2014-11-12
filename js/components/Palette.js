@@ -11,13 +11,20 @@ cm.define('Com.Palette', {
         'tinycolor'
     ],
     'events' : [
-        'onRender'
+        'onRender',
+        'onDraw',
+        'onSet',
+        'onSelect',
+        'onChange'
     ],
     'params' : {
         'container' : cm.Node('div'),
+        'value' : '#ff0000',
+        'defaultValue' : '#000000',
         'langs' : {
             'new' : 'new',
-            'previous' : 'previous'
+            'previous' : 'previous',
+            'select' : 'Select'
         }
     }
 },
@@ -28,11 +35,8 @@ function(params){
 
     that.nodes = {};
     that.componnets = {};
-    that.value = {
-        'h' : 0,
-        's' : 1,
-        'v' : 1
-    };
+    that.value = null;
+    that.previousValue = null;
 
     var init = function(){
         that.setParams(params);
@@ -40,7 +44,7 @@ function(params){
         that.getDataConfig(that.params['node']);
 
         render();
-        afterRender();
+        that.set(that.params['value'], false);
     };
 
     var render = function(){
@@ -61,15 +65,20 @@ function(params){
                 ),
                 cm.Node('div', {'class' : 'b-stuff'},
                     cm.Node('div', {'class' : 'b-top'},
-                        cm.Node('div', {'class' : 'b-color-preview'},
+                        cm.Node('div', {'class' : 'b-preview-color'},
                             cm.Node('div', {'class' : 'b-title'}, that.lang('new')),
                             cm.Node('div', {'class' : 'b-colors'},
-                                that.nodes['colorNew'] = cm.Node('div', {'class' : 'b-color'}),
-                                that.nodes['colorPrev'] = cm.Node('div', {'class' : 'b-color'})
+                                that.nodes['previewNew'] = cm.Node('div', {'class' : 'b-color'}),
+                                that.nodes['previewPrev'] = cm.Node('div', {'class' : 'b-color'})
                             ),
                             cm.Node('div', {'class' : 'b-title'}, that.lang('previous'))
                         ),
-                        that.nodes['hex'] = cm.Node('input', {'type' : 'text', 'maxlength' : 7})
+                        cm.Node('div', {'class' : 'b-preview-inputs'},
+                            that.nodes['inputHEX'] = cm.Node('input', {'type' : 'text', 'maxlength' : 7})
+                        ),
+                        cm.Node('div', {'class' : 'b-buttons'},
+                            that.nodes['buttonSelect'] = cm.Node('div', {'class' : 'button button-primary wide'}, that.lang('select'))
+                        )
                     )
                 )
             )
@@ -77,7 +86,7 @@ function(params){
         // Render canvas
         paletteContext = that.nodes['paletteCanvas'].getContext('2d');
         rangeContext = that.nodes['rangeCanvas'].getContext('2d');
-        renderRange();
+        renderRangeCanvas();
         // Init draggable
         that.componnets['paletteDrag'] = new Com.Draggable({
             'target' : that.nodes['paletteZone'],
@@ -88,8 +97,7 @@ function(params){
                     var dimensions = my.getDimensions();
                     that.value['v'] = cm.toFixed((100 - (100 / dimensions['limiter']['absoluteHeight']) * data['posY']) / 100, 2);
                     that.value['s'] = cm.toFixed(((100 / dimensions['limiter']['absoluteWidth']) * data['posX']) / 100, 2);
-                    renderColorNew();
-                    renderHex();
+                    setColor();
                 }
             }
         });
@@ -102,32 +110,23 @@ function(params){
                 'onSet' : function(my, data){
                     var dimensions = my.getDimensions();
                     that.value['h'] = Math.floor(360 - (360 / 100) * ((100 / dimensions['limiter']['absoluteHeight']) * data['posY']));
-                    renderPalette();
-                    renderColorNew();
-                    renderHex();
+                    renderPaletteCanvas();
+                    setColor();
                 }
             }
         });
         // Add events
-        cm.addEvent(that.nodes['hex'], 'input', setHex);
+        cm.addEvent(that.nodes['inputHEX'], 'input', inputHEXHandler);
+        cm.addEvent(that.nodes['buttonSelect'], 'input', buttonSelectHandler);
         // Embed
         that.params['container'].appendChild(that.nodes['container']);
-    };
-
-    var afterRender = function(){
-        renderColorPrev();
-        renderColor();
+        // Trigger event
         that.triggerEvent('onRender');
     };
 
     /* *** COLORS *** */
 
-    var renderColor = function(){
-        setRange();
-        setPalette();
-    };
-
-    var setRange = function(){
+    var setRangeDrag = function(){
         var dimensions = that.componnets['rangeDrag'].getDimensions(),
             posY;
         if(that.value['h'] == 0){
@@ -137,41 +136,63 @@ function(params){
         }else{
             posY = dimensions['limiter']['absoluteHeight'] - (dimensions['limiter']['absoluteHeight'] / 100) * ((100 / 360) * that.value['h']);
         }
-        that.componnets['rangeDrag'].setPosition(0, posY);
+        that.componnets['rangeDrag'].setPosition(0, posY, false);
     };
 
-    var setPalette = function(){
+    var setPaletteDrag = function(){
         var dimensions = that.componnets['paletteDrag'].getDimensions(),
             posY,
             posX;
         posY = dimensions['limiter']['absoluteHeight'] - (dimensions['limiter']['absoluteHeight'] / 100) * (that.value['v'] * 100);
         posX = (dimensions['limiter']['absoluteWidth'] / 100) * (that.value['s'] * 100);
-        that.componnets['paletteDrag'].setPosition(posX, posY);
+        that.componnets['paletteDrag'].setPosition(posX, posY, false);
     };
 
-    var setHex = function(){
-        var color = that.nodes['hex'].value;
-        that.set(color);
+    var inputHEXHandler = function(){
+        var color = that.nodes['inputHEX'].value;
+        set(color, true);
     };
 
-    var renderColorNew = function(){
+    var buttonSelectHandler = function(){
+        that.triggerEvent('onSelect');
+    };
+
+    var set = function(color, triggerEvent){
+        if(cm.isEmpty(color)){
+            color = that.params['defaultValue'];
+        }
+        that.value = tinycolor(color).toHsv();
+        that.redraw();
+        // Trigger onSet event
+        if(triggerEvent){
+            that.triggerEvent('onSet');
+        }
+    };
+    
+    var setColor = function(){
+        setPreviewNew();
+        setPreviewInputs();
+        that.triggerEvent('onSet');
+    };
+
+    var setPreviewNew = function(){
         var color = tinycolor(cm.clone(that.value));
-        that.nodes['colorNew'].style.backgroundColor = color.toHslString();
+        that.nodes['previewNew'].style.backgroundColor = color.toHslString();
     };
 
-    var renderColorPrev = function(){
-        var color = tinycolor(cm.clone(that.value));
-        that.nodes['colorPrev'].style.backgroundColor = color.toHslString();
+    var setPreviewPrev = function(){
+        var color = tinycolor(cm.clone(that.previousValue));
+        that.nodes['previewPrev'].style.backgroundColor = color.toHslString();
     };
 
-    var renderHex = function(){
+    var setPreviewInputs = function(){
         var color = tinycolor(cm.clone(that.value));
-        that.nodes['hex'].value = color.toHexString();
+        that.nodes['inputHEX'].value = color.toHexString();
     };
 
     /* *** CANVAS *** */
 
-    var renderRange = function(){
+    var renderRangeCanvas = function(){
         var gradient = rangeContext.createLinearGradient(0, 0, 0, 100);
         gradient.addColorStop(0, 'rgb(255, 0, 0)');
         gradient.addColorStop(1/6, 'rgb(255, 0, 255)');
@@ -184,7 +205,7 @@ function(params){
         rangeContext.fillRect(0, 0, 100, 100);
     };
 
-    var renderPalette = function(){
+    var renderPaletteCanvas = function(){
         var gradient;
         // Fill color
         paletteContext.rect(0, 0, 100, 100);
@@ -206,17 +227,70 @@ function(params){
 
     /* ******* MAIN ******* */
 
-    that.set = function(color){
-        if(cm.isEmpty(color)){
-            that.value = {
-                'h' : 0,
-                's' : 0,
-                'v' : 0
-            }
+    that.set = function(color, triggerEvent){
+        triggerEvent = typeof triggerEvent == 'undefined'? true : triggerEvent;
+        // Render previous color
+        if(that.value){
+            that.previousValue = cm.clone(that.value);
         }else{
-            that.value = tinycolor(color).toHsv();
+            if(!cm.isEmpty(that.params['value'])){
+                that.previousValue = tinycolor(that.params['value']).toHsv();
+            }else{
+                that.previousValue = tinycolor(that.params['defaultValue']).toHsv();
+            }
         }
-        renderColor();
+        setPreviewPrev();
+        // Render new color
+        set(color, triggerEvent);
+        return that;
+    };
+
+    that.get = function(method){
+        var color = tinycolor(cm.clone(that.value));
+        switch(method){
+            case 'rgb':
+                color = color.toRgbString();
+                break;
+            case 'hsl':
+                color = color.toHslString();
+                break;
+            case 'hsv':
+            case 'hsb':
+                color = color.toHsvString();
+                break;
+            case 'hex':
+            default:
+                color = color.toHexString();
+                break;
+        }
+        return color;
+    };
+
+    that.getRaw = function(method){
+        var color = tinycolor(cm.clone(that.value));
+        switch(method){
+            case 'hsl':
+                color = color.toHsl();
+                break;
+            case 'hsv':
+            case 'hsb':
+            default:
+                // Color already in HSV
+                break;
+        }
+        return color;
+    };
+
+    that.redraw = function(triggerEvent){
+        triggerEvent = typeof triggerEvent == 'undefined'? true : triggerEvent;
+        setRangeDrag();
+        renderPaletteCanvas();
+        setPaletteDrag();
+        setPreviewNew();
+        setPreviewInputs();
+        if(triggerEvent){
+            that.triggerEvent('onDraw');
+        }
         return that;
     };
 

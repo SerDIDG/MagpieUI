@@ -4457,7 +4457,6 @@ html.ie9 .com__palette > .inner {
 }
 .com__palette .b-palette > .inner,
 .com__palette .b-range > .inner {
-  height: 250px;
   position: relative;
 }
 .com__palette .b-palette canvas,
@@ -4475,7 +4474,6 @@ html.ie9 .com__palette .b-range {
   margin: 0 12px 0 0;
 }
 .com__palette .b-palette > .inner {
-  width: 250px;
   overflow: hidden;
   cursor: crosshair;
 }
@@ -4518,21 +4516,31 @@ html.ie9 .com__palette .b-range {
 html.ie9 .com__palette .b-stuff {
   overflow: hidden;
 }
-.com__palette .b-color-preview {
+.com__palette .b-preview-color {
   margin: 0 0 12px;
 }
-.com__palette .b-color-preview .b-title {
+.com__palette .b-preview-color .b-title {
   font: normal 11px/18px 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
   text-align: center;
 }
-.com__palette .b-color-preview .b-colors {
+.com__palette .b-preview-color .b-colors {
   overflow: hidden;
   border: 1px solid #cbcbcb;
   border-radius: 3px;
 }
-.com__palette .b-color-preview .b-colors .b-color {
+.com__palette .b-preview-color .b-colors .b-color {
   padding-bottom: 50%;
+}
+.com__palette .b-buttons {
+  margin: 24px 0 0 0;
+}
+.com__palette .b-palette > .inner,
+.com__palette .b-range > .inner {
+  height: 200px;
+}
+.com__palette .b-palette > .inner {
+  width: 200px;
 }
 .com__palette__body,
 .com__palette__body * {
@@ -4540,6 +4548,7 @@ html.ie9 .com__palette .b-stuff {
   -moz-user-select: none;
   user-select: none;
 }
+/* ******* COMPONENTS: PALETTE: BUNDLE ******* */
 /* ******* COMPONENTS: DIALOG ******* */
 .com-dialog {
   width: 100%;

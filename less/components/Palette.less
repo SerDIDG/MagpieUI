@@ -15,7 +15,6 @@
         border-radius: @cm-borderRadius;
 
         > .inner {
-            height: @ComColorPalette-Size;
             position: relative;
         }
 
@@ -35,7 +34,6 @@
         margin: 0 @cm-indentXSmall 0 0;
 
          > .inner {
-             width: @ComColorPalette-Size;
              overflow: hidden;
              cursor: crosshair;
          }
@@ -83,7 +81,7 @@
         }
     }
 
-    .b-color-preview {
+    .b-preview-color {
         margin: 0 0 @cm-indentXSmall;
 
         .b-title {
@@ -101,9 +99,35 @@
             }
         }
     }
+
+    .b-buttons {
+        margin: @cm-indentMedium 0 0 0;
+    }
+
+    #cm > .com__palette__size();
 }
 
 .com__palette__body,
 .com__palette__body * {
     .cm-user-select(none);
+}
+
+
+/* ******* COMPONENTS: PALETTE: BUNDLE ******* */
+
+#cm () {
+    .com__palette__size (@value: @ComColorPalette-Size) {
+        .b-palette,
+        .b-range {
+            > .inner {
+                height: @ComColorPalette-Size;
+            }
+        }
+
+        .b-palette {
+            > .inner {
+                width: @ComColorPalette-Size;
+            }
+        }
+    }
 }
