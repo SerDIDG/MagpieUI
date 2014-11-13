@@ -68,16 +68,18 @@
 /* *** FIELD WITH ICON *** */
 
 .form-field {
+    @iconSize: @CmForm-fieldHeight - @cm-borderWidth * 2;
     position: relative;
 
     .icon {
-        width: @CmForm-fieldHeight;
-        height: @CmForm-fieldHeight;
+        width: @iconSize;
+        height: @iconSize;
         padding: 0;
         position: absolute;
         background-color: transparent;
         background-position: 50% 50%;
         background-repeat: no-repeat;
+        border-radius: max(@cm-borderRadius - 2px, 0px);
 
         &.xxx-small,
         &.xx-small,
@@ -85,14 +87,14 @@
         &.small,
         &.medium,
         &.large {
-            width: @CmForm-fieldHeight;
-            height: @CmForm-fieldHeight;
+            width: @iconSize;
+            height: @iconSize;
         }
     }
 
     &.has-icon-left {
         .icon {
-            .cm-position(0, auto, auto, 0);
+            .cm-position(@cm-borderWidth, auto, auto, @cm-borderWidth);
         }
 
         input {
@@ -102,7 +104,7 @@
 
     &.has-icon-right {
         .icon {
-            .cm-position(0, 0, auto, auto);
+            .cm-position(@cm-borderWidth, @cm-borderWidth, auto, auto);
         }
 
         input {

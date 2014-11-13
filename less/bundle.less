@@ -92,17 +92,19 @@
         height: @CmForm-fieldHeight;
         padding: @padding @CmForm-input-padding;
         margin: 0;
-        .cm-box-sizing();
         vertical-align: top;
         background: #fff;
         border: @cm-borderStyle;
         border-radius: @cm-borderRadius;
         box-shadow: none;
         cursor: text;
-        .cm-transition(background-color @CM-Transition-Duration ease-in-out);
+        .cm-box-sizing();
+        .cm-background-clip(padding-box);
+        .cm-transition(background @CM-Transition-Duration ease-in-out);
         .cm-transition(border-color @CM-Transition-Duration ease-in-out);
         .cm-transition(color @CM-Transition-Duration ease-in-out);
         .cm-transition(box-shadow @CM-Transition-Duration ease-in-out);
+        .cm-transition(text-shadow @CM-Transition-Duration ease-in-out);
 
         &:focus {
             #cm > .input-focus;
@@ -110,6 +112,18 @@
 
         &[disabled] {
             #cm > .input-disabled;
+        }
+
+        &.input-dark {
+            #cm > .input-dark;
+        }
+
+        &.input-light {
+            #cm > .input-light;
+        }
+
+        &.input-transparent {
+            #cm > .input-transparent;
         }
     }
 
@@ -121,6 +135,28 @@
     .input-disabled {
         background-color: @cm-colorLight-background;
         border-color: @cm-colorLight-border;
+    }
+
+    .input-light {
+        text-shadow: 0 1px 1px rgba(255, 255, 255, 0.7),
+                     0 -1px 1px rgba(255, 255, 255, 0.7),
+                     1px 0 1px rgba(255, 255, 255, 0.7),
+                    -1px 0 1px rgba(255, 255, 255, 0.7);
+    }
+
+    .input-dark {
+        color: #ffffff;
+        text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+    }
+
+    .input-transparent {
+        background-image: url("@{CmPath-image}/parts/transparent.png");
+        text-shadow: 0 0 5px #ffffff,
+                     0 0 5px #ffffff,
+                     0 1px 1px #ffffff,
+                     0 -1px 1px #ffffff,
+                     1px 0 1px #ffffff,
+                    -1px 0 1px #ffffff;
     }
 
     // /* *** TEXTAREA *** */

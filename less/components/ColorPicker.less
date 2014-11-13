@@ -1,0 +1,38 @@
+/* ******* COMPONENTS: COLOR PICKER ******* */
+
+.com__colorpicker {
+    width: 100%;
+    max-width: @ComDatepicker-width;
+    display: inline-block;
+    vertical-align: top;
+    position: relative;
+    z-index: 1;
+    outline: none;
+
+    .form-field {
+        .icon {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-left: @cm-borderStyle;
+
+            &.linked {
+                &:hover {
+                    opacity: 1;
+                }
+            }
+
+            &.default {
+                .icon.medium.datepicker;
+            }
+        }
+    }
+}
+
+/* *** TOOLTIP *** */
+
+.com-tooltip {
+    &.com__colorpicker-tooltip {
+        > .inner > .scroll {
+            overflow: visible;
+        }
+    }
+}

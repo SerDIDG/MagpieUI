@@ -95,6 +95,7 @@ function(params){
             'events' : {
                 'onSet' : function(my, data){
                     var dimensions = my.getDimensions();
+                    that.value['a'] = 1;
                     that.value['v'] = cm.toFixed((100 - (100 / dimensions['limiter']['absoluteHeight']) * data['posY']) / 100, 2);
                     that.value['s'] = cm.toFixed(((100 / dimensions['limiter']['absoluteWidth']) * data['posX']) / 100, 2);
                     setColor();
@@ -109,6 +110,7 @@ function(params){
             'events' : {
                 'onSet' : function(my, data){
                     var dimensions = my.getDimensions();
+                    that.value['a'] = 1;
                     that.value['h'] = Math.floor(360 - (360 / 100) * ((100 / dimensions['limiter']['absoluteHeight']) * data['posY']));
                     renderPaletteCanvas();
                     setColor();
@@ -117,7 +119,7 @@ function(params){
         });
         // Add events
         cm.addEvent(that.nodes['inputHEX'], 'input', inputHEXHandler);
-        cm.addEvent(that.nodes['buttonSelect'], 'input', buttonSelectHandler);
+        cm.addEvent(that.nodes['buttonSelect'], 'click', buttonSelectHandler);
         // Embed
         that.params['container'].appendChild(that.nodes['container']);
         // Trigger event
@@ -154,7 +156,9 @@ function(params){
     };
 
     var buttonSelectHandler = function(){
-        that.triggerEvent('onSelect');
+        setColorPrev();
+        that.triggerEvent('onSelect', that.value);
+        eventOnChange();
     };
 
     var set = function(color, triggerEvent){
@@ -165,14 +169,27 @@ function(params){
         that.redraw();
         // Trigger onSet event
         if(triggerEvent){
-            that.triggerEvent('onSet');
+            that.triggerEvent('onSet', that.value);
         }
     };
     
     var setColor = function(){
         setPreviewNew();
         setPreviewInputs();
-        that.triggerEvent('onSet');
+        that.triggerEvent('onSet', that.value);
+    };
+
+    var setColorPrev = function(){
+        if(that.value){
+            that.previousValue = cm.clone(that.value);
+        }else{
+            if(!cm.isEmpty(that.params['value'])){
+                that.previousValue = tinycolor(that.params['value']).toHsv();
+            }else{
+                that.previousValue = tinycolor(that.params['defaultValue']).toHsv();
+            }
+        }
+        setPreviewPrev();
     };
 
     var setPreviewNew = function(){
@@ -188,6 +205,12 @@ function(params){
     var setPreviewInputs = function(){
         var color = tinycolor(cm.clone(that.value));
         that.nodes['inputHEX'].value = color.toHexString();
+    };
+
+    var eventOnChange = function(){
+        if(JSON.stringify(that.value) === JSON.stringify(that.previousValue) ){
+            that.triggerEvent('onChange', that.value);
+        }
     };
 
     /* *** CANVAS *** */
@@ -229,19 +252,10 @@ function(params){
 
     that.set = function(color, triggerEvent){
         triggerEvent = typeof triggerEvent == 'undefined'? true : triggerEvent;
-        // Render previous color
-        if(that.value){
-            that.previousValue = cm.clone(that.value);
-        }else{
-            if(!cm.isEmpty(that.params['value'])){
-                that.previousValue = tinycolor(that.params['value']).toHsv();
-            }else{
-                that.previousValue = tinycolor(that.params['defaultValue']).toHsv();
-            }
-        }
-        setPreviewPrev();
         // Render new color
         set(color, triggerEvent);
+        // Render previous color
+        setColorPrev();
         return that;
     };
 
@@ -292,6 +306,16 @@ function(params){
             that.triggerEvent('onDraw');
         }
         return that;
+    };
+
+    that.isLight = function(){
+        var color = tinycolor(cm.clone(that.value));
+        return color.isLight();
+    };
+
+    that.isDark = function(){
+        var color = tinycolor(cm.clone(that.value));
+        return color.isDark();
     };
 
     init();

@@ -578,16 +578,19 @@ select {
   height: 28px;
   padding: 4px 6px;
   margin: 0;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
   vertical-align: top;
   background: #fff;
   border: 1px solid #cbcbcb;
   border-radius: 3px;
   box-shadow: none;
   cursor: text;
-  -webkit-transition: background-color 300ms ease-in-out, border-color 300ms ease-in-out, color 300ms ease-in-out, box-shadow 300ms ease-in-out;
-  transition: background-color 300ms ease-in-out, border-color 300ms ease-in-out, color 300ms ease-in-out, box-shadow 300ms ease-in-out;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-background-clip: padding-box;
+  -moz-background-clip: padding-box;
+  background-clip: padding-box;
+  -webkit-transition: background 300ms ease-in-out, border-color 300ms ease-in-out, color 300ms ease-in-out, box-shadow 300ms ease-in-out, text-shadow 300ms ease-in-out;
+  transition: background 300ms ease-in-out, border-color 300ms ease-in-out, color 300ms ease-in-out, box-shadow 300ms ease-in-out, text-shadow 300ms ease-in-out;
 }
 .cm-input:focus,
 input[type="text"]:focus,
@@ -608,6 +611,35 @@ textarea[disabled],
 select[disabled] {
   background-color: #fafafa;
   border-color: #e6e6e6;
+}
+.cm-input.input-dark,
+input[type="text"].input-dark,
+input[type="email"].input-dark,
+input[type="number"].input-dark,
+input[type="password"].input-dark,
+textarea.input-dark,
+select.input-dark {
+  color: #ffffff;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+}
+.cm-input.input-light,
+input[type="text"].input-light,
+input[type="email"].input-light,
+input[type="number"].input-light,
+input[type="password"].input-light,
+textarea.input-light,
+select.input-light {
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.7), 0 -1px 1px rgba(255, 255, 255, 0.7), 1px 0 1px rgba(255, 255, 255, 0.7), -1px 0 1px rgba(255, 255, 255, 0.7);
+}
+.cm-input.input-transparent,
+input[type="text"].input-transparent,
+input[type="email"].input-transparent,
+input[type="number"].input-transparent,
+input[type="password"].input-transparent,
+textarea.input-transparent,
+select.input-transparent {
+  background-image: url("../img/parts/transparent.png");
+  text-shadow: 0 0 5px #ffffff, 0 0 5px #ffffff, 0 1px 1px #ffffff, 0 -1px 1px #ffffff, 1px 0 1px #ffffff, -1px 0 1px #ffffff;
 }
 .cm-textarea,
 textarea {
@@ -883,6 +915,9 @@ input[type="checkbox"] {
 }
 .icon.small.drag-vertical {
   background-image: url("../img/icons/small/drag-vertical.png");
+}
+.icon.small.transparent {
+  background-image: url("../img/icons/small/transparent.png");
 }
 .icon.small.loader {
   background-image: url("../img/icons/small/loader.gif");
@@ -1583,6 +1618,7 @@ button.has-icon-small .icon,
   border-radius: 3px;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
   -webkit-background-clip: padding-box;
+  -moz-background-clip: padding-box;
   background-clip: padding-box;
 }
 .cm-box--clear {
@@ -1880,13 +1916,14 @@ button.has-icon-small .icon,
   position: relative;
 }
 .form-field .icon {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   padding: 0;
   position: absolute;
   background-color: transparent;
   background-position: 50% 50%;
   background-repeat: no-repeat;
+  border-radius: 1px;
 }
 .form-field .icon.xxx-small,
 .form-field .icon.xx-small,
@@ -1894,21 +1931,21 @@ button.has-icon-small .icon,
 .form-field .icon.small,
 .form-field .icon.medium,
 .form-field .icon.large {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
 }
 .form-field.has-icon-left .icon {
-  top: 0;
+  top: 1px;
   right: auto;
   bottom: auto;
-  left: 0;
+  left: 1px;
 }
 .form-field.has-icon-left input {
   padding-left: 28px;
 }
 .form-field.has-icon-right .icon {
-  top: 0;
-  right: 0;
+  top: 1px;
+  right: 1px;
   bottom: auto;
   left: auto;
 }
@@ -2662,6 +2699,7 @@ button.has-icon-small .icon,
   border-radius: 3px;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
   -webkit-background-clip: padding-box;
+  -moz-background-clip: padding-box;
   background-clip: padding-box;
   display: block;
   visibility: hidden;
@@ -3170,6 +3208,7 @@ button.has-icon-small .icon,
   border-radius: 3px;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
   -webkit-background-clip: padding-box;
+  -moz-background-clip: padding-box;
   background-clip: padding-box;
   display: block;
   visibility: hidden;
@@ -3976,6 +4015,7 @@ button.has-icon-small .icon,
   border-radius: 3px;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
   -webkit-background-clip: padding-box;
+  -moz-background-clip: padding-box;
   background-clip: padding-box;
 }
 /* ******* COMPONENT: TOOLTIP: INNER COMPONENTS ******* */
@@ -4023,16 +4063,19 @@ button.has-icon-small .icon,
   height: 28px;
   padding: 4px 6px;
   margin: 0;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
   vertical-align: top;
   background: #fff;
   border: 1px solid #cbcbcb;
   border-radius: 3px;
   box-shadow: none;
   cursor: text;
-  -webkit-transition: background-color 300ms ease-in-out, border-color 300ms ease-in-out, color 300ms ease-in-out, box-shadow 300ms ease-in-out;
-  transition: background-color 300ms ease-in-out, border-color 300ms ease-in-out, color 300ms ease-in-out, box-shadow 300ms ease-in-out;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-background-clip: padding-box;
+  -moz-background-clip: padding-box;
+  background-clip: padding-box;
+  -webkit-transition: background 300ms ease-in-out, border-color 300ms ease-in-out, color 300ms ease-in-out, box-shadow 300ms ease-in-out, text-shadow 300ms ease-in-out;
+  transition: background 300ms ease-in-out, border-color 300ms ease-in-out, color 300ms ease-in-out, box-shadow 300ms ease-in-out, text-shadow 300ms ease-in-out;
   height: auto;
   min-height: 28px;
   padding: 4px;
@@ -4044,6 +4087,17 @@ button.has-icon-small .icon,
 .com-multiselect .inner[disabled] {
   background-color: #fafafa;
   border-color: #e6e6e6;
+}
+.com-multiselect .inner.input-dark {
+  color: #ffffff;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+}
+.com-multiselect .inner.input-light {
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.7), 0 -1px 1px rgba(255, 255, 255, 0.7), 1px 0 1px rgba(255, 255, 255, 0.7), -1px 0 1px rgba(255, 255, 255, 0.7);
+}
+.com-multiselect .inner.input-transparent {
+  background-image: url("../img/parts/transparent.png");
+  text-shadow: 0 0 5px #ffffff, 0 0 5px #ffffff, 0 1px 1px #ffffff, 0 -1px 1px #ffffff, 1px 0 1px #ffffff, -1px 0 1px #ffffff;
 }
 .com-multiselect .cm-items-list > ul {
   max-height: 114px;
@@ -4113,6 +4167,7 @@ button.has-icon-small .icon,
   border-radius: 3px;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
   -webkit-background-clip: padding-box;
+  -moz-background-clip: padding-box;
   background-clip: padding-box;
   display: block;
   visibility: hidden;
@@ -4537,10 +4592,10 @@ html.ie9 .com__palette .b-stuff {
 }
 .com__palette .b-palette > .inner,
 .com__palette .b-range > .inner {
-  height: 200px;
+  height: 198px;
 }
 .com__palette .b-palette > .inner {
-  width: 200px;
+  width: 198px;
 }
 .com__palette__body,
 .com__palette__body * {
@@ -4549,6 +4604,30 @@ html.ie9 .com__palette .b-stuff {
   user-select: none;
 }
 /* ******* COMPONENTS: PALETTE: BUNDLE ******* */
+/* ******* COMPONENTS: COLOR PICKER ******* */
+.com__colorpicker {
+  width: 100%;
+  max-width: 210px;
+  display: inline-block;
+  vertical-align: top;
+  position: relative;
+  z-index: 1;
+  outline: none;
+}
+.com__colorpicker .form-field .icon {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-left: 1px solid #cbcbcb;
+}
+.com__colorpicker .form-field .icon.linked:hover {
+  opacity: 1;
+}
+.com__colorpicker .form-field .icon.default {
+  background-image: url("../img/icons/medium/datepicker.png");
+}
+/* *** TOOLTIP *** */
+.com-tooltip.com__colorpicker-tooltip > .inner > .scroll {
+  overflow: visible;
+}
 /* ******* COMPONENTS: DIALOG ******* */
 .com-dialog {
   width: 100%;
@@ -5395,6 +5474,7 @@ html.ie9 .com__palette .b-stuff {
   border-radius: 3px;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
   -webkit-background-clip: padding-box;
+  -moz-background-clip: padding-box;
   background-clip: padding-box;
   display: block;
   visibility: hidden;

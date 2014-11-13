@@ -18,6 +18,7 @@
     <script type="text/javascript" src="../../../js/components/UA.js"></script>
     <script type="text/javascript" src="../../../js/components/Collector.js"></script>
     <script type="text/javascript" src="../../../js/components/Tabset.js"></script>
+    <script type="text/javascript" src="../../../js/components/Tooltip.js"></script>
     <script type="text/javascript" src="../../../js/components/Draggable.js"></script>
     <script type="text/javascript" src="../../../js/components/Palette.js"></script>
     <script type="text/javascript" src="../../../js/components/ColorPicker.js"></script>
@@ -33,7 +34,7 @@
                     new Com.Tabset({'node' : node});
                 })
                 .add('colorpicker', function(node){
-                    new Com.Palette({'container' : node});
+                    new Com.ColorPicker({'input' : node});
                 })
                 .construct();
         });
@@ -51,7 +52,7 @@
 
     <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
         <h2>Default:</h2>
-        <input type="text" readonly data-element="colorpicker">
+        <input type="text" readonly data-element="colorpicker" value="transparent">
     </li>
 </ul>
 
