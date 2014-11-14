@@ -4543,7 +4543,12 @@ html.ie9 .com__palette .b-range {
   margin: -8px 0 0 -8px;
   border: 2px solid #ffffff;
   border-radius: 12px;
-  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3), inset 0 0 2px rgba(0, 0, 0, 0.3);
+}
+.com__palette .b-palette .drag.is-dark {
+  border-color: #ffffff;
+}
+.com__palette .b-palette .drag.is-light {
+  border-color: #000000;
 }
 .com__palette .b-range {
   margin: 0 24px 0 0;
@@ -4553,16 +4558,50 @@ html.ie9 .com__palette .b-range {
   cursor: row-resize;
 }
 .com__palette .b-range .drag {
-  height: 6px;
+  height: 8px;
   position: absolute;
-  margin: -3px -4px 0;
-  background: #fff;
-  border-radius: 3px;
-  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+  margin: -4px 0 0;
   top: 0;
   right: 0;
   bottom: auto;
   left: 0;
+  /*
+            height: 6px;
+            position: absolute;
+            margin: -3px -4px 0;
+            background: #fff;
+            border: 1px solid #111111;
+            border-radius: 3px;
+            .cm-position(0, 0, auto, 0);
+            */
+}
+.com__palette .b-range .drag:before {
+  width: 0;
+  height: 0;
+  display: block;
+  position: absolute;
+  content: '';
+  border-style: solid;
+  border-width: 4px 0 4px 6px;
+  border-color: transparent transparent transparent #000000;
+  top: 0;
+  right: auto;
+  bottom: auto;
+  left: -7px;
+}
+.com__palette .b-range .drag:after {
+  width: 0;
+  height: 0;
+  display: block;
+  position: absolute;
+  content: '';
+  border-style: solid;
+  border-width: 4px 6px 4px 0;
+  border-color: transparent #000000 transparent transparent;
+  top: 0;
+  right: -7px;
+  bottom: auto;
+  left: auto;
 }
 .com__palette .b-stuff {
   -webkit-flex: auto;

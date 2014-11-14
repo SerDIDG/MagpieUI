@@ -178,6 +178,7 @@ function(params){
     var setColor = function(){
         setPreviewNew();
         setPreviewInputs();
+        setPaletteDragColor();
         that.triggerEvent('onSet', that.value);
     };
 
@@ -192,6 +193,15 @@ function(params){
             }
         }
         setPreviewPrev();
+    };
+
+    var setPaletteDragColor = function(){
+        var color = tinycolor(cm.clone(that.value));
+        if(color.isDark()){
+            cm.replaceClass(that.nodes['paletteDrag'], 'is-light', 'is-dark');
+        }else{
+            cm.replaceClass(that.nodes['paletteDrag'], 'is-dark', 'is-light');
+        }
     };
 
     var setPreviewNew = function(){
@@ -304,6 +314,7 @@ function(params){
         setPaletteDrag();
         setPreviewNew();
         setPreviewInputs();
+        setPaletteDragColor();
         if(triggerEvent){
             that.triggerEvent('onDraw');
         }
