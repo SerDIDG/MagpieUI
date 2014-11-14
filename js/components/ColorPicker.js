@@ -90,6 +90,10 @@ function(params){
         if(that.params['input'].id){
             that.nodes['container'].id = that.params['input'].id;
         }
+        // Set hidden input attributes
+        if(that.params['input'].getAttribute('name')){
+            that.nodes['hidden'].setAttribute('name', that.params['input'].getAttribute('name'));
+        }
         /* *** INSERT INTO DOM *** */
         if(that.params['container']){
             that.params['container'].appendChild(that.nodes['container']);
