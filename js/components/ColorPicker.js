@@ -13,12 +13,14 @@ cm.define('Com.ColorPicker', {
     'events' : [
         'onRender',
         'onSelect',
-        'onChange'
+        'onChange',
+        'onClear'
     ],
     'params' : {
         'container' : false,
         'input' : cm.Node('div'),
         'value' : null,                        // Color string: transparent | hex.
+        'defaultValue' : 'transparent',
         'title' : '',
         'showTitleTooltip' : true,
         'renderInBody' : true,
@@ -35,9 +37,7 @@ cm.define('Com.ColorPicker', {
             'className' : 'com__colorpicker-tooltip',
             'top' : 'targetHeight + 3'
         },
-        'Com.Palette' : {
-
-        }
+        'Com.Palette' : {}
     }
 },
 function(params){
@@ -65,7 +65,7 @@ function(params){
             that.params['disabled'] = that.params['input'].disabled || that.params['disabled'];
             that.value = that.params['input'].value;
         }
-        that.value = that.params['value'] || that.value || 'transparent';
+        that.value = that.params['value'] || that.value || that.params['defaultValue'];
         that.disabled = that.params['disabled'];
     };
 
@@ -100,6 +100,15 @@ function(params){
     };
 
     var setLogic = function(){
+        // Add events on input to makes him clear himself when user wants that
+        cm.addEvent(that.nodes['input'], 'keydown', function(e){
+            e = cm.getEvent(e);
+            cm.preventDefault(e);
+            if(e.keyCode == 8){
+                that.clear();
+                that.components['tooltip'].hide();
+            }
+        });
         // Render tooltip
         that.components['tooltip'] = new Com.Tooltip(
             cm.merge(that.params['Com.Tooltip'], {
@@ -185,6 +194,18 @@ function(params){
 
     that.get = function(){
         return that.value;
+    };
+
+    that.clear = function(triggerEvents){
+        triggerEvents = typeof triggerEvents != 'undefined'? triggerEvents : true;
+        // Set default color value
+        set(that.params['defaultValue'], false);
+        // Trigger events
+        if(triggerEvents){
+            that.triggerEvent('onClear', that.value);
+            eventOnChange();
+        }
+        return that;
     };
 
     that.disable = function(){

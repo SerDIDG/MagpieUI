@@ -638,6 +638,7 @@ input[type="number"].input-transparent,
 input[type="password"].input-transparent,
 textarea.input-transparent,
 select.input-transparent {
+  background-color: #fdffff;
   background-image: url("../img/parts/transparent.png");
   text-shadow: 0 0 5px #ffffff, 0 0 5px #ffffff, 0 1px 1px #ffffff, 0 -1px 1px #ffffff, 1px 0 1px #ffffff, -1px 0 1px #ffffff;
 }
@@ -1020,6 +1021,9 @@ input[type="checkbox"] {
 }
 .icon.medium.plus-white {
   background-image: url("../img/icons/medium/plus-white.png");
+}
+.icon.medium.palette {
+  background-image: url("../img/icons/medium/palette.png");
 }
 .icon.large {
   width: 32px;
@@ -4096,6 +4100,7 @@ button.has-icon-small .icon,
   text-shadow: 0 1px 1px rgba(255, 255, 255, 0.7), 0 -1px 1px rgba(255, 255, 255, 0.7), 1px 0 1px rgba(255, 255, 255, 0.7), -1px 0 1px rgba(255, 255, 255, 0.7);
 }
 .com-multiselect .inner.input-transparent {
+  background-color: #fdffff;
   background-image: url("../img/parts/transparent.png");
   text-shadow: 0 0 5px #ffffff, 0 0 5px #ffffff, 0 1px 1px #ffffff, 0 -1px 1px #ffffff, 1px 0 1px #ffffff, -1px 0 1px #ffffff;
 }
@@ -4507,7 +4512,6 @@ html.ie9 .com__palette > .inner {
 }
 .com__palette .b-palette,
 .com__palette .b-range {
-  border: 1px solid #cbcbcb;
   border-radius: 3px;
 }
 .com__palette .b-palette > .inner,
@@ -4587,15 +4591,18 @@ html.ie9 .com__palette .b-stuff {
 .com__palette .b-preview-color .b-colors .b-color {
   padding-bottom: 50%;
 }
+.com__palette .b-preview-color .b-colors .b-color.transparent {
+  background-image: url("../img/parts/transparent.png");
+}
 .com__palette .b-buttons {
   margin: 24px 0 0 0;
 }
 .com__palette .b-palette > .inner,
 .com__palette .b-range > .inner {
-  height: 198px;
+  height: 200px;
 }
 .com__palette .b-palette > .inner {
-  width: 198px;
+  width: 200px;
 }
 .com__palette__body,
 .com__palette__body * {
@@ -4614,15 +4621,8 @@ html.ie9 .com__palette .b-stuff {
   z-index: 1;
   outline: none;
 }
-.com__colorpicker .form-field .icon {
-  background-color: rgba(255, 255, 255, 0.9);
-  border-left: 1px solid #cbcbcb;
-}
-.com__colorpicker .form-field .icon.linked:hover {
-  opacity: 1;
-}
 .com__colorpicker .form-field .icon.default {
-  background-image: url("../img/icons/medium/datepicker.png");
+  background-image: url("../img/icons/medium/palette.png");
 }
 /* *** TOOLTIP *** */
 .com-tooltip.com__colorpicker-tooltip > .inner > .scroll {

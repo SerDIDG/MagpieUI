@@ -164,6 +164,8 @@ function(params){
     var set = function(color, triggerEvent){
         if(cm.isEmpty(color)){
             color = that.params['defaultValue'];
+        }else if(color == 'transparent'){
+            color = {'h' : 360,  's' : 0,  'v' : 1, 'a' : 0};
         }
         that.value = tinycolor(color).toHsv();
         that.redraw();
@@ -194,11 +196,21 @@ function(params){
 
     var setPreviewNew = function(){
         var color = tinycolor(cm.clone(that.value));
+        if(that.value['a'] == 0){
+            cm.addClass(that.nodes['previewNew'], 'transparent');
+        }else{
+            cm.removeClass(that.nodes['previewNew'], 'transparent');
+        }
         that.nodes['previewNew'].style.backgroundColor = color.toHslString();
     };
 
     var setPreviewPrev = function(){
         var color = tinycolor(cm.clone(that.previousValue));
+        if(that.previousValue['a'] == 0){
+            cm.addClass(that.nodes['previewPrev'], 'transparent');
+        }else{
+            cm.removeClass(that.nodes['previewPrev'], 'transparent');
+        }
         that.nodes['previewPrev'].style.backgroundColor = color.toHslString();
     };
 
