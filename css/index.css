@@ -4587,12 +4587,10 @@ html.ie9 .com__palette .b-stuff {
   overflow: hidden;
   border: 1px solid #cbcbcb;
   border-radius: 3px;
+  background-image: url("../img/parts/transparent.png");
 }
 .com__palette .b-preview-color .b-colors .b-color {
   padding-bottom: 50%;
-}
-.com__palette .b-preview-color .b-colors .b-color.transparent {
-  background-image: url("../img/parts/transparent.png");
 }
 .com__palette .b-buttons {
   margin: 24px 0 0 0;
