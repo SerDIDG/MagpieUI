@@ -382,17 +382,17 @@ function(params){
         }
         // Animate chassis
         if(currentAboveItem && tempCurrentAboveItem && currentAboveItem['chassis'][currentPosition] != tempCurrentAboveItem['chassis'][tempCurrentPosition]){
-            animateChassis(currentAboveItem['chassis'][currentPosition], 0, 150);
-            animateChassis(tempCurrentAboveItem['chassis'][tempCurrentPosition], current['dimensions']['absoluteHeight'], 150);
+            animateChassis(currentAboveItem['chassis'][currentPosition], 0, 200);
+            animateChassis(tempCurrentAboveItem['chassis'][tempCurrentPosition], current['dimensions']['absoluteHeight'], 200);
         }else if(!currentAboveItem && tempCurrentAboveItem){
-            animateChassis(currentArea['chassis'][0], 0, 150);
-            animateChassis(tempCurrentAboveItem['chassis'][tempCurrentPosition], current['dimensions']['absoluteHeight'], 150);
+            animateChassis(currentArea['chassis'][0], 0, 200);
+            animateChassis(tempCurrentAboveItem['chassis'][tempCurrentPosition], current['dimensions']['absoluteHeight'], 200);
         }else if(currentAboveItem && !tempCurrentAboveItem){
-            animateChassis(currentAboveItem['chassis'][currentPosition], 0, 150);
-            animateChassis(tempCurrentArea['chassis'][0], current['dimensions']['absoluteHeight'], 150);
+            animateChassis(currentAboveItem['chassis'][currentPosition], 0, 200);
+            animateChassis(tempCurrentArea['chassis'][0], current['dimensions']['absoluteHeight'], 200);
         }else if(!currentAboveItem && !tempCurrentAboveItem && currentArea != tempCurrentArea){
-            animateChassis(currentArea['chassis'][0], 0, 150);
-            animateChassis(tempCurrentArea['chassis'][0], current['dimensions']['absoluteHeight'], 150);
+            animateChassis(currentArea['chassis'][0], 0, 200);
+            animateChassis(tempCurrentArea['chassis'][0], current['dimensions']['absoluteHeight'], 200);
         }
         // Unset classname from previous active area
         if(currentArea && currentArea != tempCurrentArea){
