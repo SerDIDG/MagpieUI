@@ -9,6 +9,10 @@
         margin: 0;
     }
 
+    .cm-content-tags {
+        margin: 0;
+    }
+
     .block {
         margin: @cm-indentMedium 0 0 0;
 
@@ -38,18 +42,19 @@
             &:first-child {
                 margin: 0;
             }
-
-            * {
-                margin: 0;
-            }
         }
     }
 
-    .stuff:extend(.cm-line-info all) {
-        margin: 0;
-        padding: 0;
-        list-style: none;
+    .list-info {
         .cm-font-hint;
+    }
+
+    .list-title {
+        font-weight: @cm-boldWeight;
+
+        .cm-content-tags {
+            font-weight: @cm-boldWeight;
+        }
     }
 }
 

@@ -43,7 +43,6 @@ form {
 .clear:after,
 .btn-wrap:after,
 .cm-box-content:after,
-.cm-line-info:after,
 .form dl:after,
 .cm-title-editable:after,
 .cm-itembox:after,
@@ -53,8 +52,7 @@ form {
 .com-togglebox > dd:after,
 .com-tags > .inner:after,
 .com-forum-cell-counter .line:after,
-.com-profile > .inner:after,
-.cm-listing .stuff:after {
+.com-profile > .inner:after {
   content: ".";
   display: block;
   clear: both;
@@ -160,6 +158,8 @@ form {
 .cm-ul-inline > li,
 .cm-grid > ul > li,
 .com-slider > .inner > .slides.effect-push > ul > li {
+  font: normal 13px/18px 'Open Sans', arial, helvetica, sans-serif;
+  color: #666666;
   display: inline-block;
   vertical-align: top;
 }
@@ -410,10 +410,7 @@ form {
 /* ************ COMMON PARTS ************ */
 /* ******* PARTS: FONT ******* */
 .cm-font-base,
-.cm-ul-inline > li,
-.com-timeselect > .inner > .sep,
-.cm-grid > ul > li,
-.com-slider > .inner > .slides.effect-push > ul > li {
+.com-timeselect > .inner > .sep {
   font: normal 13px/18px 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
 }
@@ -1711,18 +1708,21 @@ button.has-icon-small .icon,
 }
 /* ******* PART: LINE ******* */
 /* ****** PART: LINE: INFO ******* */
+.cm-line-info:after {
+  content: ".";
+  display: block;
+  clear: both;
+  visibility: hidden;
+  line-height: 0;
+  font-size: 0;
+  height: 0;
+}
 .cm-line-info .category,
 .cm-line-info .author,
 .cm-line-info .date,
 .cm-line-info .hash,
 .cm-line-info .links,
-.cm-line-info .status,
-.cm-listing .stuff .category,
-.cm-listing .stuff .author,
-.cm-listing .stuff .date,
-.cm-listing .stuff .hash,
-.cm-listing .stuff .links,
-.cm-listing .stuff .status {
+.cm-line-info .status {
   float: left;
   margin: 0 12px 0 0;
   line-height: inherit;
@@ -1733,83 +1733,80 @@ button.has-icon-small .icon,
 .cm-line-info .date:last-child,
 .cm-line-info .hash:last-child,
 .cm-line-info .links:last-child,
-.cm-line-info .status:last-child,
-.cm-listing .stuff .category:last-child,
-.cm-listing .stuff .author:last-child,
-.cm-listing .stuff .date:last-child,
-.cm-listing .stuff .hash:last-child,
-.cm-listing .stuff .links:last-child,
-.cm-listing .stuff .status:last-child {
+.cm-line-info .status:last-child {
   margin: 0;
 }
-.cm-line-info .status.error,
-.cm-listing .stuff .status.error {
+.cm-line-info .status.error {
   color: #e61919;
 }
-.cm-line-info .status.valid,
-.cm-listing .stuff .status.valid {
+.cm-line-info .status.valid {
   color: #009900;
 }
-.cm-line-info .status.pending,
-.cm-listing .stuff .status.pending {
+.cm-line-info .status.pending {
   color: #ffa200;
 }
-.cm-line-info .date,
-.cm-listing .stuff .date {
+.cm-line-info .date {
   color: #999999;
 }
 .cm-line-info .category a,
 .cm-line-info .author a,
 .cm-line-info .category span,
-.cm-line-info .author span,
-.cm-listing .stuff .category a,
-.cm-listing .stuff .author a,
-.cm-listing .stuff .category span,
-.cm-listing .stuff .author span {
+.cm-line-info .author span {
   font-weight: 600;
 }
 /* ******* PART: LINE: SHARE ******* */
-.cm-line-share ul {
-  margin: 0 0 -8px 0;
+.cm-line-share > ul {
+  margin: 0;
   padding: 0;
   list-style: none;
+  text-align: left;
   font-size: 0;
+  margin: 0 0 -8px 0;
 }
-.cm-line-share li {
-  margin: 0 8px 8px 0;
+.cm-line-share > ul > li {
+  margin: 0;
+  padding: 0;
+}
+.cm-line-share > ul > li {
+  font: normal 13px/18px 'Open Sans', arial, helvetica, sans-serif;
+  color: #666666;
   display: inline-block;
   vertical-align: top;
 }
-.cm-line-share li:last-child {
+.cm-line-share > ul > li {
+  margin: 0 8px 8px 0;
+}
+.cm-line-share > ul > li:last-child {
   margin-right: 0;
 }
-.cm-line-share li a {
+.cm-line-share > ul > li a {
+  display: block;
+  font-size: 0;
+}
+.cm-line-share > ul > li a img {
   display: block;
 }
-.cm-line-share li a img {
-  display: block;
-}
-.cm-line-share li a:hover .icon.default {
+.cm-line-share > ul > li a:hover .icon.default {
   opacity: 0.7;
   -webkit-transition: opacity 100ms ease-in-out;
   transition: opacity 100ms ease-in-out;
 }
-.cm-line-share li a:hover .label,
-.cm-line-share li a:hover .count {
+.cm-line-share > ul > li a:hover .label,
+.cm-line-share > ul > li a:hover .count {
   background-color: #e6e6e6;
   -webkit-transition: background 100ms ease-in-out;
   transition: background 100ms ease-in-out;
 }
-.cm-line-share li a:hover .label {
+.cm-line-share > ul > li a:hover .label {
   background-color: #dbebfb;
 }
-.cm-line-share.pull-left {
+.cm-line-share.pull-left > ul {
   text-align: left;
 }
-.cm-line-share.pull-center {
+.cm-line-share.pull-center > ul {
   text-align: center;
 }
-.cm-line-share.pull-right {
+.cm-line-share.pull-right > ul {
   text-align: right;
 }
 .cm-line-share .icon {
@@ -3811,6 +3808,19 @@ button.has-icon-small .icon,
 .cm-listing.bottom {
   margin: 0;
 }
+.cm-listing .cm-content-tags,
+.cm-listing h1,
+.cm-listing h2,
+.cm-listing h3,
+.cm-listing h4,
+.cm-listing h5,
+.cm-listing h6,
+.cm-listing p,
+.cm-listing dl,
+.cm-listing ul,
+.cm-listing ol {
+  margin: 0;
+}
 .cm-listing .block {
   margin: 24px 0 0 0;
 }
@@ -3836,15 +3846,25 @@ button.has-icon-small .icon,
 .cm-listing .list > li:first-child {
   margin: 0;
 }
-.cm-listing .list > li * {
-  margin: 0;
-}
-.cm-listing .stuff {
-  margin: 0;
-  padding: 0;
-  list-style: none;
+.cm-listing .list-info {
   font: normal 11px/18px 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
+}
+.cm-listing .list-title {
+  font-weight: 600;
+}
+.cm-listing .list-title .cm-content-tags,
+.cm-listing .list-title h1,
+.cm-listing .list-title h2,
+.cm-listing .list-title h3,
+.cm-listing .list-title h4,
+.cm-listing .list-title h5,
+.cm-listing .list-title h6,
+.cm-listing .list-title p,
+.cm-listing .list-title dl,
+.cm-listing .list-title ul,
+.cm-listing .list-title ol {
+  font-weight: 600;
 }
 /* *** DEFAULT *** */
 .cm-listing-default {
@@ -3927,12 +3947,10 @@ button.has-icon-small .icon,
   font: normal 11px/18px 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
 }
-.lt__post .post-info .cm-line-info,
-.lt__post .post-info .cm-listing .stuff {
+.lt__post .post-info .cm-line-info {
   margin: 0;
 }
-.lt__post .post-info .cm-line-info *,
-.lt__post .post-info .cm-listing .stuff * {
+.lt__post .post-info .cm-line-info * {
   line-height: inherit;
   font-size: inherit;
 }
@@ -6432,8 +6450,7 @@ html.ie9 .com__palette .b-stuff {
   color: #666666;
   line-height: 14px;
 }
-.com-comment .comment-info .cm-line-info,
-.com-comment .comment-info .cm-listing .stuff {
+.com-comment .comment-info .cm-line-info {
   margin: 0;
 }
 .com-comment .comment-info:first-child {

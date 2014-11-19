@@ -2,7 +2,9 @@
 
 /* ****** PART: LINE: INFO ******* */
 
-.cm-line-info:extend(.clear all) {
+.cm-line-info {
+    .clearfix;
+
     .category,
     .author,
     .date,
@@ -48,58 +50,62 @@
 /* ******* PART: LINE: SHARE ******* */
 
 .cm-line-share {
-    ul {
+    > ul {
+        .cm-ul-clear;
+        .cm-ul-inline;
         margin: 0 0 -@cm-indentXXSmall 0;
-        padding: 0;
-        list-style: none;
-        font-size: 0;
-    }
 
-    li {
-        margin: 0 @cm-indentXXSmall @cm-indentXXSmall 0;
-        display: inline-block;
-        vertical-align: top;
+        > li {
+            margin: 0 @cm-indentXXSmall @cm-indentXXSmall 0;
 
-        &:last-child {
-            margin-right: 0;
-        }
-
-        a {
-            display: block;
-
-            img {
-                display: block;
+            &:last-child {
+                margin-right: 0;
             }
 
-            &:hover {
-                .icon.default {
-                    opacity: @CM-Opacity-Hover;
-                    .cm-transition(opacity @CM-Transition-DurationReverse ease-in-out);
+            a {
+                display: block;
+                font-size: 0;
+
+                img {
+                    display: block;
                 }
 
-                .label,
-                .count {
-                    background-color: @cm-colorLight-backgroundHover;
-                    .cm-transition(background @CM-Transition-DurationReverse ease-in-out);
-                }
+                &:hover {
+                    .icon.default {
+                        opacity: @CM-Opacity-Hover;
+                        .cm-transition(opacity @CM-Transition-DurationReverse ease-in-out);
+                    }
 
-                .label {
-                    background-color: @cm-colorActive;
+                    .label,
+                    .count {
+                        background-color: @cm-colorLight-backgroundHover;
+                        .cm-transition(background @CM-Transition-DurationReverse ease-in-out);
+                    }
+
+                    .label {
+                        background-color: @cm-colorActive;
+                    }
                 }
             }
         }
     }
 
     &.pull-left {
-        text-align: left;
+        > ul {
+            text-align: left;
+        }
     }
 
     &.pull-center {
-        text-align: center;
+        > ul {
+            text-align: center;
+        }
     }
 
     &.pull-right {
-        text-align: right;
+        > ul {
+            text-align: right;
+        }
     }
 
     .icon {
