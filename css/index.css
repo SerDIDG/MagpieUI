@@ -3821,6 +3821,9 @@ button.has-icon-small .icon,
 .cm-listing ol {
   margin: 0;
 }
+.cm-listing .cm-title-editable {
+  margin: 0;
+}
 .cm-listing .block {
   margin: 24px 0 0 0;
 }
