@@ -1599,10 +1599,10 @@ button.has-icon-small .icon,
   margin: 0;
 }
 .btn-wrap.is-flexible {
-  -ms-flex-pack: center;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
+  -ms-flex-pack: center;
   -webkit-flex-direction: row;
   -ms-flex-direction: row;
   flex-direction: row;
@@ -1619,6 +1619,16 @@ button.has-icon-small .icon,
   -webkit-flex: 1;
   -ms-flex: 1;
   flex: 1;
+}
+.btn-wrap.is-flexible .cm-button:first-child,
+.btn-wrap.is-flexible .browse-button:first-child,
+.btn-wrap.is-flexible .com-action-menu:first-child,
+.btn-wrap.is-flexible input[type="button"]:first-child,
+.btn-wrap.is-flexible input[type="submit"]:first-child,
+.btn-wrap.is-flexible input[type="reset"]:first-child,
+.btn-wrap.is-flexible button:first-child,
+.btn-wrap.is-flexible .button:first-child {
+  margin: 0;
 }
 /* ******* PART: BOX ******* */
 .cm-box {
@@ -3399,6 +3409,18 @@ button.has-icon-small .icon,
 .cm-grid.is-adaptive > ul > li {
   width: auto;
   overflow: visible;
+}
+.cm-grid.is-flexible > ul {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+}
+.cm-grid.is-flexible > ul > li {
+  -webkit-flex: auto;
+  -ms-flex: auto;
+  flex: auto;
+  width: 100%;
 }
 .cm-grid.col-1 > ul > li {
   width: 100%;
