@@ -127,10 +127,7 @@ button,
     }
 
     &.is-flexible {
-        -ms-flex-pack: center;
-        display: -webkit-flex;
-        display: -ms-flexbox;
-        display: flex;
+        .display-flex;
         -webkit-flex-direction: row;
             -ms-flex-direction: row;
                 flex-direction: row;
@@ -139,9 +136,11 @@ button,
         .browse-button,
         .com-action-menu {
             float: none;
-            -webkit-flex: 1;
-                -ms-flex: 1;
-                    flex: 1;
+            .cm-flex(1);
+
+            &:first-child {
+                margin: 0;
+            }
         }
     }
 }

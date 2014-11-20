@@ -96,6 +96,17 @@
         }
     }
 
+    &.is-flexible {
+        > ul {
+            .display-flex;
+
+            > li {
+                .cm-flex(auto);
+                width: 100%;
+            }
+        }
+    }
+
     // /* Build columns styles */
 
     .loop(@counter) when (@counter > 0) {
