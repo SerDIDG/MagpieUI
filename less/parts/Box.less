@@ -7,6 +7,7 @@
     border-radius: @cm-borderRadius;
     box-shadow: @cm-ui-shadowLight;
     .cm-background-clip(padding-box);
+    .cm-box-sizing(border-box);
 }
 
 .cm-box--clear {
@@ -15,18 +16,28 @@
     border: none;
     border-radius: 0;
     box-shadow: none;
+    .cm-box-sizing(border-box);
 }
 
 .cm-box-border {
     #cm > .box-border;
+    .cm-box-sizing(border-box);
 }
 
 .cm-box-flat {
-    #cm > .box-flat;
     margin: 0 0 @cm-indentMedium;
+    padding: @cm-indentXSmall;
+    background: @cm-background-light;
+    border-radius: @cm-borderRadius;
+    .cm-box-sizing(border-box);
+    .cm-transition(background @CM-Transition-Duration ease-in-out);
 
     &:last-child {
         margin: 0;
+    }
+
+    &.active {
+        background: @cm-background-themeLight;
     }
 }
 

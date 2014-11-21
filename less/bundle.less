@@ -224,6 +224,10 @@
             #cm > .button-transparent;
         }
 
+        &.button-white {
+            #cm > .button-white;
+        }
+
         &.button-clear {
             #cm > .button-clear;
         }
@@ -280,6 +284,29 @@
 
     .button-secondary-active {
         box-shadow: 0 2px 2px rgba(0,0,0,0.2) inset;
+    }
+
+    .button-white {
+        background: #ffffff;
+        color: @cm-color;
+
+        &:hover {
+            #cm > .button-white-hover;
+        }
+
+        &:active,
+        &.active {
+            #cm > .button-white-active;
+        }
+    }
+
+    .button-white-hover {
+        background-color: darken(@cm-color, 10%);
+        color: #fff;
+    }
+
+    .button-white-active {
+        box-shadow: 0 3px 3px rgba(0,0,0,0.4) inset;
     }
 
     .button-error {

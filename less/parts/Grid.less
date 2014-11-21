@@ -97,12 +97,41 @@
     }
 
     &.is-flexible {
+        overflow: visible;
+
         > ul {
             .display-flex;
 
             > li {
-                .cm-flex(auto);
                 width: 100%;
+                .cm-flex(auto);
+            }
+        }
+    }
+
+    &.is-flexible-in {
+        overflow: visible;
+
+        > ul {
+            .display-flex;
+            .cm-flex-flow(row wrap);
+
+            > li {
+                .display-flex;
+                .cm-flex(1 1);
+            }
+        }
+
+        .ie9 &,
+        .ie8 & {
+            > ul {
+                width: 100%;
+                display: table;
+                table-layout: fixed;
+
+                > li {
+                    display: table-cell;
+                }
             }
         }
     }
@@ -137,8 +166,14 @@
     html.is-adaptive {
         .cm-grid {
             &:not(.is-not-adaptive) {
-                > ul > li {
-                    width: 100%;
+                > ul {
+                    width: auto;
+                    display: block;
+
+                    > li {
+                        width: 100%;
+                        display: block;
+                    }
                 }
             }
         }
