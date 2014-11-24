@@ -1,6 +1,6 @@
 /* ******* PARTS: GRID ******* */
 
-.cm-grid {
+.pt__grid {
     margin: 0 0 @cm-indentMedium;
     overflow: hidden;
 
@@ -142,7 +142,7 @@
         .loop((@counter - 1));
 
         &.col-@{counter} {
-            #cm > .cm-grid__size(@counter);
+            #cm > .pt__grid__size(@counter);
         }
     }
 
@@ -150,11 +150,11 @@
 
     // /* Set grid items indent */
 
-    #cm > .cm-grid__indent(@CmGrid-itemIndent);
+    #cm > .pt__grid__indent(@CmGrid-itemIndent);
 
     .for(@ComGrid-indents); .-each(@name) {
         &.indent-@{name} {
-            #cm > .cm-grid__indent(@name);
+            #cm > .pt__grid__indent(@name);
         }
     }
 }
@@ -164,7 +164,7 @@
 @media only screen and (max-width: @cm-screenMobile) {
 
     html.is-adaptive {
-        .cm-grid {
+        .pt__grid {
             &:not(.is-not-adaptive) {
                 > ul {
                     width: auto;
@@ -184,7 +184,7 @@
 /* ******* PARTS: GRID: BUNDLE ******* */
 
 #cm () {
-    .cm-grid__size (@count: 1) {
+    .pt__grid__size (@count: 1) {
         @size: 100% / @count;
 
         > ul > li {
@@ -192,7 +192,7 @@
         }
     }
 
-    .cm-grid__indent (@indent: @CmGrid-itemIndent) {
+    .pt__grid__indent (@indent: @CmGrid-itemIndent) {
         > ul {
             margin: @indent -@indent -@indent;
 
