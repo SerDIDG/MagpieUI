@@ -1761,6 +1761,18 @@ button.has-icon-small .icon,
 .cm-box-info:last-child {
   margin: 0;
 }
+/* *** TABLE *** */
+.pt__box-cell .b-title,
+.pt__box-cell .b-descr {
+  margin: 0 0 12px;
+}
+.pt__box-cell .b-title:last-child,
+.pt__box-cell .b-descr:last-child {
+  margin: 0;
+}
+.pt__box-cell .b-title {
+  font-weight: 600;
+}
 /* ******* PART: LINE ******* */
 /* ****** PART: LINE: INFO ******* */
 .cm-line-info:after {
@@ -1772,6 +1784,7 @@ button.has-icon-small .icon,
   font-size: 0;
   height: 0;
 }
+.cm-line-info .item,
 .cm-line-info .category,
 .cm-line-info .author,
 .cm-line-info .date,
@@ -1783,6 +1796,7 @@ button.has-icon-small .icon,
   line-height: inherit;
   font-size: inherit;
 }
+.cm-line-info .item:last-child,
 .cm-line-info .category:last-child,
 .cm-line-info .author:last-child,
 .cm-line-info .date:last-child,
@@ -4305,6 +4319,9 @@ button.has-icon-small .icon,
 .com-action-menu .button {
   margin: 0 !important;
 }
+.com-action-menu .cm-menu {
+  display: none;
+}
 /* *** TOOLTIP *** */
 .com-tooltip.com-action-menu-tooltip > .inner > .scroll {
   overflow: visible;
@@ -5435,6 +5452,9 @@ html.ie9 .com__palette .b-range {
 .com-gridlist table th {
   text-align: left;
   padding: 6px;
+  -webkit-background-clip: padding-box;
+  -moz-background-clip: padding-box;
+  background-clip: padding-box;
 }
 .com-gridlist table td > .inner,
 .com-gridlist table th > .inner {
@@ -5445,6 +5465,22 @@ html.ie9 .com__palette .b-range {
   text-overflow: ellipsis;
   word-wrap: normal;
   text-decoration: none;
+}
+.com-gridlist table td.cell-title,
+.com-gridlist table th.cell-title {
+  width: 20%;
+}
+.com-gridlist table td.cell-description,
+.com-gridlist table th.cell-description {
+  width: auto;
+}
+.com-gridlist table td.cell-status,
+.com-gridlist table th.cell-status {
+  width: 100px;
+}
+.com-gridlist table td.cell-links,
+.com-gridlist table th.cell-links {
+  width: 200px;
 }
 .com-gridlist table th {
   font-weight: 600;
@@ -5476,7 +5512,12 @@ html.ie9 .com__palette .b-range {
 }
 .com-gridlist table tr td {
   vertical-align: top;
+  border-top: 1px solid transparent;
   word-wrap: break-word;
+}
+.com-gridlist table tr.active td,
+.com-gridlist table tr.selected td {
+  background-color: #f1f7fd;
 }
 .com-gridlist table tr:hover td {
   background-color: #f2f2f2;

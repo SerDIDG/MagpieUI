@@ -25,6 +25,7 @@
         td, th {
             text-align: left;
             padding: @ComGridlist-paddingInner;
+            .cm-background-clip(padding-box);
 
             > .inner {
                 display: block;
@@ -32,6 +33,22 @@
                 .cm-text-overflow;
                 word-wrap: normal;
                 text-decoration: none;
+            }
+
+            &.cell-title {
+                width: 20%;
+            }
+
+            &.cell-description {
+                width: auto;
+            }
+
+            &.cell-status {
+                width: 100px;
+            }
+
+            &.cell-links {
+                width: 200px;
             }
         }
 
@@ -67,7 +84,15 @@
         tr {
             td {
                 vertical-align: top;
+                border-top: 1px solid transparent;
                 word-wrap: break-word;
+            }
+
+            &.active,
+            &.selected {
+                td {
+                    background-color: @cm-background-themeLight;
+                }
             }
 
             &:hover td {

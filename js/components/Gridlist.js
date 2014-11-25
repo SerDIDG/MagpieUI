@@ -283,7 +283,10 @@ Com['Gridlist'] = function(o){
                     myNodes['inner'].appendChild(
                         myNodes['node'] = cm.Node('input', {'type' : 'checkbox'})
                     );
-                    myNodes['node'].checked = item['isChecked'];
+                    item['nodes']['checkbox'] = myNodes['node'];
+                    if(item['isChecked']){
+                        checkRow(item, false);
+                    }
                     cm.addEvent(myNodes['node'], 'click', function(){
                         if(!item['isChecked']){
                             checkRow(item, true);
@@ -291,7 +294,6 @@ Com['Gridlist'] = function(o){
                             unCheckRow(item, true);
                         }
                     });
-                    item['nodes']['checkbox'] = myNodes['node'];
                     break;
 
                 case 'empty' :
@@ -385,9 +387,12 @@ Com['Gridlist'] = function(o){
     };
 
     var checkRow = function(row, execute){
-        row['nodes']['checkbox'].checked = true;
+        if(row['nodes']['checkbox']){
+            row['nodes']['checkbox'].checked = true;
+        }
         row['isChecked'] = true;
         row['data']['_checked'] = true;
+        cm.addClass(row['nodes']['container'], 'selected');
         if(execute){
             // API onCheck Event
             executeEvent('onCheck', row);
@@ -395,9 +400,12 @@ Com['Gridlist'] = function(o){
     };
 
     var unCheckRow = function(row, execute){
-        row['nodes']['checkbox'].checked = false;
+        if(row['nodes']['checkbox']){
+            row['nodes']['checkbox'].checked = false;
+        }
         row['isChecked'] = false;
         row['data']['_checked'] = false;
+        cm.removeClass(row['nodes']['container'], 'selected');
         if(execute){
             // API onUnCheck Event
             executeEvent('onUnCheck', row);
