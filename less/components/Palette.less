@@ -2,15 +2,12 @@
 
 .com__palette {
     > .inner {
-        .display-flex;
-
-        html.ie9 & {
-            display: block;
-        }
+        .clearfix;
     }
 
     .b-palette,
     .b-range {
+        float: left;
         border-radius: @cm-borderRadius;
 
         > .inner {
@@ -105,21 +102,20 @@
     }
 
     .b-stuff {
-        .cm-flex(auto);
+        float: left;
 
-        .b-top {
-            &:extend(.clearfix all);
+        > .inner {
             width: 72px;
+            position: relative;
         }
 
-        html.ie9 & {
-            overflow: hidden;
+        .b-bottom {
+            position: absolute;
+            .cm-position(auto, 0, 0, 0);
         }
     }
 
     .b-preview-color {
-        margin: 0 0 @cm-indentXSmall;
-
         .b-title {
             .cm-font-ui;
             text-align: center;
@@ -138,7 +134,7 @@
     }
 
     .b-buttons {
-        margin: @cm-indentMedium 0 0 0;
+        margin: @cm-indentXSmall 0 0 0;
     }
 
     #cm > .com__palette__size();
@@ -155,7 +151,8 @@
 #cm () {
     .com__palette__size (@value: @ComColorPalette-Size) {
         .b-palette,
-        .b-range {
+        .b-range,
+        .b-stuff {
             > .inner {
                 height: @ComColorPalette-Size;
             }

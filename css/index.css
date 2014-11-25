@@ -48,7 +48,6 @@ form {
 .cm-itembox:after,
 .cm-list-counted.is-inline ul:after,
 .com-timeselect > .inner:after,
-.com__palette .b-stuff .b-top:after,
 .com-togglebox > dd:after,
 .com-tags > .inner:after,
 .com-forum-cell-counter .line:after,
@@ -4648,17 +4647,18 @@ button.has-icon-small .icon,
   margin: 0;
 }
 /* ******* COMPONENTS: COLOR PALETTE ****** */
-.com__palette > .inner {
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-pack: center;
-}
-html.ie9 .com__palette > .inner {
+.com__palette > .inner:after {
+  content: ".";
   display: block;
+  clear: both;
+  visibility: hidden;
+  line-height: 0;
+  font-size: 0;
+  height: 0;
 }
 .com__palette .b-palette,
 .com__palette .b-range {
+  float: left;
   border-radius: 3px;
 }
 .com__palette .b-palette > .inner,
@@ -4751,18 +4751,18 @@ html.ie9 .com__palette .b-range {
   left: auto;
 }
 .com__palette .b-stuff {
-  -webkit-flex: auto;
-  -ms-flex: auto;
-  flex: auto;
+  float: left;
 }
-.com__palette .b-stuff .b-top {
+.com__palette .b-stuff > .inner {
   width: 72px;
+  position: relative;
 }
-html.ie9 .com__palette .b-stuff {
-  overflow: hidden;
-}
-.com__palette .b-preview-color {
-  margin: 0 0 12px;
+.com__palette .b-stuff .b-bottom {
+  position: absolute;
+  top: auto;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 .com__palette .b-preview-color .b-title {
   font: normal 11px/18px 'Open Sans', arial, helvetica, sans-serif;
@@ -4779,10 +4779,11 @@ html.ie9 .com__palette .b-stuff {
   padding-bottom: 50%;
 }
 .com__palette .b-buttons {
-  margin: 24px 0 0 0;
+  margin: 12px 0 0 0;
 }
 .com__palette .b-palette > .inner,
-.com__palette .b-range > .inner {
+.com__palette .b-range > .inner,
+.com__palette .b-stuff > .inner {
   height: 200px;
 }
 .com__palette .b-palette > .inner {

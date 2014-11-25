@@ -64,7 +64,7 @@ function(params){
                     )
                 ),
                 cm.Node('div', {'class' : 'b-stuff'},
-                    cm.Node('div', {'class' : 'b-top'},
+                    cm.Node('div', {'class' : 'inner'},
                         cm.Node('div', {'class' : 'b-preview-color'},
                             cm.Node('div', {'class' : 'b-title'}, that.lang('new')),
                             cm.Node('div', {'class' : 'b-colors'},
@@ -73,11 +73,13 @@ function(params){
                             ),
                             cm.Node('div', {'class' : 'b-title'}, that.lang('previous'))
                         ),
-                        cm.Node('div', {'class' : 'b-preview-inputs'},
-                            that.nodes['inputHEX'] = cm.Node('input', {'type' : 'text', 'maxlength' : 7})
-                        ),
-                        cm.Node('div', {'class' : 'b-buttons'},
-                            that.nodes['buttonSelect'] = cm.Node('div', {'class' : 'button button-primary wide'}, that.lang('select'))
+                        cm.Node('div', {'class' : 'b-bottom'},
+                            cm.Node('div', {'class' : 'b-preview-inputs'},
+                                that.nodes['inputHEX'] = cm.Node('input', {'type' : 'text', 'maxlength' : 7})
+                            ),
+                            cm.Node('div', {'class' : 'b-buttons'},
+                                that.nodes['buttonSelect'] = cm.Node('div', {'class' : 'button button-primary wide'}, that.lang('select'))
+                            )
                         )
                     )
                 )
