@@ -26,11 +26,11 @@
 
     &.linked {
         cursor: pointer;
-        .cm-transition(opacity @CM-Transition-Duration ease-in-out);
+        .cm-transition(opacity @Cm-Transition-Duration ease-in-out);
 
         &:hover {
-            opacity: @CM-Opacity-Hover;
-            .cm-transition(opacity @CM-Transition-DurationReverse ease-in-out);
+            opacity: @Cm-Opacity-Hover;
+            .cm-transition(opacity @Cm-Transition-DurationReverse ease-in-out);
         }
     }
 
@@ -48,19 +48,19 @@
         .cm-size-x-small;
 
         &.centered {
-            @margin: @cm-XSmall / 2;
+            @margin: @Cm-XSmall / 2;
             margin: -@margin 0 0 -@margin;
         }
 
         &.has-caption {
             width: auto;
-            padding-left: @cm-XSmall + @cm-indentXXXSmall;
-            line-height: @cm-XSmall;
+            padding-left: @Cm-XSmall + @Cm-indentXXXSmall;
+            line-height: @Cm-XSmall;
         }
 
         .for(search search-white); .-each(@name) {
             &.@{name} {
-                background-image: url("@{CmPath-image}/icons/x-small/@{name}.png");
+                background-image: url("@{CmPath-Images}/icons/x-small/@{name}.png");
             }
         }
     }
@@ -71,19 +71,19 @@
         .cm-size-small;
 
         &.centered {
-            @margin: @cm-Small / 2;
+            @margin: @Cm-Small / 2;
             margin: -@margin 0 0 -@margin;
         }
 
         &.has-caption {
             width: auto;
-            padding-left: @cm-Small + @cm-indentXXXSmall;
-            line-height: @cm-Small;
+            padding-left: @Cm-Small + @Cm-indentXXXSmall;
+            line-height: @Cm-Small;
         }
 
         .for(tags add arrow-priority-down arrow-priority-up arrow-left arrow-right arrow-top arrow-bottom copy done edit fail help remove settings settings-white view search arrow-white-left arrow-white-right arrow-white-top arrow-white-bottom drag-vertical transparent); .-each(@name) {
             &.@{name} {
-                background-image: url("@{CmPath-image}/icons/small/@{name}.png");
+                background-image: url("@{CmPath-Images}/icons/small/@{name}.png");
             }
         }
     }
@@ -91,7 +91,7 @@
     &.small {
         .for(loader loader-circle); .-each(@name) {
             &.@{name} {
-                background-image: url("@{CmPath-image}/icons/small/@{name}.gif");
+                background-image: url("@{CmPath-Images}/icons/small/@{name}.gif");
             }
         }
     }
@@ -99,7 +99,7 @@
     &.small {
         .for(archive default doc exe flash image movie music pdf pps ttf txt xls); .-each(@name) {
             &.file-@{name} {
-                background-image: url("@{CmPath-image}/icons/small/files/@{name}.gif");
+                background-image: url("@{CmPath-Images}/icons/small/files/@{name}.gif");
             }
         }
     }
@@ -110,19 +110,19 @@
         .cm-size-medium;
 
         &.centered {
-            @margin: @cm-Medium / 2;
+            @margin: @Cm-Medium / 2;
             margin: -@margin 0 0 -@margin;
         }
 
         &.has-caption {
             width: auto;
-            padding-left: @cm-Medium + @cm-indentXXXSmall;
-            line-height: @cm-Medium;
+            padding-left: @Cm-Medium + @Cm-indentXXXSmall;
+            line-height: @Cm-Medium;
         }
 
         .for(arrow-left arrow-right arrow-white-left arrow-white-right arrow-white-top arrow-white-bottom datepicker select-arrow close close-white menu menu-white settings settings-white plus-white palette); .-each(@name) {
             &.@{name} {
-                background-image: url("@{CmPath-image}/icons/medium/@{name}.png");
+                background-image: url("@{CmPath-Images}/icons/medium/@{name}.png");
             }
         }
     }
@@ -133,19 +133,19 @@
         .cm-size-large;
 
         &.centered {
-            @margin: @cm-Large / 2;
+            @margin: @Cm-Large / 2;
             margin: -@margin 0 0 -@margin;
         }
 
         &.has-caption {
             width: auto;
-            padding-left: @cm-Large + @cm-indentXXXSmall;
-            line-height: @cm-Large;
+            padding-left: @Cm-Large + @Cm-indentXXXSmall;
+            line-height: @Cm-Large;
         }
 
         .for(message page page-featured google linkedin twitter facebook favorite); .-each(@name) {
             &.@{name} {
-                background-image: url("@{CmPath-image}/icons/large/@{name}.png");
+                background-image: url("@{CmPath-Images}/icons/large/@{name}.png");
             }
         }
     }
@@ -153,7 +153,7 @@
     &.large {
         .for(loader-circle); .-each(@name) {
             &.@{name} {
-                background-image: url("@{CmPath-image}/icons/large/@{name}.gif");
+                background-image: url("@{CmPath-Images}/icons/large/@{name}.gif");
             }
         }
     }
@@ -164,19 +164,19 @@
         .cm-size-x-large;
 
         &.centered {
-            @margin: @cm-XLarge / 2;
+            @margin: @Cm-XLarge / 2;
             margin: -@margin 0 0 -@margin;
         }
 
         &.has-caption {
             width: auto;
-            padding-left: @cm-XLarge + @cm-indentXXXSmall;
-            line-height: @cm-XLarge;
+            padding-left: @Cm-XLarge + @Cm-indentXXXSmall;
+            line-height: @Cm-XLarge;
         }
 
         .for(play); .-each(@name) {
             &.@{name} {
-                background-image: url("@{CmPath-image}/icons/x-large/@{name}.png");
+                background-image: url("@{CmPath-Images}/icons/x-large/@{name}.png");
             }
         }
     }
@@ -187,19 +187,19 @@
         .cm-size-xx-large;
 
         &.centered {
-            @margin: @cm-XXLarge / 2;
+            @margin: @Cm-XXLarge / 2;
             margin: -@margin 0 0 -@margin;
         }
 
         &.has-caption {
             width: auto;
-            padding-left: @cm-XXLarge + @cm-indentXXXSmall;
-            line-height: @cm-XXLarge;
+            padding-left: @Cm-XXLarge + @Cm-indentXXXSmall;
+            line-height: @Cm-XXLarge;
         }
 
         .for(arrow-left arrow-right arrow-white-left arrow-white-right); .-each(@name) {
             &.@{name} {
-                background-image: url("@{CmPath-image}/icons/xx-large/@{name}.png");
+                background-image: url("@{CmPath-Images}/icons/xx-large/@{name}.png");
             }
         }
     }
@@ -209,7 +209,7 @@
     &.toolbar {
         .for(bold italic underline); .-each(@name) {
             &.@{name} {
-                background-image: url("@{CmPath-image}/icons/toolbar/@{name}.png");
+                background-image: url("@{CmPath-Images}/icons/toolbar/@{name}.png");
             }
         }
     }
@@ -220,18 +220,18 @@
         &.asc {
             width: 10px;
             height: 6px;
-            background-image: url("@{CmPath-image}/icons/arrow-asc.png");
+            background-image: url("@{CmPath-Images}/icons/arrow-asc.png");
         }
 
         &.desc {
             width: 10px;
             height: 6px;
-            background-image: url("@{CmPath-image}/icons/arrow-desc.png");
+            background-image: url("@{CmPath-Images}/icons/arrow-desc.png");
         }
     }
 
     &.draggable {
-        background: url("@{CmPath-image}/icons/draggable.png") 0 0 repeat;
+        background: url("@{CmPath-Images}/icons/draggable.png") 0 0 repeat;
     }
 
     // /* *** BROWSER ICONS *** */
@@ -242,7 +242,7 @@
     &.safari {
         width: 100px;
         height: 76px;
-        background: url("@{CmPath-image}/icons/browsers.png");
+        background: url("@{CmPath-Images}/icons/browsers.png");
     }
 
     &.chrome {

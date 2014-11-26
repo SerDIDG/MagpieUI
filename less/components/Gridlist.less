@@ -1,17 +1,20 @@
-/* ******* GRIDLIST ******* */
+/* ******* COMPONENTS: GRIDLIST ******* */
 
-.com-gridlist-counter {
-    margin: 0 0 @cm-indentMedium;
+.com-gridlist-container {
+    margin: 0 0 @Cm-indentMedium;
 
     &.bottom {
+        margin: 0;
+    }
+
+    > .com-pagination-container {
         margin: 0;
     }
 }
 
 .com-gridlist {
-    margin: 0 0 @cm-indentMedium;
+    margin: 0 0 @Cm-indentMedium;
     overflow: hidden;
-    font-size: @ComGridlist-fontSize;
 
     &.bottom {
         margin: 0;
@@ -23,8 +26,9 @@
         border-collapse: separate;
 
         td, th {
+            vertical-align: top;
             text-align: left;
-            padding: @ComGridlist-paddingInner;
+            padding: @ComGridlist-PaddingInner;
             .cm-background-clip(padding-box);
 
             > .inner {
@@ -33,6 +37,18 @@
                 .cm-text-overflow;
                 word-wrap: normal;
                 text-decoration: none;
+            }
+
+            &.pull-left {
+                text-align: left;
+            }
+
+            &.pull-center {
+                text-align: center;
+            }
+
+            &.pull-right {
+                text-align: right;
             }
 
             &.cell-title {
@@ -53,21 +69,26 @@
         }
 
         th {
-            font-weight: @cm-boldWeight;
+            font-weight: @Cm-boldWeight;
+            font-size: @ComGridlist-FontTitle-Size;
             .cm-user-select(none);
 
             &.sort {
                 .cm-transition(background-color 0.3s ease-in-out);
 
                 &:hover {
-                    background: @cm-colorSecondary;
+                    background: @CmColor-LightHover;
                     .cm-transition(background-color 0.1s ease-in-out);
+                }
+
+                &:active {
+                    background: @CmColor-LightActive;
                 }
 
                 .inner {
                     display: block;
-                    margin: -@ComGridlist-paddingInner;
-                    padding: @ComGridlist-paddingInner 20px @ComGridlist-paddingInner @ComGridlist-paddingInner;
+                    margin: -@ComGridlist-PaddingInner;
+                    padding: @ComGridlist-PaddingInner 20px @ComGridlist-PaddingInner @ComGridlist-PaddingInner;
                     cursor: pointer;
                 }
 
@@ -75,185 +96,107 @@
                     display: block;
                     position: absolute;
                     top: 50%;
-                    right: @ComGridlist-paddingInner;
+                    right: @ComGridlist-PaddingInner;
                     margin: -3px 0 0 0;
                 }
             }
         }
 
-        tr {
-            td {
-                vertical-align: top;
-                border-top: 1px solid transparent;
-                word-wrap: break-word;
-            }
+        td {
+            vertical-align: top;
+            border-top: 1px solid transparent;
+            word-wrap: break-word;
+            font-size: @ComGridlist-Font-Size;
+        }
 
-            &.active,
-            &.selected {
+        tr {
+            &:hover {
                 td {
-                    background-color: @cm-background-themeLight;
+                    background-color: @CmColor-Secondary-LightHover;
                 }
             }
 
-            &:hover td {
-                background-color: @cm-colorSecondary;
+            &.active {
+                td {
+                    background-color: @CmColor-LightActive;
+                }
+
+                &:hover {
+                    td {
+                        background-color: @CmColor-LightActiveHover;
+                    }
+                }
+            }
+
+            &.valid {
+                td {
+                    background-color: @CmColor-Valid-LightActive;
+                }
+
+                &:hover {
+                    td {
+                        background-color: @CmColor-Valid-LightActiveHover;
+                    }
+                }
+            }
+
+            &.invalid {
+                td {
+                    background-color: @CmColor-Invalid-LightActive;
+                }
+
+                &:hover {
+                    td {
+                        background-color: @CmColor-Invalid-LightActiveHover;
+                    }
+                }
             }
         }
-
-        .is-show td {
-            background: #F5F5F5;
-        }
-    }
-
-    .expire {
-        color: #D2A323;
-        font-weight: @cm-boldWeight;
-    }
-
-    .expired {
-        color: #DF3E3E;
-        font-weight: @cm-boldWeight;
     }
 }
 
-.com-gridlist-container {
-    margin: 0 0 @cm-indentMedium;
+.com-gridlist-counter {
+    margin: 0 0 @Cm-indentMedium;
 
     &.bottom {
-        margin: 0;
-    }
-
-    > .com-pagination-container {
         margin: 0;
     }
 }
 
 .com-gridlist-indent {
-    width: @cm-XSmall;
+    width: @Cm-XSmall;
     display: inline-block;
     vertical-align: top;
     text-align: left;
 }
 
-.com-gridlist-middle {
-    table {
-        td, th {
+/* *** STUFF *** */
+
+.com-gridlist {
+    .control {
+        .icon {
+            display: inline-block;
             vertical-align: middle;
-        }
-    }
-}
-
-/* *** LINKS *** */
-
-.com-gridlist-link {
-    margin: 0 0 0 @ComGridlist-linkIndent;
-
-    &:first-child {
-        margin: 0;
-    }
-}
-
-.com-gridlist-links {
-    margin: 0;
-    padding: 0;
-    font-size: 0;
-    list-style: none;
-
-    li {
-        display: inline-block;
-        vertical-align: middle;
-        font-size: @ComGridlist-fontSize;
-
-        &:before {
-            content: '|';
-            margin: 0 @ComGridlist-linkIndent;
+            cursor: pointer;
         }
 
-        &:first-child:before {
-            content: normal;
+        input[type="checkbox"],
+        input[type="radio"] {
+            vertical-align: middle;
             margin: 0;
         }
     }
 
-    &.style2 {
-        li {
-            display: block;
-
-            &:before {
-                content: normal;
-                margin: 0;
-            }
+    .cm-form-icons-inside {
+        .text {
+            font-size: @ComGridlist-Font-Size;
         }
-    }
-
-    &.right {
-        text-align: right;
     }
 }
 
-/* *** CONTROLS *** */
+/* ******* COMPONENTS: GRIDLIST: ADAPTIVE ******* */
 
-.com-gridlist .control {
-    .icon {
-        display: inline-block;
-        vertical-align: middle;
-        cursor: pointer;
-    }
-
-    input[type="checkbox"],
-    input[type="radio"] {
-        vertical-align: middle;
-        margin: 0;
-    }
-}
-
-/* *** ICONS *** */
-
-.com-gridlist .cm-form-icons-inside {
-    .text {
-        font-size: @ComGridlist-fontSize;
-    }
-}
-
-/* ******* COMPONENTS IN GRIDLIST ******* */
-
-/* *** TOGGLE BOX *** */
-
-.com-gridlist {
-    .slide-tr {
-        > td {
-            border-top: 1px solid #FFFFFF;
-            border-bottom: 1px solid #FFFFFF;
-            padding: 0;
-        }
-
-        &:hover > td {
-            background-color: #fff;
-        }
-
-        .slide-box {
-            height: 0;
-            overflow: hidden;
-            position: relative;
-
-            > .inner {
-                padding: 6px;
-            }
-        }
-    }
-
-    .has-padding tr td:first-child {
-        padding-left: 20px;
-    }
-
-    .has-padding-two tr td:first-child {
-        padding-left: 40px;
-    }
-}
-
-/* ******* COMPONENT: GRIDLIST: ADAPTIVE ******* */
-
-@media only screen and (max-width : @ComGridlist-adaptiveFrom) {
+@media only screen and (max-width : @ComGridlist-AdaptiveFrom) {
 
     html.is-adaptive {
         .com-gridlist {
@@ -264,7 +207,7 @@
                         display: block;
                     }
                     td:first-child {
-                        border-top: 1px solid @cm-colorBorder;
+                        border-top: 1px solid @Cm-colorBorder;
                     }
                 }
             }

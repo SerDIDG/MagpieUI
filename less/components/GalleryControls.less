@@ -5,21 +5,21 @@
     z-index: 2;
     opacity: 0;
     .cm-user-select(none);
-    .cm-transition(opacity @CM-Transition-Duration ease-in-out);
+    .cm-transition(opacity @Cm-Transition-Duration ease-in-out);
 
     .bar-arrow {
         position: absolute;
         .cm-position(0, auto, 0, auto);
         z-index: 2;
         opacity: 1;
-        .cm-transition(opacity @CM-Transition-Duration ease-in-out);
+        .cm-transition(opacity @Cm-Transition-Duration ease-in-out);
         cursor: pointer;
 
         .icon {
             position: absolute;
             top: 0;
             opacity: 0.3;
-            .cm-transition(opacity @CM-Transition-Duration ease-in-out);
+            .cm-transition(opacity @Cm-Transition-Duration ease-in-out);
         }
 
         &.next {
@@ -47,7 +47,7 @@
 
     .bar-buttons {
         position: absolute;
-        .cm-position(auto, 0, @cm-indentXSmall, 0);
+        .cm-position(auto, 0, @Cm-indentXSmall, 0);
         z-index: 1;
         font-size: 0;
         white-space: nowrap;
@@ -64,28 +64,28 @@
                 width: @ComGalleryControls-buttonSize;
                 height: @ComGalleryControls-buttonSize;
                 display: inline-block;
-                margin: 0 0 0 @cm-indentXXSmall;
+                margin: 0 0 0 @Cm-indentXXSmall;
                 vertical-align: top;
                 -moz-box-sizing: border-box;
                      box-sizing: border-box;
-                background-color: @cm-colorSecondary;
-                border: 2px solid @cm-colorSecondary;
+                background-color: @Cm-colorSecondary;
+                border: 2px solid @Cm-colorSecondary;
                 border-radius: @ComGalleryControls-buttonSize;
                 cursor: pointer;
-                .cm-transition(all @CM-Transition-Duration ease-in-out);
+                .cm-transition(all @Cm-Transition-Duration ease-in-out);
 
                 &:first-child {
                     margin: 0;
                 }
 
                 &:hover {
-                    border-color: @cm-color;
-                    .cm-transition(all @CM-Transition-DurationReverse ease-in-out);
+                    border-color: @Cm-color;
+                    .cm-transition(all @Cm-Transition-DurationReverse ease-in-out);
                 }
 
                 &.active {
-                    border-color: @cm-color;
-                    background-color: @cm-color;
+                    border-color: @Cm-color;
+                    background-color: @Cm-color;
                 }
             }
         }
@@ -103,7 +103,7 @@
                     .cm-size-xx-large;
                     position: absolute;
                     top: 50%;
-                    margin: -(@cm-XXLarge / 2) 0 0 0;
+                    margin: -(@Cm-XXLarge / 2) 0 0 0;
 
                     &.next {
                         .icon.xx-large.arrow-white-right;
@@ -143,17 +143,17 @@
                     .cm-size-xx-large;
                     position: absolute;
                     top: 50%;
-                    margin: -(@cm-XXLarge / 2) 0 0 0;
+                    margin: -(@Cm-XXLarge / 2) 0 0 0;
                     background-color: rgba(0,0,0,0.3);
 
                     &.next {
                         .icon.xx-large.arrow-white-right;
-                        border-radius: @cm-borderRadius 0 0 @cm-borderRadius;
+                        border-radius: @Cm-borderRadius 0 0 @Cm-borderRadius;
                     }
 
                     &.prev {
                         .icon.xx-large.arrow-white-left;
-                        border-radius: 0 @cm-borderRadius @cm-borderRadius 0;
+                        border-radius: 0 @Cm-borderRadius @Cm-borderRadius 0;
                     }
                 }
             }
@@ -161,7 +161,7 @@
     }
 
     &.is-small {
-        height: @cm-indentXSmall * 2 + @ComGalleryControls-buttonSize;
+        height: @Cm-indentXSmall * 2 + @ComGalleryControls-buttonSize;
         .cm-position(auto, 0, 0, 0);
 
         .bar-arrow {
@@ -170,16 +170,16 @@
                     .cm-size-small;
                     position: absolute;
                     top: 50%;
-                    margin: -(@cm-Small / 2) 0 0 0;
+                    margin: -(@Cm-Small / 2) 0 0 0;
 
                     &.next {
                         .icon.small.arrow-white-right;
-                        right: @cm-indentXXSmall;
+                        right: @Cm-indentXXSmall;
                     }
 
                     &.prev {
                         .icon.small.arrow-white-left;
-                        left: @cm-indentXXSmall;
+                        left: @Cm-indentXXSmall;
                     }
                 }
             }

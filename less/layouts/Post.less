@@ -6,7 +6,7 @@
     position: relative;
 
     .post-title {
-        margin: 0 0 @cm-indentXXXSmall;
+        margin: 0 0 @Cm-indentXXXSmall;
 
         .cm-title-editable {
             margin: 0;
@@ -29,13 +29,13 @@
         }
 
         &.is-bottom {
-            margin: @cm-indentXSmall 0 0 0;
+            margin: @Cm-indentXSmall 0 0 0;
         }
     }
 
     .post-share {
         .cm-line-share {
-            margin: @cm-indentMedium 0 0 0;
+            margin: @Cm-indentMedium 0 0 0;
 
             &:first-child {
                 margin: 0;
@@ -53,31 +53,31 @@
     .post-abstract,
     .post-entry,
     .post-tags {
-        margin: @cm-indentXSmall 0 0 0;
+        margin: @Cm-indentXSmall 0 0 0;
     }
 
     &.is-pending,
     &.is-featured {
         &:before {
             position: absolute;
-            .cm-position(-@cm-indentXXSmall, -@cm-indentXXSmall, -@cm-indentXXSmall, -@cm-indentXXSmall);
+            .cm-position(-@Cm-indentXXSmall, -@Cm-indentXXSmall, -@Cm-indentXXSmall, -@Cm-indentXXSmall);
             display: block;
             z-index: -1;
             content: '';
-            background-color: @cm-background-pendingLight;
-            border-radius: @cm-borderRadius;
+            background-color: @Cm-background-pendingLight;
+            border-radius: @Cm-borderRadius;
         }
     }
 
     &.is-featured {
         &:before {
-            background-color: @cm-background-themeLight;
+            background-color: @Cm-background-themeLight;
         }
     }
 
     &.is-pending {
         &:before {
-            background-color: @cm-background-pendingLight;
+            background-color: @Cm-background-pendingLight;
         }
     }
 
@@ -87,7 +87,7 @@
         .post-entry,
         .post-abstract,
         .post-tags {
-            margin: @cm-indentMedium 0 0 0;
+            margin: @Cm-indentMedium 0 0 0;
         }
     }
 }
@@ -96,7 +96,7 @@
 
 .lt__posts {
     .lt__post {
-        margin: @cm-indentLarge 0 0;
+        margin: @Cm-indentLarge 0 0;
 
         &:first-child {
             margin: 0;

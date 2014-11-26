@@ -1,11 +1,11 @@
 /* ******* PART: BOX ******* */
 
 .cm-box {
-    padding: @cm-indentXXXSmall;
+    padding: @Cm-indentXXXSmall;
     background: #fff;
-    border: @cm-borderStyle;
-    border-radius: @cm-borderRadius;
-    box-shadow: @cm-ui-shadowLight;
+    border: @Cm-borderStyle;
+    border-radius: @Cm-borderRadius;
+    box-shadow: @Cm-ui-shadowLight;
     .cm-background-clip(padding-box);
     .cm-box-sizing(border-box);
 }
@@ -25,19 +25,19 @@
 }
 
 .cm-box-flat {
-    margin: 0 0 @cm-indentMedium;
-    padding: @cm-indentXSmall;
-    background: @cm-background-light;
-    border-radius: @cm-borderRadius;
+    margin: 0 0 @Cm-indentMedium;
+    padding: @Cm-indentXSmall;
+    background: @Cm-background-light;
+    border-radius: @Cm-borderRadius;
     .cm-box-sizing(border-box);
-    .cm-transition(background @CM-Transition-Duration ease-in-out);
+    .cm-transition(background @Cm-Transition-Duration ease-in-out);
 
     &:last-child {
         margin: 0;
     }
 
     &.active {
-        background: @cm-background-themeLight;
+        background: @Cm-background-themeLight;
     }
 }
 
@@ -70,7 +70,7 @@
 /* *** INFO *** */
 
 .cm-box-info {
-    margin: 0 0 @cm-indentMedium;
+    margin: 0 0 @Cm-indentMedium;
 
     dl {
         dt {
@@ -96,7 +96,7 @@
 .pt__box-cell {
     .b-title,
     .b-descr {
-        margin: 0 0 @cm-indentXSmall;
+        margin: 0 0 @Cm-indentXSmall;
 
         &:last-child {
             margin: 0;
@@ -104,6 +104,6 @@
     }
 
     .b-title {
-        font-weight: @cm-boldWeight;
+        font-weight: @Cm-boldWeight;
     }
 }

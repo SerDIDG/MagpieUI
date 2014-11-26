@@ -1,7 +1,7 @@
 /* ******* PART: IMAGE BOX ******* */
 
 .cm-imagebox {
-    @title-bottom: (@CmImagebox-titlePaddingTop * 2) + @cm-lineHeight;
+    @title-bottom: (@CmImagebox-titlePaddingTop * 2) + @Cm-lineHeight;
 
     position: relative;
     .cm-user-select(none);
@@ -16,11 +16,11 @@
         > .descr:extend(.cm-image-resizable all) {
             position: relative;
             z-index: 1;
-            .cm-transition(opacity @CM-Transition-Duration ease-in-out);
+            .cm-transition(opacity @Cm-Transition-Duration ease-in-out);
         }
 
         > .text {
-            padding: @cm-indentMedium;
+            padding: @Cm-indentMedium;
             position: absolute;
             z-index: 2;
             .cm-position(0,0,0,0);
@@ -55,14 +55,14 @@
             .cm-position(auto,0,-@title-bottom,0);
             background: rgba(0,0,0,0.7);
             opacity: 0;
-            .cm-transition(bottom @CM-Transition-Duration ease-in-out);
-            .cm-transition(opacity @CM-Transition-Duration ease-in-out);
+            .cm-transition(bottom @Cm-Transition-Duration ease-in-out);
+            .cm-transition(opacity @Cm-Transition-Duration ease-in-out);
 
             .inner {
                 padding: @CmImagebox-titlePaddingTop 8px;
                 .cm-text-overflow;
                 #cm > .font-base;
-                font-weight: @cm-boldWeight;
+                font-weight: @Cm-boldWeight;
                 color: #fff;
 
                 & * {
@@ -84,19 +84,19 @@
         z-index: 3;
 
         &.top-right {
-            .cm-position(@cm-indentXSmall, @cm-indentXSmall, auto, auto);
+            .cm-position(@Cm-indentXSmall, @Cm-indentXSmall, auto, auto);
         }
 
         &.top-left {
-            .cm-position(@cm-indentXSmall, auto, auto, @cm-indentXSmall);
+            .cm-position(@Cm-indentXSmall, auto, auto, @Cm-indentXSmall);
         }
 
         &.bottom-right {
-            .cm-position(auto, @cm-indentXSmall, @cm-indentXSmall, auto);
+            .cm-position(auto, @Cm-indentXSmall, @Cm-indentXSmall, auto);
         }
 
         &.bottom-left {
-            .cm-position(auto, auto, @cm-indentXSmall, @cm-indentXSmall);
+            .cm-position(auto, auto, @Cm-indentXSmall, @Cm-indentXSmall);
         }
 
         input[type="checkbox"],
@@ -106,7 +106,7 @@
 
         .icon {
             float: left;
-            margin: 0 0 0 @cm-indentXXSmall;
+            margin: 0 0 0 @Cm-indentXXSmall;
 
             &:first-child {
                 margin: 0;
@@ -120,8 +120,8 @@
         &:hover {
             > .inner {
                 > .descr {
-                    opacity: @CM-Opacity-Hover;
-                    .cm-transition(opacity @CM-Transition-DurationReverse ease-in-out);
+                    opacity: @Cm-Opacity-Hover;
+                    .cm-transition(opacity @Cm-Transition-DurationReverse ease-in-out);
                 }
             }
         }
@@ -135,8 +135,8 @@
     &.is-checkable {
         > .inner {
             > .descr {
-                opacity: @CM-Opacity-Hover;
-                .cm-transition(opacity @CM-Transition-Duration ease-in-out);
+                opacity: @Cm-Opacity-Hover;
+                .cm-transition(opacity @Cm-Transition-Duration ease-in-out);
             }
         }
 
@@ -216,8 +216,8 @@
         > .title {
             bottom: 0;
             opacity: 1;
-            .cm-transition(top @CM-Transition-DurationReverse ease-in-out);
-            .cm-transition(opacity @CM-Transition-DurationReverse ease-in-out);
+            .cm-transition(top @Cm-Transition-DurationReverse ease-in-out);
+            .cm-transition(opacity @Cm-Transition-DurationReverse ease-in-out);
         }
     }
 }

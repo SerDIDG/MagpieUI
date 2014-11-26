@@ -392,7 +392,7 @@ Com['Gridlist'] = function(o){
         }
         row['isChecked'] = true;
         row['data']['_checked'] = true;
-        cm.addClass(row['nodes']['container'], 'selected');
+        cm.addClass(row['nodes']['container'], 'active');
         if(execute){
             // API onCheck Event
             executeEvent('onCheck', row);
@@ -405,7 +405,7 @@ Com['Gridlist'] = function(o){
         }
         row['isChecked'] = false;
         row['data']['_checked'] = false;
-        cm.removeClass(row['nodes']['container'], 'selected');
+        cm.removeClass(row['nodes']['container'], 'active');
         if(execute){
             // API onUnCheck Event
             executeEvent('onUnCheck', row);

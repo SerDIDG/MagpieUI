@@ -1,7 +1,7 @@
 /* ******* PARTS: GRID ******* */
 
 .pt__grid {
-    margin: 0 0 @cm-indentMedium;
+    margin: 0 0 @Cm-indentMedium;
     overflow: hidden;
 
     &.bottom {
@@ -27,13 +27,13 @@
                     display: block;
                     position: relative;
                     cursor: pointer;
-                    .cm-transition(opacity @CM-Transition-Duration ease-in-out);
+                    .cm-transition(opacity @Cm-Transition-Duration ease-in-out);
                 }
 
                 &:hover {
                     > img {
-                        opacity: @CM-Opacity-Hover;
-                        .cm-transition(opacity @CM-Transition-DurationReverse ease-in-out);
+                        opacity: @Cm-Opacity-Hover;
+                        .cm-transition(opacity @Cm-Transition-DurationReverse ease-in-out);
                     }
                 }
             }
@@ -161,7 +161,7 @@
 
 // /* ******* PARTS: GRID: ADAPTIVE ******* */
 
-@media only screen and (max-width: @cm-screenMobile) {
+@media only screen and (max-width: @CmScreen-Mobile) {
 
     html.is-adaptive {
         .pt__grid {

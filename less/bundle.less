@@ -5,13 +5,13 @@
     /* *** FONT *** */
 
     .font-base {
-        font: @cm-fontWeight ~'@{cm-fontSize}/@{cm-lineHeight}' @cm-fontFamily;
-        color: @cm-colorFont;
+        font: @Cm-fontWeight ~'@{Cm-fontSize}/@{Cm-lineHeight}' @Cm-fontFamily;
+        color: @Cm-colorFont;
     }
 
     .font-ui {
-        font: @cm-fontWeight ~'@{cm-fontSizeUI}/@{cm-lineHeight}' @cm-fontFamily;
-        color: @cm-colorFont;
+        font: @Cm-fontWeight ~'@{Cm-fontSizeUI}/@{Cm-lineHeight}' @Cm-fontFamily;
+        color: @Cm-colorFont;
     }
 
     .font-ui-cursive {
@@ -20,35 +20,35 @@
     }
 
     .font-title {
-        font: 300 ~'@{cm-fontSizeTitle}/@{cm-lineHeightTitle}' 'Open Sans', @cm-fontFamily;
-        color: @cm-colorFontTitle;
+        font: 300 ~'@{Cm-fontSizeTitle}/@{Cm-lineHeightTitle}' 'Open Sans', @Cm-fontFamily;
+        color: @Cm-colorFontTitle;
     }
 
     .font-title-medium {
-        font: 300 ~'@{cm-fontSizeTitleMedium}/@{cm-lineHeightTitleMedium}' 'Open Sans', @cm-fontFamily;
-        color: @cm-colorFontTitle;
+        font: 300 ~'@{Cm-fontSizeTitleMedium}/@{Cm-lineHeightTitleMedium}' 'Open Sans', @Cm-fontFamily;
+        color: @Cm-colorFontTitle;
     }
 
     .font-hint {
-        font: @cm-fontWeight ~'@{cm-fontSizeHint}/@{cm-lineHeight}' @cm-fontFamily;
-        color: @cm-colorFont;
+        font: @Cm-fontWeight ~'@{Cm-fontSizeHint}/@{Cm-lineHeight}' @Cm-fontFamily;
+        color: @Cm-colorFont;
     }
 
     .font-hint-cursive {
         #cm > .font-hint;
         font-style: italic;
-        color: @cm-colorHint;
+        color: @Cm-colorHint;
     }
 
     .font-link {
         text-decoration: underline;
-        color: @cm-colorLink;
+        color: @Cm-colorLink;
         outline: none;
         cursor: pointer;
 
         &:hover {
             text-decoration: none;
-            color: @cm-colorLinkHover;
+            color: @Cm-colorLinkHover;
         }
     }
 
@@ -58,26 +58,26 @@
         height: 0;
         overflow: hidden;
         border: none;
-        border-top: @cm-borderSeparator;
-        margin: @cm-indentMedium 0;
+        border-top: @Cm-borderSeparator;
+        margin: @Cm-indentMedium 0;
         padding: 0;
         display: block;
         clear: both;
     }
 
     .box-flat {
-        padding: @cm-indentXSmall;
-        background: @cm-background-light;
-        border-radius: @cm-borderRadius;
+        padding: @Cm-indentXSmall;
+        background: @Cm-background-light;
+        border-radius: @Cm-borderRadius;
     }
 
     .box-border {
-        padding: @cm-indentXSmall;
-        border: @cm-borderBox;
-        .cm-transition(border-color @CM-Transition-Duration ease-in-out);
+        padding: @Cm-indentXSmall;
+        border: @Cm-borderBox;
+        .cm-transition(border-color @Cm-Transition-Duration ease-in-out);
 
         &.active {
-            border: @cm-borderBoxActive;
+            border: @Cm-borderBoxActive;
         }
     }
 
@@ -86,7 +86,7 @@
     // /* *** INPUT *** */
 
     .input {
-        @padding: (@CmForm-fieldHeight - @cm-lineHeight - @cm-borderWidth * 2) / 2;
+        @padding: (@CmForm-fieldHeight - @Cm-lineHeight - @Cm-borderWidth * 2) / 2;
 
         width: 100%;
         height: @CmForm-fieldHeight;
@@ -94,17 +94,17 @@
         margin: 0;
         vertical-align: top;
         background: #fff;
-        border: @cm-borderStyle;
-        border-radius: @cm-borderRadius;
+        border: @Cm-borderStyle;
+        border-radius: @Cm-borderRadius;
         box-shadow: none;
         cursor: text;
         .cm-box-sizing();
         .cm-background-clip(padding-box);
-        .cm-transition(background @CM-Transition-Duration ease-in-out);
-        .cm-transition(border-color @CM-Transition-Duration ease-in-out);
-        .cm-transition(color @CM-Transition-Duration ease-in-out);
-        .cm-transition(box-shadow @CM-Transition-Duration ease-in-out);
-        .cm-transition(text-shadow @CM-Transition-Duration ease-in-out);
+        .cm-transition(background @Cm-Transition-Duration ease-in-out);
+        .cm-transition(border-color @Cm-Transition-Duration ease-in-out);
+        .cm-transition(color @Cm-Transition-Duration ease-in-out);
+        .cm-transition(box-shadow @Cm-Transition-Duration ease-in-out);
+        .cm-transition(text-shadow @Cm-Transition-Duration ease-in-out);
 
         &:focus {
             #cm > .input-focus;
@@ -129,12 +129,12 @@
 
     .input-focus {
         background-color: #fdffff;
-        border-color: @cm-colorBorderHover;
+        border-color: @Cm-colorBorderHover;
     }
 
     .input-disabled {
-        background-color: @cm-colorLight-background;
-        border-color: @cm-colorLight-border;
+        background-color: @Cm-colorLight-background;
+        border-color: @Cm-colorLight-border;
     }
 
     .input-light {
@@ -151,7 +151,7 @@
 
     .input-transparent {
         background-color: #fdffff;
-        background-image: url("@{CmPath-image}/parts/transparent.png");
+        background-image: url("@{CmPath-Images}/parts/transparent.png");
         text-shadow: 0 0 5px #ffffff,
                      0 0 5px #ffffff,
                      0 1px 1px #ffffff,
@@ -184,19 +184,19 @@
            -moz-background-clip: border-box;
                 background-clip: border-box;
         border: none;
-        border-radius: @cm-borderRadius;
+        border-radius: @Cm-borderRadius;
         text-align: center;
         text-decoration: none;
         line-height: @CmForm-fieldHeight;
-        font-size: @cm-fontSize;
+        font-size: @Cm-fontSize;
         white-space: nowrap;
         .cm-text-overflow;
         cursor: pointer;
         .cm-user-select();
         #cm > .button-primary;
-        .cm-transition(background-color @CM-Transition-Duration ease-in-out);
-        .cm-transition(color @CM-Transition-Duration ease-in-out);
-        .cm-transition(box-shadow @CM-Transition-Duration ease-in-out);
+        .cm-transition(background-color @Cm-Transition-Duration ease-in-out);
+        .cm-transition(color @Cm-Transition-Duration ease-in-out);
+        .cm-transition(box-shadow @Cm-Transition-Duration ease-in-out);
 
         &.wide {
             width: 100%;
@@ -235,13 +235,13 @@
 
     .button-hover {
         text-decoration: none;
-        .cm-transition(background-color @CM-Transition-DurationReverse ease-in-out);
-        .cm-transition(color @CM-Transition-DurationReverse ease-in-out);
-        .cm-transition(box-shadow @CM-Transition-DurationReverse ease-in-out);
+        .cm-transition(background-color @Cm-Transition-DurationReverse ease-in-out);
+        .cm-transition(color @Cm-Transition-DurationReverse ease-in-out);
+        .cm-transition(box-shadow @Cm-Transition-DurationReverse ease-in-out);
     }
 
     .button-primary {
-        background: @cm-color;
+        background: @Cm-color;
         color: #fff;
 
         &:hover {
@@ -255,7 +255,7 @@
     }
 
     .button-primary-hover {
-        background-color: darken(@cm-color, 10%);
+        background-color: darken(@Cm-color, 10%);
         color: #fff;
     }
 
@@ -264,8 +264,8 @@
     }
 
     .button-secondary {
-         background: @cm-colorSecondary;
-         color: @cm-color;
+         background: @Cm-colorSecondary;
+         color: @Cm-color;
 
          &:hover {
              #cm > .button-secondary-hover;
@@ -278,8 +278,8 @@
      }
 
     .button-secondary-hover {
-        background: @cm-colorSecondaryHover;
-        color: @cm-color;
+        background: @Cm-colorSecondaryHover;
+        color: @Cm-color;
     }
 
     .button-secondary-active {
@@ -288,7 +288,7 @@
 
     .button-white {
         background: #ffffff;
-        color: @cm-color;
+        color: @Cm-color;
 
         &:hover {
             #cm > .button-white-hover;
@@ -301,7 +301,7 @@
     }
 
     .button-white-hover {
-        background-color: darken(@cm-color, 10%);
+        background-color: darken(@Cm-color, 10%);
         color: #fff;
     }
 
@@ -310,7 +310,7 @@
     }
 
     .button-error {
-        background: @cm-colorError;
+        background: @Cm-colorError;
         color: #ffffff;
 
         &:hover {
@@ -324,7 +324,7 @@
     }
 
     .button-error-hover {
-        background: darken(@cm-colorError, 10%);
+        background: darken(@Cm-colorError, 10%);
         color: #ffffff;
     }
 
@@ -336,7 +336,7 @@
         background: none;
         box-shadow: none;
         border: none;
-        color: @cm-color;
+        color: @Cm-color;
 
         &:hover {
             #cm > .button-transparent-hover;
@@ -349,8 +349,8 @@
     }
 
     .button-transparent-hover {
-        background: @cm-colorSecondary;
-        color: @cm-color;
+        background: @Cm-colorSecondary;
+        color: @Cm-color;
     }
 
     .button-transparent-active {
@@ -361,7 +361,7 @@
         background: none;
         box-shadow: none;
         border: none;
-        color: @cm-color;
+        color: @Cm-color;
         cursor: default;
     }
 }

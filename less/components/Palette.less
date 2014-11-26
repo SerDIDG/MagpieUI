@@ -8,7 +8,7 @@
     .b-palette,
     .b-range {
         float: left;
-        border-radius: @cm-borderRadius;
+        border-radius: @Cm-borderRadius;
 
         > .inner {
             position: relative;
@@ -18,7 +18,7 @@
             width: 100%;
             height: 100%;
             display: block;
-            border-radius: @cm-borderRadius;
+            border-radius: @Cm-borderRadius;
         }
 
         html.ie9 & {
@@ -27,7 +27,7 @@
     }
 
     .b-palette {
-        margin: 0 @cm-indentXSmall 0 0;
+        margin: 0 @Cm-indentXSmall 0 0;
 
          > .inner {
              overflow: hidden;
@@ -53,10 +53,10 @@
     }
 
     .b-range {
-        margin: 0 @cm-indentMedium 0 0;
+        margin: 0 @Cm-indentMedium 0 0;
 
         > .inner {
-            width: @cm-Medium;
+            width: @Cm-Medium;
             cursor: row-resize;
         }
 
@@ -123,9 +123,9 @@
 
         .b-colors {
             overflow: hidden;
-            border: @cm-borderStyle;
-            border-radius: @cm-borderRadius;
-            background-image: url("@{CmPath-image}/parts/transparent.png");
+            border: @Cm-borderStyle;
+            border-radius: @Cm-borderRadius;
+            background-image: url("@{CmPath-Images}/parts/transparent.png");
 
             .b-color {
                 padding-bottom: 50%;
@@ -134,7 +134,7 @@
     }
 
     .b-buttons {
-        margin: @cm-indentXSmall 0 0 0;
+        margin: @Cm-indentXSmall 0 0 0;
     }
 
     #cm > .com__palette__size();

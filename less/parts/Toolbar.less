@@ -1,14 +1,14 @@
 /* ******* TOOLBAR ********** */
 
 .cm-toolbar {
-    margin: 0 0 @cm-indentMedium;
+    margin: 0 0 @Cm-indentMedium;
 
     &.bottom {
         margin: 0;
     }
 
     > .inner {
-        margin: 0 0 -@cm-indentMedium;
+        margin: 0 0 -@Cm-indentMedium;
         font-size: 0;
         display: -webkit-flex;
         display: flex;
@@ -42,16 +42,16 @@
             max-width: 100%;
             display: inline-block;
             vertical-align: top;
-            margin: 0 @CmToolbar-itemIndent @cm-indentMedium 0;
+            margin: 0 @CmToolbar-itemIndent @Cm-indentMedium 0;
             line-height: @CmForm-fieldHeight;
-            font-size: @cm-fontSize;
+            font-size: @Cm-fontSize;
 
             &:last-child {
                 margin-right: 0;
             }
 
             &.label {
-                margin-right: @cm-indentXXSmall;
+                margin-right: @Cm-indentXXSmall;
             }
 
             &.is-icon {
@@ -100,11 +100,11 @@
 
                     &:first-child {
                         margin: 0;
-                        border-radius: @cm-borderRadius 0 0 @cm-borderRadius;
+                        border-radius: @Cm-borderRadius 0 0 @Cm-borderRadius;
                     }
 
                     &:last-child {
-                        border-radius: 0 @cm-borderRadius @cm-borderRadius 0;
+                        border-radius: 0 @Cm-borderRadius @Cm-borderRadius 0;
                     }
 
                     &:hover {
@@ -135,7 +135,7 @@
 
 /* *** ADAPTIVE *** */
 
-@media only screen and (max-width : @cm-screenMobile) {
+@media only screen and (max-width : @CmScreen-Mobile) {
 
     html.is-adaptive {
         .cm-toolbar {

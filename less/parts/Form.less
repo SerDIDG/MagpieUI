@@ -4,12 +4,12 @@
     cursor: default;
 
     &.in-content {
-        margin: 0 0 @cm-indentMedium;
+        margin: 0 0 @Cm-indentMedium;
     }
 
     .required {
-        color: @cm-colorError;
-        font-weight: @cm-boldWeight;
+        color: @Cm-colorError;
+        font-weight: @Cm-boldWeight;
     }
 }
 
@@ -31,9 +31,9 @@
         width: @CmForm-fieldTitleWidth;
         display: block;
         margin: 0;
-        padding: ((@CmForm-fieldHeight - @cm-lineHeight) / 2) 0;
+        padding: ((@CmForm-fieldHeight - @Cm-lineHeight) / 2) 0;
         float: left;
-        line-height: @cm-lineHeight;
+        line-height: @Cm-lineHeight;
     }
 
     dd {
@@ -68,7 +68,7 @@
 /* *** FIELD WITH ICON *** */
 
 .form-field {
-    @iconSize: @CmForm-fieldHeight - @cm-borderWidth * 2;
+    @iconSize: @CmForm-fieldHeight - @Cm-borderWidth * 2;
     position: relative;
 
     .icon {
@@ -79,7 +79,7 @@
         background-color: transparent;
         background-position: 50% 50%;
         background-repeat: no-repeat;
-        border-radius: max(@cm-borderRadius - 2px, 0px);
+        border-radius: max(@Cm-borderRadius - 2px, 0px);
 
         &.xxx-small,
         &.xx-small,
@@ -94,7 +94,7 @@
 
     &.has-icon-left {
         .icon {
-            .cm-position(@cm-borderWidth, auto, auto, @cm-borderWidth);
+            .cm-position(@Cm-borderWidth, auto, auto, @Cm-borderWidth);
         }
 
         input {
@@ -104,7 +104,7 @@
 
     &.has-icon-right {
         .icon {
-            .cm-position(@cm-borderWidth, @cm-borderWidth, auto, auto);
+            .cm-position(@Cm-borderWidth, @Cm-borderWidth, auto, auto);
         }
 
         input {
@@ -210,11 +210,11 @@
     }
 
     label {
-        @padding: (@CmForm-fieldHeight - @cm-lineHeight) / 2;
+        @padding: (@CmForm-fieldHeight - @Cm-lineHeight) / 2;
         padding: @padding 20px @padding @CmForm-fieldInnerIndent;
         cursor: pointer;
         vertical-align: baseline;
-        line-height: @cm-lineHeight;
+        line-height: @Cm-lineHeight;
     }
 
     input[type="radio"],
@@ -308,10 +308,10 @@
 /* *** FIELDSET *** */
 
 .form fieldset {
-    padding: 0 @cm-indentMedium @cm-indentMedium @cm-indentMedium;
+    padding: 0 @Cm-indentMedium @Cm-indentMedium @Cm-indentMedium;
     margin: @CmForm-fieldIndent 0 0 0;
-    border: @cm-borderStyle;
-    border-radius: @cm-borderRadius;
+    border: @Cm-borderStyle;
+    border-radius: @Cm-borderRadius;
 
     &:first-child {
         margin: 0;
@@ -319,25 +319,25 @@
 
     dl {
         &:first-child {
-            margin-top: @cm-indentMedium;
+            margin-top: @Cm-indentMedium;
         }
     }
 
     &.error {
-        border-color: @cm-colorError;
+        border-color: @Cm-colorError;
 
         legend {
-            color: @cm-colorError;
-            font-weight: @cm-boldWeight;
+            color: @Cm-colorError;
+            font-weight: @Cm-boldWeight;
         }
     }
 
     &.ok {
-        border-color: @cm-colorValid;
+        border-color: @Cm-colorValid;
 
         legend {
-            color: @cm-colorValid;
-            font-weight: @cm-boldWeight;
+            color: @Cm-colorValid;
+            font-weight: @Cm-boldWeight;
         }
     }
 }
@@ -375,18 +375,18 @@
 .form-image-box {
     > .l {
         float: left;
-        margin: 0 @cm-indentXSmall 0 0;
+        margin: 0 @Cm-indentXSmall 0 0;
 
         .no-image {
             width: 80px;
             height: 80px;
-            background: url('@{CmPath-image}/parts/no-image-80.png');
+            background: url('@{CmPath-Images}/parts/no-image-80.png');
         }
 
         .no-avatar {
             width: 80px;
             height: 80px;
-            background: url('@{CmPath-image}/parts/no-avatar-80.png');
+            background: url('@{CmPath-Images}/parts/no-avatar-80.png');
         }
 
         img {
@@ -401,7 +401,7 @@
         font-size: 0;
 
         .hint {
-            margin: @cm-indentXXSmall 0 0 0;
+            margin: @Cm-indentXXSmall 0 0 0;
         }
     }
 
@@ -471,7 +471,7 @@
 /* *** FILTER FROM - TO *** */
 
 .form-filter-fromto {
-    margin: 0 0 @cm-indentMedium 0;
+    margin: 0 0 @Cm-indentMedium 0;
 
     dl {
         float: left;
@@ -480,7 +480,7 @@
 
     .form-box {
         width: @ComDatepicker-width;
-        margin: 0 @cm-indentMedium 0 0;
+        margin: 0 @Cm-indentMedium 0 0;
     }
 
     .buttons {
@@ -500,39 +500,39 @@
 .form dl {
     &.error {
         dt {
-            color: @cm-colorError;
+            color: @Cm-colorError;
         }
 
         .hint {
-            color: @cm-colorError;
+            color: @Cm-colorError;
         }
 
         .validate {
-            color: @cm-colorError;
-            font-weight: @cm-boldWeight;
+            color: @Cm-colorError;
+            font-weight: @Cm-boldWeight;
         }
 
         .cm-input {
-            border: 1px solid @cm-colorError;
+            border: 1px solid @Cm-colorError;
         }
     }
 
     &.ok {
         dt {
-            color: @cm-colorValid;
+            color: @Cm-colorValid;
         }
 
         .hint {
-            color: @cm-colorValid;
+            color: @Cm-colorValid;
         }
 
         .validate {
-            color: @cm-colorValid;
-            font-weight: @cm-boldWeight;
+            color: @Cm-colorValid;
+            font-weight: @Cm-boldWeight;
         }
 
         .cm-input {
-            border: 1px solid @cm-colorValid;
+            border: 1px solid @Cm-colorValid;
         }
     }
 }
@@ -547,9 +547,9 @@
         .loop((@counter - 1));
 
         &.count-@{counter} {
-            @x-small: @counter * (@cm-XSmall + @CmForm-iconsIndent);
-            @small: @counter * (@cm-Small + @CmForm-iconsIndent);
-            @medium: @counter * (@cm-Medium + @CmForm-iconsIndent);
+            @x-small: @counter * (@Cm-XSmall + @CmForm-iconsIndent);
+            @small: @counter * (@Cm-Small + @CmForm-iconsIndent);
+            @medium: @counter * (@Cm-Medium + @CmForm-iconsIndent);
 
             &.x-small {
                 margin-right: @x-small;
@@ -645,7 +645,7 @@
 
             .cm-button {
                 float: left;
-                margin: 0 @cm-indentXSmall 0 0;
+                margin: 0 @Cm-indentXSmall 0 0;
             }
 
             .text {
@@ -670,7 +670,7 @@
     .browse-button {
         display: block;
         float: left;
-        margin: 0 @cm-indentXSmall 0 0;
+        margin: 0 @Cm-indentXSmall 0 0;
     }
 
     .text {
@@ -686,7 +686,7 @@
 
 .cm-multifield {
     > ul {
-        margin: 0 0 @cm-indentMedium 0;
+        margin: 0 0 @Cm-indentMedium 0;
         padding: 0;
         list-style: none;
 
@@ -727,7 +727,7 @@
 
 /* ******* PART: FORM: ADAPTIVE ******* */
 
-@media only screen and (max-width: @cm-screenMobile) {
+@media only screen and (max-width: @CmScreen-Mobile) {
 
     html.is-adaptive {
 
@@ -818,7 +818,7 @@
 
 }
 
-@media only screen and (max-width: @cm-screenMobilePortrait) {
+@media only screen and (max-width: @CmScreen-MobilePortrait) {
 
     html.is-adaptive {
 

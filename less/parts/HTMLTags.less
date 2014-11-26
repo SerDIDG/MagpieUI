@@ -1,10 +1,48 @@
-/* ******* PART: ELEMENTS ******* */
+/* ******* PARTS: HTML TAGS ******* */
+
+body {
+    .cm-font-base;
+    margin: 0;
+    padding: 0;
+    cursor: default;
+    -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: subpixel-antialiased;
+}
+
+a {
+    .cm-font-link;
+}
+
+img {
+    border: none;
+    -webkit-transform: translateZ(0px);
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+dl, dt, dd, canvas, iframe, form {
+    padding: 0;
+    margin: 0;
+    display: block;
+    text-indent: 0;
+}
+
+iframe {
+    width: 100%;
+    display: block;
+    border: none;
+}
+
+header, main, aside, footer, section {
+    display: block;
+}
 
 /* *** CONTENT TAGS *** */
 
 .cm-content-tags {
     #cm > .font-base;
-    margin: 0 0 @cm-lineHeight;
+    margin: 0 0 @Cm-lineHeight;
     padding: 0;
 }
 
@@ -27,16 +65,16 @@ p, dl, ul, ol {
 }
 
 h1 {
-    margin: 0 0 @cm-indentMedium;
+    margin: 0 0 @Cm-indentMedium;
     font-size: 34px;
     line-height: 40px;
-    font-weight: @cm-boldWeight;
+    font-weight: @Cm-boldWeight;
 }
 
 h2 {
     font-size: 24px;
     line-height: 28px;
-    font-weight: @cm-boldWeight;
+    font-weight: @Cm-boldWeight;
 }
 
 h3 {
@@ -49,11 +87,11 @@ h4 {
 }
 
 b {
-    font-weight: @cm-boldWeight;
+    font-weight: @Cm-boldWeight;
 }
 
 ul, ol {
-    padding: 0 0 0 @cm-indentMedium;
+    padding: 0 0 0 @Cm-indentMedium;
 
     &.none {
         list-style: none;
@@ -71,7 +109,7 @@ ul, ol {
 
 dl {
     dd {
-        padding: 0 0 0 @cm-lineHeight;
+        padding: 0 0 0 @Cm-lineHeight;
     }
 }
 
@@ -80,18 +118,8 @@ hr {
 }
 
 br {
-    height: @cm-lineHeight;
-    line-height: @cm-lineHeight;
-}
-
-iframe {
-    width: 100%;
-    display: block;
-    border: none;
-}
-
-header, main, aside, footer, section {
-    display: block;
+    height: @Cm-lineHeight;
+    line-height: @Cm-lineHeight;
 }
 
 /* *** TABLE *** */
@@ -126,16 +154,16 @@ tbody, thead, td, th, tr {
 
 .cm-select {
     &[multiple] {
-        height: @CmForm-select-size * @cm-lineHeight + @cm-borderWidth * 2;
+        height: @CmForm-select-size * @Cm-lineHeight + @Cm-borderWidth * 2;
         padding: 0;
     }
 }
 
 input, select, textarea {
+    .cm-font-base;
     margin: 0;
-    #cm > .font-base;
     outline: none;
-    .cm-placeholder(@cm-colorPlaceholder);
+    .cm-placeholder(@Cm-colorPlaceholder);
 }
 
 input[type="file"] {
@@ -148,19 +176,19 @@ input[type="checkbox"] {
     cursor: pointer;
 }
 
-input[type="text"]:extend(.cm-input all),
-input[type="email"]:extend(.cm-input all),
-input[type="number"]:extend(.cm-input all),
-input[type="password"]:extend(.cm-input all),
-textarea:extend(.cm-input all),
-select:extend(.cm-input all) {
-
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="password"],
+textarea,
+select {
+    &:extend(.cm-input all);
 }
 
-textarea:extend(.cm-textarea all) {
-
+textarea {
+    &:extend(.cm-textarea all);
 }
 
-select:extend(.cm-select all) {
-
+select {
+    &:extend(.cm-select all);
 }

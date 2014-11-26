@@ -46,16 +46,6 @@
                         'node' : node
                     });
                 })
-                .add('gridlist-togglebox', function(node){
-                    new Com.ToggleBoxGridlist({
-                        'node' : node,
-                        'useLangs' : true,
-                        'langs' : {
-                            'showTitle' : 'Show',
-                            'hideTitle' : 'Hide'
-                        }
-                    });
-                })
                 .add('gridlist', function(node){
                     // Sample data
                     var data = [
@@ -88,15 +78,17 @@
                                 {'type' : 'empty', 'width' : '150', 'title' : 'Custom nodes', 'onRender' : function(gridlist, data){
                                     //cm.log(data);
                                     data['nodes']['inner'].appendChild(
-                                        cm.Node('ul', {'class' : 'com-gridlist-links'},
-                                            cm.Node('li',
-                                                cm.Node('a', 'Add')
-                                            ),
-                                            cm.Node('li',
-                                                cm.Node('a', 'Edit')
-                                            ),
-                                            cm.Node('li',
-                                                cm.Node('a', 'Remove')
+                                        cm.Node('div', {'class' : 'pt__links'},
+                                            cm.Node('ul',
+                                                cm.Node('li',
+                                                    cm.Node('a', 'Add')
+                                                ),
+                                                cm.Node('li',
+                                                    cm.Node('a', 'Edit')
+                                                ),
+                                                cm.Node('li',
+                                                    cm.Node('a', 'Remove')
+                                                )
                                             )
                                         )
                                     );
@@ -558,11 +550,19 @@
                             <div class="icon small done inline"></div>
                         </td>
                         <td>
-                            <ul class="com-gridlist-links">
-                                <li><a href="#">Add</a></li>
-                                <li><a href="#">Edit</a></li>
-                                <li><a href="#">Remove</a></li>
-                            </ul>
+                            <div class="pt__links">
+                                <ul>
+                                    <li>
+                                        <a>Add</a>
+                                    </li>
+                                    <li>
+                                        <a>Edit</a>
+                                    </li>
+                                    <li>
+                                        <a>Remove</a>
+                                    </li>
+                                </ul>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
@@ -589,11 +589,19 @@
                             <div class="icon small done inline"></div>
                         </td>
                         <td>
-                            <ul class="com-gridlist-links">
-                                <li><a href="#">Add</a></li>
-                                <li><a href="#">Edit</a></li>
-                                <li><a href="#">Remove</a></li>
-                            </ul>
+                            <div class="pt__links">
+                                <ul>
+                                    <li>
+                                        <a>Add</a>
+                                    </li>
+                                    <li>
+                                        <a>Edit</a>
+                                    </li>
+                                    <li>
+                                        <a>Remove</a>
+                                    </li>
+                                </ul>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
@@ -617,11 +625,19 @@
                             <div class="icon small done inline"></div>
                         </td>
                         <td>
-                            <ul class="com-gridlist-links">
-                                <li><a href="#">Add</a></li>
-                                <li><a href="#">Edit</a></li>
-                                <li><a href="#">Remove</a></li>
-                            </ul>
+                            <div class="pt__links">
+                                <ul>
+                                    <li>
+                                        <a>Add</a>
+                                    </li>
+                                    <li>
+                                        <a>Edit</a>
+                                    </li>
+                                    <li>
+                                        <a>Remove</a>
+                                    </li>
+                                </ul>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
@@ -645,11 +661,19 @@
                             <div class="icon small done inline"></div>
                         </td>
                         <td>
-                            <ul class="com-gridlist-links">
-                                <li><a href="#">Add</a></li>
-                                <li><a href="#">Edit</a></li>
-                                <li><a href="#">Remove</a></li>
-                            </ul>
+                            <div class="pt__links">
+                                <ul>
+                                    <li>
+                                        <a>Add</a>
+                                    </li>
+                                    <li>
+                                        <a>Edit</a>
+                                    </li>
+                                    <li>
+                                        <a>Remove</a>
+                                    </li>
+                                </ul>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
@@ -673,11 +697,19 @@
                             <div class="icon small fail inline"></div>
                         </td>
                         <td>
-                            <ul class="com-gridlist-links">
-                                <li><a href="#">Add</a></li>
-                                <li><a href="#">Edit</a></li>
-                                <li><a href="#">Remove</a></li>
-                            </ul>
+                            <div class="pt__links">
+                                <ul>
+                                    <li>
+                                        <a>Add</a>
+                                    </li>
+                                    <li>
+                                        <a>Edit</a>
+                                    </li>
+                                    <li>
+                                        <a>Remove</a>
+                                    </li>
+                                </ul>
+                            </div>
                         </td>
                     </tr>
                 </tbody>

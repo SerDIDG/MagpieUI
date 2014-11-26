@@ -1,17 +1,13 @@
-/* ******* PART: LINKS ******* */
+/* ******* PARTS: LINKS ******* */
 
-.cm-links {
+.pt__links {
     > ul {
-        margin: 0;
-        padding: 0;
-        list-style: none;
+        .cm-ul-clear;
+        .cm-ul-inline;
         line-height: inherit;
         font-size: inherit;
 
-
         > li {
-            display: inline-block;
-            vertical-align: top;
             .icon {
                 display: inline-block;
                 vertical-align: top;
@@ -19,13 +15,31 @@
 
             &:before {
                 content: '|';
-                margin: 0 @CmLinks-indent;
+                margin: 0 @CmLinks-Indent;
             }
 
             &:first-child:before {
                 content: normal;
                 margin: 0;
             }
+        }
+    }
+
+    &.pull-left {
+        > ul {
+            text-align: left;
+        }
+    }
+
+    &.pull-center {
+        > ul {
+            text-align: center;
+        }
+    }
+
+    &.pull-right {
+        > ul {
+            text-align: right;
         }
     }
 }

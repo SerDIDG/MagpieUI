@@ -142,7 +142,7 @@
 /* ******* COMPONENT: DIALOG: THEMES ******* */
 
 .com-dialog {
-    @titleHeight: @ComDialog-titleIndent * 2 + @cm-lineHeightTitle;
+    @titleHeight: @ComDialog-titleIndent * 2 + @Cm-lineHeightTitle;
 
     // /* *** DEFAULT *** */
 
@@ -152,10 +152,10 @@
 
             > .icon {
                 .cm-size-medium;
-                .cm-position(@cm-indentMedium, @cm-indentMedium, auto, auto);
+                .cm-position(@Cm-indentMedium, @Cm-indentMedium, auto, auto);
                 font-size: 0;
                 opacity: 0.4;
-                .cm-transition(opacity @CM-Transition-Duration ease-in-out);
+                .cm-transition(opacity @Cm-Transition-Duration ease-in-out);
 
                 &.default {
                     .icon.medium.close-white;
@@ -182,7 +182,7 @@
 
             > .inner {
                 background-color: #ffffff;
-                border-radius: @cm-borderRadius;
+                border-radius: @Cm-borderRadius;
 
                 > .title {
                     padding: @ComDialog-titleIndent @ComDialog-indent;
@@ -237,7 +237,7 @@
             > .window {
                 > .inner {
                     > .title {
-                        padding-right: @ComDialog-indent * 2 + @cm-Medium;
+                        padding-right: @ComDialog-indent * 2 + @Cm-Medium;
                     }
                 }
             }

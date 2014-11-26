@@ -26,10 +26,10 @@
             right: 0;
             bottom: 0;
             left: 0;
-            border: @cm-borderEditable;
-            border-radius: @cm-borderRadius;
+            border: @Cm-borderEditable;
+            border-radius: @Cm-borderRadius;
             opacity: 0;
-            .cm-transition(all @CM-Transition-Duration ease-in-out);
+            .cm-transition(all @Cm-Transition-Duration ease-in-out);
         }
 
         > .inner {
@@ -53,13 +53,13 @@
             z-index: 3;
             left: 50%;
             opacity: 0;
-            background: @cm-colorSecondary;
+            background: @Cm-colorSecondary;
             background-clip: border-box;
-            border: @cm-borderEditable;
-            border-radius: @cm-borderRadius;
+            border: @Cm-borderEditable;
+            border-radius: @Cm-borderRadius;
             cursor: move;
             visibility: hidden;
-            .cm-transition(all @CM-Transition-Duration ease-in-out);
+            .cm-transition(all @Cm-Transition-Duration ease-in-out);
 
             .icon {
                 width: 34px;
@@ -69,8 +69,8 @@
             }
 
             &:hover {
-                background: @cm-colorSecondaryHover;
-                .cm-transition(all @CM-Transition-DurationReverse ease-in-out);
+                background: @Cm-colorSecondaryHover;
+                .cm-transition(all @Cm-Transition-DurationReverse ease-in-out);
             }
 
             &:not(.is-bottom) {
@@ -90,7 +90,7 @@
             right: -12px;
             opacity: 0;
             cursor: pointer;
-            .cm-transition(all @CM-Transition-Duration ease-in-out);
+            .cm-transition(all @Cm-Transition-Duration ease-in-out);
 
             .icon {
                 width: 24px;
@@ -98,9 +98,9 @@
                 display: block;
                 position: relative;
                 z-index: 2;
-                background-color: @cm-colorSecondary;
-                border: @cm-borderEditable;
-                border-radius: @cm-borderRadius;
+                background-color: @Cm-colorSecondary;
+                border: @Cm-borderEditable;
+                border-radius: @Cm-borderRadius;
             }
 
             .cm-menu-dropdown {
@@ -113,7 +113,7 @@
                 z-index: 14;
 
                 .icon {
-                    background-color: @cm-colorSecondaryHover;
+                    background-color: @Cm-colorSecondaryHover;
                 }
 
                 .cm-menu-dropdown {
@@ -131,13 +131,13 @@
             left: -16px;
             opacity: 1;
             background: #ffffff;
-            .cm-transition(all @CM-Transition-DurationReverse ease-in-out);
+            .cm-transition(all @Cm-Transition-DurationReverse ease-in-out);
         }
 
         > .drag {
             opacity: 1;
             visibility: visible;
-            .cm-transition(all @CM-Transition-DurationReverse ease-in-out);
+            .cm-transition(all @Cm-Transition-DurationReverse ease-in-out);
 
             &:not(.is-bottom) {
                 top: -28px;
@@ -152,19 +152,19 @@
             top: -28px;
             right: -28px;
             opacity: 1;
-            .cm-transition(all @CM-Transition-DurationReverse ease-in-out);
+            .cm-transition(all @Cm-Transition-DurationReverse ease-in-out);
         }
     }
 
     .active {
         > .drag {
-            background-color: @cm-colorActive;
+            background-color: @Cm-colorActive;
         }
     }
 }
 
 .cm-editable {
-    margin: 0 0 @cm-indentMedium;
+    margin: 0 0 @Cm-indentMedium;
 
     &.bottom {
         margin: 0;

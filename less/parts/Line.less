@@ -13,7 +13,7 @@
     .links,
     .status {
         float: left;
-        margin: 0 @cm-indentXSmall 0 0;
+        margin: 0 @Cm-indentXSmall 0 0;
         line-height: inherit;
         font-size: inherit;
 
@@ -24,26 +24,26 @@
 
     .status {
         &.error {
-            color: @cm-colorError;
+            color: @Cm-colorError;
         }
 
         &.valid {
-            color: @cm-colorValid;
+            color: @Cm-colorValid;
         }
 
         &.pending {
-            color: @cm-colorPending;
+            color: @Cm-colorPending;
         }
     }
 
     .date {
-        color: @cm-colorFontMedium;
+        color: @Cm-colorFontMedium;
     }
 
     .category,
     .author {
         a, span {
-            font-weight: @cm-boldWeight;
+            font-weight: @Cm-boldWeight;
         }
     }
 }
@@ -54,10 +54,10 @@
     > ul {
         .cm-ul-clear;
         .cm-ul-inline;
-        margin: 0 0 -@cm-indentXXSmall 0;
+        margin: 0 0 -@Cm-indentXXSmall 0;
 
         > li {
-            margin: 0 @cm-indentXXSmall @cm-indentXXSmall 0;
+            margin: 0 @Cm-indentXXSmall @Cm-indentXXSmall 0;
 
             &:last-child {
                 margin-right: 0;
@@ -73,18 +73,18 @@
 
                 &:hover {
                     .icon.default {
-                        opacity: @CM-Opacity-Hover;
-                        .cm-transition(opacity @CM-Transition-DurationReverse ease-in-out);
+                        opacity: @Cm-Opacity-Hover;
+                        .cm-transition(opacity @Cm-Transition-DurationReverse ease-in-out);
                     }
 
                     .label,
                     .count {
-                        background-color: @cm-colorLight-backgroundHover;
-                        .cm-transition(background @CM-Transition-DurationReverse ease-in-out);
+                        background-color: @Cm-colorLight-backgroundHover;
+                        .cm-transition(background @Cm-Transition-DurationReverse ease-in-out);
                     }
 
                     .label {
-                        background-color: @cm-colorActive;
+                        background-color: @Cm-colorActive;
                     }
                 }
             }
@@ -116,7 +116,7 @@
         &.default {
             width: @CmShareLine-iconSize;
             height: @CmShareLine-iconSize;
-            .cm-transition(opacity @CM-Transition-Duration ease-in-out);
+            .cm-transition(opacity @Cm-Transition-Duration ease-in-out);
 
             &.facebook {
                 .icon.large.facebook;
@@ -140,18 +140,18 @@
     .count:extend(.cm-font-ui) {
         display: inline-block;
         vertical-align: top;
-        padding: 0 @cm-indentXSmall;
+        padding: 0 @Cm-indentXSmall;
         line-height: @CmShareLine-iconSize;
-        .cm-transition(background @CM-Transition-Duration ease-in-out);
+        .cm-transition(background @Cm-Transition-Duration ease-in-out);
     }
 
     .label {
-        background: @cm-colorLight-backgroundHover;
-        border-radius: @cm-borderRadius 0 0 @cm-borderRadius;
+        background: @Cm-colorLight-backgroundHover;
+        border-radius: @Cm-borderRadius 0 0 @Cm-borderRadius;
     }
 
     .count {
-        background: @cm-colorLight-background;
-        border-radius: 0 @cm-borderRadius @cm-borderRadius 0;
+        background: @Cm-colorLight-background;
+        border-radius: 0 @Cm-borderRadius @Cm-borderRadius 0;
     }
 }

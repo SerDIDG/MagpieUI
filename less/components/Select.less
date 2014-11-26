@@ -36,7 +36,7 @@
         .cm-user-select(none);
 
         > .inner > .scroll {
-            max-height: @ComSelect-listCount * (@cm-lineHeight + @CmItemsList-indent + @CmItemsList-padding-y * 2) - @CmItemsList-indent;
+            max-height: @ComSelect-listCount * (@Cm-lineHeight + @CmItemsList-indent + @CmItemsList-padding-y * 2) - @CmItemsList-indent;
         }
     }
 }
@@ -50,11 +50,11 @@
         #cm > .input;
         height: auto;
         min-height: @CmForm-fieldHeight;
-        padding: @cm-indentXXXSmall;
+        padding: @Cm-indentXXXSmall;
     }
 
     .cm-items-list > ul {
-        max-height: @ComSelect-multiListCount * (@cm-lineHeight + @CmItemsList-indent + @CmItemsList-padding-y * 2) - @CmItemsList-indent;
+        max-height: @ComSelect-multiListCount * (@Cm-lineHeight + @CmItemsList-indent + @CmItemsList-padding-y * 2) - @CmItemsList-indent;
     }
 
     &.disabled {

@@ -1,132 +1,183 @@
+
+// /* ************************************************ */
+// /* ******* COLORS ******* */
+// /* ************************************************ */
+
+@CmVar-Color-LightHover-Lightness: 96%;
+@CmVar-Color-LightActive-Lightness: 93%;
+@CmVar-Color-LightActiveHover-Lightness: 88%;
+
+@CmColor: 210;
+@CmColor-LightSaturation: 70%;
+@CmColor-LightHover: hsl(@CmColor, @CmColor-LightSaturation, @CmVar-Color-LightHover-Lightness);
+@CmColor-LightActive: hsl(@CmColor, @CmColor-LightSaturation, @CmVar-Color-LightActive-Lightness);
+@CmColor-LightActiveHover: hsl(@CmColor, @CmColor-LightSaturation, @CmVar-Color-LightActiveHover-Lightness);
+
+@CmColor-Secondary: 0;
+@CmColor-Secondary-LightSaturation: 0%;
+@CmColor-Secondary-LightHover: hsl(@CmColor-Secondary, @CmColor-Secondary-LightSaturation, @CmVar-Color-LightHover-Lightness);
+@CmColor-Secondary-LightActive: hsl(@CmColor-Secondary, @CmColor-Secondary-LightSaturation, @CmVar-Color-LightActive-Lightness);
+@CmColor-Secondary-LightActiveHover: hsl(@CmColor-Secondary, @CmColor-Secondary-LightSaturation, @CmVar-Color-LightActiveHover-Lightness);
+
+@CmColor-Valid: 120;
+@CmColor-Valid-LightSaturation: 65%;
+@CmColor-Valid-LightHover: hsl(@CmColor-Valid, @CmColor-Valid-LightSaturation, @CmVar-Color-LightHover-Lightness);
+@CmColor-Valid-LightActive: hsl(@CmColor-Valid, @CmColor-Valid-LightSaturation, @CmVar-Color-LightActive-Lightness);
+@CmColor-Valid-LightActiveHover: hsl(@CmColor-Valid, @CmColor-Valid-LightSaturation, @CmVar-Color-LightActiveHover-Lightness);
+
+
+@CmColor-Invalid: 0;
+@CmColor-Invalid-LightSaturation: 65%;
+@CmColor-Invalid-LightHover: hsl(@CmColor-Invalid, @CmColor-Invalid-LightSaturation, @CmVar-Color-LightHover-Lightness);
+@CmColor-Invalid-LightActive: hsl(@CmColor-Invalid, @CmColor-Invalid-LightSaturation, @CmVar-Color-LightActive-Lightness);
+@CmColor-Invalid-LightActiveHover: hsl(@CmColor-Invalid, @CmColor-Invalid-LightSaturation, @CmVar-Color-LightActiveHover-Lightness);
+
+// /* ************************************************ */
+// /* ******* VARIABLES ******* */
+// /* ************************************************ */
+
 // /* ******* PATH ******* */
 
-@CmPath-image: '../img';
+@CmPath-Images: '../img';
 
 // /* ******* COMMON ******* */
 
-@CM-Transition-Duration: 300ms;
-@CM-Transition-DurationReverse: 100ms;
-@CM-Opacity-Hover: 0.7;
+@Cm-Transition-Duration: 300ms;
+@Cm-Transition-DurationReverse: 100ms;
+@Cm-Opacity-Hover: 0.7;
 
-// /* ******* VARIABLES ******* */
+// /* ******* SCREEN TYPES ******* */
 
-@cm-screenMobile: 640px;
-@cm-screenMobilePortrait: 480px;
-@cm-screenTablet: 1024px;
-@cm-screenTabletPortrait: 768px;
+@CmScreen-Mobile: 640px;
+@CmScreen-MobilePortrait: 480px;
+@CmScreen-Tablet: 1024px;
+@CmScreen-TabletPortrait: 768px;
 
-// /* *** SIZES *** */
+// /* ******* SIZES ******* */
 
-@cm-XXXSmall: 4px;
-@cm-XXSmall: 8px;
-@cm-XSmall: 12px;
-@cm-Small: 16px;
-@cm-Medium: 24px;
-@cm-Large: 32px;
-@cm-XLarge: 48px;
-@cm-XXLarge: 64px;
+@Cm-XXXSmall: 4px;
+@Cm-XXSmall: 8px;
+@Cm-XSmall: 12px;
+@Cm-Small: 16px;
+@Cm-Medium: 24px;
+@Cm-Large: 32px;
+@Cm-XLarge: 48px;
+@Cm-XXLarge: 64px;
 
-// /* *** COLORS *** */
+// /* *** BASE *** */
 
-@cm-colorFont: #666666;
-@cm-colorFontMedium: #999999;
-@cm-colorFontTitle: #666666;
-@cm-colorPlaceholder: #b7b7b7;
-@cm-colorHint: #999999;
-@cm-colorMark: #fdf6ad;
-@cm-colorLink: @cm-color;
-@cm-colorLinkHover: @cm-colorLink;
-@cm-colorLinkVisited: #8a156d;
-@cm-colorError: hsl(0, 80%, 50%);
-@cm-colorValid: #009900;
-@cm-colorPending: #ffa200;
-@cm-colorPendingLight: #fff9ef;
-
-@cm-color: hsl(210, 80%, 55%);
-@cm-colorLighten: lighten(@cm-color, 40%);
-@cm-colorActive: lighten(desaturate(@cm-color, 2%), 37%);
-@cm-colorActiveHover: darken(@cm-colorActive, 5%);
-@cm-colorSecondary: hsl(0, 0, 95%);
-@cm-colorSecondaryHover: lighten(@cm-colorSecondary, 3%);
-
-@cm-colorBorder: #CBCBCB;
-@cm-colorBorderHover: @cm-colorActiveHover;
-
-@cm-colorLight-background: #fafafa;
-@cm-colorLight-backgroundHover: #e6e6e6;
-@cm-colorLight-backgroundDisabled: #f0f0f0;
-@cm-colorLight-backgroundDisabledHover: @cm-colorLight-backgroundHover;
-@cm-colorLight-border: #e6e6e6;
-@cm-colorLight-borderHover: #d2d2d2;
-@cm-colorLight-borderDisabled: @cm-colorLight-border;
-@cm-colorLight-borderDisabledHover: @cm-colorLight-borderHover;
-
-@cm-background-light: @cm-colorLight-background;
-@cm-background-dark: @cm-colorLight-backgroundDisabled;
-@cm-background-themeLight: lighten(@cm-color, 42%);
-@cm-background-gallery: #111111;
-@cm-background-pendingLight: @cm-colorPendingLight;
-
-// /* *** FONT *** */
-
-@cm-lineHeight: 18px;
-@cm-lineHeightTitle: 38px;
-@cm-lineHeightTitleMedium : 24px;
-@cm-fontSize: 13px;
-@cm-fontSizeUI: 11px;
-@cm-fontSizeTitle: 30px;
-@cm-fontSizeTitleMedium: 16px;
-@cm-fontSizeHint: 11px;
-@cm-fontFamily: 'Open Sans', arial, helvetica, sans-serif;
-@cm-fontWeight: normal;
-@cm-boldWeight: 600;
-
-// /* *** BORDER *** */
-
-@cm-borderRadius: 3px;
-@cm-borderWidth: 1px;
-@cm-borderBoxWidth: 2px;
-@cm-borderStyle: @cm-borderWidth solid @cm-colorBorder;
-@cm-borderSeparator: @cm-borderWidth dotted @cm-colorBorder;
-@cm-borderEditable: @cm-borderWidth dashed @cm-color;
-@cm-borderBox: @cm-borderBoxWidth solid @cm-colorBorder;
-@cm-borderBoxActive: @cm-borderBoxWidth solid @cm-colorActive;
-@cm-borderBoxSelected: @cm-borderBoxWidth solid @cm-color;
-
-// /* *** INDENT *** */
-
-@cm-indentXXXSmall: @cm-XXXSmall;
-@cm-indentXXSmall: @cm-XXSmall;
-@cm-indentXSmall: @cm-XSmall;
-@cm-indentSmall: @cm-Small;
-@cm-indentMedium: @cm-Medium;
-@cm-indentLarge: @cm-Large;
-@cm-indentXLarge: @cm-XLarge;
-@cm-indentXXLarge: @cm-XXLarge;
+@CmBase-LineHeight: 18px;
+@CmBase-Font-Size: 13px;
+@CmBase-Font-Color: #666666;
 
 // /* *** UI *** */
 
-@cm-ui-shadowLight: 0 0 2px rgba(0,0,0,0.2);
-@cm-ui-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+@CmUI-LineHeight: 18px;
+@CmUI-Font-Size: 11px;
+@CmUI-Font-Color: #666666;
+
+
+// /* *** COLORS *** */
+
+@Cm-colorFont: #666666;
+@Cm-colorFontMedium: #999999;
+@Cm-colorFontTitle: #666666;
+@Cm-colorPlaceholder: #b7b7b7;
+@Cm-colorHint: #999999;
+@Cm-colorMark: #fdf6ad;
+@Cm-colorLink: @Cm-color;
+@Cm-colorLinkHover: @Cm-colorLink;
+@Cm-colorLinkVisited: #8a156d;
+@Cm-colorError: hsl(0, 80%, 50%);
+@Cm-colorValid: #009900;
+@Cm-colorPending: #ffa200;
+@Cm-colorPendingLight: #fff9ef;
+
+@Cm-color: hsl(210, 80%, 55%);
+@Cm-colorLighten: lighten(@Cm-color, 40%);
+@Cm-colorActive: lighten(desaturate(@Cm-color, 2%), 37%);
+@Cm-colorActiveHover: darken(@Cm-colorActive, 5%);
+@Cm-colorSecondary: hsl(0, 0, 95%);
+@Cm-colorSecondaryHover: lighten(@Cm-colorSecondary, 3%);
+
+@Cm-colorBorder: #CBCBCB;
+@Cm-colorBorderHover: @Cm-colorActiveHover;
+
+@Cm-colorLight-background: #fafafa;
+@Cm-colorLight-backgroundHover: #e6e6e6;
+@Cm-colorLight-backgroundDisabled: #f0f0f0;
+@Cm-colorLight-backgroundDisabledHover: @Cm-colorLight-backgroundHover;
+@Cm-colorLight-border: #e6e6e6;
+@Cm-colorLight-borderHover: #d2d2d2;
+@Cm-colorLight-borderDisabled: @Cm-colorLight-border;
+@Cm-colorLight-borderDisabledHover: @Cm-colorLight-borderHover;
+
+@Cm-background-light: @Cm-colorLight-background;
+@Cm-background-dark: @Cm-colorLight-backgroundDisabled;
+@Cm-background-themeLight: lighten(@Cm-color, 42%);
+@Cm-background-gallery: #111111;
+@Cm-background-pendingLight: @Cm-colorPendingLight;
+
+// /* *** FONT *** */
+
+@Cm-lineHeight: 18px;
+@Cm-lineHeightTitle: 38px;
+@Cm-lineHeightTitleMedium : 24px;
+@Cm-fontSize: 13px;
+@Cm-fontSizeUI: 11px;
+@Cm-fontSizeTitle: 30px;
+@Cm-fontSizeTitleMedium: 16px;
+@Cm-fontSizeHint: 11px;
+@Cm-fontFamily: 'Open Sans', arial, helvetica, sans-serif;
+@Cm-fontWeight: normal;
+@Cm-boldWeight: 600;
+
+// /* *** BORDER *** */
+
+@Cm-borderRadius: 3px;
+@Cm-borderWidth: 1px;
+@Cm-borderBoxWidth: 2px;
+@Cm-borderStyle: @Cm-borderWidth solid @Cm-colorBorder;
+@Cm-borderSeparator: @Cm-borderWidth dotted @Cm-colorBorder;
+@Cm-borderEditable: @Cm-borderWidth dashed @Cm-color;
+@Cm-borderBox: @Cm-borderBoxWidth solid @Cm-colorBorder;
+@Cm-borderBoxActive: @Cm-borderBoxWidth solid @Cm-colorActive;
+@Cm-borderBoxSelected: @Cm-borderBoxWidth solid @Cm-color;
+
+// /* *** INDENT *** */
+
+@Cm-indentXXXSmall: @Cm-XXXSmall;
+@Cm-indentXXSmall: @Cm-XXSmall;
+@Cm-indentXSmall: @Cm-XSmall;
+@Cm-indentSmall: @Cm-Small;
+@Cm-indentMedium: @Cm-Medium;
+@Cm-indentLarge: @Cm-Large;
+@Cm-indentXLarge: @Cm-XLarge;
+@Cm-indentXXLarge: @Cm-XXLarge;
+
+// /* *** UI *** */
+
+@Cm-ui-shadowLight: 0 0 2px rgba(0,0,0,0.2);
+@Cm-ui-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
 
 // /* *** ELEMENTS *** */
 
-@CmElement-button-paddingX: @cm-indentXSmall;
+@CmElement-button-paddingX: @Cm-indentXSmall;
 
 // /* ******* FORM ******* */
 
 @CmForm-fieldHeight: 28px;
-@CmForm-fieldIndent: @cm-indentSmall;
+@CmForm-fieldIndent: @Cm-indentSmall;
 @CmForm-fieldTitleWidth: 150px;
 @CmForm-fieldInnerIndent: @CmForm-fieldIndent / 2;
-@CmForm-buttonsIndent: @cm-indentXXSmall;
+@CmForm-buttonsIndent: @Cm-indentXXSmall;
 @CmForm-input-padding: 6px;
 @CmForm-textarea-height: 100px;
 @CmForm-select-size: 7;
 
 // /* *** ICONS OUTSIDE *** */
 
-@CmForm-iconsIndent: @cm-indentXXSmall;
+@CmForm-iconsIndent: @Cm-indentXXSmall;
 
 // /* *** IMAGE BOX *** */
 
@@ -137,24 +188,26 @@
 @CmForm-cols-names: one two three four five six seven eight nine ten;
 @CmForm-cols-indent: 2%;
 
+// /* ************************************************ */
 // /* ******* PARTS ******* */
+// /* ************************************************ */
 
 // /* *** COUNTER *** */
 
-@CmCounter-size: @cm-Small;
+@CmCounter-size: @Cm-Small;
 @CmCounter-radius: @CmCounter-size;
-@CmCounter-fontSize: @cm-fontSizeUI;
+@CmCounter-fontSize: @Cm-fontSizeUI;
 @CmCounter-color: #ffffff;
 
 // /* *** MENU *** */
 
-@CmMenu-indent: @cm-indentXXXSmall;
+@CmMenu-indent: @Cm-indentXXXSmall;
 @CmMenu-itemIndentY: 2px;
-@CmMenu-itemIndentX: @cm-indentXSmall;
+@CmMenu-itemIndentX: @Cm-indentXSmall;
 
 // /* *** LINKS *** */
 
-@CmLinks-indent: @cm-indentXXXSmall;
+@CmLinks-Indent: @Cm-indentXXXSmall;
 
 // /* *** ITEM BOX *** */
 
@@ -163,25 +216,25 @@
 // /* *** ITEMS LIST *** */
 
 @CmItemsList-count: 10;
-@CmItemsList-background-hover: @cm-colorSecondary;
-@CmItemsList-background-active: @cm-colorActive;
-@CmItemsList-background-active-hover: @cm-colorActiveHover;
+@CmItemsList-background-hover: @Cm-colorSecondary;
+@CmItemsList-background-active: @Cm-colorActive;
+@CmItemsList-background-active-hover: @Cm-colorActiveHover;
 @CmItemsList-padding-y: 2px;
 @CmItemsList-indent: 1px;
 
 // /* *** LIST COUNTED *** */
 
-@CmListCounted-indent: @cm-indentXXXSmall;
-@CmListCounted-height: @cm-Medium;
+@CmListCounted-indent: @Cm-indentXXXSmall;
+@CmListCounted-height: @Cm-Medium;
 
 // /* *** GRID *** */
 
-@CmGrid-itemIndent: @cm-indentMedium / 2;
+@CmGrid-itemIndent: @Cm-indentMedium / 2;
 
 // /* *** SELECTABLE*** */
 
-@cm-selectable-background-hover: @cm-colorSecondary;
-@cm-selectable-border-color-active: @cm-colorActive;
+@Cm-selectable-background-hover: @Cm-colorSecondary;
+@Cm-selectable-border-color-active: @Cm-colorActive;
 
 // /* *** FILES LIST *** */
 
@@ -189,8 +242,8 @@
 
 // /* *** TOOLBAR *** */
 
-@CmToolbar-groupIndent: @cm-indentSmall;
-@CmToolbar-itemIndent: @cm-indentXXXSmall;
+@CmToolbar-groupIndent: @Cm-indentSmall;
+@CmToolbar-itemIndent: @Cm-indentXXXSmall;
 @CmToolbar-XSmall: 70px;
 @CmToolbar-Small: 100px;
 @CmToolbar-Medium: 150px;
@@ -199,40 +252,42 @@
 
 // /* *** IMAGE BOX *** */
 
-@CmImagebox-background: @cm-background-light;
+@CmImagebox-background: @Cm-background-light;
 @CmImagebox-titlePaddingTop: 4px;
 @CmImagebox-textColor: #ffffff;
 
 // /* *** DRAG AND DROP *** */
 
-@CmDraganddrop-areaPadding: @cm-indentXSmall;
-@CmDraganddrop-areaBorderRadius: @cm-borderRadius;
-@CmDraganddrop-areaBackgroundActive: fade(@cm-color, 12%);
-@CmDraganddrop-areaBackgroundHighlight: fade(@cm-color, 5%);
-@CmDraganddrop-areaActiveBorder: 1px dashed @cm-color;
-@CmDraganddrop-areaHighlightBorder: 1px dashed fade(@cm-color, 30%);
+@CmDraganddrop-areaPadding: @Cm-indentXSmall;
+@CmDraganddrop-areaBorderRadius: @Cm-borderRadius;
+@CmDraganddrop-areaBackgroundActive: fade(@Cm-color, 12%);
+@CmDraganddrop-areaBackgroundHighlight: fade(@Cm-color, 5%);
+@CmDraganddrop-areaActiveBorder: 1px dashed @Cm-color;
+@CmDraganddrop-areaHighlightBorder: 1px dashed fade(@Cm-color, 30%);
 @CmDraganddrop-dropDuration: 400ms;
 
 // /* *** LISTING *** */
 
-@CmListing-stuffFontSize: @cm-fontSizeUI;
-@CmListing-stuffFontWeight: @cm-boldWeight;
-@CmListing-stuffColor: @cm-colorFontMedium;
+@CmListing-stuffFontSize: @Cm-fontSizeUI;
+@CmListing-stuffFontWeight: @Cm-boldWeight;
+@CmListing-stuffColor: @Cm-colorFontMedium;
 
 // /* *** GRID *** */
 
-@ComGrid-indents: 0px @cm-indentXXXSmall @cm-indentXXSmall @cm-indentXSmall @cm-indentSmall @cm-indentMedium @cm-indentLarge @cm-indentXLarge @cm-indentXXLarge;
+@ComGrid-indents: 0px @Cm-indentXXXSmall @Cm-indentXXSmall @Cm-indentXSmall @Cm-indentSmall @Cm-indentMedium @Cm-indentLarge @Cm-indentXLarge @Cm-indentXXLarge;
 
 // /* *** SHARE LINE *** */
 
-@CmShareLine-iconSize: @cm-Large;
+@CmShareLine-iconSize: @Cm-Large;
 
 // /* *** BOX *** */
 
-@CmBoxContent-Indent: @cm-indentXLarge;
-@CmBoxContent-Indents: 0px @cm-indentXXXSmall @cm-indentXXSmall @cm-indentXSmall @cm-indentSmall @cm-indentMedium @cm-indentLarge @cm-indentXLarge @cm-indentXXLarge;
+@CmBoxContent-Indent: @Cm-indentXLarge;
+@CmBoxContent-Indents: 0px @Cm-indentXXXSmall @Cm-indentXXSmall @Cm-indentXSmall @Cm-indentSmall @Cm-indentMedium @Cm-indentLarge @Cm-indentXLarge @Cm-indentXXLarge;
 
+// /* ************************************************ */
 // /* ******* COMPONENTS ******* */
+// /* ************************************************ */
 
 // /* *** COLLAPSIBLE LAYOUT *** */
 
@@ -243,7 +298,7 @@
 
 @ComCalendar-cellHeight: 21px;
 @ComCalendar-cellBorderSize: 1px;
-@ComCalendar-cellBorderRadius: min(@cm-borderRadius, 2px);
+@ComCalendar-cellBorderRadius: min(@Cm-borderRadius, 2px);
 @ComCalendar-todayBorderSize: 2px;
 
 @ComCalendar-outer-background: transparent;
@@ -252,29 +307,29 @@
 @ComCalendar-outer-border: transparent;
 @ComCalendar-outer-borderHover: transparent;
 
-@ComCalendar-inner-background: @cm-colorLight-background;
-@ComCalendar-inner-backgroundHover: @cm-colorLight-backgroundHover;
+@ComCalendar-inner-background: @Cm-colorLight-background;
+@ComCalendar-inner-backgroundHover: @Cm-colorLight-backgroundHover;
 @ComCalendar-inner-borderSize: 1px;
-@ComCalendar-inner-border: @cm-colorLight-border;
-@ComCalendar-inner-borderHover: @cm-colorLight-borderHover;
+@ComCalendar-inner-border: @Cm-colorLight-border;
+@ComCalendar-inner-borderHover: @Cm-colorLight-borderHover;
 
-@ComCalendar-weekend-background: @cm-colorLight-backgroundDisabled;
-@ComCalendar-weekend-backgroundHover: @cm-colorLight-backgroundDisabledHover;
+@ComCalendar-weekend-background: @Cm-colorLight-backgroundDisabled;
+@ComCalendar-weekend-backgroundHover: @Cm-colorLight-backgroundDisabledHover;
 @ComCalendar-weekend-borderSize: @ComCalendar-inner-borderSize;
-@ComCalendar-weekend-border: @cm-colorLight-borderDisabled;
-@ComCalendar-weekend-borderHover: @cm-colorLight-borderDisabledHover;
+@ComCalendar-weekend-border: @Cm-colorLight-borderDisabled;
+@ComCalendar-weekend-borderHover: @Cm-colorLight-borderDisabledHover;
 
 @ComCalendar-today-background: '';
-@ComCalendar-today-backgroundHover: @cm-colorActive;
+@ComCalendar-today-backgroundHover: @Cm-colorActive;
 @ComCalendar-today-borderSize: 2px;
-@ComCalendar-today-border: @cm-color;
-@ComCalendar-today-borderHover: @cm-color;
+@ComCalendar-today-border: @Cm-color;
+@ComCalendar-today-borderHover: @Cm-color;
 
-@ComCalendar-active-background: @cm-colorActive;
-@ComCalendar-active-backgroundHover: @cm-colorActiveHover;
+@ComCalendar-active-background: @Cm-colorActive;
+@ComCalendar-active-backgroundHover: @Cm-colorActiveHover;
 @ComCalendar-active-borderSize: @ComCalendar-inner-borderSize;
-@ComCalendar-active-border: @cm-color;
-@ComCalendar-active-borderHover: @cm-color;
+@ComCalendar-active-border: @Cm-color;
+@ComCalendar-active-borderHover: @Cm-color;
 
 // /* *** DATEPICKER *** */
 
@@ -285,7 +340,7 @@
 // /* *** TIME SELECT *** */
 
 @ComTimeSelect-width: 210px;
-@ComTimeSelect-indent: @cm-indentMedium;
+@ComTimeSelect-indent: @Cm-indentMedium;
 
 // /* *** COLOR PALETTE *** */
 
@@ -297,50 +352,50 @@
 
 // /* *** DIALOG *** */
 
-@ComDialog-indent: @cm-indentMedium;
-@ComDialog-titleIndent: @cm-indentXSmall;
+@ComDialog-indent: @Cm-indentMedium;
+@ComDialog-titleIndent: @Cm-indentXSmall;
 
-@ComDialog-themeBlack-background: @cm-background-gallery;
+@ComDialog-themeBlack-background: @Cm-background-gallery;
 @ComDialog-themeBlack-titleColor: #ffffff;
 
 // /* *** GRIDLIST *** */
 
-@ComGridlist-adaptiveFrom: @cm-screenMobile;
-@ComGridlist-fontSize: @cm-fontSizeUI;
-@ComGridlist-paddingInner: 6px;
-@ComGridlist-linkIndent: @CmLinks-indent;
+@ComGridlist-AdaptiveFrom: @CmScreen-Mobile;
+@ComGridlist-Font-Size: @CmUI-Font-Size;
+@ComGridlist-FontTitle-Size: @CmUI-Font-Size;
+@ComGridlist-PaddingInner: 6px;
 
 // /* *** COLUMNS *** */
 
-@ComColumns-adaptiveFrom: @cm-screenMobile;
-@ComColumns-indent: @cm-indentMedium;
-@ComColumns-indents: 0px @cm-indentXXXSmall @cm-indentXXSmall @cm-indentXSmall @cm-indentSmall @cm-indentMedium @cm-indentLarge @cm-indentXLarge @cm-indentXXLarge;
+@ComColumns-adaptiveFrom: @CmScreen-Mobile;
+@ComColumns-indent: @Cm-indentMedium;
+@ComColumns-indents: 0px @Cm-indentXXXSmall @Cm-indentXXSmall @Cm-indentXSmall @Cm-indentSmall @Cm-indentMedium @Cm-indentLarge @Cm-indentXLarge @Cm-indentXXLarge;
 @ComColumns-minHeight: 64px;
 @ComColumns-backgroundHover: rgba(0, 0, 0, 0.01);
 
 // /* *** TABSET *** */
 
-@ComTabset-adaptiveFrom: @cm-screenMobile;
-@ComTabset-borderColor: @cm-colorBorder;
-@ComTabset-borderRadius: @cm-borderRadius;
+@ComTabset-adaptiveFrom: @CmScreen-Mobile;
+@ComTabset-borderColor: @Cm-colorBorder;
+@ComTabset-borderRadius: @Cm-borderRadius;
 @ComTabset-tabsHeight: @CmForm-fieldHeight;
-@ComTabset-tabsIndent: @cm-indentXXXSmall;
-@ComTabset-tabsBackground: @cm-colorSecondary;
+@ComTabset-tabsIndent: @Cm-indentXXXSmall;
+@ComTabset-tabsBackground: @Cm-colorSecondary;
 @ComTabset-tabsBackgroundHover: #ffffff;
 @ComTabset-tabsBackgroundActive: #ffffff;
-@ComTabset-tabsTitle: @cm-colorSecondary;
-@ComTabset-tabsColor: @cm-colorFont;
+@ComTabset-tabsTitle: @Cm-colorSecondary;
+@ComTabset-tabsColor: @Cm-colorFont;
 
 // /* *** TOGGLE BOX *** */
 
-@ComToggleBox-adaptiveFrom: @cm-screenMobile;
-@ComToggleBox-size: @cm-lineHeightTitle;
-@ComToggleBox-sizeMedium: @cm-Medium;
-@ComToggleBox-sizeUI: @cm-Medium;
+@ComToggleBox-adaptiveFrom: @CmScreen-Mobile;
+@ComToggleBox-size: @Cm-lineHeightTitle;
+@ComToggleBox-sizeMedium: @Cm-Medium;
+@ComToggleBox-sizeUI: @Cm-Medium;
 @ComToggleBox-contentBorder: 1px solid #ffffff;
-@ComToggleBox-contentBackground: @cm-background-light;
+@ComToggleBox-contentBackground: @Cm-background-light;
 @ComToggleBox-contentSpaceBorder: @ComToggleBox-contentBorder;
-@ComToggleBox-titleBackground: @cm-background-dark;
+@ComToggleBox-titleBackground: @Cm-background-dark;
 
 // /* *** SELECT *** */
 
@@ -359,15 +414,15 @@
 
 // /* *** GALLERY *** */
 
-@ComGallery-background: @cm-background-gallery;
+@ComGallery-background: @Cm-background-gallery;
 
 // /* *** GALLERY CONTROLS *** */
 
-@ComGalleryControls-buttonSize: @cm-XSmall;
+@ComGalleryControls-buttonSize: @Cm-XSmall;
 
 // /* *** GALLERY LAYOUT *** */
 
-@ComGalleryLayout-arrowWidth: @cm-indentMedium;
+@ComGalleryLayout-arrowWidth: @Cm-indentMedium;
 @ComGalleryLayout-sizesCount: 12;
 
 // /* *** GALLERY POPUP *** */
@@ -376,10 +431,10 @@
 
 // /* *** FORUM *** */
 
-@ComForum-adaptiveFrom: @cm-screenMobile;
-@ComForum-postBackground: @cm-background-light;
-@ComForum-postBackgroundFeatured: @cm-background-themeLight;
-@ComForum-postTitleBackground: @cm-background-dark;
+@ComForum-adaptiveFrom: @CmScreen-Mobile;
+@ComForum-postBackground: @Cm-background-light;
+@ComForum-postBackgroundFeatured: @Cm-background-themeLight;
+@ComForum-postTitleBackground: @Cm-background-dark;
 @ComForum-postLeftColumnSize: 150px;
 
 // /* *** PROFILE *** */

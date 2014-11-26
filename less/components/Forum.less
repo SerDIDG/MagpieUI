@@ -39,7 +39,7 @@
 
     .title {
         float: right;
-        margin: 0 0 0 @cm-indentXXXSmall;
+        margin: 0 0 0 @Cm-indentXXXSmall;
     }
 
     .descr {
@@ -53,11 +53,11 @@
     }
 
     h3 {
-        margin: 0 0 @cm-indentXXSmall;
+        margin: 0 0 @Cm-indentXXSmall;
     }
 
     .title {
-        font-weight: @cm-boldWeight;
+        font-weight: @Cm-boldWeight;
     }
 }
 
@@ -68,7 +68,7 @@
 /* *** TOPIC *** */
 
 .com-forum-posts {
-    margin: 0 0 @cm-indentMedium;
+    margin: 0 0 @Cm-indentMedium;
 
     &.bottom {
         margin: 0;
@@ -80,7 +80,7 @@
         list-style: none;
 
         > li {
-            margin: @cm-indentMedium 0 0 0;
+            margin: @Cm-indentMedium 0 0 0;
             padding: 0;
 
             &:first-child {
@@ -92,10 +92,10 @@
 
 .com-forum-post {
     background: @ComForum-postBackground;
-    border-radius: @cm-borderRadius;
+    border-radius: @Cm-borderRadius;
 
     .entry {
-        margin: @cm-indentXSmall 0 0;
+        margin: @Cm-indentXSmall 0 0;
     }
 
     > .inner {
@@ -106,17 +106,17 @@
         > .l {
             width: @ComForum-postLeftColumnSize;
             position: relative;
-            padding: @cm-indentXSmall;
+            padding: @Cm-indentXSmall;
             display: table-cell;
             vertical-align: top;
             background: @ComForum-postTitleBackground;
-            border-radius: @cm-borderRadius;
+            border-radius: @Cm-borderRadius;
 
             &:after {
                 width: 0;
                 height: 0;
                 position: absolute;
-                .cm-position(@cm-indentXSmall, 0, auto, auto);
+                .cm-position(@Cm-indentXSmall, 0, auto, auto);
                 display: block;
                 content: '';
                 border-style: solid;
@@ -126,14 +126,14 @@
         }
 
         > .r {
-            padding: @cm-indentXSmall;
+            padding: @Cm-indentXSmall;
             display: table-cell;
             vertical-align: top;
 
             .cm-title-editable,
             .date {
                 .cm-font-hint;
-                color: @cm-colorFontMedium;
+                color: @Cm-colorFontMedium;
             }
 
             .cm-title-editable {
@@ -144,7 +144,7 @@
 
     .post-share {
         .cm-line-share {
-            margin: @cm-indentMedium 0 0 0;
+            margin: @Cm-indentMedium 0 0 0;
 
             &:first-child {
                 margin: 0;
@@ -196,7 +196,7 @@
 
             .title {
                 float: left;
-                margin: 0 @cm-indentXXXSmall 0 0;
+                margin: 0 @Cm-indentXXXSmall 0 0;
             }
             
             .descr {

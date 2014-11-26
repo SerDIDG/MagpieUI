@@ -1,7 +1,7 @@
 /* ******* COLLAPSIBLE LAYOUT ******* */
 
 .com-collapsible-layout {
-    @width-hide: 24px + (@cm-indentXSmall * 2);
+    @width-hide: 24px + (@Cm-indentXSmall * 2);
 
     position: absolute;
     .cm-position(0,0,0,0);
@@ -13,7 +13,7 @@
         z-index: 2;
         overflow: hidden;
         background: #ffffff;
-        box-shadow: @cm-ui-shadow;
+        box-shadow: @Cm-ui-shadow;
         .cm-transition(width @ComCollapsibleLayout-duration ease-in-out);
 
         > .inner {
@@ -21,7 +21,7 @@
             position: absolute;
 
             > .title {
-                padding: 6px @cm-indentXSmall;
+                padding: 6px @Cm-indentXSmall;
                 position: absolute;
                 .cm-position(0, 0, auto, 0);
                 background: #ffffff;
@@ -39,7 +39,7 @@
             }
 
             > .descr {
-                padding: @cm-indentXSmall;
+                padding: @Cm-indentXSmall;
                 .cm-scroll-y;
                 position: absolute;
                 .cm-position(50px, 0, 0, 0);
@@ -58,7 +58,7 @@
                     text-align: left;
 
                     .icon {
-                        right: @cm-indentXSmall;
+                        right: @Cm-indentXSmall;
                     }
                 }
             }
@@ -74,7 +74,7 @@
                     text-align: right;
 
                     .icon {
-                        left: @cm-indentXSmall;
+                        left: @Cm-indentXSmall;
                     }
                 }
             }
@@ -157,7 +157,7 @@
 
 /* *** ADAPTIVE *** */
 
-@media only screen and (max-width : @cm-screenTablet) {
+@media only screen and (max-width : @CmScreen-Tablet) {
 
     html.is-adaptive {
         .com-collapsible-layout {

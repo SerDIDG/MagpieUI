@@ -1,7 +1,7 @@
 /* ******* TABSET ******* */
 
 .com-tabset {
-    margin: 0 0 @cm-indentMedium;
+    margin: 0 0 @Cm-indentMedium;
 
     &.bottom {
         margin: 0;
@@ -18,16 +18,16 @@
         &:extend(.cm-ul-clear all);
 
         li {
-            margin: 0 @ComTabset-tabsIndent -@cm-borderWidth 0;
+            margin: 0 @ComTabset-tabsIndent -@Cm-borderWidth 0;
             float: left;
             background: @ComTabset-tabsBackground;
-            border: @cm-borderStyle;
+            border: @Cm-borderStyle;
             border-radius: @ComTabset-borderRadius @ComTabset-borderRadius 0 0;
-            .cm-transition(all @CM-Transition-Duration ease-in-out);
+            .cm-transition(all @Cm-Transition-Duration ease-in-out);
 
             &:hover {
                 background: @ComTabset-tabsBackgroundHover;
-                .cm-transition(all @CM-Transition-DurationReverse ease-in-out);
+                .cm-transition(all @Cm-Transition-DurationReverse ease-in-out);
             }
 
             &:last-child {
@@ -40,7 +40,7 @@
 
             a {
                 display: block;
-                padding: 0 @cm-indentXSmall;
+                padding: 0 @Cm-indentXSmall;
                 .cm-text-overflow;
                 line-height: @ComTabset-tabsHeight;
                 color: @ComTabset-tabsColor;
@@ -54,8 +54,8 @@
     &:extend(.cm-text-overflow);
     display: none;
     overflow: hidden;
-    padding: 0 @cm-indentMedium;
-    border: @cm-borderStyle;
+    padding: 0 @Cm-indentMedium;
+    border: @Cm-borderStyle;
     border-bottom: none;
     background: @ComTabset-tabsTitle;
     line-height: @ComTabset-tabsHeight;
@@ -66,7 +66,7 @@
     height: @ComTabset-tabsHeight;
     display: none;
     position: absolute;
-    .cm-position(@cm-borderWidth, @cm-borderWidth, @cm-borderWidth, auto);
+    .cm-position(@Cm-borderWidth, @Cm-borderWidth, @Cm-borderWidth, auto);
 
     .icon {
         width: @ComTabset-tabsHeight;
@@ -80,16 +80,16 @@
     .cm-menu-dropdown {
         .cm-menu-dropdown--base;
         left: auto;
-        right: -@cm-borderWidth;
+        right: -@Cm-borderWidth;
     }
 }
 
 .com-tabset-content {
     position: relative;
     z-index: 1;
-    padding: @cm-indentMedium;
+    padding: @Cm-indentMedium;
     background: #fff;
-    border: @cm-borderStyle;
+    border: @Cm-borderStyle;
     border-radius: 0 @ComTabset-borderRadius @ComTabset-borderRadius @ComTabset-borderRadius;
 
     > ul {

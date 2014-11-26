@@ -2,36 +2,6 @@
 
 @import url(//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,300,700,600);
 
-/* ******* TAGS ******* */
-
-body {
-    margin: 0;
-    padding: 0;
-    #cm > .font-base;
-    cursor: default;
-    -webkit-text-size-adjust: 100%;
-    -webkit-font-smoothing: subpixel-antialiased;
-}
-
-a {
-    #cm > .font-link;
-}
-
-img {
-    border: none;
-    -webkit-transform: translateZ(0px);
-    -webkit-backface-visibility: hidden;
-       -moz-backface-visibility: hidden;
-            backface-visibility: hidden;
-}
-
-dl, dt, dd, canvas, iframe, form {
-    padding: 0;
-    margin: 0;
-    display: block;
-    text-indent: 0;
-}
-
 /* ******* STATIC CLASSES ******* */
 
 .clearfix,
@@ -53,15 +23,16 @@ dl, dt, dd, canvas, iframe, form {
     display: none !important;
 }
 
+.display-inline,
+.inline {
+    display: inline-block;
+}
+
 .display-flex {
     display: -webkit-flex;
     display: -ms-flexbox;
     display: flex;
     -ms-flex-pack: center;
-}
-
-.inline {
-    display: inline-block;
 }
 
 .margin-none {
@@ -95,7 +66,7 @@ dl, dt, dd, canvas, iframe, form {
 /* *** FONT *** */
 
 .cm-block-padding {
-    padding: @cm-indentMedium;
+    padding: @Cm-indentMedium;
 }
 
 .link {
@@ -134,11 +105,11 @@ dl, dt, dd, canvas, iframe, form {
 }
 
 .cm-mark {
-    background: @cm-colorMark;
+    background: @Cm-colorMark;
 }
 
 .cm-page-title {
-    margin: 0 0 @cm-indentMedium;
+    margin: 0 0 @Cm-indentMedium;
 }
 
 /* *** BUNDLE *** */
@@ -148,7 +119,6 @@ dl, dt, dd, canvas, iframe, form {
     font-size: 0;
 
     > li {
-        .cm-font-base;
         display: inline-block;
         vertical-align: top;
     }
@@ -168,14 +138,14 @@ dl, dt, dd, canvas, iframe, form {
 .cm-counter {
     height: @CmCounter-size;
     padding: 0 5px;
-    background-color: @cm-color;
+    background-color: @Cm-color;
     border-radius: @CmCounter-radius;
     text-align: center;
     line-height: @CmCounter-size;
     font-size: @CmCounter-fontSize;
-    font-weight: @cm-fontWeight;
+    font-weight: @Cm-fontWeight;
     color: @CmCounter-color;
-    .cm-transition(all @CM-Transition-Duration ease-in-out);
+    .cm-transition(all @Cm-Transition-Duration ease-in-out);
 }
 
 .cm-codebox {
@@ -184,8 +154,8 @@ dl, dt, dd, canvas, iframe, form {
     margin: 4px 0;
     padding: 8px 12px;
     background: #ffffff;
-    border: 1px dashed @cm-colorBorder;
-    border-radius: @cm-borderRadius;
+    border: 1px dashed @Cm-colorBorder;
+    border-radius: @Cm-borderRadius;
     font-family: "Courier New", Courier, monospace;
 }
 
@@ -222,7 +192,7 @@ dl, dt, dd, canvas, iframe, form {
 }
 
 .cm-view-all {
-    margin: @cm-indentMedium 0 0 0;
+    margin: @Cm-indentMedium 0 0 0;
     text-align: right;
 
     &.pull-left {
@@ -252,7 +222,7 @@ dl, dt, dd, canvas, iframe, form {
 }
 
 .cm-list {
-    margin: 0 0 @cm-indentMedium;
+    margin: 0 0 @Cm-indentMedium;
     list-style: disc;
 
     &.bottom {
@@ -261,7 +231,7 @@ dl, dt, dd, canvas, iframe, form {
 
     &.has-indent {
         ul, li {
-            margin: @cm-indentXXSmall 0 0 0;
+            margin: @Cm-indentXXSmall 0 0 0;
 
             &:first-child {
                 margin: 0;
@@ -296,7 +266,7 @@ dl, dt, dd, canvas, iframe, form {
 /* *** CONTENT BUTTONS LINE *** */
 
 .buttons {
-    margin: 0 0 @cm-indentMedium 0;
+    margin: 0 0 @Cm-indentMedium 0;
     font-size: 0;
 
     &.bottom {
@@ -320,8 +290,8 @@ dl, dt, dd, canvas, iframe, form {
         position: absolute;
         left: 0;
         top: 0;
-        .cm-transition(width @CM-Transition-Duration ease-in-out);
-        .cm-transition(background-color @CM-Transition-Duration ease-in-out);
+        .cm-transition(width @Cm-Transition-Duration ease-in-out);
+        .cm-transition(background-color @Cm-Transition-Duration ease-in-out);
     }
 
     .com-gridlist & {
@@ -363,7 +333,7 @@ dl, dt, dd, canvas, iframe, form {
         left: 50%;
         z-index: 2;
         margin: -16px 0 0 -16px;
-        background: url("@{CmPath-image}/components/ajax-loader.gif");
+        background: url("@{CmPath-Images}/components/ajax-loader.gif");
     }
 }
 
@@ -390,20 +360,20 @@ dl, dt, dd, canvas, iframe, form {
     }
 
     &:hover:before {
-        background-color: @cm-selectable-background-hover;
+        background-color: @Cm-selectable-background-hover;
         -webkit-transition: background-color 0.1s ease-in-out, border-color 0.1s ease-in-out;
         transition: background-color 0.1s ease-in-out, border-color 0.1s ease-in-out;
     }
 
     &.active:before {
         background-color: #ffffff;
-        border-color: @cm-selectable-border-color-active;
+        border-color: @Cm-selectable-border-color-active;
     }
 }
 
 /* ******* ADAPTIVE ******* */
 
-@media only screen and (max-width: @cm-screenMobile) {
+@media only screen and (max-width: @CmScreen-Mobile) {
 
     html.is-adaptive {
 
@@ -416,7 +386,7 @@ dl, dt, dd, canvas, iframe, form {
                 td {
                     width: 100% !important;
                     display: block;
-                    margin: @cm-indentMedium 0 0 0;
+                    margin: @Cm-indentMedium 0 0 0;
 
                     &:first-child {
                         margin: 0;
@@ -428,7 +398,7 @@ dl, dt, dd, canvas, iframe, form {
 
 }
 
-@media only screen and (max-width: @cm-screenMobilePortrait) {
+@media only screen and (max-width: @CmScreen-MobilePortrait) {
 
     html.is-adaptive {
 

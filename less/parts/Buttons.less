@@ -16,13 +16,13 @@
 
     &.has-icon-medium {
         .icon {
-            margin: -(@cm-Medium / 2) round((@CmForm-fieldHeight - @cm-Medium) / 2) 0;
+            margin: -(@Cm-Medium / 2) round((@CmForm-fieldHeight - @Cm-Medium) / 2) 0;
         }
     }
 
     &.has-icon-small {
         .icon {
-            margin: -(@cm-Small / 2) round((@CmForm-fieldHeight - @cm-Small) / 2) 0;
+            margin: -(@Cm-Small / 2) round((@CmForm-fieldHeight - @Cm-Small) / 2) 0;
         }
     }
 }
@@ -40,7 +40,7 @@ button,
 .btn-wrap {
     &:extend(.clearfix all);
 
-    margin-top: @cm-indentMedium;
+    margin-top: @Cm-indentMedium;
 
     .hint {
         padding: 0 @CmForm-buttonsIndent 0 0;
@@ -72,13 +72,13 @@ button,
 
     &.error {
         .hint {
-            color: @cm-colorError;
+            color: @Cm-colorError;
         }
     }
 
     &.ok {
         .hint {
-            color: @cm-colorValid;
+            color: @Cm-colorValid;
         }
     }
 

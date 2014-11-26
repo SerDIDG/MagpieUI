@@ -8,7 +8,7 @@
     .comment-info,
     .comment-text,
     .comment-actions {
-        margin: @cm-indentXXXSmall 0 0 0;
+        margin: @Cm-indentXXXSmall 0 0 0;
         .clear;
 
         &:first-child {
@@ -39,7 +39,7 @@
         .cm-font-hint;
         line-height: 12px;
 
-        .cm-links {
+        .pt__links {
             ul {
                 line-height: inherit;
                 font-size: inherit;
@@ -55,12 +55,12 @@
     &.is-pending {
         &:before {
             position: absolute;
-            .cm-position(-@cm-indentXXSmall, -@cm-indentXXSmall, -@cm-indentXXSmall, -@cm-indentXXSmall);
+            .cm-position(-@Cm-indentXXSmall, -@Cm-indentXXSmall, -@Cm-indentXXSmall, -@Cm-indentXXSmall);
             display: block;
             z-index: -1;
             content: '';
-            background-color: @cm-background-pendingLight;
-            border-radius: @cm-borderRadius;
+            background-color: @Cm-background-pendingLight;
+            border-radius: @Cm-borderRadius;
         }
     }
 }
@@ -68,7 +68,7 @@
 /* *** COMMENT LIST *** */
 
 .com-comments {
-    margin: 0 0 @cm-indentMedium;
+    margin: 0 0 @Cm-indentMedium;
 
     &.bottom {
         margin: 0;
@@ -80,11 +80,11 @@
         list-style: none;
 
         &.replies {
-            margin: @cm-indentMedium 0 0 @cm-indentMedium;
+            margin: @Cm-indentMedium 0 0 @Cm-indentMedium;
         }
 
         > li {
-            margin: @cm-indentMedium 0 0 0;
+            margin: @Cm-indentMedium 0 0 0;
 
             &:first-child {
                 margin-top: 0;

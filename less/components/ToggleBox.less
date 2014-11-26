@@ -1,7 +1,7 @@
 /* ******* COMPONENT: TOGGLE BOX ******* */
 
 .com-togglebox {
-    margin: 0 0 @cm-indentMedium 0;
+    margin: 0 0 @Cm-indentMedium 0;
 
     &.bottom {
         margin: 0;
@@ -18,15 +18,15 @@
         .icon {
             height: @ComToggleBox-size;
             float: right;
-            margin: 0 0 0 @cm-indentMedium;
+            margin: 0 0 0 @Cm-indentMedium;
             background-position: 100% 50%;
 
             &.default {
                 .icon.small.arrow-right;
-                width: @cm-Small;
-                -webkit-transition: -webkit-transform @CM-Transition-Duration ease-in-out;
-                    -ms-transition:     -ms-transform @CM-Transition-Duration ease-in-out;
-                        transition:         transform @CM-Transition-Duration ease-in-out;
+                width: @Cm-Small;
+                -webkit-transition: -webkit-transform @Cm-Transition-Duration ease-in-out;
+                    -ms-transition:     -ms-transform @Cm-Transition-Duration ease-in-out;
+                        transition:         transform @Cm-Transition-Duration ease-in-out;
             }
         }
 
@@ -41,7 +41,7 @@
         }
 
         &:hover {
-            color: @cm-color;
+            color: @Cm-color;
         }
     }
 
@@ -50,7 +50,7 @@
         opacity: 1;
 
         > .inner {
-            padding: @cm-indentXSmall 0 0 0;
+            padding: @Cm-indentXSmall 0 0 0;
         }
     }
 
@@ -62,9 +62,9 @@
 
     &.has-title-bg {
         > dt {
-            padding: 0 @cm-indentXXSmall;
+            padding: 0 @Cm-indentXXSmall;
             background: @ComToggleBox-titleBackground;
-            border-radius: @cm-borderRadius;
+            border-radius: @Cm-borderRadius;
         }
     }
 
@@ -77,29 +77,29 @@
                 border-top: @ComToggleBox-contentSpaceBorder;
                 background: @ComToggleBox-contentBackground;
                 background-clip: padding-box;
-                border-radius: @cm-borderRadius;
+                border-radius: @Cm-borderRadius;
             }
 
             .cm-toolbar {
-                padding: @cm-indentXXSmall;
+                padding: @Cm-indentXXSmall;
             }
 
             .com-gridlist {
                 tr {
                     td {
-                        padding: @cm-indentXXSmall;
+                        padding: @Cm-indentXXSmall;
                         border-top: @ComToggleBox-contentBorder;
 
                         &.sort {
                             .inner {
-                                margin: -@cm-indentXXSmall;
-                                padding: @cm-indentXXSmall 22px @cm-indentXXSmall @cm-indentXXSmall;
+                                margin: -@Cm-indentXXSmall;
+                                padding: @Cm-indentXXSmall 22px @Cm-indentXXSmall @Cm-indentXXSmall;
                             }
                         }
                     }
 
                     th {
-                        padding: @cm-indentXXSmall;
+                        padding: @Cm-indentXXSmall;
                         border-bottom: @ComToggleBox-contentBorder;
                     }
 
@@ -127,7 +127,7 @@
     &.is-ui {
         > dt {
             .cm-font-ui;
-            font-weight: @cm-boldWeight;
+            font-weight: @Cm-boldWeight;
             line-height: @ComToggleBox-sizeUI;
 
             .icon {
@@ -158,9 +158,9 @@
 }
 
 .com-togglebox-empty:extend(.cm-font-ui-cursive) {
-    padding: @cm-indentXSmall;
+    padding: @Cm-indentXSmall;
     text-align: center;
-    color: @cm-colorFontMedium;
+    color: @Cm-colorFontMedium;
 }
 
 /* ******* COMPONENT: TOGGLE BOX: ADAPTIVE ******* */
