@@ -93,19 +93,19 @@
 .ie6 .com-dialog,
 .ie7 .com-dialog,
 .ie8 .com-dialog {
-    .cm-opacity-ie(0);
+    .mx__opacity-ie(0);
 }
 
 .ie6 .com-dialog > .bg,
 .ie7 .com-dialog > .bg,
 .ie8 .com-dialog > .bg {
-    .cm-opacity-ie(60);
+    .mx__opacity-ie(60);
 }
 
 .ie6 .com-dialog > .window
 .ie7 .com-dialog > .window,
 .ie8 .com-dialog > .window {
-    .cm-opacity-ie(100);
+    .mx__opacity-ie(100);
 }
 
 /* Confirmation Dialog. Deprecated. */
@@ -142,7 +142,7 @@
 /* ******* COMPONENT: DIALOG: THEMES ******* */
 
 .com-dialog {
-    @titleHeight: @ComDialog-titleIndent * 2 + @Cm-lineHeightTitle;
+    @titleHeight: @ComDialog-titleIndent * 2 + @CmUI-FontTitle-LineHeight;
 
     // /* *** DEFAULT *** */
 
@@ -152,10 +152,10 @@
 
             > .icon {
                 .cm-size-medium;
-                .cm-position(@Cm-indentMedium, @Cm-indentMedium, auto, auto);
+                .mx__position(@CmIndent-Medium, @CmIndent-Medium, auto, auto);
                 font-size: 0;
                 opacity: 0.4;
-                .cm-transition(opacity @Cm-Transition-Duration ease-in-out);
+                .mx__transition(opacity @CmVar-Transition-Duration ease-in-out);
 
                 &.default {
                     .icon.medium.close-white;
@@ -186,7 +186,7 @@
 
                 > .title {
                     padding: @ComDialog-titleIndent @ComDialog-indent;
-                    #cm > .font-title;
+                    .cm__font--ui-title;
                 }
 
                 > .descr {

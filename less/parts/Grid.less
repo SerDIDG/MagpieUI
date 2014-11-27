@@ -1,7 +1,7 @@
 /* ******* PARTS: GRID ******* */
 
 .pt__grid {
-    margin: 0 0 @Cm-indentMedium;
+    margin: 0 0 @CmIndent-Medium;
     overflow: hidden;
 
     &.bottom {
@@ -9,14 +9,15 @@
     }
 
     > ul {
-        &:extend(.cm-ul-clear all, .cm-ul-inline all);
+        .cm-ul-clear;
+        .cm-ul-inline;
         word-spacing: 0;
 
         > li {
-            .cm-font-base;
+            .cm__font;
             width: 100%;
             overflow: hidden;
-            .cm-box-sizing();
+            .mx__box-sizing();
 
             > a {
                 display: block;
@@ -27,13 +28,13 @@
                     display: block;
                     position: relative;
                     cursor: pointer;
-                    .cm-transition(opacity @Cm-Transition-Duration ease-in-out);
+                    .mx__transition(opacity @CmVar-Transition-Duration ease-in-out);
                 }
 
                 &:hover {
                     > img {
-                        opacity: @Cm-Opacity-Hover;
-                        .cm-transition(opacity @Cm-Transition-DurationReverse ease-in-out);
+                        opacity: @CmVar-Opacity-Hover;
+                        .mx__transition(opacity @CmVar-Transition-DurationReverse ease-in-out);
                     }
                 }
             }
@@ -104,7 +105,7 @@
 
             > li {
                 width: 100%;
-                .cm-flex(auto);
+                .mx__flex(auto);
             }
         }
     }
@@ -114,11 +115,11 @@
 
         > ul {
             .display-flex;
-            .cm-flex-flow(row wrap);
+            .mx__flex-flow(row wrap);
 
             > li {
                 .display-flex;
-                .cm-flex(1 1);
+                .mx__flex(1 1);
             }
         }
 
@@ -142,7 +143,7 @@
         .loop((@counter - 1));
 
         &.col-@{counter} {
-            #cm > .pt__grid__size(@counter);
+            .pt__grid__size(@counter);
         }
     }
 
@@ -150,11 +151,35 @@
 
     // /* Set grid items indent */
 
-    #cm > .pt__grid__indent(@CmGrid-itemIndent);
+    .pt__grid__indent(@CmGrid-itemIndent);
 
-    .for(@ComGrid-indents); .-each(@name) {
+    .for(@PtGrid-indents); .-each(@name) {
         &.indent-@{name} {
-            #cm > .pt__grid__indent(@name);
+            .pt__grid__indent(@name);
+        }
+    }
+}
+
+/* ******* PARTS: GRID: MIXINS ******* */
+
+.pt__grid__size (@count: 1) {
+    @size: 100% / @count;
+
+    > ul > li {
+        width: @size;
+    }
+}
+
+.pt__grid__indent (@indent: @CmGrid-itemIndent) {
+    > ul {
+        margin: @indent -@indent -@indent;
+
+        &:first-child {
+            margin: -@indent;
+        }
+
+        > li {
+            padding: @indent;
         }
     }
 }
@@ -179,30 +204,4 @@
         }
     }
 
-}
-
-/* ******* PARTS: GRID: BUNDLE ******* */
-
-#cm () {
-    .pt__grid__size (@count: 1) {
-        @size: 100% / @count;
-
-        > ul > li {
-            width: @size;
-        }
-    }
-
-    .pt__grid__indent (@indent: @CmGrid-itemIndent) {
-        > ul {
-            margin: @indent -@indent -@indent;
-
-            &:first-child {
-                margin: -@indent;
-            }
-
-            > li {
-                padding: @indent;
-            }
-        }
-    }
 }

@@ -1,7 +1,7 @@
 /* ******* CALENDAR ******* */
 
 .com-calendar {
-    .cm-user-select(none);
+    .mx__user-select(none);
 
     .selects {
         height: @CmForm-fieldHeight;
@@ -30,7 +30,7 @@
             text-align: center;
             line-height: 14px;
             font-size: 10px;
-            color: @Cm-colorFont;
+            color: @CmBase-Font-Color;
         }
 
         td {
@@ -45,12 +45,12 @@
                 border-radius: @ComCalendar-cellBorderRadius;
                 text-align: center;
                 line-height: @ComCalendar-cellHeight - (@ComCalendar-outer-borderSize * 2);
-                font-size: @Cm-fontSizeUI;
+                font-size: @CmUI-Font-Size;
                 cursor: pointer;
-                .cm-transition(all @Cm-Transition-Duration ease-in-out);
+                .mx__transition(all @CmVar-Transition-Duration ease-in-out);
 
                 &:hover {
-                    .cm-transition(all @Cm-Transition-DurationReverse ease-in-out);
+                    .mx__transition(all @CmVar-Transition-DurationReverse ease-in-out);
                 }
             }
 

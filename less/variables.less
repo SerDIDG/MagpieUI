@@ -42,9 +42,9 @@
 
 // /* ******* COMMON ******* */
 
-@Cm-Transition-Duration: 300ms;
-@Cm-Transition-DurationReverse: 100ms;
-@Cm-Opacity-Hover: 0.7;
+@CmVar-Transition-Duration: 300ms;
+@CmVar-Transition-DurationReverse: 100ms;
+@CmVar-Opacity-Hover: 0.7;
 
 // /* ******* SCREEN TYPES ******* */
 
@@ -64,24 +64,57 @@
 @Cm-XLarge: 48px;
 @Cm-XXLarge: 64px;
 
-// /* *** BASE *** */
+@CmIndent-XXXSmall: @Cm-XXXSmall;
+@CmIndent-XXSmall: @Cm-XXSmall;
+@CmIndent-XSmall: @Cm-XSmall;
+@CmIndent-Small: @Cm-Small;
+@CmIndent-Medium: @Cm-Medium;
+@CmIndent-Large: @Cm-Large;
+@CmIndent-XLarge: @Cm-XLarge;
+@CmIndent-XXLarge: @Cm-XXLarge;
 
-@CmBase-LineHeight: 18px;
+// /* ************************************************ */
+// /* ******* FONT ******* */
+// /* ************************************************ */
+
+// /* ******* BASE ******* */
+
+@CmBase-Font-LightWeight: 300;
+@CmBase-Font-NormalWeight: 400;
+@CmBase-Font-BoldWeight: 600;
+
+@CmBase-Font-LineHeight: 18px;
+@CmBase-Font-Family: 'Open Sans', arial, helvetica, sans-serif;
 @CmBase-Font-Size: 13px;
+@CmBase-Font-Weight: @CmBase-Font-NormalWeight;
 @CmBase-Font-Color: #666666;
+@CmBase-FontHint-Size: 11px;
 
-// /* *** UI *** */
+// /* ******* UI ******* */
 
-@CmUI-LineHeight: 18px;
+@CmUI-Font-LightWeight: 300;
+@CmUI-Font-NormalWeight: 400;
+@CmUI-Font-BoldWeight: 600;
+
+@CmUI-Font-LineHeight: 18px;
 @CmUI-Font-Size: 11px;
+@CmUI-Font-Family: 'Open Sans', arial, helvetica, sans-serif;
+@CmUI-Font-Weight: @CmUI-Font-NormalWeight;
 @CmUI-Font-Color: #666666;
 
+@CmUI-FontTitle-BoldWeight: 300;
+@CmUI-FontTitle-LineHeight: 38px;
+@CmUI-FontTitle-Size: 30px;
+@CmUI-FontTitle-Weight: @CmUI-Font-LightWeight;
+@CmUI-FontTitle-Color: #666666;
+
+@CmUI-FontTitleMedium-LineHeight : 24px;
+@CmUI-FontTitleMedium-Size: 16px;
+@CmUI-FontTitleMedium-Weight: @CmUI-Font-LightWeight;
+@CmUI-FontTitleMedium-Color: #999999;
 
 // /* *** COLORS *** */
 
-@Cm-colorFont: #666666;
-@Cm-colorFontMedium: #999999;
-@Cm-colorFontTitle: #666666;
 @Cm-colorPlaceholder: #b7b7b7;
 @Cm-colorHint: #999999;
 @Cm-colorMark: #fdf6ad;
@@ -118,20 +151,6 @@
 @Cm-background-gallery: #111111;
 @Cm-background-pendingLight: @Cm-colorPendingLight;
 
-// /* *** FONT *** */
-
-@Cm-lineHeight: 18px;
-@Cm-lineHeightTitle: 38px;
-@Cm-lineHeightTitleMedium : 24px;
-@Cm-fontSize: 13px;
-@Cm-fontSizeUI: 11px;
-@Cm-fontSizeTitle: 30px;
-@Cm-fontSizeTitleMedium: 16px;
-@Cm-fontSizeHint: 11px;
-@Cm-fontFamily: 'Open Sans', arial, helvetica, sans-serif;
-@Cm-fontWeight: normal;
-@Cm-boldWeight: 600;
-
 // /* *** BORDER *** */
 
 @Cm-borderRadius: 3px;
@@ -144,17 +163,6 @@
 @Cm-borderBoxActive: @Cm-borderBoxWidth solid @Cm-colorActive;
 @Cm-borderBoxSelected: @Cm-borderBoxWidth solid @Cm-color;
 
-// /* *** INDENT *** */
-
-@Cm-indentXXXSmall: @Cm-XXXSmall;
-@Cm-indentXXSmall: @Cm-XXSmall;
-@Cm-indentXSmall: @Cm-XSmall;
-@Cm-indentSmall: @Cm-Small;
-@Cm-indentMedium: @Cm-Medium;
-@Cm-indentLarge: @Cm-Large;
-@Cm-indentXLarge: @Cm-XLarge;
-@Cm-indentXXLarge: @Cm-XXLarge;
-
 // /* *** UI *** */
 
 @Cm-ui-shadowLight: 0 0 2px rgba(0,0,0,0.2);
@@ -162,22 +170,22 @@
 
 // /* *** ELEMENTS *** */
 
-@CmElement-button-paddingX: @Cm-indentXSmall;
+@CmElement-button-paddingX: @CmIndent-XSmall;
 
 // /* ******* FORM ******* */
 
 @CmForm-fieldHeight: 28px;
-@CmForm-fieldIndent: @Cm-indentSmall;
+@CmForm-fieldIndent: @CmIndent-Small;
 @CmForm-fieldTitleWidth: 150px;
 @CmForm-fieldInnerIndent: @CmForm-fieldIndent / 2;
-@CmForm-buttonsIndent: @Cm-indentXXSmall;
+@CmForm-buttonsIndent: @CmIndent-XXSmall;
 @CmForm-input-padding: 6px;
 @CmForm-textarea-height: 100px;
 @CmForm-select-size: 7;
 
 // /* *** ICONS OUTSIDE *** */
 
-@CmForm-iconsIndent: @Cm-indentXXSmall;
+@CmForm-iconsIndent: @CmIndent-XXSmall;
 
 // /* *** IMAGE BOX *** */
 
@@ -196,18 +204,18 @@
 
 @CmCounter-size: @Cm-Small;
 @CmCounter-radius: @CmCounter-size;
-@CmCounter-fontSize: @Cm-fontSizeUI;
+@CmCounter-fontSize: @CmUI-Font-Size;
 @CmCounter-color: #ffffff;
 
 // /* *** MENU *** */
 
-@CmMenu-indent: @Cm-indentXXXSmall;
+@CmMenu-indent: @CmIndent-XXXSmall;
 @CmMenu-itemIndentY: 2px;
-@CmMenu-itemIndentX: @Cm-indentXSmall;
+@CmMenu-itemIndentX: @CmIndent-XSmall;
 
 // /* *** LINKS *** */
 
-@CmLinks-Indent: @Cm-indentXXXSmall;
+@CmLinks-Indent: @CmIndent-XXXSmall;
 
 // /* *** ITEM BOX *** */
 
@@ -224,12 +232,12 @@
 
 // /* *** LIST COUNTED *** */
 
-@CmListCounted-indent: @Cm-indentXXXSmall;
+@CmListCounted-indent: @CmIndent-XXXSmall;
 @CmListCounted-height: @Cm-Medium;
 
 // /* *** GRID *** */
 
-@CmGrid-itemIndent: @Cm-indentMedium / 2;
+@CmGrid-itemIndent: @CmIndent-Medium / 2;
 
 // /* *** SELECTABLE*** */
 
@@ -242,8 +250,8 @@
 
 // /* *** TOOLBAR *** */
 
-@CmToolbar-groupIndent: @Cm-indentSmall;
-@CmToolbar-itemIndent: @Cm-indentXXXSmall;
+@CmToolbar-groupIndent: @CmIndent-Small;
+@CmToolbar-itemIndent: @CmIndent-XXXSmall;
 @CmToolbar-XSmall: 70px;
 @CmToolbar-Small: 100px;
 @CmToolbar-Medium: 150px;
@@ -258,7 +266,7 @@
 
 // /* *** DRAG AND DROP *** */
 
-@CmDraganddrop-areaPadding: @Cm-indentXSmall;
+@CmDraganddrop-areaPadding: @CmIndent-XSmall;
 @CmDraganddrop-areaBorderRadius: @Cm-borderRadius;
 @CmDraganddrop-areaBackgroundActive: fade(@Cm-color, 12%);
 @CmDraganddrop-areaBackgroundHighlight: fade(@Cm-color, 5%);
@@ -268,13 +276,13 @@
 
 // /* *** LISTING *** */
 
-@CmListing-stuffFontSize: @Cm-fontSizeUI;
-@CmListing-stuffFontWeight: @Cm-boldWeight;
-@CmListing-stuffColor: @Cm-colorFontMedium;
+@CmListing-stuffFontSize: @CmUI-Font-Size;
+@CmListing-stuffFontWeight: @CmBase-Font-BoldWeight;
+@CmListing-stuffColor: @CmUI-FontTitleMedium-Color;
 
 // /* *** GRID *** */
 
-@ComGrid-indents: 0px @Cm-indentXXXSmall @Cm-indentXXSmall @Cm-indentXSmall @Cm-indentSmall @Cm-indentMedium @Cm-indentLarge @Cm-indentXLarge @Cm-indentXXLarge;
+@PtGrid-indents: 0px @CmIndent-XXXSmall @CmIndent-XXSmall @CmIndent-XSmall @CmIndent-Small @CmIndent-Medium @CmIndent-Large @CmIndent-XLarge @CmIndent-XXLarge;
 
 // /* *** SHARE LINE *** */
 
@@ -282,8 +290,15 @@
 
 // /* *** BOX *** */
 
-@CmBoxContent-Indent: @Cm-indentXLarge;
-@CmBoxContent-Indents: 0px @Cm-indentXXXSmall @Cm-indentXXSmall @Cm-indentXSmall @Cm-indentSmall @Cm-indentMedium @Cm-indentLarge @Cm-indentXLarge @Cm-indentXXLarge;
+@CmBoxContent-Indent: @CmIndent-XLarge;
+@CmBoxContent-Indents: 0px @CmIndent-XXXSmall @CmIndent-XXSmall @CmIndent-XSmall @CmIndent-Small @CmIndent-Medium @CmIndent-Large @CmIndent-XLarge @CmIndent-XXLarge;
+
+// /* *** GRIDLIST *** */
+
+@PtGridlist-AdaptiveFrom: @CmScreen-Mobile;
+@PtGridlist-Font-Size: @CmUI-Font-Size;
+@PtGridlist-FontTitle-Size: @CmUI-Font-Size;
+@PtGridlist-PaddingInner: 6px;
 
 // /* ************************************************ */
 // /* ******* COMPONENTS ******* */
@@ -340,7 +355,7 @@
 // /* *** TIME SELECT *** */
 
 @ComTimeSelect-width: 210px;
-@ComTimeSelect-indent: @Cm-indentMedium;
+@ComTimeSelect-indent: @CmIndent-Medium;
 
 // /* *** COLOR PALETTE *** */
 
@@ -352,24 +367,17 @@
 
 // /* *** DIALOG *** */
 
-@ComDialog-indent: @Cm-indentMedium;
-@ComDialog-titleIndent: @Cm-indentXSmall;
+@ComDialog-indent: @CmIndent-Medium;
+@ComDialog-titleIndent: @CmIndent-XSmall;
 
 @ComDialog-themeBlack-background: @Cm-background-gallery;
 @ComDialog-themeBlack-titleColor: #ffffff;
 
-// /* *** GRIDLIST *** */
-
-@ComGridlist-AdaptiveFrom: @CmScreen-Mobile;
-@ComGridlist-Font-Size: @CmUI-Font-Size;
-@ComGridlist-FontTitle-Size: @CmUI-Font-Size;
-@ComGridlist-PaddingInner: 6px;
-
 // /* *** COLUMNS *** */
 
 @ComColumns-adaptiveFrom: @CmScreen-Mobile;
-@ComColumns-indent: @Cm-indentMedium;
-@ComColumns-indents: 0px @Cm-indentXXXSmall @Cm-indentXXSmall @Cm-indentXSmall @Cm-indentSmall @Cm-indentMedium @Cm-indentLarge @Cm-indentXLarge @Cm-indentXXLarge;
+@ComColumns-indent: @CmIndent-Medium;
+@ComColumns-indents: 0px @CmIndent-XXXSmall @CmIndent-XXSmall @CmIndent-XSmall @CmIndent-Small @CmIndent-Medium @CmIndent-Large @CmIndent-XLarge @CmIndent-XXLarge;
 @ComColumns-minHeight: 64px;
 @ComColumns-backgroundHover: rgba(0, 0, 0, 0.01);
 
@@ -379,17 +387,17 @@
 @ComTabset-borderColor: @Cm-colorBorder;
 @ComTabset-borderRadius: @Cm-borderRadius;
 @ComTabset-tabsHeight: @CmForm-fieldHeight;
-@ComTabset-tabsIndent: @Cm-indentXXXSmall;
+@ComTabset-tabsIndent: @CmIndent-XXXSmall;
 @ComTabset-tabsBackground: @Cm-colorSecondary;
 @ComTabset-tabsBackgroundHover: #ffffff;
 @ComTabset-tabsBackgroundActive: #ffffff;
 @ComTabset-tabsTitle: @Cm-colorSecondary;
-@ComTabset-tabsColor: @Cm-colorFont;
+@ComTabset-tabsColor: @CmBase-Font-Color;
 
 // /* *** TOGGLE BOX *** */
 
 @ComToggleBox-adaptiveFrom: @CmScreen-Mobile;
-@ComToggleBox-size: @Cm-lineHeightTitle;
+@ComToggleBox-size: @CmUI-FontTitle-LineHeight;
 @ComToggleBox-sizeMedium: @Cm-Medium;
 @ComToggleBox-sizeUI: @Cm-Medium;
 @ComToggleBox-contentBorder: 1px solid #ffffff;
@@ -422,7 +430,7 @@
 
 // /* *** GALLERY LAYOUT *** */
 
-@ComGalleryLayout-arrowWidth: @Cm-indentMedium;
+@ComGalleryLayout-arrowWidth: @CmIndent-Medium;
 @ComGalleryLayout-sizesCount: 12;
 
 // /* *** GALLERY POPUP *** */

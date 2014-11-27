@@ -1,0 +1,75 @@
+/* ******* COMMON: FONT ******* */
+
+.cm__font {
+    font: @CmBase-Font-Weight ~'@{CmBase-Font-Size}/@{CmBase-Font-LineHeight}' @CmBase-Font-Family;
+    color: @CmBase-Font-Color;
+}
+
+.cm__font--link {
+    text-decoration: underline;
+    color: @Cm-colorLink;
+    outline: none;
+    cursor: pointer;
+
+    &:hover {
+        text-decoration: none;
+        color: @Cm-colorLinkHover;
+    }
+}
+
+.cm__font--ui {
+    font: @CmUI-Font-Weight ~'@{CmUI-Font-Size}/@{CmUI-Font-LineHeight}' @CmUI-Font-Family;
+    color: @CmUI-Font-Color;
+}
+
+.cm__font--ui-cursive {
+    .cm__font--ui;
+    font-style: italic;
+}
+
+.cm__font--ui-title {
+    font: @CmUI-FontTitle-Weight ~'@{CmUI-FontTitle-Size}/@{CmUI-FontTitle-LineHeight}' 'Open Sans', @CmBase-Font-Family;
+    color: @CmUI-FontTitle-Color;
+}
+
+.cm__font--ui-title-medium {
+    font: @CmUI-FontTitleMedium-Weight ~'@{CmUI-FontTitleMedium-Size}/@{CmUI-FontTitleMedium-LineHeight}' 'Open Sans', @CmBase-Font-Family;
+    color: @CmUI-FontTitle-Color;
+}
+
+.cm__font--hint {
+    font: @CmBase-Font-Weight ~'@{CmBase-FontHint-Size}/@{CmBase-Font-LineHeight}' @CmBase-Font-Family;
+    color: @CmBase-Font-Color;
+}
+
+.cm__font--hint-cursive {
+    .cm__font--hint;
+    font-style: italic;
+    color: @Cm-colorHint;
+}
+
+/* *** HELPERS *** */
+
+.link {
+    .cm__font--link;
+}
+
+.link--inner {
+    .cm__font--link;
+    text-decoration: none;
+    border-bottom: 1px dashed;
+
+    &:hover {
+        text-decoration: none;
+        border-bottom-color: transparent;
+    }
+}
+.link--inherit {
+    color: inherit;
+    cursor: pointer;
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}

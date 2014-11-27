@@ -39,7 +39,7 @@
 
     .title {
         float: right;
-        margin: 0 0 0 @Cm-indentXXXSmall;
+        margin: 0 0 0 @CmIndent-XXXSmall;
     }
 
     .descr {
@@ -53,11 +53,11 @@
     }
 
     h3 {
-        margin: 0 0 @Cm-indentXXSmall;
+        margin: 0 0 @CmIndent-XXSmall;
     }
 
     .title {
-        font-weight: @Cm-boldWeight;
+        font-weight: @CmBase-Font-BoldWeight;
     }
 }
 
@@ -68,7 +68,7 @@
 /* *** TOPIC *** */
 
 .com-forum-posts {
-    margin: 0 0 @Cm-indentMedium;
+    margin: 0 0 @CmIndent-Medium;
 
     &.bottom {
         margin: 0;
@@ -80,7 +80,7 @@
         list-style: none;
 
         > li {
-            margin: @Cm-indentMedium 0 0 0;
+            margin: @CmIndent-Medium 0 0 0;
             padding: 0;
 
             &:first-child {
@@ -95,7 +95,7 @@
     border-radius: @Cm-borderRadius;
 
     .entry {
-        margin: @Cm-indentXSmall 0 0;
+        margin: @CmIndent-XSmall 0 0;
     }
 
     > .inner {
@@ -106,7 +106,7 @@
         > .l {
             width: @ComForum-postLeftColumnSize;
             position: relative;
-            padding: @Cm-indentXSmall;
+            padding: @CmIndent-XSmall;
             display: table-cell;
             vertical-align: top;
             background: @ComForum-postTitleBackground;
@@ -116,7 +116,7 @@
                 width: 0;
                 height: 0;
                 position: absolute;
-                .cm-position(@Cm-indentXSmall, 0, auto, auto);
+                .mx__position(@CmIndent-XSmall, 0, auto, auto);
                 display: block;
                 content: '';
                 border-style: solid;
@@ -126,14 +126,14 @@
         }
 
         > .r {
-            padding: @Cm-indentXSmall;
+            padding: @CmIndent-XSmall;
             display: table-cell;
             vertical-align: top;
 
             .cm-title-editable,
             .date {
-                .cm-font-hint;
-                color: @Cm-colorFontMedium;
+                .cm__font--hint;
+                color: @CmUI-FontTitleMedium-Color;
             }
 
             .cm-title-editable {
@@ -144,7 +144,7 @@
 
     .post-share {
         .cm-line-share {
-            margin: @Cm-indentMedium 0 0 0;
+            margin: @CmIndent-Medium 0 0 0;
 
             &:first-child {
                 margin: 0;
@@ -196,7 +196,7 @@
 
             .title {
                 float: left;
-                margin: 0 @Cm-indentXXXSmall 0 0;
+                margin: 0 @CmIndent-XXXSmall 0 0;
             }
             
             .descr {

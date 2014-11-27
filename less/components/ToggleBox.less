@@ -1,7 +1,7 @@
 /* ******* COMPONENT: TOGGLE BOX ******* */
 
 .com-togglebox {
-    margin: 0 0 @Cm-indentMedium 0;
+    margin: 0 0 @CmIndent-Medium 0;
 
     &.bottom {
         margin: 0;
@@ -10,23 +10,23 @@
     > dt {
         position: relative;
         cursor: pointer;
-        .cm-font-title;
-        .cm-user-select(none);
-        .cm-transition(color 0.3s ease-in-out);
+        .cm__font--ui-title;
+        .mx__user-select(none);
+        .mx__transition(color 0.3s ease-in-out);
         line-height: @ComToggleBox-size;
 
         .icon {
             height: @ComToggleBox-size;
             float: right;
-            margin: 0 0 0 @Cm-indentMedium;
+            margin: 0 0 0 @CmIndent-Medium;
             background-position: 100% 50%;
 
             &.default {
                 .icon.small.arrow-right;
                 width: @Cm-Small;
-                -webkit-transition: -webkit-transform @Cm-Transition-Duration ease-in-out;
-                    -ms-transition:     -ms-transform @Cm-Transition-Duration ease-in-out;
-                        transition:         transform @Cm-Transition-Duration ease-in-out;
+                -webkit-transition: -webkit-transform @CmVar-Transition-Duration ease-in-out;
+                    -ms-transition:     -ms-transform @CmVar-Transition-Duration ease-in-out;
+                        transition:         transform @CmVar-Transition-Duration ease-in-out;
             }
         }
 
@@ -50,7 +50,7 @@
         opacity: 1;
 
         > .inner {
-            padding: @Cm-indentXSmall 0 0 0;
+            padding: @CmIndent-XSmall 0 0 0;
         }
     }
 
@@ -62,7 +62,7 @@
 
     &.has-title-bg {
         > dt {
-            padding: 0 @Cm-indentXXSmall;
+            padding: 0 @CmIndent-XXSmall;
             background: @ComToggleBox-titleBackground;
             border-radius: @Cm-borderRadius;
         }
@@ -71,7 +71,7 @@
     &.has-content-bg {
         > dd {
             .com-togglebox-empty,
-            .com-gridlist,
+            .pt__gridlist,
             .cm-toolbar {
                 margin: 0;
                 border-top: @ComToggleBox-contentSpaceBorder;
@@ -81,25 +81,25 @@
             }
 
             .cm-toolbar {
-                padding: @Cm-indentXXSmall;
+                padding: @CmIndent-XXSmall;
             }
 
-            .com-gridlist {
+            .pt__gridlist {
                 tr {
                     td {
-                        padding: @Cm-indentXXSmall;
+                        padding: @CmIndent-XXSmall;
                         border-top: @ComToggleBox-contentBorder;
 
                         &.sort {
                             .inner {
-                                margin: -@Cm-indentXXSmall;
-                                padding: @Cm-indentXXSmall 22px @Cm-indentXXSmall @Cm-indentXXSmall;
+                                margin: -@CmIndent-XXSmall;
+                                padding: @CmIndent-XXSmall 22px @CmIndent-XXSmall @CmIndent-XXSmall;
                             }
                         }
                     }
 
                     th {
-                        padding: @Cm-indentXXSmall;
+                        padding: @CmIndent-XXSmall;
                         border-bottom: @ComToggleBox-contentBorder;
                     }
 
@@ -115,7 +115,7 @@
 
     &.is-medium {
         > dt {
-            .cm-font-title-medium;
+            .cm__font--ui-title-medium;
             line-height: @ComToggleBox-sizeMedium;
 
             .icon {
@@ -126,8 +126,8 @@
 
     &.is-ui {
         > dt {
-            .cm-font-ui;
-            font-weight: @Cm-boldWeight;
+            .cm__font--ui;
+            font-weight: @CmBase-Font-BoldWeight;
             line-height: @ComToggleBox-sizeUI;
 
             .icon {
@@ -157,10 +157,10 @@
     }
 }
 
-.com-togglebox-empty:extend(.cm-font-ui-cursive) {
-    padding: @Cm-indentXSmall;
+.com-togglebox-empty:extend(.cm__font--ui-cursive) {
+    padding: @CmIndent-XSmall;
     text-align: center;
-    color: @Cm-colorFontMedium;
+    color: @CmUI-FontTitleMedium-Color;
 }
 
 /* ******* COMPONENT: TOGGLE BOX: ADAPTIVE ******* */
@@ -170,7 +170,7 @@
     html.is-adaptive {
         .com-togglebox {
             > dd {
-                .com-gridlist {
+                .pt__gridlist {
                     tr {
                         th {
                             display: none;
@@ -187,7 +187,7 @@
 
             &.has-content-bg {
                 > dd {
-                    .com-gridlist {
+                    .pt__gridlist {
                         tr {
                             td {
                                 &:first-child {

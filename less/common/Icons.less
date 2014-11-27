@@ -1,4 +1,4 @@
-/* ******* ICONS ******* */
+/* ******* COMMON: ICONS ******* */
 
 .icon {
     background: transparent 50% 50% no-repeat;
@@ -26,11 +26,11 @@
 
     &.linked {
         cursor: pointer;
-        .cm-transition(opacity @Cm-Transition-Duration ease-in-out);
+        .mx__transition(opacity @CmVar-Transition-Duration ease-in-out);
 
         &:hover {
-            opacity: @Cm-Opacity-Hover;
-            .cm-transition(opacity @Cm-Transition-DurationReverse ease-in-out);
+            opacity: @CmVar-Opacity-Hover;
+            .mx__transition(opacity @CmVar-Transition-DurationReverse ease-in-out);
         }
     }
 
@@ -54,7 +54,7 @@
 
         &.has-caption {
             width: auto;
-            padding-left: @Cm-XSmall + @Cm-indentXXXSmall;
+            padding-left: @Cm-XSmall + @CmIndent-XXXSmall;
             line-height: @Cm-XSmall;
         }
 
@@ -77,7 +77,7 @@
 
         &.has-caption {
             width: auto;
-            padding-left: @Cm-Small + @Cm-indentXXXSmall;
+            padding-left: @Cm-Small + @CmIndent-XXXSmall;
             line-height: @Cm-Small;
         }
 
@@ -116,7 +116,7 @@
 
         &.has-caption {
             width: auto;
-            padding-left: @Cm-Medium + @Cm-indentXXXSmall;
+            padding-left: @Cm-Medium + @CmIndent-XXXSmall;
             line-height: @Cm-Medium;
         }
 
@@ -139,7 +139,7 @@
 
         &.has-caption {
             width: auto;
-            padding-left: @Cm-Large + @Cm-indentXXXSmall;
+            padding-left: @Cm-Large + @CmIndent-XXXSmall;
             line-height: @Cm-Large;
         }
 
@@ -170,7 +170,7 @@
 
         &.has-caption {
             width: auto;
-            padding-left: @Cm-XLarge + @Cm-indentXXXSmall;
+            padding-left: @Cm-XLarge + @CmIndent-XXXSmall;
             line-height: @Cm-XLarge;
         }
 
@@ -193,7 +193,7 @@
 
         &.has-caption {
             width: auto;
-            padding-left: @Cm-XXLarge + @Cm-indentXXXSmall;
+            padding-left: @Cm-XXLarge + @CmIndent-XXXSmall;
             line-height: @Cm-XXLarge;
         }
 

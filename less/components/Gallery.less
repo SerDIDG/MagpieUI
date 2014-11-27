@@ -5,7 +5,7 @@
 .com-gallery {
     position: relative;
     z-index: 1;
-    .cm-user-select(none);
+    .mx__user-select(none);
 
     > .holder {
         height: 100%;
@@ -19,7 +19,7 @@
         height: 100%;
         background-color: @ComGallery-background;
         position: absolute;
-        .cm-position(0,0,0,0);
+        .mx__position(0,0,0,0);
         z-index: 1;
         opacity: 0;
     }
@@ -27,7 +27,7 @@
     > .loader {
         display: none;
         position: absolute;
-        .cm-position(0,0,0,0);
+        .mx__position(0,0,0,0);
         z-index: 5;
         opacity: 0;
         cursor: pointer;
@@ -35,7 +35,7 @@
         .bg {
             background: @ComGallery-background;
             position: absolute;
-            .cm-position(0,0,0,0);
+            .mx__position(0,0,0,0);
             z-index: 1;
             opacity: 0.6;
         }
@@ -65,7 +65,7 @@
 /* *** PREVIEW *** */
 
 .com-gallery-preview {
-    margin: 0 0 @Cm-indentMedium 0;
+    margin: 0 0 @CmIndent-Medium 0;
     position: relative;
 
     &.bottom {
@@ -74,7 +74,7 @@
 
     > .inner {
         position: absolute;
-        .cm-position(0,0,0,0);
+        .mx__position(0,0,0,0);
     }
 
     .com-gallery {

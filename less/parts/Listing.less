@@ -3,13 +3,13 @@
 /* *** LISTING CONTENT *** */
 
 .cm-listing {
-    margin: 0 0 @Cm-indentMedium;
+    margin: 0 0 @CmIndent-Medium;
 
     &.bottom {
         margin: 0;
     }
 
-    .cm-content-tags {
+    .cm__tags {
         margin: 0;
     }
 
@@ -18,14 +18,14 @@
     }
 
     .block {
-        margin: @Cm-indentMedium 0 0 0;
+        margin: @CmIndent-Medium 0 0 0;
 
         &:first-child {
             margin: 0;
         }
 
         dt {
-            margin: 0 0 @Cm-indentXXXSmall;
+            margin: 0 0 @CmIndent-XXXSmall;
             color: @CmListing-stuffColor;
             font-weight: @CmListing-stuffFontWeight;
         }
@@ -41,7 +41,7 @@
         list-style: none;
 
         > li {
-            margin: @Cm-indentXXSmall 0 0 0;
+            margin: @CmIndent-XXSmall 0 0 0;
 
             &:first-child {
                 margin: 0;
@@ -50,14 +50,14 @@
     }
 
     .list-info {
-        .cm-font-hint;
+        .cm__font--hint;
     }
 
     .list-title {
-        font-weight: @Cm-boldWeight;
+        font-weight: @CmBase-Font-BoldWeight;
 
-        .cm-content-tags {
-            font-weight: @Cm-boldWeight;
+        .cm__tags {
+            font-weight: @CmBase-Font-BoldWeight;
         }
     }
 }
@@ -65,7 +65,7 @@
 /* *** DEFAULT *** */
 
 .cm-listing-default {
-    margin: 0 0 @Cm-indentMedium;
+    margin: 0 0 @CmIndent-Medium;
 
     &.bottom {
         margin: 0;
@@ -77,7 +77,7 @@
         list-style: none;
 
         > li {
-            margin: 0 0 @Cm-indentXSmall 0;
+            margin: 0 0 @CmIndent-XSmall 0;
 
             &:last-child {
                 margin-bottom: 0;

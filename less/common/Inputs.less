@@ -1,0 +1,106 @@
+/* ******* COMMON: INPUTS ******* */
+
+.input {
+    @padding: (@CmForm-fieldHeight - @CmBase-Font-LineHeight - @Cm-borderWidth * 2) / 2;
+
+    width: 100%;
+    height: @CmForm-fieldHeight;
+    padding: @padding @CmForm-input-padding;
+    margin: 0;
+    vertical-align: top;
+    background: #fff;
+    border: @Cm-borderStyle;
+    border-radius: @Cm-borderRadius;
+    box-shadow: none;
+    cursor: text;
+    .mx__box-sizing();
+    .mx__background-clip(padding-box);
+    .mx__transition(background @CmVar-Transition-Duration ease-in-out);
+    .mx__transition(border-color @CmVar-Transition-Duration ease-in-out);
+    .mx__transition(color @CmVar-Transition-Duration ease-in-out);
+    .mx__transition(box-shadow @CmVar-Transition-Duration ease-in-out);
+    .mx__transition(text-shadow @CmVar-Transition-Duration ease-in-out);
+
+    &.input-focus,
+    &:focus {
+        background-color: #fdffff;
+        border-color: @Cm-colorBorderHover;
+    }
+
+    &.input-disabled,
+    &[disabled] {
+        background-color: @Cm-colorLight-background;
+        border-color: @Cm-colorLight-border;
+    }
+
+    &.input-dark {
+        color: #ffffff;
+        text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+    }
+
+    &.input-light {
+        text-shadow: 0 1px 1px rgba(255, 255, 255, 0.7),
+                     0 -1px 1px rgba(255, 255, 255, 0.7),
+                     1px 0 1px rgba(255, 255, 255, 0.7),
+                     -1px 0 1px rgba(255, 255, 255, 0.7);
+    }
+
+    &.input-transparent {
+        background-color: #fdffff;
+        background-image: url("@{CmPath-Images}/parts/transparent.png");
+        text-shadow: 0 0 5px #ffffff,
+                     0 0 5px #ffffff,
+                     0 1px 1px #ffffff,
+                     0 -1px 1px #ffffff,
+                     1px 0 1px #ffffff,
+                     -1px 0 1px #ffffff;
+    }
+}
+
+.textarea {
+    height: @CmForm-textarea-height;
+    min-height: @CmForm-fieldHeight;
+    padding: @CmForm-input-padding;
+    resize: vertical;
+}
+
+.select {
+    &[multiple] {
+        height: @CmForm-select-size * @CmBase-Font-LineHeight + @Cm-borderWidth * 2;
+        padding: 0;
+    }
+}
+
+input, select, textarea {
+    .cm__font;
+    margin: 0;
+    outline: none;
+    .mx__placeholder(@Cm-colorPlaceholder);
+}
+
+input[type="file"] {
+    width: 100%;
+    cursor: pointer;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+    cursor: pointer;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="password"],
+textarea,
+select {
+    &:extend(.input all);
+}
+
+textarea {
+    &:extend(.textarea all);
+}
+
+select {
+    &:extend(.select all);
+}

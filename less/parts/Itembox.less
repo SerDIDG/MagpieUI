@@ -4,7 +4,7 @@
 
     > .l {
         float: left;
-        margin: 0 @Cm-indentXSmall 0 0;
+        margin: 0 @CmIndent-XSmall 0 0;
     }
 
     > .r {
@@ -12,7 +12,7 @@
     }
 
     .title {
-        font-weight: @Cm-boldWeight;
+        font-weight: @CmBase-Font-BoldWeight;
     }
 
     .author {
@@ -22,8 +22,8 @@
     .date,
     .count,
     .status {
-        font-size: @Cm-fontSizeHint;
-        color: @Cm-colorFontMedium;
+        font-size: @CmBase-FontHint-Size;
+        color: @CmUI-FontTitleMedium-Color;
     }
 
     .status {
@@ -37,7 +37,7 @@
     }
 
     .descr {
-        margin: @Cm-indentXXXSmall 0 0 0;
+        margin: @CmIndent-XXXSmall 0 0 0;
 
         &:first-child {
             margin: 0;
@@ -45,7 +45,7 @@
     }
 
     .btn-wrap {
-        margin: @Cm-indentXXSmall 0 ;
+        margin: @CmIndent-XXSmall 0 ;
 
         &:first-child {
             margin-top: 0;
@@ -56,7 +56,7 @@
         }
     }
 
-    .hint:extend(.cm-font-hint-cursive) {}
+    .hint:extend(.cm__font--hint-cursive) {}
 
     &:not(.is-no-overflow){
         .title:extend(.cm-text-overflow) {}
@@ -67,7 +67,7 @@
     }
 
     > .cm-imagebox {
-        margin-bottom: @Cm-indentXSmall;
+        margin-bottom: @CmIndent-XSmall;
 
         &:last-child {
             margin-bottom: 0;

@@ -1,7 +1,7 @@
 /* ******* COMPONENTS: SLIDER ******* */
 
 .com-slider {
-    margin: 0 0 @Cm-indentMedium 0;
+    margin: 0 0 @CmIndent-Medium 0;
 
     &.bottom {
         margin: 0;
@@ -18,7 +18,7 @@
 
         > .slides {
             position: absolute;
-            .cm-position(0,0,0,0);
+            .mx__position(0,0,0,0);
             z-index: 1;
 
             > ul {
@@ -26,7 +26,7 @@
 
                 overflow: hidden;
                 position: absolute;
-                .cm-position(0,0,0,0);
+                .mx__position(0,0,0,0);
 
                 > li {
                     > .cm-imagebox {
@@ -40,7 +40,7 @@
 
                         > .pull {
                             opacity: 0;
-                            .cm-transition(opacity @Cm-Transition-Duration ease-in-out);
+                            .mx__transition(opacity @CmVar-Transition-Duration ease-in-out);
                         }
                     }
 
@@ -57,15 +57,15 @@
                     }
 
                     > .text {
-                        padding: @Cm-indentMedium;
+                        padding: @CmIndent-Medium;
                         position: absolute;
                         z-index: 2;
                         overflow: hidden;
                         text-shadow: 0 1px 4px rgba(0,0,0,0.35);
-                        .cm-user-select(text);
-                        .cm-position(0,0,0,0);
+                        .mx__user-select(text);
+                        .mx__position(0,0,0,0);
 
-                        .cm-content-tags {
+                        .cm__tags {
                             color: #fff;
                         }
                     }
@@ -79,7 +79,7 @@
                         position: absolute;
                         z-index: 1;
                         opacity: 0;
-                        .cm-position(0,0,0,0);
+                        .mx__position(0,0,0,0);
 
                         &:first-child {
                             display: block;
@@ -123,7 +123,7 @@
     }
 
     &.has-border {
-        padding: @Cm-indentXSmall;
+        padding: @CmIndent-XSmall;
         border: @Cm-borderBox;
     }
 }

@@ -1,7 +1,7 @@
 /* ******* TABSET ******* */
 
 .com-tabset {
-    margin: 0 0 @Cm-indentMedium;
+    margin: 0 0 @CmIndent-Medium;
 
     &.bottom {
         margin: 0;
@@ -23,11 +23,11 @@
             background: @ComTabset-tabsBackground;
             border: @Cm-borderStyle;
             border-radius: @ComTabset-borderRadius @ComTabset-borderRadius 0 0;
-            .cm-transition(all @Cm-Transition-Duration ease-in-out);
+            .mx__transition(all @CmVar-Transition-Duration ease-in-out);
 
             &:hover {
                 background: @ComTabset-tabsBackgroundHover;
-                .cm-transition(all @Cm-Transition-DurationReverse ease-in-out);
+                .mx__transition(all @CmVar-Transition-DurationReverse ease-in-out);
             }
 
             &:last-child {
@@ -40,7 +40,7 @@
 
             a {
                 display: block;
-                padding: 0 @Cm-indentXSmall;
+                padding: 0 @CmIndent-XSmall;
                 .cm-text-overflow;
                 line-height: @ComTabset-tabsHeight;
                 color: @ComTabset-tabsColor;
@@ -54,7 +54,7 @@
     &:extend(.cm-text-overflow);
     display: none;
     overflow: hidden;
-    padding: 0 @Cm-indentMedium;
+    padding: 0 @CmIndent-Medium;
     border: @Cm-borderStyle;
     border-bottom: none;
     background: @ComTabset-tabsTitle;
@@ -66,7 +66,7 @@
     height: @ComTabset-tabsHeight;
     display: none;
     position: absolute;
-    .cm-position(@Cm-borderWidth, @Cm-borderWidth, @Cm-borderWidth, auto);
+    .mx__position(@Cm-borderWidth, @Cm-borderWidth, @Cm-borderWidth, auto);
 
     .icon {
         width: @ComTabset-tabsHeight;
@@ -87,7 +87,7 @@
 .com-tabset-content {
     position: relative;
     z-index: 1;
-    padding: @Cm-indentMedium;
+    padding: @CmIndent-Medium;
     background: #fff;
     border: @Cm-borderStyle;
     border-radius: 0 @ComTabset-borderRadius @ComTabset-borderRadius @ComTabset-borderRadius;

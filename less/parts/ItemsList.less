@@ -2,7 +2,7 @@
 
 .cm-items-list {
     ul {
-        max-height: @CmItemsList-count * (@Cm-lineHeight + @CmItemsList-indent + @CmItemsList-padding-y * 2) - @CmItemsList-indent;
+        max-height: @CmItemsList-count * (@CmBase-Font-LineHeight + @CmItemsList-indent + @CmItemsList-padding-y * 2) - @CmItemsList-indent;
         margin: 0;
         padding: 0;
         overflow-x: hidden;
@@ -19,36 +19,36 @@
             a {
                 display: block;
                 padding: @CmItemsList-padding-y 4px;
-                line-height: @Cm-lineHeight;
+                line-height: @CmBase-Font-LineHeight;
                 font-weight: normal;
                 text-decoration: none;
-                color: @Cm-colorFont;
-                .cm-transition(all 0.3s ease-in-out);
+                color: @CmBase-Font-Color;
+                .mx__transition(all 0.3s ease-in-out);
 
                 .icon {
                     display: inline-block;
                     vertical-align: top;
-                    margin: 0 @Cm-indentXXSmall 0 0;
+                    margin: 0 @CmIndent-XXSmall 0 0;
 
                     &.small {
-                        margin-top: (@Cm-lineHeight - @Cm-Small) / 2;
+                        margin-top: (@CmBase-Font-LineHeight - @Cm-Small) / 2;
                     }
                 }
 
                 &:hover {
                     text-decoration: none;
-                    .cm-transition(all 0.1s ease-in-out);
+                    .mx__transition(all 0.1s ease-in-out);
                 }
             }
 
             .title {
                 padding: @CmItemsList-padding-y 4px;
-                line-height: @Cm-lineHeight;
-                font-weight: @Cm-boldWeight;
+                line-height: @CmBase-Font-LineHeight;
+                font-weight: @CmBase-Font-BoldWeight;
             }
 
             .cm-items-list {
-                margin: @CmItemsList-indent 0 0 @Cm-indentXSmall;
+                margin: @CmItemsList-indent 0 0 @CmIndent-XSmall;
 
                 &:first-child {
                     margin-top: 0;

@@ -65,35 +65,6 @@
 
 /* *** FONT *** */
 
-.cm-block-padding {
-    padding: @Cm-indentMedium;
-}
-
-.link {
-    #cm > .font-link;
-}
-
-.inner-link {
-    .link;
-    text-decoration: none;
-    border-bottom: 1px dashed;
-
-    &:hover {
-        text-decoration: none;
-        border-bottom-color: transparent;
-    }
-}
-
-.inherit-link {
-    color: inherit;
-    cursor: pointer;
-    text-decoration: none;
-}
-
-.inherit-link:hover {
-    text-decoration: underline;
-}
-
 .mark-new {
     display: inline-block;
     margin: 0 0 0 6px;
@@ -108,9 +79,7 @@
     background: @Cm-colorMark;
 }
 
-.cm-page-title {
-    margin: 0 0 @Cm-indentMedium;
-}
+
 
 /* *** BUNDLE *** */
 
@@ -143,9 +112,9 @@
     text-align: center;
     line-height: @CmCounter-size;
     font-size: @CmCounter-fontSize;
-    font-weight: @Cm-fontWeight;
+    font-weight: @CmBase-Font-Weight;
     color: @CmCounter-color;
-    .cm-transition(all @Cm-Transition-Duration ease-in-out);
+    .mx__transition(all @CmVar-Transition-Duration ease-in-out);
 }
 
 .cm-codebox {
@@ -192,7 +161,7 @@
 }
 
 .cm-view-all {
-    margin: @Cm-indentMedium 0 0 0;
+    margin: @CmIndent-Medium 0 0 0;
     text-align: right;
 
     &.pull-left {
@@ -222,7 +191,7 @@
 }
 
 .cm-list {
-    margin: 0 0 @Cm-indentMedium;
+    margin: 0 0 @CmIndent-Medium;
     list-style: disc;
 
     &.bottom {
@@ -231,7 +200,7 @@
 
     &.has-indent {
         ul, li {
-            margin: @Cm-indentXXSmall 0 0 0;
+            margin: @CmIndent-XXSmall 0 0 0;
 
             &:first-child {
                 margin: 0;
@@ -248,7 +217,7 @@
     }
 }
 
-.cm-transition-none {
+.cm__transition-none {
     -webkit-transition: none;
             transition: none;
 }
@@ -266,7 +235,7 @@
 /* *** CONTENT BUTTONS LINE *** */
 
 .buttons {
-    margin: 0 0 @Cm-indentMedium 0;
+    margin: 0 0 @CmIndent-Medium 0;
     font-size: 0;
 
     &.bottom {
@@ -290,11 +259,11 @@
         position: absolute;
         left: 0;
         top: 0;
-        .cm-transition(width @Cm-Transition-Duration ease-in-out);
-        .cm-transition(background-color @Cm-Transition-Duration ease-in-out);
+        .mx__transition(width @CmVar-Transition-Duration ease-in-out);
+        .mx__transition(background-color @CmVar-Transition-Duration ease-in-out);
     }
 
-    .com-gridlist & {
+    .pt__gridlist & {
         width: 100%;
         display: inline-block;
         vertical-align: middle;
@@ -322,7 +291,7 @@
     &.position {
         height: auto;
         position: absolute;
-        .cm-position(0,0,0,0);
+        .mx__position(0,0,0,0);
     }
 
     > .inner {
@@ -339,7 +308,7 @@
 
 /* *** SELECTABLE*** */
 
-.cm-selectable {
+.selectable {
     position: relative;
     border-radius: 3px;
     cursor: pointer;
@@ -386,7 +355,7 @@
                 td {
                     width: 100% !important;
                     display: block;
-                    margin: @Cm-indentMedium 0 0 0;
+                    margin: @CmIndent-Medium 0 0 0;
 
                     &:first-child {
                         margin: 0;

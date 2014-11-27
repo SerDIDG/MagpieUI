@@ -13,7 +13,7 @@
     .links,
     .status {
         float: left;
-        margin: 0 @Cm-indentXSmall 0 0;
+        margin: 0 @CmIndent-XSmall 0 0;
         line-height: inherit;
         font-size: inherit;
 
@@ -37,13 +37,13 @@
     }
 
     .date {
-        color: @Cm-colorFontMedium;
+        color: @CmUI-FontTitleMedium-Color;
     }
 
     .category,
     .author {
         a, span {
-            font-weight: @Cm-boldWeight;
+            font-weight: @CmBase-Font-BoldWeight;
         }
     }
 }
@@ -54,10 +54,10 @@
     > ul {
         .cm-ul-clear;
         .cm-ul-inline;
-        margin: 0 0 -@Cm-indentXXSmall 0;
+        margin: 0 0 -@CmIndent-XXSmall 0;
 
         > li {
-            margin: 0 @Cm-indentXXSmall @Cm-indentXXSmall 0;
+            margin: 0 @CmIndent-XXSmall @CmIndent-XXSmall 0;
 
             &:last-child {
                 margin-right: 0;
@@ -73,14 +73,14 @@
 
                 &:hover {
                     .icon.default {
-                        opacity: @Cm-Opacity-Hover;
-                        .cm-transition(opacity @Cm-Transition-DurationReverse ease-in-out);
+                        opacity: @CmVar-Opacity-Hover;
+                        .mx__transition(opacity @CmVar-Transition-DurationReverse ease-in-out);
                     }
 
                     .label,
                     .count {
                         background-color: @Cm-colorLight-backgroundHover;
-                        .cm-transition(background @Cm-Transition-DurationReverse ease-in-out);
+                        .mx__transition(background @CmVar-Transition-DurationReverse ease-in-out);
                     }
 
                     .label {
@@ -116,7 +116,7 @@
         &.default {
             width: @CmShareLine-iconSize;
             height: @CmShareLine-iconSize;
-            .cm-transition(opacity @Cm-Transition-Duration ease-in-out);
+            .mx__transition(opacity @CmVar-Transition-Duration ease-in-out);
 
             &.facebook {
                 .icon.large.facebook;
@@ -136,13 +136,13 @@
         }
     }
 
-    .label:extend(.cm-font-ui),
-    .count:extend(.cm-font-ui) {
+    .label:extend(.cm__font--ui),
+    .count:extend(.cm__font--ui) {
         display: inline-block;
         vertical-align: top;
-        padding: 0 @Cm-indentXSmall;
+        padding: 0 @CmIndent-XSmall;
         line-height: @CmShareLine-iconSize;
-        .cm-transition(background @Cm-Transition-Duration ease-in-out);
+        .mx__transition(background @CmVar-Transition-Duration ease-in-out);
     }
 
     .label {

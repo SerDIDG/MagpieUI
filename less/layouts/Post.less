@@ -6,7 +6,7 @@
     position: relative;
 
     .post-title {
-        margin: 0 0 @Cm-indentXXXSmall;
+        margin: 0 0 @CmIndent-XXXSmall;
 
         .cm-title-editable {
             margin: 0;
@@ -15,7 +15,7 @@
 
     .post-info,
     .post-tags {
-        .cm-font-hint;
+        .cm__font--hint;
     }
 
     .post-info {
@@ -29,13 +29,13 @@
         }
 
         &.is-bottom {
-            margin: @Cm-indentXSmall 0 0 0;
+            margin: @CmIndent-XSmall 0 0 0;
         }
     }
 
     .post-share {
         .cm-line-share {
-            margin: @Cm-indentMedium 0 0 0;
+            margin: @CmIndent-Medium 0 0 0;
 
             &:first-child {
                 margin: 0;
@@ -44,7 +44,7 @@
     }
 
     .post-abstract {
-        .cm-content-tags {
+        .cm__tags {
             margin: 0;
         }
     }
@@ -53,14 +53,14 @@
     .post-abstract,
     .post-entry,
     .post-tags {
-        margin: @Cm-indentXSmall 0 0 0;
+        margin: @CmIndent-XSmall 0 0 0;
     }
 
     &.is-pending,
     &.is-featured {
         &:before {
             position: absolute;
-            .cm-position(-@Cm-indentXXSmall, -@Cm-indentXXSmall, -@Cm-indentXXSmall, -@Cm-indentXXSmall);
+            .mx__position(-@CmIndent-XXSmall, -@CmIndent-XXSmall, -@CmIndent-XXSmall, -@CmIndent-XXSmall);
             display: block;
             z-index: -1;
             content: '';
@@ -87,7 +87,7 @@
         .post-entry,
         .post-abstract,
         .post-tags {
-            margin: @Cm-indentMedium 0 0 0;
+            margin: @CmIndent-Medium 0 0 0;
         }
     }
 }
@@ -96,7 +96,7 @@
 
 .lt__posts {
     .lt__post {
-        margin: @Cm-indentLarge 0 0;
+        margin: @CmIndent-Large 0 0;
 
         &:first-child {
             margin: 0;

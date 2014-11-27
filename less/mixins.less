@@ -1,42 +1,42 @@
-.cm-opacity-ie (@opacity) {
+.mx__opacity-ie (@opacity) {
     filter: ~"progid:DXImageTransform.Microsoft.Alpha(opacity=@{opacity})";
 }
 
-.cm-user-select (@value: none) {
+.mx__user-select (@value: none) {
     -webkit-user-select: @value;
        -moz-user-select: @value;
             user-select: @value;
 }
 
-.cm-position (@top: auto, @right: auto, @bottom: auto, @left: auto) {
+.mx__position (@top: auto, @right: auto, @bottom: auto, @left: auto) {
     top: @top;
     right: @right;
     bottom: @bottom;
     left: @left;
 }
 
-.cm-transition (@properties: none) {
+.mx__transition (@properties: none) {
     -webkit-transition+: @properties;
             transition+: @properties;
 }
 
-.cm-linear-gradient (@params) {
+.mx__linear-gradient (@params) {
     background-image: -webkit-linear-gradient(@params);
     background-image: linear-gradient(@params);
 }
 
-.cm-box-sizing (@value: border-box) {
+.mx__box-sizing (@value: border-box) {
     -moz-box-sizing: @value;
          box-sizing: @value;
 }
 
-.cm-background-clip (@value: border-box) {
+.mx__background-clip (@value: border-box) {
     -webkit-background-clip: @value;
        -moz-background-clip: @value;
             background-clip: @value;
 }
 
-.cm-placeholder (@color) {
+.mx__placeholder (@color) {
     &::-webkit-input-placeholder {
         opacity: 1;
         color: @color;
@@ -55,19 +55,22 @@
     }
 }
 
-.cm-flex (@value: auto) {
+.mx__flex (@value: auto) {
     -webkit-flex: @value;
         -ms-flex: @value;
             flex: @value;
 }
 
-.cm-flex-flow (@value: row nowrap) {
+.mx__flex-flow (@value: row nowrap) {
     -webkit-flex-flow: @value;
         -ms-flex-flow: @value;
             flex-flow: @value;
 }
 
-// /* *** FOREACH by https://github.com/seven-phases-max ***/
+// /* ******* VENDORS ******* */
+
+// /* *** FOREACH ***/
+// /* https://github.com/seven-phases-max */
 
 // ............................................................
 // .for

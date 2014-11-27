@@ -1,14 +1,14 @@
 /* ******* TOOLBAR ********** */
 
 .cm-toolbar {
-    margin: 0 0 @Cm-indentMedium;
+    margin: 0 0 @CmIndent-Medium;
 
     &.bottom {
         margin: 0;
     }
 
     > .inner {
-        margin: 0 0 -@Cm-indentMedium;
+        margin: 0 0 -@CmIndent-Medium;
         font-size: 0;
         display: -webkit-flex;
         display: flex;
@@ -42,16 +42,16 @@
             max-width: 100%;
             display: inline-block;
             vertical-align: top;
-            margin: 0 @CmToolbar-itemIndent @Cm-indentMedium 0;
+            margin: 0 @CmToolbar-itemIndent @CmIndent-Medium 0;
             line-height: @CmForm-fieldHeight;
-            font-size: @Cm-fontSize;
+            font-size: @CmBase-Font-Size;
 
             &:last-child {
                 margin-right: 0;
             }
 
             &.label {
-                margin-right: @Cm-indentXXSmall;
+                margin-right: @CmIndent-XXSmall;
             }
 
             &.is-icon {

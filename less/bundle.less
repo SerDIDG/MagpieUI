@@ -2,176 +2,12 @@
 
     // /* ******* STATIC CLASSES ******* */
 
-    /* *** FONT *** */
-
-    .font-base {
-        font: @Cm-fontWeight ~'@{Cm-fontSize}/@{Cm-lineHeight}' @Cm-fontFamily;
-        color: @Cm-colorFont;
-    }
-
-    .font-ui {
-        font: @Cm-fontWeight ~'@{Cm-fontSizeUI}/@{Cm-lineHeight}' @Cm-fontFamily;
-        color: @Cm-colorFont;
-    }
-
-    .font-ui-cursive {
-        #cm > .font-ui;
-        font-style: italic;
-    }
-
-    .font-title {
-        font: 300 ~'@{Cm-fontSizeTitle}/@{Cm-lineHeightTitle}' 'Open Sans', @Cm-fontFamily;
-        color: @Cm-colorFontTitle;
-    }
-
-    .font-title-medium {
-        font: 300 ~'@{Cm-fontSizeTitleMedium}/@{Cm-lineHeightTitleMedium}' 'Open Sans', @Cm-fontFamily;
-        color: @Cm-colorFontTitle;
-    }
-
-    .font-hint {
-        font: @Cm-fontWeight ~'@{Cm-fontSizeHint}/@{Cm-lineHeight}' @Cm-fontFamily;
-        color: @Cm-colorFont;
-    }
-
-    .font-hint-cursive {
-        #cm > .font-hint;
-        font-style: italic;
-        color: @Cm-colorHint;
-    }
-
-    .font-link {
-        text-decoration: underline;
-        color: @Cm-colorLink;
-        outline: none;
-        cursor: pointer;
-
-        &:hover {
-            text-decoration: none;
-            color: @Cm-colorLinkHover;
-        }
-    }
-
-    /* *** ELEMENTS *** */
-
-    .hr {
-        height: 0;
-        overflow: hidden;
-        border: none;
-        border-top: @Cm-borderSeparator;
-        margin: @Cm-indentMedium 0;
-        padding: 0;
-        display: block;
-        clear: both;
-    }
-
-    .box-flat {
-        padding: @Cm-indentXSmall;
-        background: @Cm-background-light;
-        border-radius: @Cm-borderRadius;
-    }
-
-    .box-border {
-        padding: @Cm-indentXSmall;
-        border: @Cm-borderBox;
-        .cm-transition(border-color @Cm-Transition-Duration ease-in-out);
-
-        &.active {
-            border: @Cm-borderBoxActive;
-        }
-    }
-
     // /* ******* FORM ELEMENTS ******* */
-
-    // /* *** INPUT *** */
-
-    .input {
-        @padding: (@CmForm-fieldHeight - @Cm-lineHeight - @Cm-borderWidth * 2) / 2;
-
-        width: 100%;
-        height: @CmForm-fieldHeight;
-        padding: @padding @CmForm-input-padding;
-        margin: 0;
-        vertical-align: top;
-        background: #fff;
-        border: @Cm-borderStyle;
-        border-radius: @Cm-borderRadius;
-        box-shadow: none;
-        cursor: text;
-        .cm-box-sizing();
-        .cm-background-clip(padding-box);
-        .cm-transition(background @Cm-Transition-Duration ease-in-out);
-        .cm-transition(border-color @Cm-Transition-Duration ease-in-out);
-        .cm-transition(color @Cm-Transition-Duration ease-in-out);
-        .cm-transition(box-shadow @Cm-Transition-Duration ease-in-out);
-        .cm-transition(text-shadow @Cm-Transition-Duration ease-in-out);
-
-        &:focus {
-            #cm > .input-focus;
-        }
-
-        &[disabled] {
-            #cm > .input-disabled;
-        }
-
-        &.input-dark {
-            #cm > .input-dark;
-        }
-
-        &.input-light {
-            #cm > .input-light;
-        }
-
-        &.input-transparent {
-            #cm > .input-transparent;
-        }
-    }
-
-    .input-focus {
-        background-color: #fdffff;
-        border-color: @Cm-colorBorderHover;
-    }
-
-    .input-disabled {
-        background-color: @Cm-colorLight-background;
-        border-color: @Cm-colorLight-border;
-    }
-
-    .input-light {
-        text-shadow: 0 1px 1px rgba(255, 255, 255, 0.7),
-                     0 -1px 1px rgba(255, 255, 255, 0.7),
-                     1px 0 1px rgba(255, 255, 255, 0.7),
-                    -1px 0 1px rgba(255, 255, 255, 0.7);
-    }
-
-    .input-dark {
-        color: #ffffff;
-        text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
-    }
-
-    .input-transparent {
-        background-color: #fdffff;
-        background-image: url("@{CmPath-Images}/parts/transparent.png");
-        text-shadow: 0 0 5px #ffffff,
-                     0 0 5px #ffffff,
-                     0 1px 1px #ffffff,
-                     0 -1px 1px #ffffff,
-                     1px 0 1px #ffffff,
-                    -1px 0 1px #ffffff;
-    }
-
-    // /* *** TEXTAREA *** */
-
-    .textarea {
-        height: @CmForm-textarea-height;
-        min-height: @CmForm-fieldHeight;
-        padding: @CmForm-input-padding;
-        resize: vertical;
-    }
 
     // /* *** BUTTONS *** */
 
     .button {
+        .cm-text-overflow;
         height: @CmForm-fieldHeight;
         margin: 0;
         padding: 0 @CmElement-button-paddingX;
@@ -179,7 +15,6 @@
         display: inline-block;
         vertical-align: top;
         -webkit-appearance: none;
-        .cm-box-sizing();
         -webkit-background-clip: border-box;
            -moz-background-clip: border-box;
                 background-clip: border-box;
@@ -188,15 +23,15 @@
         text-align: center;
         text-decoration: none;
         line-height: @CmForm-fieldHeight;
-        font-size: @Cm-fontSize;
+        font-size: @CmBase-Font-Size;
         white-space: nowrap;
-        .cm-text-overflow;
         cursor: pointer;
-        .cm-user-select();
+        .mx__box-sizing();
+        .mx__user-select();
         #cm > .button-primary;
-        .cm-transition(background-color @Cm-Transition-Duration ease-in-out);
-        .cm-transition(color @Cm-Transition-Duration ease-in-out);
-        .cm-transition(box-shadow @Cm-Transition-Duration ease-in-out);
+        .mx__transition(background-color @CmVar-Transition-Duration ease-in-out);
+        .mx__transition(color @CmVar-Transition-Duration ease-in-out);
+        .mx__transition(box-shadow @CmVar-Transition-Duration ease-in-out);
 
         &.wide {
             width: 100%;
@@ -235,9 +70,9 @@
 
     .button-hover {
         text-decoration: none;
-        .cm-transition(background-color @Cm-Transition-DurationReverse ease-in-out);
-        .cm-transition(color @Cm-Transition-DurationReverse ease-in-out);
-        .cm-transition(box-shadow @Cm-Transition-DurationReverse ease-in-out);
+        .mx__transition(background-color @CmVar-Transition-DurationReverse ease-in-out);
+        .mx__transition(color @CmVar-Transition-DurationReverse ease-in-out);
+        .mx__transition(box-shadow @CmVar-Transition-DurationReverse ease-in-out);
     }
 
     .button-primary {

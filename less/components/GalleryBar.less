@@ -2,7 +2,7 @@
 
 .com-gallery-bar {
     position: relative;
-    .cm-user-select(none);
+    .mx__user-select(none);
 
     .bar-arrow {
         position: absolute;
@@ -10,8 +10,8 @@
         opacity: 0;
         cursor: pointer;
         background-color: rgba(255,255,255,0.7);
-        .cm-transition(background-color @Cm-Transition-Duration ease-in-out);
-        .cm-transition(opacity @Cm-Transition-Duration ease-in-out);
+        .mx__transition(background-color @CmVar-Transition-Duration ease-in-out);
+        .mx__transition(opacity @CmVar-Transition-Duration ease-in-out);
 
         &:hover {
             background-color: rgba(255,255,255,0.9);
@@ -22,7 +22,7 @@
         margin: 0;
         position: relative;
         z-index: 1;
-        #cm > .pt__grid__indent(@Cm-indentXSmall / 2);
+        .pt__grid__indent(@CmIndent-XSmall / 2);
 
         > ul {
             overflow: hidden;
@@ -38,7 +38,7 @@
 
         .bar-arrow {
             width: @ComGalleryLayout-arrowWidth;
-            .cm-position(0, auto, 0, auto);
+            .mx__position(0, auto, 0, auto);
 
             &.prev {
                 left: 0;
@@ -61,14 +61,14 @@
 
             > ul {
                 position: absolute;
-                .cm-position(0,0,0,0);
+                .mx__position(0,0,0,0);
             }
         }
 
         .bar-arrow {
             width: 100%;
             height: @ComGalleryLayout-arrowWidth;
-            .cm-position(auto, 0, auto, 0);
+            .mx__position(auto, 0, auto, 0);
 
             &.prev {
                 top: 0;

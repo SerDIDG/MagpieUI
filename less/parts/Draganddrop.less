@@ -3,18 +3,18 @@
 .cm-draganddrop-body,
 .cm-draganddrop-body * {
     cursor: move !important;
-    .cm-user-select(none);
+    .mx__user-select(none);
 }
 
 .cm-draganddrop-helper {
     position: fixed;
     z-index: 9000;
-    .cm-user-select(none);
+    .mx__user-select(none);
 }
 
 .cm-draganddrop-chassis {
     height: 0;
-    .cm-transition(height 0s linear);
+    .mx__transition(height 0s linear);
 }
 
 .cm-draganddrop-removable {
@@ -22,15 +22,15 @@
 }
 
 .cm-draganddrop-area {
-    min-height: @Cm-indentMedium;
+    min-height: @CmIndent-Medium;
     padding: @CmDraganddrop-areaPadding;
     position: relative;
 
     &.is-available {
-        .cm-transition(background-color @Cm-Transition-Duration ease-in-out);
+        .mx__transition(background-color @CmVar-Transition-Duration ease-in-out);
 
         &:before {
-            .cm-transition(border-color @Cm-Transition-Duration ease-in-out);
+            .mx__transition(border-color @CmVar-Transition-Duration ease-in-out);
         }
 
         &.is-highlight {
@@ -39,7 +39,7 @@
 
             &:before {
                 position: absolute;
-                .cm-position(-1px,-1px,-1px,-1px);
+                .mx__position(-1px,-1px,-1px,-1px);
                 display: block;
                 content: '';
                 border: @CmDraganddrop-areaHighlightBorder;

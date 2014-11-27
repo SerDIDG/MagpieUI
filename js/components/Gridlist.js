@@ -55,14 +55,14 @@ Com['Gridlist'] = function(o){
         var pagesCount;
         // Container
         config['container'].appendChild(
-            nodes['container'] = cm.Node('div', {'class' : 'com-gridlist-container'})
+            nodes['container'] = cm.Node('div', {'class' : 'com__gridlist'})
         );
         // Add css class
         !cm.isEmpty(config['className']) && cm.addClass(nodes['container'], config['className']);
         // Counter
         if(config['showCounter']){
             nodes['container'].appendChild(
-                cm.Node('div', {'class' : 'com-gridlist-counter'}, lang('counter') + config['data'].length)
+                cm.Node('div', {'class' : 'pt__gridlist__counter'}, lang('counter') + config['data'].length)
             );
         }
         // Sort data array for first time
@@ -101,7 +101,7 @@ Com['Gridlist'] = function(o){
             'page' : page
         });
         // Render Table
-        nodes['table'] = cm.Node('div', {'class' : 'com-gridlist bottom'},
+        nodes['table'] = cm.Node('div', {'class' : 'pt__gridlist'},
             cm.Node('table',
                 cm.Node('thead',
                     nodes['title'] = cm.Node('tr')

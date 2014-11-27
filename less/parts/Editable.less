@@ -29,7 +29,7 @@
             border: @Cm-borderEditable;
             border-radius: @Cm-borderRadius;
             opacity: 0;
-            .cm-transition(all @Cm-Transition-Duration ease-in-out);
+            .mx__transition(all @CmVar-Transition-Duration ease-in-out);
         }
 
         > .inner {
@@ -59,7 +59,7 @@
             border-radius: @Cm-borderRadius;
             cursor: move;
             visibility: hidden;
-            .cm-transition(all @Cm-Transition-Duration ease-in-out);
+            .mx__transition(all @CmVar-Transition-Duration ease-in-out);
 
             .icon {
                 width: 34px;
@@ -70,7 +70,7 @@
 
             &:hover {
                 background: @Cm-colorSecondaryHover;
-                .cm-transition(all @Cm-Transition-DurationReverse ease-in-out);
+                .mx__transition(all @CmVar-Transition-DurationReverse ease-in-out);
             }
 
             &:not(.is-bottom) {
@@ -90,7 +90,7 @@
             right: -12px;
             opacity: 0;
             cursor: pointer;
-            .cm-transition(all @Cm-Transition-Duration ease-in-out);
+            .mx__transition(all @CmVar-Transition-Duration ease-in-out);
 
             .icon {
                 width: 24px;
@@ -106,7 +106,7 @@
             .cm-menu-dropdown {
                 .cm-menu-dropdown--base;
                 z-index: 1;
-                .cm-position(12px, 12px, auto, auto);
+                .mx__position(12px, 12px, auto, auto);
             }
 
             &:hover {
@@ -131,13 +131,13 @@
             left: -16px;
             opacity: 1;
             background: #ffffff;
-            .cm-transition(all @Cm-Transition-DurationReverse ease-in-out);
+            .mx__transition(all @CmVar-Transition-DurationReverse ease-in-out);
         }
 
         > .drag {
             opacity: 1;
             visibility: visible;
-            .cm-transition(all @Cm-Transition-DurationReverse ease-in-out);
+            .mx__transition(all @CmVar-Transition-DurationReverse ease-in-out);
 
             &:not(.is-bottom) {
                 top: -28px;
@@ -152,7 +152,7 @@
             top: -28px;
             right: -28px;
             opacity: 1;
-            .cm-transition(all @Cm-Transition-DurationReverse ease-in-out);
+            .mx__transition(all @CmVar-Transition-DurationReverse ease-in-out);
         }
     }
 
@@ -164,7 +164,7 @@
 }
 
 .cm-editable {
-    margin: 0 0 @Cm-indentMedium;
+    margin: 0 0 @CmIndent-Medium;
 
     &.bottom {
         margin: 0;

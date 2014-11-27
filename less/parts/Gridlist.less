@@ -1,0 +1,205 @@
+/* ******* PARTS: GRIDLIST ******* */
+
+.pt__gridlist {
+    margin: 0 0 @CmIndent-Medium;
+    overflow: hidden;
+
+    &.bottom {
+        margin: 0;
+    }
+
+    table {
+        width: 100%;
+        table-layout: fixed;
+        border-collapse: separate;
+
+        td, th {
+            vertical-align: top;
+            text-align: left;
+            padding: @PtGridlist-PaddingInner;
+            .mx__background-clip(padding-box);
+
+            > .inner {
+                display: block;
+                position: relative;
+                .cm-text-overflow;
+                word-wrap: normal;
+                text-decoration: none;
+            }
+
+            &.pull-left {
+                text-align: left;
+            }
+
+            &.pull-center {
+                text-align: center;
+            }
+
+            &.pull-right {
+                text-align: right;
+            }
+
+            &.cell-title {
+                width: 20%;
+            }
+
+            &.cell-description {
+                width: auto;
+            }
+
+            &.cell-status {
+                width: 100px;
+            }
+
+            &.cell-links {
+                width: 200px;
+            }
+        }
+
+        th {
+            font-weight: @CmBase-Font-BoldWeight;
+            font-size: @PtGridlist-FontTitle-Size;
+            .mx__user-select(none);
+
+            &.sort {
+                .mx__transition(background-color 0.3s ease-in-out);
+
+                &:hover {
+                    background: @CmColor-LightHover;
+                    .mx__transition(background-color 0.1s ease-in-out);
+                }
+
+                &:active {
+                    background: @CmColor-LightActive;
+                }
+
+                .inner {
+                    display: block;
+                    margin: -@PtGridlist-PaddingInner;
+                    padding: @PtGridlist-PaddingInner 20px @PtGridlist-PaddingInner @PtGridlist-PaddingInner;
+                    cursor: pointer;
+                }
+
+                .arrow {
+                    display: block;
+                    position: absolute;
+                    top: 50%;
+                    right: @PtGridlist-PaddingInner;
+                    margin: -3px 0 0 0;
+                }
+            }
+        }
+
+        td {
+            vertical-align: top;
+            border-top: 1px solid transparent;
+            word-wrap: break-word;
+            font-size: @PtGridlist-Font-Size;
+        }
+
+        tr {
+            &:hover {
+                td {
+                    background-color: @CmColor-Secondary-LightHover;
+                }
+            }
+
+            &.active {
+                td {
+                    background-color: @CmColor-LightActive;
+                }
+
+                &:hover {
+                    td {
+                        background-color: @CmColor-LightActiveHover;
+                    }
+                }
+            }
+
+            &.valid {
+                td {
+                    background-color: @CmColor-Valid-LightActive;
+                }
+
+                &:hover {
+                    td {
+                        background-color: @CmColor-Valid-LightActiveHover;
+                    }
+                }
+            }
+
+            &.invalid {
+                td {
+                    background-color: @CmColor-Invalid-LightActive;
+                }
+
+                &:hover {
+                    td {
+                        background-color: @CmColor-Invalid-LightActiveHover;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.pt__gridlist__counter {
+    margin: 0 0 @CmIndent-Medium;
+
+    &.bottom {
+        margin: 0;
+    }
+}
+
+.pt__gridlist__indent {
+    width: @Cm-XSmall;
+    display: inline-block;
+    vertical-align: top;
+    text-align: left;
+}
+
+/* *** STUFF *** */
+
+.pt__gridlist {
+    .control {
+        .icon {
+            display: inline-block;
+            vertical-align: middle;
+            cursor: pointer;
+        }
+
+        input[type="checkbox"],
+        input[type="radio"] {
+            vertical-align: middle;
+            margin: 0;
+        }
+    }
+
+    .cm-form-icons-inside {
+        .text {
+            font-size: @PtGridlist-Font-Size;
+        }
+    }
+}
+
+/* ******* PARTS: GRIDLIST: ADAPTIVE ******* */
+
+@media only screen and (max-width : @PtGridlist-AdaptiveFrom) {
+
+    html.is-adaptive {
+        .pt__gridlist {
+            &.is-adaptive {
+                tr {
+                    td, th {
+                        width: auto;
+                        display: block;
+                    }
+                    td:first-child {
+                        border-top: 1px solid @Cm-colorBorder;
+                    }
+                }
+            }
+        }
+    }
+
+}

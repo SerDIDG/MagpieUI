@@ -1,10 +1,10 @@
 /* ******* PART: IMAGE BOX ******* */
 
 .cm-imagebox {
-    @title-bottom: (@CmImagebox-titlePaddingTop * 2) + @Cm-lineHeight;
+    @title-bottom: (@CmImagebox-titlePaddingTop * 2) + @CmBase-Font-LineHeight;
 
     position: relative;
-    .cm-user-select(none);
+    .mx__user-select(none);
 
     > .inner {
         display: block;
@@ -16,17 +16,17 @@
         > .descr:extend(.cm-image-resizable all) {
             position: relative;
             z-index: 1;
-            .cm-transition(opacity @Cm-Transition-Duration ease-in-out);
+            .mx__transition(opacity @CmVar-Transition-Duration ease-in-out);
         }
 
         > .text {
-            padding: @Cm-indentMedium;
+            padding: @CmIndent-Medium;
             position: absolute;
             z-index: 2;
-            .cm-position(0,0,0,0);
+            .mx__position(0,0,0,0);
             overflow: hidden;
             text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
-            .cm-user-select(text);
+            .mx__user-select(text);
 
             > .inner {
                 height: 100%;
@@ -34,7 +34,7 @@
                 overflow: hidden;
             }
 
-            .cm-content-tags {
+            .cm__tags {
                 color: @CmImagebox-textColor;
             }
         }
@@ -52,17 +52,17 @@
             overflow: hidden;
             position: absolute;
             z-index: 3;
-            .cm-position(auto,0,-@title-bottom,0);
+            .mx__position(auto,0,-@title-bottom,0);
             background: rgba(0,0,0,0.7);
             opacity: 0;
-            .cm-transition(bottom @Cm-Transition-Duration ease-in-out);
-            .cm-transition(opacity @Cm-Transition-Duration ease-in-out);
+            .mx__transition(bottom @CmVar-Transition-Duration ease-in-out);
+            .mx__transition(opacity @CmVar-Transition-Duration ease-in-out);
 
             .inner {
                 padding: @CmImagebox-titlePaddingTop 8px;
                 .cm-text-overflow;
-                #cm > .font-base;
-                font-weight: @Cm-boldWeight;
+                .cm__font;
+                font-weight: @CmBase-Font-BoldWeight;
                 color: #fff;
 
                 & * {
@@ -75,7 +75,7 @@
     > label {
         position: absolute;
         z-index: 2;
-        .cm-position(0,0,0,0);
+        .mx__position(0,0,0,0);
         cursor: pointer;
     }
 
@@ -84,19 +84,19 @@
         z-index: 3;
 
         &.top-right {
-            .cm-position(@Cm-indentXSmall, @Cm-indentXSmall, auto, auto);
+            .mx__position(@CmIndent-XSmall, @CmIndent-XSmall, auto, auto);
         }
 
         &.top-left {
-            .cm-position(@Cm-indentXSmall, auto, auto, @Cm-indentXSmall);
+            .mx__position(@CmIndent-XSmall, auto, auto, @CmIndent-XSmall);
         }
 
         &.bottom-right {
-            .cm-position(auto, @Cm-indentXSmall, @Cm-indentXSmall, auto);
+            .mx__position(auto, @CmIndent-XSmall, @CmIndent-XSmall, auto);
         }
 
         &.bottom-left {
-            .cm-position(auto, auto, @Cm-indentXSmall, @Cm-indentXSmall);
+            .mx__position(auto, auto, @CmIndent-XSmall, @CmIndent-XSmall);
         }
 
         input[type="checkbox"],
@@ -106,7 +106,7 @@
 
         .icon {
             float: left;
-            margin: 0 0 0 @Cm-indentXXSmall;
+            margin: 0 0 0 @CmIndent-XXSmall;
 
             &:first-child {
                 margin: 0;
@@ -120,8 +120,8 @@
         &:hover {
             > .inner {
                 > .descr {
-                    opacity: @Cm-Opacity-Hover;
-                    .cm-transition(opacity @Cm-Transition-DurationReverse ease-in-out);
+                    opacity: @CmVar-Opacity-Hover;
+                    .mx__transition(opacity @CmVar-Transition-DurationReverse ease-in-out);
                 }
             }
         }
@@ -135,8 +135,8 @@
     &.is-checkable {
         > .inner {
             > .descr {
-                opacity: @Cm-Opacity-Hover;
-                .cm-transition(opacity @Cm-Transition-Duration ease-in-out);
+                opacity: @CmVar-Opacity-Hover;
+                .mx__transition(opacity @CmVar-Transition-Duration ease-in-out);
             }
         }
 
@@ -206,7 +206,7 @@
     &.has-aspect {
         > .inner {
             position: absolute;
-            .cm-position(0,0,0,0);
+            .mx__position(0,0,0,0);
         }
     }
 }
@@ -216,8 +216,8 @@
         > .title {
             bottom: 0;
             opacity: 1;
-            .cm-transition(top @Cm-Transition-DurationReverse ease-in-out);
-            .cm-transition(opacity @Cm-Transition-DurationReverse ease-in-out);
+            .mx__transition(top @CmVar-Transition-DurationReverse ease-in-out);
+            .mx__transition(opacity @CmVar-Transition-DurationReverse ease-in-out);
         }
     }
 }

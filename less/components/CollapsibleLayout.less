@@ -1,10 +1,10 @@
 /* ******* COLLAPSIBLE LAYOUT ******* */
 
 .com-collapsible-layout {
-    @width-hide: 24px + (@Cm-indentXSmall * 2);
+    @width-hide: 24px + (@CmIndent-XSmall * 2);
 
     position: absolute;
-    .cm-position(0,0,0,0);
+    .mx__position(0,0,0,0);
 
     > .sidebar {
         width: @ComCollapsibleLayout-sidebarWidth;
@@ -14,19 +14,19 @@
         overflow: hidden;
         background: #ffffff;
         box-shadow: @Cm-ui-shadow;
-        .cm-transition(width @ComCollapsibleLayout-duration ease-in-out);
+        .mx__transition(width @ComCollapsibleLayout-duration ease-in-out);
 
         > .inner {
             width: @ComCollapsibleLayout-sidebarWidth;
             position: absolute;
 
             > .title {
-                padding: 6px @Cm-indentXSmall;
+                padding: 6px @CmIndent-XSmall;
                 position: absolute;
-                .cm-position(0, 0, auto, 0);
+                .mx__position(0, 0, auto, 0);
                 background: #ffffff;
-                .cm-user-select(none);
-                #cm > .font-title;
+                .mx__user-select(none);
+                .cm__font--ui-title;
 
                 .icon {
                     position: absolute;
@@ -39,12 +39,12 @@
             }
 
             > .descr {
-                padding: @Cm-indentXSmall;
+                padding: @CmIndent-XSmall;
                 .cm-scroll-y;
                 position: absolute;
-                .cm-position(50px, 0, 0, 0);
+                .mx__position(50px, 0, 0, 0);
                 background: #ffffff;
-                .cm-transition(opacity @ComCollapsibleLayout-duration ease-in-out);
+                .mx__transition(opacity @ComCollapsibleLayout-duration ease-in-out);
             }
         }
 
@@ -52,13 +52,13 @@
             float: left;
 
             > .inner {
-                .cm-position(0, 0, 0, auto);
+                .mx__position(0, 0, 0, auto);
 
                 > .title {
                     text-align: left;
 
                     .icon {
-                        right: @Cm-indentXSmall;
+                        right: @CmIndent-XSmall;
                     }
                 }
             }
@@ -68,13 +68,13 @@
             float: right;
 
             > .inner {
-                .cm-position(0, auto, 0, 0);
+                .mx__position(0, auto, 0, 0);
 
                 > .title {
                     text-align: right;
 
                     .icon {
-                        left: @Cm-indentXSmall;
+                        left: @CmIndent-XSmall;
                     }
                 }
             }
@@ -96,17 +96,17 @@
 
     &.is-immediately {
         > .sidebar {
-            .cm-transition-none;
+            .cm__transition-none;
 
             > .inner {
                 > .title {
                     .icon {
-                        .cm-transition-none;
+                        .cm__transition-none;
                     }
                 }
 
                 > .descr {
-                    .cm-transition-none;
+                    .cm__transition-none;
                 }
             }
         }
@@ -127,7 +127,7 @@
 
                 > .descr {
                     opacity: 0;
-                    .cm-opacity-ie(0);
+                    .mx__opacity-ie(0);
                 }
             }
         }
@@ -148,7 +148,7 @@
 
                 > .descr {
                     opacity: 0;
-                    .cm-opacity-ie(0);
+                    .mx__opacity-ie(0);
                 }
             }
         }
@@ -162,17 +162,17 @@
     html.is-adaptive {
         .com-collapsible-layout {
             > .sidebar {
-                .cm-transition-none;
+                .cm__transition-none;
 
                 > .inner {
                     > .title {
                         .icon {
-                            .cm-transition-none;
+                            .cm__transition-none;
                         }
                     }
 
                     > .descr {
-                        .cm-transition-none;
+                        .cm__transition-none;
                     }
                 }
             }

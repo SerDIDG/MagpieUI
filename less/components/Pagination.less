@@ -1,9 +1,9 @@
 /* ******* PAGINATION ******* */
 
 .com-pagination {
-    margin: 0 0 @Cm-indentMedium;
+    margin: 0 0 @CmIndent-Medium;
     line-height: @CmForm-fieldHeight;
-    .cm-user-select(none);
+    .mx__user-select(none);
 
     ul {
         margin: 0;
@@ -14,10 +14,10 @@
 
         li {
             display: inline-block;
-            margin-right: @Cm-indentXXXSmall;
+            margin-right: @CmIndent-XXXSmall;
             vertical-align: top;
             line-height: @CmForm-fieldHeight;
-            font-size: @Cm-fontSize;
+            font-size: @CmBase-Font-Size;
 
             &:first-child {
                 margin-right: 0;
@@ -39,7 +39,7 @@
             &.next a {
                 #cm > .button-transparent;
                 padding: 0 6px;
-                font-weight: @Cm-boldWeight;
+                font-weight: @CmBase-Font-BoldWeight;
             }
 
             &.points {
@@ -68,7 +68,7 @@
 }
 
 .com-pagination-container {
-    margin: 0 0 @Cm-indentMedium;
+    margin: 0 0 @CmIndent-Medium;
 
     &.bottom {
         margin: 0;
@@ -80,7 +80,7 @@
 }
 
 .com-pagination-content {
-    margin: @Cm-indentMedium 0;
+    margin: @CmIndent-Medium 0;
     position: relative;
 
     &:first-child {

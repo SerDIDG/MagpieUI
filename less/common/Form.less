@@ -4,12 +4,12 @@
     cursor: default;
 
     &.in-content {
-        margin: 0 0 @Cm-indentMedium;
+        margin: 0 0 @CmIndent-Medium;
     }
 
     .required {
         color: @Cm-colorError;
-        font-weight: @Cm-boldWeight;
+        font-weight: @CmBase-Font-BoldWeight;
     }
 }
 
@@ -31,9 +31,9 @@
         width: @CmForm-fieldTitleWidth;
         display: block;
         margin: 0;
-        padding: ((@CmForm-fieldHeight - @Cm-lineHeight) / 2) 0;
+        padding: ((@CmForm-fieldHeight - @CmBase-Font-LineHeight) / 2) 0;
         float: left;
-        line-height: @Cm-lineHeight;
+        line-height: @CmBase-Font-LineHeight;
     }
 
     dd {
@@ -94,7 +94,7 @@
 
     &.has-icon-left {
         .icon {
-            .cm-position(@Cm-borderWidth, auto, auto, @Cm-borderWidth);
+            .mx__position(@Cm-borderWidth, auto, auto, @Cm-borderWidth);
         }
 
         input {
@@ -104,7 +104,7 @@
 
     &.has-icon-right {
         .icon {
-            .cm-position(@Cm-borderWidth, @Cm-borderWidth, auto, auto);
+            .mx__position(@Cm-borderWidth, @Cm-borderWidth, auto, auto);
         }
 
         input {
@@ -115,7 +115,7 @@
 
 /* *** HINT ***  */
 
-.form .hint:extend(.cm-font-hint-cursive) {
+.form .hint:extend(.cm__font--hint-cursive) {
     text-transform: none;
 }
 
@@ -169,7 +169,7 @@
         .ie8 &,
         .ie7 &,
         .ie6 & {
-            .cm-opacity-ie(0);
+            .mx__opacity-ie(0);
         }
     }
 
@@ -210,11 +210,11 @@
     }
 
     label {
-        @padding: (@CmForm-fieldHeight - @Cm-lineHeight) / 2;
+        @padding: (@CmForm-fieldHeight - @CmBase-Font-LineHeight) / 2;
         padding: @padding 20px @padding @CmForm-fieldInnerIndent;
         cursor: pointer;
         vertical-align: baseline;
-        line-height: @Cm-lineHeight;
+        line-height: @CmBase-Font-LineHeight;
     }
 
     input[type="radio"],
@@ -308,7 +308,7 @@
 /* *** FIELDSET *** */
 
 .form fieldset {
-    padding: 0 @Cm-indentMedium @Cm-indentMedium @Cm-indentMedium;
+    padding: 0 @CmIndent-Medium @CmIndent-Medium @CmIndent-Medium;
     margin: @CmForm-fieldIndent 0 0 0;
     border: @Cm-borderStyle;
     border-radius: @Cm-borderRadius;
@@ -319,7 +319,7 @@
 
     dl {
         &:first-child {
-            margin-top: @Cm-indentMedium;
+            margin-top: @CmIndent-Medium;
         }
     }
 
@@ -328,7 +328,7 @@
 
         legend {
             color: @Cm-colorError;
-            font-weight: @Cm-boldWeight;
+            font-weight: @CmBase-Font-BoldWeight;
         }
     }
 
@@ -337,7 +337,7 @@
 
         legend {
             color: @Cm-colorValid;
-            font-weight: @Cm-boldWeight;
+            font-weight: @CmBase-Font-BoldWeight;
         }
     }
 }
@@ -375,7 +375,7 @@
 .form-image-box {
     > .l {
         float: left;
-        margin: 0 @Cm-indentXSmall 0 0;
+        margin: 0 @CmIndent-XSmall 0 0;
 
         .no-image {
             width: 80px;
@@ -401,7 +401,7 @@
         font-size: 0;
 
         .hint {
-            margin: @Cm-indentXXSmall 0 0 0;
+            margin: @CmIndent-XXSmall 0 0 0;
         }
     }
 
@@ -471,7 +471,7 @@
 /* *** FILTER FROM - TO *** */
 
 .form-filter-fromto {
-    margin: 0 0 @Cm-indentMedium 0;
+    margin: 0 0 @CmIndent-Medium 0;
 
     dl {
         float: left;
@@ -480,7 +480,7 @@
 
     .form-box {
         width: @ComDatepicker-width;
-        margin: 0 @Cm-indentMedium 0 0;
+        margin: 0 @CmIndent-Medium 0 0;
     }
 
     .buttons {
@@ -509,10 +509,10 @@
 
         .validate {
             color: @Cm-colorError;
-            font-weight: @Cm-boldWeight;
+            font-weight: @CmBase-Font-BoldWeight;
         }
 
-        .cm-input {
+        .input {
             border: 1px solid @Cm-colorError;
         }
     }
@@ -528,10 +528,10 @@
 
         .validate {
             color: @Cm-colorValid;
-            font-weight: @Cm-boldWeight;
+            font-weight: @CmBase-Font-BoldWeight;
         }
 
-        .cm-input {
+        .input {
             border: 1px solid @Cm-colorValid;
         }
     }
@@ -616,7 +616,7 @@
     }
 
     .text {
-        .cm-font-base;
+        .cm__font;
         display: inline-block;
         vertical-align: middle;
         margin: 0 0 0 @CmForm-iconsIndent;
@@ -645,7 +645,7 @@
 
             .cm-button {
                 float: left;
-                margin: 0 @Cm-indentXSmall 0 0;
+                margin: 0 @CmIndent-XSmall 0 0;
             }
 
             .text {
@@ -670,7 +670,7 @@
     .browse-button {
         display: block;
         float: left;
-        margin: 0 @Cm-indentXSmall 0 0;
+        margin: 0 @CmIndent-XSmall 0 0;
     }
 
     .text {
@@ -686,7 +686,7 @@
 
 .cm-multifield {
     > ul {
-        margin: 0 0 @Cm-indentMedium 0;
+        margin: 0 0 @CmIndent-Medium 0;
         padding: 0;
         list-style: none;
 
@@ -709,7 +709,7 @@
                     width: @CmForm-fieldHeight;
                     height: @CmForm-fieldHeight;
                     position: absolute;
-                    .cm-position(0, auto, 0, 0);
+                    .mx__position(0, auto, 0, 0);
                     cursor: move;
 
                     &.default {

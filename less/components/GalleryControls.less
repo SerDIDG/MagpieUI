@@ -4,22 +4,22 @@
     position: absolute;
     z-index: 2;
     opacity: 0;
-    .cm-user-select(none);
-    .cm-transition(opacity @Cm-Transition-Duration ease-in-out);
+    .mx__user-select(none);
+    .mx__transition(opacity @CmVar-Transition-Duration ease-in-out);
 
     .bar-arrow {
         position: absolute;
-        .cm-position(0, auto, 0, auto);
+        .mx__position(0, auto, 0, auto);
         z-index: 2;
         opacity: 1;
-        .cm-transition(opacity @Cm-Transition-Duration ease-in-out);
+        .mx__transition(opacity @CmVar-Transition-Duration ease-in-out);
         cursor: pointer;
 
         .icon {
             position: absolute;
             top: 0;
             opacity: 0.3;
-            .cm-transition(opacity @Cm-Transition-Duration ease-in-out);
+            .mx__transition(opacity @CmVar-Transition-Duration ease-in-out);
         }
 
         &.next {
@@ -47,7 +47,7 @@
 
     .bar-buttons {
         position: absolute;
-        .cm-position(auto, 0, @Cm-indentXSmall, 0);
+        .mx__position(auto, 0, @CmIndent-XSmall, 0);
         z-index: 1;
         font-size: 0;
         white-space: nowrap;
@@ -64,7 +64,7 @@
                 width: @ComGalleryControls-buttonSize;
                 height: @ComGalleryControls-buttonSize;
                 display: inline-block;
-                margin: 0 0 0 @Cm-indentXXSmall;
+                margin: 0 0 0 @CmIndent-XXSmall;
                 vertical-align: top;
                 -moz-box-sizing: border-box;
                      box-sizing: border-box;
@@ -72,7 +72,7 @@
                 border: 2px solid @Cm-colorSecondary;
                 border-radius: @ComGalleryControls-buttonSize;
                 cursor: pointer;
-                .cm-transition(all @Cm-Transition-Duration ease-in-out);
+                .mx__transition(all @CmVar-Transition-Duration ease-in-out);
 
                 &:first-child {
                     margin: 0;
@@ -80,7 +80,7 @@
 
                 &:hover {
                     border-color: @Cm-color;
-                    .cm-transition(all @Cm-Transition-DurationReverse ease-in-out);
+                    .mx__transition(all @CmVar-Transition-DurationReverse ease-in-out);
                 }
 
                 &.active {
@@ -92,7 +92,7 @@
     }
 
     &.is-full {
-        .cm-position(0, 0, 0, 0);
+        .mx__position(0, 0, 0, 0);
 
         .bar-arrow {
             z-index: 1;
@@ -116,11 +116,11 @@
             }
 
             &.next {
-                .cm-linear-gradient(~"to left, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0) 50%");
+                .mx__linear-gradient(~"to left, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0) 50%");
             }
 
             &.prev {
-                .cm-linear-gradient(~"to right, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0) 50%");
+                .mx__linear-gradient(~"to right, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0) 50%");
             }
         }
 
@@ -134,7 +134,7 @@
 
         > .inner {
             position: absolute;
-            .cm-position(0, 0, 0, 0);
+            .mx__position(0, 0, 0, 0);
         }
 
         .bar-arrow {
@@ -161,8 +161,8 @@
     }
 
     &.is-small {
-        height: @Cm-indentXSmall * 2 + @ComGalleryControls-buttonSize;
-        .cm-position(auto, 0, 0, 0);
+        height: @CmIndent-XSmall * 2 + @ComGalleryControls-buttonSize;
+        .mx__position(auto, 0, 0, 0);
 
         .bar-arrow {
             .icon {
@@ -174,12 +174,12 @@
 
                     &.next {
                         .icon.small.arrow-white-right;
-                        right: @Cm-indentXXSmall;
+                        right: @CmIndent-XXSmall;
                     }
 
                     &.prev {
                         .icon.small.arrow-white-left;
-                        left: @Cm-indentXXSmall;
+                        left: @CmIndent-XXSmall;
                     }
                 }
             }
