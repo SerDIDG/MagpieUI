@@ -5137,8 +5137,9 @@ html.ie9 .com__palette .b-range {
   z-index: 3;
   margin: 0;
 }
-.com-dialog > .window > .inner > .buttons .btn-wrap {
-  margin: 0;
+.com-dialog > .window > .inner > .buttons hr:first-child,
+.com-dialog > .window > .inner > .buttons .btn-wrap:first-child {
+  margin-top: 0;
 }
 .com-dialog.has-close-background > .bg {
   cursor: pointer;
