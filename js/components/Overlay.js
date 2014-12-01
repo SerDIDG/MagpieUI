@@ -13,7 +13,7 @@ cm.define('Com.Overlay', {
         'onClose'
     ],
     'params' : {
-        'container' : document.body,
+        'container' : 'document.body',
         'openTime' : 300,
         'opacity' : 0.6,
         'position' : 'fixed',
