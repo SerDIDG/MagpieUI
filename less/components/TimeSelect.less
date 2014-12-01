@@ -6,32 +6,37 @@
     display: inline-block;
     vertical-align: top;
 
-    > .inner:extend(.clear all){
+    > .inner {
+        .display-flex;
         position: relative;
 
         > .field {
-            width: 50%;
             height: @CmForm-fieldHeight;
-            float: left;
-            padding: 0 @ComTimeSelect-indent/2;
-            .mx__box-sizing();
-
-            &:first-child {
-                padding-left: 0;
-            }
-
-            &:last-child {
-                padding-right: 0;
-            }
+            .mx__flex(1 1);
         }
 
-        > .sep:extend(.cm__font) {
+        > .sep {
+            .cm__font;
             width: @ComTimeSelect-indent;
-            position: absolute;
-            .mx__position(0, auto, 0, 50%);
-            margin: 0 0 0 -@ComTimeSelect-indent/2;
             text-align: center;
             line-height: @CmForm-fieldHeight;
+        }
+    }
+
+    html.ie9 & {
+        > .inner {
+            .clearfix;
+            display: block;
+
+            > .field {
+                display: table-cell;
+                .mx__flex(none);
+
+            }
+
+            > .sep {
+                display: table-cell;
+            }
         }
     }
 }

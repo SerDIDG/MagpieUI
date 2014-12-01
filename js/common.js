@@ -31,7 +31,7 @@ var cm = {
             'screenMobilePortrait' : 480,
             'dateFormat' : '%Y-%m-%d',
             'dateTimeFormat' : '%Y-%m-%d %H:%i:%s',
-            'timeFormat' : '%H:%i',
+            'timeFormat' : '%H:%i:%s',
             'displayDateFormat' : '%F %j, %Y',
             'displayDateTimeFormat' : '%F %j, %Y, %H:%i'
         }
