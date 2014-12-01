@@ -77,7 +77,7 @@ function(params){
 
         if((data = that.params['data'][params['year']]) && (data = data[(params['month'] + 1)]) && (data = data[params['day']])){
             // Structure
-            myNodes['content'] = cm.Node('div', {'class' : 'cm-listing com-calendar-events-listing'},
+            myNodes['content'] = cm.Node('div', {'class' : 'pt__listing com-calendar-events-listing'},
                 myNodes['list'] = cm.Node('ul', {'class' : 'list'})
             );
             // Foreach events

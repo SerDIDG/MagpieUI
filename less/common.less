@@ -79,8 +79,6 @@
     background: @Cm-colorMark;
 }
 
-
-
 /* *** BUNDLE *** */
 
 .cm-ul-inline {
@@ -190,41 +188,14 @@
     overflow-y: auto;
 }
 
-.cm-list {
-    margin: 0 0 @CmIndent-Medium;
-    list-style: disc;
-
-    &.bottom {
-        margin: 0;
-    }
-
-    &.has-indent {
-        ul, li {
-            margin: @CmIndent-XXSmall 0 0 0;
-
-            &:first-child {
-                margin: 0;
-            }
-        }
-    }
-
-    ul {
-        list-style: circle;
-
-        ul {
-            list-style: disc;
-        }
-    }
-}
-
 .cm__transition-none {
     -webkit-transition: none;
             transition: none;
 }
 
-/* ******* COMPONENTS ******* */
+/* ******* CONTENT ******* */
 
-/* *** CONTENT TABLE *** */
+/* *** TABLE *** */
 
 .content-table {
     td {
@@ -232,7 +203,7 @@
     }
 }
 
-/* *** CONTENT BUTTONS LINE *** */
+/* *** BUTTONS LINE *** */
 
 .buttons {
     margin: 0 0 @CmIndent-Medium 0;
@@ -244,65 +215,6 @@
 
     .button {
         margin-right: @CmForm-buttonsIndent;
-    }
-}
-
-/* *** PROGRESS BAR *** */
-
-.cm-progress-bar {
-    height: 14px;
-    position: relative;
-    background: #cccccc;
-
-    > .inner {
-        height: 100%;
-        position: absolute;
-        left: 0;
-        top: 0;
-        .mx__transition(width @CmVar-Transition-Duration ease-in-out);
-        .mx__transition(background-color @CmVar-Transition-Duration ease-in-out);
-    }
-
-    .pt__gridlist & {
-        width: 100%;
-        display: inline-block;
-        vertical-align: middle;
-    }
-
-    .green {
-        background: #339900;
-    }
-
-    .red {
-        background: #cc0000;
-    }
-
-    .orange {
-        background: #ff6633;
-    }
-}
-
-/* *** LOADER BOX *** */
-
-.cm-loader-box {
-    height: 50px;
-    position: relative;
-
-    &.position {
-        height: auto;
-        position: absolute;
-        .mx__position(0,0,0,0);
-    }
-
-    > .inner {
-        width: 32px;
-        height: 32px;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        z-index: 2;
-        margin: -16px 0 0 -16px;
-        background: url("@{CmPath-Images}/components/ajax-loader.gif");
     }
 }
 
@@ -346,7 +258,7 @@
 
     html.is-adaptive {
 
-        /* *** COMPONENTS *** */
+        /* *** CONTENT *** */
 
         /* Content Table */
 

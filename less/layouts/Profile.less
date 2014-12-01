@@ -1,13 +1,17 @@
-/* ******* COMPONENT: PROFILE ******* */
+/* ******* LAYOUTS: PROFILE ******* */
 
-.com-profile {
-    > .inner:extend(.clear all) {
+.lt__profile {
+    > .inner {
+        .clearfix;
+
         > .l {
             float: left;
             margin: 0 @CmIndent-XLarge 0 0;
 
             .pt__box-flat {
-                width: @ComProfile-leftColumn;
+                > .inner {
+                    width: @ComProfile-leftColumn;
+                }
             }
         }
 
@@ -17,12 +21,12 @@
     }
 }
 
-/* ******* COMPONENT: PROFILE: ADAPTIVE ******* */
+/* ******* LAYOUTS: PROFILE: ADAPTIVE ******* */
 
 @media only screen and (max-width : @CmScreen-Mobile) {
 
     html.is-adaptive {
-        .com-profile {
+        .lt__profile {
             > .inner {
                 > .l {
                     width: auto;
@@ -30,13 +34,15 @@
                     margin: 0 0 @CmIndent-XLarge;
 
                     .pt__box-flat {
-                        width: auto;
+                        > .inner {
+                            width: auto;
+                        }
                     }
                 }
             }
         }
 
-        .com-profile-members {
+        .lt__profile--members {
             .pt__grid {
                 > ul > li {
                     width: 33.33%;

@@ -1,0 +1,34 @@
+/* ******* PARTS: PROGRESS BAR ******* */
+
+.pt__progress-bar {
+    height: 14px;
+    position: relative;
+    background: #cccccc;
+
+    > .inner {
+        height: 100%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        .mx__transition(width @CmVar-Transition-Duration ease-in-out);
+        .mx__transition(background-color @CmVar-Transition-Duration ease-in-out);
+    }
+
+    .green {
+        background: #339900;
+    }
+
+    .red {
+        background: #cc0000;
+    }
+
+    .orange {
+        background: #ff6633;
+    }
+
+    .pt__gridlist & {
+        width: 100%;
+        display: inline-block;
+        vertical-align: middle;
+    }
+}

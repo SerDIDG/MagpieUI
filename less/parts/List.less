@@ -1,11 +1,44 @@
-.cm-list-counted {
+/* ******* PARTS: LIST ******* */
+
+.pt__list {
+    margin: 0 0 @CmIndent-Medium;
+    list-style: disc;
+
+    &.bottom {
+        margin: 0;
+    }
+
+    &.has-indent {
+        ul, li {
+            margin: @CmIndent-XXSmall 0 0 0;
+
+            &:first-child {
+                margin: 0;
+            }
+        }
+    }
+
+    ul {
+        list-style: circle;
+
+        ul {
+            list-style: disc;
+        }
+    }
+}
+
+/* *** COUNTED *** */
+
+.pt__list-counted {
     .cm-counter {
         margin: ((@CmListCounted-height - @CmCounter-size) / 2) 0 0 0;
         display: inline-block;
         vertical-align: top;
     }
 
-    .label:extend(.cm-text-overflow){}
+    .label {
+        .cm-text-overflow;
+    }
 
     ul {
         margin: 0;
@@ -50,7 +83,9 @@
     }
 
     &.is-inline {
-        ul:extend(.clear all) {
+        ul {
+            .clearfix;
+
             li {
                 float: left;
                 margin: 0 @CmIndent-Medium 0 0;
