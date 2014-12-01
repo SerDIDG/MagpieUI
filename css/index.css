@@ -916,6 +916,7 @@ tr {
 input[type="text"],
 input[type="email"],
 input[type="number"],
+input[type="time"],
 input[type="password"],
 textarea,
 select {
@@ -945,6 +946,8 @@ input[type="email"].input-focus,
 input[type="email"]:focus,
 input[type="number"].input-focus,
 input[type="number"]:focus,
+input[type="time"].input-focus,
+input[type="time"]:focus,
 input[type="password"].input-focus,
 input[type="password"]:focus,
 textarea.input-focus,
@@ -962,6 +965,8 @@ input[type="email"].input-disabled,
 input[type="email"][disabled],
 input[type="number"].input-disabled,
 input[type="number"][disabled],
+input[type="time"].input-disabled,
+input[type="time"][disabled],
 input[type="password"].input-disabled,
 input[type="password"][disabled],
 textarea.input-disabled,
@@ -975,6 +980,7 @@ select[disabled] {
 input[type="text"].input-dark,
 input[type="email"].input-dark,
 input[type="number"].input-dark,
+input[type="time"].input-dark,
 input[type="password"].input-dark,
 textarea.input-dark,
 select.input-dark {
@@ -985,6 +991,7 @@ select.input-dark {
 input[type="text"].input-light,
 input[type="email"].input-light,
 input[type="number"].input-light,
+input[type="time"].input-light,
 input[type="password"].input-light,
 textarea.input-light,
 select.input-light {
@@ -994,6 +1001,7 @@ select.input-light {
 input[type="text"].input-transparent,
 input[type="email"].input-transparent,
 input[type="number"].input-transparent,
+input[type="time"].input-transparent,
 input[type="password"].input-transparent,
 textarea.input-transparent,
 select.input-transparent {
@@ -1501,6 +1509,7 @@ input[type="checkbox"] {
 .form dl.error input[type="text"],
 .form dl.error input[type="email"],
 .form dl.error input[type="number"],
+.form dl.error input[type="time"],
 .form dl.error input[type="password"],
 .form dl.error textarea,
 .form dl.error select {
@@ -1520,6 +1529,7 @@ input[type="checkbox"] {
 .form dl.ok input[type="text"],
 .form dl.ok input[type="email"],
 .form dl.ok input[type="number"],
+.form dl.ok input[type="time"],
 .form dl.ok input[type="password"],
 .form dl.ok textarea,
 .form dl.ok select {
@@ -4874,6 +4884,7 @@ html.ie9 .com-timeselect > .inner > .sep {
 .com-tags-input > .inner .item input[type="text"],
 .com-tags-input > .inner .item input[type="email"],
 .com-tags-input > .inner .item input[type="number"],
+.com-tags-input > .inner .item input[type="time"],
 .com-tags-input > .inner .item input[type="password"],
 .com-tags-input > .inner .item textarea,
 .com-tags-input > .inner .item select {
