@@ -219,7 +219,7 @@
 .buttons.bottom {
   margin: 0;
 }
-.buttons .cm-button,
+.buttons .button,
 .buttons input[type="button"],
 .buttons input[type="submit"],
 .buttons input[type="reset"],
@@ -1162,7 +1162,7 @@ input[type="checkbox"] {
   color: #e61919;
 }
 /* *** PARTS: BUTTONS *** */
-.cm-button,
+.button,
 input[type="button"],
 input[type="submit"],
 input[type="reset"],
@@ -1198,7 +1198,7 @@ button,
   -webkit-transition: background-color 300ms ease-in-out, color 300ms ease-in-out, box-shadow 300ms ease-in-out;
   transition: background-color 300ms ease-in-out, color 300ms ease-in-out, box-shadow 300ms ease-in-out;
 }
-.cm-button:hover,
+.button:hover,
 input[type="button"]:hover,
 input[type="submit"]:hover,
 input[type="reset"]:hover,
@@ -1207,8 +1207,8 @@ button:hover,
   background-color: #1773cf;
   color: #fff;
 }
-.cm-button:active,
-.cm-button.active,
+.button:active,
+.button.active,
 input[type="button"]:active,
 input[type="button"].active,
 input[type="submit"]:active,
@@ -1221,7 +1221,7 @@ button.active,
 .button.active {
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.4) inset;
 }
-.cm-button.wide,
+.button.wide,
 input[type="button"].wide,
 input[type="submit"].wide,
 input[type="reset"].wide,
@@ -1232,7 +1232,7 @@ button.wide,
   margin: 0;
   display: block;
 }
-.cm-button:hover,
+.button:hover,
 input[type="button"]:hover,
 input[type="submit"]:hover,
 input[type="reset"]:hover,
@@ -1242,8 +1242,8 @@ button:hover,
   -webkit-transition: background-color 100ms ease-in-out, color 100ms ease-in-out, box-shadow 100ms ease-in-out;
   transition: background-color 100ms ease-in-out, color 100ms ease-in-out, box-shadow 100ms ease-in-out;
 }
-.cm-button.button-secondary,
-.cm-button.secondary,
+.button.button-secondary,
+.button.secondary,
 input[type="button"].button-secondary,
 input[type="button"].secondary,
 input[type="submit"].button-secondary,
@@ -1257,8 +1257,8 @@ button.secondary,
   background: #f2f2f2;
   color: #308ce8;
 }
-.cm-button.button-secondary:hover,
-.cm-button.secondary:hover,
+.button.button-secondary:hover,
+.button.secondary:hover,
 input[type="button"].button-secondary:hover,
 input[type="button"].secondary:hover,
 input[type="submit"].button-secondary:hover,
@@ -1272,10 +1272,10 @@ button.secondary:hover,
   background: #fafafa;
   color: #308ce8;
 }
-.cm-button.button-secondary:active,
-.cm-button.secondary:active,
-.cm-button.button-secondary.active,
-.cm-button.secondary.active,
+.button.button-secondary:active,
+.button.secondary:active,
+.button.button-secondary.active,
+.button.secondary.active,
 input[type="button"].button-secondary:active,
 input[type="button"].secondary:active,
 input[type="button"].button-secondary.active,
@@ -1298,8 +1298,8 @@ button.secondary.active,
 .button.secondary.active {
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2) inset;
 }
-.cm-button.button-error,
-.cm-button.error,
+.button.button-error,
+.button.error,
 input[type="button"].button-error,
 input[type="button"].error,
 input[type="submit"].button-error,
@@ -1313,8 +1313,8 @@ button.error,
   background: #e61919;
   color: #ffffff;
 }
-.cm-button.button-error:hover,
-.cm-button.error:hover,
+.button.button-error:hover,
+.button.error:hover,
 input[type="button"].button-error:hover,
 input[type="button"].error:hover,
 input[type="submit"].button-error:hover,
@@ -1328,10 +1328,10 @@ button.error:hover,
   background: #b81414;
   color: #ffffff;
 }
-.cm-button.button-error:active,
-.cm-button.error:active,
-.cm-button.button-error.active,
-.cm-button.error.active,
+.button.button-error:active,
+.button.error:active,
+.button.button-error.active,
+.button.error.active,
 input[type="button"].button-error:active,
 input[type="button"].error:active,
 input[type="button"].button-error.active,
@@ -1354,8 +1354,8 @@ button.error.active,
 .button.error.active {
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.4) inset;
 }
-.cm-button.button-transparent,
-.cm-button.transparent,
+.button.button-transparent,
+.button.transparent,
 input[type="button"].button-transparent,
 input[type="button"].transparent,
 input[type="submit"].button-transparent,
@@ -1371,8 +1371,8 @@ button.transparent,
   border: none;
   color: #308ce8;
 }
-.cm-button.button-transparent:hover,
-.cm-button.transparent:hover,
+.button.button-transparent:hover,
+.button.transparent:hover,
 input[type="button"].button-transparent:hover,
 input[type="button"].transparent:hover,
 input[type="submit"].button-transparent:hover,
@@ -1386,10 +1386,10 @@ button.transparent:hover,
   background: #f2f2f2;
   color: #308ce8;
 }
-.cm-button.button-transparent:active,
-.cm-button.transparent:active,
-.cm-button.button-transparent.active,
-.cm-button.transparent.active,
+.button.button-transparent:active,
+.button.transparent:active,
+.button.button-transparent.active,
+.button.transparent.active,
 input[type="button"].button-transparent:active,
 input[type="button"].transparent:active,
 input[type="button"].button-transparent.active,
@@ -1412,7 +1412,7 @@ button.transparent.active,
 .button.transparent.active {
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2) inset;
 }
-.cm-button.button-white,
+.button.button-white,
 input[type="button"].button-white,
 input[type="submit"].button-white,
 input[type="reset"].button-white,
@@ -1421,7 +1421,7 @@ button.button-white,
   background: #ffffff;
   color: #308ce8;
 }
-.cm-button.button-white:hover,
+.button.button-white:hover,
 input[type="button"].button-white:hover,
 input[type="submit"].button-white:hover,
 input[type="reset"].button-white:hover,
@@ -1430,8 +1430,8 @@ button.button-white:hover,
   background-color: #1773cf;
   color: #fff;
 }
-.cm-button.button-white:active,
-.cm-button.button-white.active,
+.button.button-white:active,
+.button.button-white.active,
 input[type="button"].button-white:active,
 input[type="button"].button-white.active,
 input[type="submit"].button-white:active,
@@ -1444,7 +1444,7 @@ button.button-white.active,
 .button.button-white.active {
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.4) inset;
 }
-.cm-button.button-clear,
+.button.button-clear,
 input[type="button"].button-clear,
 input[type="submit"].button-clear,
 input[type="reset"].button-clear,
@@ -1456,7 +1456,7 @@ button.button-clear,
   color: #308ce8;
   cursor: default;
 }
-.cm-button.has-icon,
+.button.has-icon,
 input[type="button"].has-icon,
 input[type="submit"].has-icon,
 input[type="reset"].has-icon,
@@ -1464,7 +1464,7 @@ button.has-icon,
 .button.has-icon {
   padding-left: 0;
 }
-.cm-button.has-icon .icon,
+.button.has-icon .icon,
 input[type="button"].has-icon .icon,
 input[type="submit"].has-icon .icon,
 input[type="reset"].has-icon .icon,
@@ -1475,7 +1475,7 @@ button.has-icon .icon,
   position: relative;
   top: 50%;
 }
-.cm-button.has-icon-medium .icon,
+.button.has-icon-medium .icon,
 input[type="button"].has-icon-medium .icon,
 input[type="submit"].has-icon-medium .icon,
 input[type="reset"].has-icon-medium .icon,
@@ -1483,7 +1483,7 @@ button.has-icon-medium .icon,
 .button.has-icon-medium .icon {
   margin: -12px 2px 0;
 }
-.cm-button.has-icon-small .icon,
+.button.has-icon-small .icon,
 input[type="button"].has-icon-small .icon,
 input[type="submit"].has-icon-small .icon,
 input[type="reset"].has-icon-small .icon,
@@ -1503,7 +1503,7 @@ button.has-icon-small .icon,
   line-height: 28px;
   font-size: 12px;
 }
-.btn-wrap .cm-button,
+.btn-wrap .button,
 .btn-wrap .browse-button,
 .btn-wrap .com-action-menu,
 .btn-wrap input[type="button"],
@@ -1515,7 +1515,7 @@ button.has-icon-small .icon,
   float: right;
   margin: 0 0 0 8px;
 }
-.btn-wrap .cm-button.left,
+.btn-wrap .button.left,
 .btn-wrap .browse-button.left,
 .btn-wrap .com-action-menu.left,
 .btn-wrap input[type="button"].left,
@@ -1526,7 +1526,7 @@ button.has-icon-small .icon,
   float: left;
   margin: 0 8px 0 0;
 }
-.btn-wrap .cm-button.wide,
+.btn-wrap .button.wide,
 .btn-wrap .browse-button.wide,
 .btn-wrap .com-action-menu.wide,
 .btn-wrap input[type="button"].wide,
@@ -1544,8 +1544,8 @@ button.has-icon-small .icon,
 .btn-wrap.ok .hint {
   color: #009900;
 }
-.btn-wrap.pull-left .cm-button,
-.btn-wrap.left .cm-button,
+.btn-wrap.pull-left .button,
+.btn-wrap.left .button,
 .btn-wrap.pull-left .browse-button,
 .btn-wrap.left .browse-button,
 .btn-wrap.pull-left .com-action-menu,
@@ -1567,8 +1567,8 @@ button.has-icon-small .icon,
 .btn-wrap.centered {
   text-align: center;
 }
-.btn-wrap.pull-center .cm-button,
-.btn-wrap.centered .cm-button,
+.btn-wrap.pull-center .button,
+.btn-wrap.centered .button,
 .btn-wrap.pull-center .browse-button,
 .btn-wrap.centered .browse-button,
 .btn-wrap.pull-center .com-action-menu,
@@ -1587,8 +1587,8 @@ button.has-icon-small .icon,
   display: inline-block;
   margin: 0 0 0 8px;
 }
-.btn-wrap.pull-center .cm-button:first-child,
-.btn-wrap.centered .cm-button:first-child,
+.btn-wrap.pull-center .button:first-child,
+.btn-wrap.centered .button:first-child,
 .btn-wrap.pull-center .browse-button:first-child,
 .btn-wrap.centered .browse-button:first-child,
 .btn-wrap.pull-center .com-action-menu:first-child,
@@ -1608,7 +1608,7 @@ button.has-icon-small .icon,
 .btn-wrap.is-block {
   height: auto;
 }
-.btn-wrap.is-block .cm-button,
+.btn-wrap.is-block .button,
 .btn-wrap.is-block .browse-button,
 .btn-wrap.is-block .com-action-menu,
 .btn-wrap.is-block input[type="button"],
@@ -1624,7 +1624,7 @@ button.has-icon-small .icon,
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.btn-wrap.is-block .cm-button:first-child,
+.btn-wrap.is-block .button:first-child,
 .btn-wrap.is-block .browse-button:first-child,
 .btn-wrap.is-block .com-action-menu:first-child,
 .btn-wrap.is-block input[type="button"]:first-child,
@@ -1643,7 +1643,7 @@ button.has-icon-small .icon,
   -ms-flex-direction: row;
   flex-direction: row;
 }
-.btn-wrap.is-flexible .cm-button,
+.btn-wrap.is-flexible .button,
 .btn-wrap.is-flexible .browse-button,
 .btn-wrap.is-flexible .com-action-menu,
 .btn-wrap.is-flexible input[type="button"],
@@ -1656,7 +1656,7 @@ button.has-icon-small .icon,
   -ms-flex: 1;
   flex: 1;
 }
-.btn-wrap.is-flexible .cm-button:first-child,
+.btn-wrap.is-flexible .button:first-child,
 .btn-wrap.is-flexible .browse-button:first-child,
 .btn-wrap.is-flexible .com-action-menu:first-child,
 .btn-wrap.is-flexible input[type="button"]:first-child,
@@ -2117,7 +2117,7 @@ button.has-icon-small .icon,
 .ie6 .browse-button input[type="file"] {
   filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
 }
-.browse-button .cm-button,
+.browse-button .button,
 .browse-button input[type="button"],
 .browse-button input[type="submit"],
 .browse-button input[type="reset"],
@@ -2125,7 +2125,7 @@ button.has-icon-small .icon,
 .browse-button .button {
   margin: 0 !important;
 }
-.browse-button:hover .cm-button,
+.browse-button:hover .button,
 .browse-button:hover input[type="button"],
 .browse-button:hover input[type="submit"],
 .browse-button:hover input[type="reset"],
@@ -2134,7 +2134,7 @@ button.has-icon-small .icon,
   background-color: #1773cf;
   color: #fff;
 }
-.browse-button:active .cm-button,
+.browse-button:active .button,
 .browse-button:active input[type="button"],
 .browse-button:active input[type="submit"],
 .browse-button:active input[type="reset"],
@@ -2336,7 +2336,7 @@ button.has-icon-small .icon,
 .form-image-box > .r .hint {
   margin: 8px 0 0 0;
 }
-.form-image-box .cm-button,
+.form-image-box .button,
 .form-image-box .browse-button,
 .form-image-box input[type="button"],
 .form-image-box input[type="submit"],
@@ -2347,7 +2347,7 @@ button.has-icon-small .icon,
   display: block;
   margin: 0 0 8px 0;
 }
-.form-image-box.style2 .cm-button,
+.form-image-box.style2 .button,
 .form-image-box.style2 .browse-button,
 .form-image-box.style2 input[type="button"],
 .form-image-box.style2 input[type="submit"],
@@ -2613,7 +2613,7 @@ button.has-icon-small .icon,
   margin: 8px 0 0 0;
   line-height: 28px;
 }
-.files-list ul li .cm-button,
+.files-list ul li .button,
 .files-list ul li input[type="button"],
 .files-list ul li input[type="submit"],
 .files-list ul li input[type="reset"],
@@ -3128,7 +3128,7 @@ button.has-icon-small .icon,
     margin-left: 0;
     margin-right: 0;
   }
-  html.is-adaptive .cm-toolbar .group.is-adaptive .cm-button,
+  html.is-adaptive .cm-toolbar .group.is-adaptive .button,
   html.is-adaptive .cm-toolbar .group.is-adaptive input[type="button"],
   html.is-adaptive .cm-toolbar .group.is-adaptive input[type="submit"],
   html.is-adaptive .cm-toolbar .group.is-adaptive input[type="reset"],
@@ -3145,7 +3145,7 @@ button.has-icon-small .icon,
   html.is-adaptive .cm-toolbar.is-adaptive > .inner {
     display: block;
   }
-  html.is-adaptive .cm-toolbar.is-adaptive .cm-button,
+  html.is-adaptive .cm-toolbar.is-adaptive .button,
   html.is-adaptive .cm-toolbar.is-adaptive input[type="button"],
   html.is-adaptive .cm-toolbar.is-adaptive input[type="submit"],
   html.is-adaptive .cm-toolbar.is-adaptive input[type="reset"],
@@ -4523,7 +4523,7 @@ button.has-icon-small .icon,
   max-height: 320px;
 }
 /* ******* COMPONENTS: ACTION MENU ******* */
-.com-action-menu .cm-button,
+.com-action-menu .button,
 .com-action-menu input[type="button"],
 .com-action-menu input[type="submit"],
 .com-action-menu input[type="reset"],

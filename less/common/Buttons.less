@@ -1,0 +1,213 @@
+/* *** PARTS: BUTTONS *** */
+
+.button {
+    .cm-text-overflow;
+    .button.button-primary;
+    height: @CmForm-fieldHeight;
+    margin: 0;
+    padding: 0 @CmElement-button-paddingX;
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+    border: none;
+    border-radius: @Cm-borderRadius;
+    text-align: center;
+    text-decoration: none;
+    line-height: @CmForm-fieldHeight;
+    font-size: @CmBase-Font-Size;
+    white-space: nowrap;
+    cursor: pointer;
+    -webkit-appearance: none;
+    .mx__box-sizing();
+    .mx__background-clip(border-box);
+    .mx__user-select();
+    .mx__transition(background-color @CmVar-Transition-Duration ease-in-out);
+    .mx__transition(color @CmVar-Transition-Duration ease-in-out);
+    .mx__transition(box-shadow @CmVar-Transition-Duration ease-in-out);
+
+    &.wide {
+        width: 100%;
+        padding: 0;
+        margin: 0;
+        display: block;
+    }
+
+    &:hover {
+        text-decoration: none;
+        .mx__transition(background-color @CmVar-Transition-DurationReverse ease-in-out);
+        .mx__transition(color @CmVar-Transition-DurationReverse ease-in-out);
+        .mx__transition(box-shadow @CmVar-Transition-DurationReverse ease-in-out);
+    }
+
+    // /* *** PRIMARY *** */
+
+    &.button-primary {
+        background: @Cm-color;
+        color: #fff;
+
+        &:hover {
+            .button.button-primary--hover;
+        }
+
+        &:active,
+        &.active {
+            .button.button-primary--active;
+        }
+    }
+
+    &.button-primary--hover {
+        background-color: darken(@Cm-color, 10%);
+        color: #fff;
+    }
+
+    &.button-primary--active {
+        box-shadow: 0 3px 3px rgba(0,0,0,0.4) inset;
+    }
+
+    // /* *** SECONDARY *** */
+
+    &.button-secondary,
+    &.secondary {
+        background: @Cm-colorSecondary;
+        color: @Cm-color;
+
+        &:hover {
+            .button.button-secondary--hover;
+        }
+
+        &:active,
+        &.active {
+            .button.button-secondary--active;
+        }
+    }
+
+    &.button-secondary--hover {
+        background: @Cm-colorSecondaryHover;
+        color: @Cm-color;
+    }
+
+    &.button-secondary--active {
+        box-shadow: 0 2px 2px rgba(0,0,0,0.2) inset;
+    }
+
+    // /* *** ERROR *** */
+
+    &.button-error,
+    &.error {
+        background: @Cm-colorError;
+        color: #ffffff;
+
+        &:hover {
+            .button.button-error--hover;
+        }
+
+        &:active,
+        &.active {
+            .button.button-error--active;
+        }
+    }
+
+    &.button-error--hover {
+        background: darken(@Cm-colorError, 10%);
+        color: #ffffff;
+    }
+
+    &.button-error--active {
+        box-shadow: 0 3px 3px rgba(0,0,0,0.4) inset;
+    }
+
+    // /* *** TRANSPARENT *** */
+
+    &.button-transparent,
+    &.transparent {
+        background: none;
+        box-shadow: none;
+        border: none;
+        color: @Cm-color;
+
+        &:hover {
+            .button.button-transparent--hover;
+        }
+
+        &:active,
+        &.active {
+            .button.button-transparent--active;
+        }
+    }
+
+    &.button-transparent--hover {
+        background: @Cm-colorSecondary;
+        color: @Cm-color;
+    }
+
+    &.button-transparent--active {
+        box-shadow: 0 2px 2px rgba(0,0,0,0.2) inset;
+    }
+
+    // /* *** WHITE *** */
+
+    &.button-white {
+        background: #ffffff;
+        color: @Cm-color;
+
+        &:hover {
+            .button.button-white--hover;
+        }
+
+        &:active,
+        &.active {
+            .button.button-white--active;
+        }
+    }
+
+    &.button-white--hover {
+        background-color: darken(@Cm-color, 10%);
+        color: #fff;
+    }
+
+    &.button-white--active {
+        box-shadow: 0 3px 3px rgba(0,0,0,0.4) inset;
+    }
+
+    // /* *** CLEAR *** */
+
+    &.button-clear {
+        background: none;
+        box-shadow: none;
+        border: none;
+        color: @Cm-color;
+        cursor: default;
+    }
+
+    // /* *** ICONS *** */
+
+    &.has-icon {
+        padding-left: 0;
+
+        .icon {
+            display: block;
+            float: left;
+            position: relative;
+            top: 50%;
+        }
+    }
+
+    &.has-icon-medium {
+        .icon {
+            margin: -(@Cm-Medium / 2) round((@CmForm-fieldHeight - @Cm-Medium) / 2) 0;
+        }
+    }
+
+    &.has-icon-small {
+        .icon {
+            margin: -(@Cm-Small / 2) round((@CmForm-fieldHeight - @Cm-Small) / 2) 0;
+        }
+    }
+}
+
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+button {
+    &:extend(.button all);
+}
