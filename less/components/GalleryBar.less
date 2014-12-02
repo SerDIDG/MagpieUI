@@ -10,8 +10,7 @@
         opacity: 0;
         cursor: pointer;
         background-color: rgba(255,255,255,0.7);
-        .mx__transition(background-color @CmVar-Transition-Duration ease-in-out);
-        .mx__transition(opacity @CmVar-Transition-Duration ease-in-out);
+        .mx__transition(background-color opacity, @CmVar-Transition-Duration);
 
         &:hover {
             background-color: rgba(255,255,255,0.9);

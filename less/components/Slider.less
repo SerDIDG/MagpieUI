@@ -12,18 +12,17 @@
 
         > .size {
             img {
-                &:extend(.cm-image-resizable all);
+                .cm-image-resizable;
             }
         }
 
         > .slides {
             position: absolute;
-            .mx__position(0,0,0,0);
             z-index: 1;
+            .mx__position(0,0,0,0);
 
             > ul {
-                &:extend(.cm-ul-clear all);
-
+                .cm__list-clear;
                 overflow: hidden;
                 position: absolute;
                 .mx__position(0,0,0,0);
@@ -40,7 +39,7 @@
 
                         > .pull {
                             opacity: 0;
-                            .mx__transition(opacity @CmVar-Transition-Duration ease-in-out);
+                            .mx__transition(opacity, @CmVar-Transition-Duration);
                         }
                     }
 
@@ -52,7 +51,7 @@
                         z-index: 1;
 
                         img {
-                            &:extend(.cm-image-flexible all);
+                            .cm-image-flexible;
                         }
                     }
 
@@ -92,8 +91,7 @@
 
             &.effect-push {
                 > ul {
-                    &:extend(.cm-ul-inline all);
-
+                    .cm__list-inline;
                     white-space: nowrap;
 
                     > li {

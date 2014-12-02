@@ -16,7 +16,7 @@
     padding: @CmMenu-indent 0;
     list-style: none;
     opacity: 0;
-    .mx__transition(all @CmVar-Transition-DurationReverse ease-in-out);
+    .mx__transition(all, @CmVar-Transition-Duration);
 
     li {
         position: relative;
@@ -78,6 +78,7 @@
 .cm-menu-dropdown--active {
     visibility: visible;
     opacity: 1;
+    .mx__transition(all, @CmVar-Transition-DurationReverse);
 }
 
 /* *** MENU *** */

@@ -15,11 +15,7 @@
     cursor: text;
     .mx__box-sizing();
     .mx__background-clip(padding-box);
-    .mx__transition(background @CmVar-Transition-Duration ease-in-out);
-    .mx__transition(border-color @CmVar-Transition-Duration ease-in-out);
-    .mx__transition(color @CmVar-Transition-Duration ease-in-out);
-    .mx__transition(box-shadow @CmVar-Transition-Duration ease-in-out);
-    .mx__transition(text-shadow @CmVar-Transition-Duration ease-in-out);
+    .mx__transition(background border-color color box-shadow text-shadow, @CmVar-Transition-Duration);
 
     &.input-focus,
     &:focus {

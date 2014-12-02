@@ -26,11 +26,11 @@
 
     &.linked {
         cursor: pointer;
-        .mx__transition(opacity @CmVar-Transition-Duration ease-in-out);
+        .mx__transition(opacity, @CmVar-Transition-Duration);
 
         &:hover {
             opacity: @CmVar-Opacity-Hover;
-            .mx__transition(opacity @CmVar-Transition-DurationReverse ease-in-out);
+            .mx__transition(opacity, @CmVar-Transition-DurationReverse);
         }
     }
 

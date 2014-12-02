@@ -14,7 +14,7 @@
 
 .cm-draganddrop-chassis {
     height: 0;
-    .mx__transition(height 0s linear);
+    .mx__transition(height, 0s, linear);
 }
 
 .cm-draganddrop-removable {
@@ -27,10 +27,10 @@
     position: relative;
 
     &.is-available {
-        .mx__transition(background-color @CmVar-Transition-Duration ease-in-out);
+        .mx__transition(background-color, @CmVar-Transition-Duration);
 
         &:before {
-            .mx__transition(border-color @CmVar-Transition-Duration ease-in-out);
+            .mx__transition(border-color, @CmVar-Transition-Duration);
         }
 
         &.is-highlight {
@@ -39,11 +39,11 @@
 
             &:before {
                 position: absolute;
-                .mx__position(-1px,-1px,-1px,-1px);
                 display: block;
                 content: '';
                 border: @CmDraganddrop-areaHighlightBorder;
                 border-radius: @CmDraganddrop-areaBorderRadius;
+                .mx__position(-1px,-1px,-1px,-1px);
             }
 
             &.is-active {

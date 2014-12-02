@@ -8,12 +8,12 @@
     }
 
     > dt {
+        .cm__font--ui-title;
         position: relative;
         cursor: pointer;
-        .cm__font--ui-title;
-        .mx__user-select(none);
-        .mx__transition(color 0.3s ease-in-out);
         line-height: @ComToggleBox-size;
+        .mx__user-select(none);
+        .mx__transition(color, @CmVar-Transition-Duration);
 
         .icon {
             height: @ComToggleBox-size;
@@ -24,20 +24,21 @@
             &.default {
                 .icon.small.arrow-right;
                 width: @Cm-Small;
-                -webkit-transition: -webkit-transform @CmVar-Transition-Duration ease-in-out;
-                    -ms-transition:     -ms-transform @CmVar-Transition-Duration ease-in-out;
-                        transition:         transform @CmVar-Transition-Duration ease-in-out;
+                .mx__transition(-webkit-transform -ms-transform transform, @CmVar-Transition-Duration);
             }
         }
 
-        .title:extend(.cm-text-overflow) {
+        .title {
+            .cm-text-overflow;
             display: block;
         }
 
         .cm-title-editable {
             margin: 0;
 
-            > .l:extend(.cm-text-overflow) {}
+            > .l{
+                .cm-text-overflow;
+            }
         }
 
         &:hover {
@@ -45,7 +46,8 @@
         }
     }
 
-    > dd:extend(.clear all) {
+    > dd {
+        .clearfix;
         padding: 0;
         opacity: 1;
 

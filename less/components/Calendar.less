@@ -47,10 +47,10 @@
                 line-height: @ComCalendar-cellHeight - (@ComCalendar-outer-borderSize * 2);
                 font-size: @CmUI-Font-Size;
                 cursor: pointer;
-                .mx__transition(all @CmVar-Transition-Duration ease-in-out);
+                .mx__transition(all, @CmVar-Transition-Duration);
 
                 &:hover {
-                    .mx__transition(all @CmVar-Transition-DurationReverse ease-in-out);
+                    .mx__transition(all, @CmVar-Transition-DurationReverse);
                 }
             }
 

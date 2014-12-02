@@ -1,3 +1,9 @@
+.mx__appearance (@value: none){
+    -webkit-appearance: @value;
+       -moz-appearance: @value;
+            appearance: @value;
+}
+
 .mx__opacity-ie (@opacity) {
     filter: ~"progid:DXImageTransform.Microsoft.Alpha(opacity=@{opacity})";
 }
@@ -15,9 +21,11 @@
     left: @left;
 }
 
-.mx__transition (@properties: none) {
-    -webkit-transition+: @properties;
-            transition+: @properties;
+.mx__transition(@properties, @duration: @CmVar-Transition-Duration, @function: ease-in-out) {
+    .for(@properties); .-each(@property) {
+        -webkit-transition+: @property;
+                transition+: @property @duration @function;
+    }
 }
 
 .mx__linear-gradient (@params) {

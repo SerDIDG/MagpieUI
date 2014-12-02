@@ -5,21 +5,21 @@
     z-index: 2;
     opacity: 0;
     .mx__user-select(none);
-    .mx__transition(opacity @CmVar-Transition-Duration ease-in-out);
+    .mx__transition(opacity, @CmVar-Transition-Duration);
 
     .bar-arrow {
         position: absolute;
         .mx__position(0, auto, 0, auto);
         z-index: 2;
         opacity: 1;
-        .mx__transition(opacity @CmVar-Transition-Duration ease-in-out);
+        .mx__transition(opacity, @CmVar-Transition-Duration);
         cursor: pointer;
 
         .icon {
             position: absolute;
             top: 0;
             opacity: 0.3;
-            .mx__transition(opacity @CmVar-Transition-Duration ease-in-out);
+            .mx__transition(opacity, @CmVar-Transition-Duration);
         }
 
         &.next {
@@ -47,11 +47,11 @@
 
     .bar-buttons {
         position: absolute;
-        .mx__position(auto, 0, @CmIndent-XSmall, 0);
         z-index: 1;
         font-size: 0;
         white-space: nowrap;
         text-align: center;
+        .mx__position(auto, 0, @CmIndent-XSmall, 0);
 
         ul {
             margin: 0 auto;
@@ -66,13 +66,12 @@
                 display: inline-block;
                 margin: 0 0 0 @CmIndent-XXSmall;
                 vertical-align: top;
-                -moz-box-sizing: border-box;
-                     box-sizing: border-box;
                 background-color: @Cm-colorSecondary;
                 border: 2px solid @Cm-colorSecondary;
                 border-radius: @ComGalleryControls-buttonSize;
                 cursor: pointer;
-                .mx__transition(all @CmVar-Transition-Duration ease-in-out);
+                .mx__box-sizing(border-box);
+                .mx__transition(all, @CmVar-Transition-Duration);
 
                 &:first-child {
                     margin: 0;
@@ -80,7 +79,7 @@
 
                 &:hover {
                     border-color: @Cm-color;
-                    .mx__transition(all @CmVar-Transition-DurationReverse ease-in-out);
+                    .mx__transition(all, @CmVar-Transition-DurationReverse);
                 }
 
                 &.active {

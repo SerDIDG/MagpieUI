@@ -29,7 +29,7 @@
             border: @Cm-borderEditable;
             border-radius: @Cm-borderRadius;
             opacity: 0;
-            .mx__transition(all @CmVar-Transition-Duration ease-in-out);
+            .mx__transition(all, @CmVar-Transition-Duration);
         }
 
         > .inner {
@@ -59,7 +59,7 @@
             border-radius: @Cm-borderRadius;
             cursor: move;
             visibility: hidden;
-            .mx__transition(all @CmVar-Transition-Duration ease-in-out);
+            .mx__transition(all, @CmVar-Transition-Duration);
 
             .icon {
                 width: 34px;
@@ -70,7 +70,7 @@
 
             &:hover {
                 background: @Cm-colorSecondaryHover;
-                .mx__transition(all @CmVar-Transition-DurationReverse ease-in-out);
+                .mx__transition(all, @CmVar-Transition-DurationReverse);
             }
 
             &:not(.is-bottom) {
@@ -90,7 +90,7 @@
             right: -12px;
             opacity: 0;
             cursor: pointer;
-            .mx__transition(all @CmVar-Transition-Duration ease-in-out);
+            .mx__transition(all, @CmVar-Transition-Duration);
 
             .icon {
                 width: 24px;
@@ -131,13 +131,13 @@
             left: -16px;
             opacity: 1;
             background: #ffffff;
-            .mx__transition(all @CmVar-Transition-DurationReverse ease-in-out);
+            .mx__transition(all, @CmVar-Transition-DurationReverse);
         }
 
         > .drag {
             opacity: 1;
             visibility: visible;
-            .mx__transition(all @CmVar-Transition-DurationReverse ease-in-out);
+            .mx__transition(all, @CmVar-Transition-DurationReverse);
 
             &:not(.is-bottom) {
                 top: -28px;
@@ -152,7 +152,7 @@
             top: -28px;
             right: -28px;
             opacity: 1;
-            .mx__transition(all @CmVar-Transition-DurationReverse ease-in-out);
+            .mx__transition(all, @CmVar-Transition-DurationReverse);
         }
     }
 

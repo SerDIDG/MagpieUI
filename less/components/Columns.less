@@ -13,7 +13,7 @@
                 flex: 1;
         -moz-box-sizing: border-box;
              box-sizing: border-box;
-        .mx__transition(background-color @CmVar-Transition-Duration ease-in-out);
+        .mx__transition(background-color, @CmVar-Transition-Duration);
     }
 
     .ie8 &,
@@ -36,7 +36,7 @@
     margin: 0 0 0 -5px;
     opacity: 0;
     cursor: col-resize;
-    .mx__transition(opacity @CmVar-Transition-Duration ease-in-out);
+    .mx__transition(opacity, @CmVar-Transition-Duration);
 
     .drag {
         width: 6px;
@@ -48,8 +48,7 @@
         background: @Cm-colorSecondary;
         border: 1px solid @Cm-colorBorder;
         border-radius: @Cm-borderRadius;
-        .mx__transition(background-color @CmVar-Transition-Duration ease-in-out);
-        .mx__transition(border-color @CmVar-Transition-Duration ease-in-out);
+        .mx__transition(background-color border-color, @CmVar-Transition-Duration);
 
         .icon {
             width: 6px;
@@ -66,18 +65,17 @@
         display: block;
         content: '';
         background: @Cm-colorSecondary;
-        .mx__transition(background-color @CmVar-Transition-Duration ease-in-out);
+        .mx__transition(background-color, @CmVar-Transition-Duration);
     }
 
     &:hover {
         .drag {
             background: @Cm-colorSecondaryHover;
-            .mx__transition(background-color @CmVar-Transition-DurationReverse ease-in-out);
-            .mx__transition(border-color @CmVar-Transition-DurationReverse ease-in-out);
+            .mx__transition(background-color border-color, @CmVar-Transition-DurationReverse);
         }
 
         &:after {
-            .mx__transition(background-color @CmVar-Transition-DurationReverse ease-in-out);
+            .mx__transition(background-color, @CmVar-Transition-DurationReverse);
         }
     }
 
@@ -104,17 +102,12 @@
         position: relative;
 
         > .container {
+            .display-flex;
             width: 100%;
             height: 100%;
             position: relative;
             z-index: 1;
-            display: -ms-flexbox;
-            display: -webkit-flex;
-            display: flex;
-            -ms-flex-pack: center;
-            -webkit-flex-direction: row;
-                -ms-flex-direction: row;
-                    flex-direction: row;
+            .mx__flex-direction(row);
         }
     }
 
@@ -161,11 +154,11 @@
 
     // /* Set columns indent */
 
-    #cm > .columns-indent(@ComColumns-indent);
+    .com__columns__indent(@ComColumns-indent);
 
     .for(@ComColumns-indents); .-each(@name) {
         &.indent-@{name} {
-            #cm > .columns-indent(@name);
+            .com__columns__indent(@name);
         }
     }
 
@@ -192,15 +185,13 @@
 
 /* ******* COMPONENT: COLUMNS: BUNDLE ******* */
 
-#cm() {
-    .columns-indent (@indent: @ComColumns-indent) {
-        > .inner {
-            margin: 0 -(@indent / 2);
-        }
+.com__columns__indent (@indent: @ComColumns-indent) {
+    > .inner {
+        margin: 0 -(@indent / 2);
+    }
 
-        .com-column > .inner {
-            margin: 0 (@indent / 2);
-        }
+    .com-column > .inner {
+        margin: 0 (@indent / 2);
     }
 }
 

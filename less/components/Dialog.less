@@ -155,10 +155,10 @@
 
             > .icon {
                 .cm-size-medium;
-                .mx__position(@CmIndent-Medium, @CmIndent-Medium, auto, auto);
                 font-size: 0;
                 opacity: 0.4;
-                .mx__transition(opacity @CmVar-Transition-Duration ease-in-out);
+                .mx__transition(opacity, @CmVar-Transition-Duration);
+                .mx__position(@CmIndent-Medium, @CmIndent-Medium, auto, auto);
 
                 &.default {
                     .icon.medium.close-white;
@@ -188,8 +188,8 @@
                 border-radius: @Cm-borderRadius;
 
                 > .title {
-                    padding: @ComDialog-titleIndent @ComDialog-indent;
                     .cm__font--ui-title;
+                    padding: @ComDialog-titleIndent @ComDialog-indent;
                 }
 
                 > .descr {

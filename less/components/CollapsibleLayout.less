@@ -14,37 +14,35 @@
         overflow: hidden;
         background: #ffffff;
         box-shadow: @Cm-ui-shadow;
-        .mx__transition(width @ComCollapsibleLayout-duration ease-in-out);
+        .mx__transition(width, @ComCollapsibleLayout-duration);
 
         > .inner {
             width: @ComCollapsibleLayout-sidebarWidth;
             position: absolute;
 
             > .title {
+                .cm__font--ui-title;
                 padding: 6px @CmIndent-XSmall;
                 position: absolute;
-                .mx__position(0, 0, auto, 0);
                 background: #ffffff;
                 .mx__user-select(none);
-                .cm__font--ui-title;
+                .mx__position(0, 0, auto, 0);
 
                 .icon {
                     position: absolute;
                     top: 14px;
                     cursor: pointer;
-                    -webkit-transition: -webkit-transform @ComCollapsibleLayout-duration ease-in-out;
-                        -ms-transition:     -ms-transform @ComCollapsibleLayout-duration ease-in-out;
-                            transition:         transform @ComCollapsibleLayout-duration ease-in-out;
+                    .mx__transition(-webkit-transform -ms-transform transform, @ComCollapsibleLayout-duration);
                 }
             }
 
             > .descr {
-                padding: @CmIndent-XSmall;
                 .cm-scroll-y;
+                padding: @CmIndent-XSmall;
                 position: absolute;
-                .mx__position(50px, 0, 0, 0);
                 background: #ffffff;
-                .mx__transition(opacity @ComCollapsibleLayout-duration ease-in-out);
+                .mx__transition(opacity, @ComCollapsibleLayout-duration);
+                .mx__position(50px, 0, 0, 0);
             }
         }
 
@@ -82,10 +80,10 @@
     }
 
     > .inner {
+        .cm-scroll-a-y;
         height: 100%;
         position: relative;
         z-index: 1;
-        .cm-scroll-a-y;
 
         > iframe {
             width: 100%;

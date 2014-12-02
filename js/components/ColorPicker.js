@@ -22,14 +22,17 @@ cm.define('Com.ColorPicker', {
         'value' : null,                        // Color string: transparent | hex.
         'defaultValue' : 'transparent',
         'title' : '',
+        'showClearButton' : false,
         'showTitleTooltip' : true,
         'renderInBody' : true,
         'disabled' : false,
         'icons' : {
-            'picker' : 'icon default linked'
+            'picker' : 'icon default linked',
+            'clear' : 'icon default linked'
         },
         'langs' : {
-            'transparent' : 'Transparent'
+            'Transparent' : 'Transparent',
+            'Clear' : 'Clear'
         },
         'Com.Tooltip' : {
             'targetEvent' : 'click',
@@ -94,6 +97,13 @@ function(params){
         if(that.params['input'].getAttribute('name')){
             that.nodes['hidden'].setAttribute('name', that.params['input'].getAttribute('name'));
         }
+        // Clear Button
+        if(that.params['showClearButton']){
+            cm.addClass(that.nodes['container'], 'has-clear-button');
+            that.nodes['container'].appendChild(
+                that.nodes['clearButton'] = cm.Node('div', {'class' : that.params['icons']['clear'], 'title' : that.lang('Clear')})
+            );
+        }
         /* *** INSERT INTO DOM *** */
         if(that.params['container']){
             that.params['container'].appendChild(that.nodes['container']);
@@ -113,6 +123,13 @@ function(params){
                 that.components['tooltip'].hide();
             }
         });
+        // Clear Button
+        if(that.params['showClearButton']){
+            cm.addEvent(that.nodes['clearButton'], 'click', function(){
+                that.clear();
+                that.components['tooltip'].hide();
+            });
+        }
         // Render tooltip
         that.components['tooltip'] = new Com.Tooltip(
             cm.merge(that.params['Com.Tooltip'], {
@@ -157,7 +174,7 @@ function(params){
         that.nodes['hidden'].value = that.value;
         that.nodes['input'].value = that.value;
         if(that.value == 'transparent'){
-            that.nodes['input'].value = that.lang('transparent');
+            that.nodes['input'].value = that.lang('Transparent');
             cm.replaceClass(that.nodes['input'], 'input-dark input-light', 'input-transparent');
         }else{
             that.nodes['input'].value = that.value;

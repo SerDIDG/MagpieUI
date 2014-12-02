@@ -15,7 +15,7 @@
 
 .com-tabset-head-tabs {
     ul {
-        &:extend(.cm-ul-clear all);
+        .cm__list-clear;
 
         li {
             margin: 0 @ComTabset-tabsIndent -@Cm-borderWidth 0;
@@ -23,11 +23,11 @@
             background: @ComTabset-tabsBackground;
             border: @Cm-borderStyle;
             border-radius: @ComTabset-borderRadius @ComTabset-borderRadius 0 0;
-            .mx__transition(all @CmVar-Transition-Duration ease-in-out);
+            .mx__transition(all, @CmVar-Transition-Duration);
 
             &:hover {
                 background: @ComTabset-tabsBackgroundHover;
-                .mx__transition(all @CmVar-Transition-DurationReverse ease-in-out);
+                .mx__transition(all, @CmVar-Transition-DurationReverse);
             }
 
             &:last-child {
@@ -39,9 +39,9 @@
             }
 
             a {
+                .cm-text-overflow;
                 display: block;
                 padding: 0 @CmIndent-XSmall;
-                .cm-text-overflow;
                 line-height: @ComTabset-tabsHeight;
                 color: @ComTabset-tabsColor;
                 text-decoration: none;
@@ -51,7 +51,7 @@
 }
 
 .com-tabset-head-title {
-    &:extend(.cm-text-overflow);
+    .cm-text-overflow;
     display: none;
     overflow: hidden;
     padding: 0 @CmIndent-Medium;

@@ -13,20 +13,21 @@
         overflow: hidden;
         font-size: 0;
 
-        > .descr:extend(.cm-image-resizable all) {
+        > .descr {
+            .cm-image-resizable;
             position: relative;
             z-index: 1;
-            .mx__transition(opacity @CmVar-Transition-Duration ease-in-out);
+            .mx__transition(opacity, @CmVar-Transition-Duration);
         }
 
         > .text {
             padding: @CmIndent-Medium;
             position: absolute;
             z-index: 2;
-            .mx__position(0,0,0,0);
             overflow: hidden;
             text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
             .mx__user-select(text);
+            .mx__position(0,0,0,0);
 
             > .inner {
                 height: 100%;
@@ -52,16 +53,15 @@
             overflow: hidden;
             position: absolute;
             z-index: 3;
-            .mx__position(auto,0,-@title-bottom,0);
             background: rgba(0,0,0,0.7);
             opacity: 0;
-            .mx__transition(bottom @CmVar-Transition-Duration ease-in-out);
-            .mx__transition(opacity @CmVar-Transition-Duration ease-in-out);
+            .mx__transition(bottom opacity, @CmVar-Transition-Duration);
+            .mx__position(auto, 0, -@title-bottom, 0);
 
             .inner {
-                padding: @CmImagebox-titlePaddingTop 8px;
-                .cm-text-overflow;
                 .cm__font;
+                .cm-text-overflow;
+                padding: @CmImagebox-titlePaddingTop 8px;
                 font-weight: @CmBase-Font-BoldWeight;
                 color: #fff;
 
@@ -75,8 +75,8 @@
     > label {
         position: absolute;
         z-index: 2;
-        .mx__position(0,0,0,0);
         cursor: pointer;
+        .mx__position(0,0,0,0);
     }
 
     > .pull {
@@ -121,7 +121,7 @@
             > .inner {
                 > .descr {
                     opacity: @CmVar-Opacity-Hover;
-                    .mx__transition(opacity @CmVar-Transition-DurationReverse ease-in-out);
+                    .mx__transition(opacity, @CmVar-Transition-DurationReverse);
                 }
             }
         }
@@ -136,7 +136,7 @@
         > .inner {
             > .descr {
                 opacity: @CmVar-Opacity-Hover;
-                .mx__transition(opacity @CmVar-Transition-Duration ease-in-out);
+                .mx__transition(opacity, @CmVar-Transition-Duration);
             }
         }
 
@@ -184,13 +184,17 @@
 
     &.is-adaptive {
         > .inner {
-            > .descr:extend(.cm-image-adaptive all) {}
+            > .descr {
+                .cm-image-adaptive;
+            }
         }
     }
 
     &.is-flexible {
         > .inner {
-            > .descr:extend(.cm-image-flexible all) {}
+            > .descr {
+                .cm-image-flexible;
+            }
         }
     }
 
@@ -216,8 +220,7 @@
         > .title {
             bottom: 0;
             opacity: 1;
-            .mx__transition(top @CmVar-Transition-DurationReverse ease-in-out);
-            .mx__transition(opacity @CmVar-Transition-DurationReverse ease-in-out);
+            .mx__transition(top opacity, @CmVar-Transition-DurationReverse);
         }
     }
 }

@@ -23,7 +23,7 @@
                 font-weight: normal;
                 text-decoration: none;
                 color: @CmBase-Font-Color;
-                .mx__transition(all 0.3s ease-in-out);
+                .mx__transition(all, @CmVar-Transition-Duration);
 
                 .icon {
                     display: inline-block;
@@ -37,7 +37,7 @@
 
                 &:hover {
                     text-decoration: none;
-                    .mx__transition(all 0.1s ease-in-out);
+                    .mx__transition(all, @CmVar-Transition-DurationReverse);
                 }
             }
 

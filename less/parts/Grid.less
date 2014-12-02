@@ -9,8 +9,8 @@
     }
 
     > ul {
-        .cm-ul-clear;
-        .cm-ul-inline;
+        .cm__list-clear;
+        .cm__list-inline;
         word-spacing: 0;
 
         > li {
@@ -28,13 +28,13 @@
                     display: block;
                     position: relative;
                     cursor: pointer;
-                    .mx__transition(opacity @CmVar-Transition-Duration ease-in-out);
+                    .mx__transition(opacity, @CmVar-Transition-Duration);
                 }
 
                 &:hover {
                     > img {
                         opacity: @CmVar-Opacity-Hover;
-                        .mx__transition(opacity @CmVar-Transition-DurationReverse ease-in-out);
+                        .mx__transition(opacity, @CmVar-Transition-DurationReverse);
                     }
                 }
             }

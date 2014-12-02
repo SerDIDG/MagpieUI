@@ -52,8 +52,8 @@
 
 .cm-line-share {
     > ul {
-        .cm-ul-clear;
-        .cm-ul-inline;
+        .cm__list-clear;
+        .cm__list-inline;
         margin: 0 0 -@CmIndent-XXSmall 0;
 
         > li {
@@ -74,13 +74,13 @@
                 &:hover {
                     .icon.default {
                         opacity: @CmVar-Opacity-Hover;
-                        .mx__transition(opacity @CmVar-Transition-DurationReverse ease-in-out);
+                        .mx__transition(opacity, @CmVar-Transition-DurationReverse);
                     }
 
                     .label,
                     .count {
                         background-color: @Cm-colorLight-backgroundHover;
-                        .mx__transition(background @CmVar-Transition-DurationReverse ease-in-out);
+                        .mx__transition(background, @CmVar-Transition-DurationReverse);
                     }
 
                     .label {
@@ -116,7 +116,7 @@
         &.default {
             width: @CmShareLine-iconSize;
             height: @CmShareLine-iconSize;
-            .mx__transition(opacity @CmVar-Transition-Duration ease-in-out);
+            .mx__transition(opacity, @CmVar-Transition-Duration);
 
             &.facebook {
                 .icon.large.facebook;
@@ -142,7 +142,7 @@
         vertical-align: top;
         padding: 0 @CmIndent-XSmall;
         line-height: @CmShareLine-iconSize;
-        .mx__transition(background @CmVar-Transition-Duration ease-in-out);
+        .mx__transition(background, @CmVar-Transition-Duration);
     }
 
     .label {

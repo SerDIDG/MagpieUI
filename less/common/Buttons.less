@@ -17,13 +17,11 @@
     font-size: @CmBase-Font-Size;
     white-space: nowrap;
     cursor: pointer;
-    -webkit-appearance: none;
+    .mx__appearance(none);
     .mx__box-sizing();
     .mx__background-clip(border-box);
     .mx__user-select();
-    .mx__transition(background-color @CmVar-Transition-Duration ease-in-out);
-    .mx__transition(color @CmVar-Transition-Duration ease-in-out);
-    .mx__transition(box-shadow @CmVar-Transition-Duration ease-in-out);
+    .mx__transition(background-color color box-shadow, @CmVar-Transition-Duration);
 
     &.wide {
         width: 100%;
@@ -34,9 +32,7 @@
 
     &:hover {
         text-decoration: none;
-        .mx__transition(background-color @CmVar-Transition-DurationReverse ease-in-out);
-        .mx__transition(color @CmVar-Transition-DurationReverse ease-in-out);
-        .mx__transition(box-shadow @CmVar-Transition-DurationReverse ease-in-out);
+        .mx__transition(background-color color box-shadow, @CmVar-Transition-DurationReverse);
     }
 
     // /* *** PRIMARY *** */

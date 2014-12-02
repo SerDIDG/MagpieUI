@@ -62,11 +62,11 @@
             .mx__user-select(none);
 
             &.sort {
-                .mx__transition(background-color 0.3s ease-in-out);
+                .mx__transition(background-color, @CmVar-Transition-Duration);
 
                 &:hover {
                     background: @CmColor-LightHover;
-                    .mx__transition(background-color 0.1s ease-in-out);
+                    .mx__transition(background-color, @CmVar-Transition-DurationReverse);
                 }
 
                 &:active {
@@ -95,6 +95,7 @@
             border-top: 1px solid transparent;
             word-wrap: break-word;
             font-size: @PtGridlist-Font-Size;
+            background-color: @CmColor-LightDefault;
         }
 
         tr {

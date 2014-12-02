@@ -24,7 +24,7 @@
     border: @Cm-borderBox;
     .mx__box-sizing(border-box);
     .mx__background-clip(padding-box);
-    .mx__transition(border-color @CmVar-Transition-Duration ease-in-out);
+    .mx__transition(border-color, @CmVar-Transition-Duration);
 
     &.active {
         border: @Cm-borderBoxActive;
@@ -38,7 +38,7 @@
     border-radius: @Cm-borderRadius;
     .mx__box-sizing(border-box);
     .mx__background-clip(padding-box);
-    .mx__transition(background @CmVar-Transition-Duration ease-in-out);
+    .mx__transition(background, @CmVar-Transition-Duration);
 
     &:last-child {
         margin: 0;

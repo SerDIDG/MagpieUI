@@ -1,0 +1,138 @@
+<!DOCTYPE HTML>
+<html class="is-adaptive">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Common: List</title>
+
+    <link type="text/css" rel="stylesheet" href="../../../css/index.css">
+    <link type="text/css" rel="stylesheet" href="../../styles/index.css">
+
+    <script type="text/javascript" src="../../../js/polyfill.js"></script>
+    <script type="text/javascript" src="../../../js/common.js"></script>
+    <script type="text/javascript" src="../../../js/parts.js"></script>
+    <script type="text/javascript" src="../../../js/modules.js"></script>
+    <script type="text/javascript" src="../../../js/init.js"></script>
+    <script type="text/javascript" src="../../../js/components/UA.js"></script>
+    <script type="text/javascript" src="../../../js/components/Collector.js"></script>
+
+    <script type="text/javascript">
+        cm.onReady(function(){
+            new Com.Collector()
+                .addEvent('onConstruct', function(collector, data){
+                    Part.Menu();
+                    Part.Autoresize(data['node']);
+                })
+                .construct();
+        });
+    </script>
+</head>
+<body>
+
+<h1 class="pt__box-title">Common: List</h1>
+<hr>
+
+<h2>List</h2>
+<textarea class="cm-codebox cm-autoresize" readonly>
+<ul class="cm__list">
+    <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+    <li>Quisque consectetur sapien ac nisi bibendum.</li>
+    <li>Curabitur efficitur sollicitudin ex.
+        <ul>
+            <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+            <li>Quisque consectetur sapien ac nisi bibendum.</li>
+            <li>Curabitur efficitur sollicitudin ex.</li>
+        </ul>
+    </li>
+</ul></textarea>
+<br>
+<ul class="cm__list">
+    <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+    <li>Quisque consectetur sapien ac nisi bibendum.</li>
+    <li>Curabitur efficitur sollicitudin ex.
+        <ul>
+            <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+            <li>Quisque consectetur sapien ac nisi bibendum.</li>
+            <li>Curabitur efficitur sollicitudin ex.</li>
+        </ul>
+    </li>
+</ul>
+
+<hr>
+
+<h2>List with indent</h2>
+<textarea class="cm-codebox cm-autoresize" readonly>
+<ul class="cm__list has-indent">
+    <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+    <li>Quisque consectetur sapien ac nisi bibendum.</li>
+    <li>Curabitur efficitur sollicitudin ex.</li>
+</ul></textarea>
+<br>
+<ul class="cm__list has-indent">
+    <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+    <li>Quisque consectetur sapien ac nisi bibendum.</li>
+    <li>Curabitur efficitur sollicitudin ex.</li>
+</ul>
+
+<hr>
+
+<h2>Clear List</h2>
+<textarea class="cm-codebox cm-autoresize" readonly>
+<ul class="cm__list-clear">
+    <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+    <li>Quisque consectetur sapien ac nisi bibendum.</li>
+    <li>Curabitur efficitur sollicitudin ex.</li>
+</ul></textarea>
+<br>
+<ul class="cm__list-clear">
+    <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+    <li>Quisque consectetur sapien ac nisi bibendum.</li>
+    <li>Curabitur efficitur sollicitudin ex.</li>
+</ul>
+
+<hr>
+
+<h2>Clear Inline List without spaces</h2>
+<textarea class="cm-codebox cm-autoresize" readonly>
+<ul class="cm__list-clear cm__list-inline">
+    <li>
+        <div class="icon large facebook"></div>
+    </li>
+    <li>
+        <div class="icon large twitter"></div>
+    </li>
+    <li>
+        <div class="icon large google"></div>
+    </li>
+</ul></textarea>
+<br>
+<ul class="cm__list-clear cm__list-inline">
+    <li>
+        <div class="icon large facebook"></div>
+    </li>
+    <li>
+        <div class="icon large twitter"></div>
+    </li>
+    <li>
+        <div class="icon large google"></div>
+    </li>
+</ul>
+
+<hr>
+
+<h2>Clear Inline List without spaces with base text styles</h2>
+<textarea class="cm-codebox cm-autoresize" readonly>
+<ul class="cm__list-clear cm__list-inline--base">
+    <li>Lorem</li>
+    <li>Quisque</li>
+    <li>Curabitur</li>
+</ul></textarea>
+<br>
+<ul class="cm__list-clear cm__list-inline--base">
+    <li>Lorem</li>
+    <li>Quisque</li>
+    <li>Curabitur</li>
+</ul>
+
+</body>
+</html>

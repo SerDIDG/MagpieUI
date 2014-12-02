@@ -81,27 +81,6 @@
 
 /* *** BUNDLE *** */
 
-.cm-ul-inline {
-    text-align: left;
-    font-size: 0;
-
-    > li {
-        display: inline-block;
-        vertical-align: top;
-    }
-}
-
-.cm-ul-clear {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-
-    > li {
-        margin: 0;
-        padding: 0;
-    }
-}
-
 .cm-counter {
     height: @CmCounter-size;
     padding: 0 5px;
@@ -112,7 +91,7 @@
     font-size: @CmCounter-fontSize;
     font-weight: @CmBase-Font-Weight;
     color: @CmCounter-color;
-    .mx__transition(all @CmVar-Transition-Duration ease-in-out);
+    .mx__transition(all, @CmVar-Transition-Duration);
 }
 
 .cm-codebox {
