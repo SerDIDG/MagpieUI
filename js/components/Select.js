@@ -253,17 +253,17 @@ function(params){
         cm.forEach(myChildes, function(myChild){
             if(cm.isElementNode(myChild)){
                 if(myChild.tagName.toLowerCase() == 'optgroup'){
-                     myOptionsNodes = myChild.querySelectorAll('option');
-                     myOptions = [];
-                     cm.forEach(myOptionsNodes, function(optionNode){
-                         myOptions.push({
+                    myOptionsNodes = myChild.querySelectorAll('option');
+                    myOptions = [];
+                    cm.forEach(myOptionsNodes, function(optionNode){
+                        myOptions.push({
                             'value' : optionNode.value,
                             'text' : optionNode.innerHTML
-                         });
-                     });
-                     renderGroup(myChild.getAttribute('label'), myOptions);
+                        });
+                    });
+                    renderGroup(myChild.getAttribute('label'), myOptions);
                 }else if(myChild.tagName.toLowerCase() == 'option'){
-                     renderOption(myChild.value, myChild.innerHTML);
+                    renderOption(myChild.value, myChild.innerHTML);
                 }
             }
         });
@@ -280,9 +280,14 @@ function(params){
         // Structure
         item['optgroup'] = cm.Node('optgroup', {'label' : myName});
         item['container'] = cm.Node('li', {'class' : 'group'},
-            cm.Node('div', {'class' : 'title', 'innerHTML' : myName}),
             item['items'] = cm.Node('ul', {'class' : 'cm-items-list'})
         );
+        if(!cm.isEmpty(myName)){
+            cm.insertFirst(
+                cm.Node('div', {'class' : 'title', 'innerHTML' : myName}),
+                item['container']
+            );
+        }
         // Render options
         cm.forEach(myOptions, function(myOption){
             renderOption(myOption.value, myOption.text, item);
