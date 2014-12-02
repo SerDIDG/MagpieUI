@@ -23,7 +23,7 @@
 
 .mx__transition(@properties, @duration: @CmVar-Transition-Duration, @function: ease-in-out) {
     .for(@properties); .-each(@property) {
-        -webkit-transition+: @property;
+        -webkit-transition+: @property @duration @function;
                 transition+: @property @duration @function;
     }
 }

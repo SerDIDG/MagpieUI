@@ -75,7 +75,7 @@
   font-size: 11px;
   font-weight: 400;
   color: #ffffff;
-  -webkit-transition: all;
+  -webkit-transition: all 300ms ease-in-out;
   transition: all 300ms ease-in-out;
 }
 .cm-codebox {
@@ -316,12 +316,12 @@
 }
 .icon.linked {
   cursor: pointer;
-  -webkit-transition: opacity;
+  -webkit-transition: opacity 300ms ease-in-out;
   transition: opacity 300ms ease-in-out;
 }
 .icon.linked:hover {
   opacity: 0.7;
-  -webkit-transition: opacity;
+  -webkit-transition: opacity 100ms ease-in-out;
   transition: opacity 100ms ease-in-out;
 }
 .icon.draggable[data-draganddrop-drag="true"] {
@@ -826,7 +826,7 @@ select {
   -webkit-background-clip: padding-box;
   -moz-background-clip: padding-box;
   background-clip: padding-box;
-  -webkit-transition: background, border-color, color, box-shadow, text-shadow;
+  -webkit-transition: background 300ms ease-in-out, border-color 300ms ease-in-out, color 300ms ease-in-out, box-shadow 300ms ease-in-out, text-shadow 300ms ease-in-out;
   transition: background 300ms ease-in-out, border-color 300ms ease-in-out, color 300ms ease-in-out, box-shadow 300ms ease-in-out, text-shadow 300ms ease-in-out;
 }
 .input.input-focus,
@@ -987,7 +987,7 @@ button {
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
-  -webkit-transition: background-color, color, box-shadow;
+  -webkit-transition: background-color 300ms ease-in-out, color 300ms ease-in-out, box-shadow 300ms ease-in-out;
   transition: background-color 300ms ease-in-out, color 300ms ease-in-out, box-shadow 300ms ease-in-out;
 }
 .button:hover,
@@ -1026,7 +1026,7 @@ input[type="submit"]:hover,
 input[type="reset"]:hover,
 button:hover {
   text-decoration: none;
-  -webkit-transition: background-color, color, box-shadow;
+  -webkit-transition: background-color 100ms ease-in-out, color 100ms ease-in-out, box-shadow 100ms ease-in-out;
   transition: background-color 100ms ease-in-out, color 100ms ease-in-out, box-shadow 100ms ease-in-out;
 }
 .button.button-primary,
@@ -2530,7 +2530,7 @@ button.has-icon-small .icon {
   -webkit-background-clip: padding-box;
   -moz-background-clip: padding-box;
   background-clip: padding-box;
-  -webkit-transition: border-color;
+  -webkit-transition: border-color 300ms ease-in-out;
   transition: border-color 300ms ease-in-out;
 }
 .pt__box-border.active {
@@ -2546,7 +2546,7 @@ button.has-icon-small .icon {
   -webkit-background-clip: padding-box;
   -moz-background-clip: padding-box;
   background-clip: padding-box;
-  -webkit-transition: background;
+  -webkit-transition: background 300ms ease-in-out;
   transition: background 300ms ease-in-out;
 }
 .pt__box-flat:last-child {
@@ -2735,13 +2735,13 @@ button.has-icon-small .icon {
 }
 .cm-line-share > ul > li a:hover .icon.default {
   opacity: 0.7;
-  -webkit-transition: opacity;
+  -webkit-transition: opacity 100ms ease-in-out;
   transition: opacity 100ms ease-in-out;
 }
 .cm-line-share > ul > li a:hover .label,
 .cm-line-share > ul > li a:hover .count {
   background-color: #e6e6e6;
-  -webkit-transition: background;
+  -webkit-transition: background 100ms ease-in-out;
   transition: background 100ms ease-in-out;
 }
 .cm-line-share > ul > li a:hover .label {
@@ -2763,7 +2763,7 @@ button.has-icon-small .icon {
 .cm-line-share .icon.default {
   width: 32px;
   height: 32px;
-  -webkit-transition: opacity;
+  -webkit-transition: opacity 300ms ease-in-out;
   transition: opacity 300ms ease-in-out;
 }
 .cm-line-share .icon.default.facebook {
@@ -2784,7 +2784,7 @@ button.has-icon-small .icon {
   vertical-align: top;
   padding: 0 12px;
   line-height: 32px;
-  -webkit-transition: background;
+  -webkit-transition: background 300ms ease-in-out;
   transition: background 300ms ease-in-out;
 }
 .cm-line-share .label {
@@ -2856,7 +2856,7 @@ button.has-icon-small .icon {
   padding: 4px 0;
   list-style: none;
   opacity: 0;
-  -webkit-transition: all;
+  -webkit-transition: all 300ms ease-in-out;
   transition: all 300ms ease-in-out;
 }
 .cm-menu-dropdown--base li {
@@ -2919,7 +2919,7 @@ button.has-icon-small .icon {
 .cm-menu-dropdown--active {
   visibility: visible;
   opacity: 1;
-  -webkit-transition: all;
+  -webkit-transition: all 100ms ease-in-out;
   transition: all 100ms ease-in-out;
 }
 /* *** MENU *** */
@@ -2927,7 +2927,7 @@ button.has-icon-small .icon {
 .cm-menu.is-show > .cm-menu-dropdown {
   visibility: visible;
   opacity: 1;
-  -webkit-transition: all;
+  -webkit-transition: all 100ms ease-in-out;
   transition: all 100ms ease-in-out;
 }
 /* ******* PART: TITLE EDITABLE ******* */
@@ -2991,7 +2991,7 @@ button.has-icon-small .icon {
   font-weight: normal;
   text-decoration: none;
   color: #666666;
-  -webkit-transition: all;
+  -webkit-transition: all 300ms ease-in-out;
   transition: all 300ms ease-in-out;
 }
 .cm-items-list ul li a .icon {
@@ -3004,7 +3004,7 @@ button.has-icon-small .icon {
 }
 .cm-items-list ul li a:hover {
   text-decoration: none;
-  -webkit-transition: all;
+  -webkit-transition: all 100ms ease-in-out;
   transition: all 100ms ease-in-out;
 }
 .cm-items-list ul li .title {
@@ -3233,7 +3233,7 @@ button.has-icon-small .icon {
 }
 .cm-draganddrop-chassis {
   height: 0;
-  -webkit-transition: height;
+  -webkit-transition: height 0s linear;
   transition: height 0s linear;
 }
 .cm-draganddrop-removable {
@@ -3245,11 +3245,11 @@ button.has-icon-small .icon {
   position: relative;
 }
 .cm-draganddrop-area.is-available {
-  -webkit-transition: background-color;
+  -webkit-transition: background-color 300ms ease-in-out;
   transition: background-color 300ms ease-in-out;
 }
 .cm-draganddrop-area.is-available:before {
-  -webkit-transition: border-color;
+  -webkit-transition: border-color 300ms ease-in-out;
   transition: border-color 300ms ease-in-out;
 }
 .cm-draganddrop-area.is-available.is-highlight {
@@ -3307,7 +3307,7 @@ button.has-icon-small .icon {
   border: 1px dashed #308ce8;
   border-radius: 3px;
   opacity: 0;
-  -webkit-transition: all;
+  -webkit-transition: all 300ms ease-in-out;
   transition: all 300ms ease-in-out;
 }
 .cm-editable.is-editable > .inner {
@@ -3335,7 +3335,7 @@ button.has-icon-small .icon {
   border-radius: 3px;
   cursor: move;
   visibility: hidden;
-  -webkit-transition: all;
+  -webkit-transition: all 300ms ease-in-out;
   transition: all 300ms ease-in-out;
 }
 .cm-editable.is-editable > .drag .icon {
@@ -3346,7 +3346,7 @@ button.has-icon-small .icon {
 }
 .cm-editable.is-editable > .drag:hover {
   background: #fafafa;
-  -webkit-transition: all;
+  -webkit-transition: all 100ms ease-in-out;
   transition: all 100ms ease-in-out;
 }
 .cm-editable.is-editable > .drag:not(.is-bottom) {
@@ -3363,7 +3363,7 @@ button.has-icon-small .icon {
   right: -12px;
   opacity: 0;
   cursor: pointer;
-  -webkit-transition: all;
+  -webkit-transition: all 300ms ease-in-out;
   transition: all 300ms ease-in-out;
 }
 .cm-editable.is-editable > .menu .icon {
@@ -3396,7 +3396,7 @@ button.has-icon-small .icon {
   padding: 4px 0;
   list-style: none;
   opacity: 0;
-  -webkit-transition: all;
+  -webkit-transition: all 300ms ease-in-out;
   transition: all 300ms ease-in-out;
   z-index: 1;
   top: 12px;
@@ -3461,7 +3461,7 @@ button.has-icon-small .icon {
 .cm-editable.is-editable > .menu:hover .cm-menu-dropdown {
   visibility: visible;
   opacity: 1;
-  -webkit-transition: all;
+  -webkit-transition: all 100ms ease-in-out;
   transition: all 100ms ease-in-out;
 }
 .cm-editable.is-active > .border,
@@ -3472,14 +3472,14 @@ button.has-icon-small .icon {
   left: -16px;
   opacity: 1;
   background: #ffffff;
-  -webkit-transition: all;
+  -webkit-transition: all 100ms ease-in-out;
   transition: all 100ms ease-in-out;
 }
 .cm-editable.is-active > .drag,
 .cm-editable:hover > .drag {
   opacity: 1;
   visibility: visible;
-  -webkit-transition: all;
+  -webkit-transition: all 100ms ease-in-out;
   transition: all 100ms ease-in-out;
 }
 .cm-editable.is-active > .drag:not(.is-bottom),
@@ -3495,7 +3495,7 @@ button.has-icon-small .icon {
   top: -28px;
   right: -28px;
   opacity: 1;
-  -webkit-transition: all;
+  -webkit-transition: all 100ms ease-in-out;
   transition: all 100ms ease-in-out;
 }
 .cm-editable.is-active > .drag {
@@ -3542,12 +3542,12 @@ button.has-icon-small .icon {
   display: block;
   position: relative;
   cursor: pointer;
-  -webkit-transition: opacity;
+  -webkit-transition: opacity 300ms ease-in-out;
   transition: opacity 300ms ease-in-out;
 }
 .pt__grid > ul > li > a:hover > img {
   opacity: 0.7;
-  -webkit-transition: opacity;
+  -webkit-transition: opacity 100ms ease-in-out;
   transition: opacity 100ms ease-in-out;
 }
 .pt__grid.is-inline > ul {
@@ -3785,7 +3785,7 @@ button.has-icon-small .icon {
   display: block;
   position: relative;
   z-index: 1;
-  -webkit-transition: opacity;
+  -webkit-transition: opacity 300ms ease-in-out;
   transition: opacity 300ms ease-in-out;
 }
 .cm-imagebox > .inner > .text {
@@ -3834,7 +3834,7 @@ button.has-icon-small .icon {
   z-index: 3;
   background: rgba(0, 0, 0, 0.7);
   opacity: 0;
-  -webkit-transition: bottom, opacity;
+  -webkit-transition: bottom 300ms ease-in-out, opacity 300ms ease-in-out;
   transition: bottom 300ms ease-in-out, opacity 300ms ease-in-out;
   top: auto;
   right: 0;
@@ -3907,19 +3907,19 @@ button.has-icon-small .icon {
 }
 .cm-imagebox:not(.is-no-hover):hover > .inner > .descr {
   opacity: 0.7;
-  -webkit-transition: opacity;
+  -webkit-transition: opacity 100ms ease-in-out;
   transition: opacity 100ms ease-in-out;
 }
 .cm-imagebox:hover > .inner > .title,
 .cm-imagebox.is-fixed-title > .inner > .title {
   bottom: 0;
   opacity: 1;
-  -webkit-transition: top, opacity;
+  -webkit-transition: top 100ms ease-in-out, opacity 100ms ease-in-out;
   transition: top 100ms ease-in-out, opacity 100ms ease-in-out;
 }
 .cm-imagebox.is-checkable > .inner > .descr {
   opacity: 0.7;
-  -webkit-transition: opacity;
+  -webkit-transition: opacity 300ms ease-in-out;
   transition: opacity 300ms ease-in-out;
 }
 .cm-imagebox.is-checkable:hover > .inner > .descr,
@@ -3978,7 +3978,7 @@ button.has-icon-small .icon {
 .cm-imagebox-title-hover > .inner > .title {
   bottom: 0;
   opacity: 1;
-  -webkit-transition: top, opacity;
+  -webkit-transition: top 100ms ease-in-out, opacity 100ms ease-in-out;
   transition: top 100ms ease-in-out, opacity 100ms ease-in-out;
 }
 /* ******* PART: ITEM BOX ******* */
@@ -4209,7 +4209,7 @@ button.has-icon-small .icon {
   position: absolute;
   left: 0;
   top: 0;
-  -webkit-transition: width, background-color;
+  -webkit-transition: width 300ms ease-in-out, background-color 300ms ease-in-out;
   transition: width 300ms ease-in-out, background-color 300ms ease-in-out;
 }
 .pt__progress-bar .green {
@@ -4294,12 +4294,12 @@ button.has-icon-small .icon {
   user-select: none;
 }
 .pt__gridlist table th.sort {
-  -webkit-transition: background-color;
+  -webkit-transition: background-color 300ms ease-in-out;
   transition: background-color 300ms ease-in-out;
 }
 .pt__gridlist table th.sort:hover {
   background: #eef5fc;
-  -webkit-transition: background-color;
+  -webkit-transition: background-color 100ms ease-in-out;
   transition: background-color 100ms ease-in-out;
 }
 .pt__gridlist table th.sort:active {
@@ -4595,7 +4595,7 @@ button.has-icon-small .icon {
   -webkit-background-clip: padding-box;
   -moz-background-clip: padding-box;
   background-clip: padding-box;
-  -webkit-transition: background, border-color, color, box-shadow, text-shadow;
+  -webkit-transition: background 300ms ease-in-out, border-color 300ms ease-in-out, color 300ms ease-in-out, box-shadow 300ms ease-in-out, text-shadow 300ms ease-in-out;
   transition: background 300ms ease-in-out, border-color 300ms ease-in-out, color 300ms ease-in-out, box-shadow 300ms ease-in-out, text-shadow 300ms ease-in-out;
   height: auto;
   min-height: 28px;
@@ -4706,7 +4706,7 @@ button.has-icon-small .icon {
   padding: 4px 0;
   list-style: none;
   opacity: 0;
-  -webkit-transition: all, all;
+  -webkit-transition: all 300ms ease-in-out, all 100ms ease-in-out;
   transition: all 300ms ease-in-out, all 100ms ease-in-out;
   visibility: visible;
   opacity: 1;
@@ -4806,11 +4806,11 @@ button.has-icon-small .icon {
   line-height: 21px;
   font-size: 11px;
   cursor: pointer;
-  -webkit-transition: all;
+  -webkit-transition: all 300ms ease-in-out;
   transition: all 300ms ease-in-out;
 }
 .com-calendar table td div:hover {
-  -webkit-transition: all;
+  -webkit-transition: all 100ms ease-in-out;
   transition: all 100ms ease-in-out;
 }
 .com-calendar table td.in div {
@@ -5350,7 +5350,7 @@ html.ie9 .com__palette .b-range {
   height: 24px;
   font-size: 0;
   opacity: 0.4;
-  -webkit-transition: opacity;
+  -webkit-transition: opacity 300ms ease-in-out;
   transition: opacity 300ms ease-in-out;
   top: 24px;
   right: 24px;
@@ -5514,7 +5514,7 @@ html.ie9 .com__palette .b-range {
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
-  -webkit-transition: background-color, color, box-shadow;
+  -webkit-transition: background-color 300ms ease-in-out, color 300ms ease-in-out, box-shadow 300ms ease-in-out;
   transition: background-color 300ms ease-in-out, color 300ms ease-in-out, box-shadow 300ms ease-in-out;
   background: #f2f2f2;
   color: #308ce8;
@@ -5537,7 +5537,7 @@ html.ie9 .com__palette .b-range {
 }
 .com-pagination ul li a:hover {
   text-decoration: none;
-  -webkit-transition: background-color, color, box-shadow;
+  -webkit-transition: background-color 100ms ease-in-out, color 100ms ease-in-out, box-shadow 100ms ease-in-out;
   transition: background-color 100ms ease-in-out, color 100ms ease-in-out, box-shadow 100ms ease-in-out;
 }
 .com-pagination ul li a.button-primary {
@@ -5775,7 +5775,7 @@ html.ie9 .com__palette .b-range {
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
-  -webkit-transition: color;
+  -webkit-transition: color 300ms ease-in-out;
   transition: color 300ms ease-in-out;
 }
 .com-togglebox > dt .icon {
@@ -5787,7 +5787,7 @@ html.ie9 .com__palette .b-range {
 .com-togglebox > dt .icon.default {
   background-image: url("../img/icons/small/arrow-right.png");
   width: 16px;
-  -webkit-transition: -webkit-transform, -ms-transform, transform;
+  -webkit-transition: -webkit-transform 300ms ease-in-out, -ms-transform 300ms ease-in-out, transform 300ms ease-in-out;
   transition: -webkit-transform 300ms ease-in-out, -ms-transform 300ms ease-in-out, transform 300ms ease-in-out;
 }
 .com-togglebox > dt .title {
@@ -5951,12 +5951,12 @@ html.ie9 .com__palette .b-range {
   background: #f2f2f2;
   border: 1px solid #cbcbcb;
   border-radius: 3px 3px 0 0;
-  -webkit-transition: all;
+  -webkit-transition: all 300ms ease-in-out;
   transition: all 300ms ease-in-out;
 }
 .com-tabset-head-tabs ul li:hover {
   background: #ffffff;
-  -webkit-transition: all;
+  -webkit-transition: all 100ms ease-in-out;
   transition: all 100ms ease-in-out;
 }
 .com-tabset-head-tabs ul li:last-child {
@@ -6023,7 +6023,7 @@ html.ie9 .com__palette .b-range {
   padding: 4px 0;
   list-style: none;
   opacity: 0;
-  -webkit-transition: all;
+  -webkit-transition: all 300ms ease-in-out;
   transition: all 300ms ease-in-out;
   left: auto;
   right: -1px;
@@ -6268,7 +6268,7 @@ html.ie9 .com__palette .b-range {
   opacity: 0;
   cursor: pointer;
   background-color: rgba(255, 255, 255, 0.7);
-  -webkit-transition: background-color, opacity;
+  -webkit-transition: background-color 300ms ease-in-out, opacity 300ms ease-in-out;
   transition: background-color 300ms ease-in-out, opacity 300ms ease-in-out;
 }
 .com-gallery-bar .bar-arrow:hover {
@@ -6346,7 +6346,7 @@ html.ie9 .com__palette .b-range {
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
-  -webkit-transition: opacity;
+  -webkit-transition: opacity 300ms ease-in-out;
   transition: opacity 300ms ease-in-out;
 }
 .com-gallery-controls .bar-arrow {
@@ -6357,7 +6357,7 @@ html.ie9 .com__palette .b-range {
   left: auto;
   z-index: 2;
   opacity: 1;
-  -webkit-transition: opacity;
+  -webkit-transition: opacity 300ms ease-in-out;
   transition: opacity 300ms ease-in-out;
   cursor: pointer;
 }
@@ -6365,7 +6365,7 @@ html.ie9 .com__palette .b-range {
   position: absolute;
   top: 0;
   opacity: 0.3;
-  -webkit-transition: opacity;
+  -webkit-transition: opacity 300ms ease-in-out;
   transition: opacity 300ms ease-in-out;
 }
 .com-gallery-controls .bar-arrow.next {
@@ -6413,7 +6413,7 @@ html.ie9 .com__palette .b-range {
   cursor: pointer;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  -webkit-transition: all;
+  -webkit-transition: all 300ms ease-in-out;
   transition: all 300ms ease-in-out;
 }
 .com-gallery-controls .bar-buttons ul li:first-child {
@@ -6421,7 +6421,7 @@ html.ie9 .com__palette .b-range {
 }
 .com-gallery-controls .bar-buttons ul li:hover {
   border-color: #308ce8;
-  -webkit-transition: all;
+  -webkit-transition: all 100ms ease-in-out;
   transition: all 100ms ease-in-out;
 }
 .com-gallery-controls .bar-buttons ul li.active {
@@ -6564,7 +6564,7 @@ html.ie9 .com__palette .b-range {
 .com-gallery:hover .cm-imagebox > .inner > .title {
   bottom: 0;
   opacity: 1;
-  -webkit-transition: top, opacity;
+  -webkit-transition: top 100ms ease-in-out, opacity 100ms ease-in-out;
   transition: top 100ms ease-in-out, opacity 100ms ease-in-out;
 }
 .com-gallery:hover > .com-gallery-controls {
@@ -6828,7 +6828,7 @@ html.ie9 .com__palette .b-range {
 }
 .com-slider > .inner > .slides > ul > li > .cm-imagebox > .pull {
   opacity: 0;
-  -webkit-transition: opacity;
+  -webkit-transition: opacity 300ms ease-in-out;
   transition: opacity 300ms ease-in-out;
 }
 .com-slider > .inner > .slides > ul > li > .image {
@@ -7253,7 +7253,7 @@ html.ie9 .com__palette .b-range {
   overflow: hidden;
   background: #ffffff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-  -webkit-transition: width;
+  -webkit-transition: width 500ms ease-in-out;
   transition: width 500ms ease-in-out;
 }
 .com-collapsible-layout > .sidebar > .inner {
@@ -7278,7 +7278,7 @@ html.ie9 .com__palette .b-range {
   position: absolute;
   top: 14px;
   cursor: pointer;
-  -webkit-transition: -webkit-transform, -ms-transform, transform;
+  -webkit-transition: -webkit-transform 500ms ease-in-out, -ms-transform 500ms ease-in-out, transform 500ms ease-in-out;
   transition: -webkit-transform 500ms ease-in-out, -ms-transform 500ms ease-in-out, transform 500ms ease-in-out;
 }
 .com-collapsible-layout > .sidebar > .inner > .descr {
@@ -7288,7 +7288,7 @@ html.ie9 .com__palette .b-range {
   padding: 12px;
   position: absolute;
   background: #ffffff;
-  -webkit-transition: opacity;
+  -webkit-transition: opacity 500ms ease-in-out;
   transition: opacity 500ms ease-in-out;
   top: 50px;
   right: 0;
@@ -7453,7 +7453,7 @@ html.ie9 .com__palette .b-range {
   flex: 1;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  -webkit-transition: background-color;
+  -webkit-transition: background-color 300ms ease-in-out;
   transition: background-color 300ms ease-in-out;
 }
 .ie8 .com-column,
@@ -7474,7 +7474,7 @@ html.ie9 .com__palette .b-range {
   margin: 0 0 0 -5px;
   opacity: 0;
   cursor: col-resize;
-  -webkit-transition: opacity;
+  -webkit-transition: opacity 300ms ease-in-out;
   transition: opacity 300ms ease-in-out;
 }
 .com-columns-chassis .drag {
@@ -7490,7 +7490,7 @@ html.ie9 .com__palette .b-range {
   background: #f2f2f2;
   border: 1px solid #cbcbcb;
   border-radius: 3px;
-  -webkit-transition: background-color, border-color;
+  -webkit-transition: background-color 300ms ease-in-out, border-color 300ms ease-in-out;
   transition: background-color 300ms ease-in-out, border-color 300ms ease-in-out;
 }
 .com-columns-chassis .drag .icon {
@@ -7509,16 +7509,16 @@ html.ie9 .com__palette .b-range {
   display: block;
   content: '';
   background: #f2f2f2;
-  -webkit-transition: background-color;
+  -webkit-transition: background-color 300ms ease-in-out;
   transition: background-color 300ms ease-in-out;
 }
 .com-columns-chassis:hover .drag {
   background: #fafafa;
-  -webkit-transition: background-color, border-color;
+  -webkit-transition: background-color 100ms ease-in-out, border-color 100ms ease-in-out;
   transition: background-color 100ms ease-in-out, border-color 100ms ease-in-out;
 }
 .com-columns-chassis:hover:after {
-  -webkit-transition: background-color;
+  -webkit-transition: background-color 100ms ease-in-out;
   transition: background-color 100ms ease-in-out;
 }
 .com-columns-chassis.is-active .drag {
