@@ -4823,8 +4823,23 @@ html.ie9 .com__palette .b-range {
   z-index: 1;
   outline: none;
 }
+.com__colorpicker.has-clear-button {
+  padding: 0 36px 0 0;
+}
 .com__colorpicker .form-field .icon.default {
   background-image: url("../img/icons/medium/palette.png");
+}
+.com__colorpicker > .icon {
+  width: 28px;
+  height: 28px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: auto;
+  left: auto;
+}
+.com__colorpicker > .icon.default {
+  background-image: url("../img/icons/small/remove.png");
 }
 /* *** TOOLTIP *** */
 .com-tooltip.com__colorpicker-tooltip > .inner > .scroll {
