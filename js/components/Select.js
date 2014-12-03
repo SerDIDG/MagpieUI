@@ -412,6 +412,7 @@ function(params){
         });
         nodes['text'].value = cm.decode(option['text']);
         option['option'].selected = true;
+        nodes['hidden'].value = active;
         cm.addClass(option['node'], 'active');
     };
 

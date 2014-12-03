@@ -4120,21 +4120,21 @@ button.has-icon-small .icon {
   font-weight: 600;
 }
 /* *** DEFAULT *** */
-.pt__listing-default {
+.pt__listing-clear {
   margin: 0 0 24px;
 }
-.pt__listing-default.bottom {
+.pt__listing-clear.bottom {
   margin: 0;
 }
-.pt__listing-default > ul {
+.pt__listing-clear > ul {
   margin: 0;
   padding: 0;
   list-style: none;
 }
-.pt__listing-default > ul > li {
+.pt__listing-clear > ul > li {
   margin: 0 0 12px 0;
 }
-.pt__listing-default > ul > li:last-child {
+.pt__listing-clear > ul > li:last-child {
   margin-bottom: 0;
 }
 /* *** LISTING WITH COUNTERS *** */
@@ -5290,6 +5290,9 @@ html.ie9 .com__palette .b-range {
 .com-dialog > .window > .inner > .descr > .scroll.is-scroll {
   overflow-x: hidden;
   overflow-y: auto;
+}
+.com-dialog > .window > .inner > .descr > .scroll > .inner {
+  overflow: hidden;
 }
 .com-dialog > .window > .inner > .buttons {
   position: relative;
