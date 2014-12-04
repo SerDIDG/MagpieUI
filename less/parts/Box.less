@@ -143,3 +143,49 @@
         background: url("@{CmPath-Images}/components/ajax-loader.gif");
     }
 }
+
+/* *** EDITABLE *** */
+
+.pt__box__editable {
+    .clearfix;
+    margin: 0 0 @CmIndent-Medium;
+
+    &.bottom {
+        margin: 0;
+    }
+
+    .cm__tags {
+        margin-bottom: 0;
+    }
+
+    > .r {
+        float: right;
+        margin: 0 0 0 @CmIndent-Medium;
+
+        .cm-toolbar {
+            margin-bottom: 0;
+        }
+    }
+
+    > .l {
+        overflow: hidden;
+    }
+}
+
+/* ******* PART: BOX: ADAPTIVE ******* */
+
+@media only screen and (max-width: @CmScreen-Mobile) {
+
+    html.is-adaptive {
+
+        /* *** EDITABLE *** */
+
+        .pt__box__editable {
+            > .l, > .r {
+                float: none;
+                margin: 0;
+            }
+        }
+    }
+
+}

@@ -1,3 +1,5 @@
+// /* ******* PREFIXES ******* */
+
 .mx__appearance (@value: none){
     -webkit-appearance: @value;
        -moz-appearance: @value;
@@ -79,6 +81,18 @@
     -webkit-flex-direction: @value;
         -ms-flex-direction: @value;
             flex-direction: @value;
+}
+
+// /* ******* COMMON ******* */
+
+.mx__background__color (@background, @colorDark, @colorLight) when (lightness(@background) >= 40%) {
+    color: @colorDark;
+}
+.mx__background__color (@background, @colorDark, @colorLight) when (lightness(@background) < 60%) {
+    color: @colorLight;
+}
+.mx__background__color (@background, @colorDark, @colorLight) {
+    background: @background;
 }
 
 // /* ******* VENDORS ******* */

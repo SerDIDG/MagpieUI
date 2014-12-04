@@ -8,7 +8,7 @@
     }
 
     .required {
-        color: @Cm-colorError;
+        color: @CmColor-Invalid-DarkDefault;
         font-weight: @CmBase-Font-BoldWeight;
     }
 }
@@ -31,7 +31,7 @@
         width: @CmForm-fieldTitleWidth;
         display: block;
         margin: 0;
-        padding: ((@CmForm-fieldHeight - @CmBase-Font-LineHeight) / 2) 0;
+        padding: ((@CmForm-FieldHeight - @CmBase-Font-LineHeight) / 2) 0;
         float: left;
         line-height: @CmBase-Font-LineHeight;
     }
@@ -68,7 +68,7 @@
 /* *** FIELD WITH ICON *** */
 
 .form-field {
-    @iconSize: @CmForm-fieldHeight - @Cm-borderWidth * 2;
+    @iconSize: @CmForm-FieldHeight - @Cm-borderWidth * 2;
     position: relative;
 
     .icon {
@@ -98,7 +98,7 @@
         }
 
         input {
-            padding-left: @CmForm-fieldHeight;
+            padding-left: @CmForm-FieldHeight;
         }
     }
 
@@ -108,7 +108,7 @@
         }
 
         input {
-            padding-right: @CmForm-fieldHeight;
+            padding-right: @CmForm-FieldHeight;
         }
     }
 }
@@ -124,7 +124,7 @@
         font-style: italic;
         overflow: hidden;
         text-align: right;
-        line-height: @CmForm-fieldHeight;
+        line-height: @CmForm-FieldHeight;
         font-size: 12px;
     }
 
@@ -149,13 +149,13 @@
 
     &.error {
         .hint {
-            color: @Cm-colorError;
+            color: @CmColor-Invalid-DarkDefault;
         }
     }
 
     &.ok {
         .hint {
-            color: @Cm-colorValid;
+            color: @CmColor-Valid-DarkDefault;
         }
     }
 
@@ -301,11 +301,11 @@
 /* *** CHECKBOX / RADIO LINE *** */
 
 .check-line {
-    min-height: @CmForm-fieldHeight;
-    line-height: @CmForm-fieldHeight;
+    min-height: @CmForm-FieldHeight;
+    line-height: @CmForm-FieldHeight;
 
     .checkbox {
-        @margin: floor((@CmForm-fieldHeight - 13px) / 2);
+        @margin: floor((@CmForm-FieldHeight - 13px) / 2);
 
         margin: @margin 0 @margin 0;
         vertical-align: top;
@@ -318,7 +318,7 @@
     }
 
     label {
-        @padding: (@CmForm-fieldHeight - @CmBase-Font-LineHeight) / 2;
+        @padding: (@CmForm-FieldHeight - @CmBase-Font-LineHeight) / 2;
         padding: @padding 20px @padding @CmForm-fieldInnerIndent;
         cursor: pointer;
         vertical-align: baseline;
@@ -351,10 +351,10 @@
 
     .field {
         width: auto;
-        min-height: @CmForm-fieldHeight;
+        min-height: @CmForm-FieldHeight;
         display: block;
         margin: 0 0 0 28px;
-        line-height: @CmForm-fieldHeight;
+        line-height: @CmForm-FieldHeight;
     }
 
     .unveil {
@@ -432,19 +432,19 @@
     }
 
     &.error {
-        border-color: @Cm-colorError;
+        border-color: @CmColor-Invalid-DarkDefault;
 
         legend {
-            color: @Cm-colorError;
+            color: @CmColor-Invalid-DarkDefault;
             font-weight: @CmBase-Font-BoldWeight;
         }
     }
 
     &.ok {
-        border-color: @Cm-colorValid;
+        border-color: @CmColor-Valid-DarkDefault;
 
         legend {
-            color: @Cm-colorValid;
+            color: @CmColor-Valid-DarkDefault;
             font-weight: @CmBase-Font-BoldWeight;
         }
     }
@@ -458,7 +458,7 @@
             float: right;
             margin: 0;
             white-space: nowrap;
-            line-height: @CmForm-fieldHeight;
+            line-height: @CmForm-FieldHeight;
 
             .icon {
                 display: inline-block;
@@ -593,7 +593,7 @@
 
     .buttons {
         float: left;
-        margin: @CmForm-fieldHeight 0 0 0;
+        margin: @CmForm-FieldHeight 0 0 0;
     }
 
     &.simple {
@@ -608,39 +608,39 @@
 .form dl {
     &.error {
         dt {
-            color: @Cm-colorError;
+            color: @CmColor-Invalid-DarkDefault;
         }
 
         .hint {
-            color: @Cm-colorError;
+            color: @CmColor-Invalid-DarkDefault;
         }
 
         .validate {
-            color: @Cm-colorError;
+            color: @CmColor-Invalid-DarkDefault;
             font-weight: @CmBase-Font-BoldWeight;
         }
 
         .input {
-            border: 1px solid @Cm-colorError;
+            border: 1px solid @CmColor-Invalid-DarkDefault;
         }
     }
 
     &.ok {
         dt {
-            color: @Cm-colorValid;
+            color: @CmColor-Valid-DarkDefault;
         }
 
         .hint {
-            color: @Cm-colorValid;
+            color: @CmColor-Valid-DarkDefault;
         }
 
         .validate {
-            color: @Cm-colorValid;
+            color: @CmColor-Valid-DarkDefault;
             font-weight: @CmBase-Font-BoldWeight;
         }
 
         .input {
-            border: 1px solid @Cm-colorValid;
+            border: 1px solid @CmColor-Valid-DarkDefault;
         }
     }
 }
@@ -648,7 +648,7 @@
 /* *** FORM ICONS *** */
 
 .cm-form-icons {
-    min-height: @CmForm-fieldHeight;
+    min-height: @CmForm-FieldHeight;
     position: relative;
 
     .loop(@counter) when (@counter > 0) {
@@ -692,7 +692,7 @@
 .cm-form-icons-outside {
     position: absolute;
     top: 0;
-    line-height: @CmForm-fieldHeight;
+    line-height: @CmForm-FieldHeight;
     font-size: 0;
     text-align: left;
 
@@ -739,7 +739,7 @@
 
 .files-list {
     ul {
-        max-height: (@CmFilesList-count * (@CmForm-fieldInnerIndent + @CmForm-fieldHeight)) - @CmForm-fieldInnerIndent;
+        max-height: (@CmFilesList-count * (@CmForm-fieldInnerIndent + @CmForm-FieldHeight)) - @CmForm-fieldInnerIndent;
         overflow-y: auto;
         overflow-x: hidden;
         padding: 0;
@@ -747,9 +747,9 @@
         list-style: none;
 
         li {
-            height: @CmForm-fieldHeight;
+            height: @CmForm-FieldHeight;
             margin: @CmForm-fieldInnerIndent 0 0 0;
-            line-height: @CmForm-fieldHeight;
+            line-height: @CmForm-FieldHeight;
 
             .button {
                 float: left;
@@ -786,7 +786,7 @@
         white-space: nowrap;
         text-overflow: ellipsis;
         word-break: normal;
-        line-height: @CmForm-fieldHeight;
+        line-height: @CmForm-FieldHeight;
     }
 }
 
@@ -811,11 +811,11 @@
             }
 
             &.is-sortable {
-                padding-left: @CmForm-fieldHeight;
+                padding-left: @CmForm-FieldHeight;
 
                 > .icon {
-                    width: @CmForm-fieldHeight;
-                    height: @CmForm-fieldHeight;
+                    width: @CmForm-FieldHeight;
+                    height: @CmForm-FieldHeight;
                     position: absolute;
                     .mx__position(0, auto, 0, 0);
                     cursor: move;

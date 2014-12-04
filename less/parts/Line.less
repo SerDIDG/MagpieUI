@@ -2,7 +2,7 @@
 
 /* ****** PART: LINE: INFO ******* */
 
-.cm-line-info {
+.pt__line__info {
     .clearfix;
 
     .item,
@@ -24,11 +24,11 @@
 
     .status {
         &.error {
-            color: @Cm-colorError;
+            color: @CmColor-Invalid-DarkDefault;
         }
 
         &.valid {
-            color: @Cm-colorValid;
+            color: @CmColor-Valid-DarkDefault;
         }
 
         &.pending {
@@ -50,7 +50,7 @@
 
 /* ******* PART: LINE: SHARE ******* */
 
-.cm-line-share {
+.pt__line__share {
     > ul {
         .cm__list-clear;
         .cm__list-inline;
@@ -136,8 +136,9 @@
         }
     }
 
-    .label:extend(.cm__font--ui),
-    .count:extend(.cm__font--ui) {
+    .label,
+    .count {
+        .cm__font--ui;
         display: inline-block;
         vertical-align: top;
         padding: 0 @CmIndent-XSmall;

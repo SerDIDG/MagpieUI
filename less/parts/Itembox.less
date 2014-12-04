@@ -28,11 +28,11 @@
 
     .status {
         &.error {
-            color: @Cm-colorError;
+            color: @CmColor-Invalid-DarkDefault;
         }
 
         &.valid {
-            color: @Cm-colorValid;
+            color: @CmColor-Valid-DarkDefault;
         }
     }
 
@@ -66,7 +66,7 @@
         .status:extend(.cm-text-overflow) {}
     }
 
-    > .cm-imagebox {
+    > .pt__image {
         margin-bottom: @CmIndent-XSmall;
 
         &:last-child {
@@ -75,7 +75,7 @@
     }
 
     &.is-image-centered {
-        .cm-imagebox {
+        .pt__image {
             margin-left: auto;
             margin-right: auto;
         }
@@ -84,7 +84,7 @@
     &.is-centered {
         text-align: center;
 
-        .cm-imagebox {
+        .pt__image {
             margin-left: auto;
             margin-right: auto;
         }
@@ -94,7 +94,7 @@
 
     .for(@CmItemBox-sizes); .-each(@name) {
         &.size-@{name} {
-            .cm-imagebox {
+            .pt__image {
                 width: unit(@name, px);
                 height: unit(@name, px);
             }

@@ -1,15 +1,15 @@
-/* ******* COMPONENT: COMMENTS ******* */
+/* ******* LAYOUTS: COMMENTS ******* */
 
 /* *** COMMENT *** */
 
-.com-comment {
+.lt__comment {
     position: relative;
 
     .comment-info,
     .comment-text,
     .comment-actions {
+        .clearfix;
         margin: @CmIndent-XXXSmall 0 0 0;
-        .clear;
 
         &:first-child {
             margin: 0;
@@ -20,7 +20,7 @@
         .cm__font--hint;
         line-height: 14px;
 
-        .cm-line-info {
+        .pt__line__info {
             margin: 0;
         }
 
@@ -30,7 +30,7 @@
     }
 
     .comment-text {
-        h1, h2, h3, h4, h5, h6, p, ul, ol {
+        .cm__tags {
             margin: 0;
         }
     }
@@ -55,19 +55,19 @@
     &.is-pending {
         &:before {
             position: absolute;
-            .mx__position(-@CmIndent-XXSmall, -@CmIndent-XXSmall, -@CmIndent-XXSmall, -@CmIndent-XXSmall);
             display: block;
             z-index: -1;
             content: '';
             background-color: @Cm-background-pendingLight;
             border-radius: @Cm-borderRadius;
+            .mx__position(-@CmIndent-XXSmall, -@CmIndent-XXSmall, -@CmIndent-XXSmall, -@CmIndent-XXSmall);
         }
     }
 }
 
 /* *** COMMENT LIST *** */
 
-.com-comments {
+.lt__comments {
     margin: 0 0 @CmIndent-Medium;
 
     &.bottom {
@@ -101,7 +101,7 @@
 
 /* *** COMMENT EDITOR *** */
 
-.com-comment-editor {
+.lt__comment__editor {
     textarea {
         min-height: 50px;
     }

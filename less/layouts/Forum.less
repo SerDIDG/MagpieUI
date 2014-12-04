@@ -1,36 +1,36 @@
-/* ******* COMPONENT: FORUM ******* */
+/* ******* LAYOUTS: FORUM ******* */
 
 /* *** MAIN *** */
 
-.com-forum {
+.lt__forum {
 }
 
-.com-forum-cell-icon {
+.lt__forum-cell-icon {
     width: 32px;
 
     .icon {
         display: block;
 
         &.default {
-            .cm-size-large;
+            .cm__size__large;
             .icon.large.message;
         }
 
         &.default-page {
-            .cm-size-large;
+            .cm__size__large;
             .icon.large.page;
             margin: 3px 0 0 0;
         }
 
         &.default-featured {
-            .cm-size-large;
+            .cm__size__large;
             .icon.large.page-featured;
             margin: 3px 0 0 0;
         }
     }
 }
 
-.com-forum-cell-counter {
+.lt__forum-cell-counter {
     width: 120px;
 
     .line:extend(.clear all) {
@@ -47,7 +47,7 @@
     }
 }
 
-.com-forum-cell-title {
+.lt__forum-cell-title {
     * {
         margin: 0;
     }
@@ -61,13 +61,13 @@
     }
 }
 
-.com-forum-cell-last {
+.lt__forum-cell-last {
     width: 20%;
 }
 
 /* *** TOPIC *** */
 
-.com-forum-posts {
+.lt__forum-posts {
     margin: 0 0 @CmIndent-Medium;
 
     &.bottom {
@@ -90,7 +90,7 @@
     }
 }
 
-.com-forum-post {
+.lt__forum-post {
     background: @ComForum-postBackground;
     border-radius: @Cm-borderRadius;
 
@@ -116,12 +116,12 @@
                 width: 0;
                 height: 0;
                 position: absolute;
-                .mx__position(@CmIndent-XSmall, 0, auto, auto);
                 display: block;
                 content: '';
                 border-style: solid;
                 border-width: 8px 12px 8px 0;
                 border-color: transparent @ComForum-postBackground transparent transparent;
+                .mx__position(@CmIndent-XSmall, 0, auto, auto);
             }
         }
 
@@ -130,20 +130,20 @@
             display: table-cell;
             vertical-align: top;
 
-            .cm-title-editable,
+            .pt__box__editable,
             .date {
                 .cm__font--hint;
                 color: @CmUI-FontTitleMedium-Color;
             }
 
-            .cm-title-editable {
+            .pt__box__editable {
                 margin: 0;
             }
         }
     }
 
     .post-share {
-        .cm-line-share {
+        .pt__line__share {
             margin: @CmIndent-Medium 0 0 0;
 
             &:first-child {
@@ -170,7 +170,7 @@
 @media only screen and (max-width : @ComForum-adaptiveFrom) {
 
     html.is-adaptive {
-        .com-forum-post {
+        .lt__forum-post {
             > .inner {
                 width: auto;
                 display: block;
@@ -189,7 +189,7 @@
             }
         }
 
-        .com-forum-cell-counter {
+        .lt__forum-cell-counter {
             .line {
                 text-align: left;
             }

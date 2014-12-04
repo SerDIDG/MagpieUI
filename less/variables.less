@@ -3,34 +3,83 @@
 // /* ******* COLORS ******* */
 // /* ************************************************ */
 
+// /* ******* VARS ******* */
+
+@CmVar-Color-DarkDefault-Lightness: 55%;
+@CmVar-Color-DarkHover-Lightness: 45%;
+@CmVar-Color-DarkActive-Lightness: 35%;
+
 @CmVar-Color-LightDefault-Lightness: 100%;
 @CmVar-Color-LightHover-Lightness: 96%;
 @CmVar-Color-LightActive-Lightness: 93%;
 @CmVar-Color-LightActiveHover-Lightness: 88%;
 
-@CmColor: 210;
-@CmColor-LightSaturation: 70%;
-@CmColor-LightDefault: transparent; // hsl(@CmColor, @CmColor-LightSaturation, @CmVar-Color-LightDefault-Lightness)
-@CmColor-LightHover: hsl(@CmColor, @CmColor-LightSaturation, @CmVar-Color-LightHover-Lightness);
-@CmColor-LightActive: hsl(@CmColor, @CmColor-LightSaturation, @CmVar-Color-LightActive-Lightness);
-@CmColor-LightActiveHover: hsl(@CmColor, @CmColor-LightSaturation, @CmVar-Color-LightActiveHover-Lightness);
+// /* ******* PRIMARY ******* */
+
+@CmColor-Primary: 210;
+
+// /* Normal Key */
+
+@CmColor-Primary-DarkSaturation: 75%;
+@CmColor-Primary-DarkDefault: hsl(@CmColor-Primary, @CmColor-Primary-DarkSaturation, @CmVar-Color-DarkDefault-Lightness);
+@CmColor-Primary-DarkHover: hsl(@CmColor-Primary, @CmColor-Primary-DarkSaturation, @CmVar-Color-DarkHover-Lightness);
+@CmColor-Primary-DarkActive: hsl(@CmColor-Primary, @CmColor-Primary-DarkSaturation, @CmVar-Color-DarkActive-Lightness);
+
+// /* Light Key */
+
+@CmColor-Primary-LightSaturation: 70%;
+@CmColor-Primary-LightDefault: transparent; // hsl(@CmColor-Primary, @CmColor-Primary-LightSaturation, @CmVar-Color-LightDefault-Lightness)
+@CmColor-Primary-LightHover: hsl(@CmColor-Primary, @CmColor-Primary-LightSaturation, @CmVar-Color-LightHover-Lightness);
+@CmColor-Primary-LightActive: hsl(@CmColor-Primary, @CmColor-Primary-LightSaturation, @CmVar-Color-LightActive-Lightness);
+@CmColor-Primary-LightActiveHover: hsl(@CmColor-Primary, @CmColor-Primary-LightSaturation, @CmVar-Color-LightActiveHover-Lightness);
+
+// /* ******* SECONDARY ******* */
 
 @CmColor-Secondary: 0;
+
+// /* Normal Key */
+
+@CmColor-Secondary-DarkSaturation: 65%;
+@CmColor-Secondary-DarkDefault: hsl(@CmColor-Secondary, @CmColor-Secondary-DarkSaturation, @CmVar-Color-DarkDefault-Lightness);
+@CmColor-Secondary-DarkHover: hsl(@CmColor-Secondary, @CmColor-Secondary-DarkSaturation, @CmVar-Color-DarkHover-Lightness);
+@CmColor-Secondary-DarkActive: hsl(@CmColor-Secondary, @CmColor-Secondary-DarkSaturation, @CmVar-Color-DarkActive-Lightness);
+
+// /* Light Key */
+
 @CmColor-Secondary-LightSaturation: 0%;
 @CmColor-Secondary-LightDefault: transparent; // hsl(@CmColor-Secondary, @CmColor-Secondary-LightSaturation, @CmVar-Color-LightDefault-Lightness)
 @CmColor-Secondary-LightHover: hsl(@CmColor-Secondary, @CmColor-Secondary-LightSaturation, @CmVar-Color-LightHover-Lightness);
 @CmColor-Secondary-LightActive: hsl(@CmColor-Secondary, @CmColor-Secondary-LightSaturation, @CmVar-Color-LightActive-Lightness);
 @CmColor-Secondary-LightActiveHover: hsl(@CmColor-Secondary, @CmColor-Secondary-LightSaturation, @CmVar-Color-LightActiveHover-Lightness);
 
+// /* ******* VALID ******* */
+
 @CmColor-Valid: 120;
-@CmColor-Valid-LightSaturation: 65%;
+
+// /* Normal Key */
+
+@CmColor-Valid-DarkSaturation: 65%;
+@CmColor-Valid-DarkDefault: hsl(@CmColor-Valid, @CmColor-Valid-DarkSaturation, 45%);
+
+// /* Light Key */
+
+@CmColor-Valid-LightSaturation: 60%;
 @CmColor-Valid-LightDefault: transparent; // hsl(@CmColor-Valid, @CmColor-Valid-LightSaturation, @CmVar-Color-LightDefault-Lightness)
 @CmColor-Valid-LightHover: hsl(@CmColor-Valid, @CmColor-Valid-LightSaturation, @CmVar-Color-LightHover-Lightness);
 @CmColor-Valid-LightActive: hsl(@CmColor-Valid, @CmColor-Valid-LightSaturation, @CmVar-Color-LightActive-Lightness);
 @CmColor-Valid-LightActiveHover: hsl(@CmColor-Valid, @CmColor-Valid-LightSaturation, @CmVar-Color-LightActiveHover-Lightness);
 
+// /* ******* INVALID ******* */
 
 @CmColor-Invalid: 0;
+
+// /* Normal Key */
+
+@CmColor-Invalid-DarkSaturation: 65%;
+@CmColor-Invalid-DarkDefault: hsl(@CmColor-Invalid, @CmColor-Invalid-DarkSaturation, @CmVar-Color-DarkDefault-Lightness);
+
+// /* Light Key */
+
 @CmColor-Invalid-LightSaturation: 65%;
 @CmColor-Invalid-LightDefault: transparent; //hsl(@CmColor-Invalid, @CmColor-Invalid-LightSaturation, @CmVar-Color-LightDefault-Lightness)
 @CmColor-Invalid-LightHover: hsl(@CmColor-Invalid, @CmColor-Invalid-LightSaturation, @CmVar-Color-LightHover-Lightness);
@@ -93,6 +142,7 @@
 @CmBase-Font-Size: 13px;
 @CmBase-Font-Weight: @CmBase-Font-NormalWeight;
 @CmBase-Font-Color: #666666;
+@CmBase-Font-ColorLight: #ffffff;
 @CmBase-FontHint-Size: 11px;
 
 // /* ******* UI ******* */
@@ -106,6 +156,7 @@
 @CmUI-Font-Family: 'Open Sans', arial, helvetica, sans-serif;
 @CmUI-Font-Weight: @CmUI-Font-NormalWeight;
 @CmUI-Font-Color: #666666;
+@CmUI-Font-ColorLight: #ffffff;
 
 @CmUI-FontTitle-BoldWeight: 300;
 @CmUI-FontTitle-LineHeight: 38px;
@@ -126,8 +177,6 @@
 @Cm-colorLink: @Cm-color;
 @Cm-colorLinkHover: @Cm-colorLink;
 @Cm-colorLinkVisited: #8a156d;
-@Cm-colorError: hsl(0, 80%, 50%);
-@Cm-colorValid: #009900;
 @Cm-colorPending: #ffa200;
 @Cm-colorPendingLight: #fff9ef;
 
@@ -173,21 +222,6 @@
 @Cm-ui-shadowLight: 0 0 2px rgba(0,0,0,0.2);
 @Cm-ui-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
 
-// /* *** ELEMENTS *** */
-
-@CmElement-button-paddingX: @CmIndent-XSmall;
-
-// /* ******* FORM ******* */
-
-@CmForm-fieldHeight: 28px;
-@CmForm-fieldIndent: @CmIndent-Small;
-@CmForm-fieldTitleWidth: 150px;
-@CmForm-fieldInnerIndent: @CmForm-fieldIndent / 2;
-@CmForm-buttonsIndent: @CmIndent-XXSmall;
-@CmForm-input-padding: 6px;
-@CmForm-textarea-height: 100px;
-@CmForm-select-size: 7;
-
 // /* *** ICONS OUTSIDE *** */
 
 @CmForm-iconsIndent: @CmIndent-XXSmall;
@@ -200,6 +234,25 @@
 
 @CmForm-cols-names: one two three four five six seven eight nine ten;
 @CmForm-cols-indent: 2%;
+
+// /* ************************************************ */
+// /* ******* COMMON ******* */
+// /* ************************************************ */
+
+// /* *** BUTTONS *** */
+
+@CmButton-PaddingX: @CmIndent-XSmall;
+
+// /* *** FORM *** */
+
+@CmForm-FieldHeight: 28px;
+@CmForm-fieldIndent: @CmIndent-Small;
+@CmForm-fieldTitleWidth: 150px;
+@CmForm-fieldInnerIndent: @CmForm-fieldIndent / 2;
+@CmForm-buttonsIndent: @CmIndent-XXSmall;
+@CmForm-input-padding: 6px;
+@CmForm-textarea-height: 100px;
+@CmForm-select-size: 7;
 
 // /* ************************************************ */
 // /* ******* PARTS ******* */
@@ -391,7 +444,7 @@
 @ComTabset-adaptiveFrom: @CmScreen-Mobile;
 @ComTabset-borderColor: @Cm-colorBorder;
 @ComTabset-borderRadius: @Cm-borderRadius;
-@ComTabset-tabsHeight: @CmForm-fieldHeight;
+@ComTabset-tabsHeight: @CmForm-FieldHeight;
 @ComTabset-tabsIndent: @CmIndent-XXXSmall;
 @ComTabset-tabsBackground: @Cm-colorSecondary;
 @ComTabset-tabsBackgroundHover: #ffffff;

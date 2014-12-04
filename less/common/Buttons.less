@@ -3,9 +3,9 @@
 .button {
     .cm-text-overflow;
     .button.button-primary;
-    height: @CmForm-fieldHeight;
+    height: @CmForm-FieldHeight;
     margin: 0;
-    padding: 0 @CmElement-button-paddingX;
+    padding: 0 @CmButton-PaddingX;
     position: relative;
     display: inline-block;
     vertical-align: top;
@@ -13,7 +13,7 @@
     border-radius: @Cm-borderRadius;
     text-align: center;
     text-decoration: none;
-    line-height: @CmForm-fieldHeight;
+    line-height: @CmForm-FieldHeight;
     font-size: @CmBase-Font-Size;
     white-space: nowrap;
     cursor: pointer;
@@ -38,8 +38,7 @@
     // /* *** PRIMARY *** */
 
     &.button-primary {
-        background: @Cm-color;
-        color: #fff;
+        .mx__background__color(@CmColor-Primary-DarkDefault, @CmBase-Font-Color, @CmBase-Font-ColorLight);
 
         &:hover {
             .button.button-primary--hover;
@@ -52,11 +51,11 @@
     }
 
     &.button-primary--hover {
-        background-color: darken(@Cm-color, 10%);
-        color: #fff;
+        .mx__background__color(@CmColor-Primary-DarkHover, @CmBase-Font-Color, @CmBase-Font-ColorLight);
     }
 
     &.button-primary--active {
+        .mx__background__color(@CmColor-Primary-DarkActive, @CmBase-Font-Color, @CmBase-Font-ColorLight);
         box-shadow: 0 3px 3px rgba(0,0,0,0.4) inset;
     }
 
@@ -90,7 +89,7 @@
 
     &.button-error,
     &.error {
-        background: @Cm-colorError;
+        background: @CmColor-Invalid-DarkDefault;
         color: #ffffff;
 
         &:hover {
@@ -104,7 +103,7 @@
     }
 
     &.button-error--hover {
-        background: darken(@Cm-colorError, 10%);
+        background: darken(@CmColor-Invalid-DarkDefault, 10%);
         color: #ffffff;
     }
 
@@ -190,13 +189,13 @@
 
     &.has-icon-medium {
         .icon {
-            margin: -(@Cm-Medium / 2) round((@CmForm-fieldHeight - @Cm-Medium) / 2) 0;
+            margin: -(@Cm-Medium / 2) round((@CmForm-FieldHeight - @Cm-Medium) / 2) 0;
         }
     }
 
     &.has-icon-small {
         .icon {
-            margin: -(@Cm-Small / 2) round((@CmForm-fieldHeight - @Cm-Small) / 2) 0;
+            margin: -(@Cm-Small / 2) round((@CmForm-FieldHeight - @Cm-Small) / 2) 0;
         }
     }
 }

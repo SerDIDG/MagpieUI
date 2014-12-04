@@ -112,7 +112,7 @@ function(params){
         /// Check type
         item['type'] = /(\.jpg|\.png|\.gif|\.jpeg|\.bmp|\.tga)$/gi.test(item['src']) ? 'image' : 'video';
         // Structure
-        item['nodes']['container'] = cm.Node('div', {'class' : 'cm-imagebox is-no-hover is-centered'},
+        item['nodes']['container'] = cm.Node('div', {'class' : 'pt__image is-no-hover is-centered'},
             item['nodes']['inner'] = cm.Node('div', {'class' : 'inner'})
         );
         // Render by type

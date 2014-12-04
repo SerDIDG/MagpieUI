@@ -1,6 +1,6 @@
-/* ******* EDITABLE AREA ******* */
+/* ******* PARTS: EDITABLE ******* */
 
-#cm-editable-bundle () {
+.pt__editable__bundle () {
     .normal {
         width: 100%;
         position: relative;
@@ -22,14 +22,11 @@
             display: block;
             position: absolute;
             z-index: 1;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
             border: @Cm-borderEditable;
             border-radius: @Cm-borderRadius;
             opacity: 0;
             .mx__transition(all, @CmVar-Transition-Duration);
+            .mx__position(0, 0, 0, 0);
         }
 
         > .inner {
@@ -54,11 +51,11 @@
             left: 50%;
             opacity: 0;
             background: @Cm-colorSecondary;
-            background-clip: border-box;
             border: @Cm-borderEditable;
             border-radius: @Cm-borderRadius;
             cursor: move;
             visibility: hidden;
+            .mx__background-clip(border-box);
             .mx__transition(all, @CmVar-Transition-Duration);
 
             .icon {
@@ -86,11 +83,10 @@
             display: block;
             position: absolute;
             z-index: 4;
-            top: -12px;
-            right: -12px;
             opacity: 0;
             cursor: pointer;
             .mx__transition(all, @CmVar-Transition-Duration);
+            .mx__position(-12px, -12px, auto, auto);
 
             .icon {
                 width: 24px;
@@ -125,13 +121,10 @@
 
     .hover {
         > .border {
-            top: -16px;
-            right: -16px;
-            bottom: -16px;
-            left: -16px;
             opacity: 1;
             background: #ffffff;
             .mx__transition(all, @CmVar-Transition-DurationReverse);
+            .mx__position(-16px, -16px, -16px, -16px);
         }
 
         > .drag {
@@ -149,10 +142,9 @@
         }
 
         > .menu {
-            top: -28px;
-            right: -28px;
             opacity: 1;
             .mx__transition(all, @CmVar-Transition-DurationReverse);
+            .mx__position(-28px, -28px, auto, auto);
         }
     }
 
@@ -163,25 +155,25 @@
     }
 }
 
-.cm-editable {
+.pt__editable {
     margin: 0 0 @CmIndent-Medium;
 
     &.bottom {
         margin: 0;
     }
 
-    #cm-editable-bundle > .normal;
+    .pt__editable__bundle > .normal;
 
     &.is-editable {
-        #cm-editable-bundle > .editable;
+        .pt__editable__bundle > .editable;
     }
 
     &.is-active,
     &:hover {
-        #cm-editable-bundle > .hover;
+        .pt__editable__bundle > .hover;
     }
 
     &.is-active {
-        #cm-editable-bundle > .active;
+        .pt__editable__bundle > .active;
     }
 }
