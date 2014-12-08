@@ -6928,7 +6928,7 @@ html.ie9 .com__palette .b-range {
   float: left;
   margin: 0 48px 0 0;
 }
-.com-profile > .inner > .l .cm-box-flat {
+.com-profile > .inner > .l .cm-box-flat > .inner {
   width: 150px;
 }
 .com-profile > .inner > .r {
@@ -7161,10 +7161,6 @@ html.ie9 .com__palette .b-range {
 /* ******* COMPONENT: COLUMNS ******* */
 .com-column {
   vertical-align: top;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-pack: center;
 }
 .com-column > .inner {
   -webkit-flex: 1;
