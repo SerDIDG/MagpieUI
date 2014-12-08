@@ -1,7 +1,7 @@
 /* ******* PART: IMAGE BOX ******* */
 
 .pt__image {
-    @title-bottom: (@CmImagebox-titlePaddingTop * 2) + @CmBase-Font-LineHeight;
+    @title-bottom: (@PtImage-titlePaddingTop * 2) + @CmFont-Base-LineHeight;
 
     position: relative;
     .mx__user-select(none);
@@ -17,7 +17,7 @@
             .cm-image-resizable;
             position: relative;
             z-index: 1;
-            .mx__transition(opacity, @CmVar-Transition-Duration);
+            .mx__transition(opacity, @CmUI-Transition-Duration);
         }
 
         > .text {
@@ -36,7 +36,7 @@
             }
 
             .cm__tags {
-                color: @CmImagebox-textColor;
+                color: @PtImage-textColor;
             }
         }
 
@@ -55,14 +55,14 @@
             z-index: 3;
             background: rgba(0,0,0,0.7);
             opacity: 0;
-            .mx__transition(bottom opacity, @CmVar-Transition-Duration);
+            .mx__transition(bottom opacity, @CmUI-Transition-Duration);
             .mx__position(auto, 0, -@title-bottom, 0);
 
             .inner {
                 .cm__font;
                 .cm-text-overflow;
-                padding: @CmImagebox-titlePaddingTop 8px;
-                font-weight: @CmBase-Font-BoldWeight;
+                padding: @PtImage-titlePaddingTop 8px;
+                font-weight: @CmFont-Base-BoldWeight;
                 color: #fff;
 
                 & * {
@@ -120,8 +120,8 @@
         &:hover {
             > .inner {
                 > .descr {
-                    opacity: @CmVar-Opacity-Hover;
-                    .mx__transition(opacity, @CmVar-Transition-DurationReverse);
+                    opacity: @CmUI-Opacity-Hover;
+                    .mx__transition(opacity, @CmUI-Transition-DurationReverse);
                 }
             }
         }
@@ -135,8 +135,8 @@
     &.is-checkable {
         > .inner {
             > .descr {
-                opacity: @CmVar-Opacity-Hover;
-                .mx__transition(opacity, @CmVar-Transition-Duration);
+                opacity: @CmUI-Opacity-Hover;
+                .mx__transition(opacity, @CmUI-Transition-Duration);
             }
         }
 
@@ -152,7 +152,7 @@
     }
 
     &.is-centered {
-        background-color: @CmImagebox-background;
+        background-color: @PtImage-background;
 
         > .inner {
             height: 100%;
@@ -220,7 +220,7 @@
         > .title {
             bottom: 0;
             opacity: 1;
-            .mx__transition(top opacity, @CmVar-Transition-DurationReverse);
+            .mx__transition(top opacity, @CmUI-Transition-DurationReverse);
         }
     }
 }

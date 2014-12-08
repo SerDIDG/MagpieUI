@@ -13,7 +13,7 @@
         cursor: pointer;
         line-height: @ComToggleBox-size;
         .mx__user-select(none);
-        .mx__transition(color, @CmVar-Transition-Duration);
+        .mx__transition(color, @CmUI-Transition-Duration);
 
         .icon {
             height: @ComToggleBox-size;
@@ -23,8 +23,8 @@
 
             &.default {
                 .icon.small.arrow-right;
-                width: @Cm-Small;
-                .mx__transition(-webkit-transform -ms-transform transform, @CmVar-Transition-Duration);
+                width: @CmSize-Small;
+                .mx__transition(-webkit-transform -ms-transform transform, @CmUI-Transition-Duration);
             }
         }
 
@@ -66,7 +66,7 @@
         > dt {
             padding: 0 @CmIndent-XXSmall;
             background: @ComToggleBox-titleBackground;
-            border-radius: @Cm-borderRadius;
+            border-radius: @CmBorder-Radius;
         }
     }
 
@@ -79,7 +79,7 @@
                 border-top: @ComToggleBox-contentSpaceBorder;
                 background: @ComToggleBox-contentBackground;
                 background-clip: padding-box;
-                border-radius: @Cm-borderRadius;
+                border-radius: @CmBorder-Radius;
             }
 
             .cm-toolbar {
@@ -129,7 +129,7 @@
     &.is-ui {
         > dt {
             .cm__font--ui;
-            font-weight: @CmBase-Font-BoldWeight;
+            font-weight: @CmFont-Base-BoldWeight;
             line-height: @ComToggleBox-sizeUI;
 
             .icon {
@@ -162,7 +162,7 @@
 .com-togglebox-empty:extend(.cm__font--ui-cursive) {
     padding: @CmIndent-XSmall;
     text-align: center;
-    color: @CmUI-FontTitleMedium-Color;
+    color: @CmFont-UI-TitleMedium-Color;
 }
 
 /* ******* COMPONENT: TOGGLE BOX: ADAPTIVE ******* */

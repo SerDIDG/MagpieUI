@@ -30,7 +30,7 @@
             text-align: center;
             line-height: 14px;
             font-size: 10px;
-            color: @CmBase-Font-Color;
+            color: @CmFont-Base-Color;
         }
 
         td {
@@ -45,12 +45,12 @@
                 border-radius: @ComCalendar-cellBorderRadius;
                 text-align: center;
                 line-height: @ComCalendar-cellHeight - (@ComCalendar-outer-borderSize * 2);
-                font-size: @CmUI-Font-Size;
+                font-size: @CmFont-UI-Size;
                 cursor: pointer;
-                .mx__transition(all, @CmVar-Transition-Duration);
+                .mx__transition(all, @CmUI-Transition-Duration);
 
                 &:hover {
-                    .mx__transition(all, @CmVar-Transition-DurationReverse);
+                    .mx__transition(all, @CmUI-Transition-DurationReverse);
                 }
             }
 

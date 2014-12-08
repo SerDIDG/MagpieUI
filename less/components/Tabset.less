@@ -18,16 +18,16 @@
         .cm__list-clear;
 
         li {
-            margin: 0 @ComTabset-tabsIndent -@Cm-borderWidth 0;
+            margin: 0 @ComTabset-tabsIndent -@CmBorder-Width 0;
             float: left;
             background: @ComTabset-tabsBackground;
-            border: @Cm-borderStyle;
+            border: @CmBorder-Default;
             border-radius: @ComTabset-borderRadius @ComTabset-borderRadius 0 0;
-            .mx__transition(all, @CmVar-Transition-Duration);
+            .mx__transition(all, @CmUI-Transition-Duration);
 
             &:hover {
                 background: @ComTabset-tabsBackgroundHover;
-                .mx__transition(all, @CmVar-Transition-DurationReverse);
+                .mx__transition(all, @CmUI-Transition-DurationReverse);
             }
 
             &:last-child {
@@ -55,7 +55,7 @@
     display: none;
     overflow: hidden;
     padding: 0 @CmIndent-Medium;
-    border: @Cm-borderStyle;
+    border: @CmBorder-Default;
     border-bottom: none;
     background: @ComTabset-tabsTitle;
     line-height: @ComTabset-tabsHeight;
@@ -66,7 +66,7 @@
     height: @ComTabset-tabsHeight;
     display: none;
     position: absolute;
-    .mx__position(@Cm-borderWidth, @Cm-borderWidth, @Cm-borderWidth, auto);
+    .mx__position(@CmBorder-Width, @CmBorder-Width, @CmBorder-Width, auto);
 
     .icon {
         width: @ComTabset-tabsHeight;
@@ -80,7 +80,7 @@
     .cm-menu-dropdown {
         .cm-menu-dropdown--base;
         left: auto;
-        right: -@Cm-borderWidth;
+        right: -@CmBorder-Width;
     }
 }
 
@@ -89,7 +89,7 @@
     z-index: 1;
     padding: @CmIndent-Medium;
     background: #fff;
-    border: @Cm-borderStyle;
+    border: @CmBorder-Default;
     border-radius: 0 @ComTabset-borderRadius @ComTabset-borderRadius @ComTabset-borderRadius;
 
     > ul {

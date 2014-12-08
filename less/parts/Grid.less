@@ -11,13 +11,12 @@
     > ul {
         .cm__list-clear;
         .cm__list-inline;
-        word-spacing: 0;
 
         > li {
             .cm__font;
             width: 100%;
             overflow: hidden;
-            .mx__box-sizing();
+            .mx__box-sizing(border-box);
 
             > a {
                 display: block;
@@ -28,13 +27,13 @@
                     display: block;
                     position: relative;
                     cursor: pointer;
-                    .mx__transition(opacity, @CmVar-Transition-Duration);
+                    .mx__transition(opacity, @CmUI-Transition-Duration);
                 }
 
                 &:hover {
                     > img {
-                        opacity: @CmVar-Opacity-Hover;
-                        .mx__transition(opacity, @CmVar-Transition-DurationReverse);
+                        opacity: @CmUI-Opacity-Hover;
+                        .mx__transition(opacity, @CmUI-Transition-DurationReverse);
                     }
                 }
             }
@@ -126,13 +125,7 @@
         .ie9 &,
         .ie8 & {
             > ul {
-                width: 100%;
-                display: table;
-                table-layout: fixed;
-
-                > li {
-                    display: table-cell;
-                }
+                .cm__list-table;
             }
         }
     }
@@ -151,9 +144,9 @@
 
     // /* Set grid items indent */
 
-    .pt__grid__indent(@CmGrid-itemIndent);
+    .pt__grid__indent(@PtGrid-Indent);
 
-    .for(@PtGrid-indents); .-each(@name) {
+    .for(@PtGrid-Indents); .-each(@name) {
         &.indent-@{name} {
             .pt__grid__indent(@name);
         }
@@ -170,7 +163,7 @@
     }
 }
 
-.pt__grid__indent (@indent: @CmGrid-itemIndent) {
+.pt__grid__indent (@indent: @PtGrid-Indent) {
     > ul {
         margin: @indent -@indent -@indent;
 

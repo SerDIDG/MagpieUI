@@ -156,7 +156,7 @@ function(params){
                 nodes['arrow'] = cm.Node('div', {'class' : that.params['icons']['arrow']}),
                 nodes['text'] = cm.Node('input', {'type' : 'text', 'readOnly' : 'true'})
             ),
-            nodes['scroll'] = cm.Node('div', {'class' : 'cm-items-list'},
+            nodes['scroll'] = cm.Node('div', {'class' : 'pt__listing-items'},
                 nodes['items'] = cm.Node('ul')
             )
         );
@@ -166,7 +166,7 @@ function(params){
         nodes['container'] = cm.Node('div', {'class' : 'com-multiselect'},
             nodes['hidden'] = cm.Node('select', {'class' : 'display-none', 'multiple' : true}),
             nodes['inner'] = cm.Node('div', {'class' : 'inner'},
-                nodes['scroll'] = cm.Node('div', {'class' : 'cm-items-list'},
+                nodes['scroll'] = cm.Node('div', {'class' : 'pt__listing-items'},
                     nodes['items'] = cm.Node('ul')
                 )
             )
@@ -280,7 +280,7 @@ function(params){
         // Structure
         item['optgroup'] = cm.Node('optgroup', {'label' : myName});
         item['container'] = cm.Node('li', {'class' : 'group'},
-            item['items'] = cm.Node('ul', {'class' : 'cm-items-list'})
+            item['items'] = cm.Node('ul', {'class' : 'pt__listing-items'})
         );
         if(!cm.isEmpty(myName)){
             cm.insertFirst(

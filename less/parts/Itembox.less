@@ -1,6 +1,7 @@
 /* ******* PART: ITEM BOX ******* */
 
-.cm-itembox:extend(.clear all) {
+.pt__itembox {
+    .clearfix;
 
     > .l {
         float: left;
@@ -12,7 +13,7 @@
     }
 
     .title {
-        font-weight: @CmBase-Font-BoldWeight;
+        font-weight: @CmFont-Base-BoldWeight;
     }
 
     .author {
@@ -22,8 +23,8 @@
     .date,
     .count,
     .status {
-        font-size: @CmBase-FontHint-Size;
-        color: @CmUI-FontTitleMedium-Color;
+        font-size: @CmFont-Base-Hint-Size;
+        color: @CmFont-Base-Hint-Color;
     }
 
     .status {
@@ -56,14 +57,18 @@
         }
     }
 
-    .hint:extend(.cm__font--hint-cursive) {}
+    .hint {
+        .cm__font--hint-cursive;
+    }
 
     &:not(.is-no-overflow){
-        .title:extend(.cm-text-overflow) {}
-        .author:extend(.cm-text-overflow) {}
-        .date:extend(.cm-text-overflow) {}
-        .count:extend(.cm-text-overflow) {}
-        .status:extend(.cm-text-overflow) {}
+        .title,
+        .author,
+        .date,
+        .count,
+        .status {
+            .cm-text-overflow;
+        }
     }
 
     > .pt__image {
@@ -92,13 +97,19 @@
 
     // /* Sizes */
 
-    .for(@CmItemBox-sizes); .-each(@name) {
+    .for(@PtItemBox-Sizes); .-each(@name) {
         &.size-@{name} {
-            .pt__image {
-                width: unit(@name, px);
-                height: unit(@name, px);
-            }
+            .pt__itembox__size(@name);
         }
     }
 
+}
+
+/* ******* PART: ITEM BOX: BUNDLE ******* */
+
+.pt__itembox__size (@value) {
+    .pt__image {
+        width: unit(@value, px);
+        height: unit(@value, px);
+    }
 }

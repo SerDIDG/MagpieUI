@@ -9,7 +9,7 @@
 
     .required {
         color: @CmColor-Invalid-DarkDefault;
-        font-weight: @CmBase-Font-BoldWeight;
+        font-weight: @CmFont-Base-BoldWeight;
     }
 }
 
@@ -17,7 +17,7 @@
 
 .form {
     dl:extend(.clear all) {
-        margin: @CmForm-fieldIndent 0 0 0;
+        margin: @CmForm-FieldIndent 0 0 0;
         padding: 0;
         display: block;
         clear: both;
@@ -28,17 +28,17 @@
     }
 
     dt {
-        width: @CmForm-fieldTitleWidth;
+        width: @CmForm-FieldTitleWidth;
         display: block;
         margin: 0;
-        padding: ((@CmForm-FieldHeight - @CmBase-Font-LineHeight) / 2) 0;
+        padding: ((@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2) 0;
         float: left;
-        line-height: @CmBase-Font-LineHeight;
+        line-height: @CmFont-Base-LineHeight;
     }
 
     dd {
         display: block;
-        margin: 0 0 0 (@CmForm-fieldTitleWidth + @CmForm-fieldIndent);
+        margin: 0 0 0 (@CmForm-FieldTitleWidth + @CmForm-FieldIndent);
         padding: 0;
         position: relative;
 
@@ -57,7 +57,7 @@
     }
 
     > dd {
-        margin: 0 0 @CmForm-fieldInnerIndent 0;
+        margin: 0 0 @CmForm-FieldInnerIndent 0;
 
         &:last-child {
             margin: 0;
@@ -68,7 +68,7 @@
 /* *** FIELD WITH ICON *** */
 
 .form-field {
-    @iconSize: @CmForm-FieldHeight - @Cm-borderWidth * 2;
+    @iconSize: @CmForm-FieldHeight - @CmBorder-Width * 2;
     position: relative;
 
     .icon {
@@ -79,7 +79,7 @@
         background-color: transparent;
         background-position: 50% 50%;
         background-repeat: no-repeat;
-        border-radius: max(@Cm-borderRadius - 2px, 0px);
+        border-radius: max(@CmBorder-Radius - 2px, 0px);
 
         &.xxx-small,
         &.xx-small,
@@ -94,7 +94,7 @@
 
     &.has-icon-left {
         .icon {
-            .mx__position(@Cm-borderWidth, auto, auto, @Cm-borderWidth);
+            .mx__position(@CmBorder-Width, auto, auto, @CmBorder-Width);
         }
 
         input {
@@ -104,7 +104,7 @@
 
     &.has-icon-right {
         .icon {
-            .mx__position(@Cm-borderWidth, @Cm-borderWidth, auto, auto);
+            .mx__position(@CmBorder-Width, @CmBorder-Width, auto, auto);
         }
 
         input {
@@ -120,7 +120,7 @@
     margin-top: @CmIndent-Medium;
 
     .hint {
-        padding: 0 @CmForm-buttonsIndent 0 0;
+        padding: 0 @CmForm-ButtonsIndent 0 0;
         font-style: italic;
         overflow: hidden;
         text-align: right;
@@ -133,11 +133,11 @@
     .com-action-menu {
         max-width: 100%;
         float: right;
-        margin: 0 0 0 @CmForm-buttonsIndent;
+        margin: 0 0 0 @CmForm-ButtonsIndent;
 
         &.left {
             float: left;
-            margin: 0 @CmForm-buttonsIndent 0 0;
+            margin: 0 @CmForm-ButtonsIndent 0 0;
         }
 
         &.wide {
@@ -165,7 +165,7 @@
         .browse-button,
         .com-action-menu {
             float: left;
-            margin: 0 @CmForm-buttonsIndent 0 0;
+            margin: 0 @CmForm-ButtonsIndent 0 0;
         }
     }
 
@@ -178,7 +178,7 @@
         .com-action-menu {
             float: none;
             display: inline-block;
-            margin: 0 0 0 @CmForm-buttonsIndent;
+            margin: 0 0 0 @CmForm-ButtonsIndent;
 
             &:first-child {
                 margin: 0;
@@ -194,7 +194,7 @@
         .com-action-menu {
             width: 100%;
             display: block;
-            margin: @CmForm-buttonsIndent 0 0 0;
+            margin: @CmForm-ButtonsIndent 0 0 0;
             float: none;
             .cm-text-overflow;
 
@@ -318,11 +318,11 @@
     }
 
     label {
-        @padding: (@CmForm-FieldHeight - @CmBase-Font-LineHeight) / 2;
-        padding: @padding 20px @padding @CmForm-fieldInnerIndent;
+        @padding: (@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2;
+        padding: @padding 20px @padding @CmForm-FieldInnerIndent;
         cursor: pointer;
         vertical-align: baseline;
-        line-height: @CmBase-Font-LineHeight;
+        line-height: @CmFont-Base-LineHeight;
     }
 
     input[type="radio"],
@@ -388,7 +388,7 @@
 
     .col {
         float: left;
-        margin-left: @CmForm-cols-indent;
+        margin-left: @CmForm-Cols-Indent;
 
         &:first-child {
             margin-left: 0;
@@ -402,8 +402,8 @@
     .loop(@counter) when (@counter > 0) {
         .loop((@counter - 1));
 
-        @name: extract(@CmForm-cols-names, @counter);
-        @size: (100% - ((@counter - 1) * @CmForm-cols-indent)) / @counter;
+        @name: extract(@CmForm-Cols-Names, @counter);
+        @size: (100% - ((@counter - 1) * @CmForm-Cols-Indent)) / @counter;
 
         &.@{name} .col {
             width: @size;
@@ -417,9 +417,9 @@
 
 .form fieldset {
     padding: 0 @CmIndent-Medium @CmIndent-Medium @CmIndent-Medium;
-    margin: @CmForm-fieldIndent 0 0 0;
-    border: @Cm-borderStyle;
-    border-radius: @Cm-borderRadius;
+    margin: @CmForm-FieldIndent 0 0 0;
+    border: @CmBorder-Default;
+    border-radius: @CmBorder-Radius;
 
     &:first-child {
         margin: 0;
@@ -436,7 +436,7 @@
 
         legend {
             color: @CmColor-Invalid-DarkDefault;
-            font-weight: @CmBase-Font-BoldWeight;
+            font-weight: @CmFont-Base-BoldWeight;
         }
     }
 
@@ -445,7 +445,7 @@
 
         legend {
             color: @CmColor-Valid-DarkDefault;
-            font-weight: @CmBase-Font-BoldWeight;
+            font-weight: @CmFont-Base-BoldWeight;
         }
     }
 }
@@ -515,16 +515,16 @@
 
     .button,
     .browse-button {
-        width: @CmForm-imageBox-buttonWidth;
+        width: @CmForm-ImageBox-ButtonWidth;
         display: block;
-        margin: 0 0 @CmForm-buttonsIndent 0;
+        margin: 0 0 @CmForm-ButtonsIndent 0;
     }
 
     &.style2 {
         .button,
         .browse-button {
             display: inline-block;
-            margin: 0 @CmForm-buttonsIndent 0 0;
+            margin: 0 @CmForm-ButtonsIndent 0 0;
         }
     }
 
@@ -617,7 +617,7 @@
 
         .validate {
             color: @CmColor-Invalid-DarkDefault;
-            font-weight: @CmBase-Font-BoldWeight;
+            font-weight: @CmFont-Base-BoldWeight;
         }
 
         .input {
@@ -636,7 +636,7 @@
 
         .validate {
             color: @CmColor-Valid-DarkDefault;
-            font-weight: @CmBase-Font-BoldWeight;
+            font-weight: @CmFont-Base-BoldWeight;
         }
 
         .input {
@@ -655,9 +655,9 @@
         .loop((@counter - 1));
 
         &.count-@{counter} {
-            @x-small: @counter * (@Cm-XSmall + @CmForm-iconsIndent);
-            @small: @counter * (@Cm-Small + @CmForm-iconsIndent);
-            @medium: @counter * (@Cm-Medium + @CmForm-iconsIndent);
+            @x-small: @counter * (@CmSize-XSmall + @CmForm-IconsIndent);
+            @small: @counter * (@CmSize-Small + @CmForm-IconsIndent);
+            @medium: @counter * (@CmSize-Medium + @CmForm-IconsIndent);
 
             &.x-small {
                 margin-right: @x-small;
@@ -698,7 +698,7 @@
 
     .icon {
         display: inline-block;
-        margin: 0 0 0 @CmForm-iconsIndent;
+        margin: 0 0 0 @CmForm-IconsIndent;
         vertical-align: middle;
     }
 }
@@ -715,7 +715,7 @@
     .icon,
     .icon.inline {
         display: inline-block;
-        margin: 0 0 0 @CmForm-iconsIndent;
+        margin: 0 0 0 @CmForm-IconsIndent;
         vertical-align: middle;
 
         &:first-child {
@@ -727,7 +727,7 @@
         .cm__font;
         display: inline-block;
         vertical-align: middle;
-        margin: 0 0 0 @CmForm-iconsIndent;
+        margin: 0 0 0 @CmForm-IconsIndent;
 
         &:first-child {
             margin: 0;
@@ -739,16 +739,16 @@
 
 .files-list {
     ul {
-        max-height: (@CmFilesList-count * (@CmForm-fieldInnerIndent + @CmForm-FieldHeight)) - @CmForm-fieldInnerIndent;
+        max-height: (@CmForm-FilesList-Count * (@CmForm-FieldInnerIndent + @CmForm-FieldHeight)) - @CmForm-FieldInnerIndent;
         overflow-y: auto;
         overflow-x: hidden;
         padding: 0;
-        margin: 0 0 @CmForm-fieldInnerIndent 0;
+        margin: 0 0 @CmForm-FieldInnerIndent 0;
         list-style: none;
 
         li {
             height: @CmForm-FieldHeight;
-            margin: @CmForm-fieldInnerIndent 0 0 0;
+            margin: @CmForm-FieldInnerIndent 0 0 0;
             line-height: @CmForm-FieldHeight;
 
             .button {
@@ -803,7 +803,7 @@
         }
 
         > li {
-            margin: 0 0 @CmForm-fieldIndent 0;
+            margin: 0 0 @CmForm-FieldIndent 0;
             position: relative;
 
             &:last-child {
@@ -847,7 +847,7 @@
                 }
 
                 dd {
-                    margin: 0 0 @CmForm-fieldInnerIndent;
+                    margin: 0 0 @CmForm-FieldInnerIndent;
 
                     &:last-child {
                         margin: 0;
@@ -877,11 +877,11 @@
                 }
             }
 
-            .for(@CmForm-cols-names); .-each(@name) {
+            .for(@CmForm-Cols-Names); .-each(@name) {
                 &.@{name} .col {
                     width: auto;
                     float: none;
-                    margin: @CmForm-fieldInnerIndent 0 0 0;
+                    margin: @CmForm-FieldInnerIndent 0 0 0;
                 }
             }
         }
@@ -892,7 +892,7 @@
             .form-box {
                 width: auto;
                 float: none;
-                margin: @CmForm-fieldIndent 0 0 0;
+                margin: @CmForm-FieldIndent 0 0 0;
 
                 &:first-child {
                     margin: 0;
@@ -901,7 +901,7 @@
 
             .buttons,
             &.simple .buttons {
-                margin: @CmForm-fieldIndent 0 0 0;
+                margin: @CmForm-FieldIndent 0 0 0;
             }
         }
 
@@ -909,7 +909,7 @@
 
         .form-multifield-line {
             dt {
-                margin: 0 0 @CmForm-fieldInnerIndent;
+                margin: 0 0 @CmForm-FieldInnerIndent;
             }
 
             dd {

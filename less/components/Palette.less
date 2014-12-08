@@ -8,7 +8,7 @@
     .b-palette,
     .b-range {
         float: left;
-        border-radius: @Cm-borderRadius;
+        border-radius: @CmBorder-Radius;
 
         > .inner {
             position: relative;
@@ -18,7 +18,7 @@
             width: 100%;
             height: 100%;
             display: block;
-            border-radius: @Cm-borderRadius;
+            border-radius: @CmBorder-Radius;
         }
 
         html.ie9 & {
@@ -56,7 +56,7 @@
         margin: 0 @CmIndent-Medium 0 0;
 
         > .inner {
-            width: @Cm-Medium;
+            width: @CmSize-Medium;
             cursor: row-resize;
         }
 
@@ -123,8 +123,8 @@
 
         .b-colors {
             overflow: hidden;
-            border: @Cm-borderStyle;
-            border-radius: @Cm-borderRadius;
+            border: @CmBorder-Default;
+            border-radius: @CmBorder-Radius;
             background-image: url("@{CmPath-Images}/parts/transparent.png");
 
             .b-color {

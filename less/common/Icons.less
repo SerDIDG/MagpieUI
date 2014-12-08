@@ -26,11 +26,11 @@
 
     &.linked {
         cursor: pointer;
-        .mx__transition(opacity, @CmVar-Transition-Duration);
+        .mx__transition(opacity, @CmUI-Transition-Duration);
 
         &:hover {
-            opacity: @CmVar-Opacity-Hover;
-            .mx__transition(opacity, @CmVar-Transition-DurationReverse);
+            opacity: @CmUI-Opacity-Hover;
+            .mx__transition(opacity, @CmUI-Transition-DurationReverse);
         }
     }
 
@@ -48,14 +48,14 @@
         .cm__size__x-small;
 
         &.centered {
-            @margin: @Cm-XSmall / 2;
+            @margin: @CmSize-XSmall / 2;
             margin: -@margin 0 0 -@margin;
         }
 
         &.has-caption {
             width: auto;
-            padding-left: @Cm-XSmall + @CmIndent-XXXSmall;
-            line-height: @Cm-XSmall;
+            padding-left: @CmSize-XSmall + @CmIndent-XXXSmall;
+            line-height: @CmSize-XSmall;
         }
 
         .for(search search-white); .-each(@name) {
@@ -71,14 +71,14 @@
         .cm__size__small;
 
         &.centered {
-            @margin: @Cm-Small / 2;
+            @margin: @CmSize-Small / 2;
             margin: -@margin 0 0 -@margin;
         }
 
         &.has-caption {
             width: auto;
-            padding-left: @Cm-Small + @CmIndent-XXXSmall;
-            line-height: @Cm-Small;
+            padding-left: @CmSize-Small + @CmIndent-XXXSmall;
+            line-height: @CmSize-Small;
         }
 
         .for(tags add arrow-priority-down arrow-priority-up arrow-left arrow-right arrow-top arrow-bottom copy done edit fail help remove settings settings-white view search arrow-white-left arrow-white-right arrow-white-top arrow-white-bottom drag-vertical transparent); .-each(@name) {
@@ -110,14 +110,14 @@
         .cm__size__medium;
 
         &.centered {
-            @margin: @Cm-Medium / 2;
+            @margin: @CmSize-Medium / 2;
             margin: -@margin 0 0 -@margin;
         }
 
         &.has-caption {
             width: auto;
-            padding-left: @Cm-Medium + @CmIndent-XXXSmall;
-            line-height: @Cm-Medium;
+            padding-left: @CmSize-Medium + @CmIndent-XXXSmall;
+            line-height: @CmSize-Medium;
         }
 
         .for(arrow-left arrow-right arrow-white-left arrow-white-right arrow-white-top arrow-white-bottom datepicker select-arrow close close-white menu menu-white settings settings-white plus-white palette); .-each(@name) {
@@ -133,14 +133,14 @@
         .cm__size__large;
 
         &.centered {
-            @margin: @Cm-Large / 2;
+            @margin: @CmSize-Large / 2;
             margin: -@margin 0 0 -@margin;
         }
 
         &.has-caption {
             width: auto;
-            padding-left: @Cm-Large + @CmIndent-XXXSmall;
-            line-height: @Cm-Large;
+            padding-left: @CmSize-Large + @CmIndent-XXXSmall;
+            line-height: @CmSize-Large;
         }
 
         .for(message page page-featured google linkedin twitter facebook favorite); .-each(@name) {
@@ -164,14 +164,14 @@
         .cm__size__x-large;
 
         &.centered {
-            @margin: @Cm-XLarge / 2;
+            @margin: @CmSize-XLarge / 2;
             margin: -@margin 0 0 -@margin;
         }
 
         &.has-caption {
             width: auto;
-            padding-left: @Cm-XLarge + @CmIndent-XXXSmall;
-            line-height: @Cm-XLarge;
+            padding-left: @CmSize-XLarge + @CmIndent-XXXSmall;
+            line-height: @CmSize-XLarge;
         }
 
         .for(play); .-each(@name) {
@@ -187,14 +187,14 @@
         .cm__size__xx-large;
 
         &.centered {
-            @margin: @Cm-XXLarge / 2;
+            @margin: @CmSize-XXLarge / 2;
             margin: -@margin 0 0 -@margin;
         }
 
         &.has-caption {
             width: auto;
-            padding-left: @Cm-XXLarge + @CmIndent-XXXSmall;
-            line-height: @Cm-XXLarge;
+            padding-left: @CmSize-XXLarge + @CmIndent-XXXSmall;
+            line-height: @CmSize-XXLarge;
         }
 
         .for(arrow-left arrow-right arrow-white-left arrow-white-right); .-each(@name) {

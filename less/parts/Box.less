@@ -3,9 +3,9 @@
 .pt__box {
     padding: @CmIndent-XXXSmall;
     background: #fff;
-    border: @Cm-borderStyle;
-    border-radius: @Cm-borderRadius;
-    box-shadow: @Cm-ui-shadowLight;
+    border: @CmBorder-Default;
+    border-radius: @CmBorder-Radius;
+    box-shadow: @CmUI-ShadowLight;
     .mx__box-sizing(border-box);
     .mx__background-clip(padding-box);
 }
@@ -21,13 +21,13 @@
 
 .pt__box-border {
     padding: @CmIndent-XSmall;
-    border: @Cm-borderBox;
+    border: @CmBorder-Box;
     .mx__box-sizing(border-box);
     .mx__background-clip(padding-box);
-    .mx__transition(border-color, @CmVar-Transition-Duration);
+    .mx__transition(border-color, @CmUI-Transition-Duration);
 
     &.active {
-        border: @Cm-borderBoxActive;
+        border: @CmBorder-BoxActive;
     }
 }
 
@@ -35,10 +35,10 @@
     margin: 0 0 @CmIndent-Medium;
     padding: @CmIndent-XSmall;
     background: @Cm-background-light;
-    border-radius: @Cm-borderRadius;
+    border-radius: @CmBorder-Radius;
     .mx__box-sizing(border-box);
     .mx__background-clip(padding-box);
-    .mx__transition(background, @CmVar-Transition-Duration);
+    .mx__transition(background, @CmUI-Transition-Duration);
 
     &:last-child {
         margin: 0;
@@ -116,7 +116,7 @@
     }
 
     .b-title {
-        font-weight: @CmBase-Font-BoldWeight;
+        font-weight: @CmFont-Base-BoldWeight;
     }
 }
 

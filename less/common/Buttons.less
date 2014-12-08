@@ -10,18 +10,18 @@
     display: inline-block;
     vertical-align: top;
     border: none;
-    border-radius: @Cm-borderRadius;
+    border-radius: @CmBorder-Radius;
     text-align: center;
     text-decoration: none;
     line-height: @CmForm-FieldHeight;
-    font-size: @CmBase-Font-Size;
+    font-size: @CmFont-Base-Size;
     white-space: nowrap;
     cursor: pointer;
     .mx__appearance(none);
     .mx__box-sizing();
     .mx__background-clip(border-box);
     .mx__user-select();
-    .mx__transition(background-color color box-shadow, @CmVar-Transition-Duration);
+    .mx__transition(background-color color box-shadow, @CmUI-Transition-Duration);
 
     &.wide {
         width: 100%;
@@ -32,13 +32,13 @@
 
     &:hover {
         text-decoration: none;
-        .mx__transition(background-color color box-shadow, @CmVar-Transition-DurationReverse);
+        .mx__transition(background-color color box-shadow, @CmUI-Transition-DurationReverse);
     }
 
     // /* *** PRIMARY *** */
 
     &.button-primary {
-        .mx__background__color(@CmColor-Primary-DarkDefault, @CmBase-Font-Color, @CmBase-Font-ColorLight);
+        .mx__background__color(@CmColor-Primary-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorInvert);
 
         &:hover {
             .button.button-primary--hover;
@@ -51,11 +51,11 @@
     }
 
     &.button-primary--hover {
-        .mx__background__color(@CmColor-Primary-DarkHover, @CmBase-Font-Color, @CmBase-Font-ColorLight);
+        .mx__background__color(@CmColor-Primary-DarkHover, @CmFont-Base-Color, @CmFont-Base-ColorInvert);
     }
 
     &.button-primary--active {
-        .mx__background__color(@CmColor-Primary-DarkActive, @CmBase-Font-Color, @CmBase-Font-ColorLight);
+        .mx__background__color(@CmColor-Primary-DarkActive, @CmFont-Base-Color, @CmFont-Base-ColorInvert);
         box-shadow: 0 3px 3px rgba(0,0,0,0.4) inset;
     }
 
@@ -189,13 +189,13 @@
 
     &.has-icon-medium {
         .icon {
-            margin: -(@Cm-Medium / 2) round((@CmForm-FieldHeight - @Cm-Medium) / 2) 0;
+            margin: -(@CmSize-Medium / 2) round((@CmForm-FieldHeight - @CmSize-Medium) / 2) 0;
         }
     }
 
     &.has-icon-small {
         .icon {
-            margin: -(@Cm-Small / 2) round((@CmForm-FieldHeight - @Cm-Small) / 2) 0;
+            margin: -(@CmSize-Small / 2) round((@CmForm-FieldHeight - @CmSize-Small) / 2) 0;
         }
     }
 }

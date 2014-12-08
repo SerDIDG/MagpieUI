@@ -268,7 +268,7 @@ function(params){
     that.callbacks.loader = function(that, query){
         var nodes = {};
         // Render Structure
-        nodes['container'] = cm.Node('div', {'class' : 'cm-items-list disabled'},
+        nodes['container'] = cm.Node('div', {'class' : 'pt__listing-items disabled'},
             cm.Node('ul',
                 cm.Node('li',
                     cm.Node('a',
@@ -318,7 +318,7 @@ function(params){
     that.callbacks.renderList = function(that, items){
         var nodes = {};
         // Render structure
-        nodes['container'] = cm.Node('div', {'class' : 'cm-items-list'},
+        nodes['container'] = cm.Node('div', {'class' : 'pt__listing-items'},
             nodes['items'] = cm.Node('ul')
         );
         // Render List Items

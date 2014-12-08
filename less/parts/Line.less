@@ -37,13 +37,13 @@
     }
 
     .date {
-        color: @CmUI-FontTitleMedium-Color;
+        color: @CmFont-UI-TitleMedium-Color;
     }
 
     .category,
     .author {
         a, span {
-            font-weight: @CmBase-Font-BoldWeight;
+            font-weight: @CmFont-Base-BoldWeight;
         }
     }
 }
@@ -73,14 +73,14 @@
 
                 &:hover {
                     .icon.default {
-                        opacity: @CmVar-Opacity-Hover;
-                        .mx__transition(opacity, @CmVar-Transition-DurationReverse);
+                        opacity: @CmUI-Opacity-Hover;
+                        .mx__transition(opacity, @CmUI-Transition-DurationReverse);
                     }
 
                     .label,
                     .count {
                         background-color: @Cm-colorLight-backgroundHover;
-                        .mx__transition(background, @CmVar-Transition-DurationReverse);
+                        .mx__transition(background, @CmUI-Transition-DurationReverse);
                     }
 
                     .label {
@@ -116,7 +116,7 @@
         &.default {
             width: @CmShareLine-iconSize;
             height: @CmShareLine-iconSize;
-            .mx__transition(opacity, @CmVar-Transition-Duration);
+            .mx__transition(opacity, @CmUI-Transition-Duration);
 
             &.facebook {
                 .icon.large.facebook;
@@ -143,16 +143,16 @@
         vertical-align: top;
         padding: 0 @CmIndent-XSmall;
         line-height: @CmShareLine-iconSize;
-        .mx__transition(background, @CmVar-Transition-Duration);
+        .mx__transition(background, @CmUI-Transition-Duration);
     }
 
     .label {
         background: @Cm-colorLight-backgroundHover;
-        border-radius: @Cm-borderRadius 0 0 @Cm-borderRadius;
+        border-radius: @CmBorder-Radius 0 0 @CmBorder-Radius;
     }
 
     .count {
         background: @Cm-colorLight-background;
-        border-radius: 0 @Cm-borderRadius @Cm-borderRadius 0;
+        border-radius: 0 @CmBorder-Radius @CmBorder-Radius 0;
     }
 }

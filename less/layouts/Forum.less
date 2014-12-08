@@ -5,7 +5,7 @@
 .lt__forum {
 }
 
-.lt__forum-cell-icon {
+.lt__forum__cell-icon {
     width: 32px;
 
     .icon {
@@ -30,7 +30,7 @@
     }
 }
 
-.lt__forum-cell-counter {
+.lt__forum__cell-counter {
     width: 120px;
 
     .line:extend(.clear all) {
@@ -47,7 +47,7 @@
     }
 }
 
-.lt__forum-cell-title {
+.lt__forum__cell-title {
     * {
         margin: 0;
     }
@@ -57,11 +57,11 @@
     }
 
     .title {
-        font-weight: @CmBase-Font-BoldWeight;
+        font-weight: @CmFont-Base-BoldWeight;
     }
 }
 
-.lt__forum-cell-last {
+.lt__forum__cell-last {
     width: 20%;
 }
 
@@ -92,7 +92,7 @@
 
 .lt__forum-post {
     background: @ComForum-postBackground;
-    border-radius: @Cm-borderRadius;
+    border-radius: @CmBorder-Radius;
 
     .entry {
         margin: @CmIndent-XSmall 0 0;
@@ -110,7 +110,7 @@
             display: table-cell;
             vertical-align: top;
             background: @ComForum-postTitleBackground;
-            border-radius: @Cm-borderRadius;
+            border-radius: @CmBorder-Radius;
 
             &:after {
                 width: 0;
@@ -130,14 +130,15 @@
             display: table-cell;
             vertical-align: top;
 
-            .pt__box__editable,
             .date {
                 .cm__font--hint;
-                color: @CmUI-FontTitleMedium-Color;
+                color: @CmFont-UI-TitleMedium-Color;
             }
 
             .pt__box__editable {
+                .cm__font--hint;
                 margin: 0;
+                color: @CmFont-UI-TitleMedium-Color;
             }
         }
     }
@@ -189,7 +190,7 @@
             }
         }
 
-        .lt__forum-cell-counter {
+        .lt__forum__cell-counter {
             .line {
                 text-align: left;
             }

@@ -17,7 +17,7 @@
     }
 }
 
-/* *** INLINE STYLES *** */
+/* ******* INLINE STYLES ******* */
 
 .display-none {
     display: none !important;
@@ -63,7 +63,43 @@
     vertical-align: bottom !important;
 }
 
-/* *** FONT *** */
+/* ******* COMMON ******* */
+
+/* *** COUNTER *** */
+
+.cm__counter {
+    .cm__font--ui;
+    height: @CmCounter-Size;
+    padding: 0 5px;
+    background-color: @CmColor-Secondary-LightDefault;
+    border: 1px solid @CmColor-Primary-DarkDefault;
+    border-radius: @CmBorder-Radius;
+    text-align: center;
+    line-height: @CmCounter-Size;
+    color: @CmColor-Primary-DarkDefault;
+    .mx__background-clip(border-box);
+    .mx__transition(all, @CmUI-Transition-Duration);
+}
+
+.cm__counter--hover {
+    background-color: @CmColor-Primary-DarkHover;
+    border-color: @CmColor-Primary-DarkHover;
+    color: @CmFont-UI-ColorInvert;
+}
+
+.cm__counter--active {
+    background-color: @CmColor-Primary-DarkActive;
+    border-color: @CmColor-Primary-DarkActive;
+    color: @CmFont-UI-ColorInvert;
+}
+
+.cm__counter--active-hover {
+    background-color: @CmColor-Primary-DarkActiveHover;
+    border-color: @CmColor-Primary-DarkActiveHover;
+    color: @CmFont-UI-ColorInvert;
+}
+
+/* *** OTHER *** */
 
 .mark-new {
     display: inline-block;
@@ -79,21 +115,6 @@
     background: @Cm-colorMark;
 }
 
-/* *** BUNDLE *** */
-
-.cm-counter {
-    height: @CmCounter-size;
-    padding: 0 5px;
-    background-color: @Cm-color;
-    border-radius: @CmCounter-radius;
-    text-align: center;
-    line-height: @CmCounter-size;
-    font-size: @CmCounter-fontSize;
-    font-weight: @CmBase-Font-Weight;
-    color: @CmCounter-color;
-    .mx__transition(all, @CmVar-Transition-Duration);
-}
-
 .cm-codebox {
     display: block;
     white-space: pre-wrap;
@@ -101,7 +122,7 @@
     padding: 8px 12px;
     background: #ffffff;
     border: 1px dashed @Cm-colorBorder;
-    border-radius: @Cm-borderRadius;
+    border-radius: @CmBorder-Radius;
     font-family: "Courier New", Courier, monospace;
 }
 
@@ -193,7 +214,7 @@
     }
 
     .button {
-        margin-right: @CmForm-buttonsIndent;
+        margin-right: @CmForm-ButtonsIndent;
     }
 }
 

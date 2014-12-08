@@ -1,21 +1,21 @@
 /* ******* COMMON: INPUTS ******* */
 
 .input {
-    @padding: (@CmForm-FieldHeight - @CmBase-Font-LineHeight - @Cm-borderWidth * 2) / 2;
+    @padding: (@CmForm-FieldHeight - @CmFont-Base-LineHeight - @CmBorder-Width * 2) / 2;
 
     width: 100%;
     height: @CmForm-FieldHeight;
-    padding: @padding @CmForm-input-padding;
+    padding: @padding @CmInput-Padding;
     margin: 0;
     vertical-align: top;
     background: #fff;
-    border: @Cm-borderStyle;
-    border-radius: @Cm-borderRadius;
+    border: @CmBorder-Default;
+    border-radius: @CmBorder-Radius;
     box-shadow: none;
     cursor: text;
     .mx__box-sizing();
     .mx__background-clip(padding-box);
-    .mx__transition(background border-color color box-shadow text-shadow, @CmVar-Transition-Duration);
+    .mx__transition(background border-color color box-shadow text-shadow, @CmUI-Transition-Duration);
 
     &.input-focus,
     &:focus {
@@ -54,15 +54,15 @@
 }
 
 .textarea {
-    height: @CmForm-textarea-height;
+    height: @CmTextarea-Height;
     min-height: @CmForm-FieldHeight;
-    padding: @CmForm-input-padding;
+    padding: @CmInput-Padding;
     resize: vertical;
 }
 
 .select {
     &[multiple] {
-        height: @CmForm-select-size * @CmBase-Font-LineHeight + @Cm-borderWidth * 2;
+        height: @CmSelect-Size * @CmFont-Base-LineHeight + @CmBorder-Width * 2;
         padding: 0;
     }
 }

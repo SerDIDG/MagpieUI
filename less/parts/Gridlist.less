@@ -57,17 +57,17 @@
         }
 
         th {
-            font-weight: @CmBase-Font-BoldWeight;
+            font-weight: @CmFont-Base-BoldWeight;
             font-size: @PtGridlist-FontTitle-Size;
             background-color: @CmColor-Primary-LightDefault;
             .mx__user-select(none);
 
             &.sort {
-                .mx__transition(background-color, @CmVar-Transition-Duration);
+                .mx__transition(background-color, @CmUI-Transition-Duration);
 
                 &:hover {
                     background: @CmColor-Primary-LightHover;
-                    .mx__transition(background-color, @CmVar-Transition-DurationReverse);
+                    .mx__transition(background-color, @CmUI-Transition-DurationReverse);
                 }
 
                 &:active {
@@ -154,7 +154,7 @@
 }
 
 .pt__gridlist__indent {
-    width: @Cm-XSmall;
+    width: @CmSize-XSmall;
     display: inline-block;
     vertical-align: top;
     text-align: left;

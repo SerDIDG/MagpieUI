@@ -151,12 +151,65 @@
 
 <hr>
 
-<h2>Listing with counters:</h2>
+<h2>Items Listing</h2>
+<div class="pt__listing-items">
+    <ul>
+        <li class="active">
+            <a>One</a>
+        </li>
+        <li>
+            <a>Two</a>
+        </li>
+        <li>
+            <a>Three</a>
+        </li>
+    </ul>
+</div>
+<div class="cm-view-all">
+    <a>View All</a>
+</div>
+
+<hr>
+
+<h2>Items Listing with sub items</h2>
+<div class="pt__listing-items">
+    <ul>
+        <li class="active">
+            <a class="title">One</a>
+        </li>
+        <li>
+            <a class="title">Two</a>
+        </li>
+        <li>
+            <a class="title">Three</a>
+            <div class="pt__listing-items">
+                <ul>
+                    <li>
+                        <a>One</a>
+                    </li>
+                    <li>
+                        <a>Two</a>
+                    </li>
+                    <li>
+                        <a>Three</a>
+                    </li>
+                </ul>
+            </div>
+        </li>
+    </ul>
+</div>
+<div class="cm-view-all">
+    <a>View All</a>
+</div>
+
+<hr>
+
+<h2>Listing with counters</h2>
 <div class="pt__listing-counters">
     <ul>
         <li class="active">
             <div class="r">
-                <div class="cm-counter">5</div>
+                <div class="cm__counter">5</div>
             </div>
             <div class="l">
                 <div class="label">Active list item</div>
@@ -164,7 +217,7 @@
         </li>
         <li>
             <div class="r">
-                <div class="cm-counter">27</div>
+                <div class="cm__counter">27</div>
             </div>
             <div class="l">
                 <div class="label">List item</div>
@@ -172,7 +225,7 @@
         </li>
         <li>
             <div class="r">
-                <div class="cm-counter">1</div>
+                <div class="cm__counter">1</div>
             </div>
             <div class="l">
                 <div class="label">List item</div>

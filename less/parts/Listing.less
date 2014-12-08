@@ -54,10 +54,10 @@
     }
 
     .list-title {
-        font-weight: @CmBase-Font-BoldWeight;
+        font-weight: @CmFont-Base-BoldWeight;
 
         .cm__tags {
-            font-weight: @CmBase-Font-BoldWeight;
+            font-weight: @CmFont-Base-BoldWeight;
         }
     }
 }
@@ -89,8 +89,8 @@
 /* *** LISTING WITH COUNTERS *** */
 
 .pt__listing-counters {
-    .cm-counter {
-        margin: ((@PtListingCounters-Height - @CmCounter-size) / 2) 0 0 0;
+    .cm__counter {
+        margin: ((@PtListingCounters-Height - @CmCounter-Size) / 2) 0 0 0;
         display: inline-block;
         vertical-align: top;
     }
@@ -100,14 +100,12 @@
     }
 
     ul {
-        margin: 0;
-        padding: 0;
-        list-style: none;
+        .cm__list-clear;
 
         li {
             position: relative;
-            cursor: pointer;
             line-height: @PtListingCounters-Height;
+            cursor: pointer;
 
             .r {
                 float: right;
@@ -128,14 +126,24 @@
                     text-decoration: underline;
                 }
 
-                .cm-counter {
-                    background-color: @Cm-colorActive;
+                .cm__counter {
+                    .cm__counter--hover;
                 }
             }
 
             &.active {
                 .label {
-                    font-weight: @CmBase-Font-BoldWeight;
+                    font-weight: @CmFont-Base-BoldWeight;
+                }
+
+                .cm__counter {
+                    .cm__counter--active;
+                }
+
+                &:hover {
+                    .cm__counter {
+                        .cm__counter--active-hover;
+                    }
                 }
             }
         }
@@ -157,6 +165,107 @@
                     float: left;
                 }
             }
+        }
+    }
+}
+
+/* ******* LISTING ITEMS ******* */
+
+.pt__listing-items {
+    ul {
+        .cm__list-clear;
+        max-height: @PtListingItems-Count * (@CmFont-Base-LineHeight + @PtListingItems-Indent + @PtListingItems-PaddingY * 2) - @PtListingItems-Indent;
+        overflow-x: hidden;
+        overflow-y: auto;
+
+        li {
+            margin-top: @PtListingItems-Indent;
+
+            &:first-child {
+                margin-top: 0;
+            }
+
+            a {
+                display: block;
+                padding: @PtListingItems-PaddingY @PtListingItems-PaddingX;
+                background-color: @CmColor-Secondary-LightDefault;
+                line-height: @CmFont-Base-LineHeight;
+                font-weight: normal;
+                text-decoration: none;
+                color: @CmFont-Base-Color;
+                .mx__transition(all, @CmUI-Transition-Duration);
+
+                .icon {
+                    display: inline-block;
+                    vertical-align: top;
+                    margin: 0 @CmIndent-XXSmall 0 0;
+
+                    &.small {
+                        margin-top: (@CmFont-Base-LineHeight - @CmSize-Small) / 2;
+                    }
+                }
+
+                &:hover {
+                    text-decoration: none;
+                    .mx__transition(all, @CmUI-Transition-DurationReverse);
+                }
+            }
+
+            .title {
+                padding: @PtListingItems-PaddingY 4px;
+                line-height: @CmFont-Base-LineHeight;
+                font-weight: @CmFont-Base-BoldWeight;
+            }
+
+            .pt__listing-items {
+                margin: @PtListingItems-Indent 0 0 @CmIndent-XSmall;
+
+                &:first-child {
+                    margin-top: 0;
+                }
+            }
+
+            &.active {
+                a {
+                    background-color: @CmColor-Primary-LightActive;
+                }
+            }
+        }
+    }
+
+    &:not(.disabled) {
+        ul {
+            li {
+                a {
+                    &:hover {
+                        background-color: @CmColor-Secondary-LightHover;
+                    }
+                }
+
+                &.active {
+                    a {
+                        &:hover {
+                            background-color: @CmColor-Primary-LightActiveHover;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    &.disabled {
+        ul {
+            li {
+                a {
+                    cursor: default;
+                }
+            }
+        }
+    }
+
+    &.auto {
+        ul {
+            max-height: none;
         }
     }
 }

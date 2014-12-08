@@ -22,10 +22,10 @@
             display: block;
             position: absolute;
             z-index: 1;
-            border: @Cm-borderEditable;
-            border-radius: @Cm-borderRadius;
+            border: @CmBorder-Editable;
+            border-radius: @CmBorder-Radius;
             opacity: 0;
-            .mx__transition(all, @CmVar-Transition-Duration);
+            .mx__transition(all, @CmUI-Transition-Duration);
             .mx__position(0, 0, 0, 0);
         }
 
@@ -51,12 +51,12 @@
             left: 50%;
             opacity: 0;
             background: @Cm-colorSecondary;
-            border: @Cm-borderEditable;
-            border-radius: @Cm-borderRadius;
+            border: @CmBorder-Editable;
+            border-radius: @CmBorder-Radius;
             cursor: move;
             visibility: hidden;
             .mx__background-clip(border-box);
-            .mx__transition(all, @CmVar-Transition-Duration);
+            .mx__transition(all, @CmUI-Transition-Duration);
 
             .icon {
                 width: 34px;
@@ -67,7 +67,7 @@
 
             &:hover {
                 background: @Cm-colorSecondaryHover;
-                .mx__transition(all, @CmVar-Transition-DurationReverse);
+                .mx__transition(all, @CmUI-Transition-DurationReverse);
             }
 
             &:not(.is-bottom) {
@@ -85,7 +85,7 @@
             z-index: 4;
             opacity: 0;
             cursor: pointer;
-            .mx__transition(all, @CmVar-Transition-Duration);
+            .mx__transition(all, @CmUI-Transition-Duration);
             .mx__position(-12px, -12px, auto, auto);
 
             .icon {
@@ -95,8 +95,8 @@
                 position: relative;
                 z-index: 2;
                 background-color: @Cm-colorSecondary;
-                border: @Cm-borderEditable;
-                border-radius: @Cm-borderRadius;
+                border: @CmBorder-Editable;
+                border-radius: @CmBorder-Radius;
             }
 
             .cm-menu-dropdown {
@@ -123,14 +123,14 @@
         > .border {
             opacity: 1;
             background: #ffffff;
-            .mx__transition(all, @CmVar-Transition-DurationReverse);
+            .mx__transition(all, @CmUI-Transition-DurationReverse);
             .mx__position(-16px, -16px, -16px, -16px);
         }
 
         > .drag {
             opacity: 1;
             visibility: visible;
-            .mx__transition(all, @CmVar-Transition-DurationReverse);
+            .mx__transition(all, @CmUI-Transition-DurationReverse);
 
             &:not(.is-bottom) {
                 top: -28px;
@@ -143,7 +143,7 @@
 
         > .menu {
             opacity: 1;
-            .mx__transition(all, @CmVar-Transition-DurationReverse);
+            .mx__transition(all, @CmUI-Transition-DurationReverse);
             .mx__position(-28px, -28px, auto, auto);
         }
     }
