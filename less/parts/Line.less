@@ -2,7 +2,7 @@
 
 /* ****** PART: LINE: INFO ******* */
 
-.pt__line__info {
+.pt__line-info {
     .clearfix;
 
     .item,
@@ -32,12 +32,12 @@
         }
 
         &.pending {
-            color: @Cm-colorPending;
+            color: @CmColor-Pending-DarkDefault;
         }
     }
 
     .date {
-        color: @CmFont-UI-TitleMedium-Color;
+        color: @CmFont-Base-Hint-Color;
     }
 
     .category,
@@ -50,7 +50,7 @@
 
 /* ******* PART: LINE: SHARE ******* */
 
-.pt__line__share {
+.pt__line-share {
     > ul {
         .cm__list-clear;
         .cm__list-inline;
@@ -114,8 +114,6 @@
         vertical-align: top;
 
         &.default {
-            width: @CmShareLine-iconSize;
-            height: @CmShareLine-iconSize;
             .mx__transition(opacity, @CmUI-Transition-Duration);
 
             &.facebook {
@@ -142,7 +140,6 @@
         display: inline-block;
         vertical-align: top;
         padding: 0 @CmIndent-XSmall;
-        line-height: @CmShareLine-iconSize;
         .mx__transition(background, @CmUI-Transition-Duration);
     }
 
@@ -154,5 +151,23 @@
     .count {
         background: @Cm-colorLight-background;
         border-radius: 0 @CmBorder-Radius @CmBorder-Radius 0;
+    }
+
+    // Set size
+
+    .pt__line-share__size(@PtLineShare-Size);
+}
+
+.pt__line-share__size (@value) {
+    .icon {
+        &.default {
+            width: @value;
+            height: @value;
+        }
+    }
+
+    .label,
+    .count {
+        line-height: @value;
     }
 }

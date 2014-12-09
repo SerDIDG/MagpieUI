@@ -50,7 +50,7 @@ function(params){
         /* *** RENDER STRUCTURE *** */
         nodes['container'] = cm.Node('div', {'class' : 'com-dateselect'},
             nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
-            cm.Node('div', {'class' : 'cm-toolbar bottom'},
+            cm.Node('div', {'class' : 'pt__toolbar bottom'},
                 cm.Node('div', {'class' : 'inner clear'},
                     cm.Node('ul', {'class' : 'group'},
                         nodes['year'] = cm.Node('li', {'class' : 'is-field small'}),

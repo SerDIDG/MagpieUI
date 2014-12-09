@@ -83,13 +83,22 @@
             flex-direction: @value;
 }
 
+.mx__flex-wrap (@value: wrap) {
+    -webkit-flex-wrap: @value;
+        -ms-flex-wrap: @value;
+            flex-wrap: @value;
+}
+
 // /* ******* COMMON ******* */
 
-.mx__background__color (@background, @colorDark, @colorLight) when (lightness(@background) >= 40%) {
+.mx__background__color (@background, @colorDark, @colorLight) when (alpha(@background) = 1) and (lightness(@background) >= 60%) {
     color: @colorDark;
 }
-.mx__background__color (@background, @colorDark, @colorLight) when (lightness(@background) < 60%) {
+.mx__background__color (@background, @colorDark, @colorLight) when (alpha(@background) = 1) and (lightness(@background) < 60%) {
     color: @colorLight;
+}
+.mx__background__color (@background, @colorDark, @colorLight) when (alpha(@background) = 0) {
+    color: @colorDark;
 }
 .mx__background__color (@background, @colorDark, @colorLight) {
     background: @background;

@@ -57,18 +57,20 @@
 // /* Normal Key */
 
 @CmColor-Primary-DarkSaturation: 75%;
-@CmColor-Primary-DarkDefault: hsl(@CmColor-Primary, @CmColor-Primary-DarkSaturation, @CmVar-Color-DarkDefault-Lightness);
-@CmColor-Primary-DarkHover: hsl(@CmColor-Primary, @CmColor-Primary-DarkSaturation, @CmVar-Color-DarkHover-Lightness);
-@CmColor-Primary-DarkActive: hsl(@CmColor-Primary, @CmColor-Primary-DarkSaturation, @CmVar-Color-DarkActive-Lightness);
-@CmColor-Primary-DarkActiveHover: hsl(@CmColor-Primary, @CmColor-Primary-DarkSaturation, @CmVar-Color-DarkActiveHover-Lightness);
+@CmColor-Primary-DarkLightness: 0%;
+@CmColor-Primary-DarkDefault: hsl(@CmColor-Primary, @CmColor-Primary-DarkSaturation, @CmVar-Color-DarkDefault-Lightness + @CmColor-Primary-DarkLightness);
+@CmColor-Primary-DarkHover: hsl(@CmColor-Primary, @CmColor-Primary-DarkSaturation, @CmVar-Color-DarkHover-Lightness + @CmColor-Primary-DarkLightness);
+@CmColor-Primary-DarkActive: hsl(@CmColor-Primary, @CmColor-Primary-DarkSaturation, @CmVar-Color-DarkActive-Lightness + @CmColor-Primary-DarkLightness);
+@CmColor-Primary-DarkActiveHover: hsl(@CmColor-Primary, @CmColor-Primary-DarkSaturation, @CmVar-Color-DarkActiveHover-Lightness + @CmColor-Primary-DarkLightness);
 
 // /* Light Key */
 
 @CmColor-Primary-LightSaturation: 70%;
-@CmColor-Primary-LightDefault: transparent; // hsl(@CmColor-Primary, @CmColor-Primary-LightSaturation, @CmVar-Color-LightDefault-Lightness)
-@CmColor-Primary-LightHover: hsl(@CmColor-Primary, @CmColor-Primary-LightSaturation, @CmVar-Color-LightHover-Lightness);
-@CmColor-Primary-LightActive: hsl(@CmColor-Primary, @CmColor-Primary-LightSaturation, @CmVar-Color-LightActive-Lightness);
-@CmColor-Primary-LightActiveHover: hsl(@CmColor-Primary, @CmColor-Primary-LightSaturation, @CmVar-Color-LightActiveHover-Lightness);
+@CmColor-Primary-LightLightness: 0%;
+@CmColor-Primary-LightDefault: transparent; // hsl(@CmColor-Primary, @CmColor-Primary-LightSaturation, @CmVar-Color-LightDefault-Lightness + @CmColor-Primary-LightLightness)
+@CmColor-Primary-LightHover: hsl(@CmColor-Primary, @CmColor-Primary-LightSaturation, @CmVar-Color-LightHover-Lightness + @CmColor-Primary-LightLightness);
+@CmColor-Primary-LightActive: hsl(@CmColor-Primary, @CmColor-Primary-LightSaturation, @CmVar-Color-LightActive-Lightness + @CmColor-Primary-LightLightness);
+@CmColor-Primary-LightActiveHover: hsl(@CmColor-Primary, @CmColor-Primary-LightSaturation, @CmVar-Color-LightActiveHover-Lightness + @CmColor-Primary-LightLightness);
 
 // /* ******* SECONDARY ******* */
 
@@ -76,19 +78,21 @@
 
 // /* Normal Key */
 
-@CmColor-Secondary-DarkSaturation: 65%;
-@CmColor-Secondary-DarkDefault: hsl(@CmColor-Secondary, @CmColor-Secondary-DarkSaturation, @CmVar-Color-DarkDefault-Lightness);
-@CmColor-Secondary-DarkHover: hsl(@CmColor-Secondary, @CmColor-Secondary-DarkSaturation, @CmVar-Color-DarkHover-Lightness);
-@CmColor-Secondary-DarkActive: hsl(@CmColor-Secondary, @CmColor-Secondary-DarkSaturation, @CmVar-Color-DarkActive-Lightness);
-@CmColor-Secondary-DarkActiveHover: hsl(@CmColor-Secondary, @CmColor-Secondary-DarkSaturation, @CmVar-Color-DarkActiveHover-Lightness);
+@CmColor-Secondary-DarkSaturation: 0%;
+@CmColor-Secondary-DarkLightness: 0%;
+@CmColor-Secondary-DarkDefault: hsl(@CmColor-Secondary, @CmColor-Secondary-DarkSaturation, @CmVar-Color-DarkDefault-Lightness + @CmColor-Secondary-DarkLightness);
+@CmColor-Secondary-DarkHover: hsl(@CmColor-Secondary, @CmColor-Secondary-DarkSaturation, @CmVar-Color-DarkHover-Lightness + @CmColor-Secondary-DarkLightness);
+@CmColor-Secondary-DarkActive: hsl(@CmColor-Secondary, @CmColor-Secondary-DarkSaturation, @CmVar-Color-DarkActive-Lightness + @CmColor-Secondary-DarkLightness);
+@CmColor-Secondary-DarkActiveHover: hsl(@CmColor-Secondary, @CmColor-Secondary-DarkSaturation, @CmVar-Color-DarkActiveHover-Lightness + @CmColor-Secondary-DarkLightness);
 
 // /* Light Key */
 
 @CmColor-Secondary-LightSaturation: 0%;
-@CmColor-Secondary-LightDefault: transparent; // hsl(@CmColor-Secondary, @CmColor-Secondary-LightSaturation, @CmVar-Color-LightDefault-Lightness)
-@CmColor-Secondary-LightHover: hsl(@CmColor-Secondary, @CmColor-Secondary-LightSaturation, @CmVar-Color-LightHover-Lightness);
-@CmColor-Secondary-LightActive: hsl(@CmColor-Secondary, @CmColor-Secondary-LightSaturation, @CmVar-Color-LightActive-Lightness);
-@CmColor-Secondary-LightActiveHover: hsl(@CmColor-Secondary, @CmColor-Secondary-LightSaturation, @CmVar-Color-LightActiveHover-Lightness);
+@CmColor-Secondary-LightLightness: 0%;
+@CmColor-Secondary-LightDefault: transparent; // hsl(@CmColor-Secondary, @CmColor-Secondary-LightSaturation, @CmVar-Color-LightDefault-Lightness + @CmColor-Secondary-LightLightness)
+@CmColor-Secondary-LightHover: hsl(@CmColor-Secondary, @CmColor-Secondary-LightSaturation, @CmVar-Color-LightHover-Lightness + @CmColor-Secondary-LightLightness);
+@CmColor-Secondary-LightActive: hsl(@CmColor-Secondary, @CmColor-Secondary-LightSaturation, @CmVar-Color-LightActive-Lightness + @CmColor-Secondary-LightLightness);
+@CmColor-Secondary-LightActiveHover: hsl(@CmColor-Secondary, @CmColor-Secondary-LightSaturation, @CmVar-Color-LightActiveHover-Lightness + @CmColor-Secondary-LightLightness);
 
 // /* ******* VALID ******* */
 
@@ -97,15 +101,20 @@
 // /* Normal Key */
 
 @CmColor-Valid-DarkSaturation: 65%;
-@CmColor-Valid-DarkDefault: hsl(@CmColor-Valid, @CmColor-Valid-DarkSaturation, 45%);
+@CmColor-Valid-DarkLightness: -10%;
+@CmColor-Valid-DarkDefault: hsl(@CmColor-Valid, @CmColor-Valid-DarkSaturation, @CmVar-Color-DarkDefault-Lightness + @CmColor-Valid-DarkLightness);
+@CmColor-Valid-DarkHover: hsl(@CmColor-Valid, @CmColor-Valid-DarkSaturation, @CmVar-Color-DarkHover-Lightness + @CmColor-Valid-DarkLightness);
+@CmColor-Valid-DarkActive: hsl(@CmColor-Valid, @CmColor-Valid-DarkSaturation, @CmVar-Color-DarkActive-Lightness + @CmColor-Valid-DarkLightness);
+@CmColor-Valid-DarkActiveHover: hsl(@CmColor-Valid, @CmColor-Valid-DarkSaturation, @CmVar-Color-DarkActiveHover-Lightness + @CmColor-Valid-DarkLightness);
 
 // /* Light Key */
 
 @CmColor-Valid-LightSaturation: 60%;
-@CmColor-Valid-LightDefault: transparent; // hsl(@CmColor-Valid, @CmColor-Valid-LightSaturation, @CmVar-Color-LightDefault-Lightness)
-@CmColor-Valid-LightHover: hsl(@CmColor-Valid, @CmColor-Valid-LightSaturation, @CmVar-Color-LightHover-Lightness);
-@CmColor-Valid-LightActive: hsl(@CmColor-Valid, @CmColor-Valid-LightSaturation, @CmVar-Color-LightActive-Lightness);
-@CmColor-Valid-LightActiveHover: hsl(@CmColor-Valid, @CmColor-Valid-LightSaturation, @CmVar-Color-LightActiveHover-Lightness);
+@CmColor-Valid-LightLightness: 0%;
+@CmColor-Valid-LightDefault: transparent; // hsl(@CmColor-Valid, @CmColor-Valid-LightSaturation, @CmVar-Color-LightDefault-Lightness + @CmColor-Valid-LightLightness)
+@CmColor-Valid-LightHover: hsl(@CmColor-Valid, @CmColor-Valid-LightSaturation, @CmVar-Color-LightHover-Lightness + @CmColor-Valid-LightLightness);
+@CmColor-Valid-LightActive: hsl(@CmColor-Valid, @CmColor-Valid-LightSaturation, @CmVar-Color-LightActive-Lightness + @CmColor-Valid-LightLightness);
+@CmColor-Valid-LightActiveHover: hsl(@CmColor-Valid, @CmColor-Valid-LightSaturation, @CmVar-Color-LightActiveHover-Lightness + @CmColor-Valid-LightLightness);
 
 // /* ******* INVALID ******* */
 
@@ -114,15 +123,48 @@
 // /* Normal Key */
 
 @CmColor-Invalid-DarkSaturation: 65%;
-@CmColor-Invalid-DarkDefault: hsl(@CmColor-Invalid, @CmColor-Invalid-DarkSaturation, @CmVar-Color-DarkDefault-Lightness);
+@CmColor-Invalid-DarkLightness: 0%;
+@CmColor-Invalid-DarkDefault: hsl(@CmColor-Invalid, @CmColor-Invalid-DarkSaturation, @CmVar-Color-DarkDefault-Lightness + @CmColor-Invalid-DarkLightness);
+@CmColor-Invalid-DarkHover: hsl(@CmColor-Invalid, @CmColor-Invalid-DarkSaturation, @CmVar-Color-DarkHover-Lightness + @CmColor-Invalid-DarkLightness);
+@CmColor-Invalid-DarkActive: hsl(@CmColor-Invalid, @CmColor-Invalid-DarkSaturation, @CmVar-Color-DarkActive-Lightness + @CmColor-Invalid-DarkLightness);
+@CmColor-Invalid-DarkActiveHover: hsl(@CmColor-Invalid, @CmColor-Invalid-DarkSaturation, @CmVar-Color-DarkActiveHover-Lightness + @CmColor-Invalid-DarkLightness);
 
 // /* Light Key */
 
 @CmColor-Invalid-LightSaturation: 65%;
-@CmColor-Invalid-LightDefault: transparent; //hsl(@CmColor-Invalid, @CmColor-Invalid-LightSaturation, @CmVar-Color-LightDefault-Lightness)
-@CmColor-Invalid-LightHover: hsl(@CmColor-Invalid, @CmColor-Invalid-LightSaturation, @CmVar-Color-LightHover-Lightness);
-@CmColor-Invalid-LightActive: hsl(@CmColor-Invalid, @CmColor-Invalid-LightSaturation, @CmVar-Color-LightActive-Lightness);
-@CmColor-Invalid-LightActiveHover: hsl(@CmColor-Invalid, @CmColor-Invalid-LightSaturation, @CmVar-Color-LightActiveHover-Lightness);
+@CmColor-Invalid-LightLightness: 0%;
+@CmColor-Invalid-LightDefault: transparent; //hsl(@CmColor-Invalid, @CmColor-Invalid-LightSaturation, @CmVar-Color-LightDefault-Lightness + @CmColor-Invalid-LightLightness)
+@CmColor-Invalid-LightHover: hsl(@CmColor-Invalid, @CmColor-Invalid-LightSaturation, @CmVar-Color-LightHover-Lightness + @CmColor-Invalid-LightLightness);
+@CmColor-Invalid-LightActive: hsl(@CmColor-Invalid, @CmColor-Invalid-LightSaturation, @CmVar-Color-LightActive-Lightness + @CmColor-Invalid-LightLightness);
+@CmColor-Invalid-LightActiveHover: hsl(@CmColor-Invalid, @CmColor-Invalid-LightSaturation, @CmVar-Color-LightActiveHover-Lightness + @CmColor-Invalid-LightLightness);
+
+// /* ******* PENDING ******* */
+
+@CmColor-Pending: 38;
+
+// /* Normal Key */
+
+@CmColor-Pending-DarkSaturation: 75%;
+@CmColor-Pending-DarkLightness: 0%;
+@CmColor-Pending-DarkDefault: hsl(@CmColor-Pending, @CmColor-Pending-DarkSaturation, @CmVar-Color-DarkDefault-Lightness + @CmColor-Pending-DarkLightness);
+@CmColor-Pending-DarkHover: hsl(@CmColor-Pending, @CmColor-Pending-DarkSaturation, @CmVar-Color-DarkHover-Lightness + @CmColor-Pending-DarkLightness);
+@CmColor-Pending-DarkActive: hsl(@CmColor-Pending, @CmColor-Pending-DarkSaturation, @CmVar-Color-DarkActive-Lightness);
+@CmColor-Pending-DarkActiveHover: hsl(@CmColor-Pending, @CmColor-Pending-DarkSaturation, @CmVar-Color-DarkActiveHover-Lightness + @CmColor-Pending-DarkLightness);
+
+// /* Light Key */
+
+@CmColor-Pending-LightSaturation: 70%;
+@CmColor-Pending-LightLightness: 0%;
+@CmColor-Pending-LightDefault: transparent; //hsl(@CmColor-Pending, @CmColor-Pending-LightSaturation, @CmVar-Color-LightDefault-Lightness + @CmColor-Pending-LightLightness)
+@CmColor-Pending-LightHover: hsl(@CmColor-Pending, @CmColor-Pending-LightSaturation, @CmVar-Color-LightHover-Lightness + @CmColor-Pending-LightLightness);
+@CmColor-Pending-LightActive: hsl(@CmColor-Pending, @CmColor-Pending-LightSaturation, @CmVar-Color-LightActive-Lightness + @CmColor-Pending-LightLightness);
+@CmColor-Pending-LightActiveHover: hsl(@CmColor-Pending, @CmColor-Pending-LightSaturation, @CmVar-Color-LightActiveHover-Lightness + @CmColor-Pending-LightLightness);
+
+// /* ******* OTHER ******* */
+
+@CmColor-Mark: #fdf6ad;
+@CmColor-Border: #cbcbcb;
+@CmColor-BorderHover: @CmColor-Primary-LightActiveHover;
 
 // /* ************************************************ */
 // /* ******* FONT ******* */
@@ -157,7 +199,6 @@
 @CmFont-UI-Color: #666666;
 @CmFont-UI-ColorInvert: #ffffff;
 
-@CmFont-UI-Title-BoldWeight: 300;
 @CmFont-UI-Title-LineHeight: 38px;
 @CmFont-UI-Title-Size: 30px;
 @CmFont-UI-Title-Weight: @CmFont-UI-LightWeight;
@@ -179,16 +220,18 @@
 @CmUI-Opacity-Hover: 0.7;
 @CmUI-Shadow: 0 0 10px rgba(0, 0, 0, 0.15);
 @CmUI-ShadowLight: 0 0 2px rgba(0,0,0,0.2);
+@CmUI-ShadowInner: 0 2px 2px rgba(0,0,0,0.4) inset;
+@CmUI-ShadowOuter: 0 2px 2px rgba(0,0,0,0.15);
 
 // /* ******* BORDER ******* */
 
 @CmBorder-Radius: 3px;
 @CmBorder-Width: 1px;
 @CmBorder-BoxWidth: 2px;
-@CmBorder-Default: @CmBorder-Width solid @Cm-colorBorder;
-@CmBorder-Separator: @CmBorder-Width dotted @Cm-colorBorder;
+@CmBorder-Default: @CmBorder-Width solid @CmColor-Border;
+@CmBorder-Separator: @CmBorder-Width dotted @CmColor-Border;
 @CmBorder-Editable: @CmBorder-Width dashed @Cm-color;
-@CmBorder-Box: @CmBorder-BoxWidth solid @Cm-colorBorder;
+@CmBorder-Box: @CmBorder-BoxWidth solid @CmColor-Border;
 @CmBorder-BoxActive: @CmBorder-BoxWidth solid @Cm-colorActive;
 @CmBorder-BoxSelected: @CmBorder-BoxWidth solid @Cm-color;
 
@@ -196,12 +239,10 @@
 
 @Cm-colorPlaceholder: #b7b7b7;
 @Cm-colorHint: #999999;
-@Cm-colorMark: #fdf6ad;
 @Cm-colorLink: @Cm-color;
 @Cm-colorLinkHover: @Cm-colorLink;
 @Cm-colorLinkVisited: #8a156d;
-@Cm-colorPending: #ffa200;
-@Cm-colorPendingLight: #fff9ef;
+@CmColor-Pending-DarkDefaultLight: #fff9ef;
 
 @Cm-color: hsl(210, 80%, 55%);
 @Cm-colorLighten: lighten(@Cm-color, 40%);
@@ -209,9 +250,6 @@
 @Cm-colorActiveHover: darken(@Cm-colorActive, 5%);
 @Cm-colorSecondary: hsl(0, 0, 95%);
 @Cm-colorSecondaryHover: lighten(@Cm-colorSecondary, 3%);
-
-@Cm-colorBorder: #CBCBCB;
-@Cm-colorBorderHover: @Cm-colorActiveHover;
 
 @Cm-colorLight-background: #fafafa;
 @Cm-colorLight-backgroundHover: #e6e6e6;
@@ -226,7 +264,7 @@
 @Cm-background-dark: @Cm-colorLight-backgroundDisabled;
 @Cm-background-themeLight: lighten(@Cm-color, 42%);
 @Cm-background-gallery: #111111;
-@Cm-background-pendingLight: @Cm-colorPendingLight;
+@Cm-background-pendingLight: @CmColor-Pending-DarkDefaultLight;
 
 // /* ************************************************ */
 // /* ******* COMMON ******* */
@@ -274,6 +312,12 @@
 
 @PtLinks-Indent: @CmIndent-XXXSmall;
 
+// /* *** IMAGE *** */
+
+@PtImage-background: @Cm-background-light;
+@PtImage-titlePaddingTop: 4px;
+@PtImage-textColor: #ffffff;
+
 // /* *** ITEM BOX *** */
 
 @PtItemBox-Sizes: 50 80 150;
@@ -302,19 +346,13 @@
 
 // /* *** TOOLBAR *** */
 
-@CmToolbar-groupIndent: @CmIndent-Small;
-@CmToolbar-itemIndent: @CmIndent-XXXSmall;
-@CmToolbar-XSmall: 70px;
-@CmToolbar-Small: 100px;
-@CmToolbar-Medium: 150px;
-@CmToolbar-Large: 250px;
-@CmToolbar-XLarge: 350px;
-
-// /* *** IMAGE BOX *** */
-
-@PtImage-background: @Cm-background-light;
-@PtImage-titlePaddingTop: 4px;
-@PtImage-textColor: #ffffff;
+@PtToolbar-groupIndent: @CmIndent-Small;
+@PtToolbar-itemIndent: @CmIndent-XXXSmall;
+@PtToolbar-XSmall: 70px;
+@PtToolbar-Small: 100px;
+@PtToolbar-Medium: 150px;
+@PtToolbar-Large: 250px;
+@PtToolbar-XLarge: 350px;
 
 // /* *** DRAG AND DROP *** */
 
@@ -326,15 +364,9 @@
 @CmDraganddrop-areaHighlightBorder: 1px dashed fade(@Cm-color, 30%);
 @CmDraganddrop-dropDuration: 400ms;
 
-// /* *** LISTING *** */
+// /* *** LINE SHARE *** */
 
-@CmListing-stuffFontSize: @CmFont-UI-Size;
-@CmListing-stuffFontWeight: @CmFont-Base-BoldWeight;
-@CmListing-stuffColor: @CmFont-UI-TitleMedium-Color;
-
-// /* *** SHARE LINE *** */
-
-@CmShareLine-iconSize: @CmSize-Large;
+@PtLineShare-Size: @CmSize-Large;
 
 // /* *** BOX *** */
 
@@ -432,7 +464,7 @@
 // /* *** TABSET *** */
 
 @ComTabset-adaptiveFrom: @CmScreen-Mobile;
-@ComTabset-borderColor: @Cm-colorBorder;
+@ComTabset-borderColor: @CmColor-Border;
 @ComTabset-borderRadius: @CmBorder-Radius;
 @ComTabset-tabsHeight: @CmForm-FieldHeight;
 @ComTabset-tabsIndent: @CmIndent-XXXSmall;

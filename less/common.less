@@ -70,6 +70,8 @@
 .cm__counter {
     .cm__font--ui;
     height: @CmCounter-Size;
+    display: inline-block;
+    vertical-align: top;
     padding: 0 5px;
     background-color: @CmColor-Secondary-LightDefault;
     border: 1px solid @CmColor-Primary-DarkDefault;
@@ -99,6 +101,31 @@
     color: @CmFont-UI-ColorInvert;
 }
 
+/* *** VIEW ALL *** */
+
+.cm__view-all {
+    margin: @CmIndent-Medium 0 0 0;
+    text-align: right;
+
+    &.pull-left {
+        text-align: left;
+    }
+
+    &.pull-center {
+        text-align: center;
+    }
+
+    &.pull-right {
+        text-align: right;
+    }
+}
+
+/* *** MARK *** */
+
+.cm__mark {
+    background: @CmColor-Mark;
+}
+
 /* *** OTHER *** */
 
 .mark-new {
@@ -111,17 +138,13 @@
     text-transform: uppercase;
 }
 
-.cm-mark {
-    background: @Cm-colorMark;
-}
-
 .cm-codebox {
     display: block;
     white-space: pre-wrap;
     margin: 4px 0;
     padding: 8px 12px;
     background: #ffffff;
-    border: 1px dashed @Cm-colorBorder;
+    border: 1px dashed @CmColor-Border;
     border-radius: @CmBorder-Radius;
     font-family: "Courier New", Courier, monospace;
 }
@@ -158,31 +181,13 @@
     text-overflow: ellipsis;
 }
 
-.cm-view-all {
-    margin: @CmIndent-Medium 0 0 0;
-    text-align: right;
-
-    &.pull-left {
-        text-align: left;
-    }
-
-    &.pull-center {
-        text-align: center;
-    }
-
-    &.pull-right {
-        text-align: right;
-    }
-}
-
-.cm-scroll-y {
+.cm__scroll-y {
     -webkit-overflow-scrolling: touch;
     overflow-x: hidden;
     overflow-y: scroll;
 }
 
-.cm-scroll-y-a,
-.cm-scroll-a-y {
+.cm__scroll-y-a {
     -webkit-overflow-scrolling: touch;
     overflow-x: hidden;
     overflow-y: auto;

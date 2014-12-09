@@ -1,11 +1,11 @@
 /* ******* SCROLLABLE LAYOUT ******* */
 
-.cm-scrollable-layout {
+.cm__scrollable-layout {
     width: 100%;
     height: 100%;
     position: relative;
 
-    .cm-scrollable-content {
+    .cm__scrollable-content {
         position: absolute;
         top: 0;
         right: 0;
@@ -15,7 +15,7 @@
         overflow-y: auto;
     }
 
-    .cm-scrollable-buttons {
+    .cm__scrollable-buttons {
         position: absolute;
         right: 0;
         bottom: 0;
@@ -37,31 +37,31 @@
     }
 
     &.has-padding {
-        .cm-scrollable-content {
+        .cm__scrollable-content {
             padding: @CmIndent-Medium;
         }
 
-        .cm-scrollable-buttons {
+        .cm__scrollable-buttons {
             padding: @CmIndent-Medium;
         }
     }
 
     &.has-toolbar {
-        .cm-scrollable-content {
+        .cm__scrollable-content {
             padding-top: 0;
             top: @CmForm-FieldHeight + @CmIndent-Medium;
         }
     }
 
     &.has-buttons {
-        .cm-scrollable-content {
+        .cm__scrollable-content {
             padding-bottom: 0;
             bottom: @CmForm-FieldHeight + @CmIndent-Medium;
         }
     }
 
     &.has-padding.has-buttons {
-        .cm-scrollable-content {
+        .cm__scrollable-content {
             bottom: @CmForm-FieldHeight + @CmIndent-Medium + @CmIndent-Medium;
         }
     }
