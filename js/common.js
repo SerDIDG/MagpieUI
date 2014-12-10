@@ -2225,6 +2225,11 @@ cm.parseJSON = function(str){
         try{
             o = JSON.parse(str);
         }catch(e){
+            cm.errorLog({
+                'type' : 'common',
+                'name' : 'cm.parseJSON',
+                'message' : ['Error while parsing JSON. Input string:', str].join(' ')
+            });
         }
     }
     return o;

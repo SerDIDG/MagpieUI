@@ -1,5 +1,7 @@
 /* ******* COMMON: FONT ******* */
 
+/* *** BASE *** */
+
 .cm__font {
     font: @CmFont-Base-Weight ~'@{CmFont-Base-Size}/@{CmFont-Base-LineHeight}' @CmFont-Base-Family;
     color: @CmFont-Base-Color;
@@ -7,15 +9,32 @@
 
 .cm__font--link {
     text-decoration: underline;
-    color: @Cm-colorLink;
+    color: @CmColor-Link;
     outline: none;
     cursor: pointer;
 
     &:hover {
         text-decoration: none;
-        color: @Cm-colorLinkHover;
+        color: @CmColor-LinkHover;
+    }
+
+    &:active {
+        color: @CmColor-LinkActive;
     }
 }
+
+.cm__font--hint {
+    font: @CmFont-Base-Weight ~'@{CmFont-Base-Hint-Size}/@{CmFont-Base-LineHeight}' @CmFont-Base-Family;
+    color: @CmFont-Base-Hint-Color;
+}
+
+.cm__font--hint-cursive {
+    .cm__font--hint;
+    font-style: italic;
+    color: @CmFont-Base-Hint-Color;
+}
+
+/* *** UI *** */
 
 .cm__font--ui {
     font: @CmFont-UI-Weight ~'@{CmFont-UI-Size}/@{CmFont-UI-LineHeight}' @CmFont-UI-Family;
@@ -28,24 +47,13 @@
 }
 
 .cm__font--ui-title {
-    font: @CmFont-UI-Title-Weight ~'@{CmFont-UI-Title-Size}/@{CmFont-UI-Title-LineHeight}' 'Open Sans', @CmFont-Base-Family;
+    font: @CmFont-UI-Title-Weight ~'@{CmFont-UI-Title-Size}/@{CmFont-UI-Title-LineHeight}' @CmFont-UI-Family;
     color: @CmFont-UI-Title-Color;
 }
 
 .cm__font--ui-title-medium {
-    font: @CmFont-UI-TitleMedium-Weight ~'@{CmFont-UI-TitleMedium-Size}/@{CmFont-UI-TitleMedium-LineHeight}' 'Open Sans', @CmFont-Base-Family;
+    font: @CmFont-UI-TitleMedium-Weight ~'@{CmFont-UI-TitleMedium-Size}/@{CmFont-UI-TitleMedium-LineHeight}' @CmFont-UI-Family;
     color: @CmFont-UI-Title-Color;
-}
-
-.cm__font--hint {
-    font: @CmFont-Base-Weight ~'@{CmFont-Base-Hint-Size}/@{CmFont-Base-LineHeight}' @CmFont-Base-Family;
-    color: @CmFont-Base-Color;
-}
-
-.cm__font--hint-cursive {
-    .cm__font--hint;
-    font-style: italic;
-    color: @Cm-colorHint;
 }
 
 /* *** HELPERS *** */

@@ -1,52 +1,69 @@
-Com['Gridlist'] = function(o){
-    var that = this,
-        config = cm.merge({
-            'container' : cm.Node('div'),
-            'data' : [],
-            'cols' : [],
-            'sort' : true,
-            'sortBy' : 'id',                                    // default sort by key in array
-            'orderBy' : 'ASC',
-            'pagination' : true,
-            'perPage' : 25,
-            'showCounter' : false,
-            'className' : '',
-            'dateFormat' : cm._config['dateTimeFormat'],        // input date format
-            'visibleDateFormat' : cm._config['dateTimeFormat'], // render date format
-            'langs' : {
-                'counter' : 'Count: ',
-                'check-all' : 'Check all',
-                'uncheck-all' : 'Uncheck all'
-            },
-            'icons' : {
-                'arrow' : {
-                    'desc' : 'icon arrow desc',
-                    'asc' : 'icon arrow asc'
-                }
-            },
-            'events' : {},
-            'Com.Pagination' : {}
-        }, o),
-        API = {
-            'onSort' : [],
-            'onCheckAll' : [],
-            'onUnCheckAll' : [],
-            'onCheck' : [],
-            'onUnCheck' : [],
-            'onRenderStart' : [],
-            'onRenderEnd' : []
+cm.define('Com.Gridlist', {
+    'modules' : [
+        'Params',
+        'Events',
+        'Langs',
+        'DataConfig'
+    ],
+    'events' : [
+        'onSort',
+        'onCheckAll',
+        'onUnCheckAll',
+        'onCheck',
+        'onUnCheck',
+        'onRenderStart',
+        'onRenderEnd'
+    ],
+    'params' : {
+        'node' : cm.Node('div'),
+        'container' : false,
+        'data' : [],
+        'cols' : [],
+        'sort' : true,
+        'sortBy' : 'id',                                    // default sort by key in array
+        'orderBy' : 'ASC',
+        'pagination' : true,
+        'perPage' : 25,
+        'showCounter' : false,
+        'className' : '',
+        'dateFormat' : 'cm._config.dateTimeFormat',        // input date format
+        'visibleDateFormat' : 'cm._config.dateTimeFormat', // render date format
+        'langs' : {
+            'counter' : 'Count: ',
+            'check-all' : 'Check all',
+            'uncheck-all' : 'Uncheck all'
         },
-        nodes = {},
-        coms = {},
+        'icons' : {
+            'arrow' : {
+                'desc' : 'icon arrow desc',
+                'asc' : 'icon arrow asc'
+            }
+        },
+        'Com.Pagination' : {}
+    }
+},
+function(params){
+    var that = this,
         rows = [],
         sortBy,
-        orderBy,
-        isCheckedAll = false;
-    
+        orderBy;
+
+    that.nodes = {};
+    that.components = {};
+    that.isCheckedAll = false;
+
     var init = function(){
-        // Convert events to API Events
-        convertEvents();
+        that.setParams(params);
+        that.convertEvents(that.params['events']);
+        that.getDataConfig(that.params['node']);
+        validateParams();
         render();
+    };
+
+    var validateParams = function(){
+        if(!that.params['container']){
+            that.params['container'] = that.params['node'];
+        }
     };
 
     /* *** TABLE RENDER FUNCTION *** */
@@ -54,25 +71,25 @@ Com['Gridlist'] = function(o){
     var render = function(){
         var pagesCount;
         // Container
-        config['container'].appendChild(
-            nodes['container'] = cm.Node('div', {'class' : 'com__gridlist'})
+        that.params['container'].appendChild(
+            that.nodes['container'] = cm.Node('div', {'class' : 'com__gridlist'})
         );
         // Add css class
-        !cm.isEmpty(config['className']) && cm.addClass(nodes['container'], config['className']);
+        !cm.isEmpty(that.params['className']) && cm.addClass(that.nodes['container'], that.params['className']);
         // Counter
-        if(config['showCounter']){
-            nodes['container'].appendChild(
-                cm.Node('div', {'class' : 'pt__gridlist__counter'}, lang('counter') + config['data'].length)
+        if(that.params['showCounter']){
+            that.nodes['container'].appendChild(
+                cm.Node('div', {'class' : 'pt__gridlist__counter'}, that.lang('counter') + that.params['data'].length)
             );
         }
         // Sort data array for first time
-        config['sort'] && arraySort(config['sortBy']);
+        that.params['sort'] && arraySort(that.params['sortBy']);
         // Pagination
-        if(config['pagination']){
-            pagesCount = config['perPage'] > 0? Math.ceil(config['data'].length / config['perPage']) : config['perPage'];
-            coms['Pagination'] = new Com.Pagination(
-                cm.merge(config['Com.Pagination'], {
-                    'container' : nodes['container'],
+        if(that.params['pagination']){
+            pagesCount = that.params['perPage'] > 0? Math.ceil(that.params['data'].length / that.params['perPage']) : that.params['perPage'];
+            that.components['Pagination'] = new Com.Pagination(
+                cm.merge(that.params['Com.Pagination'], {
+                    'container' : that.nodes['container'],
                     'count' : pagesCount,
                     'events' : {
                         'onChange' : function(pagination, data){
@@ -82,7 +99,7 @@ Com['Gridlist'] = function(o){
                 })
             );
         }else{
-            renderTable(1, nodes['container']);
+            renderTable(1, that.nodes['container']);
         }
     };
 
@@ -92,40 +109,40 @@ Com['Gridlist'] = function(o){
         If pagination not exists we need to clean up table before render new one, cause on ech sort will be rendered new table.
         When pagination exists, ech rendered table will be have his own container, and no needs to clean up previous table.
         */
-        if(!config['pagination']){
-            cm.remove(nodes['table']);
+        if(!that.params['pagination']){
+            cm.remove(that.nodes['table']);
         }
         // API onRenderEnd event
-        executeEvent('onRenderStart', {
+        that.triggerEvent('onRenderStart', {
             'container' : container,
             'page' : page
         });
         // Render Table
-        nodes['table'] = cm.Node('div', {'class' : 'pt__gridlist'},
+        that.nodes['table'] = cm.Node('div', {'class' : 'pt__gridlist'},
             cm.Node('table',
                 cm.Node('thead',
-                    nodes['title'] = cm.Node('tr')
+                    that.nodes['title'] = cm.Node('tr')
                 ),
-                nodes['content'] = cm.Node('tbody')
+                that.nodes['content'] = cm.Node('tbody')
             )
         );
         // Render Table Title
-        cm.forEach(config['cols'], renderTh);
+        cm.forEach(that.params['cols'], renderTh);
         // Render Table Row
-        if(config['pagination']){
-            end = config['perPage'] * page;
-            start = end - config['perPage'];
+        if(that.params['pagination']){
+            end = that.params['perPage'] * page;
+            start = end - that.params['perPage'];
         }else{
-            end = config['data'].length;
+            end = that.params['data'].length;
             start = 0;
         }
-        for(var i = start, l = Math.min(end, config['data'].length); i < l; i++){
-            renderRow(config['data'][i], i);
+        for(var i = start, l = Math.min(end, that.params['data'].length); i < l; i++){
+            renderRow(that.params['data'][i], i);
         }
         // Append
-        container.appendChild(nodes['table']);
+        container.appendChild(that.nodes['table']);
         // API onRenderEnd event
-        executeEvent('onRenderEnd', {
+        that.triggerEvent('onRenderEnd', {
             'container' : container,
             'page' : page,
             'rows' : rows
@@ -134,13 +151,13 @@ Com['Gridlist'] = function(o){
 
     var renderTh = function(item, i){
         // Config
-        item = config['cols'][i] = cm.merge({
+        item = that.params['cols'][i] = cm.merge({
             'width' : 'auto',           // number | % | auto
             'access' : true,            // Render column if is accessible
-            'type' : 'text',		    // text | number | url | date | html | icon | checkbox | empty
+            'type' : 'text',		    // text | number | url | date | html | icon | checkbox | empty | actions
             'key' : '',                 // Data array key
             'title' : '',               // Table th title
-            'sort' : config['sort'],    // Sort this column or not
+            'sort' : that.params['sort'],    // Sort this column or not
             'textOverflow' : false,     // Overflow long text to single line
             'class' : '',		        // Icon css class, for type="icon"
             'target' : '_blank',        // Link target, for type="url"
@@ -148,6 +165,7 @@ Com['Gridlist'] = function(o){
             'titleText' : '',           // Alternative title text, if not specified - will be shown key text
             'altText' : '',             // Alternative column text
             'urlKey' : false,           // Alternative link href, for type="url"
+            'actions' : [],             // Render actions menu, for type="actions"
             'onClick' : false,          // Cell click handler
             'onRender' : false          // Cell onRender handler
         }, item);
@@ -155,7 +173,7 @@ Com['Gridlist'] = function(o){
         // Check access
         if(item['access']){
             // Structure
-            nodes['title'].appendChild(
+            that.nodes['title'].appendChild(
                 item['nodes']['container'] = cm.Node('th', {'width' : item['width']},
                     item['nodes']['inner'] = cm.Node('div', {'class' : 'inner'})
                 )
@@ -165,17 +183,17 @@ Com['Gridlist'] = function(o){
                 case 'checkbox' :
                     cm.addClass(item['nodes']['container'], 'control');
                     item['nodes']['inner'].appendChild(
-                        item['nodes']['checkbox'] = cm.Node('input', {'type' : 'checkbox', 'title' : lang('check-all')})
+                        item['nodes']['checkbox'] = cm.Node('input', {'type' : 'checkbox', 'title' : that.lang('check-all')})
                     );
-                    item['nodes']['checkbox'].checked = isCheckedAll;
+                    item['nodes']['checkbox'].checked = that.isCheckedAll;
                     cm.addEvent(item['nodes']['checkbox'], 'click', function(){
-                        if(isCheckedAll == true){
+                        if(that.isCheckedAll == true){
                             that.unCheckAll();
                         }else{
                             that.checkAll();
                         }
                     });
-                    nodes['checkbox'] = item['nodes']['checkbox'];
+                    that.nodes['checkbox'] = item['nodes']['checkbox'];
                     break;
 
                 default:
@@ -185,19 +203,19 @@ Com['Gridlist'] = function(o){
                     break;
             }
             // Render sort arrow and set function on click to th
-            if(!/icon|empty|checkbox/.test(item['type']) && item['sort']){
+            if(!/icon|empty|actions|checkbox/.test(item['type']) && item['sort']){
                 cm.addClass(item['nodes']['container'], 'sort');
                 if(item['key'] == sortBy){
                     item['nodes']['inner'].appendChild(
-                        cm.Node('div', {'class' : config['icons']['arrow'][orderBy.toLowerCase()]})
+                        cm.Node('div', {'class' : that.params['icons']['arrow'][orderBy.toLowerCase()]})
                     );
                 }
                 cm.addEvent(item['nodes']['inner'], 'click', function(){
                     arraySort(item['key']);
-                    if(config['pagination']){
-                        coms['Pagination'].set();
+                    if(that.params['pagination']){
+                        that.components['Pagination'].set();
                     }else{
-                        renderTable(1, nodes['container']);
+                        renderTable(1, that.nodes['container']);
                     }
                 });
             }
@@ -215,11 +233,11 @@ Com['Gridlist'] = function(o){
             }
         };
         // Structure
-        nodes['content'].appendChild(
+        that.nodes['content'].appendChild(
             item['nodes']['container'] = cm.Node('tr')
         );
         // Render cells
-        cm.forEach(config['cols'], function(col){
+        cm.forEach(that.params['cols'], function(col){
             renderCell(col, item);
         });
         // Push to rows array
@@ -253,10 +271,10 @@ Com['Gridlist'] = function(o){
                     break;
 
                 case 'date' :
-                    if(config['dateFormat'] != config['visibleDateFormat']){
+                    if(that.params['dateFormat'] != that.params['visibleDateFormat']){
                         myNodes['inner'].innerHTML = cm.dateFormat(
-                            cm.parseDate(text, config['dateFormat']),
-                            config['visibleDateFormat']
+                            cm.parseDate(text, that.params['dateFormat']),
+                            that.params['visibleDateFormat']
                         );
                     }else{
                         myNodes['inner'].innerHTML = text;
@@ -293,6 +311,26 @@ Com['Gridlist'] = function(o){
                         }else{
                             unCheckRow(item, true);
                         }
+                    });
+                    break;
+
+                case 'actions':
+                    myNodes['actions'] = [];
+                    myNodes['inner'].appendChild(
+                        myNodes['node'] = cm.Node('div', {'class' : ['pt__links', col['class']].join(' ')},
+                            myNodes['actionsList'] = cm.Node('ul')
+                        )
+                    );
+                    cm.forEach(col['actions'], function(action){
+                        action = cm.merge({
+                            'label' : '',
+                            'attr' : {}
+                        }, action);
+                        myNodes['actionsList'].appendChild(
+                            cm.Node('li',
+                                cm.Node('a', action['attr'], action['label'])
+                            )
+                        );
                     });
                     break;
 
@@ -337,17 +375,17 @@ Com['Gridlist'] = function(o){
 
     var arraySort = function(key){
         sortBy = key;
-        orderBy = !orderBy? config['orderBy'] : (orderBy == 'ASC' ? 'DESC' : 'ASC');
+        orderBy = !orderBy? that.params['orderBy'] : (orderBy == 'ASC' ? 'DESC' : 'ASC');
         // Get item
         var item, textA, textB, t1, t2, value;
-        cm.forEach(config['cols'], function(col){
+        cm.forEach(that.params['cols'], function(col){
             if(col['key'] == key){
                 item = col;
             }
         });
         // Sort
-        if(config['data'].sort){
-            config['data'].sort(function(a, b){
+        if(that.params['data'].sort){
+            that.params['data'].sort(function(a, b){
                 textA = a[key];
                 textB = b[key];
                 switch(item['type']){
@@ -359,8 +397,8 @@ Com['Gridlist'] = function(o){
                         break;
 
                     case 'date':
-                        t1 = cm.parseDate(textA, config['dateFormat']);
-                        t2 = cm.parseDate(textB, config['dateFormat']);
+                        t1 = cm.parseDate(textA, that.params['dateFormat']);
+                        t2 = cm.parseDate(textB, that.params['dateFormat']);
                         return (orderBy == 'ASC')? (t1 - t2) : (t2 - t1);
                         break;
 
@@ -379,10 +417,10 @@ Com['Gridlist'] = function(o){
             });
         }
         // API onSort Event
-        executeEvent('onSort', {
+        that.triggerEvent('onSort', {
             'sortBy' : sortBy,
             'orderBy' : orderBy,
-            'data' : config['data']
+            'data' : that.params['data']
         });
     };
 
@@ -395,7 +433,7 @@ Com['Gridlist'] = function(o){
         cm.addClass(row['nodes']['container'], 'active');
         if(execute){
             // API onCheck Event
-            executeEvent('onCheck', row);
+            that.triggerEvent('onCheck', row);
         }
     };
 
@@ -408,52 +446,15 @@ Com['Gridlist'] = function(o){
         cm.removeClass(row['nodes']['container'], 'active');
         if(execute){
             // API onUnCheck Event
-            executeEvent('onUnCheck', row);
+            that.triggerEvent('onUnCheck', row);
         }
-    };
-
-    /* *** MISC HANDLERS *** */
-
-    var convertEvents = function(){
-        cm.forEach(config['events'], function(item, key){
-            that.addEvent(key, item);
-        });
-    };
-
-    var lang = function(str){
-        if(!config['langs'][str]){
-            config['langs'][str] = str;
-        }
-        return config['langs'][str];
-    };
-
-    var executeEvent = function(event, params){
-        API[event].forEach(function(item){
-            item(that, params || {});
-        });
     };
 
     /* ******* MAIN ******* */
 
-    that.addEvent = function(event, handler){
-        if(API[event] && typeof handler == 'function'){
-            API[event].push(handler);
-        }
-        return that;
-    };
-
-    that.removeEvent = function(event, handler){
-        if(API[event] && typeof handler == 'function'){
-            API[event] = API[event].filter(function(item){
-                return item != handler;
-            });
-        }
-        return that;
-    };
-
     that.check = function(index){
-        if(config['data'][index]){
-            config['data'][index]['_checked'] = true;
+        if(that.params['data'][index]){
+            that.params['data'][index]['_checked'] = true;
         }
         cm.forEach(rows, function(row){
             if(row['index'] == index){
@@ -464,8 +465,8 @@ Com['Gridlist'] = function(o){
     };
 
     that.unCheck = function(index){
-        if(config['data'][index]){
-            config['data'][index]['_checked'] = false;
+        if(that.params['data'][index]){
+            that.params['data'][index]['_checked'] = false;
         }
         cm.forEach(rows, function(row){
             if(row['index'] == index){
@@ -476,30 +477,30 @@ Com['Gridlist'] = function(o){
     };
 
     that.checkAll = function(){
-        isCheckedAll = true;
-        nodes['checkbox'].checked = true;
-        cm.forEach(config['data'], function(row){
+        that.isCheckedAll = true;
+        that.nodes['checkbox'].checked = true;
+        cm.forEach(that.params['data'], function(row){
             row['_checked'] = true;
         });
         cm.forEach(rows, function(row){
             checkRow(row);
         });
         // API onUnCheckAll Event
-        executeEvent('onCheckAll', config['data']);
+        that.triggerEvent('onCheckAll', that.params['data']);
         return that;
     };
 
     that.unCheckAll = function(){
-        isCheckedAll = false;
-        nodes['checkbox'].checked = false;
-        cm.forEach(config['data'], function(row){
+        that.isCheckedAll = false;
+        that.nodes['checkbox'].checked = false;
+        cm.forEach(that.params['data'], function(row){
             row['_checked'] = false;
         });
         cm.forEach(rows, function(row){
             unCheckRow(row);
         });
         // API onUnCheckAll Event
-        executeEvent('onUnCheckAll', config['data']);
+        that.triggerEvent('onUnCheckAll', that.params['data']);
         return that;
     };
 
@@ -513,11 +514,11 @@ Com['Gridlist'] = function(o){
 
     that.getCheckedData = function(){
         var checkedRows = [];
-        cm.forEach(config['data'], function(row){
+        cm.forEach(that.params['data'], function(row){
             row['_checked'] && checkedRows.push(row);
         });
         return checkedRows;
     };
 
     init();
-};
+});

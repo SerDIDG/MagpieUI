@@ -2,7 +2,6 @@
 
 .button {
     .cm-text-overflow;
-    .button.button-primary;
     height: @CmForm-FieldHeight;
     margin: 0;
     padding: 0 @CmButton-PaddingX;
@@ -35,6 +34,8 @@
         .mx__transition(background-color color box-shadow, @CmUI-Transition-DurationReverse);
     }
 
+    .button.button-primary;
+
     // /* *** PRIMARY *** */
 
     &.button-primary {
@@ -62,7 +63,7 @@
     // /* *** SECONDARY *** */
 
     &.button-secondary {
-        .mx__background__color(@CmColor-Secondary-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorInvert);
+        .mx__background__color(@CmColor-Secondary-LightHover, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorInvert);
 
         &:hover {
             .button.button-secondary--hover;
@@ -75,11 +76,11 @@
     }
 
     &.button-secondary--hover {
-        .mx__background__color(@CmColor-Secondary-DarkHover, @CmFont-Base-Color, @CmFont-Base-ColorInvert);
+        .mx__background__color(@CmColor-Secondary-LightActive, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorInvert);
     }
 
     &.button-secondary--active {
-        .mx__background__color(@CmColor-Secondary-DarkActive, @CmFont-Base-Color, @CmFont-Base-ColorInvert);
+        .mx__background__color(@CmColor-Secondary-LightActiveHover, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorInvert);
         box-shadow: @CmUI-ShadowInner;
     }
 

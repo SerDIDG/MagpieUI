@@ -47,6 +47,11 @@
                     });
                 })
                 .add('gridlist', function(node){
+                    new Com.Gridlist({
+                        'node' : node
+                    });
+                })
+                .add('gridlist-all', function(node){
                     // Sample data
                     var data = [
                         {'id' : '1', 'name' : '123', 'descr' : 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'url' : 'http://google.com', 'html' : '<a href="http://google.com">123</a>'},
@@ -259,8 +264,46 @@
     </li>
 
     <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
+        <h2>Render actions:</h2>
+        <textarea class="cm-codebox cm-autoresize" readonly>
+new Com.Gridlist({
+    'data' : [
+        {'id' : '1', 'name' : '123', 'descr' : 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'},
+        {'id' : '2', 'name' : '6564636536', 'descr' : 'Aliquam fringilla congue quam, sed porttitor lectus.'},
+        {'id' : '3', 'name' : '566464', 'descr' : 'Suspendisse commodo suscipit vulputate.'}
+    ],
+    'cols' : [
+        {'type' : 'number', 'key' : 'id', 'width' : '48', 'title' : 'ID'},
+        {'type' : 'number', 'key' : 'name', 'width' : 'auto', 'title' : 'Name'},
+        {'type' : 'actions', 'width' : '156', 'title' : 'Actions', 'actions' : [
+            {'label' : 'Add', 'attr' : {}},
+            {'label' : 'Edit', 'attr' : {}},
+            {'label' : 'Remove', 'attr' : {}}
+        ]}
+    ]
+});</textarea>
+        <br>
+        <div data-element="gridlist" data-config='{
+            "data" : [
+                {"id" : "1", "name" : "123", "descr" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit."},
+                {"id" : "2", "name" : "6564636536", "descr" : "Aliquam fringilla congue quam, sed porttitor lectus."},
+                {"id" : "3", "name" : "566464", "descr" : "Suspendisse commodo suscipit vulputate."}
+            ],
+            "cols" : [
+                {"type" : "number", "key" : "id", "width" : "48", "title" : "ID"},
+                {"type" : "number", "key" : "name", "width" : "auto", "title" : "Name"},
+                {"type" : "actions", "width" : "156", "title" : "Actions", "actions" : [
+                    {"label" : "Add", "attr" : {}},
+                    {"label" : "Edit", "attr" : {}},
+                    {"label" : "Remove", "attr" : {}}
+                ]}
+            ]
+        }'></div>
+        
+        <hr>
+        
         <h2>Dynamic gridlist:</h2>
-        <div data-element="gridlist"></div>
+        <div data-element="gridlist-all"></div>
     </li>
 </ul>
 

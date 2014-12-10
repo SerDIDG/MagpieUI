@@ -40,21 +40,26 @@
 
 // /* ******* VARS ******* */
 
+@CmVar-Color-LightDefault-Lightness: 100%;
+@CmVar-Color-LightHover-Lightness: 95%;
+@CmVar-Color-LightActive-Lightness: 91%;
+@CmVar-Color-LightActiveHover-Lightness: 86%;
+
+@CmVar-Color-MiddleDefault-Lightness: 80%;
+@CmVar-Color-MiddleHover-Lightness: 75%;
+@CmVar-Color-MiddleActive-Lightness: 70%;
+@CmVar-Color-MiddleActiveHover-Lightness: 65%;
+
 @CmVar-Color-DarkDefault-Lightness: 55%;
 @CmVar-Color-DarkHover-Lightness: 45%;
 @CmVar-Color-DarkActive-Lightness: 35%;
-@CmVar-Color-DarkActiveHover-Lightness: 45%;
-
-@CmVar-Color-LightDefault-Lightness: 100%;
-@CmVar-Color-LightHover-Lightness: 96%;
-@CmVar-Color-LightActive-Lightness: 93%;
-@CmVar-Color-LightActiveHover-Lightness: 88%;
+@CmVar-Color-DarkActiveHover-Lightness: 25%;
 
 // /* ******* PRIMARY ******* */
 
 @CmColor-Primary: 210;
 
-// /* Normal Key */
+// /* Dark Key */
 
 @CmColor-Primary-DarkSaturation: 75%;
 @CmColor-Primary-DarkLightness: 0%;
@@ -62,6 +67,15 @@
 @CmColor-Primary-DarkHover: hsl(@CmColor-Primary, @CmColor-Primary-DarkSaturation, @CmVar-Color-DarkHover-Lightness + @CmColor-Primary-DarkLightness);
 @CmColor-Primary-DarkActive: hsl(@CmColor-Primary, @CmColor-Primary-DarkSaturation, @CmVar-Color-DarkActive-Lightness + @CmColor-Primary-DarkLightness);
 @CmColor-Primary-DarkActiveHover: hsl(@CmColor-Primary, @CmColor-Primary-DarkSaturation, @CmVar-Color-DarkActiveHover-Lightness + @CmColor-Primary-DarkLightness);
+
+// /* Middle Tone Key */
+
+@CmColor-Primary-MiddleSaturation: 75%;
+@CmColor-Primary-MiddleLightness: 0%;
+@CmColor-Primary-MiddleDefault: hsl(@CmColor-Primary, @CmColor-Primary-MiddleSaturation, @CmVar-Color-MiddleDefault-Lightness + @CmColor-Primary-MiddleLightness);
+@CmColor-Primary-MiddleHover: hsl(@CmColor-Primary, @CmColor-Primary-MiddleSaturation, @CmVar-Color-MiddleHover-Lightness + @CmColor-Primary-MiddleLightness);
+@CmColor-Primary-MiddleActive: hsl(@CmColor-Primary, @CmColor-Primary-MiddleSaturation, @CmVar-Color-MiddleActive-Lightness + @CmColor-Primary-MiddleLightness);
+@CmColor-Primary-MiddleActiveHover: hsl(@CmColor-Primary, @CmColor-Primary-MiddleSaturation, @CmVar-Color-MiddleActiveHover-Lightness + @CmColor-Primary-MiddleLightness);
 
 // /* Light Key */
 
@@ -76,7 +90,7 @@
 
 @CmColor-Secondary: 0;
 
-// /* Normal Key */
+// /* Dark Key */
 
 @CmColor-Secondary-DarkSaturation: 0%;
 @CmColor-Secondary-DarkLightness: 0%;
@@ -84,6 +98,15 @@
 @CmColor-Secondary-DarkHover: hsl(@CmColor-Secondary, @CmColor-Secondary-DarkSaturation, @CmVar-Color-DarkHover-Lightness + @CmColor-Secondary-DarkLightness);
 @CmColor-Secondary-DarkActive: hsl(@CmColor-Secondary, @CmColor-Secondary-DarkSaturation, @CmVar-Color-DarkActive-Lightness + @CmColor-Secondary-DarkLightness);
 @CmColor-Secondary-DarkActiveHover: hsl(@CmColor-Secondary, @CmColor-Secondary-DarkSaturation, @CmVar-Color-DarkActiveHover-Lightness + @CmColor-Secondary-DarkLightness);
+
+// /* Middle Tone Key */
+
+@CmColor-Secondary-MiddleSaturation: 0%;
+@CmColor-Secondary-MiddleLightness: 0%;
+@CmColor-Secondary-MiddleDefault: hsl(@CmColor-Secondary, @CmColor-Secondary-MiddleSaturation, @CmVar-Color-MiddleDefault-Lightness + @CmColor-Secondary-MiddleLightness);
+@CmColor-Secondary-MiddleHover: hsl(@CmColor-Secondary, @CmColor-Secondary-MiddleSaturation, @CmVar-Color-MiddleHover-Lightness + @CmColor-Secondary-MiddleLightness);
+@CmColor-Secondary-MiddleActive: hsl(@CmColor-Secondary, @CmColor-Secondary-MiddleSaturation, @CmVar-Color-MiddleActive-Lightness + @CmColor-Secondary-MiddleLightness);
+@CmColor-Secondary-MiddleActiveHover: hsl(@CmColor-Secondary, @CmColor-Secondary-MiddleSaturation, @CmVar-Color-MiddleActiveHover-Lightness + @CmColor-Secondary-MiddleLightness);
 
 // /* Light Key */
 
@@ -98,7 +121,7 @@
 
 @CmColor-Valid: 120;
 
-// /* Normal Key */
+// /* Dark Key */
 
 @CmColor-Valid-DarkSaturation: 65%;
 @CmColor-Valid-DarkLightness: -10%;
@@ -120,7 +143,7 @@
 
 @CmColor-Invalid: 0;
 
-// /* Normal Key */
+// /* Dark Key */
 
 @CmColor-Invalid-DarkSaturation: 65%;
 @CmColor-Invalid-DarkLightness: 0%;
@@ -142,7 +165,7 @@
 
 @CmColor-Pending: 38;
 
-// /* Normal Key */
+// /* Dark Key */
 
 @CmColor-Pending-DarkSaturation: 75%;
 @CmColor-Pending-DarkLightness: 0%;
@@ -160,11 +183,18 @@
 @CmColor-Pending-LightActive: hsl(@CmColor-Pending, @CmColor-Pending-LightSaturation, @CmVar-Color-LightActive-Lightness + @CmColor-Pending-LightLightness);
 @CmColor-Pending-LightActiveHover: hsl(@CmColor-Pending, @CmColor-Pending-LightSaturation, @CmVar-Color-LightActiveHover-Lightness + @CmColor-Pending-LightLightness);
 
+// /* ******* FONT ******* */
+
+@CmColor-Link: @CmColor-Primary-DarkDefault;
+@CmColor-LinkHover: @CmColor-Primary-DarkHover;
+@CmColor-LinkActive: @CmColor-Primary-DarkActive;
+
 // /* ******* OTHER ******* */
 
 @CmColor-Mark: #fdf6ad;
-@CmColor-Border: #cbcbcb;
-@CmColor-BorderHover: @CmColor-Primary-LightActiveHover;
+@CmColor-Border: @CmColor-Secondary-MiddleDefault;
+@CmColor-BorderHover: @CmColor-Secondary-MiddleActiveHover;
+@CmColor-BorderActive: @CmColor-Primary-MiddleActive;
 
 // /* ************************************************ */
 // /* ******* FONT ******* */
@@ -239,9 +269,6 @@
 
 @Cm-colorPlaceholder: #b7b7b7;
 @Cm-colorHint: #999999;
-@Cm-colorLink: @Cm-color;
-@Cm-colorLinkHover: @Cm-colorLink;
-@Cm-colorLinkVisited: #8a156d;
 @CmColor-Pending-DarkDefaultLight: #fff9ef;
 
 @Cm-color: hsl(210, 80%, 55%);

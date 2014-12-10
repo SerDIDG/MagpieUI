@@ -17,9 +17,13 @@
     .mx__background-clip(padding-box);
     .mx__transition(background border-color color box-shadow text-shadow, @CmUI-Transition-Duration);
 
+    &:hover {
+        border-color: @CmColor-BorderHover;
+    }
+
     &.input-focus,
     &:focus {
-        border-color: @CmColor-BorderHover;
+        border-color: @CmColor-BorderActive;
     }
 
     &.input-disabled,
