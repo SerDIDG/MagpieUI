@@ -8,7 +8,7 @@
     }
 
     .required {
-        color: @CmColor-Invalid-DarkDefault;
+        color: @CmColor-Danger-DarkDefault;
         font-weight: @CmFont-Base-BoldWeight;
     }
 }
@@ -149,13 +149,13 @@
 
     &.error {
         .hint {
-            color: @CmColor-Invalid-DarkDefault;
+            color: @CmColor-Danger-DarkDefault;
         }
     }
 
     &.ok {
         .hint {
-            color: @CmColor-Valid-DarkDefault;
+            color: @CmColor-Success-DarkDefault;
         }
     }
 
@@ -196,7 +196,7 @@
             display: block;
             margin: @CmForm-ButtonsIndent 0 0 0;
             float: none;
-            .cm-text-overflow;
+            .cm__text-overflow;
 
             &:first-child {
                 margin: 0;
@@ -432,19 +432,19 @@
     }
 
     &.error {
-        border-color: @CmColor-Invalid-DarkDefault;
+        border-color: @CmColor-Danger-DarkDefault;
 
         legend {
-            color: @CmColor-Invalid-DarkDefault;
+            color: @CmColor-Danger-DarkDefault;
             font-weight: @CmFont-Base-BoldWeight;
         }
     }
 
     &.ok {
-        border-color: @CmColor-Valid-DarkDefault;
+        border-color: @CmColor-Success-DarkDefault;
 
         legend {
-            color: @CmColor-Valid-DarkDefault;
+            color: @CmColor-Success-DarkDefault;
             font-weight: @CmFont-Base-BoldWeight;
         }
     }
@@ -608,39 +608,39 @@
 .form dl {
     &.error {
         dt {
-            color: @CmColor-Invalid-DarkDefault;
+            color: @CmColor-Danger-DarkDefault;
         }
 
         .hint {
-            color: @CmColor-Invalid-DarkDefault;
+            color: @CmColor-Danger-DarkDefault;
         }
 
         .validate {
-            color: @CmColor-Invalid-DarkDefault;
+            color: @CmColor-Danger-DarkDefault;
             font-weight: @CmFont-Base-BoldWeight;
         }
 
         .input {
-            border: 1px solid @CmColor-Invalid-DarkDefault;
+            border: 1px solid @CmColor-Danger-DarkDefault;
         }
     }
 
     &.ok {
         dt {
-            color: @CmColor-Valid-DarkDefault;
+            color: @CmColor-Success-DarkDefault;
         }
 
         .hint {
-            color: @CmColor-Valid-DarkDefault;
+            color: @CmColor-Success-DarkDefault;
         }
 
         .validate {
-            color: @CmColor-Valid-DarkDefault;
+            color: @CmColor-Success-DarkDefault;
             font-weight: @CmFont-Base-BoldWeight;
         }
 
         .input {
-            border: 1px solid @CmColor-Valid-DarkDefault;
+            border: 1px solid @CmColor-Success-DarkDefault;
         }
     }
 }

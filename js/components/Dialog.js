@@ -166,7 +166,7 @@ function(params){
             // Render new nodes
             nodes['title'] = cm.Node('div', {'class' : 'title'}, title);
             if(that.params['titleOverflow']){
-                cm.addClass(nodes['title'], 'cm-text-overflow');
+                cm.addClass(nodes['title'], 'cm__text-overflow');
             }
             cm.insertFirst(nodes['title'], nodes['windowInner']);
         }

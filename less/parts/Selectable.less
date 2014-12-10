@@ -1,0 +1,31 @@
+/* ******* PARTS: SELECTABLE ******* */
+
+.pr__selectable {
+    position: relative;
+    border-radius: 3px;
+    cursor: pointer;
+
+    &:before {
+        display: block;
+        position: absolute;
+        z-index: -1;
+        top: -6px;
+        right: -6px;
+        bottom: -6px;
+        left: -6px;
+        content: '';
+        border: 2px solid transparent;
+        border-radius: @CmBorder-Radius;
+        .mx__transition(border-color background-color, @CmUI-Transition-Duration);
+    }
+
+    &:hover:before {
+        background-color: @pt__selectable-background-hover;
+        .mx__transition(border-color background-color, @CmUI-Transition-DurationReverse);
+    }
+
+    &.active:before {
+        background-color: #ffffff;
+        border-color: @pt__selectable-border-color-active;
+    }
+}

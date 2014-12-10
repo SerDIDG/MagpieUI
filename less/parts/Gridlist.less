@@ -20,7 +20,7 @@
             .mx__background-clip(padding-box);
 
             > .inner {
-                .cm-text-overflow;
+                .cm__text-overflow;
                 display: block;
                 position: relative;
                 word-wrap: normal;
@@ -120,24 +120,24 @@
 
             &.valid {
                 td {
-                    background-color: @CmColor-Valid-LightActive;
+                    background-color: @CmColor-Success-LightActive;
                 }
 
                 &:hover {
                     td {
-                        background-color: @CmColor-Valid-LightActiveHover;
+                        background-color: @CmColor-Success-LightActiveHover;
                     }
                 }
             }
 
             &.invalid {
                 td {
-                    background-color: @CmColor-Invalid-LightActive;
+                    background-color: @CmColor-Danger-LightActive;
                 }
 
                 &:hover {
                     td {
-                        background-color: @CmColor-Invalid-LightActiveHover;
+                        background-color: @CmColor-Danger-LightActiveHover;
                     }
                 }
             }

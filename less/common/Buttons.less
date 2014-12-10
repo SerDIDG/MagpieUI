@@ -1,7 +1,7 @@
 /* *** PARTS: BUTTONS *** */
 
 .button {
-    .cm-text-overflow;
+    .cm__text-overflow;
     height: @CmForm-FieldHeight;
     margin: 0;
     padding: 0 @CmButton-PaddingX;
@@ -39,7 +39,7 @@
     // /* *** PRIMARY *** */
 
     &.button-primary {
-        .mx__background__color(@CmColor-Primary-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorInvert);
+        .mx__background__color(@CmColor-Primary-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
 
         &:hover {
             .button.button-primary--hover;
@@ -52,18 +52,18 @@
     }
 
     &.button-primary--hover {
-        .mx__background__color(@CmColor-Primary-DarkHover, @CmFont-Base-Color, @CmFont-Base-ColorInvert);
+        .mx__background__color(@CmColor-Primary-DarkHover, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
     }
 
     &.button-primary--active {
-        .mx__background__color(@CmColor-Primary-DarkActive, @CmFont-Base-Color, @CmFont-Base-ColorInvert);
+        .mx__background__color(@CmColor-Primary-DarkActive, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
         box-shadow: @CmUI-ShadowInner;
     }
 
     // /* *** SECONDARY *** */
 
     &.button-secondary {
-        .mx__background__color(@CmColor-Secondary-LightHover, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorInvert);
+        .mx__background__color(@CmColor-Secondary-LightSelected, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
 
         &:hover {
             .button.button-secondary--hover;
@@ -76,83 +76,83 @@
     }
 
     &.button-secondary--hover {
-        .mx__background__color(@CmColor-Secondary-LightActive, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorInvert);
+        .mx__background__color(@CmColor-Secondary-LightActive, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
     }
 
     &.button-secondary--active {
-        .mx__background__color(@CmColor-Secondary-LightActiveHover, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorInvert);
+        .mx__background__color(@CmColor-Secondary-LightActiveHover, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
         box-shadow: @CmUI-ShadowInner;
     }
 
-    // /* *** VALID *** */
+    // /* *** SUCCESS *** */
 
-    &.button-valid {
-        .mx__background__color(@CmColor-Valid-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorInvert);
+    &.button-success {
+        .mx__background__color(@CmColor-Success-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
 
         &:hover {
-            .button.button-valid--hover;
+            .button.button-success--hover;
         }
 
         &:active,
         &.active {
-            .button.button-valid--active;
+            .button.button-success--active;
         }
     }
 
-    &.button-valid--hover {
-        .mx__background__color(@CmColor-Valid-DarkHover, @CmFont-Base-Color, @CmFont-Base-ColorInvert);
+    &.button-success--hover {
+        .mx__background__color(@CmColor-Success-DarkHover, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
     }
 
-    &.button-valid--active {
-        .mx__background__color(@CmColor-Valid-DarkActive, @CmFont-Base-Color, @CmFont-Base-ColorInvert);
+    &.button-success--active {
+        .mx__background__color(@CmColor-Success-DarkActive, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
         box-shadow: @CmUI-ShadowInner;
     }
 
-    // /* *** INVALID *** */
+    // /* *** DANGER *** */
 
-    &.button-invalid {
-        .mx__background__color(@CmColor-Invalid-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorInvert);
+    &.button-danger {
+        .mx__background__color(@CmColor-Danger-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
 
         &:hover {
-            .button.button-invalid--hover;
+            .button.button-danger--hover;
         }
 
         &:active,
         &.active {
-            .button.button-invalid--active;
+            .button.button-danger--active;
         }
     }
 
-    &.button-invalid--hover {
-        .mx__background__color(@CmColor-Invalid-DarkHover, @CmFont-Base-Color, @CmFont-Base-ColorInvert);
+    &.button-danger--hover {
+        .mx__background__color(@CmColor-Danger-DarkHover, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
     }
 
-    &.button-invalid--active {
-        .mx__background__color(@CmColor-Invalid-DarkActive, @CmFont-Base-Color, @CmFont-Base-ColorInvert);
+    &.button-danger--active {
+        .mx__background__color(@CmColor-Danger-DarkActive, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
         box-shadow: @CmUI-ShadowInner;
     }
 
-    // /* *** PENDING *** */
+    // /* *** WARNING *** */
 
-    &.button-pending {
-        .mx__background__color(@CmColor-Pending-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorInvert);
+    &.button-warning {
+        .mx__background__color(@CmColor-Warning-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
 
         &:hover {
-            .button.button-pending--hover;
+            .button.button-warning--hover;
         }
 
         &:active,
         &.active {
-            .button.button-pending--active;
+            .button.button-warning--active;
         }
     }
 
-    &.button-pending--hover {
-        .mx__background__color(@CmColor-Pending-DarkHover, @CmFont-Base-Color, @CmFont-Base-ColorInvert);
+    &.button-warning--hover {
+        .mx__background__color(@CmColor-Warning-DarkHover, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
     }
 
-    &.button-pending--active {
-        .mx__background__color(@CmColor-Pending-DarkActive, @CmFont-Base-Color, @CmFont-Base-ColorInvert);
+    &.button-warning--active {
+        .mx__background__color(@CmColor-Warning-DarkActive, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
         box-shadow: @CmUI-ShadowInner;
     }
 
@@ -160,7 +160,7 @@
 
     &.button-transparent,
     &.transparent {
-        .mx__background__color(@CmColor-Secondary-LightDefault, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorInvert);
+        .mx__background__color(@CmColor-Secondary-LightDefault, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
         box-shadow: none;
         border: none;
 
@@ -175,18 +175,18 @@
     }
 
     &.button-transparent--hover {
-        .mx__background__color(@CmColor-Secondary-LightHover, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorInvert);
+        .mx__background__color(@CmColor-Secondary-LightHover, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
     }
 
     &.button-transparent--active {
-        .mx__background__color(@CmColor-Secondary-LightActive, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorInvert);
+        .mx__background__color(@CmColor-Secondary-LightActive, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
         box-shadow: @CmUI-ShadowInner;
     }
 
     // /* *** WHITE *** */
 
     &.button-white {
-        .mx__background__color(#ffffff, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorInvert);
+        .mx__background__color(#ffffff, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
 
         &:hover {
             .button.button-white--hover;
@@ -199,11 +199,11 @@
     }
 
     &.button-white--hover {
-        .mx__background__color(@CmColor-Primary-DarkHover, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorInvert);
+        .mx__background__color(@CmColor-Primary-DarkHover, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
     }
 
     &.button-white--active {
-        .mx__background__color(@CmColor-Primary-DarkActive, @CmFont-Base-Color, @CmFont-Base-ColorInvert);
+        .mx__background__color(@CmColor-Primary-DarkActive, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
         box-shadow: @CmUI-ShadowInner;
     }
 
