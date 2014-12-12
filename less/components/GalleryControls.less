@@ -1,6 +1,6 @@
 /* ******* GALLERY CONTROLS ******* */
 
-.com-gallery-controls {
+.com__gallery-controls {
     position: absolute;
     z-index: 2;
     opacity: 0;
@@ -58,17 +58,17 @@
             padding: 0;
             display: block;
             list-style: none;
-            line-height: @ComGalleryControls-buttonSize;
+            line-height: @ComGalleryControls-ButtonSize;
 
             li {
-                width: @ComGalleryControls-buttonSize;
-                height: @ComGalleryControls-buttonSize;
+                width: @ComGalleryControls-ButtonSize;
+                height: @ComGalleryControls-ButtonSize;
                 display: inline-block;
                 margin: 0 0 0 @CmIndent-XXSmall;
                 vertical-align: top;
                 background-color: @Cm-colorSecondary;
                 border: 2px solid @Cm-colorSecondary;
-                border-radius: @ComGalleryControls-buttonSize;
+                border-radius: @ComGalleryControls-ButtonSize;
                 cursor: pointer;
                 .mx__box-sizing(border-box);
                 .mx__transition(all, @CmUI-Transition-Duration);
@@ -160,7 +160,7 @@
     }
 
     &.is-small {
-        height: @CmIndent-XSmall * 2 + @ComGalleryControls-buttonSize;
+        height: @CmIndent-XSmall * 2 + @ComGalleryControls-ButtonSize;
         .mx__position(auto, 0, 0, 0);
 
         .bar-arrow {

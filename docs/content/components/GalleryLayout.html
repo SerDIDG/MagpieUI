@@ -44,7 +44,7 @@
 
 <h1 class="pt__box-title">Components: Gallery Layout</h1>
 
-<ul class="com-tabset-content-ul" data-element="tabset">
+<ul class="com__tabset__content-ul" data-element="tabset">
     <li data-node="tabs:[]:container" data-config='{"id" : "overview", "title" : "Overview"}'>
         <h2>Overview</h2>
         <p>This component process server side rendered thumbnails ans embed gallery preview component. Supported image files: .jpg, .png, .gif, .jpeg, .bmp, .tga; and video from third-party sites that will be embed in iframe.</p>
@@ -138,13 +138,13 @@ new Com.GalleryLayout({
     <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
         <h2>Gallery with bottom bar and video:</h2>
         <div style="max-width: 600px;">
-            <div class="com-gallery-layout size-5 is-bar-bottom" data-element="gallery-layout" data-config='{"barDirection" : "horizontal"}'>
+            <div class="com__gallery-layout size-5 is-bar-bottom" data-element="gallery-layout" data-config='{"barDirection" : "horizontal"}'>
                 <div class="inner" data-node="inner">
-                    <div class="com-gallery-preview cm__aspect__3x2">
+                    <div class="com__gallery-preview cm__aspect-3x2">
                         <div class="inner" data-node="preview-inner"></div>
                     </div>
 
-                    <div class="com-gallery-bar is-horizontal">
+                    <div class="com__gallery-bar is-horizontal">
                         <div class="inner"  data-node="bar-inner">
                             <div class="bar-arrow prev" data-node="ComScroll.left">
                                 <div class="icon small arrow-left centered"></div>
@@ -231,9 +231,9 @@ new Com.GalleryLayout({
 
         <h2>Gallery with top bar:</h2>
         <div style="max-width: 600px;">
-            <div class="com-gallery-layout size-5 is-bar-top" data-element="gallery-layout" data-config='{"barDirection" : "horizontal"}'>
+            <div class="com__gallery-layout size-5 is-bar-top" data-element="gallery-layout" data-config='{"barDirection" : "horizontal"}'>
                 <div class="inner" data-node="inner">
-                    <div class="com-gallery-bar is-horizontal">
+                    <div class="com__gallery-bar is-horizontal">
                         <div class="inner" data-node="bar-inner">
                             <div class="bar-arrow prev" data-node="ComScroll.left">
                                 <div class="icon small arrow-left centered"></div>
@@ -305,7 +305,7 @@ new Com.GalleryLayout({
                         </div>
                     </div>
 
-                    <div class="com-gallery-preview cm__aspect__3x2">
+                    <div class="com__gallery-preview cm__aspect-3x2">
                         <div class="inner" data-node="preview-inner"></div>
                     </div>
                 </div>
@@ -316,13 +316,13 @@ new Com.GalleryLayout({
 
         <h2>Gallery with right bar:</h2>
         <div style="max-width: 600px;">
-            <div class="com-gallery-layout size-5 is-bar-right" data-element="gallery-layout" data-config='{"barDirection" : "vertical"}'>
+            <div class="com__gallery-layout size-5 is-bar-right" data-element="gallery-layout" data-config='{"barDirection" : "vertical"}'>
                 <div class="inner" data-node="inner">
-                    <div class="com-gallery-preview cm__aspect__3x2">
+                    <div class="com__gallery-preview cm__aspect-3x2">
                         <div class="inner" data-node="preview-inner"></div>
                     </div>
 
-                    <div class="com-gallery-bar is-vertical">
+                    <div class="com__gallery-bar is-vertical">
                         <div class="inner" data-node="bar-inner">
                             <div class="bar-arrow prev" data-node="ComScroll.up">
                                 <div class="icon small arrow-top centered"></div>
@@ -401,13 +401,13 @@ new Com.GalleryLayout({
 
         <h2>Gallery with left bar:</h2>
         <div style="max-width: 600px;">
-            <div class="com-gallery-layout size-5 is-bar-left" data-element="gallery-layout" data-config='{"barDirection" : "vertical"}'>
+            <div class="com__gallery-layout size-5 is-bar-left" data-element="gallery-layout" data-config='{"barDirection" : "vertical"}'>
                 <div class="inner" data-node="inner">
-                    <div class="com-gallery-preview cm__aspect__3x2">
+                    <div class="com__gallery-preview cm__aspect-3x2">
                         <div class="inner" data-node="preview-inner"></div>
                     </div>
 
-                    <div class="com-gallery-bar is-vertical">
+                    <div class="com__gallery-bar is-vertical">
                         <div class="inner" data-node="bar-inner">
                             <div class="bar-arrow prev" data-node="ComScroll.up">
                                 <div class="icon small arrow-top centered"></div>
@@ -486,13 +486,13 @@ new Com.GalleryLayout({
 
         <h2>Gallery without bar:</h2>
         <div style="max-width: 600px;">
-            <div class="com-gallery-layout size-5 is-bar-none" data-element="gallery-layout" data-config='{"hasBar" : false}'>
+            <div class="com__gallery-layout size-5 is-bar-none" data-element="gallery-layout" data-config='{"hasBar" : false}'>
                 <div class="inner" data-node="inner">
-                    <div class="com-gallery-preview cm__aspect__3x2">
+                    <div class="com__gallery-preview cm__aspect-3x2">
                         <div class="inner" data-node="preview-inner"></div>
                     </div>
 
-                    <div class="com-gallery-dummy">
+                    <div class="com__gallery-dummy">
                         <ul>
                             <li data-node="bar-items:[]:container">
                                 <div class="pt__image is-checkable">
@@ -568,13 +568,13 @@ new Com.GalleryLayout({
 
         <h2>Gallery with border:</h2>
         <div style="max-width: 600px;">
-            <div class="com-gallery-layout size-5 has-border is-bar-bottom" data-element="gallery-layout" data-config='{"barDirection" : "horizontal"}'>
+            <div class="com__gallery-layout size-5 has-border is-bar-bottom" data-element="gallery-layout" data-config='{"barDirection" : "horizontal"}'>
                 <div class="inner" data-node="inner">
-                    <div class="com-gallery-preview cm__aspect__3x2">
+                    <div class="com__gallery-preview cm__aspect-3x2">
                         <div class="inner" data-node="preview-inner"></div>
                     </div>
 
-                    <div class="com-gallery-bar is-horizontal">
+                    <div class="com__gallery-bar is-horizontal">
                         <div class="inner" data-node="bar-inner">
                             <div class="bar-arrow prev" data-node="ComScroll.left">
                                 <div class="icon small arrow-left centered"></div>

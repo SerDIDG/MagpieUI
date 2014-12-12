@@ -1,10 +1,10 @@
 /* ******* COMPONENT: DATEPICKER ******* */
 
-.com-datepicker-input {
+.com__datepicker-input {
     @clear-button-indent: @CmForm-FieldHeight + @CmForm-FieldInnerIndent;
 
     width: 100%;
-    max-width: @ComDatepicker-width;
+    max-width: @ComDatepicker-Width;
     display: inline-block;
     vertical-align: top;
     position: relative;
@@ -37,9 +37,9 @@
 
 /* Tooltip */
 
-.com-tooltip {
-    &.com-datepicker-tooltip {
-        width: @ComDatepicker-tooltipWidth;
+.com__tooltip {
+    &.com__datepicker-tooltip {
+        width: @ComDatepicker-TooltipWidth;
 
         > .inner > .scroll {
             overflow: visible;
@@ -66,14 +66,14 @@
 
 /* Calendar */
 
-.com-datepicker-calendar {
+.com__datepicker-calendar {
     .selects {
         .months {
             width: 60%;
         }
 
         .years {
-            width: 38%;
+            width: 40%;
         }
     }
 }
@@ -83,7 +83,7 @@
 @media only screen and (max-width: @CmScreen-Mobile) {
 
     html.is-adaptive {
-        .com-datepicker-input {
+        .com__datepicker-input {
             max-width: none;
             display: block;
         }

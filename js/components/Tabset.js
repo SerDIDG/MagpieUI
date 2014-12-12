@@ -73,17 +73,17 @@ function(params){
 
     var renderView = function(){
         /* *** STRUCTURE *** */
-        that.nodes['container'] = cm.Node('div', {'class' : 'com-tabset'},
-            that.nodes['content'] = cm.Node('div', {'class' : 'com-tabset-content clear'},
+        that.nodes['container'] = cm.Node('div', {'class' : 'com__tabset'},
+            that.nodes['content'] = cm.Node('div', {'class' : 'com__tabset__content clear'},
                 that.nodes['contentUL'] = cm.Node('ul')
             )
         );
-        that.nodes['header'] = cm.Node('div', {'class' : 'com-tabset-head clear'},
-            cm.Node('div', {'class' : 'com-tabset-head-tabs'},
+        that.nodes['header'] = cm.Node('div', {'class' : 'com__tabset__head clear'},
+            cm.Node('div', {'class' : 'com__tabset__head-tabs'},
                 that.nodes['headerUL'] = cm.Node('ul')
             ),
-            that.nodes['header-title'] = cm.Node('div', {'class' : 'com-tabset-head-title'}),
-            cm.Node('div', {'class' : 'com-tabset-head-menu cm-menu'},
+            that.nodes['header-title'] = cm.Node('div', {'class' : 'com__tabset__head-title'}),
+            cm.Node('div', {'class' : 'com__tabset__head-menu cm-menu'},
                 cm.Node('div', {'class' : that.params['icons']['menu']}),
                 that.nodes['headerMenuUL'] = cm.Node('ul', {'class' : 'cm-menu-dropdown'})
             )

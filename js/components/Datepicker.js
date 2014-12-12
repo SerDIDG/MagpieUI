@@ -99,7 +99,7 @@ function(params){
 
     var render = function(){
         /* *** RENDER STRUCTURE *** */
-        nodes['container'] = cm.Node('div', {'class' : 'com-datepicker-input'},
+        nodes['container'] = cm.Node('div', {'class' : 'com__datepicker-input'},
             nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
             cm.Node('div', {'class' : 'form-field has-icon-right'},
                 nodes['input'] = cm.Node('input', {'type' : 'text', 'readOnly' : 'true'}),
@@ -185,7 +185,7 @@ function(params){
         // Render tooltip
         components['menu'] = new Com.Tooltip({
             'container' : that.params['renderInBody'] ? document.body : nodes['container'],
-            'className' : 'com-datepicker-tooltip',
+            'className' : 'com__datepicker-tooltip',
             'top' : ['targetHeight', that.params['menuMargin']].join('+'),
             'content' : nodes['menuContainer'],
             'target' : nodes['container'],
@@ -200,7 +200,7 @@ function(params){
         components['calendar'] = new Com.Calendar({
             'container' : nodes['calendarContainer'],
             'renderSelectsInBody' : false,
-            'className' : 'com-datepicker-calendar',
+            'className' : 'com__datepicker-calendar',
             'startYear' : that.params['startYear'],
             'endYear' : that.params['endYear'],
             'startWeekDay' : that.params['startWeekDay'],

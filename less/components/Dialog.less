@@ -1,6 +1,6 @@
 /* ******* COMPONENTS: DIALOG ******* */
 
-.com-dialog {
+.com__dialog {
     width: 100%;
     height: 100%;
     display: none;
@@ -97,35 +97,35 @@
 
 /* IE Opacity */
 
-.ie6 .com-dialog,
-.ie7 .com-dialog,
-.ie8 .com-dialog {
+.ie6 .com__dialog,
+.ie7 .com__dialog,
+.ie8 .com__dialog {
     .mx__opacity-ie(0);
 }
 
-.ie6 .com-dialog > .bg,
-.ie7 .com-dialog > .bg,
-.ie8 .com-dialog > .bg {
+.ie6 .com__dialog > .bg,
+.ie7 .com__dialog > .bg,
+.ie8 .com__dialog > .bg {
     .mx__opacity-ie(60);
 }
 
-.ie6 .com-dialog > .window
-.ie7 .com-dialog > .window,
-.ie8 .com-dialog > .window {
+.ie6 .com__dialog > .window
+.ie7 .com__dialog > .window,
+.ie8 .com__dialog > .window {
     .mx__opacity-ie(100);
 }
 
 /* Confirmation Dialog. Deprecated. */
 
-.com-dialog-confirm {
-    padding: 14px 0 0;
+.com__dialog-confirm {
+    padding: @CmIndent-Small 0 0;
 
     > .title {
         text-align: center;
     }
 
     .button-box {
-        margin-top: 20px;
+        margin-top: @CmIndent-Medium;
 
         input {
             width: 70px;
@@ -137,7 +137,7 @@
 
 /* *** EDITABLE AREA *** */
 
-.com-dialog {
+.com__dialog {
     .pt__editable:hover > .border {
         top: -8px;
         right: -8px;
@@ -148,8 +148,8 @@
 
 /* ******* COMPONENT: DIALOG: THEMES ******* */
 
-.com-dialog {
-    @titleHeight: @ComDialog-titleIndent * 2 + @CmFont-UI-H1-LineHeight;
+.com__dialog {
+    @titleHeight: @ComDialog-TitleIndent * 2 + @CmFont-UI-H1-LineHeight;
 
     // /* *** DEFAULT *** */
 
@@ -179,8 +179,8 @@
         > .window {
             > .icon {
                 .cm__size__medium;
-                right: @ComDialog-indent;
-                top: (@titleHeight - @ComDialog-indent) / 2;
+                right: @ComDialog-Indent;
+                top: (@titleHeight - @ComDialog-Indent) / 2;
 
                 &.default {
                     .icon.medium.close;
@@ -193,29 +193,29 @@
 
                 > .title {
                     .cm__font--ui-h1;
-                    padding: @ComDialog-titleIndent @ComDialog-indent;
+                    padding: @ComDialog-TitleIndent @ComDialog-Indent;
                 }
 
                 > .descr {
                     > .scroll > .inner {
-                        padding: 0 @ComDialog-indent;
+                        padding: 0 @ComDialog-Indent;
                     }
 
                     &:first-child {
                         > .scroll > .inner {
-                            padding-top: @ComDialog-indent
+                            padding-top: @ComDialog-Indent
                         }
                     }
 
                     &:last-child {
                         > .scroll > .inner {
-                            padding-bottom: @ComDialog-indent
+                            padding-bottom: @ComDialog-Indent
                         }
                     }
                 }
 
                 > .buttons {
-                    padding: @ComDialog-indent;
+                    padding: @ComDialog-Indent;
                 }
             }
         }
@@ -244,7 +244,7 @@
             > .window {
                 > .inner {
                     > .title {
-                        padding-right: @ComDialog-indent * 2 + @CmSize-Medium;
+                        padding-right: @ComDialog-Indent * 2 + @CmSize-Medium;
                     }
                 }
             }
@@ -253,7 +253,7 @@
 
     // /* *** BLACK *** */
 
-    &.theme-black:extend(.com-dialog.theme-default all) {
+    &.theme-black:extend(.com__dialog.theme-default all) {
         > .window {
             > .icon {
                 &.default {
@@ -262,10 +262,10 @@
             }
 
             > .inner {
-                background-color: @ComDialog-themeBlack-background;
+                background-color: @ComDialog-Black-Background;
 
                 > .title {
-                    color: @ComDialog-themeBlack-titleColor;
+                    color: @ComDialog-Black-TitleColor;
                 }
             }
         }

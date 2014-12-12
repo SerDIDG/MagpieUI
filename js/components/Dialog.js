@@ -99,7 +99,7 @@ function(params){
     var render = function(){
         // Structure
         that.params['container'].appendChild(
-            nodes['container'] = cm.Node('div', {'class' : 'com-dialog'},
+            nodes['container'] = cm.Node('div', {'class' : 'com__dialog'},
                 nodes['bg'] = cm.Node('div', {'class' : 'bg'}),
                 nodes['window'] = cm.Node('div', {'class' : 'window'},
                     nodes['windowInner'] = cm.Node('div', {'class' : 'inner'})

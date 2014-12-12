@@ -37,8 +37,8 @@
         z-index: 2;
         margin: -16px 0 0 -8px;
         padding: 8px 4px;
-        background: @Cm-colorSecondary;
-        border: 1px solid @CmColor-Border;
+        background: @ComColumns-Drag-DefaultBackground;
+        border: 1px solid @ComColumns-Drag-DefaultBorder;
         border-radius: @CmBorder-Radius;
         .mx__transition(background-color border-color, @CmUI-Transition-Duration);
         .mx__position(50%, auto, auto, 50%);
@@ -56,30 +56,32 @@
         margin: 0 0 0 -1px;
         display: block;
         content: '';
-        background: @Cm-colorSecondary;
+        background: @ComColumns-Drag-DefaultBackground;
         .mx__transition(background-color, @CmUI-Transition-Duration);
         .mx__position(0, auto, 0, 50%);
     }
 
     &:hover {
         .drag {
-            background: @Cm-colorSecondaryHover;
+            background: @ComColumns-Drag-HoverBackground;
+            border-color: @ComColumns-Drag-HoverBorder;
             .mx__transition(background-color border-color, @CmUI-Transition-DurationReverse);
         }
 
         &:after {
+            background: @ComColumns-Drag-HoverBackground;
             .mx__transition(background-color, @CmUI-Transition-DurationReverse);
         }
     }
 
     &.is-active {
         .drag {
-            background: @Cm-colorActive;
-            border-color: @Cm-color;
+            background: @ComColumns-Drag-ActiveBackground;
+            border-color: @ComColumns-Drag-ActiveBorder;
         }
 
         &:after {
-            background: @Cm-colorActive;
+            background: @ComColumns-Drag-ActiveBackground;
         }
     }
 }
@@ -113,7 +115,7 @@
             > .container {
                 > .com-column {
                     > .inner {
-                        min-height: @ComColumns-minHeight + (@CmDraganddrop-areaPadding * 2);
+                        min-height: @ComColumns-minHeight + (@CmDraganddrop-AreaPadding * 2);
                     }
                 }
             }

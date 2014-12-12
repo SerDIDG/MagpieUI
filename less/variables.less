@@ -16,6 +16,7 @@
 
 // /* ******* SIZES ******* */
 
+@CmSize-None: 0px;
 @CmSize-XXXSmall: 4px;
 @CmSize-XXSmall: 8px;
 @CmSize-XSmall: 12px;
@@ -25,6 +26,7 @@
 @CmSize-XLarge: 48px;
 @CmSize-XXLarge: 64px;
 
+@CmIndent-None: @CmSize-None;
 @CmIndent-XXXSmall: @CmSize-XXXSmall;
 @CmIndent-XXSmall: @CmSize-XXSmall;
 @CmIndent-XSmall: @CmSize-XSmall;
@@ -34,6 +36,8 @@
 @CmIndent-XLarge: @CmSize-XLarge;
 @CmIndent-XXLarge: @CmSize-XXLarge;
 
+@CmIndents: @CmIndent-None @CmIndent-XXXSmall @CmIndent-XXSmall @CmIndent-XSmall @CmIndent-Small @CmIndent-Medium @CmIndent-Large @CmIndent-XLarge @CmIndent-XXLarge;
+
 // /* ************************************************ */
 // /* ******* COLORS ******* */
 // /* ************************************************ */
@@ -41,7 +45,7 @@
 // /* ******* VARS ******* */
 
 @CmVar-Color-LightDefault-Lightness: 100%;
-@CmVar-Color-LightSelected-Lightness: 95%;
+@CmVar-Color-LightSelected-Lightness: 98%;
 @CmVar-Color-LightHover-Lightness: 95%;
 @CmVar-Color-LightActive-Lightness: 91%;
 @CmVar-Color-LightActiveHover-Lightness: 86%;
@@ -204,6 +208,7 @@
 @CmColor-Border: @CmColor-Secondary-MiddleDefault;
 @CmColor-BorderHover: @CmColor-Secondary-MiddleActiveHover;
 @CmColor-BorderActive: @CmColor-Primary-MiddleActive;
+@CmColor-BorderDisabled: @CmColor-Secondary-LightActive;
 
 // /* ************************************************ */
 // /* ******* FONT ******* */
@@ -283,19 +288,6 @@
 @Cm-colorSecondary: hsl(0, 0, 95%);
 @Cm-colorSecondaryHover: lighten(@Cm-colorSecondary, 3%);
 
-@Cm-colorLight-background: #fafafa;
-@Cm-colorLight-backgroundHover: #e6e6e6;
-@Cm-colorLight-backgroundDisabled: #f0f0f0;
-@Cm-colorLight-backgroundDisabledHover: @Cm-colorLight-backgroundHover;
-@Cm-colorLight-border: #e6e6e6;
-@Cm-colorLight-borderHover: #d2d2d2;
-@Cm-colorLight-borderDisabled: @Cm-colorLight-border;
-@Cm-colorLight-borderDisabledHover: @Cm-colorLight-borderHover;
-
-@Cm-background-light: @Cm-colorLight-background;
-@Cm-background-dark: @Cm-colorLight-backgroundDisabled;
-@Cm-background-themeLight: lighten(@Cm-color, 42%);
-
 // /* ************************************************ */
 // /* ******* COMMON ******* */
 // /* ************************************************ */
@@ -316,6 +308,7 @@
 @CmForm-FieldIndent: @CmIndent-Small;
 @CmForm-FieldTitleWidth: 150px;
 @CmForm-FieldInnerIndent: @CmForm-FieldIndent / 2;
+@CmForm-FieldSmallWidth: 210px;
 @CmForm-ButtonsIndent: @CmIndent-XXSmall;
 @CmForm-IconsIndent: @CmIndent-XXSmall;
 @CmForm-ImageBox-ButtonWidth: 100px;
@@ -327,6 +320,15 @@
 
 @CmCounter-Size: @CmSize-Small;
 @CmCounter-Radius: @CmCounter-Size;
+
+// /* *** DRAG AND DROP *** */
+
+@CmDraganddrop-AreaPadding: @CmIndent-XSmall;
+@CmDraganddrop-AreaBorderRadius: @CmBorder-Radius;
+@CmDraganddrop-AreaBackgroundActive: fade(@CmColor-Primary-DarkDefault, 12%);
+@CmDraganddrop-AreaBackgroundHighlight: fade(@CmColor-Primary-DarkDefault, 5%);
+@CmDraganddrop-AreaActiveBorder: 1px dashed @CmColor-Primary-DarkDefault;
+@CmDraganddrop-AreaHighlightBorder: 1px dashed fade(@CmColor-Primary-DarkDefault, 30%);
 
 // /* ************************************************ */
 // /* ******* PARTS ******* */
@@ -344,9 +346,9 @@
 
 // /* *** IMAGE *** */
 
-@PtImage-background: @Cm-background-light;
-@PtImage-titlePaddingTop: 4px;
-@PtImage-textColor: #ffffff;
+@PtImage-Background: @CmColor-Secondary-LightSelected;
+@PtImage-TitlePaddingTop: @CmIndent-XXXSmall;
+@PtImage-Color: @CmFont-UI-ColorOpposite;
 
 // /* *** ITEM BOX *** */
 
@@ -367,32 +369,22 @@
 // /* *** GRID *** */
 
 @PtGrid-Indent: @CmIndent-Medium / 2;
-@PtGrid-Indents: 0px @CmIndent-XXXSmall @CmIndent-XXSmall @CmIndent-XSmall @CmIndent-Small @CmIndent-Medium @CmIndent-Large @CmIndent-XLarge @CmIndent-XXLarge;
+@PtGrid-Indents: @CmIndents;
 
 // /* *** SELECTABLE*** */
 
-@pt__selectable-background-hover: @Cm-colorSecondary;
-@pt__selectable-border-color-active: @Cm-colorActive;
+@PtSelectable-background-hover: @Cm-colorSecondary;
+@PtSelectable-border-color-active: @Cm-colorActive;
 
 // /* *** TOOLBAR *** */
 
-@PtToolbar-groupIndent: @CmIndent-Small;
-@PtToolbar-itemIndent: @CmIndent-XXXSmall;
+@PtToolbar-GroupIndent: @CmIndent-Small;
+@PtToolbar-ItemIndent: @CmIndent-XXXSmall;
 @PtToolbar-XSmall: 70px;
 @PtToolbar-Small: 100px;
 @PtToolbar-Medium: 150px;
 @PtToolbar-Large: 250px;
 @PtToolbar-XLarge: 350px;
-
-// /* *** DRAG AND DROP *** */
-
-@CmDraganddrop-areaPadding: @CmIndent-XSmall;
-@CmDraganddrop-areaBorderRadius: @CmBorder-Radius;
-@CmDraganddrop-areaBackgroundActive: fade(@Cm-color, 12%);
-@CmDraganddrop-areaBackgroundHighlight: fade(@Cm-color, 5%);
-@CmDraganddrop-areaActiveBorder: 1px dashed @Cm-color;
-@CmDraganddrop-areaHighlightBorder: 1px dashed fade(@Cm-color, 30%);
-@CmDraganddrop-dropDuration: 400ms;
 
 // /* *** LINE SHARE *** */
 
@@ -400,8 +392,8 @@
 
 // /* *** BOX *** */
 
-@CmBoxContent-Indent: @CmIndent-XLarge;
-@CmBoxContent-Indents: 0px @CmIndent-XXXSmall @CmIndent-XXSmall @CmIndent-XSmall @CmIndent-Small @CmIndent-Medium @CmIndent-Large @CmIndent-XLarge @CmIndent-XXLarge;
+@PtBoxContent-Indent: @CmIndent-XLarge;
+@PtBoxContent-Indents: @CmIndents;
 
 // /* *** GRIDLIST *** */
 
@@ -411,77 +403,64 @@
 @PtGridlist-PaddingInner: 6px;
 
 // /* ************************************************ */
+// /* ******* LAYOUTS ******* */
+// /* ************************************************ */
+
+// /* *** COLLAPSIBLE *** */
+
+@LtCollapsible-SidebarWidth: 350px;
+@LtCollapsible-Duration: 500ms;
+
+// /* *** FORUM *** */
+
+@LtForum-AdaptiveFrom: @CmScreen-Mobile;
+@LtForum-PostBackground: @CmColor-Secondary-LightSelected;
+@LtForum-PostBackgroundFeatured: @CmColor-Primary-LightSelected;
+@LtForum-PostTitleBackground: @CmColor-Secondary-LightActive;
+@LtForum-PostLeftColumnSize: 150px;
+
+// /* *** PROFILE *** */
+
+@LtProfile-LeftColumn: 150px;
+
+// /* ************************************************ */
 // /* ******* COMPONENTS ******* */
 // /* ************************************************ */
 
-// /* *** COLLAPSIBLE LAYOUT *** */
-
-@ComCollapsibleLayout-sidebarWidth: 350px;
-@ComCollapsibleLayout-duration: 500ms;
-
 // /* *** CALENDAR *** */
 
-@ComCalendar-cellHeight: 21px;
-@ComCalendar-cellBorderSize: 1px;
-@ComCalendar-cellBorderRadius: min(@CmBorder-Radius, 2px);
-@ComCalendar-todayBorderSize: 2px;
+@ComCalendar-CellHeight: 21px;
+@ComCalendar-CellBorderRadius: min(@CmBorder-Radius, 2px);
 
-@ComCalendar-outer-background: transparent;
-@ComCalendar-outer-backgroundHover: transparent;
-@ComCalendar-outer-borderSize: 0;
-@ComCalendar-outer-border: transparent;
-@ComCalendar-outer-borderHover: transparent;
+@ComCalendar-Outer-Background: transparent;
+@ComCalendar-Outer-BackgroundHover: transparent;
+@ComCalendar-Outer-BorderSize: 0;
+@ComCalendar-Outer-Border: transparent;
+@ComCalendar-Outer-BorderHover: transparent;
 
-@ComCalendar-inner-background: @Cm-colorLight-background;
-@ComCalendar-inner-backgroundHover: @Cm-colorLight-backgroundHover;
-@ComCalendar-inner-borderSize: 1px;
-@ComCalendar-inner-border: @Cm-colorLight-border;
-@ComCalendar-inner-borderHover: @Cm-colorLight-borderHover;
+@ComCalendar-Inner-Background: @CmColor-Secondary-LightSelected;
+@ComCalendar-Inner-BackgroundHover: @CmColor-Secondary-LightHover;
+@ComCalendar-Inner-BorderSize: 1px;
+@ComCalendar-Inner-Border: @CmColor-Secondary-LightActive;
+@ComCalendar-Inner-BorderHover: @CmColor-Secondary-LightActiveHover;
 
-@ComCalendar-weekend-background: @Cm-colorLight-backgroundDisabled;
-@ComCalendar-weekend-backgroundHover: @Cm-colorLight-backgroundDisabledHover;
-@ComCalendar-weekend-borderSize: @ComCalendar-inner-borderSize;
-@ComCalendar-weekend-border: @Cm-colorLight-borderDisabled;
-@ComCalendar-weekend-borderHover: @Cm-colorLight-borderDisabledHover;
+@ComCalendar-Weekend-Background: @CmColor-Secondary-LightActive;
+@ComCalendar-Weekend-BackgroundHover: @CmColor-Secondary-LightActiveHover;
+@ComCalendar-Weekend-BorderSize: @ComCalendar-Inner-BorderSize;
+@ComCalendar-Weekend-Border: @CmColor-Secondary-LightActive;
+@ComCalendar-Weekend-BorderHover: @CmColor-Secondary-LightActiveHover;
 
-@ComCalendar-today-background: '';
-@ComCalendar-today-backgroundHover: @Cm-colorActive;
-@ComCalendar-today-borderSize: 2px;
-@ComCalendar-today-border: @Cm-color;
-@ComCalendar-today-borderHover: @Cm-color;
+@ComCalendar-Today-Background: '';
+@ComCalendar-Today-BackgroundHover: @CmColor-Primary-LightActiveHover;
+@ComCalendar-Today-BorderSize: 2px;
+@ComCalendar-Today-Border: @CmColor-Primary-DarkDefault;
+@ComCalendar-Today-BorderHover: @CmColor-Primary-DarkHover;
 
-@ComCalendar-active-background: @Cm-colorActive;
-@ComCalendar-active-backgroundHover: @Cm-colorActiveHover;
-@ComCalendar-active-borderSize: @ComCalendar-inner-borderSize;
-@ComCalendar-active-border: @Cm-color;
-@ComCalendar-active-borderHover: @Cm-color;
-
-// /* *** DATEPICKER *** */
-
-@ComDatepicker-width: 210px;
-@ComDatepicker-tooltipWidth: @ComDatepicker-width;
-
-
-// /* *** TIME SELECT *** */
-
-@ComTimeSelect-width: 210px;
-@ComTimeSelect-indent: @CmIndent-Medium;
-
-// /* *** COLOR PALETTE *** */
-
-@ComColorPalette-Size: 200px;
-
-// /* *** COLOR PICKER *** */
-
-@ComColorPicker-Width: @ComDatepicker-width;
-
-// /* *** DIALOG *** */
-
-@ComDialog-indent: @CmIndent-Medium;
-@ComDialog-titleIndent: @CmIndent-XSmall;
-
-@ComDialog-themeBlack-background: @CmColor-Gallery;
-@ComDialog-themeBlack-titleColor: #ffffff;
+@ComCalendar-Active-Background: @CmColor-Primary-LightActive;
+@ComCalendar-Active-BackgroundHover: @CmColor-Primary-LightActiveHover;
+@ComCalendar-Active-BorderSize: @ComCalendar-Inner-BorderSize;
+@ComCalendar-Active-Border: @CmColor-Primary-DarkDefault;
+@ComCalendar-Active-BorderHover: @CmColor-Primary-DarkHover;
 
 // /* *** COLUMNS *** */
 
@@ -491,18 +470,52 @@
 @ComColumns-minHeight: 64px;
 @ComColumns-backgroundHover: rgba(0, 0, 0, 0.01);
 
+@ComColumns-Drag-DefaultBackground: @CmColor-Secondary-LightActive;
+@ComColumns-Drag-DefaultBorder: @CmColor-Border;
+
+@ComColumns-Drag-HoverBackground: @CmColor-Secondary-LightHover;
+@ComColumns-Drag-HoverBorder: @CmColor-BorderHover;
+
+@ComColumns-Drag-ActiveBackground: @CmColor-Primary-LightActive;
+@ComColumns-Drag-ActiveBorder: @CmColor-Primary-MiddleActive;
+
+// /* *** DATEPICKER *** */
+
+@ComDatepicker-Width: @CmForm-FieldSmallWidth;
+@ComDatepicker-TooltipWidth: @ComDatepicker-Width;
+
+// /* *** TIME SELECT *** */
+
+@ComTimeSelect-Width: @CmForm-FieldSmallWidth;
+@ComTimeSelect-Indent: @CmIndent-Medium;
+
+// /* *** COLOR PALETTE *** */
+
+@ComColorPalette-Size: 200px;
+
+// /* *** COLOR PICKER *** */
+
+@ComColorPicker-Width: @CmForm-FieldSmallWidth;
+
+// /* *** DIALOG *** */
+
+@ComDialog-Indent: @CmIndent-Medium;
+@ComDialog-TitleIndent: @CmIndent-XSmall;
+
+@ComDialog-Black-Background: @CmColor-Gallery;
+@ComDialog-Black-TitleColor: @CmFont-UI-ColorOpposite;
+
 // /* *** TABSET *** */
 
 @ComTabset-adaptiveFrom: @CmScreen-Mobile;
-@ComTabset-borderColor: @CmColor-Border;
-@ComTabset-borderRadius: @CmBorder-Radius;
-@ComTabset-tabsHeight: @CmForm-FieldHeight;
-@ComTabset-tabsIndent: @CmIndent-XXXSmall;
-@ComTabset-tabsBackground: @Cm-colorSecondary;
-@ComTabset-tabsBackgroundHover: #ffffff;
-@ComTabset-tabsBackgroundActive: #ffffff;
-@ComTabset-tabsTitle: @Cm-colorSecondary;
-@ComTabset-tabsColor: @CmFont-Base-Color;
+@ComTabset-BorderColor: @CmColor-Border;
+@ComTabset-BorderRadius: @CmBorder-Radius;
+@ComTabset-Tabs-Height: @CmForm-FieldHeight;
+@ComTabset-Tabs-Indent: @CmIndent-XXXSmall;
+@ComTabset-Tabs-Background: @CmColor-Secondary-LightSelected;
+@ComTabset-Tabs-BackgroundHover: @CmColor-Secondary-LightHover;
+@ComTabset-Tabs-BackgroundActive: @CmColor-Secondary-LightDefault;
+@ComTabset-Tabs-Title: @CmColor-Secondary-LightSelected;
 
 // /* *** TOGGLE BOX *** */
 
@@ -511,18 +524,18 @@
 @ComToggleBox-sizeMedium: @CmSize-Medium;
 @ComToggleBox-sizeUI: @CmSize-Medium;
 @ComToggleBox-contentBorder: 1px solid #ffffff;
-@ComToggleBox-contentBackground: @Cm-background-light;
+@ComToggleBox-contentBackground: @CmColor-Secondary-LightSelected;
 @ComToggleBox-contentSpaceBorder: @ComToggleBox-contentBorder;
-@ComToggleBox-titleBackground: @Cm-background-dark;
+@ComToggleBox-titleBackground: @CmColor-Secondary-LightActive;
 
 // /* *** SELECT *** */
 
-@ComSelect-listCount: 7;
-@ComSelect-multiListCount: 5;
+@ComSelect-ListCount: 7;
+@ComSelect-MultiListCount: 5;
 
 // /* *** AUTOCOMPLETE *** */
 
-@ComAC-listCount: 7;
+@ComAutocomplete-ListCount: 7;
 
 // /* *** TAGS INPUT *** */
 
@@ -532,29 +545,13 @@
 
 // /* *** GALLERY *** */
 
-@ComGallery-background: @CmColor-Gallery;
+@ComGallery-Background: @CmColor-Gallery;
 
 // /* *** GALLERY CONTROLS *** */
 
-@ComGalleryControls-buttonSize: @CmSize-XSmall;
+@ComGalleryControls-ButtonSize: @CmSize-XSmall;
 
 // /* *** GALLERY LAYOUT *** */
 
-@ComGalleryLayout-arrowWidth: @CmIndent-Medium;
-@ComGalleryLayout-sizesCount: 12;
-
-// /* *** GALLERY POPUP *** */
-
-@ComGalleryPopup-indentTop: 72px;
-
-// /* *** FORUM *** */
-
-@ComForum-adaptiveFrom: @CmScreen-Mobile;
-@ComForum-postBackground: @Cm-background-light;
-@ComForum-postBackgroundFeatured: @Cm-background-themeLight;
-@ComForum-postTitleBackground: @Cm-background-dark;
-@ComForum-postLeftColumnSize: 150px;
-
-// /* *** PROFILE *** */
-
-@ComProfile-leftColumn: 150px;
+@ComGalleryLayout-ArrowWidth: @CmIndent-Medium;
+@ComGalleryLayout-SizesCount: 12;

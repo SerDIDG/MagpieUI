@@ -20,7 +20,7 @@ cm.define('Com.GalleryPopup', {
             'autoOpen' : false,
             'titleOverflow' : true,
             'closeOnBackground' : true,
-            'className' : 'com-gallery-popup'
+            'className' : 'com__gallery-popup'
         },
         'Com.Gallery' : {
             'showCaption' : false
@@ -42,7 +42,7 @@ function(params){
 
     var render = function(){
         // Structure
-        nodes['container'] = cm.Node('div', {'class' : 'com-gallery-preview bottom'},
+        nodes['container'] = cm.Node('div', {'class' : 'com__gallery-preview bottom'},
             nodes['galleryContainer'] = cm.Node('div', {'class' : 'inner'})
         );
         // Set aspect ration

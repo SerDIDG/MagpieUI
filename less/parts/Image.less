@@ -1,7 +1,7 @@
 /* ******* PART: IMAGE BOX ******* */
 
 .pt__image {
-    @title-bottom: (@PtImage-titlePaddingTop * 2) + @CmFont-Base-LineHeight;
+    @title-bottom: (@PtImage-TitlePaddingTop * 2) + @CmFont-Base-LineHeight;
 
     position: relative;
     .mx__user-select(none);
@@ -36,7 +36,7 @@
             }
 
             .cm__tags {
-                color: @PtImage-textColor;
+                color: @PtImage-Color;
             }
         }
 
@@ -61,7 +61,7 @@
             .inner {
                 .cm__font;
                 .cm__text-overflow;
-                padding: @PtImage-titlePaddingTop 8px;
+                padding: @PtImage-TitlePaddingTop 8px;
                 font-weight: @CmFont-Base-BoldWeight;
                 color: #fff;
 
@@ -152,7 +152,7 @@
     }
 
     &.is-centered {
-        background-color: @PtImage-background;
+        background-color: @PtImage-Background;
 
         > .inner {
             height: 100%;

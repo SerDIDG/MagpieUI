@@ -80,7 +80,7 @@ function(params){
             minutes = 0,
             seconds = 0;
         /* *** STRUCTURE *** */
-        nodes['container'] = cm.Node('div', {'class' : 'com-timeselect'},
+        nodes['container'] = cm.Node('div', {'class' : 'com__timeselect'},
             nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
             nodes['inner'] = cm.Node('div', {'class' : 'inner'})
         );

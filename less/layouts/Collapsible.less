@@ -7,17 +7,17 @@
     .mx__position(0,0,0,0);
 
     > .sidebar {
-        width: @ComCollapsibleLayout-sidebarWidth;
+        width: @LtCollapsible-SidebarWidth;
         height: 100%;
         position: relative;
         z-index: 2;
         overflow: hidden;
         background: #ffffff;
         box-shadow: @CmUI-Shadow;
-        .mx__transition(width, @ComCollapsibleLayout-duration);
+        .mx__transition(width, @LtCollapsible-Duration);
 
         > .inner {
-            width: @ComCollapsibleLayout-sidebarWidth;
+            width: @LtCollapsible-SidebarWidth;
             position: absolute;
 
             > .title {
@@ -32,7 +32,7 @@
                     position: absolute;
                     top: 14px;
                     cursor: pointer;
-                    .mx__transition(-webkit-transform -ms-transform transform, @ComCollapsibleLayout-duration);
+                    .mx__transition(-webkit-transform -ms-transform transform, @LtCollapsible-Duration);
                 }
             }
 
@@ -41,7 +41,7 @@
                 padding: @CmIndent-XSmall;
                 position: absolute;
                 background: #ffffff;
-                .mx__transition(opacity, @ComCollapsibleLayout-duration);
+                .mx__transition(opacity, @LtCollapsible-Duration);
                 .mx__position(50px, 0, 0, 0);
             }
         }

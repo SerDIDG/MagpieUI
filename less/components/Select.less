@@ -31,12 +31,12 @@
 
 /* Tooltip */
 
-.com-tooltip {
+.com__tooltip {
     &.com-select-tooltip {
         .mx__user-select(none);
 
         > .inner > .scroll {
-            max-height: @ComSelect-listCount * (@CmFont-Base-LineHeight + @PtListingItems-Indent + @PtListingItems-PaddingY * 2) - @PtListingItems-Indent;
+            max-height: @ComSelect-ListCount * (@CmFont-Base-LineHeight + @PtListingItems-Indent + @PtListingItems-PaddingY * 2) - @PtListingItems-Indent;
         }
     }
 }
@@ -54,7 +54,7 @@
     }
 
     .pt__listing-items > ul {
-        max-height: @ComSelect-multiListCount * (@CmFont-Base-LineHeight + @PtListingItems-Indent + @PtListingItems-PaddingY * 2) - @PtListingItems-Indent;
+        max-height: @ComSelect-MultiListCount * (@CmFont-Base-LineHeight + @PtListingItems-Indent + @PtListingItems-PaddingY * 2) - @PtListingItems-Indent;
     }
 
     &.disabled {

@@ -42,7 +42,7 @@ Com['Tooltip'] = function(o){
 
     var render = function(){
         // Structure
-        nodes['container'] = cm.Node('div', {'class' : 'com-tooltip'},
+        nodes['container'] = cm.Node('div', {'class' : 'com__tooltip'},
             nodes['inner'] = cm.Node('div', {'class' : 'inner'},
                 nodes['content'] = cm.Node('div', {'class' : 'scroll'})
             )

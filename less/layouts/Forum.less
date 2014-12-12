@@ -91,7 +91,7 @@
 }
 
 .lt__forum-post {
-    background: @ComForum-postBackground;
+    background: @LtForum-PostBackground;
     border-radius: @CmBorder-Radius;
 
     .entry {
@@ -104,12 +104,12 @@
         table-layout: fixed;
 
         > .l {
-            width: @ComForum-postLeftColumnSize;
+            width: @LtForum-PostLeftColumnSize;
             position: relative;
             padding: @CmIndent-XSmall;
             display: table-cell;
             vertical-align: top;
-            background: @ComForum-postTitleBackground;
+            background: @LtForum-PostTitleBackground;
             border-radius: @CmBorder-Radius;
 
             &:after {
@@ -120,7 +120,7 @@
                 content: '';
                 border-style: solid;
                 border-width: 8px 12px 8px 0;
-                border-color: transparent @ComForum-postBackground transparent transparent;
+                border-color: transparent @LtForum-PostBackground transparent transparent;
                 .mx__position(@CmIndent-XSmall, 0, auto, auto);
             }
         }
@@ -135,7 +135,7 @@
                 color: @CmFont-UI-H4-Color;
             }
 
-            .pt__box__editable {
+            .pt__box-editable {
                 .cm__font--hint;
                 margin: 0;
                 color: @CmFont-UI-H4-Color;
@@ -154,12 +154,12 @@
     }
 
     &.is-featured {
-        background: @ComForum-postBackgroundFeatured;
+        background: @LtForum-PostBackgroundFeatured;
 
         > .inner {
             > .l {
                 &:after {
-                    border-color: transparent @ComForum-postBackgroundFeatured transparent transparent;
+                    border-color: transparent @LtForum-PostBackgroundFeatured transparent transparent;
                 }
             }
         }
@@ -168,7 +168,7 @@
 
 /* ******* COMPONENT: FORUM: ADAPTIVE ******* */
 
-@media only screen and (max-width : @ComForum-adaptiveFrom) {
+@media only screen and (max-width : @LtForum-AdaptiveFrom) {
 
     html.is-adaptive {
         .lt__forum-post {

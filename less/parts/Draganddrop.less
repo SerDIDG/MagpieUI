@@ -23,7 +23,7 @@
 
 .cm-draganddrop-area {
     min-height: @CmIndent-Medium;
-    padding: @CmDraganddrop-areaPadding;
+    padding: @CmDraganddrop-AreaPadding;
     position: relative;
 
     &.is-available {
@@ -34,23 +34,23 @@
         }
 
         &.is-highlight {
-            background-color: @CmDraganddrop-areaBackgroundHighlight;
-            border-radius: @CmDraganddrop-areaBorderRadius;
+            background-color: @CmDraganddrop-AreaBackgroundHighlight;
+            border-radius: @CmDraganddrop-AreaBorderRadius;
 
             &:before {
                 position: absolute;
                 display: block;
                 content: '';
-                border: @CmDraganddrop-areaHighlightBorder;
-                border-radius: @CmDraganddrop-areaBorderRadius;
+                border: @CmDraganddrop-AreaHighlightBorder;
+                border-radius: @CmDraganddrop-AreaBorderRadius;
                 .mx__position(-1px,-1px,-1px,-1px);
             }
 
             &.is-active {
-                background-color: @CmDraganddrop-areaBackgroundActive;
+                background-color: @CmDraganddrop-AreaBackgroundActive;
 
                 &:before {
-                    border: @CmDraganddrop-areaActiveBorder;
+                    border: @CmDraganddrop-AreaActiveBorder;
                 }
 
                 .cm-draganddrop-area {

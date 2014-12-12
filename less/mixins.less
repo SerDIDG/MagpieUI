@@ -91,17 +91,19 @@
 
 // /* ******* COMMON ******* */
 
-.mx__background__color (@background, @colorDark, @colorLight) when (alpha(@background) = 1) and (lightness(@background) >= 60%) {
+.mx__only__color (@background, @colorDark, @colorLight) when (alpha(@background) = 1) and (lightness(@background) >= 60%) {
     color: @colorDark;
 }
-.mx__background__color (@background, @colorDark, @colorLight) when (alpha(@background) = 1) and (lightness(@background) < 60%) {
+.mx__only__color (@background, @colorDark, @colorLight) when (alpha(@background) = 1) and (lightness(@background) < 60%) {
     color: @colorLight;
 }
-.mx__background__color (@background, @colorDark, @colorLight) when (alpha(@background) = 0) {
+.mx__only__color (@background, @colorDark, @colorLight) when (alpha(@background) = 0) {
     color: @colorDark;
 }
+
 .mx__background__color (@background, @colorDark, @colorLight) {
     background: @background;
+    .mx__only__color(@background, @colorDark, @colorLight);
 }
 
 // /* ******* VENDORS ******* */

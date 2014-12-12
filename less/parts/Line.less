@@ -23,14 +23,17 @@
     }
 
     .status {
+        &.danger,
         &.error {
             color: @CmColor-Danger-DarkDefault;
         }
 
+        &.success,
         &.valid {
             color: @CmColor-Success-DarkDefault;
         }
 
+        &.warning,
         &.pending {
             color: @CmColor-Warning-DarkDefault;
         }
@@ -77,14 +80,14 @@
                         .mx__transition(opacity, @CmUI-Transition-DurationReverse);
                     }
 
-                    .label,
                     .count {
-                        background-color: @Cm-colorLight-backgroundHover;
+                        background-color: @CmColor-Primary-LightHover;
                         .mx__transition(background, @CmUI-Transition-DurationReverse);
                     }
 
                     .label {
-                        background-color: @Cm-colorActive;
+                        background-color: @CmColor-Primary-LightActiveHover;
+                        .mx__transition(background, @CmUI-Transition-DurationReverse);
                     }
                 }
             }
@@ -144,12 +147,12 @@
     }
 
     .label {
-        background: @Cm-colorLight-backgroundHover;
+        background: @CmColor-Secondary-LightActive;
         border-radius: @CmBorder-Radius 0 0 @CmBorder-Radius;
     }
 
     .count {
-        background: @Cm-colorLight-background;
+        background: @CmColor-Secondary-LightSelected;
         border-radius: 0 @CmBorder-Radius @CmBorder-Radius 0;
     }
 
