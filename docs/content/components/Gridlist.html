@@ -264,43 +264,71 @@
     </li>
 
     <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
-        <h2>Render actions:</h2>
-        <textarea class="cm-codebox cm-autoresize" readonly>
+        <div class="pt__box-content">
+            <h2>Combine two keys to render link cell:</h2>
+            <textarea class="cm-codebox cm-autoresize" readonly>
 new Com.Gridlist({
     'data' : [
-        {'id' : '1', 'name' : '123', 'descr' : 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'},
-        {'id' : '2', 'name' : '6564636536', 'descr' : 'Aliquam fringilla congue quam, sed porttitor lectus.'},
-        {'id' : '3', 'name' : '566464', 'descr' : 'Suspendisse commodo suscipit vulputate.'}
+        {'id' : '1', 'name' : 'User Userberg', 'url' : 'http://google.com'},
+        {'id' : '2', 'name' : 'User Userbergovich', 'url' : 'http://facebook.com'},
+        {'id' : '3', 'name' : 'User Userbergini', 'url' : 'http://twitter.com'}
     ],
     'cols' : [
         {'type' : 'number', 'key' : 'id', 'width' : '48', 'title' : 'ID'},
-        {'type' : 'number', 'key' : 'name', 'width' : 'auto', 'title' : 'Name'},
-        {'type' : 'actions', 'width' : '156', 'title' : 'Actions', 'actions' : [
-            {'label' : 'Add', 'attr' : {}},
-            {'label' : 'Edit', 'attr' : {}},
-            {'label' : 'Remove', 'attr' : {}}
+        {'type' : 'url', 'key' : 'name', 'urlKey' : 'url', 'width' : 'auto', 'title' : 'User'}
+    ]
+});</textarea>
+            <br>
+            <div data-element="gridlist" data-config='{
+                "data" : [
+                     {"id" : "1", "name" : "User Userberg", "url" : "http://google.com"},
+                     {"id" : "2", "name" : "User Userbergovich", "url" : "http://facebook.com"},
+                     {"id" : "3", "name" : "User Userbergini", "url" : "http://twitter.com"}
+                 ],
+                 "cols" : [
+                     {"type" : "number", "key" : "id", "width" : "48", "title" : "ID"},
+                     {"type" : "url", "key" : "name", "urlKey" : "url", "width" : "auto", "title" : "User"}
+                 ]
+            }'></div>
+        </div>
+
+        <div class="pt__box-content">
+            <h2>Render actions:</h2>
+            <textarea class="cm-codebox cm-autoresize" readonly>
+new Com.Gridlist({
+    'data' : [
+        {'id' : '1', 'name' : 'Lorem 1', 'descr' : 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'},
+        {'id' : '2', 'name' : 'Lorem 2', 'descr' : 'Aliquam fringilla congue quam, sed porttitor lectus.'},
+        {'id' : '3', 'name' : 'Lorem 3', 'descr' : 'Suspendisse commodo suscipit vulputate.'}
+    ],
+    'cols' : [
+        {'type' : 'number', 'key' : 'id', 'width' : '48', 'title' : 'ID'},
+        {'type' : 'text', 'key' : 'name', 'width' : '20%', 'title' : 'Name'},
+        {'type' : 'text', 'key' : 'descr', 'width' : 'auto', 'title': 'Description'},
+        {'type' : 'actions', 'width' : '128', 'title' : 'Actions', 'actions' : [
+            {'label' : 'Edit', 'attr' : {'href' : '/edit/%id%'}, 'events' : {/* DOM Events */}},
+            {'label' : 'Remove', 'attr' : {'href' : '/remove/%id%'}, 'events' : {/* DOM Events */}}
         ]}
     ]
 });</textarea>
-        <br>
-        <div data-element="gridlist" data-config='{
-            "data" : [
-                {"id" : "1", "name" : "123", "descr" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit."},
-                {"id" : "2", "name" : "6564636536", "descr" : "Aliquam fringilla congue quam, sed porttitor lectus."},
-                {"id" : "3", "name" : "566464", "descr" : "Suspendisse commodo suscipit vulputate."}
-            ],
-            "cols" : [
-                {"type" : "number", "key" : "id", "width" : "48", "title" : "ID"},
-                {"type" : "number", "key" : "name", "width" : "auto", "title" : "Name"},
-                {"type" : "actions", "width" : "156", "title" : "Actions", "actions" : [
-                    {"label" : "Add", "attr" : {}},
-                    {"label" : "Edit", "attr" : {}},
-                    {"label" : "Remove", "attr" : {}}
-                ]}
-            ]
-        }'></div>
-        
-        <hr>
+            <br>
+            <div data-element="gridlist" data-config='{
+                "data" : [
+                    {"id" : "1", "name" : "Lorem 1", "descr" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit."},
+                    {"id" : "2", "name" : "Lorem 2", "descr" : "Aliquam fringilla congue quam, sed porttitor lectus."},
+                    {"id" : "3", "name" : "Lorem 3", "descr" : "Suspendisse commodo suscipit vulputate."}
+                ],
+                "cols" : [
+                    {"type" : "number", "key" : "id", "width" : "48", "title" : "ID"},
+                    {"type" : "text", "key" : "name", "width" : "20%", "title" : "Name"},
+                    {"type" : "text", "key" : "descr", "width" : "auto", "title" : "Description"},
+                    {"type" : "actions", "width" : "128", "title" : "Actions", "actions" : [
+                        {"label" : "Edit", "attr" : {"href" : "/edit/%id%"}},
+                        {"label" : "Remove", "attr" : {"href" : "/remove/%id%"}}
+                    ]}
+                ]
+            }'></div>
+        </div>
         
         <h2>Dynamic gridlist:</h2>
         <div data-element="gridlist-all"></div>

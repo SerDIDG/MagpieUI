@@ -112,7 +112,7 @@ function(params){
         if(!that.params['pagination']){
             cm.remove(that.nodes['table']);
         }
-        // API onRenderEnd event
+        // API onRenderStart event
         that.triggerEvent('onRenderStart', {
             'container' : container,
             'page' : page
@@ -152,22 +152,22 @@ function(params){
     var renderTh = function(item, i){
         // Config
         item = that.params['cols'][i] = cm.merge({
-            'width' : 'auto',           // number | % | auto
-            'access' : true,            // Render column if is accessible
-            'type' : 'text',		    // text | number | url | date | html | icon | checkbox | empty | actions
-            'key' : '',                 // Data array key
-            'title' : '',               // Table th title
-            'sort' : that.params['sort'],    // Sort this column or not
-            'textOverflow' : false,     // Overflow long text to single line
-            'class' : '',		        // Icon css class, for type="icon"
-            'target' : '_blank',        // Link target, for type="url"
-            'showTitle' : false,        // Show title on hover
-            'titleText' : '',           // Alternative title text, if not specified - will be shown key text
-            'altText' : '',             // Alternative column text
-            'urlKey' : false,           // Alternative link href, for type="url"
-            'actions' : [],             // Render actions menu, for type="actions"
-            'onClick' : false,          // Cell click handler
-            'onRender' : false          // Cell onRender handler
+            'width' : 'auto',               // number | % | auto
+            'access' : true,                // Render column if is accessible
+            'type' : 'text',		        // text | number | url | date | html | icon | checkbox | empty | actions
+            'key' : '',                     // Data array key
+            'title' : '',                   // Table th title
+            'sort' : that.params['sort'],   // Sort this column or not
+            'textOverflow' : false,         // Overflow long text to single line
+            'class' : '',		            // Icon css class, for type="icon"
+            'target' : '_blank',            // Link target, for type="url"
+            'showTitle' : false,            // Show title on hover
+            'titleText' : '',               // Alternative title text, if not specified - will be shown key text
+            'altText' : '',                 // Alternative column text
+            'urlKey' : false,               // Alternative link href, for type="url"
+            'actions' : [],                 // Render actions menu, for type="actions"
+            'onClick' : false,              // Cell click handler
+            'onRender' : false              // Cell onRender handler
         }, item);
         item['nodes'] = {};
         // Check access
@@ -245,7 +245,7 @@ function(params){
     };
 
     var renderCell = function(col, item){
-        var myNodes = {},
+        var nodes = {},
             text,
             title,
             href;
@@ -255,57 +255,57 @@ function(params){
             title = cm.isEmpty(col['titleText'])? text : col['titleText'];
             // Structure
             item['nodes']['container'].appendChild(
-                myNodes['container'] = cm.Node('td')
+                nodes['container'] = cm.Node('td')
             );
             // Text overflow
             if(col['textOverflow']){
-                myNodes['inner'] = cm.Node('div', {'class' : 'inner'});
-                myNodes['container'].appendChild(myNodes['inner']);
+                nodes['inner'] = cm.Node('div', {'class' : 'inner'});
+                nodes['container'].appendChild(nodes['inner']);
             }else{
-                myNodes['inner'] = myNodes['container'];
+                nodes['inner'] = nodes['container'];
             }
             // Insert value by type
             switch(col['type']){
                 case 'number' :
-                    myNodes['inner'].innerHTML = cm.splitNumber(text);
+                    nodes['inner'].innerHTML = cm.splitNumber(text);
                     break;
 
                 case 'date' :
                     if(that.params['dateFormat'] != that.params['visibleDateFormat']){
-                        myNodes['inner'].innerHTML = cm.dateFormat(
+                        nodes['inner'].innerHTML = cm.dateFormat(
                             cm.parseDate(text, that.params['dateFormat']),
                             that.params['visibleDateFormat']
                         );
                     }else{
-                        myNodes['inner'].innerHTML = text;
+                        nodes['inner'].innerHTML = text;
                     }
                     break;
 
                 case 'icon' :
-                    myNodes['inner'].appendChild(
-                        myNodes['node'] = cm.Node('div', {'class' : col['class']})
+                    nodes['inner'].appendChild(
+                        nodes['node'] = cm.Node('div', {'class' : col['class']})
                     );
-                    cm.addClass(myNodes['node'], 'icon linked inline');
+                    cm.addClass(nodes['node'], 'icon linked inline');
                     break;
 
                 case 'url' :
                     text = cm.decode(text);
                     href = col['urlKey'] && item['data'][col['urlKey']]? cm.decode(item['data'][col['urlKey']]) : text;
-                    myNodes['inner'].appendChild(
-                        myNodes['node'] = cm.Node('a', {'target' : col['target'], 'href' : href}, !cm.isEmpty(col['altText'])? col['altText'] : text)
+                    nodes['inner'].appendChild(
+                        nodes['node'] = cm.Node('a', {'target' : col['target'], 'href' : href}, !cm.isEmpty(col['altText'])? col['altText'] : text)
                     );
                     break;
 
                 case 'checkbox' :
-                    cm.addClass(myNodes['container'], 'control');
-                    myNodes['inner'].appendChild(
-                        myNodes['node'] = cm.Node('input', {'type' : 'checkbox'})
+                    cm.addClass(nodes['container'], 'control');
+                    nodes['inner'].appendChild(
+                        nodes['node'] = cm.Node('input', {'type' : 'checkbox'})
                     );
-                    item['nodes']['checkbox'] = myNodes['node'];
+                    item['nodes']['checkbox'] = nodes['node'];
                     if(item['isChecked']){
                         checkRow(item, false);
                     }
-                    cm.addEvent(myNodes['node'], 'click', function(){
+                    cm.addEvent(nodes['node'], 'click', function(){
                         if(!item['isChecked']){
                             checkRow(item, true);
                         }else{
@@ -315,22 +315,33 @@ function(params){
                     break;
 
                 case 'actions':
-                    myNodes['actions'] = [];
-                    myNodes['inner'].appendChild(
-                        myNodes['node'] = cm.Node('div', {'class' : ['pt__links', col['class']].join(' ')},
-                            myNodes['actionsList'] = cm.Node('ul')
+                    nodes['actions'] = [];
+                    nodes['inner'].appendChild(
+                        nodes['node'] = cm.Node('div', {'class' : ['pt__links', col['class']].join(' ')},
+                            nodes['actionsList'] = cm.Node('ul')
                         )
                     );
-                    cm.forEach(col['actions'], function(action){
-                        action = cm.merge({
+                    cm.forEach(col['actions'], function(actionItem){
+                        var actionNode;
+                        actionItem = cm.merge({
                             'label' : '',
-                            'attr' : {}
-                        }, action);
-                        myNodes['actionsList'].appendChild(
+                            'attr' : {},
+                            'events' : {}
+                        }, actionItem);
+                        cm.forEach(item['data'], function(itemValue, itemKey){
+                            cm.forEach(actionItem['attr'], function(actionAttrValue, actionAttrKey){
+                                actionItem['attr'][actionAttrKey] = actionAttrValue.replace(cm.strWrap(itemKey, '%'), itemValue);
+                            });
+                        });
+                        nodes['actionsList'].appendChild(
                             cm.Node('li',
-                                cm.Node('a', action['attr'], action['label'])
+                                actionNode = cm.Node('a', actionItem['attr'], actionItem['label'])
                             )
                         );
+                        cm.forEach(actionItem['events'], function(actionEventHandler, actionEventName){
+                            cm.addEvent(actionNode, actionEventName, actionEventHandler);
+                        });
+                        nodes['actions'].push(actionNode);
                     });
                     break;
 
@@ -338,20 +349,20 @@ function(params){
                     break;
 
                 default :
-                    myNodes['inner'].innerHTML = text;
+                    nodes['inner'].innerHTML = text;
                     break;
             }
             // onHover Title
             if(col['showTitle']){
-                if(myNodes['node']){
-                    myNodes['node'].title = title;
+                if(nodes['node']){
+                    nodes['node'].title = title;
                 }else{
-                    myNodes['inner'].title = title;
+                    nodes['inner'].title = title;
                 }
             }
             // onClick handler
             if(col['onClick']){
-                cm.addEvent(myNodes['node'] || myNodes['inner'], 'click', function(e){
+                cm.addEvent(nodes['node'] || nodes['inner'], 'click', function(e){
                     e = cm.getEvent(e);
                     cm.preventDefault(e);
                     // Column onClick event
@@ -361,13 +372,13 @@ function(params){
             // onCellRender handler
             if(col['onRender']){
                 col['onRender'](that, {
-                    'nodes' : myNodes,
+                    'nodes' : nodes,
                     'col' : col,
                     'row' : item
                 });
             }
             // Push cell to row nodes array
-            item['nodes']['cols'].push(myNodes);
+            item['nodes']['cols'].push(nodes);
         }
     };
 
