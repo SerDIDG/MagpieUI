@@ -330,7 +330,9 @@ function(params){
                         }, actionItem);
                         cm.forEach(item['data'], function(itemValue, itemKey){
                             cm.forEach(actionItem['attr'], function(actionAttrValue, actionAttrKey){
-                                actionItem['attr'][actionAttrKey] = actionAttrValue.replace(cm.strWrap(itemKey, '%'), itemValue);
+                                actionItem['attr'][actionAttrKey] = actionAttrValue
+                                    .replace(cm.strWrap(itemKey, '%'), itemValue)
+                                    .replace(cm.strWrap(itemKey, '%25'), itemValue);
                             });
                         });
                         nodes['actionsList'].appendChild(
