@@ -329,11 +329,7 @@ function(params){
                             'events' : {}
                         }, actionItem);
                         cm.forEach(item['data'], function(itemValue, itemKey){
-                            cm.forEach(actionItem['attr'], function(actionAttrValue, actionAttrKey){
-                                actionItem['attr'][actionAttrKey] = actionAttrValue
-                                    .replace(cm.strWrap(itemKey, '%'), itemValue)
-                                    .replace(cm.strWrap(itemKey, '%25'), itemValue);
-                            });
+                            actionItem['attr'] = cm.replaceDeep(actionItem['attr'], new RegExp([cm.strWrap(itemKey, '%'), cm.strWrap(itemKey, '%25')].join('|'), 'g'), itemValue);
                         });
                         nodes['actionsList'].appendChild(
                             cm.Node('li',

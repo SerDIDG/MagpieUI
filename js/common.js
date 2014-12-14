@@ -275,6 +275,18 @@ cm.sort = function(o){
     return o;
 };
 
+cm.replaceDeep = function(o, from, to){
+    var newO = cm.clone(o);
+    cm.forEach(newO, function(value, key){
+        if(typeof value == 'object'){
+            newO[key] = cm.replaceDeep(value, from, to);
+        }else{
+            newO[key] = value.replace(from, to);
+        }
+    });
+    return newO;
+};
+
 /* ******* EVENTS ******* */
 
 cm.log = (function(){
