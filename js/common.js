@@ -680,17 +680,22 @@ cm.getIFrameDOM = function(o){
 
 cm.node = cm.Node = function(){
     var args = arguments,
+        value,
         el = document.createElement(args[0]);
     if(typeof args[1] == "object" && !args[1].nodeType){
         for(var i in args[1]){
+            value = args[1][i];
+            if(typeof value == 'object'){
+                value = JSON.stringify(value);
+            }
             if(i == 'style'){
-                el.style.cssText = args[1][i];
+                el.style.cssText = value;
             }else if(i == 'class'){
-                el.className = args[1][i];
+                el.className = value;
             }else if(i == 'innerHTML'){
-                el.innerHTML = args[1][i];
+                el.innerHTML = value;
             }else{
-                el.setAttribute(i, args[1][i]);
+                el.setAttribute(i, value);
             }
         }
         i = 2;
