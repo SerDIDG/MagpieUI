@@ -251,7 +251,7 @@ function(params){
             href;
         // Check access
         if(col['access']){
-            text = typeof item['data'][col['key']] == 'undefined'? '' : item['data'][col['key']];
+            text = cm.isEmpty(item['data'][col['key']])? '' : item['data'][col['key']];
             title = cm.isEmpty(col['titleText'])? text : col['titleText'];
             // Structure
             item['nodes']['container'].appendChild(

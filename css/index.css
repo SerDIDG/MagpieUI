@@ -4504,7 +4504,7 @@ button::-moz-focus-inner {
 }
 .pt__gridlist table th {
   font-weight: 600;
-  font-size: 13px;
+  font-size: 11px;
   background-color: transparent;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -4539,7 +4539,7 @@ button::-moz-focus-inner {
   vertical-align: top;
   border-top: 1px solid transparent;
   word-wrap: break-word;
-  font-size: 13px;
+  font-size: 11px;
   background-color: transparent;
 }
 .pt__gridlist table tr:hover td {
@@ -4587,7 +4587,7 @@ button::-moz-focus-inner {
   margin: 0;
 }
 .pt__gridlist .cm-form-icons-inside .text {
-  font-size: 13px;
+  font-size: 11px;
 }
 /* ******* PARTS: GRIDLIST: ADAPTIVE ******* */
 @media only screen and (max-width: 640px) {
