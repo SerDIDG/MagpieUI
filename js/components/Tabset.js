@@ -83,9 +83,9 @@ function(params){
                 that.nodes['headerUL'] = cm.Node('ul')
             ),
             that.nodes['header-title'] = cm.Node('div', {'class' : 'com__tabset__head-title'}),
-            cm.Node('div', {'class' : 'com__tabset__head-menu cm-menu'},
+            cm.Node('div', {'class' : 'com__tabset__head-menu pt__menu'},
                 cm.Node('div', {'class' : that.params['icons']['menu']}),
-                that.nodes['headerMenuUL'] = cm.Node('ul', {'class' : 'cm-menu-dropdown'})
+                that.nodes['headerMenuUL'] = cm.Node('ul', {'class' : 'pt__menu-dropdown'})
             )
         );
         // Show tabs

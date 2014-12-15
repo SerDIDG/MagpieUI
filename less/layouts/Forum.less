@@ -33,7 +33,8 @@
 .lt__forum__cell-counter {
     width: 120px;
 
-    .line:extend(.clear all) {
+    .line {
+        .clearfix;
         text-align: right;
     }
 
@@ -75,9 +76,7 @@
     }
 
     > ul {
-        margin: 0;
-        padding: 0;
-        list-style: none;
+        .cm__list-clear;
 
         > li {
             margin: @CmIndent-Medium 0 0 0;

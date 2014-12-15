@@ -1,29 +1,29 @@
-/* ******* DRAG AND DROP ******* */
+/* ******* PARTS: DRAG AND DROP ******* */
 
-.cm-draganddrop-body,
-.cm-draganddrop-body * {
+.pt__dnd-body,
+.pt__dnd-body * {
     cursor: move !important;
     .mx__user-select(none);
 }
 
-.cm-draganddrop-helper {
+.pt__dnd-helper {
     position: fixed;
     z-index: 9000;
     .mx__user-select(none);
 }
 
-.cm-draganddrop-chassis {
+.pt__dnd-chassis {
     height: 0;
     .mx__transition(height, 0s, linear);
 }
 
-.cm-draganddrop-removable {
+.pt__dnd-removable {
     overflow: hidden;
 }
 
-.cm-draganddrop-area {
+.pt__dnd-area {
     min-height: @CmIndent-Medium;
-    padding: @CmDraganddrop-AreaPadding;
+    padding: @PtDnD-Area-Padding;
     position: relative;
 
     &.is-available {
@@ -34,26 +34,26 @@
         }
 
         &.is-highlight {
-            background-color: @CmDraganddrop-AreaBackgroundHighlight;
-            border-radius: @CmDraganddrop-AreaBorderRadius;
+            background-color: @PtDnD-Area-HighlightBackground;
+            border-radius: @PtDnD-Area-BorderRadius;
 
             &:before {
                 position: absolute;
                 display: block;
                 content: '';
-                border: @CmDraganddrop-AreaHighlightBorder;
-                border-radius: @CmDraganddrop-AreaBorderRadius;
+                border: @PtDnD-Area-HighlightBorder;
+                border-radius: @PtDnD-Area-BorderRadius;
                 .mx__position(-1px,-1px,-1px,-1px);
             }
 
             &.is-active {
-                background-color: @CmDraganddrop-AreaBackgroundActive;
+                background-color: @PtDnD-Area-ActiveBackground;
 
                 &:before {
-                    border: @CmDraganddrop-AreaActiveBorder;
+                    border: @PtDnD-Area-ActiveBorder;
                 }
 
-                .cm-draganddrop-area {
+                .pt__dnd-area {
                     background-color: rgba(255,255,255,0.4);
                 }
             }

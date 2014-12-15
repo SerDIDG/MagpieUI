@@ -50,7 +50,7 @@
             z-index: 3;
             left: 50%;
             opacity: 0;
-            background: @Cm-colorSecondary;
+            background: @PtEditable-Drag-DefaultBackground;
             border: @CmBorder-Editable;
             border-radius: @CmBorder-Radius;
             cursor: move;
@@ -66,7 +66,7 @@
             }
 
             &:hover {
-                background: @Cm-colorSecondaryHover;
+                background: @PtEditable-Drag-HoverBackground;
                 .mx__transition(all, @CmUI-Transition-DurationReverse);
             }
 
@@ -94,13 +94,13 @@
                 display: block;
                 position: relative;
                 z-index: 2;
-                background-color: @Cm-colorSecondary;
+                background-color: @PtEditable-Drag-DefaultBackground;
                 border: @CmBorder-Editable;
                 border-radius: @CmBorder-Radius;
             }
 
-            .cm-menu-dropdown {
-                .cm-menu-dropdown--base;
+            .pt__menu-dropdown {
+                .pt__menu-dropdown--base;
                 z-index: 1;
                 .mx__position(12px, 12px, auto, auto);
             }
@@ -109,11 +109,11 @@
                 z-index: 14;
 
                 .icon {
-                    background-color: @Cm-colorSecondaryHover;
+                    background-color: @PtEditable-Drag-HoverBackground;
                 }
 
-                .cm-menu-dropdown {
-                    .cm-menu-dropdown--active;
+                .pt__menu-dropdown {
+                    .pt__menu-dropdown--active;
                 }
             }
         }
@@ -150,7 +150,7 @@
 
     .active {
         > .drag {
-            background-color: @Cm-colorActive;
+            background-color: @PtEditable-Drag-ActiveBackground;
         }
     }
 }

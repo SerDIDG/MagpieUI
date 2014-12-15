@@ -39,7 +39,7 @@ Com['Columns'] = function(o){
 
     var render = function(){
         // Structure
-        nodes['container'] = cm.Node('div', {'class' : 'com-columns'},
+        nodes['container'] = cm.Node('div', {'class' : 'com__columns'},
             nodes['inner'] = cm.Node('div', {'class' : 'inner'},
                 nodes['holder'] = cm.Node('div', {'class' : 'container'})
             )
@@ -54,12 +54,12 @@ Com['Columns'] = function(o){
         var columns;
         // Collect nodes
         nodes['container'] = config['columns'];
-        nodes['inner'] = cm.getByAttr('data-com-columns', 'inner', nodes['container'])[0];
-        nodes['holder'] = cm.getByAttr('data-com-columns', 'holder', nodes['container'])[0];
+        nodes['inner'] = cm.getByAttr('data-com__columns', 'inner', nodes['container'])[0];
+        nodes['holder'] = cm.getByAttr('data-com__columns', 'holder', nodes['container'])[0];
         // Set editable class
         //cm.addClass(nodes['container'], 'is-editable');
         // Collect only first child columns
-        columns = cm.clone(cm.getByAttr('data-com-columns', 'column', nodes['holder']) || []);
+        columns = cm.clone(cm.getByAttr('data-com__columns', 'column', nodes['holder']) || []);
         columns = columns.filter(function(item){
             var past = true;
             cm.forEach(columns, function(testItem){
@@ -77,7 +77,7 @@ Com['Columns'] = function(o){
     var collectColumn = function(container){
         var item = {
             'container' : container,
-            'inner' : cm.getByAttr('data-com-columns', 'column-inner', container)[0] || cm.Node('div'),
+            'inner' : cm.getByAttr('data-com__columns', 'column-inner', container)[0] || cm.Node('div'),
             'width' : container.style.width
         };
         // Push to items array
@@ -89,7 +89,7 @@ Com['Columns'] = function(o){
             'width' : '0%'
         }, item);
         // Structure
-        item['container'] = cm.Node('div', {'class' : 'com-column'},
+        item['container'] = cm.Node('div', {'class' : 'com__column'},
             item['inner'] = cm.Node('div', {'class' : 'inner'})
         );
         // Push to items array
@@ -160,7 +160,7 @@ Com['Columns'] = function(o){
             ratio = nodes['holder'].offsetWidth / 100,
             left = ((cm.getRealX(items[i]['container']) - cm.getRealX(nodes['holder']) + items[i]['container'].offsetWidth) / ratio).toFixed(2);
         // Structure
-        chassis['node'] = cm.Node('div', {'class' : 'com-columns-chassis'},
+        chassis['node'] = cm.Node('div', {'class' : 'com__columns__chassis'},
             cm.Node('div', {'class' : 'drag'},
                 cm.Node('div', {'class' : 'icon draggable'})
             )
@@ -211,7 +211,7 @@ Com['Columns'] = function(o){
         // Add move event on document
         cm.addClass(nodes['container'], 'is-active');
         cm.addClass(current['chassis']['node'], 'is-active');
-        cm.addClass(document.body, 'com-columns-body');
+        cm.addClass(document.body, 'com__columns-body');
         cm.addEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mousemove', move);
         cm.addEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mouseup', stop);
         return true;
@@ -245,7 +245,7 @@ Com['Columns'] = function(o){
         // Remove move event from document
         cm.removeClass(nodes['container'], 'is-active');
         cm.removeClass(current['chassis']['node'], 'is-active');
-        cm.removeClass(document.body, 'com-columns-body');
+        cm.removeClass(document.body, 'com__columns-body');
         cm.removeEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mousemove', move);
         cm.removeEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mouseup', stop);
         current = null;
@@ -321,7 +321,7 @@ Com['ColumnsCollector'] = function(node){
     };
 
     var render = function(node){
-        allColumns = cm.clone((node.getAttribute('data-com-columns') == 'true') ? [node] : cm.getByAttr('data-com-columns', 'true', node));
+        allColumns = cm.clone((node.getAttribute('data-com__columns') == 'true') ? [node] : cm.getByAttr('data-com__columns', 'true', node));
         // Render columns
         cm.forEach(allColumns, function(item){
             columns = new Com.Columns({'columns' : item});

@@ -1,7 +1,9 @@
 /* ******* COMPONENT: COLUMNS ******* */
 
-.com-column {
+.com__column {
+    .display-flex;
     vertical-align: top;
+    .mx__flex(1 1 auto);
 
     > .inner {
         .mx__box-sizing(border-box);
@@ -19,7 +21,7 @@
     }
 }
 
-.com-columns-chassis {
+.com__columns__chassis {
     width: 10px;
     display: none;
     position: absolute;
@@ -56,7 +58,7 @@
         margin: 0 0 0 -1px;
         display: block;
         content: '';
-        background: @ComColumns-Drag-DefaultBackground;
+        background: @ComColumns-DragLine-DefaultBackground;
         .mx__transition(background-color, @CmUI-Transition-Duration);
         .mx__position(0, auto, 0, 50%);
     }
@@ -69,7 +71,7 @@
         }
 
         &:after {
-            background: @ComColumns-Drag-HoverBackground;
+            background: @ComColumns-DragLine-HoverBackground;
             .mx__transition(background-color, @CmUI-Transition-DurationReverse);
         }
     }
@@ -81,12 +83,12 @@
         }
 
         &:after {
-            background: @ComColumns-Drag-ActiveBackground;
+            background: @ComColumns-DragLine-ActiveBackground;
         }
     }
 }
 
-.com-columns {
+.com__columns {
     margin: 0 0 @CmIndent-Medium;
 
     &.bottom {
@@ -108,14 +110,14 @@
 
     &.is-editable {
         > .inner {
-            > .com-columns-chassis {
+            > .com__columns__chassis {
                 display: block;
             }
 
             > .container {
-                > .com-column {
+                > .com__column {
                     > .inner {
-                        min-height: @ComColumns-minHeight + (@CmDraganddrop-AreaPadding * 2);
+                        min-height: @ComColumns-MinHeight + (@PtDnD-Area-Padding * 2);
                     }
                 }
             }
@@ -124,14 +126,14 @@
         &.is-active,
         &:hover {
             > .inner {
-                > .com-columns-chassis {
+                > .com__columns__chassis {
                     opacity: 1;
                 }
 
                 > .container {
-                    > .com-column {
+                    > .com__column {
                         > .inner {
-                            background: @ComColumns-backgroundHover;
+                            background: @ComColumns-HoverBackground;
                         }
                     }
                 }
@@ -140,7 +142,7 @@
 
         &.is-chassis-visible {
             > .inner {
-                .com-columns-chassis {
+                .com__columns__chassis {
                     opacity: 1;
                 }
             }
@@ -149,9 +151,9 @@
 
     // /* Set columns indent */
 
-    .com__columns__indent(@ComColumns-indent);
+    .com__columns__indent(@ComColumns-Indent);
 
-    .for(@ComColumns-indents); .-each(@name) {
+    .for(@ComColumns-Indents); .-each(@name) {
         &.indent-@{name} {
             .com__columns__indent(@name);
         }
@@ -172,36 +174,36 @@
 
 /* *** HELPERS *** */
 
-.com-columns-body,
-.com-columns-body * {
+.com__columns-body,
+.com__columns-body * {
     cursor: col-resize !important;
     .mx__user-select(none);
 }
 
-/* ******* COMPONENT: COLUMNS: BUNDLE ******* */
+// /* ******* COMPONENT: COLUMNS: BUNDLE ******* */
 
-.com__columns__indent (@indent: @ComColumns-indent) {
+.com__columns__indent (@indent: @ComColumns-Indent) {
     > .inner {
         margin: 0 -(@indent / 2);
     }
 
-    .com-column > .inner {
+    .com__column > .inner {
         margin: 0 (@indent / 2);
     }
 }
 
 /* ******* COMPONENT: COLUMNS: ADAPTIVE ******* */
 
-@media only screen and (max-width : @ComColumns-adaptiveFrom) {
+@media only screen and (max-width : @ComColumns-AdaptiveFrom) {
 
     html.is-adaptive {
-        .com-column {
+        .com__column {
             width: auto !important;
             height: auto;
             display: block;
         }
 
-        .com-columns {
+        .com__columns {
             > .inner {
                 margin: 0;
 
@@ -211,12 +213,12 @@
             }
 
             &.is-editable {
-                .com-columns-chassis {
+                .com__columns__chassis {
                     display: none;
                 }
             }
 
-            .com-column {
+            .com__column {
                 margin: @CmIndent-Medium 0 0 0;
 
                 &:first-child {

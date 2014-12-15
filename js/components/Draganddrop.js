@@ -105,7 +105,7 @@ function(params){
             }, params),
             childNodes;
         // Add mark classes
-        cm.addClass(area['node'], 'cm-draganddrop-area');
+        cm.addClass(area['node'], 'pt__dnd-area');
         cm.addClass(area['node'], that.params['classes']['area']);
         if(area['isLocked']){
             cm.addClass(area['node'], 'is-locked');
@@ -240,7 +240,7 @@ function(params){
             that.params['draggableContainer'].appendChild(current['node']);
         }
         getPosition(current);
-        cm.addClass(current['node'], 'cm-draganddrop-helper');
+        cm.addClass(current['node'], 'pt__dnd-helper');
         cm.addClass(current['node'], 'is-active', true);
         // Calculate elements position and dimension
         getPositions(areas);
@@ -285,7 +285,7 @@ function(params){
         // Set check position event
         checkInt = setInterval(checkPosition, 5);
         // Add move event on document
-        cm.addClass(document.body, 'cm-draganddrop-body');
+        cm.addClass(document.body, 'pt__dnd-body');
         cm.addEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mousemove', move);
         cm.addEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mouseup', stop);
     };
@@ -415,7 +415,7 @@ function(params){
         // Remove check position event
         checkInt && clearInterval(checkInt);
         // Remove move events attached on document
-        cm.removeClass(document.body, 'cm-draganddrop-body');
+        cm.removeClass(document.body, 'pt__dnd-body');
         cm.removeEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mousemove', move);
         cm.removeEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mouseup', stop);
         // Calculate height of draggable block, like he already dropped in area, to animate height of fake empty space
@@ -511,7 +511,7 @@ function(params){
                         break;
                 }
                 // Remove draggable helper classname
-                cm.removeClass(draggable['node'], 'cm-draganddrop-helper');
+                cm.removeClass(draggable['node'], 'pt__dnd-helper');
                 hack = draggable['node'].clientHeight;
                 cm.removeClass(draggable['node'], 'is-active');
                 // Reset styles
@@ -579,7 +579,7 @@ function(params){
                     'opacity' : 0
                 }
             }else{
-                node = cm.wrap(cm.Node('div', {'class' : 'cm-draganddrop-removable'}), draggable['node']);
+                node = cm.wrap(cm.Node('div', {'class' : 'pt__dnd-removable'}), draggable['node']);
                 anim = new cm.Animation(node);
                 style = {
                     'height' : '0px',
@@ -646,7 +646,7 @@ function(params){
     };
 
     var renderChassis = function(){
-        var node = cm.Node(that.params['chassisTag'], {'class' : 'cm-draganddrop-chassis'});
+        var node = cm.Node(that.params['chassisTag'], {'class' : 'pt__dnd-chassis'});
         return {
             'node' : node,
             'anim' : new cm.Animation(node),
@@ -889,7 +889,7 @@ function(params){
             // Find old draggable area and index in area
             var area = oldDraggable['area'],
                 index = area['items'].indexOf(oldDraggableNode),
-                node = cm.wrap(cm.Node('div', {'class' : 'cm-draganddrop-removable', 'style' : 'height: 0px;'}), newDraggableNode),
+                node = cm.wrap(cm.Node('div', {'class' : 'pt__dnd-removable', 'style' : 'height: 0px;'}), newDraggableNode),
                 anim = new cm.Animation(node);
             // Append new draggable into DOM
             cm.insertAfter(node, oldDraggableNode);

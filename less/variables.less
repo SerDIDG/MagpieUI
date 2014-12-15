@@ -207,7 +207,8 @@
 @CmColor-Gallery: #111111;
 @CmColor-Border: @CmColor-Secondary-MiddleDefault;
 @CmColor-BorderHover: @CmColor-Secondary-MiddleActiveHover;
-@CmColor-BorderActive: @CmColor-Primary-MiddleActive;
+@CmColor-BorderSelected: @CmColor-Primary-MiddleDefault;
+@CmColor-BorderActive: @CmColor-Primary-DarkDefault;
 @CmColor-BorderDisabled: @CmColor-Secondary-LightActive;
 
 // /* ************************************************ */
@@ -237,7 +238,7 @@
 @CmFont-UI-BoldWeight: 600;
 
 @CmFont-UI-LineHeight: 18px;
-@CmFont-UI-Size: 11px;
+@CmFont-UI-Size: 13px;
 @CmFont-UI-Family: 'Open Sans', arial, helvetica, sans-serif;
 @CmFont-UI-Weight: @CmFont-UI-NormalWeight;
 @CmFont-UI-Color: @CmColor-Font;
@@ -274,12 +275,12 @@
 @CmBorder-BoxWidth: 2px;
 @CmBorder-Default: @CmBorder-Width solid @CmColor-Border;
 @CmBorder-Separator: @CmBorder-Width dotted @CmColor-Border;
-@CmBorder-Editable: @CmBorder-Width dashed @Cm-color;
+@CmBorder-Editable: @CmBorder-Width dashed @CmColor-BorderActive;
 @CmBorder-Box: @CmBorder-BoxWidth solid @CmColor-Border;
-@CmBorder-BoxActive: @CmBorder-BoxWidth solid @Cm-colorActive;
-@CmBorder-BoxSelected: @CmBorder-BoxWidth solid @Cm-color;
+@CmBorder-BoxActive: @CmBorder-BoxWidth solid @CmColor-BorderActive;
+@CmBorder-BoxSelected: @CmBorder-BoxWidth solid @CmColor-BorderSelected;
 
-// /* *** COLORS *** */
+// /* ******* COLORS ******* */
 
 @Cm-color: hsl(210, 80%, 55%);
 @Cm-colorLighten: lighten(@Cm-color, 40%);
@@ -292,17 +293,17 @@
 // /* ******* COMMON ******* */
 // /* ************************************************ */
 
-// /* *** BUTTONS *** */
+// /* ******* BUTTONS ******* */
 
 @CmButton-PaddingX: @CmIndent-XSmall;
 
-// /* *** INPUTS *** */
+// /* ******* INPUTS ******* */
 
 @CmInput-Padding: 6px;
 @CmTextarea-Height: 100px;
 @CmSelect-Size: 7;
 
-// /* *** FORM *** */
+// /* ******* FORM ******* */
 
 @CmForm-FieldHeight: 28px;
 @CmForm-FieldIndent: @CmIndent-Small;
@@ -316,67 +317,58 @@
 @CmForm-Cols-Indent: 2%;
 @CmForm-FilesList-Count: 3;
 
-// /* *** COUNTER *** */
+// /* ******* COUNTER ******* */
 
 @CmCounter-Size: @CmSize-Small;
 @CmCounter-Radius: @CmCounter-Size;
-
-// /* *** DRAG AND DROP *** */
-
-@CmDraganddrop-AreaPadding: @CmIndent-XSmall;
-@CmDraganddrop-AreaBorderRadius: @CmBorder-Radius;
-@CmDraganddrop-AreaBackgroundActive: fade(@CmColor-Primary-DarkDefault, 12%);
-@CmDraganddrop-AreaBackgroundHighlight: fade(@CmColor-Primary-DarkDefault, 5%);
-@CmDraganddrop-AreaActiveBorder: 1px dashed @CmColor-Primary-DarkDefault;
-@CmDraganddrop-AreaHighlightBorder: 1px dashed fade(@CmColor-Primary-DarkDefault, 30%);
 
 // /* ************************************************ */
 // /* ******* PARTS ******* */
 // /* ************************************************ */
 
-// /* *** MENU *** */
+// /* ******* MENU ******* */
 
-@CmMenu-indent: @CmIndent-XXXSmall;
-@CmMenu-itemIndentY: 2px;
-@CmMenu-itemIndentX: @CmIndent-XSmall;
+@PtMenu-Indent: @CmIndent-XXXSmall;
+@PtMenu-ItemIndentY: 2px;
+@PtMenu-ItemIndentX: @CmIndent-XSmall;
 
-// /* *** LINKS *** */
+// /* ******* LINKS ******* */
 
 @PtLinks-Indent: @CmIndent-XXXSmall;
 
-// /* *** IMAGE *** */
+// /* ******* IMAGE ******* */
 
 @PtImage-Background: @CmColor-Secondary-LightSelected;
 @PtImage-TitlePaddingTop: @CmIndent-XXXSmall;
 @PtImage-Color: @CmFont-UI-ColorOpposite;
 
-// /* *** ITEM BOX *** */
+// /* ******* ITEM BOX ******* */
 
 @PtItemBox-Sizes: 50 80 150;
 
-// /* *** LISTING ITEMS *** */
+// /* ******* LISTING ITEMS ******* */
 
 @PtListingItems-Count: 10;
 @PtListingItems-PaddingY: 2px;
 @PtListingItems-PaddingX: 4px;
 @PtListingItems-Indent: 1px;
 
-// /* *** LISTING COUNTERS *** */
+// /* ******* LISTING COUNTERS ******* */
 
 @PtListingCounters-Indent: @CmIndent-XXXSmall;
 @PtListingCounters-Height: @CmSize-Medium;
 
-// /* *** GRID *** */
+// /* ******* GRID ******* */
 
 @PtGrid-Indent: @CmIndent-Medium / 2;
 @PtGrid-Indents: @CmIndents;
 
-// /* *** SELECTABLE*** */
+// /* ******* SELECTABLE*** */
 
 @PtSelectable-background-hover: @Cm-colorSecondary;
 @PtSelectable-border-color-active: @Cm-colorActive;
 
-// /* *** TOOLBAR *** */
+// /* ******* TOOLBAR ******* */
 
 @PtToolbar-GroupIndent: @CmIndent-Small;
 @PtToolbar-ItemIndent: @CmIndent-XXXSmall;
@@ -386,32 +378,49 @@
 @PtToolbar-Large: 250px;
 @PtToolbar-XLarge: 350px;
 
-// /* *** LINE SHARE *** */
+// /* ******* LINE SHARE ******* */
 
 @PtLineShare-Size: @CmSize-Large;
 
-// /* *** BOX *** */
+// /* ******* BOX ******* */
 
 @PtBoxContent-Indent: @CmIndent-XLarge;
 @PtBoxContent-Indents: @CmIndents;
 
-// /* *** GRIDLIST *** */
+// /* ******* GRIDLIST ******* */
 
 @PtGridlist-AdaptiveFrom: @CmScreen-Mobile;
 @PtGridlist-Font-Size: @CmFont-UI-Size;
 @PtGridlist-FontTitle-Size: @CmFont-UI-Size;
 @PtGridlist-PaddingInner: 6px;
 
+// /* ******* DRAG AND DROP ******* */
+
+@PtDnD-Area-Padding: @CmIndent-XSmall;
+@PtDnD-Area-BorderRadius: @CmBorder-Radius;
+
+@PtDnD-Area-ActiveBackground: hsla(@CmColor-Primary, 75%, 55%, 0.12);
+@PtDnD-Area-ActiveBorder: 1px dashed @CmColor-Primary-DarkDefault;
+
+@PtDnD-Area-HighlightBackground: hsla(@CmColor-Primary, 75%, 55%, 0.05);
+@PtDnD-Area-HighlightBorder: 1px dashed fade(@CmColor-Primary-DarkDefault, 30%);
+
+// /* ******* EDITABLE ******* */
+
+@PtEditable-Drag-DefaultBackground: @CmColor-Secondary-LightSelected;
+@PtEditable-Drag-HoverBackground: @CmColor-Secondary-LightHover;
+@PtEditable-Drag-ActiveBackground: @CmColor-Primary-LightActive;
+
 // /* ************************************************ */
 // /* ******* LAYOUTS ******* */
 // /* ************************************************ */
 
-// /* *** COLLAPSIBLE *** */
+// /* ******* COLLAPSIBLE ******* */
 
 @LtCollapsible-SidebarWidth: 350px;
 @LtCollapsible-Duration: 500ms;
 
-// /* *** FORUM *** */
+// /* ******* FORUM ******* */
 
 @LtForum-AdaptiveFrom: @CmScreen-Mobile;
 @LtForum-PostBackground: @CmColor-Secondary-LightSelected;
@@ -419,7 +428,7 @@
 @LtForum-PostTitleBackground: @CmColor-Secondary-LightActive;
 @LtForum-PostLeftColumnSize: 150px;
 
-// /* *** PROFILE *** */
+// /* ******* PROFILE ******* */
 
 @LtProfile-LeftColumn: 150px;
 
@@ -427,7 +436,7 @@
 // /* ******* COMPONENTS ******* */
 // /* ************************************************ */
 
-// /* *** CALENDAR *** */
+// /* ******* CALENDAR ******* */
 
 @ComCalendar-CellHeight: 21px;
 @ComCalendar-CellBorderRadius: min(@CmBorder-Radius, 2px);
@@ -462,42 +471,45 @@
 @ComCalendar-Active-Border: @CmColor-Primary-DarkDefault;
 @ComCalendar-Active-BorderHover: @CmColor-Primary-DarkHover;
 
-// /* *** COLUMNS *** */
+// /* ******* COLUMNS ******* */
 
-@ComColumns-adaptiveFrom: @CmScreen-Mobile;
-@ComColumns-indent: @CmIndent-Medium;
-@ComColumns-indents: @CmIndents;
-@ComColumns-minHeight: 64px;
-@ComColumns-backgroundHover: rgba(0, 0, 0, 0.01);
+@ComColumns-AdaptiveFrom: @CmScreen-Mobile;
+@ComColumns-Indent: @CmIndent-Medium;
+@ComColumns-Indents: @CmIndents;
+@ComColumns-MinHeight: 64px;
+@ComColumns-HoverBackground: rgba(0, 0, 0, 0.01);
 
-@ComColumns-Drag-DefaultBackground: @CmColor-Secondary-LightActive;
+@ComColumns-Drag-DefaultBackground: @CmColor-Secondary-LightSelected;
 @ComColumns-Drag-DefaultBorder: @CmColor-Border;
+@ComColumns-DragLine-DefaultBackground: @CmColor-Secondary-LightActive;
 
 @ComColumns-Drag-HoverBackground: @CmColor-Secondary-LightHover;
 @ComColumns-Drag-HoverBorder: @CmColor-BorderHover;
+@ComColumns-DragLine-HoverBackground: @CmColor-Secondary-LightActive;
 
 @ComColumns-Drag-ActiveBackground: @CmColor-Primary-LightActive;
 @ComColumns-Drag-ActiveBorder: @CmColor-Primary-MiddleActive;
+@ComColumns-DragLine-ActiveBackground: @CmColor-Primary-LightActive;
 
-// /* *** DATEPICKER *** */
+// /* ******* DATEPICKER ******* */
 
 @ComDatepicker-Width: @CmForm-FieldSmallWidth;
 @ComDatepicker-TooltipWidth: @ComDatepicker-Width;
 
-// /* *** TIME SELECT *** */
+// /* ******* TIME SELECT ******* */
 
 @ComTimeSelect-Width: @CmForm-FieldSmallWidth;
 @ComTimeSelect-Indent: @CmIndent-Medium;
 
-// /* *** COLOR PALETTE *** */
+// /* ******* COLOR PALETTE ******* */
 
 @ComColorPalette-Size: 200px;
 
-// /* *** COLOR PICKER *** */
+// /* ******* COLOR PICKER ******* */
 
 @ComColorPicker-Width: @CmForm-FieldSmallWidth;
 
-// /* *** DIALOG *** */
+// /* ******* DIALOG ******* */
 
 @ComDialog-Indent: @CmIndent-Medium;
 @ComDialog-TitleIndent: @CmIndent-XSmall;
@@ -505,53 +517,56 @@
 @ComDialog-Black-Background: @CmColor-Gallery;
 @ComDialog-Black-TitleColor: @CmFont-UI-ColorOpposite;
 
-// /* *** TABSET *** */
+// /* ******* TABSET ******* */
 
-@ComTabset-adaptiveFrom: @CmScreen-Mobile;
+@ComTabset-AdaptiveFrom: @CmScreen-Mobile;
 @ComTabset-BorderColor: @CmColor-Border;
 @ComTabset-BorderRadius: @CmBorder-Radius;
 @ComTabset-Tabs-Height: @CmForm-FieldHeight;
 @ComTabset-Tabs-Indent: @CmIndent-XXXSmall;
-@ComTabset-Tabs-Background: @CmColor-Secondary-LightSelected;
-@ComTabset-Tabs-BackgroundHover: @CmColor-Secondary-LightHover;
-@ComTabset-Tabs-BackgroundActive: @CmColor-Secondary-LightDefault;
-@ComTabset-Tabs-Title: @CmColor-Secondary-LightSelected;
+@ComTabset-Tabs-DefaultBackground: @CmColor-Secondary-LightSelected;
+@ComTabset-Tabs-HoverBackground: @CmColor-Secondary-LightHover;
+@ComTabset-Tabs-ActiveBackground: @CmColor-Secondary-LightDefault;
+@ComTabset-TabsTitle-Background: @CmColor-Secondary-LightSelected;
 
-// /* *** TOGGLE BOX *** */
+// /* ******* TOGGLE BOX ******* */
 
 @ComToggleBox-adaptiveFrom: @CmScreen-Mobile;
-@ComToggleBox-size: @CmFont-UI-H1-LineHeight;
-@ComToggleBox-sizeMedium: @CmSize-Medium;
-@ComToggleBox-sizeUI: @CmSize-Medium;
-@ComToggleBox-contentBorder: 1px solid #ffffff;
-@ComToggleBox-contentBackground: @CmColor-Secondary-LightSelected;
-@ComToggleBox-contentSpaceBorder: @ComToggleBox-contentBorder;
-@ComToggleBox-titleBackground: @CmColor-Secondary-LightActive;
+@ComToggleBox-Size: @CmFont-UI-H1-LineHeight;
+@ComToggleBox-SizeMedium: @CmSize-Medium;
+@ComToggleBox-SizeUI: @CmSize-Medium;
 
-// /* *** SELECT *** */
+@ComToggleBox-Title-DefaultBackground: @CmColor-Secondary-LightActive;
+@ComToggleBox-Title-HoverBackground: @CmColor-Primary-LightActiveHover;
+
+@ComToggleBox-Content-DefaultBackground: @CmColor-Secondary-LightSelected;
+@ComToggleBox-Content-HoverBackground: @CmColor-Secondary-LightHover;
+@ComToggleBox-Content-SpaceBorder: 1px solid transparent;
+
+// /* ******* SELECT ******* */
 
 @ComSelect-ListCount: 7;
 @ComSelect-MultiListCount: 5;
 
-// /* *** AUTOCOMPLETE *** */
+// /* ******* AUTOCOMPLETE ******* */
 
 @ComAutocomplete-ListCount: 7;
 
-// /* *** TAGS INPUT *** */
+// /* ******* TAGS INPUT ******* */
 
 @ComTagsInput-itemIndent: @CmForm-ButtonsIndent;
 @ComTagsInput-itemWidth: 250px;
 @ComTagsInput-inputWidth: 200px;
 
-// /* *** GALLERY *** */
+// /* ******* GALLERY ******* */
 
 @ComGallery-Background: @CmColor-Gallery;
 
-// /* *** GALLERY CONTROLS *** */
+// /* ******* GALLERY CONTROLS ******* */
 
 @ComGalleryControls-ButtonSize: @CmSize-XSmall;
 
-// /* *** GALLERY LAYOUT *** */
+// /* ******* GALLERY LAYOUT ******* */
 
 @ComGalleryLayout-ArrowWidth: @CmIndent-Medium;
 @ComGalleryLayout-SizesCount: 12;

@@ -4,10 +4,10 @@ Part['Menu'] = (function(){
 
     return function(container){
         container = typeof container == 'undefined'? document.body : container;
-        menus = cm.getByClass('cm-menu', container);
+        menus = cm.getByClass('pt__menu', container);
         cm.forEach(menus, function(node){
             if(!cm.inArray(processedNodes, node)){
-                var drop = cm.getByClass('cm-menu-dropdown', node)[0],
+                var drop = cm.getByClass('pt__menu-dropdown', node)[0],
                     target;
                 cm.addEvent(node, 'mousedown', function(e){
                     e = cm.getEvent(e);

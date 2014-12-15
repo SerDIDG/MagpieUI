@@ -20,7 +20,7 @@
         li {
             margin: 0 @ComTabset-Tabs-Indent -@CmBorder-Width 0;
             float: left;
-            background: @ComTabset-Tabs-Background;
+            background: @ComTabset-Tabs-DefaultBackground;
             border: @CmBorder-Default;
             border-radius: @ComTabset-BorderRadius @ComTabset-BorderRadius 0 0;
             .mx__transition(all, @CmUI-Transition-Duration);
@@ -30,28 +30,29 @@
             }
 
             a {
+                .cm__font--ui;
                 .cm__text-overflow;
                 display: block;
                 padding: 0 @CmIndent-XSmall;
                 line-height: @ComTabset-Tabs-Height;
                 text-decoration: none;
-                .mx__only__color(@ComTabset-Tabs-Background, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
+                .mx__only__color(@ComTabset-Tabs-DefaultBackground, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
             }
 
             &:hover {
-                background: @ComTabset-Tabs-BackgroundHover;
+                background: @ComTabset-Tabs-HoverBackground;
                 .mx__transition(all, @CmUI-Transition-DurationReverse);
 
                 a {
-                    .mx__only__color(@ComTabset-Tabs-BackgroundHover, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
+                    .mx__only__color(@ComTabset-Tabs-HoverBackground, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
                 }
             }
 
             &.active {
-                background: @ComTabset-Tabs-BackgroundActive;
+                background: @ComTabset-Tabs-ActiveBackground;
 
                 a {
-                    .mx__only__color(@ComTabset-Tabs-BackgroundActive, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
+                    .mx__only__color(@ComTabset-Tabs-ActiveBackground, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
                 }
             }
         }
@@ -66,7 +67,7 @@
     border: @CmBorder-Default;
     border-bottom: none;
     line-height: @ComTabset-Tabs-Height;
-    .mx__background__color(@ComTabset-Tabs-Title, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
+    .mx__background__color(@ComTabset-TabsTitle-Background, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
 }
 
 .com__tabset__head-menu {
@@ -85,8 +86,8 @@
         }
     }
 
-    .cm-menu-dropdown {
-        .cm-menu-dropdown--base;
+    .pt__menu-dropdown {
+        .pt__menu-dropdown--base;
         left: auto;
         right: -@CmBorder-Width;
     }
@@ -164,7 +165,7 @@
 
 /* *** ADAPTIVE *** */
 
-@media only screen and (max-width : @ComTabset-adaptiveFrom) {
+@media only screen and (max-width : @ComTabset-AdaptiveFrom) {
 
     html.is-adaptive {
         .com__tabset__head-menu,

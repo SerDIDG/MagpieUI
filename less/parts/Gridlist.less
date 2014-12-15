@@ -190,14 +190,27 @@
 
     html.is-adaptive {
         .pt__gridlist {
-            &.is-adaptive {
-                tr {
-                    td, th {
-                        width: auto;
-                        display: block;
+            tr {
+                td, th {
+                    width: auto;
+                    display: block;
+                }
+
+                th {
+                    text-align: left;
+                }
+
+                td {
+                    &:first-child {
+                        border-top: @CmIndent-XXSmall solid transparent;
                     }
+                }
+            }
+
+            tbody:first-child {
+                tr:first-child {
                     td:first-child {
-                        border-top: 1px solid @CmColor-Border;
+                        border-top: 1px solid transparent;
                     }
                 }
             }
