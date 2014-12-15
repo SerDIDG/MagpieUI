@@ -22,6 +22,7 @@ cm.define('Com.Gridlist', {
         'sort' : true,
         'sortBy' : 'id',                                    // default sort by key in array
         'orderBy' : 'ASC',
+        'childBy' : false,
         'pagination' : true,
         'perPage' : 25,
         'showCounter' : false,
@@ -137,7 +138,7 @@ function(params){
             start = 0;
         }
         for(var i = start, l = Math.min(end, that.params['data'].length); i < l; i++){
-            renderRow(that.params['data'][i], i);
+            renderRow(rows, that.params['data'][i], i);
         }
         // Append
         container.appendChild(that.nodes['table']);
@@ -222,11 +223,12 @@ function(params){
         }
     };
 
-    var renderRow = function(row, i){
+    var renderRow = function(parent, row, i){
         // Config
         var item = {
             'index' : i,
             'data' : row,
+            'childs' : [],
             'isChecked' : row['_checked'] || false,
             'nodes' : {
                 'cols' : []
@@ -240,6 +242,12 @@ function(params){
         cm.forEach(that.params['cols'], function(col){
             renderCell(col, item);
         });
+        // Render childs
+        if(that.params['childsBy']){
+            cm.forEach(row[that.params['childsBy']], function(child, childI){
+                renderRow(item['childs'], child, childI);
+            });
+        }
         // Push to rows array
         rows.push(item);
     };
