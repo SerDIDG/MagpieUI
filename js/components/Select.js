@@ -150,7 +150,7 @@ function(params){
     };
 
     var renderSingle = function(){
-        nodes['container'] = cm.Node('div', {'class' : 'com-select'},
+        nodes['container'] = cm.Node('div', {'class' : 'com__select'},
             nodes['hidden'] = cm.Node('select', {'class' : 'display-none'}),
             cm.Node('div', {'class' : 'form-field has-icon-right'},
                 nodes['arrow'] = cm.Node('div', {'class' : that.params['icons']['arrow']}),
@@ -163,7 +163,7 @@ function(params){
     };
 
     var renderMultiple = function(){
-        nodes['container'] = cm.Node('div', {'class' : 'com-multiselect'},
+        nodes['container'] = cm.Node('div', {'class' : 'com__select-multi'},
             nodes['hidden'] = cm.Node('select', {'class' : 'display-none', 'multiple' : true}),
             nodes['inner'] = cm.Node('div', {'class' : 'inner'},
                 nodes['scroll'] = cm.Node('div', {'class' : 'pt__listing-items'},
@@ -220,7 +220,7 @@ function(params){
             // Render tooltip
             components['menu'] = new Com.Tooltip({
                 'container' : that.params['renderInBody']? document.body : nodes['container'],
-                'className' : 'com-select-tooltip',
+                'className' : 'com__select-tooltip',
                 'width' : 'targetWidth',
                 'top' : ['targetHeight', that.params['menuMargin']].join('+'),
                 'content' : nodes['scroll'],

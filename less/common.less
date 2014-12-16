@@ -90,13 +90,13 @@
 /* *** COUNTER *** */
 
 .cm__counter {
-    .cm__font--ui;
+    .cm__font--ui-small;
     height: @CmCounter-Size;
     display: inline-block;
     vertical-align: top;
     padding: 0 5px;
     background-color: @CmColor-Secondary-LightDefault;
-    border: 1px solid @CmColor-Primary-DarkDefault;
+    border: @CmCounter-Border solid @CmColor-Primary-DarkDefault;
     border-radius: @CmBorder-Radius;
     text-align: center;
     line-height: @CmCounter-Size;
@@ -151,9 +151,15 @@
 /* *** EMPTY *** */
 
 .cm__empty {
-    .cm__font--ui-cursive;
+    .cm__font--ui-small-cursive;
     padding: @CmIndent-XSmall;
     text-align: center;
+
+    &:before,
+    &:after {
+        margin: 0 4px;
+        content: '-';
+    }
 }
 
 /* *** OTHER *** */

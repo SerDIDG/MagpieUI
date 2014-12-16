@@ -39,9 +39,18 @@
     font: @CmFont-UI-Weight ~'@{CmFont-UI-Size}/@{CmFont-UI-LineHeight}' @CmFont-UI-Family;
     color: @CmFont-UI-Color;
 }
+.cm__font--ui-small {
+    font: @CmFont-UI-Weight ~'@{CmFont-UI-SizeSmall}/@{CmFont-UI-LineHeight}' @CmFont-UI-Family;
+    color: @CmFont-UI-Color;
+}
 
 .cm__font--ui-cursive {
     .cm__font--ui;
+    font-style: italic;
+}
+
+.cm__font--ui-small-cursive {
+    .cm__font--ui-small;
     font-style: italic;
 }
 

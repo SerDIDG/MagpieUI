@@ -71,42 +71,34 @@
     }
 
     &.has-content-bg {
-        > dd {
-            .cm__empty,
-            .pt__toolbar {
-                margin: 0;
-                border-top: @ComToggleBox-Content-SpaceBorder;
-                background: @ComToggleBox-Content-DefaultBackground;
-                border-radius: @CmBorder-Radius;
-                .mx__background-clip(padding-box);
-            }
+        .cm__empty,
+        .pt__toolbar {
+            margin: 0;
+            border-top: @ComToggleBox-Content-SpaceBorder;
+            background: @ComToggleBox-Content-DefaultBackground;
+            border-radius: @CmBorder-Radius;
+            .mx__background-clip(padding-box);
+        }
 
-            .pt__toolbar {
+        .pt__toolbar {
+            padding: @CmIndent-XXSmall;
+        }
+
+        .pt__gridlist {
+            .pt__gridlist__has-background;
+            border-top: @ComToggleBox-Content-SpaceBorder;
+
+            td {
                 padding: @CmIndent-XXSmall;
             }
 
-            .pt__gridlist {
-                tr {
-                    th {
-                        padding: @CmIndent-XXSmall;
-                        background-color: @ComToggleBox-Content-DefaultBackground;
-                        border-top: @ComToggleBox-Content-SpaceBorder;
+            th {
+                padding: @CmIndent-XXSmall;
 
-                        &.sort {
-                            .inner {
-                                margin: -@CmIndent-XXSmall;
-                                padding: @CmIndent-XXSmall 22px @CmIndent-XXSmall @CmIndent-XXSmall;
-                            }
-                        }
-                    }
-
-                    td {
-                        padding: @CmIndent-XXSmall;
-                        background-color: @ComToggleBox-Content-DefaultBackground;
-                    }
-
-                    &:hover td {
-                        background-color: @ComToggleBox-Content-HoverBackground;
+                &.sort {
+                    .inner {
+                        margin: -@CmIndent-XXSmall;
+                        padding: @CmIndent-XXSmall 22px @CmIndent-XXSmall @CmIndent-XXSmall;
                     }
                 }
             }

@@ -1,6 +1,6 @@
-/* ******* BREADCRUMBS ******* */
+/* ******* PARTS: BREADCRUMBS ******* */
 
-.com-breadcrumbs {
+.pt__breadcrumbs {
     margin: 0 0 @CmIndent-Medium;
 
     &.bottom {
@@ -8,16 +8,13 @@
     }
 
     ul {
+        .cm__list-clear;
+        .cm__list-inline;
         margin: 0 0 -@CmIndent-XXSmall 0;
-        padding: 0;
-        list-style: none;
-        font-size: 0;
 
         li {
+            .cm__font--ui-small;
             margin: 0 @CmIndent-XXSmall @CmIndent-XXSmall 0;
-            display: inline-block;
-            font-size: @CmFont-UI-Size;
-            vertical-align: top;
 
             &.back {
                 margin-right: @CmIndent-Medium;

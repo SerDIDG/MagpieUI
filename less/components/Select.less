@@ -1,15 +1,13 @@
 /* ******* SELECT ******* */
 
-.com-select {
+.com__select {
     position: relative;
     z-index: 1;
     outline: none;
 
     .form-field {
         .icon {
-            -webkit-transition+: -webkit-transform 0.3s ease-in-out;
-                -ms-transition+:     -ms-transform 0.3s ease-in-out;
-                    transition+:         transform 0.3s ease-in-out;
+            .mx__transition(-webkit-transform -ms-transform transform, @CmUI-Transition-Duration);
 
             &.default {
                 .icon.medium.select-arrow;
@@ -32,7 +30,7 @@
 /* Tooltip */
 
 .com__tooltip {
-    &.com-select-tooltip {
+    &.com__select-tooltip {
         .mx__user-select(none);
 
         > .inner > .scroll {
@@ -43,7 +41,7 @@
 
 /* Select Multiple */
 
-.com-multiselect {
+.com__select-multi {
     .mx__user-select(none);
 
     .inner {
