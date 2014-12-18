@@ -32,7 +32,8 @@ cm.define('Com.Gridlist', {
         'langs' : {
             'counter' : 'Count: ',
             'check-all' : 'Check all',
-            'uncheck-all' : 'Uncheck all'
+            'uncheck-all' : 'Uncheck all',
+            'empty' : 'Items does not found'
         },
         'icons' : {
             'arrow' : {
@@ -85,22 +86,28 @@ function(params){
         }
         // Sort data array for first time
         that.params['sort'] && arraySort(that.params['sortBy']);
-        // Pagination
-        if(that.params['pagination']){
-            pagesCount = that.params['perPage'] > 0? Math.ceil(that.params['data'].length / that.params['perPage']) : that.params['perPage'];
-            that.components['Pagination'] = new Com.Pagination(
-                cm.merge(that.params['Com.Pagination'], {
-                    'container' : that.nodes['container'],
-                    'count' : pagesCount,
-                    'events' : {
-                        'onChange' : function(pagination, data){
-                            renderTable(data['page'], data['container']);
+        // Render table
+        if(that.params['data'].length){
+            if(that.params['pagination']){
+                pagesCount = that.params['perPage'] > 0? Math.ceil(that.params['data'].length / that.params['perPage']) : that.params['perPage'];
+                that.components['Pagination'] = new Com.Pagination(
+                    cm.merge(that.params['Com.Pagination'], {
+                        'container' : that.nodes['container'],
+                        'count' : pagesCount,
+                        'events' : {
+                            'onChange' : function(pagination, data){
+                                renderTable(data['page'], data['container']);
+                            }
                         }
-                    }
-                })
-            );
+                    })
+                );
+            }else{
+                renderTable(1, that.nodes['container']);
+            }
         }else{
-            renderTable(1, that.nodes['container']);
+            that.nodes['container'].appendChild(
+                cm.Node('div', {'class' : 'cm__empty'}, that.lang('empty'))
+            );
         }
     };
 
