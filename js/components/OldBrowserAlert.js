@@ -1,7 +1,8 @@
 Com['OldBrowserAlert'] = function(o){
-    var that = this, config = cm.merge({
+    var that = this,
+        config = cm.merge({
             'versions' : {
-                'IE' : 8,
+                'IE' : 9,
                 'FF' : 24,
                 'Chrome' : 29,
                 'Safari' : 6,
@@ -22,8 +23,8 @@ Com['OldBrowserAlert'] = function(o){
             if(cm.is(browser) && cm.isVersion() < version){
                 // Parse description string, insert browser name and verison
                 config['langs']['descr'] = config['langs']['descr']
-                    .replace(/%browser%/g, Com.UA['full_name'])
-                    .replace(/%version%/g, Com.UA['full_version'])
+                    .replace(/%browser%/g, useragent['full_name'])
+                    .replace(/%version%/g, useragent['full_version'])
                     .replace(/%minimum_version%/g, version);
                 // Render window
                 !cm.cookieGet('comOldBrowserAlert') && render();
