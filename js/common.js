@@ -1641,10 +1641,10 @@ cm.getDimensions = function(node){
     dimensions['y2'] = dimensions['y1'] + dimensions['height'];
     // Calculate Padding and Inner Dimensions
     dimensions['padding'] = {
-        'top' : cm.getCSSStyle(node, 'paddingTop', true),
-        'right' : cm.getCSSStyle(node, 'paddingRight', true),
-        'bottom' : cm.getCSSStyle(node, 'paddingBottom', true),
-        'left' : cm.getCSSStyle(node, 'paddingLeft', true)
+        'top' :     cm.getCSSStyle(node, 'paddingTop', true),
+        'right' :   cm.getCSSStyle(node, 'paddingRight', true),
+        'bottom' :  cm.getCSSStyle(node, 'paddingBottom', true),
+        'left' :    cm.getCSSStyle(node, 'paddingLeft', true)
     };
     dimensions['innerWidth'] = dimensions['width'] - dimensions['padding']['left'] - dimensions['padding']['right'];
     dimensions['innerHeight'] = dimensions['height'] - dimensions['padding']['top'] - dimensions['padding']['bottom'];
@@ -1654,10 +1654,10 @@ cm.getDimensions = function(node){
     dimensions['innerY2'] = dimensions['innerY1'] + dimensions['innerHeight'];
     // Calculate Margin and Absolute Dimensions
     dimensions['margin'] = {
-        'top' : cm.getCSSStyle(node, 'marginTop', true),
-        'right' : cm.getCSSStyle(node, 'marginRight', true),
-        'bottom' : cm.getCSSStyle(node, 'marginBottom', true),
-        'left' : cm.getCSSStyle(node, 'marginLeft', true)
+        'top' :     cm.getCSSStyle(node, 'marginTop', true),
+        'right' :   cm.getCSSStyle(node, 'marginRight', true),
+        'bottom' :  cm.getCSSStyle(node, 'marginBottom', true),
+        'left' :    cm.getCSSStyle(node, 'marginLeft', true)
     };
     dimensions['absoluteWidth'] = dimensions['width'] + dimensions['margin']['left'] + dimensions['margin']['right'];
     dimensions['absoluteHeight'] = dimensions['height'] + dimensions['margin']['top'] + dimensions['margin']['bottom'];
