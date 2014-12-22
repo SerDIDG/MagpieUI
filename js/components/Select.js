@@ -310,7 +310,8 @@ function(params){
         var item = {
             'selected' : false,
             'value' : value,
-            'text' : text
+            'text' : text,
+            'group': group
         };
         // Structure
         item['node'] = cm.Node('li',
@@ -410,7 +411,11 @@ function(params){
         optionsList.forEach(function(item){
             cm.removeClass(item['node'], 'active');
         });
-        nodes['text'].value = cm.decode(option['text']);
+        if(option['group']){
+            nodes['text'].value = [cm.decode(option['group']['name']), cm.decode(option['text'])].join(' > ');
+        }else{
+            nodes['text'].value = cm.decode(option['text']);
+        }
         option['option'].selected = true;
         nodes['hidden'].value = active;
         cm.addClass(option['node'], 'active');

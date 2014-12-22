@@ -56,8 +56,10 @@ Com['OldBrowserAlert'] = function(o){
             'content' : nodes['container'],
             'autoOpen' : false,
             'width' : 500,
-            'onClose' : function(){
-                cm.cookieSet('comOldBrowserAlert', '1');
+            'events' : {
+                'onClose' : function(){
+                    cm.cookieSet('comOldBrowserAlert', '1');
+                }
             }
         });
         // Add event on continue button
