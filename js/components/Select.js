@@ -84,6 +84,8 @@ function(params){
                 set(optionsList[0]);
             }
         }
+        // Trigger events
+        that.triggerEvent('onRender', active);
     };
 
     var validateParams = function(){
@@ -244,8 +246,6 @@ function(params){
         }else{
             that.enable();
         }
-        // Trigger events
-        that.triggerEvent('onRender', active);
     };
 
     /* *** COLLECTORS *** */
