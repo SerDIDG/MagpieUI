@@ -58,17 +58,17 @@
             padding: 0;
             display: block;
             list-style: none;
-            line-height: @ComGalleryControls-ButtonSize;
+            line-height: @ComGalleryControls-Button-Size;
 
             li {
-                width: @ComGalleryControls-ButtonSize;
-                height: @ComGalleryControls-ButtonSize;
+                width: @ComGalleryControls-Button-Size;
+                height: @ComGalleryControls-Button-Size;
                 display: inline-block;
                 margin: 0 0 0 @CmIndent-XXSmall;
                 vertical-align: top;
-                background-color: @Cm-colorSecondary;
-                border: 2px solid @Cm-colorSecondary;
-                border-radius: @ComGalleryControls-ButtonSize;
+                background-color: @CmColor-Secondary-LightHighlight;
+                border: 2px solid @CmColor-Secondary-LightHighlight;
+                border-radius: @ComGalleryControls-Button-Size;
                 cursor: pointer;
                 .mx__box-sizing(border-box);
                 .mx__transition(all, @CmUI-Transition-Duration);
@@ -78,13 +78,13 @@
                 }
 
                 &:hover {
-                    border-color: @Cm-color;
+                    border-color: @CmColor-Primary-DarkDefault;
                     .mx__transition(all, @CmUI-Transition-DurationReverse);
                 }
 
                 &.active {
-                    border-color: @Cm-color;
-                    background-color: @Cm-color;
+                    border-color: @CmColor-Primary-DarkDefault;
+                    background-color: @CmColor-Primary-DarkDefault;
                 }
             }
         }
@@ -160,7 +160,7 @@
     }
 
     &.is-small {
-        height: @CmIndent-XSmall * 2 + @ComGalleryControls-ButtonSize;
+        height: @CmIndent-XSmall * 2 + @ComGalleryControls-Button-Size;
         .mx__position(auto, 0, 0, 0);
 
         .bar-arrow {

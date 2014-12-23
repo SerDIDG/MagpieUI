@@ -4722,7 +4722,7 @@ button::-moz-focus-inner {
 }
 .pr__selectable.active:before {
   background-color: #ffffff;
-  border-color: #dbebfb;
+  border-color: #d8e8f8;
 }
 /* ******* PARTS: BREADCRUMBS ******* */
 .pt__breadcrumbs {
@@ -6750,7 +6750,7 @@ html.ie9 .com__palette .b-range {
   text-overflow: ellipsis;
 }
 .com__togglebox > dt:hover {
-  color: #308ce8;
+  color: #2985e0;
 }
 .com__togglebox > dd {
   padding: 0;
@@ -7371,8 +7371,8 @@ html.ie9 .com__palette .b-range {
   display: inline-block;
   margin: 0 0 0 8px;
   vertical-align: top;
-  background-color: #f2f2f2;
-  border: 2px solid #f2f2f2;
+  background-color: #fafafa;
+  border: 2px solid #fafafa;
   border-radius: 12px;
   cursor: pointer;
   -moz-box-sizing: border-box;
@@ -7384,13 +7384,13 @@ html.ie9 .com__palette .b-range {
   margin: 0;
 }
 .com__gallery-controls .bar-buttons ul li:hover {
-  border-color: #308ce8;
+  border-color: #2985e0;
   -webkit-transition: all 100ms ease-in-out;
   transition: all 100ms ease-in-out;
 }
 .com__gallery-controls .bar-buttons ul li.active {
-  border-color: #308ce8;
-  background-color: #308ce8;
+  border-color: #2985e0;
+  background-color: #2985e0;
 }
 .com__gallery-controls.is-full {
   top: 0;

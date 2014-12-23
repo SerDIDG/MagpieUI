@@ -283,15 +283,6 @@
 @CmBorder-BoxActive: @CmBorder-BoxWidth solid @CmColor-BorderActive;
 @CmBorder-BoxSelected: @CmBorder-BoxWidth solid @CmColor-BorderSelected;
 
-// /* ******* COLORS ******* */
-
-@Cm-color: hsl(210, 80%, 55%);
-@Cm-colorLighten: lighten(@Cm-color, 40%);
-@Cm-colorActive: lighten(desaturate(@Cm-color, 2%), 37%);
-@Cm-colorActiveHover: darken(@Cm-colorActive, 5%);
-@Cm-colorSecondary: hsl(0, 0, 95%);
-@Cm-colorSecondaryHover: lighten(@Cm-colorSecondary, 3%);
-
 // /* ************************************************ */
 // /* ******* COMMON ******* */
 // /* ************************************************ */
@@ -369,8 +360,8 @@
 
 // /* ******* SELECTABLE*** */
 
-@PtSelectable-background-hover: @Cm-colorSecondary;
-@PtSelectable-border-color-active: @Cm-colorActive;
+@PtSelectable-background-hover: @CmColor-Secondary-LightHover;
+@PtSelectable-border-color-active: @CmColor-Primary-LightActive;
 
 // /* ******* TOOLBAR ******* */
 
@@ -568,7 +559,7 @@
 
 // /* ******* GALLERY CONTROLS ******* */
 
-@ComGalleryControls-ButtonSize: @CmSize-XSmall;
+@ComGalleryControls-Button-Size: @CmSize-XSmall;
 
 // /* ******* GALLERY LAYOUT ******* */
 

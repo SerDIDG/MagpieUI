@@ -132,8 +132,8 @@ function(params){
             }
         });
         // Set hidden input attributes
-        if(that.params['select'].getAttribute('name')){
-            nodes['hidden'].setAttribute('name', that.params['select'].getAttribute('name'));
+        if(that.params['name']){
+            nodes['hidden'].setAttribute('name', that.params['name']);
         }
         // Placeholder
         if(!cm.isEmpty(that.params['placeholder'])){

@@ -9,7 +9,8 @@ cm.define('Com.Datepicker', {
         'Params',
         'Events',
         'DataConfig',
-        'Langs'
+        'Langs',
+        'Stack'
     ],
     'events' : [
         'onRender',
@@ -22,6 +23,7 @@ cm.define('Com.Datepicker', {
     'params' : {
         'container' : false,
         'input' : cm.Node('input', {'type' : 'text'}),
+        'name' : '',
         'renderInBody' : true,
         'format' : 'cm._config.dateFormat',
         'displayFormat' : 'cm._config.displayDateFormat',
@@ -81,6 +83,8 @@ function(params){
         }else{
             that.set(that.params['input'].value, that.format, false);
         }
+        // Trigger events
+        that.triggerEvent('onRender', that.value);
     };
 
     var validateParams = function(){
@@ -88,6 +92,7 @@ function(params){
             that.params['placeholder'] = that.params['input'].getAttribute('placeholder') || that.params['placeholder'];
             that.params['title'] = that.params['input'].getAttribute('title') || that.params['title'];
             that.params['disabled'] = that.params['input'].disabled || that.params['disabled'];
+            that.params['name'] = that.params['select'].getAttribute('name') || that.params['name'];
         }
         if(that.params['value'] == 'now'){
             that.params['value'] = new Date();
@@ -109,6 +114,7 @@ function(params){
                 nodes['calendarContainer'] = cm.Node('div')
             )
         );
+        that.addToStack(nodes['container']);
         /* *** ATTRIBUTES *** */
         // Title
         if(that.params['showTitleTooltip'] && !cm.isEmpty(that.params['title'])){
@@ -119,8 +125,8 @@ function(params){
             nodes['container'].id = that.params['input'].id;
         }
         // Set hidden input attributes
-        if(that.params['input'].getAttribute('name')){
-            nodes['hidden'].setAttribute('name', that.params['input'].getAttribute('name'));
+        if(that.params['name']){
+            nodes['hidden'].setAttribute('name', that.params['name']);
         }
         // Placeholder
         if(that.params['showPlaceholder'] && !cm.isEmpty(that.params['placeholder'])){
@@ -249,8 +255,6 @@ function(params){
         }else{
             that.enable();
         }
-        // Trigger events
-        that.triggerEvent('onRender', that.value);
     };
 
     var show = function(){
