@@ -2133,8 +2133,8 @@ cm.ajax = function(o){
             'beforeSend' : function(){},
             'handler' : function(){}
         }, o),
-        responceType,
-        responce,
+        responseType,
+        response,
         callbackName,
         scriptNode,
         returnObject;
@@ -2154,7 +2154,7 @@ cm.ajax = function(o){
 
     var validate = function(){
         config['type'] = config['type'].toLocaleLowerCase();
-        responceType =  /text|json/.test(config['type']) ? 'responseText' : 'responseXML';
+        responseType =  /text|json/.test(config['type']) ? 'responseText' : 'responseXML';
         config['method'] = config['method'].toLocaleLowerCase();
         // Convert params object to URI string
         if(cm.isObject(config['params'])){
@@ -2180,11 +2180,11 @@ cm.ajax = function(o){
         // Add response events
         config['httpRequestObject'].onreadystatechange = function(){
             if(config['httpRequestObject'].readyState == 4){
-                responce = config['httpRequestObject'][responceType];
+                response = config['httpRequestObject'][responseType];
                 if(config['type'] == 'json'){
-                    responce = cm.parseJSON(responce);
+                    response = cm.parseJSON(response);
                 }
-                config['handler'](responce, config['httpRequestObject'].status, config['httpRequestObject']);
+                config['handler'](response, config['httpRequestObject'].status, config['httpRequestObject']);
             }
         };
         // Before send events

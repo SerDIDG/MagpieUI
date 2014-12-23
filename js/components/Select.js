@@ -8,7 +8,8 @@ cm.define('Com.Select', {
     'modules' : [
         'Params',
         'Events',
-        'DataConfig'
+        'DataConfig',
+        'Stack'
     ],
     'events' : [
         'onRender',
@@ -20,6 +21,7 @@ cm.define('Com.Select', {
     'params' : {
         'container' : false,                    // Component container that is required in case content is rendered without available select.
         'select' : cm.Node('select'),           // Html select node to decorate.
+        'name' : '',
         'renderInBody' : true,                  // Render dropdowns in document.body, else they will be rendrered in component container.
         'multiple' : false,                     // Render multiple select.
         'placeholder' : '',
@@ -89,6 +91,7 @@ function(params){
             that.params['placeholder'] = that.params['select'].getAttribute('placeholder') || that.params['placeholder'];
             that.params['multiple'] = that.params['select'].multiple;
             that.params['title'] = that.params['select'].getAttribute('title') || that.params['title'];
+            that.params['name'] = that.params['select'].getAttribute('name') || that.params['name'];
             that.params['disabled'] = that.params['select'].disabled || that.params['disabled'];
         }
         that.disabled = that.params['disabled'];
@@ -102,6 +105,7 @@ function(params){
         }else{
             renderSingle();
         }
+        that.addToStack(nodes['container']);
         /* *** ATTRIBUTES *** */
         // Add class name
         if(that.params['select'].className){

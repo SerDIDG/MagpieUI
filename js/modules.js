@@ -381,5 +381,43 @@ Mod['Callbacks'] = {
             that.callbacks[name] = callback;
         });
         return that;
+    }
+};
+
+/* ******* STACK ******* */
+
+Mod['Stack'] = {
+    '_config' : {
+        'extend' : true,
+        'self' : false
     },
+    '_define' : function(){
+        var that = this;
+        if(!that.build['params']['name']){
+            that.build['params']['name'] = '';
+        }
+        that.build['_stack'] = [];
+    },
+    'addToStack' : function(node){
+        var that = this;
+        if(!cm.isEmpty(that.params['name'])){
+            that._stack.push({
+                'name' : that.params['name'],
+                'node' : node,
+                'class' : that
+            });
+        }
+        return that;
+    },
+    'findInStack' : function(name, parent){
+        var that = this,
+            items = [];
+        parent = parent || document.body;
+        cm.forEach(that._stack, function(item){
+            if(item['name'] == name && cm.isParent(parent, item['node'])){
+                items.push(item);
+            }
+        });
+        return items;
+    }
 };
