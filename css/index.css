@@ -4696,12 +4696,13 @@ button::-moz-focus-inner {
   }
 }
 /* ******* PARTS: SELECTABLE ******* */
-.pr__selectable {
+.pt__selectable {
   position: relative;
   border-radius: 3px;
   cursor: pointer;
+  z-index: 1;
 }
-.pr__selectable:before {
+.pt__selectable:before {
   display: block;
   position: absolute;
   z-index: -1;
@@ -4715,13 +4716,14 @@ button::-moz-focus-inner {
   -webkit-transition: border-color 300ms ease-in-out, background-color 300ms ease-in-out;
   transition: border-color 300ms ease-in-out, background-color 300ms ease-in-out;
 }
-.pr__selectable:hover:before {
+.pt__selectable:hover:before {
   background-color: #f2f2f2;
+  border-color: transparent;
   -webkit-transition: border-color 100ms ease-in-out, background-color 100ms ease-in-out;
   transition: border-color 100ms ease-in-out, background-color 100ms ease-in-out;
 }
-.pr__selectable.active:before {
-  background-color: #ffffff;
+.pt__selectable.active:before {
+  background-color: #f6fafd;
   border-color: #d8e8f8;
 }
 /* ******* PARTS: BREADCRUMBS ******* */

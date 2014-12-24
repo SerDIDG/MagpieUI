@@ -1,9 +1,9 @@
 /* ******* PARTS: SELECTABLE ******* */
 
-.pr__selectable {
+.pt__selectable {
     position: relative;
-    border-radius: 3px;
     cursor: pointer;
+    z-index: 1;
 
     &:before {
         display: block;
@@ -20,12 +20,13 @@
     }
 
     &:hover:before {
-        background-color: @PtSelectable-background-hover;
+        background-color: @PtSelectable-Hover-Background;
+        border-color: @PtSelectable-Hover-Border;
         .mx__transition(border-color background-color, @CmUI-Transition-DurationReverse);
     }
 
     &.active:before {
-        background-color: #ffffff;
-        border-color: @PtSelectable-border-color-active;
+        background-color: @PtSelectable-Active-Background;
+        border-color: @PtSelectable-Active-Border;
     }
 }
