@@ -68,10 +68,14 @@
 
 @CmColor-Primary-DarkSaturation: 75%;
 @CmColor-Primary-DarkLighten: 0%;
-@CmColor-Primary-DarkDefault: hsl(@CmColor-Primary, @CmColor-Primary-DarkSaturation, @CmVar-Color-DarkDefault-Lightness + @CmColor-Primary-DarkLighten);
-@CmColor-Primary-DarkHover: hsl(@CmColor-Primary, @CmColor-Primary-DarkSaturation, @CmVar-Color-DarkHover-Lightness + @CmColor-Primary-DarkLighten);
-@CmColor-Primary-DarkActive: hsl(@CmColor-Primary, @CmColor-Primary-DarkSaturation, @CmVar-Color-DarkActive-Lightness + @CmColor-Primary-DarkLighten);
-@CmColor-Primary-DarkActiveHover: hsl(@CmColor-Primary, @CmColor-Primary-DarkSaturation, @CmVar-Color-DarkActiveHover-Lightness + @CmColor-Primary-DarkLighten);
+@CmColor-Primary-DarkDefault-Lightness: @CmVar-Color-DarkDefault-Lightness;
+@CmColor-Primary-DarkHover-Lightness: @CmVar-Color-DarkHover-Lightness;
+@CmColor-Primary-DarkActive-Lightness: @CmVar-Color-DarkActive-Lightness;
+@CmColor-Primary-DarkActiveHover-Lightness: @CmVar-Color-DarkActiveHover-Lightness;
+@CmColor-Primary-DarkDefault: hsl(@CmColor-Primary, @CmColor-Primary-DarkSaturation, @CmColor-Primary-DarkDefault-Lightness + @CmColor-Primary-DarkLighten);
+@CmColor-Primary-DarkHover: hsl(@CmColor-Primary, @CmColor-Primary-DarkSaturation, @CmColor-Primary-DarkHover-Lightness + @CmColor-Primary-DarkLighten);
+@CmColor-Primary-DarkActive: hsl(@CmColor-Primary, @CmColor-Primary-DarkSaturation, @CmColor-Primary-DarkActive-Lightness + @CmColor-Primary-DarkLighten);
+@CmColor-Primary-DarkActiveHover: hsl(@CmColor-Primary, @CmColor-Primary-DarkSaturation, @CmColor-Primary-DarkActiveHover-Lightness + @CmColor-Primary-DarkLighten);
 
 // /* Middle Tone Key */
 
