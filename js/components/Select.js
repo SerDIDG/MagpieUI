@@ -158,7 +158,7 @@ function(params){
     var renderSingle = function(){
         nodes['container'] = cm.Node('div', {'class' : 'com__select'},
             nodes['hidden'] = cm.Node('select', {'class' : 'display-none'}),
-            cm.Node('div', {'class' : 'form-field has-icon-right'},
+            nodes['target'] = cm.Node('div', {'class' : 'form-field has-icon-right'},
                 nodes['arrow'] = cm.Node('div', {'class' : that.params['icons']['arrow']}),
                 nodes['text'] = cm.Node('input', {'type' : 'text', 'readOnly' : 'true'})
             ),
@@ -230,7 +230,7 @@ function(params){
                 'width' : 'targetWidth',
                 'top' : ['targetHeight', that.params['menuMargin']].join('+'),
                 'content' : nodes['scroll'],
-                'target' : nodes['container'],
+                'target' : nodes['target'],
                 'targetEvent' : 'click',
                 'hideOnReClick' : true,
                 'events' : {

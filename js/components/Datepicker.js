@@ -106,7 +106,7 @@ function(params){
         /* *** RENDER STRUCTURE *** */
         nodes['container'] = cm.Node('div', {'class' : 'com__datepicker-input'},
             nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
-            cm.Node('div', {'class' : 'form-field has-icon-right'},
+            nodes['target'] = cm.Node('div', {'class' : 'form-field has-icon-right'},
                 nodes['input'] = cm.Node('input', {'type' : 'text', 'readOnly' : 'true'}),
                 nodes['icon'] = cm.Node('div', {'class' : that.params['icons']['datepicker']})
             ),
@@ -194,7 +194,7 @@ function(params){
             'className' : 'com__datepicker-tooltip',
             'top' : ['targetHeight', that.params['menuMargin']].join('+'),
             'content' : nodes['menuContainer'],
-            'target' : nodes['container'],
+            'target' : nodes['target'],
             'targetEvent' : 'click',
             'hideOnReClick' : true,
             'events' : {
