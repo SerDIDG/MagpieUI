@@ -1,9 +1,9 @@
 {
-    "name": "SerDIDG/FioraUI",
+    "name": "SerDIDG/MagpieUI",
     "version": "3.0.0",
     "license": "MIT",
     "type": "library",
-    "homepage": "http://serdidg.github.io/FioraUI/",
+    "homepage": "http://serdidg.github.io/MagpieUI/",
     "authors": [
         {
             "name": "Serhio Magpie",
