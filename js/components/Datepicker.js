@@ -92,7 +92,7 @@ function(params){
             that.params['placeholder'] = that.params['input'].getAttribute('placeholder') || that.params['placeholder'];
             that.params['title'] = that.params['input'].getAttribute('title') || that.params['title'];
             that.params['disabled'] = that.params['input'].disabled || that.params['disabled'];
-            that.params['name'] = that.params['select'].getAttribute('name') || that.params['name'];
+            that.params['name'] = that.params['input'].getAttribute('name') || that.params['name'];
         }
         if(that.params['value'] == 'now'){
             that.params['value'] = new Date();
