@@ -5672,7 +5672,7 @@ button::-moz-focus-inner {
   padding-bottom: 2px;
   text-align: center;
   line-height: 14px;
-  font-size: 10px;
+  font-size: 11px;
   color: #666666;
 }
 .com__calendar table td {
@@ -5685,7 +5685,7 @@ button::-moz-focus-inner {
   border-radius: 2px;
   text-align: center;
   line-height: 21px;
-  font-size: 13px;
+  font-size: 11px;
   cursor: pointer;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
