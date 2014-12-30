@@ -1676,7 +1676,7 @@ cm.addStyles = function(node, str){
         if(item.length > 0){
             style = item.split(':');
             // Add style to element
-            style[2] = cm.styleHash(style[0]);
+            style[2] = cm.styleStrToKey(style[0]);
             if(style[0] == 'float'){
                 node.style[style[2][0]] = style[1];
                 node.style[style[2][1]] = style[1];
@@ -1722,7 +1722,7 @@ cm.rgb2hex = function(r, g, b){
     return '#' + rgb.join('');
 };
 
-cm.styleHash = function(line){
+cm.styleStrToKey = function(line){
     line = line.replace(/\s/g, '');
     if(line == 'float'){
         line = ['cssFloat', 'styleFloat'];
@@ -1763,9 +1763,9 @@ cm.getBodyScrollHeight = function(){
 };
 
 cm.getSupportedStyle = function(style){
-    var upper = cm.styleHash(style).replace(style.charAt(0), style.charAt(0).toUpperCase()),
+    var upper = cm.styleStrToKey(style).replace(style.charAt(0), style.charAt(0).toUpperCase()),
         styles = [
-            cm.styleHash(style),
+            cm.styleStrToKey(style),
             ['Webkit', upper].join(''),
             ['Moz', upper].join(''),
             ['O', upper].join(''),
@@ -2005,7 +2005,7 @@ cm.transition = function(o){
     config['style'].forEach(function(item){
         item[3] = item[3] || o['type'];
         // Convert style to js format
-        item[4] = cm.styleHash(item[0]);
+        item[4] = cm.styleStrToKey(item[0]);
         // Build transition format string
         styles.push([item[0], (config['duration'] / 1000 + 's'), item[3]].join(' '));
     });

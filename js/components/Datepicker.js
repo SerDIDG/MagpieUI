@@ -77,6 +77,8 @@ function(params){
         validateParams();
         render();
         setLogic();
+        // Add to stack
+        that.addToStack(nodes['container']);
         // Set selected date
         if(that.params['value']){
             that.set(that.params['value'], that.format, false);
@@ -114,7 +116,6 @@ function(params){
                 nodes['calendarContainer'] = cm.Node('div')
             )
         );
-        that.addToStack(nodes['container']);
         /* *** ATTRIBUTES *** */
         // Title
         if(that.params['showTitleTooltip'] && !cm.isEmpty(that.params['title'])){

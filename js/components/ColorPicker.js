@@ -4,7 +4,8 @@ cm.define('Com.ColorPicker', {
         'Events',
         'Langs',
         'DataConfig',
-        'Storage'
+        'Storage',
+        'Stack'
     ],
     'require' : [
         'Com.Tooltip',
@@ -19,6 +20,7 @@ cm.define('Com.ColorPicker', {
     'params' : {
         'container' : false,
         'input' : cm.Node('div'),
+        'name' : '',
         'value' : null,                        // Color string: transparent | hex.
         'defaultValue' : 'transparent',
         'title' : '',
@@ -60,7 +62,12 @@ function(params){
         validateParams();
         render();
         setLogic();
+        // Add to stack
+        that.addToStack(that.nodes['container']);
+        // Set
         that.set(that.value, false);
+        // Trigger render event
+        that.triggerEvent('onRender', that.value);
     };
 
     var validateParams = function(){
@@ -68,6 +75,7 @@ function(params){
             that.params['title'] = that.params['input'].getAttribute('title') || that.params['title'];
             that.params['disabled'] = that.params['input'].disabled || that.params['disabled'];
             that.value = that.params['input'].value;
+            that.params['name'] = that.params['input'].getAttribute('name') || that.params['name'];
         }
         that.value = that.params['value'] || that.value || that.params['defaultValue'];
         that.disabled = that.params['disabled'];
@@ -161,8 +169,6 @@ function(params){
         }else{
             that.enable();
         }
-        // Trigger render event
-        that.triggerEvent('onRender');
     };
 
     var set = function(color, triggerEvents){
