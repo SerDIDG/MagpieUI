@@ -173,18 +173,7 @@
             }
         }
 
-        &.active {
-            td {
-                background-color: @CmColor-Primary-LightActive;
-            }
-
-            &:hover {
-                td {
-                    background-color: @CmColor-Primary-LightActiveHover;
-                }
-            }
-        }
-
+        &.success,
         &.valid {
             td {
                 background-color: @CmColor-Success-LightActive;
@@ -197,6 +186,7 @@
             }
         }
 
+        &.danger,
         &.invalid {
             td {
                 background-color: @CmColor-Danger-LightActive;
@@ -205,6 +195,30 @@
             &:hover {
                 td {
                     background-color: @CmColor-Danger-LightActiveHover;
+                }
+            }
+        }
+
+        &.warning {
+            td {
+                background-color: @CmColor-Warning-LightActive;
+            }
+
+            &:hover {
+                td {
+                    background-color: @CmColor-Warning-LightActiveHover;
+                }
+            }
+        }
+
+        &.active {
+            td {
+                background-color: @CmColor-Primary-LightActive;
+            }
+
+            &:hover {
+                td {
+                    background-color: @CmColor-Primary-LightActiveHover;
                 }
             }
         }

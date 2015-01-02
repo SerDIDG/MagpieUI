@@ -41,6 +41,7 @@ cm.define('Com.Gridlist', {
                 'asc' : 'icon arrow asc'
             }
         },
+        'statuses' : ['active', 'success', 'danger', 'warning'],
         'Com.Pagination' : {}
     }
 },
@@ -237,6 +238,7 @@ function(params){
             'data' : row,
             'childs' : [],
             'isChecked' : row['_checked'] || false,
+            'status' : row['_status'] || false,
             'nodes' : {
                 'cols' : []
             }
@@ -365,6 +367,10 @@ function(params){
                     nodes['inner'].innerHTML = text;
                     break;
             }
+            // Statuses
+            if(item['status']){
+                setRowStatus(item, item['status']);
+            }
             // onHover Title
             if(col['showTitle']){
                 if(nodes['node']){
@@ -454,6 +460,9 @@ function(params){
         }
         row['isChecked'] = true;
         row['data']['_checked'] = true;
+        if(row['status']){
+            cm.removeClass(row['nodes']['container'], row['status']);
+        }
         cm.addClass(row['nodes']['container'], 'active');
         if(execute){
             // API onCheck Event
@@ -468,10 +477,30 @@ function(params){
         row['isChecked'] = false;
         row['data']['_checked'] = false;
         cm.removeClass(row['nodes']['container'], 'active');
+        if(row['status']){
+            cm.addClass(row['nodes']['container'], row['status']);
+        }
         if(execute){
             // API onUnCheck Event
             that.triggerEvent('onUnCheck', row);
         }
+    };
+
+    var setRowStatus = function(row, status){
+        row['status'] = status;
+        row['data']['_status'] = status;
+        cm.removeClass(row['nodes']['container'], that.params['statuses'].join(' '));
+        if(row['isChecked']){
+            cm.addClass(row['nodes']['container'], 'active');
+        }else if(cm.inArray(that.params['statuses'], status)){
+            cm.addClass(row['nodes']['container'], status);
+        }
+    };
+
+    var clearRowStatus = function(row){
+        row['status'] = null;
+        row['data']['_status'] = null;
+        cm.removeClass(row['nodes']['container'], that.params['statuses'].join(' '));
     };
 
     /* ******* MAIN ******* */
@@ -542,6 +571,24 @@ function(params){
             row['_checked'] && checkedRows.push(row);
         });
         return checkedRows;
+    };
+
+    that.setRowStatus = function(index, status){
+        cm.forEach(rows, function(row){
+            if(row['index'] == index){
+                setRowStatus(row, status);
+            }
+        });
+        return that;
+    };
+
+    that.clearRowStatus = function(index){
+        cm.forEach(rows, function(row){
+            if(row['index'] == index){
+                clearRowStatus(row);
+            }
+        });
+        return that;
     };
 
     init();

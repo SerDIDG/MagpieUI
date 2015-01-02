@@ -232,35 +232,53 @@
     <li data-node="tabs:[]:container" data-config='{"id" : "methods", "title" : "Methods"}'>
         <h2>Add event:</h2>
         <pre class="cm-codebox">gridlist.addEvent(event, handler);</pre>
-        <p>Available events: onSort, onCheckAll, onUnCheckAll, onCheck, onUnCheck, onRenderStart, onRenderEnd.<br>Returns a class of select.</p>
+        <br>
+        <p>Available events: onSort, onCheckAll, onUnCheckAll, onCheck, onUnCheck, onRenderStart, onRenderEnd.<br>Returns a class of gridlist.</p>
 
         <h2>Remove event:</h2>
         <pre class="cm-codebox">gridlist.removeEvent(event, handler);</pre>
-        <p>Available events: onSort, onCheckAll, onUnCheckAll, onCheck, onUnCheck, onRenderStart, onRenderEnd.<br>Returns a class of select.</p>
+        <br>
+        <p>Available events: onSort, onCheckAll, onUnCheckAll, onCheck, onUnCheck, onRenderStart, onRenderEnd.<br>Returns a class of gridlist.</p>
 
         <h2>Check row:</h2>
         <pre class="cm-codebox">gridlist.check(index);</pre>
-        <p><b>index</b> <i>[Nubmer]</i> - index of row in data.<br>Trigger <b>onCheck</b> event, which returns: [Object {Gridlist}, Object {row}].<br>Returns a class of select.</p>
+        <br>
+        <p><b>index</b> <i>[Nubmer]</i> - index of row in data.<br>Trigger <b>onCheck</b> event, which returns: [Object {Gridlist}, Object {row}].<br>Returns a class of gridlist.</p>
 
         <h2>Uncheck row:</h2>
         <pre class="cm-codebox">gridlist.unCheck(index);</pre>
-        <p><b>index</b> <i>[Nubmer]</i> - index of row in data.<br>Trigger <b>onUnCheck</b> event, which returns: [Object {Gridlist}, Object {row}].<br>Returns a class of select.</p>
+        <br>
+        <p><b>index</b> <i>[Nubmer]</i> - index of row in data.<br>Trigger <b>onUnCheck</b> event, which returns: [Object {Gridlist}, Object {row}].<br>Returns a class of gridlist.</p>
 
         <h2>Check all rows:</h2>
         <pre class="cm-codebox">gridlist.checkAll();</pre>
-        <p>Trigger <b>onCheckAll</b> event, which returns: [Object {Gridlist}, Object {data}].<br>Returns a class of select.</p>
+        <br>
+        <p>Trigger <b>onCheckAll</b> event, which returns: [Object {Gridlist}, Object {data}].<br>Returns a class of gridlist.</p>
 
         <h2>Uncheck all rows:</h2>
         <pre class="cm-codebox">gridlist.unCheckAll();</pre>
-        <p>Trigger <b>onUnCheckAll</b> event, which returns: [Object {Gridlist}, Object {data}].<br>Returns a class of select.</p>
+        <br>
+        <p>Trigger <b>onUnCheckAll</b> event, which returns: [Object {Gridlist}, Object {data}].<br>Returns a class of gridlist.</p>
 
         <h2>Get checked rows from rendered rows:</h2>
         <pre class="cm-codebox">gridlist.getChecked();</pre>
-        <p>Returns the object of rows.</p>
+        <br>
+        <p>Returns the object of only rendered rows.</p>
 
         <h2>Get checked rows from data:</h2>
         <pre class="cm-codebox">gridlist.getCheckedData();</pre>
-        <p>Returns the object of data rows.</p>
+        <br>
+        <p>Returns the object of all exists rows.</p>
+
+        <h2>Set row status:</h2>
+        <pre class="cm-codebox">gridlist.setRowStatus(index, status);</pre>
+        <br>
+        <p><b>index</b> <i>[Nubmer]</i> - index of row in data.<br><b>status</b> <i>[String]</i> - status name. Available: active, success, danger, warning.<br>Returns a class of gridlist.</p>
+
+        <h2>Clear row status:</h2>
+        <pre class="cm-codebox">gridlist.clearRowStatus(index);</pre>
+        <br>
+        <p><b>index</b> <i>[Nubmer]</i> - index of row in data.<br>Returns a class of gridlist.</p>
     </li>
 
     <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
@@ -329,8 +347,42 @@ new Com.Gridlist({
                 ]
             }'></div>
         </div>
+
+        <div class="pt__box-content">
+            <h2>Render statuses:</h2>
+            <textarea class="cm-codebox cm-autoresize" readonly>
+new Com.Gridlist({
+    'data' : [
+        {'id' : '1', 'name' : 'Checked column', '_checked' : true},
+        {'id' : '2', 'name' : 'Status: active', '_status' : 'active'},
+        {'id' : '3', 'name' : 'Status: success', '_status' : 'success'},
+        {'id' : '4', 'name' : 'Status: warning', '_status' : 'warning'},
+        {'id' : '5', 'name' : 'Status: danger', '_status' : 'danger'}
+    ],
+    'cols' : [
+        {'type' : 'checkbox', 'width' : '48'},
+        {'type' : 'number', 'key' : 'id', 'width' : '48', 'title' : 'ID'},
+        {'type' : 'text', 'key' : 'name', 'width' : 'auto', 'title' : 'Name'}
+    ]
+});</textarea>
+            <br>
+            <div data-element="gridlist" data-config='{
+                "data" : [
+                    {"id" : "1", "name" : "Checked column", "_checked" : true},
+                    {"id" : "2", "name" : "Status: active", "_status" : "active"},
+                    {"id" : "3", "name" : "Status: success", "_status" : "success"},
+                    {"id" : "4", "name" : "Status: warning", "_status" : "warning"},
+                    {"id" : "5", "name" : "Status: danger", "_status" : "danger"}
+                ],
+                "cols" : [
+                    {"type" : "checkbox", "width" : "48"},
+                    {"type" : "number", "key" : "id", "width" : "48", "title" : "ID"},
+                    {"type" : "text", "key" : "name", "width" : "auto", "title" : "Name"}
+                ]
+            }'></div>
+        </div>
         
-        <h2>Dynamic gridlist:</h2>
+        <h2>Other:</h2>
         <div data-element="gridlist-all"></div>
     </li>
 </ul>
