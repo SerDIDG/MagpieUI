@@ -348,10 +348,13 @@
 .cm__color__secondary {
   color: #858585;
 }
-.cm__color__valid {
+.cm__color__success {
   color: #25b125;
 }
-.cm__color__error {
+.cm__color__warning {
+  color: #e09d29;
+}
+.cm__color__danger {
   color: #d43535;
 }
 /* *** BACKGROUND COLORS *** */
@@ -361,10 +364,13 @@
 .cm__background__secondary {
   background: #858585;
 }
-.cm__background__valid {
+.cm__background__success {
   background: #25b125;
 }
-.cm__background__error {
+.cm__background__warning {
+  background: #e09d29;
+}
+.cm__background__danger {
   background: #d43535;
 }
 /* ******* COMMON: ASPECT RATIO ******* */
