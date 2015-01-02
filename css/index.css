@@ -1671,6 +1671,10 @@ button::-moz-focus-inner {
 .form dd:first-child {
   margin: 0;
 }
+.form--values dt {
+  padding: 0;
+  font-weight: 600;
+}
 /* *** FIELD BOX *** */
 .form-box > dt {
   width: auto;
