@@ -100,10 +100,19 @@
 .mx__only__color (@background, @colorDark, @colorLight) when (alpha(@background) = 0) {
     color: @colorDark;
 }
-
 .mx__background__color (@background, @colorDark, @colorLight) {
     background-color: @background;
     .mx__only__color(@background, @colorDark, @colorLight);
+}
+
+.mx__align (@value) when (@value = left){
+    margin: 0;
+}
+.mx__align (@value) when (@value = center){
+    margin: 0 auto;
+}
+.mx__align (@value) when (@value = right){
+    margin: 0 0 0 auto;
 }
 
 // /* ******* VENDORS ******* */
