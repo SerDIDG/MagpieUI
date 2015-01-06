@@ -40,7 +40,7 @@ cm.define('Com.Autocomplete', {
             'targetEvent' : 'none',
             'className' : 'com__ac-tooltip',
             'width' : 'targetWidth',
-            'top' : 'targetHeight + 3'
+            'top' : 'targetHeight + 4'
         }
     }
 },

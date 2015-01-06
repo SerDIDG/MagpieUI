@@ -27,7 +27,7 @@ cm.define('Com.Select', {
         'placeholder' : '',
         'showTitleTag' : true,                  // Copy title from available select node to component container. Will be shown on hover.
         'title' : false,                        // Title text. Will be shown on hover.
-        'menuMargin' : 3,                       // Outer margin from component container to dropdown.
+        'menuMargin' : 4,                       // Outer margin from component container to dropdown.
         'options' : [],                         // Listing of options, for rendering through java-script. Example: [{'value' : 'foo', 'text' : 'Bar'}].
         'selected' : 0,                         // Option value / array of option values.
         'disabled' : false,

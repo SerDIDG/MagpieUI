@@ -40,7 +40,7 @@ cm.define('Com.Datepicker', {
         'showPlaceholder' : true,
         'title' : '',
         'placeholder' : '',
-        'menuMargin' : 3,
+        'menuMargin' : 4,
         'value' : 0,
         'disabled' : false,
         'icons' : {
