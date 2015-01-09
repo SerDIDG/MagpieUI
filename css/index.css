@@ -3472,7 +3472,7 @@ button::-moz-focus-inner {
 }
 .pt__dnd-area {
   min-height: 24px;
-  padding: 12px;
+  padding: 16px;
   position: relative;
 }
 .pt__dnd-area.is-available {
@@ -8134,7 +8134,7 @@ html.ie9 .com__palette .b-range {
   display: block;
 }
 .com__columns.is-editable > .inner > .container > .com__column > .inner {
-  min-height: 88px;
+  min-height: 96px;
 }
 .com__columns.is-editable.is-active > .inner > .com__columns__chassis,
 .com__columns.is-editable:hover > .inner > .com__columns__chassis {
