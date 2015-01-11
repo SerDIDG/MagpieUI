@@ -1,0 +1,106 @@
+/* ******* COMMON: INPUTS ******* */
+
+.input {
+    @padding: (@CmForm-FieldHeight - @CmFont-Base-LineHeight - @CmBorder-Width * 2) / 2;
+
+    width: 100%;
+    height: @CmForm-FieldHeight;
+    padding: @padding @CmInput-Padding;
+    margin: 0;
+    vertical-align: top;
+    background: #fff;
+    border: @CmBorder-Default;
+    border-radius: @CmBorder-Radius;
+    box-shadow: none;
+    cursor: text;
+    .mx__box-sizing();
+    .mx__background-clip(padding-box);
+    .mx__transition(background border-color color box-shadow text-shadow, @CmUI-Transition-Duration);
+
+    &:hover {
+        border-color: @CmColor-BorderHover;
+    }
+
+    &.input-focus,
+    &:focus {
+        border-color: @CmColor-BorderActive;
+    }
+
+    &.input-disabled,
+    &[disabled] {
+        background-color: @CmColor-Secondary-LightHighlight;
+        border-color: @CmColor-BorderDisabled;
+    }
+
+    &.input-dark {
+        color: @CmFont-Base-ColorOpposite;
+        text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+    }
+
+    &.input-light {
+        text-shadow: 0 1px 1px rgba(255, 255, 255, 0.7),
+                     0 -1px 1px rgba(255, 255, 255, 0.7),
+                     1px 0 1px rgba(255, 255, 255, 0.7),
+                     -1px 0 1px rgba(255, 255, 255, 0.7);
+    }
+
+    &.input-transparent {
+        background-color: #fdffff;
+        background-image: url("@{CmPath-Images}/parts/transparent.png");
+        text-shadow: 0 0 5px #ffffff,
+                     0 0 5px #ffffff,
+                     0 1px 1px #ffffff,
+                     0 -1px 1px #ffffff,
+                     1px 0 1px #ffffff,
+                     -1px 0 1px #ffffff;
+    }
+}
+
+.textarea {
+    height: @CmTextarea-Height;
+    min-height: @CmForm-FieldHeight;
+    padding: @CmInput-Padding;
+    resize: vertical;
+}
+
+.select {
+    &[multiple] {
+        height: @CmSelect-Size * @CmFont-Base-LineHeight + @CmBorder-Width * 2;
+        padding: 0;
+    }
+}
+
+input, select, textarea {
+    .cm__font;
+    margin: 0;
+    outline: none;
+    .mx__placeholder(@CmColor-Font-Placeholder);
+}
+
+input[type="file"] {
+    width: 100%;
+    cursor: pointer;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+    cursor: pointer;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="time"],
+input[type="password"],
+textarea,
+select {
+    &:extend(.input all);
+}
+
+textarea {
+    &:extend(.textarea all);
+}
+
+select {
+    &:extend(.select all);
+}

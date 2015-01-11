@@ -18,12 +18,21 @@ cm.define('Com.TimeSelect', {
         'format' : 'cm._config.timeFormat',
         'showTitleTag' : true,
         'title' : false,
+        'withHours' : true,
+        'hoursInterval' : 0,
+        'withMinutes' : true,
         'minutesInterval' : 0,
+        'withSeconds' : false,
+        'secondsInterval' : 0,
         'selected' : 0,
         'langs' : {
             'separator' : ':',
-            'Hours' : 'Hours',
-            'Minutes' : 'Minutes'
+            'Hours' : 'HH',
+            'Minutes' : 'MM',
+            'Seconds' : 'SS',
+            'HoursTitle' : 'Hours',
+            'MinutesTitle' : 'Minutes',
+            'SecondsTitle' : 'Seconds'
         }
     }
 },
@@ -55,39 +64,71 @@ function(params){
         if(cm.isNode(that.params['input'])){
             that.params['title'] = that.params['input'].getAttribute('title') || that.params['title'];
         }
+        if(cm.isEmpty(that.params['hoursInterval'])){
+            that.params['hoursInterval'] = 1;
+        }
         if(cm.isEmpty(that.params['minutesInterval'])){
             that.params['minutesInterval'] = 1;
+        }
+        if(cm.isEmpty(that.params['secondsInterval'])){
+            that.params['secondsInterval'] = 1;
         }
     };
 
     var render = function(){
-        var minutes = 0;
+        var hours = 0,
+            minutes = 0,
+            seconds = 0;
         /* *** STRUCTURE *** */
-        nodes['container'] = cm.Node('div', {'class' : 'com-timeselect'},
+        nodes['container'] = cm.Node('div', {'class' : 'com__timeselect'},
             nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
-            cm.Node('div', {'class' : 'inner'},
-                cm.Node('div', {'class' : 'field'},
-                    nodes['selectHours'] = cm.Node('select', {'placeholder' : that.lang('Hours')})
-                ),
-                cm.Node('div', {'class' : 'sep'}, that.lang('separator')),
-                cm.Node('div', {'class' : 'field'},
-                    nodes['selectMinutes'] = cm.Node('select', {'placeholder' : that.lang('Minutes')})
-                )
-            )
+            nodes['inner'] = cm.Node('div', {'class' : 'inner'})
         );
         /* *** ITEMS *** */
         // Hours
-        cm.forEach(24, function(item){
-            nodes['selectHours'].appendChild(
-                cm.Node('option', {'value' : item}, cm.addLeadZero(item))
-            );
-        });
+        if(that.params['withHours']){
+            if(nodes['inner'].childNodes.length){
+                nodes['inner'].appendChild(cm.Node('div', {'class' : 'sep'}, that.lang('separator')));
+            }
+            nodes['inner'].appendChild(cm.Node('div', {'class' : 'field'},
+                nodes['selectHours'] = cm.Node('select', {'placeholder' : that.lang('Hours'), 'title' : that.lang('HoursTitle')})
+            ));
+            while(hours < 24){
+                nodes['selectHours'].appendChild(
+                    cm.Node('option', {'value' : hours},cm.addLeadZero(hours))
+                );
+                hours += that.params['hoursInterval'];
+            }
+        }
         // Minutes
-        while(minutes < 60){
-            nodes['selectMinutes'].appendChild(
-                cm.Node('option', {'value' : minutes},cm.addLeadZero(minutes))
-            );
-            minutes += that.params['minutesInterval'];
+        if(that.params['withMinutes']){
+            if(nodes['inner'].childNodes.length){
+                nodes['inner'].appendChild(cm.Node('div', {'class' : 'sep'}, that.lang('separator')));
+            }
+            nodes['inner'].appendChild(cm.Node('div', {'class' : 'field'},
+                nodes['selectMinutes'] = cm.Node('select', {'placeholder' : that.lang('Minutes'), 'title' : that.lang('MinutesTitle')})
+            ));
+            while(minutes < 60){
+                nodes['selectMinutes'].appendChild(
+                    cm.Node('option', {'value' : minutes}, cm.addLeadZero(minutes))
+                );
+                minutes += that.params['minutesInterval'];
+            }
+        }
+        // Seconds
+        if(that.params['withSeconds']){
+            if(nodes['inner'].childNodes.length){
+                nodes['inner'].appendChild(cm.Node('div', {'class' : 'sep'}, that.lang('separator')));
+            }
+            nodes['inner'].appendChild(cm.Node('div', {'class' : 'field'},
+                nodes['selectSeconds'] = cm.Node('select', {'placeholder' : that.lang('Seconds'), 'title' : that.lang('SecondsTitle')})
+            ));
+            while(seconds < 60){
+                nodes['selectSeconds'].appendChild(
+                    cm.Node('option', {'value' : seconds},cm.addLeadZero(seconds))
+                );
+                seconds += that.params['secondsInterval'];
+            }
         }
         /* *** ATTRIBUTES *** */
         // Title
@@ -109,29 +150,42 @@ function(params){
 
     var setMiscEvents = function(){
         // Hours select
-        components['selectHours'] = new Com.Select({
-                'select' : nodes['selectHours'],
-                'renderInBody' : that.params['renderSelectsInBody']
-            })
-            .addEvent('onChange', function(){
-                set(true);
-            });
+        if(that.params['withHours']){
+            components['selectHours'] = new Com.Select({
+                    'select' : nodes['selectHours'],
+                    'renderInBody' : that.params['renderSelectsInBody']
+                }).addEvent('onChange', function(){
+                    set(true);
+                });
+        }
         // Minutes select
-        components['selectMinutes'] = new Com.Select({
-                'select' : nodes['selectMinutes'],
-                'renderInBody' : that.params['renderSelectsInBody']
-            })
-            .addEvent('onChange', function(){
-                set(true);
-            });
+        if(that.params['withMinutes']){
+            components['selectMinutes'] = new Com.Select({
+                    'select' : nodes['selectMinutes'],
+                    'renderInBody' : that.params['renderSelectsInBody']
+                }).addEvent('onChange', function(){
+                    set(true);
+                });
+        }
+        // Seconds select
+        if(that.params['withSeconds']){
+            components['selectSeconds'] = new Com.Select({
+                    'select' : nodes['selectSeconds'],
+                    'renderInBody' : that.params['renderSelectsInBody']
+                })
+                .addEvent('onChange', function(){
+                    set(true);
+                });
+        }
         // Trigger onRender Event
         that.triggerEvent('onRender');
     };
 
     var set = function(triggerEvents){
         that.previousValue = that.value;
-        that.date.setHours(components['selectHours'].get());
-        that.date.setMinutes(components['selectMinutes'].get());
+        that.params['withHours'] && that.date.setHours(components['selectHours'].get());
+        that.params['withMinutes'] && that.date.setMinutes(components['selectMinutes'].get());
+        that.params['withSeconds'] && that.date.setSeconds(components['selectSeconds'].get());
         that.value = cm.dateFormat(that.date, that.params['format']);
         nodes['hidden'].value = that.value;
         // Trigger events
@@ -162,8 +216,9 @@ function(params){
             that.date = cm.parseDate(str, format);
         }
         // Set components
-        components['selectHours'].set(that.date.getHours(), false);
-        components['selectMinutes'].set(that.date.getMinutes(), false);
+        that.params['withHours'] && components['selectHours'].set(that.date.getHours(), false);
+        that.params['withMinutes'] && components['selectMinutes'].set(that.date.getMinutes(), false);
+        that.params['withSeconds'] && components['selectSeconds'].set(that.date.getSeconds(), false);
         // Set time
         set(triggerEvents);
         return that;
@@ -185,14 +240,20 @@ function(params){
         return that.date.getMinutes();
     };
 
+    that.getSeconds = function(){
+        return that.date.getSeconds();
+    };
+
     that.clear = function(triggerEvents){
         triggerEvents = typeof triggerEvents != 'undefined'? triggerEvents : true;
         // Clear time
         that.date.setHours(0);
         that.date.setMinutes(0);
+        that.date.setSeconds(0);
         // Clear components
-        components['selectHours'].set(that.date.getHours(), false);
-        components['selectMinutes'].set(that.date.getMinutes(), false);
+        that.params['withHours'] && components['selectHours'].set(that.date.getHours(), false);
+        that.params['withMinutes'] && components['selectMinutes'].set(that.date.getMinutes(), false);
+        that.params['withSeconds'] && components['selectSeconds'].set(that.date.getSeconds(), false);
         // Set time
         set(false);
         // Trigger events

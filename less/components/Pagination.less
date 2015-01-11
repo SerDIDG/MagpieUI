@@ -1,9 +1,9 @@
 /* ******* PAGINATION ******* */
 
 .com-pagination {
-    margin: 0 0 @cm-indentMedium;
-    line-height: @CmForm-fieldHeight;
-    .cm-user-select(none);
+    margin: 0 0 @CmIndent-Medium;
+    line-height: @CmForm-FieldHeight;
+    .mx__user-select(none);
 
     ul {
         margin: 0;
@@ -14,36 +14,36 @@
 
         li {
             display: inline-block;
-            margin-right: @cm-indentXXXSmall;
+            margin-right: @CmIndent-XXXSmall;
             vertical-align: top;
-            line-height: @CmForm-fieldHeight;
-            font-size: @cm-fontSize;
+            line-height: @CmForm-FieldHeight;
+            font-size: @CmFont-Base-Size;
 
             &:first-child {
                 margin-right: 0;
             }
 
             a {
-                #cm > .button;
-                #cm > .button-secondary;
-                min-width: @CmForm-fieldHeight;
+                .button;
+                .button.button-secondary;
+                min-width: @CmForm-FieldHeight;
                 padding: 0 6px;
             }
 
             &.active a {
-                #cm > .button-primary;
+                .button.button-primary;
                 padding: 0 6px;
             }
 
             &.prev a,
             &.next a {
-                #cm > .button-transparent;
+                .button.button-transparent;
                 padding: 0 6px;
-                font-weight: @cm-boldWeight;
+                font-weight: @CmFont-Base-BoldWeight;
             }
 
             &.points {
-                width: @CmForm-fieldHeight;
+                width: @CmForm-FieldHeight;
                 font-weight: normal;
                 text-align: center;
             }
@@ -68,7 +68,7 @@
 }
 
 .com-pagination-container {
-    margin: 0 0 @cm-indentMedium;
+    margin: 0 0 @CmIndent-Medium;
 
     &.bottom {
         margin: 0;
@@ -80,7 +80,7 @@
 }
 
 .com-pagination-content {
-    margin: @cm-indentMedium 0;
+    margin: @CmIndent-Medium 0;
     position: relative;
 
     &:first-child {

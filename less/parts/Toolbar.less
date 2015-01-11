@@ -1,23 +1,21 @@
-/* ******* TOOLBAR ********** */
+/* ******* PARTS: TOOLBAR ********** */
 
-.cm-toolbar {
-    margin: 0 0 @cm-indentMedium;
+.pt__toolbar {
+    margin: 0 0 @CmIndent-Medium;
 
     &.bottom {
         margin: 0;
     }
 
     > .inner {
-        margin: 0 0 -@cm-indentMedium;
+        .display-flex;
+        margin: 0 0 -@CmIndent-Medium;
         font-size: 0;
-        display: -webkit-flex;
-        display: flex;
-        -webkit-flex-wrap: wrap;
-                 flex-wrap: wrap;
+        .mx__flex-wrap(wrap);
 
         > .left {
-            flex: auto;
             float: left;
+            .mx__flex(auto);
         }
 
         > .right {
@@ -26,13 +24,13 @@
     }
 
     .group {
+        .cm__list-clear;
+        .cm__list-inline--base;
         max-width: 100%;
-        margin: 0 @CmToolbar-groupIndent 0 0;
-        padding: 0;
+        margin: 0 @PtToolbar-GroupIndent 0 0;
         display: inline-block;
         vertical-align: top;
         list-style: none;
-        font-size: 0;
 
         &:last-child {
             margin-right: 0;
@@ -40,18 +38,15 @@
 
         > li {
             max-width: 100%;
-            display: inline-block;
-            vertical-align: top;
-            margin: 0 @CmToolbar-itemIndent @cm-indentMedium 0;
-            line-height: @CmForm-fieldHeight;
-            font-size: @cm-fontSize;
+            margin: 0 @PtToolbar-ItemIndent @CmIndent-Medium 0;
+            line-height: @CmForm-FieldHeight;
 
             &:last-child {
                 margin-right: 0;
             }
 
             &.label {
-                margin-right: @cm-indentXXSmall;
+                margin-right: @CmIndent-XXSmall;
             }
 
             &.is-icon {
@@ -70,24 +65,32 @@
                 }
             }
 
+            &.xxx-small {
+                width: @PtToolbar-XXXSmall;
+            }
+
+            &.xx-small {
+                width: @PtToolbar-XXSmall;
+            }
+
             &.x-small {
-                width: @CmToolbar-XSmall;
+                width: @PtToolbar-XSmall;
             }
 
             &.small {
-                width: @CmToolbar-Small;
+                width: @PtToolbar-Small;
             }
 
             &.medium {
-                width: @CmToolbar-Medium;
+                width: @PtToolbar-Medium;
             }
 
             &.large {
-                width: @CmToolbar-Large;
+                width: @PtToolbar-Large;
             }
 
             &.x-large {
-                width: @CmToolbar-XLarge;
+                width: @PtToolbar-XLarge;
             }
         }
 
@@ -100,11 +103,11 @@
 
                     &:first-child {
                         margin: 0;
-                        border-radius: @cm-borderRadius 0 0 @cm-borderRadius;
+                        border-radius: @CmBorder-Radius 0 0 @CmBorder-Radius;
                     }
 
                     &:last-child {
-                        border-radius: 0 @cm-borderRadius @cm-borderRadius 0;
+                        border-radius: 0 @CmBorder-Radius @CmBorder-Radius 0;
                     }
 
                     &:hover {
@@ -122,23 +125,21 @@
 
     &.is-adaptive {
         > .inner {
-            -webkit-flex-wrap: nowrap;
-                    flex-wrap: nowrap;
+            .mx__flex-wrap(nowrap);
         }
 
         .group {
-            display: -webkit-flex;
-            display: flex;
+            .display-flex;
         }
     }
 }
 
-/* *** ADAPTIVE *** */
+/* ******* PARTS: TOOLBAR: ADAPTIVE ********** */
 
-@media only screen and (max-width : @cm-screenMobile) {
+@media only screen and (max-width : @CmScreen-Mobile) {
 
     html.is-adaptive {
-        .cm-toolbar {
+        .pt__toolbar {
             > .inner {
                 > .left,
                 > .right {
@@ -167,7 +168,7 @@
                     margin-left: 0;
                     margin-right: 0;
 
-                    .cm-button {
+                    .button {
                         width: 100%;
                         display: block;
                     }
@@ -185,7 +186,7 @@
                     display: block;
                 }
 
-                .cm-button {
+                .button {
                     width: 100%;
                     display: block;
                 }

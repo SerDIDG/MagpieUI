@@ -53,9 +53,9 @@ function(params){
 
     var render = function(){
         // Structure
-        that.nodes['container'] = cm.Node('div', {'class' : 'com-gallery'},
+        that.nodes['container'] = cm.Node('div', {'class' : 'com__gallery'},
             that.nodes['holder'] = cm.Node('div', {'class' : 'holder'}),
-            that.nodes['bar'] = cm.Node('div', {'class' : 'com-gallery-controls is-full'},
+            that.nodes['bar'] = cm.Node('div', {'class' : 'com__gallery-controls is-full'},
                 cm.Node('div', {'class' : 'inner'},
                     that.nodes['prev'] = cm.Node('div', {'class' : 'bar-arrow prev'},
                         cm.Node('div', {'class' : that.params['icons']['prev']})
@@ -112,7 +112,7 @@ function(params){
         /// Check type
         item['type'] = /(\.jpg|\.png|\.gif|\.jpeg|\.bmp|\.tga)$/gi.test(item['src']) ? 'image' : 'video';
         // Structure
-        item['nodes']['container'] = cm.Node('div', {'class' : 'cm-imagebox is-no-hover is-centered'},
+        item['nodes']['container'] = cm.Node('div', {'class' : 'pt__image is-no-hover is-centered'},
             item['nodes']['inner'] = cm.Node('div', {'class' : 'inner'})
         );
         // Render by type

@@ -1,0 +1,68 @@
+/* ******* COMMON: LIST ******* */
+
+.cm__list {
+    margin: 0 0 @CmIndent-Medium;
+    list-style: disc;
+
+    &.bottom {
+        margin: 0;
+    }
+
+    &.has-indent {
+        ul, li {
+            margin: @CmIndent-XXSmall 0 0 0;
+
+            &:first-child {
+                margin: 0;
+            }
+        }
+    }
+
+    ul {
+        list-style: circle;
+
+        ul {
+            list-style: disc;
+        }
+    }
+}
+
+.cm__list-inline {
+    text-align: left;
+    font-size: 0;
+
+    > li {
+        display: inline-block;
+        vertical-align: top;
+    }
+}
+
+.cm__list-inline--base {
+    .cm__list-inline;
+
+    > li {
+        .cm__font;
+    }
+}
+
+.cm__list-clear {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    > li {
+        margin: 0;
+        padding: 0;
+    }
+}
+
+.cm__list-table {
+    width: 100%;
+    display: table;
+    table-layout: fixed;
+
+    > li {
+        display: table-cell;
+    }
+}
+

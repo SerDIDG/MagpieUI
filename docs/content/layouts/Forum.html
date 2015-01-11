@@ -1,0 +1,846 @@
+<!DOCTYPE HTML>
+<html class="is-adaptive">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Layouts: Forum</title>
+
+    <link type="text/css" rel="stylesheet" href="../../../css/index.css">
+    <link type="text/css" rel="stylesheet" href="../../styles/index.css">
+
+    <script type="text/javascript" src="../../../js/polyfill.js"></script>
+    <script type="text/javascript" src="../../../js/common.js"></script>
+    <script type="text/javascript" src="../../../js/parts.js"></script>
+    <script type="text/javascript" src="../../../js/modules.js"></script>
+    <script type="text/javascript" src="../../../js/init.js"></script>
+    <script type="text/javascript" src="../../../js/components/UA.js"></script>
+    <script type="text/javascript" src="../../../js/components/Collector.js"></script>
+    <script type="text/javascript" src="../../../js/components/Tabset.js"></script>
+    <script type="text/javascript" src="../../../js/components/ToggleBox.js"></script>
+    <script type="text/javascript" src="../../../js/components/Tooltip.js"></script>
+    <script type="text/javascript" src="../../../js/components/Select.js"></script>
+
+    <script type="text/javascript">
+        cm.onReady(function(){
+            // Components
+            new Com.Collector()
+                .addEvent('onConstruct', function(collector, data){
+                    Part.Menu();
+                    Part.Autoresize(data['node']);
+                })
+                .add('tabset', function(node){
+                    new Com.Tabset({'node' : node});
+                })
+                .add('togglebox', function(node){
+                    new Com.ToggleBox({'node' : node});
+                })
+                .add('select', function(node){
+                    new Com.Select({'select' : node});
+                })
+                .construct();
+        });
+    </script>
+</head>
+
+<body>
+
+<h1 class="pt__box-title">Layouts: Forum</h1>
+
+<ul class="com__tabset__content-ul" data-element="tabset">
+    <li data-node="tabs:[]:container" data-config='{"id" : "main", "title" : "Main"}'>
+
+        <div class="lt__forum lt__forum-main">
+            <div class="pt__breadcrumbs">
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li class="sep">&raquo;</li>
+                    <li><a href="#">Modules</a></li>
+                    <li class="sep">&raquo;</li>
+                    <li><a href="#">Slider</a></li>
+                    <li class="sep">&raquo;</li>
+                    <li>Home</li>
+                </ul>
+            </div>
+
+            <h1>Forum</h1>
+
+            <dl class="com__togglebox has-hover-icon has-content-bg has-title-bg is-ui is-show" data-element="togglebox" data-config='{"name" : "lt__forum-1", "remember" : true}'>
+                <dt>
+                    <span class="icon default linked" data-node="ComToggleBox.button"></span>
+                    <div class="title">
+                        <a>Countries</a>
+                    </div>
+                </dt>
+                <dd data-node="ComToggleBox.target">
+                    <div class="pt__gridlist bottom">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td class="lt__forum__cell-icon">
+                                        <a class="icon default linked"></a>
+                                    </td>
+                                    <td class="lt__forum__cell-title">
+                                        <div class="title">
+                                            <a>Ukraine</a>
+                                        </div>
+                                        <div class="descr">Ukraine is a country in Eastern Europe. It has an area of 603,628 km2 (233,062 sq mi), making it the largest country entirely within Europe. Ukraine borders Russia to the east and northeast, Belarus to the northwest, Poland, Slovakia and Hungary to the west, Romania and Moldova to the southwest, and the Black Sea and Sea of Azov to the south and southeast, respectively.</div>
+                                    </td>
+                                    <td class="lt__forum__cell-counter">
+                                        <div class="line">
+                                            <div class="title">topics</div>
+                                            <div class="descr">9,000</div>
+                                        </div>
+                                        <div class="line">
+                                            <div class="title">posts</div>
+                                            <div class="descr">100,500</div>
+                                        </div>
+                                    </td>
+                                    <td class="lt__forum__cell-last">
+                                        <div class="pt__box-item size-50">
+                                            <div class="l">
+                                                <div class="pt__image is-centered">
+                                                    <div class="inner">
+                                                        <img class="descr" alt="" src="../../../img/parts/no-avatar-50.png">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="r">
+                                                <div class="title"><a>Why i love my beautiful country of all world!</a></div>
+                                                <div class="author">By <a>User Userberg</a></div>
+                                                <div class="date">July 8, 2014 at 20:20</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="lt__forum__cell-icon">
+                                        <a class="icon default linked"></a>
+                                    </td>
+                                    <td class="lt__forum__cell-title">
+                                        <div class="title">
+                                            <a>Canada</a>
+                                        </div>
+                                        <div class="descr">Canada is a country in North America consisting of 10 provinces and 3 territories. Located in the northern part of the continent, it extends from the Atlantic to the Pacific and northward into the Arctic Ocean. At 9.98 million square kilometres in total, Canada is the world's second-largest country by total area and the fourth-largest country by land area. Its common border with the United States is the world's longest land border shared by the same two countries.</div>
+                                    </td>
+                                    <td class="lt__forum__cell-counter">
+                                        <div class="line">
+                                            <div class="title">topics</div>
+                                            <div class="descr">9,000</div>
+                                        </div>
+                                        <div class="line">
+                                            <div class="title">posts</div>
+                                            <div class="descr">100,500</div>
+                                        </div>
+                                    </td>
+                                    <td class="lt__forum__cell-last">
+                                        <div class="pt__box-item size-50">
+                                            <div class="l">
+                                                <div class="pt__image is-centered">
+                                                    <div class="inner">
+                                                        <img class="descr" alt="" src="../../../img/parts/no-avatar-50.png">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="r">
+                                                <div class="title"><a>Why i love my beautiful country of all world!</a></div>
+                                                <div class="author">By <a>User Userberg</a></div>
+                                                <div class="date">July 8, 2014 at 20:20</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </dd>
+            </dl>
+
+            <dl class="com__togglebox has-hover-icon has-content-bg has-title-bg is-ui is-show" data-element="togglebox" data-config='{"name" : "lt__forum-2", "remember" : true}'>
+                <dt>
+                    <span class="icon default linked" data-node="ComToggleBox.button"></span>
+                    <div class="title">
+                        <a>Cities</a>
+                    </div>
+                </dt>
+                <dd data-node="ComToggleBox.target">
+                    <div class="pt__gridlist bottom">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td class="lt__forum__cell-icon">
+                                        <a class="icon default linked"></a>
+                                    </td>
+                                    <td class="lt__forum__cell-title">
+                                        <div class="title">
+                                            <a>Ottawa</a>
+                                        </div>
+                                        <div class="descr">Ottawa is the capital of Canada, and the fourth largest city in the country. The city stands on the south bank of the Ottawa River in the eastern portion of Southern Ontario. Ottawa borders Gatineau, Quebec, and together they form the National Capital Region (NCR).</div>
+                                    </td>
+                                    <td class="lt__forum__cell-counter">
+                                        <div class="line">
+                                            <div class="title">topics</div>
+                                            <div class="descr">9,000</div>
+                                        </div>
+                                        <div class="line">
+                                            <div class="title">posts</div>
+                                            <div class="descr">100,500</div>
+                                        </div>
+                                    </td>
+                                    <td class="lt__forum__cell-last">
+                                        <div class="pt__box-item size-50">
+                                            <div class="l">
+                                                <div class="pt__image is-centered">
+                                                    <div class="inner">
+                                                        <img class="descr" alt="" src="../../../img/parts/no-avatar-50.png">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="r">
+                                                <div class="title"><a>Why i love my beautiful country of all world!</a></div>
+                                                <div class="author">By <a>User Userberg</a></div>
+                                                <div class="date">July 8, 2014 at 20:20</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="lt__forum__cell-icon">
+                                        <a class="icon default linked"></a>
+                                    </td>
+                                    <td class="lt__forum__cell-title">
+                                        <div class="title">
+                                            <a>Mykolaiv</a>
+                                        </div>
+                                        <div class="descr">Mykolaiv is a city in southern Ukraine, administrative center of the Mykolaiv Oblast. Mykolaiv is arguably the main ship building center of Black Sea. Aside of its three shipyards within the city is located number of research centers specializing in shipbuilding such as the State Research and Design Shipbuilding Center, Zoria-Mashproekt, and others.</div>
+                                    </td>
+                                    <td class="lt__forum__cell-counter">
+                                        <div class="line">
+                                            <div class="title">topics</div>
+                                            <div class="descr">9,000</div>
+                                        </div>
+                                        <div class="line">
+                                            <div class="title">posts</div>
+                                            <div class="descr">100,500</div>
+                                        </div>
+                                    </td>
+                                    <td class="lt__forum__cell-last">
+                                        <div class="pt__box-item size-50">
+                                            <div class="l">
+                                                <div class="pt__image is-centered">
+                                                    <div class="inner">
+                                                        <img class="descr" alt="" src="../../../img/parts/no-avatar-50.png">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="r">
+                                                <div class="title"><a>Why i love my beautiful country of all world!</a></div>
+                                                <div class="author">By <a>User Userberg</a></div>
+                                                <div class="date">July 8, 2014 at 20:20</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </dd>
+            </dl>
+
+            <dl class="com__togglebox has-hover-icon has-content-bg has-title-bg is-ui is-show" data-element="togglebox" data-config='{"name" : "lt__forum-3", "remember" : true}'>
+                <dt>
+                    <span class="icon default linked" data-node="ComToggleBox.button"></span>
+                    <div class="title">
+                        <a>Cities</a>
+                    </div>
+                </dt>
+                <dd data-node="ComToggleBox.target">
+                    <div class="cm__empty">There are no forums in this category</div>
+                </dd>
+            </dl>
+        </div>
+
+    </li>
+
+    <li data-node="tabs:[]:container" data-config='{"id" : "category", "title" : "Category"}'>
+
+        <div class="lt__forum lt__forum-category">
+
+            <div class="pt__breadcrumbs">
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li class="sep">&raquo;</li>
+                    <li><a href="#">Modules</a></li>
+                    <li class="sep">&raquo;</li>
+                    <li><a href="#">Slider</a></li>
+                    <li class="sep">&raquo;</li>
+                    <li>Home</li>
+                </ul>
+            </div>
+
+            <h1>Countries</h1>
+
+            <dl class="com__togglebox has-hover-icon has-content-bg has-title-bg is-ui is-show" data-element="togglebox" data-config='{"name" : "lt__forum-1-categories", "remember" : true}'>
+                <dt>
+                    <span class="icon default linked" data-node="ComToggleBox.button"></span>
+                    <div class="title">
+                        <a>Sub-categories</a>
+                    </div>
+                </dt>
+                <dd data-node="ComToggleBox.target">
+                    <div class="pt__gridlist bottom">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td class="lt__forum__cell-icon">
+                                        <a class="icon default linked"></a>
+                                    </td>
+                                    <td class="lt__forum__cell-title">
+                                        <div class="title">
+                                            <a>Ukraine</a>
+                                        </div>
+                                        <div class="descr">Ukraine is a country in Eastern Europe. It has an area of 603,628 km2 (233,062 sq mi), making it the largest country entirely within Europe. Ukraine borders Russia to the east and northeast, Belarus to the northwest, Poland, Slovakia and Hungary to the west, Romania and Moldova to the southwest, and the Black Sea and Sea of Azov to the south and southeast, respectively.</div>
+                                    </td>
+                                    <td class="lt__forum__cell-counter">
+                                        <div class="line">
+                                            <div class="title">topics</div>
+                                            <div class="descr">9,000</div>
+                                        </div>
+                                        <div class="line">
+                                            <div class="title">posts</div>
+                                            <div class="descr">100,500</div>
+                                        </div>
+                                    </td>
+                                    <td class="lt__forum__cell-last">
+                                        <div class="pt__box-item size-50">
+                                            <div class="l">
+                                                <div class="pt__image is-centered">
+                                                    <div class="inner">
+                                                        <img class="descr" alt="" src="../../../img/parts/no-avatar-50.png">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="r">
+                                                <div class="title"><a>Why i love my beautiful country of all world!</a></div>
+                                                <div class="author">By <a>User Userberg</a></div>
+                                                <div class="date">July 8, 2014 at 20:20</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="lt__forum__cell-icon">
+                                        <a class="icon default linked"></a>
+                                    </td>
+                                    <td class="lt__forum__cell-title">
+                                        <div class="title">
+                                            <a>Canada</a>
+                                        </div>
+                                        <div class="descr">Canada is a country in North America consisting of 10 provinces and 3 territories. Located in the northern part of the continent, it extends from the Atlantic to the Pacific and northward into the Arctic Ocean. At 9.98 million square kilometres in total, Canada is the world's second-largest country by total area and the fourth-largest country by land area. Its common border with the United States is the world's longest land border shared by the same two countries.</div>
+                                    </td>
+                                    <td class="lt__forum__cell-counter">
+                                        <div class="line">
+                                            <div class="title">topics</div>
+                                            <div class="descr">9,000</div>
+                                        </div>
+                                        <div class="line">
+                                            <div class="title">posts</div>
+                                            <div class="descr">100,500</div>
+                                        </div>
+                                    </td>
+                                    <td class="lt__forum__cell-last">
+                                        <div class="pt__box-item size-50">
+                                            <div class="l">
+                                                <div class="pt__image is-centered">
+                                                    <div class="inner">
+                                                        <img class="descr" alt="" src="../../../img/parts/no-avatar-50.png">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="r">
+                                                <div class="title"><a>Why i love my beautiful country of all world!</a></div>
+                                                <div class="author">By <a>User Userberg</a></div>
+                                                <div class="date">July 8, 2014 at 20:20</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </dd>
+            </dl>
+
+
+            <dl class="com__togglebox has-hover-icon has-content-bg has-title-bg is-ui is-show" data-element="togglebox" data-config='{"name" : "lt__forum-1-topics", "remember" : true}'>
+                <dt>
+                    <span class="icon default linked" data-node="ComToggleBox.button"></span>
+                    <div class="title">
+                        <a>Topics</a>
+                    </div>
+                </dt>
+                <dd data-node="ComToggleBox.target">
+
+                    <div class="pt__toolbar">
+                        <div class="inner clear">
+                            <div class="left">
+                                <ul class="group">
+                                    <li class="label">Filter by:</li>
+                                    <li class="is-field large">
+                                        <select data-element="select">
+                                            <option>New</option>
+                                            <option>Most commented</option>
+                                            <option>Most viewed</option>
+                                        </select>
+                                    </li>
+                                    <li>
+                                        <a class="button">Filter</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt__gridlist bottom">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td class="lt__forum__cell-icon">
+                                        <a class="icon default-featured linked"></a>
+                                    </td>
+                                    <td class="lt__forum__cell-title">
+                                        <div class="title">
+                                            <a>Ottawa</a>
+                                        </div>
+                                        <div class="descr">Ottawa is the capital of Canada, and the fourth largest city in the country. The city stands on the south bank of the Ottawa River in the eastern portion of Southern Ontario. Ottawa borders Gatineau, Quebec, and together they form the National Capital Region (NCR).</div>
+                                    </td>
+                                    <td class="lt__forum__cell-counter">
+                                        <div class="line">
+                                            <div class="title">replies</div>
+                                            <div class="descr">9,000</div>
+                                        </div>
+                                        <div class="line">
+                                            <div class="title">views</div>
+                                            <div class="descr">100,500</div>
+                                        </div>
+                                    </td>
+                                    <td class="lt__forum__cell-last">
+                                        <div class="pt__box-item size-50">
+                                            <div class="l">
+                                                <div class="pt__image is-centered">
+                                                    <div class="inner">
+                                                        <img class="descr" alt="" src="../../../img/parts/no-avatar-50.png">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="r">
+                                                <div class="author">By <a>User Userberg</a></div>
+                                                <div class="date">July 8, 2014 at 20:20</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="lt__forum__cell-icon">
+                                        <a class="icon default-page linked"></a>
+                                    </td>
+                                    <td class="lt__forum__cell-title">
+                                        <div class="title">
+                                            <a>Ottawa</a>
+                                        </div>
+                                        <div class="descr">Ottawa is the capital of Canada, and the fourth largest city in the country. The city stands on the south bank of the Ottawa River in the eastern portion of Southern Ontario. Ottawa borders Gatineau, Quebec, and together they form the National Capital Region (NCR).</div>
+                                    </td>
+                                    <td class="lt__forum__cell-counter">
+                                        <div class="line">
+                                            <div class="title">replies</div>
+                                            <div class="descr">9,000</div>
+                                        </div>
+                                        <div class="line">
+                                            <div class="title">views</div>
+                                            <div class="descr">100,500</div>
+                                        </div>
+                                    </td>
+                                    <td class="lt__forum__cell-last">
+                                        <div class="pt__box-item size-50">
+                                            <div class="l">
+                                                <div class="pt__image is-centered">
+                                                    <div class="inner">
+                                                        <img class="descr" alt="" src="../../../img/parts/no-avatar-50.png">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="r">
+                                                <div class="author">By <a>User Userberg</a></div>
+                                                <div class="date">July 8, 2014 at 20:20</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </dd>
+            </dl>
+        </div>
+
+    </li>
+
+    <li data-node="tabs:[]:container" data-config='{"id" : "topic", "title" : "Topic"}'>
+        <div class="lt__forum lt__forum-topic">
+            <div class="pt__breadcrumbs">
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li class="sep">&raquo;</li>
+                    <li><a href="#">Modules</a></li>
+                    <li class="sep">&raquo;</li>
+                    <li><a href="#">Slider</a></li>
+                    <li class="sep">&raquo;</li>
+                    <li>Home</li>
+                </ul>
+            </div>
+
+            <h1>Canada</h1>
+
+            <div class="pt__toolbar">
+                <div class="inner clear">
+                    <div class="left">
+                        <ul class="group is-adaptive">
+                            <li>
+                                <a class="button has-icon has-icon-small">
+                                    <span class="icon small settings-white"></span>Edit
+                                </a>
+                            </li>
+                        </ul>
+
+                        <ul class="group is-adaptive">
+                            <li>
+                                <a class="button">Reply to this topic</a>
+                            </li>
+                            <li>
+                                <a class="button">Start new topic</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lt__forum-posts">
+                <ul>
+                    <li>
+                        <div class="lt__forum-post is-featured">
+                            <div class="inner">
+                                <div class="l">
+                                    <div class="pt__box-item is-centered size-80">
+                                        <div class="pt__image is-centered">
+                                            <div class="inner">
+                                                <img class="descr" alt="" src="../../../img/parts/no-avatar-80.png">
+                                            </div>
+                                        </div>
+                                        <div class="author">
+                                            <a>User Userberg</a>
+                                        </div>
+                                        <div class="status">Online</div>
+                                    </div>
+                                </div>
+                                <div class="r">
+                                    <div class="pt__box-editable">
+                                        <div class="r">
+                                            <div class="pt__links">
+                                                <ul>
+                                                    <li>
+                                                        <a>Edit</a>
+                                                    </li>
+                                                    <li>
+                                                        <a>Delete</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="l">
+                                            <div class="date">Posted July 8, 2014 at 20:20</div>
+                                        </div>
+                                    </div>
+                                    <div class="entry">
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris viverra quam sit amet adipiscing luctus. Donec convallis lacus odio, sit amet vulputate dolor pellentesque a. Nam condimentum vulputate mi, vel ullamcorper turpis tincidunt eget. Vestibulum porta, nibh vitae mollis pretium, sem urna blandit tortor, nec elementum magna augue eu neque. Quisque in justo ut risus semper tempor. In mattis neque vitae odio mollis, id viverra metus tincidunt. Mauris et porta justo. Ut eu elit nulla. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Sed lacinia nec nisi nec aliquet. Ut rhoncus placerat rutrum.</p>
+                                    </div>
+                                    <div class="post-signature">
+                                        <hr>
+                                        <p>Default signature text.</p>
+                                    </div>
+                                    <div class="post-share">
+                                        <hr>
+                                        <div class="pt__line-share pull-left">
+                                            <ul>
+                                                <li>
+                                                    <a>
+                                                        <div class="icon default facebook"></div>
+                                                        <div class="count">25</div>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a>
+                                                        <div class="icon default twitter"></div>
+                                                        <div class="count">12</div>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a>
+                                                        <div class="icon default google"></div>
+                                                        <div class="count">1</div>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a>
+                                                        <div class="icon default favorite"></div>
+                                                        <div class="count">7</div>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="pt__line-share pull-left">
+                                            <ul>
+                                                <li>
+                                                    <a>
+                                                        <div class="label">Excellent</div>
+                                                        <div class="count">25</div>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a>
+                                                        <div class="label">Interesting</div>
+                                                        <div class="count">12</div>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a>
+                                                        <div class="label">Useful</div>
+                                                        <div class="count">1</div>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a>
+                                                        <div class="label">Not useful</div>
+                                                        <div class="count">7</div>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li>
+                        <div class="lt__forum-post">
+                            <div class="inner">
+                                <div class="l">
+                                    <div class="pt__box-item is-centered size-80">
+                                        <div class="pt__image is-centered">
+                                            <div class="inner">
+                                                <img class="descr" alt="" src="../../../img/parts/no-avatar-80.png">
+                                            </div>
+                                        </div>
+                                        <div class="author">
+                                            <a>User Userberg</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="r">
+                                    <div class="date">Posted July 8, 2014 at 20:20</div>
+                                    <div class="entry">
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris viverra quam sit amet adipiscing luctus. Donec convallis lacus odio, sit amet vulputate dolor pellentesque a. Nam condimentum vulputate mi, vel ullamcorper turpis tincidunt eget. Vestibulum porta, nibh vitae mollis pretium, sem urna blandit tortor, nec elementum magna augue eu neque. Quisque in justo ut risus semper tempor. In mattis neque vitae odio mollis, id viverra metus tincidunt. Mauris et porta justo. Ut eu elit nulla. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Sed lacinia nec nisi nec aliquet. Ut rhoncus placerat rutrum.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li>
+                        <div class="lt__forum-post">
+                            <div class="inner">
+                                <div class="l">
+                                    <div class="pt__box-item is-centered size-80">
+                                        <div class="pt__image is-centered">
+                                            <div class="inner">
+                                                <img class="descr" alt="" src="../../../img/parts/no-avatar-80.png">
+                                            </div>
+                                        </div>
+                                        <div class="author">
+                                            <a>User Userberg</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="r">
+                                    <div class="date">Posted July 8, 2014 at 20:20</div>
+                                    <div class="entry">
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris viverra quam sit amet adipiscing luctus. Donec convallis lacus odio, sit amet vulputate dolor pellentesque a. Nam condimentum vulputate mi, vel ullamcorper turpis tincidunt eget. Vestibulum porta, nibh vitae mollis pretium, sem urna blandit tortor, nec elementum magna augue eu neque. Quisque in justo ut risus semper tempor. In mattis neque vitae odio mollis, id viverra metus tincidunt. Mauris et porta justo. Ut eu elit nulla. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Sed lacinia nec nisi nec aliquet. Ut rhoncus placerat rutrum.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </li>
+
+    <li data-node="tabs:[]:container" data-config='{"id" : "admin", "title" : "Admin"}'>
+        <div class="lt__forum lt__forum-category">
+            <div class="pt__breadcrumbs">
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li class="sep">&raquo;</li>
+                    <li><a href="#">Modules</a></li>
+                    <li class="sep">&raquo;</li>
+                    <li><a href="#">Slider</a></li>
+                    <li class="sep">&raquo;</li>
+                    <li>Home</li>
+                </ul>
+            </div>
+
+            <h1>Countries</h1>
+
+            <div class="pt__toolbar">
+                <div class="inner clear">
+                    <div class="left">
+                        <ul class="group is-adaptive">
+                            <li>
+                                <a class="button has-icon has-icon-small">
+                                    <span class="icon small settings-white"></span>Edit
+                                </a>
+                            </li>
+                        </ul>
+                        <ul class="group is-adaptive">
+                            <li>
+                                <a class="button">New Category</a>
+                            </li>
+                            <li>
+                                <a class="button">New Topic</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="right">
+                        <ul class="group is-adaptive">
+                            <li class="label">Search: </li>
+                            <li class="is-field large">
+                                <div class="form-field has-icon-right">
+                                    <input type="text">
+                                    <input type="submit" value="" class="icon small search">
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <dl class="com__togglebox has-hover-icon has-content-bg has-title-bg is-ui is-show" data-element="togglebox" data-config='{"name" : "lt__forum-1-categories", "remember" : true}'>
+                <dt>
+                    <span class="icon default linked" data-node="ComToggleBox.button"></span>
+                    <div class="title">
+                        <div class="pt__box-editable">
+                            <div class="r">
+                                <div class="pt__links">
+                                    <ul>
+                                        <li>
+                                            <a>Edit</a>
+                                        </li>
+                                        <li>
+                                            <a>Delete</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="l">
+                                <a>Sub-categories</a>
+                            </div>
+                        </div>
+                    </div>
+                </dt>
+                <dd data-node="ComToggleBox.target">
+                    <div class="pt__gridlist bottom">
+                        <table>
+                            <tbody>
+                            <tr>
+                                <td class="lt__forum__cell-icon">
+                                    <a class="icon default linked"></a>
+                                </td>
+                                <td class="lt__forum__cell-title">
+                                    <div class="title">
+                                        <a>Ukraine</a>
+                                    </div>
+                                    <div class="descr">Ukraine is a country in Eastern Europe. It has an area of 603,628 km2 (233,062 sq mi), making it the largest country entirely within Europe. Ukraine borders Russia to the east and northeast, Belarus to the northwest, Poland, Slovakia and Hungary to the west, Romania and Moldova to the southwest, and the Black Sea and Sea of Azov to the south and southeast, respectively.</div>
+                                </td>
+                                <td class="lt__forum__cell-counter">
+                                    <div class="line">
+                                        <div class="title">topics</div>
+                                        <div class="descr">9,000</div>
+                                    </div>
+                                    <div class="line">
+                                        <div class="title">posts</div>
+                                        <div class="descr">100,500</div>
+                                    </div>
+                                </td>
+                                <td class="lt__forum__cell-last">
+                                    <div class="pt__box-item size-50">
+                                        <div class="l">
+                                            <div class="pt__image is-centered">
+                                                <div class="inner">
+                                                    <img class="descr" alt="" src="../../../img/parts/no-avatar-50.png">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="r">
+                                            <div class="title"><a>Why i love my beautiful country of all world!</a></div>
+                                            <div class="author">By <a>User Userberg</a></div>
+                                            <div class="date">July 8, 2014 at 20:20</div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="lt__forum__cell-icon">
+                                    <a class="icon default linked"></a>
+                                </td>
+                                <td class="lt__forum__cell-title">
+                                    <div class="title">
+                                        <a>Canada</a>
+                                    </div>
+                                    <div class="descr">Canada is a country in North America consisting of 10 provinces and 3 territories. Located in the northern part of the continent, it extends from the Atlantic to the Pacific and northward into the Arctic Ocean. At 9.98 million square kilometres in total, Canada is the world's second-largest country by total area and the fourth-largest country by land area. Its common border with the United States is the world's longest land border shared by the same two countries.</div>
+                                </td>
+                                <td class="lt__forum__cell-counter">
+                                    <div class="line">
+                                        <div class="title">topics</div>
+                                        <div class="descr">9,000</div>
+                                    </div>
+                                    <div class="line">
+                                        <div class="title">posts</div>
+                                        <div class="descr">100,500</div>
+                                    </div>
+                                </td>
+                                <td class="lt__forum__cell-last">
+                                    <div class="pt__box-item size-50">
+                                        <div class="l">
+                                            <div class="pt__image is-centered">
+                                                <div class="inner">
+                                                    <img class="descr" alt="" src="../../../img/parts/no-avatar-50.png">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="r">
+                                            <div class="title"><a>Why i love my beautiful country of all world!</a></div>
+                                            <div class="author">By <a>User Userberg</a></div>
+                                            <div class="date">July 8, 2014 at 20:20</div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </dd>
+            </dl>
+        </div>
+    </li>
+</ul>
+
+</body>
+</html>

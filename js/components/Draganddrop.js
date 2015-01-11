@@ -48,6 +48,7 @@ function(params){
         currentAboveItem,
         currentPosition,
         currentArea,
+        currentChassis,
         previousArea;
 
     /* *** INIT *** */
@@ -105,7 +106,7 @@ function(params){
             }, params),
             childNodes;
         // Add mark classes
-        cm.addClass(area['node'], 'cm-draganddrop-area');
+        cm.addClass(area['node'], 'pt__dnd-area');
         cm.addClass(area['node'], that.params['classes']['area']);
         if(area['isLocked']){
             cm.addClass(area['node'], 'is-locked');
@@ -240,13 +241,10 @@ function(params){
             that.params['draggableContainer'].appendChild(current['node']);
         }
         getPosition(current);
-        cm.addClass(current['node'], 'cm-draganddrop-helper');
+        cm.addClass(current['node'], 'pt__dnd-helper');
         cm.addClass(current['node'], 'is-active', true);
         // Calculate elements position and dimension
-        getPositions(areas);
-        cm.forEach(areas, function(area){
-            getPositions(area['items']);
-        });
+        getPositionsAll();
         // Render Chassis Blocks
         renderChassisBlocks();
         // Find above draggable item
@@ -285,7 +283,7 @@ function(params){
         // Set check position event
         checkInt = setInterval(checkPosition, 5);
         // Add move event on document
-        cm.addClass(document.body, 'cm-draganddrop-body');
+        cm.addClass(document.body, 'pt__dnd-body');
         cm.addEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mousemove', move);
         cm.addEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mouseup', stop);
     };
@@ -336,6 +334,7 @@ function(params){
         }
         // Scroll node
         if(that.params['scroll']){
+        //if(false){
             if(y + 48 > pageSize['winHeight']){
                 toggleScroll(1);
             }else if(y - 48 < 0){
@@ -382,17 +381,21 @@ function(params){
         }
         // Animate chassis
         if(currentAboveItem && tempCurrentAboveItem && currentAboveItem['chassis'][currentPosition] != tempCurrentAboveItem['chassis'][tempCurrentPosition]){
-            animateChassis(currentAboveItem['chassis'][currentPosition], 0, 150);
-            animateChassis(tempCurrentAboveItem['chassis'][tempCurrentPosition], current['dimensions']['absoluteHeight'], 150);
+            animateChassis(currentAboveItem['chassis'][currentPosition], 0, 200);
+            animateChassis(tempCurrentAboveItem['chassis'][tempCurrentPosition], current['dimensions']['absoluteHeight'], 200);
+            currentChassis = tempCurrentAboveItem['chassis'][tempCurrentPosition];
         }else if(!currentAboveItem && tempCurrentAboveItem){
-            animateChassis(currentArea['chassis'][0], 0, 150);
-            animateChassis(tempCurrentAboveItem['chassis'][tempCurrentPosition], current['dimensions']['absoluteHeight'], 150);
+            animateChassis(currentArea['chassis'][0], 0, 200);
+            animateChassis(tempCurrentAboveItem['chassis'][tempCurrentPosition], current['dimensions']['absoluteHeight'], 200);
+            currentChassis = tempCurrentAboveItem['chassis'][tempCurrentPosition];
         }else if(currentAboveItem && !tempCurrentAboveItem){
-            animateChassis(currentAboveItem['chassis'][currentPosition], 0, 150);
-            animateChassis(tempCurrentArea['chassis'][0], current['dimensions']['absoluteHeight'], 150);
+            animateChassis(currentAboveItem['chassis'][currentPosition], 0, 200);
+            animateChassis(tempCurrentArea['chassis'][0], current['dimensions']['absoluteHeight'], 200);
+            currentChassis = tempCurrentArea['chassis'][0];
         }else if(!currentAboveItem && !tempCurrentAboveItem && currentArea != tempCurrentArea){
-            animateChassis(currentArea['chassis'][0], 0, 150);
-            animateChassis(tempCurrentArea['chassis'][0], current['dimensions']['absoluteHeight'], 150);
+            animateChassis(currentArea['chassis'][0], 0, 200);
+            animateChassis(tempCurrentArea['chassis'][0], current['dimensions']['absoluteHeight'], 200);
+            currentChassis = tempCurrentArea['chassis'][0];
         }
         // Unset classname from previous active area
         if(currentArea && currentArea != tempCurrentArea){
@@ -415,7 +418,7 @@ function(params){
         // Remove check position event
         checkInt && clearInterval(checkInt);
         // Remove move events attached on document
-        cm.removeClass(document.body, 'cm-draganddrop-body');
+        cm.removeClass(document.body, 'pt__dnd-body');
         cm.removeEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mousemove', move);
         cm.removeEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mouseup', stop);
         // Calculate height of draggable block, like he already dropped in area, to animate height of fake empty space
@@ -511,7 +514,7 @@ function(params){
                         break;
                 }
                 // Remove draggable helper classname
-                cm.removeClass(draggable['node'], 'cm-draganddrop-helper');
+                cm.removeClass(draggable['node'], 'pt__dnd-helper');
                 hack = draggable['node'].clientHeight;
                 cm.removeClass(draggable['node'], 'is-active');
                 // Reset styles
@@ -579,7 +582,7 @@ function(params){
                     'opacity' : 0
                 }
             }else{
-                node = cm.wrap(cm.Node('div', {'class' : 'cm-draganddrop-removable'}), draggable['node']);
+                node = cm.wrap(cm.Node('div', {'class' : 'pt__dnd-removable'}), draggable['node']);
                 anim = new cm.Animation(node);
                 style = {
                     'height' : '0px',
@@ -646,7 +649,7 @@ function(params){
     };
 
     var renderChassis = function(){
-        var node = cm.Node(that.params['chassisTag'], {'class' : 'cm-draganddrop-chassis'});
+        var node = cm.Node(that.params['chassisTag'], {'class' : 'pt__dnd-chassis'});
         return {
             'node' : node,
             'anim' : new cm.Animation(node),
@@ -678,53 +681,63 @@ function(params){
 
     /* *** POSITION CALCULATION FUNCTIONS *** */
 
+    var getPosition = function(item){
+        item['dimensions'] = cm.merge(item['dimensions'], cm.getDimensions(item['node']));
+    };
+
     var getPositions = function(arr){
         cm.forEach(arr, getPosition);
     };
 
-    var getPosition = function(item){
-        // Get basic position and dimension
-        item['dimensions']['width'] = item['node'].offsetWidth;
-        item['dimensions']['height'] = item['node'].offsetHeight;
+    var getPositionsAll = function(){
+        getPositions(areas);
+        cm.forEach(areas, function(area){
+            getPositions(area['items']);
+        });
+    };
+
+    var recalculatePosition = function(item){
         item['dimensions']['x1'] = cm.getRealX(item['node']);
         item['dimensions']['y1'] = cm.getRealY(item['node']);
         item['dimensions']['x2'] = item['dimensions']['x1'] + item['dimensions']['width'];
         item['dimensions']['y2'] = item['dimensions']['y1'] + item['dimensions']['height'];
-        // Calculate Padding and Inner Dimensions
-        item['dimensions']['padding'] = {
-            'top' : cm.getCSSStyle(item['node'], 'paddingTop', true),
-            'right' : cm.getCSSStyle(item['node'], 'paddingRight', true),
-            'bottom' : cm.getCSSStyle(item['node'], 'paddingBottom', true),
-            'left' : cm.getCSSStyle(item['node'], 'paddingLeft', true)
-        };
-        item['dimensions']['innerWidth'] = item['dimensions']['width'] - item['dimensions']['padding']['left'] - item['dimensions']['padding']['right'];
-        item['dimensions']['innerHeight'] = item['dimensions']['height'] - item['dimensions']['padding']['top'] - item['dimensions']['padding']['bottom'];
+
         item['dimensions']['innerX1'] = item['dimensions']['x1'] + item['dimensions']['padding']['left'];
         item['dimensions']['innerY1'] = item['dimensions']['y1'] + item['dimensions']['padding']['top'];
         item['dimensions']['innerX2'] = item['dimensions']['innerX1'] + item['dimensions']['innerWidth'];
         item['dimensions']['innerY2'] = item['dimensions']['innerY1'] + item['dimensions']['innerHeight'];
-        // Calculate Margin and Absolute Dimensions
-        item['dimensions']['margin'] = {
-            'top' : cm.getCSSStyle(item['node'], 'marginTop', true),
-            'right' : cm.getCSSStyle(item['node'], 'marginRight', true),
-            'bottom' : cm.getCSSStyle(item['node'], 'marginBottom', true),
-            'left' : cm.getCSSStyle(item['node'], 'marginLeft', true)
-        };
-        item['dimensions']['absoluteWidth'] = item['dimensions']['width'] + item['dimensions']['margin']['left'] + item['dimensions']['margin']['right'];
-        item['dimensions']['absoluteHeight'] = item['dimensions']['height'] + item['dimensions']['margin']['top'] + item['dimensions']['margin']['bottom'];
+
         item['dimensions']['absoluteX1'] = item['dimensions']['x1'] - item['dimensions']['margin']['left'];
         item['dimensions']['absoluteY1'] = item['dimensions']['y1'] - item['dimensions']['margin']['top'];
         item['dimensions']['absoluteX2'] = item['dimensions']['x2'] + item['dimensions']['margin']['right'];
         item['dimensions']['absoluteY2'] = item['dimensions']['y2'] + item['dimensions']['margin']['bottom'];
     };
 
+    var recalculatePositions = function(arr){
+        cm.forEach(arr, recalculatePosition);
+    };
+
+    var recalculatePositionsAll = function(){
+        var chassisHeight = 0;
+        // Reset current active chassis height, cause we need to calculate clear positions
+        if(currentChassis){
+            chassisHeight = currentChassis['node'].offsetHeight;
+            currentChassis['node'].style.height = 0;
+        }
+        recalculatePositions(areas);
+        cm.forEach(areas, function(area){
+            recalculatePositions(area['items']);
+        });
+        // Restoring chassis height after calculation
+        if(currentChassis && chassisHeight){
+            currentChassis['node'].style.height = [chassisHeight, 'px'].join('');
+        }
+    };
+
     var checkPosition = function(){
         var filteredAreas = getFilteredAreas();
         if(filteredAreas[0]['dimensions']['y1'] != cm.getRealY(filteredAreas[0]['node'])){
-            getPositions(areas);
-            cm.forEach(areas, function(area){
-                getPositions(area['items']);
-            });
+            recalculatePositionsAll();
         }
     };
 
@@ -784,6 +797,8 @@ function(params){
             }
             anims['scroll'].go({'style' : styles, 'duration' : duration, 'onStop' : function(){
                 isScrollProccess = false;
+                //getPositionsAll();
+                //recalculatePositionsAll();
             }});
         }else if(speed > 0 && !isScrollProccess){
             isScrollProccess = true;
@@ -797,6 +812,8 @@ function(params){
             duration = scrollRemaining * that.params['scrollSpeed'];
             anims['scroll'].go({'style' : styles, 'duration' : duration, 'onStop' : function(){
                 isScrollProccess = false;
+                //getPositionsAll();
+                //recalculatePositionsAll();
             }});
         }
     };
@@ -889,7 +906,7 @@ function(params){
             // Find old draggable area and index in area
             var area = oldDraggable['area'],
                 index = area['items'].indexOf(oldDraggableNode),
-                node = cm.wrap(cm.Node('div', {'class' : 'cm-draganddrop-removable', 'style' : 'height: 0px;'}), newDraggableNode),
+                node = cm.wrap(cm.Node('div', {'class' : 'pt__dnd-removable', 'style' : 'height: 0px;'}), newDraggableNode),
                 anim = new cm.Animation(node);
             // Append new draggable into DOM
             cm.insertAfter(node, oldDraggableNode);

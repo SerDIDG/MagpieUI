@@ -1,379 +1,576 @@
+
+// /* ************************************************ */
+// /* ******* VARIABLES ******* */
+// /* ************************************************ */
+
 // /* ******* PATH ******* */
 
-@CmPath-image: '../img';
+@CmPath-Images: '../img';
+
+// /* ******* SCREEN TYPES ******* */
+
+@CmScreen-Mobile: 640px;
+@CmScreen-MobilePortrait: 480px;
+@CmScreen-Tablet: 1024px;
+@CmScreen-TabletPortrait: 768px;
+
+// /* ******* SIZES ******* */
+
+@CmSize-None: 0px;
+@CmSize-XXXSmall: 4px;
+@CmSize-XXSmall: 8px;
+@CmSize-XSmall: 12px;
+@CmSize-Small: 16px;
+@CmSize-Medium: 24px;
+@CmSize-Large: 32px;
+@CmSize-XLarge: 48px;
+@CmSize-XXLarge: 64px;
+
+@CmIndent-None: @CmSize-None;
+@CmIndent-XXXSmall: @CmSize-XXXSmall;
+@CmIndent-XXSmall: @CmSize-XXSmall;
+@CmIndent-XSmall: @CmSize-XSmall;
+@CmIndent-Small: @CmSize-Small;
+@CmIndent-Medium: @CmSize-Medium;
+@CmIndent-Large: @CmSize-Large;
+@CmIndent-XLarge: @CmSize-XLarge;
+@CmIndent-XXLarge: @CmSize-XXLarge;
+
+@CmIndents: @CmIndent-None @CmIndent-XXXSmall @CmIndent-XXSmall @CmIndent-XSmall @CmIndent-Small @CmIndent-Medium @CmIndent-Large @CmIndent-XLarge @CmIndent-XXLarge;
+
+// /* ************************************************ */
+// /* ******* COLORS ******* */
+// /* ************************************************ */
+
+// /* ******* VARS ******* */
+
+@CmVar-Color-LightDefault-Lightness: 100%;
+@CmVar-Color-LightHighlight-Lightness: 98%;
+@CmVar-Color-LightHover-Lightness: 95%;
+@CmVar-Color-LightActive-Lightness: 91%;
+@CmVar-Color-LightActiveHover-Lightness: 86%;
+
+@CmVar-Color-MiddleDefault-Lightness: 80%;
+@CmVar-Color-MiddleHover-Lightness: 75%;
+@CmVar-Color-MiddleActive-Lightness: 70%;
+@CmVar-Color-MiddleActiveHover-Lightness: 65%;
+
+@CmVar-Color-DarkDefault-Lightness: 52%;
+@CmVar-Color-DarkHover-Lightness: 45%;
+@CmVar-Color-DarkActive-Lightness: 35%;
+@CmVar-Color-DarkActiveHover-Lightness: 25%;
+
+// /* ******* PRIMARY ******* */
+
+@CmColor-Primary: 210;
+
+// /* Dark Key */
+
+@CmColor-Primary-DarkSaturation: 75%;
+@CmColor-Primary-DarkLighten: 0%;
+@CmColor-Primary-DarkDefault-Lightness: @CmVar-Color-DarkDefault-Lightness;
+@CmColor-Primary-DarkHover-Lightness: @CmVar-Color-DarkHover-Lightness;
+@CmColor-Primary-DarkActive-Lightness: @CmVar-Color-DarkActive-Lightness;
+@CmColor-Primary-DarkActiveHover-Lightness: @CmVar-Color-DarkActiveHover-Lightness;
+@CmColor-Primary-DarkDefault: hsl(@CmColor-Primary, @CmColor-Primary-DarkSaturation, @CmColor-Primary-DarkDefault-Lightness + @CmColor-Primary-DarkLighten);
+@CmColor-Primary-DarkHover: hsl(@CmColor-Primary, @CmColor-Primary-DarkSaturation, @CmColor-Primary-DarkHover-Lightness + @CmColor-Primary-DarkLighten);
+@CmColor-Primary-DarkActive: hsl(@CmColor-Primary, @CmColor-Primary-DarkSaturation, @CmColor-Primary-DarkActive-Lightness + @CmColor-Primary-DarkLighten);
+@CmColor-Primary-DarkActiveHover: hsl(@CmColor-Primary, @CmColor-Primary-DarkSaturation, @CmColor-Primary-DarkActiveHover-Lightness + @CmColor-Primary-DarkLighten);
+
+// /* Middle Tone Key */
+
+@CmColor-Primary-MiddleSaturation: 75%;
+@CmColor-Primary-MiddleLighten: 0%;
+@CmColor-Primary-MiddleDefault: hsl(@CmColor-Primary, @CmColor-Primary-MiddleSaturation, @CmVar-Color-MiddleDefault-Lightness + @CmColor-Primary-MiddleLighten);
+@CmColor-Primary-MiddleHover: hsl(@CmColor-Primary, @CmColor-Primary-MiddleSaturation, @CmVar-Color-MiddleHover-Lightness + @CmColor-Primary-MiddleLighten);
+@CmColor-Primary-MiddleActive: hsl(@CmColor-Primary, @CmColor-Primary-MiddleSaturation, @CmVar-Color-MiddleActive-Lightness + @CmColor-Primary-MiddleLighten);
+@CmColor-Primary-MiddleActiveHover: hsl(@CmColor-Primary, @CmColor-Primary-MiddleSaturation, @CmVar-Color-MiddleActiveHover-Lightness + @CmColor-Primary-MiddleLighten);
+
+// /* Light Key */
+
+@CmColor-Primary-LightSaturation: 70%;
+@CmColor-Primary-LightLighten: 0%;
+@CmColor-Primary-LightDefault: transparent;
+@CmColor-Primary-LightHighlight: hsl(@CmColor-Primary, @CmColor-Primary-LightSaturation, @CmVar-Color-LightHighlight-Lightness + @CmColor-Primary-LightLighten);
+@CmColor-Primary-LightHover: hsl(@CmColor-Primary, @CmColor-Primary-LightSaturation, @CmVar-Color-LightHover-Lightness + @CmColor-Primary-LightLighten);
+@CmColor-Primary-LightActive: hsl(@CmColor-Primary, @CmColor-Primary-LightSaturation, @CmVar-Color-LightActive-Lightness + @CmColor-Primary-LightLighten);
+@CmColor-Primary-LightActiveHover: hsl(@CmColor-Primary, @CmColor-Primary-LightSaturation, @CmVar-Color-LightActiveHover-Lightness + @CmColor-Primary-LightLighten);
+
+// /* ******* SECONDARY ******* */
+
+@CmColor-Secondary: 0;
+
+// /* Dark Key */
+
+@CmColor-Secondary-DarkSaturation: 0%;
+@CmColor-Secondary-DarkLighten: 0%;
+@CmColor-Secondary-DarkDefault: hsl(@CmColor-Secondary, @CmColor-Secondary-DarkSaturation, @CmVar-Color-DarkDefault-Lightness + @CmColor-Secondary-DarkLighten);
+@CmColor-Secondary-DarkHover: hsl(@CmColor-Secondary, @CmColor-Secondary-DarkSaturation, @CmVar-Color-DarkHover-Lightness + @CmColor-Secondary-DarkLighten);
+@CmColor-Secondary-DarkActive: hsl(@CmColor-Secondary, @CmColor-Secondary-DarkSaturation, @CmVar-Color-DarkActive-Lightness + @CmColor-Secondary-DarkLighten);
+@CmColor-Secondary-DarkActiveHover: hsl(@CmColor-Secondary, @CmColor-Secondary-DarkSaturation, @CmVar-Color-DarkActiveHover-Lightness + @CmColor-Secondary-DarkLighten);
+
+// /* Middle Tone Key */
+
+@CmColor-Secondary-MiddleSaturation: 0%;
+@CmColor-Secondary-MiddleLighten: 0%;
+@CmColor-Secondary-MiddleDefault: hsl(@CmColor-Secondary, @CmColor-Secondary-MiddleSaturation, @CmVar-Color-MiddleDefault-Lightness + @CmColor-Secondary-MiddleLighten);
+@CmColor-Secondary-MiddleHover: hsl(@CmColor-Secondary, @CmColor-Secondary-MiddleSaturation, @CmVar-Color-MiddleHover-Lightness + @CmColor-Secondary-MiddleLighten);
+@CmColor-Secondary-MiddleActive: hsl(@CmColor-Secondary, @CmColor-Secondary-MiddleSaturation, @CmVar-Color-MiddleActive-Lightness + @CmColor-Secondary-MiddleLighten);
+@CmColor-Secondary-MiddleActiveHover: hsl(@CmColor-Secondary, @CmColor-Secondary-MiddleSaturation, @CmVar-Color-MiddleActiveHover-Lightness + @CmColor-Secondary-MiddleLighten);
+
+// /* Light Key */
+
+@CmColor-Secondary-LightSaturation: 0%;
+@CmColor-Secondary-LightLighten: 0%;
+@CmColor-Secondary-LightDefault: transparent;
+@CmColor-Secondary-LightHighlight: hsl(@CmColor-Secondary, @CmColor-Secondary-LightSaturation, @CmVar-Color-LightHighlight-Lightness + @CmColor-Secondary-LightLighten);
+@CmColor-Secondary-LightHover: hsl(@CmColor-Secondary, @CmColor-Secondary-LightSaturation, @CmVar-Color-LightHover-Lightness + @CmColor-Secondary-LightLighten);
+@CmColor-Secondary-LightActive: hsl(@CmColor-Secondary, @CmColor-Secondary-LightSaturation, @CmVar-Color-LightActive-Lightness + @CmColor-Secondary-LightLighten);
+@CmColor-Secondary-LightActiveHover: hsl(@CmColor-Secondary, @CmColor-Secondary-LightSaturation, @CmVar-Color-LightActiveHover-Lightness + @CmColor-Secondary-LightLighten);
+
+// /* ******* SUCCESS ******* */
+
+@CmColor-Success: 120;
+
+// /* Dark Key */
+
+@CmColor-Success-DarkSaturation: 65%;
+@CmColor-Success-DarkLighten: -10%;
+@CmColor-Success-DarkDefault: hsl(@CmColor-Success, @CmColor-Success-DarkSaturation, @CmVar-Color-DarkDefault-Lightness + @CmColor-Success-DarkLighten);
+@CmColor-Success-DarkHover: hsl(@CmColor-Success, @CmColor-Success-DarkSaturation, @CmVar-Color-DarkHover-Lightness + @CmColor-Success-DarkLighten);
+@CmColor-Success-DarkActive: hsl(@CmColor-Success, @CmColor-Success-DarkSaturation, @CmVar-Color-DarkActive-Lightness + @CmColor-Success-DarkLighten);
+@CmColor-Success-DarkActiveHover: hsl(@CmColor-Success, @CmColor-Success-DarkSaturation, @CmVar-Color-DarkActiveHover-Lightness + @CmColor-Success-DarkLighten);
+
+// /* Light Key */
+
+@CmColor-Success-LightSaturation: 60%;
+@CmColor-Success-LightLighten: 0%;
+@CmColor-Success-LightDefault: transparent;
+@CmColor-Success-LightHighlight: hsl(@CmColor-Success, @CmColor-Success-LightSaturation, @CmVar-Color-LightHighlight-Lightness + @CmColor-Success-LightLighten);
+@CmColor-Success-LightHover: hsl(@CmColor-Success, @CmColor-Success-LightSaturation, @CmVar-Color-LightHover-Lightness + @CmColor-Success-LightLighten);
+@CmColor-Success-LightActive: hsl(@CmColor-Success, @CmColor-Success-LightSaturation, @CmVar-Color-LightActive-Lightness + @CmColor-Success-LightLighten);
+@CmColor-Success-LightActiveHover: hsl(@CmColor-Success, @CmColor-Success-LightSaturation, @CmVar-Color-LightActiveHover-Lightness + @CmColor-Success-LightLighten);
+
+// /* ******* DANGER ******* */
+
+@CmColor-Danger: 0;
+
+// /* Dark Key */
+
+@CmColor-Danger-DarkSaturation: 65%;
+@CmColor-Danger-DarkLighten: 0%;
+@CmColor-Danger-DarkDefault: hsl(@CmColor-Danger, @CmColor-Danger-DarkSaturation, @CmVar-Color-DarkDefault-Lightness + @CmColor-Danger-DarkLighten);
+@CmColor-Danger-DarkHover: hsl(@CmColor-Danger, @CmColor-Danger-DarkSaturation, @CmVar-Color-DarkHover-Lightness + @CmColor-Danger-DarkLighten);
+@CmColor-Danger-DarkActive: hsl(@CmColor-Danger, @CmColor-Danger-DarkSaturation, @CmVar-Color-DarkActive-Lightness + @CmColor-Danger-DarkLighten);
+@CmColor-Danger-DarkActiveHover: hsl(@CmColor-Danger, @CmColor-Danger-DarkSaturation, @CmVar-Color-DarkActiveHover-Lightness + @CmColor-Danger-DarkLighten);
+
+// /* Light Key */
+
+@CmColor-Danger-LightSaturation: 65%;
+@CmColor-Danger-LightLighten: 0%;
+@CmColor-Danger-LightDefault: transparent;
+@CmColor-Danger-LightHighlight: hsl(@CmColor-Danger, @CmColor-Danger-LightSaturation, @CmVar-Color-LightHighlight-Lightness + @CmColor-Danger-LightLighten);
+@CmColor-Danger-LightHover: hsl(@CmColor-Danger, @CmColor-Danger-LightSaturation, @CmVar-Color-LightHover-Lightness + @CmColor-Danger-LightLighten);
+@CmColor-Danger-LightActive: hsl(@CmColor-Danger, @CmColor-Danger-LightSaturation, @CmVar-Color-LightActive-Lightness + @CmColor-Danger-LightLighten);
+@CmColor-Danger-LightActiveHover: hsl(@CmColor-Danger, @CmColor-Danger-LightSaturation, @CmVar-Color-LightActiveHover-Lightness + @CmColor-Danger-LightLighten);
+
+// /* ******* WARNING ******* */
+
+@CmColor-Warning: 38;
+
+// /* Dark Key */
+
+@CmColor-Warning-DarkSaturation: 75%;
+@CmColor-Warning-DarkLighten: 0%;
+@CmColor-Warning-DarkDefault: hsl(@CmColor-Warning, @CmColor-Warning-DarkSaturation, @CmVar-Color-DarkDefault-Lightness + @CmColor-Warning-DarkLighten);
+@CmColor-Warning-DarkHover: hsl(@CmColor-Warning, @CmColor-Warning-DarkSaturation, @CmVar-Color-DarkHover-Lightness + @CmColor-Warning-DarkLighten);
+@CmColor-Warning-DarkActive: hsl(@CmColor-Warning, @CmColor-Warning-DarkSaturation, @CmVar-Color-DarkActive-Lightness);
+@CmColor-Warning-DarkActiveHover: hsl(@CmColor-Warning, @CmColor-Warning-DarkSaturation, @CmVar-Color-DarkActiveHover-Lightness + @CmColor-Warning-DarkLighten);
+
+// /* Light Key */
+
+@CmColor-Warning-LightSaturation: 70%;
+@CmColor-Warning-LightLighten: 0%;
+@CmColor-Warning-LightDefault: transparent;
+@CmColor-Warning-LightHighlight: hsl(@CmColor-Warning, @CmColor-Warning-LightSaturation, @CmVar-Color-LightHighlight-Lightness + @CmColor-Warning-LightLighten);
+@CmColor-Warning-LightHover: hsl(@CmColor-Warning, @CmColor-Warning-LightSaturation, @CmVar-Color-LightHover-Lightness + @CmColor-Warning-LightLighten);
+@CmColor-Warning-LightActive: hsl(@CmColor-Warning, @CmColor-Warning-LightSaturation, @CmVar-Color-LightActive-Lightness + @CmColor-Warning-LightLighten);
+@CmColor-Warning-LightActiveHover: hsl(@CmColor-Warning, @CmColor-Warning-LightSaturation, @CmVar-Color-LightActiveHover-Lightness + @CmColor-Warning-LightLighten);
+
+// /* ******* FONT ******* */
+
+@CmColor-Font: #666666;
+@CmColor-Font-Opposite: #ffffff;
+@CmColor-Font-Hint: #999999;
+@CmColor-Font-Placeholder: #b7b7b7;
+@CmColor-Font-Link: @CmColor-Primary-DarkDefault;
+@CmColor-Font-LinkHover: @CmColor-Primary-DarkHover;
+@CmColor-Font-LinkActive: @CmColor-Primary-DarkActive;
+
+// /* ******* OTHER ******* */
+
+@CmColor-Mark: #fdf6ad;
+@CmColor-Gallery: #111111;
+@CmColor-Border: @CmColor-Secondary-MiddleDefault;
+@CmColor-BorderHover: @CmColor-Secondary-MiddleActiveHover;
+@CmColor-BorderSelected: @CmColor-Primary-MiddleDefault;
+@CmColor-BorderActive: @CmColor-Primary-DarkDefault;
+@CmColor-BorderDisabled: @CmColor-Secondary-LightActive;
+
+// /* ************************************************ */
+// /* ******* FONT ******* */
+// /* ************************************************ */
+
+// /* ******* BASE ******* */
+
+@CmFont-Base-LightWeight: 300;
+@CmFont-Base-NormalWeight: 400;
+@CmFont-Base-BoldWeight: 600;
+
+@CmFont-Base-LineHeight: 18px;
+@CmFont-Base-Family: 'Open Sans', arial, helvetica, sans-serif;
+@CmFont-Base-Size: 13px;
+@CmFont-Base-Weight: @CmFont-Base-NormalWeight;
+@CmFont-Base-Color: @CmColor-Font;
+@CmFont-Base-ColorOpposite: @CmColor-Font-Opposite;
+
+@CmFont-Base-Hint-Size: 11px;
+@CmFont-Base-Hint-Color: @CmColor-Font-Hint;
+
+// /* ******* UI ******* */
+
+@CmFont-UI-LightWeight: 300;
+@CmFont-UI-NormalWeight: 400;
+@CmFont-UI-BoldWeight: 600;
+
+@CmFont-UI-LineHeight: 18px;
+@CmFont-UI-Size: 13px;
+@CmFont-UI-SizeSmall: 11px;
+@CmFont-UI-Family: 'Open Sans', arial, helvetica, sans-serif;
+@CmFont-UI-Weight: @CmFont-UI-NormalWeight;
+@CmFont-UI-Color: @CmColor-Font;
+@CmFont-UI-ColorOpposite: @CmColor-Font-Opposite;
+
+@CmFont-UI-H1-LineHeight: 38px;
+@CmFont-UI-H1-Size: 30px;
+@CmFont-UI-H1-Weight: @CmFont-UI-LightWeight;
+@CmFont-UI-H1-Color: @CmColor-Font;
+
+@CmFont-UI-H4-LineHeight : 24px;
+@CmFont-UI-H4-Size: 16px;
+@CmFont-UI-H4-Weight: @CmFont-UI-LightWeight;
+@CmFont-UI-H4-Color: @CmColor-Font;
+
+// /* ************************************************ */
+// /* ******* UI ******* */
+// /* ************************************************ */
 
 // /* ******* COMMON ******* */
 
-@CM-Transition-Duration: 300ms;
-@CM-Transition-DurationReverse: 100ms;
-@CM-Opacity-Hover: 0.7;
+@CmUI-Transition-Duration: 300ms;
+@CmUI-Transition-DurationReverse: 100ms;
+@CmUI-Opacity-Hover: 0.7;
+@CmUI-Shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+@CmUI-ShadowLight: 0 0 2px rgba(0,0,0,0.2);
+@CmUI-ShadowInner: 0 2px 2px rgba(0,0,0,0.4) inset;
+@CmUI-ShadowOuter: 0 2px 2px rgba(0,0,0,0.15);
 
-// /* ******* VARIABLES ******* */
+// /* ******* BORDER ******* */
 
-@cm-screenMobile: 640px;
-@cm-screenMobilePortrait: 480px;
-@cm-screenTablet: 1024px;
-@cm-screenTabletPortrait: 768px;
+@CmBorder-Radius: 3px;
+@CmBorder-Width: 1px;
+@CmBorder-BoxWidth: 2px;
+@CmBorder-Default: @CmBorder-Width solid @CmColor-Border;
+@CmBorder-Separator: @CmBorder-Width dotted @CmColor-Border;
+@CmBorder-Editable: @CmBorder-Width dashed @CmColor-BorderActive;
+@CmBorder-Box: @CmBorder-BoxWidth solid @CmColor-Border;
+@CmBorder-BoxActive: @CmBorder-BoxWidth solid @CmColor-BorderActive;
+@CmBorder-BoxSelected: @CmBorder-BoxWidth solid @CmColor-BorderSelected;
 
-// /* *** SIZES *** */
+// /* ************************************************ */
+// /* ******* COMMON ******* */
+// /* ************************************************ */
 
-@cm-XXXSmall: 4px;
-@cm-XXSmall: 8px;
-@cm-XSmall: 12px;
-@cm-Small: 16px;
-@cm-Medium: 24px;
-@cm-Large: 32px;
-@cm-XLarge: 48px;
-@cm-XXLarge: 64px;
+// /* ******* BUTTONS ******* */
 
-// /* *** COLORS *** */
+@CmButton-PaddingX: @CmIndent-XSmall;
 
-@cm-colorFont: #666666;
-@cm-colorFontMedium: #999999;
-@cm-colorFontTitle: #666666;
-@cm-colorPlaceholder: #b7b7b7;
-@cm-colorHint: #999999;
-@cm-colorMark: #fdf6ad;
-@cm-colorLink: @cm-colorFont;
-@cm-colorLinkHover: @cm-colorLink;
-@cm-colorLinkVisited: #8a156d;
-@cm-colorError: hsl(0, 80%, 50%);
-@cm-colorValid: #009900;
-@cm-colorPending: #ffa200;
-@cm-colorPendingLight: #fff9ef;
+// /* ******* INPUTS ******* */
 
-@cm-color: hsl(210, 80%, 55%);
-@cm-colorLighten: lighten(@cm-color, 40%);
-@cm-colorActive: lighten(desaturate(@cm-color, 2%), 37%);
-@cm-colorActiveHover: darken(@cm-colorActive, 5%);
-@cm-colorSecondary: hsl(0, 0, 95%);
-@cm-colorSecondaryHover: lighten(@cm-colorSecondary, 3%);
-
-@cm-colorBorder: #CBCBCB;
-@cm-colorBorderHover: @cm-colorActiveHover;
-
-@cm-colorLight-background: #fafafa;
-@cm-colorLight-backgroundHover: #e6e6e6;
-@cm-colorLight-backgroundDisabled: #f0f0f0;
-@cm-colorLight-backgroundDisabledHover: @cm-colorLight-backgroundHover;
-@cm-colorLight-border: #e6e6e6;
-@cm-colorLight-borderHover: #d2d2d2;
-@cm-colorLight-borderDisabled: @cm-colorLight-border;
-@cm-colorLight-borderDisabledHover: @cm-colorLight-borderHover;
-
-@cm-background-light: @cm-colorLight-background;
-@cm-background-dark: @cm-colorLight-backgroundDisabled;
-@cm-background-themeLight: lighten(@cm-color, 42%);
-@cm-background-gallery: #111111;
-@cm-background-pendingLight: @cm-colorPendingLight;
-
-// /* *** FONT *** */
-
-@cm-lineHeight: 18px;
-@cm-lineHeightTitle: 38px;
-@cm-lineHeightTitleMedium : 24px;
-@cm-fontSize: 13px;
-@cm-fontSizeUI: 11px;
-@cm-fontSizeTitle: 30px;
-@cm-fontSizeTitleMedium: 16px;
-@cm-fontSizeHint: 11px;
-@cm-fontFamily: 'Open Sans', arial, helvetica, sans-serif;
-@cm-fontWeight: normal;
-@cm-boldWeight: 600;
-
-// /* *** BORDER *** */
-
-@cm-borderRadius: 3px;
-@cm-borderWidth: 1px;
-@cm-borderBoxWidth: 2px;
-@cm-borderStyle: @cm-borderWidth solid @cm-colorBorder;
-@cm-borderSeparator: @cm-borderWidth dotted @cm-colorBorder;
-@cm-borderEditable: @cm-borderWidth dashed @cm-color;
-@cm-borderBox: @cm-borderBoxWidth solid @cm-colorBorder;
-@cm-borderBoxActive: @cm-borderBoxWidth solid @cm-colorActive;
-@cm-borderBoxSelected: @cm-borderBoxWidth solid @cm-color;
-
-// /* *** INDENT *** */
-
-@cm-indentXXXSmall: @cm-XXXSmall;
-@cm-indentXXSmall: @cm-XXSmall;
-@cm-indentXSmall: @cm-XSmall;
-@cm-indentSmall: @cm-Small;
-@cm-indentMedium: @cm-Medium;
-@cm-indentLarge: @cm-Large;
-@cm-indentXLarge: @cm-XLarge;
-@cm-indentXXLarge: @cm-XXLarge;
-
-// /* *** UI *** */
-
-@cm-ui-shadowLight: 0 0 2px rgba(0,0,0,0.2);
-@cm-ui-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-
-// /* *** ELEMENTS *** */
-
-@CmElement-button-paddingX: @cm-indentXSmall;
+@CmInput-Padding: 6px;
+@CmTextarea-Height: 100px;
+@CmSelect-Size: 7;
 
 // /* ******* FORM ******* */
 
-@CmForm-fieldHeight: 28px;
-@CmForm-fieldIndent: @cm-indentSmall;
-@CmForm-fieldTitleWidth: 150px;
-@CmForm-fieldInnerIndent: @CmForm-fieldIndent / 2;
-@CmForm-buttonsIndent: @cm-indentXXSmall;
-@CmForm-input-padding: 6px;
-@CmForm-textarea-height: 100px;
-@CmForm-select-size: 7;
+@CmForm-FieldHeight: 28px;
+@CmForm-FieldIndent: @CmIndent-Small;
+@CmForm-FieldTitleWidth: 150px;
+@CmForm-FieldInnerIndent: @CmForm-FieldIndent / 2;
+@CmForm-FieldSmallWidth: 210px;
+@CmForm-ButtonsIndent: @CmIndent-XXSmall;
+@CmForm-IconsIndent: @CmIndent-XXSmall;
+@CmForm-ImageBox-ButtonWidth: 100px;
+@CmForm-Cols-Names: one two three four five six seven eight nine ten;
+@CmForm-Cols-Indent: 2%;
+@CmForm-FilesList-Count: 3;
 
-// /* *** ICONS OUTSIDE *** */
+// /* ******* COUNTER ******* */
 
-@CmForm-iconsIndent: @cm-indentXXSmall;
+@CmCounter-Size: @CmSize-Small;
+@CmCounter-Border: 1px;
+@CmCounter-Radius: @CmCounter-Size;
 
-// /* *** IMAGE BOX *** */
-
-@CmForm-imageBox-buttonWidth: 100px;
-
-// /* *** COLUMNS *** */
-
-@CmForm-cols-names: one two three four five six seven eight nine ten;
-@CmForm-cols-indent: 2%;
-
+// /* ************************************************ */
 // /* ******* PARTS ******* */
+// /* ************************************************ */
 
-// /* *** COUNTER *** */
+// /* ******* MENU ******* */
 
-@CmCounter-size: @cm-Small;
-@CmCounter-radius: @CmCounter-size;
-@CmCounter-fontSize: @cm-fontSizeUI;
-@CmCounter-color: #ffffff;
+@PtMenu-Indent: @CmIndent-XXXSmall;
+@PtMenu-ItemIndentY: 2px;
+@PtMenu-ItemIndentX: @CmIndent-XSmall;
 
-// /* *** MENU *** */
+// /* ******* LINKS ******* */
 
-@CmMenu-indent: @cm-indentXXXSmall;
-@CmMenu-itemIndentY: 2px;
-@CmMenu-itemIndentX: @cm-indentXSmall;
+@PtLinks-Indent: @CmIndent-XXXSmall;
 
-// /* *** LINKS *** */
+// /* ******* IMAGE ******* */
 
-@CmLinks-indent: @cm-indentXXXSmall;
+@PtImage-Background: @CmColor-Secondary-LightHighlight;
+@PtImage-TitlePaddingTop: @CmIndent-XXXSmall;
+@PtImage-Color: @CmFont-UI-ColorOpposite;
 
-// /* *** ITEM BOX *** */
+// /* ******* ITEM BOX ******* */
 
-@CmItemBox-sizes: 50 80 150;
+@PtItemBox-Sizes: 50 80 150;
 
-// /* *** ITEMS LIST *** */
+// /* ******* LISTING ITEMS ******* */
 
-@CmItemsList-count: 10;
-@CmItemsList-background-hover: @cm-colorSecondary;
-@CmItemsList-background-active: @cm-colorActive;
-@CmItemsList-background-active-hover: @cm-colorActiveHover;
-@CmItemsList-padding-y: 2px;
-@CmItemsList-indent: 1px;
+@PtListingItems-Count: 10;
+@PtListingItems-PaddingY: 2px;
+@PtListingItems-PaddingX: 4px;
+@PtListingItems-Indent: 1px;
 
-// /* *** LIST COUNTED *** */
+// /* ******* LISTING COUNTERS ******* */
 
-@CmListCounted-indent: @cm-indentXXXSmall;
-@CmListCounted-height: @cm-Medium;
+@PtListingCounters-Indent: @CmIndent-XXXSmall;
+@PtListingCounters-Height: @CmSize-Medium;
 
-// /* *** GRID *** */
+// /* ******* GRID ******* */
 
-@CmGrid-itemIndent: @cm-indentMedium / 2;
+@PtGrid-Indent: @CmIndent-Medium / 2;
+@PtGrid-Indents: @CmIndents;
 
-// /* *** SELECTABLE*** */
+// /* ******* SELECTABLE*** */
 
-@cm-selectable-background-hover: @cm-colorSecondary;
-@cm-selectable-border-color-active: @cm-colorActive;
+@PtSelectable-Hover-Background: @CmColor-Secondary-LightHighlight;
+@PtSelectable-Hover-Border: @CmColor-Secondary-LightHover;
 
-// /* *** FILES LIST *** */
+@PtSelectable-Active-Background: @CmColor-Primary-LightHighlight;
+@PtSelectable-Active-Border: @CmColor-Primary-LightActive;
 
-@CmFilesList-count: 3;
+// /* ******* TOOLBAR ******* */
 
-// /* *** TOOLBAR *** */
+@PtToolbar-GroupIndent: @CmIndent-Small;
+@PtToolbar-ItemIndent: @CmIndent-XXXSmall;
+@PtToolbar-XXXSmall: 32px;
+@PtToolbar-XXSmall: 52px;
+@PtToolbar-XSmall: 70px;
+@PtToolbar-Small: 100px;
+@PtToolbar-Medium: 150px;
+@PtToolbar-Large: 250px;
+@PtToolbar-XLarge: 350px;
 
-@CmToolbar-groupIndent: @cm-indentSmall;
-@CmToolbar-itemIndent: @cm-indentXXXSmall;
-@CmToolbar-XSmall: 70px;
-@CmToolbar-Small: 100px;
-@CmToolbar-Medium: 150px;
-@CmToolbar-Large: 250px;
-@CmToolbar-XLarge: 350px;
+// /* ******* LINE SHARE ******* */
 
-// /* *** IMAGE BOX *** */
+@PtLineShare-Size: @CmSize-Large;
 
-@CmImagebox-background: @cm-background-light;
-@CmImagebox-titlePaddingTop: 4px;
-@CmImagebox-textColor: #ffffff;
+// /* ******* BOX ******* */
 
-// /* *** DRAG AND DROP *** */
+@PtBoxContent-Indent: @CmIndent-XLarge;
+@PtBoxContent-Indents: @CmIndents;
 
-@CmDraganddrop-areaPadding: @cm-indentXSmall;
-@CmDraganddrop-areaBorderRadius: @cm-borderRadius;
-@CmDraganddrop-areaBackgroundActive: fade(@cm-color, 12%);
-@CmDraganddrop-areaBackgroundHighlight: fade(@cm-color, 5%);
-@CmDraganddrop-areaActiveBorder: 1px dashed @cm-color;
-@CmDraganddrop-areaHighlightBorder: 1px dashed fade(@cm-color, 30%);
-@CmDraganddrop-dropDuration: 400ms;
+// /* ******* GRIDLIST ******* */
 
-// /* *** LISTING *** */
+@PtGridlist-AdaptiveFrom: @CmScreen-Mobile;
+@PtGridlist-Font-Size: @CmFont-UI-SizeSmall;
+@PtGridlist-FontTitle-Size: @CmFont-UI-SizeSmall;
+@PtGridlist-PaddingInner: 6px;
 
-@CmListing-stuffFontSize: @cm-fontSizeUI;
-@CmListing-stuffFontWeight: @cm-boldWeight;
-@CmListing-stuffColor: @cm-colorFontMedium;
+// /* ******* DRAG AND DROP ******* */
 
-// /* *** GRID *** */
+@PtDnD-Area-Padding: @CmIndent-Small;
+@PtDnD-Area-BorderRadius: @CmBorder-Radius;
 
-@ComGrid-indents: 0px @cm-indentXXXSmall @cm-indentXXSmall @cm-indentXSmall @cm-indentSmall @cm-indentMedium @cm-indentLarge @cm-indentXLarge @cm-indentXXLarge;
+@PtDnD-Area-ActiveBackground: hsla(@CmColor-Primary, 75%, 55%, 0.12);
+@PtDnD-Area-ActiveBorder: 1px dashed @CmColor-Primary-DarkDefault;
 
-// /* *** SHARE LINE *** */
+@PtDnD-Area-HighlightBackground: hsla(@CmColor-Primary, 75%, 55%, 0.05);
+@PtDnD-Area-HighlightBorder: 1px dashed fade(@CmColor-Primary-DarkDefault, 30%);
 
-@CmShareLine-iconSize: @cm-Large;
+// /* ******* EDITABLE ******* */
 
-// /* *** BOX *** */
+@PtEditable-Drag-DefaultBackground: @CmColor-Secondary-LightHighlight;
+@PtEditable-Drag-HoverBackground: @CmColor-Secondary-LightHover;
+@PtEditable-Drag-ActiveBackground: @CmColor-Primary-LightActive;
 
-@CmBoxContent-Indent: @cm-indentXLarge;
-@CmBoxContent-Indents: 0px @cm-indentXXXSmall @cm-indentXXSmall @cm-indentXSmall @cm-indentSmall @cm-indentMedium @cm-indentLarge @cm-indentXLarge @cm-indentXXLarge;
+// /* ************************************************ */
+// /* ******* LAYOUTS ******* */
+// /* ************************************************ */
 
+// /* ******* COLLAPSIBLE ******* */
+
+@LtCollapsible-SidebarWidth: 350px;
+@LtCollapsible-Duration: 500ms;
+
+// /* ******* FORUM ******* */
+
+@LtForum-AdaptiveFrom: @CmScreen-Mobile;
+@LtForum-PostBackground: @CmColor-Secondary-LightHighlight;
+@LtForum-PostBackgroundFeatured: @CmColor-Primary-LightHighlight;
+@LtForum-PostTitleBackground: @CmColor-Secondary-LightActive;
+@LtForum-PostLeftColumnSize: 150px;
+
+// /* ******* PROFILE ******* */
+
+@LtProfile-LeftColumn: 150px;
+
+// /* ************************************************ */
 // /* ******* COMPONENTS ******* */
+// /* ************************************************ */
 
-// /* *** COLLAPSIBLE LAYOUT *** */
+// /* ******* CALENDAR ******* */
 
-@ComCollapsibleLayout-sidebarWidth: 350px;
-@ComCollapsibleLayout-duration: 500ms;
+@ComCalendar-CellHeight: 21px;
+@ComCalendar-CellBorderRadius: min(@CmBorder-Radius, 2px);
 
-// /* *** CALENDAR *** */
+@ComCalendar-Outer-Background: transparent;
+@ComCalendar-Outer-BackgroundHover: transparent;
+@ComCalendar-Outer-BorderSize: 0;
+@ComCalendar-Outer-Border: transparent;
+@ComCalendar-Outer-BorderHover: transparent;
 
-@ComCalendar-cellHeight: 21px;
-@ComCalendar-cellBorderSize: 1px;
-@ComCalendar-cellBorderRadius: min(@cm-borderRadius, 2px);
-@ComCalendar-todayBorderSize: 2px;
+@ComCalendar-Inner-Background: @CmColor-Secondary-LightHighlight;
+@ComCalendar-Inner-BackgroundHover: @CmColor-Secondary-LightHover;
+@ComCalendar-Inner-BorderSize: 1px;
+@ComCalendar-Inner-Border: @CmColor-Secondary-LightActive;
+@ComCalendar-Inner-BorderHover: @CmColor-Secondary-LightActiveHover;
 
-@ComCalendar-outer-background: transparent;
-@ComCalendar-outer-backgroundHover: transparent;
-@ComCalendar-outer-borderSize: 0;
-@ComCalendar-outer-border: transparent;
-@ComCalendar-outer-borderHover: transparent;
+@ComCalendar-Weekend-Background: @CmColor-Secondary-LightActive;
+@ComCalendar-Weekend-BackgroundHover: @CmColor-Secondary-LightActiveHover;
+@ComCalendar-Weekend-BorderSize: @ComCalendar-Inner-BorderSize;
+@ComCalendar-Weekend-Border: @CmColor-Secondary-LightActive;
+@ComCalendar-Weekend-BorderHover: @CmColor-Secondary-LightActiveHover;
 
-@ComCalendar-inner-background: @cm-colorLight-background;
-@ComCalendar-inner-backgroundHover: @cm-colorLight-backgroundHover;
-@ComCalendar-inner-borderSize: 1px;
-@ComCalendar-inner-border: @cm-colorLight-border;
-@ComCalendar-inner-borderHover: @cm-colorLight-borderHover;
+@ComCalendar-Today-Background: '';
+@ComCalendar-Today-BackgroundHover: @CmColor-Primary-LightActiveHover;
+@ComCalendar-Today-BorderSize: 2px;
+@ComCalendar-Today-Border: @CmColor-Primary-DarkDefault;
+@ComCalendar-Today-BorderHover: @CmColor-Primary-DarkHover;
 
-@ComCalendar-weekend-background: @cm-colorLight-backgroundDisabled;
-@ComCalendar-weekend-backgroundHover: @cm-colorLight-backgroundDisabledHover;
-@ComCalendar-weekend-borderSize: @ComCalendar-inner-borderSize;
-@ComCalendar-weekend-border: @cm-colorLight-borderDisabled;
-@ComCalendar-weekend-borderHover: @cm-colorLight-borderDisabledHover;
+@ComCalendar-Active-Background: @CmColor-Primary-LightActive;
+@ComCalendar-Active-BackgroundHover: @CmColor-Primary-LightActiveHover;
+@ComCalendar-Active-BorderSize: @ComCalendar-Inner-BorderSize;
+@ComCalendar-Active-Border: @CmColor-Primary-DarkDefault;
+@ComCalendar-Active-BorderHover: @CmColor-Primary-DarkHover;
 
-@ComCalendar-today-background: '';
-@ComCalendar-today-backgroundHover: @cm-colorActive;
-@ComCalendar-today-borderSize: 2px;
-@ComCalendar-today-border: @cm-color;
-@ComCalendar-today-borderHover: @cm-color;
+// /* ******* COLUMNS ******* */
 
-@ComCalendar-active-background: @cm-colorActive;
-@ComCalendar-active-backgroundHover: @cm-colorActiveHover;
-@ComCalendar-active-borderSize: @ComCalendar-inner-borderSize;
-@ComCalendar-active-border: @cm-color;
-@ComCalendar-active-borderHover: @cm-color;
+@ComColumns-AdaptiveFrom: @CmScreen-Mobile;
+@ComColumns-Indent: @CmIndent-Medium;
+@ComColumns-Indents: @CmIndents;
+@ComColumns-MinHeight: 64px;
+@ComColumns-HoverBackground: rgba(0, 0, 0, 0.01);
 
-// /* *** DATEPICKER *** */
+@ComColumns-Drag-DefaultBackground: @CmColor-Secondary-LightHighlight;
+@ComColumns-Drag-DefaultBorder: @CmColor-Border;
+@ComColumns-DragLine-DefaultBackground: @CmColor-Secondary-LightActive;
 
-@ComDatepicker-width: 210px;
-@ComDatepicker-tooltipWidth: @ComDatepicker-width;
+@ComColumns-Drag-HoverBackground: @CmColor-Secondary-LightHover;
+@ComColumns-Drag-HoverBorder: @CmColor-BorderHover;
+@ComColumns-DragLine-HoverBackground: @CmColor-Secondary-LightActive;
 
+@ComColumns-Drag-ActiveBackground: @CmColor-Primary-LightActive;
+@ComColumns-Drag-ActiveBorder: @CmColor-Primary-MiddleActive;
+@ComColumns-DragLine-ActiveBackground: @CmColor-Primary-LightActive;
 
-// /* *** TIME SELECT *** */
+// /* ******* DATEPICKER ******* */
 
-@ComTimeSelect-width: 210px;
-@ComTimeSelect-indent: @cm-indentMedium;
+@ComDatepicker-Width: @CmForm-FieldSmallWidth;
+@ComDatepicker-TooltipWidth: @ComDatepicker-Width;
 
-// /* *** DIALOG *** */
+// /* ******* TIME SELECT ******* */
 
-@ComDialog-indent: @cm-indentMedium;
-@ComDialog-titleIndent: @cm-indentXSmall;
+@ComTimeSelect-Width: @CmForm-FieldSmallWidth;
+@ComTimeSelect-Indent: @CmIndent-Medium;
 
-@ComDialog-themeBlack-background: @cm-background-gallery;
-@ComDialog-themeBlack-titleColor: #ffffff;
+// /* ******* COLOR PALETTE ******* */
 
-// /* *** GRIDLIST *** */
+@ComColorPalette-Size: 200px;
 
-@ComGridlist-adaptiveFrom: @cm-screenMobile;
-@ComGridlist-fontSize: @cm-fontSizeUI;
-@ComGridlist-paddingInner: 6px;
-@ComGridlist-linkIndent: @CmLinks-indent;
+// /* ******* COLOR PICKER ******* */
 
-// /* *** COLUMNS *** */
+@ComColorPicker-Width: @CmForm-FieldSmallWidth;
 
-@ComColumns-adaptiveFrom: @cm-screenMobile;
-@ComColumns-indent: @cm-indentMedium;
-@ComColumns-indents: 0px @cm-indentXXXSmall @cm-indentXXSmall @cm-indentXSmall @cm-indentSmall @cm-indentMedium @cm-indentLarge @cm-indentXLarge @cm-indentXXLarge;
-@ComColumns-minHeight: 64px;
-@ComColumns-backgroundHover: rgba(0, 0, 0, 0.01);
+// /* ******* DIALOG ******* */
 
-// /* *** TABSET *** */
+@ComDialog-Indent: @CmIndent-Medium;
+@ComDialog-TitleIndent: @CmIndent-XSmall;
 
-@ComTabset-adaptiveFrom: @cm-screenMobile;
-@ComTabset-borderColor: @cm-colorBorder;
-@ComTabset-borderRadius: @cm-borderRadius;
-@ComTabset-tabsHeight: @CmForm-fieldHeight;
-@ComTabset-tabsIndent: @cm-indentXXXSmall;
-@ComTabset-tabsBackground: @cm-colorSecondary;
-@ComTabset-tabsBackgroundHover: #ffffff;
-@ComTabset-tabsBackgroundActive: #ffffff;
-@ComTabset-tabsTitle: @cm-colorSecondary;
-@ComTabset-tabsColor: @cm-colorFont;
+@ComDialog-Black-Background: @CmColor-Gallery;
+@ComDialog-Black-TitleColor: @CmFont-UI-ColorOpposite;
 
-// /* *** TOGGLE BOX *** */
+// /* ******* TABSET ******* */
 
-@ComToggleBox-adaptiveFrom: @cm-screenMobile;
-@ComToggleBox-size: @cm-lineHeightTitle;
-@ComToggleBox-sizeMedium: @cm-Medium;
-@ComToggleBox-sizeUI: @cm-Medium;
-@ComToggleBox-contentBorder: 1px solid #ffffff;
-@ComToggleBox-contentBackground: @cm-background-light;
-@ComToggleBox-contentSpaceBorder: @ComToggleBox-contentBorder;
-@ComToggleBox-titleBackground: @cm-background-dark;
+@ComTabset-AdaptiveFrom: @CmScreen-Mobile;
+@ComTabset-BorderColor: @CmColor-Border;
+@ComTabset-BorderRadius: @CmBorder-Radius;
+@ComTabset-Tabs-Height: @CmForm-FieldHeight;
+@ComTabset-Tabs-Indent: @CmIndent-XXXSmall;
+@ComTabset-Tabs-DefaultBackground: @CmColor-Secondary-LightHighlight;
+@ComTabset-Tabs-HoverBackground: @CmColor-Secondary-LightHover;
+@ComTabset-Tabs-ActiveBackground: @CmColor-Secondary-LightDefault;
+@ComTabset-TabsTitle-Background: @CmColor-Secondary-LightHighlight;
 
-// /* *** SELECT *** */
+// /* ******* TOGGLE BOX ******* */
 
-@ComSelect-listCount: 7;
-@ComSelect-multiListCount: 5;
+@ComToggleBox-adaptiveFrom: @CmScreen-Mobile;
+@ComToggleBox-Size: @CmFont-UI-H1-LineHeight;
+@ComToggleBox-SizeMedium: @CmSize-Medium;
+@ComToggleBox-SizeUI: @CmSize-Medium;
 
-// /* *** AUTOCOMPLETE *** */
+@ComToggleBox-Title-DefaultBackground: @CmColor-Secondary-LightActive;
+@ComToggleBox-Title-HoverBackground: @CmColor-Primary-LightActiveHover;
 
-@ComAC-listCount: 7;
+@ComToggleBox-Content-DefaultBackground: @CmColor-Secondary-LightHighlight;
+@ComToggleBox-Content-HoverBackground: @CmColor-Secondary-LightHover;
+@ComToggleBox-Content-SpaceBorder: 1px solid transparent;
 
-// /* *** TAGS INPUT *** */
+// /* ******* SELECT ******* */
 
-@ComTagsInput-itemIndent: @CmForm-buttonsIndent;
+@ComSelect-ListCount: 7;
+@ComSelect-MultiListCount: 5;
+
+// /* ******* AUTOCOMPLETE ******* */
+
+@ComAutocomplete-ListCount: 7;
+
+// /* ******* TAGS INPUT ******* */
+
+@ComTagsInput-itemIndent: @CmForm-ButtonsIndent;
 @ComTagsInput-itemWidth: 250px;
-@ComTagsInput-inputWidth: 150px;
+@ComTagsInput-inputWidth: 200px;
 
-// /* *** GALLERY *** */
+// /* ******* GALLERY ******* */
 
-@ComGallery-background: @cm-background-gallery;
+@ComGallery-Background: @CmColor-Gallery;
 
-// /* *** GALLERY CONTROLS *** */
+// /* ******* GALLERY CONTROLS ******* */
 
-@ComGalleryControls-buttonSize: @cm-XSmall;
+@ComGalleryControls-Button-Size: @CmSize-XSmall;
 
-// /* *** GALLERY LAYOUT *** */
+// /* ******* GALLERY LAYOUT ******* */
 
-@ComGalleryLayout-arrowWidth: @cm-indentMedium;
-@ComGalleryLayout-sizesCount: 12;
-
-// /* *** GALLERY POPUP *** */
-
-@ComGalleryPopup-indentTop: 72px;
-
-// /* *** FORUM *** */
-
-@ComForum-adaptiveFrom: @cm-screenMobile;
-@ComForum-postBackground: @cm-background-light;
-@ComForum-postBackgroundFeatured: @cm-background-themeLight;
-@ComForum-postTitleBackground: @cm-background-dark;
-@ComForum-postLeftColumnSize: 150px;
-
-// /* *** PROFILE *** */
-
-@ComProfile-leftColumn: 150px;
+@ComGalleryLayout-ArrowWidth: @CmIndent-Medium;
+@ComGalleryLayout-SizesCount: 12;

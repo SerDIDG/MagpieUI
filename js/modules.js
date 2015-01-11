@@ -151,15 +151,23 @@ Mod['Langs'] = {
             that.build['params']['langs'] = {};
         }
     },
-    'lang' : function(str){
-        var that = this;
-        if(cm.isEmpty(str)){
-            return that.params['langs'];
+    'lang' : function(str, vars){
+        var that = this,
+            langStr;
+        if(!str || cm.isEmpty(str)){
+            return '';
         }
         if(!that.params['langs'][str]){
             that.params['langs'][str] = str;
         }
-        return that.params['langs'][str];
+        langStr = that.params['langs'][str];
+        // Process variables
+        if(vars && cm.isObject(vars)){
+            cm.forEach(vars, function(item, key){
+                langStr = langStr.replace(key, item);
+            });
+        }
+        return langStr;
     },
     'setLangs' : function(o){
         var that = this;
@@ -373,5 +381,43 @@ Mod['Callbacks'] = {
             that.callbacks[name] = callback;
         });
         return that;
+    }
+};
+
+/* ******* STACK ******* */
+
+Mod['Stack'] = {
+    '_config' : {
+        'extend' : true,
+        'self' : false
     },
+    '_define' : function(){
+        var that = this;
+        if(!that.build['params']['name']){
+            that.build['params']['name'] = '';
+        }
+        that.build['_stack'] = [];
+    },
+    'addToStack' : function(node){
+        var that = this;
+        if(!cm.isEmpty(that.params['name'])){
+            that._stack.push({
+                'name' : that.params['name'],
+                'node' : node,
+                'class' : that
+            });
+        }
+        return that;
+    },
+    'findInStack' : function(name, parent){
+        var that = this,
+            items = [];
+        parent = parent || document.body;
+        cm.forEach(that._stack, function(item){
+            if(cm.isEmpty(name) || (item['name'] == name && cm.isParent(parent, item['node']))){
+                items.push(item);
+            }
+        });
+        return items;
+    }
 };

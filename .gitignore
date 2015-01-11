@@ -1,7 +1,8 @@
-.idea/
-.git/
-_dev/
-_old/
-js/components/old/
-js/components/dev/
-docs/content/dev/
+.DS_Store
+.idea
+.git
+_dev
+_old
+js/components/old
+js/components/dev
+docs/content/dev

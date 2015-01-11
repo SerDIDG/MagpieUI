@@ -1,43 +1,43 @@
-/* ******* COMPONENT: GALLERY ******* */
+/* ******* COMPONENTS: GALLERY ******* */
 
 /* *** CORE *** */
 
-.com-gallery {
+.com__gallery {
     position: relative;
     z-index: 1;
-    .cm-user-select(none);
+    .mx__user-select(none);
 
     > .holder {
         height: 100%;
         position: relative;
         z-index: 1;
         overflow: hidden;
-        background: @ComGallery-background;
+        background: @ComGallery-Background;
     }
 
-    .cm-imagebox {
+    .pt__image {
         height: 100%;
-        background-color: @ComGallery-background;
+        background-color: @ComGallery-Background;
         position: absolute;
-        .cm-position(0,0,0,0);
         z-index: 1;
         opacity: 0;
+        .mx__position(0,0,0,0);
     }
 
     > .loader {
         display: none;
         position: absolute;
-        .cm-position(0,0,0,0);
         z-index: 5;
         opacity: 0;
         cursor: pointer;
+        .mx__position(0,0,0,0);
 
         .bg {
-            background: @ComGallery-background;
+            background: @ComGallery-Background;
             position: absolute;
-            .cm-position(0,0,0,0);
             z-index: 1;
             opacity: 0.6;
+            .mx__position(0,0,0,0);
         }
 
         .icon {
@@ -46,11 +46,11 @@
     }
 
     &:hover {
-        .cm-imagebox {
-            .cm-imagebox-title-hover;
+        .pt__image {
+            .pt__image-title-hover;
         }
 
-        > .com-gallery-controls {
+        > .com__gallery-controls {
             opacity: 1;
         }
     }
@@ -58,14 +58,14 @@
 
 /* *** DUMMY *** */
 
-.com-gallery-dummy {
+.com__gallery-dummy {
     display: none;
 }
 
 /* *** PREVIEW *** */
 
-.com-gallery-preview {
-    margin: 0 0 @cm-indentMedium 0;
+.com__gallery-preview {
+    margin: 0 0 @CmIndent-Medium 0;
     position: relative;
 
     &.bottom {
@@ -74,10 +74,10 @@
 
     > .inner {
         position: absolute;
-        .cm-position(0,0,0,0);
+        .mx__position(0,0,0,0);
     }
 
-    .com-gallery {
+    .com__gallery {
         width: 100%;
         height: 100%;
     }

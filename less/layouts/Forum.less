@@ -1,0 +1,208 @@
+/* ******* LAYOUTS: FORUM ******* */
+
+/* *** MAIN *** */
+
+.lt__forum {
+}
+
+.lt__forum__cell-icon {
+    width: 32px;
+
+    .icon {
+        display: block;
+
+        &.default {
+            .cm__size__large;
+            .icon.large.message;
+        }
+
+        &.default-page {
+            .cm__size__large;
+            .icon.large.page;
+            margin: 3px 0 0 0;
+        }
+
+        &.default-featured {
+            .cm__size__large;
+            .icon.large.page-featured;
+            margin: 3px 0 0 0;
+        }
+    }
+}
+
+.lt__forum__cell-counter {
+    width: 120px;
+
+    .line {
+        .clearfix;
+        text-align: right;
+    }
+
+    .title {
+        float: right;
+        margin: 0 0 0 @CmIndent-XXXSmall;
+    }
+
+    .descr {
+        float: right;
+    }
+}
+
+.lt__forum__cell-title {
+    .cm__tags--base {
+        margin: 0;
+    }
+
+    .cm__tags--title {
+        margin: 0 0 @CmIndent-XXSmall;
+    }
+
+    .title {
+        font-weight: @CmFont-Base-BoldWeight;
+    }
+}
+
+.lt__forum__cell-last {
+    width: 20%;
+}
+
+/* *** TOPIC *** */
+
+.lt__forum-posts {
+    margin: 0 0 @CmIndent-Medium;
+
+    &.bottom {
+        margin: 0;
+    }
+
+    > ul {
+        .cm__list-clear;
+
+        > li {
+            margin: @CmIndent-Medium 0 0 0;
+            padding: 0;
+
+            &:first-child {
+                margin: 0;
+            }
+        }
+    }
+}
+
+.lt__forum-post {
+    background: @LtForum-PostBackground;
+    border-radius: @CmBorder-Radius;
+
+    .entry {
+        margin: @CmIndent-XSmall 0 0;
+    }
+
+    > .inner {
+        width: 100%;
+        display: table;
+        table-layout: fixed;
+
+        > .l {
+            width: @LtForum-PostLeftColumnSize;
+            position: relative;
+            padding: @CmIndent-XSmall;
+            display: table-cell;
+            vertical-align: top;
+            background: @LtForum-PostTitleBackground;
+            border-radius: @CmBorder-Radius;
+
+            &:after {
+                width: 0;
+                height: 0;
+                position: absolute;
+                display: block;
+                content: '';
+                border-style: solid;
+                border-width: 8px 12px 8px 0;
+                border-color: transparent @LtForum-PostBackground transparent transparent;
+                .mx__position(@CmIndent-XSmall, 0, auto, auto);
+            }
+        }
+
+        > .r {
+            padding: @CmIndent-XSmall;
+            display: table-cell;
+            vertical-align: top;
+
+            .date {
+                .cm__font--hint;
+                color: @CmFont-UI-H4-Color;
+            }
+
+            .pt__box-editable {
+                .cm__font--hint;
+                margin: 0;
+                color: @CmFont-UI-H4-Color;
+            }
+        }
+    }
+
+    .post-share {
+        .pt__line-share {
+            margin: @CmIndent-Medium 0 0 0;
+
+            &:first-child {
+                margin: 0;
+            }
+        }
+    }
+
+    &.is-featured {
+        background: @LtForum-PostBackgroundFeatured;
+
+        > .inner {
+            > .l {
+                &:after {
+                    border-color: transparent @LtForum-PostBackgroundFeatured transparent transparent;
+                }
+            }
+        }
+    }
+}
+
+/* ******* COMPONENT: FORUM: ADAPTIVE ******* */
+
+@media only screen and (max-width : @LtForum-AdaptiveFrom) {
+
+    html.is-adaptive {
+        .lt__forum-post {
+            > .inner {
+                width: auto;
+                display: block;
+
+                > .l,
+                > .r {
+                    width: auto;
+                    display: block;
+                }
+
+                > .l {
+                    &:after {
+                        display: none;
+                    }
+                }
+            }
+        }
+
+        .lt__forum__cell-counter {
+            .line {
+                text-align: left;
+            }
+
+            .title {
+                float: left;
+                margin: 0 @CmIndent-XXXSmall 0 0;
+            }
+            
+            .descr {
+                float: left;
+            }
+        }
+    }
+
+}

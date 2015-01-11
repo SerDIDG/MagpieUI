@@ -17,6 +17,8 @@
     <script type="text/javascript" src="../../../js/components/Collector.js"></script>
     <script type="text/javascript" src="../../../js/components/Tabset.js"></script>
     <script type="text/javascript" src="../../../js/components/TagsInput.js"></script>
+    <script type="text/javascript" src="../../../js/components/Tooltip.js"></script>
+    <script type="text/javascript" src="../../../js/components/Autocomplete.js"></script>
 
     <script type="text/javascript">
         cm.onReady(function(){
@@ -39,9 +41,9 @@
 
 <body>
 
-<h1 class="cm-page-title">Components: Tags</h1>
+<h1 class="pt__box-title">Components: Tags</h1>
 
-<ul class="com-tabset-content-ul" data-element="tabset">
+<ul class="com__tabset__content-ul" data-element="tabset">
     <li data-node="tabs:[]:container" data-config='{"id" : "overview", "title" : "Overview"}'></li>
 
     <li data-node="tabs:[]:container" data-config='{"id" : "methods", "title" : "Methods"}'></li>
@@ -56,6 +58,21 @@
                 </div>
                 <div class="r">
                     <input type="text" data-element="tags" value="tag1, tag2">
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>Input with Autocomplete:</h2>
+
+        <div class="com-tags is-editable">
+            <div class="inner">
+                <div class="l">
+                    <div class="icon small tags" title="Tags"></div>
+                </div>
+                <div class="r">
+                    <input type="text" value="tag1, tag2" data-element="tags" data-config='{"autocomplete" : {"data" : ["Sponge Bob", "User Userberg", "User Userbergovich", "User Userbergini", "User Userbergovski", "User Userbergoff", "User Userberegovoy", "User Userbergosyan", "User Userbergovenko"]}}'>
                 </div>
             </div>
         </div>

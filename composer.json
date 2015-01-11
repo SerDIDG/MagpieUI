@@ -1,9 +1,9 @@
 {
-    "name": "SerDIDG/FioraUI",
-    "version": "2.1.0",
+    "name": "SerDIDG/MagpieUI",
+    "version": "3.0.2",
     "license": "MIT",
     "type": "library",
-    "homepage": "http://serdidg.github.io/FioraUI/",
+    "homepage": "http://serdidg.github.io/MagpieUI/",
     "authors": [
         {
             "name": "Serhio Magpie",
@@ -14,8 +14,8 @@
     ],
     "repositories": [
         {
-            "type": "vcs",
-            "url": "https://github.com/SerDIDG/FioraUI"
+            "type": "git",
+            "url": "https://github.com/SerDIDG/MagpieUI"
         },
         {
             "type": "package",
@@ -28,9 +28,22 @@
                     "reference": "origin/master"
                 }
             }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "bgrins/TinyColor",
+                "version": "dev-master",
+                "source": {
+                    "url": "https://bgrins.github.com/TinyColor",
+                    "type": "git",
+                    "reference": "origin/master"
+                }
+            }
         }
     ],
     "require": {
-        "daneden/animate.css": "dev-master"
+        "daneden/animate.css": "dev-master",
+        "bgrins/TinyColor": "dev-master"
     }
 }

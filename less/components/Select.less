@@ -1,15 +1,13 @@
 /* ******* SELECT ******* */
 
-.com-select {
+.com__select {
     position: relative;
     z-index: 1;
     outline: none;
 
     .form-field {
         .icon {
-            -webkit-transition+: -webkit-transform 0.3s ease-in-out;
-                -ms-transition+:     -ms-transform 0.3s ease-in-out;
-                    transition+:         transform 0.3s ease-in-out;
+            .mx__transition(-webkit-transform -ms-transform transform, @CmUI-Transition-Duration);
 
             &.default {
                 .icon.medium.select-arrow;
@@ -31,35 +29,35 @@
 
 /* Tooltip */
 
-.com-tooltip {
-    &.com-select-tooltip {
-        .cm-user-select(none);
+.com__tooltip {
+    &.com__select-tooltip {
+        .mx__user-select(none);
 
         > .inner > .scroll {
-            max-height: @ComSelect-listCount * (@cm-lineHeight + @CmItemsList-indent + @CmItemsList-padding-y * 2) - @CmItemsList-indent;
+            max-height: @ComSelect-ListCount * (@CmFont-Base-LineHeight + @PtListingItems-Indent + @PtListingItems-PaddingY * 2) - @PtListingItems-Indent;
         }
     }
 }
 
 /* Select Multiple */
 
-.com-multiselect {
-    .cm-user-select(none);
+.com__select-multi {
+    .mx__user-select(none);
 
     .inner {
-        #cm > .input;
+        .input;
         height: auto;
-        min-height: @CmForm-fieldHeight;
-        padding: @cm-indentXXXSmall;
+        min-height: @CmForm-FieldHeight;
+        padding: @CmIndent-XXXSmall;
     }
 
-    .cm-items-list > ul {
-        max-height: @ComSelect-multiListCount * (@cm-lineHeight + @CmItemsList-indent + @CmItemsList-padding-y * 2) - @CmItemsList-indent;
+    .pt__listing-items > ul {
+        max-height: @ComSelect-MultiListCount * (@CmFont-Base-LineHeight + @PtListingItems-Indent + @PtListingItems-PaddingY * 2) - @PtListingItems-Indent;
     }
 
     &.disabled {
         .inner {
-            #cm > .input-disabled;
+            .input.input-disabled;
             cursor: default;
         }
     }

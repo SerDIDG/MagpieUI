@@ -126,6 +126,8 @@ function(params){
         // Init animations
         anims['slides'] = new cm.Animation(that.nodes['slides']);
         anims['slidesInner'] = new cm.Animation(that.nodes['slidesInner']);
+        // Resize events
+        cm.addEvent(window, 'resize', resizeHandler);
     };
 
     var renderLayout = function(){
@@ -149,7 +151,9 @@ function(params){
         cm.forEach(items, function(item){
             height = Math.max(height, cm.getRealHeight(item.nodes['container'], 'offsetRelative'));
         });
-        that.nodes['inner'].style.height = [height, 'px'].join('');
+        if(height != that.nodes['inner'].offsetHeight){
+            that.nodes['inner'].style.height = [height, 'px'].join('');
+        }
     };
 
     var collectItem = function(item, i){
@@ -280,6 +284,10 @@ function(params){
                     'previous' : previous
                 });
             });
+            // Recalculate slider height
+            if(that.params['calculateMaxHeight']){
+                calculateMaxHeight();
+            }
         }
     };
 
@@ -331,6 +339,15 @@ function(params){
         if(!that.paused){
             stopSlideshow();
             startSlideshow();
+        }
+    };
+
+    /* *** HELPERS *** */
+
+    var resizeHandler = function(){
+        // Recalculate slider height
+        if(that.params['calculateMaxHeight']){
+            calculateMaxHeight();
         }
     };
     

@@ -2,63 +2,62 @@
 
 /* *** DROPDOWN *** */
 
-.cm-menu-dropdown {
+.pt__menu-dropdown {
 }
 
-.cm-menu-dropdown--base {
-    .cm-box;
+.pt__menu-dropdown--base {
+    .pt__box;
     display: block;
     visibility: hidden;
     position: absolute;
     top: 100%;
     left: 0;
     margin: 0;
-    padding: @CmMenu-indent 0;
+    padding: @PtMenu-Indent 0;
     list-style: none;
     opacity: 0;
-    .cm-transition(all @CM-Transition-DurationReverse ease-in-out);
+    .mx__transition(all, @CmUI-Transition-Duration);
 
     li {
         position: relative;
 
         a {
-            .cm-font-link;
-            .cm-font-base;
+            .cm__font--ui;
+            .cm__font--link;
             display: block;
-            padding: @CmMenu-itemIndentY @CmMenu-itemIndentX;
-            line-height: 18px;
+            padding: @PtMenu-ItemIndentY @PtMenu-ItemIndentX;
             text-decoration: none;
             white-space: nowrap;
+            color: @CmFont-Base-Color;
 
             &:hover {
-                color: @cm-color;
                 text-decoration: none;
             }
         }
 
         ul {
-            top: -(@cm-borderWidth + @CmMenu-indent);
+            top: -(@CmBorder-Width + @PtMenu-Indent);
             left: 100%;
         }
 
         &.sep {
             display: none;
             height: 0;
-            margin: 0 @cm-indentMedium / 2;
+            margin: 0 @CmIndent-Medium / 2;
             overflow: hidden;
-            border-top: @cm-borderStyle;
+            border-top: @CmBorder-Default;
         }
 
         &:before {
             display: block;
             height: 0;
-            margin: 0 @cm-indentMedium / 2;
+            margin: 0 @CmIndent-Medium / 2;
             overflow: hidden;
-            border-top: @cm-borderStyle;
+            border-top: @CmBorder-Default;
             content: '';
         }
 
-        &:first-child{
+        &:first-child {
             &:before {
                 display: none;
             }
@@ -72,22 +71,23 @@
     }
 }
 
-.cm-menu-dropdown--clear {
-    .cm-box--clear;
+.pt__menu-dropdown--clear {
+    .pt__box--clear;
 }
 
-.cm-menu-dropdown--active {
+.pt__menu-dropdown--active {
     visibility: visible;
     opacity: 1;
+    .mx__transition(all, @CmUI-Transition-DurationReverse);
 }
 
 /* *** MENU *** */
 
-.cm-menu {
+.pt__menu {
     &:hover,
     &.is-show {
-        > .cm-menu-dropdown {
-            .cm-menu-dropdown--active;
+        > .pt__menu-dropdown {
+            .pt__menu-dropdown--active;
         }
     }
 }

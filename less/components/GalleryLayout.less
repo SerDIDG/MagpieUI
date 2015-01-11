@@ -1,7 +1,7 @@
 /* ******* COMPONENT: GALLERY: LAYOUT ******* */
 
-.com-gallery-layout {
-    margin: 0 0 @cm-indentMedium 0;
+.com__gallery-layout {
+    margin: 0 0 @CmIndent-Medium 0;
 
     &.bottom {
         margin: 0;
@@ -13,8 +13,8 @@
 
     // /* Preview */
 
-    .com-gallery-preview {
-        margin: @cm-indentXSmall 0;
+    .com__gallery-preview {
+        margin: @CmIndent-XSmall 0;
 
         &:first-child {
             margin-top: 0;
@@ -37,17 +37,17 @@
                 padding: 0 @size;
             }
 
-            .com-gallery-bar {
+            .com__gallery-bar {
                 width: @size;
 
-                .cm-grid {
-                    #cm > .grid-size(@counter);
+                .pt__grid {
+                    .pt__grid__size(@counter);
                 }
             }
         }
     }
 
-    .loop(@ComGalleryLayout-sizesCount);
+    .loop(@ComGalleryLayout-SizesCount);
 
     // /* Bar Horizontal */
 
@@ -58,13 +58,13 @@
             padding: 0;
         }
 
-        .com-gallery-bar {
+        .com__gallery-bar {
             width: auto;
         }
     }
 
     &.is-bar-none {
-        .com-gallery-preview {
+        .com__gallery-preview {
             margin: 0;
         }
     }
@@ -73,17 +73,16 @@
 
     &.is-bar-left,
     &.is-bar-right {
-        .com-gallery-preview {
+        .com__gallery-preview {
             margin: 0;
         }
 
-        .com-gallery-bar {
+        .com__gallery-bar {
             position: absolute;
-            .cm-position(0, auto, 0, auto);
-            -moz-box-sizing: border-box;
-                 box-sizing: border-box;
+            .mx__box-sizing(border-box);
+            .mx__position(0, auto, 0, auto);
 
-            .cm-grid > ul > li {
+            .pt__grid > ul > li {
                 width: 100%;
             }
         }
@@ -94,8 +93,8 @@
             padding-right: 0;
         }
 
-        .com-gallery-bar {
-            padding: 0 @cm-indentXSmall 0 0;
+        .com__gallery-bar {
+            padding: 0 @CmIndent-XSmall 0 0;
             left: 0;
         }
     }
@@ -105,8 +104,8 @@
             padding-left: 0;
         }
 
-        .com-gallery-bar {
-            padding: 0 0 0 @cm-indentXSmall;
+        .com__gallery-bar {
+            padding: 0 0 0 @CmIndent-XSmall;
             right: 0;
         }
     }
@@ -114,7 +113,7 @@
     // /* *** Gallery Border *** */
 
     &.has-border {
-        padding: @cm-indentXSmall;
-        border: @cm-borderBox;
+        padding: @CmIndent-XSmall;
+        border: @CmBorder-Box;
     }
 }

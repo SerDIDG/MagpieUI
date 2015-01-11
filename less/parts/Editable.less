@@ -1,6 +1,6 @@
-/* ******* EDITABLE AREA ******* */
+/* ******* PARTS: EDITABLE ******* */
 
-#cm-editable-bundle () {
+.pt__editable__bundle () {
     .normal {
         width: 100%;
         position: relative;
@@ -22,14 +22,11 @@
             display: block;
             position: absolute;
             z-index: 1;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            border: @cm-borderEditable;
-            border-radius: @cm-borderRadius;
+            border: @CmBorder-Editable;
+            border-radius: @CmBorder-Radius;
             opacity: 0;
-            .cm-transition(all @CM-Transition-Duration ease-in-out);
+            .mx__transition(all, @CmUI-Transition-Duration);
+            .mx__position(0, 0, 0, 0);
         }
 
         > .inner {
@@ -53,13 +50,13 @@
             z-index: 3;
             left: 50%;
             opacity: 0;
-            background: @cm-colorSecondary;
-            background-clip: border-box;
-            border: @cm-borderEditable;
-            border-radius: @cm-borderRadius;
+            background: @PtEditable-Drag-DefaultBackground;
+            border: @CmBorder-Editable;
+            border-radius: @CmBorder-Radius;
             cursor: move;
             visibility: hidden;
-            .cm-transition(all @CM-Transition-Duration ease-in-out);
+            .mx__background-clip(border-box);
+            .mx__transition(all, @CmUI-Transition-Duration);
 
             .icon {
                 width: 34px;
@@ -69,8 +66,8 @@
             }
 
             &:hover {
-                background: @cm-colorSecondaryHover;
-                .cm-transition(all @CM-Transition-DurationReverse ease-in-out);
+                background: @PtEditable-Drag-HoverBackground;
+                .mx__transition(all, @CmUI-Transition-DurationReverse);
             }
 
             &:not(.is-bottom) {
@@ -86,11 +83,10 @@
             display: block;
             position: absolute;
             z-index: 4;
-            top: -12px;
-            right: -12px;
             opacity: 0;
             cursor: pointer;
-            .cm-transition(all @CM-Transition-Duration ease-in-out);
+            .mx__transition(all, @CmUI-Transition-Duration);
+            .mx__position(-12px, -12px, auto, auto);
 
             .icon {
                 width: 24px;
@@ -98,26 +94,26 @@
                 display: block;
                 position: relative;
                 z-index: 2;
-                background-color: @cm-colorSecondary;
-                border: @cm-borderEditable;
-                border-radius: @cm-borderRadius;
+                background-color: @PtEditable-Drag-DefaultBackground;
+                border: @CmBorder-Editable;
+                border-radius: @CmBorder-Radius;
             }
 
-            .cm-menu-dropdown {
-                .cm-menu-dropdown--base;
+            .pt__menu-dropdown {
+                .pt__menu-dropdown--base;
                 z-index: 1;
-                .cm-position(12px, 12px, auto, auto);
+                .mx__position(12px, 12px, auto, auto);
             }
 
             &:hover {
                 z-index: 14;
 
                 .icon {
-                    background-color: @cm-colorSecondaryHover;
+                    background-color: @PtEditable-Drag-HoverBackground;
                 }
 
-                .cm-menu-dropdown {
-                    .cm-menu-dropdown--active;
+                .pt__menu-dropdown {
+                    .pt__menu-dropdown--active;
                 }
             }
         }
@@ -125,19 +121,16 @@
 
     .hover {
         > .border {
-            top: -16px;
-            right: -16px;
-            bottom: -16px;
-            left: -16px;
             opacity: 1;
             background: #ffffff;
-            .cm-transition(all @CM-Transition-DurationReverse ease-in-out);
+            .mx__transition(all, @CmUI-Transition-DurationReverse);
+            .mx__position(-16px, -16px, -16px, -16px);
         }
 
         > .drag {
             opacity: 1;
             visibility: visible;
-            .cm-transition(all @CM-Transition-DurationReverse ease-in-out);
+            .mx__transition(all, @CmUI-Transition-DurationReverse);
 
             &:not(.is-bottom) {
                 top: -28px;
@@ -149,39 +142,38 @@
         }
 
         > .menu {
-            top: -28px;
-            right: -28px;
             opacity: 1;
-            .cm-transition(all @CM-Transition-DurationReverse ease-in-out);
+            .mx__transition(all, @CmUI-Transition-DurationReverse);
+            .mx__position(-28px, -28px, auto, auto);
         }
     }
 
     .active {
         > .drag {
-            background-color: @cm-colorActive;
+            background-color: @PtEditable-Drag-ActiveBackground;
         }
     }
 }
 
-.cm-editable {
-    margin: 0 0 @cm-indentMedium;
+.pt__editable {
+    margin: 0 0 @CmIndent-Medium;
 
     &.bottom {
         margin: 0;
     }
 
-    #cm-editable-bundle > .normal;
+    .pt__editable__bundle > .normal;
 
     &.is-editable {
-        #cm-editable-bundle > .editable;
+        .pt__editable__bundle > .editable;
     }
 
     &.is-active,
     &:hover {
-        #cm-editable-bundle > .hover;
+        .pt__editable__bundle > .hover;
     }
 
     &.is-active {
-        #cm-editable-bundle > .active;
+        .pt__editable__bundle > .active;
     }
 }

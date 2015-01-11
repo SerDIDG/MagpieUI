@@ -1,0 +1,67 @@
+<!DOCTYPE HTML>
+<html class="is-adaptive">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Layouts: Collapsible</title>
+
+    <link type="text/css" rel="stylesheet" href="../../../css/index.css">
+    <link type="text/css" rel="stylesheet" href="../../styles/index.css">
+
+    <script type="text/javascript" src="../../../js/polyfill.js"></script>
+    <script type="text/javascript" src="../../../js/common.js"></script>
+    <script type="text/javascript" src="../../../js/parts.js"></script>
+    <script type="text/javascript" src="../../../js/modules.js"></script>
+    <script type="text/javascript" src="../../../js/init.js"></script>
+    <script type="text/javascript" src="../../../js/components/UA.js"></script>
+    <script type="text/javascript" src="../../../js/components/Collector.js"></script>
+    <script type="text/javascript" src="../../../js/components/CollapsibleLayout.js"></script>
+
+    <script type="text/javascript">
+        cm.onReady(function(){
+            // Components
+            new Com.Collector()
+                .addEvent('onConstruct', function(collector, data){
+                    Part.Menu();
+                    Part.Autoresize(data['node']);
+                })
+                .add('collapsible-layout', function(node){
+                    new Com.CollapsibleLayout({
+                        'node' : node
+                    });
+                })
+                .construct();
+        });
+    </script>
+</head>
+
+<body>
+
+<div class="lt__collapsible" data-element="collapsible-layout" data-config='{"remember" : true, "name" : "cm-docs-layout-collapsible"}'>
+    <div class="sidebar left" data-node="ComCollapsibleLayout.leftContainer">
+        <div class="inner">
+            <div class="title">
+                <span class="icon medium linked arrow-left" data-node="ComCollapsibleLayout.leftButton"></span>
+                Left
+            </div>
+            <div class="descr"></div>
+        </div>
+    </div>
+
+    <div class="sidebar right" data-node="ComCollapsibleLayout.rightContainer">
+        <div class="inner">
+            <div class="title">
+                <span class="icon medium linked arrow-right" data-node="ComCollapsibleLayout.rightButton"></span>
+                Right
+            </div>
+            <div class="descr"></div>
+        </div>
+    </div>
+
+    <div class="inner">
+        <h1 class="pt__box-title">Layouts: Collapsible</h1>
+    </div>
+</div>
+
+</body>
+</html>

@@ -6,16 +6,20 @@
     position: relative;
 
     .post-title {
-        margin: 0 0 @cm-indentXXXSmall;
+        margin: 0 0 @CmIndent-XXXSmall;
+
+        .pt__box-editable {
+            margin: 0;
+        }
     }
 
     .post-info,
     .post-tags {
-        .cm-font-hint;
+        .cm__font--hint;
     }
 
     .post-info {
-        .cm-line-info {
+        .pt__line-info {
             margin: 0;
 
             * {
@@ -25,13 +29,13 @@
         }
 
         &.is-bottom {
-            margin: @cm-indentXSmall 0 0 0;
+            margin: @CmIndent-XSmall 0 0 0;
         }
     }
 
     .post-share {
-        .cm-line-share {
-            margin: @cm-indentMedium 0 0 0;
+        .pt__line-share {
+            margin: @CmIndent-Medium 0 0 0;
 
             &:first-child {
                 margin: 0;
@@ -40,50 +44,49 @@
     }
 
     .post-abstract {
-        .cm-content-tags {
+        .cm__tags {
             margin: 0;
         }
     }
 
-    .cm-toolbar,
+    .pt__toolbar,
     .post-abstract,
     .post-entry,
     .post-tags {
-        margin: @cm-indentXSmall 0 0 0;
+        margin: @CmIndent-XSmall 0 0 0;
     }
 
     &.is-pending,
     &.is-featured {
         &:before {
             position: absolute;
-            .cm-position(-@cm-indentXXSmall, -@cm-indentXXSmall, -@cm-indentXXSmall, -@cm-indentXXSmall);
             display: block;
             z-index: -1;
             content: '';
-            background-color: @cm-background-pendingLight;
-            border-radius: @cm-borderRadius;
+            border-radius: @CmBorder-Radius;
+            .mx__position(-@CmIndent-XXSmall, -@CmIndent-XXSmall, -@CmIndent-XXSmall, -@CmIndent-XXSmall);
         }
     }
 
     &.is-featured {
         &:before {
-            background-color: @cm-background-themeLight;
+            background-color: @CmColor-Primary-LightHighlight;
         }
     }
 
     &.is-pending {
         &:before {
-            background-color: @cm-background-pendingLight;
+            background-color: @CmColor-Warning-LightHighlight;
         }
     }
 
     &.is-entry {
         .post-info.is-bottom,
-        .cm-toolbar,
+        .pt__toolbar,
         .post-entry,
         .post-abstract,
         .post-tags {
-            margin: @cm-indentMedium 0 0 0;
+            margin: @CmIndent-Medium 0 0 0;
         }
     }
 }
@@ -92,7 +95,7 @@
 
 .lt__posts {
     .lt__post {
-        margin: @cm-indentLarge 0 0;
+        margin: @CmIndent-Large 0 0;
 
         &:first-child {
             margin: 0;

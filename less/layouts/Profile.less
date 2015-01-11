@@ -1,0 +1,54 @@
+/* ******* LAYOUTS: PROFILE ******* */
+
+.lt__profile {
+    > .inner {
+        .clearfix;
+
+        > .l {
+            float: left;
+            margin: 0 @CmIndent-XLarge 0 0;
+
+            .pt__box-flat {
+                > .inner {
+                    width: @LtProfile-LeftColumn;
+                }
+            }
+        }
+
+        > .r {
+            overflow: hidden;
+        }
+    }
+}
+
+/* ******* LAYOUTS: PROFILE: ADAPTIVE ******* */
+
+@media only screen and (max-width : @CmScreen-Mobile) {
+
+    html.is-adaptive {
+        .lt__profile {
+            > .inner {
+                > .l {
+                    width: auto;
+                    float: none;
+                    margin: 0 0 @CmIndent-XLarge;
+
+                    .pt__box-flat {
+                        > .inner {
+                            width: auto;
+                        }
+                    }
+                }
+            }
+        }
+
+        .lt__profile--members {
+            .pt__grid {
+                > ul > li {
+                    width: 33.33%;
+                }
+            }
+        }
+    }
+
+}

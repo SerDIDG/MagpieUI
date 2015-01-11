@@ -1,0 +1,291 @@
+/* ******* PARTS: GRIDLIST ******* */
+
+.pt__gridlist {
+    .pt__gridlist__backgrounds;
+    margin: 0 0 @CmIndent-Medium;
+    overflow: hidden;
+
+    &.bottom {
+        margin: 0;
+    }
+
+    table {
+        width: 100%;
+        table-layout: fixed;
+        border-collapse: separate;
+
+        td, th {
+            min-height: @CmFont-UI-LineHeight;
+            vertical-align: top;
+            text-align: left;
+            padding: @PtGridlist-PaddingInner;
+            line-height: @CmFont-UI-LineHeight;
+            .mx__background-clip(padding-box);
+
+            > .inner {
+                .cm__text-overflow;
+                display: block;
+                position: relative;
+                word-wrap: normal;
+                text-decoration: none;
+            }
+
+            &.pull-left {
+                text-align: left;
+            }
+
+            &.pull-center {
+                text-align: center;
+            }
+
+            &.pull-right {
+                text-align: right;
+            }
+
+            &.cell-title {
+                width: 20%;
+            }
+
+            &.cell-description {
+                width: auto;
+            }
+
+            &.cell-status {
+                width: 100px;
+            }
+
+            &.cell-links {
+                width: 200px;
+            }
+        }
+
+        th {
+            font-weight: @CmFont-Base-BoldWeight;
+            font-size: @PtGridlist-FontTitle-Size;
+            .mx__user-select(none);
+
+            &.sort {
+                .mx__transition(background-color, @CmUI-Transition-Duration);
+
+                .inner {
+                    display: block;
+                    margin: -@PtGridlist-PaddingInner;
+                    padding: @PtGridlist-PaddingInner 20px @PtGridlist-PaddingInner @PtGridlist-PaddingInner;
+                    cursor: pointer;
+                }
+
+                .arrow {
+                    display: block;
+                    position: absolute;
+                    top: 50%;
+                    right: @PtGridlist-PaddingInner;
+                    margin: -3px 0 0 0;
+                }
+            }
+        }
+
+        td {
+            vertical-align: top;
+            border-top: 1px solid transparent;
+            word-wrap: break-word;
+            font-size: @PtGridlist-Font-Size;
+        }
+
+        tbody, thead {
+            &:first-child {
+                tr {
+                    &:first-child {
+                        td, th {
+                            border: none;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.pt__gridlist__counter {
+    margin: 0 0 @CmIndent-Medium;
+
+    &.bottom {
+        margin: 0;
+    }
+}
+
+.pt__gridlist__indent {
+    width: @CmSize-XSmall;
+    display: inline-block;
+    vertical-align: top;
+    text-align: left;
+}
+
+/* *** STUFF *** */
+
+.pt__gridlist {
+    .control {
+        .icon {
+            display: inline-block;
+            vertical-align: middle;
+            cursor: pointer;
+        }
+
+        input[type="checkbox"],
+        input[type="radio"] {
+            vertical-align: middle;
+            margin: 0;
+        }
+    }
+
+    .cm-form-icons-inside {
+        .text {
+            font-size: @PtGridlist-Font-Size;
+        }
+    }
+}
+
+// /* ******* PARTS: GRIDLIST: MIXINS ******* */
+
+.pt__gridlist__backgrounds () {
+    th {
+        background-color: @CmColor-Primary-LightDefault;
+
+        &.sort {
+            &:hover {
+                background-color: @CmColor-Primary-LightHover;
+                .mx__transition(background-color, @CmUI-Transition-DurationReverse);
+            }
+
+            &:active {
+                background-color: @CmColor-Primary-LightActive;
+            }
+        }
+    }
+
+    tr {
+        td {
+            background-color: @CmColor-Primary-LightDefault;
+        }
+
+        &:hover {
+            td {
+                background-color: @CmColor-Secondary-LightHover;
+            }
+        }
+
+        &.success,
+        &.valid {
+            td {
+                background-color: @CmColor-Success-LightActive;
+            }
+
+            &:hover {
+                td {
+                    background-color: @CmColor-Success-LightActiveHover;
+                }
+            }
+        }
+
+        &.danger,
+        &.invalid {
+            td {
+                background-color: @CmColor-Danger-LightActive;
+            }
+
+            &:hover {
+                td {
+                    background-color: @CmColor-Danger-LightActiveHover;
+                }
+            }
+        }
+
+        &.warning {
+            td {
+                background-color: @CmColor-Warning-LightActive;
+            }
+
+            &:hover {
+                td {
+                    background-color: @CmColor-Warning-LightActiveHover;
+                }
+            }
+        }
+
+        &.active {
+            td {
+                background-color: @CmColor-Primary-LightActive;
+            }
+
+            &:hover {
+                td {
+                    background-color: @CmColor-Primary-LightActiveHover;
+                }
+            }
+        }
+    }
+}
+
+.pt__gridlist__has-background () {
+    .pt__gridlist__backgrounds;
+
+    th {
+        background-color: @CmColor-Secondary-LightHighlight;
+    }
+
+    tr {
+        td {
+            background-color: @CmColor-Secondary-LightHighlight;
+        }
+
+        &:hover {
+            td {
+                background-color: @CmColor-Secondary-LightHover;
+            }
+        }
+    }
+}
+
+/* ******* PARTS: GRIDLIST: ADAPTIVE ******* */
+
+@media only screen and (max-width : @PtGridlist-AdaptiveFrom) {
+
+    html.is-adaptive {
+        .pt__gridlist {
+            .pt__gridlist__has-background;
+
+            tr {
+                td, th {
+                    width: auto;
+                    display: block;
+                }
+
+                th {
+                    text-align: left !important;
+                }
+
+                td, th {
+                    &:first-child {
+                        border-top: @CmIndent-XXSmall solid transparent;
+                    }
+                }
+            }
+
+            tbody, thead {
+                &:first-child {
+                    tr {
+                        &:first-child {
+                            td, th {
+                                border-top: 1px solid transparent;
+
+                                &:first-child {
+                                    border: none;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+}

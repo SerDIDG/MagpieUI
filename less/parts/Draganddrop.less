@@ -1,59 +1,59 @@
-/* ******* DRAG AND DROP ******* */
+/* ******* PARTS: DRAG AND DROP ******* */
 
-.cm-draganddrop-body,
-.cm-draganddrop-body * {
+.pt__dnd-body,
+.pt__dnd-body * {
     cursor: move !important;
-    .cm-user-select(none);
+    .mx__user-select(none);
 }
 
-.cm-draganddrop-helper {
+.pt__dnd-helper {
     position: fixed;
     z-index: 9000;
-    .cm-user-select(none);
+    .mx__user-select(none);
 }
 
-.cm-draganddrop-chassis {
+.pt__dnd-chassis {
     height: 0;
-    .cm-transition(height 0s linear);
+    .mx__transition(height, 0s, linear);
 }
 
-.cm-draganddrop-removable {
+.pt__dnd-removable {
     overflow: hidden;
 }
 
-.cm-draganddrop-area {
-    min-height: @cm-indentMedium;
-    padding: @CmDraganddrop-areaPadding;
+.pt__dnd-area {
+    min-height: @CmIndent-Medium;
+    padding: @PtDnD-Area-Padding;
     position: relative;
 
     &.is-available {
-        .cm-transition(background-color @CM-Transition-Duration ease-in-out);
+        .mx__transition(background-color, @CmUI-Transition-Duration);
 
         &:before {
-            .cm-transition(border-color @CM-Transition-Duration ease-in-out);
+            .mx__transition(border-color, @CmUI-Transition-Duration);
         }
 
         &.is-highlight {
-            background-color: @CmDraganddrop-areaBackgroundHighlight;
-            border-radius: @CmDraganddrop-areaBorderRadius;
+            background-color: @PtDnD-Area-HighlightBackground;
+            border-radius: @PtDnD-Area-BorderRadius;
 
             &:before {
                 position: absolute;
-                .cm-position(-1px,-1px,-1px,-1px);
                 display: block;
                 content: '';
-                border: @CmDraganddrop-areaHighlightBorder;
-                border-radius: @CmDraganddrop-areaBorderRadius;
+                border: @PtDnD-Area-HighlightBorder;
+                border-radius: @PtDnD-Area-BorderRadius;
+                .mx__position(-1px,-1px,-1px,-1px);
             }
 
             &.is-active {
-                background-color: @CmDraganddrop-areaBackgroundActive;
+                background-color: @PtDnD-Area-ActiveBackground;
 
                 &:before {
-                    border: @CmDraganddrop-areaActiveBorder;
+                    border: @PtDnD-Area-ActiveBorder;
                 }
 
-                .cm-draganddrop-area {
+                .pt__dnd-area {
                     background-color: rgba(255,255,255,0.4);
                 }
             }

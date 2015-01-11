@@ -1,7 +1,7 @@
-/* ******* GRID ******* */
+/* ******* PARTS: GRID ******* */
 
-.cm-grid {
-    margin: 0 0 @cm-indentMedium;
+.pt__grid {
+    margin: 0 0 @CmIndent-Medium;
     overflow: hidden;
 
     &.bottom {
@@ -9,18 +9,14 @@
     }
 
     > ul {
-        padding: 0;
-        list-style: none;
-        font-size: 0;
-        word-spacing: 0;
+        .cm__list-clear;
+        .cm__list-inline;
 
         > li {
+            .cm__font;
             width: 100%;
-            display: inline-block;
             overflow: hidden;
-            vertical-align: top;
-            .cm-font-base;
-            .cm-box-sizing();
+            .mx__box-sizing(border-box);
 
             > a {
                 display: block;
@@ -31,14 +27,13 @@
                     display: block;
                     position: relative;
                     cursor: pointer;
-                    -webkit-transform: translateZ(0px);
-                    .cm-transition(opacity @CM-Transition-Duration ease-in-out);
+                    .mx__transition(opacity, @CmUI-Transition-Duration);
                 }
 
                 &:hover {
                     > img {
-                        opacity: @CM-Opacity-Hover;
-                        .cm-transition(opacity @CM-Transition-DurationReverse ease-in-out);
+                        opacity: @CmUI-Opacity-Hover;
+                        .mx__transition(opacity, @CmUI-Transition-DurationReverse);
                     }
                 }
             }
@@ -56,13 +51,92 @@
         height: 100%;
     }
 
+    &.pull-left {
+        > ul {
+            text-align: left;
+        }
+    }
+
+    &.pull-center {
+        > ul {
+            text-align: center;
+        }
+    }
+
+    &.pull-right {
+        > ul {
+            text-align: right;
+        }
+    }
+
+    &.is-justify {
+        > ul {
+            > li {
+                text-align: center;
+
+                &:first-child {
+                    text-align: left;
+                }
+
+                &:last-child {
+                    text-align: right;
+                }
+            }
+        }
+    }
+
+    &.is-adaptive {
+        overflow: visible;
+
+        > ul {
+            > li {
+                width: auto;
+                overflow: visible;
+            }
+        }
+    }
+
+    &.is-flexible {
+        overflow: visible;
+
+        > ul {
+            .display-flex;
+
+            > li {
+                width: 100%;
+                .mx__flex(auto);
+            }
+        }
+    }
+
+    &.is-flexible-in {
+        overflow: visible;
+
+        > ul {
+            .display-flex;
+            .mx__flex-flow(row wrap);
+
+            > li {
+                .display-flex;
+                .mx__flex(1 1);
+            }
+        }
+
+        .ie9 &,
+        .ie8 & {
+            > ul {
+                .cm__list-table;
+            }
+        }
+    }
+
     // /* Build columns styles */
 
     .loop(@counter) when (@counter > 0) {
         .loop((@counter - 1));
 
         &.col-@{counter} {
-            #cm > .grid-size(@counter);
+            .pt__grid__size(@counter);
         }
     }
 
@@ -70,24 +144,54 @@
 
     // /* Set grid items indent */
 
-    #cm > .grid-indent(@CmGrid-itemIndent);
+    .pt__grid__indent(@PtGrid-Indent);
 
-    .for(@ComGrid-indents); .-each(@name) {
+    .for(@PtGrid-Indents); .-each(@name) {
         &.indent-@{name} {
-            #cm > .grid-indent(@name);
+            .pt__grid__indent(@name);
         }
     }
 }
 
-// /* *** ADAPTIVE *** */
+/* ******* PARTS: GRID: MIXINS ******* */
 
-@media only screen and (max-width: @cm-screenMobile) {
+.pt__grid__size (@count: 1) {
+    @size: 100% / @count;
+
+    > ul > li {
+        width: @size;
+    }
+}
+
+.pt__grid__indent (@indent: @PtGrid-Indent) {
+    > ul {
+        margin: @indent -@indent -@indent;
+
+        &:first-child {
+            margin: -@indent;
+        }
+
+        > li {
+            padding: @indent;
+        }
+    }
+}
+
+// /* ******* PARTS: GRID: ADAPTIVE ******* */
+
+@media only screen and (max-width: @CmScreen-Mobile) {
 
     html.is-adaptive {
-        .cm-grid {
+        .pt__grid {
             &:not(.is-not-adaptive) {
-                > ul > li {
-                    width: 100%;
+                > ul {
+                    width: auto;
+                    display: block;
+
+                    > li {
+                        width: 100%;
+                        display: block;
+                    }
                 }
             }
         }

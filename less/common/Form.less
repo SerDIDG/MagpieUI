@@ -1,0 +1,969 @@
+/* ******* PART: FORM ******* */
+
+.form {
+    cursor: default;
+
+    &.in-content {
+        margin: 0 0 @CmIndent-Medium;
+    }
+
+    .required {
+        color: @CmColor-Danger-DarkDefault;
+        font-weight: @CmFont-Base-BoldWeight;
+    }
+}
+
+/* *** FIELD *** */
+
+.form {
+    dl:extend(.clear all) {
+        margin: @CmForm-FieldIndent 0 0 0;
+        padding: 0;
+        display: block;
+        clear: both;
+    }
+
+    > dl:first-child {
+        margin-top: 0;
+    }
+
+    dt {
+        width: @CmForm-FieldTitleWidth;
+        display: block;
+        margin: 0;
+        padding: ((@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2) 0;
+        float: left;
+        line-height: @CmFont-Base-LineHeight;
+    }
+
+    dd {
+        display: block;
+        margin: 0 0 0 (@CmForm-FieldTitleWidth + @CmForm-FieldIndent);
+        padding: 0;
+        position: relative;
+
+        &:first-child {
+            margin: 0;
+        }
+    }
+}
+
+.form--values {
+    dt {
+        padding: 0;
+        font-weight: @CmFont-Base-BoldWeight;
+    }
+}
+
+/* *** FIELD BOX *** */
+
+.form-box {
+    > dt {
+        width: auto;
+        float: none;
+    }
+
+    > dd {
+        margin: 0 0 @CmForm-FieldInnerIndent 0;
+
+        &:last-child {
+            margin: 0;
+        }
+    }
+}
+
+/* *** FIELD WITH ICON *** */
+
+.form-field {
+    @iconSize: @CmForm-FieldHeight - @CmBorder-Width * 2;
+    position: relative;
+
+    .icon {
+        width: @iconSize;
+        height: @iconSize;
+        padding: 0;
+        position: absolute;
+        background-color: transparent;
+        background-position: 50% 50%;
+        background-repeat: no-repeat;
+        border-radius: max(@CmBorder-Radius - 2px, 0px);
+
+        &.xxx-small,
+        &.xx-small,
+        &.x-small,
+        &.small,
+        &.medium,
+        &.large {
+            width: @iconSize;
+            height: @iconSize;
+        }
+    }
+
+    &.has-icon-left {
+        .icon {
+            .mx__position(@CmBorder-Width, auto, auto, @CmBorder-Width);
+        }
+
+        input {
+            padding-left: @CmForm-FieldHeight;
+        }
+    }
+
+    &.has-icon-right {
+        .icon {
+            .mx__position(@CmBorder-Width, @CmBorder-Width, auto, auto);
+        }
+
+        input {
+            padding-right: @CmForm-FieldHeight;
+        }
+    }
+}
+
+/* *** BUTTONS CONTAINER *** */
+
+.btn-wrap {
+    .clearfix;
+    margin-top: @CmIndent-Medium;
+
+    .hint {
+        padding: 0 @CmForm-ButtonsIndent 0 0;
+        font-style: italic;
+        overflow: hidden;
+        text-align: right;
+        line-height: @CmForm-FieldHeight;
+        font-size: 12px;
+    }
+
+    .button,
+    .browse-button,
+    .com-action-menu {
+        max-width: 100%;
+        float: right;
+        margin: 0 0 0 @CmForm-ButtonsIndent;
+
+        &.left {
+            float: left;
+            margin: 0 @CmForm-ButtonsIndent 0 0;
+        }
+
+        &.wide {
+            width: 100%;
+            float: none;
+            margin: 0;
+        }
+    }
+
+    &.error {
+        .hint {
+            color: @CmColor-Danger-DarkDefault;
+        }
+    }
+
+    &.ok {
+        .hint {
+            color: @CmColor-Success-DarkDefault;
+        }
+    }
+
+    &.pull-left,
+    &.left {
+        .button,
+        .browse-button,
+        .com-action-menu {
+            float: left;
+            margin: 0 @CmForm-ButtonsIndent 0 0;
+        }
+    }
+
+    &.pull-center,
+    &.centered {
+        text-align: center;
+
+        .button,
+        .browse-button,
+        .com-action-menu {
+            float: none;
+            display: inline-block;
+            margin: 0 0 0 @CmForm-ButtonsIndent;
+
+            &:first-child {
+                margin: 0;
+            }
+        }
+    }
+
+    &.is-block {
+        height: auto;
+
+        .button,
+        .browse-button,
+        .com-action-menu {
+            width: 100%;
+            display: block;
+            margin: @CmForm-ButtonsIndent 0 0 0;
+            float: none;
+            .cm__text-overflow;
+
+            &:first-child {
+                margin: 0;
+            }
+        }
+    }
+
+    &.is-flexible {
+        .display-flex;
+        .mx__flex-direction(row);
+
+        .button,
+        .browse-button,
+        .com-action-menu {
+            float: none;
+            .mx__flex(1);
+
+            &:first-child {
+                margin: 0;
+            }
+        }
+    }
+}
+
+/* *** HINT ***  */
+
+.form .hint:extend(.cm__font--hint-cursive) {
+    text-transform: none;
+}
+
+.form ul.hint {
+    margin: 0;
+    padding: 6px 0 2px;
+    display: block;
+    list-style: none;
+
+    li {
+        margin-top: 4px;
+        line-height: 13px;
+
+        &:first-child {
+            margin: 0;
+        }
+
+        &:before {
+            content: '-';
+            margin-right: 4px;
+        }
+    }
+}
+
+/* ** BROWSE *** */
+
+.browse-button {
+    display: inline-block;
+    vertical-align: top;
+    position: relative;
+    cursor: pointer;
+
+    > .inner {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        overflow: hidden;
+    }
+
+    input[type="file"] {
+        width: auto;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        right: 0;
+        opacity: 0;
+        cursor: pointer;
+
+        .ie8 &,
+        .ie7 &,
+        .ie6 & {
+            .mx__opacity-ie(0);
+        }
+    }
+
+    .button {
+        margin: 0 !important;
+    }
+
+    &:hover {
+        .button {
+            .button.button-primary--hover;
+        }
+    }
+
+    &:active {
+        .button {
+            .button.button-primary--active;
+        }
+    }
+}
+
+/* *** CHECKBOX / RADIO LINE *** */
+
+.check-line {
+    min-height: @CmForm-FieldHeight;
+    line-height: @CmForm-FieldHeight;
+
+    .checkbox {
+        @margin: floor((@CmForm-FieldHeight - 13px) / 2);
+
+        margin: @margin 0 @margin 0;
+        vertical-align: top;
+        padding: 0;
+        cursor: pointer;
+
+        &:checked + label + .unveil {
+            display: block;
+        }
+    }
+
+    label {
+        @padding: (@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2;
+        padding: @padding 20px @padding @CmForm-FieldInnerIndent;
+        cursor: pointer;
+        vertical-align: baseline;
+        line-height: @CmFont-Base-LineHeight;
+    }
+
+    input[type="radio"],
+    input[type="checkbox"] {
+        .check-line > .checkbox;
+    }
+
+    &.outside {
+        line-height: inherit;
+
+        label {
+            display: block;
+            margin: 0 0 0 16px;
+        }
+
+        input[type="radio"],
+        input[type="checkbox"] {
+            float: left;
+        }
+    }
+
+    &.filter > input {
+        display: block;
+        float: left;
+    }
+
+    .field {
+        width: auto;
+        min-height: @CmForm-FieldHeight;
+        display: block;
+        margin: 0 0 0 28px;
+        line-height: @CmForm-FieldHeight;
+    }
+
+    .unveil {
+        display: none;
+        padding: 4px 0 4px 24px;
+
+        dl:first-child {
+            margin: 0;
+        }
+
+        .ie6 &,
+        .ie7 &,
+        .ie8 & {
+            display: block;
+        }
+    }
+}
+
+.form dd > input[type="checkbox"] {
+    .check-line > .checkbox;
+}
+
+/* *** COLUMNS *** */
+
+.form .cols {
+    margin: 10px 0 0;
+
+    &:first-child {
+        margin: 0;
+    }
+
+    .col {
+        float: left;
+        margin-left: @CmForm-Cols-Indent;
+
+        &:first-child {
+            margin-left: 0;
+        }
+
+        > dl:first-child {
+            margin-top: 0;
+        }
+    }
+
+    .loop(@counter) when (@counter > 0) {
+        .loop((@counter - 1));
+
+        @name: extract(@CmForm-Cols-Names, @counter);
+        @size: (100% - ((@counter - 1) * @CmForm-Cols-Indent)) / @counter;
+
+        &.@{name} .col {
+            width: @size;
+        }
+    }
+
+    .loop(10);
+}
+
+/* *** FIELDSET *** */
+
+.form fieldset {
+    padding: 0 @CmIndent-Medium @CmIndent-Medium @CmIndent-Medium;
+    margin: @CmForm-FieldIndent 0 0 0;
+    border: @CmBorder-Default;
+    border-radius: @CmBorder-Radius;
+
+    &:first-child {
+        margin: 0;
+    }
+
+    dl {
+        &:first-child {
+            margin-top: @CmIndent-Medium;
+        }
+    }
+
+    &.error {
+        border-color: @CmColor-Danger-DarkDefault;
+
+        legend {
+            color: @CmColor-Danger-DarkDefault;
+            font-weight: @CmFont-Base-BoldWeight;
+        }
+    }
+
+    &.ok {
+        border-color: @CmColor-Success-DarkDefault;
+
+        legend {
+            color: @CmColor-Success-DarkDefault;
+            font-weight: @CmFont-Base-BoldWeight;
+        }
+    }
+}
+
+/* *** MULTI FIELD  *** */
+
+.form-multifield-line {
+    dd {
+        &.controls {
+            float: right;
+            margin: 0;
+            white-space: nowrap;
+            line-height: @CmForm-FieldHeight;
+
+            .icon {
+                display: inline-block;
+                margin: 0 0 0 6px;
+                vertical-align: middle;
+
+                &:first-child {
+                    margin: 0;
+                }
+            }
+        }
+
+        &.descr,
+        &.descr:last-child {
+            margin-right: 32px;
+        }
+    }
+}
+
+/* *** IMAGE LOADER *** */
+
+.form-image-box {
+    > .l {
+        float: left;
+        margin: 0 @CmIndent-XSmall 0 0;
+
+        .no-image {
+            width: 80px;
+            height: 80px;
+            background: url('@{CmPath-Images}/parts/no-image-80.png');
+        }
+
+        .no-avatar {
+            width: 80px;
+            height: 80px;
+            background: url('@{CmPath-Images}/parts/no-avatar-80.png');
+        }
+
+        img {
+            width: 80px;
+            height: 80px;
+            display: block;
+        }
+    }
+
+    > .r {
+        float: left;
+        font-size: 0;
+
+        .hint {
+            margin: @CmIndent-XXSmall 0 0 0;
+        }
+    }
+
+    .button,
+    .browse-button {
+        width: @CmForm-ImageBox-ButtonWidth;
+        display: block;
+        margin: 0 0 @CmForm-ButtonsIndent 0;
+    }
+
+    &.style2 {
+        .button,
+        .browse-button {
+            display: inline-block;
+            margin: 0 @CmForm-ButtonsIndent 0 0;
+        }
+    }
+
+    &.flat {
+        > .l {
+            float: none;
+            margin: 0 0 12px;
+
+            img {
+                width: auto;
+                height: auto;
+            }
+        }
+
+        > .r {
+            float: none;
+        }
+    }
+}
+
+/* *** CAPTCHA *** */
+
+.form .captcha img {
+    display: block;
+    margin: 0 0 10px;
+}
+
+.form .captcha {
+    display: inline-block;
+}
+
+/* *** FORM FILTER *** */
+
+.form-filter {
+    width: 30%;
+}
+
+.form-filter.right {
+    float: right;
+}
+
+.form-filter.right dt {
+    width: auto;
+    margin: 0 20px 0 0;
+}
+
+.form-filter.right dd {
+    margin-left: 0;
+    overflow: hidden;
+}
+
+/* *** FILTER FROM - TO *** */
+
+.form-filter-fromto {
+    margin: 0 0 @CmIndent-Medium 0;
+
+    dl {
+        float: left;
+        clear: none;
+    }
+
+    .form-box {
+        width: @ComDatepicker-Width;
+        margin: 0 @CmIndent-Medium 0 0;
+    }
+
+    .buttons {
+        float: left;
+        margin: @CmForm-FieldHeight 0 0 0;
+    }
+
+    &.simple {
+        .buttons {
+            margin: 0;
+        }
+    }
+}
+
+/* *** ERRORS *** */
+
+.form dl {
+    &.error {
+        dt {
+            color: @CmColor-Danger-DarkDefault;
+        }
+
+        .hint {
+            color: @CmColor-Danger-DarkDefault;
+        }
+
+        .validate {
+            color: @CmColor-Danger-DarkDefault;
+            font-weight: @CmFont-Base-BoldWeight;
+        }
+
+        .input {
+            border: 1px solid @CmColor-Danger-DarkDefault;
+        }
+    }
+
+    &.ok {
+        dt {
+            color: @CmColor-Success-DarkDefault;
+        }
+
+        .hint {
+            color: @CmColor-Success-DarkDefault;
+        }
+
+        .validate {
+            color: @CmColor-Success-DarkDefault;
+            font-weight: @CmFont-Base-BoldWeight;
+        }
+
+        .input {
+            border: 1px solid @CmColor-Success-DarkDefault;
+        }
+    }
+}
+
+/* *** FORM ICONS *** */
+
+.cm-form-icons {
+    min-height: @CmForm-FieldHeight;
+    position: relative;
+
+    .loop(@counter) when (@counter > 0) {
+        .loop((@counter - 1));
+
+        &.count-@{counter} {
+            @x-small: @counter * (@CmSize-XSmall + @CmForm-IconsIndent);
+            @small: @counter * (@CmSize-Small + @CmForm-IconsIndent);
+            @medium: @counter * (@CmSize-Medium + @CmForm-IconsIndent);
+
+            &.x-small {
+                margin-right: @x-small;
+
+                .cm-form-icons-outside {
+                    width: @x-small;
+                    right: -@x-small;
+                }
+            }
+            &.small {
+                margin-right: @small;
+
+                .cm-form-icons-outside {
+                    width: @small;
+                    right: -@small;
+                }
+            }
+            &.medium {
+                margin-right: @medium;
+
+                .cm-form-icons-outside {
+                    width: @medium;
+                    right: -@medium;
+                }
+            }
+        }
+    }
+
+    .loop(5);
+}
+
+.cm-form-icons-outside {
+    position: absolute;
+    top: 0;
+    line-height: @CmForm-FieldHeight;
+    font-size: 0;
+    text-align: left;
+
+    .icon {
+        display: inline-block;
+        margin: 0 0 0 @CmForm-IconsIndent;
+        vertical-align: middle;
+    }
+}
+
+.cm-form-icons-inside {
+    text-align: right;
+    white-space: nowrap;
+    font-size: 0;
+
+    &.left {
+        text-align: left;
+    }
+
+    .icon,
+    .icon.inline {
+        display: inline-block;
+        margin: 0 0 0 @CmForm-IconsIndent;
+        vertical-align: middle;
+
+        &:first-child {
+            margin: 0;
+        }
+    }
+
+    .text {
+        .cm__font;
+        display: inline-block;
+        vertical-align: middle;
+        margin: 0 0 0 @CmForm-IconsIndent;
+
+        &:first-child {
+            margin: 0;
+        }
+    }
+}
+
+/* *** FILES LIST *** */
+
+.files-list {
+    ul {
+        max-height: (@CmForm-FilesList-Count * (@CmForm-FieldInnerIndent + @CmForm-FieldHeight)) - @CmForm-FieldInnerIndent;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 0;
+        margin: 0 0 @CmForm-FieldInnerIndent 0;
+        list-style: none;
+
+        li {
+            height: @CmForm-FieldHeight;
+            margin: @CmForm-FieldInnerIndent 0 0 0;
+            line-height: @CmForm-FieldHeight;
+
+            .button {
+                float: left;
+                margin: 0 @CmIndent-XSmall 0 0;
+            }
+
+            .text {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                word-break: normal;
+
+                .ie & {
+                    overflow: visible;
+                }
+            }
+
+            &:first-child {
+                margin: 0;
+            }
+        }
+    }
+}
+
+.single-file {
+    .browse-button {
+        display: block;
+        float: left;
+        margin: 0 @CmIndent-XSmall 0 0;
+    }
+
+    .text {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        word-break: normal;
+        line-height: @CmForm-FieldHeight;
+    }
+}
+
+/* *** MULTI FIELD *** */
+
+.cm-multifield {
+    > ul {
+        margin: 0 0 @CmIndent-Medium 0;
+        padding: 0;
+        list-style: none;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+
+        > li {
+            margin: 0 0 @CmForm-FieldIndent 0;
+            position: relative;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+
+            &.is-sortable {
+                padding-left: @CmForm-FieldHeight;
+
+                > .icon {
+                    width: @CmForm-FieldHeight;
+                    height: @CmForm-FieldHeight;
+                    position: absolute;
+                    .mx__position(0, auto, 0, 0);
+                    cursor: move;
+
+                    &.default {
+                        .icon.small.drag-vertical;
+                    }
+                }
+            }
+
+            &.pt__dnd-helper {
+                position: fixed;
+            }
+        }
+    }
+}
+
+/* ******* PART: FORM: ADAPTIVE ******* */
+
+@media only screen and (max-width: @CmScreen-Mobile) {
+
+    html.is-adaptive {
+
+        .form {
+            dl {
+                dt {
+                    width: auto;
+                    float: none;
+                }
+
+                dd {
+                    margin: 0 0 @CmForm-FieldInnerIndent;
+
+                    &:last-child {
+                        margin: 0;
+                    }
+                }
+            }
+        }
+
+        .form-filter.right,
+        .form-filter {
+            width: auto;
+            float: none;
+        }
+
+        .form-filter.right dt,
+        .form-filter dt {
+            float: none;
+            margin: 0;
+        }
+
+        /* COLUMNS */
+
+        .form .cols {
+            .col {
+                &:first-child {
+                    margin-top: 0;
+                }
+            }
+
+            .for(@CmForm-Cols-Names); .-each(@name) {
+                &.@{name} .col {
+                    width: auto;
+                    float: none;
+                    margin: @CmForm-FieldInnerIndent 0 0 0;
+                }
+            }
+        }
+
+        /* FILTER FROM - TO */
+
+        .form-filter-fromto {
+            .form-box {
+                width: auto;
+                float: none;
+                margin: @CmForm-FieldIndent 0 0 0;
+
+                &:first-child {
+                    margin: 0;
+                }
+            }
+
+            .buttons,
+            &.simple .buttons {
+                margin: @CmForm-FieldIndent 0 0 0;
+            }
+        }
+
+        /* MULTI FIELD */
+
+        .form-multifield-line {
+            dt {
+                margin: 0 0 @CmForm-FieldInnerIndent;
+            }
+
+            dd {
+                margin: 0;
+
+                &.descr,
+                &.descr:last-child {
+                    margin-right: 32px;
+                }
+            }
+        }
+
+    }
+
+}
+
+@media only screen and (max-width: @CmScreen-MobilePortrait) {
+
+    html.is-adaptive {
+
+        /* FILTER FROM - TO */
+
+        .form-filter-fromto {
+            .form-box {
+                width: auto;
+                float: none;
+                margin: 16px 0 0 0;
+
+                &:first-child {
+                    margin: 0;
+                }
+            }
+
+            &.simple {
+                .buttons {
+                    margin: 26px 0 0 0;
+                }
+            }
+        }
+
+        /* IMAGE LOADER */
+
+        .form-image-box.style2 .browse-button {
+            display: block;
+            margin: 0 0 8px;
+        }
+
+    }
+
+}

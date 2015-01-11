@@ -1,17 +1,13 @@
-/* ******* PART: LINKS ******* */
+/* ******* PARTS: LINKS ******* */
 
-.cm-links {
+.pt__links {
     > ul {
-        margin: 0;
-        padding: 0;
-        list-style: none;
+        .cm__list-clear;
+        .cm__list-inline;
         line-height: inherit;
         font-size: inherit;
 
-
         > li {
-            display: inline-block;
-            vertical-align: top;
             .icon {
                 display: inline-block;
                 vertical-align: top;
@@ -19,7 +15,7 @@
 
             &:before {
                 content: '|';
-                margin: 0 @CmLinks-indent;
+                margin: 0 @PtLinks-Indent;
             }
 
             &:first-child:before {
@@ -28,4 +24,32 @@
             }
         }
     }
+
+    &.pull-left {
+        > ul {
+            text-align: left;
+        }
+    }
+
+    &.pull-center {
+        > ul {
+            text-align: center;
+        }
+    }
+
+    &.pull-right {
+        > ul {
+            text-align: right;
+        }
+    }
+}
+
+/* *******  PARTS: LINKS: PRINT ******* */
+
+@media print {
+
+    .pt__links {
+        display: none !important;
+    }
+
 }

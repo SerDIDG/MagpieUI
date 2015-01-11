@@ -1,0 +1,226 @@
+/* ******* PART: IMAGE BOX ******* */
+
+.pt__image {
+    @title-bottom: (@PtImage-TitlePaddingTop * 2) + @CmFont-Base-LineHeight;
+
+    position: relative;
+    .mx__user-select(none);
+
+    > .inner {
+        display: block;
+        position: relative;
+        z-index: 1;
+        overflow: hidden;
+        font-size: 0;
+
+        > .descr {
+            .cm__image-resizable;
+            position: relative;
+            z-index: 1;
+            .mx__transition(opacity, @CmUI-Transition-Duration);
+        }
+
+        > .text {
+            padding: @CmIndent-Medium;
+            position: absolute;
+            z-index: 2;
+            overflow: hidden;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+            .mx__user-select(text);
+            .mx__position(0,0,0,0);
+
+            > .inner {
+                height: 100%;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .cm__tags {
+                color: @PtImage-Color;
+            }
+        }
+
+        > iframe.descr {
+            width: 100%;
+            height: 100%;
+        }
+
+        > .icon {
+            z-index: 2;
+        }
+
+        > .title {
+            overflow: hidden;
+            position: absolute;
+            z-index: 3;
+            background: rgba(0,0,0,0.7);
+            opacity: 0;
+            .mx__transition(bottom opacity, @CmUI-Transition-Duration);
+            .mx__position(auto, 0, -@title-bottom, 0);
+
+            .inner {
+                .cm__font;
+                .cm__text-overflow;
+                padding: @PtImage-TitlePaddingTop 8px;
+                font-weight: @CmFont-Base-BoldWeight;
+                color: #fff;
+
+                & * {
+                    color: #fff;
+                }
+            }
+        }
+    }
+
+    > label {
+        position: absolute;
+        z-index: 2;
+        cursor: pointer;
+        .mx__position(0,0,0,0);
+    }
+
+    > .pull {
+        position: absolute;
+        z-index: 3;
+
+        &.top-right {
+            .mx__position(@CmIndent-XSmall, @CmIndent-XSmall, auto, auto);
+        }
+
+        &.top-left {
+            .mx__position(@CmIndent-XSmall, auto, auto, @CmIndent-XSmall);
+        }
+
+        &.bottom-right {
+            .mx__position(auto, @CmIndent-XSmall, @CmIndent-XSmall, auto);
+        }
+
+        &.bottom-left {
+            .mx__position(auto, auto, @CmIndent-XSmall, @CmIndent-XSmall);
+        }
+
+        input[type="checkbox"],
+        input[type="radio"] {
+            display: block;
+        }
+
+        .icon {
+            float: left;
+            margin: 0 0 0 @CmIndent-XXSmall;
+
+            &:first-child {
+                margin: 0;
+            }
+        }
+    }
+
+    &:not(.is-no-hover) {
+        cursor: pointer;
+
+        &:hover {
+            > .inner {
+                > .descr {
+                    opacity: @CmUI-Opacity-Hover;
+                    .mx__transition(opacity, @CmUI-Transition-DurationReverse);
+                }
+            }
+        }
+    }
+
+    &:hover,
+    &.is-fixed-title {
+        .pt__image-title-hover;
+    }
+
+    &.is-checkable {
+        > .inner {
+            > .descr {
+                opacity: @CmUI-Opacity-Hover;
+                .mx__transition(opacity, @CmUI-Transition-Duration);
+            }
+        }
+
+        &:hover,
+        &.active,
+        .active & > {
+            > .inner {
+                > .descr {
+                    opacity: 1;
+                }
+            }
+        }
+    }
+
+    &.is-centered {
+        background-color: @PtImage-Background;
+
+        > .inner {
+            height: 100%;
+            text-align: center;
+
+            &:before {
+                height: 100%;
+                display: inline-block;
+                vertical-align: middle;
+                content: "";
+            }
+
+            > .descr {
+                display: inline-block;
+                width: auto;
+                height: auto;
+                max-width: 100%;
+                max-height: 100%;
+                margin: auto;
+                vertical-align: middle;
+            }
+
+            > iframe.descr {
+                width: 100%;
+                height: 100%;
+            }
+        }
+    }
+
+    &.is-adaptive {
+        > .inner {
+            > .descr {
+                .cm__image-adaptive;
+            }
+        }
+    }
+
+    &.is-flexible {
+        > .inner {
+            > .descr {
+                .cm__image-flexible;
+            }
+        }
+    }
+
+    &.is-origin {
+        > .inner {
+            > .descr {
+                width: auto;
+                height: auto;
+            }
+        }
+    }
+
+    &.has-aspect {
+        > .inner {
+            position: absolute;
+            .mx__position(0,0,0,0);
+        }
+    }
+}
+
+.pt__image-title-hover {
+    > .inner {
+        > .title {
+            bottom: 0;
+            opacity: 1;
+            .mx__transition(top opacity, @CmUI-Transition-DurationReverse);
+        }
+    }
+}

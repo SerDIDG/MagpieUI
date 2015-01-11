@@ -56,6 +56,7 @@ cm.define('Com.Dialog', {
         'closeOnBackground' : false,
         'openTime' : 200,
         'autoOpen' : true,
+        'appendOnRender' : true,
         'removeOnClose' : true,
         'scroll' : true,
         'icons' : {
@@ -98,14 +99,15 @@ function(params){
 
     var render = function(){
         // Structure
-        that.params['container'].appendChild(
-            nodes['container'] = cm.Node('div', {'class' : 'com-dialog'},
-                nodes['bg'] = cm.Node('div', {'class' : 'bg'}),
-                nodes['window'] = cm.Node('div', {'class' : 'window'},
-                    nodes['windowInner'] = cm.Node('div', {'class' : 'inner'})
-                )
+        nodes['container'] = cm.Node('div', {'class' : 'com__dialog'},
+            nodes['bg'] = cm.Node('div', {'class' : 'bg'}),
+            nodes['window'] = cm.Node('div', {'class' : 'window'},
+                nodes['windowInner'] = cm.Node('div', {'class' : 'inner'})
             )
         );
+        if(that.params['appendOnRender']){
+            that.params['container'].appendChild(nodes['container']);
+        }
         // Set that.params styles
         nodes['container'].style.position = that.params['position'];
         nodes['window'].style.width = that.params['width'] + 'px';
@@ -166,7 +168,7 @@ function(params){
             // Render new nodes
             nodes['title'] = cm.Node('div', {'class' : 'title'}, title);
             if(that.params['titleOverflow']){
-                cm.addClass(nodes['title'], 'cm-text-overflow');
+                cm.addClass(nodes['title'], 'cm__text-overflow');
             }
             cm.insertFirst(nodes['title'], nodes['windowInner']);
         }

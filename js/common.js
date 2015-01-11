@@ -31,7 +31,7 @@ var cm = {
             'screenMobilePortrait' : 480,
             'dateFormat' : '%Y-%m-%d',
             'dateTimeFormat' : '%Y-%m-%d %H:%i:%s',
-            'timeFormat' : '%H:%i',
+            'timeFormat' : '%H:%i:%s',
             'displayDateFormat' : '%F %j, %Y',
             'displayDateTimeFormat' : '%F %j, %Y, %H:%i'
         }
@@ -273,6 +273,18 @@ cm.sort = function(o){
         o[item['key']] = item['value'];
     });
     return o;
+};
+
+cm.replaceDeep = function(o, from, to){
+    var newO = cm.clone(o);
+    cm.forEach(newO, function(value, key){
+        if(typeof value == 'object'){
+            newO[key] = cm.replaceDeep(value, from, to);
+        }else{
+            newO[key] = value.replace(from, to);
+        }
+    });
+    return newO;
 };
 
 /* ******* EVENTS ******* */
@@ -668,17 +680,22 @@ cm.getIFrameDOM = function(o){
 
 cm.node = cm.Node = function(){
     var args = arguments,
+        value,
         el = document.createElement(args[0]);
     if(typeof args[1] == "object" && !args[1].nodeType){
         for(var i in args[1]){
+            value = args[1][i];
+            if(typeof value == 'object'){
+                value = JSON.stringify(value);
+            }
             if(i == 'style'){
-                el.style.cssText = args[1][i];
+                el.style.cssText = value;
             }else if(i == 'class'){
-                el.className = args[1][i];
+                el.className = value;
             }else if(i == 'innerHTML'){
-                el.innerHTML = args[1][i];
+                el.innerHTML = value;
             }else{
-                el.setAttribute(i, args[1][i]);
+                el.setAttribute(i, value);
             }
         }
         i = 2;
@@ -1611,6 +1628,46 @@ cm.getIndentY = function(node){
          + cm.getStyle(node, 'borderBottomWidth', true);
 };
 
+cm.getDimensions = function(node){
+    if(!node){
+        return null;
+    }
+    var dimensions = {};
+    dimensions['width'] = node.offsetWidth;
+    dimensions['height'] = node.offsetHeight;
+    dimensions['x1'] = cm.getRealX(node);
+    dimensions['y1'] = cm.getRealY(node);
+    dimensions['x2'] = dimensions['x1'] + dimensions['width'];
+    dimensions['y2'] = dimensions['y1'] + dimensions['height'];
+    // Calculate Padding and Inner Dimensions
+    dimensions['padding'] = {
+        'top' :     cm.getCSSStyle(node, 'paddingTop', true),
+        'right' :   cm.getCSSStyle(node, 'paddingRight', true),
+        'bottom' :  cm.getCSSStyle(node, 'paddingBottom', true),
+        'left' :    cm.getCSSStyle(node, 'paddingLeft', true)
+    };
+    dimensions['innerWidth'] = dimensions['width'] - dimensions['padding']['left'] - dimensions['padding']['right'];
+    dimensions['innerHeight'] = dimensions['height'] - dimensions['padding']['top'] - dimensions['padding']['bottom'];
+    dimensions['innerX1'] = dimensions['x1'] + dimensions['padding']['left'];
+    dimensions['innerY1'] = dimensions['y1'] + dimensions['padding']['top'];
+    dimensions['innerX2'] = dimensions['innerX1'] + dimensions['innerWidth'];
+    dimensions['innerY2'] = dimensions['innerY1'] + dimensions['innerHeight'];
+    // Calculate Margin and Absolute Dimensions
+    dimensions['margin'] = {
+        'top' :     cm.getCSSStyle(node, 'marginTop', true),
+        'right' :   cm.getCSSStyle(node, 'marginRight', true),
+        'bottom' :  cm.getCSSStyle(node, 'marginBottom', true),
+        'left' :    cm.getCSSStyle(node, 'marginLeft', true)
+    };
+    dimensions['absoluteWidth'] = dimensions['width'] + dimensions['margin']['left'] + dimensions['margin']['right'];
+    dimensions['absoluteHeight'] = dimensions['height'] + dimensions['margin']['top'] + dimensions['margin']['bottom'];
+    dimensions['absoluteX1'] = dimensions['x1'] - dimensions['margin']['left'];
+    dimensions['absoluteY1'] = dimensions['y1'] - dimensions['margin']['top'];
+    dimensions['absoluteX2'] = dimensions['x2'] + dimensions['margin']['right'];
+    dimensions['absoluteY2'] = dimensions['y2'] + dimensions['margin']['bottom'];
+    return dimensions;
+};
+
 cm.addStyles = function(node, str){
     var arr = str.replace(/\s/g, '').split(';'),
         style;
@@ -1619,7 +1676,7 @@ cm.addStyles = function(node, str){
         if(item.length > 0){
             style = item.split(':');
             // Add style to element
-            style[2] = cm.styleHash(style[0]);
+            style[2] = cm.styleStrToKey(style[0]);
             if(style[0] == 'float'){
                 node.style[style[2][0]] = style[1];
                 node.style[style[2][1]] = style[1];
@@ -1665,7 +1722,7 @@ cm.rgb2hex = function(r, g, b){
     return '#' + rgb.join('');
 };
 
-cm.styleHash = function(line){
+cm.styleStrToKey = function(line){
     line = line.replace(/\s/g, '');
     if(line == 'float'){
         line = ['cssFloat', 'styleFloat'];
@@ -1706,9 +1763,9 @@ cm.getBodyScrollHeight = function(){
 };
 
 cm.getSupportedStyle = function(style){
-    var upper = cm.styleHash(style).replace(style.charAt(0), style.charAt(0).toUpperCase()),
+    var upper = cm.styleStrToKey(style).replace(style.charAt(0), style.charAt(0).toUpperCase()),
         styles = [
-            cm.styleHash(style),
+            cm.styleStrToKey(style),
             ['Webkit', upper].join(''),
             ['Moz', upper].join(''),
             ['O', upper].join(''),
@@ -1948,7 +2005,7 @@ cm.transition = function(o){
     config['style'].forEach(function(item){
         item[3] = item[3] || o['type'];
         // Convert style to js format
-        item[4] = cm.styleHash(item[0]);
+        item[4] = cm.styleStrToKey(item[0]);
         // Build transition format string
         styles.push([item[0], (config['duration'] / 1000 + 's'), item[3]].join(' '));
     });
@@ -2063,7 +2120,7 @@ cm.cookieDate = function(num){
 
 cm.ajax = function(o){
     var config = cm.merge({
-            'type' : 'xml',                                         // text | xml | json
+            'type' : 'xml',                                         // text | xml | json | jsonp
             'method' : 'post',                                      // post | get
             'params' : '',
             'url' : '',
@@ -2076,18 +2133,34 @@ cm.ajax = function(o){
             'beforeSend' : function(){},
             'handler' : function(){}
         }, o),
-        responceType,
-        responce;
+        responseType,
+        response,
+        callbackName,
+        scriptNode,
+        returnObject;
 
     var init = function(){
         validate();
-        send();
+        if(config['type'] == 'jsonp'){
+            returnObject = {
+                'abort' : abortJSONP
+            };
+            sendJSONP();
+        }else{
+            returnObject = config['httpRequestObject'];
+            send();
+        }
     };
 
     var validate = function(){
         config['type'] = config['type'].toLocaleLowerCase();
-        responceType =  /text|json/.test(config['type']) ? 'responseText' : 'responseXML';
+        responseType =  /text|json/.test(config['type']) ? 'responseText' : 'responseXML';
         config['method'] = config['method'].toLocaleLowerCase();
+        // Convert params object to URI string
+        if(cm.isObject(config['params'])){
+            config['params'] = cm.obj2URI(config['params']);
+        }
+        // Build request link
         if(config['method'] != 'post'){
             if(!cm.isEmpty(config['params'])){
                 config['url'] = [config['url'], config['params']].join('?');
@@ -2107,11 +2180,11 @@ cm.ajax = function(o){
         // Add response events
         config['httpRequestObject'].onreadystatechange = function(){
             if(config['httpRequestObject'].readyState == 4){
-                responce = config['httpRequestObject'][responceType];
+                response = config['httpRequestObject'][responseType];
                 if(config['type'] == 'json'){
-                    responce = cm.parseJSON(responce);
+                    response = cm.parseJSON(response);
                 }
-                config['handler'](responce, config['httpRequestObject'].status, config['httpRequestObject']);
+                config['handler'](response, config['httpRequestObject'].status, config['httpRequestObject']);
             }
         };
         // Before send events
@@ -2124,8 +2197,43 @@ cm.ajax = function(o){
         }
     };
 
+    var sendJSONP = function(){
+        // Before send events
+        config['beforeSend']();
+        // Generate unique callback name
+        callbackName = ['cmAjaxJSONP', Date.now()].join('');
+        window[callbackName] = function(){
+            config['handler'].apply(config['handler'], arguments);
+            removeJSONP();
+        };
+        // Prepare url
+        scriptNode = cm.Node('script', {'type' : 'application/javascript'});
+        if(/%callback%|%25callback%25/.test(config['url'])){
+            config['url'] = config['url']
+                .replace('%callback%', callbackName)
+                .replace('%25callback%25', callbackName);
+        }else{
+            cm.addEvent(scriptNode, 'load', window[callbackName]);
+        }
+        scriptNode.setAttribute('src', config['url']);
+        // Embed
+        document.getElementsByTagName('head')[0].appendChild(scriptNode);
+    };
+
+    var removeJSONP = function(){
+        cm.removeEvent(scriptNode, 'load', window[callbackName]);
+        cm.remove(scriptNode);
+        delete window[callbackName];
+    };
+
+    var abortJSONP = function(){
+        window[callbackName] = function(){
+            removeJSONP();
+        };
+    };
+
     init();
-    return config['httpRequestObject'];
+    return returnObject;
 };
 
 cm.parseJSON = function(str){
@@ -2134,6 +2242,11 @@ cm.parseJSON = function(str){
         try{
             o = JSON.parse(str);
         }catch(e){
+            cm.errorLog({
+                'type' : 'common',
+                'name' : 'cm.parseJSON',
+                'message' : ['Error while parsing JSON. Input string:', str].join(' ')
+            });
         }
     }
     return o;
@@ -2269,6 +2382,7 @@ cm.defineHelper = function(name, data, handler){
     // Process config
     data = cm.merge({
         'modules' : [],
+        'require' : [],
         'params' : {},
         'events' : []
     }, data);
@@ -2282,6 +2396,23 @@ cm.defineHelper = function(name, data, handler){
         },
         'params' : data['params']
     };
+    // Check requires
+    /*
+    cm.forEach(that.build._raw['require'], function(name){
+        var str = name.split('.'),
+            method = window;
+        cm.forEach(str, function(item){
+            method = method[item];
+        });
+        if(typeof method == 'undefined'){
+            cm.errorLog({
+                'type' : 'error',
+                'name' : that.build._name['full'],
+                'message' : ['Library', cm.strWrap(name, '"'), 'not defined.'].join(' ')
+            });
+        }
+    });
+    */
     // Extend class
     cm.forEach(that.build._raw['modules'], function(module){
         if(Mod[module]){

@@ -44,7 +44,7 @@ Com['Calendar'] = function(o){
     var render = function(){
         var weekday;
         // Structure
-        nodes['container'] = cm.Node('div', {'class' : 'com-calendar'},
+        nodes['container'] = cm.Node('div', {'class' : 'com__calendar'},
             cm.Node('div', {'class' : 'selects'},
                 nodes['months'] = cm.Node('select', {'class' : 'select months'}),
                 nodes['years'] = cm.Node('select', {'class' : 'select years'})

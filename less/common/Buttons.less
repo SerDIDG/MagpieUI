@@ -1,0 +1,255 @@
+/* *** PARTS: BUTTONS *** */
+
+.button {
+    .cm__text-overflow;
+    height: @CmForm-FieldHeight;
+    margin: 0;
+    padding: 0 @CmButton-PaddingX;
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+    border: none;
+    border-radius: @CmBorder-Radius;
+    text-align: center;
+    text-decoration: none;
+    line-height: @CmForm-FieldHeight;
+    font-size: @CmFont-Base-Size;
+    white-space: nowrap;
+    cursor: pointer;
+    .mx__appearance(none);
+    .mx__box-sizing(border-box);
+    .mx__background-clip(border-box);
+    .mx__user-select(none);
+    .mx__transition(background-color color box-shadow, @CmUI-Transition-Duration);
+
+    &.wide {
+        width: 100%;
+        padding: 0;
+        margin: 0;
+        display: block;
+    }
+
+    &:hover {
+        text-decoration: none;
+        .mx__transition(background-color color box-shadow, @CmUI-Transition-DurationReverse);
+    }
+
+    .button.button-primary;
+
+    // /* *** PRIMARY *** */
+
+    &.button-primary {
+        .mx__background__color(@CmColor-Primary-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
+
+        &:active,
+        &.active {
+            .button.button-primary--active;
+        }
+
+        &:hover {
+            .button.button-primary--hover;
+        }
+    }
+
+    &.button-primary--hover {
+        .mx__background__color(@CmColor-Primary-DarkHover, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
+    }
+
+    &.button-primary--active {
+        .mx__background__color(@CmColor-Primary-DarkActive, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
+        box-shadow: @CmUI-ShadowInner;
+    }
+
+    // /* *** SECONDARY *** */
+
+    &.button-secondary {
+        .mx__background__color(@CmColor-Secondary-LightHighlight, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
+
+        &:active,
+        &.active {
+            .button.button-secondary--active;
+        }
+
+        &:hover {
+            .button.button-secondary--hover;
+        }
+    }
+
+    &.button-secondary--hover {
+        .mx__background__color(@CmColor-Secondary-LightActive, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
+    }
+
+    &.button-secondary--active {
+        .mx__background__color(@CmColor-Secondary-LightActiveHover, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
+        box-shadow: @CmUI-ShadowInner;
+    }
+
+    // /* *** SUCCESS *** */
+
+    &.button-success {
+        .mx__background__color(@CmColor-Success-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
+
+        &:active,
+        &.active {
+            .button.button-success--active;
+        }
+
+        &:hover {
+            .button.button-success--hover;
+        }
+    }
+
+    &.button-success--hover {
+        .mx__background__color(@CmColor-Success-DarkHover, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
+    }
+
+    &.button-success--active {
+        .mx__background__color(@CmColor-Success-DarkActive, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
+        box-shadow: @CmUI-ShadowInner;
+    }
+
+    // /* *** DANGER *** */
+
+    &.button-danger {
+        .mx__background__color(@CmColor-Danger-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
+
+        &:active,
+        &.active {
+            .button.button-danger--active;
+        }
+
+        &:hover {
+            .button.button-danger--hover;
+        }
+    }
+
+    &.button-danger--hover {
+        .mx__background__color(@CmColor-Danger-DarkHover, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
+    }
+
+    &.button-danger--active {
+        .mx__background__color(@CmColor-Danger-DarkActive, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
+        box-shadow: @CmUI-ShadowInner;
+    }
+
+    // /* *** WARNING *** */
+
+    &.button-warning {
+        .mx__background__color(@CmColor-Warning-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
+
+        &:active,
+        &.active {
+            .button.button-warning--active;
+        }
+
+        &:hover {
+            .button.button-warning--hover;
+        }
+    }
+
+    &.button-warning--hover {
+        .mx__background__color(@CmColor-Warning-DarkHover, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
+    }
+
+    &.button-warning--active {
+        .mx__background__color(@CmColor-Warning-DarkActive, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
+        box-shadow: @CmUI-ShadowInner;
+    }
+
+    // /* *** TRANSPARENT *** */
+
+    &.button-transparent,
+    &.transparent {
+        .mx__background__color(@CmColor-Secondary-LightDefault, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
+        box-shadow: none;
+        border: none;
+
+        &:active,
+        &.active {
+            .button.button-transparent--active;
+        }
+
+        &:hover {
+            .button.button-transparent--hover;
+        }
+    }
+
+    &.button-transparent--hover {
+        .mx__background__color(@CmColor-Secondary-LightHover, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
+    }
+
+    &.button-transparent--active {
+        .mx__background__color(@CmColor-Secondary-LightActive, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
+        box-shadow: @CmUI-ShadowInner;
+    }
+
+    // /* *** WHITE *** */
+
+    &.button-white {
+        .mx__background__color(#ffffff, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
+
+        &:active,
+        &.active {
+            .button.button-white--active;
+        }
+
+        &:hover {
+            .button.button-white--hover;
+        }
+    }
+
+    &.button-white--hover {
+        .mx__background__color(@CmColor-Primary-DarkHover, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
+    }
+
+    &.button-white--active {
+        .mx__background__color(@CmColor-Primary-DarkActive, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
+        box-shadow: @CmUI-ShadowInner;
+    }
+
+    // /* *** CLEAR *** */
+
+    &.button-clear {
+        background: none;
+        box-shadow: none;
+        border: none;
+        color: @CmColor-Primary-DarkDefault;
+        cursor: default;
+    }
+
+    // /* *** ICONS *** */
+
+    &.has-icon {
+        padding-left: 0;
+
+        .icon {
+            display: block;
+            float: left;
+            position: relative;
+            top: 50%;
+        }
+    }
+
+    &.has-icon-medium {
+        .icon {
+            margin: -(@CmSize-Medium / 2) round((@CmForm-FieldHeight - @CmSize-Medium) / 2) 0;
+        }
+    }
+
+    &.has-icon-small {
+        .icon {
+            margin: -(@CmSize-Small / 2) round((@CmForm-FieldHeight - @CmSize-Small) / 2) 0;
+        }
+    }
+}
+
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+button {
+    &:extend(.button all);
+
+    &::-moz-focus-inner {
+        border: 0;
+    }
+}

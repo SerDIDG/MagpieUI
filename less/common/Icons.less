@@ -1,0 +1,263 @@
+/* ******* COMMON: ICONS ******* */
+
+.icon {
+    background: transparent 50% 50% no-repeat;
+
+    // /* *** PARAMETERS *** */
+
+    &.inline {
+        margin: 0 4px;
+        vertical-align: middle;
+    }
+
+    &.centered {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+    }
+
+    &.has-caption {
+        background-position: 0 50%;
+    }
+
+    &.hidden {
+        visibility: hidden;
+    }
+
+    &.linked {
+        cursor: pointer;
+        .mx__transition(opacity, @CmUI-Transition-Duration);
+
+        &:hover {
+            opacity: @CmUI-Opacity-Hover;
+            .mx__transition(opacity, @CmUI-Transition-DurationReverse);
+        }
+    }
+
+    &.draggable[data-draganddrop-drag="true"] {
+        cursor: move;
+    }
+
+    &.draggable[data-draganddrop-drag="false"] {
+        cursor: default;
+    }
+
+    // /* *** X SMALL *** */
+
+    &.x-small {
+        .cm__size__x-small;
+
+        &.centered {
+            @margin: @CmSize-XSmall / 2;
+            margin: -@margin 0 0 -@margin;
+        }
+
+        &.has-caption {
+            width: auto;
+            padding-left: @CmSize-XSmall + @CmIndent-XXXSmall;
+            line-height: @CmSize-XSmall;
+        }
+
+        .for(search search-white); .-each(@name) {
+            &.@{name} {
+                background-image: url("@{CmPath-Images}/icons/x-small/@{name}.png");
+            }
+        }
+    }
+
+    // /* *** SMALL *** */
+
+    &.small {
+        .cm__size__small;
+
+        &.centered {
+            @margin: @CmSize-Small / 2;
+            margin: -@margin 0 0 -@margin;
+        }
+
+        &.has-caption {
+            width: auto;
+            padding-left: @CmSize-Small + @CmIndent-XXXSmall;
+            line-height: @CmSize-Small;
+        }
+
+        .for(tags add arrow-priority-down arrow-priority-up arrow-left arrow-right arrow-top arrow-bottom copy done edit fail help remove settings settings-white view search search-white arrow-white-left arrow-white-right arrow-white-top arrow-white-bottom drag-vertical transparent); .-each(@name) {
+            &.@{name} {
+                background-image: url("@{CmPath-Images}/icons/small/@{name}.png");
+            }
+        }
+    }
+
+    &.small {
+        .for(loader loader-circle); .-each(@name) {
+            &.@{name} {
+                background-image: url("@{CmPath-Images}/icons/small/@{name}.gif");
+            }
+        }
+    }
+
+    &.small {
+        .for(archive default doc exe flash image movie music pdf pps ttf txt xls); .-each(@name) {
+            &.file-@{name} {
+                background-image: url("@{CmPath-Images}/icons/small/files/@{name}.gif");
+            }
+        }
+    }
+
+    // /* *** MEDIUM *** */
+
+    &.medium {
+        .cm__size__medium;
+
+        &.centered {
+            @margin: @CmSize-Medium / 2;
+            margin: -@margin 0 0 -@margin;
+        }
+
+        &.has-caption {
+            width: auto;
+            padding-left: @CmSize-Medium + @CmIndent-XXXSmall;
+            line-height: @CmSize-Medium;
+        }
+
+        .for(arrow-left arrow-right arrow-white-left arrow-white-right arrow-white-top arrow-white-bottom datepicker select-arrow close close-white menu menu-white settings settings-white plus-white palette); .-each(@name) {
+            &.@{name} {
+                background-image: url("@{CmPath-Images}/icons/medium/@{name}.png");
+            }
+        }
+    }
+
+    // /* *** LARGE *** */
+
+    &.large {
+        .cm__size__large;
+
+        &.centered {
+            @margin: @CmSize-Large / 2;
+            margin: -@margin 0 0 -@margin;
+        }
+
+        &.has-caption {
+            width: auto;
+            padding-left: @CmSize-Large + @CmIndent-XXXSmall;
+            line-height: @CmSize-Large;
+        }
+
+        .for(message page page-featured google linkedin twitter facebook favorite); .-each(@name) {
+            &.@{name} {
+                background-image: url("@{CmPath-Images}/icons/large/@{name}.png");
+            }
+        }
+    }
+
+    &.large {
+        .for(loader-circle); .-each(@name) {
+            &.@{name} {
+                background-image: url("@{CmPath-Images}/icons/large/@{name}.gif");
+            }
+        }
+    }
+
+    // /* *** X-LARGE *** */
+
+    &.x-large {
+        .cm__size__x-large;
+
+        &.centered {
+            @margin: @CmSize-XLarge / 2;
+            margin: -@margin 0 0 -@margin;
+        }
+
+        &.has-caption {
+            width: auto;
+            padding-left: @CmSize-XLarge + @CmIndent-XXXSmall;
+            line-height: @CmSize-XLarge;
+        }
+
+        .for(play); .-each(@name) {
+            &.@{name} {
+                background-image: url("@{CmPath-Images}/icons/x-large/@{name}.png");
+            }
+        }
+    }
+
+    // /* *** XX-LARGE *** */
+
+    &.xx-large {
+        .cm__size__xx-large;
+
+        &.centered {
+            @margin: @CmSize-XXLarge / 2;
+            margin: -@margin 0 0 -@margin;
+        }
+
+        &.has-caption {
+            width: auto;
+            padding-left: @CmSize-XXLarge + @CmIndent-XXXSmall;
+            line-height: @CmSize-XXLarge;
+        }
+
+        .for(arrow-left arrow-right arrow-white-left arrow-white-right); .-each(@name) {
+            &.@{name} {
+                background-image: url("@{CmPath-Images}/icons/xx-large/@{name}.png");
+            }
+        }
+    }
+
+    // /* *** TOOLBAR *** */
+
+    &.toolbar {
+        .for(bold italic underline); .-each(@name) {
+            &.@{name} {
+                background-image: url("@{CmPath-Images}/icons/toolbar/@{name}.png");
+            }
+        }
+    }
+
+    // /* *** OTHER *** */
+
+    &.arrow {
+        &.asc {
+            width: 10px;
+            height: 6px;
+            background-image: url("@{CmPath-Images}/icons/arrow-asc.png");
+        }
+
+        &.desc {
+            width: 10px;
+            height: 6px;
+            background-image: url("@{CmPath-Images}/icons/arrow-desc.png");
+        }
+    }
+
+    &.draggable {
+        background: url("@{CmPath-Images}/icons/draggable.png") 0 0 repeat;
+    }
+
+    // /* *** BROWSER ICONS *** */
+
+    &.chrome,
+    &.firefox,
+    &.msie,
+    &.safari {
+        width: 100px;
+        height: 76px;
+        background: url("@{CmPath-Images}/icons/browsers.png");
+    }
+
+    &.chrome {
+        background-position: -200px 0;
+    }
+
+    &.firefox {
+        background-position: -100px 0;
+    }
+
+    &.msie {
+        background-position: -300px 0;
+    }
+
+    &.safari {
+        background-position: -400px 0;
+    }
+}

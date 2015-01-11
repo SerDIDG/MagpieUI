@@ -1,96 +1,105 @@
 /* ******* TABSET ******* */
 
-.com-tabset {
-    margin: 0 0 @cm-indentMedium;
+.com__tabset {
+    margin: 0 0 @CmIndent-Medium;
 
     &.bottom {
         margin: 0;
     }
 }
 
-.com-tabset-head {
+.com__tabset__head {
     position: relative;
     z-index: 2;
 }
 
-.com-tabset-head-tabs {
+.com__tabset__head-tabs {
     ul {
-        &:extend(.cm-ul-clear all);
+        .cm__list-clear;
 
         li {
-            margin: 0 @ComTabset-tabsIndent -@cm-borderWidth 0;
+            margin: 0 @ComTabset-Tabs-Indent -@CmBorder-Width 0;
             float: left;
-            background: @ComTabset-tabsBackground;
-            border: @cm-borderStyle;
-            border-radius: @ComTabset-borderRadius @ComTabset-borderRadius 0 0;
-            .cm-transition(all @CM-Transition-Duration ease-in-out);
-
-            &:hover {
-                background: @ComTabset-tabsBackgroundHover;
-                .cm-transition(all @CM-Transition-DurationReverse ease-in-out);
-            }
+            background: @ComTabset-Tabs-DefaultBackground;
+            border: @CmBorder-Default;
+            border-radius: @ComTabset-BorderRadius @ComTabset-BorderRadius 0 0;
+            .mx__transition(all, @CmUI-Transition-Duration);
 
             &:last-child {
                 margin-right: 0;
             }
 
-            &.active {
-                background: @ComTabset-tabsBackgroundActive;
+            a {
+                .cm__font--ui;
+                .cm__text-overflow;
+                display: block;
+                padding: 0 @CmIndent-XSmall;
+                line-height: @ComTabset-Tabs-Height;
+                text-decoration: none;
+                .mx__only__color(@ComTabset-Tabs-DefaultBackground, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
             }
 
-            a {
-                display: block;
-                padding: 0 @cm-indentXSmall;
-                .cm-text-overflow;
-                line-height: @ComTabset-tabsHeight;
-                color: @ComTabset-tabsColor;
-                text-decoration: none;
+            &:hover {
+                background: @ComTabset-Tabs-HoverBackground;
+                .mx__transition(all, @CmUI-Transition-DurationReverse);
+
+                a {
+                    .mx__only__color(@ComTabset-Tabs-HoverBackground, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
+                }
+            }
+
+            &.active {
+                background: @ComTabset-Tabs-ActiveBackground;
+
+                a {
+                    .mx__only__color(@ComTabset-Tabs-ActiveBackground, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
+                }
             }
         }
     }
 }
 
-.com-tabset-head-title {
-    &:extend(.cm-text-overflow);
+.com__tabset__head-title {
+    .cm__text-overflow;
     display: none;
     overflow: hidden;
-    padding: 0 @cm-indentMedium;
-    border: @cm-borderStyle;
+    padding: 0 @CmIndent-Medium;
+    border: @CmBorder-Default;
     border-bottom: none;
-    background: @ComTabset-tabsTitle;
-    line-height: @ComTabset-tabsHeight;
+    line-height: @ComTabset-Tabs-Height;
+    .mx__background__color(@ComTabset-TabsTitle-Background, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
 }
 
-.com-tabset-head-menu {
-    width: @ComTabset-tabsHeight;
-    height: @ComTabset-tabsHeight;
+.com__tabset__head-menu {
+    width: @ComTabset-Tabs-Height;
+    height: @ComTabset-Tabs-Height;
     display: none;
     position: absolute;
-    .cm-position(@cm-borderWidth, @cm-borderWidth, @cm-borderWidth, auto);
+    .mx__position(@CmBorder-Width, @CmBorder-Width, @CmBorder-Width, auto);
 
     .icon {
-        width: @ComTabset-tabsHeight;
-        height: @ComTabset-tabsHeight;
+        width: @ComTabset-Tabs-Height;
+        height: @ComTabset-Tabs-Height;
 
         &.default {
             .icon.medium.menu;
         }
     }
 
-    .cm-menu-dropdown {
-        .cm-menu-dropdown--base;
+    .pt__menu-dropdown {
+        .pt__menu-dropdown--base;
         left: auto;
-        right: -@cm-borderWidth;
+        right: -@CmBorder-Width;
     }
 }
 
-.com-tabset-content {
+.com__tabset__content {
     position: relative;
     z-index: 1;
-    padding: @cm-indentMedium;
+    padding: @CmIndent-Medium;
     background: #fff;
-    border: @cm-borderStyle;
-    border-radius: 0 @ComTabset-borderRadius @ComTabset-borderRadius @ComTabset-borderRadius;
+    border: @CmBorder-Default;
+    border-radius: 0 @ComTabset-BorderRadius @ComTabset-BorderRadius @ComTabset-BorderRadius;
 
     > ul {
         margin: 0;
@@ -103,7 +112,7 @@
     }
 }
 
-.com-tabset-content-ul {
+.com__tabset__content-ul {
     > li {
         display: none;
     }
@@ -111,13 +120,13 @@
 
 /* Tabs Position */
 
-.com-tabset {
+.com__tabset {
     &.is-tabs-top {
-        .com-tabset-head-title {
-            border-radius: @ComTabset-borderRadius @ComTabset-borderRadius 0 0;
+        .com__tabset__head-title {
+            border-radius: @ComTabset-BorderRadius @ComTabset-BorderRadius 0 0;
         }
 
-        > .com-tabset-head {
+        > .com__tabset__head {
             ul {
                 li {
                     &.active {
@@ -129,17 +138,17 @@
     }
 
     &.is-tabs-bottom {
-        .com-tabset-head-title {
-            border-radius: 0 0 @ComTabset-borderRadius @ComTabset-borderRadius;
+        .com__tabset__head-title {
+            border-radius: 0 0 @ComTabset-BorderRadius @ComTabset-BorderRadius;
         }
 
-        > .com-tabset-head {
+        > .com__tabset__head {
             bottom: auto;
             top: -1px;
 
             ul {
                 li {
-                    border-radius: 0 0 @ComTabset-borderRadius @ComTabset-borderRadius;
+                    border-radius: 0 0 @ComTabset-BorderRadius @ComTabset-BorderRadius;
 
                     &.active {
                         border-top-color: #fff;
@@ -148,36 +157,36 @@
             }
         }
 
-        > .com-tabset-content {
-            border-radius: @ComTabset-borderRadius @ComTabset-borderRadius @ComTabset-borderRadius 0;
+        > .com__tabset__content {
+            border-radius: @ComTabset-BorderRadius @ComTabset-BorderRadius @ComTabset-BorderRadius 0;
         }
     }
 }
 
 /* *** ADAPTIVE *** */
 
-@media only screen and (max-width : @ComTabset-adaptiveFrom) {
+@media only screen and (max-width : @ComTabset-AdaptiveFrom) {
 
     html.is-adaptive {
-        .com-tabset-head-menu,
-        .com-tabset-head-title {
+        .com__tabset__head-menu,
+        .com__tabset__head-title {
             display: block;
         }
 
-        .com-tabset-head-tabs {
+        .com__tabset__head-tabs {
             display: none;
         }
 
-        .com-tabset {
+        .com__tabset {
             &.is-tabs-top {
-                > .com-tabset-content {
-                    border-radius: 0 0 @ComTabset-borderRadius @ComTabset-borderRadius;
+                > .com__tabset__content {
+                    border-radius: 0 0 @ComTabset-BorderRadius @ComTabset-BorderRadius;
                 }
             }
 
             &.is-tabs-bottom {
-                > .com-tabset-content {
-                    border-radius: @ComTabset-borderRadius @ComTabset-borderRadius 0 0;
+                > .com__tabset__content {
+                    border-radius: @ComTabset-BorderRadius @ComTabset-BorderRadius 0 0;
                 }
             }
         }

@@ -2,37 +2,7 @@
 
 @import url(//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,300,700,600);
 
-/* ******* TAGS ******* */
-
-body {
-    margin: 0;
-    padding: 0;
-    #cm > .font-base;
-    cursor: default;
-    -webkit-text-size-adjust: 100%;
-    -webkit-font-smoothing: subpixel-antialiased;
-}
-
-a {
-    #cm > .font-link;
-}
-
-img {
-    border: none;
-    -webkit-transform: translateZ(0px);
-    -webkit-backface-visibility: hidden;
-       -moz-backface-visibility: hidden;
-            backface-visibility: hidden;
-}
-
-dl, dt, dd, canvas, iframe, form {
-    padding: 0;
-    margin: 0;
-    display: block;
-    text-indent: 0;
-}
-
-/* ******* STATIC CLASSES ******* */
+/* ******* INLINE STYLES ******* */
 
 .clearfix,
 .clear {
@@ -47,14 +17,20 @@ dl, dt, dd, canvas, iframe, form {
     }
 }
 
-/* *** INLINE STYLES *** */
-
 .display-none {
     display: none !important;
 }
 
+.display-inline,
 .inline {
     display: inline-block;
+}
+
+.display-flex {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: center;
 }
 
 .margin-none {
@@ -85,17 +61,12 @@ dl, dt, dd, canvas, iframe, form {
     vertical-align: bottom !important;
 }
 
-/* *** FONT *** */
-
-.cm-block-padding {
-    padding: @cm-indentMedium;
-}
-
 .link {
-    #cm > .font-link;
+    .cm__font--link;
 }
 
-.inner-link {
+.link--inner {
+    .cm__font--link;
     text-decoration: none;
     border-bottom: 1px dashed;
 
@@ -104,118 +75,58 @@ dl, dt, dd, canvas, iframe, form {
         border-bottom-color: transparent;
     }
 }
-
-.inherit-link {
+.link--inherit {
     color: inherit;
     cursor: pointer;
     text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
 }
 
-.inherit-link:hover {
-    text-decoration: underline;
-}
+/* ******* COMMON ******* */
 
-.mark-new {
+/* *** COUNTER *** */
+
+.cm__counter {
+    .cm__font--ui-small;
+    height: @CmCounter-Size;
     display: inline-block;
-    margin: 0 0 0 6px;
-    position: relative;
-    top: -5px;
-    color: #f8504b;
-    font-size: 8px;
-    text-transform: uppercase;
-}
-
-.cm-mark {
-    background: @cm-colorMark;
-}
-
-.cm-page-title {
-    margin: 0 0 @cm-indentMedium;
-}
-
-/* *** BUNDLE *** */
-
-.cm-ul-inline {
-    text-align: left;
-    font-size: 0;
-
-    > li {
-        &:extend(.cm-font-base);
-
-        display: inline-block;
-        vertical-align: top;
-    }
-}
-
-.cm-ul-clear {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-
-    > li {
-        margin: 0;
-        padding: 0;
-    }
-}
-
-.cm-counter {
-    height: @CmCounter-size;
+    vertical-align: top;
     padding: 0 5px;
-    background-color: @cm-color;
-    border-radius: @CmCounter-radius;
+    background-color: @CmColor-Secondary-LightDefault;
+    border: @CmCounter-Border solid @CmColor-Primary-DarkDefault;
+    border-radius: @CmBorder-Radius;
     text-align: center;
-    line-height: @CmCounter-size;
-    font-size: @CmCounter-fontSize;
-    font-weight: @cm-fontWeight;
-    color: @CmCounter-color;
-    .cm-transition(all @CM-Transition-Duration ease-in-out);
+    line-height: @CmCounter-Size;
+    color: @CmColor-Primary-DarkDefault;
+    .mx__background-clip(border-box);
+    .mx__transition(all, @CmUI-Transition-Duration);
 }
 
-.cm-codebox {
-    display: block;
-    white-space: pre-wrap;
-    margin: 4px 0;
-    padding: 8px 12px;
-    background: #ffffff;
-    border: 1px dashed @cm-colorBorder;
-    border-radius: @cm-borderRadius;
-    font-family: "Courier New", Courier, monospace;
+.cm__counter--hover {
+    background-color: @CmColor-Primary-DarkHover;
+    border-color: @CmColor-Primary-DarkHover;
+    color: @CmFont-UI-ColorOpposite;
 }
 
-.cm-autoresize {
-    height: 0;
-    min-height: @CmForm-fieldHeight;
-    overflow: hidden;
-    resize: none;
+.cm__counter--active {
+    background-color: @CmColor-Primary-DarkActive;
+    border-color: @CmColor-Primary-DarkActive;
+    color: @CmFont-UI-ColorOpposite;
 }
 
-.cm-image-resizable {
-    width: 100%;
-    height: auto;
-    display: block;
+.cm__counter--active-hover {
+    background-color: @CmColor-Primary-DarkActiveHover;
+    border-color: @CmColor-Primary-DarkActiveHover;
+    color: @CmFont-UI-ColorOpposite;
 }
 
-.cm-image-flexible {
-    width: 100%;
-    height: 100%;
-    display: block;
-}
+/* *** VIEW ALL *** */
 
-.cm-image-adaptive {
-    width: auto;
-    max-width: 100%;
-    height: auto;
-    display: block;
-}
-
-.cm-text-overflow {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-
-.cm-view-all {
-    margin: @cm-indentMedium 0 0 0;
+.cm__view-all {
+    margin: @CmIndent-Medium 0 0 0;
     text-align: right;
 
     &.pull-left {
@@ -231,54 +142,101 @@ dl, dt, dd, canvas, iframe, form {
     }
 }
 
-.cm-scroll-y {
+/* *** MARK *** */
+
+.cm__mark {
+    background: @CmColor-Mark;
+}
+
+/* *** EMPTY *** */
+
+.cm__empty {
+    .cm__font--ui-small-cursive;
+    padding: @CmIndent-XSmall;
+    text-align: center;
+
+    &:before,
+    &:after {
+        margin: 0 4px;
+        content: '-';
+    }
+}
+
+/* *** OTHER *** */
+
+.mark-new {
+    display: inline-block;
+    margin: 0 0 0 6px;
+    position: relative;
+    top: -5px;
+    color: #f8504b;
+    font-size: 8px;
+    text-transform: uppercase;
+}
+
+.cm-codebox {
+    display: block;
+    white-space: pre-wrap;
+    margin: 4px 0;
+    padding: 8px 12px;
+    background: #ffffff;
+    border: 1px dashed @CmColor-Border;
+    border-radius: @CmBorder-Radius;
+    font-family: "Courier New", Courier, monospace;
+}
+
+.cm-autoresize {
+    height: 0;
+    min-height: @CmForm-FieldHeight;
+    overflow: hidden;
+    resize: none;
+}
+
+.cm__image-resizable {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.cm__image-flexible {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.cm__image-adaptive {
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+.cm__text-overflow {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.cm__scroll-y {
     -webkit-overflow-scrolling: touch;
     overflow-x: hidden;
     overflow-y: scroll;
 }
 
-.cm-scroll-y-a,
-.cm-scroll-a-y {
+.cm__scroll-y-a {
     -webkit-overflow-scrolling: touch;
     overflow-x: hidden;
     overflow-y: auto;
 }
 
-.cm-list {
-    margin: 0 0 @cm-indentMedium;
-    list-style: disc;
-
-    &.bottom {
-        margin: 0;
-    }
-
-    &.has-indent {
-        ul, li {
-            margin: @cm-indentXXSmall 0 0 0;
-
-            &:first-child {
-                margin: 0;
-            }
-        }
-    }
-
-    ul {
-        list-style: circle;
-
-        ul {
-            list-style: disc;
-        }
-    }
-}
-
-.cm-transition-none {
+.cm__transition-none {
     -webkit-transition: none;
             transition: none;
 }
 
-/* ******* COMPONENTS ******* */
+/* ******* CONTENT ******* */
 
-/* *** CONTENT TABLE *** */
+/* *** TABLE *** */
 
 .content-table {
     td {
@@ -286,121 +244,28 @@ dl, dt, dd, canvas, iframe, form {
     }
 }
 
-/* *** CONTENT BUTTONS LINE *** */
+/* *** BUTTONS LINE *** */
 
 .buttons {
-    margin: 0 0 @cm-indentMedium 0;
+    margin: 0 0 @CmIndent-Medium 0;
     font-size: 0;
 
     &.bottom {
         margin: 0;
     }
 
-    .cm-button {
-        margin-right: @CmForm-buttonsIndent;
-    }
-}
-
-/* *** PROGRESS BAR *** */
-
-.cm-progress-bar {
-    height: 14px;
-    position: relative;
-    background: #cccccc;
-
-    > .inner {
-        height: 100%;
-        position: absolute;
-        left: 0;
-        top: 0;
-        .cm-transition(width @CM-Transition-Duration ease-in-out);
-        .cm-transition(background-color @CM-Transition-Duration ease-in-out);
-    }
-
-    .com-gridlist & {
-        width: 100%;
-        display: inline-block;
-        vertical-align: middle;
-    }
-
-    .green {
-        background: #339900;
-    }
-
-    .red {
-        background: #cc0000;
-    }
-
-    .orange {
-        background: #ff6633;
-    }
-}
-
-/* *** LOADER BOX *** */
-
-.cm-loader-box {
-    height: 50px;
-    position: relative;
-
-    &.position {
-        height: auto;
-        position: absolute;
-        .cm-position(0,0,0,0);
-    }
-
-    > .inner {
-        width: 32px;
-        height: 32px;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        z-index: 2;
-        margin: -16px 0 0 -16px;
-        background: url("@{CmPath-image}/components/ajax-loader.gif");
-    }
-}
-
-/* *** SELECTABLE*** */
-
-.cm-selectable {
-    position: relative;
-    border-radius: 3px;
-    cursor: pointer;
-
-    &:before {
-        display: block;
-        position: absolute;
-        z-index: -1;
-        top: -6px;
-        right: -6px;
-        bottom: -6px;
-        left: -6px;
-        content: '';
-        border: 2px solid transparent;
-        border-radius: 3px;
-        -webkit-transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out;
-        transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out;
-    }
-
-    &:hover:before {
-        background-color: @cm-selectable-background-hover;
-        -webkit-transition: background-color 0.1s ease-in-out, border-color 0.1s ease-in-out;
-        transition: background-color 0.1s ease-in-out, border-color 0.1s ease-in-out;
-    }
-
-    &.active:before {
-        background-color: #ffffff;
-        border-color: @cm-selectable-border-color-active;
+    .button {
+        margin-right: @CmForm-ButtonsIndent;
     }
 }
 
 /* ******* ADAPTIVE ******* */
 
-@media only screen and (max-width: @cm-screenMobile) {
+@media only screen and (max-width: @CmScreen-Mobile) {
 
     html.is-adaptive {
 
-        /* *** COMPONENTS *** */
+        /* *** CONTENT *** */
 
         /* Content Table */
 
@@ -409,7 +274,7 @@ dl, dt, dd, canvas, iframe, form {
                 td {
                     width: 100% !important;
                     display: block;
-                    margin: @cm-indentMedium 0 0 0;
+                    margin: @CmIndent-Medium 0 0 0;
 
                     &:first-child {
                         margin: 0;
@@ -421,7 +286,7 @@ dl, dt, dd, canvas, iframe, form {
 
 }
 
-@media only screen and (max-width: @cm-screenMobilePortrait) {
+@media only screen and (max-width: @CmScreen-MobilePortrait) {
 
     html.is-adaptive {
 

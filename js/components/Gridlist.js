@@ -1,52 +1,72 @@
-Com['Gridlist'] = function(o){
-    var that = this,
-        config = cm.merge({
-            'container' : cm.Node('div'),
-            'data' : [],
-            'cols' : [],
-            'sort' : true,
-            'sortBy' : 'id',                                    // default sort by key in array
-            'orderBy' : 'ASC',
-            'pagination' : true,
-            'perPage' : 25,
-            'showCounter' : false,
-            'className' : '',
-            'dateFormat' : cm._config['dateTimeFormat'],        // input date format
-            'visibleDateFormat' : cm._config['dateTimeFormat'], // render date format
-            'langs' : {
-                'counter' : 'Count: ',
-                'check-all' : 'Check all',
-                'uncheck-all' : 'Uncheck all'
-            },
-            'icons' : {
-                'arrow' : {
-                    'desc' : 'icon arrow desc',
-                    'asc' : 'icon arrow asc'
-                }
-            },
-            'events' : {},
-            'Com.Pagination' : {}
-        }, o),
-        API = {
-            'onSort' : [],
-            'onCheckAll' : [],
-            'onUnCheckAll' : [],
-            'onCheck' : [],
-            'onUnCheck' : [],
-            'onRenderStart' : [],
-            'onRenderEnd' : []
+cm.define('Com.Gridlist', {
+    'modules' : [
+        'Params',
+        'Events',
+        'Langs',
+        'DataConfig'
+    ],
+    'events' : [
+        'onSort',
+        'onCheckAll',
+        'onUnCheckAll',
+        'onCheck',
+        'onUnCheck',
+        'onRenderStart',
+        'onRenderEnd'
+    ],
+    'params' : {
+        'node' : cm.Node('div'),
+        'container' : false,
+        'data' : [],
+        'cols' : [],
+        'sort' : true,
+        'sortBy' : 'id',                                    // default sort by key in array
+        'orderBy' : 'ASC',
+        'childBy' : false,
+        'pagination' : true,
+        'perPage' : 25,
+        'showCounter' : false,
+        'className' : '',
+        'dateFormat' : 'cm._config.dateTimeFormat',        // input date format
+        'visibleDateFormat' : 'cm._config.dateTimeFormat', // render date format
+        'langs' : {
+            'counter' : 'Count: ',
+            'check-all' : 'Check all',
+            'uncheck-all' : 'Uncheck all',
+            'empty' : 'Items does not found'
         },
-        nodes = {},
-        coms = {},
+        'icons' : {
+            'arrow' : {
+                'desc' : 'icon arrow desc',
+                'asc' : 'icon arrow asc'
+            }
+        },
+        'statuses' : ['active', 'success', 'danger', 'warning'],
+        'Com.Pagination' : {}
+    }
+},
+function(params){
+    var that = this,
         rows = [],
         sortBy,
-        orderBy,
-        isCheckedAll = false;
-    
+        orderBy;
+
+    that.nodes = {};
+    that.components = {};
+    that.isCheckedAll = false;
+
     var init = function(){
-        // Convert events to API Events
-        convertEvents();
+        that.setParams(params);
+        that.convertEvents(that.params['events']);
+        that.getDataConfig(that.params['node']);
+        validateParams();
         render();
+    };
+
+    var validateParams = function(){
+        if(!that.params['container']){
+            that.params['container'] = that.params['node'];
+        }
     };
 
     /* *** TABLE RENDER FUNCTION *** */
@@ -54,35 +74,41 @@ Com['Gridlist'] = function(o){
     var render = function(){
         var pagesCount;
         // Container
-        config['container'].appendChild(
-            nodes['container'] = cm.Node('div', {'class' : 'com-gridlist-container'})
+        that.params['container'].appendChild(
+            that.nodes['container'] = cm.Node('div', {'class' : 'com__gridlist'})
         );
         // Add css class
-        !cm.isEmpty(config['className']) && cm.addClass(nodes['container'], config['className']);
+        !cm.isEmpty(that.params['className']) && cm.addClass(that.nodes['container'], that.params['className']);
         // Counter
-        if(config['showCounter']){
-            nodes['container'].appendChild(
-                cm.Node('div', {'class' : 'com-gridlist-counter'}, lang('counter') + config['data'].length)
+        if(that.params['showCounter']){
+            that.nodes['container'].appendChild(
+                cm.Node('div', {'class' : 'pt__gridlist__counter'}, that.lang('counter') + that.params['data'].length)
             );
         }
         // Sort data array for first time
-        config['sort'] && arraySort(config['sortBy']);
-        // Pagination
-        if(config['pagination']){
-            pagesCount = config['perPage'] > 0? Math.ceil(config['data'].length / config['perPage']) : config['perPage'];
-            coms['Pagination'] = new Com.Pagination(
-                cm.merge(config['Com.Pagination'], {
-                    'container' : nodes['container'],
-                    'count' : pagesCount,
-                    'events' : {
-                        'onChange' : function(pagination, data){
-                            renderTable(data['page'], data['container']);
+        that.params['sort'] && arraySort(that.params['sortBy']);
+        // Render table
+        if(that.params['data'].length){
+            if(that.params['pagination']){
+                pagesCount = that.params['perPage'] > 0? Math.ceil(that.params['data'].length / that.params['perPage']) : that.params['perPage'];
+                that.components['Pagination'] = new Com.Pagination(
+                    cm.merge(that.params['Com.Pagination'], {
+                        'container' : that.nodes['container'],
+                        'count' : pagesCount,
+                        'events' : {
+                            'onChange' : function(pagination, data){
+                                renderTable(data['page'], data['container']);
+                            }
                         }
-                    }
-                })
-            );
+                    })
+                );
+            }else{
+                renderTable(1, that.nodes['container']);
+            }
         }else{
-            renderTable(1, nodes['container']);
+            that.nodes['container'].appendChild(
+                cm.Node('div', {'class' : 'cm__empty'}, that.lang('empty'))
+            );
         }
     };
 
@@ -92,40 +118,40 @@ Com['Gridlist'] = function(o){
         If pagination not exists we need to clean up table before render new one, cause on ech sort will be rendered new table.
         When pagination exists, ech rendered table will be have his own container, and no needs to clean up previous table.
         */
-        if(!config['pagination']){
-            cm.remove(nodes['table']);
+        if(!that.params['pagination']){
+            cm.remove(that.nodes['table']);
         }
-        // API onRenderEnd event
-        executeEvent('onRenderStart', {
+        // API onRenderStart event
+        that.triggerEvent('onRenderStart', {
             'container' : container,
             'page' : page
         });
         // Render Table
-        nodes['table'] = cm.Node('div', {'class' : 'com-gridlist bottom'},
+        that.nodes['table'] = cm.Node('div', {'class' : 'pt__gridlist'},
             cm.Node('table',
                 cm.Node('thead',
-                    nodes['title'] = cm.Node('tr')
+                    that.nodes['title'] = cm.Node('tr')
                 ),
-                nodes['content'] = cm.Node('tbody')
+                that.nodes['content'] = cm.Node('tbody')
             )
         );
         // Render Table Title
-        cm.forEach(config['cols'], renderTh);
+        cm.forEach(that.params['cols'], renderTh);
         // Render Table Row
-        if(config['pagination']){
-            end = config['perPage'] * page;
-            start = end - config['perPage'];
+        if(that.params['pagination']){
+            end = that.params['perPage'] * page;
+            start = end - that.params['perPage'];
         }else{
-            end = config['data'].length;
+            end = that.params['data'].length;
             start = 0;
         }
-        for(var i = start, l = Math.min(end, config['data'].length); i < l; i++){
-            renderRow(config['data'][i], i);
+        for(var i = start, l = Math.min(end, that.params['data'].length); i < l; i++){
+            renderRow(rows, that.params['data'][i], i);
         }
         // Append
-        container.appendChild(nodes['table']);
+        container.appendChild(that.nodes['table']);
         // API onRenderEnd event
-        executeEvent('onRenderEnd', {
+        that.triggerEvent('onRenderEnd', {
             'container' : container,
             'page' : page,
             'rows' : rows
@@ -134,28 +160,29 @@ Com['Gridlist'] = function(o){
 
     var renderTh = function(item, i){
         // Config
-        item = config['cols'][i] = cm.merge({
-            'width' : 'auto',           // number | % | auto
-            'access' : true,            // Render column if is accessible
-            'type' : 'text',		    // text | number | url | date | html | icon | checkbox | empty
-            'key' : '',                 // Data array key
-            'title' : '',               // Table th title
-            'sort' : config['sort'],    // Sort this column or not
-            'textOverflow' : false,     // Overflow long text to single line
-            'class' : '',		        // Icon css class, for type="icon"
-            'target' : '_blank',        // Link target, for type="url"
-            'showTitle' : false,        // Show title on hover
-            'titleText' : '',           // Alternative title text, if not specified - will be shown key text
-            'altText' : '',             // Alternative column text
-            'urlKey' : false,           // Alternative link href, for type="url"
-            'onClick' : false,          // Cell click handler
-            'onRender' : false          // Cell onRender handler
+        item = that.params['cols'][i] = cm.merge({
+            'width' : 'auto',               // number | % | auto
+            'access' : true,                // Render column if is accessible
+            'type' : 'text',		        // text | number | url | date | html | icon | checkbox | empty | actions
+            'key' : '',                     // Data array key
+            'title' : '',                   // Table th title
+            'sort' : that.params['sort'],   // Sort this column or not
+            'textOverflow' : false,         // Overflow long text to single line
+            'class' : '',		            // Icon css class, for type="icon"
+            'target' : '_blank',            // Link target, for type="url"
+            'showTitle' : false,            // Show title on hover
+            'titleText' : '',               // Alternative title text, if not specified - will be shown key text
+            'altText' : '',                 // Alternative column text
+            'urlKey' : false,               // Alternative link href, for type="url"
+            'actions' : [],                 // Render actions menu, for type="actions"
+            'onClick' : false,              // Cell click handler
+            'onRender' : false              // Cell onRender handler
         }, item);
         item['nodes'] = {};
         // Check access
         if(item['access']){
             // Structure
-            nodes['title'].appendChild(
+            that.nodes['title'].appendChild(
                 item['nodes']['container'] = cm.Node('th', {'width' : item['width']},
                     item['nodes']['inner'] = cm.Node('div', {'class' : 'inner'})
                 )
@@ -165,17 +192,17 @@ Com['Gridlist'] = function(o){
                 case 'checkbox' :
                     cm.addClass(item['nodes']['container'], 'control');
                     item['nodes']['inner'].appendChild(
-                        item['nodes']['checkbox'] = cm.Node('input', {'type' : 'checkbox', 'title' : lang('check-all')})
+                        item['nodes']['checkbox'] = cm.Node('input', {'type' : 'checkbox', 'title' : that.lang('check-all')})
                     );
-                    item['nodes']['checkbox'].checked = isCheckedAll;
+                    item['nodes']['checkbox'].checked = that.isCheckedAll;
                     cm.addEvent(item['nodes']['checkbox'], 'click', function(){
-                        if(isCheckedAll == true){
+                        if(that.isCheckedAll == true){
                             that.unCheckAll();
                         }else{
                             that.checkAll();
                         }
                     });
-                    nodes['checkbox'] = item['nodes']['checkbox'];
+                    that.nodes['checkbox'] = item['nodes']['checkbox'];
                     break;
 
                 default:
@@ -185,133 +212,176 @@ Com['Gridlist'] = function(o){
                     break;
             }
             // Render sort arrow and set function on click to th
-            if(!/icon|empty|checkbox/.test(item['type']) && item['sort']){
+            if(!/icon|empty|actions|checkbox/.test(item['type']) && item['sort']){
                 cm.addClass(item['nodes']['container'], 'sort');
                 if(item['key'] == sortBy){
                     item['nodes']['inner'].appendChild(
-                        cm.Node('div', {'class' : config['icons']['arrow'][orderBy.toLowerCase()]})
+                        cm.Node('div', {'class' : that.params['icons']['arrow'][orderBy.toLowerCase()]})
                     );
                 }
                 cm.addEvent(item['nodes']['inner'], 'click', function(){
                     arraySort(item['key']);
-                    if(config['pagination']){
-                        coms['Pagination'].set();
+                    if(that.params['pagination']){
+                        that.components['Pagination'].set();
                     }else{
-                        renderTable(1, nodes['container']);
+                        renderTable(1, that.nodes['container']);
                     }
                 });
             }
         }
     };
 
-    var renderRow = function(row, i){
+    var renderRow = function(parent, row, i){
         // Config
         var item = {
             'index' : i,
             'data' : row,
+            'childs' : [],
             'isChecked' : row['_checked'] || false,
+            'status' : row['_status'] || false,
             'nodes' : {
                 'cols' : []
             }
         };
         // Structure
-        nodes['content'].appendChild(
+        that.nodes['content'].appendChild(
             item['nodes']['container'] = cm.Node('tr')
         );
         // Render cells
-        cm.forEach(config['cols'], function(col){
+        cm.forEach(that.params['cols'], function(col){
             renderCell(col, item);
         });
+        // Render childs
+        if(that.params['childsBy']){
+            cm.forEach(row[that.params['childsBy']], function(child, childI){
+                renderRow(item['childs'], child, childI);
+            });
+        }
         // Push to rows array
         rows.push(item);
     };
 
     var renderCell = function(col, item){
-        var myNodes = {},
+        var nodes = {},
             text,
             title,
             href;
         // Check access
         if(col['access']){
-            text = typeof item['data'][col['key']] == 'undefined'? '' : item['data'][col['key']];
+            text = cm.isEmpty(item['data'][col['key']])? '' : item['data'][col['key']];
             title = cm.isEmpty(col['titleText'])? text : col['titleText'];
             // Structure
             item['nodes']['container'].appendChild(
-                myNodes['container'] = cm.Node('td')
+                nodes['container'] = cm.Node('td')
             );
             // Text overflow
             if(col['textOverflow']){
-                myNodes['inner'] = cm.Node('div', {'class' : 'inner'});
-                myNodes['container'].appendChild(myNodes['inner']);
+                nodes['inner'] = cm.Node('div', {'class' : 'inner'});
+                nodes['container'].appendChild(nodes['inner']);
             }else{
-                myNodes['inner'] = myNodes['container'];
+                nodes['inner'] = nodes['container'];
             }
             // Insert value by type
             switch(col['type']){
                 case 'number' :
-                    myNodes['inner'].innerHTML = cm.splitNumber(text);
+                    nodes['inner'].innerHTML = cm.splitNumber(text);
                     break;
 
                 case 'date' :
-                    if(config['dateFormat'] != config['visibleDateFormat']){
-                        myNodes['inner'].innerHTML = cm.dateFormat(
-                            cm.parseDate(text, config['dateFormat']),
-                            config['visibleDateFormat']
+                    if(that.params['dateFormat'] != that.params['visibleDateFormat']){
+                        nodes['inner'].innerHTML = cm.dateFormat(
+                            cm.parseDate(text, that.params['dateFormat']),
+                            that.params['visibleDateFormat']
                         );
                     }else{
-                        myNodes['inner'].innerHTML = text;
+                        nodes['inner'].innerHTML = text;
                     }
                     break;
 
                 case 'icon' :
-                    myNodes['inner'].appendChild(
-                        myNodes['node'] = cm.Node('div', {'class' : col['class']})
+                    nodes['inner'].appendChild(
+                        nodes['node'] = cm.Node('div', {'class' : col['class']})
                     );
-                    cm.addClass(myNodes['node'], 'icon linked inline');
+                    cm.addClass(nodes['node'], 'icon linked inline');
                     break;
 
                 case 'url' :
                     text = cm.decode(text);
                     href = col['urlKey'] && item['data'][col['urlKey']]? cm.decode(item['data'][col['urlKey']]) : text;
-                    myNodes['inner'].appendChild(
-                        myNodes['node'] = cm.Node('a', {'target' : col['target'], 'href' : href}, !cm.isEmpty(col['altText'])? col['altText'] : text)
+                    nodes['inner'].appendChild(
+                        nodes['node'] = cm.Node('a', {'target' : col['target'], 'href' : href}, !cm.isEmpty(col['altText'])? col['altText'] : text)
                     );
                     break;
 
                 case 'checkbox' :
-                    cm.addClass(myNodes['container'], 'control');
-                    myNodes['inner'].appendChild(
-                        myNodes['node'] = cm.Node('input', {'type' : 'checkbox'})
+                    cm.addClass(nodes['container'], 'control');
+                    nodes['inner'].appendChild(
+                        nodes['node'] = cm.Node('input', {'type' : 'checkbox'})
                     );
-                    myNodes['node'].checked = item['isChecked'];
-                    cm.addEvent(myNodes['node'], 'click', function(){
+                    item['nodes']['checkbox'] = nodes['node'];
+                    if(item['isChecked']){
+                        checkRow(item, false);
+                    }
+                    cm.addEvent(nodes['node'], 'click', function(){
                         if(!item['isChecked']){
                             checkRow(item, true);
                         }else{
                             unCheckRow(item, true);
                         }
                     });
-                    item['nodes']['checkbox'] = myNodes['node'];
+                    break;
+
+                case 'actions':
+                    nodes['actions'] = [];
+                    nodes['inner'].appendChild(
+                        nodes['node'] = cm.Node('div', {'class' : ['pt__links', col['class']].join(' ')},
+                            nodes['actionsList'] = cm.Node('ul')
+                        )
+                    );
+                    cm.forEach(col['actions'], function(actionItem){
+                        var actionNode;
+                        actionItem = cm.merge({
+                            'label' : '',
+                            'attr' : {},
+                            'events' : {}
+                        }, actionItem);
+                        cm.forEach(item['data'], function(itemValue, itemKey){
+                            actionItem['attr'] = cm.replaceDeep(actionItem['attr'], new RegExp([cm.strWrap(itemKey, '%'), cm.strWrap(itemKey, '%25')].join('|'), 'g'), itemValue);
+                        });
+                        nodes['actionsList'].appendChild(
+                            cm.Node('li',
+                                actionNode = cm.Node('a', actionItem['attr'], actionItem['label'])
+                            )
+                        );
+                        cm.forEach(actionItem['events'], function(actionEventHandler, actionEventName){
+                            cm.addEvent(actionNode, actionEventName, actionEventHandler);
+                        });
+                        nodes['actions'].push(actionNode);
+                    });
                     break;
 
                 case 'empty' :
                     break;
 
                 default :
-                    myNodes['inner'].innerHTML = text;
+                    nodes['inner'].innerHTML = text;
                     break;
+            }
+            // Statuses
+            if(item['status']){
+                setRowStatus(item, item['status']);
             }
             // onHover Title
             if(col['showTitle']){
-                if(myNodes['node']){
-                    myNodes['node'].title = title;
+                if(nodes['node']){
+                    nodes['node'].title = title;
                 }else{
-                    myNodes['inner'].title = title;
+                    nodes['inner'].title = title;
                 }
             }
             // onClick handler
             if(col['onClick']){
-                cm.addEvent(myNodes['node'] || myNodes['inner'], 'click', function(e){
+                cm.addEvent(nodes['node'] || nodes['inner'], 'click', function(e){
                     e = cm.getEvent(e);
                     cm.preventDefault(e);
                     // Column onClick event
@@ -321,13 +391,13 @@ Com['Gridlist'] = function(o){
             // onCellRender handler
             if(col['onRender']){
                 col['onRender'](that, {
-                    'nodes' : myNodes,
+                    'nodes' : nodes,
                     'col' : col,
                     'row' : item
                 });
             }
             // Push cell to row nodes array
-            item['nodes']['cols'].push(myNodes);
+            item['nodes']['cols'].push(nodes);
         }
     };
 
@@ -335,17 +405,17 @@ Com['Gridlist'] = function(o){
 
     var arraySort = function(key){
         sortBy = key;
-        orderBy = !orderBy? config['orderBy'] : (orderBy == 'ASC' ? 'DESC' : 'ASC');
+        orderBy = !orderBy? that.params['orderBy'] : (orderBy == 'ASC' ? 'DESC' : 'ASC');
         // Get item
         var item, textA, textB, t1, t2, value;
-        cm.forEach(config['cols'], function(col){
+        cm.forEach(that.params['cols'], function(col){
             if(col['key'] == key){
                 item = col;
             }
         });
         // Sort
-        if(config['data'].sort){
-            config['data'].sort(function(a, b){
+        if(that.params['data'].sort){
+            that.params['data'].sort(function(a, b){
                 textA = a[key];
                 textB = b[key];
                 switch(item['type']){
@@ -357,8 +427,8 @@ Com['Gridlist'] = function(o){
                         break;
 
                     case 'date':
-                        t1 = cm.parseDate(textA, config['dateFormat']);
-                        t2 = cm.parseDate(textB, config['dateFormat']);
+                        t1 = cm.parseDate(textA, that.params['dateFormat']);
+                        t2 = cm.parseDate(textB, that.params['dateFormat']);
                         return (orderBy == 'ASC')? (t1 - t2) : (t2 - t1);
                         break;
 
@@ -377,75 +447,67 @@ Com['Gridlist'] = function(o){
             });
         }
         // API onSort Event
-        executeEvent('onSort', {
+        that.triggerEvent('onSort', {
             'sortBy' : sortBy,
             'orderBy' : orderBy,
-            'data' : config['data']
+            'data' : that.params['data']
         });
     };
 
     var checkRow = function(row, execute){
-        row['nodes']['checkbox'].checked = true;
+        if(row['nodes']['checkbox']){
+            row['nodes']['checkbox'].checked = true;
+        }
         row['isChecked'] = true;
         row['data']['_checked'] = true;
+        if(row['status']){
+            cm.removeClass(row['nodes']['container'], row['status']);
+        }
+        cm.addClass(row['nodes']['container'], 'active');
         if(execute){
             // API onCheck Event
-            executeEvent('onCheck', row);
+            that.triggerEvent('onCheck', row);
         }
     };
 
     var unCheckRow = function(row, execute){
-        row['nodes']['checkbox'].checked = false;
+        if(row['nodes']['checkbox']){
+            row['nodes']['checkbox'].checked = false;
+        }
         row['isChecked'] = false;
         row['data']['_checked'] = false;
+        cm.removeClass(row['nodes']['container'], 'active');
+        if(row['status']){
+            cm.addClass(row['nodes']['container'], row['status']);
+        }
         if(execute){
             // API onUnCheck Event
-            executeEvent('onUnCheck', row);
+            that.triggerEvent('onUnCheck', row);
         }
     };
 
-    /* *** MISC HANDLERS *** */
-
-    var convertEvents = function(){
-        cm.forEach(config['events'], function(item, key){
-            that.addEvent(key, item);
-        });
-    };
-
-    var lang = function(str){
-        if(!config['langs'][str]){
-            config['langs'][str] = str;
+    var setRowStatus = function(row, status){
+        row['status'] = status;
+        row['data']['_status'] = status;
+        cm.removeClass(row['nodes']['container'], that.params['statuses'].join(' '));
+        if(row['isChecked']){
+            cm.addClass(row['nodes']['container'], 'active');
+        }else if(cm.inArray(that.params['statuses'], status)){
+            cm.addClass(row['nodes']['container'], status);
         }
-        return config['langs'][str];
     };
 
-    var executeEvent = function(event, params){
-        API[event].forEach(function(item){
-            item(that, params || {});
-        });
+    var clearRowStatus = function(row){
+        row['status'] = null;
+        row['data']['_status'] = null;
+        cm.removeClass(row['nodes']['container'], that.params['statuses'].join(' '));
     };
 
     /* ******* MAIN ******* */
 
-    that.addEvent = function(event, handler){
-        if(API[event] && typeof handler == 'function'){
-            API[event].push(handler);
-        }
-        return that;
-    };
-
-    that.removeEvent = function(event, handler){
-        if(API[event] && typeof handler == 'function'){
-            API[event] = API[event].filter(function(item){
-                return item != handler;
-            });
-        }
-        return that;
-    };
-
     that.check = function(index){
-        if(config['data'][index]){
-            config['data'][index]['_checked'] = true;
+        if(that.params['data'][index]){
+            that.params['data'][index]['_checked'] = true;
         }
         cm.forEach(rows, function(row){
             if(row['index'] == index){
@@ -456,8 +518,8 @@ Com['Gridlist'] = function(o){
     };
 
     that.unCheck = function(index){
-        if(config['data'][index]){
-            config['data'][index]['_checked'] = false;
+        if(that.params['data'][index]){
+            that.params['data'][index]['_checked'] = false;
         }
         cm.forEach(rows, function(row){
             if(row['index'] == index){
@@ -468,30 +530,30 @@ Com['Gridlist'] = function(o){
     };
 
     that.checkAll = function(){
-        isCheckedAll = true;
-        nodes['checkbox'].checked = true;
-        cm.forEach(config['data'], function(row){
+        that.isCheckedAll = true;
+        that.nodes['checkbox'].checked = true;
+        cm.forEach(that.params['data'], function(row){
             row['_checked'] = true;
         });
         cm.forEach(rows, function(row){
             checkRow(row);
         });
         // API onUnCheckAll Event
-        executeEvent('onCheckAll', config['data']);
+        that.triggerEvent('onCheckAll', that.params['data']);
         return that;
     };
 
     that.unCheckAll = function(){
-        isCheckedAll = false;
-        nodes['checkbox'].checked = false;
-        cm.forEach(config['data'], function(row){
+        that.isCheckedAll = false;
+        that.nodes['checkbox'].checked = false;
+        cm.forEach(that.params['data'], function(row){
             row['_checked'] = false;
         });
         cm.forEach(rows, function(row){
             unCheckRow(row);
         });
         // API onUnCheckAll Event
-        executeEvent('onUnCheckAll', config['data']);
+        that.triggerEvent('onUnCheckAll', that.params['data']);
         return that;
     };
 
@@ -505,11 +567,29 @@ Com['Gridlist'] = function(o){
 
     that.getCheckedData = function(){
         var checkedRows = [];
-        cm.forEach(config['data'], function(row){
+        cm.forEach(that.params['data'], function(row){
             row['_checked'] && checkedRows.push(row);
         });
         return checkedRows;
     };
 
+    that.setRowStatus = function(index, status){
+        cm.forEach(rows, function(row){
+            if(row['index'] == index){
+                setRowStatus(row, status);
+            }
+        });
+        return that;
+    };
+
+    that.clearRowStatus = function(index){
+        cm.forEach(rows, function(row){
+            if(row['index'] == index){
+                clearRowStatus(row);
+            }
+        });
+        return that;
+    };
+
     init();
-};
+});

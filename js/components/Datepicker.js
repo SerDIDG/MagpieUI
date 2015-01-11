@@ -9,7 +9,8 @@ cm.define('Com.Datepicker', {
         'Params',
         'Events',
         'DataConfig',
-        'Langs'
+        'Langs',
+        'Stack'
     ],
     'events' : [
         'onRender',
@@ -22,6 +23,7 @@ cm.define('Com.Datepicker', {
     'params' : {
         'container' : false,
         'input' : cm.Node('input', {'type' : 'text'}),
+        'name' : '',
         'renderInBody' : true,
         'format' : 'cm._config.dateFormat',
         'displayFormat' : 'cm._config.displayDateFormat',
@@ -38,7 +40,7 @@ cm.define('Com.Datepicker', {
         'showPlaceholder' : true,
         'title' : '',
         'placeholder' : '',
-        'menuMargin' : 3,
+        'menuMargin' : 4,
         'value' : 0,
         'disabled' : false,
         'icons' : {
@@ -74,13 +76,17 @@ function(params){
         that.getDataConfig(that.params['input']);
         validateParams();
         render();
-        setMiscEvents();
+        setLogic();
+        // Add to stack
+        that.addToStack(nodes['container']);
         // Set selected date
         if(that.params['value']){
             that.set(that.params['value'], that.format, false);
         }else{
             that.set(that.params['input'].value, that.format, false);
         }
+        // Trigger events
+        that.triggerEvent('onRender', that.value);
     };
 
     var validateParams = function(){
@@ -88,6 +94,7 @@ function(params){
             that.params['placeholder'] = that.params['input'].getAttribute('placeholder') || that.params['placeholder'];
             that.params['title'] = that.params['input'].getAttribute('title') || that.params['title'];
             that.params['disabled'] = that.params['input'].disabled || that.params['disabled'];
+            that.params['name'] = that.params['input'].getAttribute('name') || that.params['name'];
         }
         if(that.params['value'] == 'now'){
             that.params['value'] = new Date();
@@ -99,9 +106,9 @@ function(params){
 
     var render = function(){
         /* *** RENDER STRUCTURE *** */
-        nodes['container'] = cm.Node('div', {'class' : 'com-datepicker-input'},
+        nodes['container'] = cm.Node('div', {'class' : 'com__datepicker-input'},
             nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
-            cm.Node('div', {'class' : 'form-field has-icon-right'},
+            nodes['target'] = cm.Node('div', {'class' : 'form-field has-icon-right'},
                 nodes['input'] = cm.Node('input', {'type' : 'text', 'readOnly' : 'true'}),
                 nodes['icon'] = cm.Node('div', {'class' : that.params['icons']['datepicker']})
             ),
@@ -119,8 +126,8 @@ function(params){
             nodes['container'].id = that.params['input'].id;
         }
         // Set hidden input attributes
-        if(that.params['input'].getAttribute('name')){
-            nodes['hidden'].setAttribute('name', that.params['input'].getAttribute('name'));
+        if(that.params['name']){
+            nodes['hidden'].setAttribute('name', that.params['name']);
         }
         // Placeholder
         if(that.params['showPlaceholder'] && !cm.isEmpty(that.params['placeholder'])){
@@ -158,7 +165,7 @@ function(params){
         cm.remove(that.params['input']);
     };
 
-    var setMiscEvents = function(){
+    var setLogic = function(){
         // Add events on input to makes him clear himself when user wants that
         cm.addEvent(nodes['input'], 'keydown', function(e){
             e = cm.getEvent(e);
@@ -185,10 +192,10 @@ function(params){
         // Render tooltip
         components['menu'] = new Com.Tooltip({
             'container' : that.params['renderInBody'] ? document.body : nodes['container'],
-            'className' : 'com-datepicker-tooltip',
+            'className' : 'com__datepicker-tooltip',
             'top' : ['targetHeight', that.params['menuMargin']].join('+'),
             'content' : nodes['menuContainer'],
-            'target' : nodes['container'],
+            'target' : nodes['target'],
             'targetEvent' : 'click',
             'hideOnReClick' : true,
             'events' : {
@@ -200,7 +207,7 @@ function(params){
         components['calendar'] = new Com.Calendar({
             'container' : nodes['calendarContainer'],
             'renderSelectsInBody' : false,
-            'className' : 'com-datepicker-calendar',
+            'className' : 'com__datepicker-calendar',
             'startYear' : that.params['startYear'],
             'endYear' : that.params['endYear'],
             'startWeekDay' : that.params['startWeekDay'],
@@ -249,8 +256,6 @@ function(params){
         }else{
             that.enable();
         }
-        // Trigger events
-        that.triggerEvent('onRender', that.value);
     };
 
     var show = function(){

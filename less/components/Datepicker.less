@@ -1,10 +1,10 @@
 /* ******* COMPONENT: DATEPICKER ******* */
 
-.com-datepicker-input {
-    @clear-button-indent: @CmForm-fieldHeight + @CmForm-fieldInnerIndent;
+.com__datepicker-input {
+    @clear-button-indent: @CmForm-FieldHeight + @CmForm-FieldInnerIndent;
 
     width: 100%;
-    max-width: @ComDatepicker-width;
+    max-width: @ComDatepicker-Width;
     display: inline-block;
     vertical-align: top;
     position: relative;
@@ -24,10 +24,10 @@
     }
 
     > .icon {
-        width: @CmForm-fieldHeight;
-        height: @CmForm-fieldHeight;
+        width: @CmForm-FieldHeight;
+        height: @CmForm-FieldHeight;
         position: absolute;
-        .cm-position(0, 0, auto, auto);
+        .mx__position(0, 0, auto, auto);
 
         &.default {
             .icon.small.remove;
@@ -37,19 +37,19 @@
 
 /* Tooltip */
 
-.com-tooltip {
-    &.com-datepicker-tooltip {
-        width: @ComDatepicker-tooltipWidth;
+.com__tooltip {
+    &.com__datepicker-tooltip {
+        width: @ComDatepicker-TooltipWidth;
 
         > .inner > .scroll {
             overflow: visible;
         }
 
         .time-holder {
-            padding: 0 0 @cm-indentXXSmall;
-            margin: @cm-indentXXSmall 0 0 0;
-            border-bottom: @cm-borderSeparator;
-            border-top: @cm-borderSeparator;
+            padding: 0 0 @CmIndent-XXSmall;
+            margin: @CmIndent-XXSmall 0 0 0;
+            border-bottom: @CmBorder-Separator;
+            border-top: @CmBorder-Separator;
 
             dl {
                 margin: 0;
@@ -59,31 +59,31 @@
         .button.today {
             width: 100%;
             padding: 0;
-            margin: @cm-indentXXSmall 0 0 0;
+            margin: @CmIndent-XXSmall 0 0 0;
         }
     }
 }
 
 /* Calendar */
 
-.com-datepicker-calendar {
+.com__datepicker-calendar {
     .selects {
         .months {
             width: 60%;
         }
 
         .years {
-            width: 38%;
+            width: 40%;
         }
     }
 }
 
 /* ******* COMPONENT: DATEPICKER: ADAPTIVE ******* */
 
-@media only screen and (max-width: @cm-screenMobile) {
+@media only screen and (max-width: @CmScreen-Mobile) {
 
     html.is-adaptive {
-        .com-datepicker-input {
+        .com__datepicker-input {
             max-width: none;
             display: block;
         }

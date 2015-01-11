@@ -8,7 +8,8 @@ cm.define('Com.Select', {
     'modules' : [
         'Params',
         'Events',
-        'DataConfig'
+        'DataConfig',
+        'Stack'
     ],
     'events' : [
         'onRender',
@@ -20,12 +21,13 @@ cm.define('Com.Select', {
     'params' : {
         'container' : false,                    // Component container that is required in case content is rendered without available select.
         'select' : cm.Node('select'),           // Html select node to decorate.
+        'name' : '',
         'renderInBody' : true,                  // Render dropdowns in document.body, else they will be rendrered in component container.
         'multiple' : false,                     // Render multiple select.
         'placeholder' : '',
         'showTitleTag' : true,                  // Copy title from available select node to component container. Will be shown on hover.
         'title' : false,                        // Title text. Will be shown on hover.
-        'menuMargin' : 3,                       // Outer margin from component container to dropdown.
+        'menuMargin' : 4,                       // Outer margin from component container to dropdown.
         'options' : [],                         // Listing of options, for rendering through java-script. Example: [{'value' : 'foo', 'text' : 'Bar'}].
         'selected' : 0,                         // Option value / array of option values.
         'disabled' : false,
@@ -82,6 +84,8 @@ function(params){
                 set(optionsList[0]);
             }
         }
+        // Trigger events
+        that.triggerEvent('onRender', active);
     };
 
     var validateParams = function(){
@@ -89,6 +93,7 @@ function(params){
             that.params['placeholder'] = that.params['select'].getAttribute('placeholder') || that.params['placeholder'];
             that.params['multiple'] = that.params['select'].multiple;
             that.params['title'] = that.params['select'].getAttribute('title') || that.params['title'];
+            that.params['name'] = that.params['select'].getAttribute('name') || that.params['name'];
             that.params['disabled'] = that.params['select'].disabled || that.params['disabled'];
         }
         that.disabled = that.params['disabled'];
@@ -102,6 +107,7 @@ function(params){
         }else{
             renderSingle();
         }
+        that.addToStack(nodes['container']);
         /* *** ATTRIBUTES *** */
         // Add class name
         if(that.params['select'].className){
@@ -126,8 +132,8 @@ function(params){
             }
         });
         // Set hidden input attributes
-        if(that.params['select'].getAttribute('name')){
-            nodes['hidden'].setAttribute('name', that.params['select'].getAttribute('name'));
+        if(that.params['name']){
+            nodes['hidden'].setAttribute('name', that.params['name']);
         }
         // Placeholder
         if(!cm.isEmpty(that.params['placeholder'])){
@@ -150,23 +156,23 @@ function(params){
     };
 
     var renderSingle = function(){
-        nodes['container'] = cm.Node('div', {'class' : 'com-select'},
+        nodes['container'] = cm.Node('div', {'class' : 'com__select'},
             nodes['hidden'] = cm.Node('select', {'class' : 'display-none'}),
-            cm.Node('div', {'class' : 'form-field has-icon-right'},
+            nodes['target'] = cm.Node('div', {'class' : 'form-field has-icon-right'},
                 nodes['arrow'] = cm.Node('div', {'class' : that.params['icons']['arrow']}),
                 nodes['text'] = cm.Node('input', {'type' : 'text', 'readOnly' : 'true'})
             ),
-            nodes['scroll'] = cm.Node('div', {'class' : 'cm-items-list'},
+            nodes['scroll'] = cm.Node('div', {'class' : 'pt__listing-items'},
                 nodes['items'] = cm.Node('ul')
             )
         );
     };
 
     var renderMultiple = function(){
-        nodes['container'] = cm.Node('div', {'class' : 'com-multiselect'},
+        nodes['container'] = cm.Node('div', {'class' : 'com__select-multi'},
             nodes['hidden'] = cm.Node('select', {'class' : 'display-none', 'multiple' : true}),
             nodes['inner'] = cm.Node('div', {'class' : 'inner'},
-                nodes['scroll'] = cm.Node('div', {'class' : 'cm-items-list'},
+                nodes['scroll'] = cm.Node('div', {'class' : 'pt__listing-items'},
                     nodes['items'] = cm.Node('ul')
                 )
             )
@@ -220,11 +226,11 @@ function(params){
             // Render tooltip
             components['menu'] = new Com.Tooltip({
                 'container' : that.params['renderInBody']? document.body : nodes['container'],
-                'className' : 'com-select-tooltip',
+                'className' : 'com__select-tooltip',
                 'width' : 'targetWidth',
                 'top' : ['targetHeight', that.params['menuMargin']].join('+'),
                 'content' : nodes['scroll'],
-                'target' : nodes['container'],
+                'target' : nodes['target'],
                 'targetEvent' : 'click',
                 'hideOnReClick' : true,
                 'events' : {
@@ -240,8 +246,6 @@ function(params){
         }else{
             that.enable();
         }
-        // Trigger events
-        that.triggerEvent('onRender', active);
     };
 
     /* *** COLLECTORS *** */
@@ -253,17 +257,17 @@ function(params){
         cm.forEach(myChildes, function(myChild){
             if(cm.isElementNode(myChild)){
                 if(myChild.tagName.toLowerCase() == 'optgroup'){
-                     myOptionsNodes = myChild.querySelectorAll('option');
-                     myOptions = [];
-                     cm.forEach(myOptionsNodes, function(optionNode){
-                         myOptions.push({
+                    myOptionsNodes = myChild.querySelectorAll('option');
+                    myOptions = [];
+                    cm.forEach(myOptionsNodes, function(optionNode){
+                        myOptions.push({
                             'value' : optionNode.value,
                             'text' : optionNode.innerHTML
-                         });
-                     });
-                     renderGroup(myChild.getAttribute('label'), myOptions);
+                        });
+                    });
+                    renderGroup(myChild.getAttribute('label'), myOptions);
                 }else if(myChild.tagName.toLowerCase() == 'option'){
-                     renderOption(myChild.value, myChild.innerHTML);
+                    renderOption(myChild.value, myChild.innerHTML);
                 }
             }
         });
@@ -280,9 +284,14 @@ function(params){
         // Structure
         item['optgroup'] = cm.Node('optgroup', {'label' : myName});
         item['container'] = cm.Node('li', {'class' : 'group'},
-            cm.Node('div', {'class' : 'title', 'innerHTML' : myName}),
-            item['items'] = cm.Node('ul', {'class' : 'cm-items-list'})
+            item['items'] = cm.Node('ul', {'class' : 'pt__listing-items'})
         );
+        if(!cm.isEmpty(myName)){
+            cm.insertFirst(
+                cm.Node('div', {'class' : 'title', 'innerHTML' : myName}),
+                item['container']
+            );
+        }
         // Render options
         cm.forEach(myOptions, function(myOption){
             renderOption(myOption.value, myOption.text, item);
@@ -305,7 +314,8 @@ function(params){
         var item = {
             'selected' : false,
             'value' : value,
-            'text' : text
+            'text' : text,
+            'group': group
         };
         // Structure
         item['node'] = cm.Node('li',
@@ -405,8 +415,13 @@ function(params){
         optionsList.forEach(function(item){
             cm.removeClass(item['node'], 'active');
         });
-        nodes['text'].value = cm.decode(option['text']);
+        if(option['group']){
+            nodes['text'].value = [cm.decode(option['group']['name']), cm.decode(option['text'])].join(' > ');
+        }else{
+            nodes['text'].value = cm.decode(option['text']);
+        }
         option['option'].selected = true;
+        nodes['hidden'].value = active;
         cm.addClass(option['node'], 'active');
     };
 

@@ -1,0 +1,25 @@
+/* ******* PARTS: BREADCRUMBS ******* */
+
+.pt__breadcrumbs {
+    margin: 0 0 @CmIndent-Medium;
+
+    &.bottom {
+        margin: 0;
+    }
+
+    ul {
+        .cm__list-clear;
+        .cm__list-inline;
+        margin: 0 0 -@CmIndent-XXSmall 0;
+
+        li {
+            .cm__font--ui-small;
+            margin: 0 @CmIndent-XXSmall @CmIndent-XXSmall 0;
+
+            &.back {
+                margin-right: @CmIndent-Medium;
+                font-weight: @CmFont-Base-BoldWeight;
+            }
+        }
+    }
+}

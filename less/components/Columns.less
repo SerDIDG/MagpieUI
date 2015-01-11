@@ -1,19 +1,14 @@
 /* ******* COMPONENT: COLUMNS ******* */
 
-.com-column {
+.com__column {
+    //.display-flex;
     vertical-align: top;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-pack: center;
+    //.mx__flex(1 1 auto);
 
     > .inner {
-        -webkit-flex: 1;
-            -ms-flex: 1;
-                flex: 1;
-        -moz-box-sizing: border-box;
-             box-sizing: border-box;
-        .cm-transition(background-color @CM-Transition-Duration ease-in-out);
+        .mx__box-sizing(border-box);
+        .mx__flex(1);
+        .mx__transition(background-color, @CmUI-Transition-Duration);
     }
 
     .ie8 &,
@@ -26,7 +21,7 @@
     }
 }
 
-.com-columns-chassis {
+.com__columns__chassis {
     width: 10px;
     display: none;
     position: absolute;
@@ -36,20 +31,19 @@
     margin: 0 0 0 -5px;
     opacity: 0;
     cursor: col-resize;
-    .cm-transition(opacity @CM-Transition-Duration ease-in-out);
+    .mx__transition(opacity, @CmUI-Transition-Duration);
 
     .drag {
         width: 6px;
         position: absolute;
         z-index: 2;
-        .cm-position(50%, auto, auto, 50%);
         margin: -16px 0 0 -8px;
         padding: 8px 4px;
-        background: @cm-colorSecondary;
-        border: 1px solid @cm-colorBorder;
-        border-radius: @cm-borderRadius;
-        .cm-transition(background-color @CM-Transition-Duration ease-in-out);
-        .cm-transition(border-color @CM-Transition-Duration ease-in-out);
+        background: @ComColumns-Drag-DefaultBackground;
+        border: 1px solid @ComColumns-Drag-DefaultBorder;
+        border-radius: @CmBorder-Radius;
+        .mx__transition(background-color border-color, @CmUI-Transition-Duration);
+        .mx__position(50%, auto, auto, 50%);
 
         .icon {
             width: 6px;
@@ -61,40 +55,41 @@
         width: 2px;
         position: absolute;
         z-index: 1;
-        .cm-position(0, auto, 0, 50%);
         margin: 0 0 0 -1px;
         display: block;
         content: '';
-        background: @cm-colorSecondary;
-        .cm-transition(background-color @CM-Transition-Duration ease-in-out);
+        background: @ComColumns-DragLine-DefaultBackground;
+        .mx__transition(background-color, @CmUI-Transition-Duration);
+        .mx__position(0, auto, 0, 50%);
     }
 
     &:hover {
         .drag {
-            background: @cm-colorSecondaryHover;
-            .cm-transition(background-color @CM-Transition-DurationReverse ease-in-out);
-            .cm-transition(border-color @CM-Transition-DurationReverse ease-in-out);
+            background: @ComColumns-Drag-HoverBackground;
+            border-color: @ComColumns-Drag-HoverBorder;
+            .mx__transition(background-color border-color, @CmUI-Transition-DurationReverse);
         }
 
         &:after {
-            .cm-transition(background-color @CM-Transition-DurationReverse ease-in-out);
+            background: @ComColumns-DragLine-HoverBackground;
+            .mx__transition(background-color, @CmUI-Transition-DurationReverse);
         }
     }
 
     &.is-active {
         .drag {
-            background: @cm-colorActive;
-            border-color: @cm-color;
+            background: @ComColumns-Drag-ActiveBackground;
+            border-color: @ComColumns-Drag-ActiveBorder;
         }
 
         &:after {
-            background: @cm-colorActive;
+            background: @ComColumns-DragLine-ActiveBackground;
         }
     }
 }
 
-.com-columns {
-    margin: 0 0 @cm-indentMedium;
+.com__columns {
+    margin: 0 0 @CmIndent-Medium;
 
     &.bottom {
         margin: 0;
@@ -104,30 +99,25 @@
         position: relative;
 
         > .container {
+            .display-flex;
             width: 100%;
             height: 100%;
             position: relative;
             z-index: 1;
-            display: -ms-flexbox;
-            display: -webkit-flex;
-            display: flex;
-            -ms-flex-pack: center;
-            -webkit-flex-direction: row;
-                -ms-flex-direction: row;
-                    flex-direction: row;
+            .mx__flex-direction(row);
         }
     }
 
     &.is-editable {
         > .inner {
-            > .com-columns-chassis {
+            > .com__columns__chassis {
                 display: block;
             }
 
             > .container {
-                > .com-column {
+                > .com__column {
                     > .inner {
-                        min-height: @ComColumns-minHeight + (@CmDraganddrop-areaPadding * 2);
+                        min-height: @ComColumns-MinHeight + (@PtDnD-Area-Padding * 2);
                     }
                 }
             }
@@ -136,14 +126,14 @@
         &.is-active,
         &:hover {
             > .inner {
-                > .com-columns-chassis {
+                > .com__columns__chassis {
                     opacity: 1;
                 }
 
                 > .container {
-                    > .com-column {
+                    > .com__column {
                         > .inner {
-                            background: @ComColumns-backgroundHover;
+                            background: @ComColumns-HoverBackground;
                         }
                     }
                 }
@@ -152,7 +142,7 @@
 
         &.is-chassis-visible {
             > .inner {
-                .com-columns-chassis {
+                .com__columns__chassis {
                     opacity: 1;
                 }
             }
@@ -161,11 +151,11 @@
 
     // /* Set columns indent */
 
-    #cm > .columns-indent(@ComColumns-indent);
+    .com__columns__indent(@ComColumns-Indent);
 
-    .for(@ComColumns-indents); .-each(@name) {
+    .for(@ComColumns-Indents); .-each(@name) {
         &.indent-@{name} {
-            #cm > .columns-indent(@name);
+            .com__columns__indent(@name);
         }
     }
 
@@ -184,38 +174,36 @@
 
 /* *** HELPERS *** */
 
-.com-columns-body,
-.com-columns-body * {
+.com__columns-body,
+.com__columns-body * {
     cursor: col-resize !important;
-    .cm-user-select(none);
+    .mx__user-select(none);
 }
 
-/* ******* COMPONENT: COLUMNS: BUNDLE ******* */
+// /* ******* COMPONENT: COLUMNS: BUNDLE ******* */
 
-#cm() {
-    .columns-indent (@indent: @ComColumns-indent) {
-        > .inner {
-            margin: 0 -(@indent / 2);
-        }
+.com__columns__indent (@indent: @ComColumns-Indent) {
+    > .inner {
+        margin: 0 -(@indent / 2);
+    }
 
-        .com-column > .inner {
-            margin: 0 (@indent / 2);
-        }
+    .com__column > .inner {
+        margin: 0 (@indent / 2);
     }
 }
 
 /* ******* COMPONENT: COLUMNS: ADAPTIVE ******* */
 
-@media only screen and (max-width : @ComColumns-adaptiveFrom) {
+@media only screen and (max-width : @ComColumns-AdaptiveFrom) {
 
     html.is-adaptive {
-        .com-column {
+        .com__column {
             width: auto !important;
             height: auto;
             display: block;
         }
 
-        .com-columns {
+        .com__columns {
             > .inner {
                 margin: 0;
 
@@ -225,13 +213,13 @@
             }
 
             &.is-editable {
-                .com-columns-chassis {
+                .com__columns__chassis {
                     display: none;
                 }
             }
 
-            .com-column {
-                margin: @cm-indentMedium 0 0 0;
+            .com__column {
+                margin: @CmIndent-Medium 0 0 0;
 
                 &:first-child {
                     margin: 0;

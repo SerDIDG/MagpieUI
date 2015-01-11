@@ -16,7 +16,7 @@ cm.define('Com.CalendarEvents', {
             'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
         },
         'Com.Tooltip' : {
-            'className' : 'com-calendar-events-tooltip'
+            'className' : 'com__calendar-events-tooltip'
         }
     }
 },
@@ -36,7 +36,7 @@ function(params){
 
     var render = function(){
         // Structure
-        that.nodes['container'] = cm.Node('div', {'class' : 'com-calendar-events'});
+        that.nodes['container'] = cm.Node('div', {'class' : 'com__calendar-events'});
         // Render calendar
         that.components['calendar'] = new Com.Calendar({
             'container' : that.nodes['container'],
@@ -77,7 +77,7 @@ function(params){
 
         if((data = that.params['data'][params['year']]) && (data = data[(params['month'] + 1)]) && (data = data[params['day']])){
             // Structure
-            myNodes['content'] = cm.Node('div', {'class' : 'cm-listing com-calendar-events-listing'},
+            myNodes['content'] = cm.Node('div', {'class' : 'pt__listing com__calendar-events-listing'},
                 myNodes['list'] = cm.Node('ul', {'class' : 'list'})
             );
             // Foreach events
