@@ -654,7 +654,7 @@
 
 /* *** FORM ICONS *** */
 
-.cm-form-icons {
+.cm__form__icons {
     min-height: @CmForm-FieldHeight;
     position: relative;
 
@@ -669,7 +669,7 @@
             &.x-small {
                 margin-right: @x-small;
 
-                .cm-form-icons-outside {
+                .cm__form__icons-outside {
                     width: @x-small;
                     right: -@x-small;
                 }
@@ -677,7 +677,7 @@
             &.small {
                 margin-right: @small;
 
-                .cm-form-icons-outside {
+                .cm__form__icons-outside {
                     width: @small;
                     right: -@small;
                 }
@@ -685,7 +685,7 @@
             &.medium {
                 margin-right: @medium;
 
-                .cm-form-icons-outside {
+                .cm__form__icons-outside {
                     width: @medium;
                     right: -@medium;
                 }
@@ -696,7 +696,7 @@
     .loop(5);
 }
 
-.cm-form-icons-outside {
+.cm__form__icons-outside {
     position: absolute;
     top: 0;
     line-height: @CmForm-FieldHeight;
@@ -710,14 +710,10 @@
     }
 }
 
-.cm-form-icons-inside {
-    text-align: right;
+.cm__form__icons-inside {
+    text-align: left;
     white-space: nowrap;
     font-size: 0;
-
-    &.left {
-        text-align: left;
-    }
 
     .icon,
     .icon.inline {
@@ -739,6 +735,18 @@
         &:first-child {
             margin: 0;
         }
+    }
+
+    &.pull-left {
+        text-align: left;
+    }
+
+    &.pull-center {
+        text-align: center;
+    }
+
+    &.pull-right {
+        text-align: right;
     }
 }
 

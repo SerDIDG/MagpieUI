@@ -184,6 +184,8 @@ function(params){
         }
         e = cm.getEvent(e);
         cm.preventDefault(e);
+        // Hide IFRAMES and EMBED tags
+        cm.hideSpecialTags();
         // Check event type and get cursor / finger position
         var x = e.clientX,
             y = e.clientY,
@@ -460,6 +462,8 @@ function(params){
         if(that.params['highlightAreas']){
             toggleHighlightAreas();
         }
+        // Show IFRAMES and EMBED tags
+        cm.showSpecialTags();
     };
 
     /* *** DRAGGABLE MANIPULATION FUNCTIONS *** */

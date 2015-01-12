@@ -2280,154 +2280,160 @@ button::-moz-focus-inner {
   border: 1px solid #25b125;
 }
 /* *** FORM ICONS *** */
-.cm-form-icons {
+.cm__form__icons {
   min-height: 28px;
   position: relative;
 }
-.cm-form-icons.count-1.x-small {
+.cm__form__icons.count-1.x-small {
   margin-right: 20px;
 }
-.cm-form-icons.count-1.x-small .cm-form-icons-outside {
+.cm__form__icons.count-1.x-small .cm__form__icons-outside {
   width: 20px;
   right: -20px;
 }
-.cm-form-icons.count-1.small {
+.cm__form__icons.count-1.small {
   margin-right: 24px;
 }
-.cm-form-icons.count-1.small .cm-form-icons-outside {
+.cm__form__icons.count-1.small .cm__form__icons-outside {
   width: 24px;
   right: -24px;
 }
-.cm-form-icons.count-1.medium {
+.cm__form__icons.count-1.medium {
   margin-right: 32px;
 }
-.cm-form-icons.count-1.medium .cm-form-icons-outside {
+.cm__form__icons.count-1.medium .cm__form__icons-outside {
   width: 32px;
   right: -32px;
 }
-.cm-form-icons.count-2.x-small {
+.cm__form__icons.count-2.x-small {
   margin-right: 40px;
 }
-.cm-form-icons.count-2.x-small .cm-form-icons-outside {
+.cm__form__icons.count-2.x-small .cm__form__icons-outside {
   width: 40px;
   right: -40px;
 }
-.cm-form-icons.count-2.small {
+.cm__form__icons.count-2.small {
   margin-right: 48px;
 }
-.cm-form-icons.count-2.small .cm-form-icons-outside {
+.cm__form__icons.count-2.small .cm__form__icons-outside {
   width: 48px;
   right: -48px;
 }
-.cm-form-icons.count-2.medium {
+.cm__form__icons.count-2.medium {
   margin-right: 64px;
 }
-.cm-form-icons.count-2.medium .cm-form-icons-outside {
+.cm__form__icons.count-2.medium .cm__form__icons-outside {
   width: 64px;
   right: -64px;
 }
-.cm-form-icons.count-3.x-small {
+.cm__form__icons.count-3.x-small {
   margin-right: 60px;
 }
-.cm-form-icons.count-3.x-small .cm-form-icons-outside {
+.cm__form__icons.count-3.x-small .cm__form__icons-outside {
   width: 60px;
   right: -60px;
 }
-.cm-form-icons.count-3.small {
+.cm__form__icons.count-3.small {
   margin-right: 72px;
 }
-.cm-form-icons.count-3.small .cm-form-icons-outside {
+.cm__form__icons.count-3.small .cm__form__icons-outside {
   width: 72px;
   right: -72px;
 }
-.cm-form-icons.count-3.medium {
+.cm__form__icons.count-3.medium {
   margin-right: 96px;
 }
-.cm-form-icons.count-3.medium .cm-form-icons-outside {
+.cm__form__icons.count-3.medium .cm__form__icons-outside {
   width: 96px;
   right: -96px;
 }
-.cm-form-icons.count-4.x-small {
+.cm__form__icons.count-4.x-small {
   margin-right: 80px;
 }
-.cm-form-icons.count-4.x-small .cm-form-icons-outside {
+.cm__form__icons.count-4.x-small .cm__form__icons-outside {
   width: 80px;
   right: -80px;
 }
-.cm-form-icons.count-4.small {
+.cm__form__icons.count-4.small {
   margin-right: 96px;
 }
-.cm-form-icons.count-4.small .cm-form-icons-outside {
+.cm__form__icons.count-4.small .cm__form__icons-outside {
   width: 96px;
   right: -96px;
 }
-.cm-form-icons.count-4.medium {
+.cm__form__icons.count-4.medium {
   margin-right: 128px;
 }
-.cm-form-icons.count-4.medium .cm-form-icons-outside {
+.cm__form__icons.count-4.medium .cm__form__icons-outside {
   width: 128px;
   right: -128px;
 }
-.cm-form-icons.count-5.x-small {
+.cm__form__icons.count-5.x-small {
   margin-right: 100px;
 }
-.cm-form-icons.count-5.x-small .cm-form-icons-outside {
+.cm__form__icons.count-5.x-small .cm__form__icons-outside {
   width: 100px;
   right: -100px;
 }
-.cm-form-icons.count-5.small {
+.cm__form__icons.count-5.small {
   margin-right: 120px;
 }
-.cm-form-icons.count-5.small .cm-form-icons-outside {
+.cm__form__icons.count-5.small .cm__form__icons-outside {
   width: 120px;
   right: -120px;
 }
-.cm-form-icons.count-5.medium {
+.cm__form__icons.count-5.medium {
   margin-right: 160px;
 }
-.cm-form-icons.count-5.medium .cm-form-icons-outside {
+.cm__form__icons.count-5.medium .cm__form__icons-outside {
   width: 160px;
   right: -160px;
 }
-.cm-form-icons-outside {
+.cm__form__icons-outside {
   position: absolute;
   top: 0;
   line-height: 28px;
   font-size: 0;
   text-align: left;
 }
-.cm-form-icons-outside .icon {
+.cm__form__icons-outside .icon {
   display: inline-block;
   margin: 0 0 0 8px;
   vertical-align: middle;
 }
-.cm-form-icons-inside {
-  text-align: right;
+.cm__form__icons-inside {
+  text-align: left;
   white-space: nowrap;
   font-size: 0;
 }
-.cm-form-icons-inside.left {
-  text-align: left;
-}
-.cm-form-icons-inside .icon,
-.cm-form-icons-inside .icon.inline {
+.cm__form__icons-inside .icon,
+.cm__form__icons-inside .icon.inline {
   display: inline-block;
   margin: 0 0 0 8px;
   vertical-align: middle;
 }
-.cm-form-icons-inside .icon:first-child,
-.cm-form-icons-inside .icon.inline:first-child {
+.cm__form__icons-inside .icon:first-child,
+.cm__form__icons-inside .icon.inline:first-child {
   margin: 0;
 }
-.cm-form-icons-inside .text {
+.cm__form__icons-inside .text {
   font: 400 13px/18px 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
   display: inline-block;
   vertical-align: middle;
   margin: 0 0 0 8px;
 }
-.cm-form-icons-inside .text:first-child {
+.cm__form__icons-inside .text:first-child {
   margin: 0;
+}
+.cm__form__icons-inside.pull-left {
+  text-align: left;
+}
+.cm__form__icons-inside.pull-center {
+  text-align: center;
+}
+.cm__form__icons-inside.pull-right {
+  text-align: right;
 }
 /* *** FILES LIST *** */
 .files-list ul {
@@ -3256,6 +3262,8 @@ button::-moz-focus-inner {
   -webkit-flex-wrap: wrap;
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
+  -webkit-justify-content: flex-start;
+  justify-content: flex-start;
 }
 .pt__toolbar > .inner > .left {
   float: left;
@@ -4302,10 +4310,41 @@ button::-moz-focus-inner {
   list-style: none;
 }
 .pt__listing-clear > ul > li {
+  margin: 0;
+  padding: 0;
+}
+.pt__listing-clear > ul > li {
   margin: 0 0 12px 0;
 }
 .pt__listing-clear > ul > li:last-child {
   margin-bottom: 0;
+}
+/* *** LEGEND *** */
+.pt__listing-legend {
+  margin: 0 0 24px;
+}
+.pt__listing-legend.bottom {
+  margin: 0;
+}
+.pt__listing-legend > ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pt__listing-legend > ul > li {
+  margin: 0;
+  padding: 0;
+}
+.pt__listing-legend > ul > li {
+  margin: 0 0 12px 0;
+}
+.pt__listing-legend > ul > li:last-child {
+  margin-bottom: 0;
+}
+.pt__listing-legend > ul > li .icon {
+  display: inline-block;
+  margin: 0 12px 0 0;
+  vertical-align: middle;
 }
 /* *** LISTING WITH COUNTERS *** */
 .pt__listing-counters .cm__counter {
@@ -4580,6 +4619,18 @@ button::-moz-focus-inner {
 .pt__gridlist table th.cell-description {
   width: auto;
 }
+.pt__gridlist table td.cell-date,
+.pt__gridlist table th.cell-date {
+  width: 100px;
+}
+.pt__gridlist table td.cell-price,
+.pt__gridlist table th.cell-price {
+  width: 100px;
+}
+.pt__gridlist table td.cell-auto,
+.pt__gridlist table th.cell-auto {
+  width: auto;
+}
 .pt__gridlist table td.cell-status,
 .pt__gridlist table th.cell-status {
   width: 100px;
@@ -4624,6 +4675,9 @@ button::-moz-focus-inner {
 .pt__gridlist table thead:first-child tr:first-child th {
   border: none;
 }
+.pt__gridlist.valign-middle table td {
+  vertical-align: middle;
+}
 .pt__gridlist__counter {
   margin: 0 0 24px;
 }
@@ -4647,7 +4701,7 @@ button::-moz-focus-inner {
   vertical-align: middle;
   margin: 0;
 }
-.pt__gridlist .cm-form-icons-inside .text {
+.pt__gridlist .cm__form__icons-inside .text {
   font-size: 11px;
 }
 /* ******* PARTS: GRIDLIST: ADAPTIVE ******* */
@@ -5063,6 +5117,10 @@ button::-moz-focus-inner {
   margin: 0;
   padding: 0;
   list-style: none;
+}
+.lt__faq__questions > ul > li {
+  margin: 0;
+  padding: 0;
 }
 .lt__faq__questions > ul > li {
   margin: 0 0 12px 0;
@@ -8016,14 +8074,7 @@ html.ie9 .com__palette .b-range {
 }
 /* ******* COMPONENT: COLUMNS ******* */
 .com__column {
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-pack: center;
   vertical-align: top;
-  -webkit-flex: 1 1 auto;
-  -ms-flex: 1 1 auto;
-  flex: 1 1 auto;
 }
 .com__column > .inner {
   -moz-box-sizing: border-box;

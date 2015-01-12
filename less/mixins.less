@@ -89,6 +89,11 @@
             flex-wrap: @value;
 }
 
+.mx__justify-content (@value: flex-start) {
+    -webkit-justify-content: @value;
+            justify-content: @value;
+}
+
 // /* ******* COMMON ******* */
 
 .mx__only__color (@background, @colorDark, @colorLight) when (alpha(@background) = 1) and (lightness(@background) >= 60%) {

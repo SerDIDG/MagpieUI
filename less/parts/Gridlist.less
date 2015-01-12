@@ -50,6 +50,18 @@
                 width: auto;
             }
 
+            &.cell-date {
+                width: 100px;
+            }
+
+            &.cell-price {
+                width: 100px;
+            }
+
+            &.cell-auto {
+                width: auto;
+            }
+
             &.cell-status {
                 width: 100px;
             }
@@ -103,6 +115,14 @@
             }
         }
     }
+
+    &.valign-middle {
+        table {
+            td {
+                vertical-align: middle;
+            }
+        }
+    }
 }
 
 .pt__gridlist__counter {
@@ -137,7 +157,7 @@
         }
     }
 
-    .cm-form-icons-inside {
+    .cm__form__icons-inside {
         .text {
             font-size: @PtGridlist-Font-Size;
         }
