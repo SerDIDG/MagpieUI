@@ -15,6 +15,10 @@
         .mx__user-select(none);
         .mx__transition(color, @CmUI-Transition-Duration);
 
+        a {
+            font-weight: inherit;
+        }
+
         .icon {
             height: @ComToggleBox-Size;
             float: right;
@@ -42,7 +46,7 @@
         }
 
         &:hover {
-            color: @CmColor-Font-Link;
+            color: @CmColor-Primary-DarkDefault;
         }
     }
 
@@ -128,6 +132,18 @@
 
             .icon {
                 height: @ComToggleBox-SizeMedium;
+            }
+        }
+    }
+
+    &.is-base {
+        > dt {
+            .cm__font;
+            font-weight: @CmFont-Base-BoldWeight;
+            line-height: @ComToggleBox-SizeBase;
+
+            .icon {
+                height: @ComToggleBox-SizeBase;
             }
         }
     }

@@ -1,7 +1,9 @@
-/* ******* COMPONENT: TAGS ******* */
+/* ******* COMPONENTS: TAGS ******* */
 
-.com-tags {
-    > .inner:extend(.clear all) {
+.com__tags {
+    > .inner {
+        .clearfix;
+
         > .l {
             float: left;
             margin: 0 @CmIndent-XXSmall 0 0;
@@ -17,9 +19,7 @@
             overflow: hidden;
 
             ul {
-                margin: 0;
-                padding: 0;
-                list-style: none;
+                .cm__list-clear;
                 line-height: inherit;
                 font-size: inherit;
 

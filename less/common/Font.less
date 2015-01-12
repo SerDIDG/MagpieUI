@@ -7,6 +7,21 @@
     color: @CmFont-Base-Color;
 }
 
+.cm__font--small {
+    font: @CmFont-Base-Weight ~'@{CmFont-Base-SizeSmall}/@{CmFont-Base-LineHeight}' @CmFont-Base-Family;
+    color: @CmFont-Base-Color;
+}
+
+.cm__font--cursive {
+    .cm__font;
+    font-style: italic;
+}
+
+.cm__font--small-cursive {
+    .cm__font--small;
+    font-style: italic;
+}
+
 .cm__font--link {
     text-decoration: underline;
     color: @CmColor-Font-Link;

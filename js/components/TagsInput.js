@@ -71,7 +71,7 @@ function(params){
 
     var render = function(){
         /* *** STRUCTURE *** */
-        nodes['container'] = cm.Node('div', {'class' : 'com-tags-input'},
+        nodes['container'] = cm.Node('div', {'class' : 'com__tags-input'},
             nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
             nodes['inner'] = cm.Node('div', {'class' : 'inner'})
         );
