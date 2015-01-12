@@ -4,12 +4,15 @@
     .display-flex;
     vertical-align: top;
     .mx__flex(1 1 auto);
-    .mx__flex-flow(column nowrap);
 
     > .inner {
         .mx__box-sizing(border-box);
         .mx__flex(1);
         .mx__transition(background-color, @CmUI-Transition-Duration);
+    }
+
+    .firefox & {
+        .mx__flex-direction(column);
     }
 
     .ie8 &,

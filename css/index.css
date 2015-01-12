@@ -8122,9 +8122,6 @@ html.ie9 .com__palette .b-range {
   -webkit-flex: 1 1 auto;
   -ms-flex: 1 1 auto;
   flex: 1 1 auto;
-  -webkit-flex-flow: column nowrap;
-  -ms-flex-flow: column nowrap;
-  flex-flow: column nowrap;
 }
 .com__column > .inner {
   -moz-box-sizing: border-box;
@@ -8134,6 +8131,11 @@ html.ie9 .com__palette .b-range {
   flex: 1;
   -webkit-transition: background-color 300ms ease-in-out;
   transition: background-color 300ms ease-in-out;
+}
+.firefox .com__column {
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
 }
 .ie8 .com__column,
 .ie9 .com__column {
