@@ -283,7 +283,7 @@ function(params){
         currentPosition = tempCurrentPosition;
         cm.addClass(currentArea['node'], 'is-active');
         // Set check position event
-        checkInt = setInterval(checkPosition, 5);
+        //checkInt = setInterval(checkPosition, 5);
         // Add move event on document
         cm.addClass(document.body, 'pt__dnd-body');
         cm.addEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mousemove', move);
@@ -345,6 +345,8 @@ function(params){
                 toggleScroll(0);
             }
         }
+        // Check and recalculate position
+        checkPosition();
         // Find above area
         cm.forEach(filteredAvailableAreas, function(area){
             if(x >= area['dimensions']['x1'] && x < area['dimensions']['x2'] && y >= area['dimensions']['y1'] && y <= area['dimensions']['y2']){
@@ -418,7 +420,7 @@ function(params){
         e = cm.getEvent(e);
         var currentHeight;
         // Remove check position event
-        checkInt && clearInterval(checkInt);
+        //checkInt && clearInterval(checkInt);
         // Remove move events attached on document
         cm.removeClass(document.body, 'pt__dnd-body');
         cm.removeEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mousemove', move);
@@ -701,19 +703,19 @@ function(params){
     };
 
     var recalculatePosition = function(item){
-        item['dimensions']['x1'] = cm.getRealX(item['node']);
+        //item['dimensions']['x1'] = cm.getRealX(item['node']);
         item['dimensions']['y1'] = cm.getRealY(item['node']);
-        item['dimensions']['x2'] = item['dimensions']['x1'] + item['dimensions']['width'];
+        //item['dimensions']['x2'] = item['dimensions']['x1'] + item['dimensions']['width'];
         item['dimensions']['y2'] = item['dimensions']['y1'] + item['dimensions']['height'];
 
-        item['dimensions']['innerX1'] = item['dimensions']['x1'] + item['dimensions']['padding']['left'];
+        //item['dimensions']['innerX1'] = item['dimensions']['x1'] + item['dimensions']['padding']['left'];
         item['dimensions']['innerY1'] = item['dimensions']['y1'] + item['dimensions']['padding']['top'];
-        item['dimensions']['innerX2'] = item['dimensions']['innerX1'] + item['dimensions']['innerWidth'];
+        //item['dimensions']['innerX2'] = item['dimensions']['innerX1'] + item['dimensions']['innerWidth'];
         item['dimensions']['innerY2'] = item['dimensions']['innerY1'] + item['dimensions']['innerHeight'];
 
-        item['dimensions']['absoluteX1'] = item['dimensions']['x1'] - item['dimensions']['margin']['left'];
+        //item['dimensions']['absoluteX1'] = item['dimensions']['x1'] - item['dimensions']['margin']['left'];
         item['dimensions']['absoluteY1'] = item['dimensions']['y1'] - item['dimensions']['margin']['top'];
-        item['dimensions']['absoluteX2'] = item['dimensions']['x2'] + item['dimensions']['margin']['right'];
+        //item['dimensions']['absoluteX2'] = item['dimensions']['x2'] + item['dimensions']['margin']['right'];
         item['dimensions']['absoluteY2'] = item['dimensions']['y2'] + item['dimensions']['margin']['bottom'];
     };
 
