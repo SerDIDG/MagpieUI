@@ -5234,37 +5234,60 @@ button::-moz-focus-inner {
   margin: 0;
 }
 /* ******* LAYOUTS: PROFILE ******* */
-.lt__profile > .inner:after {
-  content: ".";
-  display: block;
-  clear: both;
-  visibility: hidden;
-  line-height: 0;
-  font-size: 0;
-  height: 0;
+.lt__profile > .inner {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+  margin: 0 -24px;
+}
+.lt__profile > .inner > .l,
+.lt__profile > .inner > .r {
+  margin: 0 24px;
 }
 .lt__profile > .inner > .l {
-  float: left;
-  margin: 0 48px 0 0;
-}
-.lt__profile > .inner > .l .pt__box-flat > .inner {
-  width: 150px;
+  -webkit-flex: 0 0 auto;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
 }
 .lt__profile > .inner > .r {
+  -webkit-flex: 0 1 auto;
+  -ms-flex: 0 1 auto;
+  flex: 0 1 auto;
+}
+.ie9 .lt__profile > .inner > .l {
+  float: left;
+}
+.ie9 .lt__profile > .inner > .r {
   overflow: hidden;
 }
-/* ******* LAYOUTS: PROFILE: ADAPTIVE ******* */
 @media only screen and (max-width: 640px) {
-  html.is-adaptive .lt__profile > .inner > .l {
-    width: auto;
-    float: none;
+  .lt__profile > .inner {
+    display: block;
+    margin: 0;
+  }
+  .lt__profile > .inner > .l {
     margin: 0 0 48px;
+    -webkit-flex: none;
+    -ms-flex: none;
+    flex: none;
   }
-  html.is-adaptive .lt__profile > .inner > .l .pt__box-flat > .inner {
-    width: auto;
+  .lt__profile > .inner > .r {
+    margin: 0;
+    -webkit-flex: none;
+    -ms-flex: none;
+    flex: none;
   }
-  html.is-adaptive .lt__profile--members .pt__grid > ul > li {
+  .lt__profile .lt__profile--members .pt__grid > ul > li {
     width: 33.33%;
+  }
+}
+.lt__profile > .inner > .l {
+  width: 174px;
+}
+@media only screen and (max-width: 640px) {
+  .lt__profile > .inner > .l {
+    width: auto;
   }
 }
 /* ******* LAYOUTS: FORUM ******* */

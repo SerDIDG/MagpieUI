@@ -2,43 +2,47 @@
 
 .lt__profile {
     > .inner {
-        .clearfix;
-
+        .display-flex;
+        margin: 0 -@CmIndent-Medium;
+        
+        > .l, > .r {
+            margin: 0 @CmIndent-Medium;
+        }
+        
         > .l {
-            float: left;
-            margin: 0 @CmIndent-XLarge 0 0;
-
-            .pt__box-flat {
-                > .inner {
-                    width: @LtProfile-LeftColumn;
-                }
-            }
+            .mx__flex(0 0 auto);
         }
 
         > .r {
-            overflow: hidden;
+            .mx__flex(0 1 auto);
         }
     }
-}
 
-/* ******* LAYOUTS: PROFILE: ADAPTIVE ******* */
+    .ie9 & {
+        > .inner {
+            > .l {
+                float: left;
+            }
 
-@media only screen and (max-width : @CmScreen-Mobile) {
+            > .r {
+                overflow: hidden;
+            }
+        }
+    }
 
-    html.is-adaptive {
-        .lt__profile {
-            > .inner {
-                > .l {
-                    width: auto;
-                    float: none;
-                    margin: 0 0 @CmIndent-XLarge;
+    @media only screen and (max-width : @CmScreen-Mobile) {
+        > .inner {
+            display: block;
+            margin: 0;
 
-                    .pt__box-flat {
-                        > .inner {
-                            width: auto;
-                        }
-                    }
-                }
+            > .l {
+                margin: 0 0 @CmIndent-XLarge;
+                .mx__flex(none);
+            }
+
+            > .r {
+                margin: 0;
+                .mx__flex(none);
             }
         }
 
@@ -51,4 +55,19 @@
         }
     }
 
+    .lt__profile__size();
+}
+
+// /* *** MIXINS *** */
+
+.lt__profile__size (@value: @LtProfile-LeftColumn) {
+    > .inner {
+        > .l {
+            width: @value;
+
+            @media only screen and (max-width : @CmScreen-Mobile) {
+                width: auto;
+            }
+        }
+    }
 }
