@@ -94,6 +94,11 @@
             justify-content: @value;
 }
 
+.mx__align-items (@value: stretch) {
+    -webkit-align-items: @value;
+            align-items: @value;
+}
+
 // /* ******* COMMON ******* */
 
 .mx__only__color (@background, @colorDark, @colorLight) when (alpha(@background) = 1) and (lightness(@background) >= 60%) {
