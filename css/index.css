@@ -634,6 +634,9 @@
   padding-left: 28px;
   line-height: 24px;
 }
+.icon.medium.check {
+  background-image: url("../img/icons/medium/check.png");
+}
 .icon.medium.arrow-left {
   background-image: url("../img/icons/medium/arrow-left.png");
 }
@@ -1854,15 +1857,23 @@ button::-moz-focus-inner {
 .btn-wrap.centered button:first-child {
   margin: 0;
 }
+.btn-wrap.is-box,
 .btn-wrap.is-block {
   height: auto;
 }
+.btn-wrap.is-box .button,
 .btn-wrap.is-block .button,
+.btn-wrap.is-box .browse-button,
 .btn-wrap.is-block .browse-button,
+.btn-wrap.is-box .com-action-menu,
 .btn-wrap.is-block .com-action-menu,
+.btn-wrap.is-box input[type="button"],
 .btn-wrap.is-block input[type="button"],
+.btn-wrap.is-box input[type="submit"],
 .btn-wrap.is-block input[type="submit"],
+.btn-wrap.is-box input[type="reset"],
 .btn-wrap.is-block input[type="reset"],
+.btn-wrap.is-box button,
 .btn-wrap.is-block button {
   width: 100%;
   display: block;
@@ -1872,12 +1883,19 @@ button::-moz-focus-inner {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+.btn-wrap.is-box .button:first-child,
 .btn-wrap.is-block .button:first-child,
+.btn-wrap.is-box .browse-button:first-child,
 .btn-wrap.is-block .browse-button:first-child,
+.btn-wrap.is-box .com-action-menu:first-child,
 .btn-wrap.is-block .com-action-menu:first-child,
+.btn-wrap.is-box input[type="button"]:first-child,
 .btn-wrap.is-block input[type="button"]:first-child,
+.btn-wrap.is-box input[type="submit"]:first-child,
 .btn-wrap.is-block input[type="submit"]:first-child,
+.btn-wrap.is-box input[type="reset"]:first-child,
 .btn-wrap.is-block input[type="reset"]:first-child,
+.btn-wrap.is-box button:first-child,
 .btn-wrap.is-block button:first-child {
   margin: 0;
 }

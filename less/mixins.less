@@ -99,6 +99,11 @@
             align-items: @value;
 }
 
+.mx__backface-visibility (@value: visible) {
+    -webkit-backface-visibility: @value;
+    backface-visibility: @value;
+}
+
 // /* ******* COMMON ******* */
 
 .mx__only__color (@background, @colorDark, @colorLight) when (alpha(@background) = 1) and (lightness(@background) >= 60%) {
