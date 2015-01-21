@@ -4,19 +4,33 @@ Com['GetColumns'] = function(id){
     return Com.Elements.Columns[id] || null;
 };
 
-Com['Columns'] = function(o){
+cm.define('Com.Columns', {
+    'modules' : [
+        'Params',
+        'Events',
+        'DataConfig',
+        'Stack'
+    ],
+    'required' : [
+        'Com.Draggable'
+    ],
+    'events' : [
+        'onRender',
+        'onAdd',
+        'onRemove',
+        'onChange',
+        'onResize'
+    ],
+    'params' : {
+        'container' : cm.Node('div'),
+        'name' : '',
+        'columns' : false,
+        'minColumnWidth' : 12,              // in px
+        'data' : []
+    }
+},
+function(params){
     var that = this,
-        config = cm.merge({
-            'container' : cm.Node('div'),
-            'columns' : false,
-            'minColumnWidth' : 12,      // in px
-            'data' : []
-        }, o),
-        API = {
-            'onAdd' : [],
-            'onRemove' : [],
-            'onResize' : []
-        },
         nodes = {},
         items = [],
         chassisList = [],
@@ -25,14 +39,24 @@ Com['Columns'] = function(o){
     /* *** INIT *** */
 
     var init = function(){
-        // Render or collect columns structure
-        if(config['columns']){
+        that.setParams(params);
+        that.convertEvents(that.params['events']);
+        that.getDataConfig(that.params['container']);
+        validateParams();
+        if(that.params['columns']){
             collect();
         }else{
             render();
         }
-        // Render draggable chassis
         renderChassis();
+        that.addToStack(that.params['container']);
+        that.triggerEvent('onRender');
+    };
+
+    var validateParams = function(){
+        if(cm.isNode(that.params['container'])){
+            that.params['name'] = that.params['container'].getAttribute('name') || that.params['name'];
+        }
     };
 
     /* *** STRUCTURE *** */
@@ -45,15 +69,15 @@ Com['Columns'] = function(o){
             )
         );
         // Render Columns
-        cm.forEach(config['data'], renderColumn);
+        cm.forEach(that.params['data'], renderColumn);
         // Embed
-        config['container'].appendChild(nodes['container']);
+        that.params['container'].appendChild(nodes['container']);
     };
 
     var collect = function(){
         var columns;
         // Collect nodes
-        nodes['container'] = config['columns'];
+        nodes['container'] = that.params['columns'];
         nodes['inner'] = cm.getByAttr('data-com__columns', 'inner', nodes['container'])[0];
         nodes['holder'] = cm.getByAttr('data-com__columns', 'holder', nodes['container'])[0];
         // Set editable class
@@ -98,7 +122,7 @@ Com['Columns'] = function(o){
         nodes['holder'].appendChild(item['container']);
         if(execute){
             // API onAdd event
-            executeEvent('onAdd', item);
+            that.triggerEvent('onAdd', item);
         }
         return item;
     };
@@ -109,7 +133,7 @@ Com['Columns'] = function(o){
         items.splice(index, 1);
         if(execute){
             // API onRemove event
-            executeEvent('onRemove', item);
+            that.triggerEvent('onRemove', item);
         }
         return item;
     };
@@ -119,7 +143,7 @@ Com['Columns'] = function(o){
         cm.remove(item['container']);
         if(execute){
             // API onRemove event
-            executeEvent('onRemove', item);
+            that.triggerEvent('onRemove', item);
         }
         return item;
     };
@@ -133,7 +157,8 @@ Com['Columns'] = function(o){
             item['container'].style.width = item['width'];
         });
         // API onResize event
-        executeEvent('onResize', items);
+        that.triggerEvent('onResize', items);
+        that.triggerEvent('onChange', items);
     };
 
     /* *** CHASSIS METHODS *** */
@@ -186,6 +211,8 @@ Com['Columns'] = function(o){
         }
         e = cm.getEvent(e);
         cm.preventDefault(e);
+        // Hide IFRAMES and EMBED tags
+        cm.hideSpecialTags();
         // If not left mouse button, don't duplicate drag event
         if((cm.is('IE') && cm.isVersion() < 9 && e.button != 1) || (!cm.is('IE') && e.button)){
             return false;
@@ -194,6 +221,7 @@ Com['Columns'] = function(o){
         var index = chassisList.indexOf(chassis),
             leftColumn = items[index],
             rightColumn = items[index + 1];
+
         current = {
             'index' : index,
             'offset' : cm.getRealX(nodes['holder']),
@@ -229,7 +257,7 @@ Com['Columns'] = function(o){
         leftWidth = x - current['left']['offset'];
         rightWidth = current['right']['offset'] - x;
         // Apply sizes and positions
-        if(leftWidth > config['minColumnWidth'] && rightWidth > config['minColumnWidth']){
+        if(leftWidth > that.params['minColumnWidth'] && rightWidth > that.params['minColumnWidth']){
             current['left']['column']['width'] = [(leftWidth / current['ratio']).toFixed(2), '%'].join('');
             current['right']['column']['width'] = [(rightWidth / current['ratio']).toFixed(2), '%'].join('');
 
@@ -240,8 +268,6 @@ Com['Columns'] = function(o){
     };
 
     var stop = function(){
-        // API onResize event
-        executeEvent('onResize', items);
         // Remove move event from document
         cm.removeClass(nodes['container'], 'is-active');
         cm.removeClass(current['chassis']['node'], 'is-active');
@@ -249,17 +275,18 @@ Com['Columns'] = function(o){
         cm.removeEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mousemove', move);
         cm.removeEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mouseup', stop);
         current = null;
-    };
-
-    /* *** EVENTS HANDLERS *** */
-
-    var executeEvent = function(event, params){
-        API[event].forEach(function(item){
-            item(that, params || {});
-        });
+        // Show IFRAMES and EMBED tags
+        cm.showSpecialTags();
+        // API onResize event
+        that.triggerEvent('onResize', items);
     };
 
     /* ******* MAIN ******* */
+
+    that.redraw = function(){
+        updateChassis();
+        return that;
+    };
 
     that.setColumnsCount = function(count){
         var itemsLength = items.length;
@@ -286,50 +313,5 @@ Com['Columns'] = function(o){
         return items;
     };
 
-    that.addEvent = function(event, handler){
-        if(API[event] && typeof handler == 'function'){
-            API[event].push(handler);
-        }
-        return that;
-    };
-
-    that.removeEvent = function(event, handler){
-        if(API[event] && typeof handler == 'function'){
-            API[event] = API[event].filter(function(item){
-                return item != handler;
-            });
-        }
-        return that;
-    };
-
     init();
-};
-
-Com['ColumnsCollector'] = function(node){
-    var allColumns,
-        id,
-        columns;
-
-    var init = function(node){
-        if(!node){
-            render(document.body);
-        }else if(node.constructor == Array){
-            cm.forEach(node, render);
-        }else{
-            render(node);
-        }
-    };
-
-    var render = function(node){
-        allColumns = cm.clone((node.getAttribute('data-com__columns') == 'true') ? [node] : cm.getByAttr('data-com__columns', 'true', node));
-        // Render columns
-        cm.forEach(allColumns, function(item){
-            columns = new Com.Columns({'columns' : item});
-            if(id = item.id){
-                Com.Elements.Columns[id] = columns;
-            }
-        });
-    };
-
-    init(node);
-};
+});

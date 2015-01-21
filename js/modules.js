@@ -400,13 +400,11 @@ Mod['Stack'] = {
     },
     'addToStack' : function(node){
         var that = this;
-        if(!cm.isEmpty(that.params['name'])){
-            that._stack.push({
-                'name' : that.params['name'],
-                'node' : node,
-                'class' : that
-            });
-        }
+        that._stack.push({
+            'name' : that.params['name'],
+            'node' : node,
+            'class' : that
+        });
         return that;
     },
     'findInStack' : function(name, parent){

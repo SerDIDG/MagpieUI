@@ -15,6 +15,8 @@ cm.define('Com.GalleryPopup', {
         'aspectRatio' : 'auto',                  // auto | 1x1 | 4x3 | 3x2 | 16x10 | 16x9 | 2x1 | 21x9 | 35x10 | 3x4 | 2x3 | 10x16 | 9x16 | 1x2
         'theme' : 'theme-black',
         'showTitle' : true,
+        'data' : [],
+        'openOnSelfClick' : false,
         'Com.Dialog' : {
             'width' : '700',
             'autoOpen' : false,
@@ -70,11 +72,16 @@ function(params){
         components['gallery'] = new Com.Gallery(
                 cm.merge(that.params['Com.Gallery'], {
                     'node' : that.params['node'],
-                    'container' : nodes['galleryContainer']
+                    'container' : nodes['galleryContainer'],
+                    'data' : that.params['data']
                 })
             )
             .addEvent('onSet', components['dialog'].open)
             .addEvent('onChange', onChange);
+        // Node's self click
+        if(that.params['openOnSelfClick']){
+            cm.addEvent(that.params['node'], 'click', that.open);
+        }
     };
 
     var onChange = function(gallery, data){
@@ -88,7 +95,7 @@ function(params){
     /* ******* MAIN ******* */
 
     that.open = function(){
-        components['dialog'].open();
+        that.set(0);
         return that;
     };
 

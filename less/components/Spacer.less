@@ -1,0 +1,42 @@
+/* ******* COMPONENTS: SPACER ******* */
+
+.com__spacer {
+    position: relative;
+    .mx__transition(background-color, @CmUI-Transition-Duration);
+
+    > .com__spacer__chassis {
+        position: absolute;
+        display: none;
+        .mx__position(0, 0, auto, 0);
+    }
+
+    &.is-editable {
+        > .com__spacer__chassis {
+            display: block;
+            opacity: 0;
+            .mx__transition(opacity, @CmUI-Transition-Duration);
+        }
+
+        &:hover {
+            background-color: @ComSpacer-HoverBackground;
+
+            > .com__spacer__chassis {
+                opacity: 1;
+            }
+        }
+
+        &.is-active {
+            background-color: @ComSpacer-ActiveBackground;
+
+            > .com__spacer__chassis {
+                opacity: 1;
+            }
+        }
+
+        &.is-chassis-visible {
+            > .com__spacer__chassis {
+                opacity: 1;
+            }
+        }
+    }
+}

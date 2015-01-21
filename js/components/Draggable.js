@@ -16,6 +16,7 @@ cm.define('Com.Draggable', {
         'node' : cm.Node('div'),            // Node, for drag
         'target' : false,                   // Node, for drag target event
         'limiter' : false,                  // Node, for limit draggable in it
+        'minY' : false,
         'direction' : 'both',               // both | vertical | horizontal
         'alignNode' : false
     }
@@ -57,6 +58,8 @@ function(params){
         that.isDrag = true;
         e = cm.getEvent(e);
         cm.preventDefault(e);
+        // Hide IFRAMES and EMBED tags
+        cm.hideSpecialTags();
         // Check event type and get cursor / finger position
         var x = e.clientX,
             y = e.clientY;
@@ -100,6 +103,8 @@ function(params){
         // Remove move events attached on document
         cm.removeEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mousemove', move);
         cm.removeEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mouseup', stop);
+        // Show IFRAMES and EMBED tags
+        cm.showSpecialTags();
         // Trigger Event
         that.triggerEvent('onStop');
     };
@@ -137,6 +142,10 @@ function(params){
             }else if(posX > that.dimensions['limiter']['absoluteWidth']){
                 posX = that.dimensions['limiter']['absoluteWidth'];
             }
+        }
+        // Limiters
+        if(!isNaN(that.params['minY']) && posY < that.params['minY']){
+            posY = that.params['minY'];
         }
         // Align node
         nodePosY = posY;

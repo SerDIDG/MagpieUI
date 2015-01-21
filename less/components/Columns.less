@@ -43,8 +43,8 @@
         z-index: 2;
         margin: -16px 0 0 -8px;
         padding: 8px 4px;
-        background: @ComColumns-Drag-DefaultBackground;
-        border: 1px solid @ComColumns-Drag-DefaultBorder;
+        background: @PtDrag-DefaultBackground;
+        border: 1px solid @PtDrag-DefaultBorder;
         border-radius: @CmBorder-Radius;
         .mx__transition(background-color border-color, @CmUI-Transition-Duration);
         .mx__position(50%, auto, auto, 50%);
@@ -62,32 +62,32 @@
         margin: 0 0 0 -1px;
         display: block;
         content: '';
-        background: @ComColumns-DragLine-DefaultBackground;
+        background: @PtDrag-Line-DefaultBackground;
         .mx__transition(background-color, @CmUI-Transition-Duration);
         .mx__position(0, auto, 0, 50%);
     }
 
     &:hover {
         .drag {
-            background: @ComColumns-Drag-HoverBackground;
-            border-color: @ComColumns-Drag-HoverBorder;
+            background: @PtDrag-HoverBackground;
+            border-color: @PtDrag-HoverBorder;
             .mx__transition(background-color border-color, @CmUI-Transition-DurationReverse);
         }
 
         &:after {
-            background: @ComColumns-DragLine-HoverBackground;
+            background: @PtDrag-Line-HoverBackground;
             .mx__transition(background-color, @CmUI-Transition-DurationReverse);
         }
     }
 
     &.is-active {
         .drag {
-            background: @ComColumns-Drag-ActiveBackground;
-            border-color: @ComColumns-Drag-ActiveBorder;
+            background: @PtDrag-ActiveBackground;
+            border-color: @PtDrag-ActiveBorder;
         }
 
         &:after {
-            background: @ComColumns-DragLine-ActiveBackground;
+            background: @PtDrag-Line-ActiveBackground;
         }
     }
 }

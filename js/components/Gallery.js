@@ -107,11 +107,16 @@ function(params){
             'index' : i,
             'isLoad' : false,
             'type' : 'image',        // image | video
-            'nodes' : {}
+            'nodes' : {},
+            'src' : '',
+            'title' : ''
         }, item);
         /// Check type
         item['type'] = /(\.jpg|\.png|\.gif|\.jpeg|\.bmp|\.tga)$/gi.test(item['src']) ? 'image' : 'video';
         // Structure
+        if(!item['link']){
+            item['link'] = cm.Node('a')
+        }
         item['nodes']['container'] = cm.Node('div', {'class' : 'pt__image is-no-hover is-centered'},
             item['nodes']['inner'] = cm.Node('div', {'class' : 'inner'})
         );
