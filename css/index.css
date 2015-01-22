@@ -7733,6 +7733,7 @@ html.ie9 .com__palette .b-range {
 }
 .com__gallery-controls.is-small {
   height: 36px;
+  background-color: rgba(0, 0, 0, 0.3);
   top: auto;
   right: 0;
   bottom: 0;
@@ -8050,8 +8051,8 @@ html.ie9 .com__palette .b-range {
   margin: 0;
   padding: 0;
   list-style: none;
-  overflow: hidden;
   position: absolute;
+  overflow: hidden;
   top: 0;
   right: 0;
   bottom: 0;
@@ -8060,6 +8061,10 @@ html.ie9 .com__palette .b-range {
 .com__slider > .inner > .slides > ul > li {
   margin: 0;
   padding: 0;
+}
+.com__slider > .inner > .slides > ul > li {
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 .com__slider > .inner > .slides > ul > li > .pt__image {
   width: 100%;
@@ -8113,6 +8118,14 @@ html.ie9 .com__palette .b-range {
 .com__slider > .inner > .slides > ul > li > .text ol,
 .com__slider > .inner > .slides > ul > li > .text hr {
   color: #fff;
+}
+.com__slider > .inner > .slides > ul > li > .slider-link {
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 .com__slider > .inner > .slides.effect-fade > ul > li {
   display: none;

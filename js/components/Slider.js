@@ -3,7 +3,8 @@ cm.define('Com.Slider', {
         'Params',
         'Events',
         'DataConfig',
-        'DataNodes'
+        'DataNodes',
+        'Stack'
     ],
     'events' : [
         'onRender',
@@ -14,6 +15,7 @@ cm.define('Com.Slider', {
     ],
     'params' : {
         'node' : cm.Node('div'),
+        'name' : '',
         'time' : 500,                   // Fade time
         'delay' : 4000,                 // Delay before slide will be changed
         'slideshow' : true,             // Turn on / off slideshow
@@ -71,11 +73,15 @@ function(params){
         validateParams();
         renderSlider();
         renderLayout();
-        afterRender();
         items[0] && set(0);
+        that.addToStack(that.params['node']);
+        that.triggerEvent('onRender');
     };
 
     var validateParams = function(){
+        if(cm.isNode(that.params['node'])){
+            that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
+        }
         that.params['direction'] = {'forward' : 1, 'backward' : 1, 'random' : 1}[that.params['direction']] ? that.params['direction'] : 'forward';
         that.params['effect'] = {'push' : 1, 'fade' : 1}[that.params['effect']] ? that.params['effect'] : 'fade';
         that.params['transition'] = {'smooth' : 1, 'simple' : 1, 'acceleration' : 1, 'inhibition' : 1}[that.params['transition']] ? that.params['transition'] : 'smooth';
@@ -140,10 +146,6 @@ function(params){
                 })
             );
         }
-    };
-
-    var afterRender = function(){
-        that.triggerEvent('onRender');
     };
 
     var calculateMaxHeight = function(){
