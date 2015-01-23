@@ -8062,13 +8062,11 @@ html.ie9 .com__palette .b-range {
   margin: 0;
   padding: 0;
 }
-.com__slider > .inner > .slides > ul > li {
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-}
 .com__slider > .inner > .slides > ul > li > .pt__image {
   width: 100%;
   height: 100%;
+  position: absolute;
+  z-index: 1;
 }
 .com__slider > .inner > .slides > ul > li > .pt__image > .inner {
   width: 100%;
@@ -8083,7 +8081,7 @@ html.ie9 .com__palette .b-range {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  position: relative;
+  position: absolute;
   z-index: 1;
 }
 .com__slider > .inner > .slides > ul > li > .image img {
@@ -8119,9 +8117,17 @@ html.ie9 .com__palette .b-range {
 .com__slider > .inner > .slides > ul > li > .text hr {
   color: #fff;
 }
-.com__slider > .inner > .slides > ul > li > .slider-link {
+.com__slider > .inner > .slides > ul > li > .slide-area {
   position: absolute;
   z-index: 3;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+.com__slider > .inner > .slides > ul > li > .slide-link {
+  position: absolute;
+  z-index: 4;
   top: 0;
   right: 0;
   bottom: 0;
@@ -8154,6 +8160,10 @@ html.ie9 .com__palette .b-range {
 .com__slider > .inner > .slides.effect-push > ul > li {
   width: 100%;
   height: 100%;
+  position: relative;
+}
+.com__slider.is-adaptive-content > .inner > .slides > ul > li > .slide-area,
+.com__slider.is-adaptive-content > .inner > .slides > ul > li > .text {
   position: relative;
 }
 .com__slider:hover > .inner > .com__gallery-controls {

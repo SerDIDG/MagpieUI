@@ -11,7 +11,7 @@ cm.define('Com.Slider', {
         'onChangeStart',
         'onChange',
         'onPause',
-        'onUnPause'
+        'onStart'
     ],
     'params' : {
         'node' : cm.Node('div'),
@@ -61,6 +61,7 @@ function(params){
     that.current = null;
     that.previous = null;
     that.paused = false;
+    that.pausedOutside = false;
 
     that.isProcess = false;
 
@@ -110,6 +111,7 @@ function(params){
         }
         // Parameters
         if(that.params['calculateMaxHeight']){
+            cm.addClass(that.params['node'], 'is-adaptive-content');
             calculateMaxHeight();
         }
         // Pause slider when it hovered
@@ -118,14 +120,14 @@ function(params){
                 e = cm.getEvent(e);
                 var target = cm.getObjToEvent(e);
                 if(!cm.isParent(that.nodes['container'], target, true)){
-                    that.pause();
+                    stopSlideshow();
                 }
             });
             cm.addEvent(that.nodes['container'], 'mouseout', function(e){
                 e = cm.getEvent(e);
                 var target = cm.getObjToEvent(e);
                 if(!cm.isParent(that.nodes['container'], target, true)){
-                    that.unpause();
+                    startSlideshow();
                 }
             });
         }
@@ -314,31 +316,37 @@ function(params){
     /* *** SLIDESHOW *** */
 
     var startSlideshow = function(){
-        that.paused = false;
-        slideshowInt = setTimeout(function(){
-            switch(that.params['direction']){
-                case 'random':
-                    set(cm.rand(0, (items.length - 1)));
-                    break;
+        if(that.paused && !that.pausedOutside){
+            that.paused = false;
+            slideshowInt = setTimeout(function(){
+                switch(that.params['direction']){
+                    case 'random':
+                        set(cm.rand(0, (items.length - 1)));
+                        break;
 
-                case 'backward':
-                    that.prev();
-                    break;
+                    case 'backward':
+                        that.prev();
+                        break;
 
-                case 'forward':
-                    that.next();
-                    break;
-            }
-        }, that.params['delay']);
+                    case 'forward':
+                        that.next();
+                        break;
+                }
+            }, that.params['delay']);
+            that.triggerEvent('onStart');
+        }
     };
 
     var stopSlideshow = function(){
-        that.paused = true;
-        slideshowInt && clearTimeout(slideshowInt);
+        if(!that.paused){
+            that.paused = true;
+            slideshowInt && clearTimeout(slideshowInt);
+            that.triggerEvent('onPause');
+        }
     };
 
     var renewSlideshow = function(){
-        if(!that.paused){
+        if(!that.paused && !that.pausedOutside){
             stopSlideshow();
             startSlideshow();
         }
@@ -377,16 +385,14 @@ function(params){
     };
 
     that.pause = function(){
+        that.pausedOutside = true;
         stopSlideshow();
-        // API onPause event
-        that.triggerEvent('onPause');
         return that;
     };
 
-    that.unpause = function(){
+    that.start = function(){
+        that.pausedOutside = false;
         startSlideshow();
-        // API onUnPause event
-        that.triggerEvent('onUnPause');
         return that;
     };
 
