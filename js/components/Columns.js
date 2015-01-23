@@ -246,7 +246,8 @@ function(params){
     };
 
     var move = function(e){
-        var leftWidth, rightWidth;
+        var leftWidth,
+            rightWidth;
         e = cm.getEvent(e);
         cm.preventDefault(e);
         var x = e.clientX;
@@ -265,6 +266,8 @@ function(params){
             current['right']['column']['container'].style.width = current['right']['column']['width'];
             current['chassis']['node'].style.left = [((x - current['offset']) / current['ratio']).toFixed(2), '%'].join('');
         }
+        // API onResize event
+        that.triggerEvent('onChange', items);
     };
 
     var stop = function(){

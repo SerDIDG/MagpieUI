@@ -8522,6 +8522,8 @@ html.ie9 .com__palette .b-range {
 /* ******* COMPONENTS: SPACER ******* */
 .com__spacer {
   position: relative;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
   -webkit-transition: background-color 300ms ease-in-out;
   transition: background-color 300ms ease-in-out;
 }

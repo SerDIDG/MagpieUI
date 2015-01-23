@@ -10,7 +10,8 @@ cm.define('Com.Spacer', {
     ],
     'events' : [
         'onRender',
-        'onChange'
+        'onChange',
+        'onResize'
     ],
     'params' : {
         'node' : cm.Node('div'),
@@ -26,6 +27,7 @@ function(params){
 
     that.components = {};
     that.nodes = {};
+    that.value = 0;
 
     var init = function(){
         that.setParams(params);
@@ -67,7 +69,8 @@ function(params){
                 'events' : {
                     'onStart' : start,
                     'onSet' : function(my, data){
-                        set(data['posY'], true);
+                        that.value = data['posY'];
+                        move();
                     },
                     'onStop' : stop
                 }
@@ -81,25 +84,40 @@ function(params){
         cm.addClass(that.nodes['drag'], 'is-active');
     };
 
-    var set = function(height, triggerEvents){
-        that.params['node'].style.height = [height, 'px'].join('');
-        if(triggerEvents){
-            that.triggerEvent('onChange', {
-                'height' : height
-            });
-        }
+    var move = function(){
+        that.params['node'].style.height = [that.value, 'px'].join('');
+        that.triggerEvent('onChange', {
+            'height' : that.value
+        });
     };
 
     var stop = function(){
         cm.removeClass(document.body, 'pt__drag__body--vertical');
         cm.removeClass(that.params['node'], 'is-active');
         cm.removeClass(that.nodes['drag'], 'is-active');
+        that.triggerEvent('onResize', {
+            'height' : that.value
+        });
+    };
+
+    var set = function(height, triggerEvents){
+        that.value = height;
+        that.nodes['chassis'].style.top = [that.params['node'].offsetHeight, 'px'].join('');
+        that.params['node'].style.height = [that.value, 'px'].join('');
+        if(triggerEvents){
+            that.triggerEvent('onChange', {
+                'height' : that.value
+            });
+            that.triggerEvent('onResize', {
+                'height' : that.value
+            });
+        }
     };
 
     /* ******* MAIN ******* */
 
     that.redraw = function(){
-        that.nodes['chassis'].style.top = [that.params['node'].offsetHeight, 'px'].join('');
+        set(that.params['node'].offsetHeight, false);
         return that;
     };
 
@@ -107,9 +125,12 @@ function(params){
         triggerEvents = typeof triggerEvents != 'undefined'? triggerEvents : true;
         if(!isNaN(height)){
             set(height, triggerEvents);
-            that.redraw();
         }
         return that;
+    };
+
+    that.get = function(){
+        return that.value;
     };
 
     init();
