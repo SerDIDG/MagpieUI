@@ -1,38 +1,9 @@
 /* ******* COMMON: ICONS ******* */
 
 .icon {
-    background: transparent 50% 50% no-repeat;
+    .cm__icon();
 
     // /* *** PARAMETERS *** */
-
-    &.inline {
-        margin: 0 4px;
-        vertical-align: middle;
-    }
-
-    &.centered {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-    }
-
-    &.has-caption {
-        background-position: 0 50%;
-    }
-
-    &.hidden {
-        visibility: hidden;
-    }
-
-    &.linked {
-        cursor: pointer;
-        .mx__transition(opacity, @CmUI-Transition-Duration);
-
-        &:hover {
-            opacity: @CmUI-Opacity-Hover;
-            .mx__transition(opacity, @CmUI-Transition-DurationReverse);
-        }
-    }
 
     &.draggable[data-draganddrop-drag="true"] {
         cursor: move;
@@ -270,5 +241,44 @@
 
     &.safari {
         background-position: -400px 0;
+    }
+}
+
+// /* *** MIXINS *** */
+
+.cm__icon() {
+    background: transparent 50% 50% no-repeat;
+
+    &.initial {
+        background: transparent 50% 50% no-repeat;
+    }
+
+    &.inline {
+        margin: 0 4px;
+        vertical-align: middle;
+    }
+
+    &.centered {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+    }
+
+    &.has-caption {
+        background-position: 0 50%;
+    }
+
+    &.hidden {
+        visibility: hidden;
+    }
+
+    &.linked {
+        cursor: pointer;
+        .mx__transition(opacity, @CmUI-Transition-Duration);
+
+        &:hover {
+            opacity: @CmUI-Opacity-Hover;
+            .mx__transition(opacity, @CmUI-Transition-DurationReverse);
+        }
     }
 }

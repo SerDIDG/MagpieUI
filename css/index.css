@@ -473,6 +473,9 @@
 .icon {
   background: transparent 50% 50% no-repeat;
 }
+.icon.initial {
+  background: transparent 50% 50% no-repeat;
+}
 .icon.inline {
   margin: 0 4px;
   vertical-align: middle;
