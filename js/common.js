@@ -2055,7 +2055,7 @@ cm.storageSet = function(key, value, cookie){
     cookie = cookie !== false;
     if(cm.isLocalStorage){
         try{
-            localStorage.setItem(key, value);
+            window.localStorage.setItem(key, value);
         }catch(e){
         }
     }else if(cookie){
@@ -2066,7 +2066,7 @@ cm.storageSet = function(key, value, cookie){
 cm.storageGet = function(key, cookie){
     cookie = cookie !== false;
     if(cm.isLocalStorage){
-        return localStorage.getItem(key);
+        return window.localStorage.getItem(key);
     }else if(cookie){
         return cm.cookieGet(key);
     }

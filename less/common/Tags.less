@@ -16,9 +16,7 @@ a {
 img {
     border: none;
     -webkit-transform: translateZ(0px);
-    -webkit-backface-visibility: hidden;
-    -moz-backface-visibility: hidden;
-    backface-visibility: hidden;
+    .mx__backface-visibility(hidden);
 }
 
 dl, dt, dd, canvas, iframe, form {
@@ -44,6 +42,10 @@ header, main, aside, footer, section {
     .cm__font;
     margin: 0 0 @CmFont-Base-LineHeight;
     padding: 0;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
 }
 
 .cm__tags--title {

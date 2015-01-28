@@ -28,7 +28,7 @@
             &.default {
                 .icon.small.arrow-right;
                 width: @CmSize-Small;
-                .mx__transition(-webkit-transform -ms-transform transform, @CmUI-Transition-Duration);
+                .mx__transition(transform, @CmUI-Transition-Duration);
             }
         }
 
@@ -40,7 +40,7 @@
         .pt__box-editable {
             margin: 0;
 
-            > .l{
+            > .l {
                 .cm__text-overflow;
             }
         }
@@ -172,9 +172,7 @@
         > dt {
             .icon {
                 &.default {
-                    -webkit-transform: rotate(90deg);
-                        -ms-transform: rotate(90deg);
-                            transform: rotate(90deg);
+                    .mx__transform(rotate(90deg));
                 }
             }
         }
@@ -183,7 +181,7 @@
 
 /* ******* COMPONENT: TOGGLE BOX: ADAPTIVE ******* */
 
-@media only screen and (max-width : @ComToggleBox-adaptiveFrom) {
+@media only screen and (max-width : @ComToggleBox-AdaptiveFrom) {
 
 
 

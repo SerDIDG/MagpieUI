@@ -58,17 +58,13 @@
             padding: 0;
             display: block;
             list-style: none;
-            line-height: @ComGalleryControls-Button-Size;
 
             li {
-                width: @ComGalleryControls-Button-Size;
-                height: @ComGalleryControls-Button-Size;
                 display: inline-block;
                 margin: 0 0 0 @CmIndent-XXSmall;
                 vertical-align: top;
                 background-color: @CmColor-Secondary-LightHighlight;
                 border: 2px solid @CmColor-Secondary-LightHighlight;
-                border-radius: @ComGalleryControls-Button-Size;
                 cursor: pointer;
                 .mx__box-sizing(border-box);
                 .mx__transition(all, @CmUI-Transition-Duration);
@@ -89,6 +85,8 @@
             }
         }
     }
+
+    .com__gallery-controls__button-size();
 
     &.is-full {
         .mx__position(0, 0, 0, 0);
@@ -182,6 +180,22 @@
                         left: @CmIndent-XXSmall;
                     }
                 }
+            }
+        }
+    }
+}
+
+/* *** MIXINS *** */
+
+.com__gallery-controls__button-size(@value: @ComGalleryControls-Button-Size) {
+    .bar-buttons {
+        ul {
+            line-height: @value;
+
+            li {
+                width: @value;
+                height: @value;
+                border-radius: @value;
             }
         }
     }

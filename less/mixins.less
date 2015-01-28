@@ -25,8 +25,30 @@
 
 .mx__transition(@properties, @duration: @CmUI-Transition-Duration, @function: ease-in-out) {
     .for(@properties); .-each(@property) {
-        -webkit-transition+: @property @duration @function;
-                transition+: @property @duration @function;
+        .property(@property) when (@property = transform) {
+            -webkit-transition+: -webkit-transform @duration @function;
+                    transition+: -ms-transform @duration @function;
+                    transition+: transform @duration @function;
+            // Safari 8 fix
+            .safari & {
+                transition+: -webkit-transform @duration @function;
+            }
+        }
+
+        .property(@property) when not (@property = transform) {
+            -webkit-transition+: @property @duration @function;
+                    transition+: @property @duration @function;
+        }
+
+        .property(@property);
+    }
+}
+
+.mx__transform(@properties) {
+    .for(@properties); .-each(@property) {
+        -webkit-transform+_: @property;
+            -ms-transform+_: @property;
+                transform+_: @property;
     }
 }
 
@@ -101,7 +123,8 @@
 
 .mx__backface-visibility (@value: visible) {
     -webkit-backface-visibility: @value;
-    backface-visibility: @value;
+       -moz-backface-visibility: @value;
+            backface-visibility: @value;
 }
 
 // /* ******* COMMON ******* */

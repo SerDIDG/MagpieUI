@@ -113,7 +113,7 @@ function(params){
                 nodes['icon'] = cm.Node('div', {'class' : that.params['icons']['datepicker']})
             ),
             nodes['menuContainer'] = cm.Node('div', {'class' : 'form'},
-                nodes['calendarContainer'] = cm.Node('div')
+                nodes['calendarContainer'] = cm.Node('div', {'class' : 'calendar-holder'})
             )
         );
         /* *** ATTRIBUTES *** */

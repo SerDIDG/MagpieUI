@@ -4,3 +4,6 @@
 [submodule "vendors/bgrins/TinyColor"]
 	path = vendors/bgrins/TinyColor
 	url = https://github.com/bgrins/TinyColor.git
+[submodule "vendors/FortAwesome/Font-Awesome"]
+	path = vendors/FortAwesome/Font-Awesome
+	url = https://github.com/FortAwesome/Font-Awesome.git
