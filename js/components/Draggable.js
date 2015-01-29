@@ -23,7 +23,11 @@ cm.define('Com.Draggable', {
 },
 function(params){
     var that = this;
-    
+
+    that.startX = 0;
+    that.startY = 0;
+    that.nodeStartX = 0;
+    that.nodeStartY = 0;
     that.isDrag = false;
     that.dimensions = {
         'target' : {}
@@ -35,6 +39,7 @@ function(params){
         that.getDataConfig(that.params['node']);
         validateParams();
         render();
+        that.triggerEvent('onRender');
     };
 
     var validateParams = function(){
@@ -48,7 +53,6 @@ function(params){
         that.getDimensions();
         // Add drag start event
         cm.addEvent(that.params['target'], 'mousedown', start);
-        that.triggerEvent('onRender');
     };
 
     var start = function(e){
@@ -61,11 +65,11 @@ function(params){
         // Hide IFRAMES and EMBED tags
         cm.hideSpecialTags();
         // Check event type and get cursor / finger position
-        var x = e.clientX,
-            y = e.clientY;
+        that.startX = e.clientX;
+        that.startY = e.clientY;
         if(cm.isTouch && e.touches){
-            x = e.touches[0].clientX;
-            y = e.touches[0].clientY;
+            that.startX = e.touches[0].clientX;
+            that.startY = e.touches[0].clientY;
         }else{
             // If not left mouse button, don't duplicate drag event
             if((cm.is('IE') && cm.isVersion() < 9 && e.button != 1) || (!cm.is('IE') && e.button)){
@@ -74,7 +78,9 @@ function(params){
         }
         // Calculate dimensions and position
         that.getDimensions();
-        setPosition(x, y);
+        that.nodeStartX = cm.getStyle(that.params['node'], 'left', true);
+        that.nodeStartY = cm.getStyle(that.params['node'], 'top', true);
+        setPosition(that.startX, that.startY);
         // Add move event on document
         cm.addEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mousemove', move);
         cm.addEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mouseup', stop);
@@ -112,8 +118,15 @@ function(params){
     /* *** HELPERS *** */
 
     var setPosition = function(x, y){
-        var posY =  y - that.dimensions['target']['absoluteY1'],
-            posX = x - that.dimensions['target']['absoluteX1'];
+        var posX = x,
+            posY = y;
+        if(that.params['node'] === that.params['target']){
+            posX += that.nodeStartX - that.startX;
+            posY += that.nodeStartY - that.startY;
+        }else{
+            posX -= that.dimensions['target']['absoluteX1'];
+            posY -= that.dimensions['target']['absoluteY1'];
+        }
         that.setPosition(posX, posY, true);
     };
 

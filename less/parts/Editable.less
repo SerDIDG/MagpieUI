@@ -122,7 +122,7 @@
     .hover {
         > .border {
             opacity: 1;
-            background: #ffffff;
+            background: @PtEditable-HoverBackground;
             .mx__transition(all, @CmUI-Transition-DurationReverse);
             .mx__position(-16px, -16px, -16px, -16px);
         }
@@ -149,6 +149,10 @@
     }
 
     .active {
+        > .border {
+            background: @PtEditable-ActiveBackground;
+        }
+
         > .drag {
             background-color: @PtEditable-Drag-ActiveBackground;
         }

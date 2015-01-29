@@ -428,6 +428,9 @@
 
 // /* ******* EDITABLE ******* */
 
+@PtEditable-HoverBackground: fade(#ffffff, 80%);
+@PtEditable-ActiveBackground: #ffffff;
+
 @PtEditable-Drag-DefaultBackground: @CmColor-Secondary-LightHighlight;
 @PtEditable-Drag-HoverBackground: @CmColor-Secondary-LightHover;
 @PtEditable-Drag-ActiveBackground: @CmColor-Primary-LightActive;
@@ -439,10 +442,10 @@
 @PtDrag-Vertical-Icon-Width: 18px;
 @PtDrag-Vertical-Icon-Height: 6px;
 
-@PtDrag-Horizontal-Width: @CmSize-Large;
-@PtDrag-Horizontal-Height: @CmSize-Small;
-@PtDrag-Horizontal-Icon-Width: 14px;
-@PtDrag-Horizontal-Icon-Height: 6px;
+@PtDrag-Horizontal-Width: @CmSize-Small;
+@PtDrag-Horizontal-Height: @CmSize-Large;
+@PtDrag-Horizontal-Icon-Width: 6px;
+@PtDrag-Horizontal-Icon-Height: 14px;
 
 @PtDrag-DefaultBackground: @CmColor-Secondary-LightHighlight;
 @PtDrag-DefaultBorder: @CmColor-Border;
@@ -456,7 +459,7 @@
 @PtDrag-Line-Size: @CmBorder-BoxWidth;
 @PtDrag-Line-DefaultBackground: @CmColor-Secondary-LightActive;
 @PtDrag-Line-HoverBackground: @CmColor-Secondary-LightActive;
-@PtDrag-Line-ActiveBackground: @CmColor-Primary-LightActive;
+@PtDrag-Line-ActiveBackground: @CmColor-Primary-DarkDefault;
 
 // /* ******* RULER ******* */
 
@@ -464,7 +467,7 @@
 @PtRuler-Line-Indent: @CmIndent-XSmall;
 @PtRuler-Line-DefaultBackground: @CmColor-Secondary-LightActive;
 @PtRuler-Line-HoverBackground: @CmColor-Secondary-LightActive;
-@PtRuler-Line-ActiveBackground: @CmColor-Primary-LightActive;
+@PtRuler-Line-ActiveBackground: @CmColor-Primary-DarkDefault;
 
 // /* ************************************************ */
 // /* ******* LAYOUTS ******* */
@@ -533,6 +536,10 @@
 @ComColumns-Indents: @CmIndents;
 @ComColumns-MinHeight: 64px;
 @ComColumns-HoverBackground: rgba(0, 0, 0, 0.01);
+@ComColumns-ActiveBackground: rgba(0, 0, 0, 0.01);
+
+@ComColumns-Ruler-DefaultBackground: fade(@CmColor-Secondary-LightHighlight, 80%);
+@ComColumns-Ruler-ActiveBackground: fade(@CmColor-Primary-LightHighlight, 80%);
 
 // /* ******* SPACER ******* */
 

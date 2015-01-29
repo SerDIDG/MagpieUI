@@ -6,6 +6,8 @@
     .mx__flex(1 1 auto);
 
     > .inner {
+        position: relative;
+        border-radius: @CmBorder-Radius;
         .mx__box-sizing(border-box);
         .mx__flex(1);
         .mx__transition(background-color, @CmUI-Transition-Duration);
@@ -26,70 +28,24 @@
 }
 
 .com__columns__chassis {
-    width: 10px;
     display: none;
     position: absolute;
     z-index: 2;
-    top: 0;
-    bottom: 0;
-    margin: 0 0 0 -5px;
     opacity: 0;
-    cursor: col-resize;
+    .mx__position(0, auto, 0, auto);
     .mx__transition(opacity, @CmUI-Transition-Duration);
+}
 
-    .drag {
-        width: 6px;
-        position: absolute;
-        z-index: 2;
-        margin: -16px 0 0 -8px;
-        padding: 8px 4px;
-        background: @PtDrag-DefaultBackground;
-        border: 1px solid @PtDrag-DefaultBorder;
-        border-radius: @CmBorder-Radius;
-        .mx__transition(background-color border-color, @CmUI-Transition-Duration);
-        .mx__position(50%, auto, auto, 50%);
-
-        .icon {
-            width: 6px;
-            height: 14px;
-        }
-    }
-
-    &:after {
-        width: 2px;
-        position: absolute;
-        z-index: 1;
-        margin: 0 0 0 -1px;
-        display: block;
-        content: '';
-        background: @PtDrag-Line-DefaultBackground;
-        .mx__transition(background-color, @CmUI-Transition-Duration);
-        .mx__position(0, auto, 0, 50%);
-    }
-
-    &:hover {
-        .drag {
-            background: @PtDrag-HoverBackground;
-            border-color: @PtDrag-HoverBorder;
-            .mx__transition(background-color border-color, @CmUI-Transition-DurationReverse);
-        }
-
-        &:after {
-            background: @PtDrag-Line-HoverBackground;
-            .mx__transition(background-color, @CmUI-Transition-DurationReverse);
-        }
-    }
-
-    &.is-active {
-        .drag {
-            background: @PtDrag-ActiveBackground;
-            border-color: @PtDrag-ActiveBorder;
-        }
-
-        &:after {
-            background: @PtDrag-Line-ActiveBackground;
-        }
-    }
+.com__columns__ruler {
+    display: none;
+    visibility: hidden;
+    position: absolute;
+    z-index: 100;
+    opacity: 0;
+    background: @ComColumns-Ruler-DefaultBackground;
+    border-radius: @CmBorder-Radius;
+    .mx__position(0, 0, 0, 0);
+    .mx__transition(background opacity visibility, @CmUI-Transition-Duration);
 }
 
 .com__columns {
@@ -122,12 +78,15 @@
                 > .com__column {
                     > .inner {
                         min-height: @ComColumns-MinHeight + (@PtDnD-Area-Padding * 2);
+
+                        > .com__columns__ruler {
+                            display: block;
+                        }
                     }
                 }
             }
         }
 
-        &.is-active,
         &:hover {
             > .inner {
                 > .com__columns__chassis {
@@ -138,6 +97,28 @@
                     > .com__column {
                         > .inner {
                             background: @ComColumns-HoverBackground;
+                        }
+                    }
+                }
+            }
+        }
+
+        &.is-active {
+            > .inner {
+                > .com__columns__chassis {
+                    opacity: 1;
+                }
+
+                > .container {
+                    > .com__column {
+                        > .inner {
+                            background: @ComColumns-ActiveBackground;
+
+                            > .com__columns__ruler {
+                                visibility: visible;
+                                opacity: 1;
+                                background: @ComColumns-Ruler-ActiveBackground;
+                            }
                         }
                     }
                 }
@@ -176,15 +157,7 @@
     }
 }
 
-/* *** HELPERS *** */
-
-.com__columns-body,
-.com__columns-body * {
-    cursor: col-resize !important;
-    .mx__user-select(none);
-}
-
-// /* ******* COMPONENT: COLUMNS: BUNDLE ******* */
+// /* *** MIXINS *** */
 
 .com__columns__indent (@indent: @ComColumns-Indent) {
     > .inner {

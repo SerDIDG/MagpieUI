@@ -104,6 +104,8 @@ function(params){
             'inner' : cm.getByAttr('data-com__columns', 'column-inner', container)[0] || cm.Node('div'),
             'width' : container.style.width
         };
+        // Render ruler
+        renderRuler(item);
         // Push to items array
         items.push(item);
     };
@@ -116,6 +118,8 @@ function(params){
         item['container'] = cm.Node('div', {'class' : 'com__column'},
             item['inner'] = cm.Node('div', {'class' : 'inner'})
         );
+        // Render ruler
+        renderRuler(item);
         // Push to items array
         items.push(item);
         // Embed
@@ -155,10 +159,26 @@ function(params){
         cm.forEach(items, function(item){
             item['width'] = [width, '%'].join('');
             item['container'].style.width = item['width'];
+            item['rulerCounter'].innerHTML = item['width'];
         });
         // API onResize event
         that.triggerEvent('onResize', items);
         that.triggerEvent('onChange', items);
+    };
+
+    /* *** RULERS METHODS *** */
+
+    var renderRuler = function(item){
+        // Structure
+        item['rulerContainer'] = cm.Node('div', {'class' : 'com__columns__ruler'},
+            item['ruler'] = cm.Node('div', {'class' : 'pt__ruler is-horizontal is-small'},
+                cm.Node('div', {'class' : 'line line-top'}),
+                item['rulerCounter'] = cm.Node('div', {'class' : 'counter'}, item['width']),
+                cm.Node('div', {'class' : 'line line-bottom'})
+            )
+        );
+        // Embed
+        item['inner'].appendChild(item['rulerContainer']);
     };
 
     /* *** CHASSIS METHODS *** */
@@ -170,7 +190,7 @@ function(params){
 
     var removeChassis = function(){
         cm.forEach(chassisList, function(chassis){
-            cm.remove(chassis['node']);
+            cm.remove(chassis['container']);
         });
         chassisList = [];
     };
@@ -185,21 +205,24 @@ function(params){
             ratio = nodes['holder'].offsetWidth / 100,
             left = ((cm.getRealX(items[i]['container']) - cm.getRealX(nodes['holder']) + items[i]['container'].offsetWidth) / ratio).toFixed(2);
         // Structure
-        chassis['node'] = cm.Node('div', {'class' : 'com__columns__chassis'},
-            cm.Node('div', {'class' : 'drag'},
-                cm.Node('div', {'class' : 'icon draggable'})
+        chassis['container'] = cm.Node('div', {'class' : 'com__columns__chassis'},
+            chassis['drag'] = cm.Node('div', {'class' : 'pt__drag is-horizontal'},
+                cm.Node('div', {'class' : 'line'}),
+                cm.Node('div', {'class' : 'drag'},
+                    cm.Node('div', {'class' : 'icon draggable'})
+                )
             )
         );
         // Styles
-        chassis['node'].style.left = [left, '%'].join('');
+        chassis['container'].style.left = [left, '%'].join('');
         // Push to chassis array
         chassisList.push(chassis);
         // Add events
-        cm.addEvent(chassis['node'], 'mousedown', function(e){
+        cm.addEvent(chassis['container'], 'mousedown', function(e){
             start(e, chassis);
         });
         // Embed
-        nodes['inner'].appendChild(chassis['node']);
+        nodes['inner'].appendChild(chassis['container']);
     };
 
     /* *** DRAG FUNCTIONS *** */
@@ -238,8 +261,10 @@ function(params){
         };
         // Add move event on document
         cm.addClass(nodes['container'], 'is-active');
-        cm.addClass(current['chassis']['node'], 'is-active');
-        cm.addClass(document.body, 'com__columns-body');
+        cm.addClass(current['chassis']['drag'], 'is-active');
+        cm.addClass(current['left']['column']['ruler'], 'is-active');
+        cm.addClass(current['right']['column']['ruler'], 'is-active');
+        cm.addClass(document.body, 'pt__drag__body--horizontal');
         cm.addEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mousemove', move);
         cm.addEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mouseup', stop);
         return true;
@@ -264,7 +289,10 @@ function(params){
 
             current['left']['column']['container'].style.width = current['left']['column']['width'];
             current['right']['column']['container'].style.width = current['right']['column']['width'];
-            current['chassis']['node'].style.left = [((x - current['offset']) / current['ratio']).toFixed(2), '%'].join('');
+            current['chassis']['container'].style.left = [((x - current['offset']) / current['ratio']).toFixed(2), '%'].join('');
+
+            current['left']['column']['rulerCounter'].innerHTML = current['left']['column']['width'];
+            current['right']['column']['rulerCounter'].innerHTML = current['right']['column']['width'];
         }
         // API onResize event
         that.triggerEvent('onChange', items);
@@ -273,8 +301,10 @@ function(params){
     var stop = function(){
         // Remove move event from document
         cm.removeClass(nodes['container'], 'is-active');
-        cm.removeClass(current['chassis']['node'], 'is-active');
-        cm.removeClass(document.body, 'com__columns-body');
+        cm.removeClass(current['chassis']['drag'], 'is-active');
+        cm.removeClass(current['left']['column']['ruler'], 'is-active');
+        cm.removeClass(current['right']['column']['ruler'], 'is-active');
+        cm.removeClass(document.body, 'pt__drag__body--horizontal');
         cm.removeEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mousemove', move);
         cm.removeEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mouseup', stop);
         current = null;

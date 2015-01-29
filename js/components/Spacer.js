@@ -74,7 +74,6 @@ function(params){
         that.components['draggable'] = new Com.Draggable(
             cm.merge(that.params['Com.Draggable'], {
                 'node': that.nodes['dragContainer'],
-                'target' : that.params['node'],
                 'events' : {
                     'onStart' : start,
                     'onSet' : function(my, data){
@@ -128,7 +127,7 @@ function(params){
     };
 
     var setRulerCounter = function(){
-        that.nodes['rulerCounter'].innerHTML = [that.value, ' px'].join('');;
+        that.nodes['rulerCounter'].innerHTML = [that.value, ' px'].join('');
     };
 
     /* ******* MAIN ******* */
