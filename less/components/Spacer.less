@@ -3,34 +3,50 @@
 .com__spacer {
     position: relative;
     .mx__box-sizing(border-box);
-    .mx__transition(background-color, @CmUI-Transition-Duration);
 
     > .com__spacer__chassis {
         position: absolute;
+        z-index: 2;
         display: none;
+        opacity: 0;
         .mx__position(0, 0, auto, 0);
+        .mx__transition(opacity, @CmUI-Transition-Duration);
+    }
+
+    > .com__spacer__ruler {
+        position: absolute;
+        z-index: 1;
+        display: none;
+        opacity: 0;
+        .mx__position(0, 0, 0, 0);
+        .mx__transition(background-color opacity, @CmUI-Transition-Duration);
     }
 
     &.is-editable {
-        > .com__spacer__chassis {
+        > .com__spacer__chassis,
+        > .com__spacer__ruler {
             display: block;
-            opacity: 0;
-            .mx__transition(opacity, @CmUI-Transition-Duration);
         }
 
         &:hover {
-            background-color: @ComSpacer-HoverBackground;
-
             > .com__spacer__chassis {
                 opacity: 1;
+            }
+
+            > .com__spacer__ruler {
+                opacity: 1;
+                background-color: @ComSpacer-HoverBackground;
             }
         }
 
         &.is-active {
-            background-color: @ComSpacer-ActiveBackground;
-
             > .com__spacer__chassis {
                 opacity: 1;
+            }
+
+            > .com__spacer__ruler {
+                opacity: 1;
+                background-color: @ComSpacer-ActiveBackground;
             }
         }
 

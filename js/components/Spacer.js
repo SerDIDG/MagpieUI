@@ -48,8 +48,8 @@ function(params){
     };
 
     var render = function(){
-        // Structure
-        that.nodes['chassis'] = cm.Node('div', {'class' : 'com__spacer__chassis'},
+        // Chassis Structure
+        that.nodes['dragContainer'] = cm.Node('div', {'class' : 'com__spacer__chassis'},
             that.nodes['drag'] = cm.Node('div', {'class' : 'pt__drag is-vertical'},
                 cm.Node('div', {'class' : 'line'}),
                 cm.Node('div', {'class' : 'drag'},
@@ -57,14 +57,23 @@ function(params){
                 )
             )
         );
+        // Ruler Structure
+        that.nodes['rulerContainer'] = cm.Node('div', {'class' : 'com__spacer__ruler'},
+            that.nodes['ruler'] = cm.Node('div', {'class' : 'pt__ruler is-vertical is-small'},
+                cm.Node('div', {'class' : 'line line-top'}),
+                that.nodes['rulerCounter'] = cm.Node('div', {'class' : 'counter'}),
+                cm.Node('div', {'class' : 'line line-bottom'})
+            )
+        );
         // Embed
-        that.params['node'].appendChild(that.nodes['chassis']);
+        that.params['node'].appendChild(that.nodes['dragContainer']);
+        that.params['node'].appendChild(that.nodes['rulerContainer']);
     };
 
     var setLogic = function(){
         that.components['draggable'] = new Com.Draggable(
             cm.merge(that.params['Com.Draggable'], {
-                'node': that.nodes['chassis'],
+                'node': that.nodes['dragContainer'],
                 'target' : that.params['node'],
                 'events' : {
                     'onStart' : start,
@@ -82,10 +91,12 @@ function(params){
         cm.addClass(document.body, 'pt__drag__body--vertical');
         cm.addClass(that.params['node'], 'is-active');
         cm.addClass(that.nodes['drag'], 'is-active');
+        cm.addClass(that.nodes['ruler'], 'is-active');
     };
 
     var move = function(){
         that.params['node'].style.height = [that.value, 'px'].join('');
+        setRulerCounter();
         that.triggerEvent('onChange', {
             'height' : that.value
         });
@@ -95,6 +106,7 @@ function(params){
         cm.removeClass(document.body, 'pt__drag__body--vertical');
         cm.removeClass(that.params['node'], 'is-active');
         cm.removeClass(that.nodes['drag'], 'is-active');
+        cm.removeClass(that.nodes['ruler'], 'is-active');
         that.triggerEvent('onResize', {
             'height' : that.value
         });
@@ -102,8 +114,9 @@ function(params){
 
     var set = function(height, triggerEvents){
         that.value = height;
-        that.nodes['chassis'].style.top = [that.params['node'].offsetHeight, 'px'].join('');
+        that.nodes['dragContainer'].style.top = [that.params['node'].offsetHeight, 'px'].join('');
         that.params['node'].style.height = [that.value, 'px'].join('');
+        setRulerCounter();
         if(triggerEvents){
             that.triggerEvent('onChange', {
                 'height' : that.value
@@ -112,6 +125,10 @@ function(params){
                 'height' : that.value
             });
         }
+    };
+
+    var setRulerCounter = function(){
+        that.nodes['rulerCounter'].innerHTML = [that.value, ' px'].join('');;
     };
 
     /* ******* MAIN ******* */

@@ -1,0 +1,75 @@
+/* ******* PARTS: RULER ******* */
+
+.pt__ruler {
+    position: absolute;
+    .mx__position(0, 0, 0, 0);
+    .mx__user-select(none);
+
+    .line {
+        position: absolute;
+        z-index: 1;
+        background: @PtRuler-Line-DefaultBackground;
+        .mx__transition(background-color, @CmUI-Transition-Duration);
+    }
+
+    .counter {
+        position: absolute;
+        text-align: center;
+        .mx__position(50%, 0, 0, 0);
+    }
+
+    &:hover {
+        .line {
+            background: @PtRuler-Line-HoverBackground;
+        }
+    }
+
+    &.is-active {
+        .line {
+            background: @PtRuler-Line-ActiveBackground;
+        }
+    }
+
+    &.is-small {
+        .counter {
+            .cm__font;
+            margin-top: -(@CmFont-Base-LineHeight / 2);
+        }
+    }
+
+    &.is-horizontal {
+        .line {
+            height: @PtRuler-Line-Size;
+            margin: -(@PtDrag-Line-Size / 2) 0 0 0;
+            .mx__position(50%, 0, auto, 0);
+        }
+    }
+
+    &.is-vertical {
+        .line {
+            width: @PtRuler-Line-Size;
+            margin: @PtRuler-Line-Indent 0 @PtRuler-Line-Indent -(@PtDrag-Line-Size / 2);
+            .mx__position(0, auto, 0, 50%);
+
+            &.line-top {
+                bottom: 50%;
+            }
+
+            &.line-bottom {
+                top: 50%;
+            }
+        }
+
+        &.is-small {
+            @line_indent: @PtRuler-Line-Indent + (@CmFont-Base-LineHeight / 2);
+
+            .line-top {
+                margin-bottom: @line_indent;
+            }
+
+            .line-bottom {
+                margin-top: @line_indent;
+            }
+        }
+    }
+}
