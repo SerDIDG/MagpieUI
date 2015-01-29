@@ -2795,6 +2795,9 @@ button::-moz-focus-inner {
 .pt__box-flat:last-child {
   margin: 0;
 }
+.pt__box-flat > .inner > .title {
+  margin-bottom: 24px;
+}
 .pt__box-flat.active {
   background: #f6fafd;
 }
