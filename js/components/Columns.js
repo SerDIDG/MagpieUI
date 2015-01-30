@@ -178,7 +178,7 @@ function(params){
             )
         );
         // Embed
-        item['inner'].appendChild(item['rulerContainer']);
+        cm.insertFirst(item['rulerContainer'], item['inner']);
     };
 
     /* *** CHASSIS METHODS *** */
