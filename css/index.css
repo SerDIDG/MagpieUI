@@ -12,6 +12,15 @@
   font-size: 0;
   height: 0;
 }
+.marginfix:before {
+  content: ".";
+  display: block;
+  clear: both;
+  visibility: hidden;
+  line-height: 0;
+  font-size: 0;
+  height: 0;
+}
 .display-none {
   display: none !important;
 }
@@ -3840,6 +3849,8 @@ button::-moz-focus-inner {
   width: 100%;
   position: relative;
   z-index: 1;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 .pt__editable.bottom {
   margin: 0;
@@ -4560,6 +4571,15 @@ button::-moz-focus-inner {
   right: 0;
   bottom: 0;
   left: 0;
+}
+.pt__image.pull-left > .inner > .descr {
+  margin: 0;
+}
+.pt__image.pull-center > .inner > .descr {
+  margin: 0 auto;
+}
+.pt__image.pull-right > .inner > .descr {
+  margin: 0 0 0 auto;
 }
 .pt__image-title-hover > .inner > .title {
   bottom: 0;
