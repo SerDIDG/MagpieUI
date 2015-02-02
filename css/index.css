@@ -881,10 +881,12 @@ a:active {
 }
 img {
   border: none;
-  -webkit-transform: translateZ(0px);
   -webkit-backface-visibility: hidden;
   -moz-backface-visibility: hidden;
   backface-visibility: hidden;
+  -webkit-transform: translate(0px, 0px);
+  -ms-transform: translate(0px, 0px);
+  transform: translate(0px, 0px);
 }
 dl,
 dt,
