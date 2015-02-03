@@ -3482,12 +3482,14 @@ button::-moz-focus-inner {
   display: block;
   visibility: hidden;
   position: absolute;
-  top: 100%;
-  left: 0;
   margin: 0;
   padding: 4px 0;
   list-style: none;
   opacity: 0;
+  top: 100%;
+  right: auto;
+  bottom: auto;
+  left: 0;
   -webkit-transition: all 300ms ease-in-out;
   transition: all 300ms ease-in-out;
 }
@@ -3549,6 +3551,30 @@ button::-moz-focus-inner {
 }
 .pt__menu-dropdown--base li:hover > ul {
   display: block;
+}
+.pt__menu-dropdown--base.pull-left {
+  top: 100%;
+  right: auto;
+  bottom: auto;
+  left: 0;
+}
+.pt__menu-dropdown--base.pull-left li ul {
+  top: -5px;
+  right: auto;
+  bottom: auto;
+  left: 100%;
+}
+.pt__menu-dropdown--base.pull-right {
+  top: 100%;
+  right: 0;
+  bottom: auto;
+  left: auto;
+}
+.pt__menu-dropdown--base.pull-right li ul {
+  top: -5px;
+  right: 100%;
+  bottom: auto;
+  left: auto;
 }
 .pt__menu-dropdown--clear {
   padding: 0;
@@ -3965,12 +3991,13 @@ button::-moz-focus-inner {
   display: block;
   visibility: hidden;
   position: absolute;
-  top: 100%;
-  left: 0;
   margin: 0;
   padding: 4px 0;
   list-style: none;
   opacity: 0;
+  top: 100%;
+  right: auto;
+  left: 0;
   -webkit-transition: all 300ms ease-in-out;
   transition: all 300ms ease-in-out;
   z-index: 1;
@@ -4037,6 +4064,30 @@ button::-moz-focus-inner {
 }
 .pt__editable.is-editable > .menu .pt__menu-dropdown li:hover > ul {
   display: block;
+}
+.pt__editable.is-editable > .menu .pt__menu-dropdown.pull-left {
+  top: 100%;
+  right: auto;
+  bottom: auto;
+  left: 0;
+}
+.pt__editable.is-editable > .menu .pt__menu-dropdown.pull-left li ul {
+  top: -5px;
+  right: auto;
+  bottom: auto;
+  left: 100%;
+}
+.pt__editable.is-editable > .menu .pt__menu-dropdown.pull-right {
+  top: 100%;
+  right: 0;
+  bottom: auto;
+  left: auto;
+}
+.pt__editable.is-editable > .menu .pt__menu-dropdown.pull-right li ul {
+  top: -5px;
+  right: 100%;
+  bottom: auto;
+  left: auto;
 }
 .pt__editable.is-editable > .menu:hover {
   z-index: 14;
@@ -6056,12 +6107,14 @@ button::-moz-focus-inner {
   display: block;
   visibility: hidden;
   position: absolute;
-  top: 100%;
-  left: 0;
   margin: 0;
   padding: 4px 0;
   list-style: none;
   opacity: 0;
+  top: 100%;
+  right: auto;
+  bottom: auto;
+  left: 0;
   -webkit-transition: all 300ms ease-in-out, all 100ms ease-in-out;
   transition: all 300ms ease-in-out, all 100ms ease-in-out;
   visibility: visible;
@@ -6126,6 +6179,30 @@ button::-moz-focus-inner {
 }
 .com__tooltip.com-action-menu-tooltip .pt__menu .pt__menu-dropdown li:hover > ul {
   display: block;
+}
+.com__tooltip.com-action-menu-tooltip .pt__menu .pt__menu-dropdown.pull-left {
+  top: 100%;
+  right: auto;
+  bottom: auto;
+  left: 0;
+}
+.com__tooltip.com-action-menu-tooltip .pt__menu .pt__menu-dropdown.pull-left li ul {
+  top: -5px;
+  right: auto;
+  bottom: auto;
+  left: 100%;
+}
+.com__tooltip.com-action-menu-tooltip .pt__menu .pt__menu-dropdown.pull-right {
+  top: 100%;
+  right: 0;
+  bottom: auto;
+  left: auto;
+}
+.com__tooltip.com-action-menu-tooltip .pt__menu .pt__menu-dropdown.pull-right li ul {
+  top: -5px;
+  right: 100%;
+  bottom: auto;
+  left: auto;
 }
 /* ******* COMPONENTS: CALENDAR ******* */
 .com__calendar {
@@ -7534,12 +7611,14 @@ html.ie9 .com__palette .b-range {
   display: block;
   visibility: hidden;
   position: absolute;
-  top: 100%;
-  left: 0;
   margin: 0;
   padding: 4px 0;
   list-style: none;
   opacity: 0;
+  top: 100%;
+  right: auto;
+  bottom: auto;
+  left: 0;
   -webkit-transition: all 300ms ease-in-out;
   transition: all 300ms ease-in-out;
   left: auto;
@@ -7603,6 +7682,30 @@ html.ie9 .com__palette .b-range {
 }
 .com__tabset__head-menu .pt__menu-dropdown li:hover > ul {
   display: block;
+}
+.com__tabset__head-menu .pt__menu-dropdown.pull-left {
+  top: 100%;
+  right: auto;
+  bottom: auto;
+  left: 0;
+}
+.com__tabset__head-menu .pt__menu-dropdown.pull-left li ul {
+  top: -5px;
+  right: auto;
+  bottom: auto;
+  left: 100%;
+}
+.com__tabset__head-menu .pt__menu-dropdown.pull-right {
+  top: 100%;
+  right: 0;
+  bottom: auto;
+  left: auto;
+}
+.com__tabset__head-menu .pt__menu-dropdown.pull-right li ul {
+  top: -5px;
+  right: 100%;
+  bottom: auto;
+  left: auto;
 }
 .com__tabset__content {
   position: relative;

@@ -10,12 +10,11 @@
     display: block;
     visibility: hidden;
     position: absolute;
-    top: 100%;
-    left: 0;
     margin: 0;
     padding: @PtMenu-Indent 0;
     list-style: none;
     opacity: 0;
+    .mx__position(100%, auto, auto, 0);
     .mx__transition(all, @CmUI-Transition-Duration);
 
     li {
@@ -71,6 +70,26 @@
         &:hover {
             > ul {
                 display: block;
+            }
+        }
+    }
+
+    &.pull-left {
+        .mx__position(100%, auto, auto, 0);
+
+        li {
+            ul {
+                .mx__position(-(@CmBorder-Width + @PtMenu-Indent), auto, auto, 100%);
+            }
+        }
+    }
+
+    &.pull-right {
+        .mx__position(100%, 0, auto, auto);
+
+        li {
+            ul {
+                .mx__position(-(@CmBorder-Width + @PtMenu-Indent), 100%, auto, auto);
             }
         }
     }
