@@ -9,10 +9,6 @@ body {
     -webkit-font-smoothing: subpixel-antialiased;
 }
 
-a {
-    .cm__font--link;
-}
-
 img {
     border: none;
     .mx__backface-visibility(hidden);
@@ -38,6 +34,10 @@ header, main, aside, footer, section {
 
 /* *** CONTENT TAGS *** */
 
+.cm__link {
+    .cm__font--link;
+}
+
 .cm__tags {
     .cm__font;
     margin: 0 0 @CmFont-Base-LineHeight;
@@ -52,6 +52,10 @@ header, main, aside, footer, section {
 }
 
 .cm__tags--base {
+}
+
+a {
+    &:extend(.cm__link all);
 }
 
 h1, h2, h3, h4, h5, h6, p, dl, ul, ol, hr {

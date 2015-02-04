@@ -111,6 +111,14 @@
             flex-wrap: @value;
 }
 
+.mx__flex-order (@value: wrap) {
+    -webkit-box-ordinal-group: @value;
+       -moz-box-ordinal-group: @value;
+    -ms-flex-order: @value;
+    -webkit-order: @value;
+            order: @value;
+}
+
 .mx__justify-content (@value: flex-start) {
     -webkit-justify-content: @value;
             justify-content: @value;

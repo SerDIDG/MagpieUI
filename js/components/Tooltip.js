@@ -1,85 +1,102 @@
-Com['Tooltip'] = function(o){
+cm.define('Com.Tooltip', {
+    'modules' : [
+        'Params',
+        'Events',
+        'Langs'
+    ],
+    'events' : [
+        'onRender',
+        'onShowStart',
+        'onShow',
+        'onHideStart',
+        'onHide'
+    ],
+    'params' : {
+        'target' : cm.Node('div'),
+        'targetEvent' : 'hover',        // hover | click | none
+        'hideOnReClick' : false,        // Hide tooltip when re-clicking on the target, requires setting value 'targetEvent' : 'click'
+        'hideOnOut' : true,
+        'preventClickEvent' : false,    // Prevent default click event on the target, requires setting value 'targetEvent' : 'click'
+        'top' : 0,                      // Supported properties: targetHeight, selfHeight, number
+        'left' : 0,                     // Supported properties: targetWidth, selfWidth, number
+        'width' : 'auto',               // Supported properties: targetWidth, auto, number
+        'duration' : 150,
+        'className' : '',
+        'theme' : 'theme-default',
+        'adaptive' : true,
+        'adaptiveX' : true,
+        'adaptiveY' : true,
+        'title' : '',
+        'titleTag' : 'h3',
+        'content' : cm.Node('div'),
+        'container' : 'document.body'
+    }
+},
+function(params){
     var that = this,
-        config = cm.merge({
-            'target' : cm.Node('div'),
-            'targetEvent' : 'hover',        // hover | click | none
-            'hideOnReClick' : false,        // Hide tooltip when re-clicking on the target, requires setting value 'targetEvent' : 'click'
-            'hideOnOut' : true,
-            'preventClickEvent' : false,    // Prevent default click event on the target, requires setting value 'targetEvent' : 'click'
-            'top' : 0,                      // Supported properties: targetHeight, selfHeight, number
-            'left' : 0,                     // Supported properties: targetWidth, selfWidth, number
-            'width' : 'auto',               // Supported properties: targetWidth, auto, number
-            'duration' : 150,
-            'className' : '',
-            'theme' : 'theme-default',
-            'adaptive' : true,
-            'title' : '',
-            'titleTag' : 'h3',
-            'content' : cm.Node('div'),
-            'container' : document.body,
-            'events' : {}
-        }, o),
-        API = {
-            'onShowStart' : [],
-            'onShow' : [],
-            'onHideStart' : [],
-            'onHide' : []
-        },
         checkInt,
-        anim,
-        nodes = {};
-
+        anim;
+    
+    that.nodes = {};
     that.isShow = false;
     that.disabled = false;
 
     var init = function(){
-        // Convert events to API Events
-        convertEvents(config['events']);
-        // Render structure
+        that.setParams(params);
+        that.convertEvents(that.params['events']);
+        validateParams();
         render();
         setMiscEvents();
+        that.triggerEvent('onRender');
+    };
+
+    var validateParams = function(){
+        if(!that.params['adaptive']){
+            that.params['adaptiveX'] = false;
+            that.params['adaptiveY'] = false;
+        }
     };
 
     var render = function(){
         // Structure
-        nodes['container'] = cm.Node('div', {'class' : 'com__tooltip'},
-            nodes['inner'] = cm.Node('div', {'class' : 'inner'},
-                nodes['content'] = cm.Node('div', {'class' : 'scroll'})
+        that.nodes['container'] = cm.Node('div', {'class' : 'com__tooltip'},
+            that.nodes['inner'] = cm.Node('div', {'class' : 'inner'},
+                that.nodes['content'] = cm.Node('div', {'class' : 'scroll'})
             )
         );
         // Add theme css class
-        !cm.isEmpty(config['theme']) && cm.addClass(nodes['container'], config['theme']);
+        !cm.isEmpty(that.params['theme']) && cm.addClass(that.nodes['container'], that.params['theme']);
         // Add css class
-        !cm.isEmpty(config['className']) && cm.addClass(nodes['container'], config['className']);
+        !cm.isEmpty(that.params['className']) && cm.addClass(that.nodes['container'], that.params['className']);
         // Set title
-        renderTitle(config['title']);
+        renderTitle(that.params['title']);
         // Embed content
-        renderContent(config['content']);
+        renderContent(that.params['content']);
     };
 
     var renderTitle = function(title){
-        cm.remove(nodes['title']);
+        cm.remove(that.nodes['title']);
         if(!cm.isEmpty(title)){
-            nodes['title'] = cm.Node('div', {'class' : 'title'},
-                cm.Node(config['titleTag'], title)
+            that.nodes['title'] = cm.Node('div', {'class' : 'title'},
+                cm.Node(that.params['titleTag'], title)
             );
-            cm.insertFirst(nodes['title'], nodes['inner']);
+            cm.insertFirst(that.nodes['title'], that.nodes['inner']);
         }
     };
 
     var renderContent = function(node){
-        cm.clearNode(nodes['content']);
+        cm.clearNode(that.nodes['content']);
         if(node){
-            nodes['content'].appendChild(node);
+            that.nodes['content'].appendChild(node);
         }
     };
 
     var setMiscEvents = function(){
         // Init animation
-        anim = new cm.Animation(nodes['container']);
+        anim = new cm.Animation(that.nodes['container']);
         // Add target event
-        if(config['preventClickEvent']){
-            config['target'].onclick = function(e){
+        if(that.params['preventClickEvent']){
+            that.params['target'].onclick = function(e){
                 e = cm.getEvent(e);
                 cm.preventDefault(e);
             };
@@ -89,7 +106,7 @@ Com['Tooltip'] = function(o){
 
     var targetEvent = function(){
         if(!that.disabled){
-            if(that.isShow && config['targetEvent'] == 'click' && config['hideOnReClick']){
+            if(that.isShow && that.params['targetEvent'] == 'click' && that.params['hideOnReClick']){
                 hide(false);
             }else{
                 show();
@@ -98,23 +115,23 @@ Com['Tooltip'] = function(o){
     };
 
     var setTargetEvent = function(){
-        switch(config['targetEvent']){
+        switch(that.params['targetEvent']){
             case 'hover' :
-                cm.addEvent(config['target'], 'mouseover', targetEvent);
+                cm.addEvent(that.params['target'], 'mouseover', targetEvent);
                 break;
             case 'click' :
-                cm.addEvent(config['target'], 'click', targetEvent);
+                cm.addEvent(that.params['target'], 'click', targetEvent);
                 break;
         }
     };
 
     var removeTargetEvent = function(){
-        switch(config['targetEvent']){
+        switch(that.params['targetEvent']){
             case 'hover' :
-                cm.removeEvent(config['target'], 'mouseover', targetEvent);
+                cm.removeEvent(that.params['target'], 'mouseover', targetEvent);
                 break;
             case 'click' :
-                cm.removeEvent(config['target'], 'click', targetEvent);
+                cm.removeEvent(that.params['target'], 'click', targetEvent);
                 break;
         }
     };
@@ -123,20 +140,20 @@ Com['Tooltip'] = function(o){
         if(!that.isShow){
             that.isShow = true;
             // Append child tooltip into body and set position
-            config['container'].appendChild(nodes['container']);
+            that.params['container'].appendChild(that.nodes['container']);
             getPosition();
             // Show tooltip
-            nodes['container'].style.display = 'block';
+            that.nodes['container'].style.display = 'block';
             // Check position
             checkInt = setInterval(getPosition, 5);
             // Animate
-            anim.go({'style' : {'opacity' : 1}, 'duration' : immediately? 0 : config['duration'], 'onStop' : function(){
+            anim.go({'style' : {'opacity' : 1}, 'duration' : immediately? 0 : that.params['duration'], 'onStop' : function(){
                 /* *** EXECUTE API EVENTS *** */
-                executeEvent('onShow');
+                that.triggerEvent('onShow');
             }});
             // Add document target event
-            if(config['hideOnOut']){
-                switch(config['targetEvent']){
+            if(that.params['hideOnOut']){
+                switch(that.params['targetEvent']){
                     case 'hover' :
                         cm.addEvent(document, 'mouseover', bodyEvent);
                         break;
@@ -147,7 +164,7 @@ Com['Tooltip'] = function(o){
                 }
             }
             /* *** EXECUTE API EVENTS *** */
-            executeEvent('onShowStart');
+            that.triggerEvent('onShowStart');
         }
     };
 
@@ -157,8 +174,8 @@ Com['Tooltip'] = function(o){
             // Remove event - Check position
             checkInt && clearInterval(checkInt);
             // Remove document target event
-            if(config['hideOnOut']){
-                switch(config['targetEvent']){
+            if(that.params['hideOnOut']){
+                switch(that.params['targetEvent']){
                     case 'hover' :
                         cm.removeEvent(document, 'mouseover', bodyEvent);
                         break;
@@ -169,57 +186,56 @@ Com['Tooltip'] = function(o){
                 }
             }
             // Animate
-            anim.go({'style' : {'opacity' : 0}, 'duration' : immediately? 0 : config['duration'], 'onStop' : function(){
-                nodes['container'].style.display = 'none';
-                cm.remove(nodes['container']);
+            anim.go({'style' : {'opacity' : 0}, 'duration' : immediately? 0 : that.params['duration'], 'onStop' : function(){
+                that.nodes['container'].style.display = 'none';
+                cm.remove(that.nodes['container']);
                 /* *** EXECUTE API EVENTS *** */
-                executeEvent('onHide');
+                that.triggerEvent('onHide');
             }});
             /* *** EXECUTE API EVENTS *** */
-            executeEvent('onHideStart');
+            that.triggerEvent('onHideStart');
         }
     };
 
     var getPosition = function(){
-        var targetWidth =  config['target'].offsetWidth,
-            targetHeight = config['target'].offsetHeight,
-            selfHeight = nodes['container'].offsetHeight,
-            selfWidth = nodes['container'].offsetWidth,
+        var targetWidth =  that.params['target'].offsetWidth,
+            targetHeight = that.params['target'].offsetHeight,
+            selfHeight = that.nodes['container'].offsetHeight,
+            selfWidth = that.nodes['container'].offsetWidth,
             pageSize = cm.getPageSize();
         // Calculate size
         (function(){
-            if(config['width'] != 'auto'){
+            if(that.params['width'] != 'auto'){
                 var width = eval(
-                    config['width']
+                    that.params['width']
                         .toString()
                         .replace('targetWidth', targetWidth)
                 );
-
                 if(width != selfWidth){
-                    nodes['container'].style.width =  [width, 'px'].join('');
+                    that.nodes['container'].style.width =  [width, 'px'].join('');
                 }
             }
         })();
         // Calculate position
         (function(){
-            var top = cm.getRealY(config['target']),
+            var top = cm.getRealY(that.params['target']),
                 topAdd = eval(
-                    config['top']
+                    that.params['top']
                         .toString()
                         .replace('targetHeight', targetHeight)
                         .replace('selfHeight', selfHeight)
                 ),
-                left =  cm.getRealX(config['target']),
+                left =  cm.getRealX(that.params['target']),
                 leftAdd = eval(
-                    config['left']
+                    that.params['left']
                         .toString()
                         .replace('targetWidth', targetWidth)
                         .replace('selfWidth', selfWidth)
                 ),
                 positionTop,
                 positionLeft;
-            // Adaptive or static position
-            if(config['adaptive']){
+            // Calculate adaptive or static vertical position
+            if(that.params['adaptiveY']){
                 positionTop = Math.max(
                     Math.min(
                         ((top + topAdd + selfHeight > pageSize['winHeight'])
@@ -230,6 +246,11 @@ Com['Tooltip'] = function(o){
                     ),
                     0
                 );
+            }else{
+                positionTop = top + topAdd;
+            }
+            // Calculate adaptive or static horizontal position
+            if(that.params['adaptiveX']){
                 positionLeft = Math.max(
                     Math.min(
                         ((left + leftAdd + selfWidth > pageSize['winWidth'])
@@ -241,15 +262,14 @@ Com['Tooltip'] = function(o){
                     0
                 );
             }else{
-                positionTop = top + topAdd;
                 positionLeft = left + leftAdd;
             }
             // Apply styles
-            if(positionTop != nodes['container'].offsetTop){
-                nodes['container'].style.top =  [positionTop, 'px'].join('');
+            if(positionTop != that.nodes['container'].offsetTop){
+                that.nodes['container'].style.top =  [positionTop, 'px'].join('');
             }
-            if(positionLeft != nodes['container'].offsetLeft){
-                nodes['container'].style.left = [positionLeft, 'px'].join('');
+            if(positionLeft != that.nodes['container'].offsetLeft){
+                that.nodes['container'].style.left = [positionLeft, 'px'].join('');
             }
         })();
     };
@@ -258,35 +278,13 @@ Com['Tooltip'] = function(o){
         if(that.isShow){
             e = cm.getEvent(e);
             var target = cm.getEventTarget(e);
-            if(!cm.isParent(nodes['container'], target, true) && !cm.isParent(config['target'], target, true)){
+            if(!cm.isParent(that.nodes['container'], target, true) && !cm.isParent(that.params['target'], target, true)){
                 hide(false);
             }
         }
     };
 
-    var executeEvent = function(event){
-        var handler = function(){
-            cm.forEach(API[event], function(item){
-                item(that);
-            });
-        };
-
-        switch(event){
-            default:
-                handler();
-                break;
-        }
-    };
-
-    var convertEvents = function(o){
-        cm.forEach(o, function(item, key){
-            if(API[key] && typeof item == 'function'){
-                API[key].push(item);
-            }
-        });
-    };
-
-    /* Main */
+    /* ******* MAIN ******* */
 
     that.setTitle = function(title){
         renderTitle(title);
@@ -300,7 +298,7 @@ Com['Tooltip'] = function(o){
 
     that.setTarget = function(node){
         removeTargetEvent();
-        config['target'] = node || cm.Node('div');
+        that.params['target'] = node || cm.Node('div');
         setTargetEvent();
         return that;
     };
@@ -326,18 +324,14 @@ Com['Tooltip'] = function(o){
     };
 
     that.scrollToNode = function(node){
-        if(cm.isNode(node) && cm.isParent(nodes['content'], node)){
-            nodes['content'].scrollTop = node.offsetTop - nodes['content'].offsetTop;
+        if(cm.isNode(node) && cm.isParent(that.nodes['content'], node)){
+            that.nodes['content'].scrollTop = node.offsetTop - that.nodes['content'].offsetTop;
         }
         return that;
     };
 
     that.isOwnNode = function(node){
-        return cm.isParent(nodes['container'], node, true);
-    };
-
-    that.getNodes = function(key){
-        return nodes[key] || nodes;
+        return cm.isParent(that.nodes['container'], node, true);
     };
 
     that.remove = function(){
@@ -346,21 +340,10 @@ Com['Tooltip'] = function(o){
         return that;
     };
 
-    that.addEvent = function(event, handler){
-        if(API[event] && typeof handler == 'function'){
-            API[event].push(handler);
-        }
-        return that;
-    };
-
-    that.removeEvent = function(event, handler){
-        if(API[event] && typeof handler == 'function'){
-            API[event] = API[event].filter(function(item){
-                return item != handler;
-            });
-        }
-        return that;
+    // Deprecated
+    that.getNodes = function(key){
+        return that.nodes[key] || that.nodes;
     };
 
     init();
-};
+});

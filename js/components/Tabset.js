@@ -74,11 +74,11 @@ function(params){
     var renderView = function(){
         /* *** STRUCTURE *** */
         that.nodes['container'] = cm.Node('div', {'class' : 'com__tabset'},
-            that.nodes['content'] = cm.Node('div', {'class' : 'com__tabset__content clear'},
+            that.nodes['content'] = cm.Node('div', {'class' : 'com__tabset__content'},
                 that.nodes['contentUL'] = cm.Node('ul')
             )
         );
-        that.nodes['header'] = cm.Node('div', {'class' : 'com__tabset__head clear'},
+        that.nodes['header'] = cm.Node('div', {'class' : 'com__tabset__head'},
             cm.Node('div', {'class' : 'com__tabset__head-tabs'},
                 that.nodes['headerUL'] = cm.Node('ul')
             ),

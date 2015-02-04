@@ -18,7 +18,7 @@
             min-height: @CmFont-UI-LineHeight;
             vertical-align: top;
             text-align: left;
-            padding: @PtGridlist-PaddingInner;
+            padding: @PtGridlist-Cell-Padding;
             line-height: @CmFont-UI-LineHeight;
             .mx__background-clip(padding-box);
 
@@ -73,7 +73,7 @@
 
         th {
             font-weight: @CmFont-Base-BoldWeight;
-            font-size: @PtGridlist-FontTitle-Size;
+            font-size: @PtGridlist-Title-FontSize;
             .mx__user-select(none);
 
             &.sort {
@@ -81,8 +81,8 @@
 
                 .inner {
                     display: block;
-                    margin: -@PtGridlist-PaddingInner;
-                    padding: @PtGridlist-PaddingInner 20px @PtGridlist-PaddingInner @PtGridlist-PaddingInner;
+                    margin: -@PtGridlist-Cell-Padding;
+                    padding: @PtGridlist-Cell-Padding 20px @PtGridlist-Cell-Padding @PtGridlist-Cell-Padding;
                     cursor: pointer;
                 }
 
@@ -90,7 +90,7 @@
                     display: block;
                     position: absolute;
                     top: 50%;
-                    right: @PtGridlist-PaddingInner;
+                    right: @PtGridlist-Cell-Padding;
                     margin: -3px 0 0 0;
                 }
             }
@@ -98,9 +98,9 @@
 
         td {
             vertical-align: top;
-            border-top: 1px solid transparent;
+            border-top: @PtGridlist-Cell-SpaceBorder;
             word-wrap: break-word;
-            font-size: @PtGridlist-Font-Size;
+            font-size: @PtGridlist-Cell-FontSize;
         }
 
         tbody, thead {
@@ -159,7 +159,7 @@
 
     .cm__form__icons-inside {
         .text {
-            font-size: @PtGridlist-Font-Size;
+            font-size: @PtGridlist-Cell-FontSize;
         }
     }
 }
@@ -295,7 +295,7 @@
                     tr {
                         &:first-child {
                             td, th {
-                                border-top: 1px solid transparent;
+                                border-top: @PtGridlist-Cell-SpaceBorder;
 
                                 &:first-child {
                                     border: none;

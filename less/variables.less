@@ -242,6 +242,7 @@
 @CmFont-Base-BoldWeight: 600;
 
 @CmFont-Base-LineHeight: 18px;
+@CmFont-Base-LineHeightSmall: @CmFont-Base-LineHeight;
 @CmFont-Base-Family: 'Open Sans', arial, helvetica, sans-serif;
 @CmFont-Base-Size: 13px;
 @CmFont-Base-SizeSmall: 11px;
@@ -411,9 +412,11 @@
 // /* ******* GRIDLIST ******* */
 
 @PtGridlist-AdaptiveFrom: @CmScreen-Mobile;
-@PtGridlist-Font-Size: @CmFont-Base-SizeSmall;
-@PtGridlist-FontTitle-Size: @CmFont-Base-SizeSmall;
-@PtGridlist-PaddingInner: 6px;
+@PtGridlist-Title-FontSize: @CmFont-Base-SizeSmall;
+@PtGridlist-Cell-Padding: 6px;
+@PtGridlist-Cell-SpaceSize: 1px;
+@PtGridlist-Cell-SpaceBorder: @PtGridlist-Cell-SpaceSize solid transparent;
+@PtGridlist-Cell-FontSize: @CmFont-Base-SizeSmall;
 
 // /* ******* DRAG AND DROP ******* */
 
@@ -477,6 +480,10 @@
 
 @LtCollapsible-SidebarWidth: 350px;
 @LtCollapsible-Duration: 500ms;
+
+// /* ******* COMMENTS ******* */
+
+@LtComment-InnerIndent: @CmIndent-XXXSmall;
 
 // /* ******* FORUM ******* */
 
@@ -577,8 +584,12 @@
 @ComTabset-AdaptiveFrom: @CmScreen-Mobile;
 @ComTabset-BorderColor: @CmColor-Border;
 @ComTabset-BorderRadius: @CmBorder-Radius;
+@ComTabset-BorderWidth: @CmBorder-Width;
+@ComTabset-Border: @ComTabset-BorderWidth solid @ComTabset-BorderColor;
 @ComTabset-Tabs-Height: @CmForm-FieldHeight;
 @ComTabset-Tabs-Indent: @CmIndent-XXXSmall;
+@ComTabset-Tabs-IndentInner: @CmIndent-XSmall;
+@ComTabset-Tabs-FontSize: @CmFont-Base-Size;
 @ComTabset-Tabs-DefaultBackground: @CmColor-Secondary-LightHighlight;
 @ComTabset-Tabs-HoverBackground: @CmColor-Secondary-LightHover;
 @ComTabset-Tabs-ActiveBackground: #ffffff;
