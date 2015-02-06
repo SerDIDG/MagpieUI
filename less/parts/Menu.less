@@ -11,7 +11,7 @@
     visibility: hidden;
     position: absolute;
     margin: 0;
-    padding: @PtMenu-Indent 0;
+    padding: @PtMenu-IndentY @PtMenu-IndentX;
     list-style: none;
     opacity: 0;
     .mx__position(100%, auto, auto, 0);
@@ -36,7 +36,7 @@
         }
 
         ul {
-            top: -(@CmBorder-Width + @PtMenu-Indent);
+            top: -(@CmBorder-Width + @PtMenu-IndentY);
             left: 100%;
         }
 
@@ -79,7 +79,7 @@
 
         li {
             ul {
-                .mx__position(-(@CmBorder-Width + @PtMenu-Indent), auto, auto, 100%);
+                .mx__position(-(@CmBorder-Width + @PtMenu-IndentY), auto, auto, 100%);
             }
         }
     }
@@ -89,7 +89,7 @@
 
         li {
             ul {
-                .mx__position(-(@CmBorder-Width + @PtMenu-Indent), 100%, auto, auto);
+                .mx__position(-(@CmBorder-Width + @PtMenu-IndentY), 100%, auto, auto);
             }
         }
     }

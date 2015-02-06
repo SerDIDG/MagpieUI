@@ -3471,7 +3471,7 @@ button::-moz-focus-inner {
   visibility: hidden;
   position: absolute;
   margin: 0;
-  padding: 4px 0;
+  padding: 4px 0px;
   list-style: none;
   opacity: 0;
   top: 100%;
@@ -3980,7 +3980,7 @@ button::-moz-focus-inner {
   visibility: hidden;
   position: absolute;
   margin: 0;
-  padding: 4px 0;
+  padding: 4px 0px;
   list-style: none;
   opacity: 0;
   top: 100%;
@@ -6077,7 +6077,7 @@ button::-moz-focus-inner {
   visibility: hidden;
   position: absolute;
   margin: 0;
-  padding: 4px 0;
+  padding: 4px 0px;
   list-style: none;
   opacity: 0;
   top: 100%;
@@ -7595,7 +7595,7 @@ html.ie9 .com__palette .b-range {
   visibility: hidden;
   position: absolute;
   margin: 0;
-  padding: 4px 0;
+  padding: 4px 0px;
   list-style: none;
   opacity: 0;
   top: 100%;
