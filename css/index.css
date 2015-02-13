@@ -8061,12 +8061,12 @@ html.ie9 .com__palette .b-range {
   background-image: url("../img/icons/xx-large/arrow-white-left.png");
 }
 .com__gallery-controls.is-full .bar-arrow.next {
-  background-image: -webkit-linear-gradient(to left, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0) 50%);
-  background-image: linear-gradient(to left, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0) 50%);
+  background-image: -webkit-linear-gradient(to left, rgba(17, 17, 17, 0.3) 0%, rgba(0,0,0,0) 50%);
+  background-image: linear-gradient(to left, rgba(17, 17, 17, 0.3) 0%, rgba(0,0,0,0) 50%);
 }
 .com__gallery-controls.is-full .bar-arrow.prev {
-  background-image: -webkit-linear-gradient(to right, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0) 50%);
-  background-image: linear-gradient(to right, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0) 50%);
+  background-image: -webkit-linear-gradient(to right, rgba(17, 17, 17, 0.3) 0%, rgba(0,0,0,0) 50%);
+  background-image: linear-gradient(to right, rgba(17, 17, 17, 0.3) 0%, rgba(0,0,0,0) 50%);
 }
 .com__gallery-controls.is-full .bar-buttons {
   z-index: 2;

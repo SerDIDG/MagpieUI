@@ -92,6 +92,7 @@
         .mx__position(0, 0, 0, 0);
 
         .bar-arrow {
+            @background: fade(@ComGallery-Background, 30%);
             z-index: 1;
             width: 50%;
 
@@ -113,11 +114,11 @@
             }
 
             &.next {
-                .mx__linear-gradient(~"to left, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0) 50%");
+                .mx__linear-gradient(~"to left, @{background} 0%, rgba(0,0,0,0) 50%");
             }
 
             &.prev {
-                .mx__linear-gradient(~"to right, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0) 50%");
+                .mx__linear-gradient(~"to right, @{background} 0%, rgba(0,0,0,0) 50%");
             }
         }
 

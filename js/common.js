@@ -358,7 +358,7 @@ cm.crossEvents = function(key){
 };
 
 cm.addEvent = function(el, type, handler, useCapture){
-    useCapture = typeof(useCapture) == 'undefined' ? true : useCapture;
+    useCapture = typeof useCapture == 'undefined' ? false : useCapture;
     // Process touch events
     if(cm.isTouch && cm.crossEvents(type)){
         el.addEventListener(cm.crossEvents(type), handler, useCapture);
@@ -367,13 +367,13 @@ cm.addEvent = function(el, type, handler, useCapture){
     try{
         el.addEventListener(type, handler, useCapture);
     }catch(e){
-        el.attachEvent("on" + type, handler);
+        el.attachEvent('on' + type, handler);
     }
     return el;
 };
 
 cm.removeEvent = function(el, type, handler, useCapture){
-    useCapture = typeof(useCapture) == 'undefined' ? true : useCapture;
+    useCapture = typeof useCapture == 'undefined' ? false : useCapture;
     // Process touch events
     if(cm.isTouch && cm.crossEvents(type)){
         el.removeEventListener(cm.crossEvents(type), handler, useCapture);
@@ -382,7 +382,28 @@ cm.removeEvent = function(el, type, handler, useCapture){
     try{
         el.removeEventListener(type, handler, useCapture);
     }catch(e){
-        el.detachEvent("on" + type, handler);
+        el.detachEvent('on' + type, handler);
+    }
+    return el;
+};
+
+cm.triggerEvent = function(el, type){
+    var event;
+    if(cm.isTouch && cm.crossEvents(type)){
+        type = cm.crossEvents(type);
+    }
+    if(document.createEvent){
+        event = document.createEvent('Event');
+        event.initEvent(type, true, true);
+    }else if(document.createEventObject){
+        event = document.createEventObject();
+        event.eventType = type;
+    }
+    event.eventName = type;
+    if(el.dispatchEvent){
+        el.dispatchEvent(event);
+    }else if(el.fireEvent){
+        el.fireEvent('on' + event.eventType, event);
     }
     return el;
 };
