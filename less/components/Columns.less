@@ -162,10 +162,14 @@
 .com__columns__indent (@indent: @ComColumns-Indent) {
     > .inner {
         margin: 0 -(@indent / 2);
-    }
 
-    .com__column > .inner {
-        margin: 0 (@indent / 2);
+        > .container {
+            .com__column {
+                > .inner {
+                    margin: 0 (@indent / 2);
+                }
+            }
+        }
     }
 }
 

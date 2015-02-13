@@ -8765,67 +8765,67 @@ html.ie9 .com__palette .b-range {
 .com__columns > .inner {
   margin: 0 -12px;
 }
-.com__columns .com__column > .inner {
+.com__columns > .inner > .container .com__column > .inner {
   margin: 0 12px;
 }
 .com__columns.indent-0px > .inner {
   margin: 0 0px;
 }
-.com__columns.indent-0px .com__column > .inner {
+.com__columns.indent-0px > .inner > .container .com__column > .inner {
   margin: 0 0px;
 }
 .com__columns.indent-4px > .inner {
   margin: 0 -2px;
 }
-.com__columns.indent-4px .com__column > .inner {
+.com__columns.indent-4px > .inner > .container .com__column > .inner {
   margin: 0 2px;
 }
 .com__columns.indent-8px > .inner {
   margin: 0 -4px;
 }
-.com__columns.indent-8px .com__column > .inner {
+.com__columns.indent-8px > .inner > .container .com__column > .inner {
   margin: 0 4px;
 }
 .com__columns.indent-12px > .inner {
   margin: 0 -6px;
 }
-.com__columns.indent-12px .com__column > .inner {
+.com__columns.indent-12px > .inner > .container .com__column > .inner {
   margin: 0 6px;
 }
 .com__columns.indent-16px > .inner {
   margin: 0 -8px;
 }
-.com__columns.indent-16px .com__column > .inner {
+.com__columns.indent-16px > .inner > .container .com__column > .inner {
   margin: 0 8px;
 }
 .com__columns.indent-24px > .inner {
   margin: 0 -12px;
 }
-.com__columns.indent-24px .com__column > .inner {
+.com__columns.indent-24px > .inner > .container .com__column > .inner {
   margin: 0 12px;
 }
 .com__columns.indent-32px > .inner {
   margin: 0 -16px;
 }
-.com__columns.indent-32px .com__column > .inner {
+.com__columns.indent-32px > .inner > .container .com__column > .inner {
   margin: 0 16px;
 }
 .com__columns.indent-48px > .inner {
   margin: 0 -24px;
 }
-.com__columns.indent-48px .com__column > .inner {
+.com__columns.indent-48px > .inner > .container .com__column > .inner {
   margin: 0 24px;
 }
 .com__columns.indent-64px > .inner {
   margin: 0 -32px;
 }
-.com__columns.indent-64px .com__column > .inner {
+.com__columns.indent-64px > .inner > .container .com__column > .inner {
   margin: 0 32px;
 }
 .com__columns.indent-96px > .inner {
   margin: 0 -48px;
 }
-.com__columns.indent-96px .com__column > .inner {
+.com__columns.indent-96px > .inner > .container .com__column > .inner {
   margin: 0 48px;
 }
 .ie8 .com__columns > .inner > .container,
