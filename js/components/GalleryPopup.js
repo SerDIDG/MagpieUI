@@ -14,6 +14,7 @@ cm.define('Com.GalleryPopup', {
         'size' : 'fullscreen',                   // fullscreen | auto
         'aspectRatio' : 'auto',                  // auto | 1x1 | 4x3 | 3x2 | 16x10 | 16x9 | 2x1 | 21x9 | 35x10 | 3x4 | 2x3 | 10x16 | 9x16 | 1x2
         'theme' : 'theme-black',
+        'showCounter' : true,
         'showTitle' : true,
         'data' : [],
         'openOnSelfClick' : false,
@@ -85,9 +86,20 @@ function(params){
     };
 
     var onChange = function(gallery, data){
+        var title;
         // Set caption
+        if(that.params['showCounter']){
+            title = [(data['current']['index'] + 1), gallery.getCount()].join('/');
+        }
         if(that.params['showTitle']){
-            components['dialog'].setTitle(data['current']['title']);
+            if(that.params['showCounter']){
+                title = [title, data['current']['title']].join(' - ');
+            }else{
+                title = data['current']['title'];
+            }
+        }
+        if(that.params['showCounter'] || that.params['showTitle']){
+            components['dialog'].setTitle(title);
         }
         that.triggerEvent('onChange', data);
     };

@@ -258,5 +258,9 @@ function(params){
         return that;
     };
 
+    that.getCount = function(){
+        return items.length;
+    };
+
     init();
 });
