@@ -8,30 +8,64 @@
     }
 }
 
-/* *** TABS HEAD *** */
+/* *** TITLE *** */
 
-.com__tabset__head {
-    .clearfix;
+.com__tabset__head-title {
     position: relative;
     z-index: 2;
+    display: none;
 }
 
+.com__tabset__head-text {
+    .cm__text-overflow;
+    position: relative;
+    overflow: hidden;
+    padding: 0 @CmIndent-Medium;
+    border: @ComTabset-Border;
+    border-bottom: none;
+    border-radius: @ComTabset-BorderRadius @ComTabset-BorderRadius 0 0;
+    line-height: @ComTabset-Tabs-Height;
+    font-size: @ComTabset-Tabs-FontSize;
+    .mx__background__color(@ComTabset-TabsTitle-Background, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
+}
+
+.com__tabset__head-menu {
+    width: @ComTabset-Tabs-Height;
+    height: @ComTabset-Tabs-Height;
+    position: absolute;
+    .mx__position(@CmBorder-Width, @CmBorder-Width, @CmBorder-Width, auto);
+
+    .icon {
+        width: @ComTabset-Tabs-Height;
+        height: @ComTabset-Tabs-Height;
+
+        &.default {
+            .icon.medium.menu;
+        }
+    }
+
+    .pt__menu-dropdown {
+        .pt__menu-dropdown--base;
+        left: auto;
+        right: -@CmBorder-Width;
+    }
+}
+
+/* *** TABS *** */
+
 .com__tabset__head-tabs {
+    position: relative;
+    z-index: 2;
+
     ul {
         .cm__list-clear;
 
         li {
-            margin: 0 @ComTabset-Tabs-Indent 0 0;
             position: relative;
-            float: left;
             background: @ComTabset-Tabs-DefaultBackground;
             border: @ComTabset-Border;
             border-radius: @ComTabset-BorderRadius;
             .mx__transition(all, @CmUI-Transition-Duration);
-
-            &:last-child {
-                margin-right: 0;
-            }
 
             a {
                 .cm__font;
@@ -64,60 +98,42 @@
     }
 }
 
-.com__tabset__head-title {
-    .cm__text-overflow;
-    display: none;
-    position: relative;
-    overflow: hidden;
-    padding: 0 @CmIndent-Medium;
-    border: @ComTabset-Border;
-    border-bottom: none;
-    line-height: @ComTabset-Tabs-Height;
-    font-size: @ComTabset-Tabs-FontSize;
-    .mx__background__color(@ComTabset-TabsTitle-Background, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
-}
-
-.com__tabset__head-menu {
-    width: @ComTabset-Tabs-Height;
-    height: @ComTabset-Tabs-Height;
-    display: none;
-    position: absolute;
-    .mx__position(@CmBorder-Width, @CmBorder-Width, @CmBorder-Width, auto);
-
-    .icon {
-        width: @ComTabset-Tabs-Height;
-        height: @ComTabset-Tabs-Height;
-
-        &.default {
-            .icon.medium.menu;
-        }
-    }
-
-    .pt__menu-dropdown {
-        .pt__menu-dropdown--base;
-        left: auto;
-        right: -@CmBorder-Width;
-    }
-}
-
 /* *** TABS CONTENT *** */
 
 .com__tabset__content {
-    .clearfix;
     position: relative;
     z-index: 1;
     padding: @CmIndent-Medium;
-    background: #fff;
+    background: @ComTabset-Content-Background;
     border: @CmBorder-Width solid @ComTabset-BorderColor;
     border-radius: @ComTabset-BorderRadius;
 
     > ul {
-        margin: 0;
-        padding: 0;
-        list-style: none;
+        .cm__list-clear;
+        position: relative;
 
         > li {
-            display: none;
+            .clearfix;
+            overflow: hidden;
+            position: absolute;
+            z-index: 1;
+            opacity: 0;
+            background-color: @ComTabset-Content-Background;
+            .mx__position(0, 0, 0, 0);
+            .mx__transition(opacity, @CmUI-Transition-Duration);
+
+            &.active {
+                overflow: visible;
+                position: relative;
+                z-index: 2;
+                opacity: 1;
+            }
+
+            // Bug with rendering when switching tabs in Safari 8 on Mac
+
+            .safari & {
+                opacity: 1;
+            }
         }
     }
 }
@@ -132,44 +148,180 @@
 
 .com__tabset {
     &.is-tabs-top {
-        > .com__tabset__head {
-            .com__tabset__head-title {
-                border-radius: @ComTabset-BorderRadius @ComTabset-BorderRadius 0 0;
-            }
+        .com__tabset--top;
 
-            .com__tabset__head-tabs {
-                .com__tabset__head-tabs--top;
-            }
+        > .com__tabset__head-tabs {
+            .com__tabset__head-tabs--top;
         }
 
         > .com__tabset__content {
-            border-radius: 0 @ComTabset-BorderRadius @ComTabset-BorderRadius @ComTabset-BorderRadius;
+            .com__tabset__content--top
         }
     }
 
     &.is-tabs-bottom {
-        > .com__tabset__head {
-            .com__tabset__head-title {
-                border-radius: 0 0 @ComTabset-BorderRadius @ComTabset-BorderRadius;
-            }
+        .com__tabset--bottom;
 
-            .com__tabset__head-tabs {
-                .com__tabset__head-tabs--bottom;
-            }
+        > .com__tabset__head-tabs {
+            .com__tabset__head-tabs--bottom;
         }
 
         > .com__tabset__content {
-            border-radius: @ComTabset-BorderRadius @ComTabset-BorderRadius @ComTabset-BorderRadius 0;
+            .com__tabset__content--bottom;
+        }
+    }
+
+    &.is-tabs-right {
+        .com__tabset--right;
+
+        > .com__tabset__head-tabs {
+            .com__tabset__head-tabs--right;
+        }
+
+        > .com__tabset__content {
+            .com__tabset__content--right;
+        }
+    }
+
+    &.is-tabs-left {
+        .com__tabset--left;
+
+        > .com__tabset__head-tabs {
+            .com__tabset__head-tabs--left;
+        }
+
+        > .com__tabset__content {
+            .com__tabset__content--left;
         }
     }
 }
 
 // /* *** MIXINS *** */
 
-.com__tabset__head-tabs--top () {
+.com__tabset--vertical () {
+    .display-flex;
+    .mx__flex-flow(row nowrap);
+
+    > .com__tabset__head-tabs {
+        width: @ComTabset-Column-Width;
+        .mx__flex(0 0 auto);
+    }
+
+    > .com__tabset__content {
+        .mx__flex(1 1 auto);
+    }
+
+    .ie9 & {
+        width: 100%;
+        display: table;
+        table-layout: fixed;
+
+        > .com__tabset__head-tabs {
+            display: table-cell;
+        }
+
+        > .com__tabset__content {
+            display: table-cell;
+        }
+    }
+}
+
+.com__tabset--horizontal () {
+    &.is-tabs-flexible {
+        > .com__tabset__head-tabs {
+            .com__tabset__head-tabs--flexible;
+        }
+    }
+}
+
+.com__tabset--top () {
+    .com__tabset--horizontal;
+}
+
+.com__tabset--bottom () {
+    .com__tabset--horizontal;
+}
+
+.com__tabset--right () {
+    .com__tabset--vertical;
+}
+
+.com__tabset--left () {
+    .com__tabset--vertical;
+}
+
+.com__tabset__content--top () {
+    border-radius: @ComTabset-BorderRadius;
+}
+
+.com__tabset__content--bottom () {
+    border-radius: @ComTabset-BorderRadius;
+}
+
+.com__tabset__content--right () {
+    border-radius: @ComTabset-BorderRadius;
+}
+
+.com__tabset__content--left () {
+    border-radius: @ComTabset-BorderRadius;
+}
+
+.com__tabset__head-tabs--horizontal () {
+    ul {
+        .display-flex;
+        padding: 0 @ComTabset-Tabs-HorizontalIndent;
+        .mx__flex-flow(row wrap);
+
+        li {
+            max-width: 50%;
+            margin: 0 @ComTabset-Tabs-Indent 0 0;
+
+            &:last-child {
+                margin-right: 0;
+            }
+        }
+    }
+
+    .ie9 & {
+        ul {
+            .clearfix;
+
+            li {
+                float: left;
+            }
+        }
+    }
+}
+
+.com__tabset__head-tabs--vertical () {
+    ul {
+        padding: @ComTabset-Tabs-VerticalIndent 0;
+
+        li {
+            margin: 0 0 @ComTabset-Tabs-Indent 0;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+}
+
+.com__tabset__head-tabs--flexible () {
     ul {
         li {
-            margin-bottom: -@ComTabset-BorderWidth;
+            .mx__flex(1 1);
+            text-align: center;
+        }
+    }
+}
+
+.com__tabset__head-tabs--top () {
+    .com__tabset__head-tabs--horizontal;
+    margin-bottom: -@ComTabset-BorderWidth;
+
+    ul {
+        li {
             border-radius: @ComTabset-BorderRadius @ComTabset-BorderRadius 0 0;
 
             &.active {
@@ -180,13 +332,45 @@
 }
 
 .com__tabset__head-tabs--bottom () {
+    .com__tabset__head-tabs--horizontal;
+    margin-top: -@ComTabset-BorderWidth;
+
     ul {
         li {
-            margin-top: -@ComTabset-BorderWidth;
             border-radius: 0 0 @ComTabset-BorderRadius @ComTabset-BorderRadius;
 
             &.active {
                 border-top-color: #fff;
+            }
+        }
+    }
+}
+
+.com__tabset__head-tabs--right () {
+    .com__tabset__head-tabs--vertical;
+    margin-left: -@ComTabset-BorderWidth;
+
+    ul {
+        li {
+            border-radius: 0 @ComTabset-BorderRadius @ComTabset-BorderRadius 0;
+
+            &.active {
+                border-left-color: #ffffff;
+            }
+        }
+    }
+}
+
+.com__tabset__head-tabs--left () {
+    .com__tabset__head-tabs--vertical;
+    margin-right: -@ComTabset-BorderWidth;
+
+    ul {
+        li {
+            border-radius: @ComTabset-BorderRadius 0 0 @ComTabset-BorderRadius;
+
+            &.active {
+                border-right-color: #ffffff;
             }
         }
     }
@@ -197,26 +381,20 @@
 @media only screen and (max-width : @ComTabset-AdaptiveFrom) {
 
     html.is-adaptive {
-        .com__tabset__head-menu,
-        .com__tabset__head-title {
-            display: block;
-        }
-
-        .com__tabset__head-tabs {
-            display: none;
-        }
-
         .com__tabset {
-            &.is-tabs-top {
-                > .com__tabset__content {
-                    border-radius: 0 0 @ComTabset-BorderRadius @ComTabset-BorderRadius;
-                }
+            display: block !important;
+
+            .com__tabset__head-title {
+                display: block !important;
             }
 
-            &.is-tabs-bottom {
-                > .com__tabset__content {
-                    border-radius: @ComTabset-BorderRadius @ComTabset-BorderRadius 0 0;
-                }
+            .com__tabset__head-tabs {
+                display: none !important;
+            }
+
+            .com__tabset__content {
+                display: block !important;
+                border-radius: 0 0 @ComTabset-BorderRadius @ComTabset-BorderRadius;
             }
         }
     }

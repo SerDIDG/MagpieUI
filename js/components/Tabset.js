@@ -13,7 +13,9 @@ cm.define('Com.Tabset', {
     ],
     'events' : [
         'onRender',
+        'onTabShowStart',
         'onTabShow',
+        'onTabHideStart',
         'onTabHide'
     ],
     'params' : {
@@ -23,8 +25,13 @@ cm.define('Com.Tabset', {
         'renderOnInit' : true,
         'active' : null,
         'className' : '',
-        'tabsPosition' : 'top',         // top | bottom
+        'tabsPosition' : 'top',         // top | right | bottom | left
+        'tabsFlexible' : false,
         'showTabs' : true,
+        'switchManually' : false,
+        'animateSwitch' : true,
+        'animateDuration' : 300,
+        'calculateMaxHeight' : false,
         'tabs' : [],
         'icons' : {
             'menu' : 'icon default linked'
@@ -33,24 +40,34 @@ cm.define('Com.Tabset', {
 },
 function(params){
     var that = this,
-        hashInterval;
+        hashInterval,
+        resizeInterval;
     
     that.nodes = {
         'tabs' : []
     };
+    that.anim = {};
     that.tabs = {};
     that.tabsListing = [];
-    that.active = null;
+    that.active = false;
+    that.previous = false;
     
     var init = function(){
         that.setParams(params);
         that.convertEvents(that.params['events']);
         that.getDataNodes(that.params['node'], that.params['nodesDataMarker'], false);
         that.getDataConfig(that.params['node']);
+        validateParams();
         // Render tabset view
         renderView();
         // Render active tab
         that.params['renderOnInit'] && render();
+    };
+
+    var validateParams = function(){
+        if(!cm.inArray(['top', 'right', 'bottom', 'left'], that.params['tabsPosition'])){
+            that.params['tabsPosition'] = 'top';
+        }
     };
 
     var render = function(){
@@ -78,28 +95,27 @@ function(params){
                 that.nodes['contentUL'] = cm.Node('ul')
             )
         );
-        that.nodes['header'] = cm.Node('div', {'class' : 'com__tabset__head'},
-            cm.Node('div', {'class' : 'com__tabset__head-tabs'},
-                that.nodes['headerUL'] = cm.Node('ul')
-            ),
-            that.nodes['header-title'] = cm.Node('div', {'class' : 'com__tabset__head-title'}),
+        that.nodes['headerTitle'] = cm.Node('div', {'class' : 'com__tabset__head-title'},
+            that.nodes['headerTitleText'] = cm.Node('div', {'class' : 'com__tabset__head-text'}),
             cm.Node('div', {'class' : 'com__tabset__head-menu pt__menu'},
                 cm.Node('div', {'class' : that.params['icons']['menu']}),
                 that.nodes['headerMenuUL'] = cm.Node('ul', {'class' : 'pt__menu-dropdown'})
             )
         );
-        // Show tabs
-        if(!that.params['showTabs']){
-            that.nodes['header'].style.display = 'none';
+        that.nodes['headerTabs'] = cm.Node('div', {'class' : 'com__tabset__head-tabs'},
+            that.nodes['headerUL'] = cm.Node('ul')
+        );
+        // Embed Tabs
+        if(that.params['showTabs']){
+            cm.insertBefore(that.nodes['headerTitle'], that.nodes['content']);
+            if(/bottom|right/.test(that.params['tabsPosition'])){
+                cm.insertAfter(that.nodes['headerTabs'], that.nodes['content']);
+            }else{
+                cm.insertBefore(that.nodes['headerTabs'], that.nodes['content']);
+            }
         }
-        // Tabs position
-        if(that.params['tabsPosition'] == 'bottom'){
-            cm.addClass(that.nodes['container'], 'is-tabs-bottom');
-            cm.insertAfter(that.nodes['header'], that.nodes['content']);
-        }else{
-            cm.addClass(that.nodes['container'], 'is-tabs-top');
-            cm.insertBefore(that.nodes['header'], that.nodes['content']);
-        }
+        // Init Animation
+        that.anim['contentUL'] = new cm.Animation(that.nodes['contentUL']);
         /* *** RENDER TABS *** */
         cm.forEach(that.nodes['tabs'], function(item){
             renderTab(
@@ -111,6 +127,10 @@ function(params){
         });
         /* *** ATTRIBUTES *** */
         // CSS
+        cm.addClass(that.nodes['container'], ['is-tabs', that.params['tabsPosition']].join('-'));
+        if(that.params['tabsFlexible']){
+            cm.addClass(that.nodes['container'], 'is-tabs-flexible');
+        }
         if(!cm.isEmpty(that.params['className'])){
             cm.addClass(that.nodes['container'], that.params['className']);
         }
@@ -127,6 +147,7 @@ function(params){
         cm.remove(that.params['node']);
         /* *** EVENTS *** */
         Part.Menu();
+        cm.addEvent(window, 'resize', resizeHandler);
         that.triggerEvent('onRender');
     };
 
@@ -141,7 +162,9 @@ function(params){
             'title' : '',
             'content' : cm.Node('li'),
             'isHide' : true,
+            'onShowStart' : function(that, tab){},
             'onShow' : function(that, tab){},
+            'onHideStart' : function(that, tab){},
             'onHide' : function(that, tab){}
         }, item);
         // Structure
@@ -149,8 +172,6 @@ function(params){
         item['menu'] = renderTabLink(item);
         // Remove active tab class if exists
         cm.removeClass(item['content'], 'active');
-        // Hide content
-        item['content'].style.display = 'none';
         // Append tab
         that.nodes['headerUL'].appendChild(item['tab']['container']);
         that.nodes['headerMenuUL'].appendChild(item['menu']['container']);
@@ -195,28 +216,69 @@ function(params){
     };
 
     var set = function(id){
-        // Hide previous active tab
+        // Hide Previous Tab
         if(that.active && that.tabs[that.active]){
-            // onHide event
+            that.previous = that.active;
             that.tabs[that.active]['isHide'] = true;
-            that.tabs[that.active]['onHide'](that, that.tabs[that.active]);
-            that.triggerEvent('onTabHide', that.tabs[that.active]);
+            // Hide Start Event
+            that.tabs[that.active]['onHideStart'](that, that.tabs[that.active]);
+            that.triggerEvent('onTabHideStart', that.tabs[that.active]);
             // Hide
             cm.removeClass(that.tabs[that.active]['tab']['container'], 'active');
             cm.removeClass(that.tabs[that.active]['menu']['container'], 'active');
-            that.tabs[that.active]['content'].style.display = 'none';
+            cm.removeClass(that.tabs[that.active]['content'], 'active');
+            // Hide End Event
+            that.tabs[that.active]['onHide'](that, that.tabs[that.active]);
+            that.triggerEvent('onTabHide', that.tabs[that.active]);
         }
-        // Show current tab
+        // Show New Tab
         that.active = id;
+        that.tabs[that.active]['isHide'] = false;
+        // Show Start Event
+        that.tabs[that.active]['onShow'](that, that.tabs[that.active]);
+        that.triggerEvent('onTabShow', that.tabs[that.active]);
         // Show
         cm.addClass(that.tabs[that.active]['tab']['container'], 'active');
         cm.addClass(that.tabs[that.active]['menu']['container'], 'active');
-        that.tabs[that.active]['content'].style.display = 'block';
-        that.nodes['header-title'].innerHTML = that.tabs[that.active]['title'];
-        // onShow event
-        that.tabs[that.active]['isHide'] = false;
-        that.tabs[that.active]['onShow'](that, that.tabs[that.active]);
-        that.triggerEvent('onTabShow', that.tabs[that.active]);
+        cm.addClass(that.tabs[that.active]['content'], 'active');
+        that.nodes['headerTitleText'].innerHTML = that.tabs[that.active]['title'];
+        // Animate
+        if(!that.params['switchManually']){
+            if(that.previous && that.params['animateSwitch'] && !that.params['calculateMaxHeight']){
+                animateSwitch();
+            }else{
+                if(that.params['calculateMaxHeight']){
+                    calculateMaxHeight();
+                }
+                // Show End Event
+                that.tabs[that.active]['onShow'](that, that.tabs[that.active]);
+                that.triggerEvent('onTabShow', that.tabs[that.active]);
+            }
+        }
+    };
+
+    /* *** HELPERS *** */
+
+    var animateSwitch = function(){
+        var previousHeight = 0,
+            currentHeight = 0;
+        // Get height
+        if(that.previous){
+            previousHeight = cm.getRealHeight(that.tabs[that.previous]['content'], 'offsetRelative');
+        }
+        if(that.active){
+            currentHeight = cm.getRealHeight(that.tabs[that.active]['content'], 'offsetRelative');
+        }
+        // Animate
+        that.nodes['contentUL'].style.overflow = 'hidden';
+        that.nodes['contentUL'].style.height = [previousHeight, 'px'].join('');
+        that.anim['contentUL'].go({'style' : {'height' : [currentHeight, 'px'].join('')}, 'duration' : that.params['animateDuration'], 'anim' : 'smooth', 'onStop' : function(){
+            that.nodes['contentUL'].style.overflow = 'visible';
+            that.nodes['contentUL'].style.height = 'auto';
+            // Show End Event
+            that.tabs[that.active]['onShow'](that, that.tabs[that.active]);
+            that.triggerEvent('onTabShow', that.tabs[that.active]);
+        }});
     };
 
     var initHashChange = function(){
@@ -246,6 +308,23 @@ function(params){
             return null;
         }
         return id && that.tabs[id]? id : that.tabsListing[0]['id'];
+    };
+
+    var calculateMaxHeight = function(){
+        var height = 0;
+        cm.forEach(that.tabs, function(item){
+            height = Math.max(height, cm.getRealHeight(item['content'], 'offsetRelative'));
+        });
+        if(height != that.nodes['contentUL'].offsetHeight){
+            that.nodes['contentUL'].style.height = [height, 'px'].join('');
+        }
+    };
+
+    var resizeHandler = function(){
+        // Recalculate slider height
+        if(that.params['calculateMaxHeight']){
+            calculateMaxHeight();
+        }
     };
     
     /* ******* MAIN ******* */
@@ -292,7 +371,9 @@ function(params){
 
     that.remove = function(){
         cm.removeEvent(window, 'hashchange', hashHandler);
+        cm.removeEvent(window, 'resize', resizeHandler);
         hashInterval && clearInterval(hashInterval);
+        resizeInterval && clearInterval(resizeInterval);
         cm.remove(that.nodes['container']);
         return that;
     };
@@ -302,5 +383,4 @@ function(params){
     };
 
     init();
-    
 });

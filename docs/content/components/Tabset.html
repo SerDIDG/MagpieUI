@@ -321,6 +321,7 @@ new Com.Tabset({
         <hr>
 
         <h2>Set tab position:</h2>
+        <h3>Bottom</h3>
         <textarea class="cm-codebox cm-autoresize" readonly>
 new Com.Tabset({
     'tabsPosition' : 'bottom'
@@ -349,6 +350,38 @@ new Com.Tabset({
         <br>
         <ul class="com__tabset__content-ul" data-element="tabset" data-config='{"toggleOnHashChange" : false, "tabsPosition" : "bottom"}'>
             <li data-node="tabs:[]:container" data-config='{"id" : "foo", "title" : "Foo"}'>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum tempor velit eget tortor eleifend, at hendrerit neque interdum. Proin faucibus aliquam ligula id suscipit. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nulla sed venenatis odio. Curabitur in pharetra ligula. Duis eget leo nunc. Nullam non nisl imperdiet nulla accumsan scelerisque vel ac sem. Nam id lectus rutrum lacus ullamcorper vehicula. Vestibulum scelerisque lorem ut dictum luctus. Donec pellentesque leo id felis ultricies imperdiet. Vestibulum non tincidunt magna, at suscipit tellus. Phasellus sed mi turpis. Ut laoreet fringilla tortor laoreet convallis. Curabitur lorem odio, gravida luctus velit vitae, tempus imperdiet augue. Curabitur eleifend ex id sem venenatis maximus.</p>
+            </li>
+            <li data-node="tabs:[]:container" data-config='{"id" : "bar", "title" : "Bar"}'>
+                <p>Pellentesque vel velit sit amet libero tincidunt mattis faucibus sit amet velit.</p>
+            </li>
+        </ul>
+
+        <h3>Left</h3>
+        <textarea class="cm-codebox cm-autoresize" readonly>
+new Com.Tabset({
+    'tabsPosition' : 'left',
+    'calculateMaxHeight' : true
+});</textarea>
+        <br>
+        <ul class="com__tabset__content-ul" data-element="tabset" data-config='{"toggleOnHashChange" : false, "tabsPosition" : "left", "calculateMaxHeight" : true}'>
+            <li data-node="tabs:[]:container" data-config='{"id" : "foo", "title" : "Foo"}'>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum tempor velit eget tortor eleifend, at hendrerit neque interdum. Proin faucibus aliquam ligula id suscipit. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nulla sed venenatis odio. Curabitur in pharetra ligula. Duis eget leo nunc. Nullam non nisl imperdiet nulla accumsan scelerisque vel ac sem. Nam id lectus rutrum lacus ullamcorper vehicula. Vestibulum scelerisque lorem ut dictum luctus. Donec pellentesque leo id felis ultricies imperdiet. Vestibulum non tincidunt magna, at suscipit tellus. Phasellus sed mi turpis. Ut laoreet fringilla tortor laoreet convallis. Curabitur lorem odio, gravida luctus velit vitae, tempus imperdiet augue. Curabitur eleifend ex id sem venenatis maximus.</p>
+            </li>
+            <li data-node="tabs:[]:container" data-config='{"id" : "bar", "title" : "Bar"}'>
+                <p>Pellentesque vel velit sit amet libero tincidunt mattis faucibus sit amet velit.</p>
+            </li>
+        </ul>
+
+        <h3>Right</h3>
+        <textarea class="cm-codebox cm-autoresize" readonly>
+new Com.Tabset({
+    'tabsPosition' : 'right',
+    'calculateMaxHeight' : true
+});</textarea>
+        <br>
+        <ul class="com__tabset__content-ul" data-element="tabset" data-config='{"toggleOnHashChange" : false, "tabsPosition" : "right", "calculateMaxHeight" : true}'>
+            <li data-node="tabs:[]:container" data-config='{"id" : "foo", "title" : "Foo"}'>
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
             </li>
             <li data-node="tabs:[]:container" data-config='{"id" : "bar", "title" : "Bar"}'>
@@ -372,6 +405,27 @@ new Com.Tabset({
                 </ul>
             </li>
             <li data-node="tabs:[]:container" data-config='{"id" : "bar", "title" : "Bar"}'>
+                <p>Pellentesque vel velit sit amet libero tincidunt mattis faucibus sit amet velit.</p>
+            </li>
+        </ul>
+
+        <hr>
+
+        <h2>Flexible tabs:</h2>
+
+        <textarea class="cm-codebox cm-autoresize" readonly>
+new Com.Tabset({
+    'tabsFlexible' : true
+});</textarea>
+        <br>
+        <ul class="com__tabset__content-ul" data-element="tabset" data-config='{"toggleOnHashChange" : false, "tabsPosition" : "top", "tabsFlexible" : true}'>
+            <li data-node="tabs:[]:container" data-config='{"id" : "foo", "title" : "Foo"}'>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </li>
+            <li data-node="tabs:[]:container" data-config='{"id" : "bar", "title" : "Bar"}'>
+                <p>Pellentesque vel velit sit amet libero tincidunt mattis faucibus sit amet velit.</p>
+            </li>
+            <li data-node="tabs:[]:container" data-config='{"id" : "foobar", "title" : "Foo Bar"}'>
                 <p>Pellentesque vel velit sit amet libero tincidunt mattis faucibus sit amet velit.</p>
             </li>
         </ul>
