@@ -133,6 +133,12 @@
 
             .safari & {
                 opacity: 1;
+                visibility: hidden;
+                .mx__transition(visibility, @CmUI-Transition-Duration);
+
+                &.active {
+                    visibility: visible;
+                }
             }
         }
     }
