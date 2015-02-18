@@ -7731,8 +7731,6 @@ html.ie9 .com__palette .b-range {
 .safari .com__tabset__content > ul > li {
   opacity: 1;
   visibility: hidden;
-  -webkit-transition: visibility 300ms ease-in-out;
-  transition: visibility 300ms ease-in-out;
 }
 .safari .com__tabset__content > ul > li.active {
   visibility: visible;
