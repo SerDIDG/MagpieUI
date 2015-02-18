@@ -1,12 +1,8 @@
 /* ******* PARTS: GRID ******* */
 
 .pt__grid {
-    margin: 0 0 @CmIndent-Medium;
+    .cm__box;
     overflow: hidden;
-
-    &.bottom {
-        margin: 0;
-    }
 
     > ul {
         .cm__list-clear;
@@ -164,15 +160,17 @@
 }
 
 .pt__grid__indent (@indent: @PtGrid-Indent) {
+    @half__indent: @indent / 2;
+
     > ul {
-        margin: @indent -@indent -@indent;
+        margin: @half__indent -@half__indent -@half__indent;
 
         &:first-child {
-            margin: -@indent;
+            margin: -@half__indent;
         }
 
         > li {
-            padding: @indent;
+            padding: @half__indent;
         }
     }
 }

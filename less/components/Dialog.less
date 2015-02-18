@@ -95,24 +95,8 @@
     }
 }
 
-/* IE Opacity */
-
-.ie6 .com__dialog,
-.ie7 .com__dialog,
-.ie8 .com__dialog {
-    .mx__opacity-ie(0);
-}
-
-.ie6 .com__dialog > .bg,
-.ie7 .com__dialog > .bg,
-.ie8 .com__dialog > .bg {
-    .mx__opacity-ie(60);
-}
-
-.ie6 .com__dialog > .window
-.ie7 .com__dialog > .window,
-.ie8 .com__dialog > .window {
-    .mx__opacity-ie(100);
+.com__dialog__inner {
+    overflow: hidden;
 }
 
 /* Confirmation Dialog. Deprecated. */
@@ -253,7 +237,9 @@
 
     // /* *** BLACK *** */
 
-    &.theme-black:extend(.com__dialog.theme-default all) {
+    &.theme-black {
+        &:extend(.com__dialog.theme-default all);
+
         > .window {
             > .icon {
                 &.default {

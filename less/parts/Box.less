@@ -58,7 +58,7 @@
 /* *** TITLE *** */
 
 .pt__box-title {
-    margin: 0 0 @CmIndent-Medium;
+    .cm__box;
 }
 
 /* *** CONTENT *** */
@@ -88,7 +88,7 @@
 /* *** INFO *** */
 
 .pt__box-info {
-    margin: 0 0 @CmIndent-Medium;
+    .cm__box;
 
     dl {
         dt {
@@ -102,10 +102,6 @@
         &:last-child {
             margin: 0;
         }
-    }
-
-    &:last-child {
-        margin: 0;
     }
 }
 
@@ -154,11 +150,7 @@
 
 .pt__box-editable {
     .clearfix;
-    margin: 0 0 @CmIndent-Medium;
-
-    &.bottom {
-        margin: 0;
-    }
+    .cm__box;
 
     .cm__tags {
         margin-bottom: 0;

@@ -39,13 +39,9 @@ header, main, aside, footer, section {
 }
 
 .cm__tags {
+    .cm__box;
     .cm__font;
-    margin: 0 0 @CmFont-Base-LineHeight;
     padding: 0;
-
-    &:last-child {
-        margin-bottom: 0;
-    }
 }
 
 .cm__tags--title {
@@ -56,18 +52,22 @@ header, main, aside, footer, section {
 
 a {
     &:extend(.cm__link all);
+    &:extend(.cm__inherit all);
 }
 
 h1, h2, h3, h4, h5, h6, p, dl, ul, ol, hr {
     &:extend(.cm__tags all);
+    &:extend(.cm__inherit all);
 }
 
 h1, h2, h3, h4, h5, h6 {
     &:extend(.cm__tags--title all);
+    &:extend(.cm__inherit all);
 }
 
 p, dl, ul, ol, hr {
     &:extend(.cm__tags--base all);
+    &:extend(.cm__inherit all);
 }
 
 h1 {

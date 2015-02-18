@@ -178,7 +178,7 @@ function(params){
         if(!nodes['descr']){
             nodes['descr'] = cm.Node('div', {'class' : 'descr'},
                 nodes['scroll'] = cm.Node('div', {'class' : 'scroll'},
-                    nodes['inner'] = cm.Node('div', {'class' : 'inner'})
+                    nodes['inner'] = cm.Node('div', {'class' : 'inner com__dialog__inner'})
                 )
             );
             if(nodes['title']){

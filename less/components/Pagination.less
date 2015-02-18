@@ -1,23 +1,17 @@
 /* ******* PAGINATION ******* */
 
 .com-pagination {
-    margin: 0 0 @CmIndent-Medium;
+    .cm__box;
     line-height: @CmForm-FieldHeight;
     .mx__user-select(none);
 
     ul {
-        margin: 0;
-        padding: 0;
-        list-style: none;
-        font-size: 0;
-        text-align: left;
+        .cm__list-clear;
+        .cm__list-inline--base;
 
         li {
-            display: inline-block;
             margin-right: @CmIndent-XXXSmall;
-            vertical-align: top;
             line-height: @CmForm-FieldHeight;
-            font-size: @CmFont-Base-Size;
 
             &:last-child {
                 margin-right: 0;
@@ -68,11 +62,7 @@
 }
 
 .com-pagination-container {
-    margin: 0 0 @CmIndent-Medium;
-
-    &.bottom {
-        margin: 0;
-    }
+    .cm__box;
 
     > .com-pagination {
         margin: 0;
@@ -90,6 +80,8 @@
     &:last-child {
         margin-bottom: 0;
     }
+
+    // WTF
 
     > div {
         width: 100%;

@@ -16,7 +16,8 @@
 /* *** FIELD *** */
 
 .form {
-    dl:extend(.clear all) {
+    dl {
+        .clearfix;
         margin: @CmForm-FieldIndent 0 0 0;
         padding: 0;
         display: block;
@@ -232,7 +233,9 @@
 
 /* *** HINT ***  */
 
-.form .hint:extend(.cm__font--hint-cursive) {
+.form .hint {
+    &:extend(.cm__inherit all);
+    .cm__font--hint-cursive;
     text-transform: none;
 }
 
