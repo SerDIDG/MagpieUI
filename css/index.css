@@ -924,6 +924,7 @@ hr {
   font: 400 13px/18px 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
   padding: 0;
+  margin: 0 0 18px;
 }
 .cm__tags.bottom,
 .cm__tags.is-last,
