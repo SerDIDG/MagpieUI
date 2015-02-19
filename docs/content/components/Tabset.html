@@ -64,7 +64,6 @@
 
         <h2>Initialize</h2>
         <pre class="cm-codebox">new Com.Tabset(o);</pre>
-        <br>
         <p>or</p>
         <textarea class="cm-codebox cm-autoresize" readonly>
 <script type="text/javascript">
@@ -85,7 +84,6 @@
         <p>Pellentesque vel velit sit amet libero tincidunt mattis faucibus sit amet velit.</p>
     </li>
 </ul></textarea>
-        <br>
         <ul class="com__tabset__content-ul" data-element="tabset" data-config='{"toggleOnHashChange" : false}'>
             <li data-node="tabs:[]:container" data-config='{"id" : "foo", "title" : "Foo"}'>
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
@@ -196,28 +194,23 @@ new Com.Tabset({
     <li data-node="tabs:[]:container" data-config='{"id" : "methods", "title" : "Methods"}'>
         <h2>Get tabset by id:</h2>
         <pre class="cm-codebox">Com.GetTabset(id);</pre>
-        <br>
         <p>Returns class of tabset component.</p>
 
         <h2>Render tabset:</h2>
         <p>This method will be init tabset misc helpers and set active tab. Must be called only when parameter <code>renderOnInit</code> is <code>false</code>.</p>
         <pre class="cm-codebox">tabset.render();</pre>
-        <br>
         <p>Returns a class of tabset.</p>
 
         <h2>Set active tab by id:</h2>
         <pre class="cm-codebox">tabset.set(id);</pre>
-        <br>
         <p>Returns class of tabset component.</p>
 
         <h2>Get tab by id:</h2>
         <pre class="cm-codebox">tabset.get(id);</pre>
-        <br>
         <p>Returns specified tab object.</p>
 
         <h2>Add tab:</h2>
         <pre class="cm-codebox">tabset.addTab(o);</pre>
-        <br>
         <p>Example:</p>
         <textarea class="cm-codebox cm-autoresize" readonly>
 tabset.addTab({
@@ -227,17 +220,14 @@ tabset.addTab({
     'onShow' : function(tabset, tab){},
     'onHide' : function(tabset, tab){}
 });</textarea>
-        <br>
         <p>Returns class of tabset component.</p>
 
         <h2>Remove tab by id:</h2>
         <pre class="cm-codebox">tabset.removeTab(id);</pre>
-        <br>
         <p>Returns class of tabset component.</p>
 
         <h2>Set events on tabs:</h2>
         <pre class="cm-codebox">tabset.setEvents(o);</pre>
-        <br>
         <p>Example:</p>
         <textarea class="cm-codebox cm-autoresize" readonly>
 tabset.setEvents({
@@ -246,38 +236,31 @@ tabset.setEvents({
         'onHide' : function(tabset, tab){}
     }
 });</textarea>
-        <br>
         <p>Returns class of tabset component.</p>
 
         <h2>Set event:</h2>
         <pre class="cm-codebox">tabset.addEvent(event, handler);</pre>
-        <br>
         <p>Available events: <code>onRender</code>, <code>onTabShow</code>, <code>onTabHide</code>.  Returns class of tabset component.</p>
 
         <h2>Set events:</h2>
         <pre class="cm-codebox">tabset.addEvents(o);</pre>
-        <br>
         <p>Example: <code>{'onTabShow' : function(tabset, tab){}}</code>. Available events: <code>onRender</code>, <code>onTabShow</code>, <code>onTabHide</code>.  Returns class of tabset component.</p>
 
         <h2>Remove event:</h2>
         <pre class="cm-codebox">tabset.removeEvent(event, handler);</pre>
-        <br>
         <p>Available events: <code>onRender</code>, <code>onTabShow</code>, <code>onTabHide</code>.  Returns class of tabset component.</p>
 
         <h2>Trigger event:</h2>
         <pre class="cm-codebox">tabset.triggerEvent(event);</pre>
-        <br>
         <p>Available events: <code>onRender</code>, <code>onTabShow</code>, <code>onTabHide</code>.  Returns class of tabset component.</p>
 
         <h2>Remove tabset:</h2>
         <p>This method will be stop all misc helpers and remove tabset html node.</p>
         <pre class="cm-codebox">tabset.remove();</pre>
-        <br>
         <p>Returns class of tabset component.</p>
 
         <h2>Get list of tabset nodes:</h2>
         <pre class="cm-codebox">tabset.getNodes(key);</pre>
-        <br>
         <p>Returns object of nodes, or node if key is specified.</p>
     </li>
 
@@ -287,7 +270,6 @@ tabset.setEvents({
 new Com.Tabset({
     'active' : 'bar'
 });</textarea>
-        <br>
         <p>or</p>
         <textarea class="cm-codebox cm-autoresize" readonly>
 <script type="text/javascript">
@@ -308,7 +290,6 @@ new Com.Tabset({
         <p>Pellentesque vel velit sit amet libero tincidunt mattis faucibus sit amet velit.</p>
     </li>
 </ul></textarea>
-        <br>
         <ul class="com__tabset__content-ul" data-element="tabset" data-config='{"toggleOnHashChange" : false, "active" : "bar"}'>
             <li data-node="tabs:[]:container" data-config='{"id" : "foo", "title" : "Foo"}'>
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
@@ -326,7 +307,6 @@ new Com.Tabset({
 new Com.Tabset({
     'tabsPosition' : 'bottom'
 });</textarea>
-        <br>
         <p>or</p>
         <textarea class="cm-codebox cm-autoresize" readonly>
 <script type="text/javascript">
@@ -347,7 +327,6 @@ new Com.Tabset({
         <p>Pellentesque vel velit sit amet libero tincidunt mattis faucibus sit amet velit.</p>
     </li>
 </ul></textarea>
-        <br>
         <ul class="com__tabset__content-ul" data-element="tabset" data-config='{"toggleOnHashChange" : false, "tabsPosition" : "bottom"}'>
             <li data-node="tabs:[]:container" data-config='{"id" : "foo", "title" : "Foo"}'>
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum tempor velit eget tortor eleifend, at hendrerit neque interdum. Proin faucibus aliquam ligula id suscipit. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nulla sed venenatis odio. Curabitur in pharetra ligula. Duis eget leo nunc. Nullam non nisl imperdiet nulla accumsan scelerisque vel ac sem. Nam id lectus rutrum lacus ullamcorper vehicula. Vestibulum scelerisque lorem ut dictum luctus. Donec pellentesque leo id felis ultricies imperdiet. Vestibulum non tincidunt magna, at suscipit tellus. Phasellus sed mi turpis. Ut laoreet fringilla tortor laoreet convallis. Curabitur lorem odio, gravida luctus velit vitae, tempus imperdiet augue. Curabitur eleifend ex id sem venenatis maximus.</p>
@@ -363,7 +342,6 @@ new Com.Tabset({
     'tabsPosition' : 'left',
     'calculateMaxHeight' : true
 });</textarea>
-        <br>
         <ul class="com__tabset__content-ul" data-element="tabset" data-config='{"toggleOnHashChange" : false, "tabsPosition" : "left", "calculateMaxHeight" : true}'>
             <li data-node="tabs:[]:container" data-config='{"id" : "foo", "title" : "Foo"}'>
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum tempor velit eget tortor eleifend, at hendrerit neque interdum. Proin faucibus aliquam ligula id suscipit. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nulla sed venenatis odio. Curabitur in pharetra ligula. Duis eget leo nunc. Nullam non nisl imperdiet nulla accumsan scelerisque vel ac sem. Nam id lectus rutrum lacus ullamcorper vehicula. Vestibulum scelerisque lorem ut dictum luctus. Donec pellentesque leo id felis ultricies imperdiet. Vestibulum non tincidunt magna, at suscipit tellus. Phasellus sed mi turpis. Ut laoreet fringilla tortor laoreet convallis. Curabitur lorem odio, gravida luctus velit vitae, tempus imperdiet augue. Curabitur eleifend ex id sem venenatis maximus.</p>
@@ -379,7 +357,6 @@ new Com.Tabset({
     'tabsPosition' : 'right',
     'calculateMaxHeight' : true
 });</textarea>
-        <br>
         <ul class="com__tabset__content-ul" data-element="tabset" data-config='{"toggleOnHashChange" : false, "tabsPosition" : "right", "calculateMaxHeight" : true}'>
             <li data-node="tabs:[]:container" data-config='{"id" : "foo", "title" : "Foo"}'>
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
@@ -417,7 +394,6 @@ new Com.Tabset({
 new Com.Tabset({
     'tabsFlexible' : true
 });</textarea>
-        <br>
         <ul class="com__tabset__content-ul" data-element="tabset" data-config='{"toggleOnHashChange" : false, "tabsPosition" : "top", "tabsFlexible" : true}'>
             <li data-node="tabs:[]:container" data-config='{"id" : "foo", "title" : "Foo"}'>
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>

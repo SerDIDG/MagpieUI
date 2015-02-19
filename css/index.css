@@ -156,14 +156,19 @@
   text-transform: uppercase;
 }
 .cm-codebox {
+  margin: 0 0 24px;
   display: block;
   white-space: pre-wrap;
-  margin: 4px 0;
   padding: 8px 12px;
   background: #ffffff;
   border: 1px dashed #cccccc;
   border-radius: 3px;
   font-family: "Courier New", Courier, monospace;
+}
+.cm-codebox.bottom,
+.cm-codebox.is-last,
+.cm-codebox:last-child {
+  margin-bottom: 0;
 }
 .cm-autoresize {
   height: 0;
@@ -4465,10 +4470,16 @@ button::-moz-focus-inner {
 }
 /* ******* PART: IMAGE BOX ******* */
 .pt__image {
+  margin: 0 0 24px;
   position: relative;
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
+}
+.pt__image.bottom,
+.pt__image.is-last,
+.pt__image:last-child {
+  margin-bottom: 0;
 }
 .pt__image > .inner {
   display: block;

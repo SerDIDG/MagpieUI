@@ -56,7 +56,6 @@
 
         <h2>Initialize</h2>
         <pre class="cm-codebox">new Com.Select(o);</pre>
-        <br>
         <p>or</p>
         <textarea class="cm-codebox cm-autoresize" readonly>
 <script type="text/javascript">
@@ -70,7 +69,6 @@
 </script>
 
 <select name="foobar" data-element="select"></select></textarea>
-        <br>
 
         <h2>Parameters</h2>
         <dl>
@@ -181,102 +179,82 @@ new Com.Select({
     <li data-node="tabs:[]:container" data-config='{"id" : "methods", "title" : "Methods"}'>
         <h2>Get select by id:</h2>
         <pre class="cm-codebox">Com.GetSelect('id');</pre>
-        <br>
         <p>Returns class of select component.</p>
 
         <h2>Get selected option value:</h2>
         <pre class="cm-codebox">select.get();</pre>
-        <br>
         <p>Returns selected option value, or array of values if select is multiple.</p>
 
         <h2>Set active option:</h2>
         <pre class="cm-codebox">select.set(value);</pre>
-        <br>
         <p>Set active option value, or array of values if select is multiple.  Returns class of select component.</p>
 
         <h2>Select all options:</h2>
         <pre class="cm-codebox">select.selectAll();</pre>
-        <br>
         <p>Select all options in multiple select.  Returns class of select component.</p>
 
         <h2>Deselect all options:</h2>
         <pre class="cm-codebox">select.deselectAll();</pre>
-        <br>
         <p>Deselect all options in multiple select.  Returns class of select component.</p>
 
         <h2>Set event:</h2>
         <pre class="cm-codebox">select.addEvent(event, handler);</pre>
-        <br>
         <p>Available events: onSelect, onChange, onFocus, onBlur.  Returns class of select component.</p>
 
         <h2>Set events:</h2>
         <pre class="cm-codebox">select.addEvents(o);</pre>
-        <br>
         <p>Example: <code>{'onChange' : function(){}}</code>. Available events: onSelect, onChange, onFocus, onBlur.  Returns class of select component.</p>
 
         <h2>Remove event:</h2>
         <pre class="cm-codebox">select.removeEvent(event, handler);</pre>
-        <br>
         <p>Available events: onSelect, onChange, onFocus, onBlur.  Returns class of select component.</p>
 
         <h2>Trigger event:</h2>
         <pre class="cm-codebox">select.triggerEvent(event);</pre>
-        <br>
         <p>Available events: onSelect, onChange, onFocus, onBlur.  Returns class of select component.</p>
 
         <h2>Add option:</h2>
         <pre class="cm-codebox">select.addOption(value, text);</pre>
-        <br>
         <p>Returns class of select component.</p>
 
         <h2>Add options:</h2>
         <pre class="cm-codebox">select.addOptions(arr);</pre>
-        <br>
         <p>Example: <code>[{'value' : 'foo', 'text' : 'Bar'}]</code>.  Returns class of select component.</p>
 
         <h2>Edit option text:</h2>
         <pre class="cm-codebox">select.editOption(value, text);</pre>
-        <br>
         <p>Returns class of select component.</p>
 
         <h2>Remove option:</h2>
         <pre class="cm-codebox">select.removeOption(value);</pre>
-        <br>
         <p> Returns class of select component.</p>
 
         <h2>Remove all options:</h2>
         <pre class="cm-codebox">select.removeOptionAll();</pre>
-        <br>
         <p> Returns class of select component.</p>
 
         <h2>Get option:</h2>
         <pre class="cm-codebox">select.getOption(value);</pre>
-        <br>
         <p>Returns option object.</p>
 
         <h2>Get options:</h2>
         <pre class="cm-codebox">select.getOption(arr);</pre>
-        <br>
         <p>Returns array of options.</p>
 
         <h2>Get all options:</h2>
         <pre class="cm-codebox">select.getOptionsAll();</pre>
-        <br>
         <p>Returns array of options.</p>
 
         <h2>Disable:</h2>
         <pre class="cm-codebox">select.disable();</pre>
-        <br>
         <p> Returns class of select component.</p>
 
         <h2>Enable:</h2>
         <pre class="cm-codebox">select.enable();</pre>
-        <br>
         <p> Returns class of select component.</p>
 
         <h2>Get list of select nodes:</h2>
         <pre class="cm-codebox">select.getNodes(key);</pre>
-        <br>
         <p>Returns object of nodes, or node if key is specified.</p>
     </li>
 
@@ -360,16 +338,13 @@ new Com.Select({
         {'value' : 'foo', 'text' : 'Bar'}
     ]
 });</textarea>
-        <br>
         <p>or</p>
         <pre class="cm-codebox">select.addOption(value, text)</pre>
-        <br>
         <p>or</p>
         <textarea class="cm-codebox cm-autoresize" readonly>
 select.addOptions([
     {'value' : 'foo', 'text' : 'Bar'}
 ]);</textarea>
-        <br>
         <p>or</p>
         <textarea class="cm-codebox cm-autoresize" readonly>
 <select data-element="select" data-config='{"options" : [{"value" : "foo", "text" : "Bar"}]}'></select></textarea>

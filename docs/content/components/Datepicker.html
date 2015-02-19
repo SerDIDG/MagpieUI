@@ -67,7 +67,6 @@
 
         <h2>Initialize</h2>
         <pre class="cm-codebox">new Com.Datepicker(o);</pre>
-        <br>
         <p>or</p>
         <textarea class="cm-codebox cm-autoresize" readonly>
 <script type="text/javascript">
@@ -81,7 +80,6 @@
 </script>
 
 <input type="text" readonly data-element="datepicker"></textarea>
-        <br>
 
         <h2>Parameters</h2>
         <dl>
@@ -261,113 +259,92 @@ new Com.Datepicker({
     <li data-node="tabs:[]:container" data-config='{"id" : "methods", "title" : "Methods"}'>
         <h2>Get datepicker by id:</h2>
         <pre class="cm-codebox">Com.GetDatepicker('id');</pre>
-        <br>
         <p>Returns class of datepicker component..</p>
 
         <h2>Get value:</h2>
         <pre class="cm-codebox">datepicker.get(format);</pre>
-        <br>
         <p>Returns value in input format, or in specified format.</p>
 
         <h2>Get value as date object:</h2>
         <pre class="cm-codebox">datepicker.getDate();</pre>
-        <br>
         <p>Returns value in date object.</p>
 
         <h2>Get selected year:</h2>
         <pre class="cm-codebox">datepicker.getFullYear();</pre>
-        <br>
         <p>Returns number.</p>
 
         <h2>Get selected month:</h2>
         <pre class="cm-codebox">datepicker.getMonth();</pre>
-        <br>
         <p>Returns number.</p>
 
         <h2>Get selected date:</h2>
         <pre class="cm-codebox">datepicker.getDay();</pre>
-        <br>
         <p>Returns number.</p>
 
         <h2>Get selected hours:</h2>
         <pre class="cm-codebox">datepicker.getHours();</pre>
-        <br>
         <p>Returns number.</p>
 
         <h2>Get selected minutes:</h2>
         <pre class="cm-codebox">datepicker.getMinutes();</pre>
-        <br>
         <p>Returns number.</p>
 
         <h2>Set value:</h2>
         <pre class="cm-codebox">datepicker.set(date);</pre>
-        <br>
         <p>Set value in input format, or set value in date object.<br>Returns class of datepicker component.</p>
 
         <h2>Set event:</h2>
         <pre class="cm-codebox">datepicker.addEvent(event, handler);</pre>
-        <br>
         <p>Available events: <code>onRender</code>, <code>onSelect</code>, <code>onChange</code>, <code>onClear</code>, <code>onFocus</code>, <code>onBlur</code>.<br>Returns class of datepicker component.</p>
 
         <h2>Set events:</h2>
         <pre class="cm-codebox">datepicker.addEvents(o);</pre>
-        <br>
         <p>Example: <code>{'onChange' : function(){}}</code>. Available events: <code>onRender</code>, <code>onSelect</code>, <code>onChange</code>, <code>onClear</code>, <code>onFocus</code>, <code>onBlur</code>.  Returns class of datepicker component.</p>
 
         <h2>Remove event:</h2>
         <pre class="cm-codebox">datepicker.removeEvent(event, handler);</pre>
-        <br>
         <p>Available events: <code>onRender</code>, <code>onSelect</code>, <code>onChange</code>, <code>onClear</code>, <code>onFocus</code>, <code>onBlur</code>.<br>Returns class of datepicker component.</p>
 
         <h2>Trigger event:</h2>
         <pre class="cm-codebox">datepicker.triggerEvent(event);</pre>
-        <br>
         <p>Available events: <code>onRender</code>, <code>onSelect</code>, <code>onChange</code>, <code>onClear</code>, <code>onFocus</code>, <code>onBlur</code>.  Returns class of datepicker component.</p>
 
         <h2>Disable:</h2>
         <pre class="cm-codebox">datepicker.disable();</pre>
-        <br>
         <p> Returns class of datepicker component.</p>
 
         <h2>Enable:</h2>
         <pre class="cm-codebox">datepicker.enable();</pre>
-        <br>
         <p> Returns class of datepicker component.</p>
 
         <h2>Get list of datepicker nodes:</h2>
         <pre class="cm-codebox">datepicker.getNodes(key);</pre>
-        <br>
         <p>Returns object of nodes, or node if key is specified.</p>
     </li>
 
     <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
         <h2>Default Datepicker:</h2>
         <textarea class="cm-codebox cm-autoresize" readonly><input type="text" readonly data-element="datepicker"></textarea>
-        <br>
         <input type="text" readonly data-element="datepicker">
         <hr>
 
         <h2>Datepicker with placeholder:</h2>
         <textarea class="cm-codebox cm-autoresize" readonly><input type="text" readonly placeholder="Specify date" data-element="datepicker"></textarea>
-        <br>
         <input type="text" readonly placeholder="Specify date" data-element="datepicker">
         <hr>
 
         <h2>Datepicker with clear button:</h2>
         <textarea class="cm-codebox cm-autoresize" readonly><input type="text" readonly data-element="datepicker" data-config='{"showClearButton" : true}'></textarea>
-        <br>
         <input type="text" readonly data-element="datepicker" data-config='{"showClearButton" : true}'>
         <hr>
 
         <h2>Datepicker with time selector:</h2>
         <textarea class="cm-codebox cm-autoresize" readonly><input type="text" readonly data-element="datepicker" data-config='{"isDateTime" : true}'></textarea>
-        <br>
         <input type="text" readonly data-element="datepicker" data-config='{"isDateTime" : true}'>
         <hr>
 
         <h2>Datepicker with time selector and custom visible date format:</h2>
         <textarea class="cm-codebox cm-autoresize" readonly><input type="text" readonly data-element="datepicker" data-config='{"isDateTime" : true, "displayDateTimeFormat" : "%j %F %Y, %g:%i %A", "value" : "now"}'></textarea>
-        <br>
         <input type="text" readonly data-element="datepicker" data-config='{"isDateTime" : true, "displayDateTimeFormat" : "%j %F %Y, %g:%i %A", "value" : "now"}'>
     </li>
 </ul>
