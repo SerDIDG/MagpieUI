@@ -160,7 +160,7 @@
         margin: 0 -(@indent / 2);
 
         > .container {
-            .com__column {
+            > .com__column {
                 > .inner {
                     margin: 0 (@indent / 2);
                 }
@@ -186,24 +186,24 @@
 
                 > .container {
                     display: block;
+
+                    > .com__column {
+                        margin: @CmIndent-Medium 0 0 0;
+
+                        &:first-child {
+                            margin: 0;
+                        }
+
+                        > .inner {
+                            margin: 0;
+                        }
+                    }
                 }
             }
 
             &.is-editable {
                 .com__columns__chassis {
                     display: none;
-                }
-            }
-
-            .com__column {
-                margin: @CmIndent-Medium 0 0 0;
-
-                &:first-child {
-                    margin: 0;
-                }
-
-                > .inner {
-                    margin: 0;
                 }
             }
         }
