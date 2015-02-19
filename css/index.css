@@ -7857,7 +7857,7 @@ html.ie9 .com__palette .b-range {
   display: -ms-flexbox;
   display: flex;
   -ms-flex-pack: center;
-  padding: 0 16px;
+  padding: 0 24px;
   -webkit-flex-flow: row wrap;
   -ms-flex-flow: row wrap;
   flex-flow: row wrap;
@@ -7904,7 +7904,7 @@ html.ie9 .com__palette .b-range {
   display: -ms-flexbox;
   display: flex;
   -ms-flex-pack: center;
-  padding: 0 16px;
+  padding: 0 24px;
   -webkit-flex-flow: row wrap;
   -ms-flex-flow: row wrap;
   flex-flow: row wrap;
@@ -7972,7 +7972,7 @@ html.ie9 .com__palette .b-range {
   margin-left: -1px;
 }
 .com__tabset.is-tabs-right > .com__tabset__head-tabs ul {
-  padding: 16px 0;
+  padding: 24px 0;
 }
 .com__tabset.is-tabs-right > .com__tabset__head-tabs ul li {
   margin: 0 0 4px 0;
@@ -8024,7 +8024,7 @@ html.ie9 .com__palette .b-range {
   margin-right: -1px;
 }
 .com__tabset.is-tabs-left > .com__tabset__head-tabs ul {
-  padding: 16px 0;
+  padding: 24px 0;
 }
 .com__tabset.is-tabs-left > .com__tabset__head-tabs ul li {
   margin: 0 0 4px 0;
