@@ -7827,6 +7827,15 @@ html.ie9 .com__palette .b-range {
   font-size: 0;
   height: 0;
 }
+.com__tabset__content > ul > li:before {
+  content: ".";
+  display: block;
+  clear: both;
+  visibility: hidden;
+  line-height: 0;
+  font-size: 0;
+  height: 0;
+}
 .com__tabset__content > ul > li.active {
   overflow: visible;
   position: relative;
