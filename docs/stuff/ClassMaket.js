@@ -6,7 +6,8 @@ cm.define('Com.ClassMaket', {
         'DataConfig',
         'DataNodes',
         'Storage',
-        'Callbacks'
+        'Callbacks',
+        'Stack'
     ],
     'events' : [
         'onRender'

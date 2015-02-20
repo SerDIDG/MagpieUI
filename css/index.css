@@ -2614,6 +2614,7 @@ button::-moz-focus-inner {
   margin: 0 12px 0 0;
 }
 .single-file .text {
+  display: block;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
