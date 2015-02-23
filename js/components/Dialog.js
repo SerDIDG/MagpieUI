@@ -76,6 +76,8 @@ function(params){
         nodes = {},
         anim = {};
 
+    that.isOpen = false;
+
     var init = function(){
         that.setParams(params);
         that.convertEvents(that.params['events']);
@@ -281,38 +283,46 @@ function(params){
     };
 
     var open = function(){
-        if(!cm.inDOM(nodes['container'])){
-            that.params['container'].appendChild(nodes['container']);
-        }
-        nodes['container'].style.display = 'block';
-        // Resize interval, will be removed on close
-        resizeInt = setInterval(resize, 5);
-        // Add close event on Esc press
-        cm.addEvent(window, 'keydown', windowClickEvent);
-        // Animate
-        anim['container'].go({'style' : {'opacity' : '1'}, 'duration' : that.params['openTime'], 'onStop' : function(){
+        if(!that.isOpen){
+            that.isOpen = true;
+            if(!cm.inDOM(nodes['container'])){
+                that.params['container'].appendChild(nodes['container']);
+            }
+            nodes['container'].style.display = 'block';
+            // Resize interval, will be removed on close
+            resizeInt = setInterval(resize, 5);
+            // Add close event on Esc press
+            cm.addEvent(window, 'keydown', windowClickEvent);
+            // Animate
+            anim['container'].go({'style' : {'opacity' : '1'}, 'duration' : that.params['openTime'], 'onStop' : function(){
+                // Open Event
+                that.triggerEvent('onOpen');
+            }});
             // Open Event
-            that.triggerEvent('onOpen');
-        }});
-        // Open Event
-        that.triggerEvent('onOpenStart');
+            that.triggerEvent('onOpenStart');
+        }
     };
 
     var close = function(){
-        // Remove resize interval
-        resizeInt && clearInterval(resizeInt);
-        // Remove close event on Esc press
-        cm.removeEvent(window, 'keydown', windowClickEvent);
-        // Animate
-        anim['container'].go({'style' : {'opacity' : '0'}, 'duration' : that.params['openTime'], 'onStop' : function(){
-            nodes['container'].style.display = 'none';
+        if(that.isOpen){
+            that.isOpen = false;
+            // Remove resize interval
+            resizeInt && clearInterval(resizeInt);
+            // Remove close event on Esc press
+            cm.removeEvent(window, 'keydown', windowClickEvent);
+            // Animate
+            anim['container'].go({
+                'style' : {'opacity' : '0'}, 'duration' : that.params['openTime'], 'onStop' : function(){
+                    nodes['container'].style.display = 'none';
+                    // Close Event
+                    that.triggerEvent('onClose');
+                    // Remove Window
+                    that.params['removeOnClose'] && remove();
+                }
+            });
             // Close Event
-            that.triggerEvent('onClose');
-            // Remove Window
-            that.params['removeOnClose'] && remove();
-        }});
-        // Close Event
-        that.triggerEvent('onCloseStart');
+            that.triggerEvent('onCloseStart');
+        }
     };
 
     var remove = function(){
