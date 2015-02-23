@@ -64,9 +64,11 @@ function(params){
                 })
             )
             .addEvent('onOpen', function(){
+                cm.addEvent(window, 'keydown', keyboardEvents);
                 that.triggerEvent('onOpen');
             })
             .addEvent('onClose', function(){
+                cm.removeEvent(window, 'keydown', keyboardEvents);
                 that.triggerEvent('onClose');
             });
         // Gallery
@@ -102,6 +104,18 @@ function(params){
             components['dialog'].setTitle(title);
         }
         that.triggerEvent('onChange', data);
+    };
+
+    var keyboardEvents = function(e){
+        e = cm.getEvent(e);
+        switch(e.keyCode){
+            case 37:
+                components['gallery'].prev();
+                break;
+            case 39:
+                components['gallery'].next();
+                break;
+        }
     };
 
     /* ******* MAIN ******* */
