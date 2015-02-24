@@ -27,7 +27,9 @@ cm.define('Com.Tabset', {
         'className' : '',
         'tabsPosition' : 'top',         // top | right | bottom | left
         'tabsFlexible' : false,
+        'tabsWidth' : 256,              // only for tabsPosition left or right
         'showTabs' : true,
+        'showTabsTitle' : true,         // show title tooltip
         'switchManually' : false,
         'animateSwitch' : true,
         'animateDuration' : 300,
@@ -68,6 +70,9 @@ function(params){
         if(!cm.inArray(['top', 'right', 'bottom', 'left'], that.params['tabsPosition'])){
             that.params['tabsPosition'] = 'top';
         }
+        if(typeof that.params['tabsWidth'] == 'number'){
+            that.params['tabsWidth'] = [that.params['tabsWidth'], 'px'].join('');
+        }
     };
 
     var render = function(){
@@ -105,6 +110,10 @@ function(params){
         that.nodes['headerTabs'] = cm.Node('div', {'class' : 'com__tabset__head-tabs'},
             that.nodes['headerUL'] = cm.Node('ul')
         );
+        // Set Tabs Width
+        if(/left|right/.test(that.params['tabsPosition'])){
+            that.nodes['headerTabs'].style.width = that.params['tabsWidth'];
+        }
         // Embed Tabs
         if(that.params['showTabs']){
             cm.insertBefore(that.nodes['headerTitle'], that.nodes['content']);
@@ -187,6 +196,9 @@ function(params){
         item['container'] = cm.Node('li',
             item['a'] = cm.Node('a', tab['title'])
         );
+        if(that.params['showTabsTitle']){
+            item['a'].setAttribute('title', tab['title']);
+        }
         // Add click event
         if(that.params['toggleOnHashChange']){
             item['a'].setAttribute('href', [window.location.href.split('#')[0], tab['id']].join('#'));
