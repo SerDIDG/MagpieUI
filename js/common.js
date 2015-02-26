@@ -1974,7 +1974,13 @@ var animFrame = (function(){
                     var el = (/body/i.test(obj.parentNode.tagName) || /top|left/i.test(Name)) ? 'client' : 'offset';
                     var pv = (/width|left/i.test(Name)) ? obj.parentNode[el + 'Width'] : obj.parentNode[el + 'Height'];
                     return 100 * ( obj['offset' + Name] / pv );
-                }else if((dimension == '%' && /%/.test(obj.style[name])) || (dimension == 'px' && /px/.test(obj.style[name]))){
+                }else if(dimension == '%' && /%/.test(obj.style[name])){
+                    var display = obj.style.display;
+                    obj.style.display = 'none';
+                    var style = cm.getCSSStyle(obj, name, true) || 0;
+                    obj.style.display = display;
+                    return style;
+                }else if(dimension == 'px' && /px/.test(obj.style[name])){
                     return cm.getCSSStyle(obj, name, true) || 0;
                 }
                 return obj['offset' + Name];
