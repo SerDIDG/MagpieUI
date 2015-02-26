@@ -1709,17 +1709,30 @@ cm.addStyles = function(node, str){
     return node;
 };
 
-cm.getCSSStyle = cm.getStyle = function(o, name, number){
-    var obj = typeof o.currentStyle != 'undefined' ? o.currentStyle : document.defaultView.getComputedStyle(o, null),
+cm.getCSSStyle = cm.getStyle = function(node, name, number){
+    var display,
+        obj,
+        raw,
         data;
+    if(node.currentStyle){
+        obj = node.currentStyle;
+    }else if(window.getComputedStyle){
+        obj = document.defaultView.getComputedStyle(node, null);
+    }
     if(!obj){
         return 0;
     }
+    // Computed style does not retrieve styles in percentage, so we need to hide element before get styles.
+    display = node.style.display;
+    node.style.display = 'none';
+    raw = obj[name];
+    node.style.display = display;
+    // Parse
     if(number){
-        data = parseFloat(obj[name].toString().replace(/(pt|px|%)/g, ''));
+        data = parseFloat(raw.toString().replace(/(pt|px|%)/g, ''));
         data = isNaN(data)? 0 : data;
     }else{
-        data = obj[name];
+        data = raw;
     }
     return data;
 };

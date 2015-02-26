@@ -25,7 +25,7 @@ cm.define('Com.Slider', {
         'buttons' : true,               // Display buttons, can hide exists buttons
         'numericButtons' : false,       // Render slide index on button
         'arrows' : true,                // Display arrows, can hide exists arrows
-        'effect' : 'fade',              // fade | push
+        'effect' : 'fade',              // fade | push | pull | pull-parallax | pull-overlap
         'transition' : 'smooth',        // smooth | simple | acceleration | inhibition,
         'calculateMaxHeight' : false,
         'hasBar' : false,
@@ -38,9 +38,7 @@ cm.define('Com.Slider', {
 },
 function(params){
     var that = this,
-        items = [],
         components = {},
-        anims = {},
         slideshowInt;
     
     that.nodes = {
@@ -57,12 +55,15 @@ function(params){
         'bar-items' : []
     };
 
+    that.anim = {};
+    that.items = [];
+    that.itemsLength = 0;
+
     that.direction = 'next';
     that.current = null;
     that.previous = null;
     that.paused = false;
     that.pausedOutside = false;
-
     that.isProcess = false;
 
     var init = function(){
@@ -74,7 +75,7 @@ function(params){
         validateParams();
         renderSlider();
         renderLayout();
-        items[0] && set(0);
+        that.items[0] && set(0);
         that.addToStack(that.params['node']);
         that.triggerEvent('onRender');
     };
@@ -84,7 +85,7 @@ function(params){
             that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
         }
         that.params['direction'] = {'forward' : 1, 'backward' : 1, 'random' : 1}[that.params['direction']] ? that.params['direction'] : 'forward';
-        that.params['effect'] = {'push' : 1, 'fade' : 1}[that.params['effect']] ? that.params['effect'] : 'fade';
+        that.params['effect'] = Com.SliderEffects[that.params['effect']] ? that.params['effect'] : 'fade';
         that.params['transition'] = {'smooth' : 1, 'simple' : 1, 'acceleration' : 1, 'inhibition' : 1}[that.params['transition']] ? that.params['transition'] : 'smooth';
     };
 
@@ -98,15 +99,15 @@ function(params){
             cm.addEvent(that.nodes['next'], 'click', that.next);
             cm.addEvent(that.nodes['prev'], 'click', that.prev);
         }
-        if(!that.params['arrows'] || items.length < 2){
+        if(!that.params['arrows'] || that.itemsLength < 2){
             that.nodes['next'].style.display = 'none';
             that.nodes['prev'].style.display = 'none';
         }
         // Buttons
         if(that.params['buttons']){
-            cm.forEach(items, renderButton);
+            cm.forEach(that.items, renderButton);
         }
-        if(!that.params['buttons'] || items.length < 2){
+        if(!that.params['buttons'] || that.itemsLength < 2){
             that.nodes['buttons'].style.display = 'none';
         }
         // Parameters
@@ -132,8 +133,8 @@ function(params){
             });
         }
         // Init animations
-        anims['slides'] = new cm.Animation(that.nodes['slides']);
-        anims['slidesInner'] = new cm.Animation(that.nodes['slidesInner']);
+        that.anim['slides'] = new cm.Animation(that.nodes['slides']);
+        that.anim['slidesInner'] = new cm.Animation(that.nodes['slidesInner']);
         // Resize events
         cm.addEvent(window, 'resize', resizeHandler);
     };
@@ -141,7 +142,6 @@ function(params){
     var renderLayout = function(){
         if(that.params['hasBar']){
             that.nodes['ComScroll'] = cm.getNodes(that.params['node'])['ComScroll'];
-
             components['scroll'] = new Com.Scroll(
                 cm.merge(that.params['Com.Scroll'], {
                     'nodes' : that.nodes['ComScroll']
@@ -152,7 +152,7 @@ function(params){
 
     var calculateMaxHeight = function(){
         var height = 0;
-        cm.forEach(items, function(item){
+        cm.forEach(that.items, function(item){
             height = Math.max(height, cm.getRealHeight(item.nodes['container'], 'offsetRelative'));
         });
         if(height != that.nodes['inner'].offsetHeight){
@@ -179,7 +179,7 @@ function(params){
     var processItem = function(item){
         // Configuration
         item = cm.merge({
-            'index' : items.length,
+            'index' : that.items.length,
             'nodes' : {
                 'container' : cm.Node('li')
             }
@@ -196,7 +196,8 @@ function(params){
         // Init animation
         item['anim'] = new cm.Animation(item['nodes']['container']);
         // Push to items array
-        items.push(item);
+        that.items.push(item);
+        that.itemsLength = that.items.length;
     };
 
     var renderButton = function(item){
@@ -214,50 +215,14 @@ function(params){
         });
     };
 
-    var effects = {
-        'fade' : function(current, previous, callback){
-            var fadeOut = function(item){
-                if(item){
-                    item['nodes']['container'].style.zIndex = 1;
-                    if(that.params['fadePrevious']){
-                        item['anim'].go({'style' : {'opacity' : 0}, 'duration' : that.params['time'], 'anim' : that.params['transition'], 'onStop' : function(){
-                            hide(item);
-                        }});
-                    }else{
-                        setTimeout(function(){
-                            hide(item);
-                        }, that.params['time']);
-                    }
-                }
-            };
-            var hide = function(item){
-                if(item['index'] != that.current){
-                    item['nodes']['container'].style.display = 'none';
-                    cm.setOpacity(item['nodes']['container'], 0);
-                }
-            };
-            // Hide previous slide
-            fadeOut(previous);
-            // Set visible new slide and animate it
-            current['nodes']['container'].style.zIndex = 2;
-            current['nodes']['container'].style.display = 'block';
-            current['anim'].go({'style' : {'opacity' : 1}, 'duration' : that.params['time'], 'anim' : that.params['transition'], 'onStop' : callback});
-        },
-
-        'push' : function(current, previous, callback){
-            var left = current['nodes']['container'].offsetLeft;
-            anims['slidesInner'].go({'style' : {'scrollLeft' : left}, 'duration' : that.params['time'], 'anim' : that.params['transition'], 'onStop' : callback});
-        }
-    };
-
     var set = function(index){
         if(!that.isProcess){
             that.isProcess = true;
             // Renew slideshow delay
             that.params['slideshow'] && renewSlideshow();
             // Set current active slide
-            var current = items[index],
-                previous = items[that.current];
+            var current = that.items[index],
+                previous = that.items[that.current];
             that.previous = that.current;
             that.current = index;
             // API onChangeStart event
@@ -280,7 +245,7 @@ function(params){
                 setBarItem(current, previous);
             }
             // Transition effect and callback
-            effects[that.params['effect']](current, previous, function(){
+            Com.SliderEffects[that.params['effect']](that, current, previous, function(){
                 that.isProcess = false;
                 // API onChange event
                 that.triggerEvent('onChange', {
@@ -321,7 +286,7 @@ function(params){
             slideshowInt = setTimeout(function(){
                 switch(that.params['direction']){
                     case 'random':
-                        set(cm.rand(0, (items.length - 1)));
+                        set(cm.rand(0, (that.items.length - 1)));
                         break;
 
                     case 'backward':
@@ -364,7 +329,7 @@ function(params){
     /* ******* MAIN ******* */
 
     that.set = function(index){
-        if(items[index]){
+        if(that.items[index]){
             set(index);
         }
         return that;
@@ -372,14 +337,14 @@ function(params){
 
     that.next = function(){
         that.direction = 'next';
-        var i = ((that.current + 1) == items.length) ? 0 : (that.current + 1);
+        var i = ((that.current + 1) == that.items.length) ? 0 : (that.current + 1);
         set(i);
         return that;
     };
 
     that.prev = function(){
         that.direction = 'prev';
-        var i = (that.current == 0) ? (items.length - 1) : (that.current - 1);
+        var i = (that.current == 0) ? (that.items.length - 1) : (that.current - 1);
         set(i);
         return that;
     };
@@ -398,3 +363,111 @@ function(params){
 
     init();
 });
+
+/* ******* SLIDER EFFECTS ******* */
+
+Com.SliderEffects = {};
+
+/* *** FADE *** */
+
+Com.SliderEffects['fade'] = function(slider, current, previous, callback){
+    var hide = function(item){
+        item['nodes']['container'].style.display = 'none';
+        cm.setOpacity(item['nodes']['container'], 0);
+    };
+
+    if(slider.itemsLength > 1 && previous && current != previous){
+        // Hide previous slide
+        previous['nodes']['container'].style.zIndex = 1;
+        if(slider.params['fadePrevious']){
+            previous['anim'].go({'style' : {'opacity' : 0}, 'duration' : slider.params['time'], 'anim' : slider.params['transition'], 'onStop' : function(){
+                hide(previous);
+            }});
+        }else{
+            setTimeout(function(){
+                hide(previous);
+            }, slider.params['time']);
+        }
+        // Set visible new slide and animate it
+        current['nodes']['container'].style.zIndex = 2;
+        current['nodes']['container'].style.display = 'block';
+        current['anim'].go({'style' : {'opacity' : 1}, 'duration' : slider.params['time'], 'anim' : slider.params['transition'], 'onStop' : callback});
+    }else{
+        callback();
+    }
+};
+
+/* *** PUSH *** */
+
+Com.SliderEffects['push'] = function(slider, current, previous, callback){
+    var left = current['nodes']['container'].offsetLeft;
+    slider.anim['slidesInner'].go({'style' : {'scrollLeft' : left}, 'duration' : slider.params['time'], 'anim' : slider.params['transition'], 'onStop' : callback});
+};
+
+/* *** PULL *** */
+
+Com.SliderEffects['pull'] = function(slider, current, previous, callback){
+    if(slider.itemsLength > 1 && previous &&current != previous){
+        // Hide previous slide
+        var style = slider.direction == 'next' ? '-100%' : '100%';
+        previous['nodes']['container'].style.zIndex = 1;
+        previous['anim'].go({'style' : {'left' : style}, 'duration' : slider.params['time'], 'anim' : slider.params['transition'], 'onStop' : function(){
+            previous['nodes']['container'].style.left = '100%';
+        }});
+        // Set visible new slide and animate it
+        current['nodes']['container'].style.zIndex = 2;
+        if(slider.direction == 'next'){
+            current['nodes']['container'].style.left = '100%';
+        }else if(slider.direction == 'prev'){
+            current['nodes']['container'].style.left = '-100%';
+        }
+        current['anim'].go({'style' : {'left' : '0%'}, 'duration' : slider.params['time'], 'anim' : slider.params['transition'], 'onStop' : callback});
+    }else{
+        callback();
+    }
+};
+
+/* *** PULL OVERLAP *** */
+
+Com.SliderEffects['pull-overlap'] = function(slider, current, previous, callback){
+    if(slider.itemsLength > 1 && previous && current != previous){
+        // Hide previous slide
+        previous['nodes']['container'].style.zIndex = 1;
+        setTimeout(function(){
+            previous['nodes']['container'].style.left = '100%';
+        }, slider.params['time']);
+        // Set visible new slide and animate it
+        current['nodes']['container'].style.zIndex = 2;
+        if(slider.direction == 'next'){
+            current['nodes']['container'].style.left = '100%';
+        }else if(slider.direction == 'prev'){
+            current['nodes']['container'].style.left = '-100%';
+        }
+        current['anim'].go({'style' : {'left' : '0%'}, 'duration' : slider.params['time'], 'anim' : slider.params['transition'], 'onStop' : callback});
+    }else{
+        callback();
+    }
+};
+
+/* *** PULL PARALLAX *** */
+
+Com.SliderEffects['pull-parallax'] = function(slider, current, previous, callback){
+    if(slider.itemsLength > 1 && previous &&current != previous){
+        // Hide previous slide
+        var style = slider.direction == 'next' ? '-50%' : '50%';
+        previous['nodes']['container'].style.zIndex = 1;
+        previous['anim'].go({'style' : {'left' : style}, 'duration' : slider.params['time'], 'anim' : slider.params['transition'], 'onStop' : function(){
+            previous['nodes']['container'].style.left = '100%';
+        }});
+        // Set visible new slide and animate it
+        current['nodes']['container'].style.zIndex = 2;
+        if(slider.direction == 'next'){
+            current['nodes']['container'].style.left = '100%';
+        }else if(slider.direction == 'prev'){
+            current['nodes']['container'].style.left = '-100%';
+        }
+        current['anim'].go({'style' : {'left' : '0%'}, 'duration' : slider.params['time'], 'anim' : slider.params['transition'], 'onStop' : callback});
+    }else{
+        callback();
+    }
+};

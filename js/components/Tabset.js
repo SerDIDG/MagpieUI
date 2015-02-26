@@ -360,6 +360,10 @@ function(params){
         return null;
     };
 
+    that.getTabs = function(){
+        return that.tabs;
+    };
+
     that.addTab = function(item){
         if(item && item['id']){
             renderTab(item);

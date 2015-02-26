@@ -144,13 +144,8 @@
         }
 
         &:hover,
-        &.active,
-        .active & > {
-            > .inner {
-                > .descr {
-                    opacity: 1;
-                }
-            }
+        &.active {
+            .pt__image--active;
         }
     }
 
@@ -238,6 +233,14 @@
             > .descr {
                 .mx__align(right);
             }
+        }
+    }
+}
+
+.pt__image--active {
+    > .inner {
+        > .descr {
+            opacity: 1;
         }
     }
 }
