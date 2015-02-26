@@ -1713,20 +1713,30 @@ cm.getCSSStyle = cm.getStyle = function(node, name, number){
     var display,
         obj,
         raw,
-        data;
+        data,
+        isComputed = false;
     if(node.currentStyle){
         obj = node.currentStyle;
     }else if(window.getComputedStyle){
+        isComputed = true;
         obj = document.defaultView.getComputedStyle(node, null);
     }
     if(!obj){
         return 0;
     }
     // Computed style does not retrieve styles in percentage, so we need to hide element before get styles.
-    display = node.style.display;
-    node.style.display = 'none';
-    raw = obj[name];
-    node.style.display = display;
+    if(isComputed){
+        if(!/display/.test(name)){
+            display = node.style.display;
+            node.style.display = 'none';
+            raw = obj[name];
+            node.style.display = display;
+        }else{
+            raw = obj[name];
+        }
+    }else{
+        raw = obj[name];
+    }
     // Parse
     if(number){
         data = parseFloat(raw.toString().replace(/(pt|px|%)/g, ''));
