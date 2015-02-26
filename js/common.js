@@ -1710,33 +1710,18 @@ cm.addStyles = function(node, str){
 };
 
 cm.getCSSStyle = cm.getStyle = function(node, name, number){
-    var display,
-        obj,
+    var obj,
         raw,
-        data,
-        isComputed = false;
+        data;
     if(node.currentStyle){
         obj = node.currentStyle;
     }else if(window.getComputedStyle){
-        isComputed = true;
         obj = document.defaultView.getComputedStyle(node, null);
     }
     if(!obj){
         return 0;
     }
-    // Computed style does not retrieve styles in percentage, so we need to hide element before get styles.
-    if(isComputed){
-        if(!/display/.test(name)){
-            display = node.style.display;
-            node.style.display = 'none';
-            raw = obj[name];
-            node.style.display = display;
-        }else{
-            raw = obj[name];
-        }
-    }else{
-        raw = obj[name];
-    }
+    raw = obj[name];
     // Parse
     if(number){
         data = parseFloat(raw.toString().replace(/(pt|px|%)/g, ''));
