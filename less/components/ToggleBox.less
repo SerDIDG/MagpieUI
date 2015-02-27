@@ -22,7 +22,6 @@
             background-position: 100% 50%;
 
             &.default {
-                .icon.small.arrow-right;
                 width: @CmSize-Small;
                 .mx__transition(transform, @CmUI-Transition-Duration);
             }
@@ -39,10 +38,6 @@
             > .l {
                 .cm__text-overflow;
             }
-        }
-
-        &:hover {
-            color: @CmColor-Primary-DarkDefault;
         }
     }
 
@@ -65,7 +60,7 @@
     &.has-title-bg {
         > dt {
             padding: 0 @CmIndent-XXSmall;
-            background: @ComToggleBox-Title-DefaultBackground;
+            background: @ComToggleBox-TitleBackgroundNormal;
             border-radius: @CmBorder-Radius;
         }
     }
@@ -74,8 +69,8 @@
         .cm__empty,
         .pt__toolbar {
             margin: 0;
-            border-top: @ComToggleBox-Content-SpaceBorder;
-            background: @ComToggleBox-Content-DefaultBackground;
+            border-top: @ComToggleBox-ContentSpaceBorder;
+            background: @ComToggleBox-ContentBackgroundNormal;
             border-radius: @CmBorder-Radius;
             .mx__background-clip(padding-box);
         }
@@ -86,7 +81,7 @@
 
         .pt__gridlist {
             .pt__gridlist__has-background;
-            border-top: @ComToggleBox-Content-SpaceBorder;
+            border-top: @ComToggleBox-ContentSpaceBorder;
 
             td {
                 padding: @CmIndent-XXSmall;
@@ -114,7 +109,7 @@
         &.has-title-bg {
             > dt {
                 &:hover {
-                    background-color: @ComToggleBox-Title-HoverBackground;
+                    background-color: @ComToggleBox-TitleBackgroundHover;
                     .mx__transition(background-color color, @CmUI-Transition-DurationReverse);
                 }
             }
@@ -174,6 +169,49 @@
         }
     }
 }
+
+// /* *** MIXINS *** */
+
+.com__togglebox__title-theme (@theme) {
+    .com__togglebox__title-color(~"@{ComToggleBox-Theme@{theme}-TitleColorNormal}", ~"@{ComToggleBox-Theme@{theme}-TitleColorHover}", ~"@{ComToggleBox-Theme@{theme}-TitleColorActive}");
+    .com__togglebox__title-icon(~"@{ComToggleBox-Theme@{theme}-TitleIcon}");
+}
+
+.com__togglebox__title-color (@normal, @hover, @active) {
+    .com__togglebox {
+        &.is-hide {
+            > dt {
+                color: @normal;
+
+                &:hover {
+                    color: @hover;
+                }
+            }
+        }
+
+        &.is-show {
+            > dt {
+                color: @active;
+
+                &:hover {
+                    color: @hover;
+                }
+            }
+        }
+    }
+}
+
+.com__togglebox__title-icon (@image) {
+    .com__togglebox {
+        > dt {
+            .icon.default {
+                background-image: url("@{image}");
+            }
+        }
+    }
+}
+
+.com__togglebox__title-theme(@ComToggleBox-Theme);
 
 /* ******* COMPONENT: TOGGLE BOX: ADAPTIVE ******* */
 
