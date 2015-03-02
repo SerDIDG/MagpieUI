@@ -82,6 +82,7 @@
     .icon {
         width: @iconSize;
         height: @iconSize;
+        min-height: 0;
         padding: 0;
         position: absolute;
         background-color: transparent;
@@ -106,7 +107,7 @@
             .mx__position(@CmBorder-Width, auto, auto, @CmBorder-Width);
         }
 
-        input {
+        .input {
             padding-left: @CmForm-FieldHeight;
         }
     }
@@ -116,7 +117,7 @@
             .mx__position(@CmBorder-Width, @CmBorder-Width, auto, auto);
         }
 
-        input {
+        .input {
             padding-right: @CmForm-FieldHeight;
         }
     }

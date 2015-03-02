@@ -41,8 +41,8 @@ Com['Pagination'] = function(o){
     var render = function(){
         // Structure
         config['container'].appendChild(
-            nodes['container'] = cm.Node('div', {'class' : 'com-pagination-container'},
-                nodes['content'] = cm.Node('div', {'class' : 'com-pagination-content'})
+            nodes['container'] = cm.Node('div', {'class' : 'com__pagination__container'},
+                nodes['content'] = cm.Node('div', {'class' : 'com__pagination__content'})
             )
         );
         // Init animations
@@ -60,7 +60,7 @@ Com['Pagination'] = function(o){
 
     var renderBar = function(position){
         // Structure
-        nodes[position]['container'] = cm.Node('div', {'class' : 'com-pagination'},
+        nodes[position]['container'] = cm.Node('div', {'class' : 'com__pagination'},
             nodes[position]['list'] = cm.Node('ul')
         );
         // Add css class

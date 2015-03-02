@@ -143,7 +143,7 @@ function(params){
         // Today / Now Button
         if(that.params['showTodayButton']){
             nodes['menuContainer'].appendChild(
-                nodes['todayButton'] = cm.Node('div', {'class' : 'button today'}, that.lang(that.params['isDateTime']? 'Now' : 'Today'))
+                nodes['todayButton'] = cm.Node('div', {'class' : 'button today is-wide'}, that.lang(that.params['isDateTime']? 'Now' : 'Today'))
             );
         }
         // Time Select

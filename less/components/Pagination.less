@@ -1,6 +1,6 @@
-/* ******* PAGINATION ******* */
+/* ******* COMPONENTS: PAGINATION ******* */
 
-.com-pagination {
+.com__pagination {
     .cm__box;
     line-height: @CmForm-FieldHeight;
     .mx__user-select(none);
@@ -21,18 +21,21 @@
                 .button;
                 .button.button-secondary;
                 min-width: @CmForm-FieldHeight;
-                padding: 0 6px;
+                padding-left: 6px;
+                padding-right: 6px;
             }
 
             &.active a {
                 .button.button-primary;
-                padding: 0 6px;
+                padding-left: 6px;
+                padding-right: 6px;
             }
 
             &.prev a,
             &.next a {
                 .button.button-transparent;
-                padding: 0 6px;
+                padding-left: 6px;
+                padding-right: 6px;
                 font-weight: @CmFont-Base-BoldWeight;
             }
 
@@ -44,32 +47,34 @@
         }
     }
 
-    &.centered {
+    &.pull-left {
+        ul {
+            text-align: left;
+        }
+    }
+
+    &.pull-center {
         ul {
             text-align: center;
         }
     }
 
-    &.right {
+    &.pull-right {
         ul {
             text-align: right;
         }
     }
-
-    &.bottom {
-        margin: 0;
-    }
 }
 
-.com-pagination-container {
+.com__pagination__container {
     .cm__box;
 
-    > .com-pagination {
+    > .com__pagination {
         margin: 0;
     }
 }
 
-.com-pagination-content {
+.com__pagination__content {
     margin: @CmIndent-Medium 0;
     position: relative;
 

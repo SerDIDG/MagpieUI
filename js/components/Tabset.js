@@ -21,7 +21,7 @@ cm.define('Com.Tabset', {
     'params' : {
         'node' : cm.Node('div'),        // tabs contained node
         'container' : false,
-        'toggleOnHashChange' : false,
+        'toggleOnHashChange' : true,
         'renderOnInit' : true,
         'active' : null,
         'className' : '',

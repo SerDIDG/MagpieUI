@@ -78,7 +78,7 @@ function(params){
                                 that.nodes['inputHEX'] = cm.Node('input', {'type' : 'text', 'maxlength' : 7})
                             ),
                             cm.Node('div', {'class' : 'b-buttons'},
-                                that.nodes['buttonSelect'] = cm.Node('div', {'class' : 'button button-primary wide'}, that.lang('select'))
+                                that.nodes['buttonSelect'] = cm.Node('div', {'class' : 'button button-primary is-wide'}, that.lang('select'))
                             )
                         )
                     )

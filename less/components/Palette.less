@@ -7,6 +7,7 @@
 
     .b-palette,
     .b-range {
+        margin: 0 @CmIndent-XSmall 0 0;
         float: left;
         border-radius: @CmBorder-Radius;
 
@@ -27,8 +28,6 @@
     }
 
     .b-palette {
-        margin: 0 @CmIndent-XSmall 0 0;
-
          > .inner {
              overflow: hidden;
              cursor: crosshair;
@@ -53,8 +52,6 @@
     }
 
     .b-range {
-        margin: 0 @CmIndent-Medium 0 0;
-
         > .inner {
             width: @CmSize-Medium;
             cursor: row-resize;
@@ -135,6 +132,11 @@
 
     .b-buttons {
         margin: @CmIndent-XSmall 0 0 0;
+
+        .button {
+            padding-left: 0;
+            padding-right: 0;
+        }
     }
 
     #cm > .com__palette__size();
