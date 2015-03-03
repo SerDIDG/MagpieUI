@@ -206,3 +206,21 @@
         }
     }
 }
+
+/* ******* ADAPTIVE ******* */
+
+@media only screen and (max-width : @CmScreen-Mobile) {
+
+    html.is-adaptive {
+        .com__slider {
+            > .slides {
+                > ul {
+                    > li {
+                        background-attachment: scroll !important;
+                    }
+                }
+            }
+        }
+    }
+
+}
