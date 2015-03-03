@@ -412,10 +412,12 @@ Com.SliderEffects['pull'] = function(slider, current, previous, callback){
         var style = slider.direction == 'next' ? '-100%' : '100%';
         previous['nodes']['container'].style.zIndex = 1;
         previous['anim'].go({'style' : {'left' : style}, 'duration' : slider.params['time'], 'anim' : slider.params['transition'], 'onStop' : function(){
+            previous['nodes']['container'].style.display = 'none';
             previous['nodes']['container'].style.left = '100%';
         }});
         // Set visible new slide and animate it
         current['nodes']['container'].style.zIndex = 2;
+        current['nodes']['container'].style.display = 'block';
         if(slider.direction == 'next'){
             current['nodes']['container'].style.left = '100%';
         }else if(slider.direction == 'prev'){
@@ -434,10 +436,12 @@ Com.SliderEffects['pull-overlap'] = function(slider, current, previous, callback
         // Hide previous slide
         previous['nodes']['container'].style.zIndex = 1;
         setTimeout(function(){
+            previous['nodes']['container'].style.display = 'none';
             previous['nodes']['container'].style.left = '100%';
         }, slider.params['time']);
         // Set visible new slide and animate it
         current['nodes']['container'].style.zIndex = 2;
+        current['nodes']['container'].style.display = 'block';
         if(slider.direction == 'next'){
             current['nodes']['container'].style.left = '100%';
         }else if(slider.direction == 'prev'){
@@ -457,10 +461,12 @@ Com.SliderEffects['pull-parallax'] = function(slider, current, previous, callbac
         var style = slider.direction == 'next' ? '-50%' : '50%';
         previous['nodes']['container'].style.zIndex = 1;
         previous['anim'].go({'style' : {'left' : style}, 'duration' : slider.params['time'], 'anim' : slider.params['transition'], 'onStop' : function(){
+            previous['nodes']['container'].style.display = 'none';
             previous['nodes']['container'].style.left = '100%';
         }});
         // Set visible new slide and animate it
         current['nodes']['container'].style.zIndex = 2;
+        current['nodes']['container'].style.display = 'block';
         if(slider.direction == 'next'){
             current['nodes']['container'].style.left = '100%';
         }else if(slider.direction == 'prev'){
