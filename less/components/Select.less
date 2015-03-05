@@ -6,22 +6,17 @@
     outline: none;
 
     .form-field {
-        .icon {
+        .icon.default {
+            .icon.medium.select-arrow;
             .mx__transition(transform, @CmUI-Transition-Duration);
-
-            &.default {
-                .icon.medium.select-arrow;
-            }
         }
     }
 
     &:focus,
     &.active {
         .form-field {
-            .icon {
-                -webkit-transform: rotate(180deg);
-                    -ms-transform: rotate(180deg);
-                        transform: rotate(180deg);
+            .icon.default {
+                .mx__transform(rotate(180deg));
             }
         }
     }

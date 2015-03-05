@@ -147,7 +147,7 @@ function(params){
                 'target' : that.nodes['target'],
                 'events' : {
                     'onShowStart' : show,
-                    'onHide' : hide
+                    'onHideStart' : hide
                 }
             })
         );
@@ -202,10 +202,12 @@ function(params){
     };
 
     var hide = function(){
+        cm.removeClass(that.nodes['container'], 'active');
         that.components['palette'].set(that.value, false);
     };
 
     var show = function(){
+        cm.addClass(that.nodes['container'], 'active');
         that.components['palette'].redraw();
     };
 

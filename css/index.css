@@ -6049,18 +6049,16 @@ button::-moz-focus-inner {
   z-index: 1;
   outline: none;
 }
-.com__select .form-field .icon {
+.com__select .form-field .icon.default {
+  background-image: url("../img/icons/medium/select-arrow.png");
   -webkit-transition: -webkit-transform 300ms ease-in-out;
   transition: -ms-transform 300ms ease-in-out, transform 300ms ease-in-out;
 }
-.safari .com__select .form-field .icon {
+.safari .com__select .form-field .icon.default {
   transition: -webkit-transform 300ms ease-in-out;
 }
-.com__select .form-field .icon.default {
-  background-image: url("../img/icons/medium/select-arrow.png");
-}
-.com__select:focus .form-field .icon,
-.com__select.active .form-field .icon {
+.com__select:focus .form-field .icon.default,
+.com__select.active .form-field .icon.default {
   -webkit-transform: rotate(180deg);
   -ms-transform: rotate(180deg);
   transform: rotate(180deg);
@@ -6761,6 +6759,11 @@ html.ie9 .com__palette .b-range {
 }
 .com__colorpicker .form-field .icon.default {
   background-image: url("../img/icons/medium/palette.png");
+  -webkit-transition: -webkit-transform 300ms ease-in-out;
+  transition: -ms-transform 300ms ease-in-out, transform 300ms ease-in-out;
+}
+.safari .com__colorpicker .form-field .icon.default {
+  transition: -webkit-transform 300ms ease-in-out;
 }
 .com__colorpicker > .icon {
   width: 28px;
@@ -6773,6 +6776,11 @@ html.ie9 .com__palette .b-range {
 }
 .com__colorpicker > .icon.default {
   background-image: url("../img/icons/small/remove.png");
+}
+.com__colorpicker.active .form-field .icon.default {
+  -webkit-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  transform: rotate(180deg);
 }
 /* *** TOOLTIP *** */
 .com__tooltip.com__colorpicker-tooltip > .inner > .scroll {
