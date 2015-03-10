@@ -34,12 +34,12 @@
          }
 
         .drag {
-            width: 12px;
-            height: 12px;
+            width: @ComColorPalette-Drag-Size;
+            height: @ComColorPalette-Drag-Size;
             position: absolute;
-            margin: -(16px / 2) 0 0 -(16px / 2);
+            margin: -(@ComColorPalette-Drag-Size / 2) 0 0 -(@ComColorPalette-Drag-Size / 2);
             border: 2px solid #ffffff;
-            border-radius: 12px;
+            border-radius: @ComColorPalette-Drag-Size;
 
             &.is-dark {
                 border-color: #ffffff;

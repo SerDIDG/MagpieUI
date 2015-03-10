@@ -234,7 +234,7 @@ function(params){
         with(current['node'].style){
             top = [current['dimensions']['absoluteY1'], 'px'].join('');
             left = [current['dimensions']['absoluteX1'], 'px'].join('');
-            width = [current['dimensions']['innerWidth'], 'px'].join('');
+            width = [current['dimensions']['width'], 'px'].join('');
         }
         // Unset area from draggable item
         unsetDraggableFromArea(current);
@@ -427,9 +427,9 @@ function(params){
         cm.removeEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mouseup', stop);
         // Calculate height of draggable block, like he already dropped in area, to animate height of fake empty space
         getPosition(current);
-        current['node'].style.width = [(currentArea['dimensions']['innerWidth'] - current['dimensions']['margin']['left'] - current['dimensions']['margin']['right']), 'px'].join('');
+        current['node'].style.width = [(currentArea['dimensions']['width'] - current['dimensions']['margin']['left'] - current['dimensions']['margin']['right']), 'px'].join('');
         currentHeight = current['node'].offsetHeight + current['dimensions']['margin']['top'] + current['dimensions']['margin']['bottom'];
-        current['node'].style.width = [current['dimensions']['innerWidth'], 'px'].join('');
+        current['node'].style.width = [current['dimensions']['width'], 'px'].join('');
         // If current draggable located above another draggable item, drops after/before it, or drops in area
         if(currentAboveItem){
             // Animate chassis blocks
@@ -486,7 +486,7 @@ function(params){
             'target' : area['node'],
             'append' : 'child',
             'index' : 0,
-            'width' : [area['dimensions']['innerWidth'] - draggable['dimensions']['padding']['left'] - draggable['dimensions']['padding']['right'], 'px'].join(''),
+            'width' : [area['dimensions']['innerWidth'], 'px'].join(''),
             'top' : [area['dimensions']['innerY1'] - draggable['dimensions']['margin']['top'], 'px'].join(''),
             'left' : [area['dimensions']['innerX1'] - draggable['dimensions']['margin']['left'], 'px'].join(''),
             'onStart' : function(){},

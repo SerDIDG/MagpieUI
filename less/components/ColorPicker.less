@@ -4,7 +4,7 @@
     @clear-button-indent: @CmForm-FieldHeight + @CmForm-FieldInnerIndent;
 
     width: 100%;
-    max-width: @ComDatepicker-Width;
+    max-width: @ComColorPicker-Width;
     display: inline-block;
     vertical-align: top;
     position: relative;
@@ -12,6 +12,7 @@
     outline: none;
 
     &.has-clear-button {
+        max-width: @ComColorPicker-Width + @clear-button-indent;
         padding: 0 @clear-button-indent 0 0;
     }
 

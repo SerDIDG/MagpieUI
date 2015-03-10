@@ -335,6 +335,10 @@ function(params){
         return that;
     };
 
+    that.get = function(index){
+        return that.items[index]? that.items[index] : null;
+    };
+
     that.next = function(){
         that.direction = 'next';
         var i = ((that.current + 1) == that.items.length) ? 0 : (that.current + 1);

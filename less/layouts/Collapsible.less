@@ -32,7 +32,15 @@
                     position: absolute;
                     top: 14px;
                     cursor: pointer;
-                    .mx__transition(transform, @LtCollapsible-Duration);
+                    .mx__transition(transform opacity, @LtCollapsible-Duration);
+
+                    &.default {
+                        .cm__size__medium;
+
+                        &:hover {
+                            opacity: @CmUI-Opacity-Hover;
+                        }
+                    }
                 }
             }
 
@@ -57,6 +65,10 @@
 
                     .icon {
                         right: @CmIndent-XSmall;
+
+                        &.default {
+                            .icon.medium.ui-arrow-left;
+                        }
                     }
                 }
             }
@@ -73,6 +85,10 @@
 
                     .icon {
                         left: @CmIndent-XSmall;
+
+                        &.default {
+                            .icon.medium.ui-arrow-right;
+                        }
                     }
                 }
             }

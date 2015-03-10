@@ -854,6 +854,12 @@
   background-position: -400px 0;
 }
 /* ******* COMMON: TAGS ******* */
+*,
+*:after,
+*:before {
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
 body {
   font: 400 13px/18px 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
@@ -5096,6 +5102,8 @@ button::-moz-focus-inner {
   text-align: left;
   padding: 6px;
   line-height: 18px;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
   -webkit-background-clip: padding-box;
   -moz-background-clip: padding-box;
   background-clip: padding-box;
@@ -5404,11 +5412,18 @@ button::-moz-focus-inner {
   position: absolute;
   top: 14px;
   cursor: pointer;
-  -webkit-transition: -webkit-transform 500ms ease-in-out;
-  transition: -ms-transform 500ms ease-in-out, transform 500ms ease-in-out;
+  -webkit-transition: -webkit-transform 500ms ease-in-out, opacity 500ms ease-in-out;
+  transition: -ms-transform 500ms ease-in-out, transform 500ms ease-in-out, opacity 500ms ease-in-out;
 }
 .safari .lt__collapsible > .sidebar > .inner > .title .icon {
   transition: -webkit-transform 500ms ease-in-out;
+}
+.lt__collapsible > .sidebar > .inner > .title .icon.default {
+  width: 24px;
+  height: 24px;
+}
+.lt__collapsible > .sidebar > .inner > .title .icon.default:hover {
+  opacity: 0.7;
 }
 .lt__collapsible > .sidebar > .inner > .descr {
   -webkit-overflow-scrolling: touch;
@@ -5439,6 +5454,9 @@ button::-moz-focus-inner {
 .lt__collapsible > .sidebar.left > .inner > .title .icon {
   right: 12px;
 }
+.lt__collapsible > .sidebar.left > .inner > .title .icon.default {
+  background-image: url("../img/icons/medium/ui-arrow-left.png");
+}
 .lt__collapsible > .sidebar.right {
   float: right;
 }
@@ -5453,6 +5471,9 @@ button::-moz-focus-inner {
 }
 .lt__collapsible > .sidebar.right > .inner > .title .icon {
   left: 12px;
+}
+.lt__collapsible > .sidebar.right > .inner > .title .icon.default {
+  background-image: url("../img/icons/medium/ui-arrow-right.png");
 }
 .lt__collapsible > .inner {
   -webkit-overflow-scrolling: touch;
@@ -5896,7 +5917,7 @@ button::-moz-focus-inner {
   table-layout: fixed;
 }
 .lt__forum-post > .inner > .l {
-  width: 150px;
+  width: 174px;
   position: relative;
   padding: 12px;
   display: table-cell;
@@ -6428,6 +6449,7 @@ button::-moz-focus-inner {
   outline: none;
 }
 .com__datepicker-input.has-clear-button {
+  max-width: 246px;
   padding: 0 36px 0 0;
 }
 .com__datepicker-input .form-field .icon.default {
@@ -6627,12 +6649,12 @@ html.ie9 .com__palette .b-range {
   cursor: crosshair;
 }
 .com__palette .b-palette .drag {
-  width: 12px;
-  height: 12px;
+  width: 16px;
+  height: 16px;
   position: absolute;
   margin: -8px 0 0 -8px;
   border: 2px solid #ffffff;
-  border-radius: 12px;
+  border-radius: 16px;
 }
 .com__palette .b-palette .drag.is-dark {
   border-color: #ffffff;
@@ -6755,6 +6777,7 @@ html.ie9 .com__palette .b-range {
   outline: none;
 }
 .com__colorpicker.has-clear-button {
+  max-width: 246px;
   padding: 0 36px 0 0;
 }
 .com__colorpicker .form-field .icon.default {
@@ -8247,13 +8270,13 @@ html.ie9 .com__palette .b-range {
   z-index: 1;
 }
 .com__gallery-bar .pt__grid > ul {
-  margin: 3px -3px -3px;
+  margin: 6px -6px -6px;
 }
 .com__gallery-bar .pt__grid > ul:first-child {
-  margin: -3px;
+  margin: -6px;
 }
 .com__gallery-bar .pt__grid > ul > li {
-  padding: 3px;
+  padding: 6px;
 }
 .com__gallery-bar .pt__grid > ul {
   overflow: hidden;

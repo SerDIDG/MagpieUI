@@ -70,21 +70,22 @@
 
 .mx__placeholder (@color) {
     &::-webkit-input-placeholder {
-        opacity: 1;
-        color: @color;
+        .mx__placeholder__content(@color);
     }
     &:-moz-placeholder {
-        opacity: 1;
-        color: @color;
+        .mx__placeholder__content(@color);
     }
     &::-moz-placeholder {
-        opacity: 1;
-        color: @color;
+        .mx__placeholder__content(@color);
     }
     &:-ms-input-placeholder {
-        opacity: 1;
-        color: @color;
+        .mx__placeholder__content(@color);
     }
+}
+
+.mx__placeholder__content (@color) {
+    opacity: 1;
+    color: @color;
 }
 
 .mx__flex (@value: auto) {
