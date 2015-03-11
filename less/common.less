@@ -212,18 +212,18 @@
 
 .cm-codebox {
     .cm__box;
+    min-height: @CmFont-Base-LineHeight + ((@CmCodeBox-PaddingY + @CmBorder-Width ) * 2);
     display: block;
     white-space: pre-wrap;
-    padding: 8px 12px;
+    padding: @CmCodeBox-PaddingY @CmCodeBox-PaddingX;
     background: #ffffff;
-    border: 1px dashed @CmColor-Border;
+    border: @CmBorder-Width dashed @CmColor-Border;
     border-radius: @CmBorder-Radius;
     font-family: "Courier New", Courier, monospace;
 }
 
 .cm-autoresize {
     height: 0;
-    min-height: @CmForm-FieldHeight;
     overflow: hidden;
     resize: none;
 }
