@@ -247,10 +247,17 @@
     display: block;
 }
 
+.cm__text-nowrap,
 .cm__text-overflow {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+
+.cm__text-wrap {
+    overflow: visible;
+    white-space: normal;
+    text-overflow: clip;
 }
 
 .cm__scroll-y {

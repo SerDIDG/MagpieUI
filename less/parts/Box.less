@@ -204,11 +204,15 @@
     }
 
     .status {
-        &.error {
+        &.danger {
             color: @CmColor-Danger-DarkDefault;
         }
 
-        &.valid {
+        &.warning {
+            color: @CmColor-Warning-DarkDefault;
+        }
+
+        &.success {
             color: @CmColor-Success-DarkDefault;
         }
     }
@@ -237,7 +241,16 @@
         .cm__font--hint-cursive;
     }
 
-    &:not(.is-no-overflow){
+    > .pt__image {
+        margin-bottom: @CmIndent-XSmall;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    &:not(.is-no-overflow),
+    &.is-nowrap {
         .title,
         .author,
         .date,
@@ -247,11 +260,13 @@
         }
     }
 
-    > .pt__image {
-        margin-bottom: @CmIndent-XSmall;
-
-        &:last-child {
-            margin-bottom: 0;
+    .is-wrap {
+        .title,
+        .author,
+        .date,
+        .count,
+        .status {
+            .cm__text-wrap;
         }
     }
 
