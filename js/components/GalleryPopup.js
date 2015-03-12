@@ -95,7 +95,9 @@ function(params){
         }
         if(that.params['showTitle']){
             if(that.params['showCounter']){
-                title = [title, data['current']['title']].join(' - ');
+                if(!cm.isEmpty(data['current']['title'])){
+                    title = [title, data['current']['title']].join(' - ');
+                }
             }else{
                 title = data['current']['title'];
             }
