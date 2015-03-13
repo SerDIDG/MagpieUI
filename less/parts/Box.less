@@ -173,15 +173,24 @@
 /* *** ITEM *** */
 
 .pt__box-item {
-    .clearfix;
+    .display-flex;
+    .mx__flex-flow(row nowrap);
 
     > .l {
-        float: left;
-        margin: 0 @CmIndent-XSmall 0 0;
+        .mx__flex(0 0);
     }
 
     > .r {
-        overflow: hidden;
+        .mx__flex(1 1 auto);
+    }
+
+    > .l,
+    > .r {
+        margin: 0 @CmIndent-XSmall 0 0;
+
+        &:last-child {
+            margin: 0;
+        }
     }
 
     .title {
@@ -251,6 +260,10 @@
 
     &:not(.is-no-overflow),
     &.is-nowrap {
+        > .r {
+            overflow: hidden;
+        }
+
         .title,
         .author,
         .date,
@@ -271,6 +284,8 @@
     }
 
     &.is-image-centered {
+        display: block;
+
         .pt__image {
             margin-left: auto;
             margin-right: auto;
@@ -278,11 +293,25 @@
     }
 
     &.is-centered {
+        display: block;
         text-align: center;
 
         .pt__image {
             margin-left: auto;
             margin-right: auto;
+        }
+    }
+
+    &.is-image-top {
+        .mx__flex-direction(column);
+
+        > .l,
+        > .r {
+            margin: 0 0 @CmIndent-Medium 0;
+
+            &:last-child {
+                margin: 0;
+            }
         }
     }
 

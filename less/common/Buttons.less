@@ -1,9 +1,9 @@
 /* *** PARTS: BUTTONS *** */
 
 .button {
-    @padding: round((@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2);
+    @padding: max(round((@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2), 0);
 
-    .cm__text-overflow;
+    .cm__text-nowrap;
     min-height: @CmForm-FieldHeight;
     margin: 0;
     padding: @padding @CmButton-PaddingX;
@@ -25,7 +25,7 @@
     .mx__transition(background-color color box-shadow, @CmUI-Transition-Duration);
 
     &.is-wrap {
-        white-space: normal;
+        .cm__text-wrap;
     }
 
     &.is-wide,

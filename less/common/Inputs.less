@@ -1,7 +1,7 @@
 /* ******* COMMON: INPUTS ******* */
 
 .input {
-    @padding: (@CmForm-FieldHeight - @CmFont-Base-LineHeight - @CmBorder-Width * 2) / 2;
+    @padding: max(round((@CmForm-FieldHeight - @CmFont-Base-LineHeight - @CmBorder-Width * 2) / 2), 0);
 
     width: 100%;
     height: @CmForm-FieldHeight;
