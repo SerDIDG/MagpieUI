@@ -3053,9 +3053,9 @@ button::-moz-focus-inner {
   flex-flow: row nowrap;
 }
 .pt__box-item > .l {
-  -webkit-flex: 0 0;
-  -ms-flex: 0 0;
-  flex: 0 0;
+  -webkit-flex: 0 0 auto;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
 }
 .pt__box-item > .r {
   -webkit-flex: 1 1 auto;
