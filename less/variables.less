@@ -537,6 +537,8 @@
 // /* ******* COMPONENTS ******* */
 // /* ************************************************ */
 
+@Com: com__;
+
 // /* ******* CALENDAR ******* */
 
 @ComCalendar-CellHeight: 21px;
@@ -645,24 +647,33 @@
 @ComToggleBox-SizeUI: @CmSize-Medium;
 @ComToggleBox-SizeBase: @CmSize-Medium;
 
-@ComToggleBox-TitleBackgroundNormal: @CmColor-Secondary-LightActive;
-@ComToggleBox-TitleBackgroundHover: @CmColor-Primary-LightActiveHover;
+@ComToggleBox-HasBackground-TitleIndentX: @CmIndent-XXSmall;
+@ComToggleBox-HasBackground-TitleIndentY: 0px;
+@ComToggleBox-HasBackground-TitleIndent: @ComToggleBox-HasBackground-TitleIndentY @ComToggleBox-HasBackground-TitleIndentX;
+@ComToggleBox-HasBackground-TitleBorderRadius: @CmBorder-Radius;
 
 @ComToggleBox-ContentBackgroundNormal: @CmColor-Secondary-LightHighlight;
 @ComToggleBox-ContentBackgroundHover: @CmColor-Secondary-LightHover;
 @ComToggleBox-ContentSpaceBorder: 1px solid transparent;
 
 @ComToggleBox-Theme: 'Light';
+@ComToggleBox-HasBackground-TitleTheme: 'Light';
 
 @ComToggleBox-ThemeLight-TitleColorNormal: @CmColor-Font;
 @ComToggleBox-ThemeLight-TitleColorHover: @CmColor-Font-LinkHover;
 @ComToggleBox-ThemeLight-TitleColorActive: @CmColor-Font;
 @ComToggleBox-ThemeLight-TitleIcon: "@{CmPath-Images}/icons/small/arrow-right.png";
+@ComToggleBox-ThemeLight-TitleBackgroundNormal: @CmColor-Secondary-LightActive;
+@ComToggleBox-ThemeLight-TitleBackgroundHover: @CmColor-Primary-LightActiveHover;
+@ComToggleBox-ThemeLight-TitleBackgroundActive: @CmColor-Secondary-LightActive;
 
 @ComToggleBox-ThemeDark-TitleColorNormal: @CmColor-Font-Opposite;
 @ComToggleBox-ThemeDark-TitleColorHover: @CmColor-Primary-LightActiveHover;
 @ComToggleBox-ThemeDark-TitleColorActive: @CmColor-Font-Opposite;
 @ComToggleBox-ThemeDark-TitleIcon: "@{CmPath-Images}/icons/small/arrow-white-right.png";
+@ComToggleBox-ThemeDark-TitleBackgroundNormal: @CmColor-Primary-DarkDefault;
+@ComToggleBox-ThemeDark-TitleBackgroundHover: @CmColor-Primary-DarkHover;
+@ComToggleBox-ThemeDark-TitleBackgroundActive: @CmColor-Primary-DarkDefault;
 
 // /* ******* SELECT ******* */
 

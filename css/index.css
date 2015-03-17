@@ -302,6 +302,13 @@
   color: #999999;
   font-style: italic;
 }
+.cm__font--inherit {
+  line-height: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  font-style: inherit;
+  color: inherit;
+}
 /* *** UI *** */
 .cm__font--ui {
   font: 400 13px/18px 'Open Sans', arial, helvetica, sans-serif;
@@ -7483,11 +7490,12 @@ html.ie9 .com__palette .b-range {
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
-  -webkit-transition: color 300ms ease-in-out;
-  transition: color 300ms ease-in-out;
+  -webkit-transition: background 300ms ease-in-out, color 300ms ease-in-out;
+  transition: background 300ms ease-in-out, color 300ms ease-in-out;
 }
-.com__togglebox > dt a {
-  font-weight: inherit;
+.com__togglebox > dt:hover {
+  -webkit-transition: background 100ms ease-in-out, color 100ms ease-in-out;
+  transition: background 100ms ease-in-out, color 100ms ease-in-out;
 }
 .com__togglebox > dt .icon {
   height: 38px;
@@ -7508,6 +7516,42 @@ html.ie9 .com__palette .b-range {
   white-space: nowrap;
   text-overflow: ellipsis;
   display: block;
+}
+.com__togglebox > dt .cm__inherit,
+.com__togglebox > dt .link,
+.com__togglebox > dt .link--inner,
+.com__togglebox > dt .cm__empty,
+.com__togglebox > dt a,
+.com__togglebox > dt h1,
+.com__togglebox > dt h2,
+.com__togglebox > dt h3,
+.com__togglebox > dt h4,
+.com__togglebox > dt h5,
+.com__togglebox > dt h6,
+.com__togglebox > dt p,
+.com__togglebox > dt dl,
+.com__togglebox > dt ul,
+.com__togglebox > dt ol,
+.com__togglebox > dt hr,
+.com__togglebox > dt h1,
+.com__togglebox > dt h2,
+.com__togglebox > dt h3,
+.com__togglebox > dt h4,
+.com__togglebox > dt h5,
+.com__togglebox > dt h6,
+.com__togglebox > dt p,
+.com__togglebox > dt dl,
+.com__togglebox > dt ul,
+.com__togglebox > dt ol,
+.com__togglebox > dt hr,
+.com__togglebox > dt .form .hint,
+.com__togglebox > dt .com__glossary .com__glossary__title,
+.com__togglebox > dt .com__glossary .com__glossary__title {
+  line-height: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  font-style: inherit;
+  color: inherit;
 }
 .com__togglebox > dt .pt__box-editable {
   margin: 0;
@@ -7533,12 +7577,8 @@ html.ie9 .com__palette .b-range {
 .com__togglebox > dd > .inner {
   padding: 12px 0 0 0;
 }
-.com__togglebox.has-hover-icon > dt {
-  cursor: default;
-}
 .com__togglebox.has-title-bg > dt {
-  padding: 0 8px;
-  background: #e8e8e8;
+  padding: 0px 8px;
   border-radius: 3px;
 }
 .com__togglebox.has-content-bg .cm__empty,
@@ -7621,16 +7661,6 @@ html.ie9 .com__palette .b-range {
   margin: -8px;
   padding: 8px 22px 8px 8px;
 }
-.com__togglebox:not(.has-hover-icon) > dt {
-  cursor: pointer;
-  -webkit-transition: background-color 300ms ease-in-out, color 300ms ease-in-out;
-  transition: background-color 300ms ease-in-out, color 300ms ease-in-out;
-}
-.com__togglebox:not(.has-hover-icon).has-title-bg > dt:hover {
-  background-color: #c2dbf4;
-  -webkit-transition: background-color 100ms ease-in-out, color 100ms ease-in-out;
-  transition: background-color 100ms ease-in-out, color 100ms ease-in-out;
-}
 .com__togglebox.is-medium > dt {
   font: 300 16px/24px 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
@@ -7640,8 +7670,7 @@ html.ie9 .com__palette .b-range {
   height: 24px;
 }
 .com__togglebox.is-base > dt {
-  font: 400 13px/18px 'Open Sans', arial, helvetica, sans-serif;
-  color: #666666;
+  font-size: 13px;
   font-weight: 600;
   line-height: 24px;
 }
@@ -7673,13 +7702,96 @@ html.ie9 .com__palette .b-range {
 .com__togglebox.is-hide > dt:hover {
   color: #1d73c9;
 }
+.com__togglebox.is-hide > dt .cm__link,
+.com__togglebox.is-hide > dt .link,
+.com__togglebox.is-hide > dt .link--inner,
+.com__togglebox.is-hide > dt a,
+.com__togglebox.is-hide > dt .com__glossary .com__glossary__title {
+  color: #666666;
+}
+.com__togglebox.is-hide > dt .cm__link:hover,
+.com__togglebox.is-hide > dt .link:hover,
+.com__togglebox.is-hide > dt .link--inner:hover,
+.com__togglebox.is-hide > dt a:hover,
+.com__togglebox.is-hide > dt .com__glossary .com__glossary__title:hover {
+  color: #1d73c9;
+}
 .com__togglebox.is-show > dt {
   color: #666666;
 }
 .com__togglebox.is-show > dt:hover {
   color: #1d73c9;
 }
+.com__togglebox.is-show > dt .cm__link,
+.com__togglebox.is-show > dt .link,
+.com__togglebox.is-show > dt .link--inner,
+.com__togglebox.is-show > dt a,
+.com__togglebox.is-show > dt .com__glossary .com__glossary__title {
+  color: #666666;
+}
+.com__togglebox.is-show > dt .cm__link:hover,
+.com__togglebox.is-show > dt .link:hover,
+.com__togglebox.is-show > dt .link--inner:hover,
+.com__togglebox.is-show > dt a:hover,
+.com__togglebox.is-show > dt .com__glossary .com__glossary__title:hover {
+  color: #1d73c9;
+}
 .com__togglebox > dt .icon.default {
+  background-image: url("../img/icons/small/arrow-right.png");
+}
+.com__togglebox.has-title-bg.is-hide > dt {
+  background: #e8e8e8;
+}
+.com__togglebox.has-title-bg.is-hide > dt:hover {
+  background: #c2dbf4;
+}
+.com__togglebox.has-title-bg.is-show > dt {
+  background: #e8e8e8;
+}
+.com__togglebox.has-title-bg.is-show > dt:hover {
+  background: #c2dbf4;
+}
+.com__togglebox.has-title-bg.is-hide > dt {
+  color: #666666;
+}
+.com__togglebox.has-title-bg.is-hide > dt:hover {
+  color: #1d73c9;
+}
+.com__togglebox.has-title-bg.is-hide > dt .cm__link,
+.com__togglebox.has-title-bg.is-hide > dt .link,
+.com__togglebox.has-title-bg.is-hide > dt .link--inner,
+.com__togglebox.has-title-bg.is-hide > dt a,
+.com__togglebox.has-title-bg.is-hide > dt .com__glossary .com__glossary__title {
+  color: #666666;
+}
+.com__togglebox.has-title-bg.is-hide > dt .cm__link:hover,
+.com__togglebox.has-title-bg.is-hide > dt .link:hover,
+.com__togglebox.has-title-bg.is-hide > dt .link--inner:hover,
+.com__togglebox.has-title-bg.is-hide > dt a:hover,
+.com__togglebox.has-title-bg.is-hide > dt .com__glossary .com__glossary__title:hover {
+  color: #1d73c9;
+}
+.com__togglebox.has-title-bg.is-show > dt {
+  color: #666666;
+}
+.com__togglebox.has-title-bg.is-show > dt:hover {
+  color: #1d73c9;
+}
+.com__togglebox.has-title-bg.is-show > dt .cm__link,
+.com__togglebox.has-title-bg.is-show > dt .link,
+.com__togglebox.has-title-bg.is-show > dt .link--inner,
+.com__togglebox.has-title-bg.is-show > dt a,
+.com__togglebox.has-title-bg.is-show > dt .com__glossary .com__glossary__title {
+  color: #666666;
+}
+.com__togglebox.has-title-bg.is-show > dt .cm__link:hover,
+.com__togglebox.has-title-bg.is-show > dt .link:hover,
+.com__togglebox.has-title-bg.is-show > dt .link--inner:hover,
+.com__togglebox.has-title-bg.is-show > dt a:hover,
+.com__togglebox.has-title-bg.is-show > dt .com__glossary .com__glossary__title:hover {
+  color: #1d73c9;
+}
+.com__togglebox.has-title-bg > dt .icon.default {
   background-image: url("../img/icons/small/arrow-right.png");
 }
 /* ******* COMPONENT: TOGGLE BOX: ADAPTIVE ******* */

@@ -9,10 +9,10 @@
         cursor: pointer;
         line-height: @ComToggleBox-Size;
         .mx__user-select(none);
-        .mx__transition(color, @CmUI-Transition-Duration);
+        .mx__transition(background color, @CmUI-Transition-Duration);
 
-        a {
-            font-weight: inherit;
+        &:hover {
+            .mx__transition(background color, @CmUI-Transition-DurationReverse);
         }
 
         .icon {
@@ -28,15 +28,19 @@
         }
 
         .title {
-            .cm__text-overflow;
+            .cm__text-nowrap;
             display: block;
+        }
+
+        .cm__inherit {
+            .cm__font--inherit;
         }
 
         .pt__box-editable {
             margin: 0;
 
             > .l {
-                .cm__text-overflow;
+                .cm__text-nowrap;
             }
         }
     }
@@ -51,17 +55,10 @@
         }
     }
 
-    &.has-hover-icon {
-        > dt {
-            cursor: default;
-        }
-    }
-
     &.has-title-bg {
         > dt {
-            padding: 0 @CmIndent-XXSmall;
-            background: @ComToggleBox-TitleBackgroundNormal;
-            border-radius: @CmBorder-Radius;
+            padding: @ComToggleBox-HasBackground-TitleIndent;
+            border-radius: @ComToggleBox-HasBackground-TitleBorderRadius;
         }
     }
 
@@ -100,22 +97,6 @@
         }
     }
 
-    &:not(.has-hover-icon) {
-        > dt {
-            cursor: pointer;
-            .mx__transition(background-color color, @CmUI-Transition-Duration);
-        }
-
-        &.has-title-bg {
-            > dt {
-                &:hover {
-                    background-color: @ComToggleBox-TitleBackgroundHover;
-                    .mx__transition(background-color color, @CmUI-Transition-DurationReverse);
-                }
-            }
-        }
-    }
-
     &.is-medium {
         > dt {
             .cm__font--ui-h4;
@@ -129,7 +110,7 @@
 
     &.is-base {
         > dt {
-            .cm__font;
+            font-size: @CmFont-Base-Size;
             font-weight: @CmFont-Base-BoldWeight;
             line-height: @ComToggleBox-SizeBase;
 
@@ -168,19 +149,36 @@
             }
         }
     }
+
+    .com__togglebox__theme(@ComToggleBox-Theme);
+    .com__togglebox--has-background__title-theme(@ComToggleBox-HasBackground-TitleTheme);
 }
 
 // /* *** MIXINS *** */
 
-.com__togglebox__title-theme (@theme) {
+.com__togglebox__theme (@theme) {
     .com__togglebox__title-color(~"@{ComToggleBox-Theme@{theme}-TitleColorNormal}", ~"@{ComToggleBox-Theme@{theme}-TitleColorHover}", ~"@{ComToggleBox-Theme@{theme}-TitleColorActive}");
     .com__togglebox__title-icon(~"@{ComToggleBox-Theme@{theme}-TitleIcon}");
 }
 
+.com__togglebox--has-background__title-theme (@theme) {
+    &.has-title-bg {
+        .com__togglebox--title-background(~"@{ComToggleBox-Theme@{theme}-TitleBackgroundNormal}", ~"@{ComToggleBox-Theme@{theme}-TitleBackgroundHover}", ~"@{ComToggleBox-Theme@{theme}-TitleBackgroundActive}");
+        .com__togglebox__title-color(~"@{ComToggleBox-Theme@{theme}-TitleColorNormal}", ~"@{ComToggleBox-Theme@{theme}-TitleColorHover}", ~"@{ComToggleBox-Theme@{theme}-TitleColorActive}");
+        .com__togglebox__title-icon(~"@{ComToggleBox-Theme@{theme}-TitleIcon}");
+    }
+}
+
 .com__togglebox__title-color (@normal, @hover, @active) {
-    .com__togglebox {
-        &.is-hide {
-            > dt {
+    &.is-hide {
+        > dt {
+            color: @normal;
+
+            &:hover {
+                color: @hover;
+            }
+
+            .cm__link {
                 color: @normal;
 
                 &:hover {
@@ -188,9 +186,17 @@
                 }
             }
         }
+    }
 
-        &.is-show {
-            > dt {
+    &.is-show {
+        > dt {
+            color: @active;
+
+            &:hover {
+                color: @hover;
+            }
+
+            .cm__link {
                 color: @active;
 
                 &:hover {
@@ -202,16 +208,34 @@
 }
 
 .com__togglebox__title-icon (@image) {
-    .com__togglebox {
-        > dt {
-            .icon.default {
-                background-image: url("@{image}");
-            }
+    > dt {
+        .icon.default {
+            background-image: url("@{image}");
         }
     }
 }
 
-.com__togglebox__title-theme(@ComToggleBox-Theme);
+.com__togglebox--title-background (@normal, @hover, @active) {
+    &.is-hide {
+        > dt {
+            background: @normal;
+
+            &:hover {
+                background: @hover;
+            }
+        }
+    }
+
+    &.is-show {
+        > dt {
+            background: @active;
+
+            &:hover {
+                background: @hover;
+            }
+        }
+    }
+}
 
 /* ******* COMPONENT: TOGGLE BOX: ADAPTIVE ******* */
 
