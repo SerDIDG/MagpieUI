@@ -7547,11 +7547,10 @@ html.ie9 .com__palette .b-range {
 .com__togglebox > dt .form .hint,
 .com__togglebox > dt .com__glossary .com__glossary__title,
 .com__togglebox > dt .com__glossary .com__glossary__title {
-  line-height: inherit;
-  font-size: inherit;
-  font-weight: inherit;
-  font-style: inherit;
   color: inherit;
+}
+.com__togglebox > dt .pt__links {
+  font-size: 13px;
 }
 .com__togglebox > dt .pt__box-editable {
   margin: 0;
