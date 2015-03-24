@@ -28,6 +28,7 @@ cm.define('Com.Slider', {
         'effect' : 'fade',              // fade | push | pull | pull-parallax | pull-overlap
         'transition' : 'smooth',        // smooth | simple | acceleration | inhibition,
         'calculateMaxHeight' : false,
+        'minHeight' : 96,               // Set min-height of slider, work with calculateMaxHeight parameter
         'hasBar' : false,
         'barDirection' : 'horizontal',  // horizontal | vertical
         'Com.Scroll' : {
@@ -39,7 +40,8 @@ cm.define('Com.Slider', {
 function(params){
     var that = this,
         components = {},
-        slideshowInt;
+        slideshowInt,
+        minHeightDimension;
     
     that.nodes = {
         'container' : cm.Node('div'),
@@ -87,6 +89,10 @@ function(params){
         that.params['direction'] = {'forward' : 1, 'backward' : 1, 'random' : 1}[that.params['direction']] ? that.params['direction'] : 'forward';
         that.params['effect'] = Com.SliderEffects[that.params['effect']] ? that.params['effect'] : 'fade';
         that.params['transition'] = {'smooth' : 1, 'simple' : 1, 'acceleration' : 1, 'inhibition' : 1}[that.params['transition']] ? that.params['transition'] : 'smooth';
+        if(that.params['minHeight'] && isNaN(that.params['minHeight'])){
+            minHeightDimension = getDimension(that.params['minHeight']);
+            that.params['minHeight'] = parseFloat(that.params['minHeight']);
+        }
     };
 
     var renderSlider = function(){
@@ -155,6 +161,11 @@ function(params){
         cm.forEach(that.items, function(item){
             height = Math.max(height, cm.getRealHeight(item.nodes['container'], 'offsetRelative'));
         });
+        if(minHeightDimension == '%'){
+            height = Math.max(height, (that.nodes['inner'].offsetWidth / 100 * that.params['minHeight']));
+        }else{
+            height = Math.max(height, that.params['minHeight']);
+        }
         if(height != that.nodes['inner'].offsetHeight){
             that.nodes['inner'].style.height = [height, 'px'].join('');
         }
@@ -324,6 +335,11 @@ function(params){
         if(that.params['calculateMaxHeight']){
             calculateMaxHeight();
         }
+    };
+
+    var getDimension = function(value){
+        var pure = value.match(/\d+(\D*)/);
+        return pure ? pure[1] : '';
     };
     
     /* ******* MAIN ******* */
