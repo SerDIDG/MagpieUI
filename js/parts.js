@@ -1,6 +1,17 @@
 Part['Menu'] = (function(){
     var processedNodes = [],
-        menus;
+        menus,
+        pageSize;
+
+    var checkPosition = function(drop){
+        pageSize = cm.getPageSize();
+        cm.replaceClass(drop, 'pull-right', 'pull-left');
+        if(cm.getRealX(drop) + drop.offsetWidth >= pageSize['winWidth']){
+            cm.replaceClass(drop, 'pull-left', 'pull-right');
+        }else{
+            cm.replaceClass(drop, 'pull-right', 'pull-left');
+        }
+    };
 
     return function(container){
         container = typeof container == 'undefined'? document.body : container;
@@ -9,6 +20,13 @@ Part['Menu'] = (function(){
             if(!cm.inArray(processedNodes, node)){
                 var drop = cm.getByClass('pt__menu-dropdown', node)[0],
                     target;
+                cm.addEvent(node, 'mouseover', function(e){
+                    e = cm.getEvent(e);
+                    target = cm.getObjFromEvent(e);
+                    if(!cm.isParent(drop, target, true)){
+                        checkPosition(drop);
+                    }
+                });
                 cm.addEvent(node, 'mousedown', function(e){
                     e = cm.getEvent(e);
                     target = cm.getObjFromEvent(e);
