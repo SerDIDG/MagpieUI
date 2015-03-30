@@ -4,6 +4,7 @@
     padding: @CmIndent-XXXSmall;
     background: #fff;
     border: @CmBorder-Default;
+    border-width: @PtBox-BorderWidth;
     border-radius: @CmBorder-Radius;
     box-shadow: @CmUI-ShadowLight;
     .mx__box-sizing(border-box);
@@ -319,7 +320,7 @@
 
     // /* Sizes */
 
-    .for(@PtItemBox-Sizes); .-each(@name) {
+    .for(@PtBoxItem-Sizes); .-each(@name) {
         &.size-@{name} {
             .pt__box-item__size(@name);
         }
