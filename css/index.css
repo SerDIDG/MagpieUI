@@ -2846,6 +2846,7 @@ button::-moz-focus-inner {
   padding: 4px;
   background: #fff;
   border: 1px solid #cccccc;
+  border-width: 1px;
   border-radius: 3px;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
   -moz-box-sizing: border-box;
@@ -3629,6 +3630,7 @@ button::-moz-focus-inner {
   position: absolute;
   margin: 0;
   padding: 4px 0px;
+  border-width: 1px;
   list-style: none;
   opacity: 0;
   top: 100%;
@@ -3666,7 +3668,21 @@ button::-moz-focus-inner {
 }
 .pt__menu-dropdown--base li ul {
   top: -5px;
-  left: 100%;
+  right: auto;
+  bottom: auto;
+  left: calc(100%);
+}
+.pt__menu-dropdown--base li ul.pull-left {
+  top: -5px;
+  right: auto;
+  bottom: auto;
+  left: calc(100%);
+}
+.pt__menu-dropdown--base li ul.pull-right {
+  top: -5px;
+  right: calc(100%);
+  bottom: auto;
+  left: auto;
 }
 .pt__menu-dropdown--base li.sep {
   display: none;
@@ -3703,21 +3719,9 @@ button::-moz-focus-inner {
   bottom: auto;
   left: 0;
 }
-.pt__menu-dropdown--base.pull-left li ul {
-  top: -5px;
-  right: auto;
-  bottom: auto;
-  left: 100%;
-}
 .pt__menu-dropdown--base.pull-right {
   top: 100%;
   right: 0;
-  bottom: auto;
-  left: auto;
-}
-.pt__menu-dropdown--base.pull-right li ul {
-  top: -5px;
-  right: 100%;
   bottom: auto;
   left: auto;
 }
@@ -3987,6 +3991,15 @@ button::-moz-focus-inner {
   padding: 16px;
   position: relative;
 }
+.pt__dnd-area:after {
+  content: ".";
+  display: block;
+  clear: both;
+  visibility: hidden;
+  line-height: 0;
+  font-size: 0;
+  height: 0;
+}
 .pt__dnd-area.is-available {
   -webkit-transition: background-color 300ms ease-in-out;
   transition: background-color 300ms ease-in-out;
@@ -4141,6 +4154,7 @@ button::-moz-focus-inner {
   position: absolute;
   margin: 0;
   padding: 4px 0px;
+  border-width: 1px;
   list-style: none;
   opacity: 0;
   top: 100%;
@@ -4182,7 +4196,21 @@ button::-moz-focus-inner {
 }
 .pt__editable.is-editable > .menu .pt__menu-dropdown li ul {
   top: -5px;
-  left: 100%;
+  right: auto;
+  bottom: auto;
+  left: calc(100%);
+}
+.pt__editable.is-editable > .menu .pt__menu-dropdown li ul.pull-left {
+  top: -5px;
+  right: auto;
+  bottom: auto;
+  left: calc(100%);
+}
+.pt__editable.is-editable > .menu .pt__menu-dropdown li ul.pull-right {
+  top: -5px;
+  right: calc(100%);
+  bottom: auto;
+  left: auto;
 }
 .pt__editable.is-editable > .menu .pt__menu-dropdown li.sep {
   display: none;
@@ -4219,21 +4247,16 @@ button::-moz-focus-inner {
   bottom: auto;
   left: 0;
 }
-.pt__editable.is-editable > .menu .pt__menu-dropdown.pull-left li ul {
-  top: -5px;
-  right: auto;
-  bottom: auto;
-  left: 100%;
-}
 .pt__editable.is-editable > .menu .pt__menu-dropdown.pull-right {
   top: 100%;
   right: 0;
   bottom: auto;
   left: auto;
 }
-.pt__editable.is-editable > .menu .pt__menu-dropdown.pull-right li ul {
-  top: -5px;
-  right: 100%;
+.pt__editable.is-editable > .menu .pt__menu-dropdown.pull-left,
+.pt__editable.is-editable > .menu .pt__menu-dropdown.pull-right {
+  top: 12px;
+  right: 12px;
   bottom: auto;
   left: auto;
 }
@@ -6108,6 +6131,7 @@ button::-moz-focus-inner {
   padding: 4px;
   background: #fff;
   border: 1px solid #cccccc;
+  border-width: 1px;
   border-radius: 3px;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
   -moz-box-sizing: border-box;
@@ -6273,6 +6297,7 @@ button::-moz-focus-inner {
   position: absolute;
   margin: 0;
   padding: 4px 0px;
+  border-width: 1px;
   list-style: none;
   opacity: 0;
   top: 100%;
@@ -6313,7 +6338,21 @@ button::-moz-focus-inner {
 }
 .com__tooltip.com-action-menu-tooltip .pt__menu .pt__menu-dropdown li ul {
   top: -5px;
-  left: 100%;
+  right: auto;
+  bottom: auto;
+  left: calc(100%);
+}
+.com__tooltip.com-action-menu-tooltip .pt__menu .pt__menu-dropdown li ul.pull-left {
+  top: -5px;
+  right: auto;
+  bottom: auto;
+  left: calc(100%);
+}
+.com__tooltip.com-action-menu-tooltip .pt__menu .pt__menu-dropdown li ul.pull-right {
+  top: -5px;
+  right: calc(100%);
+  bottom: auto;
+  left: auto;
 }
 .com__tooltip.com-action-menu-tooltip .pt__menu .pt__menu-dropdown li.sep {
   display: none;
@@ -6350,21 +6389,9 @@ button::-moz-focus-inner {
   bottom: auto;
   left: 0;
 }
-.com__tooltip.com-action-menu-tooltip .pt__menu .pt__menu-dropdown.pull-left li ul {
-  top: -5px;
-  right: auto;
-  bottom: auto;
-  left: 100%;
-}
 .com__tooltip.com-action-menu-tooltip .pt__menu .pt__menu-dropdown.pull-right {
   top: 100%;
   right: 0;
-  bottom: auto;
-  left: auto;
-}
-.com__tooltip.com-action-menu-tooltip .pt__menu .pt__menu-dropdown.pull-right li ul {
-  top: -5px;
-  right: 100%;
   bottom: auto;
   left: auto;
 }
@@ -7545,6 +7572,9 @@ html.ie9 .com__palette .b-range {
 .com__togglebox > dt ol,
 .com__togglebox > dt hr,
 .com__togglebox > dt .form .hint,
+.com__togglebox > dt .pt__box-item .title,
+.com__togglebox > dt .pt__box-item .descr,
+.com__togglebox > dt .pt__box-item .author,
 .com__togglebox > dt .com__glossary .com__glossary__title,
 .com__togglebox > dt .com__glossary .com__glossary__title {
   color: inherit;
@@ -7881,6 +7911,7 @@ html.ie9 .com__palette .b-range {
   position: absolute;
   margin: 0;
   padding: 4px 0px;
+  border-width: 1px;
   list-style: none;
   opacity: 0;
   top: 100%;
@@ -7920,7 +7951,21 @@ html.ie9 .com__palette .b-range {
 }
 .com__tabset__head-menu .pt__menu-dropdown li ul {
   top: -5px;
-  left: 100%;
+  right: auto;
+  bottom: auto;
+  left: calc(100%);
+}
+.com__tabset__head-menu .pt__menu-dropdown li ul.pull-left {
+  top: -5px;
+  right: auto;
+  bottom: auto;
+  left: calc(100%);
+}
+.com__tabset__head-menu .pt__menu-dropdown li ul.pull-right {
+  top: -5px;
+  right: calc(100%);
+  bottom: auto;
+  left: auto;
 }
 .com__tabset__head-menu .pt__menu-dropdown li.sep {
   display: none;
@@ -7957,21 +8002,9 @@ html.ie9 .com__palette .b-range {
   bottom: auto;
   left: 0;
 }
-.com__tabset__head-menu .pt__menu-dropdown.pull-left li ul {
-  top: -5px;
-  right: auto;
-  bottom: auto;
-  left: 100%;
-}
 .com__tabset__head-menu .pt__menu-dropdown.pull-right {
   top: 100%;
   right: 0;
-  bottom: auto;
-  left: auto;
-}
-.com__tabset__head-menu .pt__menu-dropdown.pull-right li ul {
-  top: -5px;
-  right: 100%;
   bottom: auto;
   left: auto;
 }
@@ -9027,13 +9060,13 @@ html.ie9 .com__palette .b-range {
   z-index: 2;
   overflow: hidden;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
-  -webkit-user-select: text;
-  -moz-user-select: text;
-  user-select: text;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  user-select: text;
 }
 .com__slider > .inner > .slides > ul > li > .text .cm__tags,
 .com__slider > .inner > .slides > ul > li > .text h1,
@@ -9056,6 +9089,9 @@ html.ie9 .com__palette .b-range {
   right: 0;
   bottom: 0;
   left: 0;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  user-select: text;
 }
 .com__slider > .inner > .slides > ul > li > .slide-link {
   position: absolute;
