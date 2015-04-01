@@ -9,7 +9,8 @@ cm.define('Com.Tabset', {
         'Params',
         'Events',
         'DataConfig',
-        'DataNodes'
+        'DataNodes',
+        'Stack'
     ],
     'events' : [
         'onRender',
@@ -21,6 +22,7 @@ cm.define('Com.Tabset', {
     'params' : {
         'node' : cm.Node('div'),        // tabs contained node
         'container' : false,
+        'name' : '',
         'toggleOnHashChange' : true,
         'renderOnInit' : true,
         'active' : null,
@@ -157,6 +159,7 @@ function(params){
         /* *** EVENTS *** */
         Part.Menu();
         cm.addEvent(window, 'resize', resizeHandler);
+        that.addToStack(that.nodes['container']);
         that.triggerEvent('onRender');
     };
 
@@ -247,8 +250,8 @@ function(params){
         that.active = id;
         that.tabs[that.active]['isHide'] = false;
         // Show Start Event
-        that.tabs[that.active]['onShow'](that, that.tabs[that.active]);
-        that.triggerEvent('onTabShow', that.tabs[that.active]);
+        that.tabs[that.active]['onShowStart'](that, that.tabs[that.active]);
+        that.triggerEvent('onTabShowStart', that.tabs[that.active]);
         // Show
         cm.addClass(that.tabs[that.active]['tab']['container'], 'active');
         cm.addClass(that.tabs[that.active]['menu']['container'], 'active');
