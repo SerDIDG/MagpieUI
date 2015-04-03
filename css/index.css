@@ -3182,14 +3182,20 @@ button::-moz-focus-inner {
 }
 .pt__box-item.size-50 .pt__image {
   width: 50px;
+}
+.pt__box-item.size-50 .pt__image.is-centered {
   height: 50px;
 }
 .pt__box-item.size-80 .pt__image {
   width: 80px;
+}
+.pt__box-item.size-80 .pt__image.is-centered {
   height: 80px;
 }
 .pt__box-item.size-150 .pt__image {
   width: 150px;
+}
+.pt__box-item.size-150 .pt__image.is-centered {
   height: 150px;
 }
 /* ******* PART: BOX: ADAPTIVE ******* */
@@ -3711,7 +3717,10 @@ button::-moz-focus-inner {
   display: none;
 }
 .pt__menu-dropdown--base li:hover > ul {
-  display: block;
+  visibility: visible;
+  opacity: 1;
+  -webkit-transition: all 100ms ease-in-out;
+  transition: all 100ms ease-in-out;
 }
 .pt__menu-dropdown--base.pull-left {
   top: 100%;
@@ -4239,7 +4248,10 @@ button::-moz-focus-inner {
   display: none;
 }
 .pt__editable.is-editable > .menu .pt__menu-dropdown li:hover > ul {
-  display: block;
+  visibility: visible;
+  opacity: 1;
+  -webkit-transition: all 100ms ease-in-out;
+  transition: all 100ms ease-in-out;
 }
 .pt__editable.is-editable > .menu .pt__menu-dropdown.pull-left {
   top: 100%;
@@ -6381,7 +6393,10 @@ button::-moz-focus-inner {
   display: none;
 }
 .com__tooltip.com-action-menu-tooltip .pt__menu .pt__menu-dropdown li:hover > ul {
-  display: block;
+  visibility: visible;
+  opacity: 1;
+  -webkit-transition: all 100ms ease-in-out;
+  transition: all 100ms ease-in-out;
 }
 .com__tooltip.com-action-menu-tooltip .pt__menu .pt__menu-dropdown.pull-left {
   top: 100%;
@@ -7994,7 +8009,10 @@ html.ie9 .com__palette .b-range {
   display: none;
 }
 .com__tabset__head-menu .pt__menu-dropdown li:hover > ul {
-  display: block;
+  visibility: visible;
+  opacity: 1;
+  -webkit-transition: all 100ms ease-in-out;
+  transition: all 100ms ease-in-out;
 }
 .com__tabset__head-menu .pt__menu-dropdown.pull-left {
   top: 100%;

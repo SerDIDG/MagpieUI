@@ -327,10 +327,13 @@
     }
 }
 
-.pt__box-item__size (@value) {
+.pt__box-item__size (@value) when (@value > 0) {
     .pt__image {
         width: unit(@value, px);
-        height: unit(@value, px);
+
+        &.is-centered {
+            height: unit(@value, px);
+        }
     }
 }
 
