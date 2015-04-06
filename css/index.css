@@ -4959,7 +4959,7 @@ button::-moz-focus-inner {
 }
 /* *** LISTING WITH COUNTERS *** */
 .pt__listing-counters .cm__counter {
-  margin: 3px 0 0 0;
+  margin: 4px 0 0 0;
   display: inline-block;
   vertical-align: top;
 }

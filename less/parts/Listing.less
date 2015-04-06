@@ -95,14 +95,14 @@
 
 .pt__listing-counters {
     .cm__counter {
-        @margin: round((@PtListingCounters-Height - @CmCounter-Size - @CmCounter-Border * 2) / 2);
+        @margin: round((@PtListingCounters-Height - @CmCounter-Size) / 2);
         margin:  @margin 0 0 0;
         display: inline-block;
         vertical-align: top;
     }
 
     .label {
-        .cm__text-overflow;
+        .cm__text-nowrap;
     }
 
     ul {
