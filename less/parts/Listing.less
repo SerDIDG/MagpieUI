@@ -95,7 +95,8 @@
 
 .pt__listing-counters {
     .cm__counter {
-        margin: ((@PtListingCounters-Height - @CmCounter-Size - @CmCounter-Border * 2) / 2) 0 0 0;
+        @margin: round((@PtListingCounters-Height - @CmCounter-Size - @CmCounter-Border * 2) / 2);
+        margin:  @margin 0 0 0;
         display: inline-block;
         vertical-align: top;
     }

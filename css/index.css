@@ -86,8 +86,6 @@
 }
 /* *** COUNTER *** */
 .cm__counter {
-  font: 400 11px/18px 'Open Sans', arial, helvetica, sans-serif;
-  color: #666666;
   height: 16px;
   display: inline-block;
   vertical-align: top;
@@ -96,6 +94,7 @@
   border: 1px solid #2985e0;
   border-radius: 3px;
   text-align: center;
+  font-size: 11px;
   line-height: 16px;
   color: #2985e0;
   -webkit-background-clip: border-box;
@@ -103,6 +102,11 @@
   background-clip: border-box;
   -webkit-transition: all 300ms ease-in-out;
   transition: all 300ms ease-in-out;
+}
+.cm__counter.active {
+  background-color: #16599c;
+  border-color: #16599c;
+  color: #ffffff;
 }
 .cm__counter--hover {
   background-color: #1d73c9;

@@ -126,7 +126,6 @@
 /* *** COUNTER *** */
 
 .cm__counter {
-    .cm__font--ui-small;
     height: @CmCounter-Size;
     display: inline-block;
     vertical-align: top;
@@ -135,10 +134,15 @@
     border: @CmCounter-Border solid @CmColor-Primary-DarkDefault;
     border-radius: @CmBorder-Radius;
     text-align: center;
+    font-size: @CmFont-Base-SizeSmall;
     line-height: @CmCounter-Size;
     color: @CmColor-Primary-DarkDefault;
     .mx__background-clip(border-box);
     .mx__transition(all, @CmUI-Transition-Duration);
+
+    &.active {
+        .cm__counter--active;
+    }
 }
 
 .cm__counter--hover {
