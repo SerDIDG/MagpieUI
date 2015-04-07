@@ -3,9 +3,10 @@
 Mod['Params'] = {
     '_config' : {
         'extend' : true,
-        'self' : false
+        'predefine' : false,
+        'require' : ['Extend']
     },
-    '_define' : function(){
+    '_construct' : function(){
         var that = this;
         if(!that.build['params']){
             that.build['params'] = {};
@@ -49,9 +50,10 @@ Mod['Params'] = {
 Mod['Events'] = {
     '_config' : {
         'extend' : true,
-        'self' : false
+        'predefine' : false,
+        'require' : ['Extend']
     },
-    '_define' : function(){
+    '_construct' : function(){
         var that = this;
         if(!that.build['params']['events']){
             that.build['params']['events'] = {};
@@ -143,9 +145,10 @@ Mod['Events'] = {
 Mod['Langs'] = {
     '_config' : {
         'extend' : true,
-        'self' : false
+        'predefine' : false,
+        'require' : ['Extend']
     },
-    '_define' : function(){
+    '_construct' : function(){
         var that = this;
         if(!that.build['params']['langs']){
             that.build['params']['langs'] = {};
@@ -183,9 +186,10 @@ Mod['Langs'] = {
 Mod['DataConfig'] = {
     '_config' : {
         'extend' : true,
-        'self' : false
+        'predefine' : false,
+        'require' : ['Extend']
     },
-    '_define' : function(){
+    '_construct' : function(){
         var that = this;
         if(typeof that.build['params']['configDataMarker'] == 'undefined'){
             that.build['params']['configDataMarker'] = 'data-config';
@@ -222,9 +226,10 @@ Mod['DataConfig'] = {
 Mod['DataNodes'] = {
     '_config' : {
         'extend' : true,
-        'self' : false
+        'predefine' : false,
+        'require' : ['Extend']
     },
-    '_define' : function(){
+    '_construct' : function(){
         var that = this;
         if(!that.build['params']['nodes']){
             that.build['params']['nodes'] = {};
@@ -263,9 +268,10 @@ Mod['DataNodes'] = {
 Mod['Storage'] = {
     '_config' : {
         'extend' : true,
-        'self' : false
+        'predefine' : false,
+        'require' : ['Extend']
     },
-    '_define' : function(){
+    '_construct' : function(){
         var that = this;
         if(!that.build['params']['name']){
             that.build['params']['name'] = '';
@@ -353,9 +359,10 @@ Mod['Storage'] = {
 Mod['Callbacks'] = {
     '_config' : {
         'extend' : true,
-        'self' : false
+        'predefine' : false,
+        'require' : ['Extend']
     },
-    '_define' : function(){
+    '_construct' : function(){
         var that = this;
         if(!that.build['params']['callbacks']){
             that.build['params']['callbacks'] = {};
@@ -389,9 +396,10 @@ Mod['Callbacks'] = {
 Mod['Stack'] = {
     '_config' : {
         'extend' : true,
-        'self' : false
+        'predefine' : false,
+        'require' : ['Extend']
     },
-    '_define' : function(){
+    '_construct' : function(){
         var that = this;
         if(!that.build['params']['name']){
             that.build['params']['name'] = '';
@@ -403,7 +411,8 @@ Mod['Stack'] = {
         that._stack.push({
             'name' : that.params['name'],
             'node' : node,
-            'class' : that
+            'class' : that,
+            'className' : that._name['full']
         });
         return that;
     },
@@ -417,5 +426,111 @@ Mod['Stack'] = {
             }
         });
         return items;
+    }
+};
+
+/* ******* EXTEND ******* */
+
+Mod['Extend'] = {
+    '_config' : {
+        'extend' : true,
+        'predefine' : true
+    },
+    '_construct' : function(){
+        var that = this;
+    },
+    '_extend' : function(o, name){
+        var that = this;
+        if(!that.build._modules[name]){
+            // Merge Config
+            o._config = cm.merge({
+                'extend' : false,
+                'predefine' : false,
+                'require' : []
+            }, o._config);
+            // Check Requires
+            cm.forEach(o._config['require'], function(module){
+                if(Mod[module]){
+                    Mod['Extend']._extend.call(that, Mod[module], module);
+                }
+            });
+            // Extend class by module's methods
+            if(o._config['extend']){
+                cm.forEach(o, function(item, key){
+                    if(!/^(_)/.test(key)){
+                        that.build[key] = item;
+                    }
+                });
+            }
+            // Construct module
+            if(typeof o._construct == 'function'){
+                // Construct
+                o._construct.call(that);
+            }else{
+                cm.errorLog({
+                    'type' : 'error',
+                    'name' : that.build._name['full'],
+                    'message' : ['Module', cm.strWrap(name, '"'), 'does not have "_construct" method.'].join(' ')
+                });
+            }
+            // Add into stack of class's modules
+            that.build._modules[name] = o;
+        }
+    },
+    'extend' : function(o, name){
+        var that = this;
+        if(!o){
+            cm.errorLog({
+                'type' : 'error',
+                'name' : that._name['full'],
+                'message' : 'Trying to extend the class by non-existing module.'
+            });
+        }else if(!name){
+            cm.errorLog({
+                'type' : 'error',
+                'name' : that._name['full'],
+                'message' : 'Module should have a name.'
+            });
+        }else if(that._modules[name]){
+            cm.errorLog({
+                'type' : 'error',
+                'name' : that._name['full'],
+                'message' : ['Module with name', cm.strWrap(name, '"'), 'already constructed.'].join(' ')
+            });
+        }else{
+            // Merge Config
+            o._config = cm.merge({
+                'extend' : false,
+                'predefine' : false,
+                'require' : []
+            }, o._config);
+            // Check Requires
+            cm.forEach(o._config['require'], function(module){
+                if(Mod[module]){
+                    Mod['Extend']._extend.call(that, Mod[module], module);
+                }
+            });
+            // Extend class by module's methods
+            if(o._config['extend']){
+                cm.forEach(o, function(item, key){
+                    if(!/^(_)/.test(key)){
+                        cm.defineStack[that._name['full']].prototype[key] = item;
+                    }
+                });
+            }
+            // Construct module
+            if(typeof o._construct == 'function'){
+                // Construct
+                o._construct.call(that);
+            }else{
+                cm.errorLog({
+                    'type' : 'error',
+                    'name' : that._name['full'],
+                    'message' : ['Module', cm.strWrap(name, '"'), 'does not have "_construct" method.'].join(' ')
+                });
+            }
+            // Add into stack of class's modules
+            that._modules[name] = o;
+        }
     }
 };

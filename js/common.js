@@ -260,6 +260,17 @@ cm.isEmpty = function(el){
     }
 };
 
+cm.objectSelector = function(name){
+    name = name.split('.');
+    var find = window;
+    cm.forEach(name, function(item){
+        if(find){
+            find = find[item];
+        }
+    });
+    return find;
+};
+
 cm.sort = function(o){
     var a = [];
     cm.forEach(o, function(item, key){
@@ -2412,6 +2423,8 @@ cm.createSvg = function(){
 
 /* ******* CLASS FABRIC ******* */
 
+cm.defineStack = {};
+
 cm.defineHelper = function(name, data, handler){
     var that = this;
     // Process config
@@ -2429,61 +2442,19 @@ cm.defineHelper = function(name, data, handler){
             'short' : name.replace('.', ''),
             'split' : name.split('.')
         },
+        '_modules' : {},
         'params' : data['params']
     };
-    // Check requires
-    /*
-    cm.forEach(that.build._raw['require'], function(name){
-        var str = name.split('.'),
-            method = window;
-        cm.forEach(str, function(item){
-            method = method[item];
-        });
-        if(typeof method == 'undefined'){
-            cm.errorLog({
-                'type' : 'error',
-                'name' : that.build._name['full'],
-                'message' : ['Library', cm.strWrap(name, '"'), 'not defined.'].join(' ')
-            });
+    // Extend class by predefine module
+    cm.forEach(Mod, function(module, name){
+        if(module._config && module._config['predefine']){
+            Mod['Extend']._extend.call(that, module, name);
         }
     });
-    */
-    // Extend class
+    // Extend class by class specific modules
     cm.forEach(that.build._raw['modules'], function(module){
         if(Mod[module]){
-            // Process module config
-            Mod[module]._config = cm.merge({
-                'extend' : false,
-                'self' : false
-            }, Mod[module]._config);
-            // Extend class object
-            if(Mod[module]._config['extend']){
-                cm.forEach(Mod[module], function(item, key){
-                    if(!/_define|_config/.test(key)){
-                        that.build[key] = item;
-                    }
-                });
-            }
-            // Extend modules object
-            if(Mod[module]._config['self']){
-                that.build[module] = Mod[module];
-            }
-            // Construct module
-            if(typeof Mod[module]._define == 'function'){
-                Mod[module]._define.call(that);
-            }else{
-                cm.errorLog({
-                    'type' : 'error',
-                    'name' : that.build._name['full'],
-                    'message' : ['Module', cm.strWrap(module, '"'), 'does not have "_define" method.'].join(' ')
-                });
-            }
-        }else{
-            cm.errorLog({
-                'type' : 'error',
-                'name' : that.build._name['full'],
-                'message' : ['Module', cm.strWrap(module, '"'), 'does not exists.'].join(' ')
-            });
+            Mod['Extend']._extend.call(that, Mod[module], module);
         }
     });
     // Prototype class
@@ -2497,6 +2468,8 @@ cm.defineHelper = function(name, data, handler){
         }
         window[that.build._name['split'][0]][that.build._name['split'][1]] = handler;
     }
+    // Add to defined stack
+    cm.defineStack[name] = handler;
 };
 
 cm.define = (function(){
@@ -2505,3 +2478,33 @@ cm.define = (function(){
         definer.apply(cm.defineHelper, arguments);
     };
 })();
+
+cm.find = function(className, name, parentNode){
+    if(!className || className == '*'){
+        var classes = [];
+        cm.forEach(cm.defineStack, function(classObject){
+            if(classObject.prototype.findInStack){
+                classes = cm.extend(classes, classObject.prototype.findInStack(name, parentNode));
+            }
+        });
+        return classes;
+    }else{
+        var classObject = cm.defineStack[className];
+        if(!classObject){
+            cm.errorLog({
+                'type' : 'error',
+                'name' : 'cm.find',
+                'message' : ['Class', cm.strWrap(className, '"'), 'does not exist.'].join(' ')
+            });
+        }else if(!classObject.prototype.findInStack){
+            cm.errorLog({
+                'type' : 'error',
+                'name' : 'cm.find',
+                'message' : ['Class', cm.strWrap(className, '"'), 'does not support Module Stack.'].join(' ')
+            });
+        }else{
+            return classObject.prototype.findInStack(name, parentNode);
+        }
+    }
+    return null;
+};
