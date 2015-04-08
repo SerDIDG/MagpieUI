@@ -14,11 +14,12 @@
     Ajax:                           1852
     Hash (?):                       1986
     Graphics:                       2006
+    Class Fabric                    2424
 
 */
 
 var cm = {
-        '_version' : '2.1.0',
+        '_version' : '3.0.5',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -2448,13 +2449,13 @@ cm.defineHelper = function(name, data, handler){
     // Extend class by predefine module
     cm.forEach(Mod, function(module, name){
         if(module._config && module._config['predefine']){
-            Mod['Extend']._extend.call(that, module, name);
+            Mod['Extend']._extend.call(that, name, module);
         }
     });
     // Extend class by class specific modules
     cm.forEach(that.build._raw['modules'], function(module){
         if(Mod[module]){
-            Mod['Extend']._extend.call(that, Mod[module], module);
+            Mod['Extend']._extend.call(that, module, Mod[module]);
         }
     });
     // Prototype class

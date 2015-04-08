@@ -439,7 +439,7 @@ Mod['Extend'] = {
     '_construct' : function(){
         var that = this;
     },
-    '_extend' : function(o, name){
+    '_extend' : function(name, o){
         var that = this;
         if(!that.build._modules[name]){
             // Merge Config
@@ -451,7 +451,7 @@ Mod['Extend'] = {
             // Check Requires
             cm.forEach(o._config['require'], function(module){
                 if(Mod[module]){
-                    Mod['Extend']._extend.call(that, Mod[module], module);
+                    Mod['Extend']._extend.call(that, module, Mod[module]);
                 }
             });
             // Extend class by module's methods
@@ -477,7 +477,7 @@ Mod['Extend'] = {
             that.build._modules[name] = o;
         }
     },
-    'extend' : function(o, name){
+    'extend' : function(name, o){
         var that = this;
         if(!o){
             cm.errorLog({
@@ -507,7 +507,7 @@ Mod['Extend'] = {
             // Check Requires
             cm.forEach(o._config['require'], function(module){
                 if(Mod[module]){
-                    Mod['Extend']._extend.call(that, Mod[module], module);
+                    Mod['Extend']._extend.call(that, module, Mod[module]);
                 }
             });
             // Extend class by module's methods

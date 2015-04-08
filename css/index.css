@@ -3723,8 +3723,8 @@ button::-moz-focus-inner {
 .pt__menu-dropdown--base li:hover > ul {
   visibility: visible;
   opacity: 1;
-  -webkit-transition: all 100ms ease-in-out;
-  transition: all 100ms ease-in-out;
+  -webkit-transition: visibility 100ms ease-in-out, opacity 100ms ease-in-out;
+  transition: visibility 100ms ease-in-out, opacity 100ms ease-in-out;
 }
 .pt__menu-dropdown--base.pull-left {
   top: 100%;
@@ -3750,16 +3750,16 @@ button::-moz-focus-inner {
 .pt__menu-dropdown--active {
   visibility: visible;
   opacity: 1;
-  -webkit-transition: all 100ms ease-in-out;
-  transition: all 100ms ease-in-out;
+  -webkit-transition: visibility 100ms ease-in-out, opacity 100ms ease-in-out;
+  transition: visibility 100ms ease-in-out, opacity 100ms ease-in-out;
 }
 /* *** MENU *** */
 .pt__menu:hover > .pt__menu-dropdown,
 .pt__menu.is-show > .pt__menu-dropdown {
   visibility: visible;
   opacity: 1;
-  -webkit-transition: all 100ms ease-in-out;
-  transition: all 100ms ease-in-out;
+  -webkit-transition: visibility 100ms ease-in-out, opacity 100ms ease-in-out;
+  transition: visibility 100ms ease-in-out, opacity 100ms ease-in-out;
 }
 /* ******* PARTS: TOOLBAR ********** */
 .pt__toolbar {
@@ -4254,8 +4254,8 @@ button::-moz-focus-inner {
 .pt__editable.is-editable > .menu .pt__menu-dropdown li:hover > ul {
   visibility: visible;
   opacity: 1;
-  -webkit-transition: all 100ms ease-in-out;
-  transition: all 100ms ease-in-out;
+  -webkit-transition: visibility 100ms ease-in-out, opacity 100ms ease-in-out;
+  transition: visibility 100ms ease-in-out, opacity 100ms ease-in-out;
 }
 .pt__editable.is-editable > .menu .pt__menu-dropdown.pull-left {
   top: 100%;
@@ -4285,8 +4285,8 @@ button::-moz-focus-inner {
 .pt__editable.is-editable > .menu:hover .pt__menu-dropdown {
   visibility: visible;
   opacity: 1;
-  -webkit-transition: all 100ms ease-in-out;
-  transition: all 100ms ease-in-out;
+  -webkit-transition: visibility 100ms ease-in-out, opacity 100ms ease-in-out;
+  transition: visibility 100ms ease-in-out, opacity 100ms ease-in-out;
 }
 .pt__editable.is-active > .border,
 .pt__editable:hover > .border {
@@ -6320,8 +6320,8 @@ button::-moz-focus-inner {
   right: auto;
   bottom: auto;
   left: 0;
-  -webkit-transition: all 300ms ease-in-out, all 100ms ease-in-out;
-  transition: all 300ms ease-in-out, all 100ms ease-in-out;
+  -webkit-transition: all 300ms ease-in-out, visibility 100ms ease-in-out, opacity 100ms ease-in-out;
+  transition: all 300ms ease-in-out, visibility 100ms ease-in-out, opacity 100ms ease-in-out;
   visibility: visible;
   opacity: 1;
   position: static;
@@ -6399,8 +6399,8 @@ button::-moz-focus-inner {
 .com__tooltip.com-action-menu-tooltip .pt__menu .pt__menu-dropdown li:hover > ul {
   visibility: visible;
   opacity: 1;
-  -webkit-transition: all 100ms ease-in-out;
-  transition: all 100ms ease-in-out;
+  -webkit-transition: visibility 100ms ease-in-out, opacity 100ms ease-in-out;
+  transition: visibility 100ms ease-in-out, opacity 100ms ease-in-out;
 }
 .com__tooltip.com-action-menu-tooltip .pt__menu .pt__menu-dropdown.pull-left {
   top: 100%;
@@ -8015,8 +8015,8 @@ html.ie9 .com__palette .b-range {
 .com__tabset__head-menu .pt__menu-dropdown li:hover > ul {
   visibility: visible;
   opacity: 1;
-  -webkit-transition: all 100ms ease-in-out;
-  transition: all 100ms ease-in-out;
+  -webkit-transition: visibility 100ms ease-in-out, opacity 100ms ease-in-out;
+  transition: visibility 100ms ease-in-out, opacity 100ms ease-in-out;
 }
 .com__tabset__head-menu .pt__menu-dropdown.pull-left {
   top: 100%;
