@@ -1,10 +1,12 @@
 cm.init = function(){
     // Set browser class
-    if(typeof Com.UA != 'undefined'){
-        Com.UA.setBrowserClass();
-    }
-    // Check device type
-    var checkDeviceType = function(){
+    (function checkBrowser(){
+        if(typeof Com.UA != 'undefined'){
+            Com.UA.setBrowserClass();
+        }
+    })();
+    // Get device type
+    (function checkType(){
         var sizes = cm.getPageSize(),
             width = sizes['winWidth'],
             height = sizes['winHeight'],
@@ -25,9 +27,13 @@ cm.init = function(){
         }
         cm.addClass(html, ['is', cm._deviceType].join('-'));
         cm.addClass(html, ['is', cm._deviceOrientation].join('-'));
-    };
-    cm.addEvent(window, 'resize', checkDeviceType);
-    checkDeviceType();
+        cm.addEvent(window, 'resize', checkType);
+    })();
+    // Get device scroll bar size
+    (function checkScrollBar(){
+        cm._scrollSize = cm.getScrollBarSize();
+        cm.addEvent(window, 'resize', checkScrollBar);
+    })();
 };
 
 cm.onReady(cm.init, false);

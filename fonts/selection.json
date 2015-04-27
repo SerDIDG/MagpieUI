@@ -1,0 +1,112 @@
+{
+	"IcoMoonType": "selection",
+	"icons": [
+		{
+			"icon": {
+				"paths": [
+					"M512 1024c-282.752 0-512-229.248-512-512s229.248-512 512-512c282.752 0 512 229.248 512 512s-229.248 512-512 512zM512 85.333c-235.648 0-426.667 191.019-426.667 426.667s191.019 426.667 426.667 426.667c235.648 0 426.667-191.019 426.667-426.667s-191.019-426.667-426.667-426.667zM597.333 725.333c0 0-128 0-128 0s-213.333-213.333-213.333-213.333c0 0 213.333-213.333 213.333-213.333s128 0 128 0c0 0-170.667 170.667-170.667 170.667s341.333 0 341.333 0c0 0 0 85.333 0 85.333s-341.333 0-341.333 0c0 0 170.667 170.667 170.667 170.667z"
+				],
+				"attrs": [
+					{}
+				],
+				"isMulticolor": false,
+				"grid": 24,
+				"tags": [
+					"ui-arrow-left"
+				]
+			},
+			"attrs": [
+				{}
+			],
+			"properties": {
+				"order": 2,
+				"id": 0,
+				"prevSize": 32,
+				"code": 59136,
+				"name": "circle-arrow-left"
+			},
+			"setIdx": 0,
+			"setId": 3,
+			"iconIdx": 0
+		},
+		{
+			"icon": {
+				"paths": [
+					"M512 1024c-282.752 0-512-229.248-512-512s229.248-512 512-512c282.752 0 512 229.248 512 512s-229.248 512-512 512zM512 85.333c-235.648 0-426.667 191.019-426.667 426.667s191.019 426.667 426.667 426.667c235.648 0 426.667-191.019 426.667-426.667s-191.019-426.667-426.667-426.667zM426.667 725.333c0 0 170.667-170.667 170.667-170.667s-341.333 0-341.333 0c0 0 0-85.333 0-85.333s341.333 0 341.333 0c0 0-170.667-170.667-170.667-170.667s128 0 128 0c0 0 213.333 213.333 213.333 213.333s-213.333 213.333-213.333 213.333c0 0-128 0-128 0z"
+				],
+				"attrs": [
+					{}
+				],
+				"isMulticolor": false,
+				"grid": 24,
+				"tags": [
+					"ui-arrow-right"
+				]
+			},
+			"attrs": [
+				{}
+			],
+			"properties": {
+				"order": 1,
+				"id": 1,
+				"prevSize": 32,
+				"code": 59137,
+				"name": "circle-arrow-right"
+			},
+			"setIdx": 0,
+			"setId": 3,
+			"iconIdx": 1
+		}
+	],
+	"height": 1024,
+	"metadata": {
+		"name": "Magpie-UI-Glyphs"
+	},
+	"preferences": {
+		"showGlyphs": true,
+		"showQuickUse": true,
+		"showQuickUse2": true,
+		"showSVGs": true,
+		"fontPref": {
+			"prefix": "cm-i__",
+			"metadata": {
+				"fontFamily": "Magpie-UI-Glyphs",
+				"majorVersion": 1,
+				"minorVersion": 0
+			},
+			"metrics": {
+				"emSize": 1024,
+				"baseline": 6.25,
+				"whitespace": 50
+			},
+			"autoHost": true,
+			"showSelector": true,
+			"showMetrics": true,
+			"showMetadata": true,
+			"showVersion": true,
+			"resetPoint": 58880,
+			"selector": "",
+			"classSelector": ".cm-i",
+			"includeMetadata": false
+		},
+		"imagePref": {
+			"prefix": "icon-",
+			"png": true,
+			"useClassSelector": true,
+			"color": 4473924,
+			"bgColor": 16777215,
+			"classSelector": ".icon",
+			"autoHost": true
+		},
+		"historySize": 100,
+		"showCodes": true,
+		"quickUsageToken": {
+			"MagpieUI": "MTdkMGZiZThiMmEyZDFlOWNmOGNjMGQ2NzcwYzRhY2YjMSMxNDI5MjAyNTk5IyMj"
+		},
+		"imageHostingName": false,
+		"fontHostingName": false,
+		"gridSize": 16,
+		"showGrid": true,
+		"showLiga": false
+	}
+}

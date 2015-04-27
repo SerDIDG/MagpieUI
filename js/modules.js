@@ -421,7 +421,7 @@ Mod['Stack'] = {
             items = [];
         parent = parent || document.body;
         cm.forEach(that._stack, function(item){
-            if((cm.isEmpty(name) || item['name'] == name) && cm.isParent(parent, item['node'])){
+            if((cm.isEmpty(name) || item['name'] == name) && cm.isParent(parent, item['node'], true)){
                 items.push(item);
             }
         });

@@ -6,6 +6,13 @@
 // /* ******* PATH ******* */
 
 @CmPath-Images: '../img';
+@CmPath-Fonts: '../fonts';
+
+// /* ************************************************ */
+// /* ******* IMPORT ******* */
+// /* ************************************************ */
+
+@import "variables.icons.less";
 
 // /* ******* SCREEN TYPES ******* */
 
@@ -255,6 +262,7 @@
 
 // /* ******* OTHER ******* */
 
+@CmColor-Icon: #666666;
 @CmColor-Mark: #fdf6ad;
 @CmColor-Gallery: #111111;
 @CmColor-Border: @CmColor-Secondary-MiddleDefault;
@@ -300,7 +308,7 @@
 @CmFont-UI-ColorOpposite: @CmColor-Font-Opposite;
 
 @CmFont-UI-H1-LineHeight: 38px;
-@CmFont-UI-H1-Size: 30px;
+@CmFont-UI-H1-Size: 28px;
 @CmFont-UI-H1-Weight: @CmFont-UI-LightWeight;
 @CmFont-UI-H1-Color: @CmColor-Font;
 
@@ -323,6 +331,10 @@
 @CmUI-ShadowInner: 0 2px 2px rgba(0,0,0,0.4) inset;
 @CmUI-Shadow-Bottom: 0 2px 2px rgba(0,0,0,0.15);
 @CmUI-Shadow-Right: 2px 0 2px rgba(0,0,0,0.15);
+@CmUI-Overlay: @CmUI-Overlay-Light;
+@CmUI-Overlay-Dark: rgba(0, 0, 0, 0.7);
+@CmUI-Overlay-Light: rgba(255, 255, 255, 0.7);
+@CmUI-Overlay-Duration: 500ms;
 
 // /* ******* BORDER ******* */
 
@@ -382,9 +394,12 @@
 
 @PtMenu-IndentY: @CmIndent-XXXSmall;
 @PtMenu-IndentX: 0px;
+@PtMenu-BorderWidth: @PtBox-BorderWidth;
+
 @PtMenu-ItemIndentY: 2px;
 @PtMenu-ItemIndentX: @CmIndent-XSmall;
-@PtMenu-BorderWidth: @PtBox-BorderWidth;
+@PtMenu-SeparatorIndentX: @PtMenu-ItemIndentX;
+@PtMenu-SeparatorSize: @PtBox-BorderWidth;
 
 @PtMenu-Dropdown-IndentX: 0px;
 @PtMenu-Dropdown-IndentY: 0px;
@@ -510,6 +525,13 @@
 @PtRuler-Line-HoverBackground: @CmColor-Secondary-LightActive;
 @PtRuler-Line-ActiveBackground: @CmColor-Primary-DarkDefault;
 
+// /* ******* OVERLAY ******* */
+
+@PtOverlay-Default: @CmUI-Overlay;
+@PtOverlay-Light: @CmUI-Overlay-Light;
+@PtOverlay-Dark: @CmUI-Overlay-Dark;
+@PtOverlay-Duration: @CmUI-Overlay-Duration;
+
 // /* ************************************************ */
 // /* ******* LAYOUTS ******* */
 // /* ************************************************ */
@@ -614,6 +636,7 @@
 
 @ComDialog-Indent: @CmIndent-Medium;
 @ComDialog-TitleIndent: @CmIndent-XSmall;
+@ComDialog-Overlay: @CmUI-Overlay-Dark;
 
 @ComDialog-Black-Background: @CmColor-Gallery;
 @ComDialog-Black-TitleColor: @CmFont-UI-ColorOpposite;

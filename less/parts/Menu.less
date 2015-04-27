@@ -20,7 +20,7 @@
 
     li {
         position: relative;
-        margin-top: @CmBorder-Width;
+        margin-top: @PtMenu-SeparatorSize;
 
         a {
             .cm__font;
@@ -48,14 +48,6 @@
             }
         }
 
-        &.sep {
-            display: none;
-            height: 0;
-            margin: 0 @CmIndent-Medium / 2;
-            overflow: hidden;
-            border-top: @CmBorder-Default;
-        }
-
         &:before {
             display: block;
             height: 0;
@@ -63,6 +55,7 @@
             position: absolute;
             overflow: hidden;
             border-top: @CmBorder-Default;
+            border-width: @PtMenu-SeparatorSize;
             content: '';
             .mx__position(-@CmBorder-Width, 0, auto, 0)
         }

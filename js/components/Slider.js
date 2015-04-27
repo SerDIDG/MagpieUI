@@ -159,7 +159,11 @@ function(params){
     var calculateMaxHeight = function(){
         var height = 0;
         cm.forEach(that.items, function(item){
-            height = Math.max(height, cm.getRealHeight(item.nodes['container'], 'offsetRelative'));
+            if(item.nodes['inner']){
+                height = Math.max(height, cm.getRealHeight(item.nodes['inner'], 'offsetRelative'));
+            }else{
+                height = Math.max(height, cm.getRealHeight(item.nodes['container'], 'offsetRelative'));
+            }
         });
         if(minHeightDimension == '%'){
             height = Math.max(height, (that.nodes['inner'].offsetWidth / 100 * that.params['minHeight']));
@@ -192,7 +196,8 @@ function(params){
         item = cm.merge({
             'index' : that.items.length,
             'nodes' : {
-                'container' : cm.Node('li')
+                'container' : cm.Node('li'),
+                'inner' : null
             }
         }, item);
         // Bar

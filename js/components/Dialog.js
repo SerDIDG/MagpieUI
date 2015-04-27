@@ -1,29 +1,10 @@
-Com.Elements['Dialog'] = {};
-
-Com['GetDialog'] = function(id){
-    return Com.Elements.Dialog[id] || null;
-};
-
-Com['SetDialog'] = function(id, dialog){
-    if(id && dialog){
-        Com.Elements.Dialog[id] = dialog;
-        return dialog;
-    }
-    return false;
-};
-
-Com['RemoveDialog'] = function(id){
-    if(Com.Elements.Dialog[id]){
-        delete Com.Elements.Dialog[id];
-    }
-};
-
 cm.define('Com.Dialog', {
     'modules' : [
         'Params',
         'Events',
         'Langs',
-        'DataConfig'
+        'DataConfig',
+        'Stack'
     ],
     'events' : [
         'onRender',
@@ -34,7 +15,7 @@ cm.define('Com.Dialog', {
     ],
     'params' : {
         'container' : 'document.body',
-        'id' : null,
+        'name' : '',
         'size' : 'auto',                // auto | fullscreen
         'width' : 700,                  // number, %
         'height' : 'auto',              // number, %, auto
@@ -84,8 +65,9 @@ function(params){
         that.getDataConfig(that.params['content']);
         validateParams();
         render();
-        // Add to global array
-        Com['SetDialog'](that.params['id'], that);
+        that.addToStack(nodes['container']);
+        // Trigger onRender event
+        that.triggerEvent('onRender');
         // Open
         that.params['autoOpen'] && open();
     };
@@ -159,8 +141,6 @@ function(params){
         renderButtons(that.params['buttons']);
         // Init animation
         anim['container'] = new cm.Animation(nodes['container']);
-        // Trigger onRender event
-        that.triggerEvent('onRender');
     };
 
     var renderTitle = function(title){

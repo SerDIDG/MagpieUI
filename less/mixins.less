@@ -23,7 +23,7 @@
     left: @left;
 }
 
-.mx__transition(@properties, @duration: @CmUI-Transition-Duration, @function: ease-in-out) {
+.mx__transition (@properties, @duration: @CmUI-Transition-Duration, @function: ease-in-out) {
     .for(@properties); .-each(@property) {
         .property(@property) when (@property = transform) {
             -webkit-transition+: -webkit-transform @duration @function;
@@ -44,12 +44,18 @@
     }
 }
 
-.mx__transform(@properties) {
+.mx__transform (@properties) {
     .for(@properties); .-each(@property) {
         -webkit-transform+_: @property;
             -ms-transform+_: @property;
                 transform+_: @property;
     }
+}
+
+.mx__transform-origin (@properties) {
+    -webkit-transform-origin: @properties;
+       -moz-transform-origin: @properties;
+            transform-origin: @properties;
 }
 
 .mx__linear-gradient (@params) {

@@ -1,5 +1,12 @@
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
 /* ************ FIORA UI: COMMON STYLES ************ */
+@font-face {
+  font-family: 'Magpie-UI-Glyphs';
+  src: url('../fonts/Magpie-UI-Glyphs.eot?6');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix6') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?6') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?6') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?6#Magpie-UI-Glyphs') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
 /* ******* INLINE STYLES ******* */
 .clearfix:after,
 .clear:after {
@@ -263,7 +270,7 @@
     margin: 0;
   }
 }
-/* ************ FIORA UI: COMMON ************ */
+/* ************ MAGPIE UI: COMMON ************ */
 /* ******* COMMON: FONT ******* */
 /* *** BASE *** */
 .cm__font {
@@ -333,7 +340,7 @@
   font-style: italic;
 }
 .cm__font--ui-h1 {
-  font: 300 30px/38px 'Open Sans', arial, helvetica, sans-serif;
+  font: 300 28px/38px 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
 }
 .cm__font--ui-h4 {
@@ -491,6 +498,7 @@
 }
 /* ******* COMMON: ICONS ******* */
 .icon {
+  display: block;
   background: transparent 50% 50% no-repeat;
 }
 .icon.initial {
@@ -870,6 +878,81 @@
 .icon.safari {
   background-position: -400px 0;
 }
+/* *** GLYPHS *** */
+.cm-i,
+[class^="cm-i__"],
+[class*=" cm-i__"] {
+  font-family: 'Magpie-UI-Glyphs';
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  text-decoration: none;
+  text-align: center;
+  color: #666666;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.cm-i.xx-small,
+[class^="cm-i__"].xx-small,
+[class*=" cm-i__"].xx-small {
+  line-height: 8px;
+  font-size: 8px;
+}
+.cm-i.x-small,
+[class^="cm-i__"].x-small,
+[class*=" cm-i__"].x-small {
+  line-height: 12px;
+  font-size: 12px;
+}
+.cm-i.small,
+[class^="cm-i__"].small,
+[class*=" cm-i__"].small {
+  line-height: 16px;
+  font-size: 16px;
+}
+.cm-i.medium,
+[class^="cm-i__"].medium,
+[class*=" cm-i__"].medium {
+  line-height: 24px;
+  font-size: 24px;
+}
+.cm-i.large,
+[class^="cm-i__"].large,
+[class*=" cm-i__"].large {
+  line-height: 32px;
+  font-size: 32px;
+}
+.cm-i.x-large,
+[class^="cm-i__"].x-large,
+[class*=" cm-i__"].x-large {
+  line-height: 48px;
+  font-size: 48px;
+}
+.cm-i.xx-large,
+[class^="cm-i__"].xx-large,
+[class*=" cm-i__"].xx-large {
+  line-height: 64px;
+  font-size: 64px;
+}
+.cm-i.xxx-large,
+[class^="cm-i__"].xxx-large,
+[class*=" cm-i__"].xxx-large {
+  line-height: 96px;
+  font-size: 96px;
+}
+.cm-i:before,
+[class^="cm-i__"]:before,
+[class*=" cm-i__"]:before {
+  speak: none;
+  display: block;
+}
+.cm-i__circle-arrow-left:before {
+  content: '\e700';
+}
+.cm-i__circle-arrow-right:before {
+  content: '\e701';
+}
 /* ******* COMMON: TAGS ******* */
 *,
 *:after,
@@ -923,6 +1006,7 @@ section {
 .link,
 .link--inner,
 a,
+.pt__listing-items ul li a,
 .com__glossary .com__glossary__title {
   text-decoration: underline;
   color: #2985e0;
@@ -933,6 +1017,7 @@ a,
 .link:hover,
 .link--inner:hover,
 a:hover,
+.pt__listing-items ul li a:hover,
 .com__glossary .com__glossary__title:hover {
   text-decoration: none;
   color: #1d73c9;
@@ -941,6 +1026,7 @@ a:hover,
 .link:active,
 .link--inner:active,
 a:active,
+.pt__listing-items ul li a:active,
 .com__glossary .com__glossary__title:active {
   color: #16599c;
 }
@@ -1650,8 +1736,8 @@ input[type="reset"].button-white:active,
 input[type="reset"].button-white.active,
 button.button-white:active,
 button.button-white.active {
-  background-color: #16599c;
-  color: #ffffff;
+  background-color: #d8e8f8;
+  color: #2985e0;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
 .button.button-white:hover,
@@ -1659,24 +1745,24 @@ input[type="button"].button-white:hover,
 input[type="submit"].button-white:hover,
 input[type="reset"].button-white:hover,
 button.button-white:hover {
-  background-color: #1d73c9;
-  color: #ffffff;
+  background-color: #e9f2fb;
+  color: #2985e0;
 }
 .button.button-white--hover,
 input[type="button"].button-white--hover,
 input[type="submit"].button-white--hover,
 input[type="reset"].button-white--hover,
 button.button-white--hover {
-  background-color: #1d73c9;
-  color: #ffffff;
+  background-color: #e9f2fb;
+  color: #2985e0;
 }
 .button.button-white--active,
 input[type="button"].button-white--active,
 input[type="submit"].button-white--active,
 input[type="reset"].button-white--active,
 button.button-white--active {
-  background-color: #16599c;
-  color: #ffffff;
+  background-color: #d8e8f8;
+  color: #2985e0;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
 .button.button-clear,
@@ -2830,7 +2916,7 @@ button::-moz-focus-inner {
     margin: 0 0 8px;
   }
 }
-/* ************ FIORA UI: PARTS ************ */
+/* ************ MAGPIE UI: PARTS ************ */
 /* ******* PART: ANIMATE ******* */
 /**
 * Require: modules/Animate.css
@@ -3694,13 +3780,6 @@ button::-moz-focus-inner {
   bottom: auto;
   left: auto;
 }
-.pt__menu-dropdown--base li.sep {
-  display: none;
-  height: 0;
-  margin: 0 12px;
-  overflow: hidden;
-  border-top: 1px solid #cccccc;
-}
 .pt__menu-dropdown--base li:before {
   display: block;
   height: 0;
@@ -3708,6 +3787,7 @@ button::-moz-focus-inner {
   position: absolute;
   overflow: hidden;
   border-top: 1px solid #cccccc;
+  border-width: 1px;
   content: '';
   top: -1px;
   right: 0;
@@ -4225,13 +4305,6 @@ button::-moz-focus-inner {
   bottom: auto;
   left: auto;
 }
-.pt__editable.is-editable > .menu .pt__menu-dropdown li.sep {
-  display: none;
-  height: 0;
-  margin: 0 12px;
-  overflow: hidden;
-  border-top: 1px solid #cccccc;
-}
 .pt__editable.is-editable > .menu .pt__menu-dropdown li:before {
   display: block;
   height: 0;
@@ -4239,6 +4312,7 @@ button::-moz-focus-inner {
   position: absolute;
   overflow: hidden;
   border-top: 1px solid #cccccc;
+  border-width: 1px;
   content: '';
   top: -1px;
   right: 0;
@@ -4901,6 +4975,7 @@ button::-moz-focus-inner {
 .pt__listing .list-title .link,
 .pt__listing .list-title .link--inner,
 .pt__listing .list-title a,
+.pt__listing .list-title .pt__listing-items ul li a,
 .pt__listing .list-title .com__glossary .com__glossary__title {
   font-weight: 600;
 }
@@ -5039,7 +5114,6 @@ button::-moz-focus-inner {
   margin: 0;
   padding: 0;
   list-style: none;
-  max-height: 229px;
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -5088,20 +5162,17 @@ button::-moz-focus-inner {
 .pt__listing-items ul li .pt__listing-items:first-child {
   margin-top: 0;
 }
-.pt__listing-items ul li.active a {
+.pt__listing-items ul li.active > a {
   background-color: #d8e8f8;
 }
 .pt__listing-items:not(.disabled) ul li a:hover {
   background-color: #f2f2f2;
 }
-.pt__listing-items:not(.disabled) ul li.active a:hover {
+.pt__listing-items:not(.disabled) ul li.active > a:hover {
   background-color: #c2dbf4;
 }
 .pt__listing-items.disabled ul li a {
   cursor: default;
-}
-.pt__listing-items.auto ul {
-  max-height: none;
 }
 /* ******* PARTS: PROGRESS BAR ******* */
 .pt__progress-bar {
@@ -5466,7 +5537,67 @@ button::-moz-focus-inner {
   margin-right: 24px;
   font-weight: 600;
 }
-/* ************ FIORA UI: LAYOUTS ************ */
+/* ******* PARTS: OVERLAY ******* */
+.pt__overlay {
+  visibility: hidden;
+  position: absolute;
+  z-index: 1003;
+  opacity: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  -webkit-transition: all 500ms ease-in-out;
+  transition: all 500ms ease-in-out;
+}
+.pt__overlay .overlay__spinner,
+.pt__overlay .overlay__content {
+  visibility: hidden;
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  -webkit-transition: all 500ms ease-in-out;
+  transition: all 500ms ease-in-out;
+}
+.pt__overlay .overlay__spinner.is-show,
+.pt__overlay .overlay__content.is-show {
+  visibility: visible;
+  opacity: 1;
+}
+.pt__overlay .overlay__spinner {
+  width: 32px;
+  height: 32px;
+  margin: auto;
+  z-index: 1;
+  background: url('../img/components/ajax-loader.gif');
+}
+.pt__overlay .overlay__content {
+  z-index: 2;
+}
+.pt__overlay.theme-transparent {
+  background-color: transparent;
+}
+.pt__overlay.theme-default {
+  background-color: rgba(255, 255, 255, 0.7);
+}
+.pt__overlay.theme-light {
+  background-color: rgba(255, 255, 255, 0.7);
+}
+.pt__overlay.theme-dark {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+.pt__overlay.is-open {
+  visibility: visible;
+  opacity: 1;
+}
+/* *** HELPERS *** */
+.pt__overlay-helper__duration {
+  transition-duration: 500ms;
+}
+/* ************ MAGPIE UI: LAYOUTS ************ */
 /* ******* LAYOUTS: COLLAPSIBLE ******* */
 .lt__collapsible {
   position: absolute;
@@ -5491,7 +5622,7 @@ button::-moz-focus-inner {
   position: absolute;
 }
 .lt__collapsible > .sidebar > .inner > .title {
-  font: 300 30px/38px 'Open Sans', arial, helvetica, sans-serif;
+  font: 300 28px/38px 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
   padding: 6px 12px;
   position: absolute;
@@ -6107,7 +6238,7 @@ button::-moz-focus-inner {
 .lt__filegridlist__cell-size {
   width: 80px;
 }
-/* ************ FIORA UI: COMPONENTS ************ */
+/* ************ MAGPIE UI: COMPONENTS ************ */
 /* ******* COMPONENT: TOOLTIP ******* */
 .com__tooltip {
   position: fixed;
@@ -6370,13 +6501,6 @@ button::-moz-focus-inner {
   bottom: auto;
   left: auto;
 }
-.com__tooltip.com-action-menu-tooltip .pt__menu .pt__menu-dropdown li.sep {
-  display: none;
-  height: 0;
-  margin: 0 12px;
-  overflow: hidden;
-  border-top: 1px solid #cccccc;
-}
 .com__tooltip.com-action-menu-tooltip .pt__menu .pt__menu-dropdown li:before {
   display: block;
   height: 0;
@@ -6384,6 +6508,7 @@ button::-moz-focus-inner {
   position: absolute;
   overflow: hidden;
   border-top: 1px solid #cccccc;
+  border-width: 1px;
   content: '';
   top: -1px;
   right: 0;
@@ -7057,7 +7182,7 @@ html.ie9 .com__palette .b-range {
 }
 .com__dialog.theme-default > .window > .inner > .title,
 .com__dialog.theme-black > .window > .inner > .title {
-  font: 300 30px/38px 'Open Sans', arial, helvetica, sans-serif;
+  font: 300 28px/38px 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
   padding: 12px 24px;
 }
@@ -7097,41 +7222,6 @@ html.ie9 .com__palette .b-range {
 }
 .com__dialog.theme-black > .window > .inner > .title {
   color: #ffffff;
-}
-/* ******* OVERLAY ******* */
-.cm-overlay {
-  display: none;
-  position: fixed;
-  z-index: 1003;
-  opacity: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-}
-.cm-overlay > .bg {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 1;
-  background-color: #ffffff;
-}
-.cm-overlay > .inner {
-  width: 32px;
-  height: 32px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  z-index: 2;
-  margin: -16px 0 0 -16px;
-  background: url('../img/components/ajax-loader.gif');
-}
-.ie8 .cm-overlay,
-.ie7 .cm-overlay,
-.ie6 .cm-overlay {
-  filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
 }
 /* ******* COMPONENTS: PAGINATION ******* */
 .com__pagination {
@@ -7386,21 +7476,21 @@ html.ie9 .com__palette .b-range {
 }
 .com__pagination ul li a.button-white:active,
 .com__pagination ul li a.button-white.active {
-  background-color: #16599c;
-  color: #ffffff;
+  background-color: #d8e8f8;
+  color: #2985e0;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
 .com__pagination ul li a.button-white:hover {
-  background-color: #1d73c9;
-  color: #ffffff;
+  background-color: #e9f2fb;
+  color: #2985e0;
 }
 .com__pagination ul li a.button-white--hover {
-  background-color: #1d73c9;
-  color: #ffffff;
+  background-color: #e9f2fb;
+  color: #2985e0;
 }
 .com__pagination ul li a.button-white--active {
-  background-color: #16599c;
-  color: #ffffff;
+  background-color: #d8e8f8;
+  color: #2985e0;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
 .com__pagination ul li a.button-clear {
@@ -7528,7 +7618,7 @@ html.ie9 .com__palette .b-range {
   margin-bottom: 0;
 }
 .com__togglebox > dt {
-  font: 300 30px/38px 'Open Sans', arial, helvetica, sans-serif;
+  font: 300 28px/38px 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
   position: relative;
   cursor: pointer;
@@ -7754,6 +7844,7 @@ html.ie9 .com__palette .b-range {
 .com__togglebox.is-hide > dt .link,
 .com__togglebox.is-hide > dt .link--inner,
 .com__togglebox.is-hide > dt a,
+.com__togglebox.is-hide > dt .pt__listing-items ul li a,
 .com__togglebox.is-hide > dt .com__glossary .com__glossary__title {
   color: #666666;
 }
@@ -7761,6 +7852,7 @@ html.ie9 .com__palette .b-range {
 .com__togglebox.is-hide > dt .link:hover,
 .com__togglebox.is-hide > dt .link--inner:hover,
 .com__togglebox.is-hide > dt a:hover,
+.com__togglebox.is-hide > dt .pt__listing-items ul li a:hover,
 .com__togglebox.is-hide > dt .com__glossary .com__glossary__title:hover {
   color: #1d73c9;
 }
@@ -7774,6 +7866,7 @@ html.ie9 .com__palette .b-range {
 .com__togglebox.is-show > dt .link,
 .com__togglebox.is-show > dt .link--inner,
 .com__togglebox.is-show > dt a,
+.com__togglebox.is-show > dt .pt__listing-items ul li a,
 .com__togglebox.is-show > dt .com__glossary .com__glossary__title {
   color: #666666;
 }
@@ -7781,6 +7874,7 @@ html.ie9 .com__palette .b-range {
 .com__togglebox.is-show > dt .link:hover,
 .com__togglebox.is-show > dt .link--inner:hover,
 .com__togglebox.is-show > dt a:hover,
+.com__togglebox.is-show > dt .pt__listing-items ul li a:hover,
 .com__togglebox.is-show > dt .com__glossary .com__glossary__title:hover {
   color: #1d73c9;
 }
@@ -7809,6 +7903,7 @@ html.ie9 .com__palette .b-range {
 .com__togglebox.has-title-bg.is-hide > dt .link,
 .com__togglebox.has-title-bg.is-hide > dt .link--inner,
 .com__togglebox.has-title-bg.is-hide > dt a,
+.com__togglebox.has-title-bg.is-hide > dt .pt__listing-items ul li a,
 .com__togglebox.has-title-bg.is-hide > dt .com__glossary .com__glossary__title {
   color: #666666;
 }
@@ -7816,6 +7911,7 @@ html.ie9 .com__palette .b-range {
 .com__togglebox.has-title-bg.is-hide > dt .link:hover,
 .com__togglebox.has-title-bg.is-hide > dt .link--inner:hover,
 .com__togglebox.has-title-bg.is-hide > dt a:hover,
+.com__togglebox.has-title-bg.is-hide > dt .pt__listing-items ul li a:hover,
 .com__togglebox.has-title-bg.is-hide > dt .com__glossary .com__glossary__title:hover {
   color: #1d73c9;
 }
@@ -7829,6 +7925,7 @@ html.ie9 .com__palette .b-range {
 .com__togglebox.has-title-bg.is-show > dt .link,
 .com__togglebox.has-title-bg.is-show > dt .link--inner,
 .com__togglebox.has-title-bg.is-show > dt a,
+.com__togglebox.has-title-bg.is-show > dt .pt__listing-items ul li a,
 .com__togglebox.has-title-bg.is-show > dt .com__glossary .com__glossary__title {
   color: #666666;
 }
@@ -7836,6 +7933,7 @@ html.ie9 .com__palette .b-range {
 .com__togglebox.has-title-bg.is-show > dt .link:hover,
 .com__togglebox.has-title-bg.is-show > dt .link--inner:hover,
 .com__togglebox.has-title-bg.is-show > dt a:hover,
+.com__togglebox.has-title-bg.is-show > dt .pt__listing-items ul li a:hover,
 .com__togglebox.has-title-bg.is-show > dt .com__glossary .com__glossary__title:hover {
   color: #1d73c9;
 }
@@ -7986,13 +8084,6 @@ html.ie9 .com__palette .b-range {
   bottom: auto;
   left: auto;
 }
-.com__tabset__head-menu .pt__menu-dropdown li.sep {
-  display: none;
-  height: 0;
-  margin: 0 12px;
-  overflow: hidden;
-  border-top: 1px solid #cccccc;
-}
 .com__tabset__head-menu .pt__menu-dropdown li:before {
   display: block;
   height: 0;
@@ -8000,6 +8091,7 @@ html.ie9 .com__palette .b-range {
   position: absolute;
   overflow: hidden;
   border-top: 1px solid #cccccc;
+  border-width: 1px;
   content: '';
   top: -1px;
   right: 0;

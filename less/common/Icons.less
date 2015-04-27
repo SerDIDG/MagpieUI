@@ -1,7 +1,41 @@
 /* ******* COMMON: ICONS ******* */
 
 .icon {
-    .cm__icon();
+    display: block;
+    background: transparent 50% 50% no-repeat;
+
+    &.initial {
+        background: transparent 50% 50% no-repeat;
+    }
+
+    &.inline {
+        margin: 0 4px;
+        vertical-align: middle;
+    }
+
+    &.centered {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+    }
+
+    &.has-caption {
+        background-position: 0 50%;
+    }
+
+    &.hidden {
+        visibility: hidden;
+    }
+
+    &.linked {
+        cursor: pointer;
+        .mx__transition(opacity, @CmUI-Transition-Duration);
+
+        &:hover {
+            opacity: @CmUI-Opacity-Hover;
+            .mx__transition(opacity, @CmUI-Transition-DurationReverse);
+        }
+    }
 
     // /* *** PARAMETERS *** */
 
@@ -244,41 +278,77 @@
     }
 }
 
+/* *** GLYPHS *** */
+
+.cm-i,
+[class^="cm-i__"],
+[class*=" cm-i__"] {
+    font-family: @CmIconVars-Family;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    text-decoration: none;
+    text-align: center;
+    color: @CmIconVars-Color;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    &.xx-small {
+        .cm-i__size(@CmSize-XXSmall);
+    }
+
+    &.x-small {
+        .cm-i__size(@CmSize-XSmall);
+    }
+
+    &.small {
+        .cm-i__size(@CmSize-Small);
+    }
+
+    &.medium {
+        .cm-i__size(@CmSize-Medium);
+    }
+
+    &.large {
+        .cm-i__size(@CmSize-Large);
+    }
+
+    &.x-large {
+        .cm-i__size(@CmSize-XLarge);
+    }
+
+    &.xx-large {
+        .cm-i__size(@CmSize-XXLarge);
+    }
+
+    &.xxx-large {
+        .cm-i__size(@CmSize-XXXLarge);
+    }
+
+    &:before {
+        speak: none;
+        display: block;
+    }
+}
+
+.cm-i__circle-arrow-left:before {
+    content: @CmIcon-CircleArrowLeft;
+}
+
+.cm-i__circle-arrow-right:before {
+    content: @CmIcon-CircleArrowRight;
+}
+
 // /* *** MIXINS *** */
 
-.cm__icon() {
-    background: transparent 50% 50% no-repeat;
+.cm-i__size (@size: @CmSize-Medium) {
+    line-height: @size;
+    font-size: @size;
+}
 
-    &.initial {
-        background: transparent 50% 50% no-repeat;
-    }
-
-    &.inline {
-        margin: 0 4px;
-        vertical-align: middle;
-    }
-
-    &.centered {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-    }
-
-    &.has-caption {
-        background-position: 0 50%;
-    }
-
-    &.hidden {
-        visibility: hidden;
-    }
-
-    &.linked {
-        cursor: pointer;
-        .mx__transition(opacity, @CmUI-Transition-Duration);
-
-        &:hover {
-            opacity: @CmUI-Opacity-Hover;
-            .mx__transition(opacity, @CmUI-Transition-DurationReverse);
-        }
-    }
+.cm-i__b-size (@size: @CmSize-Medium) {
+    width: @size;
+    height: @size;
+    line-height: @size;
 }

@@ -19,12 +19,13 @@
 */
 
 var cm = {
-        '_version' : '3.0.5',
+        '_version' : '3.0.6',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
         '_deviceType' : 'desktop',
         '_deviceOrientation' : 'landscape',
+        '_scrollSize' : 0,
         '_config' : {
             'screenTablet' : 1024,
             'screenTabletPortrait' : 768,
@@ -96,6 +97,19 @@ cm.forEach = function(o, callback){
             }
             break;
     }
+    return o;
+};
+
+cm.forEachReverse = function(o, callback){
+    if(!o){
+        return null;
+    }
+    if(!callback){
+        return o;
+    }
+    o.reverse();
+    cm.forEach(o, callback);
+    o.reverse();
     return o;
 };
 
@@ -399,7 +413,7 @@ cm.removeEvent = function(el, type, handler, useCapture){
     return el;
 };
 
-cm.triggerEvent = function(el, type){
+cm.triggerEvent = function(el, type, params){
     var event;
     if(cm.isTouch && cm.crossEvents(type)){
         type = cm.crossEvents(type);
@@ -1515,6 +1529,21 @@ cm.getPageSize = function(key){
     return o[key] || o;
 };
 
+cm.getScrollBarSize = function(){
+    var node = cm.Node('div'),
+        styles = node.style,
+        size = 0;
+    styles.width = '100px';
+    styles.height = '100px';
+    styles.overflow = 'scroll';
+    styles.position = 'position';
+    styles.top = '-9000px';
+    cm.insertFirst(node, document.body);
+    size = Math.max(node.offsetWidth - node.clientWidth, 0);
+    cm.remove(node);
+    return size;
+};
+
 cm.setOpacity = function(node, value){
     if(node){
         if(cm.is('ie') && cm.isVersion() < 9){
@@ -1736,11 +1765,16 @@ cm.getCSSStyle = cm.getStyle = function(node, name, number){
     raw = obj[name];
     // Parse
     if(number){
-        data = parseFloat(raw.toString().replace(/(pt|px|%)/g, ''));
-        data = isNaN(data)? 0 : data;
+        data = cm.styleToNumber(raw);
     }else{
         data = raw;
     }
+    return data;
+};
+
+cm.styleToNumber = function(data){
+    data = parseFloat(data.toString().replace(/(pt|px|%)/g, ''));
+    data = isNaN(data)? 0 : data;
     return data;
 };
 
@@ -1819,6 +1853,86 @@ cm.getSupportedStyle = function(style){
         }
     });
     return style;
+};
+
+cm.getTransitionDurationFromRule = function(rule){
+    var openDurationRule = cm.getCSSRule(rule)[0],
+        openDurationProperty;
+    if(openDurationRule){
+        if(openDurationProperty = openDurationRule.style[cm.getSupportedStyle('transitionDuration')]){
+            if(openDurationProperty.match('ms')){
+                return parseFloat(openDurationProperty);
+            }else if(openDurationProperty.match('s')){
+                return (openDurationProperty) / 1000;
+            }else{
+                return parseFloat(openDurationProperty);
+            }
+        }
+    }
+    return 0;
+};
+
+cm.createStyleSheet = function(){
+    var style = document.createElement('style');
+    // Fix for WebKit
+    style.appendChild(document.createTextNode(''));
+    document.head.appendChild(style);
+    return style.sheet;
+};
+
+cm.getCSSRule = function(ruleName){
+    var matchedRules = [],
+        cssRules;
+    if(document.styleSheets){
+        cm.forEach(document.styleSheets, function(styleSheet){
+            if(styleSheet.cssRules){
+                cssRules = styleSheet.cssRules;
+            }else{
+                cssRules = styleSheet.rules;
+            }
+            cm.forEach(cssRules, function(cssRule){
+                if(cssRule.selectorText == ruleName){
+                    matchedRules.push(cssRule);
+                }
+            });
+        });
+    }
+    return matchedRules;
+};
+
+cm.addCSSRule = function(sheet, selector, rules, index){
+    if(document.styleSheets){
+        sheet = typeof sheet == 'undefined' || !sheet ? document.styleSheets[0] : sheet;
+        rules = typeof rules == 'undefined' || !rules ? '' : rules;
+        index = typeof index == 'undefined' || !index ? -1 : index;
+        if('insertRule' in sheet){
+            sheet.insertRule(selector + '{' + rules + '}', index);
+        }else if('addRule' in sheet){
+            sheet.addRule(selector, rules, index);
+        }
+    }
+};
+
+cm.removeCSSRule = function(ruleName){
+    var cssRules;
+    if(document.styleSheets){
+        cm.forEach(document.styleSheets, function(styleSheet){
+            if(styleSheet.cssRules){
+                cssRules = styleSheet.cssRules;
+            }else{
+                cssRules = styleSheet.rules;
+            }
+            cm.forEachReverse(cssRules, function(cssRule, i){
+                if(cssRule.selectorText == ruleName){
+                    if(styleSheet.cssRules){
+                        styleSheet.deleteRule(i);
+                    }else{
+                        styleSheet.removeRule(i);
+                    }
+                }
+            });
+        });
+    }
 };
 
 /* ******* ANIMATION ******* */
@@ -2508,4 +2622,19 @@ cm.find = function(className, name, parentNode){
         }
     }
     return null;
+};
+
+cm.getClass = function(className, callback){
+    var classObject = cm.defineStack[className];
+    if(typeof cm.objectSelector(className) == 'undefined'){
+        cm.errorLog({
+            'type' : 'error',
+            'name' : 'cm.getClass',
+            'message' : ['Class', cm.strWrap(className, '"'), 'does not exists or define.'].join(' ')
+        });
+        return false;
+    }else{
+        typeof callback == 'function' && callback(classObject);
+        return classObject;
+    }
 };

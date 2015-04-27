@@ -180,7 +180,7 @@
 .pt__listing-items {
     ul {
         .cm__list-clear;
-        max-height: @PtListingItems-Count * (@CmFont-Base-LineHeight + @PtListingItems-Indent + @PtListingItems-PaddingY * 2) - @PtListingItems-Indent;
+        //max-height: @PtListingItems-Count * (@CmFont-Base-LineHeight + @PtListingItems-Indent + @PtListingItems-PaddingY * 2) - @PtListingItems-Indent;
         overflow-x: hidden;
         overflow-y: auto;
 
@@ -192,6 +192,7 @@
             }
 
             a {
+                &:extend(.cm__link all);
                 display: block;
                 padding: @PtListingItems-PaddingY @PtListingItems-PaddingX;
                 background-color: @CmColor-Secondary-LightDefault;
@@ -232,7 +233,7 @@
             }
 
             &.active {
-                a {
+                > a {
                     background-color: @CmColor-Primary-LightActive;
                 }
             }
@@ -249,7 +250,7 @@
                 }
 
                 &.active {
-                    a {
+                    > a {
                         &:hover {
                             background-color: @CmColor-Primary-LightActiveHover;
                         }
@@ -266,12 +267,6 @@
                     cursor: default;
                 }
             }
-        }
-    }
-
-    &.auto {
-        ul {
-            max-height: none;
         }
     }
 }
