@@ -2,8 +2,8 @@
 /* ************ FIORA UI: COMMON STYLES ************ */
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?6');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix6') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?6') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?6') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?6#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?7');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix7') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?7') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?7') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?7#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -952,6 +952,9 @@
 }
 .cm-i__circle-arrow-right:before {
   content: '\e701';
+}
+.cm-i__circle-close:before {
+  content: '\e702';
 }
 /* ******* COMMON: TAGS ******* */
 *,

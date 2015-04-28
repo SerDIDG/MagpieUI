@@ -123,7 +123,7 @@ function(params){
         // Render by type
         if(item['type'] == 'image'){
             item['nodes']['inner'].appendChild(
-                item['nodes']['content'] = cm.Node('img', {'class' : 'descr', 'alt' : item['title']})
+                item['nodes']['content'] = cm.Node('img', {'class' : 'descr', 'alt' : item['title'], 'title' : item['title']})
             );
         }else{
             item['nodes']['inner'].appendChild(
