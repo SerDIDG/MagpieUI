@@ -3,7 +3,8 @@ cm.define('Com.TagsInput', {
         'Params',
         'Events',
         'Langs',
-        'DataConfig'
+        'DataConfig',
+        'Stack'
     ],
     'require' : [
         'Com.Autocomplete'
@@ -17,8 +18,9 @@ cm.define('Com.TagsInput', {
         'onClose'
     ],
     'params' : {
-        'input' : cm.Node('input', {'type' : 'text'}),
         'container' : false,
+        'input' : cm.Node('input', {'type' : 'text'}),
+        'name' : '',
         'data' : [],
         'maxSingleTagLength': 255,
         'autocomplete' : {                              // All parameters what uses in Com.Autocomplete
@@ -55,6 +57,8 @@ function(params){
         // Render
         render();
         setLogic();
+        that.addToStack(nodes['container']);
+        that.triggerEvent('onRender');
         // Set tags
         sourceTags = that.params['data'].concat(
             that.params['input'].value.split(',')
@@ -94,16 +98,17 @@ function(params){
 
     var setLogic = function(){
         // Autocomplete
-        that.components['autocomplete'] = new Com.Autocomplete(
-            cm.merge(that.params['autocomplete'], {
-                'events' : {
-                    'onClickSelect' : function(){
-                        addAdderTags(true);
+        cm.getConstructor('Com.Autocomplete', function(classConstructor){
+            that.components['autocomplete'] = new classConstructor(
+                cm.merge(that.params['autocomplete'], {
+                    'events' : {
+                        'onClickSelect' : function(){
+                            addAdderTags(true);
+                        }
                     }
-                }
-            })
-        );
-        that.triggerEvent('onRender');
+                })
+            );
+        });
     };
 
     var renderAddButton = function(){
@@ -144,7 +149,12 @@ function(params){
                 if(e.keyCode == 13 || e.charCode == 44){
                     cm.preventDefault(e);
                     addAdderTags(true);
-                    that.components['autocomplete'].hide();
+                    that.isAutocomplete && that.components['autocomplete'].hide();
+                }
+                if(e.keyCode == 27){
+                    cm.preventDefault(e);
+                    addAdderTags(true);
+                    closeAdder(nodes['adder']);
                 }
             });
             // Hide adder on document click
@@ -158,6 +168,8 @@ function(params){
 
     var closeAdder = function(item){
         cm.removeEvent(document, 'mousedown', bodyEvent);
+        nodes['adder']['input'].blur();
+        that.isAutocomplete && that.components['autocomplete'].hide();
         item['container'].style.overflow = 'hidden';
         item['anim'].go({'style' : {'width' : '0px', 'opacity' : 0}, 'duration' : 200, 'anim' : 'smooth', 'onStop' : function(){
             cm.remove(item['container']);
@@ -175,7 +187,7 @@ function(params){
         });
         nodes['adder']['input'].value = '';
         nodes['adder']['input'].focus();
-        that.components['autocomplete'].clear();
+        that.isAutocomplete && that.components['autocomplete'].clear();
     };
 
     var addTag = function(tag, execute){
