@@ -63,9 +63,9 @@
         </ul>
 
         <h2>Initialize</h2>
-        <pre class="cm-codebox">new Com.Tabset(o);</pre>
+        <pre class="pt__box-code">new Com.Tabset(o);</pre>
         <p>or</p>
-        <textarea class="cm-codebox cm-autoresize" readonly>
+        <textarea class="pt__box-code cm-autoresize" readonly>
 <script type="text/javascript">
     cm.onReady(function(){
         new Com.Collector()
@@ -167,7 +167,7 @@
             </dt>
             <dd>
                 <p><code>Array</code>. Listing of tabs, for rendering through java-script. Example:</p>
-                <textarea class="cm-codebox cm-autoresize" readonly>
+                <textarea class="pt__box-code cm-autoresize" readonly>
 new Com.Tabset({
     'tabs' : [{
         'id' : 'foo',
@@ -185,7 +185,7 @@ new Com.Tabset({
             </dt>
             <dd>
                 <p><code>Object</code>. Object of events. Available events: <code>onRender</code>, <code>onTabShow</code>, <code>onTabHide</code>. Example:</p>
-                <textarea class="cm-codebox cm-autoresize" readonly>
+                <textarea class="pt__box-code cm-autoresize" readonly>
 new Com.Tabset({
     'events' : {
         'onTabShow' : function(tabset, tab){}
@@ -211,26 +211,26 @@ new Com.Tabset({
 
     <li data-node="tabs:[]:container" data-config='{"id" : "methods", "title" : "Methods"}'>
         <h2>Get tabset by id:</h2>
-        <pre class="cm-codebox">Com.GetTabset(id);</pre>
+        <pre class="pt__box-code">Com.GetTabset(id);</pre>
         <p>Returns class of tabset component.</p>
 
         <h2>Render tabset:</h2>
         <p>This method will be init tabset misc helpers and set active tab. Must be called only when parameter <code>renderOnInit</code> is <code>false</code>.</p>
-        <pre class="cm-codebox">tabset.render();</pre>
+        <pre class="pt__box-code">tabset.render();</pre>
         <p>Returns a class of tabset.</p>
 
         <h2>Set active tab by id:</h2>
-        <pre class="cm-codebox">tabset.set(id);</pre>
+        <pre class="pt__box-code">tabset.set(id);</pre>
         <p>Returns class of tabset component.</p>
 
         <h2>Get tab by id:</h2>
-        <pre class="cm-codebox">tabset.get(id);</pre>
+        <pre class="pt__box-code">tabset.get(id);</pre>
         <p>Returns specified tab object.</p>
 
         <h2>Add tab:</h2>
-        <pre class="cm-codebox">tabset.addTab(o);</pre>
+        <pre class="pt__box-code">tabset.addTab(o);</pre>
         <p>Example:</p>
-        <textarea class="cm-codebox cm-autoresize" readonly>
+        <textarea class="pt__box-code cm-autoresize" readonly>
 tabset.addTab({
     'id' : 'foo',
     'title' : 'Foo',
@@ -241,13 +241,13 @@ tabset.addTab({
         <p>Returns class of tabset component.</p>
 
         <h2>Remove tab by id:</h2>
-        <pre class="cm-codebox">tabset.removeTab(id);</pre>
+        <pre class="pt__box-code">tabset.removeTab(id);</pre>
         <p>Returns class of tabset component.</p>
 
         <h2>Set events on tabs:</h2>
-        <pre class="cm-codebox">tabset.setEvents(o);</pre>
+        <pre class="pt__box-code">tabset.setEvents(o);</pre>
         <p>Example:</p>
-        <textarea class="cm-codebox cm-autoresize" readonly>
+        <textarea class="pt__box-code cm-autoresize" readonly>
 tabset.setEvents({
     'foo' : {
         'onShow' : function(tabset, tab){},
@@ -257,39 +257,39 @@ tabset.setEvents({
         <p>Returns class of tabset component.</p>
 
         <h2>Set event:</h2>
-        <pre class="cm-codebox">tabset.addEvent(event, handler);</pre>
+        <pre class="pt__box-code">tabset.addEvent(event, handler);</pre>
         <p>Available events: <code>onRender</code>, <code>onTabShow</code>, <code>onTabHide</code>.  Returns class of tabset component.</p>
 
         <h2>Set events:</h2>
-        <pre class="cm-codebox">tabset.addEvents(o);</pre>
+        <pre class="pt__box-code">tabset.addEvents(o);</pre>
         <p>Example: <code>{'onTabShow' : function(tabset, tab){}}</code>. Available events: <code>onRender</code>, <code>onTabShow</code>, <code>onTabHide</code>.  Returns class of tabset component.</p>
 
         <h2>Remove event:</h2>
-        <pre class="cm-codebox">tabset.removeEvent(event, handler);</pre>
+        <pre class="pt__box-code">tabset.removeEvent(event, handler);</pre>
         <p>Available events: <code>onRender</code>, <code>onTabShow</code>, <code>onTabHide</code>.  Returns class of tabset component.</p>
 
         <h2>Trigger event:</h2>
-        <pre class="cm-codebox">tabset.triggerEvent(event);</pre>
+        <pre class="pt__box-code">tabset.triggerEvent(event);</pre>
         <p>Available events: <code>onRender</code>, <code>onTabShow</code>, <code>onTabHide</code>.  Returns class of tabset component.</p>
 
         <h2>Remove tabset:</h2>
         <p>This method will be stop all misc helpers and remove tabset html node.</p>
-        <pre class="cm-codebox">tabset.remove();</pre>
+        <pre class="pt__box-code">tabset.remove();</pre>
         <p>Returns class of tabset component.</p>
 
         <h2>Get list of tabset nodes:</h2>
-        <pre class="cm-codebox">tabset.getNodes(key);</pre>
+        <pre class="pt__box-code">tabset.getNodes(key);</pre>
         <p>Returns object of nodes, or node if key is specified.</p>
     </li>
 
     <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
         <h2>Specify active tab:</h2>
-        <textarea class="cm-codebox cm-autoresize" readonly>
+        <textarea class="pt__box-code cm-autoresize" readonly>
 new Com.Tabset({
     'active' : 'bar'
 });</textarea>
         <p>or</p>
-        <textarea class="cm-codebox cm-autoresize" readonly>
+        <textarea class="pt__box-code cm-autoresize" readonly>
 <script type="text/javascript">
     cm.onReady(function(){
         new Com.Collector()
@@ -321,12 +321,12 @@ new Com.Tabset({
 
         <h2>Set tab position:</h2>
         <h3>Bottom</h3>
-        <textarea class="cm-codebox cm-autoresize" readonly>
+        <textarea class="pt__box-code cm-autoresize" readonly>
 new Com.Tabset({
     'tabsPosition' : 'bottom'
 });</textarea>
         <p>or</p>
-        <textarea class="cm-codebox cm-autoresize" readonly>
+        <textarea class="pt__box-code cm-autoresize" readonly>
 <script type="text/javascript">
     cm.onReady(function(){
         new Com.Collector()
@@ -355,7 +355,7 @@ new Com.Tabset({
         </ul>
 
         <h3>Left</h3>
-        <textarea class="cm-codebox cm-autoresize" readonly>
+        <textarea class="pt__box-code cm-autoresize" readonly>
 new Com.Tabset({
     'tabsPosition' : 'left',
     'tabsWidth' : 256
@@ -370,7 +370,7 @@ new Com.Tabset({
         </ul>
 
         <h3>Right</h3>
-        <textarea class="cm-codebox cm-autoresize" readonly>
+        <textarea class="pt__box-code cm-autoresize" readonly>
 new Com.Tabset({
     'tabsPosition' : 'right',
     'tabsWidth' : 256
@@ -408,7 +408,7 @@ new Com.Tabset({
 
         <h2>Flexible tabs:</h2>
 
-        <textarea class="cm-codebox cm-autoresize" readonly>
+        <textarea class="pt__box-code cm-autoresize" readonly>
 new Com.Tabset({
     'tabsFlexible' : true
 });</textarea>

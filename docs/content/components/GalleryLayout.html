@@ -64,7 +64,7 @@
         </ul>
 
         <h2>Initialize</h2>
-        <textarea class="cm-codebox cm-autoresize" readonly>
+        <textarea class="pt__box-code cm-autoresize" readonly>
 <script type="text/javascript">
     cm.onReady(function(){
         new Com.Collector()
@@ -102,7 +102,7 @@
             </dt>
             <dd>
                 <p><code>Object</code>. Object of events. Available events: <code>onRender</code>, <code>onChange</code>. Example:</p>
-                <textarea class="cm-codebox cm-autoresize" readonly>
+                <textarea class="pt__box-code cm-autoresize" readonly>
 new Com.GalleryLayout({
     'events' : {
         'onChange' : function(gallery, data){}
@@ -114,19 +114,19 @@ new Com.GalleryLayout({
 
     <li data-node="tabs:[]:container" data-config='{"id" : "methods", "title" : "Methods"}'>
         <h2>Set event:</h2>
-        <pre class="cm-codebox">gallery.addEvent(event, handler);</pre>
+        <pre class="pt__box-code">gallery.addEvent(event, handler);</pre>
         <p>Available events: <code>onRender</code>, <code>onChange</code>.<br>Returns class of gallery layout component.</p>
 
         <h2>Set events:</h2>
-        <pre class="cm-codebox">gallery.addEvents(o);</pre>
+        <pre class="pt__box-code">gallery.addEvents(o);</pre>
         <p>Example: <code>{'onChange' : function(){}}</code>. Available events: <code>onRender</code>, <code>onChange</code>.<br>Returns class of gallery layout component.</p>
 
         <h2>Remove event:</h2>
-        <pre class="cm-codebox">gallery.removeEvent(event, handler);</pre>
+        <pre class="pt__box-code">gallery.removeEvent(event, handler);</pre>
         <p>Available events: <code>onRender</code>, <code>onChange</code>.<br>Returns class of gallery layout component.</p>
 
         <h2>Trigger event:</h2>
-        <pre class="cm-codebox">gallery.triggerEvent(event);</pre>
+        <pre class="pt__box-code">gallery.triggerEvent(event);</pre>
         <p>Available events: <code>onRender</code>, <code>onChange</code>.<br>Returns class of gallery layout component.</p>
     </li>
 

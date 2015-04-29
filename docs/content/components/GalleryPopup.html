@@ -63,7 +63,7 @@
         </ul>
 
         <h2>Initialize</h2>
-        <textarea class="cm-codebox cm-autoresize" readonly>
+        <textarea class="pt__box-code cm-autoresize" readonly>
 <script type="text/javascript">
     cm.onReady(function(){
         new Com.Collector()
@@ -119,7 +119,7 @@
             </dt>
             <dd>
                 <p><code>Object</code>. Object of events. Available events: <code>onOpen</code>, <code>onClose</code>, <code>onChange</code>. Example:</p>
-                <textarea class="cm-codebox cm-autoresize" readonly>
+                <textarea class="pt__box-code cm-autoresize" readonly>
 new Com.GalleryPopup({
     'events' : {
         'onChange' : function(gallery, data){}
@@ -130,44 +130,44 @@ new Com.GalleryPopup({
 
         <h2>Set parameters in html through data attribute</h2>
         <p>Value in data attribute must be in JSON format. Example:</p>
-        <textarea class="cm-codebox cm-autoresize" readonly><div data-element="gallery-popup" data-config='{"size" : "auto", "theme" : "theme-default", "aspectRatio" : "16x9"}'></div></textarea>
+        <textarea class="pt__box-code cm-autoresize" readonly><div data-element="gallery-popup" data-config='{"size" : "auto", "theme" : "theme-default", "aspectRatio" : "16x9"}'></div></textarea>
     </li>
 
     <li data-node="tabs:[]:container" data-config='{"id" : "methods", "title" : "Methods"}'>
         <h2>Open popup:</h2>
-        <pre class="cm-codebox">gallery.open();</pre>
+        <pre class="pt__box-code">gallery.open();</pre>
         <p>Returns class of gallery popup component.</p>
 
         <h2>Close popup:</h2>
-        <pre class="cm-codebox">gallery.close();</pre>
+        <pre class="pt__box-code">gallery.close();</pre>
         <p>Returns class of gallery popup component.</p>
 
         <h2>Set gallery popup active image:</h2>
-        <pre class="cm-codebox">gallery.set(i);</pre>
+        <pre class="pt__box-code">gallery.set(i);</pre>
         <p>Returns class of gallery popup component.</p>
 
         <h2>Set next active gallery popup image:</h2>
-        <pre class="cm-codebox">gallery.next();</pre>
+        <pre class="pt__box-code">gallery.next();</pre>
         <p>Returns class of gallery popup component.</p>
 
         <h2>Set previous active gallery popup image:</h2>
-        <pre class="cm-codebox">gallery.prev();</pre>
+        <pre class="pt__box-code">gallery.prev();</pre>
         <p>Returns class of gallery popup component.</p>
 
         <h2>Set event:</h2>
-        <pre class="cm-codebox">gallery.addEvent(event, handler);</pre>
+        <pre class="pt__box-code">gallery.addEvent(event, handler);</pre>
         <p>Available events: <code>onOpen</code>, <code>onClose</code>, <code>onChange</code>.<br>Returns class of gallery popup component.</p>
 
         <h2>Set events:</h2>
-        <pre class="cm-codebox">gallery.addEvents(o);</pre>
+        <pre class="pt__box-code">gallery.addEvents(o);</pre>
         <p>Example: <code>{'onChange' : function(){}}</code>. Available events: <code>onOpen</code>, <code>onClose</code>, <code>onChange</code>.<br>Returns class of gallery popup component.</p>
 
         <h2>Remove event:</h2>
-        <pre class="cm-codebox">gallery.removeEvent(event, handler);</pre>
+        <pre class="pt__box-code">gallery.removeEvent(event, handler);</pre>
         <p>Available events: <code>onOpen</code>, <code>onClose</code>, <code>onChange</code>.<br>Returns class of gallery popup component.</p>
 
         <h2>Trigger event:</h2>
-        <pre class="cm-codebox">gallery.triggerEvent(event);</pre>
+        <pre class="pt__box-code">gallery.triggerEvent(event);</pre>
         <p>Available events: <code>onOpen</code>, <code>onClose</code>, <code>onChange</code>.<br>Returns class of gallery popup component.</p>
     </li>
 
@@ -286,7 +286,7 @@ new Com.GalleryPopup({
         <hr>
         <h2>Gallery listing with video</h2>
         <p>Add data-config attribute to customize settings:</p>
-        <textarea class="cm-codebox cm-autoresize" readonly><div class="pt__grid col-5 bottom" data-element="gallery-popup" data-config='{"size" : "auto", "theme" : "theme-default", "aspectRatio" : "16x9"}'></div></textarea>
+        <textarea class="pt__box-code cm-autoresize" readonly><div class="pt__grid col-5 bottom" data-element="gallery-popup" data-config='{"size" : "auto", "theme" : "theme-default", "aspectRatio" : "16x9"}'></div></textarea>
         <div class="pt__grid col-5 bottom" data-element="gallery-popup" data-config='{"size" : "auto", "theme" : "theme-default", "aspectRatio" : "16x9"}'>
             <ul>
                 <li>
@@ -306,7 +306,7 @@ new Com.GalleryPopup({
         <hr>
 
         <h2>Open Gallery Popup on self click</h2>
-        <textarea class="cm-codebox cm-autoresize" readonly><div class="button button-primary" data-element="gallery-popup" data-config='{"openOnSelfClick" : true, "data" : [{"src" : "%image_src%", "title" : "%image_title%"}]}'>Open</div></textarea>
+        <textarea class="pt__box-code cm-autoresize" readonly><div class="button button-primary" data-element="gallery-popup" data-config='{"openOnSelfClick" : true, "data" : [{"src" : "%image_src%", "title" : "%image_title%"}]}'>Open</div></textarea>
         <div class="pt__toolbar">
             <div class="inner clear">
                 <ul class="group">

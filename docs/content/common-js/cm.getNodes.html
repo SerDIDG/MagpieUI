@@ -54,35 +54,35 @@
 
     <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
         <h2>Simple collect nodes</h2>
-        <textarea readonly class="cm-codebox cm-autoresize">
+        <textarea readonly class="pt__box-code cm-autoresize">
 <div data-node="foo"></div>
 <div data-node="bar"></div></textarea>
         <br>
         <p>Returns an object:</p>
-        <pre class="cm-codebox">{foo = div, bar = div}</pre>
+        <pre class="pt__box-code">{foo = div, bar = div}</pre>
         <hr>
 
         <h2>Creating object namespace</h2>
-        <textarea readonly class="cm-codebox cm-autoresize">
+        <textarea readonly class="pt__box-code cm-autoresize">
 <div data-node="foobar:{}">
     <div data-node="bar"></div>
 </div></textarea>
         <br>
         <p>Returns an object:</p>
-        <pre class="cm-codebox">{foobar = {bar = div}}</pre>
+        <pre class="pt__box-code">{foobar = {bar = div}}</pre>
         <br>
         <h4>Collect node that has namespace specified</h4>
-        <textarea readonly class="cm-codebox cm-autoresize">
+        <textarea readonly class="pt__box-code cm-autoresize">
 <div data-node="foobar:{}:foo">
     <div data-node="bar"></div>
 </div></textarea>
         <br>
         <p>Returns an object:</p>
-        <pre class="cm-codebox">{foobar = {foo = div, bar = div}}</pre>
+        <pre class="pt__box-code">{foobar = {foo = div, bar = div}}</pre>
         <hr>
 
         <h2>Creating array namespace</h2>
-        <textarea readonly class="cm-codebox cm-autoresize">
+        <textarea readonly class="pt__box-code cm-autoresize">
 <div data-node="foobar:[]">
     <div data-node="foo"></div>
 </div>
@@ -91,10 +91,10 @@
 </div></textarea>
         <br>
         <p>Returns an object:</p>
-        <pre class="cm-codebox">{foobar = [{foo = div}, {bar = div}]}</pre>
+        <pre class="pt__box-code">{foobar = [{foo = div}, {bar = div}]}</pre>
         <br>
         <h4>Collect node that has namespace specified</h4>
-        <textarea readonly class="cm-codebox cm-autoresize">
+        <textarea readonly class="pt__box-code cm-autoresize">
 <div data-node="foobar:[]:foo">
     <div data-node="bar"></div>
 </div>
@@ -103,53 +103,53 @@
 </div></textarea>
         <br>
         <p>Returns an object:</p>
-        <pre class="cm-codebox">{foobar = [{foo = div, bar = div}, {foo = div, bar = div}]}</pre>
+        <pre class="pt__box-code">{foobar = [{foo = div, bar = div}, {foo = div, bar = div}]}</pre>
         <hr>
 
         <h2>Creating absolute path</h2>
-        <textarea readonly class="cm-codebox cm-autoresize">
+        <textarea readonly class="pt__box-code cm-autoresize">
 <div data-node="foobar.foo">
     <div data-node="foobar.bar"></div>
 </div>
 <div data-node="foobar.player.foo"></div></textarea>
         <br>
         <p>Returns an object:</p>
-        <pre class="cm-codebox">{foobar = {foo = div, bar = div, player = {foo = div}}}</pre>
+        <pre class="pt__box-code">{foobar = {foo = div, bar = div, player = {foo = div}}}</pre>
         <br>
         <h4>Add single node from namespace to global array</h4>
-        <textarea readonly class="cm-codebox cm-autoresize">
+        <textarea readonly class="pt__box-code cm-autoresize">
 <div data-node="foobar:{}">
     <div data-node="foo"></div>
     <div data-node=".bar"></div>
 </div></textarea>
         <br>
         <p>Returns an object:</p>
-        <pre class="cm-codebox">{foobar = {foo = div}, bar = div}</pre>
+        <pre class="pt__box-code">{foobar = {foo = div}, bar = div}</pre>
         <hr>
 
         <h2>Create link of node with different names or namespaces</h2>
         <h4>Node with different names</h4>
-        <textarea readonly class="cm-codebox cm-autoresize">
+        <textarea readonly class="pt__box-code cm-autoresize">
 <div data-node="foo|bar"></div></textarea>
         <br>
         <p>Returns an object:</p>
-        <pre class="cm-codebox">{foo = div, bar = div}</pre>
+        <pre class="pt__box-code">{foo = div, bar = div}</pre>
         <br>
         <h4>Node in different absolute paths</h4>
-        <textarea readonly class="cm-codebox cm-autoresize">
+        <textarea readonly class="pt__box-code cm-autoresize">
 <div data-node="foo.foobar|bar.foobar"></div></textarea>
         <br>
         <p>Returns an object:</p>
-        <pre class="cm-codebox">{foo = {foobar = div}, bar = {foobar = div}}</pre>
+        <pre class="pt__box-code">{foo = {foobar = div}, bar = {foobar = div}}</pre>
         <br>
         <h4>Namespace in different absolute paths</h4>
-        <textarea readonly class="cm-codebox cm-autoresize">
+        <textarea readonly class="pt__box-code cm-autoresize">
 <div data-node="foo.foobar:{}:container|bar.foobar:{}:container">
     <div data-node="node"></div>
 </div></textarea>
         <br>
         <p>Returns an object:</p>
-        <pre class="cm-codebox">{foo = {foobar = {container = div, node = div}}, bar = {foobar = {container = div, node = div}}}</pre>
+        <pre class="pt__box-code">{foo = {foobar = {container = div, node = div}}, bar = {foobar = {container = div, node = div}}}</pre>
     </li>
 </ul>
 

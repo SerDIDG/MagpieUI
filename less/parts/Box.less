@@ -336,6 +336,20 @@
     }
 }
 
+/* *** CODE BOX *** */
+
+.pt__box-code {
+    .cm__box;
+    min-height: @CmFont-Base-LineHeight + ((@PtBoxCode-PaddingY + @CmBorder-Width ) * 2);
+    display: block;
+    white-space: pre-wrap;
+    padding: @PtBoxCode-PaddingY @PtBoxCode-PaddingX;
+    background: #ffffff;
+    border: @CmBorder-Width dashed @CmColor-Border;
+    border-radius: @CmBorder-Radius;
+    font-family: "Courier New", Courier, monospace;
+}
+
 /* ******* PART: BOX: ADAPTIVE ******* */
 
 @media only screen and (max-width: @CmScreen-Mobile) {
