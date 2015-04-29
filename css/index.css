@@ -1930,6 +1930,9 @@ button::-moz-focus-inner {
 .form-box > dd:last-child {
   margin: 0;
 }
+.form-box.is-no-label > dt {
+  display: none;
+}
 /* *** FIELD WITH ICON *** */
 .form-field {
   position: relative;
