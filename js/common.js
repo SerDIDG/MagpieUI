@@ -2624,12 +2624,12 @@ cm.find = function(className, name, parentNode){
     return null;
 };
 
-cm.getClass = function(className, callback){
+cm.getConstructor = function(className, callback){
     var classObject = cm.defineStack[className];
     if(typeof cm.objectSelector(className) == 'undefined'){
         cm.errorLog({
             'type' : 'error',
-            'name' : 'cm.getClass',
+            'name' : 'cm.getConstructor',
             'message' : ['Class', cm.strWrap(className, '"'), 'does not exists or define.'].join(' ')
         });
         return false;
