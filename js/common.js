@@ -1935,6 +1935,27 @@ cm.removeCSSRule = function(ruleName){
     }
 };
 
+cm.setCSSTranslate = (function(){
+    var transform = cm.getSupportedStyle('transform');
+    if(transform){
+        return function(node, x, y, z){
+            x = typeof x != 'undefined' && x != 'auto' ? x : 0;
+            y = typeof y != 'undefined' && y != 'auto' ? y : 0;
+            z = typeof z != 'undefined' && z != 'auto' ? z : 0;
+            node.style[transform] = ['translate3d(', x, ',', y, ',', z,')'].join('');
+            return node;
+        };
+    }else{
+        return function(node, x, y, z){
+            x = typeof x != 'undefined' ? x : 0;
+            y = typeof y != 'undefined' ? y : 0;
+            node.style.left = x;
+            node.style.top = y;
+            return node;
+        };
+    }
+})();
+
 /* ******* ANIMATION ******* */
 
 var animFrame = (function(){

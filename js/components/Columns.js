@@ -25,7 +25,7 @@ cm.define('Com.Columns', {
         'container' : cm.Node('div'),
         'name' : '',
         'columns' : false,
-        'minColumnWidth' : 12,              // in px
+        'minColumnWidth' : 48,              // in px
         'data' : []
     }
 },

@@ -27,12 +27,9 @@
     .for(@properties); .-each(@property) {
         .property(@property) when (@property = transform) {
             -webkit-transition+: -webkit-transform @duration @function;
+                    transition+: -webkit-transform @duration @function;
                     transition+: -ms-transform @duration @function;
                     transition+: transform @duration @function;
-            // Safari 8 fix
-            .safari & {
-                transition+: -webkit-transform @duration @function;
-            }
         }
 
         .property(@property) when not (@property = transform) {

@@ -19,7 +19,7 @@ cm.define('Com.Draganddrop', {
         'scrollNode' : 'document.html',
         'scrollSpeed' : 1,                           // ms per 1px
         'renderTemporaryAria' : false,
-        'useCSSAnimation' : false,
+        'useCSSAnimation' : true,
         'useGracefulDegradation' : true,
         'dropDuration' : 400,
         'direction' : 'both',                        // both | vertical | horizontal
@@ -55,7 +55,8 @@ function(params){
 
     var init = function(){
         var areasNodes;
-        
+
+        getCSSHelpers();
         that.setParams(params);
         that.convertEvents(that.params['events']);
 
@@ -83,6 +84,10 @@ function(params){
             that.triggerEvent('onInit', {});
             that.triggerEvent('onRender', {});
         }
+    };
+
+    var getCSSHelpers = function(){
+        that.params['dropDuration'] = cm.getTransitionDurationFromRule('.pt__dnd-helper__drop-duration');
     };
 
     var initArea = function(node, params){
@@ -231,11 +236,10 @@ function(params){
             current = draggable;
         }
         // Set position and dimension to current draggable node, before we insert it to draggableContainer
-        with(current['node'].style){
-            top = [current['dimensions']['absoluteY1'], 'px'].join('');
-            left = [current['dimensions']['absoluteX1'], 'px'].join('');
-            width = [current['dimensions']['width'], 'px'].join('');
-        }
+        current['node'].style.top = 0;
+        current['node'].style.left = 0;
+        current['node'].style.width = [current['dimensions']['width'], 'px'].join('');
+        cm.setCSSTranslate(current['node'], [current['dimensions']['absoluteX1'], 'px'].join(''), [current['dimensions']['absoluteY1'], 'px'].join(''));
         // Unset area from draggable item
         unsetDraggableFromArea(current);
         // Insert draggable element to body
@@ -298,6 +302,8 @@ function(params){
             y = e.clientY,
             posY,
             posX,
+            styleX,
+            styleY,
             tempCurrentArea,
             tempCurrentAboveItem,
             tempCurrentPosition;
@@ -306,34 +312,35 @@ function(params){
             x = e.touches[0].clientX;
             y = e.touches[0].clientY;
         }
-        // Set new position
+        // Calculate new position
         posY = y - current['dimensions']['offsetY'];
         posX = x - current['dimensions']['offsetX'];
-        // Drag directions
-        with(current['node'].style){
-            switch(that.params['direction']){
-                case 'both':
-                    top = [posY, 'px'].join('');
-                    left = [posX, 'px'].join('');
-                    break;
-                case 'vertical':
-                    if(that.params['limit']){
-                        if(posY < current['area']['dimensions']['y1']){
-                            top = [current['area']['dimensions']['y1'], 'px'].join('');
-                        }else if(posY > current['area']['dimensions']['y2']){
-                            top = [current['area']['dimensions']['y2'], 'px'].join('');
-                        }else{
-                            top = [posY, 'px'].join('');
-                        }
+        // Calculate drag direction and set new position
+        switch(that.params['direction']){
+            case 'both':
+                styleX = [posX, 'px'].join('');
+                styleY = [posY, 'px'].join('');
+                break;
+            case 'vertical':
+                styleX = [current['dimensions']['absoluteX1'], 'px'].join('');
+                if(that.params['limit']){
+                    if(posY < current['area']['dimensions']['y1']){
+                        styleY = [current['area']['dimensions']['y1'], 'px'].join('');
+                    }else if(posY > current['area']['dimensions']['y2']){
+                        styleY = [current['area']['dimensions']['y2'], 'px'].join('');
                     }else{
-                        top = [posY, 'px'].join('');
+                        styleY = [posY, 'px'].join('');
                     }
-                    break;
-                case 'horizontal':
-                    left = [posX, 'px'].join('');
-                    break;
-            }
+                }else{
+                    styleY = [posY, 'px'].join('');
+                }
+                break;
+            case 'horizontal':
+                styleX = [posX, 'px'].join('');
+                styleY = [current['dimensions']['absoluteY1'], 'px'].join('');
+                break;
         }
+        cm.setCSSTranslate(current['node'], styleX, styleY);
         // Scroll node
         if(that.params['scroll']){
         //if(false){
@@ -481,7 +488,6 @@ function(params){
     };
 
     var dropDraggableToArea = function(draggable, area, params){
-        var hack;
         params = cm.merge({
             'target' : area['node'],
             'append' : 'child',
@@ -495,56 +501,48 @@ function(params){
         // System onStart event
         params['onStart']();
         // Animate draggable item, like it drops in area
-        draggable['anim'].go({
-            'duration' : that.params['dropDuration'],
-            'anim' : 'smooth',
-            'style' : {
-                'top' : params['top'],
-                'left' : params['left'],
-                'width' : params['width']
-            },
-            'onStop' : function(){
-                // Append element in new position
-                switch(params['append']){
-                    case 'child' :
-                        cm.appendChild(draggable['node'], params['target']);
-                        break;
-                    case 'before' :
-                        cm.insertBefore(draggable['node'], params['target']);
-                        break;
-                    case 'after' :
-                        cm.insertAfter(draggable['node'], params['target']);
-                        break;
-                    case 'first' :
-                        cm.insertFirst(draggable['node'], params['target']);
-                        break;
-                }
-                // Remove draggable helper classname
-                cm.removeClass(draggable['node'], 'pt__dnd-helper');
-                hack = draggable['node'].clientHeight;
-                cm.removeClass(draggable['node'], 'is-active');
-                // Reset styles
-                with(draggable['node'].style){
-                    width = 'auto';
-                    left = 'auto';
-                    top = 'auto';
-                }
-                // Set index of draggable item in new area
-                area['items'].splice(params['index'], 0, draggable);
-                // API onDrop Event
-                that.triggerEvent('onDrop', {
-                    'item' : draggable,
-                    'node' : draggable['node'],
-                    'to' : area,
-                    'from' : draggable['area'],
-                    'index' : params['index']
-                });
-                // Set draggable new area
-                draggable['area'] = area;
-                // System onStop event
-                params['onStop']();
+        cm.addClass(draggable['node'], 'is-drop', true);
+        draggable['node'].style.width = params['width'];
+        cm.setCSSTranslate(draggable['node'], params['left'], params['top']);
+        // On Dnimate Stop
+        setTimeout(function(){
+            // Append element in new position
+            switch(params['append']){
+                case 'child' :
+                    cm.appendChild(draggable['node'], params['target']);
+                    break;
+                case 'before' :
+                    cm.insertBefore(draggable['node'], params['target']);
+                    break;
+                case 'after' :
+                    cm.insertAfter(draggable['node'], params['target']);
+                    break;
+                case 'first' :
+                    cm.insertFirst(draggable['node'], params['target']);
+                    break;
             }
-        });
+            // Remove draggable helper classname
+            cm.removeClass(draggable['node'], 'pt__dnd-helper is-drop is-active', true);
+            // Reset styles
+            draggable['node'].style.left = 'auto';
+            draggable['node'].style.top = 'auto';
+            draggable['node'].style.width = 'auto';
+            cm.setCSSTranslate(current['node'], 'auto', 'auto');
+            // Set index of draggable item in new area
+            area['items'].splice(params['index'], 0, draggable);
+            // API onDrop Event
+            that.triggerEvent('onDrop', {
+                'item' : draggable,
+                'node' : draggable['node'],
+                'to' : area,
+                'from' : draggable['area'],
+                'index' : params['index']
+            });
+            // Set draggable new area
+            draggable['area'] = area;
+            // System onStop event
+            params['onStop']();
+        }, that.params['dropDuration']);
     };
 
     var removeDraggable = function(draggable, params){

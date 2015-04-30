@@ -4081,6 +4081,10 @@ button::-moz-focus-inner {
   -moz-user-select: none;
   user-select: none;
 }
+.pt__dnd-helper.is-drop {
+  -webkit-transition: all 400ms ease-in-out;
+  transition: all 400ms ease-in-out;
+}
 .pt__dnd-chassis {
   height: 0;
   -webkit-transition: height 0s linear;
@@ -4134,6 +4138,10 @@ button::-moz-focus-inner {
 }
 .pt__dnd-area.is-available.is-highlight.is-active .pt__dnd-area {
   background-color: rgba(255, 255, 255, 0.4);
+}
+/* *** HELPERS *** */
+.pt__dnd-helper__drop-duration {
+  transition-duration: 400ms;
 }
 /* ******* PARTS: EDITABLE ******* */
 .pt__editable {
@@ -5648,10 +5656,7 @@ button::-moz-focus-inner {
   top: 14px;
   cursor: pointer;
   -webkit-transition: -webkit-transform 500ms ease-in-out, opacity 500ms ease-in-out;
-  transition: -ms-transform 500ms ease-in-out, transform 500ms ease-in-out, opacity 500ms ease-in-out;
-}
-.safari .lt__collapsible > .sidebar > .inner > .title .icon {
-  transition: -webkit-transform 500ms ease-in-out;
+  transition: -webkit-transform 500ms ease-in-out, -ms-transform 500ms ease-in-out, transform 500ms ease-in-out, opacity 500ms ease-in-out;
 }
 .lt__collapsible > .sidebar > .inner > .title .icon.default {
   width: 24px;
@@ -6307,10 +6312,7 @@ button::-moz-focus-inner {
 .com__select .form-field .icon.default {
   background-image: url("../img/icons/medium/select-arrow.png");
   -webkit-transition: -webkit-transform 300ms ease-in-out;
-  transition: -ms-transform 300ms ease-in-out, transform 300ms ease-in-out;
-}
-.safari .com__select .form-field .icon.default {
-  transition: -webkit-transform 300ms ease-in-out;
+  transition: -webkit-transform 300ms ease-in-out, -ms-transform 300ms ease-in-out, transform 300ms ease-in-out;
 }
 .com__select:focus .form-field .icon.default,
 .com__select.active .form-field .icon.default {
@@ -7015,10 +7017,7 @@ html.ie9 .com__palette .b-range {
 .com__colorpicker .form-field .icon.default {
   background-image: url("../img/icons/medium/palette.png");
   -webkit-transition: -webkit-transform 300ms ease-in-out;
-  transition: -ms-transform 300ms ease-in-out, transform 300ms ease-in-out;
-}
-.safari .com__colorpicker .form-field .icon.default {
-  transition: -webkit-transform 300ms ease-in-out;
+  transition: -webkit-transform 300ms ease-in-out, -ms-transform 300ms ease-in-out, transform 300ms ease-in-out;
 }
 .com__colorpicker > .icon {
   width: 28px;
@@ -7646,10 +7645,7 @@ html.ie9 .com__palette .b-range {
 .com__togglebox > dt .icon.default {
   width: 16px;
   -webkit-transition: -webkit-transform 300ms ease-in-out;
-  transition: -ms-transform 300ms ease-in-out, transform 300ms ease-in-out;
-}
-.safari .com__togglebox > dt .icon.default {
-  transition: -webkit-transform 300ms ease-in-out;
+  transition: -webkit-transform 300ms ease-in-out, -ms-transform 300ms ease-in-out, transform 300ms ease-in-out;
 }
 .com__togglebox > dt .title {
   overflow: hidden;
