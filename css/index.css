@@ -885,6 +885,11 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.cm-i:hover,
+[class^="cm-i__"]:hover,
+[class*=" cm-i__"]:hover {
+  text-decoration: none;
+}
 .cm-i.xx-small,
 [class^="cm-i__"].xx-small,
 [class*=" cm-i__"].xx-small {
