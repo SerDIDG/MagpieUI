@@ -150,6 +150,22 @@
         }
     }
 
+    &.effect-fade-out {
+        > ul {
+            > li {
+                display: none;
+                position: absolute;
+                opacity: 0;
+                .mx__position(0, auto, auto, 0);
+
+                &:first-child {
+                    display: block;
+                    opacity: 1;
+                }
+            }
+        }
+    }
+
     &.effect-push {
         > ul {
             .cm__list-inline;

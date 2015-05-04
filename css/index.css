@@ -9232,6 +9232,19 @@ html.ie9 .com__palette .b-range {
   display: block;
   opacity: 1;
 }
+.com__slider > .inner > .slides.effect-fade-out > ul > li {
+  display: none;
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: auto;
+  bottom: auto;
+  left: 0;
+}
+.com__slider > .inner > .slides.effect-fade-out > ul > li:first-child {
+  display: block;
+  opacity: 1;
+}
 .com__slider > .inner > .slides.effect-push > ul {
   text-align: left;
   font-size: 0;

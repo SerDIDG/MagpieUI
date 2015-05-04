@@ -25,7 +25,7 @@ cm.define('Com.Slider', {
         'buttons' : true,               // Display buttons, can hide exists buttons
         'numericButtons' : false,       // Render slide index on button
         'arrows' : true,                // Display arrows, can hide exists arrows
-        'effect' : 'fade',              // fade | push | pull | pull-parallax | pull-overlap
+        'effect' : 'fade',              // fade | fade-out | push | pull | pull-parallax | pull-overlap
         'transition' : 'smooth',        // smooth | simple | acceleration | inhibition,
         'calculateMaxHeight' : false,
         'minHeight' : 96,               // Set min-height of slider, work with calculateMaxHeight parameter
@@ -413,6 +413,29 @@ Com.SliderEffects['fade'] = function(slider, current, previous, callback){
                 hide(previous);
             }, slider.params['time']);
         }
+        // Set visible new slide and animate it
+        current['nodes']['container'].style.zIndex = 2;
+        current['nodes']['container'].style.display = 'block';
+        current['anim'].go({'style' : {'opacity' : 1}, 'duration' : slider.params['time'], 'anim' : slider.params['transition'], 'onStop' : callback});
+    }else{
+        callback();
+    }
+};
+
+/* *** FADE *** */
+
+Com.SliderEffects['fade-out'] = function(slider, current, previous, callback){
+    var hide = function(item){
+        item['nodes']['container'].style.display = 'none';
+        cm.setOpacity(item['nodes']['container'], 0);
+    };
+
+    if(slider.itemsLength > 1 && previous && current != previous){
+        // Hide previous slide
+        previous['nodes']['container'].style.zIndex = 1;
+        previous['anim'].go({'style' : {'opacity' : 0}, 'duration' : slider.params['time'], 'anim' : slider.params['transition'], 'onStop' : function(){
+            hide(previous);
+        }});
         // Set visible new slide and animate it
         current['nodes']['container'].style.zIndex = 2;
         current['nodes']['container'].style.display = 'block';
