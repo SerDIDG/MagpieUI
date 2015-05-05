@@ -424,7 +424,7 @@ Mod['Stack'] = {
         cm.forEach(that._stack, function(item){
             if((cm.isEmpty(name) || item['name'] == name) && cm.isParent(parent, item['node'], true)){
                 items.push(item);
-                callback.call(that, item['class'], item['name'], item['node'])
+                callback.call(that, item['class'], item)
             }
         });
         return items;
