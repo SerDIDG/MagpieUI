@@ -497,7 +497,7 @@
 }
 .icon.inline {
   margin: 0 4px;
-  display: inline;
+  display: inline-block;
   vertical-align: middle;
 }
 .icon.centered {
