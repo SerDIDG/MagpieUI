@@ -2616,12 +2616,12 @@ cm.define = (function(){
     };
 })();
 
-cm.find = function(className, name, parentNode){
+cm.find = function(className, name, parentNode, callback){
     if(!className || className == '*'){
         var classes = [];
         cm.forEach(cm.defineStack, function(classObject){
             if(classObject.prototype.findInStack){
-                classes = cm.extend(classes, classObject.prototype.findInStack(name, parentNode));
+                classes = cm.extend(classes, classObject.prototype.findInStack(name, parentNode, callback));
             }
         });
         return classes;
@@ -2640,15 +2640,15 @@ cm.find = function(className, name, parentNode){
                 'message' : ['Class', cm.strWrap(className, '"'), 'does not support Module Stack.'].join(' ')
             });
         }else{
-            return classObject.prototype.findInStack(name, parentNode);
+            return classObject.prototype.findInStack(name, parentNode, callback);
         }
     }
     return null;
 };
 
 cm.getConstructor = function(className, callback){
-    var classObject = cm.defineStack[className];
-    if(typeof cm.objectSelector(className) == 'undefined'){
+    var classConstructor = cm.defineStack[className];
+    if(!classConstructor){
         cm.errorLog({
             'type' : 'error',
             'name' : 'cm.getConstructor',
@@ -2656,7 +2656,7 @@ cm.getConstructor = function(className, callback){
         });
         return false;
     }else{
-        typeof callback == 'function' && callback(classObject);
-        return classObject;
+        typeof callback == 'function' && callback(classConstructor);
+        return classConstructor;
     }
 };
