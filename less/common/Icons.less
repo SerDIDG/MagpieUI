@@ -1,5 +1,6 @@
 /* ******* COMMON: ICONS ******* */
 
+.cm__icon,
 .icon {
     display: block;
     background: transparent 50% 50% no-repeat;
@@ -38,18 +39,6 @@
         }
     }
 
-    // /* *** PARAMETERS *** */
-
-    &.draggable[data-draganddrop-drag="true"] {
-        cursor: move;
-    }
-
-    &.draggable[data-draganddrop-drag="false"] {
-        cursor: default;
-    }
-
-    // /* *** X SMALL *** */
-
     &.x-small {
         .cm__size__x-small;
 
@@ -63,15 +52,7 @@
             padding-left: @CmSize-XSmall + @CmIndent-XXXSmall;
             line-height: @CmSize-XSmall;
         }
-
-        .for(search search-white); .-each(@name) {
-            &.@{name} {
-                background-image: url("@{CmPath-Images}/icons/x-small/@{name}.png");
-            }
-        }
     }
-
-    // /* *** SMALL *** */
 
     &.small {
         .cm__size__small;
@@ -86,7 +67,104 @@
             padding-left: @CmSize-Small + @CmIndent-XXXSmall;
             line-height: @CmSize-Small;
         }
+    }
 
+    &.medium {
+        .cm__size__medium;
+
+        &.centered {
+            @margin: @CmSize-Medium / 2;
+            margin: -@margin 0 0 -@margin;
+        }
+
+        &.has-caption {
+            width: auto;
+            padding-left: @CmSize-Medium + @CmIndent-XXXSmall;
+            line-height: @CmSize-Medium;
+        }
+    }
+
+    &.large {
+        .cm__size__large;
+
+        &.centered {
+            @margin: @CmSize-Large / 2;
+            margin: -@margin 0 0 -@margin;
+        }
+
+        &.has-caption {
+            width: auto;
+            padding-left: @CmSize-Large + @CmIndent-XXXSmall;
+            line-height: @CmSize-Large;
+        }
+    }
+
+    &.x-large {
+        .cm__size__x-large;
+
+        &.centered {
+            @margin: @CmSize-XLarge / 2;
+            margin: -@margin 0 0 -@margin;
+        }
+
+        &.has-caption {
+            width: auto;
+            padding-left: @CmSize-XLarge + @CmIndent-XXXSmall;
+            line-height: @CmSize-XLarge;
+        }
+    }
+
+    &.xx-large {
+        .cm__size__xx-large;
+
+        &.centered {
+            @margin: @CmSize-XXLarge / 2;
+            margin: -@margin 0 0 -@margin;
+        }
+
+        &.has-caption {
+            width: auto;
+            padding-left: @CmSize-XXLarge + @CmIndent-XXXSmall;
+            line-height: @CmSize-XXLarge;
+        }
+    }
+
+    &.xxx-large {
+        .cm__size__xxx-large;
+
+        &.centered {
+            @margin: @CmSize-XXXLarge / 2;
+            margin: -@margin 0 0 -@margin;
+        }
+    }
+}
+
+/* *** OLD STYLE ICONS *** */
+
+.icon {
+    // /* *** PARAMETERS *** */
+
+    &.draggable[data-draganddrop-drag="true"] {
+        cursor: move;
+    }
+
+    &.draggable[data-draganddrop-drag="false"] {
+        cursor: default;
+    }
+
+    // /* *** X SMALL *** */
+
+    &.x-small {
+        .for(search search-white); .-each(@name) {
+            &.@{name} {
+                background-image: url("@{CmPath-Images}/icons/x-small/@{name}.png");
+            }
+        }
+    }
+
+    // /* *** SMALL *** */
+
+    &.small {
         .for(tags add arrow-priority-down arrow-priority-up arrow-left arrow-right arrow-top arrow-bottom copy check edit help remove settings settings-white view search search-white arrow-white-left arrow-white-right arrow-white-top arrow-white-bottom drag-vertical transparent); .-each(@name) {
             &.@{name} {
                 background-image: url("@{CmPath-Images}/icons/small/@{name}.png");
@@ -113,19 +191,6 @@
     // /* *** MEDIUM *** */
 
     &.medium {
-        .cm__size__medium;
-
-        &.centered {
-            @margin: @CmSize-Medium / 2;
-            margin: -@margin 0 0 -@margin;
-        }
-
-        &.has-caption {
-            width: auto;
-            padding-left: @CmSize-Medium + @CmIndent-XXXSmall;
-            line-height: @CmSize-Medium;
-        }
-
         .for(check ui-arrow-left ui-arrow-right ui-arrow-white-left ui-arrow-white-right arrow-white-left arrow-white-right arrow-white-top arrow-white-bottom datepicker select-arrow close close-white menu menu-white settings settings-white plus-white palette); .-each(@name) {
             &.@{name} {
                 background-image: url("@{CmPath-Images}/icons/medium/@{name}.png");
@@ -136,19 +201,6 @@
     // /* *** LARGE *** */
 
     &.large {
-        .cm__size__large;
-
-        &.centered {
-            @margin: @CmSize-Large / 2;
-            margin: -@margin 0 0 -@margin;
-        }
-
-        &.has-caption {
-            width: auto;
-            padding-left: @CmSize-Large + @CmIndent-XXXSmall;
-            line-height: @CmSize-Large;
-        }
-
         .for(message page page-featured google linkedin twitter facebook favorite); .-each(@name) {
             &.@{name} {
                 background-image: url("@{CmPath-Images}/icons/large/@{name}.png");
@@ -167,19 +219,6 @@
     // /* *** X-LARGE *** */
 
     &.x-large {
-        .cm__size__x-large;
-
-        &.centered {
-            @margin: @CmSize-XLarge / 2;
-            margin: -@margin 0 0 -@margin;
-        }
-
-        &.has-caption {
-            width: auto;
-            padding-left: @CmSize-XLarge + @CmIndent-XXXSmall;
-            line-height: @CmSize-XLarge;
-        }
-
         .for(play); .-each(@name) {
             &.@{name} {
                 background-image: url("@{CmPath-Images}/icons/x-large/@{name}.png");
@@ -190,19 +229,6 @@
     // /* *** XX-LARGE *** */
 
     &.xx-large {
-        .cm__size__xx-large;
-
-        &.centered {
-            @margin: @CmSize-XXLarge / 2;
-            margin: -@margin 0 0 -@margin;
-        }
-
-        &.has-caption {
-            width: auto;
-            padding-left: @CmSize-XXLarge + @CmIndent-XXXSmall;
-            line-height: @CmSize-XXLarge;
-        }
-
         .for(arrow-left arrow-right arrow-white-left arrow-white-right); .-each(@name) {
             &.@{name} {
                 background-image: url("@{CmPath-Images}/icons/xx-large/@{name}.png");
@@ -211,15 +237,6 @@
     }
 
     // /* *** XXX-LARGE *** */
-
-    &.xxx-large {
-        .cm__size__xxx-large;
-
-        &.centered {
-            @margin: @CmSize-XXXLarge / 2;
-            margin: -@margin 0 0 -@margin;
-        }
-    }
 
     // /* *** TOOLBAR *** */
 
