@@ -381,16 +381,28 @@
 // /* ******* PARTS ******* */
 // /* ************************************************ */
 
+// /* ******* BOX ******* */
+
+@PtBox-BorderWidth: @CmBorder-Width;
+@PtBox-BorderColor: @CmColor-Border;
+@PtBoxItem-Sizes: 50 80 150;
+@PtBoxContent-Indent: @CmIndent-XLarge;
+@PtBoxContent-Indents: @CmIndents;
+@PtBoxCode-PaddingY: @CmIndent-XXSmall;
+@PtBoxCode-PaddingX: @CmIndent-XSmall;
+
 // /* ******* MENU ******* */
 
 @PtMenu-IndentY: @CmIndent-XXXSmall;
 @PtMenu-IndentX: 0px;
 @PtMenu-BorderWidth: @PtBox-BorderWidth;
+@PtMenu-BorderColor: @PtBox-BorderColor;
 
 @PtMenu-ItemIndentY: 2px;
 @PtMenu-ItemIndentX: @CmIndent-XSmall;
 @PtMenu-SeparatorIndentX: @PtMenu-ItemIndentX;
 @PtMenu-SeparatorSize: @PtBox-BorderWidth;
+@PtMenu-SeparatorColor: @PtBox-BorderColor;
 
 @PtMenu-Dropdown-IndentX: 0px;
 @PtMenu-Dropdown-IndentY: 0px;
@@ -404,15 +416,6 @@
 @PtImage-Background: @CmColor-Secondary-LightHighlight;
 @PtImage-TitlePaddingTop: @CmIndent-XXXSmall;
 @PtImage-Color: @CmFont-UI-ColorOpposite;
-
-// /* ******* BOX ******* */
-
-@PtBox-BorderWidth: @CmBorder-Width;
-@PtBoxItem-Sizes: 50 80 150;
-@PtBoxContent-Indent: @CmIndent-XLarge;
-@PtBoxContent-Indents: @CmIndents;
-@PtBoxCode-PaddingY: @CmIndent-XXSmall;
-@PtBoxCode-PaddingX: @CmIndent-XSmall;
 
 // /* ******* LISTING ITEMS ******* */
 

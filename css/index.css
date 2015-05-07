@@ -2970,6 +2970,7 @@ button::-moz-focus-inner {
   border: 1px solid #cccccc;
   border-width: 1px;
   border-radius: 3px;
+  border-color: #cccccc;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
   -webkit-background-clip: padding-box;
   -moz-background-clip: padding-box;
@@ -3772,6 +3773,7 @@ button::-moz-focus-inner {
   margin: 0;
   padding: 4px 0px;
   border-width: 1px;
+  border-color: #cccccc;
   list-style: none;
   opacity: 0;
   top: 100%;
@@ -3833,6 +3835,7 @@ button::-moz-focus-inner {
   overflow: hidden;
   border-top: 1px solid #cccccc;
   border-width: 1px;
+  border-color: #cccccc;
   content: '';
   top: -1px;
   right: 0;
@@ -4299,6 +4302,7 @@ button::-moz-focus-inner {
   margin: 0;
   padding: 4px 0px;
   border-width: 1px;
+  border-color: #cccccc;
   list-style: none;
   opacity: 0;
   top: 100%;
@@ -4364,6 +4368,7 @@ button::-moz-focus-inner {
   overflow: hidden;
   border-top: 1px solid #cccccc;
   border-width: 1px;
+  border-color: #cccccc;
   content: '';
   top: -1px;
   right: 0;
@@ -6328,6 +6333,7 @@ button::-moz-focus-inner {
   border: 1px solid #cccccc;
   border-width: 1px;
   border-radius: 3px;
+  border-color: #cccccc;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
   -webkit-background-clip: padding-box;
   -moz-background-clip: padding-box;
@@ -6486,6 +6492,7 @@ button::-moz-focus-inner {
   margin: 0;
   padding: 4px 0px;
   border-width: 1px;
+  border-color: #cccccc;
   list-style: none;
   opacity: 0;
   top: 100%;
@@ -6550,6 +6557,7 @@ button::-moz-focus-inner {
   overflow: hidden;
   border-top: 1px solid #cccccc;
   border-width: 1px;
+  border-color: #cccccc;
   content: '';
   top: -1px;
   right: 0;
@@ -8062,6 +8070,7 @@ html.ie9 .com__palette .b-range {
   margin: 0;
   padding: 4px 0px;
   border-width: 1px;
+  border-color: #cccccc;
   list-style: none;
   opacity: 0;
   top: 100%;
@@ -8125,6 +8134,7 @@ html.ie9 .com__palette .b-range {
   overflow: hidden;
   border-top: 1px solid #cccccc;
   border-width: 1px;
+  border-color: #cccccc;
   content: '';
   top: -1px;
   right: 0;

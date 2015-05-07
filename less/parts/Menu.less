@@ -13,6 +13,7 @@
     margin: 0;
     padding: @PtMenu-IndentY @PtMenu-IndentX;
     border-width: @PtMenu-BorderWidth;
+    border-color: @PtMenu-BorderColor;
     list-style: none;
     opacity: 0;
     .mx__position(100%, auto, auto, 0);
@@ -51,11 +52,12 @@
         &:before {
             display: block;
             height: 0;
-            margin: 0 @CmIndent-Medium / 2;
+            margin: 0 @PtMenu-SeparatorIndentX;
             position: absolute;
             overflow: hidden;
             border-top: @CmBorder-Default;
             border-width: @PtMenu-SeparatorSize;
+            border-color: @PtMenu-SeparatorColor;
             content: '';
             .mx__position(-@CmBorder-Width, 0, auto, 0)
         }
