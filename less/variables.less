@@ -1,5 +1,11 @@
 
 // /* ************************************************ */
+// /* ******* IMPORT ******* */
+// /* ************************************************ */
+
+@import "variables.icons.less";
+
+// /* ************************************************ */
 // /* ******* VARIABLES ******* */
 // /* ************************************************ */
 
@@ -7,12 +13,6 @@
 
 @CmPath-Images: '../img';
 @CmPath-Fonts: '../fonts';
-
-// /* ************************************************ */
-// /* ******* IMPORT ******* */
-// /* ************************************************ */
-
-@import "variables.icons.less";
 
 // /* ******* SCREEN TYPES ******* */
 
@@ -46,6 +46,21 @@
 @CmIndent-XXXLarge: @CmSize-XXXLarge;
 
 @CmIndents: @CmIndent-None @CmIndent-XXXSmall @CmIndent-XXSmall @CmIndent-XSmall @CmIndent-Small @CmIndent-Medium @CmIndent-Large @CmIndent-XLarge @CmIndent-XXLarge @CmIndent-XXXLarge;
+
+// /* ******* UI ******* */
+
+@CmUI-Transition-Duration: 300ms;
+@CmUI-Transition-DurationReverse: 100ms;
+@CmUI-Opacity-Hover: 0.7;
+@CmUI-Shadow: 0 0 8px rgba(0, 0, 0, 0.15);
+@CmUI-ShadowLight: 0 0 2px rgba(0,0,0,0.2);
+@CmUI-ShadowInner: 0 2px 2px rgba(0,0,0,0.4) inset;
+@CmUI-Shadow-Bottom: 0 2px 2px rgba(0,0,0,0.15);
+@CmUI-Shadow-Right: 2px 0 2px rgba(0,0,0,0.15);
+@CmUI-Overlay: @CmUI-Overlay-Light;
+@CmUI-Overlay-Dark: rgba(0, 0, 0, 0.7);
+@CmUI-Overlay-Light: rgba(255, 255, 255, 0.7);
+@CmUI-Overlay-Duration: 500ms;
 
 // /* ************************************************ */
 // /* ******* COLORS ******* */
@@ -272,10 +287,12 @@
 @CmColor-BorderDisabled: @CmColor-Secondary-LightActive;
 
 // /* ************************************************ */
-// /* ******* FONT ******* */
+// /* ******* COMMON ******* */
 // /* ************************************************ */
 
-// /* ******* BASE ******* */
+// /* ******* FONT ******* */
+
+// /* *** BASE *** */
 
 @CmFont-Base-LightWeight: 300;
 @CmFont-Base-NormalWeight: 400;
@@ -293,7 +310,7 @@
 @CmFont-Base-Hint-Size: 11px;
 @CmFont-Base-Hint-Color: @CmColor-Font-Hint;
 
-// /* ******* UI ******* */
+// /* *** UI *** */
 
 @CmFont-UI-LightWeight: 300;
 @CmFont-UI-NormalWeight: 400;
@@ -317,25 +334,6 @@
 @CmFont-UI-H4-Weight: @CmFont-UI-LightWeight;
 @CmFont-UI-H4-Color: @CmColor-Font;
 
-// /* ************************************************ */
-// /* ******* UI ******* */
-// /* ************************************************ */
-
-// /* ******* COMMON ******* */
-
-@CmUI-Transition-Duration: 300ms;
-@CmUI-Transition-DurationReverse: 100ms;
-@CmUI-Opacity-Hover: 0.7;
-@CmUI-Shadow: 0 0 8px rgba(0, 0, 0, 0.15);
-@CmUI-ShadowLight: 0 0 2px rgba(0,0,0,0.2);
-@CmUI-ShadowInner: 0 2px 2px rgba(0,0,0,0.4) inset;
-@CmUI-Shadow-Bottom: 0 2px 2px rgba(0,0,0,0.15);
-@CmUI-Shadow-Right: 2px 0 2px rgba(0,0,0,0.15);
-@CmUI-Overlay: @CmUI-Overlay-Light;
-@CmUI-Overlay-Dark: rgba(0, 0, 0, 0.7);
-@CmUI-Overlay-Light: rgba(255, 255, 255, 0.7);
-@CmUI-Overlay-Duration: 500ms;
-
 // /* ******* BORDER ******* */
 
 @CmBorder-Radius: 3px;
@@ -348,10 +346,6 @@
 @CmBorder-BoxHover: @CmBorder-BoxWidth solid @CmColor-BorderHover;
 @CmBorder-BoxActive: @CmBorder-BoxWidth solid @CmColor-BorderActive;
 @CmBorder-BoxSelected: @CmBorder-BoxWidth solid @CmColor-BorderSelected;
-
-// /* ************************************************ */
-// /* ******* COMMON ******* */
-// /* ************************************************ */
 
 // /* ******* BUTTONS ******* */
 
