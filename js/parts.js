@@ -1,42 +1,48 @@
 Part['Menu'] = (function(){
     var processedNodes = [],
-        menus,
         pageSize;
 
-    var checkPosition = function(drop){
+    var checkPosition = function(item){
         pageSize = cm.getPageSize();
-        cm.replaceClass(drop, 'pull-right', 'pull-left');
-        if(cm.getRealX(drop) + drop.offsetWidth >= pageSize['winWidth']){
-            cm.replaceClass(drop, 'pull-left', 'pull-right');
+        var dropWidth = item['drop'].offsetWidth,
+            parentLeft = cm.getX(item['node']),
+            parentWidth = item['node'].parentNode && cm.isClass(item['node'].parentNode, 'pt__menu-dropdown') ? item['node'].parentNode.offsetWidth : 0;
+        if(dropWidth + parentWidth + parentLeft >= pageSize['winWidth']){
+            cm.replaceClass(item['drop'], 'pull-left', 'pull-right');
         }else{
-            cm.replaceClass(drop, 'pull-right', 'pull-left');
+            cm.replaceClass(item['drop'], 'pull-right', 'pull-left');
         }
     };
 
     return function(container){
         container = typeof container == 'undefined'? document.body : container;
-        menus = cm.getByClass('pt__menu', container);
+        var menus = cm.getByClass('pt__menu', container),
+            items = [],
+            item,
+            target;
         cm.forEach(menus, function(node){
             if(!cm.inArray(processedNodes, node)){
-                var drop = cm.getByClass('pt__menu-dropdown', node)[0],
-                    target;
-                cm.addEvent(node, 'mouseover', function(e){
+                item = {
+                    'node' : node,
+                    'drop' : cm.getByClass('pt__menu-dropdown', node)[0]
+                };
+                cm.addEvent(item['node'], 'mouseover', function(e){
                     e = cm.getEvent(e);
                     target = cm.getObjFromEvent(e);
-                    if(!cm.isParent(drop, target, true)){
-                        checkPosition(drop);
+                    if(!cm.isParent(item['drop'], target, true)){
+                        checkPosition(item);
                     }
                 });
-                cm.addEvent(node, 'mousedown', function(e){
+                cm.addEvent(item['node'], 'mousedown', function(e){
                     e = cm.getEvent(e);
                     target = cm.getObjFromEvent(e);
-                    if(cm.getStyle(drop, 'visibility') == 'hidden' && !cm.isClass(node, 'is-show')){
-                        if(!cm.isParent(drop, target, true)){
-                            if(cm.isClass(node, 'is-show')){
-                                cm.removeClass(node, 'is-show');
+                    if(cm.getStyle(item['drop'], 'visibility') == 'hidden' && !cm.isClass(item['node'], 'is-show')){
+                        if(!cm.isParent(item['drop'], target, true)){
+                            if(cm.isClass(item['node'], 'is-show')){
+                                cm.removeClass(item['node'], 'is-show');
                             }else{
                                 cm.preventDefault(e);
-                                cm.addClass(node, 'is-show');
+                                cm.addClass(item['node'], 'is-show');
                             }
                         }
                     }
@@ -44,12 +50,19 @@ Part['Menu'] = (function(){
                 cm.addEvent(document.body, 'mousedown', function(e){
                     e = cm.getEvent(e);
                     target = cm.getObjFromEvent(e);
-                    if(!cm.isParent(node, target, true)){
-                        cm.removeClass(node, 'is-show');
+                    if(!cm.isParent(item['node'], target, true)){
+                        cm.removeClass(item['node'], 'is-show');
                     }
                 });
+                checkPosition(item);
+                items.push(item);
                 processedNodes.push(node);
             }
+        });
+        cm.addEvent(window, 'resize', function(){
+            cm.forEach(items, function(item){
+                checkPosition(item);
+            });
         });
     };
 })();

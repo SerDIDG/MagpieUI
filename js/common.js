@@ -1750,15 +1750,22 @@ cm.addStyles = function(node, str){
     return node;
 };
 
+cm.getStyleObject = (function(){
+    if(window.getComputedStyle){
+        return function(node){
+            return document.defaultView.getComputedStyle(node, null);
+        };
+    }else{
+        return function(node){
+            return node.currentStyle;
+        };
+    }
+})();
+
 cm.getCSSStyle = cm.getStyle = function(node, name, number){
-    var obj,
+    var obj = cm.getStyleObject(node),
         raw,
         data;
-    if(node.currentStyle){
-        obj = node.currentStyle;
-    }else if(window.getComputedStyle){
-        obj = document.defaultView.getComputedStyle(node, null);
-    }
     if(!obj){
         return 0;
     }
