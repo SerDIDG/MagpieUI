@@ -1587,12 +1587,12 @@ cm.getY = function(o){
     return y;
 };
 
-cm.getRealX = function(o, styleObject){
-    var x = cm.getX(o, styleObject),
+cm.getRealX = function(o){
+    var x = cm.getX(o),
         bodyScroll = false;
     while(o){
         if(o.tagName){
-            bodyScroll = cm.getCSSStyle((styleObject || o), 'position') == 'fixed' || bodyScroll;
+            bodyScroll = cm.getCSSStyle(o, 'position') == 'fixed' || bodyScroll;
             if(!/body|html/gi.test(o.tagName)){
                 x -= (o.scrollLeft || 0);
             }
@@ -1602,12 +1602,12 @@ cm.getRealX = function(o, styleObject){
     return x - (!bodyScroll ? cm.getBodyScrollLeft() : 0);
 };
 
-cm.getRealY = function(o, styleObject){
+cm.getRealY = function(o){
     var y = cm.getY(o),
         bodyScroll = false;
     while(o){
         if(o.tagName){
-            bodyScroll = cm.getCSSStyle((styleObject || o), 'position') == 'fixed' || bodyScroll;
+            bodyScroll = cm.getCSSStyle(o, 'position') == 'fixed' || bodyScroll;
             if(!/body|html/gi.test(o.tagName)){
                 y -= (o.scrollTop || 0);
             }
@@ -1701,8 +1701,8 @@ cm.getDimensions = function(node){
     // Get size and position
     dimensions['width'] = node.offsetWidth;
     dimensions['height'] = node.offsetHeight;
-    dimensions['x1'] = cm.getRealX(node, styleObject);
-    dimensions['y1'] = cm.getRealY(node, styleObject);
+    dimensions['x1'] = cm.getRealX(node);
+    dimensions['y1'] = cm.getRealY(node);
     dimensions['x2'] = dimensions['x1'] + dimensions['width'];
     dimensions['y2'] = dimensions['y1'] + dimensions['height'];
     // Calculate Padding and Inner Dimensions
