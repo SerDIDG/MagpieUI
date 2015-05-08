@@ -98,6 +98,7 @@ function(params){
         // Config
         var area = cm.merge({
                 'node' : node,
+                'styleObject' : cm.getStyleObject(node),
                 'type' : 'area',
                 'isLocked' : false,
                 'isTemporary' : false,
@@ -145,6 +146,7 @@ function(params){
         // Config
         var draggable = cm.merge({
             'node' : node,
+            'styleObject' : cm.getStyleObject(node),
             'type' : 'item',
             'chassis' : {
                 'top' : null,
@@ -307,7 +309,6 @@ function(params){
             tempCurrentArea,
             tempCurrentAboveItem,
             tempCurrentPosition;
-
         if(cm.isTouch && e.touches){
             x = e.touches[0].clientX;
             y = e.touches[0].clientY;
@@ -417,7 +418,7 @@ function(params){
         currentArea = tempCurrentArea;
         currentAboveItem = tempCurrentAboveItem;
         currentPosition = tempCurrentPosition;
-        // Set active area claaanme
+        // Set active area class name
         if(!(previousArea && previousArea['isTemporary'] && currentArea['isRemoveZone'])){
             cm.addClass(currentArea['node'], 'is-active');
         }
@@ -686,7 +687,7 @@ function(params){
     /* *** POSITION CALCULATION FUNCTIONS *** */
 
     var getPosition = function(item){
-        item['dimensions'] = cm.merge(item['dimensions'], cm.getDimensions(item['node']));
+        item['dimensions'] = cm.extend(item['dimensions'], cm.getDimensions(item['node'], item['styleObject']));
     };
 
     var getPositions = function(arr){
@@ -725,6 +726,7 @@ function(params){
         var chassisHeight = 0;
         // Reset current active chassis height, cause we need to calculate clear positions
         if(currentChassis){
+            cm.addClass(currentChassis['node'], 'is-immediately');
             chassisHeight = currentChassis['node'].offsetHeight;
             currentChassis['node'].style.height = 0;
         }
@@ -735,6 +737,7 @@ function(params){
         // Restoring chassis height after calculation
         if(currentChassis && chassisHeight){
             currentChassis['node'].style.height = [chassisHeight, 'px'].join('');
+            cm.removeClass(currentChassis['node'], 'is-immediately');
         }
     };
 

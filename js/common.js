@@ -205,6 +205,8 @@ cm.clone = function(o, cloneNode){
                 newO = o;
             }else if(o == window){
                 newO = o;
+            }else if(o instanceof CSSStyleDeclaration){
+                newO = o;
             }else{
                 newO = [];
                 cm.forEach(o, function(item){
@@ -651,15 +653,15 @@ cm.onImageLoad = function(src, handler, delay){
 /* ******* NODES ******* */
 
 cm.isNode = function(node){
-    return node && node.nodeType;
+    return !!(node && node.nodeType);
 };
 
 cm.isTextNode = function(node){
-    return node && node.nodeType && node.nodeType == 3;
+    return !!(node && node.nodeType && node.nodeType == 3);
 };
 
 cm.isElementNode = function(node){
-    return node && node.nodeType && node.nodeType == 1;
+    return !!(node && node.nodeType && node.nodeType == 1);
 };
 
 cm.getEl = function(str){
@@ -1692,12 +1694,12 @@ cm.getIndentY = function(node){
          + cm.getStyle(node, 'borderBottomWidth', true);
 };
 
-cm.getDimensions = function(node){
+cm.getDimensions = function(node, styleObject){
     if(!node || !cm.isNode(node)){
         return null;
     }
-    var dimensions = {},
-        styleObject = cm.getStyleObject(node);
+    var dimensions = {};
+    styleObject = typeof styleObject == 'undefined' ? cm.getStyleObject(node) : styleObject;
     // Get size and position
     dimensions['width'] = node.offsetWidth;
     dimensions['height'] = node.offsetHeight;

@@ -19,6 +19,10 @@
 .pt__dnd-chassis {
     height: 0;
     .mx__transition(height, 0s, linear);
+
+    &.is-immediately {
+        .cm__transition-none;
+    }
 }
 
 .pt__dnd-removable {

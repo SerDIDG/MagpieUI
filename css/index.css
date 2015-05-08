@@ -4128,6 +4128,10 @@ button::-moz-focus-inner {
   -webkit-transition: height 0s linear;
   transition: height 0s linear;
 }
+.pt__dnd-chassis.is-immediately {
+  -webkit-transition: none !important;
+  transition: none !important;
+}
 .pt__dnd-removable {
   overflow: hidden;
 }
