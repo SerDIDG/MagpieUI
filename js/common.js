@@ -1587,12 +1587,12 @@ cm.getY = function(o){
     return y;
 };
 
-cm.getRealX = function(o){
-    var x = cm.getX(o),
+cm.getRealX = function(o, styleObject){
+    var x = cm.getX(o, styleObject),
         bodyScroll = false;
     while(o){
         if(o.tagName){
-            bodyScroll = cm.getCSSStyle(o, 'position') == 'fixed' || bodyScroll;
+            bodyScroll = cm.getCSSStyle((styleObject || o), 'position') == 'fixed' || bodyScroll;
             if(!/body|html/gi.test(o.tagName)){
                 x -= (o.scrollLeft || 0);
             }
@@ -1602,12 +1602,12 @@ cm.getRealX = function(o){
     return x - (!bodyScroll ? cm.getBodyScrollLeft() : 0);
 };
 
-cm.getRealY = function(o){
+cm.getRealY = function(o, styleObject){
     var y = cm.getY(o),
         bodyScroll = false;
     while(o){
         if(o.tagName){
-            bodyScroll = cm.getCSSStyle(o, 'position') == 'fixed' || bodyScroll;
+            bodyScroll = cm.getCSSStyle((styleObject || o), 'position') == 'fixed' || bodyScroll;
             if(!/body|html/gi.test(o.tagName)){
                 y -= (o.scrollTop || 0);
             }
@@ -1631,11 +1631,13 @@ cm.getRealWidth = function(node, applyWidth){
 cm.getRealHeight = function(node, type, applyType){
     var types = ['self', 'current', 'offset', 'offsetRelative'],
         height = {},
-        styles;
+        styles,
+        styleObject;
     // Check parameters
     if(!node || !cm.isNode(node)){
         return 0;
     }
+    styleObject = cm.getStyleObject(node);
     type = typeof type == 'undefined' || !cm.inArray(types, type)? 'offset' : type;
     applyType = typeof applyType == 'undefined' || !cm.inArray(types, applyType) ? false : applyType;
     cm.forEach(types, function(type){
@@ -1653,10 +1655,10 @@ cm.getRealHeight = function(node, type, applyType){
 
     height['offset'] = node.offsetHeight;
     height['self'] = height['offset']
-                     - cm.getStyle(node, 'borderTopWidth', true)
-                     - cm.getStyle(node, 'borderBottomWidth', true)
-                     - cm.getStyle(node, 'paddingTop', true)
-                     - cm.getStyle(node, 'paddingBottom', true);
+                     - cm.getStyle(styleObject, 'borderTopWidth', true)
+                     - cm.getStyle(styleObject, 'borderBottomWidth', true)
+                     - cm.getStyle(styleObject, 'paddingTop', true)
+                     - cm.getStyle(styleObject, 'paddingBottom', true);
 
     node.style.position = 'relative';
     height['offsetRelative'] = node.offsetHeight;
@@ -1691,22 +1693,24 @@ cm.getIndentY = function(node){
 };
 
 cm.getDimensions = function(node){
-    if(!node){
+    if(!node || !cm.isNode(node)){
         return null;
     }
-    var dimensions = {};
+    var dimensions = {},
+        styleObject = cm.getStyleObject(node);
+    // Get size and position
     dimensions['width'] = node.offsetWidth;
     dimensions['height'] = node.offsetHeight;
-    dimensions['x1'] = cm.getRealX(node);
-    dimensions['y1'] = cm.getRealY(node);
+    dimensions['x1'] = cm.getRealX(node, styleObject);
+    dimensions['y1'] = cm.getRealY(node, styleObject);
     dimensions['x2'] = dimensions['x1'] + dimensions['width'];
     dimensions['y2'] = dimensions['y1'] + dimensions['height'];
     // Calculate Padding and Inner Dimensions
     dimensions['padding'] = {
-        'top' :     cm.getCSSStyle(node, 'paddingTop', true),
-        'right' :   cm.getCSSStyle(node, 'paddingRight', true),
-        'bottom' :  cm.getCSSStyle(node, 'paddingBottom', true),
-        'left' :    cm.getCSSStyle(node, 'paddingLeft', true)
+        'top' :     cm.getCSSStyle(styleObject, 'paddingTop', true),
+        'right' :   cm.getCSSStyle(styleObject, 'paddingRight', true),
+        'bottom' :  cm.getCSSStyle(styleObject, 'paddingBottom', true),
+        'left' :    cm.getCSSStyle(styleObject, 'paddingLeft', true)
     };
     dimensions['innerWidth'] = dimensions['width'] - dimensions['padding']['left'] - dimensions['padding']['right'];
     dimensions['innerHeight'] = dimensions['height'] - dimensions['padding']['top'] - dimensions['padding']['bottom'];
@@ -1716,10 +1720,10 @@ cm.getDimensions = function(node){
     dimensions['innerY2'] = dimensions['innerY1'] + dimensions['innerHeight'];
     // Calculate Margin and Absolute Dimensions
     dimensions['margin'] = {
-        'top' :     cm.getCSSStyle(node, 'marginTop', true),
-        'right' :   cm.getCSSStyle(node, 'marginRight', true),
-        'bottom' :  cm.getCSSStyle(node, 'marginBottom', true),
-        'left' :    cm.getCSSStyle(node, 'marginLeft', true)
+        'top' :     cm.getCSSStyle(styleObject, 'marginTop', true),
+        'right' :   cm.getCSSStyle(styleObject, 'marginRight', true),
+        'bottom' :  cm.getCSSStyle(styleObject, 'marginBottom', true),
+        'left' :    cm.getCSSStyle(styleObject, 'marginLeft', true)
     };
     dimensions['absoluteWidth'] = dimensions['width'] + dimensions['margin']['left'] + dimensions['margin']['right'];
     dimensions['absoluteHeight'] = dimensions['height'] + dimensions['margin']['top'] + dimensions['margin']['bottom'];
@@ -1763,9 +1767,12 @@ cm.getStyleObject = (function(){
 })();
 
 cm.getCSSStyle = cm.getStyle = function(node, name, number){
-    var obj = cm.getStyleObject(node),
-        raw,
-        data;
+    var obj, raw, data;
+    if(cm.isNode(node)){
+        obj = cm.getStyleObject(node);
+    }else{
+        obj = node;
+    }
     if(!obj){
         return 0;
     }
