@@ -281,11 +281,17 @@
             transition: none !important;
 }
 
-.cm__transition-disable,
-.cm__transition-disable *,
-.cm__transition-disable *:after,
-.cm__transition-disable *:before {
+.cm__transition-disable {
     .cm__transition-none;
+
+    * {
+        .cm__transition-none;
+
+        &:before,
+        &:after {
+            .cm__transition-none;
+        }
+    }
 }
 
 /* ******* CONTENT ******* */

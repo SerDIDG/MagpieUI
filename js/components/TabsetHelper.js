@@ -17,7 +17,8 @@ cm.define('Com.TabsetHelper', {
     'params' : {
         'node' : cm.Node('div'),
         'name' : '',
-        'active' : null
+        'active' : null,
+        'setFirstTabImmediately' : true
     }
 },
 function(params){
@@ -121,6 +122,14 @@ function(params){
             // Show new tab
             that.current = id;
             triggerEvents && that.triggerEvent('onTabShowStart', that.tabs[that.current]);
+            if(!that.previous && that.params['setFirstTabImmediately']){
+                cm.addClass(that.tabs[that.current]['tab'], 'is-immediately');
+                cm.addClass(that.tabs[that.current]['label'], 'is-immediately');
+                setTimeout(function(){
+                    cm.removeClass(that.tabs[that.current]['tab'], 'is-immediately');
+                    cm.removeClass(that.tabs[that.current]['label'], 'is-immediately');
+                }, 5);
+            }
             cm.addClass(that.tabs[that.current]['tab'], 'active');
             cm.addClass(that.tabs[that.current]['label'], 'active');
             triggerEvents && that.triggerEvent('onTabShow', that.tabs[that.current]);
@@ -151,6 +160,7 @@ function(params){
     that.unset = function(triggerEvents){
         triggerEvents = typeof triggerEvents != 'undefined'? triggerEvents : true;
         unset(triggerEvents);
+        that.previous = null;
         return that;
     };
 
