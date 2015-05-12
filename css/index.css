@@ -9189,9 +9189,11 @@ html.ie9 .com__palette .b-range {
 .com__slider > .inner > .slides > ul > li {
   width: 100%;
   height: 100%;
+  display: none;
   z-index: 1;
 }
 .com__slider > .inner > .slides > ul > li:first-child {
+  display: block;
   z-index: 2;
 }
 .com__slider > .inner > .slides > ul > li > .pt__image {
