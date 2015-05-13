@@ -3343,7 +3343,7 @@ button::-moz-focus-inner {
   margin-bottom: 0;
 }
 /* ******* PART: BOX: ADAPTIVE ******* */
-@media only screen and (max-width: 640px) {
+@media only screen and (max-width: 768px) {
   html.is-adaptive {
     /* *** EDITABLE *** */
   }
@@ -4057,7 +4057,7 @@ button::-moz-focus-inner {
   justify-content: flex-start;
 }
 /* ******* PARTS: TOOLBAR: ADAPTIVE ********** */
-@media only screen and (max-width: 640px) {
+@media only screen and (max-width: 768px) {
   html.is-adaptive .pt__toolbar > .inner > .left,
   html.is-adaptive .pt__toolbar > .inner > .right {
     width: 100%;
@@ -4734,7 +4734,7 @@ button::-moz-focus-inner {
   padding: 48px;
 }
 /* ******* PARTS: GRID: MIXINS ******* */
-@media only screen and (max-width: 640px) {
+@media only screen and (max-width: 768px) {
   html.is-adaptive .pt__grid:not(.is-not-adaptive) > ul {
     width: auto;
     display: block;
@@ -5459,7 +5459,7 @@ button::-moz-focus-inner {
   font-size: 11px;
 }
 /* ******* PARTS: GRIDLIST: ADAPTIVE ******* */
-@media only screen and (max-width: 640px) {
+@media only screen and (max-width: 768px) {
   html.is-adaptive .pt__gridlist th {
     background-color: transparent;
   }
@@ -6070,7 +6070,7 @@ button::-moz-focus-inner {
 .ie9 .lt__profile > .inner > .r {
   overflow: hidden;
 }
-@media only screen and (max-width: 640px) {
+@media only screen and (max-width: 768px) {
   .lt__profile > .inner {
     display: block;
     margin: 0;
@@ -6258,7 +6258,7 @@ button::-moz-focus-inner {
   border-color: transparent #f6fafd transparent transparent;
 }
 /* ******* COMPONENT: FORUM: ADAPTIVE ******* */
-@media only screen and (max-width: 640px) {
+@media only screen and (max-width: 768px) {
   html.is-adaptive .lt__forum-post > .inner {
     width: auto;
     display: block;
@@ -8489,7 +8489,7 @@ html.ie9 .com__palette .b-range {
   border-radius: 3px;
 }
 /* ******* COMPONENTS: TABSET: ADAPTIVE ******* */
-@media only screen and (max-width: 640px) {
+@media only screen and (max-width: 768px) {
   html.is-adaptive .com__tabset {
     display: block !important;
   }
@@ -9360,7 +9360,7 @@ html.ie9 .com__palette .b-range {
   border: 2px solid #cccccc;
 }
 /* ******* ADAPTIVE ******* */
-@media only screen and (max-width: 640px) {
+@media only screen and (max-width: 768px) {
   html.is-adaptive .com__slider > .inner > .slides > ul > li {
     background-attachment: scroll !important;
   }
@@ -9666,7 +9666,7 @@ html.ie9 .com__palette .b-range {
   table-layout: fixed;
 }
 /* ******* COMPONENT: COLUMNS: ADAPTIVE ******* */
-@media only screen and (max-width: 640px) {
+@media only screen and (max-width: 768px) {
   html.is-adaptive .com__column {
     width: auto !important;
     height: auto;

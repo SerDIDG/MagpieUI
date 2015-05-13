@@ -61,6 +61,7 @@
 @CmUI-Overlay-Dark: rgba(0, 0, 0, 0.7);
 @CmUI-Overlay-Light: rgba(255, 255, 255, 0.7);
 @CmUI-Overlay-Duration: 500ms;
+@CmUI-AdaptiveFrom: @CmScreen-TabletPortrait;
 
 // /* ************************************************ */
 // /* ******* COLORS ******* */
@@ -460,7 +461,7 @@
 
 // /* ******* GRIDLIST ******* */
 
-@PtGridlist-AdaptiveFrom: @CmScreen-Mobile;
+@PtGridlist-AdaptiveFrom: @CmUI-AdaptiveFrom;
 @PtGridlist-Title-FontSize: @CmFont-Base-SizeSmall;
 @PtGridlist-Cell-Padding: 6px;
 @PtGridlist-Cell-SpaceSize: 1px;
@@ -544,7 +545,7 @@
 
 // /* ******* FORUM ******* */
 
-@LtForum-AdaptiveFrom: @CmScreen-Mobile;
+@LtForum-AdaptiveFrom: @CmUI-AdaptiveFrom;
 @LtForum-PostBackground: @CmColor-Secondary-LightHighlight;
 @LtForum-PostBackgroundFeatured: @CmColor-Primary-LightHighlight;
 @LtForum-PostTitleBackground: @CmColor-Secondary-LightActive;
@@ -595,7 +596,7 @@
 
 // /* ******* COLUMNS ******* */
 
-@ComColumns-AdaptiveFrom: @CmScreen-Mobile;
+@ComColumns-AdaptiveFrom: @CmUI-AdaptiveFrom;
 @ComColumns-Indent: @CmIndent-Medium;
 @ComColumns-Indents: @CmIndents;
 @ComColumns-MinHeight: 64px;
@@ -640,7 +641,7 @@
 
 // /* ******* TABSET ******* */
 
-@ComTabset-AdaptiveFrom: @CmScreen-Mobile;
+@ComTabset-AdaptiveFrom: @CmUI-AdaptiveFrom;
 @ComTabset-BorderColor: @CmColor-Border;
 @ComTabset-BorderRadius: @CmBorder-Radius;
 @ComTabset-BorderWidth: @CmBorder-Width;
@@ -661,7 +662,7 @@
 
 // /* ******* TOGGLE BOX ******* */
 
-@ComToggleBox-AdaptiveFrom: @CmScreen-Mobile;
+@ComToggleBox-AdaptiveFrom: @CmUI-AdaptiveFrom;
 @ComToggleBox-Size: @CmFont-UI-H1-LineHeight;
 @ComToggleBox-SizeMedium: @CmSize-Medium;
 @ComToggleBox-SizeUI: @CmSize-Medium;
