@@ -6094,7 +6094,7 @@ button::-moz-focus-inner {
 .lt__profile > .inner > .l {
   width: 174px;
 }
-@media only screen and (max-width: 640px) {
+@media only screen and (max-width: 768px) {
   .lt__profile > .inner > .l {
     width: auto;
   }
