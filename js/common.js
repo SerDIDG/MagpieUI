@@ -25,6 +25,7 @@ var cm = {
         '_debugAlert' : false,
         '_deviceType' : 'desktop',
         '_deviceOrientation' : 'landscape',
+        '_adaptiveFrom' : 768,
         '_scrollSize' : 0,
         '_config' : {
             'screenTablet' : 1024,
