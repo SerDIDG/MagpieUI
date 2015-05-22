@@ -57,15 +57,8 @@
     > ul {
         .cm__list-clear;
         .cm__list-inline;
-        margin: 0 0 -@CmIndent-XXSmall 0;
 
         > li {
-            margin: 0 @CmIndent-XXSmall @CmIndent-XXSmall 0;
-
-            &:last-child {
-                margin-right: 0;
-            }
-
             a {
                 display: block;
                 font-size: 0;
@@ -159,9 +152,10 @@
     // Set size
 
     .pt__line-share__size(@PtLineShare-Size);
+    .pt__line-share__indent(@PtLineShare-Indent);
 }
 
-.pt__line-share__size (@value) {
+.pt__line-share__size (@value: @PtLineShare-Size) {
     .icon {
         &.default {
             width: @value;
@@ -172,5 +166,41 @@
     .label,
     .count {
         line-height: @value;
+    }
+}
+
+.pt__line-share__indent (@value: @PtLineShare-Indent) {
+    > ul {
+        margin: 0 0 -@value 0;
+
+        > li {
+            margin: 0 0 @value 0;
+        }
+    }
+
+    &.pull-left,
+    &.pull-center,
+    &.pull-justify {
+        > ul {
+            > li {
+                margin-right: @value;
+
+                &:last-child {
+                    margin-right: 0;
+                }
+            }
+        }
+    }
+
+    &.pull-right {
+        > ul {
+            > li {
+                margin-left: @value;
+
+                &:first-child {
+                    margin-left: 0;
+                }
+            }
+        }
     }
 }

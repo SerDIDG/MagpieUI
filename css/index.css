@@ -3413,7 +3413,6 @@ button::-moz-focus-inner {
   list-style: none;
   text-align: left;
   font-size: 0;
-  margin: 0 0 -8px 0;
 }
 .pt__line-share > ul > li {
   margin: 0;
@@ -3422,12 +3421,6 @@ button::-moz-focus-inner {
 .pt__line-share > ul > li {
   display: inline-block;
   vertical-align: top;
-}
-.pt__line-share > ul > li {
-  margin: 0 8px 8px 0;
-}
-.pt__line-share > ul > li:last-child {
-  margin-right: 0;
 }
 .pt__line-share > ul > li a {
   display: block;
@@ -3505,6 +3498,28 @@ button::-moz-focus-inner {
 .pt__line-share .label,
 .pt__line-share .count {
   line-height: 32px;
+}
+.pt__line-share > ul {
+  margin: 0 0 -8px 0;
+}
+.pt__line-share > ul > li {
+  margin: 0 0 8px 0;
+}
+.pt__line-share.pull-left > ul > li,
+.pt__line-share.pull-center > ul > li,
+.pt__line-share.pull-justify > ul > li {
+  margin-right: 8px;
+}
+.pt__line-share.pull-left > ul > li:last-child,
+.pt__line-share.pull-center > ul > li:last-child,
+.pt__line-share.pull-justify > ul > li:last-child {
+  margin-right: 0;
+}
+.pt__line-share.pull-right > ul > li {
+  margin-left: 8px;
+}
+.pt__line-share.pull-right > ul > li:first-child {
+  margin-left: 0;
 }
 /* ******* PARTS: DRAG ******* */
 .pt__drag {
