@@ -446,7 +446,7 @@ function(params){
         cm.removeEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mouseup', stop);
         // Calculate height of draggable block, like he already dropped in area, to animate height of fake empty space
         getPosition(current);
-        current['node'].style.width = [(currentArea['dimensions']['width'] - current['dimensions']['margin']['left'] - current['dimensions']['margin']['right']), 'px'].join('');
+        current['node'].style.width = [(currentArea['dimensions']['innerWidth'] - current['dimensions']['margin']['left'] - current['dimensions']['margin']['right']), 'px'].join('');
         currentHeight = current['node'].offsetHeight + current['dimensions']['margin']['top'] + current['dimensions']['margin']['bottom'];
         current['node'].style.width = [current['dimensions']['width'], 'px'].join('');
         // If current draggable located above another draggable item, drops after/before it, or drops in area
