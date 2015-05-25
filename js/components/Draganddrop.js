@@ -283,9 +283,16 @@ function(params){
         }
         // Set chassis
         if(tempCurrentAboveItem){
-            tempCurrentAboveItem['chassis'][tempCurrentPosition]['node'].style.height = [current['dimensions']['absoluteHeight'], 'px'].join('');
+            currentChassis = tempCurrentAboveItem['chassis'][tempCurrentPosition];
         }else{
-            current['area']['chassis'][0]['node'].style.height = [current['dimensions']['absoluteHeight'], 'px'].join('');
+            currentChassis = current['area']['chassis'][0];
+        }
+        if(currentChassis){
+            cm.addClass(currentChassis['node'], 'is-active');
+            if(that.params['highlightChassis']){
+                cm.addClass(currentChassis['node'], 'is-highlight');
+            }
+            currentChassis['node'].style.height = [current['dimensions']['absoluteHeight'], 'px'].join('');
         }
         // Set current area and above
         currentArea = current['area'];
