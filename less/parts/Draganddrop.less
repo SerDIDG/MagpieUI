@@ -18,7 +18,27 @@
 
 .pt__dnd-chassis {
     height: 0;
+    position: relative;
     .mx__transition(height, 0s, linear);
+
+    &:before {
+        display: block;
+        position: absolute;
+        opacity: 0;
+        content: '';
+        background: url('@{CmPath-Images}/parts/pattern-diagonal-2x50.png') 0 0 repeat;
+        border: 2px dashed #ffffff;
+        border-radius: @CmBorder-Radius;
+        .mx__position(0, 0, @PtDnD-Chassis-HighlightIndent, 0);
+        .mx__transition(opacity, @CmUI-Transition-Duration);
+    }
+
+    &.is-highlight {
+        &:before {
+            opacity: 1;
+            .mx__transition(opacity, @CmUI-Transition-DurationReverse);
+        }
+    }
 
     &.is-immediately {
         .cm__transition-none;
@@ -74,4 +94,8 @@
 
 .pt__dnd-helper__drop-duration {
     transition-duration: @PtDnD-DropDuration;
+}
+
+.pt__dnd-helper__move-duration {
+    transition-duration: @PtDnD-MoveDuration;
 }

@@ -22,9 +22,11 @@ cm.define('Com.Draganddrop', {
         'useCSSAnimation' : true,
         'useGracefulDegradation' : true,
         'dropDuration' : 400,
+        'moveDuration' : 200,
         'direction' : 'both',                        // both | vertical | horizontal
         'limit' : false,
         'highlightAreas' : true,                     // highlight areas on drag start
+        'highlightChassis' : false,
         'classes' : {
             'area' : null
         }
@@ -39,6 +41,7 @@ function(params){
         draggableList = [],
         filteredAvailableAreas = [],
         checkInt,
+        chassisInt,
         pageSize,
         isScrollProccess = false,
         isGracefulDegradation = false,
@@ -88,6 +91,7 @@ function(params){
 
     var getCSSHelpers = function(){
         that.params['dropDuration'] = cm.getTransitionDurationFromRule('.pt__dnd-helper__drop-duration');
+        that.params['moveDuration'] = cm.getTransitionDurationFromRule('.pt__dnd-helper__move-duration');
     };
 
     var initArea = function(node, params){
@@ -391,23 +395,30 @@ function(params){
                 tempCurrentPosition = 'bottom';
             }
         }
-        // Animate chassis
+        // Animate previous chassis and get current
+        if(currentChassis){
+            cm.removeClass(currentChassis['node'], 'is-active is-highlight');
+        }
         if(currentAboveItem && tempCurrentAboveItem && currentAboveItem['chassis'][currentPosition] != tempCurrentAboveItem['chassis'][tempCurrentPosition]){
-            animateChassis(currentAboveItem['chassis'][currentPosition], 0, 200);
-            animateChassis(tempCurrentAboveItem['chassis'][tempCurrentPosition], current['dimensions']['absoluteHeight'], 200);
+            animateChassis(currentAboveItem['chassis'][currentPosition], 0, that.params['moveDuration']);
             currentChassis = tempCurrentAboveItem['chassis'][tempCurrentPosition];
         }else if(!currentAboveItem && tempCurrentAboveItem){
-            animateChassis(currentArea['chassis'][0], 0, 200);
-            animateChassis(tempCurrentAboveItem['chassis'][tempCurrentPosition], current['dimensions']['absoluteHeight'], 200);
+            animateChassis(currentArea['chassis'][0], 0, that.params['moveDuration']);
             currentChassis = tempCurrentAboveItem['chassis'][tempCurrentPosition];
         }else if(currentAboveItem && !tempCurrentAboveItem){
-            animateChassis(currentAboveItem['chassis'][currentPosition], 0, 200);
-            animateChassis(tempCurrentArea['chassis'][0], current['dimensions']['absoluteHeight'], 200);
+            animateChassis(currentAboveItem['chassis'][currentPosition], 0, that.params['moveDuration']);
             currentChassis = tempCurrentArea['chassis'][0];
         }else if(!currentAboveItem && !tempCurrentAboveItem && currentArea != tempCurrentArea){
-            animateChassis(currentArea['chassis'][0], 0, 200);
-            animateChassis(tempCurrentArea['chassis'][0], current['dimensions']['absoluteHeight'], 200);
+            animateChassis(currentArea['chassis'][0], 0, that.params['moveDuration']);
             currentChassis = tempCurrentArea['chassis'][0];
+        }
+        // Animate current chassis
+        if(currentChassis){
+            cm.addClass(currentChassis['node'], 'is-active');
+            if(that.params['highlightChassis']){
+                cm.addClass(currentChassis['node'], 'is-highlight');
+            }
+            animateChassis(currentChassis, current['dimensions']['absoluteHeight'], that.params['moveDuration']);
         }
         // Unset classname from previous active area
         if(currentArea && currentArea != tempCurrentArea){
@@ -463,6 +474,10 @@ function(params){
             dropDraggableToArea(current, currentArea, {
                 'onStop' : unsetCurrentDraggable
             });
+        }
+        // Unset chassis
+        if(currentChassis){
+            cm.removeClass(currentChassis['node'], 'is-active is-highlight');
         }
         // Unset active area classname
         if(currentArea){
@@ -724,6 +739,7 @@ function(params){
 
     var recalculatePositionsAll = function(){
         var chassisHeight = 0;
+        chassisInt && clearTimeout(chassisInt);
         // Reset current active chassis height, cause we need to calculate clear positions
         if(currentChassis){
             cm.addClass(currentChassis['node'], 'is-immediately');
@@ -737,13 +753,17 @@ function(params){
         // Restoring chassis height after calculation
         if(currentChassis && chassisHeight){
             currentChassis['node'].style.height = [chassisHeight, 'px'].join('');
-            cm.removeClass(currentChassis['node'], 'is-immediately');
+            chassisInt = setTimeout(function(){
+                cm.removeClass(currentChassis['node'], 'is-immediately');
+            }, 5);
+
         }
     };
 
     var checkPosition = function(){
         var filteredAreas = getFilteredAreas();
         if(filteredAreas[0]['dimensions']['y1'] != cm.getRealY(filteredAreas[0]['node'])){
+            cm.log(1);
             recalculatePositionsAll();
         }
     };

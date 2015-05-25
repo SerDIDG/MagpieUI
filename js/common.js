@@ -594,7 +594,7 @@ cm.onScrollStart = function(node, handler){
         scrollEnd = function(){
             worked = false;
         },
-        helper = _.debounce(scrollEnd, 300),
+        helper = cm.debounce(scrollEnd, 300),
         scrollEvent = function(){
             !worked && handler();
             worked = true;
@@ -609,7 +609,7 @@ cm.onScrollStart = function(node, handler){
 };
 
 cm.onScrollEnd = function(node, handler){
-    var helper = _.debounce(handler, 300);
+    var helper = cm.debounce(handler, 300);
     cm.addEvent(node, 'scroll', helper);
     return {
         'remove' : function(){

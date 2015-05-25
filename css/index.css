@@ -4146,8 +4146,29 @@ button::-moz-focus-inner {
 }
 .pt__dnd-chassis {
   height: 0;
+  position: relative;
   -webkit-transition: height 0s linear;
   transition: height 0s linear;
+}
+.pt__dnd-chassis:before {
+  display: block;
+  position: absolute;
+  opacity: 0;
+  content: '';
+  background: url('../img/parts/pattern-diagonal-2x50.png') 0 0 repeat;
+  border: 2px dashed #ffffff;
+  border-radius: 3px;
+  top: 0;
+  right: 0;
+  bottom: 24px;
+  left: 0;
+  -webkit-transition: opacity 300ms ease-in-out;
+  transition: opacity 300ms ease-in-out;
+}
+.pt__dnd-chassis.is-highlight:before {
+  opacity: 1;
+  -webkit-transition: opacity 100ms ease-in-out;
+  transition: opacity 100ms ease-in-out;
 }
 .pt__dnd-chassis.is-immediately {
   -webkit-transition: none !important;
@@ -4205,6 +4226,9 @@ button::-moz-focus-inner {
 /* *** HELPERS *** */
 .pt__dnd-helper__drop-duration {
   transition-duration: 400ms;
+}
+.pt__dnd-helper__move-duration {
+  transition-duration: 200ms;
 }
 /* ******* PARTS: EDITABLE ******* */
 .pt__editable {
