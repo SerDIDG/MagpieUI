@@ -459,7 +459,7 @@ function(params){
             dropDraggableToArea(current, currentArea, {
                 'target' : currentAboveItem['node'],
                 'append' : currentPosition == 'top' ? 'before' : 'after',
-                'index' : currentArea['items'].indexOf(currentAboveItem) + (currentPosition == 'bottom' ? 1 : 0),
+                'index' : currentArea['items'].indexOf(currentAboveItem) + (currentPosition == 'top' ? 0 : 1),
                 'top' : [currentPosition == 'top'? currentAboveItem['dimensions']['absoluteY1'] : currentAboveItem['dimensions']['absoluteY2'], 'px'].join(''),
                 'onStop' : unsetCurrentDraggable
             });
@@ -651,7 +651,6 @@ function(params){
                 cm.appendChild(chassis['node'], area['node']);
                 area['chassis'].push(chassis);
             }
-
             cm.forEach(area['items'], function(draggable, i){
                 if(i === 0){
                     chassis = renderChassis();
@@ -739,7 +738,6 @@ function(params){
 
     var recalculatePositionsAll = function(){
         var chassisHeight = 0;
-        chassisInt && clearTimeout(chassisInt);
         // Reset current active chassis height, cause we need to calculate clear positions
         if(currentChassis){
             cm.addClass(currentChassis['node'], 'is-immediately');
@@ -753,17 +751,17 @@ function(params){
         // Restoring chassis height after calculation
         if(currentChassis && chassisHeight){
             currentChassis['node'].style.height = [chassisHeight, 'px'].join('');
-            chassisInt = setTimeout(function(){
-                cm.removeClass(currentChassis['node'], 'is-immediately');
-            }, 5);
-
+            (function(currentChassis){
+                setTimeout(function(){
+                    cm.removeClass(currentChassis['node'], 'is-immediately');
+                }, 5);
+            })(currentChassis);
         }
     };
 
     var checkPosition = function(){
         var filteredAreas = getFilteredAreas();
         if(filteredAreas[0]['dimensions']['y1'] != cm.getRealY(filteredAreas[0]['node'])){
-            cm.log(1);
             recalculatePositionsAll();
         }
     };
@@ -932,7 +930,7 @@ function(params){
         if(oldDraggable){
             // Find old draggable area and index in area
             var area = oldDraggable['area'],
-                index = area['items'].indexOf(oldDraggableNode),
+                index = area['items'].indexOf(oldDraggable),
                 node = cm.wrap(cm.Node('div', {'class' : 'pt__dnd-removable', 'style' : 'height: 0px;'}), newDraggableNode),
                 anim = new cm.Animation(node);
             // Append new draggable into DOM
