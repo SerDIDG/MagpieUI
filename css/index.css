@@ -8282,17 +8282,8 @@ html.ie9 .com__palette .b-range {
   padding: 0;
 }
 .com__tabset__content > ul > li {
-  overflow: hidden;
-  position: absolute;
-  z-index: 1;
-  opacity: 0;
+  display: none;
   background-color: #ffffff;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  -webkit-transition: opacity 300ms ease-in-out;
-  transition: opacity 300ms ease-in-out;
 }
 .com__tabset__content > ul > li:after {
   content: ".";
@@ -8313,17 +8304,27 @@ html.ie9 .com__palette .b-range {
   height: 0;
 }
 .com__tabset__content > ul > li.active {
-  overflow: visible;
+  display: block;
+}
+.com__tabset__content.is-animated > ul > li {
+  visibility: hidden;
+  position: absolute;
+  z-index: 1;
+  overflow: hidden;
+  opacity: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  -webkit-transition: opacity 300ms ease-in-out, visibility 300ms ease-in-out;
+  transition: opacity 300ms ease-in-out, visibility 300ms ease-in-out;
+}
+.com__tabset__content.is-animated > ul > li.active {
+  visibility: visible;
   position: relative;
   z-index: 2;
+  overflow: visible;
   opacity: 1;
-}
-.safari .com__tabset__content > ul > li {
-  opacity: 1;
-  visibility: hidden;
-}
-.safari .com__tabset__content > ul > li.active {
-  visibility: visible;
 }
 .com__tabset__content-ul > li {
   display: none;
@@ -8526,6 +8527,9 @@ html.ie9 .com__palette .b-range {
 }
 .com__tabset.is-tabs-left > .com__tabset__content {
   border-radius: 3px;
+}
+.com__tabset-helper__duration {
+  transition-duration: 300ms;
 }
 /* ******* COMPONENTS: TABSET: ADAPTIVE ******* */
 @media only screen and (max-width: 768px) {

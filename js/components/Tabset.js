@@ -20,7 +20,7 @@ cm.define('Com.Tabset', {
         'onTabHide'
     ],
     'params' : {
-        'node' : cm.Node('div'),        // tabs contained node
+        'node' : cm.Node('div'),        // Tabs contained node
         'container' : false,
         'name' : '',
         'toggleOnHashChange' : true,
@@ -29,10 +29,10 @@ cm.define('Com.Tabset', {
         'className' : '',
         'tabsPosition' : 'top',         // top | right | bottom | left
         'tabsFlexible' : false,
-        'tabsWidth' : 256,              // only for tabsPosition left or right
+        'tabsWidth' : 256,              // Only for tabsPosition left or right
         'showTabs' : true,
-        'showTabsTitle' : true,         // show title tooltip
-        'switchManually' : false,
+        'showTabsTitle' : true,         // Show title tooltip
+        'switchManually' : false,       // Change tab manually, not implemented yet
         'animateSwitch' : true,
         'animateDuration' : 300,
         'calculateMaxHeight' : false,
@@ -57,6 +57,7 @@ function(params){
     that.previous = false;
     
     var init = function(){
+        getCSSHelpers();
         that.setParams(params);
         that.convertEvents(that.params['events']);
         that.getDataNodes(that.params['node'], that.params['nodesDataMarker'], false);
@@ -66,6 +67,10 @@ function(params){
         renderView();
         // Render active tab
         that.params['renderOnInit'] && render();
+    };
+
+    var getCSSHelpers = function(){
+        that.params['animateDuration'] = cm.getTransitionDurationFromRule('.com__tabset-helper__duration');
     };
 
     var validateParams = function(){
@@ -112,6 +117,9 @@ function(params){
         that.nodes['headerTabs'] = cm.Node('div', {'class' : 'com__tabset__head-tabs'},
             that.nodes['headerUL'] = cm.Node('ul')
         );
+        if(that.params['animateSwitch']){
+            cm.addClass(that.nodes['content'], 'is-animated');
+        }
         // Set Tabs Width
         if(/left|right/.test(that.params['tabsPosition'])){
             that.nodes['headerTabs'].style.width = that.params['tabsWidth'];
@@ -253,9 +261,10 @@ function(params){
         that.tabs[that.active]['onShowStart'](that, that.tabs[that.active]);
         that.triggerEvent('onTabShowStart', that.tabs[that.active]);
         // Show
+        that.tabs[that.active]['content'].style.display = 'block';
         cm.addClass(that.tabs[that.active]['tab']['container'], 'active');
         cm.addClass(that.tabs[that.active]['menu']['container'], 'active');
-        cm.addClass(that.tabs[that.active]['content'], 'active');
+        cm.addClass(that.tabs[that.active]['content'], 'active', true);
         that.nodes['headerTitleText'].innerHTML = that.tabs[that.active]['title'];
         // Animate
         if(!that.params['switchManually']){
@@ -264,6 +273,9 @@ function(params){
             }else{
                 if(that.params['calculateMaxHeight']){
                     calculateMaxHeight();
+                }
+                if(that.previous){
+                    that.tabs[that.previous]['content'].style.display = 'none';
                 }
                 // Show End Event
                 that.tabs[that.active]['onShow'](that, that.tabs[that.active]);
@@ -288,6 +300,9 @@ function(params){
         that.nodes['contentUL'].style.overflow = 'hidden';
         that.nodes['contentUL'].style.height = [previousHeight, 'px'].join('');
         that.anim['contentUL'].go({'style' : {'height' : [currentHeight, 'px'].join('')}, 'duration' : that.params['animateDuration'], 'anim' : 'smooth', 'onStop' : function(){
+            if(that.previous){
+                that.tabs[that.previous]['content'].style.display = 'none';
+            }
             that.nodes['contentUL'].style.overflow = 'visible';
             that.nodes['contentUL'].style.height = 'auto';
             // Show End Event
