@@ -4,8 +4,7 @@ cm.define('Com.Palette', {
         'Events',
         'Langs',
         'DataConfig',
-        'Storage',
-        'Stack'
+        'Storage'
     ],
     'require' : [
         'Com.Draggable',
@@ -45,7 +44,6 @@ function(params){
         that.getDataConfig(that.params['node']);
         render();
         initComponents();
-        that.addToStack(that.nodes['container']);
         that.triggerEvent('onRender');
         that.set(that.params['value'], false);
     };
