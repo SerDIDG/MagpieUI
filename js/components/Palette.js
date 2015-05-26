@@ -95,6 +95,7 @@ function(params){
         renderRangeCanvas();
         // Add events
         cm.addEvent(that.nodes['inputHEX'], 'input', inputHEXHandler);
+        cm.addEvent(that.nodes['inputHEX'], 'keypress', inputHEXKeypressHandler);
         cm.addEvent(that.nodes['buttonSelect'], 'click', buttonSelectHandler);
         // Embed
         that.params['container'].appendChild(that.nodes['container']);
@@ -162,6 +163,16 @@ function(params){
             that.nodes['inputHEX'].value = '#' + color;
         }else{
             set(color, true, {'setInput' : false});
+        }
+    };
+
+    var inputHEXKeypressHandler = function(e){
+        var color;
+        e = cm.getEvent(e);
+        if(e.keyCode == 13){
+            color = that.nodes['inputHEX'].value;
+            set(color, true);
+            buttonSelectHandler();
         }
     };
 
