@@ -49,7 +49,7 @@ function(params){
             render();
         }
         renderChassis();
-        that.addToStack(that.params['container']);
+        that.addToStack(nodes['container']);
         that.triggerEvent('onRender');
     };
 
