@@ -79,6 +79,7 @@ function(params){
         }
         that.value = that.params['value'] || that.value || that.params['defaultValue'];
         that.disabled = that.params['disabled'];
+        that.params['Com.Palette']['name'] = [that.params['name'], 'palette'].join('-');
     };
 
     var render = function(){

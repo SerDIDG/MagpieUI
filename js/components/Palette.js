@@ -4,7 +4,8 @@ cm.define('Com.Palette', {
         'Events',
         'Langs',
         'DataConfig',
-        'Storage'
+        'Storage',
+        'Stack'
     ],
     'require' : [
         'Com.Draggable',
@@ -18,6 +19,7 @@ cm.define('Com.Palette', {
         'onChange'
     ],
     'params' : {
+        'name' : '',
         'container' : cm.Node('div'),
         'value' : '#ff0000',
         'defaultValue' : '#000000',
@@ -44,6 +46,7 @@ function(params){
         that.getDataConfig(that.params['node']);
         render();
         initComponents();
+        that.addToStack(that.nodes['container']);
         that.triggerEvent('onRender');
         that.set(that.params['value'], false);
     };
