@@ -4,7 +4,8 @@ cm.define('Com.Palette', {
         'Events',
         'Langs',
         'DataConfig',
-        'Storage'
+        'Storage',
+        'Stack'
     ],
     'require' : [
         'Com.Draggable',
@@ -42,8 +43,10 @@ function(params){
         that.setParams(params);
         that.convertEvents(that.params['events']);
         that.getDataConfig(that.params['node']);
-
         render();
+        initComponents();
+        that.addToStack(that.nodes['container']);
+        that.triggerEvent('onRender');
         that.set(that.params['value'], false);
     };
 
@@ -89,7 +92,14 @@ function(params){
         paletteContext = that.nodes['paletteCanvas'].getContext('2d');
         rangeContext = that.nodes['rangeCanvas'].getContext('2d');
         renderRangeCanvas();
-        // Init draggable
+        // Add events
+        cm.addEvent(that.nodes['inputHEX'], 'input', inputHEXHandler);
+        cm.addEvent(that.nodes['buttonSelect'], 'click', buttonSelectHandler);
+        // Embed
+        that.params['container'].appendChild(that.nodes['container']);
+    };
+
+    var initComponents = function(){
         that.componnets['paletteDrag'] = new Com.Draggable({
             'target' : that.nodes['paletteZone'],
             'node' : that.nodes['paletteDrag'],
@@ -119,13 +129,6 @@ function(params){
                 }
             }
         });
-        // Add events
-        cm.addEvent(that.nodes['inputHEX'], 'input', inputHEXHandler);
-        cm.addEvent(that.nodes['buttonSelect'], 'click', buttonSelectHandler);
-        // Embed
-        that.params['container'].appendChild(that.nodes['container']);
-        // Trigger event
-        that.triggerEvent('onRender');
     };
 
     /* *** COLORS *** */
@@ -154,7 +157,11 @@ function(params){
 
     var inputHEXHandler = function(){
         var color = that.nodes['inputHEX'].value;
-        set(color, true);
+        if(!/^#/.test(color)){
+            that.nodes['inputHEX'].value = '#' + color;
+        }else{
+            set(color, true, {'setInput' : false});
+        }
     };
 
     var buttonSelectHandler = function(){
@@ -163,14 +170,14 @@ function(params){
         eventOnChange();
     };
 
-    var set = function(color, triggerEvent){
+    var set = function(color, triggerEvent, params){
         if(cm.isEmpty(color)){
             color = that.params['defaultValue'];
         }else if(color == 'transparent'){
             color = {'h' : 360,  's' : 0,  'v' : 1, 'a' : 0};
         }
         that.value = tinycolor(color).toHsv();
-        that.redraw();
+        that.redraw(true, params);
         // Trigger onSet event
         if(triggerEvent){
             that.triggerEvent('onSet', that.value);
@@ -264,10 +271,11 @@ function(params){
 
     /* ******* MAIN ******* */
 
-    that.set = function(color, triggerEvent){
+    that.set = function(color, triggerEvent, params){
         triggerEvent = typeof triggerEvent == 'undefined'? true : triggerEvent;
+        params = typeof params == 'undefined' ? {} : params;
         // Render new color
-        set(color, triggerEvent);
+        set(color, triggerEvent, params);
         // Render previous color
         setColorPrev();
         return that;
@@ -309,14 +317,20 @@ function(params){
         return color;
     };
 
-    that.redraw = function(triggerEvent){
+    that.redraw = function(triggerEvent, params){
         triggerEvent = typeof triggerEvent == 'undefined'? true : triggerEvent;
+        params = typeof params == 'undefined'? {} : params;
+        params = cm.merge({
+            'setInput' : true
+        }, params);
         setRangeDrag();
         renderPaletteCanvas();
         setPaletteDrag();
         setPreviewNew();
-        setPreviewInputs();
         setPaletteDragColor();
+        if(params['setInput']){
+            setPreviewInputs();
+        }
         if(triggerEvent){
             that.triggerEvent('onDraw');
         }
