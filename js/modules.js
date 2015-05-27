@@ -167,7 +167,7 @@ Mod['Langs'] = {
         // Process variables
         if(vars && cm.isObject(vars)){
             cm.forEach(vars, function(item, key){
-                langStr = langStr.replace(key, item);
+                langStr = langStr.replace(new RegExp(key, 'g'), item);
             });
         }
         return langStr;

@@ -1,7 +1,7 @@
-/* ******* OLD BROWSERS ALERT ******* */
+/* ******* COMPONENTS: OLD BROWSERS ALERT ******* */
 
-.com-oldbrowser-alert {
-    .descr {
+.com__oldbrowser-alert {
+    .b-descr {
         margin: 0 0 32px;
 
         p {
@@ -9,24 +9,22 @@
         }
     }
 
-    .browsers {
+    .b-browsers {
+        .cm__list-clear;
+        .cm__list-inline;
         margin: 0 0 40px;
-        padding: 0;
-        list-style: none;
         white-space: nowrap;
-        font-size: 0;
         text-align: center;
 
-        li {
-            display: inline-block;
+        > li {
+            .ie6 &,
+            .ie7 & {
+                display: inline;
+                zoom: 1;
+            }
 
-            a {
+            > a {
                 display: block;
-                cursor: pointer;
-
-                &:hover {
-                    opacity: 0.7;
-                }
             }
         }
     }
@@ -34,10 +32,4 @@
     .btn-wrap {
         margin-top: 0;
     }
-}
-
-.ie6 .com-oldbrowser-alert .browsers li,
-.ie7 .com-oldbrowser-alert .browsers li {
-    display: inline;
-    zoom: 1;
 }

@@ -1,72 +1,104 @@
-Com['OldBrowserAlert'] = function(o){
+cm.define('Com.OldBrowserAlert', {
+    'modules' : [
+        'Params',
+        'Events',
+        'Langs',
+        'Storage',
+        'Stack'
+    ],
+    'events' : [
+        'onRender'
+    ],
+    'params' : {
+        'name' : 'default',
+        'remember' : true,
+        'versions' : {
+            'IE' : 10,
+            'FF' : 31,
+            'Chrome' : 40,
+            'Safari' : 6,
+            'Opera' : 26
+        },
+        'langs' : {
+            'title' : 'Thank you for visiting our site!',
+            'descr' : 'It seems that you are using an outdated browser <b>(%browser% %version%)</b>. As a result, we cannot provide you with the best user experience while visiting our site. Please upgrade your <b>%browser%</b> to version <b>%minimum_version%</b> or above, or use another standards based browser such as Firefox, Chrome or Safari, by clicking on the icons below.',
+            'continue' : 'Skip for now'
+        }
+    }
+},
+function(params){
     var that = this,
-        config = cm.merge({
-            'versions' : {
-                'IE' : 9,
-                'FF' : 24,
-                'Chrome' : 29,
-                'Safari' : 6,
-                'Opera' : 15
-            },
-            'langs' : {
-                'title' : 'Thank you for visiting our site!',
-                'descr' : 'It seems that you are using an outdated browser <b>(%browser% %version%)</b>. As a result, we cannot provide you with the best user experience while visiting our site. Please upgrade your <b>%browser%</b> to version <b>%minimum_version%</b> or above, or use another standards based browser such as Firefox, Chrome or Safari, by clicking on the icons below.',
-                'continue' : 'Continue'
-            }
-        }, o),
-        useragent = Com.UA.get(),
-        nodes = {},
-        dialog;
+        userAgent = Com.UA.get();
+
+    that.nodes = {};
+    that.compoennts = {};
 
     var init = function(){
-        cm.forEach(config['versions'], function(version, browser){
-            if(cm.is(browser) && cm.isVersion() < version){
-                // Parse description string, insert browser name and verison
-                config['langs']['descr'] = config['langs']['descr']
-                    .replace(/%browser%/g, useragent['full_name'])
-                    .replace(/%version%/g, useragent['full_version'])
-                    .replace(/%minimum_version%/g, version);
+        that.setParams(params);
+        that.convertEvents(that.params['events']);
+        that.addToStack();
+        check();
+        that.triggerEvent('onRender');
+    };
+
+    var check = function(){
+        cm.forEach(that.params['versions'], function(version, browser){
+            if(Com.UA.is(browser) && Com.UA.isVersion() < version){
+                // Parse description string, insert browser name and version
+                that.params['langs']['descr'] = that.lang('descr', {
+                    '%browser%' : userAgent['full_name'],
+                    '%version%' : userAgent['full_version'],
+                    '%minimum_version%' : version
+                });
                 // Render window
-                !cm.cookieGet('comOldBrowserAlert') && render();
+                if(!that.params['remember'] || (that.params['remember'] && !that.storageRead('isShow'))){
+                    render();
+                }
             }
         });
     };
 
     var render = function(){
         // Structure
-        nodes['container'] = cm.Node('div', {'class' : 'com-oldbrowser-alert'},
-            cm.Node('div', {'class' : 'descr'},
-                cm.Node('p', {'innerHTML' : config['langs']['descr']})
+        that.nodes['container'] = cm.Node('div', {'class' : 'com__oldbrowser-alert'},
+            cm.Node('div', {'class' : 'b-descr'},
+                cm.Node('p', {'innerHTML' : that.lang('descr')})
             ),
-            cm.Node('ul', {'class' : 'browsers'},
-                cm.Node('li', cm.Node('a', {'class' : 'icon chrome', 'title' : 'Google Chrome', 'href' : 'http://www.google.com/chrome/', 'target' : '_blank'})),
-                cm.Node('li', cm.Node('a', {'class' : 'icon firefox', 'title' : 'Mozilla Firefox', 'href' : 'http://www.mozilla.com/', 'target' : '_blank'})),
-                cm.Node('li', cm.Node('a', {'class' : 'icon safari', 'title' : 'Apple Safari', 'href' : 'http://www.apple.com/safari/', 'target' : '_blank'})),
-                cm.Node('li', cm.Node('a', {'class' : 'icon msie', 'title' : 'Microsoft Internet Explorer', 'href' : 'http://ie.microsoft.com/', 'target' : '_blank'}))
+            cm.Node('ul', {'class' : 'b-browsers'},
+                cm.Node('li', cm.Node('a', {'class' : 'icon linked chrome', 'title' : 'Google Chrome', 'href' : 'http://www.google.com/chrome/', 'target' : '_blank'})),
+                cm.Node('li', cm.Node('a', {'class' : 'icon linked firefox', 'title' : 'Mozilla Firefox', 'href' : 'http://www.mozilla.com/', 'target' : '_blank'})),
+                cm.Node('li', cm.Node('a', {'class' : 'icon linked safari', 'title' : 'Apple Safari', 'href' : 'http://www.apple.com/safari/', 'target' : '_blank'})),
+                cm.Node('li', cm.Node('a', {'class' : 'icon linked msie', 'title' : 'Microsoft Internet Explorer', 'href' : 'http://ie.microsoft.com/', 'target' : '_blank'}))
             ),
             cm.Node('div', {'class' : 'form'},
-                cm.Node('div', {'class' : 'btn-wrap centered'},
-                    nodes['button'] = cm.Node('input', {'type' : 'button', 'value' : config['langs']['continue']})
+                cm.Node('div', {'class' : 'btn-wrap pull-center'},
+                    that.nodes['button'] = cm.Node('input', {'type' : 'button', 'value' : that.lang('continue')})
                 )
             )
         );
         // Init dialog
-        dialog = new Com.Dialog({
-            'title' : config['langs']['title'],
-            'content' : nodes['container'],
-            'autoOpen' : false,
-            'width' : 500,
-            'events' : {
-                'onClose' : function(){
-                    cm.cookieSet('comOldBrowserAlert', '1');
+        cm.getConstructor('Com.Dialog', function(classConstructor){
+            that.compoennts['dialog'] = new classConstructor({
+                'title' : that.lang('title'),
+                'content' : that.nodes['container'],
+                'autoOpen' : false,
+                'width' : 500,
+                'events' : {
+                    'onClose' : function(){
+                        if(that.params['remember']){
+                            that.storageWrite('isShow', true);
+                        }
+                    }
                 }
-            }
+            });
+            // Add event on continue button
+            cm.addEvent(that.nodes['button'], 'click', that.compoennts['dialog'].close);
+            // Open dialog
+            that.compoennts['dialog'].open();
         });
-        // Add event on continue button
-        nodes['button'].onclick = dialog.close;
-        // Open dialog
-        dialog.open();
     };
 
+    /* ******* MAIN ******* */
+
     init();
-};
+});
