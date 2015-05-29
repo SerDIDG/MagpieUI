@@ -42,8 +42,13 @@
 
     .pt__menu-dropdown {
         .pt__menu-dropdown--base;
-        left: auto;
-        right: -@CmBorder-Width;
+
+        &.pull-left,
+        &.pull-right {
+            .pt__menu-dropdown--base.pull-right;
+            left: auto;
+            right: -@CmBorder-Width;
+        }
     }
 }
 
@@ -405,10 +410,12 @@
             }
 
             .com__tabset__head-tabs {
+                width: auto !important;
                 display: none !important;
             }
 
             .com__tabset__content {
+                width: auto !important;
                 display: block !important;
                 border-radius: 0 0 @ComTabset-BorderRadius @ComTabset-BorderRadius;
             }

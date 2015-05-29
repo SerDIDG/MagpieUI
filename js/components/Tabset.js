@@ -70,8 +70,11 @@ function(params){
     };
 
     var getCSSHelpers = function(){
-        that.params['tabsWidth'] = cm.getTransitionDurationFromRule('.com__tabset-helper__column-width');
+        var rule;
         that.params['animateDuration'] = cm.getTransitionDurationFromRule('.com__tabset-helper__duration');
+        if(rule = cm.getCSSRule('.com__tabset-helper__column-width')[0]){
+            that.params['tabsWidth'] = cm.styleToNumber(rule.style.width);
+        }
     };
 
     var validateParams = function(){
@@ -124,7 +127,7 @@ function(params){
         // Set Tabs Width
         if(/left|right/.test(that.params['tabsPosition'])){
             that.nodes['headerTabs'].style.width = that.params['tabsWidth'];
-            that.nodes['content'].style.width = ['calc(100% - ', that.params['tabsWidth'], 'px)'].join('');
+            that.nodes['content'].style.width = ['calc(100% - ', that.params['tabsWidth'], ')'].join('');
         }
         // Embed Tabs
         if(that.params['showTabs']){
