@@ -70,6 +70,7 @@ function(params){
     };
 
     var getCSSHelpers = function(){
+        that.params['tabsWidth'] = cm.getTransitionDurationFromRule('.com__tabset-helper__column-width');
         that.params['animateDuration'] = cm.getTransitionDurationFromRule('.com__tabset-helper__duration');
     };
 
@@ -123,6 +124,7 @@ function(params){
         // Set Tabs Width
         if(/left|right/.test(that.params['tabsPosition'])){
             that.nodes['headerTabs'].style.width = that.params['tabsWidth'];
+            that.nodes['content'].style.width = ['calc(100% - ', that.params['tabsWidth'], 'px)'].join('');
         }
         // Embed Tabs
         if(that.params['showTabs']){

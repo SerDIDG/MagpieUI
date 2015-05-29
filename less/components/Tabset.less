@@ -213,6 +213,7 @@
     }
 
     > .com__tabset__content {
+        width: calc(~'100% - @{ComTabset-Column-Width}');
         .mx__flex(1 1 auto);
     }
 
@@ -382,6 +383,10 @@
 }
 
 // /* *** HELPERS *** */
+
+.com__tabset-helper__column-width {
+    width: @ComTabset-Column-Width;
+}
 
 .com__tabset-helper__duration {
     transition-duration: @ComTabset-Duration;

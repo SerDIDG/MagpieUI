@@ -8440,6 +8440,7 @@ html.ie9 .com__palette .b-range {
   flex: 0 0 auto;
 }
 .com__tabset.is-tabs-right > .com__tabset__content {
+  width: calc(100% - 256px);
   -webkit-flex: 1 1 auto;
   -ms-flex: 1 1 auto;
   flex: 1 1 auto;
@@ -8492,6 +8493,7 @@ html.ie9 .com__palette .b-range {
   flex: 0 0 auto;
 }
 .com__tabset.is-tabs-left > .com__tabset__content {
+  width: calc(100% - 256px);
   -webkit-flex: 1 1 auto;
   -ms-flex: 1 1 auto;
   flex: 1 1 auto;
@@ -8527,6 +8529,9 @@ html.ie9 .com__palette .b-range {
 }
 .com__tabset.is-tabs-left > .com__tabset__content {
   border-radius: 3px;
+}
+.com__tabset-helper__column-width {
+  width: 256px;
 }
 .com__tabset-helper__duration {
   transition-duration: 300ms;
