@@ -55,6 +55,7 @@ function(params){
     that.tabsListing = [];
     that.active = false;
     that.previous = false;
+    that.isProcess = false;
     
     var init = function(){
         getCSSHelpers();
@@ -244,47 +245,51 @@ function(params){
     };
 
     var set = function(id){
-        // Hide Previous Tab
-        if(that.active && that.tabs[that.active]){
-            that.previous = that.active;
-            that.tabs[that.active]['isHide'] = true;
-            // Hide Start Event
-            that.tabs[that.active]['onHideStart'](that, that.tabs[that.active]);
-            that.triggerEvent('onTabHideStart', that.tabs[that.active]);
-            // Hide
-            cm.removeClass(that.tabs[that.active]['tab']['container'], 'active');
-            cm.removeClass(that.tabs[that.active]['menu']['container'], 'active');
-            cm.removeClass(that.tabs[that.active]['content'], 'active');
-            // Hide End Event
-            that.tabs[that.active]['onHide'](that, that.tabs[that.active]);
-            that.triggerEvent('onTabHide', that.tabs[that.active]);
-        }
-        // Show New Tab
-        that.active = id;
-        that.tabs[that.active]['isHide'] = false;
-        // Show Start Event
-        that.tabs[that.active]['onShowStart'](that, that.tabs[that.active]);
-        that.triggerEvent('onTabShowStart', that.tabs[that.active]);
-        // Show
-        that.tabs[that.active]['content'].style.display = 'block';
-        cm.addClass(that.tabs[that.active]['tab']['container'], 'active');
-        cm.addClass(that.tabs[that.active]['menu']['container'], 'active');
-        cm.addClass(that.tabs[that.active]['content'], 'active', true);
-        that.nodes['headerTitleText'].innerHTML = that.tabs[that.active]['title'];
-        // Animate
-        if(!that.params['switchManually']){
-            if(that.previous && that.params['animateSwitch'] && !that.params['calculateMaxHeight']){
-                animateSwitch();
-            }else{
-                if(that.params['calculateMaxHeight']){
-                    calculateMaxHeight();
+        if(!that.isProcess){
+            that.isProcess = true;
+            // Hide Previous Tab
+            if(that.active && that.tabs[that.active]){
+                that.previous = that.active;
+                that.tabs[that.active]['isHide'] = true;
+                // Hide Start Event
+                that.tabs[that.active]['onHideStart'](that, that.tabs[that.active]);
+                that.triggerEvent('onTabHideStart', that.tabs[that.active]);
+                // Hide
+                cm.removeClass(that.tabs[that.active]['tab']['container'], 'active');
+                cm.removeClass(that.tabs[that.active]['menu']['container'], 'active');
+                cm.removeClass(that.tabs[that.active]['content'], 'active');
+                // Hide End Event
+                that.tabs[that.active]['onHide'](that, that.tabs[that.active]);
+                that.triggerEvent('onTabHide', that.tabs[that.active]);
+            }
+            // Show New Tab
+            that.active = id;
+            that.tabs[that.active]['isHide'] = false;
+            // Show Start Event
+            that.tabs[that.active]['onShowStart'](that, that.tabs[that.active]);
+            that.triggerEvent('onTabShowStart', that.tabs[that.active]);
+            // Show
+            that.tabs[that.active]['content'].style.display = 'block';
+            cm.addClass(that.tabs[that.active]['tab']['container'], 'active');
+            cm.addClass(that.tabs[that.active]['menu']['container'], 'active');
+            cm.addClass(that.tabs[that.active]['content'], 'active', true);
+            that.nodes['headerTitleText'].innerHTML = that.tabs[that.active]['title'];
+            // Animate
+            if(!that.params['switchManually']){
+                if(that.previous && that.params['animateSwitch'] && !that.params['calculateMaxHeight']){
+                    animateSwitch();
+                }else{
+                    if(that.params['calculateMaxHeight']){
+                        calculateMaxHeight();
+                    }
+                    if(that.previous){
+                        that.tabs[that.previous]['content'].style.display = 'none';
+                    }
+                    // Show End Event
+                    that.tabs[that.active]['onShow'](that, that.tabs[that.active]);
+                    that.triggerEvent('onTabShow', that.tabs[that.active]);
+                    that.isProcess = false;
                 }
-                if(that.previous){
-                    that.tabs[that.previous]['content'].style.display = 'none';
-                }
-                // Show End Event
-                that.tabs[that.active]['onShow'](that, that.tabs[that.active]);
-                that.triggerEvent('onTabShow', that.tabs[that.active]);
             }
         }
     };
@@ -313,6 +318,7 @@ function(params){
             // Show End Event
             that.tabs[that.active]['onShow'](that, that.tabs[that.active]);
             that.triggerEvent('onTabShow', that.tabs[that.active]);
+            that.isProcess = false;
         }});
     };
 

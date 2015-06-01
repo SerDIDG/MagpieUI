@@ -33,6 +33,7 @@ function(params){
 
     that.current = null;
     that.previous = null;
+    that.isProcess = false;
 
     that.nodes = {
         'items' : []
@@ -151,25 +152,30 @@ function(params){
     };
 
     var set = function(i){
-        var item = items[i],
+        var item, itemOld;
+        if(!that.isProcess){
+            that.isProcess = true;
+            // Get item
+            item = items[i];
             itemOld = items[that.current];
-        // API onSet
-        that.triggerEvent('onSet', {
-            'current' : item,
-            'previous' : itemOld
-        });
-        // If current active item not equal new item - process with new item, else redraw window alignment and dimensions
-        if(i != that.current){
             // API onSet
-            that.triggerEvent('onChange', {
+            that.triggerEvent('onSet', {
                 'current' : item,
                 'previous' : itemOld
             });
-            // Check type
-            if(item['type'] == 'image'){
-                setItemImage(i, item, itemOld);
-            }else{
-                setItemVideo(i, item, itemOld);
+            // If current active item not equal new item - process with new item, else redraw window alignment and dimensions
+            if(i != that.current){
+                // API onSet
+                that.triggerEvent('onChange', {
+                    'current' : item,
+                    'previous' : itemOld
+                });
+                // Check type
+                if(item['type'] == 'image'){
+                    setItemImage(i, item, itemOld);
+                }else{
+                    setItemVideo(i, item, itemOld);
+                }
             }
         }
     };
@@ -228,6 +234,7 @@ function(params){
             }
             // API onImageSet event
             that.triggerEvent('onItemSet', item);
+            that.isProcess = false;
         }});
     };
 
