@@ -245,7 +245,7 @@ function(params){
     };
 
     var set = function(id){
-        if(!that.isProcess){
+        if(!that.isProcess && id != that.active){
             that.isProcess = true;
             // Hide Previous Tab
             if(that.active && that.tabs[that.active]){
@@ -291,7 +291,7 @@ function(params){
                     that.isProcess = false;
                 }
             }
-        }
+    }
     };
 
     /* *** HELPERS *** */
