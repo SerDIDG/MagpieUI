@@ -80,7 +80,7 @@ function(params){
         validateParams();
         renderSlider();
         renderLayout();
-        that.items[0] && set(0);
+        that.setEffect(that.params['effect']);
         that.params['editMode'] && that.enableEditMode();
         that.addToStack(that.params['node']);
         that.triggerEvent('onRender');
@@ -129,7 +129,6 @@ function(params){
         if(/max|slide/.test(that.params['height'])){
             cm.addClass(that.nodes['container'], 'is-adaptive-content');
         }
-        that.setEffect(that.params['effect']);
         // Pause slider when it hovered
         if(that.params['slideshow'] && that.params['pauseOnHover']){
             cm.addEvent(that.nodes['container'], 'mouseover', function(e){
@@ -254,6 +253,16 @@ function(params){
         // Push to items array
         that.items.push(item);
         that.itemsLength = that.items.length;
+    };
+
+    var resetItems = function(){
+        that.nodes['slidesInner'].scrollLeft = 0;
+        cm.forEach(that.items, function(item){
+            item.nodes['container'].style.display = '';
+            item.nodes['container'].style.opacity = '';
+            item.nodes['container'].style.left = '';
+            item.nodes['container'].style.zIndex = '';
+        });
     };
 
     var renderButton = function(item){
@@ -382,7 +391,7 @@ function(params){
         var pure = value.match(/\d+(\D*)/);
         return pure ? pure[1] : '';
     };
-    
+
     /* ******* MAIN ******* */
 
     that.set = function(index){
@@ -438,7 +447,7 @@ function(params){
         cm.removeClass(that.nodes['slides'], ['effect', that.effect].join('-'));
         that.effect = Com.SliderEffects[effect] ? effect : 'fade';
         cm.addClass(that.nodes['slides'], ['effect', that.effect].join('-'));
-        // Transition
+        resetItems();
         that.items[0] && set(0);
         calculateHeight();
         return that;
@@ -463,9 +472,7 @@ Com.SliderEffects['none'] = function(slider, current, previous, callback){
         previous['nodes']['container'].style.display = 'none';
         previous['nodes']['container'].style.zIndex = 1;
         current['nodes']['container'].style.zIndex = 2;
-        current['nodes']['container'].style.opacity = 1;
         current['nodes']['container'].style.display = 'block';
-        current['nodes']['container'].style.left = 0;
     }
     callback();
 };
