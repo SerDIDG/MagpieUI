@@ -2638,31 +2638,44 @@ cm.define = (function(){
 cm.find = function(className, name, parentNode, callback){
     if(!className || className == '*'){
         var classes = [];
-        cm.forEach(cm.defineStack, function(classObject){
-            if(classObject.prototype.findInStack){
-                classes = cm.extend(classes, classObject.prototype.findInStack(name, parentNode, callback));
+        cm.forEach(cm.defineStack, function(classConstructor){
+            if(classConstructor.prototype.findInStack){
+                classes = cm.extend(classes, classConstructor.prototype.findInStack(name, parentNode, callback));
             }
         });
         return classes;
     }else{
-        var classObject = cm.defineStack[className];
-        if(!classObject){
+        var classConstructor = cm.defineStack[className];
+        if(!classConstructor){
             cm.errorLog({
                 'type' : 'error',
                 'name' : 'cm.find',
                 'message' : ['Class', cm.strWrap(className, '"'), 'does not exist.'].join(' ')
             });
-        }else if(!classObject.prototype.findInStack){
+        }else if(!classConstructor.prototype.findInStack){
             cm.errorLog({
                 'type' : 'error',
                 'name' : 'cm.find',
                 'message' : ['Class', cm.strWrap(className, '"'), 'does not support Module Stack.'].join(' ')
             });
         }else{
-            return classObject.prototype.findInStack(name, parentNode, callback);
+            return classConstructor.prototype.findInStack(name, parentNode, callback);
         }
     }
     return null;
+};
+
+cm.prefind = function(className, name, parentNode, eventName, callback){
+    eventName = typeof eventName != 'undefined' ? eventName : 'onRender';
+    var finder = cm.find(className, name, parentNode, callback);
+    if(!finder || !finder.length){
+        cm.getConstructor(className, function(classConstructor){
+            classConstructor.prototype.addEvent(eventName, function(){
+                finder = cm.find(className, name, parentNode, callback);
+            });
+        });
+    }
+    return finder;
 };
 
 cm.getConstructor = function(className, callback){

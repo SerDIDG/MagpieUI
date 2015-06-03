@@ -408,12 +408,13 @@ Mod['Stack'] = {
     },
     'addToStack' : function(node){
         var that = this;
-        that._stack.push({
+        that._stackItem = {
             'name' : that.params['name'],
             'node' : node,
             'class' : that,
             'className' : that._name['full']
-        });
+        };
+        that._stack.push(that._stackItem);
         return that;
     },
     'findInStack' : function(name, parent, callback){
