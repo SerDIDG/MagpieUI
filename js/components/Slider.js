@@ -451,9 +451,7 @@ function(params){
         that.effect = Com.SliderEffects[effect] ? effect : 'fade';
         cm.addClass(that.nodes['slides'], ['effect', that.effect].join('-'));
         // Reset slide
-        if(that.current !== null){
-            set(that.current);
-        }else if(that.items[0]){
+        if(that.items[0]){
             set(0);
         }
         // Recalculate slider height
