@@ -25,12 +25,13 @@ cm.define('Com.Slider', {
         'buttons' : true,               // Display buttons, can hide exists buttons
         'numericButtons' : false,       // Render slide index on button
         'arrows' : true,                // Display arrows, can hide exists arrows
-        'effect' : 'fade',              // none | dev | fade | fade-out | push | pull | pull-parallax | pull-overlap
+        'effect' : 'fade',              // none | edit | fade | fade-out | push | pull | pull-parallax | pull-overlap
         'transition' : 'smooth',        // smooth | simple | acceleration | inhibition,
         'height' : 'auto',           // auto | max | slide
         'minHeight' : 48,               // Set min-height of slider, work with calculateMaxHeight parameter
         'hasBar' : false,
         'barDirection' : 'horizontal',  // horizontal | vertical
+        'editMode' : false,
         'Com.Scroll' : {
             'step' : 25,
             'time' : 25
@@ -80,6 +81,7 @@ function(params){
         renderSlider();
         renderLayout();
         that.items[0] && set(0);
+        that.params['editMode'] && that.enableEditMode();
         that.addToStack(that.params['node']);
         that.triggerEvent('onRender');
     };
@@ -103,6 +105,7 @@ function(params){
     };
 
     var renderSlider = function(){
+        var transitionRule = cm.getSupportedStyle('transition');
         // Collect items
         cm.forEach(that.nodes['items'], collectItem);
         // Arrows
@@ -122,6 +125,7 @@ function(params){
             that.nodes['buttons'].style.display = 'none';
         }
         // Height Type Parameters
+        that.nodes['inner'].style[transitionRule] = [that.params['time'], 'ms'].join('');
         if(/max|slide/.test(that.params['height'])){
             cm.addClass(that.nodes['container'], 'is-adaptive-content');
         }
@@ -162,18 +166,14 @@ function(params){
     };
 
     var calculateHeight = function(){
-        if(that.effect == 'dev'){
-            that.nodes['inner'].style.height = 'auto';
-        }else{
-            switch(that.params['height']){
-                case 'max' :
-                    calculateMaxHeight();
-                    break;
+        switch(that.params['height']){
+            case 'max' :
+                calculateMaxHeight();
+                break;
 
-                case 'slide' :
-                    calculateSlideHeight();
-                    break;
-            }
+            case 'slide' :
+                calculateSlideHeight();
+                break;
         }
     };
 
@@ -424,19 +424,29 @@ function(params){
         return that;
     };
 
+    that.enableEditMode = function(){
+        that.pause();
+        cm.addClass(that.nodes['container'], 'is-edit-mode');
+        that.setEffect('edit');
+    };
+
+    that.disableEditMode = function(){
+        that.start();
+        cm.removeClass(that.nodes['container'], 'is-edit-mode');
+        that.restoreEffect();
+    };
+
     that.setEffect = function(effect){
-        var transitionRule = cm.getSupportedStyle('transition');
         cm.removeClass(that.nodes['slides'], ['effect', that.effect].join('-'));
         that.effect = Com.SliderEffects[effect] ? effect : 'fade';
         cm.addClass(that.nodes['slides'], ['effect', that.effect].join('-'));
-        if(transitionRule && /max|slide/.test(that.params['height'])){
-            if(/dev|none/.test(that.effect)){
-                that.nodes['inner'].style[transitionRule] = 'none';
-            }else{
-                that.nodes['inner'].style[transitionRule] = [that.params['time'], 'ms'].join('');
-            }
-        }
+        // Transition
         calculateHeight();
+        return that;
+    };
+
+    that.restoreEffect = function(){
+        that.setEffect(that.params['effect']);
         return that;
     };
 
@@ -461,7 +471,7 @@ Com.SliderEffects['none'] = function(slider, current, previous, callback){
 
 /* *** DEV *** */
 
-Com.SliderEffects['dev'] = function(slider, current, previous, callback){
+Com.SliderEffects['edit'] = function(slider, current, previous, callback){
     if(slider.itemsLength > 1 && previous && current != previous){
         previous['nodes']['container'].style.display = 'none';
         previous['nodes']['container'].style.zIndex = 1;

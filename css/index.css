@@ -9346,17 +9346,17 @@ html.ie9 .com__palette .b-range {
 .com__slider > .inner > .slides.effect-none > ul > li:first-child {
   display: block;
 }
-.com__slider > .inner > .slides.effect-dev {
+.com__slider > .inner > .slides.effect-edit {
   position: relative;
 }
-.com__slider > .inner > .slides.effect-dev > ul {
+.com__slider > .inner > .slides.effect-edit > ul {
   position: relative;
 }
-.com__slider > .inner > .slides.effect-dev > ul > li {
+.com__slider > .inner > .slides.effect-edit > ul > li {
   display: none;
   position: relative;
 }
-.com__slider > .inner > .slides.effect-dev > ul > li:first-child {
+.com__slider > .inner > .slides.effect-edit > ul > li:first-child {
   display: block;
 }
 .com__slider > .inner > .slides.effect-fade > ul > li {
@@ -9441,6 +9441,23 @@ html.ie9 .com__palette .b-range {
 .com__slider.is-adaptive-content > .inner > .slides > ul > li > .slide-area,
 .com__slider.is-adaptive-content > .inner > .slides > ul > li > .text {
   position: relative;
+}
+.com__slider.is-edit-mode > .inner {
+  height: auto !important;
+  -webkit-transition: none !important;
+  transition: none !important;
+}
+.com__slider.is-edit-mode > .inner > .size {
+  display: none;
+}
+.com__slider.is-edit-mode > .inner > .slides > ul {
+  overflow: visible;
+}
+.com__slider.is-edit-mode > .inner > .slides > ul > li > .slide-link {
+  display: none;
+}
+.com__slider.is-edit-mode > .inner > .com__gallery-controls {
+  display: none;
 }
 .com__slider:hover > .inner > .com__gallery-controls {
   opacity: 1;

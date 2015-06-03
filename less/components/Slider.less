@@ -114,6 +114,33 @@
         }
     }
 
+    &.is-edit-mode {
+        > .inner {
+            height: auto !important;
+            .cm__transition-none;
+
+            > .size {
+                display: none;
+            }
+
+            > .slides {
+                > ul {
+                    overflow: visible;
+
+                    > li {
+                        > .slide-link {
+                            display: none;
+                        }
+                    }
+                }
+            }
+
+            > .com__gallery-controls {
+                display: none;
+            }
+        }
+    }
+
     &:hover {
         > .inner {
             > .com__gallery-controls {
@@ -162,7 +189,7 @@
         }
     }
 
-    &.effect-dev {
+    &.effect-edit {
         position: relative;
 
         > ul {
