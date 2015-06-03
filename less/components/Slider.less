@@ -99,6 +99,8 @@
 
     &.is-adaptive-content {
         > .inner {
+            .mx__transition(height, @ComSlider-Duration);
+
             > .slides {
                 > ul {
                     > li {
@@ -134,9 +136,49 @@
     }
 }
 
+// /* *** HELPERS *** */
+
+.com__slider-helper__duration {
+    transition-duration: @ComSlider-Duration;
+}
+
 // /* *** MIXINS *** */
 
 .com__slider__effects () {
+    &.effect-none {
+        position: relative;
+
+        > ul {
+            position: relative;
+
+            > li {
+                display: none;
+                position: relative;
+
+                &:first-child {
+                    display: block;
+                }
+            }
+        }
+    }
+
+    &.effect-dev {
+        position: relative;
+
+        > ul {
+            position: relative;
+
+            > li {
+                display: none;
+                position: relative;
+
+                &:first-child {
+                    display: block;
+                }
+            }
+        }
+    }
+
     &.effect-fade {
         > ul {
             > li {

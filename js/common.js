@@ -202,6 +202,8 @@ cm.clone = function(o, cloneNode){
                 }else{
                     newO = o;
                 }
+            }else if(XMLHttpRequest && o instanceof XMLHttpRequest){
+                newO = o;
             }else if(Object.prototype.toString.call(o) == '[object Object]' && o.constructor != Object){
                 newO = o;
             }else if(o == window){

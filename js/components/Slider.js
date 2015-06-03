@@ -25,10 +25,10 @@ cm.define('Com.Slider', {
         'buttons' : true,               // Display buttons, can hide exists buttons
         'numericButtons' : false,       // Render slide index on button
         'arrows' : true,                // Display arrows, can hide exists arrows
-        'effect' : 'fade',              // fade | fade-out | push | pull | pull-parallax | pull-overlap
+        'effect' : 'fade',              // none | dev | fade | fade-out | push | pull | pull-parallax | pull-overlap
         'transition' : 'smooth',        // smooth | simple | acceleration | inhibition,
-        'calculateMaxHeight' : false,
-        'minHeight' : 96,               // Set min-height of slider, work with calculateMaxHeight parameter
+        'height' : 'auto',           // auto | max | slide
+        'minHeight' : 48,               // Set min-height of slider, work with calculateMaxHeight parameter
         'hasBar' : false,
         'barDirection' : 'horizontal',  // horizontal | vertical
         'Com.Scroll' : {
@@ -40,7 +40,7 @@ cm.define('Com.Slider', {
 function(params){
     var that = this,
         components = {},
-        slideshowInt,
+        slideshowInterval,
         minHeightDimension;
     
     that.nodes = {
@@ -61,6 +61,7 @@ function(params){
     that.items = [];
     that.itemsLength = 0;
 
+    that.effect = null;
     that.direction = 'next';
     that.current = null;
     that.previous = null;
@@ -69,6 +70,7 @@ function(params){
     that.isProcess = false;
 
     var init = function(){
+        getCSSHelpers();
         that.setParams(params);
         that.convertEvents(that.params['events']);
         that.getDataNodes(that.params['node']);
@@ -82,6 +84,10 @@ function(params){
         that.triggerEvent('onRender');
     };
 
+    var getCSSHelpers = function(){
+        that.params['time'] = cm.getTransitionDurationFromRule('.com__slider-helper__duration');
+    };
+
     var validateParams = function(){
         if(cm.isNode(that.params['node'])){
             that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
@@ -89,6 +95,7 @@ function(params){
         that.params['direction'] = {'forward' : 1, 'backward' : 1, 'random' : 1}[that.params['direction']] ? that.params['direction'] : 'forward';
         that.params['effect'] = Com.SliderEffects[that.params['effect']] ? that.params['effect'] : 'fade';
         that.params['transition'] = {'smooth' : 1, 'simple' : 1, 'acceleration' : 1, 'inhibition' : 1}[that.params['transition']] ? that.params['transition'] : 'smooth';
+        that.params['height'] = {'auto' : 1, 'max' : 1, 'slide' : 1}[that.params['height']] ? that.params['height'] : 'auto';
         if(that.params['minHeight'] && isNaN(that.params['minHeight'])){
             minHeightDimension = getDimension(that.params['minHeight']);
             that.params['minHeight'] = parseFloat(that.params['minHeight']);
@@ -96,8 +103,6 @@ function(params){
     };
 
     var renderSlider = function(){
-        // Set class on slides container dependence of animation effect
-        cm.addClass(that.nodes['slides'], ['effect', that.params['effect']].join('-'));
         // Collect items
         cm.forEach(that.nodes['items'], collectItem);
         // Arrows
@@ -116,11 +121,11 @@ function(params){
         if(!that.params['buttons'] || that.itemsLength < 2){
             that.nodes['buttons'].style.display = 'none';
         }
-        // Parameters
-        if(that.params['calculateMaxHeight']){
-            cm.addClass(that.params['node'], 'is-adaptive-content');
-            calculateMaxHeight();
+        // Height Type Parameters
+        if(/max|slide/.test(that.params['height'])){
+            cm.addClass(that.nodes['container'], 'is-adaptive-content');
         }
+        that.setEffect(that.params['effect']);
         // Pause slider when it hovered
         if(that.params['slideshow'] && that.params['pauseOnHover']){
             cm.addEvent(that.nodes['container'], 'mouseover', function(e){
@@ -156,6 +161,22 @@ function(params){
         }
     };
 
+    var calculateHeight = function(){
+        if(that.effect == 'dev'){
+            that.nodes['inner'].style.height = 'auto';
+        }else{
+            switch(that.params['height']){
+                case 'max' :
+                    calculateMaxHeight();
+                    break;
+
+                case 'slide' :
+                    calculateSlideHeight();
+                    break;
+            }
+        }
+    };
+
     var calculateMaxHeight = function(){
         var height = 0;
         cm.forEach(that.items, function(item){
@@ -165,6 +186,27 @@ function(params){
                 height = Math.max(height, cm.getRealHeight(item.nodes['container'], 'offsetRelative'));
             }
         });
+        if(minHeightDimension == '%'){
+            height = Math.max(height, (that.nodes['inner'].offsetWidth / 100 * that.params['minHeight']));
+        }else{
+            height = Math.max(height, that.params['minHeight']);
+        }
+        if(height != that.nodes['inner'].offsetHeight){
+            that.nodes['inner'].style.height = [height, 'px'].join('');
+        }
+    };
+
+    var calculateSlideHeight = function(){
+        var item,
+            height = 0;
+        if(that.current !== null){
+            item = that.items[that.current];
+            if(item.nodes['inner']){
+                height = Math.max(height, cm.getRealHeight(item.nodes['inner'], 'offsetRelative'));
+            }else{
+                height = Math.max(height, cm.getRealHeight(item.nodes['container'], 'offsetRelative'));
+            }
+        }
         if(minHeightDimension == '%'){
             height = Math.max(height, (that.nodes['inner'].offsetWidth / 100 * that.params['minHeight']));
         }else{
@@ -207,7 +249,7 @@ function(params){
                 e = cm.getEvent(e);
                 cm.preventDefault(e);
                 set(item['index']);
-            }, true, true);
+            });
         }
         // Init animation
         item['anim'] = new cm.Animation(item['nodes']['container']);
@@ -261,7 +303,7 @@ function(params){
                 setBarItem(current, previous);
             }
             // Transition effect and callback
-            Com.SliderEffects[that.params['effect']](that, current, previous, function(){
+            Com.SliderEffects[that.effect](that, current, previous, function(){
                 that.isProcess = false;
                 // API onChange event
                 that.triggerEvent('onChange', {
@@ -269,10 +311,8 @@ function(params){
                     'previous' : previous
                 });
             });
-            // Recalculate slider height
-            if(that.params['calculateMaxHeight']){
-                calculateMaxHeight();
-            }
+            // Recalculate slider height dependence of height type
+            calculateHeight();
         }
     };
 
@@ -299,7 +339,7 @@ function(params){
     var startSlideshow = function(){
         if(that.paused && !that.pausedOutside){
             that.paused = false;
-            slideshowInt = setTimeout(function(){
+            slideshowInterval = setTimeout(function(){
                 switch(that.params['direction']){
                     case 'random':
                         set(cm.rand(0, (that.items.length - 1)));
@@ -321,7 +361,7 @@ function(params){
     var stopSlideshow = function(){
         if(!that.paused){
             that.paused = true;
-            slideshowInt && clearTimeout(slideshowInt);
+            slideshowInterval && clearTimeout(slideshowInterval);
             that.triggerEvent('onPause');
         }
     };
@@ -336,10 +376,8 @@ function(params){
     /* *** HELPERS *** */
 
     var resizeHandler = function(){
-        // Recalculate slider height
-        if(that.params['calculateMaxHeight']){
-            calculateMaxHeight();
-        }
+        // Recalculate slider height dependence of height type
+        calculateHeight();
     };
 
     var getDimension = function(value){
@@ -386,12 +424,52 @@ function(params){
         return that;
     };
 
+    that.setEffect = function(effect){
+        var transitionRule = cm.getSupportedStyle('transition');
+        cm.removeClass(that.nodes['slides'], ['effect', that.effect].join('-'));
+        that.effect = Com.SliderEffects[effect] ? effect : 'fade';
+        cm.addClass(that.nodes['slides'], ['effect', that.effect].join('-'));
+        if(transitionRule && /max|slide/.test(that.params['height'])){
+            if(/dev|none/.test(that.effect)){
+                that.nodes['inner'].style[transitionRule] = 'none';
+            }else{
+                that.nodes['inner'].style[transitionRule] = [that.params['time'], 'ms'].join('');
+            }
+        }
+        calculateHeight();
+        return that;
+    };
+
     init();
 });
 
 /* ******* SLIDER EFFECTS ******* */
 
 Com.SliderEffects = {};
+
+/* *** NONE *** */
+
+Com.SliderEffects['none'] = function(slider, current, previous, callback){
+    if(slider.itemsLength > 1 && previous && current != previous){
+        previous['nodes']['container'].style.display = 'none';
+        previous['nodes']['container'].style.zIndex = 1;
+        current['nodes']['container'].style.zIndex = 2;
+        current['nodes']['container'].style.display = 'block';
+    }
+    callback();
+};
+
+/* *** DEV *** */
+
+Com.SliderEffects['dev'] = function(slider, current, previous, callback){
+    if(slider.itemsLength > 1 && previous && current != previous){
+        previous['nodes']['container'].style.display = 'none';
+        previous['nodes']['container'].style.zIndex = 1;
+        current['nodes']['container'].style.zIndex = 2;
+        current['nodes']['container'].style.display = 'block';
+    }
+    callback();
+};
 
 /* *** FADE *** */
 
@@ -455,7 +533,7 @@ Com.SliderEffects['push'] = function(slider, current, previous, callback){
 /* *** PULL *** */
 
 Com.SliderEffects['pull'] = function(slider, current, previous, callback){
-    if(slider.itemsLength > 1 && previous &&current != previous){
+    if(slider.itemsLength > 1 && previous && current != previous){
         // Hide previous slide
         var style = slider.direction == 'next' ? '-100%' : '100%';
         previous['nodes']['container'].style.zIndex = 1;
@@ -504,7 +582,7 @@ Com.SliderEffects['pull-overlap'] = function(slider, current, previous, callback
 /* *** PULL PARALLAX *** */
 
 Com.SliderEffects['pull-parallax'] = function(slider, current, previous, callback){
-    if(slider.itemsLength > 1 && previous &&current != previous){
+    if(slider.itemsLength > 1 && previous && current != previous){
         // Hide previous slide
         var style = slider.direction == 'next' ? '-50%' : '50%';
         previous['nodes']['container'].style.zIndex = 1;
