@@ -180,10 +180,9 @@ function(params){
     var calculateMaxHeight = function(){
         var height = 0;
         cm.forEach(that.items, function(item){
+            height = Math.max(height, cm.getRealHeight(item.nodes['container'], 'offsetRelative'));
             if(item.nodes['inner']){
                 height = Math.max(height, cm.getRealHeight(item.nodes['inner'], 'offsetRelative'));
-            }else{
-                height = Math.max(height, cm.getRealHeight(item.nodes['container'], 'offsetRelative'));
             }
         });
         if(minHeightDimension == '%'){
@@ -201,10 +200,9 @@ function(params){
             height = 0;
         if(that.current !== null){
             item = that.items[that.current];
+            height = Math.max(height, cm.getRealHeight(item.nodes['container'], 'offsetRelative'));
             if(item.nodes['inner']){
                 height = Math.max(height, cm.getRealHeight(item.nodes['inner'], 'offsetRelative'));
-            }else{
-                height = Math.max(height, cm.getRealHeight(item.nodes['container'], 'offsetRelative'));
             }
         }
         if(minHeightDimension == '%'){
@@ -441,6 +439,7 @@ function(params){
         that.effect = Com.SliderEffects[effect] ? effect : 'fade';
         cm.addClass(that.nodes['slides'], ['effect', that.effect].join('-'));
         // Transition
+        that.items[0] && set(0);
         calculateHeight();
         return that;
     };
