@@ -464,7 +464,9 @@ Com.SliderEffects['none'] = function(slider, current, previous, callback){
         previous['nodes']['container'].style.display = 'none';
         previous['nodes']['container'].style.zIndex = 1;
         current['nodes']['container'].style.zIndex = 2;
+        current['nodes']['container'].style.opacity = 1;
         current['nodes']['container'].style.display = 'block';
+        current['nodes']['container'].style.left = 0;
     }
     callback();
 };
@@ -476,7 +478,9 @@ Com.SliderEffects['edit'] = function(slider, current, previous, callback){
         previous['nodes']['container'].style.display = 'none';
         previous['nodes']['container'].style.zIndex = 1;
         current['nodes']['container'].style.zIndex = 2;
+        current['nodes']['container'].style.opacity = 1;
         current['nodes']['container'].style.display = 'block';
+        current['nodes']['container'].style.left = 0;
     }
     callback();
 };
