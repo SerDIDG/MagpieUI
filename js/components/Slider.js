@@ -255,7 +255,7 @@ function(params){
         that.itemsLength = that.items.length;
     };
 
-    var resetItems = function(){
+    var resetStyles = function(){
         that.nodes['slidesInner'].scrollLeft = 0;
         cm.forEach(that.items, function(item){
             item.nodes['container'].style.display = '';
@@ -444,11 +444,19 @@ function(params){
     };
 
     that.setEffect = function(effect){
+        // Reset slides styles after previous effect
         cm.removeClass(that.nodes['slides'], ['effect', that.effect].join('-'));
+        resetStyles();
+        // Set new effect
         that.effect = Com.SliderEffects[effect] ? effect : 'fade';
         cm.addClass(that.nodes['slides'], ['effect', that.effect].join('-'));
-        resetItems();
-        that.items[0] && set(0);
+        // Reset slide
+        if(that.current !== null){
+            set(that.current);
+        }else if(that.items[0]){
+            set(0);
+        }
+        // Recalculate slider height
         calculateHeight();
         return that;
     };
