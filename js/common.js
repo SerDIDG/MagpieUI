@@ -14,12 +14,12 @@
     Ajax:                           1852
     Hash (?):                       1986
     Graphics:                       2006
-    Class Fabric                    2424
+    Class Fabric                    2580
 
 */
 
 var cm = {
-        '_version' : '3.0.10',
+        '_version' : '3.0.11',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
