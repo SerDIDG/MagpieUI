@@ -417,6 +417,15 @@ Mod['Stack'] = {
         that._stack.push(that._stackItem);
         return that;
     },
+    'isAppropriateToStack' : function(name, parent, callback){
+        var that = this,
+            item = that._stackItem;
+        if((cm.isEmpty(name) || item['name'] == name) && cm.isParent(parent, item['node'], true)){
+            callback(item['class'], item);
+            return true;
+        }
+        return false;
+    },
     'findInStack' : function(name, parent, callback){
         var that = this,
             items = [];

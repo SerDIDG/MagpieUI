@@ -2635,6 +2635,30 @@ cm.define = (function(){
     };
 })();
 
+cm.getConstructor = function(className, callback){
+    var classConstructor;
+    callback = typeof callback != 'undefined' ? callback : function(){}
+    if(!className || className == '*'){
+        cm.forEach(cm.defineStack, function(classConstructor){
+            callback(classConstructor);
+        });
+        return cm.defineStack;
+    }else{
+        classConstructor = cm.defineStack[className];
+        if(!classConstructor){
+            cm.errorLog({
+                'type' : 'error',
+                'name' : 'cm.getConstructor',
+                'message' : ['Class', cm.strWrap(className, '"'), 'does not exists or define.'].join(' ')
+            });
+            return false;
+        }else{
+            callback(classConstructor);
+            return classConstructor;
+        }
+    }
+};
+
 cm.find = function(className, name, parentNode, callback){
     if(!className || className == '*'){
         var classes = [];
@@ -2665,30 +2689,46 @@ cm.find = function(className, name, parentNode, callback){
     return null;
 };
 
-cm.prefind = function(className, name, parentNode, eventName, callback){
-    eventName = typeof eventName != 'undefined' ? eventName : 'onRender';
-    var finder = cm.find(className, name, parentNode, callback);
-    if(!finder || !finder.length){
-        cm.getConstructor(className, function(classConstructor){
-            classConstructor.prototype.addEvent(eventName, function(){
-                finder = cm.find(className, name, parentNode, callback);
-            });
-        });
-    }
-    return finder;
-};
+cm.Finder = function(className, name, parentNode, callback, params){
+    var that = this,
+        isEventBind = false;
 
-cm.getConstructor = function(className, callback){
-    var classConstructor = cm.defineStack[className];
-    if(!classConstructor){
-        cm.errorLog({
-            'type' : 'error',
-            'name' : 'cm.getConstructor',
-            'message' : ['Class', cm.strWrap(className, '"'), 'does not exists or define.'].join(' ')
-        });
-        return false;
-    }else{
-        typeof callback == 'function' && callback(classConstructor);
-        return classConstructor;
-    }
+    var init = function(){
+        var finder;
+        // Merge params
+        parentNode = parentNode || document.body;
+        callback = typeof callback == 'function' ? callback : function(){};
+        params = cm.merge({
+            'event' : 'onRender',
+            'multiple' : false
+        }, params);
+        // Search in constructed classes
+        finder = cm.find(className, name, parentNode, callback);
+        // Bind event when no one constructed class found
+        if(!finder || !finder.length || params['multiple']){
+            isEventBind = true;
+            cm.getConstructor(className, function(classConstructor){
+                classConstructor.prototype.addEvent(params['event'], watcher);
+            });
+        }
+    };
+
+    var watcher = function(classObject){
+        classObject.removeEvent(params['event'], watcher);
+        var isSame = classObject.isAppropriateToStack(name, parentNode, callback);
+        if(isSame && !params['multiple']){
+            that.remove();
+        }
+    };
+
+    that.remove = function(){
+        if(isEventBind){
+            cm.getConstructor(className, function(classConstructor){
+                classConstructor.prototype.removeEvent(params['event'], watcher);
+            });
+        }
+        return that;
+    };
+
+    init();
 };
