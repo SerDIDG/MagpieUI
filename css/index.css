@@ -3487,6 +3487,12 @@ button::-moz-focus-inner {
   background: #e8e8e8;
   border-radius: 3px 0 0 3px;
 }
+.pt__line-share .label:last-child {
+  border-radius: 0 3px 3px 0;
+}
+.pt__line-share .label:first-child:last-child {
+  border-radius: 3px;
+}
 .pt__line-share .count {
   background: #fafafa;
   border-radius: 0 3px 3px 0;
@@ -9494,6 +9500,9 @@ html.ie9 .com__palette .b-range {
   position: relative;
 }
 /* ******* COMPONENTS: TAGS ******* */
+.com__tags > .inner {
+  line-height: 18px;
+}
 .com__tags > .inner:after {
   content: ".";
   display: block;
@@ -9506,7 +9515,6 @@ html.ie9 .com__palette .b-range {
 .com__tags > .inner > .l {
   float: left;
   margin: 0 8px 0 0;
-  line-height: 18px;
 }
 .com__tags > .inner > .l .icon {
   display: inline-block;
