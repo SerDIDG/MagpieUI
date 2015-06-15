@@ -28,7 +28,6 @@ Part['Menu'] = (function(){
             target = cm.getObjFromEvent(e);
             if(cm.getStyle(item['drop'], 'visibility') == 'hidden' && !cm.isClass(item['node'], 'is-show')){
                 if(!cm.isParent(item['drop'], target, true)){
-                    cm.log(item['node']);
                     if(cm.isClass(item['node'], 'is-show')){
                         cm.removeClass(item['node'], 'is-show');
                     }else{
@@ -42,7 +41,6 @@ Part['Menu'] = (function(){
             e = cm.getEvent(e);
             target = cm.getRelatedTarget(e);
             if(!cm.isParent(item['node'], target, true)){
-                cm.log(item['node'], target);
                 cm.removeClass(item['node'], 'is-show');
             }
         });
