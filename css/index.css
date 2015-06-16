@@ -9365,6 +9365,9 @@ html.ie9 .com__palette .b-range {
 .com__slider > .inner > .slides.effect-edit > ul > li:first-child {
   display: block;
 }
+.com__slider > .inner > .slides.effect-edit > ul > li > .slide-area {
+  position: relative;
+}
 .com__slider > .inner > .slides.effect-fade > ul > li {
   display: none;
   position: absolute;
