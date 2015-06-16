@@ -27,7 +27,7 @@ cm.define('Com.Slider', {
         'arrows' : true,                // Display arrows, can hide exists arrows
         'effect' : 'fade',              // none | edit | fade | fade-out | push | pull | pull-parallax | pull-overlap
         'transition' : 'smooth',        // smooth | simple | acceleration | inhibition,
-        'height' : 'auto',           // auto | max | slide
+        'height' : 'auto',              // auto | max | slide
         'minHeight' : 48,               // Set min-height of slider, work with calculateMaxHeight parameter
         'hasBar' : false,
         'barDirection' : 'horizontal',  // horizontal | vertical
