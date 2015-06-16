@@ -41,6 +41,23 @@
     }
 }
 
+.cm__list-flex {
+    .display-flex;
+    .mx__align-items(flex-start);
+
+    &.pull-left {
+        .mx__align-items(flex-start);
+    }
+
+    &.pull-center {
+        .mx__align-items(center);
+    }
+
+    &.pull-right {
+        .mx__align-items(flex-end);
+    }
+}
+
 .cm__list-clear {
     margin: 0;
     padding: 0;

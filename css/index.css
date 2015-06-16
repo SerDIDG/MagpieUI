@@ -1883,6 +1883,26 @@ button::-moz-focus-inner {
   font: 400 13px/18px 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
 }
+.cm__list-flex {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+  -webkit-align-items: flex-start;
+  align-items: flex-start;
+}
+.cm__list-flex.pull-left {
+  -webkit-align-items: flex-start;
+  align-items: flex-start;
+}
+.cm__list-flex.pull-center {
+  -webkit-align-items: center;
+  align-items: center;
+}
+.cm__list-flex.pull-right {
+  -webkit-align-items: flex-end;
+  align-items: flex-end;
+}
 .cm__list-clear {
   margin: 0;
   padding: 0;
@@ -7218,7 +7238,16 @@ html.ie9 .com__palette .b-range {
 .com__dialog__inner {
   overflow: hidden;
 }
-/* Confirmation Dialog. Deprecated. */
+/* *** FONT *** */
+/* ******* COMPONENT: DIALOG: STUFF ******* */
+/* *** EDITABLE AREA *** */
+.com__dialog .pt__editable:hover > .border {
+  top: -8px;
+  right: -8px;
+  bottom: -8px;
+  left: -8px;
+}
+/* *** DEPRECATED > CONFIRMATION DIALOG *** */
 .com__dialog-confirm {
   padding: 16px 0 0;
 }
@@ -7230,14 +7259,6 @@ html.ie9 .com__palette .b-range {
 }
 .com__dialog-confirm .button-box input {
   width: 70px;
-}
-/* ******* COMPONENT: DIALOG: STUFF ******* */
-/* *** EDITABLE AREA *** */
-.com__dialog .pt__editable:hover > .border {
-  top: -8px;
-  right: -8px;
-  bottom: -8px;
-  left: -8px;
 }
 /* ******* COMPONENT: DIALOG: THEMES ******* */
 .com__dialog.theme-default > .bg,
@@ -7315,6 +7336,44 @@ html.ie9 .com__palette .b-range {
 .com__dialog.theme-black.has-close-inside > .window > .inner > .title {
   padding-right: 72px;
 }
+.com__dialog.theme-black {
+  color: #ffffff;
+}
+.com__dialog.theme-black .cm__inherit,
+.com__dialog.theme-black .link,
+.com__dialog.theme-black .link--inner,
+.com__dialog.theme-black .cm__empty,
+.com__dialog.theme-black a,
+.com__dialog.theme-black h1,
+.com__dialog.theme-black h2,
+.com__dialog.theme-black h3,
+.com__dialog.theme-black h4,
+.com__dialog.theme-black h5,
+.com__dialog.theme-black h6,
+.com__dialog.theme-black p,
+.com__dialog.theme-black dl,
+.com__dialog.theme-black ul,
+.com__dialog.theme-black ol,
+.com__dialog.theme-black hr,
+.com__dialog.theme-black h1,
+.com__dialog.theme-black h2,
+.com__dialog.theme-black h3,
+.com__dialog.theme-black h4,
+.com__dialog.theme-black h5,
+.com__dialog.theme-black h6,
+.com__dialog.theme-black p,
+.com__dialog.theme-black dl,
+.com__dialog.theme-black ul,
+.com__dialog.theme-black ol,
+.com__dialog.theme-black hr,
+.com__dialog.theme-black .form .hint,
+.com__dialog.theme-black .pt__box-item .title,
+.com__dialog.theme-black .pt__box-item .descr,
+.com__dialog.theme-black .pt__box-item .author,
+.com__dialog.theme-black .com__glossary .com__glossary__title,
+.com__dialog.theme-black .com__glossary .com__glossary__title {
+  color: #ffffff;
+}
 .com__dialog.theme-black > .window > .icon.default {
   background-image: url("../img/icons/medium/close-white.png");
 }
@@ -7322,6 +7381,45 @@ html.ie9 .com__palette .b-range {
   background-color: #111111;
 }
 .com__dialog.theme-black > .window > .inner > .title {
+  color: #ffffff;
+}
+/* *** FONT *** */
+.com__dialog-font--theme-black {
+  color: #ffffff;
+}
+.com__dialog-font--theme-black .cm__inherit,
+.com__dialog-font--theme-black .link,
+.com__dialog-font--theme-black .link--inner,
+.com__dialog-font--theme-black .cm__empty,
+.com__dialog-font--theme-black a,
+.com__dialog-font--theme-black h1,
+.com__dialog-font--theme-black h2,
+.com__dialog-font--theme-black h3,
+.com__dialog-font--theme-black h4,
+.com__dialog-font--theme-black h5,
+.com__dialog-font--theme-black h6,
+.com__dialog-font--theme-black p,
+.com__dialog-font--theme-black dl,
+.com__dialog-font--theme-black ul,
+.com__dialog-font--theme-black ol,
+.com__dialog-font--theme-black hr,
+.com__dialog-font--theme-black h1,
+.com__dialog-font--theme-black h2,
+.com__dialog-font--theme-black h3,
+.com__dialog-font--theme-black h4,
+.com__dialog-font--theme-black h5,
+.com__dialog-font--theme-black h6,
+.com__dialog-font--theme-black p,
+.com__dialog-font--theme-black dl,
+.com__dialog-font--theme-black ul,
+.com__dialog-font--theme-black ol,
+.com__dialog-font--theme-black hr,
+.com__dialog-font--theme-black .form .hint,
+.com__dialog-font--theme-black .pt__box-item .title,
+.com__dialog-font--theme-black .pt__box-item .descr,
+.com__dialog-font--theme-black .pt__box-item .author,
+.com__dialog-font--theme-black .com__glossary .com__glossary__title,
+.com__dialog-font--theme-black .com__glossary .com__glossary__title {
   color: #ffffff;
 }
 /* ******* COMPONENTS: PAGINATION ******* */
@@ -9351,6 +9449,9 @@ html.ie9 .com__palette .b-range {
 }
 .com__slider > .inner > .slides.effect-none > ul > li:first-child {
   display: block;
+}
+.com__slider > .inner > .slides.effect-none > ul > li > .slide-area {
+  position: relative;
 }
 .com__slider > .inner > .slides.effect-edit {
   position: relative;

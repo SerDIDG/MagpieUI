@@ -1,6 +1,7 @@
 /* ******* COMPONENTS: DIALOG ******* */
 
 .com__dialog {
+    .com__dialog-font;
     width: 100%;
     height: 100%;
     display: none;
@@ -99,7 +100,26 @@
     overflow: hidden;
 }
 
-/* Confirmation Dialog. Deprecated. */
+/* *** FONT *** */
+
+.com__dialog-font {
+
+}
+
+/* ******* COMPONENT: DIALOG: STUFF ******* */
+
+/* *** EDITABLE AREA *** */
+
+.com__dialog {
+    .pt__editable:hover > .border {
+        top: -8px;
+        right: -8px;
+        bottom: -8px;
+        left: -8px;
+    }
+}
+
+/* *** DEPRECATED > CONFIRMATION DIALOG *** */
 
 .com__dialog-confirm {
     padding: @CmIndent-Small 0 0;
@@ -117,19 +137,6 @@
     }
 }
 
-/* ******* COMPONENT: DIALOG: STUFF ******* */
-
-/* *** EDITABLE AREA *** */
-
-.com__dialog {
-    .pt__editable:hover > .border {
-        top: -8px;
-        right: -8px;
-        bottom: -8px;
-        left: -8px;
-    }
-}
-
 /* ******* COMPONENT: DIALOG: THEMES ******* */
 
 .com__dialog {
@@ -138,6 +145,8 @@
     // /* *** DEFAULT *** */
 
     &.theme-default {
+        .com__dialog-font--theme-default;
+
         > .bg {
             background: @ComDialog-Overlay;
 
@@ -239,6 +248,7 @@
 
     &.theme-black {
         &:extend(.com__dialog.theme-default all);
+        .com__dialog-font--theme-black;
 
         > .window {
             > .icon {
@@ -255,5 +265,18 @@
                 }
             }
         }
+    }
+}
+
+/* *** FONT *** */
+
+.com__dialog-font--theme-default {
+}
+
+.com__dialog-font--theme-black {
+    color: @CmColor-Font-Opposite;
+
+    .cm__inherit {
+        color: @CmColor-Font-Opposite;
     }
 }
