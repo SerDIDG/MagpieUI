@@ -58,11 +58,9 @@ header, main, aside, footer, section {
 }
 
 a {
-    outline: none;
-    cursor: pointer;
+    &:extend(.cm__link all);
 
     &:not(.button):not(.icon) {
-        &:extend(.cm__link all);
         &:extend(.cm__inherit all);
     }
 }

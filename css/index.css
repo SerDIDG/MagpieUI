@@ -1037,29 +1037,29 @@ section {
   display: block;
 }
 /* *** CONTENT TAGS *** */
-.cm__link:not(.button),
-.link:not(.button),
-.link--inner:not(.button),
-a:not(.button),
-.com__glossary .com__glossary__title:not(.button) {
+.cm__link,
+.link,
+.link--inner,
+a,
+.com__glossary .com__glossary__title {
   text-decoration: underline;
   color: #2985e0;
   outline: none;
   cursor: pointer;
 }
-.cm__link:not(.button):hover,
-.link:not(.button):hover,
-.link--inner:not(.button):hover,
-a:not(.button):hover,
-.com__glossary .com__glossary__title:not(.button):hover {
+.cm__link:hover,
+.link:hover,
+.link--inner:hover,
+a:hover,
+.com__glossary .com__glossary__title:hover {
   text-decoration: none;
   color: #1d73c9;
 }
-.cm__link:not(.button):active,
-.link:not(.button):active,
-.link--inner:not(.button):active,
-a:not(.button):active,
-.com__glossary .com__glossary__title:not(.button):active {
+.cm__link:active,
+.link:active,
+.link--inner:active,
+a:active,
+.com__glossary .com__glossary__title:active {
   color: #16599c;
 }
 .cm__tags,
@@ -7339,7 +7339,7 @@ html.ie9 .com__palette .b-range {
 .com__dialog.theme-black .link,
 .com__dialog.theme-black .link--inner,
 .com__dialog.theme-black .cm__empty,
-.com__dialog.theme-black a,
+.com__dialog.theme-black a:not(.button):not(.icon),
 .com__dialog.theme-black h1,
 .com__dialog.theme-black h2,
 .com__dialog.theme-black h3,
@@ -7387,7 +7387,7 @@ html.ie9 .com__palette .b-range {
 .com__dialog-font--theme-black .link,
 .com__dialog-font--theme-black .link--inner,
 .com__dialog-font--theme-black .cm__empty,
-.com__dialog-font--theme-black a,
+.com__dialog-font--theme-black a:not(.button):not(.icon),
 .com__dialog-font--theme-black h1,
 .com__dialog-font--theme-black h2,
 .com__dialog-font--theme-black h3,
@@ -7849,7 +7849,7 @@ html.ie9 .com__palette .b-range {
 .com__togglebox > dt .link,
 .com__togglebox > dt .link--inner,
 .com__togglebox > dt .cm__empty,
-.com__togglebox > dt a,
+.com__togglebox > dt a:not(.button):not(.icon),
 .com__togglebox > dt h1,
 .com__togglebox > dt h2,
 .com__togglebox > dt h3,
