@@ -41,9 +41,7 @@ header, main, aside, footer, section {
 /* *** CONTENT TAGS *** */
 
 .cm__link {
-    &:not(.button){
-        .cm__font--link;
-    }
+    .cm__font--link;
 }
 
 .cm__tags {
@@ -60,8 +58,10 @@ header, main, aside, footer, section {
 }
 
 a {
-    &:extend(.cm__link all);
-    &:extend(.cm__inherit all);
+    &:not(.button){
+        &:extend(.cm__link all);
+        &:extend(.cm__inherit all);
+    }
 }
 
 h1, h2, h3, h4, h5, h6, p, dl, ul, ol, hr {
