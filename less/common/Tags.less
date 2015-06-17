@@ -41,7 +41,9 @@ header, main, aside, footer, section {
 /* *** CONTENT TAGS *** */
 
 .cm__link {
-    .cm__font--link;
+    &:not(.button){
+        .cm__font--link;
+    }
 }
 
 .cm__tags {

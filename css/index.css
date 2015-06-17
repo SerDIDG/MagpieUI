@@ -1037,32 +1037,29 @@ section {
   display: block;
 }
 /* *** CONTENT TAGS *** */
-.cm__link,
-.link,
-.link--inner,
-a,
-.pt__listing-items ul li a,
-.com__glossary .com__glossary__title {
+.cm__link:not(.button),
+.link:not(.button),
+.link--inner:not(.button),
+a:not(.button),
+.com__glossary .com__glossary__title:not(.button) {
   text-decoration: underline;
   color: #2985e0;
   outline: none;
   cursor: pointer;
 }
-.cm__link:hover,
-.link:hover,
-.link--inner:hover,
-a:hover,
-.pt__listing-items ul li a:hover,
-.com__glossary .com__glossary__title:hover {
+.cm__link:not(.button):hover,
+.link:not(.button):hover,
+.link--inner:not(.button):hover,
+a:not(.button):hover,
+.com__glossary .com__glossary__title:not(.button):hover {
   text-decoration: none;
   color: #1d73c9;
 }
-.cm__link:active,
-.link:active,
-.link--inner:active,
-a:active,
-.pt__listing-items ul li a:active,
-.com__glossary .com__glossary__title:active {
+.cm__link:not(.button):active,
+.link:not(.button):active,
+.link--inner:not(.button):active,
+a:not(.button):active,
+.com__glossary .com__glossary__title:not(.button):active {
   color: #16599c;
 }
 .cm__tags,
@@ -5106,7 +5103,6 @@ button::-moz-focus-inner {
 .pt__listing .list-title .link,
 .pt__listing .list-title .link--inner,
 .pt__listing .list-title a,
-.pt__listing .list-title .pt__listing-items ul li a,
 .pt__listing .list-title .com__glossary .com__glossary__title {
   font-weight: 600;
 }
@@ -8040,7 +8036,6 @@ html.ie9 .com__palette .b-range {
 .com__togglebox.is-hide > dt .link,
 .com__togglebox.is-hide > dt .link--inner,
 .com__togglebox.is-hide > dt a,
-.com__togglebox.is-hide > dt .pt__listing-items ul li a,
 .com__togglebox.is-hide > dt .com__glossary .com__glossary__title {
   color: #666666;
 }
@@ -8048,7 +8043,6 @@ html.ie9 .com__palette .b-range {
 .com__togglebox.is-hide > dt .link:hover,
 .com__togglebox.is-hide > dt .link--inner:hover,
 .com__togglebox.is-hide > dt a:hover,
-.com__togglebox.is-hide > dt .pt__listing-items ul li a:hover,
 .com__togglebox.is-hide > dt .com__glossary .com__glossary__title:hover {
   color: #1d73c9;
 }
@@ -8062,7 +8056,6 @@ html.ie9 .com__palette .b-range {
 .com__togglebox.is-show > dt .link,
 .com__togglebox.is-show > dt .link--inner,
 .com__togglebox.is-show > dt a,
-.com__togglebox.is-show > dt .pt__listing-items ul li a,
 .com__togglebox.is-show > dt .com__glossary .com__glossary__title {
   color: #666666;
 }
@@ -8070,7 +8063,6 @@ html.ie9 .com__palette .b-range {
 .com__togglebox.is-show > dt .link:hover,
 .com__togglebox.is-show > dt .link--inner:hover,
 .com__togglebox.is-show > dt a:hover,
-.com__togglebox.is-show > dt .pt__listing-items ul li a:hover,
 .com__togglebox.is-show > dt .com__glossary .com__glossary__title:hover {
   color: #1d73c9;
 }
@@ -8099,7 +8091,6 @@ html.ie9 .com__palette .b-range {
 .com__togglebox.has-title-bg.is-hide > dt .link,
 .com__togglebox.has-title-bg.is-hide > dt .link--inner,
 .com__togglebox.has-title-bg.is-hide > dt a,
-.com__togglebox.has-title-bg.is-hide > dt .pt__listing-items ul li a,
 .com__togglebox.has-title-bg.is-hide > dt .com__glossary .com__glossary__title {
   color: #666666;
 }
@@ -8107,7 +8098,6 @@ html.ie9 .com__palette .b-range {
 .com__togglebox.has-title-bg.is-hide > dt .link:hover,
 .com__togglebox.has-title-bg.is-hide > dt .link--inner:hover,
 .com__togglebox.has-title-bg.is-hide > dt a:hover,
-.com__togglebox.has-title-bg.is-hide > dt .pt__listing-items ul li a:hover,
 .com__togglebox.has-title-bg.is-hide > dt .com__glossary .com__glossary__title:hover {
   color: #1d73c9;
 }
@@ -8121,7 +8111,6 @@ html.ie9 .com__palette .b-range {
 .com__togglebox.has-title-bg.is-show > dt .link,
 .com__togglebox.has-title-bg.is-show > dt .link--inner,
 .com__togglebox.has-title-bg.is-show > dt a,
-.com__togglebox.has-title-bg.is-show > dt .pt__listing-items ul li a,
 .com__togglebox.has-title-bg.is-show > dt .com__glossary .com__glossary__title {
   color: #666666;
 }
@@ -8129,7 +8118,6 @@ html.ie9 .com__palette .b-range {
 .com__togglebox.has-title-bg.is-show > dt .link:hover,
 .com__togglebox.has-title-bg.is-show > dt .link--inner:hover,
 .com__togglebox.has-title-bg.is-show > dt a:hover,
-.com__togglebox.has-title-bg.is-show > dt .pt__listing-items ul li a:hover,
 .com__togglebox.has-title-bg.is-show > dt .com__glossary .com__glossary__title:hover {
   color: #1d73c9;
 }
