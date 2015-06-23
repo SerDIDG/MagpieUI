@@ -1075,8 +1075,6 @@ ul,
 ol,
 hr {
   margin: 0 0 24px;
-  font: 400 13px/18px 'Open Sans', arial, helvetica, sans-serif;
-  color: #666666;
   padding: 0;
   margin: 0 0 18px;
 }
@@ -3486,6 +3484,9 @@ button::-moz-focus-inner {
 }
 .pt__line-share .icon.default.google {
   background-image: url("../img/icons/large/google.png");
+}
+.pt__line-share .icon.default.linkedin {
+  background-image: url("../img/icons/large/linkedin.png");
 }
 .pt__line-share .icon.default.favorite {
   background-image: url("../img/icons/large/favorite.png");
