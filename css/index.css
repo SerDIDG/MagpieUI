@@ -3437,6 +3437,9 @@ button::-moz-focus-inner {
   display: inline-block;
   vertical-align: top;
 }
+.pt__line-share > ul > li {
+  line-height: normal;
+}
 .pt__line-share > ul > li a {
   display: block;
   font-size: 0;
@@ -4707,13 +4710,13 @@ button::-moz-focus-inner {
   padding: 12px;
 }
 .pt__grid.indent-0px > ul {
-  margin: 0px 0px 0px;
+  margin: 0;
 }
 .pt__grid.indent-0px > ul:first-child {
-  margin: 0px;
+  margin: 0;
 }
 .pt__grid.indent-0px > ul > li {
-  padding: 0px;
+  padding: 0;
 }
 .pt__grid.indent-4px > ul {
   margin: 2px -2px -2px;

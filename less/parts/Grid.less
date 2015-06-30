@@ -159,7 +159,21 @@
     }
 }
 
-.pt__grid__indent (@indent: @PtGrid-Indent) {
+.pt__grid__indent (@indent: @PtGrid-Indent) when (@indent = 0) {
+    > ul {
+        margin: 0;
+
+        &:first-child {
+            margin: 0;
+        }
+
+        > li {
+            padding: 0;
+        }
+    }
+}
+
+.pt__grid__indent (@indent: @PtGrid-Indent) when (@indent > 0) {
     @half__indent: @indent / 2;
 
     > ul {
