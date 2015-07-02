@@ -176,6 +176,8 @@ function(params){
                 }else{
                     setItemVideo(i, item, itemOld);
                 }
+            }else{
+                that.isProcess = false;
             }
         }
     };
