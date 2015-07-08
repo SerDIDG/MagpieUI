@@ -82,12 +82,9 @@
 /* *** FIELD WITH ICON *** */
 
 .form-field {
-    @iconSize: @CmForm-FieldHeight - @CmBorder-Width * 2;
     position: relative;
 
     .icon {
-        width: @iconSize;
-        height: @iconSize;
         min-height: 0;
         padding: 0;
         position: absolute;
@@ -96,38 +93,47 @@
         background-repeat: no-repeat;
         border-radius: max(@CmBorder-Radius - 2px, 0px);
         color: @CmColor-Border;
+    }
 
-        &.xxx-small,
-        &.xx-small,
-        &.x-small,
-        &.small,
-        &.medium,
-        &.large {
-            width: @iconSize;
-            height: @iconSize;
+    .cm__form-field--size();
+}
+
+.cm__form-field--size (@height: @CmForm-FieldHeight, @paddingX: @CmInput-Padding, @borderWidth: @CmBorder-Width, @lineHeight: @CmFont-Base-LineHeight){
+    @paddingY: max(round((@height - @lineHeight - @borderWidth * 2) / 2), 0px);
+    @iconSize: @height - @borderWidth * 2;
+
+    .input {
+        height: @height;
+        padding: @paddingY @paddingX;
+        border-width: @borderWidth;
+    }
+
+    .icon {
+        height: @iconSize;
+        width: @iconSize;
+    }
+
+    &.has-icon-right {
+        .icon {
+            .mx__position(@borderWidth, @borderWidth, auto, auto);
+        }
+
+        .input {
+            padding-right: @iconSize + @paddingX;
         }
     }
 
     &.has-icon-left {
         .icon {
-            .mx__position(@CmBorder-Width, auto, auto, @CmBorder-Width);
+            .mx__position(@borderWidth, auto, auto, @borderWidth);
         }
 
         .input {
-            padding-left: @CmForm-FieldHeight;
-        }
-    }
-
-    &.has-icon-right {
-        .icon {
-            .mx__position(@CmBorder-Width, @CmBorder-Width, auto, auto);
-        }
-
-        .input {
-            padding-right: @CmForm-FieldHeight;
+            padding-left: @iconSize + @paddingX;
         }
     }
 }
+
 
 /* *** BUTTONS CONTAINER *** */
 

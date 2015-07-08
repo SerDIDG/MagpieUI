@@ -1985,8 +1985,6 @@ button::-moz-focus-inner {
   position: relative;
 }
 .form-field .icon {
-  width: 26px;
-  height: 26px;
   min-height: 0;
   padding: 0;
   position: absolute;
@@ -1996,30 +1994,21 @@ button::-moz-focus-inner {
   border-radius: 1px;
   color: #cccccc;
 }
-.form-field .icon.xxx-small,
-.form-field .icon.xx-small,
-.form-field .icon.x-small,
-.form-field .icon.small,
-.form-field .icon.medium,
-.form-field .icon.large {
-  width: 26px;
+.form-field .input,
+.form-field input[type="text"],
+.form-field input[type="email"],
+.form-field input[type="number"],
+.form-field input[type="time"],
+.form-field input[type="password"],
+.form-field textarea,
+.form-field select {
+  height: 28px;
+  padding: 4px 6px;
+  border-width: 1px;
+}
+.form-field .icon {
   height: 26px;
-}
-.form-field.has-icon-left .icon {
-  top: 1px;
-  right: auto;
-  bottom: auto;
-  left: 1px;
-}
-.form-field.has-icon-left .input,
-.form-field.has-icon-left input[type="text"],
-.form-field.has-icon-left input[type="email"],
-.form-field.has-icon-left input[type="number"],
-.form-field.has-icon-left input[type="time"],
-.form-field.has-icon-left input[type="password"],
-.form-field.has-icon-left textarea,
-.form-field.has-icon-left select {
-  padding-left: 28px;
+  width: 26px;
 }
 .form-field.has-icon-right .icon {
   top: 1px;
@@ -2035,7 +2024,23 @@ button::-moz-focus-inner {
 .form-field.has-icon-right input[type="password"],
 .form-field.has-icon-right textarea,
 .form-field.has-icon-right select {
-  padding-right: 28px;
+  padding-right: 32px;
+}
+.form-field.has-icon-left .icon {
+  top: 1px;
+  right: auto;
+  bottom: auto;
+  left: 1px;
+}
+.form-field.has-icon-left .input,
+.form-field.has-icon-left input[type="text"],
+.form-field.has-icon-left input[type="email"],
+.form-field.has-icon-left input[type="number"],
+.form-field.has-icon-left input[type="time"],
+.form-field.has-icon-left input[type="password"],
+.form-field.has-icon-left textarea,
+.form-field.has-icon-left select {
+  padding-left: 32px;
 }
 /* *** BUTTONS CONTAINER *** */
 .btn-wrap {
