@@ -38,14 +38,15 @@
         }
 
         ul {
-            .mx__position(@PtMenu-Dropdown-IndentY - (@PtMenu-BorderWidth + @PtMenu-IndentY), auto, auto, calc(100% + @PtMenu-Dropdown-IndentX));
+            @indentX: ~'calc(100% - @{PtMenu-Dropdown-IndentX})';
+            .mx__position(@PtMenu-Dropdown-IndentY - (@PtMenu-BorderWidth + @PtMenu-IndentY), auto, auto, @indentX);
 
             &.pull-left {
-                .mx__position(@PtMenu-Dropdown-IndentY - (@PtMenu-BorderWidth + @PtMenu-IndentY), auto, auto, calc(100% + @PtMenu-Dropdown-IndentX));
+                .mx__position(@PtMenu-Dropdown-IndentY - (@PtMenu-BorderWidth + @PtMenu-IndentY), auto, auto, @indentX);
             }
 
             &.pull-right {
-                .mx__position(@PtMenu-Dropdown-IndentY - (@PtMenu-BorderWidth + @PtMenu-IndentY), calc(100% + @PtMenu-Dropdown-IndentX), auto, auto);
+                .mx__position(@PtMenu-Dropdown-IndentY - (@PtMenu-BorderWidth + @PtMenu-IndentY), @indentX, auto, auto);
             }
         }
 

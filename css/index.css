@@ -3427,6 +3427,9 @@ button::-moz-focus-inner {
   font-weight: 600;
 }
 /* ******* PART: LINE: SHARE ******* */
+.pt__line-share {
+  overflow: hidden;
+}
 .pt__line-share > ul {
   margin: 0;
   padding: 0;
@@ -3866,17 +3869,17 @@ button::-moz-focus-inner {
   top: -5px;
   right: auto;
   bottom: auto;
-  left: calc(100%);
+  left: calc(100% - 0px);
 }
 .pt__menu-dropdown--base li ul.pull-left {
   top: -5px;
   right: auto;
   bottom: auto;
-  left: calc(100%);
+  left: calc(100% - 0px);
 }
 .pt__menu-dropdown--base li ul.pull-right {
   top: -5px;
-  right: calc(100%);
+  right: calc(100% - 0px);
   bottom: auto;
   left: auto;
 }
@@ -4427,17 +4430,17 @@ button::-moz-focus-inner {
   top: -5px;
   right: auto;
   bottom: auto;
-  left: calc(100%);
+  left: calc(100% - 0px);
 }
 .pt__editable.is-editable > .menu .pt__menu-dropdown li ul.pull-left {
   top: -5px;
   right: auto;
   bottom: auto;
-  left: calc(100%);
+  left: calc(100% - 0px);
 }
 .pt__editable.is-editable > .menu .pt__menu-dropdown li ul.pull-right {
   top: -5px;
-  right: calc(100%);
+  right: calc(100% - 0px);
   bottom: auto;
   left: auto;
 }
@@ -6615,17 +6618,17 @@ button::-moz-focus-inner {
   top: -5px;
   right: auto;
   bottom: auto;
-  left: calc(100%);
+  left: calc(100% - 0px);
 }
 .com__tooltip.com-action-menu-tooltip .pt__menu .pt__menu-dropdown li ul.pull-left {
   top: -5px;
   right: auto;
   bottom: auto;
-  left: calc(100%);
+  left: calc(100% - 0px);
 }
 .com__tooltip.com-action-menu-tooltip .pt__menu .pt__menu-dropdown li ul.pull-right {
   top: -5px;
-  right: calc(100%);
+  right: calc(100% - 0px);
   bottom: auto;
   left: auto;
 }
@@ -8260,17 +8263,17 @@ html.ie9 .com__palette .b-range {
   top: -5px;
   right: auto;
   bottom: auto;
-  left: calc(100%);
+  left: calc(100% - 0px);
 }
 .com__tabset__head-menu .pt__menu-dropdown li ul.pull-left {
   top: -5px;
   right: auto;
   bottom: auto;
-  left: calc(100%);
+  left: calc(100% - 0px);
 }
 .com__tabset__head-menu .pt__menu-dropdown li ul.pull-right {
   top: -5px;
-  right: calc(100%);
+  right: calc(100% - 0px);
   bottom: auto;
   left: auto;
 }
