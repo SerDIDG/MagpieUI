@@ -252,9 +252,11 @@ function(params){
         if(response){
             if(/json|jsonp/i.test(config['type'])){
                 if(response['data']){
-                    that.callbacks.render(that, that.covertData(response['data']));
+                    that.callbacks.render(that, that.convertData(response['data']));
                 }
             }
+        }else{
+            that.callbacks.render(that, []);
         }
     };
 

@@ -68,27 +68,30 @@
                                 'response' : function(that, query, config, responce){
                                     var items = [],
                                             item;
-                                    if(responce && responce['data']){
+                                    if(responce && responce['items']){
                                         // Filter data.
-                                        cm.forEach(responce['data']['items'], function(dataItem){
+                                        cm.forEach(responce['items'], function(dataItem){
                                             item = {
-                                                'value' : dataItem['video']['id'],
-                                                'text' : dataItem['video']['title']
+                                                'value' : dataItem['snippet']['resourceId']['videoId'],
+                                                'text' : dataItem['snippet']['title']
                                             };
                                             items.push(item);
                                         });
                                         // Render data. We use that.callbacks.filter method for filter data, because youtube return only 25 last movies.
                                         that.callbacks.render(that, that.callbacks.filter(that, query, items));
+                                    }else{
+                                        that.callbacks.render(that, []);
                                     }
                                 }
                             };
+                            var apiKey = 'AIzaSyAqlbfLg5KtgnYVi1eJRsoHpmno_wzJ6mc';
 
                             new Com.Autocomplete({
                                 'input' : node,
                                 'callbacks' : callbacks,
                                 'ajax' : {
                                     'type' : 'jsonp',
-                                    'url' : 'http://gdata.youtube.com/feeds/api/playlists/PL164841586808EE79?v=2&alt=jsonc&&max-results=25&callback=%callback%'
+                                    'url' : 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=PL164841586808EE79&maxResults=50&callback=%callback%&key=' + apiKey
                                 }
                             });
                             break;
@@ -177,28 +180,32 @@
     var callbacks = {
         'response' : function(that, query, config, responce){
             var items = [],
-                item;
-            if(responce && responce['data']){
+                    item;
+            if(responce && responce['items']){
                 // Filter data.
-                cm.forEach(responce['data']['items'], function(dataItem){
+                cm.forEach(responce['items'], function(dataItem){
                     item = {
-                        'value' : dataItem['video']['id'],
-                        'text' : dataItem['video']['title']
+                        'value' : dataItem['snippet']['resourceId']['videoId'],
+                        'text' : dataItem['snippet']['title']
                     };
                     items.push(item);
                 });
-                // Render data. We use that.callbacks.filter method for filter data, because youtube return only 25 last movies.
+                // Render data. We use that.callbacks.filter method for filter data, because youtube return only 50 last movies.
                 that.callbacks.render(that, that.callbacks.filter(that, query, items));
+            }else{
+                // Empty results handler
+                that.callbacks.render(that, []);
             }
         }
     };
+    var apiKey = '{YOUR_API_KEY}';
 
     new Com.Autocomplete({
         'input' : node,
         'callbacks' : callbacks,
         'ajax' : {
             'type' : 'jsonp',
-            'url' : 'http://gdata.youtube.com/feeds/api/playlists/PL164841586808EE79?v=2&alt=jsonc&&max-results=25&callback=%callback%'
+            'url' : 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=PL164841586808EE79&maxResults=50&callback=%callback%&key=' + apiKey
         }
     });
 </script></textarea>
