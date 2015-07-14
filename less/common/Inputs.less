@@ -8,7 +8,7 @@
     padding: @padding @CmInput-Padding;
     margin: 0;
     vertical-align: top;
-    background: #fff;
+    background: @CmInput-DefaultBackground;
     border: @CmBorder-Default;
     border-radius: @CmBorder-Radius;
     box-shadow: none;
@@ -18,17 +18,19 @@
     .mx__transition(background border-color color box-shadow text-shadow, @CmUI-Transition-Duration);
 
     &:hover {
+        background: @CmInput-HoverBackground;
         border-color: @CmColor-BorderHover;
     }
 
     &.input-focus,
     &:focus {
+        background: @CmInput-ActiveBackground;
         border-color: @CmColor-BorderActive;
     }
 
     &.input-disabled,
     &[disabled] {
-        background-color: @CmColor-Secondary-LightHighlight;
+        background-color: @CmInput-DisabledBackground;
         border-color: @CmColor-BorderDisabled;
     }
 

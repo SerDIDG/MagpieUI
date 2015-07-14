@@ -1207,7 +1207,7 @@ select {
   padding: 4px 6px;
   margin: 0;
   vertical-align: top;
-  background: #fff;
+  background: #ffffff;
   border: 1px solid #cccccc;
   border-radius: 3px;
   box-shadow: none;
@@ -1228,6 +1228,7 @@ input[type="time"]:hover,
 input[type="password"]:hover,
 textarea:hover,
 select:hover {
+  background: #ffffff;
   border-color: #a6a6a6;
 }
 .input.input-focus,
@@ -1246,6 +1247,7 @@ textarea.input-focus,
 textarea:focus,
 select.input-focus,
 select:focus {
+  background: #ffffff;
   border-color: #2985e0;
 }
 .input.input-disabled,
@@ -6465,7 +6467,7 @@ button::-moz-focus-inner {
   padding: 4px 6px;
   margin: 0;
   vertical-align: top;
-  background: #fff;
+  background: #ffffff;
   border: 1px solid #cccccc;
   border-radius: 3px;
   box-shadow: none;
@@ -6482,10 +6484,12 @@ button::-moz-focus-inner {
   padding: 4px;
 }
 .com__select-multi .inner:hover {
+  background: #ffffff;
   border-color: #a6a6a6;
 }
 .com__select-multi .inner.input-focus,
 .com__select-multi .inner:focus {
+  background: #ffffff;
   border-color: #2985e0;
 }
 .com__select-multi .inner.input-disabled,
