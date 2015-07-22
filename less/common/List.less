@@ -31,6 +31,18 @@
         display: inline-block;
         vertical-align: top;
     }
+
+    &.pull-left {
+        text-align: left;
+    }
+
+    &.pull-center {
+        text-align: center;
+    }
+
+    &.pull-right {
+        text-align: right;
+    }
 }
 
 .cm__list-inline--base {
@@ -43,18 +55,18 @@
 
 .cm__list-flex {
     .display-flex;
-    .mx__align-items(flex-start);
+    .mx__justify-content(flex-start);
 
     &.pull-left {
-        .mx__align-items(flex-start);
+        .mx__justify-content(flex-start);
     }
 
     &.pull-center {
-        .mx__align-items(center);
+        .mx__justify-content(center);
     }
 
     &.pull-right {
-        .mx__align-items(flex-end);
+        .mx__justify-content(flex-end);
     }
 }
 

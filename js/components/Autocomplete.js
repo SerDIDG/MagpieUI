@@ -15,7 +15,9 @@ cm.define('Com.Autocomplete', {
         'onClear',
         'onSelect',
         'onChange',
-        'onClickSelect'
+        'onClickSelect',
+        'onAbort',
+        'onError'
     ],
     'params' : {
         'input' : cm.Node('input', {'type' : 'text'}),      // HTML input node.
@@ -30,7 +32,7 @@ cm.define('Com.Autocomplete', {
             'type' : 'json',
             'method' : 'get',
             'url' : '',                                     // Request URL. Variables: %query%, %callback%.
-            'params' : ''                                   // Params string or object. Variables: %query%, %callback%.
+            'params' : ''                                   // Params object. Variables: %query%, %callback%.
         },
         'langs' : {
             'loader' : 'Searching for: %query%.'            // Variable: %query%.
@@ -152,20 +154,21 @@ function(params){
     };
 
     var requestHandler = function(){
-        var query = that.params['input'].value;
+        var query = that.params['input'].value,
+            config = cm.clone(that.params['ajax']);
         // Clear tooltip ajax/static delay and filtered items list
         requestDelay && clearTimeout(requestDelay);
         that.selectedItemIndex = null;
         that.registeredItems = [];
-        that.callbacks.abort(that, ajaxHandler);
+        that.abort();
 
         if(query.length >= that.params['minLength']){
             requestDelay = setTimeout(function(){
                 if(that.isAjax){
                     if(that.params['showLoader']){
-                        that.callbacks.loader(that, query);
+                        that.callbacks.loader(that, config, query);
                     }
-                    ajaxHandler = that.callbacks.request(that, query, that.params['ajax']);
+                    request(config, query);
                 }else{
                     that.callbacks.data(that, query, that.params['data']);
                 }
@@ -173,6 +176,21 @@ function(params){
         }else{
             that.hide();
         }
+    };
+
+    var request = function(config, query){
+        config = that.callbacks.prepare(that, config, query);
+        // Return ajax handler (XMLHttpRequest) to providing abort method.
+        that.ajaxHandler = cm.ajax(
+            cm.merge(config, {
+                'onSuccess' : function(response){
+                    that.callbacks.response(that, config, query, response);
+                },
+                'onError' : function(){
+                    that.callbacks.error(that, config, query);
+                }
+            })
+        );
     };
 
     var setListItem = function(index){
@@ -230,44 +248,37 @@ function(params){
 
     /* *** AJAX *** */
 
-    that.callbacks.prepare = function(that, query, config){
-        config['url'] = config['url'].replace('%query%', query);
-        config['params'] = config['params'].replace('%query%', query);
+    that.callbacks.prepare = function(that, config, query){
+        config['url'] = cm.strReplace(config['url'], {
+            '%query%' : query
+        });
+        config['params'] = cm.strReplace(config['params'], {
+            '%query%' : query
+        });
         return config;
     };
 
-    that.callbacks.request = function(that, query, config){
-        config = that.callbacks.prepare(that, query, config);
-        // Return ajax handler (XMLHttpRequest) to providing abort method.
-        return cm.ajax(
-            cm.merge(config, {
-                'handler' : function(response){
-                    that.callbacks.response(that, query, config, response);
-                }
-            })
-        );
+    that.callbacks.filter = function(that, config, query, response){
+        return response;
     };
 
-    that.callbacks.response = function(that, query, config, response){
+    that.callbacks.response = function(that, config, query, response){
         if(response){
-            if(/json|jsonp/i.test(config['type'])){
-                if(response['data']){
-                    that.callbacks.render(that, that.convertData(response['data']));
-                }
-            }
+            response = that.callbacks.filter(that, config, query, response);
+        }
+        if(!cm.isEmpty(response)){
+            that.callbacks.render(that, that.convertData(response));
         }else{
             that.callbacks.render(that, []);
         }
     };
 
-    that.callbacks.abort = function(that, ajaxHandler){
-        if(ajaxHandler && ajaxHandler.abort){
-            ajaxHandler.abort();
-        }
-        return ajaxHandler;
+    that.callbacks.error = function(that, config, query){
+        that.hide();
+        that.triggerEvent('onError');
     };
 
-    that.callbacks.loader = function(that, query){
+    that.callbacks.loader = function(that, config, query){
         var nodes = {};
         // Render Structure
         nodes['container'] = cm.Node('div', {'class' : 'pt__listing-items disabled'},
@@ -290,13 +301,13 @@ function(params){
 
     that.callbacks.data = function(that, query, items){
         // Filter data
-        items = that.callbacks.filter(that, query, items);
+        items = that.callbacks.query(that, query, items);
         that.callbacks.render(that, items);
     };
 
     /* *** HELPERS *** */
 
-    that.callbacks.filter = function(that, query, items){
+    that.callbacks.query = function(that, query, items){
         var filteredItems = [];
         cm.forEach(items, function(item){
             if(item['text'].toLowerCase().indexOf(query.toLowerCase()) > -1){
@@ -466,6 +477,13 @@ function(params){
 
     that.hide = function(){
         that.components['tooltip'].hide();
+        return that;
+    };
+
+    that.abort = function(){
+        if(that.ajaxHandler && that.ajaxHandler.abort){
+            that.ajaxHandler.abort();
+        }
         return that;
     };
 

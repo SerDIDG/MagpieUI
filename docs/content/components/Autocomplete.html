@@ -64,34 +64,41 @@
                             break;
 
                         case 'youtube' :
+                            var apiKey = 'AIzaSyAqlbfLg5KtgnYVi1eJRsoHpmno_wzJ6mc';
                             var callbacks = {
-                                'response' : function(that, query, config, responce){
-                                    var items = [],
-                                            item;
-                                    if(responce && responce['items']){
-                                        // Filter data.
-                                        cm.forEach(responce['items'], function(dataItem){
-                                            item = {
-                                                'value' : dataItem['snippet']['resourceId']['videoId'],
-                                                'text' : dataItem['snippet']['title']
+                                'filter' : function(that, config, query, response){
+                                    var data = [],
+                                        newItem;
+                                    // Here we filter youtube data and prepare clear object to render
+                                    if(response['items'] && !cm.isEmpty(response['items'])){
+                                        cm.forEach(response['items'], function(item){
+                                            newItem = {
+                                                'value' : item['snippet']['resourceId']['videoId'],
+                                                'text' : item['snippet']['title']
                                             };
-                                            items.push(item);
+                                            data.push(newItem);
                                         });
-                                        // Render data. We use that.callbacks.filter method for filter data, because youtube return only 25 last movies.
-                                        that.callbacks.render(that, that.callbacks.filter(that, query, items));
-                                    }else{
-                                        that.callbacks.render(that, []);
                                     }
+                                    // We request just 50 last items, so we need to filter it by query
+                                    data = that.callbacks.query(that, query, data);
+                                    // Return filtered response
+                                    return data;
                                 }
                             };
-                            var apiKey = 'AIzaSyAqlbfLg5KtgnYVi1eJRsoHpmno_wzJ6mc';
 
                             new Com.Autocomplete({
                                 'input' : node,
                                 'callbacks' : callbacks,
                                 'ajax' : {
-                                    'type' : 'jsonp',
-                                    'url' : 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=PL164841586808EE79&maxResults=50&callback=%callback%&key=' + apiKey
+                                    'type' : 'json',
+                                    'url' : 'https://www.googleapis.com/youtube/v3/playlistItems',
+                                    'params' : {
+                                        'part' : 'snippet',
+                                        'playlistId' : 'PL164841586808EE79',
+                                        'maxResults' : 50,
+                                        'order' : 'date',
+                                        'key' : apiKey
+                                    }
                                 }
                             });
                             break;
@@ -177,35 +184,41 @@
         <br>
         <textarea class="pt__box-code cm-autoresize" readonly>
 <script type="text/javascript">
+    var apiKey = '{YOUR_API_KEY}';
     var callbacks = {
-        'response' : function(that, query, config, responce){
-            var items = [],
-                    item;
-            if(responce && responce['items']){
-                // Filter data.
-                cm.forEach(responce['items'], function(dataItem){
-                    item = {
-                        'value' : dataItem['snippet']['resourceId']['videoId'],
-                        'text' : dataItem['snippet']['title']
+        'filter' : function(that, config, query, response){
+            var data = [],
+                newItem;
+            // Here we filter youtube data and prepare clear object to render
+            if(response['items'] && !cm.isEmpty(response['items'])){
+                cm.forEach(response['items'], function(item){
+                    newItem = {
+                        'value' : item['snippet']['resourceId']['videoId'],
+                        'text' : item['snippet']['title']
                     };
-                    items.push(item);
+                    data.push(newItem);
                 });
-                // Render data. We use that.callbacks.filter method for filter data, because youtube return only 50 last movies.
-                that.callbacks.render(that, that.callbacks.filter(that, query, items));
-            }else{
-                // Empty results handler
-                that.callbacks.render(that, []);
             }
+            // We request just 50 last items, so we need to filter it by query
+            data = that.callbacks.query(that, query, data);
+            // Return filtered response
+            return data;
         }
     };
-    var apiKey = '{YOUR_API_KEY}';
 
     new Com.Autocomplete({
         'input' : node,
         'callbacks' : callbacks,
         'ajax' : {
-            'type' : 'jsonp',
-            'url' : 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=PL164841586808EE79&maxResults=50&callback=%callback%&key=' + apiKey
+            'type' : 'json',
+            'url' : 'https://www.googleapis.com/youtube/v3/playlistItems',
+            'params' : {
+                'part' : 'snippet',
+                'playlistId' : 'PL164841586808EE79',
+                'maxResults' : 50,
+                'order' : 'date',
+                'key' : apiKey
+            }
         }
     });
 </script></textarea>

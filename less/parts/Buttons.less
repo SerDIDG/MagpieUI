@@ -1,0 +1,58 @@
+/* ******* PARTS: BUTTONS ******* */
+
+.pt__buttons {
+    @buttonIndent: round(@CmForm-ButtonsIndent / 2);
+
+    .cm__box;
+    .cm__list-inline;
+    margin-top: @CmIndent-Medium;
+    margin-right: -@buttonIndent;
+    margin-left: -@buttonIndent;
+
+    &:first-child {
+        margin-top: 0;
+    }
+
+    .button,
+    .browse-button,
+    .com-action-menu {
+        margin: 0 @buttonIndent;
+    }
+
+    &.pull-right {
+    }
+
+    &.pull-left {
+    }
+
+    &.pull-center {
+    }
+
+    &.pull-justify {
+        .display-flex;
+
+        .button,
+        .browse-button,
+        .com-action-menu {
+            .mx__flex(1);
+        }
+    }
+
+    &.is-box {
+        margin-left: 0;
+        margin-right: 0;
+
+        .button,
+        .browse-button,
+        .com-action-menu {
+            .cm__text-nowrap;
+            width: 100%;
+            display: block;
+            margin: @CmForm-ButtonsIndent 0 0 0;
+
+            &:first-child {
+                margin: 0;
+            }
+        }
+    }
+}

@@ -266,6 +266,18 @@ cm.arrayToObject = function(a){
     return o;
 };
 
+cm.objectReplace = function(o, vars){
+    var newO = cm.clone(o);
+    cm.forEach(newO, function(value, key){
+        if(typeof value == 'object'){
+            newO[key] = cm.objectReplace(value, vars);
+        }else{
+            newO[key] = cm.strReplace(value, vars);
+        }
+    });
+    return newO;
+};
+
 cm.isEmpty = function(el){
     if(!el){
         return true;
@@ -347,6 +359,7 @@ cm.errorLog = function(o){
             'message' : '',
             'langs' : {
                 'error' : 'Error!',
+                'success' : 'Success!',
                 'attention' : 'Attention!',
                 'common' : 'Common'
             }
@@ -565,6 +578,30 @@ cm.onReady = function(handler, isMessage){
     try{
         cm.addEvent(window, 'load', execute);
     }catch(e){}
+};
+
+cm.addScrollEvent = function(node, callback, useCapture){
+    useCapture = typeof useCapture == 'undefined' ? false : useCapture;
+    if(cm.isNode(node)){
+        if(/body|html/gi.test(node.tagName)){
+            cm.addEvent(window, 'scroll', callback, useCapture);
+        }else{
+            cm.addEvent(node, 'scroll', callback, useCapture);
+        }
+    }
+    return node;
+};
+
+cm.removeScrollEvent = function(node, callback, useCapture){
+    useCapture = typeof useCapture == 'undefined' ? false : useCapture;
+    if(cm.isNode(node)){
+        if(/body|html/gi.test(node.tagName)){
+            cm.removeEvent(window, 'scroll', callback, useCapture);
+        }else{
+            cm.removeEvent(node, 'scroll', callback, useCapture);
+        }
+    }
+    return node;
 };
 
 cm.isCenterButton = function(e){
@@ -1274,7 +1311,18 @@ cm.decode = (function(){
 })();
 
 cm.strWrap = function(str, symbol){
+    str = str.toString();
     return ['', str, ''].join(symbol);
+};
+
+cm.strReplace = function(str, vars){
+    if(vars && cm.isObject(vars)){
+        str = str.toString();
+        cm.forEach(vars, function(item, key){
+            str = str.replace(new RegExp(key, 'g'), item);
+        });
+    }
+    return str;
 };
 
 cm.reduceText = function(str, length, points){
@@ -1827,6 +1875,37 @@ cm.styleStrToKey = function(line){
     return line;
 };
 
+cm.getScrollTop = function(node){
+    if(cm.isNode(node)){
+        if(/body|html/gi.test(node.tagName)){
+            return cm.getBodyScrollTop();
+        }
+        return node.scrollTop;
+    }
+    return 0;
+};
+
+cm.setScrollTop = function(node, num){
+    if(cm.isNode(node)){
+        if(/body|html/gi.test(node.tagName)){
+            cm.setBodyScrollTop(num);
+        }else{
+            node.scrollTop = num;
+        }
+    }
+    return node;
+};
+
+cm.getScrollHeight = function(node){
+    if(cm.isNode(node)){
+        if(/body|html/gi.test(node.tagName)){
+            return cm.getBodyScrollHeight();
+        }
+        return node.scrollHeight;
+    }
+    return 0;
+};
+
 cm.setBodyScrollTop = function(num){
     document.documentElement.scrollTop = num;
     document.body.scrollTop = num;
@@ -2322,6 +2401,7 @@ cm.cookieDate = function(num){
 
 cm.ajax = function(o){
     var config = cm.merge({
+            'debug' : true,
             'type' : 'xml',                                         // text | xml | json | jsonp
             'method' : 'post',                                      // post | get
             'params' : '',
@@ -2332,12 +2412,18 @@ cm.ajax = function(o){
                 'X-Requested-With' : 'XMLHttpRequest'
             },
             'withCredentials' : false,
-            'beforeSend' : function(){},
-            'handler' : function(){}
+            'onStart' : function(){},
+            'onEnd' : function(){},
+            'onSuccess' : function(){},
+            'onError' : function(){},
+            'onAbort' : function(){},
+            'handler' : false
         }, o),
         responseType,
         response,
         callbackName,
+        callbackSuccessName,
+        callbackErrorName,
         scriptNode,
         returnObject;
 
@@ -2380,18 +2466,11 @@ cm.ajax = function(o){
             config['httpRequestObject'].setRequestHeader(name, value);
         });
         // Add response events
-        config['httpRequestObject'].onreadystatechange = function(){
-            if(config['httpRequestObject'].readyState == 4){
-                response = config['httpRequestObject'][responseType];
-                if(config['type'] == 'json'){
-                    response = cm.parseJSON(response);
-                }
-                config['handler'](response, config['httpRequestObject'].status, config['httpRequestObject']);
-            }
-        };
-        // Before send events
-        config['beforeSend'](config['httpRequestObject']);
+        cm.addEvent(config['httpRequestObject'], 'load', loadHandler);
+        cm.addEvent(config['httpRequestObject'], 'error', errorHandler);
+        cm.addEvent(config['httpRequestObject'], 'abort', abortHandler);
         // Send
+        config['onStart']();
         if(config['method'] == 'post'){
             config['httpRequestObject'].send(config['params']);
         }else{
@@ -2399,37 +2478,86 @@ cm.ajax = function(o){
         }
     };
 
-    var sendJSONP = function(){
-        // Before send events
-        config['beforeSend']();
-        // Generate unique callback name
-        callbackName = ['cmAjaxJSONP', Date.now()].join('');
-        window[callbackName] = function(){
+    var loadHandler = function(e){
+        if(config['httpRequestObject'].readyState == 4){
+            response = config['httpRequestObject'][responseType];
+            if(config['type'] == 'json'){
+                response = cm.parseJSON(response);
+            }
+            if(config['httpRequestObject'].status == 200){
+                config['onSuccess'](response, e);
+            }else{
+                config['onError'](e);
+            }
+            deprecatedHandler(response);
+            config['onEnd'](e);
+        }
+    };
+
+    var successHandler = function(){
+        config['onSuccess'].apply(config['onSuccess'], arguments);
+        deprecatedHandler.apply(deprecatedHandler, arguments);
+        config['onEnd'].apply(config['onEnd'], arguments);
+    };
+
+    var errorHandler = function(){
+        config['onError'].apply(config['onError'], arguments);
+        deprecatedHandler.apply(deprecatedHandler, arguments);
+        config['onEnd'].apply(config['onEnd'], arguments);
+    };
+
+    var abortHandler = function(){
+        config['onAbort'].apply(config['onAbort'], arguments);
+        deprecatedHandler.apply(deprecatedHandler, arguments);
+        config['onEnd'].apply(config['onEnd'], arguments);
+    };
+
+    var deprecatedHandler = function(){
+        if(typeof config['handler'] == 'function'){
+            cm.errorLog({'type' : 'attention', 'name' : 'cm.ajax', 'message' : 'Parameter "handler" is deprecated. Use "onSuccess", "onError" or "onAbort" callbacks instead.'});
             config['handler'].apply(config['handler'], arguments);
+        }
+    };
+
+    var sendJSONP = function(){
+        // Generate unique callback name
+        callbackName = ['cmAjaxJSONP', Date.now()].join('__');
+        callbackSuccessName = [callbackName, 'Success'].join('__');
+        callbackErrorName = [callbackName, 'Error'].join('__');
+        // Generate events
+        window[callbackSuccessName] = function(){
+            successHandler.apply(successHandler, arguments);
             removeJSONP();
         };
-        // Prepare url
+        window[callbackErrorName] = function(){
+            errorHandler.apply(errorHandler, arguments);
+            removeJSONP();
+        };
+        // Prepare url and attach events
         scriptNode = cm.Node('script', {'type' : 'application/javascript'});
         if(/%callback%|%25callback%25/.test(config['url'])){
-            config['url'] = config['url']
-                .replace('%callback%', callbackName)
-                .replace('%25callback%25', callbackName);
+            config['url'] = cm.strReplace(config['url'], {'%callback%' : callbackSuccessName, '%25callback%25' : callbackSuccessName});
         }else{
-            cm.addEvent(scriptNode, 'load', window[callbackName]);
+            cm.addEvent(scriptNode, 'load', window[callbackSuccessName]);
         }
-        scriptNode.setAttribute('src', config['url']);
+        cm.addEvent(scriptNode, 'error', window[callbackErrorName]);
         // Embed
+        config['onStart']();
+        scriptNode.setAttribute('src', config['url']);
         document.getElementsByTagName('head')[0].appendChild(scriptNode);
     };
 
     var removeJSONP = function(){
-        cm.removeEvent(scriptNode, 'load', window[callbackName]);
+        cm.removeEvent(scriptNode, 'load', window[callbackSuccessName]);
+        cm.removeEvent(scriptNode, 'error', window[callbackErrorName]);
         cm.remove(scriptNode);
-        delete window[callbackName];
+        delete window[callbackSuccessName];
+        delete window[callbackErrorName];
     };
 
     var abortJSONP = function(){
-        window[callbackName] = function(){
+        window[callbackSuccessName] = function(){
+            abortHandler();
             removeJSONP();
         };
     };

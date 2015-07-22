@@ -165,11 +165,7 @@ Mod['Langs'] = {
         }
         langStr = that.params['langs'][str];
         // Process variables
-        if(vars && cm.isObject(vars)){
-            cm.forEach(vars, function(item, key){
-                langStr = langStr.replace(new RegExp(key, 'g'), item);
-            });
-        }
+        langStr = cm.strReplace(langStr, vars);
         return langStr;
     },
     'setLangs' : function(o){
@@ -372,6 +368,7 @@ Mod['Callbacks'] = {
     },
     'callbacksProcess' : function(){
         var that = this;
+        that.callbacks = cm.clone(that.callbacks);
         // Save default callbacks
         cm.forEach(that.callbacks, function(callback, name){
             that._callbacks[name] = callback;
@@ -384,6 +381,7 @@ Mod['Callbacks'] = {
     },
     'callbacksRestore' : function(){
         var that = this;
+        that.callbacks = cm.clone(that.callbacks);
         cm.forEach(that._callbacks, function(callback, name){
             that.callbacks[name] = callback;
         });

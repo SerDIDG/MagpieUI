@@ -28,6 +28,10 @@
         .cm__text-wrap;
     }
 
+    &.is-hidden {
+        display: none;
+    }
+
     &.is-wide,
     &.wide {
         width: 100%;
@@ -229,20 +233,28 @@
         .icon {
             display: inline-block;
             vertical-align: top;
+
+            &:first-child {
+                margin-left: 0;
+            }
+
+            &:last-child {
+                margin-right: 0;
+            }
         }
     }
 
     &.has-icon-medium {
         .icon {
             @margin: round((@CmFont-Base-LineHeight - @CmSize-Medium) / 2);
-            margin: @margin @CmIndent-XXSmall 0 0;
+            margin: @margin @CmIndent-XXSmall 0;
         }
     }
 
     &.has-icon-small {
         .icon {
             @margin: round((@CmFont-Base-LineHeight - @CmSize-Small) / 2);
-            margin: @margin @CmIndent-XXSmall 0 0;
+            margin: @margin @CmIndent-XXSmall 0;
         }
     }
 }
