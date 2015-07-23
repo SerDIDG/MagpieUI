@@ -1,0 +1,135 @@
+<!DOCTYPE HTML>
+<html class="is-adaptive">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Components: Scroll Pagination</title>
+
+    <link type="text/css" rel="stylesheet" href="../../../../css/index.css">
+    <link type="text/css" rel="stylesheet" href="../../../styles/index.css">
+
+    <script type="text/javascript" src="../../../../js/polyfill.js"></script>
+    <script type="text/javascript" src="../../../../js/common.js"></script>
+    <script type="text/javascript" src="../../../../js/parts.js"></script>
+    <script type="text/javascript" src="../../../../js/modules.js"></script>
+    <script type="text/javascript" src="../../../../js/init.js"></script>
+    <script type="text/javascript" src="../../../../js/components/UA.js"></script>
+    <script type="text/javascript" src="../../../../js/components/Collector.js"></script>
+    <script type="text/javascript" src="../../../../js/components/Tabset.js"></script>
+    <script type="text/javascript" src="../../../../js/components/Dialog.js"></script>
+    <script type="text/javascript" src="../../../../js/components/Gallery.js"></script>
+    <script type="text/javascript" src="../../../../js/components/GalleryPopup.js"></script>
+    <script type="text/javascript" src="../../../../js/components/ScrollPagination.js"></script>
+
+    <script type="text/javascript">
+        cm.onReady(function(){
+            window.Collector = new Com.Collector()
+                .addEvent('onConstruct', function(collector, data){
+                    Part.Menu();
+                    Part.Autoresize(data['node']);
+                })
+                .add('tabset', function(node){
+                    new Com.Tabset({'node' : node});
+                })
+                .add('scroll-pagination', function(node){
+                    var apiKey = 'AIzaSyAqlbfLg5KtgnYVi1eJRsoHpmno_wzJ6mc';
+                    var callbacks = {
+                        'filter' : function(that, config, response){
+                            var data = [],
+                                    newItem;
+                            // Here we filter youtube data and prepare clear object to render
+                            if(response['items'] && !cm.isEmpty(response['items'])){
+                                cm.forEach(response['items'], function(item){
+                                    if(/video|playlist/.test(item['id']['kind'])){
+                                        newItem = {
+                                            'id' : item['id']['videoId'],
+                                            'title' : item['snippet']['title'],
+                                            'thumbnail' : item['snippet']['thumbnails']['high']['url']
+                                        };
+                                        data.push(newItem);
+                                    }
+                                });
+                                // YouTube return next page token instead of simple numeration, lets set this token
+                                if(response.nextPageToken){
+                                    that.setToken(that.nextPage, response.nextPageToken);
+                                }else{
+                                    that.callbacks.finalize(that);
+                                }
+                            }
+                            // Return filtered response
+                            return data;
+                        }
+                    };
+                    var events = {
+                        'onPageRender' : function(that, page){
+                            var itemNode;
+                            // Here we render html structure of YouTube videos list
+                            cm.forEach(page['data'], function(item){
+                                itemNode = cm.Node('li',
+                                    cm.Node('div', {'class' : 'pt__image'},
+                                        cm.Node('a', {
+                                                'class' : 'inner',
+                                                'target' : '_blank',
+                                                'href' : ['http://www.youtube.com/watch?v=', item['id']].join('')
+                                            },
+                                            cm.Node('img', {'class' : 'descr', 'src' : item['thumbnail']}),
+                                            cm.Node('div', {'class' : 'icon x-large play centered'}),
+                                            cm.Node('div', {'class' : 'title'},
+                                                cm.Node('div', {'class' : 'inner'}, item['title'])
+                                            )
+                                        )
+                                    )
+                                );
+                                // Embed
+                                page['container'].appendChild(itemNode);
+                            });
+                        },
+                        'onEnd' : function(that, page){
+                            // Construct components
+                            window.Collector.construct(page['container']);
+                        }
+                    };
+
+                    new Com.ScrollPagination({
+                        'node' : node,
+                        'callbacks' : callbacks,
+                        'events' : events,
+                        'perPage' : 12,
+                        'startPage' : '',
+                        'pageTag' : 'ul',
+                        'showButton' : true,
+                        'ajax' : {
+                            'type' : 'json',
+                            'url' : 'https://www.googleapis.com/youtube/v3/search',
+                            'params' : {
+                                'part' : 'snippet',
+                                'channelId' : 'UC2SPrSzWw28jpsxBShFoKMA',
+                                'maxResults' : '%perPage%',
+                                'order' : 'date',
+                                'pageToken' : '%page%',
+                                'key' : apiKey
+                            }
+                        }
+                    });
+                })
+                .construct();
+        });
+    </script>
+</head>
+
+<body>
+
+<h1>Example with YouTube API</h1>
+
+<div class="com__scroll-pagination" data-element="scroll-pagination" data-node="ComScrollPagination:{}:container">
+    <div class="pt__grid col-3" data-node="pagesContainer"></div>
+    <div class="com__scroll-pagination__buttons" data-node="buttonContainer">
+        <div class="button button-primary" data-node="button">Load More</div>
+        <div class="button button-clear has-icon has-icon has-icon-small" data-node="loader">
+            <div class="icon small loader"></div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
