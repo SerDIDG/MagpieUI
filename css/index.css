@@ -82,6 +82,10 @@
 .link--inherit:hover {
   text-decoration: underline;
 }
+.disable-hover,
+.disable-hover * {
+  pointer-events: none !important;
+}
 /* ******* COMMON ******* */
 .cm__box {
   margin: 0 0 24px;

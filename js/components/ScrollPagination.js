@@ -22,21 +22,21 @@ cm.define('Com.ScrollPagination', {
         'node' : cm.Node('div'),
         'name' : '',
         'scrollNode' : 'document.html',
-        'scrollIndent' : '%blockHeight% / 2',               // Variables: %blockHeight%.
-        'data' : [],                                        // Static data
-        'perPage' : 0,                                      // 0 - all
-        'startPage' : 1,                                    // Start page token
-        'showButton' : true,                                // true - always | once - show once after first loaded page
+        'scrollIndent' : 'Math.min(%blockHeight% / 2, 600)',    // Variables: %blockHeight%.
+        'data' : [],                                            // Static data
+        'perPage' : 0,                                          // 0 - all
+        'startPage' : 1,                                        // Start page token
+        'showButton' : true,                                    // true - always | once - show once after first loaded page
         'showLoader' : true,
-        'loaderDelay' : 100,                                // in ms
+        'loaderDelay' : 100,                                    // in ms
         'stopOnESC' : true,
         'pageTag' : 'li',
-        'pageContainer' : true,                             //
+        'pageContainer' : true,                                 //
         'ajax' : {
             'type' : 'json',
             'method' : 'get',
-            'url' : '',                                     // Request URL. Variables: %page%, %perPage%, %callback% for JSONP.
-            'params' : ''                                   // Params object. %page%, %perPage%, %callback% for JSONP.
+            'url' : '',                                         // Request URL. Variables: %page%, %perPage%, %callback% for JSONP.
+            'params' : ''                                       // Params object. %page%, %perPage%, %callback% for JSONP.
         }
     }
 },
@@ -108,7 +108,11 @@ function(params){
             cm.removeClass(that.nodes['button'], 'is-hidden');
             cm.removeClass(that.nodes['buttonContainer'], 'is-hidden');
         }
-        cm.addEvent(that.nodes['button'], 'click', set);
+        cm.addEvent(that.nodes['button'], 'click', function(e){
+            e = cm.getEvent(e);
+            cm.preventDefault(e);
+            set();
+        });
         // Hide Loader
         cm.addClass(that.nodes['loader'], 'is-hidden');
         // ESC event
@@ -247,6 +251,7 @@ function(params){
         if(that.params['pageContainer']){
             page['container'] = that.callbacks.renderContainer(that, page);
         }
+        that.data = cm.extend(that.data, data);
         that.pages[that.page] = page;
         that.triggerEvent('onPageRender', page);
         that.callbacks.renderPage(that, page);

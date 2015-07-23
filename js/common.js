@@ -19,7 +19,7 @@
 */
 
 var cm = {
-        '_version' : '3.1.0',
+        '_version' : '3.1.1',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -1640,34 +1640,18 @@ cm.getY = function(o){
     return y;
 };
 
-cm.getRealX = function(o){
-    var x = cm.getX(o),
-        bodyScroll = false;
-    while(o){
-        if(o.tagName){
-            bodyScroll = cm.getCSSStyle(o, 'position') == 'fixed' || bodyScroll;
-            if(!/body|html/gi.test(o.tagName)){
-                x -= (o.scrollLeft || 0);
-            }
-        }
-        o = o.parentNode;
+cm.getRealX = function(node){
+    if(cm.isNode(node)){
+        return node.getBoundingClientRect()['left'];
     }
-    return x - (!bodyScroll ? cm.getBodyScrollLeft() : 0);
+    return 0;
 };
 
-cm.getRealY = function(o){
-    var y = cm.getY(o),
-        bodyScroll = false;
-    while(o){
-        if(o.tagName){
-            bodyScroll = cm.getCSSStyle(o, 'position') == 'fixed' || bodyScroll;
-            if(!/body|html/gi.test(o.tagName)){
-                y -= (o.scrollTop || 0);
-            }
-        }
-        o = o.parentNode;
+cm.getRealY = function(node){
+    if(cm.isNode(node)){
+        return node.getBoundingClientRect()['top'];
     }
-    return y - (!bodyScroll ? cm.getBodyScrollTop() : 0);
+    return 0;
 };
 
 cm.getRealWidth = function(node, applyWidth){
