@@ -19,7 +19,7 @@
 */
 
 var cm = {
-        '_version' : '3.1.1',
+        '_version' : '3.1.2',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -582,7 +582,9 @@ cm.onReady = function(handler, isMessage){
 
 cm.addScrollEvent = function(node, callback, useCapture){
     useCapture = typeof useCapture == 'undefined' ? false : useCapture;
-    if(cm.isNode(node)){
+    if(cm.isWindow(node)){
+        cm.addEvent(window, 'scroll', callback, useCapture);
+    }else if(cm.isNode(node)){
         if(/body|html/gi.test(node.tagName)){
             cm.addEvent(window, 'scroll', callback, useCapture);
         }else{
@@ -594,7 +596,9 @@ cm.addScrollEvent = function(node, callback, useCapture){
 
 cm.removeScrollEvent = function(node, callback, useCapture){
     useCapture = typeof useCapture == 'undefined' ? false : useCapture;
-    if(cm.isNode(node)){
+    if(cm.isWindow(node)){
+        cm.removeEvent(window, 'scroll', callback, useCapture);
+    }if(cm.isNode(node)){
         if(/body|html/gi.test(node.tagName)){
             cm.removeEvent(window, 'scroll', callback, useCapture);
         }else{
@@ -702,6 +706,14 @@ cm.isTextNode = function(node){
 
 cm.isElementNode = function(node){
     return !!(node && node.nodeType && node.nodeType == 1);
+};
+
+cm.isWindow = function(o) {
+    if(typeof(window.constructor) === 'undefined') {
+        return o instanceof window.constructor;
+    }else{
+        return o.window === o;
+    }
 };
 
 cm.getEl = function(str){
@@ -1654,6 +1666,33 @@ cm.getRealY = function(node){
     return 0;
 };
 
+cm.getRect = function(node){
+    var rect;
+    if(cm.isWindow(node)){
+        return {
+            'top' : 0,
+            'right' : document.documentElement.clientWidth,
+            'bottom' : document.documentElement.clientHeight,
+            'left' : 0
+        };
+    }
+    if(cm.isNode(node)){
+        rect = node.getBoundingClientRect();
+        return {
+            'top' : Math.round(rect['top']),
+            'right' : Math.round(rect['right']),
+            'bottom' : Math.round(rect['bottom']),
+            'left' : Math.round(rect['left'])
+        };
+    }
+    return {
+        'top' : 0,
+        'right' : 0,
+        'bottom' : 0,
+        'left' : 0
+    };
+};
+
 cm.getRealWidth = function(node, applyWidth){
     var nodeWidth = 0,
         width = 0;
@@ -1860,6 +1899,9 @@ cm.styleStrToKey = function(line){
 };
 
 cm.getScrollTop = function(node){
+    if(cm.isWindow(node)){
+        return cm.getBodyScrollTop();
+    }
     if(cm.isNode(node)){
         if(/body|html/gi.test(node.tagName)){
             return cm.getBodyScrollTop();
@@ -1870,7 +1912,9 @@ cm.getScrollTop = function(node){
 };
 
 cm.setScrollTop = function(node, num){
-    if(cm.isNode(node)){
+    if(cm.isWindow(node)){
+        cm.setBodyScrollTop(num);
+    }else if(cm.isNode(node)){
         if(/body|html/gi.test(node.tagName)){
             cm.setBodyScrollTop(num);
         }else{
@@ -1881,6 +1925,9 @@ cm.setScrollTop = function(node, num){
 };
 
 cm.getScrollHeight = function(node){
+    if(cm.isWindow(node)){
+        return cm.getBodyScrollHeight();
+    }
     if(cm.isNode(node)){
         if(/body|html/gi.test(node.tagName)){
             return cm.getBodyScrollHeight();

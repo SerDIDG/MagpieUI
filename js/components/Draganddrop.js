@@ -16,7 +16,7 @@ cm.define('Com.Draganddrop', {
         'chassisTag' : 'div',
         'draggableContainer' : 'document.body',      // HTML node | selfParent
         'scroll' : true,
-        'scrollNode' : 'document.html',
+        'scrollNode' : window,
         'scrollSpeed' : 1,                           // ms per 1px
         'renderTemporaryAria' : false,
         'useCSSAnimation' : true,
@@ -820,12 +820,11 @@ function(params){
             anims['scroll'].stop();
         }else if(speed < 0 && !isScrollProccess){
             isScrollProccess = true;
-            if(that.params['scrollNode'] == document.body || that.params['scrollNode'] == document.documentElement){
+            duration = cm.getScrollTop(that.params['scrollNode']) * that.params['scrollSpeed'];
+            if(cm.isWindow(that.params['scrollNode'])){
                 styles['docScrollTop'] = 0;
-                duration = cm.getBodyScrollTop() * that.params['scrollSpeed'];
             }else{
                 styles['scrollTop'] = 0;
-                duration = that.params['scrollNode'].scrollTop * that.params['scrollSpeed'];
             }
             anims['scroll'].go({'style' : styles, 'duration' : duration, 'onStop' : function(){
                 isScrollProccess = false;
@@ -834,11 +833,10 @@ function(params){
             }});
         }else if(speed > 0 && !isScrollProccess){
             isScrollProccess = true;
-            if(that.params['scrollNode'] == document.body || that.params['scrollNode'] == document.documentElement){
-                scrollRemaining = cm.getBodyScrollHeight() - pageSize['winHeight'];
+            scrollRemaining = cm.getScrollHeight(that.params['scrollNode']) - pageSize['winHeight'];
+            if(cm.isWindow(that.params['scrollNode'])){
                 styles['docScrollTop'] = scrollRemaining;
             }else{
-                scrollRemaining = that.params['scrollNode'].scrollHeight - pageSize['winHeight'];
                 styles['scrollTop'] = scrollRemaining;
             }
             duration = scrollRemaining * that.params['scrollSpeed'];

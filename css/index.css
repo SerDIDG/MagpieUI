@@ -10191,18 +10191,12 @@ html.ie9 .com__palette .b-range {
 .com__scroll-pagination:last-child {
   margin-bottom: 0;
 }
-.com__scroll-pagination__content > ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.com__scroll-pagination__content > ul > li {
-  margin: 0;
-  padding: 0;
-}
 .com__scroll-pagination__scroll {
   overflow-x: hidden;
   overflow-y: scroll;
+}
+.com__scroll-pagination__page.is-hidden {
+  visibility: hidden;
 }
 .com__scroll-pagination__buttons {
   height: 28px;

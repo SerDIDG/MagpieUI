@@ -4,15 +4,15 @@
     .cm__box;
 }
 
-.com__scroll-pagination__content {
-    > ul {
-        .cm__list-clear;
-    }
-}
-
 .com__scroll-pagination__scroll {
     overflow-x: hidden;
     overflow-y: scroll;
+}
+
+.com__scroll-pagination__page {
+    &.is-hidden {
+        visibility: hidden;
+    }
 }
 
 .com__scroll-pagination__buttons {
