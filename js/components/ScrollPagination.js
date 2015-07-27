@@ -15,6 +15,8 @@ cm.define('Com.ScrollPagination', {
         'onError',
         'onPageRender',
         'onPageRenderEnd',
+        'onPageShow',
+        'onPageHide',
         'onEnd',
         'onFinalize'
     ],
@@ -26,6 +28,7 @@ cm.define('Com.ScrollPagination', {
         'data' : [],                                                // Static data
         'perPage' : 0,                                              // 0 - all
         'startPage' : 1,                                            // Start page token
+        'pageCount' : 0,                                            // 0 - infinity
         'showButton' : true,                                        // true - always | once - show once after first loaded page
         'showLoader' : true,
         'loaderDelay' : 100,                                        // in ms
@@ -34,6 +37,8 @@ cm.define('Com.ScrollPagination', {
         'pageAttributes' : {
             'class' : 'com__scroll-pagination__page'
         },
+        'responseKey' : 'data',                                     // Instead of using filter callback, you can provide response array key
+        'responseHTML' : false,                                     // If true, html will append automatically
         'ajax' : {
             'type' : 'json',
             'method' : 'get',
@@ -56,6 +61,7 @@ function(params){
 
     that.components = {};
     that.pages = {};
+    that.data = [];
     that.ajaxHandler = null;
     that.loaderDelay = null;
 
@@ -90,10 +96,9 @@ function(params){
         }
         // If URL parameter exists, use ajax data
         if(that.isAjax = !cm.isEmpty(that.params['ajax']['url'])){
-            //that.data = [];
+            that.data = [];
         }else{
-            //that.data = that.params['data'];
-            that.params['showButton'] = false;
+            that.data = that.params['data'];
         }
         // Set next page token
         that.nextPage = that.params['startPage'];
@@ -124,15 +129,13 @@ function(params){
     var set = function(){
         if(!that.isProcess && !that.isFinalize){
             that.isProcess = true;
-            // Get next page and token
-            that.page = that.nextPage;
-            that.pageToken = that.pages[that.page]? that.pages[that.page]['token'] : that.page;
+            // Preset next page and page token
+            that.preSetPage();
             // Request
             if(that.isAjax){
                 request(cm.clone(that.params['ajax']));
             }else{
-                //that.callbacks.data(that, that.params['data']);
-                that.callbacks.render(that, that.params['data']);
+                that.callbacks.data(that, that.data);
             }
         }
     };
@@ -140,7 +143,6 @@ function(params){
     var scrollHandler = function(){
         var scrollRect = cm.getRect(that.params['scrollNode']),
             pagesRect = cm.getRect(that.nodes['pagesContainer']),
-            pageRect,
             scrollIndent;
         if((!that.params['showButton'] || (that.params['showButton'] == 'once' && that.params['startPage'] != that.currentPage)) && !cm.isProcess && !that.isFinalize && !that.isButton){
             scrollIndent = eval(cm.strReplace(that.params['scrollIndent'], {
@@ -152,12 +154,7 @@ function(params){
         }
         // Show / Hide non visible pages
         cm.forEach(that.pages, function(page){
-            pageRect = cm.getRect(page['container']);
-            if(pageRect['top'] >= scrollRect['top'] && pageRect['top'] <= scrollRect['bottom'] || pageRect['top'] < scrollRect['top'] && pageRect['bottom'] >= scrollRect['top']){
-                cm.hasClass(page['container'], 'is-hidden') && cm.removeClass(page['container'], 'is-hidden');
-            }else{
-                !cm.hasClass(page['container'], 'is-hidden') && cm.addClass(page['container'], 'is-hidden');
-            }
+            that.isPageVisible(page, scrollRect);
         });
     };
 
@@ -213,14 +210,17 @@ function(params){
     };
 
     that.callbacks.filter = function(that, config, response){
-        return response;
+        var data = [],
+            dataItem = cm.objectSelector(that.params['responseKey'], response);
+        if(dataItem && !cm.isEmpty(dataItem)){
+            data = dataItem;
+        }
+        return data;
     };
 
     that.callbacks.response = function(that, config, response){
         // Set next page
-        that.previousPage = that.currentPage;
-        that.currentPage = that.nextPage;
-        that.nextPage++;
+        that.setPage();
         // Response
         if(response){
             response = that.callbacks.filter(that, config, response);
@@ -240,6 +240,28 @@ function(params){
         that.triggerEvent('onAbort');
     };
 
+    /* *** STATIC *** */
+
+    that.callbacks.data = function(that, data){
+        var length, pageData;
+
+        that.preSetPage();
+        that.setPage();
+        // Get page data
+        length = data.length;
+        if(that.params['perPage'] > 0){
+            var start = Math.min(((that.page - 1) * that.params['perPage']), length);
+            var end = Math.min((that.page * that.params['perPage']), length);
+            pageData = data.slice(start , end);
+            // Render data
+            if(!cm.isEmpty(pageData)){
+                that.callbacks.render(that, pageData);
+            }else{
+                that.callbacks.finalize(that);
+            }
+        }
+    };
+
     /* *** RENDER *** */
 
     that.callbacks.renderContainer = function(that, page){
@@ -253,7 +275,8 @@ function(params){
                 'token' : that.pageToken,
                 'pagesContainer' : that.nodes['pagesContainer'],
                 'container' : cm.Node(that.params['pageTag']),
-                'data' : data
+                'data' : data,
+                'isVisible' : false
             };
         page['container'] = that.callbacks.renderContainer(that, page);
         that.data = cm.extend(that.data, data);
@@ -265,10 +288,23 @@ function(params){
         // Restore scroll position
         cm.setScrollTop(that.params['scrollNode'], scrollTop);
         that.triggerEvent('onPageRenderEnd', page);
+        that.isPageVisible(page);
     };
 
     that.callbacks.renderPage = function(that, page){
-
+        var nodes;
+        if(that.params['responseHTML']){
+            nodes = cm.strToHTML(page['data']);
+            if(cm.isNode(nodes)){
+                page['container'].appendChild(nodes);
+            }else if(cm.isArray(nodes)){
+                cm.forEach(nodes, function(node){
+                    if(cm.isNode(node)){
+                        page['container'].appendChild(node);
+                    }
+                });
+            }
+        }
     };
 
     /* *** HELPERS *** */
@@ -334,6 +370,38 @@ function(params){
         }
         that.pages[page]['token'] = token;
         return that;
+    };
+
+    that.preSetPage = function(){
+        that.page = that.nextPage;
+        that.pageToken = that.pages[that.page]? that.pages[that.page]['token'] : that.page;
+        return that;
+    };
+
+    that.setPage = function(){
+        that.previousPage = that.currentPage;
+        that.currentPage = that.nextPage;
+        that.nextPage++;
+        return that;
+    };
+
+    that.isPageVisible = function(page, scrollRect){
+        scrollRect = typeof scrollRect == 'undefined' ? cm.getRect(that.params['scrollNode']) : scrollRect;
+        var pageRect = cm.getRect(page['container']);
+        if(pageRect['top'] >= scrollRect['top'] && pageRect['top'] <= scrollRect['bottom'] || pageRect['top'] < scrollRect['top'] && pageRect['bottom'] >= scrollRect['top']){
+            if(!page['isVisible']){
+                page['isVisible'] = true;
+                cm.removeClass(page['container'], 'is-hidden');
+                cm.triggerEvent('onPageShow', page);
+            }
+        }else{
+            if(page['isVisible']){
+                page['isVisible'] = false;
+                cm.addClass(page['container'], 'is-hidden');
+                cm.triggerEvent('onPageHide', page);
+            }
+        }
+        return page['isVisible'];
     };
 
     that.abort = function(){

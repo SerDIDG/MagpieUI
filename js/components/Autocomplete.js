@@ -20,22 +20,23 @@ cm.define('Com.Autocomplete', {
         'onError'
     ],
     'params' : {
-        'input' : cm.Node('input', {'type' : 'text'}),      // HTML input node.
-        'target' : false,                                   // HTML node.
+        'input' : cm.Node('input', {'type' : 'text'}),              // HTML input node.
+        'target' : false,                                           // HTML node.
         'container' : 'document.body',
         'minLength' : 3,
         'delay' : 300,
-        'clearOnEmpty' : true,                              // Clear input and value if item didn't selected from tooltip
-        'showLoader' : true,                                // Show ajax spinner in tooltip, for ajax mode only.
-        'data' : [],                                        // Examples: [{'value' : 'foo', 'text' : 'Bar'}] or ['Foo', 'Bar'].
+        'clearOnEmpty' : true,                                      // Clear input and value if item didn't selected from tooltip
+        'showLoader' : true,                                        // Show ajax spinner in tooltip, for ajax mode only.
+        'data' : [],                                                // Examples: [{'value' : 'foo', 'text' : 'Bar'}] or ['Foo', 'Bar'].
+        'responseKey' : 'data',                                     // Instead of using filter callback, you can provide response array key
         'ajax' : {
             'type' : 'json',
             'method' : 'get',
-            'url' : '',                                     // Request URL. Variables: %query%, %callback%.
-            'params' : ''                                   // Params object. Variables: %query%, %callback%.
+            'url' : '',                                             // Request URL. Variables: %query%, %callback%.
+            'params' : ''                                           // Params object. Variables: %query%, %callback%.
         },
         'langs' : {
-            'loader' : 'Searching for: %query%.'            // Variable: %query%.
+            'loader' : 'Searching for: %query%.'                    // Variable: %query%.
         },
         'Com.Tooltip' : {
             'hideOnOut' : true,
@@ -259,7 +260,12 @@ function(params){
     };
 
     that.callbacks.filter = function(that, config, query, response){
-        return response;
+        var data = [],
+            dataItem = cm.objectSelector(that.params['responseKey'], response);
+        if(dataItem && !cm.isEmpty(dataItem)){
+            data = dataItem;
+        }
+        return data;
     };
 
     that.callbacks.response = function(that, config, query, response){

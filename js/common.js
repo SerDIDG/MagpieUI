@@ -292,15 +292,21 @@ cm.isEmpty = function(el){
     }
 };
 
-cm.objectSelector = function(name){
+cm.objectSelector = function(name, obj, apply){
+    obj = typeof obj == 'undefined'? window : obj;
     name = name.split('.');
-    var find = window;
-    cm.forEach(name, function(item){
-        if(find){
-            find = find[item];
+    var findObj = obj,
+        length = name.length;
+    cm.forEach(name, function(item, key){
+        if(!findObj[item]){
+            findObj[item] = {};
         }
+        if(apply && key == length -1){
+            findObj[item] = apply;
+        }
+        findObj = findObj[item];
     });
-    return find;
+    return findObj;
 };
 
 cm.sort = function(o){
@@ -2741,7 +2747,8 @@ cm.createSvg = function(){
 cm.defineStack = {};
 
 cm.defineHelper = function(name, data, handler){
-    var that = this;
+    var that = this,
+        buildObj;
     // Process config
     data = cm.merge({
         'modules' : [],
@@ -2775,14 +2782,7 @@ cm.defineHelper = function(name, data, handler){
     // Prototype class
     handler.prototype = that.build;
     // Extend Window object
-    if(that.build._name['split'].length == 1){
-        window[that.build._name['split'][0]] = handler;
-    }else{
-        if(!window[that.build._name['split'][0]]){
-            window[that.build._name['split'][0]] = {};
-        }
-        window[that.build._name['split'][0]][that.build._name['split'][1]] = handler;
-    }
+    buildObj = cm.objectSelector(that.build._name['full'], window, handler);
     // Add to defined stack
     cm.defineStack[name] = handler;
 };
