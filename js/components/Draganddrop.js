@@ -252,7 +252,6 @@ function(params){
         if(that.params['draggableContainer'] && that.params['draggableContainer'] != 'selfParent'){
             that.params['draggableContainer'].appendChild(current['node']);
         }
-        getPosition(current);
         cm.addClass(current['node'], 'pt__dnd-helper');
         cm.addClass(current['node'], 'is-active', true);
         // Calculate elements position and dimension

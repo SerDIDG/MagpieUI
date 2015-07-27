@@ -1,7 +1,8 @@
 html {
     width: auto;
     height: auto;
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: scroll;
 }
 
 body {
@@ -10,4 +11,8 @@ body {
     margin: 0;
     padding: 24px;
     position: static;
+}
+
+.docs__main {
+    overflow: auto;
 }
