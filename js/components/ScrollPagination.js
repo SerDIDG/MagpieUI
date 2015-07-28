@@ -339,7 +339,6 @@ function(params){
         cm.addClass(that.nodes['loader'], 'is-hidden');
         // Check pages count
         if(that.params['endPage'] > 0 && that.params['endPage'] == that.currentPage){
-            cm.log(1);
             that.callbacks.finalize(that);
         }
         // Show / Hide Load More Button

@@ -202,6 +202,14 @@ function(params){
         anim['loader'].go({'style' : {'opacity' : 1}, 'anim' : 'smooth', 'duration' : that.params['duration']});
         // Add image load event and src
         cm.addEvent(item['nodes']['content'], 'load', function(){
+            item['isLoad'] = true;
+            // Hide loader
+            removeLoader();
+            // Set and show item
+            setItem(i, item, itemOld);
+        });
+        cm.addEvent(item['nodes']['content'], 'error', function(){
+            item['isLoad'] = false;
             // Hide loader
             removeLoader();
             // Set and show item
@@ -220,7 +228,6 @@ function(params){
         // Set new active
         that.previous = that.current;
         that.current = i;
-        item['isLoad'] = true;
         // API onImageSetStart
         that.triggerEvent('onItemLoad', item);
         // Embed item content
