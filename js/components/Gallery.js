@@ -203,13 +203,21 @@ function(params){
         // Add image load event and src
         cm.addEvent(item['nodes']['content'], 'load', function(){
             // Hide loader
-            anim['loader'].go({'style' : {'opacity' : 0}, 'anim' : 'smooth', 'duration' : that.params['duration'], 'onStop' : function(){
-                that.nodes['loader'].style.display = 'none';
-            }});
+            removeLoader();
             // Set and show item
             setItem(i, item, itemOld);
         });
+        cm.addEvent(item['nodes']['content'], 'error', function(){
+            removeLoader();
+            that.isProcess = false;
+        });
         item['nodes']['content'].src = item['src'];
+    };
+
+    var removeLoader = function(){
+        anim['loader'].go({'style' : {'opacity' : 0}, 'anim' : 'smooth', 'duration' : that.params['duration'], 'onStop' : function(){
+            that.nodes['loader'].style.display = 'none';
+        }});
     };
 
     var setItem = function(i, item, itemOld){
@@ -269,6 +277,11 @@ function(params){
 
     that.getCount = function(){
         return items.length;
+    };
+
+    that.stop = function(){
+        that.isProcess = false;
+        return that;
     };
 
     init();
