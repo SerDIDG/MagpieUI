@@ -21,6 +21,8 @@
     <script type="text/javascript" src="../../../../js/components/GalleryPopup.js"></script>
     <script type="text/javascript" src="../../../../js/components/ScrollPagination.js"></script>
 
+    <script type="text/javascript" src="static.js"></script>
+
     <script type="text/javascript">
         cm.onReady(function(){
             window.Collector = new Com.Collector();
@@ -32,16 +34,6 @@
                     new Com.Tabset({'node' : node});
                 })
                 .add('scroll-pagination', function(node){
-                    var callbacks = {
-                        'filter' : function(that, config, response){
-                            var data = [];
-                            if(response){
-                                data = response;
-                                data.shift();
-                            }
-                            return data;
-                        }
-                    };
                     var events = {
                         'onPageRender' : function(that, page){
                             var itemNode;
@@ -73,25 +65,11 @@
 
                     new Com.ScrollPagination({
                         'node' : node,
-                        'callbacks' : callbacks,
                         'events' : events,
                         'perPage' : 25,
+                        'data' : ScrollPaginationData,
                         'pageTag' : 'ul',
-                        'showButton' : 'once',
-                        'ajax' : {
-                            'type' : 'jsonp',
-                            'url' : 'http://screensider.com/ajax.php',
-                            'params' : {
-                                'screens' : 1,
-                                'id' : 'index',
-                                'type' : 'index',
-                                'page' : '%page%',
-                                'count' : '%perPage%',
-                                'sort' : 'pop',
-                                'order' : 'z-a',
-                                'callback' : '%callback%'
-                            }
-                        }
+                        'showButton' : 'once'
                     });
                 })
                 .construct();
@@ -101,7 +79,7 @@
 
 <body>
 
-<h1>Example of Screensider API</h1>
+<h1>Example of Static Data</h1>
 
 <div class="com__scroll-pagination" data-element="scroll-pagination" data-node="ComScrollPagination:{}:container">
     <div class="pt__grid col-5 indent-12px" data-node="pagesContainer"></div>

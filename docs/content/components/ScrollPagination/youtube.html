@@ -23,8 +23,8 @@
 
     <script type="text/javascript">
         cm.onReady(function(){
-            window.Collector = new Com.Collector()
-                .addEvent('onConstruct', function(collector, data){
+            window.Collector = new Com.Collector();
+            window.Collector.addEvent('onConstruct', function(collector, data){
                     Part.Menu();
                     Part.Autoresize(data['node']);
                 })
@@ -36,7 +36,7 @@
                     var callbacks = {
                         'filter' : function(that, config, response){
                             var data = [],
-                                    newItem;
+                                newItem;
                             // Here we filter youtube data and prepare clear object to render
                             if(response['items'] && !cm.isEmpty(response['items'])){
                                 cm.forEach(response['items'], function(item){
@@ -84,7 +84,7 @@
                                 page['container'].appendChild(itemNode);
                             });
                         },
-                        'onEnd' : function(that, page){
+                        'onPageRenderEnd' : function(that, page){
                             // Construct components
                             window.Collector.construct(page['container']);
                         }

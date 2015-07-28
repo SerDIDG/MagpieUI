@@ -23,8 +23,8 @@
 
     <script type="text/javascript">
         cm.onReady(function(){
-            window.Collector = new Com.Collector()
-                .addEvent('onConstruct', function(collector, data){
+            window.Collector = new Com.Collector();
+            window.Collector.addEvent('onConstruct', function(collector, data){
                     Part.Menu();
                     Part.Autoresize(data['node']);
                 })
@@ -65,7 +65,7 @@
                                 page['container'].appendChild(itemNode);
                             });
                         },
-                        'onEnd' : function(that, page){
+                        'onPageRenderEnd' : function(that, page){
                             // Construct components
                             window.Collector.construct(page['container']);
                         }
@@ -76,7 +76,6 @@
                         'callbacks' : callbacks,
                         'events' : events,
                         'perPage' : 25,
-                        'startPage' : 1,
                         'pageTag' : 'ul',
                         'showButton' : 'once',
                         'ajax' : {

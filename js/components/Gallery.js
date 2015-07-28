@@ -207,10 +207,6 @@ function(params){
             // Set and show item
             setItem(i, item, itemOld);
         });
-        cm.addEvent(item['nodes']['content'], 'error', function(){
-            removeLoader();
-            that.isProcess = false;
-        });
         item['nodes']['content'].src = item['src'];
     };
 

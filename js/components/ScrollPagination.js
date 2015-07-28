@@ -26,9 +26,9 @@ cm.define('Com.ScrollPagination', {
         'scrollNode' : window,
         'scrollIndent' : 'Math.min(%scrollHeight% / 2, 600)',       // Variables: %blockHeight%.
         'data' : [],                                                // Static data
-        'perPage' : 0,                                              // 0 - all
-        'startPage' : 1,                                            // Start page token
-        'pageCount' : 0,                                            // 0 - infinity
+        'perPage' : 0,                                              // 0 - render all data in one page
+        'startPage' : 1,                                            // Start page
+        'endPage' : 0,                                              // Last page. Render only count of pages. 0 - infinity
         'showButton' : true,                                        // true - always | once - show once after first loaded page
         'showLoader' : true,
         'loaderDelay' : 100,                                        // in ms
@@ -61,7 +61,6 @@ function(params){
 
     that.components = {};
     that.pages = {};
-    that.data = [];
     that.ajaxHandler = null;
     that.loaderDelay = null;
 
@@ -95,10 +94,10 @@ function(params){
             that.params['scrollNode'] = that.nodes['scrollNode'];
         }
         // If URL parameter exists, use ajax data
-        if(that.isAjax = !cm.isEmpty(that.params['ajax']['url'])){
-            that.data = [];
+        if(!cm.isEmpty(that.params['ajax']['url'])){
+            that.isAjax = true;
         }else{
-            that.data = that.params['data'];
+            that.params['showLoader'] = false;
         }
         // Set next page token
         that.nextPage = that.params['startPage'];
@@ -135,7 +134,7 @@ function(params){
             if(that.isAjax){
                 request(cm.clone(that.params['ajax']));
             }else{
-                that.callbacks.data(that, that.data);
+                that.callbacks.data(that, that.params['data']);
             }
         }
     };
@@ -243,23 +242,32 @@ function(params){
     /* *** STATIC *** */
 
     that.callbacks.data = function(that, data){
-        var length, pageData;
-
-        that.preSetPage();
+        var length, start, end, pageData;
+        that.callbacks.start(that);
         that.setPage();
-        // Get page data
-        length = data.length;
-        if(that.params['perPage'] > 0){
-            var start = Math.min(((that.page - 1) * that.params['perPage']), length);
-            var end = Math.min((that.page * that.params['perPage']), length);
-            pageData = data.slice(start , end);
-            // Render data
-            if(!cm.isEmpty(pageData)){
-                that.callbacks.render(that, pageData);
-            }else{
+        if(!cm.isEmpty(data)){
+            // Get page data and render
+            if(that.params['perPage'] == 0){
+                that.callbacks.render(that, data);
                 that.callbacks.finalize(that);
+            }else if(that.params['perPage'] > 0){
+                length = data.length;
+                start = (that.page - 1) * that.params['perPage'];
+                end = (that.page * that.params['perPage']);
+                if(start >= length){
+                    that.callbacks.finalize(that);
+                }else{
+                    pageData = data.slice(start , Math.min(end, length));
+                    that.callbacks.render(that, pageData);
+                }
+                if(end >= length){
+                    that.callbacks.finalize(that);
+                }
             }
+        }else{
+            that.callbacks.render(that, data);
         }
+        that.callbacks.end(that);
     };
 
     /* *** RENDER *** */
@@ -279,7 +287,6 @@ function(params){
                 'isVisible' : false
             };
         page['container'] = that.callbacks.renderContainer(that, page);
-        that.data = cm.extend(that.data, data);
         that.pages[that.page] = page;
         that.triggerEvent('onPageRender', page);
         that.callbacks.renderPage(that, page);
@@ -330,6 +337,11 @@ function(params){
         // Hide Loader
         that.loaderDelay && clearTimeout(that.loaderDelay);
         cm.addClass(that.nodes['loader'], 'is-hidden');
+        // Check pages count
+        if(that.params['endPage'] > 0 && that.params['endPage'] == that.currentPage){
+            cm.log(1);
+            that.callbacks.finalize(that);
+        }
         // Show / Hide Load More Button
         if(!that.isFinalize && (that.params['showButton'] === true || (that.params['showButton'] == 'once' && that.params['startPage'] == that.page))){
             that.callbacks.showButton(that);
@@ -340,9 +352,11 @@ function(params){
     };
 
     that.callbacks.finalize = function(that){
-        that.isFinalize = true;
-        that.callbacks.hideButton(that);
-        that.triggerEvent('onFinalize');
+        if(!that.isFinalize){
+            that.isFinalize = true;
+            that.callbacks.hideButton(that);
+            that.triggerEvent('onFinalize');
+        }
     };
 
     that.callbacks.showButton = function(that){
@@ -386,22 +400,25 @@ function(params){
     };
 
     that.isPageVisible = function(page, scrollRect){
-        scrollRect = typeof scrollRect == 'undefined' ? cm.getRect(that.params['scrollNode']) : scrollRect;
-        var pageRect = cm.getRect(page['container']);
-        if(pageRect['top'] >= scrollRect['top'] && pageRect['top'] <= scrollRect['bottom'] || pageRect['top'] < scrollRect['top'] && pageRect['bottom'] >= scrollRect['top']){
-            if(!page['isVisible']){
-                page['isVisible'] = true;
-                cm.removeClass(page['container'], 'is-hidden');
-                cm.triggerEvent('onPageShow', page);
+        if(page['container']){
+            scrollRect = typeof scrollRect == 'undefined' ? cm.getRect(that.params['scrollNode']) : scrollRect;
+            var pageRect = cm.getRect(page['container']);
+            if(pageRect['top'] >= scrollRect['top'] && pageRect['top'] <= scrollRect['bottom'] || pageRect['top'] < scrollRect['top'] && pageRect['bottom'] >= scrollRect['top']){
+                if(!page['isVisible']){
+                    page['isVisible'] = true;
+                    cm.removeClass(page['container'], 'is-hidden');
+                    cm.triggerEvent('onPageShow', page);
+                }
+            }else{
+                if(page['isVisible']){
+                    page['isVisible'] = false;
+                    cm.addClass(page['container'], 'is-hidden');
+                    cm.triggerEvent('onPageHide', page);
+                }
             }
-        }else{
-            if(page['isVisible']){
-                page['isVisible'] = false;
-                cm.addClass(page['container'], 'is-hidden');
-                cm.triggerEvent('onPageHide', page);
-            }
+            return page['isVisible'];
         }
-        return page['isVisible'];
+        return false;
     };
 
     that.abort = function(){
