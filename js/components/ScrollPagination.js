@@ -28,6 +28,7 @@ cm.define('Com.ScrollPagination', {
         'data' : [],                                                // Static data
         'perPage' : 0,                                              // 0 - render all data in one page
         'startPage' : 1,                                            // Start page
+        'startPageToken' : '',
         'endPage' : 0,                                              // Last page. Render only count of pages. 0 - infinity
         'showButton' : true,                                        // true - always | once - show once after first loaded page
         'showLoader' : true,
@@ -42,8 +43,8 @@ cm.define('Com.ScrollPagination', {
         'ajax' : {
             'type' : 'json',
             'method' : 'get',
-            'url' : '',                                             // Request URL. Variables: %page%, %perPage%, %callback% for JSONP.
-            'params' : ''                                           // Params object. %page%, %perPage%, %callback% for JSONP.
+            'url' : '',                                             // Request URL. Variables: %page%, %token%, %perPage%, %callback% for JSONP.
+            'params' : ''                                           // Params object. %page%, %token%, %perPage%, %callback% for JSONP.
         }
     }
 },
@@ -99,6 +100,8 @@ function(params){
         }else{
             that.params['showLoader'] = false;
         }
+        // Set start page token
+        that.setToken(that.params['startPage'], that.params['startPageToken']);
         // Set next page token
         that.nextPage = that.params['startPage'];
     };
@@ -199,11 +202,13 @@ function(params){
         // Prepare
         config['url'] = cm.strReplace(config['url'], {
             '%perPage%' : that.params['perPage'],
-            '%page%' : that.pageToken
+            '%page%' : that.page,
+            '%token%' : that.pageToken
         });
         config['params'] = cm.objectReplace(config['params'], {
             '%perPage%' : that.params['perPage'],
-            '%page%' : that.pageToken
+            '%page%' : that.page,
+            '%token%' : that.pageToken
         });
         return config;
     };
@@ -387,7 +392,7 @@ function(params){
 
     that.preSetPage = function(){
         that.page = that.nextPage;
-        that.pageToken = that.pages[that.page]? that.pages[that.page]['token'] : that.page;
+        that.pageToken = that.pages[that.page]? that.pages[that.page]['token'] : '';
         return that;
     };
 
