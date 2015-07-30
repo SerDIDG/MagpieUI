@@ -1,0 +1,95 @@
+<!DOCTYPE HTML>
+<html class="is-adaptive">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Components: Scroll Pagination</title>
+
+    <link type="text/css" rel="stylesheet" href="../../../../css/index.css">
+    <link type="text/css" rel="stylesheet" href="../../../styles/index.css">
+
+    <script type="text/javascript" src="../../../../js/polyfill.js"></script>
+    <script type="text/javascript" src="../../../../js/common.js"></script>
+    <script type="text/javascript" src="../../../../js/parts.js"></script>
+    <script type="text/javascript" src="../../../../js/modules.js"></script>
+    <script type="text/javascript" src="../../../../js/init.js"></script>
+    <script type="text/javascript" src="../../../../js/components/UA.js"></script>
+    <script type="text/javascript" src="../../../../js/components/Collector.js"></script>
+    <script type="text/javascript" src="../../../../js/components/Tabset.js"></script>
+    <script type="text/javascript" src="../../../../js/components/Dialog.js"></script>
+    <script type="text/javascript" src="../../../../js/components/Gallery.js"></script>
+    <script type="text/javascript" src="../../../../js/components/GalleryPopup.js"></script>
+    <script type="text/javascript" src="../../../../js/components/ScrollPagination.js"></script>
+
+    <script type="text/javascript" src="static.js"></script>
+
+    <script type="text/javascript">
+        cm.onReady(function(){
+            window.Collector = new Com.Collector();
+            window.Collector.addEvent('onConstruct', function(collector, data){
+                    Part.Menu();
+                    Part.Autoresize(data['node']);
+                })
+                .add('tabset', function(node){
+                    new Com.Tabset({'node' : node});
+                })
+                .add('scroll-pagination', function(node){
+                    var events = {
+                        'onPageRender' : function(that, page){
+                            var itemNode;
+                            // Here we render html structure of Screensider screenshots
+                            cm.forEach(page['data'], function(item){
+                                itemNode = cm.Node('li',
+                                    cm.Node('div', {'class' : 'pt__image'},
+                                        cm.Node('a', {
+                                                'class' : 'inner',
+                                                'target' : '_blank',
+                                                'href' : ['http://screensider.com', item['id']].join('/')
+                                            },
+                                            cm.Node('img', {'class' : 'descr', 'src' : ['http://screensider.com/images/albums/', item['album_id'] ,'/', item['filename'] ,'-top.jpg'].join('')}),
+                                            cm.Node('div', {'class' : 'title'},
+                                                cm.Node('div', {'class' : 'inner'}, item['album_name'])
+                                            )
+                                        )
+                                    )
+                                );
+                                // Embed
+                                page['container'].appendChild(itemNode);
+                            });
+                        },
+                        'onPageRenderEnd' : function(that, page){
+                            // Construct components
+                            window.Collector.construct(page['container']);
+                        }
+                    };
+
+                    new Com.ScrollPagination({
+                        'node' : node,
+                        'events' : events,
+                        'perPage' : 25,
+                        'data' : ScrollPaginationData,
+                        'pageTag' : 'ul',
+                        'showButton' : 'once'
+                    });
+                })
+                .construct();
+        });
+    </script>
+</head>
+
+<body>
+
+<h1>Example of Static Data</h1>
+
+<div class="com__scroll-pagination" data-element="scroll-pagination" data-node="ComScrollPagination:{}:container">
+    <div class="pt__grid col-5 indent-12px" data-node="pagesContainer"></div>
+    <div class="com__scroll-pagination__buttons" data-node="buttonContainer">
+        <div class="button button-primary" data-node="button">Load More</div>
+        <div class="button button-clear has-icon has-icon has-icon-small" data-node="loader">
+            <div class="icon small loader"></div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
