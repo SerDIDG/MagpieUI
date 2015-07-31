@@ -16,12 +16,9 @@
     <script type="text/javascript" src="../../../../js/components/UA.js"></script>
     <script type="text/javascript" src="../../../../js/components/Collector.js"></script>
     <script type="text/javascript" src="../../../../js/components/Tabset.js"></script>
-    <script type="text/javascript" src="../../../../js/components/Dialog.js"></script>
-    <script type="text/javascript" src="../../../../js/components/Gallery.js"></script>
-    <script type="text/javascript" src="../../../../js/components/GalleryPopup.js"></script>
     <script type="text/javascript" src="../../../../js/components/ScrollPagination.js"></script>
 
-    <script type="text/javascript" src="static.js"></script>
+    <script type="text/javascript" src="../../../stuff/static.js"></script>
 
     <script type="text/javascript">
         cm.onReady(function(){
@@ -67,7 +64,7 @@
                         'node' : node,
                         'events' : events,
                         'perPage' : 25,
-                        'data' : ScrollPaginationData,
+                        'data' : StaticDataList,
                         'pageTag' : 'ul',
                         'showButton' : 'once'
                     });
@@ -82,8 +79,8 @@
 <h1>Example of Static Data</h1>
 
 <div class="com__scroll-pagination" data-element="scroll-pagination" data-node="ComScrollPagination:{}:container">
-    <div class="pt__grid col-5 indent-12px" data-node="pagesContainer"></div>
-    <div class="com__scroll-pagination__buttons" data-node="buttonContainer">
+    <div class="pt__grid col-5 indent-12px" data-node="pages"></div>
+    <div class="com__scroll-pagination__bar" data-node="bar">
         <div class="button button-primary" data-node="button">Load More</div>
         <div class="button button-clear has-icon has-icon has-icon-small" data-node="loader">
             <div class="icon small loader"></div>

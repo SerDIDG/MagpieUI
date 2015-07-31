@@ -23,18 +23,20 @@ cm.define('Com.ScrollPagination', {
     'params' : {
         'node' : cm.Node('div'),
         'name' : '',
+        'renderStructure' : false,                                  // Render wrapper nodes if not exists in html
+        'container' : false,
         'scrollNode' : window,
         'scrollIndent' : 'Math.min(%scrollHeight% / 2, 600)',       // Variables: %blockHeight%.
         'data' : [],                                                // Static data
         'perPage' : 0,                                              // 0 - render all data in one page
         'startPage' : 1,                                            // Start page
         'startPageToken' : '',
-        'endPage' : 0,                                              // Last page. Render only count of pages. 0 - infinity
+        'pageCount' : 0,                                              // Render only count of pages. 0 - infinity
         'showButton' : true,                                        // true - always | once - show once after first loaded page
         'showLoader' : true,
         'loaderDelay' : 100,                                        // in ms
         'stopOnESC' : true,
-        'pageTag' : 'ul',
+        'pageTag' : 'div',
         'pageAttributes' : {
             'class' : 'com__scroll-pagination__page'
         },
@@ -45,6 +47,9 @@ cm.define('Com.ScrollPagination', {
             'method' : 'get',
             'url' : '',                                             // Request URL. Variables: %page%, %token%, %perPage%, %callback% for JSONP.
             'params' : ''                                           // Params object. %page%, %token%, %perPage%, %callback% for JSONP.
+        },
+        'langs' : {
+            'load_more' : 'Load More'
         }
     }
 },
@@ -53,9 +58,9 @@ function(params){
 
     that.nodes = {
         'container' : cm.Node('div'),
-        'scrollNode' : null,
-        'buttonContainer' : cm.Node('div'),
-        'pagesContainer' : cm.Node('ul'),
+        'scroll' : null,
+        'bar' : cm.Node('div'),
+        'pages' : cm.Node('div'),
         'button' : cm.Node('div'),
         'loader' : cm.Node('div')
     };
@@ -91,8 +96,8 @@ function(params){
 
     var validateParams = function(){
         // Set Scroll Node
-        if(that.nodes['scrollNode']){
-            that.params['scrollNode'] = that.nodes['scrollNode'];
+        if(that.nodes['scroll']){
+            that.params['scrollNode'] = that.nodes['scroll'];
         }
         // If URL parameter exists, use ajax data
         if(!cm.isEmpty(that.params['ajax']['url'])){
@@ -107,6 +112,21 @@ function(params){
     };
 
     var render = function(){
+        // Render Structure
+        if(that.params['renderStructure']){
+            that.nodes['container'] = cm.Node('div', {'class' : 'com__scroll-pagination'},
+                that.nodes['pages'] = cm.Node('div', {'class' : 'com__scroll-pagination__pages'}),
+                that.nodes['bar'] = cm.Node('div', {'class' : 'com__scroll-pagination__bar'},
+                    that.nodes['button'] = cm.Node('div', {'class' : 'button button-primary'}, that.lang('load_more')),
+                    that.nodes['loader'] = cm.Node('div', {'class' : 'button button-clear has-icon has-icon has-icon-small'},
+                        cm.Node('div', {'class' : 'icon small loader'})
+                    )
+                )
+            );
+            if(that.params['container']){
+                that.params['container'].appendChild(that.nodes['container']);
+            }
+        }
         // Load More Button
         if(!that.params['showButton']){
             that.callbacks.hideButton(that);
@@ -144,7 +164,7 @@ function(params){
 
     var scrollHandler = function(){
         var scrollRect = cm.getRect(that.params['scrollNode']),
-            pagesRect = cm.getRect(that.nodes['pagesContainer']),
+            pagesRect = cm.getRect(that.nodes['pages']),
             scrollIndent;
         if((!that.params['showButton'] || (that.params['showButton'] == 'once' && that.params['startPage'] != that.currentPage)) && !cm.isProcess && !that.isFinalize && !that.isButton){
             scrollIndent = eval(cm.strReplace(that.params['scrollIndent'], {
@@ -286,7 +306,7 @@ function(params){
             page = {
                 'page' : that.page,
                 'token' : that.pageToken,
-                'pagesContainer' : that.nodes['pagesContainer'],
+                'pages' : that.nodes['pages'],
                 'container' : cm.Node(that.params['pageTag']),
                 'data' : data,
                 'isVisible' : false
@@ -296,7 +316,7 @@ function(params){
         that.triggerEvent('onPageRender', page);
         that.callbacks.renderPage(that, page);
         // Embed
-        that.nodes['pagesContainer'].appendChild(page['container']);
+        that.nodes['pages'].appendChild(page['container']);
         // Restore scroll position
         cm.setScrollTop(that.params['scrollNode'], scrollTop);
         that.triggerEvent('onPageRenderEnd', page);
@@ -330,7 +350,7 @@ function(params){
             }else{
                 that.loaderDelay = setTimeout(function(){
                     cm.removeClass(that.nodes['loader'], 'is-hidden');
-                    cm.removeClass(that.nodes['buttonContainer'], 'is-hidden');
+                    cm.removeClass(that.nodes['bar'], 'is-hidden');
                 }, that.params['loaderDelay']);
             }
         }
@@ -343,7 +363,7 @@ function(params){
         that.loaderDelay && clearTimeout(that.loaderDelay);
         cm.addClass(that.nodes['loader'], 'is-hidden');
         // Check pages count
-        if(that.params['endPage'] > 0 && that.params['endPage'] == that.currentPage){
+        if(that.params['pageCount'] > 0 && that.params['pageCount'] == that.currentPage){
             that.callbacks.finalize(that);
         }
         // Show / Hide Load More Button
@@ -366,13 +386,13 @@ function(params){
     that.callbacks.showButton = function(that){
         that.isButton = true;
         cm.removeClass(that.nodes['button'], 'is-hidden');
-        cm.removeClass(that.nodes['buttonContainer'], 'is-hidden');
+        cm.removeClass(that.nodes['bar'], 'is-hidden');
     };
 
     that.callbacks.hideButton = function(that){
         that.isButton = false;
         cm.addClass(that.nodes['button'], 'is-hidden');
-        cm.addClass(that.nodes['buttonContainer'], 'is-hidden');
+        cm.addClass(that.nodes['bar'], 'is-hidden');
     };
 
     /* ******* PUBLIC ******* */

@@ -1,4 +1,4 @@
-cm.define('Com.ScrollPagination', {
+cm.define('Com.Pagination', {
     'modules' : [
         'Params',
         'Events',
@@ -17,28 +17,26 @@ cm.define('Com.ScrollPagination', {
         'onPageRenderEnd',
         'onPageShow',
         'onPageHide',
-        'onEnd',
-        'onFinalize'
+        'onEnd'
     ],
     'params' : {
         'node' : cm.Node('div'),
         'name' : '',
         'renderStructure' : false,                                  // Render wrapper nodes if not exists in html
         'container' : false,
-        'scrollNode' : window,
-        'scrollIndent' : 'Math.min(%scrollHeight% / 2, 600)',       // Variables: %blockHeight%.
         'data' : [],                                                // Static data
+        'count' : 0,
         'perPage' : 0,                                              // 0 - render all data in one page
         'startPage' : 1,                                            // Start page
         'startPageToken' : '',
-        'endPage' : 0,                                              // Last page. Render only count of pages. 0 - infinity
-        'showButton' : true,                                        // true - always | once - show once after first loaded page
+        'pageCount' : 0,
         'showLoader' : true,
         'loaderDelay' : 100,                                        // in ms
-        'stopOnESC' : true,
-        'pageTag' : 'ul',
+        'barCountLR' : 3,
+        'barCountM' : 1,                                            // must be 1, for drawing 3 center pagination buttons, 2 - 5, 3 - 7, etc
+        'pageTag' : 'div',
         'pageAttributes' : {
-            'class' : 'com__scroll-pagination__page'
+            'class' : 'com__pagination__page'
         },
         'responseKey' : 'data',                                     // Instead of using filter callback, you can provide response array key
         'responseHTML' : false,                                     // If true, html will append automatically
@@ -47,9 +45,6 @@ cm.define('Com.ScrollPagination', {
             'method' : 'get',
             'url' : '',                                             // Request URL. Variables: %page%, %token%, %perPage%, %callback% for JSONP.
             'params' : ''                                           // Params object. %page%, %token%, %perPage%, %callback% for JSONP.
-        },
-        'langs' : {
-            'load_more' : 'Load More'
         }
     }
 },
@@ -58,11 +53,10 @@ function(params){
 
     that.nodes = {
         'container' : cm.Node('div'),
-        'scrollNode' : null,
-        'buttonContainer' : cm.Node('div'),
-        'pagesContainer' : cm.Node('ul'),
-        'button' : cm.Node('div'),
-        'loader' : cm.Node('div')
+        'content' : cm.Node('div'),
+        'pages' : cm.Node('div'),
+        'loader' : cm.Node('div'),
+        'bar' : []
     };
 
     that.components = {};
@@ -72,8 +66,6 @@ function(params){
 
     that.isAjax = false;
     that.isProcess = false;
-    that.isFinalize = false;
-    that.isButton = false;
 
     that.page = null;
     that.pageToken = null;
@@ -95,15 +87,17 @@ function(params){
     };
 
     var validateParams = function(){
-        // Set Scroll Node
-        if(that.nodes['scrollNode']){
-            that.params['scrollNode'] = that.nodes['scrollNode'];
-        }
         // If URL parameter exists, use ajax data
         if(!cm.isEmpty(that.params['ajax']['url'])){
             that.isAjax = true;
         }else{
+            if(!cm.isEmpty(that.params['data'])){
+                that.params['count'] = that.params['data'].length;
+            }
             that.params['showLoader'] = false;
+        }
+        if(that.params['pageCount'] == 0){
+            that.params['pageCount'] = Math.ceil(that.params['count'] / that.params['perPage']);
         }
         // Set start page token
         that.setToken(that.params['startPage'], that.params['startPageToken']);
@@ -114,38 +108,19 @@ function(params){
     var render = function(){
         // Render Structure
         if(that.params['renderStructure']){
-            that.nodes['container'] = cm.Node('div', {'class' : 'com__scroll-pagination'},
-                that.nodes['pagesContainer'] = cm.Node('div', {'class' : 'com__scroll-pagination__pages'}),
-                that.nodes['buttonContainer'] = cm.Node('div', {'class' : 'com__scroll-pagination__buttons'},
-                    that.nodes['button'] = cm.Node('div', {'class' : 'button button-primary'}, that.lang('load_more')),
-                    that.nodes['loader'] = cm.Node('div', {'class' : 'button button-clear has-icon has-icon has-icon-small'},
-                        cm.Node('div', {'class' : 'icon small loader'})
-                    )
-                )
+            that.nodes['container'] = cm.Node('div', {'class' : 'com__pagination'},
+                that.nodes['pages'] = cm.Node('div', {'class' : 'com__pagination__pages'})
             );
             if(that.params['container']){
                 that.params['container'].appendChild(that.nodes['container']);
             }
         }
-        // Load More Button
-        if(!that.params['showButton']){
-            that.callbacks.hideButton(that);
-        }else{
-            that.callbacks.showButton(that);
-        }
-        cm.addEvent(that.nodes['button'], 'click', function(e){
-            e = cm.getEvent(e);
-            cm.preventDefault(e);
-            set();
+        // Render bars
+        cm.forEach(that.nodes['bar'], function(item){
+            that.callbacks.renderBar(that, item);
         });
         // Hide Loader
         cm.addClass(that.nodes['loader'], 'is-hidden');
-        // ESC event
-        if(that.params['stopOnESC']){
-            cm.addEvent(window, 'keydown', ESCHandler);
-        }
-        // Scroll Event
-        cm.addScrollEvent(that.params['scrollNode'], scrollHandler);
     };
 
     var set = function(){
@@ -160,24 +135,6 @@ function(params){
                 that.callbacks.data(that, that.params['data']);
             }
         }
-    };
-
-    var scrollHandler = function(){
-        var scrollRect = cm.getRect(that.params['scrollNode']),
-            pagesRect = cm.getRect(that.nodes['pagesContainer']),
-            scrollIndent;
-        if((!that.params['showButton'] || (that.params['showButton'] == 'once' && that.params['startPage'] != that.currentPage)) && !cm.isProcess && !that.isFinalize && !that.isButton){
-            scrollIndent = eval(cm.strReplace(that.params['scrollIndent'], {
-                '%scrollHeight%' : scrollRect['bottom'] - scrollRect['top']
-            }));
-            if(pagesRect['bottom'] - scrollRect['bottom'] <= scrollIndent){
-                set();
-            }
-        }
-        // Show / Hide non visible pages
-        cm.forEach(that.pages, function(page){
-            that.isPageVisible(page, scrollRect);
-        });
     };
 
     var request = function(config){
@@ -202,16 +159,6 @@ function(params){
                 }
             })
         );
-    };
-
-    var ESCHandler = function(e){
-        e = cm.getEvent(e);
-
-        if(e.keyCode == 27){
-            if(!cm.isProcess && !cm.isFinalize){
-                that.callbacks.showButton(that);
-            }
-        }
     };
 
     /* ******* CALLBACKS ******* */
@@ -274,19 +221,13 @@ function(params){
             // Get page data and render
             if(that.params['perPage'] == 0){
                 that.callbacks.render(that, data);
-                that.callbacks.finalize(that);
             }else if(that.params['perPage'] > 0){
                 length = data.length;
                 start = (that.page - 1) * that.params['perPage'];
                 end = (that.page * that.params['perPage']);
-                if(start >= length){
-                    that.callbacks.finalize(that);
-                }else{
+                if(start < length){
                     pageData = data.slice(start , Math.min(end, length));
                     that.callbacks.render(that, pageData);
-                }
-                if(end >= length){
-                    that.callbacks.finalize(that);
                 }
             }
         }else{
@@ -302,11 +243,10 @@ function(params){
     };
 
     that.callbacks.render = function(that, data){
-        var scrollTop = cm.getScrollTop(that.params['scrollNode']),
-            page = {
+        var page = {
                 'page' : that.page,
                 'token' : that.pageToken,
-                'pagesContainer' : that.nodes['pagesContainer'],
+                'pages' : that.nodes['pages'],
                 'container' : cm.Node(that.params['pageTag']),
                 'data' : data,
                 'isVisible' : false
@@ -316,11 +256,9 @@ function(params){
         that.triggerEvent('onPageRender', page);
         that.callbacks.renderPage(that, page);
         // Embed
-        that.nodes['pagesContainer'].appendChild(page['container']);
+        that.nodes['pages'].appendChild(page['container']);
         // Restore scroll position
-        cm.setScrollTop(that.params['scrollNode'], scrollTop);
         that.triggerEvent('onPageRenderEnd', page);
-        that.isPageVisible(page);
     };
 
     that.callbacks.renderPage = function(that, page){
@@ -339,20 +277,131 @@ function(params){
         }
     };
 
+    /* *** RENDER BAR *** */
+
+    that.callbacks.renderBar = function(that, item){
+        item = cm.merge({
+            'container' : cm.Node('div', {'class' : 'com__pagination__bar'}),
+            'list' : cm.Node('ul')
+        }, item);
+        // Clear items
+        cm.clearNode(item['list']);
+        // Show / Hide
+        if(that.params['pageCount'] < 2){
+            cm.addClass(item['container'], 'is-hidden');
+        }else{
+            cm.removeClass(item['container'], 'is-hidden');
+            // Render items
+            that.callbacks.renderBarItems(that, item);
+        }
+    };
+
+    that.callbacks.renderBarItems = function(that, item){
+        var dots = false;
+        // Previous page buttons
+        that.callbacks.renderBarArrow(that, item, {
+            'text' : '<',
+            'title' : that.lang('prev'),
+            'className' : 'prev',
+            'callback' : that.prev
+        });
+        // Page buttons
+        cm.forEach(that.params['pageCount'], function(page){
+            ++page;
+            if(page == that.currentPage){
+                that.callbacks.renderBarItem(that, item, {
+                    'page' : page,
+                    'isActive' : true
+                });
+                dots = true;
+            }else{
+                if(
+                    page <= that.params['barCountLR'] ||
+                    (that.currentPage && page >= that.currentPage - that.params['barCountM'] && page <= that.currentPage + that.params['barCountM']) ||
+                    page > that.params['pageCount'] - that.params['barCountLR']
+                ){
+                    dots = true;
+                    that.callbacks.renderBarItem(that, item, {
+                        'page' : page,
+                        'isActive' : false
+                    });
+                }else if(dots){
+                    dots = false;
+                    that.callbacks.renderBarPoints(that, item, {});
+                }
+
+            }
+        });
+        // Next page buttons
+        that.callbacks.renderBarArrow(that, item, {
+            'text' : '>',
+            'title' : that.lang('prev'),
+            'className' : 'next',
+            'callback' : that.next
+        });
+    };
+
+    that.callbacks.renderBarArrow = function(that, item, params){
+        params = cm.merge({
+            'text' : '',
+            'title' : '',
+            'className' : '',
+            'callback' : function(){}
+        }, params);
+        // Structure
+        params['container'] = cm.Node('li', {'class' : params['className']},
+            params['link'] = cm.Node('a', {'title' : params['title']}, params['name'])
+        );
+        // Events
+        cm.addEvent(params['link'], 'click', function(e){
+            e = cm.getEvent(e);
+            cm.preventDefault(e);
+            params['callback']();
+        });
+        // Append
+        item['items'].appendChild(params['container']);
+    };
+
+    that.callbacks.renderBarPoints = function(that, item, params){
+        params = cm.merge({
+            'text' : '...',
+            'className' : 'points'
+        }, params);
+        // Structure
+        params['container'] = cm.Node('li', {'class' : params['className']}, params['name']);
+        // Append
+        item['items'].appendChild(params['container']);
+    };
+
+    that.callbacks.renderBarItem = function(that, item, params){
+        params = cm.merge({
+            'page' : null,
+            'isActive' : false
+        }, params);
+        // Structure
+        params['container'] = cm.Node('li',
+            params['link'] = cm.Node('a', params['page'])
+        );
+        // Active Class
+        if(params['isActive']){
+            cm.addClass(params['container'], 'active');
+        }
+        // Events
+        cm.addEvent(params['link'], 'click', function(e){
+            e = cm.getEvent(e);
+            cm.preventDefault(e);
+            that.set(params['page']);
+        });
+        // Append
+        item['items'].appendChild(params['container']);
+    };
+
     /* *** HELPERS *** */
 
     that.callbacks.start = function(that){
         // Show Loader
         if(that.params['showLoader']){
-            if(that.isButton){
-                cm.addClass(that.nodes['button'], 'is-hidden');
-                cm.removeClass(that.nodes['loader'], 'is-hidden');
-            }else{
-                that.loaderDelay = setTimeout(function(){
-                    cm.removeClass(that.nodes['loader'], 'is-hidden');
-                    cm.removeClass(that.nodes['buttonContainer'], 'is-hidden');
-                }, that.params['loaderDelay']);
-            }
+            cm.removeClass(that.nodes['loader'], 'is-hidden');
         }
         that.triggerEvent('onStart');
     };
@@ -362,43 +411,23 @@ function(params){
         // Hide Loader
         that.loaderDelay && clearTimeout(that.loaderDelay);
         cm.addClass(that.nodes['loader'], 'is-hidden');
-        // Check pages count
-        if(that.params['endPage'] > 0 && that.params['endPage'] == that.currentPage){
-            that.callbacks.finalize(that);
-        }
-        // Show / Hide Load More Button
-        if(!that.isFinalize && (that.params['showButton'] === true || (that.params['showButton'] == 'once' && that.params['startPage'] == that.page))){
-            that.callbacks.showButton(that);
-        }else{
-            that.callbacks.hideButton(that);
-        }
         that.triggerEvent('onEnd');
-    };
-
-    that.callbacks.finalize = function(that){
-        if(!that.isFinalize){
-            that.isFinalize = true;
-            that.callbacks.hideButton(that);
-            that.triggerEvent('onFinalize');
-        }
-    };
-
-    that.callbacks.showButton = function(that){
-        that.isButton = true;
-        cm.removeClass(that.nodes['button'], 'is-hidden');
-        cm.removeClass(that.nodes['buttonContainer'], 'is-hidden');
-    };
-
-    that.callbacks.hideButton = function(that){
-        that.isButton = false;
-        cm.addClass(that.nodes['button'], 'is-hidden');
-        cm.addClass(that.nodes['buttonContainer'], 'is-hidden');
     };
 
     /* ******* PUBLIC ******* */
 
-    that.set = function(){
-        set();
+    that.set = function(page){
+        set(page || that.nextPage);
+        return that;
+    };
+
+    that.next = function(){
+        set(that.params['pageCount'] == that.currentPage ? 1 : that.currentPage + 1);
+        return that;
+    };
+
+    that.prev = function(){
+        set(that.currentPage - 1 || that.params['pageCount']);
         return that;
     };
 
@@ -421,28 +450,6 @@ function(params){
         that.currentPage = that.nextPage;
         that.nextPage++;
         return that;
-    };
-
-    that.isPageVisible = function(page, scrollRect){
-        if(page['container']){
-            scrollRect = typeof scrollRect == 'undefined' ? cm.getRect(that.params['scrollNode']) : scrollRect;
-            var pageRect = cm.getRect(page['container']);
-            if(pageRect['top'] >= scrollRect['top'] && pageRect['top'] <= scrollRect['bottom'] || pageRect['top'] < scrollRect['top'] && pageRect['bottom'] >= scrollRect['top']){
-                if(!page['isVisible']){
-                    page['isVisible'] = true;
-                    cm.removeClass(page['container'], 'is-hidden');
-                    cm.triggerEvent('onPageShow', page);
-                }
-            }else{
-                if(page['isVisible']){
-                    page['isVisible'] = false;
-                    cm.addClass(page['container'], 'is-hidden');
-                    cm.triggerEvent('onPageHide', page);
-                }
-            }
-            return page['isVisible'];
-        }
-        return false;
     };
 
     that.abort = function(){

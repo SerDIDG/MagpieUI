@@ -1,4 +1,4 @@
-Com['Pagination'] = function(o){
+Com['OldPagination'] = function(o){
     var that = this,
         config = cm.merge({
             'container' : cm.Node('div'),
@@ -60,7 +60,7 @@ Com['Pagination'] = function(o){
 
     var renderBar = function(position){
         // Structure
-        nodes[position]['container'] = cm.Node('div', {'class' : 'com__pagination'},
+        nodes[position]['container'] = cm.Node('div', {'class' : 'com__pagination__bar'},
             nodes[position]['list'] = cm.Node('ul')
         );
         // Add css class
@@ -165,7 +165,7 @@ Com['Pagination'] = function(o){
             // Render page
             nodes['previous'] = nodes['current'];
             nodes['content'].appendChild(
-                nodes['current'] = cm.Node('div')
+                nodes['current'] = cm.Node('div', 'com__pagination__page')
             );
             anims['previous'] = anims['current'];
             anims['current'] = new cm.Animation(nodes['current']);

@@ -1,4 +1,4 @@
-var ScrollPaginationData = [
+var StaticDataList = [
   {
     "id": "46722",
     "filename": "jZbULP",

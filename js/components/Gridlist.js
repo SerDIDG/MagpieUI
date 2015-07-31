@@ -22,7 +22,6 @@ cm.define('Com.Gridlist', {
         'sort' : true,
         'sortBy' : 'id',                                    // default sort by key in array
         'orderBy' : 'ASC',
-        'childBy' : false,
         'pagination' : true,
         'perPage' : 25,
         'showCounter' : false,
@@ -31,8 +30,8 @@ cm.define('Com.Gridlist', {
         'visibleDateFormat' : 'cm._config.dateTimeFormat', // render date format
         'langs' : {
             'counter' : 'Count: ',
-            'check-all' : 'Check all',
-            'uncheck-all' : 'Uncheck all',
+            'check_all' : 'Check all',
+            'uncheck_all' : 'Uncheck all',
             'empty' : 'Items does not found'
         },
         'icons' : {
@@ -91,7 +90,7 @@ function(params){
         if(that.params['data'].length){
             if(that.params['pagination']){
                 pagesCount = that.params['perPage'] > 0? Math.ceil(that.params['data'].length / that.params['perPage']) : that.params['perPage'];
-                that.components['Pagination'] = new Com.Pagination(
+                that.components['Pagination'] = new Com.OldPagination(
                     cm.merge(that.params['Com.Pagination'], {
                         'container' : that.nodes['container'],
                         'count' : pagesCount,
@@ -192,7 +191,7 @@ function(params){
                 case 'checkbox' :
                     cm.addClass(item['nodes']['container'], 'control');
                     item['nodes']['inner'].appendChild(
-                        item['nodes']['checkbox'] = cm.Node('input', {'type' : 'checkbox', 'title' : that.lang('check-all')})
+                        item['nodes']['checkbox'] = cm.Node('input', {'type' : 'checkbox', 'title' : that.lang('check_all')})
                     );
                     item['nodes']['checkbox'].checked = that.isCheckedAll;
                     cm.addEvent(item['nodes']['checkbox'], 'click', function(){

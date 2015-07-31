@@ -7608,52 +7608,68 @@ html.ie9 .com__palette .b-range {
 /* ******* COMPONENTS: PAGINATION ******* */
 .com__pagination {
   margin: 0 0 24px;
-  line-height: 28px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
 }
 .com__pagination.bottom,
 .com__pagination.is-last,
 .com__pagination:last-child {
   margin-bottom: 0;
 }
-.com__pagination ul {
+.com__pagination__page.is-hidden {
+  visibility: hidden;
+}
+/* *** BAR *** */
+.com__pagination__bar {
+  margin: 24px 0;
+  line-height: 28px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+.com__pagination__bar:first-child {
+  margin-top: 0;
+}
+.com__pagination__bar:last-child {
+  margin-bottom: 0;
+}
+.com__pagination__bar.is-hidden {
+  display: none;
+}
+.com__pagination__bar ul {
   margin: 0;
   padding: 0;
   list-style: none;
   text-align: left;
   font-size: 0;
 }
-.com__pagination ul > li {
+.com__pagination__bar ul > li {
   margin: 0;
   padding: 0;
 }
-.com__pagination ul > li {
+.com__pagination__bar ul > li {
   display: inline-block;
   vertical-align: top;
 }
-.com__pagination ul.pull-left {
+.com__pagination__bar ul.pull-left {
   text-align: left;
 }
-.com__pagination ul.pull-center {
+.com__pagination__bar ul.pull-center {
   text-align: center;
 }
-.com__pagination ul.pull-right {
+.com__pagination__bar ul.pull-right {
   text-align: right;
 }
-.com__pagination ul > li {
+.com__pagination__bar ul > li {
   font: 400 13px/18px 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
 }
-.com__pagination ul li {
+.com__pagination__bar ul li {
   margin-right: 4px;
   line-height: 28px;
 }
-.com__pagination ul li:last-child {
+.com__pagination__bar ul li:last-child {
   margin-right: 0;
 }
-.com__pagination ul li a {
+.com__pagination__bar ul li a {
   overflow: hidden;
   text-overflow: ellipsis;
   min-height: 28px;
@@ -7691,253 +7707,253 @@ html.ie9 .com__palette .b-range {
   padding-left: 6px;
   padding-right: 6px;
 }
-.com__pagination ul li a.is-wrap {
+.com__pagination__bar ul li a.is-wrap {
   overflow: visible;
   white-space: normal;
   text-overflow: clip;
 }
-.com__pagination ul li a.is-hidden {
+.com__pagination__bar ul li a.is-hidden {
   display: none;
 }
-.com__pagination ul li a.is-wide,
-.com__pagination ul li a.wide {
+.com__pagination__bar ul li a.is-wide,
+.com__pagination__bar ul li a.wide {
   width: 100%;
   margin: 0;
   display: block;
 }
-.com__pagination ul li a:hover {
+.com__pagination__bar ul li a:hover {
   text-decoration: none;
   -webkit-transition: background-color 100ms ease-in-out, color 100ms ease-in-out, box-shadow 100ms ease-in-out;
   transition: background-color 100ms ease-in-out, color 100ms ease-in-out, box-shadow 100ms ease-in-out;
 }
-.com__pagination ul li a:active,
-.com__pagination ul li a.active {
+.com__pagination__bar ul li a:active,
+.com__pagination__bar ul li a.active {
   background-color: #16599c;
   color: #ffffff;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
-.com__pagination ul li a:hover {
+.com__pagination__bar ul li a:hover {
   background-color: #1d73c9;
   color: #ffffff;
 }
-.com__pagination ul li a.button-primary {
+.com__pagination__bar ul li a.button-primary {
   background-color: #2985e0;
   color: #ffffff;
 }
-.com__pagination ul li a.button-primary:active,
-.com__pagination ul li a.button-primary.active {
+.com__pagination__bar ul li a.button-primary:active,
+.com__pagination__bar ul li a.button-primary.active {
   background-color: #16599c;
   color: #ffffff;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
-.com__pagination ul li a.button-primary:hover {
+.com__pagination__bar ul li a.button-primary:hover {
   background-color: #1d73c9;
   color: #ffffff;
 }
-.com__pagination ul li a.button-primary--hover {
+.com__pagination__bar ul li a.button-primary--hover {
   background-color: #1d73c9;
   color: #ffffff;
 }
-.com__pagination ul li a.button-primary--active {
+.com__pagination__bar ul li a.button-primary--active {
   background-color: #16599c;
   color: #ffffff;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
-.com__pagination ul li a.button-secondary {
+.com__pagination__bar ul li a.button-secondary {
   background-color: #fafafa;
   color: #2985e0;
 }
-.com__pagination ul li a.button-secondary:active,
-.com__pagination ul li a.button-secondary.active {
+.com__pagination__bar ul li a.button-secondary:active,
+.com__pagination__bar ul li a.button-secondary.active {
   background-color: #dbdbdb;
   color: #2985e0;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
-.com__pagination ul li a.button-secondary:hover {
+.com__pagination__bar ul li a.button-secondary:hover {
   background-color: #e8e8e8;
   color: #2985e0;
 }
-.com__pagination ul li a.button-secondary--hover {
+.com__pagination__bar ul li a.button-secondary--hover {
   background-color: #e8e8e8;
   color: #2985e0;
 }
-.com__pagination ul li a.button-secondary--active {
+.com__pagination__bar ul li a.button-secondary--active {
   background-color: #dbdbdb;
   color: #2985e0;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
-.com__pagination ul li a.button-success {
+.com__pagination__bar ul li a.button-success {
   background-color: #25b125;
   color: #ffffff;
 }
-.com__pagination ul li a.button-success:active,
-.com__pagination ul li a.button-success.active {
+.com__pagination__bar ul li a.button-success:active,
+.com__pagination__bar ul li a.button-success.active {
   background-color: #166916;
   color: #ffffff;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
-.com__pagination ul li a.button-success:hover {
+.com__pagination__bar ul li a.button-success:hover {
   background-color: #1f931f;
   color: #ffffff;
 }
-.com__pagination ul li a.button-success--hover {
+.com__pagination__bar ul li a.button-success--hover {
   background-color: #1f931f;
   color: #ffffff;
 }
-.com__pagination ul li a.button-success--active {
+.com__pagination__bar ul li a.button-success--active {
   background-color: #166916;
   color: #ffffff;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
-.com__pagination ul li a.button-danger {
+.com__pagination__bar ul li a.button-danger {
   background-color: #d43535;
   color: #ffffff;
 }
-.com__pagination ul li a.button-danger:active,
-.com__pagination ul li a.button-danger.active {
+.com__pagination__bar ul li a.button-danger:active,
+.com__pagination__bar ul li a.button-danger.active {
   background-color: #931f1f;
   color: #ffffff;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
-.com__pagination ul li a.button-danger:hover {
+.com__pagination__bar ul li a.button-danger:hover {
   background-color: #bd2828;
   color: #ffffff;
 }
-.com__pagination ul li a.button-danger--hover {
+.com__pagination__bar ul li a.button-danger--hover {
   background-color: #bd2828;
   color: #ffffff;
 }
-.com__pagination ul li a.button-danger--active {
+.com__pagination__bar ul li a.button-danger--active {
   background-color: #931f1f;
   color: #ffffff;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
-.com__pagination ul li a.button-warning {
+.com__pagination__bar ul li a.button-warning {
   background-color: #e09d29;
   color: #ffffff;
 }
-.com__pagination ul li a.button-warning:active,
-.com__pagination ul li a.button-warning.active {
+.com__pagination__bar ul li a.button-warning:active,
+.com__pagination__bar ul li a.button-warning.active {
   background-color: #9c6b16;
   color: #ffffff;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
-.com__pagination ul li a.button-warning:hover {
+.com__pagination__bar ul li a.button-warning:hover {
   background-color: #c98a1d;
   color: #ffffff;
 }
-.com__pagination ul li a.button-warning--hover {
+.com__pagination__bar ul li a.button-warning--hover {
   background-color: #c98a1d;
   color: #ffffff;
 }
-.com__pagination ul li a.button-warning--active {
+.com__pagination__bar ul li a.button-warning--active {
   background-color: #9c6b16;
   color: #ffffff;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
-.com__pagination ul li a.button-transparent,
-.com__pagination ul li a.transparent {
+.com__pagination__bar ul li a.button-transparent,
+.com__pagination__bar ul li a.transparent {
   background-color: transparent;
   color: #2985e0;
   box-shadow: none;
   border: none;
 }
-.com__pagination ul li a.button-transparent:active,
-.com__pagination ul li a.transparent:active,
-.com__pagination ul li a.button-transparent.active,
-.com__pagination ul li a.transparent.active {
+.com__pagination__bar ul li a.button-transparent:active,
+.com__pagination__bar ul li a.transparent:active,
+.com__pagination__bar ul li a.button-transparent.active,
+.com__pagination__bar ul li a.transparent.active {
   background-color: #e8e8e8;
   color: #2985e0;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
-.com__pagination ul li a.button-transparent:hover,
-.com__pagination ul li a.transparent:hover {
+.com__pagination__bar ul li a.button-transparent:hover,
+.com__pagination__bar ul li a.transparent:hover {
   background-color: #f2f2f2;
   color: #2985e0;
 }
-.com__pagination ul li a.button-transparent--hover {
+.com__pagination__bar ul li a.button-transparent--hover {
   background-color: #f2f2f2;
   color: #2985e0;
 }
-.com__pagination ul li a.button-transparent--active {
+.com__pagination__bar ul li a.button-transparent--active {
   background-color: #e8e8e8;
   color: #2985e0;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
-.com__pagination ul li a.button-white {
+.com__pagination__bar ul li a.button-white {
   background-color: #ffffff;
   color: #2985e0;
 }
-.com__pagination ul li a.button-white:active,
-.com__pagination ul li a.button-white.active {
+.com__pagination__bar ul li a.button-white:active,
+.com__pagination__bar ul li a.button-white.active {
   background-color: #d8e8f8;
   color: #2985e0;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
-.com__pagination ul li a.button-white:hover {
+.com__pagination__bar ul li a.button-white:hover {
   background-color: #e9f2fb;
   color: #2985e0;
 }
-.com__pagination ul li a.button-white--hover {
+.com__pagination__bar ul li a.button-white--hover {
   background-color: #e9f2fb;
   color: #2985e0;
 }
-.com__pagination ul li a.button-white--active {
+.com__pagination__bar ul li a.button-white--active {
   background-color: #d8e8f8;
   color: #2985e0;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
-.com__pagination ul li a.button-clear {
+.com__pagination__bar ul li a.button-clear {
   background: none;
   box-shadow: none;
   border: none;
   color: #2985e0;
   cursor: default;
 }
-.com__pagination ul li a.has-icon .icon {
+.com__pagination__bar ul li a.has-icon .icon {
   display: inline-block;
   vertical-align: top;
 }
-.com__pagination ul li a.has-icon .icon:first-child {
+.com__pagination__bar ul li a.has-icon .icon:first-child {
   margin-left: 0;
 }
-.com__pagination ul li a.has-icon .icon:last-child {
+.com__pagination__bar ul li a.has-icon .icon:last-child {
   margin-right: 0;
 }
-.com__pagination ul li a.has-icon-medium .icon {
+.com__pagination__bar ul li a.has-icon-medium .icon {
   margin: -3px 8px 0;
 }
-.com__pagination ul li a.has-icon-small .icon {
+.com__pagination__bar ul li a.has-icon-small .icon {
   margin: 1px 8px 0;
 }
-.com__pagination ul li a:active,
-.com__pagination ul li a.active {
+.com__pagination__bar ul li a:active,
+.com__pagination__bar ul li a.active {
   background-color: #dbdbdb;
   color: #2985e0;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
-.com__pagination ul li a:hover {
+.com__pagination__bar ul li a:hover {
   background-color: #e8e8e8;
   color: #2985e0;
 }
-.com__pagination ul li.active a {
+.com__pagination__bar ul li.active a {
   background-color: #2985e0;
   color: #ffffff;
   padding-left: 6px;
   padding-right: 6px;
 }
-.com__pagination ul li.active a:active,
-.com__pagination ul li.active a.active {
+.com__pagination__bar ul li.active a:active,
+.com__pagination__bar ul li.active a.active {
   background-color: #16599c;
   color: #ffffff;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
-.com__pagination ul li.active a:hover {
+.com__pagination__bar ul li.active a:hover {
   background-color: #1d73c9;
   color: #ffffff;
 }
-.com__pagination ul li.prev a,
-.com__pagination ul li.next a {
+.com__pagination__bar ul li.prev a,
+.com__pagination__bar ul li.next a {
   background-color: transparent;
   color: #2985e0;
   box-shadow: none;
@@ -7946,41 +7962,34 @@ html.ie9 .com__palette .b-range {
   padding-right: 6px;
   font-weight: 600;
 }
-.com__pagination ul li.prev a:active,
-.com__pagination ul li.next a:active,
-.com__pagination ul li.prev a.active,
-.com__pagination ul li.next a.active {
+.com__pagination__bar ul li.prev a:active,
+.com__pagination__bar ul li.next a:active,
+.com__pagination__bar ul li.prev a.active,
+.com__pagination__bar ul li.next a.active {
   background-color: #e8e8e8;
   color: #2985e0;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
-.com__pagination ul li.prev a:hover,
-.com__pagination ul li.next a:hover {
+.com__pagination__bar ul li.prev a:hover,
+.com__pagination__bar ul li.next a:hover {
   background-color: #f2f2f2;
   color: #2985e0;
 }
-.com__pagination ul li.points {
+.com__pagination__bar ul li.points {
   width: 28px;
   font-weight: normal;
   text-align: center;
 }
-.com__pagination.pull-left ul {
+.com__pagination__bar.pull-left ul {
   text-align: left;
 }
-.com__pagination.pull-center ul {
+.com__pagination__bar.pull-center ul {
   text-align: center;
 }
-.com__pagination.pull-right ul {
+.com__pagination__bar.pull-right ul {
   text-align: right;
 }
-.com__pagination__container {
-  margin: 0 0 24px;
-}
-.com__pagination__container.bottom,
-.com__pagination__container.is-last,
-.com__pagination__container:last-child {
-  margin-bottom: 0;
-}
+/* *** DEPRECATED *** */
 .com__pagination__container > .com__pagination {
   margin: 0;
 }
@@ -10194,6 +10203,14 @@ html.ie9 .com__palette .b-range {
 .com__scroll-pagination__scroll {
   overflow-x: hidden;
   overflow-y: scroll;
+}
+.com__scroll-pagination__pages {
+  margin: 0 0 24px;
+}
+.com__scroll-pagination__pages.bottom,
+.com__scroll-pagination__pages.is-last,
+.com__scroll-pagination__pages:last-child {
+  margin-bottom: 0;
 }
 .com__scroll-pagination__page.is-hidden {
   visibility: hidden;
