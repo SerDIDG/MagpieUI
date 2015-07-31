@@ -165,7 +165,7 @@ Com['OldPagination'] = function(o){
             // Render page
             nodes['previous'] = nodes['current'];
             nodes['content'].appendChild(
-                nodes['current'] = cm.Node('div', 'com__pagination__page')
+                nodes['current'] = cm.Node('div', {'class' : 'com__pagination__page'})
             );
             anims['previous'] = anims['current'];
             anims['current'] = new cm.Animation(nodes['current']);

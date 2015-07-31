@@ -279,11 +279,14 @@ function(params){
 
     /* *** RENDER BAR *** */
 
-    that.callbacks.renderBar = function(that, item){
+    that.callbacks.renderBar = function(that, item, params){
         item = cm.merge({
             'container' : cm.Node('div', {'class' : 'com__pagination__bar'}),
             'list' : cm.Node('ul')
         }, item);
+        params = cm.merge({
+            'align' : 'left'
+        }, params);
         // Clear items
         cm.clearNode(item['list']);
         // Show / Hide
@@ -293,6 +296,11 @@ function(params){
             cm.removeClass(item['container'], 'is-hidden');
             // Render items
             that.callbacks.renderBarItems(that, item);
+        }
+        // Embed
+        if(!cm.inDOM(item['container'])){
+            cm.addClass(item['container'], ['pull', params['align']].join('-'));
+            that.nodes['container'].appendChild(item['container']);
         }
     };
 
@@ -350,7 +358,7 @@ function(params){
         }, params);
         // Structure
         params['container'] = cm.Node('li', {'class' : params['className']},
-            params['link'] = cm.Node('a', {'title' : params['title']}, params['name'])
+            params['link'] = cm.Node('a', {'title' : params['title']}, params['text'])
         );
         // Events
         cm.addEvent(params['link'], 'click', function(e){
@@ -368,7 +376,7 @@ function(params){
             'className' : 'points'
         }, params);
         // Structure
-        params['container'] = cm.Node('li', {'class' : params['className']}, params['name']);
+        params['container'] = cm.Node('li', {'class' : params['className']}, params['text']);
         // Append
         item['items'].appendChild(params['container']);
     };
