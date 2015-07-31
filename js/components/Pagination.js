@@ -24,6 +24,7 @@ cm.define('Com.Pagination', {
         'name' : '',
         'renderStructure' : false,                                  // Render wrapper nodes if not exists in html
         'container' : false,
+        'scrollNode' : window,
         'data' : [],                                                // Static data
         'count' : 0,
         'perPage' : 0,                                              // 0 - render all data in one page
@@ -38,6 +39,7 @@ cm.define('Com.Pagination', {
         'pageAttributes' : {
             'class' : 'com__pagination__page'
         },
+        'responseCountKey' : 'count',                               // Take items count from response
         'responseKey' : 'data',                                     // Instead of using filter callback, you can provide response array key
         'responseHTML' : false,                                     // If true, html will append automatically
         'ajax' : {
@@ -83,7 +85,7 @@ function(params){
         render();
         that.addToStack(that.nodes['container']);
         that.triggerEvent('onRender');
-        set();
+        set(that.params['startPage']);
     };
 
     var validateParams = function(){
@@ -115,19 +117,21 @@ function(params){
                 that.params['container'].appendChild(that.nodes['container']);
             }
         }
-        // Render bars
-        cm.forEach(that.nodes['bar'], function(item){
-            that.callbacks.renderBar(that, item);
-        });
         // Hide Loader
         cm.addClass(that.nodes['loader'], 'is-hidden');
     };
 
-    var set = function(){
-        if(!that.isProcess && !that.isFinalize){
+    var set = function(page){
+        if(that.isProcess){
+            that.abort();
+        }
+        if(!that.isProcess){
             that.isProcess = true;
             // Preset next page and page token
-            that.preSetPage();
+            that.page = page;
+            that.pageToken = that.pages[that.page]? that.pages[that.page]['token'] : '';
+            // Render bars
+            that.callbacks.renderBars(that);
             // Request
             if(that.isAjax){
                 request(cm.clone(that.params['ajax']));
@@ -182,25 +186,24 @@ function(params){
 
     that.callbacks.filter = function(that, config, response){
         var data = [],
-            dataItem = cm.objectSelector(that.params['responseKey'], response);
+            dataItem = cm.objectSelector(that.params['responseKey'], response),
+            countItem = cm.objectSelector(that.params['responseCountKey'], response);
         if(dataItem && !cm.isEmpty(dataItem)){
             data = dataItem;
+        }
+        if(countItem){
+            that.setCount(countItem);
         }
         return data;
     };
 
     that.callbacks.response = function(that, config, response){
-        // Set next page
         that.setPage();
         // Response
         if(response){
             response = that.callbacks.filter(that, config, response);
         }
-        if(!cm.isEmpty(response)){
-            that.callbacks.render(that, response);
-        }else{
-            that.callbacks.finalize(that);
-        }
+        that.callbacks.render(that, response);
     };
 
     that.callbacks.error = function(that, config){
@@ -243,7 +246,8 @@ function(params){
     };
 
     that.callbacks.render = function(that, data){
-        var page = {
+        var scrollTop = cm.getScrollTop(that.params['scrollNode']),
+            page = {
                 'page' : that.page,
                 'token' : that.pageToken,
                 'pages' : that.nodes['pages'],
@@ -257,7 +261,9 @@ function(params){
         that.callbacks.renderPage(that, page);
         // Embed
         that.nodes['pages'].appendChild(page['container']);
+        cm.addClass(page['container'], 'is-visible', true);
         // Restore scroll position
+        cm.setScrollTop(that.params['scrollNode'], scrollTop);
         that.triggerEvent('onPageRenderEnd', page);
     };
 
@@ -279,16 +285,22 @@ function(params){
 
     /* *** RENDER BAR *** */
 
+    that.callbacks.renderBars = function(that){
+        cm.forEach(that.nodes['bar'], function(item){
+            that.callbacks.renderBar(that, item);
+        });
+    };
+
     that.callbacks.renderBar = function(that, item, params){
         item = cm.merge({
             'container' : cm.Node('div', {'class' : 'com__pagination__bar'}),
-            'list' : cm.Node('ul')
+            'items' : cm.Node('ul')
         }, item);
         params = cm.merge({
             'align' : 'left'
         }, params);
         // Clear items
-        cm.clearNode(item['list']);
+        cm.clearNode(item['items']);
         // Show / Hide
         if(that.params['pageCount'] < 2){
             cm.addClass(item['container'], 'is-hidden');
@@ -316,7 +328,7 @@ function(params){
         // Page buttons
         cm.forEach(that.params['pageCount'], function(page){
             ++page;
-            if(page == that.currentPage){
+            if(page == that.page){
                 that.callbacks.renderBarItem(that, item, {
                     'page' : page,
                     'isActive' : true
@@ -325,7 +337,7 @@ function(params){
             }else{
                 if(
                     page <= that.params['barCountLR'] ||
-                    (that.currentPage && page >= that.currentPage - that.params['barCountM'] && page <= that.currentPage + that.params['barCountM']) ||
+                    (that.currentPage && page >= that.page - that.params['barCountM'] && page <= that.page + that.params['barCountM']) ||
                     page > that.params['pageCount'] - that.params['barCountLR']
                 ){
                     dots = true;
@@ -447,16 +459,17 @@ function(params){
         return that;
     };
 
-    that.preSetPage = function(){
-        that.page = that.nextPage;
-        that.pageToken = that.pages[that.page]? that.pages[that.page]['token'] : '';
+    that.setCount = function(count){
+        if(count && (count = parseInt(count.toString())) && count != that.params['count']){
+            that.params['count'] = parseInt(count.toString());
+            that.callbacks.renderBars(that);
+        }
         return that;
     };
 
     that.setPage = function(){
         that.previousPage = that.currentPage;
-        that.currentPage = that.nextPage;
-        that.nextPage++;
+        that.currentPage = that.page;
         return that;
     };
 

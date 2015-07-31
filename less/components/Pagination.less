@@ -5,12 +5,27 @@
 }
 
 .com__pagination__pages {
-
+    position: relative;
 }
 
 .com__pagination__page {
-    &.is-hidden {
-        visibility: hidden;
+    visibility: hidden;
+    position: absolute;
+    z-index: 2;
+    overflow: hidden;
+    opacity: 0;
+    .mx__position(0, 0, 0, 0);
+    .mx__transition(opacity visibility, @ComTabset-Duration);
+
+    &:first-child {
+        position: relative;
+        z-index: 1;
+        overflow: visible;
+    }
+
+    &.is-visible {
+        visibility: visible;
+        opacity: 1;
     }
 }
 

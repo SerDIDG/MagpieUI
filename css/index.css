@@ -7614,8 +7614,30 @@ html.ie9 .com__palette .b-range {
 .com__pagination:last-child {
   margin-bottom: 0;
 }
-.com__pagination__page.is-hidden {
+.com__pagination__pages {
+  position: relative;
+}
+.com__pagination__page {
   visibility: hidden;
+  position: absolute;
+  z-index: 2;
+  overflow: hidden;
+  opacity: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  -webkit-transition: opacity 300ms ease-in-out, visibility 300ms ease-in-out;
+  transition: opacity 300ms ease-in-out, visibility 300ms ease-in-out;
+}
+.com__pagination__page:first-child {
+  position: relative;
+  z-index: 1;
+  overflow: visible;
+}
+.com__pagination__page.is-visible {
+  visibility: visible;
+  opacity: 1;
 }
 /* *** BAR *** */
 .com__pagination__bar {
