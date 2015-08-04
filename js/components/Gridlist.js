@@ -72,7 +72,6 @@ function(params){
             that.params['container'] = that.params['node'];
         }
         // Pagination
-        that.params['Com.Pagination']['container'] = that.params['container'];
         that.params['Com.Pagination']['perPage'] = that.params['perPage'];
         if(that.params['pagination']){
             that.params['Com.Pagination']['pageCount'] = that.params['perPage'] > 0 ? Math.ceil(that.params['data'].length / that.params['perPage']) : that.params['perPage'];
@@ -101,6 +100,7 @@ function(params){
             if(that.params['pagination']){
                 that.components['pagination'] = new Com.Pagination(
                     cm.merge(that.params['Com.Pagination'], {
+                        'container' : that.nodes['container'],
                         'events' : {
                             'onPageRender' : function(pagination, data){
                                 renderTable(data['page'], data['container']);
