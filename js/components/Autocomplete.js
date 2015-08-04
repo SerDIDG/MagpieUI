@@ -169,7 +169,7 @@ function(params){
                     if(that.params['showLoader']){
                         that.callbacks.loader(that, config, query);
                     }
-                    request(config, query);
+                    that.ajaxHandler = that.callbacks.request(that, config, query);
                 }else{
                     that.callbacks.data(that, query, that.params['data']);
                 }
@@ -177,21 +177,6 @@ function(params){
         }else{
             that.hide();
         }
-    };
-
-    var request = function(config, query){
-        config = that.callbacks.prepare(that, config, query);
-        // Return ajax handler (XMLHttpRequest) to providing abort method.
-        that.ajaxHandler = cm.ajax(
-            cm.merge(config, {
-                'onSuccess' : function(response){
-                    that.callbacks.response(that, config, query, response);
-                },
-                'onError' : function(){
-                    that.callbacks.error(that, config, query);
-                }
-            })
-        );
     };
 
     var setListItem = function(index){
@@ -220,7 +205,7 @@ function(params){
         var item;
         // Kill timeout interval and ajax request
         requestDelay && clearTimeout(requestDelay);
-        that.callbacks.abort(that, ajaxHandler);
+        that.abort();
         // Clear input
         if(that.params['clearOnEmpty']){
             item = that.getRegisteredItem(that.value);
@@ -257,6 +242,21 @@ function(params){
             '%query%' : query
         });
         return config;
+    };
+
+    that.callbacks.request = function(that, config, query){
+        config = that.callbacks.prepare(that, config, query);
+        // Return ajax handler (XMLHttpRequest) to providing abort method.
+        return cm.ajax(
+            cm.merge(config, {
+                'onSuccess' : function(response){
+                    that.callbacks.response(that, config, query, response);
+                },
+                'onError' : function(){
+                    that.callbacks.error(that, config, query);
+                }
+            })
+        );
     };
 
     that.callbacks.filter = function(that, config, query, response){

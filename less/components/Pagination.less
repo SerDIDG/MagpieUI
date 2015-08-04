@@ -2,6 +2,16 @@
 
 .com__pagination {
     .cm__box;
+
+    &.is-animated {
+        .com__pagination__page {
+            .mx__transition(opacity visibility, @ComPagination-Duration);
+        }
+    }
+}
+
+.com__pagination__content {
+    position: relative;
 }
 
 .com__pagination__pages {
@@ -14,8 +24,7 @@
     z-index: 2;
     overflow: hidden;
     opacity: 0;
-    .mx__position(0, 0, 0, 0);
-    .mx__transition(opacity visibility, @ComTabset-Duration);
+    .mx__position(0, 0, auto, 0);
 
     &:first-child {
         position: relative;
@@ -146,4 +155,10 @@
             z-index: 1;
         }
     }
+}
+
+/* *** HELPERS *** */
+
+.com__pagination-helper__duration {
+    transition-duration: @ComPagination-Duration;
 }

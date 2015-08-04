@@ -16,6 +16,7 @@
     <script type="text/javascript" src="../../../../js/components/UA.js"></script>
     <script type="text/javascript" src="../../../../js/components/Collector.js"></script>
     <script type="text/javascript" src="../../../../js/components/Tabset.js"></script>
+    <script type="text/javascript" src="../../../../js/components/Overlay.js"></script>
     <script type="text/javascript" src="../../../../js/components/Pagination.js"></script>
 
     <script type="text/javascript" src="../../../stuff/static.js"></script>
@@ -69,7 +70,7 @@
                         'node' : node,
                         'events' : events,
                         'data' : StaticDataList,
-                        'perPage' : 25
+                        'perPage' : 10
                     });
                 })
                 .construct();
@@ -82,8 +83,10 @@
 <h1>Example of Static Data</h1>
 
 <div class="com__pagination" data-element="scroll-pagination" data-node="ComPagination:{}:container">
-    <div class="com__pagination__pages" data-node="content|pages"></div>
-    <div class="com__pagination__bar" data-node="bar:[]:container">
+    <div class="com__pagination__content" data-node="content">
+        <div class="com__pagination__pages" data-node="pages"></div>
+    </div>
+    <div class="com__pagination__bar pull-center" data-node="bar:[]:container">
         <ul data-node="items"></ul>
     </div>
 </div>

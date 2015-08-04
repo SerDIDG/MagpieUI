@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>Components: Scroll Pagination</title>
+    <title>Components: Pagination</title>
 
     <link type="text/css" rel="stylesheet" href="../../../../css/index.css">
     <link type="text/css" rel="stylesheet" href="../../../styles/index.css">
@@ -16,10 +16,8 @@
     <script type="text/javascript" src="../../../../js/components/UA.js"></script>
     <script type="text/javascript" src="../../../../js/components/Collector.js"></script>
     <script type="text/javascript" src="../../../../js/components/Tabset.js"></script>
-    <script type="text/javascript" src="../../../../js/components/Dialog.js"></script>
-    <script type="text/javascript" src="../../../../js/components/Gallery.js"></script>
-    <script type="text/javascript" src="../../../../js/components/GalleryPopup.js"></script>
-    <script type="text/javascript" src="../../../../js/components/ScrollPagination.js"></script>
+    <script type="text/javascript" src="../../../../js/components/Overlay.js"></script>
+    <script type="text/javascript" src="../../../../js/components/Pagination.js"></script>
 
     <script type="text/javascript">
         cm.onReady(function(){
@@ -34,17 +32,23 @@
                 .add('scroll-pagination', function(node){
                     var callbacks = {
                         'filter' : function(that, config, response){
-                            var data = [];
+                            var data = [],
+                                count;
                             if(response){
                                 data = response;
-                                data.shift();
+                                count = data.shift();
+                                that.setCount(count);
                             }
                             return data;
                         }
                     };
                     var events = {
                         'onPageRender' : function(that, page){
-                            var itemNode;
+                            var itemNode, containerNode, innerNode;
+                            // Structure
+                            containerNode = cm.Node('div', {'class' : 'pt__grid col-5 indent-12px'},
+                                innerNode = cm.Node('ul')
+                            );
                             // Here we render html structure of Screensider screenshots
                             cm.forEach(page['data'], function(item){
                                 itemNode = cm.Node('li',
@@ -61,9 +65,10 @@
                                         )
                                     )
                                 );
-                                // Embed
-                                page['container'].appendChild(itemNode);
+                                innerNode.appendChild(itemNode);
                             });
+                            // Embed
+                            page['container'].appendChild(containerNode);
                         },
                         'onPageRenderEnd' : function(that, page){
                             // Construct components
@@ -71,13 +76,11 @@
                         }
                     };
 
-                    new Com.ScrollPagination({
+                    new Com.Pagination({
                         'node' : node,
                         'callbacks' : callbacks,
                         'events' : events,
-                        'perPage' : 25,
-                        'pageTag' : 'ul',
-                        'showButton' : 'once',
+                        'perPage' : 10,
                         'ajax' : {
                             'type' : 'jsonp',
                             'url' : 'http://screensider.com/ajax.php',
@@ -101,19 +104,14 @@
 
 <body>
 
-<h1>Example of Scroll Node</h1>
+<h1>Example of Screensider API</h1>
 
-<div class="com__scroll-pagination" data-element="scroll-pagination" data-node="ComScrollPagination:{}:container">
-    <div class="com__scroll-pagination__scroll" data-node="scroll" style="max-height: 700px;">
-        <div class="com__scroll-pagination__content" data-node="content">
-            <div class="pt__grid col-5 indent-12px" data-node="pages"></div>
-        </div>
-        <div class="com__scroll-pagination__bar" data-node="bar">
-            <div class="button button-primary" data-node="button">Load More</div>
-            <div class="button button-clear has-icon has-icon has-icon-small" data-node="loader">
-                <div class="icon small loader"></div>
-            </div>
-        </div>
+<div class="com__pagination" data-element="scroll-pagination" data-node="ComPagination:{}:container">
+    <div class="com__pagination__content" data-node="content">
+        <div class="com__pagination__pages" data-node="pages"></div>
+    </div>
+    <div class="com__pagination__bar pull-center" data-node="bar:[]:container">
+        <ul data-node="items"></ul>
     </div>
 </div>
 

@@ -9,24 +9,28 @@
     overflow-y: scroll;
 }
 
-.com__scroll-pagination__pages {
-    .cm__box;
-}
-
 .com__scroll-pagination__page {
     &.is-hidden {
         visibility: hidden;
     }
 }
 
-.com__scroll-pagination__buttons {
+.com__scroll-pagination__bar {
     height: @CmForm-FieldHeight;
+    margin: @CmIndent-Medium 0;
     overflow: hidden;
     text-align: center;
-    .mx__transition(all, @CmUI-Transition-Duration);
+    .mx__user-select(none);
 
+    &:first-child {
+        margin-top: 0;
+    }
+
+    &:last-child {
+        margin-bottom: 0;
+    }
 
     &.is-hidden {
-        height: 0;
+        display: none;
     }
 }

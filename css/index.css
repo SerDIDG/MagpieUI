@@ -7614,6 +7614,13 @@ html.ie9 .com__palette .b-range {
 .com__pagination:last-child {
   margin-bottom: 0;
 }
+.com__pagination.is-animated .com__pagination__page {
+  -webkit-transition: opacity 300ms ease-in-out, visibility 300ms ease-in-out;
+  transition: opacity 300ms ease-in-out, visibility 300ms ease-in-out;
+}
+.com__pagination__content {
+  position: relative;
+}
 .com__pagination__pages {
   position: relative;
 }
@@ -7625,10 +7632,8 @@ html.ie9 .com__palette .b-range {
   opacity: 0;
   top: 0;
   right: 0;
-  bottom: 0;
+  bottom: auto;
   left: 0;
-  -webkit-transition: opacity 300ms ease-in-out, visibility 300ms ease-in-out;
-  transition: opacity 300ms ease-in-out, visibility 300ms ease-in-out;
 }
 .com__pagination__page:first-child {
   position: relative;
@@ -8038,6 +8043,10 @@ html.ie9 .com__palette .b-range {
   opacity: 1;
   position: relative;
   z-index: 1;
+}
+/* *** HELPERS *** */
+.com__pagination-helper__duration {
+  transition-duration: 300ms;
 }
 /* ******* COMPONENT: TOGGLE BOX ******* */
 .com__togglebox {
@@ -10226,24 +10235,24 @@ html.ie9 .com__palette .b-range {
   overflow-x: hidden;
   overflow-y: scroll;
 }
-.com__scroll-pagination__pages {
-  margin: 0 0 24px;
-}
-.com__scroll-pagination__pages.bottom,
-.com__scroll-pagination__pages.is-last,
-.com__scroll-pagination__pages:last-child {
-  margin-bottom: 0;
-}
 .com__scroll-pagination__page.is-hidden {
   visibility: hidden;
 }
-.com__scroll-pagination__buttons {
+.com__scroll-pagination__bar {
   height: 28px;
+  margin: 24px 0;
   overflow: hidden;
   text-align: center;
-  -webkit-transition: all 300ms ease-in-out;
-  transition: all 300ms ease-in-out;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
 }
-.com__scroll-pagination__buttons.is-hidden {
-  height: 0;
+.com__scroll-pagination__bar:first-child {
+  margin-top: 0;
+}
+.com__scroll-pagination__bar:last-child {
+  margin-bottom: 0;
+}
+.com__scroll-pagination__bar.is-hidden {
+  display: none;
 }

@@ -2,24 +2,24 @@
 
 /*
 
-    Objects and Arrays:             123
-    Events:                         303
-    Nodes:                          580
-    Forms:                          845
-    Strings:                        1018
-    Date and Time:                  1110
-    Styles:                         1166
-    Animation:                      1437
-    Cookie and Local Storage:       1785
-    Ajax:                           1852
-    Hash (?):                       1986
-    Graphics:                       2006
-    Class Fabric                    2580
+    Objects and Arrays:             56
+    Events:                         339
+    Nodes:                          703
+    Forms:                          1006
+    Strings:                        1282
+    Date and Time:                  1379
+    Styles:                         1506
+    Animation:                      2105
+    Cookie and Local Storage:       2380
+    Ajax:                           2447
+    Hash (?):                       2725
+    Graphics:                       2745
+    Class Fabric                    2755
 
 */
 
 var cm = {
-        '_version' : '3.1.3',
+        '_version' : '3.2',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -1673,29 +1673,39 @@ cm.getRealY = function(node){
 };
 
 cm.getRect = function(node){
-    var rect;
+    var docEl = document.documentElement,
+        o,
+        rect;
     if(cm.isWindow(node)){
+        docEl = document.documentElement;
         return {
             'top' : 0,
-            'right' : document.documentElement.clientWidth,
-            'bottom' : document.documentElement.clientHeight,
-            'left' : 0
+            'right' : docEl.clientWidth,
+            'bottom' : docEl.clientHeight,
+            'left' : 0,
+            'width' : docEl.clientWidth,
+            'height' : docEl.clientHeight
         };
     }
     if(cm.isNode(node)){
-        rect = node.getBoundingClientRect();
-        return {
-            'top' : Math.round(rect['top']),
-            'right' : Math.round(rect['right']),
-            'bottom' : Math.round(rect['bottom']),
-            'left' : Math.round(rect['left'])
+        o = node.getBoundingClientRect();
+        rect = {
+            'top' : Math.round(o['top']),
+            'right' : Math.round(o['right']),
+            'bottom' : Math.round(o['bottom']),
+            'left' : Math.round(o['left'])
         };
+        rect['width'] = typeof o['width'] != 'undefined' ? Math.round(o['width']) : o['right'] - o['left'];
+        rect['height'] = typeof o['height'] != 'undefined' ? Math.round(o['height']) : o['bottom'] - o['top'];
+        return rect;
     }
     return {
         'top' : 0,
         'right' : 0,
         'bottom' : 0,
-        'left' : 0
+        'left' : 0,
+        'width' : 0,
+        'height' : 0
     };
 };
 
@@ -2747,8 +2757,7 @@ cm.createSvg = function(){
 cm.defineStack = {};
 
 cm.defineHelper = function(name, data, handler){
-    var that = this,
-        buildObj;
+    var that = this;
     // Process config
     data = cm.merge({
         'modules' : [],
@@ -2782,7 +2791,7 @@ cm.defineHelper = function(name, data, handler){
     // Prototype class
     handler.prototype = that.build;
     // Extend Window object
-    buildObj = cm.objectSelector(that.build._name['full'], window, handler);
+    cm.objectSelector(that.build._name['full'], window, handler);
     // Add to defined stack
     cm.defineStack[name] = handler;
 };

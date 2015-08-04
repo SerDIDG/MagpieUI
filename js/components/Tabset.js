@@ -171,7 +171,7 @@ function(params){
         }
         cm.remove(that.params['node']);
         /* *** EVENTS *** */
-        Part.Menu();
+        Part.Menu && Part.Menu();
         cm.addEvent(window, 'resize', resizeHandler);
         that.addToStack(that.nodes['container']);
         that.triggerEvent('onRender');
@@ -221,7 +221,7 @@ function(params){
             item['a'].setAttribute('href', [window.location.href.split('#')[0], tab['id']].join('#'));
         }else{
             item['a'].onclick = function(e){
-                cm.getEvent(e);
+                e = cm.getEvent(e);
                 cm.preventDefault(e);
                 set(tab['id']);
             };
@@ -231,7 +231,7 @@ function(params){
 
     var removeTab = function(item){
         // Set new active tab, if current active is nominated for remove
-        if(item['id'] === that.active){
+        if(item['id'] === that.active && that.tabsListing[0]){
             set(that.tabsListing[0]);
         }
         // Remove tab from list and array
