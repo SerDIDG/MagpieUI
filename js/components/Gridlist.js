@@ -22,6 +22,7 @@ cm.define('Com.Gridlist', {
         'sort' : true,
         'sortBy' : 'id',                                    // default sort by key in array
         'orderBy' : 'ASC',
+        'childsBy' : false,
         'pagination' : true,
         'perPage' : 25,
         'showCounter' : false,
@@ -41,7 +42,11 @@ cm.define('Com.Gridlist', {
             }
         },
         'statuses' : ['active', 'success', 'danger', 'warning'],
-        'Com.Pagination' : {}
+        'Com.Pagination' : {
+            'renderStructure' : true,
+            'animateSwitch' : true,
+            'animatePrevious' : true
+        }
     }
 },
 function(params){
@@ -66,12 +71,17 @@ function(params){
         if(!that.params['container']){
             that.params['container'] = that.params['node'];
         }
+        // Pagination
+        that.params['Com.Pagination']['container'] = that.params['container'];
+        that.params['Com.Pagination']['perPage'] = that.params['perPage'];
+        if(that.params['pagination']){
+            that.params['Com.Pagination']['pageCount'] = that.params['perPage'] > 0 ? Math.ceil(that.params['data'].length / that.params['perPage']) : that.params['perPage'];
+        }
     };
 
     /* *** TABLE RENDER FUNCTION *** */
 
     var render = function(){
-        var pagesCount;
         // Container
         that.params['container'].appendChild(
             that.nodes['container'] = cm.Node('div', {'class' : 'com__gridlist'})
@@ -89,13 +99,10 @@ function(params){
         // Render table
         if(that.params['data'].length){
             if(that.params['pagination']){
-                pagesCount = that.params['perPage'] > 0? Math.ceil(that.params['data'].length / that.params['perPage']) : that.params['perPage'];
-                that.components['Pagination'] = new Com.OldPagination(
+                that.components['pagination'] = new Com.Pagination(
                     cm.merge(that.params['Com.Pagination'], {
-                        'container' : that.nodes['container'],
-                        'count' : pagesCount,
                         'events' : {
-                            'onChange' : function(pagination, data){
+                            'onPageRender' : function(pagination, data){
                                 renderTable(data['page'], data['container']);
                             }
                         }
@@ -221,7 +228,7 @@ function(params){
                 cm.addEvent(item['nodes']['inner'], 'click', function(){
                     arraySort(item['key']);
                     if(that.params['pagination']){
-                        that.components['Pagination'].set();
+                        that.components['pagination'].rebuild();
                     }else{
                         renderTable(1, that.nodes['container']);
                     }
