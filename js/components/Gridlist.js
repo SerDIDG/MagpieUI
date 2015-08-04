@@ -72,10 +72,8 @@ function(params){
             that.params['container'] = that.params['node'];
         }
         // Pagination
+        that.params['Com.Pagination']['count'] = that.params['data'].length;
         that.params['Com.Pagination']['perPage'] = that.params['perPage'];
-        if(that.params['pagination']){
-            that.params['Com.Pagination']['pageCount'] = that.params['perPage'] > 0 ? Math.ceil(that.params['data'].length / that.params['perPage']) : that.params['perPage'];
-        }
     };
 
     /* *** TABLE RENDER FUNCTION *** */
