@@ -37,7 +37,7 @@ cm.define('Com.Pagination', {
         'barCountLR' : 3,
         'barCountM' : 1,                                            // 1 for drawing 3 center pagination buttons, 2 - 5, 3 - 7, etc
         'switchManually' : false,                                   // Switch pages manually
-        'animateSwitch' : true,
+        'animateSwitch' : false,
         'animateDuration' : 300,
         'animatePrevious' : false,                                  // Animating of hiding previous page, require animateSwitch
         'pageTag' : 'div',
@@ -346,14 +346,14 @@ function(params){
     };
 
     that.callbacks.switchPage = function(that, page){
+        var contentRect = cm.getRect(that.nodes['content']),
+            pageRect = cm.getRect(page['container']);
         // Hide previous page
         if(that.previousPage){
             that.callbacks.hidePage(that, that.pages[that.previousPage]);
         }
         // Show new page
         if(that.params['animateSwitch']){
-            var contentRect = cm.getRect(that.nodes['content']),
-                pageRect = cm.getRect(page['container']);
             that.nodes['content'].style.overflow = 'hidden';
             that.nodes['content'].style.height = [contentRect['height'], 'px'].join('');
             that.animations['content'].go({'style' : {'height' : [pageRect['height'], 'px'].join('')}, 'duration' : that.params['animateDuration'], 'anim' : 'smooth', 'onStop' : function(){

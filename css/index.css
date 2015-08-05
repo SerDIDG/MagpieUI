@@ -7625,7 +7625,6 @@ html.ie9 .com__palette .b-range {
   position: relative;
 }
 .com__pagination__page {
-  visibility: hidden;
   position: absolute;
   z-index: 2;
   overflow: hidden;
@@ -7641,7 +7640,6 @@ html.ie9 .com__palette .b-range {
   overflow: visible;
 }
 .com__pagination__page.is-visible {
-  visibility: visible;
   opacity: 1;
 }
 /* *** BAR *** */
