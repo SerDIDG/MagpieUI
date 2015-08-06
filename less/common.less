@@ -254,8 +254,8 @@
     max-width: 100%;
     height: auto;
     display: block;
-}
 
+}
 .cm__text-nowrap,
 .cm__text-overflow {
     overflow: hidden;
@@ -267,6 +267,16 @@
     overflow: visible;
     white-space: normal;
     text-overflow: clip;
+}
+
+.cm__scroll {
+    -webkit-overflow-scrolling: touch;
+    overflow: scroll;
+}
+
+.cm__scroll--auto {
+    -webkit-overflow-scrolling: touch;
+    overflow: auto;
 }
 
 .cm__scroll-y {
