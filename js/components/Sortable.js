@@ -12,6 +12,7 @@ cm.define('Com.Sortable', {
     ],
     'params' : {
         'node' : cm.Node('div'),
+        'process' : true,
         'Com.Draganddrop' : {}
     }
 },

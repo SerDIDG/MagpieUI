@@ -27,6 +27,7 @@ cm.define('Com.Draganddrop', {
         'limit' : false,
         'highlightAreas' : true,                     // highlight areas on drag start
         'highlightChassis' : false,
+        'animateRemove' : true,
         'classes' : {
             'area' : null
         }
@@ -598,7 +599,7 @@ function(params){
         // System onStart event
         params['onStart']();
         // If draggable not in DOM, we don't need to wrap and animate it
-        if(params['isInDOM']){
+        if(params['isInDOM'] && that.params['animateRemove']){
             // If draggable is current - just animate pull out left, else - wrap to removable node
             if(params['isCurrent']){
                 node = draggable['node'];

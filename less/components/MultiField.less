@@ -1,0 +1,62 @@
+/* ******* COMPONENTS: MULTI FIELD  ******* */
+
+.com__multifield {
+
+}
+
+.com__multifield__content {
+    .cm__list-clear;
+
+    &.pt__dnd-area {
+        min-height: 0;
+
+        &:after {
+            display: none;
+        }
+    }
+}
+
+.com__multifield__toolbar {
+    &.is-hidden {
+        display: none;
+    }
+
+    .com__multifield__item {
+        padding: 0;
+    }
+}
+
+.com__multifield__item {
+    .display-flex;
+    padding: 0 0 @CmForm-FieldIndent 0;
+    position: relative;
+    .mx__flex-flow(row wrap);
+    .mx__justify-content(flex-end);
+
+    > .icon {
+        width: @CmForm-FieldHeight;
+        height: @CmForm-FieldHeight;
+        .mx__flex(0 0 auto);
+
+        &.drag {
+            .icon.small.drag-vertical;
+            cursor: move;
+        }
+
+        &.remove {
+            .icon.small.remove;
+        }
+
+        &.add {
+            .icon.small.add;
+        }
+    }
+
+    > .field {
+        .mx__flex(1 1 0);
+    }
+
+    &.pt__dnd-helper {
+        position: fixed;
+    }
+}
