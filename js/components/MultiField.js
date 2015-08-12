@@ -19,7 +19,7 @@ cm.define('Com.MultiField', {
         'name' : '',
         'renderStructure' : false,
         'container' : false,
-        'renderItems' : 1,
+        'renderItems' : 0,
         'maxItems' : 0,                         // 0 - infinity
         'sortable' : true,                      // Use drag and drop to sort items
         'langs' : {
@@ -32,14 +32,7 @@ cm.define('Com.MultiField', {
             'remove' : 'icon remove linked'
         },
         'Com.Sortable' : {
-            'process' : false,
-            'Com.Draganddrop' : {
-                'draggableContainer' : 'selfParent',
-                'direction' : 'vertical',
-                'limit' : true,
-                'scroll' : false,
-                'animateRemove' : false
-            }
+            'process' : false
         }
     }
 }, function(params){
@@ -199,10 +192,23 @@ cm.define('Com.MultiField', {
     };
 
     that.removeItem = function(item){
-        if(itemInArray(item)){
+        if(typeof item == 'number' && that.items[item]){
+            removeItem(that.items[item]);
+        }else if(itemInArray(item)){
             removeItem(item);
         }
         return that;
+    };
+
+    that.getItem = function(index){
+        if(that.items[index]){
+            return that.items[index];
+        }
+        return null;
+    };
+
+    that.getItems = function(){
+        return that.items;
     };
 
     init();

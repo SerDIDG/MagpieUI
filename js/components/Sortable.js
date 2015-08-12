@@ -13,7 +13,13 @@ cm.define('Com.Sortable', {
     'params' : {
         'node' : cm.Node('div'),
         'process' : true,
-        'Com.Draganddrop' : {}
+        'Com.Draganddrop' : {
+            'draggableContainer' : 'selfParent',
+            'direction' : 'vertical',
+            'limit' : true,
+            'scroll' : false,
+            'animateRemove' : false
+        }
     }
 },
 function(params){
@@ -44,7 +50,9 @@ function(params){
             .addEvent('onRemove', onRemove)
             .addEvent('onDrop', onSort);
         // Process items
-        cm.forEach(that.nodes['groups'], process);
+        if(that.params['process']){
+            cm.forEach(that.nodes['groups'], process);
+        }
         // Trigger render event
         that.triggerEvent('onRender');
     };
