@@ -17,21 +17,25 @@
 }
 
 .com__multifield__toolbar {
-    &.is-hidden {
-        display: none;
-    }
-
     .com__multifield__item {
-        padding: 0;
+        &:after {
+            display: none;
+        }
     }
 }
 
 .com__multifield__item {
     .display-flex;
-    padding: 0 0 @CmForm-FieldIndent 0;
     position: relative;
     .mx__flex-flow(row wrap);
     .mx__justify-content(flex-end);
+
+    &:after {
+        height: @CmForm-FieldIndent;
+        display: block;
+        content: '';
+        .mx__flex(0 0 100%);
+    }
 
     > .icon {
         width: @CmForm-FieldHeight;

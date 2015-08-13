@@ -22,6 +22,7 @@ cm.define('Com.MultiField', {
         'renderItems' : 0,
         'maxItems' : 0,                         // 0 - infinity
         'sortable' : true,                      // Use drag and drop to sort items
+        'duration' : 200,
         'langs' : {
             'add' : 'Add',
             'remove' : 'Remove'
@@ -36,7 +37,9 @@ cm.define('Com.MultiField', {
         }
     }
 }, function(params){
-    var that = this;
+    var that = this,
+        toolbarHeight = 0,
+        toolbarVisible = true;
 
     that.nodes = {
         'container' : cm.node('div'),
@@ -46,6 +49,7 @@ cm.define('Com.MultiField', {
         'items' : []
     };
     that.components = {};
+    that.animations = {};
     that.items = [];
 
     var init = function(){
@@ -87,6 +91,8 @@ cm.define('Com.MultiField', {
                 that.params['container'].appendChild(that.nodes['container']);
             }
         }
+        // Animations
+        that.animations['toolbar'] = new cm.Animation(that.nodes['toolbar']);
         // Add button events
         cm.addEvent(that.nodes['add'], 'click', function(e){
             cm.preventDefault(e);
@@ -111,7 +117,9 @@ cm.define('Com.MultiField', {
     };
 
     var renderItem = function(){
-        var item = {};
+        var item = {
+            'isVisible' : false
+        };
         if(that.params['maxItems'] == 0 || that.items.length < that.params['maxItems']){
             // Structure
             item['container'] = cm.node('div', {'class' : 'com__multifield__item', 'data-node' : 'items:[]:container'},
@@ -145,6 +153,10 @@ cm.define('Com.MultiField', {
         // Push
         that.items.push(item);
         resetIndexes();
+        // Animate
+        toggleItemVisibility(item);
+        // Toggle toolbar visibility
+        toggleToolbarVisibility();
         // Trigger event
         that.triggerEvent('onItemProcess', item);
     };
@@ -157,8 +169,13 @@ cm.define('Com.MultiField', {
         // Remove from array
         that.items.splice(that.items.indexOf(item), 1);
         resetIndexes();
-        // Remove from DOM
-        cm.remove(item['container']);
+        // Animate
+        toggleItemVisibility(item, function(){
+            // Remove from DOM
+            cm.remove(item['container']);
+        });
+        // Toggle toolbar visibility
+        toggleToolbarVisibility();
         // Trigger event
         that.triggerEvent('onItemRemove', item);
     };
@@ -182,6 +199,71 @@ cm.define('Com.MultiField', {
         return !!that.items.find(function(find){
             return find === item;
         });
+    };
+
+    var toggleToolbarVisibility = function(){
+        if(!toolbarHeight){
+            toolbarHeight = that.nodes['toolbar'].offsetHeight;
+        }
+        if(that.params['maxItems'] > 0 && that.items.length == that.params['maxItems']){
+            if(toolbarVisible){
+                toolbarVisible = false;
+                that.nodes['toolbar'].style.overflow = 'hidden';
+                cm.transition(that.nodes['toolbar'], {
+                    'properties' : {'height' : '0px', 'opacity' : 0},
+                    'duration' : that.params['duration'],
+                    'easing' : 'ease-in-out'
+                });
+            }
+        }else{
+            if(!toolbarVisible){
+                toolbarVisible = true;
+                that.nodes['toolbar'].style.overflow = 'hidden';
+                cm.transition(that.nodes['toolbar'], {
+                    'properties' : {'height' : [toolbarHeight, 'px'].join(''), 'opacity' : 1},
+                    'duration' : that.params['duration'],
+                    'easing' : 'ease-in-out',
+                    'clear' : true,
+                    'onStop' : function(){
+                        that.nodes['toolbar'].style.overflow = '';
+                    }
+                });
+            }
+        }
+    };
+
+    var toggleItemVisibility = function(item, callback){
+        callback = typeof callback == 'function' ? callback : function(){};
+        if(!item['height']){
+            item['height'] = item['container'].offsetHeight;
+        }
+        if(typeof item['isVisible'] == 'undefined'){
+            item['isVisible'] = true;
+        }else if(item['isVisible']){
+            item['isVisible'] = false;
+            item['container'].style.overflow = 'hidden';
+            cm.transition(item['container'], {
+                'properties' : {'height' : '0px', 'opacity' : 0},
+                'duration' : that.params['duration'],
+                'easing' : 'ease-in-out',
+                'onStop' : callback
+            });
+        }else{
+            item['isVisible'] = true;
+            item['container'].style.overflow = 'hidden';
+            item['container'].style.height = '0px';
+            item['container'].style.opacity = 0;
+            cm.transition(item['container'], {
+                'properties' : {'height' : [item['height'], 'px'].join(''), 'opacity' : 1},
+                'duration' : that.params['duration'],
+                'easing' : 'ease-in-out',
+                'clear' : true,
+                'onStop' : function(){
+                    item['container'].style.overflow = '';
+                    callback();
+                }
+            });
+        }
     };
 
     /* ******* PUBLIC ******* */

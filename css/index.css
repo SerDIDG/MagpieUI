@@ -7365,24 +7365,28 @@ html.ie9 .com__palette .b-range {
 .com__multifield__content.pt__dnd-area:after {
   display: none;
 }
-.com__multifield__toolbar.is-hidden {
+.com__multifield__toolbar .com__multifield__item:after {
   display: none;
-}
-.com__multifield__toolbar .com__multifield__item {
-  padding: 0;
 }
 .com__multifield__item {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
   -ms-flex-pack: center;
-  padding: 0 0 16px 0;
   position: relative;
   -webkit-flex-flow: row wrap;
   -ms-flex-flow: row wrap;
   flex-flow: row wrap;
   -webkit-justify-content: flex-end;
   justify-content: flex-end;
+}
+.com__multifield__item:after {
+  height: 16px;
+  display: block;
+  content: '';
+  -webkit-flex: 0 0 100%;
+  -ms-flex: 0 0 100%;
+  flex: 0 0 100%;
 }
 .com__multifield__item > .icon {
   width: 28px;

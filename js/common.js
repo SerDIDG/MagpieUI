@@ -9,17 +9,17 @@
     Strings:                        1282
     Date and Time:                  1379
     Styles:                         1506
-    Animation:                      2105
-    Cookie and Local Storage:       2380
-    Ajax:                           2447
-    Hash (?):                       2725
-    Graphics:                       2745
-    Class Fabric                    2755
+    Animation:                      2168
+    Cookie and Local Storage:       2372
+    Ajax:                           2439
+    Hash (?):                       2717
+    Graphics:                       2737
+    Class Fabric                    2747
 
 */
 
 var cm = {
-        '_version' : '3.3',
+        '_version' : '3.3.1',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -1709,6 +1709,48 @@ cm.getRect = function(node){
     };
 };
 
+cm.getFullRect = function(node, styleObject){
+    if(!node || !cm.isNode(node)){
+        return null;
+    }
+    var dimensions = {};
+    styleObject = typeof styleObject == 'undefined' ? cm.getStyleObject(node) : styleObject;
+    // Get size and position
+    dimensions['width'] = node.offsetWidth;
+    dimensions['height'] = node.offsetHeight;
+    dimensions['x1'] = cm.getRealX(node);
+    dimensions['y1'] = cm.getRealY(node);
+    dimensions['x2'] = dimensions['x1'] + dimensions['width'];
+    dimensions['y2'] = dimensions['y1'] + dimensions['height'];
+    // Calculate Padding and Inner Dimensions
+    dimensions['padding'] = {
+        'top' :     cm.getCSSStyle(styleObject, 'paddingTop', true),
+        'right' :   cm.getCSSStyle(styleObject, 'paddingRight', true),
+        'bottom' :  cm.getCSSStyle(styleObject, 'paddingBottom', true),
+        'left' :    cm.getCSSStyle(styleObject, 'paddingLeft', true)
+    };
+    dimensions['innerWidth'] = dimensions['width'] - dimensions['padding']['left'] - dimensions['padding']['right'];
+    dimensions['innerHeight'] = dimensions['height'] - dimensions['padding']['top'] - dimensions['padding']['bottom'];
+    dimensions['innerX1'] = dimensions['x1'] + dimensions['padding']['left'];
+    dimensions['innerY1'] = dimensions['y1'] + dimensions['padding']['top'];
+    dimensions['innerX2'] = dimensions['innerX1'] + dimensions['innerWidth'];
+    dimensions['innerY2'] = dimensions['innerY1'] + dimensions['innerHeight'];
+    // Calculate Margin and Absolute Dimensions
+    dimensions['margin'] = {
+        'top' :     cm.getCSSStyle(styleObject, 'marginTop', true),
+        'right' :   cm.getCSSStyle(styleObject, 'marginRight', true),
+        'bottom' :  cm.getCSSStyle(styleObject, 'marginBottom', true),
+        'left' :    cm.getCSSStyle(styleObject, 'marginLeft', true)
+    };
+    dimensions['absoluteWidth'] = dimensions['width'] + dimensions['margin']['left'] + dimensions['margin']['right'];
+    dimensions['absoluteHeight'] = dimensions['height'] + dimensions['margin']['top'] + dimensions['margin']['bottom'];
+    dimensions['absoluteX1'] = dimensions['x1'] - dimensions['margin']['left'];
+    dimensions['absoluteY1'] = dimensions['y1'] - dimensions['margin']['top'];
+    dimensions['absoluteX2'] = dimensions['x2'] + dimensions['margin']['right'];
+    dimensions['absoluteY2'] = dimensions['y2'] + dimensions['margin']['bottom'];
+    return dimensions;
+};
+
 cm.getRealWidth = function(node, applyWidth){
     var nodeWidth = 0,
         width = 0;
@@ -1718,7 +1760,6 @@ cm.getRealWidth = function(node, applyWidth){
     node.style.width = typeof applyWidth == 'undefined' ? [nodeWidth, 'px'].join('') : applyWidth;
     return width;
 };
-
 
 cm.getRealHeight = function(node, type, applyType){
     var types = ['self', 'current', 'offset', 'offsetRelative'],
@@ -1784,48 +1825,6 @@ cm.getIndentY = function(node){
          + cm.getStyle(node, 'borderBottomWidth', true);
 };
 
-cm.getDimensions = function(node, styleObject){
-    if(!node || !cm.isNode(node)){
-        return null;
-    }
-    var dimensions = {};
-    styleObject = typeof styleObject == 'undefined' ? cm.getStyleObject(node) : styleObject;
-    // Get size and position
-    dimensions['width'] = node.offsetWidth;
-    dimensions['height'] = node.offsetHeight;
-    dimensions['x1'] = cm.getRealX(node);
-    dimensions['y1'] = cm.getRealY(node);
-    dimensions['x2'] = dimensions['x1'] + dimensions['width'];
-    dimensions['y2'] = dimensions['y1'] + dimensions['height'];
-    // Calculate Padding and Inner Dimensions
-    dimensions['padding'] = {
-        'top' :     cm.getCSSStyle(styleObject, 'paddingTop', true),
-        'right' :   cm.getCSSStyle(styleObject, 'paddingRight', true),
-        'bottom' :  cm.getCSSStyle(styleObject, 'paddingBottom', true),
-        'left' :    cm.getCSSStyle(styleObject, 'paddingLeft', true)
-    };
-    dimensions['innerWidth'] = dimensions['width'] - dimensions['padding']['left'] - dimensions['padding']['right'];
-    dimensions['innerHeight'] = dimensions['height'] - dimensions['padding']['top'] - dimensions['padding']['bottom'];
-    dimensions['innerX1'] = dimensions['x1'] + dimensions['padding']['left'];
-    dimensions['innerY1'] = dimensions['y1'] + dimensions['padding']['top'];
-    dimensions['innerX2'] = dimensions['innerX1'] + dimensions['innerWidth'];
-    dimensions['innerY2'] = dimensions['innerY1'] + dimensions['innerHeight'];
-    // Calculate Margin and Absolute Dimensions
-    dimensions['margin'] = {
-        'top' :     cm.getCSSStyle(styleObject, 'marginTop', true),
-        'right' :   cm.getCSSStyle(styleObject, 'marginRight', true),
-        'bottom' :  cm.getCSSStyle(styleObject, 'marginBottom', true),
-        'left' :    cm.getCSSStyle(styleObject, 'marginLeft', true)
-    };
-    dimensions['absoluteWidth'] = dimensions['width'] + dimensions['margin']['left'] + dimensions['margin']['right'];
-    dimensions['absoluteHeight'] = dimensions['height'] + dimensions['margin']['top'] + dimensions['margin']['bottom'];
-    dimensions['absoluteX1'] = dimensions['x1'] - dimensions['margin']['left'];
-    dimensions['absoluteY1'] = dimensions['y1'] - dimensions['margin']['top'];
-    dimensions['absoluteX2'] = dimensions['x2'] + dimensions['margin']['right'];
-    dimensions['absoluteY2'] = dimensions['y2'] + dimensions['margin']['bottom'];
-    return dimensions;
-};
-
 cm.addStyles = function(node, str){
     var arr = str.replace(/\s/g, '').split(';'),
         style;
@@ -1876,6 +1875,70 @@ cm.getCSSStyle = cm.getStyle = function(node, name, number){
         data = raw;
     }
     return data;
+};
+
+cm.getCurrentStyle = function(obj, name, dimension){
+    switch(name){
+        case 'width':
+        case 'height':
+        case 'top':
+        case 'left':
+            var Name = name.charAt(0).toUpperCase() + name.substr(1, name.length - 1);
+            if(dimension == '%' && !obj.style[name].match(/%/)){
+                var el = (/body/i.test(obj.parentNode.tagName) || /top|left/i.test(Name)) ? 'client' : 'offset';
+                var pv = (/width|left/i.test(Name)) ? obj.parentNode[el + 'Width'] : obj.parentNode[el + 'Height'];
+                return 100 * ( obj['offset' + Name] / pv );
+            }else if(dimension == '%' && /%/.test(obj.style[name])){
+                var display = obj.style.display;
+                obj.style.display = 'none';
+                var style = cm.getCSSStyle(obj, name, true) || 0;
+                obj.style.display = display;
+                return style;
+            }else if(dimension == 'px' && /px/.test(obj.style[name])){
+                return cm.getCSSStyle(obj, name, true) || 0;
+            }
+            return obj['offset' + Name];
+            break;
+        case 'opacity':
+            if(cm.is('ie') && cm.isVersion() < 9){
+                var reg = /alpha\(opacity=(.*)\)/;
+                var res = reg.exec(obj.style.filter || cm.getCSSStyle(obj, 'filter'));
+                return (res) ? res[1] / 100 : 1;
+            }else{
+                var val = parseFloat(obj.style.opacity || cm.getCSSStyle(obj, 'opacity'));
+                return (!isNaN(val)) ? val : 1;
+            }
+            break;
+        case 'color':
+        case 'backgroundColor':
+        case 'borderColor':
+            var val = cm.getCSSStyle(obj, name);
+            if(val.match(/rgb/i)){
+                return val = val.match(/\d+/g), [parseInt(val[0]), parseInt(val[1]), parseInt(val[2])];
+            }
+            return cm.hex2rgb(val.match(/[\w\d]+/)[0]);
+            break;
+        case 'docScrollTop':
+            return cm.getBodyScrollTop();
+            break;
+        case 'scrollLeft':
+        case 'scrollTop':
+            return obj[name];
+            break;
+        case 'x1':
+        case 'x2':
+        case 'y1':
+        case 'y2':
+            return parseInt(obj.getAttribute(name));
+            break;
+        default:
+            return cm.getCSSStyle(obj, name, true) || 0;
+    }
+};
+
+cm.getStyleDimension = function(value){
+    var pure = value.toString().match(/\d+(\D*)/);
+    return pure ? pure[1] : '';
 };
 
 cm.styleToNumber = function(data){
@@ -2115,7 +2178,7 @@ var animFrame = (function(){
             };
 })();
 
- cm.Animation = function(o){
+cm.Animation = function(o){
     var that = this,
         obj = o,
         processes = [],
@@ -2148,9 +2211,7 @@ var animFrame = (function(){
                 'style' : '',
                 'duration' : '',
                 'anim' : 'simple',
-                'animParams' : {},
-                'onStop' : function(){
-                }
+                'onStop' : function(){}
             }, arguments[0]),
             pId = 'animation_process_' + Math.random(),
             delta = animationMethod[args.anim] || animationMethod['simple'],
@@ -2158,12 +2219,12 @@ var animFrame = (function(){
 
         for(var name in args.style){
             var value = args.style[name].toString();
-            var dimension = getDimension(value);
+            var dimension = cm.getStyleDimension(value);
             properties.push({
                 'name' : name,
                 'new' : prepareEndPosition(name, value),
                 'dimension' : dimension,
-                'old' : getStyle(name, dimension)
+                'old' : cm.getCurrentStyle(obj, name, dimension)
             });
         }
 
@@ -2245,136 +2306,67 @@ var animFrame = (function(){
                 return [parseInt(rgb[0]), parseInt(rgb[1]), parseInt(rgb[2])];
             }else{
                 return cm.hex2rgb(value.match(/[\w\d]+/)[0]);
-
             }
         }
         return value.replace(/[^\-0-9\.]/g, '');
     };
-
-    var getDimension = function(value){
-        var pure = value.match(/\d+(\D*)/);
-        return pure ? pure[1] : '';
-    };
-
-    var getStyle = function(name, dimension){
-        switch(name){
-            case 'width':
-            case 'height':
-            case 'top':
-            case 'left':
-                var Name = name.charAt(0).toUpperCase() + name.substr(1, name.length - 1);
-                if(dimension == '%' && !obj.style[name].match(/%/)){
-                    var el = (/body/i.test(obj.parentNode.tagName) || /top|left/i.test(Name)) ? 'client' : 'offset';
-                    var pv = (/width|left/i.test(Name)) ? obj.parentNode[el + 'Width'] : obj.parentNode[el + 'Height'];
-                    return 100 * ( obj['offset' + Name] / pv );
-                }else if(dimension == '%' && /%/.test(obj.style[name])){
-                    var display = obj.style.display;
-                    obj.style.display = 'none';
-                    var style = cm.getCSSStyle(obj, name, true) || 0;
-                    obj.style.display = display;
-                    return style;
-                }else if(dimension == 'px' && /px/.test(obj.style[name])){
-                    return cm.getCSSStyle(obj, name, true) || 0;
-                }
-                return obj['offset' + Name];
-                break;
-            case 'opacity':
-                if(cm.is('ie') && cm.isVersion() < 9){
-                    var reg = /alpha\(opacity=(.*)\)/;
-                    var res = reg.exec(obj.style.filter || cm.getCSSStyle(obj, 'filter'));
-                    return (res) ? res[1] / 100 : 1;
-                }else{
-                    var val = parseFloat(obj.style.opacity || cm.getCSSStyle(obj, 'opacity'));
-                    return (!isNaN(val)) ? val : 1;
-                }
-                break;
-            case 'color':
-            case 'backgroundColor':
-            case 'borderColor':
-                var val = cm.getCSSStyle(obj, name);
-                if(val.match(/rgb/i)){
-                    return val = val.match(/\d+/g), [parseInt(val[0]), parseInt(val[1]), parseInt(val[2])];
-                }
-                return cm.hex2rgb(val.match(/[\w\d]+/)[0]);
-                break;
-            case 'docScrollTop':
-                return cm.getBodyScrollTop();
-                break;
-            case 'scrollLeft':
-            case 'scrollTop':
-                return obj[name];
-                break;
-            case 'x1':
-            case 'x2':
-            case 'y1':
-            case 'y2':
-                return parseInt(obj.getAttribute(name));
-                break;
-            default:
-                return cm.getCSSStyle(obj, name, true) || 0;
-        }
-    };
 };
 
-cm.transition = function(o){
-    var config = cm.merge({
-            'node' : null,
-            'style' : [],			// array ['style','0','px','type']
-            'duration' : 100,
-            'type' : 'easy-in-out',
-            'delayIn' : 0,
+cm.transition = function(node, params){
+    var rule = cm.getSupportedStyle('transition'),
+        transitions = [],
+        dimension;
+
+    var init = function(){
+        // Merge params
+        params = cm.merge({
+            'properties' : {},
+            'duration' : 0,
+            'easing' : 'ease-in-out',
+            'delayIn' : 30,
             'delayOut' : 30,
-            'clear' : true,
-            'onStop' : function(){
-            }
-        }, o),
-        styles = [];
-    // Prepare styles
-    config['style'].forEach(function(item){
-        item[3] = item[3] || o['type'];
-        // Convert style to js format
-        item[4] = cm.styleStrToKey(item[0]);
-        // Build transition format string
-        styles.push([item[0], (config['duration'] / 1000 + 's'), item[3]].join(' '));
-    });
-    styles = styles.join(', ');
-    // Start
-    setTimeout(function(){
-        if(cm.is('opera')){
-            // Presto
-            config['node'].style.OTransition = styles;
-        }else if(cm.is('ff') && cm.isVersion() < 16){
-            // Gecko
-            config['node'].style.MozTransition = styles;
-        }else if(cm.is('chrome') || cm.is('safari')){
-            // Webkit
-            config['node'].style.webkitTransition = styles;
-        }
-        // Default
-        config['node'].style.transition = styles;
-        // Set styles
-        config['style'].forEach(function(item){
-            config['node'].style[item[4]] = item[1] + item[2];
+            'clear' : false,
+            'onStop' : function(){}
+        }, params);
+        // Prepare styles
+        cm.forEach(params['properties'], function(value, key){
+            key = cm.styleStrToKey(key);
+            transitions.push([key, params['duration'] + 'ms', params['easing']].join(' '));
         });
-    }, config['delayIn']);
-    // End
-    setTimeout(function(){
-        if(config['clear']){
-            if(cm.is('opera')){
-                // Presto
-                config['node'].style.OTransition = 'none 0s';
-            }else if(cm.is('ff') && cm.isVersion() < 16){
-                // Gecko
-                config['node'].style.MozTransition = 'none 0s';
-            }else if(cm.is('chrome') || cm.is('safari')){
-                // Webkit
-                config['node'].style.webkitTransition = 'none 0s';
+        transitions = transitions.join(', ');
+        start();
+    };
+
+    var start = function(){
+        // Prepare
+        cm.forEach(params['properties'], function(value, key){
+            key = cm.styleStrToKey(key);
+            dimension = cm.getStyleDimension(value);
+            node.style[key] = cm.getCurrentStyle(node, key, dimension) + dimension;
+        });
+        // Set
+        setTimeout(function(){
+            node.style[rule] = transitions;
+            // Set new styles
+            cm.forEach(params['properties'], function(value, key){
+                key = cm.styleStrToKey(key);
+                node.style[key] = value;
+            });
+        }, params['delayIn']);
+        // End
+        setTimeout(function(){
+            node.style[rule]  = '';
+            if(params['clear']){
+                cm.forEach(params['properties'], function(value, key){
+                    key = cm.styleStrToKey(key);
+                    node.style[key] = '';
+                });
             }
-            // Default
-            config['node'].style.transition = 'none 0s';
-        }
-        config['onStop']();
-    }, (config['delayIn'] + config['duration'] + config['delayOut']));
+            params['onStop'](node);
+        }, params['duration'] + params['delayIn'] + params['delayOut']);
+    };
+
+    init();
 };
 
 /* ******* COOKIE & LOCAL STORAGE ******* */

@@ -708,7 +708,7 @@ function(params){
     /* *** POSITION CALCULATION FUNCTIONS *** */
 
     var getPosition = function(item){
-        item['dimensions'] = cm.extend(item['dimensions'], cm.getDimensions(item['node'], item['styleObject']));
+        item['dimensions'] = cm.extend(item['dimensions'], cm.getFullRect(item['node'], item['styleObject']));
     };
 
     var getPositions = function(arr){

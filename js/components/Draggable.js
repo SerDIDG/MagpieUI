@@ -133,9 +133,9 @@ function(params){
     /* ******* MAIN ******* */
 
     that.getDimensions = function(){
-        that.dimensions['target'] = cm.getDimensions(that.params['target']);
-        that.dimensions['node'] = cm.getDimensions(that.params['node']);
-        that.dimensions['limiter'] = cm.getDimensions(that.params['limiter']);
+        that.dimensions['target'] = cm.getFullRect(that.params['target']);
+        that.dimensions['node'] = cm.getFullRect(that.params['node']);
+        that.dimensions['limiter'] = cm.getFullRect(that.params['limiter']);
         return that.dimensions;
     };
 
