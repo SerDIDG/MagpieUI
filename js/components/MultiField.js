@@ -144,6 +144,8 @@ cm.define('Com.MultiField', {
         // Register sortable item
         if(that.params['sortable']){
             that.components['sortable'].addItem(item['container'], that.nodes['content']);
+        }else{
+            cm.remove(item['drag']);
         }
         // Events
         cm.addEvent(item['remove'], 'click', function(e){
