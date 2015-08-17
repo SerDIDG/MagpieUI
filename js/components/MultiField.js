@@ -22,6 +22,8 @@ cm.define('Com.MultiField', {
         'renderItems' : 0,
         'maxItems' : 0,                         // 0 - infinity
         'template' : null,                      // Html node or string with items template
+        'templateAttributeReplace' : false,
+        'templateAttribute' : 'name',           // Replace items attribute by pattern, available: %index%
         'sortable' : true,                      // Use drag and drop to sort items
         'duration' : 200,
         'langs' : {
@@ -128,6 +130,7 @@ cm.define('Com.MultiField', {
                 item['remove'] = cm.node('div', {'class' : that.params['icons']['remove'], 'title' : that.lang('remove'), 'data-node' : 'remove'})
             );
             // Template
+            cm.log(that.params['template']);
             if(cm.isNode(that.params['template'])){
                 cm.appendChild(that.params['template'], item['field']);
             }else if(!cm.isEmpty(that.params['template'])){
@@ -200,7 +203,12 @@ cm.define('Com.MultiField', {
 
     var resetIndexes = function(){
         cm.forEach(that.items, function(item, index){
+            // Set index
             item['index'] = index;
+            // Process data attributes
+            if(that.params['templateAttributeReplace']){
+                cm.processDataAttributes(item['field'], that.params['templateAttribute'], {'%index%' : index});
+            }
         });
     };
 

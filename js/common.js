@@ -1111,6 +1111,22 @@ cm.getNodes = function(container, marker){
     return nodes;
 };
 
+cm.processDataAttributes = function(node, name, vars){
+    vars = typeof vars != 'undefined' ? vars : {};
+    var marker = ['data-attributes', name].join('-'),
+        nodes = node.querySelectorAll('[' + marker + ']'),
+        value;
+
+    var process = function(node){
+        if(value = node.getAttribute(marker)){
+            node.setAttribute(name, cm.strReplace(value, vars));
+        }
+    };
+
+    process(node);
+    cm.forEach(nodes, process);
+};
+
 /* ******* FORM ******* */
 
 cm.setFDO = function(o, form){
