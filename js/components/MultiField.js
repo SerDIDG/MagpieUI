@@ -12,7 +12,8 @@ cm.define('Com.MultiField', {
         'onItemAdd',
         'onItemRemove',
         'onItemProcess',
-        'onItemSort'
+        'onItemSort',
+        'onItemIndexChange'
     ],
     'params' : {
         'node' : cm.Node('div'),
@@ -203,11 +204,15 @@ cm.define('Com.MultiField', {
 
     var resetIndexes = function(){
         cm.forEach(that.items, function(item, index){
-            // Set index
-            item['index'] = index;
-            // Process data attributes
-            if(that.params['templateAttributeReplace']){
-                cm.processDataAttributes(item['field'], that.params['templateAttribute'], {'%index%' : index});
+            if(item['index'] != index){
+                // Set index
+                item['index'] = index;
+                // Process data attributes
+                if(that.params['templateAttributeReplace']){
+                    cm.processDataAttributes(item['field'], that.params['templateAttribute'], {'%index%' : index});
+                }
+                // Trigger event
+                that.triggerEvent('onItemIndexChange', item);
             }
         });
     };
