@@ -21,6 +21,7 @@ cm.define('Com.MultiField', {
         'container' : false,
         'renderItems' : 0,
         'maxItems' : 0,                         // 0 - infinity
+        'template' : null,                      // Html node or string with items template
         'sortable' : true,                      // Use drag and drop to sort items
         'duration' : 200,
         'langs' : {
@@ -126,6 +127,12 @@ cm.define('Com.MultiField', {
                 item['field'] = cm.node('div', {'class' : 'field', 'data-node' : 'field'}),
                 item['remove'] = cm.node('div', {'class' : that.params['icons']['remove'], 'title' : that.lang('remove'), 'data-node' : 'remove'})
             );
+            // Template
+            if(cm.isNode(that.params['template'])){
+                cm.appendChild(that.params['template'], item['field']);
+            }else if(!cm.isEmpty(that.params['template'])){
+                cm.appendChild(cm.strToHTML(that.params['template']), item['field']);
+            }
             // Sortable
             if(that.params['sortable']){
                 item['drag'] = cm.node('div', {'class' : that.params['icons']['drag'], 'data-node' : 'drag'});

@@ -19,7 +19,7 @@
 */
 
 var cm = {
-        '_version' : '3.3.1',
+        '_version' : '3.3.2',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -947,30 +947,38 @@ cm.firstEl = function(node){
 };
 
 cm.insertFirst = function(node, target){
-    if(target.firstChild){
-        cm.insertBefore(node, target.firstChild);
-    }else{
-        target.appendChild(node);
+    if(cm.isNode(node) && cm.isNode(target)){
+        if(target.firstChild){
+            cm.insertBefore(node, target.firstChild);
+        }else{
+            cm.appendChild(node, target);
+        }
     }
     return node;
 };
 
 cm.insertLast = cm.appendChild = function(node, target){
-    target.appendChild(node);
+    if(cm.isNode(node) && cm.isNode(target)){
+        target.appendChild(node);
+    }
     return node;
 };
 
-cm.insertBefore = function(el, target){
-    target.parentNode.insertBefore(el, target);
-    return el;
+cm.insertBefore = function(node, target){
+    if(cm.isNode(node) && cm.isNode(target)){
+        target.parentNode.insertBefore(node, target);
+    }
+    return node;
 };
 
 cm.insertAfter = function(node, target){
-    var before = target.nextSibling;
-    if(before != null){
-        cm.insertBefore(node, before);
-    }else{
-        target.parentNode.appendChild(node);
+    if(cm.isNode(node) && cm.isNode(target)){
+        var before = target.nextSibling;
+        if(before != null){
+            cm.insertBefore(node, before);
+        }else{
+            target.parentNode.appendChild(node);
+        }
     }
     return node;
 };

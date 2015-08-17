@@ -32,28 +32,9 @@
                 })
 
                 .add('multifield', function(node){
-                    var name = node.getAttribute('name');
-
-                    switch(name){
-                        case 'custom':
-                            new Com.MultiField({
-                                'node' : node,
-                                'events' : {
-                                    'onItemAdd' : function(that, item){
-                                        item['field'].appendChild(
-                                                cm.node('input', {'type' : 'text'})
-                                        );
-                                    }
-                                }
-                            });
-                            break;
-
-                        default:
-                            new Com.MultiField({
-                                'node' : node
-                            });
-                            break;
-                    }
+                    new Com.MultiField({
+                        'node' : node
+                    });
                 })
                 .construct();
         });
@@ -84,7 +65,7 @@
     })
 </script>
 
-<div class="com__multifield" data-element="multifield" data-node="ComMultiField:{}:container">
+<div class="com__multifield" data-element="multifield" data-node="ComMultiField:{}:container" data-config='{"template":"<input type=\"text\">"}'>
     <div class="com__multifield__content" data-node="content">
         <div class="com__multifield__item" data-node="items:[]:container">
             <div class="icon drag linked" data-node="drag"></div>
@@ -100,7 +81,7 @@
         </div>
     </div>
 </div></textarea>
-        <div class="com__multifield" data-element="multifield" data-node="ComMultiField:{}:container" name="custom">
+        <div class="com__multifield" data-element="multifield" data-node="ComMultiField:{}:container" data-config='{"template":"<input type=\"text\">"}'>
             <div class="com__multifield__content" data-node="content">
                 <div class="com__multifield__item" data-node="items:[]:container">
                     <div class="icon drag linked" data-node="drag"></div>
