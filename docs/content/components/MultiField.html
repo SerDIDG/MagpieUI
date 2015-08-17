@@ -54,14 +54,7 @@
         <textarea class="pt__box-code cm-autoresize" readonly>
 <script type="text/javascript">
     new Com.MultiField({
-        'node' : node,
-        'events' : {
-            'onItemAdd' : function(that, item){
-                item['field'].appendChild(
-                    cm.node('input', {'type' : 'text'})
-                );
-            }
-        }
+        'node' : node
     })
 </script>
 
