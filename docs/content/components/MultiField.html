@@ -51,6 +51,50 @@
     <li data-node="tabs:[]:container" data-config='{"id" : "methods", "title" : "Methods"}'></li>
 
     <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
+        <h2>Template</h2>
+        <textarea class="pt__box-code cm-autoresize" readonly>
+<script type="text/javascript">
+    new Com.MultiField({
+        'node' : node
+    })
+</script>
+
+<div class="com__multifield" data-element="multifield" data-node="ComMultiField:{}:container" data-config='{"template":"<input type=\"text\" data-attributes-name=\"test[%index%]\">"}'>
+    <div class="com__multifield__content" data-node="content">
+        <div class="com__multifield__item" data-node="items:[]:container">
+            <div class="icon drag linked" data-node="drag"></div>
+            <div class="field" data-node="field">
+                <input type="text">
+            </div>
+            <div class="icon remove linked" data-node="remove" title="Remove"></div>
+        </div>
+    </div>
+    <div class="com__multifield__toolbar" data-node="toolbar">
+        <div class="com__multifield__item">
+            <div class="icon add linked" data-node="add" title="Add"></div>
+        </div>
+    </div>
+</div></textarea>
+        <div class="com__multifield" data-element="multifield" data-node="ComMultiField:{}:container" data-config='{"template":"<input type=\"text\" data-attributes-name=\"test[%index%]\">"}'>
+            <div class="com__multifield__content" data-node="content">
+                <div class="com__multifield__item" data-node="items:[]:container">
+                    <div class="icon drag linked" data-node="drag"></div>
+                    <div class="field" data-node="field">
+                        <input type="text">
+                    </div>
+                    <div class="icon remove linked" data-node="remove" title="Remove"></div>
+                </div>
+            </div>
+            <div class="com__multifield__toolbar" data-node="toolbar">
+                <div class="com__multifield__item">
+                    <div class="icon add linked" data-node="add" title="Add"></div>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>Template attribute replacement</h2>
         <textarea class="pt__box-code cm-autoresize" readonly>
 <script type="text/javascript">
     new Com.MultiField({
@@ -79,7 +123,7 @@
                 <div class="com__multifield__item" data-node="items:[]:container">
                     <div class="icon drag linked" data-node="drag"></div>
                     <div class="field" data-node="field">
-                        <input type="text" data-attributes-name="test[%index%]">
+                        <input type="text" name="test[0]" data-attributes-name="test[%index%]">
                     </div>
                     <div class="icon remove linked" data-node="remove" title="Remove"></div>
                 </div>
