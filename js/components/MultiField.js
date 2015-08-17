@@ -23,7 +23,7 @@ cm.define('Com.MultiField', {
         'maxItems' : 0,                         // 0 - infinity
         'template' : null,                      // Html node or string with items template
         'templateAttributeReplace' : false,
-        'templateAttribute' : 'name',           // Replace items attribute by pattern, available: %index%
+        'templateAttribute' : 'name',           // Replace specified items attribute by pattern, example: data-attribute-name="test[%index%]", available variables: %index%
         'sortable' : true,                      // Use drag and drop to sort items
         'duration' : 200,
         'langs' : {
