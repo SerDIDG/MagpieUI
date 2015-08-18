@@ -53,7 +53,6 @@ cm.define('Com.MultiField', {
         'items' : []
     };
     that.components = {};
-    that.animations = {};
     that.items = [];
 
     var init = function(){
@@ -95,8 +94,6 @@ cm.define('Com.MultiField', {
                 that.params['container'].appendChild(that.nodes['container']);
             }
         }
-        // Animations
-        that.animations['toolbar'] = new cm.Animation(that.nodes['toolbar']);
         // Add button events
         cm.addEvent(that.nodes['add'], 'click', function(e){
             cm.preventDefault(e);
@@ -121,17 +118,16 @@ cm.define('Com.MultiField', {
     };
 
     var renderItem = function(){
-        var item = {
-            'isVisible' : false
-        };
         if(that.params['maxItems'] == 0 || that.items.length < that.params['maxItems']){
+            var item = {
+                'isVisible' : false
+            };
             // Structure
             item['container'] = cm.node('div', {'class' : 'com__multifield__item', 'data-node' : 'items:[]:container'},
                 item['field'] = cm.node('div', {'class' : 'field', 'data-node' : 'field'}),
                 item['remove'] = cm.node('div', {'class' : that.params['icons']['remove'], 'title' : that.lang('remove'), 'data-node' : 'remove'})
             );
             // Template
-            cm.log(that.params['template']);
             if(cm.isNode(that.params['template'])){
                 cm.appendChild(that.params['template'], item['field']);
             }else if(!cm.isEmpty(that.params['template'])){
