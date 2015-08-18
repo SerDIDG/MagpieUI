@@ -32,9 +32,41 @@
                 })
 
                 .add('multifield', function(node){
-                    new Com.MultiField({
-                        'node' : node
-                    });
+                    var name = node.getAttribute('name');
+                    switch(name){
+                        case 'sample-javascript':
+                            new Com.MultiField({
+                                'node' : node,
+                                'container' : node,
+                                'renderStructure' : true,
+                                'renderItems' : 1,
+                                'events' : {
+                                    'onItemAdd' : function(that, item){
+                                        item['field'].appendChild(
+                                            cm.node('input', {'type' : 'text'})
+                                        );
+                                    }
+                                }
+                            });
+                            break;
+                        case 'sample-template':
+                            new Com.MultiField({
+                                'node' : node,
+                                'events' : {
+                                    'onItemAdd' : function(that, item){
+                                        item['field'].appendChild(
+                                            cm.node('input', {'type' : 'text'})
+                                        );
+                                    }
+                                }
+                            });
+                            break;
+                        default:
+                            new Com.MultiField({
+                                'node' : node
+                            });
+                            break;
+                    }
                 })
                 .construct();
         });
@@ -46,20 +78,39 @@
 <h1 class="pt__box-title">Components: Multi Field</h1>
 
 <ul class="com__tabset__content-ul" data-element="tabset">
-    <li data-node="tabs:[]:container" data-config='{"id" : "overview", "title" : "Overview"}'></li>
+    <li data-node="tabs:[]:container" data-config='{"id" : "overview", "title" : "Overview"}'>
+        <h2>Overview</h2>
+        <p>This component provide form multi fields.</p>
 
-    <li data-node="tabs:[]:container" data-config='{"id" : "methods", "title" : "Methods"}'></li>
+        <h4>Embedded Modules</h4>
+        <ul class="cm__list">
+            <li><code>Params</code></li>
+            <li><code>Events</code></li>
+            <li><code>DataConfig</code></li>
+            <li><code>DataNodes</code></li>
+            <li><code>Stack</code></li>
+            <li><code>Langs</code></li>
+        </ul>
 
-    <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
-        <h2>Template</h2>
+        <h4>Required Components</h4>
+        <ul class="cm__list">
+            <li><code>Com.Sortable</code></li>
+            <li><code>Com.Draganddrop</code></li>
+        </ul>
+
+        <h2>Initialize</h2>
         <textarea class="pt__box-code cm-autoresize" readonly>
 <script type="text/javascript">
-    new Com.MultiField({
-        'node' : node
-    })
+    cm.onReady(function(){
+        new Com.Collector()
+            .add('multifield', function(node){
+                new Com.MultiField({'node' : node});
+            })
+            .construct()
+    });
 </script>
 
-<div class="com__multifield" data-element="multifield" data-node="ComMultiField:{}:container" data-config='{"template":"<input type=\"text\" data-attributes-name=\"test[%index%]\">"}'>
+<div class="com__multifield" data-element="multifield" data-node="ComMultiField:{}:container" data-config='{"template":"<input type=\"text\">"}'>
     <div class="com__multifield__content" data-node="content">
         <div class="com__multifield__item" data-node="items:[]:container">
             <div class="icon drag linked" data-node="drag"></div>
@@ -75,7 +126,163 @@
         </div>
     </div>
 </div></textarea>
-        <div class="com__multifield" data-element="multifield" data-node="ComMultiField:{}:container" data-config='{"template":"<input type=\"text\" data-attributes-name=\"test[%index%]\">"}'>
+
+        <p>or</p>
+
+        <textarea class="pt__box-code cm-autoresize" readonly>
+<script type="text/javascript">
+    cm.onReady(function(){
+        new Com.Collector()
+            .add('multifield', function(node){
+                new Com.MultiField({
+                    'node' : node,
+                    'container' : node,
+                    'renderStructure' : true,
+                    'events' : {
+                        'onItemAdd' : function(that, item){
+                            item['field'].appendChild(
+                                cm.node('input', {'type' : 'text'})
+                            );
+                        }
+                    }
+                });
+            })
+            .construct()
+    });
+</script>
+
+<div data-element="multifield"></div></textarea>
+    </li>
+
+    <li data-node="tabs:[]:container" data-config='{"id" : "methods", "title" : "Methods"}'>
+        <h2>Add field:</h2>
+        <pre class="pt__box-code">multifield.addItem();</pre>
+        <p>Returns class of multifield component.</p>
+
+        <h2>Remove field:</h2>
+        <pre class="pt__box-code">multifield.removeItem(<i>item or index</i>);</pre>
+        <p>Returns class of multifield component.</p>
+
+        <h2>Get field:</h2>
+        <pre class="pt__box-code">multifield.getItem(<i>index</i>);</pre>
+        <p>Returns field item.</p>
+
+        <h2>Get all fields:</h2>
+        <pre class="pt__box-code">multifield.getItems();</pre>
+        <p>Returns fields array.</p>
+
+        <h2>Set event:</h2>
+        <pre class="pt__box-code">multifield.addEvent(event, handler);</pre>
+        <p>Available events: onRender, onItemAdd, onItemRemove, onItemProcess, onItemSort, onItemIndexChange.  Returns class of multifield component.</p>
+
+        <h2>Remove event:</h2>
+        <pre class="pt__box-code">multifield.removeEvent(event, handler);</pre>
+        <p>Available events: onRender, onItemAdd, onItemRemove, onItemProcess, onItemSort, onItemIndexChange.  Returns class of multifield component.</p>
+
+        <h2>Trigger event:</h2>
+        <pre class="pt__box-code">multifield.triggerEvent(event);</pre>
+        <p>Available events: onRender, onItemAdd, onItemRemove, onItemProcess, onItemSort, onItemIndexChange.  Returns class of multifield component.</p>
+    </li>
+
+    <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
+        <h2>Render structure via Java-Script</h2>
+        <textarea class="pt__box-code cm-autoresize" readonly>
+<script type="text/javascript">
+    new Com.MultiField({
+        'node' : node,
+        'container' : node,
+        'renderStructure' : true,
+        'renderItems' : 1,
+        'events' : {
+            'onItemAdd' : function(that, item){
+                item['field'].appendChild(
+                    cm.node('input', {'type' : 'text'})
+                );
+            }
+        }
+    });
+</script>
+
+<div data-element="multifield"></div></textarea>
+        <div data-element="multifield" name="sample-javascript"></div>
+
+        <hr>
+
+        <h2>Render template via Java-Script</h2>
+        <textarea class="pt__box-code cm-autoresize" readonly>
+<script type="text/javascript">
+    new Com.MultiField({
+        'node' : node,
+        'events' : {
+            'onItemAdd' : function(that, item){
+                item['field'].appendChild(
+                    cm.node('input', {'type' : 'text'})
+                );
+            }
+        }
+    });
+</script>
+
+<div class="com__multifield" data-element="multifield" data-node="ComMultiField:{}:container">
+    <div class="com__multifield__content" data-node="content">
+        <div class="com__multifield__item" data-node="items:[]:container">
+            <div class="icon drag linked" data-node="drag"></div>
+            <div class="field" data-node="field">
+                <input type="text">
+            </div>
+            <div class="icon remove linked" data-node="remove" title="Remove"></div>
+        </div>
+    </div>
+    <div class="com__multifield__toolbar" data-node="toolbar">
+        <div class="com__multifield__item">
+            <div class="icon add linked" data-node="add" title="Add"></div>
+        </div>
+    </div>
+</div></textarea>
+        <div class="com__multifield" data-element="multifield" data-node="ComMultiField:{}:container" name="sample-template">
+            <div class="com__multifield__content" data-node="content">
+                <div class="com__multifield__item" data-node="items:[]:container">
+                    <div class="icon drag linked" data-node="drag"></div>
+                    <div class="field" data-node="field">
+                        <input type="text">
+                    </div>
+                    <div class="icon remove linked" data-node="remove" title="Remove"></div>
+                </div>
+            </div>
+            <div class="com__multifield__toolbar" data-node="toolbar">
+                <div class="com__multifield__item">
+                    <div class="icon add linked" data-node="add" title="Add"></div>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>Set template in parameter</h2>
+        <textarea class="pt__box-code cm-autoresize" readonly>
+<script type="text/javascript">
+    new Com.MultiField({
+        'node' : node
+    });
+</script>
+
+<div class="com__multifield" data-element="multifield" data-node="ComMultiField:{}:container" data-config='{"template":"<input type=\"text\">"}'>
+    <div class="com__multifield__content" data-node="content">
+        <div class="com__multifield__item" data-node="items:[]:container">
+            <div class="icon drag linked" data-node="drag"></div>
+            <div class="field" data-node="field">
+                <input type="text">
+            </div>
+            <div class="icon remove linked" data-node="remove" title="Remove"></div>
+        </div>
+    </div>
+    <div class="com__multifield__toolbar" data-node="toolbar">
+        <div class="com__multifield__item">
+            <div class="icon add linked" data-node="add" title="Add"></div>
+        </div>
+    </div>
+</div></textarea>
+        <div class="com__multifield" data-element="multifield" data-node="ComMultiField:{}:container" data-config='{"template":"<input type=\"text\">"}'>
             <div class="com__multifield__content" data-node="content">
                 <div class="com__multifield__item" data-node="items:[]:container">
                     <div class="icon drag linked" data-node="drag"></div>
@@ -99,7 +306,7 @@
 <script type="text/javascript">
     new Com.MultiField({
         'node' : node
-    })
+    });
 </script>
 
 <div class="com__multifield" data-element="multifield" data-node="ComMultiField:{}:container" data-config='{"template":"<input type=\"text\" data-attributes-name=\"test[%index%]\">", "templateAttributeReplace" : true}'>
