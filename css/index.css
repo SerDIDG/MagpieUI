@@ -211,6 +211,9 @@
   -webkit-overflow-scrolling: touch;
   overflow: scroll;
 }
+.cm__scroll--none {
+  overflow: hidden;
+}
 .cm__scroll--auto {
   -webkit-overflow-scrolling: touch;
   overflow: auto;

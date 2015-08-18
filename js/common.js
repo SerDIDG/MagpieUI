@@ -785,6 +785,14 @@ cm.getIFrameDOM = function(o){
     return o.contentDocument || o.document;
 };
 
+cm.getDocumentHead = function(){
+    return document.getElementsByTagName('head')[0];
+};
+
+cm.getDocumentHtml = function(){
+    return document.documentElement;
+};
+
 cm.node = cm.Node = function(){
     var args = arguments,
         value,

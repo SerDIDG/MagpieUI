@@ -40,6 +40,7 @@ cm.define('Com.Dialog', {
         'appendOnRender' : true,
         'removeOnClose' : true,
         'scroll' : true,
+        'documentScroll' : true,
         'icons' : {
             'closeInside' : 'icon default linked',
             'closeOutside' : 'icon default linked'
@@ -271,6 +272,10 @@ function(params){
             nodes['container'].style.display = 'block';
             // Resize interval, will be removed on close
             resizeInt = setInterval(resize, 5);
+            // Show / Hide Document Scroll
+            if(!that.params['documentScroll']){
+                cm.addClass(cm.getDocumentHtml(), 'cm__scroll--none');
+            }
             // Add close event on Esc press
             cm.addEvent(window, 'keydown', windowClickEvent);
             // Animate
@@ -290,6 +295,10 @@ function(params){
             resizeInt && clearInterval(resizeInt);
             // Remove close event on Esc press
             cm.removeEvent(window, 'keydown', windowClickEvent);
+            // Show / Hide Document Scroll
+            if(!that.params['documentScroll']){
+                cm.removeClass(cm.getDocumentHtml(), 'cm__scroll--none');
+            }
             // Animate
             anim['container'].go({
                 'style' : {'opacity' : '0'}, 'duration' : that.params['openTime'], 'onStop' : function(){

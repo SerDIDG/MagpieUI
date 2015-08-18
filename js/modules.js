@@ -23,7 +23,7 @@ Mod['Params'] = {
                     break;
 
                 case 'document.html':
-                    that.params[key] = document.documentElement;
+                    that.params[key] = cm.getDocumentHtml();
                     break;
 
                 case 'document.body':
@@ -31,7 +31,7 @@ Mod['Params'] = {
                     break;
 
                 case 'document.head':
-                    that.params[key] = document.getElementsByTagName('head')[0];
+                    that.params[key] = cm.getDocumentHead();
                     break;
 
                 default:
