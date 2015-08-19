@@ -164,6 +164,9 @@ function(params){
                     nodes['inner'] = cm.Node('div', {'class' : 'inner com__dialog__inner'})
                 )
             );
+            if(!that.params['scroll']){
+                cm.addClass(nodes['scroll'], 'is-no-scroll');
+            }
             if(nodes['title']){
                 cm.insertAfter(nodes['descr'], nodes['title']);
             }else if(nodes['buttons']){

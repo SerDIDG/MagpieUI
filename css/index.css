@@ -7526,15 +7526,14 @@ html.ie9 .com__palette .b-range {
   overflow: hidden;
 }
 .com__dialog > .window > .inner > .descr > .scroll > .inner {
-  height: 100%;
   overflow: hidden;
 }
 .com__dialog > .window > .inner > .descr > .scroll.is-scroll {
   overflow-x: hidden;
   overflow-y: auto;
 }
-.com__dialog > .window > .inner > .descr > .scroll.is-scroll > .inner {
-  height: auto;
+.com__dialog > .window > .inner > .descr > .scroll.is-no-scroll > .inner {
+  height: 100%;
 }
 .com__dialog > .window > .inner > .buttons {
   position: relative;

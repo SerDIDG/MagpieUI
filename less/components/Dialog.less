@@ -64,16 +64,17 @@
                     overflow: hidden;
 
                     > .inner {
-                        height: 100%;
                         overflow: hidden;
                     }
 
                     &.is-scroll {
                         overflow-x: hidden;
                         overflow-y: auto;
+                    }
 
+                    &.is-no-scroll {
                         > .inner {
-                            height: auto;
+                            height: 100%;
                         }
                     }
                 }
