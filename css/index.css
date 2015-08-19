@@ -7525,12 +7525,16 @@ html.ie9 .com__palette .b-range {
   position: relative;
   overflow: hidden;
 }
+.com__dialog > .window > .inner > .descr > .scroll > .inner {
+  height: 100%;
+  overflow: hidden;
+}
 .com__dialog > .window > .inner > .descr > .scroll.is-scroll {
   overflow-x: hidden;
   overflow-y: auto;
 }
-.com__dialog > .window > .inner > .descr > .scroll > .inner {
-  overflow: hidden;
+.com__dialog > .window > .inner > .descr > .scroll.is-scroll > .inner {
+  height: auto;
 }
 .com__dialog > .window > .inner > .buttons {
   position: relative;
@@ -7546,6 +7550,10 @@ html.ie9 .com__palette .b-range {
 }
 .com__dialog__inner {
   overflow: hidden;
+}
+.com__dialog__iframe {
+  width: 100%;
+  height: 100%;
 }
 /* *** FONT *** */
 /* ******* COMPONENT: DIALOG: STUFF ******* */
