@@ -8284,6 +8284,9 @@ html.ie9 .com__palette .b-range {
 .com__togglebox > dd > .inner {
   padding: 12px 0 0 0;
 }
+.com__togglebox.has-hover-icon > dt {
+  cursor: default;
+}
 .com__togglebox.has-title-bg > dt {
   padding: 0px 8px;
   border-radius: 3px;
