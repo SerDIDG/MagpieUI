@@ -11,7 +11,7 @@ cm.define('Com.ImageBox', {
         'node' : cm.Node('div'),
         'animated' : false,
         'effect' : 'none',
-        'scrollNode' : 'document.window'
+        'scrollNode' : window
     }
 },
 function(params){

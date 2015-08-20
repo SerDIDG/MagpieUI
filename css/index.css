@@ -154,7 +154,7 @@
 }
 /* *** EMPTY *** */
 .cm__empty {
-  font: 400 11px/18px 'Open Sans', arial, helvetica, sans-serif;
+  font: 400 13px/18px 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
   font-style: italic;
   padding: 12px;
@@ -5655,7 +5655,7 @@ button::-moz-focus-inner {
 }
 .pt__gridlist table th {
   font-weight: 600;
-  font-size: 11px;
+  font-size: 13px;
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
@@ -5681,7 +5681,7 @@ button::-moz-focus-inner {
   vertical-align: top;
   border-top: 1px solid transparent;
   word-wrap: break-word;
-  font-size: 11px;
+  font-size: 13px;
 }
 .pt__gridlist table tbody:first-child tr:first-child td,
 .pt__gridlist table thead:first-child tr:first-child td,
@@ -5718,7 +5718,7 @@ button::-moz-focus-inner {
   margin: 0;
 }
 .pt__gridlist .cm__form__icons-inside .text {
-  font-size: 11px;
+  font-size: 13px;
 }
 /* ******* PARTS: GRIDLIST: ADAPTIVE ******* */
 @media only screen and (max-width: 768px) {
@@ -5866,7 +5866,7 @@ button::-moz-focus-inner {
   text-align: right;
 }
 .pt__breadcrumbs ul li {
-  font: 400 11px/18px 'Open Sans', arial, helvetica, sans-serif;
+  font: 400 13px/18px 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
   margin: 0 8px 8px 0;
 }
