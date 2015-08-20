@@ -218,13 +218,19 @@ function(params){
         }
         // Add click event
         if(that.params['toggleOnHashChange']){
-            item['a'].setAttribute('href', [window.location.href.split('#')[0], tab['id']].join('#'));
+            cm.addEvent(item['a'], 'click', function(e){
+                e = cm.getEvent(e);
+                cm.preventDefault(e);
+                if(that.active != tab['id']){
+                    window.location.href = [window.location.href.split('#')[0], tab['id']].join('#');
+                }
+            });
         }else{
-            item['a'].onclick = function(e){
+            cm.addEvent(item['a'], 'click', function(e){
                 e = cm.getEvent(e);
                 cm.preventDefault(e);
                 set(tab['id']);
-            };
+            });
         }
         return item;
     };
