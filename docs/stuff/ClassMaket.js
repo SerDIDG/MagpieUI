@@ -13,7 +13,8 @@ cm.define('Com.ClassMaket', {
         'onRender'
     ],
     'params' : {
-        'node' : cm.Node('div')
+        'node' : cm.Node('div'),
+        'name' : ''
     }
 },
 function(params){
@@ -26,13 +27,14 @@ function(params){
         that.getDataConfig(that.params['node']);
         that.callbacksProcess();
         render();
+        that.addToStack(that.params['node']);
+        that.triggerEvent('onRender');
     };
 
     var render = function(){
-        that.triggerEvent('onRender', {});
     };
 
-    /* ******* MAIN ******* */
+    /* ******* PUBLIC ******* */
 
     init();
 });
