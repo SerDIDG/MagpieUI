@@ -21,7 +21,7 @@ cm.define('Com.ColorPicker', {
         'container' : false,
         'input' : cm.Node('div'),
         'name' : '',
-        'value' : null,                        // Color string: transparent | hex.
+        'value' : null,                        // Color string: transparent | hex | rgba.
         'defaultValue' : 'transparent',
         'title' : '',
         'showInputValue' : true,
@@ -43,7 +43,9 @@ cm.define('Com.ColorPicker', {
             'className' : 'com__colorpicker-tooltip',
             'top' : 'targetHeight + 4'
         },
-        'Com.Palette' : {}
+        'Com.Palette' : {
+            'setOnInit' : false
+        }
     }
 },
 function(params){
@@ -158,7 +160,7 @@ function(params){
                 'container' : that.nodes['menuContainer'],
                 'events' : {
                     'onChange' : function(my, value){
-                        set(my.get('hex'), true);
+                        set(my.get('rgb'), true);
                         that.components['tooltip'].hide();
                     }
                 }
@@ -175,11 +177,11 @@ function(params){
     var set = function(color, triggerEvents){
         that.previousValue = that.value;
         if(cm.isEmpty(color)){
-            color = 'transparent';
+            color = that.params['defaultValue'];
         }
         that.value = color;
         that.components['palette'].set(that.value, false);
-        that.nodes['hidden'].value = that.value;
+        that.nodes['hidden'].value = that.components['palette'].get('rgb');
         if(that.value == 'transparent'){
             if(that.params['showInputValue']){
                 that.nodes['input'].value = that.lang('Transparent');
@@ -187,9 +189,9 @@ function(params){
             cm.replaceClass(that.nodes['input'], 'input-dark input-light', 'input-transparent');
         }else{
             if(that.params['showInputValue']){
-                that.nodes['input'].value = that.value;
+                that.nodes['input'].value = that.components['palette'].get('hex');
             }
-            that.nodes['input'].style.backgroundColor = that.value;
+            that.nodes['input'].style.backgroundColor = that.components['palette'].get('hex');
             if(that.components['palette'].isDark()){
                 cm.replaceClass(that.nodes['input'], 'input-transparent input-light', 'input-dark');
             }else{

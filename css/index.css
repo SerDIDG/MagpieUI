@@ -3058,6 +3058,20 @@ button::-moz-focus-inner {
   -moz-background-clip: padding-box;
   background-clip: padding-box;
 }
+.pt__box--black {
+  padding: 4px;
+  background: #fff;
+  border: 1px solid #cccccc;
+  border-width: 1px;
+  border-radius: 3px;
+  border-color: #cccccc;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+  -webkit-background-clip: padding-box;
+  -moz-background-clip: padding-box;
+  background-clip: padding-box;
+  background: #111111;
+  border-color: #111111;
+}
 .pt__box--clear {
   padding: 0;
   background: transparent;
@@ -6606,6 +6620,20 @@ button::-moz-focus-inner {
   -moz-background-clip: padding-box;
   background-clip: padding-box;
 }
+.com__tooltip.theme-black > .inner {
+  padding: 4px;
+  background: #fff;
+  border: 1px solid #cccccc;
+  border-width: 1px;
+  border-radius: 3px;
+  border-color: #cccccc;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+  -webkit-background-clip: padding-box;
+  -moz-background-clip: padding-box;
+  background-clip: padding-box;
+  background: #111111;
+  border-color: #111111;
+}
 /* ******* COMPONENT: TOOLTIP: INNER COMPONENTS ******* */
 /* *** ITEMS LIST *** */
 .com__tooltip .pt__listing-items ul {
@@ -7171,7 +7199,7 @@ html.ie9 .com__timeselect > .inner > .sep {
 }
 .com__palette .b-palette,
 .com__palette .b-range {
-  margin: 0 12px 0 0;
+  margin: 0 16px 0 0;
   float: left;
   border-radius: 3px;
 }
@@ -7207,6 +7235,9 @@ html.ie9 .com__palette .b-range {
 }
 .com__palette .b-palette .drag.is-light {
   border-color: #000000;
+}
+.com__palette .b-range {
+  border-radius: 3px;
 }
 .com__palette .b-range > .inner {
   width: 24px;
@@ -7257,6 +7288,9 @@ html.ie9 .com__palette .b-range {
   right: -7px;
   bottom: auto;
   left: auto;
+}
+.com__palette .b-opacity {
+  background-image: url("../img/parts/transparent.png");
 }
 .com__palette .b-stuff {
   float: left;

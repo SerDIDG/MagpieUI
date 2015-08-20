@@ -17,8 +17,8 @@ cm.define('Com.Dialog', {
         'container' : 'document.body',
         'name' : '',
         'size' : 'auto',                // auto | fullscreen
-        'width' : 700,                  // number, %
-        'height' : 'auto',              // number, %, auto
+        'width' : 700,                  // number, %, px
+        'height' : 'auto',              // number, %, px, auto
         'minHeight' : 0,                // number, %, auto, not applicable when using height
         'maxHeight' : 'auto',           // number, %, auto, not applicable when using height
         'position' : 'fixed',
@@ -37,7 +37,7 @@ cm.define('Com.Dialog', {
         'closeOnBackground' : false,
         'openTime' : 200,
         'autoOpen' : true,
-        'appendOnRender' : true,
+        'appendOnRender' : false,
         'removeOnClose' : true,
         'scroll' : true,
         'documentScroll' : true,
@@ -219,6 +219,9 @@ function(params){
         }else if(/%/.test(that.params['maxHeight'])){
             maxHeight = ((winHeight / 100) * parseFloat(that.params['maxHeight'])) - NAHeight;
         }else{
+            if(/px/.test(that.params['maxHeight'])){
+                that.params['maxHeight'] = parseFloat(that.params['maxHeight']);
+            }
             maxHeight = that.params['maxHeight'] - NAHeight;
         }
         if(that.params['minHeight'] == 'auto'){
@@ -226,6 +229,9 @@ function(params){
         }else if(/%/.test(that.params['minHeight'])){
             minHeight = ((winHeight / 100) * parseFloat(that.params['minHeight'])) - NAHeight;
         }else{
+            if(/px/.test(that.params['minHeight'])){
+                that.params['minHeight'] = parseFloat(that.params['minHeight']);
+            }
             minHeight = that.params['minHeight'] - NAHeight;
         }
         // Calculate height
@@ -240,6 +246,9 @@ function(params){
         }else if(/%/.test(that.params['height'])){
             setHeight = ((winHeight / 100) * parseFloat(that.params['height'])) - NAHeight;
         }else{
+            if(/px/.test(that.params['height'])){
+                that.params['height'] = parseFloat(that.params['height']);
+            }
             setHeight = that.params['height'] - NAHeight;
         }
         setHeight = Math.min(Math.max(setHeight, 0), AHeight);
@@ -247,6 +256,9 @@ function(params){
         if(/%/.test(that.params['width'])){
             setWidth = ((winWidth / 100) * parseFloat(that.params['width']));
         }else{
+            if(/px/.test(that.params['width'])){
+                that.params['width'] = parseFloat(that.params['width']);
+            }
             setWidth = that.params['width'];
         }
         setWidth = Math.min(setWidth, AWidth);

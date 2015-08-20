@@ -7,7 +7,7 @@
 
     .b-palette,
     .b-range {
-        margin: 0 @CmIndent-XSmall 0 0;
+        margin: 0 @CmIndent-Small 0 0;
         float: left;
         border-radius: @CmBorder-Radius;
 
@@ -52,6 +52,8 @@
     }
 
     .b-range {
+        border-radius: @CmBorder-Radius;
+
         > .inner {
             width: @CmSize-Medium;
             cursor: row-resize;
@@ -96,6 +98,10 @@
                 .mx__position(0, -7px, auto, auto);
             }
         }
+    }
+
+    .b-opacity {
+        background-image: url("@{CmPath-Images}/parts/transparent.png");
     }
 
     .b-stuff {
