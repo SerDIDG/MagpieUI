@@ -40,7 +40,7 @@ cm.define('Com.Dialog', {
         'appendOnRender' : false,
         'removeOnClose' : true,
         'scroll' : true,
-        'documentScroll' : true,
+        'documentScroll' : false,
         'icons' : {
             'closeInside' : 'icon default linked',
             'closeOutside' : 'icon default linked'

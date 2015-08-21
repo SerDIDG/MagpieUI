@@ -42,8 +42,17 @@ function(params){
         that.convertEvents(that.params['events']);
         that.getDataConfig(that.params['node']);
         that.addToStack(that.params['node']);
+        validateParams();
         render();
         setLogic();
+    };
+
+    var validateParams = function(){
+        that.params['Com.Dialog']['theme'] = that.params['theme'];
+        that.params['Com.Dialog']['size'] = that.params['size'];
+        if(that.params['size'] == 'fullscreen'){
+            that.params['Com.Dialog']['documentScroll'] = false;
+        }
     };
 
     var render = function(){
@@ -61,9 +70,7 @@ function(params){
         // Dialog
         components['dialog'] = new Com.Dialog(
                 cm.merge(that.params['Com.Dialog'], {
-                    'content' : nodes['container'],
-                    'theme' : that.params['theme'],
-                    'size' : that.params['size']
+                    'content' : nodes['container']
                 })
             )
             .addEvent('onOpen', function(){
