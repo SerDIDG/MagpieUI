@@ -13,6 +13,9 @@ cm.define('Com.HelpBubble', {
     'params' : {
         'node' : cm.Node('div'),
         'name' : '',
+        'renderStructure' : false,
+        'container' : false,
+        'content' : cm.node('span'),
         'Com.Tooltip' : {
             'className' : 'com__help-bubble__tooltip'
         }
@@ -22,8 +25,9 @@ function(params){
     var that = this;
 
     that.nodes = {
-        'button' : cm.node('div'),
-        'content' : cm.node('div')
+        'container' : cm.node('span'),
+        'button' : cm.node('span'),
+        'content' : cm.node('span')
     };
 
     that.components = {};
@@ -34,11 +38,25 @@ function(params){
         that.getDataNodes(that.params['node']);
         that.getDataConfig(that.params['node']);
         render();
-        that.addToStack(that.params['node']);
+        that.addToStack(that.nodes['container']);
         that.triggerEvent('onRender');
     };
 
     var render = function(){
+        // Render structure
+        if(that.params['renderStructure']){
+            that.nodes['container'] = cm.node('span', {'class' : 'com__help-bubble'},
+                that.nodes['button'] = cm.node('span', {'class' : 'icon default linked'}),
+                that.nodes['content'] = cm.node('span', {'class' : 'com__help-bubble__content'},
+                    that.params['content']
+                )
+            );
+            // Embed
+            if(that.params['container']){
+                that.params['container'].appendChild(that.nodes['container']);
+            }
+        }
+        // Render tooltip
         cm.getConstructor('Com.Tooltip', function(classConstructor){
             that.components['tooltip'] = new classConstructor(that.params['Com.Tooltip']);
             that.components['tooltip']
@@ -48,6 +66,14 @@ function(params){
     };
 
     /* ******* PUBLIC ******* */
+
+    that.set = function(node){
+        if(cm.isNode(node)){
+            cm.clearNode(that.nodes['content']);
+            that.nodes['content'].appendChild(node);
+        }
+        return that;
+    };
 
     init();
 });
