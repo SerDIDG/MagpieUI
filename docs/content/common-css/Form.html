@@ -37,6 +37,7 @@
     <script type="text/javascript" src="../../../js/components/Palette.js"></script>
     <script type="text/javascript" src="../../../js/components/ColorPicker.js"></script>
     <script type="text/javascript" src="../../../js/components/MultiField.js"></script>
+    <script type="text/javascript" src="../../../js/components/HelpBubble.js"></script>
     <script type="text/javascript" src="../../../js/components/Dialog.js"></script>
 
 	<script type="text/javascript">
@@ -78,6 +79,11 @@
                         'node' : node
                     });
                 })
+                .add('help-bubble', function(node){
+                    new Com.HelpBubble({
+                        'node' : node
+                    });
+                })
                 .add('multifield', function(node){
                     var name = node.getAttribute('name');
 
@@ -115,7 +121,13 @@
     <li data-node="tabs:[]:container" data-config='{"id" : "inputs", "title" : "Inputs"}'>
         <div class="form">
             <dl>
-                <dt>Text:</dt>
+                <dt>
+                    Text:
+                    <span class="com__help-bubble" data-element="help-bubble" data-node="ComHelpBubble:{}:container">
+                        <span class="icon default linked" data-node="button"></span>
+                        <span class="com__help-bubble__content" data-node="content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eget dolor malesuada, mollis est non, aliquam est. Nam lacinia porta dolor quis egestas. Aliquam eu iaculis ipsum. Cras at finibus magna. Proin ac erat ut augue egestas varius. Curabitur finibus quam nulla, sit amet tempus ligula malesuada sit amet.</span>
+                    </span>
+                </dt>
                 <dd>
                     <input type="text" placeholder="Type here">
                 </dd>

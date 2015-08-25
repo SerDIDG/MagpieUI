@@ -1,0 +1,28 @@
+.com__help-bubble {
+    display: inline-block;
+
+    > .icon {
+        .cm__size__small;
+        .icon.small.help;
+        display: inline-block;
+        vertical-align: text-top;
+    }
+
+    .com__help-bubble__content {
+        display: none;
+    }
+}
+
+.com__help-bubble__content {
+    display: block;
+}
+
+.com__tooltip {
+    &.com__help-bubble__tooltip {
+        width: 250px;
+
+        > .inner {
+            padding: @CmIndent-XSmall;
+        }
+    }
+}

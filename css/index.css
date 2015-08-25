@@ -6885,6 +6885,28 @@ button::-moz-focus-inner {
   bottom: auto;
   left: auto;
 }
+.com__help-bubble {
+  display: inline-block;
+}
+.com__help-bubble > .icon {
+  width: 16px;
+  height: 16px;
+  background-image: url("../img/icons/small/help.png");
+  display: inline-block;
+  vertical-align: text-top;
+}
+.com__help-bubble .com__help-bubble__content {
+  display: none;
+}
+.com__help-bubble__content {
+  display: block;
+}
+.com__tooltip.com__help-bubble__tooltip {
+  width: 250px;
+}
+.com__tooltip.com__help-bubble__tooltip > .inner {
+  padding: 12px;
+}
 /* ******* COMPONENTS: CALENDAR ******* */
 .com__calendar {
   -webkit-user-select: none;
