@@ -19,15 +19,15 @@
 */
 
 var cm = {
-        '_version' : '3.4.1',
+        '_version' : '3.4.2',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
         '_deviceType' : 'desktop',
         '_deviceOrientation' : 'landscape',
-        '_adaptiveFrom' : 768,
         '_scrollSize' : 0,
         '_config' : {
+            'adaptiveFrom' : 768,
             'screenTablet' : 1024,
             'screenTabletPortrait' : 768,
             'screenMobile' : 640,
@@ -36,7 +36,8 @@ var cm = {
             'dateTimeFormat' : '%Y-%m-%d %H:%i:%s',
             'timeFormat' : '%H:%i:%s',
             'displayDateFormat' : '%F %j, %Y',
-            'displayDateTimeFormat' : '%F %j, %Y, %H:%i'
+            'displayDateTimeFormat' : '%F %j, %Y, %H:%i',
+            'tooltipTop' : 'targetHeight + 4'
         }
     },
     Mod = {},

@@ -55,6 +55,12 @@ cm.define('Com.Datepicker', {
             'Today' : 'Today',
             'Now' : 'Now',
             'Time' : 'Time:'
+        },
+        'Com.Tooltip' : {
+            'targetEvent' : 'click',
+            'hideOnReClick' : true,
+            'className' : 'com__datepicker__tooltip',
+            'top' : 'cm._config.tooltipTop'
         }
     }
 },
@@ -190,19 +196,17 @@ function(params){
             });
         }
         // Render tooltip
-        components['menu'] = new Com.Tooltip({
-            'container' : that.params['renderInBody'] ? document.body : nodes['container'],
-            'className' : 'com__datepicker-tooltip',
-            'top' : ['targetHeight', that.params['menuMargin']].join('+'),
-            'content' : nodes['menuContainer'],
-            'target' : nodes['target'],
-            'targetEvent' : 'click',
-            'hideOnReClick' : true,
-            'events' : {
-                'onShowStart' : show,
-                'onHideStart' : hide
-            }
-        });
+        components['menu'] = new Com.Tooltip(
+            cm.merge(that.params['Com.Tooltip'], {
+                'container' : that.params['renderInBody'] ? document.body : nodes['container'],
+                'content' : nodes['menuContainer'],
+                'target' : nodes['target'],
+                'events' : {
+                    'onShowStart' : show,
+                    'onHideStart' : hide
+                }
+            })
+        );
         // Render calendar
         components['calendar'] = new Com.Calendar({
             'container' : nodes['calendarContainer'],

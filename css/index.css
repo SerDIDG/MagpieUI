@@ -6657,12 +6657,12 @@ button::-moz-focus-inner {
   transform: rotate(180deg);
 }
 /* Tooltip */
-.com__tooltip.com__select-tooltip {
+.com__tooltip.com__select__tooltip {
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
 }
-.com__tooltip.com__select-tooltip > .inner > .scroll {
+.com__tooltip.com__select__tooltip > .inner > .scroll {
   max-height: 160px;
 }
 /* Select Multiple */
@@ -7064,26 +7064,26 @@ button::-moz-focus-inner {
   background-image: url("../img/icons/small/remove.png");
 }
 /* Tooltip */
-.com__tooltip.com__datepicker-tooltip {
+.com__tooltip.com__datepicker__tooltip {
   width: 210px;
 }
-.com__tooltip.com__datepicker-tooltip > .inner > .scroll {
+.com__tooltip.com__datepicker__tooltip > .inner > .scroll {
   overflow: visible;
 }
-.com__tooltip.com__datepicker-tooltip .time-holder {
+.com__tooltip.com__datepicker__tooltip .time-holder {
   padding: 0 0 8px;
   margin: 8px 0 0 0;
   border-bottom: 1px dotted #cccccc;
   border-top: 1px dotted #cccccc;
 }
-.com__tooltip.com__datepicker-tooltip .time-holder dl {
+.com__tooltip.com__datepicker__tooltip .time-holder dl {
   margin: 0;
 }
-.com__tooltip.com__datepicker-tooltip .button.today,
-.com__tooltip.com__datepicker-tooltip input[type="button"].today,
-.com__tooltip.com__datepicker-tooltip input[type="submit"].today,
-.com__tooltip.com__datepicker-tooltip input[type="reset"].today,
-.com__tooltip.com__datepicker-tooltip button.today {
+.com__tooltip.com__datepicker__tooltip .button.today,
+.com__tooltip.com__datepicker__tooltip input[type="button"].today,
+.com__tooltip.com__datepicker__tooltip input[type="submit"].today,
+.com__tooltip.com__datepicker__tooltip input[type="reset"].today,
+.com__tooltip.com__datepicker__tooltip button.today {
   margin: 8px 0 0 0;
 }
 /* Calendar */
@@ -7405,7 +7405,7 @@ html.ie9 .com__palette .b-range {
   transform: rotate(180deg);
 }
 /* *** TOOLTIP *** */
-.com__tooltip.com__colorpicker-tooltip > .inner > .scroll {
+.com__tooltip.com__colorpicker__tooltip > .inner > .scroll {
   overflow: visible;
 }
 /* ******* COMPONENTS: MULTI FIELD  ******* */

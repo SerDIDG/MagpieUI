@@ -27,12 +27,18 @@ cm.define('Com.Select', {
         'placeholder' : '',
         'showTitleTag' : true,                  // Copy title from available select node to component container. Will be shown on hover.
         'title' : false,                        // Title text. Will be shown on hover.
-        'menuMargin' : 4,                       // Outer margin from component container to dropdown.
         'options' : [],                         // Listing of options, for rendering through java-script. Example: [{'value' : 'foo', 'text' : 'Bar'}].
         'selected' : 0,                         // Option value / array of option values.
         'disabled' : false,
         'icons' : {
             'arrow' : 'icon default linked'
+        },
+        'Com.Tooltip' : {
+            'targetEvent' : 'click',
+            'hideOnReClick' : true,
+            'className' : 'com__select__tooltip',
+            'width' : 'targetWidth',
+            'top' : 'cm._config.tooltipTop'
         }
     }
 },
@@ -224,20 +230,17 @@ function(params){
                 cm.removeEvent(document.body, 'keydown', blockDocumentArrows);
             });
             // Render tooltip
-            components['menu'] = new Com.Tooltip({
-                'container' : that.params['renderInBody']? document.body : nodes['container'],
-                'className' : 'com__select-tooltip',
-                'width' : 'targetWidth',
-                'top' : ['targetHeight', that.params['menuMargin']].join('+'),
-                'content' : nodes['scroll'],
-                'target' : nodes['target'],
-                'targetEvent' : 'click',
-                'hideOnReClick' : true,
-                'events' : {
-                    'onShowStart' : show,
-                    'onHideStart' : hide
-                }
-            });
+            components['menu'] = new Com.Tooltip(
+                cm.merge(that.params['Com.Tooltip'], {
+                    'container' : that.params['renderInBody']? document.body : nodes['container'],
+                    'content' : nodes['scroll'],
+                    'target' : nodes['target'],
+                    'events' : {
+                        'onShowStart' : show,
+                        'onHideStart' : hide
+                    }
+                })
+            );
             nodes['menu'] = components['menu'].getNodes();
         }
         // Enable / Disable
