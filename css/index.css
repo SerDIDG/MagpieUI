@@ -8251,8 +8251,8 @@ html.ie9 .com__palette .b-range {
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
-  -webkit-transition: background 300ms ease-in-out, color 300ms ease-in-out;
-  transition: background 300ms ease-in-out, color 300ms ease-in-out;
+  -webkit-transition: background 300ms ease-in-out;
+  transition: background 300ms ease-in-out;
 }
 .com__togglebox > dt:hover {
   -webkit-transition: background 100ms ease-in-out, color 100ms ease-in-out;
@@ -8277,6 +8277,8 @@ html.ie9 .com__palette .b-range {
   text-overflow: ellipsis;
   display: block;
   padding: 0px 0;
+  -webkit-transition: color 300ms ease-in-out;
+  transition: color 300ms ease-in-out;
 }
 .com__togglebox > dt .cm__inherit,
 .com__togglebox > dt .link,
@@ -8323,6 +8325,10 @@ html.ie9 .com__palette .b-range {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+.com__togglebox > dt:hover .title {
+  -webkit-transition: background 100ms ease-in-out, color 100ms ease-in-out;
+  transition: background 100ms ease-in-out, color 100ms ease-in-out;
 }
 .com__togglebox > dd {
   padding: 0;
@@ -8476,11 +8482,8 @@ html.ie9 .com__palette .b-range {
   -ms-transform: rotate(90deg);
   transform: rotate(90deg);
 }
-.com__togglebox.is-hide > dt {
+.com__togglebox.is-hide > dt .title {
   color: #666666;
-}
-.com__togglebox.is-hide > dt:hover {
-  color: #1d73c9;
 }
 .com__togglebox.is-hide > dt .cm__link,
 .com__togglebox.is-hide > dt .link,
@@ -8496,11 +8499,11 @@ html.ie9 .com__palette .b-range {
 .com__togglebox.is-hide > dt .com__glossary .com__glossary__title:hover {
   color: #1d73c9;
 }
-.com__togglebox.is-show > dt {
-  color: #666666;
-}
-.com__togglebox.is-show > dt:hover {
+.com__togglebox.is-hide > dt:hover .title {
   color: #1d73c9;
+}
+.com__togglebox.is-show > dt .title {
+  color: #666666;
 }
 .com__togglebox.is-show > dt .cm__link,
 .com__togglebox.is-show > dt .link,
@@ -8514,6 +8517,9 @@ html.ie9 .com__palette .b-range {
 .com__togglebox.is-show > dt .link--inner:hover,
 .com__togglebox.is-show > dt a:hover,
 .com__togglebox.is-show > dt .com__glossary .com__glossary__title:hover {
+  color: #1d73c9;
+}
+.com__togglebox.is-show > dt:hover .title {
   color: #1d73c9;
 }
 .com__togglebox > dt .icon.default {
@@ -8531,11 +8537,8 @@ html.ie9 .com__palette .b-range {
 .com__togglebox.has-title-bg.is-show > dt:hover {
   background: #c2dbf4;
 }
-.com__togglebox.has-title-bg.is-hide > dt {
+.com__togglebox.has-title-bg.is-hide > dt .title {
   color: #666666;
-}
-.com__togglebox.has-title-bg.is-hide > dt:hover {
-  color: #1d73c9;
 }
 .com__togglebox.has-title-bg.is-hide > dt .cm__link,
 .com__togglebox.has-title-bg.is-hide > dt .link,
@@ -8551,11 +8554,11 @@ html.ie9 .com__palette .b-range {
 .com__togglebox.has-title-bg.is-hide > dt .com__glossary .com__glossary__title:hover {
   color: #1d73c9;
 }
-.com__togglebox.has-title-bg.is-show > dt {
-  color: #666666;
-}
-.com__togglebox.has-title-bg.is-show > dt:hover {
+.com__togglebox.has-title-bg.is-hide > dt:hover .title {
   color: #1d73c9;
+}
+.com__togglebox.has-title-bg.is-show > dt .title {
+  color: #666666;
 }
 .com__togglebox.has-title-bg.is-show > dt .cm__link,
 .com__togglebox.has-title-bg.is-show > dt .link,
@@ -8569,6 +8572,9 @@ html.ie9 .com__palette .b-range {
 .com__togglebox.has-title-bg.is-show > dt .link--inner:hover,
 .com__togglebox.has-title-bg.is-show > dt a:hover,
 .com__togglebox.has-title-bg.is-show > dt .com__glossary .com__glossary__title:hover {
+  color: #1d73c9;
+}
+.com__togglebox.has-title-bg.is-show > dt:hover .title {
   color: #1d73c9;
 }
 .com__togglebox.has-title-bg > dt .icon.default {

@@ -8,7 +8,7 @@
         position: relative;
         cursor: pointer;
         .mx__user-select(none);
-        .mx__transition(background color, @CmUI-Transition-Duration);
+        .mx__transition(background, @CmUI-Transition-Duration);
 
         &:hover {
             .mx__transition(background color, @CmUI-Transition-DurationReverse);
@@ -33,6 +33,7 @@
             .cm__text-nowrap;
             display: block;
             padding: @padding 0;
+            .mx__transition(color, @CmUI-Transition-Duration);
         }
 
         .cm__inherit {
@@ -48,6 +49,12 @@
 
             > .l {
                 .cm__text-nowrap;
+            }
+        }
+
+        &:hover {
+            .title {
+                .mx__transition(background color, @CmUI-Transition-DurationReverse);
             }
         }
     }
@@ -205,10 +212,8 @@
 .com__togglebox__title-color (@normal, @hover, @active) {
     &.is-hide {
         > dt {
-            color: @normal;
-
-            &:hover {
-                color: @hover;
+            .title {
+                color: @normal;
             }
 
             .cm__link {
@@ -218,15 +223,19 @@
                     color: @hover;
                 }
             }
+
+            &:hover {
+                .title {
+                    color: @hover;
+                }
+            }
         }
     }
 
     &.is-show {
         > dt {
-            color: @active;
-
-            &:hover {
-                color: @hover;
+            .title {
+                color: @active;
             }
 
             .cm__link {
@@ -236,6 +245,13 @@
                     color: @hover;
                 }
             }
+
+            &:hover {
+                .title {
+                    color: @hover;
+                }
+            }
+
         }
     }
 }
