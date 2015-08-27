@@ -4,10 +4,9 @@
     .cm__box;
 
     > dt {
-        .cm__font--ui-h1;
+        min-height: @ComToggleBox-Size;
         position: relative;
         cursor: pointer;
-        line-height: @ComToggleBox-Size;
         .mx__user-select(none);
         .mx__transition(background color, @CmUI-Transition-Duration);
 
@@ -28,8 +27,12 @@
         }
 
         .title {
+            @padding: max(round((@ComToggleBox-Size - @CmFont-UI-H1-LineHeight) / 2), 0);
+
+            .cm__font--ui-h1;
             .cm__text-nowrap;
             display: block;
+            padding: @padding 0;
         }
 
         .cm__inherit {
@@ -109,35 +112,55 @@
 
     &.is-medium {
         > dt {
-            .cm__font--ui-h4;
-            line-height: @ComToggleBox-SizeMedium;
+            min-height: @ComToggleBox-SizeMedium;
 
             .icon {
                 height: @ComToggleBox-SizeMedium;
+            }
+
+            .title {
+                @padding: max(round((@ComToggleBox-SizeMedium - @CmFont-UI-H4-LineHeight) / 2), 0);
+
+                .cm__font--ui-h4;
+                padding: @padding 0;
             }
         }
     }
 
     &.is-base {
         > dt {
-            font-size: @CmFont-Base-Size;
-            font-weight: @CmFont-Base-BoldWeight;
-            line-height: @ComToggleBox-SizeBase;
+            min-height: @ComToggleBox-SizeBase;
 
             .icon {
                 height: @ComToggleBox-SizeBase;
+            }
+
+            .title {
+                @padding: max(round((@ComToggleBox-SizeBase - @CmFont-Base-LineHeight) / 2), 0);
+
+                .cm__text-wrap;
+                .cm__font;
+                font-weight: @CmFont-Base-BoldWeight;
+                padding: @padding 0;
+                overflow: hidden;
             }
         }
     }
 
     &.is-ui {
         > dt {
-            .cm__font--ui;
-            font-weight: @CmFont-UI-BoldWeight;
-            line-height: @ComToggleBox-SizeUI;
+            min-height: @ComToggleBox-SizeUI;
 
             .icon {
                 height: @ComToggleBox-SizeUI;
+            }
+
+            .title {
+                @padding: max(round((@ComToggleBox-SizeUI - @CmFont-UI-LineHeight) / 2), 0);
+
+                .cm__font--ui;
+                font-weight: @CmFont-UI-BoldWeight;
+                padding: @padding 0;
             }
         }
     }

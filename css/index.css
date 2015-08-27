@@ -8245,11 +8245,9 @@ html.ie9 .com__palette .b-range {
   margin-bottom: 0;
 }
 .com__togglebox > dt {
-  font: 300 28px/38px 'Open Sans', arial, helvetica, sans-serif;
-  color: #666666;
+  min-height: 38px;
   position: relative;
   cursor: pointer;
-  line-height: 38px;
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
@@ -8272,10 +8270,13 @@ html.ie9 .com__palette .b-range {
   transition: -webkit-transform 300ms ease-in-out, -ms-transform 300ms ease-in-out, transform 300ms ease-in-out;
 }
 .com__togglebox > dt .title {
+  font: 300 28px/38px 'Open Sans', arial, helvetica, sans-serif;
+  color: #666666;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   display: block;
+  padding: 0px 0;
 }
 .com__togglebox > dt .cm__inherit,
 .com__togglebox > dt .link,
@@ -8427,29 +8428,43 @@ html.ie9 .com__palette .b-range {
   padding: 8px 22px 8px 8px;
 }
 .com__togglebox.is-medium > dt {
-  font: 300 16px/24px 'Open Sans', arial, helvetica, sans-serif;
-  color: #666666;
-  line-height: 24px;
+  min-height: 24px;
 }
 .com__togglebox.is-medium > dt .icon {
   height: 24px;
 }
+.com__togglebox.is-medium > dt .title {
+  font: 300 16px/24px 'Open Sans', arial, helvetica, sans-serif;
+  color: #666666;
+  padding: 0px 0;
+}
 .com__togglebox.is-base > dt {
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 24px;
+  min-height: 24px;
 }
 .com__togglebox.is-base > dt .icon {
   height: 24px;
 }
-.com__togglebox.is-ui > dt {
+.com__togglebox.is-base > dt .title {
+  overflow: visible;
+  white-space: normal;
+  text-overflow: clip;
   font: 400 13px/18px 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
   font-weight: 600;
-  line-height: 24px;
+  padding: 3px 0;
+  overflow: hidden;
+}
+.com__togglebox.is-ui > dt {
+  min-height: 24px;
 }
 .com__togglebox.is-ui > dt .icon {
   height: 24px;
+}
+.com__togglebox.is-ui > dt .title {
+  font: 400 13px/18px 'Open Sans', arial, helvetica, sans-serif;
+  color: #666666;
+  font-weight: 600;
+  padding: 3px 0;
 }
 .com__togglebox.is-hide > dd {
   height: 0;
