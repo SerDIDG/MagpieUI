@@ -31,8 +31,8 @@ cm.define('Com.Datepicker', {
         'dateTimeFormat' : 'cm._config.dateTimeFormat',
         'displayDateTimeFormat' : 'cm._config.displayDateTimeFormat',
         'minutesInterval' : 1,
-        'startYear' : 1950,
-        'endYear' : new Date().getFullYear() + 10,
+        'startYear' : 1950,                                                 // number | current
+        'endYear' : new Date().getFullYear() + 10,                          // number | current
         'startWeekDay' : 0,
         'showTodayButton' : true,
         'showClearButton' : false,
@@ -104,6 +104,12 @@ function(params){
         }
         if(that.params['value'] == 'now'){
             that.params['value'] = new Date();
+        }
+        if(that.params['startYear'] == 'current'){
+            that.params['startYear'] = new Date().getFullYear();
+        }
+        if(that.params['endYear'] == 'current'){
+            that.params['endYear'] = new Date().getFullYear();
         }
         that.format = that.params['isDateTime']? that.params['dateTimeFormat'] : that.params['format'];
         that.displayFormat = that.params['isDateTime']? that.params['displayDateTimeFormat'] : that.params['displayFormat'];
