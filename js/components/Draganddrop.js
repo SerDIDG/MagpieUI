@@ -28,6 +28,7 @@ cm.define('Com.Draganddrop', {
         'highlightAreas' : true,                     // highlight areas on drag start
         'highlightChassis' : false,
         'animateRemove' : true,
+        'removeNode' : true,
         'classes' : {
             'area' : null
         }
@@ -572,7 +573,9 @@ function(params){
         var style, anim, node;
         // Remove handler
         var handler = function(){
-            cm.remove(node);
+            if(that.params['removeNode']){
+                cm.remove(node);
+            }
             // Remove from draggable list
             draggableList = draggableList.filter(function(item){
                 return item != draggable;
@@ -624,6 +627,7 @@ function(params){
                 'onStop' : handler
             });
         }else{
+            node = draggable['node'];
             handler();
         }
     };

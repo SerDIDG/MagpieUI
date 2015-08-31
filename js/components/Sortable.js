@@ -18,7 +18,8 @@ cm.define('Com.Sortable', {
             'direction' : 'vertical',
             'limit' : true,
             'scroll' : false,
-            'animateRemove' : false
+            'animateRemove' : false,
+            'removeNode' : false
         }
     }
 },
