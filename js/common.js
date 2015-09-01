@@ -992,6 +992,12 @@ cm.insertAfter = function(node, target){
     return node;
 };
 
+cm.replaceNode = function(node, target){
+    cm.insertBefore(node, target);
+    cm.remove(target);
+    return node;
+};
+
 cm.hideSpecialTags = function(){
     var els;
     if(document.querySelectorAll){
