@@ -3,9 +3,11 @@ cm.define('Com.ToggleBox', {
         'Params',
         'Events',
         'Langs',
+        'Structure',
         'DataConfig',
         'DataNodes',
-        'Storage'
+        'Storage',
+        'Stack'
     ],
     'events' : [
         'onRender',
@@ -17,8 +19,14 @@ cm.define('Com.ToggleBox', {
     'params' : {
         'node' : cm.Node('div'),
         'duration' : 500,
-        'toggleTitle' : false,          // Change title on toggle
-        'remember' : false,             // Remember toggle state
+        'remember' : false,                                 // Remember toggle state
+        'toggleTitle' : false,                              // Change title on toggle
+        'renderStructure' : false,
+        'container' : false,
+        'title' : false,
+        'content' : false,
+        'className' : 'has-title-bg is-base is-hide',
+        'eventNode' : 'title',                             // button | title
         'langs' : {
             'show' : 'Show',
             'hide' : 'Hide'
@@ -26,14 +34,15 @@ cm.define('Com.ToggleBox', {
     }
 },
 function(params){
-    var that = this,
-        anim;
+    var that = this;
 
     that.nodes = {
+        'container' : cm.node('div'),
         'button': cm.Node('div'),
         'target': cm.Node('div'),
         'title': cm.Node('div')
     };
+    that.animations = {};
 
     that.isCollapsed = false;
     that.isProcess = false;
@@ -43,25 +52,66 @@ function(params){
         that.convertEvents(that.params['events']);
         that.getDataNodes(that.params['node']);
         that.getDataConfig(that.params['node']);
+        validateParams();
         render();
+        that.addToStack(that.nodes['container']);
+        that.triggerEvent('onRender');
+    };
+
+    var validateParams = function(){
+        if(that.params['renderStructure']){
+            if(!that.params['title']){
+                that.params['title'] = '';
+                that.params['toggleTitle'] = true;
+            }
+        }
     };
 
     var render = function(){
-        anim = new cm.Animation(that.nodes['target']);
-        cm.addEvent(that.nodes['button'], 'click', that.toggle);
+        // Render Structure
+        if(that.params['renderStructure']){
+            that.nodes['container'] = cm.Node('dl', {'class' : 'com__togglebox'},
+                that.nodes['titleContainer'] = cm.Node('dt',
+                    that.nodes['button'] = cm.Node('span', {'class' : 'icon default linked'}),
+                    that.nodes['title'] = cm.Node('span', {'class' : 'title'}, that.params['title'])
+                ),
+                that.nodes['target'] = cm.Node('dd',
+                    that.nodes['content'] = cm.Node('div', {'class' : 'inner'})
+                )
+            );
+            cm.addClass(that.nodes['container'], that.params['className']);
+            // Embed
+            that.embedStructure(that.nodes['container']);
+            // Embed content
+            if(that.params['content']){
+                that.nodes['content'].appendChild(that.params['content']);
+            }else{
+                that.nodes['content'].appendChild(that.params['node']);
+            }
+            // Set events
+            if(that.params['eventNode'] == 'button'){
+                cm.addClass(that.nodes['container'], 'has-hover-icon');
+                cm.addEvent(that.nodes['button'], 'click', that.toggle);
+            }else{
+                cm.addEvent(that.nodes['titleContainer'], 'click', that.toggle);
+            }
+        }else{
+            cm.addEvent(that.nodes['button'], 'click', that.toggle);
+        }
+        // Animation
+        that.animations['target'] = new cm.Animation(that.nodes['target']);
         // Check toggle class
-        that.isCollapsed = cm.isClass(that.params['node'], 'is-hide') || !cm.isClass(that.params['node'], 'is-show');
+        that.isCollapsed = cm.isClass(that.nodes['container'], 'is-hide') || !cm.isClass(that.nodes['container'], 'is-show');
         // Check storage
         if(that.params['remember']){
             that.isCollapsed = that.storageRead('isCollapsed');
         }
-        // Trigger events
+        // Trigger collapse event
         if(that.isCollapsed){
             that.collapse(true);
         }else{
             that.expand(true);
         }
-        that.triggerEvent('onRender', {});
     };
 
     var expandEnd = function(){
@@ -98,7 +148,7 @@ function(params){
             if(that.params['remember']){
                 that.storageWrite('isCollapsed', false);
             }
-            cm.replaceClass(that.params['node'], 'is-hide', 'is-show');
+            cm.replaceClass(that.nodes['container'], 'is-hide', 'is-show');
             // Set title
             if(that.params['toggleTitle']){
                 that.nodes['title'].innerHTML = that.lang('hide');
@@ -106,13 +156,12 @@ function(params){
             // Animate
             if(isImmediately){
                 expandEnd();
-            }
-            else{
+            }else{
                 that.nodes['target'].style.overflow = 'hidden';
                 if(!that.nodes['target'].style.opacity){
                     that.nodes['target'].style.opacity = 0;
                 }
-                anim.go({
+                that.animations['target'].go({
                     'style' : {
                         'height' : [cm.getRealHeight(that.nodes['target'], 'offset', 'current'), 'px'].join(''),
                         'opacity' : 1
@@ -134,7 +183,7 @@ function(params){
             if(that.params['remember']){
                 that.storageWrite('isCollapsed', true);
             }
-            cm.replaceClass(that.params['node'], 'is-show', 'is-hide');
+            cm.replaceClass(that.nodes['container'], 'is-show', 'is-hide');
             // Set title
             if(that.params['toggleTitle']){
                 that.nodes['title'].innerHTML = that.lang('show');
@@ -147,7 +196,7 @@ function(params){
             if(isImmediately){
                 collapseEnd();
             }else{
-                anim.go({
+                that.animations['target'].go({
                     'style' : {
                         'height' : '0px',
                         'opacity' : 0

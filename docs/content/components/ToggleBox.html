@@ -29,9 +29,6 @@
                 .add('togglebox', function(node){
                     new Com.ToggleBox({'node' : node});
                 })
-                .add('simple-togglebox', function(node){
-                    new Com.SimpleToggleBox({'node' : node});
-                })
                 .construct();
         });
     </script>
@@ -40,6 +37,26 @@
 <body>
 
 <h1 class="pt__box-title">Components: Toggle Box</h1>
+<hr>
+
+<h2>Simple</h2>
+<textarea class="pt__box-code cm-autoresize" readonly>
+<script type="text/javascript">
+    cm.onReady(function(){
+        new Com.Collector()
+                .add('togglebox', function(node){
+                    new Com.ToggleBox({'node' : node});
+                })
+                .construct();
+    });
+</script>
+
+<div data-element="togglebox" data-config='{"title" : "Spoiler", "renderStructure" : true}'></div></textarea>
+
+<div data-element="togglebox" data-config='{"title" : "Spoiler", "renderStructure" : true}'>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean in eros fermentum, hendrerit sem ut, lacinia nisl. Aenean cursus interdum elit, ut porttitor urna tempus eu. Vivamus eget augue id metus laoreet dictum id a libero. Etiam laoreet tristique lorem, hendrerit aliquet dolor cursus eget. Donec ultrices sodales quam pellentesque malesuada. Morbi vitae porta velit. Etiam pellentesque sagittis enim sed dapibus. In et sem vel eros placerat suscipit a non massa. Nulla eget nibh velit. Vestibulum id metus nec sapien euismod commodo. Vestibulum molestie tortor purus, at iaculis lectus luctus ac. Suspendisse sodales lectus et tortor dapibus volutpat. In in leo id eros convallis sollicitudin. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Sed et elementum diam. Nulla massa purus, iaculis eget venenatis nec, adipiscing at arcu.</p>
+</div>
+
 <hr>
 
 <h2>Default</h2>
@@ -78,23 +95,6 @@
 
 <hr>
 
-<h2>Simple</h2>
-<textarea class="pt__box-code cm-autoresize" readonly>
-<script type="text/javascript">
-    cm.onReady(function(){
-        new Com.Collector()
-            .add('simple-togglebox', function(node){
-                new Com.SimpleToggleBox({'node' : node});
-            })
-            .construct();
-    });
-</script>
-
-<div data-element="simple-togglebox" data-config='{"title" : "Spoiler"}'></div></textarea>
-
-<div data-element="simple-togglebox" data-config='{"title" : "Spoiler"}'>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean in eros fermentum, hendrerit sem ut, lacinia nisl. Aenean cursus interdum elit, ut porttitor urna tempus eu. Vivamus eget augue id metus laoreet dictum id a libero. Etiam laoreet tristique lorem, hendrerit aliquet dolor cursus eget. Donec ultrices sodales quam pellentesque malesuada. Morbi vitae porta velit. Etiam pellentesque sagittis enim sed dapibus. In et sem vel eros placerat suscipit a non massa. Nulla eget nibh velit. Vestibulum id metus nec sapien euismod commodo. Vestibulum molestie tortor purus, at iaculis lectus luctus ac. Suspendisse sodales lectus et tortor dapibus volutpat. In in leo id eros convallis sollicitudin. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Sed et elementum diam. Nulla massa purus, iaculis eget venenatis nec, adipiscing at arcu.</p>
-</div>
 
 </body>
 </html>

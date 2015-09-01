@@ -544,3 +544,32 @@ Mod['Extend'] = {
         }
     }
 };
+
+/* ****** STRUCTURE ******* */
+
+Mod['Structure'] = {
+    '_config' : {
+        'extend' : true,
+        'predefine' : false,
+        'require' : ['Extend']
+    },
+    '_construct' : function(){
+        var that = this;
+        if(typeof that.build['params']['renderStructure'] == 'undefined'){
+            that.build['params']['renderStructure'] = true;
+        }
+    },
+    'embedStructure' : function(node){
+        var that = this;
+        if(that.params['container']){
+            if(that.params['container'] === that.params['node']){
+                cm.insertBefore(node, that.params['node']);
+            }else{
+                that.params['container'].appendChild(node);
+            }
+        }else if(that.params['node'].parentNode){
+            cm.insertBefore(node, that.params['node']);
+        }
+        return that;
+    }
+};
