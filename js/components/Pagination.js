@@ -183,7 +183,7 @@ function(params){
                 if(that.pages[that.page] && that.pages[that.page]['isRendered']){
                     that.callbacks.cached(that, that.pages[that.page]['data']);
                 }else if(that.isAjax){
-                    config = cm.clone(that.params['ajax'])
+                    config = cm.clone(that.params['ajax']);
                     that.ajaxHandler = that.callbacks.request(that, config);
                 }else{
                     that.callbacks.data(that, that.params['data']);

@@ -5,6 +5,7 @@ cm.define('Com.ColumnsHelper', {
         'Langs',
         'DataConfig',
         'DataNodes',
+        'Callbacks',
         'Stack'
     ],
     'events' : [
@@ -20,7 +21,13 @@ cm.define('Com.ColumnsHelper', {
         'name' : '',
         'isEditMode' : true,
         'items' : [],
-        'minColumnWidth' : 48              // in px
+        'minColumnWidth' : 48,              // in px
+        'ajax' : {
+            'type' : 'json',
+            'method' : 'post',
+            'url' : '',                                             // Request URL. Variables: %items%, %callback% for JSONP.
+            'params' : ''                                           // Params object. %items%, %callback% for JSONP.
+        }
     }
 },
 function(params){
@@ -31,12 +38,16 @@ function(params){
     that.current = null;
     that.isEditMode = false;
     that.isRendered = false;
+    that.isAjax = false;
+    that.isProcess = false;
+    that.ajaxHandler = null;
 
     var init = function(){
         that.setParams(params);
         that.convertEvents(that.params['events']);
         that.getDataNodes(that.params['node']);
         that.getDataConfig(that.params['node']);
+        that.callbacksProcess();
         validateParams();
         render();
         that.addToStack(that.params['node']);
@@ -44,6 +55,9 @@ function(params){
     };
 
     var validateParams = function(){
+        if(!cm.isEmpty(that.params['ajax']['url'])){
+            that.isAjax = true;
+        }
         that.isEditMode = that.params['isEditMode'];
     };
 
@@ -101,6 +115,10 @@ function(params){
         // If current exists, we don't need to start another drag event until previous will not stop
         if(that.current){
             return false;
+        }
+        // Abort ajax handler
+        if(that.isProcess){
+            that.abort();
         }
         e = cm.getEvent(e);
         cm.preventDefault(e);
@@ -166,6 +184,7 @@ function(params){
     };
 
     var stop = function(){
+        var config;
         // Remove move event from document
         cm.removeClass(that.params['node'], 'is-chassis-active');
         cm.removeClass(that.current['chassis']['drag'], 'is-active');
@@ -178,6 +197,52 @@ function(params){
         that.triggerEvent('onResize', that.items);
         that.triggerEvent('onDragStop', that.current);
         that.current = null;
+        // Ajax
+        cm.log(that.items);
+        if(that.isAjax){
+            config = cm.clone(that.params['ajax']);
+            that.ajaxHandler = that.callbacks.request(that, config);
+        }
+    };
+
+    /* ******* CALLBACKS ******* */
+
+    that.callbacks.prepare = function(that, config){
+        var items = [];
+        cm.forEach(that.items, function(item){
+            items.push(item['width']);
+        });
+        // Prepare
+        config['url'] = cm.strReplace(config['url'], {
+            '%items%' : items
+        });
+        config['params'] = cm.objectReplace(config['params'], {
+            '%items%' : items
+        });
+        return config;
+    };
+
+    that.callbacks.request = function(that, config){
+        config = that.callbacks.prepare(that, config);
+        // Return ajax handler (XMLHttpRequest) to providing abort method.
+        return cm.ajax(
+            cm.merge(config, {
+                'onStart' : function(){
+                    that.callbacks.start(that);
+                },
+                'onEnd' : function(){
+                    that.callbacks.end(that);
+                }
+            })
+        );
+    };
+
+    that.callbacks.start = function(that){
+        that.isProcess = true;
+    };
+
+    that.callbacks.end = function(that){
+        that.isProcess = false;
     };
 
     /* ******* PUBLIC ******* */
@@ -191,6 +256,13 @@ function(params){
     that.disableEditMode = function(){
         that.isEditMode = false;
         remove();
+        return that;
+    };
+
+    that.abort = function(){
+        if(that.ajaxHandler && that.ajaxHandler.abort){
+            that.ajaxHandler.abort();
+        }
         return that;
     };
 

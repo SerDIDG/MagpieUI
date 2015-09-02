@@ -16,6 +16,12 @@ cm.define('Com.GridlistHelper', {
         'node' : cm.Node('div'),
         'name' : '',
         'isEditMode' : true,
+        'ajax' : {
+            'type' : 'json',
+            'method' : 'post',
+            'url' : '',                                             // Request URL. Variables: %items%, %callback% for JSONP.
+            'params' : ''                                           // Params object. %items%, %callback% for JSONP.
+        },
         'Com.ColumnsHelper' : {}
     }
 },
@@ -44,6 +50,7 @@ function(params){
     var validateParams = function(){
         that.nodes['container'] = that.params['node'];
         that.isEditMode = that.params['isEditMode'];
+        that.params['Com.ColumnsHelper']['ajax'] = that.params['ajax'];
     };
 
     var render = function(){
