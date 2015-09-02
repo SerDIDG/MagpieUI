@@ -198,7 +198,6 @@ function(params){
         that.triggerEvent('onDragStop', that.current);
         that.current = null;
         // Ajax
-        cm.log(that.items);
         if(that.isAjax){
             config = cm.clone(that.params['ajax']);
             that.ajaxHandler = that.callbacks.request(that, config);
