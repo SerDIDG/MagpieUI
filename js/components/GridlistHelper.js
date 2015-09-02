@@ -59,10 +59,10 @@ function(params){
                     'items' : that.nodes['items'],
                     'events' : {
                         'onDragStart' : function(){
-                            cm.addClass(that.params['node'], 'is-active');
+                            cm.addClass(that.nodes['container'], 'is-active');
                         },
                         'onDragStop' : function(){
-                            cm.removeClass(that.params['node'], 'is-active');
+                            cm.removeClass(that.nodes['container'], 'is-active');
                         },
                         'onChange' : function(my, items){
                             that.triggerEvent('onChange', items);
@@ -84,7 +84,7 @@ function(params){
 
     that.enableEditMode = function(){
         that.isEditMode = true;
-        cm.addClass(that.params['node'], 'is-editable');
+        cm.addClass(that.nodes['container'], 'is-editable');
         if(that.components['columns']){
             that.components['columns'].enableEditMode();
         }
@@ -93,7 +93,7 @@ function(params){
 
     that.disableEditMode = function(){
         that.isEditMode = false;
-        cm.removeClass(that.params['node'], 'is-editable');
+        cm.removeClass(that.nodes['container'], 'is-editable');
         if(that.components['columns']){
             that.components['columns'].disableEditMode();
         }
