@@ -26,7 +26,7 @@ cm.define('Com.ToggleBox', {
         'title' : false,
         'content' : false,
         'className' : 'has-title-bg is-base is-hide',
-        'eventNode' : 'title',                             // button | title
+        'eventNode' : 'title',                              // button | title
         'langs' : {
             'show' : 'Show',
             'hide' : 'Hide'

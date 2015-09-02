@@ -4,6 +4,7 @@
     .cm__box;
     .pt__gridlist__backgrounds;
     overflow: hidden;
+    position: relative;
 
     table {
         width: 100%;
@@ -16,7 +17,6 @@
             text-align: left;
             padding: @PtGridlist-Cell-Padding;
             line-height: @CmFont-UI-LineHeight;
-            .mx__box-sizing(content-box);
             .mx__background-clip(padding-box);
 
             > .inner {
@@ -117,6 +117,30 @@
         table {
             td {
                 vertical-align: middle;
+            }
+        }
+    }
+
+    &.is-editable {
+        > .com__columns__chassis {
+            display: block;
+        }
+
+        &:hover {
+            > .com__columns__chassis {
+                opacity: 1;
+            }
+        }
+
+        &.is-active {
+            > .com__columns__chassis {
+                opacity: 1;
+            }
+        }
+
+        &.is-chassis-visible {
+            > .com__columns__chassis {
+                opacity: 1;
             }
         }
     }

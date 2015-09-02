@@ -5534,6 +5534,7 @@ button::-moz-focus-inner {
 .pt__gridlist {
   margin: 0 0 24px;
   overflow: hidden;
+  position: relative;
 }
 .pt__gridlist.bottom,
 .pt__gridlist.is-last,
@@ -5597,8 +5598,6 @@ button::-moz-focus-inner {
   text-align: left;
   padding: 6px;
   line-height: 18px;
-  -moz-box-sizing: content-box;
-  box-sizing: content-box;
   -webkit-background-clip: padding-box;
   -moz-background-clip: padding-box;
   background-clip: padding-box;
@@ -5691,6 +5690,18 @@ button::-moz-focus-inner {
 }
 .pt__gridlist.valign-middle table td {
   vertical-align: middle;
+}
+.pt__gridlist.is-editable > .com__columns__chassis {
+  display: block;
+}
+.pt__gridlist.is-editable:hover > .com__columns__chassis {
+  opacity: 1;
+}
+.pt__gridlist.is-editable.is-active > .com__columns__chassis {
+  opacity: 1;
+}
+.pt__gridlist.is-editable.is-chassis-visible > .com__columns__chassis {
+  opacity: 1;
 }
 .pt__gridlist__counter {
   margin: 0 0 24px;
