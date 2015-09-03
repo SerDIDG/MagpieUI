@@ -21,6 +21,7 @@ cm.define('Com.ColumnsHelper', {
         'name' : '',
         'isEditMode' : true,
         'items' : [],
+        'showDrag' : true,
         'minColumnWidth' : 48,              // in px
         'ajax' : {
             'type' : 'json',
@@ -83,13 +84,21 @@ function(params){
             left = ((cm.getRealX(that.items[i]['container']) - cm.getRealX(that.params['node']) + that.items[i]['container'].offsetWidth) / ratio).toFixed(2);
         // Structure
         chassis['container'] = cm.node('div', {'class' : 'com__columns__chassis'},
-            chassis['drag'] = cm.node('div', {'class' : 'pt__drag is-horizontal'},
-                cm.node('div', {'class' : 'line'}),
+            chassis['inner'] = cm.node('div', {'class' : 'pt__drag is-horizontal'},
+                cm.node('div', {'class' : 'line'})
+            )
+        );
+        if(that.params['showDrag']){
+            chassis['inner'].appendChild(
                 cm.node('div', {'class' : 'drag'},
                     cm.node('div', {'class' : 'icon draggable'})
                 )
-            )
-        );
+            );
+        }else{
+            chassis['inner'].appendChild(
+                cm.node('div', {'class' : 'helper'})
+            );
+        }
         // Styles
         chassis['container'].style.left = [left, '%'].join('');
         // Push to chassis array
@@ -149,7 +158,7 @@ function(params){
         };
         // Add move event on document
         cm.addClass(that.params['node'], 'is-chassis-active');
-        cm.addClass(that.current['chassis']['drag'], 'is-active');
+        cm.addClass(that.current['chassis']['inner'], 'is-active');
         cm.addClass(document.body, 'pt__drag__body--horizontal');
         cm.addEvent(window, 'mousemove', move);
         cm.addEvent(window, 'mouseup', stop);
@@ -187,7 +196,7 @@ function(params){
         var config;
         // Remove move event from document
         cm.removeClass(that.params['node'], 'is-chassis-active');
-        cm.removeClass(that.current['chassis']['drag'], 'is-active');
+        cm.removeClass(that.current['chassis']['inner'], 'is-active');
         cm.removeClass(document.body, 'pt__drag__body--horizontal');
         cm.removeEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mousemove', move);
         cm.removeEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mouseup', stop);

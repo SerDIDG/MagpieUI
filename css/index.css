@@ -3653,9 +3653,13 @@ button::-moz-focus-inner {
   -webkit-transition: background-color 300ms ease-in-out;
   transition: background-color 300ms ease-in-out;
 }
-.pt__drag .drag {
+.pt__drag .helper {
   position: absolute;
   z-index: 2;
+}
+.pt__drag .drag {
+  position: absolute;
+  z-index: 3;
   background: #fafafa;
   border: 1px solid #cccccc;
   border-radius: 3px;
@@ -3702,6 +3706,14 @@ button::-moz-focus-inner {
   bottom: 0;
   left: 50%;
 }
+.pt__drag.is-horizontal .helper {
+  width: 4px;
+  margin: 0 0 0 -2px;
+  top: 0;
+  right: auto;
+  bottom: 0;
+  left: 50%;
+}
 .pt__drag.is-horizontal .drag {
   width: 16px;
   height: 32px;
@@ -3718,6 +3730,14 @@ button::-moz-focus-inner {
 .pt__drag.is-vertical .line {
   height: 2px;
   margin: -1px 0 0 0;
+  top: 50%;
+  right: 0;
+  bottom: auto;
+  left: 0;
+}
+.pt__drag.is-vertical .helper {
+  height: 4px;
+  margin: -2px 0 0 0;
   top: 50%;
   right: 0;
   bottom: auto;

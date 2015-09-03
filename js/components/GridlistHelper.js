@@ -17,6 +17,7 @@ cm.define('Com.GridlistHelper', {
         'name' : '',
         'isEditMode' : true,
         'columns' : {
+            'showDrag' : false,
             'ajax' : {
                 'type' : 'json',
                 'method' : 'post',

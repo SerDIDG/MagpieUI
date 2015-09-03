@@ -12,9 +12,14 @@
         .mx__transition(background-color, @CmUI-Transition-Duration);
     }
 
-    .drag {
+    .helper {
         position: absolute;
         z-index: 2;
+    }
+
+    .drag {
+        position: absolute;
+        z-index: 3;
         background: @PtDrag-DefaultBackground;
         border: 1px solid @PtDrag-DefaultBorder;
         border-radius: @CmBorder-Radius;
@@ -60,6 +65,12 @@
             .mx__position(0, auto, 0, 50%);
         }
 
+        .helper {
+            width: @CmSize-XXXSmall;
+            margin: 0 0 0 -(@CmSize-XXXSmall / 2);
+            .mx__position(0, auto, 0, 50%);
+        }
+
         .drag {
             width: @PtDrag-Horizontal-Width;
             height: @PtDrag-Horizontal-Height;
@@ -79,6 +90,12 @@
         .line {
             height: @PtDrag-Line-Size;
             margin: -(@PtDrag-Line-Size / 2) 0 0 0;
+            .mx__position(50%, 0, auto, 0);
+        }
+
+        .helper {
+            height: @CmSize-XXXSmall;
+            margin: -(@CmSize-XXXSmall / 2) 0 0 0;
             .mx__position(50%, 0, auto, 0);
         }
 
