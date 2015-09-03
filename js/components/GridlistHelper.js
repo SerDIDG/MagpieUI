@@ -16,13 +16,14 @@ cm.define('Com.GridlistHelper', {
         'node' : cm.Node('div'),
         'name' : '',
         'isEditMode' : true,
-        'ajax' : {
-            'type' : 'json',
-            'method' : 'post',
-            'url' : '',                                             // Request URL. Variables: %items%, %callback% for JSONP.
-            'params' : ''                                           // Params object. %items%, %callback% for JSONP.
-        },
-        'Com.ColumnsHelper' : {}
+        'columns' : {
+            'ajax' : {
+                'type' : 'json',
+                'method' : 'post',
+                'url' : '',                                             // Request URL. Variables: %items%, %callback% for JSONP.
+                'params' : ''                                           // Params object. %items%, %callback% for JSONP.
+            }
+        }
     }
 },
 function(params){
@@ -50,7 +51,6 @@ function(params){
     var validateParams = function(){
         that.nodes['container'] = that.params['node'];
         that.isEditMode = that.params['isEditMode'];
-        that.params['Com.ColumnsHelper']['ajax'] = that.params['ajax'];
     };
 
     var render = function(){
@@ -60,7 +60,7 @@ function(params){
         // Init Columns
         cm.getConstructor('Com.ColumnsHelper', function(classConstructor){
             that.components['columns'] = new classConstructor(
-                cm.merge(that.params['Com.ColumnsHelper'], {
+                cm.merge(that.params['columns'], {
                     'isEditMode' : false,
                     'node' : that.nodes['container'],
                     'items' : that.nodes['items'],
