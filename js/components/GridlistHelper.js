@@ -9,8 +9,8 @@ cm.define('Com.GridlistHelper', {
     ],
     'events' : [
         'onRender',
-        'onChange',
-        'onResize'
+        'onColumnsChange',
+        'onColumnsResize'
     ],
     'params' : {
         'node' : cm.Node('div'),
@@ -73,10 +73,10 @@ function(params){
                             cm.removeClass(that.nodes['container'], 'is-active');
                         },
                         'onChange' : function(my, items){
-                            that.triggerEvent('onChange', items);
+                            that.triggerEvent('onColumnsChange', items);
                         },
                         'onResize' : function(my, items){
-                            that.triggerEvent('onResize', items);
+                            that.triggerEvent('onColumnsResize', items);
                         }
                     }
                 })
