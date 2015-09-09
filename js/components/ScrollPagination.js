@@ -341,7 +341,7 @@ function(params){
             nodes = cm.strToHTML(page['data']);
             if(cm.isNode(nodes)){
                 page['container'].appendChild(nodes);
-            }else if(cm.isArray(nodes)){
+            }else{
                 cm.forEach(nodes, function(node){
                     if(cm.isNode(node)){
                         page['container'].appendChild(node);

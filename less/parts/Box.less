@@ -241,6 +241,10 @@
         &:first-child {
             margin: 0;
         }
+
+        &.is-short {
+            .pt__box-item__descr-lines(@PtBoxItem-DescrLines);
+        }
     }
 
     .btn-wrap {
@@ -341,6 +345,12 @@
             height: unit(@value, px);
         }
     }
+}
+
+.pt__box-item__descr-lines (@count) when (@count > 0) {
+    .cm__text-wrap;
+    height: @count * @CmFont-Base-LineHeight;
+    overflow: hidden;
 }
 
 /* *** CODE BOX *** */

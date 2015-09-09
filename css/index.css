@@ -3322,6 +3322,13 @@ button::-moz-focus-inner {
 .pt__box-item .descr:first-child {
   margin: 0;
 }
+.pt__box-item .descr.is-short {
+  overflow: visible;
+  white-space: normal;
+  text-overflow: clip;
+  height: 18px;
+  overflow: hidden;
+}
 .pt__box-item .btn-wrap {
   margin: 8px 0;
 }
