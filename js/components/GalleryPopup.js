@@ -158,5 +158,10 @@ function(params){
         return that;
     };
 
+    that.collect = function(node){
+        components['gallery'].collect(node);
+        return that;
+    };
+
     init();
 });

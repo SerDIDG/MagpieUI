@@ -333,14 +333,18 @@ function(params){
         var nodes;
         if(that.params['responseHTML']){
             nodes = cm.strToHTML(page['data']);
-            if(cm.isNode(nodes)){
-                page['container'].appendChild(nodes);
-            }else{
-                cm.forEach(nodes, function(node){
-                    if(cm.isNode(node)){
-                        page['container'].appendChild(node);
+            if(!cm.isEmpty(nodes)){
+                if(cm.isNode(nodes)){
+                    page['container'].appendChild(nodes);
+                }else{
+                    while(nodes.length){
+                        if(cm.isNode(nodes[0])){
+                            page['container'].appendChild(nodes[0]);
+                        }else{
+                            cm.remove(nodes[0]);
+                        }
                     }
-                });
+                }
             }
         }
     };

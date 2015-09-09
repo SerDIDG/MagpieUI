@@ -50,6 +50,7 @@ function(params){
         // Process config items
         cm.forEach(that.params['data'], processItem);
         afterRender();
+        that.triggerEvent('onRender');
     };
 
     var render = function(){
@@ -88,11 +89,12 @@ function(params){
     var afterRender = function(){
         if(items.length < 2){
             that.nodes['bar'].style.display = 'none';
+        }else{
+            that.nodes['bar'].style.display = '';
         }
-        that.triggerEvent('onRender');
     };
 
-    var collectItem = function(item, i){
+    var collectItem = function(item){
         if(!item['link']){
             item['link'] = cm.Node('a')
         }
@@ -100,12 +102,12 @@ function(params){
             'src' : item['link'].getAttribute('href') || '',
             'title' : item['link'].getAttribute('title') || ''
         }, item);
-        processItem(item, i);
+        processItem(item);
     };
 
-    var processItem = function(item, i){
+    var processItem = function(item){
         item = cm.merge({
-            'index' : i,
+            'index' : items.length,
             'isLoad' : false,
             'type' : 'image',        // image | video
             'nodes' : {},
@@ -284,6 +286,19 @@ function(params){
 
     that.stop = function(){
         that.isProcess = false;
+        return that;
+    };
+
+    that.collect = function(node){
+        var nodes;
+        if(cm.isNode(node)){
+            nodes = cm.getNodes(node);
+            // Collect items
+            if(nodes['items']){
+                cm.forEach(nodes['items'], collectItem);
+                afterRender();
+            }
+        }
         return that;
     };
 
