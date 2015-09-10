@@ -157,6 +157,9 @@ Mod['Langs'] = {
     'lang' : function(str, vars){
         var that = this,
             langStr;
+        if(typeof str == 'undefined'){
+            return that.params['langs'];
+        }
         if(!str || cm.isEmpty(str)){
             return '';
         }

@@ -1,7 +1,8 @@
 cm.define('Com.CalendarEvents', {
     'modules' : [
         'Params',
-        'DataConfig'
+        'DataConfig',
+        'Langs'
     ],
     'params' : {
         'node' : cm.Node('div'),
@@ -12,11 +13,12 @@ cm.define('Com.CalendarEvents', {
         'startWeekDay' : 0,
         'target' : '_blank',
         'langs' : {
-            'days' : ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+            'daysAbbr' : ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+            'days' : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
             'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
         },
         'Com.Tooltip' : {
-            'className' : 'com__calendar-events-tooltip'
+            'className' : 'com__calendar-events__tooltip'
         }
     }
 },
@@ -91,7 +93,7 @@ function(params){
             // Show tooltip
             that.components['tooltip']
                 .setTarget(params['node'])
-                .setTitle(cm.dateFormat(params['date'], that.params['format'], that.params['langs']))
+                .setTitle(cm.dateFormat(params['date'], that.params['format'], that.lang()))
                 .setContent(myNodes['content'])
                 .show();
         }

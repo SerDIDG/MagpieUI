@@ -7059,13 +7059,13 @@ button::-moz-focus-inner {
   line-height: 17px;
 }
 /* ******* CALENDAR OF EVENTS ******* */
-.com__tooltip.com__calendar-events-tooltip {
+.com__tooltip.com__calendar-events__tooltip {
   width: 250px;
 }
-.com__tooltip.com__calendar-events-tooltip > .inner .title {
+.com__tooltip.com__calendar-events__tooltip > .inner .title {
   padding: 4px 8px 0;
 }
-.com__tooltip.com__calendar-events-tooltip > .inner > .scroll {
+.com__tooltip.com__calendar-events__tooltip > .inner > .scroll {
   max-height: 300px;
 }
 .com__calendar-events-listing {
