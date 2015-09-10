@@ -108,22 +108,20 @@ function(params){
         // Render close button
         if(that.params['closeButtonOutside']){
             nodes['bg'].appendChild(
-                nodes['closeOutside'] = cm.Node('div', {'class' : that.params['icons']['closeOutside']}, that.params['langs']['close'])
+                nodes['closeOutside'] = cm.Node('div', {'class' : that.params['icons']['closeOutside']}, that.lang('close'))
             );
             if(that.params['closeTitle']){
-                nodes['closeOutside'].title = that.params['langs']['closeTitle'];
+                nodes['closeOutside'].title = that.lang('closeTitle');
             }
             cm.addEvent(nodes['closeOutside'], 'click', close);
         }
         if(that.params['closeButton']){
             cm.addClass(nodes['container'], 'has-close-inside');
             nodes['window'].appendChild(
-                nodes['closeInside'] = cm.Node('div', {'class' : that.params['icons']['closeInside']},
-                    that.params['langs']['close']
-                )
+                nodes['closeInside'] = cm.Node('div', {'class' : that.params['icons']['closeInside']}, that.lang('close'))
             );
             if(that.params['closeTitle']){
-                nodes['closeInside'].title = that.params['langs']['closeTitle'];
+                nodes['closeInside'].title = that.lang('closeTitle');
             }
             cm.addEvent(nodes['closeInside'], 'click', close);
         }
@@ -131,7 +129,7 @@ function(params){
             cm.addClass(nodes['container'], 'has-close-background');
             cm.addEvent(nodes['bg'], 'click', close);
             if(that.params['closeTitle']){
-                nodes['bg'].title = that.params['langs']['closeTitle'];
+                nodes['bg'].title = that.lang('closeTitle');
             }
         }
         // Set title

@@ -1,26 +1,36 @@
-Com['Calendar'] = function(o){
+cm.define('Com.Calendar', {
+    'modules' : [
+        'Params',
+        'Events',
+        'Langs',
+        'DataConfig',
+        'Stack'
+    ],
+    'events' : [
+        'onRender',
+        'onDayOver',
+        'onDayOut',
+        'onDayClick',
+        'onMonthRender'
+    ],
+    'params' : {
+        'name' : '',
+        'container' : cm.Node('div'),
+        'className' : '',
+        'startYear' : 1950,                                                 // number | current
+        'endYear' : 'current + 10',                                         // number | current
+        'renderMonthOnInit' : true,
+        'startWeekDay' : 0,
+        'renderSelectsInBody' : true,
+        'langs' : {
+            'daysAbbr' : ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+            'days' : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+            'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+        }
+    }
+},
+function(params){
     var that = this,
-        config = cm.merge({
-            'container' : cm.Node('div'),
-            'className' : '',
-            'startYear' : 1950,
-            'endYear' : new Date().getFullYear() + 10,
-            'renderMonthOnInit' : true,
-            'startWeekDay' : 0,
-            'renderSelectsInBody' : true,
-            'events' : {},
-            'langs' : {
-                'daysAbbr' : ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
-                'days' : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-                'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-            }
-        }, o),
-        API = {
-            'onDayOver' : [],
-            'onDayOut' : [],
-            'onDayClick' : [],
-            'onMonthRender' : []
-        },
         nodes = {
             'selects' : {}
         },
@@ -34,11 +44,24 @@ Com['Calendar'] = function(o){
         next = {};
 
     var init = function(){
-        convertEvents(config['events']);
-        // Render
+        that.setParams(params);
+        that.convertEvents(that.params['events']);
+        that.getDataConfig(that.params['container']);
+        validateParams();
         render();
         setMiscEvents();
-        config['renderMonthOnInit'] && renderView();
+        that.params['renderMonthOnInit'] && renderView();
+        that.addToStack(nodes['container']);
+        that.triggerEvent('onRender');
+    };
+
+    var validateParams = function(){
+        if(/current/.test(that.params['startYear'])){
+            that.params['startYear'] = eval(cm.strReplace(that.params['startYear'], {'current' : new Date().getFullYear()}));
+        }
+        if(/current/.test(that.params['endYear'])){
+            that.params['endYear'] = eval(cm.strReplace(that.params['endYear'], {'current' : new Date().getFullYear()}));
+        }
     };
 
     var render = function(){
@@ -57,42 +80,42 @@ Com['Calendar'] = function(o){
             )
         );
         // Add css class
-        !cm.isEmpty(config['className']) && cm.addClass(nodes['container'], config['className']);
+        !cm.isEmpty(that.params['className']) && cm.addClass(nodes['container'], that.params['className']);
         // Render days
         cm.forEach(7, function(i){
-            weekday = i + config['startWeekDay'];
+            weekday = i + that.params['startWeekDay'];
             weekday = weekday > 6? Math.abs(6 - (weekday - 1)) : weekday;
             nodes['days'].appendChild(
-                cm.Node('th', config['langs']['daysAbbr'][weekday])
+                cm.Node('th', that.lang('daysAbbr')[weekday])
             );
         });
         // Render selects options
-        config['langs']['months'].forEach(function(item, i){
+        that.lang('months').forEach(function(item, i){
             nodes['months'].appendChild(
                 cm.Node('option', {'value' : i}, item)
             );
         });
-        for(var i = config['endYear']; i >= config['startYear']; i--){
+        for(var i = that.params['endYear']; i >= that.params['startYear']; i--){
             nodes['years'].appendChild(
                 cm.Node('option', {'value' : i}, i)
             );
         }
         // Insert into DOM
-        config['container'].appendChild(nodes['container']);
+        that.params['container'].appendChild(nodes['container']);
     };
 
     var setMiscEvents = function(){
         // Init custom selects
         selects['years'] = new Com.Select({
                 'select' : nodes['years'],
-                'renderInBody' : config['renderSelectsInBody']
+                'renderInBody' : that.params['renderSelectsInBody']
             })
             .set(current['year'])
             .addEvent('onChange', renderView);
 
         selects['months'] = new Com.Select({
                 'select' : nodes['months'],
-                'renderInBody' : config['renderSelectsInBody']
+                'renderInBody' : that.params['renderSelectsInBody']
             })
             .set(current['month'])
             .addEvent('onChange', renderView);
@@ -120,12 +143,12 @@ Com['Calendar'] = function(o){
         cm.forEach(6, renderRow);
         // Trigger events
         if(triggerEvents){
-            executeEvent('onMonthRender', current);
+            that.triggerEvent('onMonthRender', current);
         }
     };
 
     var renderRow = function(i){
-        var startWeekDay = current['startWeekDay'] - config['startWeekDay'],
+        var startWeekDay = current['startWeekDay'] - that.params['startWeekDay'],
             day = ((i - 1) * 7) + 1 - (startWeekDay > 0? startWeekDay - 7 : startWeekDay),
             tr = nodes['dates'].appendChild(
                 cm.Node('tr')
@@ -179,13 +202,13 @@ Com['Calendar'] = function(o){
             }
             // Add events
             cm.addEvent(div, 'mouseover', function(){
-                executeEvent('onDayOver', params);
+                that.triggerEvent('onDayOver', params);
             });
             cm.addEvent(div, 'mouseout', function(){
-                executeEvent('onDayOut', params);
+                that.triggerEvent('onDayOut', params);
             });
             cm.addEvent(div, 'click', function(){
-                executeEvent('onDayClick', params);
+                that.triggerEvent('onDayClick', params);
             });
             // Add to array
             current['days'][day] = params;
@@ -203,29 +226,7 @@ Com['Calendar'] = function(o){
         return o;
     };
 
-    var executeEvent = function(event, params){
-        var handler = function(){
-            cm.forEach(API[event], function(item){
-                item(that, params || {});
-            });
-        };
-
-        switch(event){
-            default:
-                handler();
-                break;
-        }
-    };
-
-    var convertEvents = function(o){
-        cm.forEach(o, function(item, key){
-            if(API[key] && typeof item == 'function'){
-                API[key].push(item);
-            }
-        });
-    };
-
-    /* *** MAIN *** */
+    /* ******* PUBLIC ******* */
 
     that.getFullYear = function(){
         return current['year'];
@@ -238,7 +239,7 @@ Com['Calendar'] = function(o){
     that.set = function(year, month, triggerEvents){
         triggerEvents = typeof triggerEvents != 'undefined'? triggerEvents : true;
         if(
-            year >= config['startYear'] && year <= config['endYear']
+            year >= that.params['startYear'] && year <= that.params['endYear']
             && month >= 0 && month <= 11
         ){
             selects['years'].set(year, false);
@@ -267,7 +268,7 @@ Com['Calendar'] = function(o){
     };
 
     that.nextMonth = function(){
-        if(next['year'] <= config['endYear']){
+        if(next['year'] <= that.params['endYear']){
             selects['years'].set(next['year'], false);
             selects['months'].set(next['month'], false);
             renderView();
@@ -276,7 +277,7 @@ Com['Calendar'] = function(o){
     };
 
     that.prevMonth = function(){
-        if(previous['year'] >= config['startYear']){
+        if(previous['year'] >= that.params['startYear']){
             selects['years'].set(previous['year'], false);
             selects['months'].set(previous['month'], false);
             renderView();
@@ -296,25 +297,9 @@ Com['Calendar'] = function(o){
         }
     };
 
-    that.addEvent = function(event, handler){
-        if(API[event] && typeof handler == 'function'){
-            API[event].push(handler);
-        }
-        return that;
-    };
-
-    that.removeEvent = function(event, handler){
-        if(API[event] && typeof handler == 'function'){
-            API[event] = API[event].filter(function(item){
-                return item != handler;
-            });
-        }
-        return that;
-    };
-
     that.getNodes = function(key){
         return nodes[key] || nodes;
     };
 
     init();
-};
+});

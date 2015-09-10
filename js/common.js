@@ -19,7 +19,7 @@
 */
 
 var cm = {
-        '_version' : '3.4.5',
+        '_version' : '3.4.6',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,

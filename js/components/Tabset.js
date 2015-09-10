@@ -10,7 +10,8 @@ cm.define('Com.Tabset', {
         'Events',
         'DataConfig',
         'DataNodes',
-        'Stack'
+        'Stack',
+        'Structure'
     ],
     'events' : [
         'onRender',
@@ -164,11 +165,7 @@ function(params){
             that.nodes['container'].id = that.params['node'].id;
         }
         /* *** INSERT INTO DOM *** */
-        if(that.params['container']){
-            that.params['container'].appendChild(that.nodes['container']);
-        }else if(that.params['node'].parentNode){
-            cm.insertBefore(that.nodes['container'], that.params['node']);
-        }
+        that.appendStructure(that.nodes['container']);
         cm.remove(that.params['node']);
         /* *** EVENTS *** */
         Part.Menu && Part.Menu();

@@ -100,7 +100,7 @@ function(params){
         data = [
             {'value' : '00', 'text' : that.lang('Month')}
         ];
-        cm.forEach(that.params['langs']['months'], function(month, i){
+        cm.forEach(that.lang('months'), function(month, i){
             data.push({'value' : cm.addLeadZero(parseInt(i + 1)), 'text' : month});
         });
         components['month'] = new Com.Select({

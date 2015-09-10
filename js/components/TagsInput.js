@@ -114,7 +114,7 @@ function(params){
     var renderAddButton = function(){
         nodes['inner'].appendChild(
             nodes['addButtonContainer'] = cm.Node('div', {'class' : 'item'},
-                nodes['addButton'] = cm.Node('div', {'class' : that.params['icons']['add'], 'title' : that.params['langs']['add']})
+                nodes['addButton'] = cm.Node('div', {'class' : that.params['icons']['add'], 'title' : that.lang('add')})
             )
         );
         // Add event on "Add Tag" button
@@ -213,7 +213,7 @@ function(params){
         // Structure
         item['container'] = cm.Node('div', {'class' : 'item'},
             cm.Node('div', {'class' : 'text', 'title' : tag}, tag),
-            item['button'] = cm.Node('div', {'class' : that.params['icons']['remove'], 'title' : that.params['langs']['remove']})
+            item['button'] = cm.Node('div', {'class' : that.params['icons']['remove'], 'title' : that.lang('remove')})
         );
         item['anim'] = new cm.Animation(item['container']);
         // Append

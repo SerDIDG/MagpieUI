@@ -81,7 +81,7 @@ function(params){
             );
             cm.addClass(that.nodes['container'], that.params['className']);
             // Embed
-            that.embedStructure(that.nodes['container']);
+            that.appendStructure(that.nodes['container']);
             // Embed content
             if(that.params['content']){
                 that.nodes['content'].appendChild(that.params['content']);

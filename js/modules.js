@@ -559,7 +559,7 @@ Mod['Structure'] = {
             that.build['params']['renderStructure'] = true;
         }
     },
-    'embedStructure' : function(node){
+    'appendStructure' : function(node){
         var that = this;
         if(that.params['container']){
             if(that.params['container'] === that.params['node']){
