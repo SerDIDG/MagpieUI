@@ -2,16 +2,21 @@ cm.define('Com.ImageBox', {
     'modules' : [
         'Params',
         'Events',
-        'DataConfig'
+        'DataConfig',
+        'DataNodes',
+        'Stack'
     ],
     'events' : [
         'onRender'
     ],
     'params' : {
         'node' : cm.Node('div'),
+        'name' : '',
         'animated' : false,
         'effect' : 'none',
-        'scrollNode' : window
+        'zoom' : false,
+        'scrollNode' : window,
+        'Com.GalleryPopup' : {}
     }
 },
 function(params){
@@ -19,22 +24,39 @@ function(params){
         dimensions = {},
         pageDimensions = {};
 
+    that.nodes = {
+        'items' : []
+    };
+    that.components = {};
     that.processed = false;
 
     var init = function(){
         that.setParams(params);
         that.convertEvents(that.params['events']);
         that.getDataConfig(that.params['node']);
+        that.getDataNodes(that.params['node']);
+        validateParams();
         render();
+        that.addToStack(that.params['node']);
+        that.triggerEvent('onRender');
+    };
+
+    var validateParams = function(){
+        that.params['Com.GalleryPopup']['node'] = that.params['node'];
     };
 
     var render = function(){
         if(that.params['animated']){
+            cm.addClass(that.params['node'], 'cm-animate');
             cm.addClass(that.params['node'], ['pre', that.params['effect']].join('-'));
             cm.addEvent(that.params['scrollNode'], 'scroll', process);
             process();
         }
-        that.triggerEvent('onRender');
+        if(that.params['zoom']){
+            cm.getConstructor('Com.GalleryPopup', function(classConstructor){
+                that.components['popup'] = new classConstructor(that.params['Com.GalleryPopup']);
+            });
+        }
     };
 
     var process = function(){
@@ -45,16 +67,16 @@ function(params){
             if(dimensions['height'] < pageDimensions['winHeight']){
                 // Rules for block, which size is smaller than page's.
                 if(
-                    dimensions['y1'] >= 0 &&
-                    dimensions['y2'] <= pageDimensions['winHeight']
+                    dimensions['top'] >= 0 &&
+                    dimensions['bottom'] <= pageDimensions['winHeight']
                 ){
                     doProcess();
                 }
             }else{
                 // Rules for block, which size is larger than page's.
                 if(
-                    (dimensions['y1'] < 0 && dimensions['y2'] >= pageDimensions['winHeight'] / 2) ||
-                    (dimensions['y2'] > pageDimensions['winHeight'] && dimensions['y1'] <= pageDimensions['winHeight'] / 2)
+                    (dimensions['top'] < 0 && dimensions['bottom'] >= pageDimensions['winHeight'] / 2) ||
+                    (dimensions['bottom'] > pageDimensions['winHeight'] && dimensions['top'] <= pageDimensions['winHeight'] / 2)
                 ){
                     doProcess();
                 }
@@ -68,19 +90,14 @@ function(params){
     };
     
     var getDimensions = function(){
-        dimensions['width'] = that.params['node'].offsetWidth;
-        dimensions['height'] = that.params['node'].offsetHeight;
-        dimensions['x1'] = cm.getRealX(that.params['node']);
-        dimensions['y1'] = cm.getRealY(that.params['node']);
-        dimensions['x2'] = dimensions['x1'] + dimensions['width'];
-        dimensions['y2'] = dimensions['y1'] + dimensions['height'];
+        dimensions = cm.getRect(that.params['node']);
     };
 
     var getPageDimensions = function(){
         pageDimensions = cm.getPageSize();
     };
 
-    /* ******* MAIN ******* */
+    /* ******* PUBLIC ******* */
 
     init();
 });

@@ -18,6 +18,9 @@
     <script type="text/javascript" src="../../../js/components/Collector.js"></script>
     <script type="text/javascript" src="../../../js/components/Tabset.js"></script>
     <script type="text/javascript" src="../../../js/components/ImageBox.js"></script>
+    <script type="text/javascript" src="../../../js/components/Gallery.js"></script>
+    <script type="text/javascript" src="../../../js/components/Dialog.js"></script>
+    <script type="text/javascript" src="../../../js/components/GalleryPopup.js"></script>
 
     <script type="text/javascript">
         cm.onReady(function(){
@@ -278,6 +281,19 @@
         <div style="width: 320px">
             <div class="pt__image cm-animate" data-element="imagebox" data-config='{"animated" : true, "effect" : "tada"}'>
                 <a class="inner">
+                    <img class="descr" src="../../images/gallery/1.jpg" alt="">
+                    <div class="title">
+                        <div class="inner">Some title text</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </li>
+
+    <li data-node="tabs:[]:container" data-config='{"id" : "zoom", "title" : "Zoom"}'>
+        <div style="width: 320px">
+            <div class="pt__image" data-element="imagebox" data-config='{"zoom" : true}'>
+                <a class="inner" data-node="items:[]:link" title="Some title text" href="../../images/gallery/1.jpg">
                     <img class="descr" src="../../images/gallery/1.jpg" alt="">
                     <div class="title">
                         <div class="inner">Some title text</div>

@@ -160,7 +160,7 @@ Mod['Langs'] = {
         if(!str || cm.isEmpty(str)){
             return '';
         }
-        if(!that.params['langs'][str]){
+        if(typeof that.params['langs'][str] == 'undefined'){
             that.params['langs'][str] = str;
         }
         langStr = that.params['langs'][str];

@@ -68,30 +68,34 @@ function(params){
 
     var setLogic = function(){
         // Dialog
-        components['dialog'] = new Com.Dialog(
-                cm.merge(that.params['Com.Dialog'], {
-                    'content' : nodes['container']
+        cm.getConstructor('Com.Dialog', function(classConstructor){
+            components['dialog'] = new classConstructor(
+                    cm.merge(that.params['Com.Dialog'], {
+                        'content' : nodes['container']
+                    })
+                )
+                .addEvent('onOpen', function(){
+                    cm.addEvent(window, 'keydown', keyboardEvents);
+                    that.triggerEvent('onOpen');
                 })
-            )
-            .addEvent('onOpen', function(){
-                cm.addEvent(window, 'keydown', keyboardEvents);
-                that.triggerEvent('onOpen');
-            })
-            .addEvent('onClose', function(){
-                components['gallery'].stop();
-                cm.removeEvent(window, 'keydown', keyboardEvents);
-                that.triggerEvent('onClose');
-            });
+                .addEvent('onClose', function(){
+                    components['gallery'].stop();
+                    cm.removeEvent(window, 'keydown', keyboardEvents);
+                    that.triggerEvent('onClose');
+                });
+        });
         // Gallery
-        components['gallery'] = new Com.Gallery(
-                cm.merge(that.params['Com.Gallery'], {
-                    'node' : that.params['node'],
-                    'container' : nodes['galleryContainer'],
-                    'data' : that.params['data']
-                })
-            )
-            .addEvent('onSet', components['dialog'].open)
-            .addEvent('onChange', onChange);
+        cm.getConstructor('Com.Gallery', function(classConstructor){
+            components['gallery'] = new classConstructor(
+                    cm.merge(that.params['Com.Gallery'], {
+                        'node' : that.params['node'],
+                        'container' : nodes['galleryContainer'],
+                        'data' : that.params['data']
+                    })
+                )
+                .addEvent('onSet', components['dialog'].open)
+                .addEvent('onChange', onChange);
+        });
         // Node's self click
         if(that.params['openOnSelfClick']){
             cm.addEvent(that.params['node'], 'click', that.open);
