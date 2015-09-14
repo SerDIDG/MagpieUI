@@ -6960,14 +6960,14 @@ button::-moz-focus-inner {
 }
 .com__calendar .selects .months {
   margin-right: 4px;
-  -webkit-flex: 0 1 auto;
-  -ms-flex: 0 1 auto;
-  flex: 0 1 auto;
+  -webkit-flex: 1 1 auto;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
 }
 .com__calendar .selects .years {
-  -webkit-flex: 0 1 auto;
-  -ms-flex: 0 1 auto;
-  flex: 0 1 auto;
+  -webkit-flex: 1 1 auto;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
 }
 .ie9 .com__calendar .selects .months,
 .ie9 .com__calendar .selects .years {
