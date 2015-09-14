@@ -23,6 +23,8 @@
     <script type="text/javascript" src="../../../js/components/Dialog.js"></script>
     <script type="text/javascript" src="../../../js/components/Collector.js"></script>
     <script type="text/javascript" src="../../../js/components/Columns.js"></script>
+    <script type="text/javascript" src="../../../js/components/ColumnsHelper.js"></script>
+    <script type="text/javascript" src="../../../js/components/GridlistHelper.js"></script>
 
     <script type="text/javascript">
         cm.onReady(function(){
@@ -33,6 +35,9 @@
                 })
                 .add('tabset', function(node){
                     new Com.Tabset({'node' : node});
+                })
+                .add('gridlist-helper', function(node){
+                    new Com.GridlistHelper({'node' : node});
                 })
                 .construct();
         });
@@ -421,6 +426,87 @@ new Com.Tabset({
             </li>
             <li data-node="tabs:[]:container" data-config='{"id" : "foobar", "title" : "Foo Bar"}'>
                 <p>Pellentesque vel velit sit amet libero tincidunt mattis faucibus sit amet velit.</p>
+            </li>
+        </ul>
+    </li>
+
+    <li data-node="tabs:[]:container" data-config='{"id" : "garage", "title" : "Garage"}'>
+        <h2>Gridlist in Tabset</h2>
+        <ul class="com__tabset__content-ul" data-element="tabset">
+            <li data-node="tabs:[]:container" data-config='{"id" : "tab1", "title" : "Tab 1"}'>
+                <div class="pt__gridlist" data-element="gridlist-helper">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th width="20%" class="sort">
+                                <div class="inner">
+                                    <span>Name</span>
+                                    <div class="icon arrow desc"></div>
+                                </div>
+                            </th>
+                            <th>Description</th>
+                            <th width="80">Order</th>
+                            <th width="80"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>Canada</td>
+                            <td>Canada is a North American country consisting of ten provinces and three territories.</td>
+                            <td>
+                                <div class="cm__form__icons-inside left">
+                                    <div class="text">1</div>
+                                    <div class="icon small arrow-priority-up linked inline hidden"></div>
+                                    <div class="icon small arrow-priority-down inline linked"></div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="cm__form__icons-inside">
+                                    <div class="icon small add linked inline" title="Add"></div>
+                                    <div class="icon small edit linked inline" title="Edit"></div>
+                                    <div class="icon small remove linked inline" title="Remove"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Canada</td>
+                            <td>Canada is a North American country consisting of ten provinces and three territories.</td>
+                            <td>
+                                <div class="cm__form__icons-inside left">
+                                    <div class="text">2</div>
+                                    <div class="icon small arrow-priority-up inline linked"></div>
+                                    <div class="icon small arrow-priority-down inline linked"></div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="cm__form__icons-inside">
+                                    <div class="icon small add linked inline" title="Add"></div>
+                                    <div class="icon small edit linked inline" title="Edit"></div>
+                                    <div class="icon small remove linked inline" title="Remove"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Canada</td>
+                            <td>Canada is a North American country consisting of ten provinces and three territories.</td>
+                            <td>
+                                <div class="cm__form__icons-inside left">
+                                    <div class="text">3</div>
+                                    <div class="icon small arrow-priority-up linked inline"></div>
+                                    <div class="icon small arrow-priority-down linked inline hidden"></div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="cm__form__icons-inside">
+                                    <div class="icon small add linked inline" title="Add"></div>
+                                    <div class="icon small edit linked inline" title="Edit"></div>
+                                    <div class="icon small remove linked inline" title="Remove"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </li>
         </ul>
     </li>

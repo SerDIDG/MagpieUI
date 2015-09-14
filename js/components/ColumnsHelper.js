@@ -63,6 +63,14 @@ function(params){
     };
 
     var render = function(){
+        renderChassis();
+        // Add custom event
+        cm.customEvent.add(that.params['node'], 'redraw', function(){
+            that.redraw();
+        });
+    };
+
+    var renderChassis = function(){
         if(that.isEditMode && !that.isRendered){
             that.items = [];
             that.chassis = [];
@@ -79,9 +87,9 @@ function(params){
     };
 
     var renderChassisItem = function(i){
-        var chassis = {},
-            ratio = that.params['node'].offsetWidth / 100,
-            left = ((cm.getRealX(that.items[i]['container']) - cm.getRealX(that.params['node']) + that.items[i]['container'].offsetWidth) / ratio).toFixed(2);
+        var chassis = {
+            'index' : i
+        };
         // Structure
         chassis['container'] = cm.node('div', {'class' : 'com__columns__chassis'},
             chassis['inner'] = cm.node('div', {'class' : 'pt__drag is-horizontal'},
@@ -100,7 +108,7 @@ function(params){
             );
         }
         // Styles
-        chassis['container'].style.left = [left, '%'].join('');
+        redrawChassisItem(chassis);
         // Push to chassis array
         that.chassis.push(chassis);
         // Add events
@@ -111,10 +119,25 @@ function(params){
         that.params['node'].appendChild(chassis['container']);
     };
 
-    var remove = function(){
+    var redrawChassisItem = function(chassis){
+        var ratio = that.params['node'].offsetWidth / 100,
+            i = chassis['index'],
+            left = ((cm.getRealX(that.items[i]['container']) - cm.getRealX(that.params['node']) + that.items[i]['container'].offsetWidth) / ratio).toFixed(2);
+        chassis['container'].style.left = [left, '%'].join('');
+    };
+
+    var redrawChassis = function(){
+        cm.forEach(that.chassis, function(item){
+            redrawChassisItem(item);
+        });
+    };
+
+    var removeChassis = function(){
         cm.forEach(that.chassis, function(item){
             cm.remove(item['container']);
         });
+        that.items = [];
+        that.chassis = [];
         that.isRendered = false;
     };
 
@@ -257,19 +280,26 @@ function(params){
 
     that.enableEditMode = function(){
         that.isEditMode = true;
-        render();
+        renderChassis();
         return that;
     };
 
     that.disableEditMode = function(){
         that.isEditMode = false;
-        remove();
+        removeChassis();
         return that;
     };
 
     that.abort = function(){
         if(that.ajaxHandler && that.ajaxHandler.abort){
             that.ajaxHandler.abort();
+        }
+        return that;
+    };
+
+    that.redraw = function(){
+        if(that.isEditMode){
+            redrawChassis();
         }
         return that;
     };

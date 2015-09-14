@@ -288,13 +288,22 @@ function(params){
                     if(that.previous){
                         that.tabs[that.previous]['content'].style.display = 'none';
                     }
-                    // Show End Event
-                    that.tabs[that.active]['onShow'](that, that.tabs[that.active]);
-                    that.triggerEvent('onTabShow', that.tabs[that.active]);
-                    that.isProcess = false;
+                    switchTab();
                 }
             }
-    }
+        }
+    };
+
+    var switchTab = function(){
+        // Show End Event
+        that.tabs[that.active]['onShow'](that, that.tabs[that.active]);
+        that.triggerEvent('onTabShow', that.tabs[that.active]);
+        that.isProcess = false;
+        // Trigger custom event
+        cm.customEvent.trigger(that.tabs[that.active]['content'], 'redraw', {
+            'type' : 'child',
+            'self' : false
+        });
     };
 
     /* *** HELPERS *** */
@@ -318,10 +327,7 @@ function(params){
             }
             that.nodes['contentUL'].style.overflow = 'visible';
             that.nodes['contentUL'].style.height = 'auto';
-            // Show End Event
-            that.tabs[that.active]['onShow'](that, that.tabs[that.active]);
-            that.triggerEvent('onTabShow', that.tabs[that.active]);
-            that.isProcess = false;
+            switchTab();
         }});
     };
 

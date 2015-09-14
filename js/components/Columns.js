@@ -24,6 +24,7 @@ cm.define('Com.Columns', {
     'params' : {
         'container' : cm.Node('div'),
         'name' : '',
+        'renderStructure' : false,
         'columns' : false,
         'minColumnWidth' : 48,              // in px
         'data' : []
@@ -32,9 +33,10 @@ cm.define('Com.Columns', {
 function(params){
     var that = this,
         nodes = {},
-        items = [],
-        chassisList = [],
         current;
+
+    that.items = [];
+    that.chassis = [];
 
     /* *** INIT *** */
 
@@ -43,11 +45,7 @@ function(params){
         that.convertEvents(that.params['events']);
         that.getDataConfig(that.params['container']);
         validateParams();
-        if(that.params['columns']){
-            collect();
-        }else{
-            render();
-        }
+        render();
         renderChassis();
         that.addToStack(nodes['container']);
         that.triggerEvent('onRender');
@@ -62,16 +60,15 @@ function(params){
     /* *** STRUCTURE *** */
 
     var render = function(){
-        // Structure
-        nodes['container'] = cm.Node('div', {'class' : 'com__columns'},
-            nodes['inner'] = cm.Node('div', {'class' : 'inner'},
-                nodes['holder'] = cm.Node('div', {'class' : 'container'})
-            )
-        );
-        // Render Columns
-        cm.forEach(that.params['data'], renderColumn);
-        // Embed
-        that.params['container'].appendChild(nodes['container']);
+        if(that.params['renderStructure']){
+            renderStructure();
+        }else if(that.params['columns']){
+            collect();
+        }
+        // Add custom event
+        cm.customEvent.add(nodes['container'], 'redraw', function(){
+            that.redraw();
+        });
     };
 
     var collect = function(){
@@ -96,6 +93,19 @@ function(params){
         cm.forEach(columns, collectColumn);
     };
 
+    var renderStructure = function(){
+        // Structure
+        nodes['container'] = cm.Node('div', {'class' : 'com__columns'},
+            nodes['inner'] = cm.Node('div', {'class' : 'inner'},
+                nodes['holder'] = cm.Node('div', {'class' : 'container'})
+            )
+        );
+        // Render Columns
+        cm.forEach(that.params['data'], renderColumn);
+        // Embed
+        that.params['container'].appendChild(nodes['container']);
+    };
+
     /* *** COLUMNS *** */
 
     var collectColumn = function(container){
@@ -107,7 +117,7 @@ function(params){
         // Render ruler
         renderRuler(item);
         // Push to items array
-        items.push(item);
+        that.items.push(item);
     };
 
     var renderColumn = function(item, execute){
@@ -121,7 +131,7 @@ function(params){
         // Render ruler
         renderRuler(item);
         // Push to items array
-        items.push(item);
+        that.items.push(item);
         // Embed
         nodes['holder'].appendChild(item['container']);
         if(execute){
@@ -132,9 +142,9 @@ function(params){
     };
 
     var removeColumn = function(item, execute){
-        var index = items.indexOf(item);
+        var index = that.items.indexOf(item);
         cm.remove(item['container']);
-        items.splice(index, 1);
+        that.items.splice(index, 1);
         if(execute){
             // API onRemove event
             that.triggerEvent('onRemove', item);
@@ -143,7 +153,7 @@ function(params){
     };
 
     var removeLastColumn = function(execute){
-        var item = items.pop();
+        var item = that.items.pop();
         cm.remove(item['container']);
         if(execute){
             // API onRemove event
@@ -153,17 +163,17 @@ function(params){
     };
 
     var setEqualDimensions = function(){
-        var itemsLength = items.length,
+        var itemsLength = that.items.length,
             width = (100 / itemsLength).toFixed(2);
 
-        cm.forEach(items, function(item){
+        cm.forEach(that.items, function(item){
             item['width'] = [width, '%'].join('');
             item['container'].style.width = item['width'];
             item['rulerCounter'].innerHTML = item['width'];
         });
         // API onResize event
-        that.triggerEvent('onResize', items);
-        that.triggerEvent('onChange', items);
+        that.triggerEvent('onResize', that.items);
+        that.triggerEvent('onChange', that.items);
     };
 
     /* *** RULERS METHODS *** */
@@ -184,15 +194,16 @@ function(params){
     /* *** CHASSIS METHODS *** */
 
     var renderChassis = function(){
-        var count = items.length - 1;
+        that.chassis = [];
+        var count = that.items.length - 1;
         cm.forEach(count, renderChassisItem);
     };
 
     var removeChassis = function(){
-        cm.forEach(chassisList, function(chassis){
+        cm.forEach(that.chassis, function(chassis){
             cm.remove(chassis['container']);
         });
-        chassisList = [];
+        that.chassis = [];
     };
 
     var updateChassis = function(){
@@ -200,10 +211,16 @@ function(params){
         renderChassis();
     };
 
+    var redrawChassis = function(){
+        cm.forEach(that.chassis, function(item){
+            redrawChassisItem(item);
+        });
+    };
+
     var renderChassisItem = function(i){
-        var chassis = {},
-            ratio = nodes['holder'].offsetWidth / 100,
-            left = ((cm.getRealX(items[i]['container']) - cm.getRealX(nodes['holder']) + items[i]['container'].offsetWidth) / ratio).toFixed(2);
+        var chassis = {
+            'index' : i
+        };
         // Structure
         chassis['container'] = cm.Node('div', {'class' : 'com__columns__chassis'},
             chassis['drag'] = cm.Node('div', {'class' : 'pt__drag is-horizontal'},
@@ -214,15 +231,23 @@ function(params){
             )
         );
         // Styles
-        chassis['container'].style.left = [left, '%'].join('');
+        redrawChassisItem(chassis);
         // Push to chassis array
-        chassisList.push(chassis);
+        that.chassis.push(chassis);
         // Add events
         cm.addEvent(chassis['container'], 'mousedown', function(e){
             start(e, chassis);
         });
         // Embed
         nodes['inner'].appendChild(chassis['container']);
+    };
+
+    var redrawChassisItem = function(chassis){
+        var ratio = nodes['holder'].offsetWidth / 100,
+            i = chassis['index'],
+            left = ((cm.getRealX(that.items[i]['container']) - cm.getRealX(nodes['holder']) + that.items[i]['container'].offsetWidth) / ratio).toFixed(2);
+        // Structure
+        chassis['container'].style.left = [left, '%'].join('');
     };
 
     /* *** DRAG FUNCTIONS *** */
@@ -241,9 +266,9 @@ function(params){
             return false;
         }
         // Current
-        var index = chassisList.indexOf(chassis),
-            leftColumn = items[index],
-            rightColumn = items[index + 1];
+        var index = that.chassis.indexOf(chassis),
+            leftColumn = that.items[index],
+            rightColumn = that.items[index + 1];
 
         current = {
             'index' : index,
@@ -295,7 +320,7 @@ function(params){
             current['right']['column']['rulerCounter'].innerHTML = current['right']['column']['width'];
         }
         // API onResize event
-        that.triggerEvent('onChange', items);
+        that.triggerEvent('onChange', that.items);
     };
 
     var stop = function(){
@@ -311,18 +336,18 @@ function(params){
         // Show IFRAMES and EMBED tags
         cm.showSpecialTags();
         // API onResize event
-        that.triggerEvent('onResize', items);
+        that.triggerEvent('onResize', that.items);
     };
 
     /* ******* MAIN ******* */
 
     that.redraw = function(){
-        updateChassis();
+        redrawChassis();
         return that;
     };
 
     that.setColumnsCount = function(count){
-        var itemsLength = items.length;
+        var itemsLength = that.items.length;
         if(!count || itemsLength == count){
             return that;
         }
@@ -333,7 +358,7 @@ function(params){
             });
         }else{
             // Remove columns from last
-            while(items.length > count){
+            while(that.items.length > count){
                 removeLastColumn(true);
             }
         }
@@ -343,7 +368,7 @@ function(params){
     };
 
     that.get = function(){
-        return items;
+        return that.items;
     };
 
     init();

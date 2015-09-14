@@ -19,7 +19,7 @@
 */
 
 var cm = {
-        '_version' : '3.4.6',
+        '_version' : '3.5',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -542,6 +542,78 @@ cm.removeCustomEvent = function(el, type, handler, useCapture){
     return el;
 };
 
+cm.customEvent = (function(){
+    var _stack = {};
+
+    return {
+        'add' : function(node, type, handler){
+            if(!_stack[type]){
+                _stack[type] = [];
+            }
+            _stack[type].push({
+                'node' : node,
+                'type' : type,
+                'handler' : typeof handler == 'function' ? handler : function(){}
+            });
+            return node;
+        },
+        'remove' : function(node, type, handler){
+            if(!_stack[type]){
+                _stack[type] = [];
+            }
+            _stack[type] = _stack[type].filter(function(item){
+                return item['node'] != node && item['handler'] != handler;
+            });
+            return node;
+        },
+        'trigger' : function(node, type, params){
+            var stopPropagation = false;
+            params = cm.merge({
+                'target' : node,
+                'type' : 'both',            // child | parent | both | all
+                'self' : true,
+                'stopPropagation' : function(){
+                    stopPropagation = true;
+                }
+            }, params);
+            cm.forEach(_stack[type], function(item){
+                if(!stopPropagation){
+                    if(params['self'] && node === item['node']){
+                        item['handler'](params);
+                    }
+                    switch(params['type']){
+                        case 'child':
+                            if(cm.isParent(node, item['node'], false)){
+                                item['handler'](params);
+                            }
+                            break;
+                        case 'parent':
+                            if(cm.isParent(item['node'], node, false)){
+                                item['handler'](params);
+                            }
+                            break;
+                        case 'both':
+                            if(cm.isParent(node, item['node'], false)){
+                                item['handler'](params);
+                            }
+                            if(cm.isParent(item['node'], node, false)){
+                                item['handler'](params);
+                            }
+                            break;
+                        case 'all':
+                        default:
+                            if(!params['self'] && node !== item['node']){
+                                item['handler'](params);
+                            }
+                            break;
+                    }
+                }
+            });
+            return node;
+        }
+    };
+})();
+
 cm.onLoad = function(handler, isMessage){
     isMessage = typeof isMessage == 'undefined'? true : isMessage;
     var called = false;
@@ -855,7 +927,11 @@ cm.inDOM = function(o){
 };
 
 cm.isParent = function(p, o, flag){
-    if(o && o.parentNode){
+    if(cm.isNode(o) && o.parentNode){
+        if(cm.isWindow(p) && cm.inDOM(o)){
+            return true;
+        }
+
         var el = o.parentNode;
         do{
             if(el == p){
