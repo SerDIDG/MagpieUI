@@ -3,13 +3,15 @@ cm.define('Com.ActionMenu', {
         'Params',
         'Events',
         'DataConfig',
-        'DataNodes'
+        'DataNodes',
+        'Stack'
     ],
     'events' : [
         'onRender'
     ],
     'params' : {
         'node' : cm.Node('div'),
+        'name' : '',
         'Com.Tooltip' : {
             'className' : 'com-action-menu-tooltip',
             'top' : 'targetHeight',
@@ -20,13 +22,13 @@ cm.define('Com.ActionMenu', {
     }
 },
 function(params){
-    var that = this,
-        components = {};
+    var that = this;
 
     that.nodes = {
         'button' : cm.Node('div'),
         'target' : cm.Node('div')
     };
+    that.components = {};
 
     var init = function(){
         that.setParams(params);
@@ -34,31 +36,33 @@ function(params){
         that.getDataNodes(that.params['node']);
         that.getDataConfig(that.params['node']);
         render();
+        that.addToStack(that.params['node']);
+        that.triggerEvent('onRender');
     };
 
     var render = function(){
         // Tooltip
-        components['tooltip'] = new Com.Tooltip(
-            cm.merge(that.params['Com.Tooltip'], {
-                'target' : that.nodes['button'],
-                'content' : that.nodes['target'],
-                'events' : {
-                    'onShowStart' : function(){
-                        cm.addClass(that.params['node'], 'active');
-                        cm.addClass(that.nodes['button'], 'active');
-                    },
-                    'onHideStart' : function(){
-                        cm.removeClass(that.params['node'], 'active');
-                        cm.removeClass(that.nodes['button'], 'active');
+        cm.getConstructor('Com.Tooltip', function(classConstructor){
+            that.components['tooltip'] = new classConstructor(
+                cm.merge(that.params['Com.Tooltip'], {
+                    'target' : that.nodes['button'],
+                    'content' : that.nodes['target'],
+                    'events' : {
+                        'onShowStart' : function(){
+                            cm.addClass(that.params['node'], 'active');
+                            cm.addClass(that.nodes['button'], 'active');
+                        },
+                        'onHideStart' : function(){
+                            cm.removeClass(that.params['node'], 'active');
+                            cm.removeClass(that.nodes['button'], 'active');
+                        }
                     }
-                }
-            })
-        );
-        // Trigger event
-        that.triggerEvent('onRender', {});
+                })
+            );
+        });
     };
 
-    /* ******* MAIN ******* */
+    /* ******* PUBLIC ******* */
 
     init();
 });
