@@ -25,6 +25,8 @@
     <script type="text/javascript" src="../../../js/components/Columns.js"></script>
     <script type="text/javascript" src="../../../js/components/ColumnsHelper.js"></script>
     <script type="text/javascript" src="../../../js/components/GridlistHelper.js"></script>
+    <script type="text/javascript" src="../../../js/components/Draggable.js"></script>
+    <script type="text/javascript" src="../../../js/components/Spacer.js"></script>
 
     <script type="text/javascript">
         cm.onReady(function(){
@@ -38,6 +40,11 @@
                 })
                 .add('gridlist-helper', function(node){
                     new Com.GridlistHelper({'node' : node});
+                })
+                .add('spacer', function(node){
+                    new Com.Spacer({
+                        'node' : node
+                    });
                 })
                 .construct();
         });
@@ -431,9 +438,9 @@ new Com.Tabset({
     </li>
 
     <li data-node="tabs:[]:container" data-config='{"id" : "garage", "title" : "Garage"}'>
-        <h2>Gridlist in Tabset</h2>
-        <ul class="com__tabset__content-ul" data-element="tabset">
-            <li data-node="tabs:[]:container" data-config='{"id" : "tab1", "title" : "Tab 1"}'>
+        <h2>Components in Tabset</h2>
+        <ul class="com__tabset__content-ul" data-element="tabset" data-config='{"toggleOnHashChange" : false}'>
+            <li data-node="tabs:[]:container" data-config='{"id" : "gridlist", "title" : "Gridlist"}'>
                 <div class="pt__gridlist" data-element="gridlist-helper">
                     <table>
                         <thead>
@@ -507,6 +514,9 @@ new Com.Tabset({
                         </tbody>
                     </table>
                 </div>
+            </li>
+            <li data-node="tabs:[]:container" data-config='{"id" : "spacer", "title" : "Spacer"}'>
+                <div class="app-mod__spacer com__spacer is-chassis-visible is-editable" style="height: 24px;" data-element="spacer"></div>
             </li>
         </ul>
     </li>

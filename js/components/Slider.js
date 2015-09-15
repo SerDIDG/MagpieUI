@@ -150,7 +150,13 @@ function(params){
         that.anim['slides'] = new cm.Animation(that.nodes['slides']);
         that.anim['slidesInner'] = new cm.Animation(that.nodes['slidesInner']);
         // Resize events
-        cm.addEvent(window, 'resize', resizeHandler);
+        cm.addEvent(window, 'resize', function(){
+            that.redraw();
+        });
+        // Add custom event
+        cm.customEvent.add(that.params['node'], 'redraw', function(){
+            that.redraw();
+        });
     };
 
     var renderLayout = function(){
@@ -317,6 +323,11 @@ function(params){
                     'current' : current,
                     'previous' : previous
                 });
+                // Trigger custom event
+                cm.customEvent.trigger(current['nodes']['container'], 'redraw', {
+                    'type' : 'child',
+                    'self' : false
+                });
             });
             // Recalculate slider height dependence of height type
             calculateHeight();
@@ -393,6 +404,11 @@ function(params){
     };
 
     /* ******* MAIN ******* */
+
+    that.redraw = function(){
+        resizeHandler();
+        return that;
+    };
 
     that.set = function(index){
         if(that.items[index]){

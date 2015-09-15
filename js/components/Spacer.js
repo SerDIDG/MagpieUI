@@ -36,7 +36,7 @@ function(params){
         validateParams();
         render();
         setLogic();
-        that.redraw();
+        set(that.params['node'].style.height, false);
         that.addToStack(that.params['node']);
         that.triggerEvent('onRender');
     };
@@ -68,6 +68,14 @@ function(params){
         // Embed
         that.params['node'].appendChild(that.nodes['dragContainer']);
         that.params['node'].appendChild(that.nodes['rulerContainer']);
+        // Add window event
+        cm.addEvent(window, 'resize', function(){
+            that.redraw();
+        });
+        // Add custom event
+        cm.customEvent.add(that.params['node'], 'redraw', function(){
+            that.redraw();
+        });
     };
 
     var setLogic = function(){
@@ -113,8 +121,7 @@ function(params){
 
     var set = function(height, triggerEvents){
         that.value = height;
-        that.nodes['dragContainer'].style.top = [that.params['node'].offsetHeight, 'px'].join('');
-        that.params['node'].style.height = [that.value, 'px'].join('');
+        setHeight(height);
         setRulerCounter();
         if(triggerEvents){
             that.triggerEvent('onChange', {
@@ -130,10 +137,15 @@ function(params){
         that.nodes['rulerCounter'].innerHTML = [that.value, ' px'].join('');
     };
 
+    var setHeight = function(height){
+        that.params['node'].style.height = [height, 'px'].join('');
+        that.nodes['dragContainer'].style.top = [that.params['node'].offsetHeight, 'px'].join('');
+    };
+
     /* ******* MAIN ******* */
 
     that.redraw = function(){
-        set(that.params['node'].offsetHeight, false);
+        setHeight(that.value);
         return that;
     };
 

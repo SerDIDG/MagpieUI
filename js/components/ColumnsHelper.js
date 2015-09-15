@@ -64,6 +64,10 @@ function(params){
 
     var render = function(){
         renderChassis();
+        // Add window event
+        cm.addEvent(window, 'resize', function(){
+            that.redraw();
+        });
         // Add custom event
         cm.customEvent.add(that.params['node'], 'redraw', function(){
             that.redraw();

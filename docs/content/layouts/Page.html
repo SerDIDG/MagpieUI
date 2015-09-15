@@ -15,9 +15,27 @@
     <script type="text/javascript" src="../../../js/init.js"></script>
     <script type="text/javascript" src="../../../js/components/UA.js"></script>
     <script type="text/javascript" src="../../../js/components/Collector.js"></script>
+    <script type="text/javascript" src="../../../js/components/Tooltip.js"></script>
+    <script type="text/javascript" src="../../../js/components/ActionMenu.js"></script>
+    <script type="text/javascript" src="../../../js/components/ColumnsHelper.js"></script>
+    <script type="text/javascript" src="../../../js/components/GridlistHelper.js"></script>
 
     <script type="text/javascript">
         cm.onReady(function(){
+            new Com.Collector()
+                .addEvent('onConstruct', function(collector, data){
+                    Part.Menu();
+                    Part.Autoresize(data['node']);
+                })
+                .add('action-menu', function(node){
+                    new Com.ActionMenu({
+                        'node' : node
+                    });
+                })
+                .add('gridlist-helper', function(node){
+                    new Com.GridlistHelper({'node' : node});
+                })
+                .construct();
         });
     </script>
 </head>
@@ -80,18 +98,18 @@
     </div>
 </div>
 
-<div class="pt__gridlist">
+<div class="pt__gridlist" data-element="gridlist-helper">
     <table>
         <thead>
             <tr>
-                <th width="20%" class="sort">
+                <th width="15%" class="sort">
                     <a class="inner">
                         <span>Name</span>
                         <div class="icon arrow desc"></div>
                     </a>
                 </th>
                 <th>Description</th>
-                <th width="140"></th>
+                <th width="160"></th>
             </tr>
         </thead>
         <tbody>

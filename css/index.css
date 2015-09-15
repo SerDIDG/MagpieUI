@@ -5838,6 +5838,9 @@ button::-moz-focus-inner {
   html.is-adaptive .pt__gridlist thead:first-child tr:first-child th:first-child {
     border: none;
   }
+  html.is-adaptive .pt__gridlist > .com__columns__chassis {
+    display: none;
+  }
 }
 /* ******* PARTS: SELECTABLE ******* */
 .pt__selectable {
@@ -10421,6 +10424,7 @@ html.ie9 .com__palette .b-range {
   position: absolute;
   z-index: 2;
   display: none;
+  margin-top: -1px;
   opacity: 0;
   top: 0;
   right: 0;
