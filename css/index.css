@@ -8286,34 +8286,6 @@ html.ie9 .com__palette .b-range {
 .com__pagination__bar.pull-right ul {
   text-align: right;
 }
-/* *** DEPRECATED *** */
-.com__pagination__container > .com__pagination {
-  margin: 0;
-}
-.com__pagination__content {
-  margin: 24px 0;
-  position: relative;
-}
-.com__pagination__content:first-child {
-  margin-top: 0;
-}
-.com__pagination__content:last-child {
-  margin-bottom: 0;
-}
-.com__pagination__content > div {
-  width: 100%;
-  position: absolute;
-  left: 0;
-  top: 0;
-  background-color: #FFFFFF;
-  opacity: 0;
-  z-index: 2;
-}
-.com__pagination__content > div:first-child {
-  opacity: 1;
-  position: relative;
-  z-index: 1;
-}
 /* *** HELPERS *** */
 .com__pagination-helper__duration {
   transition-duration: 300ms;

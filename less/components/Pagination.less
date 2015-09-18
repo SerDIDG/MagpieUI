@@ -116,45 +116,6 @@
     }
 }
 
-/* *** DEPRECATED *** */
-
-.com__pagination__container {
-    > .com__pagination {
-        margin: 0;
-    }
-}
-
-.com__pagination__content {
-    margin: @CmIndent-Medium 0;
-    position: relative;
-
-    &:first-child {
-        margin-top: 0;
-    }
-
-    &:last-child {
-        margin-bottom: 0;
-    }
-
-    // WTF
-
-    > div {
-        width: 100%;
-        position: absolute;
-        left: 0;
-        top: 0;
-        background-color: #FFFFFF;
-        opacity: 0;
-        z-index: 2;
-
-        &:first-child {
-            opacity: 1;
-            position: relative;
-            z-index: 1;
-        }
-    }
-}
-
 /* *** HELPERS *** */
 
 .com__pagination-helper__duration {
