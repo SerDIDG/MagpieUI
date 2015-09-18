@@ -57,6 +57,10 @@ function(params){
                 that.components['popup'] = new classConstructor(that.params['Com.GalleryPopup']);
             });
         }
+        // Add custom event
+        cm.customEvent.add(that.params['node'], 'redraw', function(){
+            that.redraw();
+        });
     };
 
     var process = function(){
@@ -70,7 +74,7 @@ function(params){
                     dimensions['top'] >= 0 &&
                     dimensions['bottom'] <= pageDimensions['winHeight']
                 ){
-                    doProcess();
+                    set();
                 }
             }else{
                 // Rules for block, which size is larger than page's.
@@ -78,15 +82,20 @@ function(params){
                     (dimensions['top'] < 0 && dimensions['bottom'] >= pageDimensions['winHeight'] / 2) ||
                     (dimensions['bottom'] > pageDimensions['winHeight'] && dimensions['top'] <= pageDimensions['winHeight'] / 2)
                 ){
-                    doProcess();
+                    set();
                 }
             }
         }
     };
 
-    var doProcess = function(){
+    var set = function(){
         that.processed = true;
         cm.addClass(that.params['node'], ['animated', that.params['effect']].join(' '));
+    };
+
+    var restore = function(){
+        that.processed = false;
+        cm.removeClass(that.params['node'], ['animated', that.params['effect']].join(' '));
     };
     
     var getDimensions = function(){
@@ -98,6 +107,14 @@ function(params){
     };
 
     /* ******* PUBLIC ******* */
+
+    that.redraw = function(){
+        if(that.params['animated']){
+            restore();
+            process();
+        }
+        return that;
+    };
 
     init();
 });
