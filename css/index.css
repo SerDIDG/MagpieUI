@@ -6365,6 +6365,9 @@ button::-moz-focus-inner {
 .lt__post.has-image > .l {
   max-width: 172px;
   margin: 0 16px 0 0;
+  -webkit-flex: 0 0 auto;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
 }
 .lt__post.has-image > .r {
   -webkit-flex: 1 1 auto;
