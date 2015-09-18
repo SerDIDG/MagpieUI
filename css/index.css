@@ -6363,7 +6363,6 @@ button::-moz-focus-inner {
   -ms-flex-pack: center;
 }
 .lt__post.has-image > .l {
-  max-width: 172px;
   margin: 0 16px 0 0;
   -webkit-flex: 0 0 auto;
   -ms-flex: 0 0 auto;
@@ -6373,6 +6372,9 @@ button::-moz-focus-inner {
   -webkit-flex: 1 1 auto;
   -ms-flex: 1 1 auto;
   flex: 1 1 auto;
+}
+.lt__post.has-image > .l {
+  max-width: 172px;
 }
 /* *** POSTS *** */
 .lt__posts .lt__post {

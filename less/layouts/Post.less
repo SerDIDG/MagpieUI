@@ -100,7 +100,6 @@
         .display-flex;
 
         > .l {
-            max-width: @LtPost-Image-Size;
             margin: 0 @LtPost-Image-Indent 0 0;
             .mx__flex(0 0 auto);
         }
@@ -109,6 +108,8 @@
             .mx__flex(1 1 auto);
         }
     }
+
+    .lt__post__image-size(@LtPost-Image-Size);
 }
 
 /* *** POSTS *** */
@@ -119,6 +120,16 @@
 
         &:first-child {
             margin: 0;
+        }
+    }
+}
+
+// /* *** MIXINS *** */
+
+.lt__post__image-size(@value: @LtPost-Image-Size){
+    &.has-image {
+        > .l {
+            max-width: @value;
         }
     }
 }
