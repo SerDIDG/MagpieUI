@@ -38,7 +38,10 @@
     <script type="text/javascript" src="../../../js/components/ColorPicker.js"></script>
     <script type="text/javascript" src="../../../js/components/MultiField.js"></script>
     <script type="text/javascript" src="../../../js/components/HelpBubble.js"></script>
+    <script type="text/javascript" src="../../../js/components/ImageBox.js"></script>
+    <script type="text/javascript" src="../../../js/components/Gallery.js"></script>
     <script type="text/javascript" src="../../../js/components/Dialog.js"></script>
+    <script type="text/javascript" src="../../../js/components/GalleryPopup.js"></script>
 
 	<script type="text/javascript">
 		cm.onReady(function(){
@@ -50,6 +53,9 @@
                 })
                 .add('tabset', function(node){
                     new Com.Tabset({'node' : node});
+                })
+                .add('imagebox', function(node){
+                    new Com.ImageBox({'node' : node});
                 })
                 .add('tags', function(node){
                     new Com.TagsInput({'input' : node});
@@ -1218,10 +1224,10 @@
                 <dd>
                     <div class="pt__box-item size-80">
                         <div class="l">
-                            <div class="pt__image is-centered">
-                                <div class="inner">
+                            <div class="pt__image is-zoom" data-element="imagebox" data-config='{"zoom" : true}'>
+                                <a class="inner" data-node="items:[]:link" title="Some title text" href="../../images/gallery/1.jpg">
                                     <img class="descr" alt="" src="../../../img/parts/no-avatar-80.png">
-                                </div>
+                                </a>
                             </div>
                         </div>
                         <div class="r">

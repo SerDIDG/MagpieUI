@@ -120,7 +120,7 @@ function(params){
         if(!item['link']){
             item['link'] = cm.Node('a')
         }
-        item['nodes']['container'] = cm.Node('div', {'class' : 'pt__image is-no-hover is-centered'},
+        item['nodes']['container'] = cm.Node('div', {'class' : 'pt__image is-centered'},
             item['nodes']['inner'] = cm.Node('div', {'class' : 'inner'})
         );
         // Render by type

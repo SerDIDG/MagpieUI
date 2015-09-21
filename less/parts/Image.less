@@ -117,8 +117,18 @@
         }
     }
 
-    &:not(.is-no-hover) {
+    &:hover,
+    &.is-title-fixed {
+        .pt__image-title-hover;
+    }
+
+    &.is-hover,
+    &.is-zoom {
         cursor: pointer;
+
+        > a.inner {
+            cursor: pointer;
+        }
 
         &:hover {
             > .inner {
@@ -130,12 +140,17 @@
         }
     }
 
-    &:hover,
-    &.is-fixed-title {
-        .pt__image-title-hover;
+    &.is-zoom {
+        cursor: zoom-in;
+
+        > a.inner {
+            cursor: zoom-in;
+        }
     }
 
     &.is-checkable {
+        cursor: pointer;
+
         > .inner {
             > .descr {
                 opacity: @CmUI-Opacity-Hover;

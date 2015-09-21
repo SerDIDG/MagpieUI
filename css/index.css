@@ -5179,20 +5179,35 @@ button::-moz-focus-inner {
 .pt__image > .pull .icon:first-child {
   margin: 0;
 }
-.pt__image:not(.is-no-hover) {
-  cursor: pointer;
-}
-.pt__image:not(.is-no-hover):hover > .inner > .descr {
-  opacity: 0.7;
-  -webkit-transition: opacity 100ms ease-in-out;
-  transition: opacity 100ms ease-in-out;
-}
 .pt__image:hover > .inner > .title,
-.pt__image.is-fixed-title > .inner > .title {
+.pt__image.is-title-fixed > .inner > .title {
   bottom: 0;
   opacity: 1;
   -webkit-transition: top 100ms ease-in-out, opacity 100ms ease-in-out;
   transition: top 100ms ease-in-out, opacity 100ms ease-in-out;
+}
+.pt__image.is-hover,
+.pt__image.is-zoom {
+  cursor: pointer;
+}
+.pt__image.is-hover > a.inner,
+.pt__image.is-zoom > a.inner {
+  cursor: pointer;
+}
+.pt__image.is-hover:hover > .inner > .descr,
+.pt__image.is-zoom:hover > .inner > .descr {
+  opacity: 0.7;
+  -webkit-transition: opacity 100ms ease-in-out;
+  transition: opacity 100ms ease-in-out;
+}
+.pt__image.is-zoom {
+  cursor: zoom-in;
+}
+.pt__image.is-zoom > a.inner {
+  cursor: zoom-in;
+}
+.pt__image.is-checkable {
+  cursor: pointer;
 }
 .pt__image.is-checkable > .inner > .descr {
   opacity: 0.7;

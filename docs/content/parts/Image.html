@@ -93,12 +93,22 @@
         </div>
         <hr>
 
-        <h2>Image Box without hover</h2>
+        <h2>Image Box Hover</h2>
         <div style="max-width: 500px">
-            <div class="pt__image is-no-hover">
-                <div class="inner">
+            <div class="pt__image is-hover">
+                <a class="inner">
                     <img class="descr" src="../../images/gallery/8.jpg" alt="">
-                </div>
+                </a>
+            </div>
+        </div>
+        <hr>
+
+        <h2>Image Box Zoom</h2>
+        <div style="max-width: 500px">
+            <div class="pt__image is-zoom">
+                <a class="inner">
+                    <img class="descr" src="../../images/gallery/8.jpg" alt="">
+                </a>
             </div>
         </div>
         <hr>
@@ -118,7 +128,7 @@
 
         <h2>Image Box with Fixed Caption</h2>
         <div style="max-width: 500px">
-            <div class="pt__image is-fixed-title">
+            <div class="pt__image is-title-fixed">
                 <div class="inner">
                     <img class="descr" src="../../images/gallery/5.jpg" alt="">
                     <div class="title">
@@ -196,12 +206,12 @@
         <h2>Fade In</h2>
         <div style="width: 320px">
             <div class="pt__image cm-animate" data-element="imagebox" data-config='{"animated" : true, "effect" : "fadeIn"}'>
-                <a class="inner">
+                <div class="inner">
                     <img class="descr" src="../../images/gallery/1.jpg" alt="">
                     <div class="title">
                         <div class="inner">Some title text</div>
                     </div>
-                </a>
+                </div>
             </div>
         </div>
 
@@ -210,12 +220,12 @@
         <h2>Fade In Up</h2>
         <div style="width: 320px">
             <div class="pt__image cm-animate" data-element="imagebox" data-config='{"animated" : true, "effect" : "fadeInUp"}'>
-                <a class="inner">
+                <div class="inner">
                     <img class="descr" src="../../images/gallery/1.jpg" alt="">
                     <div class="title">
                         <div class="inner">Some title text</div>
                     </div>
-                </a>
+                </div>
             </div>
         </div>
 
@@ -224,12 +234,12 @@
         <h2>Fade In Down</h2>
         <div style="width: 320px">
             <div class="pt__image cm-animate" data-element="imagebox" data-config='{"animated" : true, "effect" : "fadeInDown"}'>
-                <a class="inner">
+                <div class="inner">
                     <img class="descr" src="../../images/gallery/1.jpg" alt="">
                     <div class="title">
                         <div class="inner">Some title text</div>
                     </div>
-                </a>
+                </div>
             </div>
         </div>
 
@@ -238,12 +248,12 @@
         <h2>Bounce</h2>
         <div style="width: 320px">
             <div class="pt__image cm-animate" data-element="imagebox" data-config='{"animated" : true, "effect" : "bounce"}'>
-                <a class="inner">
+                <div class="inner">
                     <img class="descr" src="../../images/gallery/1.jpg" alt="">
                     <div class="title">
                         <div class="inner">Some title text</div>
                     </div>
-                </a>
+                </div>
             </div>
         </div>
 
@@ -252,12 +262,12 @@
         <h2>Pull Right</h2>
         <div style="width: 320px">
             <div class="pt__image cm-animate" data-element="imagebox" data-config='{"animated" : true, "effect" : "fadeInRightBig"}'>
-                <a class="inner">
+                <div class="inner">
                     <img class="descr" src="../../images/gallery/1.jpg" alt="">
                     <div class="title">
                         <div class="inner">Some title text</div>
                     </div>
-                </a>
+                </div>
             </div>
         </div>
 
@@ -266,12 +276,12 @@
         <h2>Pull Left</h2>
         <div style="width: 320px">
             <div class="pt__image cm-animate" data-element="imagebox" data-config='{"animated" : true, "effect" : "fadeInLeftBig"}'>
-                <a class="inner">
+                <div class="inner">
                     <img class="descr" src="../../images/gallery/1.jpg" alt="">
                     <div class="title">
                         <div class="inner">Some title text</div>
                     </div>
-                </a>
+                </div>
             </div>
         </div>
 
@@ -280,24 +290,21 @@
         <h2>Tada</h2>
         <div style="width: 320px">
             <div class="pt__image cm-animate" data-element="imagebox" data-config='{"animated" : true, "effect" : "tada"}'>
-                <a class="inner">
+                <div class="inner">
                     <img class="descr" src="../../images/gallery/1.jpg" alt="">
                     <div class="title">
                         <div class="inner">Some title text</div>
                     </div>
-                </a>
+                </div>
             </div>
         </div>
     </li>
 
     <li data-node="tabs:[]:container" data-config='{"id" : "zoom", "title" : "Zoom"}'>
         <div style="width: 320px">
-            <div class="pt__image" data-element="imagebox" data-config='{"zoom" : true}'>
+            <div class="pt__image is-zoom" data-element="imagebox" data-config='{"zoom" : true}'>
                 <a class="inner" data-node="items:[]:link" title="Some title text" href="../../images/gallery/1.jpg">
                     <img class="descr" src="../../images/gallery/1.jpg" alt="">
-                    <div class="title">
-                        <div class="inner">Some title text</div>
-                    </div>
                 </a>
             </div>
         </div>
