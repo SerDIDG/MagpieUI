@@ -20,6 +20,7 @@ cm.define('Com.Gallery', {
         'duration' : 500,
         'showCaption' : true,
         'showArrowTitles' : false,
+        'autoplay' : true,
         'icons' : {
             'prev' : 'icon default prev',
             'next' : 'icon default next'
@@ -109,13 +110,23 @@ function(params){
         item = cm.merge({
             'index' : items.length,
             'isLoad' : false,
-            'type' : 'image',        // image | video
+            'type' : 'image',        // image | iframe
+            'service' : false,
             'nodes' : {},
             'src' : '',
             'title' : ''
         }, item);
-        /// Check type
-        item['type'] = /(\.jpg|\.png|\.gif|\.jpeg|\.bmp|\.tga)$/gi.test(item['src']) ? 'image' : 'video';
+        // Check type
+        item['type'] = /(\.jpg|\.png|\.gif|\.jpeg|\.bmp|\.tga)$/gi.test(item['src']) ? 'image' : 'iframe';
+        // Check service
+        if(item['type'] == 'iframe'){
+            if(item['src'].indexOf('youtube') > -1){
+                item['service'] = 'youtube';
+            }
+            if(item['src'].indexOf('vimeo') > -1){
+                item['service'] = 'vimeo';
+            }
+        }
         // Structure
         if(!item['link']){
             item['link'] = cm.Node('a')
@@ -176,7 +187,7 @@ function(params){
                 if(item['type'] == 'image'){
                     setItemImage(i, item, itemOld);
                 }else{
-                    setItemVideo(i, item, itemOld);
+                    setItemIframe(i, item, itemOld);
                 }
             }else{
                 that.isProcess = false;
@@ -193,7 +204,7 @@ function(params){
         }
     };
 
-    var setItemVideo = function(i, item, itemOld){
+    var setItemIframe = function(i, item, itemOld){
         cm.replaceClass(that.nodes['bar'], 'is-full', 'is-partial');
         that.nodes['holder'].appendChild(item['nodes']['container']);
         setLoader(i, item, itemOld);
