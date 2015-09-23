@@ -111,22 +111,12 @@ function(params){
             'index' : items.length,
             'isLoad' : false,
             'type' : 'image',        // image | iframe
-            'service' : false,
             'nodes' : {},
             'src' : '',
             'title' : ''
         }, item);
         // Check type
         item['type'] = /(\.jpg|\.png|\.gif|\.jpeg|\.bmp|\.tga)$/gi.test(item['src']) ? 'image' : 'iframe';
-        // Check service
-        if(item['type'] == 'iframe'){
-            if(item['src'].indexOf('youtube') > -1){
-                item['service'] = 'youtube';
-            }
-            if(item['src'].indexOf('vimeo') > -1){
-                item['service'] = 'vimeo';
-            }
-        }
         // Structure
         if(!item['link']){
             item['link'] = cm.Node('a')
