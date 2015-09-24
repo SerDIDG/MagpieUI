@@ -1,0 +1,17 @@
+/* ******* COMPONENTS: ZOOM ******* */
+
+.com__zoom {
+    position: fixed;
+    z-index: 1000;
+    opacity: 0;
+    background: @ComZoom-Background;
+    cursor: zoom-out;
+    .mx__position(0, 0, 0, 0);
+
+    > .inner {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+}

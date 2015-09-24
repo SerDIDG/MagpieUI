@@ -296,7 +296,7 @@
     }
 }
 
-/* *** GLYPHS *** */
+/* ******* GLYPHS ******* */
 
 .cm-i,
 [class^="cm-i__"],
@@ -353,6 +353,16 @@
         display: block;
     }
 }
+
+/* *** COMMON *** */
+
+.cm-i__magnify {
+    &:before {
+        content: @CmIcon-Magnify;
+    }
+}
+
+/* *** CIRCLE *** */
 
 .cm-i__circle-arrow-left {
     &:before {

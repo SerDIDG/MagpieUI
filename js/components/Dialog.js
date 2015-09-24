@@ -35,7 +35,7 @@ cm.define('Com.Dialog', {
         'closeButton' : true,
         'closeTitle' : true,
         'closeOnBackground' : false,
-        'openTime' : 200,
+        'openTime' : 'cm._config.animDuration',
         'autoOpen' : true,
         'appendOnRender' : false,
         'removeOnClose' : true,
@@ -337,6 +337,7 @@ function(params){
     var windowClickEvent = function(e){
         e = cm.getEvent(e);
         if(e.keyCode == 27){
+            // ESC key
             close();
         }
     };

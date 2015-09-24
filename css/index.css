@@ -2,8 +2,8 @@
 /* ************ FIORA UI: COMMON STYLES ************ */
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?7');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix7') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?7') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?7') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?7#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?9');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix9') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?9') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?9') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?9#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -920,7 +920,7 @@
 .icon.safari {
   background-position: -400px 0;
 }
-/* *** GLYPHS *** */
+/* ******* GLYPHS ******* */
 .cm-i,
 [class^="cm-i__"],
 [class*=" cm-i__"] {
@@ -994,6 +994,11 @@
   speak: none;
   display: block;
 }
+/* *** COMMON *** */
+.cm-i__magnify:before {
+  content: '\e600';
+}
+/* *** CIRCLE *** */
 .cm-i__circle-arrow-left:before {
   content: '\e700';
 }
@@ -7030,25 +7035,17 @@ button::-moz-focus-inner {
   height: 28px;
 }
 .com__calendar .selects .months {
+  width: 60%;
   margin-right: 4px;
   -webkit-flex: 1 1 auto;
   -ms-flex: 1 1 auto;
   flex: 1 1 auto;
 }
 .com__calendar .selects .years {
+  width: 40%;
   -webkit-flex: 1 1 auto;
   -ms-flex: 1 1 auto;
   flex: 1 1 auto;
-}
-.ie9 .com__calendar .selects .months,
-.ie9 .com__calendar .selects .years {
-  width: 49%;
-  float: left;
-  margin-right: 2%;
-}
-.ie9 .com__calendar .selects .months:last-child,
-.ie9 .com__calendar .selects .years:last-child {
-  margin-right: 0;
 }
 .com__calendar table {
   width: 100%;
@@ -7194,13 +7191,6 @@ button::-moz-focus-inner {
 .com__tooltip.com__datepicker__tooltip input[type="reset"].today,
 .com__tooltip.com__datepicker__tooltip button.today {
   margin: 8px 0 0 0;
-}
-/* Calendar */
-.com__datepicker-calendar .selects .months {
-  width: 60%;
-}
-.com__datepicker-calendar .selects .years {
-  width: 40%;
 }
 /* ******* COMPONENT: DATEPICKER: ADAPTIVE ******* */
 @media only screen and (max-width: 640px) {
@@ -9309,6 +9299,24 @@ html.ie9 .com__palette .b-range {
 .com-notification .close:hover {
   text-decoration: none;
 }
+/* ******* COMPONENTS: ZOOM ******* */
+.com__zoom {
+  position: fixed;
+  z-index: 1000;
+  opacity: 0;
+  background: #111111;
+  cursor: zoom-out;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+.com__zoom > .inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
 /* ******* COMPONENT: GALLERY: BAR ******* */
 .com__gallery-bar {
   position: relative;
@@ -9489,6 +9497,19 @@ html.ie9 .com__palette .b-range {
   height: 12px;
   border-radius: 12px;
 }
+.com__gallery-controls .bar-zoom {
+  position: absolute;
+  z-index: 3;
+  cursor: zoom-in;
+}
+.com__gallery-controls .bar-zoom .icon {
+  opacity: 0.3;
+  -webkit-transition: opacity 300ms ease-in-out;
+  transition: opacity 300ms ease-in-out;
+}
+.com__gallery-controls .bar-zoom:hover .icon {
+  opacity: 1;
+}
 .com__gallery-controls.is-full {
   top: 0;
   right: 0;
@@ -9523,6 +9544,30 @@ html.ie9 .com__palette .b-range {
 .com__gallery-controls.is-full .bar-buttons {
   z-index: 2;
 }
+.com__gallery-controls.is-full .bar-zoom {
+  z-index: 3;
+  top: 0;
+  right: auto;
+  bottom: auto;
+  left: 50%;
+}
+.com__gallery-controls.is-full .bar-zoom .icon {
+  margin: 0 0 0 -32px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 0 0 3px 3px;
+}
+.com__gallery-controls.is-full .bar-zoom .icon.default {
+  width: 64px;
+  height: 64px;
+  line-height: 64px;
+  line-height: 48px;
+  font-size: 48px;
+  padding: 8px;
+  color: #ffffff;
+}
+.com__gallery-controls.is-full .bar-zoom .icon.default.zoom:before {
+  content: '\e600';
+}
 .com__gallery-controls.is-partial {
   position: static;
 }
@@ -9549,6 +9594,9 @@ html.ie9 .com__palette .b-range {
   background-image: url("../img/icons/xx-large/arrow-white-left.png");
   border-radius: 0 3px 3px 0;
 }
+.com__gallery-controls.is-partial .bar-zoom {
+  display: none;
+}
 .com__gallery-controls.is-small {
   height: 36px;
   background-color: rgba(0, 0, 0, 0.3);
@@ -9571,6 +9619,9 @@ html.ie9 .com__palette .b-range {
 .com__gallery-controls.is-small .bar-arrow .icon.default.prev {
   background-image: url("../img/icons/small/arrow-white-left.png");
   left: 8px;
+}
+.com__gallery-controls.is-small .bar-zoom {
+  display: none;
 }
 /* *** MIXINS *** */
 /* ******* COMPONENTS: GALLERY ******* */

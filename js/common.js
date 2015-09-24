@@ -27,6 +27,7 @@ var cm = {
         '_deviceOrientation' : 'landscape',
         '_scrollSize' : 0,
         '_config' : {
+            'animDuration' : 300,
             'adaptiveFrom' : 768,
             'screenTablet' : 1024,
             'screenTabletPortrait' : 768,

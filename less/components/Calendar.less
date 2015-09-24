@@ -8,25 +8,14 @@
         height: @CmForm-FieldHeight;
 
         .months {
+            width: 60%;
             margin-right: @CmIndent-XXXSmall;
             .mx__flex(1 1 auto);
         }
 
         .years {
+            width: 40%;
             .mx__flex(1 1 auto);
-        }
-
-        .ie9 & {
-            .months,
-            .years {
-                width: 49%;
-                float: left;
-                margin-right: 2%;
-
-                &:last-child {
-                    margin-right: 0;
-                }
-            }
         }
     }
 

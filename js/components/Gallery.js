@@ -21,9 +21,14 @@ cm.define('Com.Gallery', {
         'showCaption' : true,
         'showArrowTitles' : false,
         'autoplay' : true,
+        'zoom' : true,
         'icons' : {
             'prev' : 'icon default prev',
-            'next' : 'icon default next'
+            'next' : 'icon default next',
+            'zoom' : 'icon cm-i default zoom'
+        },
+        'Com.Zoom' : {
+            'autoOpen' : false
         }
     }
 },
@@ -31,6 +36,8 @@ function(params){
     var that = this,
         items = [],
         anim = {};
+
+    that.components = {};
 
     that.current = null;
     that.previous = null;
@@ -65,6 +72,9 @@ function(params){
                     ),
                     that.nodes['next'] = cm.Node('div', {'class' : 'bar-arrow next'},
                         cm.Node('div', {'class' : that.params['icons']['next']})
+                    ),
+                    that.nodes['zoom'] = cm.Node('div', {'class' : 'bar-zoom'},
+                        cm.Node('div', {'class' : that.params['icons']['zoom']})
                     )
                 )
             ),
@@ -77,6 +87,12 @@ function(params){
         if(that.params['showArrowTitles']){
             that.nodes['next'].setAttribute('title', that.lang('Next'));
             that.nodes['prev'].setAttribute('title', that.lang('Previous'));
+        }
+        if(that.params['zoom']){
+            cm.getConstructor('Com.Zoom', function(classConstructor){
+                that.components['zoom'] = new classConstructor(that.params['Com.Zoom']);
+                cm.addEvent(that.nodes['zoom'], 'click', zoom);
+            });
         }
         // Set events
         cm.addEvent(that.nodes['next'], 'click', next);
@@ -260,6 +276,12 @@ function(params){
 
     var prev = function(){
         set((that.current == 0)? items.length - 1 : that.current - 1);
+    };
+
+    var zoom = function(){
+        that.components['zoom']
+            .set(items[that.current]['src'])
+            .open();
     };
 
     /* ******* MAIN ******* */
