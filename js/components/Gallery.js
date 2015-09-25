@@ -28,7 +28,9 @@ cm.define('Com.Gallery', {
             'zoom' : 'icon cm-i default zoom'
         },
         'Com.Zoom' : {
-            'autoOpen' : false
+            'autoOpen' : false,
+            'removeOnClose' : true,
+            'documentScroll' : true
         }
     }
 },
@@ -88,11 +90,14 @@ function(params){
             that.nodes['next'].setAttribute('title', that.lang('Next'));
             that.nodes['prev'].setAttribute('title', that.lang('Previous'));
         }
+        // Zoom
         if(that.params['zoom']){
             cm.getConstructor('Com.Zoom', function(classConstructor){
                 that.components['zoom'] = new classConstructor(that.params['Com.Zoom']);
                 cm.addEvent(that.nodes['zoom'], 'click', zoom);
             });
+        }else{
+            cm.remove(that.nodes['zoom']);
         }
         // Set events
         cm.addEvent(that.nodes['next'], 'click', next);

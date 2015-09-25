@@ -19,13 +19,14 @@
 */
 
 var cm = {
-        '_version' : '3.5.3',
+        '_version' : '3.6',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
         '_deviceType' : 'desktop',
         '_deviceOrientation' : 'landscape',
         '_scrollSize' : 0,
+        '_clientPosition' : {'x' : 0, 'y' : 0},
         '_config' : {
             'animDuration' : 300,
             'adaptiveFrom' : 768,
@@ -398,6 +399,20 @@ cm.getObjFromEvent = cm.getEventObject = cm.getEventTarget = function(e){
 
 cm.getObjToEvent = cm.getRelatedTarget = function(e){
     return e.relatedTarget || e.srcElement;
+};
+
+cm.getEventClientPosition = function(e){
+    var o = {
+        'x' : 0,
+        'y' : 0
+    };
+    o['x'] = e.clientX;
+    o['y'] = e.clientY;
+    if(cm.isTouch && e.touches){
+        o['x'] = e.touches[0].clientX;
+        o['y'] = e.touches[0].clientY;
+    }
+    return o;
 };
 
 cm.crossEvents = function(key){

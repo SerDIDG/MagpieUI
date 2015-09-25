@@ -5,6 +5,7 @@ cm.init = function(){
         checkScrollBar();
         cm.addEvent(window, 'resize', checkType);
         cm.addEvent(window, 'resize', checkScrollBar);
+        cm.addEvent(window, 'mousemove', getClientPosition);
         //cm.addEvent(window, 'scroll', disableHover);
     };
 
@@ -69,6 +70,12 @@ cm.init = function(){
             }, 100);
         };
     })();
+
+    // Get client cursor position
+
+    var getClientPosition = function(e){
+        cm._clientPosition = cm.getEventClientPosition(e);
+    };
 
     init();
 };

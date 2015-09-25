@@ -9303,6 +9303,7 @@ html.ie9 .com__palette .b-range {
 .com__zoom {
   position: fixed;
   z-index: 1000;
+  display: none;
   opacity: 0;
   background: #111111;
   cursor: zoom-out;
@@ -9316,6 +9317,10 @@ html.ie9 .com__palette .b-range {
   height: 100%;
   position: relative;
   overflow: hidden;
+}
+.com__zoom > .inner > img {
+  display: block;
+  padding: 24px;
 }
 /* ******* COMPONENT: GALLERY: BAR ******* */
 .com__gallery-bar {

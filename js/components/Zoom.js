@@ -2,9 +2,7 @@ cm.define('Com.Zoom', {
     'modules' : [
         'Params',
         'Events',
-        'Langs',
         'DataConfig',
-        'Callbacks',
         'Stack'
     ],
     'events' : [
@@ -18,15 +16,19 @@ cm.define('Com.Zoom', {
         'node' : cm.Node('div'),
         'container' : 'document.body',
         'name' : '',
-        'thumbnail' : '',
         'src' :'',
         'duration' : 'cm._config.animDuration',
         'autoOpen' : true,
-        'removeOnClose' : true
+        'removeOnClose' : true,
+        'documentScroll' : false
     }
 },
 function(params){
-    var that = this;
+    var that = this,
+        imageRect,
+        innerRect,
+        widthRatio,
+        heightRatio;
 
     that.isOpen = false;
     that.isLoad = false;
@@ -36,9 +38,8 @@ function(params){
         that.setParams(params);
         that.convertEvents(that.params['events']);
         that.getDataConfig(that.params['node']);
-        that.callbacksProcess();
         render();
-        that.addToStack(that.params['node']);
+        that.addToStack(that.nodes['container']);
         that.triggerEvent('onRender');
         that.params['autoOpen'] && that.open();
     };
@@ -53,19 +54,59 @@ function(params){
 
     var renderImage = function(){
         that.nodes['image'] = cm.node('img');
-        cm.addEvent(that.nodes['inner'], 'load', function(){
+        cm.addEvent(that.nodes['image'], 'load', function(){
             that.isLoad = true;
+            // Get image properties
+            calculateHelper();
+            calculateAction();
         });
         that.nodes['image'].src = that.params['src'];
+        // Append
         that.nodes['inner'].appendChild(that.nodes['image']);
     };
 
-    var windowClickEvent = function(e){
+    var calculateHelper = function(){
+        imageRect = cm.getRect(that.nodes['image']);
+        innerRect = cm.getRect(that.nodes['inner']);
+        widthRatio = (imageRect['width'] - innerRect['width']) / innerRect['width'];
+        heightRatio = (imageRect['height'] - innerRect['height']) / innerRect['height'];
+    };
+
+    var calculateAction = function(){
+        if(that.isLoad){
+            var setX = -cm._clientPosition['x'] * widthRatio,
+                setY = -cm._clientPosition['y'] * heightRatio;
+            cm.setCSSTranslate(that.nodes['image'], [setX, 'px'].join(''), [setY, 'px'].join(''));
+        }
+    };
+
+    var clickAction = function(e){
         e = cm.getEvent(e);
         if(e.keyCode == 27){
             // ESC key
             that.close();
         }
+    };
+
+    var resizeAction = function(){
+        calculateHelper();
+        calculateAction();
+    };
+
+    var moveAction = function(){
+        calculateAction();
+    };
+
+    var appendEvents = function(){
+        cm.addEvent(window, 'mousemove', moveAction);
+        cm.addEvent(window, 'resize', resizeAction);
+        cm.addEvent(window, 'keydown', clickAction);
+    };
+
+    var removeEvents = function(){
+        cm.removeEvent(window, 'mousemove', moveAction);
+        cm.removeEvent(window, 'resize', resizeAction);
+        cm.removeEvent(window, 'keydown', clickAction);
     };
 
     /* ******* PUBLIC ******* */
@@ -79,10 +120,16 @@ function(params){
     that.open = function(){
         if(!that.isOpen){
             that.isOpen = true;
-            // Add close event on Esc press
-            cm.addEvent(window, 'keydown', windowClickEvent);
+            appendEvents();
+            // Show / Hide Document Scroll
+            if(!that.params['documentScroll']){
+                cm.addClass(cm.getDocumentHtml(), 'cm__scroll--none');
+            }
             // Append
-            that.params['container'].appendChild(that.nodes['container']);
+            that.nodes['container'].style.display = 'block';
+            if(!cm.inDOM(that.nodes['container'])){
+                that.params['container'].appendChild(that.nodes['container']);
+            }
             renderImage();
             // Animate
             cm.transition(that.nodes['container'], {
@@ -103,8 +150,11 @@ function(params){
     that.close = function(){
         if(that.isOpen){
             that.isOpen = false;
-            // Remove close event on Esc press
-            cm.removeEvent(window, 'keydown', windowClickEvent);
+            removeEvents();
+            // Show / Hide Document Scroll
+            if(!that.params['documentScroll']){
+                cm.removeClass(cm.getDocumentHtml(), 'cm__scroll--none');
+            }
             // Animate
             cm.transition(that.nodes['container'], {
                 'properties' : {'opacity' : 0},
@@ -112,6 +162,7 @@ function(params){
                 'easing' : 'ease-in-out',
                 'onStop' : function(){
                     // Remove Window
+                    that.nodes['container'].style.display = 'none';
                     that.params['removeOnClose'] && cm.remove(that.nodes['container']);
                     cm.remove(that.nodes['image']);
                     // Event

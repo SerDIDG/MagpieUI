@@ -3,6 +3,7 @@
 .com__zoom {
     position: fixed;
     z-index: 1000;
+    display: none;
     opacity: 0;
     background: @ComZoom-Background;
     cursor: zoom-out;
@@ -13,5 +14,10 @@
         height: 100%;
         position: relative;
         overflow: hidden;
+
+        > img {
+            display: block;
+            padding: @CmIndent-Medium;
+        }
     }
 }
