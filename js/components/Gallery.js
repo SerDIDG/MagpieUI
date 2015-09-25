@@ -110,9 +110,11 @@ function(params){
 
     var afterRender = function(){
         if(items.length < 2){
-            that.nodes['bar'].style.display = 'none';
+            that.nodes['next'].style.display = 'none';
+            that.nodes['prev'].style.display = 'none';
         }else{
-            that.nodes['bar'].style.display = '';
+            that.nodes['next'].style.display = '';
+            that.nodes['prev'].style.display = '';
         }
     };
 
