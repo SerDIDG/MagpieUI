@@ -278,6 +278,7 @@
 
 // /* ******* OTHER ******* */
 
+@CmColor-Background: #ffffff;
 @CmColor-Icon: #666666;
 @CmColor-Mark: #fdf6ad;
 @CmColor-Gallery: #111111;
@@ -355,7 +356,7 @@
 // /* ******* INPUTS ******* */
 
 @CmInput-Padding: 6px;
-@CmInput-DefaultBackground: #ffffff;
+@CmInput-DefaultBackground: @CmColor-Background;
 @CmInput-HoverBackground: @CmInput-DefaultBackground;
 @CmInput-ActiveBackground: @CmInput-DefaultBackground;
 @CmInput-DisabledBackground: @CmColor-Secondary-LightHighlight;
@@ -652,6 +653,8 @@
 @ComDialog-TitleIndent: @CmIndent-XSmall;
 @ComDialog-Overlay: @CmUI-Overlay-Dark;
 
+@ComDialog-Default-Background: @CmColor-Background;
+
 @ComDialog-Black-Background: @CmColor-Gallery;
 @ComDialog-Black-TitleColor: @CmFont-UI-ColorOpposite;
 
@@ -664,7 +667,7 @@
 @ComTabset-Border: @ComTabset-BorderWidth solid @ComTabset-BorderColor;
 @ComTabset-Duration: @CmUI-Transition-Duration;
 @ComTabset-Column-Width: 256px;
-@ComTabset-Content-Background: #ffffff;
+@ComTabset-Content-Background: @CmColor-Background;
 @ComTabset-Tabs-Height: @CmForm-FieldHeight;
 @ComTabset-Tabs-Indent: @CmIndent-XXXSmall;
 @ComTabset-Tabs-IndentInner: @CmIndent-XSmall;

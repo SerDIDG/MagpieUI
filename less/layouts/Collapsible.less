@@ -12,7 +12,7 @@
         position: relative;
         z-index: 2;
         overflow: hidden;
-        background: #ffffff;
+        background: @CmColor-Background;
         box-shadow: @CmUI-Shadow;
         .mx__transition(width, @LtCollapsible-Duration);
 
@@ -24,7 +24,7 @@
                 .cm__font--ui-h1;
                 padding: 6px @CmIndent-XSmall;
                 position: absolute;
-                background: #ffffff;
+                background: @CmColor-Background;
                 .mx__user-select(none);
                 .mx__position(0, 0, auto, 0);
 
@@ -48,7 +48,7 @@
                 .cm__scroll-y;
                 padding: @CmIndent-XSmall;
                 position: absolute;
-                background: #ffffff;
+                background: @CmColor-Background;
                 .mx__transition(opacity, @LtCollapsible-Duration);
                 .mx__position(50px, 0, 0, 0);
             }

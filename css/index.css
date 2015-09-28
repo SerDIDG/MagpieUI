@@ -3053,7 +3053,7 @@ button::-moz-focus-inner {
 /* ******* PART: BOX ******* */
 .pt__box {
   padding: 4px;
-  background: #fff;
+  background: #ffffff;
   border: 1px solid #cccccc;
   border-width: 1px;
   border-radius: 3px;
@@ -3065,7 +3065,7 @@ button::-moz-focus-inner {
 }
 .pt__box--black {
   padding: 4px;
-  background: #fff;
+  background: #ffffff;
   border: 1px solid #cccccc;
   border-width: 1px;
   border-radius: 3px;
@@ -3936,7 +3936,7 @@ button::-moz-focus-inner {
 /* *** DROPDOWN *** */
 .pt__menu-dropdown--base {
   padding: 4px;
-  background: #fff;
+  background: #ffffff;
   border: 1px solid #cccccc;
   border-radius: 3px;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
@@ -4585,7 +4585,7 @@ button::-moz-focus-inner {
 }
 .pt__editable.is-editable > .menu .pt__menu-dropdown {
   padding: 4px;
-  background: #fff;
+  background: #ffffff;
   border: 1px solid #cccccc;
   border-radius: 3px;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
@@ -6728,7 +6728,7 @@ button::-moz-focus-inner {
 /* ******* COMPONENT: TOOLTIP: THEMES ******* */
 .com__tooltip.theme-default > .inner {
   padding: 4px;
-  background: #fff;
+  background: #ffffff;
   border: 1px solid #cccccc;
   border-width: 1px;
   border-radius: 3px;
@@ -6740,7 +6740,7 @@ button::-moz-focus-inner {
 }
 .com__tooltip.theme-black > .inner {
   padding: 4px;
-  background: #fff;
+  background: #ffffff;
   border: 1px solid #cccccc;
   border-width: 1px;
   border-radius: 3px;
@@ -6894,7 +6894,7 @@ button::-moz-focus-inner {
 }
 .com__tooltip.com-action-menu-tooltip .pt__menu .pt__menu-dropdown {
   padding: 4px;
-  background: #fff;
+  background: #ffffff;
   border: 1px solid #cccccc;
   border-radius: 3px;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
@@ -8729,7 +8729,7 @@ html.ie9 .com__palette .b-range {
 }
 .com__tabset__head-menu .pt__menu-dropdown {
   padding: 4px;
-  background: #fff;
+  background: #ffffff;
   border: 1px solid #cccccc;
   border-radius: 3px;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
