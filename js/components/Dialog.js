@@ -59,6 +59,7 @@ function(params){
         anim = {};
 
     that.isOpen = false;
+    that.isFocus = false;
 
     var init = function(){
         that.setParams(params);
@@ -140,6 +141,19 @@ function(params){
         renderButtons(that.params['buttons']);
         // Init animation
         anim['container'] = new cm.Animation(nodes['container']);
+        // Events
+        cm.addEvent(nodes['container'], 'mouseover', function(e){
+            var target = cm.getEventTarget(e);
+            if(cm.isParent(nodes['container'], target, true)){
+                that.isFocus = true;
+            }
+        });
+        cm.addEvent(nodes['container'], 'mouseout', function(e){
+            var target = cm.getRelatedTarget(e);
+            if(!cm.isParent(nodes['container'], target, true)){
+                that.isFocus = false;
+            }
+        });
     };
 
     var renderTitle = function(title){
@@ -338,7 +352,7 @@ function(params){
         e = cm.getEvent(e);
         if(e.keyCode == 27){
             // ESC key
-            close();
+            that.isFocus && close();
         }
     };
 
