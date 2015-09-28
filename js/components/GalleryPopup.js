@@ -127,10 +127,10 @@ function(params){
         e = cm.getEvent(e);
         switch(e.keyCode){
             case 37:
-                components['gallery'].prev();
+                components['dialog'].isFocus && components['gallery'].prev();
                 break;
             case 39:
-                components['gallery'].next();
+                components['dialog'].isFocus && components['gallery'].next();
                 break;
         }
     };
