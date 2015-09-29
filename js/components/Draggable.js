@@ -89,17 +89,9 @@ function(params){
     };
 
     var move = function(e){
-        e = cm.getEvent(e);
         cm.preventDefault(e);
-        // Check event type and get cursor / finger position
-        var x = e.clientX,
-            y = e.clientY;
-        if(cm.isTouch && e.touches){
-            x = e.touches[0].clientX;
-            y = e.touches[0].clientY;
-        }
         // Calculate dimensions and position
-        setPosition(x, y);
+        setPosition(cm._clientPosition['x'], cm._clientPosition['y']);
         // Trigger Event
         that.triggerEvent('onMove');
     };

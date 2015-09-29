@@ -2,9 +2,9 @@ cm.init = function(){
     var init = function(){
         checkBrowser();
         checkType();
-        checkScrollBar();
+        checkScrollSize();
         cm.addEvent(window, 'resize', checkType);
-        cm.addEvent(window, 'resize', checkScrollBar);
+        cm.addEvent(window, 'resize', checkScrollSize);
         cm.addEvent(window, 'mousemove', getClientPosition);
         //cm.addEvent(window, 'scroll', disableHover);
     };
@@ -19,7 +19,7 @@ cm.init = function(){
     // Get device type
 
     var checkType = (function(){
-        var html = document.getElementsByTagName('html')[0],
+        var html = cm.getDocumentHtml(),
             sizes,
             width,
             height;
@@ -50,9 +50,21 @@ cm.init = function(){
 
     // Get device scroll bar size
 
-    var checkScrollBar = function(){
-        cm._scrollSize = cm.getScrollBarSize();
-    };
+    var checkScrollSize = (function(){
+        var oldSize = 0;
+
+        return function(){
+            oldSize = cm._scrollSize;
+            cm._scrollSize = cm.getScrollBarSize();
+            if(oldSize != cm._scrollSize){
+                cm.customEvent.trigger(window, 'scrollSizeChange', {
+                    'type' : 'all',
+                    'self' : true,
+                    'scrollSize' : cm._scrollSize
+                })
+            }
+        };
+    })();
 
     // Disable hover on scroll
 

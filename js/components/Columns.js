@@ -290,24 +290,18 @@ function(params){
         cm.addClass(current['left']['column']['ruler'], 'is-active');
         cm.addClass(current['right']['column']['ruler'], 'is-active');
         cm.addClass(document.body, 'pt__drag__body--horizontal');
-        cm.addEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mousemove', move);
-        cm.addEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mouseup', stop);
+        cm.addEvent(window, 'mousemove', move);
+        cm.addEvent(window, 'mouseup', stop);
         return true;
     };
 
     var move = function(e){
-        var leftWidth,
-            rightWidth;
-        e = cm.getEvent(e);
         cm.preventDefault(e);
-        var x = e.clientX;
-        if(cm.isTouch && e.touches){
-            x = e.touches[0].clientX;
-        }
-        var toFixed = e.shiftKey ? 0 : 2;
         // Calculate sizes and positions
-        leftWidth = x - current['left']['offset'];
-        rightWidth = current['right']['offset'] - x;
+        var x = cm._clientPosition['x'],
+            toFixed = e.shiftKey ? 0 : 2,
+            leftWidth = x - current['left']['offset'],
+            rightWidth = current['right']['offset'] - x;
         // Apply sizes and positions
         if(leftWidth > that.params['minColumnWidth'] && rightWidth > that.params['minColumnWidth']){
             current['left']['column']['width'] = [(leftWidth / current['ratio']).toFixed(toFixed), '%'].join('');
@@ -331,8 +325,8 @@ function(params){
         cm.removeClass(current['left']['column']['ruler'], 'is-active');
         cm.removeClass(current['right']['column']['ruler'], 'is-active');
         cm.removeClass(document.body, 'pt__drag__body--horizontal');
-        cm.removeEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mousemove', move);
-        cm.removeEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mouseup', stop);
+        cm.removeEvent(window, 'mousemove', move);
+        cm.removeEvent(window, 'mouseup', stop);
         current = null;
         // Show IFRAMES and EMBED tags
         cm.showSpecialTags();

@@ -1,6 +1,6 @@
 /* ******* INFO ******* */
 
-/*
+/* *******
 
     Objects and Arrays:             56
     Events:                         339
@@ -16,10 +16,15 @@
     Graphics:                       2737
     Class Fabric                    2747
 
-*/
+    -------
+
+    Custom Events:
+       scrollSizeChange
+
+ ******* */
 
 var cm = {
-        '_version' : '3.6.1',
+        '_version' : '3.6.2',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,

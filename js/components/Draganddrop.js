@@ -195,18 +195,15 @@ function(params){
         if(current){
             return;
         }
-        e = cm.getEvent(e);
         cm.preventDefault(e);
         // Hide IFRAMES and EMBED tags
         cm.hideSpecialTags();
         // Check event type and get cursor / finger position
-        var x = e.clientX,
-            y = e.clientY,
-            tempCurrentAboveItem, tempCurrentPosition, hack;
-        if(cm.isTouch && e.touches){
-            x = e.touches[0].clientX;
-            y = e.touches[0].clientY;
-        }else{
+        var x = cm._clientPosition['x'],
+            y = cm._clientPosition['y'],
+            tempCurrentAboveItem,
+            tempCurrentPosition;
+        if(!cm.isTouch){
             // If not left mouse button, don't duplicate drag event
             if((cm.is('IE') && cm.isVersion() < 9 && e.button != 1) || (!cm.is('IE') && e.button)){
                 return;
@@ -312,22 +309,15 @@ function(params){
         e = cm.getEvent(e);
         cm.preventDefault(e);
         // Check event type and get cursor / finger position
-        var x = e.clientX,
-            y = e.clientY,
-            posY,
-            posX,
+        var x = cm._clientPosition['x'],
+            y = cm._clientPosition['y'],
+            posY = y - current['dimensions']['offsetY'],
+            posX = x - current['dimensions']['offsetX'],
             styleX,
             styleY,
             tempCurrentArea,
             tempCurrentAboveItem,
             tempCurrentPosition;
-        if(cm.isTouch && e.touches){
-            x = e.touches[0].clientX;
-            y = e.touches[0].clientY;
-        }
-        // Calculate new position
-        posY = y - current['dimensions']['offsetY'];
-        posX = x - current['dimensions']['offsetX'];
         // Calculate drag direction and set new position
         switch(that.params['direction']){
             case 'both':
