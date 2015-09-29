@@ -5834,6 +5834,9 @@ button::-moz-focus-inner {
   html.is-adaptive .pt__gridlist th {
     background-color: #fafafa;
   }
+  html.is-adaptive .pt__gridlist th.sort:hover {
+    background-color: #f2f2f2;
+  }
   html.is-adaptive .pt__gridlist tr td {
     background-color: #fafafa;
   }
@@ -8491,6 +8494,9 @@ html.ie9 .com__palette .b-range {
 }
 .com__togglebox.has-content-bg .pt__gridlist th {
   background-color: #fafafa;
+}
+.com__togglebox.has-content-bg .pt__gridlist th.sort:hover {
+  background-color: #f2f2f2;
 }
 .com__togglebox.has-content-bg .pt__gridlist tr td {
   background-color: #fafafa;

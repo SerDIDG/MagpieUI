@@ -266,17 +266,23 @@
     .pt__gridlist__backgrounds;
 
     th {
-        background-color: @PtGridlist-HasBackground-Normal;
+        background-color: @PtGridlist-Title-HasBackground-Default;
+
+        &.sort {
+            &:hover {
+                background-color: @PtGridlist-Title-HasBackground-Hover;
+            }
+        }
     }
 
     tr {
         td {
-            background-color: @PtGridlist-HasBackground-Normal;
+            background-color: @PtGridlist-Cell-HasBackground-Default;
         }
 
         &:hover {
             td {
-                background-color: @PtGridlist-HasBackground-Hover;
+                background-color: @PtGridlist-Cell-HasBackground-Hover;
             }
         }
     }
