@@ -304,17 +304,18 @@ function(params){
         if(cm.isTouch && e.touches){
             x = e.touches[0].clientX;
         }
+        var toFixed = e.shiftKey ? 0 : 2;
         // Calculate sizes and positions
         leftWidth = x - current['left']['offset'];
         rightWidth = current['right']['offset'] - x;
         // Apply sizes and positions
         if(leftWidth > that.params['minColumnWidth'] && rightWidth > that.params['minColumnWidth']){
-            current['left']['column']['width'] = [(leftWidth / current['ratio']).toFixed(2), '%'].join('');
-            current['right']['column']['width'] = [(rightWidth / current['ratio']).toFixed(2), '%'].join('');
+            current['left']['column']['width'] = [(leftWidth / current['ratio']).toFixed(toFixed), '%'].join('');
+            current['right']['column']['width'] = [(rightWidth / current['ratio']).toFixed(toFixed), '%'].join('');
 
             current['left']['column']['container'].style.width = current['left']['column']['width'];
             current['right']['column']['container'].style.width = current['right']['column']['width'];
-            current['chassis']['container'].style.left = [((x - current['offset']) / current['ratio']).toFixed(2), '%'].join('');
+            current['chassis']['container'].style.left = [((x - current['offset']) / current['ratio']).toFixed(toFixed), '%'].join('');
 
             current['left']['column']['rulerCounter'].innerHTML = current['left']['column']['width'];
             current['right']['column']['rulerCounter'].innerHTML = current['right']['column']['width'];
