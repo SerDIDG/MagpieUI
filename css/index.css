@@ -5609,7 +5609,7 @@ button::-moz-focus-inner {
   background-color: transparent;
 }
 .pt__gridlist tr:hover td {
-  background-color: #f2f2f2;
+  background-color: #e9f2fb;
 }
 .pt__gridlist tr.success td,
 .pt__gridlist tr.valid td {
@@ -5801,7 +5801,7 @@ button::-moz-focus-inner {
     background-color: transparent;
   }
   html.is-adaptive .pt__gridlist tr:hover td {
-    background-color: #f2f2f2;
+    background-color: #e9f2fb;
   }
   html.is-adaptive .pt__gridlist tr.success td,
   html.is-adaptive .pt__gridlist tr.valid td {
@@ -8459,7 +8459,7 @@ html.ie9 .com__palette .b-range {
   background-color: transparent;
 }
 .com__togglebox.has-content-bg .pt__gridlist tr:hover td {
-  background-color: #f2f2f2;
+  background-color: #e9f2fb;
 }
 .com__togglebox.has-content-bg .pt__gridlist tr.success td,
 .com__togglebox.has-content-bg .pt__gridlist tr.valid td {

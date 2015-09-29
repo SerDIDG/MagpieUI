@@ -185,40 +185,40 @@
 
 .pt__gridlist__backgrounds () {
     th {
-        background-color: @CmColor-Primary-LightDefault;
+        background-color: @PtGridlist-Title-DefaultBackground;
 
         &.sort {
             &:hover {
-                background-color: @CmColor-Primary-LightHover;
+                background-color: @PtGridlist-Title-HoverBackground;
                 .mx__transition(background-color, @CmUI-Transition-DurationReverse);
             }
 
             &:active {
-                background-color: @CmColor-Primary-LightActive;
+                background-color: @PtGridlist-Title-ActiveBackground;
             }
         }
     }
 
     tr {
         td {
-            background-color: @CmColor-Primary-LightDefault;
+            background-color: @PtGridlist-Cell-DefaultBackground;
         }
 
         &:hover {
             td {
-                background-color: @CmColor-Secondary-LightHover;
+                background-color: @PtGridlist-Cell-HoverBackground;
             }
         }
 
         &.success,
         &.valid {
             td {
-                background-color: @CmColor-Success-LightActive;
+                background-color: @PtGridlist-Cell-SuccessBackground;
             }
 
             &:hover {
                 td {
-                    background-color: @CmColor-Success-LightActiveHover;
+                    background-color: @PtGridlist-Cell-SuccessHoverBackground;
                 }
             }
         }
@@ -226,36 +226,36 @@
         &.danger,
         &.invalid {
             td {
-                background-color: @CmColor-Danger-LightActive;
+                background-color: @PtGridlist-Cell-DangerBackground;
             }
 
             &:hover {
                 td {
-                    background-color: @CmColor-Danger-LightActiveHover;
+                    background-color: @PtGridlist-Cell-DangerHoverBackground;
                 }
             }
         }
 
         &.warning {
             td {
-                background-color: @CmColor-Warning-LightActive;
+                background-color: @PtGridlist-Cell-WarningBackground;
             }
 
             &:hover {
                 td {
-                    background-color: @CmColor-Warning-LightActiveHover;
+                    background-color: @PtGridlist-Cell-WarningHoverBackground;
                 }
             }
         }
 
         &.active {
             td {
-                background-color: @CmColor-Primary-LightActive;
+                background-color: @PtGridlist-Cell-ActiveBackground;
             }
 
             &:hover {
                 td {
-                    background-color: @CmColor-Primary-LightActiveHover;
+                    background-color: @PtGridlist-Cell-ActiveHoverBackground;
                 }
             }
         }
