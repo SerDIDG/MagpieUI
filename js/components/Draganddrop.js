@@ -301,12 +301,11 @@ function(params){
         //checkInt = setInterval(checkPosition, 5);
         // Add move event on document
         cm.addClass(document.body, 'pt__dnd-body');
-        cm.addEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mousemove', move);
-        cm.addEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mouseup', stop);
+        cm.addEvent(window, 'mousemove', move);
+        cm.addEvent(window, 'mouseup', stop);
     };
 
     var move = function(e){
-        e = cm.getEvent(e);
         cm.preventDefault(e);
         // Check event type and get cursor / finger position
         var x = cm._clientPosition['x'],
@@ -434,14 +433,13 @@ function(params){
     };
 
     var stop = function(e){
-        e = cm.getEvent(e);
         var currentHeight;
         // Remove check position event
         //checkInt && clearInterval(checkInt);
         // Remove move events attached on document
         cm.removeClass(document.body, 'pt__dnd-body');
-        cm.removeEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mousemove', move);
-        cm.removeEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mouseup', stop);
+        cm.removeEvent(window, 'mousemove', move);
+        cm.removeEvent(window, 'mouseup', stop);
         // Calculate height of draggable block, like he already dropped in area, to animate height of fake empty space
         getPosition(current);
         current['node'].style.width = [(currentArea['dimensions']['innerWidth'] - current['dimensions']['margin']['left'] - current['dimensions']['margin']['right']), 'px'].join('');
