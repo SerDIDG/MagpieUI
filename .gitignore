@@ -6,3 +6,4 @@ _old
 js/components/old
 js/components/dev
 docs/content/dev
+node_modules
