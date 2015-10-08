@@ -65,6 +65,7 @@ cm.define('Com.Pagination', {
     }
 },
 function(params){
+
     var that = this;
 
     that.nodes = {
@@ -88,6 +89,7 @@ function(params){
     that.pageToken = null;
     that.currentPage = null;
     that.previousPage = null;
+    that.pageCount = 0;
 
     var init = function(){
         getCSSHelpers();
@@ -118,7 +120,9 @@ function(params){
             that.params['showLoader'] = false;
         }
         if(that.params['pageCount'] == 0){
-            that.params['pageCount'] = Math.ceil(that.params['count'] / that.params['perPage']);
+            that.pageCount = Math.ceil(that.params['count'] / that.params['perPage']);
+        }else{
+            that.pageCount = that.params['pageCount'];
         }
         // Set start page token
         that.setToken(that.params['startPage'], that.params['startPageToken']);
@@ -172,13 +176,14 @@ function(params){
         if(that.isProcess){
             that.abort();
         }
-        if((!that.params['pageCount'] || page <= that.params['pageCount']) && !that.isProcess && !that.isRendering){
+        if((!that.pageCount || page <= that.pageCount) && !that.isProcess && !that.isRendering){
             // Preset next page and page token
             that.page = page;
             that.pageToken = that.pages[that.page]? that.pages[that.page]['token'] : '';
             // Render bars
             that.callbacks.rebuildBars(that);
             // Request
+
             if(!that.currentPage || page != that.currentPage){
                 if(that.pages[that.page] && that.pages[that.page]['isRendered']){
                     that.callbacks.cached(that, that.pages[that.page]['data']);
@@ -213,6 +218,7 @@ function(params){
 
     that.callbacks.request = function(that, config){
         config = that.callbacks.prepare(that, config);
+
         // Return ajax handler (XMLHttpRequest) to providing abort method.
         return cm.ajax(
             cm.merge(config, {
@@ -306,14 +312,14 @@ function(params){
     that.callbacks.render = function(that, data){
         that.isRendering = true;
         var page = {
-                'page' : that.page,
-                'token' : that.pageToken,
-                'pages' : that.nodes['pages'],
-                'container' : cm.Node(that.params['pageTag']),
-                'data' : data,
-                'isVisible' : true,
-                'isRendered' : true
-            };
+            'page' : that.page,
+            'token' : that.pageToken,
+            'pages' : that.nodes['pages'],
+            'container' : cm.Node(that.params['pageTag']),
+            'data' : data,
+            'isVisible' : true,
+            'isRendered' : true
+        };
         page['container'] = that.callbacks.renderContainer(that, page);
         that.pages[that.page] = page;
         // Render
@@ -427,7 +433,7 @@ function(params){
         // Clear items
         cm.clearNode(item['items']);
         // Show / Hide
-        if(that.params['pageCount'] < 2){
+        if(that.pageCount < 2){
             cm.addClass(item['container'], 'is-hidden');
         }else{
             cm.removeClass(item['container'], 'is-hidden');
@@ -446,7 +452,7 @@ function(params){
             'callback' : that.prev
         });
         // Page buttons
-        cm.forEach(that.params['pageCount'], function(page){
+        cm.forEach(that.pageCount, function(page){
             ++page;
             if(page == that.page){
                 that.callbacks.renderBarItem(that, item, {
@@ -458,7 +464,7 @@ function(params){
                 if(
                     page <= that.params['barCountLR'] ||
                     (that.currentPage && page >= that.page - that.params['barCountM'] && page <= that.page + that.params['barCountM']) ||
-                    page > that.params['pageCount'] - that.params['barCountLR']
+                    page > that.pageCount - that.params['barCountLR']
                 ){
                     dots = true;
                     that.callbacks.renderBarItem(that, item, {
@@ -573,12 +579,12 @@ function(params){
     };
 
     that.next = function(){
-        set(that.params['pageCount'] == that.currentPage ? 1 : that.currentPage + 1);
+        set(that.pageCount == that.currentPage ? 1 : that.currentPage + 1);
         return that;
     };
 
     that.prev = function(){
-        set(that.currentPage - 1 || that.params['pageCount']);
+        set(that.currentPage - 1 || that.pageCount);
         return that;
     };
 
@@ -613,7 +619,9 @@ function(params){
         if(count && (count = parseInt(count.toString())) && count != that.params['count']){
             that.params['count'] = count;
             if(that.params['pageCount'] == 0){
-                that.params['pageCount'] = Math.ceil(that.params['count'] / that.params['perPage']);
+                that.pageCount = Math.ceil(that.params['count'] / that.params['perPage']);
+            }else{
+                that.pageCount = that.params['pageCount'];
             }
             that.callbacks.rebuildBars(that);
         }

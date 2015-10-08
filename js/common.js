@@ -812,7 +812,7 @@ cm.isWindow = function(o) {
     if(typeof(window.constructor) === 'undefined') {
         return o instanceof window.constructor;
     }else{
-        return o.window === o;
+        return window === o;
     }
 };
 
