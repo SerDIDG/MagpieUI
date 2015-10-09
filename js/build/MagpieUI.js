@@ -251,7 +251,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.6.2',
+        '_version' : '3.7.1',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -5910,41 +5910,45 @@ function(params){
         if(current){
             return false;
         }
-        e = cm.getEvent(e);
         cm.preventDefault(e);
-        // Hide IFRAMES and EMBED tags
-        cm.hideSpecialTags();
-        // If not left mouse button, don't duplicate drag event
-        if((cm.is('IE') && cm.isVersion() < 9 && e.button != 1) || (!cm.is('IE') && e.button)){
+        // Current
+        if(e.ctrlKey){
+            blockContextMenu();
+            setEqualDimensions();
+            redrawChassis();
+        }else if(e.button === 0){
+            // Hide IFRAMES and EMBED tags
+            cm.hideSpecialTags();
+            // Get columns
+            var index = that.chassis.indexOf(chassis),
+                leftColumn = that.items[index],
+                rightColumn = that.items[index + 1];
+
+            current = {
+                'index' : index,
+                'offset' : cm.getRealX(nodes['holder']),
+                'ratio' : nodes['holder'].offsetWidth / 100,
+                'chassis' : chassis,
+                'left' : {
+                    'column' : leftColumn,
+                    'offset' : cm.getRealX(leftColumn['container'])
+                },
+                'right' : {
+                    'column' : rightColumn,
+                    'offset' : cm.getRealX(rightColumn['container']) + rightColumn['container'].offsetWidth
+                }
+            };
+            // Add move event on document
+            cm.addClass(nodes['container'], 'is-active');
+            cm.addClass(current['chassis']['drag'], 'is-active');
+            cm.addClass(current['left']['column']['ruler'], 'is-active');
+            cm.addClass(current['right']['column']['ruler'], 'is-active');
+            cm.addClass(document.body, 'pt__drag__body--horizontal');
+            cm.addEvent(window, 'mousemove', move);
+            cm.addEvent(window, 'mouseup', stop);
+        }else{
             return false;
         }
-        // Current
-        var index = that.chassis.indexOf(chassis),
-            leftColumn = that.items[index],
-            rightColumn = that.items[index + 1];
-
-        current = {
-            'index' : index,
-            'offset' : cm.getRealX(nodes['holder']),
-            'ratio' : nodes['holder'].offsetWidth / 100,
-            'chassis' : chassis,
-            'left' : {
-                'column' : leftColumn,
-                'offset' : cm.getRealX(leftColumn['container'])
-            },
-            'right' : {
-                'column' : rightColumn,
-                'offset' : cm.getRealX(rightColumn['container']) + rightColumn['container'].offsetWidth
-            }
-        };
-        // Add move event on document
-        cm.addClass(nodes['container'], 'is-active');
-        cm.addClass(current['chassis']['drag'], 'is-active');
-        cm.addClass(current['left']['column']['ruler'], 'is-active');
-        cm.addClass(current['right']['column']['ruler'], 'is-active');
-        cm.addClass(document.body, 'pt__drag__body--horizontal');
-        cm.addEvent(window, 'mousemove', move);
-        cm.addEvent(window, 'mouseup', stop);
         return true;
     };
 
@@ -5987,7 +5991,23 @@ function(params){
         that.triggerEvent('onResize', that.items);
     };
 
-    /* ******* MAIN ******* */
+    /* *** HELPERS *** */
+
+    var blockContextMenu = function(){
+        cm.addEvent(window, 'contextmenu', contextMenuHandler);
+        cm.addEvent(window, 'mouseup', restoreContextMenu);
+    };
+
+    var restoreContextMenu = function(){
+        cm.removeEvent(window, 'contextmenu', contextMenuHandler);
+        cm.removeEvent(window, 'mouseup', restoreContextMenu);
+    };
+
+    var contextMenuHandler = function(e){
+        cm.preventDefault(e);
+    };
+
+    /* ******* PUBLIC ******* */
 
     that.redraw = function(){
         redrawChassis();
