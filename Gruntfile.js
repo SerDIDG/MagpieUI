@@ -31,6 +31,14 @@ module.exports = function(grunt) {
             }
         },
 
+        cssmin: {
+            target: {
+                files: {
+                    "css/<%= pkg.name %>.min.css": "css/<%= pkg.name %>.css"
+                }
+            }
+        },
+
         uglify: {
             build: {
                 src: 'js/build/<%= pkg.name %>.js',
@@ -53,7 +61,7 @@ module.exports = function(grunt) {
     });
 
     // Default task(s).
-    grunt.registerTask('default', ['concat', 'less', 'uglify']);
+    grunt.registerTask('default', ['concat', 'less', 'cssmin', 'uglify']);
     grunt.registerTask('dev', ['concat', 'less']);
 
 };
