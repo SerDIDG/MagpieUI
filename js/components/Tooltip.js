@@ -13,14 +13,15 @@ cm.define('Com.Tooltip', {
     ],
     'params' : {
         'target' : cm.Node('div'),
-        'targetEvent' : 'hover',        // hover | click | none
-        'hideOnReClick' : false,        // Hide tooltip when re-clicking on the target, requires setting value 'targetEvent' : 'click'
+        'targetEvent' : 'hover',                        // hover | click | none
+        'hideOnReClick' : false,                        // Hide tooltip when re-clicking on the target, requires setting value 'targetEvent' : 'click'
         'hideOnOut' : true,
-        'preventClickEvent' : false,    // Prevent default click event on the target, requires setting value 'targetEvent' : 'click'
-        'top' : 0,                      // Supported properties: targetHeight, selfHeight, number
-        'left' : 0,                     // Supported properties: targetWidth, selfWidth, number
-        'width' : 'auto',               // Supported properties: targetWidth, auto, number
-        'duration' : 150,
+        'preventClickEvent' : false,                    // Prevent default click event on the target, requires setting value 'targetEvent' : 'click'
+        'top' : 0,                                      // Supported properties: targetHeight, selfHeight, number
+        'left' : 0,                                     // Supported properties: targetWidth, selfWidth, number
+        'width' : 'auto',                               // Supported properties: targetWidth, auto, number
+        'duration' : 'cm._config.animDurationQuick',
+        'position' : 'absolute',
         'className' : '',
         'theme' : 'theme-default',
         'adaptive' : true,
@@ -55,6 +56,7 @@ function(params){
             that.params['adaptiveX'] = false;
             that.params['adaptiveY'] = false;
         }
+        that.params['position'] = cm.inArray(['absolute', 'fixed'], that.params['position'])? that.params['position'] : 'absolute';
     };
 
     var render = function(){
@@ -64,6 +66,8 @@ function(params){
                 that.nodes['content'] = cm.Node('div', {'class' : 'scroll'})
             )
         );
+        // Add position style
+        that.nodes['container'].style.position = that.params['position'];
         // Add theme css class
         !cm.isEmpty(that.params['theme']) && cm.addClass(that.nodes['container'], that.params['theme']);
         // Add css class
@@ -97,7 +101,6 @@ function(params){
         // Add target event
         if(that.params['preventClickEvent']){
             that.params['target'].onclick = function(e){
-                e = cm.getEvent(e);
                 cm.preventDefault(e);
             };
         }
@@ -117,10 +120,10 @@ function(params){
     var setTargetEvent = function(){
         switch(that.params['targetEvent']){
             case 'hover' :
-                cm.addEvent(that.params['target'], 'mouseover', targetEvent);
+                cm.addEvent(that.params['target'], 'mouseover', targetEvent, true);
                 break;
             case 'click' :
-                cm.addEvent(that.params['target'], 'click', targetEvent);
+                cm.addEvent(that.params['target'], 'click', targetEvent, true);
                 break;
         }
     };
@@ -148,7 +151,6 @@ function(params){
             checkInt = setInterval(getPosition, 5);
             // Animate
             anim.go({'style' : {'opacity' : 1}, 'duration' : immediately? 0 : that.params['duration'], 'onStop' : function(){
-                /* *** EXECUTE API EVENTS *** */
                 that.triggerEvent('onShow');
             }});
             // Add document target event
@@ -163,7 +165,6 @@ function(params){
                         break;
                 }
             }
-            /* *** EXECUTE API EVENTS *** */
             that.triggerEvent('onShowStart');
         }
     };
@@ -189,10 +190,8 @@ function(params){
             anim.go({'style' : {'opacity' : 0}, 'duration' : immediately? 0 : that.params['duration'], 'onStop' : function(){
                 that.nodes['container'].style.display = 'none';
                 cm.remove(that.nodes['container']);
-                /* *** EXECUTE API EVENTS *** */
                 that.triggerEvent('onHide');
             }});
-            /* *** EXECUTE API EVENTS *** */
             that.triggerEvent('onHideStart');
         }
     };
@@ -202,7 +201,9 @@ function(params){
             targetHeight = that.params['target'].offsetHeight,
             selfHeight = that.nodes['container'].offsetHeight,
             selfWidth = that.nodes['container'].offsetWidth,
-            pageSize = cm.getPageSize();
+            pageSize = cm.getPageSize(),
+            scrollTop = cm.getScrollTop(window),
+            scrollLeft = cm.getScrollLeft(window);
         // Calculate size
         (function(){
             if(that.params['width'] != 'auto'){
@@ -263,6 +264,16 @@ function(params){
                 );
             }else{
                 positionLeft = left + leftAdd;
+            }
+            // Fix scroll position for absolute
+            if(that.params['position'] == 'absolute'){
+                if(that.params['container'] == document.body){
+                    positionTop += scrollTop;
+                    positionLeft += scrollLeft;
+                }else{
+                    positionTop -= cm.getRealY(that.params['container']);
+                    positionLeft -= cm.getRealX(that.params['container']);
+                }
             }
             // Apply styles
             if(positionTop != that.nodes['container'].offsetTop){

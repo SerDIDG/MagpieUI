@@ -205,6 +205,7 @@ function(params){
     };
 
     var hide = function(){
+        that.nodes['input'].blur();
         cm.removeClass(that.nodes['container'], 'active');
         that.components['palette'].set(that.value, false);
     };

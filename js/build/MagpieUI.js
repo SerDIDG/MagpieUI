@@ -251,7 +251,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.7.1',
+        '_version' : '3.7.2',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -261,6 +261,7 @@ var cm = {
         '_clientPosition' : {'x' : 0, 'y' : 0},
         '_config' : {
             'animDuration' : 300,
+            'animDurationQuick' : 150,
             'adaptiveFrom' : 768,
             'screenTablet' : 1024,
             'screenTabletPortrait' : 768,
@@ -638,11 +639,13 @@ cm.getEventClientPosition = function(e){
         'x' : 0,
         'y' : 0
     };
-    o['x'] = e.clientX;
-    o['y'] = e.clientY;
-    if(cm.isTouch && e.touches){
-        o['x'] = e.touches[0].clientX;
-        o['y'] = e.touches[0].clientY;
+    if(e){
+        o['x'] = e.clientX;
+        o['y'] = e.clientY;
+        if(cm.isTouch && e.touches){
+            o['x'] = e.touches[0].clientX;
+            o['y'] = e.touches[0].clientY;
+        }
     }
     return o;
 };
@@ -2353,6 +2356,19 @@ cm.getScrollTop = function(node){
     return 0;
 };
 
+cm.getScrollLeft = function(node){
+    if(cm.isWindow(node)){
+        return cm.getBodyScrollLeft();
+    }
+    if(cm.isNode(node)){
+        if(/body|html/gi.test(node.tagName)){
+            return cm.getBodyScrollLeft();
+        }
+        return node.scrollLeft;
+    }
+    return 0;
+};
+
 cm.setScrollTop = function(node, num){
     if(cm.isWindow(node)){
         cm.setBodyScrollTop(num);
@@ -2361,6 +2377,19 @@ cm.setScrollTop = function(node, num){
             cm.setBodyScrollTop(num);
         }else{
             node.scrollTop = num;
+        }
+    }
+    return node;
+};
+
+cm.setScrollLeft = function(node, num){
+    if(cm.isWindow(node)){
+        cm.setBodyScrollLeft(num);
+    }else if(cm.isNode(node)){
+        if(/body|html/gi.test(node.tagName)){
+            cm.setBodyScrollLeft(num);
+        }else{
+            node.scrollLeft = num;
         }
     }
     return node;
@@ -2384,18 +2413,23 @@ cm.setBodyScrollTop = function(num){
     document.body.scrollTop = num;
 };
 
-cm.getBodyScrollLeft = function(){
-    return Math.max(
-        document.documentElement.scrollLeft,
-        document.body.scrollLeft,
-        0
-    );
+cm.setBodyScrollLeft = function(num){
+    document.documentElement.scrollLeft = num;
+    document.body.scrollLeft = num;
 };
 
 cm.getBodyScrollTop = function(){
     return Math.max(
         document.documentElement.scrollTop,
         document.body.scrollTop,
+        0
+    );
+};
+
+cm.getBodyScrollLeft = function(){
+    return Math.max(
+        document.documentElement.scrollLeft,
+        document.body.scrollLeft,
         0
     );
 };
@@ -5594,6 +5628,7 @@ function(params){
     };
 
     var hide = function(){
+        that.nodes['input'].blur();
         cm.removeClass(that.nodes['container'], 'active');
         that.components['palette'].set(that.value, false);
     };
@@ -6875,7 +6910,7 @@ function(params){
     };
 
     var hide = function(){
-        // Remove classes
+        nodes['input'].blur();
         cm.removeClass(nodes['container'], 'active');
         that.triggerEvent('onBlur', that.value);
     };
@@ -11349,7 +11384,6 @@ function(params){
         if(that.params['showLoader']){
             that.loaderDelay = setTimeout(function(){
                 if(that.components['loader'] && !that.components['loader'].isOpen){
-                    cm.log('open');
                     that.components['loader'].open();
                 }
             }, that.params['loaderDelay']);
@@ -11363,7 +11397,6 @@ function(params){
         if(that.params['showLoader']){
             that.loaderDelay && clearTimeout(that.loaderDelay);
             if(that.components['loader'] && that.components['loader'].isOpen){
-                cm.log('close');
                 that.components['loader'].close();
             }
         }
@@ -12964,10 +12997,8 @@ function(params){
     };
 
     var hide = function(){
-        // Remove classes
-        cm.removeClass(nodes['container'], 'active');
         nodes['text'].blur();
-        /* *** EXECUTE API EVENTS *** */
+        cm.removeClass(nodes['container'], 'active');
         that.triggerEvent('onBlur', active);
     };
 
@@ -15496,14 +15527,15 @@ cm.define('Com.Tooltip', {
     ],
     'params' : {
         'target' : cm.Node('div'),
-        'targetEvent' : 'hover',        // hover | click | none
-        'hideOnReClick' : false,        // Hide tooltip when re-clicking on the target, requires setting value 'targetEvent' : 'click'
+        'targetEvent' : 'hover',                        // hover | click | none
+        'hideOnReClick' : false,                        // Hide tooltip when re-clicking on the target, requires setting value 'targetEvent' : 'click'
         'hideOnOut' : true,
-        'preventClickEvent' : false,    // Prevent default click event on the target, requires setting value 'targetEvent' : 'click'
-        'top' : 0,                      // Supported properties: targetHeight, selfHeight, number
-        'left' : 0,                     // Supported properties: targetWidth, selfWidth, number
-        'width' : 'auto',               // Supported properties: targetWidth, auto, number
-        'duration' : 150,
+        'preventClickEvent' : false,                    // Prevent default click event on the target, requires setting value 'targetEvent' : 'click'
+        'top' : 0,                                      // Supported properties: targetHeight, selfHeight, number
+        'left' : 0,                                     // Supported properties: targetWidth, selfWidth, number
+        'width' : 'auto',                               // Supported properties: targetWidth, auto, number
+        'duration' : 'cm._config.animDurationQuick',
+        'position' : 'absolute',
         'className' : '',
         'theme' : 'theme-default',
         'adaptive' : true,
@@ -15538,6 +15570,7 @@ function(params){
             that.params['adaptiveX'] = false;
             that.params['adaptiveY'] = false;
         }
+        that.params['position'] = cm.inArray(['absolute', 'fixed'], that.params['position'])? that.params['position'] : 'absolute';
     };
 
     var render = function(){
@@ -15547,6 +15580,8 @@ function(params){
                 that.nodes['content'] = cm.Node('div', {'class' : 'scroll'})
             )
         );
+        // Add position style
+        that.nodes['container'].style.position = that.params['position'];
         // Add theme css class
         !cm.isEmpty(that.params['theme']) && cm.addClass(that.nodes['container'], that.params['theme']);
         // Add css class
@@ -15580,7 +15615,6 @@ function(params){
         // Add target event
         if(that.params['preventClickEvent']){
             that.params['target'].onclick = function(e){
-                e = cm.getEvent(e);
                 cm.preventDefault(e);
             };
         }
@@ -15600,10 +15634,10 @@ function(params){
     var setTargetEvent = function(){
         switch(that.params['targetEvent']){
             case 'hover' :
-                cm.addEvent(that.params['target'], 'mouseover', targetEvent);
+                cm.addEvent(that.params['target'], 'mouseover', targetEvent, true);
                 break;
             case 'click' :
-                cm.addEvent(that.params['target'], 'click', targetEvent);
+                cm.addEvent(that.params['target'], 'click', targetEvent, true);
                 break;
         }
     };
@@ -15631,7 +15665,6 @@ function(params){
             checkInt = setInterval(getPosition, 5);
             // Animate
             anim.go({'style' : {'opacity' : 1}, 'duration' : immediately? 0 : that.params['duration'], 'onStop' : function(){
-                /* *** EXECUTE API EVENTS *** */
                 that.triggerEvent('onShow');
             }});
             // Add document target event
@@ -15646,7 +15679,6 @@ function(params){
                         break;
                 }
             }
-            /* *** EXECUTE API EVENTS *** */
             that.triggerEvent('onShowStart');
         }
     };
@@ -15672,10 +15704,8 @@ function(params){
             anim.go({'style' : {'opacity' : 0}, 'duration' : immediately? 0 : that.params['duration'], 'onStop' : function(){
                 that.nodes['container'].style.display = 'none';
                 cm.remove(that.nodes['container']);
-                /* *** EXECUTE API EVENTS *** */
                 that.triggerEvent('onHide');
             }});
-            /* *** EXECUTE API EVENTS *** */
             that.triggerEvent('onHideStart');
         }
     };
@@ -15685,7 +15715,9 @@ function(params){
             targetHeight = that.params['target'].offsetHeight,
             selfHeight = that.nodes['container'].offsetHeight,
             selfWidth = that.nodes['container'].offsetWidth,
-            pageSize = cm.getPageSize();
+            pageSize = cm.getPageSize(),
+            scrollTop = cm.getScrollTop(window),
+            scrollLeft = cm.getScrollLeft(window);
         // Calculate size
         (function(){
             if(that.params['width'] != 'auto'){
@@ -15746,6 +15778,16 @@ function(params){
                 );
             }else{
                 positionLeft = left + leftAdd;
+            }
+            // Fix scroll position for absolute
+            if(that.params['position'] == 'absolute'){
+                if(that.params['container'] == document.body){
+                    positionTop += scrollTop;
+                    positionLeft += scrollLeft;
+                }else{
+                    positionTop -= cm.getRealY(that.params['container']);
+                    positionLeft -= cm.getRealX(that.params['container']);
+                }
             }
             // Apply styles
             if(positionTop != that.nodes['container'].offsetTop){

@@ -550,7 +550,6 @@ function(params){
         if(that.params['showLoader']){
             that.loaderDelay = setTimeout(function(){
                 if(that.components['loader'] && !that.components['loader'].isOpen){
-                    cm.log('open');
                     that.components['loader'].open();
                 }
             }, that.params['loaderDelay']);
@@ -564,7 +563,6 @@ function(params){
         if(that.params['showLoader']){
             that.loaderDelay && clearTimeout(that.loaderDelay);
             if(that.components['loader'] && that.components['loader'].isOpen){
-                cm.log('close');
                 that.components['loader'].close();
             }
         }

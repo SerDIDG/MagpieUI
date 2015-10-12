@@ -280,7 +280,7 @@ function(params){
     };
 
     var hide = function(){
-        // Remove classes
+        nodes['input'].blur();
         cm.removeClass(nodes['container'], 'active');
         that.triggerEvent('onBlur', that.value);
     };

@@ -3,11 +3,18 @@
 .com__palette {
     > .inner {
         .clearfix;
+        margin-top: -@CmIndent-Small;
+    }
+
+    .b-palette,
+    .b-range,
+    .b-stuff {
+        margin-top: @CmIndent-Small;
     }
 
     .b-palette,
     .b-range {
-        margin: 0 @CmIndent-Small 0 0;
+        margin-right: @CmIndent-Small;
         float: left;
         border-radius: @CmBorder-Radius;
 
@@ -145,7 +152,7 @@
         }
     }
 
-    #cm > .com__palette__size();
+    .com__palette__size(@ComColorPalette-Size);
 }
 
 .com__palette__body,
@@ -154,21 +161,33 @@
 }
 
 
-/* ******* COMPONENTS: PALETTE: BUNDLE ******* */
+// /* *** MIXINS *** */
 
-#cm () {
-    .com__palette__size (@value: @ComColorPalette-Size) {
-        .b-palette,
-        .b-range,
-        .b-stuff {
-            > .inner {
-                height: @ComColorPalette-Size;
-            }
+.com__palette__size (@value: @ComColorPalette-Size) {
+    .b-palette,
+    .b-range,
+    .b-stuff {
+        > .inner {
+            height: @ComColorPalette-Size;
         }
+    }
 
-        .b-palette {
-            > .inner {
-                width: @ComColorPalette-Size;
+    .b-palette {
+        > .inner {
+            width: @ComColorPalette-Size;
+        }
+    }
+}
+
+/* ******* COMPONENTS: PALETTE: ADAPTIVE ******* */
+
+@media only screen and (max-width : @CmScreen-MobilePortrait) {
+
+    html.is-adaptive {
+        .com__palette {
+            .b-palette {
+                clear: both;
+                float: none;
             }
         }
     }

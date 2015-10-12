@@ -463,10 +463,8 @@ function(params){
     };
 
     var hide = function(){
-        // Remove classes
-        cm.removeClass(nodes['container'], 'active');
         nodes['text'].blur();
-        /* *** EXECUTE API EVENTS *** */
+        cm.removeClass(nodes['container'], 'active');
         that.triggerEvent('onBlur', active);
     };
 

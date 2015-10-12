@@ -24,7 +24,7 @@
  ******* */
 
 var cm = {
-        '_version' : '3.7.1',
+        '_version' : '3.7.2',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -34,6 +34,7 @@ var cm = {
         '_clientPosition' : {'x' : 0, 'y' : 0},
         '_config' : {
             'animDuration' : 300,
+            'animDurationQuick' : 150,
             'adaptiveFrom' : 768,
             'screenTablet' : 1024,
             'screenTabletPortrait' : 768,
@@ -411,11 +412,13 @@ cm.getEventClientPosition = function(e){
         'x' : 0,
         'y' : 0
     };
-    o['x'] = e.clientX;
-    o['y'] = e.clientY;
-    if(cm.isTouch && e.touches){
-        o['x'] = e.touches[0].clientX;
-        o['y'] = e.touches[0].clientY;
+    if(e){
+        o['x'] = e.clientX;
+        o['y'] = e.clientY;
+        if(cm.isTouch && e.touches){
+            o['x'] = e.touches[0].clientX;
+            o['y'] = e.touches[0].clientY;
+        }
     }
     return o;
 };
@@ -2126,6 +2129,19 @@ cm.getScrollTop = function(node){
     return 0;
 };
 
+cm.getScrollLeft = function(node){
+    if(cm.isWindow(node)){
+        return cm.getBodyScrollLeft();
+    }
+    if(cm.isNode(node)){
+        if(/body|html/gi.test(node.tagName)){
+            return cm.getBodyScrollLeft();
+        }
+        return node.scrollLeft;
+    }
+    return 0;
+};
+
 cm.setScrollTop = function(node, num){
     if(cm.isWindow(node)){
         cm.setBodyScrollTop(num);
@@ -2134,6 +2150,19 @@ cm.setScrollTop = function(node, num){
             cm.setBodyScrollTop(num);
         }else{
             node.scrollTop = num;
+        }
+    }
+    return node;
+};
+
+cm.setScrollLeft = function(node, num){
+    if(cm.isWindow(node)){
+        cm.setBodyScrollLeft(num);
+    }else if(cm.isNode(node)){
+        if(/body|html/gi.test(node.tagName)){
+            cm.setBodyScrollLeft(num);
+        }else{
+            node.scrollLeft = num;
         }
     }
     return node;
@@ -2157,18 +2186,23 @@ cm.setBodyScrollTop = function(num){
     document.body.scrollTop = num;
 };
 
-cm.getBodyScrollLeft = function(){
-    return Math.max(
-        document.documentElement.scrollLeft,
-        document.body.scrollLeft,
-        0
-    );
+cm.setBodyScrollLeft = function(num){
+    document.documentElement.scrollLeft = num;
+    document.body.scrollLeft = num;
 };
 
 cm.getBodyScrollTop = function(){
     return Math.max(
         document.documentElement.scrollTop,
         document.body.scrollTop,
+        0
+    );
+};
+
+cm.getBodyScrollLeft = function(){
+    return Math.max(
+        document.documentElement.scrollLeft,
+        document.body.scrollLeft,
         0
     );
 };
