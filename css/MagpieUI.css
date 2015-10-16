@@ -2381,10 +2381,13 @@ button::-moz-focus-inner {
   display: block;
 }
 .check-line label {
-  padding: 5px 20px 5px 8px;
+  padding: 5px 24px 5px 8px;
   cursor: pointer;
   vertical-align: baseline;
   line-height: 18px;
+}
+.check-line label:last-child {
+  padding-right: 0;
 }
 .check-line input[type="radio"],
 .check-line input[type="checkbox"] {

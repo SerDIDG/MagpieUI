@@ -1,0 +1,33 @@
+{
+  "name": "magpieui",
+  "repository": "SerDIDG/MagpieUI",
+  "description": "Simple and lightweight framework that allows you to build UI quickly as possible.",
+  "main": [
+    "js/build/MagpieUI.js",
+    "less/index.less"
+  ],
+  "authors": [
+    {
+      "name": "Serhio Magpie",
+      "email": "serdidg@gmail.com",
+      "homepage": "https://github.com/SerDIDG"
+    }
+  ],
+  "license": "MIT",
+  "keywords": [
+    "ui", "javascript", "js", "css", "less"
+  ],
+  "homepage": "https://github.com/SerDIDG/MagpieUI",
+  "moduleType": [
+    "globals"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ],
+  "dependencies": {
+    "tinycolor": "~1.2.1",
+    "animate.css": "~3.4.0"
+  }
+}

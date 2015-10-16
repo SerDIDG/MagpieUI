@@ -343,11 +343,15 @@
     }
 
     label {
-        @padding: (@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2;
-        padding: @padding 20px @padding @CmForm-FieldInnerIndent;
+        @padding: round((@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2);
+        padding: @padding @CmIndent-Medium @padding @CmForm-FieldInnerIndent;
         cursor: pointer;
         vertical-align: baseline;
         line-height: @CmFont-Base-LineHeight;
+
+        &:last-child {
+            padding-right: 0;
+        }
     }
 
     input[type="radio"],

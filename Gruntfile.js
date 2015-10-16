@@ -14,7 +14,9 @@ module.exports = function(grunt) {
                     'js/modules.js',
                     'js/parts.js',
                     'js/init.js',
-                    'js/components/**/*.js'
+                    'js/components/**/*.js',
+                    '!js/components/dev/**/*.js',
+                    '!js/components/old/**/*.js'
                 ],
                 dest: 'js/build/<%= pkg.name %>.js'
             }
