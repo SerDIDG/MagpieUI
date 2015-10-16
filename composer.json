@@ -43,7 +43,7 @@
         }
     ],
     "require": {
-        "daneden/animate.css": "dev-master",
-        "bgrins/TinyColor": "dev-master"
+        "daneden/animate.css": "*",
+        "bgrins/TinyColor": "*"
     }
 }
