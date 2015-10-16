@@ -12,12 +12,8 @@
             "role": "Developer"
         }
     ],
-    "repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/SerDIDG/MagpieUI"
-        },
-        {
+    "repositories": {
+        "animate.css": {
             "type": "package",
             "package": {
                 "name": "daneden/animate.css",
@@ -29,7 +25,7 @@
                 }
             }
         },
-        {
+        "TinyColor": {
             "type": "package",
             "package": {
                 "name": "bgrins/TinyColor",
@@ -41,7 +37,7 @@
                 }
             }
         }
-    ],
+    },
     "require": {
         "daneden/animate.css": "*",
         "bgrins/TinyColor": "*"
