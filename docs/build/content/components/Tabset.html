@@ -1,0 +1,506 @@
+<!DOCTYPE HTML>
+<html class="is-adaptive">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Components: Tabset</title>
+
+    <link type="text/css" rel="stylesheet" href="../../css/MagpieUI.css">
+    <script type="text/javascript" src="../../js/MagpieUI.js"></script>
+
+    <script type="text/javascript">
+        cm.onReady(function(){
+            new Com.Collector()
+                .addEvent('onConstruct', function(collector, data){
+                    Part.Menu();
+                    Part.Autoresize(data['node']);
+                })
+                .add('tabset', function(node){
+                    new Com.Tabset({'node' : node});
+                })
+                .add('gridlist-helper', function(node){
+                    new Com.GridlistHelper({'node' : node});
+                })
+                .add('spacer', function(node){
+                    new Com.Spacer({
+                        'node' : node
+                    });
+                })
+                .construct();
+        });
+    </script>
+</head>
+
+<body>
+
+<h1 class="pt__box-title">Components: Tabset</h1>
+
+<ul class="com__tabset__content-ul" data-element="tabset">
+    <li data-node="tabs:[]:container" data-config='{"id" : "overview", "title" : "Overview"}'>
+        <h2>Overview</h2>
+        <p>This component render tabset.</p>
+        <dl>
+            <dd></dd>
+        </dl>
+        <h4>Embedded Modules</h4>
+        <ul class="cm__list">
+            <li><code>Params</code></li>
+            <li><code>Events</code></li>
+            <li><code>DataConfig</code></li>
+            <li><code>DataNodes</code></li>
+        </ul>
+        <h4>Required Parts</h4>
+        <ul class="cm__list">
+            <li><code>Part.Menu</code></li>
+        </ul>
+
+        <h2>Initialize</h2>
+        <pre class="pt__box-code">new Com.Tabset(o);</pre>
+        <p>or</p>
+        <textarea class="pt__box-code cm-autoresize" readonly>
+<script type="text/javascript">
+    cm.onReady(function(){
+        new Com.Collector()
+            .add('tabset', function(node){
+                new Com.Tabset({'node' : node})
+            })
+            .construct();
+    });
+</script>
+
+<ul class="com__tabset__content-ul" data-element="tabset" data-config='{"toggleOnHashChange" : false}'>
+    <li data-node="tabs:[]:container" data-config='{"id" : "foo", "title" : "Foo"}'>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    </li>
+    <li data-node="tabs:[]:container" data-config='{"id" : "bar", "title" : "Bar"}'>
+        <p>Pellentesque vel velit sit amet libero tincidunt mattis faucibus sit amet velit.</p>
+    </li>
+</ul></textarea>
+        <ul class="com__tabset__content-ul" data-element="tabset" data-config='{"toggleOnHashChange" : false}'>
+            <li data-node="tabs:[]:container" data-config='{"id" : "foo", "title" : "Foo"}'>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </li>
+            <li data-node="tabs:[]:container" data-config='{"id" : "bar", "title" : "Bar"}'>
+                <p>Pellentesque vel velit sit amet libero tincidunt mattis faucibus sit amet velit.</p>
+            </li>
+        </ul>
+
+        <h2>Parameters:</h2>
+
+        <dl>
+            <dt>
+                <code><b>container</b></code>
+            </dt>
+            <dd><code>HTML Node</code>. Component container that is required in case content is rendered without available tabset node. Default: <code>false</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>node</b></code>
+            </dt>
+            <dd><code>HTML Node</code>. Html node that contains tabs. Default: <code>cm.Node('div')</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>toggleOnHashChange</b></code>
+            </dt>
+            <dd><code>Boolean</code>. Add address bar listener to change tab on hash change. Default: <code>false</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>renderOnInit</b></code>
+            </dt>
+            <dd><code>Boolean</code>. After rendering view of tabs, set active tab. Default: <code>true</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>active</b></code>
+            </dt>
+            <dd><code>String</code>. Id of tab to be set after rendering view. Default: <code>null</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>className</b></code>
+            </dt>
+            <dd><code>String</code>. Add css class to tabset container. Default: <code>empty</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>showTabs</b></code>
+            </dt>
+            <dd><code>Boolean</code>. Show tabset header. Default: <code>true</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>showTabsTitle</b></code>
+            </dt>
+            <dd><code>Boolean</code>. Show title tooltip on hover. Default: <code>true</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>tabsPosition</b></code>
+            </dt>
+            <dd><code>String</code>. Tabset header position. Available: top, right, bottom, left. Default: <code>top</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>tabsFlexible</b></code>
+            </dt>
+            <dd><code>Boolean</code>. Flexible tabs, required tabsPosition top or bottom. Default: <code>false</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>tabsWidth</b></code>
+            </dt>
+            <dd><code>Number</code>. Tabs column width, required tabsPosition right or left. Default: <code>256</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>tabs</b></code>
+            </dt>
+            <dd>
+                <p><code>Array</code>. Listing of tabs, for rendering through java-script. Example:</p>
+                <textarea class="pt__box-code cm-autoresize" readonly>
+new Com.Tabset({
+    'tabs' : [{
+        'id' : 'foo',
+        'title' : 'Foo',
+        'content' : cm.Node('li'),
+        'onShow' : function(tabset, tab){},
+        'onHide' : function(tabset, tab){}
+    }]
+});</textarea>
+            </dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>events</b></code>
+            </dt>
+            <dd>
+                <p><code>Object</code>. Object of events. Available events: <code>onRender</code>, <code>onTabShow</code>, <code>onTabHide</code>. Example:</p>
+                <textarea class="pt__box-code cm-autoresize" readonly>
+new Com.Tabset({
+    'events' : {
+        'onTabShow' : function(tabset, tab){}
+    }
+});</textarea>
+            </dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>icons</b></code>
+            </dt>
+            <dd>
+                <p><code>Object</code>. Object of icons CSS class names.</p>
+                <dl>
+                    <dt>
+                        <code><b>menu</b></code>
+                    </dt>
+                    <dd><code>String</code>. Menu icon CSS class name. Default: <code>icon default linked</code>.</dd>
+                </dl>
+            </dd>
+        </dl>
+    </li>
+
+    <li data-node="tabs:[]:container" data-config='{"id" : "methods", "title" : "Methods"}'>
+        <h2>Get tabset by id:</h2>
+        <pre class="pt__box-code">Com.GetTabset(id);</pre>
+        <p>Returns class of tabset component.</p>
+
+        <h2>Render tabset:</h2>
+        <p>This method will be init tabset misc helpers and set active tab. Must be called only when parameter <code>renderOnInit</code> is <code>false</code>.</p>
+        <pre class="pt__box-code">tabset.render();</pre>
+        <p>Returns a class of tabset.</p>
+
+        <h2>Set active tab by id:</h2>
+        <pre class="pt__box-code">tabset.set(id);</pre>
+        <p>Returns class of tabset component.</p>
+
+        <h2>Get tab by id:</h2>
+        <pre class="pt__box-code">tabset.get(id);</pre>
+        <p>Returns specified tab object.</p>
+
+        <h2>Add tab:</h2>
+        <pre class="pt__box-code">tabset.addTab(o);</pre>
+        <p>Example:</p>
+        <textarea class="pt__box-code cm-autoresize" readonly>
+tabset.addTab({
+    'id' : 'foo',
+    'title' : 'Foo',
+    'content' : cm.Node('li'),
+    'onShow' : function(tabset, tab){},
+    'onHide' : function(tabset, tab){}
+});</textarea>
+        <p>Returns class of tabset component.</p>
+
+        <h2>Remove tab by id:</h2>
+        <pre class="pt__box-code">tabset.removeTab(id);</pre>
+        <p>Returns class of tabset component.</p>
+
+        <h2>Set events on tabs:</h2>
+        <pre class="pt__box-code">tabset.setEvents(o);</pre>
+        <p>Example:</p>
+        <textarea class="pt__box-code cm-autoresize" readonly>
+tabset.setEvents({
+    'foo' : {
+        'onShow' : function(tabset, tab){},
+        'onHide' : function(tabset, tab){}
+    }
+});</textarea>
+        <p>Returns class of tabset component.</p>
+
+        <h2>Set event:</h2>
+        <pre class="pt__box-code">tabset.addEvent(event, handler);</pre>
+        <p>Available events: <code>onRender</code>, <code>onTabShow</code>, <code>onTabHide</code>.  Returns class of tabset component.</p>
+
+        <h2>Set events:</h2>
+        <pre class="pt__box-code">tabset.addEvents(o);</pre>
+        <p>Example: <code>{'onTabShow' : function(tabset, tab){}}</code>. Available events: <code>onRender</code>, <code>onTabShow</code>, <code>onTabHide</code>.  Returns class of tabset component.</p>
+
+        <h2>Remove event:</h2>
+        <pre class="pt__box-code">tabset.removeEvent(event, handler);</pre>
+        <p>Available events: <code>onRender</code>, <code>onTabShow</code>, <code>onTabHide</code>.  Returns class of tabset component.</p>
+
+        <h2>Trigger event:</h2>
+        <pre class="pt__box-code">tabset.triggerEvent(event);</pre>
+        <p>Available events: <code>onRender</code>, <code>onTabShow</code>, <code>onTabHide</code>.  Returns class of tabset component.</p>
+
+        <h2>Remove tabset:</h2>
+        <p>This method will be stop all misc helpers and remove tabset html node.</p>
+        <pre class="pt__box-code">tabset.remove();</pre>
+        <p>Returns class of tabset component.</p>
+
+        <h2>Get list of tabset nodes:</h2>
+        <pre class="pt__box-code">tabset.getNodes(key);</pre>
+        <p>Returns object of nodes, or node if key is specified.</p>
+    </li>
+
+    <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
+        <h2>Specify active tab:</h2>
+        <textarea class="pt__box-code cm-autoresize" readonly>
+new Com.Tabset({
+    'active' : 'bar'
+});</textarea>
+        <p>or</p>
+        <textarea class="pt__box-code cm-autoresize" readonly>
+<script type="text/javascript">
+    cm.onReady(function(){
+        new Com.Collector()
+            .add('tabset', function(node){
+                new Com.Tabset({'node' : node})
+            })
+            .construct();
+    });
+</script>
+
+<ul class="com__tabset__content-ul" data-element="tabset" data-config='{"toggleOnHashChange" : false, "active" : "bar"}'>
+    <li data-node="tabs:[]:container" data-config='{"id" : "foo", "title" : "Foo"}'>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    </li>
+    <li data-node="tabs:[]:container" data-config='{"id" : "bar", "title" : "Bar"}'>
+        <p>Pellentesque vel velit sit amet libero tincidunt mattis faucibus sit amet velit.</p>
+    </li>
+</ul></textarea>
+        <ul class="com__tabset__content-ul" data-element="tabset" data-config='{"toggleOnHashChange" : false, "active" : "bar"}'>
+            <li data-node="tabs:[]:container" data-config='{"id" : "foo", "title" : "Foo"}'>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </li>
+            <li data-node="tabs:[]:container" data-config='{"id" : "bar", "title" : "Bar"}'>
+                <p>Pellentesque vel velit sit amet libero tincidunt mattis faucibus sit amet velit.</p>
+            </li>
+        </ul>
+
+        <hr>
+
+        <h2>Set tab position:</h2>
+        <h3>Bottom</h3>
+        <textarea class="pt__box-code cm-autoresize" readonly>
+new Com.Tabset({
+    'tabsPosition' : 'bottom'
+});</textarea>
+        <p>or</p>
+        <textarea class="pt__box-code cm-autoresize" readonly>
+<script type="text/javascript">
+    cm.onReady(function(){
+        new Com.Collector()
+            .add('tabset', function(node){
+                new Com.Tabset({'node' : node})
+            })
+            .construct();
+    });
+</script>
+
+<ul class="com__tabset__content-ul" data-element="tabset" data-config='{"toggleOnHashChange" : false, "tabsPosition" : "bottom"}'>
+    <li data-node="tabs:[]:container" data-config='{"id" : "foo", "title" : "Foo"}'>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    </li>
+    <li data-node="tabs:[]:container" data-config='{"id" : "bar", "title" : "Bar"}'>
+        <p>Pellentesque vel velit sit amet libero tincidunt mattis faucibus sit amet velit.</p>
+    </li>
+</ul></textarea>
+        <ul class="com__tabset__content-ul" data-element="tabset" data-config='{"toggleOnHashChange" : false, "tabsPosition" : "bottom"}'>
+            <li data-node="tabs:[]:container" data-config='{"id" : "foo", "title" : "Foo"}'>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum tempor velit eget tortor eleifend, at hendrerit neque interdum. Proin faucibus aliquam ligula id suscipit. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nulla sed venenatis odio. Curabitur in pharetra ligula. Duis eget leo nunc. Nullam non nisl imperdiet nulla accumsan scelerisque vel ac sem. Nam id lectus rutrum lacus ullamcorper vehicula. Vestibulum scelerisque lorem ut dictum luctus. Donec pellentesque leo id felis ultricies imperdiet. Vestibulum non tincidunt magna, at suscipit tellus. Phasellus sed mi turpis. Ut laoreet fringilla tortor laoreet convallis. Curabitur lorem odio, gravida luctus velit vitae, tempus imperdiet augue. Curabitur eleifend ex id sem venenatis maximus.</p>
+            </li>
+            <li data-node="tabs:[]:container" data-config='{"id" : "bar", "title" : "Bar"}'>
+                <p>Pellentesque vel velit sit amet libero tincidunt mattis faucibus sit amet velit.</p>
+            </li>
+        </ul>
+
+        <h3>Left</h3>
+        <textarea class="pt__box-code cm-autoresize" readonly>
+new Com.Tabset({
+    'tabsPosition' : 'left',
+    'tabsWidth' : 256
+});</textarea>
+        <ul class="com__tabset__content-ul" data-element="tabset" data-config='{"toggleOnHashChange" : false, "tabsPosition" : "left", "tabsWidth" : 256}'>
+            <li data-node="tabs:[]:container" data-config='{"id" : "foo", "title" : "Foo"}'>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum tempor velit eget tortor eleifend, at hendrerit neque interdum. Proin faucibus aliquam ligula id suscipit. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nulla sed venenatis odio. Curabitur in pharetra ligula. Duis eget leo nunc. Nullam non nisl imperdiet nulla accumsan scelerisque vel ac sem. Nam id lectus rutrum lacus ullamcorper vehicula. Vestibulum scelerisque lorem ut dictum luctus. Donec pellentesque leo id felis ultricies imperdiet. Vestibulum non tincidunt magna, at suscipit tellus. Phasellus sed mi turpis. Ut laoreet fringilla tortor laoreet convallis. Curabitur lorem odio, gravida luctus velit vitae, tempus imperdiet augue. Curabitur eleifend ex id sem venenatis maximus.</p>
+            </li>
+            <li data-node="tabs:[]:container" data-config='{"id" : "bar", "title" : "Bar"}'>
+                <p>Pellentesque vel velit sit amet libero tincidunt mattis faucibus sit amet velit.</p>
+            </li>
+        </ul>
+
+        <h3>Right</h3>
+        <textarea class="pt__box-code cm-autoresize" readonly>
+new Com.Tabset({
+    'tabsPosition' : 'right',
+    'tabsWidth' : 256
+});</textarea>
+        <ul class="com__tabset__content-ul" data-element="tabset" data-config='{"toggleOnHashChange" : false, "tabsPosition" : "right", "tabsWidth" : 256}'>
+            <li data-node="tabs:[]:container" data-config='{"id" : "foo", "title" : "Foo"}'>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </li>
+            <li data-node="tabs:[]:container" data-config='{"id" : "bar", "title" : "Bar"}'>
+                <p>Pellentesque vel velit sit amet libero tincidunt mattis faucibus sit amet velit.</p>
+            </li>
+        </ul>
+
+        <hr>
+
+        <h2>Tabset in tabset:</h2>
+
+        <ul class="com__tabset__content-ul" data-element="tabset" data-config='{"toggleOnHashChange" : false, "className" : "bottom"}'>
+            <li data-node="tabs:[]:container" data-config='{"id" : "foo", "title" : "Foo"}'>
+                <ul class="com__tabset__content-ul" data-element="tabset" data-config='{"toggleOnHashChange" : false, "className" : "bottom"}'>
+                    <li data-node="tabs:[]:container" data-config='{"id" : "foo", "title" : "Foo"}'>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                    </li>
+                    <li data-node="tabs:[]:container" data-config='{"id" : "bar", "title" : "Bar"}'>
+                        <p>Pellentesque vel velit sit amet libero tincidunt mattis faucibus sit amet velit.</p>
+                    </li>
+                </ul>
+            </li>
+            <li data-node="tabs:[]:container" data-config='{"id" : "bar", "title" : "Bar"}'>
+                <p>Pellentesque vel velit sit amet libero tincidunt mattis faucibus sit amet velit.</p>
+            </li>
+        </ul>
+
+        <hr>
+
+        <h2>Flexible tabs:</h2>
+
+        <textarea class="pt__box-code cm-autoresize" readonly>
+new Com.Tabset({
+    'tabsFlexible' : true
+});</textarea>
+        <ul class="com__tabset__content-ul" data-element="tabset" data-config='{"toggleOnHashChange" : false, "tabsPosition" : "top", "tabsFlexible" : true}'>
+            <li data-node="tabs:[]:container" data-config='{"id" : "foo", "title" : "Foo"}'>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </li>
+            <li data-node="tabs:[]:container" data-config='{"id" : "bar", "title" : "Bar"}'>
+                <p>Pellentesque vel velit sit amet libero tincidunt mattis faucibus sit amet velit.</p>
+            </li>
+            <li data-node="tabs:[]:container" data-config='{"id" : "foobar", "title" : "Foo Bar"}'>
+                <p>Pellentesque vel velit sit amet libero tincidunt mattis faucibus sit amet velit.</p>
+            </li>
+        </ul>
+    </li>
+
+    <li data-node="tabs:[]:container" data-config='{"id" : "garage", "title" : "Garage"}'>
+        <h2>Components in Tabset</h2>
+        <ul class="com__tabset__content-ul" data-element="tabset" data-config='{"toggleOnHashChange" : false}'>
+            <li data-node="tabs:[]:container" data-config='{"id" : "gridlist", "title" : "Gridlist"}'>
+                <div class="pt__gridlist" data-element="gridlist-helper">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th width="20%" class="sort">
+                                <div class="inner">
+                                    <span>Name</span>
+                                    <div class="icon arrow desc"></div>
+                                </div>
+                            </th>
+                            <th>Description</th>
+                            <th width="80">Order</th>
+                            <th width="80"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>Canada</td>
+                            <td>Canada is a North American country consisting of ten provinces and three territories.</td>
+                            <td>
+                                <div class="cm__form__icons-inside left">
+                                    <div class="text">1</div>
+                                    <div class="icon small arrow-priority-up linked inline hidden"></div>
+                                    <div class="icon small arrow-priority-down inline linked"></div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="cm__form__icons-inside">
+                                    <div class="icon small add linked inline" title="Add"></div>
+                                    <div class="icon small edit linked inline" title="Edit"></div>
+                                    <div class="icon small remove linked inline" title="Remove"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Canada</td>
+                            <td>Canada is a North American country consisting of ten provinces and three territories.</td>
+                            <td>
+                                <div class="cm__form__icons-inside left">
+                                    <div class="text">2</div>
+                                    <div class="icon small arrow-priority-up inline linked"></div>
+                                    <div class="icon small arrow-priority-down inline linked"></div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="cm__form__icons-inside">
+                                    <div class="icon small add linked inline" title="Add"></div>
+                                    <div class="icon small edit linked inline" title="Edit"></div>
+                                    <div class="icon small remove linked inline" title="Remove"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Canada</td>
+                            <td>Canada is a North American country consisting of ten provinces and three territories.</td>
+                            <td>
+                                <div class="cm__form__icons-inside left">
+                                    <div class="text">3</div>
+                                    <div class="icon small arrow-priority-up linked inline"></div>
+                                    <div class="icon small arrow-priority-down linked inline hidden"></div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="cm__form__icons-inside">
+                                    <div class="icon small add linked inline" title="Add"></div>
+                                    <div class="icon small edit linked inline" title="Edit"></div>
+                                    <div class="icon small remove linked inline" title="Remove"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </li>
+            <li data-node="tabs:[]:container" data-config='{"id" : "spacer", "title" : "Spacer"}'>
+                <div class="app-mod__spacer com__spacer is-chassis-visible is-editable" style="height: 24px;" data-element="spacer"></div>
+            </li>
+        </ul>
+    </li>
+</ul>
+
+</body>
+</html>

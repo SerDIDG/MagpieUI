@@ -1,0 +1,59 @@
+<!DOCTYPE HTML>
+<html class="is-adaptive">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Components: Breadcrumbs</title>
+
+    <link type="text/css" rel="stylesheet" href="../../css/MagpieUI.css">
+    <script type="text/javascript" src="../../js/MagpieUI.js"></script>
+
+    <script type="text/javascript">
+        cm.onReady(function(){
+            // Components
+            new Com.Collector()
+                .addEvent('onConstruct', function(collector, data){
+                    Part.Menu();
+                    Part.Autoresize(data['node']);
+                })
+                .add('tabset', function(node){
+                    new Com.Tabset({'node' : node});
+                })
+                .add('tags', function(node){
+                    new Com.TagsInput({'input' : node});
+                })
+                .construct();
+        });
+    </script>
+</head>
+
+<body>
+
+<h1 class="pt__box-title">Components: Breadcrumbs</h1>
+<hr>
+
+<div class="pt__breadcrumbs">
+    <ul>
+        <li class="back">
+            <a>&laquo; Back</a>
+        </li>
+        <li>
+            <a>Home</a>
+        </li>
+        <li class="sep">&raquo;</li>
+        <li>
+            <a>Components</a>
+        </li>
+        <li class="sep">&raquo;</li>
+        <li>
+            <a>Breadcrumbs</a>
+        </li>
+        <li class="sep">&raquo;</li>
+        <li class="active">
+            <a>Examples</a>
+        </li>
+    </ul>
+</div>
+
+</body>
+</html>

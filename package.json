@@ -1,7 +1,7 @@
 {
   "name": "MagpieUI",
-  "version": "3.7.3",
-  "description": "Simple and lightweight framework that allows you to build UI quickly as possible.",
+  "version": "3.8.0",
+  "description": "Collection of JavaScript and CSS snippets to fast build UI.",
   "license": "MIT",
   "author": {
     "name": "Serhio Magpie",
@@ -9,15 +9,22 @@
     "url": "https://github.com/SerDIDG"
   },
   "repository": "SerDIDG/MagpieUI",
+  "dependencies": {
+    "bower": "~1.3.0"
+  },
   "devDependencies": {
     "grunt": "^0.4.5",
-    "load-grunt-tasks": "~3.3.0",
+    "grunt-bower-task": "^0.4.0",
+    "grunt-cli": "^0.1.13",
+    "grunt-contrib-clean": "^0.6.0",
     "grunt-contrib-concat": "~0.5.1",
-    "grunt-contrib-jshint": "~0.10.0",
-    "grunt-contrib-less": "~1.0.1",
+    "grunt-contrib-copy": "^0.8.2",
     "grunt-contrib-cssmin": "~0.14.0",
-    "grunt-contrib-nodeunit": "~0.4.1",
+    "grunt-contrib-imagemin": "^0.9.4",
+    "grunt-contrib-less": "~1.0.1",
     "grunt-contrib-uglify": "~0.5.0",
-    "grunt-contrib-watch": "~0.6.0"
+    "grunt-contrib-watch": "~0.6.0",
+    "load-grunt-tasks": "~3.3.0",
+    "time-grunt": "^1.2.2"
   }
 }

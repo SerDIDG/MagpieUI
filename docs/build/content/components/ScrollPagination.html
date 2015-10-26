@@ -1,0 +1,80 @@
+<!DOCTYPE HTML>
+<html class="is-adaptive">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Components: Scroll Pagination</title>
+
+    <link type="text/css" rel="stylesheet" href="../../css/MagpieUI.css">
+    <script type="text/javascript" src="../../js/MagpieUI.js"></script>
+
+    <script type="text/javascript">
+        cm.onReady(function(){
+            window.Collector = new Com.Collector()
+                .addEvent('onConstruct', function(collector, data){
+                    Part.Menu();
+                    Part.Autoresize(data['node']);
+                })
+                .add('tabset', function(node){
+                    new Com.Tabset({'node' : node});
+                })
+                .construct();
+        });
+    </script>
+</head>
+
+<body>
+
+<h1 class="pt__box-title">Components: Scroll Pagination</h1>
+
+<ul class="com__tabset__content-ul" data-element="tabset">
+    <li data-node="tabs:[]:container" data-config='{"id" : "overview", "title" : "Overview"}'></li>
+
+    <li data-node="tabs:[]:container" data-config='{"id" : "methods", "title" : "Methods"}'></li>
+
+    <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
+        <div class="pt__listing-clear">
+            <h2>Default</h2>
+            <textarea class="pt__box-code cm-autoresize" readonly>
+<script type="text/javascript">
+    cm.onReady(function(){
+        new Com.Collector()
+            .add('scroll-pagination', function(node){
+                new Com.ScrollPagination({'node' : node})
+            })
+            .construct()
+    });
+</script>
+
+<div class="com__scroll-pagination" data-element="scroll-pagination" data-node="ComScrollPagination:{}:container">
+    <div class="com__scroll-pagination__content" data-node="content">
+        <div class="com__scroll-pagination__pages" data-node="pages"></div>
+    </div>
+    <div class="com__scroll-pagination__bar" data-node="bar">
+        <div class="button button-primary" data-node="button">Load More</div>
+        <div class="button button-clear has-icon has-icon has-icon-small" data-node="loader">
+            <div class="icon small loader"></div>
+        </div>
+    </div>
+</div></textarea>
+            <h2>Examples</h2>
+            <ul>
+                <li>
+                    <a href="ScrollPagination/static.html">Static Data Example</a>
+                </li>
+                <li>
+                    <a href="ScrollPagination/youtube.html">Youtube API Example</a>
+                </li>
+                <li>
+                    <a href="ScrollPagination/screensider.html">Screensider API Example</a>
+                </li>
+                <li>
+                    <a href="ScrollPagination/scroll.html">Scroll Node Example</a>
+                </li>
+            </ul>
+        </div>
+    </li>
+</ul>
+
+</body>
+</html>

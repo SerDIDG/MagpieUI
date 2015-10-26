@@ -1,0 +1,48 @@
+<!DOCTYPE HTML>
+<html class="is-adaptive">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Components: Spacer</title>
+
+    <link type="text/css" rel="stylesheet" href="../../css/MagpieUI.css">
+    <script type="text/javascript" src="../../js/MagpieUI.js"></script>
+
+    <script type="text/javascript">
+        cm.onReady(function(){
+            // Components
+            new Com.Collector()
+                .addEvent('onConstruct', function(collector, data){
+                    Part.Menu();
+                    Part.Autoresize(data['node']);
+                })
+                .add('spacer', function(node){
+                    new Com.Spacer({
+                        'node' : node
+                    });
+                })
+                .construct();
+        });
+    </script>
+</head>
+
+<body>
+
+<h1 class="pt__box-title">Components: Spacer</h1>
+<hr>
+
+<h2>Default spacer:</h2>
+<textarea class="pt__box-code cm-autoresize" readonly><div class="app__module app-mod__spacer com__spacer " style="height: 24px;"></div></textarea>
+<br>
+<div class="com__spacer" style="height: 24px;"></div>
+
+<hr>
+
+<h2>Editable spacer:</h2>
+<textarea class="pt__box-code cm-autoresize" readonly><div class="app__module app-mod__spacer com__spacer is-chassis-visible is-editable" style="height: 24px;" data-element="spacer"></div></textarea>
+<br>
+<div class="com__spacer is-chassis-visible is-editable" style="height: 24px;" data-element="spacer"></div>
+
+</body>
+
+</html>

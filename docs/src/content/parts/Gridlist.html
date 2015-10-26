@@ -1,0 +1,346 @@
+<!DOCTYPE HTML>
+<html class="is-adaptive">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Parts: Gridlist</title>
+
+    <link type="text/css" rel="stylesheet" href="../../css/MagpieUI.css">
+    <script type="text/javascript" src="../../js/MagpieUI.js"></script>
+
+    <script type="text/javascript">
+        cm.onReady(function(){
+            new Com.Collector()
+                .addEvent('onConstruct', function(collector, data){
+                    Part.Menu();
+                    Part.Autoresize(data['node']);
+                })
+                .add('action-menu', function(node){
+                    new Com.ActionMenu({
+                        'node' : node
+                    });
+                })
+                .add('tabset', function(node){
+                    new Com.Tabset({'node' : node});
+                })
+                .add('gridlist-helper', function(node){
+                    new Com.GridlistHelper({'node' : node});
+                })
+                .construct();
+        });
+    </script>
+</head>
+
+<body>
+
+<h1 class="pt__box-title">Parts: Gridlist</h1>
+<hr>
+
+<h2>Default:</h2>
+<div class="pt__gridlist" data-element="gridlist-helper">
+    <table>
+        <thead>
+            <tr>
+                <th width="20%" class="sort">
+                    <div class="inner">
+                        <span>Name</span>
+                        <div class="icon arrow desc"></div>
+                    </div>
+                </th>
+                <th>Description</th>
+                <th width="80">Order</th>
+                <th width="80"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Canada</td>
+                <td>Canada is a North American country consisting of ten provinces and three territories.</td>
+                <td>
+                    <div class="cm__form__icons-inside left">
+                        <div class="text">1</div>
+                        <div class="icon small arrow-priority-up linked inline hidden"></div>
+                        <div class="icon small arrow-priority-down inline linked"></div>
+                    </div>
+                </td>
+                <td>
+                    <div class="cm__form__icons-inside">
+                        <div class="icon small add linked inline" title="Add"></div>
+                        <div class="icon small edit linked inline" title="Edit"></div>
+                        <div class="icon small remove linked inline" title="Remove"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Canada</td>
+                <td>Canada is a North American country consisting of ten provinces and three territories.</td>
+                <td>
+                    <div class="cm__form__icons-inside left">
+                        <div class="text">2</div>
+                        <div class="icon small arrow-priority-up inline linked"></div>
+                        <div class="icon small arrow-priority-down inline linked"></div>
+                    </div>
+                </td>
+                <td>
+                    <div class="cm__form__icons-inside">
+                        <div class="icon small add linked inline" title="Add"></div>
+                        <div class="icon small edit linked inline" title="Edit"></div>
+                        <div class="icon small remove linked inline" title="Remove"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Canada</td>
+                <td>Canada is a North American country consisting of ten provinces and three territories.</td>
+                <td>
+                    <div class="cm__form__icons-inside left">
+                        <div class="text">3</div>
+                        <div class="icon small arrow-priority-up linked inline"></div>
+                        <div class="icon small arrow-priority-down linked inline hidden"></div>
+                    </div>
+                </td>
+                <td>
+                    <div class="cm__form__icons-inside">
+                        <div class="icon small add linked inline" title="Add"></div>
+                        <div class="icon small edit linked inline" title="Edit"></div>
+                        <div class="icon small remove linked inline" title="Remove"></div>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<hr>
+
+<h2>Default with Action Menu:</h2>
+<div class="pt__gridlist" data-element="gridlist-helper">
+    <table>
+        <thead>
+        <tr>
+            <th width="20%" class="sort">
+                <div class="inner">
+                    <span>Name</span>
+                    <div class="icon arrow desc"></div>
+                </div>
+            </th>
+            <th>Description</th>
+            <th width="80"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Canada</td>
+            <td>Canada is a North American country consisting of ten provinces and three territories.</td>
+            <td>
+                <div class="pt__links">
+                    <ul>
+                        <li>
+                            <div class="com-action-menu" data-element="action-menu">
+                                <a data-node="ComActionMenu.button">Actions</a>
+                                <div class="pt__menu" data-node="ComActionMenu.target">
+                                    <ul class="pt__menu-dropdown">
+                                        <li><a>Edit Properties</a></li>
+                                        <li><a>Edit Content</a></li>
+                                        <li><a>Duplicate</a></li>
+                                        <li><a>Delete</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<hr>
+
+<h2>Gridlist with indents:</h2>
+<div class="pt__gridlist" data-element="gridlist-helper">
+    <table>
+        <thead>
+        <tr>
+            <th width="20%" class="sort">
+                <div class="inner">
+                    <span>Name</span>
+                    <div class="icon arrow desc"></div>
+                </div>
+            </th>
+            <th>Description</th>
+            <th width="80">Order</th>
+            <th width="80"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Canada</td>
+            <td>Canada is a North American country consisting of ten provinces and three territories.</td>
+            <td>
+                <div class="cm__form__icons-inside left">
+                    <div class="text">1</div>
+                    <div class="icon small arrow-priority-up linked inline hidden"></div>
+                    <div class="icon small arrow-priority-down inline linked"></div>
+                </div>
+            </td>
+            <td>
+                <div class="cm__form__icons-inside">
+                    <div class="icon small add linked inline" title="Add"></div>
+                    <div class="icon small edit linked inline" title="Edit"></div>
+                    <div class="icon small remove linked inline" title="Remove"></div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td><div class="pt__gridlist__indent"></div>Ottawa</td>
+            <td>Canada is a North American country consisting of ten provinces and three territories.</td>
+            <td>
+                <div class="cm__form__icons-inside left">
+                    <div class="text">2</div>
+                    <div class="icon small arrow-priority-up inline linked"></div>
+                    <div class="icon small arrow-priority-down inline linked"></div>
+                </div>
+            </td>
+            <td>
+                <div class="cm__form__icons-inside">
+                    <div class="icon small add linked inline" title="Add"></div>
+                    <div class="icon small edit linked inline" title="Edit"></div>
+                    <div class="icon small remove linked inline" title="Remove"></div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td><div class="pt__gridlist__indent"></div><div class="pt__gridlist__indent"></div>DOWNTOWN DISTRICT</td>
+            <td>Canada is a North American country consisting of ten provinces and three territories.</td>
+            <td>
+                <div class="cm__form__icons-inside left">
+                    <div class="text">3</div>
+                    <div class="icon small arrow-priority-up linked inline"></div>
+                    <div class="icon small arrow-priority-down linked inline hidden"></div>
+                </div>
+            </td>
+            <td>
+                <div class="cm__form__icons-inside">
+                    <div class="icon small add linked inline" title="Add"></div>
+                    <div class="icon small edit linked inline" title="Edit"></div>
+                    <div class="icon small remove linked inline" title="Remove"></div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td><div class="pt__gridlist__indent"></div><div class="pt__gridlist__indent"></div>THE GLEBE DISTRICT</td>
+            <td>Canada is a North American country consisting of ten provinces and three territories.</td>
+            <td>
+                <div class="cm__form__icons-inside left">
+                    <div class="text">3</div>
+                    <div class="icon small arrow-priority-up linked inline"></div>
+                    <div class="icon small arrow-priority-down linked inline hidden"></div>
+                </div>
+            </td>
+            <td>
+                <div class="cm__form__icons-inside">
+                    <div class="icon small add linked inline" title="Add"></div>
+                    <div class="icon small edit linked inline" title="Edit"></div>
+                    <div class="icon small remove linked inline" title="Remove"></div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td><div class="pt__gridlist__indent"></div><div class="pt__gridlist__indent"></div>WESTERN DISTRICTS</td>
+            <td>Canada is a North American country consisting of ten provinces and three territories.</td>
+            <td>
+                <div class="cm__form__icons-inside left">
+                    <div class="text">3</div>
+                    <div class="icon small arrow-priority-up linked inline"></div>
+                    <div class="icon small arrow-priority-down linked inline hidden"></div>
+                </div>
+            </td>
+            <td>
+                <div class="cm__form__icons-inside">
+                    <div class="icon small add linked inline" title="Add"></div>
+                    <div class="icon small edit linked inline" title="Edit"></div>
+                    <div class="icon small remove linked inline" title="Remove"></div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td><div class="pt__gridlist__indent"></div><div class="pt__gridlist__indent"></div><div class="pt__gridlist__indent"></div>Ottawa Public Library</td>
+            <td>Canada is a North American country consisting of ten provinces and three territories.</td>
+            <td>
+                <div class="cm__form__icons-inside left">
+                    <div class="text">3</div>
+                    <div class="icon small arrow-priority-up linked inline"></div>
+                    <div class="icon small arrow-priority-down linked inline hidden"></div>
+                </div>
+            </td>
+            <td>
+                <div class="cm__form__icons-inside">
+                    <div class="icon small add linked inline" title="Add"></div>
+                    <div class="icon small edit linked inline" title="Edit"></div>
+                    <div class="icon small remove linked inline" title="Remove"></div>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<hr>
+
+<h2>Other elements:</h2>
+<div class="pt__gridlist">
+    <table>
+        <thead>
+        <tr>
+            <th width="10%">Name</th>
+            <th>Description</th>
+            <th width="9%">Progress Tracker</th>
+            <th width="6%" class="align-center">Active</th>
+            <th width="6%" class="align-center">Settings</th>
+            <th width="9%">Status</th>
+            <th width="180">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Canada</td>
+            <td>Canada is a North American country consisting of ten provinces and three territories.</td>
+            <td>
+                <div class="pt__progress-bar">
+                    <div class="inner green" style="width: 85%;"></div>
+                </div>
+            </td>
+            <td class="align-center control">
+                <input type="checkbox">
+            </td>
+            <td class="align-center control">
+                <div class="icon small settings inline linked"></div>
+            </td>
+            <td>
+                Passed 85%
+                <div class="icon small done inline"></div>
+            </td>
+            <td>
+                <div class="pt__links">
+                    <ul>
+                        <li>
+                            <a>Add</a>
+                        </li>
+                        <li>
+                            <a>Edit</a>
+                        </li>
+                        <li>
+                            <a>Remove</a>
+                        </li>
+                    </ul>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,507 @@
+<!DOCTYPE HTML>
+<html class="is-adaptive docs__main">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>MagpieUI Docs</title>
+
+    <link type="text/css" rel="stylesheet" href="css/MagpieUI.css">
+    <script type="text/javascript" src="js/MagpieUI.js"></script>
+
+    <script type="text/javascript">
+        cm.onReady(function(){
+            // Components
+            new Com.Collector()
+                .add('sidebar', function(node){
+                    new Com.CollapsibleLayout({
+                        'node' : node
+                    });
+                })
+                .add('togglebox', function(node){
+                    new Com.ToggleBox({'node' : node});
+                })
+                .construct();
+        });
+    </script>
+</head>
+
+<body>
+
+<div class="lt__collapsible" data-element="sidebar" data-config='{"name" : "docs-sidebar", "remember" : true}'>
+    <div class="sidebar left" data-node="ComCollapsibleLayout.leftContainer">
+        <div class="inner">
+            <div class="title">
+                <span class="icon default" data-node="ComCollapsibleLayout.leftButton"></span>
+                MagpieUI Docs
+            </div>
+            <div class="descr">
+                <dl class="com__togglebox is-hide" data-element="togglebox" data-config='{"remember" : true, "name" : "docs-sidebar__common-js"}' data-node="ComToggleBox.container">
+                    <dt data-node="ComToggleBox.button">
+                        <span class="icon default"></span>
+                        <span class="title">Common JS</span>
+                    </dt>
+                    <dd data-node="ComToggleBox.target">
+                        <div class="pt__listing-items auto">
+                            <ul>
+                                <li>
+                                    <a class="title" href="content/common-js/index.html#support" target="content">Support</a>
+                                    <ul class="pt__listing-items">
+                                        <li>
+                                            <a href="content/common-js/index.html#cm.isCanvas" target="content">IsCanvas</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/common-js/index.html#cm.isFileReader" target="content">IsFileReader</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/common-js/index.html#cm.isHistoryAPI" target="content">IsHistoryAPI</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/common-js/index.html#cm.isLocalStorage" target="content">IsLocalStorage</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/common-js/index.html#cm.isTouch" target="content">IsTouch</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="title" href="content/common-js/index.html#arrays" target="content">Array</a>
+                                    <ul class="pt__listing-items">
+                                        <li>
+                                            <a href="content/common-js/index.html#cm.forEach" target="content">Foreach</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/common-js/index.html#cm.isArray" target="content">IsArray</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/common-js/index.html#cm.isObject" target="content">IsObject</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="title" href="content/common-js/index.html#nodes" target="content">Nodes</a>
+                                    <ul class="pt__listing-items">
+                                        <li>
+                                            <a href="content/common-js/cm.getNodes.html" target="content">Get Data Nodes</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </dd>
+                </dl>
+
+                <dl class="com__togglebox is-hide" data-element="togglebox" data-config='{"remember" : true, "name" : "docs-sidebar__common-css"}' data-node="ComToggleBox.container">
+                    <dt data-node="ComToggleBox.button">
+                        <span class="icon default"></span>
+                        <span class="title">Common CSS</span>
+                    </dt>
+                    <dd data-node="ComToggleBox.target">
+                        <div class="pt__listing-items auto">
+                            <ul>
+                                <li>
+                                    <a class="title" href="content/common-css/Common.html" target="content">Common</a>
+                                    <ul class="pt__listing-items">
+                                        <li>
+                                            <a href="content/common-css/Common.html#counter" target="content">Counter</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/common-css/Common.html#empty" target="content">Empty</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/common-css/Common.html#mark" target="content">Mark</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/common-css/Common.html#view-all" target="content">View All</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="content/common-css/Size.html" target="content">Size</a>
+                                </li>
+                                <li>
+                                    <a class="title" href="content/common-css/Form.html" target="content">Form</a>
+                                    <ul class="pt__listing-items">
+                                        <li>
+                                            <a href="content/common-css/Form.html#inputs" target="content">Inputs</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/common-css/Form.html#selects" target="content">Selects</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/common-css/Form.html#checkboxes" target="content">Checkboxes</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/common-css/Form.html#buttons" target="content">Buttons</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/common-css/Form.html#fieldsets" target="content">Fieldsets</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/common-css/Form.html#columns" target="content">Columns</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/common-css/Form.html#toolbars" target="content">Toolbars</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/common-css/Form.html#multi" target="content">Multi Fields</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/common-css/Form.html#other" target="content">Other</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/common-css/Form.html#disabled" target="content">Disabled Elements</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="content/common-css/List.html" target="content">List</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </dd>
+                </dl>
+
+                <dl class="com__togglebox is-hide" data-element="togglebox" data-config='{"remember" : true, "name" : "docs-sidebar__parts"}' data-node="ComToggleBox.container">
+                    <dt data-node="ComToggleBox.button">
+                        <span class="icon default"></span>
+                        <span class="title">Parts</span>
+                    </dt>
+                    <dd data-node="ComToggleBox.target">
+                        <div class="pt__listing-items auto">
+                            <ul>
+                                <li>
+                                    <a href="content/parts/Editable.html" target="content">Editable</a>
+                                </li>
+                                <li>
+                                    <a href="content/parts/Grid.html" target="content">Grid</a>
+                                </li>
+                                <li>
+                                    <a href="content/parts/Gridlist.html" target="content">Gridlist</a>
+                                </li>
+                                <li>
+                                    <a href="content/parts/Image.html" target="content">Image</a>
+                                </li>
+                                <li>
+                                    <a href="content/parts/Listing.html" target="content">Listing</a>
+                                </li>
+                                <li>
+                                    <a class="title" href="content/parts/Line.html" target="content">Line</a>
+                                    <ul class="pt__listing-items">
+                                        <li>
+                                            <a href="content/parts/Line.html#info" target="content">Info</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/parts/Line.html#social-icons" target="content">Social icons</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/parts/Line.html#social-share" target="content">Social share</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/parts/Line.html#rates" target="content">Rates</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </dd>
+                </dl>
+
+                <dl class="com__togglebox is-hide" data-element="togglebox" data-config='{"remember" : true, "name" : "docs-sidebar__layouts"}' data-node="ComToggleBox.container">
+                    <dt data-node="ComToggleBox.button">
+                        <span class="icon default"></span>
+                        <span class="title">Layouts</span>
+                    </dt>
+                    <dd data-node="ComToggleBox.target">
+                        <div class="pt__listing-items auto">
+                            <ul>
+                                <li>
+                                    <a href="content/layouts/BlogPost.html" target="content">Blog Post</a>
+                                </li>
+                                <li>
+                                    <a href="content/layouts/BlogPosts.html" target="content">Blog Posts</a>
+                                </li>
+                                <li>
+                                    <a href="content/layouts/Collapsible.html" target="content">Collapsible</a>
+                                </li>
+                                <li>
+                                    <a href="content/layouts/Comments.html" target="content">Comments</a>
+                                </li>
+                                <li>
+                                    <a href="content/layouts/Faq.html" target="content">FAQ</a>
+                                </li>
+                                <li>
+                                    <a href="content/layouts/FileGridlist.html" target="content">File Gridlist</a>
+                                </li>
+                                <li>
+                                    <a href="content/layouts/Forum.html" target="content">Forum</a>
+                                </li>
+                                <li>
+                                    <a href="content/layouts/GroupProfile.html" target="content">Group Profile</a>
+                                </li>
+                                <li>
+                                    <a href="content/layouts/Page.html" target="content">Page</a>
+                                </li>
+                                <li>
+                                    <a href="content/layouts/Profile.html" target="content">Profile</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </dd>
+                </dl>
+
+                <dl class="com__togglebox is-show" data-element="togglebox"  data-config='{"remember" : true, "name" : "docs-sidebar__components"}' data-node="ComToggleBox.container">
+                    <dt data-node="ComToggleBox.button">
+                        <span class="icon default"></span>
+                        <span class="title">Components</span>
+                    </dt>
+                    <dd data-node="ComToggleBox.target">
+                        <div class="pt__listing-items auto">
+                            <ul>
+                                <li>
+                                    <a class="title" href="content/components/Autocomplete.html" target="content">Autocomplete</a>
+                                    <ul class="pt__listing-items">
+                                        <li>
+                                            <a href="content/components/Autocomplete.html#examples" target="content">Examples</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="title" href="content/components/Breadcrumbs.html" target="content">Breadcrumbs</a>
+                                </li>
+                                <li>
+                                    <a class="title" href="content/components/CalendarEvents.html" target="content">Calendar of Events</a>
+                                    <ul class="pt__listing-items">
+                                        <li>
+                                            <a href="content/components/CalendarEvents.html#examples" target="content">Examples</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="title" href="content/components/ColorPicker.html" target="content">Color Picker</a>
+                                    <ul class="pt__listing-items">
+                                        <li>
+                                            <a href="content/components/ColorPicker.html#examples" target="content">Examples</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="title" href="content/components/Columns.html" target="content">Columns</a>
+                                    <ul class="pt__listing-items">
+                                        <li>
+                                            <a href="content/components/Columns.html#examples" target="content">Examples</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="title" href="content/components/Datepicker.html" target="content">Datepicker</a>
+                                    <ul class="pt__listing-items">
+                                        <li>
+                                            <a href="content/components/Datepicker.html#overview" target="content">Overview</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/components/Datepicker.html#methods" target="content">Methods</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/components/Datepicker.html#examples" target="content">Examples</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="title" href="content/components/GalleryPopup.html" target="content">Gallery Popup</a>
+                                    <ul class="pt__listing-items">
+                                        <li>
+                                            <a href="content/components/GalleryPopup.html#overview" target="content">Overview</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/components/GalleryPopup.html#methods" target="content">Methods</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/components/GalleryPopup.html#examples" target="content">Examples</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="title" href="content/components/GalleryLayout.html" target="content">Gallery Layout</a>
+                                    <ul class="pt__listing-items">
+                                        <li>
+                                            <a href="content/components/GalleryLayout.html#overview" target="content">Overview</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/components/GalleryLayout.html#methods" target="content">Methods</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/components/GalleryLayout.html#examples" target="content">Examples</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="title" href="content/components/Glossary.html" target="content">Glossary</a>
+                                    <ul class="pt__listing-items">
+                                        <li>
+                                            <a href="content/components/Glossary.html#overview" target="content">Overview</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/components/Glossary.html#methods" target="content">Methods</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/components/Glossary.html#examples" target="content">Examples</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="title" href="content/components/Gridlist.html" target="content">Gridlist</a>
+                                    <ul class="pt__listing-items">
+                                        <li>
+                                            <a href="content/components/Gridlist.html#overview" target="content">Overview</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/components/Gridlist.html#methods" target="content">Methods</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/components/Gridlist.html#examples" target="content">Examples</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="title" href="content/components/MultiField.html" target="content">Multi Field</a>
+                                    <ul class="pt__listing-items">
+                                        <li>
+                                            <a href="content/components/MultiField.html#overview" target="content">Overview</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/components/MultiField.html#methods" target="content">Methods</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/components/MultiField.html#examples" target="content">Examples</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="title" href="content/components/Pagination.html" target="content">Pagination</a>
+                                    <ul class="pt__listing-items">
+                                        <li>
+                                            <a href="content/components/Pagination.html#examples" target="content">Examples</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="title" href="content/components/Palette.html" target="content">Pallete</a>
+                                    <ul class="pt__listing-items">
+                                        <li>
+                                            <a href="content/components/Palette.html#examples" target="content">Examples</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="title" href="content/components/ScrollPagination.html" target="content">Scroll Pagination</a>
+                                    <ul class="pt__listing-items">
+                                        <li>
+                                            <a href="content/components/ScrollPagination.html#examples" target="content">Examples</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="title" href="content/components/Select.html" target="content">Select</a>
+                                    <ul class="pt__listing-items">
+                                        <li>
+                                            <a href="content/components/Select.html#overview" target="content">Overview</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/components/Select.html#methods" target="content">Methods</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/components/Select.html#examples" target="content">Examples</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="title" href="content/components/Slider.html" target="content">Slider</a>
+                                    <ul class="pt__listing-items">
+                                        <li>
+                                            <a href="content/components/Slider.html#examples" target="content">Examples</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/components/Slider.html#examples-thumbs" target="content">Examples: Thumbnails</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="title" href="content/components/Spacer.html" target="content">Spacer</a>
+                                </li>
+                                <li>
+                                    <a class="title" href="content/components/ToggleBox.html" target="content">Toggle Box</a>
+                                </li>
+                                <li>
+                                    <a class="title" href="content/components/Tabset.html" target="content">Tabset</a>
+                                    <ul class="pt__listing-items">
+                                        <li>
+                                            <a href="content/components/Tabset.html#overview" target="content">Overview</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/components/Tabset.html#methods" target="content">Methods</a>
+                                        </li>
+                                        <li>
+                                            <a href="content/components/Tabset.html#examples" target="content">Examples</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="title" href="content/components/Tags.html" target="content">Tags</a>
+                                    <ul class="pt__listing-items">
+                                        <li>
+                                            <a href="content/components/Tags.html#examples" target="content">Examples</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </dd>
+                </dl>
+
+                <dl class="com__togglebox is-show" data-element="togglebox"  data-config='{"remember" : true, "name" : "docs-sidebar__vendors"}' data-node="ComToggleBox.container">
+                    <dt data-node="ComToggleBox.button">
+                        <span class="icon default"></span>
+                        <span class="title">Vendors</span>
+                    </dt>
+                    <dd data-node="ComToggleBox.target">
+                        <div class="pt__listing-items auto">
+                            <ul>
+                                <li>
+                                    <a class="title" href="http://daneden.github.io/animate.css/" target="content">Animate.css</a>
+                                    <a class="title" href="http://bgrins.github.io/TinyColor/" target="content">TinyColor</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </dd>
+                </dl>
+
+                <dl class="com__togglebox is-show" data-element="togglebox"  data-config='{"remember" : true, "name" : "docs-sidebar__stuff"}' data-node="ComToggleBox.container">
+                    <dt data-node="ComToggleBox.button">
+                        <span class="icon default"></span>
+                        <span class="title">Stuff</span>
+                    </dt>
+                    <dd data-node="ComToggleBox.target">
+                        <div class="pt__listing-items auto">
+                            <ul>
+                                <li>
+                                    <a class="title" href="stuff/ClassMaket.js" target="content">Maket of JS Class. Fabric.</a>
+                                </li>
+                                <li>
+                                    <a class="title" href="stuff/ClassMaket.old.js" target="content">Maket of JS Class. Native.</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <div class="inner">
+        <iframe name="content" src="content/common-js/index.html"></iframe>
+    </div>
+</div>
+
+</body>
+
+</html>

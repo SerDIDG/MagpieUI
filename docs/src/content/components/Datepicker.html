@@ -1,0 +1,333 @@
+<!DOCTYPE HTML>
+<html class="is-adaptive">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Components: Datepicker</title>
+
+    <link type="text/css" rel="stylesheet" href="../../css/MagpieUI.css">
+    <script type="text/javascript" src="../../js/MagpieUI.js"></script>
+
+    <script type="text/javascript">
+        cm.onReady(function(){
+            new Com.Collector()
+                .addEvent('onConstruct', function(collector, data){
+                    Part.Menu();
+                    Part.Autoresize(data['node']);
+                })
+                .add('tabset', function(node){
+                    new Com.Tabset({'node' : node});
+                })
+                .add('datepicker', function(node){
+                    new Com.Datepicker({'input' : node});
+                })
+                .construct();
+        });
+    </script>
+</head>
+
+<body>
+
+<h1 class="pt__box-title">Components: Datepicker</h1>
+
+<ul class="com__tabset__content-ul" data-element="tabset">
+    <li data-node="tabs:[]:container" data-config='{"id" : "overview", "title" : "Overview"}'>
+        <h2>Overview</h2>
+        <p>This component decorate input node and convert it to datepicker / datetimepicker. You can specify date format different than input date format.</p>
+
+        <h4>Embedded Modules</h4>
+        <ul class="cm__list">
+            <li><code>Params</code></li>
+            <li><code>Events</code></li>
+            <li><code>DataConfig</code></li>
+            <li><code>Langs</code></li>
+        </ul>
+
+        <h4>Required Components</h4>
+        <ul class="cm__list">
+            <li><code>Com.Tooltip</code></li>
+            <li><code>Com.Select</code></li>
+            <li><code>Com.Calendar</code></li>
+            <li><code>Com.TimeSelect</code></li>
+        </ul>
+
+        <h2>Initialize</h2>
+        <pre class="pt__box-code">new Com.Datepicker(o);</pre>
+        <p>or</p>
+        <textarea class="pt__box-code cm-autoresize" readonly>
+<script type="text/javascript">
+    cm.onReady(function(){
+        new Com.Collector()
+            .add('datepicker', function(node){
+                new Com.Datepicker({'input' : node})
+            })
+            .construct()
+    });
+</script>
+
+<input type="text" readonly data-element="datepicker"></textarea>
+
+        <h2>Parameters</h2>
+        <dl>
+            <dt>
+                <code><b>container</b></code>
+            </dt>
+            <dd><code>HTML Node</code>. Component container that is required in case content is rendered without available input node. Default: <code>false</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>input</b></code>
+            </dt>
+            <dd><code>HTML Node</code>. HTML input node. Default: <code>cm.Node('input', {'type' : 'text'})</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>renderInBody</b></code>
+            </dt>
+            <dd><code>Boolean</code>. Render datepicker's dropdown in document.body, else it will be rendrered in component container. Default: <code>true</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>format</b></code>
+            </dt>
+            <dd><code>String</code>. Input date format. Default: <code>'%Y-%m-%d'</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>displayFormat</b></code>
+            </dt>
+            <dd><code>String</code>. Display date format. Default: <code>'%F %j, %Y'</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>isDateTime</b></code>
+            </dt>
+            <dd><code>Boolean</code>. Display time selector in datepicker and use date time format. Default: <code>false</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>dateTimeFormat</b></code>
+            </dt>
+            <dd><code>String</code>. Input date time format. Default: <code>'%Y-%m-%d %H:%i:%s'</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>displayDateTimeFormat</b></code>
+            </dt>
+            <dd><code>String</code>. Display date time format. Default: <code>'%F %j, %Y, %H:%i'</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>minutesInterval</b></code>
+            </dt>
+            <dd><code>Number</code>. Minutes interval in time selector. Default: <code>1</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>startYear</b></code>
+            </dt>
+            <dd><code>Number | String</code>. Start year. Default: <code>1950</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>endYear</b></code>
+            </dt>
+            <dd><code>Number | String</code>. End year. Default: <code>'current + 10'</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>startWeekDay</b></code>
+            </dt>
+            <dd><code>Number</code>. First day of week. 0 equal to Sunday, etc. Default: <code>0</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>showTodayButton</b></code>
+            </dt>
+            <dd><code>Boolean</code>. Show button that sets the current date / time. Default: <code>true</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>showClearButton</b></code>
+            </dt>
+            <dd><code>Boolean</code>. Show icon outside the input, that clear date / time. Default: <code>false</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>showTitleTooltip</b></code>
+            </dt>
+            <dd><code>Boolean</code>. Show title tooltip on hover. Default: <code>true</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>showPlaceholder</b></code>
+            </dt>
+            <dd><code>Boolean</code>. Show placeholder text, when date not specified. Default: <code>true</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>title</b></code>
+            </dt>
+            <dd><code>String</code>. Title text. Will be shown on hover. Default: <code>empty</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>placeholder</b></code>
+            </dt>
+            <dd><code>String</code>. Placeholder text. Default: <code>empty</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>value</b></code>
+            </dt>
+            <dd><code>String / Date object</code>. Date / time value in input format or date object or 'now'. Default: <code>0</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>disabled</b></code>
+            </dt>
+            <dd><code>Boolean</code>. Is datepicker disabled. Default: <code>false</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>events</b></code>
+            </dt>
+            <dd>
+                <p><code>Object</code>. Object of events. Available events: <code>onRender</code>, <code>onSelect</code>, <code>onChange</code>, <code>onClear</code>, <code>onFocus</code>, <code>onBlur</code>. Example:</p>
+                <textarea class="pt__box-code cm-autoresize" readonly>
+new Com.Datepicker({
+    'events' : {
+        'onChange' : function(datepicker, value){}
+    }
+});</textarea>
+            </dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>icons</b></code>
+            </dt>
+            <dd>
+                <p><code>Object</code>. Object of icons css class names.</p>
+                <dl>
+                    <dt>
+                        <code><b>datepicker</b></code>
+                    </dt>
+                    <dd><code>String</code>. Icon css class name, that render inside input area. Icon will be open datepicker on click. Default: <code>icon default linked</code>.</dd>
+                </dl>
+                <dl>
+                    <dt>
+                        <code><b>clear</b></code>
+                    </dt>
+                    <dd><code>String</code>. Icon css class name, that render outside input area. Icon will be clear date / time. Default: <code>icon default linked</code>.</dd>
+                </dl>
+            </dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>langs</b></code>
+            </dt>
+            <dd><code>Object</code>. Object of language strings.</dd>
+        </dl>
+
+
+        <h2>Set parameters in html through data attribute</h2>
+        <p>Value in data attribute must be in JSON format. Example:</p>
+        <textarea class="pt__box-code cm-autoresize" readonly>
+<input type="text" readonly data-element="datepicker" data-config='{"isDateTime" : true, "showClearButton" : true}'></textarea>
+    </li>
+
+    <li data-node="tabs:[]:container" data-config='{"id" : "methods", "title" : "Methods"}'>
+        <h2>Get datepicker by id:</h2>
+        <pre class="pt__box-code">Com.GetDatepicker('id');</pre>
+        <p>Returns class of datepicker component..</p>
+
+        <h2>Get value:</h2>
+        <pre class="pt__box-code">datepicker.get(format);</pre>
+        <p>Returns value in input format, or in specified format.</p>
+
+        <h2>Get value as date object:</h2>
+        <pre class="pt__box-code">datepicker.getDate();</pre>
+        <p>Returns value in date object.</p>
+
+        <h2>Get selected year:</h2>
+        <pre class="pt__box-code">datepicker.getFullYear();</pre>
+        <p>Returns number.</p>
+
+        <h2>Get selected month:</h2>
+        <pre class="pt__box-code">datepicker.getMonth();</pre>
+        <p>Returns number.</p>
+
+        <h2>Get selected date:</h2>
+        <pre class="pt__box-code">datepicker.getDay();</pre>
+        <p>Returns number.</p>
+
+        <h2>Get selected hours:</h2>
+        <pre class="pt__box-code">datepicker.getHours();</pre>
+        <p>Returns number.</p>
+
+        <h2>Get selected minutes:</h2>
+        <pre class="pt__box-code">datepicker.getMinutes();</pre>
+        <p>Returns number.</p>
+
+        <h2>Set value:</h2>
+        <pre class="pt__box-code">datepicker.set(date);</pre>
+        <p>Set value in input format, or set value in date object.<br>Returns class of datepicker component.</p>
+
+        <h2>Set event:</h2>
+        <pre class="pt__box-code">datepicker.addEvent(event, handler);</pre>
+        <p>Available events: <code>onRender</code>, <code>onSelect</code>, <code>onChange</code>, <code>onClear</code>, <code>onFocus</code>, <code>onBlur</code>.<br>Returns class of datepicker component.</p>
+
+        <h2>Set events:</h2>
+        <pre class="pt__box-code">datepicker.addEvents(o);</pre>
+        <p>Example: <code>{'onChange' : function(){}}</code>. Available events: <code>onRender</code>, <code>onSelect</code>, <code>onChange</code>, <code>onClear</code>, <code>onFocus</code>, <code>onBlur</code>.  Returns class of datepicker component.</p>
+
+        <h2>Remove event:</h2>
+        <pre class="pt__box-code">datepicker.removeEvent(event, handler);</pre>
+        <p>Available events: <code>onRender</code>, <code>onSelect</code>, <code>onChange</code>, <code>onClear</code>, <code>onFocus</code>, <code>onBlur</code>.<br>Returns class of datepicker component.</p>
+
+        <h2>Trigger event:</h2>
+        <pre class="pt__box-code">datepicker.triggerEvent(event);</pre>
+        <p>Available events: <code>onRender</code>, <code>onSelect</code>, <code>onChange</code>, <code>onClear</code>, <code>onFocus</code>, <code>onBlur</code>.  Returns class of datepicker component.</p>
+
+        <h2>Disable:</h2>
+        <pre class="pt__box-code">datepicker.disable();</pre>
+        <p> Returns class of datepicker component.</p>
+
+        <h2>Enable:</h2>
+        <pre class="pt__box-code">datepicker.enable();</pre>
+        <p> Returns class of datepicker component.</p>
+
+        <h2>Get list of datepicker nodes:</h2>
+        <pre class="pt__box-code">datepicker.getNodes(key);</pre>
+        <p>Returns object of nodes, or node if key is specified.</p>
+    </li>
+
+    <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
+        <h2>Default Datepicker:</h2>
+        <textarea class="pt__box-code cm-autoresize" readonly><input type="text" readonly data-element="datepicker"></textarea>
+        <input type="text" readonly data-element="datepicker">
+        <hr>
+
+        <h2>Datepicker with placeholder:</h2>
+        <textarea class="pt__box-code cm-autoresize" readonly><input type="text" readonly placeholder="Specify date" data-element="datepicker"></textarea>
+        <input type="text" readonly placeholder="Specify date" data-element="datepicker">
+        <hr>
+
+        <h2>Datepicker with clear button:</h2>
+        <textarea class="pt__box-code cm-autoresize" readonly><input type="text" readonly data-element="datepicker" data-config='{"showClearButton" : true}'></textarea>
+        <input type="text" readonly data-element="datepicker" data-config='{"showClearButton" : true}'>
+        <hr>
+
+        <h2>Datepicker with time selector:</h2>
+        <textarea class="pt__box-code cm-autoresize" readonly><input type="text" readonly data-element="datepicker" data-config='{"isDateTime" : true}'></textarea>
+        <input type="text" readonly data-element="datepicker" data-config='{"isDateTime" : true}'>
+        <hr>
+
+        <h2>Datepicker with time selector and custom visible date format:</h2>
+        <textarea class="pt__box-code cm-autoresize" readonly><input type="text" readonly data-element="datepicker" data-config='{"isDateTime" : true, "displayDateTimeFormat" : "%j %F %Y, %g:%i %A", "value" : "now"}'></textarea>
+        <input type="text" readonly data-element="datepicker" data-config='{"isDateTime" : true, "displayDateTimeFormat" : "%j %F %Y, %g:%i %A", "value" : "now"}'>
+    </li>
+</ul>
+
+</body>
+</html>

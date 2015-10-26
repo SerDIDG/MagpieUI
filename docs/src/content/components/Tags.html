@@ -1,0 +1,101 @@
+<!DOCTYPE HTML>
+<html class="is-adaptive">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Components: Tags</title>
+
+    <link type="text/css" rel="stylesheet" href="../../css/MagpieUI.css">
+    <script type="text/javascript" src="../../js/MagpieUI.js"></script>
+
+    <script type="text/javascript">
+        cm.onReady(function(){
+            // Components
+            new Com.Collector()
+                .addEvent('onConstruct', function(collector, data){
+                    Part.Menu();
+                    Part.Autoresize(data['node']);
+                })
+                .add('tabset', function(node){
+                    new Com.Tabset({'node' : node});
+                })
+                .add('tags', function(node){
+                    new Com.TagsInput({'input' : node});
+                })
+                .construct();
+        });
+    </script>
+</head>
+
+<body>
+
+<h1 class="pt__box-title">Components: Tags</h1>
+
+<ul class="com__tabset__content-ul" data-element="tabset">
+    <li data-node="tabs:[]:container" data-config='{"id" : "overview", "title" : "Overview"}'></li>
+
+    <li data-node="tabs:[]:container" data-config='{"id" : "methods", "title" : "Methods"}'></li>
+
+    <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
+        <h2>Input:</h2>
+
+        <div class="com__tags is-editable">
+            <div class="inner">
+                <div class="l">
+                    <div class="icon small tags" title="Tags"></div>
+                </div>
+                <div class="r">
+                    <input type="text" data-element="tags" value="tag1, tag2">
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>Input with Autocomplete:</h2>
+
+        <div class="com__tags is-editable">
+            <div class="inner">
+                <div class="l">
+                    <div class="icon small tags" title="Tags"></div>
+                </div>
+                <div class="r">
+                    <input type="text" value="tag1, tag2" data-element="tags" data-config='{"autocomplete" : {"data" : ["Sponge Bob", "User Userberg", "User Userbergovich", "User Userbergini", "User Userbergovski", "User Userbergoff", "User Userberegovoy", "User Userbergosyan", "User Userbergovenko"]}}'>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>Listing:</h2>
+        <div class="com__tags">
+            <div class="inner">
+                <div class="l">
+                    <div class="icon small tags" title="Tags"></div>
+                </div>
+                <div class="r">
+                    <ul>
+                        <li>
+                            <a>Music</a>
+                        </li>
+                        <li>
+                            <a>Groups</a>
+                        </li>
+                        <li>
+                            <a>Rock</a>
+                        </li>
+                        <li>
+                            <a>Liverpool</a>
+                        </li>
+                        <li>
+                            <a>The Beatles</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </li>
+</ul>
+
+</body>
+</html>

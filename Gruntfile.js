@@ -1,69 +1,197 @@
 module.exports = function(grunt) {
-    // Load all grunt tasks matching the `grunt-*` pattern.
+    // Display how match time it took to build each task
+    require('time-grunt')(grunt);
+    // Load all grunt tasks
     require('load-grunt-tasks')(grunt);
-
     // Project configuration.
     grunt.initConfig({
-        pkg: grunt.file.readJSON('package.json'),
+        pkg : grunt.file.readJSON('package.json'),
+
+        clean: {
+            build : [
+                'build'
+            ],
+            docs : [
+                'docs/build'
+            ],
+            post : [
+                'temp'
+            ]
+        },
+
+        bower : {
+            install : {
+                targetDir : './lib',
+                cleanup : true,
+                layout : 'byComponent',
+                install : true
+            }
+        },
+
+        less : {
+            build: {
+                src: ['src/less/index.less'],
+                dest: 'temp/build.css'
+            },
+            docs: {
+                src: ['docs/src/less/index.less'],
+                dest: 'temp/docs.css'
+            }
+        },
 
         concat: {
-            dist: {
+            build_scripts: {
                 src: [
-                    'js/polyfill.js',
-                    'js/common.js',
-                    'js/modules.js',
-                    'js/parts.js',
-                    'js/init.js',
-                    'js/components/**/*.js',
-                    '!js/components/dev/**/*.js',
-                    '!js/components/old/**/*.js'
+                    'src/js/polyfill.js',
+                    'src/js/common.js',
+                    'src/js/modules.js',
+                    'src/js/parts.js',
+                    'src/js/init.js',
+                    'src/js/components/**/*.js',
+                    '!src/js/components/dev/**/*.js',
+                    '!src/js/components/old/**/*.js',
+                    'lib/**/*.js'
                 ],
-                dest: 'js/build/<%= pkg.name %>.js'
+                dest: 'build/js/<%= pkg.name %>.js'
+            },
+            build_styles: {
+                src: [
+                    'src/css/**/*.css',
+                    'temp/build.css',
+                    'lib/**/*.css'
+                ],
+                dest: 'build/css/<%= pkg.name %>.css'
+            },
+            docs_scripts: {
+                src: [
+                    'src/js/polyfill.js',
+                    'src/js/common.js',
+                    'src/js/modules.js',
+                    'src/js/parts.js',
+                    'src/js/init.js',
+                    'src/js/components/**/*.js',
+                    '!src/js/components/dev/**/*.js',
+                    '!src/js/components/old/**/*.js',
+                    'lib/**/*.js'
+                ],
+                dest: 'docs/build/js/<%= pkg.name %>.js'
+            },
+            docs_styles: {
+                src: [
+                    'docs/src/css/**/*.css',
+                    'temp/docs.css',
+                    'lib/**/*.css'
+                ],
+                dest: 'docs/build/css/<%= pkg.name %>.css'
             }
         },
 
-        less: {
-            development: {
-                options: {
-                    paths : ["assets/css"]
-                },
-                files: {
-                    "css/<%= pkg.name %>.css": "less/index.less"
+        cssmin : {
+            build : {
+                files : {
+                    'build/css/<%= pkg.name %>.min.css' : 'build/css/<%= pkg.name %>.css'
                 }
             }
         },
 
-        cssmin: {
-            target: {
-                files: {
-                    "css/<%= pkg.name %>.min.css": "css/<%= pkg.name %>.css"
-                }
+        uglify : {
+            build : {
+                src : 'build/js/<%= pkg.name %>.js',
+                dest : 'build/js/<%= pkg.name %>.min.js'
             }
         },
 
-        uglify: {
+        imagemin: {
             build: {
-                src: 'js/build/<%= pkg.name %>.js',
-                dest: 'js/build/<%= pkg.name %>.min.js'
+                options: {
+                    optimizationLevel: 3
+                },
+                files: [{
+                    expand: true,
+                    cwd: 'src/img/',
+                    src: ['**/*.*'],
+                    dest: 'build/img/'
+                }]
+            }
+        },
+
+        copy: {
+            build: {
+                files: [{
+                    expand: true,
+                    cwd: 'src/fonts/',
+                    src: [
+                        '**/*.*',
+                        '!**/*.json'
+                    ],
+                    dest: 'build/fonts/'
+                }]
+            },
+            docs: {
+                files: [{
+                    expand: true,
+                    cwd: 'docs/src/',
+                    src: ['*.*'],
+                    dest: 'docs/build/'
+                },{
+                    expand: true,
+                    cwd: 'docs/src/content/',
+                    src: ['**/*.*'],
+                    dest: 'docs/build/content/'
+                },{
+                    expand: true,
+                    cwd: 'docs/src/stuff/',
+                    src: ['**/*.*'],
+                    dest: 'docs/build/stuff/'
+                },{
+                    expand: true,
+                    cwd: 'docs/src/img/',
+                    src: ['**/*.*'],
+                    dest: 'docs/build/img/'
+                },{
+                    expand: true,
+                    cwd: 'build/fonts/',
+                    src: ['**/*.*'],
+                    dest: 'docs/build/fonts/magpieui/'
+                },{
+                    expand: true,
+                    cwd: 'build/img/',
+                    src: ['**/*.*'],
+                    dest: 'docs/build/img/magpieui'
+                }]
             }
         },
 
         watch: {
-            scripts: {
+            development: {
                 files: [
-                    'js/**/*.js',
-                    'less/**/*.less'
+                    'src/js/**/*.js',
+                    'src/css/**/*.css',
+                    'src/less/**/*.less'
                 ],
-                tasks: ['concat', 'less'],
+                tasks: ['dev'],
+                options: {
+                    spawn: false
+                }
+            },
+            docs_development: {
+                files: [
+                    'src/js/**/*.js',
+                    'src/css/**/*.css',
+                    'src/less/**/*.less',
+                    'docs/src/js/**/*.js',
+                    'docs/src/css/**/*.css',
+                    'docs/src/less/**/*.less'
+                ],
+                tasks: ['docs'],
                 options: {
                     spawn: false
                 }
             }
         }
     });
-
     // Default task(s).
-    grunt.registerTask('default', ['concat', 'less', 'cssmin', 'uglify']);
-    grunt.registerTask('dev', ['concat', 'less']);
-
+    grunt.registerTask('default', ['clean', 'bower', 'less', 'concat', 'cssmin', 'uglify', 'imagemin', 'copy', 'clean:post']);
+    grunt.registerTask('dev', ['less:build', 'concat:build_styles', 'concat:build_scripts', 'clean:post']);
+    grunt.registerTask('docs', ['less:docs', 'concat:docs_styles', 'concat:docs_scripts', 'clean:post']);
 };

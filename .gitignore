@@ -5,6 +5,8 @@ _dev
 _old
 js/components/old
 js/components/dev
-docs/content/dev
+docs/src/content/dev
+lib
+temp
 node_modules
 bower_components

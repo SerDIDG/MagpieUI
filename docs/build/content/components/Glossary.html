@@ -1,0 +1,104 @@
+<!DOCTYPE HTML>
+<html class="is-adaptive">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Components: Glossary</title>
+
+    <link type="text/css" rel="stylesheet" href="../../css/MagpieUI.css">
+    <script type="text/javascript" src="../../js/MagpieUI.js"></script>
+
+    <script type="text/javascript">
+        cm.onReady(function(){
+            cm.onReady(function(){
+                new Com.Collector()
+                    .addEvent('onConstruct', function(collector, data){
+                        Part.Menu();
+                        Part.Autoresize(data['node']);
+                    })
+                    .add('tabset', function(node){
+                        new Com.Tabset({'node' : node});
+                    })
+                    .add('glossary', function(node){
+                        new Com.Glossary({'node' : node});
+                    })
+                    .construct();
+            });
+        });
+    </script>
+</head>
+
+<body>
+
+<h1 class="pt__box-title">Components: Glossary</h1>
+
+<ul class="com__tabset__content-ul" data-element="tabset">
+    <li data-node="tabs:[]:container" data-config='{"id" : "overview", "title" : "Overview"}'>
+        <h2>Overview</h2>
+        <p>This component provide glossary tooltip.</p>
+
+        <h4>Embedded Modules</h4>
+        <ul class="cm__list">
+            <li><code>Params</code></li>
+            <li><code>Events</code></li>
+            <li><code>DataConfig</code></li>
+            <li><code>DataNodes</code></li>
+        </ul>
+
+        <h4>Required Components</h4>
+        <ul class="cm__list">
+            <li><code>Com.Tooltip</code></li>
+        </ul>
+
+        <h2>Initialize</h2>
+        <pre class="pt__box-code">new Com.Glossary(o);</pre>
+        <p>or</p>
+        <textarea class="pt__box-code cm-autoresize" readonly>
+<script type="text/javascript">
+    cm.onReady(function(){
+        new Com.Collector()
+            .add('glossary', function(node){
+                new Com.Glossary({'node' : node})
+            })
+            .construct()
+    });
+</script>
+
+<span class="com__glossary" data-element="glossary" data-node="ComGlossary:{}:container">
+    <span class="com__glossary__title" data-node="title">Glossary Word</span>
+    <span class="com__glossary__content" data-node="content">Glossary Description</span>
+</span></textarea>
+
+        <h2>Parameters</h2>
+        <dl>
+            <dt>
+                <code><b>node</b></code>
+            </dt>
+            <dd><code>HTML Node</code>. Html node that contains glossary. Default: <code>cm.Node('div')</code>.</dd>
+        </dl>
+    </li>
+
+    <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
+        <p>
+            <span class="com__glossary" data-element="glossary" data-node="ComGlossary:{}:container">
+                <span class="com__glossary__title" data-node="title">fringilla</span>
+                <span class="com__glossary__content" data-node="content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eget lectus mauris. Aliquam id est ut leo pharetra placerat. Nulla tortor orci, vestibulum quis porta at, tristique sed tortor. Integer erat sem, eleifend eu tempus sed, pellentesque non sem.</span>
+            </span>
+        </p>
+        <p>
+            <span class="com__glossary" data-element="glossary" data-node="ComGlossary:{}:container">
+                <span class="com__glossary__title" data-node="title">Curabitur tincidunt dignissim eros</span>
+                <span class="com__glossary__content" data-node="content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eget lectus mauris. Aliquam id est ut leo pharetra placerat. Nulla tortor orci, vestibulum quis porta at, tristique sed tortor. Integer erat sem, eleifend eu tempus sed, pellentesque non sem.</span>
+            </span>
+        </p>
+        <p>
+            <span class="com__glossary" data-element="glossary" data-node="ComGlossary:{}:container">
+                <span class="com__glossary__title" data-node="title">Aenean ultricies</span>
+                <span class="com__glossary__content" data-node="content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eget lectus mauris. Aliquam id est ut leo pharetra placerat. Nulla tortor orci, vestibulum quis porta at, tristique sed tortor. Integer erat sem, eleifend eu tempus sed, pellentesque non sem. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eget lectus mauris. Aliquam id est ut leo pharetra placerat. Nulla tortor orci, vestibulum quis porta at, tristique sed tortor. Integer erat sem, eleifend eu tempus sed, pellentesque non sem.</span>
+            </span>
+        </p>
+    </li>
+</ul>
+
+</body>
+</html>

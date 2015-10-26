@@ -1,0 +1,40 @@
+cm.define('Com.ClassMaket', {
+    'modules' : [
+        'Params',
+        'Events',
+        'Langs',
+        'DataConfig',
+        'DataNodes',
+        'Storage',
+        'Callbacks',
+        'Stack'
+    ],
+    'events' : [
+        'onRender'
+    ],
+    'params' : {
+        'node' : cm.Node('div'),
+        'name' : ''
+    }
+},
+function(params){
+    var that = this;
+
+    var init = function(){
+        that.setParams(params);
+        that.convertEvents(that.params['events']);
+        that.getDataNodes(that.params['node']);
+        that.getDataConfig(that.params['node']);
+        that.callbacksProcess();
+        render();
+        that.addToStack(that.params['node']);
+        that.triggerEvent('onRender');
+    };
+
+    var render = function(){
+    };
+
+    /* ******* PUBLIC ******* */
+
+    init();
+});

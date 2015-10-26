@@ -1,10 +1,10 @@
 {
   "name": "magpieui",
   "repository": "SerDIDG/MagpieUI",
-  "description": "Simple and lightweight framework that allows you to build UI quickly as possible.",
+  "description": "Collection of JavaScript and CSS snippets to fast build UI.",
   "main": [
-    "js/build/MagpieUI.js",
-    "less/index.less"
+    "build/js/MagpieUI.js",
+    "build/css/MagpieUI.css"
   ],
   "authors": [
     {
@@ -15,7 +15,7 @@
   ],
   "license": "MIT",
   "keywords": [
-    "ui", "javascript", "js", "css", "less"
+    "ui", "javascript", "js", "css", "less", "framework"
   ],
   "homepage": "https://github.com/SerDIDG/MagpieUI",
   "moduleType": [
@@ -23,6 +23,8 @@
   ],
   "ignore": [
     "**/.*",
+    "lib",
+    "temp",
     "node_modules",
     "bower_components"
   ],
