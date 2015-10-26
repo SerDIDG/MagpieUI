@@ -1,6 +1,6 @@
 {
   "name": "MagpieUI",
-  "version": "3.8.0",
+  "version": "3.8.1",
   "description": "Collection of JavaScript and CSS snippets to fast build UI.",
   "license": "MIT",
   "author": {
@@ -24,6 +24,7 @@
     "grunt-contrib-less": "~1.0.1",
     "grunt-contrib-uglify": "~0.5.0",
     "grunt-contrib-watch": "~0.6.0",
+    "grunt-less-imports": "^1.1.0",
     "load-grunt-tasks": "~3.3.0",
     "time-grunt": "^1.2.2"
   }

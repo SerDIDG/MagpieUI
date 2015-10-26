@@ -1,8 +1,36 @@
 module.exports = function(grunt) {
-    // Display how match time it took to build each task
-    require('time-grunt')(grunt);
+    // Custom config
+    var config = {
+        'less' : {
+            'files' : [
+                'src/less/variables/**/*.less',
+                'src/less/variables.less',
+                'src/less/mixins.less',
+                'src/less/common.less',
+                'src/less/common/Font.less',
+                'src/less/common/Size.less',
+                'src/less/common/Indent.less',
+                'src/less/common/Colors.less',
+                'src/less/common/Aspect.less',
+                'src/less/common/Icons.less',
+                'src/less/common/Tags.less',
+                'src/less/common/Inputs.less',
+                'src/less/common/Buttons.less',
+                'src/less/common/List.less',
+                'src/less/common/Form.less',
+                'src/less/common/**/*.less',
+                'src/less/parts/**/*.less',
+                'src/less/layouts/**/*.less',
+                'src/less/components/**/*.less',
+                '!src/less/index.less',
+                '!src/less/components/old/**/*.less'
+            ]
+        }
+    };
     // Load all grunt tasks
     require('load-grunt-tasks')(grunt);
+    // Display how match time it took to build each task
+    require('time-grunt')(grunt);
     // Project configuration.
     grunt.initConfig({
         pkg : grunt.file.readJSON('package.json'),
@@ -15,7 +43,8 @@ module.exports = function(grunt) {
                 'docs/build'
             ],
             post : [
-                'temp'
+                'temp',
+                'lib'
             ]
         },
 
@@ -28,10 +57,22 @@ module.exports = function(grunt) {
             }
         },
 
+        less_imports: {
+            source: {
+                options: {
+                    banner: '/* ************ MAGPIE UI: IMPORT ************ */'
+                },
+                src: config['less']['files'],
+                dest: 'src/less/index.less'
+            }
+        },
+
         less : {
             build: {
-                src: ['src/less/index.less'],
-                dest: 'temp/build.css'
+                files: [{
+                    src: ['src/less/index.less'],
+                    dest: 'temp/build.css'
+                }]
             },
             docs: {
                 src: ['docs/src/less/index.less'],
@@ -55,12 +96,21 @@ module.exports = function(grunt) {
                 dest: 'build/js/<%= pkg.name %>.js'
             },
             build_styles: {
-                src: [
-                    'src/css/**/*.css',
-                    'temp/build.css',
-                    'lib/**/*.css'
-                ],
-                dest: 'build/css/<%= pkg.name %>.css'
+                files: [{
+                    src: [
+                        'src/css/**/*.css',
+                        'temp/build.css',
+                        'lib/**/*.css'
+                    ],
+                    dest: 'build/css/<%= pkg.name %>.css'
+                },{
+                    src: [
+                        'lib/**/*.css',
+                        'src/css/**/*.css',
+                        config['less']['files']
+                    ],
+                    dest: 'build/less/<%= pkg.name %>.less'
+                }]
             },
             docs_scripts: {
                 src: [
@@ -191,7 +241,7 @@ module.exports = function(grunt) {
         }
     });
     // Default task(s).
-    grunt.registerTask('default', ['clean', 'bower', 'less', 'concat', 'cssmin', 'uglify', 'imagemin', 'copy', 'clean:post']);
-    grunt.registerTask('dev', ['less:build', 'concat:build_styles', 'concat:build_scripts', 'clean:post']);
-    grunt.registerTask('docs', ['less:docs', 'concat:docs_styles', 'concat:docs_scripts', 'clean:post']);
+    grunt.registerTask('default', ['clean', 'bower', 'less_imports', 'less', 'concat', 'cssmin', 'uglify', 'imagemin', 'copy', 'clean:post']);
+    grunt.registerTask('dev', ['less_imports', 'less:build', 'concat:build_styles', 'concat:build_scripts', 'clean:post']);
+    grunt.registerTask('docs', ['less_imports', 'less:docs', 'concat:docs_styles', 'concat:docs_scripts', 'clean:post']);
 };
