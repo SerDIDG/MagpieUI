@@ -8877,9 +8877,11 @@ button {
         > ul {
             > li {
                 margin-right: @value;
+                margin-left: 0;
 
                 &:last-child {
                     margin-right: 0;
+                    margin-left: 0;
                 }
             }
         }
@@ -8888,9 +8890,11 @@ button {
     &.pull-right {
         > ul {
             > li {
+                margin-right: 0;
                 margin-left: @value;
 
                 &:first-child {
+                    margin-right: 0;
                     margin-left: 0;
                 }
             }

@@ -5111,16 +5111,20 @@ button::-moz-focus-inner {
 .pt__line-share.pull-center > ul > li,
 .pt__line-share.pull-justify > ul > li {
   margin-right: 8px;
+  margin-left: 0;
 }
 .pt__line-share.pull-left > ul > li:last-child,
 .pt__line-share.pull-center > ul > li:last-child,
 .pt__line-share.pull-justify > ul > li:last-child {
   margin-right: 0;
+  margin-left: 0;
 }
 .pt__line-share.pull-right > ul > li {
+  margin-right: 0;
   margin-left: 8px;
 }
 .pt__line-share.pull-right > ul > li:first-child {
+  margin-right: 0;
   margin-left: 0;
 }
 /* ******* PARTS: LINKS ******* */
