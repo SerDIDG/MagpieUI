@@ -224,7 +224,7 @@ module.exports = function(grunt) {
                     spawn: false
                 }
             },
-            docs_development: {
+            docs: {
                 files: [
                     'src/js/**/*.js',
                     'src/css/**/*.css',

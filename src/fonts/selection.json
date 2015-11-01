@@ -35,7 +35,7 @@
 					{}
 				],
 				"isMulticolor": false,
-				"grid": 24,
+				"grid": 48,
 				"tags": [
 					"ui-arrow-left"
 				]
@@ -63,7 +63,7 @@
 					{}
 				],
 				"isMulticolor": false,
-				"grid": 24,
+				"grid": 48,
 				"tags": [
 					"ui-arrow-right"
 				]
@@ -91,7 +91,7 @@
 					{}
 				],
 				"isMulticolor": false,
-				"grid": 24,
+				"grid": 48,
 				"tags": [
 					"circle-close"
 				]
@@ -117,7 +117,7 @@
 				],
 				"attrs": [],
 				"isMulticolor": false,
-				"grid": 24,
+				"grid": 48,
 				"tags": [
 					"circle-twitter"
 				]
@@ -141,7 +141,7 @@
 				],
 				"attrs": [],
 				"isMulticolor": false,
-				"grid": 24,
+				"grid": 48,
 				"tags": [
 					"circle-instagram"
 				]
@@ -165,7 +165,7 @@
 				],
 				"attrs": [],
 				"isMulticolor": false,
-				"grid": 24,
+				"grid": 48,
 				"tags": [
 					"circle-youtube"
 				]
@@ -189,7 +189,7 @@
 				],
 				"attrs": [],
 				"isMulticolor": false,
-				"grid": 24,
+				"grid": 48,
 				"tags": [
 					"circle-vk"
 				]

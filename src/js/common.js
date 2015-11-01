@@ -24,7 +24,7 @@
  ******* */
 
 var cm = {
-        '_version' : '3.8.2',
+        '_version' : '3.8.3',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -1513,6 +1513,17 @@ cm.isEven = function(num){
 cm.addLeadZero = function(x){
     x = parseInt(x, 10);
     return x < 10 ? '0' + x : x;
+};
+
+cm.getNumberDeclension = function(number, titles){
+    var cases = [2, 0, 1, 1, 1, 2];
+    return titles[
+        (number % 100 > 4 && number % 100 < 20)
+            ?
+            2
+            :
+            cases[(number % 10 < 5) ? number % 10 : 5]
+        ];
 };
 
 /* ******* DATE AND TIME ******* */
