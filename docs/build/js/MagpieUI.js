@@ -251,7 +251,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.8.3',
+        '_version' : '3.8.4',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -16830,16 +16830,16 @@ cm.define('Com.Timer', {
         'onEnd'
     ],
     'params' : {
-        'count' : 0,                 // ms
-        'tick' : 500                 // ms
+        'count' : 0                 // ms
     }
 },
 function(params){
-    var that = this,
-        tickInterval;
+    var that = this;
 
     that.left = 0;
     that.pass = 0;
+
+    that.isProcess = false;
 
     var init = function(){
         that.setParams(params);
@@ -16868,23 +16868,31 @@ function(params){
         var o = getLeftTime(),
             tick = Date.now(),
             tack;
+        that.isProcess = true;
         that.triggerEvent('onStart', o);
-        tickInterval = setInterval(function(){
-            tack = tick;
-            tick = Date.now();
-            that.left = Math.max(that.left - (tick - tack), 0);
-            that.pass = that.params['count'] - that.left;
-            o = getLeftTime();
-            that.triggerEvent('onTick', o);
-            if(that.left == 0){
-                that.stop();
-                that.triggerEvent('onEnd', o);
+        // Process
+        (function process(){
+            if(that.isProcess){
+                tack = tick;
+                tick = Date.now();
+                that.left = Math.max(that.left - (tick - tack), 0);
+                that.pass = that.params['count'] - that.left;
+                o = getLeftTime();
+                that.triggerEvent('onTick', o);
+                if(that.left == 0){
+                    that.stop();
+                    that.triggerEvent('onEnd', o);
+                }else{
+                    animFrame(process);
+                }
             }
-        }, 500);
+        })();
+        return that;
     };
 
     that.stop = function(){
-        clearInterval(tickInterval);
+        that.isProcess = false;
+        return that;
     };
 
     init();
