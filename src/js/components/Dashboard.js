@@ -58,6 +58,7 @@ function(params){
 
     that.currentAreas = [];
     that.currentPlaceholder = null;
+    that.currentArea = null;
     that.currentWidget = null;
 
     /* *** INIT *** */
@@ -244,22 +245,26 @@ function(params){
         // Move widget
         moveWidget(that.currentWidget, params, true);
         // Find placeholder above widget
-        var date = Date.now();
-        cm.log('Start');
         checkPlaceholders(that.currentAreas, params);
         getCurrentPlaceholder(that.currentAreas, params);
-        cm.log('End: ' + (Date.now() - date));
     };
 
     var stop = function(){
         // Unhighlight Placeholder
         unhighlightPlaceholder(that.currentPlaceholder);
         // Drop widget
-        dropWidget(that.currentWidget, that.currentPlaceholder['area'], {
-            'index' : that.currentPlaceholder['index'],
-            'placeholder' : that.currentPlaceholder,
-            'onStop' : clear
-        });
+        if(!that.currentArea || that.currentArea['isRemoveZone'] || that.currentArea['isTemporary']){
+            cm.log(1);
+            removeWidget(that.currentWidget, {
+                'onStop' : clear
+            });
+        }else{
+            dropWidget(that.currentWidget, that.currentArea, {
+                'index' : that.currentPlaceholder['index'],
+                'placeholder' : that.currentPlaceholder,
+                'onStop' : clear
+            });
+        }
         // Show IFRAMES and EMBED tags
         cm.showSpecialTags();
         cm.removeClass(document.body, 'com__dashboard__body');
@@ -286,6 +291,7 @@ function(params){
         // Clear variables
         that.currentAreas = [];
         that.currentPlaceholder = null;
+        that.currentArea = null;
         that.currentWidget = null;
     };
 
@@ -770,15 +776,22 @@ function(params){
     var moveWidget = function(widget, params, offset){
         // Calculate
         var left = params['left'],
-            top = params['top'];
+            top = params['top'],
+            node = params['node'] || widget['node'];
         if(offset){
             left += widget['dimensions']['offsetX'];
             top += widget['dimensions']['offsetY'];
         }
         if(params['width']){
-            widget['node'].style.width = [params['width'], 'px'].join('');
+            node.style.width = [params['width'], 'px'].join('');
         }
-        cm.setCSSTranslate(widget['node'], [left, 'px'].join(''), [top, 'px'].join(''));
+        if(params['height']){
+            node.style.height = [params['height'], 'px'].join('');
+        }
+        if(params['opacity']){
+            node.style.opacity = params['opacity'];
+        }
+        cm.setCSSTranslate(node, [left, 'px'].join(''), [top, 'px'].join(''));
     };
 
     var resetWidget = function(widget){
@@ -801,14 +814,26 @@ function(params){
             'onStart' : function(){},
             'onStop' : function(){}
         }, params);
+        // System onStart event
+        params['onStart']();
         // Init drop state
         cm.addClass(widget['node'], 'is-drop', true);
+        // Update widget dimensions
+        updateDimensions(widget);
         // Move widget
         if(params['placeholder']){
             moveWidget(widget, {
                 'left' : params['placeholder']['dimensions']['left'] - widget['dimensions']['margin']['left'],
                 'top' : params['placeholder']['dimensions']['top'] - widget['dimensions']['margin']['top'],
                 'width' : area['dimensions']['innerWidth']
+            });
+            // Animate placeholder
+            cm.transition(params['placeholder']['node'], {
+                'properties' : {
+                    'height' : [widget['dimensions']['absoluteHeight'], 'px'].join('')
+                },
+                'duration' : that.params['dropDuration']
+
             });
         }else{
             moveWidget(widget, {
@@ -829,7 +854,6 @@ function(params){
             resetWidget(widget);
             // Set index of draggable item in new area
             area['items'].splice(params['index'], 0, widget);
-            cm.log(area['items']);
             // Drop event
             that.triggerEvent('onDrop', {
                 'item' : widget,
@@ -840,6 +864,66 @@ function(params){
             });
             // Set draggable new area
             widget['area'] = area;
+            // System onStop event
+            params['onStop']();
+        }, that.params['dropDuration']);
+    };
+
+    var removeWidget = function(widget, params){
+        var node;
+        // Merge params
+        params = cm.merge({
+            'onStart' : function(){},
+            'onStop' : function(){}
+        }, params);
+        // System onStart event
+        params['onStart']();
+        // Check if widget exists and placed in DOM
+        if(cm.inDOM(widget['node'])){
+            // Update widget dimensions
+            updateDimensions(widget);
+            // Init drop state
+            cm.addClass(widget['node'], 'is-drop', true);
+            // Move widget
+            if(widget === that.currentWidget){
+                node = widget['node'];
+                moveWidget(widget, {
+                    'left' : -widget['dimensions']['absoluteWidth'],
+                    'top' : widget['dimensions']['absoluteY1'],
+                    'opacity' : 0
+                });
+            }else{
+                node = cm.wrap(cm.Node('div', {'class' : 'pt__dnd-removable'}), widget['node']);
+                cm.transition(node, {
+                    'properties' : {
+                        'height' : '0px',
+                        'opacity' : 0
+                    },
+                    'duration' : that.params['dropDuration'],
+                    'easing' : 'linear'
+                });
+            }
+        }else{
+            node = widget['node'];
+        }
+        // Animation end event
+        setTimeout(function(){
+            if(that.params['removeNode']){
+                cm.remove(node);
+            }
+            // Remove from draggable list
+            draggableList = draggableList.filter(function(item){
+                return item != widget;
+            });
+            unsetDraggableFromArea(widget);
+            // API onRemove Event
+            if(!params['noEvent']){
+                that.triggerEvent('onRemove', {
+                    'item' : widget,
+                    'node' : widget['node'],
+                    'from' : widget['area']
+                });
+            }
             // System onStop event
             params['onStop']();
         }, that.params['dropDuration']);
@@ -896,7 +980,8 @@ function(params){
             'index' : 0,
             'area' : null
         };
-        //params['isArea'] && cm.addClass(placeholder['node'], 'is-area');
+
+        params['isArea'] && cm.addClass(placeholder['node'], 'is-area');
         cm[params['append']](placeholder['node'], targetNode);
         placeholder['dimensions'] = cm.getRect(placeholder['node']);
         cm.addClass(placeholder['node'], 'is-show', true);
@@ -926,15 +1011,15 @@ function(params){
             bottom = params['top'] + additional;
         cm.forEach(areas, function(area){
             cm.forEach(area['placeholders'], function(item){
-                if(cm.inRange(item['dimensions']['top'], item['dimensions']['bottom'], top, bottom)){
-                    if(!item['isExpand']){
-                        expandPlaceholder(item);
+                if(!cm.inRange(item['dimensions']['top'], item['dimensions']['bottom'], top, bottom)){
+                    if(item['isExpand']){
+                        collapsePlaceholder(item);
                         updatePlaceholdersDimensions(areas, params);
                         checkPlaceholders(areas, params);
                     }
                 }else{
-                    if(item['isExpand']){
-                        collapsePlaceholder(item);
+                    if(!item['isExpand']){
+                        expandPlaceholder(item);
                         updatePlaceholdersDimensions(areas, params);
                         checkPlaceholders(areas, params);
                     }
@@ -972,6 +1057,10 @@ function(params){
             highlightPlaceholder(placeholder);
         }
         that.currentPlaceholder = placeholder;
+        // Get current area
+        if(that.currentPlaceholder){
+            that.currentArea = that.currentPlaceholder['area'];
+        }
         // Update placeholders position
         updatePlaceholdersDimensions(areas, params);
     };
@@ -992,6 +1081,7 @@ function(params){
 
     var highlightPlaceholder = function(placeholder){
         if(placeholder && !placeholder['isActive']){
+            highlightArea(placeholder['area']);
             placeholder['isActive'] = true;
             cm.addClass(placeholder['node'], 'is-active');
         }
@@ -999,6 +1089,7 @@ function(params){
 
     var unhighlightPlaceholder = function(placeholder){
         if(placeholder && placeholder['isActive']){
+            unhighlightArea(placeholder['area']);
             placeholder['isActive'] = false;
             cm.removeClass(placeholder['node'], 'is-active');
         }
@@ -1183,6 +1274,20 @@ function(params){
         }
     };
 
+    var highlightArea = function(area){
+        if(area && !area['isActive']){
+            area['isActive'] = true;
+            cm.addClass(area['node'], 'is-active');
+        }
+    };
+
+    var unhighlightArea = function(area){
+        if(area && area['isActive']){
+            area['isActive'] = false;
+            cm.removeClass(area['node'], 'is-active');
+        }
+    };
+
     /* *** HELPERS *** */
 
     var toggleScroll = function(speed){
@@ -1311,26 +1416,34 @@ function(params){
             // Find old draggable area and index in area
             var area = oldDraggable['area'],
                 index = area['items'].indexOf(oldDraggable),
-                node = cm.wrap(cm.Node('div', {'class' : 'pt__dnd-removable', 'style' : 'height: 0px;'}), newDraggableNode),
-                anim = new cm.Animation(node);
+                node = cm.wrap(cm.Node('div', {'class' : 'pt__dnd-removable', 'style' : 'height: 0px;'}), newDraggableNode);
             // Append new draggable into DOM
             cm.insertAfter(node, oldDraggableNode);
             // Remove old draggable
             removeDraggable(oldDraggable, params);
             // Animate new draggable
-            anim.go({'style' : {'height' : [cm.getRealHeight(node, 'offset', 0), 'px'].join(''), 'opacity' : 1}, 'duration' : 300, 'anim' : 'simple', 'onStop' : function(){
-                cm.insertAfter(newDraggableNode, node);
-                cm.remove(node);
-                // Register new draggable
-                newDraggable = initDraggable(newDraggableNode, area);
-                area['items'].splice(index, 0, newDraggable);
-                // API onEmbed event
-                that.triggerEvent('onReplace', {
-                    'item' : newDraggable,
-                    'node' : newDraggable['node'],
-                    'to' : newDraggable['to']
-                });
-            }});
+            cm.transition(node, {
+                'properties' : {
+                    'height' : [cm.getRealHeight(node, 'offset', 0), 'px'].join(''),
+                    'opacity' : 1
+                },
+                'duration' : that.params['dropDuration'],
+                'easing' : 'linear',
+                'onStop' : function(){
+                    cm.insertAfter(newDraggableNode, node);
+                    cm.remove(node);
+                    // Register new draggable
+                    newDraggable = initDraggable(newDraggableNode, area);
+                    area['items'].splice(index, 0, newDraggable);
+                    // API onEmbed event
+                    that.triggerEvent('onReplace', {
+                        'item' : newDraggable,
+                        'node' : newDraggable['node'],
+                        'to' : newDraggable['to']
+                    });
+                }
+            });
+
         }
         return that;
     };

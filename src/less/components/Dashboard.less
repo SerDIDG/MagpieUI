@@ -39,10 +39,6 @@
         .mx__transition(all, @CmUI-Transition-Duration);
     }
 
-    &.is-area {
-        height: @ComDashboard-Placeholder-Height;
-    }
-
     &.is-expand {
         height: @ComDashboard-Placeholder-Height;
     }
@@ -58,6 +54,10 @@
         &:before {
             border-color: @CmColor-Primary-DarkDefault;
         }
+    }
+
+    &.is-area {
+        min-height: 100%;
     }
 
     &.is-immediately {

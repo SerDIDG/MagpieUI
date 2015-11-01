@@ -1,6 +1,6 @@
 {
   "name": "MagpieUI",
-  "version": "3.8.1",
+  "version": "3.8.2",
   "description": "Collection of JavaScript and CSS snippets to fast build UI.",
   "license": "MIT",
   "author": {
@@ -10,12 +10,12 @@
   },
   "repository": "SerDIDG/MagpieUI",
   "dependencies": {
-    "bower": "~1.3.0"
+    "bower": "~1.3.0",
+    "grunt-cli": "^0.1.13"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
     "grunt-bower-task": "^0.4.0",
-    "grunt-cli": "^0.1.13",
     "grunt-contrib-clean": "^0.6.0",
     "grunt-contrib-concat": "~0.5.1",
     "grunt-contrib-copy": "^0.8.2",

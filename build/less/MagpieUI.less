@@ -3278,13 +3278,18 @@ Copyright (c) 2015 Daniel Eden
 
 @CmIconVars-Family: 'Magpie-UI-Glyphs';
 @CmIconVars-Color: @CmColor-Icon;
-@CmIconVars-Version: 9;
+@CmIconVars-Version: 10;
 
 @CmIcon-Magnify: '\e600';
 
 @CmIcon-CircleArrowLeft: '\e700';
 @CmIcon-CircleArrowRight: '\e701';
 @CmIcon-CircleClose: '\e702';
+
+@CmIcon-CircleTwitter: '\e800';
+@CmIcon-CircleInstagram: '\e801';
+@CmIcon-CircleYoutube: '\e802';
+@CmIcon-CircleVK: '\e803';
 // /* ************************************************ */
 // /* ******* VARIABLES ******* */
 // /* ************************************************ */
@@ -5285,6 +5290,30 @@ Copyright (c) 2015 Daniel Eden
 .cm-i__circle-close {
     &:before {
         content: @CmIcon-CircleClose;
+    }
+}
+
+.cm-i__circle-twitter {
+    &:before {
+        content: @CmIcon-CircleTwitter;
+    }
+}
+
+.cm-i__circle-instagram {
+    &:before {
+        content: @CmIcon-CircleInstagram;
+    }
+}
+
+.cm-i__circle-youtube {
+    &:before {
+        content: @CmIcon-CircleYoutube;
+    }
+}
+
+.cm-i__circle-vk {
+    &:before {
+        content: @CmIcon-CircleVK;
     }
 }
 
@@ -11016,10 +11045,6 @@ button {
         .mx__transition(all, @CmUI-Transition-Duration);
     }
 
-    &.is-area {
-        height: @ComDashboard-Placeholder-Height;
-    }
-
     &.is-expand {
         height: @ComDashboard-Placeholder-Height;
     }
@@ -11035,6 +11060,10 @@ button {
         &:before {
             border-color: @CmColor-Primary-DarkDefault;
         }
+    }
+
+    &.is-area {
+        min-height: 100%;
     }
 
     &.is-immediately {

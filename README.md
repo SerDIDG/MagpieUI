@@ -16,7 +16,16 @@ bower install magpieui
 
 ## Custom build
 
-First install Node.js, then install dependency modules:
+First install Node.js and update npm:
+```sh
+sudo npm install npm -g
+```
+Install global  modules:
+```sh
+sudo npm install -g grunt-cli
+sudo npm install -g bower
+```
+Install dependency modules:
 ```sh
 cd patch_to/magpieui
 sudo npm install
