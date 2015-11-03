@@ -10,6 +10,7 @@ cm.define('Com.ScrollPagination', {
     ],
     'events' : [
         'onRender',
+        'onRebuild',
         'onStart',
         'onAbort',
         'onError',
@@ -130,25 +131,32 @@ function(params){
                 that.params['container'].appendChild(that.nodes['container']);
             }
         }
+        // Reset styles and variables
+        reset();
+        // Events
+        cm.addEvent(that.nodes['button'], 'click', function(e){
+            e = cm.getEvent(e);
+            cm.preventDefault(e);
+            set();
+        });
+        if(that.params['stopOnESC']){
+            cm.addEvent(window, 'keydown', ESCHandler);
+        }
+        cm.addScrollEvent(that.params['scrollNode'], scrollHandler);
+        cm.addEvent(window, 'resize', resizeHandler);
+    };
+
+    var reset = function(){
+        // Clear render pages
+        cm.clearNode(that.nodes['pages']);
         // Load More Button
         if(!that.params['showButton']){
             that.callbacks.hideButton(that);
         }else{
             that.callbacks.showButton(that);
         }
-        cm.addEvent(that.nodes['button'], 'click', function(e){
-            e = cm.getEvent(e);
-            cm.preventDefault(e);
-            set();
-        });
         // Hide Loader
         cm.addClass(that.nodes['loader'], 'is-hidden');
-        // Events
-        if(that.params['stopOnESC']){
-            cm.addEvent(window, 'keydown', ESCHandler);
-        }
-        cm.addScrollEvent(that.params['scrollNode'], scrollHandler);
-        cm.addEvent(window, 'resize', resizeHandler);
     };
 
     var set = function(){
@@ -384,11 +392,7 @@ function(params){
             that.callbacks.finalize(that);
         }
         // Show / Hide Load More Button
-        if(!that.isFinalize && (that.params['showButton'] === true || (that.params['showButton'] == 'once' && that.params['startPage'] == that.page))){
-            that.callbacks.showButton(that);
-        }else{
-            that.callbacks.hideButton(that);
-        }
+        that.callbacks.toggleButton(that);
         that.triggerEvent('onEnd');
     };
 
@@ -397,6 +401,14 @@ function(params){
             that.isFinalize = true;
             that.callbacks.hideButton(that);
             that.triggerEvent('onFinalize');
+        }
+    };
+
+    that.callbacks.toggleButton = function(that){
+        if(!that.isFinalize && (that.params['showButton'] === true || (that.params['showButton'] == 'once' && that.params['startPage'] == that.page))){
+            that.callbacks.showButton(that);
+        }else{
+            that.callbacks.hideButton(that);
         }
     };
 
@@ -432,6 +444,24 @@ function(params){
         that.currentPage = that.nextPage;
         that.nextPage++;
         return that;
+    };
+
+    that.rebuild = function(params){
+        // Cleanup
+        if(that.isProcess){
+            that.abort();
+        }
+        that.pages = {};
+        that.currentPage = null;
+        that.previousPage = null;
+        // Set new parameters
+        that.setParams(params);
+        validateParams();
+        // Reset styles and variables
+        reset();
+        that.triggerEvent('onRebuild');
+        // Render new pge
+        set();
     };
 
     that.isPageVisible = function(page, scrollRect){

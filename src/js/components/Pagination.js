@@ -160,6 +160,8 @@ function(params){
                 that.params['container'].appendChild(that.nodes['container']);
             }
         }
+        // Reset styles and variables
+        reset();
         // Overlay
         cm.getConstructor('Com.Overlay', function(classConstructor){
             that.components['loader'] = new classConstructor(that.params['Com.Overlay']);
@@ -169,6 +171,11 @@ function(params){
             cm.addClass(that.nodes['container'], 'is-animated');
         }
         that.animations['content'] = new cm.Animation(that.nodes['content']);
+    };
+
+    var reset = function(){
+        // Clear render pages
+        cm.clearNode(that.nodes['pages']);
     };
 
     var set = function(page){
@@ -591,13 +598,11 @@ function(params){
         if(that.isProcess){
             that.abort();
         }
-        if(that.currentPage){
-            cm.remove(that.pages[that.currentPage]['container']);
-        }
         that.pages = {};
-        that.isAjax = false;
         that.currentPage = null;
         that.previousPage = null;
+        // Reset styles and variables
+        reset();
         // Set new parameters
         that.setParams(params);
         validateParams();

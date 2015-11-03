@@ -26,7 +26,7 @@
     height: 0;
     position: relative;
     opacity: 0;
-    .mx__transition(opacity, @CmUI-Transition-Duration);
+    .mx__transition(opacity height, 150ms);
 
     &:before {
         display: block;
@@ -45,7 +45,6 @@
 
     &.is-show {
         opacity: 1;
-        .mx__transition(opacity, @CmUI-Transition-DurationReverse);
     }
 
     &.is-active {

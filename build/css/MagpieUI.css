@@ -7253,8 +7253,8 @@ button::-moz-focus-inner {
   height: 0;
   position: relative;
   opacity: 0;
-  -webkit-transition: opacity 300ms ease-in-out;
-  transition: opacity 300ms ease-in-out;
+  -webkit-transition: opacity 150ms ease-in-out, height 150ms ease-in-out;
+  transition: opacity 150ms ease-in-out, height 150ms ease-in-out;
 }
 .com__dashboard__placeholder:before {
   display: block;
@@ -7275,8 +7275,6 @@ button::-moz-focus-inner {
 }
 .com__dashboard__placeholder.is-show {
   opacity: 1;
-  -webkit-transition: opacity 100ms ease-in-out;
-  transition: opacity 100ms ease-in-out;
 }
 .com__dashboard__placeholder.is-active {
   height: 48px;

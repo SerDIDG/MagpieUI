@@ -6529,7 +6529,7 @@ function(params){
             }, params),
             childNodes;
         // Add mark classes
-        cm.addClass(area['node'], 'com__dashboard__area');
+        cm.addClass(area['node'], 'pt__dnd-area');
         cm.addClass(area['node'], that.params['classes']['area']);
         if(area['isLocked']){
             cm.addClass(area['node'], 'is-locked');
@@ -7187,13 +7187,13 @@ function(params){
             left += widget['dimensions']['offsetX'];
             top += widget['dimensions']['offsetY'];
         }
-        if(params['width']){
+        if(typeof params['width'] != 'undefined'){
             node.style.width = [params['width'], 'px'].join('');
         }
-        if(params['height']){
+        if(typeof params['height'] != 'undefined'){
             node.style.height = [params['height'], 'px'].join('');
         }
-        if(params['opacity']){
+        if(typeof params['opacity'] != 'undefined'){
             node.style.opacity = params['opacity'];
         }
         cm.setCSSTranslate(node, [left, 'px'].join(''), [top, 'px'].join(''));
@@ -14013,6 +14013,36 @@ function(params){
         that.currentPage = that.nextPage;
         that.nextPage++;
         return that;
+    };
+
+    that.rebuild = function(params){
+        // Cleanup
+        if(that.isProcess){
+            that.abort();
+        }
+        if(that.currentPage){
+            cm.remove(that.pages[that.currentPage]['container']);
+        }
+        that.pages = {};
+        that.isAjax = false;
+        that.currentPage = null;
+        that.previousPage = null;
+
+        that.isAjax = false;
+        that.isProcess = false;
+        that.isFinalize = false;
+        that.isButton = false;
+
+        that.page = null;
+        that.pageToken = null;
+        that.currentPage = null;
+        that.previousPage = null;
+        that.nextPage = null;
+        // Set new parameters
+        that.setParams(params);
+        validateParams();
+        // Render
+        set(that.params['startPage']);
     };
 
     that.isPageVisible = function(page, scrollRect){

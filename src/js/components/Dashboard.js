@@ -124,7 +124,7 @@ function(params){
             }, params),
             childNodes;
         // Add mark classes
-        cm.addClass(area['node'], 'com__dashboard__area');
+        cm.addClass(area['node'], 'pt__dnd-area');
         cm.addClass(area['node'], that.params['classes']['area']);
         if(area['isLocked']){
             cm.addClass(area['node'], 'is-locked');
@@ -782,13 +782,13 @@ function(params){
             left += widget['dimensions']['offsetX'];
             top += widget['dimensions']['offsetY'];
         }
-        if(params['width']){
+        if(typeof params['width'] != 'undefined'){
             node.style.width = [params['width'], 'px'].join('');
         }
-        if(params['height']){
+        if(typeof params['height'] != 'undefined'){
             node.style.height = [params['height'], 'px'].join('');
         }
-        if(params['opacity']){
+        if(typeof params['opacity'] != 'undefined'){
             node.style.opacity = params['opacity'];
         }
         cm.setCSSTranslate(node, [left, 'px'].join(''), [top, 'px'].join(''));
