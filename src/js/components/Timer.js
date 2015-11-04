@@ -35,10 +35,14 @@ function(params){
 
     var getLeftTime = function(){
         var o = {};
-        o['d'] = Math.floor(that.left / 1000 / 60 / 60 / 24);
-        o['h'] = Math.floor((that.left / 1000 / 60 / 60) - (o['d'] * 24));
-        o['m'] = Math.floor((that.left / 1000 / 60) - (o['d'] * 24 * 60) - (o['h'] * 60));
-        o['s'] = Math.floor((that.left / 1000) - (o['d'] * 24 * 60 * 60) - (o['h'] * 60 * 60) - (o['m'] * 60));
+        o['d_total'] = Math.floor(that.left / 1000 / 60 / 60 / 24);
+        o['h_total'] = Math.floor(that.left / 1000 / 60 / 60);
+        o['m_total'] = Math.floor(that.left / 1000 / 60);
+        o['s_total'] = Math.floor(that.left / 1000);
+        o['d'] = Math.floor(o['d_total']);
+        o['h'] = Math.floor(o['h_total'] - (o['d'] * 24));
+        o['m'] = Math.floor(o['m_total'] - (o['d'] * 24 * 60) - (o['h'] * 60));
+        o['s'] = Math.floor(o['s_total'] - (o['d'] * 24 * 60 * 60) - (o['h'] * 60 * 60) - (o['m'] * 60));
         return o;
     };
 
@@ -46,16 +50,16 @@ function(params){
 
     that.start = function(){
         var o = getLeftTime(),
-            tick = Date.now(),
-            tack;
+            left = that.left,
+            startTime = Date.now(),
+            currentTime;
         that.isProcess = true;
         that.triggerEvent('onStart', o);
         // Process
         (function process(){
             if(that.isProcess){
-                tack = tick;
-                tick = Date.now();
-                that.left = Math.max(that.left - (tick - tack), 0);
+                currentTime = Date.now();
+                that.left = Math.max(left - (currentTime - startTime), 0);
                 that.pass = that.params['count'] - that.left;
                 o = getLeftTime();
                 that.triggerEvent('onTick', o);
