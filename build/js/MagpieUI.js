@@ -251,7 +251,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.8.5',
+        '_version' : '3.8.6',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -1751,6 +1751,14 @@ cm.getNumberDeclension = function(number, titles){
             :
             cases[(number % 10 < 5) ? number % 10 : 5]
         ];
+};
+
+cm.toRadians = function(degrees) {
+    return degrees * Math.PI / 180;
+};
+
+cm.toDegrees = function(radians) {
+    return radians * 180 / Math.PI;
 };
 
 /* ******* DATE AND TIME ******* */
