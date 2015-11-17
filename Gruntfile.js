@@ -230,7 +230,8 @@ module.exports = function(grunt) {
                     'src/less/**/*.less',
                     'docs/src/js/**/*.js',
                     'docs/src/css/**/*.css',
-                    'docs/src/less/**/*.less'
+                    'docs/src/less/**/*.less',
+                    'docs/src/content/**/*.*'
                 ],
                 tasks: ['docs'],
                 options: {
@@ -242,5 +243,5 @@ module.exports = function(grunt) {
     // Tasks
     grunt.registerTask('default', ['clean', 'bower', 'less_imports', 'less', 'concat', 'cssmin', 'uglify', 'imagemin', 'copy', 'clean:post']);
     grunt.registerTask('dev', ['less_imports', 'less:build', 'concat:build_styles', 'concat:build_scripts', 'clean:post']);
-    grunt.registerTask('docs', ['less_imports', 'less:docs', 'concat:docs_styles', 'concat:docs_scripts', 'clean:post']);
+    grunt.registerTask('docs', ['less_imports', 'less:docs', 'concat:docs_styles', 'concat:docs_scripts', 'copy:docs', 'clean:post']);
 };

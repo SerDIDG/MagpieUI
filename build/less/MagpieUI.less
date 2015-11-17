@@ -3278,7 +3278,7 @@ Copyright (c) 2015 Daniel Eden
 
 @CmIconVars-Family: 'Magpie-UI-Glyphs';
 @CmIconVars-Color: @CmColor-Icon;
-@CmIconVars-Version: 11;
+@CmIconVars-Version: 13;
 
 @CmIcon-Magnify: '\e600';
 
@@ -3290,6 +3290,12 @@ Copyright (c) 2015 Daniel Eden
 @CmIcon-CircleInstagram: '\e801';
 @CmIcon-CircleYoutube: '\e802';
 @CmIcon-CircleVK: '\e803';
+@CmIcon-CircleFacebook: '\e804';
+
+@CmIcon-ChevronDown: '\e900';
+@CmIcon-ChevronUp: '\e901';
+@CmIcon-ChevronLeft: '\e902';
+@CmIcon-ChevronRight: '\e903';
 // /* ************************************************ */
 // /* ******* VARIABLES ******* */
 // /* ************************************************ */
@@ -5318,6 +5324,38 @@ Copyright (c) 2015 Daniel Eden
     }
 }
 
+.cm-i__circle-facebook {
+    &:before {
+        content: @CmIcon-CircleFacebook;
+    }
+}
+
+/* *** SMALL *** */
+
+.cm-i__chevron-down {
+    &:before {
+        content: @CmIcon-ChevronDown;
+    }
+}
+
+.cm-i__chevron-up {
+    &:before {
+        content: @CmIcon-ChevronUp;
+    }
+}
+
+.cm-i__chevron-left {
+    &:before {
+        content: @CmIcon-ChevronLeft;
+    }
+}
+
+.cm-i__chevron-right {
+    &:before {
+        content: @CmIcon-ChevronRight;
+    }
+}
+
 // /* *** MIXINS *** */
 
 .cm-i__size (@size: @CmSize-Medium) {
@@ -5846,6 +5884,11 @@ select {
             &:last-child {
                 margin-right: 0;
             }
+        }
+
+        .label {
+            display: inline-block;
+            vertical-align: top;
         }
     }
 

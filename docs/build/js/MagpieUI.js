@@ -11702,10 +11702,11 @@ cm.define('Com.Menu', {
     'params' : {
         'node' : cm.Node('div'),
         'name' : '',
+        'event' : 'hover',
         'Com.Tooltip' : {
             'className' : 'com__menu-tooltip',
             'top' : 'targetHeight',
-            'targetEvent' : 'click',
+            'targetEvent' : 'hover',
             'hideOnReClick' : true,
             'theme' : false
         }
@@ -11725,9 +11726,14 @@ function(params){
         that.convertEvents(that.params['events']);
         that.getDataNodes(that.params['node']);
         that.getDataConfig(that.params['node']);
+        validateParams();
         render();
         that.addToStack(that.params['node']);
         that.triggerEvent('onRender');
+    };
+
+    var validateParams = function(){
+        that.params['Com.Tooltip']['targetEvent'] = that.params['event'];
     };
 
     var render = function(){

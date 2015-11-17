@@ -3,8 +3,8 @@
 /* ************ FIORA UI: COMMON STYLES ************ */
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?11');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix11') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?11') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?11') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?11#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?13');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix13') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?13') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?13') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?13#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -1020,6 +1020,22 @@
 .cm-i__circle-vk:before {
   content: '\e803';
 }
+.cm-i__circle-facebook:before {
+  content: '\e804';
+}
+/* *** SMALL *** */
+.cm-i__chevron-down:before {
+  content: '\e900';
+}
+.cm-i__chevron-up:before {
+  content: '\e901';
+}
+.cm-i__chevron-left:before {
+  content: '\e902';
+}
+.cm-i__chevron-right:before {
+  content: '\e903';
+}
 /* ******* COMMON: TAGS ******* */
 *,
 *:after,
@@ -1868,6 +1884,14 @@ input[type="submit"].has-icon .icon:last-child,
 input[type="reset"].has-icon .icon:last-child,
 button.has-icon .icon:last-child {
   margin-right: 0;
+}
+.button.has-icon .label,
+input[type="button"].has-icon .label,
+input[type="submit"].has-icon .label,
+input[type="reset"].has-icon .label,
+button.has-icon .label {
+  display: inline-block;
+  vertical-align: top;
 }
 .button.has-icon-medium .icon,
 input[type="button"].has-icon-medium .icon,
@@ -8788,6 +8812,10 @@ button::-moz-focus-inner {
 }
 .com__pagination__bar ul li a.has-icon .icon:last-child {
   margin-right: 0;
+}
+.com__pagination__bar ul li a.has-icon .label {
+  display: inline-block;
+  vertical-align: top;
 }
 .com__pagination__bar ul li a.has-icon-medium .icon {
   margin: -3px 8px 0;
