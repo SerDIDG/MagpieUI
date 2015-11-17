@@ -10603,6 +10603,63 @@ button {
         }
     }
 }
+/* ******* COMPONENT: TOOLTIP ******* */
+
+.com__tooltip {
+    position: absolute;
+    display: none;
+    left: 0;
+    top: 0;
+    z-index: 1001;
+    opacity: 0;
+
+    > .inner {
+        > .title {
+            margin: 0 0 8px;
+
+            &:last-child {
+                margin: 0;
+            }
+
+            .cm__tags {
+                margin: 0;
+            }
+        }
+
+        > .scroll {
+            .cm__scroll-y-a;
+        }
+    }
+}
+
+/* ******* COMPONENT: TOOLTIP: THEMES ******* */
+
+.com__tooltip {
+    &.theme-default {
+        > .inner {
+            .pt__box;
+        }
+    }
+
+    &.theme-black{
+        > .inner {
+            .pt__box--black;
+        }
+    }
+}
+
+/* ******* COMPONENT: TOOLTIP: INNER COMPONENTS ******* */
+
+/* *** ITEMS LIST *** */
+
+.com__tooltip {
+    .pt__listing-items {
+        ul {
+            max-height: none;
+        }
+    }
+}
+
 /* ******* COMPONENTS: AUTOCOMPLETE ******* */
 
 /* *** TOOLTIP *** */
@@ -14058,63 +14115,6 @@ button {
 
 
 }
-/* ******* COMPONENT: TOOLTIP ******* */
-
-.com__tooltip {
-    position: absolute;
-    display: none;
-    left: 0;
-    top: 0;
-    z-index: 1001;
-    opacity: 0;
-
-    > .inner {
-        > .title {
-            margin: 0 0 8px;
-
-            &:last-child {
-                margin: 0;
-            }
-
-            .cm__tags {
-                margin: 0;
-            }
-        }
-
-        > .scroll {
-            .cm__scroll-y-a;
-        }
-    }
-}
-
-/* ******* COMPONENT: TOOLTIP: THEMES ******* */
-
-.com__tooltip {
-    &.theme-default {
-        > .inner {
-            .pt__box;
-        }
-    }
-
-    &.theme-black{
-        > .inner {
-            .pt__box--black;
-        }
-    }
-}
-
-/* ******* COMPONENT: TOOLTIP: INNER COMPONENTS ******* */
-
-/* *** ITEMS LIST *** */
-
-.com__tooltip {
-    .pt__listing-items {
-        ul {
-            max-height: none;
-        }
-    }
-}
-
 /* ******* COMPONENTS: ZOOM ******* */
 
 .com__zoom {

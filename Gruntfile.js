@@ -21,6 +21,7 @@ module.exports = function(grunt) {
                 'src/less/common/**/*.less',
                 'src/less/parts/**/*.less',
                 'src/less/layouts/**/*.less',
+                'src/less/components/Tooltip.less',
                 'src/less/components/**/*.less',
                 '!src/less/index.less',
                 '!src/less/components/old/**/*.less'
