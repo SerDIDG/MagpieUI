@@ -15,8 +15,8 @@
                     Part.Menu();
                     Part.Autoresize(data['node']);
                 })
-                .add('action-menu', function(node){
-                    new Com.ActionMenu({
+                .add('menu', function(node){
+                    new Com.Menu({
                         'node' : node
                     });
                 })
@@ -108,9 +108,9 @@
                     <div class="pt__links">
                         <ul>
                             <li>
-                                <div class="com-action-menu" data-element="action-menu">
-                                    <a data-node="ComActionMenu.button">Actions</a>
-                                    <div class="pt__menu" data-node="ComActionMenu.target">
+                                <div class="com__menu" data-element="menu" data-node="ComMenu:{}:container">
+                                    <a data-node="button">Actions</a>
+                                    <div class="pt__menu" data-node="target">
                                         <ul class="pt__menu-dropdown">
                                             <li><a>Add</a></li>
                                             <li><a>Edit</a></li>
@@ -130,9 +130,9 @@
                     <div class="pt__links">
                         <ul>
                             <li>
-                                <div class="com-action-menu" data-element="action-menu">
-                                    <a data-node="ComActionMenu.button">Actions</a>
-                                    <div class="pt__menu" data-node="ComActionMenu.target">
+                                <div class="com__menu" data-element="menu" data-node="ComMenu:{}:container">
+                                    <a data-node="button">Actions</a>
+                                    <div class="pt__menu" data-node="target">
                                         <ul class="pt__menu-dropdown">
                                             <li><a>Add</a></li>
                                             <li><a>Edit</a></li>
@@ -152,9 +152,9 @@
                     <div class="pt__links">
                         <ul>
                             <li>
-                                <div class="com-action-menu" data-element="action-menu">
-                                    <a data-node="ComActionMenu.button">Actions</a>
-                                    <div class="pt__menu" data-node="ComActionMenu.target">
+                                <div class="com__menu" data-element="menu" data-node="ComMenu:{}:container">
+                                    <a data-node="button">Actions</a>
+                                    <div class="pt__menu" data-node="target">
                                         <ul class="pt__menu-dropdown">
                                             <li><a>Add</a></li>
                                             <li><a>Edit</a></li>

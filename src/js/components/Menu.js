@@ -1,4 +1,4 @@
-cm.define('Com.ActionMenu', {
+cm.define('Com.Menu', {
     'modules' : [
         'Params',
         'Events',
@@ -13,7 +13,7 @@ cm.define('Com.ActionMenu', {
         'node' : cm.Node('div'),
         'name' : '',
         'Com.Tooltip' : {
-            'className' : 'com-action-menu-tooltip',
+            'className' : 'com__menu-tooltip',
             'top' : 'targetHeight',
             'targetEvent' : 'click',
             'hideOnReClick' : true,

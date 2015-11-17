@@ -124,7 +124,7 @@ function(params){
             }, params),
             childNodes;
         // Add mark classes
-        cm.addClass(area['node'], 'pt__dnd-area');
+        cm.addClass(area['node'], 'com__dashboard__area');
         cm.addClass(area['node'], that.params['classes']['area']);
         if(area['isLocked']){
             cm.addClass(area['node'], 'is-locked');
@@ -1006,7 +1006,7 @@ function(params){
     };
 
     var checkPlaceholders = function(areas, params){
-        var additional = 24,
+        var additional = 96,
             top = params['top'] - additional,
             bottom = params['top'] + additional;
         cm.forEach(areas, function(area){

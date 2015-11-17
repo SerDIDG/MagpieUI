@@ -6122,7 +6122,7 @@ button {
 
     .button,
     .browse-button,
-    .com-action-menu {
+    .com__menu {
         max-width: 100%;
         float: right;
         margin: 0 0 0 @CmForm-ButtonsIndent;
@@ -6155,7 +6155,7 @@ button {
     &.left {
         .button,
         .browse-button,
-        .com-action-menu {
+        .com__menu {
             float: left;
             margin: 0 @CmForm-ButtonsIndent 0 0;
         }
@@ -6167,7 +6167,7 @@ button {
 
         .button,
         .browse-button,
-        .com-action-menu {
+        .com__menu {
             float: none;
             display: inline-block;
             margin: 0 0 0 @CmForm-ButtonsIndent;
@@ -6184,7 +6184,7 @@ button {
 
         .button,
         .browse-button,
-        .com-action-menu {
+        .com__menu {
             width: 100%;
             display: block;
             margin: @CmForm-ButtonsIndent 0 0 0;
@@ -6203,7 +6203,7 @@ button {
 
         .button,
         .browse-button,
-        .com-action-menu {
+        .com__menu {
             float: none;
             .mx__flex(1);
 
@@ -7417,7 +7417,7 @@ button {
 
     .button,
     .browse-button,
-    .com-action-menu {
+    .com__menu {
         margin: 0 @buttonIndent;
     }
 
@@ -7435,7 +7435,7 @@ button {
 
         .button,
         .browse-button,
-        .com-action-menu {
+        .com__menu {
             .mx__flex(1);
         }
     }
@@ -7446,7 +7446,7 @@ button {
 
         .button,
         .browse-button,
-        .com-action-menu {
+        .com__menu {
             .cm__text-nowrap;
             width: 100%;
             display: block;
@@ -10560,37 +10560,6 @@ button {
         }
     }
 }
-/* ******* COMPONENTS: ACTION MENU ******* */
-
-.com-action-menu {
-    .button {
-        margin: 0 !important;
-    }
-
-    .pt__menu {
-        display: none;
-    }
-}
-
-/* *** TOOLTIP *** */
-
-.com__tooltip {
-    &.com-action-menu-tooltip {
-        > .inner {
-            > .scroll {
-                overflow: visible;
-            }
-        }
-
-        .pt__menu {
-            .pt__menu-dropdown {
-                .pt__menu-dropdown--base;
-                .pt__menu-dropdown--active;
-                position: static;
-            }
-        }
-    }
-}
 /* ******* COMPONENTS: AUTOCOMPLETE ******* */
 
 /* *** TOOLTIP *** */
@@ -12064,6 +12033,37 @@ button {
 
         > .inner {
             padding: @CmIndent-XSmall;
+        }
+    }
+}
+/* ******* COMPONENTS: MENU ******* */
+
+.com__menu {
+    .button {
+        margin: 0 !important;
+    }
+
+    .pt__menu {
+        display: none;
+    }
+}
+
+/* *** TOOLTIP *** */
+
+.com__tooltip {
+    &.com__menu-tooltip {
+        > .inner {
+            > .scroll {
+                overflow: visible;
+            }
+        }
+
+        .pt__menu {
+            .pt__menu-dropdown {
+                .pt__menu-dropdown--base;
+                .pt__menu-dropdown--active;
+                position: static;
+            }
         }
     }
 }

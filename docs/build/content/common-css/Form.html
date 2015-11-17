@@ -40,8 +40,8 @@
                 .add('colorpicker', function(node){
                     new Com.ColorPicker({'input' : node});
                 })
-                .add('action-menu', function(node){
-                    new Com.ActionMenu({
+                .add('menu', function(node){
+                    new Com.Menu({
                         'node' : node
                     });
                 })
@@ -453,11 +453,11 @@
     <li data-node="tabs:[]:container" data-config='{"id" : "buttons", "title" : "Buttons"}'>
          <div class="form">
              <div class="btn-wrap left">
-                 <div class="com-action-menu" data-element="action-menu">
-                     <div class="button has-icon has-icon-small" data-node="ComActionMenu.button">
+                 <div class="com__menu" data-element="menu" data-node="ComMenu:{}:container">
+                     <div class="button has-icon has-icon-small" data-node="button">
                          <div class="icon small settings-white"></div>Actions
                      </div>
-                     <div class="pt__menu" data-node="ComActionMenu.target">
+                     <div class="pt__menu" data-node="target">
                          <ul class="pt__menu-dropdown">
                              <li><a>Edit Properties</a></li>
                              <li><a>Edit Content</a></li>

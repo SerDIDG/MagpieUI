@@ -54,7 +54,6 @@ cm.define('Com.Dialog', {
 function(params){
     var that = this,
         contentHeight,
-        resizeInt,
         nodes = {},
         anim = {};
 
@@ -154,6 +153,8 @@ function(params){
                 that.isFocus = false;
             }
         });
+        // Resize
+        animFrame(resize);
     };
 
     var renderTitle = function(title){
@@ -203,91 +204,94 @@ function(params){
     };
 
     var resize = function(){
-        var winHeight = nodes['container'].offsetHeight - (that.params['indentY'] * 2),
-            winWidth = nodes['container'].offsetWidth - (that.params['indentX'] * 2),
-            windowHeight = nodes['window'].offsetHeight,
-            windowWidth = nodes['window'].offsetWidth,
-            insetHeight = nodes['inner'].offsetHeight,
+        if(that.isOpen){
+            var winHeight = nodes['container'].offsetHeight - (that.params['indentY'] * 2),
+                winWidth = nodes['container'].offsetWidth - (that.params['indentX'] * 2),
+                windowHeight = nodes['window'].offsetHeight,
+                windowWidth = nodes['window'].offsetWidth,
+                insetHeight = nodes['inner'].offsetHeight,
 
-            AWidth,
-            AHeight,
-            NAHeight,
+                AWidth,
+                AHeight,
+                NAHeight,
 
-            maxHeight,
-            minHeight,
-            setHeight,
-            setWidth;
-        // Calculate available width / height
-        AHeight = winHeight
+                maxHeight,
+                minHeight,
+                setHeight,
+                setWidth;
+            // Calculate available width / height
+            AHeight = winHeight
                 - (nodes['title'] && nodes['title'].offsetHeight || 0)
                 - (nodes['buttons'] && nodes['buttons'].offsetHeight || 0)
                 - cm.getIndentY(nodes['windowInner'])
                 - cm.getIndentY(nodes['descr']);
-        NAHeight = winHeight - AHeight;
-        AWidth = winWidth;
-        // Calculate min / max height
-        if(that.params['maxHeight'] == 'auto'){
-            maxHeight = AHeight;
-        }else if(/%/.test(that.params['maxHeight'])){
-            maxHeight = ((winHeight / 100) * parseFloat(that.params['maxHeight'])) - NAHeight;
-        }else{
-            if(/px/.test(that.params['maxHeight'])){
-                that.params['maxHeight'] = parseFloat(that.params['maxHeight']);
-            }
-            maxHeight = that.params['maxHeight'] - NAHeight;
-        }
-        if(that.params['minHeight'] == 'auto'){
-            minHeight = 0;
-        }else if(/%/.test(that.params['minHeight'])){
-            minHeight = ((winHeight / 100) * parseFloat(that.params['minHeight'])) - NAHeight;
-        }else{
-            if(/px/.test(that.params['minHeight'])){
-                that.params['minHeight'] = parseFloat(that.params['minHeight']);
-            }
-            minHeight = that.params['minHeight'] - NAHeight;
-        }
-        // Calculate height
-        if(that.params['height'] == 'auto'){
-            if(insetHeight < minHeight){
-                setHeight = minHeight;
-            }else if(insetHeight > maxHeight){
-                setHeight = maxHeight;
+            NAHeight = winHeight - AHeight;
+            AWidth = winWidth;
+            // Calculate min / max height
+            if(that.params['maxHeight'] == 'auto'){
+                maxHeight = AHeight;
+            }else if(/%/.test(that.params['maxHeight'])){
+                maxHeight = ((winHeight / 100) * parseFloat(that.params['maxHeight'])) - NAHeight;
             }else{
-                setHeight = insetHeight;
+                if(/px/.test(that.params['maxHeight'])){
+                    that.params['maxHeight'] = parseFloat(that.params['maxHeight']);
+                }
+                maxHeight = that.params['maxHeight'] - NAHeight;
             }
-        }else if(/%/.test(that.params['height'])){
-            setHeight = ((winHeight / 100) * parseFloat(that.params['height'])) - NAHeight;
-        }else{
-            if(/px/.test(that.params['height'])){
-                that.params['height'] = parseFloat(that.params['height']);
+            if(that.params['minHeight'] == 'auto'){
+                minHeight = 0;
+            }else if(/%/.test(that.params['minHeight'])){
+                minHeight = ((winHeight / 100) * parseFloat(that.params['minHeight'])) - NAHeight;
+            }else{
+                if(/px/.test(that.params['minHeight'])){
+                    that.params['minHeight'] = parseFloat(that.params['minHeight']);
+                }
+                minHeight = that.params['minHeight'] - NAHeight;
             }
-            setHeight = that.params['height'] - NAHeight;
-        }
-        setHeight = Math.min(Math.max(setHeight, 0), AHeight);
-        // Calculate width
-        if(/%/.test(that.params['width'])){
-            setWidth = ((winWidth / 100) * parseFloat(that.params['width']));
-        }else{
-            if(/px/.test(that.params['width'])){
-                that.params['width'] = parseFloat(that.params['width']);
+            // Calculate height
+            if(that.params['height'] == 'auto'){
+                if(insetHeight < minHeight){
+                    setHeight = minHeight;
+                }else if(insetHeight > maxHeight){
+                    setHeight = maxHeight;
+                }else{
+                    setHeight = insetHeight;
+                }
+            }else if(/%/.test(that.params['height'])){
+                setHeight = ((winHeight / 100) * parseFloat(that.params['height'])) - NAHeight;
+            }else{
+                if(/px/.test(that.params['height'])){
+                    that.params['height'] = parseFloat(that.params['height']);
+                }
+                setHeight = that.params['height'] - NAHeight;
             }
-            setWidth = that.params['width'];
-        }
-        setWidth = Math.min(setWidth, AWidth);
-        // Set window height
-        if(windowHeight != setHeight + NAHeight || contentHeight != insetHeight){
-            contentHeight = insetHeight;
-            if(insetHeight <= setHeight){
-                cm.removeClass(nodes['scroll'], 'is-scroll');
-            }else if(that.params['scroll']){
-                cm.addClass(nodes['scroll'], 'is-scroll');
+            setHeight = Math.min(Math.max(setHeight, 0), AHeight);
+            // Calculate width
+            if(/%/.test(that.params['width'])){
+                setWidth = ((winWidth / 100) * parseFloat(that.params['width']));
+            }else{
+                if(/px/.test(that.params['width'])){
+                    that.params['width'] = parseFloat(that.params['width']);
+                }
+                setWidth = that.params['width'];
             }
-            nodes['scroll'].style.height = [setHeight, 'px'].join('');
+            setWidth = Math.min(setWidth, AWidth);
+            // Set window height
+            if(windowHeight != setHeight + NAHeight || contentHeight != insetHeight){
+                contentHeight = insetHeight;
+                if(insetHeight <= setHeight){
+                    cm.removeClass(nodes['scroll'], 'is-scroll');
+                }else if(that.params['scroll']){
+                    cm.addClass(nodes['scroll'], 'is-scroll');
+                }
+                nodes['scroll'].style.height = [setHeight, 'px'].join('');
+            }
+            // Set window width
+            if(windowWidth != setWidth){
+                nodes['window'].style.width = [setWidth, 'px'].join('')
+            }
         }
-        // Set window width
-        if(windowWidth != setWidth){
-            nodes['window'].style.width = [setWidth, 'px'].join('')
-        }
+        animFrame(resize);
     };
 
     var open = function(){
@@ -297,8 +301,6 @@ function(params){
                 that.params['container'].appendChild(nodes['container']);
             }
             nodes['container'].style.display = 'block';
-            // Resize interval, will be removed on close
-            resizeInt = setInterval(resize, 5);
             // Show / Hide Document Scroll
             if(!that.params['documentScroll']){
                 cm.addClass(cm.getDocumentHtml(), 'cm__scroll--none');
@@ -318,8 +320,6 @@ function(params){
     var close = function(){
         if(that.isOpen){
             that.isOpen = false;
-            // Remove resize interval
-            resizeInt && clearInterval(resizeInt);
             // Remove close event on Esc press
             cm.removeEvent(window, 'keydown', windowClickEvent);
             // Show / Hide Document Scroll
@@ -342,8 +342,7 @@ function(params){
     };
 
     var remove = function(){
-        // Remove resize interval
-        resizeInt && clearInterval(resizeInt);
+        that.isOpen = false;
         // Remove dialog container node
         cm.remove(nodes['container']);
     };

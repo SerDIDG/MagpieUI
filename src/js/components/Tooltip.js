@@ -35,7 +35,6 @@ cm.define('Com.Tooltip', {
 },
 function(params){
     var that = this,
-        checkInt,
         anim;
     
     that.nodes = {};
@@ -105,6 +104,8 @@ function(params){
             };
         }
         setTargetEvent();
+        // Check position
+        animFrame(getPosition);
     };
 
     var targetEvent = function(){
@@ -144,11 +145,8 @@ function(params){
             that.isShow = true;
             // Append child tooltip into body and set position
             that.params['container'].appendChild(that.nodes['container']);
-            getPosition();
             // Show tooltip
             that.nodes['container'].style.display = 'block';
-            // Check position
-            checkInt = setInterval(getPosition, 5);
             // Animate
             anim.go({'style' : {'opacity' : 1}, 'duration' : immediately? 0 : that.params['duration'], 'onStop' : function(){
                 that.triggerEvent('onShow');
@@ -172,8 +170,6 @@ function(params){
     var hide = function(immediately){
         if(that.isShow){
             that.isShow = false;
-            // Remove event - Check position
-            checkInt && clearInterval(checkInt);
             // Remove document target event
             if(that.params['hideOnOut']){
                 switch(that.params['targetEvent']){
@@ -197,92 +193,95 @@ function(params){
     };
 
     var getPosition = function(){
-        var targetWidth =  that.params['target'].offsetWidth,
-            targetHeight = that.params['target'].offsetHeight,
-            selfHeight = that.nodes['container'].offsetHeight,
-            selfWidth = that.nodes['container'].offsetWidth,
-            pageSize = cm.getPageSize(),
-            scrollTop = cm.getScrollTop(window),
-            scrollLeft = cm.getScrollLeft(window);
-        // Calculate size
-        (function(){
-            if(that.params['width'] != 'auto'){
-                var width = eval(
-                    that.params['width']
-                        .toString()
-                        .replace('targetWidth', targetWidth)
-                );
-                if(width != selfWidth){
-                    that.nodes['container'].style.width =  [width, 'px'].join('');
+        if(that.isShow){
+            var targetWidth =  that.params['target'].offsetWidth,
+                targetHeight = that.params['target'].offsetHeight,
+                selfHeight = that.nodes['container'].offsetHeight,
+                selfWidth = that.nodes['container'].offsetWidth,
+                pageSize = cm.getPageSize(),
+                scrollTop = cm.getScrollTop(window),
+                scrollLeft = cm.getScrollLeft(window);
+            // Calculate size
+            (function(){
+                if(that.params['width'] != 'auto'){
+                    var width = eval(
+                        that.params['width']
+                            .toString()
+                            .replace('targetWidth', targetWidth)
+                    );
+                    if(width != selfWidth){
+                        that.nodes['container'].style.width =  [width, 'px'].join('');
+                    }
                 }
-            }
-        })();
-        // Calculate position
-        (function(){
-            var top = cm.getRealY(that.params['target']),
-                topAdd = eval(
-                    that.params['top']
-                        .toString()
-                        .replace('targetHeight', targetHeight)
-                        .replace('selfHeight', selfHeight)
-                ),
-                left =  cm.getRealX(that.params['target']),
-                leftAdd = eval(
-                    that.params['left']
-                        .toString()
-                        .replace('targetWidth', targetWidth)
-                        .replace('selfWidth', selfWidth)
-                ),
-                positionTop,
-                positionLeft;
-            // Calculate adaptive or static vertical position
-            if(that.params['adaptiveY']){
-                positionTop = Math.max(
-                    Math.min(
-                        ((top + topAdd + selfHeight > pageSize['winHeight'])
-                            ? (top - topAdd - selfHeight + targetHeight)
-                            : (top + topAdd)
-                        ),
-                        (pageSize['winHeight'] - selfHeight)
+            })();
+            // Calculate position
+            (function(){
+                var top = cm.getRealY(that.params['target']),
+                    topAdd = eval(
+                        that.params['top']
+                            .toString()
+                            .replace('targetHeight', targetHeight)
+                            .replace('selfHeight', selfHeight)
                     ),
-                    0
-                );
-            }else{
-                positionTop = top + topAdd;
-            }
-            // Calculate adaptive or static horizontal position
-            if(that.params['adaptiveX']){
-                positionLeft = Math.max(
-                    Math.min(
-                        ((left + leftAdd + selfWidth > pageSize['winWidth'])
-                            ? (left - leftAdd - selfWidth + targetWidth)
-                            : (left + leftAdd)
-                        ),
-                        (pageSize['winWidth'] - selfWidth)
+                    left =  cm.getRealX(that.params['target']),
+                    leftAdd = eval(
+                        that.params['left']
+                            .toString()
+                            .replace('targetWidth', targetWidth)
+                            .replace('selfWidth', selfWidth)
                     ),
-                    0
-                );
-            }else{
-                positionLeft = left + leftAdd;
-            }
-            // Fix scroll position for absolute
-            if(that.params['position'] == 'absolute'){
-                if(that.params['container'] == document.body){
-                    positionTop += scrollTop;
-                    positionLeft += scrollLeft;
+                    positionTop,
+                    positionLeft;
+                // Calculate adaptive or static vertical position
+                if(that.params['adaptiveY']){
+                    positionTop = Math.max(
+                        Math.min(
+                            ((top + topAdd + selfHeight > pageSize['winHeight'])
+                                    ? (top - topAdd - selfHeight + targetHeight)
+                                    : (top + topAdd)
+                            ),
+                            (pageSize['winHeight'] - selfHeight)
+                        ),
+                        0
+                    );
                 }else{
-                    positionTop -= cm.getRealY(that.params['container']);
-                    positionLeft -= cm.getRealX(that.params['container']);
+                    positionTop = top + topAdd;
                 }
-            }
-            // Apply styles
-            if(positionTop != that.nodes['container'].offsetTop){
-                that.nodes['container'].style.top =  [positionTop, 'px'].join('');
-            }
-            if(positionLeft != that.nodes['container'].offsetLeft){
-                that.nodes['container'].style.left = [positionLeft, 'px'].join('');
-            }
-        })();
+                // Calculate adaptive or static horizontal position
+                if(that.params['adaptiveX']){
+                    positionLeft = Math.max(
+                        Math.min(
+                            ((left + leftAdd + selfWidth > pageSize['winWidth'])
+                                    ? (left - leftAdd - selfWidth + targetWidth)
+                                    : (left + leftAdd)
+                            ),
+                            (pageSize['winWidth'] - selfWidth)
+                        ),
+                        0
+                    );
+                }else{
+                    positionLeft = left + leftAdd;
+                }
+                // Fix scroll position for absolute
+                if(that.params['position'] == 'absolute'){
+                    if(that.params['container'] == document.body){
+                        positionTop += scrollTop;
+                        positionLeft += scrollLeft;
+                    }else{
+                        positionTop -= cm.getRealY(that.params['container']);
+                        positionLeft -= cm.getRealX(that.params['container']);
+                    }
+                }
+                // Apply styles
+                if(positionTop != that.nodes['container'].offsetTop){
+                    that.nodes['container'].style.top =  [positionTop, 'px'].join('');
+                }
+                if(positionLeft != that.nodes['container'].offsetLeft){
+                    that.nodes['container'].style.left = [positionLeft, 'px'].join('');
+                }
+            })();
+        }
+        animFrame(getPosition);
     };
 
     var bodyEvent = function(e){

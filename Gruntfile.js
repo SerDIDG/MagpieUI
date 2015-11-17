@@ -43,8 +43,7 @@ module.exports = function(grunt) {
                 'docs/build'
             ],
             post : [
-                'temp',
-                'lib'
+                'temp'
             ]
         },
 

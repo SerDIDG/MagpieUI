@@ -251,7 +251,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.8.6',
+        '_version' : '3.8.7',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -4102,74 +4102,6 @@ cm.init = function(){
 };
 
 cm.onReady(cm.init, false);
-cm.define('Com.ActionMenu', {
-    'modules' : [
-        'Params',
-        'Events',
-        'DataConfig',
-        'DataNodes',
-        'Stack'
-    ],
-    'events' : [
-        'onRender'
-    ],
-    'params' : {
-        'node' : cm.Node('div'),
-        'name' : '',
-        'Com.Tooltip' : {
-            'className' : 'com-action-menu-tooltip',
-            'top' : 'targetHeight',
-            'targetEvent' : 'click',
-            'hideOnReClick' : true,
-            'theme' : false
-        }
-    }
-},
-function(params){
-    var that = this;
-
-    that.nodes = {
-        'button' : cm.Node('div'),
-        'target' : cm.Node('div')
-    };
-    that.components = {};
-
-    var init = function(){
-        that.setParams(params);
-        that.convertEvents(that.params['events']);
-        that.getDataNodes(that.params['node']);
-        that.getDataConfig(that.params['node']);
-        render();
-        that.addToStack(that.params['node']);
-        that.triggerEvent('onRender');
-    };
-
-    var render = function(){
-        // Tooltip
-        cm.getConstructor('Com.Tooltip', function(classConstructor){
-            that.components['tooltip'] = new classConstructor(
-                cm.merge(that.params['Com.Tooltip'], {
-                    'target' : that.nodes['button'],
-                    'content' : that.nodes['target'],
-                    'events' : {
-                        'onShowStart' : function(){
-                            cm.addClass(that.params['node'], 'active');
-                            cm.addClass(that.nodes['button'], 'active');
-                        },
-                        'onHideStart' : function(){
-                            cm.removeClass(that.params['node'], 'active');
-                            cm.removeClass(that.nodes['button'], 'active');
-                        }
-                    }
-                })
-            );
-        });
-    };
-
-    /* ******* PUBLIC ******* */
-
-    init();
-});
 cm.define('Com.Autocomplete', {
     'modules' : [
         'Params',
@@ -6537,7 +6469,7 @@ function(params){
             }, params),
             childNodes;
         // Add mark classes
-        cm.addClass(area['node'], 'pt__dnd-area');
+        cm.addClass(area['node'], 'com__dashboard__area');
         cm.addClass(area['node'], that.params['classes']['area']);
         if(area['isLocked']){
             cm.addClass(area['node'], 'is-locked');
@@ -7419,7 +7351,7 @@ function(params){
     };
 
     var checkPlaceholders = function(areas, params){
-        var additional = 24,
+        var additional = 96,
             top = params['top'] - additional,
             bottom = params['top'] + additional;
         cm.forEach(areas, function(area){
@@ -8625,7 +8557,6 @@ cm.define('Com.Dialog', {
 function(params){
     var that = this,
         contentHeight,
-        resizeInt,
         nodes = {},
         anim = {};
 
@@ -8725,6 +8656,8 @@ function(params){
                 that.isFocus = false;
             }
         });
+        // Resize
+        animFrame(resize);
     };
 
     var renderTitle = function(title){
@@ -8774,91 +8707,94 @@ function(params){
     };
 
     var resize = function(){
-        var winHeight = nodes['container'].offsetHeight - (that.params['indentY'] * 2),
-            winWidth = nodes['container'].offsetWidth - (that.params['indentX'] * 2),
-            windowHeight = nodes['window'].offsetHeight,
-            windowWidth = nodes['window'].offsetWidth,
-            insetHeight = nodes['inner'].offsetHeight,
+        if(that.isOpen){
+            var winHeight = nodes['container'].offsetHeight - (that.params['indentY'] * 2),
+                winWidth = nodes['container'].offsetWidth - (that.params['indentX'] * 2),
+                windowHeight = nodes['window'].offsetHeight,
+                windowWidth = nodes['window'].offsetWidth,
+                insetHeight = nodes['inner'].offsetHeight,
 
-            AWidth,
-            AHeight,
-            NAHeight,
+                AWidth,
+                AHeight,
+                NAHeight,
 
-            maxHeight,
-            minHeight,
-            setHeight,
-            setWidth;
-        // Calculate available width / height
-        AHeight = winHeight
+                maxHeight,
+                minHeight,
+                setHeight,
+                setWidth;
+            // Calculate available width / height
+            AHeight = winHeight
                 - (nodes['title'] && nodes['title'].offsetHeight || 0)
                 - (nodes['buttons'] && nodes['buttons'].offsetHeight || 0)
                 - cm.getIndentY(nodes['windowInner'])
                 - cm.getIndentY(nodes['descr']);
-        NAHeight = winHeight - AHeight;
-        AWidth = winWidth;
-        // Calculate min / max height
-        if(that.params['maxHeight'] == 'auto'){
-            maxHeight = AHeight;
-        }else if(/%/.test(that.params['maxHeight'])){
-            maxHeight = ((winHeight / 100) * parseFloat(that.params['maxHeight'])) - NAHeight;
-        }else{
-            if(/px/.test(that.params['maxHeight'])){
-                that.params['maxHeight'] = parseFloat(that.params['maxHeight']);
-            }
-            maxHeight = that.params['maxHeight'] - NAHeight;
-        }
-        if(that.params['minHeight'] == 'auto'){
-            minHeight = 0;
-        }else if(/%/.test(that.params['minHeight'])){
-            minHeight = ((winHeight / 100) * parseFloat(that.params['minHeight'])) - NAHeight;
-        }else{
-            if(/px/.test(that.params['minHeight'])){
-                that.params['minHeight'] = parseFloat(that.params['minHeight']);
-            }
-            minHeight = that.params['minHeight'] - NAHeight;
-        }
-        // Calculate height
-        if(that.params['height'] == 'auto'){
-            if(insetHeight < minHeight){
-                setHeight = minHeight;
-            }else if(insetHeight > maxHeight){
-                setHeight = maxHeight;
+            NAHeight = winHeight - AHeight;
+            AWidth = winWidth;
+            // Calculate min / max height
+            if(that.params['maxHeight'] == 'auto'){
+                maxHeight = AHeight;
+            }else if(/%/.test(that.params['maxHeight'])){
+                maxHeight = ((winHeight / 100) * parseFloat(that.params['maxHeight'])) - NAHeight;
             }else{
-                setHeight = insetHeight;
+                if(/px/.test(that.params['maxHeight'])){
+                    that.params['maxHeight'] = parseFloat(that.params['maxHeight']);
+                }
+                maxHeight = that.params['maxHeight'] - NAHeight;
             }
-        }else if(/%/.test(that.params['height'])){
-            setHeight = ((winHeight / 100) * parseFloat(that.params['height'])) - NAHeight;
-        }else{
-            if(/px/.test(that.params['height'])){
-                that.params['height'] = parseFloat(that.params['height']);
+            if(that.params['minHeight'] == 'auto'){
+                minHeight = 0;
+            }else if(/%/.test(that.params['minHeight'])){
+                minHeight = ((winHeight / 100) * parseFloat(that.params['minHeight'])) - NAHeight;
+            }else{
+                if(/px/.test(that.params['minHeight'])){
+                    that.params['minHeight'] = parseFloat(that.params['minHeight']);
+                }
+                minHeight = that.params['minHeight'] - NAHeight;
             }
-            setHeight = that.params['height'] - NAHeight;
-        }
-        setHeight = Math.min(Math.max(setHeight, 0), AHeight);
-        // Calculate width
-        if(/%/.test(that.params['width'])){
-            setWidth = ((winWidth / 100) * parseFloat(that.params['width']));
-        }else{
-            if(/px/.test(that.params['width'])){
-                that.params['width'] = parseFloat(that.params['width']);
+            // Calculate height
+            if(that.params['height'] == 'auto'){
+                if(insetHeight < minHeight){
+                    setHeight = minHeight;
+                }else if(insetHeight > maxHeight){
+                    setHeight = maxHeight;
+                }else{
+                    setHeight = insetHeight;
+                }
+            }else if(/%/.test(that.params['height'])){
+                setHeight = ((winHeight / 100) * parseFloat(that.params['height'])) - NAHeight;
+            }else{
+                if(/px/.test(that.params['height'])){
+                    that.params['height'] = parseFloat(that.params['height']);
+                }
+                setHeight = that.params['height'] - NAHeight;
             }
-            setWidth = that.params['width'];
-        }
-        setWidth = Math.min(setWidth, AWidth);
-        // Set window height
-        if(windowHeight != setHeight + NAHeight || contentHeight != insetHeight){
-            contentHeight = insetHeight;
-            if(insetHeight <= setHeight){
-                cm.removeClass(nodes['scroll'], 'is-scroll');
-            }else if(that.params['scroll']){
-                cm.addClass(nodes['scroll'], 'is-scroll');
+            setHeight = Math.min(Math.max(setHeight, 0), AHeight);
+            // Calculate width
+            if(/%/.test(that.params['width'])){
+                setWidth = ((winWidth / 100) * parseFloat(that.params['width']));
+            }else{
+                if(/px/.test(that.params['width'])){
+                    that.params['width'] = parseFloat(that.params['width']);
+                }
+                setWidth = that.params['width'];
             }
-            nodes['scroll'].style.height = [setHeight, 'px'].join('');
+            setWidth = Math.min(setWidth, AWidth);
+            // Set window height
+            if(windowHeight != setHeight + NAHeight || contentHeight != insetHeight){
+                contentHeight = insetHeight;
+                if(insetHeight <= setHeight){
+                    cm.removeClass(nodes['scroll'], 'is-scroll');
+                }else if(that.params['scroll']){
+                    cm.addClass(nodes['scroll'], 'is-scroll');
+                }
+                nodes['scroll'].style.height = [setHeight, 'px'].join('');
+            }
+            // Set window width
+            if(windowWidth != setWidth){
+                nodes['window'].style.width = [setWidth, 'px'].join('')
+            }
         }
-        // Set window width
-        if(windowWidth != setWidth){
-            nodes['window'].style.width = [setWidth, 'px'].join('')
-        }
+        animFrame(resize);
     };
 
     var open = function(){
@@ -8868,8 +8804,6 @@ function(params){
                 that.params['container'].appendChild(nodes['container']);
             }
             nodes['container'].style.display = 'block';
-            // Resize interval, will be removed on close
-            resizeInt = setInterval(resize, 5);
             // Show / Hide Document Scroll
             if(!that.params['documentScroll']){
                 cm.addClass(cm.getDocumentHtml(), 'cm__scroll--none');
@@ -8889,8 +8823,6 @@ function(params){
     var close = function(){
         if(that.isOpen){
             that.isOpen = false;
-            // Remove resize interval
-            resizeInt && clearInterval(resizeInt);
             // Remove close event on Esc press
             cm.removeEvent(window, 'keydown', windowClickEvent);
             // Show / Hide Document Scroll
@@ -8913,8 +8845,7 @@ function(params){
     };
 
     var remove = function(){
-        // Remove resize interval
-        resizeInt && clearInterval(resizeInt);
+        that.isOpen = false;
         // Remove dialog container node
         cm.remove(nodes['container']);
     };
@@ -11754,6 +11685,74 @@ function(params){
         }
         return that;
     };
+
+    init();
+});
+cm.define('Com.Menu', {
+    'modules' : [
+        'Params',
+        'Events',
+        'DataConfig',
+        'DataNodes',
+        'Stack'
+    ],
+    'events' : [
+        'onRender'
+    ],
+    'params' : {
+        'node' : cm.Node('div'),
+        'name' : '',
+        'Com.Tooltip' : {
+            'className' : 'com__menu-tooltip',
+            'top' : 'targetHeight',
+            'targetEvent' : 'click',
+            'hideOnReClick' : true,
+            'theme' : false
+        }
+    }
+},
+function(params){
+    var that = this;
+
+    that.nodes = {
+        'button' : cm.Node('div'),
+        'target' : cm.Node('div')
+    };
+    that.components = {};
+
+    var init = function(){
+        that.setParams(params);
+        that.convertEvents(that.params['events']);
+        that.getDataNodes(that.params['node']);
+        that.getDataConfig(that.params['node']);
+        render();
+        that.addToStack(that.params['node']);
+        that.triggerEvent('onRender');
+    };
+
+    var render = function(){
+        // Tooltip
+        cm.getConstructor('Com.Tooltip', function(classConstructor){
+            that.components['tooltip'] = new classConstructor(
+                cm.merge(that.params['Com.Tooltip'], {
+                    'target' : that.nodes['button'],
+                    'content' : that.nodes['target'],
+                    'events' : {
+                        'onShowStart' : function(){
+                            cm.addClass(that.params['node'], 'active');
+                            cm.addClass(that.nodes['button'], 'active');
+                        },
+                        'onHideStart' : function(){
+                            cm.removeClass(that.params['node'], 'active');
+                            cm.removeClass(that.nodes['button'], 'active');
+                        }
+                    }
+                })
+            );
+        });
+    };
+
+    /* ******* PUBLIC ******* */
 
     init();
 });
@@ -17194,7 +17193,6 @@ cm.define('Com.Tooltip', {
 },
 function(params){
     var that = this,
-        checkInt,
         anim;
     
     that.nodes = {};
@@ -17264,6 +17262,8 @@ function(params){
             };
         }
         setTargetEvent();
+        // Check position
+        animFrame(getPosition);
     };
 
     var targetEvent = function(){
@@ -17303,11 +17303,8 @@ function(params){
             that.isShow = true;
             // Append child tooltip into body and set position
             that.params['container'].appendChild(that.nodes['container']);
-            getPosition();
             // Show tooltip
             that.nodes['container'].style.display = 'block';
-            // Check position
-            checkInt = setInterval(getPosition, 5);
             // Animate
             anim.go({'style' : {'opacity' : 1}, 'duration' : immediately? 0 : that.params['duration'], 'onStop' : function(){
                 that.triggerEvent('onShow');
@@ -17331,8 +17328,6 @@ function(params){
     var hide = function(immediately){
         if(that.isShow){
             that.isShow = false;
-            // Remove event - Check position
-            checkInt && clearInterval(checkInt);
             // Remove document target event
             if(that.params['hideOnOut']){
                 switch(that.params['targetEvent']){
@@ -17356,92 +17351,95 @@ function(params){
     };
 
     var getPosition = function(){
-        var targetWidth =  that.params['target'].offsetWidth,
-            targetHeight = that.params['target'].offsetHeight,
-            selfHeight = that.nodes['container'].offsetHeight,
-            selfWidth = that.nodes['container'].offsetWidth,
-            pageSize = cm.getPageSize(),
-            scrollTop = cm.getScrollTop(window),
-            scrollLeft = cm.getScrollLeft(window);
-        // Calculate size
-        (function(){
-            if(that.params['width'] != 'auto'){
-                var width = eval(
-                    that.params['width']
-                        .toString()
-                        .replace('targetWidth', targetWidth)
-                );
-                if(width != selfWidth){
-                    that.nodes['container'].style.width =  [width, 'px'].join('');
+        if(that.isShow){
+            var targetWidth =  that.params['target'].offsetWidth,
+                targetHeight = that.params['target'].offsetHeight,
+                selfHeight = that.nodes['container'].offsetHeight,
+                selfWidth = that.nodes['container'].offsetWidth,
+                pageSize = cm.getPageSize(),
+                scrollTop = cm.getScrollTop(window),
+                scrollLeft = cm.getScrollLeft(window);
+            // Calculate size
+            (function(){
+                if(that.params['width'] != 'auto'){
+                    var width = eval(
+                        that.params['width']
+                            .toString()
+                            .replace('targetWidth', targetWidth)
+                    );
+                    if(width != selfWidth){
+                        that.nodes['container'].style.width =  [width, 'px'].join('');
+                    }
                 }
-            }
-        })();
-        // Calculate position
-        (function(){
-            var top = cm.getRealY(that.params['target']),
-                topAdd = eval(
-                    that.params['top']
-                        .toString()
-                        .replace('targetHeight', targetHeight)
-                        .replace('selfHeight', selfHeight)
-                ),
-                left =  cm.getRealX(that.params['target']),
-                leftAdd = eval(
-                    that.params['left']
-                        .toString()
-                        .replace('targetWidth', targetWidth)
-                        .replace('selfWidth', selfWidth)
-                ),
-                positionTop,
-                positionLeft;
-            // Calculate adaptive or static vertical position
-            if(that.params['adaptiveY']){
-                positionTop = Math.max(
-                    Math.min(
-                        ((top + topAdd + selfHeight > pageSize['winHeight'])
-                            ? (top - topAdd - selfHeight + targetHeight)
-                            : (top + topAdd)
-                        ),
-                        (pageSize['winHeight'] - selfHeight)
+            })();
+            // Calculate position
+            (function(){
+                var top = cm.getRealY(that.params['target']),
+                    topAdd = eval(
+                        that.params['top']
+                            .toString()
+                            .replace('targetHeight', targetHeight)
+                            .replace('selfHeight', selfHeight)
                     ),
-                    0
-                );
-            }else{
-                positionTop = top + topAdd;
-            }
-            // Calculate adaptive or static horizontal position
-            if(that.params['adaptiveX']){
-                positionLeft = Math.max(
-                    Math.min(
-                        ((left + leftAdd + selfWidth > pageSize['winWidth'])
-                            ? (left - leftAdd - selfWidth + targetWidth)
-                            : (left + leftAdd)
-                        ),
-                        (pageSize['winWidth'] - selfWidth)
+                    left =  cm.getRealX(that.params['target']),
+                    leftAdd = eval(
+                        that.params['left']
+                            .toString()
+                            .replace('targetWidth', targetWidth)
+                            .replace('selfWidth', selfWidth)
                     ),
-                    0
-                );
-            }else{
-                positionLeft = left + leftAdd;
-            }
-            // Fix scroll position for absolute
-            if(that.params['position'] == 'absolute'){
-                if(that.params['container'] == document.body){
-                    positionTop += scrollTop;
-                    positionLeft += scrollLeft;
+                    positionTop,
+                    positionLeft;
+                // Calculate adaptive or static vertical position
+                if(that.params['adaptiveY']){
+                    positionTop = Math.max(
+                        Math.min(
+                            ((top + topAdd + selfHeight > pageSize['winHeight'])
+                                    ? (top - topAdd - selfHeight + targetHeight)
+                                    : (top + topAdd)
+                            ),
+                            (pageSize['winHeight'] - selfHeight)
+                        ),
+                        0
+                    );
                 }else{
-                    positionTop -= cm.getRealY(that.params['container']);
-                    positionLeft -= cm.getRealX(that.params['container']);
+                    positionTop = top + topAdd;
                 }
-            }
-            // Apply styles
-            if(positionTop != that.nodes['container'].offsetTop){
-                that.nodes['container'].style.top =  [positionTop, 'px'].join('');
-            }
-            if(positionLeft != that.nodes['container'].offsetLeft){
-                that.nodes['container'].style.left = [positionLeft, 'px'].join('');
-            }
-        })();
+                // Calculate adaptive or static horizontal position
+                if(that.params['adaptiveX']){
+                    positionLeft = Math.max(
+                        Math.min(
+                            ((left + leftAdd + selfWidth > pageSize['winWidth'])
+                                    ? (left - leftAdd - selfWidth + targetWidth)
+                                    : (left + leftAdd)
+                            ),
+                            (pageSize['winWidth'] - selfWidth)
+                        ),
+                        0
+                    );
+                }else{
+                    positionLeft = left + leftAdd;
+                }
+                // Fix scroll position for absolute
+                if(that.params['position'] == 'absolute'){
+                    if(that.params['container'] == document.body){
+                        positionTop += scrollTop;
+                        positionLeft += scrollLeft;
+                    }else{
+                        positionTop -= cm.getRealY(that.params['container']);
+                        positionLeft -= cm.getRealX(that.params['container']);
+                    }
+                }
+                // Apply styles
+                if(positionTop != that.nodes['container'].offsetTop){
+                    that.nodes['container'].style.top =  [positionTop, 'px'].join('');
+                }
+                if(positionLeft != that.nodes['container'].offsetLeft){
+                    that.nodes['container'].style.left = [positionLeft, 'px'].join('');
+                }
+            })();
+        }
+        animFrame(getPosition);
     };
 
     var bodyEvent = function(e){
