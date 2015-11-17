@@ -5134,6 +5134,14 @@ Copyright (c) 2015 Daniel Eden
         }
     }
 
+    &.large {
+        .for(archive default doc exe flash image movie music pdf pps ttf txt xls); .-each(@name) {
+            &.file-@{name} {
+                background-image: url("@{CmPath-Images}/icons/large/files/@{name}.png");
+            }
+        }
+    }
+
     // /* *** X-LARGE *** */
 
     &.x-large {
@@ -6058,6 +6066,12 @@ button {
 
         &:first-child {
             margin: 0;
+        }
+    }
+
+    &.is-box {
+        dl {
+            .form-box;
         }
     }
 }
@@ -8246,6 +8260,10 @@ button {
         }
     }
 
+    &.has-background {
+        .pt__gridlist__has-background;
+    }
+
     &.valign-middle {
         table {
             td {
@@ -10141,7 +10159,7 @@ button {
 }
 
 .lt__filegridlist__cell-icon {
-    width: 40px;
+    width: 48px;
 
     .icon {
         display: block;
@@ -10149,6 +10167,21 @@ button {
 }
 
 .lt__filegridlist__cell-title {
+    .cm__tags--base {
+        margin: 0;
+    }
+
+    .cm__tags--title {
+        margin: 0 0 @CmIndent-XXSmall;
+
+        &:last-child {
+            margin: 0;
+        }
+    }
+
+    .title {
+        font-weight: @CmFont-Base-BoldWeight;
+    }
 }
 
 .lt__filegridlist__cell-date {

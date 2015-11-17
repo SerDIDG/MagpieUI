@@ -863,6 +863,45 @@
 .icon.large.loader-circle {
   background-image: url("../img/icons/large/loader-circle.gif");
 }
+.icon.large.file-archive {
+  background-image: url("../img/icons/large/files/archive.png");
+}
+.icon.large.file-default {
+  background-image: url("../img/icons/large/files/default.png");
+}
+.icon.large.file-doc {
+  background-image: url("../img/icons/large/files/doc.png");
+}
+.icon.large.file-exe {
+  background-image: url("../img/icons/large/files/exe.png");
+}
+.icon.large.file-flash {
+  background-image: url("../img/icons/large/files/flash.png");
+}
+.icon.large.file-image {
+  background-image: url("../img/icons/large/files/image.png");
+}
+.icon.large.file-movie {
+  background-image: url("../img/icons/large/files/movie.png");
+}
+.icon.large.file-music {
+  background-image: url("../img/icons/large/files/music.png");
+}
+.icon.large.file-pdf {
+  background-image: url("../img/icons/large/files/pdf.png");
+}
+.icon.large.file-pps {
+  background-image: url("../img/icons/large/files/pps.png");
+}
+.icon.large.file-ttf {
+  background-image: url("../img/icons/large/files/ttf.png");
+}
+.icon.large.file-txt {
+  background-image: url("../img/icons/large/files/txt.png");
+}
+.icon.large.file-xls {
+  background-image: url("../img/icons/large/files/xls.png");
+}
 .icon.x-large.play {
   background-image: url("../img/icons/x-large/play.png");
 }
@@ -2058,6 +2097,19 @@ button::-moz-focus-inner {
 }
 .form dd:first-child {
   margin: 0;
+}
+.form.is-box dl > dt {
+  width: auto;
+  float: none;
+}
+.form.is-box dl > dd {
+  margin: 0 0 8px 0;
+}
+.form.is-box dl > dd:last-child {
+  margin: 0;
+}
+.form.is-box dl.is-no-label > dt {
+  display: none;
 }
 .form--values dt {
   padding: 0;
@@ -4581,6 +4633,63 @@ button::-moz-focus-inner {
 .pt__gridlist table thead:first-child tr:first-child th {
   border: none;
 }
+.pt__gridlist.has-background th {
+  background-color: transparent;
+}
+.pt__gridlist.has-background th.sort:hover {
+  background-color: #e9f2fb;
+  -webkit-transition: background-color 100ms ease-in-out;
+  transition: background-color 100ms ease-in-out;
+}
+.pt__gridlist.has-background th.sort:active {
+  background-color: #d8e8f8;
+}
+.pt__gridlist.has-background tr td {
+  background-color: transparent;
+}
+.pt__gridlist.has-background tr:hover td {
+  background-color: #e9f2fb;
+}
+.pt__gridlist.has-background tr.success td,
+.pt__gridlist.has-background tr.valid td {
+  background-color: #daf6da;
+}
+.pt__gridlist.has-background tr.success:hover td,
+.pt__gridlist.has-background tr.valid:hover td {
+  background-color: #c6f1c6;
+}
+.pt__gridlist.has-background tr.danger td,
+.pt__gridlist.has-background tr.invalid td {
+  background-color: #f7d9d9;
+}
+.pt__gridlist.has-background tr.danger:hover td,
+.pt__gridlist.has-background tr.invalid:hover td {
+  background-color: #f3c4c4;
+}
+.pt__gridlist.has-background tr.warning td {
+  background-color: #f8ecd8;
+}
+.pt__gridlist.has-background tr.warning:hover td {
+  background-color: #f4e2c2;
+}
+.pt__gridlist.has-background tr.active td {
+  background-color: #d8e8f8;
+}
+.pt__gridlist.has-background tr.active:hover td {
+  background-color: #c2dbf4;
+}
+.pt__gridlist.has-background th {
+  background-color: #fafafa;
+}
+.pt__gridlist.has-background th.sort:hover {
+  background-color: #f2f2f2;
+}
+.pt__gridlist.has-background tr td {
+  background-color: #fafafa;
+}
+.pt__gridlist.has-background tr:hover td {
+  background-color: #f2f2f2;
+}
 .pt__gridlist.valign-middle table td {
   vertical-align: middle;
 }
@@ -6346,10 +6455,39 @@ button::-moz-focus-inner {
 }
 /* ******* LAYOUTS: FILES GRIDLIST ******* */
 .lt__filegridlist__cell-icon {
-  width: 40px;
+  width: 48px;
 }
 .lt__filegridlist__cell-icon .icon {
   display: block;
+}
+.lt__filegridlist__cell-title .cm__tags--base,
+.lt__filegridlist__cell-title p,
+.lt__filegridlist__cell-title dl,
+.lt__filegridlist__cell-title ul,
+.lt__filegridlist__cell-title ol,
+.lt__filegridlist__cell-title hr {
+  margin: 0;
+}
+.lt__filegridlist__cell-title .cm__tags--title,
+.lt__filegridlist__cell-title h1,
+.lt__filegridlist__cell-title h2,
+.lt__filegridlist__cell-title h3,
+.lt__filegridlist__cell-title h4,
+.lt__filegridlist__cell-title h5,
+.lt__filegridlist__cell-title h6 {
+  margin: 0 0 8px;
+}
+.lt__filegridlist__cell-title .cm__tags--title:last-child,
+.lt__filegridlist__cell-title h1:last-child,
+.lt__filegridlist__cell-title h2:last-child,
+.lt__filegridlist__cell-title h3:last-child,
+.lt__filegridlist__cell-title h4:last-child,
+.lt__filegridlist__cell-title h5:last-child,
+.lt__filegridlist__cell-title h6:last-child {
+  margin: 0;
+}
+.lt__filegridlist__cell-title .title {
+  font-weight: 600;
 }
 .lt__filegridlist__cell-date {
   width: 140px;

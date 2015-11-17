@@ -5,7 +5,7 @@
 }
 
 .lt__filegridlist__cell-icon {
-    width: 40px;
+    width: 48px;
 
     .icon {
         display: block;
@@ -13,6 +13,21 @@
 }
 
 .lt__filegridlist__cell-title {
+    .cm__tags--base {
+        margin: 0;
+    }
+
+    .cm__tags--title {
+        margin: 0 0 @CmIndent-XXSmall;
+
+        &:last-child {
+            margin: 0;
+        }
+    }
+
+    .title {
+        font-weight: @CmFont-Base-BoldWeight;
+    }
 }
 
 .lt__filegridlist__cell-date {

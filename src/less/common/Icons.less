@@ -216,6 +216,14 @@
         }
     }
 
+    &.large {
+        .for(archive default doc exe flash image movie music pdf pps ttf txt xls); .-each(@name) {
+            &.file-@{name} {
+                background-image: url("@{CmPath-Images}/icons/large/files/@{name}.png");
+            }
+        }
+    }
+
     // /* *** X-LARGE *** */
 
     &.x-large {
