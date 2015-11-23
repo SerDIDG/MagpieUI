@@ -24,7 +24,7 @@
  ******* */
 
 var cm = {
-        '_version' : '3.8.7',
+        '_version' : '3.9.0',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -413,12 +413,14 @@ cm.getEventClientPosition = function(e){
         'y' : 0
     };
     if(e){
-        o['x'] = e.clientX;
-        o['y'] = e.clientY;
-        if(cm.isTouch && e.touches){
-            o['x'] = e.touches[0].clientX;
-            o['y'] = e.touches[0].clientY;
-        }
+        try{
+            o['x'] = e.clientX;
+            o['y'] = e.clientY;
+            if(cm.isTouch && e.touches){
+                o['x'] = e.touches[0].clientX;
+                o['y'] = e.touches[0].clientY;
+            }
+        }catch(e){}
     }
     return o;
 };
@@ -2999,11 +3001,13 @@ cm.getConstructor = function(className, callback){
     }else{
         classConstructor = cm.defineStack[className];
         if(!classConstructor){
-            cm.errorLog({
-                'type' : 'error',
-                'name' : 'cm.getConstructor',
-                'message' : ['Class', cm.strWrap(className, '"'), 'does not exists or define.'].join(' ')
-            });
+            if(cm._debug){
+                cm.errorLog({
+                    'type' : 'attention',
+                    'name' : 'cm.getConstructor',
+                    'message' : ['Class', cm.strWrap(className, '"'), 'does not exists or define.'].join(' ')
+                });
+            }
             return false;
         }else{
             callback(classConstructor);

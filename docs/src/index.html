@@ -7,27 +7,11 @@
 
     <link type="text/css" rel="stylesheet" href="css/MagpieUI.css">
     <script type="text/javascript" src="js/MagpieUI.js"></script>
-
-    <script type="text/javascript">
-        cm.onReady(function(){
-            // Components
-            new Com.Collector()
-                .add('sidebar', function(node){
-                    new Com.CollapsibleLayout({
-                        'node' : node
-                    });
-                })
-                .add('togglebox', function(node){
-                    new Com.ToggleBox({'node' : node});
-                })
-                .construct();
-        });
-    </script>
 </head>
 
 <body>
 
-<div class="lt__collapsible" data-element="sidebar" data-config='{"name" : "docs-sidebar", "remember" : true}'>
+<div class="lt__collapsible" data-element="Com.CollapsibleLayout" data-config='{"name" : "docs-sidebar", "remember" : true}'>
     <div class="sidebar left" data-node="ComCollapsibleLayout.leftContainer">
         <div class="inner">
             <div class="title">
@@ -303,6 +287,14 @@
                                         </li>
                                         <li>
                                             <a href="content/components/Datepicker.html#examples" target="content">Examples</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="title" href="content/components/Form.html" target="content">Form Builder</a>
+                                    <ul class="pt__listing-items">
+                                        <li>
+                                            <a href="content/components/Form.html#examples" target="content">Examples</a>
                                         </li>
                                     </ul>
                                 </li>

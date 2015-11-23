@@ -90,7 +90,8 @@ function(params){
                 set(optionsList[0]);
             }
         }
-        // Trigger events
+        // Final events
+        that.addToStack(nodes['container']);
         that.triggerEvent('onRender', active);
     };
 
@@ -113,7 +114,6 @@ function(params){
         }else{
             renderSingle();
         }
-        that.addToStack(nodes['container']);
         /* *** ATTRIBUTES *** */
         // Add class name
         if(that.params['select'].className){
@@ -616,4 +616,32 @@ function(params){
     };
 
     init();
+});
+
+/* ****** FORM FIELD COMPONENT ******* */
+
+Com.FormFields.add('Com.Select', {
+    'node' : cm.node('select'),
+    'isComponent' : true,
+    'callbacks' : {
+        'component' : function(params){
+            var that = this;
+            return new that.params['constructor'](
+                cm.merge(params, {
+                    'select' : that.params['node'],
+                    'name' : that.params['name'],
+                    'options' : that.params['options']
+                })
+            );
+        },
+        'set' : function(value){
+            var that = this;
+            that.component.set(value);
+            return value;
+        },
+        'get' : function(){
+            var that = this;
+            return that.component.get();
+        }
+    }
 });

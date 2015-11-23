@@ -9,78 +9,31 @@
     <script type="text/javascript" src="../../js/MagpieUI.js"></script>
 
 	<script type="text/javascript">
-		cm.onReady(function(){
-            // Components
-            new Com.Collector()
-                .addEvent('onConstruct', function(collector, data){
-                    Part.Menu();
-                    Part.Autoresize(data['node']);
-                })
-                .add('tabset', function(node){
-                    new Com.Tabset({'node' : node});
-                })
-                .add('imagebox', function(node){
-                    new Com.ImageBox({'node' : node});
-                })
-                .add('tags', function(node){
-                    new Com.TagsInput({'input' : node});
-                })
-                .add('datepicker', function(node){
-                    new Com.Datepicker({'input' : node});
-                })
-                .add('select', function(node){
-                    new Com.Select({'select' : node})
-                })
-                .add('date-select', function(node){
-                    new Com.DateSelect({'input' : node});
-                })
-                .add('time-select', function(node){
-                    new Com.TimeSelect({'input' : node});
-                })
-                .add('colorpicker', function(node){
-                    new Com.ColorPicker({'input' : node});
-                })
-                .add('menu', function(node){
-                    new Com.Menu({
-                        'node' : node
-                    });
-                })
-                .add('sortable', function(node){
-                    new Com.Sortable({
-                        'node' : node
-                    });
-                })
-                .add('help-bubble', function(node){
-                    new Com.HelpBubble({
-                        'node' : node
-                    });
-                })
-                .add('multifield', function(node){
-                    var name = node.getAttribute('name');
+        window.Collector
+            .add('multifield', function(node){
+                var name = node.getAttribute('name');
 
-                    switch(name){
-                        case 'custom':
-                            new Com.MultiField({
-                                'node' : node,
-                                'events' : {
-                                    'onItemAdd' : function(that, item){
-                                        item['field'].appendChild(
+                switch(name){
+                    case 'custom':
+                        new Com.MultiField({
+                            'node' : node,
+                            'events' : {
+                                'onItemAdd' : function(that, item){
+                                    item['field'].appendChild(
                                             cm.node('input', {'type' : 'text'})
-                                        );
-                                    }
+                                    );
                                 }
-                            });
-                            break;
+                            }
+                        });
+                        break;
 
-                        default:
-                            new Com.MultiField({
-                                'node' : node
-                            });
-                            break;
-                    }
-                })
-                .construct();
-		});
+                    default:
+                        new Com.MultiField({
+                            'node' : node
+                        });
+                        break;
+                }
+            });
 	</script>
 </head>
 

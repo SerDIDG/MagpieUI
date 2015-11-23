@@ -60,7 +60,7 @@ module.exports = function(grunt) {
         less_imports: {
             source: {
                 options: {
-                    banner: '/* ************ MAGPIE UI: IMPORT ************ */'
+                    banner: '/* ************ MAGPIE UI ************ */'
                 },
                 src: config['less']['files'],
                 dest: 'src/less/index.less'
@@ -81,58 +81,69 @@ module.exports = function(grunt) {
         },
 
         concat: {
-            build_scripts: {
-                src: [
-                    'src/js/polyfill.js',
-                    'src/js/common.js',
-                    'src/js/modules.js',
-                    'src/js/parts.js',
-                    'src/js/init.js',
-                    'src/js/components/**/*.js',
-                    '!src/js/components/dev/**/*.js',
-                    '!src/js/components/old/**/*.js',
-                    'lib/**/*.js'
-                ],
-                dest: 'build/js/<%= pkg.name %>.js'
-            },
-            build_styles: {
+            build: {
                 files: [{
                     src: [
+                        'lib/**/*.js',
+                        '!lib/codemirror',
+                        'src/js/polyfill.js',
+                        'src/js/common.js',
+                        'src/js/modules.js',
+                        'src/js/parts.js',
+                        'src/js/init.js',
+                        'src/js/components/Form.js',
+                        'src/js/components/**/*.js',
+                        '!src/js/components/dev/**/*.js',
+                        '!src/js/components/old/**/*.js'
+                    ],
+                    dest: 'build/js/<%= pkg.name %>.js'
+                },{
+                    src: [
+                        'lib/**/*.css',
+                        '!lib/codemirror',
                         'src/css/**/*.css',
-                        'temp/build.css',
-                        'lib/**/*.css'
+                        'temp/build.css'
                     ],
                     dest: 'build/css/<%= pkg.name %>.css'
                 },{
                     src: [
                         'lib/**/*.css',
-                        'src/css/**/*.css',
-                        config['less']['files']
+                        config['less']['files'],
+                        'src/css/**/*.css'
                     ],
                     dest: 'build/less/<%= pkg.name %>.less'
                 }]
             },
-            docs_scripts: {
-                src: [
-                    'src/js/polyfill.js',
-                    'src/js/common.js',
-                    'src/js/modules.js',
-                    'src/js/parts.js',
-                    'src/js/init.js',
-                    'src/js/components/**/*.js',
-                    '!src/js/components/dev/**/*.js',
-                    '!src/js/components/old/**/*.js',
-                    'lib/**/*.js'
-                ],
-                dest: 'docs/build/js/<%= pkg.name %>.js'
-            },
-            docs_styles: {
-                src: [
-                    'docs/src/css/**/*.css',
-                    'temp/docs.css',
-                    'lib/**/*.css'
-                ],
-                dest: 'docs/build/css/<%= pkg.name %>.css'
+            docs: {
+                files: [{
+                    src: [
+                        'lib/**/*.js',
+                        'bower_components/codemirror/mode/javascript/javascript.js',
+                        'bower_components/codemirror/mode/css/css.js',
+                        'bower_components/codemirror/mode/xml/xml.js',
+                        'bower_components/codemirror/mode/htmlmixed/htmlmixed.js',
+                        'src/js/polyfill.js',
+                        'src/js/common.js',
+                        'src/js/modules.js',
+                        'src/js/parts.js',
+                        'src/js/init.js',
+                        'src/js/components/Form.js',
+                        'src/js/components/**/*.js',
+                        '!src/js/components/dev/**/*.js',
+                        '!src/js/components/old/**/*.js',
+                        'docs/src/js/*.js',
+                        'docs/src/js/components/**/*.js',
+                        'docs/src/js/components.js'
+                    ],
+                    dest: 'docs/build/js/<%= pkg.name %>.js'
+                },{
+                    src: [
+                        'lib/**/*.css',
+                        'temp/docs.css',
+                        'docs/src/css/**/*.css'
+                    ],
+                    dest: 'docs/build/css/<%= pkg.name %>.css'
+                }]
             }
         },
 
@@ -213,7 +224,7 @@ module.exports = function(grunt) {
         },
 
         watch: {
-            development: {
+            dev: {
                 files: [
                     'src/js/**/*.js',
                     'src/css/**/*.css',
@@ -243,6 +254,6 @@ module.exports = function(grunt) {
     });
     // Tasks
     grunt.registerTask('default', ['clean', 'bower', 'less_imports', 'less', 'concat', 'cssmin', 'uglify', 'imagemin', 'copy', 'clean:post']);
-    grunt.registerTask('dev', ['less_imports', 'less:build', 'concat:build_styles', 'concat:build_scripts', 'clean:post']);
-    grunt.registerTask('docs', ['less_imports', 'less:docs', 'concat:docs_styles', 'concat:docs_scripts', 'copy:docs', 'clean:post']);
+    grunt.registerTask('dev', ['less_imports', 'less:build', 'concat:build', 'clean:post']);
+    grunt.registerTask('docs', ['less_imports', 'less:docs', 'concat:docs', 'copy:docs', 'clean:post']);
 };

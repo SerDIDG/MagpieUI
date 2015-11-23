@@ -337,6 +337,38 @@
 
 /* *** CHECKBOX / RADIO LINE *** */
 
+.form__check-line {
+    min-height: @CmForm-FieldHeight;
+    line-height: @CmForm-FieldHeight;
+
+    input[type="radio"],
+    input[type="checkbox"] {
+        @margin: floor((@CmForm-FieldHeight - 13px) / 2);
+
+        margin: @margin 0 @margin 0;
+        vertical-align: top;
+        padding: 0;
+        cursor: pointer;
+    }
+
+    label {
+        @padding: round((@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2);
+        padding: @padding 0 @padding 0;
+        margin-right: @CmIndent-Medium;
+        cursor: pointer;
+        vertical-align: baseline;
+        line-height: @CmFont-Base-LineHeight;
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+
+    .label {
+        margin-left: @CmForm-FieldInnerIndent;
+    }
+}
+
 .check-line {
     min-height: @CmForm-FieldHeight;
     line-height: @CmForm-FieldHeight;
@@ -369,6 +401,10 @@
     input[type="radio"],
     input[type="checkbox"] {
         .check-line > .checkbox;
+    }
+
+    .label {
+        margin-left: @CmForm-FieldInnerIndent;
     }
 
     &.outside {
@@ -404,12 +440,6 @@
 
         dl:first-child {
             margin: 0;
-        }
-
-        .ie6 &,
-        .ie7 &,
-        .ie8 & {
-            display: block;
         }
     }
 }
