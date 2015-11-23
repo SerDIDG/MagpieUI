@@ -108,6 +108,7 @@ module.exports = function(grunt) {
                 },{
                     src: [
                         'lib/**/*.css',
+                        '!lib/codemirror',
                         config['less']['files'],
                         'src/css/**/*.css'
                     ],
