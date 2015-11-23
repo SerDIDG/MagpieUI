@@ -85,7 +85,7 @@ module.exports = function(grunt) {
                 files: [{
                     src: [
                         'lib/**/*.js',
-                        '!lib/codemirror',
+                        '!lib/codemirror/**/*.*',
                         'src/js/polyfill.js',
                         'src/js/common.js',
                         'src/js/modules.js',
@@ -100,7 +100,7 @@ module.exports = function(grunt) {
                 },{
                     src: [
                         'lib/**/*.css',
-                        '!lib/codemirror',
+                        '!lib/codemirror/**/*.*',
                         'src/css/**/*.css',
                         'temp/build.css'
                     ],
@@ -108,7 +108,7 @@ module.exports = function(grunt) {
                 },{
                     src: [
                         'lib/**/*.css',
-                        '!lib/codemirror',
+                        '!lib/codemirror/**/*.*',
                         config['less']['files'],
                         'src/css/**/*.css'
                     ],
