@@ -30,6 +30,10 @@ Mod['Params'] = {
                     that.params[key] = document.body;
                     break;
 
+                case 'top.document.body':
+                    that.params[key] = window.top.document.body;
+                    break;
+
                 case 'document.head':
                     that.params[key] = cm.getDocumentHead();
                     break;

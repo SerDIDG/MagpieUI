@@ -3069,17 +3069,15 @@ cm.Finder = function(className, name, parentNode, callback, params){
     var watcher = function(classObject){
         classObject.removeEvent(params['event'], watcher);
         var isSame = classObject.isAppropriateToStack(name, parentNode, callback);
-        if(isSame && !params['multiple']){
+        if(isSame && !params['multiple'] && isEventBind){
             that.remove();
         }
     };
 
     that.remove = function(){
-        if(isEventBind){
-            cm.getConstructor(className, function(classConstructor){
-                classConstructor.prototype.removeEvent(params['event'], watcher);
-            });
-        }
+        cm.getConstructor(className, function(classConstructor){
+            classConstructor.prototype.removeEvent(params['event'], watcher);
+        });
         return that;
     };
 

@@ -2078,6 +2078,9 @@ button::-moz-focus-inner {
   font-size: 0;
   height: 0;
 }
+.form dl.is-text dt {
+  padding: 0;
+}
 .form > dl:first-child {
   margin-top: 0;
 }
