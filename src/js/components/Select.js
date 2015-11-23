@@ -620,9 +620,9 @@ function(params){
 
 /* ****** FORM FIELD COMPONENT ******* */
 
-Com.FormFields.add('Com.Select', {
+Com.FormFields.add('select', {
     'node' : cm.node('select'),
-    'isComponent' : true,
+    'component' : 'Com.Select',
     'callbacks' : {
         'component' : function(params){
             var that = this;

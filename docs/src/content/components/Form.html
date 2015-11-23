@@ -28,38 +28,33 @@
                     <dd>
                         <textarea data-element="Com.CodeHighlight" data-node="text">
 .clear()
-.add({
+.add('select', {
   'label' : 'Select:',
-  'type' : 'Com.Select',
   'name' : 'select',
   'options' : [
     {'value' : 'foo', 'text' : 'Bar'},
     {'value' : 'bar', 'text' : 'Foo'}
   ]
 })
-.add({
+.add('input', {
   'label' : 'Input:',
-  'type' : 'input',
   'name' : 'input'
 })
-.add({
+.add('textarea', {
   'label' : 'Text:',
-  'type' : 'text',
   'name' : 'text'
 })
-.add({
+.add('radio', {
   'label' : 'Radio:',
-  'type' : 'radio',
   'name' : 'radio',
   'options' : [
     {'value' : 'foo', 'text' : 'Bar'},
     {'value' : 'bar', 'text' : 'Foo'}
   ]
 })
-.add({
+.add('check', {
   'label' : 'Checkbox:',
-  'type' : 'check',
-  'name' : 'check[]',
+  'name' : 'check',
   'options' : [
     {'value' : 'foo', 'text' : 'Bar'},
     {'value' : 'bar', 'text' : 'Foo'}

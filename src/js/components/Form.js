@@ -45,18 +45,17 @@ function(params){
         }
     };
 
-    var renderField = function(params){
+    var renderField = function(type, params){
         var field;
         // Merge params
         params = cm.merge({
-            'type' : null,
             'name' : '',
             'label' : '',
-            'fields' : [],
+            'options' : [],
             'container' : that.nodes['form']
         }, params);
         // Render
-        if(field = Com.FormFields.get(params['type'])){
+        if(field = Com.FormFields.get(type)){
             cm.getConstructor('Com.FormField', function(classConstructor){
                 params = cm.merge(field, params);
                 that.fields[params['name']] = new classConstructor(params);
@@ -71,8 +70,8 @@ function(params){
         return that;
     };
 
-    that.add = function(item){
-        renderField(item);
+    that.add = function(type, params){
+        renderField(type, params);
         return that;
     };
 
@@ -85,11 +84,11 @@ Com.FormFields = (function(){
     var stack = {};
 
     return {
-        'add' : function(type, item){
+        'add' : function(type, params){
             stack[type] = cm.merge({
                 'node' : cm.node('div'),
                 'type' : type
-            }, item);
+            }, params);
         },
         'get' : function(type){
             return stack[type]? cm.clone(stack[type], true) : null;
@@ -115,7 +114,8 @@ cm.define('Com.FormField', {
         'type' : false,
         'label' : '',
         'options' : [],
-        'isComponent' : false
+        'component' : false,
+        'componentParams' : {}
     }
 },
 function(params){
@@ -137,8 +137,8 @@ function(params){
     };
 
     var validateParams = function(){
-        if(that.params['isComponent']){
-            cm.getConstructor(that.params['type'], function(classConstructor){
+        if(that.params['component']){
+            cm.getConstructor(that.params['component'], function(classConstructor){
                 that.params['constructor'] = classConstructor;
             });
         }
@@ -156,11 +156,7 @@ function(params){
     /* ******* CALLBACKS ******* */
 
     that.callbacks.construct = function(){
-        if(that.params['isComponent'] && that.params['constructor']){
-            that.component = that.callbacks.component.apply(that, that.params[that.params['type']]);
-        }else{
-            that.callbacks.component.apply(that);
-        }
+        that.component = that.callbacks.component.apply(that, that.params['componentParams']);
     };
 
     that.callbacks.component = function(params){
@@ -178,6 +174,7 @@ function(params){
             nodes['label'] = cm.node('dt', that.params['label']),
             nodes['value'] = cm.node('dd', that.params['node'])
         );
+        that.params['node'].setAttribute('name', that.params['name']);
         return nodes;
     };
 
@@ -216,12 +213,12 @@ Com.FormFields.add('input', {
         },
         'get' : function(){
             var that = this;
-            return that.params['node'];
+            return that.params['node'].value;
         }
     }
 });
 
-Com.FormFields.add('text', {
+Com.FormFields.add('textarea', {
     'node' : cm.node('textarea'),
     'callbacks' : {
         'set' : function(value){
@@ -231,7 +228,34 @@ Com.FormFields.add('text', {
         },
         'get' : function(){
             var that = this;
-            return that.params['node'];
+            return that.params['node'].value;
+        }
+    }
+});
+
+Com.FormFields.add('select', {
+    'node' : cm.node('select'),
+    'callbacks' : {
+        'component' : function(){
+            var that = this,
+                nodes,
+                items = [];
+            cm.forEach(that.params['options'], function(item){
+                nodes = {};
+                nodes['container'] = cm.node('option', {'value' : item['value']}, item['text']);
+                that.params['node'].appendChild(nodes['container']);
+                items.push(nodes);
+            });
+            return items;
+        },
+        'set' : function(value){
+            var that = this;
+            that.params['node'].value = value;
+            return value;
+        },
+        'get' : function(){
+            var that = this;
+            return that.params['node'].value;
         }
     }
 });
@@ -239,16 +263,20 @@ Com.FormFields.add('text', {
 Com.FormFields.add('radio', {
     'node' : cm.node('div', {'class' : 'form__check-line'}),
     'callbacks' : {
-        'construct' : function(){
-            var that = this;
+        'component' : function(){
+            var that = this,
+                nodes,
+                items = [];
             cm.forEach(that.params['options'], function(item){
-                that.params['node'].appendChild(
-                    cm.node('label',
-                        cm.node('input', {'type' : 'radio', 'name' : that.params['name'], 'value' : item['value']}),
-                        cm.node('span', {'class' : 'label'}, item['text'])
-                    )
+                nodes = {};
+                nodes['container'] = cm.node('label',
+                    nodes['input'] = cm.node('input', {'type' : 'radio', 'name' : that.params['name'], 'value' : item['value']}),
+                    nodes['label'] = cm.node('span', {'class' : 'label'}, item['text'])
                 );
+                that.params['node'].appendChild(nodes['container']);
+                items.push(nodes);
             });
+            return items;
         },
         'set' : function(value){
             var that = this;
@@ -265,16 +293,20 @@ Com.FormFields.add('radio', {
 Com.FormFields.add('check', {
     'node' : cm.node('div', {'class' : 'form__check-line'}),
     'callbacks' : {
-        'construct' : function(){
-            var that = this;
+        'component' : function(){
+            var that = this,
+                nodes,
+                items = [];
             cm.forEach(that.params['options'], function(item){
-                that.params['node'].appendChild(
-                    cm.node('label',
-                        cm.node('input', {'type' : 'checkbox', 'name' : that.params['name'], 'value' : item['value']}),
-                        cm.node('span', {'class' : 'label'}, item['text'])
-                    )
+                nodes = {};
+                nodes['container'] = cm.node('label',
+                    nodes['input'] = cm.node('input', {'type' : 'checkbox', 'name' : that.params['name'], 'value' : item['value']}),
+                    nodes['label'] = cm.node('span', {'class' : 'label'}, item['text'])
                 );
+                that.params['node'].appendChild(nodes['container']);
+                items.push(nodes);
             });
+            return items;
         },
         'set' : function(value){
             var that = this;
