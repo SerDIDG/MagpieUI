@@ -628,20 +628,9 @@ Com.FormFields.add('select', {
             var that = this;
             return new that.params['constructor'](
                 cm.merge(params, {
-                    'select' : that.params['node'],
-                    'name' : that.params['name'],
-                    'options' : that.params['options']
+                    'select' : params['node']
                 })
             );
-        },
-        'set' : function(value){
-            var that = this;
-            that.component.set(value);
-            return value;
-        },
-        'get' : function(){
-            var that = this;
-            return that.component.get();
         }
     }
 });

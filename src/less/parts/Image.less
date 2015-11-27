@@ -15,6 +15,7 @@
         z-index: 1;
         overflow: hidden;
         font-size: 0;
+        .mx__transition(opacity, @CmUI-Transition-Duration);
 
         > .descr {
             .cm__image-resizable;
@@ -153,6 +154,15 @@
 
         > a.inner {
             cursor: zoom-in;
+        }
+    }
+
+    &.is-no-image {
+        background: url('@{CmPath-Images}/parts/no-image-150.png') 50% 50% no-repeat;
+        background-size: cover;
+
+        > .inner {
+            opacity: 0;
         }
     }
 

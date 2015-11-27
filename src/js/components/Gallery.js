@@ -139,7 +139,14 @@ function(params){
             'title' : ''
         }, item);
         // Check type
-        item['type'] = /(\.jpg|\.png|\.gif|\.jpeg|\.bmp|\.tga)$/gi.test(item['src']) ? 'image' : 'iframe';
+        if(
+            /(\.jpg|\.png|\.gif|\.jpeg|\.bmp|\.tga)$/gi.test(item['src']) ||
+            /^data:image/gi.test(item['src'])
+        ){
+            item['type'] = 'image';
+        }else{
+            item['type'] = 'iframe';
+        }
         // Structure
         if(!item['link']){
             item['link'] = cm.Node('a')
@@ -316,6 +323,26 @@ function(params){
 
     that.stop = function(){
         that.isProcess = false;
+        return that;
+    };
+
+    that.clear = function(){
+        if(items[that.current]){
+            cm.remove(items[that.current]['nodes']['container']);
+            that.current = null;
+            that.previous = null;
+        }
+        items = [];
+        return that;
+    };
+
+    that.add = function(item){
+        item = cm.merge({
+            'link' : cm.node('a'),
+            'src' : '',
+            'title' : ''
+        }, item);
+        processItem(item);
         return that;
     };
 

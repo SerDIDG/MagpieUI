@@ -162,8 +162,18 @@ function(params){
         return that;
     };
 
+    that.add = function(item){
+        components['gallery'].add(item);
+        return that;
+    };
+
     that.collect = function(node){
         components['gallery'].collect(node);
+        return that;
+    };
+
+    that.clear = function(){
+        components['gallery'].clear();
         return that;
     };
 

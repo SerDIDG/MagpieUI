@@ -64,6 +64,10 @@ cm.isTouch = 'ontouchstart' in document.documentElement || !!window.navigator.ms
 
 /* ******* OBJECTS AND ARRAYS ******* */
 
+cm.top = function(name){
+    return window.top.cm[name];
+};
+
 cm.isArray = Array.isArray || function(a){
     return (a) ? a.constructor == Array : false;
 };
@@ -1909,6 +1913,55 @@ cm.getFullRect = function(node, styleObject){
     dimensions['absoluteX2'] = dimensions['x2'] + dimensions['margin']['right'];
     dimensions['absoluteY2'] = dimensions['y2'] + dimensions['margin']['bottom'];
     return dimensions;
+};
+
+cm.getNodeIndents = function(node, styleObject){
+    if(!node || !cm.isNode(node)){
+        return null;
+    }
+    styleObject = typeof styleObject == 'undefined' ? cm.getStyleObject(node) : styleObject;
+    // Get size and position
+    var o = {};
+    o['margin'] = {
+        'top' :     cm.getCSSStyle(styleObject, 'marginTop', true),
+        'right' :   cm.getCSSStyle(styleObject, 'marginRight', true),
+        'bottom' :  cm.getCSSStyle(styleObject, 'marginBottom', true),
+        'left' :    cm.getCSSStyle(styleObject, 'marginLeft', true)
+    };
+    o['padding'] = {
+        'top' :     cm.getCSSStyle(styleObject, 'marginTop', true),
+        'right' :   cm.getCSSStyle(styleObject, 'marginRight', true),
+        'bottom' :  cm.getCSSStyle(styleObject, 'marginBottom', true),
+        'left' :    cm.getCSSStyle(styleObject, 'marginLeft', true)
+    };
+    return o;
+};
+
+cm.getNodeOffset = function(node, styleObject, o){
+    if(!node || !cm.isNode(node)){
+        return null;
+    }
+    styleObject = typeof styleObject == 'undefined' ? cm.getStyleObject(node) : styleObject;
+    o = !o || typeof o == 'undefined' ? cm.getNodeIndents(node, styleObject) : o;
+    // Get size and position
+    o['offset'] = cm.getRect(node);
+    o['inner'] = {
+        'width' : o['offset']['width'] - o['padding']['left'] - o['padding']['right'],
+        'height' : o['offset']['height'] - o['padding']['top'] - o['padding']['bottom'],
+        'top' : o['offset']['top'] + o['padding']['top'],
+        'right' : o['offset']['right'] - o['padding']['right'],
+        'bottom' : o['offset']['bottom'] - o['padding']['bottom'],
+        'left': o['offset']['left'] + o['padding']['left']
+    };
+    o['outer'] = {
+        'width' : o['offset']['width'] + o['margin']['left'] + o['margin']['right'],
+        'height' : o['offset']['height'] + o['margin']['top'] + o['margin']['bottom'],
+        'top' : o['offset']['top'] - o['margin']['top'],
+        'right' : o['offset']['right'] + o['margin']['right'],
+        'bottom' : o['offset']['bottom'] + o['margin']['bottom'],
+        'left': o['offset']['left'] - o['margin']['left']
+    };
+    return o;
 };
 
 cm.getRealWidth = function(node, applyWidth){

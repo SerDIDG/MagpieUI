@@ -108,6 +108,12 @@ window.Collector = new Com.Collector()
         });
     })
 
+    .add('Com.ImageInput', function(node){
+        new Com.ImageInput({
+            'node' : node
+        });
+    })
+
     .add('Com.CollapsibleLayout', function(node){
         new Com.CollapsibleLayout({
             'node' : node

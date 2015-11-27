@@ -1455,6 +1455,10 @@ cm.isTouch = 'ontouchstart' in document.documentElement || !!window.navigator.ms
 
 /* ******* OBJECTS AND ARRAYS ******* */
 
+cm.top = function(name){
+    return window.top.cm[name];
+};
+
 cm.isArray = Array.isArray || function(a){
     return (a) ? a.constructor == Array : false;
 };
@@ -3302,6 +3306,55 @@ cm.getFullRect = function(node, styleObject){
     return dimensions;
 };
 
+cm.getNodeIndents = function(node, styleObject){
+    if(!node || !cm.isNode(node)){
+        return null;
+    }
+    styleObject = typeof styleObject == 'undefined' ? cm.getStyleObject(node) : styleObject;
+    // Get size and position
+    var o = {};
+    o['margin'] = {
+        'top' :     cm.getCSSStyle(styleObject, 'marginTop', true),
+        'right' :   cm.getCSSStyle(styleObject, 'marginRight', true),
+        'bottom' :  cm.getCSSStyle(styleObject, 'marginBottom', true),
+        'left' :    cm.getCSSStyle(styleObject, 'marginLeft', true)
+    };
+    o['padding'] = {
+        'top' :     cm.getCSSStyle(styleObject, 'marginTop', true),
+        'right' :   cm.getCSSStyle(styleObject, 'marginRight', true),
+        'bottom' :  cm.getCSSStyle(styleObject, 'marginBottom', true),
+        'left' :    cm.getCSSStyle(styleObject, 'marginLeft', true)
+    };
+    return o;
+};
+
+cm.getNodeOffset = function(node, styleObject, o){
+    if(!node || !cm.isNode(node)){
+        return null;
+    }
+    styleObject = typeof styleObject == 'undefined' ? cm.getStyleObject(node) : styleObject;
+    o = !o || typeof o == 'undefined' ? cm.getNodeIndents(node, styleObject) : o;
+    // Get size and position
+    o['offset'] = cm.getRect(node);
+    o['inner'] = {
+        'width' : o['offset']['width'] - o['padding']['left'] - o['padding']['right'],
+        'height' : o['offset']['height'] - o['padding']['top'] - o['padding']['bottom'],
+        'top' : o['offset']['top'] + o['padding']['top'],
+        'right' : o['offset']['right'] - o['padding']['right'],
+        'bottom' : o['offset']['bottom'] - o['padding']['bottom'],
+        'left': o['offset']['left'] + o['padding']['left']
+    };
+    o['outer'] = {
+        'width' : o['offset']['width'] + o['margin']['left'] + o['margin']['right'],
+        'height' : o['offset']['height'] + o['margin']['top'] + o['margin']['bottom'],
+        'top' : o['offset']['top'] - o['margin']['top'],
+        'right' : o['offset']['right'] + o['margin']['right'],
+        'bottom' : o['offset']['bottom'] + o['margin']['bottom'],
+        'left': o['offset']['left'] - o['margin']['left']
+    };
+    return o;
+};
+
 cm.getRealWidth = function(node, applyWidth){
     var nodeWidth = 0,
         width = 0;
@@ -4478,7 +4531,6 @@ cm.Finder = function(className, name, parentNode, callback, params){
 
     init();
 };
-
 /* ******* PARAMS ******* */
 
 Mod['Params'] = {
@@ -5319,18 +5371,17 @@ function(params){
         }
     };
 
-    var renderField = function(params){
+    var renderField = function(type, params){
         var field;
         // Merge params
         params = cm.merge({
-            'type' : null,
             'name' : '',
             'label' : '',
-            'fields' : [],
+            'options' : [],
             'container' : that.nodes['form']
         }, params);
         // Render
-        if(field = Com.FormFields.get(params['type'])){
+        if(field = Com.FormFields.get(type)){
             cm.getConstructor('Com.FormField', function(classConstructor){
                 params = cm.merge(field, params);
                 that.fields[params['name']] = new classConstructor(params);
@@ -5345,8 +5396,8 @@ function(params){
         return that;
     };
 
-    that.add = function(item){
-        renderField(item);
+    that.add = function(type, params){
+        renderField(type, params);
         return that;
     };
 
@@ -5359,11 +5410,11 @@ Com.FormFields = (function(){
     var stack = {};
 
     return {
-        'add' : function(type, item){
+        'add' : function(type, params){
             stack[type] = cm.merge({
                 'node' : cm.node('div'),
                 'type' : type
-            }, item);
+            }, params);
         },
         'get' : function(type){
             return stack[type]? cm.clone(stack[type], true) : null;
@@ -5389,7 +5440,8 @@ cm.define('Com.FormField', {
         'type' : false,
         'label' : '',
         'options' : [],
-        'isComponent' : false
+        'component' : false,
+        'componentParams' : {}
     }
 },
 function(params){
@@ -5411,8 +5463,8 @@ function(params){
     };
 
     var validateParams = function(){
-        if(that.params['isComponent']){
-            cm.getConstructor(that.params['type'], function(classConstructor){
+        if(that.params['component']){
+            cm.getConstructor(that.params['component'], function(classConstructor){
                 that.params['constructor'] = classConstructor;
             });
         }
@@ -5430,11 +5482,7 @@ function(params){
     /* ******* CALLBACKS ******* */
 
     that.callbacks.construct = function(){
-        if(that.params['isComponent'] && that.params['constructor']){
-            that.component = that.callbacks.component.apply(that, that.params[that.params['type']]);
-        }else{
-            that.callbacks.component.apply(that);
-        }
+        that.component = that.callbacks.component.apply(that, that.params['componentParams']);
     };
 
     that.callbacks.component = function(params){
@@ -5452,6 +5500,7 @@ function(params){
             nodes['label'] = cm.node('dt', that.params['label']),
             nodes['value'] = cm.node('dd', that.params['node'])
         );
+        that.params['node'].setAttribute('name', that.params['name']);
         return nodes;
     };
 
@@ -5490,12 +5539,12 @@ Com.FormFields.add('input', {
         },
         'get' : function(){
             var that = this;
-            return that.params['node'];
+            return that.params['node'].value;
         }
     }
 });
 
-Com.FormFields.add('text', {
+Com.FormFields.add('textarea', {
     'node' : cm.node('textarea'),
     'callbacks' : {
         'set' : function(value){
@@ -5505,7 +5554,34 @@ Com.FormFields.add('text', {
         },
         'get' : function(){
             var that = this;
-            return that.params['node'];
+            return that.params['node'].value;
+        }
+    }
+});
+
+Com.FormFields.add('select', {
+    'node' : cm.node('select'),
+    'callbacks' : {
+        'component' : function(){
+            var that = this,
+                nodes,
+                items = [];
+            cm.forEach(that.params['options'], function(item){
+                nodes = {};
+                nodes['container'] = cm.node('option', {'value' : item['value']}, item['text']);
+                that.params['node'].appendChild(nodes['container']);
+                items.push(nodes);
+            });
+            return items;
+        },
+        'set' : function(value){
+            var that = this;
+            that.params['node'].value = value;
+            return value;
+        },
+        'get' : function(){
+            var that = this;
+            return that.params['node'].value;
         }
     }
 });
@@ -5513,16 +5589,20 @@ Com.FormFields.add('text', {
 Com.FormFields.add('radio', {
     'node' : cm.node('div', {'class' : 'form__check-line'}),
     'callbacks' : {
-        'construct' : function(){
-            var that = this;
+        'component' : function(){
+            var that = this,
+                nodes,
+                items = [];
             cm.forEach(that.params['options'], function(item){
-                that.params['node'].appendChild(
-                    cm.node('label',
-                        cm.node('input', {'type' : 'radio', 'name' : that.params['name'], 'value' : item['value']}),
-                        cm.node('span', {'class' : 'label'}, item['text'])
-                    )
+                nodes = {};
+                nodes['container'] = cm.node('label',
+                    nodes['input'] = cm.node('input', {'type' : 'radio', 'name' : that.params['name'], 'value' : item['value']}),
+                    nodes['label'] = cm.node('span', {'class' : 'label'}, item['text'])
                 );
+                that.params['node'].appendChild(nodes['container']);
+                items.push(nodes);
             });
+            return items;
         },
         'set' : function(value){
             var that = this;
@@ -5539,16 +5619,20 @@ Com.FormFields.add('radio', {
 Com.FormFields.add('check', {
     'node' : cm.node('div', {'class' : 'form__check-line'}),
     'callbacks' : {
-        'construct' : function(){
-            var that = this;
+        'component' : function(){
+            var that = this,
+                nodes,
+                items = [];
             cm.forEach(that.params['options'], function(item){
-                that.params['node'].appendChild(
-                    cm.node('label',
-                        cm.node('input', {'type' : 'checkbox', 'name' : that.params['name'], 'value' : item['value']}),
-                        cm.node('span', {'class' : 'label'}, item['text'])
-                    )
+                nodes = {};
+                nodes['container'] = cm.node('label',
+                    nodes['input'] = cm.node('input', {'type' : 'checkbox', 'name' : that.params['name'], 'value' : item['value']}),
+                    nodes['label'] = cm.node('span', {'class' : 'label'}, item['text'])
                 );
+                that.params['node'].appendChild(nodes['container']);
+                items.push(nodes);
             });
+            return items;
         },
         'set' : function(value){
             var that = this;
@@ -6685,34 +6769,49 @@ function(params){
 
     init();
 });
-Com['Collector'] = function(o){
-    var that = this,
-        config = cm.merge({
-            'attribute' : 'data-element',
-            'events' : {}
-        }, o),
-        API = {
-            'onConstructStart' : [],
-            'onConstruct' : [],
-            'onDestructStart' : [],
-            'onDestruct' : []
-        },
-        stuck = {};
+cm.define('Com.Collector', {
+    'modules' : [
+        'Params',
+        'Events',
+        'DataConfig',
+        'Stack'
+    ],
+    'events' : [
+        'onRender',
+        'onConstructStart',
+        'onConstruct',
+        'onDestructStart',
+        'onDestruct'
+    ],
+    'params' : {
+        'node' : cm.Node('div'),
+        'name' : '',
+        'attribute' : 'data-element'
+    }
+},
+function(params){
+    var that = this;
+
+    that.stack = {};
 
     var init = function(){
-        convertEvents(config['events']);
+        that.setParams(params);
+        that.convertEvents(that.params['events']);
+        that.getDataConfig(that.params['node']);
+        that.addToStack(that.params['node']);
+        that.triggerEvent('onRender');
     };
 
     var constructItem = function(item, name, parentNode){
         var nodes = [];
         // Find element in specified node
-        if(parentNode.getAttribute(config['attribute']) == name){
+        if(parentNode.getAttribute(that.params['attribute']) == name){
             nodes.push(parentNode)
         }
         // Search for nodes in specified node
         nodes = nodes.concat(
             cm.clone(
-                cm.getByAttr(config['attribute'], name, parentNode)
+                cm.getByAttr(that.params['attribute'], name, parentNode)
             )
         );
         // Filter off existing nodes
@@ -6734,13 +6833,13 @@ Com['Collector'] = function(o){
             inArray;
         if(parentNode){
             // Find element in specified node
-            if(parentNode.getAttribute(config['attribute']) == name){
+            if(parentNode.getAttribute(that.params['attribute']) == name){
                 nodes.push(parentNode)
             }
             // Search for nodes in specified node
             nodes = nodes.concat(
                 cm.clone(
-                    cm.getByAttr(config['attribute'], name, parentNode)
+                    cm.getByAttr(that.params['attribute'], name, parentNode)
                 )
             );
             // Filter off not existing nodes and remove existing from global array
@@ -6762,64 +6861,48 @@ Com['Collector'] = function(o){
                     handler(node);
                 });
             });
-            delete stuck[name];
+            delete that.stack[name];
         }
     };
 
-    /* *** MISC FUNCTIONS *** */
-
-    var convertEvents = function(o){
-        cm.forEach(o, function(item, key){
-            if(API[key] && typeof item == 'function'){
-                API[key].push(item);
-            }
-        });
-    };
-
-    var executeEvent = function(event, params){
-        API[event].forEach(function(item){
-            item(that, params || {});
-        });
-    };
-
-    /* *** MAIN *** */
-
+    /* ******* PUBLIC ******* */
+    
     that.add = function(name, construct, destruct){
         if(name){
-            if(!stuck[name]){
-                stuck[name] = {
+            if(!that.stack[name]){
+                that.stack[name] = {
                     'construct' : [],
                     'destruct' : [],
                     'nodes' : []
                 };
             }
             if(typeof construct == 'function'){
-                stuck[name]['construct'].push(construct);
+                that.stack[name]['construct'].push(construct);
             }
             if(typeof destruct == 'function'){
-                stuck[name]['destruct'].push(destruct);
+                that.stack[name]['destruct'].push(destruct);
             }
         }
         return that;
     };
 
     that.remove = function(name, construct, destruct){
-        if(name && stuck[name]){
+        if(name && that.stack[name]){
             if(construct || destruct){
                 // Remove item's handlers
                 if(typeof construct == 'function'){
-                    stuck[name]['construct'] = stuck[name]['construct'].filter(function(handler){
+                    that.stack[name]['construct'] = that.stack[name]['construct'].filter(function(handler){
                         return handler != construct;
                     });
                 }
                 if(typeof destruct == 'function'){
-                    stuck[name]['destruct'] = stuck[name]['destruct'].filter(function(handler){
+                    that.stack[name]['destruct'] = that.stack[name]['destruct'].filter(function(handler){
                         return handler != destruct;
                     });
                 }
             }else{
                 // Remove item from global array
-                delete stuck[name];
+                delete that.stack[name];
             }
         }
         return that;
@@ -6827,18 +6910,18 @@ Com['Collector'] = function(o){
 
     that.construct = function(node, name){
         node = node || document.body;
-        executeEvent('onConstructStart', {
+        that.triggerEvent('onConstructStart', {
             'node' : node,
             'name' : name
         });
-        if(name && stuck[name]){
-            constructItem(stuck[name], name, node);
+        if(name && that.stack[name]){
+            constructItem(that.stack[name], name, node);
         }else{
-            cm.forEach(stuck, function(item, name){
+            cm.forEach(that.stack, function(item, name){
                 constructItem(item, name, node);
             });
         }
-        executeEvent('onConstruct', {
+        that.triggerEvent('onConstruct', {
             'node' : node,
             'name' : name
         });
@@ -6847,42 +6930,26 @@ Com['Collector'] = function(o){
 
     that.destruct = function(node, name){
         node = node || null;
-        executeEvent('onDestructStart', {
+        that.triggerEvent('onDestructStart', {
             'node' : node,
             'name' : name
         });
-        if(name && stuck[name]){
-            destructItem(stuck[name], name, node);
+        if(name && that.stack[name]){
+            destructItem(that.stack[name], name, node);
         }else{
-            cm.forEach(stuck, function(item, name){
+            cm.forEach(that.stack, function(item, name){
                 destructItem(item, name, node);
             });
         }
-        executeEvent('onDestruct', {
+        that.triggerEvent('onDestruct', {
             'node' : node,
             'name' : name
         });
         return that;
     };
-
-    that.addEvent = function(event, handler){
-        if(API[event] && typeof handler == 'function'){
-            API[event].push(handler);
-        }
-        return that;
-    };
-
-    that.removeEvent = function(event, handler){
-        if(API[event] && typeof handler == 'function'){
-            API[event] = API[event].filter(function(item){
-                return item != handler;
-            });
-        }
-        return that;
-    };
-
+    
     init();
-};
+});
 cm.define('Com.ColorPicker', {
     'modules' : [
         'Params',
@@ -16228,9 +16295,9 @@ function(params){
 
 /* ****** FORM FIELD COMPONENT ******* */
 
-Com.FormFields.add('Com.Select', {
+Com.FormFields.add('select', {
     'node' : cm.node('select'),
-    'isComponent' : true,
+    'component' : 'Com.Select',
     'callbacks' : {
         'component' : function(params){
             var that = this;

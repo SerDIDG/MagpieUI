@@ -12399,6 +12399,10 @@ cm.isTouch = 'ontouchstart' in document.documentElement || !!window.navigator.ms
 
 /* ******* OBJECTS AND ARRAYS ******* */
 
+cm.top = function(name){
+    return window.top.cm[name];
+};
+
 cm.isArray = Array.isArray || function(a){
     return (a) ? a.constructor == Array : false;
 };
@@ -14246,6 +14250,55 @@ cm.getFullRect = function(node, styleObject){
     return dimensions;
 };
 
+cm.getNodeIndents = function(node, styleObject){
+    if(!node || !cm.isNode(node)){
+        return null;
+    }
+    styleObject = typeof styleObject == 'undefined' ? cm.getStyleObject(node) : styleObject;
+    // Get size and position
+    var o = {};
+    o['margin'] = {
+        'top' :     cm.getCSSStyle(styleObject, 'marginTop', true),
+        'right' :   cm.getCSSStyle(styleObject, 'marginRight', true),
+        'bottom' :  cm.getCSSStyle(styleObject, 'marginBottom', true),
+        'left' :    cm.getCSSStyle(styleObject, 'marginLeft', true)
+    };
+    o['padding'] = {
+        'top' :     cm.getCSSStyle(styleObject, 'marginTop', true),
+        'right' :   cm.getCSSStyle(styleObject, 'marginRight', true),
+        'bottom' :  cm.getCSSStyle(styleObject, 'marginBottom', true),
+        'left' :    cm.getCSSStyle(styleObject, 'marginLeft', true)
+    };
+    return o;
+};
+
+cm.getNodeOffset = function(node, styleObject, o){
+    if(!node || !cm.isNode(node)){
+        return null;
+    }
+    styleObject = typeof styleObject == 'undefined' ? cm.getStyleObject(node) : styleObject;
+    o = !o || typeof o == 'undefined' ? cm.getNodeIndents(node, styleObject) : o;
+    // Get size and position
+    o['offset'] = cm.getRect(node);
+    o['inner'] = {
+        'width' : o['offset']['width'] - o['padding']['left'] - o['padding']['right'],
+        'height' : o['offset']['height'] - o['padding']['top'] - o['padding']['bottom'],
+        'top' : o['offset']['top'] + o['padding']['top'],
+        'right' : o['offset']['right'] - o['padding']['right'],
+        'bottom' : o['offset']['bottom'] - o['padding']['bottom'],
+        'left': o['offset']['left'] + o['padding']['left']
+    };
+    o['outer'] = {
+        'width' : o['offset']['width'] + o['margin']['left'] + o['margin']['right'],
+        'height' : o['offset']['height'] + o['margin']['top'] + o['margin']['bottom'],
+        'top' : o['offset']['top'] - o['margin']['top'],
+        'right' : o['offset']['right'] + o['margin']['right'],
+        'bottom' : o['offset']['bottom'] + o['margin']['bottom'],
+        'left': o['offset']['left'] - o['margin']['left']
+    };
+    return o;
+};
+
 cm.getRealWidth = function(node, applyWidth){
     var nodeWidth = 0,
         width = 0;
@@ -15422,7 +15475,6 @@ cm.Finder = function(className, name, parentNode, callback, params){
 
     init();
 };
-
 /* ******* PARAMS ******* */
 
 Mod['Params'] = {
@@ -16360,30 +16412,30 @@ function(params){
                 that.params['constructor'] = classConstructor;
             });
         }
+        that.params['componentParams']['node'] = that.params['node'];
+        that.params['componentParams']['name'] = that.params['name'];
+        that.params['componentParams']['options'] = that.params['options'];
     };
 
     var render = function(){
         // Render structure
-        that.nodes = that.callbacks.render.apply(that) || {};
+        that.nodes = that.callbacks.render.call(that) || {};
         // Append
         that.params['container'].appendChild(that.nodes['container']);
         // Construct
-        that.callbacks.construct.apply(that);
+        that.callbacks.construct.call(that);
     };
 
     /* ******* CALLBACKS ******* */
 
     that.callbacks.construct = function(){
-        that.component = that.callbacks.component.apply(that, that.params['componentParams']);
+        that.component = that.callbacks.component.call(that, that.params['componentParams']);
     };
 
     that.callbacks.component = function(params){
-        return new that.params['constructor'](
-            cm.merge(params, {
-                'node' : that.params['node'],
-                'name' : that.params['name']
-            })
-        );
+        if(that.params['component']){
+            return new that.params['constructor'](params);
+        }
     };
 
     that.callbacks.render = function(){
@@ -16397,11 +16449,12 @@ function(params){
     };
 
     that.callbacks.set = function(value){
+        that.component.set(value);
         return value;
     };
 
     that.callbacks.get = function(){
-        return that.value;
+        return that.component.get();
     };
 
     /* ******* PUBLIC ******* */
@@ -16533,7 +16586,7 @@ Com.FormFields.add('check', {
         },
         'get' : function(){
             var that = this;
-            return that.params['node'];
+            return that.params['node'].value;
         }
     }
 });
@@ -17661,34 +17714,49 @@ function(params){
 
     init();
 });
-Com['Collector'] = function(o){
-    var that = this,
-        config = cm.merge({
-            'attribute' : 'data-element',
-            'events' : {}
-        }, o),
-        API = {
-            'onConstructStart' : [],
-            'onConstruct' : [],
-            'onDestructStart' : [],
-            'onDestruct' : []
-        },
-        stuck = {};
+cm.define('Com.Collector', {
+    'modules' : [
+        'Params',
+        'Events',
+        'DataConfig',
+        'Stack'
+    ],
+    'events' : [
+        'onRender',
+        'onConstructStart',
+        'onConstruct',
+        'onDestructStart',
+        'onDestruct'
+    ],
+    'params' : {
+        'node' : cm.Node('div'),
+        'name' : '',
+        'attribute' : 'data-element'
+    }
+},
+function(params){
+    var that = this;
+
+    that.stack = {};
 
     var init = function(){
-        convertEvents(config['events']);
+        that.setParams(params);
+        that.convertEvents(that.params['events']);
+        that.getDataConfig(that.params['node']);
+        that.addToStack(that.params['node']);
+        that.triggerEvent('onRender');
     };
 
     var constructItem = function(item, name, parentNode){
         var nodes = [];
         // Find element in specified node
-        if(parentNode.getAttribute(config['attribute']) == name){
+        if(parentNode.getAttribute(that.params['attribute']) == name){
             nodes.push(parentNode)
         }
         // Search for nodes in specified node
         nodes = nodes.concat(
             cm.clone(
-                cm.getByAttr(config['attribute'], name, parentNode)
+                cm.getByAttr(that.params['attribute'], name, parentNode)
             )
         );
         // Filter off existing nodes
@@ -17710,13 +17778,13 @@ Com['Collector'] = function(o){
             inArray;
         if(parentNode){
             // Find element in specified node
-            if(parentNode.getAttribute(config['attribute']) == name){
+            if(parentNode.getAttribute(that.params['attribute']) == name){
                 nodes.push(parentNode)
             }
             // Search for nodes in specified node
             nodes = nodes.concat(
                 cm.clone(
-                    cm.getByAttr(config['attribute'], name, parentNode)
+                    cm.getByAttr(that.params['attribute'], name, parentNode)
                 )
             );
             // Filter off not existing nodes and remove existing from global array
@@ -17738,64 +17806,48 @@ Com['Collector'] = function(o){
                     handler(node);
                 });
             });
-            delete stuck[name];
+            delete that.stack[name];
         }
     };
 
-    /* *** MISC FUNCTIONS *** */
-
-    var convertEvents = function(o){
-        cm.forEach(o, function(item, key){
-            if(API[key] && typeof item == 'function'){
-                API[key].push(item);
-            }
-        });
-    };
-
-    var executeEvent = function(event, params){
-        API[event].forEach(function(item){
-            item(that, params || {});
-        });
-    };
-
-    /* *** MAIN *** */
-
+    /* ******* PUBLIC ******* */
+    
     that.add = function(name, construct, destruct){
         if(name){
-            if(!stuck[name]){
-                stuck[name] = {
+            if(!that.stack[name]){
+                that.stack[name] = {
                     'construct' : [],
                     'destruct' : [],
                     'nodes' : []
                 };
             }
             if(typeof construct == 'function'){
-                stuck[name]['construct'].push(construct);
+                that.stack[name]['construct'].push(construct);
             }
             if(typeof destruct == 'function'){
-                stuck[name]['destruct'].push(destruct);
+                that.stack[name]['destruct'].push(destruct);
             }
         }
         return that;
     };
 
     that.remove = function(name, construct, destruct){
-        if(name && stuck[name]){
+        if(name && that.stack[name]){
             if(construct || destruct){
                 // Remove item's handlers
                 if(typeof construct == 'function'){
-                    stuck[name]['construct'] = stuck[name]['construct'].filter(function(handler){
+                    that.stack[name]['construct'] = that.stack[name]['construct'].filter(function(handler){
                         return handler != construct;
                     });
                 }
                 if(typeof destruct == 'function'){
-                    stuck[name]['destruct'] = stuck[name]['destruct'].filter(function(handler){
+                    that.stack[name]['destruct'] = that.stack[name]['destruct'].filter(function(handler){
                         return handler != destruct;
                     });
                 }
             }else{
                 // Remove item from global array
-                delete stuck[name];
+                delete that.stack[name];
             }
         }
         return that;
@@ -17803,18 +17855,18 @@ Com['Collector'] = function(o){
 
     that.construct = function(node, name){
         node = node || document.body;
-        executeEvent('onConstructStart', {
+        that.triggerEvent('onConstructStart', {
             'node' : node,
             'name' : name
         });
-        if(name && stuck[name]){
-            constructItem(stuck[name], name, node);
+        if(name && that.stack[name]){
+            constructItem(that.stack[name], name, node);
         }else{
-            cm.forEach(stuck, function(item, name){
+            cm.forEach(that.stack, function(item, name){
                 constructItem(item, name, node);
             });
         }
-        executeEvent('onConstruct', {
+        that.triggerEvent('onConstruct', {
             'node' : node,
             'name' : name
         });
@@ -17823,42 +17875,26 @@ Com['Collector'] = function(o){
 
     that.destruct = function(node, name){
         node = node || null;
-        executeEvent('onDestructStart', {
+        that.triggerEvent('onDestructStart', {
             'node' : node,
             'name' : name
         });
-        if(name && stuck[name]){
-            destructItem(stuck[name], name, node);
+        if(name && that.stack[name]){
+            destructItem(that.stack[name], name, node);
         }else{
-            cm.forEach(stuck, function(item, name){
+            cm.forEach(that.stack, function(item, name){
                 destructItem(item, name, node);
             });
         }
-        executeEvent('onDestruct', {
+        that.triggerEvent('onDestruct', {
             'node' : node,
             'name' : name
         });
         return that;
     };
-
-    that.addEvent = function(event, handler){
-        if(API[event] && typeof handler == 'function'){
-            API[event].push(handler);
-        }
-        return that;
-    };
-
-    that.removeEvent = function(event, handler){
-        if(API[event] && typeof handler == 'function'){
-            API[event] = API[event].filter(function(item){
-                return item != handler;
-            });
-        }
-        return that;
-    };
-
+    
     init();
-};
+});
 cm.define('Com.ColorPicker', {
     'modules' : [
         'Params',
@@ -22738,7 +22774,14 @@ function(params){
             'title' : ''
         }, item);
         // Check type
-        item['type'] = /(\.jpg|\.png|\.gif|\.jpeg|\.bmp|\.tga)$/gi.test(item['src']) ? 'image' : 'iframe';
+        if(
+            /(\.jpg|\.png|\.gif|\.jpeg|\.bmp|\.tga)$/gi.test(item['src']) ||
+            /^data:image/gi.test(item['src'])
+        ){
+            item['type'] = 'image';
+        }else{
+            item['type'] = 'iframe';
+        }
         // Structure
         if(!item['link']){
             item['link'] = cm.Node('a')
@@ -22915,6 +22958,26 @@ function(params){
 
     that.stop = function(){
         that.isProcess = false;
+        return that;
+    };
+
+    that.clear = function(){
+        if(items[that.current]){
+            cm.remove(items[that.current]['nodes']['container']);
+            that.current = null;
+            that.previous = null;
+        }
+        items = [];
+        return that;
+    };
+
+    that.add = function(item){
+        item = cm.merge({
+            'link' : cm.node('a'),
+            'src' : '',
+            'title' : ''
+        }, item);
+        processItem(item);
         return that;
     };
 
@@ -23198,8 +23261,18 @@ function(params){
         return that;
     };
 
+    that.add = function(item){
+        components['gallery'].add(item);
+        return that;
+    };
+
     that.collect = function(node){
         components['gallery'].collect(node);
+        return that;
+    };
+
+    that.clear = function(){
+        components['gallery'].clear();
         return that;
     };
 
@@ -24170,6 +24243,191 @@ function(params){
     };
 
     init();
+});
+cm.define('Com.ImageInput', {
+    'modules' : [
+        'Params',
+        'Events',
+        'Langs',
+        'DataConfig',
+        'Stack',
+        'Structure'
+    ],
+    'events' : [
+        'onRender'
+    ],
+    'params' : {
+        'node' : cm.Node('div'),
+        'name' : '',
+        'title' : '',
+        'placeholder' : '',
+        'value' : null,
+        'disabled' : false,
+        'langs' : {
+            'no_image' : 'No Image',
+            'browse' : 'Browse',
+            'remove' : 'Remove'
+        },
+        'Com.GalleryPopup' : {}
+    }
+},
+function(params){
+    var that = this;
+
+    that.nodes = {};
+    that.components = {};
+    that.disabled = false;
+    that.value = null;
+
+    var init = function(){
+        that.setParams(params);
+        that.convertEvents(that.params['events']);
+        that.getDataConfig(that.params['node']);
+        validateParams();
+        render();
+        // Set selected date
+        if(that.params['value']){
+            that.set(that.params['value'], false);
+        }else{
+            that.set(that.params['node'].value, false);
+        }
+        that.addToStack(that.nodes['container']);
+        that.triggerEvent('onRender');
+    };
+
+    var validateParams = function(){
+        if(cm.isNode(that.params['node'])){
+            that.params['placeholder'] = that.params['node'].getAttribute('placeholder') || that.params['placeholder'];
+            that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
+            that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
+        }
+        that.disabled = that.params['disabled'];
+    };
+
+    var render = function(){
+        // Structure
+        that.nodes['container'] = cm.node('div', {'class' : 'com__image-input'},
+            that.nodes['hidden'] = cm.node('input', {'type' : 'hidden'}),
+            cm.node('div', {'class' : 'pt__box-item size-80'},
+                cm.node('div', {'class' : 'l'},
+                    that.nodes['imageContainer'] = cm.node('div', {'class' : 'pt__image is-centered'},
+                        that.nodes['link'] = cm.node('a', {'class' : 'inner'},
+                            that.nodes['image'] = cm.node('img', {'class' : 'descr', 'alt' : ''})
+                        )
+                    )
+                ),
+                that.nodes['r'] = cm.node('div', {'class' : 'r'},
+                    that.nodes['buttons'] = cm.node('div', {'class' : 'btn-wrap pull-left'},
+                        cm.node('div', {'class' : 'browse-button'},
+                            cm.node('button', that.lang('browse')),
+                            cm.node('div', {'class' : 'inner'},
+                                that.nodes['input'] = cm.node('input', {'type' : 'file'})
+                            )
+                        ),
+                        that.nodes['remove'] = cm.node('button', that.lang('remove'))
+                    )
+                )
+            )
+        );
+        if(!cm.isEmpty(that.params['title'])){
+            that.nodes['imageContainer'].title = that.params['title'];
+        }
+        if(!cm.isEmpty(that.params['placeholder'])){
+            that.nodes['r'].appendChild(
+                cm.node('div', {'class' : 'hint'}, that.params['placeholder'])
+            );
+        }
+        if(!cm.isEmpty(that.params['name'])){
+            that.nodes['hidden'].setAttribute('name', that.params['name']);
+        }
+        // Append
+        that.appendStructure(that.nodes['container']);
+        cm.remove(that.params['node']);
+        // Events
+        cm.getConstructor('Com.GalleryPopup', function(classConstructor){
+            that.components['popup'] = new classConstructor(
+                cm.merge(that.params['Com.GalleryPopup'], {
+                    'node' : that.nodes['imageContainer']
+                })
+            );
+        });
+        that.components['fileReader'] = new FileReader();
+        cm.addEvent(that.components['fileReader'], 'load', fileReaderAction);
+        cm.addEvent(that.nodes['input'], 'change', changeAction);
+        cm.addEvent(that.nodes['remove'], 'click', removeAction);
+    };
+
+    var changeAction = function(){
+        var file = that.nodes['input'].files[0];
+        if(/^image\//.test(file.type)){
+            that.components['fileReader'].readAsDataURL(file);
+        }
+    };
+
+    var removeAction = function(){
+        that.clear();
+    };
+
+    var fileReaderAction = function(e){
+        setImage(e.target.result);
+    };
+
+    var setImage = function(url){
+        that.value = url;
+        that.nodes['hidden'].value = url;
+        that.nodes['link'].setAttribute('data-node', 'items:[]:link');
+        that.nodes['image'].src = url;
+        cm.replaceClass(that.nodes['imageContainer'], 'is-no-hover is-no-image', 'is-zoom');
+        cm.appendChild(that.nodes['remove'], that.nodes['buttons']);
+        // Replace gallery item
+        if(that.components['popup']){
+            that.components['popup']
+                .clear()
+                .add({
+                    'link' : that.nodes['link'],
+                    'src' : url,
+                    'title' : ''
+                })
+        }
+    };
+
+    /* ******* PUBLIC ******* */
+
+    that.set = function(url){
+        if(cm.isEmpty(url)){
+            that.clear();
+        }else{
+            setImage(url);
+        }
+        return that;
+    };
+
+    that.get = function(){
+        return that.value;
+    };
+
+    that.clear = function(){
+        that.value = null;
+        that.nodes['hidden'].value = '';
+        that.nodes['link'].removeAttribute('data-node');
+        cm.replaceClass(that.nodes['imageContainer'], 'is-zoom', 'is-no-hover is-no-image');
+        cm.remove(that.nodes['remove']);
+        // Clear gallery item
+        if(that.components['popup']){
+            that.components['popup']
+                .clear()
+        }
+        return that;
+    };
+
+    init();
+});
+
+/* ****** FORM FIELD COMPONENT ******* */
+
+Com.FormFields.add('image-input', {
+    'node' : cm.node('input'),
+    'component' : 'Com.ImageInput'
 });
 cm.define('Com.Menu', {
     'modules' : [
@@ -27212,20 +27470,9 @@ Com.FormFields.add('select', {
             var that = this;
             return new that.params['constructor'](
                 cm.merge(params, {
-                    'select' : that.params['node'],
-                    'name' : that.params['name'],
-                    'options' : that.params['options']
+                    'select' : params['node']
                 })
             );
-        },
-        'set' : function(value){
-            var that = this;
-            that.component.set(value);
-            return value;
-        },
-        'get' : function(){
-            var that = this;
-            return that.component.get();
         }
     }
 });
@@ -30548,6 +30795,12 @@ window.Collector = new Com.Collector()
 
     .add('help-bubble', function(node){
         new Com.HelpBubble({
+            'node' : node
+        });
+    })
+
+    .add('Com.ImageInput', function(node){
+        new Com.ImageInput({
             'node' : node
         });
     })

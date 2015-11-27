@@ -142,30 +142,30 @@ function(params){
                 that.params['constructor'] = classConstructor;
             });
         }
+        that.params['componentParams']['node'] = that.params['node'];
+        that.params['componentParams']['name'] = that.params['name'];
+        that.params['componentParams']['options'] = that.params['options'];
     };
 
     var render = function(){
         // Render structure
-        that.nodes = that.callbacks.render.apply(that) || {};
+        that.nodes = that.callbacks.render.call(that) || {};
         // Append
         that.params['container'].appendChild(that.nodes['container']);
         // Construct
-        that.callbacks.construct.apply(that);
+        that.callbacks.construct.call(that);
     };
 
     /* ******* CALLBACKS ******* */
 
     that.callbacks.construct = function(){
-        that.component = that.callbacks.component.apply(that, that.params['componentParams']);
+        that.component = that.callbacks.component.call(that, that.params['componentParams']);
     };
 
     that.callbacks.component = function(params){
-        return new that.params['constructor'](
-            cm.merge(params, {
-                'node' : that.params['node'],
-                'name' : that.params['name']
-            })
-        );
+        if(that.params['component']){
+            return new that.params['constructor'](params);
+        }
     };
 
     that.callbacks.render = function(){
@@ -179,11 +179,12 @@ function(params){
     };
 
     that.callbacks.set = function(value){
+        that.component.set(value);
         return value;
     };
 
     that.callbacks.get = function(){
-        return that.value;
+        return that.component.get();
     };
 
     /* ******* PUBLIC ******* */
@@ -315,7 +316,7 @@ Com.FormFields.add('check', {
         },
         'get' : function(){
             var that = this;
-            return that.params['node'];
+            return that.params['node'].value;
         }
     }
 });

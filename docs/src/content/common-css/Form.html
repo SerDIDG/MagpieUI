@@ -20,7 +20,7 @@
                             'events' : {
                                 'onItemAdd' : function(that, item){
                                     item['field'].appendChild(
-                                            cm.node('input', {'type' : 'text'})
+                                        cm.node('input', {'type' : 'text'})
                                     );
                                 }
                             }
@@ -145,6 +145,12 @@
                 <dt>Color Picker with clear button:</dt>
                 <dd>
                     <input type="text" readonly value="#ffffff" data-element="colorpicker" data-config='{"showClearButton" : true}'>
+                </dd>
+            </dl>
+            <dl>
+                <dt>Image Input:</dt>
+                <dd>
+                    <input type="file" readonly data-element="Com.ImageInput" placeholder="100px x 100px (.jpf, .png, .gif)">
                 </dd>
             </dl>
 

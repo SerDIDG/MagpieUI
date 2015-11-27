@@ -1,31 +1,46 @@
-Com['Collector'] = function(o){
-    var that = this,
-        config = cm.merge({
-            'attribute' : 'data-element',
-            'events' : {}
-        }, o),
-        API = {
-            'onConstructStart' : [],
-            'onConstruct' : [],
-            'onDestructStart' : [],
-            'onDestruct' : []
-        },
-        stuck = {};
+cm.define('Com.Collector', {
+    'modules' : [
+        'Params',
+        'Events',
+        'DataConfig',
+        'Stack'
+    ],
+    'events' : [
+        'onRender',
+        'onConstructStart',
+        'onConstruct',
+        'onDestructStart',
+        'onDestruct'
+    ],
+    'params' : {
+        'node' : cm.Node('div'),
+        'name' : '',
+        'attribute' : 'data-element'
+    }
+},
+function(params){
+    var that = this;
+
+    that.stack = {};
 
     var init = function(){
-        convertEvents(config['events']);
+        that.setParams(params);
+        that.convertEvents(that.params['events']);
+        that.getDataConfig(that.params['node']);
+        that.addToStack(that.params['node']);
+        that.triggerEvent('onRender');
     };
 
     var constructItem = function(item, name, parentNode){
         var nodes = [];
         // Find element in specified node
-        if(parentNode.getAttribute(config['attribute']) == name){
+        if(parentNode.getAttribute(that.params['attribute']) == name){
             nodes.push(parentNode)
         }
         // Search for nodes in specified node
         nodes = nodes.concat(
             cm.clone(
-                cm.getByAttr(config['attribute'], name, parentNode)
+                cm.getByAttr(that.params['attribute'], name, parentNode)
             )
         );
         // Filter off existing nodes
@@ -47,13 +62,13 @@ Com['Collector'] = function(o){
             inArray;
         if(parentNode){
             // Find element in specified node
-            if(parentNode.getAttribute(config['attribute']) == name){
+            if(parentNode.getAttribute(that.params['attribute']) == name){
                 nodes.push(parentNode)
             }
             // Search for nodes in specified node
             nodes = nodes.concat(
                 cm.clone(
-                    cm.getByAttr(config['attribute'], name, parentNode)
+                    cm.getByAttr(that.params['attribute'], name, parentNode)
                 )
             );
             // Filter off not existing nodes and remove existing from global array
@@ -75,64 +90,48 @@ Com['Collector'] = function(o){
                     handler(node);
                 });
             });
-            delete stuck[name];
+            delete that.stack[name];
         }
     };
 
-    /* *** MISC FUNCTIONS *** */
-
-    var convertEvents = function(o){
-        cm.forEach(o, function(item, key){
-            if(API[key] && typeof item == 'function'){
-                API[key].push(item);
-            }
-        });
-    };
-
-    var executeEvent = function(event, params){
-        API[event].forEach(function(item){
-            item(that, params || {});
-        });
-    };
-
-    /* *** MAIN *** */
-
+    /* ******* PUBLIC ******* */
+    
     that.add = function(name, construct, destruct){
         if(name){
-            if(!stuck[name]){
-                stuck[name] = {
+            if(!that.stack[name]){
+                that.stack[name] = {
                     'construct' : [],
                     'destruct' : [],
                     'nodes' : []
                 };
             }
             if(typeof construct == 'function'){
-                stuck[name]['construct'].push(construct);
+                that.stack[name]['construct'].push(construct);
             }
             if(typeof destruct == 'function'){
-                stuck[name]['destruct'].push(destruct);
+                that.stack[name]['destruct'].push(destruct);
             }
         }
         return that;
     };
 
     that.remove = function(name, construct, destruct){
-        if(name && stuck[name]){
+        if(name && that.stack[name]){
             if(construct || destruct){
                 // Remove item's handlers
                 if(typeof construct == 'function'){
-                    stuck[name]['construct'] = stuck[name]['construct'].filter(function(handler){
+                    that.stack[name]['construct'] = that.stack[name]['construct'].filter(function(handler){
                         return handler != construct;
                     });
                 }
                 if(typeof destruct == 'function'){
-                    stuck[name]['destruct'] = stuck[name]['destruct'].filter(function(handler){
+                    that.stack[name]['destruct'] = that.stack[name]['destruct'].filter(function(handler){
                         return handler != destruct;
                     });
                 }
             }else{
                 // Remove item from global array
-                delete stuck[name];
+                delete that.stack[name];
             }
         }
         return that;
@@ -140,18 +139,18 @@ Com['Collector'] = function(o){
 
     that.construct = function(node, name){
         node = node || document.body;
-        executeEvent('onConstructStart', {
+        that.triggerEvent('onConstructStart', {
             'node' : node,
             'name' : name
         });
-        if(name && stuck[name]){
-            constructItem(stuck[name], name, node);
+        if(name && that.stack[name]){
+            constructItem(that.stack[name], name, node);
         }else{
-            cm.forEach(stuck, function(item, name){
+            cm.forEach(that.stack, function(item, name){
                 constructItem(item, name, node);
             });
         }
-        executeEvent('onConstruct', {
+        that.triggerEvent('onConstruct', {
             'node' : node,
             'name' : name
         });
@@ -160,39 +159,23 @@ Com['Collector'] = function(o){
 
     that.destruct = function(node, name){
         node = node || null;
-        executeEvent('onDestructStart', {
+        that.triggerEvent('onDestructStart', {
             'node' : node,
             'name' : name
         });
-        if(name && stuck[name]){
-            destructItem(stuck[name], name, node);
+        if(name && that.stack[name]){
+            destructItem(that.stack[name], name, node);
         }else{
-            cm.forEach(stuck, function(item, name){
+            cm.forEach(that.stack, function(item, name){
                 destructItem(item, name, node);
             });
         }
-        executeEvent('onDestruct', {
+        that.triggerEvent('onDestruct', {
             'node' : node,
             'name' : name
         });
         return that;
     };
-
-    that.addEvent = function(event, handler){
-        if(API[event] && typeof handler == 'function'){
-            API[event].push(handler);
-        }
-        return that;
-    };
-
-    that.removeEvent = function(event, handler){
-        if(API[event] && typeof handler == 'function'){
-            API[event] = API[event].filter(function(item){
-                return item != handler;
-            });
-        }
-        return that;
-    };
-
+    
     init();
-};
+});

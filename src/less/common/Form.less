@@ -200,6 +200,10 @@
         .com__menu {
             float: left;
             margin: 0 @CmForm-ButtonsIndent 0 0;
+
+            &:last-child {
+                margin-right: 0;
+            }
         }
     }
 
@@ -215,7 +219,7 @@
             margin: 0 0 0 @CmForm-ButtonsIndent;
 
             &:first-child {
-                margin: 0;
+                margin-left: 0;
             }
         }
     }
@@ -234,7 +238,7 @@
             .cm__text-overflow;
 
             &:first-child {
-                margin: 0;
+                margin-top: 0;
             }
         }
     }
@@ -310,12 +314,6 @@
         right: 0;
         opacity: 0;
         cursor: pointer;
-
-        .ie8 &,
-        .ie7 &,
-        .ie6 & {
-            .mx__opacity-ie(0);
-        }
     }
 
     .button {
