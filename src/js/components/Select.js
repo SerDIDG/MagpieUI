@@ -15,12 +15,14 @@ cm.define('Com.Select', {
         'onRender',
         'onSelect',
         'onChange',
+        'onReset',
         'onFocus',
         'onBlur'
     ],
     'params' : {
         'container' : false,                    // Component container that is required in case content is rendered without available select.
-        'select' : cm.Node('select'),           // Html select node to decorate.
+        'select' : cm.Node('select'),           // Deprecated, use 'node ' parameter instead.
+        'node' : cm.Node('select'),             // Html select node to decorate.
         'name' : '',
         'renderInBody' : true,                  // Render dropdowns in document.body, else they will be rendrered in component container.
         'multiple' : false,                     // Render multiple select.
@@ -62,8 +64,9 @@ function(params){
 
     var init = function(){
         that.setParams(params);
+        preValidateParams();
         that.convertEvents(that.params['events']);
-        that.getDataConfig(that.params['select']);
+        that.getDataConfig(that.params['node']);
         validateParams();
         render();
         setMiscEvents();
@@ -77,15 +80,15 @@ function(params){
                     }
                 });
             }else{
-                cm.forEach(that.params['select'].options, function(item){
+                cm.forEach(that.params['node'].options, function(item){
                     item.selected && set(options[item.value]);
                 });
             }
         }else{
             if(that.params['selected'] && options[that.params['selected']]){
                 set(options[that.params['selected']]);
-            }else if(options[that.params['select'].value]){
-                set(options[that.params['select'].value]);
+            }else if(options[that.params['node'].value]){
+                set(options[that.params['node'].value]);
             }else if(optionsLength){
                 set(optionsList[0]);
             }
@@ -95,13 +98,19 @@ function(params){
         that.triggerEvent('onRender', active);
     };
 
-    var validateParams = function(){
+    var preValidateParams = function(){
         if(cm.isNode(that.params['select'])){
-            that.params['placeholder'] = that.params['select'].getAttribute('placeholder') || that.params['placeholder'];
-            that.params['multiple'] = that.params['select'].multiple;
-            that.params['title'] = that.params['select'].getAttribute('title') || that.params['title'];
-            that.params['name'] = that.params['select'].getAttribute('name') || that.params['name'];
-            that.params['disabled'] = that.params['select'].disabled || that.params['disabled'];
+            that.params['node'] = that.params['select'];
+        }
+    };
+
+    var validateParams = function(){
+        if(cm.isNode(that.params['node'])){
+            that.params['placeholder'] = that.params['node'].getAttribute('placeholder') || that.params['placeholder'];
+            that.params['multiple'] = that.params['node'].multiple;
+            that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
+            that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
+            that.params['disabled'] = that.params['node'].disabled || that.params['disabled'];
         }
         that.disabled = that.params['disabled'];
     };
@@ -116,23 +125,23 @@ function(params){
         }
         /* *** ATTRIBUTES *** */
         // Add class name
-        if(that.params['select'].className){
-            cm.addClass(nodes['container'], that.params['select'].className);
+        if(that.params['node'].className){
+            cm.addClass(nodes['container'], that.params['node'].className);
         }
         // Title
         if(that.params['showTitleTag'] && that.params['title']){
             nodes['container'].title = that.params['title'];
         }
         // Tabindex
-        if(tabindex = that.params['select'].getAttribute('tabindex')){
+        if(tabindex = that.params['node'].getAttribute('tabindex')){
             nodes['container'].setAttribute('tabindex', tabindex);
         }
         // ID
-        if(that.params['select'].id){
-            nodes['container'].id = that.params['select'].id;
+        if(that.params['node'].id){
+            nodes['container'].id = that.params['node'].id;
         }
         // Data
-        cm.forEach(that.params['select'].attributes, function(item){
+        cm.forEach(that.params['node'].attributes, function(item){
             if(/^data-/.test(item.name) && item.name != 'data-element'){
                 nodes['container'].setAttribute(item.name, item.value);
             }
@@ -155,10 +164,10 @@ function(params){
         /* *** INSERT INTO DOM *** */
         if(that.params['container']){
             that.params['container'].appendChild(nodes['container']);
-        }else if(that.params['select'].parentNode){
-            cm.insertBefore(nodes['container'], that.params['select']);
+        }else if(that.params['node'].parentNode){
+            cm.insertBefore(nodes['container'], that.params['node']);
         }
-        cm.remove(that.params['select']);
+        cm.remove(that.params['node']);
     };
 
     var renderSingle = function(){
@@ -254,7 +263,7 @@ function(params){
     /* *** COLLECTORS *** */
 
     var collectSelectOptions = function(){
-        var myChildes = that.params['select'].childNodes,
+        var myChildes = that.params['node'].childNodes,
             myOptionsNodes,
             myOptions;
         cm.forEach(myChildes, function(myChild){
@@ -487,43 +496,59 @@ function(params){
         return active;
     };
 
-    that.set = function(value, execute){
-        execute = typeof execute == 'undefined'? true : execute;
+    that.set = function(value, triggerEvents){
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
         // Select option and execute events
         if(typeof value != 'undefined'){
             if(cm.isArray(value)){
                 cm.forEach(value, function(item){
                     if(options[item]){
-                        set(options[item]);
+                        set(options[item], false);
                     }
                 });
-                /* *** EXECUTE API EVENTS *** */
-                if(execute){
+                if(triggerEvents){
                     that.triggerEvent('onSelect', active);
                     that.triggerEvent('onChange', active);
                 }
             }else if(options[value]){
-                set(options[value], execute);
+                set(options[value], triggerEvents);
             }
         }
         return that;
     };
 
-    that.selectAll = function(){
+    that.reset = function(triggerEvents){
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        if(that.params['multiple']){
+            that.deselectAll(triggerEvents);
+        }else{
+            if(optionsLength){
+                set(optionsList[0], triggerEvents);
+            }
+        }
+    };
+
+    that.selectAll = function(triggerEvents){
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
         if(that.params['multiple']){
             cm.forEach(options, deselectMultiple);
             cm.forEach(options, setMultiple);
-            that.triggerEvent('onSelect', active);
-            onChange();
+            if(triggerEvents){
+                that.triggerEvent('onSelect', active);
+                onChange();
+            }
         }
         return that;
     };
 
-    that.deselectAll = function(){
+    that.deselectAll = function(triggerEvents){
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
         if(that.params['multiple']){
             cm.forEach(options, deselectMultiple);
-            that.triggerEvent('onSelect', active);
-            onChange();
+            if(triggerEvents){
+                that.triggerEvent('onSelect', active);
+                onChange();
+            }
         }
         return that;
     };
@@ -624,8 +649,7 @@ Com.FormFields.add('select', {
     'node' : cm.node('select'),
     'component' : 'Com.Select',
     'callbacks' : {
-        'component' : function(params){
-            var that = this;
+        'component' : function(that, params){
             return new that.params['constructor'](
                 cm.merge(params, {
                     'select' : params['node']

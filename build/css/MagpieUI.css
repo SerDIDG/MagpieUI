@@ -5543,6 +5543,22 @@ button::-moz-focus-inner {
   float: left;
   margin: 0 8px 0 0;
 }
+.btn-wrap.pull-left .button:last-child,
+.btn-wrap.left .button:last-child,
+.btn-wrap.pull-left .browse-button:last-child,
+.btn-wrap.left .browse-button:last-child,
+.btn-wrap.pull-left .com__menu:last-child,
+.btn-wrap.left .com__menu:last-child,
+.btn-wrap.pull-left input[type="button"]:last-child,
+.btn-wrap.left input[type="button"]:last-child,
+.btn-wrap.pull-left input[type="submit"]:last-child,
+.btn-wrap.left input[type="submit"]:last-child,
+.btn-wrap.pull-left input[type="reset"]:last-child,
+.btn-wrap.left input[type="reset"]:last-child,
+.btn-wrap.pull-left button:last-child,
+.btn-wrap.left button:last-child {
+  margin-right: 0;
+}
 .btn-wrap.pull-center,
 .btn-wrap.centered {
   text-align: center;
@@ -5579,7 +5595,7 @@ button::-moz-focus-inner {
 .btn-wrap.centered input[type="reset"]:first-child,
 .btn-wrap.pull-center button:first-child,
 .btn-wrap.centered button:first-child {
-  margin: 0;
+  margin-left: 0;
 }
 .btn-wrap.is-box,
 .btn-wrap.is-block {
@@ -5621,7 +5637,7 @@ button::-moz-focus-inner {
 .btn-wrap.is-block input[type="reset"]:first-child,
 .btn-wrap.is-box button:first-child,
 .btn-wrap.is-block button:first-child {
-  margin: 0;
+  margin-top: 0;
 }
 .btn-wrap.is-flexible {
   display: -webkit-flex;
@@ -5700,11 +5716,6 @@ button::-moz-focus-inner {
   right: 0;
   opacity: 0;
   cursor: pointer;
-}
-.ie8 .browse-button input[type="file"],
-.ie7 .browse-button input[type="file"],
-.ie6 .browse-button input[type="file"] {
-  filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
 }
 .browse-button .button,
 .browse-button input[type="button"],
@@ -8139,6 +8150,8 @@ button::-moz-focus-inner {
   z-index: 1;
   overflow: hidden;
   font-size: 0;
+  -webkit-transition: opacity 300ms ease-in-out;
+  transition: opacity 300ms ease-in-out;
 }
 .pt__image > .inner > .descr {
   width: 100%;
@@ -8295,6 +8308,13 @@ button::-moz-focus-inner {
 }
 .pt__image.is-zoom > a.inner {
   cursor: zoom-in;
+}
+.pt__image.is-no-image {
+  background: url('../img/parts/no-image-150.png') 50% 50% no-repeat;
+  background-size: cover;
+}
+.pt__image.is-no-image > .inner {
+  opacity: 0;
 }
 .pt__image.is-checkable {
   cursor: pointer;

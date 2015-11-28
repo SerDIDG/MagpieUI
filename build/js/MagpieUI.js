@@ -5468,30 +5468,30 @@ function(params){
                 that.params['constructor'] = classConstructor;
             });
         }
+        that.params['componentParams']['node'] = that.params['node'];
+        that.params['componentParams']['name'] = that.params['name'];
+        that.params['componentParams']['options'] = that.params['options'];
     };
 
     var render = function(){
         // Render structure
-        that.nodes = that.callbacks.render.apply(that) || {};
+        that.nodes = that.callbacks.render.call(that) || {};
         // Append
         that.params['container'].appendChild(that.nodes['container']);
         // Construct
-        that.callbacks.construct.apply(that);
+        that.callbacks.construct.call(that);
     };
 
     /* ******* CALLBACKS ******* */
 
     that.callbacks.construct = function(){
-        that.component = that.callbacks.component.apply(that, that.params['componentParams']);
+        that.component = that.callbacks.component.call(that, that.params['componentParams']);
     };
 
     that.callbacks.component = function(params){
-        return new that.params['constructor'](
-            cm.merge(params, {
-                'node' : that.params['node'],
-                'name' : that.params['name']
-            })
-        );
+        if(that.params['component']){
+            return new that.params['constructor'](params);
+        }
     };
 
     that.callbacks.render = function(){
@@ -5505,11 +5505,12 @@ function(params){
     };
 
     that.callbacks.set = function(value){
+        that.component.set(value);
         return value;
     };
 
     that.callbacks.get = function(){
-        return that.value;
+        return that.component.get();
     };
 
     /* ******* PUBLIC ******* */
@@ -5641,7 +5642,7 @@ Com.FormFields.add('check', {
         },
         'get' : function(){
             var that = this;
-            return that.params['node'];
+            return that.params['node'].value;
         }
     }
 });
@@ -6608,6 +6609,9 @@ function(params){
             });
             that.components['codemirror'].on('change', function(cm){
                 that.params['node'].value = cm.getValue();
+            });
+            cm.customEvent.add(that.params['node'], 'redraw', function(){
+                that.components['codemirror'].refresh();
             });
         }
     };
@@ -11829,7 +11833,14 @@ function(params){
             'title' : ''
         }, item);
         // Check type
-        item['type'] = /(\.jpg|\.png|\.gif|\.jpeg|\.bmp|\.tga)$/gi.test(item['src']) ? 'image' : 'iframe';
+        if(
+            /(\.jpg|\.png|\.gif|\.jpeg|\.bmp|\.tga)$/gi.test(item['src']) ||
+            /^data:image/gi.test(item['src'])
+        ){
+            item['type'] = 'image';
+        }else{
+            item['type'] = 'iframe';
+        }
         // Structure
         if(!item['link']){
             item['link'] = cm.Node('a')
@@ -12006,6 +12017,26 @@ function(params){
 
     that.stop = function(){
         that.isProcess = false;
+        return that;
+    };
+
+    that.clear = function(){
+        if(items[that.current]){
+            cm.remove(items[that.current]['nodes']['container']);
+            that.current = null;
+            that.previous = null;
+        }
+        items = [];
+        return that;
+    };
+
+    that.add = function(item){
+        item = cm.merge({
+            'link' : cm.node('a'),
+            'src' : '',
+            'title' : ''
+        }, item);
+        processItem(item);
         return that;
     };
 
@@ -12289,8 +12320,18 @@ function(params){
         return that;
     };
 
+    that.add = function(item){
+        components['gallery'].add(item);
+        return that;
+    };
+
     that.collect = function(node){
         components['gallery'].collect(node);
+        return that;
+    };
+
+    that.clear = function(){
+        components['gallery'].clear();
         return that;
     };
 
@@ -13261,6 +13302,191 @@ function(params){
     };
 
     init();
+});
+cm.define('Com.ImageInput', {
+    'modules' : [
+        'Params',
+        'Events',
+        'Langs',
+        'DataConfig',
+        'Stack',
+        'Structure'
+    ],
+    'events' : [
+        'onRender'
+    ],
+    'params' : {
+        'node' : cm.Node('div'),
+        'name' : '',
+        'title' : '',
+        'placeholder' : '',
+        'value' : null,
+        'disabled' : false,
+        'langs' : {
+            'no_image' : 'No Image',
+            'browse' : 'Browse',
+            'remove' : 'Remove'
+        },
+        'Com.GalleryPopup' : {}
+    }
+},
+function(params){
+    var that = this;
+
+    that.nodes = {};
+    that.components = {};
+    that.disabled = false;
+    that.value = null;
+
+    var init = function(){
+        that.setParams(params);
+        that.convertEvents(that.params['events']);
+        that.getDataConfig(that.params['node']);
+        validateParams();
+        render();
+        // Set selected date
+        if(that.params['value']){
+            that.set(that.params['value'], false);
+        }else{
+            that.set(that.params['node'].value, false);
+        }
+        that.addToStack(that.nodes['container']);
+        that.triggerEvent('onRender');
+    };
+
+    var validateParams = function(){
+        if(cm.isNode(that.params['node'])){
+            that.params['placeholder'] = that.params['node'].getAttribute('placeholder') || that.params['placeholder'];
+            that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
+            that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
+        }
+        that.disabled = that.params['disabled'];
+    };
+
+    var render = function(){
+        // Structure
+        that.nodes['container'] = cm.node('div', {'class' : 'com__image-input'},
+            that.nodes['hidden'] = cm.node('input', {'type' : 'hidden'}),
+            cm.node('div', {'class' : 'pt__box-item size-80'},
+                cm.node('div', {'class' : 'l'},
+                    that.nodes['imageContainer'] = cm.node('div', {'class' : 'pt__image is-centered'},
+                        that.nodes['link'] = cm.node('a', {'class' : 'inner'},
+                            that.nodes['image'] = cm.node('img', {'class' : 'descr', 'alt' : ''})
+                        )
+                    )
+                ),
+                that.nodes['r'] = cm.node('div', {'class' : 'r'},
+                    that.nodes['buttons'] = cm.node('div', {'class' : 'btn-wrap pull-left'},
+                        cm.node('div', {'class' : 'browse-button'},
+                            cm.node('button', that.lang('browse')),
+                            cm.node('div', {'class' : 'inner'},
+                                that.nodes['input'] = cm.node('input', {'type' : 'file'})
+                            )
+                        ),
+                        that.nodes['remove'] = cm.node('button', that.lang('remove'))
+                    )
+                )
+            )
+        );
+        if(!cm.isEmpty(that.params['title'])){
+            that.nodes['imageContainer'].title = that.params['title'];
+        }
+        if(!cm.isEmpty(that.params['placeholder'])){
+            that.nodes['r'].appendChild(
+                cm.node('div', {'class' : 'hint'}, that.params['placeholder'])
+            );
+        }
+        if(!cm.isEmpty(that.params['name'])){
+            that.nodes['hidden'].setAttribute('name', that.params['name']);
+        }
+        // Append
+        that.appendStructure(that.nodes['container']);
+        cm.remove(that.params['node']);
+        // Events
+        cm.getConstructor('Com.GalleryPopup', function(classConstructor){
+            that.components['popup'] = new classConstructor(
+                cm.merge(that.params['Com.GalleryPopup'], {
+                    'node' : that.nodes['imageContainer']
+                })
+            );
+        });
+        that.components['fileReader'] = new FileReader();
+        cm.addEvent(that.components['fileReader'], 'load', fileReaderAction);
+        cm.addEvent(that.nodes['input'], 'change', changeAction);
+        cm.addEvent(that.nodes['remove'], 'click', removeAction);
+    };
+
+    var changeAction = function(){
+        var file = that.nodes['input'].files[0];
+        if(/^image\//.test(file.type)){
+            that.components['fileReader'].readAsDataURL(file);
+        }
+    };
+
+    var removeAction = function(){
+        that.clear();
+    };
+
+    var fileReaderAction = function(e){
+        setImage(e.target.result);
+    };
+
+    var setImage = function(url){
+        that.value = url;
+        that.nodes['hidden'].value = url;
+        that.nodes['link'].setAttribute('data-node', 'items:[]:link');
+        that.nodes['image'].src = url;
+        cm.replaceClass(that.nodes['imageContainer'], 'is-no-hover is-no-image', 'is-zoom');
+        cm.appendChild(that.nodes['remove'], that.nodes['buttons']);
+        // Replace gallery item
+        if(that.components['popup']){
+            that.components['popup']
+                .clear()
+                .add({
+                    'link' : that.nodes['link'],
+                    'src' : url,
+                    'title' : ''
+                })
+        }
+    };
+
+    /* ******* PUBLIC ******* */
+
+    that.set = function(url){
+        if(cm.isEmpty(url)){
+            that.clear();
+        }else{
+            setImage(url);
+        }
+        return that;
+    };
+
+    that.get = function(){
+        return that.value;
+    };
+
+    that.clear = function(){
+        that.value = null;
+        that.nodes['hidden'].value = '';
+        that.nodes['link'].removeAttribute('data-node');
+        cm.replaceClass(that.nodes['imageContainer'], 'is-zoom', 'is-no-hover is-no-image');
+        cm.remove(that.nodes['remove']);
+        // Clear gallery item
+        if(that.components['popup']){
+            that.components['popup']
+                .clear()
+        }
+        return that;
+    };
+
+    init();
+});
+
+/* ****** FORM FIELD COMPONENT ******* */
+
+Com.FormFields.add('image-input', {
+    'node' : cm.node('input'),
+    'component' : 'Com.ImageInput'
 });
 cm.define('Com.Menu', {
     'modules' : [
@@ -16303,20 +16529,9 @@ Com.FormFields.add('select', {
             var that = this;
             return new that.params['constructor'](
                 cm.merge(params, {
-                    'select' : that.params['node'],
-                    'name' : that.params['name'],
-                    'options' : that.params['options']
+                    'select' : params['node']
                 })
             );
-        },
-        'set' : function(value){
-            var that = this;
-            that.component.set(value);
-            return value;
-        },
-        'get' : function(){
-            var that = this;
-            return that.component.get();
         }
     }
 });

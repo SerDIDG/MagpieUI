@@ -12404,10 +12404,15 @@ cm.top = function(name){
 };
 
 cm.isArray = Array.isArray || function(a){
-    return (a) ? a.constructor == Array : false;
+    return a ? a.constructor == Array : false;
 };
+
 cm.isObject = function(o){
-    return (o) ? o.constructor == Object : false;
+    return o ? o.constructor == Object : false;
+};
+
+cm.isFunction = function(o){
+    return o ? typeof o == 'function' : false;
 };
 
 cm.forEach = function(o, callback){
@@ -12476,7 +12481,9 @@ cm.merge = function(o1, o2){
     cm.forEach(o2, function(item, key){
         if(item != null){
             try{
-                if(Object.prototype.toString.call(item) == '[object Object]' && item.constructor != Object){
+                if(item._isComponent){
+                    o1[key] = item;
+                }else if(Object.prototype.toString.call(item) == '[object Object]' && item.constructor != Object){
                     o1[key] = item;
                 }else if(cm.isObject(item)){
                     o1[key] = cm.merge(o1[key], item);
@@ -12537,10 +12544,14 @@ cm.clone = function(o, cloneNode){
             });
             break;
         case Object:
-            newO = {};
-            cm.forEach(o, function(item, key){
-                newO[key] = cm.clone(item, cloneNode);
-            });
+            if(o._isComponent){
+                newO = o;
+            }else{
+                newO = {};
+                cm.forEach(o, function(item, key){
+                    newO[key] = cm.clone(item, cloneNode);
+                });
+            }
             break;
         default:
             // Exceptions
@@ -15024,10 +15035,11 @@ cm.cookieDate = function(num){
 cm.ajax = function(o){
     var config = cm.merge({
             'debug' : true,
-            'type' : 'xml',                                         // text | xml | json | jsonp
-            'method' : 'post',                                      // post | get
+            'type' : 'json',                                         // text | xml | json | jsonp
+            'method' : 'post',                                       // post | get
             'params' : '',
             'url' : '',
+            'formData'  : false,
             'httpRequestObject' : cm.createXmlHttpRequestObject(),
             'headers' : {
                 'Content-Type' : 'application/x-www-form-urlencoded',
@@ -15067,7 +15079,9 @@ cm.ajax = function(o){
         responseType =  /text|json/.test(config['type']) ? 'responseText' : 'responseXML';
         config['method'] = config['method'].toLocaleLowerCase();
         // Convert params object to URI string
-        if(cm.isObject(config['params'])){
+        if(config['formData']){
+            config['params'] = cm.obj2FormData(config['params']);
+        }else if(cm.isObject(config['params'])){
             config['params'] = cm.obj2URI(config['params']);
         }
         // Build request link
@@ -15214,6 +15228,14 @@ cm.obj2URI = function(obj, prefix){
     return str.join("&");
 };
 
+cm.obj2FormData = function(o){
+    var fd = new FormData();
+    cm.forEach(o, function(value, key){
+        fd.append(key, value);
+    });
+    return fd;
+};
+
 cm.xml2arr = function(o){
     o = o.nodeType == 9 ? cm.firstEl(o) : o;
     if(o.nodeType == 3 || o.nodeType == 4){
@@ -15342,6 +15364,7 @@ cm.defineHelper = function(name, data, handler){
     }, data);
     // Create class extend object
     that.build = {
+        '_isComponent' : true,
         '_raw' : data,
         '_name' : {
             'full' : name,
@@ -16281,17 +16304,30 @@ cm.define('Com.Form', {
         'Structure'
     ],
     'events' : [
-        'onRender'
+        'onRender',
+        'onError',
+        'onAbort',
+        'onSuccess',
+        'onSendStart',
+        'onSendEnd'
     ],
     'params' : {
         'node' : cm.Node('div'),
         'name' : '',
-        'renderStructure' : true
+        'renderStructure' : true,
+        'ajax' : {
+            'type' : 'json',
+            'method' : 'post',
+            'formData' : true,
+            'url' : '',
+            'params' : ''
+        }
     }
 },
 function(params){
     var that = this;
 
+    that.ajaxHandler = null;
     that.fields = {};
 
     var init = function(){
@@ -16313,6 +16349,11 @@ function(params){
             that.appendStructure(that.nodes['container']);
             cm.remove(that.params['node']);
         }
+        // Events
+        cm.addEvent(that.nodes['form'], 'submit', function(e){
+            cm.preventDefault(e);
+            that.send();
+        });
     };
 
     var renderField = function(type, params){
@@ -16322,7 +16363,8 @@ function(params){
             'name' : '',
             'label' : '',
             'options' : [],
-            'container' : that.nodes['form']
+            'container' : that.nodes['form'],
+            'form' : that
         }, params);
         // Render
         if(field = Com.FormFields.get(type)){
@@ -16333,15 +16375,101 @@ function(params){
         }
     };
 
+    /* ******* CALLBACKS ******* */
+
+    that.callbacks.prepare = function(that, config){
+        config['params'] = that.getAll();
+        return config;
+    };
+
+    that.callbacks.request = function(that, config){
+        config = that.callbacks.prepare(that, config);
+        // Return ajax handler (XMLHttpRequest) to providing abort method.
+        return cm.ajax(
+            cm.merge(config, {
+                'onStart' : function(){
+                    that.callbacks.start(that, config);
+                },
+                'onSuccess' : function(response){
+                    that.callbacks.response(that, config, response);
+                },
+                'onError' : function(){
+                    that.callbacks.error(that, config);
+                },
+                'onAbort' : function(){
+                    that.callbacks.abort(that, config);
+                },
+                'onEnd' : function(){
+                    that.callbacks.end(that, config);
+                }
+            })
+        );
+    };
+
+    that.callbacks.start = function(that, config){
+        that.triggerEvent('onSendStart');
+    };
+
+    that.callbacks.end = function(that, config){
+        that.triggerEvent('onSendEnd');
+    };
+
+    that.callbacks.response = function(that, config, response){
+        if(!cm.isEmpty(response)){
+            that.callbacks.success(that, response);
+        }else{
+            that.callbacks.error(that, config);
+        }
+    };
+
+    that.callbacks.error = function(that, config){
+        that.triggerEvent('onError');
+    };
+
+    that.callbacks.success = function(that, response){
+        that.triggerEvent('onSuccess', response);
+    };
+
+    that.callbacks.abort = function(that, config){
+        that.triggerEvent('onAbort');
+    };
+
     /* ******* PUBLIC ******* */
+
+    that.add = function(type, params){
+        renderField(type, params);
+        return that;
+    };
+
+    that.getAll = function(){
+        var o = {};
+        cm.forEach(that.fields, function(field, name){
+            o[name] = field.get();
+        });
+        return o;
+    };
 
     that.clear = function(){
         cm.clearNode(that.nodes['form']);
         return that;
     };
 
-    that.add = function(type, params){
-        renderField(type, params);
+    that.reset = function(){
+        cm.forEach(that.fields, function(field){
+            field.reset();
+        });
+        return that;
+    };
+
+    that.send = function(){
+        that.ajaxHandler = that.callbacks.request(that, cm.clone(that.params['ajax']));
+        return that;
+    };
+
+    that.abort = function(){
+        if(that.ajaxHandler && that.ajaxHandler.abort){
+            that.ajaxHandler.abort();
+        }
         return that;
     };
 
@@ -16380,18 +16508,26 @@ cm.define('Com.FormField', {
     'params' : {
         'node' : cm.Node('div'),
         'container' : cm.node('div'),
+        'form' : false,
         'name' : '',
         'type' : false,
         'label' : '',
+        'help' : null,
+        'placeholder' : '',
         'options' : [],
         'component' : false,
-        'componentParams' : {}
+        'componentParams' : {},
+        'Com.HelpBubble' : {
+            'renderStructure' : true
+        }
     }
 },
 function(params){
     var that = this;
 
     that.nodes = {};
+    that.components = {};
+    that.form = null;
     that.component = null;
     that.value = null;
 
@@ -16415,76 +16551,105 @@ function(params){
         that.params['componentParams']['node'] = that.params['node'];
         that.params['componentParams']['name'] = that.params['name'];
         that.params['componentParams']['options'] = that.params['options'];
+        that.params['Com.HelpBubble']['content'] = that.params['help'];
+        that.params['Com.HelpBubble']['name'] = that.params['name'];
+        that.form = that.params['form'];
     };
 
     var render = function(){
         // Render structure
-        that.nodes = that.callbacks.render.call(that) || {};
+        that.nodes = that.callbacks.render(that) || {};
         // Append
         that.params['container'].appendChild(that.nodes['container']);
         // Construct
-        that.callbacks.construct.call(that);
+        that.callbacks.construct(that);
     };
 
     /* ******* CALLBACKS ******* */
 
-    that.callbacks.construct = function(){
-        that.component = that.callbacks.component.call(that, that.params['componentParams']);
+    that.callbacks.construct = function(that){
+        that.component = that.callbacks.component(that, that.params['componentParams']);
     };
 
-    that.callbacks.component = function(params){
+    that.callbacks.component = function(that, params){
         if(that.params['component']){
             return new that.params['constructor'](params);
         }
     };
 
-    that.callbacks.render = function(){
+    that.callbacks.render = function(that){
         var nodes = {};
         nodes['container'] = cm.node('dl',
-            nodes['label'] = cm.node('dt', that.params['label']),
+            nodes['label'] = cm.node('dt',
+                cm.node('label', that.params['label'])
+            ),
             nodes['value'] = cm.node('dd', that.params['node'])
         );
-        that.params['node'].setAttribute('name', that.params['name']);
+        if(!cm.isEmpty(that.params['name'])){
+            that.params['node'].setAttribute('name', that.params['name']);
+        }
+        if(!cm.isEmpty(that.params['placeholder'])){
+            that.params['node'].setAttribute('placeholder', that.params['placeholder']);
+        }
+        if(!cm.isEmpty(that.params['help'])){
+            cm.getConstructor('Com.HelpBubble', function(classConstructor){
+                that.components['help'] = new classConstructor(
+                    cm.merge(that.params['Com.HelpBubble'], {
+                        'container' : nodes['label']
+                    })
+                );
+            });
+        }
         return nodes;
     };
 
-    that.callbacks.set = function(value){
-        that.component.set(value);
+    that.callbacks.set = function(that, value){
+        cm.isFunction(that.component.set) && that.component.set(value);
         return value;
     };
 
-    that.callbacks.get = function(){
-        return that.component.get();
+    that.callbacks.get = function(that){
+        return cm.isFunction(that.component.get) ? that.component.get() : null;
+    };
+
+    that.callbacks.reset = function(that){
+        cm.isFunction(that.component.reset) && that.component.reset();
     };
 
     /* ******* PUBLIC ******* */
 
     that.set = function(value){
-        that.value = that.callbacks.set.apply(that, value);
+        that.value = that.callbacks.set(that, value);
         return that;
     };
 
     that.get = function(){
-        that.value = that.callbacks.get.apply(that);
+        that.value = that.callbacks.get(that);
         return that.value;
+    };
+
+    that.reset = function(){
+        that.callbacks.reset(that);
+        return that;
     };
 
     init();
 });
 
-/* ******* COMPONENT: FORM FIELDS ******* */
+/* ******* COMPONENT: FORM FIELD: DECORATORS ******* */
 
 Com.FormFields.add('input', {
     'node' : cm.node('input', {'type' : 'text'}),
     'callbacks' : {
-        'set' : function(value){
-            var that = this;
+        'set' : function(that, value){
             that.params['node'].value = value;
             return value;
         },
-        'get' : function(){
-            var that = this;
+        'get' : function(that){
             return that.params['node'].value;
+        },
+        'reset' : function(that){
+            that.params['node'].value = '';
         }
     }
 });
@@ -16492,14 +16657,15 @@ Com.FormFields.add('input', {
 Com.FormFields.add('textarea', {
     'node' : cm.node('textarea'),
     'callbacks' : {
-        'set' : function(value){
-            var that = this;
+        'set' : function(that, value){
             that.params['node'].value = value;
             return value;
         },
-        'get' : function(){
-            var that = this;
+        'get' : function(that){
             return that.params['node'].value;
+        },
+        'reset' : function(that){
+            that.params['node'].value = '';
         }
     }
 });
@@ -16507,9 +16673,8 @@ Com.FormFields.add('textarea', {
 Com.FormFields.add('select', {
     'node' : cm.node('select'),
     'callbacks' : {
-        'component' : function(){
-            var that = this,
-                nodes,
+        'component' : function(that){
+            var nodes,
                 items = [];
             cm.forEach(that.params['options'], function(item){
                 nodes = {};
@@ -16519,14 +16684,15 @@ Com.FormFields.add('select', {
             });
             return items;
         },
-        'set' : function(value){
-            var that = this;
+        'set' : function(that, value){
             that.params['node'].value = value;
             return value;
         },
-        'get' : function(){
-            var that = this;
+        'get' : function(that){
             return that.params['node'].value;
+        },
+        'reset' : function(that){
+            that.params['node'].value = '';
         }
     }
 });
@@ -16534,29 +16700,42 @@ Com.FormFields.add('select', {
 Com.FormFields.add('radio', {
     'node' : cm.node('div', {'class' : 'form__check-line'}),
     'callbacks' : {
-        'component' : function(){
-            var that = this,
-                nodes,
-                items = [];
-            cm.forEach(that.params['options'], function(item){
-                nodes = {};
-                nodes['container'] = cm.node('label',
-                    nodes['input'] = cm.node('input', {'type' : 'radio', 'name' : that.params['name'], 'value' : item['value']}),
-                    nodes['label'] = cm.node('span', {'class' : 'label'}, item['text'])
+        'component' : function(that){
+            var items = [],
+                item;
+            cm.forEach(that.params['options'], function(option){
+                item = {
+                    'config' : option,
+                    'nodes' : {}
+                };
+                item.nodes['container'] = cm.node('label',
+                    item.nodes['input'] = cm.node('input', {'type' : 'radio', 'name' : that.params['name'], 'value' : option['value']}),
+                    item.nodes['label'] = cm.node('span', {'class' : 'label'}, option['text'])
                 );
-                that.params['node'].appendChild(nodes['container']);
-                items.push(nodes);
+                that.params['node'].appendChild(item.nodes['container']);
+                items.push(item);
             });
             return items;
         },
-        'set' : function(value){
-            var that = this;
-            that.params['node'].value = value;
+        'set' : function(that, value){
+            cm.forEach(that.component, function(item){
+                item.nodes['input'].checked = item.config['value'] == value;
+            });
             return value;
         },
-        'get' : function(){
-            var that = this;
-            return that.params['node'];
+        'get' : function(that){
+            var value = null;
+            cm.forEach(that.component, function(item){
+                if(item.nodes['input'].checked){
+                    value = item.config['value'];
+                }
+            });
+            return value;
+        },
+        'reset' : function(that){
+            cm.forEach(that.component, function(item){
+                item.nodes['input'].checked = false;
+            });
         }
     }
 });
@@ -16564,29 +16743,93 @@ Com.FormFields.add('radio', {
 Com.FormFields.add('check', {
     'node' : cm.node('div', {'class' : 'form__check-line'}),
     'callbacks' : {
-        'component' : function(){
-            var that = this,
-                nodes,
-                items = [];
-            cm.forEach(that.params['options'], function(item){
-                nodes = {};
-                nodes['container'] = cm.node('label',
-                    nodes['input'] = cm.node('input', {'type' : 'checkbox', 'name' : that.params['name'], 'value' : item['value']}),
-                    nodes['label'] = cm.node('span', {'class' : 'label'}, item['text'])
+        'component' : function(that){
+            var items = [],
+                item;
+            cm.forEach(that.params['options'], function(option){
+                item = {
+                    'config' : option,
+                    'nodes' : {}
+                };
+                item.nodes['container'] = cm.node('label',
+                    item.nodes['input'] = cm.node('input', {'type' : 'checkbox', 'name' : that.params['name'], 'value' : option['value']}),
+                    item.nodes['label'] = cm.node('span', {'class' : 'label'}, option['text'])
                 );
-                that.params['node'].appendChild(nodes['container']);
-                items.push(nodes);
+                that.params['node'].appendChild(item.nodes['container']);
+                items.push(item);
             });
             return items;
         },
-        'set' : function(value){
-            var that = this;
-            that.params['node'].value = value;
+        'set' : function(that, value){
+            cm.forEach(that.component, function(item){
+                item.nodes['input'].checked = cm.inArray(value, item.config['value']);
+            });
             return value;
         },
-        'get' : function(){
-            var that = this;
-            return that.params['node'].value;
+        'get' : function(that){
+            var value = [];
+            cm.forEach(that.component, function(item){
+                if(item.nodes['input'].checked){
+                    value.push(item.config['value']);
+                }
+            });
+            return value;
+        },
+        'reset' : function(that){
+            cm.forEach(that.component, function(item){
+                item.nodes['input'].checked = false;
+            });
+        }
+    }
+});
+
+Com.FormFields.add('buttons', {
+    'node' : cm.node('div', {'class' : 'btn-wrap'}),
+    'callbacks' : {
+        'render' : function(that){
+            var nodes = {};
+            nodes['container'] = that.params['node'];
+            return nodes;
+        },
+        'component' : function(that){
+            var buttons = {},
+                node;
+            cm.forEach(that.params['options'], function(item){
+                node = cm.node('button', item['text']);
+                switch(item['value']){
+                    case 'submit':
+                        node.type = 'submit';
+                        cm.addClass(node, 'button-primary');
+                        cm.addEvent(node, 'click', function(e){
+                            cm.preventDefault(e);
+                            that.form.send();
+                        });
+                        break;
+
+                    case 'reset':
+                        node.type = 'reset';
+                        cm.addClass(node, 'button-secondary');
+                        cm.addEvent(node, 'click', function(e){
+                            cm.preventDefault(e);
+                            that.form.reset();
+                        });
+                        break;
+
+                    case 'clear':
+                        cm.addClass(node, 'button-secondary');
+                        cm.addEvent(node, 'click', function(e){
+                            cm.preventDefault(e);
+                            that.form.clear();
+                        });
+                        break;
+
+                    default:
+                        break;
+                }
+                buttons[item['value']] = node;
+                that.params['node'].appendChild(node);
+            });
+            return buttons;
         }
     }
 });
@@ -17553,6 +17796,9 @@ function(params){
             });
             that.components['codemirror'].on('change', function(cm){
                 that.params['node'].value = cm.getValue();
+            });
+            cm.customEvent.add(that.params['node'], 'redraw', function(){
+                that.components['codemirror'].refresh();
             });
         }
     };
@@ -24263,6 +24509,7 @@ cm.define('Com.ImageInput', {
         'placeholder' : '',
         'value' : null,
         'disabled' : false,
+        'type' : 'file',              // base64 | file
         'langs' : {
             'no_image' : 'No Image',
             'browse' : 'Browse',
@@ -24278,6 +24525,7 @@ function(params){
     that.components = {};
     that.disabled = false;
     that.value = null;
+    that.file = null;
 
     var init = function(){
         that.setParams(params);
@@ -24310,7 +24558,7 @@ function(params){
             that.nodes['hidden'] = cm.node('input', {'type' : 'hidden'}),
             cm.node('div', {'class' : 'pt__box-item size-80'},
                 cm.node('div', {'class' : 'l'},
-                    that.nodes['imageContainer'] = cm.node('div', {'class' : 'pt__image is-centered'},
+                    that.nodes['imageContainer'] = cm.node('div', {'class' : 'pt__image has-border is-centered'},
                         that.nodes['link'] = cm.node('a', {'class' : 'inner'},
                             that.nodes['image'] = cm.node('img', {'class' : 'descr', 'alt' : ''})
                         )
@@ -24360,22 +24608,26 @@ function(params){
     var changeAction = function(){
         var file = that.nodes['input'].files[0];
         if(/^image\//.test(file.type)){
-            that.components['fileReader'].readAsDataURL(file);
+            that.file = file;
+            that.components['fileReader'].readAsDataURL(that.file);
         }
     };
 
     var removeAction = function(){
-        that.clear();
+        that.reset();
     };
 
     var fileReaderAction = function(e){
-        setImage(e.target.result);
+        set(e.target.result);
+    };
+
+    var set = function(url){
+        that.value = url;
+        that.nodes['hidden'].value = url;
+        setImage(url);
     };
 
     var setImage = function(url){
-        that.value = url;
-        that.nodes['hidden'].value = url;
-        that.nodes['link'].setAttribute('data-node', 'items:[]:link');
         that.nodes['image'].src = url;
         cm.replaceClass(that.nodes['imageContainer'], 'is-no-hover is-no-image', 'is-zoom');
         cm.appendChild(that.nodes['remove'], that.nodes['buttons']);
@@ -24393,23 +24645,31 @@ function(params){
 
     /* ******* PUBLIC ******* */
 
-    that.set = function(url){
+    that.set = function(url, file){
         if(cm.isEmpty(url)){
-            that.clear();
+            that.reset();
         }else{
-            setImage(url);
+            that.file = file;
+            set(url);
         }
         return that;
     };
 
     that.get = function(){
-        return that.value;
+        switch(that.params['type']){
+            case 'base64' :
+                return that.value;
+                break;
+            case 'file' :
+                return that.file;
+                break;
+        }
     };
 
-    that.clear = function(){
+    that.reset = function(){
+        that.file = null;
         that.value = null;
         that.nodes['hidden'].value = '';
-        that.nodes['link'].removeAttribute('data-node');
         cm.replaceClass(that.nodes['imageContainer'], 'is-zoom', 'is-no-hover is-no-image');
         cm.remove(that.nodes['remove']);
         // Clear gallery item
@@ -26857,12 +27117,14 @@ cm.define('Com.Select', {
         'onRender',
         'onSelect',
         'onChange',
+        'onReset',
         'onFocus',
         'onBlur'
     ],
     'params' : {
         'container' : false,                    // Component container that is required in case content is rendered without available select.
-        'select' : cm.Node('select'),           // Html select node to decorate.
+        'select' : cm.Node('select'),           // Deprecated, use 'node ' parameter instead.
+        'node' : cm.Node('select'),             // Html select node to decorate.
         'name' : '',
         'renderInBody' : true,                  // Render dropdowns in document.body, else they will be rendrered in component container.
         'multiple' : false,                     // Render multiple select.
@@ -26904,8 +27166,9 @@ function(params){
 
     var init = function(){
         that.setParams(params);
+        preValidateParams();
         that.convertEvents(that.params['events']);
-        that.getDataConfig(that.params['select']);
+        that.getDataConfig(that.params['node']);
         validateParams();
         render();
         setMiscEvents();
@@ -26919,15 +27182,15 @@ function(params){
                     }
                 });
             }else{
-                cm.forEach(that.params['select'].options, function(item){
+                cm.forEach(that.params['node'].options, function(item){
                     item.selected && set(options[item.value]);
                 });
             }
         }else{
             if(that.params['selected'] && options[that.params['selected']]){
                 set(options[that.params['selected']]);
-            }else if(options[that.params['select'].value]){
-                set(options[that.params['select'].value]);
+            }else if(options[that.params['node'].value]){
+                set(options[that.params['node'].value]);
             }else if(optionsLength){
                 set(optionsList[0]);
             }
@@ -26937,13 +27200,19 @@ function(params){
         that.triggerEvent('onRender', active);
     };
 
-    var validateParams = function(){
+    var preValidateParams = function(){
         if(cm.isNode(that.params['select'])){
-            that.params['placeholder'] = that.params['select'].getAttribute('placeholder') || that.params['placeholder'];
-            that.params['multiple'] = that.params['select'].multiple;
-            that.params['title'] = that.params['select'].getAttribute('title') || that.params['title'];
-            that.params['name'] = that.params['select'].getAttribute('name') || that.params['name'];
-            that.params['disabled'] = that.params['select'].disabled || that.params['disabled'];
+            that.params['node'] = that.params['select'];
+        }
+    };
+
+    var validateParams = function(){
+        if(cm.isNode(that.params['node'])){
+            that.params['placeholder'] = that.params['node'].getAttribute('placeholder') || that.params['placeholder'];
+            that.params['multiple'] = that.params['node'].multiple;
+            that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
+            that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
+            that.params['disabled'] = that.params['node'].disabled || that.params['disabled'];
         }
         that.disabled = that.params['disabled'];
     };
@@ -26958,23 +27227,23 @@ function(params){
         }
         /* *** ATTRIBUTES *** */
         // Add class name
-        if(that.params['select'].className){
-            cm.addClass(nodes['container'], that.params['select'].className);
+        if(that.params['node'].className){
+            cm.addClass(nodes['container'], that.params['node'].className);
         }
         // Title
         if(that.params['showTitleTag'] && that.params['title']){
             nodes['container'].title = that.params['title'];
         }
         // Tabindex
-        if(tabindex = that.params['select'].getAttribute('tabindex')){
+        if(tabindex = that.params['node'].getAttribute('tabindex')){
             nodes['container'].setAttribute('tabindex', tabindex);
         }
         // ID
-        if(that.params['select'].id){
-            nodes['container'].id = that.params['select'].id;
+        if(that.params['node'].id){
+            nodes['container'].id = that.params['node'].id;
         }
         // Data
-        cm.forEach(that.params['select'].attributes, function(item){
+        cm.forEach(that.params['node'].attributes, function(item){
             if(/^data-/.test(item.name) && item.name != 'data-element'){
                 nodes['container'].setAttribute(item.name, item.value);
             }
@@ -26997,10 +27266,10 @@ function(params){
         /* *** INSERT INTO DOM *** */
         if(that.params['container']){
             that.params['container'].appendChild(nodes['container']);
-        }else if(that.params['select'].parentNode){
-            cm.insertBefore(nodes['container'], that.params['select']);
+        }else if(that.params['node'].parentNode){
+            cm.insertBefore(nodes['container'], that.params['node']);
         }
-        cm.remove(that.params['select']);
+        cm.remove(that.params['node']);
     };
 
     var renderSingle = function(){
@@ -27096,7 +27365,7 @@ function(params){
     /* *** COLLECTORS *** */
 
     var collectSelectOptions = function(){
-        var myChildes = that.params['select'].childNodes,
+        var myChildes = that.params['node'].childNodes,
             myOptionsNodes,
             myOptions;
         cm.forEach(myChildes, function(myChild){
@@ -27329,43 +27598,59 @@ function(params){
         return active;
     };
 
-    that.set = function(value, execute){
-        execute = typeof execute == 'undefined'? true : execute;
+    that.set = function(value, triggerEvents){
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
         // Select option and execute events
         if(typeof value != 'undefined'){
             if(cm.isArray(value)){
                 cm.forEach(value, function(item){
                     if(options[item]){
-                        set(options[item]);
+                        set(options[item], false);
                     }
                 });
-                /* *** EXECUTE API EVENTS *** */
-                if(execute){
+                if(triggerEvents){
                     that.triggerEvent('onSelect', active);
                     that.triggerEvent('onChange', active);
                 }
             }else if(options[value]){
-                set(options[value], execute);
+                set(options[value], triggerEvents);
             }
         }
         return that;
     };
 
-    that.selectAll = function(){
+    that.reset = function(triggerEvents){
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        if(that.params['multiple']){
+            that.deselectAll(triggerEvents);
+        }else{
+            if(optionsLength){
+                set(optionsList[0], triggerEvents);
+            }
+        }
+    };
+
+    that.selectAll = function(triggerEvents){
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
         if(that.params['multiple']){
             cm.forEach(options, deselectMultiple);
             cm.forEach(options, setMultiple);
-            that.triggerEvent('onSelect', active);
-            onChange();
+            if(triggerEvents){
+                that.triggerEvent('onSelect', active);
+                onChange();
+            }
         }
         return that;
     };
 
-    that.deselectAll = function(){
+    that.deselectAll = function(triggerEvents){
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
         if(that.params['multiple']){
             cm.forEach(options, deselectMultiple);
-            that.triggerEvent('onSelect', active);
-            onChange();
+            if(triggerEvents){
+                that.triggerEvent('onSelect', active);
+                onChange();
+            }
         }
         return that;
     };
@@ -27466,8 +27751,7 @@ Com.FormFields.add('select', {
     'node' : cm.node('select'),
     'component' : 'Com.Select',
     'callbacks' : {
-        'component' : function(params){
-            var that = this;
+        'component' : function(that, params){
             return new that.params['constructor'](
                 cm.merge(params, {
                     'select' : params['node']
@@ -30281,10 +30565,10 @@ function(params){
 });
 Com['UA'] = {
     'hash' : {'ie':'MSIE','opera':'Opera','ff':'Firefox','firefox':'Firefox','webkit':'AppleWebKit','safari':'Safari','chrome':'Chrome','steam':'Steam'},
-    'fullname' : {'MSIE':'Microsoft Internet Explorer','Firefox':'Mozilla Firefox','Chrome':'Google Chrome','Safari':'Apple Safari','Opera':'Opera','Opera Mini':'Opera Mini','Opera Mobile':'Opera Mobile','IE Mobile':'Internet Explorer Mobile','Steam':'Valve Steam GameOverlay'},
+    'fullname' : {'MSIE':'Microsoft Internet Explorer','Firefox':'Mozilla Firefox','Chrome':'Google Chrome','Safari':'Apple Safari','Opera':'Opera','Opera Mini':'Opera Mini','Opera Mobile':'Opera Mobile','IE Mobile':'Internet Explorer Mobile','Steam':'Valve Steam Game Overlay'},
     'os' : {
         'Windows':{'NT 5.0':'2000','NT 5.1':'XP','NT 5.2':'Server 2003','NT 6.0':'Vista','NT 6.1':'7','NT 6.2':'8','NT 6.3':'8.1','NT 10.0':'10'},
-        'Mac OS':{'X 10.0':'Cheetah','X 10.1':'Puma','X 10.2':'Jaguar','X 10.3':'Panther','X 10.4':'Tiger','X 10.5':'Leopard','X 10.6':'Snow Leopard','X 10.7':'Lion','X 10.8':'Mountain Lion','X 10.9':'Mavericks','X 10.10':'Yosemite'}
+        'Mac OSX':{'10.0':'Cheetah','10.1':'Puma','10.2':'Jaguar','10.3':'Panther','10.4':'Tiger','10.5':'Leopard','10.6':'Snow Leopard','10.7':'Lion','10.8':'Mountain Lion','10.9':'Mavericks','10.10':'Yosemite','10.11':'El Capitan'}
     },
     'str' : navigator.userAgent,
     'get' : function(str){
@@ -30430,13 +30714,11 @@ Com['UA'] = {
             arr['os_type'] = 'mobile';
             arr['os_version'] =  str.replace(/^(?:.+)(?:CPU[ iPhone]{0,} OS )([a-zA-Z0-9\._]{0,})(?:.+)$/, '$1').replace(/_/gi,'.');
         }else if(str.indexOf('Macintosh') > -1){
-            arr['os'] = 'Mac OS';
-            if((str.indexOf('Mac OS') > -1)){
-                arr['os_full_version'] =  str.replace(/^(?:.+)(?:Mac OS )([a-zA-Z0-9\.\s_]{0,})(?:.+)$/, '$1').replace(/_/gi,'.');
-                arr['os_version'] = arr['os_full_version'].slice(0, 6);
-                var os = that.os[arr['os']];
-                arr['os_name'] =  arr['os'] +' '+ arr['os_version'] + ((os && os[arr['os_version']])? ' '+os[arr['os_version']] : '');
+            if((str.indexOf('Mac OS X') > -1)){
+                arr['os'] = 'Mac OSX';
+                arr['os_version'] =  str.replace(/^(?:.+)(?:Mac OS X)(?:[\s]{0,1})([a-zA-Z0-9\.\s_]{0,})(?:.+)$/, '$1').replace(/_/gi,'.');
             }else{
+                arr['os'] = 'Mac OS';
                 arr['os_version'] = 'Classic';
             }
         }else if(str.indexOf('BlackBerry') > -1){

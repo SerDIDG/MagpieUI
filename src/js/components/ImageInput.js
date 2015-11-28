@@ -17,6 +17,7 @@ cm.define('Com.ImageInput', {
         'placeholder' : '',
         'value' : null,
         'disabled' : false,
+        'type' : 'file',              // base64 | file
         'langs' : {
             'no_image' : 'No Image',
             'browse' : 'Browse',
@@ -32,6 +33,7 @@ function(params){
     that.components = {};
     that.disabled = false;
     that.value = null;
+    that.file = null;
 
     var init = function(){
         that.setParams(params);
@@ -64,7 +66,7 @@ function(params){
             that.nodes['hidden'] = cm.node('input', {'type' : 'hidden'}),
             cm.node('div', {'class' : 'pt__box-item size-80'},
                 cm.node('div', {'class' : 'l'},
-                    that.nodes['imageContainer'] = cm.node('div', {'class' : 'pt__image is-centered'},
+                    that.nodes['imageContainer'] = cm.node('div', {'class' : 'pt__image has-border is-centered'},
                         that.nodes['link'] = cm.node('a', {'class' : 'inner'},
                             that.nodes['image'] = cm.node('img', {'class' : 'descr', 'alt' : ''})
                         )
@@ -114,22 +116,26 @@ function(params){
     var changeAction = function(){
         var file = that.nodes['input'].files[0];
         if(/^image\//.test(file.type)){
-            that.components['fileReader'].readAsDataURL(file);
+            that.file = file;
+            that.components['fileReader'].readAsDataURL(that.file);
         }
     };
 
     var removeAction = function(){
-        that.clear();
+        that.reset();
     };
 
     var fileReaderAction = function(e){
-        setImage(e.target.result);
+        set(e.target.result);
+    };
+
+    var set = function(url){
+        that.value = url;
+        that.nodes['hidden'].value = url;
+        setImage(url);
     };
 
     var setImage = function(url){
-        that.value = url;
-        that.nodes['hidden'].value = url;
-        that.nodes['link'].setAttribute('data-node', 'items:[]:link');
         that.nodes['image'].src = url;
         cm.replaceClass(that.nodes['imageContainer'], 'is-no-hover is-no-image', 'is-zoom');
         cm.appendChild(that.nodes['remove'], that.nodes['buttons']);
@@ -147,23 +153,31 @@ function(params){
 
     /* ******* PUBLIC ******* */
 
-    that.set = function(url){
+    that.set = function(url, file){
         if(cm.isEmpty(url)){
-            that.clear();
+            that.reset();
         }else{
-            setImage(url);
+            that.file = file;
+            set(url);
         }
         return that;
     };
 
     that.get = function(){
-        return that.value;
+        switch(that.params['type']){
+            case 'base64' :
+                return that.value;
+                break;
+            case 'file' :
+                return that.file;
+                break;
+        }
     };
 
-    that.clear = function(){
+    that.reset = function(){
+        that.file = null;
         that.value = null;
         that.nodes['hidden'].value = '';
-        that.nodes['link'].removeAttribute('data-node');
         cm.replaceClass(that.nodes['imageContainer'], 'is-zoom', 'is-no-hover is-no-image');
         cm.remove(that.nodes['remove']);
         // Clear gallery item

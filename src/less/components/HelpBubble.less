@@ -1,5 +1,15 @@
 .com__help-bubble {
+    margin: 0 @CmIndent-XXXSmall;
     display: inline-block;
+    vertical-align: baseline;
+
+    &:first-child {
+        margin-left: 0;
+    }
+
+    &:last-child {
+        margin-right: 0;
+    }
 
     > .icon {
         .cm__size__small;

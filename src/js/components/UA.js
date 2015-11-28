@@ -1,9 +1,9 @@
 Com['UA'] = {
     'hash' : {'ie':'MSIE','opera':'Opera','ff':'Firefox','firefox':'Firefox','webkit':'AppleWebKit','safari':'Safari','chrome':'Chrome','steam':'Steam'},
-    'fullname' : {'MSIE':'Microsoft Internet Explorer','Firefox':'Mozilla Firefox','Chrome':'Google Chrome','Safari':'Apple Safari','Opera':'Opera','Opera Mini':'Opera Mini','Opera Mobile':'Opera Mobile','IE Mobile':'Internet Explorer Mobile','Steam':'Valve Steam GameOverlay'},
+    'fullname' : {'MSIE':'Microsoft Internet Explorer','Firefox':'Mozilla Firefox','Chrome':'Google Chrome','Safari':'Apple Safari','Opera':'Opera','Opera Mini':'Opera Mini','Opera Mobile':'Opera Mobile','IE Mobile':'Internet Explorer Mobile','Steam':'Valve Steam Game Overlay'},
     'os' : {
         'Windows':{'NT 5.0':'2000','NT 5.1':'XP','NT 5.2':'Server 2003','NT 6.0':'Vista','NT 6.1':'7','NT 6.2':'8','NT 6.3':'8.1','NT 10.0':'10'},
-        'Mac OS':{'X 10.0':'Cheetah','X 10.1':'Puma','X 10.2':'Jaguar','X 10.3':'Panther','X 10.4':'Tiger','X 10.5':'Leopard','X 10.6':'Snow Leopard','X 10.7':'Lion','X 10.8':'Mountain Lion','X 10.9':'Mavericks','X 10.10':'Yosemite'}
+        'Mac OSX':{'10.0':'Cheetah','10.1':'Puma','10.2':'Jaguar','10.3':'Panther','10.4':'Tiger','10.5':'Leopard','10.6':'Snow Leopard','10.7':'Lion','10.8':'Mountain Lion','10.9':'Mavericks','10.10':'Yosemite','10.11':'El Capitan'}
     },
     'str' : navigator.userAgent,
     'get' : function(str){
@@ -149,13 +149,11 @@ Com['UA'] = {
             arr['os_type'] = 'mobile';
             arr['os_version'] =  str.replace(/^(?:.+)(?:CPU[ iPhone]{0,} OS )([a-zA-Z0-9\._]{0,})(?:.+)$/, '$1').replace(/_/gi,'.');
         }else if(str.indexOf('Macintosh') > -1){
-            arr['os'] = 'Mac OS';
-            if((str.indexOf('Mac OS') > -1)){
-                arr['os_full_version'] =  str.replace(/^(?:.+)(?:Mac OS )([a-zA-Z0-9\.\s_]{0,})(?:.+)$/, '$1').replace(/_/gi,'.');
-                arr['os_version'] = arr['os_full_version'].slice(0, 6);
-                var os = that.os[arr['os']];
-                arr['os_name'] =  arr['os'] +' '+ arr['os_version'] + ((os && os[arr['os_version']])? ' '+os[arr['os_version']] : '');
+            if((str.indexOf('Mac OS X') > -1)){
+                arr['os'] = 'Mac OSX';
+                arr['os_version'] =  str.replace(/^(?:.+)(?:Mac OS X)(?:[\s]{0,1})([a-zA-Z0-9\.\s_]{0,})(?:.+)$/, '$1').replace(/_/gi,'.');
             }else{
+                arr['os'] = 'Mac OS';
                 arr['os_version'] = 'Classic';
             }
         }else if(str.indexOf('BlackBerry') > -1){

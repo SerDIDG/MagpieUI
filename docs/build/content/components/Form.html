@@ -31,6 +31,7 @@
 .add('select', {
   'label' : 'Select:',
   'name' : 'select',
+  'help' : 'This is help text in tooltip.',
   'options' : [
     {'value' : 'foo', 'text' : 'Bar'},
     {'value' : 'bar', 'text' : 'Foo'}
@@ -63,6 +64,12 @@
 .add('image-input', {
   'label' : 'Image Input:',
   'name' : 'image'
+})
+.add('buttons', {
+  'options' : [
+    {'value' : 'submit', 'text' : 'Send'},
+    {'value' : 'reset', 'text' : 'Reset'}
+  ]
 });
                         </textarea>
                     </dd>
@@ -71,6 +78,7 @@
                     <button class="button-primary" data-node="button">Execute</button>
                 </div>
             </div>
+            <hr>
             <div data-element="Com.Form" data-config='{"name" : "dynamic"}'></div>
         </div>
     </li>

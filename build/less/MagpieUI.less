@@ -6221,6 +6221,10 @@ button {
         .com__menu {
             float: left;
             margin: 0 @CmForm-ButtonsIndent 0 0;
+
+            &:last-child {
+                margin-right: 0;
+            }
         }
     }
 
@@ -6236,7 +6240,7 @@ button {
             margin: 0 0 0 @CmForm-ButtonsIndent;
 
             &:first-child {
-                margin: 0;
+                margin-left: 0;
             }
         }
     }
@@ -6255,7 +6259,7 @@ button {
             .cm__text-overflow;
 
             &:first-child {
-                margin: 0;
+                margin-top: 0;
             }
         }
     }
@@ -6331,12 +6335,6 @@ button {
         right: 0;
         opacity: 0;
         cursor: pointer;
-
-        .ie8 &,
-        .ie7 &,
-        .ie6 & {
-            .mx__opacity-ie(0);
-        }
     }
 
     .button {
@@ -7457,7 +7455,8 @@ button {
         /* *** EDITABLE *** */
 
         .pt__box-editable {
-            > .l, > .r {
+            > .l,
+            > .r {
                 float: none;
                 margin: 0;
             }
@@ -8540,6 +8539,7 @@ button {
         z-index: 1;
         overflow: hidden;
         font-size: 0;
+        .mx__transition(opacity, @CmUI-Transition-Duration);
 
         > .descr {
             .cm__image-resizable;
@@ -8678,6 +8678,15 @@ button {
 
         > a.inner {
             cursor: zoom-in;
+        }
+    }
+
+    &.is-no-image {
+        background: url('@{CmPath-Images}/parts/no-image-150.png') 50% 50% no-repeat;
+        background-size: cover;
+
+        > .inner {
+            opacity: 0;
         }
     }
 

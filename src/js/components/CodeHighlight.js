@@ -39,6 +39,9 @@ function(params){
             that.components['codemirror'].on('change', function(cm){
                 that.params['node'].value = cm.getValue();
             });
+            cm.customEvent.add(that.params['node'], 'redraw', function(){
+                that.components['codemirror'].refresh();
+            });
         }
     };
 

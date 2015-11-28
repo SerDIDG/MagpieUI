@@ -69,10 +69,15 @@ cm.top = function(name){
 };
 
 cm.isArray = Array.isArray || function(a){
-    return (a) ? a.constructor == Array : false;
+    return a ? a.constructor == Array : false;
 };
+
 cm.isObject = function(o){
-    return (o) ? o.constructor == Object : false;
+    return o ? o.constructor == Object : false;
+};
+
+cm.isFunction = function(o){
+    return o ? typeof o == 'function' : false;
 };
 
 cm.forEach = function(o, callback){
@@ -141,7 +146,9 @@ cm.merge = function(o1, o2){
     cm.forEach(o2, function(item, key){
         if(item != null){
             try{
-                if(Object.prototype.toString.call(item) == '[object Object]' && item.constructor != Object){
+                if(item._isComponent){
+                    o1[key] = item;
+                }else if(Object.prototype.toString.call(item) == '[object Object]' && item.constructor != Object){
                     o1[key] = item;
                 }else if(cm.isObject(item)){
                     o1[key] = cm.merge(o1[key], item);
@@ -202,10 +209,14 @@ cm.clone = function(o, cloneNode){
             });
             break;
         case Object:
-            newO = {};
-            cm.forEach(o, function(item, key){
-                newO[key] = cm.clone(item, cloneNode);
-            });
+            if(o._isComponent){
+                newO = o;
+            }else{
+                newO = {};
+                cm.forEach(o, function(item, key){
+                    newO[key] = cm.clone(item, cloneNode);
+                });
+            }
             break;
         default:
             // Exceptions
@@ -2689,10 +2700,11 @@ cm.cookieDate = function(num){
 cm.ajax = function(o){
     var config = cm.merge({
             'debug' : true,
-            'type' : 'xml',                                         // text | xml | json | jsonp
-            'method' : 'post',                                      // post | get
+            'type' : 'json',                                         // text | xml | json | jsonp
+            'method' : 'post',                                       // post | get
             'params' : '',
             'url' : '',
+            'formData'  : false,
             'httpRequestObject' : cm.createXmlHttpRequestObject(),
             'headers' : {
                 'Content-Type' : 'application/x-www-form-urlencoded',
@@ -2732,7 +2744,9 @@ cm.ajax = function(o){
         responseType =  /text|json/.test(config['type']) ? 'responseText' : 'responseXML';
         config['method'] = config['method'].toLocaleLowerCase();
         // Convert params object to URI string
-        if(cm.isObject(config['params'])){
+        if(config['formData']){
+            config['params'] = cm.obj2FormData(config['params']);
+        }else if(cm.isObject(config['params'])){
             config['params'] = cm.obj2URI(config['params']);
         }
         // Build request link
@@ -2879,6 +2893,14 @@ cm.obj2URI = function(obj, prefix){
     return str.join("&");
 };
 
+cm.obj2FormData = function(o){
+    var fd = new FormData();
+    cm.forEach(o, function(value, key){
+        fd.append(key, value);
+    });
+    return fd;
+};
+
 cm.xml2arr = function(o){
     o = o.nodeType == 9 ? cm.firstEl(o) : o;
     if(o.nodeType == 3 || o.nodeType == 4){
@@ -3007,6 +3029,7 @@ cm.defineHelper = function(name, data, handler){
     }, data);
     // Create class extend object
     that.build = {
+        '_isComponent' : true,
         '_raw' : data,
         '_name' : {
             'full' : name,
