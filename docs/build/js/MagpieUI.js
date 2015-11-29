@@ -15512,9 +15512,10 @@ Mod['Params'] = {
             that.build['params'] = {};
         }
     },
-    'setParams' : function(params){
+    'setParams' : function(params, replace){
         var that = this;
-        that.params = cm.merge(that.params, params);
+        replace = typeof replace == 'undefined'? false : replace;
+        that.params = cm.merge(replace ? that._raw.params : that.params, params);
         // Validate params
         cm.forEach(that.params, function(item, key){
             switch(item){
@@ -16470,6 +16471,12 @@ function(params){
         if(that.ajaxHandler && that.ajaxHandler.abort){
             that.ajaxHandler.abort();
         }
+        return that;
+    };
+
+    that.setAction = function(o){
+        o = cm.merge(that._raw.params['ajax'], o);
+        that.params['ajax'] = o;
         return that;
     };
 

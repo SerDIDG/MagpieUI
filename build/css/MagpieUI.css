@@ -8369,6 +8369,9 @@ button::-moz-focus-inner {
   width: auto;
   height: auto;
 }
+.pt__image.has-border > .inner {
+  border: 2px solid #cccccc;
+}
 .pt__image.has-aspect > .inner {
   position: absolute;
   top: 0;
@@ -11683,7 +11686,15 @@ button::-moz-focus-inner {
   margin-bottom: 0;
 }
 .com__help-bubble {
+  margin: 0 4px;
   display: inline-block;
+  vertical-align: baseline;
+}
+.com__help-bubble:first-child {
+  margin-left: 0;
+}
+.com__help-bubble:last-child {
+  margin-right: 0;
 }
 .com__help-bubble > .icon {
   width: 16px;

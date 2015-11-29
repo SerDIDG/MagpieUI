@@ -4928,7 +4928,7 @@ Copyright (c) 2015 Daniel Eden
     }
 
     &.inline {
-        margin: 0 4px;
+        margin: 0 @CmIndent-XXXSmall;
         display: inline-block;
         vertical-align: middle;
     }
@@ -8762,6 +8762,12 @@ button {
         }
     }
 
+    &.has-border {
+        > .inner {
+            border: @CmBorder-Box;
+        }
+    }
+
     &.has-aspect {
         > .inner {
             position: absolute;
@@ -12199,7 +12205,17 @@ button {
     }
 }
 .com__help-bubble {
+    margin: 0 @CmIndent-XXXSmall;
     display: inline-block;
+    vertical-align: baseline;
+
+    &:first-child {
+        margin-left: 0;
+    }
+
+    &:last-child {
+        margin-right: 0;
+    }
 
     > .icon {
         .cm__size__small;

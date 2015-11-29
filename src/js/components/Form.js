@@ -180,6 +180,12 @@ function(params){
         return that;
     };
 
+    that.setAction = function(o){
+        o = cm.merge(that._raw.params['ajax'], o);
+        that.params['ajax'] = o;
+        return that;
+    };
+
     init();
 });
 
