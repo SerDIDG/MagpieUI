@@ -41,13 +41,13 @@
 
 <h1 class="pt__box-title">Common: Form</h1>
 
-<ul class="com__tabset__content-ul" data-element="tabset">
+<ul class="com__tabset__content-ul" data-element="Com.Tabset">
     <li data-node="tabs:[]:container" data-config='{"id" : "inputs", "title" : "Inputs"}'>
         <div class="form">
             <dl>
                 <dt>
                     Text:
-                    <span class="com__help-bubble" data-element="help-bubble" data-node="ComHelpBubble:{}:container">
+                    <span class="com__help-bubble" data-element="Com.HelpBubble" data-node="ComHelpBubble:{}:container">
                         <span class="icon default linked" data-node="button"></span>
                         <span class="com__help-bubble__content" data-node="content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eget dolor malesuada, mollis est non, aliquam est. Nam lacinia porta dolor quis egestas. Aliquam eu iaculis ipsum. Cras at finibus magna. Proin ac erat ut augue egestas varius. Curabitur finibus quam nulla, sit amet tempus ligula malesuada sit amet.</span>
                     </span>
@@ -102,49 +102,49 @@
             <dl>
                 <dt>Date Picker:</dt>
                 <dd>
-                    <input type="text" name="datepicker1" placeholder="Expires date" data-element="datepicker" readonly>
+                    <input type="text" name="datepicker1" placeholder="Expires date" data-element="Com.Datepicker" readonly>
                 </dd>
             </dl>
             <dl>
                 <dt>Date Picker with clear button:</dt>
                 <dd>
-                    <input type="text" name="datepicker2" placeholder="Expires date" data-element="datepicker" data-config='{"showClearButton" : true}' readonly>
+                    <input type="text" name="datepicker2" placeholder="Expires date" data-element="Com.Datepicker" data-config='{"showClearButton" : true}' readonly>
                 </dd>
             </dl>
             <dl>
                 <dt>Date Picker with time select:</dt>
                 <dd>
-                    <input type="text" name="datepicker3" placeholder="Expires date" data-element="datepicker" data-config='{"showClearButton" : true, "isDateTime" : true}' readonly>
+                    <input type="text" name="datepicker3" placeholder="Expires date" data-element="Com.Datepicker" data-config='{"showClearButton" : true, "isDateTime" : true}' readonly>
                 </dd>
             </dl>
             <dl>
                 <dt>Date Select:</dt>
                 <dd>
-                    <input type="text" readonly data-element="date-select">
+                    <input type="text" readonly data-element="Com.DateSelect">
                 </dd>
             </dl>
             <dl>
                 <dt>Time Select:</dt>
                 <dd>
-                    <input type="text" readonly data-element="time-select">
+                    <input type="text" readonly data-element="Com.TimeSelect">
                 </dd>
             </dl>
             <dl>
                 <dt>Time Select with seconds:</dt>
                 <dd>
-                    <input type="text" readonly data-element="time-select" data-config='{"withSeconds" : true}'>
+                    <input type="text" readonly data-element="Com.TimeSelect" data-config='{"withSeconds" : true}'>
                 </dd>
             </dl>
             <dl>
                 <dt>Color Picker:</dt>
                 <dd>
-                    <input type="text" readonly value="#ffffff" data-element="colorpicker">
+                    <input type="text" readonly value="#ffffff" data-element="Com.ColorPicker">
                 </dd>
             </dl>
             <dl>
                 <dt>Color Picker with clear button:</dt>
                 <dd>
-                    <input type="text" readonly value="#ffffff" data-element="colorpicker" data-config='{"showClearButton" : true}'>
+                    <input type="text" readonly value="#ffffff" data-element="Com.ColorPicker" data-config='{"showClearButton" : true}'>
                 </dd>
             </dl>
             <dl>
@@ -159,7 +159,7 @@
             <dl>
                 <dt>Tags:</dt>
                 <dd>
-                    <input type="text" data-element="tags" value="tag1, tag2">
+                    <input type="text" data-element="Com.TagsInput" value="tag1, tag2">
                 </dd>
             </dl>
 
@@ -224,7 +224,7 @@
             <dl>
                 <dt>Select:</dt>
                 <dd>
-                    <select data-someattr="123" name="select1" data-element="select">
+                    <select data-someattr="123" name="select1" data-element="Com.Select">
                         <option value="1">One</option>
                         <option value="2" selected>Two</option>
                         <option value="3">Three</option>
@@ -241,7 +241,7 @@
             <dl>
                 <dt>Select Multiple:</dt>
                 <dd>
-                    <select multiple name="select2"  data-element="select">
+                    <select multiple name="select2"  data-element="Com.Select">
                         <option value="1" selected>One</option>
                         <option value="2" selected>Two</option>
                         <option value="3">Three</option>
@@ -412,7 +412,7 @@
     <li data-node="tabs:[]:container" data-config='{"id" : "buttons", "title" : "Buttons"}'>
          <div class="form">
              <div class="btn-wrap left">
-                 <div class="com__menu button has-icon has-icon-small" data-element="menu" data-node="ComMenu:{}:button">
+                 <div class="com__menu button has-icon has-icon-small" data-element="Com.Menu" data-node="ComMenu:{}:button">
                      <div class="icon small settings-white"></div>
                      <div class="label">Actions</div>
                      <div class="pt__menu" data-node="target">
@@ -745,7 +745,7 @@
                     <ul class="group is-adaptive">
                         <li class="label">Type:</li>
                         <li class="is-field medium">
-                            <select data-element="select">
+                            <select data-element="Com.Select">
                                 <option>Author</option>
                                 <option>File</option>
                                 <option>Event</option>
@@ -755,7 +755,7 @@
                     <ul class="group is-adaptive">
                         <li class="label">Sort by:</li>
                         <li class="is-field medium">
-                            <select data-element="select">
+                            <select data-element="Com.Select">
                                 <option>Date</option>
                                 <option>Name</option>
                                 <option>Description</option>
@@ -768,7 +768,7 @@
                     <ul class="group is-adaptive">
                         <li class="label">Per page:</li>
                         <li class="is-field x-small">
-                            <select data-element="select">
+                            <select data-element="Com.Select">
                                 <option>10</option>
                                 <option>25</option>
                                 <option>50</option>
@@ -793,22 +793,22 @@
                 </ul>
                 <ul class="group">
                     <li class="is-field medium">
-                        <select data-element="select">
+                        <select data-element="Com.Select">
                             <option>Font</option>
                         </select>
                     </li>
                     <li class="is-field medium">
-                        <select data-element="select">
+                        <select data-element="Com.Select">
                             <option>Size</option>
                         </select>
                     </li>
                     <li class="is-field medium">
-                        <select data-element="select">
+                        <select data-element="Com.Select">
                             <option>Color</option>
                         </select>
                     </li>
                     <li class="is-field medium">
-                        <select data-element="select">
+                        <select data-element="Com.Select">
                             <option>Style</option>
                         </select>
                     </li>
@@ -825,13 +825,13 @@
                     <ul class="group is-adaptive">
                         <li class="label">From:</li>
                         <li class="is-field">
-                            <input type="text" data-element="datepicker">
+                            <input type="text" data-element="Com.Datepicker">
                         </li>
                     </ul>
                     <ul class="group is-adaptive">
                         <li class="label">To:</li>
                         <li class="is-field">
-                            <input type="text" data-element="datepicker">
+                            <input type="text" data-element="Com.Datepicker">
                         </li>
                     </ul>
                     <ul class="group is-adaptive">
@@ -854,12 +854,12 @@
                 <div class="left">
                     <ul class="group is-adaptive">
                         <li class="is-field">
-                            <input type="text" data-element="datepicker" placeholder="From">
+                            <input type="text" data-element="Com.Datepicker" placeholder="From">
                         </li>
                     </ul>
                     <ul class="group is-adaptive">
                         <li class="is-field">
-                            <input type="text" data-element="datepicker" placeholder="To">
+                            <input type="text" data-element="Com.Datepicker" placeholder="To">
                         </li>
                     </ul>
                     <ul class="group is-adaptive">
@@ -895,17 +895,17 @@
                                 <div class="cm__form__icons small count-1">
                                     <div class="cols three clear">
                                         <div class="col">
-                                            <select data-element="select">
+                                            <select data-element="Com.Select">
                                                 <option>Field</option>
                                             </select>
                                         </div>
                                         <div class="col">
-                                            <select data-element="select">
+                                            <select data-element="Com.Select">
                                                 <option>Field</option>
                                             </select>
                                         </div>
                                         <div class="col">
-                                            <select data-element="select">
+                                            <select data-element="Com.Select">
                                                 <option>Field</option>
                                             </select>
                                         </div>
@@ -933,7 +933,7 @@
             <dl>
                 <dt>Sortable:</dt>
                 <dd>
-                    <div class="com-multifield" data-node="ComSortable:{}" data-element="sortable">
+                    <div class="com-multifield" data-node="ComSortable:{}" data-element="Com.Sortable">
                         <ul data-node="groups:[]:container">
                             <li data-node="items:[]:container" class="is-sortable">
                                 <div class="icon default linked" data-node="drag"></div>
@@ -963,17 +963,17 @@
                                 <div class="cm__form__icons small count-1">
                                     <div class="cols three clear">
                                         <div class="col">
-                                            <select data-element="select">
+                                            <select data-element="Com.Select">
                                                 <option>Field</option>
                                             </select>
                                         </div>
                                         <div class="col">
-                                            <select data-element="select">
+                                            <select data-element="Com.Select">
                                                 <option>Field</option>
                                             </select>
                                         </div>
                                         <div class="col">
-                                            <select data-element="select">
+                                            <select data-element="Com.Select">
                                                 <option>Field</option>
                                             </select>
                                         </div>
@@ -1031,17 +1031,17 @@
                 <dd class="descr">
                     <div class="cols three clear">
                         <div class="col">
-                            <select data-element="select">
+                            <select data-element="Com.Select">
                                 <option>Field</option>
                             </select>
                         </div>
                         <div class="col">
-                            <select data-element="select">
+                            <select data-element="Com.Select">
                                 <option>Field</option>
                             </select>
                         </div>
                         <div class="col">
-                            <select data-element="select">
+                            <select data-element="Com.Select">
                                 <option>Field</option>
                             </select>
                         </div>
@@ -1055,12 +1055,12 @@
                 <dd class="descr">
                     <div class="cols three clear">
                         <div class="col">
-                            <select data-element="select">
+                            <select data-element="Com.Select">
                                 <option>Field</option>
                             </select>
                         </div>
                         <div class="col">
-                            <select data-element="select">
+                            <select data-element="Com.Select">
                                 <option>Field</option>
                             </select>
                         </div>
@@ -1077,17 +1077,17 @@
                 <dd class="descr">
                     <div class="cols three clear">
                         <div class="col">
-                            <select data-element="select">
+                            <select data-element="Com.Select">
                                 <option>Field</option>
                             </select>
                         </div>
                         <div class="col">
-                            <select data-element="select">
+                            <select data-element="Com.Select">
                                 <option>Field</option>
                             </select>
                         </div>
                         <div class="col">
-                            <input type="text" placeholder="Field" data-element="datepicker">
+                            <input type="text" placeholder="Field" data-element="Com.Datepicker">
                         </div>
                     </div>
                 </dd>
@@ -1147,7 +1147,7 @@
                 <dd>
                     <div class="pt__box-item size-80">
                         <div class="l">
-                            <div class="pt__image is-zoom" data-element="imagebox" data-config='{"zoom" : true}'>
+                            <div class="pt__image is-zoom" data-element="Com.ImageBox" data-config='{"zoom" : true}'>
                                 <a class="inner" data-node="items:[]:link" title="Some title text" href="../../img/examples/gallery/1.jpg">
                                     <img class="descr" alt="" src="../../img/magpieui/parts//no-avatar-80.png">
                                 </a>
@@ -1327,7 +1327,7 @@
             <dl>
                 <dt>Select:</dt>
                 <dd>
-                    <select data-element="select" disabled>
+                    <select data-element="Com.Select" disabled>
                         <option value="1">One</option>
                         <option value="2">Two</option>
                         <option value="3">Three</option>
@@ -1344,7 +1344,7 @@
             <dl>
                 <dt>Select Multiple:</dt>
                 <dd>
-                    <select data-element="select" multiple disabled>
+                    <select data-element="Com.Select" multiple disabled>
                         <option value="1">One</option>
                         <option value="2">Two</option>
                         <option value="3">Three</option>

@@ -12359,7 +12359,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.9.0',
+        '_version' : '3.9.1',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -17357,8 +17357,8 @@ cm.define('Com.Calendar', {
         'onMonthRender'
     ],
     'params' : {
+        'node' : cm.node('div'),
         'name' : '',
-        'container' : cm.Node('div'),
         'className' : '',
         'startYear' : 1950,                                                 // number | current
         'endYear' : 'current + 10',                                         // number | current
@@ -17389,7 +17389,7 @@ function(params){
     var init = function(){
         that.setParams(params);
         that.convertEvents(that.params['events']);
-        that.getDataConfig(that.params['container']);
+        that.getDataConfig(that.params['node']);
         validateParams();
         render();
         setMiscEvents();
@@ -17444,20 +17444,20 @@ function(params){
             );
         }
         // Insert into DOM
-        that.params['container'].appendChild(nodes['container']);
+        that.params['node'].appendChild(nodes['container']);
     };
 
     var setMiscEvents = function(){
         // Init custom selects
         selects['years'] = new Com.Select({
-                'select' : nodes['years'],
+                'node' : nodes['years'],
                 'renderInBody' : that.params['renderSelectsInBody']
             })
             .set(current['year'])
             .addEvent('onChange', renderView);
 
         selects['months'] = new Com.Select({
-                'select' : nodes['months'],
+                'node' : nodes['months'],
                 'renderInBody' : that.params['renderSelectsInBody']
             })
             .set(current['month'])
@@ -17689,7 +17689,7 @@ function(params){
         that.nodes['container'] = cm.Node('div', {'class' : 'com__calendar-events'});
         // Render calendar
         that.components['calendar'] = new Com.Calendar({
-            'container' : that.nodes['container'],
+            'node' : that.nodes['container'],
             'renderMonthOnInit' : false,
             'startYear' : that.params['startYear'],
             'endYear' : that.params['endYear'],
@@ -17984,7 +17984,8 @@ cm.define('Com.Collector', {
     'params' : {
         'node' : cm.Node('div'),
         'name' : '',
-        'attribute' : 'data-element'
+        'attribute' : 'data-element',
+        'autoInit' : false
     }
 },
 function(params){
@@ -17996,8 +17997,21 @@ function(params){
         that.setParams(params);
         that.convertEvents(that.params['events']);
         that.getDataConfig(that.params['node']);
+        render();
         that.addToStack(that.params['node']);
         that.triggerEvent('onRender');
+    };
+
+    var render = function(){
+        if(that.params['autoInit']){
+            cm.forEach(cm.defineStack, function(classConstructor){
+                that.add(classConstructor.prototype._name['full'], function(node){
+                    new classConstructor({
+                        'node' : node
+                    });
+                });
+            });
+        }
     };
 
     var constructItem = function(item, name, parentNode){
@@ -18169,9 +18183,10 @@ cm.define('Com.ColorPicker', {
     ],
     'params' : {
         'container' : false,
-        'input' : cm.Node('div'),
+        'input' : null,                                     // Deprecated, use 'node' parameter instead.
+        'node' : cm.Node('input', {'type' : 'text'}),
         'name' : '',
-        'value' : null,                        // Color string: transparent | hex | rgba.
+        'value' : null,                                     // Color string: transparent | hex | rgba.
         'defaultValue' : 'transparent',
         'title' : '',
         'showInputValue' : true,
@@ -18209,8 +18224,9 @@ function(params){
 
     var init = function(){
         that.setParams(params);
+        preValidateParams();
         that.convertEvents(that.params['events']);
-        that.getDataConfig(that.params['input']);
+        that.getDataConfig(that.params['node']);
         validateParams();
         render();
         setLogic();
@@ -18222,12 +18238,18 @@ function(params){
         that.triggerEvent('onRender', that.value);
     };
 
-    var validateParams = function(){
+    var preValidateParams = function(){
         if(cm.isNode(that.params['input'])){
-            that.params['title'] = that.params['input'].getAttribute('title') || that.params['title'];
-            that.params['disabled'] = that.params['input'].disabled || that.params['disabled'];
-            that.value = that.params['input'].value;
-            that.params['name'] = that.params['input'].getAttribute('name') || that.params['name'];
+            that.params['node'] = that.params['input'];
+        }
+    };
+
+    var validateParams = function(){
+        if(cm.isNode(that.params['node'])){
+            that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
+            that.params['disabled'] = that.params['node'].disabled || that.params['disabled'];
+            that.value = that.params['node'].value;
+            that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
         }
         that.value = that.params['value'] || that.value || that.params['defaultValue'];
         that.disabled = that.params['disabled'];
@@ -18252,12 +18274,12 @@ function(params){
             that.nodes['container'].title = that.params['title'];
         }
         // ID
-        if(that.params['input'].id){
-            that.nodes['container'].id = that.params['input'].id;
+        if(that.params['node'].id){
+            that.nodes['container'].id = that.params['node'].id;
         }
         // Set hidden input attributes
-        if(that.params['input'].getAttribute('name')){
-            that.nodes['hidden'].setAttribute('name', that.params['input'].getAttribute('name'));
+        if(that.params['node'].getAttribute('name')){
+            that.nodes['hidden'].setAttribute('name', that.params['node'].getAttribute('name'));
         }
         // Clear Button
         if(that.params['showClearButton']){
@@ -18269,10 +18291,10 @@ function(params){
         /* *** INSERT INTO DOM *** */
         if(that.params['container']){
             that.params['container'].appendChild(that.nodes['container']);
-        }else if(that.params['input'].parentNode){
-            cm.insertBefore(that.nodes['container'], that.params['input']);
+        }else if(that.params['node'].parentNode){
+            cm.insertBefore(that.nodes['container'], that.params['node']);
         }
-        cm.remove(that.params['input']);
+        cm.remove(that.params['node']);
     };
 
     var setLogic = function(){
@@ -18307,7 +18329,7 @@ function(params){
         // Render palette
         that.components['palette'] = new Com.Palette(
             cm.merge(that.params['Com.Palette'], {
-                'container' : that.nodes['menuContainer'],
+                'node' : that.nodes['menuContainer'],
                 'events' : {
                     'onChange' : function(my, value){
                         set(my.get('rgb'), true);
@@ -18437,10 +18459,11 @@ cm.define('Com.Columns', {
         'onResize'
     ],
     'params' : {
+        'columns' : false,                  // Deprecated, use 'node' parameter instead.
+        'node' : cm.node('div'),
         'container' : cm.Node('div'),
         'name' : '',
         'renderStructure' : false,
-        'columns' : false,
         'minColumnWidth' : 48,              // in px
         'data' : []
     }
@@ -18457,8 +18480,9 @@ function(params){
 
     var init = function(){
         that.setParams(params);
+        preValidateParams();
         that.convertEvents(that.params['events']);
-        that.getDataConfig(that.params['container']);
+        that.getDataConfig(that.params['node']);
         validateParams();
         render();
         renderChassis();
@@ -18466,9 +18490,9 @@ function(params){
         that.triggerEvent('onRender');
     };
 
-    var validateParams = function(){
-        if(cm.isNode(that.params['container'])){
-            that.params['name'] = that.params['container'].getAttribute('name') || that.params['name'];
+    var preValidateParams = function(){
+        if(cm.isNode(that.params['columns'])){
+            that.params['node'] = that.params['columns'];
         }
     };
 
@@ -18477,7 +18501,7 @@ function(params){
     var render = function(){
         if(that.params['renderStructure']){
             renderStructure();
-        }else if(that.params['columns']){
+        }else if(that.params['node']){
             collect();
         }
         // Add custom event
@@ -18489,7 +18513,7 @@ function(params){
     var collect = function(){
         var columns;
         // Collect nodes
-        nodes['container'] = that.params['columns'];
+        nodes['container'] = that.params['node'];
         nodes['inner'] = cm.getByAttr('data-com__columns', 'inner', nodes['container'])[0];
         nodes['holder'] = cm.getByAttr('data-com__columns', 'holder', nodes['container'])[0];
         // Set editable class
@@ -20631,7 +20655,8 @@ cm.define('Com.DateSelect', {
     ],
     'params' : {
         'container' : false,
-        'input' : cm.Node('input', {'type' : 'text'}),
+        'input' : null,                                 // Deprecated, use 'node' parameter instead.
+        'node' : cm.Node('input', {'type' : 'text'}),
         'format' : 'cm._config.dateFormat',
         'startYear' : 1950,
         'endYear' : new Date().getFullYear() + 10,
@@ -20659,11 +20684,18 @@ function(params){
 
     var init = function(){
         that.setParams(params);
+        preValidateParams();
         that.convertEvents(that.params['events']);
         that.getDataConfig(that.params['node']);
         render();
         // Set selected date
-        set(that.params['input'].value);
+        set(that.params['node'].value);
+    };
+
+    var preValidateParams = function(){
+        if(cm.isNode(that.params['input'])){
+            that.params['node'] = that.params['input'];
+        }
     };
 
     var render = function(){
@@ -20683,16 +20715,16 @@ function(params){
         renderSelects();
         /* *** ATTRIBUTES *** */
         // Set hidden input attributes
-        if(that.params['input'].getAttribute('name')){
-            nodes['hidden'].setAttribute('name', that.params['input'].getAttribute('name'));
+        if(that.params['node'].getAttribute('name')){
+            nodes['hidden'].setAttribute('name', that.params['node'].getAttribute('name'));
         }
         /* *** INSERT INTO DOM *** */
         if(that.params['container']){
             that.params['container'].appendChild(nodes['container']);
-        }else if(that.params['input'].parentNode){
-            cm.insertBefore(nodes['container'], that.params['input']);
+        }else if(that.params['node'].parentNode){
+            cm.insertBefore(nodes['container'], that.params['node']);
         }
-        cm.remove(that.params['input']);
+        cm.remove(that.params['node']);
     };
 
     var renderSelects = function(){
@@ -20882,7 +20914,8 @@ cm.define('Com.Datepicker', {
     ],
     'params' : {
         'container' : false,
-        'input' : cm.Node('input', {'type' : 'text'}),
+        'input' : null,                      // Deprecated, use 'node' parameter instead.
+        'node' : cm.Node('input', {'type' : 'text'}),
         'name' : '',
         'renderInBody' : true,
         'format' : 'cm._config.dateFormat',
@@ -20938,8 +20971,9 @@ function(params){
 
     var init = function(){
         that.setParams(params);
+        preValidateParams();
         that.convertEvents(that.params['events']);
-        that.getDataConfig(that.params['input']);
+        that.getDataConfig(that.params['node']);
         validateParams();
         render();
         setLogic();
@@ -20949,18 +20983,24 @@ function(params){
         if(that.params['value']){
             that.set(that.params['value'], that.format, false);
         }else{
-            that.set(that.params['input'].value, that.format, false);
+            that.set(that.params['node'].value, that.format, false);
         }
         // Trigger events
         that.triggerEvent('onRender', that.value);
     };
 
-    var validateParams = function(){
+    var preValidateParams = function(){
         if(cm.isNode(that.params['input'])){
-            that.params['placeholder'] = that.params['input'].getAttribute('placeholder') || that.params['placeholder'];
-            that.params['title'] = that.params['input'].getAttribute('title') || that.params['title'];
-            that.params['disabled'] = that.params['input'].disabled || that.params['disabled'];
-            that.params['name'] = that.params['input'].getAttribute('name') || that.params['name'];
+            that.params['node'] = that.params['input'];
+        }
+    };
+
+    var validateParams = function(){
+        if(cm.isNode(that.params['node'])){
+            that.params['placeholder'] = that.params['node'].getAttribute('placeholder') || that.params['placeholder'];
+            that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
+            that.params['disabled'] = that.params['node'].disabled || that.params['disabled'];
+            that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
         }
         if(that.params['value'] == 'now'){
             that.params['value'] = new Date();
@@ -20994,8 +21034,8 @@ function(params){
             nodes['container'].title = that.params['title'];
         }
         // ID
-        if(that.params['input'].id){
-            nodes['container'].id = that.params['input'].id;
+        if(that.params['node'].id){
+            nodes['container'].id = that.params['node'].id;
         }
         // Set hidden input attributes
         if(that.params['name']){
@@ -21031,10 +21071,10 @@ function(params){
         /* *** INSERT INTO DOM *** */
         if(that.params['container']){
             that.params['container'].appendChild(nodes['container']);
-        }else if(that.params['input'].parentNode){
-            cm.insertBefore(nodes['container'], that.params['input']);
+        }else if(that.params['node'].parentNode){
+            cm.insertBefore(nodes['container'], that.params['node']);
         }
-        cm.remove(that.params['input']);
+        cm.remove(that.params['node']);
     };
 
     var setLogic = function(){
@@ -21075,7 +21115,7 @@ function(params){
         );
         // Render calendar
         components['calendar'] = new Com.Calendar({
-            'container' : nodes['calendarContainer'],
+            'node' : nodes['calendarContainer'],
             'renderSelectsInBody' : false,
             'className' : 'com__datepicker-calendar',
             'startYear' : that.params['startYear'],
@@ -23254,7 +23294,8 @@ cm.define('Com.GalleryLayout', {
         'Params',
         'Events',
         'DataConfig',
-        'DataNodes'
+        'DataNodes',
+        'Stack'
     ],
     'events' : [
         'onRender',
@@ -23292,6 +23333,8 @@ function(params){
         that.getDataConfig(that.params['node']);
         collectItems();
         render();
+        that.addToStack(that.params['node']);
+        that.triggerEvent('onRender');
     };
 
     var render = function(){
@@ -23310,8 +23353,6 @@ function(params){
             )
             .addEvent('onChange', onChange)
             .set(0);
-        // API onRender event
-        that.triggerEvent('onRender');
     };
 
     var collectItems = function(){
@@ -23358,6 +23399,7 @@ cm.define('Com.GalleryPopup', {
         'Stack'
     ],
     'events' : [
+        'onRender',
         'onOpen',
         'onClose',
         'onChange'
@@ -23397,6 +23439,7 @@ function(params){
         validateParams();
         render();
         setLogic();
+        that.triggerEvent('onRender');
     };
 
     var validateParams = function(){
@@ -26044,8 +26087,8 @@ cm.define('Com.Palette', {
         'onChange'
     ],
     'params' : {
+        'node' : cm.node('div'),
         'name' : '',
-        'container' : cm.node('div'),
         'value' : 'transparent',
         'defaultValue' : 'rgb(255, 255, 255)',
         'setOnInit' : true,
@@ -26136,7 +26179,7 @@ function(params){
         cm.addEvent(that.nodes['inputHEX'], 'keypress', inputHEXKeypressHandler);
         cm.addEvent(that.nodes['buttonSelect'], 'click', buttonSelectHandler);
         // Embed
-        that.params['container'].appendChild(that.nodes['container']);
+        that.params['node'].appendChild(that.nodes['container']);
     };
 
     var initComponents = function(){
@@ -27130,7 +27173,7 @@ cm.define('Com.Select', {
     ],
     'params' : {
         'container' : false,                    // Component container that is required in case content is rendered without available select.
-        'select' : cm.Node('select'),           // Deprecated, use 'node ' parameter instead.
+        'select' : null,                        // Deprecated, use 'node' parameter instead.
         'node' : cm.Node('select'),             // Html select node to decorate.
         'name' : '',
         'renderInBody' : true,                  // Render dropdowns in document.body, else they will be rendrered in component container.
@@ -29355,7 +29398,8 @@ cm.define('Com.TagsInput', {
     ],
     'params' : {
         'container' : false,
-        'input' : cm.Node('input', {'type' : 'text'}),
+        'input' : null,                                 // Deprecated, use 'node' parameter instead.
+        'node' : cm.Node('input', {'type' : 'text'}),
         'name' : '',
         'data' : [],
         'maxSingleTagLength': 255,
@@ -29389,7 +29433,7 @@ function(params){
         // Init modules
         that.setParams(params);
         that.convertEvents(that.params['events']);
-        that.getDataConfig(that.params['input']);
+        that.getDataConfig(that.params['node']);
         // Render
         render();
         setLogic();
@@ -29397,7 +29441,7 @@ function(params){
         that.triggerEvent('onRender');
         // Set tags
         sourceTags = that.params['data'].concat(
-            that.params['input'].value.split(',')
+            that.params['node'].value.split(',')
         );
         cm.forEach(sourceTags, function(tag){
             addTag(tag);
@@ -29405,8 +29449,11 @@ function(params){
     };
 
     var preValidateParams = function(){
+        if(cm.isNode(that.params['input'])){
+            that.params['node'] = that.params['input'];
+        }
         // Check for autocomplete
-        that.isAutocomplete = !(!cm.isEmpty(params['autocomplete']) && !that.getNodeDataConfig(that.params['input'])['autocomplete']);
+        that.isAutocomplete = !(!cm.isEmpty(params['autocomplete']) && !that.getNodeDataConfig(that.params['node'])['autocomplete']);
     };
 
     var render = function(){
@@ -29419,16 +29466,16 @@ function(params){
         renderAddButton();
         /* *** ATTRIBUTES *** */
         // Set hidden input attributes
-        if(that.params['input'].getAttribute('name')){
-            nodes['hidden'].setAttribute('name', that.params['input'].getAttribute('name'));
+        if(that.params['node'].getAttribute('name')){
+            nodes['hidden'].setAttribute('name', that.params['node'].getAttribute('name'));
         }
         /* *** INSERT INTO DOM *** */
         if(that.params['container']){
             that.params['container'].appendChild(nodes['container']);
-        }else if(that.params['input'].parentNode){
-            cm.insertBefore(nodes['container'], that.params['input']);
+        }else if(that.params['node'].parentNode){
+            cm.insertBefore(nodes['container'], that.params['node']);
         }
-        cm.remove(that.params['input']);
+        cm.remove(that.params['node']);
 
     };
 
@@ -29662,7 +29709,8 @@ cm.define('Com.TimeSelect', {
     ],
     'params' : {
         'container' : false,
-        'input' : cm.Node('input', {'type' : 'text'}),
+        'input' : null,                                  // Deprecated, use 'node' parameter instead.
+        'node' : cm.Node('input', {'type' : 'text'}),
         'renderSelectsInBody' : true,
         'format' : 'cm._config.timeFormat',
         'showTitleTag' : true,
@@ -29696,8 +29744,9 @@ function(params){
 
     var init = function(){
         that.setParams(params);
+        preValidateParams();
         that.convertEvents(that.params['events']);
-        that.getDataConfig(that.params['input']);
+        that.getDataConfig(that.params['node']);
         validateParams();
         render();
         setMiscEvents();
@@ -29705,13 +29754,19 @@ function(params){
         if(that.params['selected']){
             that.set(that.params['selected'], that.params['format'], false);
         }else{
-            that.set(that.params['input'].value, that.params['format'], false);
+            that.set(that.params['node'].value, that.params['format'], false);
+        }
+    };
+
+    var preValidateParams = function(){
+        if(cm.isNode(that.params['input'])){
+            that.params['node'] = that.params['input'];
         }
     };
 
     var validateParams = function(){
-        if(cm.isNode(that.params['input'])){
-            that.params['title'] = that.params['input'].getAttribute('title') || that.params['title'];
+        if(cm.isNode(that.params['node'])){
+            that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
         }
         if(cm.isEmpty(that.params['hoursInterval'])){
             that.params['hoursInterval'] = 1;
@@ -29785,16 +29840,16 @@ function(params){
             nodes['container'].title = that.params['title'];
         }
         // Set hidden input attributes
-        if(that.params['input'].getAttribute('name')){
-            nodes['hidden'].setAttribute('name', that.params['input'].getAttribute('name'));
+        if(that.params['node'].getAttribute('name')){
+            nodes['hidden'].setAttribute('name', that.params['node'].getAttribute('name'));
         }
         /* *** INSERT INTO DOM *** */
         if(that.params['container']){
             that.params['container'].appendChild(nodes['container']);
-        }else if(that.params['input'].parentNode){
-            cm.insertBefore(nodes['container'], that.params['input']);
+        }else if(that.params['node'].parentNode){
+            cm.insertBefore(nodes['container'], that.params['node']);
         }
-        cm.remove(that.params['input']);
+        cm.remove(that.params['node']);
     };
 
     var setMiscEvents = function(){
@@ -30978,146 +31033,12 @@ function(params){
 
     init();
 });
-window.Collector = new Com.Collector()
+window.Collector = new Com.Collector({
+        'autoInit' : true
+    })
     .addEvent('onConstruct', function(collector, data){
         Part.Menu();
         Part.Autoresize(data['node']);
-    })
-
-    /* *** COMMON *** */
-
-    .add('glossary', function(node){
-        new Com.Glossary({
-            'node' : node
-        });
-    })
-
-    .add('togglebox', function(node){
-        new Com.ToggleBox({
-            'node' : node
-        });
-    })
-
-    .add('tabset-helper', function(node){
-        new Com.TabsetHelper({
-            'node' : node
-        });
-    })
-
-    .add('tabset', function(node){
-        new Com.Tabset({
-            'node' : node
-        });
-    })
-
-    .add('columns', function(node){
-        new Com.Columns({
-            'columns' : node
-        });
-    })
-
-    .add('date-select', function(node){
-        new Com.DateSelect({
-            'input' : node
-        });
-    })
-
-    .add('time-select', function(node){
-        new Com.TimeSelect({
-            'input' : node
-        });
-    })
-
-    .add('colorpicker', function(node){
-        new Com.ColorPicker({
-            'input' : node
-        });
-    })
-
-    .add('imagebox', function(node){
-        new Com.ImageBox({
-            'node' : node
-        });
-    })
-
-    .add('tags', function(node){
-        new Com.TagsInput({
-            'input' : node
-        });
-    })
-
-    .add('datepicker', function(node){
-        new Com.Datepicker({
-            'input' : node
-        });
-    })
-
-    .add('select', function(node){
-        new Com.Select({
-            'select' : node
-        });
-    })
-
-    .add('spacer', function(node){
-        new Com.Spacer({
-            'node' : node
-        });
-    })
-
-    .add('slider', function(node){
-        new Com.Slider({
-            'node' : node
-        });
-    })
-
-    .add('menu', function(node){
-        new Com.Menu({
-            'node' : node
-        });
-    })
-
-    .add('sortable', function(node){
-        new Com.Sortable({
-            'node' : node
-        });
-    })
-
-    .add('help-bubble', function(node){
-        new Com.HelpBubble({
-            'node' : node
-        });
-    })
-
-    .add('Com.ImageInput', function(node){
-        new Com.ImageInput({
-            'node' : node
-        });
-    })
-
-    .add('Com.CollapsibleLayout', function(node){
-        new Com.CollapsibleLayout({
-            'node' : node
-        });
-    })
-
-    .add('Com.Form', function(node){
-        new Com.Form({
-            'node' : node
-        });
-    })
-
-    .add('Com.CodeHighlight', function(node){
-        new Com.CodeHighlight({
-            'node' : node
-        });
-    })
-
-    /* *** DOCS *** */
-
-    .add('Docs.DynamicForm', function(node){
-        new Docs.DynamicForm({
-            'node' : node
-        });
     });
 
 cm.onReady(function(){

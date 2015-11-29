@@ -6,6 +6,7 @@ cm.define('Com.GalleryPopup', {
         'Stack'
     ],
     'events' : [
+        'onRender',
         'onOpen',
         'onClose',
         'onChange'
@@ -45,6 +46,7 @@ function(params){
         validateParams();
         render();
         setLogic();
+        that.triggerEvent('onRender');
     };
 
     var validateParams = function(){

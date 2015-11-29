@@ -7,32 +7,13 @@
 
     <link type="text/css" rel="stylesheet" href="../../css/MagpieUI.css">
     <script type="text/javascript" src="../../js/MagpieUI.js"></script>
-
-    <script type="text/javascript">
-        cm.onReady(function(){
-            new Com.Collector()
-                .addEvent('onConstruct', function(collector, data){
-                    Part.Menu();
-                    Part.Autoresize(data['node']);
-                })
-                .add('tabset', function(node){
-                    new Com.Tabset({'node' : node});
-                })
-                .add('gallery-layout', function(node){
-                    new Com.GalleryLayout({
-                        'node' : node
-                    });
-                })
-                .construct();
-        });
-    </script>
 </head>
 
 <body>
 
 <h1 class="pt__box-title">Components: Gallery Layout</h1>
 
-<ul class="com__tabset__content-ul" data-element="tabset">
+<ul class="com__tabset__content-ul" data-element="Com.Tabset">
     <li data-node="tabs:[]:container" data-config='{"id" : "overview", "title" : "Overview"}'>
         <h2>Overview</h2>
         <p>This component process server side rendered thumbnails ans embed gallery preview component. Supported image files: .jpg, .png, .gif, .jpeg, .bmp, .tga; and video from third-party sites that will be embed in iframe.</p>
@@ -121,7 +102,7 @@ new Com.GalleryLayout({
     <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
         <h2>Gallery with bottom bar and video:</h2>
         <div style="max-width: 600px;">
-            <div class="com__gallery-layout size-5 is-bar-bottom" data-element="gallery-layout" data-config='{"barDirection" : "horizontal"}'>
+            <div class="com__gallery-layout size-5 is-bar-bottom" data-element="Com.GalleryLayout" data-config='{"barDirection" : "horizontal"}'>
                 <div class="inner" data-node="inner">
                     <div class="com__gallery-preview cm__aspect-3x2">
                         <div class="inner" data-node="preview-inner"></div>
@@ -214,7 +195,7 @@ new Com.GalleryLayout({
 
         <h2>Gallery with top bar:</h2>
         <div style="max-width: 600px;">
-            <div class="com__gallery-layout size-5 is-bar-top" data-element="gallery-layout" data-config='{"barDirection" : "horizontal"}'>
+            <div class="com__gallery-layout size-5 is-bar-top" data-element="Com.GalleryLayout" data-config='{"barDirection" : "horizontal"}'>
                 <div class="inner" data-node="inner">
                     <div class="com__gallery-bar is-horizontal">
                         <div class="inner" data-node="bar-inner">
@@ -299,7 +280,7 @@ new Com.GalleryLayout({
 
         <h2>Gallery with right bar:</h2>
         <div style="max-width: 600px;">
-            <div class="com__gallery-layout size-5 is-bar-right" data-element="gallery-layout" data-config='{"barDirection" : "vertical"}'>
+            <div class="com__gallery-layout size-5 is-bar-right" data-element="Com.GalleryLayout" data-config='{"barDirection" : "vertical"}'>
                 <div class="inner" data-node="inner">
                     <div class="com__gallery-preview cm__aspect-3x2">
                         <div class="inner" data-node="preview-inner"></div>
@@ -384,7 +365,7 @@ new Com.GalleryLayout({
 
         <h2>Gallery with left bar:</h2>
         <div style="max-width: 600px;">
-            <div class="com__gallery-layout size-5 is-bar-left" data-element="gallery-layout" data-config='{"barDirection" : "vertical"}'>
+            <div class="com__gallery-layout size-5 is-bar-left" data-element="Com.GalleryLayout" data-config='{"barDirection" : "vertical"}'>
                 <div class="inner" data-node="inner">
                     <div class="com__gallery-preview cm__aspect-3x2">
                         <div class="inner" data-node="preview-inner"></div>
@@ -469,7 +450,7 @@ new Com.GalleryLayout({
 
         <h2>Gallery without bar:</h2>
         <div style="max-width: 600px;">
-            <div class="com__gallery-layout size-5 is-bar-none" data-element="gallery-layout" data-config='{"hasBar" : false}'>
+            <div class="com__gallery-layout size-5 is-bar-none" data-element="Com.GalleryLayout" data-config='{"hasBar" : false}'>
                 <div class="inner" data-node="inner">
                     <div class="com__gallery-preview cm__aspect-3x2">
                         <div class="inner" data-node="preview-inner"></div>
@@ -551,7 +532,7 @@ new Com.GalleryLayout({
 
         <h2>Gallery with border:</h2>
         <div style="max-width: 600px;">
-            <div class="com__gallery-layout size-5 has-border is-bar-bottom" data-element="gallery-layout" data-config='{"barDirection" : "horizontal"}'>
+            <div class="com__gallery-layout size-5 has-border is-bar-bottom" data-element="Com.GalleryLayout" data-config='{"barDirection" : "horizontal"}'>
                 <div class="inner" data-node="inner">
                     <div class="com__gallery-preview cm__aspect-3x2">
                         <div class="inner" data-node="preview-inner"></div>

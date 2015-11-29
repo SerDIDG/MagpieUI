@@ -22,10 +22,11 @@ cm.define('Com.Columns', {
         'onResize'
     ],
     'params' : {
+        'columns' : false,                  // Deprecated, use 'node' parameter instead.
+        'node' : cm.node('div'),
         'container' : cm.Node('div'),
         'name' : '',
         'renderStructure' : false,
-        'columns' : false,
         'minColumnWidth' : 48,              // in px
         'data' : []
     }
@@ -42,8 +43,9 @@ function(params){
 
     var init = function(){
         that.setParams(params);
+        preValidateParams();
         that.convertEvents(that.params['events']);
-        that.getDataConfig(that.params['container']);
+        that.getDataConfig(that.params['node']);
         validateParams();
         render();
         renderChassis();
@@ -51,9 +53,9 @@ function(params){
         that.triggerEvent('onRender');
     };
 
-    var validateParams = function(){
-        if(cm.isNode(that.params['container'])){
-            that.params['name'] = that.params['container'].getAttribute('name') || that.params['name'];
+    var preValidateParams = function(){
+        if(cm.isNode(that.params['columns'])){
+            that.params['node'] = that.params['columns'];
         }
     };
 
@@ -62,7 +64,7 @@ function(params){
     var render = function(){
         if(that.params['renderStructure']){
             renderStructure();
-        }else if(that.params['columns']){
+        }else if(that.params['node']){
             collect();
         }
         // Add custom event
@@ -74,7 +76,7 @@ function(params){
     var collect = function(){
         var columns;
         // Collect nodes
-        nodes['container'] = that.params['columns'];
+        nodes['container'] = that.params['node'];
         nodes['inner'] = cm.getByAttr('data-com__columns', 'inner', nodes['container'])[0];
         nodes['holder'] = cm.getByAttr('data-com__columns', 'holder', nodes['container'])[0];
         // Set editable class

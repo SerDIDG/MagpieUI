@@ -3,7 +3,8 @@ cm.define('Com.GalleryLayout', {
         'Params',
         'Events',
         'DataConfig',
-        'DataNodes'
+        'DataNodes',
+        'Stack'
     ],
     'events' : [
         'onRender',
@@ -41,6 +42,8 @@ function(params){
         that.getDataConfig(that.params['node']);
         collectItems();
         render();
+        that.addToStack(that.params['node']);
+        that.triggerEvent('onRender');
     };
 
     var render = function(){
@@ -59,8 +62,6 @@ function(params){
             )
             .addEvent('onChange', onChange)
             .set(0);
-        // API onRender event
-        that.triggerEvent('onRender');
     };
 
     var collectItems = function(){

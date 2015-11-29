@@ -41,7 +41,7 @@ function(params){
         that.nodes['container'] = cm.Node('div', {'class' : 'com__calendar-events'});
         // Render calendar
         that.components['calendar'] = new Com.Calendar({
-            'container' : that.nodes['container'],
+            'node' : that.nodes['container'],
             'renderMonthOnInit' : false,
             'startYear' : that.params['startYear'],
             'endYear' : that.params['endYear'],

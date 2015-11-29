@@ -19,7 +19,8 @@ cm.define('Com.TagsInput', {
     ],
     'params' : {
         'container' : false,
-        'input' : cm.Node('input', {'type' : 'text'}),
+        'input' : null,                                 // Deprecated, use 'node' parameter instead.
+        'node' : cm.Node('input', {'type' : 'text'}),
         'name' : '',
         'data' : [],
         'maxSingleTagLength': 255,
@@ -53,7 +54,7 @@ function(params){
         // Init modules
         that.setParams(params);
         that.convertEvents(that.params['events']);
-        that.getDataConfig(that.params['input']);
+        that.getDataConfig(that.params['node']);
         // Render
         render();
         setLogic();
@@ -61,7 +62,7 @@ function(params){
         that.triggerEvent('onRender');
         // Set tags
         sourceTags = that.params['data'].concat(
-            that.params['input'].value.split(',')
+            that.params['node'].value.split(',')
         );
         cm.forEach(sourceTags, function(tag){
             addTag(tag);
@@ -69,8 +70,11 @@ function(params){
     };
 
     var preValidateParams = function(){
+        if(cm.isNode(that.params['input'])){
+            that.params['node'] = that.params['input'];
+        }
         // Check for autocomplete
-        that.isAutocomplete = !(!cm.isEmpty(params['autocomplete']) && !that.getNodeDataConfig(that.params['input'])['autocomplete']);
+        that.isAutocomplete = !(!cm.isEmpty(params['autocomplete']) && !that.getNodeDataConfig(that.params['node'])['autocomplete']);
     };
 
     var render = function(){
@@ -83,16 +87,16 @@ function(params){
         renderAddButton();
         /* *** ATTRIBUTES *** */
         // Set hidden input attributes
-        if(that.params['input'].getAttribute('name')){
-            nodes['hidden'].setAttribute('name', that.params['input'].getAttribute('name'));
+        if(that.params['node'].getAttribute('name')){
+            nodes['hidden'].setAttribute('name', that.params['node'].getAttribute('name'));
         }
         /* *** INSERT INTO DOM *** */
         if(that.params['container']){
             that.params['container'].appendChild(nodes['container']);
-        }else if(that.params['input'].parentNode){
-            cm.insertBefore(nodes['container'], that.params['input']);
+        }else if(that.params['node'].parentNode){
+            cm.insertBefore(nodes['container'], that.params['node']);
         }
-        cm.remove(that.params['input']);
+        cm.remove(that.params['node']);
 
     };
 

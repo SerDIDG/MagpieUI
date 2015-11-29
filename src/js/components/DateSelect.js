@@ -11,7 +11,8 @@ cm.define('Com.DateSelect', {
     ],
     'params' : {
         'container' : false,
-        'input' : cm.Node('input', {'type' : 'text'}),
+        'input' : null,                                 // Deprecated, use 'node' parameter instead.
+        'node' : cm.Node('input', {'type' : 'text'}),
         'format' : 'cm._config.dateFormat',
         'startYear' : 1950,
         'endYear' : new Date().getFullYear() + 10,
@@ -39,11 +40,18 @@ function(params){
 
     var init = function(){
         that.setParams(params);
+        preValidateParams();
         that.convertEvents(that.params['events']);
         that.getDataConfig(that.params['node']);
         render();
         // Set selected date
-        set(that.params['input'].value);
+        set(that.params['node'].value);
+    };
+
+    var preValidateParams = function(){
+        if(cm.isNode(that.params['input'])){
+            that.params['node'] = that.params['input'];
+        }
     };
 
     var render = function(){
@@ -63,16 +71,16 @@ function(params){
         renderSelects();
         /* *** ATTRIBUTES *** */
         // Set hidden input attributes
-        if(that.params['input'].getAttribute('name')){
-            nodes['hidden'].setAttribute('name', that.params['input'].getAttribute('name'));
+        if(that.params['node'].getAttribute('name')){
+            nodes['hidden'].setAttribute('name', that.params['node'].getAttribute('name'));
         }
         /* *** INSERT INTO DOM *** */
         if(that.params['container']){
             that.params['container'].appendChild(nodes['container']);
-        }else if(that.params['input'].parentNode){
-            cm.insertBefore(nodes['container'], that.params['input']);
+        }else if(that.params['node'].parentNode){
+            cm.insertBefore(nodes['container'], that.params['node']);
         }
-        cm.remove(that.params['input']);
+        cm.remove(that.params['node']);
     };
 
     var renderSelects = function(){

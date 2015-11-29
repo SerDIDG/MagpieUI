@@ -19,8 +19,8 @@ cm.define('Com.Palette', {
         'onChange'
     ],
     'params' : {
+        'node' : cm.node('div'),
         'name' : '',
-        'container' : cm.node('div'),
         'value' : 'transparent',
         'defaultValue' : 'rgb(255, 255, 255)',
         'setOnInit' : true,
@@ -111,7 +111,7 @@ function(params){
         cm.addEvent(that.nodes['inputHEX'], 'keypress', inputHEXKeypressHandler);
         cm.addEvent(that.nodes['buttonSelect'], 'click', buttonSelectHandler);
         // Embed
-        that.params['container'].appendChild(that.nodes['container']);
+        that.params['node'].appendChild(that.nodes['container']);
     };
 
     var initComponents = function(){

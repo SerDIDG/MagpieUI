@@ -13,7 +13,8 @@ cm.define('Com.TimeSelect', {
     ],
     'params' : {
         'container' : false,
-        'input' : cm.Node('input', {'type' : 'text'}),
+        'input' : null,                                  // Deprecated, use 'node' parameter instead.
+        'node' : cm.Node('input', {'type' : 'text'}),
         'renderSelectsInBody' : true,
         'format' : 'cm._config.timeFormat',
         'showTitleTag' : true,
@@ -47,8 +48,9 @@ function(params){
 
     var init = function(){
         that.setParams(params);
+        preValidateParams();
         that.convertEvents(that.params['events']);
-        that.getDataConfig(that.params['input']);
+        that.getDataConfig(that.params['node']);
         validateParams();
         render();
         setMiscEvents();
@@ -56,13 +58,19 @@ function(params){
         if(that.params['selected']){
             that.set(that.params['selected'], that.params['format'], false);
         }else{
-            that.set(that.params['input'].value, that.params['format'], false);
+            that.set(that.params['node'].value, that.params['format'], false);
+        }
+    };
+
+    var preValidateParams = function(){
+        if(cm.isNode(that.params['input'])){
+            that.params['node'] = that.params['input'];
         }
     };
 
     var validateParams = function(){
-        if(cm.isNode(that.params['input'])){
-            that.params['title'] = that.params['input'].getAttribute('title') || that.params['title'];
+        if(cm.isNode(that.params['node'])){
+            that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
         }
         if(cm.isEmpty(that.params['hoursInterval'])){
             that.params['hoursInterval'] = 1;
@@ -136,16 +144,16 @@ function(params){
             nodes['container'].title = that.params['title'];
         }
         // Set hidden input attributes
-        if(that.params['input'].getAttribute('name')){
-            nodes['hidden'].setAttribute('name', that.params['input'].getAttribute('name'));
+        if(that.params['node'].getAttribute('name')){
+            nodes['hidden'].setAttribute('name', that.params['node'].getAttribute('name'));
         }
         /* *** INSERT INTO DOM *** */
         if(that.params['container']){
             that.params['container'].appendChild(nodes['container']);
-        }else if(that.params['input'].parentNode){
-            cm.insertBefore(nodes['container'], that.params['input']);
+        }else if(that.params['node'].parentNode){
+            cm.insertBefore(nodes['container'], that.params['node']);
         }
-        cm.remove(that.params['input']);
+        cm.remove(that.params['node']);
     };
 
     var setMiscEvents = function(){

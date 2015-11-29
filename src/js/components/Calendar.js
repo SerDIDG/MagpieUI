@@ -14,8 +14,8 @@ cm.define('Com.Calendar', {
         'onMonthRender'
     ],
     'params' : {
+        'node' : cm.node('div'),
         'name' : '',
-        'container' : cm.Node('div'),
         'className' : '',
         'startYear' : 1950,                                                 // number | current
         'endYear' : 'current + 10',                                         // number | current
@@ -46,7 +46,7 @@ function(params){
     var init = function(){
         that.setParams(params);
         that.convertEvents(that.params['events']);
-        that.getDataConfig(that.params['container']);
+        that.getDataConfig(that.params['node']);
         validateParams();
         render();
         setMiscEvents();
@@ -101,20 +101,20 @@ function(params){
             );
         }
         // Insert into DOM
-        that.params['container'].appendChild(nodes['container']);
+        that.params['node'].appendChild(nodes['container']);
     };
 
     var setMiscEvents = function(){
         // Init custom selects
         selects['years'] = new Com.Select({
-                'select' : nodes['years'],
+                'node' : nodes['years'],
                 'renderInBody' : that.params['renderSelectsInBody']
             })
             .set(current['year'])
             .addEvent('onChange', renderView);
 
         selects['months'] = new Com.Select({
-                'select' : nodes['months'],
+                'node' : nodes['months'],
                 'renderInBody' : that.params['renderSelectsInBody']
             })
             .set(current['month'])

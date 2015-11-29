@@ -19,9 +19,10 @@ cm.define('Com.ColorPicker', {
     ],
     'params' : {
         'container' : false,
-        'input' : cm.Node('div'),
+        'input' : null,                                     // Deprecated, use 'node' parameter instead.
+        'node' : cm.Node('input', {'type' : 'text'}),
         'name' : '',
-        'value' : null,                        // Color string: transparent | hex | rgba.
+        'value' : null,                                     // Color string: transparent | hex | rgba.
         'defaultValue' : 'transparent',
         'title' : '',
         'showInputValue' : true,
@@ -59,8 +60,9 @@ function(params){
 
     var init = function(){
         that.setParams(params);
+        preValidateParams();
         that.convertEvents(that.params['events']);
-        that.getDataConfig(that.params['input']);
+        that.getDataConfig(that.params['node']);
         validateParams();
         render();
         setLogic();
@@ -72,12 +74,18 @@ function(params){
         that.triggerEvent('onRender', that.value);
     };
 
-    var validateParams = function(){
+    var preValidateParams = function(){
         if(cm.isNode(that.params['input'])){
-            that.params['title'] = that.params['input'].getAttribute('title') || that.params['title'];
-            that.params['disabled'] = that.params['input'].disabled || that.params['disabled'];
-            that.value = that.params['input'].value;
-            that.params['name'] = that.params['input'].getAttribute('name') || that.params['name'];
+            that.params['node'] = that.params['input'];
+        }
+    };
+
+    var validateParams = function(){
+        if(cm.isNode(that.params['node'])){
+            that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
+            that.params['disabled'] = that.params['node'].disabled || that.params['disabled'];
+            that.value = that.params['node'].value;
+            that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
         }
         that.value = that.params['value'] || that.value || that.params['defaultValue'];
         that.disabled = that.params['disabled'];
@@ -102,12 +110,12 @@ function(params){
             that.nodes['container'].title = that.params['title'];
         }
         // ID
-        if(that.params['input'].id){
-            that.nodes['container'].id = that.params['input'].id;
+        if(that.params['node'].id){
+            that.nodes['container'].id = that.params['node'].id;
         }
         // Set hidden input attributes
-        if(that.params['input'].getAttribute('name')){
-            that.nodes['hidden'].setAttribute('name', that.params['input'].getAttribute('name'));
+        if(that.params['node'].getAttribute('name')){
+            that.nodes['hidden'].setAttribute('name', that.params['node'].getAttribute('name'));
         }
         // Clear Button
         if(that.params['showClearButton']){
@@ -119,10 +127,10 @@ function(params){
         /* *** INSERT INTO DOM *** */
         if(that.params['container']){
             that.params['container'].appendChild(that.nodes['container']);
-        }else if(that.params['input'].parentNode){
-            cm.insertBefore(that.nodes['container'], that.params['input']);
+        }else if(that.params['node'].parentNode){
+            cm.insertBefore(that.nodes['container'], that.params['node']);
         }
-        cm.remove(that.params['input']);
+        cm.remove(that.params['node']);
     };
 
     var setLogic = function(){
@@ -157,7 +165,7 @@ function(params){
         // Render palette
         that.components['palette'] = new Com.Palette(
             cm.merge(that.params['Com.Palette'], {
-                'container' : that.nodes['menuContainer'],
+                'node' : that.nodes['menuContainer'],
                 'events' : {
                     'onChange' : function(my, value){
                         set(my.get('rgb'), true);

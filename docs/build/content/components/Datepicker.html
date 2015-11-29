@@ -7,30 +7,13 @@
 
     <link type="text/css" rel="stylesheet" href="../../css/MagpieUI.css">
     <script type="text/javascript" src="../../js/MagpieUI.js"></script>
-
-    <script type="text/javascript">
-        cm.onReady(function(){
-            new Com.Collector()
-                .addEvent('onConstruct', function(collector, data){
-                    Part.Menu();
-                    Part.Autoresize(data['node']);
-                })
-                .add('tabset', function(node){
-                    new Com.Tabset({'node' : node});
-                })
-                .add('datepicker', function(node){
-                    new Com.Datepicker({'input' : node});
-                })
-                .construct();
-        });
-    </script>
 </head>
 
 <body>
 
 <h1 class="pt__box-title">Components: Datepicker</h1>
 
-<ul class="com__tabset__content-ul" data-element="tabset">
+<ul class="com__tabset__content-ul" data-element="Com.Tabset">
     <li data-node="tabs:[]:container" data-config='{"id" : "overview", "title" : "Overview"}'>
         <h2>Overview</h2>
         <p>This component decorate input node and convert it to datepicker / datetimepicker. You can specify date format different than input date format.</p>
@@ -65,7 +48,7 @@
     });
 </script>
 
-<input type="text" readonly data-element="datepicker"></textarea>
+<input type="text" readonly data-element="Com.Datepicker"></textarea>
 
         <h2>Parameters</h2>
         <dl>
@@ -233,7 +216,7 @@ new Com.Datepicker({
         <h2>Set parameters in html through data attribute</h2>
         <p>Value in data attribute must be in JSON format. Example:</p>
         <textarea class="pt__box-code cm-autoresize" readonly>
-<input type="text" readonly data-element="datepicker" data-config='{"isDateTime" : true, "showClearButton" : true}'></textarea>
+<input type="text" readonly data-element="Com.Datepicker" data-config='{"isDateTime" : true, "showClearButton" : true}'></textarea>
     </li>
 
     <li data-node="tabs:[]:container" data-config='{"id" : "methods", "title" : "Methods"}'>
@@ -304,28 +287,28 @@ new Com.Datepicker({
 
     <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
         <h2>Default Datepicker:</h2>
-        <textarea class="pt__box-code cm-autoresize" readonly><input type="text" readonly data-element="datepicker"></textarea>
-        <input type="text" readonly data-element="datepicker">
+        <textarea class="pt__box-code cm-autoresize" readonly><input type="text" readonly data-element="Com.Datepicker"></textarea>
+        <input type="text" readonly data-element="Com.Datepicker">
         <hr>
 
         <h2>Datepicker with placeholder:</h2>
-        <textarea class="pt__box-code cm-autoresize" readonly><input type="text" readonly placeholder="Specify date" data-element="datepicker"></textarea>
-        <input type="text" readonly placeholder="Specify date" data-element="datepicker">
+        <textarea class="pt__box-code cm-autoresize" readonly><input type="text" readonly placeholder="Specify date" data-element="Com.Datepicker"></textarea>
+        <input type="text" readonly placeholder="Specify date" data-element="Com.Datepicker">
         <hr>
 
         <h2>Datepicker with clear button:</h2>
-        <textarea class="pt__box-code cm-autoresize" readonly><input type="text" readonly data-element="datepicker" data-config='{"showClearButton" : true}'></textarea>
-        <input type="text" readonly data-element="datepicker" data-config='{"showClearButton" : true}'>
+        <textarea class="pt__box-code cm-autoresize" readonly><input type="text" readonly data-element="Com.Datepicker" data-config='{"showClearButton" : true}'></textarea>
+        <input type="text" readonly data-element="Com.Datepicker" data-config='{"showClearButton" : true}'>
         <hr>
 
         <h2>Datepicker with time selector:</h2>
-        <textarea class="pt__box-code cm-autoresize" readonly><input type="text" readonly data-element="datepicker" data-config='{"isDateTime" : true}'></textarea>
-        <input type="text" readonly data-element="datepicker" data-config='{"isDateTime" : true}'>
+        <textarea class="pt__box-code cm-autoresize" readonly><input type="text" readonly data-element="Com.Datepicker" data-config='{"isDateTime" : true}'></textarea>
+        <input type="text" readonly data-element="Com.Datepicker" data-config='{"isDateTime" : true}'>
         <hr>
 
         <h2>Datepicker with time selector and custom visible date format:</h2>
-        <textarea class="pt__box-code cm-autoresize" readonly><input type="text" readonly data-element="datepicker" data-config='{"isDateTime" : true, "displayDateTimeFormat" : "%j %F %Y, %g:%i %A", "value" : "now"}'></textarea>
-        <input type="text" readonly data-element="datepicker" data-config='{"isDateTime" : true, "displayDateTimeFormat" : "%j %F %Y, %g:%i %A", "value" : "now"}'>
+        <textarea class="pt__box-code cm-autoresize" readonly><input type="text" readonly data-element="Com.Datepicker" data-config='{"isDateTime" : true, "displayDateTimeFormat" : "%j %F %Y, %g:%i %A", "value" : "now"}'></textarea>
+        <input type="text" readonly data-element="Com.Datepicker" data-config='{"isDateTime" : true, "displayDateTimeFormat" : "%j %F %Y, %g:%i %A", "value" : "now"}'>
     </li>
 </ul>
 

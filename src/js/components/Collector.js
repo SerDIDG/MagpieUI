@@ -15,7 +15,8 @@ cm.define('Com.Collector', {
     'params' : {
         'node' : cm.Node('div'),
         'name' : '',
-        'attribute' : 'data-element'
+        'attribute' : 'data-element',
+        'autoInit' : false
     }
 },
 function(params){
@@ -27,8 +28,21 @@ function(params){
         that.setParams(params);
         that.convertEvents(that.params['events']);
         that.getDataConfig(that.params['node']);
+        render();
         that.addToStack(that.params['node']);
         that.triggerEvent('onRender');
+    };
+
+    var render = function(){
+        if(that.params['autoInit']){
+            cm.forEach(cm.defineStack, function(classConstructor){
+                that.add(classConstructor.prototype._name['full'], function(node){
+                    new classConstructor({
+                        'node' : node
+                    });
+                });
+            });
+        }
     };
 
     var constructItem = function(item, name, parentNode){

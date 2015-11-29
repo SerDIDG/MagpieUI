@@ -21,7 +21,7 @@ cm.define('Com.Select', {
     ],
     'params' : {
         'container' : false,                    // Component container that is required in case content is rendered without available select.
-        'select' : cm.Node('select'),           // Deprecated, use 'node ' parameter instead.
+        'select' : null,                        // Deprecated, use 'node' parameter instead.
         'node' : cm.Node('select'),             // Html select node to decorate.
         'name' : '',
         'renderInBody' : true,                  // Render dropdowns in document.body, else they will be rendrered in component container.

@@ -22,7 +22,8 @@ cm.define('Com.Datepicker', {
     ],
     'params' : {
         'container' : false,
-        'input' : cm.Node('input', {'type' : 'text'}),
+        'input' : null,                      // Deprecated, use 'node' parameter instead.
+        'node' : cm.Node('input', {'type' : 'text'}),
         'name' : '',
         'renderInBody' : true,
         'format' : 'cm._config.dateFormat',
@@ -78,8 +79,9 @@ function(params){
 
     var init = function(){
         that.setParams(params);
+        preValidateParams();
         that.convertEvents(that.params['events']);
-        that.getDataConfig(that.params['input']);
+        that.getDataConfig(that.params['node']);
         validateParams();
         render();
         setLogic();
@@ -89,18 +91,24 @@ function(params){
         if(that.params['value']){
             that.set(that.params['value'], that.format, false);
         }else{
-            that.set(that.params['input'].value, that.format, false);
+            that.set(that.params['node'].value, that.format, false);
         }
         // Trigger events
         that.triggerEvent('onRender', that.value);
     };
 
-    var validateParams = function(){
+    var preValidateParams = function(){
         if(cm.isNode(that.params['input'])){
-            that.params['placeholder'] = that.params['input'].getAttribute('placeholder') || that.params['placeholder'];
-            that.params['title'] = that.params['input'].getAttribute('title') || that.params['title'];
-            that.params['disabled'] = that.params['input'].disabled || that.params['disabled'];
-            that.params['name'] = that.params['input'].getAttribute('name') || that.params['name'];
+            that.params['node'] = that.params['input'];
+        }
+    };
+
+    var validateParams = function(){
+        if(cm.isNode(that.params['node'])){
+            that.params['placeholder'] = that.params['node'].getAttribute('placeholder') || that.params['placeholder'];
+            that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
+            that.params['disabled'] = that.params['node'].disabled || that.params['disabled'];
+            that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
         }
         if(that.params['value'] == 'now'){
             that.params['value'] = new Date();
@@ -134,8 +142,8 @@ function(params){
             nodes['container'].title = that.params['title'];
         }
         // ID
-        if(that.params['input'].id){
-            nodes['container'].id = that.params['input'].id;
+        if(that.params['node'].id){
+            nodes['container'].id = that.params['node'].id;
         }
         // Set hidden input attributes
         if(that.params['name']){
@@ -171,10 +179,10 @@ function(params){
         /* *** INSERT INTO DOM *** */
         if(that.params['container']){
             that.params['container'].appendChild(nodes['container']);
-        }else if(that.params['input'].parentNode){
-            cm.insertBefore(nodes['container'], that.params['input']);
+        }else if(that.params['node'].parentNode){
+            cm.insertBefore(nodes['container'], that.params['node']);
         }
-        cm.remove(that.params['input']);
+        cm.remove(that.params['node']);
     };
 
     var setLogic = function(){
@@ -215,7 +223,7 @@ function(params){
         );
         // Render calendar
         components['calendar'] = new Com.Calendar({
-            'container' : nodes['calendarContainer'],
+            'node' : nodes['calendarContainer'],
             'renderSelectsInBody' : false,
             'className' : 'com__datepicker-calendar',
             'startYear' : that.params['startYear'],
