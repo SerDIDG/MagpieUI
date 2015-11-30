@@ -18461,7 +18461,7 @@ cm.define('Com.Columns', {
     'params' : {
         'columns' : false,                  // Deprecated, use 'node' parameter instead.
         'node' : cm.node('div'),
-        'container' : cm.Node('div'),
+        'container' : false,
         'name' : '',
         'renderStructure' : false,
         'minColumnWidth' : 48,              // in px
@@ -18483,7 +18483,6 @@ function(params){
         preValidateParams();
         that.convertEvents(that.params['events']);
         that.getDataConfig(that.params['node']);
-        validateParams();
         render();
         renderChassis();
         that.addToStack(nodes['container']);
@@ -18542,7 +18541,9 @@ function(params){
         // Render Columns
         cm.forEach(that.params['data'], renderColumn);
         // Embed
-        that.params['container'].appendChild(nodes['container']);
+        if(that.params['container']){
+            that.params['container'].appendChild(nodes['container']);
+        }
     };
 
     /* *** COLUMNS *** */
