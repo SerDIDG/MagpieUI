@@ -200,6 +200,7 @@ cm.clone = function(o, cloneNode){
         case RegExp:
         case Boolean:
         case XMLHttpRequest:
+        case File:
             newO = o;
             break;
         case Array:

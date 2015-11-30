@@ -1591,6 +1591,7 @@ cm.clone = function(o, cloneNode){
         case RegExp:
         case Boolean:
         case XMLHttpRequest:
+        case File:
             newO = o;
             break;
         case Array:
@@ -5414,7 +5415,7 @@ function(params){
     };
 
     var renderField = function(type, params){
-        var field;
+        var fieldParams, field;
         // Merge params
         params = cm.merge({
             'name' : '',
@@ -5424,10 +5425,13 @@ function(params){
             'form' : that
         }, params);
         // Render
-        if(field = Com.FormFields.get(type)){
+        if(fieldParams = Com.FormFields.get(type)){
             cm.getConstructor('Com.FormField', function(classConstructor){
-                params = cm.merge(field, params);
-                that.fields[params['name']] = new classConstructor(params);
+                params = cm.merge(fieldParams, params);
+                field = new classConstructor(params);
+                if(params['field']){
+                    that.fields[params['name']] = field;
+                }
             });
         }
     };
@@ -5548,7 +5552,8 @@ Com.FormFields = (function(){
         'add' : function(type, params){
             stack[type] = cm.merge({
                 'node' : cm.node('div'),
-                'type' : type
+                'type' : type,
+                'field' : true
             }, params);
         },
         'get' : function(type){
@@ -5848,6 +5853,7 @@ Com.FormFields.add('check', {
 
 Com.FormFields.add('buttons', {
     'node' : cm.node('div', {'class' : 'btn-wrap'}),
+    'field' : false,
     'callbacks' : {
         'render' : function(that){
             var nodes = {};
