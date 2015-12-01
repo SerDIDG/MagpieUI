@@ -7,6 +7,8 @@
     display: block;
     position: relative;
     cursor: default;
+    background: transparent 50% 50% no-repeat;
+    background-size: contain;
     .mx__user-select(none);
 
     > .inner {
@@ -185,9 +187,14 @@
     &.is-centered {
         background-color: @PtImage-Background;
 
+        &:not(.has-aspect) {
+            padding-bottom: 100%;
+        }
+
         > .inner {
-            height: 100%;
+            position: absolute;
             text-align: center;
+            .mx__position(0, 0, 0, 0);
 
             &:before {
                 height: 100%;
@@ -247,7 +254,7 @@
     &.has-aspect {
         > .inner {
             position: absolute;
-            .mx__position(0,0,0,0);
+            .mx__position(0, 0, 0, 0);
         }
     }
 

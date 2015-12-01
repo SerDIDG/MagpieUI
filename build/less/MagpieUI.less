@@ -7422,6 +7422,7 @@ button {
 
         &.is-centered {
             height: unit(@value, px);
+            padding-bottom: 0;
         }
     }
 }
@@ -8531,6 +8532,8 @@ button {
     display: block;
     position: relative;
     cursor: default;
+    background: transparent 50% 50% no-repeat;
+    background-size: contain;
     .mx__user-select(none);
 
     > .inner {
@@ -8709,9 +8712,14 @@ button {
     &.is-centered {
         background-color: @PtImage-Background;
 
+        &:not(.has-aspect) {
+            padding-bottom: 100%;
+        }
+
         > .inner {
-            height: 100%;
+            position: absolute;
             text-align: center;
+            .mx__position(0, 0, 0, 0);
 
             &:before {
                 height: 100%;
@@ -8771,7 +8779,7 @@ button {
     &.has-aspect {
         > .inner {
             position: absolute;
-            .mx__position(0,0,0,0);
+            .mx__position(0, 0, 0, 0);
         }
     }
 
@@ -10509,8 +10517,10 @@ button {
     .post-abstract,
     .post-entry,
     .post-tags,
-    .post-image {
-        margin: @CmIndent-XSmall 0 0 0;
+    .post-image,
+    .post-columns,
+    .post-items {
+        margin: @CmIndent-Small 0 0 0;
 
         &:first-child {
             margin: 0;
@@ -10547,8 +10557,27 @@ button {
         .post-entry,
         .post-abstract,
         .post-tags,
-        .post-image {
+        .post-image,
+        .post-columns,
+        .post-items {
             margin: @CmIndent-Medium 0 0 0;
+
+            &:first-child {
+                margin: 0;
+            }
+        }
+    }
+
+    .post-columns {
+        .display-flex;
+
+        .post-left {
+            margin: 0 @LtPost-Image-Indent 0 0;
+            .mx__flex(0 0 auto);
+        }
+
+        .post-right {
+            .mx__flex(1 1 auto);
         }
     }
 
@@ -10583,6 +10612,12 @@ button {
 // /* *** MIXINS *** */
 
 .lt__post__image-size(@value: @LtPost-Image-Size){
+    .post-columns {
+        .post-left {
+            max-width: @value;
+        }
+    }
+
     &.has-image {
         > .l {
             max-width: @value;
@@ -11630,6 +11665,10 @@ button {
         z-index: 1;
         opacity: 0;
         .mx__position(0,0,0,0);
+
+        &.is-centered {
+            padding-bottom: 0;
+        }
     }
 
     > .loader {
