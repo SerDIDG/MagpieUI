@@ -16,30 +16,6 @@
         {
             "type": "git",
             "url": "https://github.com/SerDIDG/MagpieUI"
-        },
-        {
-            "type": "package",
-            "package": {
-                "name": "daneden/animate.css",
-                "version": "dev-master",
-                "source": {
-                    "url": "git://github.com/daneden/animate.css.git",
-                    "type": "git",
-                    "reference": "master"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package": {
-                "name": "bgrins/TinyColor",
-                "version": "dev-master",
-                "source": {
-                    "url": "git://github.com/bgrins/TinyColor.git",
-                    "type": "git",
-                    "reference": "master"
-                }
-            }
         }
     ],
     "require": {
