@@ -17,9 +17,5 @@
             "type": "git",
             "url": "https://github.com/SerDIDG/MagpieUI"
         }
-    ],
-    "require": {
-        "daneden/animate.css": "master",
-        "bgrins/TinyColor": "master"
-    }
+    ]
 }
