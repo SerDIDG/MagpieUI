@@ -46,8 +46,8 @@ cm.define('Com.ScrollPagination', {
         'ajax' : {
             'type' : 'json',
             'method' : 'get',
-            'url' : '',                                             // Request URL. Variables: %page%, %token%, %perPage%, %callback% for JSONP.
-            'params' : ''                                           // Params object. %page%, %token%, %perPage%, %callback% for JSONP.
+            'url' : '',                                             // Request URL. Variables: %baseurl%, %page%, %token%, %perPage%, %callback% for JSONP.
+            'params' : ''                                           // Params object. %baseurl%, %page%, %token%, %perPage%, %callback% for JSONP.
         },
         'langs' : {
             'load_more' : 'Load More'
@@ -219,12 +219,14 @@ function(params){
         config['url'] = cm.strReplace(config['url'], {
             '%perPage%' : that.params['perPage'],
             '%page%' : that.page,
-            '%token%' : that.pageToken
+            '%token%' : that.pageToken,
+            '%baseurl%' : cm._baseUrl
         });
         config['params'] = cm.objectReplace(config['params'], {
             '%perPage%' : that.params['perPage'],
             '%page%' : that.page,
-            '%token%' : that.pageToken
+            '%token%' : that.pageToken,
+            '%baseurl%' : cm._baseUrl
         });
         return config;
     };

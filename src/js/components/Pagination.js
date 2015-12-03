@@ -190,7 +190,6 @@ function(params){
             // Render bars
             that.callbacks.rebuildBars(that);
             // Request
-
             if(!that.currentPage || page != that.currentPage){
                 if(that.pages[that.page] && that.pages[that.page]['isRendered']){
                     that.callbacks.cached(that, that.pages[that.page]['data']);
@@ -225,7 +224,6 @@ function(params){
 
     that.callbacks.request = function(that, config){
         config = that.callbacks.prepare(that, config);
-
         // Return ajax handler (XMLHttpRequest) to providing abort method.
         return cm.ajax(
             cm.merge(config, {

@@ -24,12 +24,13 @@
  ******* */
 
 var cm = {
-        '_version' : '3.9.1',
+        '_version' : '3.9.2',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
         '_deviceType' : 'desktop',
         '_deviceOrientation' : 'landscape',
+        '_baseUrl': [window.location.protocol, window.location.hostname].join('//'),
         '_scrollSize' : 0,
         '_clientPosition' : {'x' : 0, 'y' : 0},
         '_config' : {

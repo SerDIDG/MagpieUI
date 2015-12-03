@@ -1415,12 +1415,13 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.9.1',
+        '_version' : '3.9.2',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
         '_deviceType' : 'desktop',
         '_deviceOrientation' : 'landscape',
+        '_baseUrl': [window.location.protocol, window.location.hostname].join('//'),
         '_scrollSize' : 0,
         '_clientPosition' : {'x' : 0, 'y' : 0},
         '_config' : {
@@ -5936,8 +5937,8 @@ cm.define('Com.Autocomplete', {
         'ajax' : {
             'type' : 'json',
             'method' : 'get',
-            'url' : '',                                             // Request URL. Variables: %query%, %callback%.
-            'params' : ''                                           // Params object. Variables: %query%, %callback%.
+            'url' : '',                                             // Request URL. Variables: %baseurl%, %query%, %callback%.
+            'params' : ''                                           // Params object. Variables: %baseurl%, %query%, %callback%.
         },
         'langs' : {
             'loader' : 'Searching for: %query%.'                    // Variable: %query%.
@@ -6140,10 +6141,12 @@ function(params){
 
     that.callbacks.prepare = function(that, config, query){
         config['url'] = cm.strReplace(config['url'], {
-            '%query%' : query
+            '%query%' : query,
+            '%baseurl%' : cm._baseUrl
         });
         config['params'] = cm.strReplace(config['params'], {
-            '%query%' : query
+            '%query%' : query,
+            '%baseurl%' : cm._baseUrl
         });
         return config;
     };
@@ -14669,7 +14672,6 @@ function(params){
             // Render bars
             that.callbacks.rebuildBars(that);
             // Request
-
             if(!that.currentPage || page != that.currentPage){
                 if(that.pages[that.page] && that.pages[that.page]['isRendered']){
                     that.callbacks.cached(that, that.pages[that.page]['data']);
@@ -14704,7 +14706,6 @@ function(params){
 
     that.callbacks.request = function(that, config){
         config = that.callbacks.prepare(that, config);
-
         // Return ajax handler (XMLHttpRequest) to providing abort method.
         return cm.ajax(
             cm.merge(config, {
@@ -15759,8 +15760,8 @@ cm.define('Com.ScrollPagination', {
         'ajax' : {
             'type' : 'json',
             'method' : 'get',
-            'url' : '',                                             // Request URL. Variables: %page%, %token%, %perPage%, %callback% for JSONP.
-            'params' : ''                                           // Params object. %page%, %token%, %perPage%, %callback% for JSONP.
+            'url' : '',                                             // Request URL. Variables: %baseurl%, %page%, %token%, %perPage%, %callback% for JSONP.
+            'params' : ''                                           // Params object. %baseurl%, %page%, %token%, %perPage%, %callback% for JSONP.
         },
         'langs' : {
             'load_more' : 'Load More'
@@ -15932,12 +15933,14 @@ function(params){
         config['url'] = cm.strReplace(config['url'], {
             '%perPage%' : that.params['perPage'],
             '%page%' : that.page,
-            '%token%' : that.pageToken
+            '%token%' : that.pageToken,
+            '%baseurl%' : cm._baseUrl
         });
         config['params'] = cm.objectReplace(config['params'], {
             '%perPage%' : that.params['perPage'],
             '%page%' : that.page,
-            '%token%' : that.pageToken
+            '%token%' : that.pageToken,
+            '%baseurl%' : cm._baseUrl
         });
         return config;
     };
@@ -18247,8 +18250,9 @@ cm.define('Com.TabsetHelper', {
     'modules' : [
         'Params',
         'Events',
-        'DataConfig',
+        'Callbacks',
         'DataNodes',
+        'DataConfig',
         'Stack'
     ],
     'events' : [
@@ -18257,154 +18261,340 @@ cm.define('Com.TabsetHelper', {
         'onTabShow',
         'onTabHideStart',
         'onTabHide',
-        'onLabelClick'
+        'onLabelClick',
+        'onRequestStart',
+        'onRequestEnd',
+        'onRequestError',
+        'onRequestSuccess',
+        'onRequestAbort',
+        'onContentRenderStart',
+        'onContentRender'
     ],
     'params' : {
         'node' : cm.Node('div'),
         'name' : '',
         'active' : null,
-        'setFirstTabImmediately' : true
+        'items' : [],
+        'setFirstTabImmediately' : true,
+        'showLoader' : true,
+        'loaderDelay' : 300,                                        // in ms
+        'responseKey' : 'data',                                     // Instead of using filter callback, you can provide response array key
+        'responseHTML' : false,                                     // If true, html will append automatically
+        'ajax' : {
+            'type' : 'json',
+            'method' : 'get',
+            'url' : '',                                             // Request URL. Variables: %baseurl%, %tab%, %callback% for JSONP.
+            'params' : ''                                           // Params object. %tab%, %baseurl%, %callback% for JSONP.
+        },
+        'Com.Overlay' : {
+            'position' : 'absolute',
+            'autoOpen' : false,
+            'removeOnClose' : true
+        }
     }
 },
 function(params){
     var that = this;
 
+    that.components = {};
     that.nodes = {
         'container': cm.Node('div'),
         'labels' : [],
         'tabs' : []
     };
 
+    that.ajaxHandler = null;
+    that.isAjax = false;
+    that.isProcess = false;
+    that.loaderDelay = null;
+
     that.current = false;
     that.previous = false;
-    that.tabs = {};
+    that.items = {};
 
     var init = function(){
         that.setParams(params);
         that.convertEvents(that.params['events']);
         that.getDataNodes(that.params['node']);
         that.getDataConfig(that.params['node']);
+        that.callbacksProcess();
+        validateParams();
         render();
         that.addToStack(that.params['node']);
         that.triggerEvent('onRender');
         // Set active tab
-        if(that.params['active'] && that.tabs[that.params['active']]){
-            set(that.params['active'], true);
+        if(that.params['active'] && that.items[that.params['active']]){
+            set(that.params['active']);
+        }
+    };
+
+    var validateParams = function(){
+        if(!cm.isEmpty(that.params['ajax']['url'])){
+            that.isAjax = true;
         }
     };
 
     var render = function(){
         // Process tabs
-        cm.forEach(that.nodes['tabs'], function(item){
-            processTab(item);
+        that.processTabs(that.nodes['tabs'], that.nodes['labels']);
+        // Process tabs in parameters
+        cm.forEach(that.params['items'], function(item){
+            renderTab(item);
         });
-        cm.forEach(that.nodes['labels'], function(item){
-            processLabel(item);
+        // Overlay
+        cm.getConstructor('Com.Overlay', function(classConstructor){
+            that.components['loader'] = new classConstructor(that.params['Com.Overlay']);
         });
-    };
-
-    var processTab = function(item, config){
-        config = cm.merge(
-            cm.merge({
-                    'id' : ''
-                }, that.getNodeDataConfig(item['container'])
-            ),
-            config
-        );
-        config['container'] = item['container'];
-        renderTab(config);
-    };
-
-    var processLabel = function(item, config){
-        config = cm.merge(
-            cm.merge({
-                    'id' : ''
-                }, that.getNodeDataConfig(item['container'])
-            ),
-            config
-        );
-        config['container'] = item['container'];
-        renderLabel(config);
     };
 
     var renderTab = function(item){
-        var tab;
         item = cm.merge({
             'id' : '',
-            'container' : cm.Node('li')
+            'tab' : {
+                'container' : cm.node('li'),
+                'inner' : cm.node('div')
+            },
+            'label' : {
+                'container' : cm.node('li'),
+                'inner' : cm.node('div')
+            },
+            'isHidden' : false,
+            'isAjax' : false,
+            'ajax' : {}
         }, item);
-
-        if(!cm.isEmpty(item['id']) && !(tab = that.tabs[item['id']])){
-            that.tabs[item['id']] = {
-                'id' : item['id'],
-                'tab' : item['container'],
-                'config' : item
-            };
-        }
-    };
-
-    var renderLabel = function(item){
-        var tab;
-        item = cm.merge({
-            'id' : '',
-            'container' : cm.Node('li')
-        }, item);
-
-        if(!cm.isEmpty(item['id']) && (tab = that.tabs[item['id']])){
-            tab['label'] = item['container'];
-            tab['config'] = cm.merge(tab['config'], item);
-            cm.addEvent(tab['label'], 'click', function(){
-                that.triggerEvent('onLabelClick', tab);
-                set(tab['id']);
+        if(!cm.isEmpty(item['id']) && !that.items[item['id']]){
+            that.items[item['id']] = item;
+            if(item.isHidden){
+                cm.addClass(item['label']['container'], 'hidden');
+                cm.addClass(item['tab']['container'], 'hidden');
+            }
+            cm.addEvent(item['label']['container'], 'click', function(){
+                that.triggerEvent('onLabelClick', {
+                    'item' : item
+                });
+                set(item['id']);
             });
         }
     };
 
-    var set = function(id, triggerEvents){
+    var set = function(id){
+        var item;
         if(that.current != id){
             // Hide previous tab
-            unset(triggerEvents);
+            unset();
             // Show new tab
             that.current = id;
-            triggerEvents && that.triggerEvent('onTabShowStart', that.tabs[that.current]);
+            item = that.items[that.current];
+            that.triggerEvent('onTabShowStart', {
+                'item' : item
+            });
             if(!that.previous && that.params['setFirstTabImmediately']){
-                cm.addClass(that.tabs[that.current]['tab'], 'is-immediately');
-                cm.addClass(that.tabs[that.current]['label'], 'is-immediately');
+                cm.addClass(item['tab']['container'], 'is-immediately');
+                cm.addClass(item['label']['container'], 'is-immediately');
                 setTimeout(function(){
-                    cm.removeClass(that.tabs[that.current]['tab'], 'is-immediately');
-                    cm.removeClass(that.tabs[that.current]['label'], 'is-immediately');
+                    cm.removeClass(item['tab']['container'], 'is-immediately');
+                    cm.removeClass(item['label']['container'], 'is-immediately');
                 }, 5);
             }
-            cm.addClass(that.tabs[that.current]['tab'], 'active');
-            cm.addClass(that.tabs[that.current]['label'], 'active');
-            triggerEvents && that.triggerEvent('onTabShow', that.tabs[that.current]);
+            cm.addClass(item['tab']['container'], 'active');
+            cm.addClass(item['label']['container'], 'active');
+            if(that.isAjax && item.isAjax){
+                that.ajaxHandler = that.callbacks.request(that, item, cm.merge(that.params['ajax'], item['ajax']));
+            }else{
+                that.triggerEvent('onTabShow', {
+                    'item' : item
+                });
+            }
         }
     };
 
-    var unset = function(triggerEvents){
-        if(that.current && that.tabs[that.current]){
+    var unset = function(){
+        var item;
+        if(that.current && that.items[that.current]){
+            item = that.items[that.current];
+            if(that.isProcess){
+                that.abort();
+            }
             that.previous = that.current;
-            triggerEvents && that.triggerEvent('onTabHideStart', that.tabs[that.current]);
-            cm.removeClass(that.tabs[that.current]['tab'], 'active');
-            cm.removeClass(that.tabs[that.current]['label'], 'active');
-            triggerEvents && that.triggerEvent('onTabHide', that.tabs[that.current]);
+            that.triggerEvent('onTabHideStart', {
+                'item' : item
+            });
+            cm.removeClass(item['tab']['container'], 'active');
+            cm.removeClass(item['label']['container'], 'active');
+            that.triggerEvent('onTabHide', {
+                'item' : item
+            });
             that.current = null;
         }
     };
 
-    /* ******* MAIN ******* */
+    /* ******* CALLBACKS ******* */
 
-    that.set = function(id, triggerEvents){
-        triggerEvents = typeof triggerEvents != 'undefined'? triggerEvents : true;
-        if(id && that.tabs[id]){
-            set(id, triggerEvents);
+    /* *** AJAX *** */
+
+    that.callbacks.prepare = function(that, item, config){
+        // Prepare
+        config['url'] = cm.strReplace(config['url'], {
+            '%tab%' : item['id'],
+            '%baseurl%' : cm._baseUrl
+        });
+        config['params'] = cm.objectReplace(config['params'], {
+            '%tab%' : item['id'],
+            '%baseurl%' : cm._baseUrl
+        });
+        return config;
+    };
+
+    that.callbacks.request = function(that, item, config){
+        config = that.callbacks.prepare(that, item, config);
+        // Return ajax handler (XMLHttpRequest) to providing abort method.
+        return cm.ajax(
+            cm.merge(config, {
+                'onStart' : function(){
+                    that.callbacks.start(that, item, config);
+                },
+                'onSuccess' : function(response){
+                    that.callbacks.response(that, item, config, response);
+                },
+                'onError' : function(){
+                    that.callbacks.error(that, item, config);
+                },
+                'onAbort' : function(){
+                    that.callbacks.abort(that, item, config);
+                },
+                'onEnd' : function(){
+                    that.callbacks.end(that, item,  config);
+                }
+            })
+        );
+    };
+
+    that.callbacks.start = function(that, item, config){
+        that.isProcess = true;
+        // Show Loader
+        if(that.params['showLoader']){
+            that.loaderDelay = setTimeout(function(){
+                if(that.components['loader'] && !that.components['loader'].isOpen){
+                    that.components['loader']
+                        .embed(item['tab']['container'])
+                        .open();
+                }
+            }, that.params['loaderDelay']);
+        }
+        that.triggerEvent('onRequestStart', {
+            'item' : item
+        });
+    };
+
+    that.callbacks.end = function(that, item, config){
+        that.isProcess = false;
+        // Hide Loader
+        if(that.params['showLoader']){
+            that.loaderDelay && clearTimeout(that.loaderDelay);
+            if(that.components['loader'] && that.components['loader'].isOpen){
+                that.components['loader'].close();
+            }
+        }
+        that.triggerEvent('onRequestEnd', {
+            'item' : item
+        });
+    };
+
+    that.callbacks.filter = function(that, item, config, response){
+        var data = [],
+            dataItem = cm.objectSelector(that.params['responseKey'], response);
+        if(dataItem && !cm.isEmpty(dataItem)){
+            data = dataItem;
+        }
+        return data;
+    };
+
+    that.callbacks.response = function(that, item, config, response){
+        // Response
+        if(!cm.isEmpty(response)){
+            that.callbacks.success(that, {
+                'item' : item,
+                'response' : response
+            });
+            response = that.callbacks.filter(that, item, config, response);
+            that.callbacks.render(that, item, response);
+        }else{
+            that.callbacks.error(that, item, config);
+        }
+    };
+
+    that.callbacks.error = function(that, item, config){
+        that.triggerEvent('onRequestError', {
+            'item' : item
+        });
+    };
+
+    that.callbacks.success = function(that, tab, response){
+        that.triggerEvent('onRequestSuccess', {
+            'tab' : tab,
+            'response' : response
+        });
+    };
+
+    that.callbacks.abort = function(that, item, config){
+        that.triggerEvent('onRequestAbort', {
+            'item' : item
+        });
+    };
+
+    /* *** RENDER *** */
+
+    that.callbacks.render = function(that, item, data){
+        that.isRendering = true;
+        item['data'] = data;
+        // Render
+        that.triggerEvent('onContentRenderStart', {
+            'item' : item,
+            'data' : data
+        });
+        that.callbacks.renderContent(that, item, data);
+        that.triggerEvent('onContentRender', {
+            'item' : item,
+            'data' : data
+        });
+        that.triggerEvent('onTabShow', {
+            'item' : item,
+            'data' : data
+        });
+    };
+
+    that.callbacks.renderContent = function(that, item, data){
+        var nodes;
+        if(that.params['responseHTML']){
+            cm.clearNode(item['tab']['inner']);
+            nodes = cm.strToHTML(data);
+            if(!cm.isEmpty(nodes)){
+                if(cm.isNode(nodes)){
+                    item['tab']['inner'].appendChild(nodes);
+                }else{
+                    while(nodes.length){
+                        if(cm.isNode(nodes[0])){
+                            item['tab']['inner'].appendChild(nodes[0]);
+                        }else{
+                            cm.remove(nodes[0]);
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    /* ******* PUBLIC ******* */
+
+    that.set = function(id){
+        if(id && that.items[id]){
+            set(id);
         }
         return that;
     };
 
-    that.unset = function(triggerEvents){
-        triggerEvents = typeof triggerEvents != 'undefined'? triggerEvents : true;
-        unset(triggerEvents);
+    that.unset = function(){
+        unset();
         that.previous = null;
         return that;
     };
@@ -18413,29 +18603,48 @@ function(params){
         return that.current;
     };
 
-    that.addTab = function(tab, label, config){
-        cm.isNode(tab) && processTab(tab, config);
-        cm.isNode(label) && processLabel(label, config);
+    that.addTab = function(item){
+        renderTab(item);
         return that;
     };
 
-    that.addTabs = function(tabs, lables){
-        tabs = cm.isArray(tabs) ? tabs : [];
-        lables = cm.isArray(lables) ? lables : [];
-        cm.forEach(tabs, function(item){
-            processTab(item);
+    that.addTabs = function(items){
+        cm.forEach(items, function(item){
+            renderTab(item);
         });
-        cm.forEach(lables, function(item){
-            processLabel(item);
+        return that;
+    };
+
+    that.processTabs = function(tabs, labels){
+        var items = [],
+            label,
+            config,
+            item;
+        cm.forEach(tabs, function(tab, key){
+            label = labels[key];
+            config = cm.merge(that.getNodeDataConfig(tab['container']), that.getNodeDataConfig(label['container']));
+            item = cm.merge(config, {
+                'tab' : tab,
+                'label' : label
+            });
+            items.push(item);
         });
+        that.addTabs(items);
         return that;
     };
 
     that.getTab = function(id){
-        if(id && that.tabs[id]){
-            return that.tabs[id];
+        if(id && that.items[id]){
+            return that.items[id];
         }
         return null;
+    };
+
+    that.abort = function(){
+        if(that.ajaxHandler && that.ajaxHandler.abort){
+            that.ajaxHandler.abort();
+        }
+        return that;
     };
 
     init();
