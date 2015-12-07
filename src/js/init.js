@@ -2,11 +2,21 @@ cm.init = function(){
     var init = function(){
         checkBrowser();
         checkType();
+        checkPageSize();
         checkScrollSize();
         cm.addEvent(window, 'resize', checkType);
-        cm.addEvent(window, 'resize', checkScrollSize);
+        cm.addEvent(window, 'resize', resizeAction);
         cm.addEvent(window, 'mousemove', getClientPosition);
         //cm.addEvent(window, 'scroll', disableHover);
+    };
+
+    // Actions
+
+    var resizeAction = function(){
+        animFrame(function(){
+            checkScrollSize();
+            checkPageSize();
+        });
     };
 
     // Set browser class
@@ -65,6 +75,10 @@ cm.init = function(){
             }
         };
     })();
+
+    var checkPageSize = function(){
+        cm._pageSize = cm.getPageSize();
+    };
 
     // Disable hover on scroll
 

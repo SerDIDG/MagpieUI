@@ -1423,6 +1423,7 @@ var cm = {
         '_deviceOrientation' : 'landscape',
         '_baseUrl': [window.location.protocol, window.location.hostname].join('//'),
         '_scrollSize' : 0,
+        '_pageSize' : {},
         '_clientPosition' : {'x' : 0, 'y' : 0},
         '_config' : {
             'animDuration' : 300,
@@ -5275,11 +5276,21 @@ cm.init = function(){
     var init = function(){
         checkBrowser();
         checkType();
+        checkPageSize();
         checkScrollSize();
         cm.addEvent(window, 'resize', checkType);
-        cm.addEvent(window, 'resize', checkScrollSize);
+        cm.addEvent(window, 'resize', resizeAction);
         cm.addEvent(window, 'mousemove', getClientPosition);
         //cm.addEvent(window, 'scroll', disableHover);
+    };
+
+    // Actions
+
+    var resizeAction = function(){
+        animFrame(function(){
+            checkScrollSize();
+            checkPageSize();
+        });
     };
 
     // Set browser class
@@ -5338,6 +5349,10 @@ cm.init = function(){
             }
         };
     })();
+
+    var checkPageSize = function(){
+        cm._pageSize = cm.getPageSize();
+    };
 
     // Disable hover on scroll
 
@@ -11039,7 +11054,7 @@ function(params){
         var area = cm.merge({
                 'node' : node,
                 'styleObject' : cm.getStyleObject(node),
-                'type' : 'area',
+                'type' : false,                             // content, form
                 'isLocked' : false,
                 'isTemporary' : false,
                 'isSystem' : false,
@@ -11051,6 +11066,8 @@ function(params){
                 'dimensions' : {}
             }, params),
             childNodes;
+        // Get type
+        area['type'] = area['node'].getAttribute('data-block-type');
         // Add mark classes
         cm.addClass(area['node'], 'pt__dnd-area');
         cm.addClass(area['node'], that.params['classes']['area']);
@@ -11087,7 +11104,7 @@ function(params){
         var draggable = cm.merge({
             'node' : node,
             'styleObject' : cm.getStyleObject(node),
-            'type' : 'item',
+            'type' : false,                             // content, form
             'chassis' : {
                 'top' : null,
                 'bottom' : null
@@ -11099,6 +11116,8 @@ function(params){
         }, params);
         draggable['area'] = area;
         draggable['anim'] = new cm.Animation(draggable['node']);
+        // Get type
+        draggable['type'] = draggable['node'].getAttribute('data-block-type');
         // Set draggable event on element
         initDraggableDrag(draggable);
         // Return item to push in area array
@@ -11153,7 +11172,11 @@ function(params){
         // Filter areas
         filteredAvailableAreas = areas.filter(function(area){
             // Filter out locked areas and inner areas
-            if(cm.isParent(draggable['node'], area['node']) || area['isLocked']){
+            if(
+                (draggable['type'] != area['type'] && !area['isRemoveZone'])
+                || cm.isParent(draggable['node'], area['node'])
+                || area['isLocked']
+            ){
                 return false;
             }
             // True - pass area

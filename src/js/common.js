@@ -32,6 +32,7 @@ var cm = {
         '_deviceOrientation' : 'landscape',
         '_baseUrl': [window.location.protocol, window.location.hostname].join('//'),
         '_scrollSize' : 0,
+        '_pageSize' : {},
         '_clientPosition' : {'x' : 0, 'y' : 0},
         '_config' : {
             'animDuration' : 300,

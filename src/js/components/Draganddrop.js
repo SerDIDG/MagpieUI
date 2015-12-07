@@ -105,7 +105,7 @@ function(params){
         var area = cm.merge({
                 'node' : node,
                 'styleObject' : cm.getStyleObject(node),
-                'type' : 'area',
+                'type' : false,                             // content, form
                 'isLocked' : false,
                 'isTemporary' : false,
                 'isSystem' : false,
@@ -117,6 +117,8 @@ function(params){
                 'dimensions' : {}
             }, params),
             childNodes;
+        // Get type
+        area['type'] = area['node'].getAttribute('data-block-type');
         // Add mark classes
         cm.addClass(area['node'], 'pt__dnd-area');
         cm.addClass(area['node'], that.params['classes']['area']);
@@ -153,7 +155,7 @@ function(params){
         var draggable = cm.merge({
             'node' : node,
             'styleObject' : cm.getStyleObject(node),
-            'type' : 'item',
+            'type' : false,                             // content, form
             'chassis' : {
                 'top' : null,
                 'bottom' : null
@@ -165,6 +167,8 @@ function(params){
         }, params);
         draggable['area'] = area;
         draggable['anim'] = new cm.Animation(draggable['node']);
+        // Get type
+        draggable['type'] = draggable['node'].getAttribute('data-block-type');
         // Set draggable event on element
         initDraggableDrag(draggable);
         // Return item to push in area array
@@ -219,7 +223,11 @@ function(params){
         // Filter areas
         filteredAvailableAreas = areas.filter(function(area){
             // Filter out locked areas and inner areas
-            if(cm.isParent(draggable['node'], area['node']) || area['isLocked']){
+            if(
+                (draggable['type'] != area['type'] && !area['isRemoveZone'])
+                || cm.isParent(draggable['node'], area['node'])
+                || area['isLocked']
+            ){
                 return false;
             }
             // True - pass area
