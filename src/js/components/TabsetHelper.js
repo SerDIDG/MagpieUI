@@ -32,6 +32,7 @@ cm.define('Com.TabsetHelper', {
         'loaderDelay' : 300,                                        // in ms
         'responseKey' : 'data',                                     // Instead of using filter callback, you can provide response array key
         'responseHTML' : false,                                     // If true, html will append automatically
+        'cache' : false,
         'ajax' : {
             'type' : 'json',
             'method' : 'get',
@@ -112,8 +113,12 @@ function(params){
             },
             'isHidden' : false,
             'isAjax' : false,
+            'isCached' : false,
             'ajax' : {}
         }, item);
+        if(!cm.isEmpty(item['ajax']['url'])){
+            item.isAjax = true;
+        }
         if(!cm.isEmpty(item['id']) && !that.items[item['id']]){
             that.items[item['id']] = item;
             if(item.isHidden){
@@ -150,7 +155,7 @@ function(params){
             }
             cm.addClass(item['tab']['container'], 'active');
             cm.addClass(item['label']['container'], 'active');
-            if(that.isAjax && item.isAjax){
+            if(item.isAjax && (!that.params['cache'] || (that.params['cache'] && !item.isCached))){
                 that.ajaxHandler = that.callbacks.request(that, item, cm.merge(that.params['ajax'], item['ajax']));
             }else{
                 that.triggerEvent('onTabShow', {
@@ -299,6 +304,7 @@ function(params){
     that.callbacks.render = function(that, item, data){
         that.isRendering = true;
         item['data'] = data;
+        item.isCached = true;
         // Render
         that.triggerEvent('onContentRenderStart', {
             'item' : item,

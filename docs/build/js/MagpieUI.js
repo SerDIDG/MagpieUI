@@ -12537,6 +12537,7 @@ cm.clone = function(o, cloneNode){
         case Boolean:
         case XMLHttpRequest:
         case File:
+        case FormData:
             newO = o;
             break;
         case Array:
@@ -15077,9 +15078,9 @@ cm.ajax = function(o){
     };
 
     var validate = function(){
-        config['type'] = config['type'].toLocaleLowerCase();
+        config['type'] = config['type'].toLowerCase();
         responseType =  /text|json/.test(config['type']) ? 'responseText' : 'responseXML';
-        config['method'] = config['method'].toLocaleLowerCase();
+        config['method'] = config['method'].toLowerCase();
         // Convert params object to URI string
         if(config['formData']){
             config['params'] = cm.obj2FormData(config['params']);
@@ -15236,6 +15237,21 @@ cm.obj2FormData = function(o){
         fd.append(key, value);
     });
     return fd;
+};
+
+cm.formData2Obj = function(fd){
+    var o = {},
+        data;
+    if(fd.entries && (data = fd.entries())){
+        cm.forEach(data, function(item){
+            o[item[0]] = item[1];
+        });
+    }
+    return o;
+};
+
+cm.formData2URI = function(fd){
+    return cm.obj2URI(cm.formData2Obj(fd));
 };
 
 cm.xml2arr = function(o){
@@ -16322,8 +16338,8 @@ cm.define('Com.Form', {
             'type' : 'json',
             'method' : 'post',
             'formData' : true,
-            'url' : '',
-            'params' : ''
+            'url' : '',                                             // Request URL. Variables: %baseurl%, %callback% for JSONP.
+            'params' : ''                                           // Params object. %baseurl%, %callback% for JSONP.
         }
     }
 },
@@ -16384,7 +16400,15 @@ function(params){
     /* ******* CALLBACKS ******* */
 
     that.callbacks.prepare = function(that, config){
-        config['params'] = that.getAll();
+        // Prepare
+        config['url'] = cm.strReplace(config['url'], {
+            '%baseurl%' : cm._baseUrl
+        });
+        config['params'] = cm.objectReplace(config['params'], {
+            '%baseurl%' : cm._baseUrl
+        });
+        // Get Params
+        config['params'] = cm.merge(config['params'], that.getAll());
         return config;
     };
 
@@ -16846,6 +16870,113 @@ Com.FormFields.add('buttons', {
             return buttons;
         }
     }
+});
+cm.define('Com.Ajax', {
+    'modules' : [
+        'Params',
+        'Events',
+        'Callbacks'
+    ],
+    'events' : [
+        'onRender'
+    ],
+    'params' : {
+        'url' : '',
+        'data' : {},
+        'form' : false,                                         // Provide form node to send it as iframe
+        'method' : 'post',                                      // delete | get | head | post | put
+        'requestType' : 'default',                              // default | form-data | jsonp | iframe
+        'responseType' : 'json',                                // text | xml | json
+        'send' : true,
+        'async' : true,
+        'withCredentials' : false,
+        'headers' : {
+            'Content-Type' : 'application/x-www-form-urlencoded',
+            'X-Requested-With' : 'XMLHttpRequest'
+        },
+        'xhr' : cm.createXmlHttpRequestObject()
+    }
+},
+function(params){
+    var that = this;
+
+    var init = function(){
+        that.setParams(params);
+        that.convertEvents(that.params['events']);
+        that.callbacksProcess();
+        validateParams();
+        render();
+        that.triggerEvent('onRender');
+        that.params['send'] && that.send();
+    };
+
+    var validateParams = function(){
+        that.params['responseType'] = that.params['responseType'].toLowerCase();
+        that.params['requestType'] = that.params['requestType'].toLowerCase();
+        that.params['method'] = that.params['method'].toLowerCase();
+        // Convert data
+        if(/delete|get|head/.test(that.params['method'])){
+            that.params['data'] = convertData(that.params['data'], 'uri');
+        }else{
+            if(that.params['requestType'] == 'form-data'){
+                that.params['data'] = convertData(that.params['data'], 'form-data');
+            }else if(that.params['requestType'] == 'iframe'){
+                that.params['data'] = convertData(that.params['data'], 'obj');
+            }else{
+                that.params['data'] = convertData(that.params['data'], 'uri');
+            }
+        }
+        // Build request link
+        if(/delete|get|head/.test(that.params['method'])){
+            if(!cm.isEmpty(that.params['data'])){
+                that.params['url'] = [that.params['url'], that.params['data']].join('?');
+            }
+        }
+    };
+
+    var convertData = function(data, type){
+        switch(type){
+            case 'form-data':
+                if(data.constructor == FormData){
+                    return data
+                }else{
+                    return cm.obj2FormData(data);
+                }
+                break;
+            case 'uri':
+                if(data.constructor == FormData){
+                    return cm.formData2URI(data);
+                }else{
+                    return cm.obj2URI(data);
+                }
+                break;
+            case 'object':
+                if(data.constructor == FormData){
+                    return cm.formData2Obj(data);
+                }else{
+                    return data;
+                }
+                break;
+            default:
+                return data;
+                break;
+        }
+    };
+
+    var render = function(){
+    };
+
+    /* ******* PUBLIC ******* */
+
+    that.send = function(){
+        return that;
+    };
+
+    that.abort = function(){
+        return that;
+    };
+
+    init();
 });
 cm.define('Com.Autocomplete', {
     'modules' : [
@@ -29224,6 +29355,7 @@ cm.define('Com.TabsetHelper', {
         'loaderDelay' : 300,                                        // in ms
         'responseKey' : 'data',                                     // Instead of using filter callback, you can provide response array key
         'responseHTML' : false,                                     // If true, html will append automatically
+        'cache' : false,
         'ajax' : {
             'type' : 'json',
             'method' : 'get',
@@ -29304,8 +29436,12 @@ function(params){
             },
             'isHidden' : false,
             'isAjax' : false,
+            'isCached' : false,
             'ajax' : {}
         }, item);
+        if(!cm.isEmpty(item['ajax']['url'])){
+            item.isAjax = true;
+        }
         if(!cm.isEmpty(item['id']) && !that.items[item['id']]){
             that.items[item['id']] = item;
             if(item.isHidden){
@@ -29342,7 +29478,7 @@ function(params){
             }
             cm.addClass(item['tab']['container'], 'active');
             cm.addClass(item['label']['container'], 'active');
-            if(that.isAjax && item.isAjax){
+            if(item.isAjax && (!that.params['cache'] || (that.params['cache'] && !item.isCached))){
                 that.ajaxHandler = that.callbacks.request(that, item, cm.merge(that.params['ajax'], item['ajax']));
             }else{
                 that.triggerEvent('onTabShow', {
@@ -29491,6 +29627,7 @@ function(params){
     that.callbacks.render = function(that, item, data){
         that.isRendering = true;
         item['data'] = data;
+        item.isCached = true;
         // Render
         that.triggerEvent('onContentRenderStart', {
             'item' : item,

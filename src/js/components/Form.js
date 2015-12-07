@@ -26,8 +26,8 @@ cm.define('Com.Form', {
             'type' : 'json',
             'method' : 'post',
             'formData' : true,
-            'url' : '',
-            'params' : ''
+            'url' : '',                                             // Request URL. Variables: %baseurl%, %callback% for JSONP.
+            'params' : ''                                           // Params object. %baseurl%, %callback% for JSONP.
         }
     }
 },
@@ -88,7 +88,15 @@ function(params){
     /* ******* CALLBACKS ******* */
 
     that.callbacks.prepare = function(that, config){
-        config['params'] = that.getAll();
+        // Prepare
+        config['url'] = cm.strReplace(config['url'], {
+            '%baseurl%' : cm._baseUrl
+        });
+        config['params'] = cm.objectReplace(config['params'], {
+            '%baseurl%' : cm._baseUrl
+        });
+        // Get Params
+        config['params'] = cm.merge(config['params'], that.getAll());
         return config;
     };
 

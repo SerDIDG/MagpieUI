@@ -202,6 +202,7 @@ cm.clone = function(o, cloneNode){
         case Boolean:
         case XMLHttpRequest:
         case File:
+        case FormData:
             newO = o;
             break;
         case Array:
@@ -2742,9 +2743,9 @@ cm.ajax = function(o){
     };
 
     var validate = function(){
-        config['type'] = config['type'].toLocaleLowerCase();
+        config['type'] = config['type'].toLowerCase();
         responseType =  /text|json/.test(config['type']) ? 'responseText' : 'responseXML';
-        config['method'] = config['method'].toLocaleLowerCase();
+        config['method'] = config['method'].toLowerCase();
         // Convert params object to URI string
         if(config['formData']){
             config['params'] = cm.obj2FormData(config['params']);
@@ -2901,6 +2902,21 @@ cm.obj2FormData = function(o){
         fd.append(key, value);
     });
     return fd;
+};
+
+cm.formData2Obj = function(fd){
+    var o = {},
+        data;
+    if(fd.entries && (data = fd.entries())){
+        cm.forEach(data, function(item){
+            o[item[0]] = item[1];
+        });
+    }
+    return o;
+};
+
+cm.formData2URI = function(fd){
+    return cm.obj2URI(cm.formData2Obj(fd));
 };
 
 cm.xml2arr = function(o){

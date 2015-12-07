@@ -244,7 +244,8 @@ module.exports = function(grunt) {
                     'docs/src/js/**/*.js',
                     'docs/src/css/**/*.css',
                     'docs/src/less/**/*.less',
-                    'docs/src/content/**/*.*'
+                    'docs/src/content/**/*.*',
+                    'docs/src/stuff/**/*.*'
                 ],
                 tasks: ['docs'],
                 options: {
