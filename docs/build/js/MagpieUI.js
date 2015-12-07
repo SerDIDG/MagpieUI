@@ -31320,3 +31320,4 @@ window.Collector = new Com.Collector({
 cm.onReady(function(){
     window.Collector.construct();
 });
+cm._baseUrl = [cm._baseUrl, 'docs/build'].join('/');

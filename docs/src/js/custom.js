@@ -1,0 +1,1 @@
+cm._baseUrl = [cm._baseUrl, 'docs/build'].join('/');

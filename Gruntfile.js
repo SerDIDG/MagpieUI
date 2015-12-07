@@ -133,7 +133,8 @@ module.exports = function(grunt) {
                         '!src/js/components/dev/**/*.js',
                         '!src/js/components/old/**/*.js',
                         'docs/src/js/components/**/*.js',
-                        'docs/src/js/components.js'
+                        'docs/src/js/components.js',
+                        'docs/src/js/custom.js'
                     ],
                     dest: 'docs/build/js/<%= pkg.name %>.js'
                 },{
