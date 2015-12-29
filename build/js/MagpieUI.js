@@ -8048,7 +8048,7 @@ function(params){
 
             current['left']['column']['container'].style.width = current['left']['column']['width'];
             current['right']['column']['container'].style.width = current['right']['column']['width'];
-            current['chassis']['container'].style.left = [((x - current['offset']) / current['ratio']).toFixed(toFixed), '%'].join('');
+            current['chassis']['container'].style.left = [((position['left'] - current['offset']) / current['ratio']).toFixed(toFixed), '%'].join('');
 
             current['left']['column']['rulerCounter'].innerHTML = current['left']['column']['width'];
             current['right']['column']['rulerCounter'].innerHTML = current['right']['column']['width'];
