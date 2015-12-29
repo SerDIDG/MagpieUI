@@ -2,18 +2,24 @@ cm.init = function(){
     var init = function(){
         checkBrowser();
         checkType();
-        checkPageSize();
         checkScrollSize();
-        cm.addEvent(window, 'resize', checkType);
-        cm.addEvent(window, 'resize', resizeAction);
+        checkPageSize();
+        // Events
         cm.addEvent(window, 'mousemove', getClientPosition);
+        cm.addEvent(window, 'resize', resizeAction);
+        setInterval(checkAction, 500);
         //cm.addEvent(window, 'scroll', disableHover);
     };
 
     // Actions
 
+    var checkAction = function(){
+        checkScrollSize();
+    };
+
     var resizeAction = function(){
         animFrame(function(){
+            checkType();
             checkScrollSize();
             checkPageSize();
         });
@@ -61,12 +67,12 @@ cm.init = function(){
     // Get device scroll bar size
 
     var checkScrollSize = (function(){
-        var oldSize = 0;
+        var size = cm._scrollSize;
 
         return function(){
-            oldSize = cm._scrollSize;
             cm._scrollSize = cm.getScrollBarSize();
-            if(oldSize != cm._scrollSize){
+            if(size != cm._scrollSize){
+                size = cm._scrollSize;
                 cm.customEvent.trigger(window, 'scrollSizeChange', {
                     'type' : 'all',
                     'self' : true,

@@ -210,10 +210,7 @@ function(params){
         cm.hideSpecialTags();
         cm.addClass(document.body, 'com__dashboard__body');
         // Get pointer position
-        var params = {
-            'left' : cm._clientPosition['x'],
-            'top' : cm._clientPosition['y']
-        };
+        var params = cm.getEventClientPosition(e);
         // Filter areas
         that.currentAreas = getDroppableAreas(widget);
         // Drag start event
@@ -238,10 +235,7 @@ function(params){
     var move  = function(e){
         cm.preventDefault(e);
         // Get pointer position
-        var params = {
-            'left' : cm._clientPosition['x'],
-            'top' : cm._clientPosition['y']
-        };
+        var params = cm.getEventClientPosition(e);
         // Move widget
         moveWidget(that.currentWidget, params, true);
         // Find placeholder above widget
@@ -274,7 +268,7 @@ function(params){
         cm.removeScrollEvent(window, scroll);
     };
 
-    var scroll = function(){
+    var scroll = function(e){
         // Get pointer position
         var params = {
             'left' : cm._clientPosition['x'],

@@ -1415,7 +1415,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.9.2',
+        '_version' : '3.10.0',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -1439,7 +1439,8 @@ var cm = {
             'displayDateFormat' : '%F %j, %Y',
             'displayDateTimeFormat' : '%F %j, %Y, %H:%i',
             'tooltipTop' : 'targetHeight + 4'
-        }
+        },
+        'MAX_SAFE_INTEGER' : 9007199254740991
     },
     Mod = {},
     Part = {},
@@ -1453,61 +1454,143 @@ cm.isFileReader = (function(){return 'FileReader' in window;})();
 cm.isHistoryAPI = !!(window.history && history.pushState);
 cm.isLocalStorage = (function(){try{return 'localStorage' in window && window['localStorage'] !== null;}catch(e){return false;}})();
 cm.isCanvas = !!document.createElement("canvas").getContext;
-cm.isTouch = 'ontouchstart' in document.documentElement || !!window.navigator.msMaxTouchPoints;
+cm.isTouch = 'ontouchstart' in document.documentElement || !!window.maxTouchPoints || !!navigator.maxTouchPoints;
 
 /* ******* OBJECTS AND ARRAYS ******* */
 
-cm.top = function(name){
-    return window.top.cm[name];
+cm.top = window.top.cm || cm;
+
+cm.objToString = Object.prototype.toString;
+
+cm.property = function(key) {
+    return function(o) {
+        return o == null ? void 0 : o[key];
+    };
 };
 
-cm.isArray = Array.isArray || function(a){
-    return a ? a.constructor == Array : false;
+cm.length = cm.property('length');
+
+cm.isType = function(o, types){
+    if(cm.isString(types)){
+        return Object.prototype.toString.call(o) === '[object ' + types +']'
+    }
+    if(cm.isRegExp(types)){
+        return types.test(Object.prototype.toString.call(o));
+    }
+    if(cm.isObject(types)){
+        var match = false;
+        cm.forEach(types, function(type){
+            if(!match){
+                match = Object.prototype.toString.call(o) === '[object ' + type +']'
+            }
+        });
+        return match;
+    }
+    return false;
+};
+
+cm.isString = function(o){
+    return Object.prototype.toString.call(o) === '[object String]';
+};
+
+cm.isNumber = function(o){
+    return Object.prototype.toString.call(o) === '[object Number]';
+};
+
+cm.isArray = Array.isArray || function(o){
+    return Object.prototype.toString.call(o) === '[object Array]';
+};
+
+cm.isArrayLike = function(o) {
+    return o != null && cm.isLength(cm.length(o));
 };
 
 cm.isObject = function(o){
-    return o ? o.constructor == Object : false;
+    return Object.prototype.toString.call(o) === '[object Object]';
+};
+
+cm.isArguments = function(o){
+    return Object.prototype.toString.call(o) === '[object Arguments]';
 };
 
 cm.isFunction = function(o){
-    return o ? typeof o == 'function' : false;
+    return Object.prototype.toString.call(o) === '[object Function]';
+};
+
+cm.isRegExp = function(o){
+    return Object.prototype.toString.call(o) === '[object RegExp]';
+};
+
+cm.isDate = function(o){
+    return Object.prototype.toString.call(o) === '[object Date]';
+};
+
+cm.isWindow = function(o) {
+    return Object.prototype.toString.call(o) === '[object Window]' || Object.prototype.toString.call(o) === '[object global]';
+};
+
+cm.isLength = function(o) {
+    return typeof o == 'number' && o > -1 && o % 1 == 0 && o <= cm.MAX_SAFE_INTEGER;
+};
+
+cm.isNode = function(node){
+    return !!(node && node.nodeType);
+};
+
+cm.isTextNode = function(node){
+    return !!(node && node.nodeType && node.nodeType == 3);
+};
+
+cm.isElementNode = function(node){
+    return !!(node && node.nodeType && node.nodeType == 1);
+};
+
+cm.isPlainObject = function(obj) {
+    if (typeof obj == 'object' && obj !== null) {
+        if (typeof Object.getPrototypeOf == 'function') {
+            var proto = Object.getPrototypeOf(obj);
+            return proto === Object.prototype || proto === null;
+        }
+        return Object.prototype.toString.call(obj) == '[object Object]';
+    }
+    return false;
 };
 
 cm.forEach = function(o, callback){
-    if(!o){
-        return null;
-    }
-    if(!callback){
+    if(!o || !(callback && typeof callback == 'function')){
         return o;
     }
     var i, l;
-    switch(o.constructor){
-        case Object:
-            for(var key in o){
-                if(o.hasOwnProperty(key)){
-                    callback(o[key], key, o);
-                }
+    // Objects
+    if(cm.isObject(o)){
+        for(var key in o){
+            if(o.hasOwnProperty(key)){
+                callback(o[key], key, o);
             }
-            break;
-        case Array:
-            o.forEach(callback);
-            break;
-        case Number:
-            for(i = 0; i < o; i++){
-                callback(i);
+        }
+        return o;
+    }
+    // Arrays
+    if(cm.isArray(o)){
+        o.forEach(callback);
+        return o;
+    }
+    // Numbers
+    if(cm.isNumber(o)){
+        for(i = 0; i < o; i++){
+            callback(i);
+        }
+        return o;
+    }
+    // Default
+    try{
+        Array.prototype.forEach.call(o, callback);
+    }catch(e){
+        try{
+            for(i = 0, l = o.length; i < l; i++){
+                callback(o[i], i, o);
             }
-            break;
-        default:
-            try{
-                Array.prototype.forEach.call(o, callback);
-            }catch(e){
-                try{
-                    for(i = 0, l = o.length; i < l; i++){
-                        callback(o[i], i, o);
-                    }
-                }catch(e){}
-            }
-            break;
+        }catch(e){}
     }
     return o;
 };
@@ -1537,11 +1620,11 @@ cm.merge = function(o1, o2){
         return cm.clone(o2);
     }
     cm.forEach(o2, function(item, key){
-        if(item != null){
+        if(item !== null){
             try{
                 if(item._isComponent){
                     o1[key] = item;
-                }else if(Object.prototype.toString.call(item) == '[object Object]' && item.constructor != Object){
+                }else if(cm.isObject(item) && item.constructor != Object){
                     o1[key] = item;
                 }else if(cm.isObject(item)){
                     o1[key] = cm.merge(o1[key], item);
@@ -1564,21 +1647,21 @@ cm.extend = function(o1, o2){
         return o1;
     }
     var o;
-    switch(o1.constructor){
-        case Array:
-            o = o1.concat(o2);
-            break;
-        case Object:
-            o = {};
-            cm.forEach(o1, function(item, key){
-                o[key] = item;
-            });
-            cm.forEach(o2, function(item, key){
-                o[key] = item;
-            });
-            break;
+    if(cm.isArray(o1)){
+        o = o1.concat(o2);
+        return o;
     }
-    return o;
+    if(cm.isObject(o1)){
+        o = {};
+        cm.forEach(o1, function(item, key){
+            o[key] = item;
+        });
+        cm.forEach(o2, function(item, key){
+            o[key] = item;
+        });
+        return o;
+    }
+    return null;
 };
 
 cm.clone = function(o, cloneNode){
@@ -1586,58 +1669,39 @@ cm.clone = function(o, cloneNode){
     if(!o){
         return o;
     }
-    switch(o.constructor){
-        case Function:
-        case String:
-        case Number:
-        case RegExp:
-        case Boolean:
-        case XMLHttpRequest:
-        case File:
-        case FormData:
-            newO = o;
-            break;
-        case Array:
-            newO = [];
-            cm.forEach(o, function(item){
-                newO.push(cm.clone(item, cloneNode));
-            });
-            break;
-        case Object:
-            if(o._isComponent){
-                newO = o;
-            }else{
-                newO = {};
-                cm.forEach(o, function(item, key){
-                    newO[key] = cm.clone(item, cloneNode);
-                });
-            }
-            break;
-        default:
-            // Exceptions
-            if(cm.isNode(o)){
-                if(cloneNode){
-                    newO = o.cloneNode(true);
-                }else{
-                    newO = o;
-                }
-            }else if(XMLHttpRequest && o instanceof XMLHttpRequest){
-                newO = o;
-            }else if(Object.prototype.toString.call(o) == '[object Object]' && o.constructor != Object){
-                newO = o;
-            }else if(o == window){
-                newO = o;
-            }else if(o instanceof CSSStyleDeclaration){
-                newO = o;
-            }else{
-                newO = [];
-                cm.forEach(o, function(item){
-                    newO.push(cm.clone(item, cloneNode));
-                });
-            }
-            break;
+    // Arrays
+    if(cm.isType(o, /Array|Arguments|StyleSheetList|CSSRuleList|HTMLCollection|NodeList|DOMTokenList|FileList/)){
+        newO = [];
+        cm.forEach(o, function(item){
+            newO.push(cm.clone(item, cloneNode));
+        });
+        return newO;
     }
-    return newO;
+    // Objects
+    if(cm.isObject(o) && !o._isComponent){
+        newO = {};
+        cm.forEach(o, function(item, key){
+            newO[key] = cm.clone(item, cloneNode);
+        });
+        return newO;
+    }
+    // Dates
+    if(cm.isDate(o)){
+        newO = new Date();
+        newO.setTime(o.getTime());
+        return newO;
+    }
+    // Nodes
+    if(cm.isNode(o)){
+        if(cloneNode){
+            newO = o.cloneNode(true);
+        }else{
+            newO = o;
+        }
+        return newO;
+    }
+    // Other (make links)
+    return o;
 };
 
 cm.getLength = function(o){
@@ -1648,18 +1712,17 @@ cm.getLength = function(o){
     return i;
 };
 
-cm.inArray = function(a, str){
+cm.inArray = function(a, item){
     if(typeof a == 'string'){
-        return a === str;
+        return a === item;
     }else{
-        var inArray = false;
-        a.forEach(function(item){
-            if(item === str){
-                inArray = true;
-            }
-        });
-        return inArray;
+        return a.indexOf(item) > -1;
     }
+};
+
+cm.arrayRemove = function(a, item){
+    a.splice(a.indexOf(item), 1);
+    return a;
 };
 
 cm.objectToArray = function(o){
@@ -1700,9 +1763,9 @@ cm.objectReplace = function(o, vars){
 cm.isEmpty = function(el){
     if(!el){
         return true;
-    }else if(typeof el == 'string' || el.constructor == Array){
+    }else if(typeof el == 'string' || cm.isArray(el)){
         return el.length == 0;
-    }else if(el.constructor == Object){
+    }else if(cm.isObject(el)){
         return cm.getLength(el) === 0;
     }else if(typeof el == 'number'){
         return el == 0;
@@ -1819,16 +1882,16 @@ cm.getObjToEvent = cm.getRelatedTarget = function(e){
 
 cm.getEventClientPosition = function(e){
     var o = {
-        'x' : 0,
-        'y' : 0
+        'left' : 0,
+        'top' : 0
     };
     if(e){
         try{
-            o['x'] = e.clientX;
-            o['y'] = e.clientY;
-            if(cm.isTouch && e.touches){
-                o['x'] = e.touches[0].clientX;
-                o['y'] = e.touches[0].clientY;
+            o['left'] = e.clientX;
+            o['top'] = e.clientY;
+            if(e.touches){
+                o['left'] = e.touches[0].clientX;
+                o['top'] = e.touches[0].clientY;
             }
         }catch(e){}
     }
@@ -2038,7 +2101,7 @@ cm.customEvent = (function(){
                             break;
                         case 'all':
                         default:
-                            if(!params['self'] && node !== item['node']){
+                            if(node !== item['node']){
                                 item['handler'](params);
                             }
                             break;
@@ -2098,10 +2161,10 @@ cm.onReady = function(handler, isMessage){
 cm.addScrollEvent = function(node, callback, useCapture){
     useCapture = typeof useCapture == 'undefined' ? false : useCapture;
     if(cm.isWindow(node)){
-        cm.addEvent(window, 'scroll', callback, useCapture);
+        cm.addEvent(node, 'scroll', callback, useCapture);
     }else if(cm.isNode(node)){
         if(/body|html/gi.test(node.tagName)){
-            cm.addEvent(window, 'scroll', callback, useCapture);
+            cm.addEvent(cm.getOwnerWindow(node), 'scroll', callback, useCapture);
         }else{
             cm.addEvent(node, 'scroll', callback, useCapture);
         }
@@ -2112,10 +2175,10 @@ cm.addScrollEvent = function(node, callback, useCapture){
 cm.removeScrollEvent = function(node, callback, useCapture){
     useCapture = typeof useCapture == 'undefined' ? false : useCapture;
     if(cm.isWindow(node)){
-        cm.removeEvent(window, 'scroll', callback, useCapture);
+        cm.removeEvent(node, 'scroll', callback, useCapture);
     }if(cm.isNode(node)){
         if(/body|html/gi.test(node.tagName)){
-            cm.removeEvent(window, 'scroll', callback, useCapture);
+            cm.removeEvent(cm.getOwnerWindow(node), 'scroll', callback, useCapture);
         }else{
             cm.removeEvent(node, 'scroll', callback, useCapture);
         }
@@ -2211,24 +2274,8 @@ cm.onImageLoad = function(src, handler, delay){
 
 /* ******* NODES ******* */
 
-cm.isNode = function(node){
-    return !!(node && node.nodeType);
-};
-
-cm.isTextNode = function(node){
-    return !!(node && node.nodeType && node.nodeType == 3);
-};
-
-cm.isElementNode = function(node){
-    return !!(node && node.nodeType && node.nodeType == 1);
-};
-
-cm.isWindow = function(o) {
-    if(typeof(window.constructor) === 'undefined') {
-        return o instanceof window.constructor;
-    }else{
-        return window === o;
-    }
+cm.getOwnerWindow = function(node){
+    return node.ownerDocument.defaultView;
 };
 
 cm.getEl = function(str){
@@ -2832,12 +2879,10 @@ cm.getValue = function(name, node){
 
 /* ******* STRINGS ******* */
 
-cm.isRegExp = function(obj){
-    return obj.constructor == RegExp;
-};
 cm.toFixed = function(n, x){
     return parseFloat(n).toFixed(x);
 };
+
 cm.toNumber = function(str){
     return parseInt(str.replace(/\s+/, ''));
 };
@@ -3076,7 +3121,7 @@ cm.parseDate = function(str, format){
 /* ******* STYLES ******* */
 
 cm.addClass = function(node, str, useHack){
-    if(!node || cm.isEmpty(str)){
+    if(!cm.isNode(node) || cm.isEmpty(str)){
         return null;
     }
     if(useHack){
@@ -3098,7 +3143,7 @@ cm.addClass = function(node, str, useHack){
 };
 
 cm.removeClass = function(node, str, useHack){
-    if(!node || cm.isEmpty(str)){
+    if(!cm.isNode(node) || cm.isEmpty(str)){
         return null;
     }
     if(useHack){
@@ -3125,7 +3170,7 @@ cm.removeClass = function(node, str, useHack){
 };
 
 cm.replaceClass = function(node, oldClass, newClass, useHack){
-    if(!node){
+    if(!cm.isNode(node)){
         return null;
     }
     return cm.addClass(cm.removeClass(node, oldClass, useHack), newClass, useHack);
@@ -3133,7 +3178,7 @@ cm.replaceClass = function(node, oldClass, newClass, useHack){
 
 cm.hasClass = cm.isClass = function(node, cssClass){
     var hasClass, classes;
-    if(!node){
+    if(!cm.isNode(node)){
         return false;
     }
     if(node.classList){
@@ -3153,16 +3198,17 @@ cm.hasClass = cm.isClass = function(node, cssClass){
 cm.getPageSize = function(key){
     var d = document,
         de = d.documentElement,
+        b = d.body,
         o = {
             'height' : Math.max(
-                Math.max(d.body.scrollHeight, de.scrollHeight),
-                Math.max(d.body.offsetHeight, de.offsetHeight),
-                Math.max(d.body.clientHeight, de.clientHeight)
+                Math.max(b.scrollHeight, de.scrollHeight),
+                Math.max(b.offsetHeight, de.offsetHeight),
+                Math.max(b.clientHeight, de.clientHeight)
             ),
             'width' : Math.max(
-                Math.max(d.body.scrollWidth, de.scrollWidth),
-                Math.max(d.body.offsetWidth, de.offsetWidth),
-                Math.max(d.body.clientWidth, de.clientWidth)
+                Math.max(b.scrollWidth, de.scrollWidth),
+                Math.max(b.offsetWidth, de.offsetWidth),
+                Math.max(b.clientWidth, de.clientWidth)
             ),
             'winHeight' : de.clientHeight,
             'winWidth' : de.clientWidth
@@ -3170,20 +3216,13 @@ cm.getPageSize = function(key){
     return o[key] || o;
 };
 
-cm.getScrollBarSize = function(){
-    var node = cm.Node('div'),
-        styles = node.style,
-        size = 0;
-    styles.width = '100px';
-    styles.height = '100px';
-    styles.overflow = 'scroll';
-    styles.position = 'position';
-    styles.top = '-9000px';
-    cm.insertFirst(node, document.body);
-    size = Math.max(node.offsetWidth - node.clientWidth, 0);
-    cm.remove(node);
-    return size;
-};
+cm.getScrollBarSize = (function(){
+    var node;
+    return function(){
+        !node && (node = cm.insertFirst(cm.Node('div', {'class' : 'cm__scroll-bar-size-checker'}), document.body));
+        return Math.max(node.offsetWidth - node.clientWidth, 0);
+    };
+})();
 
 cm.setOpacity = function(node, value){
     if(node){
@@ -3243,11 +3282,9 @@ cm.getRealY = function(node){
 };
 
 cm.getRect = function(node){
-    var docEl = document.documentElement,
-        o,
-        rect;
+    var docEl, o, rect;
     if(cm.isWindow(node)){
-        docEl = document.documentElement;
+        docEl = node.document.documentElement;
         return {
             'top' : 0,
             'right' : docEl.clientWidth,
@@ -3280,7 +3317,7 @@ cm.getRect = function(node){
 };
 
 cm.getFullRect = function(node, styleObject){
-    if(!node || !cm.isNode(node)){
+    if(!cm.isNode(node)){
         return null;
     }
     var dimensions = {};
@@ -3322,7 +3359,7 @@ cm.getFullRect = function(node, styleObject){
 };
 
 cm.getNodeIndents = function(node, styleObject){
-    if(!node || !cm.isNode(node)){
+    if(!cm.isNode(node)){
         return null;
     }
     styleObject = typeof styleObject == 'undefined' ? cm.getStyleObject(node) : styleObject;
@@ -3335,22 +3372,28 @@ cm.getNodeIndents = function(node, styleObject){
         'left' :    cm.getCSSStyle(styleObject, 'marginLeft', true)
     };
     o['padding'] = {
-        'top' :     cm.getCSSStyle(styleObject, 'marginTop', true),
-        'right' :   cm.getCSSStyle(styleObject, 'marginRight', true),
-        'bottom' :  cm.getCSSStyle(styleObject, 'marginBottom', true),
-        'left' :    cm.getCSSStyle(styleObject, 'marginLeft', true)
+        'top' :     cm.getCSSStyle(styleObject, 'paddingTop', true),
+        'right' :   cm.getCSSStyle(styleObject, 'paddingRight', true),
+        'bottom' :  cm.getCSSStyle(styleObject, 'paddingBottom', true),
+        'left' :    cm.getCSSStyle(styleObject, 'paddingLeft', true)
     };
     return o;
 };
 
-cm.getNodeOffset = function(node, styleObject, o){
-    if(!node || !cm.isNode(node)){
+cm.getNodeOffset = function(node, styleObject, o, offsets){
+    if(!cm.isNode(node)){
         return null;
     }
     styleObject = typeof styleObject == 'undefined' ? cm.getStyleObject(node) : styleObject;
     o = !o || typeof o == 'undefined' ? cm.getNodeIndents(node, styleObject) : o;
     // Get size and position
     o['offset'] = cm.getRect(node);
+    if(offsets){
+        o['offset']['top'] += offsets['top'];
+        o['offset']['right'] += offsets['left'];
+        o['offset']['bottom'] += offsets['top'];
+        o['offset']['left'] += offsets['left'];
+    }
     o['inner'] = {
         'width' : o['offset']['width'] - o['padding']['left'] - o['padding']['right'],
         'height' : o['offset']['height'] - o['padding']['top'] - o['padding']['bottom'],
@@ -3861,16 +3904,16 @@ cm.Animation = function(o){
     };
 
     that.go = function(){
-        var args = cm.merge({
+        var params = arguments[0],
+            args = cm.merge({
                 'style' : '',
                 'duration' : '',
                 'anim' : 'simple',
                 'onStop' : function(){}
-            }, arguments[0]),
+            }, params),
             pId = 'animation_process_' + Math.random(),
             delta = animationMethod[args.anim] || animationMethod['simple'],
             properties = [];
-
         for(var name in args.style){
             var value = args.style[name].toString();
             var dimension = cm.getStyleDimension(value);
@@ -4100,7 +4143,6 @@ cm.ajax = function(o){
             'params' : '',
             'url' : '',
             'formData'  : false,
-            'httpRequestObject' : cm.createXmlHttpRequestObject(),
             'headers' : {
                 'Content-Type' : 'application/x-www-form-urlencoded',
                 'X-Requested-With' : 'XMLHttpRequest'
@@ -4135,6 +4177,7 @@ cm.ajax = function(o){
     };
 
     var validate = function(){
+        config['httpRequestObject'] = cm.createXmlHttpRequestObject();
         config['type'] = config['type'].toLowerCase();
         responseType =  /text|json/.test(config['type']) ? 'responseText' : 'responseXML';
         config['method'] = config['method'].toLowerCase();
@@ -4439,7 +4482,6 @@ cm.defineHelper = function(name, data, handler){
     }, data);
     // Create class extend object
     that.build = {
-        '_isComponent' : true,
         '_raw' : data,
         '_name' : {
             'full' : name,
@@ -4481,7 +4523,7 @@ cm.getConstructor = function(className, callback){
     callback = typeof callback != 'undefined' ? callback : function(){}
     if(!className || className == '*'){
         cm.forEach(cm.defineStack, function(classConstructor){
-            callback(classConstructor);
+            callback(classConstructor, className);
         });
         return cm.defineStack;
     }else{
@@ -4496,7 +4538,7 @@ cm.getConstructor = function(className, callback){
             }
             return false;
         }else{
-            callback(classConstructor);
+            callback(classConstructor, className);
             return classConstructor;
         }
     }
@@ -4573,6 +4615,135 @@ cm.Finder = function(className, name, parentNode, callback, params){
 
     init();
 };
+/* ******* EXTEND ******* */
+
+Mod['Extend'] = {
+    '_config' : {
+        'extend' : true,
+        'predefine' : true
+    },
+    '_construct' : function(){
+        var that = this;
+    },
+    '_extend' : function(name, o){
+        var that = this;
+        if(!that.build._modules[name]){
+            // Merge Config
+            o._config = cm.merge({
+                'extend' : false,
+                'predefine' : false,
+                'require' : []
+            }, o._config);
+            // Check Requires
+            cm.forEach(o._config['require'], function(module){
+                if(Mod[module]){
+                    Mod['Extend']._extend.call(that, module, Mod[module]);
+                }
+            });
+            // Extend class by module's methods
+            if(o._config['extend']){
+                cm.forEach(o, function(item, key){
+                    if(!/^(_)/.test(key)){
+                        that.build[key] = item;
+                    }
+                });
+            }
+            // Construct module
+            if(typeof o._construct == 'function'){
+                // Construct
+                o._construct.call(that);
+            }else{
+                cm.errorLog({
+                    'type' : 'error',
+                    'name' : that.build._name['full'],
+                    'message' : ['Module', cm.strWrap(name, '"'), 'does not have "_construct" method.'].join(' ')
+                });
+            }
+            // Add into stack of class's modules
+            that.build._modules[name] = o;
+        }
+    },
+    'extend' : function(name, o){
+        var that = this;
+        if(!o){
+            cm.errorLog({
+                'type' : 'error',
+                'name' : that._name['full'],
+                'message' : 'Trying to extend the class by non-existing module.'
+            });
+        }else if(!name){
+            cm.errorLog({
+                'type' : 'error',
+                'name' : that._name['full'],
+                'message' : 'Module should have a name.'
+            });
+        }else if(that._modules[name]){
+            cm.errorLog({
+                'type' : 'error',
+                'name' : that._name['full'],
+                'message' : ['Module with name', cm.strWrap(name, '"'), 'already constructed.'].join(' ')
+            });
+        }else{
+            // Merge Config
+            o._config = cm.merge({
+                'extend' : false,
+                'predefine' : false,
+                'require' : []
+            }, o._config);
+            // Check Requires
+            cm.forEach(o._config['require'], function(module){
+                if(Mod[module]){
+                    Mod['Extend']._extend.call(that, module, Mod[module]);
+                }
+            });
+            // Extend class by module's methods
+            if(o._config['extend']){
+                cm.forEach(o, function(item, key){
+                    if(!/^(_)/.test(key)){
+                        cm.defineStack[that._name['full']].prototype[key] = item;
+                    }
+                });
+            }
+            // Construct module
+            if(typeof o._construct == 'function'){
+                // Construct
+                o._construct.call(that);
+            }else{
+                cm.errorLog({
+                    'type' : 'error',
+                    'name' : that._name['full'],
+                    'message' : ['Module', cm.strWrap(name, '"'), 'does not have "_construct" method.'].join(' ')
+                });
+            }
+            // Add into stack of class's modules
+            that._modules[name] = o;
+        }
+    }
+};
+
+/* ******* COMPONENTS ******* */
+
+Mod['Component'] = {
+    '_config' : {
+        'extend' : true,
+        'predefine' : true
+    },
+    '_construct' : function(){
+        var that = this;
+        that.build._isComponent = true;
+    },
+    'cloneComponent' : function(params){
+        var that = this,
+            component;
+        cm.getConstructor(that._name['full'], function(classConstructor){
+            component = new classConstructor(
+                cm.merge(that.params, params)
+            );
+        });
+        return component;
+    }
+};
+
 /* ******* PARAMS ******* */
 
 Mod['Params'] = {
@@ -4599,19 +4770,27 @@ Mod['Params'] = {
                     break;
 
                 case 'document.html':
-                    that.params[key] = cm.getDocumentHtml();
+                    if(cm.getDocumentHtml()){
+                        that.params[key] = cm.getDocumentHtml();
+                    }
                     break;
 
                 case 'document.body':
-                    that.params[key] = document.body;
+                    if(document.body){
+                        that.params[key] = document.body;
+                    }
                     break;
 
                 case 'top.document.body':
-                    that.params[key] = window.top.document.body;
+                    if(window.top.document.body){
+                        that.params[key] = window.top.document.body;
+                    }
                     break;
 
                 case 'document.head':
-                    that.params[key] = cm.getDocumentHead();
+                    if(cm.getDocumentHead()){
+                        that.params[key] = cm.getDocumentHead();
+                    }
                     break;
 
                 default:
@@ -4998,11 +5177,16 @@ Mod['Stack'] = {
         that._stack.push(that._stackItem);
         return that;
     },
+    'removeFromStack' : function(){
+        var that = this;
+        cm.arrayRemove(that._stack, that._stackItem);
+        return that;
+    },
     'isAppropriateToStack' : function(name, parent, callback){
         var that = this,
             item = that._stackItem;
         if((cm.isEmpty(name) || item['name'] == name) && cm.isParent(parent, item['node'], true)){
-            callback(item['class'], item);
+            callback(item['class'], item, name);
             return true;
         }
         return false;
@@ -5015,116 +5199,10 @@ Mod['Stack'] = {
         cm.forEach(that._stack, function(item){
             if((cm.isEmpty(name) || item['name'] == name) && cm.isParent(parent, item['node'], true)){
                 items.push(item);
-                callback(item['class'], item);
+                callback(item['class'], item, name);
             }
         });
         return items;
-    }
-};
-
-/* ******* EXTEND ******* */
-
-Mod['Extend'] = {
-    '_config' : {
-        'extend' : true,
-        'predefine' : true
-    },
-    '_construct' : function(){
-        var that = this;
-    },
-    '_extend' : function(name, o){
-        var that = this;
-        if(!that.build._modules[name]){
-            // Merge Config
-            o._config = cm.merge({
-                'extend' : false,
-                'predefine' : false,
-                'require' : []
-            }, o._config);
-            // Check Requires
-            cm.forEach(o._config['require'], function(module){
-                if(Mod[module]){
-                    Mod['Extend']._extend.call(that, module, Mod[module]);
-                }
-            });
-            // Extend class by module's methods
-            if(o._config['extend']){
-                cm.forEach(o, function(item, key){
-                    if(!/^(_)/.test(key)){
-                        that.build[key] = item;
-                    }
-                });
-            }
-            // Construct module
-            if(typeof o._construct == 'function'){
-                // Construct
-                o._construct.call(that);
-            }else{
-                cm.errorLog({
-                    'type' : 'error',
-                    'name' : that.build._name['full'],
-                    'message' : ['Module', cm.strWrap(name, '"'), 'does not have "_construct" method.'].join(' ')
-                });
-            }
-            // Add into stack of class's modules
-            that.build._modules[name] = o;
-        }
-    },
-    'extend' : function(name, o){
-        var that = this;
-        if(!o){
-            cm.errorLog({
-                'type' : 'error',
-                'name' : that._name['full'],
-                'message' : 'Trying to extend the class by non-existing module.'
-            });
-        }else if(!name){
-            cm.errorLog({
-                'type' : 'error',
-                'name' : that._name['full'],
-                'message' : 'Module should have a name.'
-            });
-        }else if(that._modules[name]){
-            cm.errorLog({
-                'type' : 'error',
-                'name' : that._name['full'],
-                'message' : ['Module with name', cm.strWrap(name, '"'), 'already constructed.'].join(' ')
-            });
-        }else{
-            // Merge Config
-            o._config = cm.merge({
-                'extend' : false,
-                'predefine' : false,
-                'require' : []
-            }, o._config);
-            // Check Requires
-            cm.forEach(o._config['require'], function(module){
-                if(Mod[module]){
-                    Mod['Extend']._extend.call(that, module, Mod[module]);
-                }
-            });
-            // Extend class by module's methods
-            if(o._config['extend']){
-                cm.forEach(o, function(item, key){
-                    if(!/^(_)/.test(key)){
-                        cm.defineStack[that._name['full']].prototype[key] = item;
-                    }
-                });
-            }
-            // Construct module
-            if(typeof o._construct == 'function'){
-                // Construct
-                o._construct.call(that);
-            }else{
-                cm.errorLog({
-                    'type' : 'error',
-                    'name' : that._name['full'],
-                    'message' : ['Module', cm.strWrap(name, '"'), 'does not have "_construct" method.'].join(' ')
-                });
-            }
-            // Add into stack of class's modules
-            that._modules[name] = o;
-        }
     }
 };
 
@@ -5276,18 +5354,24 @@ cm.init = function(){
     var init = function(){
         checkBrowser();
         checkType();
-        checkPageSize();
         checkScrollSize();
-        cm.addEvent(window, 'resize', checkType);
-        cm.addEvent(window, 'resize', resizeAction);
+        checkPageSize();
+        // Events
         cm.addEvent(window, 'mousemove', getClientPosition);
+        cm.addEvent(window, 'resize', resizeAction);
+        setInterval(checkAction, 500);
         //cm.addEvent(window, 'scroll', disableHover);
     };
 
     // Actions
 
+    var checkAction = function(){
+        checkScrollSize();
+    };
+
     var resizeAction = function(){
         animFrame(function(){
+            checkType();
             checkScrollSize();
             checkPageSize();
         });
@@ -5335,12 +5419,12 @@ cm.init = function(){
     // Get device scroll bar size
 
     var checkScrollSize = (function(){
-        var oldSize = 0;
+        var size = cm._scrollSize;
 
         return function(){
-            oldSize = cm._scrollSize;
             cm._scrollSize = cm.getScrollBarSize();
-            if(oldSize != cm._scrollSize){
+            if(size != cm._scrollSize){
+                size = cm._scrollSize;
                 cm.customEvent.trigger(window, 'scrollSizeChange', {
                     'type' : 'all',
                     'self' : true,
@@ -7953,10 +8037,10 @@ function(params){
     var move = function(e){
         cm.preventDefault(e);
         // Calculate sizes and positions
-        var x = cm._clientPosition['x'],
+        var position = cm.getEventClientPosition(e),
             toFixed = e.shiftKey ? 0 : 2,
-            leftWidth = x - current['left']['offset'],
-            rightWidth = current['right']['offset'] - x;
+            leftWidth = position['left'] - current['left']['offset'],
+            rightWidth = current['right']['offset'] - position['left'];
         // Apply sizes and positions
         if(leftWidth > that.params['minColumnWidth'] && rightWidth > that.params['minColumnWidth']){
             current['left']['column']['width'] = [(leftWidth / current['ratio']).toFixed(toFixed), '%'].join('');
@@ -8563,10 +8647,7 @@ function(params){
         cm.hideSpecialTags();
         cm.addClass(document.body, 'com__dashboard__body');
         // Get pointer position
-        var params = {
-            'left' : cm._clientPosition['x'],
-            'top' : cm._clientPosition['y']
-        };
+        var params = cm.getEventClientPosition(e);
         // Filter areas
         that.currentAreas = getDroppableAreas(widget);
         // Drag start event
@@ -8591,10 +8672,7 @@ function(params){
     var move  = function(e){
         cm.preventDefault(e);
         // Get pointer position
-        var params = {
-            'left' : cm._clientPosition['x'],
-            'top' : cm._clientPosition['y']
-        };
+        var params = cm.getEventClientPosition(e);
         // Move widget
         moveWidget(that.currentWidget, params, true);
         // Find placeholder above widget
@@ -8627,7 +8705,7 @@ function(params){
         cm.removeScrollEvent(window, scroll);
     };
 
-    var scroll = function(){
+    var scroll = function(e){
         // Get pointer position
         var params = {
             'left' : cm._clientPosition['x'],
@@ -11052,20 +11130,19 @@ function(params){
         }
         // Config
         var area = cm.merge({
-                'node' : node,
-                'styleObject' : cm.getStyleObject(node),
-                'type' : false,                             // content, form
-                'isLocked' : false,
-                'isTemporary' : false,
-                'isSystem' : false,
-                'isRemoveZone' : false,
-                'draggableInChildNodes' : true,
-                'cloneDraggable' : false,
-                'items' : [],
-                'chassis' : [],
-                'dimensions' : {}
-            }, params),
-            childNodes;
+            'node' : node,
+            'styleObject' : cm.getStyleObject(node),
+            'type' : false,                             // content, form
+            'isLocked' : false,
+            'isTemporary' : false,
+            'isSystem' : false,
+            'isRemoveZone' : false,
+            'draggableInChildNodes' : true,
+            'cloneDraggable' : false,
+            'items' : [],
+            'chassis' : [],
+            'dimensions' : {}
+        }, params);
         // Get type
         area['type'] = area['node'].getAttribute('data-block-type');
         // Add mark classes
@@ -11076,6 +11153,16 @@ function(params){
         }else{
             cm.addClass(area['node'], 'is-available');
         }
+        // Find draggable elements
+        initAreaWidgets(area);
+        // Push to areas array
+        areasList.push(area['node']);
+        areas.push(area);
+    };
+
+    var initAreaWidgets = function(area){
+        var childNodes;
+        area['items'] = [];
         // Find draggable elements
         if(area['draggableInChildNodes']){
             childNodes = area['node'].childNodes;
@@ -11094,9 +11181,6 @@ function(params){
                 );
             });
         }
-        // Push to areas array
-        areasList.push(area['node']);
-        areas.push(area);
     };
 
     var initDraggable = function(node, area, params){
@@ -11152,8 +11236,9 @@ function(params){
         // Hide IFRAMES and EMBED tags
         cm.hideSpecialTags();
         // Check event type and get cursor / finger position
-        var x = cm._clientPosition['x'],
-            y = cm._clientPosition['y'],
+        var position = cm.getEventClientPosition(e),
+            x = position['left'],
+            y = position['top'],
             tempCurrentAboveItem,
             tempCurrentPosition;
         if(!cm.isTouch){
@@ -11265,8 +11350,9 @@ function(params){
     var move = function(e){
         cm.preventDefault(e);
         // Check event type and get cursor / finger position
-        var x = cm._clientPosition['x'],
-            y = cm._clientPosition['y'],
+        var position = cm.getEventClientPosition(e),
+            x = position['left'],
+            y = position['top'],
             posY = y - current['dimensions']['offsetY'],
             posX = x - current['dimensions']['offsetX'],
             styleX,
@@ -11816,6 +11902,14 @@ function(params){
         return that;
     };
 
+    that.updateArea = function(node){
+        var area = that.getArea(node);
+        if(area){
+            initAreaWidgets(area);
+        }
+        return that;
+    };
+
     that.removeArea = function(node, params){
         if(cm.isNode(node) && cm.inArray(areasList, node)){
             areasList = areasList.filter(function(area){
@@ -12020,22 +12114,20 @@ function(params){
     };
 
     var start = function(e){
+        cm.preventDefault(e);
+        if(!cm.isTouch && e.button){
+            return;
+        }
         if(that.isDrag){
             return;
         }
         that.isDrag = true;
-        cm.preventDefault(e);
         // Hide IFRAMES and EMBED tags
         cm.hideSpecialTags();
         // Check event type and get cursor / finger position
-        that.startX = cm._clientPosition['x'];
-        that.startY = cm._clientPosition['y'];
-        if(!cm.isTouch){
-            // If not left mouse button, don't duplicate drag event
-            if((cm.is('IE') && cm.isVersion() < 9 && e.button != 1) || (!cm.is('IE') && e.button)){
-                return;
-            }
-        }
+        var position = cm.getEventClientPosition(e);
+        that.startX = position['left'];
+        that.startY = position['top'];
         // Calculate dimensions and position
         that.getDimensions();
         that.nodeStartX = cm.getStyle(that.params['node'], 'left', true);
@@ -12050,8 +12142,9 @@ function(params){
 
     var move = function(e){
         cm.preventDefault(e);
+        var position = cm.getEventClientPosition(e);
         // Calculate dimensions and position
-        setPosition(cm._clientPosition['x'], cm._clientPosition['y']);
+        setPosition(position['left'], position['top']);
         // Trigger Event
         that.triggerEvent('onMove');
     };
@@ -14463,8 +14556,10 @@ cm.define('Com.Overlay', {
         'onRender',
         'onOpenStart',
         'onOpen',
+        'onOpenEnd',
         'onCloseStart',
-        'onClose'
+        'onClose',
+        'onCloseEnd'
     ],
     'params' : {
         'name' : '',
@@ -14486,6 +14581,7 @@ function(params){
     that.isOpen = false;
     that.isShowSpinner = false;
     that.isShowContent = false;
+    that.openInterval = null;
 
     var init = function(){
         getCSSHelpers();
@@ -14522,34 +14618,70 @@ function(params){
         that.setTheme(that.params['theme']);
     };
 
+    var openHelper = function(){
+        that.triggerEvent('onOpen')
+            .triggerEvent('onOpenEnd');
+    };
+
+    var closeHelper = function(){
+        that.triggerEvent('onClose')
+            .triggerEvent('onCloseEnd');
+        if(that.params['removeOnClose']){
+            cm.remove(that.nodes['container']);
+        }
+    };
+
     /* ******* MAIN ******* */
 
-    that.open = function(){
+    that.open = function(isImmediately){
         if(!that.isOpen){
             that.isOpen = true;
+            // Set immediately animation hack
+            if(isImmediately){
+                cm.addClass(that.nodes['container'], 'is-immediately');
+            }
             if(!cm.inDOM(that.nodes['container'])){
                 that.params['container'].appendChild(that.nodes['container']);
             }
             that.triggerEvent('onOpenStart');
             cm.addClass(that.nodes['container'], 'is-open', true);
-            setTimeout(function(){
-                that.triggerEvent('onOpen');
-            }, that.params['duration']);
+            // Remove immediately animation hack
+            that.openInterval && clearTimeout(that.openInterval);
+            if(isImmediately){
+                that.openInterval = setTimeout(function(){
+                    cm.removeClass(that.nodes['container'], 'is-immediately');
+                    openHelper();
+                }, 5);
+            }else{
+                that.openInterval = setTimeout(function(){
+                    openHelper();
+                }, that.params['duration'] + 5);
+            }
         }
         return that;
     };
 
-    that.close = function(){
+    that.close = function(isImmediately){
         if(that.isOpen){
             that.isOpen = false;
+            // Set immediately animation hack
+            if(isImmediately){
+                cm.addClass(that.nodes['container'], 'is-immediately');
+            }
             that.triggerEvent('onCloseStart');
             cm.removeClass(that.nodes['container'], 'is-open');
-            setTimeout(function(){
-                if(that.params['removeOnClose']){
-                    cm.remove(that.nodes['container']);
-                }
-                that.triggerEvent('onClose');
-            }, that.params['duration']);
+            // Remove immediately animation hack
+            that.openInterval && clearTimeout(that.openInterval);
+            if(isImmediately){
+                that.openInterval = setTimeout(function(){
+                    cm.removeClass(that.nodes['container'], 'is-immediately');
+                    closeHelper();
+                }, 5);
+            }else{
+                that.openInterval = setTimeout(function(){
+                    closeHelper();
+                }, that.params['duration'] + 5);
+            }
         }
         // Close Event
         return that;
@@ -14569,7 +14701,7 @@ function(params){
             if(!that.params['removeOnClose']){
                 setTimeout(function(){
                     cm.remove(that.nodes['container']);
-                }, that.params['duration']);
+                }, that.params['duration'] + 5);
             }
         }else{
             cm.remove(that.nodes['container']);
@@ -20362,8 +20494,8 @@ function(params){
 
     var calculateAction = function(){
         if(that.isLoad){
-            var setX = -cm._clientPosition['x'] * widthRatio,
-                setY = -cm._clientPosition['y'] * heightRatio;
+            var setX = -cm._clientPosition['left'] * widthRatio,
+                setY = -cm._clientPosition['top'] * heightRatio;
             cm.setCSSTranslate(that.nodes['image'], [setX, 'px'].join(''), [setY, 'px'].join(''));
         }
     };

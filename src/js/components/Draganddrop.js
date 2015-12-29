@@ -103,20 +103,19 @@ function(params){
         }
         // Config
         var area = cm.merge({
-                'node' : node,
-                'styleObject' : cm.getStyleObject(node),
-                'type' : false,                             // content, form
-                'isLocked' : false,
-                'isTemporary' : false,
-                'isSystem' : false,
-                'isRemoveZone' : false,
-                'draggableInChildNodes' : true,
-                'cloneDraggable' : false,
-                'items' : [],
-                'chassis' : [],
-                'dimensions' : {}
-            }, params),
-            childNodes;
+            'node' : node,
+            'styleObject' : cm.getStyleObject(node),
+            'type' : false,                             // content, form
+            'isLocked' : false,
+            'isTemporary' : false,
+            'isSystem' : false,
+            'isRemoveZone' : false,
+            'draggableInChildNodes' : true,
+            'cloneDraggable' : false,
+            'items' : [],
+            'chassis' : [],
+            'dimensions' : {}
+        }, params);
         // Get type
         area['type'] = area['node'].getAttribute('data-block-type');
         // Add mark classes
@@ -127,6 +126,16 @@ function(params){
         }else{
             cm.addClass(area['node'], 'is-available');
         }
+        // Find draggable elements
+        initAreaWidgets(area);
+        // Push to areas array
+        areasList.push(area['node']);
+        areas.push(area);
+    };
+
+    var initAreaWidgets = function(area){
+        var childNodes;
+        area['items'] = [];
         // Find draggable elements
         if(area['draggableInChildNodes']){
             childNodes = area['node'].childNodes;
@@ -145,9 +154,6 @@ function(params){
                 );
             });
         }
-        // Push to areas array
-        areasList.push(area['node']);
-        areas.push(area);
     };
 
     var initDraggable = function(node, area, params){
@@ -203,8 +209,9 @@ function(params){
         // Hide IFRAMES and EMBED tags
         cm.hideSpecialTags();
         // Check event type and get cursor / finger position
-        var x = cm._clientPosition['x'],
-            y = cm._clientPosition['y'],
+        var position = cm.getEventClientPosition(e),
+            x = position['left'],
+            y = position['top'],
             tempCurrentAboveItem,
             tempCurrentPosition;
         if(!cm.isTouch){
@@ -316,8 +323,9 @@ function(params){
     var move = function(e){
         cm.preventDefault(e);
         // Check event type and get cursor / finger position
-        var x = cm._clientPosition['x'],
-            y = cm._clientPosition['y'],
+        var position = cm.getEventClientPosition(e),
+            x = position['left'],
+            y = position['top'],
             posY = y - current['dimensions']['offsetY'],
             posX = x - current['dimensions']['offsetX'],
             styleX,
@@ -863,6 +871,14 @@ function(params){
     that.registerArea = function(node, params){
         if(cm.isNode(node) && node.tagName){
             initArea(node, params || {});
+        }
+        return that;
+    };
+
+    that.updateArea = function(node){
+        var area = that.getArea(node);
+        if(area){
+            initAreaWidgets(area);
         }
         return that;
     };

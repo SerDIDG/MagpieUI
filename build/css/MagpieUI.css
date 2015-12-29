@@ -3281,6 +3281,17 @@ Copyright (c) 2015 Daniel Eden
   font-weight: normal;
   font-style: normal;
 }
+/* ******* HELPERS ******* */
+.cm__scroll-bar-size-checker {
+  width: 100px;
+  height: 100px;
+  overflow: scroll;
+  position: fixed;
+  top: -9000px;
+  right: auto;
+  bottom: auto;
+  left: -9000px;
+}
 /* ******* INLINE STYLES ******* */
 .clearfix:after,
 .clear:after {
@@ -5351,11 +5362,11 @@ button::-moz-focus-inner {
   font-size: 0;
   height: 0;
 }
+.form dl:first-child {
+  margin-top: 0;
+}
 .form dl.is-text dt {
   padding: 0;
-}
-.form > dl:first-child {
-  margin-top: 0;
 }
 .form dt {
   width: 150px;
@@ -6611,6 +6622,7 @@ button::-moz-focus-inner {
   height: 50px;
   position: relative;
 }
+.pt__box-loader.is-absolute,
 .pt__box-loader.position {
   height: auto;
   position: absolute;
@@ -9103,6 +9115,10 @@ button::-moz-focus-inner {
 }
 .pt__overlay.theme-dark {
   background-color: rgba(0, 0, 0, 0.7);
+}
+.pt__overlay.is-immediately {
+  -webkit-transition: none !important;
+  transition: none !important;
 }
 .pt__overlay.is-open {
   visibility: visible;

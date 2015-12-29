@@ -24,7 +24,7 @@
  ******* */
 
 var cm = {
-        '_version' : '3.9.2',
+        '_version' : '3.10.0',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -48,7 +48,8 @@ var cm = {
             'displayDateFormat' : '%F %j, %Y',
             'displayDateTimeFormat' : '%F %j, %Y, %H:%i',
             'tooltipTop' : 'targetHeight + 4'
-        }
+        },
+        'MAX_SAFE_INTEGER' : 9007199254740991
     },
     Mod = {},
     Part = {},
@@ -62,61 +63,143 @@ cm.isFileReader = (function(){return 'FileReader' in window;})();
 cm.isHistoryAPI = !!(window.history && history.pushState);
 cm.isLocalStorage = (function(){try{return 'localStorage' in window && window['localStorage'] !== null;}catch(e){return false;}})();
 cm.isCanvas = !!document.createElement("canvas").getContext;
-cm.isTouch = 'ontouchstart' in document.documentElement || !!window.navigator.msMaxTouchPoints;
+cm.isTouch = 'ontouchstart' in document.documentElement || !!window.maxTouchPoints || !!navigator.maxTouchPoints;
 
 /* ******* OBJECTS AND ARRAYS ******* */
 
-cm.top = function(name){
-    return window.top.cm[name];
+cm.top = window.top.cm || cm;
+
+cm.objToString = Object.prototype.toString;
+
+cm.property = function(key) {
+    return function(o) {
+        return o == null ? void 0 : o[key];
+    };
 };
 
-cm.isArray = Array.isArray || function(a){
-    return a ? a.constructor == Array : false;
+cm.length = cm.property('length');
+
+cm.isType = function(o, types){
+    if(cm.isString(types)){
+        return Object.prototype.toString.call(o) === '[object ' + types +']'
+    }
+    if(cm.isRegExp(types)){
+        return types.test(Object.prototype.toString.call(o));
+    }
+    if(cm.isObject(types)){
+        var match = false;
+        cm.forEach(types, function(type){
+            if(!match){
+                match = Object.prototype.toString.call(o) === '[object ' + type +']'
+            }
+        });
+        return match;
+    }
+    return false;
+};
+
+cm.isString = function(o){
+    return Object.prototype.toString.call(o) === '[object String]';
+};
+
+cm.isNumber = function(o){
+    return Object.prototype.toString.call(o) === '[object Number]';
+};
+
+cm.isArray = Array.isArray || function(o){
+    return Object.prototype.toString.call(o) === '[object Array]';
+};
+
+cm.isArrayLike = function(o) {
+    return o != null && cm.isLength(cm.length(o));
 };
 
 cm.isObject = function(o){
-    return o ? o.constructor == Object : false;
+    return Object.prototype.toString.call(o) === '[object Object]';
+};
+
+cm.isArguments = function(o){
+    return Object.prototype.toString.call(o) === '[object Arguments]';
 };
 
 cm.isFunction = function(o){
-    return o ? typeof o == 'function' : false;
+    return Object.prototype.toString.call(o) === '[object Function]';
+};
+
+cm.isRegExp = function(o){
+    return Object.prototype.toString.call(o) === '[object RegExp]';
+};
+
+cm.isDate = function(o){
+    return Object.prototype.toString.call(o) === '[object Date]';
+};
+
+cm.isWindow = function(o) {
+    return Object.prototype.toString.call(o) === '[object Window]' || Object.prototype.toString.call(o) === '[object global]';
+};
+
+cm.isLength = function(o) {
+    return typeof o == 'number' && o > -1 && o % 1 == 0 && o <= cm.MAX_SAFE_INTEGER;
+};
+
+cm.isNode = function(node){
+    return !!(node && node.nodeType);
+};
+
+cm.isTextNode = function(node){
+    return !!(node && node.nodeType && node.nodeType == 3);
+};
+
+cm.isElementNode = function(node){
+    return !!(node && node.nodeType && node.nodeType == 1);
+};
+
+cm.isPlainObject = function(obj) {
+    if (typeof obj == 'object' && obj !== null) {
+        if (typeof Object.getPrototypeOf == 'function') {
+            var proto = Object.getPrototypeOf(obj);
+            return proto === Object.prototype || proto === null;
+        }
+        return Object.prototype.toString.call(obj) == '[object Object]';
+    }
+    return false;
 };
 
 cm.forEach = function(o, callback){
-    if(!o){
-        return null;
-    }
-    if(!callback){
+    if(!o || !(callback && typeof callback == 'function')){
         return o;
     }
     var i, l;
-    switch(o.constructor){
-        case Object:
-            for(var key in o){
-                if(o.hasOwnProperty(key)){
-                    callback(o[key], key, o);
-                }
+    // Objects
+    if(cm.isObject(o)){
+        for(var key in o){
+            if(o.hasOwnProperty(key)){
+                callback(o[key], key, o);
             }
-            break;
-        case Array:
-            o.forEach(callback);
-            break;
-        case Number:
-            for(i = 0; i < o; i++){
-                callback(i);
+        }
+        return o;
+    }
+    // Arrays
+    if(cm.isArray(o)){
+        o.forEach(callback);
+        return o;
+    }
+    // Numbers
+    if(cm.isNumber(o)){
+        for(i = 0; i < o; i++){
+            callback(i);
+        }
+        return o;
+    }
+    // Default
+    try{
+        Array.prototype.forEach.call(o, callback);
+    }catch(e){
+        try{
+            for(i = 0, l = o.length; i < l; i++){
+                callback(o[i], i, o);
             }
-            break;
-        default:
-            try{
-                Array.prototype.forEach.call(o, callback);
-            }catch(e){
-                try{
-                    for(i = 0, l = o.length; i < l; i++){
-                        callback(o[i], i, o);
-                    }
-                }catch(e){}
-            }
-            break;
+        }catch(e){}
     }
     return o;
 };
@@ -146,11 +229,11 @@ cm.merge = function(o1, o2){
         return cm.clone(o2);
     }
     cm.forEach(o2, function(item, key){
-        if(item != null){
+        if(item !== null){
             try{
                 if(item._isComponent){
                     o1[key] = item;
-                }else if(Object.prototype.toString.call(item) == '[object Object]' && item.constructor != Object){
+                }else if(cm.isObject(item) && item.constructor != Object){
                     o1[key] = item;
                 }else if(cm.isObject(item)){
                     o1[key] = cm.merge(o1[key], item);
@@ -173,21 +256,21 @@ cm.extend = function(o1, o2){
         return o1;
     }
     var o;
-    switch(o1.constructor){
-        case Array:
-            o = o1.concat(o2);
-            break;
-        case Object:
-            o = {};
-            cm.forEach(o1, function(item, key){
-                o[key] = item;
-            });
-            cm.forEach(o2, function(item, key){
-                o[key] = item;
-            });
-            break;
+    if(cm.isArray(o1)){
+        o = o1.concat(o2);
+        return o;
     }
-    return o;
+    if(cm.isObject(o1)){
+        o = {};
+        cm.forEach(o1, function(item, key){
+            o[key] = item;
+        });
+        cm.forEach(o2, function(item, key){
+            o[key] = item;
+        });
+        return o;
+    }
+    return null;
 };
 
 cm.clone = function(o, cloneNode){
@@ -195,58 +278,39 @@ cm.clone = function(o, cloneNode){
     if(!o){
         return o;
     }
-    switch(o.constructor){
-        case Function:
-        case String:
-        case Number:
-        case RegExp:
-        case Boolean:
-        case XMLHttpRequest:
-        case File:
-        case FormData:
-            newO = o;
-            break;
-        case Array:
-            newO = [];
-            cm.forEach(o, function(item){
-                newO.push(cm.clone(item, cloneNode));
-            });
-            break;
-        case Object:
-            if(o._isComponent){
-                newO = o;
-            }else{
-                newO = {};
-                cm.forEach(o, function(item, key){
-                    newO[key] = cm.clone(item, cloneNode);
-                });
-            }
-            break;
-        default:
-            // Exceptions
-            if(cm.isNode(o)){
-                if(cloneNode){
-                    newO = o.cloneNode(true);
-                }else{
-                    newO = o;
-                }
-            }else if(XMLHttpRequest && o instanceof XMLHttpRequest){
-                newO = o;
-            }else if(Object.prototype.toString.call(o) == '[object Object]' && o.constructor != Object){
-                newO = o;
-            }else if(o == window){
-                newO = o;
-            }else if(o instanceof CSSStyleDeclaration){
-                newO = o;
-            }else{
-                newO = [];
-                cm.forEach(o, function(item){
-                    newO.push(cm.clone(item, cloneNode));
-                });
-            }
-            break;
+    // Arrays
+    if(cm.isType(o, /Array|Arguments|StyleSheetList|CSSRuleList|HTMLCollection|NodeList|DOMTokenList|FileList/)){
+        newO = [];
+        cm.forEach(o, function(item){
+            newO.push(cm.clone(item, cloneNode));
+        });
+        return newO;
     }
-    return newO;
+    // Objects
+    if(cm.isObject(o) && !o._isComponent){
+        newO = {};
+        cm.forEach(o, function(item, key){
+            newO[key] = cm.clone(item, cloneNode);
+        });
+        return newO;
+    }
+    // Dates
+    if(cm.isDate(o)){
+        newO = new Date();
+        newO.setTime(o.getTime());
+        return newO;
+    }
+    // Nodes
+    if(cm.isNode(o)){
+        if(cloneNode){
+            newO = o.cloneNode(true);
+        }else{
+            newO = o;
+        }
+        return newO;
+    }
+    // Other (make links)
+    return o;
 };
 
 cm.getLength = function(o){
@@ -257,18 +321,17 @@ cm.getLength = function(o){
     return i;
 };
 
-cm.inArray = function(a, str){
+cm.inArray = function(a, item){
     if(typeof a == 'string'){
-        return a === str;
+        return a === item;
     }else{
-        var inArray = false;
-        a.forEach(function(item){
-            if(item === str){
-                inArray = true;
-            }
-        });
-        return inArray;
+        return a.indexOf(item) > -1;
     }
+};
+
+cm.arrayRemove = function(a, item){
+    a.splice(a.indexOf(item), 1);
+    return a;
 };
 
 cm.objectToArray = function(o){
@@ -309,9 +372,9 @@ cm.objectReplace = function(o, vars){
 cm.isEmpty = function(el){
     if(!el){
         return true;
-    }else if(typeof el == 'string' || el.constructor == Array){
+    }else if(typeof el == 'string' || cm.isArray(el)){
         return el.length == 0;
-    }else if(el.constructor == Object){
+    }else if(cm.isObject(el)){
         return cm.getLength(el) === 0;
     }else if(typeof el == 'number'){
         return el == 0;
@@ -428,16 +491,16 @@ cm.getObjToEvent = cm.getRelatedTarget = function(e){
 
 cm.getEventClientPosition = function(e){
     var o = {
-        'x' : 0,
-        'y' : 0
+        'left' : 0,
+        'top' : 0
     };
     if(e){
         try{
-            o['x'] = e.clientX;
-            o['y'] = e.clientY;
-            if(cm.isTouch && e.touches){
-                o['x'] = e.touches[0].clientX;
-                o['y'] = e.touches[0].clientY;
+            o['left'] = e.clientX;
+            o['top'] = e.clientY;
+            if(e.touches){
+                o['left'] = e.touches[0].clientX;
+                o['top'] = e.touches[0].clientY;
             }
         }catch(e){}
     }
@@ -647,7 +710,7 @@ cm.customEvent = (function(){
                             break;
                         case 'all':
                         default:
-                            if(!params['self'] && node !== item['node']){
+                            if(node !== item['node']){
                                 item['handler'](params);
                             }
                             break;
@@ -707,10 +770,10 @@ cm.onReady = function(handler, isMessage){
 cm.addScrollEvent = function(node, callback, useCapture){
     useCapture = typeof useCapture == 'undefined' ? false : useCapture;
     if(cm.isWindow(node)){
-        cm.addEvent(window, 'scroll', callback, useCapture);
+        cm.addEvent(node, 'scroll', callback, useCapture);
     }else if(cm.isNode(node)){
         if(/body|html/gi.test(node.tagName)){
-            cm.addEvent(window, 'scroll', callback, useCapture);
+            cm.addEvent(cm.getOwnerWindow(node), 'scroll', callback, useCapture);
         }else{
             cm.addEvent(node, 'scroll', callback, useCapture);
         }
@@ -721,10 +784,10 @@ cm.addScrollEvent = function(node, callback, useCapture){
 cm.removeScrollEvent = function(node, callback, useCapture){
     useCapture = typeof useCapture == 'undefined' ? false : useCapture;
     if(cm.isWindow(node)){
-        cm.removeEvent(window, 'scroll', callback, useCapture);
+        cm.removeEvent(node, 'scroll', callback, useCapture);
     }if(cm.isNode(node)){
         if(/body|html/gi.test(node.tagName)){
-            cm.removeEvent(window, 'scroll', callback, useCapture);
+            cm.removeEvent(cm.getOwnerWindow(node), 'scroll', callback, useCapture);
         }else{
             cm.removeEvent(node, 'scroll', callback, useCapture);
         }
@@ -820,24 +883,8 @@ cm.onImageLoad = function(src, handler, delay){
 
 /* ******* NODES ******* */
 
-cm.isNode = function(node){
-    return !!(node && node.nodeType);
-};
-
-cm.isTextNode = function(node){
-    return !!(node && node.nodeType && node.nodeType == 3);
-};
-
-cm.isElementNode = function(node){
-    return !!(node && node.nodeType && node.nodeType == 1);
-};
-
-cm.isWindow = function(o) {
-    if(typeof(window.constructor) === 'undefined') {
-        return o instanceof window.constructor;
-    }else{
-        return window === o;
-    }
+cm.getOwnerWindow = function(node){
+    return node.ownerDocument.defaultView;
 };
 
 cm.getEl = function(str){
@@ -1441,12 +1488,10 @@ cm.getValue = function(name, node){
 
 /* ******* STRINGS ******* */
 
-cm.isRegExp = function(obj){
-    return obj.constructor == RegExp;
-};
 cm.toFixed = function(n, x){
     return parseFloat(n).toFixed(x);
 };
+
 cm.toNumber = function(str){
     return parseInt(str.replace(/\s+/, ''));
 };
@@ -1685,7 +1730,7 @@ cm.parseDate = function(str, format){
 /* ******* STYLES ******* */
 
 cm.addClass = function(node, str, useHack){
-    if(!node || cm.isEmpty(str)){
+    if(!cm.isNode(node) || cm.isEmpty(str)){
         return null;
     }
     if(useHack){
@@ -1707,7 +1752,7 @@ cm.addClass = function(node, str, useHack){
 };
 
 cm.removeClass = function(node, str, useHack){
-    if(!node || cm.isEmpty(str)){
+    if(!cm.isNode(node) || cm.isEmpty(str)){
         return null;
     }
     if(useHack){
@@ -1734,7 +1779,7 @@ cm.removeClass = function(node, str, useHack){
 };
 
 cm.replaceClass = function(node, oldClass, newClass, useHack){
-    if(!node){
+    if(!cm.isNode(node)){
         return null;
     }
     return cm.addClass(cm.removeClass(node, oldClass, useHack), newClass, useHack);
@@ -1742,7 +1787,7 @@ cm.replaceClass = function(node, oldClass, newClass, useHack){
 
 cm.hasClass = cm.isClass = function(node, cssClass){
     var hasClass, classes;
-    if(!node){
+    if(!cm.isNode(node)){
         return false;
     }
     if(node.classList){
@@ -1762,16 +1807,17 @@ cm.hasClass = cm.isClass = function(node, cssClass){
 cm.getPageSize = function(key){
     var d = document,
         de = d.documentElement,
+        b = d.body,
         o = {
             'height' : Math.max(
-                Math.max(d.body.scrollHeight, de.scrollHeight),
-                Math.max(d.body.offsetHeight, de.offsetHeight),
-                Math.max(d.body.clientHeight, de.clientHeight)
+                Math.max(b.scrollHeight, de.scrollHeight),
+                Math.max(b.offsetHeight, de.offsetHeight),
+                Math.max(b.clientHeight, de.clientHeight)
             ),
             'width' : Math.max(
-                Math.max(d.body.scrollWidth, de.scrollWidth),
-                Math.max(d.body.offsetWidth, de.offsetWidth),
-                Math.max(d.body.clientWidth, de.clientWidth)
+                Math.max(b.scrollWidth, de.scrollWidth),
+                Math.max(b.offsetWidth, de.offsetWidth),
+                Math.max(b.clientWidth, de.clientWidth)
             ),
             'winHeight' : de.clientHeight,
             'winWidth' : de.clientWidth
@@ -1779,20 +1825,13 @@ cm.getPageSize = function(key){
     return o[key] || o;
 };
 
-cm.getScrollBarSize = function(){
-    var node = cm.Node('div'),
-        styles = node.style,
-        size = 0;
-    styles.width = '100px';
-    styles.height = '100px';
-    styles.overflow = 'scroll';
-    styles.position = 'position';
-    styles.top = '-9000px';
-    cm.insertFirst(node, document.body);
-    size = Math.max(node.offsetWidth - node.clientWidth, 0);
-    cm.remove(node);
-    return size;
-};
+cm.getScrollBarSize = (function(){
+    var node;
+    return function(){
+        !node && (node = cm.insertFirst(cm.Node('div', {'class' : 'cm__scroll-bar-size-checker'}), document.body));
+        return Math.max(node.offsetWidth - node.clientWidth, 0);
+    };
+})();
 
 cm.setOpacity = function(node, value){
     if(node){
@@ -1852,11 +1891,9 @@ cm.getRealY = function(node){
 };
 
 cm.getRect = function(node){
-    var docEl = document.documentElement,
-        o,
-        rect;
+    var docEl, o, rect;
     if(cm.isWindow(node)){
-        docEl = document.documentElement;
+        docEl = node.document.documentElement;
         return {
             'top' : 0,
             'right' : docEl.clientWidth,
@@ -1889,7 +1926,7 @@ cm.getRect = function(node){
 };
 
 cm.getFullRect = function(node, styleObject){
-    if(!node || !cm.isNode(node)){
+    if(!cm.isNode(node)){
         return null;
     }
     var dimensions = {};
@@ -1931,7 +1968,7 @@ cm.getFullRect = function(node, styleObject){
 };
 
 cm.getNodeIndents = function(node, styleObject){
-    if(!node || !cm.isNode(node)){
+    if(!cm.isNode(node)){
         return null;
     }
     styleObject = typeof styleObject == 'undefined' ? cm.getStyleObject(node) : styleObject;
@@ -1944,22 +1981,28 @@ cm.getNodeIndents = function(node, styleObject){
         'left' :    cm.getCSSStyle(styleObject, 'marginLeft', true)
     };
     o['padding'] = {
-        'top' :     cm.getCSSStyle(styleObject, 'marginTop', true),
-        'right' :   cm.getCSSStyle(styleObject, 'marginRight', true),
-        'bottom' :  cm.getCSSStyle(styleObject, 'marginBottom', true),
-        'left' :    cm.getCSSStyle(styleObject, 'marginLeft', true)
+        'top' :     cm.getCSSStyle(styleObject, 'paddingTop', true),
+        'right' :   cm.getCSSStyle(styleObject, 'paddingRight', true),
+        'bottom' :  cm.getCSSStyle(styleObject, 'paddingBottom', true),
+        'left' :    cm.getCSSStyle(styleObject, 'paddingLeft', true)
     };
     return o;
 };
 
-cm.getNodeOffset = function(node, styleObject, o){
-    if(!node || !cm.isNode(node)){
+cm.getNodeOffset = function(node, styleObject, o, offsets){
+    if(!cm.isNode(node)){
         return null;
     }
     styleObject = typeof styleObject == 'undefined' ? cm.getStyleObject(node) : styleObject;
     o = !o || typeof o == 'undefined' ? cm.getNodeIndents(node, styleObject) : o;
     // Get size and position
     o['offset'] = cm.getRect(node);
+    if(offsets){
+        o['offset']['top'] += offsets['top'];
+        o['offset']['right'] += offsets['left'];
+        o['offset']['bottom'] += offsets['top'];
+        o['offset']['left'] += offsets['left'];
+    }
     o['inner'] = {
         'width' : o['offset']['width'] - o['padding']['left'] - o['padding']['right'],
         'height' : o['offset']['height'] - o['padding']['top'] - o['padding']['bottom'],
@@ -2470,16 +2513,16 @@ cm.Animation = function(o){
     };
 
     that.go = function(){
-        var args = cm.merge({
+        var params = arguments[0],
+            args = cm.merge({
                 'style' : '',
                 'duration' : '',
                 'anim' : 'simple',
                 'onStop' : function(){}
-            }, arguments[0]),
+            }, params),
             pId = 'animation_process_' + Math.random(),
             delta = animationMethod[args.anim] || animationMethod['simple'],
             properties = [];
-
         for(var name in args.style){
             var value = args.style[name].toString();
             var dimension = cm.getStyleDimension(value);
@@ -2709,7 +2752,6 @@ cm.ajax = function(o){
             'params' : '',
             'url' : '',
             'formData'  : false,
-            'httpRequestObject' : cm.createXmlHttpRequestObject(),
             'headers' : {
                 'Content-Type' : 'application/x-www-form-urlencoded',
                 'X-Requested-With' : 'XMLHttpRequest'
@@ -2744,6 +2786,7 @@ cm.ajax = function(o){
     };
 
     var validate = function(){
+        config['httpRequestObject'] = cm.createXmlHttpRequestObject();
         config['type'] = config['type'].toLowerCase();
         responseType =  /text|json/.test(config['type']) ? 'responseText' : 'responseXML';
         config['method'] = config['method'].toLowerCase();
@@ -3048,7 +3091,6 @@ cm.defineHelper = function(name, data, handler){
     }, data);
     // Create class extend object
     that.build = {
-        '_isComponent' : true,
         '_raw' : data,
         '_name' : {
             'full' : name,
@@ -3090,7 +3132,7 @@ cm.getConstructor = function(className, callback){
     callback = typeof callback != 'undefined' ? callback : function(){}
     if(!className || className == '*'){
         cm.forEach(cm.defineStack, function(classConstructor){
-            callback(classConstructor);
+            callback(classConstructor, className);
         });
         return cm.defineStack;
     }else{
@@ -3105,7 +3147,7 @@ cm.getConstructor = function(className, callback){
             }
             return false;
         }else{
-            callback(classConstructor);
+            callback(classConstructor, className);
             return classConstructor;
         }
     }

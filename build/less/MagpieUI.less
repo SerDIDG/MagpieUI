@@ -4275,6 +4275,16 @@ Copyright (c) 2015 Daniel Eden
     font-style: normal;
 }
 
+/* ******* HELPERS ******* */
+
+.cm__scroll-bar-size-checker {
+    width: 100px;
+    height: 100px;
+    overflow: scroll;
+    position: fixed;
+    .mx__position(-9000px, auto, auto, -9000px);
+}
+
 /* ******* INLINE STYLES ******* */
 
 .clearfix,
@@ -6044,15 +6054,15 @@ button {
         display: block;
         clear: both;
 
+        &:first-child {
+            margin-top: 0;
+        }
+
         &.is-text {
             dt {
                 padding: 0;
             }
         }
-    }
-
-    > dl:first-child {
-        margin-top: 0;
     }
 
     dt {
@@ -7214,6 +7224,7 @@ button {
     height: 50px;
     position: relative;
 
+    &.is-absolute,
     &.position {
         height: auto;
         position: absolute;
@@ -9537,6 +9548,10 @@ button {
 
     &.theme-dark {
         background-color: @PtOverlay-Dark;
+    }
+
+    &.is-immediately {
+        .cm__transition-none;
     }
 
     &.is-open {

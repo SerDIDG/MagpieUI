@@ -305,10 +305,10 @@ function(params){
     var move = function(e){
         cm.preventDefault(e);
         // Calculate sizes and positions
-        var x = cm._clientPosition['x'],
+        var position = cm.getEventClientPosition(e),
             toFixed = e.shiftKey ? 0 : 2,
-            leftWidth = x - current['left']['offset'],
-            rightWidth = current['right']['offset'] - x;
+            leftWidth = position['left'] - current['left']['offset'],
+            rightWidth = current['right']['offset'] - position['left'];
         // Apply sizes and positions
         if(leftWidth > that.params['minColumnWidth'] && rightWidth > that.params['minColumnWidth']){
             current['left']['column']['width'] = [(leftWidth / current['ratio']).toFixed(toFixed), '%'].join('');

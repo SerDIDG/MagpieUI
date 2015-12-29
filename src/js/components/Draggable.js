@@ -56,22 +56,20 @@ function(params){
     };
 
     var start = function(e){
+        cm.preventDefault(e);
+        if(!cm.isTouch && e.button){
+            return;
+        }
         if(that.isDrag){
             return;
         }
         that.isDrag = true;
-        cm.preventDefault(e);
         // Hide IFRAMES and EMBED tags
         cm.hideSpecialTags();
         // Check event type and get cursor / finger position
-        that.startX = cm._clientPosition['x'];
-        that.startY = cm._clientPosition['y'];
-        if(!cm.isTouch){
-            // If not left mouse button, don't duplicate drag event
-            if((cm.is('IE') && cm.isVersion() < 9 && e.button != 1) || (!cm.is('IE') && e.button)){
-                return;
-            }
-        }
+        var position = cm.getEventClientPosition(e);
+        that.startX = position['left'];
+        that.startY = position['top'];
         // Calculate dimensions and position
         that.getDimensions();
         that.nodeStartX = cm.getStyle(that.params['node'], 'left', true);
@@ -86,8 +84,9 @@ function(params){
 
     var move = function(e){
         cm.preventDefault(e);
+        var position = cm.getEventClientPosition(e);
         // Calculate dimensions and position
-        setPosition(cm._clientPosition['x'], cm._clientPosition['y']);
+        setPosition(position['left'], position['top']);
         // Trigger Event
         that.triggerEvent('onMove');
     };

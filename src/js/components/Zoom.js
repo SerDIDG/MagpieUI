@@ -74,8 +74,8 @@ function(params){
 
     var calculateAction = function(){
         if(that.isLoad){
-            var setX = -cm._clientPosition['x'] * widthRatio,
-                setY = -cm._clientPosition['y'] * heightRatio;
+            var setX = -cm._clientPosition['left'] * widthRatio,
+                setY = -cm._clientPosition['top'] * heightRatio;
             cm.setCSSTranslate(that.nodes['image'], [setX, 'px'].join(''), [setY, 'px'].join(''));
         }
     };

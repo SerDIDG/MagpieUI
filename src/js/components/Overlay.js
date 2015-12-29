@@ -9,8 +9,10 @@ cm.define('Com.Overlay', {
         'onRender',
         'onOpenStart',
         'onOpen',
+        'onOpenEnd',
         'onCloseStart',
-        'onClose'
+        'onClose',
+        'onCloseEnd'
     ],
     'params' : {
         'name' : '',
@@ -32,6 +34,7 @@ function(params){
     that.isOpen = false;
     that.isShowSpinner = false;
     that.isShowContent = false;
+    that.openInterval = null;
 
     var init = function(){
         getCSSHelpers();
@@ -68,34 +71,70 @@ function(params){
         that.setTheme(that.params['theme']);
     };
 
+    var openHelper = function(){
+        that.triggerEvent('onOpen')
+            .triggerEvent('onOpenEnd');
+    };
+
+    var closeHelper = function(){
+        that.triggerEvent('onClose')
+            .triggerEvent('onCloseEnd');
+        if(that.params['removeOnClose']){
+            cm.remove(that.nodes['container']);
+        }
+    };
+
     /* ******* MAIN ******* */
 
-    that.open = function(){
+    that.open = function(isImmediately){
         if(!that.isOpen){
             that.isOpen = true;
+            // Set immediately animation hack
+            if(isImmediately){
+                cm.addClass(that.nodes['container'], 'is-immediately');
+            }
             if(!cm.inDOM(that.nodes['container'])){
                 that.params['container'].appendChild(that.nodes['container']);
             }
             that.triggerEvent('onOpenStart');
             cm.addClass(that.nodes['container'], 'is-open', true);
-            setTimeout(function(){
-                that.triggerEvent('onOpen');
-            }, that.params['duration']);
+            // Remove immediately animation hack
+            that.openInterval && clearTimeout(that.openInterval);
+            if(isImmediately){
+                that.openInterval = setTimeout(function(){
+                    cm.removeClass(that.nodes['container'], 'is-immediately');
+                    openHelper();
+                }, 5);
+            }else{
+                that.openInterval = setTimeout(function(){
+                    openHelper();
+                }, that.params['duration'] + 5);
+            }
         }
         return that;
     };
 
-    that.close = function(){
+    that.close = function(isImmediately){
         if(that.isOpen){
             that.isOpen = false;
+            // Set immediately animation hack
+            if(isImmediately){
+                cm.addClass(that.nodes['container'], 'is-immediately');
+            }
             that.triggerEvent('onCloseStart');
             cm.removeClass(that.nodes['container'], 'is-open');
-            setTimeout(function(){
-                if(that.params['removeOnClose']){
-                    cm.remove(that.nodes['container']);
-                }
-                that.triggerEvent('onClose');
-            }, that.params['duration']);
+            // Remove immediately animation hack
+            that.openInterval && clearTimeout(that.openInterval);
+            if(isImmediately){
+                that.openInterval = setTimeout(function(){
+                    cm.removeClass(that.nodes['container'], 'is-immediately');
+                    closeHelper();
+                }, 5);
+            }else{
+                that.openInterval = setTimeout(function(){
+                    closeHelper();
+                }, that.params['duration'] + 5);
+            }
         }
         // Close Event
         return that;
@@ -115,7 +154,7 @@ function(params){
             if(!that.params['removeOnClose']){
                 setTimeout(function(){
                     cm.remove(that.nodes['container']);
-                }, that.params['duration']);
+                }, that.params['duration'] + 5);
             }
         }else{
             cm.remove(that.nodes['container']);
