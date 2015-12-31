@@ -16,9 +16,9 @@ cm.define('Com.Spacer', {
     'params' : {
         'node' : cm.Node('div'),
         'name' : '',
+        'minHeight' : 24,
         'Com.Draggable' : {
-            'direction' : 'vertical',
-            'minY' : 24
+            'direction' : 'vertical'
         }
     }
 },
@@ -36,7 +36,7 @@ function(params){
         validateParams();
         render();
         setLogic();
-        set(that.params['node'].style.height, false);
+        set(parseFloat(that.params['node'].style.height), false);
         that.addToStack(that.params['node']);
         that.triggerEvent('onRender');
     };
@@ -45,6 +45,7 @@ function(params){
         if(cm.isNode(that.params['node'])){
             that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
         }
+        that.params['Com.Draggable']['minY'] = that.params['minHeight'];
     };
 
     var render = function(){
@@ -120,7 +121,7 @@ function(params){
     };
 
     var set = function(height, triggerEvents){
-        that.value = height;
+        that.value = Math.min(height, that.params['minHeight']);
         setHeight(height);
         setRulerCounter();
         if(triggerEvents){

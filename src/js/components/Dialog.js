@@ -7,6 +7,7 @@ cm.define('Com.Dialog', {
         'Stack'
     ],
     'events' : [
+        'onRenderStart',
         'onRender',
         'onOpenStart',
         'onOpen',
@@ -65,6 +66,7 @@ function(params){
         that.convertEvents(that.params['events']);
         that.getDataConfig(that.params['content']);
         validateParams();
+        that.triggerEvent('onRenderStart');
         render();
         that.addToStack(nodes['container']);
         // Trigger onRender event

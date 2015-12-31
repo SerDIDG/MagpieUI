@@ -7,6 +7,7 @@ cm.define('Com.Gallery', {
         'DataNodes'
     ],
     'events' : [
+        'onRenderStart',
         'onRender',
         'onSet',
         'onChange',
@@ -54,6 +55,7 @@ function(params){
         that.convertEvents(that.params['events']);
         that.getDataNodes(that.params['node'], that.params['nodesDataMarker'], false);
         that.getDataConfig(that.params['node']);
+        that.triggerEvent('onRenderStart');
         render();
         // Collect items
         cm.forEach(that.nodes['items'], collectItem);

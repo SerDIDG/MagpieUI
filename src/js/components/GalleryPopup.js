@@ -6,6 +6,7 @@ cm.define('Com.GalleryPopup', {
         'Stack'
     ],
     'events' : [
+        'onRenderStart',
         'onRender',
         'onOpen',
         'onClose',
@@ -44,6 +45,7 @@ function(params){
         that.getDataConfig(that.params['node']);
         that.addToStack(that.params['node']);
         validateParams();
+        that.triggerEvent('onRenderStart');
         render();
         setLogic();
         that.triggerEvent('onRender');

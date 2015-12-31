@@ -7,6 +7,7 @@ cm.define('Com.GalleryLayout', {
         'Stack'
     ],
     'events' : [
+        'onRenderStart',
         'onRender',
         'onChange'
     ],
@@ -40,6 +41,7 @@ function(params){
         that.convertEvents(that.params['events']);
         that.getDataNodes(that.params['node'], that.params['nodesDataMarker'], false);
         that.getDataConfig(that.params['node']);
+        that.triggerEvent('onRenderStart');
         collectItems();
         render();
         that.addToStack(that.params['node']);

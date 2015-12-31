@@ -21556,6 +21556,7 @@ cm.define('Com.Dialog', {
         'Stack'
     ],
     'events' : [
+        'onRenderStart',
         'onRender',
         'onOpenStart',
         'onOpen',
@@ -21614,6 +21615,7 @@ function(params){
         that.convertEvents(that.params['events']);
         that.getDataConfig(that.params['content']);
         validateParams();
+        that.triggerEvent('onRenderStart');
         render();
         that.addToStack(nodes['container']);
         // Trigger onRender event
@@ -23192,6 +23194,7 @@ cm.define('Com.Gallery', {
         'DataNodes'
     ],
     'events' : [
+        'onRenderStart',
         'onRender',
         'onSet',
         'onChange',
@@ -23239,6 +23242,7 @@ function(params){
         that.convertEvents(that.params['events']);
         that.getDataNodes(that.params['node'], that.params['nodesDataMarker'], false);
         that.getDataConfig(that.params['node']);
+        that.triggerEvent('onRenderStart');
         render();
         // Collect items
         cm.forEach(that.nodes['items'], collectItem);
@@ -23555,6 +23559,7 @@ cm.define('Com.GalleryLayout', {
         'Stack'
     ],
     'events' : [
+        'onRenderStart',
         'onRender',
         'onChange'
     ],
@@ -23588,6 +23593,7 @@ function(params){
         that.convertEvents(that.params['events']);
         that.getDataNodes(that.params['node'], that.params['nodesDataMarker'], false);
         that.getDataConfig(that.params['node']);
+        that.triggerEvent('onRenderStart');
         collectItems();
         render();
         that.addToStack(that.params['node']);
@@ -23656,6 +23662,7 @@ cm.define('Com.GalleryPopup', {
         'Stack'
     ],
     'events' : [
+        'onRenderStart',
         'onRender',
         'onOpen',
         'onClose',
@@ -23694,6 +23701,7 @@ function(params){
         that.getDataConfig(that.params['node']);
         that.addToStack(that.params['node']);
         validateParams();
+        that.triggerEvent('onRenderStart');
         render();
         setLogic();
         that.triggerEvent('onRender');
@@ -25762,8 +25770,8 @@ cm.define('Com.Pagination', {
         'ajax' : {
             'type' : 'json',
             'method' : 'get',
-            'url' : '',                                             // Request URL. Variables: %page%, %token%, %perPage%, %callback% for JSONP.
-            'params' : ''                                           // Params object. %page%, %token%, %perPage%, %callback% for JSONP.
+            'url' : '',                                             // Request URL. Variables: %page%, %offset%, %token%, %perPage%, %limit%, %callback% for JSONP.
+            'params' : ''                                           // Params object. %page%, %offset%, %token%, %perPage%, %limit%, %callback% for JSONP.
         },
         'Com.Overlay' : {
             'position' : 'absolute',
@@ -25923,13 +25931,19 @@ function(params){
         // Prepare
         config['url'] = cm.strReplace(config['url'], {
             '%perPage%' : that.params['perPage'],
+            '%limit%' : that.params['perPage'],
             '%page%' : that.page,
-            '%token%' : that.pageToken
+            '%offset%' : (that.page - 1) * that.params['perPage'],
+            '%token%' : that.pageToken,
+            '%baseurl%' : cm._baseUrl
         });
         config['params'] = cm.objectReplace(config['params'], {
             '%perPage%' : that.params['perPage'],
+            '%limit%' : that.params['perPage'],
             '%page%' : that.page,
-            '%token%' : that.pageToken
+            '%offset%' : (that.page - 1) * that.params['perPage'],
+            '%token%' : that.pageToken,
+            '%baseurl%' : cm._baseUrl
         });
         return config;
     };
@@ -26990,8 +27004,8 @@ cm.define('Com.ScrollPagination', {
         'ajax' : {
             'type' : 'json',
             'method' : 'get',
-            'url' : '',                                             // Request URL. Variables: %baseurl%, %page%, %token%, %perPage%, %callback% for JSONP.
-            'params' : ''                                           // Params object. %baseurl%, %page%, %token%, %perPage%, %callback% for JSONP.
+            'url' : '',                                             // Request URL. Variables: %baseurl%, %page%, %offset%, %token%, %limit%, %perPage%, %callback% for JSONP.
+            'params' : ''                                           // Params object. %baseurl%, %page%, %offset%, %token%, %limit%, %perPage%, %callback% for JSONP.
         },
         'langs' : {
             'load_more' : 'Load More'
@@ -27162,13 +27176,17 @@ function(params){
         // Prepare
         config['url'] = cm.strReplace(config['url'], {
             '%perPage%' : that.params['perPage'],
+            '%limit%' : that.params['perPage'],
             '%page%' : that.page,
+            '%offset%' : (that.page - 1) * that.params['perPage'],
             '%token%' : that.pageToken,
             '%baseurl%' : cm._baseUrl
         });
         config['params'] = cm.objectReplace(config['params'], {
             '%perPage%' : that.params['perPage'],
+            '%limit%' : that.params['perPage'],
             '%page%' : that.page,
+            '%offset%' : (that.page - 1) * that.params['perPage'],
             '%token%' : that.pageToken,
             '%baseurl%' : cm._baseUrl
         });
@@ -28889,9 +28907,9 @@ cm.define('Com.Spacer', {
     'params' : {
         'node' : cm.Node('div'),
         'name' : '',
+        'minHeight' : 24,
         'Com.Draggable' : {
-            'direction' : 'vertical',
-            'minY' : 24
+            'direction' : 'vertical'
         }
     }
 },
@@ -28909,7 +28927,7 @@ function(params){
         validateParams();
         render();
         setLogic();
-        set(that.params['node'].style.height, false);
+        set(parseFloat(that.params['node'].style.height), false);
         that.addToStack(that.params['node']);
         that.triggerEvent('onRender');
     };
@@ -28918,6 +28936,7 @@ function(params){
         if(cm.isNode(that.params['node'])){
             that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
         }
+        that.params['Com.Draggable']['minY'] = that.params['minHeight'];
     };
 
     var render = function(){
@@ -28993,7 +29012,7 @@ function(params){
     };
 
     var set = function(height, triggerEvents){
-        that.value = height;
+        that.value = Math.min(height, that.params['minHeight']);
         setHeight(height);
         setRulerCounter();
         if(triggerEvents){
