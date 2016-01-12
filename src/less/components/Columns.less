@@ -174,36 +174,38 @@
 @media only screen and (max-width : @ComColumns-AdaptiveFrom) {
 
     html.is-adaptive {
-        .com__column {
-            width: auto !important;
-            height: auto;
-            display: block;
-        }
-
         .com__columns {
-            > .inner {
-                margin: 0;
-
-                > .container {
-                    display: block;
-
-                    > .com__column {
-                        margin: @CmIndent-Medium 0 0 0;
-
-                        &:first-child {
-                            margin: 0;
-                        }
-
-                        > .inner {
-                            margin: 0;
-                        }
-                    }
-                }
-            }
-
             &.is-editable {
                 .com__columns__chassis {
                     display: none;
+                }
+            }
+
+            &:not(.is-not-adaptive) {
+                > .inner {
+                    margin: 0;
+
+                    > .container {
+                        display: block;
+
+                        > .com__column {
+                            margin: @CmIndent-Medium 0 0 0;
+
+                            &:first-child {
+                                margin: 0;
+                            }
+
+                            > .inner {
+                                margin: 0;
+                            }
+                        }
+                    }
+                }
+
+                .com__column {
+                    width: auto !important;
+                    height: auto;
+                    display: block;
                 }
             }
         }

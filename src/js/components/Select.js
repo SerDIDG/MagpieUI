@@ -159,7 +159,7 @@ function(params){
         /* *** RENDER OPTIONS *** */
         collectSelectOptions();
         cm.forEach(that.params['options'], function(item){
-            renderOption(item.value, item.text);
+            renderOption(item);
         });
         /* *** INSERT INTO DOM *** */
         if(that.params['container']){
@@ -274,12 +274,17 @@ function(params){
                     cm.forEach(myOptionsNodes, function(optionNode){
                         myOptions.push({
                             'value' : optionNode.value,
-                            'text' : optionNode.innerHTML
+                            'text' : optionNode.innerHTML,
+                            'className' : optionNode.className
                         });
                     });
                     renderGroup(myChild.getAttribute('label'), myOptions);
                 }else if(myChild.tagName.toLowerCase() == 'option'){
-                    renderOption(myChild.value, myChild.innerHTML);
+                    renderOption({
+                        'value' : myChild.value,
+                        'text' : myChild.innerHTML,
+                        'className' : myChild.className
+                    });
                 }
             }
         });
@@ -306,7 +311,7 @@ function(params){
         }
         // Render options
         cm.forEach(myOptions, function(myOption){
-            renderOption(myOption.value, myOption.text, item);
+            renderOption(myOption, item);
         });
         // Append
         nodes['items'].appendChild(item['container']);
@@ -317,23 +322,24 @@ function(params){
 
     /* *** OPTIONS *** */
 
-    var renderOption = function(value, text, group){
+    var renderOption = function(item, group){
         // Check for exists
-        if(options[value]){
-            removeOption(options[value]);
+        if(options[item['value']]){
+            removeOption(options[item['value']]);
         }
         // Config
-        var item = {
+        item = cm.merge({
             'selected' : false,
-            'value' : value,
-            'text' : text,
+            'value' : '',
+            'text' : '',
+            'className' : '',
             'group': group
-        };
+        }, item);
         // Structure
-        item['node'] = cm.Node('li',
-            cm.Node('a', {'innerHTML' : text})
+        item['node'] = cm.Node('li', {'class' : item['className']},
+            cm.Node('a', {'innerHTML' : item['text']})
         );
-        item['option'] = cm.Node('option', {'value' : value, 'innerHTML' : text});
+        item['option'] = cm.Node('option', {'value' : item['value'], 'innerHTML' : item['text']});
         // Label onlick event
         cm.addEvent(item['node'], 'click', function(){
             if(!that.disabled){
@@ -350,7 +356,7 @@ function(params){
             nodes['hidden'].appendChild(item['option']);
         }
         // Push
-        optionsList.push(options[value] = item);
+        optionsList.push(options[item['value']] = item);
         optionsLength = optionsList.length;
     };
 
@@ -554,13 +560,20 @@ function(params){
     };
 
     that.addOption = function(value, text){
-        renderOption(value, text);
+        if(cm.isArray(arguments[0])){
+            renderOption(arguments[0]);
+        }else{
+            renderOption({
+                'value' : value,
+                'text' : text
+            });
+        }
         return that;
     };
 
     that.addOptions = function(arr){
         cm.forEach(arr, function(item){
-            renderOption(item['value'], item['text']);
+            renderOption(item);
         });
         return that;
     };

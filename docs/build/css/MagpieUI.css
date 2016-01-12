@@ -3706,6 +3706,9 @@ span.CodeMirror-selectedtext { background: none; }
 .disable-hover * {
   pointer-events: none !important;
 }
+.cm__bold {
+  font-weight: 600;
+}
 /* ******* COMMON ******* */
 .cm__box {
   margin: 0 0 24px;
@@ -9224,7 +9227,6 @@ button::-moz-focus-inner {
   padding: 2px 4px;
   background-color: transparent;
   line-height: 18px;
-  font-weight: normal;
   text-decoration: none;
   color: #666666;
   -webkit-transition: all 300ms ease-in-out;
@@ -11021,28 +11023,28 @@ button::-moz-focus-inner {
 }
 /* ******* COMPONENT: COLUMNS: ADAPTIVE ******* */
 @media only screen and (max-width: 768px) {
-  html.is-adaptive .com__column {
+  html.is-adaptive .com__columns.is-editable .com__columns__chassis {
+    display: none;
+  }
+  html.is-adaptive .com__columns:not(.is-not-adaptive) > .inner {
+    margin: 0;
+  }
+  html.is-adaptive .com__columns:not(.is-not-adaptive) > .inner > .container {
+    display: block;
+  }
+  html.is-adaptive .com__columns:not(.is-not-adaptive) > .inner > .container > .com__column {
+    margin: 24px 0 0 0;
+  }
+  html.is-adaptive .com__columns:not(.is-not-adaptive) > .inner > .container > .com__column:first-child {
+    margin: 0;
+  }
+  html.is-adaptive .com__columns:not(.is-not-adaptive) > .inner > .container > .com__column > .inner {
+    margin: 0;
+  }
+  html.is-adaptive .com__columns:not(.is-not-adaptive) .com__column {
     width: auto !important;
     height: auto;
     display: block;
-  }
-  html.is-adaptive .com__columns > .inner {
-    margin: 0;
-  }
-  html.is-adaptive .com__columns > .inner > .container {
-    display: block;
-  }
-  html.is-adaptive .com__columns > .inner > .container > .com__column {
-    margin: 24px 0 0 0;
-  }
-  html.is-adaptive .com__columns > .inner > .container > .com__column:first-child {
-    margin: 0;
-  }
-  html.is-adaptive .com__columns > .inner > .container > .com__column > .inner {
-    margin: 0;
-  }
-  html.is-adaptive .com__columns.is-editable .com__columns__chassis {
-    display: none;
   }
 }
 /* ******* COMPONENTS: DASHBOARD ******* */
