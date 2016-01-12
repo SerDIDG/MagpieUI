@@ -2795,6 +2795,7 @@ cm.ajax = function(o){
             delete config['headers']['Content-Type'];
         }else if(config['formData']){
             config['params'] = cm.obj2FormData(config['params']);
+            delete config['headers']['Content-Type'];
         }else if(cm.isObject(config['params'])){
             config['params'] = cm.obj2URI(config['params']);
         }
