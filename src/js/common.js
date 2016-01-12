@@ -2791,7 +2791,9 @@ cm.ajax = function(o){
         responseType =  /text|json/.test(config['type']) ? 'responseText' : 'responseXML';
         config['method'] = config['method'].toLowerCase();
         // Convert params object to URI string
-        if(config['formData']){
+        if(config['params'] instanceof FormData) {
+            delete config['headers']['Content-Type'];
+        }else if(config['formData']){
             config['params'] = cm.obj2FormData(config['params']);
         }else if(cm.isObject(config['params'])){
             config['params'] = cm.obj2URI(config['params']);
