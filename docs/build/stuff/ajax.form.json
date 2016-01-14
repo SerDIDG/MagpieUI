@@ -1,9 +1,10 @@
 {
-  "data" : {
-    "error" : "some_error",
-    "fields" : {
-      "image" : "size_to_big",
-      "category" : "empty"
+  "errors":[
+    {
+      "message" : "Item not found",
+      "field" : [
+        "select"
+      ]
     }
-  }
+  ]
 }

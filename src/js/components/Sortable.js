@@ -41,13 +41,7 @@ function(params){
 
     var render = function(){
         // Init drag'n'drop class
-        that.components['dd'] = new Com.Draganddrop(
-                cm.merge(that.params['Com.Draganddrop'], {
-                    'draggableContainer' : that.params['draggableContainer'],
-                    'direction' : that.params['direction'],
-                    'limit' : that.params['limit']
-                })
-            )
+        that.components['dd'] = new Com.Draganddrop(that.params['Com.Draganddrop'])
             .addEvent('onRemove', onRemove)
             .addEvent('onDrop', onSort);
         // Process items
