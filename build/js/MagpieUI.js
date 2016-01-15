@@ -1415,7 +1415,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.10.2',
+        '_version' : '3.10.3',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -1424,7 +1424,7 @@ var cm = {
         '_baseUrl': [window.location.protocol, window.location.hostname].join('//'),
         '_scrollSize' : 0,
         '_pageSize' : {},
-        '_clientPosition' : {'x' : 0, 'y' : 0},
+        '_clientPosition' : {'left' : 0, 'top' : 0},
         '_config' : {
             'animDuration' : 300,
             'animDurationQuick' : 150,
@@ -2405,6 +2405,13 @@ cm.inDOM = function(o){
             }
             el = el.parentNode
         }
+    }
+    return false;
+};
+
+cm.hasParentNode = function(o){
+    if(o){
+        return !!o.parentNode;
     }
     return false;
 };
@@ -4020,8 +4027,8 @@ cm.transition = function(node, params){
             'properties' : {},
             'duration' : 0,
             'easing' : 'ease-in-out',
-            'delayIn' : 30,
-            'delayOut' : 30,
+            'delayIn' : 0,
+            'delayOut' : 0,
             'clear' : false,
             'onStop' : function(){}
         }, params);
@@ -7750,11 +7757,16 @@ cm.define('Com.Columns', {
         'Com.Draggable'
     ],
     'events' : [
+        'onRenderStart',
         'onRender',
         'onAdd',
         'onRemove',
         'onChange',
-        'onResize'
+        'onResize',
+        'enableEditing',
+        'disableEditing',
+        'enableEditable',
+        'disableEditable'
     ],
     'params' : {
         'columns' : false,                  // Deprecated, use 'node' parameter instead.
@@ -7763,7 +7775,9 @@ cm.define('Com.Columns', {
         'name' : '',
         'renderStructure' : false,
         'minColumnWidth' : 48,              // in px
-        'data' : []
+        'data' : [],
+        'isEditing' : true,
+        'customEvents' : true
     }
 },
 function(params){
@@ -7771,6 +7785,7 @@ function(params){
         nodes = {},
         current;
 
+    that.isEditing = false;
     that.items = [];
     that.chassis = [];
 
@@ -7781,8 +7796,10 @@ function(params){
         preValidateParams();
         that.convertEvents(that.params['events']);
         that.getDataConfig(that.params['node']);
+        that.triggerEvent('onRenderStart');
         render();
         renderChassis();
+        that.params['isEditing'] && that.enableEditing();
         that.addToStack(nodes['container']);
         that.triggerEvent('onRender');
     };
@@ -7802,9 +7819,17 @@ function(params){
             collect();
         }
         // Add custom event
-        cm.customEvent.add(nodes['container'], 'redraw', function(){
-            that.redraw();
-        });
+        if(that.params['customEvents']){
+            cm.customEvent.add(nodes['container'], 'redraw', function(){
+                that.redraw();
+            });
+            cm.customEvent.add(nodes['container'], 'enableEditable', function(){
+                that.enableEditing();
+            });
+            cm.customEvent.add(nodes['container'], 'disableEditable', function(){
+                that.disableEditing();
+            });
+        }
     };
 
     var collect = function(){
@@ -8094,6 +8119,26 @@ function(params){
 
     /* ******* PUBLIC ******* */
 
+    that.enableEditing = function(){
+        if(!that.isEditing){
+            that.isEditing = true;
+            cm.addClass(nodes['container'], 'is-editing is-editable');
+            that.triggerEvent('enableEditing');
+            that.triggerEvent('enableEditable');
+        }
+        return that;
+    };
+
+    that.disableEditing = function(){
+        if(that.isEditing){
+            that.isEditing = false;
+            cm.removeClass(nodes['container'], 'is-editing is-editable');
+            that.triggerEvent('disableEditing');
+            that.triggerEvent('disableEditable');
+        }
+        return that;
+    };
+
     that.redraw = function(){
         redrawChassis();
         return that;
@@ -8142,15 +8187,20 @@ cm.define('Com.ColumnsHelper', {
         'onResize',
         'onDragStart',
         'onDragMove',
-        'onDragStop'
+        'onDragStop',
+        'enableEditing',
+        'disableEditing',
+        'enableEditable',
+        'disableEditable'
     ],
     'params' : {
         'node' : cm.node('div'),
         'name' : '',
-        'isEditMode' : true,
+        'isEditing' : true,
         'items' : [],
         'showDrag' : true,
         'minColumnWidth' : 48,              // in px
+        'customEvents' : true,
         'ajax' : {
             'type' : 'json',
             'method' : 'post',
@@ -8165,7 +8215,7 @@ function(params){
     that.items = [];
     that.chassis = [];
     that.current = null;
-    that.isEditMode = false;
+    that.isEditing = false;
     that.isRendered = false;
     that.isAjax = false;
     that.isProcess = false;
@@ -8187,7 +8237,6 @@ function(params){
         if(!cm.isEmpty(that.params['ajax']['url'])){
             that.isAjax = true;
         }
-        that.isEditMode = that.params['isEditMode'];
     };
 
     var render = function(){
@@ -8197,13 +8246,23 @@ function(params){
             that.redraw();
         });
         // Add custom event
-        cm.customEvent.add(that.params['node'], 'redraw', function(){
-            that.redraw();
-        });
+        if(that.params['customEvents']){
+            cm.customEvent.add(that.params['node'], 'redraw', function(){
+                that.redraw();
+            });
+            cm.customEvent.add(that.params['node'], 'enableEditable', function(){
+                that.enableEditing();
+            });
+            cm.customEvent.add(that.params['node'], 'disableEditable', function(){
+                that.disableEditing();
+            });
+        }
+        // Editing
+        that.params['isEditing'] && that.enableEditing();
     };
 
     var renderChassis = function(){
-        if(that.isEditMode && !that.isRendered){
+        if(that.isEditing && !that.isRendered){
             that.items = [];
             that.chassis = [];
             cm.forEach(that.params['items'], function(item, i){
@@ -8322,17 +8381,11 @@ function(params){
     };
 
     var move = function(e){
-        var leftWidth,
-            rightWidth;
-        e = cm.getEvent(e);
         cm.preventDefault(e);
-        var x = e.clientX;
-        if(cm.isTouch && e.touches){
-            x = e.touches[0].clientX;
-        }
         // Calculate sizes and positions
-        leftWidth = x - that.current['left']['offset'];
-        rightWidth = that.current['right']['offset'] - x;
+        var position = cm.getEventClientPosition(e),
+            leftWidth = position['left'] - that.current['left']['offset'],
+            rightWidth = that.current['right']['offset'] - position['left'];
         // Apply sizes and positions
         if(leftWidth > that.params['minColumnWidth'] && rightWidth > that.params['minColumnWidth']){
             that.current['left']['column']['width'] = [(leftWidth / that.current['ratio']).toFixed(2), '%'].join('');
@@ -8410,15 +8463,23 @@ function(params){
 
     /* ******* PUBLIC ******* */
 
-    that.enableEditMode = function(){
-        that.isEditMode = true;
-        renderChassis();
+    that.enableEditing = function(){
+        if(!that.isEditing){
+            that.isEditing = true;
+            renderChassis();
+            that.triggerEvent('enableEditing');
+            that.triggerEvent('enableEditable');
+        }
         return that;
     };
 
-    that.disableEditMode = function(){
-        that.isEditMode = false;
-        removeChassis();
+    that.disableEditing = function(){
+        if(that.isEditing){
+            that.isEditing = false;
+            removeChassis();
+            that.triggerEvent('disableEditing');
+            that.triggerEvent('disableEditable');
+        }
         return that;
     };
 
@@ -8430,7 +8491,7 @@ function(params){
     };
 
     that.redraw = function(){
-        if(that.isEditMode){
+        if(that.isEditing){
             redrawChassis();
         }
         return that;
@@ -13565,13 +13626,20 @@ cm.define('Com.GridlistHelper', {
     'events' : [
         'onRender',
         'onColumnsChange',
-        'onColumnsResize'
+        'onColumnsResize',
+        'enableEditing',
+        'disableEditing',
+        'enableEditable',
+        'disableEditable'
     ],
     'params' : {
         'node' : cm.Node('div'),
         'name' : '',
-        'isEditMode' : true,
+        'isEditing' : true,
+        'customEvents' : true,
         'columns' : {
+            'isEditing' : false,
+            'customEvents' : false,
             'showDrag' : false,
             'ajax' : {
                 'type' : 'json',
@@ -13591,7 +13659,7 @@ function(params){
         'items' : []
     };
     that.components = {};
-    that.isEditMode = false;
+    that.isEditing = false;
 
     var init = function(){
         that.setParams(params);
@@ -13606,7 +13674,6 @@ function(params){
 
     var validateParams = function(){
         that.nodes['container'] = that.params['node'];
-        that.isEditMode = that.params['isEditMode'];
     };
 
     var render = function(){
@@ -13617,7 +13684,6 @@ function(params){
         cm.getConstructor('Com.ColumnsHelper', function(classConstructor){
             that.components['columns'] = new classConstructor(
                 cm.merge(that.params['columns'], {
-                    'isEditMode' : false,
                     'node' : that.nodes['container'],
                     'items' : that.nodes['items'],
                     'events' : {
@@ -13637,29 +13703,48 @@ function(params){
                 })
             );
         });
-        // Edit mode
-        if(that.isEditMode){
-            that.enableEditMode();
+        // Add custom event
+        if(that.params['customEvents']){
+            cm.customEvent.add(that.params['node'], 'redraw', function(){
+                that.redraw();
+            });
+            cm.customEvent.add(that.params['node'], 'enableEditable', function(){
+                that.enableEditing();
+            });
+            cm.customEvent.add(that.params['node'], 'disableEditable', function(){
+                that.disableEditing();
+            });
         }
+        // Editing
+        that.params['isEditing'] && that.enableEditing();
     };
 
     /* ******* PUBLIC ******* */
 
-    that.enableEditMode = function(){
-        that.isEditMode = true;
-        cm.addClass(that.nodes['container'], 'is-editable');
-        if(that.components['columns']){
-            that.components['columns'].enableEditMode();
+    that.enableEditing = function(){
+        if(!that.isEditing){
+            that.isEditing = true;
+            cm.addClass(that.params['node'], 'is-editing is-editable');
+            that.components['columns'] && that.components['columns'].enableEditing();
+            that.triggerEvent('enableEditing');
+            that.triggerEvent('enableEditable');
         }
         return that;
     };
 
-    that.disableEditMode = function(){
-        that.isEditMode = false;
-        cm.removeClass(that.nodes['container'], 'is-editable');
-        if(that.components['columns']){
-            that.components['columns'].disableEditMode();
+    that.disableEditing = function(){
+        if(that.isEditing){
+            that.isEditing = false;
+            cm.removeClass(that.params['node'], 'is-editing is-editable');
+            that.components['columns'] && that.components['columns'].disableEditing();
+            that.triggerEvent('disableEditing');
+            that.triggerEvent('disableEditable');
         }
+        return that;
+    };
+
+    that.redraw = function(){
+        that.components['columns'] && that.components['columns'].redraw();
         return that;
     };
 
@@ -17229,7 +17314,8 @@ cm.define('Com.Slider', {
         'minHeight' : 48,               // Set min-height of slider, work with calculateMaxHeight parameter
         'hasBar' : false,
         'barDirection' : 'horizontal',  // horizontal | vertical
-        'editMode' : false,
+        'isEditing' : false,
+        'customEvents' : true,
         'Com.Scroll' : {
             'step' : 25,
             'time' : 25
@@ -17267,6 +17353,7 @@ function(params){
     that.paused = false;
     that.pausedOutside = false;
     that.isProcess = false;
+    that.isEditing = false;
 
     var init = function(){
         getCSSHelpers();
@@ -17279,7 +17366,7 @@ function(params){
         renderSlider();
         renderLayout();
         that.setEffect(that.params['effect']);
-        that.params['editMode'] && that.enableEditMode();
+        that.params['isEditing'] && that.enableEditing();
         that.addToStack(that.params['node']);
         that.triggerEvent('onRender');
     };
@@ -17292,6 +17379,7 @@ function(params){
         if(cm.isNode(that.params['node'])){
             that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
         }
+        that.isEditing = cm.hasClass(that.params['node'], 'is-editing');
         that.params['direction'] = {'forward' : 1, 'backward' : 1, 'random' : 1}[that.params['direction']] ? that.params['direction'] : 'forward';
         that.params['effect'] = Com.SliderEffects[that.params['effect']] ? that.params['effect'] : 'fade';
         that.params['transition'] = {'smooth' : 1, 'simple' : 1, 'acceleration' : 1, 'inhibition' : 1}[that.params['transition']] ? that.params['transition'] : 'smooth';
@@ -17352,9 +17440,17 @@ function(params){
             that.redraw();
         });
         // Add custom event
-        cm.customEvent.add(that.params['node'], 'redraw', function(){
-            that.redraw();
-        });
+        if(that.params['customEvents']){
+            cm.customEvent.add(that.params['node'], 'redraw', function(){
+                that.redraw();
+            });
+            cm.customEvent.add(that.params['node'], 'enableEditable', function(){
+                that.enableEditing();
+            });
+            cm.customEvent.add(that.params['node'], 'disableEditable', function(){
+                that.disableEditing();
+            });
+        }
     };
 
     var renderLayout = function(){
@@ -17603,6 +17699,28 @@ function(params){
 
     /* ******* MAIN ******* */
 
+    that.enableEditing = function(){
+        if(!that.isEditing){
+            that.isEditing = true;
+            cm.addClass(that.params['node'], 'is-editing');
+            that.enableEditMode();
+            that.triggerEvent('enableEditing');
+            that.triggerEvent('enableEditable');
+        }
+        return that;
+    };
+
+    that.disableEditing = function(){
+        if(that.isEditing){
+            that.isEditing = false;
+            cm.removeClass(that.params['node'], 'is-editing');
+            that.disableEditMode();
+            that.triggerEvent('disableEditing');
+            that.triggerEvent('disableEditable');
+        }
+        return that;
+    };
+
     that.redraw = function(){
         resizeHandler();
         return that;
@@ -17647,13 +17765,13 @@ function(params){
 
     that.enableEditMode = function(){
         that.pause();
-        cm.addClass(that.nodes['container'], 'is-edit-mode');
+        cm.addClass(that.nodes['container'], 'is-editable');
         that.setEffect('edit');
     };
 
     that.disableEditMode = function(){
         that.start();
-        cm.removeClass(that.nodes['container'], 'is-edit-mode');
+        cm.removeClass(that.nodes['container'], 'is-editable');
         that.restoreEffect();
     };
 
@@ -17968,12 +18086,18 @@ cm.define('Com.Spacer', {
     'events' : [
         'onRender',
         'onChange',
-        'onResize'
+        'onResize',
+        'enableEditing',
+        'disableEditing',
+        'enableEditable',
+        'disableEditable'
     ],
     'params' : {
         'node' : cm.Node('div'),
         'name' : '',
         'minHeight' : 24,
+        'isEditing' : true,
+        'customEvents' : true,
         'Com.Draggable' : {
             'direction' : 'vertical'
         }
@@ -17982,6 +18106,7 @@ cm.define('Com.Spacer', {
 function(params){
     var that = this;
 
+    that.isEditing = false;
     that.components = {};
     that.nodes = {};
     that.value = 0;
@@ -18031,9 +18156,19 @@ function(params){
             that.redraw();
         });
         // Add custom event
-        cm.customEvent.add(that.params['node'], 'redraw', function(){
-            that.redraw();
-        });
+        if(that.params['customEvents']){
+            cm.customEvent.add(that.params['node'], 'redraw', function(){
+                that.redraw();
+            });
+            cm.customEvent.add(that.params['node'], 'enableEditable', function(){
+                that.enableEditing();
+            });
+            cm.customEvent.add(that.params['node'], 'disableEditable', function(){
+                that.disableEditing();
+            });
+        }
+        // Editing
+        that.params['isEditing'] && that.enableEditing();
     };
 
     var setLogic = function(){
@@ -18101,6 +18236,26 @@ function(params){
     };
 
     /* ******* MAIN ******* */
+
+    that.enableEditing = function(){
+        if(!that.isEditing){
+            that.isEditing = true;
+            cm.addClass(that.params['node'], 'is-editing is-editable');
+            that.triggerEvent('enableEditing');
+            that.triggerEvent('enableEditable');
+        }
+        return that;
+    };
+
+    that.disableEditing = function(){
+        if(that.isEditing){
+            that.isEditing = false;
+            cm.removeClass(that.params['node'], 'is-editing is-editable');
+            that.triggerEvent('disableEditing');
+            that.triggerEvent('disableEditable');
+        }
+        return that;
+    };
 
     that.redraw = function(){
         setHeight(that.value);

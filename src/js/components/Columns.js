@@ -15,11 +15,16 @@ cm.define('Com.Columns', {
         'Com.Draggable'
     ],
     'events' : [
+        'onRenderStart',
         'onRender',
         'onAdd',
         'onRemove',
         'onChange',
-        'onResize'
+        'onResize',
+        'enableEditing',
+        'disableEditing',
+        'enableEditable',
+        'disableEditable'
     ],
     'params' : {
         'columns' : false,                  // Deprecated, use 'node' parameter instead.
@@ -28,7 +33,9 @@ cm.define('Com.Columns', {
         'name' : '',
         'renderStructure' : false,
         'minColumnWidth' : 48,              // in px
-        'data' : []
+        'data' : [],
+        'isEditing' : true,
+        'customEvents' : true
     }
 },
 function(params){
@@ -36,6 +43,7 @@ function(params){
         nodes = {},
         current;
 
+    that.isEditing = false;
     that.items = [];
     that.chassis = [];
 
@@ -46,8 +54,10 @@ function(params){
         preValidateParams();
         that.convertEvents(that.params['events']);
         that.getDataConfig(that.params['node']);
+        that.triggerEvent('onRenderStart');
         render();
         renderChassis();
+        that.params['isEditing'] && that.enableEditing();
         that.addToStack(nodes['container']);
         that.triggerEvent('onRender');
     };
@@ -67,9 +77,17 @@ function(params){
             collect();
         }
         // Add custom event
-        cm.customEvent.add(nodes['container'], 'redraw', function(){
-            that.redraw();
-        });
+        if(that.params['customEvents']){
+            cm.customEvent.add(nodes['container'], 'redraw', function(){
+                that.redraw();
+            });
+            cm.customEvent.add(nodes['container'], 'enableEditable', function(){
+                that.enableEditing();
+            });
+            cm.customEvent.add(nodes['container'], 'disableEditable', function(){
+                that.disableEditing();
+            });
+        }
     };
 
     var collect = function(){
@@ -358,6 +376,26 @@ function(params){
     };
 
     /* ******* PUBLIC ******* */
+
+    that.enableEditing = function(){
+        if(!that.isEditing){
+            that.isEditing = true;
+            cm.addClass(nodes['container'], 'is-editing is-editable');
+            that.triggerEvent('enableEditing');
+            that.triggerEvent('enableEditable');
+        }
+        return that;
+    };
+
+    that.disableEditing = function(){
+        if(that.isEditing){
+            that.isEditing = false;
+            cm.removeClass(nodes['container'], 'is-editing is-editable');
+            that.triggerEvent('disableEditing');
+            that.triggerEvent('disableEditable');
+        }
+        return that;
+    };
 
     that.redraw = function(){
         redrawChassis();

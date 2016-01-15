@@ -14,15 +14,20 @@ cm.define('Com.ColumnsHelper', {
         'onResize',
         'onDragStart',
         'onDragMove',
-        'onDragStop'
+        'onDragStop',
+        'enableEditing',
+        'disableEditing',
+        'enableEditable',
+        'disableEditable'
     ],
     'params' : {
         'node' : cm.node('div'),
         'name' : '',
-        'isEditMode' : true,
+        'isEditing' : true,
         'items' : [],
         'showDrag' : true,
         'minColumnWidth' : 48,              // in px
+        'customEvents' : true,
         'ajax' : {
             'type' : 'json',
             'method' : 'post',
@@ -37,7 +42,7 @@ function(params){
     that.items = [];
     that.chassis = [];
     that.current = null;
-    that.isEditMode = false;
+    that.isEditing = false;
     that.isRendered = false;
     that.isAjax = false;
     that.isProcess = false;
@@ -59,7 +64,6 @@ function(params){
         if(!cm.isEmpty(that.params['ajax']['url'])){
             that.isAjax = true;
         }
-        that.isEditMode = that.params['isEditMode'];
     };
 
     var render = function(){
@@ -69,13 +73,23 @@ function(params){
             that.redraw();
         });
         // Add custom event
-        cm.customEvent.add(that.params['node'], 'redraw', function(){
-            that.redraw();
-        });
+        if(that.params['customEvents']){
+            cm.customEvent.add(that.params['node'], 'redraw', function(){
+                that.redraw();
+            });
+            cm.customEvent.add(that.params['node'], 'enableEditable', function(){
+                that.enableEditing();
+            });
+            cm.customEvent.add(that.params['node'], 'disableEditable', function(){
+                that.disableEditing();
+            });
+        }
+        // Editing
+        that.params['isEditing'] && that.enableEditing();
     };
 
     var renderChassis = function(){
-        if(that.isEditMode && !that.isRendered){
+        if(that.isEditing && !that.isRendered){
             that.items = [];
             that.chassis = [];
             cm.forEach(that.params['items'], function(item, i){
@@ -194,17 +208,11 @@ function(params){
     };
 
     var move = function(e){
-        var leftWidth,
-            rightWidth;
-        e = cm.getEvent(e);
         cm.preventDefault(e);
-        var x = e.clientX;
-        if(cm.isTouch && e.touches){
-            x = e.touches[0].clientX;
-        }
         // Calculate sizes and positions
-        leftWidth = x - that.current['left']['offset'];
-        rightWidth = that.current['right']['offset'] - x;
+        var position = cm.getEventClientPosition(e),
+            leftWidth = position['left'] - that.current['left']['offset'],
+            rightWidth = that.current['right']['offset'] - position['left'];
         // Apply sizes and positions
         if(leftWidth > that.params['minColumnWidth'] && rightWidth > that.params['minColumnWidth']){
             that.current['left']['column']['width'] = [(leftWidth / that.current['ratio']).toFixed(2), '%'].join('');
@@ -282,15 +290,23 @@ function(params){
 
     /* ******* PUBLIC ******* */
 
-    that.enableEditMode = function(){
-        that.isEditMode = true;
-        renderChassis();
+    that.enableEditing = function(){
+        if(!that.isEditing){
+            that.isEditing = true;
+            renderChassis();
+            that.triggerEvent('enableEditing');
+            that.triggerEvent('enableEditable');
+        }
         return that;
     };
 
-    that.disableEditMode = function(){
-        that.isEditMode = false;
-        removeChassis();
+    that.disableEditing = function(){
+        if(that.isEditing){
+            that.isEditing = false;
+            removeChassis();
+            that.triggerEvent('disableEditing');
+            that.triggerEvent('disableEditable');
+        }
         return that;
     };
 
@@ -302,7 +318,7 @@ function(params){
     };
 
     that.redraw = function(){
-        if(that.isEditMode){
+        if(that.isEditing){
             redrawChassis();
         }
         return that;

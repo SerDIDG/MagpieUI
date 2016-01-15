@@ -11,12 +11,18 @@ cm.define('Com.Spacer', {
     'events' : [
         'onRender',
         'onChange',
-        'onResize'
+        'onResize',
+        'enableEditing',
+        'disableEditing',
+        'enableEditable',
+        'disableEditable'
     ],
     'params' : {
         'node' : cm.Node('div'),
         'name' : '',
         'minHeight' : 24,
+        'isEditing' : true,
+        'customEvents' : true,
         'Com.Draggable' : {
             'direction' : 'vertical'
         }
@@ -25,6 +31,7 @@ cm.define('Com.Spacer', {
 function(params){
     var that = this;
 
+    that.isEditing = false;
     that.components = {};
     that.nodes = {};
     that.value = 0;
@@ -74,9 +81,19 @@ function(params){
             that.redraw();
         });
         // Add custom event
-        cm.customEvent.add(that.params['node'], 'redraw', function(){
-            that.redraw();
-        });
+        if(that.params['customEvents']){
+            cm.customEvent.add(that.params['node'], 'redraw', function(){
+                that.redraw();
+            });
+            cm.customEvent.add(that.params['node'], 'enableEditable', function(){
+                that.enableEditing();
+            });
+            cm.customEvent.add(that.params['node'], 'disableEditable', function(){
+                that.disableEditing();
+            });
+        }
+        // Editing
+        that.params['isEditing'] && that.enableEditing();
     };
 
     var setLogic = function(){
@@ -144,6 +161,26 @@ function(params){
     };
 
     /* ******* MAIN ******* */
+
+    that.enableEditing = function(){
+        if(!that.isEditing){
+            that.isEditing = true;
+            cm.addClass(that.params['node'], 'is-editing is-editable');
+            that.triggerEvent('enableEditing');
+            that.triggerEvent('enableEditable');
+        }
+        return that;
+    };
+
+    that.disableEditing = function(){
+        if(that.isEditing){
+            that.isEditing = false;
+            cm.removeClass(that.params['node'], 'is-editing is-editable');
+            that.triggerEvent('disableEditing');
+            that.triggerEvent('disableEditable');
+        }
+        return that;
+    };
 
     that.redraw = function(){
         setHeight(that.value);

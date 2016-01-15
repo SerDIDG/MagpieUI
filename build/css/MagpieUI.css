@@ -13104,21 +13104,21 @@ html.ie9 .com__palette .b-range {
 .com__slider.is-adaptive-content > .inner > .slides > ul > li > .text {
   position: relative;
 }
-.com__slider.is-edit-mode > .inner {
+.com__slider.is-editable > .inner {
   height: auto !important;
   -webkit-transition: none !important;
   transition: none !important;
 }
-.com__slider.is-edit-mode > .inner > .size {
+.com__slider.is-editable > .inner > .size {
   display: none;
 }
-.com__slider.is-edit-mode > .inner > .slides > ul {
+.com__slider.is-editable > .inner > .slides > ul {
   overflow: visible;
 }
-.com__slider.is-edit-mode > .inner > .slides > ul > li > .slide-link {
+.com__slider.is-editable > .inner > .slides > ul > li > .slide-link {
   display: none;
 }
-.com__slider.is-edit-mode > .inner > .com__gallery-controls {
+.com__slider.is-editable > .inner > .com__gallery-controls {
   display: none;
 }
 .com__slider:hover > .inner > .com__gallery-controls {

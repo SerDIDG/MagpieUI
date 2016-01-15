@@ -10,13 +10,20 @@ cm.define('Com.GridlistHelper', {
     'events' : [
         'onRender',
         'onColumnsChange',
-        'onColumnsResize'
+        'onColumnsResize',
+        'enableEditing',
+        'disableEditing',
+        'enableEditable',
+        'disableEditable'
     ],
     'params' : {
         'node' : cm.Node('div'),
         'name' : '',
-        'isEditMode' : true,
+        'isEditing' : true,
+        'customEvents' : true,
         'columns' : {
+            'isEditing' : false,
+            'customEvents' : false,
             'showDrag' : false,
             'ajax' : {
                 'type' : 'json',
@@ -36,7 +43,7 @@ function(params){
         'items' : []
     };
     that.components = {};
-    that.isEditMode = false;
+    that.isEditing = false;
 
     var init = function(){
         that.setParams(params);
@@ -51,7 +58,6 @@ function(params){
 
     var validateParams = function(){
         that.nodes['container'] = that.params['node'];
-        that.isEditMode = that.params['isEditMode'];
     };
 
     var render = function(){
@@ -62,7 +68,6 @@ function(params){
         cm.getConstructor('Com.ColumnsHelper', function(classConstructor){
             that.components['columns'] = new classConstructor(
                 cm.merge(that.params['columns'], {
-                    'isEditMode' : false,
                     'node' : that.nodes['container'],
                     'items' : that.nodes['items'],
                     'events' : {
@@ -82,29 +87,48 @@ function(params){
                 })
             );
         });
-        // Edit mode
-        if(that.isEditMode){
-            that.enableEditMode();
+        // Add custom event
+        if(that.params['customEvents']){
+            cm.customEvent.add(that.params['node'], 'redraw', function(){
+                that.redraw();
+            });
+            cm.customEvent.add(that.params['node'], 'enableEditable', function(){
+                that.enableEditing();
+            });
+            cm.customEvent.add(that.params['node'], 'disableEditable', function(){
+                that.disableEditing();
+            });
         }
+        // Editing
+        that.params['isEditing'] && that.enableEditing();
     };
 
     /* ******* PUBLIC ******* */
 
-    that.enableEditMode = function(){
-        that.isEditMode = true;
-        cm.addClass(that.nodes['container'], 'is-editable');
-        if(that.components['columns']){
-            that.components['columns'].enableEditMode();
+    that.enableEditing = function(){
+        if(!that.isEditing){
+            that.isEditing = true;
+            cm.addClass(that.params['node'], 'is-editing is-editable');
+            that.components['columns'] && that.components['columns'].enableEditing();
+            that.triggerEvent('enableEditing');
+            that.triggerEvent('enableEditable');
         }
         return that;
     };
 
-    that.disableEditMode = function(){
-        that.isEditMode = false;
-        cm.removeClass(that.nodes['container'], 'is-editable');
-        if(that.components['columns']){
-            that.components['columns'].disableEditMode();
+    that.disableEditing = function(){
+        if(that.isEditing){
+            that.isEditing = false;
+            cm.removeClass(that.params['node'], 'is-editing is-editable');
+            that.components['columns'] && that.components['columns'].disableEditing();
+            that.triggerEvent('disableEditing');
+            that.triggerEvent('disableEditable');
         }
+        return that;
+    };
+
+    that.redraw = function(){
+        that.components['columns'] && that.components['columns'].redraw();
         return that;
     };
 

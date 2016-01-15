@@ -31,7 +31,8 @@ cm.define('Com.Slider', {
         'minHeight' : 48,               // Set min-height of slider, work with calculateMaxHeight parameter
         'hasBar' : false,
         'barDirection' : 'horizontal',  // horizontal | vertical
-        'editMode' : false,
+        'isEditing' : false,
+        'customEvents' : true,
         'Com.Scroll' : {
             'step' : 25,
             'time' : 25
@@ -69,6 +70,7 @@ function(params){
     that.paused = false;
     that.pausedOutside = false;
     that.isProcess = false;
+    that.isEditing = false;
 
     var init = function(){
         getCSSHelpers();
@@ -81,7 +83,7 @@ function(params){
         renderSlider();
         renderLayout();
         that.setEffect(that.params['effect']);
-        that.params['editMode'] && that.enableEditMode();
+        that.params['isEditing'] && that.enableEditing();
         that.addToStack(that.params['node']);
         that.triggerEvent('onRender');
     };
@@ -94,6 +96,7 @@ function(params){
         if(cm.isNode(that.params['node'])){
             that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
         }
+        that.isEditing = cm.hasClass(that.params['node'], 'is-editing');
         that.params['direction'] = {'forward' : 1, 'backward' : 1, 'random' : 1}[that.params['direction']] ? that.params['direction'] : 'forward';
         that.params['effect'] = Com.SliderEffects[that.params['effect']] ? that.params['effect'] : 'fade';
         that.params['transition'] = {'smooth' : 1, 'simple' : 1, 'acceleration' : 1, 'inhibition' : 1}[that.params['transition']] ? that.params['transition'] : 'smooth';
@@ -154,9 +157,17 @@ function(params){
             that.redraw();
         });
         // Add custom event
-        cm.customEvent.add(that.params['node'], 'redraw', function(){
-            that.redraw();
-        });
+        if(that.params['customEvents']){
+            cm.customEvent.add(that.params['node'], 'redraw', function(){
+                that.redraw();
+            });
+            cm.customEvent.add(that.params['node'], 'enableEditable', function(){
+                that.enableEditing();
+            });
+            cm.customEvent.add(that.params['node'], 'disableEditable', function(){
+                that.disableEditing();
+            });
+        }
     };
 
     var renderLayout = function(){
@@ -405,6 +416,28 @@ function(params){
 
     /* ******* MAIN ******* */
 
+    that.enableEditing = function(){
+        if(!that.isEditing){
+            that.isEditing = true;
+            cm.addClass(that.params['node'], 'is-editing');
+            that.enableEditMode();
+            that.triggerEvent('enableEditing');
+            that.triggerEvent('enableEditable');
+        }
+        return that;
+    };
+
+    that.disableEditing = function(){
+        if(that.isEditing){
+            that.isEditing = false;
+            cm.removeClass(that.params['node'], 'is-editing');
+            that.disableEditMode();
+            that.triggerEvent('disableEditing');
+            that.triggerEvent('disableEditable');
+        }
+        return that;
+    };
+
     that.redraw = function(){
         resizeHandler();
         return that;
@@ -449,13 +482,13 @@ function(params){
 
     that.enableEditMode = function(){
         that.pause();
-        cm.addClass(that.nodes['container'], 'is-edit-mode');
+        cm.addClass(that.nodes['container'], 'is-editable');
         that.setEffect('edit');
     };
 
     that.disableEditMode = function(){
         that.start();
-        cm.removeClass(that.nodes['container'], 'is-edit-mode');
+        cm.removeClass(that.nodes['container'], 'is-editable');
         that.restoreEffect();
     };
 

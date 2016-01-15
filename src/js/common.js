@@ -24,7 +24,7 @@
  ******* */
 
 var cm = {
-        '_version' : '3.10.2',
+        '_version' : '3.10.3',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -33,7 +33,7 @@ var cm = {
         '_baseUrl': [window.location.protocol, window.location.hostname].join('//'),
         '_scrollSize' : 0,
         '_pageSize' : {},
-        '_clientPosition' : {'x' : 0, 'y' : 0},
+        '_clientPosition' : {'left' : 0, 'top' : 0},
         '_config' : {
             'animDuration' : 300,
             'animDurationQuick' : 150,
@@ -1014,6 +1014,13 @@ cm.inDOM = function(o){
             }
             el = el.parentNode
         }
+    }
+    return false;
+};
+
+cm.hasParentNode = function(o){
+    if(o){
+        return !!o.parentNode;
     }
     return false;
 };
@@ -2629,8 +2636,8 @@ cm.transition = function(node, params){
             'properties' : {},
             'duration' : 0,
             'easing' : 'ease-in-out',
-            'delayIn' : 30,
-            'delayOut' : 30,
+            'delayIn' : 0,
+            'delayOut' : 0,
             'clear' : false,
             'onStop' : function(){}
         }, params);
