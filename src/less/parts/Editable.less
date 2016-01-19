@@ -163,6 +163,13 @@
             background-color: @PtEditable-Drag-ActiveBackground;
         }
     }
+
+    .is-immediately {
+        > .drag,
+        > .border {
+            .cm__transition-none;
+        }
+    }
 }
 
 .pt__editable {
@@ -185,5 +192,9 @@
 
     &.is-active {
         .pt__editable__bundle > .active;
+    }
+
+    &.is-immediately {
+        .pt__editable__bundle > .is-immediately;
     }
 }

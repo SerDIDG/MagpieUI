@@ -7854,6 +7854,11 @@ button::-moz-focus-inner {
 .pt__editable.is-active > .drag {
   background-color: #d8e8f8;
 }
+.pt__editable.is-immediately > .drag,
+.pt__editable.is-immediately > .border {
+  -webkit-transition: none !important;
+  transition: none !important;
+}
 /* ******* PARTS: GRID ******* */
 .pt__grid {
   margin: 0 0 24px;
