@@ -1,9 +1,5 @@
 /* ******* PART: ANIMATE ******* */
 
-/**
-* Require: modules/Animate.css
-*/
-
 .cm-animate {
     visibility: hidden;
 
@@ -14,5 +10,19 @@
 
     &.animated {
         visibility: visible;
+    }
+}
+
+/* *** ANIMATION ON HOVER *** */
+
+.cm__animate {
+    &.hover--fadeIn {
+        opacity: 0;
+        .mx__transition(opacity, @CmUI-Transition-Duration);
+
+        &:hover {
+            opacity: 1;
+            .mx__transition(opacity, @CmUI-Transition-DurationReverse);
+        }
     }
 }
