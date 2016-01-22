@@ -1415,7 +1415,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.10.4',
+        '_version' : '3.10.5',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -1723,6 +1723,10 @@ cm.inArray = function(a, item){
 cm.arrayRemove = function(a, item){
     a.splice(a.indexOf(item), 1);
     return a;
+};
+
+cm.arrayIndex = function(a, item){
+    return Array.prototype.indexOf.call(a, item)
 };
 
 cm.objectToArray = function(o){
@@ -2069,45 +2073,45 @@ cm.customEvent = (function(){
             var stopPropagation = false;
             params = cm.merge({
                 'target' : node,
-                'type' : 'both',            // child | parent | both | all
+                'type' : 'all',            // child | parent | all
                 'self' : true,
                 'stopPropagation' : function(){
                     stopPropagation = true;
                 }
             }, params);
-            cm.forEach(_stack[type], function(item){
-                if(!stopPropagation){
-                    if(params['self'] && node === item['node']){
-                        item['handler'](params);
-                    }
-                    switch(params['type']){
-                        case 'child':
-                            if(cm.isParent(node, item['node'], false)){
-                                item['handler'](params);
-                            }
-                            break;
-                        case 'parent':
-                            if(cm.isParent(item['node'], node, false)){
-                                item['handler'](params);
-                            }
-                            break;
-                        case 'both':
-                            if(cm.isParent(node, item['node'], false)){
-                                item['handler'](params);
-                            }
-                            if(cm.isParent(item['node'], node, false)){
-                                item['handler'](params);
-                            }
-                            break;
-                        case 'all':
-                        default:
-                            if(node !== item['node']){
-                                item['handler'](params);
-                            }
-                            break;
-                    }
+            if(_stack[type]){
+                _stack[type].sort(function(a, b){
+                    return cm.getNodeOffsetIndex(a['node']) > cm.getNodeOffsetIndex(b['node']) ? 1 : -1;
+                });
+                if(params['type'] == 'parent'){
+                    _stack[type].reverse();
                 }
-            });
+                cm.forEach(_stack[type], function(item){
+                    if(!stopPropagation){
+                        if(params['self'] && node === item['node']){
+                            item['handler'](params);
+                        }
+                        switch(params['type']){
+                            case 'child':
+                                if(cm.isParent(node, item['node'], false)){
+                                    item['handler'](params);
+                                }
+                                break;
+                            case 'parent':
+                                if(cm.isParent(item['node'], node, false)){
+                                    item['handler'](params);
+                                }
+                                break;
+                            case 'all':
+                            default:
+                                if(node !== item['node']){
+                                    item['handler'](params);
+                                }
+                                break;
+                        }
+                    }
+                });
+            }
             return node;
         }
     };
@@ -2347,6 +2351,16 @@ cm.getDocumentHead = function(){
 
 cm.getDocumentHtml = function(){
     return document.documentElement;
+};
+
+cm.getNodeOffsetIndex = function(node){
+    var o = node,
+        i = 0;
+    while(o.parentNode){
+        o = o.parentNode;
+        i++;
+    }
+    return i;
 };
 
 cm.node = cm.Node = function(){
@@ -10694,7 +10708,7 @@ cm.define('Com.Dialog', {
         'position' : 'fixed',
         'indentY' : 24,
         'indentX' : 24,
-        'theme' : 'theme-default',      // theme css class name, default: theme-default
+        'theme' : 'theme-default',      // theme css class name, default: theme-default | theme-black
         'className' : '',               // custom css class name
         'content' : cm.Node('div'),
         'title' : '',

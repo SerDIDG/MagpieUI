@@ -25,7 +25,7 @@ cm.define('Com.Dialog', {
         'position' : 'fixed',
         'indentY' : 24,
         'indentX' : 24,
-        'theme' : 'theme-default',      // theme css class name, default: theme-default
+        'theme' : 'theme-default',      // theme css class name, default: theme-default | theme-black
         'className' : '',               // custom css class name
         'content' : cm.Node('div'),
         'title' : '',
