@@ -13,7 +13,7 @@ cm.define('Com.TabsetHelper', {
         'onTabShow',
         'onTabHideStart',
         'onTabHide',
-        'onLabelClick',
+        'onLabelTarget',
         'onRequestStart',
         'onRequestEnd',
         'onRequestError',
@@ -27,6 +27,7 @@ cm.define('Com.TabsetHelper', {
         'name' : '',
         'active' : null,
         'items' : [],
+        'targetEvent' : 'click',                                    // click | hover
         'setFirstTabImmediately' : true,
         'showLoader' : true,
         'loaderDelay' : 300,                                        // in ms
@@ -60,6 +61,7 @@ function(params){
     that.isAjax = false;
     that.isProcess = false;
     that.loaderDelay = null;
+    that.targetEvent;
 
     that.current = false;
     that.previous = false;
@@ -82,8 +84,18 @@ function(params){
     };
 
     var validateParams = function(){
+        // Ajax
         if(!cm.isEmpty(that.params['ajax']['url'])){
             that.isAjax = true;
+        }
+        // Target Event
+        switch(that.params['targetEvent']){
+            case 'click':
+                that.targetEvent = 'click';
+                break;
+            case 'hover':
+                that.targetEvent = 'mouseover';
+                break;
         }
     };
 
@@ -112,6 +124,7 @@ function(params){
                 'inner' : cm.node('div')
             },
             'isHidden' : false,
+            'isShow' : false,
             'isAjax' : false,
             'isCached' : false,
             'ajax' : {}
@@ -125,8 +138,8 @@ function(params){
                 cm.addClass(item['label']['container'], 'hidden');
                 cm.addClass(item['tab']['container'], 'hidden');
             }
-            cm.addEvent(item['label']['container'], 'click', function(){
-                that.triggerEvent('onLabelClick', {
+            cm.addEvent(item['label']['container'], that.targetEvent, function(){
+                that.triggerEvent('onLabelTarget', {
                     'item' : item
                 });
                 set(item['id']);
@@ -142,6 +155,7 @@ function(params){
             // Show new tab
             that.current = id;
             item = that.items[that.current];
+            item.isShow = true;
             that.triggerEvent('onTabShowStart', {
                 'item' : item
             });
@@ -173,6 +187,7 @@ function(params){
                 that.abort();
             }
             that.previous = that.current;
+            item.isShow = false;
             that.triggerEvent('onTabHideStart', {
                 'item' : item
             });

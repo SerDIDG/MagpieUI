@@ -43,7 +43,7 @@ function(params){
         nodes = {},
         current;
 
-    that.isEditing = false;
+    that.isEditing = null;
     that.items = [];
     that.chassis = [];
 
@@ -378,7 +378,7 @@ function(params){
     /* ******* PUBLIC ******* */
 
     that.enableEditing = function(){
-        if(!that.isEditing){
+        if(typeof that.isEditing !== 'boolean' || !that.isEditing){
             that.isEditing = true;
             cm.addClass(nodes['container'], 'is-editing is-editable');
             that.triggerEvent('enableEditing');
@@ -388,7 +388,7 @@ function(params){
     };
 
     that.disableEditing = function(){
-        if(that.isEditing){
+        if(typeof that.isEditing !== 'boolean' || that.isEditing){
             that.isEditing = false;
             cm.removeClass(nodes['container'], 'is-editing is-editable');
             that.triggerEvent('disableEditing');

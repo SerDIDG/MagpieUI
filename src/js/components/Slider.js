@@ -70,7 +70,7 @@ function(params){
     that.paused = false;
     that.pausedOutside = false;
     that.isProcess = false;
-    that.isEditing = false;
+    that.isEditing = null;
 
     var init = function(){
         getCSSHelpers();
@@ -417,7 +417,7 @@ function(params){
     /* ******* MAIN ******* */
 
     that.enableEditing = function(){
-        if(!that.isEditing){
+        if(typeof that.isEditing !== 'boolean' || !that.isEditing){
             that.isEditing = true;
             cm.addClass(that.params['node'], 'is-editing');
             that.enableEditMode();
@@ -428,7 +428,7 @@ function(params){
     };
 
     that.disableEditing = function(){
-        if(that.isEditing){
+        if(typeof that.isEditing !== 'boolean' || that.isEditing){
             that.isEditing = false;
             cm.removeClass(that.params['node'], 'is-editing');
             that.disableEditMode();

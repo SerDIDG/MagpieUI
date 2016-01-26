@@ -690,11 +690,11 @@ cm.customEvent = (function(){
             }, params);
             if(_stack[type]){
                 _stack[type].sort(function(a, b){
+                    if(params['type'] == 'parent'){
+                        return cm.getNodeOffsetIndex(a['node']) > cm.getNodeOffsetIndex(b['node']) ? -1 : 1;
+                    }
                     return cm.getNodeOffsetIndex(a['node']) > cm.getNodeOffsetIndex(b['node']) ? 1 : -1;
                 });
-                if(params['type'] == 'parent'){
-                    _stack[type].reverse();
-                }
                 cm.forEach(_stack[type], function(item){
                     if(!stopPropagation){
                         if(params['self'] && node === item['node']){

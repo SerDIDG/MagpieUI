@@ -31,7 +31,7 @@ cm.define('Com.Spacer', {
 function(params){
     var that = this;
 
-    that.isEditing = false;
+    that.isEditing = null;
     that.components = {};
     that.nodes = {};
     that.value = 0;
@@ -163,7 +163,7 @@ function(params){
     /* ******* MAIN ******* */
 
     that.enableEditing = function(){
-        if(!that.isEditing){
+        if(typeof that.isEditing !== 'boolean' || !that.isEditing){
             that.isEditing = true;
             cm.addClass(that.params['node'], 'is-editing is-editable');
             that.triggerEvent('enableEditing');
@@ -173,7 +173,7 @@ function(params){
     };
 
     that.disableEditing = function(){
-        if(that.isEditing){
+        if(typeof that.isEditing !== 'boolean' || that.isEditing){
             that.isEditing = false;
             cm.removeClass(that.params['node'], 'is-editing is-editable');
             that.triggerEvent('disableEditing');
