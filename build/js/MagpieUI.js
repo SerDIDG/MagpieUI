@@ -1415,7 +1415,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.10.5',
+        '_version' : '3.10.6',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -1428,6 +1428,7 @@ var cm = {
         '_config' : {
             'animDuration' : 300,
             'animDurationQuick' : 150,
+            'hideDelay' : 300,
             'adaptiveFrom' : 768,
             'screenTablet' : 1024,
             'screenTabletPortrait' : 768,
@@ -1460,16 +1461,6 @@ cm.isTouch = 'ontouchstart' in document.documentElement || !!window.maxTouchPoin
 
 cm.top = window.top.cm || cm;
 
-cm.objToString = Object.prototype.toString;
-
-cm.property = function(key) {
-    return function(o) {
-        return o == null ? void 0 : o[key];
-    };
-};
-
-cm.length = cm.property('length');
-
 cm.isType = function(o, types){
     if(cm.isString(types)){
         return Object.prototype.toString.call(o) === '[object ' + types +']'
@@ -1501,10 +1492,6 @@ cm.isArray = Array.isArray || function(o){
     return Object.prototype.toString.call(o) === '[object Array]';
 };
 
-cm.isArrayLike = function(o) {
-    return o != null && cm.isLength(cm.length(o));
-};
-
 cm.isObject = function(o){
     return Object.prototype.toString.call(o) === '[object Object]';
 };
@@ -1527,10 +1514,6 @@ cm.isDate = function(o){
 
 cm.isWindow = function(o) {
     return Object.prototype.toString.call(o) === '[object Window]' || Object.prototype.toString.call(o) === '[object global]';
-};
-
-cm.isLength = function(o) {
-    return typeof o == 'number' && o > -1 && o % 1 == 0 && o <= cm.MAX_SAFE_INTEGER;
 };
 
 cm.isNode = function(node){
@@ -15704,7 +15687,11 @@ cm.define('Com.Slider', {
         'onChangeStart',
         'onChange',
         'onPause',
-        'onStart'
+        'onStart',
+        'enableEditing',
+        'disableEditing',
+        'enableEditable',
+        'disableEditable'
     ],
     'params' : {
         'node' : cm.Node('div'),
@@ -16645,7 +16632,7 @@ function(params){
         that.nodes['dragContainer'].style.top = [that.params['node'].offsetHeight, 'px'].join('');
     };
 
-    /* ******* MAIN ******* */
+    /* ******* PUBLIC ******* */
 
     that.enableEditing = function(){
         if(typeof that.isEditing !== 'boolean' || !that.isEditing){
@@ -17189,11 +17176,12 @@ function(params){
     that.isAjax = false;
     that.isProcess = false;
     that.loaderDelay = null;
-    that.targetEvent;
+    that.targetEvent = null;
 
     that.current = false;
     that.previous = false;
     that.items = {};
+    that.itemsList = [];
 
     var init = function(){
         that.setParams(params);
@@ -17218,11 +17206,12 @@ function(params){
         }
         // Target Event
         switch(that.params['targetEvent']){
-            case 'click':
-                that.targetEvent = 'click';
-                break;
             case 'hover':
                 that.targetEvent = 'mouseover';
+                break;
+            case 'click':
+            default:
+                that.targetEvent = 'click';
                 break;
         }
     };
@@ -17243,6 +17232,7 @@ function(params){
     var renderTab = function(item){
         item = cm.merge({
             'id' : '',
+            'title' : '',
             'tab' : {
                 'container' : cm.node('li'),
                 'inner' : cm.node('div')
@@ -17261,6 +17251,7 @@ function(params){
             item.isAjax = true;
         }
         if(!cm.isEmpty(item['id']) && !that.items[item['id']]){
+            that.itemsList.push(item);
             that.items[item['id']] = item;
             if(item.isHidden){
                 cm.addClass(item['label']['container'], 'hidden');
@@ -17278,15 +17269,15 @@ function(params){
     var set = function(id){
         var item;
         if(that.current != id){
+            that.triggerEvent('onTabShowStart', {
+                'item' : that.items[id]
+            });
             // Hide previous tab
             unset();
             // Show new tab
             that.current = id;
             item = that.items[that.current];
             item.isShow = true;
-            that.triggerEvent('onTabShowStart', {
-                'item' : item
-            });
             if(!that.previous && that.params['setFirstTabImmediately']){
                 cm.addClass(item['tab']['container'], 'is-immediately');
                 cm.addClass(item['label']['container'], 'is-immediately');
@@ -17494,6 +17485,14 @@ function(params){
         return that;
     };
 
+    that.setByIndex = function(index){
+        var item;
+        if(item = that.itemsList[index]){
+            set(item['id']);
+        }
+        return that;
+    };
+
     that.unset = function(){
         unset();
         that.previous = null;
@@ -17539,6 +17538,10 @@ function(params){
             return that.items[id];
         }
         return null;
+    };
+
+    that.getTabs = function(){
+        return that.items;
     };
 
     that.abort = function(){

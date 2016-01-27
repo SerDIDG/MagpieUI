@@ -160,7 +160,7 @@ function(params){
         that.nodes['dragContainer'].style.top = [that.params['node'].offsetHeight, 'px'].join('');
     };
 
-    /* ******* MAIN ******* */
+    /* ******* PUBLIC ******* */
 
     that.enableEditing = function(){
         if(typeof that.isEditing !== 'boolean' || !that.isEditing){

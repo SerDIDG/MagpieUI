@@ -61,11 +61,12 @@ function(params){
     that.isAjax = false;
     that.isProcess = false;
     that.loaderDelay = null;
-    that.targetEvent;
+    that.targetEvent = null;
 
     that.current = false;
     that.previous = false;
     that.items = {};
+    that.itemsList = [];
 
     var init = function(){
         that.setParams(params);
@@ -90,11 +91,12 @@ function(params){
         }
         // Target Event
         switch(that.params['targetEvent']){
-            case 'click':
-                that.targetEvent = 'click';
-                break;
             case 'hover':
                 that.targetEvent = 'mouseover';
+                break;
+            case 'click':
+            default:
+                that.targetEvent = 'click';
                 break;
         }
     };
@@ -115,6 +117,7 @@ function(params){
     var renderTab = function(item){
         item = cm.merge({
             'id' : '',
+            'title' : '',
             'tab' : {
                 'container' : cm.node('li'),
                 'inner' : cm.node('div')
@@ -133,6 +136,7 @@ function(params){
             item.isAjax = true;
         }
         if(!cm.isEmpty(item['id']) && !that.items[item['id']]){
+            that.itemsList.push(item);
             that.items[item['id']] = item;
             if(item.isHidden){
                 cm.addClass(item['label']['container'], 'hidden');
@@ -150,15 +154,15 @@ function(params){
     var set = function(id){
         var item;
         if(that.current != id){
+            that.triggerEvent('onTabShowStart', {
+                'item' : that.items[id]
+            });
             // Hide previous tab
             unset();
             // Show new tab
             that.current = id;
             item = that.items[that.current];
             item.isShow = true;
-            that.triggerEvent('onTabShowStart', {
-                'item' : item
-            });
             if(!that.previous && that.params['setFirstTabImmediately']){
                 cm.addClass(item['tab']['container'], 'is-immediately');
                 cm.addClass(item['label']['container'], 'is-immediately');
@@ -366,6 +370,14 @@ function(params){
         return that;
     };
 
+    that.setByIndex = function(index){
+        var item;
+        if(item = that.itemsList[index]){
+            set(item['id']);
+        }
+        return that;
+    };
+
     that.unset = function(){
         unset();
         that.previous = null;
@@ -411,6 +423,10 @@ function(params){
             return that.items[id];
         }
         return null;
+    };
+
+    that.getTabs = function(){
+        return that.items;
     };
 
     that.abort = function(){

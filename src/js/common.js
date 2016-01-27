@@ -24,7 +24,7 @@
  ******* */
 
 var cm = {
-        '_version' : '3.10.5',
+        '_version' : '3.10.6',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -37,6 +37,7 @@ var cm = {
         '_config' : {
             'animDuration' : 300,
             'animDurationQuick' : 150,
+            'hideDelay' : 300,
             'adaptiveFrom' : 768,
             'screenTablet' : 1024,
             'screenTabletPortrait' : 768,
@@ -69,16 +70,6 @@ cm.isTouch = 'ontouchstart' in document.documentElement || !!window.maxTouchPoin
 
 cm.top = window.top.cm || cm;
 
-cm.objToString = Object.prototype.toString;
-
-cm.property = function(key) {
-    return function(o) {
-        return o == null ? void 0 : o[key];
-    };
-};
-
-cm.length = cm.property('length');
-
 cm.isType = function(o, types){
     if(cm.isString(types)){
         return Object.prototype.toString.call(o) === '[object ' + types +']'
@@ -110,10 +101,6 @@ cm.isArray = Array.isArray || function(o){
     return Object.prototype.toString.call(o) === '[object Array]';
 };
 
-cm.isArrayLike = function(o) {
-    return o != null && cm.isLength(cm.length(o));
-};
-
 cm.isObject = function(o){
     return Object.prototype.toString.call(o) === '[object Object]';
 };
@@ -136,10 +123,6 @@ cm.isDate = function(o){
 
 cm.isWindow = function(o) {
     return Object.prototype.toString.call(o) === '[object Window]' || Object.prototype.toString.call(o) === '[object global]';
-};
-
-cm.isLength = function(o) {
-    return typeof o == 'number' && o > -1 && o % 1 == 0 && o <= cm.MAX_SAFE_INTEGER;
 };
 
 cm.isNode = function(node){

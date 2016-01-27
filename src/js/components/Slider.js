@@ -11,7 +11,11 @@ cm.define('Com.Slider', {
         'onChangeStart',
         'onChange',
         'onPause',
-        'onStart'
+        'onStart',
+        'enableEditing',
+        'disableEditing',
+        'enableEditable',
+        'disableEditable'
     ],
     'params' : {
         'node' : cm.Node('div'),
