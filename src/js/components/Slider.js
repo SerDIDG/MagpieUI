@@ -87,8 +87,8 @@ function(params){
         renderSlider();
         renderLayout();
         that.setEffect(that.params['effect']);
-        that.params['isEditing'] && that.enableEditing();
         that.addToStack(that.params['node']);
+        that.params['isEditing'] && that.enableEditing();
         that.triggerEvent('onRender');
     };
 

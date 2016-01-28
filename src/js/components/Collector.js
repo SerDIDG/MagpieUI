@@ -22,7 +22,8 @@ cm.define('Com.Collector', {
 function(params){
     var that = this;
 
-    that.stack = {};
+    that.stackList = [];
+    that.stackNodes = {};
 
     var init = function(){
         that.setParams(params);
@@ -45,7 +46,7 @@ function(params){
         }
     };
 
-    var constructItem = function(item, name, parentNode){
+    var findNodes = function(parentNode, name){
         var nodes = [];
         // Find element in specified node
         if(parentNode.getAttribute(that.params['attribute']) == name){
@@ -57,139 +58,183 @@ function(params){
                 cm.getByAttr(that.params['attribute'], name, parentNode)
             )
         );
+        return nodes;
+    };
+
+    var addNodes = function(parentNode, name){
+        var nodes = findNodes(parentNode, name);
         // Filter off existing nodes
         nodes = nodes.filter(function(node){
-            return !cm.inArray(item['nodes'], node);
+            return !cm.inArray(that.stackNodes[name], node);
         });
         // Push new nodes in constructed nodes array
-        item['nodes'] = item['nodes'].concat(nodes);
-        // Construct
-        cm.forEach(nodes, function(node){
-            cm.forEach(item['construct'], function(handler){
-                handler(node);
+        that.stackNodes[name] = that.stackNodes[name].concat(nodes);
+        return nodes;
+    };
+
+    var removeNodes = function(parentNode, name){
+        var nodes = findNodes(parentNode, name),
+            inArray;
+        // Filter off not existing nodes and remove existing from global array
+        nodes = nodes.filter(function(node){
+            if(inArray = cm.inArray(that.stackNodes[name], node)){
+                that.stackNodes[name].splice(that.stackNodes[name].indexOf(node), 1);
+            }
+            return inArray;
+        });
+        return nodes;
+    };
+
+    var constructAll = function(parentNode){
+        var processNodes = {};
+        cm.forEach(that.stackNodes, function(item, name){
+            processNodes[name] = addNodes(parentNode, name);
+        });
+        cm.forEach(that.stackList, function(item){
+            cm.forEach(processNodes[item['name']], function(node){
+                item['construct'](node, item['priority']);
             });
         });
     };
 
-    var destructItem = function(item, name, parentNode){
-        var nodes = [],
-            inArray;
-        if(parentNode){
-            // Find element in specified node
-            if(parentNode.getAttribute(that.params['attribute']) == name){
-                nodes.push(parentNode)
-            }
-            // Search for nodes in specified node
-            nodes = nodes.concat(
-                cm.clone(
-                    cm.getByAttr(that.params['attribute'], name, parentNode)
-                )
-            );
-            // Filter off not existing nodes and remove existing from global array
-            nodes = nodes.filter(function(node){
-                if(inArray = cm.inArray(item['nodes'], node)){
-                    item['nodes'].splice(item['nodes'].indexOf(node), 1);
-                }
-                return inArray;
+    var constructItem = function(parentNode, name){
+        var processArray = that.stackList.filter(function(item){
+            return item['name'] === name;
+        });
+        var processNodes = addNodes(parentNode, name);
+        cm.forEach(processArray, function(item){
+            cm.forEach(processNodes, function(node){
+                item['construct'](node, item['priority']);
             });
-            // Destruct
-            cm.forEach(nodes, function(node){
-                cm.forEach(item['destruct'], function(handler){
-                    handler(node);
+        });
+    };
+
+    var destructAll = function(parentNode){
+        if(cm.isNode(parentNode)){
+            var processNodes = {};
+            cm.forEach(that.stackNodes, function(item, name){
+                processNodes[name] = removeNodes(parentNode, name);
+            });
+            cm.forEach(that.stackList, function(item){
+                cm.forEach(processNodes[item['name']], function(node){
+                    item['destruct'](node, item['priority']);
                 });
             });
         }else{
-            cm.forEach(item['nodes'], function(node){
-                cm.forEach(item['destruct'], function(handler){
-                    handler(node);
+            cm.forEach(that.stackList, function(item){
+                cm.forEach(that.stackNodes[item['name']], function(node){
+                    item['destruct'](node, item['priority']);
                 });
             });
-            delete that.stack[name];
+            that.stackNodes = [];
+        }
+    };
+
+    var destructItem = function(parentNode, name){
+        var processArray = that.stackList.filter(function(item){
+            return item['name'] === name;
+        });
+        if(cm.isNode(parentNode)){
+            var processNodes = removeNodes(parentNode, name);
+            cm.forEach(processArray, function(item){
+                cm.forEach(processNodes, function(node){
+                    item['destruct'](node, item['priority']);
+                });
+            });
+        }else{
+            cm.forEach(processArray, function(item){
+                cm.forEach(that.stackNodes[item['name']], function(node){
+                    item['destruct'](node, item['priority']);
+                });
+            });
+            delete that.stackNodes[name];
         }
     };
 
     /* ******* PUBLIC ******* */
-    
-    that.add = function(name, construct, destruct){
+
+    that.add = function(name, construct, destruct, priority){
         if(name){
-            if(!that.stack[name]){
-                that.stack[name] = {
-                    'construct' : [],
-                    'destruct' : [],
-                    'nodes' : []
-                };
+            if(!that.stackNodes[name]){
+                that.stackNodes[name] = [];
             }
-            if(typeof construct == 'function'){
-                that.stack[name]['construct'].push(construct);
-            }
-            if(typeof destruct == 'function'){
-                that.stack[name]['destruct'].push(destruct);
+            var item = {
+                'name' : name,
+                'priority' : priority,
+                'construct' : construct,
+                'destruct' : destruct
+            };
+            if(typeof priority != 'undefined' && cm.isNumber(priority)){
+                that.stackList.splice(priority, 0, item);
+            }else{
+                that.stackList.push(item);
             }
         }
         return that;
     };
 
     that.remove = function(name, construct, destruct){
-        if(name && that.stack[name]){
-            if(construct || destruct){
-                // Remove item's handlers
-                if(typeof construct == 'function'){
-                    that.stack[name]['construct'] = that.stack[name]['construct'].filter(function(handler){
-                        return handler != construct;
-                    });
-                }
-                if(typeof destruct == 'function'){
-                    that.stack[name]['destruct'] = that.stack[name]['destruct'].filter(function(handler){
-                        return handler != destruct;
-                    });
-                }
+        if(name){
+            if(typeof construct == 'undefined'){
+                that.stackList = that.stackList.filter(function(item){
+                    return !(item['name'] === name);
+                });
             }else{
-                // Remove item from global array
-                delete that.stack[name];
+                that.stackList = that.stackList.filter(function(item){
+                    return !(item['name'] === name && item['construct'] === construct && item['destruct'] === destruct);
+                });
             }
         }
         return that;
     };
 
     that.construct = function(node, name){
+        var timer = Date.now();
         node = node || document.body;
         that.triggerEvent('onConstructStart', {
             'node' : node,
             'name' : name
         });
-        if(name && that.stack[name]){
-            constructItem(that.stack[name], name, node);
+        if(name){
+            constructItem(node, name)
         }else{
-            cm.forEach(that.stack, function(item, name){
-                constructItem(item, name, node);
-            });
+            constructAll(node);
         }
         that.triggerEvent('onConstruct', {
             'node' : node,
             'name' : name
         });
+        cm.errorLog({
+            'type' : 'common',
+            'name' : 'Com.Collector',
+            'message' : ['Construct time', (Date.now() - timer), 'ms.'].join(' ')
+        });
         return that;
     };
 
     that.destruct = function(node, name){
+        var timer = Date.now();
         node = node || null;
         that.triggerEvent('onDestructStart', {
             'node' : node,
             'name' : name
         });
-        if(name && that.stack[name]){
-            destructItem(that.stack[name], name, node);
+        if(name){
+            destructItem(node, name)
         }else{
-            cm.forEach(that.stack, function(item, name){
-                destructItem(item, name, node);
-            });
+            destructAll(node);
         }
         that.triggerEvent('onDestruct', {
             'node' : node,
             'name' : name
         });
+        cm.errorLog({
+            'type' : 'common',
+            'name' : 'Com.Collector',
+            'message' : ['Destruct time', (Date.now() - timer), 'ms.'].join(' ')
+        });
         return that;
     };
-    
+
     init();
 });
