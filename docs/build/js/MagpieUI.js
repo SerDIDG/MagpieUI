@@ -19075,10 +19075,10 @@ cm.define('Com.ColumnsHelper', {
     'params' : {
         'node' : cm.node('div'),
         'name' : '',
-        'isEditing' : true,
         'items' : [],
         'showDrag' : true,
         'minColumnWidth' : 48,              // in px
+        'isEditing' : true,
         'customEvents' : true,
         'ajax' : {
             'type' : 'json',
@@ -19094,7 +19094,7 @@ function(params){
     that.items = [];
     that.chassis = [];
     that.current = null;
-    that.isEditing = false;
+    that.isEditing = null;
     that.isRendered = false;
     that.isAjax = false;
     that.isProcess = false;
@@ -19214,22 +19214,19 @@ function(params){
     /* *** DRAG FUNCTIONS *** */
 
     var start = function(e, chassis){
-        // If current exists, we don't need to start another drag event until previous will not stop
+        cm.preventDefault(e);
+        if(!cm.isTouch && e.button){
+            return;
+        }
         if(that.current){
-            return false;
+            return;
         }
         // Abort ajax handler
         if(that.isProcess){
             that.abort();
         }
-        e = cm.getEvent(e);
-        cm.preventDefault(e);
         // Hide IFRAMES and EMBED tags
         cm.hideSpecialTags();
-        // If not left mouse button, don't duplicate drag event
-        if((cm.is('IE') && cm.isVersion() < 9 && e.button != 1) || (!cm.is('IE') && e.button)){
-            return false;
-        }
         // Current
         var index = that.chassis.indexOf(chassis),
             leftColumn = that.items[index],
@@ -19272,7 +19269,7 @@ function(params){
 
             that.current['left']['column']['container'].style.width = that.current['left']['column']['width'];
             that.current['right']['column']['container'].style.width = that.current['right']['column']['width'];
-            that.current['chassis']['container'].style.left = [((x - that.current['offset']) / that.current['ratio']).toFixed(2), '%'].join('');
+            that.current['chassis']['container'].style.left = [((position['left'] - that.current['offset']) / that.current['ratio']).toFixed(2), '%'].join('');
         }
         // API onResize event
         that.triggerEvent('onChange', that.items);
@@ -19343,7 +19340,7 @@ function(params){
     /* ******* PUBLIC ******* */
 
     that.enableEditing = function(){
-        if(!that.isEditing){
+        if(typeof that.isEditing !== 'boolean' || !that.isEditing){
             that.isEditing = true;
             renderChassis();
             that.triggerEvent('enableEditing');
@@ -19353,7 +19350,7 @@ function(params){
     };
 
     that.disableEditing = function(){
-        if(that.isEditing){
+        if(typeof that.isEditing !== 'boolean' || that.isEditing){
             that.isEditing = false;
             removeChassis();
             that.triggerEvent('disableEditing');
@@ -23041,7 +23038,7 @@ function(params){
         'items' : []
     };
     that.components = {};
-    that.isEditing = false;
+    that.isEditing = null;
 
     var init = function(){
         that.setParams(params);
@@ -23104,7 +23101,7 @@ function(params){
     /* ******* PUBLIC ******* */
 
     that.enableEditing = function(){
-        if(!that.isEditing){
+        if(typeof that.isEditing !== 'boolean' || !that.isEditing){
             that.isEditing = true;
             cm.addClass(that.params['node'], 'is-editing is-editable');
             that.components['columns'] && that.components['columns'].enableEditing();
@@ -23115,7 +23112,7 @@ function(params){
     };
 
     that.disableEditing = function(){
-        if(that.isEditing){
+        if(typeof that.isEditing !== 'boolean' || that.isEditing){
             that.isEditing = false;
             cm.removeClass(that.params['node'], 'is-editing is-editable');
             that.components['columns'] && that.components['columns'].disableEditing();

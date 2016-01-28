@@ -43,7 +43,7 @@ function(params){
         'items' : []
     };
     that.components = {};
-    that.isEditing = false;
+    that.isEditing = null;
 
     var init = function(){
         that.setParams(params);
@@ -106,7 +106,7 @@ function(params){
     /* ******* PUBLIC ******* */
 
     that.enableEditing = function(){
-        if(!that.isEditing){
+        if(typeof that.isEditing !== 'boolean' || !that.isEditing){
             that.isEditing = true;
             cm.addClass(that.params['node'], 'is-editing is-editable');
             that.components['columns'] && that.components['columns'].enableEditing();
@@ -117,7 +117,7 @@ function(params){
     };
 
     that.disableEditing = function(){
-        if(that.isEditing){
+        if(typeof that.isEditing !== 'boolean' || that.isEditing){
             that.isEditing = false;
             cm.removeClass(that.params['node'], 'is-editing is-editable');
             that.components['columns'] && that.components['columns'].disableEditing();
