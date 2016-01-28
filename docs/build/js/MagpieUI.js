@@ -26830,10 +26830,10 @@ function(params){
             cm.customEvent.add(that.params['node'], 'redraw', function(){
                 that.redraw();
             });
-            cm.customEvent.add(that.params['node'], 'enableEditable', function(){
+            cm.customEvent.add(that.params['node'], 'enableEditing', function(){
                 that.enableEditing();
             });
-            cm.customEvent.add(that.params['node'], 'disableEditable', function(){
+            cm.customEvent.add(that.params['node'], 'disableEditing', function(){
                 that.disableEditing();
             });
         }
