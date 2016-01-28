@@ -165,10 +165,10 @@ function(params){
             cm.customEvent.add(that.params['node'], 'redraw', function(){
                 that.redraw();
             });
-            cm.customEvent.add(that.params['node'], 'enableEditing', function(){
+            cm.customEvent.add(that.params['node'], 'enableEditable', function(){
                 that.enableEditing();
             });
-            cm.customEvent.add(that.params['node'], 'disableEditing', function(){
+            cm.customEvent.add(that.params['node'], 'disableEditable', function(){
                 that.disableEditing();
             });
         }
