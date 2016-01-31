@@ -19,9 +19,9 @@
     <li data-node="tabs:[]:container" data-config='{"id" : "methods", "title" : "Methods"}'></li>
 
     <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
-        <h2>Default Columns:</h2>
+        <h2>Default columns:</h2>
 
-        <div class="com__columns is-editing is-editable" data-element="Com.Columns">
+        <div class="com__columns" data-element="Com.Columns" data-config='{"isEditing" : false}'>
             <div class="inner" data-com__columns="inner">
                 <div class="container" data-com__columns="holder">
                     <div class="com__column" data-com__columns="column" style="width: 33.33%;">
@@ -38,9 +38,30 @@
         </div>
 
         <hr>
-        <h2>Columns with visible chassis:</h2>
 
-        <div class="com__columns is-editing is-editable is-chassis-visible" data-element="Com.Columns">
+        <h2>Editable columns:</h2>
+
+        <div class="com__columns" data-element="Com.Columns" data-config='{"isEditing" : true}'>
+            <div class="inner" data-com__columns="inner">
+                <div class="container" data-com__columns="holder">
+                    <div class="com__column" data-com__columns="column" style="width: 33.33%;">
+                        <div class="inner" data-com__columns="column-inner">123</div>
+                    </div>
+                    <div class="com__column" data-com__columns="column" style="width: 33.34%;">
+                        <div class="inner" data-com__columns="column-inner">345</div>
+                    </div>
+                    <div class="com__column" data-com__columns="column" style="width: 33.33%;">
+                        <div class="inner" data-com__columns="column-inner">678</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>Editable columns with visible chassis:</h2>
+
+        <div class="com__columns is-chassis-visible" data-element="Com.Columns" data-config='{"isEditing" : true}'>
             <div class="inner" data-com__columns="inner">
                 <div class="container" data-com__columns="holder">
                     <div class="com__column" data-com__columns="column" style="width: 33.33%;">

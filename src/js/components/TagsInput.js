@@ -3,6 +3,7 @@ cm.define('Com.TagsInput', {
         'Params',
         'Events',
         'Langs',
+        'Structure',
         'DataConfig',
         'Stack'
     ],
@@ -18,15 +19,14 @@ cm.define('Com.TagsInput', {
         'onClose'
     ],
     'params' : {
-        'container' : false,
         'input' : null,                                 // Deprecated, use 'node' parameter instead.
         'node' : cm.Node('input', {'type' : 'text'}),
+        'container' : null,
         'name' : '',
+        'embedStructure' : 'replace',
         'data' : [],
         'maxSingleTagLength': 255,
-        'autocomplete' : {                              // All parameters what uses in Com.Autocomplete
-            'clearOnEmpty' : false
-        },
+        'autocomplete' : false,
         'icons' : {
             'add' : 'icon default linked',
             'remove' : 'icon default linked'
@@ -35,6 +35,9 @@ cm.define('Com.TagsInput', {
             'tags' : 'Tags',
             'add' : 'Add Tag',
             'remove' : 'Remove Tag'
+        },
+        'Com.Autocomplete' : {
+            'clearOnEmpty' : false
         }
     }
 },
@@ -56,6 +59,7 @@ function(params){
         that.convertEvents(that.params['events']);
         that.getDataConfig(that.params['node']);
         // Render
+        validateParams();
         render();
         setLogic();
         that.addToStack(nodes['container']);
@@ -73,30 +77,29 @@ function(params){
         if(cm.isNode(that.params['input'])){
             that.params['node'] = that.params['input'];
         }
-        // Check for autocomplete
-        that.isAutocomplete = !(!cm.isEmpty(params['autocomplete']) && !that.getNodeDataConfig(that.params['node'])['autocomplete']);
+    };
+
+    var validateParams = function(){
+        if(cm.isNode(that.params['node'])){
+            that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
+        }
+        that.isAutocomplete = that.params['autocomplete'];
     };
 
     var render = function(){
-        /* *** STRUCTURE *** */
+        // Structure
         nodes['container'] = cm.Node('div', {'class' : 'com__tags-input'},
             nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
             nodes['inner'] = cm.Node('div', {'class' : 'inner'})
         );
         // Render add button
         renderAddButton();
-        /* *** ATTRIBUTES *** */
-        // Set hidden input attributes
-        if(that.params['node'].getAttribute('name')){
-            nodes['hidden'].setAttribute('name', that.params['node'].getAttribute('name'));
+        // Attributes
+        if(that.params['name']){
+            nodes['hidden'].setAttribute('name', that.params['name']);
         }
-        /* *** INSERT INTO DOM *** */
-        if(that.params['container']){
-            that.params['container'].appendChild(nodes['container']);
-        }else if(that.params['node'].parentNode){
-            cm.insertBefore(nodes['container'], that.params['node']);
-        }
-        cm.remove(that.params['node']);
+        // Append
+        that.embedStructure(nodes['container']);
 
     };
 
@@ -104,7 +107,7 @@ function(params){
         // Autocomplete
         cm.getConstructor('Com.Autocomplete', function(classConstructor){
             that.components['autocomplete'] = new classConstructor(
-                cm.merge(that.params['autocomplete'], {
+                cm.merge(that.params['Com.Autocomplete'], {
                     'events' : {
                         'onClickSelect' : function(){
                             addAdderTags(true);
@@ -311,6 +314,10 @@ function(params){
             }
         });
         return that;
+    };
+
+    that.getAutocomplete = function(){
+        return that.components['autocomplete'];
     };
 
     init();

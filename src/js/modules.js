@@ -602,8 +602,29 @@ Mod['Structure'] = {
         if(typeof that.build['params']['renderStructure'] == 'undefined'){
             that.build['params']['renderStructure'] = true;
         }
+        if(typeof that.build['params']['embedStructure'] == 'undefined'){
+            that.build['params']['embedStructure'] = 'append';
+        }
+    },
+    'embedStructure' : function(node){
+        var that = this;
+        if(that.params['embedStructure'] == 'replace'){
+            that.replaceStructure(node);
+        }else{
+            that.appendStructure(node);
+        }
+        return that;
     },
     'appendStructure' : function(node){
+        var that = this;
+        if(that.params['container']){
+            that.params['container'].appendChild(node);
+        }else if(that.params['node']){
+            that.params['node'].appendChild(node);
+        }
+        return that;
+    },
+    'replaceStructure' : function(node){
         var that = this;
         if(that.params['container']){
             if(that.params['container'] === that.params['node']){
@@ -614,6 +635,7 @@ Mod['Structure'] = {
         }else if(that.params['node'].parentNode){
             cm.insertBefore(node, that.params['node']);
         }
+        cm.remove(that.params['node']);
         return that;
     }
 };

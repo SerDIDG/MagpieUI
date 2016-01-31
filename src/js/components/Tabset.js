@@ -22,8 +22,9 @@ cm.define('Com.Tabset', {
     ],
     'params' : {
         'node' : cm.Node('div'),        // Tabs contained node
-        'container' : false,
+        'container' : null,
         'name' : '',
+        'embedStructure' : 'replace',
         'toggleOnHashChange' : true,
         'renderOnInit' : true,
         'active' : null,
@@ -165,8 +166,7 @@ function(params){
             that.nodes['container'].id = that.params['node'].id;
         }
         /* *** INSERT INTO DOM *** */
-        that.appendStructure(that.nodes['container']);
-        cm.remove(that.params['node']);
+        that.embedStructure(that.nodes['container']);
         /* *** EVENTS *** */
         Part.Menu && Part.Menu();
         cm.addEvent(window, 'resize', resizeHandler);

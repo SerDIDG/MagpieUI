@@ -2,6 +2,7 @@ cm.define('Com.MultiField', {
     'modules' : [
         'Params',
         'Events',
+        'Structure',
         'DataConfig',
         'DataNodes',
         'Stack',
@@ -17,9 +18,10 @@ cm.define('Com.MultiField', {
     ],
     'params' : {
         'node' : cm.Node('div'),
+        'container' : null,
         'name' : '',
         'renderStructure' : false,
-        'container' : false,
+        'embedStructure' : 'append',
         'renderItems' : 0,
         'maxItems' : 0,                         // 0 - infinity
         'template' : null,                      // Html node or string with items template
@@ -89,10 +91,8 @@ cm.define('Com.MultiField', {
                     )
                 )
             );
-            // Embed
-            if(that.params['container']){
-                that.params['container'].appendChild(that.nodes['container']);
-            }
+            // Append
+            that.embedStructure(that.nodes['container']);
         }
         // Add button events
         cm.addEvent(that.nodes['add'], 'click', function(e){

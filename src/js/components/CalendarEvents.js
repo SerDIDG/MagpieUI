@@ -1,13 +1,18 @@
 cm.define('Com.CalendarEvents', {
     'modules' : [
         'Params',
+        'Structure',
+        'Stack',
         'DataConfig',
         'Langs'
     ],
     'params' : {
-        'node' : cm.Node('div'),
+        'node' : cm.node('div'),
+        'container' : null,
+        'embedStructure' : 'append',
+        'name' : '',
         'data' : {},
-        'format' : cm._config['displayDateFormat'],
+        'format' : 'cm._config.displayDateFormat',
         'startYear' : 1950,
         'endYear' : new Date().getFullYear() + 10,
         'startWeekDay' : 0,
@@ -34,11 +39,12 @@ function(params){
         // Render
         render();
         setMiscEvents();
+        that.addToStack(that.nodes['container']);
     };
 
     var render = function(){
         // Structure
-        that.nodes['container'] = cm.Node('div', {'class' : 'com__calendar-events'});
+        that.nodes['container'] = cm.node('div', {'class' : 'com__calendar-events'});
         // Render calendar
         that.components['calendar'] = new Com.Calendar({
             'node' : that.nodes['container'],
@@ -50,8 +56,8 @@ function(params){
         });
         // Render tooltip
         that.components['tooltip'] = new Com.Tooltip(that.params['Com.Tooltip']);
-        // Insert into DOM
-        that.params['node'].appendChild(that.nodes['container']);
+        // Append
+        that.embedStructure(that.nodes['container']);
     };
 
     var setMiscEvents = function(){
@@ -79,14 +85,14 @@ function(params){
 
         if((data = that.params['data'][params['year']]) && (data = data[(params['month'] + 1)]) && (data = data[params['day']])){
             // Structure
-            myNodes['content'] = cm.Node('div', {'class' : 'pt__listing com__calendar-events-listing'},
-                myNodes['list'] = cm.Node('ul', {'class' : 'list'})
+            myNodes['content'] = cm.node('div', {'class' : 'pt__listing com__calendar-events-listing'},
+                myNodes['list'] = cm.node('ul', {'class' : 'list'})
             );
             // Foreach events
             cm.forEach(data, function(value){
                 myNodes['list'].appendChild(
-                    cm.Node('li',
-                        cm.Node('a', {'href' : value['url'], 'target' : that.params['target']}, value['title'])
+                    cm.node('li',
+                        cm.node('a', {'href' : value['url'], 'target' : that.params['target']}, value['title'])
                     )
                 );
             });

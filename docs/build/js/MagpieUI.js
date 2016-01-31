@@ -12359,7 +12359,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.11.1',
+        '_version' : '3.11.2',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -16170,8 +16170,29 @@ Mod['Structure'] = {
         if(typeof that.build['params']['renderStructure'] == 'undefined'){
             that.build['params']['renderStructure'] = true;
         }
+        if(typeof that.build['params']['embedStructure'] == 'undefined'){
+            that.build['params']['embedStructure'] = 'append';
+        }
+    },
+    'embedStructure' : function(node){
+        var that = this;
+        if(that.params['embedStructure'] == 'replace'){
+            that.replaceStructure(node);
+        }else{
+            that.appendStructure(node);
+        }
+        return that;
     },
     'appendStructure' : function(node){
+        var that = this;
+        if(that.params['container']){
+            that.params['container'].appendChild(node);
+        }else if(that.params['node']){
+            that.params['node'].appendChild(node);
+        }
+        return that;
+    },
+    'replaceStructure' : function(node){
         var that = this;
         if(that.params['container']){
             if(that.params['container'] === that.params['node']){
@@ -16182,6 +16203,7 @@ Mod['Structure'] = {
         }else if(that.params['node'].parentNode){
             cm.insertBefore(node, that.params['node']);
         }
+        cm.remove(that.params['node']);
         return that;
     }
 };
@@ -16438,8 +16460,10 @@ cm.define('Com.Form', {
     ],
     'params' : {
         'node' : cm.Node('div'),
+        'container' : null,
         'name' : '',
         'renderStructure' : true,
+        'embedStructure' : 'append',
         'ajax' : {
             'type' : 'json',
             'method' : 'post',
@@ -16471,8 +16495,7 @@ function(params){
             that.nodes['container'] = cm.node('div', {'class' : 'com__form'},
                 that.nodes['form'] = cm.node('form', {'class' : 'form'})
             );
-            that.appendStructure(that.nodes['container']);
-            cm.remove(that.params['node']);
+            that.embedStructure(that.nodes['container']);
         }
         // Events
         cm.addEvent(that.nodes['form'], 'submit', function(e){
@@ -17788,13 +17811,18 @@ function(params){
 cm.define('Com.CalendarEvents', {
     'modules' : [
         'Params',
+        'Structure',
+        'Stack',
         'DataConfig',
         'Langs'
     ],
     'params' : {
-        'node' : cm.Node('div'),
+        'node' : cm.node('div'),
+        'container' : null,
+        'embedStructure' : 'append',
+        'name' : '',
         'data' : {},
-        'format' : cm._config['displayDateFormat'],
+        'format' : 'cm._config.displayDateFormat',
         'startYear' : 1950,
         'endYear' : new Date().getFullYear() + 10,
         'startWeekDay' : 0,
@@ -17821,11 +17849,12 @@ function(params){
         // Render
         render();
         setMiscEvents();
+        that.addToStack(that.nodes['container']);
     };
 
     var render = function(){
         // Structure
-        that.nodes['container'] = cm.Node('div', {'class' : 'com__calendar-events'});
+        that.nodes['container'] = cm.node('div', {'class' : 'com__calendar-events'});
         // Render calendar
         that.components['calendar'] = new Com.Calendar({
             'node' : that.nodes['container'],
@@ -17837,8 +17866,8 @@ function(params){
         });
         // Render tooltip
         that.components['tooltip'] = new Com.Tooltip(that.params['Com.Tooltip']);
-        // Insert into DOM
-        that.params['node'].appendChild(that.nodes['container']);
+        // Append
+        that.embedStructure(that.nodes['container']);
     };
 
     var setMiscEvents = function(){
@@ -17866,14 +17895,14 @@ function(params){
 
         if((data = that.params['data'][params['year']]) && (data = data[(params['month'] + 1)]) && (data = data[params['day']])){
             // Structure
-            myNodes['content'] = cm.Node('div', {'class' : 'pt__listing com__calendar-events-listing'},
-                myNodes['list'] = cm.Node('ul', {'class' : 'list'})
+            myNodes['content'] = cm.node('div', {'class' : 'pt__listing com__calendar-events-listing'},
+                myNodes['list'] = cm.node('ul', {'class' : 'list'})
             );
             // Foreach events
             cm.forEach(data, function(value){
                 myNodes['list'].appendChild(
-                    cm.Node('li',
-                        cm.Node('a', {'href' : value['url'], 'target' : that.params['target']}, value['title'])
+                    cm.node('li',
+                        cm.node('a', {'href' : value['url'], 'target' : that.params['target']}, value['title'])
                     )
                 );
             });
@@ -18373,6 +18402,7 @@ cm.define('Com.ColorPicker', {
         'Params',
         'Events',
         'Langs',
+        'Structure',
         'DataConfig',
         'Storage',
         'Stack'
@@ -18388,9 +18418,10 @@ cm.define('Com.ColorPicker', {
         'onClear'
     ],
     'params' : {
-        'container' : false,
         'input' : null,                                     // Deprecated, use 'node' parameter instead.
         'node' : cm.Node('input', {'type' : 'text'}),
+        'container' : null,
+        'embedStructure' : 'replace',
         'name' : '',
         'value' : null,                                     // Color string: transparent | hex | rgba.
         'defaultValue' : 'transparent',
@@ -18483,9 +18514,9 @@ function(params){
         if(that.params['node'].id){
             that.nodes['container'].id = that.params['node'].id;
         }
-        // Set hidden input attributes
-        if(that.params['node'].getAttribute('name')){
-            that.nodes['hidden'].setAttribute('name', that.params['node'].getAttribute('name'));
+        // Name
+        if(that.params['name']){
+            that.nodes['hidden'].setAttribute('name', that.params['name']);
         }
         // Clear Button
         if(that.params['showClearButton']){
@@ -18495,12 +18526,7 @@ function(params){
             );
         }
         /* *** INSERT INTO DOM *** */
-        if(that.params['container']){
-            that.params['container'].appendChild(that.nodes['container']);
-        }else if(that.params['node'].parentNode){
-            cm.insertBefore(that.nodes['container'], that.params['node']);
-        }
-        cm.remove(that.params['node']);
+        that.embedStructure(that.nodes['container']);
     };
 
     var setLogic = function(){
@@ -19402,16 +19428,20 @@ cm.define('Com.DateSelect', {
         'Params',
         'DataConfig',
         'Langs',
-        'Events'
+        'Events',
+        'Structure',
+        'Stack'
     ],
     'events' : [
         'onSelect',
         'onChange'
     ],
     'params' : {
-        'container' : false,
         'input' : null,                                 // Deprecated, use 'node' parameter instead.
         'node' : cm.Node('input', {'type' : 'text'}),
+        'name' : '',
+        'embedStructure' : 'replace',
+        'container' : null,
         'format' : 'cm._config.dateFormat',
         'startYear' : 1950,
         'endYear' : new Date().getFullYear() + 10,
@@ -19442,7 +19472,9 @@ function(params){
         preValidateParams();
         that.convertEvents(that.params['events']);
         that.getDataConfig(that.params['node']);
+        validateParams();
         render();
+        that.addToStack(nodes['container']);
         // Set selected date
         set(that.params['node'].value);
     };
@@ -19453,9 +19485,15 @@ function(params){
         }
     };
 
+    var validateParams = function(){
+        if(cm.isNode(that.params['node'])){
+            that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
+        }
+    };
+
     var render = function(){
-        /* *** RENDER STRUCTURE *** */
-        nodes['container'] = cm.Node('div', {'class' : 'com-dateselect'},
+        // Structure
+        nodes['container'] = cm.Node('div', {'class' : 'com__dateselect'},
             nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
             cm.Node('div', {'class' : 'pt__toolbar bottom'},
                 cm.Node('div', {'class' : 'inner clear'},
@@ -19468,18 +19506,12 @@ function(params){
             )
         );
         renderSelects();
-        /* *** ATTRIBUTES *** */
-        // Set hidden input attributes
-        if(that.params['node'].getAttribute('name')){
-            nodes['hidden'].setAttribute('name', that.params['node'].getAttribute('name'));
+        // Attributes
+        if(that.params['name']){
+            nodes['hidden'].setAttribute('name', that.params['name']);
         }
-        /* *** INSERT INTO DOM *** */
-        if(that.params['container']){
-            that.params['container'].appendChild(nodes['container']);
-        }else if(that.params['node'].parentNode){
-            cm.insertBefore(nodes['container'], that.params['node']);
-        }
-        cm.remove(that.params['node']);
+        // Append
+        that.embedStructure(nodes['container']);
     };
 
     var renderSelects = function(){
@@ -19627,7 +19659,7 @@ function(params){
         return str;
     };
 
-    /* ******* MAIN ******* */
+    /* ******* PUBLIC ******* */
 
     that.get = function(format){
         format = format || that.params['format'];
@@ -19656,6 +19688,7 @@ cm.define('Com.Datepicker', {
         'Params',
         'Events',
         'DataConfig',
+        'Structure',
         'Langs',
         'Stack'
     ],
@@ -19668,10 +19701,11 @@ cm.define('Com.Datepicker', {
         'onBlur'
     ],
     'params' : {
-        'container' : false,
         'input' : null,                      // Deprecated, use 'node' parameter instead.
         'node' : cm.Node('input', {'type' : 'text'}),
+        'container' : null,
         'name' : '',
+        'embedStructure' : 'replace',
         'renderInBody' : true,
         'format' : 'cm._config.dateFormat',
         'displayFormat' : 'cm._config.displayDateFormat',
@@ -19824,12 +19858,7 @@ function(params){
             cm.insertAfter(nodes['timeHolder'], nodes['calendarContainer']);
         }
         /* *** INSERT INTO DOM *** */
-        if(that.params['container']){
-            that.params['container'].appendChild(nodes['container']);
-        }else if(that.params['node'].parentNode){
-            cm.insertBefore(nodes['container'], that.params['node']);
-        }
-        cm.remove(that.params['node']);
+        that.embedStructure(nodes['container']);
     };
 
     var setLogic = function(){
@@ -22421,7 +22450,9 @@ cm.define('Com.Gridlist', {
         'Params',
         'Events',
         'Langs',
-        'DataConfig'
+        'Structure',
+        'DataConfig',
+        'Stack'
     ],
     'events' : [
         'onSort',
@@ -22434,7 +22465,9 @@ cm.define('Com.Gridlist', {
     ],
     'params' : {
         'node' : cm.Node('div'),
-        'container' : false,
+        'container' : null,
+        'embedStructure' : 'append',
+        'name' : '',
         'data' : [],
         'cols' : [],
         'sort' : true,
@@ -22463,7 +22496,7 @@ cm.define('Com.Gridlist', {
         'Com.Pagination' : {
             'renderStructure' : true,
             'animateSwitch' : true,
-            'animatePrevious' : true
+            'animatePrevious' : false
         }
     }
 },
@@ -22483,6 +22516,7 @@ function(params){
         that.getDataConfig(that.params['node']);
         validateParams();
         render();
+        that.addToStack(that.nodes['container']);
     };
 
     var validateParams = function(){
@@ -22498,9 +22532,9 @@ function(params){
 
     var render = function(){
         // Container
-        that.params['container'].appendChild(
-            that.nodes['container'] = cm.Node('div', {'class' : 'com__gridlist'})
-        );
+        that.nodes['container'] = cm.Node('div', {'class' : 'com__gridlist'});
+        // Append
+        that.embedStructure(that.nodes['container']);
         // Add css class
         !cm.isEmpty(that.params['className']) && cm.addClass(that.nodes['container'], that.params['className']);
         // Counter
@@ -23364,7 +23398,9 @@ cm.define('Com.ImageInput', {
     ],
     'params' : {
         'node' : cm.Node('div'),
+        'container' : null,
         'name' : '',
+        'embedStructure' : 'replace',
         'title' : '',
         'placeholder' : '',
         'value' : null,
@@ -23449,8 +23485,7 @@ function(params){
             that.nodes['hidden'].setAttribute('name', that.params['name']);
         }
         // Append
-        that.appendStructure(that.nodes['container']);
-        cm.remove(that.params['node']);
+        that.embedStructure(that.nodes['container']);
         // Events
         cm.getConstructor('Com.GalleryPopup', function(classConstructor){
             that.components['popup'] = new classConstructor(
@@ -23627,6 +23662,7 @@ cm.define('Com.MultiField', {
     'modules' : [
         'Params',
         'Events',
+        'Structure',
         'DataConfig',
         'DataNodes',
         'Stack',
@@ -23642,9 +23678,10 @@ cm.define('Com.MultiField', {
     ],
     'params' : {
         'node' : cm.Node('div'),
+        'container' : null,
         'name' : '',
         'renderStructure' : false,
-        'container' : false,
+        'embedStructure' : 'append',
         'renderItems' : 0,
         'maxItems' : 0,                         // 0 - infinity
         'template' : null,                      // Html node or string with items template
@@ -23714,10 +23751,8 @@ cm.define('Com.MultiField', {
                     )
                 )
             );
-            // Embed
-            if(that.params['container']){
-                that.params['container'].appendChild(that.nodes['container']);
-            }
+            // Append
+            that.embedStructure(that.nodes['container']);
         }
         // Add button events
         cm.addEvent(that.nodes['add'], 'click', function(e){
@@ -24268,6 +24303,7 @@ cm.define('Com.Pagination', {
         'Params',
         'Events',
         'Langs',
+        'Structure',
         'DataConfig',
         'DataNodes',
         'Callbacks',
@@ -24285,9 +24321,10 @@ cm.define('Com.Pagination', {
     ],
     'params' : {
         'node' : cm.Node('div'),
+        'container' : null,
         'name' : '',
         'renderStructure' : false,                                  // Render wrapper nodes if not exists in html
-        'container' : false,
+        'embedStructure' : 'append',
         'scrollNode' : window,
         'data' : [],                                                // Static data
         'count' : 0,
@@ -24420,10 +24457,8 @@ function(params){
                     })
                 );
             }
-            // Embed
-            if(that.params['container']){
-                that.params['container'].appendChild(that.nodes['container']);
-            }
+            // Append
+            that.embedStructure(that.nodes['container']);
         }
         // Reset styles and variables
         reset();
@@ -25506,6 +25541,7 @@ cm.define('Com.ScrollPagination', {
         'Params',
         'Events',
         'Langs',
+        'Structure',
         'DataConfig',
         'DataNodes',
         'Callbacks',
@@ -25526,9 +25562,10 @@ cm.define('Com.ScrollPagination', {
     ],
     'params' : {
         'node' : cm.Node('div'),
+        'container' : null,
         'name' : '',
         'renderStructure' : false,                                  // Render wrapper nodes if not exists in html
-        'container' : false,
+        'embedStructure' : 'append',
         'scrollNode' : window,
         'scrollIndent' : 'Math.min(%scrollHeight% / 2, 600)',       // Variables: %blockHeight%.
         'data' : [],                                                // Static data
@@ -25630,9 +25667,8 @@ function(params){
                     )
                 )
             );
-            if(that.params['container']){
-                that.params['container'].appendChild(that.nodes['container']);
-            }
+            // Append
+            that.embedStructure(that.nodes['container']);
         }
         // Reset styles and variables
         reset();
@@ -26019,6 +26055,7 @@ cm.define('Com.Select', {
     'modules' : [
         'Params',
         'Events',
+        'Structure',
         'DataConfig',
         'Stack'
     ],
@@ -26031,10 +26068,11 @@ cm.define('Com.Select', {
         'onBlur'
     ],
     'params' : {
-        'container' : false,                    // Component container that is required in case content is rendered without available select.
         'select' : null,                        // Deprecated, use 'node' parameter instead.
         'node' : cm.Node('select'),             // Html select node to decorate.
+        'container' : null,                    // Component container that is required in case content is rendered without available select.
         'name' : '',
+        'embedStructure' : 'replace',
         'renderInBody' : true,                  // Render dropdowns in document.body, else they will be rendrered in component container.
         'multiple' : false,                     // Render multiple select.
         'placeholder' : '',
@@ -26173,12 +26211,7 @@ function(params){
             renderOption(item);
         });
         /* *** INSERT INTO DOM *** */
-        if(that.params['container']){
-            that.params['container'].appendChild(nodes['container']);
-        }else if(that.params['node'].parentNode){
-            cm.insertBefore(nodes['container'], that.params['node']);
-        }
-        cm.remove(that.params['node']);
+        that.embedStructure(nodes['container']);
     };
 
     var renderSingle = function(){
@@ -27705,8 +27738,9 @@ cm.define('Com.Tabset', {
     ],
     'params' : {
         'node' : cm.Node('div'),        // Tabs contained node
-        'container' : false,
+        'container' : null,
         'name' : '',
+        'embedStructure' : 'replace',
         'toggleOnHashChange' : true,
         'renderOnInit' : true,
         'active' : null,
@@ -27848,8 +27882,7 @@ function(params){
             that.nodes['container'].id = that.params['node'].id;
         }
         /* *** INSERT INTO DOM *** */
-        that.appendStructure(that.nodes['container']);
-        cm.remove(that.params['node']);
+        that.embedStructure(that.nodes['container']);
         /* *** EVENTS *** */
         Part.Menu && Part.Menu();
         cm.addEvent(window, 'resize', resizeHandler);
@@ -28566,6 +28599,7 @@ cm.define('Com.TagsInput', {
         'Params',
         'Events',
         'Langs',
+        'Structure',
         'DataConfig',
         'Stack'
     ],
@@ -28581,15 +28615,14 @@ cm.define('Com.TagsInput', {
         'onClose'
     ],
     'params' : {
-        'container' : false,
         'input' : null,                                 // Deprecated, use 'node' parameter instead.
         'node' : cm.Node('input', {'type' : 'text'}),
+        'container' : null,
         'name' : '',
+        'embedStructure' : 'replace',
         'data' : [],
         'maxSingleTagLength': 255,
-        'autocomplete' : {                              // All parameters what uses in Com.Autocomplete
-            'clearOnEmpty' : false
-        },
+        'autocomplete' : false,
         'icons' : {
             'add' : 'icon default linked',
             'remove' : 'icon default linked'
@@ -28598,6 +28631,9 @@ cm.define('Com.TagsInput', {
             'tags' : 'Tags',
             'add' : 'Add Tag',
             'remove' : 'Remove Tag'
+        },
+        'Com.Autocomplete' : {
+            'clearOnEmpty' : false
         }
     }
 },
@@ -28619,6 +28655,7 @@ function(params){
         that.convertEvents(that.params['events']);
         that.getDataConfig(that.params['node']);
         // Render
+        validateParams();
         render();
         setLogic();
         that.addToStack(nodes['container']);
@@ -28636,30 +28673,29 @@ function(params){
         if(cm.isNode(that.params['input'])){
             that.params['node'] = that.params['input'];
         }
-        // Check for autocomplete
-        that.isAutocomplete = !(!cm.isEmpty(params['autocomplete']) && !that.getNodeDataConfig(that.params['node'])['autocomplete']);
+    };
+
+    var validateParams = function(){
+        if(cm.isNode(that.params['node'])){
+            that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
+        }
+        that.isAutocomplete = that.params['autocomplete'];
     };
 
     var render = function(){
-        /* *** STRUCTURE *** */
+        // Structure
         nodes['container'] = cm.Node('div', {'class' : 'com__tags-input'},
             nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
             nodes['inner'] = cm.Node('div', {'class' : 'inner'})
         );
         // Render add button
         renderAddButton();
-        /* *** ATTRIBUTES *** */
-        // Set hidden input attributes
-        if(that.params['node'].getAttribute('name')){
-            nodes['hidden'].setAttribute('name', that.params['node'].getAttribute('name'));
+        // Attributes
+        if(that.params['name']){
+            nodes['hidden'].setAttribute('name', that.params['name']);
         }
-        /* *** INSERT INTO DOM *** */
-        if(that.params['container']){
-            that.params['container'].appendChild(nodes['container']);
-        }else if(that.params['node'].parentNode){
-            cm.insertBefore(nodes['container'], that.params['node']);
-        }
-        cm.remove(that.params['node']);
+        // Append
+        that.embedStructure(nodes['container']);
 
     };
 
@@ -28667,7 +28703,7 @@ function(params){
         // Autocomplete
         cm.getConstructor('Com.Autocomplete', function(classConstructor){
             that.components['autocomplete'] = new classConstructor(
-                cm.merge(that.params['autocomplete'], {
+                cm.merge(that.params['Com.Autocomplete'], {
                     'events' : {
                         'onClickSelect' : function(){
                             addAdderTags(true);
@@ -28876,6 +28912,10 @@ function(params){
         return that;
     };
 
+    that.getAutocomplete = function(){
+        return that.components['autocomplete'];
+    };
+
     init();
 });
 cm.define('Com.TimeSelect', {
@@ -28883,7 +28923,9 @@ cm.define('Com.TimeSelect', {
         'Params',
         'Events',
         'Langs',
-        'DataConfig'
+        'Structure',
+        'DataConfig',
+        'Stack'
     ],
     'events' : [
         'onRender',
@@ -28892,9 +28934,11 @@ cm.define('Com.TimeSelect', {
         'onClear'
     ],
     'params' : {
-        'container' : false,
         'input' : null,                                  // Deprecated, use 'node' parameter instead.
         'node' : cm.Node('input', {'type' : 'text'}),
+        'container' : null,
+        'embedStructure' : 'replace',
+        'name' : '',
         'renderSelectsInBody' : true,
         'format' : 'cm._config.timeFormat',
         'showTitleTag' : true,
@@ -28934,6 +28978,7 @@ function(params){
         validateParams();
         render();
         setMiscEvents();
+        that.addToStack(nodes['container']);
         // Set selected time
         if(that.params['selected']){
             that.set(that.params['selected'], that.params['format'], false);
@@ -28951,6 +28996,7 @@ function(params){
     var validateParams = function(){
         if(cm.isNode(that.params['node'])){
             that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
+            that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
         }
         if(cm.isEmpty(that.params['hoursInterval'])){
             that.params['hoursInterval'] = 1;
@@ -29023,17 +29069,12 @@ function(params){
         if(that.params['showTitleTag'] && that.params['title']){
             nodes['container'].title = that.params['title'];
         }
-        // Set hidden input attributes
-        if(that.params['node'].getAttribute('name')){
-            nodes['hidden'].setAttribute('name', that.params['node'].getAttribute('name'));
+        // Name
+        if(that.params['name']){
+            nodes['hidden'].setAttribute('name', that.params['name']);
         }
         /* *** INSERT INTO DOM *** */
-        if(that.params['container']){
-            that.params['container'].appendChild(nodes['container']);
-        }else if(that.params['node'].parentNode){
-            cm.insertBefore(nodes['container'], that.params['node']);
-        }
-        cm.remove(that.params['node']);
+        that.embedStructure(nodes['container']);
     };
 
     var setMiscEvents = function(){
@@ -29257,10 +29298,12 @@ cm.define('Com.ToggleBox', {
     ],
     'params' : {
         'node' : cm.Node('div'),
+        'name' : '',
+        'renderStructure' : false,
+        'embedStructure' : 'replace',
         'duration' : 500,
         'remember' : false,                                 // Remember toggle state
         'toggleTitle' : false,                              // Change title on toggle
-        'renderStructure' : false,
         'container' : false,
         'title' : false,
         'content' : false,
@@ -29320,7 +29363,7 @@ function(params){
             );
             cm.addClass(that.nodes['container'], that.params['className']);
             // Embed
-            that.appendStructure(that.nodes['container']);
+            that.embedStructure(that.nodes['container']);
             // Embed content
             if(that.params['content']){
                 that.nodes['content'].appendChild(that.params['content']);
@@ -29455,8 +29498,10 @@ cm.define('Com.Toolbar', {
         'Params',
         'Events',
         'Langs',
+        'Structure',
         'DataConfig',
-        'DataNodes'
+        'DataNodes',
+        'Stack'
     ],
     'events' : [
         'onRenderStart',
@@ -29464,11 +29509,17 @@ cm.define('Com.Toolbar', {
     ],
     'params' : {
         'node' : cm.Node('div'),
-        'name' : ''
+        'container' : null,
+        'name' : '',
+        'embedStructure' : 'append'
     }
 },
 function(params){
     var that = this;
+
+    that.nodes = {};
+    that.groups = [];
+    that.items = [];
 
     var init = function(){
         that.setParams(params);
@@ -29482,9 +29533,19 @@ function(params){
     };
 
     var render = function(){
+        that.nodes['container'] = cm.node('div');
+        // Append
+        that.embedStructure(that.nodes['container']);
     };
 
     /* ******* PUBLIC ******* */
+
+    that.addGroup = function(item){
+        item = cm.merge({
+            'name' : '',
+            'align' : 'left'
+        }, item);
+    };
 
     init();
 });
@@ -29847,9 +29908,11 @@ function(params){
 
     init();
 });
+// This file must be deleted in future
+
 Com['UA'] = {
-    'hash' : {'ie':'MSIE','opera':'Opera','ff':'Firefox','firefox':'Firefox','webkit':'AppleWebKit','safari':'Safari','chrome':'Chrome','steam':'Steam'},
-    'fullname' : {'MSIE':'Microsoft Internet Explorer','Firefox':'Mozilla Firefox','Chrome':'Google Chrome','Safari':'Apple Safari','Opera':'Opera','Opera Mini':'Opera Mini','Opera Mobile':'Opera Mobile','IE Mobile':'Internet Explorer Mobile','Steam':'Valve Steam Game Overlay'},
+    'hash' : {'ie':'MSIE','edge':'Edge','opera':'Opera','ff':'Firefox','firefox':'Firefox','webkit':'AppleWebKit','safari':'Safari','chrome':'Chrome','steam':'Steam'},
+    'fullname' : {'Edge':'Microsoft Edge','MSIE':'Microsoft Internet Explorer','Firefox':'Mozilla Firefox','Chrome':'Google Chrome','Safari':'Apple Safari','Opera':'Opera','Opera Mini':'Opera Mini','Opera Mobile':'Opera Mobile','IE Mobile':'Internet Explorer Mobile','Steam':'Valve Steam Game Overlay'},
     'os' : {
         'Windows':{'NT 5.0':'2000','NT 5.1':'XP','NT 5.2':'Server 2003','NT 6.0':'Vista','NT 6.1':'7','NT 6.2':'8','NT 6.3':'8.1','NT 10.0':'10'},
         'Mac OSX':{'10.0':'Cheetah','10.1':'Puma','10.2':'Jaguar','10.3':'Panther','10.4':'Tiger','10.5':'Leopard','10.6':'Snow Leopard','10.7':'Lion','10.8':'Mountain Lion','10.9':'Mavericks','10.10':'Yosemite','10.11':'El Capitan'}
@@ -29928,6 +29991,14 @@ Com['UA'] = {
             var sp = arr['full_version'].toString().split('.');
             arr['version'] = sp[0]+((sp[1])? '.'+sp[1] : '');
             arr['short_version'] = sp[0];
+        }else if(str.indexOf('Edge') > -1){
+            arr['browser'] = 'Edge';
+            arr['hash'] = 'edge';
+            arr['engine'] = 'EdgeHTML';
+            arr['full_version'] = str.replace(/^(?:.+)(?:Edge)(?:[\/]{0,})([0-9\.]{0,})(?:.{0,})$/, '$1');
+            var sp = arr['full_version'].toString().split('.');
+            arr['version'] = sp[0]+((sp[1])? '.'+sp[1] : '');
+            arr['short_version'] = sp[0];
         }else if(str.indexOf('Valve Steam GameOverlay') > -1){
             arr['browser'] = 'Steam';
             arr['hash'] = 'steam';
@@ -29971,7 +30042,11 @@ Com['UA'] = {
             }
         }
         // Check OS
-        if(str.indexOf('Windows Phone OS') > -1){
+        if(str.indexOf('Windows Phone') > -1){
+            arr['os'] = 'Windows Phone';
+            arr['os_type'] = 'mobile';
+            arr['os_version'] = str.replace(/^(?:.+)(?:Windows Phone)(?:[\s]{0,1})([a-zA-Z\s0-9\.]{0,})(?:.+)$/, '$1');
+        }else if(str.indexOf('Windows Phone OS') > -1){
             arr['os'] = 'Windows Phone OS';
             arr['os_type'] = 'mobile';
             arr['os_version'] = str.replace(/^(?:.+)(?:Windows Phone OS)(?:[\s]{0,1})([a-zA-Z\s0-9\.]{0,})(?:.+)$/, '$1');

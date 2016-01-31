@@ -3,7 +3,9 @@ cm.define('Com.TimeSelect', {
         'Params',
         'Events',
         'Langs',
-        'DataConfig'
+        'Structure',
+        'DataConfig',
+        'Stack'
     ],
     'events' : [
         'onRender',
@@ -12,9 +14,11 @@ cm.define('Com.TimeSelect', {
         'onClear'
     ],
     'params' : {
-        'container' : false,
         'input' : null,                                  // Deprecated, use 'node' parameter instead.
         'node' : cm.Node('input', {'type' : 'text'}),
+        'container' : null,
+        'embedStructure' : 'replace',
+        'name' : '',
         'renderSelectsInBody' : true,
         'format' : 'cm._config.timeFormat',
         'showTitleTag' : true,
@@ -54,6 +58,7 @@ function(params){
         validateParams();
         render();
         setMiscEvents();
+        that.addToStack(nodes['container']);
         // Set selected time
         if(that.params['selected']){
             that.set(that.params['selected'], that.params['format'], false);
@@ -71,6 +76,7 @@ function(params){
     var validateParams = function(){
         if(cm.isNode(that.params['node'])){
             that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
+            that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
         }
         if(cm.isEmpty(that.params['hoursInterval'])){
             that.params['hoursInterval'] = 1;
@@ -143,17 +149,12 @@ function(params){
         if(that.params['showTitleTag'] && that.params['title']){
             nodes['container'].title = that.params['title'];
         }
-        // Set hidden input attributes
-        if(that.params['node'].getAttribute('name')){
-            nodes['hidden'].setAttribute('name', that.params['node'].getAttribute('name'));
+        // Name
+        if(that.params['name']){
+            nodes['hidden'].setAttribute('name', that.params['name']);
         }
         /* *** INSERT INTO DOM *** */
-        if(that.params['container']){
-            that.params['container'].appendChild(nodes['container']);
-        }else if(that.params['node'].parentNode){
-            cm.insertBefore(nodes['container'], that.params['node']);
-        }
-        cm.remove(that.params['node']);
+        that.embedStructure(nodes['container']);
     };
 
     var setMiscEvents = function(){

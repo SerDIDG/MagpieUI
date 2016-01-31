@@ -9,6 +9,7 @@ cm.define('Com.Datepicker', {
         'Params',
         'Events',
         'DataConfig',
+        'Structure',
         'Langs',
         'Stack'
     ],
@@ -21,10 +22,11 @@ cm.define('Com.Datepicker', {
         'onBlur'
     ],
     'params' : {
-        'container' : false,
         'input' : null,                      // Deprecated, use 'node' parameter instead.
         'node' : cm.Node('input', {'type' : 'text'}),
+        'container' : null,
         'name' : '',
+        'embedStructure' : 'replace',
         'renderInBody' : true,
         'format' : 'cm._config.dateFormat',
         'displayFormat' : 'cm._config.displayDateFormat',
@@ -177,12 +179,7 @@ function(params){
             cm.insertAfter(nodes['timeHolder'], nodes['calendarContainer']);
         }
         /* *** INSERT INTO DOM *** */
-        if(that.params['container']){
-            that.params['container'].appendChild(nodes['container']);
-        }else if(that.params['node'].parentNode){
-            cm.insertBefore(nodes['container'], that.params['node']);
-        }
-        cm.remove(that.params['node']);
+        that.embedStructure(nodes['container']);
     };
 
     var setLogic = function(){

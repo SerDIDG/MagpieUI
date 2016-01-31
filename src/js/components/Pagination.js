@@ -3,6 +3,7 @@ cm.define('Com.Pagination', {
         'Params',
         'Events',
         'Langs',
+        'Structure',
         'DataConfig',
         'DataNodes',
         'Callbacks',
@@ -20,9 +21,10 @@ cm.define('Com.Pagination', {
     ],
     'params' : {
         'node' : cm.Node('div'),
+        'container' : null,
         'name' : '',
         'renderStructure' : false,                                  // Render wrapper nodes if not exists in html
-        'container' : false,
+        'embedStructure' : 'append',
         'scrollNode' : window,
         'data' : [],                                                // Static data
         'count' : 0,
@@ -155,10 +157,8 @@ function(params){
                     })
                 );
             }
-            // Embed
-            if(that.params['container']){
-                that.params['container'].appendChild(that.nodes['container']);
-            }
+            // Append
+            that.embedStructure(that.nodes['container']);
         }
         // Reset styles and variables
         reset();

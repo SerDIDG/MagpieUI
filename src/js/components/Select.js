@@ -8,6 +8,7 @@ cm.define('Com.Select', {
     'modules' : [
         'Params',
         'Events',
+        'Structure',
         'DataConfig',
         'Stack'
     ],
@@ -20,10 +21,11 @@ cm.define('Com.Select', {
         'onBlur'
     ],
     'params' : {
-        'container' : false,                    // Component container that is required in case content is rendered without available select.
         'select' : null,                        // Deprecated, use 'node' parameter instead.
         'node' : cm.Node('select'),             // Html select node to decorate.
+        'container' : null,                    // Component container that is required in case content is rendered without available select.
         'name' : '',
+        'embedStructure' : 'replace',
         'renderInBody' : true,                  // Render dropdowns in document.body, else they will be rendrered in component container.
         'multiple' : false,                     // Render multiple select.
         'placeholder' : '',
@@ -162,12 +164,7 @@ function(params){
             renderOption(item);
         });
         /* *** INSERT INTO DOM *** */
-        if(that.params['container']){
-            that.params['container'].appendChild(nodes['container']);
-        }else if(that.params['node'].parentNode){
-            cm.insertBefore(nodes['container'], that.params['node']);
-        }
-        cm.remove(that.params['node']);
+        that.embedStructure(nodes['container']);
     };
 
     var renderSingle = function(){

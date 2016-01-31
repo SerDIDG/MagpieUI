@@ -3,16 +3,20 @@ cm.define('Com.DateSelect', {
         'Params',
         'DataConfig',
         'Langs',
-        'Events'
+        'Events',
+        'Structure',
+        'Stack'
     ],
     'events' : [
         'onSelect',
         'onChange'
     ],
     'params' : {
-        'container' : false,
         'input' : null,                                 // Deprecated, use 'node' parameter instead.
         'node' : cm.Node('input', {'type' : 'text'}),
+        'name' : '',
+        'embedStructure' : 'replace',
+        'container' : null,
         'format' : 'cm._config.dateFormat',
         'startYear' : 1950,
         'endYear' : new Date().getFullYear() + 10,
@@ -43,7 +47,9 @@ function(params){
         preValidateParams();
         that.convertEvents(that.params['events']);
         that.getDataConfig(that.params['node']);
+        validateParams();
         render();
+        that.addToStack(nodes['container']);
         // Set selected date
         set(that.params['node'].value);
     };
@@ -54,9 +60,15 @@ function(params){
         }
     };
 
+    var validateParams = function(){
+        if(cm.isNode(that.params['node'])){
+            that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
+        }
+    };
+
     var render = function(){
-        /* *** RENDER STRUCTURE *** */
-        nodes['container'] = cm.Node('div', {'class' : 'com-dateselect'},
+        // Structure
+        nodes['container'] = cm.Node('div', {'class' : 'com__dateselect'},
             nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
             cm.Node('div', {'class' : 'pt__toolbar bottom'},
                 cm.Node('div', {'class' : 'inner clear'},
@@ -69,18 +81,12 @@ function(params){
             )
         );
         renderSelects();
-        /* *** ATTRIBUTES *** */
-        // Set hidden input attributes
-        if(that.params['node'].getAttribute('name')){
-            nodes['hidden'].setAttribute('name', that.params['node'].getAttribute('name'));
+        // Attributes
+        if(that.params['name']){
+            nodes['hidden'].setAttribute('name', that.params['name']);
         }
-        /* *** INSERT INTO DOM *** */
-        if(that.params['container']){
-            that.params['container'].appendChild(nodes['container']);
-        }else if(that.params['node'].parentNode){
-            cm.insertBefore(nodes['container'], that.params['node']);
-        }
-        cm.remove(that.params['node']);
+        // Append
+        that.embedStructure(nodes['container']);
     };
 
     var renderSelects = function(){
@@ -228,7 +234,7 @@ function(params){
         return str;
     };
 
-    /* ******* MAIN ******* */
+    /* ******* PUBLIC ******* */
 
     that.get = function(format){
         format = format || that.params['format'];

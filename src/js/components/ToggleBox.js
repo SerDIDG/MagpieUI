@@ -18,10 +18,12 @@ cm.define('Com.ToggleBox', {
     ],
     'params' : {
         'node' : cm.Node('div'),
+        'name' : '',
+        'renderStructure' : false,
+        'embedStructure' : 'replace',
         'duration' : 500,
         'remember' : false,                                 // Remember toggle state
         'toggleTitle' : false,                              // Change title on toggle
-        'renderStructure' : false,
         'container' : false,
         'title' : false,
         'content' : false,
@@ -81,7 +83,7 @@ function(params){
             );
             cm.addClass(that.nodes['container'], that.params['className']);
             // Embed
-            that.appendStructure(that.nodes['container']);
+            that.embedStructure(that.nodes['container']);
             // Embed content
             if(that.params['content']){
                 that.nodes['content'].appendChild(that.params['content']);

@@ -3,7 +3,9 @@ cm.define('Com.Gridlist', {
         'Params',
         'Events',
         'Langs',
-        'DataConfig'
+        'Structure',
+        'DataConfig',
+        'Stack'
     ],
     'events' : [
         'onSort',
@@ -16,7 +18,9 @@ cm.define('Com.Gridlist', {
     ],
     'params' : {
         'node' : cm.Node('div'),
-        'container' : false,
+        'container' : null,
+        'embedStructure' : 'append',
+        'name' : '',
         'data' : [],
         'cols' : [],
         'sort' : true,
@@ -45,7 +49,7 @@ cm.define('Com.Gridlist', {
         'Com.Pagination' : {
             'renderStructure' : true,
             'animateSwitch' : true,
-            'animatePrevious' : true
+            'animatePrevious' : false
         }
     }
 },
@@ -65,6 +69,7 @@ function(params){
         that.getDataConfig(that.params['node']);
         validateParams();
         render();
+        that.addToStack(that.nodes['container']);
     };
 
     var validateParams = function(){
@@ -80,9 +85,9 @@ function(params){
 
     var render = function(){
         // Container
-        that.params['container'].appendChild(
-            that.nodes['container'] = cm.Node('div', {'class' : 'com__gridlist'})
-        );
+        that.nodes['container'] = cm.Node('div', {'class' : 'com__gridlist'});
+        // Append
+        that.embedStructure(that.nodes['container']);
         // Add css class
         !cm.isEmpty(that.params['className']) && cm.addClass(that.nodes['container'], that.params['className']);
         // Counter

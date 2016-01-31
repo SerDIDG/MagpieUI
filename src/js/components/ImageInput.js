@@ -12,7 +12,9 @@ cm.define('Com.ImageInput', {
     ],
     'params' : {
         'node' : cm.Node('div'),
+        'container' : null,
         'name' : '',
+        'embedStructure' : 'replace',
         'title' : '',
         'placeholder' : '',
         'value' : null,
@@ -97,8 +99,7 @@ function(params){
             that.nodes['hidden'].setAttribute('name', that.params['name']);
         }
         // Append
-        that.appendStructure(that.nodes['container']);
-        cm.remove(that.params['node']);
+        that.embedStructure(that.nodes['container']);
         // Events
         cm.getConstructor('Com.GalleryPopup', function(classConstructor){
             that.components['popup'] = new classConstructor(

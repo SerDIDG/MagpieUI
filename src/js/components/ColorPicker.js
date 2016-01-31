@@ -3,6 +3,7 @@ cm.define('Com.ColorPicker', {
         'Params',
         'Events',
         'Langs',
+        'Structure',
         'DataConfig',
         'Storage',
         'Stack'
@@ -18,9 +19,10 @@ cm.define('Com.ColorPicker', {
         'onClear'
     ],
     'params' : {
-        'container' : false,
         'input' : null,                                     // Deprecated, use 'node' parameter instead.
         'node' : cm.Node('input', {'type' : 'text'}),
+        'container' : null,
+        'embedStructure' : 'replace',
         'name' : '',
         'value' : null,                                     // Color string: transparent | hex | rgba.
         'defaultValue' : 'transparent',
@@ -113,9 +115,9 @@ function(params){
         if(that.params['node'].id){
             that.nodes['container'].id = that.params['node'].id;
         }
-        // Set hidden input attributes
-        if(that.params['node'].getAttribute('name')){
-            that.nodes['hidden'].setAttribute('name', that.params['node'].getAttribute('name'));
+        // Name
+        if(that.params['name']){
+            that.nodes['hidden'].setAttribute('name', that.params['name']);
         }
         // Clear Button
         if(that.params['showClearButton']){
@@ -125,12 +127,7 @@ function(params){
             );
         }
         /* *** INSERT INTO DOM *** */
-        if(that.params['container']){
-            that.params['container'].appendChild(that.nodes['container']);
-        }else if(that.params['node'].parentNode){
-            cm.insertBefore(that.nodes['container'], that.params['node']);
-        }
-        cm.remove(that.params['node']);
+        that.embedStructure(that.nodes['container']);
     };
 
     var setLogic = function(){

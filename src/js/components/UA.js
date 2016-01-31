@@ -1,6 +1,8 @@
+// This file must be deleted in future
+
 Com['UA'] = {
-    'hash' : {'ie':'MSIE','opera':'Opera','ff':'Firefox','firefox':'Firefox','webkit':'AppleWebKit','safari':'Safari','chrome':'Chrome','steam':'Steam'},
-    'fullname' : {'MSIE':'Microsoft Internet Explorer','Firefox':'Mozilla Firefox','Chrome':'Google Chrome','Safari':'Apple Safari','Opera':'Opera','Opera Mini':'Opera Mini','Opera Mobile':'Opera Mobile','IE Mobile':'Internet Explorer Mobile','Steam':'Valve Steam Game Overlay'},
+    'hash' : {'ie':'MSIE','edge':'Edge','opera':'Opera','ff':'Firefox','firefox':'Firefox','webkit':'AppleWebKit','safari':'Safari','chrome':'Chrome','steam':'Steam'},
+    'fullname' : {'Edge':'Microsoft Edge','MSIE':'Microsoft Internet Explorer','Firefox':'Mozilla Firefox','Chrome':'Google Chrome','Safari':'Apple Safari','Opera':'Opera','Opera Mini':'Opera Mini','Opera Mobile':'Opera Mobile','IE Mobile':'Internet Explorer Mobile','Steam':'Valve Steam Game Overlay'},
     'os' : {
         'Windows':{'NT 5.0':'2000','NT 5.1':'XP','NT 5.2':'Server 2003','NT 6.0':'Vista','NT 6.1':'7','NT 6.2':'8','NT 6.3':'8.1','NT 10.0':'10'},
         'Mac OSX':{'10.0':'Cheetah','10.1':'Puma','10.2':'Jaguar','10.3':'Panther','10.4':'Tiger','10.5':'Leopard','10.6':'Snow Leopard','10.7':'Lion','10.8':'Mountain Lion','10.9':'Mavericks','10.10':'Yosemite','10.11':'El Capitan'}
@@ -79,6 +81,14 @@ Com['UA'] = {
             var sp = arr['full_version'].toString().split('.');
             arr['version'] = sp[0]+((sp[1])? '.'+sp[1] : '');
             arr['short_version'] = sp[0];
+        }else if(str.indexOf('Edge') > -1){
+            arr['browser'] = 'Edge';
+            arr['hash'] = 'edge';
+            arr['engine'] = 'EdgeHTML';
+            arr['full_version'] = str.replace(/^(?:.+)(?:Edge)(?:[\/]{0,})([0-9\.]{0,})(?:.{0,})$/, '$1');
+            var sp = arr['full_version'].toString().split('.');
+            arr['version'] = sp[0]+((sp[1])? '.'+sp[1] : '');
+            arr['short_version'] = sp[0];
         }else if(str.indexOf('Valve Steam GameOverlay') > -1){
             arr['browser'] = 'Steam';
             arr['hash'] = 'steam';
@@ -122,7 +132,11 @@ Com['UA'] = {
             }
         }
         // Check OS
-        if(str.indexOf('Windows Phone OS') > -1){
+        if(str.indexOf('Windows Phone') > -1){
+            arr['os'] = 'Windows Phone';
+            arr['os_type'] = 'mobile';
+            arr['os_version'] = str.replace(/^(?:.+)(?:Windows Phone)(?:[\s]{0,1})([a-zA-Z\s0-9\.]{0,})(?:.+)$/, '$1');
+        }else if(str.indexOf('Windows Phone OS') > -1){
             arr['os'] = 'Windows Phone OS';
             arr['os_type'] = 'mobile';
             arr['os_version'] = str.replace(/^(?:.+)(?:Windows Phone OS)(?:[\s]{0,1})([a-zA-Z\s0-9\.]{0,})(?:.+)$/, '$1');

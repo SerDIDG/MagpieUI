@@ -20,8 +20,10 @@ cm.define('Com.Form', {
     ],
     'params' : {
         'node' : cm.Node('div'),
+        'container' : null,
         'name' : '',
         'renderStructure' : true,
+        'embedStructure' : 'append',
         'ajax' : {
             'type' : 'json',
             'method' : 'post',
@@ -53,8 +55,7 @@ function(params){
             that.nodes['container'] = cm.node('div', {'class' : 'com__form'},
                 that.nodes['form'] = cm.node('form', {'class' : 'form'})
             );
-            that.appendStructure(that.nodes['container']);
-            cm.remove(that.params['node']);
+            that.embedStructure(that.nodes['container']);
         }
         // Events
         cm.addEvent(that.nodes['form'], 'submit', function(e){

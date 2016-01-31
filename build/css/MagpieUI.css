@@ -8067,7 +8067,7 @@ button::-moz-focus-inner {
 }
 .pt__gridlist .control input[type="checkbox"],
 .pt__gridlist .control input[type="radio"] {
-  vertical-align: middle;
+  vertical-align: baseline;
   margin: 0;
 }
 .pt__gridlist .cm__form__icons-inside .text {

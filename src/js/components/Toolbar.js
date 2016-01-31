@@ -3,8 +3,10 @@ cm.define('Com.Toolbar', {
         'Params',
         'Events',
         'Langs',
+        'Structure',
         'DataConfig',
-        'DataNodes'
+        'DataNodes',
+        'Stack'
     ],
     'events' : [
         'onRenderStart',
@@ -12,11 +14,17 @@ cm.define('Com.Toolbar', {
     ],
     'params' : {
         'node' : cm.Node('div'),
-        'name' : ''
+        'container' : null,
+        'name' : '',
+        'embedStructure' : 'append'
     }
 },
 function(params){
     var that = this;
+
+    that.nodes = {};
+    that.groups = [];
+    that.items = [];
 
     var init = function(){
         that.setParams(params);
@@ -30,9 +38,19 @@ function(params){
     };
 
     var render = function(){
+        that.nodes['container'] = cm.node('div');
+        // Append
+        that.embedStructure(that.nodes['container']);
     };
 
     /* ******* PUBLIC ******* */
+
+    that.addGroup = function(item){
+        item = cm.merge({
+            'name' : '',
+            'align' : 'left'
+        }, item);
+    };
 
     init();
 });
