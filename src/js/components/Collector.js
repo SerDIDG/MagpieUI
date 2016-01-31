@@ -7,6 +7,8 @@ cm.define('Com.Collector', {
     ],
     'events' : [
         'onRender',
+        'onAdd',
+        'onRemove',
         'onConstructStart',
         'onConstruct',
         'onDestructStart',
@@ -22,6 +24,7 @@ cm.define('Com.Collector', {
 function(params){
     var that = this;
 
+    that.isChanged = false;
     that.stackList = [];
     that.stackNodes = {};
 
@@ -85,14 +88,25 @@ function(params){
         return nodes;
     };
 
+    var sortList = function(){
+        if(that.isChanged){
+            that.stackList.sort(function(a, b){
+                return a['priority'] - b['priority'];
+            });
+        }
+        that.isChanged = false;
+    };
+
     var constructAll = function(parentNode){
         var processNodes = {};
+        // Find new nodes to process
         cm.forEach(that.stackNodes, function(item, name){
             processNodes[name] = addNodes(parentNode, name);
         });
+        // Process nodes
         cm.forEach(that.stackList, function(item){
             cm.forEach(processNodes[item['name']], function(node){
-                item['construct'](node, item['priority']);
+                item['construct'] && item['construct'](node, item['priority']);
             });
         });
     };
@@ -104,7 +118,7 @@ function(params){
         var processNodes = addNodes(parentNode, name);
         cm.forEach(processArray, function(item){
             cm.forEach(processNodes, function(node){
-                item['construct'](node, item['priority']);
+                item['construct'] && item['construct'](node, item['priority']);
             });
         });
     };
@@ -117,13 +131,13 @@ function(params){
             });
             cm.forEach(that.stackList, function(item){
                 cm.forEach(processNodes[item['name']], function(node){
-                    item['destruct'](node, item['priority']);
+                    item['destruct'] && item['destruct'](node, item['priority']);
                 });
             });
         }else{
             cm.forEach(that.stackList, function(item){
                 cm.forEach(that.stackNodes[item['name']], function(node){
-                    item['destruct'](node, item['priority']);
+                    item['destruct'] && item['destruct'](node, item['priority']);
                 });
             });
             that.stackNodes = [];
@@ -138,13 +152,13 @@ function(params){
             var processNodes = removeNodes(parentNode, name);
             cm.forEach(processArray, function(item){
                 cm.forEach(processNodes, function(node){
-                    item['destruct'](node, item['priority']);
+                    item['destruct'] && item['destruct'](node, item['priority']);
                 });
             });
         }else{
             cm.forEach(processArray, function(item){
                 cm.forEach(that.stackNodes[item['name']], function(node){
-                    item['destruct'](node, item['priority']);
+                    item['destruct'] && item['destruct'](node, item['priority']);
                 });
             });
             delete that.stackNodes[name];
@@ -160,7 +174,7 @@ function(params){
             }
             var item = {
                 'name' : name,
-                'priority' : priority,
+                'priority' : priority || 0,
                 'construct' : construct,
                 'destruct' : destruct
             };
@@ -169,6 +183,8 @@ function(params){
             }else{
                 that.stackList.push(item);
             }
+            that.isChanged = true;
+            that.triggerEvent('onAdd', item);
         }
         return that;
     };
@@ -184,6 +200,10 @@ function(params){
                     return !(item['name'] === name && item['construct'] === construct && item['destruct'] === destruct);
                 });
             }
+            that.isChanged = true;
+            that.triggerEvent('onRemove', {
+                'name' : name
+            });
         }
         return that;
     };
@@ -195,6 +215,7 @@ function(params){
             'node' : node,
             'name' : name
         });
+        sortList();
         if(name){
             constructItem(node, name)
         }else{
@@ -219,6 +240,7 @@ function(params){
             'node' : node,
             'name' : name
         });
+        sortList();
         if(name){
             destructItem(node, name)
         }else{

@@ -24,7 +24,7 @@
  ******* */
 
 var cm = {
-        '_version' : '3.11.0',
+        '_version' : '3.11.1',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -674,9 +674,9 @@ cm.customEvent = (function(){
             if(_stack[type]){
                 _stack[type].sort(function(a, b){
                     if(params['type'] == 'parent'){
-                        return cm.getNodeOffsetIndex(a['node']) > cm.getNodeOffsetIndex(b['node']) ? -1 : 1;
+                        return cm.getNodeOffsetIndex(b['node']) > cm.getNodeOffsetIndex(a['node']);
                     }
-                    return cm.getNodeOffsetIndex(a['node']) > cm.getNodeOffsetIndex(b['node']) ? 1 : -1;
+                    return cm.getNodeOffsetIndex(a['node']) - cm.getNodeOffsetIndex(b['node']);
                 });
                 cm.forEach(_stack[type], function(item){
                     if(!stopPropagation){

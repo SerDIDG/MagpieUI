@@ -10,6 +10,7 @@ cm.define('Com.ClassMaket', {
         'Stack'
     ],
     'events' : [
+        'onRenderStart',
         'onRender'
     ],
     'params' : {
@@ -26,9 +27,15 @@ function(params){
         that.getDataNodes(that.params['node']);
         that.getDataConfig(that.params['node']);
         that.callbacksProcess();
-        render();
         that.addToStack(that.params['node']);
+        validateParams();
+        that.triggerEvent('onRenderStart');
+        render();
         that.triggerEvent('onRender');
+    };
+
+    var validateParams = function(){
+
     };
 
     var render = function(){

@@ -12359,7 +12359,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.11.0',
+        '_version' : '3.11.1',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -13009,9 +13009,9 @@ cm.customEvent = (function(){
             if(_stack[type]){
                 _stack[type].sort(function(a, b){
                     if(params['type'] == 'parent'){
-                        return cm.getNodeOffsetIndex(a['node']) > cm.getNodeOffsetIndex(b['node']) ? -1 : 1;
+                        return cm.getNodeOffsetIndex(b['node']) > cm.getNodeOffsetIndex(a['node']);
                     }
-                    return cm.getNodeOffsetIndex(a['node']) > cm.getNodeOffsetIndex(b['node']) ? 1 : -1;
+                    return cm.getNodeOffsetIndex(a['node']) - cm.getNodeOffsetIndex(b['node']);
                 });
                 cm.forEach(_stack[type], function(item){
                     if(!stopPropagation){
@@ -18115,6 +18115,8 @@ cm.define('Com.Collector', {
     ],
     'events' : [
         'onRender',
+        'onAdd',
+        'onRemove',
         'onConstructStart',
         'onConstruct',
         'onDestructStart',
@@ -18130,6 +18132,7 @@ cm.define('Com.Collector', {
 function(params){
     var that = this;
 
+    that.isChanged = false;
     that.stackList = [];
     that.stackNodes = {};
 
@@ -18193,14 +18196,25 @@ function(params){
         return nodes;
     };
 
+    var sortList = function(){
+        if(that.isChanged){
+            that.stackList.sort(function(a, b){
+                return a['priority'] - b['priority'];
+            });
+        }
+        that.isChanged = false;
+    };
+
     var constructAll = function(parentNode){
         var processNodes = {};
+        // Find new nodes to process
         cm.forEach(that.stackNodes, function(item, name){
             processNodes[name] = addNodes(parentNode, name);
         });
+        // Process nodes
         cm.forEach(that.stackList, function(item){
             cm.forEach(processNodes[item['name']], function(node){
-                item['construct'](node, item['priority']);
+                item['construct'] && item['construct'](node, item['priority']);
             });
         });
     };
@@ -18212,7 +18226,7 @@ function(params){
         var processNodes = addNodes(parentNode, name);
         cm.forEach(processArray, function(item){
             cm.forEach(processNodes, function(node){
-                item['construct'](node, item['priority']);
+                item['construct'] && item['construct'](node, item['priority']);
             });
         });
     };
@@ -18225,13 +18239,13 @@ function(params){
             });
             cm.forEach(that.stackList, function(item){
                 cm.forEach(processNodes[item['name']], function(node){
-                    item['destruct'](node, item['priority']);
+                    item['destruct'] && item['destruct'](node, item['priority']);
                 });
             });
         }else{
             cm.forEach(that.stackList, function(item){
                 cm.forEach(that.stackNodes[item['name']], function(node){
-                    item['destruct'](node, item['priority']);
+                    item['destruct'] && item['destruct'](node, item['priority']);
                 });
             });
             that.stackNodes = [];
@@ -18246,13 +18260,13 @@ function(params){
             var processNodes = removeNodes(parentNode, name);
             cm.forEach(processArray, function(item){
                 cm.forEach(processNodes, function(node){
-                    item['destruct'](node, item['priority']);
+                    item['destruct'] && item['destruct'](node, item['priority']);
                 });
             });
         }else{
             cm.forEach(processArray, function(item){
                 cm.forEach(that.stackNodes[item['name']], function(node){
-                    item['destruct'](node, item['priority']);
+                    item['destruct'] && item['destruct'](node, item['priority']);
                 });
             });
             delete that.stackNodes[name];
@@ -18268,7 +18282,7 @@ function(params){
             }
             var item = {
                 'name' : name,
-                'priority' : priority,
+                'priority' : priority || 0,
                 'construct' : construct,
                 'destruct' : destruct
             };
@@ -18277,6 +18291,8 @@ function(params){
             }else{
                 that.stackList.push(item);
             }
+            that.isChanged = true;
+            that.triggerEvent('onAdd', item);
         }
         return that;
     };
@@ -18292,6 +18308,10 @@ function(params){
                     return !(item['name'] === name && item['construct'] === construct && item['destruct'] === destruct);
                 });
             }
+            that.isChanged = true;
+            that.triggerEvent('onRemove', {
+                'name' : name
+            });
         }
         return that;
     };
@@ -18303,6 +18323,7 @@ function(params){
             'node' : node,
             'name' : name
         });
+        sortList();
         if(name){
             constructItem(node, name)
         }else{
@@ -18327,6 +18348,7 @@ function(params){
             'node' : node,
             'name' : name
         });
+        sortList();
         if(name){
             destructItem(node, name)
         }else{
@@ -29428,6 +29450,44 @@ function(params){
 
     init();
 });
+cm.define('Com.Toolbar', {
+    'modules' : [
+        'Params',
+        'Events',
+        'Langs',
+        'DataConfig',
+        'DataNodes'
+    ],
+    'events' : [
+        'onRenderStart',
+        'onRender'
+    ],
+    'params' : {
+        'node' : cm.Node('div'),
+        'name' : ''
+    }
+},
+function(params){
+    var that = this;
+
+    var init = function(){
+        that.setParams(params);
+        that.convertEvents(that.params['events']);
+        that.getDataNodes(that.params['node']);
+        that.getDataConfig(that.params['node']);
+        that.triggerEvent('onRenderStart');
+        render();
+        that.addToStack(that.params['node']);
+        that.triggerEvent('onRender');
+    };
+
+    var render = function(){
+    };
+
+    /* ******* PUBLIC ******* */
+
+    init();
+});
 cm.define('Com.Tooltip', {
     'modules' : [
         'Params',
@@ -30244,6 +30304,66 @@ function(params){
 
     var executeAction = function(){
         var value = "that.components['form']" + that.nodes['text'].value;
+        try{
+            eval(value);
+        }catch(e){
+
+        }
+    };
+
+    /* ******* PUBLIC ******* */
+
+    init();
+});
+cm.define('Docs.DynamicToolbar', {
+    'modules' : [
+        'Params',
+        'Events',
+        'Langs',
+        'DataConfig',
+        'DataNodes',
+        'Stack'
+    ],
+    'events' : [
+        'onRender'
+    ],
+    'params' : {
+        'node' : cm.Node('div'),
+        'name' : '',
+        'toolbarName' : 'dynamic'
+    }
+},
+function(params){
+    var that = this;
+
+    that.nodes = {
+        'container' : cm.node('div'),
+        'text' : cm.node('textarea'),
+        'button' : cm.node('button')
+    };
+    that.components = {};
+
+    var init = function(){
+        that.setParams(params);
+        that.convertEvents(that.params['events']);
+        that.getDataNodes(that.params['node']);
+        that.getDataConfig(that.params['node']);
+        render();
+        that.addToStack(that.params['node']);
+        that.triggerEvent('onRender');
+    };
+
+    var render = function(){
+        new cm.Finder('Com.Toolbar', that.params['toolbarName'], that.nodes['container'], process);
+    };
+
+    var process = function(classObject){
+        that.components['toolbar'] = classObject;
+        cm.addEvent(that.nodes['button'], 'click', executeAction);
+    };
+
+    var executeAction = function(){
+        var value = "that.components['toolbar']" + that.nodes['text'].value;
         try{
             eval(value);
         }catch(e){

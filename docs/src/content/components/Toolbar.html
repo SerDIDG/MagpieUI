@@ -1,0 +1,88 @@
+<!DOCTYPE HTML>
+<html class="is-adaptive">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Components: Form</title>
+
+    <link type="text/css" rel="stylesheet" href="../../css/MagpieUI.css">
+    <script type="text/javascript" src="../../js/MagpieUI.js"></script>
+</head>
+
+<body>
+
+<h1 class="pt__box-title">Components: Form</h1>
+
+<ul class="com__tabset__content-ul" data-element="Com.Tabset">
+    <li data-node="tabs:[]:container" data-config='{"id" : "overview", "title" : "Overview"}'></li>
+
+    <li data-node="tabs:[]:container" data-config='{"id" : "methods", "title" : "Methods"}'></li>
+
+    <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
+        <h2>Dynamic Form Example:</h2>
+
+        <div data-element="Docs.DynamicForm" data-node="DocsDynamicToolbar:{}:container">
+            <div class="cm__box form is-box">
+                <dl>
+                    <dt>Code:</dt>
+                    <dd>
+                        <textarea data-element="Com.CodeHighlight" data-node="text">
+.clear()
+.add('select', {
+  'label' : 'Select:',
+  'name' : 'select',
+  'help' : 'This is help text in tooltip.',
+  'options' : [
+    {'value' : 'foo', 'text' : 'Bar'},
+    {'value' : 'bar', 'text' : 'Foo'}
+  ]
+})
+.add('input', {
+  'label' : 'Input:',
+  'name' : 'input'
+})
+.add('textarea', {
+  'label' : 'Text:',
+  'name' : 'text'
+})
+.add('radio', {
+  'label' : 'Radio:',
+  'name' : 'radio',
+  'options' : [
+    {'value' : 'foo', 'text' : 'Bar'},
+    {'value' : 'bar', 'text' : 'Foo'}
+  ]
+})
+.add('check', {
+  'label' : 'Checkbox:',
+  'name' : 'check',
+  'options' : [
+    {'value' : 'foo', 'text' : 'Bar'},
+    {'value' : 'bar', 'text' : 'Foo'}
+  ]
+})
+.add('image-input', {
+  'label' : 'Image Input:',
+  'name' : 'image'
+})
+.add('buttons', {
+  'options' : [
+    {'value' : 'submit', 'text' : 'Send'},
+    {'value' : 'reset', 'text' : 'Reset'}
+  ]
+});
+                        </textarea>
+                    </dd>
+                </dl>
+                <div class="btn-wrap">
+                    <button class="button-primary" data-node="button">Execute</button>
+                </div>
+            </div>
+            <hr>
+            <div data-element="Com.Toolbar" data-config='{"name" : "dynamic"}'></div>
+        </div>
+    </li>
+</ul>
+
+</body>
+</html>
