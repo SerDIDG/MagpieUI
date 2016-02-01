@@ -118,6 +118,7 @@ cm.define('Com.MultiField', {
     };
 
     var renderItem = function(){
+        var nodes;
         if(that.params['maxItems'] == 0 || that.items.length < that.params['maxItems']){
             var item = {
                 'isVisible' : false
@@ -130,8 +131,21 @@ cm.define('Com.MultiField', {
             // Template
             if(cm.isNode(that.params['template'])){
                 cm.appendChild(that.params['template'], item['field']);
-            }else if(!cm.isEmpty(that.params['template'])){
-                cm.appendChild(cm.strToHTML(that.params['template']), item['field']);
+            }else{
+                nodes = cm.strToHTML(that.params['template']);
+                if(!cm.isEmpty(nodes)){
+                    if(cm.isNode(nodes)){
+                        cm.appendChild(nodes, item['field']);
+                    }else{
+                        while(nodes.length){
+                            if(cm.isNode(nodes[0])){
+                                cm.appendChild(nodes[0], item['field']);
+                            }else{
+                                cm.remove(nodes[0]);
+                            }
+                        }
+                    }
+                }
             }
             // Sortable
             if(that.params['sortable']){
