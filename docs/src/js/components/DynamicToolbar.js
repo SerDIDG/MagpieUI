@@ -12,8 +12,7 @@ cm.define('Docs.DynamicToolbar', {
     ],
     'params' : {
         'node' : cm.Node('div'),
-        'name' : '',
-        'toolbarName' : 'dynamic'
+        'name' : ''
     }
 },
 function(params){
@@ -31,13 +30,13 @@ function(params){
         that.convertEvents(that.params['events']);
         that.getDataNodes(that.params['node']);
         that.getDataConfig(that.params['node']);
-        render();
         that.addToStack(that.params['node']);
+        render();
         that.triggerEvent('onRender');
     };
 
     var render = function(){
-        new cm.Finder('Com.Toolbar', that.params['toolbarName'], that.nodes['container'], process);
+        new cm.Finder('Com.Toolbar', that.params['name'], that.nodes['container'], process);
     };
 
     var process = function(classObject){

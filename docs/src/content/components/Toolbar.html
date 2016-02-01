@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>Components: Form</title>
+    <title>Components: Toolbar</title>
 
     <link type="text/css" rel="stylesheet" href="../../css/MagpieUI.css">
     <script type="text/javascript" src="../../js/MagpieUI.js"></script>
@@ -11,7 +11,7 @@
 
 <body>
 
-<h1 class="pt__box-title">Components: Form</h1>
+<h1 class="pt__box-title">Components: Toolbar</h1>
 
 <ul class="com__tabset__content-ul" data-element="Com.Tabset">
     <li data-node="tabs:[]:container" data-config='{"id" : "overview", "title" : "Overview"}'></li>
@@ -19,57 +19,45 @@
     <li data-node="tabs:[]:container" data-config='{"id" : "methods", "title" : "Methods"}'></li>
 
     <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
-        <h2>Dynamic Form Example:</h2>
+        <h2>Sandbox:</h2>
 
-        <div data-element="Docs.DynamicForm" data-node="DocsDynamicToolbar:{}:container">
+        <div data-element="Docs.DynamicToolbar" data-node="DocsDynamicToolbar:{}:container" data-config='{"name" : "example1"}'>
             <div class="cm__box form is-box">
                 <dl>
                     <dt>Code:</dt>
                     <dd>
                         <textarea data-element="Com.CodeHighlight" data-node="text">
 .clear()
-.add('select', {
-  'label' : 'Select:',
-  'name' : 'select',
-  'help' : 'This is help text in tooltip.',
-  'options' : [
-    {'value' : 'foo', 'text' : 'Bar'},
-    {'value' : 'bar', 'text' : 'Foo'}
-  ]
+.addGroup({
+    'name' : 'controls',
+    'position' : 'left'
 })
-.add('input', {
-  'label' : 'Input:',
-  'name' : 'input'
+.addButton({
+    'group' : 'controls',
+    'name' : 'add',
+    'label' : 'Add'
 })
-.add('textarea', {
-  'label' : 'Text:',
-  'name' : 'text'
+.addButton({
+    'group' : 'controls',
+    'name' : 'edit',
+    'label' : 'Edit'
 })
-.add('radio', {
-  'label' : 'Radio:',
-  'name' : 'radio',
-  'options' : [
-    {'value' : 'foo', 'text' : 'Bar'},
-    {'value' : 'bar', 'text' : 'Foo'}
-  ]
+.addButton({
+    'group' : 'controls',
+    'name' : 'delete',
+    'label' : 'Delete'
 })
-.add('check', {
-  'label' : 'Checkbox:',
-  'name' : 'check',
-  'options' : [
-    {'value' : 'foo', 'text' : 'Bar'},
-    {'value' : 'bar', 'text' : 'Foo'}
-  ]
+.addGroup({
+    'name' : 'tests',
+    'position' : 'right'
 })
-.add('image-input', {
-  'label' : 'Image Input:',
-  'name' : 'image'
-})
-.add('buttons', {
-  'options' : [
-    {'value' : 'submit', 'text' : 'Send'},
-    {'value' : 'reset', 'text' : 'Reset'}
-  ]
+.addButton({
+    'group' : 'tests',
+    'name' : 'handler',
+    'label' : 'Handler',
+    'handler' : function(e, item){
+        cm.log(item);
+    }
 });
                         </textarea>
                     </dd>
@@ -79,7 +67,7 @@
                 </div>
             </div>
             <hr>
-            <div data-element="Com.Toolbar" data-config='{"name" : "dynamic"}'></div>
+            <div data-element="Com.Toolbar" data-config='{"name" : "example1"}'></div>
         </div>
     </li>
 </ul>

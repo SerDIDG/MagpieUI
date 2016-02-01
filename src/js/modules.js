@@ -551,13 +551,17 @@ Mod['Stack'] = {
     },
     'addToStack' : function(node){
         var that = this;
-        that._stackItem = {
-            'name' : that.params['name'],
-            'node' : node,
-            'class' : that,
-            'className' : that._name['full']
-        };
-        that._stack.push(that._stackItem);
+        if(!that._stackItem){
+            that._stackItem = {
+                'name' : that.params['name'],
+                'node' : node,
+                'class' : that,
+                'className' : that._name['full']
+            };
+            that._stack.push(that._stackItem);
+        }else{
+            that._stackItem['node'] = node;
+        }
         return that;
     },
     'removeFromStack' : function(){
