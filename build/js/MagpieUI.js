@@ -1415,7 +1415,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.11.4',
+        '_version' : '3.11.5',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
