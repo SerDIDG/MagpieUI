@@ -6297,6 +6297,7 @@ function(params){
     /* *** AJAX *** */
 
     that.callbacks.prepare = function(that, config, query){
+        config = that.callbacks.beforePrepare(that, config, query);
         config['url'] = cm.strReplace(config['url'], {
             '%query%' : query,
             '%baseurl%' : cm._baseUrl
@@ -6305,6 +6306,15 @@ function(params){
             '%query%' : query,
             '%baseurl%' : cm._baseUrl
         });
+        config = that.callbacks.afterPrepare(that, config, query);
+        return config;
+    };
+
+    that.callbacks.beforePrepare = function(that, config, query){
+        return config;
+    };
+
+    that.callbacks.afterPrepare = function(that, config, query){
         return config;
     };
 
@@ -9199,6 +9209,7 @@ cm.define('Com.Dialog', {
         'autoOpen' : true,
         'appendOnRender' : false,
         'removeOnClose' : true,
+        'destructOnRemove' : false,
         'scroll' : true,
         'documentScroll' : false,
         'icons' : {
@@ -9219,6 +9230,8 @@ function(params){
 
     that.isOpen = false;
     that.isFocus = false;
+    that.isRemoved = false;
+    that.isDestructed = false;
 
     var init = function(){
         that.setParams(params);
@@ -9455,9 +9468,14 @@ function(params){
         animFrame(resize);
     };
 
-    var open = function(){
+    var open = function(params){
+        params = {
+            'onEnd' : function(){}
+        };
         if(!that.isOpen){
             that.isOpen = true;
+            that.isFocus = true;
+            that.isRemoved = false;
             if(!cm.inDOM(nodes['container'])){
                 that.params['container'].appendChild(nodes['container']);
             }
@@ -9470,6 +9488,7 @@ function(params){
             cm.addEvent(window, 'keydown', windowClickEvent);
             // Animate
             anim['container'].go({'style' : {'opacity' : '1'}, 'duration' : that.params['openTime'], 'onStop' : function(){
+                params['onEnd']();
                 // Open Event
                 that.triggerEvent('onOpen');
             }});
@@ -9478,9 +9497,13 @@ function(params){
         }
     };
 
-    var close = function(){
+    var close = function(params){
+        params = {
+            'onEnd' : function(){}
+        };
         if(that.isOpen){
             that.isOpen = false;
+            that.isFocus = false;
             // Remove close event on Esc press
             cm.removeEvent(window, 'keydown', windowClickEvent);
             // Show / Hide Document Scroll
@@ -9491,10 +9514,11 @@ function(params){
             anim['container'].go({
                 'style' : {'opacity' : '0'}, 'duration' : that.params['openTime'], 'onStop' : function(){
                     nodes['container'].style.display = 'none';
-                    // Close Event
-                    that.triggerEvent('onClose');
                     // Remove Window
                     that.params['removeOnClose'] && remove();
+                    params['onEnd']();
+                    // Close Event
+                    that.triggerEvent('onClose');
                 }
             });
             // Close Event
@@ -9503,15 +9527,26 @@ function(params){
     };
 
     var remove = function(){
-        that.isOpen = false;
-        // Remove dialog container node
-        cm.remove(nodes['container']);
+        if(!that.isRemoved){
+            that.isRemoved = true;
+            if(that.params['destructOnRemove'] && !that.isDestructed){
+                that.isDestructed = true;
+                cm.customEvent.trigger(nodes['container'], 'destruct', {
+                    'type' : 'child',
+                    'self' : false
+                });
+                that.removeFromStack();
+                that.triggerEvent('onClose');
+            }
+            // Remove dialog container node
+            cm.remove(nodes['container']);
+        }
     };
 
     var windowClickEvent = function(e){
         e = cm.getEvent(e);
+        // ESC key
         if(e.keyCode == 27){
-            // ESC key
             that.isFocus && close();
         }
     };
@@ -9571,7 +9606,17 @@ function(params){
     };
 
     that.remove = function(){
-        remove();
+        if(that.isOpen){
+            close({
+                'onEnd' : function(){
+                    if(!that.params['removeOnClose']){
+                        remove();
+                    }
+                }
+            });
+        }else{
+            remove();
+        }
         return that;
     };
 
@@ -11524,22 +11569,30 @@ cm.define('Com.Gridlist', {
         'onRenderEnd'
     ],
     'params' : {
-        'node' : cm.Node('div'),
+        'node' : cm.node('div'),
         'container' : null,
         'embedStructure' : 'append',
         'name' : '',
         'data' : [],
         'cols' : [],
         'sort' : true,
-        'sortBy' : 'id',                                    // default sort by key in array
+        'sortBy' : 'id',                                            // Default sort by key in array
         'orderBy' : 'ASC',
-        'childsBy' : false,
+        'childsBy' : false,                                         // Render child rows after parent, WIP - doesn't work checking / uncheking rows and statuses
         'pagination' : true,
         'perPage' : 25,
         'showCounter' : false,
         'className' : '',
-        'dateFormat' : 'cm._config.dateTimeFormat',        // input date format
-        'visibleDateFormat' : 'cm._config.dateTimeFormat', // render date format
+        'dateFormat' : 'cm._config.dateTimeFormat',                 // Input date format
+        'visibleDateFormat' : 'cm._config.dateTimeFormat',          // Render date format
+        'responseCountKey' : 'count',                               // Ajax data count response key
+        'responseKey' : 'data',                                     // Ajax data response key
+        'ajax' : {                                                  // Ajax, WIP - doesn't work checking / uncheking rows and statuses
+            'type' : 'json',
+            'method' : 'get',
+            'url' : '',                                             // Request URL. Variables: %orderBy%, %sortBy%, %page%, %offset%, %perPage%, %limit%, %callback% for JSONP.
+            'params' : ''                                           // Params object. Variables: %orderBy%, %sortBy%, %page%, %offset%, %perPage%, %limit%, %callback% for JSONP.
+        },
         'langs' : {
             'counter' : 'Count: ',
             'check_all' : 'Check all',
@@ -11556,19 +11609,20 @@ cm.define('Com.Gridlist', {
         'Com.Pagination' : {
             'renderStructure' : true,
             'animateSwitch' : true,
-            'animatePrevious' : false
+            'animatePrevious' : true
         }
     }
 },
 function(params){
-    var that = this,
-        rows = [],
-        sortBy,
-        orderBy;
+    var that = this;
 
     that.nodes = {};
     that.components = {};
+    that.isAjax = false;
     that.isCheckedAll = false;
+    that.sortBy = null;
+    that.orderBy = 'ASC';
+    that.rows = [];
 
     var init = function(){
         that.setParams(params);
@@ -11580,11 +11634,19 @@ function(params){
     };
 
     var validateParams = function(){
-        if(!that.params['container']){
-            that.params['container'] = that.params['node'];
+        that.sortBy = that.params['sortBy'];
+        that.orderBy = that.params['orderBy'];
+        // Ajax
+        if(!cm.isEmpty(that.params['ajax']['url'])){
+            that.isAjax = true;
+            that.params['pagination'] = true;
+            that.params['Com.Pagination']['ajax'] = that.params['ajax'];
+            that.params['Com.Pagination']['responseCountKey'] = that.params['responseCountKey'];
+            that.params['Com.Pagination']['responseKey'] = that.params['responseKey'];
+        }else{
+            that.params['Com.Pagination']['count'] = that.params['data'].length;
         }
         // Pagination
-        that.params['Com.Pagination']['count'] = that.params['data'].length;
         that.params['Com.Pagination']['perPage'] = that.params['perPage'];
     };
 
@@ -11592,47 +11654,95 @@ function(params){
 
     var render = function(){
         // Container
-        that.nodes['container'] = cm.Node('div', {'class' : 'com__gridlist'});
+        that.nodes['container'] = cm.node('div', {'class' : 'com__gridlist'});
+        // Add css class
+        cm.addClass(that.nodes['container'], that.params['className']);
         // Append
         that.embedStructure(that.nodes['container']);
-        // Add css class
-        !cm.isEmpty(that.params['className']) && cm.addClass(that.nodes['container'], that.params['className']);
-        // Counter
-        if(that.params['showCounter']){
-            that.nodes['container'].appendChild(
-                cm.Node('div', {'class' : 'pt__gridlist__counter'}, that.lang('counter') + that.params['data'].length)
-            );
-        }
-        // Sort data array for first time
-        that.params['sort'] && arraySort(that.params['sortBy']);
-        // Render table
-        if(that.params['data'].length){
+        // Render table page
+        if(that.isAjax){
+            // Render dynamic pagination
+            renderPagination();
+        }else if(that.params['data'].length){
+            // Counter
+            if(that.params['showCounter']){
+                renderCounter(that.params['data'].length);
+            }
+            // Sort data array for first time
+            that.params['sort'] && arraySort();
             if(that.params['pagination']){
-                that.components['pagination'] = new Com.Pagination(
-                    cm.merge(that.params['Com.Pagination'], {
-                        'container' : that.nodes['container'],
-                        'events' : {
-                            'onPageRender' : function(pagination, data){
-                                renderTable(data['page'], data['container']);
-                            }
-                        }
-                    })
-                );
+                // Render static pagination
+                renderPagination();
             }else{
-                renderTable(1, that.nodes['container']);
+                // Render all data items
+                renderTable(1, that.params['data'], that.nodes['container']);
             }
         }else{
-            that.nodes['container'].appendChild(
-                cm.Node('div', {'class' : 'cm__empty'}, that.lang('empty'))
-            );
+            renderEmptiness(that.nodes['container']);
         }
     };
 
-    var renderTable = function(page, container){
-        var start, end;
+    var renderPagination = function(){
+        var startIndex, endIndex, dataArray;
+        cm.getConstructor('Com.Pagination', function(classConstructor){
+            that.components['pagination'] = new classConstructor(
+                cm.merge(that.params['Com.Pagination'], {
+                    'container' : that.nodes['container'],
+                    'callbacks' : {
+                        'afterPrepare' : function(pagination, config){
+                            config['url'] = cm.strReplace(config['url'], {
+                                '%sortBy%' : that.sortBy,
+                                '%orderBy%' : that.orderBy
+                            });
+                            config['params'] = cm.objectReplace(config['params'], {
+                                '%sortBy%' : that.sortBy,
+                                '%orderBy%' : that.orderBy
+                            });
+                            return config;
+                        }
+                    },
+                    'events' : {
+                        'onPageRender' : function(pagination, data){
+                            if(that.isAjax){
+                                if(data['data'].length){
+                                    renderTable(data['page'], data['data'], data['container']);
+                                }else{
+                                    renderEmptiness(data['container']);
+                                }
+                            }else{
+                                startIndex = that.params['perPage'] * (data['page'] - 1);
+                                endIndex = Math.min(that.params['perPage'] * data['page'], that.params['data'].length);
+                                dataArray = that.params['data'].slice(startIndex, endIndex);
+                                renderTable(data['page'], dataArray, data['container']);
+                            }
+                        },
+                        'onSetCount' : function(pagination, count){
+                            that.params['showCounter'] && renderCounter(count);
+                        }
+                    }
+                })
+            );
+        });
+    };
+
+    var renderCounter = function(count){
+        if(that.nodes['counter']){
+            that.nodes['counter'].innerHTML = that.lang('counter') + count;
+        }else{
+            that.nodes['counter'] = cm.node('div', {'class' : 'pt__gridlist__counter'}, that.lang('counter') + count);
+            cm.insertFirst(that.nodes['counter'], that.nodes['container']);
+        }
+    };
+
+    var renderEmptiness = function(container){
+        that.nodes['empty'] = cm.node('div', {'class' : 'cm__empty'}, that.lang('empty'));
+        cm.appendChild(that.nodes['empty'], container);
+    };
+
+    var renderTable = function(page, data, container){
         /*
-        If pagination not exists we need to clean up table before render new one, cause on ech sort will be rendered new table.
-        When pagination exists, ech rendered table will be have his own container, and no needs to clean up previous table.
+            If pagination not exists we need to clean up table before render new one, cause on each sort will be rendered new table.
+            When pagination exists, each rendered table will be have his own container, and no needs to clean up previous table.
         */
         if(!that.params['pagination']){
             cm.remove(that.nodes['table']);
@@ -11643,34 +11753,27 @@ function(params){
             'page' : page
         });
         // Render Table
-        that.nodes['table'] = cm.Node('div', {'class' : 'pt__gridlist'},
-            cm.Node('table',
-                cm.Node('thead',
-                    that.nodes['title'] = cm.Node('tr')
+        that.nodes['table'] = cm.node('div', {'class' : 'pt__gridlist'},
+            cm.node('table',
+                cm.node('thead',
+                    that.nodes['title'] = cm.node('tr')
                 ),
-                that.nodes['content'] = cm.Node('tbody')
+                that.nodes['content'] = cm.node('tbody')
             )
         );
         // Render Table Title
         cm.forEach(that.params['cols'], renderTh);
         // Render Table Row
-        if(that.params['pagination']){
-            end = that.params['perPage'] * page;
-            start = end - that.params['perPage'];
-        }else{
-            end = that.params['data'].length;
-            start = 0;
-        }
-        for(var i = start, l = Math.min(end, that.params['data'].length); i < l; i++){
-            renderRow(rows, that.params['data'][i], i);
-        }
+        cm.forEach(data, function(item, i){
+            renderRow(that.rows, item, (i + (page -1)));
+        });
         // Append
-        container.appendChild(that.nodes['table']);
+        cm.appendChild(that.nodes['table'], container);
         // API onRenderEnd event
         that.triggerEvent('onRenderEnd', {
             'container' : container,
             'page' : page,
-            'rows' : rows
+            'rows' : that.rows
         });
     };
 
@@ -11679,7 +11782,7 @@ function(params){
         item = that.params['cols'][i] = cm.merge({
             'width' : 'auto',               // number | % | auto
             'access' : true,                // Render column if is accessible
-            'type' : 'text',		        // text | number | url | date | html | icon | checkbox | empty | actions
+            'type' : 'text',		        // text | number | url | date | html | icon | checkbox | empty | actions | links
             'key' : '',                     // Data array key
             'title' : '',                   // Table th title
             'sort' : that.params['sort'],   // Sort this column or not
@@ -11690,6 +11793,7 @@ function(params){
             'titleText' : '',               // Alternative title text, if not specified - will be shown key text
             'altText' : '',                 // Alternative column text
             'urlKey' : false,               // Alternative link href, for type="url"
+            'links' : [],                   // Render links menu, for type="links"
             'actions' : [],                 // Render actions menu, for type="actions"
             'onClick' : false,              // Cell click handler
             'onRender' : false              // Cell onRender handler
@@ -11699,8 +11803,8 @@ function(params){
         if(item['access']){
             // Structure
             that.nodes['title'].appendChild(
-                item['nodes']['container'] = cm.Node('th', {'width' : item['width']},
-                    item['nodes']['inner'] = cm.Node('div', {'class' : 'inner'})
+                item['nodes']['container'] = cm.node('th', {'width' : item['width']},
+                    item['nodes']['inner'] = cm.node('div', {'class' : 'inner'})
                 )
             );
             // Insert specific specified content in th
@@ -11708,7 +11812,7 @@ function(params){
                 case 'checkbox' :
                     cm.addClass(item['nodes']['container'], 'control');
                     item['nodes']['inner'].appendChild(
-                        item['nodes']['checkbox'] = cm.Node('input', {'type' : 'checkbox', 'title' : that.lang('check_all')})
+                        item['nodes']['checkbox'] = cm.node('input', {'type' : 'checkbox', 'title' : that.lang('check_all')})
                     );
                     item['nodes']['checkbox'].checked = that.isCheckedAll;
                     cm.addEvent(item['nodes']['checkbox'], 'click', function(){
@@ -11723,45 +11827,47 @@ function(params){
 
                 default:
                     item['nodes']['inner'].appendChild(
-                        cm.Node('span', item['title'])
+                        cm.node('span', item['title'])
                     );
                     break;
             }
             // Render sort arrow and set function on click to th
-            if(!/icon|empty|actions|checkbox/.test(item['type']) && item['sort']){
+            if(item['sort'] && !/icon|empty|actions|links|checkbox/.test(item['type'])){
                 cm.addClass(item['nodes']['container'], 'sort');
-                if(item['key'] == sortBy){
+                if(item['key'] == that.sortBy){
                     item['nodes']['inner'].appendChild(
-                        cm.Node('div', {'class' : that.params['icons']['arrow'][orderBy.toLowerCase()]})
+                        cm.node('div', {'class' : that.params['icons']['arrow'][that.orderBy.toLowerCase()]})
                     );
                 }
                 cm.addEvent(item['nodes']['inner'], 'click', function(){
-                    arraySort(item['key']);
+                    that.sortBy = item['key'];
+                    that.orderBy = that.orderBy == 'ASC' ? 'DESC' : 'ASC';
+                    !that.isAjax && arraySort();
                     if(that.params['pagination']){
                         that.components['pagination'].rebuild();
                     }else{
-                        renderTable(1, that.nodes['container']);
+                        renderTable(1, that.params['data'], that.nodes['container']);
                     }
                 });
             }
         }
     };
 
-    var renderRow = function(parent, row, i){
+    var renderRow = function(parentRow, data, i){
         // Config
         var item = {
             'index' : i,
-            'data' : row,
+            'data' : data,
             'childs' : [],
-            'isChecked' : row['_checked'] || false,
-            'status' : row['_status'] || false,
+            'isChecked' : data['_checked'] || false,
+            'status' : data['_status'] || false,
             'nodes' : {
                 'cols' : []
             }
         };
         // Structure
         that.nodes['content'].appendChild(
-            item['nodes']['container'] = cm.Node('tr')
+            item['nodes']['container'] = cm.node('tr')
         );
         // Render cells
         cm.forEach(that.params['cols'], function(col){
@@ -11769,12 +11875,12 @@ function(params){
         });
         // Render childs
         if(that.params['childsBy']){
-            cm.forEach(row[that.params['childsBy']], function(child, childI){
+            cm.forEach(data[that.params['childsBy']], function(child, childI){
                 renderRow(item['childs'], child, childI);
             });
         }
         // Push to rows array
-        rows.push(item);
+        parentRow.push(item);
     };
 
     var renderCell = function(col, item){
@@ -11788,11 +11894,11 @@ function(params){
             title = cm.isEmpty(col['titleText'])? text : col['titleText'];
             // Structure
             item['nodes']['container'].appendChild(
-                nodes['container'] = cm.Node('td')
+                nodes['container'] = cm.node('td')
             );
             // Text overflow
             if(col['textOverflow']){
-                nodes['inner'] = cm.Node('div', {'class' : 'inner'});
+                nodes['inner'] = cm.node('div', {'class' : 'inner'});
                 nodes['container'].appendChild(nodes['inner']);
             }else{
                 nodes['inner'] = nodes['container'];
@@ -11816,7 +11922,7 @@ function(params){
 
                 case 'icon' :
                     nodes['inner'].appendChild(
-                        nodes['node'] = cm.Node('div', {'class' : col['class']})
+                        nodes['node'] = cm.node('div', {'class' : col['class']})
                     );
                     cm.addClass(nodes['node'], 'icon linked inline');
                     break;
@@ -11825,14 +11931,14 @@ function(params){
                     text = cm.decode(text);
                     href = col['urlKey'] && item['data'][col['urlKey']]? cm.decode(item['data'][col['urlKey']]) : text;
                     nodes['inner'].appendChild(
-                        nodes['node'] = cm.Node('a', {'target' : col['target'], 'href' : href}, !cm.isEmpty(col['altText'])? col['altText'] : text)
+                        nodes['node'] = cm.node('a', {'target' : col['target'], 'href' : href}, !cm.isEmpty(col['altText'])? col['altText'] : text)
                     );
                     break;
 
                 case 'checkbox' :
                     cm.addClass(nodes['container'], 'control');
                     nodes['inner'].appendChild(
-                        nodes['node'] = cm.Node('input', {'type' : 'checkbox'})
+                        nodes['node'] = cm.node('input', {'type' : 'checkbox'})
                     );
                     item['nodes']['checkbox'] = nodes['node'];
                     if(item['isChecked']){
@@ -11847,11 +11953,40 @@ function(params){
                     });
                     break;
 
+                case 'links':
+                    nodes['links'] = [];
+                    nodes['inner'].appendChild(
+                        nodes['node'] = cm.node('div', {'class' : ['pt__links', col['class']].join(' ')},
+                            nodes['linksList'] = cm.node('ul')
+                        )
+                    );
+                    cm.forEach(col['links'], function(actionItem){
+                        var actionNode;
+                        actionItem = cm.merge({
+                            'label' : '',
+                            'attr' : {},
+                            'events' : {}
+                        }, actionItem);
+                        cm.forEach(item['data'], function(itemValue, itemKey){
+                            actionItem['attr'] = cm.replaceDeep(actionItem['attr'], new RegExp([cm.strWrap(itemKey, '%'), cm.strWrap(itemKey, '%25')].join('|'), 'g'), itemValue);
+                        });
+                        nodes['linksList'].appendChild(
+                            cm.node('li',
+                                actionNode = cm.node('a', actionItem['attr'], actionItem['label'])
+                            )
+                        );
+                        cm.forEach(actionItem['events'], function(actionEventHandler, actionEventName){
+                            cm.addEvent(actionNode, actionEventName, actionEventHandler);
+                        });
+                        nodes['links'].push(actionNode);
+                    });
+                    break;
+
                 case 'actions':
                     nodes['actions'] = [];
                     nodes['inner'].appendChild(
-                        nodes['node'] = cm.Node('div', {'class' : ['pt__links', col['class']].join(' ')},
-                            nodes['actionsList'] = cm.Node('ul')
+                        nodes['node'] = cm.node('div', {'class' : ['pt__links', col['class']].join(' ')},
+                            nodes['actionsList'] = cm.node('ul')
                         )
                     );
                     cm.forEach(col['actions'], function(actionItem){
@@ -11865,8 +12000,8 @@ function(params){
                             actionItem['attr'] = cm.replaceDeep(actionItem['attr'], new RegExp([cm.strWrap(itemKey, '%'), cm.strWrap(itemKey, '%25')].join('|'), 'g'), itemValue);
                         });
                         nodes['actionsList'].appendChild(
-                            cm.Node('li',
-                                actionNode = cm.Node('a', actionItem['attr'], actionItem['label'])
+                            cm.node('li',
+                                actionNode = cm.node('a', actionItem['attr'], actionItem['label'])
                             )
                         );
                         cm.forEach(actionItem['events'], function(actionEventHandler, actionEventName){
@@ -11919,54 +12054,49 @@ function(params){
 
     /* *** HELPING FUNCTIONS *** */
 
-    var arraySort = function(key){
-        sortBy = key;
-        orderBy = !orderBy? that.params['orderBy'] : (orderBy == 'ASC' ? 'DESC' : 'ASC');
+    var arraySort = function(){
         // Get item
         var item, textA, textB, t1, t2, value;
         cm.forEach(that.params['cols'], function(col){
-            if(col['key'] == key){
+            if(col['key'] == that.sortBy){
                 item = col;
             }
         });
         // Sort
-        if(that.params['data'].sort){
-            that.params['data'].sort(function(a, b){
-                textA = a[key];
-                textB = b[key];
-                switch(item['type']){
-                    case 'html':
-                        t1 = cm.getTextNodesStr(cm.strToHTML(textA));
-                        t2 = cm.getTextNodesStr(cm.strToHTML(textB));
-                        value = (t1 < t2)? -1 : ((t1 > t2)? 1 : 0);
-                        return (orderBy == 'ASC')? value : (-1 * value);
-                        break;
+        that.params['data'].sort(function(a, b){
+            textA = a[that.sortBy];
+            textB = b[that.sortBy];
+            switch(item['type']){
+                case 'html':
+                    t1 = cm.getTextNodesStr(cm.strToHTML(textA));
+                    t2 = cm.getTextNodesStr(cm.strToHTML(textB));
+                    value = (t1 < t2)? -1 : ((t1 > t2)? 1 : 0);
+                    return (that.orderBy == 'ASC')? value : (-1 * value);
+                    break;
 
-                    case 'date':
-                        t1 = cm.parseDate(textA, that.params['dateFormat']);
-                        t2 = cm.parseDate(textB, that.params['dateFormat']);
-                        return (orderBy == 'ASC')? (t1 - t2) : (t2 - t1);
-                        break;
+                case 'date':
+                    t1 = cm.parseDate(textA, that.params['dateFormat']);
+                    t2 = cm.parseDate(textB, that.params['dateFormat']);
+                    return (that.orderBy == 'ASC')? (t1 - t2) : (t2 - t1);
+                    break;
 
-                    case 'number':
-                        value = textA - textB;
-                        return (orderBy == 'ASC')? value : (-1 * value);
-                        break;
+                case 'number':
+                    value = textA - textB;
+                    return (that.orderBy == 'ASC')? value : (-1 * value);
+                    break;
 
-                    default :
-                        t1 = textA? textA.toLowerCase() : '';
-                        t2 = textB? textB.toLowerCase() : '';
-                        value = (t1 < t2)? -1 : ((t1 > t2)? 1 : 0);
-                        return (orderBy == 'ASC')? value : (-1 * value);
-                        break;
-                }
-            });
-        }
+                default :
+                    t1 = textA? textA.toLowerCase() : '';
+                    t2 = textB? textB.toLowerCase() : '';
+                    value = (t1 < t2)? -1 : ((t1 > t2)? 1 : 0);
+                    return (that.orderBy == 'ASC')? value : (-1 * value);
+                    break;
+            }
+        });
         // API onSort Event
         that.triggerEvent('onSort', {
-            'sortBy' : sortBy,
-            'orderBy' : orderBy,
-            'data' : that.params['data']
+            'sortBy' : that.sortBy,
+            'orderBy' : that.orderBy
         });
     };
 
@@ -12037,7 +12167,7 @@ function(params){
         if(that.params['data'][index]){
             that.params['data'][index]['_checked'] = false;
         }
-        cm.forEach(rows, function(row){
+        cm.forEach(that.rows, function(row){
             if(row['index'] == index){
                 unCheckRow(row, true);
             }
@@ -12051,7 +12181,7 @@ function(params){
         cm.forEach(that.params['data'], function(row){
             row['_checked'] = true;
         });
-        cm.forEach(rows, function(row){
+        cm.forEach(that.rows, function(row){
             checkRow(row);
         });
         // API onUnCheckAll Event
@@ -12065,7 +12195,7 @@ function(params){
         cm.forEach(that.params['data'], function(row){
             row['_checked'] = false;
         });
-        cm.forEach(rows, function(row){
+        cm.forEach(that.rows, function(row){
             unCheckRow(row);
         });
         // API onUnCheckAll Event
@@ -12075,7 +12205,7 @@ function(params){
 
     that.getChecked = function(){
         var checkedRows = [];
-        cm.forEach(rows, function(row){
+        cm.forEach(that.rows, function(row){
             row['isChecked'] && checkedRows.push(row);
         });
         return checkedRows;
@@ -12090,7 +12220,7 @@ function(params){
     };
 
     that.setRowStatus = function(index, status){
-        cm.forEach(rows, function(row){
+        cm.forEach(that.rows, function(row){
             if(row['index'] == index){
                 setRowStatus(row, status);
             }
@@ -12099,7 +12229,7 @@ function(params){
     };
 
     that.clearRowStatus = function(index){
-        cm.forEach(rows, function(row){
+        cm.forEach(that.rows, function(row){
             if(row['index'] == index){
                 clearRowStatus(row);
             }
@@ -13391,7 +13521,8 @@ cm.define('Com.Pagination', {
         'onPageRender',
         'onPageRenderEnd',
         'onPageSwitched',
-        'onEnd'
+        'onEnd',
+        'onSetCount'
     ],
     'params' : {
         'node' : cm.Node('div'),
@@ -13423,6 +13554,7 @@ cm.define('Com.Pagination', {
         'responseCountKey' : 'count',                               // Take items count from response
         'responseKey' : 'data',                                     // Instead of using filter callback, you can provide response array key
         'responseHTML' : false,                                     // If true, html will append automatically
+        'cache' : true,                                             // Cache response data
         'ajax' : {
             'type' : 'json',
             'method' : 'get',
@@ -13565,7 +13697,7 @@ function(params){
             that.callbacks.rebuildBars(that);
             // Request
             if(!that.currentPage || page != that.currentPage){
-                if(that.pages[that.page] && that.pages[that.page]['isRendered']){
+                if(that.params['cache'] && that.pages[that.page] && that.pages[that.page]['isRendered']){
                     that.callbacks.cached(that, that.pages[that.page]['data']);
                 }else if(that.isAjax){
                     config = cm.clone(that.params['ajax']);
@@ -13582,7 +13714,7 @@ function(params){
     /* *** AJAX *** */
 
     that.callbacks.prepare = function(that, config){
-        // Prepare
+        config = that.callbacks.beforePrepare(that, config);
         config['url'] = cm.strReplace(config['url'], {
             '%perPage%' : that.params['perPage'],
             '%limit%' : that.params['perPage'],
@@ -13599,6 +13731,15 @@ function(params){
             '%token%' : that.pageToken,
             '%baseurl%' : cm._baseUrl
         });
+        config = that.callbacks.afterPrepare(that, config);
+        return config;
+    };
+
+    that.callbacks.beforePrepare = function(that, config){
+        return config;
+    };
+
+    that.callbacks.afterPrepare = function(that, config){
         return config;
     };
 
@@ -14005,6 +14146,7 @@ function(params){
                 that.pageCount = that.params['pageCount'];
             }
             that.callbacks.rebuildBars(that);
+            that.triggerEvent('onSetCount', count);
         }
         return that;
     };
@@ -14022,7 +14164,7 @@ function(params){
         return that;
     };
 
-    that.isParent = function(node, flag){
+    that.isOwnNode = that.isParent = function(node, flag){
         return cm.isParent(that.nodes['container'], node, flag);
     };
 
@@ -14828,7 +14970,7 @@ function(params){
     /* *** AJAX *** */
 
     that.callbacks.prepare = function(that, config){
-        // Prepare
+        config = that.callbacks.beforePrepare(that, config);
         config['url'] = cm.strReplace(config['url'], {
             '%perPage%' : that.params['perPage'],
             '%limit%' : that.params['perPage'],
@@ -14845,6 +14987,15 @@ function(params){
             '%token%' : that.pageToken,
             '%baseurl%' : cm._baseUrl
         });
+        config = that.callbacks.afterPrepare(that, config);
+        return config;
+    };
+
+    that.callbacks.beforePrepare = function(that, config){
+        return config;
+    };
+
+    that.callbacks.afterPrepare = function(that, config){
         return config;
     };
 

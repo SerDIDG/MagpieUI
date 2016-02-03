@@ -17,7 +17,8 @@ cm.define('Com.Pagination', {
         'onPageRender',
         'onPageRenderEnd',
         'onPageSwitched',
-        'onEnd'
+        'onEnd',
+        'onSetCount'
     ],
     'params' : {
         'node' : cm.Node('div'),
@@ -49,6 +50,7 @@ cm.define('Com.Pagination', {
         'responseCountKey' : 'count',                               // Take items count from response
         'responseKey' : 'data',                                     // Instead of using filter callback, you can provide response array key
         'responseHTML' : false,                                     // If true, html will append automatically
+        'cache' : true,                                             // Cache response data
         'ajax' : {
             'type' : 'json',
             'method' : 'get',
@@ -191,7 +193,7 @@ function(params){
             that.callbacks.rebuildBars(that);
             // Request
             if(!that.currentPage || page != that.currentPage){
-                if(that.pages[that.page] && that.pages[that.page]['isRendered']){
+                if(that.params['cache'] && that.pages[that.page] && that.pages[that.page]['isRendered']){
                     that.callbacks.cached(that, that.pages[that.page]['data']);
                 }else if(that.isAjax){
                     config = cm.clone(that.params['ajax']);
@@ -208,7 +210,7 @@ function(params){
     /* *** AJAX *** */
 
     that.callbacks.prepare = function(that, config){
-        // Prepare
+        config = that.callbacks.beforePrepare(that, config);
         config['url'] = cm.strReplace(config['url'], {
             '%perPage%' : that.params['perPage'],
             '%limit%' : that.params['perPage'],
@@ -225,6 +227,15 @@ function(params){
             '%token%' : that.pageToken,
             '%baseurl%' : cm._baseUrl
         });
+        config = that.callbacks.afterPrepare(that, config);
+        return config;
+    };
+
+    that.callbacks.beforePrepare = function(that, config){
+        return config;
+    };
+
+    that.callbacks.afterPrepare = function(that, config){
         return config;
     };
 
@@ -631,6 +642,7 @@ function(params){
                 that.pageCount = that.params['pageCount'];
             }
             that.callbacks.rebuildBars(that);
+            that.triggerEvent('onSetCount', count);
         }
         return that;
     };
@@ -648,7 +660,7 @@ function(params){
         return that;
     };
 
-    that.isParent = function(node, flag){
+    that.isOwnNode = that.isParent = function(node, flag){
         return cm.isParent(that.nodes['container'], node, flag);
     };
 

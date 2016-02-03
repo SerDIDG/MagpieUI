@@ -40,6 +40,7 @@ cm.define('Com.Dialog', {
         'autoOpen' : true,
         'appendOnRender' : false,
         'removeOnClose' : true,
+        'destructOnRemove' : false,
         'scroll' : true,
         'documentScroll' : false,
         'icons' : {
@@ -60,6 +61,8 @@ function(params){
 
     that.isOpen = false;
     that.isFocus = false;
+    that.isRemoved = false;
+    that.isDestructed = false;
 
     var init = function(){
         that.setParams(params);
@@ -296,9 +299,14 @@ function(params){
         animFrame(resize);
     };
 
-    var open = function(){
+    var open = function(params){
+        params = {
+            'onEnd' : function(){}
+        };
         if(!that.isOpen){
             that.isOpen = true;
+            that.isFocus = true;
+            that.isRemoved = false;
             if(!cm.inDOM(nodes['container'])){
                 that.params['container'].appendChild(nodes['container']);
             }
@@ -311,6 +319,7 @@ function(params){
             cm.addEvent(window, 'keydown', windowClickEvent);
             // Animate
             anim['container'].go({'style' : {'opacity' : '1'}, 'duration' : that.params['openTime'], 'onStop' : function(){
+                params['onEnd']();
                 // Open Event
                 that.triggerEvent('onOpen');
             }});
@@ -319,9 +328,13 @@ function(params){
         }
     };
 
-    var close = function(){
+    var close = function(params){
+        params = {
+            'onEnd' : function(){}
+        };
         if(that.isOpen){
             that.isOpen = false;
+            that.isFocus = false;
             // Remove close event on Esc press
             cm.removeEvent(window, 'keydown', windowClickEvent);
             // Show / Hide Document Scroll
@@ -332,10 +345,11 @@ function(params){
             anim['container'].go({
                 'style' : {'opacity' : '0'}, 'duration' : that.params['openTime'], 'onStop' : function(){
                     nodes['container'].style.display = 'none';
-                    // Close Event
-                    that.triggerEvent('onClose');
                     // Remove Window
                     that.params['removeOnClose'] && remove();
+                    params['onEnd']();
+                    // Close Event
+                    that.triggerEvent('onClose');
                 }
             });
             // Close Event
@@ -344,15 +358,26 @@ function(params){
     };
 
     var remove = function(){
-        that.isOpen = false;
-        // Remove dialog container node
-        cm.remove(nodes['container']);
+        if(!that.isRemoved){
+            that.isRemoved = true;
+            if(that.params['destructOnRemove'] && !that.isDestructed){
+                that.isDestructed = true;
+                cm.customEvent.trigger(nodes['container'], 'destruct', {
+                    'type' : 'child',
+                    'self' : false
+                });
+                that.removeFromStack();
+                that.triggerEvent('onClose');
+            }
+            // Remove dialog container node
+            cm.remove(nodes['container']);
+        }
     };
 
     var windowClickEvent = function(e){
         e = cm.getEvent(e);
+        // ESC key
         if(e.keyCode == 27){
-            // ESC key
             that.isFocus && close();
         }
     };
@@ -412,7 +437,17 @@ function(params){
     };
 
     that.remove = function(){
-        remove();
+        if(that.isOpen){
+            close({
+                'onEnd' : function(){
+                    if(!that.params['removeOnClose']){
+                        remove();
+                    }
+                }
+            });
+        }else{
+            remove();
+        }
         return that;
     };
 

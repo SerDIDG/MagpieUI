@@ -235,6 +235,7 @@ function(params){
     /* *** AJAX *** */
 
     that.callbacks.prepare = function(that, config, query){
+        config = that.callbacks.beforePrepare(that, config, query);
         config['url'] = cm.strReplace(config['url'], {
             '%query%' : query,
             '%baseurl%' : cm._baseUrl
@@ -243,6 +244,15 @@ function(params){
             '%query%' : query,
             '%baseurl%' : cm._baseUrl
         });
+        config = that.callbacks.afterPrepare(that, config, query);
+        return config;
+    };
+
+    that.callbacks.beforePrepare = function(that, config, query){
+        return config;
+    };
+
+    that.callbacks.afterPrepare = function(that, config, query){
         return config;
     };
 

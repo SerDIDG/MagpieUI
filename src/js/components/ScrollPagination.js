@@ -216,7 +216,7 @@ function(params){
     /* *** AJAX *** */
 
     that.callbacks.prepare = function(that, config){
-        // Prepare
+        config = that.callbacks.beforePrepare(that, config);
         config['url'] = cm.strReplace(config['url'], {
             '%perPage%' : that.params['perPage'],
             '%limit%' : that.params['perPage'],
@@ -233,6 +233,15 @@ function(params){
             '%token%' : that.pageToken,
             '%baseurl%' : cm._baseUrl
         });
+        config = that.callbacks.afterPrepare(that, config);
+        return config;
+    };
+
+    that.callbacks.beforePrepare = function(that, config){
+        return config;
+    };
+
+    that.callbacks.afterPrepare = function(that, config){
         return config;
     };
 
