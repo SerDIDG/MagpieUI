@@ -12359,7 +12359,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.11.5',
+        '_version' : '3.11.6',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -18249,13 +18249,14 @@ function(params){
     };
 
     var constructAll = function(parentNode){
-        var processNodes = {};
+        var processNodes = {},
+            processArray = that.stackList.slice(0);
         // Find new nodes to process
         cm.forEach(that.stackNodes, function(item, name){
             processNodes[name] = addNodes(parentNode, name);
         });
         // Process nodes
-        cm.forEach(that.stackList, function(item){
+        cm.forEach(processArray, function(item){
             cm.forEach(processNodes[item['name']], function(node){
                 item['construct'] && item['construct'](node, item['priority']);
             });
@@ -18263,10 +18264,10 @@ function(params){
     };
 
     var constructItem = function(parentNode, name){
-        var processArray = that.stackList.filter(function(item){
-            return item['name'] === name;
-        });
-        var processNodes = addNodes(parentNode, name);
+        var processNodes = addNodes(parentNode, name),
+            processArray = that.stackList.filter(function(item){
+                return item['name'] === name;
+            });
         cm.forEach(processArray, function(item){
             cm.forEach(processNodes, function(node){
                 item['construct'] && item['construct'](node, item['priority']);
@@ -18275,18 +18276,19 @@ function(params){
     };
 
     var destructAll = function(parentNode){
+        var processNodes = {},
+            processArray = that.stackList.slice(0);
         if(cm.isNode(parentNode)){
-            var processNodes = {};
             cm.forEach(that.stackNodes, function(item, name){
                 processNodes[name] = removeNodes(parentNode, name);
             });
-            cm.forEach(that.stackList, function(item){
+            cm.forEach(processArray, function(item){
                 cm.forEach(processNodes[item['name']], function(node){
                     item['destruct'] && item['destruct'](node, item['priority']);
                 });
             });
         }else{
-            cm.forEach(that.stackList, function(item){
+            cm.forEach(processArray, function(item){
                 cm.forEach(that.stackNodes[item['name']], function(node){
                     item['destruct'] && item['destruct'](node, item['priority']);
                 });
@@ -18296,11 +18298,12 @@ function(params){
     };
 
     var destructItem = function(parentNode, name){
-        var processArray = that.stackList.filter(function(item){
-            return item['name'] === name;
-        });
+        var processNodes = {},
+            processArray = that.stackList.filter(function(item){
+                return item['name'] === name;
+            });
         if(cm.isNode(parentNode)){
-            var processNodes = removeNodes(parentNode, name);
+            processNodes = removeNodes(parentNode, name);
             cm.forEach(processArray, function(item){
                 cm.forEach(processNodes, function(node){
                     item['destruct'] && item['destruct'](node, item['priority']);
