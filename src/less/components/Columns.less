@@ -4,6 +4,7 @@
     .display-flex;
     vertical-align: top;
     .mx__flex(1 1 auto);
+    .mx__flex-direction(column);
 
     > .inner {
         position: relative;
@@ -13,8 +14,9 @@
         .mx__transition(background-color, @CmUI-Transition-Duration);
     }
 
-    .firefox & {
-        .mx__flex-direction(column);
+    .ie10 &,
+    .ie11 & {
+        .mx__flex-direction(row);
     }
 
     .ie8 &,

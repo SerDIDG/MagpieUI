@@ -121,14 +121,24 @@
         }
     }
 
-    &.is-adaptive {
+    &.is-flex {
         > .inner {
-            .mx__flex-wrap(nowrap);
-        }
+            > .left {
+                .display-flex;
+                .mx__flex(1 1 auto);
+                .mx__justify-content(flex-start);
+            }
 
-        .group {
-            .display-flex;
-            .mx__justify-content(flex-start);
+            > .center {
+                .display-flex;
+                .mx__flex(0 1 auto);
+            }
+
+            > .right {
+                .display-flex;
+                .mx__flex(1 1 auto);
+                .mx__justify-content(flex-end);
+            }
         }
     }
 }
@@ -141,6 +151,7 @@
         .pt__toolbar {
             > .inner {
                 > .left,
+                > .center,
                 > .right {
                     width: 100%;
                     float: none;
@@ -183,6 +194,12 @@
             &.is-adaptive {
                 > .inner {
                     display: block;
+
+                    > .left,
+                    > .center,
+                    > .right {
+                        display: block;
+                    }
                 }
 
                 .button {

@@ -42,7 +42,7 @@
 
 // /* ******* UI ******* */
 
-@CmUI-Transition-Duration: 300ms;
+@CmUI-Transition-Duration: 250ms;
 @CmUI-Transition-DurationReverse: 100ms;
 @CmUI-Opacity-Hover: 0.7;
 @CmUI-Shadow: 0 0 8px rgba(0, 0, 0, 0.15);
@@ -55,6 +55,7 @@
 @CmUI-Overlay-Light: rgba(255, 255, 255, 0.7);
 @CmUI-Overlay-Duration: 500ms;
 @CmUI-AdaptiveFrom: @CmScreen-TabletPortrait;
+@CmUI-TooltipWidth: 320px;
 
 // /* ************************************************ */
 // /* ******* COLORS ******* */
@@ -594,6 +595,10 @@
 // /* ******* COMPONENTS ******* */
 // /* ************************************************ */
 
+// /* ******* TOOLTIP ******* */
+
+@ComTooltip-Duration: @CmUI-Transition-DurationReverse;
+
 // /* ******* CALENDAR ******* */
 
 @ComCalendar-CellHeight: 21px;
@@ -628,6 +633,40 @@
 @ComCalendar-Active-BorderSize: @ComCalendar-Inner-BorderSize;
 @ComCalendar-Active-Border: @CmColor-Primary-DarkDefault;
 @ComCalendar-Active-BorderHover: @CmColor-Primary-DarkHover;
+
+// /* ******* BIG CALENDAR ******* */
+
+@ComBigCalendar-BorderWidth: @CmBorder-Width;
+@ComBigCalendar-BorderColor: @CmColor-Border;
+@ComBigCalendar-Border: @ComBigCalendar-BorderWidth solid @ComBigCalendar-BorderColor;
+@ComBigCalendar-Background: #ffffff;
+
+@ComCalendarEvent-TooltipWidth: @CmUI-TooltipWidth;
+@ComCalendarEvent-Indent: 1px;
+
+@ComCalendarMonth-Border: @ComBigCalendar-Border;
+@ComCalendarMonth-Item-Count: 3;
+@ComCalendarMonth-Item-LineHeight: @CmFont-Base-LineHeight;
+@ComCalendarMonth-Item-Height: @ComCalendarMonth-Item-LineHeight + (@ComBigCalendar-BorderWidth * 2);
+@ComCalendarMonth-Item-Indent: @ComCalendarEvent-Indent;
+@ComCalendarMonth-Day-Indent: @CmIndent-XXXSmall;
+@ComCalendarMonth-Day-Items : @ComCalendarMonth-Item-Count + 2;
+@ComCalendarMonth-Day-Height: (@ComCalendarMonth-Item-Height * @ComCalendarMonth-Day-Items) + (@ComCalendarMonth-Item-Indent * (@ComCalendarMonth-Day-Items - 1)) + (@ComCalendarMonth-Day-Indent * 2);
+
+@ComCalendarMonth-Default-Background: #ffffff;
+@ComCalendarMonth-Default-BackgroundHover: @CmColor-Secondary-LightHover;
+
+@ComCalendarMonth-Inactive-Background: #ffffff;
+@ComCalendarMonth-Inactive-BackgroundHover: @CmColor-Secondary-LightHover;
+
+@ComCalendarMonth-Weekend-Background: @CmColor-Secondary-LightActive;
+@ComCalendarMonth-Weekend-BackgroundHover: @CmColor-Secondary-LightActiveHover;
+
+@ComCalendarMonth-Today-Background: @CmColor-Primary-LightActive;
+@ComCalendarMonth-Today-BackgroundHover: @CmColor-Primary-LightActiveHover;
+
+@ComCalendarMonth-Active-Background: @CmColor-Primary-LightActive;
+@ComCalendarMonth-Active-BackgroundHover: @CmColor-Primary-LightActiveHover;
 
 // /* ******* COLUMNS ******* */
 

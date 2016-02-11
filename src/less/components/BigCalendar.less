@@ -1,0 +1,215 @@
+/* ******* COMPONENTS: BIG CALENDAR *** */
+
+.com__big-calendar {
+}
+
+.com__calendar-event {
+    border: @CmBorder-Default;
+    border-radius: @CmBorder-Radius;
+    background-color: @CmColor-Secondary-LightHighlight;
+    cursor: pointer;
+    .mx__transition(all, @CmUI-Transition-Duration);
+
+    > .label {
+        .cm__font--hint;
+        padding: 0 @CmIndent-XXXSmall;
+        color: @CmColor-Font;
+
+        .time {
+            color: @CmColor-Font-Hint;
+        }
+    }
+
+    &.is-short {
+        margin-top: @ComCalendarMonth-Item-Indent;
+
+        &:first-child {
+            margin-top: 0;
+        }
+
+        > .label {
+            .cm__text-nowrap;
+            line-height: @ComCalendarMonth-Item-LineHeight;
+
+            .time {
+                margin: 0 0 0 @CmIndent-XXXSmall;
+                float: right;
+            }
+
+            .title {
+                .cm__text-nowrap;
+            }
+        }
+    }
+
+    &:hover {
+        border-color: @CmColor-Primary-DarkDefault;
+        background-color: @CmColor-Primary-LightHover;
+        .mx__transition(all, @CmUI-Transition-DurationReverse);
+    }
+}
+
+/* *** AGENDA VIEW *** */
+
+.com__calendar-agenda {
+    .calendar__templates {
+        display: none;
+    }
+
+    .calendar__day {
+        margin-top: @CmIndent-Medium;
+
+        &:first-child {
+            margin-top: 0;
+        }
+    }
+
+    .calendar__dayname {
+        margin-bottom: @CmIndent-XXSmall;
+    }
+}
+
+/* *** MONTH VIEW *** */
+
+.com__calendar-month {
+    .calendar__table {
+        > table {
+            table-layout: fixed;
+
+            th {
+                padding: @CmIndent-XXXSmall;
+                vertical-align: top;
+                text-align: center;
+            }
+
+            td {
+                border: @ComCalendarMonth-Border;
+                vertical-align: top;
+                text-align: left;
+                .mx__transition(all, @CmUI-Transition-Duration);
+
+                &:hover {
+                    .mx__transition(all, @CmUI-Transition-DurationReverse);
+                }
+
+                &.default {
+                    background-color: @ComCalendarMonth-Default-Background;
+
+                    &:hover {
+                        background-color: @ComCalendarMonth-Default-BackgroundHover;
+                    }
+
+                    .calendar__dayname {
+                        .calendar__dayname--default;
+                    }
+                }
+
+                &.inactive {
+                    background-color: @ComCalendarMonth-Inactive-Background;
+
+                    &:hover {
+                        background-color: @ComCalendarMonth-Inactive-BackgroundHover;
+                    }
+                }
+
+                &.weekend {
+                    background-color: @ComCalendarMonth-Weekend-Background;
+
+                    &:hover {
+                        background-color: @ComCalendarMonth-Weekend-BackgroundHover;
+                    }
+                }
+
+                &.today {
+                    background-color: @ComCalendarMonth-Today-Background;
+
+                    &:hover {
+                        background-color: @ComCalendarMonth-Today-BackgroundHover;
+                    }
+                }
+            }
+        }
+    }
+
+    .calendar__templates {
+        display: none;
+    }
+
+    .calendar__day {
+        height: @ComCalendarMonth-Day-Height;
+        padding: @ComCalendarMonth-Day-Indent;
+        position: relative;
+    }
+
+    .calendar__dayname {
+        height: @ComCalendarMonth-Item-Height;
+
+        > .label {
+            .cm__font--hint;
+            line-height: @ComCalendarMonth-Item-Height;
+            text-align: right;
+        }
+    }
+
+    .calendar__dayname--default {
+        > .label {
+            color: @CmColor-Font;
+            font-weight: @CmFont-Base-BoldWeight;
+        }
+    }
+
+    .calendar__events-holder {
+        margin-top: @ComCalendarMonth-Item-Indent;
+    }
+
+    .calendar__more {
+        height: @ComCalendarMonth-Item-Height;
+        margin-top: @ComCalendarMonth-Item-Indent;
+
+        > .label {
+            .cm__font--hint;
+            .cm__text-nowrap;
+            line-height: @ComCalendarMonth-Item-Height;
+            text-align: right;
+        }
+    }
+
+    .calendar__more-holder {
+        .cm__scroll-y-a;
+        position: absolute;
+        z-index: 10;
+        visibility: hidden;
+        opacity: 0;
+        .mx__position(0, 0, 0, 0);
+        .mx__transition(all, @CmUI-Transition-Duration);
+
+        > .inner {
+            padding: @ComCalendarMonth-Day-Indent;
+            background-color: @ComBigCalendar-Background;
+        }
+
+        &.is-show {
+            visibility: visible;
+            opacity: 1;
+            .mx__transition(all, @CmUI-Transition-DurationReverse);
+        }
+    }
+}
+
+/* *** TOOLTIP *** */
+
+.com__tooltip {
+    &.com__calendar-event-tooltip {
+        width: @ComCalendarEvent-TooltipWidth;
+
+        > .inner {
+            padding: @CmIndent-XSmall;
+        }
+    }
+}
+
+/* *** HELPERS *** */
+
+.com__calendar-event-helper__indent {
+    height: @ComCalendarEvent-Indent;
+}

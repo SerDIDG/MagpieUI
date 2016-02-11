@@ -24,7 +24,7 @@
  ******* */
 
 var cm = {
-        '_version' : '3.11.6',
+        '_version' : '3.12.0',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -35,9 +35,12 @@ var cm = {
         '_pageSize' : {},
         '_clientPosition' : {'left' : 0, 'top' : 0},
         '_config' : {
-            'animDuration' : 300,
-            'animDurationQuick' : 150,
-            'hideDelay' : 300,
+            'animDuration' : 250,
+            'animDurationShort' : 150,
+            'animDurationLong' : 500,
+            'hideDelay' : 250,
+            'hideDelayShort' : 150,
+            'hideDelayLong' : 500,
             'adaptiveFrom' : 768,
             'screenTablet' : 1024,
             'screenTabletPortrait' : 768,
@@ -504,31 +507,35 @@ cm.crossEvents = function(key){
 };
 
 cm.addEvent = function(el, type, handler, useCapture){
-    useCapture = typeof useCapture == 'undefined' ? false : useCapture;
-    // Process touch events
-    if(cm.isTouch && cm.crossEvents(type)){
-        el.addEventListener(cm.crossEvents(type), handler, useCapture);
-        return el;
-    }
-    try{
-        el.addEventListener(type, handler, useCapture);
-    }catch(e){
-        el.attachEvent('on' + type, handler);
+    if(el){
+        useCapture = typeof useCapture == 'undefined' ? false : useCapture;
+        // Process touch events
+        if(cm.isTouch && cm.crossEvents(type)){
+            el.addEventListener(cm.crossEvents(type), handler, useCapture);
+            return el;
+        }
+        try{
+            el.addEventListener(type, handler, useCapture);
+        }catch(e){
+            el.attachEvent('on' + type, handler);
+        }
     }
     return el;
 };
 
 cm.removeEvent = function(el, type, handler, useCapture){
-    useCapture = typeof useCapture == 'undefined' ? false : useCapture;
-    // Process touch events
-    if(cm.isTouch && cm.crossEvents(type)){
-        el.removeEventListener(cm.crossEvents(type), handler, useCapture);
-        return el;
-    }
-    try{
-        el.removeEventListener(type, handler, useCapture);
-    }catch(e){
-        el.detachEvent('on' + type, handler);
+    if(el){
+        useCapture = typeof useCapture == 'undefined' ? false : useCapture;
+        // Process touch events
+        if(cm.isTouch && cm.crossEvents(type)){
+            el.removeEventListener(cm.crossEvents(type), handler, useCapture);
+            return el;
+        }
+        try{
+            el.removeEventListener(type, handler, useCapture);
+        }catch(e){
+            el.detachEvent('on' + type, handler);
+        }
     }
     return el;
 };
@@ -779,6 +786,32 @@ cm.removeScrollEvent = function(node, callback, useCapture){
             cm.removeEvent(node, 'scroll', callback, useCapture);
         }
     }
+    return node;
+};
+
+cm.isolateScrolling = function(e){
+    var that = this;
+    if(e.deltaY > 0 && that.clientHeight + that.scrollTop >= that.scrollHeight){
+        that.scrollTop = that.scrollHeight - that.clientHeight;
+        cm.stopPropagation(e);
+        cm.preventDefault(e);
+        return false;
+    }else if (e.deltaY < 0 && that.scrollTop <= 0){
+        that.scrollTop = 0;
+        cm.stopPropagation(e);
+        cm.preventDefault(e);
+        return false;
+    }
+    return true;
+};
+
+cm.addIsolateScrolling = function(node){
+    cm.addEvent(node, 'wheel', cm.isolateScrolling);
+    return node;
+};
+
+cm.removeIsolateScrolling = function(node){
+    cm.removeEvent(node, 'wheel', cm.isolateScrolling);
     return node;
 };
 
@@ -2469,6 +2502,21 @@ cm.setCSSTranslate = (function(){
             return node;
         };
     }
+})();
+
+cm.setCSSTransitionDuration = (function(){
+    var rule = cm.getSupportedStyle('transition-duration');
+
+    return function(node, time){
+        if(!rule){
+            return node;
+        }
+        if(cm.isNumber(time)){
+            time = [time, 'ms'].join('');
+        }
+        node.style[rule] = time;
+        return node;
+    };
 })();
 
 cm.inRange = function(a1, b1, a2, b2){

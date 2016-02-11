@@ -3340,7 +3340,7 @@ Copyright (c) 2015 Daniel Eden
 
 // /* ******* UI ******* */
 
-@CmUI-Transition-Duration: 300ms;
+@CmUI-Transition-Duration: 250ms;
 @CmUI-Transition-DurationReverse: 100ms;
 @CmUI-Opacity-Hover: 0.7;
 @CmUI-Shadow: 0 0 8px rgba(0, 0, 0, 0.15);
@@ -3353,6 +3353,7 @@ Copyright (c) 2015 Daniel Eden
 @CmUI-Overlay-Light: rgba(255, 255, 255, 0.7);
 @CmUI-Overlay-Duration: 500ms;
 @CmUI-AdaptiveFrom: @CmScreen-TabletPortrait;
+@CmUI-TooltipWidth: 320px;
 
 // /* ************************************************ */
 // /* ******* COLORS ******* */
@@ -3892,6 +3893,10 @@ Copyright (c) 2015 Daniel Eden
 // /* ******* COMPONENTS ******* */
 // /* ************************************************ */
 
+// /* ******* TOOLTIP ******* */
+
+@ComTooltip-Duration: @CmUI-Transition-DurationReverse;
+
 // /* ******* CALENDAR ******* */
 
 @ComCalendar-CellHeight: 21px;
@@ -3926,6 +3931,40 @@ Copyright (c) 2015 Daniel Eden
 @ComCalendar-Active-BorderSize: @ComCalendar-Inner-BorderSize;
 @ComCalendar-Active-Border: @CmColor-Primary-DarkDefault;
 @ComCalendar-Active-BorderHover: @CmColor-Primary-DarkHover;
+
+// /* ******* BIG CALENDAR ******* */
+
+@ComBigCalendar-BorderWidth: @CmBorder-Width;
+@ComBigCalendar-BorderColor: @CmColor-Border;
+@ComBigCalendar-Border: @ComBigCalendar-BorderWidth solid @ComBigCalendar-BorderColor;
+@ComBigCalendar-Background: #ffffff;
+
+@ComCalendarEvent-TooltipWidth: @CmUI-TooltipWidth;
+@ComCalendarEvent-Indent: 1px;
+
+@ComCalendarMonth-Border: @ComBigCalendar-Border;
+@ComCalendarMonth-Item-Count: 3;
+@ComCalendarMonth-Item-LineHeight: @CmFont-Base-LineHeight;
+@ComCalendarMonth-Item-Height: @ComCalendarMonth-Item-LineHeight + (@ComBigCalendar-BorderWidth * 2);
+@ComCalendarMonth-Item-Indent: @ComCalendarEvent-Indent;
+@ComCalendarMonth-Day-Indent: @CmIndent-XXXSmall;
+@ComCalendarMonth-Day-Items : @ComCalendarMonth-Item-Count + 2;
+@ComCalendarMonth-Day-Height: (@ComCalendarMonth-Item-Height * @ComCalendarMonth-Day-Items) + (@ComCalendarMonth-Item-Indent * (@ComCalendarMonth-Day-Items - 1)) + (@ComCalendarMonth-Day-Indent * 2);
+
+@ComCalendarMonth-Default-Background: #ffffff;
+@ComCalendarMonth-Default-BackgroundHover: @CmColor-Secondary-LightHover;
+
+@ComCalendarMonth-Inactive-Background: #ffffff;
+@ComCalendarMonth-Inactive-BackgroundHover: @CmColor-Secondary-LightHover;
+
+@ComCalendarMonth-Weekend-Background: @CmColor-Secondary-LightActive;
+@ComCalendarMonth-Weekend-BackgroundHover: @CmColor-Secondary-LightActiveHover;
+
+@ComCalendarMonth-Today-Background: @CmColor-Primary-LightActive;
+@ComCalendarMonth-Today-BackgroundHover: @CmColor-Primary-LightActiveHover;
+
+@ComCalendarMonth-Active-Background: @CmColor-Primary-LightActive;
+@ComCalendarMonth-Active-BackgroundHover: @CmColor-Primary-LightActiveHover;
 
 // /* ******* COLUMNS ******* */
 
@@ -9878,14 +9917,24 @@ button {
         }
     }
 
-    &.is-adaptive {
+    &.is-flex {
         > .inner {
-            .mx__flex-wrap(nowrap);
-        }
+            > .left {
+                .display-flex;
+                .mx__flex(1 1 auto);
+                .mx__justify-content(flex-start);
+            }
 
-        .group {
-            .display-flex;
-            .mx__justify-content(flex-start);
+            > .center {
+                .display-flex;
+                .mx__flex(0 1 auto);
+            }
+
+            > .right {
+                .display-flex;
+                .mx__flex(1 1 auto);
+                .mx__justify-content(flex-end);
+            }
         }
     }
 }
@@ -9898,6 +9947,7 @@ button {
         .pt__toolbar {
             > .inner {
                 > .left,
+                > .center,
                 > .right {
                     width: 100%;
                     float: none;
@@ -9940,6 +9990,12 @@ button {
             &.is-adaptive {
                 > .inner {
                     display: block;
+
+                    > .left,
+                    > .center,
+                    > .right {
+                        display: block;
+                    }
                 }
 
                 .button {
@@ -10771,6 +10827,8 @@ button {
     top: 0;
     z-index: 1001;
     opacity: 0;
+    visibility: hidden;
+    .mx__transition(opacity visibilty, @ComTooltip-Duration);
 
     > .inner {
         > .title {
@@ -10789,6 +10847,21 @@ button {
             .cm__scroll-y-a;
         }
     }
+
+    &.is-show {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    &.is-immediately {
+        .cm__transition-none;
+    }
+}
+
+/* *** HELPERS *** */
+
+.com__tooltip-helper__duration {
+    transition-duration: @ComTooltip-Duration;
 }
 
 /* ******* COMPONENT: TOOLTIP: THEMES ******* */
@@ -10832,6 +10905,222 @@ button {
         }
     }
 }
+/* ******* COMPONENTS: BIG CALENDAR *** */
+
+.com__big-calendar {
+}
+
+.com__calendar-event {
+    border: @CmBorder-Default;
+    border-radius: @CmBorder-Radius;
+    background-color: @CmColor-Secondary-LightHighlight;
+    cursor: pointer;
+    .mx__transition(all, @CmUI-Transition-Duration);
+
+    > .label {
+        .cm__font--hint;
+        padding: 0 @CmIndent-XXXSmall;
+        color: @CmColor-Font;
+
+        .time {
+            color: @CmColor-Font-Hint;
+        }
+    }
+
+    &.is-short {
+        margin-top: @ComCalendarMonth-Item-Indent;
+
+        &:first-child {
+            margin-top: 0;
+        }
+
+        > .label {
+            .cm__text-nowrap;
+            line-height: @ComCalendarMonth-Item-LineHeight;
+
+            .time {
+                margin: 0 0 0 @CmIndent-XXXSmall;
+                float: right;
+            }
+
+            .title {
+                .cm__text-nowrap;
+            }
+        }
+    }
+
+    &:hover {
+        border-color: @CmColor-Primary-DarkDefault;
+        background-color: @CmColor-Primary-LightHover;
+        .mx__transition(all, @CmUI-Transition-DurationReverse);
+    }
+}
+
+/* *** AGENDA VIEW *** */
+
+.com__calendar-agenda {
+    .calendar__templates {
+        display: none;
+    }
+
+    .calendar__day {
+        margin-top: @CmIndent-Medium;
+
+        &:first-child {
+            margin-top: 0;
+        }
+    }
+
+    .calendar__dayname {
+        margin-bottom: @CmIndent-XXSmall;
+    }
+}
+
+/* *** MONTH VIEW *** */
+
+.com__calendar-month {
+    .calendar__table {
+        > table {
+            table-layout: fixed;
+
+            th {
+                padding: @CmIndent-XXXSmall;
+                vertical-align: top;
+                text-align: center;
+            }
+
+            td {
+                border: @ComCalendarMonth-Border;
+                vertical-align: top;
+                text-align: left;
+                .mx__transition(all, @CmUI-Transition-Duration);
+
+                &:hover {
+                    .mx__transition(all, @CmUI-Transition-DurationReverse);
+                }
+
+                &.default {
+                    background-color: @ComCalendarMonth-Default-Background;
+
+                    &:hover {
+                        background-color: @ComCalendarMonth-Default-BackgroundHover;
+                    }
+
+                    .calendar__dayname {
+                        .calendar__dayname--default;
+                    }
+                }
+
+                &.inactive {
+                    background-color: @ComCalendarMonth-Inactive-Background;
+
+                    &:hover {
+                        background-color: @ComCalendarMonth-Inactive-BackgroundHover;
+                    }
+                }
+
+                &.weekend {
+                    background-color: @ComCalendarMonth-Weekend-Background;
+
+                    &:hover {
+                        background-color: @ComCalendarMonth-Weekend-BackgroundHover;
+                    }
+                }
+
+                &.today {
+                    background-color: @ComCalendarMonth-Today-Background;
+
+                    &:hover {
+                        background-color: @ComCalendarMonth-Today-BackgroundHover;
+                    }
+                }
+            }
+        }
+    }
+
+    .calendar__templates {
+        display: none;
+    }
+
+    .calendar__day {
+        height: @ComCalendarMonth-Day-Height;
+        padding: @ComCalendarMonth-Day-Indent;
+        position: relative;
+    }
+
+    .calendar__dayname {
+        height: @ComCalendarMonth-Item-Height;
+
+        > .label {
+            .cm__font--hint;
+            line-height: @ComCalendarMonth-Item-Height;
+            text-align: right;
+        }
+    }
+
+    .calendar__dayname--default {
+        > .label {
+            color: @CmColor-Font;
+            font-weight: @CmFont-Base-BoldWeight;
+        }
+    }
+
+    .calendar__events-holder {
+        margin-top: @ComCalendarMonth-Item-Indent;
+    }
+
+    .calendar__more {
+        height: @ComCalendarMonth-Item-Height;
+        margin-top: @ComCalendarMonth-Item-Indent;
+
+        > .label {
+            .cm__font--hint;
+            .cm__text-nowrap;
+            line-height: @ComCalendarMonth-Item-Height;
+            text-align: right;
+        }
+    }
+
+    .calendar__more-holder {
+        .cm__scroll-y-a;
+        position: absolute;
+        z-index: 10;
+        visibility: hidden;
+        opacity: 0;
+        .mx__position(0, 0, 0, 0);
+        .mx__transition(all, @CmUI-Transition-Duration);
+
+        > .inner {
+            padding: @ComCalendarMonth-Day-Indent;
+            background-color: @ComBigCalendar-Background;
+        }
+
+        &.is-show {
+            visibility: visible;
+            opacity: 1;
+            .mx__transition(all, @CmUI-Transition-DurationReverse);
+        }
+    }
+}
+
+/* *** TOOLTIP *** */
+
+.com__tooltip {
+    &.com__calendar-event-tooltip {
+        width: @ComCalendarEvent-TooltipWidth;
+
+        > .inner {
+            padding: @CmIndent-XSmall;
+        }
+    }
+}
+
+/* *** HELPERS *** */
+
+.com__calendar-event-helper__indent {
+    height: @ComCalendarEvent-Indent;
+}
+
 /* ******* COMPONENTS: CALENDAR ******* */
 
 .com__calendar {
@@ -11033,6 +11322,7 @@ button {
     .display-flex;
     vertical-align: top;
     .mx__flex(1 1 auto);
+    .mx__flex-direction(column);
 
     > .inner {
         position: relative;
@@ -11042,8 +11332,9 @@ button {
         .mx__transition(background-color, @CmUI-Transition-Duration);
     }
 
-    .firefox & {
-        .mx__flex-direction(column);
+    .ie10 &,
+    .ie11 & {
+        .mx__flex-direction(row);
     }
 
     .ie8 &,

@@ -20,7 +20,8 @@ cm.define('Com.Tooltip', {
         'top' : 0,                                      // Supported properties: targetHeight, selfHeight, number
         'left' : 0,                                     // Supported properties: targetWidth, selfWidth, number
         'width' : 'auto',                               // Supported properties: targetWidth, auto, number
-        'duration' : 'cm._config.animDurationQuick',
+        'duration' : false,
+        'delay' : 0,
         'position' : 'absolute',
         'className' : '',
         'theme' : 'theme-default',
@@ -38,16 +39,27 @@ function(params){
         anim;
     
     that.nodes = {};
+    that.delay = null;
+    that.isHideProcess = false;
+    that.isShowProcess = false;
     that.isShow = false;
+    that.isWindowEvent = false;
     that.disabled = false;
 
     var init = function(){
+        getCSSHelpers();
         that.setParams(params);
         that.convertEvents(that.params['events']);
         validateParams();
         render();
         setMiscEvents();
         that.triggerEvent('onRender');
+    };
+
+    var getCSSHelpers = function(){
+        if(!cm.isNumber(that.params['duration'])){
+            that.params['duration'] = cm.getTransitionDurationFromRule('.com__tooltip-helper__duration');
+        }
     };
 
     var validateParams = function(){
@@ -65,6 +77,8 @@ function(params){
                 that.nodes['content'] = cm.Node('div', {'class' : 'scroll'})
             )
         );
+        cm.setCSSTransitionDuration(that.nodes['container'], that.params['duration']);
+        cm.addIsolateScrolling(that.nodes['content']);
         // Add position style
         that.nodes['container'].style.position = that.params['position'];
         // Add theme css class
@@ -111,7 +125,7 @@ function(params){
     var targetEvent = function(){
         if(!that.disabled){
             if(that.isShow && that.params['targetEvent'] == 'click' && that.params['hideOnReClick']){
-                hide(false);
+                hide();
             }else{
                 show();
             }
@@ -143,52 +157,87 @@ function(params){
     var show = function(immediately){
         if(!that.isShow){
             that.isShow = true;
+            that.isShowProcess = true;
+            that.triggerEvent('onShowStart');
             // Append child tooltip into body and set position
             that.params['container'].appendChild(that.nodes['container']);
             // Show tooltip
             that.nodes['container'].style.display = 'block';
+            setWindowEvent();
             // Animate
-            anim.go({'style' : {'opacity' : 1}, 'duration' : immediately? 0 : that.params['duration'], 'onStop' : function(){
-                that.triggerEvent('onShow');
-            }});
-            // Add document target event
-            if(that.params['hideOnOut']){
-                switch(that.params['targetEvent']){
-                    case 'hover' :
-                        cm.addEvent(document, 'mouseover', bodyEvent);
-                        break;
-                    case 'click' :
-                    default :
-                        cm.addEvent(document, 'mousedown', bodyEvent);
-                        break;
-                }
+            that.delay && clearTimeout(that.delay);
+            if(immediately){
+                cm.addClass(that.nodes['container'], 'is-immediately');
+                showHandler(immediately);
+                that.delay = setTimeout(function(){
+                    cm.removeClass(that.nodes['container'], 'is-immediately');
+                }, 5);
+            }else if(that.params['delay'] && !that.isHideProcess){
+                that.delay = setTimeout(function(){
+                    showHandler();
+                }, that.params['delay']);
+            }else{
+                showHandler();
             }
-            that.triggerEvent('onShowStart');
+        }
+    };
+
+    var showHandler = function(immediately){
+        if(immediately || !that.params['duration']){
+            that.isShowProcess = false;
+            that.isHideProcess = false;
+            cm.addClass(that.nodes['container'], 'is-show', true);
+            that.triggerEvent('onShow');
+        }else{
+            cm.addClass(that.nodes['container'], 'is-show', true);
+            that.delay = setTimeout(function(){
+                that.isShowProcess = false;
+                that.isHideProcess = false;
+                that.triggerEvent('onShow');
+            }, that.params['duration']);
         }
     };
 
     var hide = function(immediately){
         if(that.isShow){
             that.isShow = false;
-            // Remove document target event
-            if(that.params['hideOnOut']){
-                switch(that.params['targetEvent']){
-                    case 'hover' :
-                        cm.removeEvent(document, 'mouseover', bodyEvent);
-                        break;
-                    case 'click' :
-                    default :
-                        cm.removeEvent(document, 'mousedown', bodyEvent);
-                        break;
-                }
-            }
+            that.isHideProcess = true;
+            that.triggerEvent('onHideStart');
             // Animate
-            anim.go({'style' : {'opacity' : 0}, 'duration' : immediately? 0 : that.params['duration'], 'onStop' : function(){
-                that.nodes['container'].style.display = 'none';
+            that.delay && clearTimeout(that.delay);
+            if(immediately){
+                cm.addClass(that.nodes['container'], 'is-immediately');
+                hideHandler(immediately);
+                that.delay = setTimeout(function(){
+                    cm.removeClass(that.nodes['container'], 'is-immediately');
+                }, 5);
+            }else if(that.params['delay'] && !that.isShowProcess){
+                that.delay = setTimeout(function(){
+                    hideHandler();
+                }, that.params['delay']);
+            }else{
+                hideHandler();
+            }
+        }
+    };
+
+    var hideHandler = function(immediately){
+        if(immediately || !that.params['duration']){
+            that.isShowProcess = false;
+            that.isHideProcess = false;
+            removeWindowEvent();
+            cm.removeClass(that.nodes['container'], 'is-show', true);
+            cm.remove(that.nodes['container']);
+            that.triggerEvent('onHide');
+        }else{
+            cm.removeClass(that.nodes['container'], 'is-show', true);
+            that.delay = setTimeout(function(){
+                that.isShowProcess = false;
+                that.isHideProcess = false;
+                removeWindowEvent();
                 cm.remove(that.nodes['container']);
                 that.triggerEvent('onHide');
-            }});
-            that.triggerEvent('onHideStart');
+            }, that.params['duration']);
         }
     };
 
@@ -272,6 +321,8 @@ function(params){
                         positionLeft -= cm.getRealX(that.params['container']);
                     }
                 }
+                positionTop = Math.round(positionTop);
+                positionLeft = Math.round(positionLeft);
                 // Apply styles
                 if(positionTop != that.nodes['container'].offsetTop){
                     that.nodes['container'].style.top =  [positionTop, 'px'].join('');
@@ -284,13 +335,42 @@ function(params){
         animFrame(getPosition);
     };
 
-    var bodyEvent = function(e){
-        if(that.isShow){
-            e = cm.getEvent(e);
-            var target = cm.getEventTarget(e);
-            if(!cm.isParent(that.nodes['container'], target, true) && !cm.isParent(that.params['target'], target, true)){
-                hide(false);
+    var setWindowEvent = function(){
+        if(that.params['hideOnOut'] && !that.isWindowEvent){
+            that.isWindowEvent = true;
+            switch(that.params['targetEvent']){
+                case 'hover' :
+                    cm.addEvent(window, 'mousemove', windowEvent);
+                    break;
+                case 'click' :
+                default :
+                    cm.addEvent(window, 'mousedown', windowEvent);
+                    break;
             }
+        }
+    };
+
+    var removeWindowEvent = function(){
+        if(that.params['hideOnOut'] && that.isWindowEvent){
+            that.isWindowEvent = false;
+            switch(that.params['targetEvent']){
+                case 'hover' :
+                    cm.removeEvent(window, 'mousemove', windowEvent);
+                    break;
+                case 'click' :
+                default :
+                    cm.removeEvent(window, 'mousedown', windowEvent);
+                    break;
+            }
+        }
+    };
+
+    var windowEvent = function(e){
+        var target = cm.getEventTarget(e);
+        if(!cm.isParent(that.nodes['container'], target, true) && !cm.isParent(that.params['target'], target, true)){
+            hide(false);
+        }else{
+            show(true);
         }
     };
 
@@ -307,6 +387,7 @@ function(params){
     };
 
     that.setTarget = function(node){
+        that.delay && clearTimeout(that.delay);
         removeTargetEvent();
         that.params['target'] = node || cm.Node('div');
         setTargetEvent();
