@@ -92,6 +92,10 @@ cm.isType = function(o, types){
     return false;
 };
 
+cm.isBoolean = function(o){
+    return Object.prototype.toString.call(o) === '[object Boolean]';
+};
+
 cm.isString = function(o){
     return Object.prototype.toString.call(o) === '[object String]';
 };

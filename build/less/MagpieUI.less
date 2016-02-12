@@ -3942,29 +3942,27 @@ Copyright (c) 2015 Daniel Eden
 @ComCalendarEvent-TooltipWidth: @CmUI-TooltipWidth;
 @ComCalendarEvent-Indent: 1px;
 
-@ComCalendarMonth-Border: @ComBigCalendar-Border;
+@ComCalendarTable-Border: @ComBigCalendar-Border;
+@ComCalendarTable-Default-Background: #ffffff;
+@ComCalendarTable-Default-BackgroundHover: @CmColor-Secondary-LightHover;
+@ComCalendarTable-Inactive-Background: #ffffff;
+@ComCalendarTable-Inactive-BackgroundHover: @CmColor-Secondary-LightHover;
+@ComCalendarTable-Weekend-Background: @CmColor-Secondary-LightActive;
+@ComCalendarTable-Weekend-BackgroundHover: @CmColor-Secondary-LightActiveHover;
+@ComCalendarTable-Today-Background: @CmColor-Primary-LightActive;
+@ComCalendarTable-Today-BackgroundHover: @CmColor-Primary-LightActiveHover;
+@ComCalendarTable-Active-Background: @CmColor-Primary-LightActive;
+@ComCalendarTable-Active-BackgroundHover: @CmColor-Primary-LightActiveHover;
+
+@ComCalendarWeek-Day-Indent: @CmIndent-XXXSmall;
+
 @ComCalendarMonth-Item-Count: 3;
 @ComCalendarMonth-Item-LineHeight: @CmFont-Base-LineHeight;
 @ComCalendarMonth-Item-Height: @ComCalendarMonth-Item-LineHeight + (@ComBigCalendar-BorderWidth * 2);
 @ComCalendarMonth-Item-Indent: @ComCalendarEvent-Indent;
 @ComCalendarMonth-Day-Indent: @CmIndent-XXXSmall;
 @ComCalendarMonth-Day-Items : @ComCalendarMonth-Item-Count + 2;
-@ComCalendarMonth-Day-Height: (@ComCalendarMonth-Item-Height * @ComCalendarMonth-Day-Items) + (@ComCalendarMonth-Item-Indent * (@ComCalendarMonth-Day-Items - 1)) + (@ComCalendarMonth-Day-Indent * 2);
-
-@ComCalendarMonth-Default-Background: #ffffff;
-@ComCalendarMonth-Default-BackgroundHover: @CmColor-Secondary-LightHover;
-
-@ComCalendarMonth-Inactive-Background: #ffffff;
-@ComCalendarMonth-Inactive-BackgroundHover: @CmColor-Secondary-LightHover;
-
-@ComCalendarMonth-Weekend-Background: @CmColor-Secondary-LightActive;
-@ComCalendarMonth-Weekend-BackgroundHover: @CmColor-Secondary-LightActiveHover;
-
-@ComCalendarMonth-Today-Background: @CmColor-Primary-LightActive;
-@ComCalendarMonth-Today-BackgroundHover: @CmColor-Primary-LightActiveHover;
-
-@ComCalendarMonth-Active-Background: @CmColor-Primary-LightActive;
-@ComCalendarMonth-Active-BackgroundHover: @CmColor-Primary-LightActiveHover;
+@ComCalendarMonth-Day-Height: (@ComCalendarMonth-Item-Height * @ComCalendarMonth-Day-Items) + (@ComCalendarMonth-Item-Indent * (@ComCalendarMonth-Day-Items - 1));
 
 // /* ******* COLUMNS ******* */
 
@@ -10976,6 +10974,74 @@ button {
     }
 }
 
+/* *** WEEK VIEW *** */
+
+.com__calendar-week {
+    .calendar__table {
+        > table {
+            table-layout: fixed;
+
+            th {
+                padding: @CmIndent-XXXSmall;
+                vertical-align: top;
+                text-align: center;
+            }
+
+            td {
+                border: @ComCalendarTable-Border;
+                vertical-align: top;
+                text-align: left;
+                .mx__transition(all, @CmUI-Transition-Duration);
+
+                &:hover {
+                    .mx__transition(all, @CmUI-Transition-DurationReverse);
+                }
+
+                &.default {
+                    background-color: @ComCalendarTable-Default-Background;
+
+                    &:hover {
+                        background-color: @ComCalendarTable-Default-BackgroundHover;
+                    }
+                }
+
+                &.inactive {
+                    background-color: @ComCalendarTable-Inactive-Background;
+
+                    &:hover {
+                        background-color: @ComCalendarTable-Inactive-BackgroundHover;
+                    }
+                }
+
+                &.weekend {
+                    background-color: @ComCalendarTable-Weekend-Background;
+
+                    &:hover {
+                        background-color: @ComCalendarTable-Weekend-BackgroundHover;
+                    }
+                }
+
+                &.today {
+                    background-color: @ComCalendarTable-Today-Background;
+
+                    &:hover {
+                        background-color: @ComCalendarTable-Today-BackgroundHover;
+                    }
+                }
+            }
+        }
+    }
+
+    .calendar__templates {
+        display: none;
+    }
+
+    .calendar__day {
+        padding: @ComCalendarWeek-Day-Indent;
+        position: relative;
+    }
+}
+
 /* *** MONTH VIEW *** */
 
 .com__calendar-month {
@@ -10990,7 +11056,7 @@ button {
             }
 
             td {
-                border: @ComCalendarMonth-Border;
+                border: @ComCalendarTable-Border;
                 vertical-align: top;
                 text-align: left;
                 .mx__transition(all, @CmUI-Transition-Duration);
@@ -11000,10 +11066,10 @@ button {
                 }
 
                 &.default {
-                    background-color: @ComCalendarMonth-Default-Background;
+                    background-color: @ComCalendarTable-Default-Background;
 
                     &:hover {
-                        background-color: @ComCalendarMonth-Default-BackgroundHover;
+                        background-color: @ComCalendarTable-Default-BackgroundHover;
                     }
 
                     .calendar__dayname {
@@ -11012,26 +11078,26 @@ button {
                 }
 
                 &.inactive {
-                    background-color: @ComCalendarMonth-Inactive-Background;
+                    background-color: @ComCalendarTable-Inactive-Background;
 
                     &:hover {
-                        background-color: @ComCalendarMonth-Inactive-BackgroundHover;
+                        background-color: @ComCalendarTable-Inactive-BackgroundHover;
                     }
                 }
 
                 &.weekend {
-                    background-color: @ComCalendarMonth-Weekend-Background;
+                    background-color: @ComCalendarTable-Weekend-Background;
 
                     &:hover {
-                        background-color: @ComCalendarMonth-Weekend-BackgroundHover;
+                        background-color: @ComCalendarTable-Weekend-BackgroundHover;
                     }
                 }
 
                 &.today {
-                    background-color: @ComCalendarMonth-Today-Background;
+                    background-color: @ComCalendarTable-Today-Background;
 
                     &:hover {
-                        background-color: @ComCalendarMonth-Today-BackgroundHover;
+                        background-color: @ComCalendarTable-Today-BackgroundHover;
                     }
                 }
             }
@@ -11043,9 +11109,12 @@ button {
     }
 
     .calendar__day {
-        height: @ComCalendarMonth-Day-Height;
         padding: @ComCalendarMonth-Day-Indent;
         position: relative;
+
+        > .inner {
+            height: @ComCalendarMonth-Day-Height;
+        }
     }
 
     .calendar__dayname {

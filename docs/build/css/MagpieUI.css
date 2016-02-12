@@ -10780,6 +10780,57 @@ button::-moz-focus-inner {
 .com__calendar-agenda .calendar__dayname {
   margin-bottom: 8px;
 }
+/* *** WEEK VIEW *** */
+.com__calendar-week .calendar__table > table {
+  table-layout: fixed;
+}
+.com__calendar-week .calendar__table > table th {
+  padding: 4px;
+  vertical-align: top;
+  text-align: center;
+}
+.com__calendar-week .calendar__table > table td {
+  border: 1px solid #cccccc;
+  vertical-align: top;
+  text-align: left;
+  -webkit-transition: all 250ms ease-in-out;
+  transition: all 250ms ease-in-out;
+}
+.com__calendar-week .calendar__table > table td:hover {
+  -webkit-transition: all 100ms ease-in-out;
+  transition: all 100ms ease-in-out;
+}
+.com__calendar-week .calendar__table > table td.default {
+  background-color: #ffffff;
+}
+.com__calendar-week .calendar__table > table td.default:hover {
+  background-color: #f2f2f2;
+}
+.com__calendar-week .calendar__table > table td.inactive {
+  background-color: #ffffff;
+}
+.com__calendar-week .calendar__table > table td.inactive:hover {
+  background-color: #f2f2f2;
+}
+.com__calendar-week .calendar__table > table td.weekend {
+  background-color: #e8e8e8;
+}
+.com__calendar-week .calendar__table > table td.weekend:hover {
+  background-color: #dbdbdb;
+}
+.com__calendar-week .calendar__table > table td.today {
+  background-color: #d8e8f8;
+}
+.com__calendar-week .calendar__table > table td.today:hover {
+  background-color: #c2dbf4;
+}
+.com__calendar-week .calendar__templates {
+  display: none;
+}
+.com__calendar-week .calendar__day {
+  padding: 4px;
+  position: relative;
+}
 /* *** MONTH VIEW *** */
 .com__calendar-month .calendar__table > table {
   table-layout: fixed;
@@ -10832,9 +10883,11 @@ button::-moz-focus-inner {
   display: none;
 }
 .com__calendar-month .calendar__day {
-  height: 112px;
   padding: 4px;
   position: relative;
+}
+.com__calendar-month .calendar__day > .inner {
+  height: 104px;
 }
 .com__calendar-month .calendar__dayname {
   height: 20px;

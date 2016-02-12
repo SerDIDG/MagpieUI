@@ -1483,6 +1483,10 @@ cm.isType = function(o, types){
     return false;
 };
 
+cm.isBoolean = function(o){
+    return Object.prototype.toString.call(o) === '[object Boolean]';
+};
+
 cm.isString = function(o){
     return Object.prototype.toString.call(o) === '[object String]';
 };
@@ -6833,6 +6837,87 @@ function(params){
                 }, that.params['delay']);
             }
         }
+    };
+
+    /* ******* PUBLIC ******* */
+
+    init();
+});
+
+/* *** CALENDAR AGENDA VIEW *** */
+
+cm.define('Com.CalendarWeek', {
+    'modules' : [
+        'Params',
+        'Events',
+        'Langs',
+        'DataConfig',
+        'DataNodes',
+        'Stack'
+    ],
+    'events' : [
+        'onRenderStart',
+        'onRender'
+    ],
+    'params' : {
+        'node' : cm.Node('div'),
+        'name' : '',
+        'itemIndent' : 1,
+        'Com.Tooltip' : {
+            'top' : 'targetHeight + %itemIndent%',
+            'left' : 'targetHeight'
+        }
+    }
+},
+function(params){
+    var that = this;
+
+    that.nodes = {
+        'templates' : {}
+    };
+    that.days = [];
+
+    var init = function(){
+        getCSSHelpers();
+        that.setParams(params);
+        that.convertEvents(that.params['events']);
+        that.getDataNodes(that.params['node']);
+        that.getDataConfig(that.params['node']);
+        validateParams();
+        that.addToStack(that.params['node']);
+        that.triggerEvent('onRenderStart');
+        render();
+        that.triggerEvent('onRender');
+    };
+
+    var getCSSHelpers = function(){
+        var rule;
+        if(rule = cm.getCSSRule('.com__calendar-event-helper__indent')[0]){
+            that.params['itemIndent'] = cm.styleToNumber(rule.style.height);
+        }
+    };
+
+    var validateParams = function(){
+        that.params['Com.Tooltip']['top'] = cm.strReplace(that.params['Com.Tooltip']['top'], {
+            '%itemIndent%' : that.params['itemIndent']
+        });
+        that.params['Com.Tooltip']['left'] = cm.strReplace(that.params['Com.Tooltip']['left'], {
+            '%itemIndent%' : that.params['itemIndent']
+        });
+    };
+
+    var render = function(){
+        cm.log(that.nodes);
+        var template;
+        // Find events and set template and tooltip config
+        new cm.Finder('Com.CalendarEvent', null, that.params['node'], function(classObject){
+            // Clone template
+            template = cm.clone(that.nodes['templates']['event']['container'], true);
+            // Set Node
+            classObject
+                .setTooltipParams(that.params['Com.Tooltip'])
+                .setTemplate(template);
+        });
     };
 
     /* ******* PUBLIC ******* */

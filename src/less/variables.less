@@ -644,29 +644,27 @@
 @ComCalendarEvent-TooltipWidth: @CmUI-TooltipWidth;
 @ComCalendarEvent-Indent: 1px;
 
-@ComCalendarMonth-Border: @ComBigCalendar-Border;
+@ComCalendarTable-Border: @ComBigCalendar-Border;
+@ComCalendarTable-Default-Background: #ffffff;
+@ComCalendarTable-Default-BackgroundHover: @CmColor-Secondary-LightHover;
+@ComCalendarTable-Inactive-Background: #ffffff;
+@ComCalendarTable-Inactive-BackgroundHover: @CmColor-Secondary-LightHover;
+@ComCalendarTable-Weekend-Background: @CmColor-Secondary-LightActive;
+@ComCalendarTable-Weekend-BackgroundHover: @CmColor-Secondary-LightActiveHover;
+@ComCalendarTable-Today-Background: @CmColor-Primary-LightActive;
+@ComCalendarTable-Today-BackgroundHover: @CmColor-Primary-LightActiveHover;
+@ComCalendarTable-Active-Background: @CmColor-Primary-LightActive;
+@ComCalendarTable-Active-BackgroundHover: @CmColor-Primary-LightActiveHover;
+
+@ComCalendarWeek-Day-Indent: @CmIndent-XXXSmall;
+
 @ComCalendarMonth-Item-Count: 3;
 @ComCalendarMonth-Item-LineHeight: @CmFont-Base-LineHeight;
 @ComCalendarMonth-Item-Height: @ComCalendarMonth-Item-LineHeight + (@ComBigCalendar-BorderWidth * 2);
 @ComCalendarMonth-Item-Indent: @ComCalendarEvent-Indent;
 @ComCalendarMonth-Day-Indent: @CmIndent-XXXSmall;
 @ComCalendarMonth-Day-Items : @ComCalendarMonth-Item-Count + 2;
-@ComCalendarMonth-Day-Height: (@ComCalendarMonth-Item-Height * @ComCalendarMonth-Day-Items) + (@ComCalendarMonth-Item-Indent * (@ComCalendarMonth-Day-Items - 1)) + (@ComCalendarMonth-Day-Indent * 2);
-
-@ComCalendarMonth-Default-Background: #ffffff;
-@ComCalendarMonth-Default-BackgroundHover: @CmColor-Secondary-LightHover;
-
-@ComCalendarMonth-Inactive-Background: #ffffff;
-@ComCalendarMonth-Inactive-BackgroundHover: @CmColor-Secondary-LightHover;
-
-@ComCalendarMonth-Weekend-Background: @CmColor-Secondary-LightActive;
-@ComCalendarMonth-Weekend-BackgroundHover: @CmColor-Secondary-LightActiveHover;
-
-@ComCalendarMonth-Today-Background: @CmColor-Primary-LightActive;
-@ComCalendarMonth-Today-BackgroundHover: @CmColor-Primary-LightActiveHover;
-
-@ComCalendarMonth-Active-Background: @CmColor-Primary-LightActive;
-@ComCalendarMonth-Active-BackgroundHover: @CmColor-Primary-LightActiveHover;
+@ComCalendarMonth-Day-Height: (@ComCalendarMonth-Item-Height * @ComCalendarMonth-Day-Items) + (@ComCalendarMonth-Item-Indent * (@ComCalendarMonth-Day-Items - 1));
 
 // /* ******* COLUMNS ******* */
 
