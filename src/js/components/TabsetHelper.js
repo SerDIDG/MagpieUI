@@ -124,7 +124,7 @@ function(params){
             },
             'label' : {
                 'container' : cm.node('li'),
-                'inner' : cm.node('div')
+                'link' : cm.node('a')
             },
             'isHidden' : false,
             'isShow' : false,

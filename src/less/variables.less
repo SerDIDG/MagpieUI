@@ -643,6 +643,7 @@
 
 @ComCalendarEvent-TooltipWidth: @CmUI-TooltipWidth;
 @ComCalendarEvent-Indent: 1px;
+@ComCalendarEvent-LineHeight: @CmFont-Base-LineHeight;
 
 @ComCalendarTable-Border: @ComBigCalendar-Border;
 @ComCalendarTable-Default-Background: #ffffff;
@@ -657,9 +658,10 @@
 @ComCalendarTable-Active-BackgroundHover: @CmColor-Primary-LightActiveHover;
 
 @ComCalendarWeek-Day-Indent: @CmIndent-XXXSmall;
+@ComCalendarMonth-Item-Height: @ComCalendarEvent-LineHeight + (@ComBigCalendar-BorderWidth * 2);
 
 @ComCalendarMonth-Item-Count: 3;
-@ComCalendarMonth-Item-LineHeight: @CmFont-Base-LineHeight;
+@ComCalendarMonth-Item-LineHeight: @ComCalendarEvent-LineHeight;
 @ComCalendarMonth-Item-Height: @ComCalendarMonth-Item-LineHeight + (@ComBigCalendar-BorderWidth * 2);
 @ComCalendarMonth-Item-Indent: @ComCalendarEvent-Indent;
 @ComCalendarMonth-Day-Indent: @CmIndent-XXXSmall;

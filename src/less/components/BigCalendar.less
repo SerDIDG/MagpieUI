@@ -21,7 +21,7 @@
     }
 
     &.is-short {
-        margin-top: @ComCalendarMonth-Item-Indent;
+        margin-top: @ComCalendarEvent-Indent;
 
         &:first-child {
             margin-top: 0;
@@ -29,7 +29,7 @@
 
         > .label {
             .cm__text-nowrap;
-            line-height: @ComCalendarMonth-Item-LineHeight;
+            line-height: @ComCalendarEvent-LineHeight;
 
             .time {
                 margin: 0 0 0 @CmIndent-XXXSmall;
@@ -134,6 +134,10 @@
     .calendar__day {
         padding: @ComCalendarWeek-Day-Indent;
         position: relative;
+
+        > .inner {
+            min-height: @ComCalendarMonth-Item-Height;
+        }
     }
 }
 
@@ -283,4 +287,12 @@
 
 .com__calendar-event-helper__indent {
     height: @ComCalendarEvent-Indent;
+}
+
+.com__calendar-month-helper__day-indent {
+    height: @ComCalendarMonth-Day-Indent;
+}
+
+.com__calendar-week-helper__day-indent {
+    height: @ComCalendarWeek-Day-Indent;
 }

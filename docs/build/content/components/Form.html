@@ -65,12 +65,18 @@
   'label' : 'Image Input:',
   'name' : 'image'
 })
-.add('buttons', {
-  'options' : [
-    {'value' : 'submit', 'text' : 'Send'},
-    {'value' : 'reset', 'text' : 'Reset'}
-  ]
-});
+.addButtons([
+  {
+    'label' : 'Send',
+    'action' : 'submit',
+    'name' : 'send'
+  },
+  {
+    'label' : 'Reset',
+    'action' : 'reset',
+    'name' : 'reset'
+  }
+]);
                         </textarea>
                     </dd>
                 </dl>

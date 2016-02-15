@@ -61,8 +61,12 @@ function(params){
     };
 
     var renderContent = function(template){
-        template['title'].innerHTML = that.params['data']['title'];
-        template['date'].innerHTML = that.params['data']['date'];
+        if(!cm.isEmpty(that.params['data']['title'])){
+            template['title'].innerHTML = that.params['data']['title'];
+        }
+        if(!cm.isEmpty(that.params['data']['date'])){
+            template['date'].innerHTML = that.params['data']['date'];
+        }
         if(!cm.isEmpty(that.params['data']['description'])){
             template['description'].innerHTML = that.params['data']['description'];
         }else{
@@ -114,7 +118,9 @@ cm.define('Com.CalendarMonth', {
         'node' : cm.Node('div'),
         'name' : '',
         'itemIndent' : 1,
+        'dayIndent' : 4,
         'Com.Tooltip' : {
+            'width' : '(targetWidth + %dayIndent%) * 2 - targetHeight * 2',
             'top' : 'targetHeight + %itemIndent%',
             'left' : '-(selfWidth - targetWidth) - targetHeight'
         }
@@ -146,14 +152,25 @@ function(params){
         if(rule = cm.getCSSRule('.com__calendar-event-helper__indent')[0]){
             that.params['itemIndent'] = cm.styleToNumber(rule.style.height);
         }
+        if(rule = cm.getCSSRule('.com__calendar-week-helper__day-indent')[0]){
+            that.params['dayIndent'] = cm.styleToNumber(rule.style.height);
+        }
     };
 
     var validateParams = function(){
+        if(that.params['Com.Tooltip']['width'] != 'auto'){
+            that.params['Com.Tooltip']['width'] = cm.strReplace(that.params['Com.Tooltip']['width'], {
+                '%itemIndent%' : that.params['itemIndent'],
+                '%dayIndent%' : that.params['dayIndent']
+            });
+        }
         that.params['Com.Tooltip']['top'] = cm.strReplace(that.params['Com.Tooltip']['top'], {
-            '%itemIndent%' : that.params['itemIndent']
+            '%itemIndent%' : that.params['itemIndent'],
+            '%dayIndent%' : that.params['dayIndent']
         });
         that.params['Com.Tooltip']['left'] = cm.strReplace(that.params['Com.Tooltip']['left'], {
-            '%itemIndent%' : that.params['itemIndent']
+            '%itemIndent%' : that.params['itemIndent'],
+            '%dayIndent%' : that.params['dayIndent']
         });
     };
 
@@ -236,7 +253,9 @@ cm.define('Com.CalendarWeek', {
         'node' : cm.Node('div'),
         'name' : '',
         'itemIndent' : 1,
+        'dayIndent' : 4,
         'Com.Tooltip' : {
+            'width' : '(targetWidth + %dayIndent%) * 2 - targetHeight * 2',
             'top' : 'targetHeight + %itemIndent%',
             'left' : 'targetHeight'
         }
@@ -268,14 +287,23 @@ function(params){
         if(rule = cm.getCSSRule('.com__calendar-event-helper__indent')[0]){
             that.params['itemIndent'] = cm.styleToNumber(rule.style.height);
         }
+        if(rule = cm.getCSSRule('.com__calendar-week-helper__day-indent')[0]){
+            that.params['dayIndent'] = cm.styleToNumber(rule.style.height);
+        }
     };
 
     var validateParams = function(){
+        that.params['Com.Tooltip']['width'] = cm.strReplace(that.params['Com.Tooltip']['width'], {
+            '%itemIndent%' : that.params['itemIndent'],
+            '%dayIndent%' : that.params['dayIndent']
+        });
         that.params['Com.Tooltip']['top'] = cm.strReplace(that.params['Com.Tooltip']['top'], {
-            '%itemIndent%' : that.params['itemIndent']
+            '%itemIndent%' : that.params['itemIndent'],
+            '%dayIndent%' : that.params['dayIndent']
         });
         that.params['Com.Tooltip']['left'] = cm.strReplace(that.params['Com.Tooltip']['left'], {
-            '%itemIndent%' : that.params['itemIndent']
+            '%itemIndent%' : that.params['itemIndent'],
+            '%dayIndent%' : that.params['dayIndent']
         });
     };
 
@@ -318,7 +346,7 @@ cm.define('Com.CalendarAgenda', {
         'name' : '',
         'itemIndent' : 1,
         'Com.Tooltip' : {
-            'width' : 'targetWidth - targetHeight',
+            'width' : 'targetWidth - targetHeight * 2',
             'top' : 'targetHeight + %itemIndent%',
             'left' : 'targetHeight'
         }
@@ -353,6 +381,11 @@ function(params){
     };
 
     var validateParams = function(){
+        if(that.params['Com.Tooltip']['width'] != 'auto'){
+            that.params['Com.Tooltip']['width'] = cm.strReplace(that.params['Com.Tooltip']['width'], {
+                '%itemIndent%' : that.params['itemIndent']
+            });
+        }
         that.params['Com.Tooltip']['top'] = cm.strReplace(that.params['Com.Tooltip']['top'], {
             '%itemIndent%' : that.params['itemIndent']
         });

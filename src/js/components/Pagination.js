@@ -69,7 +69,6 @@ cm.define('Com.Pagination', {
     }
 },
 function(params){
-
     var that = this;
 
     that.nodes = {

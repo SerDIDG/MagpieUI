@@ -16507,6 +16507,7 @@ cm.define('Com.Form', {
         'Structure'
     ],
     'events' : [
+        'onRenderStart',
         'onRender',
         'onError',
         'onAbort',
@@ -16520,20 +16521,37 @@ cm.define('Com.Form', {
         'name' : '',
         'renderStructure' : true,
         'embedStructure' : 'append',
+        'renderButtons' : true,
+        'renderButtonsSeparator' : true,
+        'buttonsAlign' : 'right',
+        'showLoader' : true,
+        'loaderCoverage' : 'fields',                                // fields, all
+        'loaderDelay' : 'cm._config.hideDelay',                     // in ms
         'ajax' : {
             'type' : 'json',
             'method' : 'post',
             'formData' : true,
             'url' : '',                                             // Request URL. Variables: %baseurl%, %callback% for JSONP.
             'params' : ''                                           // Params object. %baseurl%, %callback% for JSONP.
+        },
+        'Com.Overlay' : {
+            'position' : 'absolute',
+            'autoOpen' : false,
+            'removeOnClose' : true
         }
     }
 },
 function(params){
     var that = this;
 
-    that.ajaxHandler = null;
+    that.nodes = {};
+    that.components = {};
     that.fields = {};
+    that.buttons = {};
+    that.ajaxHandler = null;
+    that.loaderDelay = null;
+
+    that.isProcess = false;
 
     var init = function(){
         that.setParams(params);
@@ -16541,22 +16559,61 @@ function(params){
         that.getDataNodes(that.params['node']);
         that.getDataConfig(that.params['node']);
         that.callbacksProcess();
+        that.addToStack(that.params['node']);
+        that.triggerEvent('onRenderStart');
+        validateParams();
         render();
         that.addToStack(that.nodes['container']);
         that.triggerEvent('onRender');
     };
 
+    var validateParams = function(){
+        that.params['buttonsAlign'] = cm.inArray(['left', 'center', 'right', 'justify'], that.params['buttonsAlign']) ? that.params['buttonsAlign'] : 'right';
+        that.params['loaderCoverage'] = cm.inArray(['fields', 'all'], that.params['loaderCoverage']) ? that.params['loaderCoverage'] : 'all';
+    };
+
     var render = function(){
+        var overlayContainer;
+        // Structure
         if(that.params['renderStructure']){
             that.nodes['container'] = cm.node('div', {'class' : 'com__form'},
-                that.nodes['form'] = cm.node('form', {'class' : 'form'})
+                that.nodes['form'] = cm.node('form', {'class' : 'form'},
+                    that.nodes['fields'] = cm.node('div', {'class' : 'com__form__fields'}))
             );
+            // Buttons
+            that.nodes['buttonsSeparator'] = cm.node('hr');
+            that.nodes['buttonsContainer'] = cm.node('form', {'class' : 'com__form__buttons'},
+                that.nodes['buttons'] = cm.node('div', {'class' : 'btn-wrap'})
+            );
+            cm.addClass(that.nodes['buttons'], ['pull', that.params['buttonsAlign']].join('-'));
+            // Embed
+            that.params['renderButtonsSeparator'] && cm.insertFirst(that.nodes['buttonsSeparator'], that.nodes['buttonsContainer']);
+            that.params['renderButtons'] && cm.appendChild(that.nodes['buttonsContainer'], that.nodes['form']);
             that.embedStructure(that.nodes['container']);
         }
+        // Overlay
+        cm.getConstructor('Com.Overlay', function(classConstructor, className){
+            switch(that.params['loaderCoverage']){
+                case 'fields':
+                    overlayContainer = that.nodes['fields'];
+                    break;
+                case 'all':
+                default:
+                    overlayContainer = that.nodes['container'];
+                    break;
+            }
+            that.components['loader'] = new classConstructor(
+                cm.merge(that.params[className], {
+                    'container' : overlayContainer
+                })
+            );
+        });
         // Events
         cm.addEvent(that.nodes['form'], 'submit', function(e){
             cm.preventDefault(e);
-            that.send();
+            if(!that.isProcess){
+                that.send();
+            }
         });
     };
 
@@ -16567,11 +16624,11 @@ function(params){
             'name' : '',
             'label' : '',
             'options' : [],
-            'container' : that.nodes['form'],
+            'container' : that.nodes['fields'],
             'form' : that
         }, params);
         // Render
-        if(fieldParams = Com.FormFields.get(type)){
+        if(!that.fields[params['name']] && (fieldParams = Com.FormFields.get(type))){
             cm.getConstructor('Com.FormField', function(classConstructor){
                 params = cm.merge(fieldParams, params);
                 field = new classConstructor(params);
@@ -16579,6 +16636,63 @@ function(params){
                     that.fields[params['name']] = field;
                 }
             });
+        }
+    };
+
+    var renderButton = function(params){
+        params = cm.merge({
+            'name' : '',
+            'label' : '',
+            'action' : 'submit',          // submit | reset | clear | custom
+            'handler' : function(){}
+        }, params);
+        // Render
+        if(!that.buttons[params['name']]){
+            params['node'] = cm.node('button', {'name' : params['name']}, params['label']);
+            switch(params['action']){
+                case 'submit':
+                    params['node'].type = 'submit';
+                    cm.addClass(params['node'], 'button-primary');
+                    cm.addEvent(params['node'], 'click', function(e){
+                        cm.preventDefault(e);
+                        if(that.isProcess){
+                            that.abort();
+                        }else{
+                            that.send();
+                        }
+                    });
+                    break;
+
+                case 'reset':
+                    params['node'].type = 'reset';
+                    cm.addClass(params['node'], 'button-secondary');
+                    cm.addEvent(params['node'], 'click', function(e){
+                        cm.preventDefault(e);
+                        if(!that.isProcess){
+                            that.reset();
+                        }
+                    });
+                    break;
+
+                case 'clear':
+                    cm.addClass(params['node'], 'button-secondary');
+                    cm.addEvent(params['node'], 'click', function(e){
+                        cm.preventDefault(e);
+                        if(!that.isProcess){
+                            that.clear();
+                        }
+                    });
+                    break;
+
+                case 'custom':
+                default:
+                    cm.addEvent(params['node'], 'click', function(e){
+                        cm.preventDefault(e);
+                        cm.isFunction(params['handler']) && params['handler'](that, params, e);
+                    });
+                    break;
+            }
+            cm.appendChild(params['node'], that.nodes['buttons']);
         }
     };
 
@@ -16622,10 +16736,27 @@ function(params){
     };
 
     that.callbacks.start = function(that, config){
+        that.isProcess = true;
+        // Show Loader
+        if(that.params['showLoader']){
+            that.loaderDelay = setTimeout(function(){
+                if(that.components['loader'] && !that.components['loader'].isOpen){
+                    that.components['loader'].open();
+                }
+            }, that.params['loaderDelay']);
+        }
         that.triggerEvent('onSendStart');
     };
 
     that.callbacks.end = function(that, config){
+        that.isProcess = false;
+        // Hide Loader
+        if(that.params['showLoader']){
+            that.loaderDelay && clearTimeout(that.loaderDelay);
+            if(that.components['loader'] && that.components['loader'].isOpen){
+                that.components['loader'].close();
+            }
+        }
         that.triggerEvent('onSendEnd');
     };
 
@@ -16651,8 +16782,29 @@ function(params){
 
     /* ******* PUBLIC ******* */
 
+    that.destruct = function(){
+        cm.forEach(that.fields, function(field){
+            field.destruct();
+        });
+        return that;
+    };
+
     that.add = function(type, params){
         renderField(type, params);
+        return that;
+    };
+
+    that.addButton = function(o){
+        renderButton(o);
+        return that;
+    };
+
+    that.addButtons = function(o){
+        if(cm.isArray(o)){
+            cm.forEach(o, function(item){
+                renderButton(item);
+            });
+        }
         return that;
     };
 
@@ -16665,7 +16817,16 @@ function(params){
     };
 
     that.clear = function(){
-        cm.clearNode(that.nodes['form']);
+        cm.forEach(that.fields, function(field){
+            field.destruct();
+        });
+        that.fields = {};
+        cm.clearNode(that.nodes['fields']);
+        cm.forEach(that.buttons, function(button){
+            cm.remove(button.node);
+        });
+        that.buttons = {};
+        cm.clearNode(that.nodes['buttons']);
         return that;
     };
 
@@ -16826,16 +16987,20 @@ function(params){
     };
 
     that.callbacks.set = function(that, value){
-        cm.isFunction(that.component.set) && that.component.set(value);
+        that.component && cm.isFunction(that.component.set) && that.component.set(value);
         return value;
     };
 
     that.callbacks.get = function(that){
-        return cm.isFunction(that.component.get) ? that.component.get() : null;
+        return that.component && cm.isFunction(that.component.get) ? that.component.get() : null;
     };
 
     that.callbacks.reset = function(that){
-        cm.isFunction(that.component.reset) && that.component.reset();
+        that.component && cm.isFunction(that.component.reset) && that.component.reset();
+    };
+
+    that.callbacks.destruct = function(that){
+        that.component && cm.isFunction(that.component.destruct) && that.component.destruct();
     };
 
     /* ******* PUBLIC ******* */
@@ -16852,6 +17017,11 @@ function(params){
 
     that.reset = function(){
         that.callbacks.reset(that);
+        return that;
+    };
+
+    that.destruct = function(){
+        that.callbacks.destruct(that);
         return that;
     };
 
@@ -17632,8 +17802,12 @@ function(params){
     };
 
     var renderContent = function(template){
-        template['title'].innerHTML = that.params['data']['title'];
-        template['date'].innerHTML = that.params['data']['date'];
+        if(!cm.isEmpty(that.params['data']['title'])){
+            template['title'].innerHTML = that.params['data']['title'];
+        }
+        if(!cm.isEmpty(that.params['data']['date'])){
+            template['date'].innerHTML = that.params['data']['date'];
+        }
         if(!cm.isEmpty(that.params['data']['description'])){
             template['description'].innerHTML = that.params['data']['description'];
         }else{
@@ -17685,7 +17859,9 @@ cm.define('Com.CalendarMonth', {
         'node' : cm.Node('div'),
         'name' : '',
         'itemIndent' : 1,
+        'dayIndent' : 4,
         'Com.Tooltip' : {
+            'width' : '(targetWidth + %dayIndent%) * 2 - targetHeight * 2',
             'top' : 'targetHeight + %itemIndent%',
             'left' : '-(selfWidth - targetWidth) - targetHeight'
         }
@@ -17717,14 +17893,25 @@ function(params){
         if(rule = cm.getCSSRule('.com__calendar-event-helper__indent')[0]){
             that.params['itemIndent'] = cm.styleToNumber(rule.style.height);
         }
+        if(rule = cm.getCSSRule('.com__calendar-week-helper__day-indent')[0]){
+            that.params['dayIndent'] = cm.styleToNumber(rule.style.height);
+        }
     };
 
     var validateParams = function(){
+        if(that.params['Com.Tooltip']['width'] != 'auto'){
+            that.params['Com.Tooltip']['width'] = cm.strReplace(that.params['Com.Tooltip']['width'], {
+                '%itemIndent%' : that.params['itemIndent'],
+                '%dayIndent%' : that.params['dayIndent']
+            });
+        }
         that.params['Com.Tooltip']['top'] = cm.strReplace(that.params['Com.Tooltip']['top'], {
-            '%itemIndent%' : that.params['itemIndent']
+            '%itemIndent%' : that.params['itemIndent'],
+            '%dayIndent%' : that.params['dayIndent']
         });
         that.params['Com.Tooltip']['left'] = cm.strReplace(that.params['Com.Tooltip']['left'], {
-            '%itemIndent%' : that.params['itemIndent']
+            '%itemIndent%' : that.params['itemIndent'],
+            '%dayIndent%' : that.params['dayIndent']
         });
     };
 
@@ -17807,7 +17994,9 @@ cm.define('Com.CalendarWeek', {
         'node' : cm.Node('div'),
         'name' : '',
         'itemIndent' : 1,
+        'dayIndent' : 4,
         'Com.Tooltip' : {
+            'width' : '(targetWidth + %dayIndent%) * 2 - targetHeight * 2',
             'top' : 'targetHeight + %itemIndent%',
             'left' : 'targetHeight'
         }
@@ -17839,14 +18028,23 @@ function(params){
         if(rule = cm.getCSSRule('.com__calendar-event-helper__indent')[0]){
             that.params['itemIndent'] = cm.styleToNumber(rule.style.height);
         }
+        if(rule = cm.getCSSRule('.com__calendar-week-helper__day-indent')[0]){
+            that.params['dayIndent'] = cm.styleToNumber(rule.style.height);
+        }
     };
 
     var validateParams = function(){
+        that.params['Com.Tooltip']['width'] = cm.strReplace(that.params['Com.Tooltip']['width'], {
+            '%itemIndent%' : that.params['itemIndent'],
+            '%dayIndent%' : that.params['dayIndent']
+        });
         that.params['Com.Tooltip']['top'] = cm.strReplace(that.params['Com.Tooltip']['top'], {
-            '%itemIndent%' : that.params['itemIndent']
+            '%itemIndent%' : that.params['itemIndent'],
+            '%dayIndent%' : that.params['dayIndent']
         });
         that.params['Com.Tooltip']['left'] = cm.strReplace(that.params['Com.Tooltip']['left'], {
-            '%itemIndent%' : that.params['itemIndent']
+            '%itemIndent%' : that.params['itemIndent'],
+            '%dayIndent%' : that.params['dayIndent']
         });
     };
 
@@ -17889,7 +18087,7 @@ cm.define('Com.CalendarAgenda', {
         'name' : '',
         'itemIndent' : 1,
         'Com.Tooltip' : {
-            'width' : 'targetWidth - targetHeight',
+            'width' : 'targetWidth - targetHeight * 2',
             'top' : 'targetHeight + %itemIndent%',
             'left' : 'targetHeight'
         }
@@ -17924,6 +18122,11 @@ function(params){
     };
 
     var validateParams = function(){
+        if(that.params['Com.Tooltip']['width'] != 'auto'){
+            that.params['Com.Tooltip']['width'] = cm.strReplace(that.params['Com.Tooltip']['width'], {
+                '%itemIndent%' : that.params['itemIndent']
+            });
+        }
         that.params['Com.Tooltip']['top'] = cm.strReplace(that.params['Com.Tooltip']['top'], {
             '%itemIndent%' : that.params['itemIndent']
         });
@@ -24953,7 +25156,6 @@ cm.define('Com.Pagination', {
     }
 },
 function(params){
-
     var that = this;
 
     that.nodes = {
@@ -28885,7 +29087,7 @@ function(params){
             },
             'label' : {
                 'container' : cm.node('li'),
-                'inner' : cm.node('div')
+                'link' : cm.node('a')
             },
             'isHidden' : false,
             'isShow' : false,
@@ -31172,7 +31374,6 @@ function(params){
         try{
             eval(value);
         }catch(e){
-
         }
     };
 
