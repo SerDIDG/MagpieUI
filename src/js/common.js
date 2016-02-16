@@ -1644,62 +1644,13 @@ cm.toDegrees = function(radians) {
 /* ******* DATE AND TIME ******* */
 
 cm.getCurrentDate = function(format){
-    format = format || cm._config['dateTimeFormat'];
+    format = format || cm._config.dateTimeFormat;
     return cm.dateFormat(new Date(), format);
 };
 
 cm.dateFormat = function(date, format, langs){
-    var str = format,
-        formats = function(date){
-            return {
-                '%Y' : function(){
-                    return date ? date.getFullYear() : '0000';
-                },
-                '%m' : function(){
-                    return date ? cm.addLeadZero(date.getMonth() + 1) : '00';
-                },
-                '%n' : function(){
-                    return date ? (date.getMonth() + 1) : '00';
-                },
-                '%F' : function(){
-                    return date ? langs['months'][date.getMonth()] : '00';
-                },
-                '%d' : function(){
-                    return date ? cm.addLeadZero(date.getDate()) : '00';
-                },
-                '%j' : function(){
-                    return date ? date.getDate() : '00';
-                },
-                '%l' : function(){
-                    return date ? langs['days'][date.getDay()] : '00';
-                },
-                '%a' : function(){
-                    return date ? (date.getHours() >= 12? 'pm' : 'am') : '';
-                },
-                '%A' : function(){
-                    return date ? (date.getHours() >= 12? 'PM' : 'AM') : '';
-                },
-                '%g' : function(){
-                    return date ? (date.getHours() % 12 || 12) : '00';
-                },
-                '%G' : function(){
-                    return date ? date.getHours() : '00';
-                },
-                '%h' : function(){
-                    return date ? cm.addLeadZero(date.getHours() % 12 || 12) : '00';
-                },
-                '%H' : function(){
-                    return date ? cm.addLeadZero(date.getHours()) : '00';
-                },
-                '%i' : function(){
-                    return date ? cm.addLeadZero(date.getMinutes()) : '00';
-                },
-                '%s' : function(){
-                    return date ? cm.addLeadZero(date.getSeconds()) : '00';
-                }
-            }
-        };
-
+    date = cm.isDate(date) ? date : new Date();
+    format = cm.isString(format) ? format : cm._config.dateTimeFormat;
     langs = cm.merge({
         'months' : [
             'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'
@@ -1709,10 +1660,60 @@ cm.dateFormat = function(date, format, langs){
         ]
     }, langs);
 
+    var formats = function(date){
+        return {
+            '%Y' : function(){
+                return date ? date.getFullYear() : '0000';
+            },
+            '%m' : function(){
+                return date ? cm.addLeadZero(date.getMonth() + 1) : '00';
+            },
+            '%n' : function(){
+                return date ? (date.getMonth() + 1) : '00';
+            },
+            '%F' : function(){
+                return date ? langs['months'][date.getMonth()] : '00';
+            },
+            '%d' : function(){
+                return date ? cm.addLeadZero(date.getDate()) : '00';
+            },
+            '%j' : function(){
+                return date ? date.getDate() : '00';
+            },
+            '%l' : function(){
+                return date ? langs['days'][date.getDay()] : '00';
+            },
+            '%a' : function(){
+                return date ? (date.getHours() >= 12? 'pm' : 'am') : '';
+            },
+            '%A' : function(){
+                return date ? (date.getHours() >= 12? 'PM' : 'AM') : '';
+            },
+            '%g' : function(){
+                return date ? (date.getHours() % 12 || 12) : '00';
+            },
+            '%G' : function(){
+                return date ? date.getHours() : '00';
+            },
+            '%h' : function(){
+                return date ? cm.addLeadZero(date.getHours() % 12 || 12) : '00';
+            },
+            '%H' : function(){
+                return date ? cm.addLeadZero(date.getHours()) : '00';
+            },
+            '%i' : function(){
+                return date ? cm.addLeadZero(date.getMinutes()) : '00';
+            },
+            '%s' : function(){
+                return date ? cm.addLeadZero(date.getSeconds()) : '00';
+            }
+        }
+    };
+
     cm.forEach(formats(date), function(item, key){
-        str = str.replace(key, item);
+        format = format.replace(key, item);
     });
-    return str;
+    return format;
 };
 
 cm.parseDate = function(str, format){

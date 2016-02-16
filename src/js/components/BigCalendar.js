@@ -25,7 +25,8 @@ cm.define('Com.CalendarEvent', {
         },
         'Com.Tooltip' : {
             'delay' : 'cm._config.hideDelayLong',
-            'className' : 'com__calendar-event-tooltip'
+            'className' : 'com__calendar-event-tooltip',
+            'minWidth' : 250
         }
     }
 },

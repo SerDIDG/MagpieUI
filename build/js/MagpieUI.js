@@ -3035,62 +3035,13 @@ cm.toDegrees = function(radians) {
 /* ******* DATE AND TIME ******* */
 
 cm.getCurrentDate = function(format){
-    format = format || cm._config['dateTimeFormat'];
+    format = format || cm._config.dateTimeFormat;
     return cm.dateFormat(new Date(), format);
 };
 
 cm.dateFormat = function(date, format, langs){
-    var str = format,
-        formats = function(date){
-            return {
-                '%Y' : function(){
-                    return date ? date.getFullYear() : '0000';
-                },
-                '%m' : function(){
-                    return date ? cm.addLeadZero(date.getMonth() + 1) : '00';
-                },
-                '%n' : function(){
-                    return date ? (date.getMonth() + 1) : '00';
-                },
-                '%F' : function(){
-                    return date ? langs['months'][date.getMonth()] : '00';
-                },
-                '%d' : function(){
-                    return date ? cm.addLeadZero(date.getDate()) : '00';
-                },
-                '%j' : function(){
-                    return date ? date.getDate() : '00';
-                },
-                '%l' : function(){
-                    return date ? langs['days'][date.getDay()] : '00';
-                },
-                '%a' : function(){
-                    return date ? (date.getHours() >= 12? 'pm' : 'am') : '';
-                },
-                '%A' : function(){
-                    return date ? (date.getHours() >= 12? 'PM' : 'AM') : '';
-                },
-                '%g' : function(){
-                    return date ? (date.getHours() % 12 || 12) : '00';
-                },
-                '%G' : function(){
-                    return date ? date.getHours() : '00';
-                },
-                '%h' : function(){
-                    return date ? cm.addLeadZero(date.getHours() % 12 || 12) : '00';
-                },
-                '%H' : function(){
-                    return date ? cm.addLeadZero(date.getHours()) : '00';
-                },
-                '%i' : function(){
-                    return date ? cm.addLeadZero(date.getMinutes()) : '00';
-                },
-                '%s' : function(){
-                    return date ? cm.addLeadZero(date.getSeconds()) : '00';
-                }
-            }
-        };
-
+    date = cm.isDate(date) ? date : new Date();
+    format = cm.isString(format) ? format : cm._config.dateTimeFormat;
     langs = cm.merge({
         'months' : [
             'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'
@@ -3100,10 +3051,60 @@ cm.dateFormat = function(date, format, langs){
         ]
     }, langs);
 
+    var formats = function(date){
+        return {
+            '%Y' : function(){
+                return date ? date.getFullYear() : '0000';
+            },
+            '%m' : function(){
+                return date ? cm.addLeadZero(date.getMonth() + 1) : '00';
+            },
+            '%n' : function(){
+                return date ? (date.getMonth() + 1) : '00';
+            },
+            '%F' : function(){
+                return date ? langs['months'][date.getMonth()] : '00';
+            },
+            '%d' : function(){
+                return date ? cm.addLeadZero(date.getDate()) : '00';
+            },
+            '%j' : function(){
+                return date ? date.getDate() : '00';
+            },
+            '%l' : function(){
+                return date ? langs['days'][date.getDay()] : '00';
+            },
+            '%a' : function(){
+                return date ? (date.getHours() >= 12? 'pm' : 'am') : '';
+            },
+            '%A' : function(){
+                return date ? (date.getHours() >= 12? 'PM' : 'AM') : '';
+            },
+            '%g' : function(){
+                return date ? (date.getHours() % 12 || 12) : '00';
+            },
+            '%G' : function(){
+                return date ? date.getHours() : '00';
+            },
+            '%h' : function(){
+                return date ? cm.addLeadZero(date.getHours() % 12 || 12) : '00';
+            },
+            '%H' : function(){
+                return date ? cm.addLeadZero(date.getHours()) : '00';
+            },
+            '%i' : function(){
+                return date ? cm.addLeadZero(date.getMinutes()) : '00';
+            },
+            '%s' : function(){
+                return date ? cm.addLeadZero(date.getSeconds()) : '00';
+            }
+        }
+    };
+
     cm.forEach(formats(date), function(item, key){
-        str = str.replace(key, item);
+        format = format.replace(key, item);
     });
-    return str;
+    return format;
 };
 
 cm.parseDate = function(str, format){
@@ -6822,7 +6823,8 @@ cm.define('Com.CalendarEvent', {
         },
         'Com.Tooltip' : {
             'delay' : 'cm._config.hideDelayLong',
-            'className' : 'com__calendar-event-tooltip'
+            'className' : 'com__calendar-event-tooltip',
+            'minWidth' : 250
         }
     }
 },
@@ -19538,7 +19540,8 @@ cm.define('Com.Tooltip', {
         'top' : 0,                                      // Supported properties: targetHeight, selfHeight, number
         'left' : 0,                                     // Supported properties: targetWidth, selfWidth, number
         'width' : 'auto',                               // Supported properties: targetWidth, auto, number
-        'duration' : false,
+        'minWidth' : 0,
+        'duration' : 'cm._config.animDurationShort',
         'delay' : 0,
         'position' : 'absolute',
         'className' : '',
@@ -19558,6 +19561,8 @@ function(params){
     
     that.nodes = {};
     that.delay = null;
+    that.delayImmediately = null;
+    that.delayDuration = null;
     that.isHideProcess = false;
     that.isShowProcess = false;
     that.isShow = false;
@@ -19673,21 +19678,18 @@ function(params){
     };
 
     var show = function(immediately){
-        if(!that.isShow){
-            that.isShow = true;
+        if((!that.isShow && !that.isShowProcess) || that.isHideProcess){
             that.isShowProcess = true;
             that.triggerEvent('onShowStart');
             // Append child tooltip into body and set position
             that.params['container'].appendChild(that.nodes['container']);
-            // Show tooltip
-            that.nodes['container'].style.display = 'block';
             setWindowEvent();
             // Animate
-            that.delay && clearTimeout(that.delay);
+            clearDelays();
             if(immediately){
                 cm.addClass(that.nodes['container'], 'is-immediately');
                 showHandler(immediately);
-                that.delay = setTimeout(function(){
+                that.delayImmediately = setTimeout(function(){
                     cm.removeClass(that.nodes['container'], 'is-immediately');
                 }, 5);
             }else if(that.params['delay'] && !that.isHideProcess){
@@ -19701,6 +19703,8 @@ function(params){
     };
 
     var showHandler = function(immediately){
+        that.nodes['container'].style.display = 'block';
+        that.isShow = true;
         if(immediately || !that.params['duration']){
             that.isShowProcess = false;
             that.isHideProcess = false;
@@ -19708,7 +19712,7 @@ function(params){
             that.triggerEvent('onShow');
         }else{
             cm.addClass(that.nodes['container'], 'is-show', true);
-            that.delay = setTimeout(function(){
+            that.delayDuration = setTimeout(function(){
                 that.isShowProcess = false;
                 that.isHideProcess = false;
                 that.triggerEvent('onShow');
@@ -19717,16 +19721,15 @@ function(params){
     };
 
     var hide = function(immediately){
-        if(that.isShow){
-            that.isShow = false;
+        if((that.isShow || that.isShowProcess) && !that.isHideProcess){
             that.isHideProcess = true;
             that.triggerEvent('onHideStart');
             // Animate
-            that.delay && clearTimeout(that.delay);
+            clearDelays();
             if(immediately){
                 cm.addClass(that.nodes['container'], 'is-immediately');
                 hideHandler(immediately);
-                that.delay = setTimeout(function(){
+                that.delayImmediately = setTimeout(function(){
                     cm.removeClass(that.nodes['container'], 'is-immediately');
                 }, 5);
             }else if(that.params['delay'] && !that.isShowProcess){
@@ -19740,6 +19743,7 @@ function(params){
     };
 
     var hideHandler = function(immediately){
+        that.isShow = false;
         if(immediately || !that.params['duration']){
             that.isShowProcess = false;
             that.isHideProcess = false;
@@ -19749,7 +19753,7 @@ function(params){
             that.triggerEvent('onHide');
         }else{
             cm.removeClass(that.nodes['container'], 'is-show', true);
-            that.delay = setTimeout(function(){
+            that.delayDuration = setTimeout(function(){
                 that.isShowProcess = false;
                 that.isHideProcess = false;
                 removeWindowEvent();
@@ -19760,7 +19764,7 @@ function(params){
     };
 
     var getPosition = function(){
-        if(that.isShow){
+        if(that.isShow && !that.isHideProcess){
             var targetWidth =  that.params['target'].offsetWidth,
                 targetHeight = that.params['target'].offsetHeight,
                 selfHeight = that.nodes['container'].offsetHeight,
@@ -19770,14 +19774,26 @@ function(params){
                 scrollLeft = cm.getScrollLeft(window);
             // Calculate size
             (function(){
+                var width;
                 if(that.params['width'] != 'auto'){
-                    var width = eval(
-                        that.params['width']
-                            .toString()
-                            .replace('targetWidth', targetWidth)
+                    width = Math.max(
+                        eval(
+                            that.params['minWidth']
+                                .toString()
+                                .replace('targetWidth', targetWidth)
+                                .replace('selfWidth', selfWidth)
+                        ),
+                        eval(
+                            that.params['width']
+                                .toString()
+                                .replace('targetWidth', targetWidth)
+                                .replace('selfWidth', selfWidth)
+                        )
                     );
                     if(width != selfWidth){
                         that.nodes['container'].style.width =  [width, 'px'].join('');
+                        selfWidth = that.nodes['container'].offsetWidth;
+                        selfHeight = that.nodes['container'].offsetHeight;
                     }
                 }
             })();
@@ -19892,6 +19908,12 @@ function(params){
         }
     };
 
+    var clearDelays = function(){
+        that.delay && clearTimeout(that.delay);
+        that.delayImmediately && clearTimeout(that.delayImmediately);
+        that.delayDuration && clearTimeout(that.delayDuration);
+    };
+
     /* ******* MAIN ******* */
 
     that.setTitle = function(title){
@@ -19905,7 +19927,7 @@ function(params){
     };
 
     that.setTarget = function(node){
-        that.delay && clearTimeout(that.delay);
+        clearDelays();
         removeTargetEvent();
         that.params['target'] = node || cm.Node('div');
         setTargetEvent();
