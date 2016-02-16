@@ -3937,16 +3937,16 @@ Copyright (c) 2015 Daniel Eden
 @ComBigCalendar-BorderWidth: @CmBorder-Width;
 @ComBigCalendar-BorderColor: @CmColor-Border;
 @ComBigCalendar-Border: @ComBigCalendar-BorderWidth solid @ComBigCalendar-BorderColor;
-@ComBigCalendar-Background: #ffffff;
+@ComBigCalendar-Background: @CmColor-Background;
 
 @ComCalendarEvent-TooltipWidth: @CmUI-TooltipWidth;
 @ComCalendarEvent-Indent: 1px;
 @ComCalendarEvent-LineHeight: @CmFont-Base-LineHeight;
 
 @ComCalendarTable-Border: @ComBigCalendar-Border;
-@ComCalendarTable-Default-Background: #ffffff;
+@ComCalendarTable-Default-Background: @CmColor-Background;
 @ComCalendarTable-Default-BackgroundHover: @CmColor-Secondary-LightHover;
-@ComCalendarTable-Inactive-Background: #ffffff;
+@ComCalendarTable-Inactive-Background: @CmColor-Background;
 @ComCalendarTable-Inactive-BackgroundHover: @CmColor-Secondary-LightHover;
 @ComCalendarTable-Weekend-Background: @CmColor-Secondary-LightActive;
 @ComCalendarTable-Weekend-BackgroundHover: @CmColor-Secondary-LightActiveHover;
@@ -4033,7 +4033,7 @@ Copyright (c) 2015 Daniel Eden
 @ComTabset-Tabs-FontSize: @CmFont-Base-Size;
 @ComTabset-Tabs-DefaultBackground: @CmColor-Secondary-LightHighlight;
 @ComTabset-Tabs-HoverBackground: @CmColor-Secondary-LightHover;
-@ComTabset-Tabs-ActiveBackground: #ffffff;
+@ComTabset-Tabs-ActiveBackground: @CmColor-Background;
 @ComTabset-TabsTitle-Background: @CmColor-Secondary-LightHighlight;
 
 // /* ******* PAGINATION ******* */
@@ -4571,6 +4571,17 @@ Copyright (c) 2015 Daniel Eden
     display: block;
 
 }
+
+.cm__image-centered {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    margin: auto;
+    position: absolute;
+    .mx__position(0, 0, 0, 0);
+}
+
 .cm__text-nowrap,
 .cm__text-overflow {
     overflow: hidden;
