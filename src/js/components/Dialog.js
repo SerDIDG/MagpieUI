@@ -63,6 +63,7 @@ function(params){
     that.isFocus = false;
     that.isRemoved = false;
     that.isDestructed = false;
+    that.resizeInterval = null;
 
     var init = function(){
         that.setParams(params);
@@ -208,95 +209,98 @@ function(params){
         }
     };
 
+    var resizeHelper = function(){
+        resize();
+        clearResizeInterval();
+        that.resizeInterval = setTimeout(resizeHelper, that.params['resizeInterval']);
+    };
+
     var resize = function(){
-        if(that.isOpen){
-            var winHeight = nodes['container'].offsetHeight - (that.params['indentY'] * 2),
-                winWidth = nodes['container'].offsetWidth - (that.params['indentX'] * 2),
-                windowHeight = nodes['window'].offsetHeight,
-                windowWidth = nodes['window'].offsetWidth,
-                insetHeight = nodes['inner'].offsetHeight,
+        var winHeight = nodes['container'].offsetHeight - (that.params['indentY'] * 2),
+            winWidth = nodes['container'].offsetWidth - (that.params['indentX'] * 2),
+            windowHeight = nodes['window'].offsetHeight,
+            windowWidth = nodes['window'].offsetWidth,
+            insetHeight = nodes['inner'].offsetHeight,
 
-                AWidth,
-                AHeight,
-                NAHeight,
+            AWidth,
+            AHeight,
+            NAHeight,
 
-                maxHeight,
-                minHeight,
-                setHeight,
-                setWidth;
-            // Calculate available width / height
-            AHeight = winHeight
-                - (nodes['title'] && nodes['title'].offsetHeight || 0)
-                - (nodes['buttons'] && nodes['buttons'].offsetHeight || 0)
-                - cm.getIndentY(nodes['windowInner'])
-                - cm.getIndentY(nodes['descr']);
-            NAHeight = winHeight - AHeight;
-            AWidth = winWidth;
-            // Calculate min / max height
-            if(that.params['maxHeight'] == 'auto'){
-                maxHeight = AHeight;
-            }else if(/%/.test(that.params['maxHeight'])){
-                maxHeight = ((winHeight / 100) * parseFloat(that.params['maxHeight'])) - NAHeight;
-            }else{
-                if(/px/.test(that.params['maxHeight'])){
-                    that.params['maxHeight'] = parseFloat(that.params['maxHeight']);
-                }
-                maxHeight = that.params['maxHeight'] - NAHeight;
+            maxHeight,
+            minHeight,
+            setHeight,
+            setWidth;
+        // Calculate available width / height
+        AHeight = winHeight
+            - (nodes['title'] && nodes['title'].offsetHeight || 0)
+            - (nodes['buttons'] && nodes['buttons'].offsetHeight || 0)
+            - cm.getIndentY(nodes['windowInner'])
+            - cm.getIndentY(nodes['descr']);
+        NAHeight = winHeight - AHeight;
+        AWidth = winWidth;
+        // Calculate min / max height
+        if(that.params['maxHeight'] == 'auto'){
+            maxHeight = AHeight;
+        }else if(/%/.test(that.params['maxHeight'])){
+            maxHeight = ((winHeight / 100) * parseFloat(that.params['maxHeight'])) - NAHeight;
+        }else{
+            if(/px/.test(that.params['maxHeight'])){
+                that.params['maxHeight'] = parseFloat(that.params['maxHeight']);
             }
-            if(that.params['minHeight'] == 'auto'){
-                minHeight = 0;
-            }else if(/%/.test(that.params['minHeight'])){
-                minHeight = ((winHeight / 100) * parseFloat(that.params['minHeight'])) - NAHeight;
-            }else{
-                if(/px/.test(that.params['minHeight'])){
-                    that.params['minHeight'] = parseFloat(that.params['minHeight']);
-                }
-                minHeight = that.params['minHeight'] - NAHeight;
-            }
-            // Calculate height
-            if(that.params['height'] == 'auto'){
-                if(insetHeight < minHeight){
-                    setHeight = minHeight;
-                }else if(insetHeight > maxHeight){
-                    setHeight = maxHeight;
-                }else{
-                    setHeight = insetHeight;
-                }
-            }else if(/%/.test(that.params['height'])){
-                setHeight = ((winHeight / 100) * parseFloat(that.params['height'])) - NAHeight;
-            }else{
-                if(/px/.test(that.params['height'])){
-                    that.params['height'] = parseFloat(that.params['height']);
-                }
-                setHeight = that.params['height'] - NAHeight;
-            }
-            setHeight = Math.min(Math.max(setHeight, 0), AHeight);
-            // Calculate width
-            if(/%/.test(that.params['width'])){
-                setWidth = ((winWidth / 100) * parseFloat(that.params['width']));
-            }else{
-                if(/px/.test(that.params['width'])){
-                    that.params['width'] = parseFloat(that.params['width']);
-                }
-                setWidth = that.params['width'];
-            }
-            setWidth = Math.min(setWidth, AWidth);
-            // Set window height
-            if(windowHeight != setHeight + NAHeight || contentHeight != insetHeight){
-                contentHeight = insetHeight;
-                if(insetHeight <= setHeight){
-                    cm.removeClass(nodes['scroll'], 'is-scroll');
-                }else if(that.params['scroll']){
-                    cm.addClass(nodes['scroll'], 'is-scroll');
-                }
-                nodes['scroll'].style.height = [setHeight, 'px'].join('');
-            }
-            // Set window width
-            if(windowWidth != setWidth){
-                nodes['window'].style.width = [setWidth, 'px'].join('')
-            }
+            maxHeight = that.params['maxHeight'] - NAHeight;
         }
-        animFrame(resize);
+        if(that.params['minHeight'] == 'auto'){
+            minHeight = 0;
+        }else if(/%/.test(that.params['minHeight'])){
+            minHeight = ((winHeight / 100) * parseFloat(that.params['minHeight'])) - NAHeight;
+        }else{
+            if(/px/.test(that.params['minHeight'])){
+                that.params['minHeight'] = parseFloat(that.params['minHeight']);
+            }
+            minHeight = that.params['minHeight'] - NAHeight;
+        }
+        // Calculate height
+        if(that.params['height'] == 'auto'){
+            if(insetHeight < minHeight){
+                setHeight = minHeight;
+            }else if(insetHeight > maxHeight){
+                setHeight = maxHeight;
+            }else{
+                setHeight = insetHeight;
+            }
+        }else if(/%/.test(that.params['height'])){
+            setHeight = ((winHeight / 100) * parseFloat(that.params['height'])) - NAHeight;
+        }else{
+            if(/px/.test(that.params['height'])){
+                that.params['height'] = parseFloat(that.params['height']);
+            }
+            setHeight = that.params['height'] - NAHeight;
+        }
+        setHeight = Math.min(Math.max(setHeight, 0), AHeight);
+        // Calculate width
+        if(/%/.test(that.params['width'])){
+            setWidth = ((winWidth / 100) * parseFloat(that.params['width']));
+        }else{
+            if(/px/.test(that.params['width'])){
+                that.params['width'] = parseFloat(that.params['width']);
+            }
+            setWidth = that.params['width'];
+        }
+        setWidth = Math.min(setWidth, AWidth);
+        // Set window height
+        if(windowHeight != setHeight + NAHeight || contentHeight != insetHeight){
+            contentHeight = insetHeight;
+            if(insetHeight <= setHeight){
+                cm.removeClass(nodes['scroll'], 'is-scroll');
+            }else if(that.params['scroll']){
+                cm.addClass(nodes['scroll'], 'is-scroll');
+            }
+            nodes['scroll'].style.height = [setHeight, 'px'].join('');
+        }
+        // Set window width
+        if(windowWidth != setWidth){
+            nodes['window'].style.width = [setWidth, 'px'].join('')
+        }
     };
 
     var open = function(params){
@@ -311,6 +315,7 @@ function(params){
                 that.params['container'].appendChild(nodes['container']);
             }
             nodes['container'].style.display = 'block';
+            resizeHelper();
             // Show / Hide Document Scroll
             if(!that.params['documentScroll']){
                 cm.addClass(cm.getDocumentHtml(), 'cm__scroll--none');
@@ -343,7 +348,10 @@ function(params){
             }
             // Animate
             anim['container'].go({
-                'style' : {'opacity' : '0'}, 'duration' : that.params['openTime'], 'onStop' : function(){
+                'style' : {'opacity' : '0'},
+                'duration' : that.params['openTime'],
+                'onStop' : function(){
+                    clearResizeInterval();
                     nodes['container'].style.display = 'none';
                     // Remove Window
                     that.params['removeOnClose'] && remove();
@@ -380,6 +388,11 @@ function(params){
         if(e.keyCode == 27){
             that.isFocus && close();
         }
+    };
+
+    var clearResizeInterval = function(){
+        that.resizeInterval && clearTimeout(that.resizeInterval);
+        that.resizeInterval = null;
     };
 
     /* ******* MAIN ******* */
@@ -449,6 +462,10 @@ function(params){
             remove();
         }
         return that;
+    };
+
+    that.isOwnNode = function(node){
+        return cm.isParent(nodes['window'], node, true);
     };
 
     that.getNodes = function(key){

@@ -10315,9 +10315,6 @@ button::-moz-focus-inner {
   top: 0;
   z-index: 1001;
   opacity: 0;
-  visibility: hidden;
-  -webkit-transition: opacity 100ms ease-in-out, visibilty 100ms ease-in-out;
-  transition: opacity 100ms ease-in-out, visibilty 100ms ease-in-out;
 }
 .com__tooltip > .inner > .title {
   margin: 0 0 8px;
@@ -10344,18 +10341,6 @@ button::-moz-focus-inner {
   overflow-x: hidden;
   overflow-y: auto;
 }
-.com__tooltip.is-show {
-  opacity: 1;
-  visibility: visible;
-}
-.com__tooltip.is-immediately {
-  -webkit-transition: none !important;
-  transition: none !important;
-}
-/* *** HELPERS *** */
-.com__tooltip-helper__duration {
-  transition-duration: 100ms;
-}
 /* ******* COMPONENT: TOOLTIP: THEMES ******* */
 .com__tooltip.theme-default > .inner {
   padding: 4px;
@@ -10369,6 +10354,7 @@ button::-moz-focus-inner {
   -moz-background-clip: padding-box;
   background-clip: padding-box;
 }
+.com__tooltip.theme-dark > .inner,
 .com__tooltip.theme-black > .inner {
   padding: 4px;
   background: #ffffff;

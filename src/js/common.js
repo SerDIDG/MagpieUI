@@ -24,7 +24,7 @@
  ******* */
 
 var cm = {
-        '_version' : '3.12.1',
+        '_version' : '3.12.2',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -2565,61 +2565,6 @@ cm.Animation = function(o){
             }
         };
 
-    that.getTarget = function(){
-        return obj;
-    };
-
-    that.go = function(){
-        var params = arguments[0],
-            args = cm.merge({
-                'style' : '',
-                'duration' : '',
-                'anim' : 'simple',
-                'onStop' : function(){}
-            }, params),
-            pId = 'animation_process_' + Math.random(),
-            delta = animationMethod[args.anim] || animationMethod['simple'],
-            properties = [];
-        for(var name in args.style){
-            var value = args.style[name].toString();
-            var dimension = cm.getStyleDimension(value);
-            properties.push({
-                'name' : name,
-                'new' : prepareEndPosition(name, value),
-                'dimension' : dimension,
-                'old' : cm.getCurrentStyle(obj, name, dimension)
-            });
-        }
-
-        var start = Date.now();
-        for(var i in processes){
-            processes[i] = false;
-        }
-        processes[pId] = true;
-        // Run process
-        (function process(){
-            var processId = pId;
-            if(!processes[processId]){
-                delete processes[processId];
-                return false;
-            }
-            var now = Date.now() - start;
-            var progress = now / args.duration;
-            if(setProperties(progress, delta, properties, args['duration'])){
-                delete processes[processId];
-                args.onStop && args.onStop();
-            }else{
-                animFrame(process);
-            }
-        })();
-    };
-
-    that.stop = function(){
-        for(var i in processes){
-            processes[i] = false;
-        }
-    };
-
     var setProperties = function(progress, delta, properties, duration){
         if(progress <= 1){
             properties.forEach(function(item){
@@ -2672,6 +2617,62 @@ cm.Animation = function(o){
             }
         }
         return value.replace(/[^\-0-9\.]/g, '');
+    };
+
+    that.getTarget = function(){
+        return obj;
+    };
+
+    that.go = function(){
+        var params = arguments[0],
+            args = cm.merge({
+                'style' : '',
+                'duration' : '',
+                'anim' : 'simple',
+                'onStop' : function(){}
+            }, params),
+            pId = 'animation_process_' + Math.random(),
+            delta = animationMethod[args.anim] || animationMethod['simple'],
+            properties = [],
+            start = Date.now();
+        for(var name in args.style){
+            var value = args.style[name].toString();
+            var dimension = cm.getStyleDimension(value);
+            properties.push({
+                'name' : name,
+                'new' : prepareEndPosition(name, value),
+                'dimension' : dimension,
+                'old' : cm.getCurrentStyle(obj, name, dimension)
+            });
+        }
+        for(var i in processes){
+            processes[i] = false;
+        }
+        processes[pId] = true;
+        // Run process
+        (function process(){
+            var processId = pId;
+            if(!processes[processId]){
+                delete processes[processId];
+                return false;
+            }
+            var now = Date.now() - start;
+            var progress = now / args.duration;
+            if(setProperties(progress, delta, properties, args['duration'])){
+                delete processes[processId];
+                args.onStop && args.onStop();
+            }else{
+                animFrame(process);
+            }
+        })();
+        return that;
+    };
+
+    that.stop = function(){
+        for(var i in processes){
+            processes[i] = false;
+        }
+        return that;
     };
 };
 

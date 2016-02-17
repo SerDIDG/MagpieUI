@@ -195,7 +195,6 @@ function(params){
         if(!that.params['multiple']){
             // Switch items on arrows press
             cm.addEvent(nodes['container'], 'keydown', function(e){
-                e = cm.getEvent(e);
                 if(optionsLength){
                     var item = options[active],
                         index = optionsList.indexOf(item),
@@ -203,6 +202,7 @@ function(params){
 
                     switch(e.keyCode){
                         case 38:
+                            cm.preventDefault(e);
                             if(index - 1 >= 0){
                                 option = optionsList[index - 1];
                             }else{
@@ -211,6 +211,7 @@ function(params){
                             break;
 
                         case 40:
+                            cm.preventDefault(e);
                             if(index + 1 < optionsLength){
                                 option = optionsList[index + 1];
                             }else{
@@ -230,10 +231,10 @@ function(params){
                 }
             });
             cm.addEvent(nodes['container'], 'focus', function(){
-                cm.addEvent(document.body, 'keydown', blockDocumentArrows);
+                cm.addEvent(window, 'keydown', blockDocumentArrows);
             });
             cm.addEvent(nodes['container'], 'blur', function(){
-                cm.removeEvent(document.body, 'keydown', blockDocumentArrows);
+                cm.removeEvent(window, 'keydown', blockDocumentArrows);
             });
             // Render tooltip
             components['menu'] = new Com.Tooltip(

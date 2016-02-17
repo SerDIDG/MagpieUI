@@ -3893,10 +3893,6 @@ Copyright (c) 2015 Daniel Eden
 // /* ******* COMPONENTS ******* */
 // /* ************************************************ */
 
-// /* ******* TOOLTIP ******* */
-
-@ComTooltip-Duration: @CmUI-Transition-DurationReverse;
-
 // /* ******* CALENDAR ******* */
 
 @ComCalendar-CellHeight: 21px;
@@ -10833,8 +10829,6 @@ button {
     top: 0;
     z-index: 1001;
     opacity: 0;
-    visibility: hidden;
-    .mx__transition(opacity visibilty, @ComTooltip-Duration);
 
     > .inner {
         > .title {
@@ -10853,21 +10847,6 @@ button {
             .cm__scroll-y-a;
         }
     }
-
-    &.is-show {
-        opacity: 1;
-        visibility: visible;
-    }
-
-    &.is-immediately {
-        .cm__transition-none;
-    }
-}
-
-/* *** HELPERS *** */
-
-.com__tooltip-helper__duration {
-    transition-duration: @ComTooltip-Duration;
 }
 
 /* ******* COMPONENT: TOOLTIP: THEMES ******* */
@@ -10879,7 +10858,8 @@ button {
         }
     }
 
-    &.theme-black{
+    &.theme-dark,
+    &.theme-black {
         > .inner {
             .pt__box--black;
         }
