@@ -71,7 +71,13 @@ cm.isTouch = 'ontouchstart' in document.documentElement || !!window.maxTouchPoin
 
 /* ******* OBJECTS AND ARRAYS ******* */
 
-cm.top = window.top.cm || cm;
+cm.top = (function(){
+    try {
+        return window.top.cm
+    }catch(e){
+        return window.cm;
+    }
+})();
 
 cm.isType = function(o, types){
     if(cm.isString(types)){
@@ -1767,6 +1773,14 @@ cm.parseDate = function(str, format){
     });
 
     return date;
+};
+
+cm.getDateWeek = function(date){
+    date = cm.isDate(date) ? date : new Date();
+    var d = new Date(+date);
+    d.setHours(0,0,0);
+    d.setDate(d.getDate()+4-(d.getDay()||7));
+    return Math.ceil((((d-new Date(d.getFullYear(),0,1))/8.64e7)+1)/7);
 };
 
 /* ******* STYLES ******* */

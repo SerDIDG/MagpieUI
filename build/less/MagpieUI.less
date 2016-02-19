@@ -3936,8 +3936,11 @@ Copyright (c) 2015 Daniel Eden
 @ComBigCalendar-Background: @CmColor-Background;
 
 @ComCalendarEvent-TooltipWidth: @CmUI-TooltipWidth;
-@ComCalendarEvent-Indent: 1px;
+@ComCalendarEvent-Padding: @CmIndent-XXXSmall;
 @ComCalendarEvent-LineHeight: @CmFont-Base-LineHeight;
+@ComCalendarEvent-Short-Indent: 1px;
+@ComCalendarEvent-Short-Height: @ComCalendarMonth-Item-LineHeight + (@ComBigCalendar-BorderWidth * 2);
+@ComCalendarEvent-Long-Indent: @CmIndent-XSmall;
 
 @ComCalendarTable-Border: @ComBigCalendar-Border;
 @ComCalendarTable-Default-Background: @CmColor-Background;
@@ -3951,13 +3954,16 @@ Copyright (c) 2015 Daniel Eden
 @ComCalendarTable-Active-Background: @CmColor-Primary-LightActive;
 @ComCalendarTable-Active-BackgroundHover: @CmColor-Primary-LightActiveHover;
 
+@ComCalendarAgenda-Day-Indent: @CmIndent-Medium;
+@ComCalendarAgenda-Day-Width: 64px;
+
 @ComCalendarWeek-Day-Indent: @CmIndent-XXXSmall;
-@ComCalendarMonth-Item-Height: @ComCalendarEvent-LineHeight + (@ComBigCalendar-BorderWidth * 2);
+@ComCalendarWeek-Item-Height: @ComCalendarEvent-Short-Height;
 
 @ComCalendarMonth-Item-Count: 3;
 @ComCalendarMonth-Item-LineHeight: @ComCalendarEvent-LineHeight;
-@ComCalendarMonth-Item-Height: @ComCalendarMonth-Item-LineHeight + (@ComBigCalendar-BorderWidth * 2);
-@ComCalendarMonth-Item-Indent: @ComCalendarEvent-Indent;
+@ComCalendarMonth-Item-Height: @ComCalendarEvent-Short-Height;
+@ComCalendarMonth-Item-Indent: @ComCalendarEvent-Short-Indent;
 @ComCalendarMonth-Day-Indent: @CmIndent-XXXSmall;
 @ComCalendarMonth-Day-Items : @ComCalendarMonth-Item-Count + 2;
 @ComCalendarMonth-Day-Height: (@ComCalendarMonth-Item-Height * @ComCalendarMonth-Day-Items) + (@ComCalendarMonth-Item-Indent * (@ComCalendarMonth-Day-Items - 1));
@@ -9923,7 +9929,7 @@ button {
         > .inner {
             > .left {
                 .display-flex;
-                .mx__flex(1 1 auto);
+                .mx__flex(1 1 0);
                 .mx__justify-content(flex-start);
             }
 
@@ -9934,7 +9940,7 @@ button {
 
             > .right {
                 .display-flex;
-                .mx__flex(1 1 auto);
+                .mx__flex(1 1 0);
                 .mx__justify-content(flex-end);
             }
         }
@@ -10897,48 +10903,65 @@ button {
 }
 
 .com__calendar-event {
-    border: @CmBorder-Default;
-    border-radius: @CmBorder-Radius;
-    background-color: @CmColor-Secondary-LightHighlight;
-    cursor: pointer;
-    .mx__transition(all, @CmUI-Transition-Duration);
+    &.is-long {
+        margin-top: @ComCalendarEvent-Long-Indent;
 
-    > .label {
-        .cm__font--hint;
-        padding: 0 @CmIndent-XXXSmall;
-        color: @CmColor-Font;
+        > .label {
+            .time {
+                margin: 0 @ComCalendarEvent-Padding 0 0;
+                float: left;
+                color: @CmColor-Font-Hint;
+            }
 
-        .time {
-            color: @CmColor-Font-Hint;
+            .title {
+                overflow: hidden;
+            }
         }
-    }
 
-    &.is-short {
-        margin-top: @ComCalendarEvent-Indent;
+        > .abstract {
+            margin-top: @ComCalendarEvent-Padding;
+        }
 
         &:first-child {
             margin-top: 0;
         }
+    }
+
+    &.is-short {
+        margin-top: @ComCalendarEvent-Short-Indent;
+        border: @CmBorder-Default;
+        border-radius: @CmBorder-Radius;
+        background-color: @CmColor-Secondary-LightHighlight;
+        cursor: pointer;
+        .mx__transition(all, @CmUI-Transition-Duration);
 
         > .label {
             .cm__text-nowrap;
+            .cm__font--hint;
+            padding: 0 @ComCalendarEvent-Padding;
             line-height: @ComCalendarEvent-LineHeight;
+            color: @CmColor-Font;
 
             .time {
-                margin: 0 0 0 @CmIndent-XXXSmall;
+                margin: 0 0 0 @ComCalendarEvent-Padding;
                 float: right;
+                color: @CmColor-Font-Hint;
             }
 
             .title {
                 .cm__text-nowrap;
             }
         }
-    }
 
-    &:hover {
-        border-color: @CmColor-Primary-DarkDefault;
-        background-color: @CmColor-Primary-LightHover;
-        .mx__transition(all, @CmUI-Transition-DurationReverse);
+        &:hover {
+            border-color: @CmColor-Primary-DarkDefault;
+            background-color: @CmColor-Primary-LightHover;
+            .mx__transition(all, @CmUI-Transition-DurationReverse);
+        }
+
+        &:first-child {
+            margin-top: 0;
+        }
     }
 }
 
@@ -10949,22 +10972,45 @@ button {
         display: none;
     }
 
+    .calendar__title {
+        .cm__box;
+    }
+
     .calendar__day {
-        margin-top: @CmIndent-Medium;
+        margin-top: @ComCalendarAgenda-Day-Indent;
+        padding-top: @ComCalendarAgenda-Day-Indent;
+        border-top: @ComBigCalendar-Border;
 
         &:first-child {
             margin-top: 0;
+            padding-top: 0;
+            border-top: 0;
         }
     }
 
     .calendar__dayname {
-        margin-bottom: @CmIndent-XXSmall;
+        width: @ComCalendarAgenda-Day-Width;
+        float: left;
+        margin-right: @CmIndent-XSmall;
+        font-weight: @CmFont-Base-BoldWeight;
+    }
+
+    .calendar__events-holder {
+        overflow: hidden;
     }
 }
 
 /* *** WEEK VIEW *** */
 
 .com__calendar-week {
+    .calendar__templates {
+        display: none;
+    }
+
+    .calendar__title {
+        .cm__box;
+    }
+
     .calendar__table {
         > table {
             table-layout: fixed;
@@ -11017,11 +11063,15 @@ button {
                     }
                 }
             }
-        }
-    }
 
-    .calendar__templates {
-        display: none;
+            tr {
+                &.is-allday {
+                    td {
+                        border-bottom-width: 2px;
+                    }
+                }
+            }
+        }
     }
 
     .calendar__day {
@@ -11029,7 +11079,7 @@ button {
         position: relative;
 
         > .inner {
-            min-height: @ComCalendarMonth-Item-Height;
+            min-height: @ComCalendarWeek-Item-Height;
         }
     }
 }
@@ -11037,6 +11087,14 @@ button {
 /* *** MONTH VIEW *** */
 
 .com__calendar-month {
+    .calendar__templates {
+        display: none;
+    }
+
+    .calendar__title {
+        .cm__box;
+    }
+
     .calendar__table {
         > table {
             table-layout: fixed;
@@ -11094,10 +11152,6 @@ button {
                 }
             }
         }
-    }
-
-    .calendar__templates {
-        display: none;
     }
 
     .calendar__day {
@@ -11178,8 +11232,12 @@ button {
 
 /* *** HELPERS *** */
 
-.com__calendar-event-helper__indent {
-    height: @ComCalendarEvent-Indent;
+.com__calendar-event-helper__short-indent {
+    height: @ComCalendarEvent-Short-Indent;
+}
+
+.com__calendar-event-helper__short-height {
+    height: @ComCalendarEvent-Short-Height;
 }
 
 .com__calendar-month-helper__day-indent {

@@ -12406,7 +12406,13 @@ cm.isTouch = 'ontouchstart' in document.documentElement || !!window.maxTouchPoin
 
 /* ******* OBJECTS AND ARRAYS ******* */
 
-cm.top = window.top.cm || cm;
+cm.top = (function(){
+    try {
+        return window.top.cm
+    }catch(e){
+        return window.cm;
+    }
+})();
 
 cm.isType = function(o, types){
     if(cm.isString(types)){
@@ -14102,6 +14108,14 @@ cm.parseDate = function(str, format){
     });
 
     return date;
+};
+
+cm.getDateWeek = function(date){
+    date = cm.isDate(date) ? date : new Date();
+    var d = new Date(+date);
+    d.setHours(0,0,0);
+    d.setDate(d.getDate()+4-(d.getDay()||7));
+    return Math.ceil((((d-new Date(d.getFullYear(),0,1))/8.64e7)+1)/7);
 };
 
 /* ******* STYLES ******* */
@@ -17861,11 +17875,12 @@ cm.define('Com.CalendarMonth', {
     'params' : {
         'node' : cm.Node('div'),
         'name' : '',
-        'itemIndent' : 1,
+        'itemShortIndent' : 1,
+        'itemShortHeight' : 24,
         'dayIndent' : 4,
         'Com.Tooltip' : {
             'width' : '(targetWidth + %dayIndent%) * 2 - targetHeight * 2',
-            'top' : 'targetHeight + %itemIndent%',
+            'top' : 'targetHeight + %itemShortIndent%',
             'left' : '-(selfWidth - targetWidth) - targetHeight'
         }
     }
@@ -17893,8 +17908,11 @@ function(params){
 
     var getCSSHelpers = function(){
         var rule;
-        if(rule = cm.getCSSRule('.com__calendar-event-helper__indent')[0]){
-            that.params['itemIndent'] = cm.styleToNumber(rule.style.height);
+        if(rule = cm.getCSSRule('.com__calendar-event-helper__short-indent')[0]){
+            that.params['itemShortIndent'] = cm.styleToNumber(rule.style.height);
+        }
+        if(rule = cm.getCSSRule('.com__calendar-event-helper__short-height')[0]){
+            that.params['itemShortHeight'] = cm.styleToNumber(rule.style.height);
         }
         if(rule = cm.getCSSRule('.com__calendar-week-helper__day-indent')[0]){
             that.params['dayIndent'] = cm.styleToNumber(rule.style.height);
@@ -17904,16 +17922,19 @@ function(params){
     var validateParams = function(){
         if(that.params['Com.Tooltip']['width'] != 'auto'){
             that.params['Com.Tooltip']['width'] = cm.strReplace(that.params['Com.Tooltip']['width'], {
-                '%itemIndent%' : that.params['itemIndent'],
+                '%itemShortIndent%' : that.params['itemShortIndent'],
+                '%itemShortHeight%' : that.params['itemShortHeight'],
                 '%dayIndent%' : that.params['dayIndent']
             });
         }
         that.params['Com.Tooltip']['top'] = cm.strReplace(that.params['Com.Tooltip']['top'], {
-            '%itemIndent%' : that.params['itemIndent'],
+            '%itemShortIndent%' : that.params['itemShortIndent'],
+            '%itemShortHeight%' : that.params['itemShortHeight'],
             '%dayIndent%' : that.params['dayIndent']
         });
         that.params['Com.Tooltip']['left'] = cm.strReplace(that.params['Com.Tooltip']['left'], {
-            '%itemIndent%' : that.params['itemIndent'],
+            '%itemShortIndent%' : that.params['itemShortIndent'],
+            '%itemShortHeight%' : that.params['itemShortHeight'],
             '%dayIndent%' : that.params['dayIndent']
         });
     };
@@ -17996,11 +18017,12 @@ cm.define('Com.CalendarWeek', {
     'params' : {
         'node' : cm.Node('div'),
         'name' : '',
-        'itemIndent' : 1,
+        'itemShortIndent' : 1,
+        'itemShortHeight' : 24,
         'dayIndent' : 4,
         'Com.Tooltip' : {
             'width' : '(targetWidth + %dayIndent%) * 2 - targetHeight * 2',
-            'top' : 'targetHeight + %itemIndent%',
+            'top' : 'targetHeight + %itemShortIndent%',
             'left' : 'targetHeight'
         }
     }
@@ -18028,8 +18050,11 @@ function(params){
 
     var getCSSHelpers = function(){
         var rule;
-        if(rule = cm.getCSSRule('.com__calendar-event-helper__indent')[0]){
-            that.params['itemIndent'] = cm.styleToNumber(rule.style.height);
+        if(rule = cm.getCSSRule('.com__calendar-event-helper__short-indent')[0]){
+            that.params['itemShortIndent'] = cm.styleToNumber(rule.style.height);
+        }
+        if(rule = cm.getCSSRule('.com__calendar-event-helper__short-height')[0]){
+            that.params['itemShortHeight'] = cm.styleToNumber(rule.style.height);
         }
         if(rule = cm.getCSSRule('.com__calendar-week-helper__day-indent')[0]){
             that.params['dayIndent'] = cm.styleToNumber(rule.style.height);
@@ -18038,15 +18063,18 @@ function(params){
 
     var validateParams = function(){
         that.params['Com.Tooltip']['width'] = cm.strReplace(that.params['Com.Tooltip']['width'], {
-            '%itemIndent%' : that.params['itemIndent'],
+            '%itemShortIndent%' : that.params['itemShortIndent'],
+            '%itemShortHeight%' : that.params['itemShortHeight'],
             '%dayIndent%' : that.params['dayIndent']
         });
         that.params['Com.Tooltip']['top'] = cm.strReplace(that.params['Com.Tooltip']['top'], {
-            '%itemIndent%' : that.params['itemIndent'],
+            '%itemShortIndent%' : that.params['itemShortIndent'],
+            '%itemShortHeight%' : that.params['itemShortHeight'],
             '%dayIndent%' : that.params['dayIndent']
         });
         that.params['Com.Tooltip']['left'] = cm.strReplace(that.params['Com.Tooltip']['left'], {
-            '%itemIndent%' : that.params['itemIndent'],
+            '%itemShortIndent%' : that.params['itemShortIndent'],
+            '%itemShortHeight%' : that.params['itemShortHeight'],
             '%dayIndent%' : that.params['dayIndent']
         });
     };
@@ -18088,10 +18116,11 @@ cm.define('Com.CalendarAgenda', {
     'params' : {
         'node' : cm.Node('div'),
         'name' : '',
-        'itemIndent' : 1,
+        'itemShortIndent' : 1,
+        'itemShortHeight' : 24,
         'Com.Tooltip' : {
-            'width' : 'targetWidth - targetHeight * 2',
-            'top' : 'targetHeight + %itemIndent%',
+            'width' : 'targetWidth - %itemShortHeight% * 2',
+            'top' : 'targetHeight + %itemShortIndent%',
             'left' : 'targetHeight'
         }
     }
@@ -18119,27 +18148,32 @@ function(params){
 
     var getCSSHelpers = function(){
         var rule;
-        if(rule = cm.getCSSRule('.com__calendar-event-helper__indent')[0]){
-            that.params['itemIndent'] = cm.styleToNumber(rule.style.height);
+        if(rule = cm.getCSSRule('.com__calendar-event-helper__short-indent')[0]){
+            that.params['itemShortIndent'] = cm.styleToNumber(rule.style.height);
+        }
+        if(rule = cm.getCSSRule('.com__calendar-event-helper__short-height')[0]){
+            that.params['itemShortHeight'] = cm.styleToNumber(rule.style.height);
         }
     };
 
     var validateParams = function(){
         if(that.params['Com.Tooltip']['width'] != 'auto'){
             that.params['Com.Tooltip']['width'] = cm.strReplace(that.params['Com.Tooltip']['width'], {
-                '%itemIndent%' : that.params['itemIndent']
+                '%itemShortIndent%' : that.params['itemShortIndent'],
+                '%itemShortHeight%' : that.params['itemShortHeight']
             });
         }
         that.params['Com.Tooltip']['top'] = cm.strReplace(that.params['Com.Tooltip']['top'], {
-            '%itemIndent%' : that.params['itemIndent']
+            '%itemShortIndent%' : that.params['itemShortIndent'],
+            '%itemShortHeight%' : that.params['itemShortHeight']
         });
         that.params['Com.Tooltip']['left'] = cm.strReplace(that.params['Com.Tooltip']['left'], {
-            '%itemIndent%' : that.params['itemIndent']
+            '%itemShortIndent%' : that.params['itemShortIndent'],
+            '%itemShortHeight%' : that.params['itemShortHeight']
         });
     };
 
     var render = function(){
-        cm.log(that.nodes);
         var template;
         // Find events and set template and tooltip config
         new cm.Finder('Com.CalendarEvent', null, that.params['node'], function(classObject){
@@ -30634,8 +30668,6 @@ function(params){
         if((!that.isShow && !that.isShowProcess) || that.isHideProcess){
             that.isShowProcess = true;
             that.triggerEvent('onShowStart');
-            // Append
-            that.params['container'].appendChild(that.nodes['container']);
             setWindowEvent();
             // Show Handler
             clearDelayInterval();
@@ -30650,6 +30682,8 @@ function(params){
     };
 
     var showHandler = function(immediately){
+        // Append
+        that.params['container'].appendChild(that.nodes['container']);
         that.nodes['container'].style.display = 'block';
         resizeHelper();
         // Animate

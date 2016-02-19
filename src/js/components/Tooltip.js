@@ -151,8 +151,6 @@ function(params){
         if((!that.isShow && !that.isShowProcess) || that.isHideProcess){
             that.isShowProcess = true;
             that.triggerEvent('onShowStart');
-            // Append
-            that.params['container'].appendChild(that.nodes['container']);
             setWindowEvent();
             // Show Handler
             clearDelayInterval();
@@ -167,6 +165,8 @@ function(params){
     };
 
     var showHandler = function(immediately){
+        // Append
+        that.params['container'].appendChild(that.nodes['container']);
         that.nodes['container'].style.display = 'block';
         resizeHelper();
         // Animate

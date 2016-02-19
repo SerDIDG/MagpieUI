@@ -638,8 +638,11 @@
 @ComBigCalendar-Background: @CmColor-Background;
 
 @ComCalendarEvent-TooltipWidth: @CmUI-TooltipWidth;
-@ComCalendarEvent-Indent: 1px;
+@ComCalendarEvent-Padding: @CmIndent-XXXSmall;
 @ComCalendarEvent-LineHeight: @CmFont-Base-LineHeight;
+@ComCalendarEvent-Short-Indent: 1px;
+@ComCalendarEvent-Short-Height: @ComCalendarMonth-Item-LineHeight + (@ComBigCalendar-BorderWidth * 2);
+@ComCalendarEvent-Long-Indent: @CmIndent-XSmall;
 
 @ComCalendarTable-Border: @ComBigCalendar-Border;
 @ComCalendarTable-Default-Background: @CmColor-Background;
@@ -653,13 +656,16 @@
 @ComCalendarTable-Active-Background: @CmColor-Primary-LightActive;
 @ComCalendarTable-Active-BackgroundHover: @CmColor-Primary-LightActiveHover;
 
+@ComCalendarAgenda-Day-Indent: @CmIndent-Medium;
+@ComCalendarAgenda-Day-Width: 64px;
+
 @ComCalendarWeek-Day-Indent: @CmIndent-XXXSmall;
-@ComCalendarMonth-Item-Height: @ComCalendarEvent-LineHeight + (@ComBigCalendar-BorderWidth * 2);
+@ComCalendarWeek-Item-Height: @ComCalendarEvent-Short-Height;
 
 @ComCalendarMonth-Item-Count: 3;
 @ComCalendarMonth-Item-LineHeight: @ComCalendarEvent-LineHeight;
-@ComCalendarMonth-Item-Height: @ComCalendarMonth-Item-LineHeight + (@ComBigCalendar-BorderWidth * 2);
-@ComCalendarMonth-Item-Indent: @ComCalendarEvent-Indent;
+@ComCalendarMonth-Item-Height: @ComCalendarEvent-Short-Height;
+@ComCalendarMonth-Item-Indent: @ComCalendarEvent-Short-Indent;
 @ComCalendarMonth-Day-Indent: @CmIndent-XXXSmall;
 @ComCalendarMonth-Day-Items : @ComCalendarMonth-Item-Count + 2;
 @ComCalendarMonth-Day-Height: (@ComCalendarMonth-Item-Height * @ComCalendarMonth-Day-Items) + (@ComCalendarMonth-Item-Indent * (@ComCalendarMonth-Day-Items - 1));
