@@ -2,6 +2,7 @@ cm.define('Com.TabsetHelper', {
     'modules' : [
         'Params',
         'Events',
+        'Langs',
         'Callbacks',
         'DataNodes',
         'DataConfig',
@@ -30,9 +31,9 @@ cm.define('Com.TabsetHelper', {
         'targetEvent' : 'click',                                    // click | hover
         'setFirstTabImmediately' : true,
         'showLoader' : true,
-        'loaderDelay' : 300,                                        // in ms
+        'loaderDelay' : 'cm._config.loadDelay',                     // in ms
         'responseKey' : 'data',                                     // Instead of using filter callback, you can provide response array key
-        'responseHTML' : false,                                     // If true, html will append automatically
+        'responseHTML' : true,                                      // If true, html will append automatically
         'cache' : false,
         'ajax' : {
             'type' : 'json',
@@ -44,6 +45,9 @@ cm.define('Com.TabsetHelper', {
             'position' : 'absolute',
             'autoOpen' : false,
             'removeOnClose' : true
+        },
+        'langs' : {
+            'server_error' : 'An unexpected error has occurred. Please try again later.'
         }
     }
 },
@@ -277,7 +281,7 @@ function(params){
     };
 
     that.callbacks.filter = function(that, item, config, response){
-        var data = [],
+        var data,
             dataItem = cm.objectSelector(that.params['responseKey'], response);
         if(dataItem && !cm.isEmpty(dataItem)){
             data = dataItem;
@@ -286,28 +290,27 @@ function(params){
     };
 
     that.callbacks.response = function(that, item, config, response){
-        // Response
         if(!cm.isEmpty(response)){
-            that.callbacks.success(that, {
-                'item' : item,
-                'response' : response
-            });
             response = that.callbacks.filter(that, item, config, response);
-            that.callbacks.render(that, item, response);
+        }
+        if(!cm.isEmpty(response)){
+            that.callbacks.success(that, item, response);
         }else{
             that.callbacks.error(that, item, config);
         }
     };
 
     that.callbacks.error = function(that, item, config){
+        that.callbacks.renderError(that, item, config);
         that.triggerEvent('onRequestError', {
             'item' : item
         });
     };
 
-    that.callbacks.success = function(that, tab, response){
+    that.callbacks.success = function(that, item, response){
+        that.callbacks.render(that, item, response);
         that.triggerEvent('onRequestSuccess', {
-            'tab' : tab,
+            'tab' : item,
             'response' : response
         });
     };
@@ -321,7 +324,6 @@ function(params){
     /* *** RENDER *** */
 
     that.callbacks.render = function(that, item, data){
-        that.isRendering = true;
         item['data'] = data;
         item.isCached = true;
         // Render
@@ -358,6 +360,15 @@ function(params){
                     }
                 }
             }
+        }
+    };
+
+    that.callbacks.renderError = function(that, item, config){
+        if(that.params['responseHTML']){
+            cm.clearNode(item['tab']['inner']);
+            item['tab']['inner'].appendChild(
+                cm.node('div', {'class' : 'cm__empty'}, that.lang('server_error'))
+            );
         }
     };
 

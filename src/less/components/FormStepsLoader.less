@@ -1,0 +1,41 @@
+/* ******* COMPONENTS: FORM STEPS LOADER ******* */
+
+.com__form-steps-loader {
+    .cm__box;
+    position: relative;
+
+    .form__request,
+    .form__buttons,
+    .form__response {
+        .cm__box-reverse;
+    }
+
+    .form__response {
+        height: 0;
+        overflow: hidden;
+        display: none;
+
+        > .inner {
+            position: relative;
+        }
+
+        &.is-show {
+            display: block;
+        }
+    }
+
+    .form__temporary {
+        position: absolute;
+        opacity: 0;
+        .mx__position(0, 0, auto, 0);
+        .mx__transition(opacity, @CmUI-Transition-Duration);
+
+        &:first-child {
+            position: relative;
+        }
+
+        &.is-show {
+            opacity: 1;
+        }
+    }
+}

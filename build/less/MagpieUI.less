@@ -3949,13 +3949,14 @@ Copyright (c) 2015 Daniel Eden
 @ComCalendarTable-Inactive-BackgroundHover: @CmColor-Secondary-LightHover;
 @ComCalendarTable-Weekend-Background: @CmColor-Secondary-LightActive;
 @ComCalendarTable-Weekend-BackgroundHover: @CmColor-Secondary-LightActiveHover;
-@ComCalendarTable-Today-Background: @CmColor-Primary-LightActive;
-@ComCalendarTable-Today-BackgroundHover: @CmColor-Primary-LightActiveHover;
+@ComCalendarTable-Today-Background: @CmColor-Primary-LightHighlight;
+@ComCalendarTable-Today-BackgroundHover: @CmColor-Primary-LightHover;
 @ComCalendarTable-Active-Background: @CmColor-Primary-LightActive;
 @ComCalendarTable-Active-BackgroundHover: @CmColor-Primary-LightActiveHover;
 
 @ComCalendarAgenda-Day-Indent: @CmIndent-Medium;
-@ComCalendarAgenda-Day-Width: 64px;
+@ComCalendarAgenda-Day-Padding: @CmIndent-XSmall;
+@ComCalendarAgenda-Day-Width: 72px;
 
 @ComCalendarWeek-Day-Indent: @CmIndent-XXXSmall;
 @ComCalendarWeek-Item-Height: @ComCalendarEvent-Short-Height;
@@ -4023,6 +4024,7 @@ Copyright (c) 2015 Daniel Eden
 @ComTabset-BorderWidth: @CmBorder-Width;
 @ComTabset-Border: @ComTabset-BorderWidth solid @ComTabset-BorderColor;
 @ComTabset-BorderOverlap: @ComTabset-Content-Background;
+@ComTabset-BorderOverlapRadius: 0;
 @ComTabset-Duration: @CmUI-Transition-Duration;
 @ComTabset-Column-Width: 256px;
 @ComTabset-Content-Background: @CmColor-Background;
@@ -4033,7 +4035,7 @@ Copyright (c) 2015 Daniel Eden
 @ComTabset-Tabs-HorizontalIndent: @CmIndent-Medium;
 @ComTabset-Tabs-VerticalIndent: @CmIndent-Medium;
 @ComTabset-Tabs-FontSize: @CmFont-Base-Size;
-@ComTabset-Tabs-DefaultBackground: @CmColor-Secondary-LightHighlight;
+@ComTabset-Tabs-DefaultBackground: @CmColor-Secondary-LightActive;
 @ComTabset-Tabs-HoverBackground: @CmColor-Secondary-LightHover;
 @ComTabset-Tabs-ActiveBackground: @CmColor-Background;
 @ComTabset-TabsTitle-Background: @CmColor-Secondary-LightHighlight;
@@ -4453,6 +4455,14 @@ Copyright (c) 2015 Daniel Eden
     &.is-last,
     &:last-child {
         margin-bottom: 0;
+    }
+}
+
+.cm__box-reverse {
+    margin: @CmIndent-Medium 0 0;
+
+    &:first-child {
+        margin-top: 0;
     }
 }
 
@@ -6311,6 +6321,37 @@ button {
         }
     }
 
+    &.is-row {
+        .display-flex;
+        height: auto;
+        .mx__flex-direction(column);
+
+        &.pull-left {
+            .mx__align-items(flex-start);
+        }
+
+        &.pull-center {
+            .mx__align-items(center);
+        }
+
+        &.pull-right {
+            .mx__align-items(flex-end);
+        }
+
+        .button,
+        .browse-button,
+        .com__menu {
+            .cm__text-overflow;
+            margin: @CmForm-ButtonsIndent 0 0 0;
+            display: block;
+            float: none;
+
+            &:first-child {
+                margin-top: 0;
+            }
+        }
+    }
+
     &.is-box,
     &.is-block {
         height: auto;
@@ -6318,11 +6359,11 @@ button {
         .button,
         .browse-button,
         .com__menu {
+            .cm__text-overflow;
             width: 100%;
             display: block;
             margin: @CmForm-ButtonsIndent 0 0 0;
             float: none;
-            .cm__text-overflow;
 
             &:first-child {
                 margin-top: 0;
@@ -10908,7 +10949,7 @@ button {
 
         > .label {
             .time {
-                margin: 0 @ComCalendarEvent-Padding 0 0;
+                margin: 0 @CmIndent-XSmall 0 0;
                 float: left;
                 color: @CmColor-Font-Hint;
             }
@@ -10943,7 +10984,7 @@ button {
             color: @CmColor-Font;
 
             .time {
-                margin: 0 0 0 @ComCalendarEvent-Padding;
+                margin: 0 0 0 @CmIndent-XXXSmall;
                 float: right;
                 color: @CmColor-Font-Hint;
             }
@@ -10976,27 +11017,63 @@ button {
         .cm__box;
     }
 
-    .calendar__day {
-        margin-top: @ComCalendarAgenda-Day-Indent;
-        padding-top: @ComCalendarAgenda-Day-Indent;
-        border-top: @ComBigCalendar-Border;
+    .calendar__table {
+        > table {
+            table-layout: fixed;
 
-        &:first-child {
-            margin-top: 0;
-            padding-top: 0;
-            border-top: 0;
+            tr {
+                td {
+                    border-top: @ComBigCalendar-Border;
+                    padding: @ComCalendarAgenda-Day-Padding;
+                    vertical-align: top;
+                    .mx__transition(all, @CmUI-Transition-Duration);
+
+                    &.table__dayname {
+                        width: @ComCalendarAgenda-Day-Width;
+                    }
+                }
+
+                &:first-child {
+                    td {
+                        border-top: none;
+                    }
+                }
+
+                &:hover {
+                    td {
+                        .mx__transition(all, @CmUI-Transition-DurationReverse);
+                    }
+                }
+
+                &.default {
+                    td {
+                        background-color: @ComCalendarTable-Default-Background;
+                    }
+
+                    &:hover {
+                        td {
+                            background-color: @ComCalendarTable-Default-BackgroundHover;
+                        }
+                    }
+                }
+
+                &.today {
+                    td {
+                        background-color: @ComCalendarTable-Today-Background;
+                    }
+
+                    &:hover {
+                        td {
+                            background-color: @ComCalendarTable-Today-BackgroundHover;
+                        }
+                    }
+                }
+            }
         }
     }
 
     .calendar__dayname {
-        width: @ComCalendarAgenda-Day-Width;
-        float: left;
-        margin-right: @CmIndent-XSmall;
         font-weight: @CmFont-Base-BoldWeight;
-    }
-
-    .calendar__events-holder {
-        overflow: hidden;
     }
 }
 
@@ -12111,6 +12188,47 @@ button {
 .com__form__buttons {
     .clearfix;
     position: relative;
+}
+/* ******* COMPONENTS: FORM STEPS LOADER ******* */
+
+.com__form-steps-loader {
+    .cm__box;
+    position: relative;
+
+    .form__request,
+    .form__buttons,
+    .form__response {
+        .cm__box-reverse;
+    }
+
+    .form__response {
+        height: 0;
+        overflow: hidden;
+        display: none;
+
+        > .inner {
+            position: relative;
+        }
+
+        &.is-show {
+            display: block;
+        }
+    }
+
+    .form__temporary {
+        position: absolute;
+        opacity: 0;
+        .mx__position(0, 0, auto, 0);
+        .mx__transition(opacity, @CmUI-Transition-Duration);
+
+        &:first-child {
+            position: relative;
+        }
+
+        &.is-show {
+            opacity: 1;
+        }
+    }
 }
 /* ******* COMPONENTS: GALLERY ******* */
 
@@ -14186,7 +14304,7 @@ button {
 
     ul {
         li {
-            border-radius: @ComTabset-BorderRadius @ComTabset-BorderRadius 0 0;
+            border-radius: @ComTabset-BorderRadius @ComTabset-BorderRadius @ComTabset-BorderOverlapRadius @ComTabset-BorderOverlapRadius;
 
             &.active {
                 border-bottom-color: @ComTabset-BorderOverlap;
@@ -14201,7 +14319,7 @@ button {
 
     ul {
         li {
-            border-radius: 0 0 @ComTabset-BorderRadius @ComTabset-BorderRadius;
+            border-radius: @ComTabset-BorderOverlapRadius @ComTabset-BorderOverlapRadius @ComTabset-BorderRadius @ComTabset-BorderRadius;
 
             &.active {
                 border-top-color: @ComTabset-BorderOverlap;
@@ -14216,7 +14334,7 @@ button {
 
     ul {
         li {
-            border-radius: 0 @ComTabset-BorderRadius @ComTabset-BorderRadius 0;
+            border-radius: @ComTabset-BorderOverlapRadius @ComTabset-BorderRadius @ComTabset-BorderRadius @ComTabset-BorderOverlapRadius;
 
             &.active {
                 border-left-color: @ComTabset-BorderOverlap;
@@ -14231,7 +14349,7 @@ button {
 
     ul {
         li {
-            border-radius: @ComTabset-BorderRadius 0 0 @ComTabset-BorderRadius;
+            border-radius: @ComTabset-BorderRadius @ComTabset-BorderOverlapRadius @ComTabset-BorderOverlapRadius @ComTabset-BorderRadius;
 
             &.active {
                 border-right-color: @ComTabset-BorderOverlap;
@@ -14730,6 +14848,11 @@ button {
 
 
 
+}
+/* ******* COMPONENTS: TOOLBAR ******* */
+
+.com__toolbar {
+    .cm__box;
 }
 /* ******* COMPONENTS: ZOOM ******* */
 

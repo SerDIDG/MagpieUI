@@ -651,13 +651,14 @@
 @ComCalendarTable-Inactive-BackgroundHover: @CmColor-Secondary-LightHover;
 @ComCalendarTable-Weekend-Background: @CmColor-Secondary-LightActive;
 @ComCalendarTable-Weekend-BackgroundHover: @CmColor-Secondary-LightActiveHover;
-@ComCalendarTable-Today-Background: @CmColor-Primary-LightActive;
-@ComCalendarTable-Today-BackgroundHover: @CmColor-Primary-LightActiveHover;
+@ComCalendarTable-Today-Background: @CmColor-Primary-LightHighlight;
+@ComCalendarTable-Today-BackgroundHover: @CmColor-Primary-LightHover;
 @ComCalendarTable-Active-Background: @CmColor-Primary-LightActive;
 @ComCalendarTable-Active-BackgroundHover: @CmColor-Primary-LightActiveHover;
 
 @ComCalendarAgenda-Day-Indent: @CmIndent-Medium;
-@ComCalendarAgenda-Day-Width: 64px;
+@ComCalendarAgenda-Day-Padding: @CmIndent-XSmall;
+@ComCalendarAgenda-Day-Width: 72px;
 
 @ComCalendarWeek-Day-Indent: @CmIndent-XXXSmall;
 @ComCalendarWeek-Item-Height: @ComCalendarEvent-Short-Height;
@@ -725,6 +726,7 @@
 @ComTabset-BorderWidth: @CmBorder-Width;
 @ComTabset-Border: @ComTabset-BorderWidth solid @ComTabset-BorderColor;
 @ComTabset-BorderOverlap: @ComTabset-Content-Background;
+@ComTabset-BorderOverlapRadius: 0;
 @ComTabset-Duration: @CmUI-Transition-Duration;
 @ComTabset-Column-Width: 256px;
 @ComTabset-Content-Background: @CmColor-Background;
@@ -735,7 +737,7 @@
 @ComTabset-Tabs-HorizontalIndent: @CmIndent-Medium;
 @ComTabset-Tabs-VerticalIndent: @CmIndent-Medium;
 @ComTabset-Tabs-FontSize: @CmFont-Base-Size;
-@ComTabset-Tabs-DefaultBackground: @CmColor-Secondary-LightHighlight;
+@ComTabset-Tabs-DefaultBackground: @CmColor-Secondary-LightActive;
 @ComTabset-Tabs-HoverBackground: @CmColor-Secondary-LightHover;
 @ComTabset-Tabs-ActiveBackground: @CmColor-Background;
 @ComTabset-TabsTitle-Background: @CmColor-Secondary-LightHighlight;

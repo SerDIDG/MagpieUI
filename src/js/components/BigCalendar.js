@@ -417,11 +417,11 @@ function(params){
     };
 
     var render = function(){
-        var template;
+        cm.log(that.nodes);
         // Find events and set template and tooltip config
         new cm.Finder('Com.CalendarEvent', null, that.params['node'], function(classObject){
             // Clone template
-            template = cm.clone(that.nodes['templates']['event']['container'], true);
+            var template = cm.clone(that.nodes['templates']['event']['container'], true);
             // Set Node
             classObject
                 .setTooltipParams(that.params['Com.Tooltip'])

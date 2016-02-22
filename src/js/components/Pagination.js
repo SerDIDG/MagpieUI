@@ -34,14 +34,14 @@ cm.define('Com.Pagination', {
         'startPageToken' : '',
         'pageCount' : 0,
         'showLoader' : true,
-        'loaderDelay' : 300,                                        // in ms
+        'loaderDelay' : 'cm._config.loadDelay',
         'barPosition' : 'bottom',                                   // top | bottom | both, require renderStructure
         'barAlign' : 'left',                                        // left | center | right, require renderStructure
         'barCountLR' : 3,
         'barCountM' : 1,                                            // 1 for drawing 3 center pagination buttons, 2 - 5, 3 - 7, etc
         'switchManually' : false,                                   // Switch pages manually
         'animateSwitch' : false,
-        'animateDuration' : 300,
+        'animateDuration' : 'cm._config.animDuration',
         'animatePrevious' : false,                                  // Animating of hiding previous page, require animateSwitch
         'pageTag' : 'div',
         'pageAttributes' : {
@@ -64,7 +64,8 @@ cm.define('Com.Pagination', {
         },
         'langs' : {
             'prev' : 'Previous',
-            'next' : 'Next'
+            'next' : 'Next',
+            'server_error' : 'An unexpected error has occurred. Please try again later.'
         }
     }
 },
@@ -286,6 +287,7 @@ function(params){
 
     that.callbacks.error = function(that, config){
         that.triggerEvent('onError');
+        that.callbacks.response(that, config);
     };
 
     that.callbacks.abort = function(that, config){
@@ -327,7 +329,7 @@ function(params){
     /* *** RENDER PAGE *** */
 
     that.callbacks.renderContainer = function(that, page){
-        return cm.Node(that.params['pageTag'], that.params['pageAttributes']);
+        return cm.node(that.params['pageTag'], that.params['pageAttributes']);
     };
 
     that.callbacks.render = function(that, data){
@@ -336,16 +338,21 @@ function(params){
             'page' : that.page,
             'token' : that.pageToken,
             'pages' : that.nodes['pages'],
-            'container' : cm.Node(that.params['pageTag']),
+            'container' : cm.node(that.params['pageTag']),
             'data' : data,
             'isVisible' : true,
-            'isRendered' : true
+            'isRendered' : true,
+            'isError' : !data
         };
         page['container'] = that.callbacks.renderContainer(that, page);
         that.pages[that.page] = page;
         // Render
         that.triggerEvent('onPageRender', page);
-        that.callbacks.renderPage(that, page);
+        if(page['data']){
+            that.callbacks.renderPage(that, page);
+        }else{
+            that.callbacks.renderError(that, page);
+        }
         // Embed
         that.nodes['pages'].appendChild(page['container']);
         cm.addClass(page['container'], 'is-visible', true);
@@ -373,6 +380,14 @@ function(params){
                     }
                 }
             }
+        }
+    };
+
+    that.callbacks.renderError = function(that, page){
+        if(that.params['responseHTML']){
+            page['container'].appendChild(
+                cm.node('div', {'class' : 'cm__empty'}, that.lang('server_error'))
+            );
         }
     };
 

@@ -152,7 +152,9 @@ function(params){
                     'events' : {
                         'onPageRender' : function(pagination, data){
                             if(that.isAjax){
-                                if(data['data'].length){
+                                if(data.isError){
+
+                                }else if(data['data'].length){
                                     renderTable(data['page'], data['data'], data['container']);
                                 }else{
                                     renderEmptiness(data['container']);
@@ -598,6 +600,13 @@ function(params){
     };
 
     /* ******* MAIN ******* */
+
+    that.rebuild = function(){
+        if(that.isAjax){
+            that.components['pagination'].rebuild();
+        }
+        return that;
+    };
 
     that.check = function(index){
         if(that.params['data'][index]){

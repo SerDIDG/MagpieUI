@@ -30,7 +30,7 @@ cm.define('Com.Form', {
         'buttonsAlign' : 'right',
         'showLoader' : true,
         'loaderCoverage' : 'fields',                                // fields, all
-        'loaderDelay' : 'cm._config.hideDelay',                     // in ms
+        'loaderDelay' : 'cm._config.loadDelay',
         'ajax' : {
             'type' : 'json',
             'method' : 'post',

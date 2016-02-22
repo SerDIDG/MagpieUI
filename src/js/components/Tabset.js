@@ -1,3 +1,5 @@
+/* ******* COMPONENTS: TABSET ******* */
+
 Com.Elements['Tabset'] = {};
 
 Com['GetTabset'] = function(id){
@@ -185,6 +187,8 @@ function(params){
             'title' : '',
             'content' : cm.Node('li'),
             'isHide' : true,
+            'controller' : false,
+            'controllerParams' : {},
             'onShowStart' : function(that, tab){},
             'onShow' : function(that, tab){},
             'onHideStart' : function(that, tab){},
@@ -248,35 +252,59 @@ function(params){
     };
 
     var set = function(id){
+        var item, previous;
         if(!that.isProcess && id != that.active){
             that.isProcess = true;
             // Hide Previous Tab
             if(that.active && that.tabs[that.active]){
                 that.previous = that.active;
-                that.tabs[that.active]['isHide'] = true;
+                previous = that.tabs[that.previous];
+                previous['isHide'] = true;
                 // Hide Start Event
-                that.tabs[that.active]['onHideStart'](that, that.tabs[that.active]);
-                that.triggerEvent('onTabHideStart', that.tabs[that.active]);
+                previous['onHideStart'](that, previous);
+                that.triggerEvent('onTabHideStart', previous);
+                // Controller
+                if(previous['controllerObject']){
+                    previous['controllerObject'].pause();
+                }
                 // Hide
-                cm.removeClass(that.tabs[that.active]['tab']['container'], 'active');
-                cm.removeClass(that.tabs[that.active]['menu']['container'], 'active');
-                cm.removeClass(that.tabs[that.active]['content'], 'active');
+                cm.removeClass(previous['tab']['container'], 'active');
+                cm.removeClass(previous['menu']['container'], 'active');
+                cm.removeClass(previous['content'], 'active');
                 // Hide End Event
-                that.tabs[that.active]['onHide'](that, that.tabs[that.active]);
-                that.triggerEvent('onTabHide', that.tabs[that.active]);
+                previous['onHide'](that, previous);
+                that.triggerEvent('onTabHide', previous);
             }
             // Show New Tab
             that.active = id;
-            that.tabs[that.active]['isHide'] = false;
+            item = that.tabs[that.active];
+            item['isHide'] = false;
             // Show Start Event
-            that.tabs[that.active]['onShowStart'](that, that.tabs[that.active]);
-            that.triggerEvent('onTabShowStart', that.tabs[that.active]);
+            item['onShowStart'](that, item);
+            that.triggerEvent('onTabShowStart', item);
+            // Controller
+            if(item['controller']){
+                if(!item['controllerObject'] || !item['controllerObject']._isConstructed){
+                    cm.getConstructor(item['controller'], function(classConstructor){
+                        if(classConstructor.prototype._modules['TabController']){
+                            item['controllerObject'] = new classConstructor(
+                                cm.merge(item['controllerParams'], {
+                                    'container' : item['content']
+                                })
+                            );
+                            item['controllerObject'].construct();
+                        }
+                    });
+                }else{
+                    item['controllerObject'].refresh();
+                }
+            }
             // Show
-            that.tabs[that.active]['content'].style.display = 'block';
-            cm.addClass(that.tabs[that.active]['tab']['container'], 'active');
-            cm.addClass(that.tabs[that.active]['menu']['container'], 'active');
-            cm.addClass(that.tabs[that.active]['content'], 'active', true);
-            that.nodes['headerTitleText'].innerHTML = that.tabs[that.active]['title'];
+            item['content'].style.display = 'block';
+            cm.addClass(item['tab']['container'], 'active');
+            cm.addClass(item['menu']['container'], 'active');
+            cm.addClass(item['content'], 'active', true);
+            that.nodes['headerTitleText'].innerHTML = item['title'];
             // Animate
             if(!that.params['switchManually']){
                 if(that.previous && that.params['animateSwitch'] && !that.params['calculateMaxHeight']){
@@ -383,10 +411,23 @@ function(params){
         render();
         return that;
     };
+    
+    that.destruct = function(){
+        that.remove();
+        that.removeFromStack();
+    };
 
     that.set = function(id){
         if(id && that.tabs[id]){
             set(id);
+        }
+        return that;
+    };
+
+    that.setByIndex = function(index){
+        var item;
+        if(item = that.tabsListing[index]){
+            set(item['id']);
         }
         return that;
     };
@@ -405,6 +446,13 @@ function(params){
     that.addTab = function(item){
         if(item && item['id']){
             renderTab(item);
+        }
+        return that;
+    };
+
+    that.addTabs = function(o){
+        if(cm.isArray(o) || cm.isObject(o)){
+            cm.forEach(o, that.addTab);
         }
         return that;
     };
@@ -438,3 +486,52 @@ function(params){
 
     init();
 });
+
+/* ******* COMPONENTS: TABSET: MODULE TAB CONTROLLER ******* */
+
+Mod['TabController'] = {
+    '_config' : {
+        'extend' : true,
+        'predefine' : false,
+        'require' : ['Extend']
+    },
+    '_construct' : function(){
+        var that = this;
+        that._isConstructed = false;
+        that._isDestructed = false;
+        that._isPaused = false;
+    },
+    'construct' : function(){
+        var that = this;
+        that._isConstructed = true;
+        that._isDestructed = false;
+        that._isPaused = false;
+        return that;
+    },
+    'destruct' : function(){
+        var that = this;
+        if(that._isConstructed && !that._isDestructed){
+            that._isConstructed = false;
+            that._isDestructed = true;
+            cm.customEvent.trigger(that.params['node'], 'destruct', {
+                'type' : 'child',
+                'self' : false
+            });
+            that.removeFromStack && that.removeFromStack();
+            cm.remove(that.params['node']);
+        }
+        return that;
+    },
+    'refresh' : function(){
+        var that = this;
+        that._isPaused = false;
+        return that;
+    },
+    'pause' : function(){
+        var that = this;
+        if(!that._isPaused){
+            that._isPaused = true;
+        }
+        return that;
+    }
+};

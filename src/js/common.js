@@ -38,6 +38,7 @@ var cm = {
             'animDuration' : 250,
             'animDurationShort' : 150,
             'animDurationLong' : 500,
+            'loadDelay' : 350,
             'hideDelay' : 250,
             'hideDelayShort' : 150,
             'hideDelayLong' : 500,
@@ -360,7 +361,7 @@ cm.arrayToObject = function(a){
 cm.objectReplace = function(o, vars){
     var newO = cm.clone(o);
     cm.forEach(newO, function(value, key){
-        if(typeof value == 'object'){
+        if(cm.isObject(value)){
             newO[key] = cm.objectReplace(value, vars);
         }else{
             newO[key] = cm.strReplace(value, vars);
@@ -1589,6 +1590,9 @@ cm.strReplace = function(str, vars){
     if(vars && cm.isObject(vars)){
         str = str.toString();
         cm.forEach(vars, function(item, key){
+            if(cm.isObject(item)){
+                item = JSON.stringify(item);
+            }
             str = str.replace(new RegExp(key, 'g'), item);
         });
     }

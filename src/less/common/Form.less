@@ -224,6 +224,37 @@
         }
     }
 
+    &.is-row {
+        .display-flex;
+        height: auto;
+        .mx__flex-direction(column);
+
+        &.pull-left {
+            .mx__align-items(flex-start);
+        }
+
+        &.pull-center {
+            .mx__align-items(center);
+        }
+
+        &.pull-right {
+            .mx__align-items(flex-end);
+        }
+
+        .button,
+        .browse-button,
+        .com__menu {
+            .cm__text-overflow;
+            margin: @CmForm-ButtonsIndent 0 0 0;
+            display: block;
+            float: none;
+
+            &:first-child {
+                margin-top: 0;
+            }
+        }
+    }
+
     &.is-box,
     &.is-block {
         height: auto;
@@ -231,11 +262,11 @@
         .button,
         .browse-button,
         .com__menu {
+            .cm__text-overflow;
             width: 100%;
             display: block;
             margin: @CmForm-ButtonsIndent 0 0 0;
             float: none;
-            .cm__text-overflow;
 
             &:first-child {
                 margin-top: 0;

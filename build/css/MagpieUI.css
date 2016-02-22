@@ -3383,6 +3383,12 @@ Copyright (c) 2015 Daniel Eden
 .cm__box:last-child {
   margin-bottom: 0;
 }
+.cm__box-reverse {
+  margin: 24px 0 0;
+}
+.cm__box-reverse:first-child {
+  margin-top: 0;
+}
 /* *** COUNTER *** */
 .cm__counter {
   height: 16px;
@@ -5623,6 +5629,51 @@ button::-moz-focus-inner {
 .btn-wrap.centered button:first-child {
   margin-left: 0;
 }
+.btn-wrap.is-row {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+  height: auto;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+.btn-wrap.is-row.pull-left {
+  -webkit-align-items: flex-start;
+  align-items: flex-start;
+}
+.btn-wrap.is-row.pull-center {
+  -webkit-align-items: center;
+  align-items: center;
+}
+.btn-wrap.is-row.pull-right {
+  -webkit-align-items: flex-end;
+  align-items: flex-end;
+}
+.btn-wrap.is-row .button,
+.btn-wrap.is-row .browse-button,
+.btn-wrap.is-row .com__menu,
+.btn-wrap.is-row input[type="button"],
+.btn-wrap.is-row input[type="submit"],
+.btn-wrap.is-row input[type="reset"],
+.btn-wrap.is-row button {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin: 8px 0 0 0;
+  display: block;
+  float: none;
+}
+.btn-wrap.is-row .button:first-child,
+.btn-wrap.is-row .browse-button:first-child,
+.btn-wrap.is-row .com__menu:first-child,
+.btn-wrap.is-row input[type="button"]:first-child,
+.btn-wrap.is-row input[type="submit"]:first-child,
+.btn-wrap.is-row input[type="reset"]:first-child,
+.btn-wrap.is-row button:first-child {
+  margin-top: 0;
+}
 .btn-wrap.is-box,
 .btn-wrap.is-block {
   height: auto;
@@ -5641,13 +5692,13 @@ button::-moz-focus-inner {
 .btn-wrap.is-block input[type="reset"],
 .btn-wrap.is-box button,
 .btn-wrap.is-block button {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   width: 100%;
   display: block;
   margin: 8px 0 0 0;
   float: none;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
 }
 .btn-wrap.is-box .button:first-child,
 .btn-wrap.is-block .button:first-child,
@@ -10389,7 +10440,7 @@ button::-moz-focus-inner {
   margin-top: 12px;
 }
 .com__calendar-event.is-long > .label .time {
-  margin: 0 4px 0 0;
+  margin: 0 12px 0 0;
   float: left;
   color: #999999;
 }
@@ -10452,24 +10503,40 @@ button::-moz-focus-inner {
 .com__calendar-agenda .calendar__title:last-child {
   margin-bottom: 0;
 }
-.com__calendar-agenda .calendar__day {
-  margin-top: 24px;
-  padding-top: 24px;
-  border-top: 1px solid #cccccc;
+.com__calendar-agenda .calendar__table > table {
+  table-layout: fixed;
 }
-.com__calendar-agenda .calendar__day:first-child {
-  margin-top: 0;
-  padding-top: 0;
-  border-top: 0;
+.com__calendar-agenda .calendar__table > table tr td {
+  border-top: 1px solid #cccccc;
+  padding: 12px;
+  vertical-align: top;
+  -webkit-transition: all 250ms ease-in-out;
+  transition: all 250ms ease-in-out;
+}
+.com__calendar-agenda .calendar__table > table tr td.table__dayname {
+  width: 72px;
+}
+.com__calendar-agenda .calendar__table > table tr:first-child td {
+  border-top: none;
+}
+.com__calendar-agenda .calendar__table > table tr:hover td {
+  -webkit-transition: all 100ms ease-in-out;
+  transition: all 100ms ease-in-out;
+}
+.com__calendar-agenda .calendar__table > table tr.default td {
+  background-color: #ffffff;
+}
+.com__calendar-agenda .calendar__table > table tr.default:hover td {
+  background-color: #f2f2f2;
+}
+.com__calendar-agenda .calendar__table > table tr.today td {
+  background-color: #f6fafd;
+}
+.com__calendar-agenda .calendar__table > table tr.today:hover td {
+  background-color: #e9f2fb;
 }
 .com__calendar-agenda .calendar__dayname {
-  width: 64px;
-  float: left;
-  margin-right: 12px;
   font-weight: 600;
-}
-.com__calendar-agenda .calendar__events-holder {
-  overflow: hidden;
 }
 /* *** WEEK VIEW *** */
 .com__calendar-week .calendar__templates {
@@ -10521,10 +10588,10 @@ button::-moz-focus-inner {
   background-color: #dbdbdb;
 }
 .com__calendar-week .calendar__table > table td.today {
-  background-color: #d8e8f8;
+  background-color: #f6fafd;
 }
 .com__calendar-week .calendar__table > table td.today:hover {
-  background-color: #c2dbf4;
+  background-color: #e9f2fb;
 }
 .com__calendar-week .calendar__table > table tr.is-allday td {
   border-bottom-width: 2px;
@@ -10590,10 +10657,10 @@ button::-moz-focus-inner {
   background-color: #dbdbdb;
 }
 .com__calendar-month .calendar__table > table td.today {
-  background-color: #d8e8f8;
+  background-color: #f6fafd;
 }
 .com__calendar-month .calendar__table > table td.today:hover {
-  background-color: #c2dbf4;
+  background-color: #e9f2fb;
 }
 .com__calendar-month .calendar__day {
   padding: 4px;
@@ -11492,6 +11559,53 @@ button::-moz-focus-inner {
   line-height: 0;
   font-size: 0;
   height: 0;
+}
+/* ******* COMPONENTS: FORM STEPS LOADER ******* */
+.com__form-steps-loader {
+  margin: 0 0 24px;
+  position: relative;
+}
+.com__form-steps-loader.bottom,
+.com__form-steps-loader.is-last,
+.com__form-steps-loader:last-child {
+  margin-bottom: 0;
+}
+.com__form-steps-loader .form__request,
+.com__form-steps-loader .form__buttons,
+.com__form-steps-loader .form__response {
+  margin: 24px 0 0;
+}
+.com__form-steps-loader .form__request:first-child,
+.com__form-steps-loader .form__buttons:first-child,
+.com__form-steps-loader .form__response:first-child {
+  margin-top: 0;
+}
+.com__form-steps-loader .form__response {
+  height: 0;
+  overflow: hidden;
+  display: none;
+}
+.com__form-steps-loader .form__response > .inner {
+  position: relative;
+}
+.com__form-steps-loader .form__response.is-show {
+  display: block;
+}
+.com__form-steps-loader .form__temporary {
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: 0;
+  bottom: auto;
+  left: 0;
+  -webkit-transition: opacity 250ms ease-in-out;
+  transition: opacity 250ms ease-in-out;
+}
+.com__form-steps-loader .form__temporary:first-child {
+  position: relative;
+}
+.com__form-steps-loader .form__temporary.is-show {
+  opacity: 1;
 }
 /* ******* COMPONENTS: GALLERY ******* */
 /* *** CORE *** */
@@ -13759,7 +13873,7 @@ html.ie9 .com__palette .b-range {
 }
 .com__tabset__head-tabs ul li {
   position: relative;
-  background: #fafafa;
+  background: #e8e8e8;
   border: 1px solid #cccccc;
   border-radius: 3px;
   -webkit-transition: all 250ms ease-in-out;
@@ -14596,6 +14710,15 @@ html.ie9 .com__timeselect > .inner > .sep {
   background-image: url("../img/icons/small/arrow-right.png");
 }
 /* ******* COMPONENT: TOGGLE BOX: ADAPTIVE ******* */
+/* ******* COMPONENTS: TOOLBAR ******* */
+.com__toolbar {
+  margin: 0 0 24px;
+}
+.com__toolbar.bottom,
+.com__toolbar.is-last,
+.com__toolbar:last-child {
+  margin-bottom: 0;
+}
 /* ******* COMPONENTS: ZOOM ******* */
 .com__zoom {
   position: fixed;

@@ -34,10 +34,10 @@ cm.define('Com.ScrollPagination', {
         'perPage' : 0,                                              // 0 - render all data in one page
         'startPage' : 1,                                            // Start page
         'startPageToken' : '',
-        'pageCount' : 0,                                              // Render only count of pages. 0 - infinity
+        'pageCount' : 0,                                            // Render only count of pages. 0 - infinity
         'showButton' : true,                                        // true - always | once - show once after first loaded page
         'showLoader' : true,
-        'loaderDelay' : 100,                                        // in ms
+        'loaderDelay' : 'cm._config.loadDelay',
         'stopOnESC' : true,
         'pageTag' : 'div',
         'pageAttributes' : {

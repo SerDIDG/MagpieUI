@@ -334,7 +334,7 @@
 
     ul {
         li {
-            border-radius: @ComTabset-BorderRadius @ComTabset-BorderRadius 0 0;
+            border-radius: @ComTabset-BorderRadius @ComTabset-BorderRadius @ComTabset-BorderOverlapRadius @ComTabset-BorderOverlapRadius;
 
             &.active {
                 border-bottom-color: @ComTabset-BorderOverlap;
@@ -349,7 +349,7 @@
 
     ul {
         li {
-            border-radius: 0 0 @ComTabset-BorderRadius @ComTabset-BorderRadius;
+            border-radius: @ComTabset-BorderOverlapRadius @ComTabset-BorderOverlapRadius @ComTabset-BorderRadius @ComTabset-BorderRadius;
 
             &.active {
                 border-top-color: @ComTabset-BorderOverlap;
@@ -364,7 +364,7 @@
 
     ul {
         li {
-            border-radius: 0 @ComTabset-BorderRadius @ComTabset-BorderRadius 0;
+            border-radius: @ComTabset-BorderOverlapRadius @ComTabset-BorderRadius @ComTabset-BorderRadius @ComTabset-BorderOverlapRadius;
 
             &.active {
                 border-left-color: @ComTabset-BorderOverlap;
@@ -379,7 +379,7 @@
 
     ul {
         li {
-            border-radius: @ComTabset-BorderRadius 0 0 @ComTabset-BorderRadius;
+            border-radius: @ComTabset-BorderRadius @ComTabset-BorderOverlapRadius @ComTabset-BorderOverlapRadius @ComTabset-BorderRadius;
 
             &.active {
                 border-right-color: @ComTabset-BorderOverlap;

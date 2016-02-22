@@ -276,7 +276,10 @@ function(params){
             }
             setHeight = that.params['height'] - NAHeight;
         }
-        setHeight = Math.min(Math.max(setHeight, 0), AHeight);
+        setHeight = Math.min(
+            Math.max(setHeight, minHeight, 0),
+            AHeight
+        );
         // Calculate width
         if(/%/.test(that.params['width'])){
             setWidth = ((winWidth / 100) * parseFloat(that.params['width']));

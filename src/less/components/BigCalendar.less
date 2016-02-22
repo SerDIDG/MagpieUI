@@ -9,7 +9,7 @@
 
         > .label {
             .time {
-                margin: 0 @ComCalendarEvent-Padding 0 0;
+                margin: 0 @CmIndent-XSmall 0 0;
                 float: left;
                 color: @CmColor-Font-Hint;
             }
@@ -44,7 +44,7 @@
             color: @CmColor-Font;
 
             .time {
-                margin: 0 0 0 @ComCalendarEvent-Padding;
+                margin: 0 0 0 @CmIndent-XXXSmall;
                 float: right;
                 color: @CmColor-Font-Hint;
             }
@@ -77,27 +77,63 @@
         .cm__box;
     }
 
-    .calendar__day {
-        margin-top: @ComCalendarAgenda-Day-Indent;
-        padding-top: @ComCalendarAgenda-Day-Indent;
-        border-top: @ComBigCalendar-Border;
+    .calendar__table {
+        > table {
+            table-layout: fixed;
 
-        &:first-child {
-            margin-top: 0;
-            padding-top: 0;
-            border-top: 0;
+            tr {
+                td {
+                    border-top: @ComBigCalendar-Border;
+                    padding: @ComCalendarAgenda-Day-Padding;
+                    vertical-align: top;
+                    .mx__transition(all, @CmUI-Transition-Duration);
+
+                    &.table__dayname {
+                        width: @ComCalendarAgenda-Day-Width;
+                    }
+                }
+
+                &:first-child {
+                    td {
+                        border-top: none;
+                    }
+                }
+
+                &:hover {
+                    td {
+                        .mx__transition(all, @CmUI-Transition-DurationReverse);
+                    }
+                }
+
+                &.default {
+                    td {
+                        background-color: @ComCalendarTable-Default-Background;
+                    }
+
+                    &:hover {
+                        td {
+                            background-color: @ComCalendarTable-Default-BackgroundHover;
+                        }
+                    }
+                }
+
+                &.today {
+                    td {
+                        background-color: @ComCalendarTable-Today-Background;
+                    }
+
+                    &:hover {
+                        td {
+                            background-color: @ComCalendarTable-Today-BackgroundHover;
+                        }
+                    }
+                }
+            }
         }
     }
 
     .calendar__dayname {
-        width: @ComCalendarAgenda-Day-Width;
-        float: left;
-        margin-right: @CmIndent-XSmall;
         font-weight: @CmFont-Base-BoldWeight;
-    }
-
-    .calendar__events-holder {
-        overflow: hidden;
     }
 }
 
