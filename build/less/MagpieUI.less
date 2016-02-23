@@ -12180,6 +12180,15 @@ button {
     position: relative;
 }
 
+.com__form__notifications {
+    .cm__box;
+    display: none;
+
+    &.is-show {
+        display: block;
+    }
+}
+
 .com__form__fields {
     .clearfix;
     position: relative;
@@ -12211,7 +12220,14 @@ button {
         }
 
         &.is-show {
+            height: auto;
             display: block;
+        }
+
+        &.is-loaded {
+            height: auto;
+            display: block;
+            overflow: visible;
         }
     }
 

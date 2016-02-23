@@ -21,7 +21,7 @@
     <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
         <h2>Example:</h2>
 
-        <div class="com__form-steps-loader" data-element="Com.FormStepsLoader" data-node="ComFormStepsLoader:{}:container">
+        <div class="com__form-steps-loader" data-element="Com.FormStepsLoader" data-node="ComFormStepsLoader:{}:container" data-config='{"ajax" : {"url" : "%baseurl%"}}'>
             <form class="form">
                 <div class="form__request" data-node="request:{}:container">
                     <div class="inner" data-node="inner">
@@ -49,7 +49,9 @@
                     </div>
                 </div>
                 <div class="form__response" data-node="response:{}:container">
-                    <div class="inner" data-node="inner"></div>
+                    <div class="inner" data-node="inner">
+
+                    </div>
                 </div>
             </form>
         </div>

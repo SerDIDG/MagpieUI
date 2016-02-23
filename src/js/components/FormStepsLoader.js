@@ -263,6 +263,7 @@ function(params){
         cm.appendChild(temporary, that.nodes['response']['inner']);
         cm.addClass(temporary, 'is-show', true);
         // Animate
+        cm.removeClass(that.nodes['response']['container'], 'is-loaded', true);
         cm.addClass(that.nodes['response']['container'], 'is-show', true);
         height = temporary.offsetHeight;
         that.animations['response'].go({
@@ -270,6 +271,7 @@ function(params){
             'duration' : that.params['animateDuration'],
             'anim' : 'smooth',
             'onStop' : function(){
+                cm.addClass(that.nodes['response']['container'], 'is-loaded', true);
                 cm.remove(that.nodes['response']['temporary']);
                 that.nodes['response']['temporary'] = temporary;
                 that.isRendering = false;

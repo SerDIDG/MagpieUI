@@ -497,7 +497,7 @@ function(params){
     /* ******* MAIN ******* */
 
     that.get = function(){
-        return active;
+        return active || null;
     };
 
     that.set = function(value, triggerEvents){

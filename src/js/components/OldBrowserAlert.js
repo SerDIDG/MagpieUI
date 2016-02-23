@@ -31,7 +31,7 @@ function(params){
         userAgent = Com.UA.get();
 
     that.nodes = {};
-    that.compoennts = {};
+    that.components = {};
 
     var init = function(){
         that.setParams(params);
@@ -78,7 +78,7 @@ function(params){
         );
         // Init dialog
         cm.getConstructor('Com.Dialog', function(classConstructor){
-            that.compoennts['dialog'] = new classConstructor({
+            that.components['dialog'] = new classConstructor({
                 'title' : that.lang('title'),
                 'content' : that.nodes['container'],
                 'autoOpen' : false,
@@ -92,9 +92,9 @@ function(params){
                 }
             });
             // Add event on continue button
-            cm.addEvent(that.nodes['button'], 'click', that.compoennts['dialog'].close);
+            cm.addEvent(that.nodes['button'], 'click', that.components['dialog'].close);
             // Open dialog
-            that.compoennts['dialog'].open();
+            that.components['dialog'].open();
         });
     };
 

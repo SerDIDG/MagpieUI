@@ -15,7 +15,7 @@ cm.define('Com.ClassDummy', {
         'onRender'
     ],
     'params' : {
-        'node' : cm.Node('div'),
+        'node' : cm.node('div'),
         'container' : null,
         'name' : '',
         'embedStructure' : 'append'

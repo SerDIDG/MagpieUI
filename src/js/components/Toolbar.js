@@ -115,6 +115,8 @@ function(params){
             'label' : '',
             'title' : '',
             'group' : '',
+            'controller' : false,
+            'controllerParams' : {},
             'handler' : function(){}
         }, item);
         if((group = that.groups[item['group']]) && !group.items[item['name']]){
@@ -122,6 +124,14 @@ function(params){
             item['node'].title = item['title'];
             cm.addEvent(item['node'], 'click', function(e){
                 cm.preventDefault(e);
+                if(item['controllerObject']){
+                    item['controllerObject'].destruct();
+                }
+                if(item['controller']){
+                    cm.getConstructor(item['controller'], function(classConstructor){
+                        item['controllerObject'] = new classConstructor(item['controllerParams']);
+                    });
+                }
                 item['handler'](e, item);
             });
             cm.appendChild(item['node'], item['container']);

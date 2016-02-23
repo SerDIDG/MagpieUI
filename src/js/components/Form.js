@@ -20,7 +20,7 @@ cm.define('Com.Form', {
         'onSendEnd'
     ],
     'params' : {
-        'node' : cm.Node('div'),
+        'node' : cm.node('div'),
         'container' : null,
         'name' : '',
         'renderStructure' : true,
@@ -31,6 +31,7 @@ cm.define('Com.Form', {
         'showLoader' : true,
         'loaderCoverage' : 'fields',                                // fields, all
         'loaderDelay' : 'cm._config.loadDelay',
+        'showNotifications' : true,
         'ajax' : {
             'type' : 'json',
             'method' : 'post',
@@ -42,6 +43,9 @@ cm.define('Com.Form', {
             'position' : 'absolute',
             'autoOpen' : false,
             'removeOnClose' : true
+        },
+        'langs' : {
+            'server_error' : 'An unexpected error has occurred. Please try again later.'
         }
     }
 },
@@ -84,15 +88,22 @@ function(params){
                 that.nodes['form'] = cm.node('form', {'class' : 'form'},
                     that.nodes['fields'] = cm.node('div', {'class' : 'com__form__fields'}))
             );
+            // Notifications
+            that.nodes['notificationsContainer'] = cm.node('div', {'class' : 'com__form__notifications'},
+                cm.node('div', {'class' : 'com-notification'},
+                    that.nodes['notifications'] = cm.node('ul')
+                )
+            );
             // Buttons
             that.nodes['buttonsSeparator'] = cm.node('hr');
-            that.nodes['buttonsContainer'] = cm.node('form', {'class' : 'com__form__buttons'},
+            that.nodes['buttonsContainer'] = cm.node('div', {'class' : 'com__form__buttons'},
                 that.nodes['buttons'] = cm.node('div', {'class' : 'btn-wrap'})
             );
             cm.addClass(that.nodes['buttons'], ['pull', that.params['buttonsAlign']].join('-'));
             // Embed
             that.params['renderButtonsSeparator'] && cm.insertFirst(that.nodes['buttonsSeparator'], that.nodes['buttonsContainer']);
             that.params['renderButtons'] && cm.appendChild(that.nodes['buttonsContainer'], that.nodes['form']);
+            that.params['showNotifications'] && cm.insertFirst(that.nodes['notificationsContainer'], that.nodes['form']);
             that.embedStructure(that.nodes['container']);
         }
         // Overlay
@@ -273,6 +284,7 @@ function(params){
     };
 
     that.callbacks.error = function(that, config){
+        that.renderError(that, config);
         that.triggerEvent('onError');
     };
 
@@ -284,12 +296,31 @@ function(params){
         that.triggerEvent('onAbort');
     };
 
+    /* *** RENDER *** */
+
+    that.renderError = function(that, config, response){
+        cm.clearNode(that.nodes['notifications']);
+        if(!response){
+            that.nodes['notifications'].appendChild(
+                cm.node('li', {'class' : 'error'},
+                    cm.node('div', {'class' : 'descr'}, that.lang('server_error'))
+                )
+            );
+        }
+        cm.addClass(that.nodes['notificationsContainer'], 'is-show', true);
+    };
+
     /* ******* PUBLIC ******* */
 
     that.destruct = function(){
-        cm.forEach(that.fields, function(field){
-            field.destruct();
-        });
+        if(!that._isDestructed){
+            that._isDestructed = true;
+            cm.forEach(that.fields, function(field){
+                field.destruct();
+            });
+            that.removeFromStack();
+            cm.remove(that.nodes['container']);
+        }
         return that;
     };
 
@@ -320,6 +351,10 @@ function(params){
         return o;
     };
 
+    that.getButtonsContainer = function(){
+        return that.nodes['buttonsContainer'];
+    };
+
     that.clear = function(){
         cm.forEach(that.fields, function(field){
             field.destruct();
@@ -335,6 +370,7 @@ function(params){
     };
 
     that.reset = function(){
+        cm.removeClass(that.nodes['notificationsContainer'], 'is-show');
         cm.forEach(that.fields, function(field){
             field.reset();
         });
@@ -393,7 +429,7 @@ cm.define('Com.FormField', {
         'onRender'
     ],
     'params' : {
-        'node' : cm.Node('div'),
+        'node' : cm.node('div'),
         'container' : cm.node('div'),
         'form' : false,
         'name' : '',
@@ -526,6 +562,7 @@ function(params){
 
     that.destruct = function(){
         that.callbacks.destruct(that);
+        that.removeFromStack();
         return that;
     };
 

@@ -54,8 +54,8 @@ cm.define('Com.Pagination', {
         'ajax' : {
             'type' : 'json',
             'method' : 'get',
-            'url' : '',                                             // Request URL. Variables: %page%, %offset%, %token%, %perPage%, %limit%, %callback% for JSONP.
-            'params' : ''                                           // Params object. %page%, %offset%, %token%, %perPage%, %limit%, %callback% for JSONP.
+            'url' : '',                                             // Request URL. Variables: %baseurl%, %page%, %offset%, %token%, %perPage%, %limit%, %callback% for JSONP.
+            'params' : ''                                           // Params object. %baseurl%, %page%, %offset%, %token%, %perPage%, %limit%, %callback% for JSONP.
         },
         'Com.Overlay' : {
             'position' : 'absolute',

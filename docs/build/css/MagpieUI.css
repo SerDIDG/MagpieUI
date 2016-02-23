@@ -11871,6 +11871,18 @@ button::-moz-focus-inner {
 .com__form:last-child {
   margin-bottom: 0;
 }
+.com__form__notifications {
+  margin: 0 0 24px;
+  display: none;
+}
+.com__form__notifications.bottom,
+.com__form__notifications.is-last,
+.com__form__notifications:last-child {
+  margin-bottom: 0;
+}
+.com__form__notifications.is-show {
+  display: block;
+}
 .com__form__fields {
   position: relative;
 }
@@ -11924,7 +11936,13 @@ button::-moz-focus-inner {
   position: relative;
 }
 .com__form-steps-loader .form__response.is-show {
+  height: auto;
   display: block;
+}
+.com__form-steps-loader .form__response.is-loaded {
+  height: auto;
+  display: block;
+  overflow: visible;
 }
 .com__form-steps-loader .form__temporary {
   position: absolute;

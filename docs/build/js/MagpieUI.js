@@ -16536,7 +16536,7 @@ cm.define('Com.Form', {
         'onSendEnd'
     ],
     'params' : {
-        'node' : cm.Node('div'),
+        'node' : cm.node('div'),
         'container' : null,
         'name' : '',
         'renderStructure' : true,
@@ -16547,6 +16547,7 @@ cm.define('Com.Form', {
         'showLoader' : true,
         'loaderCoverage' : 'fields',                                // fields, all
         'loaderDelay' : 'cm._config.loadDelay',
+        'showNotifications' : true,
         'ajax' : {
             'type' : 'json',
             'method' : 'post',
@@ -16558,6 +16559,9 @@ cm.define('Com.Form', {
             'position' : 'absolute',
             'autoOpen' : false,
             'removeOnClose' : true
+        },
+        'langs' : {
+            'server_error' : 'An unexpected error has occurred. Please try again later.'
         }
     }
 },
@@ -16600,15 +16604,22 @@ function(params){
                 that.nodes['form'] = cm.node('form', {'class' : 'form'},
                     that.nodes['fields'] = cm.node('div', {'class' : 'com__form__fields'}))
             );
+            // Notifications
+            that.nodes['notificationsContainer'] = cm.node('div', {'class' : 'com__form__notifications'},
+                cm.node('div', {'class' : 'com-notification'},
+                    that.nodes['notifications'] = cm.node('ul')
+                )
+            );
             // Buttons
             that.nodes['buttonsSeparator'] = cm.node('hr');
-            that.nodes['buttonsContainer'] = cm.node('form', {'class' : 'com__form__buttons'},
+            that.nodes['buttonsContainer'] = cm.node('div', {'class' : 'com__form__buttons'},
                 that.nodes['buttons'] = cm.node('div', {'class' : 'btn-wrap'})
             );
             cm.addClass(that.nodes['buttons'], ['pull', that.params['buttonsAlign']].join('-'));
             // Embed
             that.params['renderButtonsSeparator'] && cm.insertFirst(that.nodes['buttonsSeparator'], that.nodes['buttonsContainer']);
             that.params['renderButtons'] && cm.appendChild(that.nodes['buttonsContainer'], that.nodes['form']);
+            that.params['showNotifications'] && cm.insertFirst(that.nodes['notificationsContainer'], that.nodes['form']);
             that.embedStructure(that.nodes['container']);
         }
         // Overlay
@@ -16789,6 +16800,7 @@ function(params){
     };
 
     that.callbacks.error = function(that, config){
+        that.renderError(that, config);
         that.triggerEvent('onError');
     };
 
@@ -16800,12 +16812,31 @@ function(params){
         that.triggerEvent('onAbort');
     };
 
+    /* *** RENDER *** */
+
+    that.renderError = function(that, config, response){
+        cm.clearNode(that.nodes['notifications']);
+        if(!response){
+            that.nodes['notifications'].appendChild(
+                cm.node('li', {'class' : 'error'},
+                    cm.node('div', {'class' : 'descr'}, that.lang('server_error'))
+                )
+            );
+        }
+        cm.addClass(that.nodes['notificationsContainer'], 'is-show', true);
+    };
+
     /* ******* PUBLIC ******* */
 
     that.destruct = function(){
-        cm.forEach(that.fields, function(field){
-            field.destruct();
-        });
+        if(!that._isDestructed){
+            that._isDestructed = true;
+            cm.forEach(that.fields, function(field){
+                field.destruct();
+            });
+            that.removeFromStack();
+            cm.remove(that.nodes['container']);
+        }
         return that;
     };
 
@@ -16836,6 +16867,10 @@ function(params){
         return o;
     };
 
+    that.getButtonsContainer = function(){
+        return that.nodes['buttonsContainer'];
+    };
+
     that.clear = function(){
         cm.forEach(that.fields, function(field){
             field.destruct();
@@ -16851,6 +16886,7 @@ function(params){
     };
 
     that.reset = function(){
+        cm.removeClass(that.nodes['notificationsContainer'], 'is-show');
         cm.forEach(that.fields, function(field){
             field.reset();
         });
@@ -16909,7 +16945,7 @@ cm.define('Com.FormField', {
         'onRender'
     ],
     'params' : {
-        'node' : cm.Node('div'),
+        'node' : cm.node('div'),
         'container' : cm.node('div'),
         'form' : false,
         'name' : '',
@@ -17042,6 +17078,7 @@ function(params){
 
     that.destruct = function(){
         that.callbacks.destruct(that);
+        that.removeFromStack();
         return that;
     };
 
@@ -17760,6 +17797,285 @@ function(params){
     init();
 });
 /* ******* COMPONENTS: BIG CALENDAR ******* */
+
+cm.define('Com.BigCalendar', {
+    'modules' : [
+        'Params',
+        'Events',
+        'Langs',
+        'DataConfig',
+        'DataNodes',
+        'Callbacks',
+        'Stack'
+    ],
+    'events' : [
+        'onRenderStart',
+        'onRender',
+        'onError',
+        'onAbort',
+        'onSuccess',
+        'onSendStart',
+        'onSendEnd',
+        'onProcessEnd'
+    ],
+    'params' : {
+        'node' : cm.node('div'),
+        'name' : '',
+        'animateDuration' : 'cm._config.animDuration',
+        'showLoader' : true,
+        'loaderDelay' : 'cm._config.loadDelay',
+        'responseKey' : 'data',                                     // Instead of using filter callback, you can provide response array key
+        'responseHTML' : true,                                      // If true, html will append automatically
+        'ajax' : {
+            'type' : 'json',
+            'method' : 'get',
+            'url' : '',                                             // Request URL. Variables: %baseurl%, %view%, %year%, %month%, %week%, %callback% for JSONP.
+            'params' : ''                                           // Params object. %baseurl%, %view%, %year%, %month%, %week%, %callback% for JSONP.
+        },
+        'langs' : {
+            'server_error' : 'An unexpected error has occurred. Please try again later.'
+        },
+        'Com.Overlay' : {
+            'position' : 'absolute',
+            'autoOpen' : false,
+            'removeOnClose' : true
+        }
+    }
+},
+function(params){
+    var that = this;
+
+    that.nodes = {
+        'container' : cm.node('div'),
+        'buttons' : {
+            'views' : {
+                'agenda' : cm.node('div'),
+                'week' : cm.node('div'),
+                'month' : cm.node('div')
+            }
+        }
+    };
+    that.components = {};
+    that.animations = {};
+
+    that.ajaxHandler = null;
+    that.isProcess = false;
+    that.isRendering = false;
+    that.loaderDelay = null;
+
+    var init = function(){
+        that.setParams(params);
+        that.convertEvents(that.params['events']);
+        that.getDataNodes(that.params['node']);
+        that.getDataConfig(that.params['node']);
+        validateParams();
+        that.addToStack(that.params['node']);
+        that.triggerEvent('onRenderStart');
+        render();
+        that.addToStack(that.nodes['container']);
+        that.triggerEvent('onRender');
+    };
+
+    var validateParams = function(){
+        that.params['Com.Overlay']['container'] = that.nodes['container'];
+    };
+
+    var render = function(){
+        // Overlay
+        cm.getConstructor('Com.Overlay', function(classConstructor, className){
+            that.components['loader'] = new classConstructor(that.params[className]);
+        });
+        // Animations
+        that.animations['response'] = new cm.Animation(that.nodes['holder']['container']);
+    };
+
+    /* ******* CALLBACKS ******* */
+
+    /* *** AJAX *** */
+
+    that.callbacks.prepare = function(that, config){
+        config = that.callbacks.beforePrepare(that, config);
+        config['url'] = cm.strReplace(config['url'], {
+            '%baseurl%' : cm._baseUrl
+        });
+        config['params'] = cm.objectReplace(config['params'], {
+            '%baseurl%' : cm._baseUrl
+        });
+        config = that.callbacks.afterPrepare(that, config);
+        return config;
+    };
+
+    that.callbacks.beforePrepare = function(that, config){
+        return config;
+    };
+
+    that.callbacks.afterPrepare = function(that, config){
+        return config;
+    };
+
+    that.callbacks.request = function(that, config){
+        config = that.callbacks.prepare(that, config);
+        // Return ajax handler (XMLHttpRequest) to providing abort method.
+        return cm.ajax(
+            cm.merge(config, {
+                'onStart' : function(){
+                    that.callbacks.start(that);
+                },
+                'onSuccess' : function(response){
+                    that.callbacks.response(that, config, response);
+                },
+                'onError' : function(){
+                    that.callbacks.error(that, config);
+                },
+                'onAbort' : function(){
+                    that.callbacks.abort(that, config);
+                },
+                'onEnd' : function(){
+                    that.callbacks.end(that);
+                }
+            })
+        );
+    };
+
+    that.callbacks.filter = function(that, config, response){
+        var data,
+            dataItem = cm.objectSelector(that.params['responseKey'], response);
+        if(dataItem && !cm.isEmpty(dataItem)){
+            data = dataItem;
+        }
+        return data;
+    };
+
+    that.callbacks.start = function(that, config){
+        that.isProcess = true;
+        // Show Loader
+        if(that.params['showLoader']){
+            that.loaderDelay = setTimeout(function(){
+                if(that.components['loader'] && !that.components['loader'].isOpen){
+                    that.components['loader'].open();
+                }
+            }, that.params['loaderDelay']);
+        }
+        that.triggerEvent('onSendStart');
+    };
+
+    that.callbacks.end = function(that, config){
+        that.isProcess = false;
+        // Hide Loader
+        if(that.params['showLoader']){
+            that.loaderDelay && clearTimeout(that.loaderDelay);
+            if(that.components['loader'] && that.components['loader'].isOpen){
+                that.components['loader'].close();
+            }
+        }
+        that.triggerEvent('onSendEnd');
+        that.triggerEvent('onProcessEnd', that.nodes['response']['inner']);
+    };
+
+    that.callbacks.response = function(that, config, response){
+        if(!cm.isEmpty(response)){
+            response = that.callbacks.filter(that, config, response);
+        }
+        if(!cm.isEmpty(response)){
+            that.callbacks.success(that, response);
+        }else{
+            that.callbacks.error(that, config);
+        }
+    };
+
+    that.callbacks.error = function(that, config){
+        that.callbacks.renderError(that, config);
+        that.triggerEvent('onError');
+    };
+
+    that.callbacks.success = function(that, response){
+        that.callbacks.render(that, response);
+        that.triggerEvent('onSuccess', response);
+    };
+
+    that.callbacks.abort = function(that, config){
+        that.triggerEvent('onAbort');
+    };
+
+    /* *** RENDER *** */
+
+    that.callbacks.renderTemporary = function(that){
+        return cm.node('div', {'class' : 'calendar__temporary'});
+    };
+
+    that.callbacks.render = function(that, data){
+        var nodes, temporary;
+        if(that.params['responseHTML']){
+            that.isRendering = true;
+            temporary = that.callbacks.renderTemporary(that);
+            nodes = cm.strToHTML(data);
+            if(!cm.isEmpty(nodes)){
+                if(cm.isNode(nodes)){
+                    temporary.appendChild(nodes);
+                }else{
+                    while(nodes.length){
+                        if(cm.isNode(nodes[0])){
+                            temporary.appendChild(nodes[0]);
+                        }else{
+                            cm.remove(nodes[0]);
+                        }
+                    }
+                }
+            }
+            that.callbacks.append(that, temporary);
+        }
+    };
+
+    that.callbacks.renderError = function(that, config){
+        if(that.params['responseHTML']){
+            that.isRendering = true;
+            var temporary = that.callbacks.renderTemporary(that);
+            temporary.appendChild(
+                cm.node('div', {'class' : 'cm__empty'}, that.lang('server_error'))
+            );
+            that.callbacks.append(that, temporary);
+        }
+    };
+
+    that.callbacks.append = function(that, temporary){
+        var height;
+        // Wrap old content
+        if(!that.nodes['temporary']){
+            that.nodes['temporary'] = that.callbacks.renderTemporary(that);
+            cm.forEach(that.nodes['holder'].childNodes, function(node){
+                cm.appendChild(node, that.nodes['temporary']);
+            });
+            cm.appendChild(that.nodes['temporary'], that.nodes['holder']);
+        }
+        cm.removeClass(that.nodes['temporary'], 'is-show', true);
+        // Append temporary
+        cm.appendChild(temporary, that.nodes['holder']);
+        cm.addClass(temporary, 'is-show', true);
+        // Animate
+        height = temporary.offsetHeight;
+        that.animations['response'].go({
+            'style' : {'height' : [height, 'px'].join('')},
+            'duration' : that.params['animateDuration'],
+            'anim' : 'smooth',
+            'onStop' : function(){
+                cm.remove(that.nodes['temporary']);
+                that.nodes['temporary'] = temporary;
+                that.isRendering = false;
+            }
+        });
+    };
+
+    /* ******* PUBLIC ******* */
+
+    that.abort = function(){
+        if(that.ajaxHandler && that.ajaxHandler.abort){
+            that.ajaxHandler.abort();
+        }
+        return that;
+    };
+
+    init();
+});
 
 /* *** CALENDAR EVENT *** */
 
@@ -22749,6 +23065,7 @@ function(params){
         cm.appendChild(temporary, that.nodes['response']['inner']);
         cm.addClass(temporary, 'is-show', true);
         // Animate
+        cm.removeClass(that.nodes['response']['container'], 'is-loaded', true);
         cm.addClass(that.nodes['response']['container'], 'is-show', true);
         height = temporary.offsetHeight;
         that.animations['response'].go({
@@ -22756,6 +23073,7 @@ function(params){
             'duration' : that.params['animateDuration'],
             'anim' : 'smooth',
             'onStop' : function(){
+                cm.addClass(that.nodes['response']['container'], 'is-loaded', true);
                 cm.remove(that.nodes['response']['temporary']);
                 that.nodes['response']['temporary'] = temporary;
                 that.isRendering = false;
@@ -25163,7 +25481,7 @@ function(params){
         userAgent = Com.UA.get();
 
     that.nodes = {};
-    that.compoennts = {};
+    that.components = {};
 
     var init = function(){
         that.setParams(params);
@@ -25210,7 +25528,7 @@ function(params){
         );
         // Init dialog
         cm.getConstructor('Com.Dialog', function(classConstructor){
-            that.compoennts['dialog'] = new classConstructor({
+            that.components['dialog'] = new classConstructor({
                 'title' : that.lang('title'),
                 'content' : that.nodes['container'],
                 'autoOpen' : false,
@@ -25224,9 +25542,9 @@ function(params){
                 }
             });
             // Add event on continue button
-            cm.addEvent(that.nodes['button'], 'click', that.compoennts['dialog'].close);
+            cm.addEvent(that.nodes['button'], 'click', that.components['dialog'].close);
             // Open dialog
-            that.compoennts['dialog'].open();
+            that.components['dialog'].open();
         });
     };
 
@@ -25511,8 +25829,8 @@ cm.define('Com.Pagination', {
         'ajax' : {
             'type' : 'json',
             'method' : 'get',
-            'url' : '',                                             // Request URL. Variables: %page%, %offset%, %token%, %perPage%, %limit%, %callback% for JSONP.
-            'params' : ''                                           // Params object. %page%, %offset%, %token%, %perPage%, %limit%, %callback% for JSONP.
+            'url' : '',                                             // Request URL. Variables: %baseurl%, %page%, %offset%, %token%, %perPage%, %limit%, %callback% for JSONP.
+            'params' : ''                                           // Params object. %baseurl%, %page%, %offset%, %token%, %perPage%, %limit%, %callback% for JSONP.
         },
         'Com.Overlay' : {
             'position' : 'absolute',
@@ -27736,7 +28054,7 @@ function(params){
     /* ******* MAIN ******* */
 
     that.get = function(){
-        return active;
+        return active || null;
     };
 
     that.set = function(value, triggerEvents){
@@ -30911,6 +31229,8 @@ function(params){
             'label' : '',
             'title' : '',
             'group' : '',
+            'controller' : false,
+            'controllerParams' : {},
             'handler' : function(){}
         }, item);
         if((group = that.groups[item['group']]) && !group.items[item['name']]){
@@ -30918,6 +31238,14 @@ function(params){
             item['node'].title = item['title'];
             cm.addEvent(item['node'], 'click', function(e){
                 cm.preventDefault(e);
+                if(item['controllerObject']){
+                    item['controllerObject'].destruct();
+                }
+                if(item['controller']){
+                    cm.getConstructor(item['controller'], function(classConstructor){
+                        item['controllerObject'] = new classConstructor(item['controllerParams']);
+                    });
+                }
                 item['handler'](e, item);
             });
             cm.appendChild(item['node'], item['container']);
