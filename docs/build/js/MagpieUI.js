@@ -18281,6 +18281,7 @@ cm.define('Com.CalendarMonth', {
     'params' : {
         'node' : cm.Node('div'),
         'name' : '',
+        'viewName' : 'month',
         'itemShortIndent' : 1,
         'itemShortHeight' : 24,
         'dayIndent' : 4,
@@ -18297,7 +18298,12 @@ function(params){
     that.nodes = {
         'container' : cm.node('div'),
         'buttons' : {
-            'container' : cm.node('div')
+            'container' : cm.node('div'),
+            'views' : {
+                'agenda' : cm.node('div'),
+                'week' : cm.node('div'),
+                'month' : cm.node('div')
+            }
         },
         'templates' : {}
     };
@@ -18361,16 +18367,30 @@ function(params){
                 .setTooltipParams(that.params['Com.Tooltip'])
                 .setTemplate(template);
         });
+        // View Buttons
+        cm.forEach(that.nodes['buttons']['views'], function(node, key){
+            if(key === that.params['viewName']){
+                cm.replaceClass(node, 'button-secondary', 'button-primary');
+            }else{
+                cm.replaceClass(node, 'button-primary', 'button-secondary');
+            }
+            cm.addEvent(node, 'click', function(e){
+                cm.preventDefault(e);
+                requestView({
+                    'view' : key
+                });
+            });
+        });
         // Process Days
         cm.forEach(that.nodes['days'], processDay);
         // Toolbar Controls
         new cm.Finder('Com.Select', 'year', that.nodes['buttons']['container'], function(classObject){
             that.components['year'] = classObject
-                .addEvent('onChange', requestView);
+                .addEvent('onChange', updateView);
         });
         new cm.Finder('Com.Select', 'month', that.nodes['buttons']['container'], function(classObject){
             that.components['month'] = classObject
-                .addEvent('onChange', requestView);
+                .addEvent('onChange', updateView);
         });
     };
 
@@ -18413,9 +18433,13 @@ function(params){
         }
     };
 
-    var requestView = function(){
+    var requestView = function(data){
+        that.triggerEvent('onRequestView', data);
+    };
+
+    var updateView = function(){
         var data = {
-            'view' : 'month',
+            'view' : that.params['viewName'],
             'year' : that.components['year'].get(),
             'month' : that.components['month'].get()
         };
@@ -18446,6 +18470,7 @@ cm.define('Com.CalendarWeek', {
     'params' : {
         'node' : cm.Node('div'),
         'name' : '',
+        'viewName' : 'week',
         'itemShortIndent' : 1,
         'itemShortHeight' : 24,
         'dayIndent' : 4,
@@ -18462,7 +18487,12 @@ function(params){
     that.nodes = {
         'container' : cm.node('div'),
         'buttons' : {
-            'container' : cm.node('div')
+            'container' : cm.node('div'),
+            'views' : {
+                'agenda' : cm.node('div'),
+                'week' : cm.node('div'),
+                'month' : cm.node('div')
+            }
         },
         'templates' : {}
     };
@@ -18524,20 +18554,38 @@ function(params){
                 .setTooltipParams(that.params['Com.Tooltip'])
                 .setTemplate(template);
         });
+        // View Buttons
+        cm.forEach(that.nodes['buttons']['views'], function(node, key){
+            if(key === that.params['viewName']){
+                cm.replaceClass(node, 'button-secondary', 'button-primary');
+            }else{
+                cm.replaceClass(node, 'button-primary', 'button-secondary');
+            }
+            cm.addEvent(node, 'click', function(e){
+                cm.preventDefault(e);
+                requestView({
+                    'view' : key
+                });
+            });
+        });
         // Toolbar Controls
         new cm.Finder('Com.Select', 'week', that.nodes['buttons']['container'], function(classObject){
             that.components['week'] = classObject
-                .addEvent('onChange', requestView);
+                .addEvent('onChange', updateView);
         });
         new cm.Finder('Com.Select', 'year', that.nodes['buttons']['container'], function(classObject){
             that.components['year'] = classObject
-                .addEvent('onChange', requestView);
+                .addEvent('onChange', updateView);
         });
     };
 
-    var requestView = function(){
+    var requestView = function(data){
+        that.triggerEvent('onRequestView', data);
+    };
+
+    var updateView = function(){
         var data = {
-            'view' : 'week',
+            'view' : that.params['viewName'],
             'week' : that.components['week'].get(),
             'year' : that.components['year'].get()
         };
@@ -18568,6 +18616,7 @@ cm.define('Com.CalendarAgenda', {
     'params' : {
         'node' : cm.Node('div'),
         'name' : '',
+        'viewName' : 'agenda',
         'itemShortIndent' : 1,
         'itemShortHeight' : 24,
         'Com.Tooltip' : {
@@ -18583,7 +18632,12 @@ function(params){
     that.nodes = {
         'container' : cm.node('div'),
         'buttons' : {
-            'container' : cm.node('div')
+            'container' : cm.node('div'),
+            'views' : {
+                'agenda' : cm.node('div'),
+                'week' : cm.node('div'),
+                'month' : cm.node('div')
+            }
         },
         'templates' : {}
     };
@@ -18640,20 +18694,38 @@ function(params){
                 .setTooltipParams(that.params['Com.Tooltip'])
                 .setTemplate(template);
         });
+        // View Buttons
+        cm.forEach(that.nodes['buttons']['views'], function(node, key){
+            if(key === that.params['viewName']){
+                cm.replaceClass(node, 'button-secondary', 'button-primary');
+            }else{
+                cm.replaceClass(node, 'button-primary', 'button-secondary');
+            }
+            cm.addEvent(node, 'click', function(e){
+                cm.preventDefault(e);
+                requestView({
+                    'view' : key
+                });
+            });
+        });
         // Toolbar Controls
         new cm.Finder('Com.Select', 'year', that.nodes['buttons']['container'], function(classObject){
             that.components['year'] = classObject
-                .addEvent('onChange', requestView);
+                .addEvent('onChange', updateView);
         });
         new cm.Finder('Com.Select', 'month', that.nodes['buttons']['container'], function(classObject){
             that.components['month'] = classObject
-                .addEvent('onChange', requestView);
+                .addEvent('onChange', updateView);
         });
     };
 
-    var requestView = function(){
+    var requestView = function(data){
+        that.triggerEvent('onRequestView', data);
+    };
+
+    var updateView = function(){
         var data = {
-            'view' : 'agenda',
+            'view' : that.params['viewName'],
             'year' : that.components['year'].get(),
             'month' : that.components['month'].get()
         };

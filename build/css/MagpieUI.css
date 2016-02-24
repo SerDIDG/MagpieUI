@@ -9555,9 +9555,11 @@ button::-moz-focus-inner {
   html.is-adaptive .pt__toolbar > .inner > .center,
   html.is-adaptive .pt__toolbar > .inner > .right {
     width: 100%;
+    display: block;
     float: none;
   }
   html.is-adaptive .pt__toolbar .group {
+    display: block;
     margin-top: 0;
   }
   html.is-adaptive .pt__toolbar .group > li.label {
