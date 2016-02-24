@@ -23,6 +23,8 @@ cm.define('Com.BigCalendar', {
     'params' : {
         'node' : cm.node('div'),
         'name' : '',
+        'defaultView' : 'agenda',                                   // agenda | week | month
+        'isViewPreloaded' : false,
         'animateDuration' : 'cm._config.animDuration',
         'showLoader' : true,
         'loaderDelay' : 'cm._config.loadDelay',
@@ -32,7 +34,12 @@ cm.define('Com.BigCalendar', {
             'type' : 'json',
             'method' : 'get',
             'url' : '',                                             // Request URL. Variables: %baseurl%, %view%, %year%, %month%, %week%, %callback% for JSONP.
-            'params' : ''                                           // Params object. %baseurl%, %view%, %year%, %month%, %week%, %callback% for JSONP.
+            'params' : {                                            // Params object. %baseurl%, %view%, %year%, %month%, %week%, %callback% for JSONP.
+                'view' : '%view%',
+                'week' : '%week%',
+                'month' : '%month%',
+                'year' : '%year%'
+            }
         },
         'langs' : {
             'server_error' : 'An unexpected error has occurred. Please try again later.'
@@ -55,6 +62,10 @@ function(params){
                 'week' : cm.node('div'),
                 'month' : cm.node('div')
             }
+        },
+        'holder' : {
+            'container' : cm.node('div'),
+            'inner' : cm.node('div')
         }
     };
     that.components = {};
@@ -64,6 +75,12 @@ function(params){
     that.isProcess = false;
     that.isRendering = false;
     that.loaderDelay = null;
+    that.viewDetails = {
+        'view' : null,
+        'week' : null,
+        'month' : null,
+        'year' : null
+    };
 
     var init = function(){
         that.setParams(params);
@@ -79,6 +96,7 @@ function(params){
     };
 
     var validateParams = function(){
+        that.params['defaultView'] = cm.inArray(['agenda', 'week', 'month'], that.params['defaultView']) ? that.params['defaultView'] : 'month';
         that.params['Com.Overlay']['container'] = that.nodes['container'];
     };
 
@@ -89,6 +107,61 @@ function(params){
         });
         // Animations
         that.animations['response'] = new cm.Animation(that.nodes['holder']['container']);
+        // View Buttons
+        cm.forEach(that.nodes['buttons']['views'], function(node, key){
+            cm.addEvent(node, 'click', function(e){
+                cm.preventDefault(e);
+                setView({
+                    'view' : key
+                });
+            });
+        });
+        // View Finder
+        new cm.Finder('Com.CalendarAgenda', that.params['name'], that.nodes['holder']['inner'], function(classObject){
+            classObject.addEvent('onRequestView', function(calendar, data){
+                setView(data);
+            });
+        }, {'multiple' : true});
+        new cm.Finder('Com.CalendarWeek', that.params['name'], that.nodes['holder']['inner'], function(classObject){
+            classObject.addEvent('onRequestView', function(calendar, data){
+                setView(data);
+            });
+        }, {'multiple' : true});
+        new cm.Finder('Com.CalendarMonth', that.params['name'], that.nodes['holder']['inner'], function(classObject){
+            classObject.addEvent('onRequestView', function(calendar, data){
+                setView(data);
+            });
+        }, {'multiple' : true});
+        // Render View
+        !that.params['isViewPreloaded'] && setView({
+            'view' : that.params['defaultView']
+        });
+    };
+
+    var setViewDetails = function(data){
+        that.viewDetails = cm.merge({
+            'view' : null,
+            'week' : null,
+            'month' : null,
+            'year' : null
+        }, data);
+    };
+
+    var setView = function(data){
+        if(that.isProcess){
+            that.abort();
+        }
+        if(!that.isProcess && !that.isRendering){
+            setViewDetails(data);
+            cm.forEach(that.nodes['buttons']['views'], function(node, key){
+                if(key === that.viewDetails['view']){
+                    cm.replaceClass(node, 'button-secondary', 'button-primary');
+                }else{
+                    cm.replaceClass(node, 'button-primary', 'button-secondary');
+                }
+            });
+            that.ajaxHandler = that.callbacks.request(that, cm.clone(that.params['ajax']));
+        }
     };
 
     /* ******* CALLBACKS ******* */
@@ -98,10 +171,18 @@ function(params){
     that.callbacks.prepare = function(that, config){
         config = that.callbacks.beforePrepare(that, config);
         config['url'] = cm.strReplace(config['url'], {
-            '%baseurl%' : cm._baseUrl
+            '%baseurl%' : cm._baseUrl,
+            '%view%' : that.viewDetails['view'],
+            '%year%' : that.viewDetails['year'],
+            '%month%' : that.viewDetails['month'],
+            '%week%' : that.viewDetails['week']
         });
         config['params'] = cm.objectReplace(config['params'], {
-            '%baseurl%' : cm._baseUrl
+            '%baseurl%' : cm._baseUrl,
+            '%view%' : that.viewDetails['view'],
+            '%year%' : that.viewDetails['year'],
+            '%month%' : that.viewDetails['month'],
+            '%week%' : that.viewDetails['week']
         });
         config = that.callbacks.afterPrepare(that, config);
         return config;
@@ -171,7 +252,7 @@ function(params){
             }
         }
         that.triggerEvent('onSendEnd');
-        that.triggerEvent('onProcessEnd', that.nodes['response']['inner']);
+        that.triggerEvent('onProcessEnd', that.nodes['holder']['inner']);
     };
 
     that.callbacks.response = function(that, config, response){
@@ -242,26 +323,30 @@ function(params){
     that.callbacks.append = function(that, temporary){
         var height;
         // Wrap old content
-        if(!that.nodes['temporary']){
-            that.nodes['temporary'] = that.callbacks.renderTemporary(that);
-            cm.forEach(that.nodes['holder'].childNodes, function(node){
-                cm.appendChild(node, that.nodes['temporary']);
+        if(!that.nodes['holder']['temporary']){
+            that.nodes['holder']['temporary'] = that.callbacks.renderTemporary(that);
+            cm.forEach(that.nodes['holder']['inner'].childNodes, function(node){
+                cm.appendChild(node, that.nodes['holder']['temporary']);
             });
-            cm.appendChild(that.nodes['temporary'], that.nodes['holder']);
+            cm.appendChild(that.nodes['holder']['temporary'], that.nodes['holder']['inner']);
         }
-        cm.removeClass(that.nodes['temporary'], 'is-show', true);
+        cm.removeClass(that.nodes['holder']['temporary'], 'is-show', true);
         // Append temporary
-        cm.appendChild(temporary, that.nodes['holder']);
+        cm.appendChild(temporary, that.nodes['holder']['inner']);
         cm.addClass(temporary, 'is-show', true);
         // Animate
+        cm.removeClass(that.nodes['holder']['container'], 'is-loaded', true);
+        cm.addClass(that.nodes['holder']['container'], 'is-show', true);
         height = temporary.offsetHeight;
         that.animations['response'].go({
             'style' : {'height' : [height, 'px'].join('')},
             'duration' : that.params['animateDuration'],
             'anim' : 'smooth',
             'onStop' : function(){
-                cm.remove(that.nodes['temporary']);
-                that.nodes['temporary'] = temporary;
+                that.nodes['holder']['container'].style.height = '';
+                cm.addClass(that.nodes['holder']['container'], 'is-loaded', true);
+                cm.remove(that.nodes['holder']['temporary']);
+                that.nodes['holder']['temporary'] = temporary;
                 that.isRendering = false;
             }
         });
@@ -392,7 +477,8 @@ cm.define('Com.CalendarMonth', {
     ],
     'events' : [
         'onRenderStart',
-        'onRender'
+        'onRender',
+        'onRequestView'
     ],
     'params' : {
         'node' : cm.Node('div'),
@@ -411,8 +497,13 @@ function(params){
     var that = this;
 
     that.nodes = {
+        'container' : cm.node('div'),
+        'buttons' : {
+            'container' : cm.node('div')
+        },
         'templates' : {}
     };
+    that.components = {};
     that.days = [];
 
     var init = function(){
@@ -462,7 +553,6 @@ function(params){
     };
 
     var render = function(){
-        cm.log(that.nodes);
         var template;
         // Find events and set template and tooltip config
         new cm.Finder('Com.CalendarEvent', null, that.params['node'], function(classObject){
@@ -475,6 +565,15 @@ function(params){
         });
         // Process Days
         cm.forEach(that.nodes['days'], processDay);
+        // Toolbar Controls
+        new cm.Finder('Com.Select', 'year', that.nodes['buttons']['container'], function(classObject){
+            that.components['year'] = classObject
+                .addEvent('onChange', requestView);
+        });
+        new cm.Finder('Com.Select', 'month', that.nodes['buttons']['container'], function(classObject){
+            that.components['month'] = classObject
+                .addEvent('onChange', requestView);
+        });
     };
 
     var processDay = function(nodes){
@@ -516,12 +615,21 @@ function(params){
         }
     };
 
+    var requestView = function(){
+        var data = {
+            'view' : 'month',
+            'year' : that.components['year'].get(),
+            'month' : that.components['month'].get()
+        };
+        that.triggerEvent('onRequestView', data);
+    };
+
     /* ******* PUBLIC ******* */
 
     init();
 });
 
-/* *** CALENDAR AGENDA VIEW *** */
+/* *** CALENDAR WEEK VIEW *** */
 
 cm.define('Com.CalendarWeek', {
     'modules' : [
@@ -534,7 +642,8 @@ cm.define('Com.CalendarWeek', {
     ],
     'events' : [
         'onRenderStart',
-        'onRender'
+        'onRender',
+        'onRequestView'
     ],
     'params' : {
         'node' : cm.Node('div'),
@@ -553,8 +662,13 @@ function(params){
     var that = this;
 
     that.nodes = {
+        'container' : cm.node('div'),
+        'buttons' : {
+            'container' : cm.node('div')
+        },
         'templates' : {}
     };
+    that.components = {};
     that.days = [];
 
     var init = function(){
@@ -602,7 +716,6 @@ function(params){
     };
 
     var render = function(){
-        cm.log(that.nodes);
         var template;
         // Find events and set template and tooltip config
         new cm.Finder('Com.CalendarEvent', null, that.params['node'], function(classObject){
@@ -613,6 +726,24 @@ function(params){
                 .setTooltipParams(that.params['Com.Tooltip'])
                 .setTemplate(template);
         });
+        // Toolbar Controls
+        new cm.Finder('Com.Select', 'week', that.nodes['buttons']['container'], function(classObject){
+            that.components['week'] = classObject
+                .addEvent('onChange', requestView);
+        });
+        new cm.Finder('Com.Select', 'year', that.nodes['buttons']['container'], function(classObject){
+            that.components['year'] = classObject
+                .addEvent('onChange', requestView);
+        });
+    };
+
+    var requestView = function(){
+        var data = {
+            'view' : 'week',
+            'week' : that.components['week'].get(),
+            'year' : that.components['year'].get()
+        };
+        that.triggerEvent('onRequestView', data);
     };
 
     /* ******* PUBLIC ******* */
@@ -633,7 +764,8 @@ cm.define('Com.CalendarAgenda', {
     ],
     'events' : [
         'onRenderStart',
-        'onRender'
+        'onRender',
+        'onRequestView'
     ],
     'params' : {
         'node' : cm.Node('div'),
@@ -651,8 +783,13 @@ function(params){
     var that = this;
 
     that.nodes = {
+        'container' : cm.node('div'),
+        'buttons' : {
+            'container' : cm.node('div')
+        },
         'templates' : {}
     };
+    that.components = {};
     that.days = [];
 
     var init = function(){
@@ -696,7 +833,6 @@ function(params){
     };
 
     var render = function(){
-        cm.log(that.nodes);
         // Find events and set template and tooltip config
         new cm.Finder('Com.CalendarEvent', null, that.params['node'], function(classObject){
             // Clone template
@@ -706,6 +842,24 @@ function(params){
                 .setTooltipParams(that.params['Com.Tooltip'])
                 .setTemplate(template);
         });
+        // Toolbar Controls
+        new cm.Finder('Com.Select', 'year', that.nodes['buttons']['container'], function(classObject){
+            that.components['year'] = classObject
+                .addEvent('onChange', requestView);
+        });
+        new cm.Finder('Com.Select', 'month', that.nodes['buttons']['container'], function(classObject){
+            that.components['month'] = classObject
+                .addEvent('onChange', requestView);
+        });
+    };
+
+    var requestView = function(){
+        var data = {
+            'view' : 'agenda',
+            'year' : that.components['year'].get(),
+            'month' : that.components['month'].get()
+        };
+        that.triggerEvent('onRequestView', data);
     };
 
     /* ******* PUBLIC ******* */

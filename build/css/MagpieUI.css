@@ -10436,6 +10436,61 @@ button::-moz-focus-inner {
   max-height: 160px;
 }
 /* ******* COMPONENTS: BIG CALENDAR *** */
+.com__big-calendar {
+  margin: 0 0 24px;
+  position: relative;
+}
+.com__big-calendar.bottom,
+.com__big-calendar.is-last,
+.com__big-calendar:last-child {
+  margin-bottom: 0;
+}
+.com__big-calendar .calendar__holder {
+  margin: 0 0 24px;
+  height: 0;
+  overflow: hidden;
+  display: none;
+}
+.com__big-calendar .calendar__holder.bottom,
+.com__big-calendar .calendar__holder.is-last,
+.com__big-calendar .calendar__holder:last-child {
+  margin-bottom: 0;
+}
+.com__big-calendar .calendar__holder > .inner {
+  position: relative;
+}
+.com__big-calendar .calendar__holder.is-show {
+  height: auto;
+  display: block;
+}
+.com__big-calendar .calendar__holder.is-loaded {
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+.com__big-calendar .calendar__holder > .inner {
+  position: relative;
+}
+.com__big-calendar .calendar__temporary {
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: 0;
+  bottom: auto;
+  left: 0;
+  -webkit-transition: opacity 250ms ease-in-out;
+  transition: opacity 250ms ease-in-out;
+}
+.com__big-calendar .calendar__temporary:first-child {
+  position: relative;
+}
+.com__big-calendar .calendar__temporary.is-show {
+  opacity: 1;
+}
+/* *** EVENT *** */
+.com__calendar-event {
+  display: block;
+}
 .com__calendar-event.is-long {
   margin-top: 12px;
 }

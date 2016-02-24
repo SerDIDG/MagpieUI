@@ -271,6 +271,7 @@ function(params){
             'duration' : that.params['animateDuration'],
             'anim' : 'smooth',
             'onStop' : function(){
+                that.nodes['response']['container'].style.height = '';
                 cm.addClass(that.nodes['response']['container'], 'is-loaded', true);
                 cm.remove(that.nodes['response']['temporary']);
                 that.nodes['response']['temporary'] = temporary;

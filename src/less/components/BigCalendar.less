@@ -1,9 +1,56 @@
 /* ******* COMPONENTS: BIG CALENDAR *** */
 
 .com__big-calendar {
+    .cm__box;
+    position: relative;
+
+    .calendar__holder {
+        .cm__box;
+        height: 0;
+        overflow: hidden;
+        display: none;
+
+        > .inner {
+            position: relative;
+        }
+
+        &.is-show {
+            height: auto;
+            display: block;
+        }
+
+        &.is-loaded {
+            height: auto;
+            display: block;
+            overflow: visible;
+        }
+
+        > .inner {
+            position: relative;
+        }
+    }
+
+    .calendar__temporary {
+        position: absolute;
+        opacity: 0;
+        .mx__position(0, 0, auto, 0);
+        .mx__transition(opacity, @CmUI-Transition-Duration);
+
+        &:first-child {
+            position: relative;
+        }
+
+        &.is-show {
+            opacity: 1;
+        }
+    }
 }
 
+/* *** EVENT *** */
+
 .com__calendar-event {
+    display: block;
+
     &.is-long {
         margin-top: @ComCalendarEvent-Long-Indent;
 
