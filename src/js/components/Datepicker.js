@@ -22,7 +22,7 @@ cm.define('Com.Datepicker', {
         'onBlur'
     ],
     'params' : {
-        'input' : null,                      // Deprecated, use 'node' parameter instead.
+        'input' : null,                                                     // Deprecated, use 'node' parameter instead.
         'node' : cm.Node('input', {'type' : 'text'}),
         'container' : null,
         'name' : '',
@@ -359,10 +359,10 @@ function(params){
         format = typeof format != 'undefined'? format : that.format;
         triggerEvents = typeof triggerEvents != 'undefined'? triggerEvents : true;
         // Get date
-        if(cm.isEmpty(str) || typeof str == 'string' && new RegExp(cm.dateFormat(false, format, that.lang())).test(str)){
+        if(cm.isEmpty(str)){
             that.clear();
             return that;
-        }else if(typeof str == 'object'){
+        }else if(cm.isDate(str)){
             that.date = str;
         }else{
             that.date = cm.parseDate(str, format);

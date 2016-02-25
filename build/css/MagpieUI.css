@@ -9526,8 +9526,8 @@ button::-moz-focus-inner {
   -webkit-flex: 1 1 0;
   -ms-flex: 1 1 0;
   flex: 1 1 0;
-  -webkit-justify-content: flex-start;
-  justify-content: flex-start;
+  -webkit-align-items: center;
+  align-items: center;
 }
 .pt__toolbar.is-flex > .inner > .center {
   display: -webkit-flex;
@@ -9548,6 +9548,9 @@ button::-moz-focus-inner {
   flex: 1 1 0;
   -webkit-justify-content: flex-end;
   justify-content: flex-end;
+}
+.pt__toolbar.is-flex .group {
+  display: block;
 }
 /* ******* PARTS: TOOLBAR: ADAPTIVE ********** */
 @media only screen and (max-width: 768px) {

@@ -12359,7 +12359,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.12.3',
+        '_version' : '3.12.4',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -14077,13 +14077,19 @@ cm.parseDate = function(str, format){
         },
         formats = {
             'YYYY' : function(value){
-                date.setFullYear(value);
+                if(value != '0000'){
+                    date.setFullYear(value);
+                }
             },
             'mm' : function(value){
-                date.setMonth(value - 1);
+                if(value != '00'){
+                    date.setMonth(value - 1);
+                }
             },
             'dd' : function(value){
-                date.setDate(value);
+                if(value != '00'){
+                    date.setDate(value);
+                }
             },
             'HH' : function(value){
                 date.setHours(value);
@@ -20937,7 +20943,7 @@ cm.define('Com.Datepicker', {
         'onBlur'
     ],
     'params' : {
-        'input' : null,                      // Deprecated, use 'node' parameter instead.
+        'input' : null,                                                     // Deprecated, use 'node' parameter instead.
         'node' : cm.Node('input', {'type' : 'text'}),
         'container' : null,
         'name' : '',
@@ -21274,10 +21280,10 @@ function(params){
         format = typeof format != 'undefined'? format : that.format;
         triggerEvents = typeof triggerEvents != 'undefined'? triggerEvents : true;
         // Get date
-        if(cm.isEmpty(str) || typeof str == 'string' && new RegExp(cm.dateFormat(false, format, that.lang())).test(str)){
+        if(cm.isEmpty(str)){
             that.clear();
             return that;
-        }else if(typeof str == 'object'){
+        }else if(cm.isDate(str)){
             that.date = str;
         }else{
             that.date = cm.parseDate(str, format);

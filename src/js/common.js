@@ -24,7 +24,7 @@
  ******* */
 
 var cm = {
-        '_version' : '3.12.3',
+        '_version' : '3.12.4',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -1742,13 +1742,19 @@ cm.parseDate = function(str, format){
         },
         formats = {
             'YYYY' : function(value){
-                date.setFullYear(value);
+                if(value != '0000'){
+                    date.setFullYear(value);
+                }
             },
             'mm' : function(value){
-                date.setMonth(value - 1);
+                if(value != '00'){
+                    date.setMonth(value - 1);
+                }
             },
             'dd' : function(value){
-                date.setDate(value);
+                if(value != '00'){
+                    date.setDate(value);
+                }
             },
             'HH' : function(value){
                 date.setHours(value);
