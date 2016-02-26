@@ -344,8 +344,8 @@ function(params){
             'anim' : 'smooth',
             'onStop' : function(){
                 that.nodes['holder']['container'].style.height = '';
-                cm.addClass(that.nodes['holder']['container'], 'is-loaded', true);
                 cm.remove(that.nodes['holder']['temporary']);
+                cm.addClass(that.nodes['holder']['container'], 'is-loaded', true);
                 that.nodes['holder']['temporary'] = temporary;
                 that.isRendering = false;
             }

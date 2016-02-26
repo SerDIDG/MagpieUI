@@ -1415,7 +1415,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.12.4',
+        '_version' : '3.12.5',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -7204,8 +7204,8 @@ function(params){
             'anim' : 'smooth',
             'onStop' : function(){
                 that.nodes['holder']['container'].style.height = '';
-                cm.addClass(that.nodes['holder']['container'], 'is-loaded', true);
                 cm.remove(that.nodes['holder']['temporary']);
+                cm.addClass(that.nodes['holder']['container'], 'is-loaded', true);
                 that.nodes['holder']['temporary'] = temporary;
                 that.isRendering = false;
             }
@@ -12362,8 +12362,8 @@ function(params){
             'anim' : 'smooth',
             'onStop' : function(){
                 that.nodes['response']['container'].style.height = '';
-                cm.addClass(that.nodes['response']['container'], 'is-loaded', true);
                 cm.remove(that.nodes['response']['temporary']);
+                cm.addClass(that.nodes['response']['container'], 'is-loaded', true);
                 that.nodes['response']['temporary'] = temporary;
                 that.isRendering = false;
             }
@@ -17940,7 +17940,7 @@ function(params){
     that.enableEditing = function(){
         if(typeof that.isEditing !== 'boolean' || !that.isEditing){
             that.isEditing = true;
-            cm.addClass(that.params['node'], 'is-editing');
+            cm.addClass(that.params['node'], 'is-editing is-editable');
             that.enableEditMode();
             that.triggerEvent('enableEditing');
             that.triggerEvent('enableEditable');
@@ -17951,7 +17951,7 @@ function(params){
     that.disableEditing = function(){
         if(typeof that.isEditing !== 'boolean' || that.isEditing){
             that.isEditing = false;
-            cm.removeClass(that.params['node'], 'is-editing');
+            cm.removeClass(that.params['node'], 'is-editing is-editable');
             that.disableEditMode();
             that.triggerEvent('disableEditing');
             that.triggerEvent('disableEditable');
@@ -19491,6 +19491,10 @@ function(params){
 
     that.getTabs = function(){
         return that.items;
+    };
+
+    that.getCurrentTab = function(){
+        return that.items[that.current];
     };
 
     that.abort = function(){

@@ -272,8 +272,8 @@ function(params){
             'anim' : 'smooth',
             'onStop' : function(){
                 that.nodes['response']['container'].style.height = '';
-                cm.addClass(that.nodes['response']['container'], 'is-loaded', true);
                 cm.remove(that.nodes['response']['temporary']);
+                cm.addClass(that.nodes['response']['container'], 'is-loaded', true);
                 that.nodes['response']['temporary'] = temporary;
                 that.isRendering = false;
             }

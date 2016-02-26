@@ -9971,7 +9971,7 @@ button {
             > .left {
                 .display-flex;
                 .mx__flex(1 1 0);
-                .mx__align-items(center);
+                .mx__justify-content(flex-start);
             }
 
             > .center {
@@ -9999,6 +9999,8 @@ button {
     html.is-adaptive {
         .pt__toolbar {
             > .inner {
+                display: block;
+
                 > .left,
                 > .center,
                 > .right {

@@ -423,7 +423,7 @@ function(params){
     that.enableEditing = function(){
         if(typeof that.isEditing !== 'boolean' || !that.isEditing){
             that.isEditing = true;
-            cm.addClass(that.params['node'], 'is-editing');
+            cm.addClass(that.params['node'], 'is-editing is-editable');
             that.enableEditMode();
             that.triggerEvent('enableEditing');
             that.triggerEvent('enableEditable');
@@ -434,7 +434,7 @@ function(params){
     that.disableEditing = function(){
         if(typeof that.isEditing !== 'boolean' || that.isEditing){
             that.isEditing = false;
-            cm.removeClass(that.params['node'], 'is-editing');
+            cm.removeClass(that.params['node'], 'is-editing is-editable');
             that.disableEditMode();
             that.triggerEvent('disableEditing');
             that.triggerEvent('disableEditable');

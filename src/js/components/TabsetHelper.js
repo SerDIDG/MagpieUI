@@ -440,6 +440,10 @@ function(params){
         return that.items;
     };
 
+    that.getCurrentTab = function(){
+        return that.items[that.current];
+    };
+
     that.abort = function(){
         if(that.ajaxHandler && that.ajaxHandler.abort){
             that.ajaxHandler.abort();
