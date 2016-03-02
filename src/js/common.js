@@ -24,7 +24,7 @@
  ******* */
 
 var cm = {
-        '_version' : '3.12.5',
+        '_version' : '3.12.6',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -1659,7 +1659,7 @@ cm.getCurrentDate = function(format){
 };
 
 cm.dateFormat = function(date, format, langs){
-    date = cm.isDate(date) ? date : new Date();
+    date = !date ? new Date() : new Date(+date);
     format = cm.isString(format) ? format : cm._config.dateTimeFormat;
     langs = cm.merge({
         'months' : [
@@ -1785,12 +1785,19 @@ cm.parseDate = function(str, format){
     return date;
 };
 
-cm.getDateWeek = function(date){
-    date = cm.isDate(date) ? date : new Date();
+cm.getWeek = function(date){
+    date = !date ? new Date() : new Date(+date);
     var d = new Date(+date);
     d.setHours(0,0,0);
     d.setDate(d.getDate()+4-(d.getDay()||7));
     return Math.ceil((((d-new Date(d.getFullYear(),0,1))/8.64e7)+1)/7);
+};
+
+cm.getWeeksInYear = function(year){
+    year = !year ? new Date().getFullYear() : year;
+    var date = new Date(year, 11, 31),
+        week = cm.getWeek(date);
+    return week == 1 ? cm.getWeek(date.setDate(24)) : week;
 };
 
 /* ******* STYLES ******* */

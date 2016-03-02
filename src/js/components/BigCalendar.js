@@ -501,6 +501,8 @@ function(params){
         'container' : cm.node('div'),
         'buttons' : {
             'container' : cm.node('div'),
+            'prev' : cm.node('div'),
+            'next' : cm.node('div'),
             'views' : {
                 'agenda' : cm.node('div'),
                 'week' : cm.node('div'),
@@ -559,15 +561,25 @@ function(params){
     };
 
     var render = function(){
-        var template;
         // Find events and set template and tooltip config
         new cm.Finder('Com.CalendarEvent', null, that.params['node'], function(classObject){
             // Clone template
-            template = cm.clone(that.nodes['templates']['event']['container'], true);
+            var template = cm.clone(that.nodes['templates']['event']['container'], true);
             // Set Node
             classObject
                 .setTooltipParams(that.params['Com.Tooltip'])
                 .setTemplate(template);
+        });
+        // Process Days
+        cm.forEach(that.nodes['days'], processDay);
+        // Toolbar Controls
+        new cm.Finder('Com.Select', 'year', that.nodes['buttons']['container'], function(classObject){
+            that.components['year'] = classObject
+                .addEvent('onChange', updateView);
+        });
+        new cm.Finder('Com.Select', 'month', that.nodes['buttons']['container'], function(classObject){
+            that.components['month'] = classObject
+                .addEvent('onChange', updateView);
         });
         // View Buttons
         cm.forEach(that.nodes['buttons']['views'], function(node, key){
@@ -583,16 +595,14 @@ function(params){
                 });
             });
         });
-        // Process Days
-        cm.forEach(that.nodes['days'], processDay);
-        // Toolbar Controls
-        new cm.Finder('Com.Select', 'year', that.nodes['buttons']['container'], function(classObject){
-            that.components['year'] = classObject
-                .addEvent('onChange', updateView);
+        // Prev / Next Buttons
+        cm.addEvent(that.nodes['buttons']['prev'], 'click', function(e){
+            cm.preventDefault(e);
+            that.prev();
         });
-        new cm.Finder('Com.Select', 'month', that.nodes['buttons']['container'], function(classObject){
-            that.components['month'] = classObject
-                .addEvent('onChange', updateView);
+        cm.addEvent(that.nodes['buttons']['next'], 'click', function(e){
+            cm.preventDefault(e);
+            that.next();
         });
     };
 
@@ -650,6 +660,36 @@ function(params){
 
     /* ******* PUBLIC ******* */
 
+    that.prev = function(){
+        var data = {
+            'view' : that.params['viewName'],
+            'year' : that.components['year'].get(),
+            'month' : that.components['month'].get()
+        };
+        if(data['month'] == 0){
+            data['year']--;
+            data['month'] = 11;
+        }else{
+            data['month']--;
+        }
+        requestView(data);
+    };
+
+    that.next = function(){
+        var data = {
+            'view' : that.params['viewName'],
+            'year' : that.components['year'].get(),
+            'month' : that.components['month'].get()
+        };
+        if(data['month'] == 11){
+            data['year']++;
+            data['month'] = 0;
+        }else{
+            data['month']++;
+        }
+        requestView(data);
+    };
+
     init();
 });
 
@@ -690,6 +730,8 @@ function(params){
         'container' : cm.node('div'),
         'buttons' : {
             'container' : cm.node('div'),
+            'prev' : cm.node('div'),
+            'next' : cm.node('div'),
             'views' : {
                 'agenda' : cm.node('div'),
                 'week' : cm.node('div'),
@@ -756,6 +798,15 @@ function(params){
                 .setTooltipParams(that.params['Com.Tooltip'])
                 .setTemplate(template);
         });
+        // Toolbar Controls
+        new cm.Finder('Com.Select', 'week', that.nodes['buttons']['container'], function(classObject){
+            that.components['week'] = classObject
+                .addEvent('onChange', updateView);
+        });
+        new cm.Finder('Com.Select', 'year', that.nodes['buttons']['container'], function(classObject){
+            that.components['year'] = classObject
+                .addEvent('onChange', updateView);
+        });
         // View Buttons
         cm.forEach(that.nodes['buttons']['views'], function(node, key){
             if(key === that.params['viewName']){
@@ -770,14 +821,14 @@ function(params){
                 });
             });
         });
-        // Toolbar Controls
-        new cm.Finder('Com.Select', 'week', that.nodes['buttons']['container'], function(classObject){
-            that.components['week'] = classObject
-                .addEvent('onChange', updateView);
+        // Prev / Next Buttons
+        cm.addEvent(that.nodes['buttons']['prev'], 'click', function(e){
+            cm.preventDefault(e);
+            that.prev();
         });
-        new cm.Finder('Com.Select', 'year', that.nodes['buttons']['container'], function(classObject){
-            that.components['year'] = classObject
-                .addEvent('onChange', updateView);
+        cm.addEvent(that.nodes['buttons']['next'], 'click', function(e){
+            cm.preventDefault(e);
+            that.next();
         });
     };
 
@@ -795,6 +846,36 @@ function(params){
     };
 
     /* ******* PUBLIC ******* */
+
+    that.prev = function(){
+        var data = {
+            'view' : that.params['viewName'],
+            'week' : that.components['week'].get(),
+            'year' : that.components['year'].get()
+        };
+        if(data['week'] == 1){
+            data['year']--;
+            data['week'] = cm.getWeeksInYear(data['year']);
+        }else{
+            data['week']--;
+        }
+        requestView(data);
+    };
+
+    that.next = function(){
+        var data = {
+            'view' : that.params['viewName'],
+            'week' : that.components['week'].get(),
+            'year' : that.components['year'].get()
+        };
+        if(data['week'] == cm.getWeeksInYear(data['year'])){
+            data['year']++;
+            data['week'] = 1;
+        }else{
+            data['week']++;
+        }
+        requestView(data);
+    };
 
     init();
 });
@@ -835,6 +916,8 @@ function(params){
         'container' : cm.node('div'),
         'buttons' : {
             'container' : cm.node('div'),
+            'prev' : cm.node('div'),
+            'next' : cm.node('div'),
             'views' : {
                 'agenda' : cm.node('div'),
                 'week' : cm.node('div'),
@@ -896,6 +979,15 @@ function(params){
                 .setTooltipParams(that.params['Com.Tooltip'])
                 .setTemplate(template);
         });
+        // Toolbar Controls
+        new cm.Finder('Com.Select', 'year', that.nodes['buttons']['container'], function(classObject){
+            that.components['year'] = classObject
+                .addEvent('onChange', updateView);
+        });
+        new cm.Finder('Com.Select', 'month', that.nodes['buttons']['container'], function(classObject){
+            that.components['month'] = classObject
+                .addEvent('onChange', updateView);
+        });
         // View Buttons
         cm.forEach(that.nodes['buttons']['views'], function(node, key){
             if(key === that.params['viewName']){
@@ -910,14 +1002,14 @@ function(params){
                 });
             });
         });
-        // Toolbar Controls
-        new cm.Finder('Com.Select', 'year', that.nodes['buttons']['container'], function(classObject){
-            that.components['year'] = classObject
-                .addEvent('onChange', updateView);
+        // Prev / Next Buttons
+        cm.addEvent(that.nodes['buttons']['prev'], 'click', function(e){
+            cm.preventDefault(e);
+            that.prev();
         });
-        new cm.Finder('Com.Select', 'month', that.nodes['buttons']['container'], function(classObject){
-            that.components['month'] = classObject
-                .addEvent('onChange', updateView);
+        cm.addEvent(that.nodes['buttons']['next'], 'click', function(e){
+            cm.preventDefault(e);
+            that.next();
         });
     };
 
@@ -935,6 +1027,36 @@ function(params){
     };
 
     /* ******* PUBLIC ******* */
+
+    that.prev = function(){
+        var data = {
+            'view' : that.params['viewName'],
+            'year' : that.components['year'].get(),
+            'month' : that.components['month'].get()
+        };
+        if(data['month'] == 0){
+            data['year']--;
+            data['month'] = 11;
+        }else{
+            data['month']--;
+        }
+        requestView(data);
+    };
+
+    that.next = function(){
+        var data = {
+            'view' : that.params['viewName'],
+            'year' : that.components['year'].get(),
+            'month' : that.components['month'].get()
+        };
+        if(data['month'] == 11){
+            data['year']++;
+            data['month'] = 0;
+        }else{
+            data['month']++;
+        }
+        requestView(data);
+    };
 
     init();
 });
