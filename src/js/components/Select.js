@@ -658,14 +658,5 @@ function(params){
 
 Com.FormFields.add('select', {
     'node' : cm.node('select'),
-    'component' : 'Com.Select',
-    'callbacks' : {
-        'component' : function(that, params){
-            return new that.params['constructor'](
-                cm.merge(params, {
-                    'select' : params['node']
-                })
-            );
-        }
-    }
+    'component' : 'Com.Select'
 });

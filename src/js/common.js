@@ -24,7 +24,7 @@
  ******* */
 
 var cm = {
-        '_version' : '3.12.6',
+        '_version' : '3.12.7',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -42,6 +42,7 @@ var cm = {
             'hideDelay' : 250,
             'hideDelayShort' : 150,
             'hideDelayLong' : 500,
+            'requestDelay' : 300,
             'adaptiveFrom' : 768,
             'screenTablet' : 1024,
             'screenTabletPortrait' : 768,

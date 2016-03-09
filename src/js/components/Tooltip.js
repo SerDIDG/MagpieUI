@@ -150,7 +150,6 @@ function(params){
     var show = function(immediately){
         if((!that.isShow && !that.isShowProcess) || that.isHideProcess){
             that.isShowProcess = true;
-            that.triggerEvent('onShowStart');
             setWindowEvent();
             // Show Handler
             clearDelayInterval();
@@ -169,6 +168,7 @@ function(params){
         that.params['container'].appendChild(that.nodes['container']);
         that.nodes['container'].style.display = 'block';
         resizeHelper();
+        that.triggerEvent('onShowStart');
         // Animate
         if(immediately || !that.params['duration']){
             showHandlerEnd();
@@ -194,7 +194,6 @@ function(params){
     var hide = function(immediately){
         if((that.isShow || that.isShowProcess) && !that.isHideProcess){
             that.isHideProcess = true;
-            that.triggerEvent('onHideStart');
             // Hide Handler
             clearDelayInterval();
             if(immediately){
@@ -222,6 +221,7 @@ function(params){
     };
 
     var hideHandlerEnd = function(){
+        that.triggerEvent('onHideStart');
         clearResizeInterval();
         removeWindowEvent();
         that.nodes['container'].style.display = 'none';

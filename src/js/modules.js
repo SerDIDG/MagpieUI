@@ -590,6 +590,10 @@ Mod['Stack'] = {
             }
         });
         return items;
+    },
+    'getStackNode' : function(){
+        var that = this;
+        return that._stackItem['node'];
     }
 };
 
@@ -640,6 +644,180 @@ Mod['Structure'] = {
             cm.insertBefore(node, that.params['node']);
         }
         cm.remove(that.params['node']);
+        return that;
+    }
+};
+
+/* ******* CONTROLLER ******* */
+
+Mod['Controller'] = {
+    '_config' : {
+        'extend' : true,
+        'predefine' : false,
+        'require' : ['Extend']
+    },
+    '_construct' : function(){
+        var that = this;
+        if(typeof that.build['params']['removeOnDestruct'] == 'undefined'){
+            that.build['params']['removeOnDestruct'] = true;
+        }
+        if(that.build['params']['customEvents'] !== false){
+            that.build['params']['customEvents'] = cm.merge({
+                'destruct' : true,
+                'redraw' : true,
+                'refresh' : true,
+                'resume' : true,
+                'suspend' : true
+            }, that.build['params']['customEvents']);
+        }
+        if(that.build['params']['triggerCustomEvents'] !== false){
+            that.build['params']['triggerCustomEvents'] = cm.merge({
+                'destruct' : true,
+                'redraw' : true,
+                'refresh' : true,
+                'resume' : true,
+                'suspend' : true
+            }, that.build['params']['triggerCustomEvents']);
+        }
+        that.build._isConstructed = false;
+        that.build._isDestructed = false;
+        that.build._isSuspended = false;
+    },
+    'construct' : function(){
+        var that = this;
+        var node = that._modules['Stack'] ? that.getStackNode() : that.params['node'];
+        if(!that._isConstructed){
+            that._isConstructed = true;
+            that._isDestructed = false;
+            that._isSuspended = false;
+            if(that.params['customEvents']){
+                if(that.params['customEvents'] === true){
+                    cm.customEvent.add(node, 'destruct', that.destruct);
+                    cm.customEvent.add(node, 'redraw', that.redraw);
+                    cm.customEvent.add(node, 'refresh', that.refresh);
+                    cm.customEvent.add(node, 'resume', that.resume);
+                    cm.customEvent.add(node, 'suspend', that.suspend);
+                }else{
+                    cm.forEach(that.params['customEvents'], function(bool, key){
+                        bool && cm.customEvent.add(node, 'destruct', that[key]);
+                    });
+                }
+            }
+            that.constructHook(node);
+        }
+        return that;
+    },
+    'destruct' : function(){
+        var that = this;
+        if(that._isConstructed && !that._isDestructed){
+            var node = that._modules['Stack'] ? that.getStackNode() : that.params['node'];
+            that._isConstructed = false;
+            that._isDestructed = true;
+            that.destructHook(node);
+            if(that.params['triggerCustomEvents'] && (that.params['triggerCustomEvents'] === true || that.params['triggerCustomEvents']['destruct'])){
+                cm.customEvent.trigger(node, 'destruct', {
+                    'type' : 'child',
+                    'self' : false
+                });
+            }
+            if(that.params['customEvents']){
+                if(that.params['customEvents'] === true){
+                    cm.customEvent.remove(node, 'destruct', that.destruct);
+                    cm.customEvent.remove(node, 'redraw', that.redraw);
+                    cm.customEvent.remove(node, 'refresh', that.refresh);
+                    cm.customEvent.remove(node, 'resume', that.resume);
+                    cm.customEvent.remove(node, 'suspend', that.suspend);
+                }else{
+                    cm.forEach(that.params['customEvents'], function(bool, key){
+                        bool && cm.customEvent.remove(node, 'destruct', that[key]);
+                    });
+                }
+            }
+            that._modules['Stack'] && that.removeFromStack();
+            that.params['removeOnDestruct'] && cm.remove(node);
+        }
+        return that;
+    },
+    'resume' : function(){
+        var that = this;
+        if(that._isSuspended){
+            var node = that._modules['Stack'] ? that.getStackNode() : that.params['node'];
+            that._isSuspended = false;
+            that.resumeHook(node);
+            if(that.params['triggerCustomEvents'] && (that.params['triggerCustomEvents'] === true || that.params['triggerCustomEvents']['resume'])){
+                cm.customEvent.trigger(node, 'resume', {
+                    'type' : 'child',
+                    'self' : false
+                });
+            }
+        }
+        return that;
+    },
+    'suspend' : function(){
+        var that = this;
+        if(!that._isSuspended){
+            var node = that._modules['Stack'] ? that.getStackNode() : that.params['node'];
+            that._isSuspended = true;
+            that.suspendHook(node);
+            if(that.params['triggerCustomEvents'] && (that.params['triggerCustomEvents'] === true || that.params['triggerCustomEvents']['suspend'])){
+                cm.customEvent.trigger(node, 'suspend', {
+                    'type' : 'child',
+                    'self' : false
+                });
+            }
+        }
+        return that;
+    },
+    'refresh' : function(){
+        var that = this;
+        if(!that._isSuspended){
+            var node = that._modules['Stack'] ? that.getStackNode() : that.params['node'];
+            that.refreshHook(node);
+            if(that.params['triggerCustomEvents'] && (that.params['triggerCustomEvents'] === true || that.params['triggerCustomEvents']['refresh'])){
+                cm.customEvent.trigger(node, 'refresh', {
+                    'type' : 'child',
+                    'self' : false
+                });
+            }
+        }
+        return that;
+    },
+    'redraw' : function(){
+        var that = this;
+        if(!that._isSuspended){
+            var node = that._modules['Stack'] ? that.getStackNode() : that.params['node'];
+            that.redrawHook(node);
+            if(that.params['triggerCustomEvents'] && (that.params['triggerCustomEvents'] === true || that.params['triggerCustomEvents']['redraw'])){
+                cm.customEvent.trigger(node, 'redraw', {
+                    'type' : 'child',
+                    'self' : false
+                });
+            }
+        }
+        return that;
+    },
+    'constructHook' : function(node){
+        var that = this;
+        return that;
+    },
+    'destructHook' : function(node){
+        var that = this;
+        return that;
+    },
+    'resumeHook' : function(node){
+        var that = this;
+        return that;
+    },
+    'suspendHook' : function(node){
+        var that = this;
+        return that;
+    },
+    'refreshHook' : function(node){
+        var that = this;
+        return that;
+    },
+    'redrawHook' : function(node){
+        var that = this;
         return that;
     }
 };

@@ -1415,7 +1415,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.12.6',
+        '_version' : '3.12.7',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -1433,6 +1433,7 @@ var cm = {
             'hideDelay' : 250,
             'hideDelayShort' : 150,
             'hideDelayLong' : 500,
+            'requestDelay' : 300,
             'adaptiveFrom' : 768,
             'screenTablet' : 1024,
             'screenTabletPortrait' : 768,
@@ -5299,6 +5300,10 @@ Mod['Stack'] = {
             }
         });
         return items;
+    },
+    'getStackNode' : function(){
+        var that = this;
+        return that._stackItem['node'];
     }
 };
 
@@ -5349,6 +5354,180 @@ Mod['Structure'] = {
             cm.insertBefore(node, that.params['node']);
         }
         cm.remove(that.params['node']);
+        return that;
+    }
+};
+
+/* ******* CONTROLLER ******* */
+
+Mod['Controller'] = {
+    '_config' : {
+        'extend' : true,
+        'predefine' : false,
+        'require' : ['Extend']
+    },
+    '_construct' : function(){
+        var that = this;
+        if(typeof that.build['params']['removeOnDestruct'] == 'undefined'){
+            that.build['params']['removeOnDestruct'] = true;
+        }
+        if(that.build['params']['customEvents'] !== false){
+            that.build['params']['customEvents'] = cm.merge({
+                'destruct' : true,
+                'redraw' : true,
+                'refresh' : true,
+                'resume' : true,
+                'suspend' : true
+            }, that.build['params']['customEvents']);
+        }
+        if(that.build['params']['triggerCustomEvents'] !== false){
+            that.build['params']['triggerCustomEvents'] = cm.merge({
+                'destruct' : true,
+                'redraw' : true,
+                'refresh' : true,
+                'resume' : true,
+                'suspend' : true
+            }, that.build['params']['triggerCustomEvents']);
+        }
+        that.build._isConstructed = false;
+        that.build._isDestructed = false;
+        that.build._isSuspended = false;
+    },
+    'construct' : function(){
+        var that = this;
+        var node = that._modules['Stack'] ? that.getStackNode() : that.params['node'];
+        if(!that._isConstructed){
+            that._isConstructed = true;
+            that._isDestructed = false;
+            that._isSuspended = false;
+            if(that.params['customEvents']){
+                if(that.params['customEvents'] === true){
+                    cm.customEvent.add(node, 'destruct', that.destruct);
+                    cm.customEvent.add(node, 'redraw', that.redraw);
+                    cm.customEvent.add(node, 'refresh', that.refresh);
+                    cm.customEvent.add(node, 'resume', that.resume);
+                    cm.customEvent.add(node, 'suspend', that.suspend);
+                }else{
+                    cm.forEach(that.params['customEvents'], function(bool, key){
+                        bool && cm.customEvent.add(node, 'destruct', that[key]);
+                    });
+                }
+            }
+            that.constructHook(node);
+        }
+        return that;
+    },
+    'destruct' : function(){
+        var that = this;
+        if(that._isConstructed && !that._isDestructed){
+            var node = that._modules['Stack'] ? that.getStackNode() : that.params['node'];
+            that._isConstructed = false;
+            that._isDestructed = true;
+            that.destructHook(node);
+            if(that.params['triggerCustomEvents'] && (that.params['triggerCustomEvents'] === true || that.params['triggerCustomEvents']['destruct'])){
+                cm.customEvent.trigger(node, 'destruct', {
+                    'type' : 'child',
+                    'self' : false
+                });
+            }
+            if(that.params['customEvents']){
+                if(that.params['customEvents'] === true){
+                    cm.customEvent.remove(node, 'destruct', that.destruct);
+                    cm.customEvent.remove(node, 'redraw', that.redraw);
+                    cm.customEvent.remove(node, 'refresh', that.refresh);
+                    cm.customEvent.remove(node, 'resume', that.resume);
+                    cm.customEvent.remove(node, 'suspend', that.suspend);
+                }else{
+                    cm.forEach(that.params['customEvents'], function(bool, key){
+                        bool && cm.customEvent.remove(node, 'destruct', that[key]);
+                    });
+                }
+            }
+            that._modules['Stack'] && that.removeFromStack();
+            that.params['removeOnDestruct'] && cm.remove(node);
+        }
+        return that;
+    },
+    'resume' : function(){
+        var that = this;
+        if(that._isSuspended){
+            var node = that._modules['Stack'] ? that.getStackNode() : that.params['node'];
+            that._isSuspended = false;
+            that.resumeHook(node);
+            if(that.params['triggerCustomEvents'] && (that.params['triggerCustomEvents'] === true || that.params['triggerCustomEvents']['resume'])){
+                cm.customEvent.trigger(node, 'resume', {
+                    'type' : 'child',
+                    'self' : false
+                });
+            }
+        }
+        return that;
+    },
+    'suspend' : function(){
+        var that = this;
+        if(!that._isSuspended){
+            var node = that._modules['Stack'] ? that.getStackNode() : that.params['node'];
+            that._isSuspended = true;
+            that.suspendHook(node);
+            if(that.params['triggerCustomEvents'] && (that.params['triggerCustomEvents'] === true || that.params['triggerCustomEvents']['suspend'])){
+                cm.customEvent.trigger(node, 'suspend', {
+                    'type' : 'child',
+                    'self' : false
+                });
+            }
+        }
+        return that;
+    },
+    'refresh' : function(){
+        var that = this;
+        if(!that._isSuspended){
+            var node = that._modules['Stack'] ? that.getStackNode() : that.params['node'];
+            that.refreshHook(node);
+            if(that.params['triggerCustomEvents'] && (that.params['triggerCustomEvents'] === true || that.params['triggerCustomEvents']['refresh'])){
+                cm.customEvent.trigger(node, 'refresh', {
+                    'type' : 'child',
+                    'self' : false
+                });
+            }
+        }
+        return that;
+    },
+    'redraw' : function(){
+        var that = this;
+        if(!that._isSuspended){
+            var node = that._modules['Stack'] ? that.getStackNode() : that.params['node'];
+            that.redrawHook(node);
+            if(that.params['triggerCustomEvents'] && (that.params['triggerCustomEvents'] === true || that.params['triggerCustomEvents']['redraw'])){
+                cm.customEvent.trigger(node, 'redraw', {
+                    'type' : 'child',
+                    'self' : false
+                });
+            }
+        }
+        return that;
+    },
+    'constructHook' : function(node){
+        var that = this;
+        return that;
+    },
+    'destructHook' : function(node){
+        var that = this;
+        return that;
+    },
+    'resumeHook' : function(node){
+        var that = this;
+        return that;
+    },
+    'suspendHook' : function(node){
+        var that = this;
+        return that;
+    },
+    'refreshHook' : function(node){
+        var that = this;
+        return that;
+    },
+    'redrawHook' : function(node){
+        var that = this;
         return that;
     }
 };
@@ -5617,6 +5796,7 @@ cm.define('Com.Form', {
         'loaderCoverage' : 'fields',                                // fields, all
         'loaderDelay' : 'cm._config.loadDelay',
         'showNotifications' : true,
+        'responseErrorsKey': 'errors',
         'ajax' : {
             'type' : 'json',
             'method' : 'post',
@@ -5743,6 +5923,7 @@ function(params){
         params = cm.merge({
             'name' : '',
             'label' : '',
+            'class' : '',
             'action' : 'submit',          // submit | reset | clear | custom
             'handler' : function(){}
         }, params);
@@ -5786,6 +5967,7 @@ function(params){
 
                 case 'custom':
                 default:
+                    cm.addClass(params['node'], params['class']);
                     cm.addEvent(params['node'], 'click', function(e){
                         cm.preventDefault(e);
                         cm.isFunction(params['handler']) && params['handler'](that, params, e);
@@ -5862,14 +6044,19 @@ function(params){
 
     that.callbacks.response = function(that, config, response){
         if(!cm.isEmpty(response)){
-            that.callbacks.success(that, response);
+            var errors = cm.objectSelector(that.params['responseErrorsKey'], response);
+            if(!cm.isEmpty(errors)){
+                that.callbacks.error(that, config, errors);
+            }else{
+                that.callbacks.success(that, response);
+            }
         }else{
             that.callbacks.error(that, config);
         }
     };
 
-    that.callbacks.error = function(that, config){
-        that.renderError(that, config);
+    that.callbacks.error = function(that, config, message){
+        that.callbacks.renderError(that, config, message);
         that.triggerEvent('onError');
     };
 
@@ -5883,15 +6070,25 @@ function(params){
 
     /* *** RENDER *** */
 
-    that.renderError = function(that, config, response){
+    that.callbacks.renderError = function(that, config, errors){
         cm.clearNode(that.nodes['notifications']);
-        if(!response){
-            that.nodes['notifications'].appendChild(
-                cm.node('li', {'class' : 'error'},
-                    cm.node('div', {'class' : 'descr'}, that.lang('server_error'))
-                )
-            );
+        if(cm.isArray(errors)){
+            cm.forEach(errors, function(item){
+                that.callbacks.renderErrorItem(that, config, item);
+            });
+        }else{
+            that.callbacks.renderErrorItem(that, config, {
+                'message' : 'server_error'
+            });
         }
+    };
+
+    that.callbacks.renderErrorItem = function(that, config, item){
+        that.nodes['notifications'].appendChild(
+            cm.node('li', {'class' : 'error'},
+                cm.node('div', {'class' : 'descr'}, that.lang(item['message']))
+            )
+        );
         cm.addClass(that.nodes['notificationsContainer'], 'is-show', true);
     };
 
@@ -6359,12 +6556,14 @@ cm.define('Com.Autocomplete', {
         'Langs',
         'DataConfig',
         'Storage',
-        'Callbacks'
+        'Callbacks',
+        'Stack'
     ],
     'require' : [
         'Com.Tooltip'
     ],
     'events' : [
+        'onRenderStart',
         'onRender',
         'onClear',
         'onSelect',
@@ -6374,11 +6573,13 @@ cm.define('Com.Autocomplete', {
         'onError'
     ],
     'params' : {
-        'input' : cm.Node('input', {'type' : 'text'}),              // HTML input node.
+        'input' : null,                                             // Deprecated, use 'node' parameter instead.
+        'node' : cm.Node('input', {'type' : 'text'}),               // Html input node to decorate.
         'target' : false,                                           // HTML node.
         'container' : 'document.body',
+        'name' : '',
         'minLength' : 3,
-        'delay' : 300,
+        'delay' : 'cm._config.that.requestDelay',
         'clearOnEmpty' : true,                                      // Clear input and value if item didn't selected from tooltip
         'showLoader' : true,                                        // Show ajax spinner in tooltip, for ajax mode only.
         'data' : [],                                                // Examples: [{'value' : 'foo', 'text' : 'Bar'}] or ['Foo', 'Bar'].
@@ -6402,13 +6603,15 @@ cm.define('Com.Autocomplete', {
     }
 },
 function(params){
-    var that = this,
-        requestDelay,
-        ajaxHandler;
+    var that = this;
+    
+    that.components = {};
 
+    that.ajaxHandler = null;
     that.isOpen = false;
     that.isAjax = false;
-    that.components = {};
+    that.requestDelay = null;
+
     that.registeredItems = [];
     that.selectedItemIndex = null;
     that.value = null;
@@ -6416,23 +6619,30 @@ function(params){
 
     var init = function(){
         that.setParams(params);
+        preValidateParams();
         that.convertEvents(that.params['events']);
-        that.getDataConfig(that.params['input']);
+        that.getDataConfig(that.params['node']);
         that.callbacksProcess();
         validateParams();
+        that.addToStack(that.params['node']);
+        that.triggerEvent('onRenderStart');
         render();
+        that.addToStack(that.params['node']);
+        that.triggerEvent('onRender');
+    };
+
+    var preValidateParams = function(){
+        if(cm.isNode(that.params['input'])){
+            that.params['node'] = that.params['input'];
+        }
     };
 
     var validateParams = function(){
         if(!that.params['target']){
-            that.params['target'] = that.params['input'];
+            that.params['target'] = that.params['node'];
         }
         // If URL parameter exists, use ajax data
         that.isAjax = !cm.isEmpty(that.params['ajax']['url']);
-        // Convert params object to URI string
-        if(cm.isObject(that.params['ajax']['params'])){
-            that.params['ajax']['params'] = cm.obj2URI(that.params['ajax']['params']);
-        }
         // Prepare data
         that.params['data'] = that.convertData(that.params['data']);
     };
@@ -6456,8 +6666,7 @@ function(params){
             })
         );
         // Set input
-        that.setInput(that.params['input']);
-        that.triggerEvent('onRender');
+        that.setInput(that.params['node']);
     };
 
     var inputHandler = function(e){
@@ -6509,16 +6718,16 @@ function(params){
     };
 
     var requestHandler = function(){
-        var query = that.params['input'].value,
+        var query = that.params['node'].value,
             config = cm.clone(that.params['ajax']);
         // Clear tooltip ajax/static delay and filtered items list
-        requestDelay && clearTimeout(requestDelay);
+        that.requestDelay && clearTimeout(that.requestDelay);
         that.selectedItemIndex = null;
         that.registeredItems = [];
         that.abort();
 
         if(query.length >= that.params['minLength']){
-            requestDelay = setTimeout(function(){
+            that.requestDelay = setTimeout(function(){
                 if(that.isAjax){
                     if(that.params['showLoader']){
                         that.callbacks.loader(that, config, query);
@@ -6558,12 +6767,12 @@ function(params){
     var clear = function(){
         var item;
         // Kill timeout interval and ajax request
-        requestDelay && clearTimeout(requestDelay);
+        that.requestDelay && clearTimeout(that.requestDelay);
         that.abort();
         // Clear input
         if(that.params['clearOnEmpty']){
             item = that.getRegisteredItem(that.value);
-            if(!item || item['data']['text'] != that.params['input'].value){
+            if(!item || item['data']['text'] != that.params['node'].value){
                 that.clear();
             }
         }
@@ -6589,12 +6798,13 @@ function(params){
     /* *** AJAX *** */
 
     that.callbacks.prepare = function(that, config, query){
+        cm.log(config, query);
         config = that.callbacks.beforePrepare(that, config, query);
         config['url'] = cm.strReplace(config['url'], {
             '%query%' : query,
             '%baseurl%' : cm._baseUrl
         });
-        config['params'] = cm.strReplace(config['params'], {
+        config['params'] = cm.objectReplace(config['params'], {
             '%query%' : query,
             '%baseurl%' : cm._baseUrl
         });
@@ -6755,7 +6965,7 @@ function(params){
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
         that.previousValue = that.value;
         that.value = typeof item['value'] != 'undefined'? item['value'] : item['text'];
-        that.params['input'].value = item['text'];
+        that.params['node'].value = item['text'];
         // Trigger events
         if(triggerEvents){
             that.triggerEvent('onSelect', that.value);
@@ -6772,10 +6982,10 @@ function(params){
 
     that.setInput = function(node){
         if(cm.isNode(node)){
-            that.params['input'] = node;
-            cm.addEvent(that.params['input'], 'input', requestHandler);
-            cm.addEvent(that.params['input'], 'keydown', inputHandler);
-            cm.addEvent(that.params['input'], 'blur', blurHandler);
+            that.params['node'] = node;
+            cm.addEvent(that.params['node'], 'input', requestHandler);
+            cm.addEvent(that.params['node'], 'keydown', inputHandler);
+            cm.addEvent(that.params['node'], 'blur', blurHandler);
         }
         return that;
     };
@@ -6832,7 +7042,7 @@ function(params){
         that.previousValue = that.value;
         that.value = null;
         if(that.params['clearOnEmpty']){
-            that.params['input'].value = '';
+            that.params['node'].value = '';
         }
         // Trigger events
         if(triggerEvents){
@@ -6864,6 +7074,13 @@ function(params){
     };
 
     init();
+});
+
+/* ****** FORM FIELD COMPONENT ******* */
+
+Com.FormFields.add('autocomplete', {
+    'node' : cm.node('input', {'type' : 'text'}),
+    'component' : 'Com.Autocomplete'
 });
 /* ******* COMPONENTS: BIG CALENDAR ******* */
 
@@ -17633,16 +17850,7 @@ function(params){
 
 Com.FormFields.add('select', {
     'node' : cm.node('select'),
-    'component' : 'Com.Select',
-    'callbacks' : {
-        'component' : function(that, params){
-            return new that.params['constructor'](
-                cm.merge(params, {
-                    'select' : params['node']
-                })
-            );
-        }
-    }
+    'component' : 'Com.Select'
 });
 cm.define('Com.Slider', {
     'modules' : [
@@ -18910,7 +19118,7 @@ function(params){
                 that.triggerEvent('onTabHideStart', previous);
                 // Controller
                 if(previous['controllerObject']){
-                    previous['controllerObject'].pause();
+                    previous['controllerObject'].suspend();
                 }
                 // Hide
                 cm.removeClass(previous['tab']['container'], 'active');
@@ -18931,7 +19139,7 @@ function(params){
             if(item['controller']){
                 if(!item['controllerObject'] || !item['controllerObject']._isConstructed){
                     cm.getConstructor(item['controller'], function(classConstructor){
-                        if(classConstructor.prototype._modules['TabController']){
+                        if(classConstructor.prototype._modules['Controller']){
                             item['controllerObject'] = new classConstructor(
                                 cm.merge(item['controllerParams'], {
                                     'container' : item['content']
@@ -18941,7 +19149,7 @@ function(params){
                         }
                     });
                 }else{
-                    item['controllerObject'].refresh();
+                    item['controllerObject'].resume();
                 }
             }
             // Show
@@ -20856,7 +21064,6 @@ function(params){
     var show = function(immediately){
         if((!that.isShow && !that.isShowProcess) || that.isHideProcess){
             that.isShowProcess = true;
-            that.triggerEvent('onShowStart');
             setWindowEvent();
             // Show Handler
             clearDelayInterval();
@@ -20875,6 +21082,7 @@ function(params){
         that.params['container'].appendChild(that.nodes['container']);
         that.nodes['container'].style.display = 'block';
         resizeHelper();
+        that.triggerEvent('onShowStart');
         // Animate
         if(immediately || !that.params['duration']){
             showHandlerEnd();
@@ -20900,7 +21108,6 @@ function(params){
     var hide = function(immediately){
         if((that.isShow || that.isShowProcess) && !that.isHideProcess){
             that.isHideProcess = true;
-            that.triggerEvent('onHideStart');
             // Hide Handler
             clearDelayInterval();
             if(immediately){
@@ -20928,6 +21135,7 @@ function(params){
     };
 
     var hideHandlerEnd = function(){
+        that.triggerEvent('onHideStart');
         clearResizeInterval();
         removeWindowEvent();
         that.nodes['container'].style.display = 'none';

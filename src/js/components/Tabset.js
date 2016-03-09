@@ -265,7 +265,7 @@ function(params){
                 that.triggerEvent('onTabHideStart', previous);
                 // Controller
                 if(previous['controllerObject']){
-                    previous['controllerObject'].pause();
+                    previous['controllerObject'].suspend();
                 }
                 // Hide
                 cm.removeClass(previous['tab']['container'], 'active');
@@ -286,7 +286,7 @@ function(params){
             if(item['controller']){
                 if(!item['controllerObject'] || !item['controllerObject']._isConstructed){
                     cm.getConstructor(item['controller'], function(classConstructor){
-                        if(classConstructor.prototype._modules['TabController']){
+                        if(classConstructor.prototype._modules['Controller']){
                             item['controllerObject'] = new classConstructor(
                                 cm.merge(item['controllerParams'], {
                                     'container' : item['content']
@@ -296,7 +296,7 @@ function(params){
                         }
                     });
                 }else{
-                    item['controllerObject'].refresh();
+                    item['controllerObject'].resume();
                 }
             }
             // Show

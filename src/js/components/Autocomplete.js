@@ -5,12 +5,14 @@ cm.define('Com.Autocomplete', {
         'Langs',
         'DataConfig',
         'Storage',
-        'Callbacks'
+        'Callbacks',
+        'Stack'
     ],
     'require' : [
         'Com.Tooltip'
     ],
     'events' : [
+        'onRenderStart',
         'onRender',
         'onClear',
         'onSelect',
@@ -20,11 +22,13 @@ cm.define('Com.Autocomplete', {
         'onError'
     ],
     'params' : {
-        'input' : cm.Node('input', {'type' : 'text'}),              // HTML input node.
+        'input' : null,                                             // Deprecated, use 'node' parameter instead.
+        'node' : cm.Node('input', {'type' : 'text'}),               // Html input node to decorate.
         'target' : false,                                           // HTML node.
         'container' : 'document.body',
+        'name' : '',
         'minLength' : 3,
-        'delay' : 300,
+        'delay' : 'cm._config.that.requestDelay',
         'clearOnEmpty' : true,                                      // Clear input and value if item didn't selected from tooltip
         'showLoader' : true,                                        // Show ajax spinner in tooltip, for ajax mode only.
         'data' : [],                                                // Examples: [{'value' : 'foo', 'text' : 'Bar'}] or ['Foo', 'Bar'].
@@ -48,13 +52,15 @@ cm.define('Com.Autocomplete', {
     }
 },
 function(params){
-    var that = this,
-        requestDelay,
-        ajaxHandler;
+    var that = this;
+    
+    that.components = {};
 
+    that.ajaxHandler = null;
     that.isOpen = false;
     that.isAjax = false;
-    that.components = {};
+    that.requestDelay = null;
+
     that.registeredItems = [];
     that.selectedItemIndex = null;
     that.value = null;
@@ -62,23 +68,30 @@ function(params){
 
     var init = function(){
         that.setParams(params);
+        preValidateParams();
         that.convertEvents(that.params['events']);
-        that.getDataConfig(that.params['input']);
+        that.getDataConfig(that.params['node']);
         that.callbacksProcess();
         validateParams();
+        that.addToStack(that.params['node']);
+        that.triggerEvent('onRenderStart');
         render();
+        that.addToStack(that.params['node']);
+        that.triggerEvent('onRender');
+    };
+
+    var preValidateParams = function(){
+        if(cm.isNode(that.params['input'])){
+            that.params['node'] = that.params['input'];
+        }
     };
 
     var validateParams = function(){
         if(!that.params['target']){
-            that.params['target'] = that.params['input'];
+            that.params['target'] = that.params['node'];
         }
         // If URL parameter exists, use ajax data
         that.isAjax = !cm.isEmpty(that.params['ajax']['url']);
-        // Convert params object to URI string
-        if(cm.isObject(that.params['ajax']['params'])){
-            that.params['ajax']['params'] = cm.obj2URI(that.params['ajax']['params']);
-        }
         // Prepare data
         that.params['data'] = that.convertData(that.params['data']);
     };
@@ -102,8 +115,7 @@ function(params){
             })
         );
         // Set input
-        that.setInput(that.params['input']);
-        that.triggerEvent('onRender');
+        that.setInput(that.params['node']);
     };
 
     var inputHandler = function(e){
@@ -155,16 +167,16 @@ function(params){
     };
 
     var requestHandler = function(){
-        var query = that.params['input'].value,
+        var query = that.params['node'].value,
             config = cm.clone(that.params['ajax']);
         // Clear tooltip ajax/static delay and filtered items list
-        requestDelay && clearTimeout(requestDelay);
+        that.requestDelay && clearTimeout(that.requestDelay);
         that.selectedItemIndex = null;
         that.registeredItems = [];
         that.abort();
 
         if(query.length >= that.params['minLength']){
-            requestDelay = setTimeout(function(){
+            that.requestDelay = setTimeout(function(){
                 if(that.isAjax){
                     if(that.params['showLoader']){
                         that.callbacks.loader(that, config, query);
@@ -204,12 +216,12 @@ function(params){
     var clear = function(){
         var item;
         // Kill timeout interval and ajax request
-        requestDelay && clearTimeout(requestDelay);
+        that.requestDelay && clearTimeout(that.requestDelay);
         that.abort();
         // Clear input
         if(that.params['clearOnEmpty']){
             item = that.getRegisteredItem(that.value);
-            if(!item || item['data']['text'] != that.params['input'].value){
+            if(!item || item['data']['text'] != that.params['node'].value){
                 that.clear();
             }
         }
@@ -235,12 +247,13 @@ function(params){
     /* *** AJAX *** */
 
     that.callbacks.prepare = function(that, config, query){
+        cm.log(config, query);
         config = that.callbacks.beforePrepare(that, config, query);
         config['url'] = cm.strReplace(config['url'], {
             '%query%' : query,
             '%baseurl%' : cm._baseUrl
         });
-        config['params'] = cm.strReplace(config['params'], {
+        config['params'] = cm.objectReplace(config['params'], {
             '%query%' : query,
             '%baseurl%' : cm._baseUrl
         });
@@ -401,7 +414,7 @@ function(params){
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
         that.previousValue = that.value;
         that.value = typeof item['value'] != 'undefined'? item['value'] : item['text'];
-        that.params['input'].value = item['text'];
+        that.params['node'].value = item['text'];
         // Trigger events
         if(triggerEvents){
             that.triggerEvent('onSelect', that.value);
@@ -418,10 +431,10 @@ function(params){
 
     that.setInput = function(node){
         if(cm.isNode(node)){
-            that.params['input'] = node;
-            cm.addEvent(that.params['input'], 'input', requestHandler);
-            cm.addEvent(that.params['input'], 'keydown', inputHandler);
-            cm.addEvent(that.params['input'], 'blur', blurHandler);
+            that.params['node'] = node;
+            cm.addEvent(that.params['node'], 'input', requestHandler);
+            cm.addEvent(that.params['node'], 'keydown', inputHandler);
+            cm.addEvent(that.params['node'], 'blur', blurHandler);
         }
         return that;
     };
@@ -478,7 +491,7 @@ function(params){
         that.previousValue = that.value;
         that.value = null;
         if(that.params['clearOnEmpty']){
-            that.params['input'].value = '';
+            that.params['node'].value = '';
         }
         // Trigger events
         if(triggerEvents){
@@ -510,4 +523,11 @@ function(params){
     };
 
     init();
+});
+
+/* ****** FORM FIELD COMPONENT ******* */
+
+Com.FormFields.add('autocomplete', {
+    'node' : cm.node('input', {'type' : 'text'}),
+    'component' : 'Com.Autocomplete'
 });

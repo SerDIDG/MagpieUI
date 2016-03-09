@@ -32,6 +32,7 @@ cm.define('Com.Form', {
         'loaderCoverage' : 'fields',                                // fields, all
         'loaderDelay' : 'cm._config.loadDelay',
         'showNotifications' : true,
+        'responseErrorsKey': 'errors',
         'ajax' : {
             'type' : 'json',
             'method' : 'post',
@@ -158,6 +159,7 @@ function(params){
         params = cm.merge({
             'name' : '',
             'label' : '',
+            'class' : '',
             'action' : 'submit',          // submit | reset | clear | custom
             'handler' : function(){}
         }, params);
@@ -201,6 +203,7 @@ function(params){
 
                 case 'custom':
                 default:
+                    cm.addClass(params['node'], params['class']);
                     cm.addEvent(params['node'], 'click', function(e){
                         cm.preventDefault(e);
                         cm.isFunction(params['handler']) && params['handler'](that, params, e);
@@ -277,14 +280,19 @@ function(params){
 
     that.callbacks.response = function(that, config, response){
         if(!cm.isEmpty(response)){
-            that.callbacks.success(that, response);
+            var errors = cm.objectSelector(that.params['responseErrorsKey'], response);
+            if(!cm.isEmpty(errors)){
+                that.callbacks.error(that, config, errors);
+            }else{
+                that.callbacks.success(that, response);
+            }
         }else{
             that.callbacks.error(that, config);
         }
     };
 
-    that.callbacks.error = function(that, config){
-        that.renderError(that, config);
+    that.callbacks.error = function(that, config, message){
+        that.callbacks.renderError(that, config, message);
         that.triggerEvent('onError');
     };
 
@@ -298,15 +306,25 @@ function(params){
 
     /* *** RENDER *** */
 
-    that.renderError = function(that, config, response){
+    that.callbacks.renderError = function(that, config, errors){
         cm.clearNode(that.nodes['notifications']);
-        if(!response){
-            that.nodes['notifications'].appendChild(
-                cm.node('li', {'class' : 'error'},
-                    cm.node('div', {'class' : 'descr'}, that.lang('server_error'))
-                )
-            );
+        if(cm.isArray(errors)){
+            cm.forEach(errors, function(item){
+                that.callbacks.renderErrorItem(that, config, item);
+            });
+        }else{
+            that.callbacks.renderErrorItem(that, config, {
+                'message' : 'server_error'
+            });
         }
+    };
+
+    that.callbacks.renderErrorItem = function(that, config, item){
+        that.nodes['notifications'].appendChild(
+            cm.node('li', {'class' : 'error'},
+                cm.node('div', {'class' : 'descr'}, that.lang(item['message']))
+            )
+        );
         cm.addClass(that.nodes['notificationsContainer'], 'is-show', true);
     };
 
