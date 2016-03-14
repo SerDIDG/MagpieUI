@@ -130,6 +130,7 @@ function(params){
                 if(item['controller']){
                     cm.getConstructor(item['controller'], function(classConstructor){
                         item['controllerObject'] = new classConstructor(item['controllerParams']);
+                        item['controllerObject'].construct();
                     });
                 }
                 item['handler'](e, item);

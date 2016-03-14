@@ -569,7 +569,7 @@ function(params){
             classObject
                 .setTooltipParams(that.params['Com.Tooltip'])
                 .setTemplate(template);
-        });
+        }, {'multiple' : true});
         // Process Days
         cm.forEach(that.nodes['days'], processDay);
         // Toolbar Controls
@@ -797,7 +797,7 @@ function(params){
             classObject
                 .setTooltipParams(that.params['Com.Tooltip'])
                 .setTemplate(template);
-        });
+        }, {'multiple' : true});
         // Toolbar Controls
         new cm.Finder('Com.Select', 'week', that.nodes['buttons']['container'], function(classObject){
             that.components['week'] = classObject
@@ -978,7 +978,7 @@ function(params){
             classObject
                 .setTooltipParams(that.params['Com.Tooltip'])
                 .setTemplate(template);
-        });
+        }, {'multiple' : true});
         // Toolbar Controls
         new cm.Finder('Com.Select', 'year', that.nodes['buttons']['container'], function(classObject){
             that.components['year'] = classObject

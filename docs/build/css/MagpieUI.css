@@ -11266,6 +11266,9 @@ button::-moz-focus-inner {
   border: 1px solid #cccccc;
   border-radius: 3px;
 }
+.CodeMirror-scroll {
+  min-height: 100px;
+}
 /* ******* COMPONENTS: COLOR PICKER ******* */
 .com__colorpicker {
   width: 100%;

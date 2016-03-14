@@ -251,20 +251,19 @@ function(params){
         // Render Time Select
         if(that.params['isDateTime']){
             components['time'] = new Com.TimeSelect({
-                    'container' : nodes['timeContainer'],
-                    'renderSelectsInBody' : false,
-                    'minutesInterval' : that.params['minutesInterval']
-                })
-                .onChange(function(){
-                    if(!that.date){
-                        that.date = new Date();
-                    }
-                    components['calendar'].set(that.date.getFullYear(), that.date.getMonth(), false);
-                    components['calendar'].selectDay(that.date);
-                    set(true);
-                });
+                'container' : nodes['timeContainer'],
+                'renderSelectsInBody' : false,
+                'minutesInterval' : that.params['minutesInterval']
+            });
+            components['time'].addEvent('onChange', function(){
+                if(!that.date){
+                    that.date = new Date();
+                }
+                components['calendar'].set(that.date.getFullYear(), that.date.getMonth(), false);
+                components['calendar'].selectDay(that.date);
+                set(true);
+            });
         }
-
         // Enable / Disable
         if(that.disabled){
             that.disable();

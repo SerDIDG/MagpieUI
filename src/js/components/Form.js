@@ -307,10 +307,19 @@ function(params){
     /* *** RENDER *** */
 
     that.callbacks.renderError = function(that, config, errors){
+        var field;
+        // Clear old errors
         cm.clearNode(that.nodes['notifications']);
+        cm.forEach(that.fields, function(field){
+            field.clearError();
+        });
+        // Render new errors
         if(cm.isArray(errors)){
             cm.forEach(errors, function(item){
                 that.callbacks.renderErrorItem(that, config, item);
+                if(field = that.getField(item['field'])){
+                    field.renderError(item['message']);
+                }
             });
         }else{
             that.callbacks.renderErrorItem(that, config, {
@@ -359,6 +368,10 @@ function(params){
             });
         }
         return that;
+    };
+
+    that.getField = function(name){
+        return that.fields[name];
     };
 
     that.getAll = function(){
@@ -544,6 +557,20 @@ function(params){
         return nodes;
     };
 
+    that.callbacks.clearError = function(that){
+        cm.removeClass(that.nodes['container'], 'error');
+        cm.remove(that.nodes['errors']);
+    };
+
+    that.callbacks.renderError = function(that, message){
+        that.callbacks.clearError(that);
+        cm.addClass(that.nodes['container'], 'error');
+        that.nodes['errors'] = cm.node('ul', {'class' : 'hint'},
+            cm.node('li', {'class' : 'error'}, message)
+        );
+        cm.appendChild(that.nodes['errors'], that.nodes['value']);
+    };
+
     that.callbacks.set = function(that, value){
         that.component && cm.isFunction(that.component.set) && that.component.set(value);
         return value;
@@ -581,6 +608,16 @@ function(params){
     that.destruct = function(){
         that.callbacks.destruct(that);
         that.removeFromStack();
+        return that;
+    };
+
+    that.renderError = function(message){
+        that.callbacks.renderError(that, message);
+        return that;
+    };
+
+    that.clearError = function(){
+        that.callbacks.clearError(that);
         return that;
     };
 

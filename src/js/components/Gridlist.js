@@ -340,7 +340,7 @@ function(params){
             href;
         // Check access
         if(col['access']){
-            text = cm.isEmpty(item['data'][col['key']])? '' : item['data'][col['key']];
+            text = cm.isEmpty(cm.objectSelector(col['key'], item['data']))? '' : cm.objectSelector(col['key'], item['data']);
             title = cm.isEmpty(col['titleText'])? text : col['titleText'];
             // Structure
             item['nodes']['container'].appendChild(

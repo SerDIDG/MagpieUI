@@ -24,7 +24,7 @@
  ******* */
 
 var cm = {
-        '_version' : '3.12.7',
+        '_version' : '3.13.0',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -216,34 +216,51 @@ cm.forEachReverse = function(o, callback){
 };
 
 cm.merge = function(o1, o2){
+    var o;
     if(!o2){
-        o2 = {};
+        if(cm.isArray(o1)){
+            o2 = [];
+        }else{
+            o2 = {};
+        }
     }
     if(!o1){
-        o1 = {}
-    }else if(cm.isObject(o1) || cm.isArray(o1)){
-        o1 = cm.clone(o1);
-    }else{
-        return cm.clone(o2);
-    }
-    cm.forEach(o2, function(item, key){
-        if(item !== null){
-            try{
-                if(item._isComponent){
-                    o1[key] = item;
-                }else if(cm.isObject(item) && item.constructor != Object){
-                    o1[key] = item;
-                }else if(cm.isObject(item)){
-                    o1[key] = cm.merge(o1[key], item);
-                }else{
-                    o1[key] = item;
-                }
-            }catch(e){
-                o1[key] = item;
-            }
+        if(cm.isArray(o2)){
+            o1 = [];
+        }else{
+            o1 = {};
         }
-    });
-    return o1;
+    }
+    if(cm.isObject(o1)){
+        o = cm.clone(o1);
+        cm.forEach(o2, function(item, key){
+            if(item !== null){
+                try{
+                    if(item._isComponent){
+                        o[key] = item;
+                    }else if(cm.isObject(item) && item.constructor != Object){
+                        o[key] = item;
+                    }else if(cm.isObject(item)){
+                        o[key] = cm.merge(o[key], item);
+                    }else if(cm.isArray(item)){
+                        o[key] = cm.merge(o[key], item);
+                    }else{
+                        o[key] = item;
+                    }
+                }catch(e){
+                    o[key] = item;
+                }
+            }
+        });
+    }else if(cm.isArray(o1)){
+        o = cm.clone(o1);
+        cm.forEach(o2, function(item){
+            if(!cm.inArray(o, item)){
+                o.push(item);
+            }
+        });
+    }
+    return o;
 };
 
 cm.extend = function(o1, o2){
@@ -3180,11 +3197,14 @@ cm.defineHelper = function(name, data, handler){
         'modules' : [],
         'require' : [],
         'params' : {},
-        'events' : []
+        'events' : [],
+        'extend' : false
     }, data);
     // Create class extend object
     that.build = {
-        '_raw' : data,
+        'constructor' : handler,
+        '_raw' : cm.clone(data),
+        '_update' : {},
         '_name' : {
             'full' : name,
             'short' : name.replace('.', ''),
@@ -3193,7 +3213,15 @@ cm.defineHelper = function(name, data, handler){
         '_modules' : {},
         'params' : data['params']
     };
-    // Extend class by predefine module
+    // Inheritance
+    if(data['extend']){
+        cm.getConstructor(data['extend'], function(classConstructor){
+            handler.prototype = Object.create(classConstructor.prototype);
+            that.build._inherit = classConstructor;
+            that.build._raw['modules'] = cm.merge(that.build._inherit.prototype._raw['modules'], that.build._raw['modules']);
+        });
+    }
+    // Extend class by predefine modules
     cm.forEach(Mod, function(module, name){
         if(module._config && module._config['predefine']){
             Mod['Extend']._extend.call(that, name, module);
@@ -3205,11 +3233,13 @@ cm.defineHelper = function(name, data, handler){
             Mod['Extend']._extend.call(that, module, Mod[module]);
         }
     });
-    // Prototype class
-    handler.prototype = that.build;
+    // Prototype class methods
+    cm.forEach(that.build, function(value, key){
+        handler.prototype[key] = value;
+    });
     // Extend Window object
     cm.objectSelector(that.build._name['full'], window, handler);
-    // Add to defined stack
+    // Add to stack
     cm.defineStack[name] = handler;
 };
 

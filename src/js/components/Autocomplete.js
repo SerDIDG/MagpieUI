@@ -28,7 +28,7 @@ cm.define('Com.Autocomplete', {
         'container' : 'document.body',
         'name' : '',
         'minLength' : 3,
-        'delay' : 'cm._config.that.requestDelay',
+        'delay' : 'cm._config.requestDelay',
         'clearOnEmpty' : true,                                      // Clear input and value if item didn't selected from tooltip
         'showLoader' : true,                                        // Show ajax spinner in tooltip, for ajax mode only.
         'data' : [],                                                // Examples: [{'value' : 'foo', 'text' : 'Bar'}] or ['Foo', 'Bar'].
@@ -247,7 +247,6 @@ function(params){
     /* *** AJAX *** */
 
     that.callbacks.prepare = function(that, config, query){
-        cm.log(config, query);
         config = that.callbacks.beforePrepare(that, config, query);
         config['url'] = cm.strReplace(config['url'], {
             '%query%' : query,
@@ -475,17 +474,6 @@ function(params){
         return item;
     };
 
-    that.convertData = function(data){
-        var newData = data.map(function(item){
-            if(!cm.isObject(item)){
-                return {'text' : item, 'value' : item};
-            }else{
-                return item;
-            }
-        });
-        return newData;
-    };
-
     that.clear = function(triggerEvents){
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
         that.previousValue = that.value;
@@ -523,6 +511,18 @@ function(params){
     };
 
     init();
+});
+
+cm.getConstructor('Com.Autocomplete', function(classConstructor){
+    classConstructor.prototype.convertData = function(data){
+        return data.map(function(item){
+            if(!cm.isObject(item)){
+                return {'text' : item, 'value' : item};
+            }else{
+                return item;
+            }
+        });
+    };
 });
 
 /* ****** FORM FIELD COMPONENT ******* */

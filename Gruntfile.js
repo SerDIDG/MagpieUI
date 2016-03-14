@@ -85,7 +85,10 @@ module.exports = function(grunt) {
                 files: [{
                     src: [
                         'lib/**/*.js',
-                        '!lib/codemirror/**/*.*',
+                        'bower_components/codemirror/mode/javascript/javascript.js',
+                        'bower_components/codemirror/mode/css/css.js',
+                        'bower_components/codemirror/mode/xml/xml.js',
+                        'bower_components/codemirror/mode/htmlmixed/htmlmixed.js',
                         'src/js/polyfill.js',
                         'src/js/common.js',
                         'src/js/modules.js',
@@ -100,7 +103,6 @@ module.exports = function(grunt) {
                 },{
                     src: [
                         'lib/**/*.css',
-                        '!lib/codemirror/**/*.*',
                         'src/css/**/*.css',
                         'temp/build.css'
                     ],
@@ -108,7 +110,6 @@ module.exports = function(grunt) {
                 },{
                     src: [
                         'lib/**/*.css',
-                        '!lib/codemirror/**/*.*',
                         config['less']['files'],
                         'src/css/**/*.css'
                     ],

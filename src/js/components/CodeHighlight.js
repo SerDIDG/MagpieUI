@@ -12,7 +12,8 @@ cm.define('Com.CodeHighlight', {
         'node' : cm.Node('div'),
         'name' : '',
         'language' : 'javascript',
-        'lineNumbers' : true
+        'lineNumbers' : true,
+        'customEvents' : true
     }
 },
 function(params){
@@ -32,13 +33,15 @@ function(params){
     var render = function(){
         if(typeof CodeMirror != 'undefined'){
             that.components['codemirror'] = CodeMirror.fromTextArea(that.params['node'], {
-                'lineNumbers': that.params['lineNumbers'],
-                'viewportMargin': Infinity,
-                'mode': that.params['language']
+                'lineNumbers' : that.params['lineNumbers'],
+                'viewportMargin' : Infinity,
+                'mode' : that.params['language']
             });
             that.components['codemirror'].on('change', function(cm){
                 that.params['node'].value = cm.getValue();
             });
+        }
+        if(that.params['customEvents']){
             cm.customEvent.add(that.params['node'], 'redraw', function(){
                 that.components['codemirror'].refresh();
             });
@@ -46,6 +49,11 @@ function(params){
     };
 
     /* ******* PUBLIC ******* */
+
+    that.redraw = function(){
+        that.components['codemirror'] && that.components['codemirror'].refresh();
+        return that;
+    };
 
     init();
 });
