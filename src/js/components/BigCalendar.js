@@ -354,6 +354,11 @@ function(params){
 
     /* ******* PUBLIC ******* */
 
+    that.refresh = function(data){
+        setView(data);
+        return that;
+    };
+
     that.abort = function(){
         if(that.ajaxHandler && that.ajaxHandler.abort){
             that.ajaxHandler.abort();

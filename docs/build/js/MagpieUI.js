@@ -12359,7 +12359,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.13.0',
+        '_version' : '3.13.1',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -18484,6 +18484,11 @@ function(params){
     };
 
     /* ******* PUBLIC ******* */
+
+    that.refresh = function(data){
+        setView(data);
+        return that;
+    };
 
     that.abort = function(){
         if(that.ajaxHandler && that.ajaxHandler.abort){
