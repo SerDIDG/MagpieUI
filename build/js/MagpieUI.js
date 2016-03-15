@@ -25843,7 +25843,8 @@ cm.define('Com.MultiField', {
         'templateAttributeReplace' : false,
         'templateAttribute' : 'name',           // Replace specified items attribute by pattern, example: data-attribute-name="test[%index%]", available variables: %index%
         'sortable' : true,                      // Use drag and drop to sort items
-        'duration' : 200,
+        'duration' : 'cm._config.animDurationShort',
+        'theme' : '',
         'langs' : {
             'add' : 'Add',
             'remove' : 'Remove'
@@ -25889,6 +25890,7 @@ cm.define('Com.MultiField', {
             cm.getConstructor('Com.Sortable', function(classConstructor){
                 that.components['sortable'] = new classConstructor(that.params['Com.Sortable']);
             });
+            // WTF?
             if(!that.components['sortable']){
                 that.params['sortable'] = false;
             }
@@ -25909,6 +25911,8 @@ cm.define('Com.MultiField', {
             // Append
             that.embedStructure(that.nodes['container']);
         }
+        // Add CSS Class
+        cm.addClass(that.nodes['container'], that.params['theme']);
         // Add button events
         cm.addEvent(that.nodes['add'], 'click', function(e){
             cm.preventDefault(e);
@@ -28358,7 +28362,7 @@ function(params){
         components = {},
         options = {},
         optionsList = [],
-        optionsLength,
+        optionsLength = 0,
         groups = [],
 
         oldActive,
@@ -28546,6 +28550,7 @@ function(params){
                     'container' : that.params['renderInBody']? document.body : nodes['container'],
                     'content' : nodes['scroll'],
                     'target' : nodes['target'],
+                    'disabled' : !optionsLength,
                     'events' : {
                         'onShowStart' : show,
                         'onHideStart' : hide
@@ -28565,14 +28570,12 @@ function(params){
     /* *** COLLECTORS *** */
 
     var collectSelectOptions = function(){
-        var myChildes = that.params['node'].childNodes,
-            myOptionsNodes,
-            myOptions;
-        cm.forEach(myChildes, function(myChild){
+        var myChildes = that.params['node'].childNodes;
+        cm.forEach(myChildes, function(myChild, i){
             if(cm.isElementNode(myChild)){
                 if(myChild.tagName.toLowerCase() == 'optgroup'){
-                    myOptionsNodes = myChild.querySelectorAll('option');
-                    myOptions = [];
+                    var myOptionsNodes = myChild.querySelectorAll('option');
+                    var myOptions = [];
                     cm.forEach(myOptionsNodes, function(optionNode){
                         myOptions.push({
                             'value' : optionNode.value,
@@ -28660,6 +28663,7 @@ function(params){
         // Push
         optionsList.push(options[item['value']] = item);
         optionsLength = optionsList.length;
+        return true;
     };
 
     var editOption = function(option, text){
@@ -28870,6 +28874,10 @@ function(params){
                 'text' : text
             });
         }
+        // Enable / Disable Menu
+        if(!that.params['multiple'] && !that.disabled && optionsLength){
+            components['menu'].enable();
+        }
         return that;
     };
 
@@ -28890,6 +28898,10 @@ function(params){
     that.removeOption = function(value){
         if(typeof value != 'undefined' && options[value]){
             removeOption(options[value]);
+        }
+        // Enable / Disable Menu
+        if(!that.params['multiple'] && !optionsList){
+            components['menu'].disable();
         }
         return that;
     };
@@ -28946,7 +28958,9 @@ function(params){
         cm.removeClass(nodes['scroll'], 'disabled');
         if(!that.params['multiple']){
             nodes['text'].disabled = false;
-            components['menu'].enable();
+            if(optionsLength){
+                components['menu'].enable();
+            }
         }
         return that;
     };
@@ -32051,6 +32065,7 @@ cm.define('Com.Tooltip', {
         'duration' : 'cm._config.animDurationShort',
         'delay' : 0,
         'resizeInterval' : 5,
+        'disabled' : false,
         'position' : 'absolute',
         'className' : '',
         'theme' : 'theme-default',
@@ -32111,6 +32126,12 @@ function(params){
         renderTitle(that.params['title']);
         // Embed content
         renderContent(that.params['content']);
+        // Disabled / Enabled
+        if(that.params['disabled']){
+            that.disable();
+        }else{
+            that.enable();
+        }
     };
 
     var renderTitle = function(title){

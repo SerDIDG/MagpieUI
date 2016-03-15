@@ -54,7 +54,7 @@ function(params){
         components = {},
         options = {},
         optionsList = [],
-        optionsLength,
+        optionsLength = 0,
         groups = [],
 
         oldActive,
@@ -242,6 +242,7 @@ function(params){
                     'container' : that.params['renderInBody']? document.body : nodes['container'],
                     'content' : nodes['scroll'],
                     'target' : nodes['target'],
+                    'disabled' : !optionsLength,
                     'events' : {
                         'onShowStart' : show,
                         'onHideStart' : hide
@@ -261,14 +262,12 @@ function(params){
     /* *** COLLECTORS *** */
 
     var collectSelectOptions = function(){
-        var myChildes = that.params['node'].childNodes,
-            myOptionsNodes,
-            myOptions;
-        cm.forEach(myChildes, function(myChild){
+        var myChildes = that.params['node'].childNodes;
+        cm.forEach(myChildes, function(myChild, i){
             if(cm.isElementNode(myChild)){
                 if(myChild.tagName.toLowerCase() == 'optgroup'){
-                    myOptionsNodes = myChild.querySelectorAll('option');
-                    myOptions = [];
+                    var myOptionsNodes = myChild.querySelectorAll('option');
+                    var myOptions = [];
                     cm.forEach(myOptionsNodes, function(optionNode){
                         myOptions.push({
                             'value' : optionNode.value,
@@ -356,6 +355,7 @@ function(params){
         // Push
         optionsList.push(options[item['value']] = item);
         optionsLength = optionsList.length;
+        return true;
     };
 
     var editOption = function(option, text){
@@ -566,6 +566,10 @@ function(params){
                 'text' : text
             });
         }
+        // Enable / Disable Menu
+        if(!that.params['multiple'] && !that.disabled && optionsLength){
+            components['menu'].enable();
+        }
         return that;
     };
 
@@ -586,6 +590,10 @@ function(params){
     that.removeOption = function(value){
         if(typeof value != 'undefined' && options[value]){
             removeOption(options[value]);
+        }
+        // Enable / Disable Menu
+        if(!that.params['multiple'] && !optionsList){
+            components['menu'].disable();
         }
         return that;
     };
@@ -642,7 +650,9 @@ function(params){
         cm.removeClass(nodes['scroll'], 'disabled');
         if(!that.params['multiple']){
             nodes['text'].disabled = false;
-            components['menu'].enable();
+            if(optionsLength){
+                components['menu'].enable();
+            }
         }
         return that;
     };

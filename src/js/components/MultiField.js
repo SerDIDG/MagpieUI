@@ -28,7 +28,8 @@ cm.define('Com.MultiField', {
         'templateAttributeReplace' : false,
         'templateAttribute' : 'name',           // Replace specified items attribute by pattern, example: data-attribute-name="test[%index%]", available variables: %index%
         'sortable' : true,                      // Use drag and drop to sort items
-        'duration' : 200,
+        'duration' : 'cm._config.animDurationShort',
+        'theme' : '',
         'langs' : {
             'add' : 'Add',
             'remove' : 'Remove'
@@ -74,6 +75,7 @@ cm.define('Com.MultiField', {
             cm.getConstructor('Com.Sortable', function(classConstructor){
                 that.components['sortable'] = new classConstructor(that.params['Com.Sortable']);
             });
+            // WTF?
             if(!that.components['sortable']){
                 that.params['sortable'] = false;
             }
@@ -94,6 +96,8 @@ cm.define('Com.MultiField', {
             // Append
             that.embedStructure(that.nodes['container']);
         }
+        // Add CSS Class
+        cm.addClass(that.nodes['container'], that.params['theme']);
         // Add button events
         cm.addEvent(that.nodes['add'], 'click', function(e){
             cm.preventDefault(e);

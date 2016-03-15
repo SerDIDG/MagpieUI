@@ -24,6 +24,7 @@ cm.define('Com.Tooltip', {
         'duration' : 'cm._config.animDurationShort',
         'delay' : 0,
         'resizeInterval' : 5,
+        'disabled' : false,
         'position' : 'absolute',
         'className' : '',
         'theme' : 'theme-default',
@@ -84,6 +85,12 @@ function(params){
         renderTitle(that.params['title']);
         // Embed content
         renderContent(that.params['content']);
+        // Disabled / Enabled
+        if(that.params['disabled']){
+            that.disable();
+        }else{
+            that.enable();
+        }
     };
 
     var renderTitle = function(title){

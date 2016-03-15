@@ -12877,6 +12877,12 @@ button::-moz-focus-inner {
 .com__multifield__item.pt__dnd-helper {
   position: fixed;
 }
+/* *** THEMES *** */
+.com__multifield.theme-cards .com__multifield__item > .field {
+  padding: 12px;
+  border: 1px dashed #cccccc;
+  border-radius: 3px;
+}
 /* ******* NOTIFICATION ******* */
 .com-notification {
   margin: 0 0 24px;

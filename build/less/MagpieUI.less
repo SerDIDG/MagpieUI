@@ -13377,6 +13377,20 @@ button {
         position: fixed;
     }
 }
+
+/* *** THEMES *** */
+
+.com__multifield {
+    &.theme-cards {
+        .com__multifield__item {
+            > .field {
+                padding: @CmIndent-XSmall;
+                border: @CmBorder-Width dashed @CmColor-Border;
+                border-radius: @CmBorder-Radius;
+            }
+        }
+    }
+}
 /* ******* NOTIFICATION ******* */
 
 .com-notification {
