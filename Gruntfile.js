@@ -1,33 +1,4 @@
 module.exports = function(grunt) {
-    // Custom config
-    var config = {
-        'less' : {
-            'files' : [
-                'src/less/variables/**/*.less',
-                'src/less/variables.less',
-                'src/less/mixins.less',
-                'src/less/common.less',
-                'src/less/common/Font.less',
-                'src/less/common/Size.less',
-                'src/less/common/Indent.less',
-                'src/less/common/Colors.less',
-                'src/less/common/Aspect.less',
-                'src/less/common/Icons.less',
-                'src/less/common/Tags.less',
-                'src/less/common/Inputs.less',
-                'src/less/common/Buttons.less',
-                'src/less/common/List.less',
-                'src/less/common/Form.less',
-                'src/less/common/**/*.less',
-                'src/less/parts/**/*.less',
-                'src/less/layouts/**/*.less',
-                'src/less/components/Tooltip.less',
-                'src/less/components/**/*.less',
-                '!src/less/index.less',
-                '!src/less/components/old/**/*.less'
-            ]
-        }
-    };
     // Load all grunt tasks
     require('load-grunt-tasks')(grunt);
     // Display how match time it took to build each task
@@ -35,228 +6,323 @@ module.exports = function(grunt) {
     // Project configuration.
     grunt.initConfig({
         pkg : grunt.file.readJSON('package.json'),
+        banner : '/*! ************ <%= pkg.name %> v<%= pkg.version %> (<%= grunt.template.today("yyyy-mm-dd HH:MM") %>) ************ */\n',
 
-        clean: {
-            build : [
-                'build'
+        paths : {
+            components : 'bower_components',
+            src : 'src',
+            build : 'build',
+            docs : 'docs',
+            temp : 'temp'
+        },
+
+        components : {
+            animatecss : {
+                path : '<%= paths.components %>/animate.css',
+                styles : [
+                    '<%= components.animatecss.path %>/animate.css'
+                ]
+            },
+            codemirror : {
+                path : '<%= paths.components %>/codemirror',
+                scripts : [
+                    '<%= components.codemirror.path %>/lib/codemirror.js',
+                    '<%= components.codemirror.path %>/mode/javascript/javascript.js',
+                    '<%= components.codemirror.path %>/mode/css/css.js',
+                    '<%= components.codemirror.path %>/mode/xml/xml.js',
+                    '<%= components.codemirror.path %>/mode/htmlmixed/htmlmixed.js'
+                ],
+                styles : [
+                    '<%= components.codemirror.path %>/lib/codemirror.css'
+                ]
+            },
+            fontawesome : {
+                path : '<%= paths.components %>/font-awesome',
+                fonts : '<%= components.fontawesome.path %>/fonts'
+            },
+            tinycolor : {
+                path : '<%= paths.components %>/tinycolor',
+                scripts : [
+                    '<%= components.tinycolor.path %>/tinycolor.js'
+                ]
+            }
+        },
+
+        clean : {
+            scripts : [
+                '<%= paths.build %>/js',
+                '<%= paths.docs %>/build/js'
             ],
-            docs : [
-                'docs/build'
+            styles : [
+                '<%= paths.build %>/less',
+                '<%= paths.build %>/css',
+                '<%= paths.docs %>/build/less',
+                '<%= paths.docs %>/build/css'
             ],
-            post : [
-                'temp'
+            images : [
+                '<%= paths.build %>/img',
+                '<%= paths.docs %>/build/img'
+            ],
+            fonts : [
+                '<%= paths.build %>/fonts',
+                '<%= paths.docs %>/build/fonts'
+            ],
+            stuff : [
+                '<%= paths.docs %>/build/content',
+                '<%= paths.docs %>/build/stuff'
+            ],
+            temp : [
+                '<%= paths.temp %>'
             ]
         },
 
         bower : {
             install : {
-                targetDir : './lib',
+                copy : false,
                 cleanup : true,
                 layout : 'byComponent',
                 install : true
             }
         },
 
-        less_imports: {
-            source: {
+        concat : {
+            scripts : {
                 options: {
-                    banner: '/* ************ MAGPIE UI ************ */'
+                    banner: '<%= banner %>'
                 },
-                src: config['less']['files'],
-                dest: 'src/less/index.less'
-            }
-        },
-
-        less : {
-            build: {
-                files: [{
-                    src: ['src/less/index.less'],
-                    dest: 'temp/build.css'
-                }]
+                src : [
+                    '<%= components.codemirror.scripts %>',
+                    '<%= components.tinycolor.scripts %>',
+                    '<%= paths.src %>/js/polyfill.js',
+                    '<%= paths.src %>/js/common.js',
+                    '<%= paths.src %>/js/modules.js',
+                    '<%= paths.src %>/js/parts.js',
+                    '<%= paths.src %>/js/init.js',
+                    '<%= paths.src %>/js/components/Form.js',
+                    '<%= paths.src %>/js/components/**/*.js',
+                    '!<%= paths.src %>/js/components/dev/**/*.js',
+                    '!<%= paths.src %>/js/components/old/**/*.js'
+                ],
+                dest : '<%= paths.build %>/js/<%= pkg.name %>.js'
             },
-            docs: {
-                src: ['docs/src/less/index.less'],
-                dest: 'temp/docs.css'
-            }
-        },
-
-        concat: {
-            build: {
-                files: [{
-                    src: [
-                        'lib/**/*.js',
-                        'bower_components/codemirror/mode/javascript/javascript.js',
-                        'bower_components/codemirror/mode/css/css.js',
-                        'bower_components/codemirror/mode/xml/xml.js',
-                        'bower_components/codemirror/mode/htmlmixed/htmlmixed.js',
-                        'src/js/polyfill.js',
-                        'src/js/common.js',
-                        'src/js/modules.js',
-                        'src/js/parts.js',
-                        'src/js/init.js',
-                        'src/js/components/Form.js',
-                        'src/js/components/**/*.js',
-                        '!src/js/components/dev/**/*.js',
-                        '!src/js/components/old/**/*.js'
-                    ],
-                    dest: 'build/js/<%= pkg.name %>.js'
-                },{
-                    src: [
-                        'lib/**/*.css',
-                        'src/css/**/*.css',
-                        'temp/build.css'
-                    ],
-                    dest: 'build/css/<%= pkg.name %>.css'
-                },{
-                    src: [
-                        'lib/**/*.css',
-                        config['less']['files'],
-                        'src/css/**/*.css'
-                    ],
-                    dest: 'build/less/<%= pkg.name %>.less'
-                }]
+            scripts_docs : {
+                src : [
+                    '<%= paths.build %>/js/<%= pkg.name %>.js',
+                    '<%= paths.docs %>/src/js/common.js',
+                    '<%= paths.docs %>/src/js/components/**/*.js',
+                    '<%= paths.docs %>/src/js/components.js'
+                ],
+                dest : '<%= paths.docs %>/build/js/<%= pkg.name %>.js'
             },
-            docs: {
-                files: [{
-                    src: [
-                        'lib/**/*.js',
-                        'bower_components/codemirror/mode/javascript/javascript.js',
-                        'bower_components/codemirror/mode/css/css.js',
-                        'bower_components/codemirror/mode/xml/xml.js',
-                        'bower_components/codemirror/mode/htmlmixed/htmlmixed.js',
-                        'src/js/polyfill.js',
-                        'src/js/common.js',
-                        'src/js/modules.js',
-                        'src/js/parts.js',
-                        'src/js/init.js',
-                        'src/js/components/Form.js',
-                        'src/js/components/**/*.js',
-                        '!src/js/components/dev/**/*.js',
-                        '!src/js/components/old/**/*.js',
-                        'docs/src/js/components/**/*.js',
-                        'docs/src/js/components.js',
-                        'docs/src/js/custom.js'
-                    ],
-                    dest: 'docs/build/js/<%= pkg.name %>.js'
-                },{
-                    src: [
-                        'lib/**/*.css',
-                        'temp/docs.css',
-                        'docs/src/css/**/*.css'
-                    ],
-                    dest: 'docs/build/css/<%= pkg.name %>.css'
-                }]
+            styles : {
+                options: {
+                    banner: '<%= banner %>'
+                },
+                src : [
+                    '<%= components.animatecss.styles %>',
+                    '<%= components.codemirror.styles %>',
+                    '<%= paths.src %>/less/variables/**/*.less',
+                    '<%= paths.src %>/less/variables.less',
+                    '<%= paths.src %>/less/mixins.less',
+                    '<%= paths.src %>/less/common.less',
+                    '<%= paths.src %>/less/common/Font.less',
+                    '<%= paths.src %>/less/common/Size.less',
+                    '<%= paths.src %>/less/common/Indent.less',
+                    '<%= paths.src %>/less/common/Colors.less',
+                    '<%= paths.src %>/less/common/Aspect.less',
+                    '<%= paths.src %>/less/common/Icons.less',
+                    '<%= paths.src %>/less/common/Tags.less',
+                    '<%= paths.src %>/less/common/Inputs.less',
+                    '<%= paths.src %>/less/common/Buttons.less',
+                    '<%= paths.src %>/less/common/List.less',
+                    '<%= paths.src %>/less/common/Form.less',
+                    '<%= paths.src %>/less/common/**/*.less',
+                    '<%= paths.src %>/less/parts/**/*.less',
+                    '<%= paths.src %>/less/layouts/**/*.less',
+                    '<%= paths.src %>/less/components/Tooltip.less',
+                    '<%= paths.src %>/less/components/**/*.less'
+                ],
+                dest : '<%= paths.build %>/less/<%= pkg.name %>.less'
+            },
+            styles_docs : {
+                src : [
+                    '<%= paths.build %>/less/<%= pkg.name %>.less',
+                    '<%= paths.docs %>/src/less/variables.less',
+                    '<%= paths.docs %>/src/less/common.less'
+                ],
+                dest : '<%= paths.docs %>/build/less/<%= pkg.name %>.less'
             }
         },
 
-        cssmin : {
+        less: {
             build : {
-                files : {
-                    'build/css/<%= pkg.name %>.min.css' : 'build/css/<%= pkg.name %>.css'
-                }
+                src : ['<%= paths.build %>/less/<%= pkg.name %>.less'],
+                dest : '<%= paths.build %>/css/<%= pkg.name %>.css'
+            },
+            docs : {
+                src : ['<%= paths.docs %>/build/less/<%= pkg.name %>.less'],
+                dest : '<%= paths.docs %>/build/css/<%= pkg.name %>.css'
             }
         },
 
         uglify : {
             build : {
-                src : 'build/js/<%= pkg.name %>.js',
-                dest : 'build/js/<%= pkg.name %>.min.js'
+                src : ['<%= paths.build %>/js/<%= pkg.name %>.js'],
+                dest : '<%= paths.build %>/js/<%= pkg.name %>.min.js'
             }
         },
 
-        imagemin: {
-            build: {
+        cssmin : {
+            build : {
+                src : ['<%= paths.build %>/css/<%= pkg.name %>.css'],
+                dest : '<%= paths.build %>/css/<%= pkg.name %>.min.css'
+            }
+        },
+
+        imagemin : {
+            build : {
                 options: {
                     optimizationLevel: 3
                 },
-                files: [{
-                    expand: true,
-                    cwd: 'src/img/',
-                    src: ['**/*.*'],
-                    dest: 'build/img/'
+                files : [{
+                    expand : true,
+                    cwd : '<%= paths.build %>/img/',
+                    src : ['**/*.*'],
+                    dest : '<%= paths.temp %>/img/'
                 }]
             }
         },
 
-        copy: {
-            build: {
-                files: [{
-                    expand: true,
-                    cwd: 'src/fonts/',
-                    src: [
-                        '**/*.*',
-                        '!**/*.json'
-                    ],
-                    dest: 'build/fonts/'
+        copy : {
+            images : {
+                files : [{
+                    expand : true,
+                    cwd : '<%= paths.src %>/img/',
+                    src : ['**/*.*'],
+                    dest : '<%= paths.build %>/img/'
                 }]
             },
-            docs: {
+            images_docs : {
+                files : [{
+                    expand : true,
+                    cwd : '<%= paths.build %>/img/',
+                    src : ['**/*.*'],
+                    dest : '<%= paths.docs %>/build/img/<%= pkg.name %>/'
+                }]
+            },
+            images_docs_self : {
+                files : [{
+                    expand : true,
+                    cwd : '<%= paths.docs %>/src/img/',
+                    src : ['**/*.*'],
+                    dest : '<%= paths.docs %>/build/img/'
+                }]
+            },
+            image_optimize : {
+                files : [{
+                    expand : true,
+                    cwd : '<%= paths.temp %>/img/',
+                    src : ['**/*.*'],
+                    dest : '<%= paths.build %>/img/'
+                }]
+            },
+            fonts : {
                 files: [{
+                    expand : true,
+                    cwd : '<%= components.fontawesome.fonts %>/',
+                    src : ['**/*.*'],
+                    dest : '<%= paths.build %>/fonts/'
+                },{
+                    expand : true,
+                    cwd : '<%= paths.src %>/fonts/',
+                    src : ['**/*.*', '!**/*.json'],
+                    dest : '<%= paths.build %>/fonts/'
+                }]
+            },
+            fonts_docs : {
+                files : [{
+                    expand : true,
+                    cwd : '<%= paths.build %>/fonts/',
+                    src : ['**/*.*'],
+                    dest : '<%= paths.docs %>/build/fonts/<%= pkg.name %>/'
+                }]
+            },
+            fonts_docs_self : {
+                files : [{
+                    expand : true,
+                    cwd : '<%= paths.docs %>/src/fonts/',
+                    src : ['**/*.*'],
+                    dest : '<%= paths.docs %>/build/fonts/'
+                }]
+            },
+            stuff_docs : {
+                files : [{
                     expand: true,
-                    cwd: 'docs/src/',
+                    cwd: '<%= paths.docs %>/src/',
                     src: ['*.*'],
-                    dest: 'docs/build/'
+                    dest: '<%= paths.docs %>/build/'
                 },{
                     expand: true,
-                    cwd: 'docs/src/content/',
+                    cwd: '<%= paths.docs %>/src/content/',
                     src: ['**/*.*'],
-                    dest: 'docs/build/content/'
+                    dest: '<%= paths.docs %>/build/content/'
                 },{
                     expand: true,
-                    cwd: 'docs/src/stuff/',
+                    cwd: '<%= paths.docs %>/src/stuff/',
                     src: ['**/*.*'],
-                    dest: 'docs/build/stuff/'
-                },{
-                    expand: true,
-                    cwd: 'docs/src/img/',
-                    src: ['**/*.*'],
-                    dest: 'docs/build/img/'
-                },{
-                    expand: true,
-                    cwd: 'build/fonts/',
-                    src: ['**/*.*'],
-                    dest: 'docs/build/fonts/magpieui/'
-                },{
-                    expand: true,
-                    cwd: 'build/img/',
-                    src: ['**/*.*'],
-                    dest: 'docs/build/img/magpieui'
+                    dest: '<%= paths.docs %>/build/stuff/'
                 }]
             }
         },
 
-        watch: {
-            dev: {
-                files: [
-                    'src/js/**/*.js',
-                    'src/css/**/*.css',
-                    'src/less/**/*.less'
+        watch : {
+            scripts : {
+                files : [
+                    '<%= paths.src %>/js/**/*.js',
+                    '<%= paths.docs %>/src/js/**/*.js'
                 ],
-                tasks: ['dev'],
-                options: {
-                    spawn: false
-                }
+                tasks : ['scripts']
             },
-            docs: {
-                files: [
-                    'src/js/**/*.js',
-                    'src/css/**/*.css',
-                    'src/less/**/*.less',
-                    'docs/src/js/**/*.js',
-                    'docs/src/css/**/*.css',
-                    'docs/src/less/**/*.less',
-                    'docs/src/content/**/*.*',
-                    'docs/src/stuff/**/*.*'
+            styles : {
+                files : [
+                    '<%= paths.src %>/less/**/*.less',
+                    '<%= paths.docs %>/src/less/**/*.less'
                 ],
-                tasks: ['docs'],
-                options: {
-                    spawn: false
-                }
+                tasks : ['styles']
+            },
+            images : {
+                files : [
+                    '<%= paths.src %>/img/**/*.*',
+                    '<%= paths.docs %>/src/img/**/*.*'
+                ],
+                tasks : ['images']
+            },
+            fonts : {
+                files : [
+                    '<%= paths.src %>/fonts/**/*.*',
+                    '!<%= paths.src %>/fonts/**/*.json',
+                    '<%= paths.docs %>/src/fonts/**/*.*',
+                    '!<%= paths.docs %>/src/fonts/**/*.json'
+                ],
+                tasks : ['fonts']
+            },
+            stuff : {
+                files : [
+                    '<%= paths.docs %>/src/*.*',
+                    '<%= paths.docs %>/src/content/**/*.*',
+                    '<%= paths.docs %>/src/stuff/**/*.*'
+                ],
+                tasks : ['stuff']
             }
         }
     });
-    // Tasks
-    grunt.registerTask('default', ['clean', 'bower', 'less_imports', 'less', 'concat', 'cssmin', 'uglify', 'imagemin', 'copy', 'clean:post']);
-    grunt.registerTask('dev', ['less_imports', 'less:build', 'concat:build', 'clean:post']);
-    grunt.registerTask('docs', ['less_imports', 'less:docs', 'concat:docs', 'copy:docs', 'clean:post']);
+    // Custom Tasks
+    grunt.registerTask('default', ['scripts', 'styles', 'images', 'fonts', 'stuff']);
+    grunt.registerTask('optimize', ['clean:temp', 'default', 'uglify', 'cssmin', 'imagemin', 'copy:image_optimize', 'clean:temp']);
+
+    grunt.registerTask('scripts', ['clean:scripts', 'concat:scripts', 'concat:scripts_docs']);
+    grunt.registerTask('styles', ['clean:styles', 'concat:styles', 'concat:styles_docs', 'less:build', 'less:docs']);
+    grunt.registerTask('images', ['clean:images', 'copy:images', 'copy:images_docs', 'copy:images_docs_self']);
+    grunt.registerTask('fonts', ['clean:fonts', 'copy:fonts', 'copy:fonts_docs', 'copy:fonts_docs_self']);
+    grunt.registerTask('stuff', ['clean:stuff', 'copy:stuff_docs']);
 };

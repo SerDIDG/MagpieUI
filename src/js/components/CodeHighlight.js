@@ -42,9 +42,7 @@ function(params){
             });
         }
         if(that.params['customEvents']){
-            cm.customEvent.add(that.params['node'], 'redraw', function(){
-                that.components['codemirror'].refresh();
-            });
+            cm.customEvent.add(that.params['node'], 'redraw', that.redraw);
         }
     };
 

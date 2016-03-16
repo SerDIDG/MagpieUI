@@ -32,6 +32,7 @@
   "dependencies": {
     "tinycolor": "~1.2.1",
     "animate.css": "~3.4.0",
-    "codemirror": "~5.8.0"
+    "codemirror": "~5.8.0",
+    "font-awesome": "~4.4.0"
   }
 }
