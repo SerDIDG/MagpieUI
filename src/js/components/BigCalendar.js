@@ -354,8 +354,8 @@ function(params){
 
     /* ******* PUBLIC ******* */
 
-    that.refresh = function(data){
-        setView(data);
+    that.refresh = function(){
+        setView(that.viewDetails);
         return that;
     };
 
@@ -366,6 +366,22 @@ function(params){
         return that;
     };
 
+    that.setAction = function(o, mode){
+        mode = cm.inArray(['raw', 'update', 'current'], mode)? mode : 'current';
+        switch(mode){
+            case 'raw':
+                that.params['ajax'] = cm.merge(that._raw.params['ajax'], o);
+                break;
+            case 'current':
+                that.params['ajax'] = cm.merge(that.params['ajax'], o);
+                break;
+            case 'update':
+                that.params['ajax'] = cm.merge(that._update.params['ajax'], o);
+                that._update.params['ajax'] = cm.clone(that.params['ajax']);
+                break;
+        }
+        return that;
+    };
     init();
 });
 

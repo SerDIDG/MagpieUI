@@ -38,7 +38,18 @@ module.exports = function(grunt) {
             },
             fontawesome : {
                 path : '<%= paths.components %>/font-awesome',
-                fonts : '<%= components.fontawesome.path %>/fonts'
+                fonts : '<%= components.fontawesome.path %>/fonts',
+                styles : [
+                    '<%= components.fontawesome.path %>/less/variables.less',
+                    '<%= components.fontawesome.path %>/less/mixins.less',
+                    '<%= components.fontawesome.path %>/less/path.less',
+                    '<%= components.fontawesome.path %>/less/core.less',
+                    '<%= components.fontawesome.path %>/less/larger.less',
+                    '<%= components.fontawesome.path %>/less/fixed-width.less',
+                    '<%= components.fontawesome.path %>/less/list.less',
+                    '<%= components.fontawesome.path %>/less/stacked.less',
+                    '<%= components.fontawesome.path %>/less/icons.less'
+                ]
             },
             tinycolor : {
                 path : '<%= paths.components %>/tinycolor',
@@ -121,6 +132,7 @@ module.exports = function(grunt) {
                 src : [
                     '<%= components.animatecss.styles %>',
                     '<%= components.codemirror.styles %>',
+                    '<%= components.fontawesome.styles %>',
                     '<%= paths.src %>/less/variables/**/*.less',
                     '<%= paths.src %>/less/variables.less',
                     '<%= paths.src %>/less/mixins.less',
@@ -154,7 +166,7 @@ module.exports = function(grunt) {
             }
         },
 
-        less: {
+        less : {
             build : {
                 src : ['<%= paths.build %>/less/<%= pkg.name %>.less'],
                 dest : '<%= paths.build %>/css/<%= pkg.name %>.css'
@@ -231,7 +243,7 @@ module.exports = function(grunt) {
                     expand : true,
                     cwd : '<%= components.fontawesome.fonts %>/',
                     src : ['**/*.*'],
-                    dest : '<%= paths.build %>/fonts/'
+                    dest : '<%= paths.build %>/fonts/fontawesome/'
                 },{
                     expand : true,
                     cwd : '<%= paths.src %>/fonts/',

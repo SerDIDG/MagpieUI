@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.14.0 (2016-03-16 19:47) ************ */
+/*! ************ MagpieUI v3.14.1 (2016-03-17 18:53) ************ */
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -12360,7 +12360,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.14.0',
+        '_version' : '3.14.1',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -15836,6 +15836,7 @@ Mod['Params'] = {
         var that = this;
         replace = typeof replace == 'undefined'? false : replace;
         that.params = cm.merge(replace ? that._raw.params : that.params, params);
+        that._update.params = cm.merge(that._update.params, that.params);
         // Validate params
         cm.forEach(that.params, function(item, key){
             switch(item){
@@ -17195,9 +17196,20 @@ function(params){
         return that;
     };
 
-    that.setAction = function(o){
-        o = cm.merge(that._raw.params['ajax'], o);
-        that.params['ajax'] = o;
+    that.setAction = function(o, mode){
+        mode = cm.inArray(['raw', 'update', 'current'], mode)? mode : 'current';
+        switch(mode){
+            case 'raw':
+                that.params['ajax'] = cm.merge(that._raw.params['ajax'], o);
+                break;
+            case 'current':
+                that.params['ajax'] = cm.merge(that.params['ajax'], o);
+                break;
+            case 'update':
+                that.params['ajax'] = cm.merge(that._update.params['ajax'], o);
+                that._update.params['ajax'] = cm.clone(that.params['ajax']);
+                break;
+        }
         return that;
     };
 
@@ -18486,8 +18498,8 @@ function(params){
 
     /* ******* PUBLIC ******* */
 
-    that.refresh = function(data){
-        setView(data);
+    that.refresh = function(){
+        setView(that.viewDetails);
         return that;
     };
 
@@ -18498,6 +18510,22 @@ function(params){
         return that;
     };
 
+    that.setAction = function(o, mode){
+        mode = cm.inArray(['raw', 'update', 'current'], mode)? mode : 'current';
+        switch(mode){
+            case 'raw':
+                that.params['ajax'] = cm.merge(that._raw.params['ajax'], o);
+                break;
+            case 'current':
+                that.params['ajax'] = cm.merge(that.params['ajax'], o);
+                break;
+            case 'update':
+                that.params['ajax'] = cm.merge(that._update.params['ajax'], o);
+                that._update.params['ajax'] = cm.clone(that.params['ajax']);
+                break;
+        }
+        return that;
+    };
     init();
 });
 

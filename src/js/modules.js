@@ -151,6 +151,7 @@ Mod['Params'] = {
         var that = this;
         replace = typeof replace == 'undefined'? false : replace;
         that.params = cm.merge(replace ? that._raw.params : that.params, params);
+        that._update.params = cm.merge(that._update.params, that.params);
         // Validate params
         cm.forEach(that.params, function(item, key){
             switch(item){
