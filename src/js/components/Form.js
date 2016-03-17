@@ -420,7 +420,7 @@ function(params){
         return that;
     };
 
-    that.setAction = function(o, mode){
+    that.setAction = function(o, mode, update){
         mode = cm.inArray(['raw', 'update', 'current'], mode)? mode : 'current';
         switch(mode){
             case 'raw':
@@ -431,8 +431,10 @@ function(params){
                 break;
             case 'update':
                 that.params['ajax'] = cm.merge(that._update.params['ajax'], o);
-                that._update.params['ajax'] = cm.clone(that.params['ajax']);
                 break;
+        }
+        if(update){
+            that._update.params['ajax'] = cm.clone(that.params['ajax']);
         }
         return that;
     };

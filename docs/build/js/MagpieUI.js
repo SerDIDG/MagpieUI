@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.14.1 (2016-03-17 18:53) ************ */
+/*! ************ MagpieUI v3.14.1 (2016-03-17 18:57) ************ */
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -17196,7 +17196,7 @@ function(params){
         return that;
     };
 
-    that.setAction = function(o, mode){
+    that.setAction = function(o, mode, update){
         mode = cm.inArray(['raw', 'update', 'current'], mode)? mode : 'current';
         switch(mode){
             case 'raw':
@@ -17207,8 +17207,10 @@ function(params){
                 break;
             case 'update':
                 that.params['ajax'] = cm.merge(that._update.params['ajax'], o);
-                that._update.params['ajax'] = cm.clone(that.params['ajax']);
                 break;
+        }
+        if(update){
+            that._update.params['ajax'] = cm.clone(that.params['ajax']);
         }
         return that;
     };
@@ -18510,7 +18512,7 @@ function(params){
         return that;
     };
 
-    that.setAction = function(o, mode){
+    that.setAction = function(o, mode, update){
         mode = cm.inArray(['raw', 'update', 'current'], mode)? mode : 'current';
         switch(mode){
             case 'raw':
@@ -18521,8 +18523,10 @@ function(params){
                 break;
             case 'update':
                 that.params['ajax'] = cm.merge(that._update.params['ajax'], o);
-                that._update.params['ajax'] = cm.clone(that.params['ajax']);
                 break;
+        }
+        if(update){
+            that._update.params['ajax'] = cm.clone(that.params['ajax']);
         }
         return that;
     };
