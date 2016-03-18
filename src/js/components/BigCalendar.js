@@ -384,6 +384,7 @@ function(params){
         }
         return that;
     };
+
     init();
 });
 

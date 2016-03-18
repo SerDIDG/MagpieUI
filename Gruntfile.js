@@ -230,7 +230,7 @@ module.exports = function(grunt) {
                     dest : '<%= paths.docs %>/build/img/'
                 }]
             },
-            image_optimize : {
+            images_optimize : {
                 files : [{
                     expand : true,
                     cwd : '<%= paths.temp %>/img/',
@@ -330,7 +330,7 @@ module.exports = function(grunt) {
     });
     // Custom Tasks
     grunt.registerTask('default', ['scripts', 'styles', 'images', 'fonts', 'stuff']);
-    grunt.registerTask('optimize', ['clean:temp', 'default', 'uglify', 'cssmin', 'imagemin', 'copy:image_optimize', 'clean:temp']);
+    grunt.registerTask('optimize', ['clean:temp', 'default', 'uglify', 'cssmin', 'imagemin', 'copy:images_optimize', 'clean:temp']);
 
     grunt.registerTask('scripts', ['clean:scripts', 'concat:scripts', 'concat:scripts_docs']);
     grunt.registerTask('styles', ['clean:styles', 'concat:styles', 'concat:styles_docs', 'less:build', 'less:docs']);

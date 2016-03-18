@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.14.1 (2016-03-17 18:57) ************ */
+/*! ************ MagpieUI v3.14.1 (2016-03-18 16:23) ************ */
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -15836,6 +15836,7 @@ Mod['Params'] = {
         var that = this;
         replace = typeof replace == 'undefined'? false : replace;
         that.params = cm.merge(replace ? that._raw.params : that.params, params);
+        that._update = cm.clone(that._update);
         that._update.params = cm.merge(that._update.params, that.params);
         // Validate params
         cm.forEach(that.params, function(item, key){
@@ -16037,6 +16038,7 @@ Mod['Langs'] = {
             }else{
                 that.updateLangs();
                 that.params['langs'] = cm.merge(that.params['langs'], o);
+                that._update = cm.clone(that._update);
                 that._update.params['langs'] = cm.merge(that._update.params['langs'], o);
             }
         }
@@ -18530,6 +18532,7 @@ function(params){
         }
         return that;
     };
+
     init();
 });
 
