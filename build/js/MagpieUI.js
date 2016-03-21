@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.14.2 (2016-03-21 17:32) ************ */
+/*! ************ MagpieUI v3.14.2 (2016-03-21 17:55) ************ */
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -18908,8 +18908,10 @@ cm.define('Com.CalendarMonth', {
 function(params){
     var that = this;
     that._inherit.apply(that, arguments);
+});
 
-    var processDay = function(nodes){
+cm.getConstructor('Com.CalendarMonth', function(classConstructor){
+    classConstructor.prototype.processDay = function(nodes){
         var that = this;
         var item = {
             'isShow' : false,
@@ -18917,7 +18919,7 @@ function(params){
         };
         // Show all events on more button click
         cm.addEvent(item.nodes['more-button'], 'click', function(){
-            showMoreEvents(item);
+            that.showMoreEvents(item);
         });
         // Prevent document scrolling while scroll all events block
         cm.addIsolateScrolling(item.nodes['more-holder']);
@@ -18925,7 +18927,8 @@ function(params){
         that.days.push(item);
     };
 
-    var showMoreEvents = function(item){
+    classConstructor.prototype.showMoreEvents = function(item){
+        var that = this;
         item.delay && clearTimeout(item.delay);
         if(!item.isShow){
             item.isShow = true;
@@ -18934,7 +18937,8 @@ function(params){
         }
     };
 
-    var hideMoreEvents = function(item, isImmediately){
+    classConstructor.prototype.hideMoreEvents = function(item, isImmediately){
+        var that = this;
         item.delay && clearTimeout(item.delay);
         if(item.isShow){
             if(isImmediately){
@@ -18949,21 +18953,23 @@ function(params){
         }
     };
 
-    /* ******* PUBLIC ******* */
-
-    that.getCSSHelpers = function(){
+    classConstructor.prototype.getCSSHelpers = function(){
         var that = this;
         var rule;
         that._inherit.prototype.getCSSHelpers.call(that);
         if(rule = cm.getCSSRule('.com__calendar-month-helper__day-indent')[0]){
             that.params['dayIndent'] = cm.styleToNumber(rule.style.height);
         }
+        return that;
     };
 
-    that.render = function(){
+    classConstructor.prototype.render = function(){
         var that = this;
         that._inherit.prototype.render.call(that);
-        cm.forEach(that.nodes['days'], processDay);
+        cm.forEach(that.nodes['days'], function(){
+            that.processDay.apply(that, arguments);
+        });
+        return that;
     };
 });
 
@@ -18983,16 +18989,17 @@ cm.define('Com.CalendarWeek', {
 function(params){
     var that = this;
     that._inherit.apply(that, arguments);
+});
 
-    /* ******* PUBLIC ******* */
-
-    that.getCSSHelpers = function(){
+cm.getConstructor('Com.CalendarWeek', function(classConstructor){
+    classConstructor.prototype.getCSSHelpers = function(){
         var that = this;
         var rule;
         that._inherit.prototype.getCSSHelpers.call(that);
         if(rule = cm.getCSSRule('.com__calendar-week-helper__day-indent')[0]){
             that.params['dayIndent'] = cm.styleToNumber(rule.style.height);
         }
+        return that;
     };
 });
 
