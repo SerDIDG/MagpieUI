@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.14.1 (2016-03-18 16:23) ************ */
+/*! ************ MagpieUI v3.14.2 (2016-03-21 17:32) ************ */
 @charset "UTF-8";
 
 /*!
@@ -12979,6 +12979,10 @@ button {
                 padding: @CmIndent-XXXSmall;
                 vertical-align: top;
                 text-align: center;
+
+                &.event-type {
+                    width: 60px;
+                }
             }
 
             td {
@@ -12989,6 +12993,11 @@ button {
 
                 &:hover {
                     .mx__transition(all, @CmUI-Transition-DurationReverse);
+                }
+
+                &.event-type {
+                    border-width: 0;
+                    vertical-align: middle;
                 }
 
                 &.default {
@@ -13026,11 +13035,21 @@ button {
 
             tr {
                 &.is-allday {
-                    td {
+                    td,
+                    td.event-type {
                         border-bottom-width: 2px;
                     }
                 }
             }
+        }
+    }
+
+    .calendar__type {
+        padding: @ComCalendarWeek-Day-Indent;
+
+        .label {
+            .cm__font--hint;
+            text-align: center;
         }
     }
 

@@ -203,6 +203,10 @@
                 padding: @CmIndent-XXXSmall;
                 vertical-align: top;
                 text-align: center;
+
+                &.event-type {
+                    width: 60px;
+                }
             }
 
             td {
@@ -213,6 +217,11 @@
 
                 &:hover {
                     .mx__transition(all, @CmUI-Transition-DurationReverse);
+                }
+
+                &.event-type {
+                    border-width: 0;
+                    vertical-align: middle;
                 }
 
                 &.default {
@@ -250,11 +259,21 @@
 
             tr {
                 &.is-allday {
-                    td {
+                    td,
+                    td.event-type {
                         border-bottom-width: 2px;
                     }
                 }
             }
+        }
+    }
+
+    .calendar__type {
+        padding: @ComCalendarWeek-Day-Indent;
+
+        .label {
+            .cm__font--hint;
+            text-align: center;
         }
     }
 

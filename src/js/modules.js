@@ -414,14 +414,14 @@ Mod['DataNodes'] = {
         if(!that.build['params']['nodes']){
             that.build['params']['nodes'] = {};
         }
-        if(typeof that.build['params']['nodesDataMarker'] == 'undefined'){
-            that.build['params']['nodesDataMarker'] = 'data-node';
-        }
-        if(typeof that.build['params']['nodesMarker'] == 'undefined'){
-            that.build['params']['nodesMarker'] = that.build._name['short'];
-        }
+        that.build['params']['nodesDataMarker'] = 'data-node';
+        that.build['params']['nodesMarker'] = that.build._name['short'];
         if(!that.build['nodes']){
             that.build['nodes'] = {};
+        }
+        if(that.build._inherit){
+            that.build['params']['nodes'] = cm.merge(that.build._inherit.prototype['params']['nodes'], that.build['params']['nodes']);
+            that.build['nodes'] = cm.merge(that.build._inherit.prototype['nodes'], that.build['nodes']);
         }
     },
     'getDataNodes' : function(container, dataMarker, className){

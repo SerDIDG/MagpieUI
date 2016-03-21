@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.14.1 (2016-03-18 16:23) ************ */
+/*! ************ MagpieUI v3.14.2 (2016-03-21 17:32) ************ */
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -12360,7 +12360,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.14.1',
+        '_version' : '3.14.2',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -16099,14 +16099,14 @@ Mod['DataNodes'] = {
         if(!that.build['params']['nodes']){
             that.build['params']['nodes'] = {};
         }
-        if(typeof that.build['params']['nodesDataMarker'] == 'undefined'){
-            that.build['params']['nodesDataMarker'] = 'data-node';
-        }
-        if(typeof that.build['params']['nodesMarker'] == 'undefined'){
-            that.build['params']['nodesMarker'] = that.build._name['short'];
-        }
+        that.build['params']['nodesDataMarker'] = 'data-node';
+        that.build['params']['nodesMarker'] = that.build._name['short'];
         if(!that.build['nodes']){
             that.build['nodes'] = {};
+        }
+        if(that.build._inherit){
+            that.build['params']['nodes'] = cm.merge(that.build._inherit.prototype['params']['nodes'], that.build['params']['nodes']);
+            that.build['nodes'] = cm.merge(that.build._inherit.prototype['nodes'], that.build['nodes']);
         }
     },
     'getDataNodes' : function(container, dataMarker, className){
@@ -18186,7 +18186,8 @@ cm.define('Com.BigCalendar', {
                 'view' : '%view%',
                 'week' : '%week%',
                 'month' : '%month%',
-                'year' : '%year%'
+                'year' : '%year%',
+                'query' : '%query%'
             }
         },
         'langs' : {
@@ -18200,7 +18201,14 @@ cm.define('Com.BigCalendar', {
     }
 },
 function(params){
-    var that = this;
+    var that = this,
+        viewDetailsPattern = {
+            'view' : null,
+            'week' : null,
+            'month' : null,
+            'year' : null,
+            'query' : null
+        };
 
     that.nodes = {
         'container' : cm.node('div'),
@@ -18223,12 +18231,7 @@ function(params){
     that.isProcess = false;
     that.isRendering = false;
     that.loaderDelay = null;
-    that.viewDetails = {
-        'view' : null,
-        'week' : null,
-        'month' : null,
-        'year' : null
-    };
+    that.viewDetails = cm.clone(viewDetailsPattern);
 
     var init = function(){
         that.setParams(params);
@@ -18287,12 +18290,7 @@ function(params){
     };
 
     var setViewDetails = function(data){
-        that.viewDetails = cm.merge({
-            'view' : null,
-            'week' : null,
-            'month' : null,
-            'year' : null
-        }, data);
+        that.viewDetails = cm.merge(viewDetailsPattern, data);
     };
 
     var setView = function(data){
@@ -18323,14 +18321,16 @@ function(params){
             '%view%' : that.viewDetails['view'],
             '%year%' : that.viewDetails['year'],
             '%month%' : that.viewDetails['month'],
-            '%week%' : that.viewDetails['week']
+            '%week%' : that.viewDetails['week'],
+            '%query%' : that.viewDetails['query']
         });
         config['params'] = cm.objectReplace(config['params'], {
             '%baseurl%' : cm._baseUrl,
             '%view%' : that.viewDetails['view'],
             '%year%' : that.viewDetails['year'],
             '%month%' : that.viewDetails['month'],
-            '%week%' : that.viewDetails['week']
+            '%week%' : that.viewDetails['week'],
+            '%query%' : that.viewDetails['query']
         });
         config = that.callbacks.afterPrepare(that, config);
         return config;
@@ -18636,9 +18636,9 @@ function(params){
     init();
 });
 
-/* *** CALENDAR MONTH VIEW *** */
+/* *** CALENDAR VIEW ABSTRACT *** */
 
-cm.define('Com.CalendarMonth', {
+cm.define('Com.AbstractCalendarView', {
     'modules' : [
         'Params',
         'Events',
@@ -18655,15 +18655,11 @@ cm.define('Com.CalendarMonth', {
     'params' : {
         'node' : cm.Node('div'),
         'name' : '',
-        'viewName' : 'month',
+        'viewName' : '',
         'itemShortIndent' : 1,
         'itemShortHeight' : 24,
         'dayIndent' : 4,
-        'Com.Tooltip' : {
-            'width' : '(targetWidth + %dayIndent%) * 2 - targetHeight * 2',
-            'top' : 'targetHeight + %itemShortIndent%',
-            'left' : '-(selfWidth - targetWidth) - targetHeight'
-        }
+        'Com.Tooltip' : {}
     }
 },
 function(params){
@@ -18675,31 +18671,43 @@ function(params){
             'container' : cm.node('div'),
             'prev' : cm.node('div'),
             'next' : cm.node('div'),
+            'search-button' : cm.node('div'),
+            'search-input' : cm.node('input'),
             'views' : {
                 'agenda' : cm.node('div'),
                 'week' : cm.node('div'),
                 'month' : cm.node('div')
             }
         },
-        'templates' : {}
+        'templates' : {
+            'event' : {}
+        }
     };
     that.components = {};
     that.days = [];
 
     var init = function(){
-        getCSSHelpers();
+        that.getCSSHelpers();
         that.setParams(params);
         that.convertEvents(that.params['events']);
         that.getDataNodes(that.params['node']);
         that.getDataConfig(that.params['node']);
-        validateParams();
+        that.validateParams();
         that.addToStack(that.params['node']);
         that.triggerEvent('onRenderStart');
-        render();
+        that.renderToolbar();
+        that.render();
         that.triggerEvent('onRender');
     };
 
-    var getCSSHelpers = function(){
+    /* ******* PUBLIC ******* */
+
+    init();
+});
+
+cm.getConstructor('Com.AbstractCalendarView', function(classConstructor){
+    classConstructor.prototype.getCSSHelpers = function(){
+        var that = this;
         var rule;
         if(rule = cm.getCSSRule('.com__calendar-event-helper__short-indent')[0]){
             that.params['itemShortIndent'] = cm.styleToNumber(rule.style.height);
@@ -18707,12 +18715,11 @@ function(params){
         if(rule = cm.getCSSRule('.com__calendar-event-helper__short-height')[0]){
             that.params['itemShortHeight'] = cm.styleToNumber(rule.style.height);
         }
-        if(rule = cm.getCSSRule('.com__calendar-week-helper__day-indent')[0]){
-            that.params['dayIndent'] = cm.styleToNumber(rule.style.height);
-        }
+        return that;
     };
 
-    var validateParams = function(){
+    classConstructor.prototype.validateParams = function(){
+        var that = this;
         if(that.params['Com.Tooltip']['width'] != 'auto'){
             that.params['Com.Tooltip']['width'] = cm.strReplace(that.params['Com.Tooltip']['width'], {
                 '%itemShortIndent%' : that.params['itemShortIndent'],
@@ -18730,9 +18737,11 @@ function(params){
             '%itemShortHeight%' : that.params['itemShortHeight'],
             '%dayIndent%' : that.params['dayIndent']
         });
+        return that;
     };
 
-    var render = function(){
+    classConstructor.prototype.render = function(){
+        var that = this;
         // Find events and set template and tooltip config
         new cm.Finder('Com.CalendarEvent', null, that.params['node'], function(classObject){
             // Clone template
@@ -18742,16 +18751,40 @@ function(params){
                 .setTooltipParams(that.params['Com.Tooltip'])
                 .setTemplate(template);
         }, {'multiple' : true});
-        // Process Days
-        cm.forEach(that.nodes['days'], processDay);
+        return that;
+    };
+
+    classConstructor.prototype.renderToolbar = function(){
+        var that = this;
         // Toolbar Controls
-        new cm.Finder('Com.Select', 'year', that.nodes['buttons']['container'], function(classObject){
-            that.components['year'] = classObject
-                .addEvent('onChange', updateView);
+        new cm.Finder('Com.Select', 'week', that.nodes['buttons']['container'], function(classObject){
+            that.components['week'] = classObject
+                .addEvent('onChange', function(){
+                    that.updateView();
+                });
         });
         new cm.Finder('Com.Select', 'month', that.nodes['buttons']['container'], function(classObject){
             that.components['month'] = classObject
-                .addEvent('onChange', updateView);
+                .addEvent('onChange', function(){
+                    that.updateView();
+                });
+        });
+        new cm.Finder('Com.Select', 'year', that.nodes['buttons']['container'], function(classObject){
+            that.components['year'] = classObject
+                .addEvent('onChange', function(){
+                    that.updateView();
+                });
+        });
+        // Search
+        cm.addEvent(that.nodes['buttons']['search-input'], 'keypress', function(e){
+            if(e.keyCode == 13){
+                cm.preventDefault(e);
+                that.updateView();
+            }
+        });
+        cm.addEvent(that.nodes['buttons']['search-button'], 'click', function(e){
+            cm.preventDefault(e);
+            that.updateView();
         });
         // View Buttons
         cm.forEach(that.nodes['buttons']['views'], function(node, key){
@@ -18762,7 +18795,7 @@ function(params){
             }
             cm.addEvent(node, 'click', function(e){
                 cm.preventDefault(e);
-                requestView({
+                that.requestView({
                     'view' : key
                 });
             });
@@ -18776,9 +18809,108 @@ function(params){
             cm.preventDefault(e);
             that.next();
         });
+        return that;
     };
 
+    classConstructor.prototype.searchQuery = function(str){
+        var that = this;
+        var data = that.getData();
+        data.query = str;
+        that.requestView(data);
+        return that;
+    };
+
+    classConstructor.prototype.requestView = function(data){
+        var that = this;
+        that.triggerEvent('onRequestView', data);
+        return that;
+    };
+
+    classConstructor.prototype.getData = function(){
+        var that = this;
+        return {
+            'query' : that.nodes['buttons']['search-input'].value,
+            'view' : that.params['viewName'],
+            'year' : that.components['year'] ? that.components['year'].get() : null,
+            'month' : that.components['month'] ? that.components['month'].get() : null,
+            'week' : that.components['week'] ? that.components['week'].get() : null
+        };
+    };
+
+    classConstructor.prototype.updateView = function(){
+        var that = this;
+        that.triggerEvent('onRequestView', that.getData());
+        return that;
+    };
+
+    classConstructor.prototype.prev = function(){
+        var that = this;
+        var data = that.getData();
+        if(data['week'] !== null){
+            if(data['week'] == 1){
+                data['year']--;
+                data['week'] = cm.getWeeksInYear(data['year']);
+            }else{
+                data['week']--;
+            }
+        }else if(data['month'] !== null){
+            if(data['month'] == 0){
+                data['year']--;
+                data['month'] = 11;
+            }else{
+                data['month']--;
+            }
+        }else{
+            data['year']--;
+        }
+        that.requestView(data);
+        return that;
+    };
+
+    classConstructor.prototype.next = function(){
+        var that = this;
+        var data = that.getData();
+        if(data['week'] !== null){
+            if(data['week'] == cm.getWeeksInYear(data['year'])){
+                data['year']++;
+                data['week'] = 1;
+            }else{
+                data['week']++;
+            }
+        }else if(data['month'] !== null){
+            if(data['month'] == 11){
+                data['year']++;
+                data['month'] = 0;
+            }else{
+                data['month']++;
+            }
+        }else {
+            data['year']++;
+        }
+        that.requestView(data);
+        return that;
+    };
+});
+
+/* *** CALENDAR MONTH VIEW *** */
+
+cm.define('Com.CalendarMonth', {
+    'extend' : 'Com.AbstractCalendarView',
+    'params' : {
+        'viewName' : 'month',
+        'Com.Tooltip' : {
+            'width' : '(targetWidth + %dayIndent%) * 2 - targetHeight * 2',
+            'top' : 'targetHeight + %itemShortIndent%',
+            'left' : '-(selfWidth - targetWidth) - targetHeight'
+        }
+    }
+},
+function(params){
+    var that = this;
+    that._inherit.apply(that, arguments);
+
     var processDay = function(nodes){
+        var that = this;
         var item = {
             'isShow' : false,
             'nodes' : nodes
@@ -18817,77 +18949,30 @@ function(params){
         }
     };
 
-    var requestView = function(data){
-        that.triggerEvent('onRequestView', data);
-    };
-
-    var updateView = function(){
-        var data = {
-            'view' : that.params['viewName'],
-            'year' : that.components['year'].get(),
-            'month' : that.components['month'].get()
-        };
-        that.triggerEvent('onRequestView', data);
-    };
-
     /* ******* PUBLIC ******* */
 
-    that.prev = function(){
-        var data = {
-            'view' : that.params['viewName'],
-            'year' : that.components['year'].get(),
-            'month' : that.components['month'].get()
-        };
-        if(data['month'] == 0){
-            data['year']--;
-            data['month'] = 11;
-        }else{
-            data['month']--;
+    that.getCSSHelpers = function(){
+        var that = this;
+        var rule;
+        that._inherit.prototype.getCSSHelpers.call(that);
+        if(rule = cm.getCSSRule('.com__calendar-month-helper__day-indent')[0]){
+            that.params['dayIndent'] = cm.styleToNumber(rule.style.height);
         }
-        requestView(data);
     };
 
-    that.next = function(){
-        var data = {
-            'view' : that.params['viewName'],
-            'year' : that.components['year'].get(),
-            'month' : that.components['month'].get()
-        };
-        if(data['month'] == 11){
-            data['year']++;
-            data['month'] = 0;
-        }else{
-            data['month']++;
-        }
-        requestView(data);
+    that.render = function(){
+        var that = this;
+        that._inherit.prototype.render.call(that);
+        cm.forEach(that.nodes['days'], processDay);
     };
-
-    init();
 });
 
 /* *** CALENDAR WEEK VIEW *** */
 
 cm.define('Com.CalendarWeek', {
-    'modules' : [
-        'Params',
-        'Events',
-        'Langs',
-        'DataConfig',
-        'DataNodes',
-        'Stack'
-    ],
-    'events' : [
-        'onRenderStart',
-        'onRender',
-        'onRequestView'
-    ],
+    'extend' : 'Com.AbstractCalendarView',
     'params' : {
-        'node' : cm.Node('div'),
-        'name' : '',
         'viewName' : 'week',
-        'itemShortIndent' : 1,
-        'itemShortHeight' : 24,
-        'dayIndent' : 4,
         'Com.Tooltip' : {
             'width' : '(targetWidth + %dayIndent%) * 2 - targetHeight * 2',
             'top' : 'targetHeight + %itemShortIndent%',
@@ -18897,183 +18982,26 @@ cm.define('Com.CalendarWeek', {
 },
 function(params){
     var that = this;
+    that._inherit.apply(that, arguments);
 
-    that.nodes = {
-        'container' : cm.node('div'),
-        'buttons' : {
-            'container' : cm.node('div'),
-            'prev' : cm.node('div'),
-            'next' : cm.node('div'),
-            'views' : {
-                'agenda' : cm.node('div'),
-                'week' : cm.node('div'),
-                'month' : cm.node('div')
-            }
-        },
-        'templates' : {}
-    };
-    that.components = {};
-    that.days = [];
+    /* ******* PUBLIC ******* */
 
-    var init = function(){
-        getCSSHelpers();
-        that.setParams(params);
-        that.convertEvents(that.params['events']);
-        that.getDataNodes(that.params['node']);
-        that.getDataConfig(that.params['node']);
-        validateParams();
-        that.addToStack(that.params['node']);
-        that.triggerEvent('onRenderStart');
-        render();
-        that.triggerEvent('onRender');
-    };
-
-    var getCSSHelpers = function(){
+    that.getCSSHelpers = function(){
+        var that = this;
         var rule;
-        if(rule = cm.getCSSRule('.com__calendar-event-helper__short-indent')[0]){
-            that.params['itemShortIndent'] = cm.styleToNumber(rule.style.height);
-        }
-        if(rule = cm.getCSSRule('.com__calendar-event-helper__short-height')[0]){
-            that.params['itemShortHeight'] = cm.styleToNumber(rule.style.height);
-        }
+        that._inherit.prototype.getCSSHelpers.call(that);
         if(rule = cm.getCSSRule('.com__calendar-week-helper__day-indent')[0]){
             that.params['dayIndent'] = cm.styleToNumber(rule.style.height);
         }
     };
-
-    var validateParams = function(){
-        that.params['Com.Tooltip']['width'] = cm.strReplace(that.params['Com.Tooltip']['width'], {
-            '%itemShortIndent%' : that.params['itemShortIndent'],
-            '%itemShortHeight%' : that.params['itemShortHeight'],
-            '%dayIndent%' : that.params['dayIndent']
-        });
-        that.params['Com.Tooltip']['top'] = cm.strReplace(that.params['Com.Tooltip']['top'], {
-            '%itemShortIndent%' : that.params['itemShortIndent'],
-            '%itemShortHeight%' : that.params['itemShortHeight'],
-            '%dayIndent%' : that.params['dayIndent']
-        });
-        that.params['Com.Tooltip']['left'] = cm.strReplace(that.params['Com.Tooltip']['left'], {
-            '%itemShortIndent%' : that.params['itemShortIndent'],
-            '%itemShortHeight%' : that.params['itemShortHeight'],
-            '%dayIndent%' : that.params['dayIndent']
-        });
-    };
-
-    var render = function(){
-        var template;
-        // Find events and set template and tooltip config
-        new cm.Finder('Com.CalendarEvent', null, that.params['node'], function(classObject){
-            // Clone template
-            template = cm.clone(that.nodes['templates']['event']['container'], true);
-            // Set Node
-            classObject
-                .setTooltipParams(that.params['Com.Tooltip'])
-                .setTemplate(template);
-        }, {'multiple' : true});
-        // Toolbar Controls
-        new cm.Finder('Com.Select', 'week', that.nodes['buttons']['container'], function(classObject){
-            that.components['week'] = classObject
-                .addEvent('onChange', updateView);
-        });
-        new cm.Finder('Com.Select', 'year', that.nodes['buttons']['container'], function(classObject){
-            that.components['year'] = classObject
-                .addEvent('onChange', updateView);
-        });
-        // View Buttons
-        cm.forEach(that.nodes['buttons']['views'], function(node, key){
-            if(key === that.params['viewName']){
-                cm.replaceClass(node, 'button-secondary', 'button-primary');
-            }else{
-                cm.replaceClass(node, 'button-primary', 'button-secondary');
-            }
-            cm.addEvent(node, 'click', function(e){
-                cm.preventDefault(e);
-                requestView({
-                    'view' : key
-                });
-            });
-        });
-        // Prev / Next Buttons
-        cm.addEvent(that.nodes['buttons']['prev'], 'click', function(e){
-            cm.preventDefault(e);
-            that.prev();
-        });
-        cm.addEvent(that.nodes['buttons']['next'], 'click', function(e){
-            cm.preventDefault(e);
-            that.next();
-        });
-    };
-
-    var requestView = function(data){
-        that.triggerEvent('onRequestView', data);
-    };
-
-    var updateView = function(){
-        var data = {
-            'view' : that.params['viewName'],
-            'week' : that.components['week'].get(),
-            'year' : that.components['year'].get()
-        };
-        that.triggerEvent('onRequestView', data);
-    };
-
-    /* ******* PUBLIC ******* */
-
-    that.prev = function(){
-        var data = {
-            'view' : that.params['viewName'],
-            'week' : that.components['week'].get(),
-            'year' : that.components['year'].get()
-        };
-        if(data['week'] == 1){
-            data['year']--;
-            data['week'] = cm.getWeeksInYear(data['year']);
-        }else{
-            data['week']--;
-        }
-        requestView(data);
-    };
-
-    that.next = function(){
-        var data = {
-            'view' : that.params['viewName'],
-            'week' : that.components['week'].get(),
-            'year' : that.components['year'].get()
-        };
-        if(data['week'] == cm.getWeeksInYear(data['year'])){
-            data['year']++;
-            data['week'] = 1;
-        }else{
-            data['week']++;
-        }
-        requestView(data);
-    };
-
-    init();
 });
 
 /* *** CALENDAR AGENDA VIEW *** */
 
 cm.define('Com.CalendarAgenda', {
-    'modules' : [
-        'Params',
-        'Events',
-        'Langs',
-        'DataConfig',
-        'DataNodes',
-        'Stack'
-    ],
-    'events' : [
-        'onRenderStart',
-        'onRender',
-        'onRequestView'
-    ],
+    'extend' : 'Com.AbstractCalendarView',
     'params' : {
-        'node' : cm.Node('div'),
-        'name' : '',
         'viewName' : 'agenda',
-        'itemShortIndent' : 1,
-        'itemShortHeight' : 24,
         'Com.Tooltip' : {
             'width' : 'targetWidth - %itemShortHeight% * 2',
             'top' : 'targetHeight + %itemShortIndent%',
@@ -19083,154 +19011,7 @@ cm.define('Com.CalendarAgenda', {
 },
 function(params){
     var that = this;
-
-    that.nodes = {
-        'container' : cm.node('div'),
-        'buttons' : {
-            'container' : cm.node('div'),
-            'prev' : cm.node('div'),
-            'next' : cm.node('div'),
-            'views' : {
-                'agenda' : cm.node('div'),
-                'week' : cm.node('div'),
-                'month' : cm.node('div')
-            }
-        },
-        'templates' : {}
-    };
-    that.components = {};
-    that.days = [];
-
-    var init = function(){
-        getCSSHelpers();
-        that.setParams(params);
-        that.convertEvents(that.params['events']);
-        that.getDataNodes(that.params['node']);
-        that.getDataConfig(that.params['node']);
-        validateParams();
-        that.addToStack(that.params['node']);
-        that.triggerEvent('onRenderStart');
-        render();
-        that.triggerEvent('onRender');
-    };
-
-    var getCSSHelpers = function(){
-        var rule;
-        if(rule = cm.getCSSRule('.com__calendar-event-helper__short-indent')[0]){
-            that.params['itemShortIndent'] = cm.styleToNumber(rule.style.height);
-        }
-        if(rule = cm.getCSSRule('.com__calendar-event-helper__short-height')[0]){
-            that.params['itemShortHeight'] = cm.styleToNumber(rule.style.height);
-        }
-    };
-
-    var validateParams = function(){
-        if(that.params['Com.Tooltip']['width'] != 'auto'){
-            that.params['Com.Tooltip']['width'] = cm.strReplace(that.params['Com.Tooltip']['width'], {
-                '%itemShortIndent%' : that.params['itemShortIndent'],
-                '%itemShortHeight%' : that.params['itemShortHeight']
-            });
-        }
-        that.params['Com.Tooltip']['top'] = cm.strReplace(that.params['Com.Tooltip']['top'], {
-            '%itemShortIndent%' : that.params['itemShortIndent'],
-            '%itemShortHeight%' : that.params['itemShortHeight']
-        });
-        that.params['Com.Tooltip']['left'] = cm.strReplace(that.params['Com.Tooltip']['left'], {
-            '%itemShortIndent%' : that.params['itemShortIndent'],
-            '%itemShortHeight%' : that.params['itemShortHeight']
-        });
-    };
-
-    var render = function(){
-        // Find events and set template and tooltip config
-        new cm.Finder('Com.CalendarEvent', null, that.params['node'], function(classObject){
-            // Clone template
-            var template = cm.clone(that.nodes['templates']['event']['container'], true);
-            // Set Node
-            classObject
-                .setTooltipParams(that.params['Com.Tooltip'])
-                .setTemplate(template);
-        }, {'multiple' : true});
-        // Toolbar Controls
-        new cm.Finder('Com.Select', 'year', that.nodes['buttons']['container'], function(classObject){
-            that.components['year'] = classObject
-                .addEvent('onChange', updateView);
-        });
-        new cm.Finder('Com.Select', 'month', that.nodes['buttons']['container'], function(classObject){
-            that.components['month'] = classObject
-                .addEvent('onChange', updateView);
-        });
-        // View Buttons
-        cm.forEach(that.nodes['buttons']['views'], function(node, key){
-            if(key === that.params['viewName']){
-                cm.replaceClass(node, 'button-secondary', 'button-primary');
-            }else{
-                cm.replaceClass(node, 'button-primary', 'button-secondary');
-            }
-            cm.addEvent(node, 'click', function(e){
-                cm.preventDefault(e);
-                requestView({
-                    'view' : key
-                });
-            });
-        });
-        // Prev / Next Buttons
-        cm.addEvent(that.nodes['buttons']['prev'], 'click', function(e){
-            cm.preventDefault(e);
-            that.prev();
-        });
-        cm.addEvent(that.nodes['buttons']['next'], 'click', function(e){
-            cm.preventDefault(e);
-            that.next();
-        });
-    };
-
-    var requestView = function(data){
-        that.triggerEvent('onRequestView', data);
-    };
-
-    var updateView = function(){
-        var data = {
-            'view' : that.params['viewName'],
-            'year' : that.components['year'].get(),
-            'month' : that.components['month'].get()
-        };
-        that.triggerEvent('onRequestView', data);
-    };
-
-    /* ******* PUBLIC ******* */
-
-    that.prev = function(){
-        var data = {
-            'view' : that.params['viewName'],
-            'year' : that.components['year'].get(),
-            'month' : that.components['month'].get()
-        };
-        if(data['month'] == 0){
-            data['year']--;
-            data['month'] = 11;
-        }else{
-            data['month']--;
-        }
-        requestView(data);
-    };
-
-    that.next = function(){
-        var data = {
-            'view' : that.params['viewName'],
-            'year' : that.components['year'].get(),
-            'month' : that.components['month'].get()
-        };
-        if(data['month'] == 11){
-            data['year']++;
-            data['month'] = 0;
-        }else{
-            data['month']++;
-        }
-        requestView(data);
-    };
-
-    init();
+    that._inherit.apply(that, arguments);
 });
 cm.define('Com.Calendar', {
     'modules' : [
