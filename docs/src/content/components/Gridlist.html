@@ -315,6 +315,43 @@ new Com.Gridlist({
         </div>
 
         <div class="pt__box-content">
+            <h2>Render actions menu:</h2>
+            <textarea class="pt__box-code cm-autoresize" readonly>
+new Com.Gridlist({
+    'data' : [
+        {'id' : '1', 'name' : 'Lorem 1', 'descr' : 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'},
+        {'id' : '2', 'name' : 'Lorem 2', 'descr' : 'Aliquam fringilla congue quam, sed porttitor lectus.'},
+        {'id' : '3', 'name' : 'Lorem 3', 'descr' : 'Suspendisse commodo suscipit vulputate.'}
+    ],
+    'cols' : [
+        {'type' : 'number', 'key' : 'id', 'width' : '48', 'title' : 'ID'},
+        {'type' : 'text', 'key' : 'name', 'width' : '20%', 'title' : 'Name'},
+        {'type' : 'text', 'key' : 'descr', 'width' : 'auto', 'title': 'Description'},
+        {'type' : 'actions', 'width' : '128', 'title' : 'Actions', 'actions' : [
+            {'label' : 'Edit', 'attr' : {'href' : '/edit/%id%'}, 'events' : {/* DOM Events */}},
+            {'label' : 'Remove', 'attr' : {'href' : '/remove/%id%'}, 'events' : {/* DOM Events */}}
+        ]}
+    ]
+});</textarea>
+            <div data-element="gridlist" data-config='{
+                "data" : [
+                    {"id" : "1", "name" : "Lorem 1", "descr" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit."},
+                    {"id" : "2", "name" : "Lorem 2", "descr" : "Aliquam fringilla congue quam, sed porttitor lectus."},
+                    {"id" : "3", "name" : "Lorem 3", "descr" : "Suspendisse commodo suscipit vulputate."}
+                ],
+                "cols" : [
+                    {"type" : "number", "key" : "id", "width" : "48", "title" : "ID"},
+                    {"type" : "text", "key" : "name", "width" : "20%", "title" : "Name"},
+                    {"type" : "text", "key" : "descr", "width" : "auto", "title" : "Description"},
+                    {"type" : "actions", "width" : "128", "title" : "Actions", "actions" : [
+                        {"label" : "Edit", "attr" : {"href" : "/edit/%id%"}},
+                        {"label" : "Remove", "attr" : {"href" : "/remove/%id%"}}
+                    ]}
+                ]
+            }'></div>
+        </div>
+
+        <div class="pt__box-content">
             <h2>Render statuses:</h2>
             <textarea class="pt__box-code cm-autoresize" readonly>
 new Com.Gridlist({

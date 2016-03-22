@@ -45,7 +45,8 @@ cm.define('Com.Gridlist', {
             'counter' : 'Count: ',
             'check_all' : 'Check all',
             'uncheck_all' : 'Uncheck all',
-            'empty' : 'Items does not found'
+            'empty' : 'Items does not found',
+            'actions' : 'Actions'
         },
         'icons' : {
             'arrow' : {
@@ -228,8 +229,9 @@ function(params){
     };
 
     var renderTh = function(item, i){
-        // Config
+        // Merge cell parameters
         item = that.params['cols'][i] = cm.merge({
+            '_component' : null,            // System attribute
             'width' : 'auto',               // number | % | auto
             'access' : true,                // Render column if is accessible
             'type' : 'text',		        // text | number | url | date | html | icon | checkbox | empty | actions | links
@@ -436,7 +438,15 @@ function(params){
                     nodes['actions'] = [];
                     nodes['inner'].appendChild(
                         nodes['node'] = cm.node('div', {'class' : ['pt__links', col['class']].join(' ')},
-                            nodes['actionsList'] = cm.node('ul')
+                            cm.node('ul',
+                                nodes['componentNode'] = cm.node('li', {'class' : 'com__menu', 'data-node' : 'ComMenu:{}:button'},
+                                    cm.node('a', {'class' : 'label'}, that.lang('actions')),
+                                    cm.node('span', {'class' : 'cm-i__chevron-down xx-small inline'}),
+                                    cm.node('div', {'class' : 'pt__menu', 'data-node' : 'ComMenu.target'},
+                                        nodes['actionsList'] = cm.node('ul', {'class' : 'pt__menu-dropdown'})
+                                    )
+                                )
+                            )
                         )
                     );
                     cm.forEach(col['actions'], function(actionItem){
@@ -444,20 +454,44 @@ function(params){
                         actionItem = cm.merge({
                             'label' : '',
                             'attr' : {},
-                            'events' : {}
+                            'events' : {},
+                            'controller' : false,
+                            'controllerParams' : {},
+                            'handler' : function(){}
                         }, actionItem);
                         cm.forEach(item['data'], function(itemValue, itemKey){
                             actionItem['attr'] = cm.replaceDeep(actionItem['attr'], new RegExp([cm.strWrap(itemKey, '%'), cm.strWrap(itemKey, '%25')].join('|'), 'g'), itemValue);
                         });
                         nodes['actionsList'].appendChild(
                             cm.node('li',
-                                actionNode = cm.node('a', actionItem['attr'], actionItem['label'])
+                                actionItem['_node'] = cm.node('a', actionItem['attr'], actionItem['label'])
                             )
                         );
-                        cm.forEach(actionItem['events'], function(actionEventHandler, actionEventName){
-                            cm.addEvent(actionNode, actionEventName, actionEventHandler);
+                        if(actionItem['controller'] || actionItem['handler']){
+                            cm.addEvent(actionItem['_node'], 'click', function(e){
+                                cm.preventDefault(e);
+                                if(actionItem['_controllerObject']){
+                                    actionItem['_controllerObject'].destruct();
+                                }
+                                if(actionItem['controller']){
+                                    cm.getConstructor(actionItem['controller'], function(classConstructor){
+                                        actionItem['_controllerObject'] = new classConstructor(actionItem['controllerParams']);
+                                        actionItem['_controllerObject'].construct();
+                                    });
+                                }
+                                actionItem['handler'](e, actionItem);
+                            });
+                        }else{
+                            cm.forEach(actionItem['events'], function(actionEventHandler, actionEventName){
+                                cm.addEvent(actionItem['_node'], actionEventName, actionEventHandler);
+                            });
+                        }
+                        nodes['actions'].push(actionItem['_node']);
+                    });
+                    cm.getConstructor('Com.Menu', function(classConstructor){
+                        col['_component'] = new classConstructor({
+                            'node' : nodes['componentNode']
                         });
-                        nodes['actions'].push(actionNode);
                     });
                     break;
 

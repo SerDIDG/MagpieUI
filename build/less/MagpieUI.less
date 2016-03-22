@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.14.2 (2016-03-21 17:55) ************ */
+/*! ************ MagpieUI v3.14.2 (2016-03-22 22:25) ************ */
 @charset "UTF-8";
 
 /*!
@@ -5535,6 +5535,11 @@ span.CodeMirror-selectedtext { background: none; }
 @PtImage-Background: @CmColor-Secondary-LightHighlight;
 @PtImage-TitlePaddingTop: @CmIndent-XXXSmall;
 @PtImage-Color: @CmFont-UI-ColorOpposite;
+
+// /* ******* RANGE ******* */
+
+@PtRange-Size: @CmSize-Medium;
+@PtRange-Width: 200px;
 
 // /* ******* LISTING ITEMS ******* */
 
@@ -11539,6 +11544,68 @@ button {
         vertical-align: middle;
     }
 }
+/* ******* PARTS: RANGE ******* */
+
+.pt__range {
+    border-radius: @CmBorder-Radius;
+
+    > .inner {
+        cursor: row-resize;
+        position: relative;
+    }
+
+    .canvas {
+        width: 100%;
+        height: 100%;
+    }
+
+    &.is-vertical {
+        > .inner {
+            cursor: col-resize;
+        }
+
+        .canvas {
+            background: linear-gradient(to top,
+                rgba(255, 0, 0, 1) 0%,
+                rgba(255, 255, 0, 1) calc(1 / 6 * 100%),
+                rgba(0, 255, 0, 1) calc(2 / 6 * 100%),
+                rgba(0, 255, 255, 1) calc(3 / 6 * 100%),
+                rgba(0, 0, 255, 1) calc(4 / 6 * 100%),
+                rgba(255, 0, 255, 1) calc(5 / 6 * 100%),
+                rgba(255, 0, 0, 1) 100%);
+        }
+    }
+
+    &.is-horizontal {
+        > .inner {
+            cursor: row-resize;
+        }
+
+        .canvas {
+            background: linear-gradient(to left,
+                rgba(255, 0, 0, 1) 0%,
+                rgba(255, 255, 0, 1) calc(1 / 6 * 100%),
+                rgba(0, 255, 0, 1) calc(2 / 6 * 100%),
+                rgba(0, 255, 255, 1) calc(3 / 6 * 100%),
+                rgba(0, 0, 255, 1) calc(4 / 6 * 100%),
+                rgba(255, 0, 255, 1) calc(5 / 6 * 100%),
+                rgba(255, 0, 0, 1) 100%);
+        }
+    }
+
+    &.is-vertical {
+        > .inner {
+            width: @PtRange-Size;
+            height: @PtRange-Width;
+        }
+    }
+
+    &.is-horizontal {
+        > .inner {
+            height: @PtRange-Size;
+        }
+    }
+}
 /* ******* PARTS: RULER ******* */
 
 .pt__ruler {
@@ -14797,6 +14864,18 @@ button {
 .com__menu {
     .button {
         margin: 0 !important;
+    }
+
+    > .label {
+        margin: 0 @CmIndent-XXXSmall;
+
+        &:first-child {
+            margin-left: 0;
+        }
+
+        &:last-child {
+            margin-right: 0;
+        }
     }
 
     .pt__menu {

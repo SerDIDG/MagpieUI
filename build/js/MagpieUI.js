@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.14.2 (2016-03-21 17:55) ************ */
+/*! ************ MagpieUI v3.14.2 (2016-03-22 22:25) ************ */
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -24375,7 +24375,8 @@ cm.define('Com.Gridlist', {
             'counter' : 'Count: ',
             'check_all' : 'Check all',
             'uncheck_all' : 'Uncheck all',
-            'empty' : 'Items does not found'
+            'empty' : 'Items does not found',
+            'actions' : 'Actions'
         },
         'icons' : {
             'arrow' : {
@@ -24558,8 +24559,9 @@ function(params){
     };
 
     var renderTh = function(item, i){
-        // Config
+        // Merge cell parameters
         item = that.params['cols'][i] = cm.merge({
+            '_component' : null,            // System attribute
             'width' : 'auto',               // number | % | auto
             'access' : true,                // Render column if is accessible
             'type' : 'text',		        // text | number | url | date | html | icon | checkbox | empty | actions | links
@@ -24766,7 +24768,15 @@ function(params){
                     nodes['actions'] = [];
                     nodes['inner'].appendChild(
                         nodes['node'] = cm.node('div', {'class' : ['pt__links', col['class']].join(' ')},
-                            nodes['actionsList'] = cm.node('ul')
+                            cm.node('ul',
+                                nodes['componentNode'] = cm.node('li', {'class' : 'com__menu', 'data-node' : 'ComMenu:{}:button'},
+                                    cm.node('a', {'class' : 'label'}, that.lang('actions')),
+                                    cm.node('span', {'class' : 'cm-i__chevron-down xx-small inline'}),
+                                    cm.node('div', {'class' : 'pt__menu', 'data-node' : 'ComMenu.target'},
+                                        nodes['actionsList'] = cm.node('ul', {'class' : 'pt__menu-dropdown'})
+                                    )
+                                )
+                            )
                         )
                     );
                     cm.forEach(col['actions'], function(actionItem){
@@ -24774,20 +24784,44 @@ function(params){
                         actionItem = cm.merge({
                             'label' : '',
                             'attr' : {},
-                            'events' : {}
+                            'events' : {},
+                            'controller' : false,
+                            'controllerParams' : {},
+                            'handler' : function(){}
                         }, actionItem);
                         cm.forEach(item['data'], function(itemValue, itemKey){
                             actionItem['attr'] = cm.replaceDeep(actionItem['attr'], new RegExp([cm.strWrap(itemKey, '%'), cm.strWrap(itemKey, '%25')].join('|'), 'g'), itemValue);
                         });
                         nodes['actionsList'].appendChild(
                             cm.node('li',
-                                actionNode = cm.node('a', actionItem['attr'], actionItem['label'])
+                                actionItem['_node'] = cm.node('a', actionItem['attr'], actionItem['label'])
                             )
                         );
-                        cm.forEach(actionItem['events'], function(actionEventHandler, actionEventName){
-                            cm.addEvent(actionNode, actionEventName, actionEventHandler);
+                        if(actionItem['controller'] || actionItem['handler']){
+                            cm.addEvent(actionItem['_node'], 'click', function(e){
+                                cm.preventDefault(e);
+                                if(actionItem['_controllerObject']){
+                                    actionItem['_controllerObject'].destruct();
+                                }
+                                if(actionItem['controller']){
+                                    cm.getConstructor(actionItem['controller'], function(classConstructor){
+                                        actionItem['_controllerObject'] = new classConstructor(actionItem['controllerParams']);
+                                        actionItem['_controllerObject'].construct();
+                                    });
+                                }
+                                actionItem['handler'](e, actionItem);
+                            });
+                        }else{
+                            cm.forEach(actionItem['events'], function(actionEventHandler, actionEventName){
+                                cm.addEvent(actionItem['_node'], actionEventName, actionEventHandler);
+                            });
+                        }
+                        nodes['actions'].push(actionItem['_node']);
+                    });
+                    cm.getConstructor('Com.Menu', function(classConstructor){
+                        col['_component'] = new classConstructor({
+                            'node' : nodes['componentNode']
                         });
-                        nodes['actions'].push(actionNode);
                     });
                     break;
 
@@ -31472,6 +31506,66 @@ function(params){
         that.isProcess = false;
         return that;
     };
+
+    init();
+});
+cm.define('Com.Tint', {
+    'modules' : [
+        'Params',
+        'Events',
+        'Langs',
+        'Structure',
+        'DataConfig',
+        'Stack'
+    ],
+    'events' : [
+        'onRenderStart',
+        'onRender'
+    ],
+    'params' : {
+        'node' : cm.node('div'),
+        'container' : null,
+        'name' : '',
+        'embedStructure' : 'append'
+    }
+},
+function(params){
+    var that = this;
+
+    that.nodes = {};
+    that.components = {};
+
+    var init = function(){
+        that.setParams(params);
+        that.convertEvents(that.params['events']);
+        that.getDataConfig(that.params['node']);
+        validateParams();
+        that.addToStack(that.params['node']);
+        that.triggerEvent('onRenderStart');
+        render();
+        that.addToStack(that.nodes['container']);
+        that.triggerEvent('onRender');
+    };
+
+    var validateParams = function(){
+
+    };
+
+    var render = function(){
+        // Structure
+        that.nodes['container'] = cm.node('div', {'class' : 'com__tint'},
+            that.nodes['range'] = cm.node('div', {'class' : 'pt__range is-horizontal'},
+                that.nodes['inner'] = cm.node('div', {'class' : 'inner'},
+                    that.nodes['drag'] = cm.node('div', {'class' : 'drag'}),
+                    that.nodes['canvas'] = cm.node('div', {'class' : 'canvas', 'width' : '100%', 'height' : '100%'})
+                )
+            )
+        );
+        // Append
+        that.embedStructure(that.nodes['container']);
+    };
+
+    /* ******* PUBLIC ******* */
 
     init();
 });

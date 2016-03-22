@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.14.2 (2016-03-21 17:55) ************ */
+/*! ************ MagpieUI v3.14.2 (2016-03-22 22:25) ************ */
 /*!
 Animate.css - http://daneden.me/animate
 Licensed under the MIT license - http://opensource.org/licenses/MIT
@@ -11147,6 +11147,37 @@ button::-moz-focus-inner {
   display: inline-block;
   vertical-align: middle;
 }
+/* ******* PARTS: RANGE ******* */
+.pt__range {
+  border-radius: 3px;
+}
+.pt__range > .inner {
+  cursor: row-resize;
+  position: relative;
+}
+.pt__range .canvas {
+  width: 100%;
+  height: 100%;
+}
+.pt__range.is-vertical > .inner {
+  cursor: col-resize;
+}
+.pt__range.is-vertical .canvas {
+  background: linear-gradient(to top, #ff0000 0%, #ffff00 calc(16.66666667%), #00ff00 calc(33.33333333%), #00ffff calc(50%), #0000ff calc(66.66666667%), #ff00ff calc(83.33333333%), #ff0000 100%);
+}
+.pt__range.is-horizontal > .inner {
+  cursor: row-resize;
+}
+.pt__range.is-horizontal .canvas {
+  background: linear-gradient(to left, #ff0000 0%, #ffff00 calc(16.66666667%), #00ff00 calc(33.33333333%), #00ffff calc(50%), #0000ff calc(66.66666667%), #ff00ff calc(83.33333333%), #ff0000 100%);
+}
+.pt__range.is-vertical > .inner {
+  width: 24px;
+  height: 200px;
+}
+.pt__range.is-horizontal > .inner {
+  height: 24px;
+}
 /* ******* PARTS: RULER ******* */
 .pt__ruler {
   display: -webkit-flex;
@@ -14289,6 +14320,15 @@ button::-moz-focus-inner {
 .com__menu input[type="reset"],
 .com__menu button {
   margin: 0 !important;
+}
+.com__menu > .label {
+  margin: 0 4px;
+}
+.com__menu > .label:first-child {
+  margin-left: 0;
+}
+.com__menu > .label:last-child {
+  margin-right: 0;
 }
 .com__menu .pt__menu {
   display: none;
