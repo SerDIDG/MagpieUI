@@ -1,0 +1,29 @@
+/* ******* COMPONENTS: TINT RANGE ******* */
+
+.com__tint-range {
+    .cm__box;
+}
+
+.com__tint-range__content {
+    &.is-vertical {
+        background: linear-gradient(to top,
+            rgba(255, 0, 0, 1) 0%,
+            rgba(255, 255, 0, 1) calc(1 / 6 * 100%),
+            rgba(0, 255, 0, 1) calc(2 / 6 * 100%),
+            rgba(0, 255, 255, 1) calc(3 / 6 * 100%),
+            rgba(0, 0, 255, 1) calc(4 / 6 * 100%),
+            rgba(255, 0, 255, 1) calc(5 / 6 * 100%),
+            rgba(255, 0, 0, 1) 100%);
+    }
+
+    &.is-horizontal {
+        background: linear-gradient(to left,
+            rgba(255, 0, 0, 1) 0%,
+            rgba(255, 255, 0, 1) calc(1 / 6 * 100%),
+            rgba(0, 255, 0, 1) calc(2 / 6 * 100%),
+            rgba(0, 255, 255, 1) calc(3 / 6 * 100%),
+            rgba(0, 0, 255, 1) calc(4 / 6 * 100%),
+            rgba(255, 0, 255, 1) calc(5 / 6 * 100%),
+            rgba(255, 0, 0, 1) 100%);
+    }
+}

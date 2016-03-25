@@ -10,7 +10,8 @@ cm.define('Com.Draggable', {
         'onStart',
         'onMove',
         'onStop',
-        'onSet'
+        'onSet',
+        'onSelect'
     ],
     'params' : {
         'node' : cm.Node('div'),            // Node, for drag
@@ -74,7 +75,7 @@ function(params){
         that.getDimensions();
         that.nodeStartX = cm.getStyle(that.params['node'], 'left', true);
         that.nodeStartY = cm.getStyle(that.params['node'], 'top', true);
-        setPosition(that.startX, that.startY);
+        setPositionHelper(position, 'onSet');
         // Add move event on document
         cm.addEvent(window, 'mousemove', move);
         cm.addEvent(window, 'mouseup', stop);
@@ -86,13 +87,17 @@ function(params){
         cm.preventDefault(e);
         var position = cm.getEventClientPosition(e);
         // Calculate dimensions and position
-        setPosition(position['left'], position['top']);
+        setPositionHelper(position, 'onSet');
         // Trigger Event
         that.triggerEvent('onMove');
     };
 
-    var stop = function(){
+    var stop = function(e){
+        cm.preventDefault(e);
         that.isDrag = false;
+        // Calculate dimensions and position
+        var position = cm.getEventClientPosition(e);
+        setPositionHelper(position, 'onSelect');
         // Remove move events attached on document
         cm.removeEvent(window, 'mousemove', move);
         cm.removeEvent(window, 'mouseup', stop);
@@ -104,17 +109,66 @@ function(params){
     
     /* *** HELPERS *** */
 
-    var setPosition = function(x, y){
-        var posX = x,
-            posY = y;
+    var setPositionHelper = function(position, eventName){
+        position = cm.merge({
+            'left' : 0,
+            'top' : 0
+        }, position);
         if(that.params['node'] === that.params['target']){
-            posX += that.nodeStartX - that.startX;
-            posY += that.nodeStartY - that.startY;
+            position['left'] += that.nodeStartX - that.startX;
+            position['top'] += that.nodeStartY - that.startY;
         }else{
-            posX -= that.dimensions['target']['absoluteX1'];
-            posY -= that.dimensions['target']['absoluteY1'];
+            position['left'] -= that.dimensions['target']['absoluteX1'];
+            position['top'] -= that.dimensions['target']['absoluteY1'];
         }
-        that.setPosition(posX, posY, true);
+        position = setPositionAction(position);
+        that.triggerEvent(eventName, position);
+    };
+
+    var setPositionAction = function(position){
+        position = cm.merge({
+            'left' : 0,
+            'top' : 0,
+            'nodeTop' : 0,
+            'nodeLeft' : 0
+        }, position);
+        // Check limit
+        if(that.params['limiter']){
+            if(position['top'] < 0){
+                position['top'] = 0;
+            }else if(position['top'] > that.dimensions['limiter']['absoluteHeight']){
+                position['top'] = that.dimensions['limiter']['absoluteHeight'];
+            }
+            if(position['left'] < 0){
+                position['left'] = 0;
+            }else if(position['left'] > that.dimensions['limiter']['absoluteWidth']){
+                position['left'] = that.dimensions['limiter']['absoluteWidth'];
+            }
+        }
+        // Limiters
+        if(!isNaN(that.params['minY']) && position['top'] < that.params['minY']){
+            position['top'] = that.params['minY'];
+        }
+        // Align node
+        position['nodeTop'] = position['top'];
+        position['nodeLeft'] = position['left'];
+        if(that.params['alignNode']){
+            position['nodeTop'] -= (that.dimensions['node']['absoluteHeight'] / 2);
+            position['nodeLeft'] -= (that.dimensions['node']['absoluteWidth'] / 2);
+        }
+        // Set styles
+        switch(that.params['direction']){
+            case 'vertical' :
+                cm.setCSSTranslate(that.params['node'], 0, [position['nodeTop'], 'px'].join(''), 0);
+                break;
+            case 'horizontal' :
+                cm.setCSSTranslate(that.params['node'], [position['nodeLeft'], 'px'].join(''), 0, 0);
+                break;
+            default :
+                cm.setCSSTranslate(that.params['node'], [position['nodeLeft'], 'px'].join(''), [position['nodeTop'], 'px'].join(''), 0);
+                break;
+        }
+        return position;
     };
 
     /* ******* MAIN ******* */
@@ -126,55 +180,17 @@ function(params){
         return that.dimensions;
     };
 
-    that.setPosition = function(posX, posY, triggerEvents){
-        var nodePosY,
-            nodePosX;
+    that.setPosition = function(position, triggerEvents){
+        position = cm.merge({
+            'left' : 0,
+            'top' : 0
+        }, position);
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        // Check limit
-        if(that.params['limiter']){
-            if(posY < 0){
-                posY = 0;
-            }else if(posY > that.dimensions['limiter']['absoluteHeight']){
-                posY = that.dimensions['limiter']['absoluteHeight'];
-            }
-            if(posX < 0){
-                posX = 0;
-            }else if(posX > that.dimensions['limiter']['absoluteWidth']){
-                posX = that.dimensions['limiter']['absoluteWidth'];
-            }
-        }
-        // Limiters
-        if(!isNaN(that.params['minY']) && posY < that.params['minY']){
-            posY = that.params['minY'];
-        }
-        // Align node
-        nodePosY = posY;
-        nodePosX = posX;
-        if(that.params['alignNode']){
-            nodePosY -= (that.dimensions['node']['absoluteHeight'] / 2);
-            nodePosX -= (that.dimensions['node']['absoluteWidth'] / 2);
-        }
-        // Set styles
-        switch(that.params['direction']){
-            case 'vertical' :
-                that.params['node'].style.top = [nodePosY, 'px'].join('');
-                break;
-            case 'horizontal' :
-                that.params['node'].style.left = [nodePosX, 'px'].join('');
-                break;
-            default :
-                that.params['node'].style.top = [nodePosY, 'px'].join('');
-                that.params['node'].style.left = [nodePosX, 'px'].join('');
-                break;
-        }
+        position = setPositionAction(position);
         // Trigger Event
         if(triggerEvents){
-            that.triggerEvent('onSet', {
-                'posY' : posY,
-                'posX' : posX,
-                'nodePosY' : nodePosY,
-                'nodePosX' : nodePosX
-            })
+            that.triggerEvent('onSet', position);
+            that.triggerEvent('onSelect', position);
         }
         return that;
     };

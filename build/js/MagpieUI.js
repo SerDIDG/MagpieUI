@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.14.2 (2016-03-22 22:25) ************ */
+/*! ************ MagpieUI v3.15.0 (2016-03-25 20:54) ************ */
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -12360,7 +12360,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.14.2',
+        '_version' : '3.15.0',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -15591,7 +15591,7 @@ cm.getConstructor = function(className, callback){
     callback = typeof callback != 'undefined' ? callback : function(){}
     if(!className || className == '*'){
         cm.forEach(cm.defineStack, function(classConstructor){
-            callback(classConstructor, className);
+            callback(classConstructor, className, classConstructor.prototype);
         });
         return cm.defineStack;
     }else{
@@ -15606,7 +15606,7 @@ cm.getConstructor = function(className, callback){
             }
             return false;
         }else{
-            callback(classConstructor, className);
+            callback(classConstructor, className, classConstructor.prototype);
             return classConstructor;
         }
     }
@@ -17612,6 +17612,339 @@ Com.FormFields.add('buttons', {
             return buttons;
         }
     }
+});
+cm.define('Com.AbstractRange', {
+    'modules' : [
+        'Params',
+        'Events',
+        'Langs',
+        'Structure',
+        'DataConfig',
+        'Stack'
+    ],
+    'events' : [
+        'onRenderStart',
+        'onRender',
+        'onSet',
+        'onSelect',
+        'onChange'
+    ],
+    'params' : {
+        'node' : cm.node('div'),
+        'container' : null,
+        'name' : '',
+        'embedStructure' : 'replace',
+        'content' : null,
+        'drag' : null,
+        'className' : '',
+        'theme' : 'theme--arrows',
+        'min' : 0,
+        'max' : 100,
+        'value' : 0,
+        'direction' : 'horizontal',
+        'showCounter' : true,
+        'renderHiddenInput' : true,
+        'customEvents' : true,
+        'Com.Draggable' : {}
+    }
+},
+function(params){
+    var that = this;
+
+    that.previousValue = null;
+    that.value = null;
+    that.nodes = {};
+    that.components = {};
+
+    var init = function(){
+        that.setParams(params);
+        that.convertEvents(that.params['events']);
+        that.getDataConfig(that.params['node']);
+        that.validateParams();
+        that.addToStack(that.params['node']);
+        that.triggerEvent('onRenderStart');
+        that.render();
+        that.set(that.params['value'], false);
+        that.addToStack(that.nodes['container']);
+        that.triggerEvent('onRender');
+    };
+
+    /* ******* PUBLIC ******* */
+
+    init();
+});
+
+cm.getConstructor('Com.AbstractRange', function(classConstructor, className, classProto){
+    classProto.validateParams = function(){
+        var that = this;
+        if(that.params['renderHiddenInput'] && cm.isNode(that.params['node'])){
+            that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
+            that.params['value'] = that.params['node'].getAttribute('value') || that.params['value'];
+        }
+        that.params['Com.Draggable']['direction'] = that.params['direction'];
+        return that;
+    };
+
+    classProto.render = function(){
+        var that = this;
+        // Structure
+        that.renderView();
+        // Draggable
+        cm.getConstructor('Com.Draggable', function(classConstructor, className){
+            that.components['draggable'] = new classConstructor(
+                cm.merge(that.params[className], {
+                    'target' : that.nodes['inner'],
+                    'node' : that.nodes['drag'],
+                    'limiter' : that.nodes['inner'],
+                    'events' : {
+                        'onStart' : function(){
+                            switch(that.params['direction']){
+                                case 'horizontal':
+                                    cm.addClass(document.body, 'cm__cursor--col-resize');
+                                    break;
+
+                                case 'vertical':
+                                    cm.addClass(document.body, 'cm__cursor--row-resize');
+                                    break;
+                            }
+                            that.showCounter();
+                        },
+                        'onStop' : function(){
+                            switch(that.params['direction']){
+                                case 'horizontal':
+                                    cm.removeClass(document.body, 'cm__cursor--col-resize');
+                                    break;
+
+                                case 'vertical':
+                                    cm.removeClass(document.body, 'cm__cursor--row-resize');
+                                    break;
+                            }
+                            that.hideCounter();
+                        },
+                        'onSelect' : function(my, data){
+                            var value = that.getRangeValue(data);
+                            that.setHelper(value, 'onSelect')
+                        },
+                        'onSet' : function(my, data){
+                            var value = that.getRangeValue(data);
+                            that.setHelper(value, 'onSet')
+                        }
+                    }
+                })
+            );
+        });
+        // Events
+        that.setCustomEvents();
+        // Append
+        that.embedStructure(that.nodes['container']);
+        return that;
+    };
+
+    classProto.setCustomEvents = function(){
+        var that = this;
+        // Add custom event
+        if(that.params['customEvents']){
+            cm.customEvent.add(that.nodes['container'], 'redraw', function(){
+                that.redraw();
+            });
+        }
+        return that;
+    };
+
+    classProto.renderView = function(){
+        var that = this;
+        // Structure
+        that.nodes['container'] = cm.node('div', {'class' : 'com__range'},
+            that.nodes['range'] = cm.node('div', {'class' : 'pt__range'},
+                that.nodes['inner'] = cm.node('div', {'class' : 'inner'},
+                    that.nodes['drag'] = cm.node('div', {'class' : 'drag'},
+                        that.nodes['dragContent'] = that.renderDraggable()
+                    ),
+                    that.nodes['range'] = cm.node('div', {'class' : 'range'},
+                        that.nodes['rangeContent'] = that.renderContent()
+                    )
+                )
+            )
+        );
+        // Counter
+        that.nodes['counter'] = that.renderCounter();
+        if(that.params['showCounter']){
+            cm.insertFirst(that.nodes['counter'], that.nodes['drag']);
+        }
+        // Hidden input
+        that.nodes['hidden'] = cm.node('input', {'type' : 'hidden'});
+        if(that.params['name']){
+            that.nodes['hidden'].setAttribute('name', that.params['name']);
+        }
+        if(that.params['renderHiddenInput']){
+            cm.insertFirst(that.nodes['hidden'], that.nodes['container']);
+        }
+        // Classes
+        cm.addClass(that.nodes['container'], that.params['theme']);
+        cm.addClass(that.nodes['range'], that.params['theme']);
+        cm.addClass(that.nodes['container'], that.params['className']);
+        cm.addClass(that.nodes['rangeContent'], 'range-helper');
+        // Direction classes
+        switch(that.params['direction']){
+            case 'horizontal':
+                cm.addClass(that.nodes['container'], 'is-horizontal');
+                cm.addClass(that.nodes['range'], 'is-horizontal');
+                cm.addClass(that.nodes['dragContent'], 'is-horizontal');
+                cm.addClass(that.nodes['rangeContent'], 'is-horizontal');
+                break;
+
+            case 'vertical':
+                cm.addClass(that.nodes['container'], 'is-vertical');
+                cm.addClass(that.nodes['range'], 'is-vertical');
+                cm.addClass(that.nodes['dragContent'], 'is-vertical');
+                cm.addClass(that.nodes['rangeContent'], 'is-vertical');
+                break;
+        }
+        return that;
+    };
+
+    classProto.renderContent = function(){
+        var that = this;
+        return that.params['content'] || cm.node('div', {'class' : 'range__content'});
+    };
+
+    classProto.renderDraggable = function(){
+        var that = this;
+        return that.params['drag'] || cm.node('div', {'class' : 'drag__content'});
+    };
+
+    classProto.renderCounter = function(){
+        var that = this;
+        return that.params['counter'] || cm.node('div', {'class' : 'counter'});
+    };
+
+    classProto.showCounter = function(){
+        var that = this;
+        cm.addClass(that.nodes['counter'], 'is-show');
+        return that;
+    };
+
+    classProto.hideCounter = function(){
+        var that = this;
+        cm.removeClass(that.nodes['counter'], 'is-show');
+        return that;
+    };
+
+    classProto.getRangeValue = function(data){
+        var that = this,
+            dimensions = that.components['draggable'].getDimensions(),
+            xn = that.params['max'] - that.params['min'],
+            yn,
+            zn,
+            value;
+        switch(that.params['direction']){
+            case 'horizontal':
+                yn = dimensions['limiter']['absoluteWidth'];
+                zn = (xn / yn) * data['left'];
+                value = Math.floor(zn) + that.params['min'];
+                break;
+
+            case 'vertical':
+                yn = dimensions['limiter']['absoluteHeight'];
+                zn = (xn / yn) * data['top'];
+                value = Math.floor(zn) + that.params['min'];
+                break;
+        }
+        return value;
+    };
+
+    classProto.validateValue = function(value){
+        var that = this;
+        if(that.params['max'] > that.params['min']){
+            value = Math.min(Math.max(value, that.params['min']), that.params['max']);
+        }else{
+            value = Math.max(Math.min(value, that.params['min']), that.params['max']);
+        }
+        return value;
+    };
+
+    classProto.setHelper = function(value, eventName){
+        var that = this;
+        value = that.validateValue(value);
+        that.nodes['counter'].innerHTML = value;
+        // Trigger Events
+        that.triggerEvent(eventName, value);
+        if(eventName == 'onSelect'){
+            that.setAction(value);
+            that.changeAction();
+        }
+        return that;
+    };
+
+    classProto.setAction = function(value){
+        var that = this;
+        that.previousValue = that.value;
+        that.value = value;
+        that.nodes['hidden'].value = that.value;
+        return that;
+    };
+
+    classProto.setDraggable = function(){
+        var that = this,
+            dimensions = that.components['draggable'].getDimensions(),
+            value = that.value - that.params['min'],
+            xn = that.params['max'] - that.params['min'],
+            yn,
+            zn,
+            position = {
+                'top' : 0,
+                'left' : 0
+            };
+        switch(that.params['direction']){
+            case 'horizontal':
+                yn = dimensions['limiter']['absoluteWidth'];
+                zn = (yn / xn) * value;
+                position['left'] = Math.floor(zn);
+                break;
+
+            case 'vertical':
+                yn = dimensions['limiter']['absoluteHeight'];
+                zn = (yn / xn ) * value;
+                position['top'] = Math.floor(zn);
+                break;
+        }
+        that.components['draggable'].setPosition(position, false);
+        return that;
+    };
+
+    classProto.changeAction = function(){
+        var that = this;
+        if(that.value != that.previousValue){
+            that.triggerEvent('onChange', that.value);
+        }
+        return that;
+    };
+
+    classProto.set = function(value, triggerEvents){
+        var that = this;
+        value = that.validateValue(value);
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        that.setAction(value);
+        that.setDraggable();
+        // Trigger Event
+        if(triggerEvents){
+            that.triggerEvent('onSet', that.value);
+            that.triggerEvent('onSelect', that.value);
+            that.changeAction();
+        }
+        return that;
+    };
+
+    classProto.get = function(){
+        var that = this;
+        return that.value;
+    };
+
+    classProto.redraw = function(){
+        var that = this;
+        that.setDraggable();
+        return that;
+    };
 });
 cm.define('Com.Autocomplete', {
     'modules' : [
@@ -23144,7 +23477,8 @@ cm.define('Com.Draggable', {
         'onStart',
         'onMove',
         'onStop',
-        'onSet'
+        'onSet',
+        'onSelect'
     ],
     'params' : {
         'node' : cm.Node('div'),            // Node, for drag
@@ -23208,7 +23542,7 @@ function(params){
         that.getDimensions();
         that.nodeStartX = cm.getStyle(that.params['node'], 'left', true);
         that.nodeStartY = cm.getStyle(that.params['node'], 'top', true);
-        setPosition(that.startX, that.startY);
+        setPositionHelper(position, 'onSet');
         // Add move event on document
         cm.addEvent(window, 'mousemove', move);
         cm.addEvent(window, 'mouseup', stop);
@@ -23220,13 +23554,17 @@ function(params){
         cm.preventDefault(e);
         var position = cm.getEventClientPosition(e);
         // Calculate dimensions and position
-        setPosition(position['left'], position['top']);
+        setPositionHelper(position, 'onSet');
         // Trigger Event
         that.triggerEvent('onMove');
     };
 
-    var stop = function(){
+    var stop = function(e){
+        cm.preventDefault(e);
         that.isDrag = false;
+        // Calculate dimensions and position
+        var position = cm.getEventClientPosition(e);
+        setPositionHelper(position, 'onSelect');
         // Remove move events attached on document
         cm.removeEvent(window, 'mousemove', move);
         cm.removeEvent(window, 'mouseup', stop);
@@ -23238,17 +23576,66 @@ function(params){
     
     /* *** HELPERS *** */
 
-    var setPosition = function(x, y){
-        var posX = x,
-            posY = y;
+    var setPositionHelper = function(position, eventName){
+        position = cm.merge({
+            'left' : 0,
+            'top' : 0
+        }, position);
         if(that.params['node'] === that.params['target']){
-            posX += that.nodeStartX - that.startX;
-            posY += that.nodeStartY - that.startY;
+            position['left'] += that.nodeStartX - that.startX;
+            position['top'] += that.nodeStartY - that.startY;
         }else{
-            posX -= that.dimensions['target']['absoluteX1'];
-            posY -= that.dimensions['target']['absoluteY1'];
+            position['left'] -= that.dimensions['target']['absoluteX1'];
+            position['top'] -= that.dimensions['target']['absoluteY1'];
         }
-        that.setPosition(posX, posY, true);
+        position = setPositionAction(position);
+        that.triggerEvent(eventName, position);
+    };
+
+    var setPositionAction = function(position){
+        position = cm.merge({
+            'left' : 0,
+            'top' : 0,
+            'nodeTop' : 0,
+            'nodeLeft' : 0
+        }, position);
+        // Check limit
+        if(that.params['limiter']){
+            if(position['top'] < 0){
+                position['top'] = 0;
+            }else if(position['top'] > that.dimensions['limiter']['absoluteHeight']){
+                position['top'] = that.dimensions['limiter']['absoluteHeight'];
+            }
+            if(position['left'] < 0){
+                position['left'] = 0;
+            }else if(position['left'] > that.dimensions['limiter']['absoluteWidth']){
+                position['left'] = that.dimensions['limiter']['absoluteWidth'];
+            }
+        }
+        // Limiters
+        if(!isNaN(that.params['minY']) && position['top'] < that.params['minY']){
+            position['top'] = that.params['minY'];
+        }
+        // Align node
+        position['nodeTop'] = position['top'];
+        position['nodeLeft'] = position['left'];
+        if(that.params['alignNode']){
+            position['nodeTop'] -= (that.dimensions['node']['absoluteHeight'] / 2);
+            position['nodeLeft'] -= (that.dimensions['node']['absoluteWidth'] / 2);
+        }
+        // Set styles
+        switch(that.params['direction']){
+            case 'vertical' :
+                cm.setCSSTranslate(that.params['node'], 0, [position['nodeTop'], 'px'].join(''), 0);
+                break;
+            case 'horizontal' :
+                cm.setCSSTranslate(that.params['node'], [position['nodeLeft'], 'px'].join(''), 0, 0);
+                break;
+            default :
+                cm.setCSSTranslate(that.params['node'], [position['nodeLeft'], 'px'].join(''), [position['nodeTop'], 'px'].join(''), 0);
+                break;
+        }
+        return position;
     };
 
     /* ******* MAIN ******* */
@@ -23260,55 +23647,17 @@ function(params){
         return that.dimensions;
     };
 
-    that.setPosition = function(posX, posY, triggerEvents){
-        var nodePosY,
-            nodePosX;
+    that.setPosition = function(position, triggerEvents){
+        position = cm.merge({
+            'left' : 0,
+            'top' : 0
+        }, position);
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        // Check limit
-        if(that.params['limiter']){
-            if(posY < 0){
-                posY = 0;
-            }else if(posY > that.dimensions['limiter']['absoluteHeight']){
-                posY = that.dimensions['limiter']['absoluteHeight'];
-            }
-            if(posX < 0){
-                posX = 0;
-            }else if(posX > that.dimensions['limiter']['absoluteWidth']){
-                posX = that.dimensions['limiter']['absoluteWidth'];
-            }
-        }
-        // Limiters
-        if(!isNaN(that.params['minY']) && posY < that.params['minY']){
-            posY = that.params['minY'];
-        }
-        // Align node
-        nodePosY = posY;
-        nodePosX = posX;
-        if(that.params['alignNode']){
-            nodePosY -= (that.dimensions['node']['absoluteHeight'] / 2);
-            nodePosX -= (that.dimensions['node']['absoluteWidth'] / 2);
-        }
-        // Set styles
-        switch(that.params['direction']){
-            case 'vertical' :
-                that.params['node'].style.top = [nodePosY, 'px'].join('');
-                break;
-            case 'horizontal' :
-                that.params['node'].style.left = [nodePosX, 'px'].join('');
-                break;
-            default :
-                that.params['node'].style.top = [nodePosY, 'px'].join('');
-                that.params['node'].style.left = [nodePosX, 'px'].join('');
-                break;
-        }
+        position = setPositionAction(position);
         // Trigger Event
         if(triggerEvents){
-            that.triggerEvent('onSet', {
-                'posY' : posY,
-                'posX' : posX,
-                'nodePosY' : nodePosY,
-                'nodePosX' : nodePosX
-            })
+            that.triggerEvent('onSet', position);
+            that.triggerEvent('onSelect', position);
         }
         return that;
     };
@@ -26159,6 +26508,53 @@ function(params){
 
     init();
 });
+cm.define('Com.OpacityRange', {
+    'extend' : 'Com.AbstractRange',
+    'params' : {
+        'className' : 'com__opacity-range',
+        'min' : 100,
+        'max' : 0,
+        'value' : 100,
+        'color' : 'red'
+    }
+},
+function(params){
+    var that = this;
+    that.myNodes = {};
+
+    that._inherit.apply(that, arguments);
+
+    var init = function(){
+        that.setColor(that.params['color']);
+    };
+
+    /* ******* PUBLIC ******* */
+
+    init();
+});
+
+cm.getConstructor('Com.OpacityRange', function(classConstructor, className, classProto){
+    classProto.renderContent = function(){
+        var that = this;
+        that.myNodes['content'] = cm.node('div', {'class' : 'com__opacity-range__content'},
+            that.myNodes['inner'] = cm.node('div', {'class' : 'inner range-helper'})
+        );
+        return that.myNodes['content'];
+    };
+
+    classProto.setColor = function(color){
+        var that = this;
+        switch(that.params['direction']){
+            case 'horizontal':
+                that.myNodes['inner'].style.background = 'linear-gradient(to right, ' + color + ', rgba(255,255,255,0))';
+                break;
+            case 'vertical':
+                that.myNodes['inner'].style.background = 'linear-gradient(to bottom, ' + color + ', rgba(255,255,255,0))';
+                break;
+        }
+        return that;
+    };
+});
 cm.define('Com.Overlay', {
     'modules' : [
         'Params',
@@ -27067,8 +27463,8 @@ cm.define('Com.Palette', {
         'Params',
         'Events',
         'Langs',
+        'Structure',
         'DataConfig',
-        'Storage',
         'Stack'
     ],
     'require' : [
@@ -27076,6 +27472,7 @@ cm.define('Com.Palette', {
         'tinycolor'
     ],
     'events' : [
+        'onRenderStart',
         'onRender',
         'onDraw',
         'onSet',
@@ -27084,7 +27481,9 @@ cm.define('Com.Palette', {
     ],
     'params' : {
         'node' : cm.node('div'),
+        'container' : null,
         'name' : '',
+        'embedStructure' : 'replace',
         'value' : 'transparent',
         'defaultValue' : 'rgb(255, 255, 255)',
         'setOnInit' : true,
@@ -27105,7 +27504,7 @@ function(params){
         opacityContext;
 
     that.nodes = {};
-    that.componnets = {};
+    that.components = {};
     that.value = null;
     that.previousValue = null;
 
@@ -27113,6 +27512,8 @@ function(params){
         that.setParams(params);
         that.convertEvents(that.params['events']);
         that.getDataConfig(that.params['node']);
+        that.addToStack(that.params['node']);
+        that.triggerEvent('onRenderStart');
         render();
         initComponents();
         that.addToStack(that.nodes['container']);
@@ -27174,20 +27575,20 @@ function(params){
         cm.addEvent(that.nodes['inputHEX'], 'input', inputHEXHandler);
         cm.addEvent(that.nodes['inputHEX'], 'keypress', inputHEXKeypressHandler);
         cm.addEvent(that.nodes['buttonSelect'], 'click', buttonSelectHandler);
-        // Embed
-        that.params['node'].appendChild(that.nodes['container']);
+        // Append
+        that.embedStructure(that.nodes['container']);
     };
 
     var initComponents = function(){
-        that.componnets['paletteDrag'] = new Com.Draggable({
+        that.components['paletteDrag'] = new Com.Draggable({
             'target' : that.nodes['paletteZone'],
             'node' : that.nodes['paletteDrag'],
             'limiter' : that.nodes['paletteZone'],
             'events' : {
                 'onSet' : function(my, data){
                     var dimensions = my.getDimensions();
-                    that.value['v'] = cm.toFixed((100 - (100 / dimensions['limiter']['absoluteHeight']) * data['posY']) / 100, 2);
-                    that.value['s'] = cm.toFixed(((100 / dimensions['limiter']['absoluteWidth']) * data['posX']) / 100, 2);
+                    that.value['v'] = cm.toFixed((100 - (100 / dimensions['limiter']['absoluteHeight']) * data['top']) / 100, 2);
+                    that.value['s'] = cm.toFixed(((100 / dimensions['limiter']['absoluteWidth']) * data['left']) / 100, 2);
                     if(that.value['a'] == 0){
                         that.value['a'] = 1;
                         setOpacityDrag();
@@ -27197,7 +27598,7 @@ function(params){
                 }
             }
         });
-        that.componnets['rangeDrag'] = new Com.Draggable({
+        that.components['rangeDrag'] = new Com.Draggable({
             'target' : that.nodes['rangeZone'],
             'node' : that.nodes['rangeDrag'],
             'limiter' : that.nodes['rangeZone'],
@@ -27205,7 +27606,7 @@ function(params){
             'events' : {
                 'onSet' : function(my, data){
                     var dimensions = my.getDimensions();
-                    that.value['h'] = Math.floor(360 - (360 / 100) * ((100 / dimensions['limiter']['absoluteHeight']) * data['posY']));
+                    that.value['h'] = Math.floor(360 - (360 / 100) * ((100 / dimensions['limiter']['absoluteHeight']) * data['top']));
                     if(that.value['a'] == 0){
                         that.value['a'] = 1;
                         setOpacityDrag();
@@ -27216,7 +27617,7 @@ function(params){
                 }
             }
         });
-        that.componnets['opacityDrag'] = new Com.Draggable({
+        that.components['opacityDrag'] = new Com.Draggable({
             'target' : that.nodes['opacityZone'],
             'node' : that.nodes['opacityDrag'],
             'limiter' : that.nodes['opacityZone'],
@@ -27224,7 +27625,7 @@ function(params){
             'events' : {
                 'onSet' : function(my, data){
                     var dimensions = my.getDimensions();
-                    that.value['a'] = cm.toFixed((100 - (100 / dimensions['limiter']['absoluteHeight']) * data['posY']) / 100, 2);
+                    that.value['a'] = cm.toFixed((100 - (100 / dimensions['limiter']['absoluteHeight']) * data['top']) / 100, 2);
                     setColor();
                 }
             }
@@ -27234,32 +27635,37 @@ function(params){
     /* *** COLORS *** */
 
     var setRangeDrag = function(){
-        var dimensions = that.componnets['rangeDrag'].getDimensions(),
-            posY;
+        var dimensions = that.components['rangeDrag'].getDimensions(),
+            position = {
+                'left' : 0,
+                'top' : 0
+            };
         if(that.value['h'] == 0){
-            posY = 0;
+            position['top'] = 0;
         }else if(that.value['h'] == 360){
-            posY = dimensions['limiter']['absoluteHeight'];
+            position['top'] = dimensions['limiter']['absoluteHeight'];
         }else{
-            posY = dimensions['limiter']['absoluteHeight'] - (dimensions['limiter']['absoluteHeight'] / 100) * ((100 / 360) * that.value['h']);
+            position['top'] = dimensions['limiter']['absoluteHeight'] - (dimensions['limiter']['absoluteHeight'] / 100) * ((100 / 360) * that.value['h']);
         }
-        that.componnets['rangeDrag'].setPosition(0, posY, false);
+        that.components['rangeDrag'].setPosition(position, false);
     };
 
     var setPaletteDrag = function(){
-        var dimensions = that.componnets['paletteDrag'].getDimensions(),
-            posY,
-            posX;
-        posY = dimensions['limiter']['absoluteHeight'] - (dimensions['limiter']['absoluteHeight'] / 100) * (that.value['v'] * 100);
-        posX = (dimensions['limiter']['absoluteWidth'] / 100) * (that.value['s'] * 100);
-        that.componnets['paletteDrag'].setPosition(posX, posY, false);
+        var dimensions = that.components['paletteDrag'].getDimensions(),
+            position = {
+                'left' : (dimensions['limiter']['absoluteWidth'] / 100) * (that.value['s'] * 100),
+                'top' : dimensions['limiter']['absoluteHeight'] - (dimensions['limiter']['absoluteHeight'] / 100) * (that.value['v'] * 100)
+            };
+        that.components['paletteDrag'].setPosition(position, false);
     };
 
     var setOpacityDrag = function(){
-        var dimensions = that.componnets['opacityDrag'].getDimensions(),
-            posY;
-        posY = dimensions['limiter']['absoluteHeight'] - (dimensions['limiter']['absoluteHeight'] / 100) * (that.value['a'] * 100);
-        that.componnets['opacityDrag'].setPosition(0, posY, false);
+        var dimensions = that.components['opacityDrag'].getDimensions(),
+            position = {
+                'left' : 0,
+                'top' : dimensions['limiter']['absoluteHeight'] - (dimensions['limiter']['absoluteHeight'] / 100) * (that.value['a'] * 100)
+            };
+        that.components['opacityDrag'].setPosition(position, false);
     };
 
     var inputHEXHandler = function(){
@@ -31509,65 +31915,24 @@ function(params){
 
     init();
 });
-cm.define('Com.Tint', {
-    'modules' : [
-        'Params',
-        'Events',
-        'Langs',
-        'Structure',
-        'DataConfig',
-        'Stack'
-    ],
-    'events' : [
-        'onRenderStart',
-        'onRender'
-    ],
+cm.define('Com.TintRange', {
+    'extend' : 'Com.AbstractRange',
     'params' : {
-        'node' : cm.node('div'),
-        'container' : null,
-        'name' : '',
-        'embedStructure' : 'append'
+        'className' : 'com__tint-range',
+        'min' : 360,
+        'max' : 0,
+        'value' : 360
     }
 },
 function(params){
     var that = this;
+    that._inherit.apply(that, arguments);
+});
 
-    that.nodes = {};
-    that.components = {};
-
-    var init = function(){
-        that.setParams(params);
-        that.convertEvents(that.params['events']);
-        that.getDataConfig(that.params['node']);
-        validateParams();
-        that.addToStack(that.params['node']);
-        that.triggerEvent('onRenderStart');
-        render();
-        that.addToStack(that.nodes['container']);
-        that.triggerEvent('onRender');
+cm.getConstructor('Com.TintRange', function(classConstructor, className, classProto){
+    classProto.renderContent = function(){
+        return cm.node('div', {'class' : 'com__tint-range__content'})
     };
-
-    var validateParams = function(){
-
-    };
-
-    var render = function(){
-        // Structure
-        that.nodes['container'] = cm.node('div', {'class' : 'com__tint'},
-            that.nodes['range'] = cm.node('div', {'class' : 'pt__range is-horizontal'},
-                that.nodes['inner'] = cm.node('div', {'class' : 'inner'},
-                    that.nodes['drag'] = cm.node('div', {'class' : 'drag'}),
-                    that.nodes['canvas'] = cm.node('div', {'class' : 'canvas', 'width' : '100%', 'height' : '100%'})
-                )
-            )
-        );
-        // Append
-        that.embedStructure(that.nodes['container']);
-    };
-
-    /* ******* PUBLIC ******* */
-
-    init();
 });
 cm.define('Com.ToggleBox', {
     'modules' : [

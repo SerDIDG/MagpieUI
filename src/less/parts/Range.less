@@ -1,62 +1,130 @@
 /* ******* PARTS: RANGE ******* */
 
 .pt__range {
-    border-radius: @CmBorder-Radius;
-
     > .inner {
-        cursor: row-resize;
         position: relative;
     }
 
-    .canvas {
+    .drag {
+        position: absolute;
+        z-index: 2;
+
+        .counter {
+            position: absolute;
+            opacity: 0;
+            .mx__transition(opacity, @CmUI-Transition-Duration);
+
+            &.is-show {
+                opacity: 1;
+            }
+        }
+    }
+
+    .range,
+    .range-helper {
         width: 100%;
         height: 100%;
+        position: relative;
+        z-index: 1;
+        border-radius: @CmBorder-Radius;
+    }
+
+    .range__content {
+        background-color: @CmColor-Secondary-LightHighlight;
     }
 
     &.is-vertical {
+        > .inner {
+            height: @PtRange-Height;
+            cursor: row-resize;
+        }
+    }
+
+    &.is-horizontal {
         > .inner {
             cursor: col-resize;
         }
-
-        .canvas {
-            background: linear-gradient(to top,
-                rgba(255, 0, 0, 1) 0%,
-                rgba(255, 255, 0, 1) calc(1 / 6 * 100%),
-                rgba(0, 255, 0, 1) calc(2 / 6 * 100%),
-                rgba(0, 255, 255, 1) calc(3 / 6 * 100%),
-                rgba(0, 0, 255, 1) calc(4 / 6 * 100%),
-                rgba(255, 0, 255, 1) calc(5 / 6 * 100%),
-                rgba(255, 0, 0, 1) 100%);
-        }
     }
 
-    &.is-horizontal {
-        > .inner {
-            cursor: row-resize;
-        }
+    .pt__range__size(@PtRange-Size);
+}
 
-        .canvas {
-            background: linear-gradient(to left,
-                rgba(255, 0, 0, 1) 0%,
-                rgba(255, 255, 0, 1) calc(1 / 6 * 100%),
-                rgba(0, 255, 0, 1) calc(2 / 6 * 100%),
-                rgba(0, 255, 255, 1) calc(3 / 6 * 100%),
-                rgba(0, 0, 255, 1) calc(4 / 6 * 100%),
-                rgba(255, 0, 255, 1) calc(5 / 6 * 100%),
-                rgba(255, 0, 0, 1) 100%);
-        }
-    }
-
+.pt__range__size (@value: @PtRange-Size) {
     &.is-vertical {
         > .inner {
-            width: @PtRange-Size;
-            height: @PtRange-Width;
+            width: @value;
         }
     }
 
     &.is-horizontal {
         > .inner {
-            height: @PtRange-Size;
+            height: @value;
+        }
+    }
+}
+
+/* ******* PARTS: RANGE: THEMES ******* */
+
+.pt__range {
+    &.theme--arrows {
+        .drag {
+            &:before,
+            &:after {
+                width: 0;
+                height: 0;
+                display: block;
+                position: absolute;
+                content: '';
+                border-style: solid;
+            }
+
+            .counter {
+                .cm__font--hint;
+                color: @CmColor-Font-Opposite;
+                text-shadow:  0 0 1px #000000, 0 0 2px #000000;
+                .mx__position(50%, auto, auto, 50%);
+                .mx__transform(translate(-50%, -50%));
+            }
+        }
+
+        &.is-vertical {
+            .drag {
+                height: 8px;
+                margin: -4px 0 0;
+                .mx__position(0, 0, auto, 0);
+
+                &:before {
+                    border-width: 4px 0 4px 6px;
+                    border-color: transparent transparent transparent @PtRange-Drag-Color;
+                    .mx__position(0, auto, auto, -7px);
+                }
+
+                &:after {
+                    border-width: 4px 6px 4px 0;
+                    border-color: transparent @PtRange-Drag-Color transparent transparent;
+                    .mx__position(0, -7px, auto, auto);
+                }
+            }
+        }
+
+        &.is-horizontal {
+            .drag {
+                width: 8px;
+                margin: 0 0 0 -4px;
+                .mx__position(0, auto, 0, 0);
+
+                &:before {
+                    border-width: 6px 4px 0 4px;
+                    border-color: @PtRange-Drag-Color transparent transparent transparent;
+                    .mx__position(-7px, auto, auto, 0);
+                }
+
+                &:after {
+                    border-width: 0 4px 6px 4px;
+                    border-color: transparent transparent @PtRange-Drag-Color transparent;
+                    .mx__position(auto, auto, -7px, 0);
+                }
+            }
         }
     }
 }

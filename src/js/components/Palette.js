@@ -3,8 +3,8 @@ cm.define('Com.Palette', {
         'Params',
         'Events',
         'Langs',
+        'Structure',
         'DataConfig',
-        'Storage',
         'Stack'
     ],
     'require' : [
@@ -12,6 +12,7 @@ cm.define('Com.Palette', {
         'tinycolor'
     ],
     'events' : [
+        'onRenderStart',
         'onRender',
         'onDraw',
         'onSet',
@@ -20,7 +21,9 @@ cm.define('Com.Palette', {
     ],
     'params' : {
         'node' : cm.node('div'),
+        'container' : null,
         'name' : '',
+        'embedStructure' : 'replace',
         'value' : 'transparent',
         'defaultValue' : 'rgb(255, 255, 255)',
         'setOnInit' : true,
@@ -41,7 +44,7 @@ function(params){
         opacityContext;
 
     that.nodes = {};
-    that.componnets = {};
+    that.components = {};
     that.value = null;
     that.previousValue = null;
 
@@ -49,6 +52,8 @@ function(params){
         that.setParams(params);
         that.convertEvents(that.params['events']);
         that.getDataConfig(that.params['node']);
+        that.addToStack(that.params['node']);
+        that.triggerEvent('onRenderStart');
         render();
         initComponents();
         that.addToStack(that.nodes['container']);
@@ -110,20 +115,20 @@ function(params){
         cm.addEvent(that.nodes['inputHEX'], 'input', inputHEXHandler);
         cm.addEvent(that.nodes['inputHEX'], 'keypress', inputHEXKeypressHandler);
         cm.addEvent(that.nodes['buttonSelect'], 'click', buttonSelectHandler);
-        // Embed
-        that.params['node'].appendChild(that.nodes['container']);
+        // Append
+        that.embedStructure(that.nodes['container']);
     };
 
     var initComponents = function(){
-        that.componnets['paletteDrag'] = new Com.Draggable({
+        that.components['paletteDrag'] = new Com.Draggable({
             'target' : that.nodes['paletteZone'],
             'node' : that.nodes['paletteDrag'],
             'limiter' : that.nodes['paletteZone'],
             'events' : {
                 'onSet' : function(my, data){
                     var dimensions = my.getDimensions();
-                    that.value['v'] = cm.toFixed((100 - (100 / dimensions['limiter']['absoluteHeight']) * data['posY']) / 100, 2);
-                    that.value['s'] = cm.toFixed(((100 / dimensions['limiter']['absoluteWidth']) * data['posX']) / 100, 2);
+                    that.value['v'] = cm.toFixed((100 - (100 / dimensions['limiter']['absoluteHeight']) * data['top']) / 100, 2);
+                    that.value['s'] = cm.toFixed(((100 / dimensions['limiter']['absoluteWidth']) * data['left']) / 100, 2);
                     if(that.value['a'] == 0){
                         that.value['a'] = 1;
                         setOpacityDrag();
@@ -133,7 +138,7 @@ function(params){
                 }
             }
         });
-        that.componnets['rangeDrag'] = new Com.Draggable({
+        that.components['rangeDrag'] = new Com.Draggable({
             'target' : that.nodes['rangeZone'],
             'node' : that.nodes['rangeDrag'],
             'limiter' : that.nodes['rangeZone'],
@@ -141,7 +146,7 @@ function(params){
             'events' : {
                 'onSet' : function(my, data){
                     var dimensions = my.getDimensions();
-                    that.value['h'] = Math.floor(360 - (360 / 100) * ((100 / dimensions['limiter']['absoluteHeight']) * data['posY']));
+                    that.value['h'] = Math.floor(360 - (360 / 100) * ((100 / dimensions['limiter']['absoluteHeight']) * data['top']));
                     if(that.value['a'] == 0){
                         that.value['a'] = 1;
                         setOpacityDrag();
@@ -152,7 +157,7 @@ function(params){
                 }
             }
         });
-        that.componnets['opacityDrag'] = new Com.Draggable({
+        that.components['opacityDrag'] = new Com.Draggable({
             'target' : that.nodes['opacityZone'],
             'node' : that.nodes['opacityDrag'],
             'limiter' : that.nodes['opacityZone'],
@@ -160,7 +165,7 @@ function(params){
             'events' : {
                 'onSet' : function(my, data){
                     var dimensions = my.getDimensions();
-                    that.value['a'] = cm.toFixed((100 - (100 / dimensions['limiter']['absoluteHeight']) * data['posY']) / 100, 2);
+                    that.value['a'] = cm.toFixed((100 - (100 / dimensions['limiter']['absoluteHeight']) * data['top']) / 100, 2);
                     setColor();
                 }
             }
@@ -170,32 +175,37 @@ function(params){
     /* *** COLORS *** */
 
     var setRangeDrag = function(){
-        var dimensions = that.componnets['rangeDrag'].getDimensions(),
-            posY;
+        var dimensions = that.components['rangeDrag'].getDimensions(),
+            position = {
+                'left' : 0,
+                'top' : 0
+            };
         if(that.value['h'] == 0){
-            posY = 0;
+            position['top'] = 0;
         }else if(that.value['h'] == 360){
-            posY = dimensions['limiter']['absoluteHeight'];
+            position['top'] = dimensions['limiter']['absoluteHeight'];
         }else{
-            posY = dimensions['limiter']['absoluteHeight'] - (dimensions['limiter']['absoluteHeight'] / 100) * ((100 / 360) * that.value['h']);
+            position['top'] = dimensions['limiter']['absoluteHeight'] - (dimensions['limiter']['absoluteHeight'] / 100) * ((100 / 360) * that.value['h']);
         }
-        that.componnets['rangeDrag'].setPosition(0, posY, false);
+        that.components['rangeDrag'].setPosition(position, false);
     };
 
     var setPaletteDrag = function(){
-        var dimensions = that.componnets['paletteDrag'].getDimensions(),
-            posY,
-            posX;
-        posY = dimensions['limiter']['absoluteHeight'] - (dimensions['limiter']['absoluteHeight'] / 100) * (that.value['v'] * 100);
-        posX = (dimensions['limiter']['absoluteWidth'] / 100) * (that.value['s'] * 100);
-        that.componnets['paletteDrag'].setPosition(posX, posY, false);
+        var dimensions = that.components['paletteDrag'].getDimensions(),
+            position = {
+                'left' : (dimensions['limiter']['absoluteWidth'] / 100) * (that.value['s'] * 100),
+                'top' : dimensions['limiter']['absoluteHeight'] - (dimensions['limiter']['absoluteHeight'] / 100) * (that.value['v'] * 100)
+            };
+        that.components['paletteDrag'].setPosition(position, false);
     };
 
     var setOpacityDrag = function(){
-        var dimensions = that.componnets['opacityDrag'].getDimensions(),
-            posY;
-        posY = dimensions['limiter']['absoluteHeight'] - (dimensions['limiter']['absoluteHeight'] / 100) * (that.value['a'] * 100);
-        that.componnets['opacityDrag'].setPosition(0, posY, false);
+        var dimensions = that.components['opacityDrag'].getDimensions(),
+            position = {
+                'left' : 0,
+                'top' : dimensions['limiter']['absoluteHeight'] - (dimensions['limiter']['absoluteHeight'] / 100) * (that.value['a'] * 100)
+            };
+        that.components['opacityDrag'].setPosition(position, false);
     };
 
     var inputHEXHandler = function(){

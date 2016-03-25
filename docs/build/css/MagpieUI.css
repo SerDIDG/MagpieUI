@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.14.2 (2016-03-22 22:25) ************ */
+/*! ************ MagpieUI v3.15.0 (2016-03-25 20:54) ************ */
 /*!
 Animate.css - http://daneden.me/animate
 Licensed under the MIT license - http://opensource.org/licenses/MIT
@@ -8426,6 +8426,21 @@ button::-moz-focus-inner {
     margin: 0 0 8px;
   }
 }
+/* ******* COMMON: CURSORS ******* */
+.cm__cursor--row-resize,
+.cm__cursor--row-resize * {
+  cursor: row-resize !important;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+.cm__cursor--col-resize,
+.cm__cursor--col-resize * {
+  cursor: col-resize !important;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
 /* ******* PART: ANIMATE ******* */
 .cm-animate {
   visibility: hidden;
@@ -11148,35 +11163,116 @@ button::-moz-focus-inner {
   vertical-align: middle;
 }
 /* ******* PARTS: RANGE ******* */
-.pt__range {
-  border-radius: 3px;
-}
 .pt__range > .inner {
-  cursor: row-resize;
   position: relative;
 }
-.pt__range .canvas {
+.pt__range .drag {
+  position: absolute;
+  z-index: 2;
+}
+.pt__range .drag .counter {
+  position: absolute;
+  opacity: 0;
+  -webkit-transition: opacity 250ms ease-in-out;
+  transition: opacity 250ms ease-in-out;
+}
+.pt__range .drag .counter.is-show {
+  opacity: 1;
+}
+.pt__range .range,
+.pt__range .range-helper {
   width: 100%;
   height: 100%;
+  position: relative;
+  z-index: 1;
+  border-radius: 3px;
+}
+.pt__range .range__content {
+  background-color: #fafafa;
 }
 .pt__range.is-vertical > .inner {
-  cursor: col-resize;
-}
-.pt__range.is-vertical .canvas {
-  background: linear-gradient(to top, #ff0000 0%, #ffff00 calc(16.66666667%), #00ff00 calc(33.33333333%), #00ffff calc(50%), #0000ff calc(66.66666667%), #ff00ff calc(83.33333333%), #ff0000 100%);
-}
-.pt__range.is-horizontal > .inner {
+  height: 200px;
   cursor: row-resize;
 }
-.pt__range.is-horizontal .canvas {
-  background: linear-gradient(to left, #ff0000 0%, #ffff00 calc(16.66666667%), #00ff00 calc(33.33333333%), #00ffff calc(50%), #0000ff calc(66.66666667%), #ff00ff calc(83.33333333%), #ff0000 100%);
+.pt__range.is-horizontal > .inner {
+  cursor: col-resize;
 }
 .pt__range.is-vertical > .inner {
   width: 24px;
-  height: 200px;
 }
 .pt__range.is-horizontal > .inner {
   height: 24px;
+}
+/* ******* PARTS: RANGE: THEMES ******* */
+.pt__range.theme--arrows .drag:before,
+.pt__range.theme--arrows .drag:after {
+  width: 0;
+  height: 0;
+  display: block;
+  position: absolute;
+  content: '';
+  border-style: solid;
+}
+.pt__range.theme--arrows .drag .counter {
+  font: 400 11px/18px 'Open Sans', arial, helvetica, sans-serif;
+  color: #999999;
+  color: #ffffff;
+  text-shadow: 0 0 1px #000000, 0 0 2px #000000;
+  top: 50%;
+  right: auto;
+  bottom: auto;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+.pt__range.theme--arrows.is-vertical .drag {
+  height: 8px;
+  margin: -4px 0 0;
+  top: 0;
+  right: 0;
+  bottom: auto;
+  left: 0;
+}
+.pt__range.theme--arrows.is-vertical .drag:before {
+  border-width: 4px 0 4px 6px;
+  border-color: transparent transparent transparent #000000;
+  top: 0;
+  right: auto;
+  bottom: auto;
+  left: -7px;
+}
+.pt__range.theme--arrows.is-vertical .drag:after {
+  border-width: 4px 6px 4px 0;
+  border-color: transparent #000000 transparent transparent;
+  top: 0;
+  right: -7px;
+  bottom: auto;
+  left: auto;
+}
+.pt__range.theme--arrows.is-horizontal .drag {
+  width: 8px;
+  margin: 0 0 0 -4px;
+  top: 0;
+  right: auto;
+  bottom: 0;
+  left: 0;
+}
+.pt__range.theme--arrows.is-horizontal .drag:before {
+  border-width: 6px 4px 0 4px;
+  border-color: #000000 transparent transparent transparent;
+  top: -7px;
+  right: auto;
+  bottom: auto;
+  left: 0;
+}
+.pt__range.theme--arrows.is-horizontal .drag:after {
+  border-width: 0 4px 6px 4px;
+  border-color: transparent transparent #000000 transparent;
+  top: auto;
+  right: auto;
+  bottom: -7px;
+  left: 0;
 }
 /* ******* PARTS: RULER ******* */
 .pt__ruler {
@@ -14634,6 +14730,18 @@ button::-moz-focus-inner {
 .com__oldbrowser-alert .btn-wrap {
   margin-top: 0;
 }
+/* ******* COMPONENTS: OPACITY RANGE ******* */
+.com__opacity-range {
+  margin: 0 0 24px;
+}
+.com__opacity-range.bottom,
+.com__opacity-range.is-last,
+.com__opacity-range:last-child {
+  margin-bottom: 0;
+}
+.com__opacity-range__content {
+  background-image: url("../img/MagpieUI/parts/transparent.png");
+}
 /* ******* COMPONENTS: PAGINATION ******* */
 .com__pagination {
   margin: 0 0 24px;
@@ -15052,6 +15160,14 @@ button::-moz-focus-inner {
   transition-duration: 250ms;
 }
 /* ******* COMPONENTS: COLOR PALETTE ****** */
+.com__palette {
+  margin: 0 0 24px;
+}
+.com__palette.bottom,
+.com__palette.is-last,
+.com__palette:last-child {
+  margin-bottom: 0;
+}
 .com__palette > .inner {
   margin-top: -16px;
 }
@@ -15223,6 +15339,15 @@ html.ie9 .com__palette .b-range {
     clear: both;
     float: none;
   }
+}
+/* ******* COMPONENTS: RANGE ******* */
+.com__range {
+  margin: 0 0 24px;
+}
+.com__range.bottom,
+.com__range.is-last,
+.com__range:last-child {
+  margin-bottom: 0;
 }
 /* ******* COMPONENTS: SCROLL PAGINATION *** */
 .com__scroll-pagination {
@@ -16420,6 +16545,21 @@ html.ie9 .com__timeselect > .inner > .field {
 }
 html.ie9 .com__timeselect > .inner > .sep {
   display: table-cell;
+}
+/* ******* COMPONENTS: TINT RANGE ******* */
+.com__tint-range {
+  margin: 0 0 24px;
+}
+.com__tint-range.bottom,
+.com__tint-range.is-last,
+.com__tint-range:last-child {
+  margin-bottom: 0;
+}
+.com__tint-range__content.is-vertical {
+  background: linear-gradient(to top, #ff0000 0%, #ffff00 calc(16.66666667%), #00ff00 calc(33.33333333%), #00ffff calc(50%), #0000ff calc(66.66666667%), #ff00ff calc(83.33333333%), #ff0000 100%);
+}
+.com__tint-range__content.is-horizontal {
+  background: linear-gradient(to left, #ff0000 0%, #ffff00 calc(16.66666667%), #00ff00 calc(33.33333333%), #00ffff calc(50%), #0000ff calc(66.66666667%), #ff00ff calc(83.33333333%), #ff0000 100%);
 }
 /* ******* COMPONENT: TOGGLE BOX ******* */
 .com__togglebox {

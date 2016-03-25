@@ -24,7 +24,7 @@
  ******* */
 
 var cm = {
-        '_version' : '3.14.2',
+        '_version' : '3.15.0',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -3255,7 +3255,7 @@ cm.getConstructor = function(className, callback){
     callback = typeof callback != 'undefined' ? callback : function(){}
     if(!className || className == '*'){
         cm.forEach(cm.defineStack, function(classConstructor){
-            callback(classConstructor, className);
+            callback(classConstructor, className, classConstructor.prototype);
         });
         return cm.defineStack;
     }else{
@@ -3270,7 +3270,7 @@ cm.getConstructor = function(className, callback){
             }
             return false;
         }else{
-            callback(classConstructor, className);
+            callback(classConstructor, className, classConstructor.prototype);
             return classConstructor;
         }
     }
