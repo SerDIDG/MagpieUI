@@ -120,6 +120,9 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
         });
         // Events
         that.setCustomEvents();
+        cm.addEvent(window, 'resize', function(){
+            that.redraw();
+        });
         // Append
         that.embedStructure(that.nodes['container']);
         return that;

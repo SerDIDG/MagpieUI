@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.15.2 (2016-03-28 20:34) ************ */
+/*! ************ MagpieUI v3.15.2 (2016-03-28 20:40) ************ */
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -17735,6 +17735,9 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
         });
         // Events
         that.setCustomEvents();
+        cm.addEvent(window, 'resize', function(){
+            that.redraw();
+        });
         // Append
         that.embedStructure(that.nodes['container']);
         return that;
