@@ -103,7 +103,7 @@ function(params){
                 'events' : {
                     'onStart' : start,
                     'onSet' : function(my, data){
-                        that.value = data['posY'];
+                        that.value = data['top'];
                         move();
                     },
                     'onStop' : stop

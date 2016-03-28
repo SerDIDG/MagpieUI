@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.15.0 (2016-03-25 20:54) ************ */
+/*! ************ MagpieUI v3.15.1 (2016-03-28 20:04) ************ */
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -12360,7 +12360,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.15.0',
+        '_version' : '3.15.1',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -23626,13 +23626,14 @@ function(params){
         // Set styles
         switch(that.params['direction']){
             case 'vertical' :
-                cm.setCSSTranslate(that.params['node'], 0, [position['nodeTop'], 'px'].join(''), 0);
+                that.params['node'].style.top = [position['nodeTop'], 'px'].join('');
                 break;
             case 'horizontal' :
-                cm.setCSSTranslate(that.params['node'], [position['nodeLeft'], 'px'].join(''), 0, 0);
+                that.params['node'].style.left = [position['nodeLeft'], 'px'].join('');
                 break;
             default :
-                cm.setCSSTranslate(that.params['node'], [position['nodeLeft'], 'px'].join(''), [position['nodeTop'], 'px'].join(''), 0);
+                that.params['node'].style.top = [position['nodeTop'], 'px'].join('');
+                that.params['node'].style.left = [position['nodeLeft'], 'px'].join('');
                 break;
         }
         return position;
@@ -30141,7 +30142,7 @@ function(params){
                 'events' : {
                     'onStart' : start,
                     'onSet' : function(my, data){
-                        that.value = data['posY'];
+                        that.value = data['top'];
                         move();
                     },
                     'onStop' : stop
