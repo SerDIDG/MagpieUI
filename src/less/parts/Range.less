@@ -47,6 +47,18 @@
     }
 
     .pt__range__size(@PtRange-Size);
+
+    &.is-input {
+        .pt__range__size(@CmForm-FieldHeight);
+    }
+
+    &:hover {
+        .drag {
+            .counter {
+                opacity: 1;
+            }
+        }
+    }
 }
 
 .pt__range__size (@value: @PtRange-Size) {

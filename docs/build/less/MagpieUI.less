@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.15.1 (2016-03-28 20:04) ************ */
+/*! ************ MagpieUI v3.15.2 (2016-03-28 20:34) ************ */
 @charset "UTF-8";
 
 /*!
@@ -11607,6 +11607,18 @@ button {
     }
 
     .pt__range__size(@PtRange-Size);
+
+    &.is-input {
+        .pt__range__size(@CmForm-FieldHeight);
+    }
+
+    &:hover {
+        .drag {
+            .counter {
+                opacity: 1;
+            }
+        }
+    }
 }
 
 .pt__range__size (@value: @PtRange-Size) {

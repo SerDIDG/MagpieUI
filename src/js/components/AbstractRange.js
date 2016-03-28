@@ -19,6 +19,7 @@ cm.define('Com.AbstractRange', {
         'container' : null,
         'name' : '',
         'embedStructure' : 'replace',
+        'isInput' : true,
         'content' : null,
         'drag' : null,
         'className' : '',
@@ -28,7 +29,6 @@ cm.define('Com.AbstractRange', {
         'value' : 0,
         'direction' : 'horizontal',
         'showCounter' : true,
-        'renderHiddenInput' : true,
         'customEvents' : true,
         'Com.Draggable' : {}
     }
@@ -62,7 +62,7 @@ function(params){
 cm.getConstructor('Com.AbstractRange', function(classConstructor, className, classProto){
     classProto.validateParams = function(){
         var that = this;
-        if(that.params['renderHiddenInput'] && cm.isNode(that.params['node'])){
+        if(that.params['isInput'] && cm.isNode(that.params['node'])){
             that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
             that.params['value'] = that.params['node'].getAttribute('value') || that.params['value'];
         }
@@ -161,10 +161,14 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
         if(that.params['name']){
             that.nodes['hidden'].setAttribute('name', that.params['name']);
         }
-        if(that.params['renderHiddenInput']){
+        if(that.params['isInput']){
             cm.insertFirst(that.nodes['hidden'], that.nodes['container']);
         }
         // Classes
+        if(that.params['isInput']){
+            cm.addClass(that.nodes['container'], 'is-input');
+            cm.addClass(that.nodes['range'], 'is-input');
+        }
         cm.addClass(that.nodes['container'], that.params['theme']);
         cm.addClass(that.nodes['range'], that.params['theme']);
         cm.addClass(that.nodes['container'], that.params['className']);
@@ -251,7 +255,7 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
     classProto.setHelper = function(value, eventName){
         var that = this;
         value = that.validateValue(value);
-        that.nodes['counter'].innerHTML = value;
+        that.setCounter(value);
         // Trigger Events
         that.triggerEvent(eventName, value);
         if(eventName == 'onSelect'){
@@ -297,6 +301,12 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
         return that;
     };
 
+    classProto.setCounter = function(value){
+        var that = this;
+        that.nodes['counter'].innerHTML = value;
+        return that;
+    };
+
     classProto.changeAction = function(){
         var that = this;
         if(that.value != that.previousValue){
@@ -307,8 +317,9 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
 
     classProto.set = function(value, triggerEvents){
         var that = this;
-        value = that.validateValue(value);
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        value = that.validateValue(value);
+        that.setCounter(value);
         that.setAction(value);
         that.setDraggable();
         // Trigger Event
