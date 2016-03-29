@@ -40,6 +40,7 @@ cm.define('Com.Form', {
             'url' : '',                                             // Request URL. Variables: %baseurl%, %callback% for JSONP.
             'params' : ''                                           // Params object. %baseurl%, %callback% for JSONP.
         },
+        'Com.Notifications' : {},
         'Com.Overlay' : {
             'position' : 'absolute',
             'autoOpen' : false,
@@ -90,11 +91,7 @@ function(params){
                     that.nodes['fields'] = cm.node('div', {'class' : 'com__form__fields'}))
             );
             // Notifications
-            that.nodes['notificationsContainer'] = cm.node('div', {'class' : 'com__form__notifications'},
-                cm.node('div', {'class' : 'com-notification'},
-                    that.nodes['notifications'] = cm.node('ul')
-                )
-            );
+            that.nodes['notifications'] = cm.node('div', {'class' : 'com__form__notifications'});
             // Buttons
             that.nodes['buttonsSeparator'] = cm.node('hr');
             that.nodes['buttonsContainer'] = cm.node('div', {'class' : 'com__form__buttons'},
@@ -104,26 +101,38 @@ function(params){
             // Embed
             that.params['renderButtonsSeparator'] && cm.insertFirst(that.nodes['buttonsSeparator'], that.nodes['buttonsContainer']);
             that.params['renderButtons'] && cm.appendChild(that.nodes['buttonsContainer'], that.nodes['form']);
-            that.params['showNotifications'] && cm.insertFirst(that.nodes['notificationsContainer'], that.nodes['form']);
+            that.params['showNotifications'] && cm.insertFirst(that.nodes['notifications'], that.nodes['form']);
             that.embedStructure(that.nodes['container']);
         }
-        // Overlay
-        cm.getConstructor('Com.Overlay', function(classConstructor, className){
-            switch(that.params['loaderCoverage']){
-                case 'fields':
-                    overlayContainer = that.nodes['fields'];
-                    break;
-                case 'all':
-                default:
-                    overlayContainer = that.nodes['container'];
-                    break;
-            }
-            that.components['loader'] = new classConstructor(
-                cm.merge(that.params[className], {
-                    'container' : overlayContainer
-                })
-            );
-        });
+        // Notifications
+        if(that.params['showNotifications']){
+            cm.getConstructor('Com.Notifications', function(classConstructor, className){
+                that.components['notifications'] = new classConstructor(
+                    cm.merge(that.params[className], {
+                        'container' : that.nodes['notifications']
+                    })
+                );
+            });
+        }
+        // Overlay Loader
+        if(that.params['showLoader']){
+            cm.getConstructor('Com.Overlay', function(classConstructor, className){
+                switch(that.params['loaderCoverage']){
+                    case 'fields':
+                        overlayContainer = that.nodes['fields'];
+                        break;
+                    case 'all':
+                    default:
+                        overlayContainer = that.nodes['container'];
+                        break;
+                }
+                that.components['loader'] = new classConstructor(
+                    cm.merge(that.params[className], {
+                        'container' : overlayContainer
+                    })
+                );
+            });
+        }
         // Events
         cm.addEvent(that.nodes['form'], 'submit', function(e){
             cm.preventDefault(e);
@@ -308,33 +317,35 @@ function(params){
 
     that.callbacks.renderError = function(that, config, errors){
         var field;
-        // Clear old errors
-        cm.clearNode(that.nodes['notifications']);
+        // Clear old errors messages
+        if(that.params['showNotifications']){
+            cm.removeClass(that.nodes['notifications'], 'is-show', true);
+            that.components['notifications'].clear();
+        }
         cm.forEach(that.fields, function(field){
             field.clearError();
         });
-        // Render new errors
+        // Render new errors messages
         if(cm.isArray(errors)){
             cm.forEach(errors, function(item){
-                that.callbacks.renderErrorItem(that, config, item);
+                if(that.params['showNotifications']){
+                    cm.addClass(that.nodes['notifications'], 'is-show', true);
+                    that.components['notifications'].add({
+                        'label' : that.lang(item['message'])
+                    });
+                }
                 if(field = that.getField(item['field'])){
                     field.renderError(item['message']);
                 }
             });
         }else{
-            that.callbacks.renderErrorItem(that, config, {
-                'message' : 'server_error'
-            });
+            if(that.params['showNotifications']){
+                cm.addClass(that.nodes['notifications'], 'is-show', true);
+                that.components['notifications'].add({
+                    'label' : that.lang('server_error')
+                });
+            }
         }
-    };
-
-    that.callbacks.renderErrorItem = function(that, config, item){
-        that.nodes['notifications'].appendChild(
-            cm.node('li', {'class' : 'error'},
-                cm.node('div', {'class' : 'descr'}, that.lang(item['message']))
-            )
-        );
-        cm.addClass(that.nodes['notificationsContainer'], 'is-show', true);
     };
 
     /* ******* PUBLIC ******* */

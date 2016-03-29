@@ -119,22 +119,31 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
             );
         });
         // Events
-        that.setCustomEvents();
-        cm.addEvent(window, 'resize', function(){
-            that.redraw();
-        });
+        that.redrawHandler = that.redraw.bind(that);
+        that.destructHandler = that.destruct.bind(that);
+        cm.addEvent(window, 'resize', that.redrawHandler);
+        that.addCustomEvents();
         // Append
         that.embedStructure(that.nodes['container']);
         return that;
     };
 
-    classProto.setCustomEvents = function(){
+    classProto.addCustomEvents = function(){
         var that = this;
         // Add custom event
         if(that.params['customEvents']){
-            cm.customEvent.add(that.nodes['container'], 'redraw', function(){
-                that.redraw();
-            });
+            cm.customEvent.add(that.nodes['container'], 'redraw', that.redrawHandler);
+            cm.customEvent.add(that.nodes['container'], 'destruct', that.destructHandler);
+        }
+        return that;
+    };
+
+    classProto.removeCustomEvents = function(){
+        var that = this;
+        // Add custom event
+        if(that.params['customEvents']){
+            cm.customEvent.remove(that.nodes['container'], 'redraw', that.redrawHandler);
+            cm.customEvent.remove(that.nodes['container'], 'destruct', that.destructHandler);
         }
         return that;
     };
@@ -342,6 +351,14 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
     classProto.redraw = function(){
         var that = this;
         that.setDraggable();
+        return that;
+    };
+
+    classProto.destruct = function(){
+        var that = this;
+        cm.removeEvent(window, 'resize', that.redrawHandler);
+        that.removeCustomEvents();
+        that.removeFromStack();
         return that;
     };
 });

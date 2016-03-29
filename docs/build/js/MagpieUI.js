@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.15.2 (2016-03-28 20:40) ************ */
+/*! ************ MagpieUI v3.15.2 (2016-03-29 19:52) ************ */
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -16818,6 +16818,7 @@ cm.define('Com.Form', {
             'url' : '',                                             // Request URL. Variables: %baseurl%, %callback% for JSONP.
             'params' : ''                                           // Params object. %baseurl%, %callback% for JSONP.
         },
+        'Com.Notifications' : {},
         'Com.Overlay' : {
             'position' : 'absolute',
             'autoOpen' : false,
@@ -16868,11 +16869,7 @@ function(params){
                     that.nodes['fields'] = cm.node('div', {'class' : 'com__form__fields'}))
             );
             // Notifications
-            that.nodes['notificationsContainer'] = cm.node('div', {'class' : 'com__form__notifications'},
-                cm.node('div', {'class' : 'com-notification'},
-                    that.nodes['notifications'] = cm.node('ul')
-                )
-            );
+            that.nodes['notifications'] = cm.node('div', {'class' : 'com__form__notifications'});
             // Buttons
             that.nodes['buttonsSeparator'] = cm.node('hr');
             that.nodes['buttonsContainer'] = cm.node('div', {'class' : 'com__form__buttons'},
@@ -16882,26 +16879,38 @@ function(params){
             // Embed
             that.params['renderButtonsSeparator'] && cm.insertFirst(that.nodes['buttonsSeparator'], that.nodes['buttonsContainer']);
             that.params['renderButtons'] && cm.appendChild(that.nodes['buttonsContainer'], that.nodes['form']);
-            that.params['showNotifications'] && cm.insertFirst(that.nodes['notificationsContainer'], that.nodes['form']);
+            that.params['showNotifications'] && cm.insertFirst(that.nodes['notifications'], that.nodes['form']);
             that.embedStructure(that.nodes['container']);
         }
-        // Overlay
-        cm.getConstructor('Com.Overlay', function(classConstructor, className){
-            switch(that.params['loaderCoverage']){
-                case 'fields':
-                    overlayContainer = that.nodes['fields'];
-                    break;
-                case 'all':
-                default:
-                    overlayContainer = that.nodes['container'];
-                    break;
-            }
-            that.components['loader'] = new classConstructor(
-                cm.merge(that.params[className], {
-                    'container' : overlayContainer
-                })
-            );
-        });
+        // Notifications
+        if(that.params['showNotifications']){
+            cm.getConstructor('Com.Notifications', function(classConstructor, className){
+                that.components['notifications'] = new classConstructor(
+                    cm.merge(that.params[className], {
+                        'container' : that.nodes['notifications']
+                    })
+                );
+            });
+        }
+        // Overlay Loader
+        if(that.params['showLoader']){
+            cm.getConstructor('Com.Overlay', function(classConstructor, className){
+                switch(that.params['loaderCoverage']){
+                    case 'fields':
+                        overlayContainer = that.nodes['fields'];
+                        break;
+                    case 'all':
+                    default:
+                        overlayContainer = that.nodes['container'];
+                        break;
+                }
+                that.components['loader'] = new classConstructor(
+                    cm.merge(that.params[className], {
+                        'container' : overlayContainer
+                    })
+                );
+            });
+        }
         // Events
         cm.addEvent(that.nodes['form'], 'submit', function(e){
             cm.preventDefault(e);
@@ -17086,33 +17095,35 @@ function(params){
 
     that.callbacks.renderError = function(that, config, errors){
         var field;
-        // Clear old errors
-        cm.clearNode(that.nodes['notifications']);
+        // Clear old errors messages
+        if(that.params['showNotifications']){
+            cm.removeClass(that.nodes['notifications'], 'is-show', true);
+            that.components['notifications'].clear();
+        }
         cm.forEach(that.fields, function(field){
             field.clearError();
         });
-        // Render new errors
+        // Render new errors messages
         if(cm.isArray(errors)){
             cm.forEach(errors, function(item){
-                that.callbacks.renderErrorItem(that, config, item);
+                if(that.params['showNotifications']){
+                    cm.addClass(that.nodes['notifications'], 'is-show', true);
+                    that.components['notifications'].add({
+                        'label' : that.lang(item['message'])
+                    });
+                }
                 if(field = that.getField(item['field'])){
                     field.renderError(item['message']);
                 }
             });
         }else{
-            that.callbacks.renderErrorItem(that, config, {
-                'message' : 'server_error'
-            });
+            if(that.params['showNotifications']){
+                cm.addClass(that.nodes['notifications'], 'is-show', true);
+                that.components['notifications'].add({
+                    'label' : that.lang('server_error')
+                });
+            }
         }
-    };
-
-    that.callbacks.renderErrorItem = function(that, config, item){
-        that.nodes['notifications'].appendChild(
-            cm.node('li', {'class' : 'error'},
-                cm.node('div', {'class' : 'descr'}, that.lang(item['message']))
-            )
-        );
-        cm.addClass(that.nodes['notificationsContainer'], 'is-show', true);
     };
 
     /* ******* PUBLIC ******* */
@@ -17734,22 +17745,31 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
             );
         });
         // Events
-        that.setCustomEvents();
-        cm.addEvent(window, 'resize', function(){
-            that.redraw();
-        });
+        that.redrawHandler = that.redraw.bind(that);
+        that.destructHandler = that.destruct.bind(that);
+        cm.addEvent(window, 'resize', that.redrawHandler);
+        that.addCustomEvents();
         // Append
         that.embedStructure(that.nodes['container']);
         return that;
     };
 
-    classProto.setCustomEvents = function(){
+    classProto.addCustomEvents = function(){
         var that = this;
         // Add custom event
         if(that.params['customEvents']){
-            cm.customEvent.add(that.nodes['container'], 'redraw', function(){
-                that.redraw();
-            });
+            cm.customEvent.add(that.nodes['container'], 'redraw', that.redrawHandler);
+            cm.customEvent.add(that.nodes['container'], 'destruct', that.destructHandler);
+        }
+        return that;
+    };
+
+    classProto.removeCustomEvents = function(){
+        var that = this;
+        // Add custom event
+        if(that.params['customEvents']){
+            cm.customEvent.remove(that.nodes['container'], 'redraw', that.redrawHandler);
+            cm.customEvent.remove(that.nodes['container'], 'destruct', that.destructHandler);
         }
         return that;
     };
@@ -17957,6 +17977,14 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
     classProto.redraw = function(){
         var that = this;
         that.setDraggable();
+        return that;
+    };
+
+    classProto.destruct = function(){
+        var that = this;
+        cm.removeEvent(window, 'resize', that.redrawHandler);
+        that.removeCustomEvents();
+        that.removeFromStack();
         return that;
     };
 });
@@ -26390,34 +26418,74 @@ function(params){
     var that = this;
 
     that.nodes = {};
+    that.items = [];
     that.components = {};
 
     var init = function(){
         that.setParams(params);
         that.convertEvents(that.params['events']);
         that.getDataConfig(that.params['node']);
-        validateParams();
+        that.validateParams();
         that.addToStack(that.params['node']);
         that.triggerEvent('onRenderStart');
-        render();
+        that.render();
         that.addToStack(that.nodes['container']);
         that.triggerEvent('onRender');
-    };
-
-    var validateParams = function(){
-
-    };
-
-    var render = function(){
-        // Structure
-        that.nodes['container'] = cm.node('div', {'class' : 'com__notifications'});
-        // Append
-        that.embedStructure(that.nodes['container']);
     };
 
     /* ******* PUBLIC ******* */
 
     init();
+});
+
+cm.getConstructor('Com.Notifications', function(classConstructor, className, classProto){
+    classProto.validateParams = function(){
+        var that = this;
+        return that;
+    };
+
+    classProto.render = function(){
+        var that = this;
+        // Structure
+        that.renderView();
+        // Append
+        that.embedStructure(that.nodes['container']);
+        return that;
+    };
+
+    classProto.renderView = function(){
+        var that = this;
+        that.nodes['container'] = cm.node('div', {'class' : 'com__notifications'},
+            that.nodes['list'] = cm.node('ul')
+        );
+        return that;
+    };
+
+    classProto.clear = function(){
+        var that = this;
+        cm.forEach(that.items, function(item){
+            that.remove(item);
+        });
+        return that;
+    };
+
+    classProto.add = function(item){
+        var that = this;
+        // Config
+        item = cm.merge({
+            'label' : '',
+            'nodes' : {}
+        }, item);
+        // Structure
+        // Push
+        that.items.push(item);
+        return that;
+    };
+
+    classProto.remove = function(item){
+        var that = this;
+        return that;
+    };
 });
 cm.define('Com.OldBrowserAlert', {
     'modules' : [
