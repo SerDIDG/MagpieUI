@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.15.2 (2016-03-29 19:52) ************ */
+/*! ************ MagpieUI v3.15.3 (2016-04-04 17:41) ************ */
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -12360,7 +12360,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.15.2',
+        '_version' : '3.15.3',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -12591,7 +12591,7 @@ cm.merge = function(o1, o2){
     }else if(cm.isArray(o1)){
         o = cm.clone(o1);
         cm.forEach(o2, function(item){
-            if(!cm.inArray(o, item)){
+            if(!cm.inArray(o1, item)){
                 o.push(item);
             }
         });
@@ -17745,18 +17745,18 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
             );
         });
         // Events
-        that.redrawHandler = that.redraw.bind(that);
-        that.destructHandler = that.destruct.bind(that);
-        cm.addEvent(window, 'resize', that.redrawHandler);
-        that.addCustomEvents();
+        that.setEvents();
         // Append
         that.embedStructure(that.nodes['container']);
         return that;
     };
 
-    classProto.addCustomEvents = function(){
+    classProto.setEvents = function(){
         var that = this;
-        // Add custom event
+        that.redrawHandler = that.redraw.bind(that);
+        that.destructHandler = that.destruct.bind(that);
+        cm.addEvent(window, 'resize', that.redrawHandler);
+        // Add custom events
         if(that.params['customEvents']){
             cm.customEvent.add(that.nodes['container'], 'redraw', that.redrawHandler);
             cm.customEvent.add(that.nodes['container'], 'destruct', that.destructHandler);
@@ -17764,9 +17764,10 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
         return that;
     };
 
-    classProto.removeCustomEvents = function(){
+    classProto.unsetEvents = function(){
         var that = this;
-        // Add custom event
+        cm.removeEvent(window, 'resize', that.redrawHandler);
+        // Remove custom events
         if(that.params['customEvents']){
             cm.customEvent.remove(that.nodes['container'], 'redraw', that.redrawHandler);
             cm.customEvent.remove(that.nodes['container'], 'destruct', that.destructHandler);
@@ -17982,8 +17983,7 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
 
     classProto.destruct = function(){
         var that = this;
-        cm.removeEvent(window, 'resize', that.redrawHandler);
-        that.removeCustomEvents();
+        that.unsetEvents();
         that.removeFromStack();
         return that;
     };
@@ -19134,21 +19134,15 @@ cm.getConstructor('Com.AbstractCalendarView', function(classConstructor){
         // Toolbar Controls
         new cm.Finder('Com.Select', 'week', that.nodes['buttons']['container'], function(classObject){
             that.components['week'] = classObject
-                .addEvent('onChange', function(){
-                    that.updateView();
-                });
+                .addEvent('onChange', that.updateView.bind(that));
         });
         new cm.Finder('Com.Select', 'month', that.nodes['buttons']['container'], function(classObject){
             that.components['month'] = classObject
-                .addEvent('onChange', function(){
-                    that.updateView();
-                });
+                .addEvent('onChange',  that.updateView.bind(that));
         });
         new cm.Finder('Com.Select', 'year', that.nodes['buttons']['container'], function(classObject){
             that.components['year'] = classObject
-                .addEvent('onChange', function(){
-                    that.updateView();
-                });
+                .addEvent('onChange', that.updateView.bind(that));
         });
         // Search
         cm.addEvent(that.nodes['buttons']['search-input'], 'keypress', function(e){
@@ -19341,9 +19335,7 @@ cm.getConstructor('Com.CalendarMonth', function(classConstructor){
     classConstructor.prototype.render = function(){
         var that = this;
         that._inherit.prototype.render.call(that);
-        cm.forEach(that.nodes['days'], function(){
-            that.processDay.apply(that, arguments);
-        });
+        cm.forEach(that.nodes['days'], that.processDay.bind(that));
         return that;
     };
 });

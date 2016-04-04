@@ -119,18 +119,18 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
             );
         });
         // Events
-        that.redrawHandler = that.redraw.bind(that);
-        that.destructHandler = that.destruct.bind(that);
-        cm.addEvent(window, 'resize', that.redrawHandler);
-        that.addCustomEvents();
+        that.setEvents();
         // Append
         that.embedStructure(that.nodes['container']);
         return that;
     };
 
-    classProto.addCustomEvents = function(){
+    classProto.setEvents = function(){
         var that = this;
-        // Add custom event
+        that.redrawHandler = that.redraw.bind(that);
+        that.destructHandler = that.destruct.bind(that);
+        cm.addEvent(window, 'resize', that.redrawHandler);
+        // Add custom events
         if(that.params['customEvents']){
             cm.customEvent.add(that.nodes['container'], 'redraw', that.redrawHandler);
             cm.customEvent.add(that.nodes['container'], 'destruct', that.destructHandler);
@@ -138,9 +138,10 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
         return that;
     };
 
-    classProto.removeCustomEvents = function(){
+    classProto.unsetEvents = function(){
         var that = this;
-        // Add custom event
+        cm.removeEvent(window, 'resize', that.redrawHandler);
+        // Remove custom events
         if(that.params['customEvents']){
             cm.customEvent.remove(that.nodes['container'], 'redraw', that.redrawHandler);
             cm.customEvent.remove(that.nodes['container'], 'destruct', that.destructHandler);
@@ -356,8 +357,7 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
 
     classProto.destruct = function(){
         var that = this;
-        cm.removeEvent(window, 'resize', that.redrawHandler);
-        that.removeCustomEvents();
+        that.unsetEvents();
         that.removeFromStack();
         return that;
     };

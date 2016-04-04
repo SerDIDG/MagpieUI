@@ -611,21 +611,15 @@ cm.getConstructor('Com.AbstractCalendarView', function(classConstructor){
         // Toolbar Controls
         new cm.Finder('Com.Select', 'week', that.nodes['buttons']['container'], function(classObject){
             that.components['week'] = classObject
-                .addEvent('onChange', function(){
-                    that.updateView();
-                });
+                .addEvent('onChange', that.updateView.bind(that));
         });
         new cm.Finder('Com.Select', 'month', that.nodes['buttons']['container'], function(classObject){
             that.components['month'] = classObject
-                .addEvent('onChange', function(){
-                    that.updateView();
-                });
+                .addEvent('onChange',  that.updateView.bind(that));
         });
         new cm.Finder('Com.Select', 'year', that.nodes['buttons']['container'], function(classObject){
             that.components['year'] = classObject
-                .addEvent('onChange', function(){
-                    that.updateView();
-                });
+                .addEvent('onChange', that.updateView.bind(that));
         });
         // Search
         cm.addEvent(that.nodes['buttons']['search-input'], 'keypress', function(e){
@@ -818,9 +812,7 @@ cm.getConstructor('Com.CalendarMonth', function(classConstructor){
     classConstructor.prototype.render = function(){
         var that = this;
         that._inherit.prototype.render.call(that);
-        cm.forEach(that.nodes['days'], function(){
-            that.processDay.apply(that, arguments);
-        });
+        cm.forEach(that.nodes['days'], that.processDay.bind(that));
         return that;
     };
 });

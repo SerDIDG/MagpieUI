@@ -1,0 +1,17 @@
+<svg id="form-manager.svg" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <defs>
+    <style>
+      .cls-1, .cls-2 {
+        fill: #fff;
+        fill-rule: evenodd;
+      }
+
+      .cls-2 {
+        fill-opacity: 0.85;
+      }
+    </style>
+  </defs>
+  <path id="Border" class="cls-1" d="M582,6h38a5,5,0,0,1,5,5V49a5,5,0,0,1-5,5H582a5,5,0,0,1-5-5V11A5,5,0,0,1,582,6Zm1,2h36a4,4,0,0,1,4,4V48a4,4,0,0,1-4,4H583a4,4,0,0,1-4-4V12A4,4,0,0,1,583,8Z" transform="translate(-577 -6)"/>
+  <path id="Input" class="cls-2" d="M584,14h34a1,1,0,0,1,1,1v2a1,1,0,0,1-1,1H584a1,1,0,0,1-1-1V15A1,1,0,0,1,584,14Zm0,6h34a1,1,0,0,1,1,1v2a1,1,0,0,1-1,1H584a1,1,0,0,1-1-1V21A1,1,0,0,1,584,20Zm0,6h34a1,1,0,0,1,1,1v8a1,1,0,0,1-1,1H584a1,1,0,0,1-1-1V27A1,1,0,0,1,584,26Z" transform="translate(-577 -6)"/>
+  <path id="Button" class="cls-1" d="M589,42h10a1,1,0,0,1,1,1v2a1,1,0,0,1-1,1H589a1,1,0,0,1-1-1V43A1,1,0,0,1,589,42Zm14,0h10a1,1,0,0,1,1,1v2a1,1,0,0,1-1,1H603a1,1,0,0,1-1-1V43A1,1,0,0,1,603,42Z" transform="translate(-577 -6)"/>
+</svg>
