@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.15.4 (2016-04-05 18:18) ************ */
+/*! ************ MagpieUI v3.15.4 (2016-04-05 19:27) ************ */
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -28659,6 +28659,7 @@ cm.define('Com.Select', {
     ],
     'events' : [
         'onRender',
+        'onRenderStart',
         'onSelect',
         'onChange',
         'onReset',
@@ -28715,6 +28716,8 @@ function(params){
         that.convertEvents(that.params['events']);
         that.getDataConfig(that.params['node']);
         validateParams();
+        that.addToStack(that.params['node']);
+        that.triggerEvent('onRenderStart');
         render();
         setMiscEvents();
         // Set selected option

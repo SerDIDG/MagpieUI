@@ -14,6 +14,7 @@ cm.define('Com.Select', {
     ],
     'events' : [
         'onRender',
+        'onRenderStart',
         'onSelect',
         'onChange',
         'onReset',
@@ -70,6 +71,8 @@ function(params){
         that.convertEvents(that.params['events']);
         that.getDataConfig(that.params['node']);
         validateParams();
+        that.addToStack(that.params['node']);
+        that.triggerEvent('onRenderStart');
         render();
         setMiscEvents();
         // Set selected option
