@@ -24,7 +24,7 @@
  ******* */
 
 var cm = {
-        '_version' : '3.15.3',
+        '_version' : '3.15.4',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -243,7 +243,7 @@ cm.merge = function(o1, o2){
                     }else if(cm.isObject(item)){
                         o[key] = cm.merge(o[key], item);
                     }else if(cm.isArray(item)){
-                        o[key] = cm.merge(o[key], item);
+                        o[key] = cm.clone(item);
                     }else{
                         o[key] = item;
                     }
@@ -255,7 +255,7 @@ cm.merge = function(o1, o2){
     }else if(cm.isArray(o1)){
         o = cm.clone(o1);
         cm.forEach(o2, function(item){
-            if(!cm.inArray(o1, item)){
+            if(!cm.inArray(o, item)){
                 o.push(item);
             }
         });
