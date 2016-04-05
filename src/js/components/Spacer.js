@@ -138,8 +138,8 @@ function(params){
     };
 
     var set = function(height, triggerEvents){
-        that.value = Math.min(height, that.params['minHeight']);
-        setHeight(height);
+        that.value = Math.max(height, that.params['minHeight']);
+        setHeight();
         setRulerCounter();
         if(triggerEvents){
             that.triggerEvent('onChange', {
@@ -155,8 +155,8 @@ function(params){
         that.nodes['rulerCounter'].innerHTML = [that.value, ' px'].join('');
     };
 
-    var setHeight = function(height){
-        that.params['node'].style.height = [height, 'px'].join('');
+    var setHeight = function(){
+        that.params['node'].style.height = [that.value, 'px'].join('');
         that.nodes['dragContainer'].style.top = [that.params['node'].offsetHeight, 'px'].join('');
     };
 
@@ -183,7 +183,7 @@ function(params){
     };
 
     that.redraw = function(){
-        setHeight(that.value);
+        setHeight();
         return that;
     };
 
