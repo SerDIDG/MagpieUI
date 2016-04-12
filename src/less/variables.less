@@ -49,6 +49,7 @@
 @CmUI-ShadowLight: 0 0 2px rgba(0,0,0,0.2);
 @CmUI-ShadowInner: 0 2px 2px rgba(0,0,0,0.4) inset;
 @CmUI-Shadow-Bottom: 0 2px 2px rgba(0,0,0,0.15);
+@CmUI-Shadow-BottomLarge: 0 2px 12px rgba(0, 0, 0, 0.2);
 @CmUI-Shadow-Right: 2px 0 2px rgba(0,0,0,0.15);
 @CmUI-Overlay: @CmUI-Overlay-Light;
 @CmUI-Overlay-Dark: rgba(0, 0, 0, 0.7);
@@ -320,8 +321,8 @@
 @CmFont-UI-Color: @CmColor-Font;
 @CmFont-UI-ColorOpposite: @CmColor-Font-Opposite;
 
-@CmFont-UI-H1-LineHeight: 38px;
-@CmFont-UI-H1-Size: 28px;
+@CmFont-UI-H1-LineHeight: 32px;
+@CmFont-UI-H1-Size: 24px;
 @CmFont-UI-H1-Weight: @CmFont-UI-LightWeight;
 @CmFont-UI-H1-Color: @CmColor-Font;
 
@@ -694,6 +695,14 @@
 @ComSpacer-HoverBackground: rgba(0, 0, 0, 0.01);
 @ComSpacer-ActiveBackground: @CmColor-Primary-LightHighlight;
 
+// /* ******* BOX TOOLS ******* */
+
+@ComBoxTools-Width: 150px;
+@ComBoxTools-LineSize: @CmForm-FieldHeight;
+@ComBoxTools-LineIndent: @CmIndent-XXXSmall;
+@ComBoxTools-LinkSize: 24px;
+@ComBoxTools-LinkIndent: @CmIndent-XXXSmall;
+
 // /* ******* DATEPICKER ******* */
 
 @ComDatepicker-Width: @CmForm-FieldSmallWidth;
@@ -723,6 +732,11 @@
 
 @ComDialog-Black-Background: @CmColor-Gallery;
 @ComDialog-Black-TitleColor: @CmFont-UI-ColorOpposite;
+
+@ComDialog-Light-Overlay: @CmUI-Overlay-Light;
+@ComDialog-Light-Background: @CmColor-Background;
+@ComDialog-Light-TitleColor: @CmFont-UI-ColorOpposite;
+@ComDialog-Light-TitleBackground: @CmColor-Primary-DarkDefault;
 
 // /* ******* TABSET ******* */
 

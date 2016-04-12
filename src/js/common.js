@@ -2577,6 +2577,19 @@ cm.inRange = function(a1, b1, a2, b2){
     return a1 >= a2 && a1 <= b2 || b1 >= a2 && b1 <= b2 || a2 >= a1 && a2 <= b1
 };
 
+/* ******* VALIDATORS ******* */
+
+cm.allowOnlyDigit = function(input, callback){
+    cm.addEvent(input, 'keypress', function(e){
+        if(e.charCode >= 48 && e.charCode <= 57){
+            callback && callback();
+        }else{
+            cm.preventDefault(e);
+        }
+    });
+    return input;
+};
+
 /* ******* ANIMATION ******* */
 
 var animFrame = (function(){

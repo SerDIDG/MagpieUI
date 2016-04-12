@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.15.4 (2016-04-05 19:27) ************ */
+/*! ************ MagpieUI v3.15.4 (2016-04-12 19:11) ************ */
 @charset "UTF-8";
 
 /*!
@@ -5167,6 +5167,7 @@ span.CodeMirror-selectedtext { background: none; }
 @CmUI-ShadowLight: 0 0 2px rgba(0,0,0,0.2);
 @CmUI-ShadowInner: 0 2px 2px rgba(0,0,0,0.4) inset;
 @CmUI-Shadow-Bottom: 0 2px 2px rgba(0,0,0,0.15);
+@CmUI-Shadow-BottomLarge: 0 2px 12px rgba(0, 0, 0, 0.2);
 @CmUI-Shadow-Right: 2px 0 2px rgba(0,0,0,0.15);
 @CmUI-Overlay: @CmUI-Overlay-Light;
 @CmUI-Overlay-Dark: rgba(0, 0, 0, 0.7);
@@ -5438,8 +5439,8 @@ span.CodeMirror-selectedtext { background: none; }
 @CmFont-UI-Color: @CmColor-Font;
 @CmFont-UI-ColorOpposite: @CmColor-Font-Opposite;
 
-@CmFont-UI-H1-LineHeight: 38px;
-@CmFont-UI-H1-Size: 28px;
+@CmFont-UI-H1-LineHeight: 32px;
+@CmFont-UI-H1-Size: 24px;
 @CmFont-UI-H1-Weight: @CmFont-UI-LightWeight;
 @CmFont-UI-H1-Color: @CmColor-Font;
 
@@ -5812,6 +5813,14 @@ span.CodeMirror-selectedtext { background: none; }
 @ComSpacer-HoverBackground: rgba(0, 0, 0, 0.01);
 @ComSpacer-ActiveBackground: @CmColor-Primary-LightHighlight;
 
+// /* ******* BOX TOOLS ******* */
+
+@ComBoxTools-Width: 150px;
+@ComBoxTools-LineSize: @CmForm-FieldHeight;
+@ComBoxTools-LineIndent: @CmIndent-XXXSmall;
+@ComBoxTools-LinkSize: 24px;
+@ComBoxTools-LinkIndent: @CmIndent-XXXSmall;
+
 // /* ******* DATEPICKER ******* */
 
 @ComDatepicker-Width: @CmForm-FieldSmallWidth;
@@ -5841,6 +5850,11 @@ span.CodeMirror-selectedtext { background: none; }
 
 @ComDialog-Black-Background: @CmColor-Gallery;
 @ComDialog-Black-TitleColor: @CmFont-UI-ColorOpposite;
+
+@ComDialog-Light-Overlay: @CmUI-Overlay-Light;
+@ComDialog-Light-Background: @CmColor-Background;
+@ComDialog-Light-TitleColor: @CmFont-UI-ColorOpposite;
+@ComDialog-Light-TitleBackground: @CmColor-Primary-DarkDefault;
 
 // /* ******* TABSET ******* */
 
@@ -11423,6 +11437,8 @@ button {
         }
 
         &:hover {
+            z-index: 2;
+
             > ul {
                 .pt__menu-dropdown--active;
             }
@@ -13388,6 +13404,41 @@ button {
     height: @ComCalendarWeek-Day-Indent;
 }
 
+/* ******* COMPONENTS: BOX TOOLS ******* */
+
+.com__box-tools {
+    max-width: @ComBoxTools-Width;
+}
+
+.com__box-tools__content {
+    @linkSizeHalf: @ComBoxTools-LinkSize / 2 ;
+
+    .b-line {
+        .display-flex;
+        min-height: @ComBoxTools-LineSize;
+        margin-top: @ComBoxTools-LineIndent;
+        .mx__align-items(center);
+        .mx__justify-content(center);
+
+        &:first-child {
+            margin-top: 0;
+        }
+    }
+
+    .b-container {
+        width: calc(~"50% - @{ComBoxTools-LinkIndent} - @{linkSizeHalf}");
+    }
+
+    .b-link {
+        width: @ComBoxTools-LinkSize;
+        height: @ComBoxTools-LinkSize;
+        border-radius: @CmBorder-Radius;
+    }
+
+    .b-link-container {
+        margin: 0 @ComBoxTools-LinkIndent;
+    }
+}
 /* ******* COMPONENTS: CALENDAR ******* */
 
 .com__calendar {
@@ -14099,11 +14150,11 @@ button {
 /* ******* COMPONENT: DIALOG: THEMES ******* */
 
 .com__dialog {
-    @titleHeight: @ComDialog-TitleIndent * 2 + @CmFont-UI-H1-LineHeight;
-
     // /* *** DEFAULT *** */
 
     &.theme-default {
+        @titleHeight: @ComDialog-TitleIndent * 2 + @CmFont-UI-H1-LineHeight;
+
         .com__dialog-font--theme-default;
 
         > .bg {
@@ -14131,8 +14182,6 @@ button {
         > .window {
             > .icon {
                 .cm__size__medium;
-                right: @ComDialog-Indent;
-                top: (@titleHeight - @ComDialog-Indent) / 2;
 
                 &.default {
                     .icon.medium.close;
@@ -14145,7 +14194,6 @@ button {
 
                 > .title {
                     .cm__font--ui-h1;
-                    padding: @ComDialog-TitleIndent @ComDialog-Indent;
                 }
 
                 > .descr {
@@ -14180,27 +14228,8 @@ button {
             }
         }
 
-        &.is-title-reserve {
-            > .window {
-                > .inner {
-                    > .descr {
-                        &:first-child {
-                            padding-top: @titleHeight;
-                        }
-                    }
-                }
-            }
-        }
-
-        &.has-close-inside {
-            > .window {
-                > .inner {
-                    > .title {
-                        padding-right: @ComDialog-Indent * 2 + @CmSize-Medium;
-                    }
-                }
-            }
-        }
+        .com__dialog__title-height(@titleHeight);
+        .com__dialog__title-indent(@ComDialog-Indent);
     }
 
     // /* *** BLACK *** */
@@ -14225,6 +14254,59 @@ button {
             }
         }
     }
+
+    // /* *** BLACK *** */
+
+    &.theme-light {
+        &:extend(.com__dialog.theme-default all);
+
+        > .bg {
+            background: @ComDialog-Light-Overlay;
+
+            > .icon {
+                &.default {
+                    .icon.medium.close;
+                }
+            }
+        }
+
+        > .window {
+            > .icon {
+                &.default {
+                    .icon.medium.close-white;
+                }
+            }
+
+            > .inner {
+                background-color: @ComDialog-Light-Background;
+                box-shadow: @CmUI-Shadow-BottomLarge;
+
+                > .title {
+                    color: @ComDialog-Light-TitleColor;
+                    background-color: @ComDialog-Light-TitleBackground;
+                }
+
+                > .descr {
+                    > .scroll > .inner {
+                        padding-top: @ComDialog-Indent
+                    }
+                }
+            }
+        }
+
+        &.has-no-title {
+            > .window {
+                > .icon {
+                    &.default {
+                        .icon.medium.close;
+                    }
+                }
+            }
+        }
+
+        .com__dialog__title-height(@CmSize-XLarge);
+        .com__dialog__title-indent(@ComDialog-TitleIndent);
+    }
 }
 
 /* *** FONT *** */
@@ -14240,6 +14322,71 @@ button {
     }
 }
 
+/* *** MIXINS *** */
+
+.com__dialog__title-height (@value) {
+    @indent: round((@value - @CmFont-UI-H1-LineHeight) / 2);
+
+    > .window {
+        > .icon {
+            top: round((@value - @CmSize-Medium) / 2);
+        }
+
+        > .inner {
+            > .title {
+                min-height: @value;
+                padding-top: @indent;
+                padding-bottom: @indent;
+            }
+        }
+    }
+
+    &.is-title-reserve {
+        > .window {
+            > .inner {
+                > .descr {
+                    &:first-child {
+                        padding-top: @value;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.com__dialog__title-indent (@value) {
+    > .window {
+        > .icon {
+            right: @value;
+        }
+
+        > .inner {
+            > .title {
+                padding-left: @value;
+            }
+        }
+    }
+
+    &.has-close-inside {
+        > .window {
+            > .inner {
+                > .title {
+                    padding-right: @value * 2 + @CmSize-Medium;
+                }
+            }
+        }
+    }
+
+    &:not(.is-title-reserve){
+        &.has-no-title {
+            > .window {
+                > .icon {
+                    right: -@value - @CmIndent-Medium;
+                }
+            }
+        }
+    }
+}
 /* ******* COMPONENTS: FORM ******* */
 
 .com__form {
@@ -16041,6 +16188,7 @@ button {
         position: absolute;
         z-index: 1;
         display: none;
+        overflow: hidden;
         opacity: 0;
         border-radius: @CmBorder-Radius;
         .mx__position(0, 0, 0, 0);

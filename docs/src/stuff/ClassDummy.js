@@ -23,38 +23,39 @@ cm.define('Com.ClassDummy', {
 },
 function(params){
     var that = this;
-
     that.nodes = {};
     that.components = {};
+    that.construct(params);
+});
 
-    var init = function(){
+cm.getConstructor('Com.ClassDummy', function(classConstructor, className, classProto){
+    classProto.construct = function(params){
+        var that = this;
         that.setParams(params);
         that.convertEvents(that.params['events']);
         that.getDataNodes(that.params['node']);
         that.getDataConfig(that.params['node']);
         that.callbacksProcess();
-        validateParams();
+        that.validateParams();
         that.addToStack(that.params['node']);
         that.triggerEvent('onRenderStart');
-        render();
+        that.render();
         that.addToStack(that.nodes['container']);
         that.triggerEvent('onRender');
+        return that;
     };
 
-    var validateParams = function(){
-
+    classProto.validateParams = function(){
+        var that = this;
+        return that;
     };
 
-    var render = function(){
+    classProto.render = function(){
+        var that = this;
         // Structure
         that.nodes['container'] = cm.node('div');
         // Append
         that.embedStructure(that.nodes['container']);
+        return that;
     };
-
-    /* ******* CALLBACKS ******* */
-
-    /* ******* PUBLIC ******* */
-
-    init();
 });

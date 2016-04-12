@@ -25,7 +25,7 @@ cm.define('Com.Dialog', {
         'position' : 'fixed',
         'indentY' : 24,
         'indentX' : 24,
-        'theme' : 'theme-default',      // theme css class name, default: theme-default | theme-black
+        'theme' : 'theme-light',        // theme css class name, default: theme-default | theme-black | theme-light
         'className' : '',               // custom css class name
         'content' : cm.Node('div'),
         'title' : '',
@@ -165,6 +165,7 @@ function(params){
 
     var renderTitle = function(title){
         if(!cm.isEmpty(title)){
+            cm.removeClass(nodes['container'], 'has-no-title');
             // Remove old nodes
             cm.remove(nodes['title']);
             // Render new nodes
@@ -173,6 +174,8 @@ function(params){
                 cm.addClass(nodes['title'], 'cm__text-overflow');
             }
             cm.insertFirst(nodes['title'], nodes['windowInner']);
+        }else{
+            cm.addClass(nodes['container'], 'has-no-title');
         }
     };
 

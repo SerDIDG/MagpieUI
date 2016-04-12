@@ -1,0 +1,35 @@
+/* ******* COMPONENTS: BOX TOOLS ******* */
+
+.com__box-tools {
+    max-width: @ComBoxTools-Width;
+}
+
+.com__box-tools__content {
+    @linkSizeHalf: @ComBoxTools-LinkSize / 2 ;
+
+    .b-line {
+        .display-flex;
+        min-height: @ComBoxTools-LineSize;
+        margin-top: @ComBoxTools-LineIndent;
+        .mx__align-items(center);
+        .mx__justify-content(center);
+
+        &:first-child {
+            margin-top: 0;
+        }
+    }
+
+    .b-container {
+        width: calc(~"50% - @{ComBoxTools-LinkIndent} - @{linkSizeHalf}");
+    }
+
+    .b-link {
+        width: @ComBoxTools-LinkSize;
+        height: @ComBoxTools-LinkSize;
+        border-radius: @CmBorder-Radius;
+    }
+
+    .b-link-container {
+        margin: 0 @ComBoxTools-LinkIndent;
+    }
+}

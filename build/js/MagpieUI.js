@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.15.4 (2016-04-05 19:27) ************ */
+/*! ************ MagpieUI v3.15.4 (2016-04-12 19:11) ************ */
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -14913,6 +14913,19 @@ cm.inRange = function(a1, b1, a2, b2){
     return a1 >= a2 && a1 <= b2 || b1 >= a2 && b1 <= b2 || a2 >= a1 && a2 <= b1
 };
 
+/* ******* VALIDATORS ******* */
+
+cm.allowOnlyDigit = function(input, callback){
+    cm.addEvent(input, 'keypress', function(e){
+        if(e.charCode >= 48 && e.charCode <= 57){
+            callback && callback();
+        }else{
+            cm.preventDefault(e);
+        }
+    });
+    return input;
+};
+
 /* ******* ANIMATION ******* */
 
 var animFrame = (function(){
@@ -17624,6 +17637,217 @@ Com.FormFields.add('buttons', {
         }
     }
 });
+cm.define('Com.AbstractInput', {
+    'modules' : [
+        'Params',
+        'Events',
+        'Langs',
+        'Structure',
+        'DataConfig',
+        'DataNodes',
+        'Stack'
+    ],
+    'events' : [
+        'onRenderStart',
+        'onRender',
+        'onRedraw',
+        'onSet',
+        'onSelect',
+        'onChange',
+        'onDisable',
+        'onEnable'
+    ],
+    'params' : {
+        'node' : cm.node('div'),
+        'container' : null,
+        'name' : '',
+        'embedStructure' : 'replace',
+        'title' : '',
+        'disabled' : false,
+        'className' : '',
+        'ui' : true
+    }
+},
+function(params){
+    var that = this;
+    that.nodes = {};
+    that.components = {};
+    that.previousValue = null;
+    that.value = null;
+    that.disabled = false;
+    that.construct(params);
+});
+
+cm.getConstructor('Com.AbstractInput', function(classConstructor, className, classProto){
+    classProto.construct = function(params){
+        var that = this;
+        that.setParams(params);
+        that.convertEvents(that.params['events']);
+        that.getDataNodes(that.params['node']);
+        that.getDataConfig(that.params['node']);
+        that.validateParams();
+        that.addToStack(that.params['node']);
+        that.triggerEvent('onRenderStart');
+        that.render();
+        that.addToStack(that.nodes['container']);
+        that.triggerEvent('onRender');
+        return that;
+    };
+
+    classProto.destruct = function(){
+        var that = this;
+        that.unsetEvents();
+        that.removeFromStack();
+        return that;
+    };
+
+    classProto.set = function(value, triggerEvents){
+        var that = this;
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        value = that.validateValue(value, triggerEvents);
+        that.selectAction(value, triggerEvents);
+        that.changeAction(triggerEvents);
+        return that;
+    };
+
+    classProto.get = function(){
+        var that = this;
+        return that.value;
+    };
+
+    classProto.redraw = function(){
+        var that = this;
+        that.triggerEvent('onRedraw');
+        return that;
+    };
+
+    classProto.enable = function(){
+        var that = this;
+        that.disabled = false;
+        cm.removeClass(cm.nodes['container'], 'disabled');
+        cm.removeClass(cm.nodes['content'], 'disabled');
+        that.triggerEvent('onEnable');
+        return that;
+    };
+
+    classProto.disable = function(){
+        var that = this;
+        that.disabled = true;
+        cm.addClass(that.nodes['container'], 'disabled');
+        cm.addClass(that.nodes['content'], 'disabled');
+        that.triggerEvent('onDisable');
+        return that;
+    };
+
+    classProto.validateParams = function(){
+        var that = this;
+        if(cm.isNode(that.params['node'])){
+            that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
+            that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
+            that.params['disabled'] = that.params['node'].disabled || that.params['node'].readOnly || that.params['disabled'];
+        }
+        that.disabled = that.params['disabled'];
+        return that;
+    };
+
+    classProto.render = function(){
+        var that = this;
+        // Structure
+        that.renderView();
+        // Attributes
+        that.setAttributes();
+        // Append
+        that.embedStructure(that.nodes['container']);
+        return that;
+    };
+
+    classProto.renderView = function(){
+        var that = this;
+        that.nodes['container'] = cm.node('div', {'class' : 'com__input'},
+            that.nodes['hidden'] = cm.node('input', {'type' : 'hidden'}),
+            that.nodes['content'] = that.renderContent()
+        );
+        return that;
+    };
+
+    classProto.renderContent = function(){
+        return cm.node('div', {'class' : 'input__content'});
+    };
+
+    classProto.setAttributes = function(){
+        var that = this;
+        cm.addClass(that.nodes['container'], that.params['className']);
+        if(that.params['title']){
+            that.nodes['container'].setAttribute('title', that.lang(that.params['title']));
+        }
+        if(that.params['name']){
+            that.nodes['hidden'].setAttribute('name', that.params['name']);
+        }
+        return that;
+    };
+
+    classProto.setEvents = function(){
+        var that = this;
+        that.redrawHandler = that.redraw.bind(that);
+        that.destructHandler = that.destruct.bind(that);
+        that.setHandler = that.setAction.bind(that);
+        that.selectHandler = that.selectAction.bind(that);
+        // Windows events
+        cm.addEvent(window, 'resize', that.redrawHandler);
+        // Add custom events
+        if(that.params['customEvents']){
+            cm.customEvent.add(that.nodes['container'], 'redraw', that.redrawHandler);
+            cm.customEvent.add(that.nodes['container'], 'destruct', that.destructHandler);
+        }
+        return that;
+    };
+
+    classProto.unsetEvents = function(){
+        var that = this;
+        // Windows events
+        cm.removeEvent(window, 'resize', that.redrawHandler);
+        // Remove custom events
+        if(that.params['customEvents']){
+            cm.customEvent.remove(that.nodes['container'], 'redraw', that.redrawHandler);
+            cm.customEvent.remove(that.nodes['container'], 'destruct', that.destructHandler);
+        }
+        return that;
+    };
+
+    classProto.validateValue = function(value){
+        return value;
+    };
+
+    classProto.setAction = function(value, triggerEvents){
+        var that = this;
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        that.previousValue = that.value;
+        that.value = value;
+        that.nodes['hidden'].value = that.value;
+        if(triggerEvents){
+            that.triggerEvent('onSet', that.value);
+        }
+        return that;
+    };
+
+    classProto.selectAction = function(value, triggerEvents){
+        var that = this;
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        if(triggerEvents){
+            that.triggerEvent('onSelect', value);
+        }
+        return that;
+    };
+
+    classProto.changeAction = function(triggerEvents){
+        var that = this;
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        if(triggerEvents && that.value != that.previousValue){
+            that.triggerEvent('onChange', that.value);
+        }
+        return that;
+    };
+});
 cm.define('Com.AbstractRange', {
     'modules' : [
         'Params',
@@ -19387,6 +19611,75 @@ function(params){
     var that = this;
     that._inherit.apply(that, arguments);
 });
+cm.define('Com.BoxTools', {
+    'extend' : 'Com.AbstractInput',
+    'params' : {
+        'className' : 'com__box-tools',
+        'inputs' : [
+            {'name' : 'top', 'icon' : 'icon small edit'},
+            {'name' : 'right', 'icon' : 'icon small edit'},
+            {'name' : 'bottom', 'icon' : 'icon small edit'},
+            {'name' : 'eft', 'icon' : 'icon small edit'}
+        ]
+    }
+},
+function(params){
+    var that = this;
+    that.myNodes = {};
+    that.myInputs = [];
+    that._inherit.apply(that, arguments);
+});
+
+cm.getConstructor('Com.BoxTools', function(classConstructor, className, classProto){
+    classProto.renderContent = function(){
+        var that = this;
+        that.myNodes['container'] = cm.node('div', {'class' : 'com__box-tools__content'},
+            cm.node('div', {'class' : 'b-line line--top'},
+                cm.node('div', {'class' : 'b-container'},
+                    that.renderInput(that.params['inputs'][0])
+                )
+            ),
+            cm.node('div', {'class' : 'b-line line--middle'},
+                cm.node('div', {'class' : 'b-container'},
+                    that.renderInput(that.params['inputs'][1])
+                ),
+                cm.node('div', {'class' : 'b-link-container'},
+                    that.myNodes['link'] = cm.node('div', {'class' : 'b-link'})
+                ),
+                cm.node('div', {'class' : 'b-container'},
+                    that.renderInput(that.params['inputs'][2])
+                )
+            ),
+            cm.node('div', {'class' : 'b-line line--bottom'},
+                cm.node('div', {'class' : 'b-container'},
+                    that.renderInput(that.params['inputs'][3])
+                )
+            )
+        );
+        return that.myNodes['container'];
+    };
+
+    classProto.renderInput = function(item){
+        var that = this;
+        item = cm.merge({
+            'icon' : 'small',
+            'name' : '',
+            'nodes' : {}
+        }, item);
+        // Structure
+        item['nodes']['container'] = cm.node('div', {'class' : 'form-field'},
+            item['nodes']['input'] = cm.node('input', {'type' : 'number', 'maxlength' : "3"})
+        );
+        // Events
+        cm.addEvent(item['nodes']['icon'], 'click', function(){
+            item['nodes']['input'].focus();
+        });
+        cm.allowOnlyDigit(item['nodes']['input']);
+        // Push
+        that.myInputs.push(item);
+        return item['nodes']['container'];
+    };
+});
 cm.define('Com.Calendar', {
     'modules' : [
         'Params',
@@ -19830,21 +20123,34 @@ cm.define('Com.CodeHighlight', {
         'name' : '',
         'language' : 'javascript',
         'lineNumbers' : true,
-        'customEvents' : true
+        'customEvents' : true,
+        'disabled' : false,
+        'title' :''
     }
 },
 function(params){
     var that = this;
 
     that.components = {};
+    that.disabled = false;
 
     var init = function(){
         that.setParams(params);
         that.convertEvents(that.params['events']);
         that.getDataConfig(that.params['node']);
+        validateParams();
         render();
         that.addToStack(that.params['node']);
         that.triggerEvent('onRender');
+    };
+
+    var validateParams = function(){
+        if(cm.isNode(that.params['node'])){
+            that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
+            that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
+            that.params['disabled'] = that.params['node'].disabled || that.params['node'].readOnly || that.params['disabled'];
+        }
+        that.disabled = that.params['disabled'];
     };
 
     var render = function(){
@@ -19861,12 +20167,30 @@ function(params){
         if(that.params['customEvents']){
             cm.customEvent.add(that.params['node'], 'redraw', that.redraw);
         }
+        // Enable / Disable
+        if(that.disabled){
+            that.disable();
+        }else{
+            that.enable();
+        }
     };
 
     /* ******* PUBLIC ******* */
 
     that.redraw = function(){
         that.components['codemirror'] && that.components['codemirror'].refresh();
+        return that;
+    };
+
+    that.disable = function(){
+        that.disabled = true;
+        that.components['codemirror'] && that.components['codemirror'].setOption('readOnly', 'nocursor');
+        return that;
+    };
+
+    that.enable = function(){
+        that.disabled = false;
+        that.components['codemirror'] && that.components['codemirror'].setOption('readOnly', false);
         return that;
     };
 
@@ -22016,7 +22340,7 @@ cm.define('Com.Dialog', {
         'position' : 'fixed',
         'indentY' : 24,
         'indentX' : 24,
-        'theme' : 'theme-default',      // theme css class name, default: theme-default | theme-black
+        'theme' : 'theme-light',        // theme css class name, default: theme-default | theme-black | theme-light
         'className' : '',               // custom css class name
         'content' : cm.Node('div'),
         'title' : '',
@@ -22156,6 +22480,7 @@ function(params){
 
     var renderTitle = function(title){
         if(!cm.isEmpty(title)){
+            cm.removeClass(nodes['container'], 'has-no-title');
             // Remove old nodes
             cm.remove(nodes['title']);
             // Render new nodes
@@ -22164,6 +22489,8 @@ function(params){
                 cm.addClass(nodes['title'], 'cm__text-overflow');
             }
             cm.insertFirst(nodes['title'], nodes['windowInner']);
+        }else{
+            cm.addClass(nodes['container'], 'has-no-title');
         }
     };
 
@@ -28760,7 +29087,7 @@ function(params){
             that.params['multiple'] = that.params['node'].multiple;
             that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
             that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
-            that.params['disabled'] = that.params['node'].disabled || that.params['disabled'];
+            that.params['disabled'] = that.params['node'].disabled || that.params['node'].readOnly || that.params['disabled'];
         }
         that.disabled = that.params['disabled'];
     };
@@ -30136,7 +30463,7 @@ cm.define('Com.Spacer', {
     'params' : {
         'node' : cm.Node('div'),
         'name' : '',
-        'minHeight' : 24,
+        'minHeight' : 0,
         'isEditing' : true,
         'customEvents' : true,
         'Com.Draggable' : {
@@ -31331,7 +31658,7 @@ cm.define('Com.TagsInput', {
     ],
     'params' : {
         'input' : null,                                 // Deprecated, use 'node' parameter instead.
-        'node' : cm.Node('input', {'type' : 'text'}),
+        'node' : cm.node('input', {'type' : 'text'}),
         'container' : null,
         'name' : '',
         'embedStructure' : 'replace',

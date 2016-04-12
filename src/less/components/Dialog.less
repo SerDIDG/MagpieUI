@@ -151,11 +151,11 @@
 /* ******* COMPONENT: DIALOG: THEMES ******* */
 
 .com__dialog {
-    @titleHeight: @ComDialog-TitleIndent * 2 + @CmFont-UI-H1-LineHeight;
-
     // /* *** DEFAULT *** */
 
     &.theme-default {
+        @titleHeight: @ComDialog-TitleIndent * 2 + @CmFont-UI-H1-LineHeight;
+
         .com__dialog-font--theme-default;
 
         > .bg {
@@ -183,8 +183,6 @@
         > .window {
             > .icon {
                 .cm__size__medium;
-                right: @ComDialog-Indent;
-                top: (@titleHeight - @ComDialog-Indent) / 2;
 
                 &.default {
                     .icon.medium.close;
@@ -197,7 +195,6 @@
 
                 > .title {
                     .cm__font--ui-h1;
-                    padding: @ComDialog-TitleIndent @ComDialog-Indent;
                 }
 
                 > .descr {
@@ -232,27 +229,8 @@
             }
         }
 
-        &.is-title-reserve {
-            > .window {
-                > .inner {
-                    > .descr {
-                        &:first-child {
-                            padding-top: @titleHeight;
-                        }
-                    }
-                }
-            }
-        }
-
-        &.has-close-inside {
-            > .window {
-                > .inner {
-                    > .title {
-                        padding-right: @ComDialog-Indent * 2 + @CmSize-Medium;
-                    }
-                }
-            }
-        }
+        .com__dialog__title-height(@titleHeight);
+        .com__dialog__title-indent(@ComDialog-Indent);
     }
 
     // /* *** BLACK *** */
@@ -277,6 +255,59 @@
             }
         }
     }
+
+    // /* *** BLACK *** */
+
+    &.theme-light {
+        &:extend(.com__dialog.theme-default all);
+
+        > .bg {
+            background: @ComDialog-Light-Overlay;
+
+            > .icon {
+                &.default {
+                    .icon.medium.close;
+                }
+            }
+        }
+
+        > .window {
+            > .icon {
+                &.default {
+                    .icon.medium.close-white;
+                }
+            }
+
+            > .inner {
+                background-color: @ComDialog-Light-Background;
+                box-shadow: @CmUI-Shadow-BottomLarge;
+
+                > .title {
+                    color: @ComDialog-Light-TitleColor;
+                    background-color: @ComDialog-Light-TitleBackground;
+                }
+
+                > .descr {
+                    > .scroll > .inner {
+                        padding-top: @ComDialog-Indent
+                    }
+                }
+            }
+        }
+
+        &.has-no-title {
+            > .window {
+                > .icon {
+                    &.default {
+                        .icon.medium.close;
+                    }
+                }
+            }
+        }
+
+        .com__dialog__title-height(@CmSize-XLarge);
+        .com__dialog__title-indent(@ComDialog-TitleIndent);
+    }
 }
 
 /* *** FONT *** */
@@ -289,5 +320,71 @@
 
     .cm__inherit {
         color: @CmColor-Font-Opposite;
+    }
+}
+
+/* *** MIXINS *** */
+
+.com__dialog__title-height (@value) {
+    @indent: round((@value - @CmFont-UI-H1-LineHeight) / 2);
+
+    > .window {
+        > .icon {
+            top: round((@value - @CmSize-Medium) / 2);
+        }
+
+        > .inner {
+            > .title {
+                min-height: @value;
+                padding-top: @indent;
+                padding-bottom: @indent;
+            }
+        }
+    }
+
+    &.is-title-reserve {
+        > .window {
+            > .inner {
+                > .descr {
+                    &:first-child {
+                        padding-top: @value;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.com__dialog__title-indent (@value) {
+    > .window {
+        > .icon {
+            right: @value;
+        }
+
+        > .inner {
+            > .title {
+                padding-left: @value;
+            }
+        }
+    }
+
+    &.has-close-inside {
+        > .window {
+            > .inner {
+                > .title {
+                    padding-right: @value * 2 + @CmSize-Medium;
+                }
+            }
+        }
+    }
+
+    &:not(.is-title-reserve){
+        &.has-no-title {
+            > .window {
+                > .icon {
+                    right: -@value - @CmIndent-Medium;
+                }
+            }
+        }
     }
 }

@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.15.4 (2016-04-05 19:27) ************ */
+/*! ************ MagpieUI v3.15.4 (2016-04-12 19:11) ************ */
 /*!
 Animate.css - http://daneden.me/animate
 Licensed under the MIT license - http://opensource.org/licenses/MIT
@@ -5571,7 +5571,7 @@ span.CodeMirror-selectedtext {
   font-style: italic;
 }
 .cm__font--ui-h1 {
-  font: 300 28px/38px 'Open Sans', arial, helvetica, sans-serif;
+  font: 300 24px/32px 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
 }
 .cm__font--ui-h4 {
@@ -9440,6 +9440,9 @@ button::-moz-focus-inner {
 .pt__editable.is-editable > .menu .pt__menu-dropdown li:first-child:before {
   display: none;
 }
+.pt__editable.is-editable > .menu .pt__menu-dropdown li:hover {
+  z-index: 2;
+}
 .pt__editable.is-editable > .menu .pt__menu-dropdown li:hover > ul {
   visibility: visible;
   opacity: 1;
@@ -11029,6 +11032,9 @@ button::-moz-focus-inner {
 .pt__menu-dropdown--base li:first-child:before {
   display: none;
 }
+.pt__menu-dropdown--base li:hover {
+  z-index: 2;
+}
 .pt__menu-dropdown--base li:hover > ul {
   visibility: visible;
   opacity: 1;
@@ -11691,7 +11697,7 @@ button::-moz-focus-inner {
   position: absolute;
 }
 .lt__collapsible > .sidebar > .inner > .title {
-  font: 300 28px/38px 'Open Sans', arial, helvetica, sans-serif;
+  font: 300 24px/32px 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
   padding: 6px 12px;
   position: absolute;
@@ -12872,6 +12878,36 @@ button::-moz-focus-inner {
 .com__calendar-week-helper__day-indent {
   height: 4px;
 }
+/* ******* COMPONENTS: BOX TOOLS ******* */
+.com__box-tools {
+  max-width: 150px;
+}
+.com__box-tools__content .b-line {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+  min-height: 28px;
+  margin-top: 4px;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+}
+.com__box-tools__content .b-line:first-child {
+  margin-top: 0;
+}
+.com__box-tools__content .b-container {
+  width: calc(50% - 4px - 12px);
+}
+.com__box-tools__content .b-link {
+  width: 24px;
+  height: 24px;
+  border-radius: 3px;
+}
+.com__box-tools__content .b-link-container {
+  margin: 0 4px;
+}
 /* ******* COMPONENTS: CALENDAR ******* */
 .com__calendar {
   -webkit-user-select: none;
@@ -13498,11 +13534,13 @@ button::-moz-focus-inner {
 }
 /* ******* COMPONENT: DIALOG: THEMES ******* */
 .com__dialog.theme-default > .bg,
-.com__dialog.theme-black > .bg {
+.com__dialog.theme-black > .bg,
+.com__dialog.theme-light > .bg {
   background: rgba(0, 0, 0, 0.7);
 }
 .com__dialog.theme-default > .bg > .icon,
-.com__dialog.theme-black > .bg > .icon {
+.com__dialog.theme-black > .bg > .icon,
+.com__dialog.theme-light > .bg > .icon {
   width: 24px;
   height: 24px;
   font-size: 0;
@@ -13515,62 +13553,99 @@ button::-moz-focus-inner {
   left: auto;
 }
 .com__dialog.theme-default > .bg > .icon.default,
-.com__dialog.theme-black > .bg > .icon.default {
+.com__dialog.theme-black > .bg > .icon.default,
+.com__dialog.theme-light > .bg > .icon.default {
   background-image: url("../img/MagpieUI/icons/medium/close-white.png");
 }
 .com__dialog.theme-default > .bg:hover > .icon,
-.com__dialog.theme-black > .bg:hover > .icon {
+.com__dialog.theme-black > .bg:hover > .icon,
+.com__dialog.theme-light > .bg:hover > .icon {
   opacity: 1;
 }
 .com__dialog.theme-default > .window > .icon,
-.com__dialog.theme-black > .window > .icon {
+.com__dialog.theme-black > .window > .icon,
+.com__dialog.theme-light > .window > .icon {
   width: 24px;
   height: 24px;
-  right: 24px;
-  top: 19px;
 }
 .com__dialog.theme-default > .window > .icon.default,
-.com__dialog.theme-black > .window > .icon.default {
+.com__dialog.theme-black > .window > .icon.default,
+.com__dialog.theme-light > .window > .icon.default {
   background-image: url("../img/MagpieUI/icons/medium/close.png");
 }
 .com__dialog.theme-default > .window > .inner,
-.com__dialog.theme-black > .window > .inner {
+.com__dialog.theme-black > .window > .inner,
+.com__dialog.theme-light > .window > .inner {
   background-color: #ffffff;
   border-radius: 3px;
 }
 .com__dialog.theme-default > .window > .inner > .title,
-.com__dialog.theme-black > .window > .inner > .title {
-  font: 300 28px/38px 'Open Sans', arial, helvetica, sans-serif;
+.com__dialog.theme-black > .window > .inner > .title,
+.com__dialog.theme-light > .window > .inner > .title {
+  font: 300 24px/32px 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
-  padding: 12px 24px;
 }
 .com__dialog.theme-default > .window > .inner > .descr > .scroll > .inner,
-.com__dialog.theme-black > .window > .inner > .descr > .scroll > .inner {
+.com__dialog.theme-black > .window > .inner > .descr > .scroll > .inner,
+.com__dialog.theme-light > .window > .inner > .descr > .scroll > .inner {
   padding: 0 24px;
 }
 .com__dialog.theme-default > .window > .inner > .descr:first-child > .scroll > .inner,
-.com__dialog.theme-black > .window > .inner > .descr:first-child > .scroll > .inner {
+.com__dialog.theme-black > .window > .inner > .descr:first-child > .scroll > .inner,
+.com__dialog.theme-light > .window > .inner > .descr:first-child > .scroll > .inner {
   padding-top: 24px;
 }
 .com__dialog.theme-default > .window > .inner > .descr:last-child > .scroll > .inner,
-.com__dialog.theme-black > .window > .inner > .descr:last-child > .scroll > .inner {
+.com__dialog.theme-black > .window > .inner > .descr:last-child > .scroll > .inner,
+.com__dialog.theme-light > .window > .inner > .descr:last-child > .scroll > .inner {
   padding-bottom: 24px;
 }
 .com__dialog.theme-default > .window > .inner > .buttons,
-.com__dialog.theme-black > .window > .inner > .buttons {
+.com__dialog.theme-black > .window > .inner > .buttons,
+.com__dialog.theme-light > .window > .inner > .buttons {
   padding: 24px;
 }
 .com__dialog.theme-default.is-fullscreen > .window > .inner,
-.com__dialog.theme-black.is-fullscreen > .window > .inner {
+.com__dialog.theme-black.is-fullscreen > .window > .inner,
+.com__dialog.theme-light.is-fullscreen > .window > .inner {
   border-radius: 0;
 }
+.com__dialog.theme-default > .window > .icon,
+.com__dialog.theme-black > .window > .icon,
+.com__dialog.theme-light > .window > .icon {
+  top: 16px;
+}
+.com__dialog.theme-default > .window > .inner > .title,
+.com__dialog.theme-black > .window > .inner > .title,
+.com__dialog.theme-light > .window > .inner > .title {
+  min-height: 56px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
 .com__dialog.theme-default.is-title-reserve > .window > .inner > .descr:first-child,
-.com__dialog.theme-black.is-title-reserve > .window > .inner > .descr:first-child {
-  padding-top: 62px;
+.com__dialog.theme-black.is-title-reserve > .window > .inner > .descr:first-child,
+.com__dialog.theme-light.is-title-reserve > .window > .inner > .descr:first-child {
+  padding-top: 56px;
+}
+.com__dialog.theme-default > .window > .icon,
+.com__dialog.theme-black > .window > .icon,
+.com__dialog.theme-light > .window > .icon {
+  right: 24px;
+}
+.com__dialog.theme-default > .window > .inner > .title,
+.com__dialog.theme-black > .window > .inner > .title,
+.com__dialog.theme-light > .window > .inner > .title {
+  padding-left: 24px;
 }
 .com__dialog.theme-default.has-close-inside > .window > .inner > .title,
-.com__dialog.theme-black.has-close-inside > .window > .inner > .title {
+.com__dialog.theme-black.has-close-inside > .window > .inner > .title,
+.com__dialog.theme-light.has-close-inside > .window > .inner > .title {
   padding-right: 72px;
+}
+.com__dialog.theme-default:not(.is-title-reserve).has-no-title > .window > .icon,
+.com__dialog.theme-black:not(.is-title-reserve).has-no-title > .window > .icon,
+.com__dialog.theme-light:not(.is-title-reserve).has-no-title > .window > .icon {
+  right: -48px;
 }
 .com__dialog.theme-black {
   color: #ffffff;
@@ -13619,6 +13694,52 @@ button::-moz-focus-inner {
 .com__dialog.theme-black > .window > .inner > .title {
   color: #ffffff;
 }
+.com__dialog.theme-light > .bg {
+  background: rgba(255, 255, 255, 0.7);
+}
+.com__dialog.theme-light > .bg > .icon.default {
+  background-image: url("../img/MagpieUI/icons/medium/close.png");
+}
+.com__dialog.theme-light > .window > .icon.default {
+  background-image: url("../img/MagpieUI/icons/medium/close-white.png");
+}
+.com__dialog.theme-light > .window > .inner {
+  background-color: #ffffff;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+}
+.com__dialog.theme-light > .window > .inner > .title {
+  color: #ffffff;
+  background-color: #2985e0;
+}
+.com__dialog.theme-light > .window > .inner > .descr > .scroll > .inner {
+  padding-top: 24px;
+}
+.com__dialog.theme-light.has-no-title > .window > .icon.default {
+  background-image: url("../img/MagpieUI/icons/medium/close.png");
+}
+.com__dialog.theme-light > .window > .icon {
+  top: 12px;
+}
+.com__dialog.theme-light > .window > .inner > .title {
+  min-height: 48px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+.com__dialog.theme-light.is-title-reserve > .window > .inner > .descr:first-child {
+  padding-top: 48px;
+}
+.com__dialog.theme-light > .window > .icon {
+  right: 12px;
+}
+.com__dialog.theme-light > .window > .inner > .title {
+  padding-left: 12px;
+}
+.com__dialog.theme-light.has-close-inside > .window > .inner > .title {
+  padding-right: 48px;
+}
+.com__dialog.theme-light:not(.is-title-reserve).has-no-title > .window > .icon {
+  right: -36px;
+}
 /* *** FONT *** */
 .com__dialog-font--theme-black {
   color: #ffffff;
@@ -13658,6 +13779,7 @@ button::-moz-focus-inner {
 .com__dialog-font--theme-black .com__glossary .com__glossary__title {
   color: #ffffff;
 }
+/* *** MIXINS *** */
 /* ******* COMPONENTS: FORM ******* */
 .com__form {
   margin: 0 0 24px;
@@ -14534,6 +14656,9 @@ button::-moz-focus-inner {
 }
 .com__tooltip.com__menu-tooltip .pt__menu .pt__menu-dropdown li:first-child:before {
   display: none;
+}
+.com__tooltip.com__menu-tooltip .pt__menu .pt__menu-dropdown li:hover {
+  z-index: 2;
 }
 .com__tooltip.com__menu-tooltip .pt__menu .pt__menu-dropdown li:hover > ul {
   visibility: visible;
@@ -15856,6 +15981,7 @@ html.ie9 .com__palette .b-range {
   position: absolute;
   z-index: 1;
   display: none;
+  overflow: hidden;
   opacity: 0;
   border-radius: 3px;
   top: 0;
@@ -16024,6 +16150,9 @@ html.ie9 .com__palette .b-range {
 }
 .com__tabset__head-menu .pt__menu-dropdown li:first-child:before {
   display: none;
+}
+.com__tabset__head-menu .pt__menu-dropdown li:hover {
+  z-index: 2;
 }
 .com__tabset__head-menu .pt__menu-dropdown li:hover > ul {
   visibility: visible;
@@ -16580,7 +16709,7 @@ html.ie9 .com__timeselect > .inner > .sep {
   margin-bottom: 0;
 }
 .com__togglebox > dt {
-  min-height: 38px;
+  min-height: 32px;
   position: relative;
   cursor: pointer;
   -webkit-user-select: none;
@@ -16594,7 +16723,7 @@ html.ie9 .com__timeselect > .inner > .sep {
   transition: background 100ms ease-in-out, color 100ms ease-in-out;
 }
 .com__togglebox > dt .icon {
-  height: 38px;
+  height: 32px;
   float: right;
   margin: 0 0 0 24px;
   background-position: 100% 50%;
@@ -16605,7 +16734,7 @@ html.ie9 .com__timeselect > .inner > .sep {
   transition: -webkit-transform 250ms ease-in-out, -ms-transform 250ms ease-in-out, transform 250ms ease-in-out;
 }
 .com__togglebox > dt .title {
-  font: 300 28px/38px 'Open Sans', arial, helvetica, sans-serif;
+  font: 300 24px/32px 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
   overflow: hidden;
   white-space: nowrap;

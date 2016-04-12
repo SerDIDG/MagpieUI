@@ -20,7 +20,7 @@ cm.define('Com.Spacer', {
     'params' : {
         'node' : cm.Node('div'),
         'name' : '',
-        'minHeight' : 24,
+        'minHeight' : 0,
         'isEditing' : true,
         'customEvents' : true,
         'Com.Draggable' : {

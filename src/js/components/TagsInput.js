@@ -20,7 +20,7 @@ cm.define('Com.TagsInput', {
     ],
     'params' : {
         'input' : null,                                 // Deprecated, use 'node' parameter instead.
-        'node' : cm.Node('input', {'type' : 'text'}),
+        'node' : cm.node('input', {'type' : 'text'}),
         'container' : null,
         'name' : '',
         'embedStructure' : 'replace',
