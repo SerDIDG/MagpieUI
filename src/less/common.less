@@ -1,4 +1,7 @@
-/* ************ MAGPIE UI: COMMON STYLES ************ */
+
+// /* ************************************************ */
+// /* ******* MAGPIE UI: COMMON ******* */
+// /* ************************************************ */
 
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
 
@@ -144,7 +147,7 @@
 }
 
 .cm__box {
-    margin: 0 0 @CmIndent-Medium;
+    margin-bottom: @CmUI-BoxIndent;
 
     &.bottom,
     &.is-last,
@@ -154,10 +157,24 @@
 }
 
 .cm__box-reverse {
-    margin: @CmIndent-Medium 0 0;
+    margin-top: @CmIndent-Medium;
 
     &:first-child {
         margin-top: 0;
+    }
+}
+
+.cm__button-wrapper {
+    .button,
+    .browse-button,
+    .com__menu {
+        width: 100% !important;
+        margin: 0 !important;
+        .mx__flex(none) !important;
+    }
+
+    > .hidden {
+        display: none;
     }
 }
 

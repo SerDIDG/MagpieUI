@@ -1,12 +1,19 @@
 /* ******* COMMON: ICONS ******* */
 
 .cm__icon,
-.icon {
+.icon,
+[class^="svg__"],
+[class*=" svg__"] {
     display: block;
-    background: transparent 50% 50% no-repeat;
+    position: relative;
+    background-color: transparent;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
 
     &.initial {
-        background: transparent 50% 50% no-repeat;
+        background-color: transparent;
+        background-position: 50% 50%;
+        background-repeat: no-repeat;
     }
 
     &.inline {
@@ -37,6 +44,14 @@
             opacity: @CmUI-Opacity-Hover;
             .mx__transition(opacity, @CmUI-Transition-DurationReverse);
         }
+    }
+
+    &.xxx-small {
+        .cm__size__xxx-small;
+    }
+
+    &.xx-small {
+        .cm__size__xx-small;
     }
 
     &.x-small {
@@ -173,7 +188,7 @@
     }
 
     &.small {
-        .for(loader loader-circle); .-each(@name) {
+        .for(loader loader-circle loader-circle-white); .-each(@name) {
             &.@{name} {
                 background-image: url("@{CmPath-Images}/icons/small/@{name}.gif");
             }
@@ -322,6 +337,10 @@
 
     &:hover {
         text-decoration: none;
+    }
+
+    &.xxx-small {
+        .cm-i__size(@CmSize-XXXSmall);
     }
 
     &.xx-small {

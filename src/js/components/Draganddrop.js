@@ -61,7 +61,7 @@ function(params){
     var init = function(){
         var areasNodes;
 
-        getCSSHelpers();
+        getLESSVariables();
         that.setParams(params);
         that.convertEvents(that.params['events']);
 
@@ -91,9 +91,9 @@ function(params){
         }
     };
 
-    var getCSSHelpers = function(){
-        that.params['dropDuration'] = cm.getTransitionDurationFromRule('.pt__dnd-helper__drop-duration');
-        that.params['moveDuration'] = cm.getTransitionDurationFromRule('.pt__dnd-helper__move-duration');
+    var getLESSVariables = function(){
+        that.params['dropDuration'] = cm.getTransitionDurationFromLESS('PtDnD-DropDuration', that.params['dropDuration']);
+        that.params['moveDuration'] = cm.getTransitionDurationFromLESS('PtDnD-MoveDuration', that.params['moveDuration']);
     };
 
     var initArea = function(node, params){

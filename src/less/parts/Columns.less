@@ -1,0 +1,35 @@
+/* ******* PARTS: COLUMNS ******* */
+
+.pt__columns {
+    .cm__box;
+
+    > .inner {
+        .display-flex;
+
+        > .column {
+            .mx__flex(1);
+        }
+    }
+
+    .pt__columns__indent(@PtColumns-Indent);
+
+    .for(@PtColumns-Indents); .-each(@name) {
+        &.indent-@{name} {
+            .pt__columns__indent(@name);
+        }
+    }
+}
+
+.pt__columns__indent (@value : @PtColumns-Indent) {
+    @half: round(@value / 2);
+
+    > .inner {
+        margin-right: -@half;
+        margin-left: -@half;
+
+        > .column {
+            margin-right: @half;
+            margin-left: @half;
+        }
+    }
+}

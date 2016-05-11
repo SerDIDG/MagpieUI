@@ -35,13 +35,19 @@ cm.define('Com.AbstractRange', {
 },
 function(params){
     var that = this;
-
+    that.isDestructed = false;
     that.previousValue = null;
     that.value = null;
     that.nodes = {};
     that.components = {};
+    that.construct(params);
+});
 
-    var init = function(){
+cm.getConstructor('Com.AbstractRange', function(classConstructor, className, classProto){
+    classProto.construct = function(params){
+        var that = this;
+        that.redrawHandler = that.redraw.bind(that);
+        that.destructHandler = that.destruct.bind(that);
         that.setParams(params);
         that.convertEvents(that.params['events']);
         that.getDataConfig(that.params['node']);
@@ -52,14 +58,42 @@ function(params){
         that.set(that.params['value'], false);
         that.addToStack(that.nodes['container']);
         that.triggerEvent('onRender');
+        return that;
     };
 
-    /* ******* PUBLIC ******* */
+    classProto.destruct = function(){
+        var that = this;
+        if(!that.isDestructed){
+            that.isDestructed = true;
+            that.unsetEvents();
+            that.removeFromStack();
+        }
+        return that;
+    };
 
-    init();
-});
+    classProto.set = function(value, triggerEvents){
+        var that = this;
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        value = that.validateValue(value);
+        that.setCounter(value);
+        that.setDraggable();
+        that.selectAction(value, triggerEvents);
+        that.setAction(value, triggerEvents);
+        that.changeAction(triggerEvents);
+        return that;
+    };
 
-cm.getConstructor('Com.AbstractRange', function(classConstructor, className, classProto){
+    classProto.get = function(){
+        var that = this;
+        return that.value;
+    };
+
+    classProto.redraw = function(){
+        var that = this;
+        that.setDraggable();
+        return that;
+    };
+
     classProto.validateParams = function(){
         var that = this;
         if(that.params['isInput'] && cm.isNode(that.params['node'])){
@@ -108,11 +142,16 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
                         },
                         'onSelect' : function(my, data){
                             var value = that.getRangeValue(data);
-                            that.setHelper(value, 'onSelect')
+                            value = that.validateValue(value);
+                            that.setCounter(value);
+                            that.selectAction(value);
                         },
                         'onSet' : function(my, data){
                             var value = that.getRangeValue(data);
-                            that.setHelper(value, 'onSet')
+                            value = that.validateValue(value);
+                            that.setCounter(value);
+                            that.setAction(value);
+                            that.changeAction();
                         }
                     }
                 })
@@ -127,8 +166,7 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
 
     classProto.setEvents = function(){
         var that = this;
-        that.redrawHandler = that.redraw.bind(that);
-        that.destructHandler = that.destruct.bind(that);
+        // Windows events
         cm.addEvent(window, 'resize', that.redrawHandler);
         // Add custom events
         if(that.params['customEvents']){
@@ -140,6 +178,7 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
 
     classProto.unsetEvents = function(){
         var that = this;
+        // Windows events
         cm.removeEvent(window, 'resize', that.redrawHandler);
         // Remove custom events
         if(that.params['customEvents']){
@@ -255,37 +294,6 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
         return value;
     };
 
-    classProto.validateValue = function(value){
-        var that = this;
-        if(that.params['max'] > that.params['min']){
-            value = Math.min(Math.max(value, that.params['min']), that.params['max']);
-        }else{
-            value = Math.max(Math.min(value, that.params['min']), that.params['max']);
-        }
-        return value;
-    };
-
-    classProto.setHelper = function(value, eventName){
-        var that = this;
-        value = that.validateValue(value);
-        that.setCounter(value);
-        // Trigger Events
-        that.triggerEvent(eventName, value);
-        if(eventName == 'onSelect'){
-            that.setAction(value);
-            that.changeAction();
-        }
-        return that;
-    };
-
-    classProto.setAction = function(value){
-        var that = this;
-        that.previousValue = that.value;
-        that.value = value;
-        that.nodes['hidden'].value = that.value;
-        return that;
-    };
-
     classProto.setDraggable = function(){
         var that = this,
             dimensions = that.components['draggable'].getDimensions(),
@@ -320,45 +328,56 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
         return that;
     };
 
-    classProto.changeAction = function(){
+    classProto.validateValue = function(value){
         var that = this;
-        if(that.value != that.previousValue){
-            that.triggerEvent('onChange', that.value);
+        if(that.params['max'] > that.params['min']){
+            value = Math.min(Math.max(value, that.params['min']), that.params['max']);
+        }else{
+            value = Math.max(Math.min(value, that.params['min']), that.params['max']);
         }
-        return that;
+        return value;
     };
 
-    classProto.set = function(value, triggerEvents){
+    classProto.setHelper = function(value, eventName){
         var that = this;
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
         value = that.validateValue(value);
         that.setCounter(value);
-        that.setAction(value);
-        that.setDraggable();
-        // Trigger Event
-        if(triggerEvents){
-            that.triggerEvent('onSet', that.value);
-            that.triggerEvent('onSelect', that.value);
+        // Trigger Events
+        that.triggerEvent(eventName, value);
+        if(eventName == 'onSelect'){
+            that.selectAction(value);
             that.changeAction();
         }
         return that;
     };
 
-    classProto.get = function(){
+    classProto.selectAction = function(value, triggerEvents){
         var that = this;
-        return that.value;
-    };
-
-    classProto.redraw = function(){
-        var that = this;
-        that.setDraggable();
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        if(triggerEvents){
+            that.triggerEvent('onSelect', value);
+        }
         return that;
     };
 
-    classProto.destruct = function(){
+    classProto.setAction = function(value, triggerEvents){
         var that = this;
-        that.unsetEvents();
-        that.removeFromStack();
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        that.previousValue = that.value;
+        that.value = value;
+        that.nodes['hidden'].value = that.value;
+        if(triggerEvents){
+            that.triggerEvent('onSet', that.value);
+        }
+        return that;
+    };
+
+    classProto.changeAction = function(triggerEvents){
+        var that = this;
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        if(triggerEvents && that.value != that.previousValue){
+            that.triggerEvent('onChange', that.value);
+        }
         return that;
     };
 });

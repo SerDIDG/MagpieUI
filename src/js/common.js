@@ -1,3 +1,8 @@
+
+// /* ************************************************ */
+// /* ******* MAGPIE UI: COMMON ******* */
+// /* ************************************************ */
+
 /* ******* INFO ******* */
 
 /* *******
@@ -24,7 +29,7 @@
  ******* */
 
 var cm = {
-        '_version' : '3.15.4',
+        '_version' : '3.16.0',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -517,9 +522,12 @@ cm.getEventClientPosition = function(e){
         try{
             o['left'] = e.clientX;
             o['top'] = e.clientY;
-            if(e.touches){
+            if(e.touches && e.touches.length){
                 o['left'] = e.touches[0].clientX;
                 o['top'] = e.touches[0].clientY;
+            }else if(e.changedTouches && e.changedTouches.length){
+                o['left'] = e.changedTouches[0].clientX;
+                o['top'] = e.changedTouches[0].clientY;
             }
         }catch(e){}
     }
@@ -1208,14 +1216,14 @@ cm.insertLast = cm.appendChild = function(node, target){
 };
 
 cm.insertBefore = function(node, target){
-    if(cm.isNode(node) && cm.isNode(target)){
+    if(cm.isNode(node) && cm.isNode(target) && target.parentNode){
         target.parentNode.insertBefore(node, target);
     }
     return node;
 };
 
 cm.insertAfter = function(node, target){
-    if(cm.isNode(node) && cm.isNode(target)){
+    if(cm.isNode(node) && cm.isNode(target) && target.parentNode){
         var before = target.nextSibling;
         if(before != null){
             cm.insertBefore(node, before);
@@ -1230,6 +1238,24 @@ cm.replaceNode = function(node, target){
     cm.insertBefore(node, target);
     cm.remove(target);
     return node;
+};
+
+cm.appendNodes = function(nodes, target){
+    if(cm.isEmpty(nodes)){
+        return target;
+    }
+    if(cm.isNode(nodes)){
+        target.appendChild(nodes);
+    }else{
+        while(nodes.length){
+            if(cm.isNode(nodes[0])){
+                target.appendChild(nodes[0]);
+            }else{
+                cm.remove(nodes[0]);
+            }
+        }
+    }
+    return target;
 };
 
 cm.hideSpecialTags = function(){
@@ -1409,12 +1435,17 @@ cm.setFDO = function(o, form){
 };
 
 cm.getFDO = function(o, chbx){
-    var data = {},
-        elements = [
-            o.getElementsByTagName('input'),
-            o.getElementsByTagName('textarea'),
-            o.getElementsByTagName('select')
-        ];
+    var data = {};
+
+    if(!cm.isNode(o)){
+        return data;
+    }
+
+    var elements = [
+        o.getElementsByTagName('input'),
+        o.getElementsByTagName('textarea'),
+        o.getElementsByTagName('select')
+    ];
 
     var setValue = function(name, value){
         if(/\[.*\]$/.test(name)){
@@ -1618,6 +1649,7 @@ cm.strReplace = function(str, vars){
 };
 
 cm.reduceText = function(str, length, points){
+    points = typeof points == 'undefined' ? false : points;
     if(str.length > length){
         return str.slice(0, length) + ((points) ? '...' : '');
     }else{
@@ -2459,18 +2491,37 @@ cm.getSupportedStyle = function(style){
 cm.getTransitionDurationFromRule = function(rule){
     var openDurationRule = cm.getCSSRule(rule)[0],
         openDurationProperty;
-    if(openDurationRule){
-        if(openDurationProperty = openDurationRule.style[cm.getSupportedStyle('transitionDuration')]){
-            if(openDurationProperty.match('ms')){
-                return parseFloat(openDurationProperty);
-            }else if(openDurationProperty.match('s')){
-                return (openDurationProperty) / 1000;
-            }else{
-                return parseFloat(openDurationProperty);
-            }
+    if(
+        openDurationRule
+        && (openDurationProperty = openDurationRule.style[cm.getSupportedStyle('transitionDuration')])
+    ){
+        return cm.parseTransitionDuration(openDurationProperty);
+    }
+    return 0;
+};
+
+cm.getTransitionDurationFromLESS = function(name, defaults){
+    var variable = cm.getLESSVariable(name, defaults, false);
+    return cm.parseTransitionDuration(variable);
+};
+
+cm.parseTransitionDuration = function(value){
+    if(value){
+        if(value.match('ms')){
+            return parseFloat(value);
+        }else if(value.match('s')){
+            return (value) / 1000;
+        }else{
+            return parseFloat(value);
         }
     }
     return 0;
+};
+
+cm.getLESSVariable = function(name, defaults, parse){
+    name = name.replace(/^@/, '');
+    var variable = window.LESS && window.LESS[name] ? window.LESS[name] : defaults;
+    return parse ? cm.styleToNumber(variable) : variable;
 };
 
 cm.createStyleSheet = function(){
@@ -2577,15 +2628,106 @@ cm.inRange = function(a1, b1, a2, b2){
     return a1 >= a2 && a1 <= b2 || b1 >= a2 && b1 <= b2 || a2 >= a1 && a2 <= b1
 };
 
+cm.CSSValuesToArray = function(value){
+    if(cm.isEmpty(value)){
+        return [0, 0, 0, 0];
+    }
+    value = value.replace(/[^0-9\s]/g , '').split(/\s+/);
+    cm.forEach(value, function(item, key){
+        value[key] = cm.isEmpty(item) ? 0 : parseFloat(item);
+    });
+    switch(value.length){
+        case 0:
+            value = [0, 0, 0, 0];
+            break;
+        case 1:
+            value = [value[0], value[0], value[0], value[0]];
+            break;
+        case 2:
+            value = [value[0], value[1], value[0], value[1]];
+            break;
+        case 3:
+            value = [value[0], value[1], value[2], value[1]];
+            break;
+    }
+    return value;
+};
+
+cm.arrayToCSSValues = function(a){
+    cm.forEach(a, function(item, key){
+        a[key] = cm.isEmpty(item) ? 0 : parseFloat(item);
+    });
+    return a.reduce(function(prev, next, index, a){
+        return prev + 'px ' + next + ((index == a.length - 1) ? 'px' : '');
+    });
+};
+
 /* ******* VALIDATORS ******* */
 
-cm.allowOnlyDigit = function(input, callback){
-    cm.addEvent(input, 'keypress', function(e){
-        if(e.charCode >= 48 && e.charCode <= 57){
-            callback && callback();
-        }else{
-            cm.preventDefault(e);
+cm.keyCodeTable = {
+    8  : 'delete',
+    9  : 'tab',
+    13 : 'enter',
+    27 : 'escape',
+    32 : 'space',
+    35 : 'home',
+    36 : 'end',
+    37 : 'left',
+    38 : 'top',
+    39 : 'right',
+    40 : 'bottom',
+    46 : 'backspace'
+};
+
+cm.isKeyCode = function(code, rules){
+    var isMath = false;
+    if(cm.isString(rules)){
+        rules = rules.split(/\s+/);
+    }
+    cm.forEach(rules, function(rule){
+        if(cm.keyCodeTable[code] == rule){
+            isMath = true;
         }
+    });
+    return isMath;
+};
+
+cm.allowKeyCode = function(code, rules){
+    var codes = [];
+    cm.forEach(cm.keyCodeTable, function(item, key){
+        if(cm.inArray(rules, item)){
+            codes.push(key);
+        }
+    });
+    return cm.inArray(codes, code.toString());
+};
+
+cm.disallowKeyCode = function(code, rules){
+    var codes = [];
+    cm.forEach(cm.keyCodeTable, function(item, key){
+        if(!cm.inArray(rules, item)){
+            codes.push(key);
+        }
+    });
+    cm.log(codes, code);
+    return cm.inArray(codes, code.toString());
+};
+
+cm.charCodeIsDigit = function(code){
+    var codeString = String.fromCharCode(code);
+    return /^\d$/.test(codeString);
+};
+
+cm.allowOnlyDigitInputEvent = function(input, callback){
+    var value;
+    cm.addEvent(input, 'input', function(e){
+        value = input.value.replace(/[^\d]/, '');
+        if(input.type == 'number'){
+            input.value = Math.min(parseFloat(value), parseFloat(input.max));
+        }else{
+            input.value = cm.reduceText(value, parseInt(input.maxlength));
+        }
+        callback && callback(e, input.value);
     });
     return input;
 };
@@ -2917,9 +3059,15 @@ cm.ajax = function(o){
             config['params'] = cm.obj2FormData(config['params']);
             delete config['headers']['Content-Type'];
         }else if(cm.isObject(config['params'])){
+            config['params'] = cm.objectReplace(config['params'], {
+                '%baseurl%' : cm._baseUrl
+            });
             config['params'] = cm.obj2URI(config['params']);
         }
         // Build request link
+        config['url'] = cm.strReplace(config['url'], {
+            '%baseurl%' : cm._baseUrl
+        });
         if(config['method'] != 'post'){
             if(!cm.isEmpty(config['params'])){
                 config['url'] = [config['url'], config['params']].join('?');
@@ -3007,7 +3155,10 @@ cm.ajax = function(o){
         // Prepare url and attach events
         scriptNode = cm.Node('script', {'type' : 'application/javascript'});
         if(/%callback%|%25callback%25/.test(config['url'])){
-            config['url'] = cm.strReplace(config['url'], {'%callback%' : callbackSuccessName, '%25callback%25' : callbackSuccessName});
+            config['url'] = cm.strReplace(config['url'], {
+                '%callback%' : callbackSuccessName,
+                '%25callback%25' : callbackSuccessName
+            });
         }else{
             cm.addEvent(scriptNode, 'load', window[callbackSuccessName]);
         }

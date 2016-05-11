@@ -41,6 +41,11 @@
     }
 }
 
+.mx__transition-delay (@duration) {
+    -webkit-transition-delay: @duration;
+            transition-delay: @duration;
+}
+
 .mx__transform (@properties) {
     .for(@properties); .-each(@property) {
         -webkit-transform+_: @property;

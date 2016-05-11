@@ -61,26 +61,26 @@ module.exports = function(grunt) {
 
         clean : {
             scripts : [
-                '<%= paths.build %>/js',
-                '<%= paths.docs %>/build/js'
+                '<%= paths.build %>/js/*',
+                '<%= paths.docs %>/build/js/*'
             ],
             styles : [
-                '<%= paths.build %>/less',
-                '<%= paths.build %>/css',
-                '<%= paths.docs %>/build/less',
-                '<%= paths.docs %>/build/css'
+                '<%= paths.build %>/less/*',
+                '<%= paths.build %>/css/*',
+                '<%= paths.docs %>/build/less/*',
+                '<%= paths.docs %>/build/css/*'
             ],
             images : [
-                '<%= paths.build %>/img',
-                '<%= paths.docs %>/build/img'
+                '<%= paths.build %>/img/*',
+                '<%= paths.docs %>/build/img/*'
             ],
             fonts : [
-                '<%= paths.build %>/fonts',
-                '<%= paths.docs %>/build/fonts'
+                '<%= paths.build %>/fonts/*',
+                '<%= paths.docs %>/build/fonts/*'
             ],
             stuff : [
-                '<%= paths.docs %>/build/content',
-                '<%= paths.docs %>/build/stuff'
+                '<%= paths.docs %>/build/content/*',
+                '<%= paths.docs %>/build/stuff/*'
             ],
             temp : [
                 '<%= paths.temp %>'
@@ -109,7 +109,10 @@ module.exports = function(grunt) {
                     '<%= paths.src %>/js/modules.js',
                     '<%= paths.src %>/js/parts.js',
                     '<%= paths.src %>/js/init.js',
+                    '<%= paths.src %>/js/components/AbstractInput.js',
+                    '<%= paths.src %>/js/components/AbstractRange.js',
                     '<%= paths.src %>/js/components/Form.js',
+                    '<%= paths.src %>/js/components/BoxTools.js',
                     '<%= paths.src %>/js/components/**/*.js',
                     '!<%= paths.src %>/js/components/dev/**/*.js',
                     '!<%= paths.src %>/js/components/old/**/*.js'
@@ -119,6 +122,7 @@ module.exports = function(grunt) {
             scripts_docs : {
                 src : [
                     '<%= paths.build %>/js/<%= pkg.name %>.js',
+                    '<%= paths.docs %>/build/js/<%= pkg.name %>.variables.js',
                     '<%= paths.docs %>/src/js/common.js',
                     '<%= paths.docs %>/src/js/components/**/*.js',
                     '<%= paths.docs %>/src/js/components.js'
@@ -133,8 +137,8 @@ module.exports = function(grunt) {
                     '<%= components.animatecss.styles %>',
                     '<%= components.codemirror.styles %>',
                     '<%= components.fontawesome.styles %>',
-                    '<%= paths.src %>/less/variables/**/*.less',
-                    '<%= paths.src %>/less/variables.less',
+                    '<%= paths.src %>/less/extra/*.less',
+                    '<%= paths.src %>/less/variables/*.less',
                     '<%= paths.src %>/less/mixins.less',
                     '<%= paths.src %>/less/common.less',
                     '<%= paths.src %>/less/common/Font.less',
@@ -159,10 +163,51 @@ module.exports = function(grunt) {
             styles_docs : {
                 src : [
                     '<%= paths.build %>/less/<%= pkg.name %>.less',
-                    '<%= paths.docs %>/src/less/variables.less',
+                    '<%= paths.docs %>/src/less/variables/*.less',
                     '<%= paths.docs %>/src/less/common.less'
                 ],
                 dest : '<%= paths.docs %>/build/less/<%= pkg.name %>.less'
+            },
+            variables : {
+                src : [
+                    '<%= paths.src %>/less/variables/**/*.less'
+                ],
+                dest : '<%= paths.build %>/less/<%= pkg.name %>.variables.less'
+            },
+            variables_docs : {
+                src : [
+                    '<%= paths.build %>/less/<%= pkg.name %>.variables.less',
+                    '<%= paths.docs %>/src/less/variables/*.less'
+                ],
+                dest : '<%= paths.docs %>/build/less/<%= pkg.name %>.variables.less'
+            }
+        },
+
+        svgcss : {
+            build : {
+                options : {
+                    previewhtml : null,
+                    cssprefix : 'svg__',
+                    csstemplate : '<%= paths.src %>/hbs/svg.hbs'
+                },
+                src : ['<%= paths.src %>/img/svg/*.svg'],
+                dest : '<%= paths.src %>/less/extra/svg.less'
+            }
+        },
+
+        lessvars: {
+            options: {
+                format : function(vars){
+                    return 'window.LESS = cm.merge(window.LESS, '+ JSON.stringify(vars) +');';
+                }
+            },
+            build : {
+                src : ['<%= paths.build %>/less/<%= pkg.name %>.variables.less'],
+                dest : '<%= paths.build %>/js/<%= pkg.name %>.variables.js'
+            },
+            docs : {
+                src : ['<%= paths.docs %>/build/less/<%= pkg.name %>.variables.less'],
+                dest : '<%= paths.docs %>/build/js/<%= pkg.name %>.variables.js'
             }
         },
 
@@ -329,12 +374,14 @@ module.exports = function(grunt) {
         }
     });
     // Custom Tasks
-    grunt.registerTask('default', ['scripts', 'styles', 'images', 'fonts', 'stuff']);
+    grunt.registerTask('default', ['clean', 'pre', 'scripts', 'images', 'styles', 'fonts', 'stuff']);
     grunt.registerTask('optimize', ['clean:temp', 'default', 'uglify', 'cssmin', 'imagemin', 'copy:images_optimize', 'clean:temp']);
 
-    grunt.registerTask('scripts', ['clean:scripts', 'concat:scripts', 'concat:scripts_docs']);
-    grunt.registerTask('styles', ['clean:styles', 'concat:styles', 'concat:styles_docs', 'less:build', 'less:docs']);
-    grunt.registerTask('images', ['clean:images', 'copy:images', 'copy:images_docs', 'copy:images_docs_self']);
-    grunt.registerTask('fonts', ['clean:fonts', 'copy:fonts', 'copy:fonts_docs', 'copy:fonts_docs_self']);
-    grunt.registerTask('stuff', ['clean:stuff', 'copy:stuff_docs']);
+    grunt.registerTask('scripts', ['concat:scripts', 'concat:scripts_docs']);
+    grunt.registerTask('images', ['svgcss:build', 'copy:images', 'copy:images_docs', 'copy:images_docs_self']);
+    grunt.registerTask('styles', ['variables', 'concat:styles', 'concat:styles_docs', 'less:build', 'less:docs']);
+    grunt.registerTask('fonts', ['copy:fonts', 'copy:fonts_docs', 'copy:fonts_docs_self']);
+    grunt.registerTask('stuff', ['copy:stuff_docs']);
+    grunt.registerTask('variables', ['concat:variables', 'concat:variables_docs', 'lessvars']);
+    grunt.registerTask('pre', ['svgcss:build', 'variables']);
 };

@@ -23,16 +23,19 @@ cm.define('Com.AbstractInput', {
         'container' : null,
         'name' : '',
         'embedStructure' : 'replace',
+        'value' : null,
         'title' : '',
         'disabled' : false,
         'className' : '',
-        'ui' : true
+        'ui' : true,
+        'maxlength' : 0                 // 0 - infinity
     }
 },
 function(params){
     var that = this;
     that.nodes = {};
     that.components = {};
+    that.isDestructed = false;
     that.previousValue = null;
     that.value = null;
     that.disabled = false;
@@ -42,6 +45,10 @@ function(params){
 cm.getConstructor('Com.AbstractInput', function(classConstructor, className, classProto){
     classProto.construct = function(params){
         var that = this;
+        that.redrawHandler = that.redraw.bind(that);
+        that.destructHandler = that.destruct.bind(that);
+        that.setHandler = that.setAction.bind(that);
+        that.selectHandler = that.selectAction.bind(that);
         that.setParams(params);
         that.convertEvents(that.params['events']);
         that.getDataNodes(that.params['node']);
@@ -50,6 +57,8 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         that.addToStack(that.params['node']);
         that.triggerEvent('onRenderStart');
         that.render();
+        that.setEvents();
+        that.set(that.params['value'], false);
         that.addToStack(that.nodes['container']);
         that.triggerEvent('onRender');
         return that;
@@ -57,16 +66,20 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
 
     classProto.destruct = function(){
         var that = this;
-        that.unsetEvents();
-        that.removeFromStack();
+        if(!that.isDestructed){
+            that.isDestructed = true;
+            that.unsetEvents();
+            that.removeFromStack();
+        }
         return that;
     };
 
     classProto.set = function(value, triggerEvents){
         var that = this;
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        value = that.validateValue(value, triggerEvents);
+        value = that.validateValue(value);
         that.selectAction(value, triggerEvents);
+        that.setAction(value, triggerEvents);
         that.changeAction(triggerEvents);
         return that;
     };
@@ -106,6 +119,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
             that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
             that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
             that.params['disabled'] = that.params['node'].disabled || that.params['node'].readOnly || that.params['disabled'];
+            that.params['value'] = that.params['node'].value || that.params['value'];
         }
         that.disabled = that.params['disabled'];
         return that;
@@ -138,6 +152,12 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
     classProto.setAttributes = function(){
         var that = this;
         cm.addClass(that.nodes['container'], that.params['className']);
+        // Data attributes
+        cm.forEach(that.params['node'].attributes, function(item){
+            if(/^data-(?!node|element)/.test(item.name)){
+                that.nodes['hidden'].setAttribute(item.name, item.value);
+            }
+        });
         if(that.params['title']){
             that.nodes['container'].setAttribute('title', that.lang(that.params['title']));
         }
@@ -149,10 +169,6 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
 
     classProto.setEvents = function(){
         var that = this;
-        that.redrawHandler = that.redraw.bind(that);
-        that.destructHandler = that.destruct.bind(that);
-        that.setHandler = that.setAction.bind(that);
-        that.selectHandler = that.selectAction.bind(that);
         // Windows events
         cm.addEvent(window, 'resize', that.redrawHandler);
         // Add custom events
@@ -179,6 +195,15 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         return value;
     };
 
+    classProto.selectAction = function(value, triggerEvents){
+        var that = this;
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        if(triggerEvents){
+            that.triggerEvent('onSelect', value);
+        }
+        return that;
+    };
+
     classProto.setAction = function(value, triggerEvents){
         var that = this;
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
@@ -187,15 +212,6 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         that.nodes['hidden'].value = that.value;
         if(triggerEvents){
             that.triggerEvent('onSet', that.value);
-        }
-        return that;
-    };
-
-    classProto.selectAction = function(value, triggerEvents){
-        var that = this;
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        if(triggerEvents){
-            that.triggerEvent('onSelect', value);
         }
         return that;
     };

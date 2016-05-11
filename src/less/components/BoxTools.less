@@ -26,10 +26,55 @@
     .b-link {
         width: @ComBoxTools-LinkSize;
         height: @ComBoxTools-LinkSize;
+        background-color: @CmColor-Secondary-LightActive;
         border-radius: @CmBorder-Radius;
+        cursor: pointer;
+        .mx__transition(background box-shadow, @CmUI-Transition-Duration);
+
+        .icon {
+            .svg__chain-angle;
+            width: @ComBoxTools-LinkSize;
+            height: @ComBoxTools-LinkSize;
+            .mx__transition(background, @CmUI-Transition-Duration);
+        }
+
+        &:hover {
+            background-color: @CmColor-Primary-LightActiveHover;
+            .mx__transition(background box-shadow, @CmUI-Transition-DurationReverse);
+
+            .icon {
+                .mx__transition(background, @CmUI-Transition-DurationReverse);
+            }
+        }
+
+        &.active,
+        &:active {
+            background-color: @CmColor-Primary-DarkDefault;
+            box-shadow: @CmUI-ShadowInner;
+
+            .icon {
+                .svg__chain-angle--light;
+                .mx__transition(background, @CmUI-Transition-DurationReverse);
+            }
+        }
     }
 
     .b-link-container {
         margin: 0 @ComBoxTools-LinkIndent;
+    }
+}
+
+.com__box-tools--radius {
+    .com__box-tools__content {
+        @linkIndentHalf: ceil(@ComBoxTools-LinkIndent / 2);
+
+        .b-container {
+            width: calc(~"50% - @{linkIndentHalf}");
+            margin-right: @ComBoxTools-LinkIndent;
+
+            &:last-child {
+                margin-right: 0;
+            }
+        }
     }
 }

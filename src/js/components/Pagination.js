@@ -96,7 +96,7 @@ function(params){
     that.pageCount = 0;
 
     var init = function(){
-        getCSSHelpers();
+        getLESSVariables();
         that.setParams(params);
         that.convertEvents(that.params['events']);
         that.getDataNodes(that.params['node']);
@@ -109,8 +109,8 @@ function(params){
         set(that.params['startPage']);
     };
 
-    var getCSSHelpers = function(){
-        that.params['animateDuration'] = cm.getTransitionDurationFromRule('.com__pagination-helper__duration');
+    var getLESSVariables = function(){
+        that.params['animateDuration'] = cm.getTransitionDurationFromLESS('ComPagination-Duration', that.params['animateDuration']);
     };
 
     var validateParams = function(){

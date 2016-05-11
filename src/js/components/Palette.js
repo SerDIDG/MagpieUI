@@ -125,7 +125,7 @@ function(params){
             'node' : that.nodes['paletteDrag'],
             'limiter' : that.nodes['paletteZone'],
             'events' : {
-                'onSet' : function(my, data){
+                'onSelect' : function(my, data){
                     var dimensions = my.getDimensions();
                     that.value['v'] = cm.toFixed((100 - (100 / dimensions['limiter']['absoluteHeight']) * data['top']) / 100, 2);
                     that.value['s'] = cm.toFixed(((100 / dimensions['limiter']['absoluteWidth']) * data['left']) / 100, 2);
@@ -144,7 +144,7 @@ function(params){
             'limiter' : that.nodes['rangeZone'],
             'direction' : 'vertical',
             'events' : {
-                'onSet' : function(my, data){
+                'onSelect' : function(my, data){
                     var dimensions = my.getDimensions();
                     that.value['h'] = Math.floor(360 - (360 / 100) * ((100 / dimensions['limiter']['absoluteHeight']) * data['top']));
                     if(that.value['a'] == 0){
@@ -163,7 +163,7 @@ function(params){
             'limiter' : that.nodes['opacityZone'],
             'direction' : 'vertical',
             'events' : {
-                'onSet' : function(my, data){
+                'onSelect' : function(my, data){
                     var dimensions = my.getDimensions();
                     that.value['a'] = cm.toFixed((100 - (100 / dimensions['limiter']['absoluteHeight']) * data['top']) / 100, 2);
                     setColor();

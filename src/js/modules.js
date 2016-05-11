@@ -440,6 +440,19 @@ Mod['DataNodes'] = {
         }
         that.nodes = cm.merge(that.nodes, that.params['nodes']);
         return that;
+    },
+    'getDataNodesObject' : function(container, dataMarker, className){
+        var that = this,
+            sourceNodes = {};
+        container = typeof container == 'undefined'? document.body : container;
+        dataMarker = typeof dataMarker == 'undefined'? that.params['nodesDataMarker'] : dataMarker;
+        className = typeof className == 'undefined'? that.params['nodesMarker'] : className;
+        if(className){
+            sourceNodes = cm.getNodes(container, dataMarker)[className] || {};
+        }else{
+            sourceNodes = cm.getNodes(container, dataMarker);
+        }
+        return sourceNodes;
     }
 };
 
@@ -472,7 +485,7 @@ Mod['Storage'] = {
             cm.errorLog({
                 'type' : 'attention',
                 'name' : that._name['full'],
-                'message' : ['Parameter', cm.strWrap(key, '"'), 'does not exist or is not set.'].join(' ')
+                'message' : ['Parameter', cm.strWrap(key, '"'), 'does not exist or is not set in component with name', cm.strWrap(that.params['name'], '"'), '.'].join(' ')
             });
             return null;
         }
@@ -620,10 +633,9 @@ Mod['Stack'] = {
     'findInStack' : function(name, parent, callback){
         var that = this,
             items = [];
-        parent = parent || document.body;
         callback = typeof callback == 'function' ? callback : function(){};
         cm.forEach(that._stack, function(item){
-            if((cm.isEmpty(name) || item['name'] == name) && cm.isParent(parent, item['node'], true)){
+            if((cm.isEmpty(name) || item['name'] == name) && (cm.isEmpty(parent) || cm.isParent(parent, item['node'], true))){
                 items.push(item);
                 callback(item['class'], item, name);
             }

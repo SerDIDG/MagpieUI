@@ -77,7 +77,7 @@ function(params){
     that.isEditing = null;
 
     var init = function(){
-        getCSSHelpers();
+        getLESSVariables();
         that.setParams(params);
         that.convertEvents(that.params['events']);
         that.getDataNodes(that.params['node']);
@@ -92,8 +92,8 @@ function(params){
         that.triggerEvent('onRender');
     };
 
-    var getCSSHelpers = function(){
-        that.params['time'] = cm.getTransitionDurationFromRule('.com__slider-helper__duration');
+    var getLESSVariables = function(){
+        that.params['time'] = cm.getTransitionDurationFromLESS('ComSlider-Duration', that.params['time']);
     };
 
     var validateParams = function(){

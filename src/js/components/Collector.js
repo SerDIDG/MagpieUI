@@ -6,6 +6,7 @@ cm.define('Com.Collector', {
         'Stack'
     ],
     'events' : [
+        'onRenderStart',
         'onRender',
         'onAdd',
         'onRemove',
@@ -15,7 +16,7 @@ cm.define('Com.Collector', {
         'onDestruct'
     ],
     'params' : {
-        'node' : cm.Node('div'),
+        'node' : 'document.body',
         'name' : '',
         'attribute' : 'data-element',
         'autoInit' : false
@@ -32,6 +33,8 @@ function(params){
         that.setParams(params);
         that.convertEvents(that.params['events']);
         that.getDataConfig(that.params['node']);
+        that.addToStack(that.params['node']);
+        that.triggerEvent('onRenderStart');
         render();
         that.addToStack(that.params['node']);
         that.triggerEvent('onRender');

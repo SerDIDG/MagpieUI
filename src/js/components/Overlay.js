@@ -17,13 +17,14 @@ cm.define('Com.Overlay', {
     'params' : {
         'name' : '',
         'container' : 'document.body',
+        'appendMode' : 'appendChild',
         'theme' : 'default',            // transparent | default | light | dark
         'position' : 'fixed',
         'showSpinner' : true,
         'showContent' : true,
         'autoOpen' : true,
         'removeOnClose' : true,
-        'duration' : 500
+        'duration' : 'cm._config.animDurationLong'
     }
 },
 function(params){
@@ -37,7 +38,7 @@ function(params){
     that.openInterval = null;
 
     var init = function(){
-        getCSSHelpers();
+        getLESSVariables();
         that.setParams(params);
         that.convertEvents(that.params['events']);
         validateParams();
@@ -46,9 +47,9 @@ function(params){
         that.triggerEvent('onRender');
         that.params['autoOpen'] && that.open();
     };
-    
-    var getCSSHelpers = function(){
-        that.params['duration'] = cm.getTransitionDurationFromRule('.pt__overlay-helper__duration');
+
+    var getLESSVariables = function(){
+        that.params['duration'] = cm.getLESSVariable('PtOverlay-Duration', that.params['duration']);
     };
 
     var validateParams = function(){
@@ -94,7 +95,7 @@ function(params){
                 cm.addClass(that.nodes['container'], 'is-immediately');
             }
             if(!cm.inDOM(that.nodes['container'])){
-                that.params['container'].appendChild(that.nodes['container']);
+                cm[that.params['appendMode']](that.nodes['container'], that.params['container']);
             }
             that.triggerEvent('onOpenStart');
             cm.addClass(that.nodes['container'], 'is-open', true);

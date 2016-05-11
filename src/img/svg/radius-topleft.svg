@@ -1,0 +1,19 @@
+<svg id="radius-topleft.svg" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #5e5e5e;
+      }
+
+      .cls-1, .cls-2 {
+        fill-rule: evenodd;
+      }
+
+      .cls-2 {
+        fill: #2d6ec9;
+      }
+    </style>
+  </defs>
+  <path class="cls-1" d="M7,20V19H19V7h1V20H7Z" transform="translate(-4 -4)"/>
+  <path class="cls-2" d="M12,4h8V20H4V12A8,8,0,0,1,12,4Zm1,3h7V20H7V13A6,6,0,0,1,13,7Z" transform="translate(-4 -4)"/>
+</svg>

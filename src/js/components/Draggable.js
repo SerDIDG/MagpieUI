@@ -75,7 +75,7 @@ function(params){
         that.getDimensions();
         that.nodeStartX = cm.getStyle(that.params['node'], 'left', true);
         that.nodeStartY = cm.getStyle(that.params['node'], 'top', true);
-        setPositionHelper(position, 'onSet');
+        setPositionHelper(position, 'onSelect');
         // Add move event on document
         cm.addEvent(window, 'mousemove', move);
         cm.addEvent(window, 'mouseup', stop);
@@ -87,7 +87,7 @@ function(params){
         cm.preventDefault(e);
         var position = cm.getEventClientPosition(e);
         // Calculate dimensions and position
-        setPositionHelper(position, 'onSet');
+        setPositionHelper(position, 'onSelect');
         // Trigger Event
         that.triggerEvent('onMove');
     };
@@ -97,7 +97,7 @@ function(params){
         that.isDrag = false;
         // Calculate dimensions and position
         var position = cm.getEventClientPosition(e);
-        setPositionHelper(position, 'onSelect');
+        setPositionHelper(position, 'onSet');
         // Remove move events attached on document
         cm.removeEvent(window, 'mousemove', move);
         cm.removeEvent(window, 'mouseup', stop);
@@ -190,8 +190,8 @@ function(params){
         position = setPositionAction(position);
         // Trigger Event
         if(triggerEvents){
-            that.triggerEvent('onSet', position);
             that.triggerEvent('onSelect', position);
+            that.triggerEvent('onSet', position);
         }
         return that;
     };

@@ -1,0 +1,84 @@
+/* ******* PARTS: INPUT ******* */
+
+.pt__input {
+    position: relative;
+
+    .icon {
+        .icon.initial;
+        min-height: 0;
+        padding: 0;
+        position: absolute;
+        border-radius: max(@CmBorder-Radius - 2px, 0px);
+        color: @CmColor-Border;
+    }
+
+    .pt__input--size();
+}
+
+.pt__input--size (@height: @CmForm-FieldHeight, @paddingX: @CmInput-Padding, @borderWidth: @CmBorder-Width, @lineHeight: @CmFont-Base-LineHeight){
+    @paddingY: max(round((@height - @lineHeight - @borderWidth * 2) / 2), 0px);
+    @iconSize: @height - @borderWidth * 2;
+    @iconSizeDouble: @iconSize * 2;
+    @iconPadding: @iconSize + @paddingX;
+
+    .input {
+        height: @height;
+        padding: @paddingY @paddingX;
+        border-width: @borderWidth;
+    }
+
+    .icon {
+        height: @iconSize;
+        width: @iconSize;
+
+        &:first-child {
+            .mx__position(@borderWidth, auto, auto, @borderWidth);
+        }
+
+        &:last-child {
+            .mx__position(@borderWidth, @borderWidth, auto, auto);
+        }
+    }
+
+    &:not(.is-icon-outside) {
+        .input {
+            &:not(:first-child) {
+                padding-left: @iconPadding;
+            }
+
+            &:not(:last-child) {
+                padding-right: @iconPadding;
+            }
+        }
+
+        &.less-indent {
+            .input {
+                &:not(:first-child) {
+                    padding-left: @iconSize;
+                }
+
+                &:not(:last-child) {
+                    padding-right: @iconSize;
+                }
+            }
+        }
+    }
+
+    &.is-icon-outside {
+        .input {
+            &:not(:first-child) {
+                width: calc(~"100% - @{iconSize}");;
+                margin-left: @iconSize;
+            }
+
+            &:not(:last-child) {
+                width: calc(~"100% - @{iconSize}");;
+                margin-right: @iconSize;
+            }
+
+            &:not(:first-child):not(:last-child) {
+                width: calc(~"100% - @{iconSizeDouble}");;
+            }
+        }
+    }
+}

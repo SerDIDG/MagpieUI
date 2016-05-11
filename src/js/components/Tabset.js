@@ -62,7 +62,7 @@ function(params){
     that.isProcess = false;
     
     var init = function(){
-        getCSSHelpers();
+        getLESSVariables();
         that.setParams(params);
         that.convertEvents(that.params['events']);
         that.getDataNodes(that.params['node'], that.params['nodesDataMarker'], false);
@@ -74,12 +74,9 @@ function(params){
         that.params['renderOnInit'] && render();
     };
 
-    var getCSSHelpers = function(){
-        var rule;
-        that.params['animateDuration'] = cm.getTransitionDurationFromRule('.com__tabset-helper__duration');
-        if(rule = cm.getCSSRule('.com__tabset-helper__column-width')[0]){
-            that.params['tabsWidth'] = cm.styleToNumber(rule.style.width);
-        }
+    var getLESSVariables = function(){
+        that.params['animateDuration'] = cm.getTransitionDurationFromLESS('ComTabset-Duration', that.params['animateDuration']);
+        that.params['tabsWidth'] = cm.getLESSVariable('ComTabset-Column-Width', that.params['tabsWidth'], true);
     };
 
     var validateParams = function(){

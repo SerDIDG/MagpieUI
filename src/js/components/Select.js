@@ -147,7 +147,8 @@ function(params){
         }
         // Data
         cm.forEach(that.params['node'].attributes, function(item){
-            if(/^data-/.test(item.name) && item.name != 'data-element'){
+            if(/^data-(?!node|element)/.test(item.name)){
+                nodes['hidden'].setAttribute(item.name, item.value);
                 nodes['container'].setAttribute(item.name, item.value);
             }
         });
@@ -173,9 +174,9 @@ function(params){
     var renderSingle = function(){
         nodes['container'] = cm.Node('div', {'class' : 'com__select'},
             nodes['hidden'] = cm.Node('select', {'class' : 'display-none'}),
-            nodes['target'] = cm.Node('div', {'class' : 'form-field has-icon-right'},
-                nodes['arrow'] = cm.Node('div', {'class' : that.params['icons']['arrow']}),
-                nodes['text'] = cm.Node('input', {'type' : 'text', 'readOnly' : 'true'})
+            nodes['target'] = cm.Node('div', {'class' : 'pt__input'},
+                nodes['text'] = cm.Node('input', {'type' : 'text', 'readOnly' : 'true'}),
+                nodes['arrow'] = cm.Node('div', {'class' : that.params['icons']['arrow']})
             ),
             nodes['scroll'] = cm.Node('div', {'class' : 'pt__listing-items'},
                 nodes['items'] = cm.Node('ul')

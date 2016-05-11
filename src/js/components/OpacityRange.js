@@ -11,19 +11,19 @@ cm.define('Com.OpacityRange', {
 function(params){
     var that = this;
     that.myNodes = {};
-
-    that._inherit.apply(that, arguments);
-
-    var init = function(){
-        that.setColor(that.params['color']);
-    };
-
-    /* ******* PUBLIC ******* */
-
-    init();
+    Com.AbstractRange.apply(that, arguments);
 });
 
 cm.getConstructor('Com.OpacityRange', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.construct = function(){
+        var that = this;
+        _inherit.prototype.construct.apply(that, arguments);
+        that.setColor(that.params['color']);
+        return this;
+    };
+
     classProto.renderContent = function(){
         var that = this;
         that.myNodes['content'] = cm.node('div', {'class' : 'com__opacity-range__content'},

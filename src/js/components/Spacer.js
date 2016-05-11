@@ -102,7 +102,7 @@ function(params){
                 'node': that.nodes['dragContainer'],
                 'events' : {
                     'onStart' : start,
-                    'onSet' : function(my, data){
+                    'onSelect' : function(my, data){
                         that.value = data['top'];
                         move();
                     },

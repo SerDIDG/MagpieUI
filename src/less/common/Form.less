@@ -78,6 +78,7 @@
 
     > dd {
         margin: 0 0 @CmForm-FieldInnerIndent 0;
+        padding: 0;
 
         &:last-child {
             margin: 0;
@@ -90,62 +91,6 @@
         }
     }
 }
-
-/* *** FIELD WITH ICON *** */
-
-.form-field {
-    position: relative;
-
-    .icon {
-        min-height: 0;
-        padding: 0;
-        position: absolute;
-        background-color: transparent;
-        background-position: 50% 50%;
-        background-repeat: no-repeat;
-        border-radius: max(@CmBorder-Radius - 2px, 0px);
-        color: @CmColor-Border;
-    }
-
-    .cm__form-field--size();
-}
-
-.cm__form-field--size (@height: @CmForm-FieldHeight, @paddingX: @CmInput-Padding, @borderWidth: @CmBorder-Width, @lineHeight: @CmFont-Base-LineHeight){
-    @paddingY: max(round((@height - @lineHeight - @borderWidth * 2) / 2), 0px);
-    @iconSize: @height - @borderWidth * 2;
-
-    .input {
-        height: @height;
-        padding: @paddingY @paddingX;
-        border-width: @borderWidth;
-    }
-
-    .icon {
-        height: @iconSize;
-        width: @iconSize;
-    }
-
-    &.has-icon-right {
-        .icon {
-            .mx__position(@borderWidth, @borderWidth, auto, auto);
-        }
-
-        .input {
-            padding-right: @iconSize + @paddingX;
-        }
-    }
-
-    &.has-icon-left {
-        .icon {
-            .mx__position(@borderWidth, auto, auto, @borderWidth);
-        }
-
-        .input {
-            padding-left: @iconSize + @paddingX;
-        }
-    }
-}
-
 
 /* *** BUTTONS CONTAINER *** */
 
@@ -348,6 +293,7 @@
     }
 
     .button {
+        width: 100%;
         margin: 0 !important;
     }
 
@@ -388,6 +334,10 @@
         vertical-align: baseline;
         line-height: @CmFont-Base-LineHeight;
 
+        &:first-child {
+            margin-left: 0;
+        }
+
         &:last-child {
             margin-right: 0;
         }
@@ -421,6 +371,10 @@
         cursor: pointer;
         vertical-align: baseline;
         line-height: @CmFont-Base-LineHeight;
+
+        &:first-child {
+            padding-left: 0;
+        }
 
         &:last-child {
             padding-right: 0;

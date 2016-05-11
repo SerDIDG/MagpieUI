@@ -48,7 +48,8 @@ cm.define('Com.BigCalendar', {
         'Com.Overlay' : {
             'position' : 'absolute',
             'autoOpen' : false,
-            'removeOnClose' : true
+            'removeOnClose' : true,
+            'appendMode' : 'insertFirst'
         }
     }
 },
@@ -325,9 +326,7 @@ function(params){
         // Wrap old content
         if(!that.nodes['holder']['temporary']){
             that.nodes['holder']['temporary'] = that.callbacks.renderTemporary(that);
-            cm.forEach(that.nodes['holder']['inner'].childNodes, function(node){
-                cm.appendChild(node, that.nodes['holder']['temporary']);
-            });
+            cm.appendNodes(that.nodes['holder']['inner'].childNodes, that.nodes['holder']['temporary']);
             cm.appendChild(that.nodes['holder']['temporary'], that.nodes['holder']['inner']);
         }
         cm.removeClass(that.nodes['holder']['temporary'], 'is-show', true);
@@ -539,7 +538,7 @@ function(params){
     that.days = [];
 
     var init = function(){
-        that.getCSSHelpers();
+        that.getLESSVariables();
         that.setParams(params);
         that.convertEvents(that.params['events']);
         that.getDataNodes(that.params['node']);
@@ -557,20 +556,15 @@ function(params){
     init();
 });
 
-cm.getConstructor('Com.AbstractCalendarView', function(classConstructor){
-    classConstructor.prototype.getCSSHelpers = function(){
+cm.getConstructor('Com.AbstractCalendarView', function(classConstructor, className, classProto){
+    classProto.getLESSVariables = function(){
         var that = this;
-        var rule;
-        if(rule = cm.getCSSRule('.com__calendar-event-helper__short-indent')[0]){
-            that.params['itemShortIndent'] = cm.styleToNumber(rule.style.height);
-        }
-        if(rule = cm.getCSSRule('.com__calendar-event-helper__short-height')[0]){
-            that.params['itemShortHeight'] = cm.styleToNumber(rule.style.height);
-        }
+        that.params['itemShortIndent'] = cm.getLESSVariable('ComCalendarEvent-Short-Indent', that.params['itemShortIndent'], true);
+        that.params['itemShortHeight'] = cm.getLESSVariable('ComCalendarEvent-Short-Height', that.params['itemShortHeight'], true);
         return that;
     };
 
-    classConstructor.prototype.validateParams = function(){
+    classProto.validateParams = function(){
         var that = this;
         if(that.params['Com.Tooltip']['width'] != 'auto'){
             that.params['Com.Tooltip']['width'] = cm.strReplace(that.params['Com.Tooltip']['width'], {
@@ -592,7 +586,7 @@ cm.getConstructor('Com.AbstractCalendarView', function(classConstructor){
         return that;
     };
 
-    classConstructor.prototype.render = function(){
+    classProto.render = function(){
         var that = this;
         // Find events and set template and tooltip config
         new cm.Finder('Com.CalendarEvent', null, that.params['node'], function(classObject){
@@ -606,7 +600,7 @@ cm.getConstructor('Com.AbstractCalendarView', function(classConstructor){
         return that;
     };
 
-    classConstructor.prototype.renderToolbar = function(){
+    classProto.renderToolbar = function(){
         var that = this;
         // Toolbar Controls
         new cm.Finder('Com.Select', 'week', that.nodes['buttons']['container'], function(classObject){
@@ -658,7 +652,7 @@ cm.getConstructor('Com.AbstractCalendarView', function(classConstructor){
         return that;
     };
 
-    classConstructor.prototype.searchQuery = function(str){
+    classProto.searchQuery = function(str){
         var that = this;
         var data = that.getData();
         data.query = str;
@@ -666,13 +660,13 @@ cm.getConstructor('Com.AbstractCalendarView', function(classConstructor){
         return that;
     };
 
-    classConstructor.prototype.requestView = function(data){
+    classProto.requestView = function(data){
         var that = this;
         that.triggerEvent('onRequestView', data);
         return that;
     };
 
-    classConstructor.prototype.getData = function(){
+    classProto.getData = function(){
         var that = this;
         return {
             'query' : that.nodes['buttons']['search-input'].value,
@@ -683,13 +677,13 @@ cm.getConstructor('Com.AbstractCalendarView', function(classConstructor){
         };
     };
 
-    classConstructor.prototype.updateView = function(){
+    classProto.updateView = function(){
         var that = this;
         that.triggerEvent('onRequestView', that.getData());
         return that;
     };
 
-    classConstructor.prototype.prev = function(){
+    classProto.prev = function(){
         var that = this;
         var data = that.getData();
         if(data['week'] !== null){
@@ -713,7 +707,7 @@ cm.getConstructor('Com.AbstractCalendarView', function(classConstructor){
         return that;
     };
 
-    classConstructor.prototype.next = function(){
+    classProto.next = function(){
         var that = this;
         var data = that.getData();
         if(data['week'] !== null){
@@ -753,11 +747,13 @@ cm.define('Com.CalendarMonth', {
 },
 function(params){
     var that = this;
-    that._inherit.apply(that, arguments);
+    Com.AbstractCalendarView.apply(that, arguments);
 });
 
-cm.getConstructor('Com.CalendarMonth', function(classConstructor){
-    classConstructor.prototype.processDay = function(nodes){
+cm.getConstructor('Com.CalendarMonth', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.processDay = function(nodes){
         var that = this;
         var item = {
             'isShow' : false,
@@ -773,7 +769,7 @@ cm.getConstructor('Com.CalendarMonth', function(classConstructor){
         that.days.push(item);
     };
 
-    classConstructor.prototype.showMoreEvents = function(item){
+    classProto.showMoreEvents = function(item){
         var that = this;
         item.delay && clearTimeout(item.delay);
         if(!item.isShow){
@@ -783,7 +779,7 @@ cm.getConstructor('Com.CalendarMonth', function(classConstructor){
         }
     };
 
-    classConstructor.prototype.hideMoreEvents = function(item, isImmediately){
+    classProto.hideMoreEvents = function(item, isImmediately){
         var that = this;
         item.delay && clearTimeout(item.delay);
         if(item.isShow){
@@ -799,19 +795,16 @@ cm.getConstructor('Com.CalendarMonth', function(classConstructor){
         }
     };
 
-    classConstructor.prototype.getCSSHelpers = function(){
+    classProto.getLESSVariables = function(){
         var that = this;
-        var rule;
-        that._inherit.prototype.getCSSHelpers.call(that);
-        if(rule = cm.getCSSRule('.com__calendar-month-helper__day-indent')[0]){
-            that.params['dayIndent'] = cm.styleToNumber(rule.style.height);
-        }
+        _inherit.prototype.getLESSVariables.call(that);
+        that.params['dayIndent'] = cm.getLESSVariable('ComCalendarMonth-Day-Indent', that.params['dayIndent'], true);
         return that;
     };
 
-    classConstructor.prototype.render = function(){
+    classProto.render = function(){
         var that = this;
-        that._inherit.prototype.render.call(that);
+        _inherit.prototype.render.call(that);
         cm.forEach(that.nodes['days'], that.processDay.bind(that));
         return that;
     };
@@ -832,17 +825,16 @@ cm.define('Com.CalendarWeek', {
 },
 function(params){
     var that = this;
-    that._inherit.apply(that, arguments);
+    Com.AbstractCalendarView.apply(that, arguments);
 });
 
-cm.getConstructor('Com.CalendarWeek', function(classConstructor){
-    classConstructor.prototype.getCSSHelpers = function(){
+cm.getConstructor('Com.CalendarWeek', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.getLESSVariables = function(){
         var that = this;
-        var rule;
-        that._inherit.prototype.getCSSHelpers.call(that);
-        if(rule = cm.getCSSRule('.com__calendar-week-helper__day-indent')[0]){
-            that.params['dayIndent'] = cm.styleToNumber(rule.style.height);
-        }
+        _inherit.prototype.getLESSVariables.call(that);
+        that.params['dayIndent'] = cm.getLESSVariable('ComCalendarWeek-Day-Indent', that.params['dayIndent'], true);
         return that;
     };
 });
@@ -862,5 +854,5 @@ cm.define('Com.CalendarAgenda', {
 },
 function(params){
     var that = this;
-    that._inherit.apply(that, arguments);
+    Com.AbstractCalendarView.apply(that, arguments);
 });

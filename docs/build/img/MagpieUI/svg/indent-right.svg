@@ -1,0 +1,16 @@
+<svg id="indent-right.svg" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #2d6ec9;
+      }
+
+      .cls-2 {
+        fill: #5e5e5e;
+        fill-rule: evenodd;
+      }
+    </style>
+  </defs>
+  <rect id="Rounded_Rectangle_12" data-name="Rounded Rectangle 12" class="cls-1" x="12" width="4" height="16"/>
+  <path class="cls-2" d="M4,4H17V20H4V4ZM5,5H16V19H5V5Z" transform="translate(-4 -4)"/>
+</svg>

@@ -20,7 +20,7 @@ cm.define('Com.ColorPicker', {
     ],
     'params' : {
         'input' : null,                                     // Deprecated, use 'node' parameter instead.
-        'node' : cm.Node('input', {'type' : 'text'}),
+        'node' : cm.node('input', {'type' : 'text'}),
         'container' : null,
         'embedStructure' : 'replace',
         'name' : '',
@@ -32,6 +32,7 @@ cm.define('Com.ColorPicker', {
         'showTitleTooltip' : true,
         'renderInBody' : true,
         'disabled' : false,
+        'size' : 'default',                                 // default | full
         'icons' : {
             'picker' : 'icon default linked',
             'clear' : 'icon default linked'
@@ -98,7 +99,7 @@ function(params){
         /* *** RENDER STRUCTURE *** */
         that.nodes['container'] = cm.Node('div', {'class' : 'com__colorpicker'},
             that.nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
-            that.nodes['target'] = cm.Node('div', {'class' : 'form-field has-icon-right'},
+            that.nodes['target'] = cm.Node('div', {'class' : 'pt__input has-icon-right'},
                 that.nodes['input'] = cm.Node('input', {'type' : 'text', 'readOnly' : 'true'}),
                 that.nodes['icon'] = cm.Node('div', {'class' : that.params['icons']['picker']})
             ),
@@ -107,6 +108,10 @@ function(params){
             )
         );
         /* *** ATTRIBUTES *** */
+        // Size
+        if(!cm.isEmpty(that.params['size'])){
+            cm.addClass(that.nodes['container'], ['size', that.params['size']].join('-'));
+        }
         // Title
         if(that.params['showTitleTooltip'] && !cm.isEmpty(that.params['title'])){
             that.nodes['container'].title = that.params['title'];

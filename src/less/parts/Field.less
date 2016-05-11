@@ -1,0 +1,94 @@
+/* ******* PARTS: FIELD ******* */
+
+.pt__field {
+    .clearfix;
+    margin: 0 0 @CmForm-FieldIndent 0;
+    padding: 0;
+    display: block;
+    clear: both;
+
+    &.is-last,
+    &:last-child {
+        margin-bottom: 0;
+    }
+
+    > dt {
+        width: @CmForm-FieldTitleWidth;
+        display: block;
+        margin: 0;
+        padding: ((@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2) 0;
+        float: left;
+        line-height: @CmFont-Base-LineHeight;
+    }
+
+    > dd {
+        display: block;
+        margin: 0 0 0 (@CmForm-FieldTitleWidth + @CmForm-FieldIndent);
+        padding: 0;
+        position: relative;
+
+        &:first-child {
+            margin: 0;
+        }
+    }
+
+    &.is-text {
+        > dt {
+            padding: 0;
+        }
+    }
+
+    &.is-box {
+        .cm__box;
+
+        > dt {
+            width: auto;
+            float: none;
+        }
+
+        > dd {
+            margin: 0 0 @CmForm-FieldInnerIndent 0;
+            padding: 0;
+
+            &:last-child {
+                margin: 0;
+            }
+        }
+
+        &.is-no-label {
+            > dt {
+                display: none;
+            }
+        }
+    }
+
+    &.align-center {
+        > dt {
+            text-align: center;
+        }
+    }
+}
+
+
+/* ******* PART: FIELD: ADAPTIVE ******* */
+
+@media only screen and (max-width: @CmScreen-Mobile) {
+
+    html.is-adaptive {
+        .pt__field {
+            > dt {
+                width: auto;
+                float: none;
+            }
+
+            > dd {
+                margin: 0 0 @CmForm-FieldInnerIndent;
+
+                &:last-child {
+                    margin: 0;
+                }
+            }
+        }
+    }
+
+}

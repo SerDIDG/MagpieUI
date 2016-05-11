@@ -1,0 +1,38 @@
+/* ******* COMPONENTS: REQUEST ******* */
+
+.com__request {
+    .cm__box;
+    height: 0;
+    overflow: hidden;
+    display: none;
+
+    > .inner {
+        position: relative;
+    }
+
+    &.is-show {
+        height: auto;
+        display: block;
+    }
+
+    &.is-loaded {
+        height: auto;
+        display: block;
+        overflow: visible;
+    }
+}
+
+.com__request__temporary {
+    position: absolute;
+    opacity: 0;
+    .mx__position(0, 0, auto, 0);
+    .mx__transition(opacity, @CmUI-Transition-Duration);
+
+    &:first-child {
+        position: relative;
+    }
+
+    &.is-show {
+        opacity: 1;
+    }
+}

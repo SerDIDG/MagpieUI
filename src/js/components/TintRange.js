@@ -9,7 +9,7 @@ cm.define('Com.TintRange', {
 },
 function(params){
     var that = this;
-    that._inherit.apply(that, arguments);
+    Com.AbstractRange.apply(that, arguments);
 });
 
 cm.getConstructor('Com.TintRange', function(classConstructor, className, classProto){

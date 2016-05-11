@@ -1,6 +1,9 @@
+
 // /* ************************************************ */
-// /* ******* VARIABLES ******* */
+// /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
+
+@CmVersion: '3.16.0';
 
 // /* ******* PATH ******* */
 
@@ -44,19 +47,24 @@
 
 @CmUI-Transition-Duration: 250ms;
 @CmUI-Transition-DurationReverse: 100ms;
+@CmUI-Transition-DurationLong: 500ms;
+@CmUI-Transition-DurationNone: 0ms;
+@CmUI-MotionAsymmetric: cubic-bezier(.5,0,.15,1);
 @CmUI-Opacity-Hover: 0.7;
 @CmUI-Shadow: 0 0 8px rgba(0, 0, 0, 0.15);
 @CmUI-ShadowLight: 0 0 2px rgba(0,0,0,0.2);
 @CmUI-ShadowInner: 0 2px 2px rgba(0,0,0,0.4) inset;
-@CmUI-Shadow-Bottom: 0 2px 2px rgba(0,0,0,0.15);
+@CmUI-Shadow-Bottom: 0 2px 5px rgba(0,0,0,0.15);
 @CmUI-Shadow-BottomLarge: 0 2px 12px rgba(0, 0, 0, 0.2);
-@CmUI-Shadow-Right: 2px 0 2px rgba(0,0,0,0.15);
+@CmUI-Shadow-Right: 2px 0 5px rgba(0,0,0,0.15);
 @CmUI-Overlay: @CmUI-Overlay-Light;
 @CmUI-Overlay-Dark: rgba(0, 0, 0, 0.7);
 @CmUI-Overlay-Light: rgba(255, 255, 255, 0.7);
-@CmUI-Overlay-Duration: 500ms;
+@CmUI-Overlay-Duration: @CmUI-Transition-Duration;
 @CmUI-AdaptiveFrom: @CmScreen-TabletPortrait;
 @CmUI-TooltipWidth: 320px;
+@CmUI-ColumnIndent: @CmIndent-Medium;
+@CmUI-BoxIndent: @CmIndent-Medium;
 
 // /* ************************************************ */
 // /* ******* COLORS ******* */
@@ -358,6 +366,13 @@
 @CmTextarea-Height: 100px;
 @CmSelect-Size: 7;
 
+// /* ******* SCROLLBAR ******* */
+
+@CmScrollBar-Size: @CmSize-XSmall;
+@CmScrollBar-TrackBackground: @CmColor-Secondary-LightHighlight;
+@CmScrollBar-TrackColor: @CmColor-Secondary-LightActiveHover;
+@CmScrollBar-TrackColorHover: @CmColor-Secondary-MiddleDefault;
+
 // /* ******* FORM ******* */
 
 @CmForm-FieldHeight: 28px;
@@ -365,7 +380,7 @@
 @CmForm-FieldTitleWidth: 150px;
 @CmForm-FieldInnerIndent: @CmForm-FieldIndent / 2;
 @CmForm-FieldSmallWidth: 210px;
-@CmForm-ButtonsIndent: @CmIndent-XXSmall;
+@CmForm-ButtonsIndent: @CmIndent-XSmall;
 @CmForm-IconsIndent: @CmIndent-XXSmall;
 @CmForm-ImageBox-ButtonWidth: 100px;
 @CmForm-Cols-Names: one two three four five six seven eight nine ten;
@@ -437,9 +452,14 @@
 @PtListingCounters-Indent: @CmIndent-XXXSmall;
 @PtListingCounters-Height: @CmSize-Medium;
 
+// /* ******* COLUMNS ******* */
+
+@PtColumns-Indent: @CmUI-ColumnIndent;
+@PtColumns-Indents: @CmIndents;
+
 // /* ******* GRID ******* */
 
-@PtGrid-Indent: @CmIndent-Medium;
+@PtGrid-Indent: @CmUI-ColumnIndent;
 @PtGrid-Indents: @CmIndents;
 
 // /* ******* SELECTABLE*** */
@@ -681,7 +701,7 @@
 // /* ******* COLUMNS ******* */
 
 @ComColumns-AdaptiveFrom: @CmUI-AdaptiveFrom;
-@ComColumns-Indent: @CmIndent-Medium;
+@ComColumns-Indent: @CmUI-ColumnIndent;
 @ComColumns-Indents: @CmIndents;
 @ComColumns-MinHeight: 64px;
 @ComColumns-HoverBackground: rgba(0, 0, 0, 0.01);
@@ -697,7 +717,7 @@
 
 // /* ******* BOX TOOLS ******* */
 
-@ComBoxTools-Width: 150px;
+@ComBoxTools-Width: @CmForm-FieldSmallWidth;
 @ComBoxTools-LineSize: @CmForm-FieldHeight;
 @ComBoxTools-LineIndent: @CmIndent-XXXSmall;
 @ComBoxTools-LinkSize: 24px;
