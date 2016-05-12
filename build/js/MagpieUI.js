@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.16.0 (2016-05-11 20:46) ************ */
+/*! ************ MagpieUI v3.16.1 (2016-05-12 22:13) ************ */
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -12365,7 +12365,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.16.0',
+        '_version' : '3.16.1',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -14842,7 +14842,8 @@ cm.getTransitionDurationFromLESS = function(name, defaults){
 };
 
 cm.parseTransitionDuration = function(value){
-    if(value){
+    if(!cm.isEmpty(value)){
+        value = value.toString();
         if(value.match('ms')){
             return parseFloat(value);
         }else if(value.match('s')){
@@ -29098,6 +29099,10 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
             that.nodes['temporary'] = that.renderTemporary(false);
             cm.appendNodes(that.nodes['inner'].childNodes, that.nodes['temporary']);
             cm.appendChild(that.nodes['temporary'], that.nodes['inner']);
+            cm.customEvent.trigger(that.nodes['temporary'], 'destruct', {
+                'type' : 'child',
+                'self' : false
+            });
         }
         cm.removeClass(that.nodes['temporary'], 'is-show', true);
         // Append temporary

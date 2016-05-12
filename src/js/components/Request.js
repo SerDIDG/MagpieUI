@@ -435,6 +435,10 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
             that.nodes['temporary'] = that.renderTemporary(false);
             cm.appendNodes(that.nodes['inner'].childNodes, that.nodes['temporary']);
             cm.appendChild(that.nodes['temporary'], that.nodes['inner']);
+            cm.customEvent.trigger(that.nodes['temporary'], 'destruct', {
+                'type' : 'child',
+                'self' : false
+            });
         }
         cm.removeClass(that.nodes['temporary'], 'is-show', true);
         // Append temporary
