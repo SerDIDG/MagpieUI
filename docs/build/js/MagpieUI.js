@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.16.1 (2016-05-12 22:13) ************ */
+/*! ************ MagpieUI v3.16.1 (2016-05-19 18:31) ************ */
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -12722,7 +12722,7 @@ cm.objectReplace = function(o, vars){
     cm.forEach(newO, function(value, key){
         if(cm.isObject(value)){
             newO[key] = cm.objectReplace(value, vars);
-        }else{
+        }else if(cm.isString(value)){
             newO[key] = cm.strReplace(value, vars);
         }
     });

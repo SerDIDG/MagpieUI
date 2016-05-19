@@ -386,7 +386,7 @@ cm.objectReplace = function(o, vars){
     cm.forEach(newO, function(value, key){
         if(cm.isObject(value)){
             newO[key] = cm.objectReplace(value, vars);
-        }else{
+        }else if(cm.isString(value)){
             newO[key] = cm.strReplace(value, vars);
         }
     });
