@@ -614,14 +614,14 @@ function(params){
                 style = {
                     'left' : [-(draggable['dimensions']['absoluteWidth'] + 50), 'px'].join(''),
                     'opacity' : 0
-                }
+                };
             }else{
                 node = cm.wrap(cm.Node('div', {'class' : 'pt__dnd-removable'}), draggable['node']);
                 anim = new cm.Animation(node);
                 style = {
                     'height' : '0px',
                     'opacity' : 0
-                }
+                };
             }
             // Animate draggable, like it disappear
             anim.go({

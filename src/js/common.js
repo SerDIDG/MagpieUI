@@ -29,7 +29,7 @@
  ******* */
 
 var cm = {
-        '_version' : '3.16.1',
+        '_version' : '3.16.2',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -72,7 +72,7 @@ var cm = {
 
 cm.isFileReader = (function(){return 'FileReader' in window;})();
 cm.isHistoryAPI = !!(window.history && history.pushState);
-cm.isLocalStorage = (function(){try{return 'localStorage' in window && window['localStorage'] !== null;}catch(e){return false;}})();
+cm.isLocalStorage = (function(){try{return 'localStorage' in window && window.localStorage !== null;}catch(e){return false;}})();
 cm.isCanvas = !!document.createElement("canvas").getContext;
 cm.isTouch = 'ontouchstart' in document.documentElement || !!window.maxTouchPoints || !!navigator.maxTouchPoints;
 
@@ -80,7 +80,7 @@ cm.isTouch = 'ontouchstart' in document.documentElement || !!window.maxTouchPoin
 
 cm.top = (function(){
     try {
-        return window.top.cm
+        return window.top.cm;
     }catch(e){
         return window.cm;
     }
@@ -88,7 +88,7 @@ cm.top = (function(){
 
 cm.isType = function(o, types){
     if(cm.isString(types)){
-        return Object.prototype.toString.call(o) === '[object ' + types +']'
+        return Object.prototype.toString.call(o) === '[object ' + types +']';
     }
     if(cm.isRegExp(types)){
         return types.test(Object.prototype.toString.call(o));
@@ -97,7 +97,7 @@ cm.isType = function(o, types){
         var match = false;
         cm.forEach(types, function(type){
             if(!match){
-                match = Object.prototype.toString.call(o) === '[object ' + type +']'
+                match = Object.prototype.toString.call(o) === '[object ' + type +']';
             }
         });
         return match;
@@ -355,7 +355,7 @@ cm.arrayRemove = function(a, item){
 };
 
 cm.arrayIndex = function(a, item){
-    return Array.prototype.indexOf.call(a, item)
+    return Array.prototype.indexOf.call(a, item);
 };
 
 cm.objectToArray = function(o){
@@ -397,11 +397,11 @@ cm.isEmpty = function(el){
     if(!el){
         return true;
     }else if(typeof el == 'string' || cm.isArray(el)){
-        return el.length == 0;
+        return el.length === 0;
     }else if(cm.isObject(el)){
         return cm.getLength(el) === 0;
     }else if(typeof el == 'number'){
-        return el == 0;
+        return el === 0;
     }else{
         return false;
     }
@@ -469,7 +469,7 @@ cm.log = (function(){
             alert(results.join(', '));
         };
     }else{
-        return function(){}
+        return function(){};
     }
 })();
 
@@ -738,7 +738,6 @@ cm.customEvent = (function(){
                                     item['handler'](params);
                                 }
                                 break;
-                            case 'all':
                             default:
                                 if(node !== item['node']){
                                     item['handler'](params);
@@ -953,7 +952,8 @@ cm.getByClass = function(str, node){
     if(node.getElementsByClassName){
         return node.getElementsByClassName(str);
     }
-    var els = node.getElementsByTagName('*'), arr = [];
+    var els = node.getElementsByTagName('*'),
+        arr = [];
     for(var i = 0, l = els.length; i < l; i++){
         cm.isClass(els[i], str) && arr.push(els[i]);
     }
@@ -1027,31 +1027,30 @@ cm.getNodeOffsetIndex = function(node){
 
 cm.node = cm.Node = function(){
     var args = arguments,
-        value,
-        el = document.createElement(args[0]);
-    if(typeof args[1] == "object" && !args[1].nodeType){
-        for(var i in args[1]){
-            value = args[1][i];
-            if(typeof value == 'object'){
+        el = document.createElement(args[0]),
+        i = 0;
+    if(cm.isObject(args[1])){
+        cm.forEach(args[1], function(value, key){
+            if(cm.isObject(value)){
                 value = JSON.stringify(value);
             }
-            if(i == 'style'){
+            if(key == 'style'){
                 el.style.cssText = value;
-            }else if(i == 'class'){
+            }else if(key == 'class'){
                 el.className = value;
-            }else if(i == 'innerHTML'){
+            }else if(key == 'innerHTML'){
                 el.innerHTML = value;
             }else{
-                el.setAttribute(i, value);
+                el.setAttribute(key, value);
             }
-        }
+        });
         i = 2;
     }else{
         i = 1;
     }
     for(var ln = args.length; i < ln; i++){
-        if(typeof arguments[i] != 'undefined'){
-            if(typeof arguments[i] == 'string' || typeof args[i] == 'number'){
+        if(typeof args[i] != 'undefined'){
+            if(typeof args[i] == 'string' || typeof args[i] == 'number'){
                 el.appendChild(document.createTextNode(args[i]));
             }else{
                 el.appendChild(args[i]);
@@ -1079,7 +1078,7 @@ cm.inDOM = function(o){
             if(el == document){
                 return true;
             }
-            el = el.parentNode
+            el = el.parentNode;
         }
     }
     return false;
@@ -1164,7 +1163,7 @@ cm.remove = function(node){
 };
 
 cm.clearNode = function(node){
-    while(node.childNodes.length != 0){
+    while(node.childNodes.length){
         node.removeChild(node.firstChild);
     }
     return node;
@@ -1225,7 +1224,7 @@ cm.insertBefore = function(node, target){
 cm.insertAfter = function(node, target){
     if(cm.isNode(node) && cm.isNode(target) && target.parentNode){
         var before = target.nextSibling;
-        if(before != null){
+        if(before){
             cm.insertBefore(node, before);
         }else{
             target.parentNode.appendChild(node);
@@ -1329,7 +1328,7 @@ cm.getNodes = function(container, marker){
         var separators = attr? attr.split('.') : [],
             obj = nodes;
         cm.forEach(separators, function(separator, i){
-            if(i == 0 && cm.isEmpty(separator)){
+            if(i === 0 && cm.isEmpty(separator)){
                 obj = nodes;
             }else if((i + 1) == separators.length){
                 process(node, separator, obj, processedObj);
@@ -1412,20 +1411,20 @@ cm.setFDO = function(o, form){
             var type = (el[i].type || '').toLowerCase();
             switch(type){
                 case 'radio':
-                    if(o[name] == el[i].value){
+                    if(item == el[i].value){
                         el[i].checked = true;
                     }
                     break;
 
                 case 'checkbox':
-                    el[i].checked = !!+o[name];
+                    el[i].checked = !!item;
                     break;
 
                 default:
                     if(el[i].tagName.toLowerCase() == 'select'){
-                        cm.setSelect(el[i], o[name]);
+                        cm.setSelect(el[i], item);
                     }else{
-                        el[i].value = o[name];
+                        el[i].value = item;
                     }
                     break;
             }
@@ -1459,7 +1458,7 @@ cm.getFDO = function(o, chbx){
             data[name] = (function(i, obj){
                 var index = indexes[i];
                 var next = typeof(indexes[i + 1]) != 'undefined';
-                if(index == ''){
+                if(index === ''){
                     if(obj && obj instanceof Array){
                         obj.push(next ? arguments.callee(i + 1, obj) : value);
                     }else{
@@ -1658,7 +1657,7 @@ cm.reduceText = function(str, length, points){
 };
 
 cm.removeDanger = function(str){
-    return str.replace(/(\<|\>|&lt;|&gt;)/gim, '');
+    return str.replace(/(<|>|&lt;|&gt;)/gim, '');
 };
 
 cm.cutHTML = function(str){
@@ -1685,12 +1684,8 @@ cm.addLeadZero = function(x){
 cm.getNumberDeclension = function(number, titles){
     var cases = [2, 0, 1, 1, 1, 2];
     return titles[
-        (number % 100 > 4 && number % 100 < 20)
-            ?
-            2
-            :
-            cases[(number % 10 < 5) ? number % 10 : 5]
-        ];
+        (number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]
+    ];
 };
 
 cm.toRadians = function(degrees) {
@@ -1767,7 +1762,7 @@ cm.dateFormat = function(date, format, langs){
             '%s' : function(){
                 return date ? cm.addLeadZero(date.getSeconds()) : '00';
             }
-        }
+        };
     };
 
     cm.forEach(formats(date), function(item, key){
@@ -1951,7 +1946,10 @@ cm.getPageSize = function(key){
 cm.getScrollBarSize = (function(){
     var node;
     return function(){
-        !node && (node = cm.insertFirst(cm.Node('div', {'class' : 'cm__scroll-bar-size-checker'}), document.body));
+        if(!node){
+            node = cm.node('div', {'class' : 'cm__scroll-bar-size-checker'});
+            cm.insertFirst(node, document.body);
+        }
         return Math.max(node.offsetWidth - node.clientWidth, 0);
     };
 })();
@@ -2182,10 +2180,10 @@ cm.getRealHeight = function(node, type, applyType){
 
     height['offset'] = node.offsetHeight;
     height['self'] = height['offset']
-                     - cm.getStyle(styleObject, 'borderTopWidth', true)
-                     - cm.getStyle(styleObject, 'borderBottomWidth', true)
-                     - cm.getStyle(styleObject, 'paddingTop', true)
-                     - cm.getStyle(styleObject, 'paddingBottom', true);
+        - cm.getStyle(styleObject, 'borderTopWidth', true)
+        - cm.getStyle(styleObject, 'borderBottomWidth', true)
+        - cm.getStyle(styleObject, 'paddingTop', true)
+        - cm.getStyle(styleObject, 'paddingBottom', true);
 
     node.style.position = 'relative';
     height['offsetRelative'] = node.offsetHeight;
@@ -2204,9 +2202,9 @@ cm.getIndentX = function(node){
         return null;
     }
     return cm.getStyle(node, 'paddingLeft', true)
-         + cm.getStyle(node, 'paddingRight', true)
-         + cm.getStyle(node, 'borderLeftWidth', true)
-         + cm.getStyle(node, 'borderRightWidth', true);
+        + cm.getStyle(node, 'paddingRight', true)
+        + cm.getStyle(node, 'borderLeftWidth', true)
+        + cm.getStyle(node, 'borderRightWidth', true);
 };
 
 cm.getIndentY = function(node){
@@ -2214,9 +2212,9 @@ cm.getIndentY = function(node){
         return null;
     }
     return cm.getStyle(node, 'paddingTop', true)
-         + cm.getStyle(node, 'paddingBottom', true)
-         + cm.getStyle(node, 'borderTopWidth', true)
-         + cm.getStyle(node, 'borderBottomWidth', true);
+        + cm.getStyle(node, 'paddingBottom', true)
+        + cm.getStyle(node, 'borderTopWidth', true)
+        + cm.getStyle(node, 'borderBottomWidth', true);
 };
 
 cm.addStyles = function(node, str){
@@ -3417,7 +3415,7 @@ cm.define = (function(){
 
 cm.getConstructor = function(className, callback){
     var classConstructor;
-    callback = typeof callback != 'undefined' ? callback : function(){}
+    callback = typeof callback != 'undefined' ? callback : function(){};
     if(!className || className == '*'){
         cm.forEach(cm.defineStack, function(classConstructor){
             callback(classConstructor, className, classConstructor.prototype);

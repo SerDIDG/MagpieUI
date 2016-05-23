@@ -341,7 +341,7 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         if(visible){
             cm.addClass(node, 'is-show');
         }
-        return node
+        return node;
     };
 
     classProto.renderContent = function(){

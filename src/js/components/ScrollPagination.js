@@ -20,7 +20,8 @@ cm.define('Com.ScrollPagination', {
         'onPageShow',
         'onPageHide',
         'onEnd',
-        'onFinalize'
+        'onFinalize',
+        'onSetCount'
     ],
     'params' : {
         'node' : cm.Node('div'),
@@ -31,6 +32,7 @@ cm.define('Com.ScrollPagination', {
         'scrollNode' : window,
         'scrollIndent' : 'Math.min(%scrollHeight% / 2, 600)',       // Variables: %blockHeight%.
         'data' : [],                                                // Static data
+        'count' : 0,
         'perPage' : 0,                                              // 0 - render all data in one page
         'startPage' : 1,                                            // Start page
         'startPageToken' : '',
@@ -43,6 +45,7 @@ cm.define('Com.ScrollPagination', {
         'pageAttributes' : {
             'class' : 'com__scroll-pagination__page'
         },
+        'responseCountKey' : 'count',                               // Take items count from response
         'responseKey' : 'data',                                     // Instead of using filter callback, you can provide response array key
         'responseHTML' : false,                                     // If true, html will append automatically
         'ajax' : {
@@ -84,6 +87,7 @@ function(params){
     that.currentPage = null;
     that.previousPage = null;
     that.nextPage = null;
+    that.pageCount = 0;
 
     var init = function(){
         that.setParams(params);
@@ -108,6 +112,11 @@ function(params){
             that.isAjax = true;
         }else{
             that.params['showLoader'] = false;
+        }
+        if(that.params['pageCount'] == 0 && that.params['perPage'] && that.params['count']){
+            that.pageCount = Math.floor(that.params['count'] / that.params['perPage']);
+        }else{
+            that.pageCount = that.params['pageCount'];
         }
         // Set start page token
         that.setToken(that.params['startPage'], that.params['startPageToken']);
@@ -271,9 +280,17 @@ function(params){
 
     that.callbacks.filter = function(that, config, response){
         var data = [],
-            dataItem = cm.objectSelector(that.params['responseKey'], response);
-        if(dataItem && !cm.isEmpty(dataItem)){
-            data = dataItem;
+            dataItem = cm.objectSelector(that.params['responseKey'], response),
+            countItem = cm.objectSelector(that.params['responseCountKey'], response);
+        if(!cm.isEmpty(dataItem)){
+            if(!that.params['responseHTML'] && that.params['perPage']){
+                data = dataItem.slice(0, that.params['perPage']);
+            }else{
+                data = dataItem;
+            }
+        }
+        if(countItem){
+            that.setCount(countItem);
         }
         return data;
     };
@@ -404,7 +421,7 @@ function(params){
         that.loaderDelay && clearTimeout(that.loaderDelay);
         cm.addClass(that.nodes['loader'], 'is-hidden');
         // Check pages count
-        if(that.params['pageCount'] > 0 && that.params['pageCount'] == that.currentPage){
+        if(that.pageCount > 0 && that.pageCount == that.currentPage){
             that.callbacks.finalize(that);
         }
         // Show / Hide Load More Button
@@ -452,6 +469,22 @@ function(params){
             that.pages[page] = {};
         }
         that.pages[page]['token'] = token;
+        return that;
+    };
+
+    that.setCount = function(count){
+        if(count && (count = parseInt(count.toString())) && count != that.params['count']){
+            that.params['count'] = count;
+            if(that.params['pageCount'] == 0 && that.params['count'] && that.params['perPage']){
+                that.pageCount = Math.floor(that.params['count'] / that.params['perPage']);
+            }else{
+                that.pageCount = that.params['pageCount'];
+            }
+            if(that.pageCount > 0 && that.pageCount == that.currentPage){
+                that.callbacks.finalize(that);
+            }
+            that.triggerEvent('onSetCount', count);
+        }
         return that;
     };
 

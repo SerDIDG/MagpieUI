@@ -14,6 +14,6 @@ function(params){
 
 cm.getConstructor('Com.TintRange', function(classConstructor, className, classProto){
     classProto.renderContent = function(){
-        return cm.node('div', {'class' : 'com__tint-range__content'})
+        return cm.node('div', {'class' : 'com__tint-range__content'});
     };
 });

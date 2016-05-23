@@ -77,7 +77,7 @@ cm.init = function(){
                     'type' : 'all',
                     'self' : true,
                     'scrollSize' : cm._scrollSize
-                })
+                });
             }
         };
     })();

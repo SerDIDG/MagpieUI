@@ -122,7 +122,7 @@ function(params){
 
     var collectItem = function(item){
         if(!item['link']){
-            item['link'] = cm.Node('a')
+            item['link'] = cm.node('a');
         }
         item = cm.merge({
             'src' : item['link'].getAttribute('href') || '',
@@ -151,7 +151,7 @@ function(params){
         }
         // Structure
         if(!item['link']){
-            item['link'] = cm.Node('a')
+            item['link'] = cm.node('a');
         }
         item['nodes']['container'] = cm.Node('div', {'class' : 'pt__image is-centered'},
             item['nodes']['inner'] = cm.Node('div', {'class' : 'inner'})

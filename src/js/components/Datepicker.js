@@ -23,10 +23,11 @@ cm.define('Com.Datepicker', {
     ],
     'params' : {
         'input' : null,                                                     // Deprecated, use 'node' parameter instead.
-        'node' : cm.Node('input', {'type' : 'text'}),
+        'node' : cm.node('input', {'type' : 'text'}),
         'container' : null,
         'name' : '',
         'embedStructure' : 'replace',
+        'customEvents' : true,
         'renderInBody' : true,
         'format' : 'cm._config.dateFormat',
         'displayFormat' : 'cm._config.displayDateFormat',
@@ -78,8 +79,10 @@ function(params){
     that.format = null;
     that.displayFormat = null;
     that.disabled = false;
+    that.isDestructed = null;
 
     var init = function(){
+        that.destructHandler = that.destruct.bind(that);
         that.setParams(params);
         preValidateParams();
         that.convertEvents(that.params['events']);
@@ -87,6 +90,7 @@ function(params){
         validateParams();
         render();
         setLogic();
+        setEvents();
         // Add to stack
         that.addToStack(nodes['container']);
         // Set selected date
@@ -272,10 +276,24 @@ function(params){
         }
     };
 
+    var setEvents = function(){
+        // Add custom event
+        if(that.params['customEvents']){
+            cm.customEvent.add(nodes['container'], 'destruct', that.destructHandler);
+        }
+    };
+
+    var unsetEvents = function(){
+        // Add custom event
+        if(that.params['customEvents']){
+            cm.customEvent.remove(nodes['container'], 'destruct', that.destructHandler);
+        }
+    };
+
     var show = function(){
         // Render calendar month
         if(that.date){
-            components['calendar'].set(that.date.getFullYear(), that.date.getMonth())
+            components['calendar'].set(that.date.getFullYear(), that.date.getMonth());
         }
         components['calendar'].renderMonth();
         // Set classes
@@ -324,6 +342,20 @@ function(params){
     };
 
     /* ******* MAIN ******* */
+
+    that.destruct = function(){
+        var that = this;
+        if(!that.isDestructed){
+            that.isDestructed = true;
+            cm.customEvent.trigger(nodes['calendarContainer'], 'destruct', {
+                'type' : 'child',
+                'self' : false
+            });
+            unsetEvents();
+            that.removeFromStack();
+        }
+        return that;
+    };
 
     that.get = function(format){
         format = typeof format != 'undefined'? format : that.format;

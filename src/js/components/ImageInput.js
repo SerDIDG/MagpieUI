@@ -148,7 +148,7 @@ function(params){
                     'link' : that.nodes['link'],
                     'src' : url,
                     'title' : ''
-                })
+                });
         }
     };
 
@@ -182,10 +182,7 @@ function(params){
         cm.replaceClass(that.nodes['imageContainer'], 'is-zoom', 'is-no-hover is-no-image');
         cm.remove(that.nodes['remove']);
         // Clear gallery item
-        if(that.components['popup']){
-            that.components['popup']
-                .clear()
-        }
+        that.components['popup'] && that.components['popup'].clear();
         return that;
     };
 

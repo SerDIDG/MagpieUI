@@ -20,6 +20,8 @@ cm.define('Com.Slider', {
     'params' : {
         'node' : cm.Node('div'),
         'name' : '',
+        'customEvents' : true,
+        'isEditing' : false,
         'time' : 500,                   // Fade time
         'delay' : 4000,                 // Delay before slide will be changed
         'slideshow' : true,             // Turn on / off slideshow
@@ -35,8 +37,6 @@ cm.define('Com.Slider', {
         'minHeight' : 48,               // Set min-height of slider, work with calculateMaxHeight parameter
         'hasBar' : false,
         'barDirection' : 'horizontal',  // horizontal | vertical
-        'isEditing' : false,
-        'customEvents' : true,
         'Com.Scroll' : {
             'step' : 25,
             'time' : 25
@@ -75,17 +75,22 @@ function(params){
     that.pausedOutside = false;
     that.isProcess = false;
     that.isEditing = null;
+    that.isDestructed = null;
 
     var init = function(){
+        that.redrawHandler = that.redraw.bind(that);
+        that.destructHandler = that.destruct.bind(that);
+        that.enableEditingHandler = that.enableEditing.bind(that);
+        that.disableEditingHandler = that.disableEditing.bind(that);
         getLESSVariables();
         that.setParams(params);
         that.convertEvents(that.params['events']);
         that.getDataNodes(that.params['node']);
         that.getDataConfig(that.params['node']);
-
         validateParams();
         renderSlider();
         renderLayout();
+        setEvents();
         that.setEffect(that.params['effect']);
         that.addToStack(that.params['node']);
         that.params['isEditing'] && that.enableEditing();
@@ -156,21 +161,29 @@ function(params){
         // Init animations
         that.anim['slides'] = new cm.Animation(that.nodes['slides']);
         that.anim['slidesInner'] = new cm.Animation(that.nodes['slidesInner']);
+    };
+
+    var setEvents = function(){
         // Resize events
-        cm.addEvent(window, 'resize', function(){
-            that.redraw();
-        });
+        cm.addEvent(window, 'resize', that.redrawHandler);
         // Add custom event
         if(that.params['customEvents']){
-            cm.customEvent.add(that.params['node'], 'redraw', function(){
-                that.redraw();
-            });
-            cm.customEvent.add(that.params['node'], 'enableEditable', function(){
-                that.enableEditing();
-            });
-            cm.customEvent.add(that.params['node'], 'disableEditable', function(){
-                that.disableEditing();
-            });
+            cm.customEvent.add(that.params['node'], 'redraw', that.redrawHandler);
+            cm.customEvent.add(that.params['node'], 'enableEditable', that.enableEditingHandler);
+            cm.customEvent.add(that.params['node'], 'disableEditable', that.disableEditingHandler);
+            cm.customEvent.add(that.params['node'], 'destruct', that.destructHandler);
+        }
+    };
+
+    var unsetEvents = function(){
+        // Resize events
+        cm.removeEvent(window, 'resize', that.redrawHandler);
+        // Add custom event
+        if(that.params['customEvents']){
+            cm.customEvent.remove(that.params['node'], 'redraw', that.redrawHandler);
+            cm.customEvent.remove(that.params['node'], 'enableEditable', that.enableEditingHandler);
+            cm.customEvent.remove(that.params['node'], 'disableEditable', that.disableEditingHandler);
+            cm.customEvent.remove(that.params['node'], 'destruct', that.destructHandler);
         }
     };
 
@@ -438,6 +451,16 @@ function(params){
             that.disableEditMode();
             that.triggerEvent('disableEditing');
             that.triggerEvent('disableEditable');
+        }
+        return that;
+    };
+
+    that.destruct = function(){
+        var that = this;
+        if(!that.isDestructed){
+            that.isDestructed = true;
+            unsetEvents();
+            that.removeFromStack();
         }
         return that;
     };

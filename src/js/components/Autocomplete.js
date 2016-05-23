@@ -133,8 +133,8 @@ function(params){
             case 38:
                 listLength = that.registeredItems.length;
                 if(listLength){
-                    if(that.selectedItemIndex == null){
-                        that.selectedItemIndex = listLength - 1;
+                    if(that.selectedItemIndex === null){
+                        listIndex = listLength - 1;
                     }else if(that.selectedItemIndex - 1 >= 0){
                         listIndex = that.selectedItemIndex - 1;
                     }else{
@@ -147,7 +147,7 @@ function(params){
             case 40:
                 listLength = that.registeredItems.length;
                 if(listLength){
-                    if(that.selectedItemIndex == null){
+                    if(that.selectedItemIndex === null){
                         listIndex = 0;
                     }else if(that.selectedItemIndex + 1 < listLength){
                         listIndex = that.selectedItemIndex + 1;

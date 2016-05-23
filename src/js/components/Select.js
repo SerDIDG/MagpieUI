@@ -27,6 +27,7 @@ cm.define('Com.Select', {
         'container' : null,                    // Component container that is required in case content is rendered without available select.
         'name' : '',
         'embedStructure' : 'replace',
+        'customEvents' : true,
         'renderInBody' : true,                  // Render dropdowns in document.body, else they will be rendrered in component container.
         'multiple' : false,                     // Render multiple select.
         'placeholder' : '',
@@ -62,10 +63,12 @@ function(params){
         active;
 
     that.disabled = false;
+    that.isDestructed = null;
 
     /* *** CLASS FUNCTIONS *** */
 
     var init = function(){
+        that.destructHandler = that.destruct.bind(that);
         that.setParams(params);
         preValidateParams();
         that.convertEvents(that.params['events']);
@@ -75,6 +78,7 @@ function(params){
         that.triggerEvent('onRenderStart');
         render();
         setMiscEvents();
+        setEvents();
         // Set selected option
         if(that.params['multiple']){
             active = [];
@@ -263,6 +267,20 @@ function(params){
         }
     };
 
+    var setEvents = function(){
+        // Add custom event
+        if(that.params['customEvents']){
+            cm.customEvent.add(nodes['container'], 'destruct', that.destructHandler);
+        }
+    };
+
+    var unsetEvents = function(){
+        // Add custom event
+        if(that.params['customEvents']){
+            cm.customEvent.remove(nodes['container'], 'destruct', that.destructHandler);
+        }
+    };
+
     /* *** COLLECTORS *** */
 
     var collectSelectOptions = function(){
@@ -334,8 +352,10 @@ function(params){
             'value' : '',
             'text' : '',
             'className' : '',
-            'group': group
+            'group': null
         }, item);
+        // Add link to group
+        item['group'] = group;
         // Structure
         item['node'] = cm.Node('li', {'class' : item['className']},
             cm.Node('a', {'innerHTML' : item['text']})
@@ -394,7 +414,7 @@ function(params){
                     set(optionsList[0], true);
                 }else{
                     active = null;
-                    nodes['text'].value = ''
+                    nodes['text'].value = '';
                 }
             }
         }
@@ -499,6 +519,16 @@ function(params){
     };
 
     /* ******* MAIN ******* */
+
+    that.destruct = function(){
+        var that = this;
+        if(!that.isDestructed){
+            that.isDestructed = true;
+            unsetEvents();
+            that.removeFromStack();
+        }
+        return that;
+    };
 
     that.get = function(){
         return active || null;

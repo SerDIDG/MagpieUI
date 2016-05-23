@@ -66,7 +66,7 @@ function(params){
         );
         // Set aspect ration
         if(that.params['aspectRatio'] != 'auto'){
-            cm.addClass(nodes['container'], ['cm__aspect', that.params['aspectRatio']].join('-'))
+            cm.addClass(nodes['container'], ['cm__aspect', that.params['aspectRatio']].join('-'));
         }
     };
 

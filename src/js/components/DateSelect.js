@@ -226,7 +226,7 @@ function(params){
                     '%d' : function(){
                         return o['day'];
                     }
-                }
+                };
             };
         cm.forEach(formats(o), function(item, key){
             str = str.replace(key, item);

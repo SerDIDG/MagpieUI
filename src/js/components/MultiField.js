@@ -107,7 +107,7 @@ cm.define('Com.MultiField', {
         if(that.params['sortable']){
             that.components['sortable'].addEvent('onSort', function(my, data){
                 var item = that.items.find(function(item){
-                    return item['container'] === data['node']
+                    return item['container'] === data['node'];
                 });
                 if(item){
                     sortItem(item, data['index']);

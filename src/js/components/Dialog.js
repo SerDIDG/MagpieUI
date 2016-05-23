@@ -305,7 +305,7 @@ function(params){
         }
         // Set window width
         if(windowWidth != setWidth){
-            nodes['window'].style.width = [setWidth, 'px'].join('')
+            nodes['window'].style.width = [setWidth, 'px'].join('');
         }
     };
 

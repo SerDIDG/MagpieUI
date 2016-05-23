@@ -23,6 +23,7 @@ cm.define('Com.AbstractInput', {
         'container' : null,
         'name' : '',
         'embedStructure' : 'replace',
+        'customEvents' : true,
         'value' : null,
         'title' : '',
         'disabled' : false,

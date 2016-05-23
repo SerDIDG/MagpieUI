@@ -65,7 +65,7 @@ function(params){
         switch(type){
             case 'form-data':
                 if(data.constructor == FormData){
-                    return data
+                    return data;
                 }else{
                     return cm.obj2FormData(data);
                 }

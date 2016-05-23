@@ -36,21 +36,6 @@ module.exports = function(grunt) {
                     '<%= components.codemirror.path %>/lib/codemirror.css'
                 ]
             },
-            fontawesome : {
-                path : '<%= paths.components %>/font-awesome',
-                fonts : '<%= components.fontawesome.path %>/fonts',
-                styles : [
-                    '<%= components.fontawesome.path %>/less/variables.less',
-                    '<%= components.fontawesome.path %>/less/mixins.less',
-                    '<%= components.fontawesome.path %>/less/path.less',
-                    '<%= components.fontawesome.path %>/less/core.less',
-                    '<%= components.fontawesome.path %>/less/larger.less',
-                    '<%= components.fontawesome.path %>/less/fixed-width.less',
-                    '<%= components.fontawesome.path %>/less/list.less',
-                    '<%= components.fontawesome.path %>/less/stacked.less',
-                    '<%= components.fontawesome.path %>/less/icons.less'
-                ]
-            },
             tinycolor : {
                 path : '<%= paths.components %>/tinycolor',
                 scripts : [
@@ -136,7 +121,6 @@ module.exports = function(grunt) {
                 src : [
                     '<%= components.animatecss.styles %>',
                     '<%= components.codemirror.styles %>',
-                    '<%= components.fontawesome.styles %>',
                     '<%= paths.src %>/less/extra/*.less',
                     '<%= paths.src %>/less/variables/*.less',
                     '<%= paths.src %>/less/mixins.less',
@@ -180,6 +164,26 @@ module.exports = function(grunt) {
                     '<%= paths.docs %>/src/less/variables/*.less'
                 ],
                 dest : '<%= paths.docs %>/build/less/<%= pkg.name %>.variables.less'
+            }
+        },
+
+        jshint : {
+            src : {
+                options: {
+                    '-W002' : false,
+                    '-W069' : false
+                },
+                src :[
+                    '<%= paths.src %>/js/common.js',
+                    '<%= paths.src %>/js/modules.js',
+                    '<%= paths.src %>/js/parts.js',
+                    '<%= paths.src %>/js/init.js',
+                    '<%= paths.src %>/js/components/AbstractInput.js',
+                    '<%= paths.src %>/js/components/AbstractRange.js',
+                    '<%= paths.src %>/js/components/Form.js',
+                    '<%= paths.src %>/js/components/BoxTools.js',
+                    '<%= paths.src %>/js/components/**/*.js'
+                ]
             }
         },
 
@@ -285,11 +289,6 @@ module.exports = function(grunt) {
             },
             fonts : {
                 files: [{
-                    expand : true,
-                    cwd : '<%= components.fontawesome.fonts %>/',
-                    src : ['**/*.*'],
-                    dest : '<%= paths.build %>/fonts/fontawesome/'
-                },{
                     expand : true,
                     cwd : '<%= paths.src %>/fonts/',
                     src : ['**/*.*', '!**/*.json'],

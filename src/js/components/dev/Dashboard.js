@@ -248,7 +248,6 @@ function(params){
         unhighlightPlaceholder(that.currentPlaceholder);
         // Drop widget
         if(!that.currentArea || that.currentArea['isRemoveZone'] || that.currentArea['isTemporary']){
-            cm.log(1);
             removeWidget(that.currentWidget, {
                 'onStop' : clear
             });
@@ -697,14 +696,14 @@ function(params){
                 style = {
                     'left' : [-(draggable['dimensions']['absoluteWidth'] + 50), 'px'].join(''),
                     'opacity' : 0
-                }
+                };
             }else{
                 node = cm.wrap(cm.Node('div', {'class' : 'pt__dnd-removable'}), draggable['node']);
                 anim = new cm.Animation(node);
                 style = {
                     'height' : '0px',
                     'opacity' : 0
-                }
+                };
             }
             // Animate draggable, like it disappear
             anim.go({
@@ -941,7 +940,7 @@ function(params){
                 area['placeholders'].push(placeholder);
             }
             cm.log('start');
-            cm.forEach(area['items'], function(widget, i){;
+            cm.forEach(area['items'], function(widget, i){
                 cm.log(widget);
                 if(i === 0){
                     placeholder = renderPlaceholder(widget['node'], {

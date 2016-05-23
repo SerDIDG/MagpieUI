@@ -159,7 +159,7 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
     classProto.setInputs = function(){
         var that = this;
         cm.forEach(that.inputs, function(item){
-            item['input'].value = that.rawValue[item['i']]
+            item['input'].value = that.rawValue[item['i']];
         });
         return that;
     };

@@ -75,7 +75,7 @@ function(params){
                 if(day = params['days'][key]){
                     cm.addClass(day['container'], 'active');
                 }
-            })
+            });
         }
     };
 

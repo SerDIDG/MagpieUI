@@ -56,7 +56,7 @@ function(params){
         var nodes = [];
         // Find element in specified node
         if(parentNode.getAttribute(that.params['attribute']) == name){
-            nodes.push(parentNode)
+            nodes.push(parentNode);
         }
         // Search for nodes in specified node
         nodes = nodes.concat(
@@ -223,7 +223,7 @@ function(params){
         });
         sortList();
         if(name){
-            constructItem(node, name)
+            constructItem(node, name);
         }else{
             constructAll(node);
         }
@@ -248,7 +248,7 @@ function(params){
         });
         sortList();
         if(name){
-            destructItem(node, name)
+            destructItem(node, name);
         }else{
             destructAll(node);
         }

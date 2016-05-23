@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.16.1 (2016-05-19 18:31) ************ */
+/*! ************ MagpieUI v3.16.2 (2016-05-23 18:41) ************ */
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -12365,7 +12365,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.16.1',
+        '_version' : '3.16.2',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -12408,7 +12408,7 @@ var cm = {
 
 cm.isFileReader = (function(){return 'FileReader' in window;})();
 cm.isHistoryAPI = !!(window.history && history.pushState);
-cm.isLocalStorage = (function(){try{return 'localStorage' in window && window['localStorage'] !== null;}catch(e){return false;}})();
+cm.isLocalStorage = (function(){try{return 'localStorage' in window && window.localStorage !== null;}catch(e){return false;}})();
 cm.isCanvas = !!document.createElement("canvas").getContext;
 cm.isTouch = 'ontouchstart' in document.documentElement || !!window.maxTouchPoints || !!navigator.maxTouchPoints;
 
@@ -12416,7 +12416,7 @@ cm.isTouch = 'ontouchstart' in document.documentElement || !!window.maxTouchPoin
 
 cm.top = (function(){
     try {
-        return window.top.cm
+        return window.top.cm;
     }catch(e){
         return window.cm;
     }
@@ -12424,7 +12424,7 @@ cm.top = (function(){
 
 cm.isType = function(o, types){
     if(cm.isString(types)){
-        return Object.prototype.toString.call(o) === '[object ' + types +']'
+        return Object.prototype.toString.call(o) === '[object ' + types +']';
     }
     if(cm.isRegExp(types)){
         return types.test(Object.prototype.toString.call(o));
@@ -12433,7 +12433,7 @@ cm.isType = function(o, types){
         var match = false;
         cm.forEach(types, function(type){
             if(!match){
-                match = Object.prototype.toString.call(o) === '[object ' + type +']'
+                match = Object.prototype.toString.call(o) === '[object ' + type +']';
             }
         });
         return match;
@@ -12691,7 +12691,7 @@ cm.arrayRemove = function(a, item){
 };
 
 cm.arrayIndex = function(a, item){
-    return Array.prototype.indexOf.call(a, item)
+    return Array.prototype.indexOf.call(a, item);
 };
 
 cm.objectToArray = function(o){
@@ -12733,11 +12733,11 @@ cm.isEmpty = function(el){
     if(!el){
         return true;
     }else if(typeof el == 'string' || cm.isArray(el)){
-        return el.length == 0;
+        return el.length === 0;
     }else if(cm.isObject(el)){
         return cm.getLength(el) === 0;
     }else if(typeof el == 'number'){
-        return el == 0;
+        return el === 0;
     }else{
         return false;
     }
@@ -12805,7 +12805,7 @@ cm.log = (function(){
             alert(results.join(', '));
         };
     }else{
-        return function(){}
+        return function(){};
     }
 })();
 
@@ -13074,7 +13074,6 @@ cm.customEvent = (function(){
                                     item['handler'](params);
                                 }
                                 break;
-                            case 'all':
                             default:
                                 if(node !== item['node']){
                                     item['handler'](params);
@@ -13289,7 +13288,8 @@ cm.getByClass = function(str, node){
     if(node.getElementsByClassName){
         return node.getElementsByClassName(str);
     }
-    var els = node.getElementsByTagName('*'), arr = [];
+    var els = node.getElementsByTagName('*'),
+        arr = [];
     for(var i = 0, l = els.length; i < l; i++){
         cm.isClass(els[i], str) && arr.push(els[i]);
     }
@@ -13363,31 +13363,30 @@ cm.getNodeOffsetIndex = function(node){
 
 cm.node = cm.Node = function(){
     var args = arguments,
-        value,
-        el = document.createElement(args[0]);
-    if(typeof args[1] == "object" && !args[1].nodeType){
-        for(var i in args[1]){
-            value = args[1][i];
-            if(typeof value == 'object'){
+        el = document.createElement(args[0]),
+        i = 0;
+    if(cm.isObject(args[1])){
+        cm.forEach(args[1], function(value, key){
+            if(cm.isObject(value)){
                 value = JSON.stringify(value);
             }
-            if(i == 'style'){
+            if(key == 'style'){
                 el.style.cssText = value;
-            }else if(i == 'class'){
+            }else if(key == 'class'){
                 el.className = value;
-            }else if(i == 'innerHTML'){
+            }else if(key == 'innerHTML'){
                 el.innerHTML = value;
             }else{
-                el.setAttribute(i, value);
+                el.setAttribute(key, value);
             }
-        }
+        });
         i = 2;
     }else{
         i = 1;
     }
     for(var ln = args.length; i < ln; i++){
-        if(typeof arguments[i] != 'undefined'){
-            if(typeof arguments[i] == 'string' || typeof args[i] == 'number'){
+        if(typeof args[i] != 'undefined'){
+            if(typeof args[i] == 'string' || typeof args[i] == 'number'){
                 el.appendChild(document.createTextNode(args[i]));
             }else{
                 el.appendChild(args[i]);
@@ -13415,7 +13414,7 @@ cm.inDOM = function(o){
             if(el == document){
                 return true;
             }
-            el = el.parentNode
+            el = el.parentNode;
         }
     }
     return false;
@@ -13500,7 +13499,7 @@ cm.remove = function(node){
 };
 
 cm.clearNode = function(node){
-    while(node.childNodes.length != 0){
+    while(node.childNodes.length){
         node.removeChild(node.firstChild);
     }
     return node;
@@ -13561,7 +13560,7 @@ cm.insertBefore = function(node, target){
 cm.insertAfter = function(node, target){
     if(cm.isNode(node) && cm.isNode(target) && target.parentNode){
         var before = target.nextSibling;
-        if(before != null){
+        if(before){
             cm.insertBefore(node, before);
         }else{
             target.parentNode.appendChild(node);
@@ -13665,7 +13664,7 @@ cm.getNodes = function(container, marker){
         var separators = attr? attr.split('.') : [],
             obj = nodes;
         cm.forEach(separators, function(separator, i){
-            if(i == 0 && cm.isEmpty(separator)){
+            if(i === 0 && cm.isEmpty(separator)){
                 obj = nodes;
             }else if((i + 1) == separators.length){
                 process(node, separator, obj, processedObj);
@@ -13748,20 +13747,20 @@ cm.setFDO = function(o, form){
             var type = (el[i].type || '').toLowerCase();
             switch(type){
                 case 'radio':
-                    if(o[name] == el[i].value){
+                    if(item == el[i].value){
                         el[i].checked = true;
                     }
                     break;
 
                 case 'checkbox':
-                    el[i].checked = !!+o[name];
+                    el[i].checked = !!item;
                     break;
 
                 default:
                     if(el[i].tagName.toLowerCase() == 'select'){
-                        cm.setSelect(el[i], o[name]);
+                        cm.setSelect(el[i], item);
                     }else{
-                        el[i].value = o[name];
+                        el[i].value = item;
                     }
                     break;
             }
@@ -13795,7 +13794,7 @@ cm.getFDO = function(o, chbx){
             data[name] = (function(i, obj){
                 var index = indexes[i];
                 var next = typeof(indexes[i + 1]) != 'undefined';
-                if(index == ''){
+                if(index === ''){
                     if(obj && obj instanceof Array){
                         obj.push(next ? arguments.callee(i + 1, obj) : value);
                     }else{
@@ -13994,7 +13993,7 @@ cm.reduceText = function(str, length, points){
 };
 
 cm.removeDanger = function(str){
-    return str.replace(/(\<|\>|&lt;|&gt;)/gim, '');
+    return str.replace(/(<|>|&lt;|&gt;)/gim, '');
 };
 
 cm.cutHTML = function(str){
@@ -14021,12 +14020,8 @@ cm.addLeadZero = function(x){
 cm.getNumberDeclension = function(number, titles){
     var cases = [2, 0, 1, 1, 1, 2];
     return titles[
-        (number % 100 > 4 && number % 100 < 20)
-            ?
-            2
-            :
-            cases[(number % 10 < 5) ? number % 10 : 5]
-        ];
+        (number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]
+    ];
 };
 
 cm.toRadians = function(degrees) {
@@ -14103,7 +14098,7 @@ cm.dateFormat = function(date, format, langs){
             '%s' : function(){
                 return date ? cm.addLeadZero(date.getSeconds()) : '00';
             }
-        }
+        };
     };
 
     cm.forEach(formats(date), function(item, key){
@@ -14287,7 +14282,10 @@ cm.getPageSize = function(key){
 cm.getScrollBarSize = (function(){
     var node;
     return function(){
-        !node && (node = cm.insertFirst(cm.Node('div', {'class' : 'cm__scroll-bar-size-checker'}), document.body));
+        if(!node){
+            node = cm.node('div', {'class' : 'cm__scroll-bar-size-checker'});
+            cm.insertFirst(node, document.body);
+        }
         return Math.max(node.offsetWidth - node.clientWidth, 0);
     };
 })();
@@ -14518,10 +14516,10 @@ cm.getRealHeight = function(node, type, applyType){
 
     height['offset'] = node.offsetHeight;
     height['self'] = height['offset']
-                     - cm.getStyle(styleObject, 'borderTopWidth', true)
-                     - cm.getStyle(styleObject, 'borderBottomWidth', true)
-                     - cm.getStyle(styleObject, 'paddingTop', true)
-                     - cm.getStyle(styleObject, 'paddingBottom', true);
+        - cm.getStyle(styleObject, 'borderTopWidth', true)
+        - cm.getStyle(styleObject, 'borderBottomWidth', true)
+        - cm.getStyle(styleObject, 'paddingTop', true)
+        - cm.getStyle(styleObject, 'paddingBottom', true);
 
     node.style.position = 'relative';
     height['offsetRelative'] = node.offsetHeight;
@@ -14540,9 +14538,9 @@ cm.getIndentX = function(node){
         return null;
     }
     return cm.getStyle(node, 'paddingLeft', true)
-         + cm.getStyle(node, 'paddingRight', true)
-         + cm.getStyle(node, 'borderLeftWidth', true)
-         + cm.getStyle(node, 'borderRightWidth', true);
+        + cm.getStyle(node, 'paddingRight', true)
+        + cm.getStyle(node, 'borderLeftWidth', true)
+        + cm.getStyle(node, 'borderRightWidth', true);
 };
 
 cm.getIndentY = function(node){
@@ -14550,9 +14548,9 @@ cm.getIndentY = function(node){
         return null;
     }
     return cm.getStyle(node, 'paddingTop', true)
-         + cm.getStyle(node, 'paddingBottom', true)
-         + cm.getStyle(node, 'borderTopWidth', true)
-         + cm.getStyle(node, 'borderBottomWidth', true);
+        + cm.getStyle(node, 'paddingBottom', true)
+        + cm.getStyle(node, 'borderTopWidth', true)
+        + cm.getStyle(node, 'borderBottomWidth', true);
 };
 
 cm.addStyles = function(node, str){
@@ -15753,7 +15751,7 @@ cm.define = (function(){
 
 cm.getConstructor = function(className, callback){
     var classConstructor;
-    callback = typeof callback != 'undefined' ? callback : function(){}
+    callback = typeof callback != 'undefined' ? callback : function(){};
     if(!className || className == '*'){
         cm.forEach(cm.defineStack, function(classConstructor){
             callback(classConstructor, className, classConstructor.prototype);
@@ -16038,7 +16036,7 @@ Mod['Params'] = {
                     if(/cm._config./i.test(item)){
                         that.params[key] = cm._config[item.replace('cm._config.', '')];
                     }
-                    break
+                    break;
             }
         });
         return that;
@@ -16917,7 +16915,7 @@ cm.init = function(){
                     'type' : 'all',
                     'self' : true,
                     'scrollSize' : cm._scrollSize
-                })
+                });
             }
         };
     })();
@@ -16978,6 +16976,7 @@ cm.define('Com.AbstractInput', {
         'container' : null,
         'name' : '',
         'embedStructure' : 'replace',
+        'customEvents' : true,
         'value' : null,
         'title' : '',
         'disabled' : false,
@@ -18572,7 +18571,7 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
     classProto.setInputs = function(){
         var that = this;
         cm.forEach(that.inputs, function(item){
-            item['input'].value = that.rawValue[item['i']]
+            item['input'].value = that.rawValue[item['i']];
         });
         return that;
     };
@@ -18742,8 +18741,8 @@ function(params){
             case 38:
                 listLength = that.registeredItems.length;
                 if(listLength){
-                    if(that.selectedItemIndex == null){
-                        that.selectedItemIndex = listLength - 1;
+                    if(that.selectedItemIndex === null){
+                        listIndex = listLength - 1;
                     }else if(that.selectedItemIndex - 1 >= 0){
                         listIndex = that.selectedItemIndex - 1;
                     }else{
@@ -18756,7 +18755,7 @@ function(params){
             case 40:
                 listLength = that.registeredItems.length;
                 if(listLength){
-                    if(that.selectedItemIndex == null){
+                    if(that.selectedItemIndex === null){
                         listIndex = 0;
                     }else if(that.selectedItemIndex + 1 < listLength){
                         listIndex = that.selectedItemIndex + 1;
@@ -20426,7 +20425,7 @@ function(params){
                 if(day = params['days'][key]){
                     cm.addClass(day['container'], 'active');
                 }
-            })
+            });
         }
     };
 
@@ -20771,7 +20770,7 @@ function(params){
         var nodes = [];
         // Find element in specified node
         if(parentNode.getAttribute(that.params['attribute']) == name){
-            nodes.push(parentNode)
+            nodes.push(parentNode);
         }
         // Search for nodes in specified node
         nodes = nodes.concat(
@@ -20938,7 +20937,7 @@ function(params){
         });
         sortList();
         if(name){
-            constructItem(node, name)
+            constructItem(node, name);
         }else{
             constructAll(node);
         }
@@ -20963,7 +20962,7 @@ function(params){
         });
         sortList();
         if(name){
-            destructItem(node, name)
+            destructItem(node, name);
         }else{
             destructAll(node);
         }
@@ -22240,7 +22239,7 @@ function(params){
                     '%d' : function(){
                         return o['day'];
                     }
-                }
+                };
             };
         cm.forEach(formats(o), function(item, key){
             str = str.replace(key, item);
@@ -22291,10 +22290,11 @@ cm.define('Com.Datepicker', {
     ],
     'params' : {
         'input' : null,                                                     // Deprecated, use 'node' parameter instead.
-        'node' : cm.Node('input', {'type' : 'text'}),
+        'node' : cm.node('input', {'type' : 'text'}),
         'container' : null,
         'name' : '',
         'embedStructure' : 'replace',
+        'customEvents' : true,
         'renderInBody' : true,
         'format' : 'cm._config.dateFormat',
         'displayFormat' : 'cm._config.displayDateFormat',
@@ -22346,8 +22346,10 @@ function(params){
     that.format = null;
     that.displayFormat = null;
     that.disabled = false;
+    that.isDestructed = null;
 
     var init = function(){
+        that.destructHandler = that.destruct.bind(that);
         that.setParams(params);
         preValidateParams();
         that.convertEvents(that.params['events']);
@@ -22355,6 +22357,7 @@ function(params){
         validateParams();
         render();
         setLogic();
+        setEvents();
         // Add to stack
         that.addToStack(nodes['container']);
         // Set selected date
@@ -22540,10 +22543,24 @@ function(params){
         }
     };
 
+    var setEvents = function(){
+        // Add custom event
+        if(that.params['customEvents']){
+            cm.customEvent.add(nodes['container'], 'destruct', that.destructHandler);
+        }
+    };
+
+    var unsetEvents = function(){
+        // Add custom event
+        if(that.params['customEvents']){
+            cm.customEvent.remove(nodes['container'], 'destruct', that.destructHandler);
+        }
+    };
+
     var show = function(){
         // Render calendar month
         if(that.date){
-            components['calendar'].set(that.date.getFullYear(), that.date.getMonth())
+            components['calendar'].set(that.date.getFullYear(), that.date.getMonth());
         }
         components['calendar'].renderMonth();
         // Set classes
@@ -22592,6 +22609,20 @@ function(params){
     };
 
     /* ******* MAIN ******* */
+
+    that.destruct = function(){
+        var that = this;
+        if(!that.isDestructed){
+            that.isDestructed = true;
+            cm.customEvent.trigger(nodes['calendarContainer'], 'destruct', {
+                'type' : 'child',
+                'self' : false
+            });
+            unsetEvents();
+            that.removeFromStack();
+        }
+        return that;
+    };
 
     that.get = function(format){
         format = typeof format != 'undefined'? format : that.format;
@@ -22992,7 +23023,7 @@ function(params){
         }
         // Set window width
         if(windowWidth != setWidth){
-            nodes['window'].style.width = [setWidth, 'px'].join('')
+            nodes['window'].style.width = [setWidth, 'px'].join('');
         }
     };
 
@@ -23783,14 +23814,14 @@ function(params){
                 style = {
                     'left' : [-(draggable['dimensions']['absoluteWidth'] + 50), 'px'].join(''),
                     'opacity' : 0
-                }
+                };
             }else{
                 node = cm.wrap(cm.Node('div', {'class' : 'pt__dnd-removable'}), draggable['node']);
                 anim = new cm.Animation(node);
                 style = {
                     'height' : '0px',
                     'opacity' : 0
-                }
+                };
             }
             // Animate draggable, like it disappear
             anim.go({
@@ -24825,7 +24856,7 @@ function(params){
 
     var collectItem = function(item){
         if(!item['link']){
-            item['link'] = cm.Node('a')
+            item['link'] = cm.node('a');
         }
         item = cm.merge({
             'src' : item['link'].getAttribute('href') || '',
@@ -24854,7 +24885,7 @@ function(params){
         }
         // Structure
         if(!item['link']){
-            item['link'] = cm.Node('a')
+            item['link'] = cm.node('a');
         }
         item['nodes']['container'] = cm.Node('div', {'class' : 'pt__image is-centered'},
             item['nodes']['inner'] = cm.Node('div', {'class' : 'inner'})
@@ -25238,7 +25269,7 @@ function(params){
         );
         // Set aspect ration
         if(that.params['aspectRatio'] != 'auto'){
-            cm.addClass(nodes['container'], ['cm__aspect', that.params['aspectRatio']].join('-'))
+            cm.addClass(nodes['container'], ['cm__aspect', that.params['aspectRatio']].join('-'));
         }
     };
 
@@ -26628,7 +26659,7 @@ function(params){
                     'link' : that.nodes['link'],
                     'src' : url,
                     'title' : ''
-                })
+                });
         }
     };
 
@@ -26662,10 +26693,7 @@ function(params){
         cm.replaceClass(that.nodes['imageContainer'], 'is-zoom', 'is-no-hover is-no-image');
         cm.remove(that.nodes['remove']);
         // Clear gallery item
-        if(that.components['popup']){
-            that.components['popup']
-                .clear()
-        }
+        that.components['popup'] && that.components['popup'].clear();
         return that;
     };
 
@@ -26861,7 +26889,7 @@ cm.define('Com.MultiField', {
         if(that.params['sortable']){
             that.components['sortable'].addEvent('onSort', function(my, data){
                 var item = that.items.find(function(item){
-                    return item['container'] === data['node']
+                    return item['container'] === data['node'];
                 });
                 if(item){
                     sortItem(item, data['index']);
@@ -27676,8 +27704,8 @@ function(params){
             }
             that.params['showLoader'] = false;
         }
-        if(that.params['pageCount'] == 0){
-            that.pageCount = Math.ceil(that.params['count'] / that.params['perPage']);
+        if(that.params['pageCount'] == 0 && that.params['count'] && that.params['perPage']){
+            that.pageCount = Math.floor(that.params['count'] / that.params['perPage']);
         }else{
             that.pageCount = that.params['pageCount'];
         }
@@ -28203,8 +28231,8 @@ function(params){
     that.setCount = function(count){
         if(count && (count = parseInt(count.toString())) && count != that.params['count']){
             that.params['count'] = count;
-            if(that.params['pageCount'] == 0){
-                that.pageCount = Math.ceil(that.params['count'] / that.params['perPage']);
+            if(that.params['pageCount'] == 0 && that.params['count'] && that.params['perPage']){
+                that.pageCount = Math.floor(that.params['count'] / that.params['perPage']);
             }else{
                 that.pageCount = that.params['pageCount'];
             }
@@ -29005,7 +29033,7 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         if(visible){
             cm.addClass(node, 'is-show');
         }
-        return node
+        return node;
     };
 
     classProto.renderContent = function(){
@@ -29317,7 +29345,8 @@ cm.define('Com.ScrollPagination', {
         'onPageShow',
         'onPageHide',
         'onEnd',
-        'onFinalize'
+        'onFinalize',
+        'onSetCount'
     ],
     'params' : {
         'node' : cm.Node('div'),
@@ -29328,6 +29357,7 @@ cm.define('Com.ScrollPagination', {
         'scrollNode' : window,
         'scrollIndent' : 'Math.min(%scrollHeight% / 2, 600)',       // Variables: %blockHeight%.
         'data' : [],                                                // Static data
+        'count' : 0,
         'perPage' : 0,                                              // 0 - render all data in one page
         'startPage' : 1,                                            // Start page
         'startPageToken' : '',
@@ -29340,6 +29370,7 @@ cm.define('Com.ScrollPagination', {
         'pageAttributes' : {
             'class' : 'com__scroll-pagination__page'
         },
+        'responseCountKey' : 'count',                               // Take items count from response
         'responseKey' : 'data',                                     // Instead of using filter callback, you can provide response array key
         'responseHTML' : false,                                     // If true, html will append automatically
         'ajax' : {
@@ -29381,6 +29412,7 @@ function(params){
     that.currentPage = null;
     that.previousPage = null;
     that.nextPage = null;
+    that.pageCount = 0;
 
     var init = function(){
         that.setParams(params);
@@ -29405,6 +29437,11 @@ function(params){
             that.isAjax = true;
         }else{
             that.params['showLoader'] = false;
+        }
+        if(that.params['pageCount'] == 0 && that.params['perPage'] && that.params['count']){
+            that.pageCount = Math.floor(that.params['count'] / that.params['perPage']);
+        }else{
+            that.pageCount = that.params['pageCount'];
         }
         // Set start page token
         that.setToken(that.params['startPage'], that.params['startPageToken']);
@@ -29568,9 +29605,17 @@ function(params){
 
     that.callbacks.filter = function(that, config, response){
         var data = [],
-            dataItem = cm.objectSelector(that.params['responseKey'], response);
-        if(dataItem && !cm.isEmpty(dataItem)){
-            data = dataItem;
+            dataItem = cm.objectSelector(that.params['responseKey'], response),
+            countItem = cm.objectSelector(that.params['responseCountKey'], response);
+        if(!cm.isEmpty(dataItem)){
+            if(!that.params['responseHTML'] && that.params['perPage']){
+                data = dataItem.slice(0, that.params['perPage']);
+            }else{
+                data = dataItem;
+            }
+        }
+        if(countItem){
+            that.setCount(countItem);
         }
         return data;
     };
@@ -29701,7 +29746,7 @@ function(params){
         that.loaderDelay && clearTimeout(that.loaderDelay);
         cm.addClass(that.nodes['loader'], 'is-hidden');
         // Check pages count
-        if(that.params['pageCount'] > 0 && that.params['pageCount'] == that.currentPage){
+        if(that.pageCount > 0 && that.pageCount == that.currentPage){
             that.callbacks.finalize(that);
         }
         // Show / Hide Load More Button
@@ -29749,6 +29794,22 @@ function(params){
             that.pages[page] = {};
         }
         that.pages[page]['token'] = token;
+        return that;
+    };
+
+    that.setCount = function(count){
+        if(count && (count = parseInt(count.toString())) && count != that.params['count']){
+            that.params['count'] = count;
+            if(that.params['pageCount'] == 0 && that.params['count'] && that.params['perPage']){
+                that.pageCount = Math.floor(that.params['count'] / that.params['perPage']);
+            }else{
+                that.pageCount = that.params['pageCount'];
+            }
+            if(that.pageCount > 0 && that.pageCount == that.currentPage){
+                that.callbacks.finalize(that);
+            }
+            that.triggerEvent('onSetCount', count);
+        }
         return that;
     };
 
@@ -29842,6 +29903,7 @@ cm.define('Com.Select', {
         'container' : null,                    // Component container that is required in case content is rendered without available select.
         'name' : '',
         'embedStructure' : 'replace',
+        'customEvents' : true,
         'renderInBody' : true,                  // Render dropdowns in document.body, else they will be rendrered in component container.
         'multiple' : false,                     // Render multiple select.
         'placeholder' : '',
@@ -29877,10 +29939,12 @@ function(params){
         active;
 
     that.disabled = false;
+    that.isDestructed = null;
 
     /* *** CLASS FUNCTIONS *** */
 
     var init = function(){
+        that.destructHandler = that.destruct.bind(that);
         that.setParams(params);
         preValidateParams();
         that.convertEvents(that.params['events']);
@@ -29890,6 +29954,7 @@ function(params){
         that.triggerEvent('onRenderStart');
         render();
         setMiscEvents();
+        setEvents();
         // Set selected option
         if(that.params['multiple']){
             active = [];
@@ -30078,6 +30143,20 @@ function(params){
         }
     };
 
+    var setEvents = function(){
+        // Add custom event
+        if(that.params['customEvents']){
+            cm.customEvent.add(nodes['container'], 'destruct', that.destructHandler);
+        }
+    };
+
+    var unsetEvents = function(){
+        // Add custom event
+        if(that.params['customEvents']){
+            cm.customEvent.remove(nodes['container'], 'destruct', that.destructHandler);
+        }
+    };
+
     /* *** COLLECTORS *** */
 
     var collectSelectOptions = function(){
@@ -30149,8 +30228,10 @@ function(params){
             'value' : '',
             'text' : '',
             'className' : '',
-            'group': group
+            'group': null
         }, item);
+        // Add link to group
+        item['group'] = group;
         // Structure
         item['node'] = cm.Node('li', {'class' : item['className']},
             cm.Node('a', {'innerHTML' : item['text']})
@@ -30209,7 +30290,7 @@ function(params){
                     set(optionsList[0], true);
                 }else{
                     active = null;
-                    nodes['text'].value = ''
+                    nodes['text'].value = '';
                 }
             }
         }
@@ -30314,6 +30395,16 @@ function(params){
     };
 
     /* ******* MAIN ******* */
+
+    that.destruct = function(){
+        var that = this;
+        if(!that.isDestructed){
+            that.isDestructed = true;
+            unsetEvents();
+            that.removeFromStack();
+        }
+        return that;
+    };
 
     that.get = function(){
         return active || null;
@@ -30511,6 +30602,8 @@ cm.define('Com.Slider', {
     'params' : {
         'node' : cm.Node('div'),
         'name' : '',
+        'customEvents' : true,
+        'isEditing' : false,
         'time' : 500,                   // Fade time
         'delay' : 4000,                 // Delay before slide will be changed
         'slideshow' : true,             // Turn on / off slideshow
@@ -30526,8 +30619,6 @@ cm.define('Com.Slider', {
         'minHeight' : 48,               // Set min-height of slider, work with calculateMaxHeight parameter
         'hasBar' : false,
         'barDirection' : 'horizontal',  // horizontal | vertical
-        'isEditing' : false,
-        'customEvents' : true,
         'Com.Scroll' : {
             'step' : 25,
             'time' : 25
@@ -30566,17 +30657,22 @@ function(params){
     that.pausedOutside = false;
     that.isProcess = false;
     that.isEditing = null;
+    that.isDestructed = null;
 
     var init = function(){
+        that.redrawHandler = that.redraw.bind(that);
+        that.destructHandler = that.destruct.bind(that);
+        that.enableEditingHandler = that.enableEditing.bind(that);
+        that.disableEditingHandler = that.disableEditing.bind(that);
         getLESSVariables();
         that.setParams(params);
         that.convertEvents(that.params['events']);
         that.getDataNodes(that.params['node']);
         that.getDataConfig(that.params['node']);
-
         validateParams();
         renderSlider();
         renderLayout();
+        setEvents();
         that.setEffect(that.params['effect']);
         that.addToStack(that.params['node']);
         that.params['isEditing'] && that.enableEditing();
@@ -30647,21 +30743,29 @@ function(params){
         // Init animations
         that.anim['slides'] = new cm.Animation(that.nodes['slides']);
         that.anim['slidesInner'] = new cm.Animation(that.nodes['slidesInner']);
+    };
+
+    var setEvents = function(){
         // Resize events
-        cm.addEvent(window, 'resize', function(){
-            that.redraw();
-        });
+        cm.addEvent(window, 'resize', that.redrawHandler);
         // Add custom event
         if(that.params['customEvents']){
-            cm.customEvent.add(that.params['node'], 'redraw', function(){
-                that.redraw();
-            });
-            cm.customEvent.add(that.params['node'], 'enableEditable', function(){
-                that.enableEditing();
-            });
-            cm.customEvent.add(that.params['node'], 'disableEditable', function(){
-                that.disableEditing();
-            });
+            cm.customEvent.add(that.params['node'], 'redraw', that.redrawHandler);
+            cm.customEvent.add(that.params['node'], 'enableEditable', that.enableEditingHandler);
+            cm.customEvent.add(that.params['node'], 'disableEditable', that.disableEditingHandler);
+            cm.customEvent.add(that.params['node'], 'destruct', that.destructHandler);
+        }
+    };
+
+    var unsetEvents = function(){
+        // Resize events
+        cm.removeEvent(window, 'resize', that.redrawHandler);
+        // Add custom event
+        if(that.params['customEvents']){
+            cm.customEvent.remove(that.params['node'], 'redraw', that.redrawHandler);
+            cm.customEvent.remove(that.params['node'], 'enableEditable', that.enableEditingHandler);
+            cm.customEvent.remove(that.params['node'], 'disableEditable', that.disableEditingHandler);
+            cm.customEvent.remove(that.params['node'], 'destruct', that.destructHandler);
         }
     };
 
@@ -30929,6 +31033,16 @@ function(params){
             that.disableEditMode();
             that.triggerEvent('disableEditing');
             that.triggerEvent('disableEditable');
+        }
+        return that;
+    };
+
+    that.destruct = function(){
+        var that = this;
+        if(!that.isDestructed){
+            that.isDestructed = true;
+            unsetEvents();
+            that.removeFromStack();
         }
         return that;
     };
@@ -33177,7 +33291,7 @@ function(params){
 
 cm.getConstructor('Com.TintRange', function(classConstructor, className, classProto){
     classProto.renderContent = function(){
-        return cm.node('div', {'class' : 'com__tint-range__content'})
+        return cm.node('div', {'class' : 'com__tint-range__content'});
     };
 });
 cm.define('Com.ToggleBox', {

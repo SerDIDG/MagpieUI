@@ -188,7 +188,7 @@ Mod['Params'] = {
                     if(/cm._config./i.test(item)){
                         that.params[key] = cm._config[item.replace('cm._config.', '')];
                     }
-                    break
+                    break;
             }
         });
         return that;
