@@ -619,6 +619,7 @@ Mod['Stack'] = {
     'removeFromStack' : function(){
         var that = this;
         cm.arrayRemove(that._stack, that._stackItem);
+        that._stackItem = null;
         return that;
     },
     'isAppropriateToStack' : function(name, parent, callback){
