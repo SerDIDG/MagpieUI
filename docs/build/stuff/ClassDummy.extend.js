@@ -1,12 +1,12 @@
 cm.define('Com.ClassDummyChild', {
-    'extend' : 'Com.ClassDummy',
+    'extend' : 'Com.AbstractController',
     'params' : {
         'node' : cm.node('div'),
     }
 },
 function(params){
     var that = this;
-    Com.ClassDummy.apply(that, arguments);
+    Com.AbstractController.apply(that, arguments);
 });
 
 cm.getConstructor('Com.ClassDummyChild', function(classConstructor, className, classProto){
