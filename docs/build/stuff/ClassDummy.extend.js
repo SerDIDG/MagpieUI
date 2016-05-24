@@ -6,15 +6,17 @@ cm.define('Com.ClassDummyChild', {
 },
 function(params){
     var that = this;
+    // Call parent class construct
     Com.AbstractController.apply(that, arguments);
 });
 
 cm.getConstructor('Com.ClassDummyChild', function(classConstructor, className, classProto){
     var _inherit = classProto._inherit;
 
-    classProto.construct = function(){
+    classProto.render = function(){
         var that = this;
-        _inherit.prototype.construct.apply(that, arguments);
+        // Call parent method - render
+        _inherit.prototype.render.apply(that, arguments);
         return that;
     };
 });
