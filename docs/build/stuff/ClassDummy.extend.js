@@ -1,7 +1,7 @@
 cm.define('Com.ClassDummyChild', {
     'extend' : 'Com.AbstractController',
     'params' : {
-        'node' : cm.node('div'),
+        'node' : cm.node('div')
     }
 },
 function(params){

@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.16.3 (2016-05-24 18:53) ************ */
+/*! ************ MagpieUI v3.16.3 (2016-05-26 16:44) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3625,13 +3625,16 @@ span.CodeMirror-selectedtext { background: none; }
 
 @CmIconVars-Family: 'Magpie-UI-Glyphs';
 @CmIconVars-Color: @CmColor-Icon;
-@CmIconVars-Version: 13;
+@CmIconVars-Version: 14;
 
 @CmIcon-Magnify: '\e600';
+@CmIcon-Reduce: '\e601';
 
 @CmIcon-CircleArrowLeft: '\e700';
 @CmIcon-CircleArrowRight: '\e701';
-@CmIcon-CircleClose: '\e702';
+@CmIcon-CircleArrowUp: '\e702';
+@CmIcon-CircleArrowDown: '\e703';
+@CmIcon-CircleClose: '\e704';
 
 @CmIcon-CircleTwitter: '\e800';
 @CmIcon-CircleInstagram: '\e801';
@@ -3691,9 +3694,10 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* UI ******* */
 
 @CmUI-Transition-Duration: 250ms;
-@CmUI-Transition-DurationReverse: 100ms;
+@CmUI-Transition-DurationShort: 100ms;
 @CmUI-Transition-DurationLong: 500ms;
 @CmUI-Transition-DurationXLong: 750ms;
+@CmUI-Transition-DurationReverse: 100ms;
 @CmUI-Transition-DurationNone: 0ms;
 @CmUI-MotionAsymmetric: cubic-bezier(.5,0,.15,1);
 @CmUI-Opacity-Hover: 0.7;
@@ -3991,6 +3995,7 @@ span.CodeMirror-selectedtext { background: none; }
 @CmBorder-Radius: 3px;
 @CmBorder-Width: 1px;
 @CmBorder-BoxWidth: 2px;
+@CmBorder-TemporaryWidth: @CmBorder-BoxWidth;
 @CmBorder-Default: @CmBorder-Width solid @CmColor-Border;
 @CmBorder-Separator: @CmBorder-Width dotted @CmColor-Border;
 @CmBorder-Editable: @CmBorder-Width dashed @CmColor-BorderActive;
@@ -3998,6 +4003,10 @@ span.CodeMirror-selectedtext { background: none; }
 @CmBorder-BoxHover: @CmBorder-BoxWidth solid @CmColor-BorderHover;
 @CmBorder-BoxActive: @CmBorder-BoxWidth solid @CmColor-BorderActive;
 @CmBorder-BoxSelected: @CmBorder-BoxWidth solid @CmColor-BorderSelected;
+@CmBorder-Temporary: @CmBorder-TemporaryWidth dashed @CmColor-Border;
+@CmBorder-TemporaryHover: @CmBorder-TemporaryWidth dashed @CmColor-BorderHover;
+@CmBorder-TemporaryActive: @CmBorder-TemporaryWidth dashed @CmColor-BorderActive;
+@CmBorder-TemporarySelected: @CmBorder-TemporaryWidth dashed @CmColor-BorderSelected;
 
 // /* ******* BUTTONS ******* */
 
@@ -4388,6 +4397,10 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* COLOR PICKER ******* */
 
 @ComColorPicker-Width: @CmForm-FieldSmallWidth;
+
+// /* ******* FILE INPUT ******* */
+
+@ComFileInput-DropHeight: 128px;
 
 // /* ******* DIALOG ******* */
 
@@ -5798,6 +5811,12 @@ span.CodeMirror-selectedtext { background: none; }
     }
 }
 
+.cm-i__reduce {
+    &:before {
+        content: @CmIcon-Reduce;
+    }
+}
+
 /* *** CIRCLE *** */
 
 .cm-i__circle-arrow-left {
@@ -5809,6 +5828,18 @@ span.CodeMirror-selectedtext { background: none; }
 .cm-i__circle-arrow-right {
     &:before {
         content: @CmIcon-CircleArrowRight;
+    }
+}
+
+.cm-i__circle-arrow-up {
+    &:before {
+        content: @CmIcon-CircleArrowUp;
+    }
+}
+
+.cm-i__circle-arrow-down {
+    &:before {
+        content: @CmIcon-CircleArrowDown;
     }
 }
 
@@ -8669,6 +8700,68 @@ button {
         }
     }
 
+}
+/* ******* PARTS: FILE DROP ******* */
+
+.pt__file-drop {
+    position: relative;
+
+    > .inner {
+        .display-flex;
+        position: absolute;
+        overflow: hidden;
+        border: @CmBorder-Temporary;
+        border-radius: @CmBorder-Radius;
+        .mx__position(0, 0, 0, 0);
+        .mx__align-items(center);
+        .mx__justify-content(center);
+        .mx__transition(all, @CmUI-Transition-DurationShort);
+
+        > .title {
+            .cm__font--ui-h1;
+            .mx__transition(all, @CmUI-Transition-DurationShort);
+
+            > .icon {
+                margin: 0 auto;
+                .cm-i__size(@CmSize-Medium);
+                .cm-i__b-size(@CmSize-Medium);
+                .mx__transition(all, @CmUI-Transition-DurationShort);
+            }
+        }
+    }
+
+    &.is-highlight {
+        > .inner {
+            border: @CmBorder-TemporaryActive;
+
+            > .title {
+                color: @CmColor-Primary-DarkDefault;
+
+                > .icon {
+                    color: @CmColor-Primary-DarkDefault;
+                }
+            }
+        }
+    }
+}
+/* ******* PARTS: FILE LINE ******* */
+
+.pt__file-line {
+    .button {
+        float: left;
+
+        &:not(:first-child) {
+            margin-left: @CmForm-ButtonsIndent;
+        }
+
+        &:not(:last-child) {
+            margin-right: @CmForm-ButtonsIndent;
+        }
+    }
+
+    .label {
+        .cm__text-nowrap;
+    }
 }
 /* ******* PARTS: GRID ******* */
 
@@ -13207,6 +13300,44 @@ button {
         }
     }
 }
+/* ******* COMPONENTS: FILE INPUT ******* */
+
+.com__file-input__content {
+    height: @CmForm-FieldHeight;
+    position: relative;
+    .mx__transition(all, @CmUI-Transition-Duration);
+
+    &.is-dragging {
+        height: @ComFileInput-DropHeight;
+    }
+}
+
+.com__file-input__holder {
+    opacity: 1;
+    .mx__transition(all, @CmUI-Transition-Duration);
+
+    &.is-hidden {
+        opacity: 0;
+    }
+}
+
+.com__file-input__drop {
+    position: absolute;
+    visibility: visible;
+    opacity: 1;
+    .mx__position(0, 0, 0, 0);
+    .mx__transition(all, @CmUI-Transition-Duration);
+
+    .pt__file-drop {
+        position: absolute;
+        .mx__position(0, 0, 0, 0);
+    }
+
+    &.is-hidden {
+        visibility: hidden;
+        opacity: 0;
+    }
+}
 /* ******* COMPONENTS: FORM ******* */
 
 .com__form {
@@ -16030,13 +16161,11 @@ button {
 @CmPath-Fonts: '@{AppPath-Fonts}/MagpieUI';
 html {
     .cm__scroll-y;
-    width: auto;
-    height: auto;
+    height: 100%;
 }
 
 body {
-    width: auto;
-    height: auto;
+    height: 100%;
     margin: 0;
     padding: 24px;
     position: static;

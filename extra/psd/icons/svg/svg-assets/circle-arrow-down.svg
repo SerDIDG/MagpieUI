@@ -7,5 +7,5 @@
       }
     </style>
   </defs>
-  <path id="circle-close.svg" class="cls-1" d="M123,68a12,12,0,1,1-12,12A12,12,0,0,1,123,68Zm0,2a10,10,0,1,1-10,10A10,10,0,0,1,123,70Zm-6,15h3l9-10h-3Zm12,0h-3l-9-10h3Z" transform="translate(-111 -68)"/>
+  <path id="circle-arrow-down.svg" class="cls-1" d="M96,92a12,12,0,1,1,12-12A12,12,0,0,1,96,92Zm0-22a10,10,0,1,0,10,10A10,10,0,0,0,96,70ZM91,81V78l4,4V74h2v8l4-4v3l-5,5Z" transform="translate(-84 -68)"/>
 </svg>

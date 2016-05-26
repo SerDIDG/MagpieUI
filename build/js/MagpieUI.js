@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.16.3 (2016-05-24 18:53) ************ */
+/*! ************ MagpieUI v3.16.3 (2016-05-26 16:44) ************ */
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -12477,20 +12477,29 @@ cm.isDate = function(o){
     return Object.prototype.toString.call(o) === '[object Date]';
 };
 
-cm.isWindow = function(o) {
+cm.isWindow = function(o){
     return Object.prototype.toString.call(o) === '[object Window]' || Object.prototype.toString.call(o) === '[object global]';
 };
 
 cm.isNode = function(node){
-    return !!(node && node.nodeType);
+    try{
+        return !!(node && node.nodeType);
+    }catch(e){}
+    return false;
 };
 
 cm.isTextNode = function(node){
-    return !!(node && node.nodeType && node.nodeType == 3);
+    try{
+        return !!(node && node.nodeType && node.nodeType == 3);
+    }catch(e){}
+    return false;
 };
 
 cm.isElementNode = function(node){
-    return !!(node && node.nodeType && node.nodeType == 1);
+    try{
+        return !!(node && node.nodeType && node.nodeType == 1);
+    }catch(e){}
+    return false;
 };
 
 cm.isPlainObject = function(obj) {
@@ -16952,7 +16961,7 @@ cm.init = function(){
 };
 
 cm.onReady(cm.init, false);
-cm.define('Com.AbstractInput', {
+cm.define('Com.AbstractController', {
     'modules' : [
         'Params',
         'Events',
@@ -16960,25 +16969,151 @@ cm.define('Com.AbstractInput', {
         'Structure',
         'DataConfig',
         'DataNodes',
+        'Storage',
+        'Callbacks',
         'Stack'
     ],
     'events' : [
+        'onConstruct',
+        'onConstructStart',
+        'onConstructEnd',
+        'onValidateParams',
         'onRenderStart',
         'onRender',
+        'onDestructStart',
+        'onDestruct',
+        'onDestructEnd',
         'onRedraw',
-        'onSet',
-        'onSelect',
-        'onChange',
-        'onDisable',
-        'onEnable'
+        'onSetEventsStart',
+        'onSetEvents',
+        'onSetEventsEnd',
+        'onUnsetEventsStart',
+        'onUnsetEvents',
+        'onUnsetEventsEnd',
+        'onSetCustomEvents',
+        'onUnsetCustomEvents'
     ],
     'params' : {
         'node' : cm.node('div'),
         'container' : null,
         'name' : '',
+        'embedStructure' : 'append',
+        'customEvents' : true
+    }
+},
+function(params){
+    var that = this;
+    that.isDestructed = false;
+    that.nodes = {};
+    that.components = {};
+    that.construct(params);
+});
+
+cm.getConstructor('Com.AbstractController', function(classConstructor, className, classProto){
+    classProto.construct = function(params){
+        var that = this;
+        that.redrawHandler = that.redraw.bind(that);
+        that.destructHandler = that.destruct.bind(that);
+        that.triggerEvent('onConstructStart');
+        that.setParams(params);
+        that.convertEvents(that.params['events']);
+        that.getDataNodes(that.params['node']);
+        that.getDataConfig(that.params['node']);
+        that.callbacksProcess();
+        that.validateParams();
+        that.addToStack(that.params['node']);
+        that.triggerEvent('onRenderStart');
+        that.render();
+        that.setEvents();
+        that.triggerEvent('onConstruct');
+        that.addToStack(that.nodes['container']);
+        that.triggerEvent('onRender');
+        that.triggerEvent('onConstructEnd');
+        return that;
+    };
+
+    classProto.destruct = function(){
+        var that = this;
+        that.triggerEvent('onDestructStart');
+        if(!that.isDestructed){
+            that.isDestructed = true;
+            that.triggerEvent('onDestruct');
+            that.unsetEvents();
+            that.removeFromStack();
+            that.triggerEvent('onDestructEnd');
+        }
+        return that;
+    };
+
+    classProto.redraw = function(){
+        var that = this;
+        that.triggerEvent('onRedraw');
+        return that;
+    };
+
+    classProto.validateParams = function(){
+        var that = this;
+        that.triggerEvent('onValidateParams');
+        return that;
+    };
+
+    classProto.render = function(){
+        var that = this;
+        // Structure
+        that.nodes['container'] = cm.node('div');
+        // Append
+        that.embedStructure(that.nodes['container']);
+        return that;
+    };
+
+    classProto.setEvents = function(){
+        var that = this;
+        that.triggerEvent('onSetEventsStart');
+        // Windows events
+        cm.addEvent(window, 'resize', that.redrawHandler);
+        that.triggerEvent('onSetEvents');
+        // Add custom events
+        if(that.params['customEvents']){
+            cm.customEvent.add(that.nodes['container'], 'redraw', that.redrawHandler);
+            cm.customEvent.add(that.nodes['container'], 'destruct', that.destructHandler);
+            that.triggerEvent('onSetCustomEvents');
+        }
+        that.triggerEvent('onSetEventsEnd');
+        return that;
+    };
+
+    classProto.unsetEvents = function(){
+        var that = this;
+        that.triggerEvent('onUnsetEventsStart');
+        // Windows events
+        cm.removeEvent(window, 'resize', that.redrawHandler);
+        that.triggerEvent('onUnsetEvents');
+        // Remove custom events
+        if(that.params['customEvents']){
+            cm.customEvent.remove(that.nodes['container'], 'redraw', that.redrawHandler);
+            cm.customEvent.remove(that.nodes['container'], 'destruct', that.destructHandler);
+            that.triggerEvent('onUnsetCustomEvents');
+        }
+        that.triggerEvent('onUnsetEventsEnd');
+        return that;
+    };
+});
+cm.define('Com.AbstractInput', {
+    'extend' : 'Com.AbstractController',
+    'events' : [
+        'onSet',
+        'onSelect',
+        'onChange',
+        'onDisable',
+        'onEnable',
+        'onRenderContentStart',
+        'onRenderContent',
+        'onRenderContentEnd'
+    ],
+    'params' : {
         'embedStructure' : 'replace',
-        'customEvents' : true,
-        'value' : null,
+        'value' : '',
+        'defaultValue' : '',
         'title' : '',
         'disabled' : false,
         'className' : '',
@@ -16990,42 +17125,24 @@ function(params){
     var that = this;
     that.nodes = {};
     that.components = {};
-    that.isDestructed = false;
     that.previousValue = null;
     that.value = null;
     that.disabled = false;
-    that.construct(params);
+    Com.AbstractController.apply(that, arguments);
 });
 
 cm.getConstructor('Com.AbstractInput', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
     classProto.construct = function(params){
         var that = this;
-        that.redrawHandler = that.redraw.bind(that);
-        that.destructHandler = that.destruct.bind(that);
-        that.setHandler = that.setAction.bind(that);
-        that.selectHandler = that.selectAction.bind(that);
-        that.setParams(params);
-        that.convertEvents(that.params['events']);
-        that.getDataNodes(that.params['node']);
-        that.getDataConfig(that.params['node']);
-        that.validateParams();
-        that.addToStack(that.params['node']);
-        that.triggerEvent('onRenderStart');
-        that.render();
-        that.setEvents();
-        that.set(that.params['value'], false);
-        that.addToStack(that.nodes['container']);
-        that.triggerEvent('onRender');
-        return that;
-    };
-
-    classProto.destruct = function(){
-        var that = this;
-        if(!that.isDestructed){
-            that.isDestructed = true;
-            that.unsetEvents();
-            that.removeFromStack();
-        }
+        that.clearHandler = that.clear.bind(that);
+        that.setActionHandler = that.setAction.bind(that);
+        that.selectActionHandler = that.selectAction.bind(that);
+        that.addEvent('onConstruct', function(){
+            that.set(that.params['value'], false);
+        });
+        _inherit.prototype.construct.apply(that, arguments);
         return that;
     };
 
@@ -17044,9 +17161,10 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         return that.value;
     };
 
-    classProto.redraw = function(){
+    classProto.clear = function(triggerEvents){
         var that = this;
-        that.triggerEvent('onRedraw');
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        that.set(that.params['defaultValue'], triggerEvents);
         return that;
     };
 
@@ -17070,6 +17188,8 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
 
     classProto.validateParams = function(){
         var that = this;
+        _inherit.prototype.validateParams.apply(that, arguments);
+        // Get parameters from provided input
         if(cm.isNode(that.params['node'])){
             that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
             that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
@@ -17101,7 +17221,12 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
     };
 
     classProto.renderContent = function(){
-        return cm.node('div', {'class' : 'input__content'});
+        var that = this;
+        that.triggerEvent('onRenderContentStart');
+        var node = cm.node('div', {'class' : 'input__content'});
+        that.triggerEvent('onRenderContent');
+        that.triggerEvent('onRenderContentEnd');
+        return node;
     };
 
     classProto.setAttributes = function(){
@@ -17118,30 +17243,6 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         }
         if(that.params['name']){
             that.nodes['hidden'].setAttribute('name', that.params['name']);
-        }
-        return that;
-    };
-
-    classProto.setEvents = function(){
-        var that = this;
-        // Windows events
-        cm.addEvent(window, 'resize', that.redrawHandler);
-        // Add custom events
-        if(that.params['customEvents']){
-            cm.customEvent.add(that.nodes['container'], 'redraw', that.redrawHandler);
-            cm.customEvent.add(that.nodes['container'], 'destruct', that.destructHandler);
-        }
-        return that;
-    };
-
-    classProto.unsetEvents = function(){
-        var that = this;
-        // Windows events
-        cm.removeEvent(window, 'resize', that.redrawHandler);
-        // Remove custom events
-        if(that.params['customEvents']){
-            cm.customEvent.remove(that.nodes['container'], 'redraw', that.redrawHandler);
-            cm.customEvent.remove(that.nodes['container'], 'destruct', that.destructHandler);
         }
         return that;
     };
@@ -18464,6 +18565,7 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
 
     classProto.renderContent = function(){
         var that = this;
+        that.triggerEvent('onRenderContentStart');
         // Structure
         that.myNodes['container'] = cm.node('div', {'class' : 'com__box-tools__content'},
             cm.node('div', {'class' : 'b-line'},
@@ -18483,7 +18585,9 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
             )
         );
         // Events
+        that.triggerEvent('onRenderContent');
         cm.addEvent(that.myNodes['link'], 'click', that.linkInputsHandler);
+        that.triggerEvent('onRenderContentEnd');
         // Push
         return that.myNodes['container'];
     };
@@ -18603,124 +18707,6 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
             that.isInputsLinked = false;
             cm.removeClass(that.myNodes['link'], 'active');
             that.myNodes['link'].title = that.lang('link');
-        }
-        return that;
-    };
-});
-cm.define('Com.AbstractController', {
-    'modules' : [
-        'Params',
-        'Events',
-        'Langs',
-        'Structure',
-        'DataConfig',
-        'DataNodes',
-        'Storage',
-        'Callbacks',
-        'Stack'
-    ],
-    'events' : [
-        'onConstructStart',
-        'onConstructEnd',
-        'onValidateParams',
-        'onRenderStart',
-        'onRender',
-        'onDestructStart',
-        'onDestruct',
-        'onDestructEnd',
-        'onRedraw'
-    ],
-    'params' : {
-        'node' : cm.node('div'),
-        'container' : null,
-        'name' : '',
-        'embedStructure' : 'append',
-        'customEvents' : true
-    }
-},
-function(params){
-    var that = this;
-    that.nodes = {};
-    that.components = {};
-    that.construct(params);
-});
-
-cm.getConstructor('Com.AbstractController', function(classConstructor, className, classProto){
-    classProto.construct = function(params){
-        var that = this;
-        that.triggerEvent('onConstructStart');
-        that.redrawHandler = that.redraw.bind(that);
-        that.destructHandler = that.destruct.bind(that);
-        that.setParams(params);
-        that.convertEvents(that.params['events']);
-        that.getDataNodes(that.params['node']);
-        that.getDataConfig(that.params['node']);
-        that.callbacksProcess();
-        that.validateParams();
-        that.addToStack(that.params['node']);
-        that.triggerEvent('onRenderStart');
-        that.render();
-        that.addToStack(that.nodes['container']);
-        that.triggerEvent('onRender');
-        that.triggerEvent('onConstruct');
-        that.triggerEvent('onConstructEnd');
-        return that;
-    };
-
-    classProto.destruct = function(){
-        var that = this;
-        that.triggerEvent('onDestructStart');
-        if(!that.isDestructed){
-            that.isDestructed = true;
-            that.triggerEvent('onDestruct');
-            that.unsetEvents();
-            that.removeFromStack();
-            that.triggerEvent('onDestructEnd');
-        }
-        return that;
-    };
-
-    classProto.redraw = function(){
-        var that = this;
-        that.triggerEvent('onRedraw');
-        return that;
-    };
-
-    classProto.validateParams = function(){
-        var that = this;
-        that.triggerEvent('onValidateParams');
-        return that;
-    };
-
-    classProto.render = function(){
-        var that = this;
-        // Structure
-        that.nodes['container'] = cm.node('div');
-        // Append
-        that.embedStructure(that.nodes['container']);
-        return that;
-    };
-
-    classProto.setEvents = function(){
-        var that = this;
-        // Windows events
-        cm.addEvent(window, 'resize', that.redrawHandler);
-        // Add custom events
-        if(that.params['customEvents']){
-            cm.customEvent.add(that.nodes['container'], 'redraw', that.redrawHandler);
-            cm.customEvent.add(that.nodes['container'], 'destruct', that.destructHandler);
-        }
-        return that;
-    };
-
-    classProto.unsetEvents = function(){
-        var that = this;
-        // Windows events
-        cm.removeEvent(window, 'resize', that.redrawHandler);
-        // Remove custom events
-        if(that.params['customEvents']){
-            cm.customEvent.remove(that.nodes['container'], 'redraw', that.redrawHandler);
-            cm.customEvent.remove(that.nodes['container'], 'destruct', that.destructHandler);
         }
         return that;
     };
@@ -20138,6 +20124,7 @@ cm.getConstructor('Com.BoxRadiusTools', function(classConstructor, className, cl
 
     classProto.renderContent = function(){
         var that = this;
+        that.triggerEvent('onRenderContentStart');
         // Structure
         that.myNodes['container'] = cm.node('div', {'class' : 'com__box-tools__content'},
             cm.node('div', {'class' : 'b-line'},
@@ -20157,7 +20144,9 @@ cm.getConstructor('Com.BoxRadiusTools', function(classConstructor, className, cl
             )
         );
         // Events
+        that.triggerEvent('onRenderContent');
         cm.addEvent(that.myNodes['link'], 'click', that.linkInputsHandler);
+        that.triggerEvent('onRenderContentEnd');
         // Push
         return that.myNodes['container'];
     };
@@ -24547,6 +24536,179 @@ function(params){
     };
 
     init();
+});
+cm.define('Com.FileInput', {
+    'extend' : 'Com.AbstractInput',
+    'params' : {
+        'className' : 'com__file-input',
+        'type' : 'file',                     // file | image
+        'label' : '',
+        'langs' : {
+            'browse' : 'Browse',
+            'remove' : 'Remove',
+            'drop_here' : 'drop files here'
+        }
+    }
+},
+function(params){
+    var that = this;
+    that.myNodes = {};
+    that.myComponents = {};
+    that.dragInterval = null;
+    Com.AbstractInput.apply(that, arguments);
+});
+
+cm.getConstructor('Com.FileInput', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.construct = function(){
+        var that = this;
+        // Bind context to methods
+        that.browseActionHandler = that.browseAction.bind(that);
+        that.readerActionHandler = that.readerAction.bind(that);
+        that.dragOverHandler = that.dragOver.bind(that);
+        that.dragDropHandler = that.dragDrop.bind(that);
+        that.resetDropzoneHandler = that.resetDropzone.bind(that);
+        // Add events
+        that.addEvent('onSetEvents', function(){
+            cm.addEvent(window, 'dragover', that.dragOverHandler);
+            cm.addEvent(window, 'drop', that.dragDropHandler);
+        });
+        that.addEvent('onUnsetEvents', function(){
+            cm.removeEvent(window, 'dragover', that.dragOverHandler);
+            cm.removeEvent(window, 'drop', that.dragDropHandler);
+        });
+        // Call parent method
+        _inherit.prototype.construct.apply(that, arguments);
+        return that;
+    };
+
+    classProto.clear = function(){
+        var that = this;
+        cm.addClass(that.myNodes['remove'], 'is-hidden');
+        cm.removeClass(that.myNodes['browse'], 'is-hidden');
+        // Call parent method
+        _inherit.prototype.clear.apply(that, arguments);
+        return that;
+    };
+
+    classProto.render = function(){
+        var that = this;
+        // Init File Reader API
+        that.myComponents['reader'] = new FileReader();
+        cm.addEvent(that.myComponents['reader'], 'load', that.readerActionHandler);
+        // Call parent method
+        _inherit.prototype.render.apply(that, arguments);
+        return that;
+    };
+
+    classProto.renderContent = function(){
+        var that = this;
+        that.triggerEvent('onRenderContentStart');
+        // Structure
+        that.myNodes['container'] = cm.node('div', {'class' : 'com__file-input__content'},
+            that.myNodes['inner'] = cm.node('div', {'class' : 'inner'},
+                that.myNodes['contentHolder'] = cm.node('div', {'class' : 'com__file-input__holder'},
+                    cm.node('div', {'class' : 'pt__file-line'},
+                        that.myNodes['remove'] = cm.node('button', {'class' : 'button button-primary'}, that.lang('remove')),
+                        that.myNodes['browse'] = cm.node('div', {'class' : 'browse-button'},
+                            cm.node('button', {'class' : 'button button-primary'}, that.lang('browse')),
+                            cm.node('div', {'class' : 'inner'},
+                                that.myNodes['input'] = cm.node('input', {'type' : 'file', 'multiple' : false})
+                            )
+                        ),
+                        that.myNodes['label'] = cm.node('div', {'class' : 'label'})
+                    )
+                ),
+                that.myNodes['dropzoneHolder'] = cm.node('div', {'class' : 'com__file-input__drop is-hidden'},
+                    that.myNodes['dropzone'] = cm.node('div', {'class' : 'pt__file-drop'},
+                        cm.node('div', {'class' : 'inner'},
+                            cm.node('div', {'class' : 'title'},
+                                cm.node('div', {'class' : 'label'}, that.lang('drop_here')),
+                                cm.node('div', {'class' : 'icon cm-i cm-i__circle-arrow-down'})
+                            )
+                        )
+                    )
+                )
+            )
+        );
+        // Events
+        that.triggerEvent('onRenderContent');
+        cm.addEvent(that.myNodes['remove'], 'click', that.clearHandler);
+        cm.addEvent(that.myNodes['input'], 'change', that.browseActionHandler);
+        that.triggerEvent('onRenderContentEnd');
+        // Push
+        return that.myNodes['container'];
+    };
+
+    classProto.browseAction = function(e){
+        var that = this,
+            file = e.target.files[0];
+        that.processFile(file);
+        return that;
+    };
+
+    classProto.processFile = function(file){
+        var that = this;
+        that.myComponents['reader'] && that.myComponents['reader'].readAsDataURL(file);
+        return that;
+    };
+
+    classProto.readerAction = function(e){
+        var that = this,
+            result = e.target.result;
+        cm.log(result);
+        return that;
+    };
+
+    /* *** DRAG AND DROP ACTIONS *** */
+
+    classProto.dragOver = function(e){
+        var that = this,
+            target = cm.getEventTarget(e);
+        cm.preventDefault(e);
+        // Show dropzone
+        cm.addClass(that.myNodes['container'], 'is-dragging');
+        cm.addClass(that.myNodes['contentHolder'], 'is-hidden');
+        cm.removeClass(that.myNodes['dropzoneHolder'], 'is-hidden');
+        // Hide dropzone if event not triggering inside the current document window (hax)
+        that.dragInterval && clearTimeout(that.dragInterval);
+        that.dragInterval = setTimeout(that.resetDropzoneHandler, 100);
+        // Highlight dropzone
+        if(cm.isParent(that.myNodes['container'], target, true)){
+            cm.addClass(that.myNodes['dropzone'], 'is-highlight');
+        }else{
+            cm.removeClass(that.myNodes['dropzone'], 'is-highlight');
+        }
+        return that;
+    };
+
+    classProto.dragDrop = function(e){
+        var that = this,
+            target = cm.getEventTarget(e),
+            file;
+        cm.preventDefault(e);
+        // Hide dropzone and reset his state
+        that.dragInterval && clearTimeout(that.dragInterval);
+        that.resetDropzone();
+        // Process file
+        if(cm.isParent(that.myNodes['container'], target, true)){
+            if(e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length){
+                file = e.dataTransfer.files[0];
+                that.processFile(file);
+            }
+        }
+        return that;
+    };
+
+    classProto.resetDropzone = function(){
+        var that = this;
+        cm.removeClass(that.myNodes['container'], 'is-dragging');
+        cm.removeClass(that.myNodes['contentHolder'], 'is-hidden');
+        cm.addClass(that.myNodes['dropzoneHolder'], 'is-hidden');
+        cm.removeClass(that.myNodes['dropzone'], 'is-highlight');
+        return that;
+    };
 });
 cm.define('Com.FormStepsLoader', {
     'modules' : [

@@ -11,6 +11,7 @@ cm.define('Com.ClassDummy', {
         'Stack'
     ],
     'events' : [
+        'onConstruct',
         'onConstructStart',
         'onConstructEnd',
         'onValidateParams',
@@ -31,6 +32,7 @@ cm.define('Com.ClassDummy', {
 },
 function(params){
     var that = this;
+    that.isDestructed = false;
     that.nodes = {};
     that.components = {};
     that.construct(params);
@@ -39,9 +41,9 @@ function(params){
 cm.getConstructor('Com.ClassDummy', function(classConstructor, className, classProto){
     classProto.construct = function(params){
         var that = this;
-        that.triggerEvent('onConstructStart');
         that.redrawHandler = that.redraw.bind(that);
         that.destructHandler = that.destruct.bind(that);
+        that.triggerEvent('onConstructStart');
         that.setParams(params);
         that.convertEvents(that.params['events']);
         that.getDataNodes(that.params['node']);
@@ -51,6 +53,7 @@ cm.getConstructor('Com.ClassDummy', function(classConstructor, className, classP
         that.addToStack(that.params['node']);
         that.triggerEvent('onRenderStart');
         that.render();
+        that.setEvents();
         that.addToStack(that.nodes['container']);
         that.triggerEvent('onRender');
         that.triggerEvent('onConstruct');

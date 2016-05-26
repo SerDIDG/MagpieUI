@@ -11,6 +11,7 @@ cm.define('Com.AbstractController', {
         'Stack'
     ],
     'events' : [
+        'onConstruct',
         'onConstructStart',
         'onConstructEnd',
         'onValidateParams',
@@ -19,7 +20,15 @@ cm.define('Com.AbstractController', {
         'onDestructStart',
         'onDestruct',
         'onDestructEnd',
-        'onRedraw'
+        'onRedraw',
+        'onSetEventsStart',
+        'onSetEvents',
+        'onSetEventsEnd',
+        'onUnsetEventsStart',
+        'onUnsetEvents',
+        'onUnsetEventsEnd',
+        'onSetCustomEvents',
+        'onUnsetCustomEvents'
     ],
     'params' : {
         'node' : cm.node('div'),
@@ -31,6 +40,7 @@ cm.define('Com.AbstractController', {
 },
 function(params){
     var that = this;
+    that.isDestructed = false;
     that.nodes = {};
     that.components = {};
     that.construct(params);
@@ -39,9 +49,9 @@ function(params){
 cm.getConstructor('Com.AbstractController', function(classConstructor, className, classProto){
     classProto.construct = function(params){
         var that = this;
-        that.triggerEvent('onConstructStart');
         that.redrawHandler = that.redraw.bind(that);
         that.destructHandler = that.destruct.bind(that);
+        that.triggerEvent('onConstructStart');
         that.setParams(params);
         that.convertEvents(that.params['events']);
         that.getDataNodes(that.params['node']);
@@ -51,9 +61,10 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         that.addToStack(that.params['node']);
         that.triggerEvent('onRenderStart');
         that.render();
+        that.setEvents();
+        that.triggerEvent('onConstruct');
         that.addToStack(that.nodes['container']);
         that.triggerEvent('onRender');
-        that.triggerEvent('onConstruct');
         that.triggerEvent('onConstructEnd');
         return that;
     };
@@ -94,25 +105,33 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
 
     classProto.setEvents = function(){
         var that = this;
+        that.triggerEvent('onSetEventsStart');
         // Windows events
         cm.addEvent(window, 'resize', that.redrawHandler);
+        that.triggerEvent('onSetEvents');
         // Add custom events
         if(that.params['customEvents']){
             cm.customEvent.add(that.nodes['container'], 'redraw', that.redrawHandler);
             cm.customEvent.add(that.nodes['container'], 'destruct', that.destructHandler);
+            that.triggerEvent('onSetCustomEvents');
         }
+        that.triggerEvent('onSetEventsEnd');
         return that;
     };
 
     classProto.unsetEvents = function(){
         var that = this;
+        that.triggerEvent('onUnsetEventsStart');
         // Windows events
         cm.removeEvent(window, 'resize', that.redrawHandler);
+        that.triggerEvent('onUnsetEvents');
         // Remove custom events
         if(that.params['customEvents']){
             cm.customEvent.remove(that.nodes['container'], 'redraw', that.redrawHandler);
             cm.customEvent.remove(that.nodes['container'], 'destruct', that.destructHandler);
+            that.triggerEvent('onUnsetCustomEvents');
         }
+        that.triggerEvent('onUnsetEventsEnd');
         return that;
     };
 });

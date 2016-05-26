@@ -46,9 +46,10 @@
 // /* ******* UI ******* */
 
 @CmUI-Transition-Duration: 250ms;
-@CmUI-Transition-DurationReverse: 100ms;
+@CmUI-Transition-DurationShort: 100ms;
 @CmUI-Transition-DurationLong: 500ms;
 @CmUI-Transition-DurationXLong: 750ms;
+@CmUI-Transition-DurationReverse: 100ms;
 @CmUI-Transition-DurationNone: 0ms;
 @CmUI-MotionAsymmetric: cubic-bezier(.5,0,.15,1);
 @CmUI-Opacity-Hover: 0.7;
@@ -346,6 +347,7 @@
 @CmBorder-Radius: 3px;
 @CmBorder-Width: 1px;
 @CmBorder-BoxWidth: 2px;
+@CmBorder-TemporaryWidth: @CmBorder-BoxWidth;
 @CmBorder-Default: @CmBorder-Width solid @CmColor-Border;
 @CmBorder-Separator: @CmBorder-Width dotted @CmColor-Border;
 @CmBorder-Editable: @CmBorder-Width dashed @CmColor-BorderActive;
@@ -353,6 +355,10 @@
 @CmBorder-BoxHover: @CmBorder-BoxWidth solid @CmColor-BorderHover;
 @CmBorder-BoxActive: @CmBorder-BoxWidth solid @CmColor-BorderActive;
 @CmBorder-BoxSelected: @CmBorder-BoxWidth solid @CmColor-BorderSelected;
+@CmBorder-Temporary: @CmBorder-TemporaryWidth dashed @CmColor-Border;
+@CmBorder-TemporaryHover: @CmBorder-TemporaryWidth dashed @CmColor-BorderHover;
+@CmBorder-TemporaryActive: @CmBorder-TemporaryWidth dashed @CmColor-BorderActive;
+@CmBorder-TemporarySelected: @CmBorder-TemporaryWidth dashed @CmColor-BorderSelected;
 
 // /* ******* BUTTONS ******* */
 
@@ -743,6 +749,10 @@
 // /* ******* COLOR PICKER ******* */
 
 @ComColorPicker-Width: @CmForm-FieldSmallWidth;
+
+// /* ******* FILE INPUT ******* */
+
+@ComFileInput-DropHeight: 128px;
 
 // /* ******* DIALOG ******* */
 

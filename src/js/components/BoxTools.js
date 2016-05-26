@@ -51,6 +51,7 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
 
     classProto.renderContent = function(){
         var that = this;
+        that.triggerEvent('onRenderContentStart');
         // Structure
         that.myNodes['container'] = cm.node('div', {'class' : 'com__box-tools__content'},
             cm.node('div', {'class' : 'b-line'},
@@ -70,7 +71,9 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
             )
         );
         // Events
+        that.triggerEvent('onRenderContent');
         cm.addEvent(that.myNodes['link'], 'click', that.linkInputsHandler);
+        that.triggerEvent('onRenderContentEnd');
         // Push
         return that.myNodes['container'];
     };

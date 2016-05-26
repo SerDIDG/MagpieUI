@@ -1,30 +1,19 @@
 cm.define('Com.AbstractInput', {
-    'modules' : [
-        'Params',
-        'Events',
-        'Langs',
-        'Structure',
-        'DataConfig',
-        'DataNodes',
-        'Stack'
-    ],
+    'extend' : 'Com.AbstractController',
     'events' : [
-        'onRenderStart',
-        'onRender',
-        'onRedraw',
         'onSet',
         'onSelect',
         'onChange',
         'onDisable',
-        'onEnable'
+        'onEnable',
+        'onRenderContentStart',
+        'onRenderContent',
+        'onRenderContentEnd'
     ],
     'params' : {
-        'node' : cm.node('div'),
-        'container' : null,
-        'name' : '',
         'embedStructure' : 'replace',
-        'customEvents' : true,
-        'value' : null,
+        'value' : '',
+        'defaultValue' : '',
         'title' : '',
         'disabled' : false,
         'className' : '',
@@ -36,42 +25,24 @@ function(params){
     var that = this;
     that.nodes = {};
     that.components = {};
-    that.isDestructed = false;
     that.previousValue = null;
     that.value = null;
     that.disabled = false;
-    that.construct(params);
+    Com.AbstractController.apply(that, arguments);
 });
 
 cm.getConstructor('Com.AbstractInput', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
     classProto.construct = function(params){
         var that = this;
-        that.redrawHandler = that.redraw.bind(that);
-        that.destructHandler = that.destruct.bind(that);
-        that.setHandler = that.setAction.bind(that);
-        that.selectHandler = that.selectAction.bind(that);
-        that.setParams(params);
-        that.convertEvents(that.params['events']);
-        that.getDataNodes(that.params['node']);
-        that.getDataConfig(that.params['node']);
-        that.validateParams();
-        that.addToStack(that.params['node']);
-        that.triggerEvent('onRenderStart');
-        that.render();
-        that.setEvents();
-        that.set(that.params['value'], false);
-        that.addToStack(that.nodes['container']);
-        that.triggerEvent('onRender');
-        return that;
-    };
-
-    classProto.destruct = function(){
-        var that = this;
-        if(!that.isDestructed){
-            that.isDestructed = true;
-            that.unsetEvents();
-            that.removeFromStack();
-        }
+        that.clearHandler = that.clear.bind(that);
+        that.setActionHandler = that.setAction.bind(that);
+        that.selectActionHandler = that.selectAction.bind(that);
+        that.addEvent('onConstruct', function(){
+            that.set(that.params['value'], false);
+        });
+        _inherit.prototype.construct.apply(that, arguments);
         return that;
     };
 
@@ -90,9 +61,10 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         return that.value;
     };
 
-    classProto.redraw = function(){
+    classProto.clear = function(triggerEvents){
         var that = this;
-        that.triggerEvent('onRedraw');
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        that.set(that.params['defaultValue'], triggerEvents);
         return that;
     };
 
@@ -116,6 +88,8 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
 
     classProto.validateParams = function(){
         var that = this;
+        _inherit.prototype.validateParams.apply(that, arguments);
+        // Get parameters from provided input
         if(cm.isNode(that.params['node'])){
             that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
             that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
@@ -147,7 +121,12 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
     };
 
     classProto.renderContent = function(){
-        return cm.node('div', {'class' : 'input__content'});
+        var that = this;
+        that.triggerEvent('onRenderContentStart');
+        var node = cm.node('div', {'class' : 'input__content'});
+        that.triggerEvent('onRenderContent');
+        that.triggerEvent('onRenderContentEnd');
+        return node;
     };
 
     classProto.setAttributes = function(){
@@ -164,30 +143,6 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         }
         if(that.params['name']){
             that.nodes['hidden'].setAttribute('name', that.params['name']);
-        }
-        return that;
-    };
-
-    classProto.setEvents = function(){
-        var that = this;
-        // Windows events
-        cm.addEvent(window, 'resize', that.redrawHandler);
-        // Add custom events
-        if(that.params['customEvents']){
-            cm.customEvent.add(that.nodes['container'], 'redraw', that.redrawHandler);
-            cm.customEvent.add(that.nodes['container'], 'destruct', that.destructHandler);
-        }
-        return that;
-    };
-
-    classProto.unsetEvents = function(){
-        var that = this;
-        // Windows events
-        cm.removeEvent(window, 'resize', that.redrawHandler);
-        // Remove custom events
-        if(that.params['customEvents']){
-            cm.customEvent.remove(that.nodes['container'], 'redraw', that.redrawHandler);
-            cm.customEvent.remove(that.nodes['container'], 'destruct', that.destructHandler);
         }
         return that;
     };

@@ -94,6 +94,7 @@ module.exports = function(grunt) {
                     '<%= paths.src %>/js/modules.js',
                     '<%= paths.src %>/js/parts.js',
                     '<%= paths.src %>/js/init.js',
+                    '<%= paths.src %>/js/components/AbstractController.js',
                     '<%= paths.src %>/js/components/AbstractInput.js',
                     '<%= paths.src %>/js/components/AbstractRange.js',
                     '<%= paths.src %>/js/components/Form.js',

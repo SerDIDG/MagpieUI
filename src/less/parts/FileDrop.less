@@ -1,0 +1,43 @@
+/* ******* PARTS: FILE DROP ******* */
+
+.pt__file-drop {
+    position: relative;
+
+    > .inner {
+        .display-flex;
+        position: absolute;
+        overflow: hidden;
+        border: @CmBorder-Temporary;
+        border-radius: @CmBorder-Radius;
+        .mx__position(0, 0, 0, 0);
+        .mx__align-items(center);
+        .mx__justify-content(center);
+        .mx__transition(all, @CmUI-Transition-DurationShort);
+
+        > .title {
+            .cm__font--ui-h1;
+            .mx__transition(all, @CmUI-Transition-DurationShort);
+
+            > .icon {
+                margin: 0 auto;
+                .cm-i__size(@CmSize-Medium);
+                .cm-i__b-size(@CmSize-Medium);
+                .mx__transition(all, @CmUI-Transition-DurationShort);
+            }
+        }
+    }
+
+    &.is-highlight {
+        > .inner {
+            border: @CmBorder-TemporaryActive;
+
+            > .title {
+                color: @CmColor-Primary-DarkDefault;
+
+                > .icon {
+                    color: @CmColor-Primary-DarkDefault;
+                }
+            }
+        }
+    }
+}

@@ -141,20 +141,29 @@ cm.isDate = function(o){
     return Object.prototype.toString.call(o) === '[object Date]';
 };
 
-cm.isWindow = function(o) {
+cm.isWindow = function(o){
     return Object.prototype.toString.call(o) === '[object Window]' || Object.prototype.toString.call(o) === '[object global]';
 };
 
 cm.isNode = function(node){
-    return !!(node && node.nodeType);
+    try{
+        return !!(node && node.nodeType);
+    }catch(e){}
+    return false;
 };
 
 cm.isTextNode = function(node){
-    return !!(node && node.nodeType && node.nodeType == 3);
+    try{
+        return !!(node && node.nodeType && node.nodeType == 3);
+    }catch(e){}
+    return false;
 };
 
 cm.isElementNode = function(node){
-    return !!(node && node.nodeType && node.nodeType == 1);
+    try{
+        return !!(node && node.nodeType && node.nodeType == 1);
+    }catch(e){}
+    return false;
 };
 
 cm.isPlainObject = function(obj) {

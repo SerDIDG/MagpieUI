@@ -1,0 +1,38 @@
+/* ******* COMPONENTS: FILE INPUT ******* */
+
+.com__file-input__content {
+    height: @CmForm-FieldHeight;
+    position: relative;
+    .mx__transition(all, @CmUI-Transition-Duration);
+
+    &.is-dragging {
+        height: @ComFileInput-DropHeight;
+    }
+}
+
+.com__file-input__holder {
+    opacity: 1;
+    .mx__transition(all, @CmUI-Transition-Duration);
+
+    &.is-hidden {
+        opacity: 0;
+    }
+}
+
+.com__file-input__drop {
+    position: absolute;
+    visibility: visible;
+    opacity: 1;
+    .mx__position(0, 0, 0, 0);
+    .mx__transition(all, @CmUI-Transition-Duration);
+
+    .pt__file-drop {
+        position: absolute;
+        .mx__position(0, 0, 0, 0);
+    }
+
+    &.is-hidden {
+        visibility: hidden;
+        opacity: 0;
+    }
+}
