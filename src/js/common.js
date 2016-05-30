@@ -29,7 +29,7 @@
  ******* */
 
 var cm = {
-        '_version' : '3.16.3',
+        '_version' : '3.17.0',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -139,6 +139,10 @@ cm.isRegExp = function(o){
 
 cm.isDate = function(o){
     return Object.prototype.toString.call(o) === '[object Date]';
+};
+
+cm.isFile = function(o){
+    return Object.prototype.toString.call(o) === '[object File]';
 };
 
 cm.isWindow = function(o){
@@ -1060,13 +1064,17 @@ cm.node = cm.Node = function(){
     for(var ln = args.length; i < ln; i++){
         if(typeof args[i] != 'undefined'){
             if(typeof args[i] == 'string' || typeof args[i] == 'number'){
-                el.appendChild(document.createTextNode(args[i]));
+                el.appendChild(cm.textNode(args[i]));
             }else{
                 el.appendChild(args[i]);
             }
         }
     }
     return el;
+};
+
+cm.textNode = function(text){
+    return document.createTextNode(text);
 };
 
 cm.wrap = function(target, node){

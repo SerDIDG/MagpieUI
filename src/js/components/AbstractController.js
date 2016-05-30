@@ -11,31 +11,43 @@ cm.define('Com.AbstractController', {
         'Stack'
     ],
     'events' : [
-        'onConstruct',
         'onConstructStart',
+        'onConstructProcess',
         'onConstructEnd',
-        'onValidateParams',
+        'onInitComponentsStart',
+        'onInitComponentsEnd',
+        'onGetLESSVariablesStart',
+        'onGetLESSVariablesEnd',
+        'onValidateParamsStart',
+        'onValidateParamsEnd',
         'onRenderStart',
         'onRender',
         'onDestructStart',
-        'onDestruct',
+        'onDestructProcess',
         'onDestructEnd',
         'onRedraw',
         'onSetEventsStart',
-        'onSetEvents',
+        'onSetEventsProcess',
         'onSetEventsEnd',
         'onUnsetEventsStart',
-        'onUnsetEvents',
+        'onUnsetEventsProcess',
         'onUnsetEventsEnd',
         'onSetCustomEvents',
-        'onUnsetCustomEvents'
+        'onUnsetCustomEvents',
+        'onRenderViewStart',
+        'onRenderViewProcess',
+        'onRenderViewEnd',
+        'onSetAttributesStart',
+        'onSetAttributesEnd'
     ],
     'params' : {
         'node' : cm.node('div'),
         'container' : null,
         'name' : '',
         'embedStructure' : 'append',
-        'customEvents' : true
+        'customEvents' : true,
+        'removeOnDestruct' : false,
+        'className' : ''
     }
 },
 function(params){
@@ -52,6 +64,8 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         that.redrawHandler = that.redraw.bind(that);
         that.destructHandler = that.destruct.bind(that);
         that.triggerEvent('onConstructStart');
+        that.initComponents();
+        that.getLESSVariables();
         that.setParams(params);
         that.convertEvents(that.params['events']);
         that.getDataNodes(that.params['node']);
@@ -62,7 +76,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         that.triggerEvent('onRenderStart');
         that.render();
         that.setEvents();
-        that.triggerEvent('onConstruct');
+        that.triggerEvent('onConstructProcess');
         that.addToStack(that.nodes['container']);
         that.triggerEvent('onRender');
         that.triggerEvent('onConstructEnd');
@@ -74,9 +88,10 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         that.triggerEvent('onDestructStart');
         if(!that.isDestructed){
             that.isDestructed = true;
-            that.triggerEvent('onDestruct');
+            that.triggerEvent('onDestructProcess');
             that.unsetEvents();
             that.removeFromStack();
+            that.params['removeOnDestruct'] && cm.remove(that.nodes['container']);
             that.triggerEvent('onDestructEnd');
         }
         return that;
@@ -88,18 +103,52 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         return that;
     };
 
+    classProto.initComponents = function(){
+        var that = this;
+        that.triggerEvent('onInitComponentsStart');
+        that.triggerEvent('onInitComponentsEnd');
+        return that;
+    };
+
+    classProto.getLESSVariables = function(){
+        var that = this;
+        that.triggerEvent('onGetLESSVariablesStart');
+        that.triggerEvent('onGetLESSVariablesEnd');
+        return that;
+    };
+
     classProto.validateParams = function(){
         var that = this;
-        that.triggerEvent('onValidateParams');
+        that.triggerEvent('onValidateParamsStart');
+        that.triggerEvent('onValidateParamsEnd');
         return that;
     };
 
     classProto.render = function(){
         var that = this;
         // Structure
-        that.nodes['container'] = cm.node('div');
+        that.renderView();
+        // Attributes
+        that.setAttributes();
         // Append
         that.embedStructure(that.nodes['container']);
+        return that;
+    };
+
+    classProto.renderView = function(){
+        var that = this;
+        that.triggerEvent('onRenderViewStart');
+        that.nodes['container'] = cm.node('div', {'class' : 'com__abstract'});
+        that.triggerEvent('onRenderViewProcess');
+        that.triggerEvent('onRenderViewEnd');
+        return that;
+    };
+
+    classProto.setAttributes = function(){
+        var that = this;
+        that.triggerEvent('onSetAttributesStart');
+        cm.addClass(that.nodes['container'], that.params['className']);
+        that.triggerEvent('onSetAttributesEnd');
         return that;
     };
 
@@ -108,7 +157,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         that.triggerEvent('onSetEventsStart');
         // Windows events
         cm.addEvent(window, 'resize', that.redrawHandler);
-        that.triggerEvent('onSetEvents');
+        that.triggerEvent('onSetEventsProcess');
         // Add custom events
         if(that.params['customEvents']){
             cm.customEvent.add(that.nodes['container'], 'redraw', that.redrawHandler);
@@ -124,7 +173,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         that.triggerEvent('onUnsetEventsStart');
         // Windows events
         cm.removeEvent(window, 'resize', that.redrawHandler);
-        that.triggerEvent('onUnsetEvents');
+        that.triggerEvent('onUnsetEventsProcess');
         // Remove custom events
         if(that.params['customEvents']){
             cm.customEvent.remove(that.nodes['container'], 'redraw', that.redrawHandler);

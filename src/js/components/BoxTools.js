@@ -30,8 +30,10 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
 
     classProto.construct = function(){
         var that = this;
+        // Bind context to methods
         that.linkInputsHandler = that.linkInputs.bind(that);
         that.setValuesHandler = that.setValues.bind(that);
+        // Call parent method
         _inherit.prototype.construct.apply(that, arguments);
         return that;
     };
@@ -71,7 +73,7 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
             )
         );
         // Events
-        that.triggerEvent('onRenderContent');
+        that.triggerEvent('onRenderContentProcess');
         cm.addEvent(that.myNodes['link'], 'click', that.linkInputsHandler);
         that.triggerEvent('onRenderContentEnd');
         // Push

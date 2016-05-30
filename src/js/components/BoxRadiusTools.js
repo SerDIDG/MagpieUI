@@ -40,7 +40,7 @@ cm.getConstructor('Com.BoxRadiusTools', function(classConstructor, className, cl
             )
         );
         // Events
-        that.triggerEvent('onRenderContent');
+        that.triggerEvent('onRenderContentProcess');
         cm.addEvent(that.myNodes['link'], 'click', that.linkInputsHandler);
         that.triggerEvent('onRenderContentEnd');
         // Push

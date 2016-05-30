@@ -1,13 +1,19 @@
 cm.define('Com.FileInput', {
     'extend' : 'Com.AbstractInput',
     'params' : {
+        'embedStructure' : 'replace',
         'className' : 'com__file-input',
-        'type' : 'file',                     // file | image
-        'label' : '',
+        'file' : null,
+        'dropzone' : true,
+        'showLink' : true,
         'langs' : {
             'browse' : 'Browse',
             'remove' : 'Remove',
-            'drop_here' : 'drop files here'
+            'open' : 'Open'
+        },
+        'Com.FileReader' : {},
+        'Com.FileDropzone' : {
+            'max' : 1
         }
     }
 },
@@ -15,7 +21,8 @@ function(params){
     var that = this;
     that.myNodes = {};
     that.myComponents = {};
-    that.dragInterval = null;
+    that.rawValue = null;
+    // Call parent class construct
     Com.AbstractInput.apply(that, arguments);
 });
 
@@ -25,41 +32,104 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
     classProto.construct = function(){
         var that = this;
         // Bind context to methods
+        that.initComponentsStartHandler = that.initComponentsStart.bind(that);
+        that.validateParamsEndHandler = that.validateParamsEnd.bind(that);
         that.browseActionHandler = that.browseAction.bind(that);
-        that.readerActionHandler = that.readerAction.bind(that);
-        that.dragOverHandler = that.dragOver.bind(that);
-        that.dragDropHandler = that.dragDrop.bind(that);
-        that.resetDropzoneHandler = that.resetDropzone.bind(that);
         // Add events
-        that.addEvent('onSetEvents', function(){
-            cm.addEvent(window, 'dragover', that.dragOverHandler);
-            cm.addEvent(window, 'drop', that.dragDropHandler);
-        });
-        that.addEvent('onUnsetEvents', function(){
-            cm.removeEvent(window, 'dragover', that.dragOverHandler);
-            cm.removeEvent(window, 'drop', that.dragDropHandler);
-        });
+        that.addEvent('onInitComponentsStart', that.initComponentsStartHandler);
+        that.addEvent('onValidateParamsEnd', that.validateParamsEndHandler);
         // Call parent method
         _inherit.prototype.construct.apply(that, arguments);
         return that;
     };
 
+    classProto.set = function(){
+        var that = this;
+        // Call parent method
+        _inherit.prototype.set.apply(that, arguments);
+        // Set data
+        that.setData();
+        return that;
+    };
+
     classProto.clear = function(){
         var that = this;
-        cm.addClass(that.myNodes['remove'], 'is-hidden');
-        cm.removeClass(that.myNodes['browse'], 'is-hidden');
         // Call parent method
         _inherit.prototype.clear.apply(that, arguments);
+        // Set data
+        that.setData();
         return that;
+    };
+
+    classProto.initComponentsStart = function(){
+        var that = this;
+        cm.getConstructor('Com.FileReader', function(classObject){
+            that.myComponents['validator'] = new classObject();
+        });
+        return that;
+    };
+
+    classProto.constructProcess = function(){
+        var that = this;
+        that.set(that.rawValue, false);
+        return that;
+    };
+
+    classProto.validateParamsEnd = function(){
+        var that = this;
+        if(!cm.isEmpty(that.params['file'])){
+            that.rawValue = that.myComponents['validator'].validate(that.params['file']);
+        }else if(cm.isObject(that.params['value'])){
+            that.rawValue = that.myComponents['validator'].validate(that.params['value']);
+        }else if(!cm.isEmpty(that.params['value'])){
+            that.rawValue = that.myComponents['validator'].validate({
+                'value' : that.params['value']
+            });
+        }else{
+            that.rawValue = that.myComponents['validator'].validate();
+        }
+        return that;
+    };
+
+    classProto.validateValue = function(value){
+        var that = this;
+        if(cm.isObject(value)){
+            that.rawValue = that.myComponents['validator'].validate(value);
+        }else if(!cm.isEmpty(value)){
+            that.rawValue = that.myComponents['validator'].validate({
+                'value' : value
+            });
+        }else{
+            that.rawValue = that.myComponents['validator'].validate();
+        }
+        return that.rawValue['value'];
     };
 
     classProto.render = function(){
         var that = this;
-        // Init File Reader API
-        that.myComponents['reader'] = new FileReader();
-        cm.addEvent(that.myComponents['reader'], 'load', that.readerActionHandler);
-        // Call parent method
+        // Call parent method - render
         _inherit.prototype.render.apply(that, arguments);
+        // Init FilerReader
+        cm.getConstructor('Com.FileReader', function(classObject, className){
+            that.myComponents['reader'] = new classObject(className);
+            that.myComponents['reader'].addEvent('onReadSuccess', function(my, item){
+                that.set(item, true);
+            });
+        });
+        // Init Dropzone
+        if(that.params['dropzone']){
+            cm.getConstructor('Com.FileDropzone', function(classObject, className){
+                that.myComponents['dropzone'] = new classObject(
+                    cm.merge(that.params[className], {
+                        'container' : that.myNodes['inner'],
+                        'target' : that.myNodes['content']
+                    })
+                );
+                that.myComponents['dropzone'].addEvent('onDrop', function(my, file){
+                    that.myComponents['reader'].read(file);
+                });
+            });
+        }
         return that;
     };
 
@@ -69,105 +139,61 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         // Structure
         that.myNodes['container'] = cm.node('div', {'class' : 'com__file-input__content'},
             that.myNodes['inner'] = cm.node('div', {'class' : 'inner'},
-                that.myNodes['contentHolder'] = cm.node('div', {'class' : 'com__file-input__holder'},
+                that.myNodes['content'] = cm.node('div', {'class' : 'com__file-input__holder'},
                     cm.node('div', {'class' : 'pt__file-line'},
-                        that.myNodes['remove'] = cm.node('button', {'class' : 'button button-primary'}, that.lang('remove')),
-                        that.myNodes['browse'] = cm.node('div', {'class' : 'browse-button'},
-                            cm.node('button', {'class' : 'button button-primary'}, that.lang('browse')),
-                            cm.node('div', {'class' : 'inner'},
-                                that.myNodes['input'] = cm.node('input', {'type' : 'file', 'multiple' : false})
-                            )
-                        ),
-                        that.myNodes['label'] = cm.node('div', {'class' : 'label'})
-                    )
-                ),
-                that.myNodes['dropzoneHolder'] = cm.node('div', {'class' : 'com__file-input__drop is-hidden'},
-                    that.myNodes['dropzone'] = cm.node('div', {'class' : 'pt__file-drop'},
                         cm.node('div', {'class' : 'inner'},
-                            cm.node('div', {'class' : 'title'},
-                                cm.node('div', {'class' : 'label'}, that.lang('drop_here')),
-                                cm.node('div', {'class' : 'icon cm-i cm-i__circle-arrow-down'})
-                            )
+                            that.myNodes['browse'] = cm.node('div', {'class' : 'browse-button'},
+                                cm.node('button', {'class' : 'button button-primary'}, that.lang('browse')),
+                                cm.node('div', {'class' : 'inner'},
+                                    that.myNodes['input'] = cm.node('input', {'type' : 'file'})
+                                )
+                            ),
+                            that.myNodes['clear'] = cm.node('button', {'class' : 'button button-primary'}, that.lang('remove')),
+                            that.myNodes['label'] = cm.node('div', {'class' : 'label'})
                         )
                     )
                 )
             )
         );
         // Events
-        that.triggerEvent('onRenderContent');
-        cm.addEvent(that.myNodes['remove'], 'click', that.clearHandler);
+        that.triggerEvent('onRenderContentProcess');
+        cm.addEvent(that.myNodes['clear'], 'click', that.clearHandler);
         cm.addEvent(that.myNodes['input'], 'change', that.browseActionHandler);
         that.triggerEvent('onRenderContentEnd');
         // Push
         return that.myNodes['container'];
     };
 
+    classProto.setData = function(){
+        var that = this,
+            url;
+        if(cm.isEmpty(that.value)){
+            cm.clearNode(that.myNodes['label']);
+            cm.addClass(that.myNodes['label'], 'is-hidden');
+            cm.removeClass(that.myNodes['browse'], 'is-hidden');
+            cm.addClass(that.myNodes['clear'], 'is-hidden');
+        }else{
+            cm.clearNode(that.myNodes['label']);
+            if(that.params['showLink']){
+                that.myNodes['link'] = cm.node('a', {'target' : '_blank', 'href' : that.rawValue['url'], 'title' : that.lang('open')}, that.rawValue['name']);
+            }else{
+                that.myNodes['link'] = cm.textNode(that.rawValue['name']);
+            }
+            cm.appendChild(that.myNodes['link'], that.myNodes['label']);
+            cm.addClass(that.myNodes['browse'], 'is-hidden');
+            cm.removeClass(that.myNodes['clear'], 'is-hidden');
+            cm.removeClass(that.myNodes['label'], 'is-hidden');
+        }
+        return that;
+    };
+
+    /* *** PROCESS FILES *** */
+
     classProto.browseAction = function(e){
         var that = this,
             file = e.target.files[0];
-        that.processFile(file);
-        return that;
-    };
-
-    classProto.processFile = function(file){
-        var that = this;
-        that.myComponents['reader'] && that.myComponents['reader'].readAsDataURL(file);
-        return that;
-    };
-
-    classProto.readerAction = function(e){
-        var that = this,
-            result = e.target.result;
-        cm.log(result);
-        return that;
-    };
-
-    /* *** DRAG AND DROP ACTIONS *** */
-
-    classProto.dragOver = function(e){
-        var that = this,
-            target = cm.getEventTarget(e);
-        cm.preventDefault(e);
-        // Show dropzone
-        cm.addClass(that.myNodes['container'], 'is-dragging');
-        cm.addClass(that.myNodes['contentHolder'], 'is-hidden');
-        cm.removeClass(that.myNodes['dropzoneHolder'], 'is-hidden');
-        // Hide dropzone if event not triggering inside the current document window (hax)
-        that.dragInterval && clearTimeout(that.dragInterval);
-        that.dragInterval = setTimeout(that.resetDropzoneHandler, 100);
-        // Highlight dropzone
-        if(cm.isParent(that.myNodes['container'], target, true)){
-            cm.addClass(that.myNodes['dropzone'], 'is-highlight');
-        }else{
-            cm.removeClass(that.myNodes['dropzone'], 'is-highlight');
-        }
-        return that;
-    };
-
-    classProto.dragDrop = function(e){
-        var that = this,
-            target = cm.getEventTarget(e),
-            file;
-        cm.preventDefault(e);
-        // Hide dropzone and reset his state
-        that.dragInterval && clearTimeout(that.dragInterval);
-        that.resetDropzone();
-        // Process file
-        if(cm.isParent(that.myNodes['container'], target, true)){
-            if(e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length){
-                file = e.dataTransfer.files[0];
-                that.processFile(file);
-            }
-        }
-        return that;
-    };
-
-    classProto.resetDropzone = function(){
-        var that = this;
-        cm.removeClass(that.myNodes['container'], 'is-dragging');
-        cm.removeClass(that.myNodes['contentHolder'], 'is-hidden');
-        cm.addClass(that.myNodes['dropzoneHolder'], 'is-hidden');
-        cm.removeClass(that.myNodes['dropzone'], 'is-highlight');
+        // Read File
+        that.myComponents['reader'].read(file);
         return that;
     };
 });

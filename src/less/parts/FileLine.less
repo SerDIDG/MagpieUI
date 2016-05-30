@@ -1,19 +1,31 @@
 /* ******* PARTS: FILE LINE ******* */
 
 .pt__file-line {
-    .button {
+    > .inner {
+        .clearfix;
+    }
+
+    .button-alike {
         float: left;
+        margin-right: @CmForm-ButtonsIndent;
 
-        &:not(:first-child) {
-            margin-left: @CmForm-ButtonsIndent;
-        }
-
-        &:not(:last-child) {
-            margin-right: @CmForm-ButtonsIndent;
+        &:last-child {
+            margin-right: 0;
         }
     }
 
     .label {
         .cm__text-nowrap;
+        opacity: 1;
+        line-height: @CmForm-FieldHeight;
+        .mx__transition(all, @CmUI-Transition-DurationShort);
+
+        &.is-hidden {
+            opacity: 0;
+        }
+    }
+
+    &.is-hidden {
+        display: none;
     }
 }

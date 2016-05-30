@@ -20,13 +20,19 @@
 
     <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
         <dl class="pt__field">
+            <dt>File Input:</dt>
             <dd>
-                <input type="text" data-element="Com.FileInput">
+                <input type="text" data-element="Com.FileInput" value="Bar" name="file-input-test">
             </dd>
         </dl>
         <dl class="pt__field">
+            <dt>Multiple File Input:</dt>
             <dd>
-                <input type="text" data-element="Com.FileInput">
+                <div data-element="Com.MultipleFileInput" data-node="ComMultipleFileInput:{}:container" data-config='{"name" : "multiple-file-input-test[]"}'>
+                    <input type="text" data-node="inputs:[]:input" value="Test">
+                    <input type="text" data-node="inputs:[]:input" value="Foo">
+                    <input type="text" data-node="inputs:[]:input" value="Bar">
+                </div>
             </dd>
         </dl>
     </li>

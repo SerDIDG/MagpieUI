@@ -96,6 +96,7 @@ module.exports = function(grunt) {
                     '<%= paths.src %>/js/init.js',
                     '<%= paths.src %>/js/components/AbstractController.js',
                     '<%= paths.src %>/js/components/AbstractInput.js',
+                    '<%= paths.src %>/js/components/MultipleInput.js',
                     '<%= paths.src %>/js/components/AbstractRange.js',
                     '<%= paths.src %>/js/components/Form.js',
                     '<%= paths.src %>/js/components/BoxTools.js',
@@ -202,8 +203,9 @@ module.exports = function(grunt) {
 
         lessvars: {
             options: {
+                units : true,
                 format : function(vars){
-                    return 'window.LESS = cm.merge(window.LESS, '+ JSON.stringify(vars) +');';
+                    return 'window.LESS = ' + JSON.stringify(vars) + ';';
                 }
             },
             build : {

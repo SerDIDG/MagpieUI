@@ -1,4 +1,4 @@
-/* *** PARTS: BUTTONS *** */
+/* ******* PARTS: BUTTONS ******* */
 
 .button {
     @padding: max(ceil((@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2), 0px);
@@ -298,4 +298,64 @@ button {
     &::-moz-focus-inner {
         border: 0;
     }
+}
+
+/* *** BROWSE BUTTON **** */
+
+.browse-button {
+    display: inline-block;
+    vertical-align: top;
+    position: relative;
+    cursor: pointer;
+
+    > .inner {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        overflow: hidden;
+    }
+
+    input[type="file"] {
+        width: auto;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        right: 0;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .button {
+        width: 100%;
+        margin: 0 !important;
+    }
+
+    &:hover {
+        .button {
+            .button.button-primary--hover;
+        }
+    }
+
+    &:active {
+        .button {
+            .button.button-primary--active;
+        }
+    }
+}
+
+/* *** BUTTONS ALIKE *** */
+
+.button-alike {
+    &.is-hidden {
+        display: none;
+    }
+}
+
+.button,
+.browse-button,
+.cm__button-wrapper,
+.com__menu {
+    &:extend(.button-alike all);
 }

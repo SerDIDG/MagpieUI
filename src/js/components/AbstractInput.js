@@ -4,10 +4,11 @@ cm.define('Com.AbstractInput', {
         'onSet',
         'onSelect',
         'onChange',
+        'onClear',
         'onDisable',
         'onEnable',
         'onRenderContentStart',
-        'onRenderContent',
+        'onRenderContentProcess',
         'onRenderContentEnd'
     ],
     'params' : {
@@ -28,6 +29,7 @@ function(params){
     that.previousValue = null;
     that.value = null;
     that.disabled = false;
+    // Call parent class construct
     Com.AbstractController.apply(that, arguments);
 });
 
@@ -36,12 +38,18 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
 
     classProto.construct = function(params){
         var that = this;
+        // Bind context to methods
+        that.setHandler = that.set.bind(that);
+        that.getHandler = that.get.bind(that);
         that.clearHandler = that.clear.bind(that);
+        that.enableHandler = that.enable.bind(that);
+        that.disableHandler = that.disable.bind(that);
         that.setActionHandler = that.setAction.bind(that);
         that.selectActionHandler = that.selectAction.bind(that);
-        that.addEvent('onConstruct', function(){
-            that.set(that.params['value'], false);
-        });
+        that.constructProcessHandler = that.constructProcess.bind(that);
+        // Add events
+        that.addEvent('onConstructProcess', that.constructProcessHandler);
+        // Call parent method
         _inherit.prototype.construct.apply(that, arguments);
         return that;
     };
@@ -64,31 +72,36 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
     classProto.clear = function(triggerEvents){
         var that = this;
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        triggerEvents && that.triggerEvent('onClear');
         that.set(that.params['defaultValue'], triggerEvents);
         return that;
     };
 
     classProto.enable = function(){
         var that = this;
-        that.disabled = false;
-        cm.removeClass(cm.nodes['container'], 'disabled');
-        cm.removeClass(cm.nodes['content'], 'disabled');
-        that.triggerEvent('onEnable');
+        if(!that.disabled){
+            that.disabled = false;
+            cm.removeClass(that.nodes['container'], 'disabled');
+            cm.removeClass(that.nodes['content'], 'disabled');
+            that.triggerEvent('onEnable');
+        }
         return that;
     };
 
     classProto.disable = function(){
         var that = this;
-        that.disabled = true;
-        cm.addClass(that.nodes['container'], 'disabled');
-        cm.addClass(that.nodes['content'], 'disabled');
-        that.triggerEvent('onDisable');
+        if(that.disabled){
+            that.disabled = true;
+            cm.addClass(that.nodes['container'], 'disabled');
+            cm.addClass(that.nodes['content'], 'disabled');
+            that.triggerEvent('onDisable');
+        }
         return that;
     };
 
     classProto.validateParams = function(){
         var that = this;
-        _inherit.prototype.validateParams.apply(that, arguments);
+        that.triggerEvent('onValidateParamsStart');
         // Get parameters from provided input
         if(cm.isNode(that.params['node'])){
             that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
@@ -97,26 +110,25 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
             that.params['value'] = that.params['node'].value || that.params['value'];
         }
         that.disabled = that.params['disabled'];
+        that.triggerEvent('onValidateParamsEnd');
         return that;
     };
 
-    classProto.render = function(){
+    classProto.constructProcess = function(){
         var that = this;
-        // Structure
-        that.renderView();
-        // Attributes
-        that.setAttributes();
-        // Append
-        that.embedStructure(that.nodes['container']);
+        that.set(that.params['value'], false);
         return that;
     };
 
     classProto.renderView = function(){
         var that = this;
+        that.triggerEvent('onRenderViewStart');
         that.nodes['container'] = cm.node('div', {'class' : 'com__input'},
             that.nodes['hidden'] = cm.node('input', {'type' : 'hidden'}),
             that.nodes['content'] = that.renderContent()
         );
+        that.triggerEvent('onRenderViewProcess');
+        that.triggerEvent('onRenderViewEnd');
         return that;
     };
 
@@ -124,18 +136,20 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         var that = this;
         that.triggerEvent('onRenderContentStart');
         var node = cm.node('div', {'class' : 'input__content'});
-        that.triggerEvent('onRenderContent');
+        that.triggerEvent('onRenderContentProcess');
         that.triggerEvent('onRenderContentEnd');
         return node;
     };
 
     classProto.setAttributes = function(){
         var that = this;
+        that.triggerEvent('onSetAttributesStart');
         cm.addClass(that.nodes['container'], that.params['className']);
         // Data attributes
         cm.forEach(that.params['node'].attributes, function(item){
             if(/^data-(?!node|element)/.test(item.name)){
                 that.nodes['hidden'].setAttribute(item.name, item.value);
+                that.nodes['container'].setAttribute(item.name, item.value);
             }
         });
         if(that.params['title']){
@@ -144,6 +158,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         if(that.params['name']){
             that.nodes['hidden'].setAttribute('name', that.params['name']);
         }
+        that.triggerEvent('onSetAttributesEnd');
         return that;
     };
 
@@ -154,9 +169,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
     classProto.selectAction = function(value, triggerEvents){
         var that = this;
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        if(triggerEvents){
-            that.triggerEvent('onSelect', value);
-        }
+        triggerEvents && that.triggerEvent('onSelect', value);
         return that;
     };
 
@@ -166,9 +179,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         that.previousValue = that.value;
         that.value = value;
         that.nodes['hidden'].value = that.value;
-        if(triggerEvents){
-            that.triggerEvent('onSet', that.value);
-        }
+        triggerEvents && that.triggerEvent('onSet', that.value);
         return that;
     };
 

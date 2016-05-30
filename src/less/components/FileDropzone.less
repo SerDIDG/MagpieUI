@@ -1,7 +1,11 @@
-/* ******* PARTS: FILE DROP ******* */
+/* ******* COMPONENTS: FILE DROPZONE ******* */
 
-.pt__file-drop {
-    position: relative;
+.com__file-dropzone {
+    position: absolute;
+    visibility: visible;
+    opacity: 1;
+    .mx__position(0, 0, 0, 0);
+    .mx__transition(all, @CmUI-Transition-Duration);
 
     > .inner {
         .display-flex;
@@ -39,5 +43,10 @@
                 }
             }
         }
+    }
+
+    &.is-hidden {
+        visibility: hidden;
+        opacity: 0;
     }
 }

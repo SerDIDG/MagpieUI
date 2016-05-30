@@ -1,0 +1,27 @@
+/* ******* COMPONENTS: MULTIPLE INPUT ******* */
+
+.com__multiple-input {
+    position: relative;
+
+    > .inner {
+        .clearfix;
+        position: relative;
+    }
+}
+
+.com__multiple-input__holder {
+    opacity: 1;
+    .mx__transition(all, @CmUI-Transition-Duration);
+
+    &.is-hidden {
+        opacity: 0;
+    }
+}
+
+.com__multiple-input__item {
+    margin-top: @CmForm-FieldInnerIndent;
+
+    &:first-child {
+        margin-top: 0;
+    }
+}

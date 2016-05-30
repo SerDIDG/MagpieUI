@@ -5,6 +5,8 @@
 
 */
 
+window.URL = window.URL || window.webkitURL;
+
 if(!Array.prototype.forEach){
     Array.prototype.forEach = function(fn, scope){
         for(var i = 0, len = this.length; i < len; ++i){

@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.16.3 (2016-05-26 16:44) ************ */
+/*! ************ MagpieUI v3.17.0 (2016-05-30 20:45) ************ */
 @charset "UTF-8";
 
 /*!
@@ -4400,7 +4400,8 @@ span.CodeMirror-selectedtext { background: none; }
 
 // /* ******* FILE INPUT ******* */
 
-@ComFileInput-DropHeight: 128px;
+@ComFileDropzone-Height: 128px;
+@ComFileDropzone-Duration: @CmUI-Transition-Duration;
 
 // /* ******* DIALOG ******* */
 
@@ -6206,7 +6207,7 @@ textarea {
 select {
     &:extend(.select all);
 }
-/* *** PARTS: BUTTONS *** */
+/* ******* PARTS: BUTTONS ******* */
 
 .button {
     @padding: max(ceil((@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2), 0px);
@@ -6507,6 +6508,66 @@ button {
         border: 0;
     }
 }
+
+/* *** BROWSE BUTTON **** */
+
+.browse-button {
+    display: inline-block;
+    vertical-align: top;
+    position: relative;
+    cursor: pointer;
+
+    > .inner {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        overflow: hidden;
+    }
+
+    input[type="file"] {
+        width: auto;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        right: 0;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .button {
+        width: 100%;
+        margin: 0 !important;
+    }
+
+    &:hover {
+        .button {
+            .button.button-primary--hover;
+        }
+    }
+
+    &:active {
+        .button {
+            .button.button-primary--active;
+        }
+    }
+}
+
+/* *** BUTTONS ALIKE *** */
+
+.button-alike {
+    &.is-hidden {
+        display: none;
+    }
+}
+
+.button,
+.browse-button,
+.cm__button-wrapper,
+.com__menu {
+    &:extend(.button-alike all);
+}
 /* ******* COMMON: LIST ******* */
 
 .cm__list {
@@ -6710,9 +6771,7 @@ button {
         font-size: 12px;
     }
 
-    .button,
-    .browse-button,
-    .com__menu {
+    .button-alike {
         max-width: 100%;
         float: right;
         margin: 0 0 0 @CmForm-ButtonsIndent;
@@ -6743,9 +6802,7 @@ button {
 
     &.pull-left,
     &.left {
-        .button,
-        .browse-button,
-        .com__menu {
+        .button-alike {
             float: left;
             margin: 0 @CmForm-ButtonsIndent 0 0;
 
@@ -6759,9 +6816,7 @@ button {
     &.centered {
         text-align: center;
 
-        .button,
-        .browse-button,
-        .com__menu {
+        .button-alike {
             float: none;
             display: inline-block;
             margin: 0 0 0 @CmForm-ButtonsIndent;
@@ -6789,9 +6844,7 @@ button {
             .mx__align-items(flex-end);
         }
 
-        .button,
-        .browse-button,
-        .com__menu {
+        .button-alike {
             .cm__text-overflow;
             margin: @CmForm-ButtonsIndent 0 0 0;
             display: block;
@@ -6807,9 +6860,7 @@ button {
     &.is-block {
         height: auto;
 
-        .button,
-        .browse-button,
-        .com__menu {
+        .button-alike {
             .cm__text-overflow;
             width: 100%;
             display: block;
@@ -6826,9 +6877,7 @@ button {
         .display-flex;
         .mx__flex-direction(row);
 
-        .button,
-        .browse-button,
-        .com__menu {
+        .button-alike {
             float: none;
             .mx__flex(1);
 
@@ -6864,51 +6913,6 @@ button {
         &:before {
             content: '-';
             margin-right: 4px;
-        }
-    }
-}
-
-/* ** BROWSE *** */
-
-.browse-button {
-    display: inline-block;
-    vertical-align: top;
-    position: relative;
-    cursor: pointer;
-
-    > .inner {
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-        overflow: hidden;
-    }
-
-    input[type="file"] {
-        width: auto;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        right: 0;
-        opacity: 0;
-        cursor: pointer;
-    }
-
-    .button {
-        width: 100%;
-        margin: 0 !important;
-    }
-
-    &:hover {
-        .button {
-            .button.button-primary--hover;
-        }
-    }
-
-    &:active {
-        .button {
-            .button.button-primary--active;
         }
     }
 }
@@ -8099,10 +8103,7 @@ button {
         margin-left: -@buttonIndent;
     }
 
-    .button,
-    .browse-button,
-    .com__menu,
-    .cm__button-wrapper {
+    .button-alike {
         margin: 0 @buttonIndent;
     }
 
@@ -8122,10 +8123,7 @@ button {
             .display-flex;
         }
 
-        .button,
-        .browse-button,
-        .com__menu,
-        .cm__button-wrapper {
+        .button-alike {
             .mx__flex(1 1 0);
         }
     }
@@ -8138,10 +8136,7 @@ button {
             margin-right: 0;
         }
 
-        .button,
-        .browse-button,
-        .com__menu,
-        .cm__button-wrapper {
+        .button-alike {
             .cm__text-nowrap;
             width: 100%;
             display: block;
@@ -8701,66 +8696,35 @@ button {
     }
 
 }
-/* ******* PARTS: FILE DROP ******* */
-
-.pt__file-drop {
-    position: relative;
-
-    > .inner {
-        .display-flex;
-        position: absolute;
-        overflow: hidden;
-        border: @CmBorder-Temporary;
-        border-radius: @CmBorder-Radius;
-        .mx__position(0, 0, 0, 0);
-        .mx__align-items(center);
-        .mx__justify-content(center);
-        .mx__transition(all, @CmUI-Transition-DurationShort);
-
-        > .title {
-            .cm__font--ui-h1;
-            .mx__transition(all, @CmUI-Transition-DurationShort);
-
-            > .icon {
-                margin: 0 auto;
-                .cm-i__size(@CmSize-Medium);
-                .cm-i__b-size(@CmSize-Medium);
-                .mx__transition(all, @CmUI-Transition-DurationShort);
-            }
-        }
-    }
-
-    &.is-highlight {
-        > .inner {
-            border: @CmBorder-TemporaryActive;
-
-            > .title {
-                color: @CmColor-Primary-DarkDefault;
-
-                > .icon {
-                    color: @CmColor-Primary-DarkDefault;
-                }
-            }
-        }
-    }
-}
 /* ******* PARTS: FILE LINE ******* */
 
 .pt__file-line {
-    .button {
+    > .inner {
+        .clearfix;
+    }
+
+    .button-alike {
         float: left;
+        margin-right: @CmForm-ButtonsIndent;
 
-        &:not(:first-child) {
-            margin-left: @CmForm-ButtonsIndent;
-        }
-
-        &:not(:last-child) {
-            margin-right: @CmForm-ButtonsIndent;
+        &:last-child {
+            margin-right: 0;
         }
     }
 
     .label {
         .cm__text-nowrap;
+        opacity: 1;
+        line-height: @CmForm-FieldHeight;
+        .mx__transition(all, @CmUI-Transition-DurationShort);
+
+        &.is-hidden {
+            opacity: 0;
+        }
+    }
+
+    &.is-hidden {
+        display: none;
     }
 }
 /* ******* PARTS: GRID ******* */
@@ -13300,15 +13264,65 @@ button {
         }
     }
 }
+/* ******* COMPONENTS: FILE DROPZONE ******* */
+
+.com__file-dropzone {
+    position: absolute;
+    visibility: visible;
+    opacity: 1;
+    .mx__position(0, 0, 0, 0);
+    .mx__transition(all, @CmUI-Transition-Duration);
+
+    > .inner {
+        .display-flex;
+        position: absolute;
+        overflow: hidden;
+        border: @CmBorder-Temporary;
+        border-radius: @CmBorder-Radius;
+        .mx__position(0, 0, 0, 0);
+        .mx__align-items(center);
+        .mx__justify-content(center);
+        .mx__transition(all, @CmUI-Transition-DurationShort);
+
+        > .title {
+            .cm__font--ui-h1;
+            .mx__transition(all, @CmUI-Transition-DurationShort);
+
+            > .icon {
+                margin: 0 auto;
+                .cm-i__size(@CmSize-Medium);
+                .cm-i__b-size(@CmSize-Medium);
+                .mx__transition(all, @CmUI-Transition-DurationShort);
+            }
+        }
+    }
+
+    &.is-highlight {
+        > .inner {
+            border: @CmBorder-TemporaryActive;
+
+            > .title {
+                color: @CmColor-Primary-DarkDefault;
+
+                > .icon {
+                    color: @CmColor-Primary-DarkDefault;
+                }
+            }
+        }
+    }
+
+    &.is-hidden {
+        visibility: hidden;
+        opacity: 0;
+    }
+}
 /* ******* COMPONENTS: FILE INPUT ******* */
 
 .com__file-input__content {
-    height: @CmForm-FieldHeight;
     position: relative;
-    .mx__transition(all, @CmUI-Transition-Duration);
 
-    &.is-dragging {
-        height: @ComFileInput-DropHeight;
+    > .inner {
+        position: relative;
     }
 }
 
@@ -13317,24 +13331,6 @@ button {
     .mx__transition(all, @CmUI-Transition-Duration);
 
     &.is-hidden {
-        opacity: 0;
-    }
-}
-
-.com__file-input__drop {
-    position: absolute;
-    visibility: visible;
-    opacity: 1;
-    .mx__position(0, 0, 0, 0);
-    .mx__transition(all, @CmUI-Transition-Duration);
-
-    .pt__file-drop {
-        position: absolute;
-        .mx__position(0, 0, 0, 0);
-    }
-
-    &.is-hidden {
-        visibility: hidden;
         opacity: 0;
     }
 }
@@ -14129,7 +14125,7 @@ button {
     .mx__justify-content(flex-end);
 
     &:after {
-        height: @CmForm-FieldIndent;
+        height: @CmForm-FieldInnerIndent;
         display: block;
         content: '';
         .mx__flex(0 0 100%);
@@ -14174,6 +14170,42 @@ button {
                 border-radius: @CmBorder-Radius;
             }
         }
+    }
+}
+/* ******* COMPONENTS: MULTIPLE FILE INPUT ******* */
+
+.com__multiple-file-input__content {
+    margin-top: @CmForm-FieldInnerIndent;
+
+    &.is-hidden {
+        display: none;
+    }
+}
+/* ******* COMPONENTS: MULTIPLE INPUT ******* */
+
+.com__multiple-input {
+    position: relative;
+
+    > .inner {
+        .clearfix;
+        position: relative;
+    }
+}
+
+.com__multiple-input__holder {
+    opacity: 1;
+    .mx__transition(all, @CmUI-Transition-Duration);
+
+    &.is-hidden {
+        opacity: 0;
+    }
+}
+
+.com__multiple-input__item {
+    margin-top: @CmForm-FieldInnerIndent;
+
+    &:first-child {
+        margin-top: 0;
     }
 }
 /* ******* NOTIFICATION ******* */
