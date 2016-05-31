@@ -6,8 +6,16 @@ cm.define('Com.FileInput', {
         'file' : null,
         'dropzone' : true,
         'showLink' : true,
+        'local' : true,
+        'fileManager' : true,
+        'fileManagerConstructor' : 'Com.AbstractFileManager',
+        'fileManagerParams' : {
+            'max' : 1
+        },
         'langs' : {
             'browse' : 'Browse',
+            'browse_local' : 'Browse Local',
+            'browse_filemanager' : 'Browse File Manager',
             'remove' : 'Remove',
             'open' : 'Open'
         },
@@ -77,7 +85,20 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
 
     classProto.validateParamsEnd = function(){
         var that = this;
+        // Validate Language Strings
+        that.setLangs({
+            '_browse_local' : that.params['fileManager'] ? that.lang('browse_local') : that.lang('browse'),
+            '_browse_filemanager' : that.params['local'] ? that.lang('browse_filemanager') : that.lang('browse')
+        });
+        // Validate Value
         if(!cm.isEmpty(that.params['file'])){
+            if(cm.isEmpty(that.params['file']['value'])){
+                if(cm.isObject(that.params['value'])){
+                    that.params['file']['value'] = that.params['value']['value'];
+                }else{
+                    that.params['file']['value'] = that.params['value'];
+                }
+            }
             that.rawValue = that.myComponents['validator'].validate(that.params['file']);
         }else if(cm.isObject(that.params['value'])){
             that.rawValue = that.myComponents['validator'].validate(that.params['value']);
@@ -130,6 +151,19 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
                 });
             });
         }
+        // Init File Manager
+        if(that.params['fileManager']){
+            cm.getConstructor(that.params['fileManagerConstructor'], function(classObject){
+                that.myComponents['filemanager'] = new classObject(
+                    cm.merge(that.params['fileManagerParams'], {
+                        'node' : that.myNodes['browseFileManager']
+                    })
+                );
+                that.myComponents['filemanager'].addEvent('onSelect', function(my, file){
+                    that.myComponents['reader'].read(file);
+                });
+            });
+        }
         return that;
     };
 
@@ -141,13 +175,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
             that.myNodes['inner'] = cm.node('div', {'class' : 'inner'},
                 that.myNodes['content'] = cm.node('div', {'class' : 'com__file-input__holder'},
                     cm.node('div', {'class' : 'pt__file-line'},
-                        cm.node('div', {'class' : 'inner'},
-                            that.myNodes['browse'] = cm.node('div', {'class' : 'browse-button'},
-                                cm.node('button', {'class' : 'button button-primary'}, that.lang('browse')),
-                                cm.node('div', {'class' : 'inner'},
-                                    that.myNodes['input'] = cm.node('input', {'type' : 'file'})
-                                )
-                            ),
+                        that.myNodes['contentInner'] = cm.node('div', {'class' : 'inner'},
                             that.myNodes['clear'] = cm.node('button', {'class' : 'button button-primary'}, that.lang('remove')),
                             that.myNodes['label'] = cm.node('div', {'class' : 'label'})
                         )
@@ -155,6 +183,20 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
                 )
             )
         );
+        // Render Browse Buttons
+        if(that.params['local']){
+            that.myNodes['browseLocal'] = cm.node('div', {'class' : 'browse-button'},
+                cm.node('button', {'class' : 'button button-primary'}, that.lang('_browse_local')),
+                cm.node('div', {'class' : 'inner'},
+                    that.myNodes['input'] = cm.node('input', {'type' : 'file'})
+                )
+            );
+            cm.insertFirst(that.myNodes['browseLocal'], that.myNodes['contentInner']);
+        }
+        if(that.params['fileManager']){
+            that.myNodes['browseFileManager'] = cm.node('button', {'class' : 'button button-primary'}, that.lang('_browse_filemanager'));
+            cm.insertFirst(that.myNodes['browseFileManager'], that.myNodes['contentInner']);
+        }
         // Events
         that.triggerEvent('onRenderContentProcess');
         cm.addEvent(that.myNodes['clear'], 'click', that.clearHandler);
@@ -170,7 +212,8 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         if(cm.isEmpty(that.value)){
             cm.clearNode(that.myNodes['label']);
             cm.addClass(that.myNodes['label'], 'is-hidden');
-            cm.removeClass(that.myNodes['browse'], 'is-hidden');
+            cm.removeClass(that.myNodes['browseLocal'], 'is-hidden');
+            cm.removeClass(that.myNodes['browseFileManager'], 'is-hidden');
             cm.addClass(that.myNodes['clear'], 'is-hidden');
         }else{
             cm.clearNode(that.myNodes['label']);
@@ -180,7 +223,8 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
                 that.myNodes['link'] = cm.textNode(that.rawValue['name']);
             }
             cm.appendChild(that.myNodes['link'], that.myNodes['label']);
-            cm.addClass(that.myNodes['browse'], 'is-hidden');
+            cm.addClass(that.myNodes['browseLocal'], 'is-hidden');
+            cm.addClass(that.myNodes['browseFileManager'], 'is-hidden');
             cm.removeClass(that.myNodes['clear'], 'is-hidden');
             cm.removeClass(that.myNodes['label'], 'is-hidden');
         }

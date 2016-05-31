@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.17.0 (2016-05-30 20:45) ************ */
+/*! ************ MagpieUI v3.17.0 (2016-05-31 20:55) ************ */
 @charset "UTF-8";
 
 /*!
@@ -5010,7 +5010,6 @@ span.CodeMirror-selectedtext { background: none; }
     max-width: 100%;
     height: auto;
     display: block;
-
 }
 
 .cm__image-centered {
@@ -8098,7 +8097,7 @@ button {
     .cm__box-reverse;
 
     > .inner {
-        .cm__list-inline;
+        .display-flex;
         margin-right: -@buttonIndent;
         margin-left: -@buttonIndent;
     }
@@ -8110,19 +8109,24 @@ button {
     /* *** ALIGN *** */
 
     &.pull-right {
+        > .inner {
+            .mx__justify-content(flex-end);
+        }
     }
 
     &.pull-left {
+        > .inner {
+            .mx__justify-content(flex-start);
+        }
     }
 
     &.pull-center {
+        > .inner {
+            .mx__justify-content(center);
+        }
     }
 
     &.pull-justify {
-        > .inner {
-            .display-flex;
-        }
-
         .button-alike {
             .mx__flex(1 1 0);
         }
@@ -11148,6 +11152,10 @@ button {
         .cm__tags {
             margin: 0;
         }
+
+        img {
+            .cm__image-adaptive;
+        }
     }
 
     .comment-actions {
@@ -11397,6 +11405,10 @@ button {
                 .cm__font--hint;
                 margin: 0;
                 color: @CmFont-UI-H4-Color;
+            }
+
+            img {
+                .cm__image-adaptive;
             }
         }
     }
@@ -13332,6 +13344,13 @@ button {
 
     &.is-hidden {
         opacity: 0;
+    }
+}
+/* ******* COMPONENTS: FILE MANAGER ******* */
+
+.com__file-manager__stats-list {
+    > ul {
+        .cm__list-clear;
     }
 }
 /* ******* COMPONENTS: FORM ******* */

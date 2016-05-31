@@ -47,7 +47,10 @@ cm.define('Com.AbstractController', {
         'embedStructure' : 'append',
         'customEvents' : true,
         'removeOnDestruct' : false,
-        'className' : ''
+        'className' : '',
+        'collector' : null,
+        'constructCollector' : false,
+        'destructCollector' : false
     }
 },
 function(params){
@@ -61,8 +64,12 @@ function(params){
 cm.getConstructor('Com.AbstractController', function(classConstructor, className, classProto){
     classProto.construct = function(params){
         var that = this;
+        // Bind context to methods
         that.redrawHandler = that.redraw.bind(that);
         that.destructHandler = that.destruct.bind(that);
+        that.constructCollectorHandler = that.constructCollector.bind(that);
+        that.destructCollectorHandler = that.destructCollector.bind(that);
+        // Configure class
         that.triggerEvent('onConstructStart');
         that.initComponents();
         that.getLESSVariables();
@@ -85,8 +92,8 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
 
     classProto.destruct = function(){
         var that = this;
-        that.triggerEvent('onDestructStart');
         if(!that.isDestructed){
+            that.triggerEvent('onDestructStart');
             that.isDestructed = true;
             that.triggerEvent('onDestructProcess');
             that.unsetEvents();
@@ -181,6 +188,34 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
             that.triggerEvent('onUnsetCustomEvents');
         }
         that.triggerEvent('onUnsetEventsEnd');
+        return that;
+    };
+
+    classProto.constructCollector = function(){
+        var that = this;
+        if(that.params['constructCollector']){
+            if(that.params['collector']){
+                that.params['collector'].construct(that.nodes['container']);
+            }else{
+                cm.find('Com.Collector', null, null, function(classObject){
+                    classObject.construct(that.nodes['container']);
+                });
+            }
+        }
+        return that;
+    };
+
+    classProto.destructCollector = function(){
+        var that = this;
+        if(that.params['constructCollector']){
+            if(that.params['collector']){
+                that.params['collector'].destruct(that.nodes['container']);
+            }else{
+                cm.find('Com.Collector', null, null, function(classObject){
+                    classObject.destruct(that.nodes['container']);
+                });
+            }
+        }
         return that;
     };
 });

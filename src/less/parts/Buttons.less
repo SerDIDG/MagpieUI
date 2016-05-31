@@ -7,7 +7,7 @@
     .cm__box-reverse;
 
     > .inner {
-        .cm__list-inline;
+        .display-flex;
         margin-right: -@buttonIndent;
         margin-left: -@buttonIndent;
     }
@@ -19,19 +19,24 @@
     /* *** ALIGN *** */
 
     &.pull-right {
+        > .inner {
+            .mx__justify-content(flex-end);
+        }
     }
 
     &.pull-left {
+        > .inner {
+            .mx__justify-content(flex-start);
+        }
     }
 
     &.pull-center {
+        > .inner {
+            .mx__justify-content(center);
+        }
     }
 
     &.pull-justify {
-        > .inner {
-            .display-flex;
-        }
-
         .button-alike {
             .mx__flex(1 1 0);
         }

@@ -7,8 +7,11 @@ cm.define('Com.MultipleFileInput', {
         'inputParams' : {
             'dropzone' : false
         },
-        'dropzone' : true,
         'max' : 0,                                  // 0 - infinity
+        'dropzone' : true,
+        'fileManager' : true,
+        'fileManagerConstructor' : 'Com.AbstractFileManager',
+        'fileManagerParams' : {},
         'langs' : {
             'browse' : 'Browse'
         },

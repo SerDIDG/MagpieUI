@@ -331,7 +331,7 @@ Mod['Langs'] = {
         if(cm.isFunction(that)){
             that.prototype.params['langs'] = cm.merge(that.prototype._raw.params['langs'], that.prototype._update.params['langs']);
             if(that.prototype._inherit){
-                that.prototype._inherit.prototype.updateLangs.call(that._inherit);
+                that.prototype._inherit.prototype.updateLangs.call(that.prototype._inherit);
                 that.prototype.params['langs'] = cm.merge(that.prototype._inherit.prototype.params['langs'], that.prototype.params['langs']);
             }
         }else{
@@ -668,10 +668,13 @@ Mod['Structure'] = {
     },
     'embedStructure' : function(node){
         var that = this;
-        if(that.params['embedStructure'] == 'replace'){
-            that.replaceStructure(node);
-        }else{
-            that.appendStructure(node);
+        switch(that.params['embedStructure']){
+            case 'replace':
+                that.replaceStructure(node);
+                break;
+            case 'append':
+                that.appendStructure(node);
+                break;
         }
         return that;
     },

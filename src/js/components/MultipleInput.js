@@ -213,7 +213,7 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
     classProto.renderContent = function(){
         var that = this;
         that.triggerEvent('onRenderContentStart');
-        var node = cm.node('div', {'class' : 'input__content'});
+        var node = cm.node('div', {'class' : 'com__multiple-input__content'});
         that.triggerEvent('onRenderContentProcess');
         that.triggerEvent('onRenderContentEnd');
         return node;

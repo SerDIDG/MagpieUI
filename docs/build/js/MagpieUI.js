@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.17.0 (2016-05-30 20:45) ************ */
+/*! ************ MagpieUI v3.17.0 (2016-05-31 20:55) ************ */
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -16198,7 +16198,7 @@ Mod['Langs'] = {
         if(cm.isFunction(that)){
             that.prototype.params['langs'] = cm.merge(that.prototype._raw.params['langs'], that.prototype._update.params['langs']);
             if(that.prototype._inherit){
-                that.prototype._inherit.prototype.updateLangs.call(that._inherit);
+                that.prototype._inherit.prototype.updateLangs.call(that.prototype._inherit);
                 that.prototype.params['langs'] = cm.merge(that.prototype._inherit.prototype.params['langs'], that.prototype.params['langs']);
             }
         }else{
@@ -16535,10 +16535,13 @@ Mod['Structure'] = {
     },
     'embedStructure' : function(node){
         var that = this;
-        if(that.params['embedStructure'] == 'replace'){
-            that.replaceStructure(node);
-        }else{
-            that.appendStructure(node);
+        switch(that.params['embedStructure']){
+            case 'replace':
+                that.replaceStructure(node);
+                break;
+            case 'append':
+                that.appendStructure(node);
+                break;
         }
         return that;
     },
@@ -17020,7 +17023,10 @@ cm.define('Com.AbstractController', {
         'embedStructure' : 'append',
         'customEvents' : true,
         'removeOnDestruct' : false,
-        'className' : ''
+        'className' : '',
+        'collector' : null,
+        'constructCollector' : false,
+        'destructCollector' : false
     }
 },
 function(params){
@@ -17034,8 +17040,12 @@ function(params){
 cm.getConstructor('Com.AbstractController', function(classConstructor, className, classProto){
     classProto.construct = function(params){
         var that = this;
+        // Bind context to methods
         that.redrawHandler = that.redraw.bind(that);
         that.destructHandler = that.destruct.bind(that);
+        that.constructCollectorHandler = that.constructCollector.bind(that);
+        that.destructCollectorHandler = that.destructCollector.bind(that);
+        // Configure class
         that.triggerEvent('onConstructStart');
         that.initComponents();
         that.getLESSVariables();
@@ -17058,8 +17068,8 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
 
     classProto.destruct = function(){
         var that = this;
-        that.triggerEvent('onDestructStart');
         if(!that.isDestructed){
+            that.triggerEvent('onDestructStart');
             that.isDestructed = true;
             that.triggerEvent('onDestructProcess');
             that.unsetEvents();
@@ -17154,6 +17164,34 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
             that.triggerEvent('onUnsetCustomEvents');
         }
         that.triggerEvent('onUnsetEventsEnd');
+        return that;
+    };
+
+    classProto.constructCollector = function(){
+        var that = this;
+        if(that.params['constructCollector']){
+            if(that.params['collector']){
+                that.params['collector'].construct(that.nodes['container']);
+            }else{
+                cm.find('Com.Collector', null, null, function(classObject){
+                    classObject.construct(that.nodes['container']);
+                });
+            }
+        }
+        return that;
+    };
+
+    classProto.destructCollector = function(){
+        var that = this;
+        if(that.params['constructCollector']){
+            if(that.params['collector']){
+                that.params['collector'].destruct(that.nodes['container']);
+            }else{
+                cm.find('Com.Collector', null, null, function(classObject){
+                    classObject.destruct(that.nodes['container']);
+                });
+            }
+        }
         return that;
     };
 });
@@ -17566,7 +17604,7 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
     classProto.renderContent = function(){
         var that = this;
         that.triggerEvent('onRenderContentStart');
-        var node = cm.node('div', {'class' : 'input__content'});
+        var node = cm.node('div', {'class' : 'com__multiple-input__content'});
         that.triggerEvent('onRenderContentProcess');
         that.triggerEvent('onRenderContentEnd');
         return node;
@@ -19023,6 +19061,228 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
             cm.removeClass(that.myNodes['link'], 'active');
             that.myNodes['link'].title = that.lang('link');
         }
+        return that;
+    };
+});
+cm.define('Com.AbstractFileManager', {
+    'extend' : 'Com.AbstractController',
+    'events' : [
+        'onOpen',
+        'onSelect',
+        'onRenderHolderStart',
+        'onRenderHolderProcess',
+        'onRenderHolderEnd',
+        'onRenderContentStart',
+        'onRenderContentProcess',
+        'onRenderContentEnd'
+    ],
+    'params' : {
+        'embedStructure' : 'none',
+        'constructCollector' : true,
+        'destructCollector' : true,
+        'showStats' : true,
+        'stats' : {
+            'mfu' : 0,                      // Max files per upload
+            'umf' : 0,                      // Max file size
+            'quote' : 0,
+            'usage' : 0
+        },
+        'langs' : {
+            'cancel' : 'Cancel',
+            'select' : 'Select',
+            'title' : 'Please select files',
+            'stats' : 'Statistics',
+            'stats_mfu' : 'You can upload up to %mfu% files at a time.',
+            'stats_umf' : 'Max file size is %umf%.',
+            'stats_quote' : 'Total storage - %quote%.',
+            'stats_usage' : 'Storage used - %usage%.'
+        },
+        'Com.Dialog' : {
+            'width' : 900,
+            'removeOnClose' : false,
+            'destructOnRemove' : false
+        },
+        'Com.ToggleBox' : {
+            'renderStructure' : true
+        }
+    }
+},
+function(params){
+    var that = this;
+    that.nodes = {};
+    that.components = {};
+    // Call parent class construct
+    Com.AbstractController.apply(that, arguments);
+});
+
+cm.getConstructor('Com.AbstractFileManager', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.construct = function(){
+        var that = this;
+        // Bind context to methods
+        that.destructProcessHandler = that.destructProcess.bind(that);
+        that.openHandler = that.open.bind(that);
+        that.openEventHandler = that.openEvent.bind(that);
+        that.closeHandler = that.close.bind(that);
+        that.closeEventHandler = that.closeEvent.bind(that);
+        // Add events
+        that.addEvent('onDestructProcess', that.destructProcessHandler);
+        // Call parent method
+        _inherit.prototype.construct.apply(that, arguments);
+        return that;
+    };
+
+    classProto.open = function(e){
+        var that = this;
+        that.openDialog();
+        return that;
+    };
+
+    classProto.close = function(e){
+        var that = this;
+        that.closeDialog();
+        return that;
+    };
+
+    classProto.validateParams = function(){
+        var that = this;
+        that.triggerEvent('onValidateParamsStart');
+        that.triggerEvent('onValidateParamsEnd');
+        return that;
+    };
+
+    classProto.destructProcess = function(){
+        var that = this;
+        that.components['dialog'] && that.components['dialog'].destruct();
+        return that;
+    };
+
+    classProto.openEvent = function(e){
+        var that = this;
+        cm.preventDefault(e);
+        that.open();
+        return that;
+    };
+
+    classProto.closeEvent = function(e){
+        var that = this;
+        cm.preventDefault(e);
+        that.close();
+        return that;
+    };
+
+    classProto.render = function(){
+        var that = this;
+        // Call parent method - render
+        _inherit.prototype.render.apply(that, arguments);
+        // Init Stats ToggleBox
+        cm.getConstructor('Com.ToggleBox', function(classObject, className){
+            that.components['togglebox'] = new classObject(
+                cm.merge(that.params[className], {
+                    'node' : that.nodes['statsContent'],
+                    'title' : that.lang('stats')
+                })
+            );
+        });
+        // Add events
+        cm.addEvent(that.params['node'], 'click', that.openEventHandler);
+        return that;
+    };
+
+    classProto.renderView = function(){
+        var that = this;
+        that.triggerEvent('onRenderViewStart');
+        // Structure
+        that.nodes['container'] = cm.node('div', {'class' : 'com__file-manager'},
+            that.nodes['inner'] = cm.node('div', {'class' : 'inner'},
+                that.nodes['holder'] = that.renderHolder(),
+                that.nodes['content'] = that.renderContent()
+            )
+        );
+        // Buttons
+        that.nodes['buttons'] = cm.node('div', {'class' : 'pt__buttons pull-right'},
+            cm.node('div', {'class' : 'inner'},
+                that.nodes['cancel'] = cm.node('button', {'class' : 'button button-transparent'}, that.lang('cancel')),
+                that.nodes['select'] = cm.node('button', {'class' : 'button button-primary'}, that.lang('select'))
+            )
+        );
+        // Render Stats
+        if(that.params['showStats']){
+            that.nodes['stats'] = that.renderStats();
+            cm.appendChild(that.nodes['stats'], that.nodes['content']);
+        }
+        // Events
+        that.triggerEvent('onRenderViewProcess');
+        cm.addEvent(that.nodes['cancel'], 'click', that.closeEventHandler);
+        that.triggerEvent('onRenderViewEnd');
+        return that;
+    };
+
+    classProto.renderHolder = function(){
+        var that = this;
+        that.triggerEvent('onRenderHolderStart');
+        var node = cm.node('div', {'class' : 'com__file-manager__holder'});
+        that.triggerEvent('onRenderHolderProcess');
+        that.triggerEvent('onRenderHolderEnd');
+        return node;
+    };
+
+    classProto.renderContent = function(){
+        var that = this;
+        that.triggerEvent('onRenderContentStart');
+        // Structure
+        var node = cm.node('div', {'class' : 'com__file-manager__content'});
+        // Events
+        that.triggerEvent('onRenderContentProcess');
+        that.triggerEvent('onRenderContentEnd');
+        return node;
+    };
+
+    classProto.renderStats = function(){
+        var that = this;
+        var node = cm.node('div', {'class' : 'com__file-manager__stats'},
+            that.nodes['statsContent'] = cm.node('div', {'class' : 'com__file-manager__stats-list'},
+                cm.node('ul',
+                    cm.node('li', that.lang('stats_mfu')),
+                    cm.node('li', that.lang('stats_umf')),
+                    cm.node('li', that.lang('stats_quote')),
+                    cm.node('li', that.lang('stats_usage'))
+                )
+            )
+        );
+        return node;
+    };
+
+    classProto.openDialog = function(){
+        var that = this;
+        if(!that.components['dialog']){
+            cm.getConstructor('Com.Dialog', function(classObject, className){
+                that.components['dialog'] = new classObject(
+                    cm.merge(that.params[className], {
+                        'content': that.nodes['container'],
+                        'buttons' : that.nodes['buttons'],
+                        'title': that.lang('title'),
+                        'events': {
+                            'onOpen': function(){
+                                that.constructCollector();
+                            },
+                            'onClose': function(){
+                                that.destructCollector();
+                            }
+                        }
+                    })
+                );
+            });
+        }else{
+            that.components['dialog'].open();
+        }
+        return that;
+    };
+
+    classProto.closeDialog = function(){
+        var that = this;
+        that.components['dialog'] && that.components['dialog'].close();
         return that;
     };
 });
@@ -23515,14 +23775,8 @@ function(params){
     var remove = function(){
         if(!that.isRemoved){
             that.isRemoved = true;
-            if(that.params['destructOnRemove'] && !that.isDestructed){
-                that.isDestructed = true;
-                cm.customEvent.trigger(nodes['container'], 'destruct', {
-                    'type' : 'child',
-                    'self' : false
-                });
-                that.removeFromStack();
-                that.triggerEvent('onClose');
+            if(that.params['destructOnRemove']){
+                that.destruct();
             }
             // Remove dialog container node
             cm.remove(nodes['container']);
@@ -23607,6 +23861,19 @@ function(params){
             });
         }else{
             remove();
+        }
+        return that;
+    };
+
+    that.destruct = function(){
+        if(!that.isDestructed){
+            that.isDestructed = true;
+            cm.customEvent.trigger(nodes['container'], 'destruct', {
+                'type' : 'child',
+                'self' : false
+            });
+            that.removeFromStack();
+            cm.remove(nodes['container']);
         }
         return that;
     };
@@ -25048,8 +25315,16 @@ cm.define('Com.FileInput', {
         'file' : null,
         'dropzone' : true,
         'showLink' : true,
+        'local' : true,
+        'fileManager' : true,
+        'fileManagerConstructor' : 'Com.AbstractFileManager',
+        'fileManagerParams' : {
+            'max' : 1
+        },
         'langs' : {
             'browse' : 'Browse',
+            'browse_local' : 'Browse Local',
+            'browse_filemanager' : 'Browse File Manager',
             'remove' : 'Remove',
             'open' : 'Open'
         },
@@ -25119,7 +25394,20 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
 
     classProto.validateParamsEnd = function(){
         var that = this;
+        // Validate Language Strings
+        that.setLangs({
+            '_browse_local' : that.params['fileManager'] ? that.lang('browse_local') : that.lang('browse'),
+            '_browse_filemanager' : that.params['local'] ? that.lang('browse_filemanager') : that.lang('browse')
+        });
+        // Validate Value
         if(!cm.isEmpty(that.params['file'])){
+            if(cm.isEmpty(that.params['file']['value'])){
+                if(cm.isObject(that.params['value'])){
+                    that.params['file']['value'] = that.params['value']['value'];
+                }else{
+                    that.params['file']['value'] = that.params['value'];
+                }
+            }
             that.rawValue = that.myComponents['validator'].validate(that.params['file']);
         }else if(cm.isObject(that.params['value'])){
             that.rawValue = that.myComponents['validator'].validate(that.params['value']);
@@ -25172,6 +25460,19 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
                 });
             });
         }
+        // Init File Manager
+        if(that.params['fileManager']){
+            cm.getConstructor(that.params['fileManagerConstructor'], function(classObject){
+                that.myComponents['filemanager'] = new classObject(
+                    cm.merge(that.params['fileManagerParams'], {
+                        'node' : that.myNodes['browseFileManager']
+                    })
+                );
+                that.myComponents['filemanager'].addEvent('onSelect', function(my, file){
+                    that.myComponents['reader'].read(file);
+                });
+            });
+        }
         return that;
     };
 
@@ -25183,13 +25484,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
             that.myNodes['inner'] = cm.node('div', {'class' : 'inner'},
                 that.myNodes['content'] = cm.node('div', {'class' : 'com__file-input__holder'},
                     cm.node('div', {'class' : 'pt__file-line'},
-                        cm.node('div', {'class' : 'inner'},
-                            that.myNodes['browse'] = cm.node('div', {'class' : 'browse-button'},
-                                cm.node('button', {'class' : 'button button-primary'}, that.lang('browse')),
-                                cm.node('div', {'class' : 'inner'},
-                                    that.myNodes['input'] = cm.node('input', {'type' : 'file'})
-                                )
-                            ),
+                        that.myNodes['contentInner'] = cm.node('div', {'class' : 'inner'},
                             that.myNodes['clear'] = cm.node('button', {'class' : 'button button-primary'}, that.lang('remove')),
                             that.myNodes['label'] = cm.node('div', {'class' : 'label'})
                         )
@@ -25197,6 +25492,20 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
                 )
             )
         );
+        // Render Browse Buttons
+        if(that.params['local']){
+            that.myNodes['browseLocal'] = cm.node('div', {'class' : 'browse-button'},
+                cm.node('button', {'class' : 'button button-primary'}, that.lang('_browse_local')),
+                cm.node('div', {'class' : 'inner'},
+                    that.myNodes['input'] = cm.node('input', {'type' : 'file'})
+                )
+            );
+            cm.insertFirst(that.myNodes['browseLocal'], that.myNodes['contentInner']);
+        }
+        if(that.params['fileManager']){
+            that.myNodes['browseFileManager'] = cm.node('button', {'class' : 'button button-primary'}, that.lang('_browse_filemanager'));
+            cm.insertFirst(that.myNodes['browseFileManager'], that.myNodes['contentInner']);
+        }
         // Events
         that.triggerEvent('onRenderContentProcess');
         cm.addEvent(that.myNodes['clear'], 'click', that.clearHandler);
@@ -25212,7 +25521,8 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         if(cm.isEmpty(that.value)){
             cm.clearNode(that.myNodes['label']);
             cm.addClass(that.myNodes['label'], 'is-hidden');
-            cm.removeClass(that.myNodes['browse'], 'is-hidden');
+            cm.removeClass(that.myNodes['browseLocal'], 'is-hidden');
+            cm.removeClass(that.myNodes['browseFileManager'], 'is-hidden');
             cm.addClass(that.myNodes['clear'], 'is-hidden');
         }else{
             cm.clearNode(that.myNodes['label']);
@@ -25222,7 +25532,8 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
                 that.myNodes['link'] = cm.textNode(that.rawValue['name']);
             }
             cm.appendChild(that.myNodes['link'], that.myNodes['label']);
-            cm.addClass(that.myNodes['browse'], 'is-hidden');
+            cm.addClass(that.myNodes['browseLocal'], 'is-hidden');
+            cm.addClass(that.myNodes['browseFileManager'], 'is-hidden');
             cm.removeClass(that.myNodes['clear'], 'is-hidden');
             cm.removeClass(that.myNodes['label'], 'is-hidden');
         }
@@ -28029,8 +28340,11 @@ cm.define('Com.MultipleFileInput', {
         'inputParams' : {
             'dropzone' : false
         },
-        'dropzone' : true,
         'max' : 0,                                  // 0 - infinity
+        'dropzone' : true,
+        'fileManager' : true,
+        'fileManagerConstructor' : 'Com.AbstractFileManager',
+        'fileManagerParams' : {},
         'langs' : {
             'browse' : 'Browse'
         },

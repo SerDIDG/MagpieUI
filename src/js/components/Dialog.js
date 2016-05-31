@@ -374,14 +374,8 @@ function(params){
     var remove = function(){
         if(!that.isRemoved){
             that.isRemoved = true;
-            if(that.params['destructOnRemove'] && !that.isDestructed){
-                that.isDestructed = true;
-                cm.customEvent.trigger(nodes['container'], 'destruct', {
-                    'type' : 'child',
-                    'self' : false
-                });
-                that.removeFromStack();
-                that.triggerEvent('onClose');
+            if(that.params['destructOnRemove']){
+                that.destruct();
             }
             // Remove dialog container node
             cm.remove(nodes['container']);
@@ -466,6 +460,19 @@ function(params){
             });
         }else{
             remove();
+        }
+        return that;
+    };
+
+    that.destruct = function(){
+        if(!that.isDestructed){
+            that.isDestructed = true;
+            cm.customEvent.trigger(nodes['container'], 'destruct', {
+                'type' : 'child',
+                'self' : false
+            });
+            that.removeFromStack();
+            cm.remove(nodes['container']);
         }
         return that;
     };
