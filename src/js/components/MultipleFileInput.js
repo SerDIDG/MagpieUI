@@ -42,11 +42,12 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
     classProto.construct = function(){
         var that = this;
         // Bind context to methods
-        that.browseActionHandler = that.browseAction.bind(that);
         that.validateParamsEndHandler = that.validateParamsEnd.bind(that);
         that.itemAddProcessHandler = that.itemAddProcess.bind(that);
         that.itemAddEndHandler = that.itemAddEnd.bind(that);
         that.itemRemoveEndHandler = that.itemRemoveEnd.bind(that);
+        that.browseActionHandler = that.browseAction.bind(that);
+        that.processFilesHandler = that.processFiles.bind(that);
         // Add events
         that.addEvent('onValidateParamsEnd', that.validateParamsEndHandler);
         that.addEvent('onItemAddProcess', that.itemAddProcessHandler);
@@ -195,7 +196,7 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
             that.myComponents['reader'].read(data);
         }else if(cm.isArray(data)){
             cm.forEach(data, function(file){
-                that.addItem({'value' : file}, true);
+                that.processFiles(file);
             })
         }else if(!cm.isEmpty(data)){
             that.addItem({'value' : data}, true);

@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.18.0 (2016-06-03 19:17) ************ */
+/*! ************ MagpieUI v3.18.1 (2016-06-03 19:41) ************ */
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -12367,7 +12367,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.18.0',
+        '_version' : '3.18.1',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -25710,6 +25710,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         that.initComponentsStartHandler = that.initComponentsStart.bind(that);
         that.validateParamsEndHandler = that.validateParamsEnd.bind(that);
         that.browseActionHandler = that.browseAction.bind(that);
+        that.processFilesHandler = that.processFiles.bind(that);
         // Add events
         that.addEvent('onInitComponentsStart', that.initComponentsStartHandler);
         that.addEvent('onValidateParamsEnd', that.validateParamsEndHandler);
@@ -25815,8 +25816,8 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
                         'target' : that.myNodes['content']
                     })
                 );
-                that.myComponents['dropzone'].addEvent('onDrop', function(my, file){
-                    that.myComponents['reader'].read(file);
+                that.myComponents['dropzone'].addEvent('onDrop', function(my, data){
+                    that.processFiles(data);
                 });
             });
         }
@@ -25828,8 +25829,8 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
                         'node' : that.myNodes['browseFileManager']
                     })
                 );
-                that.myComponents['filemanager'].addEvent('onSelect', function(my, file){
-                    that.myComponents['reader'].read(file);
+                that.myComponents['filemanager'].addEvent('onSelect', function(my, data){
+                    that.processFiles(data);
                 });
             });
         }
@@ -25906,7 +25907,21 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         var that = this,
             file = e.target.files[0];
         // Read File
-        that.myComponents['reader'].read(file);
+        that.processFiles(file);
+        return that;
+    };
+
+    classProto.processFiles = function(data){
+        var that = this;
+        if(cm.isFile(data)){
+            that.myComponents['reader'].read(data);
+        }else if(cm.isArray(data)){
+            cm.forEach(data, function(file){
+                that.processFiles(file);
+            })
+        }else if(!cm.isEmpty(data)){
+            that.set(data, true);
+        }
         return that;
     };
 });
@@ -28735,11 +28750,12 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
     classProto.construct = function(){
         var that = this;
         // Bind context to methods
-        that.browseActionHandler = that.browseAction.bind(that);
         that.validateParamsEndHandler = that.validateParamsEnd.bind(that);
         that.itemAddProcessHandler = that.itemAddProcess.bind(that);
         that.itemAddEndHandler = that.itemAddEnd.bind(that);
         that.itemRemoveEndHandler = that.itemRemoveEnd.bind(that);
+        that.browseActionHandler = that.browseAction.bind(that);
+        that.processFilesHandler = that.processFiles.bind(that);
         // Add events
         that.addEvent('onValidateParamsEnd', that.validateParamsEndHandler);
         that.addEvent('onItemAddProcess', that.itemAddProcessHandler);
@@ -28888,7 +28904,7 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
             that.myComponents['reader'].read(data);
         }else if(cm.isArray(data)){
             cm.forEach(data, function(file){
-                that.addItem({'value' : file}, true);
+                that.processFiles(file);
             })
         }else if(!cm.isEmpty(data)){
             that.addItem({'value' : data}, true);

@@ -45,6 +45,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         that.initComponentsStartHandler = that.initComponentsStart.bind(that);
         that.validateParamsEndHandler = that.validateParamsEnd.bind(that);
         that.browseActionHandler = that.browseAction.bind(that);
+        that.processFilesHandler = that.processFiles.bind(that);
         // Add events
         that.addEvent('onInitComponentsStart', that.initComponentsStartHandler);
         that.addEvent('onValidateParamsEnd', that.validateParamsEndHandler);
@@ -150,8 +151,8 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
                         'target' : that.myNodes['content']
                     })
                 );
-                that.myComponents['dropzone'].addEvent('onDrop', function(my, file){
-                    that.myComponents['reader'].read(file);
+                that.myComponents['dropzone'].addEvent('onDrop', function(my, data){
+                    that.processFiles(data);
                 });
             });
         }
@@ -163,8 +164,8 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
                         'node' : that.myNodes['browseFileManager']
                     })
                 );
-                that.myComponents['filemanager'].addEvent('onSelect', function(my, file){
-                    that.myComponents['reader'].read(file);
+                that.myComponents['filemanager'].addEvent('onSelect', function(my, data){
+                    that.processFiles(data);
                 });
             });
         }
@@ -241,7 +242,21 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         var that = this,
             file = e.target.files[0];
         // Read File
-        that.myComponents['reader'].read(file);
+        that.processFiles(file);
+        return that;
+    };
+
+    classProto.processFiles = function(data){
+        var that = this;
+        if(cm.isFile(data)){
+            that.myComponents['reader'].read(data);
+        }else if(cm.isArray(data)){
+            cm.forEach(data, function(file){
+                that.processFiles(file);
+            })
+        }else if(!cm.isEmpty(data)){
+            that.set(data, true);
+        }
         return that;
     };
 });
