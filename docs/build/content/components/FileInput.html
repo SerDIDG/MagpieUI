@@ -29,9 +29,9 @@
             <dt>Multiple File Input:</dt>
             <dd>
                 <div data-element="Com.MultipleFileInput" data-node="ComMultipleFileInput:{}:container" data-config='{"name" : "multiple-file-input-test[]"}'>
-                    <input type="text" data-node="inputs:[]:input" value="Test">
+                    <input type="text" data-node="inputs:[]:input" value="http://google.com" data-config='{"file" : {"name" : "Foobar"}}'>
                     <input type="text" data-node="inputs:[]:input" value="Foo">
-                    <input type="text" data-node="inputs:[]:input" value="Bar">
+                    <input type="text" data-node="inputs:[]:input" data-config='{"file" : {"name" : "Bar-Foo", "value" : "http://quicksilk.com"}}'>
                 </div>
             </dd>
         </dl>

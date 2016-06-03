@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.17.0 (2016-05-31 20:55) ************ */
+/*! ************ MagpieUI v3.18.0 (2016-06-03 19:17) ************ */
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -12367,7 +12367,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.17.0',
+        '_version' : '3.18.0',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -13367,6 +13367,9 @@ cm.getDocumentHtml = function(){
 };
 
 cm.getNodeOffsetIndex = function(node){
+    if(!cm.isNode(node)){
+        return 0;
+    }
     var o = node,
         i = 0;
     while(o.parentNode){
@@ -15981,6 +15984,9 @@ Mod['Component'] = {
     '_construct' : function(){
         var that = this;
         that.build._isComponent = true;
+        if(typeof that.build['params']['consoleLogErrors'] == 'undefined'){
+            that.build['params']['consoleLogErrors'] = true;
+        }
     },
     'cloneComponent' : function(params){
         var that = this,
@@ -16098,6 +16104,7 @@ Mod['Events'] = {
             }
         }else{
             cm.errorLog({
+                'type' : 'attention',
                 'name' : that._name['full'],
                 'message' : [cm.strWrap(event, '"'), 'does not exists.'].join(' ')
             });
@@ -16127,6 +16134,7 @@ Mod['Events'] = {
             }
         }else{
             cm.errorLog({
+                'type' : 'attention',
                 'name' : that._name['full'],
                 'message' : [cm.strWrap(event, '"'), 'does not exists.'].join(' ')
             });
@@ -16141,11 +16149,16 @@ Mod['Events'] = {
             });
         }else{
             cm.errorLog({
+                'type' : 'attention',
                 'name' : that._name['full'],
                 'message' : [cm.strWrap(event, '"'), 'does not exists.'].join(' ')
             });
         }
         return that;
+    },
+    'hasEvent' : function(event){
+        var that = this;
+        return !!that.events[event];
     },
     'convertEvents' : function(o){
         var that = this;
@@ -16478,7 +16491,7 @@ Mod['Stack'] = {
                 'className' : that._name['full']
             };
             that._stack.push(that._stackItem);
-        }else{
+        }else if(cm.isNode(node)){
             that._stackItem['node'] = node;
         }
         return that;
@@ -17073,8 +17086,8 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
             that.isDestructed = true;
             that.triggerEvent('onDestructProcess');
             that.unsetEvents();
+            that.params['removeOnDestruct'] && cm.remove(that.getStackNode());
             that.removeFromStack();
-            that.params['removeOnDestruct'] && cm.remove(that.nodes['container']);
             that.triggerEvent('onDestructEnd');
         }
         return that;
@@ -17143,8 +17156,8 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         that.triggerEvent('onSetEventsProcess');
         // Add custom events
         if(that.params['customEvents']){
-            cm.customEvent.add(that.nodes['container'], 'redraw', that.redrawHandler);
-            cm.customEvent.add(that.nodes['container'], 'destruct', that.destructHandler);
+            cm.customEvent.add(that.getStackNode(), 'redraw', that.redrawHandler);
+            cm.customEvent.add(that.getStackNode(), 'destruct', that.destructHandler);
             that.triggerEvent('onSetCustomEvents');
         }
         that.triggerEvent('onSetEventsEnd');
@@ -17159,8 +17172,8 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         that.triggerEvent('onUnsetEventsProcess');
         // Remove custom events
         if(that.params['customEvents']){
-            cm.customEvent.remove(that.nodes['container'], 'redraw', that.redrawHandler);
-            cm.customEvent.remove(that.nodes['container'], 'destruct', that.destructHandler);
+            cm.customEvent.remove(that.getStackNode(), 'redraw', that.redrawHandler);
+            cm.customEvent.remove(that.getStackNode(), 'destruct', that.destructHandler);
             that.triggerEvent('onUnsetCustomEvents');
         }
         that.triggerEvent('onUnsetEventsEnd');
@@ -17171,10 +17184,10 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         var that = this;
         if(that.params['constructCollector']){
             if(that.params['collector']){
-                that.params['collector'].construct(that.nodes['container']);
+                that.params['collector'].construct(that.getStackNode());
             }else{
                 cm.find('Com.Collector', null, null, function(classObject){
-                    classObject.construct(that.nodes['container']);
+                    classObject.construct(that.getStackNode());
                 });
             }
         }
@@ -17185,13 +17198,271 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         var that = this;
         if(that.params['constructCollector']){
             if(that.params['collector']){
-                that.params['collector'].destruct(that.nodes['container']);
+                that.params['collector'].destruct(that.getStackNode());
             }else{
                 cm.find('Com.Collector', null, null, function(classObject){
-                    classObject.destruct(that.nodes['container']);
+                    classObject.destruct(that.getStackNode());
                 });
             }
         }
+        return that;
+    };
+});
+cm.define('Com.AbstractContainer', {
+    'extend' : 'Com.AbstractController',
+    'events' : [
+        'onOpenStart',
+        'onOpen',
+        'onCloseStart',
+        'onClose',
+        'onRenderControllerStart',
+        'onRenderControllerProcess',
+        'onRenderControllerEnd',
+        'onRenderPlaceholderStart',
+        'onRenderPlaceholderProcess',
+        'onRenderPlaceholderEnd',
+        'onRenderPlaceholderViewStart',
+        'onRenderPlaceholderViewProcess',
+        'onRenderPlaceholderViewEnd'
+    ],
+    'params' : {
+        'embedStructure' : 'none',
+        'constructor' : null,
+        'params' : {},
+        'placeholder' : false,
+        'placeholderConstructor' : null,
+        'placeholderParams' : {},
+        'langs' : {
+            'title' : 'Container',
+            'close' : 'Close',
+            'save' : 'Save'
+        },
+        'Com.Dialog' : {
+            'width' : 900,
+            'removeOnClose' : false,
+            'destructOnRemove' : false,
+            'autoOpen' : false
+        }
+    }
+},
+function(params){
+    var that = this;
+    that.nodes = {};
+    that.components = {};
+    // Call parent class construct
+    Com.AbstractController.apply(that, arguments);
+});
+
+cm.getConstructor('Com.AbstractContainer', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.construct = function(){
+        var that = this;
+        // Bind context to methods
+        that.destructProcessHandler = that.destructProcess.bind(that);
+        that.openHandler = that.open.bind(that);
+        that.closeHandler = that.close.bind(that);
+        // Add events
+        that.addEvent('onDestructProcess', that.destructProcessHandler);
+        // Call parent method
+        _inherit.prototype.construct.apply(that, arguments);
+        return that;
+    };
+
+    classProto.open = function(e){
+        e && cm.preventDefault(e);
+        var that = this;
+        if(that.params['placeholder']){
+            that.openPlaceholder();
+        }else{
+            that.openController();
+        }
+        return that;
+    };
+
+    classProto.close = function(e){
+        e && cm.preventDefault(e);
+        var that = this;
+        if(that.params['placeholder']){
+            that.closePlaceholder();
+        }else{
+            that.closeController();
+        }
+        return that;
+    };
+
+    classProto.getController = function(){
+        var that = this;
+        return that.component['controller'];
+    };
+
+    classProto.getPlaceholder = function(){
+        var that = this;
+        return that.component['placeholder'];
+    };
+
+    classProto.destructProcess = function(){
+        var that = this;
+        that.components['placeholder'] && that.components['placeholder'].destruct && that.components['placeholder'].destruct();
+        that.components['controller'] && that.components['controller'].destruct && that.components['controller'].destruct();
+        return that;
+    };
+
+    classProto.validateParams = function(){
+        var that = this;
+        that.triggerEvent('onValidateParamsStart');
+        that.params['params']['node'] = that.params['node'];
+        that.params['params']['container'] = that.params['container'];
+        that.triggerEvent('onValidateParamsEnd');
+        return that;
+    };
+
+
+    classProto.render = function(){
+        var that = this;
+        // Add Event
+        if(that.nodes['button']){
+            cm.addEvent(that.nodes['button'], 'click', that.openHandler);
+        }else{
+            cm.addEvent(that.params['node'], 'click', that.openHandler);
+        }
+        return that;
+    };
+
+    /* *** CONTROLLER *** */
+
+    classProto.renderController = function(){
+        var that = this;
+        if(!that.components['controller']){
+            cm.getConstructor(that.params['constructor'], function(classObject){
+                that.triggerEvent('onRenderControllerStart', arguments);
+                // Construct
+                that.components['controller'] = that.constructController(classObject);
+                // Events
+                that.triggerEvent('onRenderControllerProcess', that.components['controller']);
+                that.components['controller']
+                    .addEvent('onOpenStart', function(context){
+                        that.triggerEvent('onOpenStart', context);
+                    })
+                    .addEvent('onOpen', function(context){
+                        that.triggerEvent('onOpen', context);
+                    })
+                    .addEvent('onCloseStart', function(context){
+                        that.triggerEvent('onCloseStart', context);
+                    })
+                    .addEvent('onClose', function(context){
+                        that.triggerEvent('onClose', context);
+                    });
+                that.triggerEvent('onRenderControllerEnd', that.components['controller']);
+            });
+        }
+        return that;
+    };
+
+    classProto.constructController = function(classObject){
+        var that = this;
+        return new classObject(
+            cm.merge(that.params['params'], {
+                'container' : that.params['placeholder'] ? that.nodes['placeholder']['content'] : that.params['container'],
+                'content' : that.params['params']['content'] || that.nodes['holder'] || that.params['content']
+            })
+        );
+    };
+
+    classProto.openController = function(){
+        var that = this;
+        if(!that.components['controller']){
+            that.renderController();
+            that.components['controller'] && that.openController();
+        }else{
+            that.components['controller'].open && that.components['controller'].open();
+        }
+        return that;
+    };
+
+    classProto.closeController = function(){
+        var that = this;
+        that.components['controller'] && that.components['controller'].close && that.components['controller'].close();
+        return that;
+    };
+
+    /* *** PLACEHOLDER *** */
+
+    classProto.renderPlaceholderView = function(){
+        var that = this;
+        that.triggerEvent('onRenderPlaceholderViewStart');
+        // Structure
+        that.nodes['placeholder'] = {};
+        that.nodes['placeholder']['title'] = cm.textNode(that.lang('title'));
+        that.nodes['placeholder']['content'] = cm.node('div', {'class' : 'com__container__content'});
+        that.renderPlaceholderViewButtons();
+        // Events
+        that.triggerEvent('onRenderPlaceholderViewProcess', that.nodes['placeholder']);
+        that.triggerEvent('onRenderPlaceholderViewEnd', that.nodes['placeholder']);
+        return that;
+    };
+
+    classProto.renderPlaceholderViewButtons = function(){
+        var that = this;
+        // Structure
+        that.nodes['placeholder']['buttons'] = cm.node('div', {'class' : 'pt__buttons pull-right'},
+            that.nodes['placeholder']['buttonsInner'] = cm.node('div', {'class' : 'inner'},
+                that.nodes['placeholder']['close'] = cm.node('button', {'class' : 'button button-primary'}, that.lang('close'))
+            )
+        );
+        // Events
+        cm.addEvent(that.nodes['placeholder']['close'], 'click', that.closeHandler);
+        return that;
+    };
+
+    classProto.renderPlaceholder = function(){
+        var that = this;
+        if(!that.components['placeholder']){
+            cm.getConstructor(that.params['placeholderConstructor'], function(classObject){
+                that.triggerEvent('onRenderPlaceholderStart', arguments);
+                // Construct
+                that.renderPlaceholderView();
+                that.components['placeholder'] = new classObject(
+                    cm.merge(that.params['placeholderParams'], {
+                        'content' : that.nodes['placeholder']
+                    })
+                );
+                // Events
+                that.triggerEvent('onRenderPlaceholderProcess', that.components['placeholder']);
+                that.components['placeholder'].addEvent('onOpenStart', function(){
+                    that.openController();
+                });
+                that.components['placeholder'].addEvent('onOpen', function(context){
+                    that.constructCollector();
+                    that.triggerEvent('onOpen', context);
+                });
+                that.components['placeholder'].addEvent('onCloseStart', function(){
+                    that.closeController();
+                });
+                that.components['placeholder'].addEvent('onClose', function(context){
+                    that.destructCollector();
+                    that.triggerEvent('onClose', context);
+                });
+                that.triggerEvent('onRenderPlaceholderEnd', that.components['placeholder']);
+            });
+        }
+        return that;
+    };
+
+    classProto.openPlaceholder = function(){
+        var that = this;
+        if(!that.components['placeholder']){
+            that.renderPlaceholder();
+            that.components['placeholder'] && that.openPlaceholder();
+        }else{
+            that.components['placeholder'].open && that.components['placeholder'].open();
+        }
+        return that;
+    };
+
+    classProto.closePlaceholder = function(){
+        var that = this;
+        that.components['placeholder'] && that.components['placeholder'].close && that.components['placeholder'].close();
         return that;
     };
 });
@@ -17389,41 +17660,38 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         return that;
     };
 });
-cm.define('Com.MultipleInput', {
+cm.define('Com.AbstractFileManager', {
     'extend' : 'Com.AbstractController',
     'events' : [
-        'onSet',
         'onSelect',
-        'onChange',
-        'onClear',
-        'onDisable',
-        'onEnable',
+        'onRenderHolderStart',
+        'onRenderHolderProcess',
+        'onRenderHolderEnd',
         'onRenderContentStart',
         'onRenderContentProcess',
-        'onRenderContentEnd',
-        'onRenderInputViewStart',
-        'onRenderInputViewProcess',
-        'onRenderInputViewEnd',
-        'onRenderItemViewStart',
-        'onRenderItemViewProcess',
-        'onRenderItemViewEnd',
-        'onSetAttributes',
-        'onItemAddStart',
-        'onItemAddProcess',
-        'onItemAddEnd',
-        'onItemRemoveStart',
-        'onItemRemoveProcess',
-        'onItemRemoveEnd'
+        'onRenderContentEnd'
     ],
     'params' : {
         'embedStructure' : 'replace',
-        'className' : 'com__multiple-input',
-        'inputConstructor' : 'Com.AbstractInput',
-        'inputParams' : {
-            'removeOnDestruct' : true
+        'showStats' : true,
+        'max' : 0,                                                        // 0 - infinity
+        'stats' : {
+            'mfu' : 0,                                                    // Max files per upload
+            'umf' : 0,                                                    // Max file size
+            'quote' : 0,
+            'usage' : 0
         },
-        'value' : [],
-        'defaultValue' : []
+        'langs' : {
+            'stats' : 'Statistics',
+            'stats_mfu' : 'You can upload up to %mfu% files at a time.',
+            'stats_umf' : 'Max file size: %umf%.',
+            'stats_quote' : 'Total storage: %quote%.',
+            'stats_usage' : 'Storage used: %usage%.',
+            'quote_unlimited' : 'Unlimited'
+        },
+        'Com.ToggleBox' : {
+            'renderStructure' : true
+        }
     }
 },
 function(params){
@@ -17431,205 +17699,230 @@ function(params){
     that.nodes = {};
     that.components = {};
     that.items = [];
+    that.isMultiple = false;
     // Call parent class construct
     Com.AbstractController.apply(that, arguments);
 });
 
-cm.getConstructor('Com.MultipleInput', function(classConstructor, className, classProto){
+cm.getConstructor('Com.AbstractFileManager', function(classConstructor, className, classProto){
     var _inherit = classProto._inherit;
 
-    classProto.construct = function(params){
+    classProto.validateParams = function(){
         var that = this;
-        // Bind context to methods
-        that.setHandler = that.set.bind(that);
-        that.getHandler = that.get.bind(that);
-        that.clearHandler = that.clear.bind(that);
-        that.enableHandler = that.enable.bind(that);
-        that.disableHandler = that.disable.bind(that);
-        that.addItemHandler = that.addItem.bind(that);
-        that.removeItemHandler = that.removeItem.bind(that);
-        that.constructProcessHandler = that.constructProcess.bind(that);
-        // Add events
-        that.addEvent('onConstructProcess', that.constructProcessHandler);
-        // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
-        return that;
-    };
-
-    classProto.set = function(value, triggerEvents){
-        var that = this;
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        cm.forEach(that.items, function(item){
-            that.removeItem(item, false);
-        });
-        cm.forEach(value, function(item){
-            that.addItem({'value' : item}, false);
-        });
-        // Trigger set events
-        triggerEvents && that.triggerEvent('onSelect');
-        triggerEvents && that.triggerEvent('onSet');
-        triggerEvents && that.triggerEvent('onChange');
+        that.isMultiple = !that.params['max'] || that.params['max'] > 1;
         return that;
     };
 
     classProto.get = function(){
-        var that = this,
-            value = [];
-        cm.forEach(that.items, function(item){
-            value.push(item.get());
-        });
-        return value;
+        var that = this;
+        return that.items;
     };
 
-    classProto.clear = function(triggerEvents){
+    classProto.select = function(){
         var that = this;
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        triggerEvents && that.triggerEvent('onClear');
-        that.set(that.params['defaultValue'], triggerEvents);
-        return that;
-    };
-
-    classProto.enable = function(){
-        var that = this;
-        if(!that.disabled){
-            that.disabled = false;
-            cm.removeClass(that.nodes['container'], 'disabled');
-            cm.removeClass(that.nodes['content'], 'disabled');
-            that.triggerEvent('onEnable');
-        }
-        return that;
-    };
-
-    classProto.disable = function(){
-        var that = this;
-        if(that.disabled){
-            that.disabled = true;
-            cm.addClass(that.nodes['container'], 'disabled');
-            cm.addClass(that.nodes['content'], 'disabled');
-            that.triggerEvent('onDisable');
-        }
-        return that;
-    };
-
-    classProto.addItem = function(item, triggerEvents){
-        var that = this;
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        if(!that.params['max'] || that.items.length < that.params['max']){
-            that.triggerEvent('onItemAddStart', item);
-            // Merge config
-            item = cm.merge({
-                'input' : null,
-                'container' : null,
-                'name' : that.params['name'],
-                'value' : '',
-                'constructor' : that.params['inputConstructor'],
-                'nodes' : {}
-            }, item);
-            // Render views
-            if(!item['input']){
-                item['input'] = that.renderInputView(item);
-            }
-            item['container'] = that.renderItemView(item);
-            cm.appendChild(item['container'], that.nodes['items']);
-            // Process
-            cm.getConstructor(item['constructor'], function(classConstructor){
-                item['controller'] = new classConstructor(
-                    cm.merge(that.params['inputParams'], {
-                        'node' : item['input'],
-                        'name' : item['name'],
-                        'value' : item['value']
-                    })
-                );
-                that.triggerEvent('onItemAddProcess', item);
-                // Trigger set events
-                triggerEvents && that.triggerEvent('onSelect');
-                triggerEvents && that.triggerEvent('onSet');
-                triggerEvents && that.triggerEvent('onChange');
-            });
-            // Push
-            that.items.push(item);
-            that.triggerEvent('onItemAddEnd', item);
-            return item;
-        }
-        return null;
-    };
-
-    classProto.removeItem = function(item, triggerEvents){
-        var that = this;
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        that.triggerEvent('onItemRemoveStart', item);
-        that.items = cm.arrayRemove(that.items, item);
-        that.triggerEvent('onItemRemoveProcess', item);
-        item['controller'].destruct();
-        cm.remove(item['container']);
-        that.triggerEvent('onItemRemoveEnd', item);
-        // Trigger set events
-        triggerEvents && that.triggerEvent('onSelect');
-        triggerEvents && that.triggerEvent('onSet');
-        triggerEvents && that.triggerEvent('onChange');
-        return that;
-    };
-
-    classProto.constructProcess = function(){
-        var that = this;
-        // Render inputs provided in DOM
-        cm.forEach(that.nodes['inputs'], function(item){
-            that.addItem({'input' : item['input']}, false);
-        });
-        // Render inputs provided in parameters
-        if(cm.isArray(that.params['value'])){
-            cm.forEach(that.params['value'], function(item){
-                that.addItem({'value' : item}, false);
-            });
-        }
-        return that;
+        that.triggerEvent('onSelect', that.items);
+        return that.items;
     };
 
     classProto.renderView = function(){
         var that = this;
         that.triggerEvent('onRenderViewStart');
-        that.nodes['container'] = cm.node('div', {'class' : 'com__multiple-input'},
+        // Structure
+        that.nodes['container'] = cm.node('div', {'class' : 'com__file-manager'},
             that.nodes['inner'] = cm.node('div', {'class' : 'inner'},
-                that.nodes['holder'] = cm.node('div', {'class' : 'com__multiple-input__holder'},
-                    that.nodes['items'] = cm.node('div', {'class' : 'com__multiple-input__items'}),
-                    that.nodes['content'] = that.renderContent()
-                )
+                that.nodes['holder'] = that.renderHolder(),
+                that.nodes['content'] = that.renderContent()
             )
         );
+        // Events
         that.triggerEvent('onRenderViewProcess');
         that.triggerEvent('onRenderViewEnd');
         return that;
     };
 
-    classProto.renderContent = function(){
+    classProto.renderHolder = function(){
         var that = this;
-        that.triggerEvent('onRenderContentStart');
-        var node = cm.node('div', {'class' : 'com__multiple-input__content'});
-        that.triggerEvent('onRenderContentProcess');
-        that.triggerEvent('onRenderContentEnd');
+        that.triggerEvent('onRenderHolderStart');
+        var node = cm.node('div', {'class' : 'com__file-manager__holder'});
+        that.triggerEvent('onRenderHolderProcess');
+        that.triggerEvent('onRenderHolderEnd');
         return node;
     };
 
-    classProto.renderInputView = function(item){
-        var that = this;
-        that.triggerEvent('onRenderInputViewStart');
-        item['input'] = cm.node('input', {'type' : 'hidden'});
-        that.triggerEvent('onRenderInputViewProcess');
-        that.triggerEvent('onRenderInputViewEnd');
-        return item['input'];
+    classProto.renderContent = function(){
+        var that = this,
+            nodes = {};
+        that.triggerEvent('onRenderContentStart');
+        // Structure
+        nodes['container'] = cm.node('div', {'class' : 'com__file-manager__content'});
+        // Render Stats
+        if(that.params['showStats']){
+            nodes['stats'] = that.renderStats();
+            cm.appendChild(nodes['stats'], nodes['container']);
+        }
+        // Events
+        that.triggerEvent('onRenderContentProcess');
+        that.nodes['content'] = nodes;
+        that.triggerEvent('onRenderContentEnd');
+        return nodes['container'];
     };
 
-    classProto.renderItemView = function(item){
-        var that = this;
-        that.triggerEvent('onRenderItemViewStart');
-        item['nodes']['container'] = cm.node('div', {'class' : 'com__multiple-input__item'},
-            item['nodes']['inner'] = cm.node('div', {'class' : 'inner'},
-                item['nodes']['input'] = item['input']
+    classProto.renderStats = function(){
+        var that = this,
+            nodes = {},
+            vars = {
+                '%mfu%' : that.params['stats']['mfu'],
+                '%umf%' : that.params['stats']['umf'],
+                '%quote%' : that.params['stats']['quote'],
+                '%usage%' : that.params['stats']['usage']
+            };
+        vars['%quote%'] = parseFloat(vars['%quote%']) === 0 ? that.lang('quote_unlimited') : vars['%quote%'] + ' Mb';
+        vars['%usage%'] = vars['%usage%'] + ' Mb';
+        // Structure
+        nodes['container'] = cm.node('div', {'class' : 'com__file-manager__stats'},
+            nodes['content'] = cm.node('div', {'class' : 'com__file-manager__stats-list'},
+                cm.node('ul',
+                    cm.node('li', that.lang('stats_mfu', vars)),
+                    cm.node('li', that.lang('stats_umf', vars)),
+                    cm.node('li', that.lang('stats_quote', vars)),
+                    cm.node('li', that.lang('stats_usage', vars))
+                )
             )
         );
-        that.triggerEvent('onRenderItemViewProcess');
-        that.triggerEvent('onRenderItemViewEnd');
-        return item['nodes']['container'];
+        // Init Stats ToggleBox
+        cm.getConstructor('Com.ToggleBox', function(classObject, className){
+            that.components['togglebox'] = new classObject(
+                cm.merge(that.params[className], {
+                    'node' : nodes['content'],
+                    'title' : that.lang('stats')
+                })
+            );
+        });
+        // Append
+        that.nodes['stats'] = nodes;
+        return nodes['container'];
+    };
+
+    /* *** PROCESS FILES *** */
+
+    classProto.processFiles = function(data){
+        var that = this,
+            files = [],
+            max;
+        if(cm.isArray(data)){
+            files = data.map(function(file){
+                return that.convertFile(file);
+            });
+        }else if(cm.isObject(data)){
+            files.push(that.convertFile(data));
+        }
+        if(!that.params['max']){
+            that.items = files;
+        }else if(files.length){
+            max = Math.min(0, that.params['max'], files.length);
+            that.items = files.slice(0, max);
+        }else{
+            that.items = [];
+        }
+        that.triggerEvent('onSelect', that.items);
+        return that;
+    };
+
+    classProto.convertFile = function(data){
+        return data;
+    };
+});
+cm.define('Com.AbstractFileManagerContainer', {
+    'extend' : 'Com.AbstractContainer',
+    'events' : [
+        'onSelect'
+    ],
+    'params' : {
+        'constructor' : 'Com.AbstractFileManager',
+        'params' : {
+            'embedStructure' : 'append'
+        },
+        'placeholder' : true,
+        'placeholderConstructor' : 'Com.DialogContainer',
+        'placeholderParams' : {
+            'params' : {
+                'width' : 900
+            }
+        },
+        'langs' : {
+            'title_single' : 'Please select file',
+            'title_multiple' : 'Please select files',
+            'close' : 'Cancel',
+            'save' : 'Select'
+        }
+    }
+},
+function(params){
+    var that = this;
+    // Call parent class construct
+    Com.AbstractContainer.apply(that, arguments);
+});
+
+cm.getConstructor('Com.AbstractFileManagerContainer', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.construct = function(){
+        var that = this;
+        // Bind context to methods
+        that.validateParamsEndHandler = that.validateParamsEnd.bind(that);
+        that.renderControllerProcessHandler = that.renderControllerProcess.bind(that);
+        that.getHandler = that.get.bind(that);
+        that.selectHandler = that.select.bind(that);
+        // Add events
+        that.addEvent('onValidateParamsEnd', that.validateParamsEndHandler);
+        that.addEvent('onRenderControllerProcess', that.renderControllerProcessHandler);
+        // Call parent method
+        _inherit.prototype.construct.apply(that, arguments);
+        return that;
+    };
+
+    classProto.get = function(e){
+        e && cm.preventDefault(e);
+        var that = this;
+        return that.components['controller'] && that.components['controller'].get && that.components['controller'].get();
+    };
+
+    classProto.select = function(e){
+        e && cm.preventDefault(e);
+        var that = this;
+        return that.components['controller'] && that.components['controller'].select && that.components['controller'].select();
+    };
+
+    classProto.validateParamsEnd = function(){
+        var that = this;
+        // Validate Language Strings
+        that.setLangs({
+            'title' : !that.params['params']['max'] || that.params['params']['max'] > 1 ? that.lang('title_multiple') : that.lang('title_single')
+        });
+    };
+
+    classProto.renderControllerProcess = function(){
+        var that = this;
+        that.components['controller'].addEvent('onSelect', function(my, data){
+            that.triggerEvent('onSelect', data);
+            that.close();
+        });
+        return that;
+    };
+
+    classProto.renderPlaceholderViewButtons = function(){
+        var that = this;
+        // Structure
+        that.nodes['placeholder']['buttons'] = cm.node('div', {'class' : 'pt__buttons pull-right'},
+            that.nodes['placeholder']['buttonsInner'] = cm.node('div', {'class' : 'inner'},
+                that.nodes['placeholder']['close'] = cm.node('button', {'class' : 'button button-transparent'}, that.lang('close')),
+                that.nodes['placeholder']['save'] = cm.node('button', {'class' : 'button button-primary'}, that.lang('save'))
+            )
+        );
+        // Events
+        cm.addEvent(that.nodes['placeholder']['close'], 'click', that.closeHandler);
+        cm.addEvent(that.nodes['placeholder']['save'], 'click', that.selectHandler);
+        return that;
     };
 });
 cm.define('Com.AbstractRange', {
@@ -18863,6 +19156,247 @@ Com.FormFields.add('buttons', {
         }
     }
 });
+cm.define('Com.MultipleInput', {
+    'extend' : 'Com.AbstractController',
+    'events' : [
+        'onSet',
+        'onSelect',
+        'onChange',
+        'onClear',
+        'onDisable',
+        'onEnable',
+        'onRenderContentStart',
+        'onRenderContentProcess',
+        'onRenderContentEnd',
+        'onRenderInputViewStart',
+        'onRenderInputViewProcess',
+        'onRenderInputViewEnd',
+        'onRenderItemViewStart',
+        'onRenderItemViewProcess',
+        'onRenderItemViewEnd',
+        'onSetAttributes',
+        'onItemAddStart',
+        'onItemAddProcess',
+        'onItemAddEnd',
+        'onItemRemoveStart',
+        'onItemRemoveProcess',
+        'onItemRemoveEnd'
+    ],
+    'params' : {
+        'embedStructure' : 'replace',
+        'className' : 'com__multiple-input',
+        'inputConstructor' : 'Com.AbstractInput',
+        'inputParams' : {},
+        'value' : [],
+        'defaultValue' : []
+    }
+},
+function(params){
+    var that = this;
+    that.nodes = {};
+    that.components = {};
+    that.items = [];
+    // Call parent class construct
+    Com.AbstractController.apply(that, arguments);
+});
+
+cm.getConstructor('Com.MultipleInput', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.construct = function(params){
+        var that = this;
+        // Bind context to methods
+        that.setHandler = that.set.bind(that);
+        that.getHandler = that.get.bind(that);
+        that.clearHandler = that.clear.bind(that);
+        that.enableHandler = that.enable.bind(that);
+        that.disableHandler = that.disable.bind(that);
+        that.addItemHandler = that.addItem.bind(that);
+        that.removeItemHandler = that.removeItem.bind(that);
+        that.constructProcessHandler = that.constructProcess.bind(that);
+        // Add events
+        that.addEvent('onConstructProcess', that.constructProcessHandler);
+        // Call parent method
+        _inherit.prototype.construct.apply(that, arguments);
+        return that;
+    };
+
+    classProto.set = function(value, triggerEvents){
+        var that = this;
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        cm.forEach(that.items, function(item){
+            that.removeItem(item, false);
+        });
+        cm.forEach(value, function(item){
+            that.addItem({'value' : item}, false);
+        });
+        // Trigger set events
+        triggerEvents && that.triggerEvent('onSelect');
+        triggerEvents && that.triggerEvent('onSet');
+        triggerEvents && that.triggerEvent('onChange');
+        return that;
+    };
+
+    classProto.get = function(){
+        var that = this,
+            value = [];
+        cm.forEach(that.items, function(item){
+            value.push(item.get());
+        });
+        return value;
+    };
+
+    classProto.clear = function(triggerEvents){
+        var that = this;
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        triggerEvents && that.triggerEvent('onClear');
+        that.set(that.params['defaultValue'], triggerEvents);
+        return that;
+    };
+
+    classProto.enable = function(){
+        var that = this;
+        if(!that.disabled){
+            that.disabled = false;
+            cm.removeClass(that.nodes['container'], 'disabled');
+            cm.removeClass(that.nodes['content'], 'disabled');
+            that.triggerEvent('onEnable');
+        }
+        return that;
+    };
+
+    classProto.disable = function(){
+        var that = this;
+        if(that.disabled){
+            that.disabled = true;
+            cm.addClass(that.nodes['container'], 'disabled');
+            cm.addClass(that.nodes['content'], 'disabled');
+            that.triggerEvent('onDisable');
+        }
+        return that;
+    };
+
+    classProto.addItem = function(item, triggerEvents){
+        var that = this;
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        if(!that.params['max'] || that.items.length < that.params['max']){
+            that.triggerEvent('onItemAddStart', item);
+            // Merge config
+            item = cm.merge({
+                'input' : null,
+                'container' : null,
+                'name' : that.params['name'],
+                'value' : '',
+                'constructor' : that.params['inputConstructor'],
+                'nodes' : {}
+            }, item);
+            // Render views
+            if(!item['input']){
+                item['input'] = that.renderInputView(item);
+            }
+            item['container'] = that.renderItemView(item);
+            cm.appendChild(item['container'], that.nodes['items']);
+            // Process
+            cm.getConstructor(item['constructor'], function(classConstructor){
+                item['controller'] = new classConstructor(
+                    cm.merge(that.params['inputParams'], {
+                        'node' : item['input'],
+                        'name' : item['name'],
+                        'value' : item['value']
+                    })
+                );
+                that.triggerEvent('onItemAddProcess', item);
+                // Trigger set events
+                triggerEvents && that.triggerEvent('onSelect');
+                triggerEvents && that.triggerEvent('onSet');
+                triggerEvents && that.triggerEvent('onChange');
+            });
+            // Push
+            that.items.push(item);
+            that.triggerEvent('onItemAddEnd', item);
+            return item;
+        }
+        return null;
+    };
+
+    classProto.removeItem = function(item, triggerEvents){
+        var that = this;
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        that.triggerEvent('onItemRemoveStart', item);
+        that.items = cm.arrayRemove(that.items, item);
+        that.triggerEvent('onItemRemoveProcess', item);
+        item['controller'].destruct();
+        cm.remove(item['container']);
+        that.triggerEvent('onItemRemoveEnd', item);
+        // Trigger set events
+        triggerEvents && that.triggerEvent('onSelect');
+        triggerEvents && that.triggerEvent('onSet');
+        triggerEvents && that.triggerEvent('onChange');
+        return that;
+    };
+
+    classProto.constructProcess = function(){
+        var that = this;
+        // Render inputs provided in DOM
+        cm.forEach(that.nodes['inputs'], function(item){
+            that.addItem({'input' : item['input']}, false);
+        });
+        // Render inputs provided in parameters
+        if(cm.isArray(that.params['value'])){
+            cm.forEach(that.params['value'], function(item){
+                that.addItem({'value' : item}, false);
+            });
+        }
+        return that;
+    };
+
+    classProto.renderView = function(){
+        var that = this;
+        that.triggerEvent('onRenderViewStart');
+        that.nodes['container'] = cm.node('div', {'class' : 'com__multiple-input'},
+            that.nodes['inner'] = cm.node('div', {'class' : 'inner'},
+                that.nodes['holder'] = cm.node('div', {'class' : 'com__multiple-input__holder'},
+                    that.nodes['items'] = cm.node('div', {'class' : 'com__multiple-input__items'}),
+                    that.nodes['content'] = that.renderContent()
+                )
+            )
+        );
+        that.triggerEvent('onRenderViewProcess');
+        that.triggerEvent('onRenderViewEnd');
+        return that;
+    };
+
+    classProto.renderContent = function(){
+        var that = this;
+        that.triggerEvent('onRenderContentStart');
+        var node = cm.node('div', {'class' : 'com__multiple-input__content'});
+        that.triggerEvent('onRenderContentProcess');
+        that.triggerEvent('onRenderContentEnd');
+        return node;
+    };
+
+    classProto.renderInputView = function(item){
+        var that = this;
+        that.triggerEvent('onRenderInputViewStart');
+        item['input'] = cm.node('input', {'type' : 'hidden'});
+        that.triggerEvent('onRenderInputViewProcess');
+        that.triggerEvent('onRenderInputViewEnd');
+        return item['input'];
+    };
+
+    classProto.renderItemView = function(item){
+        var that = this;
+        that.triggerEvent('onRenderItemViewStart');
+        item['nodes']['container'] = cm.node('div', {'class' : 'com__multiple-input__item'},
+            item['nodes']['inner'] = cm.node('div', {'class' : 'inner'},
+                item['nodes']['input'] = item['input']
+            )
+        );
+        that.triggerEvent('onRenderItemViewProcess');
+        that.triggerEvent('onRenderItemViewEnd');
+        return item['nodes']['container'];
+    };
+});
 cm.define('Com.BoxTools', {
     'extend' : 'Com.AbstractInput',
     'params' : {
@@ -19061,228 +19595,6 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
             cm.removeClass(that.myNodes['link'], 'active');
             that.myNodes['link'].title = that.lang('link');
         }
-        return that;
-    };
-});
-cm.define('Com.AbstractFileManager', {
-    'extend' : 'Com.AbstractController',
-    'events' : [
-        'onOpen',
-        'onSelect',
-        'onRenderHolderStart',
-        'onRenderHolderProcess',
-        'onRenderHolderEnd',
-        'onRenderContentStart',
-        'onRenderContentProcess',
-        'onRenderContentEnd'
-    ],
-    'params' : {
-        'embedStructure' : 'none',
-        'constructCollector' : true,
-        'destructCollector' : true,
-        'showStats' : true,
-        'stats' : {
-            'mfu' : 0,                      // Max files per upload
-            'umf' : 0,                      // Max file size
-            'quote' : 0,
-            'usage' : 0
-        },
-        'langs' : {
-            'cancel' : 'Cancel',
-            'select' : 'Select',
-            'title' : 'Please select files',
-            'stats' : 'Statistics',
-            'stats_mfu' : 'You can upload up to %mfu% files at a time.',
-            'stats_umf' : 'Max file size is %umf%.',
-            'stats_quote' : 'Total storage - %quote%.',
-            'stats_usage' : 'Storage used - %usage%.'
-        },
-        'Com.Dialog' : {
-            'width' : 900,
-            'removeOnClose' : false,
-            'destructOnRemove' : false
-        },
-        'Com.ToggleBox' : {
-            'renderStructure' : true
-        }
-    }
-},
-function(params){
-    var that = this;
-    that.nodes = {};
-    that.components = {};
-    // Call parent class construct
-    Com.AbstractController.apply(that, arguments);
-});
-
-cm.getConstructor('Com.AbstractFileManager', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
-    classProto.construct = function(){
-        var that = this;
-        // Bind context to methods
-        that.destructProcessHandler = that.destructProcess.bind(that);
-        that.openHandler = that.open.bind(that);
-        that.openEventHandler = that.openEvent.bind(that);
-        that.closeHandler = that.close.bind(that);
-        that.closeEventHandler = that.closeEvent.bind(that);
-        // Add events
-        that.addEvent('onDestructProcess', that.destructProcessHandler);
-        // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
-        return that;
-    };
-
-    classProto.open = function(e){
-        var that = this;
-        that.openDialog();
-        return that;
-    };
-
-    classProto.close = function(e){
-        var that = this;
-        that.closeDialog();
-        return that;
-    };
-
-    classProto.validateParams = function(){
-        var that = this;
-        that.triggerEvent('onValidateParamsStart');
-        that.triggerEvent('onValidateParamsEnd');
-        return that;
-    };
-
-    classProto.destructProcess = function(){
-        var that = this;
-        that.components['dialog'] && that.components['dialog'].destruct();
-        return that;
-    };
-
-    classProto.openEvent = function(e){
-        var that = this;
-        cm.preventDefault(e);
-        that.open();
-        return that;
-    };
-
-    classProto.closeEvent = function(e){
-        var that = this;
-        cm.preventDefault(e);
-        that.close();
-        return that;
-    };
-
-    classProto.render = function(){
-        var that = this;
-        // Call parent method - render
-        _inherit.prototype.render.apply(that, arguments);
-        // Init Stats ToggleBox
-        cm.getConstructor('Com.ToggleBox', function(classObject, className){
-            that.components['togglebox'] = new classObject(
-                cm.merge(that.params[className], {
-                    'node' : that.nodes['statsContent'],
-                    'title' : that.lang('stats')
-                })
-            );
-        });
-        // Add events
-        cm.addEvent(that.params['node'], 'click', that.openEventHandler);
-        return that;
-    };
-
-    classProto.renderView = function(){
-        var that = this;
-        that.triggerEvent('onRenderViewStart');
-        // Structure
-        that.nodes['container'] = cm.node('div', {'class' : 'com__file-manager'},
-            that.nodes['inner'] = cm.node('div', {'class' : 'inner'},
-                that.nodes['holder'] = that.renderHolder(),
-                that.nodes['content'] = that.renderContent()
-            )
-        );
-        // Buttons
-        that.nodes['buttons'] = cm.node('div', {'class' : 'pt__buttons pull-right'},
-            cm.node('div', {'class' : 'inner'},
-                that.nodes['cancel'] = cm.node('button', {'class' : 'button button-transparent'}, that.lang('cancel')),
-                that.nodes['select'] = cm.node('button', {'class' : 'button button-primary'}, that.lang('select'))
-            )
-        );
-        // Render Stats
-        if(that.params['showStats']){
-            that.nodes['stats'] = that.renderStats();
-            cm.appendChild(that.nodes['stats'], that.nodes['content']);
-        }
-        // Events
-        that.triggerEvent('onRenderViewProcess');
-        cm.addEvent(that.nodes['cancel'], 'click', that.closeEventHandler);
-        that.triggerEvent('onRenderViewEnd');
-        return that;
-    };
-
-    classProto.renderHolder = function(){
-        var that = this;
-        that.triggerEvent('onRenderHolderStart');
-        var node = cm.node('div', {'class' : 'com__file-manager__holder'});
-        that.triggerEvent('onRenderHolderProcess');
-        that.triggerEvent('onRenderHolderEnd');
-        return node;
-    };
-
-    classProto.renderContent = function(){
-        var that = this;
-        that.triggerEvent('onRenderContentStart');
-        // Structure
-        var node = cm.node('div', {'class' : 'com__file-manager__content'});
-        // Events
-        that.triggerEvent('onRenderContentProcess');
-        that.triggerEvent('onRenderContentEnd');
-        return node;
-    };
-
-    classProto.renderStats = function(){
-        var that = this;
-        var node = cm.node('div', {'class' : 'com__file-manager__stats'},
-            that.nodes['statsContent'] = cm.node('div', {'class' : 'com__file-manager__stats-list'},
-                cm.node('ul',
-                    cm.node('li', that.lang('stats_mfu')),
-                    cm.node('li', that.lang('stats_umf')),
-                    cm.node('li', that.lang('stats_quote')),
-                    cm.node('li', that.lang('stats_usage'))
-                )
-            )
-        );
-        return node;
-    };
-
-    classProto.openDialog = function(){
-        var that = this;
-        if(!that.components['dialog']){
-            cm.getConstructor('Com.Dialog', function(classObject, className){
-                that.components['dialog'] = new classObject(
-                    cm.merge(that.params[className], {
-                        'content': that.nodes['container'],
-                        'buttons' : that.nodes['buttons'],
-                        'title': that.lang('title'),
-                        'events': {
-                            'onOpen': function(){
-                                that.constructCollector();
-                            },
-                            'onClose': function(){
-                                that.destructCollector();
-                            }
-                        }
-                    })
-                );
-            });
-        }else{
-            that.components['dialog'].open();
-        }
-        return that;
-    };
-
-    classProto.closeDialog = function(){
-        var that = this;
-        that.components['dialog'] && that.components['dialog'].close();
         return that;
     };
 });
@@ -23888,6 +24200,50 @@ function(params){
 
     init();
 });
+cm.define('Com.DialogContainer', {
+    'extend' : 'Com.AbstractContainer',
+    'params' : {
+        'constructor' : 'Com.Dialog',
+        'container' : 'document.body',
+        'params' : {
+            'removeOnClose' : false,
+            'destructOnRemove' : false,
+            'autoOpen' : false
+        }
+    }
+},
+function(params){
+    var that = this;
+    that.nodes = {};
+    that.components = {};
+    // Call parent class construct
+    Com.AbstractContainer.apply(that, arguments);
+});
+
+cm.getConstructor('Com.DialogContainer', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.construct = function(){
+        var that = this;
+        // Bind context to methods
+        that.validateParamsEndHandler = that.validateParamsEnd.bind(that);
+        // Add events
+        that.addEvent('onValidateParamsEnd', that.validateParamsEndHandler);
+        // Call parent method
+        _inherit.prototype.construct.apply(that, arguments);
+        return that;
+    };
+
+    classProto.validateParamsEnd = function(){
+        var that = this;
+        if(cm.isObject(that.params['content'])){
+            that.params['params']['title'] = that.params['content']['title'] || that.params['params']['title'];
+            that.params['params']['content'] = that.params['content']['content'] || that.params['params']['content'];
+            that.params['params']['buttons'] = that.params['content']['buttons'] || that.params['params']['buttons'];
+        }
+        return that;
+    };
+});
 cm.define('Com.Draganddrop', {
     'modules' : [
         'Params',
@@ -25316,10 +25672,12 @@ cm.define('Com.FileInput', {
         'dropzone' : true,
         'showLink' : true,
         'local' : true,
-        'fileManager' : true,
-        'fileManagerConstructor' : 'Com.AbstractFileManager',
+        'fileManager' : false,
+        'fileManagerConstructor' : 'Com.AbstractFileManagerContainer',
         'fileManagerParams' : {
-            'max' : 1
+            'params' : {
+                'max' : 1
+            }
         },
         'langs' : {
             'browse' : 'Browse',
@@ -25418,6 +25776,8 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         }else{
             that.rawValue = that.myComponents['validator'].validate();
         }
+        // Other
+        that.params['dropzone'] = !that.params['local'] ? false : that.params['dropzone'];
         return that;
     };
 
@@ -28338,15 +28698,22 @@ cm.define('Com.MultipleFileInput', {
         'className' : 'com__multiple-file-input',
         'inputConstructor' : 'Com.FileInput',
         'inputParams' : {
-            'dropzone' : false
+            'dropzone' : false,
+            'local' : false,
+            'fileManager' : false
         },
         'max' : 0,                                  // 0 - infinity
         'dropzone' : true,
-        'fileManager' : true,
-        'fileManagerConstructor' : 'Com.AbstractFileManager',
-        'fileManagerParams' : {},
+        'local' : true,
+        'fileManager' : false,
+        'fileManagerConstructor' : 'Com.AbstractFileManagerContainer',
+        'fileManagerParams' : {
+            'params' : {}
+        },
         'langs' : {
-            'browse' : 'Browse'
+            'browse' : 'Browse',
+            'browse_local' : 'Browse Local',
+            'browse_filemanager' : 'Browse File Manager'
         },
         'Com.FileReader' : {},
         'Com.FileDropzone' : {}
@@ -28358,6 +28725,7 @@ function(params){
     that.myComponents = {};
     that.dragInterval = null;
     that.isDropzoneShow = false;
+    // Call parent class construct
     Com.MultipleInput.apply(that, arguments);
 });
 
@@ -28392,7 +28760,14 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
 
     classProto.validateParamsEnd = function(){
         var that = this;
+        // Validate Language Strings
+        that.setLangs({
+            '_browse_local' : that.params['fileManager'] ? that.lang('browse_local') : that.lang('browse'),
+            '_browse_filemanager' : that.params['local'] ? that.lang('browse_filemanager') : that.lang('browse')
+        });
+        // File Dropzone Params
         that.params['Com.FileDropzone']['max'] = that.params['max'];
+        that.params['fileManagerParams']['params']['max'] = that.params['max'];
         return that;
     };
 
@@ -28404,9 +28779,7 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
         cm.getConstructor('Com.FileReader', function(classObject, className){
             that.myComponents['reader'] = new classObject(className);
             that.myComponents['reader'].addEvent('onReadSuccess', function(my, item){
-                that.addItem({
-                    'value' : item
-                }, true);
+                that.addItem({'value' : item}, true);
             });
         });
         // Init Dropzone
@@ -28418,8 +28791,21 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
                         'target' : that.nodes['holder']
                     })
                 );
-                that.myComponents['dropzone'].addEvent('onDrop', function(my, file){
-                    that.myComponents['reader'].read(file);
+                that.myComponents['dropzone'].addEvent('onDrop', function(my, data){
+                    that.processFiles(data);
+                });
+            });
+        }
+        // Init File Manager
+        if(that.params['fileManager']){
+            cm.getConstructor(that.params['fileManagerConstructor'], function(classObject){
+                that.myComponents['filemanager'] = new classObject(
+                    cm.merge(that.params['fileManagerParams'], {
+                        'node' : that.myNodes['browseFileManager']
+                    })
+                );
+                that.myComponents['filemanager'].addEvent('onSelect', function(my, data){
+                    that.processFiles(data);
                 });
             });
         }
@@ -28431,17 +28817,24 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
         that.triggerEvent('onRenderContentStart');
         // Structure
         that.myNodes['container'] = cm.node('div', {'class' : 'com__multiple-file-input__content'},
-            cm.node('div', {'class' : 'pt__file-line'},
-                cm.node('div', {'class' : 'inner'},
-                    cm.node('div', {'class' : 'browse-button'},
-                        cm.node('button', {'class' : 'button button-primary'}, that.lang('browse')),
-                        cm.node('div', {'class' : 'inner'},
-                            that.myNodes['input'] = cm.node('input', {'type' : 'file', 'multiple' : true})
-                        )
-                    )
-                )
+            that.myNodes['content'] = cm.node('div', {'class' : 'pt__file-line'},
+                that.myNodes['contentInner'] = cm.node('div', {'class' : 'inner'})
             )
         );
+        // Render Browse Buttons
+        if(that.params['local']){
+            that.myNodes['browseLocal'] = cm.node('div', {'class' : 'browse-button'},
+                cm.node('button', {'class' : 'button button-primary'}, that.lang('_browse_local')),
+                cm.node('div', {'class' : 'inner'},
+                    that.myNodes['input'] = cm.node('input', {'type' : 'file', 'multiple' : true})
+                )
+            );
+            cm.insertFirst(that.myNodes['browseLocal'], that.myNodes['contentInner']);
+        }
+        if(that.params['fileManager']){
+            that.myNodes['browseFileManager'] = cm.node('button', {'class' : 'button button-primary'}, that.lang('_browse_filemanager'));
+            cm.insertFirst(that.myNodes['browseFileManager'], that.myNodes['contentInner']);
+        }
         // Events
         that.triggerEvent('onRenderContentProcess');
         cm.addEvent(that.myNodes['input'], 'change', that.browseActionHandler);
@@ -28484,8 +28877,22 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
         var that = this,
             length = that.params['max'] ? Math.min(e.target.files.length, (that.params['max'] - that.items.length)) : e.target.files.length;
         cm.forEach(length, function(i){
-            that.myComponents['reader'].read(e.target.files[i]);
+            that.processFiles(e.target.files[i]);
         });
+        return that;
+    };
+
+    classProto.processFiles = function(data){
+        var that = this;
+        if(cm.isFile(data)){
+            that.myComponents['reader'].read(data);
+        }else if(cm.isArray(data)){
+            cm.forEach(data, function(file){
+                that.addItem({'value' : file}, true);
+            })
+        }else if(!cm.isEmpty(data)){
+            that.addItem({'value' : data}, true);
+        }
         return that;
     };
 });
@@ -31011,6 +31418,7 @@ function(params){
     };
 
     that.callbacks.error = function(that, config){
+        that.callbacks.finalize(that);
         that.triggerEvent('onError');
     };
 
@@ -35939,4 +36347,124 @@ function(params){
     };
 
     init();
+});
+cm.define('Com.elFinderFileManager', {
+    'extend' : 'Com.AbstractFileManager',
+    'params' : {
+        'config' : {
+            url : '',
+            lang : {},
+            dotFiles : false,
+            destroyOnClose : true,
+            useBrowserHistory : false,
+            commandsOptions : {
+                getfile : {
+                    oncomplete: 'close',
+                    folders : false,
+                    multiple : false
+                }
+            }
+        }
+    }
+},
+function(params){
+    var that = this;
+    // Call parent class construct
+    Com.AbstractFileManager.apply(that, arguments);
+});
+
+cm.getConstructor('Com.elFinderFileManager', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.construct = function(){
+        var that = this;
+        // Bind context to methods
+        that.selectFileEventHandler = that.selectFileEvent.bind(that);
+        // Call parent method
+        _inherit.prototype.construct.apply(that, arguments);
+        return that;
+    };
+
+    classProto.select = function(){
+        var that = this;
+        if(that.components['controller']){
+            that.components['controller'].exec('getfile')
+        }else{
+            that.triggerEvent('onSelect', that.items);
+        }
+        return that.items;
+    };
+
+    classProto.render = function(){
+        var that = this;
+        // Call parent method
+        _inherit.prototype.render.apply(that, arguments);
+        // Init elFinder
+        if(typeof elFinder != 'undefined'){
+            that.components['controller'] = new elFinder(that.nodes['holder'], cm.merge(that.params['config'], {
+                commandsOptions : {
+                    getfile : {
+                        multiple: that.isMultiple
+                    }
+                },
+                getFileCallback : function(data) {
+                    that.processFiles(data);
+                }
+            }));
+            that.components['controller'].bind('select', that.selectFileEventHandler);
+            that.components['controller'].show();
+        }else{
+            cm.errorLog({
+                'name' : that._name['full'],
+                'message' : ['elFinder does not exists.'].join(' ')
+            });
+        }
+        return that;
+    };
+
+    classProto.selectFileEvent = function(e){
+        var that = this,
+            selected = e.data.selected,
+            files = [],
+            file,
+            max;
+        if(selected.length){
+            cm.forEach(selected, function(item){
+                file = that.components['controller'].file(item);
+                file && files.push(file);
+            });
+        }
+        if(!that.params['max']){
+            that.items = files;
+        }else if(files.length){
+            max = Math.min(0, that.params['max'], files.length);
+            that.items = files.slice(0, max);
+        }else{
+            that.items = [];
+        }
+    };
+
+    classProto.convertFile = function(data){
+        if(!data || data['mime'] == 'directory'){
+            return false;
+        }
+        return {
+            'value' : data['url'],
+            'name' : data['name'],
+            'mime' : data['mime'],
+            'size' : data['size'],
+            'url' : data['url']
+        }
+    };
+});
+cm.define('Com.elFinderFileManagerContainer', {
+    'extend' : 'Com.AbstractFileManagerContainer',
+    'params' : {
+        'constructor' : 'Com.elFinderFileManager'
+    }
+},
+function(params){
+    var that = this;
+    // Call parent class construct
+    Com.AbstractFileManagerContainer.apply(that, arguments);
 });

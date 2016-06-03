@@ -97,8 +97,8 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
             that.isDestructed = true;
             that.triggerEvent('onDestructProcess');
             that.unsetEvents();
+            that.params['removeOnDestruct'] && cm.remove(that.getStackNode());
             that.removeFromStack();
-            that.params['removeOnDestruct'] && cm.remove(that.nodes['container']);
             that.triggerEvent('onDestructEnd');
         }
         return that;
@@ -167,8 +167,8 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         that.triggerEvent('onSetEventsProcess');
         // Add custom events
         if(that.params['customEvents']){
-            cm.customEvent.add(that.nodes['container'], 'redraw', that.redrawHandler);
-            cm.customEvent.add(that.nodes['container'], 'destruct', that.destructHandler);
+            cm.customEvent.add(that.getStackNode(), 'redraw', that.redrawHandler);
+            cm.customEvent.add(that.getStackNode(), 'destruct', that.destructHandler);
             that.triggerEvent('onSetCustomEvents');
         }
         that.triggerEvent('onSetEventsEnd');
@@ -183,8 +183,8 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         that.triggerEvent('onUnsetEventsProcess');
         // Remove custom events
         if(that.params['customEvents']){
-            cm.customEvent.remove(that.nodes['container'], 'redraw', that.redrawHandler);
-            cm.customEvent.remove(that.nodes['container'], 'destruct', that.destructHandler);
+            cm.customEvent.remove(that.getStackNode(), 'redraw', that.redrawHandler);
+            cm.customEvent.remove(that.getStackNode(), 'destruct', that.destructHandler);
             that.triggerEvent('onUnsetCustomEvents');
         }
         that.triggerEvent('onUnsetEventsEnd');
@@ -195,10 +195,10 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         var that = this;
         if(that.params['constructCollector']){
             if(that.params['collector']){
-                that.params['collector'].construct(that.nodes['container']);
+                that.params['collector'].construct(that.getStackNode());
             }else{
                 cm.find('Com.Collector', null, null, function(classObject){
-                    classObject.construct(that.nodes['container']);
+                    classObject.construct(that.getStackNode());
                 });
             }
         }
@@ -209,10 +209,10 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         var that = this;
         if(that.params['constructCollector']){
             if(that.params['collector']){
-                that.params['collector'].destruct(that.nodes['container']);
+                that.params['collector'].destruct(that.getStackNode());
             }else{
                 cm.find('Com.Collector', null, null, function(classObject){
-                    classObject.destruct(that.nodes['container']);
+                    classObject.destruct(that.getStackNode());
                 });
             }
         }

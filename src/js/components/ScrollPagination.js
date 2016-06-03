@@ -310,6 +310,7 @@ function(params){
     };
 
     that.callbacks.error = function(that, config){
+        that.callbacks.finalize(that);
         that.triggerEvent('onError');
     };
 

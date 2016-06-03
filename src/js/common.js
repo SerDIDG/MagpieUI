@@ -29,7 +29,7 @@
  ******* */
 
 var cm = {
-        '_version' : '3.17.0',
+        '_version' : '3.18.0',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -1029,6 +1029,9 @@ cm.getDocumentHtml = function(){
 };
 
 cm.getNodeOffsetIndex = function(node){
+    if(!cm.isNode(node)){
+        return 0;
+    }
     var o = node,
         i = 0;
     while(o.parentNode){

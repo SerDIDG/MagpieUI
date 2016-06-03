@@ -28,9 +28,7 @@ cm.define('Com.MultipleInput', {
         'embedStructure' : 'replace',
         'className' : 'com__multiple-input',
         'inputConstructor' : 'Com.AbstractInput',
-        'inputParams' : {
-            'removeOnDestruct' : true
-        },
+        'inputParams' : {},
         'value' : [],
         'defaultValue' : []
     }

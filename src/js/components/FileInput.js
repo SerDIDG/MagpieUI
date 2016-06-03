@@ -7,10 +7,12 @@ cm.define('Com.FileInput', {
         'dropzone' : true,
         'showLink' : true,
         'local' : true,
-        'fileManager' : true,
-        'fileManagerConstructor' : 'Com.AbstractFileManager',
+        'fileManager' : false,
+        'fileManagerConstructor' : 'Com.AbstractFileManagerContainer',
         'fileManagerParams' : {
-            'max' : 1
+            'params' : {
+                'max' : 1
+            }
         },
         'langs' : {
             'browse' : 'Browse',
@@ -109,6 +111,8 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         }else{
             that.rawValue = that.myComponents['validator'].validate();
         }
+        // Other
+        that.params['dropzone'] = !that.params['local'] ? false : that.params['dropzone'];
         return that;
     };
 

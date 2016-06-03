@@ -114,6 +114,9 @@ Mod['Component'] = {
     '_construct' : function(){
         var that = this;
         that.build._isComponent = true;
+        if(typeof that.build['params']['consoleLogErrors'] == 'undefined'){
+            that.build['params']['consoleLogErrors'] = true;
+        }
     },
     'cloneComponent' : function(params){
         var that = this,
@@ -231,6 +234,7 @@ Mod['Events'] = {
             }
         }else{
             cm.errorLog({
+                'type' : 'attention',
                 'name' : that._name['full'],
                 'message' : [cm.strWrap(event, '"'), 'does not exists.'].join(' ')
             });
@@ -260,6 +264,7 @@ Mod['Events'] = {
             }
         }else{
             cm.errorLog({
+                'type' : 'attention',
                 'name' : that._name['full'],
                 'message' : [cm.strWrap(event, '"'), 'does not exists.'].join(' ')
             });
@@ -274,11 +279,16 @@ Mod['Events'] = {
             });
         }else{
             cm.errorLog({
+                'type' : 'attention',
                 'name' : that._name['full'],
                 'message' : [cm.strWrap(event, '"'), 'does not exists.'].join(' ')
             });
         }
         return that;
+    },
+    'hasEvent' : function(event){
+        var that = this;
+        return !!that.events[event];
     },
     'convertEvents' : function(o){
         var that = this;
@@ -611,7 +621,7 @@ Mod['Stack'] = {
                 'className' : that._name['full']
             };
             that._stack.push(that._stackItem);
-        }else{
+        }else if(cm.isNode(node)){
             that._stackItem['node'] = node;
         }
         return that;
