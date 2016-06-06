@@ -493,8 +493,8 @@ cm.define('Com.FormField', {
         'help' : null,
         'placeholder' : '',
         'options' : [],
-        'component' : false,
-        'componentParams' : {},
+        'constructor' : false,
+        'constructorParams' : {},
         'Com.HelpBubble' : {
             'renderStructure' : true
         }
@@ -506,7 +506,7 @@ function(params){
     that.nodes = {};
     that.components = {};
     that.form = null;
-    that.component = null;
+    that.controller = null;
     that.value = null;
 
     var init = function(){
@@ -521,14 +521,14 @@ function(params){
     };
 
     var validateParams = function(){
-        if(that.params['component']){
-            cm.getConstructor(that.params['component'], function(classConstructor){
+        if(that.params['constructor']){
+            cm.getConstructor(that.params['constructor'], function(classConstructor){
                 that.params['constructor'] = classConstructor;
             });
         }
-        that.params['componentParams']['node'] = that.params['node'];
-        that.params['componentParams']['name'] = that.params['name'];
-        that.params['componentParams']['options'] = that.params['options'];
+        that.params['constructorParams']['node'] = that.params['node'];
+        that.params['constructorParams']['name'] = that.params['name'];
+        that.params['constructorParams']['options'] = that.params['options'];
         that.params['Com.HelpBubble']['content'] = that.params['help'];
         that.params['Com.HelpBubble']['name'] = that.params['name'];
         that.form = that.params['form'];
@@ -546,11 +546,11 @@ function(params){
     /* ******* CALLBACKS ******* */
 
     that.callbacks.construct = function(that){
-        that.component = that.callbacks.component(that, that.params['componentParams']);
+        that.controller = that.callbacks.controller(that, that.params['constructorParams']);
     };
 
-    that.callbacks.component = function(that, params){
-        if(that.params['component']){
+    that.callbacks.controller = function(that, params){
+        if(that.params['constructor']){
             return new that.params['constructor'](params);
         }
     };
@@ -596,20 +596,20 @@ function(params){
     };
 
     that.callbacks.set = function(that, value){
-        that.component && cm.isFunction(that.component.set) && that.component.set(value);
+        that.controller && cm.isFunction(that.controller.set) && that.controller.set(value);
         return value;
     };
 
     that.callbacks.get = function(that){
-        return that.component && cm.isFunction(that.component.get) ? that.component.get() : null;
+        return that.controller && cm.isFunction(that.controller.get) ? that.controller.get() : null;
     };
 
     that.callbacks.reset = function(that){
-        that.component && cm.isFunction(that.component.reset) && that.component.reset();
+        that.controller && cm.isFunction(that.controller.reset) && that.controller.reset();
     };
 
     that.callbacks.destruct = function(that){
-        that.component && cm.isFunction(that.component.destruct) && that.component.destruct();
+        that.controller && cm.isFunction(that.controller.destruct) && that.controller.destruct();
     };
 
     /* ******* PUBLIC ******* */
@@ -685,7 +685,7 @@ Com.FormFields.add('textarea', {
 Com.FormFields.add('select', {
     'node' : cm.node('select'),
     'callbacks' : {
-        'component' : function(that){
+        'controller' : function(that){
             var nodes,
                 items = [];
             cm.forEach(that.params['options'], function(item){
@@ -712,7 +712,7 @@ Com.FormFields.add('select', {
 Com.FormFields.add('radio', {
     'node' : cm.node('div', {'class' : 'form__check-line'}),
     'callbacks' : {
-        'component' : function(that){
+        'controller' : function(that){
             var items = [],
                 item;
             cm.forEach(that.params['options'], function(option){
@@ -730,14 +730,14 @@ Com.FormFields.add('radio', {
             return items;
         },
         'set' : function(that, value){
-            cm.forEach(that.component, function(item){
+            cm.forEach(that.controller, function(item){
                 item.nodes['input'].checked = item.config['value'] == value;
             });
             return value;
         },
         'get' : function(that){
             var value = null;
-            cm.forEach(that.component, function(item){
+            cm.forEach(that.controller, function(item){
                 if(item.nodes['input'].checked){
                     value = item.config['value'];
                 }
@@ -745,7 +745,7 @@ Com.FormFields.add('radio', {
             return value;
         },
         'reset' : function(that){
-            cm.forEach(that.component, function(item){
+            cm.forEach(that.controller, function(item){
                 item.nodes['input'].checked = false;
             });
         }
@@ -755,7 +755,7 @@ Com.FormFields.add('radio', {
 Com.FormFields.add('check', {
     'node' : cm.node('div', {'class' : 'form__check-line'}),
     'callbacks' : {
-        'component' : function(that){
+        'controller' : function(that){
             var items = [],
                 item;
             cm.forEach(that.params['options'], function(option){
@@ -773,14 +773,14 @@ Com.FormFields.add('check', {
             return items;
         },
         'set' : function(that, value){
-            cm.forEach(that.component, function(item){
+            cm.forEach(that.controller, function(item){
                 item.nodes['input'].checked = cm.inArray(value, item.config['value']);
             });
             return value;
         },
         'get' : function(that){
             var value = [];
-            cm.forEach(that.component, function(item){
+            cm.forEach(that.controller, function(item){
                 if(item.nodes['input'].checked){
                     value.push(item.config['value']);
                 }
@@ -788,7 +788,7 @@ Com.FormFields.add('check', {
             return value;
         },
         'reset' : function(that){
-            cm.forEach(that.component, function(item){
+            cm.forEach(that.controller, function(item){
                 item.nodes['input'].checked = false;
             });
         }
@@ -804,7 +804,7 @@ Com.FormFields.add('buttons', {
             nodes['container'] = that.params['node'];
             return nodes;
         },
-        'component' : function(that){
+        'controller' : function(that){
             var buttons = {},
                 node;
             cm.forEach(that.params['options'], function(item){

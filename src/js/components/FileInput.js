@@ -260,3 +260,10 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         return that;
     };
 });
+
+/* ****** FORM FIELD COMPONENT ******* */
+
+Com.FormFields.add('file-input', {
+    'node' : cm.node('input'),
+    'constructor' : 'Com.FileInput'
+});

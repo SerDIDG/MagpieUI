@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.18.1 (2016-06-03 19:41) ************ */
+/*! ************ MagpieUI v3.18.2 (2016-06-06 21:17) ************ */
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -12367,7 +12367,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.18.1',
+        '_version' : '3.18.2',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -18803,8 +18803,8 @@ cm.define('Com.FormField', {
         'help' : null,
         'placeholder' : '',
         'options' : [],
-        'component' : false,
-        'componentParams' : {},
+        'constructor' : false,
+        'constructorParams' : {},
         'Com.HelpBubble' : {
             'renderStructure' : true
         }
@@ -18816,7 +18816,7 @@ function(params){
     that.nodes = {};
     that.components = {};
     that.form = null;
-    that.component = null;
+    that.controller = null;
     that.value = null;
 
     var init = function(){
@@ -18831,14 +18831,14 @@ function(params){
     };
 
     var validateParams = function(){
-        if(that.params['component']){
-            cm.getConstructor(that.params['component'], function(classConstructor){
+        if(that.params['constructor']){
+            cm.getConstructor(that.params['constructor'], function(classConstructor){
                 that.params['constructor'] = classConstructor;
             });
         }
-        that.params['componentParams']['node'] = that.params['node'];
-        that.params['componentParams']['name'] = that.params['name'];
-        that.params['componentParams']['options'] = that.params['options'];
+        that.params['constructorParams']['node'] = that.params['node'];
+        that.params['constructorParams']['name'] = that.params['name'];
+        that.params['constructorParams']['options'] = that.params['options'];
         that.params['Com.HelpBubble']['content'] = that.params['help'];
         that.params['Com.HelpBubble']['name'] = that.params['name'];
         that.form = that.params['form'];
@@ -18856,11 +18856,11 @@ function(params){
     /* ******* CALLBACKS ******* */
 
     that.callbacks.construct = function(that){
-        that.component = that.callbacks.component(that, that.params['componentParams']);
+        that.controller = that.callbacks.controller(that, that.params['constructorParams']);
     };
 
-    that.callbacks.component = function(that, params){
-        if(that.params['component']){
+    that.callbacks.controller = function(that, params){
+        if(that.params['constructor']){
             return new that.params['constructor'](params);
         }
     };
@@ -18906,20 +18906,20 @@ function(params){
     };
 
     that.callbacks.set = function(that, value){
-        that.component && cm.isFunction(that.component.set) && that.component.set(value);
+        that.controller && cm.isFunction(that.controller.set) && that.controller.set(value);
         return value;
     };
 
     that.callbacks.get = function(that){
-        return that.component && cm.isFunction(that.component.get) ? that.component.get() : null;
+        return that.controller && cm.isFunction(that.controller.get) ? that.controller.get() : null;
     };
 
     that.callbacks.reset = function(that){
-        that.component && cm.isFunction(that.component.reset) && that.component.reset();
+        that.controller && cm.isFunction(that.controller.reset) && that.controller.reset();
     };
 
     that.callbacks.destruct = function(that){
-        that.component && cm.isFunction(that.component.destruct) && that.component.destruct();
+        that.controller && cm.isFunction(that.controller.destruct) && that.controller.destruct();
     };
 
     /* ******* PUBLIC ******* */
@@ -18995,7 +18995,7 @@ Com.FormFields.add('textarea', {
 Com.FormFields.add('select', {
     'node' : cm.node('select'),
     'callbacks' : {
-        'component' : function(that){
+        'controller' : function(that){
             var nodes,
                 items = [];
             cm.forEach(that.params['options'], function(item){
@@ -19022,7 +19022,7 @@ Com.FormFields.add('select', {
 Com.FormFields.add('radio', {
     'node' : cm.node('div', {'class' : 'form__check-line'}),
     'callbacks' : {
-        'component' : function(that){
+        'controller' : function(that){
             var items = [],
                 item;
             cm.forEach(that.params['options'], function(option){
@@ -19040,14 +19040,14 @@ Com.FormFields.add('radio', {
             return items;
         },
         'set' : function(that, value){
-            cm.forEach(that.component, function(item){
+            cm.forEach(that.controller, function(item){
                 item.nodes['input'].checked = item.config['value'] == value;
             });
             return value;
         },
         'get' : function(that){
             var value = null;
-            cm.forEach(that.component, function(item){
+            cm.forEach(that.controller, function(item){
                 if(item.nodes['input'].checked){
                     value = item.config['value'];
                 }
@@ -19055,7 +19055,7 @@ Com.FormFields.add('radio', {
             return value;
         },
         'reset' : function(that){
-            cm.forEach(that.component, function(item){
+            cm.forEach(that.controller, function(item){
                 item.nodes['input'].checked = false;
             });
         }
@@ -19065,7 +19065,7 @@ Com.FormFields.add('radio', {
 Com.FormFields.add('check', {
     'node' : cm.node('div', {'class' : 'form__check-line'}),
     'callbacks' : {
-        'component' : function(that){
+        'controller' : function(that){
             var items = [],
                 item;
             cm.forEach(that.params['options'], function(option){
@@ -19083,14 +19083,14 @@ Com.FormFields.add('check', {
             return items;
         },
         'set' : function(that, value){
-            cm.forEach(that.component, function(item){
+            cm.forEach(that.controller, function(item){
                 item.nodes['input'].checked = cm.inArray(value, item.config['value']);
             });
             return value;
         },
         'get' : function(that){
             var value = [];
-            cm.forEach(that.component, function(item){
+            cm.forEach(that.controller, function(item){
                 if(item.nodes['input'].checked){
                     value.push(item.config['value']);
                 }
@@ -19098,7 +19098,7 @@ Com.FormFields.add('check', {
             return value;
         },
         'reset' : function(that){
-            cm.forEach(that.component, function(item){
+            cm.forEach(that.controller, function(item){
                 item.nodes['input'].checked = false;
             });
         }
@@ -19114,7 +19114,7 @@ Com.FormFields.add('buttons', {
             nodes['container'] = that.params['node'];
             return nodes;
         },
-        'component' : function(that){
+        'controller' : function(that){
             var buttons = {},
                 node;
             cm.forEach(that.params['options'], function(item){
@@ -19239,11 +19239,13 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
 
     classProto.get = function(){
         var that = this,
-            value = [];
+            data = [],
+            value;
         cm.forEach(that.items, function(item){
-            value.push(item.get());
+            value = (item['controller'] && item['controller'].get) ? item['controller'].get() : null;
+            value && data.push(value);
         });
-        return value;
+        return data;
     };
 
     classProto.clear = function(triggerEvents){
@@ -19630,6 +19632,7 @@ cm.define('Com.Autocomplete', {
         'minLength' : 3,
         'delay' : 'cm._config.requestDelay',
         'clearOnEmpty' : true,                                      // Clear input and value if item didn't selected from tooltip
+        'showListOnEmpty' : false,                                  // Show options list, when input is empty
         'showLoader' : true,                                        // Show ajax spinner in tooltip, for ajax mode only.
         'data' : [],                                                // Examples: [{'value' : 'foo', 'text' : 'Bar'}] or ['Foo', 'Bar'].
         'responseKey' : 'data',                                     // Instead of using filter callback, you can provide response array key
@@ -19718,6 +19721,21 @@ function(params){
         that.setInput(that.params['node']);
     };
 
+    var setListItem = function(index){
+        var previousItem = that.registeredItems[that.selectedItemIndex],
+            item = that.registeredItems[index];
+        if(previousItem){
+            cm.removeClass(previousItem['node'], 'active');
+        }
+        if(item){
+            cm.addClass(item['node'], 'active');
+            that.components['tooltip'].scrollToNode(item['node']);
+        }
+        that.selectedItemIndex = index;
+        // Set input data
+        set(that.selectedItemIndex);
+    };
+
     var inputHandler = function(e){
         var listLength,
             listIndex;
@@ -19760,12 +19778,6 @@ function(params){
         }
     };
 
-    var blurHandler = function(){
-        if(!that.isOpen){
-            clear();
-        }
-    };
-
     var requestHandler = function(){
         var query = that.params['node'].value,
             config = cm.clone(that.params['ajax']);
@@ -19774,8 +19786,8 @@ function(params){
         that.selectedItemIndex = null;
         that.registeredItems = [];
         that.abort();
-
-        if(query.length >= that.params['minLength']){
+        // Request
+        if(that.params['showListOnEmpty'] || query.length >= that.params['minLength']){
             that.requestDelay = setTimeout(function(){
                 if(that.isAjax){
                     if(that.params['showLoader']){
@@ -19789,21 +19801,6 @@ function(params){
         }else{
             that.hide();
         }
-    };
-
-    var setListItem = function(index){
-        var previousItem = that.registeredItems[that.selectedItemIndex],
-            item = that.registeredItems[index];
-        if(previousItem){
-            cm.removeClass(previousItem['node'], 'active');
-        }
-        if(item){
-            cm.addClass(item['node'], 'active');
-            that.components['tooltip'].scrollToNode(item['node']);
-        }
-        that.selectedItemIndex = index;
-        // Set input data
-        set(that.selectedItemIndex);
     };
 
     var set = function(index){
@@ -19830,6 +19827,18 @@ function(params){
     var onChange = function(){
         if(that.value != that.previousValue){
             that.triggerEvent('onChange', that.value);
+        }
+    };
+
+    var blurHandler = function(){
+        if(!that.isOpen){
+            clear();
+        }
+    };
+
+    var clickHandler = function(){
+        if(that.params['showListOnEmpty']){
+            requestHandler();
         }
     };
 
@@ -20034,6 +20043,7 @@ function(params){
             cm.addEvent(that.params['node'], 'input', requestHandler);
             cm.addEvent(that.params['node'], 'keydown', inputHandler);
             cm.addEvent(that.params['node'], 'blur', blurHandler);
+            cm.addEvent(that.params['node'], 'click', clickHandler);
         }
         return that;
     };
@@ -20107,14 +20117,14 @@ function(params){
     };
 
     that.isOwnNode = function(node){
-        return that.components['tooltip'].isOwnNode(node);
+        return cm.isParent(that.params['target'], node, true) || that.components['tooltip'].isOwnNode(node);
     };
 
     init();
 });
 
-cm.getConstructor('Com.Autocomplete', function(classConstructor){
-    classConstructor.prototype.convertData = function(data){
+cm.getConstructor('Com.Autocomplete', function(classConstructor, className, classProto){
+    classProto.convertData = function(data){
         return data.map(function(item){
             if(!cm.isObject(item)){
                 return {'text' : item, 'value' : item};
@@ -20129,7 +20139,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor){
 
 Com.FormFields.add('autocomplete', {
     'node' : cm.node('input', {'type' : 'text'}),
-    'component' : 'Com.Autocomplete'
+    'constructor' : 'Com.Autocomplete'
 });
 /* ******* COMPONENTS: BIG CALENDAR ******* */
 
@@ -25925,6 +25935,13 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         return that;
     };
 });
+
+/* ****** FORM FIELD COMPONENT ******* */
+
+Com.FormFields.add('file-input', {
+    'node' : cm.node('input'),
+    'constructor' : 'Com.FileInput'
+});
 cm.define('Com.FileReader', {
     'modules' : [
         'Params',
@@ -28297,7 +28314,7 @@ function(params){
 
 Com.FormFields.add('image-input', {
     'node' : cm.node('input'),
-    'component' : 'Com.ImageInput'
+    'constructor' : 'Com.ImageInput'
 });
 cm.define('Com.Menu', {
     'modules' : [
@@ -28911,6 +28928,13 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
         }
         return that;
     };
+});
+
+/* ****** FORM FIELD COMPONENT ******* */
+
+Com.FormFields.add('multi-file-input', {
+    'node' : cm.node('div'),
+    'constructor' : 'Com.MultipleFileInput'
 });
 cm.define('Com.Notifications', {
     'modules' : [
@@ -32378,7 +32402,7 @@ function(params){
 
 Com.FormFields.add('select', {
     'node' : cm.node('select'),
-    'component' : 'Com.Select'
+    'constructor' : 'Com.Select'
 });
 cm.define('Com.Slider', {
     'modules' : [

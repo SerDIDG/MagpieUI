@@ -702,5 +702,5 @@ function(params){
 
 Com.FormFields.add('select', {
     'node' : cm.node('select'),
-    'component' : 'Com.Select'
+    'constructor' : 'Com.Select'
 });

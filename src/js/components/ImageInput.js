@@ -193,5 +193,5 @@ function(params){
 
 Com.FormFields.add('image-input', {
     'node' : cm.node('input'),
-    'component' : 'Com.ImageInput'
+    'constructor' : 'Com.ImageInput'
 });

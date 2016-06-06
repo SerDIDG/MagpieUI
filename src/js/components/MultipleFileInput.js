@@ -204,3 +204,10 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
         return that;
     };
 });
+
+/* ****** FORM FIELD COMPONENT ******* */
+
+Com.FormFields.add('multi-file-input', {
+    'node' : cm.node('div'),
+    'constructor' : 'Com.MultipleFileInput'
+});

@@ -30,6 +30,7 @@ cm.define('Com.Autocomplete', {
         'minLength' : 3,
         'delay' : 'cm._config.requestDelay',
         'clearOnEmpty' : true,                                      // Clear input and value if item didn't selected from tooltip
+        'showListOnEmpty' : false,                                  // Show options list, when input is empty
         'showLoader' : true,                                        // Show ajax spinner in tooltip, for ajax mode only.
         'data' : [],                                                // Examples: [{'value' : 'foo', 'text' : 'Bar'}] or ['Foo', 'Bar'].
         'responseKey' : 'data',                                     // Instead of using filter callback, you can provide response array key
@@ -118,6 +119,21 @@ function(params){
         that.setInput(that.params['node']);
     };
 
+    var setListItem = function(index){
+        var previousItem = that.registeredItems[that.selectedItemIndex],
+            item = that.registeredItems[index];
+        if(previousItem){
+            cm.removeClass(previousItem['node'], 'active');
+        }
+        if(item){
+            cm.addClass(item['node'], 'active');
+            that.components['tooltip'].scrollToNode(item['node']);
+        }
+        that.selectedItemIndex = index;
+        // Set input data
+        set(that.selectedItemIndex);
+    };
+
     var inputHandler = function(e){
         var listLength,
             listIndex;
@@ -160,12 +176,6 @@ function(params){
         }
     };
 
-    var blurHandler = function(){
-        if(!that.isOpen){
-            clear();
-        }
-    };
-
     var requestHandler = function(){
         var query = that.params['node'].value,
             config = cm.clone(that.params['ajax']);
@@ -174,8 +184,8 @@ function(params){
         that.selectedItemIndex = null;
         that.registeredItems = [];
         that.abort();
-
-        if(query.length >= that.params['minLength']){
+        // Request
+        if(that.params['showListOnEmpty'] || query.length >= that.params['minLength']){
             that.requestDelay = setTimeout(function(){
                 if(that.isAjax){
                     if(that.params['showLoader']){
@@ -189,21 +199,6 @@ function(params){
         }else{
             that.hide();
         }
-    };
-
-    var setListItem = function(index){
-        var previousItem = that.registeredItems[that.selectedItemIndex],
-            item = that.registeredItems[index];
-        if(previousItem){
-            cm.removeClass(previousItem['node'], 'active');
-        }
-        if(item){
-            cm.addClass(item['node'], 'active');
-            that.components['tooltip'].scrollToNode(item['node']);
-        }
-        that.selectedItemIndex = index;
-        // Set input data
-        set(that.selectedItemIndex);
     };
 
     var set = function(index){
@@ -230,6 +225,18 @@ function(params){
     var onChange = function(){
         if(that.value != that.previousValue){
             that.triggerEvent('onChange', that.value);
+        }
+    };
+
+    var blurHandler = function(){
+        if(!that.isOpen){
+            clear();
+        }
+    };
+
+    var clickHandler = function(){
+        if(that.params['showListOnEmpty']){
+            requestHandler();
         }
     };
 
@@ -434,6 +441,7 @@ function(params){
             cm.addEvent(that.params['node'], 'input', requestHandler);
             cm.addEvent(that.params['node'], 'keydown', inputHandler);
             cm.addEvent(that.params['node'], 'blur', blurHandler);
+            cm.addEvent(that.params['node'], 'click', clickHandler);
         }
         return that;
     };
@@ -507,14 +515,14 @@ function(params){
     };
 
     that.isOwnNode = function(node){
-        return that.components['tooltip'].isOwnNode(node);
+        return cm.isParent(that.params['target'], node, true) || that.components['tooltip'].isOwnNode(node);
     };
 
     init();
 });
 
-cm.getConstructor('Com.Autocomplete', function(classConstructor){
-    classConstructor.prototype.convertData = function(data){
+cm.getConstructor('Com.Autocomplete', function(classConstructor, className, classProto){
+    classProto.convertData = function(data){
         return data.map(function(item){
             if(!cm.isObject(item)){
                 return {'text' : item, 'value' : item};
@@ -529,5 +537,5 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor){
 
 Com.FormFields.add('autocomplete', {
     'node' : cm.node('input', {'type' : 'text'}),
-    'component' : 'Com.Autocomplete'
+    'constructor' : 'Com.Autocomplete'
 });

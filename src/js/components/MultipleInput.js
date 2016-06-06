@@ -81,11 +81,13 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
 
     classProto.get = function(){
         var that = this,
-            value = [];
+            data = [],
+            value;
         cm.forEach(that.items, function(item){
-            value.push(item.get());
+            value = (item['controller'] && item['controller'].get) ? item['controller'].get() : null;
+            value && data.push(value);
         });
-        return value;
+        return data;
     };
 
     classProto.clear = function(triggerEvents){
