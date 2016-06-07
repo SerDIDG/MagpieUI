@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.18.2 (2016-06-06 21:17) ************ */
+/*! ************ MagpieUI v3.18.3 (2016-06-07 19:39) ************ */
 /*!
 Animate.css - http://daneden.me/animate
 Licensed under the MIT license - http://opensource.org/licenses/MIT
@@ -4254,8 +4254,20 @@ span.CodeMirror-selectedtext {
 .icon.large.message {
   background-image: url("../img/icons/large/message.png");
 }
+.icon.large.message-draft {
+  background-image: url("../img/icons/large/message-draft.png");
+}
+.icon.large.message-pending {
+  background-image: url("../img/icons/large/message-pending.png");
+}
 .icon.large.page {
   background-image: url("../img/icons/large/page.png");
+}
+.icon.large.page-draft {
+  background-image: url("../img/icons/large/page-draft.png");
+}
+.icon.large.page-pending {
+  background-image: url("../img/icons/large/page-pending.png");
 }
 .icon.large.page-featured {
   background-image: url("../img/icons/large/page-featured.png");
@@ -10678,13 +10690,44 @@ button.is-hidden {
   height: 32px;
   background-image: url("../img/icons/large/message.png");
 }
-.lt__forum__cell-icon .icon.default-page {
+.lt__forum__cell-icon .icon.default-category {
+  width: 32px;
+  height: 32px;
+  background-image: url("../img/icons/large/message.png");
+}
+.lt__forum__cell-icon .icon.default-category-draft {
+  width: 32px;
+  height: 32px;
+  background-image: url("../img/icons/large/message-draft.png");
+}
+.lt__forum__cell-icon .icon.default-category-pending {
+  width: 32px;
+  height: 32px;
+  background-image: url("../img/icons/large/message-pending.png");
+}
+.lt__forum__cell-icon .icon.default-page,
+.lt__forum__cell-icon .icon.default-topic {
   width: 32px;
   height: 32px;
   background-image: url("../img/icons/large/page.png");
   margin: 3px 0 0 0;
 }
-.lt__forum__cell-icon .icon.default-featured {
+.lt__forum__cell-icon .icon.default-page-draft,
+.lt__forum__cell-icon .icon.default-topic-draft {
+  width: 32px;
+  height: 32px;
+  background-image: url("../img/icons/large/page-draft.png");
+  margin: 3px 0 0 0;
+}
+.lt__forum__cell-icon .icon.default-page-pending,
+.lt__forum__cell-icon .icon.default-topic-pending {
+  width: 32px;
+  height: 32px;
+  background-image: url("../img/icons/large/page-pending.png");
+  margin: 3px 0 0 0;
+}
+.lt__forum__cell-icon .icon.default-featured,
+.lt__forum__cell-icon .icon.default-topic-featured {
   width: 32px;
   height: 32px;
   background-image: url("../img/icons/large/page-featured.png");

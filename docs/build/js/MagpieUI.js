@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.18.2 (2016-06-06 21:17) ************ */
+/*! ************ MagpieUI v3.18.3 (2016-06-07 19:39) ************ */
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -12367,7 +12367,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.18.2',
+        '_version' : '3.18.3',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,

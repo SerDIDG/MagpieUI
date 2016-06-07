@@ -216,7 +216,7 @@
     // /* *** LARGE *** */
 
     &.large {
-        .for(message page page-featured google linkedin twitter facebook favorite); .-each(@name) {
+        .for(message message-draft message-pending page page-draft page-pending page-featured google linkedin twitter facebook favorite); .-each(@name) {
             &.@{name} {
                 background-image: url("@{CmPath-Images}/icons/large/@{name}.png");
             }
