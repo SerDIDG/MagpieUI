@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.18.3 (2016-06-07 19:39) ************ */
+/*! ************ MagpieUI v3.18.4 (2016-06-09 19:31) ************ */
 @charset "UTF-8";
 
 /*!
@@ -4442,6 +4442,8 @@ span.CodeMirror-selectedtext { background: none; }
 @ComTabset-Tabs-HoverBackground: @CmColor-Secondary-LightHover;
 @ComTabset-Tabs-ActiveBackground: @CmColor-Background;
 @ComTabset-TabsTitle-Background: @CmColor-Secondary-LightHighlight;
+@ComTabset-Tabs-ImageSize: @CmSize-Medium;
+@ComTabset-Tabs-TitleIndent: @CmIndent-XXSmall;
 
 // /* ******* PAGINATION ******* */
 
@@ -15385,14 +15387,38 @@ button {
             .mx__transition(all, @ComTabset-Duration);
 
             a {
+                .display-flex;
                 .cm__font;
-                .cm__text-overflow;
-                display: block;
                 padding: 0 @ComTabset-Tabs-IndentInner;
                 line-height: @ComTabset-Tabs-Height;
                 font-size: @ComTabset-Tabs-FontSize;
                 text-decoration: none;
                 .mx__only__color(@ComTabset-Tabs-DefaultBackground, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
+                .mx__align-items(center);
+                .mx__justify-content(flex-start);
+                .mx__flex-flow(row nowrap);
+
+
+                .image {
+                    position: relative;
+                    .mx__flex(0 0 auto);
+
+                    img {
+                        .cm__image-centered;
+                    }
+                }
+
+                .title {
+                    .cm__text-nowrap;
+
+                    &:first-child {
+                        margin-left: 0;
+                    }
+
+                    &:last-child {
+                        margin-right: 0;
+                    }
+                }
             }
 
             &:hover {
@@ -15413,6 +15439,9 @@ button {
             }
         }
     }
+
+    .com__tabset__tabs__image-size(@ComTabset-Tabs-ImageSize);
+    .com__tabset__tabs__title-indent(@ComTabset-Tabs-TitleIndent);
 }
 
 /* *** TABS CONTENT *** */
@@ -15638,8 +15667,13 @@ button {
 .com__tabset__head-tabs--flexible () {
     ul {
         li {
-            .mx__flex(1 1);
+            max-width: 100%;
             text-align: center;
+            .mx__flex(1 1);
+
+            a {
+                .mx__justify-content(center);
+            }
         }
     }
 }
@@ -15699,6 +15733,45 @@ button {
 
             &.active {
                 border-right-color: @ComTabset-BorderOverlap;
+            }
+        }
+    }
+}
+
+.com__tabset__tabs__image-size (@size: @ComTabset-Tabs-ImageSize) {
+    ul {
+        li {
+            a {
+                .image {
+                    width: @size;
+                    height: @size;
+                }
+            }
+        }
+    }
+
+    .pt__image {
+        width: @size;
+        height: @size;
+    }
+}
+
+.com__tabset__tabs__title-indent (@indent: @ComTabset-Tabs-TitleIndent) {
+    ul {
+        li {
+            a {
+                .title {
+                    margin-left: @indent;
+                    margin-right: @indent;
+
+                    &:first-child {
+                        margin-left: 0;
+                    }
+
+                    &:last-child {
+                        margin-right: 0;
+                    }
+                }
             }
         }
     }

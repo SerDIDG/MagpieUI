@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.18.3 (2016-06-07 19:39) ************ */
+/*! ************ MagpieUI v3.18.4 (2016-06-09 19:31) ************ */
 /*!
 Animate.css - http://daneden.me/animate
 Licensed under the MIT license - http://opensource.org/licenses/MIT
@@ -15129,16 +15129,52 @@ html.ie9 .com__palette .b-range {
   transition: all 250ms ease-in-out;
 }
 .com__tabset__head-tabs ul li a {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
   font: 400 13px/18px 'Open Sans', arial, helvetica, sans-serif;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  display: block;
   padding: 0 12px;
   line-height: 28px;
   font-size: 13px;
   text-decoration: none;
   color: #666666;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: flex-start;
+  justify-content: flex-start;
+  -webkit-flex-flow: row nowrap;
+  -ms-flex-flow: row nowrap;
+  flex-flow: row nowrap;
+}
+.com__tabset__head-tabs ul li a .image {
+  position: relative;
+  -webkit-flex: 0 0 auto;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+}
+.com__tabset__head-tabs ul li a .image img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  margin: auto;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+.com__tabset__head-tabs ul li a .title {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.com__tabset__head-tabs ul li a .title:first-child {
+  margin-left: 0;
+}
+.com__tabset__head-tabs ul li a .title:last-child {
+  margin-right: 0;
 }
 .com__tabset__head-tabs ul li:hover {
   background: #f2f2f2;
@@ -15153,6 +15189,24 @@ html.ie9 .com__palette .b-range {
 }
 .com__tabset__head-tabs ul li.active a {
   color: #666666;
+}
+.com__tabset__head-tabs ul li a .image {
+  width: 24px;
+  height: 24px;
+}
+.com__tabset__head-tabs .pt__image {
+  width: 24px;
+  height: 24px;
+}
+.com__tabset__head-tabs ul li a .title {
+  margin-left: 8px;
+  margin-right: 8px;
+}
+.com__tabset__head-tabs ul li a .title:first-child {
+  margin-left: 0;
+}
+.com__tabset__head-tabs ul li a .title:last-child {
+  margin-right: 0;
 }
 /* *** TABS CONTENT *** */
 .com__tabset__content {
@@ -15223,10 +15277,15 @@ html.ie9 .com__palette .b-range {
 }
 /* *** TABS POSITION *** */
 .com__tabset.is-tabs-top.is-tabs-flexible > .com__tabset__head-tabs ul li {
+  max-width: 100%;
+  text-align: center;
   -webkit-flex: 1 1;
   -ms-flex: 1 1;
   flex: 1 1;
-  text-align: center;
+}
+.com__tabset.is-tabs-top.is-tabs-flexible > .com__tabset__head-tabs ul li a {
+  -webkit-justify-content: center;
+  justify-content: center;
 }
 .com__tabset.is-tabs-top > .com__tabset__head-tabs {
   margin-bottom: -1px;
@@ -15272,10 +15331,15 @@ html.ie9 .com__palette .b-range {
   border-radius: 3px;
 }
 .com__tabset.is-tabs-bottom.is-tabs-flexible > .com__tabset__head-tabs ul li {
+  max-width: 100%;
+  text-align: center;
   -webkit-flex: 1 1;
   -ms-flex: 1 1;
   flex: 1 1;
-  text-align: center;
+}
+.com__tabset.is-tabs-bottom.is-tabs-flexible > .com__tabset__head-tabs ul li a {
+  -webkit-justify-content: center;
+  justify-content: center;
 }
 .com__tabset.is-tabs-bottom > .com__tabset__head-tabs {
   margin-top: -1px;

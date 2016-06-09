@@ -183,6 +183,7 @@ function(params){
             'id' : '',
             'title' : '',
             'content' : cm.Node('li'),
+            'image' : null,
             'isHide' : true,
             'controller' : false,
             'controllerParams' : {},
@@ -191,9 +192,14 @@ function(params){
             'onHideStart' : function(that, tab){},
             'onHide' : function(that, tab){}
         }, item);
+        if(!cm.isEmpty(item['image']) && !cm.isNode(item['image'])){
+            item['image'] = cm.strReplace(item['image'], {
+                '%baseurl%' : cm._baseUrl
+            });
+        }
         // Structure
-        item['tab'] = renderTabLink(item);
-        item['menu'] = renderTabLink(item);
+        item['tab'] = renderTabLink(item, true);
+        item['menu'] = renderTabLink(item, false);
         // Remove active tab class if exists
         cm.removeClass(item['content'], 'active');
         // Append tab
@@ -205,14 +211,29 @@ function(params){
         that.tabs[item['id']] = item;
     };
 
-    var renderTabLink = function(tab){
+    var renderTabLink = function(tab, image){
         var item = {};
         // Structure
         item['container'] = cm.Node('li',
-            item['a'] = cm.Node('a', tab['title'])
+            item['a'] = cm.Node('a',
+                cm.node('div', {'class' : 'title'}, tab['title'])
+            )
         );
-        if(that.params['showTabsTitle']){
-            item['a'].setAttribute('title', tab['title']);
+        // Image
+        if(image){
+            if(cm.isNode(tab['image'])){
+                item['image'] = tab['image'];
+            }else if(!cm.isEmpty(tab['image'])){
+                item['image'] = cm.node('div', {'class' : 'image'},
+                    cm.node('img', {'src' : tab['image'], 'alt' : ''})
+                );
+            }
+            if(item['image']){
+                cm.insertFirst(item['image'], item['a']);
+            }
+            if(that.params['showTabsTitle']){
+                item['a'].setAttribute('title', tab['title']);
+            }
         }
         // Add click event
         if(that.params['toggleOnHashChange']){
