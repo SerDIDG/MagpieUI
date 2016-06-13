@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.18.4 (2016-06-09 19:41) ************ */
+/*! ************ MagpieUI v3.18.4 (2016-06-13 18:23) ************ */
 /*!
 Animate.css - http://daneden.me/animate
 Licensed under the MIT license - http://opensource.org/licenses/MIT
@@ -5409,6 +5409,14 @@ button.button-clear {
   border: none;
   color: #2985e0;
   cursor: default;
+}
+.button.button--xlarge,
+input[type="button"].button--xlarge,
+input[type="submit"].button--xlarge,
+input[type="reset"].button--xlarge,
+button.button--xlarge {
+  min-height: 48px;
+  padding: 15px 32px;
 }
 .button.has-icon .icon,
 input[type="button"].has-icon .icon,
@@ -12586,20 +12594,16 @@ button.is-hidden {
   opacity: 0;
 }
 /* ******* COMPONENTS: FILE MANAGER ******* */
-.com__file-manager > .inner:before {
-  content: ".";
-  display: block;
-  clear: both;
-  visibility: hidden;
-  line-height: 0;
-  font-size: 0;
-  height: 0;
+.com__file-manager__holder {
+  margin-bottom: 24px;
 }
-.com__file-manager__content {
-  margin-top: 24px;
+.com__file-manager__holder.bottom,
+.com__file-manager__holder.is-last,
+.com__file-manager__holder:last-child {
+  margin-bottom: 0;
 }
-.com__file-manager__content:first-child {
-  margin-top: 0;
+.com__file-manager__holder.is-hidden {
+  display: none;
 }
 .com__file-manager__stats-list > ul {
   margin: 0;
@@ -12609,6 +12613,34 @@ button.is-hidden {
 .com__file-manager__stats-list > ul > li {
   margin: 0;
   padding: 0;
+}
+/* ******* COMPONENTS: FILE UPLOADER ******* */
+.com__file-uploader__dropzone {
+  position: relative;
+}
+.com__file-uploader__title {
+  font: 300 16px/24px 'Open Sans', arial, helvetica, sans-serif;
+  color: #666666;
+  text-align: center;
+}
+.com__file-uploader__files {
+  margin-top: 24px;
+}
+.com__file-uploader__files:first-child {
+  margin-top: 0;
+}
+.com__file-uploader__files.is-hidden {
+  display: none;
+}
+.com__file-uploader__local .com__file-uploader__title,
+.com__file-uploader__local .com__file-uploader__holder,
+.com__file-uploader__local .com__file-uploader__dropzone {
+  margin-top: 12px;
+}
+.com__file-uploader__local .com__file-uploader__title:first-child,
+.com__file-uploader__local .com__file-uploader__holder:first-child,
+.com__file-uploader__local .com__file-uploader__dropzone:first-child {
+  margin-top: 0;
 }
 /* ******* COMPONENTS: FORM ******* */
 .com__form {
@@ -13581,11 +13613,21 @@ button.is-hidden {
   border-radius: 3px;
 }
 /* ******* COMPONENTS: MULTIPLE FILE INPUT ******* */
+.com__multiple-file-input__content.is-hidden {
+  display: none;
+}
 .com__multiple-file-input__content {
   margin-top: 8px;
 }
-.com__multiple-file-input__content.is-hidden {
-  display: none;
+.com__multiple-file-input .com__multiple-input__items {
+  -webkit-overflow-scrolling: touch;
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: 100px;
+  margin-bottom: 0;
+}
+.com__multiple-file-input .com__multiple-input__items.is-hidden + .com__multiple-file-input__content {
+  margin-top: 0;
 }
 /* ******* COMPONENTS: MULTIPLE INPUT ******* */
 .com__multiple-input {
@@ -13610,6 +13652,12 @@ button.is-hidden {
 }
 .com__multiple-input__holder.is-hidden {
   opacity: 0;
+}
+.com__multiple-input__items {
+  margin-bottom: 8px;
+}
+.com__multiple-input__items.is-hidden {
+  display: none;
 }
 .com__multiple-input__item {
   margin-top: 8px;
@@ -14098,6 +14146,10 @@ button.is-hidden {
   border: none;
   color: #2985e0;
   cursor: default;
+}
+.com__pagination__bar ul li a.button--xlarge {
+  min-height: 48px;
+  padding: 15px 32px;
 }
 .com__pagination__bar ul li a.has-icon .icon {
   display: inline-block;

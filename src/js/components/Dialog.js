@@ -11,8 +11,10 @@ cm.define('Com.Dialog', {
         'onRender',
         'onOpenStart',
         'onOpen',
+        'onOpenEnd',
         'onCloseStart',
-        'onClose'
+        'onClose',
+        'onCloseEnd'
     ],
     'params' : {
         'container' : 'document.body',
@@ -333,6 +335,7 @@ function(params){
                 params['onEnd']();
                 // Open Event
                 that.triggerEvent('onOpen');
+                that.triggerEvent('onOpenEnd');
             }});
             // Open Event
             that.triggerEvent('onOpenStart');
@@ -364,6 +367,7 @@ function(params){
                     params['onEnd']();
                     // Close Event
                     that.triggerEvent('onClose');
+                    that.triggerEvent('onCloseEnd');
                 }
             });
             // Close Event

@@ -3,27 +3,38 @@ cm.define('Com.MultipleFileInput', {
     'params' : {
         'embedStructure' : 'replace',
         'className' : 'com__multiple-file-input',
+        'max' : 0,                                  // 0 - infinity
+        'local' : true,
+        'buttonsAlign' : 'left',
         'inputConstructor' : 'Com.FileInput',
         'inputParams' : {
             'dropzone' : false,
             'local' : false,
-            'fileManager' : false
+            'fileManager' : false,
+            'fileUploader' : false
         },
-        'max' : 0,                                  // 0 - infinity
-        'dropzone' : true,
-        'local' : true,
-        'fileManager' : false,
+        'fileManager' : true,
         'fileManagerConstructor' : 'Com.AbstractFileManagerContainer',
         'fileManagerParams' : {
             'params' : {}
+        },
+        'fileUploader' : true,
+        'fileUploaderConstructor' : 'Com.FileUploaderContainer',
+        'fileUploaderParams' : {
+            'params' : {}
+        },
+        'dropzone' : true,
+        'dropzoneConstructor' : 'Com.FileDropzone',
+        'dropzoneParams' : {
+            'embedStructure' : 'append',
+            'rollover' : true
         },
         'langs' : {
             'browse' : 'Browse',
             'browse_local' : 'Browse Local',
             'browse_filemanager' : 'Browse File Manager'
         },
-        'Com.FileReader' : {},
-        'Com.FileDropzone' : {}
+        'Com.FileReader' : {}
     }
 },
 function(params){
@@ -32,6 +43,7 @@ function(params){
     that.myComponents = {};
     that.dragInterval = null;
     that.isDropzoneShow = false;
+    that.hasButtons = false;
     // Call parent class construct
     Com.MultipleInput.apply(that, arguments);
 });
@@ -66,6 +78,17 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
         return that;
     };
 
+    classProto.getFiles = function(){
+        var that = this,
+            data = [],
+            value;
+        cm.forEach(that.items, function(item){
+            value = (item['controller'] && item['controller'].getFile) ? item['controller'].getFile() : null;
+            value && data.push(value);
+        });
+        return data;
+    };
+
     classProto.validateParamsEnd = function(){
         var that = this;
         // Validate Language Strings
@@ -73,28 +96,34 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
             '_browse_local' : that.params['fileManager'] ? that.lang('browse_local') : that.lang('browse'),
             '_browse_filemanager' : that.params['local'] ? that.lang('browse_filemanager') : that.lang('browse')
         });
-        // File Dropzone Params
-        that.params['Com.FileDropzone']['max'] = that.params['max'];
+        // Components parameters
+        that.params['dropzoneParams']['max'] = that.params['max'];
         that.params['fileManagerParams']['params']['max'] = that.params['max'];
+        that.params['fileUploaderParams']['params']['max'] = that.params['max'];
+        // Other
+        that.params['dropzone'] = !that.params['local'] ? false : that.params['dropzone'];
+        that.params['local'] = that.params['fileUploader'] ? false : that.params['local'];
+        that.params['fileManager'] = that.params['fileUploader'] ? false : that.params['fileManager'];
+        that.hasButtons = that.params['local'] || that.params['fileManager'] || that.params['fileUploader'];
         return that;
     };
 
-    classProto.render = function(){
+    classProto.renderViewModel = function(){
         var that = this;
-        // Call parent method - render
-        _inherit.prototype.render.apply(that, arguments);
+        // Call parent method - renderViewModel
+        _inherit.prototype.renderViewModel.apply(that, arguments);
         // Init FilerReader
         cm.getConstructor('Com.FileReader', function(classObject, className){
-            that.myComponents['reader'] = new classObject(className);
+            that.myComponents['reader'] = new classObject(that.params[className]);
             that.myComponents['reader'].addEvent('onReadSuccess', function(my, item){
                 that.addItem({'value' : item}, true);
             });
         });
         // Init Dropzone
         if(that.params['dropzone']){
-            cm.getConstructor('Com.FileDropzone', function(classObject, className){
+            cm.getConstructor(that.params['dropzoneConstructor'], function(classObject){
                 that.myComponents['dropzone'] = new classObject(
-                    cm.merge(that.params[className], {
+                    cm.merge(that.params['dropzoneParams'], {
                         'container' : that.nodes['inner'],
                         'target' : that.nodes['holder']
                     })
@@ -107,12 +136,25 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
         // Init File Manager
         if(that.params['fileManager']){
             cm.getConstructor(that.params['fileManagerConstructor'], function(classObject){
-                that.myComponents['filemanager'] = new classObject(
+                that.myComponents['fileManager'] = new classObject(
                     cm.merge(that.params['fileManagerParams'], {
                         'node' : that.myNodes['browseFileManager']
                     })
                 );
-                that.myComponents['filemanager'].addEvent('onSelect', function(my, data){
+                that.myComponents['fileManager'].addEvent('onSelect', function(my, data){
+                    that.processFiles(data);
+                });
+            });
+        }
+        // Init File Uploader
+        if(that.params['fileUploader']){
+            cm.getConstructor(that.params['fileUploaderConstructor'], function(classObject){
+                that.myComponents['fileUploader'] = new classObject(
+                    cm.merge(that.params['fileUploaderParams'], {
+                        'node' : that.myNodes['browseFileUploader']
+                    })
+                );
+                that.myComponents['fileUploader'].addEvent('onSelect', function(my, data){
                     that.processFiles(data);
                 });
             });
@@ -125,16 +167,17 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
         that.triggerEvent('onRenderContentStart');
         // Structure
         that.myNodes['container'] = cm.node('div', {'class' : 'com__multiple-file-input__content'},
-            that.myNodes['content'] = cm.node('div', {'class' : 'pt__file-line'},
+            that.myNodes['content'] = cm.node('div', {'class' : 'pt__buttons'},
                 that.myNodes['contentInner'] = cm.node('div', {'class' : 'inner'})
             )
         );
+        cm.addClass(that.myNodes['content'], ['pull', that.params['buttonsAlign']].join('-'));
         // Render Browse Buttons
         if(that.params['local']){
             that.myNodes['browseLocal'] = cm.node('div', {'class' : 'browse-button'},
                 cm.node('button', {'class' : 'button button-primary'}, that.lang('_browse_local')),
                 cm.node('div', {'class' : 'inner'},
-                    that.myNodes['input'] = cm.node('input', {'type' : 'file', 'multiple' : true})
+                    that.myNodes['input'] = cm.node('input', {'type' : 'file', 'multiple' : that.isMultiple})
                 )
             );
             cm.insertFirst(that.myNodes['browseLocal'], that.myNodes['contentInner']);
@@ -142,6 +185,13 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
         if(that.params['fileManager']){
             that.myNodes['browseFileManager'] = cm.node('button', {'class' : 'button button-primary'}, that.lang('_browse_filemanager'));
             cm.insertFirst(that.myNodes['browseFileManager'], that.myNodes['contentInner']);
+        }
+        if(that.params['fileUploader']){
+            that.myNodes['browseFileUploader'] = cm.node('button', {'class' : 'button button-primary'}, that.lang('browse'));
+            cm.insertFirst(that.myNodes['browseFileUploader'], that.myNodes['contentInner']);
+        }
+        if(!that.hasButtons){
+            cm.addClass(that.myNodes['container'], 'is-hidden');
         }
         // Events
         that.triggerEvent('onRenderContentProcess');
@@ -163,7 +213,7 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
         var that = this;
         if(that.params['max'] && (that.items.length == that.params['max'])){
             cm.addClass(that.myNodes['container'], 'is-hidden');
-        }else{
+        }else if(that.hasButtons){
             cm.removeClass(that.myNodes['container'], 'is-hidden');
         }
         return that;
@@ -173,7 +223,7 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
         var that = this;
         if(that.params['max'] && (that.items.length == that.params['max'])){
             cm.addClass(that.myNodes['container'], 'is-hidden');
-        }else{
+        }else if(that.hasButtons){
             cm.removeClass(that.myNodes['container'], 'is-hidden');
         }
         return that;

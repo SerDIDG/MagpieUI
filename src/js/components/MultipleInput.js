@@ -155,6 +155,8 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
                 triggerEvents && that.triggerEvent('onSet');
                 triggerEvents && that.triggerEvent('onChange');
             });
+            // Show items container
+            cm.removeClass(that.nodes['items'], 'is-hidden');
             // Push
             that.items.push(item);
             that.triggerEvent('onItemAddEnd', item);
@@ -171,6 +173,10 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
         that.triggerEvent('onItemRemoveProcess', item);
         item['controller'].destruct();
         cm.remove(item['container']);
+        // Hide items container
+        if(!that.items.length){
+            cm.addClass(that.nodes['items'], 'is-hidden');
+        }
         that.triggerEvent('onItemRemoveEnd', item);
         // Trigger set events
         triggerEvents && that.triggerEvent('onSelect');
@@ -200,7 +206,7 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
         that.nodes['container'] = cm.node('div', {'class' : 'com__multiple-input'},
             that.nodes['inner'] = cm.node('div', {'class' : 'inner'},
                 that.nodes['holder'] = cm.node('div', {'class' : 'com__multiple-input__holder'},
-                    that.nodes['items'] = cm.node('div', {'class' : 'com__multiple-input__items'}),
+                    that.nodes['items'] = cm.node('div', {'class' : 'com__multiple-input__items is-hidden'}),
                     that.nodes['content'] = that.renderContent()
                 )
             )

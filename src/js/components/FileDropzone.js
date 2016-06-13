@@ -7,6 +7,8 @@ cm.define('Com.FileDropzone', {
         'embedStructure' : 'append',
         'target' : null,
         'height' : 128,
+        'animated' : true,
+        'rollover' : true,
         'max' : 0,                                  // 0 - infinity
         'duration' : 'cm._config.animDuration',
         'langs' : {
@@ -68,19 +70,10 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
         return that;
     };
 
-    classProto.render = function(){
-        var that = this;
-        // Call parent method - render
-        _inherit.prototype.render.apply(that, arguments);
-        // Init container animation
-        that.components['animation'] = new cm.Animation(that.params['container']);
-        return that;
-    };
-
     classProto.renderView = function(){
         var that = this;
         that.triggerEvent('onRenderViewStart');
-        that.nodes['container'] = cm.node('div', {'class' : 'com__file-dropzone is-hidden'},
+        that.nodes['container'] = cm.node('div', {'class' : 'com__file-dropzone'},
             cm.node('div', {'class' : 'inner'},
                 cm.node('div', {'class' : 'title'},
                     cm.node('div', {'class' : 'label'}, that.lang('drop_here')),
@@ -90,6 +83,19 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
         );
         that.triggerEvent('onRenderViewProcess');
         that.triggerEvent('onRenderViewEnd');
+        return that;
+    };
+
+    classProto.renderViewModel = function(){
+        var that = this;
+        // Init container animation
+        if(that.params['rollover']){
+            cm.addClass(that.nodes['container'], 'is-hidden');
+            that.components['animation'] = new cm.Animation(that.params['container']);
+        }else{
+            cm.removeClass(that.nodes['container'], 'is-hidden');
+            that.params['container'].style.height = that.params['height'] + 'px';
+        }
         return that;
     };
 
@@ -147,17 +153,21 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
         if(!that.isDropzoneShow){
             that.isDropzoneShow = true;
             // Set classes
-            cm.addClass(that.params['container'], 'is-dragging');
-            cm.addClass(that.params['target'], 'is-hidden');
-            cm.removeClass(that.nodes['container'], 'is-hidden');
             cm.removeClass(that.nodes['container'], 'is-highlight');
             // Animate
-            height = Math.max(that.params['height'], that.params['target'].offsetHeight);
-            that.components['animation'].go({
-                'style' : {'height' : (height + 'px')},
-                'duration' : that.params['duration'],
-                'anim' : 'smooth'
-            });
+            if(that.params['rollover']){
+                // Set classes
+                cm.addClass(that.params['container'], 'is-dragging');
+                cm.addClass(that.params['target'], 'is-hidden');
+                cm.removeClass(that.nodes['container'], 'is-hidden');
+                // Animate
+                height = Math.max(that.params['height'], that.params['target'].offsetHeight);
+                that.components['animation'].go({
+                    'style' : {'height' : (height + 'px')},
+                    'duration' : that.params['duration'],
+                    'anim' : 'smooth'
+                });
+            }
         }
         return that;
     };
@@ -168,20 +178,24 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
         if(that.isDropzoneShow){
             that.isDropzoneShow = false;
             // Set classes
-            cm.removeClass(that.params['container'], 'is-dragging');
-            cm.removeClass(that.params['target'], 'is-hidden');
-            cm.addClass(that.nodes['container'], 'is-hidden');
             cm.removeClass(that.nodes['container'], 'is-highlight');
             // Animate
-            height = that.params['target'].offsetHeight;
-            that.components['animation'].go({
-                'style' : {'height' : (height + 'px')},
-                'duration' : that.params['duration'],
-                'anim' : 'smooth',
-                'onStop' : function(){
-                    that.params['container'].style.height = 'auto';
-                }
-            });
+            if(that.params['rollover']){
+                // Set classes
+                cm.removeClass(that.params['container'], 'is-dragging');
+                cm.removeClass(that.params['target'], 'is-hidden');
+                cm.addClass(that.nodes['container'], 'is-hidden');
+                // Animate
+                height = that.params['target'].offsetHeight;
+                that.components['animation'].go({
+                    'style' : {'height' : (height + 'px')},
+                    'duration' : that.params['duration'],
+                    'anim' : 'smooth',
+                    'onStop' : function(){
+                        that.params['container'].style.height = 'auto';
+                    }
+                });
+            }
         }
         return that;
     };

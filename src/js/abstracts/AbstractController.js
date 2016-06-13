@@ -135,7 +135,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         var that = this;
         // Structure
         that.renderView();
-        // Attributes
+        that.renderViewModel();
         that.setAttributes();
         // Append
         that.embedStructure(that.nodes['container']);
@@ -148,6 +148,11 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         that.nodes['container'] = cm.node('div', {'class' : 'com__abstract'});
         that.triggerEvent('onRenderViewProcess');
         that.triggerEvent('onRenderViewEnd');
+        return that;
+    };
+
+    classProto.renderViewModel = function(){
+        var that = this;
         return that;
     };
 

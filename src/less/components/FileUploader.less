@@ -1,0 +1,34 @@
+/* ******* COMPONENTS: FILE UPLOADER ******* */
+
+.com__file-uploader__dropzone {
+    position: relative;
+}
+
+.com__file-uploader__title {
+    .cm__font--ui-h4;
+    text-align: center;
+}
+
+.com__file-uploader__files {
+    margin-top: @CmIndent-Medium;
+
+    &:first-child {
+        margin-top: 0;
+    }
+
+    &.is-hidden {
+        display: none;
+    }
+}
+
+.com__file-uploader__local {
+    .com__file-uploader__title,
+    .com__file-uploader__holder,
+    .com__file-uploader__dropzone {
+        margin-top: @CmIndent-XSmall;
+
+        &:first-child {
+            margin-top: 0;
+        }
+    }
+}

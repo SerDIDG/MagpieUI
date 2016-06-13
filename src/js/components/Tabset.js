@@ -461,6 +461,10 @@ function(params){
         return that.tabs;
     };
 
+    that.getActiveTab = function(){
+        return that.tabs[that.active];
+    };
+
     that.addTab = function(item){
         if(item && item['id']){
             renderTab(item);

@@ -41,4 +41,11 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
         }
         return that;
     };
+
+    classProto.renderControllerEvents = function(){
+        var that = this;
+        that.components['controller'].addEvent('onOpenStart', that.afterOpenControllerHandler);
+        that.components['controller'].addEvent('onCloseEnd', that.afterCloseControllerHandler);
+        return that;
+    };
 });

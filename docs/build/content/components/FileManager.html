@@ -11,7 +11,7 @@
 
 <body>
 
-<h1 class="pt__box-title">Components: Manager</h1>
+<h1 class="pt__box-title">Components: File Manager</h1>
 
 <ul class="com__tabset__content-ul" data-element="Com.Tabset">
     <li data-node="tabs:[]:container" data-config='{"id" : "overview", "title" : "Overview"}'></li>
@@ -19,12 +19,27 @@
     <li data-node="tabs:[]:container" data-config='{"id" : "methods", "title" : "Methods"}'></li>
 
     <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
-        <div data-element="Com.AbstractFileManager"></div>
+        <dl class="pt__field">
+            <dt>File Manager:</dt>
+            <dd>
+                <div data-element="Com.AbstractFileManager"></div>
+            </dd>
+        </dl>
         <hr>
-        <div>
-            <button class="button button-primary" data-element="Com.AbstractFileManagerContainer">Open File Manager</button>
-            <button class="button button-primary" data-element="Com.elFinderFileManagerContainer">Open File Manager</button>
-        </div>
+        <dl class="pt__field">
+            <dt>File Manager Container:</dt>
+            <dd>
+                <button class="button button-primary" data-element="Com.AbstractFileManagerContainer">Open File Manager</button>
+                <button class="button button-primary" data-element="Com.elFinderFileManagerContainer">Open File Manager</button>
+            </dd>
+        </dl>
+        <hr>
+        <dl class="pt__field">
+            <dt>File Uploader Container:</dt>
+            <dd>
+                <button class="button button-primary" data-element="Com.FileUploaderContainer">Open File Uploader</button>
+            </dd>
+        </dl>
     </li>
 </ul>
 

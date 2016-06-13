@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.18.4 (2016-06-09 19:41) ************ */
+/*! ************ MagpieUI v3.18.4 (2016-06-13 18:23) ************ */
 @charset "UTF-8";
 
 /*!
@@ -4403,6 +4403,10 @@ span.CodeMirror-selectedtext { background: none; }
 @ComFileDropzone-Height: 128px;
 @ComFileDropzone-Duration: @CmUI-Transition-Duration;
 
+// /* ******* MULTIPLE FILE INPUT ******* */
+
+@CmMultipleFileInput-Count: @CmForm-FilesList-Count;
+
 // /* ******* DIALOG ******* */
 
 @ComDialog-Indent: @CmIndent-Medium;
@@ -6460,6 +6464,14 @@ select {
         border: none;
         color: @CmColor-Primary-DarkDefault;
         cursor: default;
+    }
+
+    // /* *** SIZES *** */
+
+    &.button--xlarge {
+        @padding: max(ceil((@CmSize-XLarge - @CmFont-Base-LineHeight) / 2), 0px);
+        min-height: @CmSize-XLarge;
+        padding: @padding @CmIndent-Large;
     }
 
     // /* *** ICONS *** */
@@ -13385,17 +13397,54 @@ button {
 
 .com__file-manager {
     > .inner {
-        .marginfix;
     }
 }
 
-.com__file-manager__content {
-    .cm__box-reverse;
+.com__file-manager__holder {
+    .cm__box;
+
+    &.is-hidden {
+        display: none;
+    }
 }
 
 .com__file-manager__stats-list {
     > ul {
         .cm__list-clear;
+    }
+}
+/* ******* COMPONENTS: FILE UPLOADER ******* */
+
+.com__file-uploader__dropzone {
+    position: relative;
+}
+
+.com__file-uploader__title {
+    .cm__font--ui-h4;
+    text-align: center;
+}
+
+.com__file-uploader__files {
+    margin-top: @CmIndent-Medium;
+
+    &:first-child {
+        margin-top: 0;
+    }
+
+    &.is-hidden {
+        display: none;
+    }
+}
+
+.com__file-uploader__local {
+    .com__file-uploader__title,
+    .com__file-uploader__holder,
+    .com__file-uploader__dropzone {
+        margin-top: @CmIndent-XSmall;
+
+        &:first-child {
+            margin-top: 0;
+        }
     }
 }
 /* ******* COMPONENTS: FORM ******* */
@@ -14239,10 +14288,24 @@ button {
 /* ******* COMPONENTS: MULTIPLE FILE INPUT ******* */
 
 .com__multiple-file-input__content {
-    margin-top: @CmForm-FieldInnerIndent;
-
     &.is-hidden {
         display: none;
+    }
+}
+
+.com__multiple-file-input__content {
+    margin-top: @CmForm-FieldInnerIndent;
+}
+
+.com__multiple-file-input {
+    .com__multiple-input__items {
+        .cm__scroll-y-a;
+        max-height: (@CmForm-FilesList-Count * (@CmForm-FieldInnerIndent + @CmForm-FieldHeight)) - @CmForm-FieldInnerIndent;
+        margin-bottom: 0;
+
+        &.is-hidden + .com__multiple-file-input__content {
+            margin-top: 0;
+        }
     }
 }
 /* ******* COMPONENTS: MULTIPLE INPUT ******* */
@@ -14262,6 +14325,14 @@ button {
 
     &.is-hidden {
         opacity: 0;
+    }
+}
+
+.com__multiple-input__items {
+    margin-bottom: @CmForm-FieldInnerIndent;
+
+    &.is-hidden {
+        display: none;
     }
 }
 

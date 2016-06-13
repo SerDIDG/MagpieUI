@@ -81,7 +81,7 @@ cm.getConstructor('Com.AbstractFileManager', function(classConstructor, classNam
     classProto.renderHolder = function(){
         var that = this;
         that.triggerEvent('onRenderHolderStart');
-        var node = cm.node('div', {'class' : 'com__file-manager__holder'});
+        var node = cm.node('div', {'class' : 'com__file-manager__holder is-hidden'});
         that.triggerEvent('onRenderHolderProcess');
         that.triggerEvent('onRenderHolderEnd');
         return node;

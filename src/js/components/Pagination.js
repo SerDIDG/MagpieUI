@@ -124,7 +124,7 @@ function(params){
             that.params['showLoader'] = false;
         }
         if(that.params['pageCount'] == 0 && that.params['count'] && that.params['perPage']){
-            that.pageCount = Math.floor(that.params['count'] / that.params['perPage']);
+            that.pageCount = Math.ceil(that.params['count'] / that.params['perPage']);
         }else{
             that.pageCount = that.params['pageCount'];
         }
@@ -651,7 +651,7 @@ function(params){
         if(count && (count = parseInt(count.toString())) && count != that.params['count']){
             that.params['count'] = count;
             if(that.params['pageCount'] == 0 && that.params['count'] && that.params['perPage']){
-                that.pageCount = Math.floor(that.params['count'] / that.params['perPage']);
+                that.pageCount = Math.ceil(that.params['count'] / that.params['perPage']);
             }else{
                 that.pageCount = that.params['pageCount'];
             }

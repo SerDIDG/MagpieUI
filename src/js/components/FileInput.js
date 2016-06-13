@@ -4,15 +4,28 @@ cm.define('Com.FileInput', {
         'embedStructure' : 'replace',
         'className' : 'com__file-input',
         'file' : null,
-        'dropzone' : true,
         'showLink' : true,
         'local' : true,
-        'fileManager' : false,
+        'fileManager' : true,
         'fileManagerConstructor' : 'Com.AbstractFileManagerContainer',
         'fileManagerParams' : {
             'params' : {
                 'max' : 1
             }
+        },
+        'fileUploader' : true,
+        'fileUploaderConstructor' : 'Com.FileUploaderContainer',
+        'fileUploaderParams' : {
+            'params' : {
+                'max' : 1
+            }
+        },
+        'dropzone' : true,
+        'dropzoneConstructor' : 'Com.FileDropzone',
+        'dropzoneParams' : {
+            'embedStructure' : 'append',
+            'max' : 1,
+            'rollover' : true
         },
         'langs' : {
             'browse' : 'Browse',
@@ -21,10 +34,7 @@ cm.define('Com.FileInput', {
             'remove' : 'Remove',
             'open' : 'Open'
         },
-        'Com.FileReader' : {},
-        'Com.FileDropzone' : {
-            'max' : 1
-        }
+        'Com.FileReader' : {}
     }
 },
 function(params){
@@ -72,6 +82,11 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         return that;
     };
 
+    classProto.getFile = function(){
+        var that = this;
+        return that.rawValue;
+    };
+
     classProto.initComponentsStart = function(){
         var that = this;
         cm.getConstructor('Com.FileReader', function(classObject){
@@ -114,6 +129,8 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         }
         // Other
         that.params['dropzone'] = !that.params['local'] ? false : that.params['dropzone'];
+        that.params['local'] = that.params['fileUploader'] ? false : that.params['local'];
+        that.params['fileManager'] = that.params['fileUploader'] ? false : that.params['fileManager'];
         return that;
     };
 
@@ -131,22 +148,22 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         return that.rawValue['value'];
     };
 
-    classProto.render = function(){
+    classProto.renderViewModel = function(){
         var that = this;
-        // Call parent method - render
-        _inherit.prototype.render.apply(that, arguments);
+        // Call parent method - renderViewModel
+        _inherit.prototype.renderViewModel.apply(that, arguments);
         // Init FilerReader
         cm.getConstructor('Com.FileReader', function(classObject, className){
-            that.myComponents['reader'] = new classObject(className);
+            that.myComponents['reader'] = new classObject(that.params[className]);
             that.myComponents['reader'].addEvent('onReadSuccess', function(my, item){
                 that.set(item, true);
             });
         });
         // Init Dropzone
         if(that.params['dropzone']){
-            cm.getConstructor('Com.FileDropzone', function(classObject, className){
+            cm.getConstructor(that.params['dropzoneConstructor'], function(classObject){
                 that.myComponents['dropzone'] = new classObject(
-                    cm.merge(that.params[className], {
+                    cm.merge(that.params['dropzoneParams'], {
                         'container' : that.myNodes['inner'],
                         'target' : that.myNodes['content']
                     })
@@ -159,12 +176,25 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         // Init File Manager
         if(that.params['fileManager']){
             cm.getConstructor(that.params['fileManagerConstructor'], function(classObject){
-                that.myComponents['filemanager'] = new classObject(
+                that.myComponents['fileManager'] = new classObject(
                     cm.merge(that.params['fileManagerParams'], {
                         'node' : that.myNodes['browseFileManager']
                     })
                 );
-                that.myComponents['filemanager'].addEvent('onSelect', function(my, data){
+                that.myComponents['fileManager'].addEvent('onSelect', function(my, data){
+                    that.processFiles(data);
+                });
+            });
+        }
+        // Init File Uploader
+        if(that.params['fileUploader']){
+            cm.getConstructor(that.params['fileUploaderConstructor'], function(classObject){
+                that.myComponents['fileUploader'] = new classObject(
+                    cm.merge(that.params['fileUploaderParams'], {
+                        'node' : that.myNodes['browseFileUploader']
+                    })
+                );
+                that.myComponents['fileUploader'].addEvent('onSelect', function(my, data){
                     that.processFiles(data);
                 });
             });
@@ -202,6 +232,10 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
             that.myNodes['browseFileManager'] = cm.node('button', {'class' : 'button button-primary'}, that.lang('_browse_filemanager'));
             cm.insertFirst(that.myNodes['browseFileManager'], that.myNodes['contentInner']);
         }
+        if(that.params['fileUploader']){
+            that.myNodes['browseFileUploader'] = cm.node('button', {'class' : 'button button-primary'}, that.lang('browse'));
+            cm.insertFirst(that.myNodes['browseFileUploader'], that.myNodes['contentInner']);
+        }
         // Events
         that.triggerEvent('onRenderContentProcess');
         cm.addEvent(that.myNodes['clear'], 'click', that.clearHandler);
@@ -219,6 +253,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
             cm.addClass(that.myNodes['label'], 'is-hidden');
             cm.removeClass(that.myNodes['browseLocal'], 'is-hidden');
             cm.removeClass(that.myNodes['browseFileManager'], 'is-hidden');
+            cm.removeClass(that.myNodes['browseFileUploader'], 'is-hidden');
             cm.addClass(that.myNodes['clear'], 'is-hidden');
         }else{
             cm.clearNode(that.myNodes['label']);
@@ -230,6 +265,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
             cm.appendChild(that.myNodes['link'], that.myNodes['label']);
             cm.addClass(that.myNodes['browseLocal'], 'is-hidden');
             cm.addClass(that.myNodes['browseFileManager'], 'is-hidden');
+            cm.addClass(that.myNodes['browseFileUploader'], 'is-hidden');
             cm.removeClass(that.myNodes['clear'], 'is-hidden');
             cm.removeClass(that.myNodes['label'], 'is-hidden');
         }

@@ -1,9 +1,23 @@
 /* ******* COMPONENTS: MULTIPLE FILE INPUT ******* */
 
 .com__multiple-file-input__content {
-    margin-top: @CmForm-FieldInnerIndent;
-
     &.is-hidden {
         display: none;
+    }
+}
+
+.com__multiple-file-input__content {
+    margin-top: @CmForm-FieldInnerIndent;
+}
+
+.com__multiple-file-input {
+    .com__multiple-input__items {
+        .cm__scroll-y-a;
+        max-height: (@CmForm-FilesList-Count * (@CmForm-FieldInnerIndent + @CmForm-FieldHeight)) - @CmForm-FieldInnerIndent;
+        margin-bottom: 0;
+
+        &.is-hidden + .com__multiple-file-input__content {
+            margin-top: 0;
+        }
     }
 }

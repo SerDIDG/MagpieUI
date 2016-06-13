@@ -252,6 +252,14 @@
         cursor: default;
     }
 
+    // /* *** SIZES *** */
+
+    &.button--xlarge {
+        @padding: max(ceil((@CmSize-XLarge - @CmFont-Base-LineHeight) / 2), 0px);
+        min-height: @CmSize-XLarge;
+        padding: @padding @CmIndent-Large;
+    }
+
     // /* *** ICONS *** */
 
     &.has-icon {

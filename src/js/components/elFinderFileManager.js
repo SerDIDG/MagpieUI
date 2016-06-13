@@ -29,7 +29,10 @@ cm.getConstructor('Com.elFinderFileManager', function(classConstructor, classNam
     classProto.construct = function(){
         var that = this;
         // Bind context to methods
+        that.destructProcessHandler = that.destructProcess.bind(that);
         that.selectFileEventHandler = that.selectFileEvent.bind(that);
+        // Add events
+        that.addEvent('onDestructProcess', that.destructProcessHandler);
         // Call parent method
         _inherit.prototype.construct.apply(that, arguments);
         return that;
@@ -38,19 +41,26 @@ cm.getConstructor('Com.elFinderFileManager', function(classConstructor, classNam
     classProto.select = function(){
         var that = this;
         if(that.components['controller']){
-            that.components['controller'].exec('getfile')
+            that.components['controller'].exec('getfile');
         }else{
             that.triggerEvent('onSelect', that.items);
         }
         return that.items;
     };
 
-    classProto.render = function(){
+    classProto.destructProcess = function(){
         var that = this;
-        // Call parent method
-        _inherit.prototype.render.apply(that, arguments);
+        if(that.components['controller']){
+            //that.components['controller'].exec('destroy');
+        }
+        return that;
+    };
+
+    classProto.renderViewModel = function(){
+        var that = this;
         // Init elFinder
         if(typeof elFinder != 'undefined'){
+            cm.removeClass(that.nodes['holder'], 'is-hidden');
             that.components['controller'] = new elFinder(that.nodes['holder'], cm.merge(that.params['config'], {
                 commandsOptions : {
                     getfile : {
