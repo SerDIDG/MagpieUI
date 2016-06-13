@@ -6,14 +6,14 @@ cm.define('Com.FileInput', {
         'file' : null,
         'showLink' : true,
         'local' : true,
-        'fileManager' : true,
+        'fileManager' : false,
         'fileManagerConstructor' : 'Com.AbstractFileManagerContainer',
         'fileManagerParams' : {
             'params' : {
                 'max' : 1
             }
         },
-        'fileUploader' : true,
+        'fileUploader' : false,
         'fileUploaderConstructor' : 'Com.FileUploaderContainer',
         'fileUploaderParams' : {
             'params' : {

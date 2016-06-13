@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.18.4 (2016-06-13 18:23) ************ */
+/*! ************ MagpieUI v3.18.5 (2016-06-13 18:26) ************ */
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -12367,7 +12367,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.18.4',
+        '_version' : '3.18.5',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -25762,14 +25762,14 @@ cm.define('Com.FileInput', {
         'file' : null,
         'showLink' : true,
         'local' : true,
-        'fileManager' : true,
+        'fileManager' : false,
         'fileManagerConstructor' : 'Com.AbstractFileManagerContainer',
         'fileManagerParams' : {
             'params' : {
                 'max' : 1
             }
         },
-        'fileUploader' : true,
+        'fileUploader' : false,
         'fileUploaderConstructor' : 'Com.FileUploaderContainer',
         'fileUploaderParams' : {
             'params' : {
@@ -29218,12 +29218,12 @@ cm.define('Com.MultipleFileInput', {
             'fileManager' : false,
             'fileUploader' : false
         },
-        'fileManager' : true,
+        'fileManager' : false,
         'fileManagerConstructor' : 'Com.AbstractFileManagerContainer',
         'fileManagerParams' : {
             'params' : {}
         },
-        'fileUploader' : true,
+        'fileUploader' : false,
         'fileUploaderConstructor' : 'Com.FileUploaderContainer',
         'fileUploaderParams' : {
             'params' : {}

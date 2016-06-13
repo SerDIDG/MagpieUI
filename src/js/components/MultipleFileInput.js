@@ -13,12 +13,12 @@ cm.define('Com.MultipleFileInput', {
             'fileManager' : false,
             'fileUploader' : false
         },
-        'fileManager' : true,
+        'fileManager' : false,
         'fileManagerConstructor' : 'Com.AbstractFileManagerContainer',
         'fileManagerParams' : {
             'params' : {}
         },
-        'fileUploader' : true,
+        'fileUploader' : false,
         'fileUploaderConstructor' : 'Com.FileUploaderContainer',
         'fileUploaderParams' : {
             'params' : {}
