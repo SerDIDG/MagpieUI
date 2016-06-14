@@ -42,7 +42,7 @@ function(params){
 
     var render = function(){
         if(that.params['autoInit']){
-            cm.forEach(cm.defineStack, function(classConstructor){
+            cm.forEach(cm._defineStack, function(classConstructor){
                 that.add(classConstructor.prototype._name['full'], function(node){
                     new classConstructor({
                         'node' : node

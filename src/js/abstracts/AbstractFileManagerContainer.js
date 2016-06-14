@@ -1,6 +1,7 @@
 cm.define('Com.AbstractFileManagerContainer', {
     'extend' : 'Com.AbstractContainer',
     'events' : [
+        'onComplete',
         'onSelect'
     ],
     'params' : {
@@ -53,10 +54,10 @@ cm.getConstructor('Com.AbstractFileManagerContainer', function(classConstructor,
         return that.components['controller'] && that.components['controller'].get && that.components['controller'].get();
     };
 
-    classProto.select = function(e){
+    classProto.complete = function(e){
         e && cm.preventDefault(e);
         var that = this;
-        return that.components['controller'] && that.components['controller'].select && that.components['controller'].select();
+        return that.components['controller'] && that.components['controller'].complete && that.components['controller'].complete();
     };
 
     classProto.validateParamsEnd = function(){
@@ -69,9 +70,11 @@ cm.getConstructor('Com.AbstractFileManagerContainer', function(classConstructor,
 
     classProto.renderControllerProcess = function(){
         var that = this;
+        that.components['controller'].addEvent('onComplete', function(my, data){
+            that.afterComplete(data);
+        });
         that.components['controller'].addEvent('onSelect', function(my, data){
             that.triggerEvent('onSelect', data);
-            that.close();
         });
         return that;
     };
@@ -87,7 +90,14 @@ cm.getConstructor('Com.AbstractFileManagerContainer', function(classConstructor,
         );
         // Events
         cm.addEvent(that.nodes['placeholder']['close'], 'click', that.closeHandler);
-        cm.addEvent(that.nodes['placeholder']['save'], 'click', that.selectHandler);
+        cm.addEvent(that.nodes['placeholder']['save'], 'click', that.completeHandler);
+        return that;
+    };
+
+    classProto.afterComplete = function(data){
+        var that = this;
+        that.triggerEvent('onComplete', data);
+        that.close();
         return that;
     };
 });

@@ -3371,7 +3371,8 @@ cm.createSvg = function(){
 
 /* ******* CLASS FABRIC ******* */
 
-cm.defineStack = {};
+cm._defineStack = {};
+cm._defineExtendStack = {};
 
 cm.defineHelper = function(name, data, handler){
     var that = this;
@@ -3393,15 +3394,23 @@ cm.defineHelper = function(name, data, handler){
             'short' : name.replace('.', ''),
             'split' : name.split('.')
         },
+        '_className' : name,
+        '_constructor' : handler,
         '_modules' : {},
         'params' : data['params']
     };
     // Inheritance
     if(data['extend']){
-        cm.getConstructor(data['extend'], function(classConstructor){
+        cm.getConstructor(data['extend'], function(classConstructor, className){
             handler.prototype = Object.create(classConstructor.prototype);
+            that.build._inheritName = className;
             that.build._inherit = classConstructor;
+            // Merge modules
             that.build._raw['modules'] = cm.merge(that.build._inherit.prototype._raw['modules'], that.build._raw['modules']);
+            // Add to extend stack
+            if(cm._defineExtendStack[className]){
+                cm._defineExtendStack[className].push(name);
+            }
         });
     }
     // Extend class by predefine modules
@@ -3420,10 +3429,13 @@ cm.defineHelper = function(name, data, handler){
     cm.forEach(that.build, function(value, key){
         handler.prototype[key] = value;
     });
-    // Extend Window object
-    cm.objectSelector(that.build._name['full'], window, handler);
     // Add to stack
-    cm.defineStack[name] = handler;
+    if(!cm._defineExtendStack[name]){
+        cm._defineExtendStack[name] = [];
+    }
+    cm._defineStack[name] = handler;
+    // Extend Window object
+    cm.objectSelector(name, window, handler);
 };
 
 cm.define = (function(){
@@ -3437,12 +3449,12 @@ cm.getConstructor = function(className, callback){
     var classConstructor;
     callback = typeof callback != 'undefined' ? callback : function(){};
     if(!className || className == '*'){
-        cm.forEach(cm.defineStack, function(classConstructor){
+        cm.forEach(cm._defineStack, function(classConstructor){
             callback(classConstructor, className, classConstructor.prototype);
         });
-        return cm.defineStack;
+        return cm._defineStack;
     }else{
-        classConstructor = cm.defineStack[className];
+        classConstructor = cm._defineStack[className];
         if(!classConstructor){
             if(cm._debug){
                 cm.errorLog({
@@ -3459,17 +3471,23 @@ cm.getConstructor = function(className, callback){
     }
 };
 
-cm.find = function(className, name, parentNode, callback){
+cm.find = function(className, name, parentNode, callback, params){
+    var items = [],
+        processed = {};
+    // Config
+    callback = typeof callback == 'function' ? callback : function(){};
+    params = cm.merge({
+        'childs' : false
+    }, params);
+    // Process
     if(!className || className == '*'){
-        var classes = [];
-        cm.forEach(cm.defineStack, function(classConstructor){
+        cm.forEach(cm._defineStack, function(classConstructor){
             if(classConstructor.prototype.findInStack){
-                classes = cm.extend(classes, classConstructor.prototype.findInStack(name, parentNode, callback));
+                items = cm.extend(items, classConstructor.prototype.findInStack(name, parentNode, callback));
             }
         });
-        return classes;
     }else{
-        var classConstructor = cm.defineStack[className];
+        var classConstructor = cm._defineStack[className];
         if(!classConstructor){
             cm.errorLog({
                 'type' : 'error',
@@ -3483,10 +3501,18 @@ cm.find = function(className, name, parentNode, callback){
                 'message' : ['Class', cm.strWrap(className, '"'), 'does not support Module Stack.'].join(' ')
             });
         }else{
-            return classConstructor.prototype.findInStack(name, parentNode, callback);
+            // Find instances of current constructor
+            items = cm.extend(items, classConstructor.prototype.findInStack(name, parentNode, callback));
+            // Find child instances, and stack processed parent classes to avoid infinity loops
+            if(params['childs'] && cm._defineExtendStack[className] && !processed[className]){
+                processed[className] = true;
+                cm.forEach(cm._defineExtendStack[className], function(childName){
+                    items = cm.extend(items, cm.find(childName, name, parentNode, callback, params));
+                });
+            }
         }
     }
-    return null;
+    return items;
 };
 
 cm.Finder = function(className, name, parentNode, callback, params){
@@ -3500,7 +3526,8 @@ cm.Finder = function(className, name, parentNode, callback, params){
         callback = typeof callback == 'function' ? callback : function(){};
         params = cm.merge({
             'event' : 'onRender',
-            'multiple' : false
+            'multiple' : false,
+            'childs' : false
         }, params);
         // Search in constructed classes
         finder = cm.find(className, name, parentNode, callback);
@@ -3517,14 +3544,18 @@ cm.Finder = function(className, name, parentNode, callback, params){
         classObject.removeEvent(params['event'], watcher);
         var isSame = classObject.isAppropriateToStack(name, parentNode, callback);
         if(isSame && !params['multiple'] && isEventBind){
-            that.remove();
+            that.remove(classObject._constructor);
         }
     };
 
-    that.remove = function(){
-        cm.getConstructor(className, function(classConstructor){
+    that.remove = function(classConstructor){
+        if(classConstructor){
             classConstructor.prototype.removeEvent(params['event'], watcher);
-        });
+        }else{
+            cm.getConstructor(className, function(classConstructor){
+                classConstructor.prototype.removeEvent(params['event'], watcher);
+            });
+        }
         return that;
     };
 

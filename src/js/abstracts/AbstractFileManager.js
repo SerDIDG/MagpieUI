@@ -2,6 +2,7 @@ cm.define('Com.AbstractFileManager', {
     'extend' : 'Com.AbstractController',
     'events' : [
         'onSelect',
+        'onComplete',
         'onRenderHolderStart',
         'onRenderHolderProcess',
         'onRenderHolderEnd',
@@ -45,20 +46,44 @@ function(params){
 cm.getConstructor('Com.AbstractFileManager', function(classConstructor, className, classProto){
     var _inherit = classProto._inherit;
 
+    classProto.construct = function(){
+        var that = this;
+        // Bind context to methods
+        that.completeHandler = that.complete.bind(that);
+        // Add events
+        // Call parent method
+        _inherit.prototype.construct.apply(that, arguments);
+        return that;
+    };
+
     classProto.validateParams = function(){
         var that = this;
         that.isMultiple = !that.params['max'] || that.params['max'] > 1;
         return that;
     };
 
-    classProto.get = function(){
+    classProto.get = function(callback){
+        var that = this,
+            data = [],
+            value;
+        cm.forEach(that.items, function(item){
+            value = item['value'];
+            value && data.push(item['value']);
+        });
+        callback && callback(data);
+        return data;
+    };
+
+    classProto.getFiles = function(callback){
         var that = this;
+        callback && callback(that.items);
         return that.items;
     };
 
-    classProto.select = function(){
+    classProto.complete = function(callback){
         var that = this;
-        that.triggerEvent('onSelect', that.items);
+        callback && callback(that.items);
+        that.triggerEvent('onComplete', that.items);
         return that.items;
     };
 
@@ -68,8 +93,8 @@ cm.getConstructor('Com.AbstractFileManager', function(classConstructor, classNam
         // Structure
         that.nodes['container'] = cm.node('div', {'class' : 'com__file-manager'},
             that.nodes['inner'] = cm.node('div', {'class' : 'inner'},
-                that.nodes['holder'] = that.renderHolder(),
-                that.nodes['content'] = that.renderContent()
+                that.renderHolder(),
+                that.renderContent()
             )
         );
         // Events
@@ -79,12 +104,18 @@ cm.getConstructor('Com.AbstractFileManager', function(classConstructor, classNam
     };
 
     classProto.renderHolder = function(){
-        var that = this;
+        var that = this,
+            nodes = {};
         that.triggerEvent('onRenderHolderStart');
-        var node = cm.node('div', {'class' : 'com__file-manager__holder is-hidden'});
+        // Structure
+        nodes['container'] = cm.node('div', {'class' : 'com__file-manager__holder is-hidden'},
+            nodes['inner'] = cm.node('div', {'class' : 'inner'})
+        );
+        // Events
         that.triggerEvent('onRenderHolderProcess');
+        that.nodes['holder'] = nodes;
         that.triggerEvent('onRenderHolderEnd');
-        return node;
+        return nodes['container'];
     };
 
     classProto.renderContent = function(){

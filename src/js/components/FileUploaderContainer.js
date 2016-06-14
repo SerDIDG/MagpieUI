@@ -1,6 +1,7 @@
 cm.define('Com.FileUploaderContainer', {
     'extend' : 'Com.AbstractContainer',
     'events' : [
+        'onComplete',
         'onSelect'
     ],
     'params' : {
@@ -35,7 +36,8 @@ cm.getConstructor('Com.FileUploaderContainer', function(classConstructor, classN
         that.validateParamsEndHandler = that.validateParamsEnd.bind(that);
         that.renderControllerProcessHandler = that.renderControllerProcess.bind(that);
         that.getHandler = that.get.bind(that);
-        that.selectHandler = that.select.bind(that);
+        that.completeHandler = that.complete.bind(that);
+        that.afterCompleteHandler = that.afterComplete.bind(that);
         // Add events
         that.addEvent('onValidateParamsEnd', that.validateParamsEndHandler);
         that.addEvent('onRenderControllerProcess', that.renderControllerProcessHandler);
@@ -50,10 +52,10 @@ cm.getConstructor('Com.FileUploaderContainer', function(classConstructor, classN
         return that.components['controller'] && that.components['controller'].get && that.components['controller'].get();
     };
 
-    classProto.select = function(e){
+    classProto.complete = function(e){
         e && cm.preventDefault(e);
         var that = this;
-        return that.components['controller'] && that.components['controller'].select && that.components['controller'].select();
+        return that.components['controller'] && that.components['controller'].complete && that.components['controller'].complete();
     };
 
     classProto.validateParamsEnd = function(){
@@ -66,9 +68,11 @@ cm.getConstructor('Com.FileUploaderContainer', function(classConstructor, classN
 
     classProto.renderControllerProcess = function(){
         var that = this;
+        that.components['controller'].addEvent('onComplete', function(my, data){
+            that.afterComplete(data);
+        });
         that.components['controller'].addEvent('onSelect', function(my, data){
-            that.triggerEvent('onSelect', data);
-            that.close();
+            cm.triggerEvent('onSelect', data);
         });
         return that;
     };
@@ -84,7 +88,14 @@ cm.getConstructor('Com.FileUploaderContainer', function(classConstructor, classN
         );
         // Events
         cm.addEvent(that.nodes['placeholder']['close'], 'click', that.closeHandler);
-        cm.addEvent(that.nodes['placeholder']['save'], 'click', that.selectHandler);
+        cm.addEvent(that.nodes['placeholder']['save'], 'click', that.completeHandler);
+        return that;
+    };
+
+    classProto.afterComplete = function(data){
+        var that = this;
+        that.triggerEvent('onComplete', data);
+        that.close();
         return that;
     };
 });

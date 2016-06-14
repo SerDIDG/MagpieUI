@@ -181,7 +181,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
                         'node' : that.myNodes['browseFileManager']
                     })
                 );
-                that.myComponents['fileManager'].addEvent('onSelect', function(my, data){
+                that.myComponents['fileManager'].addEvent('onComplete', function(my, data){
                     that.processFiles(data);
                 });
             });
@@ -194,7 +194,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
                         'node' : that.myNodes['browseFileUploader']
                     })
                 );
-                that.myComponents['fileUploader'].addEvent('onSelect', function(my, data){
+                that.myComponents['fileUploader'].addEvent('onComplete', function(my, data){
                     that.processFiles(data);
                 });
             });

@@ -100,6 +100,9 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
         that.params['dropzoneParams']['max'] = that.params['max'];
         that.params['fileManagerParams']['params']['max'] = that.params['max'];
         that.params['fileUploaderParams']['params']['max'] = that.params['max'];
+        // File Uploader
+        that.params['fileUploaderParams']['params']['local'] = that.params['local'];
+        that.params['fileUploaderParams']['params']['fileManager'] = that.params['fileManager'];
         // Other
         that.params['dropzone'] = !that.params['local'] ? false : that.params['dropzone'];
         that.params['local'] = that.params['fileUploader'] ? false : that.params['local'];
@@ -141,7 +144,7 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
                         'node' : that.myNodes['browseFileManager']
                     })
                 );
-                that.myComponents['fileManager'].addEvent('onSelect', function(my, data){
+                that.myComponents['fileManager'].addEvent('onComplete', function(my, data){
                     that.processFiles(data);
                 });
             });
@@ -154,7 +157,7 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
                         'node' : that.myNodes['browseFileUploader']
                     })
                 );
-                that.myComponents['fileUploader'].addEvent('onSelect', function(my, data){
+                that.myComponents['fileUploader'].addEvent('onComplete', function(my, data){
                     that.processFiles(data);
                 });
             });

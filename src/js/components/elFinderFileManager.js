@@ -5,11 +5,10 @@ cm.define('Com.elFinderFileManager', {
             url : '',
             lang : {},
             dotFiles : false,
-            destroyOnClose : true,
             useBrowserHistory : false,
+            resizable : false,
             commandsOptions : {
                 getfile : {
-                    oncomplete: 'close',
                     folders : false,
                     multiple : false
                 }
@@ -19,6 +18,8 @@ cm.define('Com.elFinderFileManager', {
 },
 function(params){
     var that = this;
+    that.processType = null;
+    that.processCallback = null;
     // Call parent class construct
     Com.AbstractFileManager.apply(that, arguments);
 });
@@ -29,49 +30,71 @@ cm.getConstructor('Com.elFinderFileManager', function(classConstructor, classNam
     classProto.construct = function(){
         var that = this;
         // Bind context to methods
-        that.destructProcessHandler = that.destructProcess.bind(that);
         that.selectFileEventHandler = that.selectFileEvent.bind(that);
+        that.getFilesEventHandler = that.getFilesEvent.bind(that);
         // Add events
-        that.addEvent('onDestructProcess', that.destructProcessHandler);
         // Call parent method
         _inherit.prototype.construct.apply(that, arguments);
         return that;
     };
 
-    classProto.select = function(){
+    classProto.get = function(callback){
         var that = this;
+        that.processType = 'get';
+        that.processCallback = callback || function(){};
+        // Get files
         if(that.components['controller']){
             that.components['controller'].exec('getfile');
         }else{
-            that.triggerEvent('onSelect', that.items);
+            _inherit.prototype.get.apply(that, arguments);
         }
-        return that.items;
+        return null;
     };
 
-    classProto.destructProcess = function(){
+    classProto.getFiles = function(callback){
         var that = this;
+        that.processType = 'getFiles';
+        that.processCallback = callback || function(){};
+        // Get files
         if(that.components['controller']){
-            //that.components['controller'].exec('destroy');
+            that.components['controller'].exec('getfile');
+        }else{
+            _inherit.prototype.getFiles.apply(that, arguments);
         }
-        return that;
+        return null;
+    };
+
+    classProto.complete = function(callback){
+        var that = this;
+        that.processType = 'complete';
+        that.processCallback = callback || function(){};
+        // Get files
+        if(that.components['controller']){
+            that.components['controller'].exec('getfile');
+        }else{
+            _inherit.prototype.complete.apply(that, arguments);
+        }
+        return that.items;
     };
 
     classProto.renderViewModel = function(){
         var that = this;
         // Init elFinder
         if(typeof elFinder != 'undefined'){
-            cm.removeClass(that.nodes['holder'], 'is-hidden');
-            that.components['controller'] = new elFinder(that.nodes['holder'], cm.merge(that.params['config'], {
-                commandsOptions : {
-                    getfile : {
-                        multiple: that.isMultiple
-                    }
-                },
-                getFileCallback : function(data) {
-                    that.processFiles(data);
-                }
-            }));
-            that.components['controller'].bind('select', that.selectFileEventHandler);
+            that.components['controller'] = new elFinder(that.nodes['holder']['inner'],
+                cm.merge(that.params['config'], {
+                    commandsOptions : {
+                        getfile : {
+                            multiple: that.isMultiple
+                        }
+                    },
+                    getFileCallback : that.getFilesEventHandler
+                })
+            );
+            // elFinder does not return path of selected file
+            //that.components['controller'].bind('select', that.selectFileEventHandler);
+            // Show
+            cm.removeClass(that.nodes['holder']['container'], 'is-hidden');
             that.components['controller'].show();
         }else{
             cm.errorLog({
@@ -82,26 +105,40 @@ cm.getConstructor('Com.elFinderFileManager', function(classConstructor, classNam
         return that;
     };
 
+    classProto.getFilesEvent = function(data){
+        var that = this;
+        that.processFiles(data);
+        switch(that.processType){
+            case 'get':
+                _inherit.prototype.get.call(that, that.processCallback);
+                break;
+            case 'getFiles':
+                _inherit.prototype.getFiles.call(that, that.processCallback);
+                break;
+            case 'complete':
+                _inherit.prototype.complete.call(that, that.processCallback);
+                break;
+            default:
+                _inherit.prototype.complete.call(that);
+                break;
+
+        }
+        that.processType = null;
+        return that;
+    };
+
     classProto.selectFileEvent = function(e){
         var that = this,
             selected = e.data.selected,
             files = [],
-            file,
-            max;
+            file;
         if(selected.length){
             cm.forEach(selected, function(item){
                 file = that.components['controller'].file(item);
                 file && files.push(file);
             });
         }
-        if(!that.params['max']){
-            that.items = files;
-        }else if(files.length){
-            max = Math.min(0, that.params['max'], files.length);
-            that.items = files.slice(0, max);
-        }else{
-            that.items = [];
-        }
+        that.processFiles(files);
     };
 
     classProto.convertFile = function(data){

@@ -83,7 +83,7 @@ Mod['Extend'] = {
             if(o._config['extend']){
                 cm.forEach(o, function(item, key){
                     if(!/^(_)/.test(key)){
-                        cm.defineStack[that._name['full']].prototype[key] = item;
+                        cm._defineStack[that._name['full']].prototype[key] = item;
                     }
                 });
             }

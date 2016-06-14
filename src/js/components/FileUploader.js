@@ -1,7 +1,8 @@
 cm.define('Com.FileUploader', {
     'extend' : 'Com.AbstractController',
     'events' : [
-        'onSelect'
+        'onSelect',
+        'onComplete'
     ],
     'params' : {
         'max' : 0,
@@ -31,7 +32,7 @@ cm.define('Com.FileUploader', {
         },
         'Com.FileReader' : {},
         'langs' : {
-            'tab_local' : 'Upload Local',
+            'tab_local' : 'Select From PC',
             'tab_filemanager' : 'File Manager',
             'browse_local_single' : 'Choose file',
             'browse_local_multiple' : 'Choose files',
@@ -56,33 +57,47 @@ cm.getConstructor('Com.FileUploader', function(classConstructor, className, clas
     classProto.construct = function(){
         var that = this;
         // Bind context to methods
+        that.completeHandler = that.complete.bind(that);
         that.browseActionHandler = that.browseAction.bind(that);
         that.processFilesHandler = that.processFiles.bind(that);
+        that.selectFilesHandler = that.selectFiles.bind(that);
         // Add events
         // Call parent method
         _inherit.prototype.construct.apply(that, arguments);
         return that;
     };
 
-    classProto.get = function(){
+    classProto.get = function(callback){
         var that = this;
         if(that.activeTab){
             switch(that.activeTab['id']){
                 case 'local':
                     that.items = that.components['local'].getFiles();
+                    callback && callback(that.items);
                     break;
                 case 'fileManager':
-                    that.items = that.components['fileManager'].get();
+                    that.components['fileManager'].getFiles(callback);
                     break;
             }
         }
-        return that.items || [];
+        return null;
     };
 
-    classProto.select = function(){
+    classProto.complete = function(){
         var that = this;
-        that.items = that.get();
-        that.triggerEvent('onSelect', that.items);
+        if(that.activeTab){
+            switch(that.activeTab['id']){
+                case 'local':
+                    that.items = that.components['local'].getFiles();
+                    that.triggerEvent('onComplete', that.items);
+                    break;
+                case 'fileManager':
+                    that.components['fileManager'].getFiles(function(data){
+                        that.triggerEvent('onComplete', data);
+                    });
+                    break;
+            }
+        }
         return that.items;
     };
 
@@ -175,6 +190,10 @@ cm.getConstructor('Com.FileUploader', function(classConstructor, className, clas
                         'node' : that.nodes['fileManager']['holder']
                     })
                 );
+                that.components['fileManager'].addEvent('onComplete', that.completeHandler);
+                that.components['fileManager'].addEvent('onSelect', function(my, data){
+                    that.selectFiles(data);
+                });
             });
         }
         // Init Tabset
@@ -268,6 +287,12 @@ cm.getConstructor('Com.FileUploader', function(classConstructor, className, clas
         }else if(!cm.isEmpty(data)){
             that.components['local'].addItem({'value' : data}, true);
         }
+        return that;
+    };
+
+    classProto.selectFiles = function(data){
+        var that = this;
+        cm.triggerEvent('onSelect', data);
         return that;
     };
 });
