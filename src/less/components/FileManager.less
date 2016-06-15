@@ -5,19 +5,23 @@
     }
 }
 
-.com__file-manager__holder {
-    .cm__box;
-
-    > .inner {
-    }
+.com__file-manager__content {
+    .cm__box-reverse;
 
     &.is-hidden {
         display: none;
     }
 }
 
-.com__file-manager__stats-list {
-    > ul {
-        .cm__list-clear;
+.com__file-manager__holder {
+    > .inner {
+    }
+
+    &.is-hidden {
+        display: none;
+    }
+
+    &.is-hidden + .com__file-manager__content {
+        margin-top: 0;
     }
 }

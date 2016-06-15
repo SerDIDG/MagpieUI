@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.18.5 (2016-06-14 21:42) ************ */
+/*! ************ MagpieUI v3.18.6 (2016-06-15 18:33) ************ */
 @charset "UTF-8";
 
 /*!
@@ -13400,18 +13400,30 @@ button {
     }
 }
 
-.com__file-manager__holder {
-    .cm__box;
-
-    > .inner {
-    }
+.com__file-manager__content {
+    .cm__box-reverse;
 
     &.is-hidden {
         display: none;
     }
 }
 
-.com__file-manager__stats-list {
+.com__file-manager__holder {
+    > .inner {
+    }
+
+    &.is-hidden {
+        display: none;
+    }
+
+    &.is-hidden + .com__file-manager__content {
+        margin-top: 0;
+    }
+}
+/* ******* COMPONENTS: FILE STATISTICS ******* */
+
+
+.com__file-stats__list {
     > ul {
         .cm__list-clear;
     }

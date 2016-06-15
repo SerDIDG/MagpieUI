@@ -2,7 +2,7 @@ cm.define('Com.FileUploaderContainer', {
     'extend' : 'Com.AbstractContainer',
     'events' : [
         'onComplete',
-        'onSelect'
+        'onGet'
     ],
     'params' : {
         'constructor' : 'Com.FileUploader',
@@ -49,13 +49,15 @@ cm.getConstructor('Com.FileUploaderContainer', function(classConstructor, classN
     classProto.get = function(e){
         e && cm.preventDefault(e);
         var that = this;
-        return that.components['controller'] && that.components['controller'].get && that.components['controller'].get();
+        that.components['controller'] && that.components['controller'].get && that.components['controller'].get();
+        return that;
     };
 
     classProto.complete = function(e){
         e && cm.preventDefault(e);
         var that = this;
-        return that.components['controller'] && that.components['controller'].complete && that.components['controller'].complete();
+        that.components['controller'] && that.components['controller'].complete && that.components['controller'].complete();
+        return that;
     };
 
     classProto.validateParamsEnd = function(){
@@ -68,11 +70,11 @@ cm.getConstructor('Com.FileUploaderContainer', function(classConstructor, classN
 
     classProto.renderControllerProcess = function(){
         var that = this;
+        that.components['controller'].addEvent('onGet', function(my, data){
+            that.afterGet(data);
+        });
         that.components['controller'].addEvent('onComplete', function(my, data){
             that.afterComplete(data);
-        });
-        that.components['controller'].addEvent('onSelect', function(my, data){
-            cm.triggerEvent('onSelect', data);
         });
         return that;
     };
@@ -89,6 +91,14 @@ cm.getConstructor('Com.FileUploaderContainer', function(classConstructor, classN
         // Events
         cm.addEvent(that.nodes['placeholder']['close'], 'click', that.closeHandler);
         cm.addEvent(that.nodes['placeholder']['save'], 'click', that.completeHandler);
+        return that;
+    };
+
+    /* *** AFTER EVENTS *** */
+
+    classProto.afterGet = function(data){
+        var that = this;
+        that.triggerEvent('onGet', data);
         return that;
     };
 

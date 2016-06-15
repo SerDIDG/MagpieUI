@@ -18,8 +18,7 @@ cm.define('Com.elFinderFileManager', {
 },
 function(params){
     var that = this;
-    that.processType = null;
-    that.processCallback = null;
+    that.getFilesProcessType = null;
     // Call parent class construct
     Com.AbstractFileManager.apply(that, arguments);
 });
@@ -38,47 +37,43 @@ cm.getConstructor('Com.elFinderFileManager', function(classConstructor, classNam
         return that;
     };
 
-    classProto.get = function(callback){
+    classProto.get = function(){
         var that = this;
-        that.processType = 'get';
-        that.processCallback = callback || function(){};
+        that.getFilesProcessType = 'get';
         // Get files
         if(that.components['controller']){
             that.components['controller'].exec('getfile');
         }else{
             _inherit.prototype.get.apply(that, arguments);
         }
-        return null;
+        return that;
     };
 
-    classProto.getFiles = function(callback){
+    classProto.complete = function(){
         var that = this;
-        that.processType = 'getFiles';
-        that.processCallback = callback || function(){};
-        // Get files
-        if(that.components['controller']){
-            that.components['controller'].exec('getfile');
-        }else{
-            _inherit.prototype.getFiles.apply(that, arguments);
-        }
-        return null;
-    };
-
-    classProto.complete = function(callback){
-        var that = this;
-        that.processType = 'complete';
-        that.processCallback = callback || function(){};
+        that.getFilesProcessType = 'complete';
         // Get files
         if(that.components['controller']){
             that.components['controller'].exec('getfile');
         }else{
             _inherit.prototype.complete.apply(that, arguments);
         }
-        return that.items;
+        return that;
+    };
+
+    classProto.redraw = function(){
+        var that = this;
+        if(that.components['controller']){
+            that.components['controller'].resize();
+        }
+        that.triggerEvent('onRedraw');
+        return that;
     };
 
     classProto.renderViewModel = function(){
         var that = this;
+        // Call parent method
+        _inherit.prototype.renderViewModel.apply(that, arguments);
         // Init elFinder
         if(typeof elFinder != 'undefined'){
             that.components['controller'] = new elFinder(that.nodes['holder']['inner'],
@@ -108,22 +103,20 @@ cm.getConstructor('Com.elFinderFileManager', function(classConstructor, classNam
     classProto.getFilesEvent = function(data){
         var that = this;
         that.processFiles(data);
-        switch(that.processType){
+        // Callbacks
+        switch(that.getFilesProcessType){
             case 'get':
-                _inherit.prototype.get.call(that, that.processCallback);
-                break;
-            case 'getFiles':
-                _inherit.prototype.getFiles.call(that, that.processCallback);
+                _inherit.prototype.get.call(that);
                 break;
             case 'complete':
-                _inherit.prototype.complete.call(that, that.processCallback);
+                _inherit.prototype.complete.call(that);
                 break;
             default:
                 _inherit.prototype.complete.call(that);
                 break;
 
         }
-        that.processType = null;
+        that.getFilesProcessType = null;
         return that;
     };
 
