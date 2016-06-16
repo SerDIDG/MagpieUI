@@ -9,6 +9,7 @@ module.exports = function(grunt) {
         banner : '/*! ************ <%= pkg.name %> v<%= pkg.version %> (<%= grunt.template.today("yyyy-mm-dd HH:MM") %>) ************ */\n',
 
         paths : {
+            modules : 'node_modules',
             components : 'bower_components',
             src : 'src',
             build : 'build',
@@ -17,6 +18,12 @@ module.exports = function(grunt) {
         },
 
         components : {
+            requirejs : {
+                path : '<%= paths.modules %>/requirejs',
+                scripts : [
+                    '<%= components.requirejs.path %>/require.js'
+                ]
+            },
             animatecss : {
                 path : '<%= paths.components %>/animate.css',
                 styles : [
@@ -24,8 +31,15 @@ module.exports = function(grunt) {
                 ]
             },
             codemirror : {
-                path : '<%= paths.components %>/codemirror',
+                path : '<%= paths.modules %>/codemirror',
                 scripts : [
+                    '<%= components.codemirror.path %>/lib/codemirror.js',
+                    '<%= components.codemirror.path %>/mode/javascript/javascript.js',
+                    '<%= components.codemirror.path %>/mode/css/css.js',
+                    '<%= components.codemirror.path %>/mode/xml/xml.js',
+                    '<%= components.codemirror.path %>/mode/htmlmixed/htmlmixed.js'
+                ],
+                scripts_require : [
                     '<%= components.codemirror.path %>/lib/codemirror.js',
                     '<%= components.codemirror.path %>/mode/javascript/javascript.js',
                     '<%= components.codemirror.path %>/mode/css/css.js',
@@ -89,6 +103,7 @@ module.exports = function(grunt) {
                 src : [
                     '<%= components.codemirror.scripts %>',
                     '<%= components.tinycolor.scripts %>',
+                    '<%= components.requirejs.scripts %>',
                     '<%= paths.src %>/js/polyfill.js',
                     '<%= paths.src %>/js/common.js',
                     '<%= paths.src %>/js/modules.js',

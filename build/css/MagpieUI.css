@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.18.6 (2016-06-15 18:33) ************ */
+/*! ************ MagpieUI v3.18.6 (2016-06-16 21:39) ************ */
 /*!
 Animate.css - http://daneden.me/animate
 Licensed under the MIT license - http://opensource.org/licenses/MIT
@@ -2907,7 +2907,7 @@ Copyright (c) 2015 Daniel Eden
 }
 .cm-fat-cursor .CodeMirror-cursor {
   width: auto;
-  border: 0;
+  border: 0 !important;
   background: #7e7;
 }
 .cm-fat-cursor div.CodeMirror-cursors {
@@ -3070,7 +3070,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
   border-right: 30px solid transparent;
 }
 /* The fake, visible scrollbars. Used to force redraw during scrolling
-   before actuall scrolling happens, thus preventing shaking and
+   before actual scrolling happens, thus preventing shaking and
    flickering artifacts. */
 .CodeMirror-vscrollbar,
 .CodeMirror-hscrollbar,
@@ -3104,12 +3104,14 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
   position: absolute;
   left: 0;
   top: 0;
+  min-height: 100%;
   z-index: 3;
 }
 .CodeMirror-gutter {
   white-space: normal;
   height: 100%;
   display: inline-block;
+  vertical-align: top;
   margin-bottom: -30px;
   /* Hack to make IE7 behave */
   *zoom: 1;
@@ -3160,6 +3162,8 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
   position: relative;
   overflow: visible;
   -webkit-tap-highlight-color: transparent;
+  -webkit-font-variant-ligatures: none;
+  font-variant-ligatures: none;
 }
 .CodeMirror-wrap pre {
   word-wrap: break-word;
@@ -4859,7 +4863,8 @@ select[multiple] {
 }
 input,
 select,
-textarea {
+textarea,
+button {
   font: 400 13px/18px 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
   margin: 0;
@@ -4867,25 +4872,29 @@ textarea {
 }
 input::-webkit-input-placeholder,
 select::-webkit-input-placeholder,
-textarea::-webkit-input-placeholder {
+textarea::-webkit-input-placeholder,
+button::-webkit-input-placeholder {
   opacity: 1;
   color: #b7b7b7;
 }
 input:-moz-placeholder,
 select:-moz-placeholder,
-textarea:-moz-placeholder {
+textarea:-moz-placeholder,
+button:-moz-placeholder {
   opacity: 1;
   color: #b7b7b7;
 }
 input::-moz-placeholder,
 select::-moz-placeholder,
-textarea::-moz-placeholder {
+textarea::-moz-placeholder,
+button::-moz-placeholder {
   opacity: 1;
   color: #b7b7b7;
 }
 input:-ms-input-placeholder,
 select:-ms-input-placeholder,
-textarea:-ms-input-placeholder {
+textarea:-ms-input-placeholder,
+button:-ms-input-placeholder {
   opacity: 1;
   color: #b7b7b7;
 }

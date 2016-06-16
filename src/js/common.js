@@ -59,8 +59,7 @@ var cm = {
             'displayDateFormat' : '%F %j, %Y',
             'displayDateTimeFormat' : '%F %j, %Y, %H:%i',
             'tooltipTop' : 'targetHeight + 4'
-        },
-        'MAX_SAFE_INTEGER' : 9007199254740991
+        }
     },
     Mod = {},
     Part = {},
@@ -1312,8 +1311,8 @@ cm.showSpecialTags = function(){
 };
 
 cm.strToHTML = function(str){
-    if(!str){
-        return null;
+    if(!str || cm.isNode(str)){
+        return str;
     }
     var node = cm.Node('div');
     node.insertAdjacentHTML('beforeend', str);

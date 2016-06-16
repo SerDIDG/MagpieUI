@@ -31,7 +31,6 @@ cm.getConstructor('Com.elFinderFileManager', function(classConstructor, classNam
         // Bind context to methods
         that.selectFileEventHandler = that.selectFileEvent.bind(that);
         that.getFilesEventHandler = that.getFilesEvent.bind(that);
-        // Add events
         // Call parent method
         _inherit.prototype.construct.apply(that, arguments);
         return that;
@@ -40,7 +39,6 @@ cm.getConstructor('Com.elFinderFileManager', function(classConstructor, classNam
     classProto.get = function(){
         var that = this;
         that.getFilesProcessType = 'get';
-        // Get files
         if(that.components['controller']){
             that.components['controller'].exec('getfile');
         }else{
@@ -52,7 +50,6 @@ cm.getConstructor('Com.elFinderFileManager', function(classConstructor, classNam
     classProto.complete = function(){
         var that = this;
         that.getFilesProcessType = 'complete';
-        // Get files
         if(that.components['controller']){
             that.components['controller'].exec('getfile');
         }else{
@@ -86,8 +83,6 @@ cm.getConstructor('Com.elFinderFileManager', function(classConstructor, classNam
                     getFileCallback : that.getFilesEventHandler
                 })
             );
-            // elFinder does not return path of selected file
-            //that.components['controller'].bind('select', that.selectFileEventHandler);
             // Show
             cm.removeClass(that.nodes['holder']['container'], 'is-hidden');
             that.components['controller'].show();
@@ -100,8 +95,11 @@ cm.getConstructor('Com.elFinderFileManager', function(classConstructor, classNam
         return that;
     };
 
+    /* *** PROCESS FILES *** */
+
     classProto.getFilesEvent = function(data){
         var that = this;
+        // Read files and convert to file format
         that.processFiles(data);
         // Callbacks
         switch(that.getFilesProcessType){
@@ -118,20 +116,6 @@ cm.getConstructor('Com.elFinderFileManager', function(classConstructor, classNam
         }
         that.getFilesProcessType = null;
         return that;
-    };
-
-    classProto.selectFileEvent = function(e){
-        var that = this,
-            selected = e.data.selected,
-            files = [],
-            file;
-        if(selected.length){
-            cm.forEach(selected, function(item){
-                file = that.components['controller'].file(item);
-                file && files.push(file);
-            });
-        }
-        that.processFiles(files);
     };
 
     classProto.convertFile = function(data){
