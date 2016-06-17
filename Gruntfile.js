@@ -18,6 +18,12 @@ module.exports = function(grunt) {
         },
 
         components : {
+            less : {
+                path : '<%= paths.modules %>/less',
+                scripts : [
+                    '<%= components.less.path %>/dist/less.js'
+                ]
+            },
             requirejs : {
                 path : '<%= paths.modules %>/requirejs',
                 scripts : [
@@ -103,7 +109,8 @@ module.exports = function(grunt) {
                 src : [
                     '<%= components.codemirror.scripts %>',
                     '<%= components.tinycolor.scripts %>',
-                    '<%= components.requirejs.scripts %>',
+                    '<%= components.less.scripts %>',
+                    //'<%= components.requirejs.scripts %>',
                     '<%= paths.src %>/js/polyfill.js',
                     '<%= paths.src %>/js/common.js',
                     '<%= paths.src %>/js/modules.js',

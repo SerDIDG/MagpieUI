@@ -29,7 +29,6 @@ cm.getConstructor('Com.elFinderFileManager', function(classConstructor, classNam
     classProto.construct = function(){
         var that = this;
         // Bind context to methods
-        that.selectFileEventHandler = that.selectFileEvent.bind(that);
         that.getFilesEventHandler = that.getFilesEvent.bind(that);
         // Call parent method
         _inherit.prototype.construct.apply(that, arguments);
