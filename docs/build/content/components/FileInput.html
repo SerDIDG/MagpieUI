@@ -22,17 +22,27 @@
         <dl class="pt__field">
             <dt>File Input:</dt>
             <dd>
-                <input type="text" data-element="Com.FileInput" value="Bar" name="file-input-test">
+                <form action="http://google.com">
+                    <input type="text" data-element="Com.FileInput" value='{"value" : "bar"}' name="file-input-test">
+                </form>
             </dd>
         </dl>
+        <hr>
         <dl class="pt__field">
             <dt>Multiple File Input:</dt>
             <dd>
                 <div data-element="Com.MultipleFileInput" data-node="ComMultipleFileInput:{}:container" data-config='{"name" : "multiple-file-input-test[]"}'>
-                    <input type="text" data-node="inputs:[]:input" value="http://google.com" data-config='{"file" : {"name" : "Foobar"}}'>
-                    <input type="text" data-node="inputs:[]:input" value="Foo">
-                    <input type="text" data-node="inputs:[]:input" data-config='{"file" : {"name" : "Bar-Foo", "value" : "http://quicksilk.com"}}'>
+                    <input type="text" data-node="inputs:[]:input" value='{"value" : "http://google.com"}' data-config='{"file" : {"name" : "Foobar"}}'>
+                    <input type="text" data-node="inputs:[]:input" value='{"value" : "foo"}'>
+                    <input type="text" data-node="inputs:[]:input" data-config='{"value" : {"name" : "Bar-Foo", "value" : "http://quicksilk.com"}}'>
                 </div>
+            </dd>
+        </dl>
+        <hr>
+        <dl class="pt__field">
+            <dt>File Uploader Container:</dt>
+            <dd>
+                <button class="button button-primary" data-element="Com.FileUploaderContainer">Open File Uploader</button>
             </dd>
         </dl>
     </li>

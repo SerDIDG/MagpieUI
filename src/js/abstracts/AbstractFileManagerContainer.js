@@ -86,8 +86,8 @@ cm.getConstructor('Com.AbstractFileManagerContainer', function(classConstructor,
         // Structure
         that.nodes['placeholder']['buttons'] = cm.node('div', {'class' : 'pt__buttons pull-right'},
             that.nodes['placeholder']['buttonsInner'] = cm.node('div', {'class' : 'inner'},
-                that.nodes['placeholder']['close'] = cm.node('button', {'class' : 'button button-transparent'}, that.lang('close')),
-                that.nodes['placeholder']['save'] = cm.node('button', {'class' : 'button button-primary'}, that.lang('save'))
+                that.nodes['placeholder']['close'] = cm.node('button', {'type' : 'button', 'class' : 'button button-transparent'}, that.lang('close')),
+                that.nodes['placeholder']['save'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('save'))
             )
         );
         // Events

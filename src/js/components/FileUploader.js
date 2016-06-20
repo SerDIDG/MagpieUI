@@ -78,7 +78,7 @@ cm.getConstructor('Com.FileUploader', function(classConstructor, className, clas
         if(that.activeTab){
             switch(that.activeTab['id']){
                 case 'local':
-                    data = that.components['local'].getFiles();
+                    data = that.components['local'].get();
                     that.afterGet(data);
                     break;
                 case 'fileManager':
@@ -95,7 +95,7 @@ cm.getConstructor('Com.FileUploader', function(classConstructor, className, clas
         if(that.activeTab){
             switch(that.activeTab['id']){
                 case 'local':
-                    data = that.components['local'].getFiles();
+                    data = that.components['local'].get();
                     that.afterComplete(data);
                     break;
                 case 'fileManager':
@@ -252,7 +252,7 @@ cm.getConstructor('Com.FileUploader', function(classConstructor, className, clas
                     cm.node('div', {'class' : 'pt__buttons pull-center'},
                         cm.node('div', {'class' : 'inner'},
                             cm.node('div', {'class' : 'browse-button'},
-                                cm.node('button', {'class' : 'button button-primary button--xlarge'}, that.lang('browse_local')),
+                                cm.node('button', {'type' : 'button','class' : 'button button-primary button--xlarge'}, that.lang('browse_local')),
                                 cm.node('div', {'class' : 'inner'},
                                     nodes['input'] = cm.node('input', {'type' : 'file', 'multiple' : that.isMultiple})
                                 )
@@ -303,6 +303,7 @@ cm.getConstructor('Com.FileUploader', function(classConstructor, className, clas
     classProto.browseAction = function(e){
         var that = this,
             length = that.params['max'] ? Math.min(e.target.files.length, (that.params['max'] - that.items.length)) : e.target.files.length;
+        cm.preventDefault(e);
         cm.forEach(length, function(i){
             that.processFiles(e.target.files[i]);
         });

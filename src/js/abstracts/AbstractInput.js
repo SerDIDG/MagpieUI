@@ -44,6 +44,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         that.clearHandler = that.clear.bind(that);
         that.enableHandler = that.enable.bind(that);
         that.disableHandler = that.disable.bind(that);
+        that.clearEventHandler = that.clearEvent.bind(that);
         that.setActionHandler = that.setAction.bind(that);
         that.selectActionHandler = that.selectAction.bind(that);
         that.constructProcessHandler = that.constructProcess.bind(that);
@@ -96,6 +97,13 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
             cm.addClass(that.nodes['content'], 'disabled');
             that.triggerEvent('onDisable');
         }
+        return that;
+    };
+
+    classProto.clearEvent = function(e){
+        var that = this;
+        cm.preventDefault(e);
+        that.clear();
         return that;
     };
 
@@ -178,7 +186,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
         that.previousValue = that.value;
         that.value = value;
-        that.nodes['hidden'].value = that.value;
+        that.nodes['hidden'].value = cm.isObject(that.value) || cm.isArray(that.value) ? JSON.stringify(that.value) : that.value;
         triggerEvents && that.triggerEvent('onSet', that.value);
         return that;
     };

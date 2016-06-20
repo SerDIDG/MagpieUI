@@ -78,17 +78,6 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
         return that;
     };
 
-    classProto.getFiles = function(){
-        var that = this,
-            data = [],
-            value;
-        cm.forEach(that.items, function(item){
-            value = (item['controller'] && item['controller'].getFile) ? item['controller'].getFile() : null;
-            value && data.push(value);
-        });
-        return data;
-    };
-
     classProto.validateParamsEnd = function(){
         var that = this;
         // Validate Language Strings
@@ -178,7 +167,7 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
         // Render Browse Buttons
         if(that.params['local']){
             that.myNodes['browseLocal'] = cm.node('div', {'class' : 'browse-button'},
-                cm.node('button', {'class' : 'button button-primary'}, that.lang('_browse_local')),
+                cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('_browse_local')),
                 cm.node('div', {'class' : 'inner'},
                     that.myNodes['input'] = cm.node('input', {'type' : 'file', 'multiple' : that.isMultiple})
                 )
@@ -186,11 +175,11 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
             cm.insertFirst(that.myNodes['browseLocal'], that.myNodes['contentInner']);
         }
         if(that.params['fileManager']){
-            that.myNodes['browseFileManager'] = cm.node('button', {'class' : 'button button-primary'}, that.lang('_browse_filemanager'));
+            that.myNodes['browseFileManager'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('_browse_filemanager'));
             cm.insertFirst(that.myNodes['browseFileManager'], that.myNodes['contentInner']);
         }
         if(that.params['fileUploader']){
-            that.myNodes['browseFileUploader'] = cm.node('button', {'class' : 'button button-primary'}, that.lang('browse'));
+            that.myNodes['browseFileUploader'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('browse'));
             cm.insertFirst(that.myNodes['browseFileUploader'], that.myNodes['contentInner']);
         }
         if(!that.hasButtons){
@@ -237,6 +226,7 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
     classProto.browseAction = function(e){
         var that = this,
             length = that.params['max'] ? Math.min(e.target.files.length, (that.params['max'] - that.items.length)) : e.target.files.length;
+        cm.preventDefault(e);
         cm.forEach(length, function(i){
             that.processFiles(e.target.files[i]);
         });

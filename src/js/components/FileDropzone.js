@@ -12,7 +12,8 @@ cm.define('Com.FileDropzone', {
         'max' : 0,                                  // 0 - infinity
         'duration' : 'cm._config.animDuration',
         'langs' : {
-            'drop_here' : 'drop files here'
+            'drop_single' : 'drop file here',
+            'drop_multiple' : 'drop files here'
         },
         'Com.FileReader' : {}
     }
@@ -49,6 +50,15 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
         return that;
     };
 
+    classProto.validateParams = function(){
+        var that = this;
+        // Validate Language Strings
+        that.setLangs({
+            'drop' : !that.params['max'] || that.params['max'] > 1 ? that.lang('drop_multiple') : that.lang('drop_single')
+        });
+        return that;
+    };
+
     classProto.getLESSVariablesEnd = function(){
         var that = this;
         that.params['height'] = cm.getLESSVariable('ComFileDropzone-Height', that.params['height'], true);
@@ -76,7 +86,7 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
         that.nodes['container'] = cm.node('div', {'class' : 'com__file-dropzone'},
             cm.node('div', {'class' : 'inner'},
                 cm.node('div', {'class' : 'title'},
-                    cm.node('div', {'class' : 'label'}, that.lang('drop_here')),
+                    cm.node('div', {'class' : 'label'}, that.lang('drop')),
                     cm.node('div', {'class' : 'icon cm-i cm-i__circle-arrow-down'})
                 )
             )

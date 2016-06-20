@@ -54,9 +54,7 @@ cm.getConstructor('Com.FileReader', function(classConstructor, className, classP
         if(cm.isFileReader && cm.isFile(file)){
             that.triggerEvent('onReadStart', file);
             // Config
-            var item = that.validate({
-                'file' : file
-            });
+            var item = that.validate(file);
             that.triggerEvent('onReadProcess', item);
             // Read File
             var reader = new FileReader();
@@ -76,22 +74,33 @@ cm.getConstructor('Com.FileReader', function(classConstructor, className, classP
     };
 
     classProto.validate = function(o){
-        o = cm.merge({
-            'file' : null,
-            'value' : null,
-            'error' : null,
-            'name' : '',
-            'size' : 0,
-            'url' : null
-        }, o);
-        if(cm.isFile(o['file'])){
-            o['name'] = o['file'].name;
-            o['size'] = o['file'].size;
-            o['url'] = window.URL.createObjectURL(o['file']);
-        }else{
-            o['name'] = cm.isEmpty(o['name']) ? o['value'] : o['name'];
-            o['url'] = cm.isEmpty(o['url']) ? o['value'] : o['url'];
+        var that = this,
+            item = {
+                'value' : null,
+                'error' : null,
+                'name' : '',
+                'size' : 0,
+                'url' : null
+            },
+            parsed;
+        if(cm.isFile(o)){
+            item['name'] = o.name;
+            item['size'] = o.size;
+            item['url'] = window.URL.createObjectURL(o);
+        }else if(cm.isObject(o)){
+            item = cm.merge(item, o);
+            item['name'] = cm.isEmpty(item['name']) ? item['value'] : item['name'];
+            item['url'] = cm.isEmpty(item['url']) ? item['value'] : item['url'];
+        }else if(!cm.isEmpty(o)){
+            parsed = cm.parseJSON(o);
+            if(cm.isObject(parsed)){
+                item = that.validate(parsed);
+            }else{
+                item = that.validate({
+                    'value' : o
+                })
+            }
         }
-        return o;
+        return item;
     };
 });
