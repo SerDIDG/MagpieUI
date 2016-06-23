@@ -42,6 +42,8 @@ function(params){
     };
 
     var render = function(){
+        var storageLeftCollapsed,
+            storageRightCollapsed;
         // Left Sidebar
         cm.addEvent(that.nodes['leftButton'], 'click', toggleLeft);
         // Right sidebar
@@ -51,8 +53,10 @@ function(params){
         that.isRightCollapsed = cm.isClass(that.params['node'], 'is-sidebar-right-collapsed');
         // Check storage
         if(that.params['remember']){
-            that.isLeftCollapsed = that.storageRead('isLeftCollapsed');
-            that.isRightCollapsed = that.storageRead('isRightCollapsed');
+            storageLeftCollapsed = that.storageRead('isLeftCollapsed');
+            storageRightCollapsed = that.storageRead('isRightCollapsed');
+            that.isLeftCollapsed = storageLeftCollapsed !== null ? storageLeftCollapsed : that.isLeftCollapsed;
+            that.isRightCollapsed = storageRightCollapsed !== null ? storageRightCollapsed : that.isRightCollapsed;
         }
         // Check sidebars visibility
         if(!cm.inDOM(that.nodes['leftContainer']) || cm.getStyle(that.nodes['leftContainer'], 'display') == 'none'){

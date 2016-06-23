@@ -174,6 +174,14 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         return value;
     };
 
+    classProto.saveValue = function(value){
+        var that = this;
+        that.previousValue = that.value;
+        that.value = value;
+        that.nodes['hidden'].value = value;
+        return that;
+    };
+
     classProto.selectAction = function(value, triggerEvents){
         var that = this;
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
@@ -184,9 +192,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
     classProto.setAction = function(value, triggerEvents){
         var that = this;
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        that.previousValue = that.value;
-        that.value = value;
-        that.nodes['hidden'].value = cm.isObject(that.value) || cm.isArray(that.value) ? JSON.stringify(that.value) : that.value;
+        that.saveValue(value);
         triggerEvents && that.triggerEvent('onSet', that.value);
         return that;
     };

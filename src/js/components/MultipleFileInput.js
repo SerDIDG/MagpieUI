@@ -78,8 +78,10 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
         return that;
     };
 
+
     classProto.validateParamsEnd = function(){
         var that = this;
+        that.isMultiple = !that.params['max'] || that.params['max'] > 1;
         // Validate Language Strings
         that.setLangs({
             '_browse_local' : that.params['fileManager'] ? that.lang('browse_local') : that.lang('browse'),
@@ -169,9 +171,10 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
             that.myNodes['browseLocal'] = cm.node('div', {'class' : 'browse-button'},
                 cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('_browse_local')),
                 cm.node('div', {'class' : 'inner'},
-                    that.myNodes['input'] = cm.node('input', {'type' : 'file', 'multiple' : that.isMultiple})
+                    that.myNodes['input'] = cm.node('input', {'type' : 'file'})
                 )
             );
+            that.isMultiple && that.myNodes['input'].setAttribute('multiple', 'multiple');
             cm.insertFirst(that.myNodes['browseLocal'], that.myNodes['contentInner']);
         }
         if(that.params['fileManager']){
@@ -226,7 +229,6 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
     classProto.browseAction = function(e){
         var that = this,
             length = that.params['max'] ? Math.min(e.target.files.length, (that.params['max'] - that.items.length)) : e.target.files.length;
-        cm.preventDefault(e);
         cm.forEach(length, function(i){
             that.processFiles(e.target.files[i]);
         });

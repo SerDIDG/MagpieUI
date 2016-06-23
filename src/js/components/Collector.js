@@ -47,7 +47,7 @@ function(params){
                     new classConstructor({
                         'node' : node
                     });
-                });
+                }, null, classConstructor.prototype.params['collectorPriority']);
             });
         }
     };

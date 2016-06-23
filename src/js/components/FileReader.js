@@ -35,9 +35,7 @@ cm.getConstructor('Com.FileReader', function(classConstructor, className, classP
         that.triggerEvent('onConstructStart');
         that.setParams(params);
         that.convertEvents(that.params['events']);
-        that.triggerEvent('onRenderStart');
         that.render();
-        that.triggerEvent('onRender');
         that.triggerEvent('onConstruct');
         that.triggerEvent('onConstructEnd');
         return that;
@@ -45,7 +43,9 @@ cm.getConstructor('Com.FileReader', function(classConstructor, className, classP
 
     classProto.render = function(){
         var that = this;
+        that.triggerEvent('onRenderStart');
         that.read(that.params['file']);
+        that.triggerEvent('onRender');
         return that;
     };
 
@@ -76,6 +76,7 @@ cm.getConstructor('Com.FileReader', function(classConstructor, className, classP
     classProto.validate = function(o){
         var that = this,
             item = {
+                '_type' : 'file',
                 'value' : null,
                 'error' : null,
                 'name' : '',

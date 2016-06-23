@@ -5,4 +5,20 @@
     > ul {
         .cm__list-clear;
     }
+
+    &.is-inline {
+        > ul {
+            display: flex;
+            .mx__flex-flow(row wrap);
+            .mx__align-items(center);
+
+            > li {
+                margin-right: @CmIndent-XSmall;
+
+                &:last-child {
+                    margin-right: 0;
+                }
+            }
+        }
+    }
 }

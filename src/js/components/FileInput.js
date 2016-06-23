@@ -104,8 +104,21 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
     };
 
     classProto.validateValue = function(value){
+        var that = this,
+            item = that.myComponents['validator'].validate(value);
+        return !cm.isEmpty(item['value']) ? item : '';
+    };
+
+    classProto.saveValue = function(value){
         var that = this;
-        return that.myComponents['validator'].validate(value);
+        that.previousValue = that.value;
+        that.value = value;
+        if(!cm.isEmpty(value)){
+            that.nodes['hidden'].value = JSON.stringify(value);
+        }else{
+            that.nodes['hidden'].value = ''
+        }
+        return that;
     };
 
     classProto.renderViewModel = function(){
@@ -208,7 +221,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
     classProto.setData = function(){
         var that = this,
             url;
-        if(cm.isEmpty(that.value['value'])){
+        if(cm.isEmpty(that.value)){
             cm.clearNode(that.myNodes['label']);
             cm.addClass(that.myNodes['label'], 'is-hidden');
             cm.removeClass(that.myNodes['browseLocal'], 'is-hidden');

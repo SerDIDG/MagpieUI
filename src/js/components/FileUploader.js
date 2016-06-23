@@ -34,7 +34,9 @@ cm.define('Com.FileUploader', {
             'toggleOnHashChange' : false
         },
         'Com.FileStats' : {
-            'embedStructure' : 'append'
+            'embedStructure' : 'append',
+            'toggleBox' : false,
+            'inline' : true
         },
         'Com.FileReader' : {},
         'langs' : {
@@ -254,7 +256,7 @@ cm.getConstructor('Com.FileUploader', function(classConstructor, className, clas
                             cm.node('div', {'class' : 'browse-button'},
                                 cm.node('button', {'type' : 'button','class' : 'button button-primary button--xlarge'}, that.lang('browse_local')),
                                 cm.node('div', {'class' : 'inner'},
-                                    nodes['input'] = cm.node('input', {'type' : 'file', 'multiple' : that.isMultiple})
+                                    nodes['input'] = cm.node('input', {'type' : 'file'})
                                 )
                             )
                         )
@@ -266,6 +268,7 @@ cm.getConstructor('Com.FileUploader', function(classConstructor, className, clas
             )
         );
         // Events
+        that.isMultiple && nodes['input'].setAttribute('multiple', 'multiple');
         cm.addEvent(nodes['input'], 'change', that.browseActionHandler);
         return nodes;
     };

@@ -5,6 +5,8 @@ cm.define('Com.FileStats', {
         'umf' : 0,                                                    // Max file size
         'quote' : 0,
         'usage' : 0,
+        'inline' : false,
+        'toggleBox' : true,
         'langs' : {
             'stats' : 'Statistics',
             'mfu' : 'You can upload up to %mfu% files at a time.',
@@ -42,6 +44,7 @@ cm.getConstructor('Com.FileStats', function(classConstructor, className, classPr
         that.nodes['container'] = cm.node('div', {'class' : 'com__file-stats'},
             that.nodes['content'] = cm.node('div', {'class' : 'com__file-stats__list'},
                 cm.node('ul',
+                    cm.node('li', {'class' : 'icon small info'}),
                     cm.node('li', that.lang('mfu', vars)),
                     cm.node('li', that.lang('umf', vars)),
                     cm.node('li', that.lang('quote', vars)),
@@ -49,6 +52,7 @@ cm.getConstructor('Com.FileStats', function(classConstructor, className, classPr
                 )
             )
         );
+        that.params['inline'] && cm.addClass(that.nodes['content'], 'is-inline');
         // Events
         that.triggerEvent('onRenderViewProcess');
         that.triggerEvent('onRenderViewEnd');
@@ -58,14 +62,16 @@ cm.getConstructor('Com.FileStats', function(classConstructor, className, classPr
     classProto.renderViewModel = function(){
         var that = this;
         // Init ToggleBox
-        cm.getConstructor('Com.ToggleBox', function(classObject, className){
-            that.components['togglebox'] = new classObject(
-                cm.merge(that.params[className], {
-                    'node' : that.nodes['content'],
-                    'title' : that.lang('stats')
-                })
-            );
-        });
+        if(that.params['toggleBox']){
+            cm.getConstructor('Com.ToggleBox', function(classObject, className){
+                that.components['togglebox'] = new classObject(
+                    cm.merge(that.params[className], {
+                        'node' : that.nodes['content'],
+                        'title' : that.lang('stats')
+                    })
+                );
+            });
+        }
         return that;
     };
 });

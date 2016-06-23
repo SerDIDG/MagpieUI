@@ -38,7 +38,8 @@ cm.define('Com.Dialog', {
         'closeButton' : true,
         'closeTitle' : true,
         'closeOnBackground' : false,
-        'openTime' : 'cm._config.animDuration',
+        'openTime' : null,
+        'duration' : 'cm._config.animDuration',
         'autoOpen' : true,
         'appendOnRender' : false,
         'removeOnClose' : true,
@@ -58,16 +59,17 @@ cm.define('Com.Dialog', {
 function(params){
     var that = this,
         contentHeight,
-        nodes = {},
-        anim = {};
+        nodes = {};
 
     that.isOpen = false;
     that.isFocus = false;
     that.isRemoved = false;
     that.isDestructed = false;
+    that.openInterval = null;
     that.resizeInterval = null;
 
     var init = function(){
+        getLESSVariables();
         that.setParams(params);
         that.convertEvents(that.params['events']);
         that.getDataConfig(that.params['content']);
@@ -80,6 +82,10 @@ function(params){
         // Open
         that.params['autoOpen'] && open();
     };
+
+    var getLESSVariables = function(){
+        that.params['duration'] = cm.getTransitionDurationFromLESS('ComDialog-Duration', that.params['duration']);
+    };
     
     var validateParams = function(){
         if(that.params['size'] == 'fullscreen'){
@@ -87,6 +93,9 @@ function(params){
             that.params['height'] = '100%';
             that.params['indentX'] = 0;
             that.params['indentY'] = 0;
+        }
+        if(that.params['openTime'] !== undefined && that.params['openTime'] !== null){
+            that.params['duration'] = that.params['openTime'];
         }
     };
 
@@ -146,8 +155,6 @@ function(params){
         renderContent(that.params['content']);
         // Embed buttons
         renderButtons(that.params['buttons']);
-        // Init animation
-        anim['container'] = new cm.Animation(nodes['container']);
         // Events
         cm.addEvent(nodes['container'], 'mouseover', function(e){
             var target = cm.getEventTarget(e);
@@ -331,12 +338,14 @@ function(params){
             // Add close event on Esc press
             cm.addEvent(window, 'keydown', windowClickEvent);
             // Animate
-            anim['container'].go({'style' : {'opacity' : '1'}, 'duration' : that.params['openTime'], 'onStop' : function(){
+            cm.addClass(nodes['container'], 'is-open', true);
+            that.openInterval && clearTimeout(that.openInterval);
+            that.openInterval = setTimeout(function(){
                 params['onEnd']();
                 // Open Event
                 that.triggerEvent('onOpen');
                 that.triggerEvent('onOpenEnd');
-            }});
+            }, that.params['duration']);
             // Open Event
             that.triggerEvent('onOpenStart');
         }
@@ -356,20 +365,18 @@ function(params){
                 cm.removeClass(cm.getDocumentHtml(), 'cm__scroll--none');
             }
             // Animate
-            anim['container'].go({
-                'style' : {'opacity' : '0'},
-                'duration' : that.params['openTime'],
-                'onStop' : function(){
-                    clearResizeInterval();
-                    nodes['container'].style.display = 'none';
-                    // Remove Window
-                    that.params['removeOnClose'] && remove();
-                    params['onEnd']();
-                    // Close Event
-                    that.triggerEvent('onClose');
-                    that.triggerEvent('onCloseEnd');
-                }
-            });
+            cm.removeClass(nodes['container'], 'is-open', true);
+            that.openInterval && clearTimeout(that.openInterval);
+            that.openInterval = setTimeout(function(){
+                clearResizeInterval();
+                nodes['container'].style.display = 'none';
+                // Remove Window
+                that.params['removeOnClose'] && remove();
+                params['onEnd']();
+                // Close Event
+                that.triggerEvent('onClose');
+                that.triggerEvent('onCloseEnd');
+            }, that.params['duration']);
             // Close Event
             that.triggerEvent('onCloseStart');
         }

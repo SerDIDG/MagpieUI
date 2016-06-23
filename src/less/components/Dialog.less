@@ -5,12 +5,13 @@
     width: 100%;
     height: 100%;
     display: none;
+    visibility: hidden;
     position: fixed;
-    top: 0;
-    left: 0;
     z-index: 1000;
     opacity: 0;
     text-align: center;
+    .mx__position(0, 0, 0, 0);
+    .mx__transition(all, @ComDialog-Duration, @CmUI-MotionAsymmetric);
 
     &:before {
         height: 100%;
@@ -41,6 +42,8 @@
         display: inline-block;
         text-align: left;
         vertical-align: middle;
+        .mx__transform(scale(0.9));
+        .mx__transition(all, @ComDialog-Duration, @CmUI-MotionAsymmetric);
 
         > .icon {
             position: absolute;
@@ -98,6 +101,15 @@
     &.has-close-background {
         > .bg {
             cursor: pointer;
+        }
+    }
+
+    &.is-open {
+        visibility: visible;
+        opacity: 1;
+
+        > .window {
+            .mx__transform(scale(1));
         }
     }
 }

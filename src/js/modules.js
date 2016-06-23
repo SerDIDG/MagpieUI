@@ -275,7 +275,7 @@ Mod['Events'] = {
         var that = this;
         if(that.events[event]){
             cm.forEach(that.events[event], function(item){
-                item(that, params || {});
+                item(that, params);
             });
         }else{
             cm.errorLog({

@@ -29,7 +29,7 @@
  ******* */
 
 var cm = {
-        '_version' : '3.18.7',
+        '_version' : '3.18.8',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -251,22 +251,26 @@ cm.merge = function(o1, o2){
     if(cm.isObject(o1)){
         o = cm.clone(o1);
         cm.forEach(o2, function(item, key){
-            if(item !== null){
-                try{
-                    if(item._isComponent){
-                        o[key] = item;
-                    }else if(cm.isObject(item) && item.constructor != Object){
-                        o[key] = item;
-                    }else if(cm.isObject(item)){
+            try{
+                if(item === undefined){
+                    o[key] = item;
+                }else if(item._isComponent){
+                    o[key] = item;
+                }else if(cm.isObject(item) && item.constructor != Object){
+                    o[key] = item;
+                }else if(cm.isObject(item)){
+                    if(cm.isObject(o[key])){
                         o[key] = cm.merge(o[key], item);
-                    }else if(cm.isArray(item)){
-                        o[key] = cm.clone(item);
                     }else{
-                        o[key] = item;
+                        o[key] = cm.clone(item);
                     }
-                }catch(e){
+                }else if(cm.isArray(item)){
+                    o[key] = cm.clone(item);
+                }else{
                     o[key] = item;
                 }
+            }catch(e){
+                o[key] = item;
             }
         });
     }else if(cm.isArray(o1)){

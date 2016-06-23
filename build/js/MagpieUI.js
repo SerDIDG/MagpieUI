@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.18.7 (2016-06-20 22:18) ************ */
+/*! ************ MagpieUI v3.18.8 (2016-06-23 19:58) ************ */
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -12455,7 +12455,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.18.7',
+        '_version' : '3.18.8',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -12677,22 +12677,26 @@ cm.merge = function(o1, o2){
     if(cm.isObject(o1)){
         o = cm.clone(o1);
         cm.forEach(o2, function(item, key){
-            if(item !== null){
-                try{
-                    if(item._isComponent){
-                        o[key] = item;
-                    }else if(cm.isObject(item) && item.constructor != Object){
-                        o[key] = item;
-                    }else if(cm.isObject(item)){
+            try{
+                if(item === undefined){
+                    o[key] = item;
+                }else if(item._isComponent){
+                    o[key] = item;
+                }else if(cm.isObject(item) && item.constructor != Object){
+                    o[key] = item;
+                }else if(cm.isObject(item)){
+                    if(cm.isObject(o[key])){
                         o[key] = cm.merge(o[key], item);
-                    }else if(cm.isArray(item)){
-                        o[key] = cm.clone(item);
                     }else{
-                        o[key] = item;
+                        o[key] = cm.clone(item);
                     }
-                }catch(e){
+                }else if(cm.isArray(item)){
+                    o[key] = cm.clone(item);
+                }else{
                     o[key] = item;
                 }
+            }catch(e){
+                o[key] = item;
             }
         });
     }else if(cm.isArray(o1)){
@@ -16263,7 +16267,7 @@ Mod['Events'] = {
         var that = this;
         if(that.events[event]){
             cm.forEach(that.events[event], function(item){
-                item(that, params || {});
+                item(that, params);
             });
         }else{
             cm.errorLog({
@@ -17810,6 +17814,14 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         return value;
     };
 
+    classProto.saveValue = function(value){
+        var that = this;
+        that.previousValue = that.value;
+        that.value = value;
+        that.nodes['hidden'].value = value;
+        return that;
+    };
+
     classProto.selectAction = function(value, triggerEvents){
         var that = this;
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
@@ -17820,9 +17832,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
     classProto.setAction = function(value, triggerEvents){
         var that = this;
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        that.previousValue = that.value;
-        that.value = value;
-        that.nodes['hidden'].value = cm.isObject(that.value) || cm.isArray(that.value) ? JSON.stringify(that.value) : that.value;
+        that.saveValue(value);
         triggerEvents && that.triggerEvent('onSet', that.value);
         return that;
     };
@@ -19604,6 +19614,7 @@ function(params){
     that.rawValue = null;
     that.isInputsLinked = false;
     that.lastInput = null;
+    // Call parent class construct
     Com.AbstractInput.apply(that, arguments);
 });
 
@@ -21789,6 +21800,8 @@ function(params){
     };
 
     var render = function(){
+        var storageLeftCollapsed,
+            storageRightCollapsed;
         // Left Sidebar
         cm.addEvent(that.nodes['leftButton'], 'click', toggleLeft);
         // Right sidebar
@@ -21798,8 +21811,10 @@ function(params){
         that.isRightCollapsed = cm.isClass(that.params['node'], 'is-sidebar-right-collapsed');
         // Check storage
         if(that.params['remember']){
-            that.isLeftCollapsed = that.storageRead('isLeftCollapsed');
-            that.isRightCollapsed = that.storageRead('isRightCollapsed');
+            storageLeftCollapsed = that.storageRead('isLeftCollapsed');
+            storageRightCollapsed = that.storageRead('isRightCollapsed');
+            that.isLeftCollapsed = storageLeftCollapsed !== null ? storageLeftCollapsed : that.isLeftCollapsed;
+            that.isRightCollapsed = storageRightCollapsed !== null ? storageRightCollapsed : that.isRightCollapsed;
         }
         // Check sidebars visibility
         if(!cm.inDOM(that.nodes['leftContainer']) || cm.getStyle(that.nodes['leftContainer'], 'display') == 'none'){
@@ -21947,7 +21962,7 @@ function(params){
                     new classConstructor({
                         'node' : node
                     });
-                });
+                }, null, classConstructor.prototype.params['collectorPriority']);
             });
         }
     };
@@ -23942,7 +23957,8 @@ cm.define('Com.Dialog', {
         'closeButton' : true,
         'closeTitle' : true,
         'closeOnBackground' : false,
-        'openTime' : 'cm._config.animDuration',
+        'openTime' : null,
+        'duration' : 'cm._config.animDuration',
         'autoOpen' : true,
         'appendOnRender' : false,
         'removeOnClose' : true,
@@ -23962,16 +23978,17 @@ cm.define('Com.Dialog', {
 function(params){
     var that = this,
         contentHeight,
-        nodes = {},
-        anim = {};
+        nodes = {};
 
     that.isOpen = false;
     that.isFocus = false;
     that.isRemoved = false;
     that.isDestructed = false;
+    that.openInterval = null;
     that.resizeInterval = null;
 
     var init = function(){
+        getLESSVariables();
         that.setParams(params);
         that.convertEvents(that.params['events']);
         that.getDataConfig(that.params['content']);
@@ -23984,6 +24001,10 @@ function(params){
         // Open
         that.params['autoOpen'] && open();
     };
+
+    var getLESSVariables = function(){
+        that.params['duration'] = cm.getTransitionDurationFromLESS('ComDialog-Duration', that.params['duration']);
+    };
     
     var validateParams = function(){
         if(that.params['size'] == 'fullscreen'){
@@ -23991,6 +24012,9 @@ function(params){
             that.params['height'] = '100%';
             that.params['indentX'] = 0;
             that.params['indentY'] = 0;
+        }
+        if(that.params['openTime'] !== undefined && that.params['openTime'] !== null){
+            that.params['duration'] = that.params['openTime'];
         }
     };
 
@@ -24050,8 +24074,6 @@ function(params){
         renderContent(that.params['content']);
         // Embed buttons
         renderButtons(that.params['buttons']);
-        // Init animation
-        anim['container'] = new cm.Animation(nodes['container']);
         // Events
         cm.addEvent(nodes['container'], 'mouseover', function(e){
             var target = cm.getEventTarget(e);
@@ -24235,12 +24257,14 @@ function(params){
             // Add close event on Esc press
             cm.addEvent(window, 'keydown', windowClickEvent);
             // Animate
-            anim['container'].go({'style' : {'opacity' : '1'}, 'duration' : that.params['openTime'], 'onStop' : function(){
+            cm.addClass(nodes['container'], 'is-open', true);
+            that.openInterval && clearTimeout(that.openInterval);
+            that.openInterval = setTimeout(function(){
                 params['onEnd']();
                 // Open Event
                 that.triggerEvent('onOpen');
                 that.triggerEvent('onOpenEnd');
-            }});
+            }, that.params['duration']);
             // Open Event
             that.triggerEvent('onOpenStart');
         }
@@ -24260,20 +24284,18 @@ function(params){
                 cm.removeClass(cm.getDocumentHtml(), 'cm__scroll--none');
             }
             // Animate
-            anim['container'].go({
-                'style' : {'opacity' : '0'},
-                'duration' : that.params['openTime'],
-                'onStop' : function(){
-                    clearResizeInterval();
-                    nodes['container'].style.display = 'none';
-                    // Remove Window
-                    that.params['removeOnClose'] && remove();
-                    params['onEnd']();
-                    // Close Event
-                    that.triggerEvent('onClose');
-                    that.triggerEvent('onCloseEnd');
-                }
-            });
+            cm.removeClass(nodes['container'], 'is-open', true);
+            that.openInterval && clearTimeout(that.openInterval);
+            that.openInterval = setTimeout(function(){
+                clearResizeInterval();
+                nodes['container'].style.display = 'none';
+                // Remove Window
+                that.params['removeOnClose'] && remove();
+                params['onEnd']();
+                // Close Event
+                that.triggerEvent('onClose');
+                that.triggerEvent('onCloseEnd');
+            }, that.params['duration']);
             // Close Event
             that.triggerEvent('onCloseStart');
         }
@@ -25995,8 +26017,21 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
     };
 
     classProto.validateValue = function(value){
+        var that = this,
+            item = that.myComponents['validator'].validate(value);
+        return !cm.isEmpty(item['value']) ? item : '';
+    };
+
+    classProto.saveValue = function(value){
         var that = this;
-        return that.myComponents['validator'].validate(value);
+        that.previousValue = that.value;
+        that.value = value;
+        if(!cm.isEmpty(value)){
+            that.nodes['hidden'].value = JSON.stringify(value);
+        }else{
+            that.nodes['hidden'].value = ''
+        }
+        return that;
     };
 
     classProto.renderViewModel = function(){
@@ -26099,7 +26134,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
     classProto.setData = function(){
         var that = this,
             url;
-        if(cm.isEmpty(that.value['value'])){
+        if(cm.isEmpty(that.value)){
             cm.clearNode(that.myNodes['label']);
             cm.addClass(that.myNodes['label'], 'is-hidden');
             cm.removeClass(that.myNodes['browseLocal'], 'is-hidden');
@@ -26192,9 +26227,7 @@ cm.getConstructor('Com.FileReader', function(classConstructor, className, classP
         that.triggerEvent('onConstructStart');
         that.setParams(params);
         that.convertEvents(that.params['events']);
-        that.triggerEvent('onRenderStart');
         that.render();
-        that.triggerEvent('onRender');
         that.triggerEvent('onConstruct');
         that.triggerEvent('onConstructEnd');
         return that;
@@ -26202,7 +26235,9 @@ cm.getConstructor('Com.FileReader', function(classConstructor, className, classP
 
     classProto.render = function(){
         var that = this;
+        that.triggerEvent('onRenderStart');
         that.read(that.params['file']);
+        that.triggerEvent('onRender');
         return that;
     };
 
@@ -26233,6 +26268,7 @@ cm.getConstructor('Com.FileReader', function(classConstructor, className, classP
     classProto.validate = function(o){
         var that = this,
             item = {
+                '_type' : 'file',
                 'value' : null,
                 'error' : null,
                 'name' : '',
@@ -26268,6 +26304,8 @@ cm.define('Com.FileStats', {
         'umf' : 0,                                                    // Max file size
         'quote' : 0,
         'usage' : 0,
+        'inline' : false,
+        'toggleBox' : true,
         'langs' : {
             'stats' : 'Statistics',
             'mfu' : 'You can upload up to %mfu% files at a time.',
@@ -26305,6 +26343,7 @@ cm.getConstructor('Com.FileStats', function(classConstructor, className, classPr
         that.nodes['container'] = cm.node('div', {'class' : 'com__file-stats'},
             that.nodes['content'] = cm.node('div', {'class' : 'com__file-stats__list'},
                 cm.node('ul',
+                    cm.node('li', {'class' : 'icon small info'}),
                     cm.node('li', that.lang('mfu', vars)),
                     cm.node('li', that.lang('umf', vars)),
                     cm.node('li', that.lang('quote', vars)),
@@ -26312,6 +26351,7 @@ cm.getConstructor('Com.FileStats', function(classConstructor, className, classPr
                 )
             )
         );
+        that.params['inline'] && cm.addClass(that.nodes['content'], 'is-inline');
         // Events
         that.triggerEvent('onRenderViewProcess');
         that.triggerEvent('onRenderViewEnd');
@@ -26321,14 +26361,16 @@ cm.getConstructor('Com.FileStats', function(classConstructor, className, classPr
     classProto.renderViewModel = function(){
         var that = this;
         // Init ToggleBox
-        cm.getConstructor('Com.ToggleBox', function(classObject, className){
-            that.components['togglebox'] = new classObject(
-                cm.merge(that.params[className], {
-                    'node' : that.nodes['content'],
-                    'title' : that.lang('stats')
-                })
-            );
-        });
+        if(that.params['toggleBox']){
+            cm.getConstructor('Com.ToggleBox', function(classObject, className){
+                that.components['togglebox'] = new classObject(
+                    cm.merge(that.params[className], {
+                        'node' : that.nodes['content'],
+                        'title' : that.lang('stats')
+                    })
+                );
+            });
+        }
         return that;
     };
 });
@@ -26368,7 +26410,9 @@ cm.define('Com.FileUploader', {
             'toggleOnHashChange' : false
         },
         'Com.FileStats' : {
-            'embedStructure' : 'append'
+            'embedStructure' : 'append',
+            'toggleBox' : false,
+            'inline' : true
         },
         'Com.FileReader' : {},
         'langs' : {
@@ -26588,7 +26632,7 @@ cm.getConstructor('Com.FileUploader', function(classConstructor, className, clas
                             cm.node('div', {'class' : 'browse-button'},
                                 cm.node('button', {'type' : 'button','class' : 'button button-primary button--xlarge'}, that.lang('browse_local')),
                                 cm.node('div', {'class' : 'inner'},
-                                    nodes['input'] = cm.node('input', {'type' : 'file', 'multiple' : that.isMultiple})
+                                    nodes['input'] = cm.node('input', {'type' : 'file'})
                                 )
                             )
                         )
@@ -26600,6 +26644,7 @@ cm.getConstructor('Com.FileUploader', function(classConstructor, className, clas
             )
         );
         // Events
+        that.isMultiple && nodes['input'].setAttribute('multiple', 'multiple');
         cm.addEvent(nodes['input'], 'change', that.browseActionHandler);
         return nodes;
     };
@@ -29046,6 +29091,59 @@ Com.FormFields.add('image-input', {
     'node' : cm.node('input'),
     'constructor' : 'Com.ImageInput'
 });
+cm.define('Com.Input', {
+    'extend' : 'Com.AbstractInput',
+    'params' : {
+    }
+},
+function(params){
+    var that = this;
+    that.myNodes = {};
+    // Call parent class construct
+    Com.AbstractInput.apply(that, arguments);
+});
+
+cm.getConstructor('Com.Input', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.construct = function(){
+        var that = this;
+        // Bind context to methods
+        that.setValueHandler = that.setValue.bind(that);
+        // Call parent method
+        _inherit.prototype.construct.apply(that, arguments);
+        return that;
+    };
+
+    classProto.renderContent = function(){
+        var that = this;
+        that.triggerEvent('onRenderContentStart');
+        // Structure
+        that.myNodes['container'] = cm.node('div', {'class' : 'pt__input'},
+            that.myNodes['input'] = cm.node('input', {'type' : 'text'})
+        );
+        // Events
+        that.triggerEvent('onRenderContentProcess');
+        cm.addEvent(that.myNodes['input'], 'blur', that.setValueHandler);
+        cm.addEvent(that.myNodes['input'], 'keypress', function(e){
+            if(cm.isKeyCode(e.keyCode, 'enter')){
+                cm.preventDefault(e);
+                that.setValue();
+                that.myNodes['input'].blur();
+            }
+        });
+        that.triggerEvent('onRenderContentEnd');
+        // Push
+        return that.myNodes['container'];
+    };
+
+    classProto.setValue = function(triggerEvents){
+        var that = this;
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        that.set(that.myNodes['input'].value, triggerEvents);
+        return that;
+    };
+});
 cm.define('Com.Menu', {
     'modules' : [
         'Params',
@@ -29533,8 +29631,10 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
         return that;
     };
 
+
     classProto.validateParamsEnd = function(){
         var that = this;
+        that.isMultiple = !that.params['max'] || that.params['max'] > 1;
         // Validate Language Strings
         that.setLangs({
             '_browse_local' : that.params['fileManager'] ? that.lang('browse_local') : that.lang('browse'),
@@ -29624,9 +29724,10 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
             that.myNodes['browseLocal'] = cm.node('div', {'class' : 'browse-button'},
                 cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('_browse_local')),
                 cm.node('div', {'class' : 'inner'},
-                    that.myNodes['input'] = cm.node('input', {'type' : 'file', 'multiple' : that.isMultiple})
+                    that.myNodes['input'] = cm.node('input', {'type' : 'file'})
                 )
             );
+            that.isMultiple && that.myNodes['input'].setAttribute('multiple', 'multiple');
             cm.insertFirst(that.myNodes['browseLocal'], that.myNodes['contentInner']);
         }
         if(that.params['fileManager']){
@@ -29681,7 +29782,6 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
     classProto.browseAction = function(e){
         var that = this,
             length = that.params['max'] ? Math.min(e.target.files.length, (that.params['max'] - that.items.length)) : e.target.files.length;
-        cm.preventDefault(e);
         cm.forEach(length, function(i){
             that.processFiles(e.target.files[i]);
         });
@@ -35935,7 +36035,7 @@ cm.define('Com.ToggleBox', {
         'onHide'
     ],
     'params' : {
-        'node' : cm.Node('div'),
+        'node' : cm.node('div'),
         'name' : '',
         'renderStructure' : false,
         'embedStructure' : 'replace',
@@ -35988,6 +36088,7 @@ function(params){
     };
 
     var render = function(){
+        var storageCollapsed;
         // Render Structure
         if(that.params['renderStructure']){
             that.nodes['container'] = cm.Node('dl', {'class' : 'com__togglebox'},
@@ -36024,7 +36125,8 @@ function(params){
         that.isCollapsed = cm.isClass(that.nodes['container'], 'is-hide') || !cm.isClass(that.nodes['container'], 'is-show');
         // Check storage
         if(that.params['remember']){
-            that.isCollapsed = that.storageRead('isCollapsed');
+            storageCollapsed = that.storageRead('isCollapsed');
+            that.isCollapsed = storageCollapsed !== null ? storageCollapsed : that.isCollapsed;
         }
         // Trigger collapse event
         if(that.isCollapsed){

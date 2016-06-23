@@ -22,6 +22,7 @@ function(params){
     that.rawValue = null;
     that.isInputsLinked = false;
     that.lastInput = null;
+    // Call parent class construct
     Com.AbstractInput.apply(that, arguments);
 });
 

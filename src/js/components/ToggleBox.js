@@ -17,7 +17,7 @@ cm.define('Com.ToggleBox', {
         'onHide'
     ],
     'params' : {
-        'node' : cm.Node('div'),
+        'node' : cm.node('div'),
         'name' : '',
         'renderStructure' : false,
         'embedStructure' : 'replace',
@@ -70,6 +70,7 @@ function(params){
     };
 
     var render = function(){
+        var storageCollapsed;
         // Render Structure
         if(that.params['renderStructure']){
             that.nodes['container'] = cm.Node('dl', {'class' : 'com__togglebox'},
@@ -106,7 +107,8 @@ function(params){
         that.isCollapsed = cm.isClass(that.nodes['container'], 'is-hide') || !cm.isClass(that.nodes['container'], 'is-show');
         // Check storage
         if(that.params['remember']){
-            that.isCollapsed = that.storageRead('isCollapsed');
+            storageCollapsed = that.storageRead('isCollapsed');
+            that.isCollapsed = storageCollapsed !== null ? storageCollapsed : that.isCollapsed;
         }
         // Trigger collapse event
         if(that.isCollapsed){
