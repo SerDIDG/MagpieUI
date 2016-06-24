@@ -1,7 +1,8 @@
 cm.define('Com.FileDropzone', {
     'extend' : 'Com.AbstractController',
     'events' : [
-        'onDrop'
+        'onDrop',
+        'onSelect'
     ],
     'params' : {
         'embedStructure' : 'append',
@@ -140,6 +141,7 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
     classProto.dragDrop = function(e){
         var that = this,
             target = cm.getEventTarget(e),
+            data = [],
             length = 0;
         cm.preventDefault(e);
         // Hide dropzone and reset his state
@@ -150,8 +152,10 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
             if(e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length){
                 length = that.params['max'] ? Math.min(e.dataTransfer.files.length, that.params['max']) : e.dataTransfer.files.length;
                 cm.forEach(length, function(i){
+                    data.push(e.dataTransfer.files[i]);
                     that.triggerEvent('onDrop', e.dataTransfer.files[i]);
                 });
+                that.triggerEvent('onSelect', data);
             }
         }
         return that;

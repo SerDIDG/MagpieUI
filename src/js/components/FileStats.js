@@ -43,8 +43,7 @@ cm.getConstructor('Com.FileStats', function(classConstructor, className, classPr
         // Structure
         that.nodes['container'] = cm.node('div', {'class' : 'com__file-stats'},
             that.nodes['content'] = cm.node('div', {'class' : 'com__file-stats__list'},
-                cm.node('ul',
-                    cm.node('li', {'class' : 'icon small info'}),
+                that.nodes['list'] = cm.node('ul',
                     cm.node('li', that.lang('mfu', vars)),
                     cm.node('li', that.lang('umf', vars)),
                     cm.node('li', that.lang('quote', vars)),
@@ -52,7 +51,10 @@ cm.getConstructor('Com.FileStats', function(classConstructor, className, classPr
                 )
             )
         );
-        that.params['inline'] && cm.addClass(that.nodes['content'], 'is-inline');
+        if(that.params['inline']){
+            cm.insertFirst(cm.node('li', {'class' : 'icon small info'}), that.nodes['list']);
+            cm.addClass(that.nodes['content'], 'is-inline');
+        }
         // Events
         that.triggerEvent('onRenderViewProcess');
         that.triggerEvent('onRenderViewEnd');

@@ -49,8 +49,9 @@ cm.getConstructor('Com.FileReader', function(classConstructor, className, classP
         return that;
     };
 
-    classProto.read = function(file){
+    classProto.read = function(file, callback){
         var that = this;
+        callback = typeof callback == 'function' ? callback : function(){};
         if(cm.isFileReader && cm.isFile(file)){
             that.triggerEvent('onReadStart', file);
             // Config
@@ -60,11 +61,13 @@ cm.getConstructor('Com.FileReader', function(classConstructor, className, classP
             var reader = new FileReader();
             cm.addEvent(reader, 'load', function(e){
                 item['value'] = e.target.result;
+                callback(item);
                 that.triggerEvent('onReadSuccess', item);
                 that.triggerEvent('onReadEnd', item);
             });
             cm.addEvent(reader, 'error', function(e){
                 item['error'] = e;
+                callback(item);
                 that.triggerEvent('onReadError', item);
                 that.triggerEvent('onReadEnd', item);
             });

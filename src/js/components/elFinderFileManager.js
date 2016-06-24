@@ -1,6 +1,7 @@
 cm.define('Com.elFinderFileManager', {
     'extend' : 'Com.AbstractFileManager',
     'params' : {
+        'lazy' : false,
         'config' : {
             url : '',
             lang : {},
@@ -19,6 +20,7 @@ cm.define('Com.elFinderFileManager', {
 function(params){
     var that = this;
     that.getFilesProcessType = null;
+    that.isLoaded = false;
     // Call parent class construct
     Com.AbstractFileManager.apply(that, arguments);
 });
@@ -66,30 +68,31 @@ cm.getConstructor('Com.elFinderFileManager', function(classConstructor, classNam
         return that;
     };
 
-    classProto.renderViewModel = function(){
+    classProto.renderController = function(){
         var that = this;
-        // Call parent method
-        _inherit.prototype.renderViewModel.apply(that, arguments);
         // Init elFinder
-        if(typeof elFinder != 'undefined'){
-            that.components['controller'] = new elFinder(that.nodes['holder']['inner'],
-                cm.merge(that.params['config'], {
-                    commandsOptions : {
-                        getfile : {
-                            multiple: that.isMultiple
-                        }
-                    },
-                    getFileCallback : that.getFilesEventHandler
-                })
-            );
-            // Show
-            cm.removeClass(that.nodes['holder']['container'], 'is-hidden');
-            that.components['controller'].show();
-        }else{
-            cm.errorLog({
-                'name' : that._name['full'],
-                'message' : ['elFinder does not exists.'].join(' ')
-            });
+        if(!that.components['controller']){
+            if(typeof elFinder != 'undefined'){
+                that.isLoaded = true;
+                that.components['controller'] = new elFinder(that.nodes['holder']['inner'],
+                    cm.merge(that.params['config'], {
+                        commandsOptions : {
+                            getfile : {
+                                multiple: that.isMultiple
+                            }
+                        },
+                        getFileCallback : that.getFilesEventHandler
+                    })
+                );
+                // Show
+                cm.removeClass(that.nodes['holder']['container'], 'is-hidden');
+                that.components['controller'].show();
+            }else{
+                cm.errorLog({
+                    'name' : that._name['full'],
+                    'message' : ['elFinder does not exists.'].join(' ')
+                });
+            }
         }
         return that;
     };

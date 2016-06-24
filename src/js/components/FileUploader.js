@@ -8,26 +8,18 @@ cm.define('Com.FileUploader', {
     'params' : {
         'max' : 0,
         'showStats' : true,
+        'completeOnSelect' : false,
         'local' : true,
-        'inputConstructor' : 'Com.MultipleFileInput',
-        'inputParams' : {
-            'local' : false,
-            'dropzone' : false,
-            'fileManager' : false,
-            'fileUploader' : false,
+        'localConstructor' : 'Com.FileUploaderLocal',
+        'localParams' : {
             'embedStructure' : 'append'
         },
+        'fileManagerLazy' : true,
         'fileManager' : true,
         'fileManagerConstructor' : 'Com.AbstractFileManager',
         'fileManagerParams' : {
             'embedStructure' : 'append',
             'showStats' : false
-        },
-        'dropzone' : true,
-        'dropzoneConstructor' : 'Com.FileDropzone',
-        'dropzoneParams' : {
-            'embedStructure' : 'append',
-            'rollover' : false
         },
         'Com.Tabset' : {
             'embedStructure' : 'append',
@@ -38,7 +30,6 @@ cm.define('Com.FileUploader', {
             'toggleBox' : false,
             'inline' : true
         },
-        'Com.FileReader' : {},
         'langs' : {
             'tab_local' : 'Select From PC',
             'tab_filemanager' : 'File Manager',
@@ -66,8 +57,6 @@ cm.getConstructor('Com.FileUploader', function(classConstructor, className, clas
         var that = this;
         // Bind context to methods
         that.completeHandler = that.complete.bind(that);
-        that.browseActionHandler = that.browseAction.bind(that);
-        that.processFilesHandler = that.processFiles.bind(that);
         // Add events
         // Call parent method
         _inherit.prototype.construct.apply(that, arguments);
@@ -110,17 +99,10 @@ cm.getConstructor('Com.FileUploader', function(classConstructor, className, clas
 
     classProto.validateParams = function(){
         var that = this;
-        that.isMultiple = !that.params['max'] || that.params['max'] > 1;
-        // Validate Language Strings
-        that.setLangs({
-            'browse_local' : !that.params['max'] || that.params['max'] > 1 ? that.lang('browse_local_multiple') : that.lang('browse_local_single')
-        });
         // Components parameters
-        that.params['inputParams']['max'] = that.params['max'];
-        that.params['dropzoneParams']['max'] = that.params['max'];
+        that.params['localParams']['max'] = that.params['max'];
         that.params['fileManagerParams']['max'] = that.params['max'];
-        // Other
-        that.params['dropzone'] = !that.params['local'] ? false : that.params['dropzone'];
+        that.params['fileManagerParams']['lazy'] = that.params['fileManagerLazy'];
         return that;
     };
 
@@ -149,44 +131,19 @@ cm.getConstructor('Com.FileUploader', function(classConstructor, className, clas
 
     classProto.renderViewModel = function(){
         var that = this;
-        // Init FilerReader
-        cm.getConstructor('Com.FileReader', function(classObject, className){
-            that.components['reader'] = new classObject(that.params[className]);
-            that.components['reader'].addEvent('onReadSuccess', function(my, data){
-                that.components['local'].addItem({'value' : data}, true);
-            });
-        });
-        // Init Dropzone
-        if(that.params['dropzone']){
-            cm.getConstructor(that.params['dropzoneConstructor'], function(classObject){
-                that.components['dropzone'] = new classObject(
-                    cm.merge(that.params['dropzoneParams'], {
-                        'container' : that.nodes['local']['dropzone']
-                    })
-                );
-                that.components['dropzone'].addEvent('onDrop', function(my, data){
-                    that.processFiles(data);
-                });
-            });
-        }
         // Init Files Input
         if(that.params['local']){
-            cm.getConstructor(that.params['inputConstructor'], function(classObject){
+            cm.getConstructor(that.params['localConstructor'], function(classObject){
                 that.components['local'] = new classObject(
-                    cm.merge(that.params['inputParams'], {
-                        'node' : that.nodes['local']['files']
+                    cm.merge(that.params['localParams'], {
+                        'node' : that.nodes['local']['holder']
                     })
                 );
-                that.components['local'].addEvent('onItemAddEnd', function(){
-                    if(that.components['local'].get().length){
-                        cm.removeClass(that.nodes['local']['files'], 'is-hidden');
-                    }
-                });
-                that.components['local'].addEvent('onItemRemoveEnd', function(){
-                    if(!that.components['local'].get().length){
-                        cm.addClass(that.nodes['local']['files'], 'is-hidden');
-                    }
-                });
+                if(that.params['completeOnSelect']){
+                    that.components['local'].addEvent('onSelect', function(my, data){
+                        that.afterComplete(data);
+                    });
+                }
             });
         }
         // Init File Manager
@@ -214,6 +171,9 @@ cm.getConstructor('Com.FileUploader', function(classConstructor, className, clas
             );
             that.components['tabset'].addEvent('onTabShow', function(my, data){
                 that.activeTab = data;
+                if(that.activeTab['id'] == 'fileManager'){
+                    that.components['fileManager'] && that.components['fileManager'].load();
+                }
             });
             if(that.params['local']){
                 that.components['tabset'].addTab({
@@ -249,27 +209,10 @@ cm.getConstructor('Com.FileUploader', function(classConstructor, className, clas
             nodes = {};
         // Structure
         nodes['li'] = cm.node('li',
-            nodes['container'] = cm.node('div', {'class' : 'com__file-uploader__local'},
-                nodes['holder'] = cm.node('div', {'class' : 'com__file-uploader__holder'},
-                    cm.node('div', {'class' : 'pt__buttons pull-center'},
-                        cm.node('div', {'class' : 'inner'},
-                            cm.node('div', {'class' : 'browse-button'},
-                                cm.node('button', {'type' : 'button','class' : 'button button-primary button--xlarge'}, that.lang('browse_local')),
-                                cm.node('div', {'class' : 'inner'},
-                                    nodes['input'] = cm.node('input', {'type' : 'file'})
-                                )
-                            )
-                        )
-                    )
-                ),
-                cm.node('div', {'class' : 'com__file-uploader__title'}, that.lang('or')),
-                nodes['dropzone'] = cm.node('div', {'class' : 'com__file-uploader__dropzone'}),
-                nodes['files'] = cm.node('div', {'class' : 'com__file-uploader__files is-hidden'})
+            nodes['container'] = cm.node('div', {'class' : 'com__file-uploader__local-container'},
+                nodes['holder'] = cm.node('div', {'class' : 'com__file-uploader__holder'})
             )
         );
-        // Events
-        that.isMultiple && nodes['input'].setAttribute('multiple', 'multiple');
-        cm.addEvent(nodes['input'], 'change', that.browseActionHandler);
         return nodes;
     };
 
@@ -298,32 +241,6 @@ cm.getConstructor('Com.FileUploader', function(classConstructor, className, clas
         var that = this;
         that.items = data;
         that.triggerEvent('onComplete', that.items);
-        return that;
-    };
-
-    /* *** PROCESS FILES *** */
-
-    classProto.browseAction = function(e){
-        var that = this,
-            length = that.params['max'] ? Math.min(e.target.files.length, (that.params['max'] - that.items.length)) : e.target.files.length;
-        cm.preventDefault(e);
-        cm.forEach(length, function(i){
-            that.processFiles(e.target.files[i]);
-        });
-        return that;
-    };
-
-    classProto.processFiles = function(data){
-        var that = this;
-        if(cm.isFile(data)){
-            that.components['reader'].read(data);
-        }else if(cm.isArray(data)){
-            cm.forEach(data, function(file){
-                that.processFiles(file);
-            })
-        }else if(!cm.isEmpty(data)){
-            that.components['local'].addItem({'value' : data}, true);
-        }
         return that;
     };
 });

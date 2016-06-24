@@ -15,8 +15,11 @@ cm.define('Com.AbstractFileManager', {
         'embedStructure' : 'replace',
         'showStats' : true,
         'max' : 0,                                                        // 0 - infinity
+        'lazy' : false,
         'Com.FileStats' : {
-            'embedStructure' : 'append'
+            'embedStructure' : 'append',
+            'toggleBox' : false,
+            'inline' : true
         }
     }
 },
@@ -52,6 +55,14 @@ cm.getConstructor('Com.AbstractFileManager', function(classConstructor, classNam
     classProto.get = function(){
         var that = this;
         that.triggerEvent('onGet', that.items);
+        return that;
+    };
+
+    classProto.load = function(){
+        var that = this;
+        if(!that.isLoaded){
+            that.renderController();
+        }
         return that;
     };
 
@@ -107,6 +118,7 @@ cm.getConstructor('Com.AbstractFileManager', function(classConstructor, classNam
 
     classProto.renderViewModel = function(){
         var that = this;
+        that.renderController();
         if(that.params['showStats']){
             cm.getConstructor('Com.FileStats', function(classObject, className){
                 cm.removeClass(that.nodes['content']['container'], 'is-hidden');
@@ -117,6 +129,14 @@ cm.getConstructor('Com.AbstractFileManager', function(classConstructor, classNam
                 );
             });
         }
+        if(!that.params['lazy']){
+            that.renderController();
+        }
+        return that;
+    };
+
+    classProto.renderController = function(){
+        var that = this;
         return that;
     };
 

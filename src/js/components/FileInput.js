@@ -96,8 +96,12 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
             '_browse_local' : that.params['fileManager'] ? that.lang('browse_local') : that.lang('browse'),
             '_browse_filemanager' : that.params['local'] ? that.lang('browse_filemanager') : that.lang('browse')
         });
-        // Other
+        // Dropzone
         that.params['dropzone'] = !that.params['local'] ? false : that.params['dropzone'];
+        // File Uploader
+        that.params['fileUploaderParams']['params']['local'] = that.params['local'];
+        that.params['fileUploaderParams']['params']['fileManager'] = that.params['fileManager'];
+        // Other
         that.params['local'] = that.params['fileUploader'] ? false : that.params['local'];
         that.params['fileManager'] = that.params['fileUploader'] ? false : that.params['fileManager'];
         return that;
