@@ -1,0 +1,11 @@
+<svg id="position-middleright.svg" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #5e5e5e;
+        fill-rule: evenodd;
+      }
+    </style>
+  </defs>
+  <path id="icon" class="cls-1" d="M10,18l6-6L10,6,8.5,7.5,12,11H4v2h8L8.5,16.5Z" transform="translate(-4 -6)"/>
+</svg>

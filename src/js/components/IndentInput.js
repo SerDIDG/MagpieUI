@@ -1,6 +1,8 @@
-cm.define('Com.Input', {
+cm.define('Com.IndentInput', {
     'extend' : 'Com.AbstractInput',
     'params' : {
+        'maxlength' : 3,
+        'units' : 'px'
     }
 },
 function(params){
@@ -10,7 +12,7 @@ function(params){
     Com.AbstractInput.apply(that, arguments);
 });
 
-cm.getConstructor('Com.Input', function(classConstructor, className, classProto){
+cm.getConstructor('Com.IndentInput', function(classConstructor, className, classProto){
     var _inherit = classProto._inherit;
 
     classProto.construct = function(){
@@ -22,6 +24,12 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto)
         return that;
     };
 
+    classProto.validateValue = function(value){
+        var that = this;
+        that.rawValue = parseInt(value);
+        return (that.rawValue + that.params['units']);
+    };
+
     classProto.renderContent = function(){
         var that = this;
         that.triggerEvent('onRenderContentStart');
@@ -29,6 +37,10 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto)
         that.myNodes['container'] = cm.node('div', {'class' : 'pt__input'},
             that.myNodes['input'] = cm.node('input', {'type' : 'text'})
         );
+        // Attributes
+        if(that.params['maxlength']){
+            that.myNodes['input'].setAttribute('maxlength', that.params['maxlength']);
+        }
         // Events
         that.triggerEvent('onRenderContentProcess');
         cm.addEvent(that.myNodes['input'], 'blur', that.setValueHandler);
@@ -39,6 +51,9 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto)
                 that.myNodes['input'].blur();
             }
         });
+        cm.allowOnlyDigitInputEvent(that.myNodes['input'], function(e, value){
+            that.selectAction(that.validateValue(value), true);
+        });
         that.triggerEvent('onRenderContentEnd');
         // Push
         return that.myNodes['container'];
@@ -47,7 +62,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto)
     classProto.setValue = function(triggerEvents){
         var that = this;
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        that.set(that.myNodes['input'].value, triggerEvents);
+        that.set(that.rawValue, triggerEvents);
         return that;
     };
 });

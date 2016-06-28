@@ -1,0 +1,21 @@
+<svg id="scale-contain.svg" xmlns="http://www.w3.org/2000/svg" width="38" height="38" viewBox="0 0 38 38">
+  <defs>
+    <style>
+      .cls-1, .cls-2 {
+        fill: #fff;
+        fill-rule: evenodd;
+      }
+
+      .cls-1 {
+        opacity: 0.85;
+      }
+
+      .cls-2 {
+        opacity: 0.35;
+      }
+    </style>
+  </defs>
+  <path id="_3" data-name="3" class="cls-1" d="M5,43V37H43v6H5ZM5,5H43v6H5V5Z" transform="translate(-5 -5)"/>
+  <path id="_2" data-name="2" class="cls-2" d="M38,36l-5-7-4,6-2.495-3.881L34,23l9,10.636V36H38ZM10,36H5V31.875L10,25l3.581,5.628Z" transform="translate(-5 -5)"/>
+  <path id="_1" data-name="1" class="cls-1" d="M29,35l4-6,5,7H10L20,21Zm6-16a3,3,0,1,1,3.011-3A3.006,3.006,0,0,1,35,19Z" transform="translate(-5 -5)"/>
+</svg>

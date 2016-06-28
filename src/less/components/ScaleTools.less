@@ -1,0 +1,43 @@
+/* ******* COMPONENTS: SCALE TOOLS ******* */
+
+.com__scale-tools__content {
+    @half_indent: @ComScaleTools-Item-Indent / 2;
+
+    > .inner {
+        .display-flex;
+        width: (@ComScaleTools-Item-Size + @ComScaleTools-Item-Indent) * 4;
+        margin: -@half_indent;
+        .mx__flex-flow(row nowrap);
+    }
+
+    .option__item {
+        width: @ComScaleTools-Item-Size;
+        height: @ComScaleTools-Item-Size;
+        margin: @half_indent;
+        overflow: hidden;
+        border: 1px solid @CmColor-Secondary-DarkDefault;
+        border-radius: @CmBorder-Radius;
+        background-color: @CmColor-Secondary-DarkDefault;
+        background-clip: padding-box;
+        cursor: pointer;
+        .mx__transition(all, @CmUI-Transition-Duration);
+
+        &:hover {
+            background-color: @CmColor-Secondary-DarkHover;
+        }
+
+        &.is-active {
+            border-color: @CmColor-Primary-DarkDefault;
+            background-color: @CmColor-Primary-DarkDefault;
+
+            &:hover {
+                background-color: @CmColor-Primary-DarkHover;
+            }
+        }
+
+        .icon {
+            width: 100%;
+            height: 100%;
+        }
+    }
+}

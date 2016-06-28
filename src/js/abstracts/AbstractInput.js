@@ -115,8 +115,9 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
             that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
             that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
             that.params['disabled'] = that.params['node'].disabled || that.params['node'].readOnly || that.params['disabled'];
-            that.params['value'] = that.params['node'].value || that.params['value'];
+            that.params['value'] = !cm.isEmpty(that.params['node'].value) ?  that.params['node'].value : that.params['value'];
         }
+        that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
         that.disabled = that.params['disabled'];
         that.triggerEvent('onValidateParamsEnd');
         return that;

@@ -12,5 +12,5 @@
     </style>
   </defs>
   <rect id="Rounded_Rectangle_12" data-name="Rounded Rectangle 12" class="cls-1" width="4" height="16"/>
-  <path class="cls-2" d="M7,4H20V20H7V4ZM8,5H19V19H8V5Z" transform="translate(-4 -4)"/>
+  <path class="cls-2" d="M19,16H32V32H19V16Zm1,1H31V31H20V17Z" transform="translate(-16 -16)"/>
 </svg>

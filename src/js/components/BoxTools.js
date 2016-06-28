@@ -3,6 +3,7 @@ cm.define('Com.BoxTools', {
     'params' : {
         'className' : 'com__box-tools',
         'maxlength' : 3,
+        'units' : 'px',
         'inputs' : [
             {'name' : 'top', 'icon' : 'icon svg__indent-top small linked', 'iconPosition' : 'insideRight'},
             {'name' : 'right', 'icon' : 'icon svg__indent-right small linked', 'iconPosition' : 'insideRight'},
@@ -49,7 +50,7 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
     classProto.validateValue = function(value){
         var that = this;
         that.rawValue = cm.CSSValuesToArray(value);
-        return cm.arrayToCSSValues(that.rawValue);
+        return cm.arrayToCSSValues(that.rawValue, that.params['units']);
     };
 
     classProto.renderContent = function(){
@@ -121,7 +122,7 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
             }else{
                 that.rawValue[item['i']] = value;
             }
-            that.selectAction(cm.arrayToCSSValues(that.rawValue), true);
+            that.selectAction(cm.arrayToCSSValues(that.rawValue, that.params['units']), true);
         });
         // Push
         that.inputs.push(item);
@@ -173,7 +174,7 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
     classProto.setValues = function(triggerEvents){
         var that = this;
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        that.set(cm.arrayToCSSValues(that.rawValue), triggerEvents);
+        that.set(cm.arrayToCSSValues(that.rawValue, that.params['units']), triggerEvents);
         return that;
     };
 

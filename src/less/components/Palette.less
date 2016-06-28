@@ -4,7 +4,8 @@
     .cm__box;
 
     > .inner {
-        .clearfix;
+        .display-flex;
+        .marginfix;
         margin-top: -@CmIndent-Small;
     }
 
@@ -17,7 +18,6 @@
     .b-palette,
     .b-range {
         margin-right: @CmIndent-Small;
-        float: left;
         border-radius: @CmBorder-Radius;
 
         > .inner {
@@ -161,7 +161,6 @@
 .com__palette__body * {
     .mx__user-select(none);
 }
-
 
 // /* *** MIXINS *** */
 

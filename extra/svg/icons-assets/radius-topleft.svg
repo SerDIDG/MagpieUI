@@ -14,6 +14,6 @@
       }
     </style>
   </defs>
-  <path class="cls-1" d="M7,20V19H19V7h1V20H7Z" transform="translate(-4 -4)"/>
-  <path class="cls-2" d="M12,4h8V20H4V12A8,8,0,0,1,12,4Zm1,3h7V20H7V13A6,6,0,0,1,13,7Z" transform="translate(-4 -4)"/>
+  <path class="cls-1" d="M19,32V31H31V19h1V32H19Z" transform="translate(-16 -16)"/>
+  <path class="cls-2" d="M24,16h8V32H16V24A8,8,0,0,1,24,16Zm1,3h7V32H19V25A6,6,0,0,1,25,19Z" transform="translate(-16 -16)"/>
 </svg>

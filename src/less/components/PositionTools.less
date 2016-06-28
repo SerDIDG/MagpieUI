@@ -1,0 +1,42 @@
+/* ******* COMPONENTS: POSITION TOOLS ******* */
+
+.com__position-tools__content {
+    @half_indent: @ComPositionTools-Item-Indent / 2;
+
+    > .inner {
+        .display-flex;
+        width: (@ComPositionTools-Item-Size + @ComPositionTools-Item-Indent) * 3;
+        margin: -@half_indent;
+        .mx__flex-flow(row wrap);
+    }
+
+    .option__item {
+        width: @ComPositionTools-Item-Size;
+        height: @ComPositionTools-Item-Size;
+        margin: @half_indent;
+        overflow: hidden;
+        border-radius: @CmBorder-Radius;
+        background-color: @CmColor-Secondary-LightActive;
+        cursor: pointer;
+        .mx__transition(all, @CmUI-Transition-Duration);
+
+        &:hover {
+            background-color: @CmColor-Primary-LightActive;
+        }
+
+        &.is-active {
+            background-color: @CmColor-Primary-DarkDefault;
+            box-shadow: @CmUI-ShadowInner;
+
+            &:hover {
+                background-color: @CmColor-Primary-DarkHover;
+            }
+        }
+
+        .icon {
+            width: 100%;
+            height: 100%;
+            .mx__transition(all, @CmUI-Transition-Duration);
+        }
+    }
+}

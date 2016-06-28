@@ -29,7 +29,7 @@
  ******* */
 
 var cm = {
-        '_version' : '3.18.9',
+        '_version' : '3.19.0',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -2675,12 +2675,13 @@ cm.CSSValuesToArray = function(value){
     return value;
 };
 
-cm.arrayToCSSValues = function(a){
+cm.arrayToCSSValues = function(a, units){
+    units = typeof units != 'undefined' ? units : 'px';
     cm.forEach(a, function(item, key){
         a[key] = cm.isEmpty(item) ? 0 : parseFloat(item);
     });
     return a.reduce(function(prev, next, index, a){
-        return prev + 'px ' + next + ((index == a.length - 1) ? 'px' : '');
+        return [prev + units, next + ((index == a.length - 1) ? units : '')].join(' ');
     });
 };
 

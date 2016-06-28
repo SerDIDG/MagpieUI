@@ -109,7 +109,7 @@ module.exports = function(grunt) {
                 src : [
                     '<%= components.codemirror.scripts %>',
                     '<%= components.tinycolor.scripts %>',
-                    //'<%= components.less.scripts %>',
+                    '<%= components.less.scripts %>',
                     //'<%= components.requirejs.scripts %>',
                     '<%= paths.src %>/js/polyfill.js',
                     '<%= paths.src %>/js/common.js',

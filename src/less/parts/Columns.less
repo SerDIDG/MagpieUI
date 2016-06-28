@@ -11,6 +11,16 @@
         }
     }
 
+    &.is-space-between {
+        > .inner {
+            .mx__justify-content(space-between);
+
+            > .column {
+                .mx__flex(1 1 auto);
+            }
+        }
+    }
+
     .pt__columns__indent(@PtColumns-Indent);
 
     .for(@PtColumns-Indents); .-each(@name) {
