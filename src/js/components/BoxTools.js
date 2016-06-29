@@ -144,11 +144,11 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
         nodes['icon'] = cm.node('div', {'class' : item['icon']});
         switch(item['iconPosition']){
             case 'insideLeft':
-                cm.addClass(nodes['inner'], 'less-indent');
+                cm.addClass(nodes['inner'], 'is-less-indent');
                 cm.insertFirst(nodes['icon'], nodes['inner']);
                 break;
             case 'insideRight':
-                cm.addClass(nodes['inner'], 'less-indent');
+                cm.addClass(nodes['inner'], 'is-less-indent');
                 cm.insertLast(nodes['icon'], nodes['inner']);
                 break;
             case 'outsideLeft':

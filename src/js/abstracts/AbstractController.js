@@ -17,8 +17,10 @@ cm.define('Com.AbstractController', {
         'onInitComponentsStart',
         'onInitComponentsEnd',
         'onGetLESSVariablesStart',
+        'onGetLESSVariablesProcess',
         'onGetLESSVariablesEnd',
         'onValidateParamsStart',
+        'onValidateParamsProcess',
         'onValidateParamsEnd',
         'onRenderStart',
         'onRender',
@@ -38,6 +40,7 @@ cm.define('Com.AbstractController', {
         'onRenderViewProcess',
         'onRenderViewEnd',
         'onSetAttributesStart',
+        'onSetAttributesProcess',
         'onSetAttributesEnd'
     ],
     'params' : {
@@ -45,6 +48,8 @@ cm.define('Com.AbstractController', {
         'container' : null,
         'name' : '',
         'embedStructure' : 'append',
+        'renderStructure' : true,
+        'embedStructureOnRender' : true,
         'customEvents' : true,
         'removeOnDestruct' : false,
         'className' : '',
@@ -96,6 +101,10 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
             that.triggerEvent('onDestructStart');
             that.isDestructed = true;
             that.triggerEvent('onDestructProcess');
+            cm.customEvent.trigger(that.getStackNode(), 'destruct', {
+                'type' : 'child',
+                'self' : false
+            });
             that.unsetEvents();
             that.params['removeOnDestruct'] && cm.remove(that.getStackNode());
             that.removeFromStack();
@@ -120,6 +129,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
     classProto.getLESSVariables = function(){
         var that = this;
         that.triggerEvent('onGetLESSVariablesStart');
+        that.triggerEvent('onGetLESSVariablesProcess');
         that.triggerEvent('onGetLESSVariablesEnd');
         return that;
     };
@@ -127,6 +137,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
     classProto.validateParams = function(){
         var that = this;
         that.triggerEvent('onValidateParamsStart');
+        that.triggerEvent('onValidateParamsProcess');
         that.triggerEvent('onValidateParamsEnd');
         return that;
     };
@@ -134,11 +145,11 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
     classProto.render = function(){
         var that = this;
         // Structure
-        that.renderView();
+        that.params['renderStructure'] && that.renderView();
         that.renderViewModel();
         that.setAttributes();
         // Append
-        that.embedStructure(that.nodes['container']);
+        that.params['embedStructureOnRender'] && that.embedStructure(that.nodes['container']);
         return that;
     };
 
@@ -159,6 +170,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
     classProto.setAttributes = function(){
         var that = this;
         that.triggerEvent('onSetAttributesStart');
+        that.triggerEvent('onSetAttributesProcess');
         cm.addClass(that.nodes['container'], that.params['className']);
         that.triggerEvent('onSetAttributesEnd');
         return that;

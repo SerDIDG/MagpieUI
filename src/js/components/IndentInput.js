@@ -2,7 +2,8 @@ cm.define('Com.IndentInput', {
     'extend' : 'Com.AbstractInput',
     'params' : {
         'maxlength' : 3,
-        'units' : 'px'
+        'units' : 'px',
+        'defaultValue' : 0
     }
 },
 function(params){
@@ -24,8 +25,18 @@ cm.getConstructor('Com.IndentInput', function(classConstructor, className, class
         return that;
     };
 
+    classProto.set = function(){
+        var that = this;
+        // Call parent method
+        _inherit.prototype.set.apply(that, arguments);
+        // Set inputs
+        that.setInput();
+        return that;
+    };
+
     classProto.validateValue = function(value){
         var that = this;
+        value = !cm.isEmpty(value) ? value : that.params['defaultValue'];
         that.rawValue = parseInt(value);
         return (that.rawValue + that.params['units']);
     };
@@ -63,6 +74,12 @@ cm.getConstructor('Com.IndentInput', function(classConstructor, className, class
         var that = this;
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
         that.set(that.rawValue, triggerEvents);
+        return that;
+    };
+
+    classProto.setInput = function(){
+        var that = this;
+        that.myNodes['input'].value = that.rawValue;
         return that;
     };
 });

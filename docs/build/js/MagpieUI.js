@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.19.0 (2016-06-28 20:34) ************ */
+/*! ************ MagpieUI v3.19.1 (2016-06-29 21:23) ************ */
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -23294,7 +23294,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.19.0',
+        '_version' : '3.19.1',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -27968,8 +27968,10 @@ cm.define('Com.AbstractController', {
         'onInitComponentsStart',
         'onInitComponentsEnd',
         'onGetLESSVariablesStart',
+        'onGetLESSVariablesProcess',
         'onGetLESSVariablesEnd',
         'onValidateParamsStart',
+        'onValidateParamsProcess',
         'onValidateParamsEnd',
         'onRenderStart',
         'onRender',
@@ -27989,6 +27991,7 @@ cm.define('Com.AbstractController', {
         'onRenderViewProcess',
         'onRenderViewEnd',
         'onSetAttributesStart',
+        'onSetAttributesProcess',
         'onSetAttributesEnd'
     ],
     'params' : {
@@ -27996,6 +27999,8 @@ cm.define('Com.AbstractController', {
         'container' : null,
         'name' : '',
         'embedStructure' : 'append',
+        'renderStructure' : true,
+        'embedStructureOnRender' : true,
         'customEvents' : true,
         'removeOnDestruct' : false,
         'className' : '',
@@ -28047,6 +28052,10 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
             that.triggerEvent('onDestructStart');
             that.isDestructed = true;
             that.triggerEvent('onDestructProcess');
+            cm.customEvent.trigger(that.getStackNode(), 'destruct', {
+                'type' : 'child',
+                'self' : false
+            });
             that.unsetEvents();
             that.params['removeOnDestruct'] && cm.remove(that.getStackNode());
             that.removeFromStack();
@@ -28071,6 +28080,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
     classProto.getLESSVariables = function(){
         var that = this;
         that.triggerEvent('onGetLESSVariablesStart');
+        that.triggerEvent('onGetLESSVariablesProcess');
         that.triggerEvent('onGetLESSVariablesEnd');
         return that;
     };
@@ -28078,6 +28088,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
     classProto.validateParams = function(){
         var that = this;
         that.triggerEvent('onValidateParamsStart');
+        that.triggerEvent('onValidateParamsProcess');
         that.triggerEvent('onValidateParamsEnd');
         return that;
     };
@@ -28085,11 +28096,11 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
     classProto.render = function(){
         var that = this;
         // Structure
-        that.renderView();
+        that.params['renderStructure'] && that.renderView();
         that.renderViewModel();
         that.setAttributes();
         // Append
-        that.embedStructure(that.nodes['container']);
+        that.params['embedStructureOnRender'] && that.embedStructure(that.nodes['container']);
         return that;
     };
 
@@ -28110,6 +28121,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
     classProto.setAttributes = function(){
         var that = this;
         that.triggerEvent('onSetAttributesStart');
+        that.triggerEvent('onSetAttributesProcess');
         cm.addClass(that.nodes['container'], that.params['className']);
         that.triggerEvent('onSetAttributesEnd');
         return that;
@@ -28202,12 +28214,6 @@ cm.define('Com.AbstractContainer', {
             'title' : 'Container',
             'close' : 'Close',
             'save' : 'Save'
-        },
-        'Com.Dialog' : {
-            'width' : 900,
-            'removeOnClose' : false,
-            'destructOnRemove' : false,
-            'autoOpen' : false
         }
     }
 },
@@ -28281,6 +28287,7 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
     classProto.validateParams = function(){
         var that = this;
         that.triggerEvent('onValidateParamsStart');
+        that.triggerEvent('onValidateParamsProcess');
         that.params['params']['node'] = that.params['node'];
         that.params['params']['container'] = that.params['container'];
         that.triggerEvent('onValidateParamsEnd');
@@ -30597,11 +30604,11 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
         nodes['icon'] = cm.node('div', {'class' : item['icon']});
         switch(item['iconPosition']){
             case 'insideLeft':
-                cm.addClass(nodes['inner'], 'less-indent');
+                cm.addClass(nodes['inner'], 'is-less-indent');
                 cm.insertFirst(nodes['icon'], nodes['inner']);
                 break;
             case 'insideRight':
-                cm.addClass(nodes['inner'], 'less-indent');
+                cm.addClass(nodes['inner'], 'is-less-indent');
                 cm.insertLast(nodes['icon'], nodes['inner']);
                 break;
             case 'outsideLeft':
@@ -33072,7 +33079,7 @@ cm.define('Com.ColorPicker', {
         'value' : null,                                     // Color string: transparent | hex | rgba.
         'defaultValue' : 'transparent',
         'title' : '',
-        'showInputValue' : true,
+        'showLabel' : true,
         'showClearButton' : false,
         'showTitleTooltip' : true,
         'renderInBody' : true,
@@ -33144,7 +33151,7 @@ function(params){
         /* *** RENDER STRUCTURE *** */
         that.nodes['container'] = cm.Node('div', {'class' : 'com__colorpicker'},
             that.nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
-            that.nodes['target'] = cm.Node('div', {'class' : 'pt__input has-icon-right'},
+            that.nodes['target'] = cm.Node('div', {'class' : 'pt__input'},
                 that.nodes['input'] = cm.Node('input', {'type' : 'text', 'readOnly' : 'true'}),
                 that.nodes['icon'] = cm.Node('div', {'class' : that.params['icons']['picker']})
             ),
@@ -33168,6 +33175,10 @@ function(params){
         // Name
         if(that.params['name']){
             that.nodes['hidden'].setAttribute('name', that.params['name']);
+        }
+        // Label
+        if(!that.params['showLabel']){
+            cm.addClass(that.nodes['target'], 'is-no-label');
         }
         // Clear Button
         if(that.params['showClearButton']){
@@ -33238,12 +33249,12 @@ function(params){
         that.components['palette'].set(that.value, false);
         that.nodes['hidden'].value = that.components['palette'].get('rgb');
         if(that.value == 'transparent'){
-            if(that.params['showInputValue']){
+            if(that.params['showLabel']){
                 that.nodes['input'].value = that.lang('Transparent');
             }
             cm.replaceClass(that.nodes['input'], 'input-dark input-light', 'input-transparent');
         }else{
-            if(that.params['showInputValue']){
+            if(that.params['showLabel']){
                 that.nodes['input'].value = that.components['palette'].get('hex');
             }
             that.nodes['input'].style.backgroundColor = that.components['palette'].get('hex');
@@ -35285,7 +35296,6 @@ cm.define('Com.DialogContainer', {
         'constructor' : 'Com.Dialog',
         'container' : 'document.body',
         'params' : {
-            'removeOnClose' : false,
             'destructOnRemove' : false,
             'autoOpen' : false
         }
@@ -35293,8 +35303,6 @@ cm.define('Com.DialogContainer', {
 },
 function(params){
     var that = this;
-    that.nodes = {};
-    that.components = {};
     // Call parent class construct
     Com.AbstractContainer.apply(that, arguments);
 });
@@ -40122,7 +40130,8 @@ cm.define('Com.IndentInput', {
     'extend' : 'Com.AbstractInput',
     'params' : {
         'maxlength' : 3,
-        'units' : 'px'
+        'units' : 'px',
+        'defaultValue' : 0
     }
 },
 function(params){
@@ -40144,8 +40153,18 @@ cm.getConstructor('Com.IndentInput', function(classConstructor, className, class
         return that;
     };
 
+    classProto.set = function(){
+        var that = this;
+        // Call parent method
+        _inherit.prototype.set.apply(that, arguments);
+        // Set inputs
+        that.setInput();
+        return that;
+    };
+
     classProto.validateValue = function(value){
         var that = this;
+        value = !cm.isEmpty(value) ? value : that.params['defaultValue'];
         that.rawValue = parseInt(value);
         return (that.rawValue + that.params['units']);
     };
@@ -40183,6 +40202,12 @@ cm.getConstructor('Com.IndentInput', function(classConstructor, className, class
         var that = this;
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
         that.set(that.rawValue, triggerEvents);
+        return that;
+    };
+
+    classProto.setInput = function(){
+        var that = this;
+        that.myNodes['input'].value = that.rawValue;
         return that;
     };
 });
@@ -42540,7 +42565,13 @@ cm.define('Com.RepeatTools', {
             {'name' : 'repeat-x', 'icon' : 'svg__repeat-horizontal'},
             {'name' : 'repeat-y', 'icon' : 'svg__repeat-vertical'},
             {'name' : 'repeat', 'icon' : 'svg__repeat-both'}
-        ]
+        ],
+        'langs' : {
+            'no-repeat' : 'No',
+            'repeat-x' : 'Horizontally',
+            'repeat-y' : 'Vertically',
+            'repeat' : 'Both'
+        }
     }
 },
 function(params){
@@ -42598,7 +42629,7 @@ cm.getConstructor('Com.RepeatTools', function(classConstructor, className, class
             'nodes' : {}
         }, item);
         // Structure
-        item['nodes']['container'] = cm.node('div', {'class' : 'option__item'},
+        item['nodes']['container'] = cm.node('div', {'class' : 'option__item', 'title' : that.lang(item['name'])},
             item['nodes']['icon'] = cm.node('div', {'class' : [item['iconType'], item['icon']].join(' ')})
         );
         cm.appendChild(item['nodes']['container'], that.myNodes['inner']);
@@ -43104,7 +43135,13 @@ cm.define('Com.ScaleTools', {
             {'name' : 'contain', 'icon' : 'svg__scale-contain'},
             {'name' : 'cover', 'icon' : 'svg__scale-cover'},
             {'name' : '100% 100%', 'icon' : 'svg__scale-fill'}
-        ]
+        ],
+        'langs' : {
+            'original' : 'Original',
+            'contain' : 'Contain',
+            'cover' : 'Cover',
+            '100% 100%' : 'Fill'
+        }
     }
 },
 function(params){
@@ -43162,7 +43199,7 @@ cm.getConstructor('Com.ScaleTools', function(classConstructor, className, classP
             'nodes' : {}
         }, item);
         // Structure
-        item['nodes']['container'] = cm.node('div', {'class' : 'option__item'},
+        item['nodes']['container'] = cm.node('div', {'class' : 'option__item', 'title' : that.lang(item['name'])},
             item['nodes']['icon'] = cm.node('div', {'class' : [item['iconType'], item['icon']].join(' ')})
         );
         cm.appendChild(item['nodes']['container'], that.myNodes['inner']);

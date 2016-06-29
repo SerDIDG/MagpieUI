@@ -12,6 +12,12 @@
         color: @CmColor-Border;
     }
 
+    &.no-label {
+        .input {
+            font-size: 0;
+        }
+    }
+
     .pt__input--size();
 }
 
@@ -40,7 +46,7 @@
         }
     }
 
-    &:not(.is-icon-outside) {
+    &:not(.is-icon-outside):not(.is-no-label) {
         .input {
             &:not(:first-child) {
                 padding-left: @iconPadding;
@@ -51,7 +57,7 @@
             }
         }
 
-        &.less-indent {
+        &.is-less-indent {
             .input {
                 &:not(:first-child) {
                     padding-left: @iconSize;
@@ -79,6 +85,13 @@
             &:not(:first-child):not(:last-child) {
                 width: calc(~"100% - @{iconSizeDouble}");;
             }
+        }
+    }
+
+    &.is-no-label {
+        .input {
+            padding-left: 0;
+            padding-right: 0;
         }
     }
 }

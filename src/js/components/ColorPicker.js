@@ -27,7 +27,7 @@ cm.define('Com.ColorPicker', {
         'value' : null,                                     // Color string: transparent | hex | rgba.
         'defaultValue' : 'transparent',
         'title' : '',
-        'showInputValue' : true,
+        'showLabel' : true,
         'showClearButton' : false,
         'showTitleTooltip' : true,
         'renderInBody' : true,
@@ -99,7 +99,7 @@ function(params){
         /* *** RENDER STRUCTURE *** */
         that.nodes['container'] = cm.Node('div', {'class' : 'com__colorpicker'},
             that.nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
-            that.nodes['target'] = cm.Node('div', {'class' : 'pt__input has-icon-right'},
+            that.nodes['target'] = cm.Node('div', {'class' : 'pt__input'},
                 that.nodes['input'] = cm.Node('input', {'type' : 'text', 'readOnly' : 'true'}),
                 that.nodes['icon'] = cm.Node('div', {'class' : that.params['icons']['picker']})
             ),
@@ -123,6 +123,10 @@ function(params){
         // Name
         if(that.params['name']){
             that.nodes['hidden'].setAttribute('name', that.params['name']);
+        }
+        // Label
+        if(!that.params['showLabel']){
+            cm.addClass(that.nodes['target'], 'is-no-label');
         }
         // Clear Button
         if(that.params['showClearButton']){
@@ -193,12 +197,12 @@ function(params){
         that.components['palette'].set(that.value, false);
         that.nodes['hidden'].value = that.components['palette'].get('rgb');
         if(that.value == 'transparent'){
-            if(that.params['showInputValue']){
+            if(that.params['showLabel']){
                 that.nodes['input'].value = that.lang('Transparent');
             }
             cm.replaceClass(that.nodes['input'], 'input-dark input-light', 'input-transparent');
         }else{
-            if(that.params['showInputValue']){
+            if(that.params['showLabel']){
                 that.nodes['input'].value = that.components['palette'].get('hex');
             }
             that.nodes['input'].style.backgroundColor = that.components['palette'].get('hex');

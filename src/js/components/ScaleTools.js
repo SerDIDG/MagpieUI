@@ -8,7 +8,13 @@ cm.define('Com.ScaleTools', {
             {'name' : 'contain', 'icon' : 'svg__scale-contain'},
             {'name' : 'cover', 'icon' : 'svg__scale-cover'},
             {'name' : '100% 100%', 'icon' : 'svg__scale-fill'}
-        ]
+        ],
+        'langs' : {
+            'original' : 'Original',
+            'contain' : 'Contain',
+            'cover' : 'Cover',
+            '100% 100%' : 'Fill'
+        }
     }
 },
 function(params){
@@ -66,7 +72,7 @@ cm.getConstructor('Com.ScaleTools', function(classConstructor, className, classP
             'nodes' : {}
         }, item);
         // Structure
-        item['nodes']['container'] = cm.node('div', {'class' : 'option__item'},
+        item['nodes']['container'] = cm.node('div', {'class' : 'option__item', 'title' : that.lang(item['name'])},
             item['nodes']['icon'] = cm.node('div', {'class' : [item['iconType'], item['icon']].join(' ')})
         );
         cm.appendChild(item['nodes']['container'], that.myNodes['inner']);

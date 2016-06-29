@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.19.0 (2016-06-28 20:34) ************ */
+/*! ************ MagpieUI v3.19.1 (2016-06-29 21:23) ************ */
 @charset "UTF-8";
 
 /*!
@@ -9670,6 +9670,12 @@ button {
         color: @CmColor-Border;
     }
 
+    &.no-label {
+        .input {
+            font-size: 0;
+        }
+    }
+
     .pt__input--size();
 }
 
@@ -9698,7 +9704,7 @@ button {
         }
     }
 
-    &:not(.is-icon-outside) {
+    &:not(.is-icon-outside):not(.is-no-label) {
         .input {
             &:not(:first-child) {
                 padding-left: @iconPadding;
@@ -9709,7 +9715,7 @@ button {
             }
         }
 
-        &.less-indent {
+        &.is-less-indent {
             .input {
                 &:not(:first-child) {
                     padding-left: @iconSize;
@@ -9737,6 +9743,13 @@ button {
             &:not(:first-child):not(:last-child) {
                 width: calc(~"100% - @{iconSizeDouble}");;
             }
+        }
+    }
+
+    &.is-no-label {
+        .input {
+            padding-left: 0;
+            padding-right: 0;
         }
     }
 }
@@ -10836,6 +10849,10 @@ button {
                 }
             }
 
+            &.size-field {
+                width: @CmForm-FieldHeight;
+            }
+
             &.xxx-small {
                 width: @PtToolbar-XXXSmall;
             }
@@ -10894,23 +10911,38 @@ button {
         }
     }
 
+    &.is-inline {
+        > .inner {
+            margin-bottom: 0;
+        }
+
+        .group {
+            > li {
+                margin-bottom: 0;
+            }
+        }
+    }
+
     &.is-flex {
         > .inner {
             > .left {
                 .display-flex;
                 .mx__flex(1 1 0);
                 .mx__justify-content(flex-start);
+                .mx__align-items(center);
             }
 
             > .center {
                 .display-flex;
                 .mx__flex(0 1 auto);
+                .mx__align-items(center);
             }
 
             > .right {
                 .display-flex;
                 .mx__flex(1 1 0);
                 .mx__justify-content(flex-end);
+                .mx__align-items(center);
             }
         }
 

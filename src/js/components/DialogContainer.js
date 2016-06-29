@@ -4,7 +4,6 @@ cm.define('Com.DialogContainer', {
         'constructor' : 'Com.Dialog',
         'container' : 'document.body',
         'params' : {
-            'removeOnClose' : false,
             'destructOnRemove' : false,
             'autoOpen' : false
         }
@@ -12,8 +11,6 @@ cm.define('Com.DialogContainer', {
 },
 function(params){
     var that = this;
-    that.nodes = {};
-    that.components = {};
     // Call parent class construct
     Com.AbstractContainer.apply(that, arguments);
 });

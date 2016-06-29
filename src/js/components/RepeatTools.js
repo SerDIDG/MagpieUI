@@ -8,7 +8,13 @@ cm.define('Com.RepeatTools', {
             {'name' : 'repeat-x', 'icon' : 'svg__repeat-horizontal'},
             {'name' : 'repeat-y', 'icon' : 'svg__repeat-vertical'},
             {'name' : 'repeat', 'icon' : 'svg__repeat-both'}
-        ]
+        ],
+        'langs' : {
+            'no-repeat' : 'No',
+            'repeat-x' : 'Horizontally',
+            'repeat-y' : 'Vertically',
+            'repeat' : 'Both'
+        }
     }
 },
 function(params){
@@ -66,7 +72,7 @@ cm.getConstructor('Com.RepeatTools', function(classConstructor, className, class
             'nodes' : {}
         }, item);
         // Structure
-        item['nodes']['container'] = cm.node('div', {'class' : 'option__item'},
+        item['nodes']['container'] = cm.node('div', {'class' : 'option__item', 'title' : that.lang(item['name'])},
             item['nodes']['icon'] = cm.node('div', {'class' : [item['iconType'], item['icon']].join(' ')})
         );
         cm.appendChild(item['nodes']['container'], that.myNodes['inner']);

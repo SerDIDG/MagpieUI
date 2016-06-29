@@ -25,12 +25,6 @@ cm.define('Com.AbstractContainer', {
             'title' : 'Container',
             'close' : 'Close',
             'save' : 'Save'
-        },
-        'Com.Dialog' : {
-            'width' : 900,
-            'removeOnClose' : false,
-            'destructOnRemove' : false,
-            'autoOpen' : false
         }
     }
 },
@@ -104,6 +98,7 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
     classProto.validateParams = function(){
         var that = this;
         that.triggerEvent('onValidateParamsStart');
+        that.triggerEvent('onValidateParamsProcess');
         that.params['params']['node'] = that.params['node'];
         that.params['params']['container'] = that.params['container'];
         that.triggerEvent('onValidateParamsEnd');
