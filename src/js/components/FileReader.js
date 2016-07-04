@@ -84,10 +84,12 @@ cm.getConstructor('Com.FileReader', function(classConstructor, className, classP
                 'error' : null,
                 'name' : '',
                 'size' : 0,
-                'url' : null
+                'url' : null,
+                'type' : null
             },
             parsed;
         if(cm.isFile(o)){
+            item['type'] = o.type;
             item['name'] = o.name;
             item['size'] = o.size;
             item['url'] = window.URL.createObjectURL(o);

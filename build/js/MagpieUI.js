@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.19.1 (2016-06-29 21:23) ************ */
+/*! ************ MagpieUI v3.20.0 (2016-07-04 20:26) ************ */
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -23294,7 +23294,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.19.1',
+        '_version' : '3.20.0',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -25950,6 +25950,10 @@ cm.arrayToCSSValues = function(a, units){
     });
 };
 
+cm.URLToCSSURL = function(url){
+    return !cm.isEmpty(url) ? 'url("' + url + '")' : 'none';
+};
+
 /* ******* VALIDATORS ******* */
 
 cm.keyCodeTable = {
@@ -28506,6 +28510,7 @@ cm.define('Com.AbstractInput', {
         'disabled' : false,
         'className' : '',
         'ui' : true,
+        'size' : 'full',                // default | full
         'maxlength' : 0                 // 0 - infinity
     }
 },
@@ -28640,7 +28645,6 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
     classProto.setAttributes = function(){
         var that = this;
         that.triggerEvent('onSetAttributesStart');
-        cm.addClass(that.nodes['container'], that.params['className']);
         // Data attributes
         cm.forEach(that.params['node'].attributes, function(item){
             if(/^data-(?!node|element)/.test(item.name)){
@@ -28653,6 +28657,11 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         }
         if(that.params['name']){
             that.nodes['hidden'].setAttribute('name', that.params['name']);
+        }
+        // Classes
+        cm.addClass(that.nodes['container'], that.params['className']);
+        if(!cm.isEmpty(that.params['size'])){
+            cm.addClass(that.nodes['container'], ['size', that.params['size']].join('-'));
         }
         that.triggerEvent('onSetAttributesEnd');
         return that;
@@ -36974,7 +36983,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
             that.myNodes['inner'] = cm.node('div', {'class' : 'inner'},
                 that.myNodes['content'] = cm.node('div', {'class' : 'com__file-input__holder'},
                     cm.node('div', {'class' : 'pt__file-line'},
-                        that.myNodes['contentInner'] = cm.node('div', {'class' : 'inner'},
+                        that.myNodes['buttonsInner'] = cm.node('div', {'class' : 'inner'},
                             that.myNodes['clear'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('remove')),
                             that.myNodes['label'] = cm.node('div', {'class' : 'label'})
                         )
@@ -36990,20 +36999,20 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
                     that.myNodes['input'] = cm.node('input', {'type' : 'file'})
                 )
             );
-            cm.insertFirst(that.myNodes['browseLocal'], that.myNodes['contentInner']);
+            cm.addEvent(that.myNodes['input'], 'change', that.browseActionHandler);
+            cm.insertFirst(that.myNodes['browseLocal'], that.myNodes['buttonsInner']);
         }
         if(that.params['fileManager']){
             that.myNodes['browseFileManager'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('_browse_filemanager'));
-            cm.insertFirst(that.myNodes['browseFileManager'], that.myNodes['contentInner']);
+            cm.insertFirst(that.myNodes['browseFileManager'], that.myNodes['buttonsInner']);
         }
         if(that.params['fileUploader']){
             that.myNodes['browseFileUploader'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('browse'));
-            cm.insertFirst(that.myNodes['browseFileUploader'], that.myNodes['contentInner']);
+            cm.insertFirst(that.myNodes['browseFileUploader'], that.myNodes['buttonsInner']);
         }
         // Events
         that.triggerEvent('onRenderContentProcess');
         cm.addEvent(that.myNodes['clear'], 'click', that.clearEventHandler);
-        cm.addEvent(that.myNodes['input'], 'change', that.browseActionHandler);
         that.triggerEvent('onRenderContentEnd');
         // Push
         return that.myNodes['container'];
@@ -37154,10 +37163,12 @@ cm.getConstructor('Com.FileReader', function(classConstructor, className, classP
                 'error' : null,
                 'name' : '',
                 'size' : 0,
-                'url' : null
+                'url' : null,
+                'type' : null
             },
             parsed;
         if(cm.isFile(o)){
+            item['type'] = o.type;
             item['name'] = o.name;
             item['size'] = o.size;
             item['url'] = window.URL.createObjectURL(o);
@@ -38292,12 +38303,14 @@ function(params){
             'type' : 'image',        // image | iframe
             'nodes' : {},
             'src' : '',
-            'title' : ''
+            'title' : '',
+            'mime' : ''
         }, item);
         // Check type
         if(
-            /(\.jpg|\.png|\.gif|\.jpeg|\.bmp|\.tga)$/gi.test(item['src']) ||
-            /^data:image/gi.test(item['src'])
+            /(\.jpg|\.png|\.gif|\.jpeg|\.bmp|\.tga)$/gi.test(item['src'])
+            || /^data:image/gi.test(item['src'])
+            || /^image/gi.test(item['mime'])
         ){
             item['type'] = 'image';
         }else{
@@ -38483,11 +38496,11 @@ function(params){
     };
 
     that.clear = function(){
-        if(items[that.current]){
+        if(that.current && items[that.current]){
             cm.remove(items[that.current]['nodes']['container']);
-            that.current = null;
-            that.previous = null;
         }
+        that.current = null;
+        that.previous = null;
         items = [];
         return that;
     };
@@ -39930,201 +39943,198 @@ function(params){
     init();
 });
 cm.define('Com.ImageInput', {
-    'modules' : [
-        'Params',
-        'Events',
-        'Langs',
-        'DataConfig',
-        'Stack',
-        'Structure'
-    ],
-    'events' : [
-        'onRender'
-    ],
+    'extend' : 'Com.FileInput',
     'params' : {
-        'node' : cm.Node('div'),
-        'container' : null,
-        'name' : '',
-        'embedStructure' : 'replace',
-        'title' : '',
-        'placeholder' : '',
-        'value' : null,
-        'disabled' : false,
-        'type' : 'file',              // base64 | file
+        'class' : 'com__image-input',
+        'size' : 'default',
+        'preview' : true,
+        'previewConstructor' : 'Com.ImagePreviewContainer',
+        'previewParams' : {},
         'langs' : {
-            'no_image' : 'No Image',
-            'browse' : 'Browse',
-            'remove' : 'Remove'
-        },
-        'Com.GalleryPopup' : {}
+            'preview' : 'Preview'
+        }
     }
 },
 function(params){
     var that = this;
+    // Call parent class construct
+    Com.FileInput.apply(that, arguments);
+});
 
-    that.nodes = {};
-    that.components = {};
-    that.disabled = false;
-    that.value = null;
-    that.file = null;
+cm.getConstructor('Com.ImageInput', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
 
-    var init = function(){
-        that.setParams(params);
-        that.convertEvents(that.params['events']);
-        that.getDataConfig(that.params['node']);
-        validateParams();
-        render();
-        // Set selected date
-        if(that.params['value']){
-            that.set(that.params['value'], false);
-        }else{
-            that.set(that.params['node'].value, false);
+    classProto.renderViewModel = function(){
+        var that = this;
+        // Call parent method - renderViewModel
+        _inherit.prototype.renderViewModel.apply(that, arguments);
+        // Init Preview
+        if(that.params['preview']){
+            cm.getConstructor(that.params['previewConstructor'], function(classObject){
+                that.components['preview'] = new classObject(
+                    cm.merge(that.params['previewParams'], {
+                        'node' : that.myNodes['preview']
+                    })
+                );
+            });
         }
-        that.addToStack(that.nodes['container']);
-        that.triggerEvent('onRender');
     };
 
-    var validateParams = function(){
-        if(cm.isNode(that.params['node'])){
-            that.params['placeholder'] = that.params['node'].getAttribute('placeholder') || that.params['placeholder'];
-            that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
-            that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
-        }
-        that.disabled = that.params['disabled'];
-    };
-
-    var render = function(){
+    classProto.renderContent = function(){
+        var that = this;
+        that.triggerEvent('onRenderContentStart');
         // Structure
-        that.nodes['container'] = cm.node('div', {'class' : 'com__image-input'},
-            that.nodes['hidden'] = cm.node('input', {'type' : 'hidden'}),
-            cm.node('div', {'class' : 'pt__box-item size-80'},
-                cm.node('div', {'class' : 'l'},
-                    that.nodes['imageContainer'] = cm.node('div', {'class' : 'pt__image has-border is-centered'},
-                        that.nodes['link'] = cm.node('a', {'class' : 'inner'},
-                            that.nodes['image'] = cm.node('img', {'class' : 'descr', 'alt' : ''})
+        that.myNodes['container'] = cm.node('div', {'class' : 'com__image-input__content'},
+            that.myNodes['inner'] = cm.node('div', {'class' : 'inner'},
+                that.myNodes['content'] = cm.node('div', {'class' : 'input__holder'},
+                    cm.node('div', {'class' : 'input__cover'},
+                        that.myNodes['label'] = cm.node('div', {'class' : 'input__label'}),
+                        that.myNodes['buttonsInner'] = cm.node('div', {'class' : 'input__buttons'},
+                            that.myNodes['clear'] = cm.node('button', {'type' : 'button', 'class' : 'button button-danger'}, that.lang('remove'))
                         )
-                    )
-                ),
-                that.nodes['r'] = cm.node('div', {'class' : 'r'},
-                    that.nodes['buttons'] = cm.node('div', {'class' : 'btn-wrap pull-left'},
-                        cm.node('div', {'class' : 'browse-button'},
-                            cm.node('button', that.lang('browse')),
-                            cm.node('div', {'class' : 'inner'},
-                                that.nodes['input'] = cm.node('input', {'type' : 'file'})
-                            )
-                        ),
-                        that.nodes['remove'] = cm.node('button', that.lang('remove'))
+                    ),
+                    that.myNodes['imageContainer'] = cm.node('div', {'class' : 'pt__image is-cover'},
+                        cm.node('div', {'class' : 'inner'},
+                            that.myNodes['image'] = cm.node('div', {'class' : 'descr'})
+                        )
                     )
                 )
             )
         );
-        if(!cm.isEmpty(that.params['title'])){
-            that.nodes['imageContainer'].title = that.params['title'];
+        // Render Buttons
+        if(that.params['preview']){
+            that.myNodes['preview'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('preview'));
+            cm.insertFirst(that.myNodes['preview'], that.myNodes['buttonsInner']);
         }
-        if(!cm.isEmpty(that.params['placeholder'])){
-            that.nodes['r'].appendChild(
-                cm.node('div', {'class' : 'hint'}, that.params['placeholder'])
+        if(that.params['local']){
+            that.myNodes['browseLocal'] = cm.node('div', {'class' : 'browse-button'},
+                cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('_browse_local')),
+                cm.node('div', {'class' : 'inner'},
+                    that.myNodes['input'] = cm.node('input', {'type' : 'file'})
+                )
             );
+            cm.addEvent(that.myNodes['input'], 'change', that.browseActionHandler);
+            cm.insertFirst(that.myNodes['browseLocal'], that.myNodes['buttonsInner']);
         }
-        if(!cm.isEmpty(that.params['name'])){
-            that.nodes['hidden'].setAttribute('name', that.params['name']);
+        if(that.params['fileManager']){
+            that.myNodes['browseFileManager'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('_browse_filemanager'));
+            cm.insertFirst(that.myNodes['browseFileManager'], that.myNodes['buttonsInner']);
         }
-        // Append
-        that.embedStructure(that.nodes['container']);
+        if(that.params['fileUploader']){
+            that.myNodes['browseFileUploader'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('browse'));
+            cm.insertFirst(that.myNodes['browseFileUploader'], that.myNodes['buttonsInner']);
+        }
         // Events
-        cm.getConstructor('Com.GalleryPopup', function(classConstructor){
-            that.components['popup'] = new classConstructor(
-                cm.merge(that.params['Com.GalleryPopup'], {
-                    'node' : that.nodes['imageContainer']
-                })
-            );
-        });
-        that.components['fileReader'] = new FileReader();
-        cm.addEvent(that.components['fileReader'], 'load', fileReaderAction);
-        cm.addEvent(that.nodes['input'], 'change', changeAction);
-        cm.addEvent(that.nodes['remove'], 'click', removeAction);
+        that.triggerEvent('onRenderContentProcess');
+        cm.addEvent(that.myNodes['clear'], 'click', that.clearEventHandler);
+        that.triggerEvent('onRenderContentEnd');
+        // Push
+        return that.myNodes['container'];
     };
 
-    var changeAction = function(){
-        var file = that.nodes['input'].files[0];
-        if(/^image\//.test(file.type)){
-            that.file = file;
-            that.components['fileReader'].readAsDataURL(that.file);
-        }
-    };
-
-    var removeAction = function(){
-        that.reset();
-    };
-
-    var fileReaderAction = function(e){
-        set(e.target.result);
-    };
-
-    var set = function(url){
-        that.value = url;
-        that.nodes['hidden'].value = url;
-        setImage(url);
-    };
-
-    var setImage = function(url){
-        that.nodes['image'].src = url;
-        cm.replaceClass(that.nodes['imageContainer'], 'is-no-hover is-no-image', 'is-zoom');
-        cm.appendChild(that.nodes['remove'], that.nodes['buttons']);
-        // Replace gallery item
-        if(that.components['popup']){
-            that.components['popup']
-                .clear()
-                .add({
-                    'link' : that.nodes['link'],
-                    'src' : url,
-                    'title' : ''
-                });
-        }
-    };
-
-    /* ******* PUBLIC ******* */
-
-    that.set = function(url, file){
-        if(cm.isEmpty(url)){
-            that.reset();
+    classProto.setData = function(){
+        var that = this,
+            url;
+        if(cm.isEmpty(that.value)){
+            // Preview
+            that.components['preview'] && that.components['preview'].clear();
+            cm.addClass(that.myNodes['preview'], 'is-hidden');
+            that.myNodes['image'].style.backgroundImage = '';
+            cm.addClass(that.myNodes['imageContainer'], 'is-default-image');
+            // Label
+            cm.clearNode(that.myNodes['label']);
+            cm.addClass(that.myNodes['label'], 'is-hidden');
+            // Remove button
+            cm.addClass(that.myNodes['clear'], 'is-hidden');
         }else{
-            that.file = file;
-            set(url);
+            // Preview
+            that.components['preview'] && that.components['preview'].set(that.value);
+            cm.removeClass(that.myNodes['preview'], 'is-hidden');
+            that.myNodes['image'].style.backgroundImage = cm.URLToCSSURL(that.value['url']);
+            cm.removeClass(that.myNodes['imageContainer'], 'is-default-image');
+            // Label
+            cm.clearNode(that.myNodes['label']);
+            if(that.params['showLink']){
+                that.myNodes['link'] = cm.node('a', {'target' : '_blank', 'href' : that.value['url'], 'title' : that.lang('open')}, that.value['name']);
+            }else{
+                that.myNodes['link'] = cm.textNode(that.value['name']);
+            }
+            cm.appendChild(that.myNodes['link'], that.myNodes['label']);
+            cm.removeClass(that.myNodes['label'], 'is-hidden');
+            // Remove button
+            cm.removeClass(that.myNodes['clear'], 'is-hidden');
         }
         return that;
     };
-
-    that.get = function(){
-        switch(that.params['type']){
-            case 'base64' :
-                return that.value;
-                break;
-            case 'file' :
-                return that.file;
-                break;
-        }
-    };
-
-    that.reset = function(){
-        that.file = null;
-        that.value = null;
-        that.nodes['hidden'].value = '';
-        cm.replaceClass(that.nodes['imageContainer'], 'is-zoom', 'is-no-hover is-no-image');
-        cm.remove(that.nodes['remove']);
-        // Clear gallery item
-        that.components['popup'] && that.components['popup'].clear();
-        return that;
-    };
-
-    init();
 });
 
-/* ****** FORM FIELD COMPONENT ******* */
+cm.define('Com.ImagePreviewContainer', {
+    'extend' : 'Com.AbstractContainer',
+    'params' : {
+        'constructor' : 'Com.GalleryPopup',
+        'params' : {
+            'showCounter' : false,
+            'showTitle' : true
+        }
+    }
+},
+function(params){
+    var that = this;
+    that.item = {};
+    // Call parent class construct
+    Com.AbstractContainer.apply(that, arguments);
+});
 
-Com.FormFields.add('image-input', {
-    'node' : cm.node('input'),
-    'constructor' : 'Com.ImageInput'
+
+cm.getConstructor('Com.ImagePreviewContainer', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.construct = function(){
+        var that = this;
+        // Bind context to methods
+        that.renderControllerProcessHandler = that.renderControllerProcess.bind(that);
+        // Add events
+        that.addEvent('onRenderControllerProcess', that.renderControllerProcessHandler);
+        // Call parent method
+        _inherit.prototype.construct.apply(that, arguments);
+        return that;
+    };
+
+    classProto.set = function(item){
+        var that = this;
+        that.clear();
+        that.setData(item);
+        that.setController();
+        return that;
+    };
+
+    classProto.clear = function(){
+        var that = this;
+        that.components['controller'] && that.components['controller'].clear();
+        return that;
+    };
+
+    classProto.renderControllerProcess = function(){
+        var that = this;
+        that.setController();
+        return that;
+    };
+
+    classProto.setData = function(item){
+        var that = this;
+        that.item = {
+            'src' : item['url'],
+            'mime' : item['type'],
+            'title' : item['name']
+        };
+        return that;
+    };
+
+    classProto.setController = function(){
+        var that = this;
+        that.components['controller'] && that.components['controller'].add(that.item);
+        return that;
+    };
 });
 cm.define('Com.IndentInput', {
     'extend' : 'Com.AbstractInput',
@@ -42974,7 +42984,7 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         var that = this;
         that.isError = false;
         if(!that.responceDataStatus || (that.responceDataStatus && that.params['renderContentOnSuccess'])){
-            that.renderContent();
+            that.renderResponse();
         }
         that.triggerEvent('onSuccess', {
             'response' : that.responceData,
@@ -43001,28 +43011,33 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         return node;
     };
 
-    classProto.renderContent = function(){
+    classProto.renderResponse = function(){
         var that = this,
-            temporary,
             nodes;
         if(that.params['responseHTML']){
             nodes = cm.strToHTML(that.responceDataHTML);
-            // Append
-            if(cm.isNode(that.params['responseContainer'])){
-                that.triggerEvent('onContentRenderStart', nodes);
-                cm.clearNode(that.params['responseContainer']);
-                cm.appendNodes(nodes, that.params['responseContainer']);
-                that.triggerEvent('onContentRender', nodes);
-                that.triggerEvent('onContentRenderEnd', nodes);
-            }else if(cm.isNode(that.params['container'])){
-                temporary = that.renderTemporary(false);
-                cm.appendNodes(nodes, temporary);
-                that.appendResponse(temporary);
-            }else{
-                that.triggerEvent('onContentRenderStart', nodes);
-                that.triggerEvent('onContentRender', nodes);
-                that.triggerEvent('onContentRenderEnd', nodes);
-            }
+            that.renderContent(nodes);
+        }
+        return that;
+    };
+
+    classProto.renderContent = function(nodes){
+        var that = this,
+            temporary;
+        if(cm.isNode(that.params['responseContainer'])){
+            that.triggerEvent('onContentRenderStart', nodes);
+            cm.clearNode(that.params['responseContainer']);
+            cm.appendNodes(nodes, that.params['responseContainer']);
+            that.triggerEvent('onContentRender', nodes);
+            that.triggerEvent('onContentRenderEnd', nodes);
+        }else if(cm.isNode(that.params['container'])){
+            temporary = that.renderTemporary(false);
+            cm.appendNodes(nodes, temporary);
+            that.appendResponse(temporary);
+        }else{
+            that.triggerEvent('onContentRenderStart', nodes);
+            that.triggerEvent('onContentRender', nodes);
+            that.triggerEvent('onContentRenderEnd', nodes);
         }
         return that;
     };

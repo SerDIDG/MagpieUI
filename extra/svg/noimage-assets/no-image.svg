@@ -1,0 +1,30 @@
+<svg id="no-image.svg" xmlns="http://www.w3.org/2000/svg" width="326" height="128" viewBox="0 0 326 128">
+  <defs>
+    <style>
+      .cls-1, .cls-2, .cls-3 {
+        fill: #fff;
+      }
+
+      .cls-1, .cls-2 {
+        fill-rule: evenodd;
+      }
+
+      .cls-1 {
+        opacity: 0.35;
+      }
+
+      .cls-2 {
+        opacity: 0.85;
+      }
+
+      .cls-4 {
+        fill: #5e5e5e;
+        opacity: 0;
+      }
+    </style>
+  </defs>
+  <path id="_3" data-name="3" class="cls-1" d="M249.7,128L223.689,91.531l-26.312,33.1-14.638-19.419,45.284-42.86L298,128H249.7ZM84.972,128H28L78.621,71.333l24.825,31.01Z"/>
+  <path id="_2" data-name="2" class="cls-2" d="M141.124,50.012l56.253,74.622,26.312-33.1L249.7,128H84.972Z"/>
+  <circle id="_1" data-name="1" class="cls-3" cx="224" cy="24" r="16"/>
+  <rect id="canvas" class="cls-4" width="326" height="128"/>
+</svg>

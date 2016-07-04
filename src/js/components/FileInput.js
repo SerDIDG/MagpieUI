@@ -187,7 +187,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
             that.myNodes['inner'] = cm.node('div', {'class' : 'inner'},
                 that.myNodes['content'] = cm.node('div', {'class' : 'com__file-input__holder'},
                     cm.node('div', {'class' : 'pt__file-line'},
-                        that.myNodes['contentInner'] = cm.node('div', {'class' : 'inner'},
+                        that.myNodes['buttonsInner'] = cm.node('div', {'class' : 'inner'},
                             that.myNodes['clear'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('remove')),
                             that.myNodes['label'] = cm.node('div', {'class' : 'label'})
                         )
@@ -203,20 +203,20 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
                     that.myNodes['input'] = cm.node('input', {'type' : 'file'})
                 )
             );
-            cm.insertFirst(that.myNodes['browseLocal'], that.myNodes['contentInner']);
+            cm.addEvent(that.myNodes['input'], 'change', that.browseActionHandler);
+            cm.insertFirst(that.myNodes['browseLocal'], that.myNodes['buttonsInner']);
         }
         if(that.params['fileManager']){
             that.myNodes['browseFileManager'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('_browse_filemanager'));
-            cm.insertFirst(that.myNodes['browseFileManager'], that.myNodes['contentInner']);
+            cm.insertFirst(that.myNodes['browseFileManager'], that.myNodes['buttonsInner']);
         }
         if(that.params['fileUploader']){
             that.myNodes['browseFileUploader'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('browse'));
-            cm.insertFirst(that.myNodes['browseFileUploader'], that.myNodes['contentInner']);
+            cm.insertFirst(that.myNodes['browseFileUploader'], that.myNodes['buttonsInner']);
         }
         // Events
         that.triggerEvent('onRenderContentProcess');
         cm.addEvent(that.myNodes['clear'], 'click', that.clearEventHandler);
-        cm.addEvent(that.myNodes['input'], 'change', that.browseActionHandler);
         that.triggerEvent('onRenderContentEnd');
         // Push
         return that.myNodes['container'];

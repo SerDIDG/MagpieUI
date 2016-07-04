@@ -1,0 +1,75 @@
+/* ******* COMPONENTS: IMAGE INPUT ******* */
+
+.com__image-input__content {
+    @half_buttons_indent: @ComImageInput-ButtonsIndent / 2;
+
+    position: relative;
+
+    > .inner {
+        position: relative;
+    }
+
+    .input__holder {
+        opacity: 1;
+        .mx__transition(all, @CmUI-Transition-Duration);
+
+        .pt__image {
+            > .inner {
+                > .descr {
+                    height: @ComImageInput-Height;
+                    border: @CmBorder-Default;
+                    border-radius: @CmBorder-Radius;
+                }
+            }
+        }
+        .input__cover {
+            .display-flex;
+            visibility: hidden;
+            position: absolute;
+            z-index: 2;
+            opacity: 0;
+            background-color: @ComImageInput-CoverBackground;
+            border-radius: @CmBorder-Radius;
+            .mx__position(0, 0, 0 ,0);
+            .mx__transition(all, @CmUI-Transition-Duration);
+        }
+
+        .input__label {
+            .display-flex;
+            overflow: hidden;
+            padding: @ComImageInput-ButtonsIndent;
+            .mx__flex(1 1 0);
+            .mx__align-items(center);
+            .mx__justify-content(center);
+
+            .cm__link {
+                .cm__text-nowrap;
+                color: @CmColor-Font-Opposite;
+            }
+        }
+
+        .input__buttons {
+            .display-flex;
+            padding: @half_buttons_indent;
+            border-left: 1px solid rgba(255, 255, 255, 0.30);
+            .mx__flex-flow(column nowrap);
+
+            .button {
+                height: 100%;
+                margin: @half_buttons_indent;
+            }
+        }
+
+        &:hover {
+            .input__cover {
+                visibility: visible;
+                opacity: 1;
+            }
+        }
+
+        &.is-hidden {
+            opacity: 0;
+        }
+    }
+
+}

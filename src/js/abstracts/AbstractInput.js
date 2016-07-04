@@ -19,6 +19,7 @@ cm.define('Com.AbstractInput', {
         'disabled' : false,
         'className' : '',
         'ui' : true,
+        'size' : 'full',                // default | full
         'maxlength' : 0                 // 0 - infinity
     }
 },
@@ -153,7 +154,6 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
     classProto.setAttributes = function(){
         var that = this;
         that.triggerEvent('onSetAttributesStart');
-        cm.addClass(that.nodes['container'], that.params['className']);
         // Data attributes
         cm.forEach(that.params['node'].attributes, function(item){
             if(/^data-(?!node|element)/.test(item.name)){
@@ -166,6 +166,11 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         }
         if(that.params['name']){
             that.nodes['hidden'].setAttribute('name', that.params['name']);
+        }
+        // Classes
+        cm.addClass(that.nodes['container'], that.params['className']);
+        if(!cm.isEmpty(that.params['size'])){
+            cm.addClass(that.nodes['container'], ['size', that.params['size']].join('-'));
         }
         that.triggerEvent('onSetAttributesEnd');
         return that;

@@ -317,7 +317,7 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         var that = this;
         that.isError = false;
         if(!that.responceDataStatus || (that.responceDataStatus && that.params['renderContentOnSuccess'])){
-            that.renderContent();
+            that.renderResponse();
         }
         that.triggerEvent('onSuccess', {
             'response' : that.responceData,
@@ -344,28 +344,33 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         return node;
     };
 
-    classProto.renderContent = function(){
+    classProto.renderResponse = function(){
         var that = this,
-            temporary,
             nodes;
         if(that.params['responseHTML']){
             nodes = cm.strToHTML(that.responceDataHTML);
-            // Append
-            if(cm.isNode(that.params['responseContainer'])){
-                that.triggerEvent('onContentRenderStart', nodes);
-                cm.clearNode(that.params['responseContainer']);
-                cm.appendNodes(nodes, that.params['responseContainer']);
-                that.triggerEvent('onContentRender', nodes);
-                that.triggerEvent('onContentRenderEnd', nodes);
-            }else if(cm.isNode(that.params['container'])){
-                temporary = that.renderTemporary(false);
-                cm.appendNodes(nodes, temporary);
-                that.appendResponse(temporary);
-            }else{
-                that.triggerEvent('onContentRenderStart', nodes);
-                that.triggerEvent('onContentRender', nodes);
-                that.triggerEvent('onContentRenderEnd', nodes);
-            }
+            that.renderContent(nodes);
+        }
+        return that;
+    };
+
+    classProto.renderContent = function(nodes){
+        var that = this,
+            temporary;
+        if(cm.isNode(that.params['responseContainer'])){
+            that.triggerEvent('onContentRenderStart', nodes);
+            cm.clearNode(that.params['responseContainer']);
+            cm.appendNodes(nodes, that.params['responseContainer']);
+            that.triggerEvent('onContentRender', nodes);
+            that.triggerEvent('onContentRenderEnd', nodes);
+        }else if(cm.isNode(that.params['container'])){
+            temporary = that.renderTemporary(false);
+            cm.appendNodes(nodes, temporary);
+            that.appendResponse(temporary);
+        }else{
+            that.triggerEvent('onContentRenderStart', nodes);
+            that.triggerEvent('onContentRender', nodes);
+            that.triggerEvent('onContentRenderEnd', nodes);
         }
         return that;
     };

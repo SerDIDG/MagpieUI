@@ -29,7 +29,7 @@
  ******* */
 
 var cm = {
-        '_version' : '3.19.1',
+        '_version' : '3.20.0',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -2683,6 +2683,10 @@ cm.arrayToCSSValues = function(a, units){
     return a.reduce(function(prev, next, index, a){
         return [prev + units, next + ((index == a.length - 1) ? units : '')].join(' ');
     });
+};
+
+cm.URLToCSSURL = function(url){
+    return !cm.isEmpty(url) ? 'url("' + url + '")' : 'none';
 };
 
 /* ******* VALIDATORS ******* */

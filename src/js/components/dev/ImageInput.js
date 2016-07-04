@@ -167,11 +167,9 @@ function(params){
     that.get = function(){
         switch(that.params['type']){
             case 'base64' :
-                cm.log(2);
                 return that.value;
                 break;
             case 'file' :
-                cm.log(1);
                 return that.file;
                 break;
         }

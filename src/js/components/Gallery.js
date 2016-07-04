@@ -138,12 +138,14 @@ function(params){
             'type' : 'image',        // image | iframe
             'nodes' : {},
             'src' : '',
-            'title' : ''
+            'title' : '',
+            'mime' : ''
         }, item);
         // Check type
         if(
-            /(\.jpg|\.png|\.gif|\.jpeg|\.bmp|\.tga)$/gi.test(item['src']) ||
-            /^data:image/gi.test(item['src'])
+            /(\.jpg|\.png|\.gif|\.jpeg|\.bmp|\.tga)$/gi.test(item['src'])
+            || /^data:image/gi.test(item['src'])
+            || /^image/gi.test(item['mime'])
         ){
             item['type'] = 'image';
         }else{
@@ -329,11 +331,11 @@ function(params){
     };
 
     that.clear = function(){
-        if(items[that.current]){
+        if(that.current && items[that.current]){
             cm.remove(items[that.current]['nodes']['container']);
-            that.current = null;
-            that.previous = null;
         }
+        that.current = null;
+        that.previous = null;
         items = [];
         return that;
     };

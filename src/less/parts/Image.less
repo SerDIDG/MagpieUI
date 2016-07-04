@@ -22,6 +22,7 @@
         .mx__transition(opacity, @CmUI-Transition-Duration);
 
         > .descr {
+            .icon.initial;
             .cm__image-resizable;
             position: relative;
             z-index: 1;
@@ -236,6 +237,33 @@
             > .descr {
                 width: auto;
                 height: auto;
+            }
+        }
+    }
+
+    &.is-contain {
+        > .inner {
+            > .descr {
+                background-size: contain;
+            }
+        }
+    }
+
+    &.is-cover {
+        > .inner {
+            > .descr {
+                background-size: cover;
+            }
+        }
+    }
+
+    &.is-default-image {
+        > .inner {
+            > .descr {
+                .icon.initial;
+                .svg__no-image;
+                background-color: @CmColor-Secondary-DarkDefault;
+                background-size: cover;
             }
         }
     }
