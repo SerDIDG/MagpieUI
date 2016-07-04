@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.20.1 (2016-07-04 21:04) ************ */
+/*! ************ MagpieUI v3.20.1 (2016-07-04 21:27) ************ */
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -28647,7 +28647,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         that.triggerEvent('onSetAttributesStart');
         // Data attributes
         cm.forEach(that.params['node'].attributes, function(item){
-            if(/^data-(?!node|element)/.test(item.name)){
+            if(/^data-(?!node|element|config)/.test(item.name)){
                 that.nodes['hidden'].setAttribute(item.name, item.value);
                 that.nodes['container'].setAttribute(item.name, item.value);
             }

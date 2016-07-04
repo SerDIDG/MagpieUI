@@ -156,7 +156,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         that.triggerEvent('onSetAttributesStart');
         // Data attributes
         cm.forEach(that.params['node'].attributes, function(item){
-            if(/^data-(?!node|element)/.test(item.name)){
+            if(/^data-(?!node|element|config)/.test(item.name)){
                 that.nodes['hidden'].setAttribute(item.name, item.value);
                 that.nodes['container'].setAttribute(item.name, item.value);
             }
