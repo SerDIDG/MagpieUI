@@ -46,7 +46,9 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
                     cm.node('div', {'class' : 'input__cover'},
                         that.myNodes['label'] = cm.node('div', {'class' : 'input__label'}),
                         that.myNodes['buttonsInner'] = cm.node('div', {'class' : 'input__buttons'},
-                            that.myNodes['clear'] = cm.node('button', {'type' : 'button', 'class' : 'button button-danger'}, that.lang('remove'))
+                            that.myNodes['clear'] = cm.node('div', {'class' : 'cm__button-wrapper'},
+                                cm.node('button', {'type' : 'button', 'class' : 'button button-danger'}, that.lang('remove'))
+                            )
                         )
                     ),
                     that.myNodes['imageContainer'] = cm.node('div', {'class' : 'pt__image is-cover'},
@@ -59,7 +61,9 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
         );
         // Render Buttons
         if(that.params['preview']){
-            that.myNodes['preview'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('preview'));
+            that.myNodes['preview'] = cm.node('div', {'class' : 'cm__button-wrapper'},
+                cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('preview'))
+            );
             cm.insertFirst(that.myNodes['preview'], that.myNodes['buttonsInner']);
         }
         if(that.params['local']){
@@ -73,11 +77,15 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
             cm.insertFirst(that.myNodes['browseLocal'], that.myNodes['buttonsInner']);
         }
         if(that.params['fileManager']){
-            that.myNodes['browseFileManager'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('_browse_filemanager'));
+            that.myNodes['browseFileManager'] = cm.node('div', {'class' : 'cm__button-wrapper'},
+                cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('_browse_filemanager'))
+            );
             cm.insertFirst(that.myNodes['browseFileManager'], that.myNodes['buttonsInner']);
         }
         if(that.params['fileUploader']){
-            that.myNodes['browseFileUploader'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('browse'));
+            that.myNodes['browseFileUploader'] = cm.node('div', {'class' : 'cm__button-wrapper'},
+                cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('browse'))
+            );
             cm.insertFirst(that.myNodes['browseFileUploader'], that.myNodes['buttonsInner']);
         }
         // Events

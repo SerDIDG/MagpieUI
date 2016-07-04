@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.20.0 (2016-07-04 20:26) ************ */
+/*! ************ MagpieUI v3.20.1 (2016-07-04 21:04) ************ */
 @charset "UTF-8";
 
 /*!
@@ -14390,9 +14390,14 @@ button {
             border-left: 1px solid rgba(255, 255, 255, 0.30);
             .mx__flex-flow(column nowrap);
 
-            .button {
-                height: 100%;
+            .button-alike {
+                .display-flex;
                 margin: @half_buttons_indent;
+                .mx__flex(1 1 100%);
+
+                &.is-hidden {
+                    display: none;
+                }
             }
         }
 

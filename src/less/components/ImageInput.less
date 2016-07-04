@@ -54,9 +54,14 @@
             border-left: 1px solid rgba(255, 255, 255, 0.30);
             .mx__flex-flow(column nowrap);
 
-            .button {
-                height: 100%;
+            .button-alike {
+                .display-flex;
                 margin: @half_buttons_indent;
+                .mx__flex(1 1 100%);
+
+                &.is-hidden {
+                    display: none;
+                }
             }
         }
 
