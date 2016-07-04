@@ -1,197 +1,283 @@
-cm.define('Com.ImageInput', {
-    'modules' : [
-        'Params',
-        'Events',
-        'Langs',
-        'DataConfig',
-        'Stack',
-        'Structure'
-    ],
-    'events' : [
-        'onRender'
-    ],
+cm.define('Com.FileInput', {
+    'extend' : 'Com.AbstractInput',
     'params' : {
-        'node' : cm.Node('div'),
-        'container' : null,
-        'name' : '',
         'embedStructure' : 'replace',
-        'title' : '',
-        'placeholder' : '',
-        'value' : null,
-        'disabled' : false,
-        'type' : 'file',              // base64 | file
-        'langs' : {
-            'no_image' : 'No Image',
-            'browse' : 'Browse',
-            'remove' : 'Remove'
+        'className' : 'com__file-input',
+        'file' : null,
+        'showLink' : true,
+        'local' : true,
+        'fileManager' : false,
+        'fileManagerConstructor' : 'Com.AbstractFileManagerContainer',
+        'fileManagerParams' : {
+            'params' : {
+                'max' : 1
+            }
         },
-        'Com.GalleryPopup' : {}
+        'fileUploader' : false,
+        'fileUploaderConstructor' : 'Com.FileUploaderContainer',
+        'fileUploaderParams' : {
+            'params' : {
+                'max' : 1
+            }
+        },
+        'dropzone' : true,
+        'dropzoneConstructor' : 'Com.FileDropzone',
+        'dropzoneParams' : {
+            'embedStructure' : 'append',
+            'max' : 1,
+            'rollover' : true
+        },
+        'langs' : {
+            'browse' : 'Browse',
+            'browse_local' : 'Browse Local',
+            'browse_filemanager' : 'Browse File Manager',
+            'remove' : 'Remove',
+            'open' : 'Open'
+        },
+        'Com.FileReader' : {}
     }
 },
 function(params){
     var that = this;
+    that.myNodes = {};
+    that.myComponents = {};
+    // Call parent class construct
+    Com.AbstractInput.apply(that, arguments);
+});
 
-    that.nodes = {};
-    that.components = {};
-    that.disabled = false;
-    that.value = null;
-    that.file = null;
+cm.getConstructor('Com.FileInput', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
 
-    var init = function(){
-        that.setParams(params);
-        that.convertEvents(that.params['events']);
-        that.getDataConfig(that.params['node']);
-        validateParams();
-        render();
-        // Set selected date
-        if(that.params['value']){
-            that.set(that.params['value'], false);
+    classProto.construct = function(){
+        var that = this;
+        // Bind context to methods
+        that.initComponentsStartHandler = that.initComponentsStart.bind(that);
+        that.validateParamsEndHandler = that.validateParamsEnd.bind(that);
+        that.browseActionHandler = that.browseAction.bind(that);
+        that.processFilesHandler = that.processFiles.bind(that);
+        // Add events
+        that.addEvent('onInitComponentsStart', that.initComponentsStartHandler);
+        that.addEvent('onValidateParamsEnd', that.validateParamsEndHandler);
+        // Call parent method
+        _inherit.prototype.construct.apply(that, arguments);
+        return that;
+    };
+
+    classProto.set = function(){
+        var that = this;
+        // Call parent method
+        _inherit.prototype.set.apply(that, arguments);
+        // Set data
+        that.setData();
+        return that;
+    };
+
+    classProto.clear = function(){
+        var that = this;
+        // Call parent method
+        _inherit.prototype.clear.apply(that, arguments);
+        // Set data
+        that.setData();
+        return that;
+    };
+
+    classProto.initComponentsStart = function(){
+        var that = this;
+        cm.getConstructor('Com.FileReader', function(classObject){
+            that.myComponents['validator'] = new classObject();
+        });
+        return that;
+    };
+
+    classProto.validateParamsEnd = function(){
+        var that = this;
+        // Validate Language Strings
+        that.setLangs({
+            '_browse_local' : that.params['fileManager'] ? that.lang('browse_local') : that.lang('browse'),
+            '_browse_filemanager' : that.params['local'] ? that.lang('browse_filemanager') : that.lang('browse')
+        });
+        // Dropzone
+        that.params['dropzone'] = !that.params['local'] ? false : that.params['dropzone'];
+        // File Uploader
+        that.params['fileUploaderParams']['params']['local'] = that.params['local'];
+        that.params['fileUploaderParams']['params']['fileManager'] = that.params['fileManager'];
+        // Other
+        that.params['local'] = that.params['fileUploader'] ? false : that.params['local'];
+        that.params['fileManager'] = that.params['fileUploader'] ? false : that.params['fileManager'];
+        return that;
+    };
+
+    classProto.validateValue = function(value){
+        var that = this,
+            item = that.myComponents['validator'].validate(value);
+        return !cm.isEmpty(item['value']) ? item : '';
+    };
+
+    classProto.saveValue = function(value){
+        var that = this;
+        that.previousValue = that.value;
+        that.value = value;
+        if(!cm.isEmpty(value)){
+            that.nodes['hidden'].value = JSON.stringify(value);
         }else{
-            that.set(that.params['node'].value, false);
+            that.nodes['hidden'].value = ''
         }
-        that.addToStack(that.nodes['container']);
-        that.triggerEvent('onRender');
+        return that;
     };
 
-    var validateParams = function(){
-        if(cm.isNode(that.params['node'])){
-            that.params['placeholder'] = that.params['node'].getAttribute('placeholder') || that.params['placeholder'];
-            that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
-            that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
+    classProto.renderViewModel = function(){
+        var that = this;
+        // Call parent method - renderViewModel
+        _inherit.prototype.renderViewModel.apply(that, arguments);
+        // Init FilerReader
+        cm.getConstructor('Com.FileReader', function(classObject, className){
+            that.myComponents['reader'] = new classObject(that.params[className]);
+            that.myComponents['reader'].addEvent('onReadSuccess', function(my, item){
+                that.set(item, true);
+            });
+        });
+        // Init Dropzone
+        if(that.params['dropzone']){
+            cm.getConstructor(that.params['dropzoneConstructor'], function(classObject){
+                that.myComponents['dropzone'] = new classObject(
+                    cm.merge(that.params['dropzoneParams'], {
+                        'container' : that.myNodes['inner'],
+                        'target' : that.myNodes['content']
+                    })
+                );
+                that.myComponents['dropzone'].addEvent('onDrop', function(my, data){
+                    that.processFiles(data);
+                });
+            });
         }
-        that.disabled = that.params['disabled'];
+        // Init File Manager
+        if(that.params['fileManager']){
+            cm.getConstructor(that.params['fileManagerConstructor'], function(classObject){
+                that.myComponents['fileManager'] = new classObject(
+                    cm.merge(that.params['fileManagerParams'], {
+                        'node' : that.myNodes['browseFileManager']
+                    })
+                );
+                that.myComponents['fileManager'].addEvent('onComplete', function(my, data){
+                    that.processFiles(data);
+                });
+            });
+        }
+        // Init File Uploader
+        if(that.params['fileUploader']){
+            cm.getConstructor(that.params['fileUploaderConstructor'], function(classObject){
+                that.myComponents['fileUploader'] = new classObject(
+                    cm.merge(that.params['fileUploaderParams'], {
+                        'node' : that.myNodes['browseFileUploader']
+                    })
+                );
+                that.myComponents['fileUploader'].addEvent('onComplete', function(my, data){
+                    that.processFiles(data);
+                });
+            });
+        }
+        return that;
     };
 
-    var render = function(){
+    classProto.renderContent = function(){
+        var that = this;
+        that.triggerEvent('onRenderContentStart');
         // Structure
-        that.nodes['container'] = cm.node('div', {'class' : 'com__image-input'},
-            that.nodes['hidden'] = cm.node('input', {'type' : 'hidden'}),
-            cm.node('div', {'class' : 'pt__box-item size-80'},
-                cm.node('div', {'class' : 'l'},
-                    that.nodes['imageContainer'] = cm.node('div', {'class' : 'pt__image has-border is-centered'},
-                        that.nodes['link'] = cm.node('a', {'class' : 'inner'},
-                            that.nodes['image'] = cm.node('img', {'class' : 'descr', 'alt' : ''})
+        that.myNodes['container'] = cm.node('div', {'class' : 'com__file-input__content'},
+            that.myNodes['inner'] = cm.node('div', {'class' : 'inner'},
+                that.myNodes['content'] = cm.node('div', {'class' : 'com__file-input__holder'},
+                    cm.node('div', {'class' : 'pt__file-line'},
+                        that.myNodes['contentInner'] = cm.node('div', {'class' : 'inner'},
+                            that.myNodes['clear'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('remove')),
+                            that.myNodes['label'] = cm.node('div', {'class' : 'label'})
                         )
-                    )
-                ),
-                that.nodes['r'] = cm.node('div', {'class' : 'r'},
-                    that.nodes['buttons'] = cm.node('div', {'class' : 'btn-wrap pull-left'},
-                        cm.node('div', {'class' : 'browse-button'},
-                            cm.node('button', that.lang('browse')),
-                            cm.node('div', {'class' : 'inner'},
-                                that.nodes['input'] = cm.node('input', {'type' : 'file'})
-                            )
-                        ),
-                        that.nodes['remove'] = cm.node('button', that.lang('remove'))
                     )
                 )
             )
         );
-        if(!cm.isEmpty(that.params['title'])){
-            that.nodes['imageContainer'].title = that.params['title'];
-        }
-        if(!cm.isEmpty(that.params['placeholder'])){
-            that.nodes['r'].appendChild(
-                cm.node('div', {'class' : 'hint'}, that.params['placeholder'])
+        // Render Browse Buttons
+        if(that.params['local']){
+            that.myNodes['browseLocal'] = cm.node('div', {'class' : 'browse-button'},
+                cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('_browse_local')),
+                cm.node('div', {'class' : 'inner'},
+                    that.myNodes['input'] = cm.node('input', {'type' : 'file'})
+                )
             );
+            cm.insertFirst(that.myNodes['browseLocal'], that.myNodes['contentInner']);
         }
-        if(!cm.isEmpty(that.params['name'])){
-            that.nodes['hidden'].setAttribute('name', that.params['name']);
+        if(that.params['fileManager']){
+            that.myNodes['browseFileManager'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('_browse_filemanager'));
+            cm.insertFirst(that.myNodes['browseFileManager'], that.myNodes['contentInner']);
         }
-        // Append
-        that.embedStructure(that.nodes['container']);
+        if(that.params['fileUploader']){
+            that.myNodes['browseFileUploader'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('browse'));
+            cm.insertFirst(that.myNodes['browseFileUploader'], that.myNodes['contentInner']);
+        }
         // Events
-        cm.getConstructor('Com.GalleryPopup', function(classConstructor){
-            that.components['popup'] = new classConstructor(
-                cm.merge(that.params['Com.GalleryPopup'], {
-                    'node' : that.nodes['imageContainer']
-                })
-            );
-        });
-        that.components['fileReader'] = new FileReader();
-        cm.addEvent(that.components['fileReader'], 'load', fileReaderAction);
-        cm.addEvent(that.nodes['input'], 'change', changeAction);
-        cm.addEvent(that.nodes['remove'], 'click', removeAction);
+        that.triggerEvent('onRenderContentProcess');
+        cm.addEvent(that.myNodes['clear'], 'click', that.clearEventHandler);
+        cm.addEvent(that.myNodes['input'], 'change', that.browseActionHandler);
+        that.triggerEvent('onRenderContentEnd');
+        // Push
+        return that.myNodes['container'];
     };
 
-    var changeAction = function(){
-        var file = that.nodes['input'].files[0];
-        if(/^image\//.test(file.type)){
-            that.file = file;
-            that.components['fileReader'].readAsDataURL(that.file);
-        }
-    };
-
-    var removeAction = function(){
-        that.reset();
-    };
-
-    var fileReaderAction = function(e){
-        set(e.target.result);
-    };
-
-    var set = function(url){
-        that.value = url;
-        that.nodes['hidden'].value = url;
-        setImage(url);
-    };
-
-    var setImage = function(url){
-        that.nodes['image'].src = url;
-        cm.replaceClass(that.nodes['imageContainer'], 'is-no-hover is-no-image', 'is-zoom');
-        cm.appendChild(that.nodes['remove'], that.nodes['buttons']);
-        // Replace gallery item
-        if(that.components['popup']){
-            that.components['popup']
-                .clear()
-                .add({
-                    'link' : that.nodes['link'],
-                    'src' : url,
-                    'title' : ''
-                });
-        }
-    };
-
-    /* ******* PUBLIC ******* */
-
-    that.set = function(url, file){
-        if(cm.isEmpty(url)){
-            that.reset();
+    classProto.setData = function(){
+        var that = this,
+            url;
+        if(cm.isEmpty(that.value)){
+            cm.clearNode(that.myNodes['label']);
+            cm.addClass(that.myNodes['label'], 'is-hidden');
+            cm.removeClass(that.myNodes['browseLocal'], 'is-hidden');
+            cm.removeClass(that.myNodes['browseFileManager'], 'is-hidden');
+            cm.removeClass(that.myNodes['browseFileUploader'], 'is-hidden');
+            cm.addClass(that.myNodes['clear'], 'is-hidden');
         }else{
-            that.file = file;
-            set(url);
+            cm.clearNode(that.myNodes['label']);
+            if(that.params['showLink']){
+                that.myNodes['link'] = cm.node('a', {'target' : '_blank', 'href' : that.value['url'], 'title' : that.lang('open')}, that.value['name']);
+            }else{
+                that.myNodes['link'] = cm.textNode(that.value['name']);
+            }
+            cm.appendChild(that.myNodes['link'], that.myNodes['label']);
+            cm.addClass(that.myNodes['browseLocal'], 'is-hidden');
+            cm.addClass(that.myNodes['browseFileManager'], 'is-hidden');
+            cm.addClass(that.myNodes['browseFileUploader'], 'is-hidden');
+            cm.removeClass(that.myNodes['clear'], 'is-hidden');
+            cm.removeClass(that.myNodes['label'], 'is-hidden');
         }
         return that;
     };
 
-    that.get = function(){
-        switch(that.params['type']){
-            case 'base64' :
-                return that.value;
-                break;
-            case 'file' :
-                return that.file;
-                break;
-        }
-    };
+    /* *** PROCESS FILES *** */
 
-    that.reset = function(){
-        that.file = null;
-        that.value = null;
-        that.nodes['hidden'].value = '';
-        cm.replaceClass(that.nodes['imageContainer'], 'is-zoom', 'is-no-hover is-no-image');
-        cm.remove(that.nodes['remove']);
-        // Clear gallery item
-        that.components['popup'] && that.components['popup'].clear();
+    classProto.browseAction = function(e){
+        var that = this,
+            file = e.target.files[0];
+        cm.preventDefault(e);
+        // Read File
+        that.processFiles(file);
         return that;
     };
 
-    init();
+    classProto.processFiles = function(data){
+        var that = this;
+        if(cm.isFile(data)){
+            that.myComponents['reader'].read(data);
+        }else if(cm.isArray(data)){
+            cm.forEach(data, function(file){
+                that.processFiles(file);
+            })
+        }else if(!cm.isEmpty(data)){
+            that.set(data, true);
+        }
+        return that;
+    };
 });
 
 /* ****** FORM FIELD COMPONENT ******* */
 
-Com.FormFields.add('image-input', {
+Com.FormFields.add('file-input', {
     'node' : cm.node('input'),
-    'constructor' : 'Com.ImageInput'
+    'constructor' : 'Com.FileInput'
 });
