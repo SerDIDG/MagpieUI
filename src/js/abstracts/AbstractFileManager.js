@@ -60,6 +60,7 @@ cm.getConstructor('Com.AbstractFileManager', function(classConstructor, classNam
 
     classProto.load = function(){
         var that = this;
+        cm.log('Load');
         if(!that.isLoaded){
             that.renderController();
         }
@@ -118,7 +119,6 @@ cm.getConstructor('Com.AbstractFileManager', function(classConstructor, classNam
 
     classProto.renderViewModel = function(){
         var that = this;
-        that.renderController();
         if(that.params['showStats']){
             cm.getConstructor('Com.FileStats', function(classObject, className){
                 cm.removeClass(that.nodes['content']['container'], 'is-hidden');

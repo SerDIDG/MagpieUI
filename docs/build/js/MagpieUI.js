@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.20.1 (2016-07-04 21:27) ************ */
+/*! ************ MagpieUI v3.20.2 (2016-07-05 18:42) ************ */
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -23294,7 +23294,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.20.1',
+        '_version' : '3.20.2',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -28765,6 +28765,7 @@ cm.getConstructor('Com.AbstractFileManager', function(classConstructor, classNam
 
     classProto.load = function(){
         var that = this;
+        cm.log('Load');
         if(!that.isLoaded){
             that.renderController();
         }
@@ -28823,7 +28824,6 @@ cm.getConstructor('Com.AbstractFileManager', function(classConstructor, classNam
 
     classProto.renderViewModel = function(){
         var that = this;
-        that.renderController();
         if(that.params['showStats']){
             cm.getConstructor('Com.FileStats', function(classObject, className){
                 cm.removeClass(that.nodes['content']['container'], 'is-hidden');
