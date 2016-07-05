@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.20.2 (2016-07-05 18:42) ************ */
+/*! ************ MagpieUI v3.20.3 (2016-07-05 19:18) ************ */
 /*!
 Animate.css - http://daneden.me/animate
 Licensed under the MIT license - http://opensource.org/licenses/MIT
@@ -3283,7 +3283,7 @@ span.CodeMirror-selectedtext {
   background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20id%3D%22indent-top.svg%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%3E%20%20%3Cdefs%3E%20%20%20%20%3Cstyle%3E%20%20%20%20%20%20.cls-1%20%7B%20%20%20%20%20%20%20%20fill%3A%20%232d6ec9%3B%20%20%20%20%20%20%7D%20%20%20%20%20%20.cls-2%20%7B%20%20%20%20%20%20%20%20fill%3A%20%235e5e5e%3B%20%20%20%20%20%20%20%20fill-rule%3A%20evenodd%3B%20%20%20%20%20%20%7D%20%20%20%20%3C%2Fstyle%3E%20%20%3C%2Fdefs%3E%20%20%3Crect%20id%3D%22Rounded_Rectangle_12%22%20data-name%3D%22Rounded%20Rectangle%2012%22%20class%3D%22cls-1%22%20width%3D%2216%22%20height%3D%224%22%2F%3E%20%20%3Cpath%20class%3D%22cls-2%22%20d%3D%22M4%2C7H20V20H4V7ZM5%2C8H19V19H5V8Z%22%20transform%3D%22translate(-4%20-4)%22%2F%3E%3C%2Fsvg%3E");
 }
 .svg__no-image {
-  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20id%3D%22no-image.svg%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22326%22%20height%3D%22128%22%20viewBox%3D%220%200%20326%20128%22%3E%20%20%3Cdefs%3E%20%20%20%20%3Cstyle%3E%20%20%20%20%20%20.cls-1%2C%20.cls-2%2C%20.cls-3%20%7B%20%20%20%20%20%20%20%20fill%3A%20%23fff%3B%20%20%20%20%20%20%7D%20%20%20%20%20%20.cls-1%2C%20.cls-2%20%7B%20%20%20%20%20%20%20%20fill-rule%3A%20evenodd%3B%20%20%20%20%20%20%7D%20%20%20%20%20%20.cls-1%20%7B%20%20%20%20%20%20%20%20opacity%3A%200.35%3B%20%20%20%20%20%20%7D%20%20%20%20%20%20.cls-2%20%7B%20%20%20%20%20%20%20%20opacity%3A%200.85%3B%20%20%20%20%20%20%7D%20%20%20%20%20%20.cls-4%20%7B%20%20%20%20%20%20%20%20fill%3A%20%235e5e5e%3B%20%20%20%20%20%20%20%20opacity%3A%200%3B%20%20%20%20%20%20%7D%20%20%20%20%3C%2Fstyle%3E%20%20%3C%2Fdefs%3E%20%20%3Cpath%20id%3D%22_3%22%20data-name%3D%223%22%20class%3D%22cls-1%22%20d%3D%22M249.7%2C128L223.689%2C91.531l-26.312%2C33.1-14.638-19.419%2C45.284-42.86L298%2C128H249.7ZM84.972%2C128H28L78.621%2C71.333l24.825%2C31.01Z%22%2F%3E%20%20%3Cpath%20id%3D%22_2%22%20data-name%3D%222%22%20class%3D%22cls-2%22%20d%3D%22M141.124%2C50.012l56.253%2C74.622%2C26.312-33.1L249.7%2C128H84.972Z%22%2F%3E%20%20%3Ccircle%20id%3D%22_1%22%20data-name%3D%221%22%20class%3D%22cls-3%22%20cx%3D%22224%22%20cy%3D%2224%22%20r%3D%2216%22%2F%3E%20%20%3Crect%20id%3D%22canvas%22%20class%3D%22cls-4%22%20width%3D%22326%22%20height%3D%22128%22%2F%3E%3C%2Fsvg%3E");
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20id%3D%22no-image.svg%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22326%22%20height%3D%22128%22%20viewBox%3D%220%200%20326%20128%22%3E%20%20%3Cdefs%3E%20%20%20%20%3Cstyle%3E%20%20%20%20%20%20.cls-1%2C%20.cls-2%2C%20.cls-3%2C%20.cls-4%20%7B%20%20%20%20%20%20%20%20fill%3A%20%23fff%3B%20%20%20%20%20%20%7D%20%20%20%20%20%20.cls-1%2C%20.cls-2%20%7B%20%20%20%20%20%20%20%20fill-rule%3A%20evenodd%3B%20%20%20%20%20%20%7D%20%20%20%20%20%20.cls-1%20%7B%20%20%20%20%20%20%20%20opacity%3A%200.35%3B%20%20%20%20%20%20%7D%20%20%20%20%20%20.cls-2%20%7B%20%20%20%20%20%20%20%20opacity%3A%200.85%3B%20%20%20%20%20%20%7D%20%20%20%20%20%20.cls-4%20%7B%20%20%20%20%20%20%20%20opacity%3A%200%3B%20%20%20%20%20%20%7D%20%20%20%20%3C%2Fstyle%3E%20%20%3C%2Fdefs%3E%20%20%3Cpath%20id%3D%22_3%22%20data-name%3D%223%22%20class%3D%22cls-1%22%20d%3D%22M248.7%2C128L222.689%2C91.531l-26.312%2C33.1-14.638-19.419%2C45.284-42.86L297%2C128H248.7ZM83.972%2C128H27L77.621%2C71.333l24.825%2C31.01Z%22%2F%3E%20%20%3Cpath%20id%3D%22_2%22%20data-name%3D%222%22%20class%3D%22cls-2%22%20d%3D%22M140.124%2C50.012l56.253%2C74.622%2C26.312-33.1L248.7%2C128H83.972Z%22%2F%3E%20%20%3Ccircle%20id%3D%22_1%22%20data-name%3D%221%22%20class%3D%22cls-3%22%20cx%3D%22203%22%20cy%3D%2224%22%20r%3D%2216%22%2F%3E%20%20%3Crect%20id%3D%22canvas%22%20class%3D%22cls-4%22%20width%3D%22326%22%20height%3D%22128%22%2F%3E%3C%2Fsvg%3E");
 }
 .svg__position-bottomcenter--light {
   background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20id%3D%22position-bottomcenter--light.svg%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%20%20%3Cdefs%3E%20%20%20%20%3Cstyle%3E%20%20%20%20%20%20.cls-1%20%7B%20%20%20%20%20%20%20%20fill%3A%20%23fff%3B%20%20%20%20%20%20%20%20fill-rule%3A%20evenodd%3B%20%20%20%20%20%20%7D%20%20%20%20%3C%2Fstyle%3E%20%20%3C%2Fdefs%3E%20%20%3Cpath%20id%3D%22icon%22%20class%3D%22cls-1%22%20d%3D%22M6%2C10l6%2C6%2C6-6L16.5%2C8.5%2C13%2C12V4H11v8L7.5%2C8.5Z%22%20transform%3D%22translate(-6%20-4)%22%2F%3E%3C%2Fsvg%3E");
@@ -9075,7 +9075,7 @@ button.is-hidden {
   background-color: transparent;
   background-position: 50% 50%;
   background-repeat: no-repeat;
-  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20id%3D%22no-image.svg%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22326%22%20height%3D%22128%22%20viewBox%3D%220%200%20326%20128%22%3E%20%20%3Cdefs%3E%20%20%20%20%3Cstyle%3E%20%20%20%20%20%20.cls-1%2C%20.cls-2%2C%20.cls-3%20%7B%20%20%20%20%20%20%20%20fill%3A%20%23fff%3B%20%20%20%20%20%20%7D%20%20%20%20%20%20.cls-1%2C%20.cls-2%20%7B%20%20%20%20%20%20%20%20fill-rule%3A%20evenodd%3B%20%20%20%20%20%20%7D%20%20%20%20%20%20.cls-1%20%7B%20%20%20%20%20%20%20%20opacity%3A%200.35%3B%20%20%20%20%20%20%7D%20%20%20%20%20%20.cls-2%20%7B%20%20%20%20%20%20%20%20opacity%3A%200.85%3B%20%20%20%20%20%20%7D%20%20%20%20%20%20.cls-4%20%7B%20%20%20%20%20%20%20%20fill%3A%20%235e5e5e%3B%20%20%20%20%20%20%20%20opacity%3A%200%3B%20%20%20%20%20%20%7D%20%20%20%20%3C%2Fstyle%3E%20%20%3C%2Fdefs%3E%20%20%3Cpath%20id%3D%22_3%22%20data-name%3D%223%22%20class%3D%22cls-1%22%20d%3D%22M249.7%2C128L223.689%2C91.531l-26.312%2C33.1-14.638-19.419%2C45.284-42.86L298%2C128H249.7ZM84.972%2C128H28L78.621%2C71.333l24.825%2C31.01Z%22%2F%3E%20%20%3Cpath%20id%3D%22_2%22%20data-name%3D%222%22%20class%3D%22cls-2%22%20d%3D%22M141.124%2C50.012l56.253%2C74.622%2C26.312-33.1L249.7%2C128H84.972Z%22%2F%3E%20%20%3Ccircle%20id%3D%22_1%22%20data-name%3D%221%22%20class%3D%22cls-3%22%20cx%3D%22224%22%20cy%3D%2224%22%20r%3D%2216%22%2F%3E%20%20%3Crect%20id%3D%22canvas%22%20class%3D%22cls-4%22%20width%3D%22326%22%20height%3D%22128%22%2F%3E%3C%2Fsvg%3E");
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20id%3D%22no-image.svg%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22326%22%20height%3D%22128%22%20viewBox%3D%220%200%20326%20128%22%3E%20%20%3Cdefs%3E%20%20%20%20%3Cstyle%3E%20%20%20%20%20%20.cls-1%2C%20.cls-2%2C%20.cls-3%2C%20.cls-4%20%7B%20%20%20%20%20%20%20%20fill%3A%20%23fff%3B%20%20%20%20%20%20%7D%20%20%20%20%20%20.cls-1%2C%20.cls-2%20%7B%20%20%20%20%20%20%20%20fill-rule%3A%20evenodd%3B%20%20%20%20%20%20%7D%20%20%20%20%20%20.cls-1%20%7B%20%20%20%20%20%20%20%20opacity%3A%200.35%3B%20%20%20%20%20%20%7D%20%20%20%20%20%20.cls-2%20%7B%20%20%20%20%20%20%20%20opacity%3A%200.85%3B%20%20%20%20%20%20%7D%20%20%20%20%20%20.cls-4%20%7B%20%20%20%20%20%20%20%20opacity%3A%200%3B%20%20%20%20%20%20%7D%20%20%20%20%3C%2Fstyle%3E%20%20%3C%2Fdefs%3E%20%20%3Cpath%20id%3D%22_3%22%20data-name%3D%223%22%20class%3D%22cls-1%22%20d%3D%22M248.7%2C128L222.689%2C91.531l-26.312%2C33.1-14.638-19.419%2C45.284-42.86L297%2C128H248.7ZM83.972%2C128H27L77.621%2C71.333l24.825%2C31.01Z%22%2F%3E%20%20%3Cpath%20id%3D%22_2%22%20data-name%3D%222%22%20class%3D%22cls-2%22%20d%3D%22M140.124%2C50.012l56.253%2C74.622%2C26.312-33.1L248.7%2C128H83.972Z%22%2F%3E%20%20%3Ccircle%20id%3D%22_1%22%20data-name%3D%221%22%20class%3D%22cls-3%22%20cx%3D%22203%22%20cy%3D%2224%22%20r%3D%2216%22%2F%3E%20%20%3Crect%20id%3D%22canvas%22%20class%3D%22cls-4%22%20width%3D%22326%22%20height%3D%22128%22%2F%3E%3C%2Fsvg%3E");
   background-color: #858585;
   background-size: cover;
 }
@@ -11287,6 +11287,10 @@ button.is-hidden {
     width: auto;
   }
 }
+/* ******* COMPONENTS: INPUT ******* */
+.com__input.size-default {
+  width: 210px;
+}
 /* ******* COMPONENT: TOOLTIP ******* */
 .com__tooltip {
   position: absolute;
@@ -12727,8 +12731,9 @@ button.is-hidden {
   transition: all 100ms ease-in-out;
 }
 .com__file-dropzone > .inner > .title {
-  font: 300 24px/32px 'Open Sans', arial, helvetica, sans-serif;
+  font: 300 16px/24px 'Open Sans', arial, helvetica, sans-serif;
   color: #666666;
+  text-align: center;
   -webkit-transition: all 100ms ease-in-out;
   transition: all 100ms ease-in-out;
 }
@@ -13604,6 +13609,18 @@ button.is-hidden {
   padding: 12px;
 }
 /* ******* COMPONENTS: IMAGE INPUT ******* */
+.com__image-input.size-default {
+  width: 128px;
+}
+.com__image-input.size-default .com__image-input__content .input__holder .input__label {
+  display: none;
+}
+.com__image-input.size-default .com__image-input__content .input__holder .input__buttons {
+  border-left: none;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+}
 .com__image-input__content {
   position: relative;
 }
@@ -13689,6 +13706,8 @@ button.is-hidden {
   display: flex;
   -ms-flex-pack: center;
   margin: 2px;
+  padding-top: 0;
+  padding-bottom: 0;
   -webkit-flex: 1 1 100%;
   -ms-flex: 1 1 100%;
   flex: 1 1 100%;
@@ -13712,9 +13731,14 @@ button.is-hidden {
 .com__image-input__content .input__holder.is-hidden {
   opacity: 0;
 }
-/* ******* COMPONENTS: INPUT ******* */
-.com__input.size-default {
-  width: 210px;
+.com__image-input__content--default .input__holder .input__label {
+  display: none;
+}
+.com__image-input__content--default .input__holder .input__buttons {
+  border-left: none;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
 }
 /* ******* COMPONENTS: MENU ******* */
 .com__menu .button,

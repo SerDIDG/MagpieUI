@@ -1,7 +1,7 @@
 cm.define('Com.ImageInput', {
     'extend' : 'Com.FileInput',
     'params' : {
-        'class' : 'com__image-input',
+        'className' : 'com__image-input',
         'size' : 'default',
         'preview' : true,
         'previewConstructor' : 'Com.ImagePreviewContainer',

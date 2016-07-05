@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.20.2 (2016-07-05 18:42) ************ */
+/*! ************ MagpieUI v3.20.3 (2016-07-05 19:17) ************ */
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -23294,7 +23294,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.20.2',
+        '_version' : '3.20.3',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -39945,7 +39945,7 @@ function(params){
 cm.define('Com.ImageInput', {
     'extend' : 'Com.FileInput',
     'params' : {
-        'class' : 'com__image-input',
+        'className' : 'com__image-input',
         'size' : 'default',
         'preview' : true,
         'previewConstructor' : 'Com.ImagePreviewContainer',
