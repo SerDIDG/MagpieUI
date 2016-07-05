@@ -29,7 +29,7 @@
  ******* */
 
 var cm = {
-        '_version' : '3.20.3git ',
+        '_version' : '3.20.3',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
