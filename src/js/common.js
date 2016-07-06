@@ -29,13 +29,14 @@
  ******* */
 
 var cm = {
-        '_version' : '3.20.3',
+        '_version' : '3.20.4',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
         '_deviceType' : 'desktop',
         '_deviceOrientation' : 'landscape',
         '_baseUrl': [window.location.protocol, window.location.hostname].join('//'),
+        '_assetsUrl' : null,
         '_scrollSize' : 0,
         '_pageSize' : {},
         '_clientPosition' : {'left' : 0, 'top' : 0},
@@ -957,6 +958,49 @@ cm.onImageLoad = function(src, handler, delay){
 
 cm.getOwnerWindow = function(node){
     return node.ownerDocument.defaultView;
+};
+
+cm.addScript = function(src, async, callback){
+    src = cm.strReplace(src, {
+        '%baseUrl%' : cm._baseUrl,
+        '%assetsUrl%' : cm._assetsUrl || cm._baseUrl
+    });
+    async = typeof async != 'undefined' ? async : false;
+    callback = typeof callback != 'undefined' ? callback : function(){};
+    var script = document.createElement('script');
+    script.src = src;
+    script.async = async;
+    cm.addEvent(script, 'load', callback);
+    cm.addEvent(script, 'error', callback);
+    cm.appendChild(script, cm.getDocumentHead());
+    return script;
+};
+
+cm.loadScript = function(o){
+    o = cm.merge({
+        'path' : '',
+        'src' : '',
+        'async' : true,
+        'callback' : function(){}
+    }, o);
+    var path = cm.objectSelector(o['path'], window);
+    if(!cm.isEmpty(path)){
+        o['callback'](path);
+    }else{
+        cm.addScript(o['src'], o['async'], function(){
+            path = cm.objectSelector(o['path'], window);
+            if(!cm.isEmpty(path)){
+                o['callback'](path);
+            }else{
+                cm.errorLog({
+                    'type' : 'error',
+                    'name' : 'cm.loadScript',
+                    'message' : [o['path'], 'does not loaded.'].join(' ')
+                });
+                o['callback'](null);
+            }
+        });
+    }
 };
 
 cm.getEl = function(str){
@@ -3087,13 +3131,13 @@ cm.ajax = function(o){
             delete config['headers']['Content-Type'];
         }else if(cm.isObject(config['params'])){
             config['params'] = cm.objectReplace(config['params'], {
-                '%baseurl%' : cm._baseUrl
+                '%baseUrl%' : cm._baseUrl
             });
             config['params'] = cm.obj2URI(config['params']);
         }
         // Build request link
         config['url'] = cm.strReplace(config['url'], {
-            '%baseurl%' : cm._baseUrl
+            '%baseUrl%' : cm._baseUrl
         });
         if(config['method'] != 'post'){
             if(!cm.isEmpty(config['params'])){

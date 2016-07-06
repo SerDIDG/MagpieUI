@@ -54,8 +54,8 @@ cm.define('Com.Pagination', {
         'ajax' : {
             'type' : 'json',
             'method' : 'get',
-            'url' : '',                                             // Request URL. Variables: %baseurl%, %page%, %offset%, %token%, %perPage%, %limit%, %callback% for JSONP.
-            'params' : ''                                           // Params object. %baseurl%, %page%, %offset%, %token%, %perPage%, %limit%, %callback% for JSONP.
+            'url' : '',                                             // Request URL. Variables: %baseUrl%, %page%, %offset%, %token%, %perPage%, %limit%, %callback% for JSONP.
+            'params' : ''                                           // Params object. %baseUrl%, %page%, %offset%, %token%, %perPage%, %limit%, %callback% for JSONP.
         },
         'Com.Overlay' : {
             'position' : 'absolute',
@@ -217,7 +217,7 @@ function(params){
             '%page%' : that.page,
             '%offset%' : (that.page - 1) * that.params['perPage'],
             '%token%' : that.pageToken,
-            '%baseurl%' : cm._baseUrl
+            '%baseUrl%' : cm._baseUrl
         });
         config['params'] = cm.objectReplace(config['params'], {
             '%perPage%' : that.params['perPage'],
@@ -225,7 +225,7 @@ function(params){
             '%page%' : that.page,
             '%offset%' : (that.page - 1) * that.params['perPage'],
             '%token%' : that.pageToken,
-            '%baseurl%' : cm._baseUrl
+            '%baseUrl%' : cm._baseUrl
         });
         config = that.callbacks.afterPrepare(that, config);
         return config;

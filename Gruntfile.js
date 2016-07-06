@@ -10,7 +10,6 @@ module.exports = function(grunt) {
 
         paths : {
             modules : 'node_modules',
-            components : 'bower_components',
             src : 'src',
             build : 'build',
             docs : 'docs',
@@ -20,44 +19,33 @@ module.exports = function(grunt) {
         components : {
             less : {
                 path : '<%= paths.modules %>/less',
+                dist : '<%= components.less.path %>/dist',
                 scripts : [
-                    '<%= components.less.path %>/dist/less.js'
-                ]
-            },
-            requirejs : {
-                path : '<%= paths.modules %>/requirejs',
-                scripts : [
-                    '<%= components.requirejs.path %>/require.js'
+                    '<%= components.less.dist %>/less.js'
                 ]
             },
             animatecss : {
-                path : '<%= paths.components %>/animate.css',
+                path : '<%= paths.modules %>/animate.css',
                 styles : [
                     '<%= components.animatecss.path %>/animate.css'
                 ]
             },
             codemirror : {
                 path : '<%= paths.modules %>/codemirror',
+                dist : '<%= components.codemirror.path %>',
                 scripts : [
-                    '<%= components.codemirror.path %>/lib/codemirror.js',
-                    '<%= components.codemirror.path %>/mode/javascript/javascript.js',
-                    '<%= components.codemirror.path %>/mode/css/css.js',
-                    '<%= components.codemirror.path %>/mode/xml/xml.js',
-                    '<%= components.codemirror.path %>/mode/htmlmixed/htmlmixed.js'
-                ],
-                scripts_require : [
-                    '<%= components.codemirror.path %>/lib/codemirror.js',
-                    '<%= components.codemirror.path %>/mode/javascript/javascript.js',
-                    '<%= components.codemirror.path %>/mode/css/css.js',
-                    '<%= components.codemirror.path %>/mode/xml/xml.js',
-                    '<%= components.codemirror.path %>/mode/htmlmixed/htmlmixed.js'
+                    '<%= components.codemirror.dist %>/lib/codemirror.js',
+                    '<%= components.codemirror.dist %>/mode/javascript/javascript.js',
+                    '<%= components.codemirror.dist %>/mode/css/css.js',
+                    '<%= components.codemirror.dist %>/mode/xml/xml.js',
+                    '<%= components.codemirror.dist %>/mode/htmlmixed/htmlmixed.js'
                 ],
                 styles : [
-                    '<%= components.codemirror.path %>/lib/codemirror.css'
+                    '<%= components.codemirror.dist %>/lib/codemirror.css'
                 ]
             },
             tinycolor : {
-                path : '<%= paths.components %>/tinycolor',
+                path : '<%= paths.modules %>/tinycolor',
                 scripts : [
                     '<%= components.tinycolor.path %>/tinycolor.js'
                 ]
@@ -87,6 +75,10 @@ module.exports = function(grunt) {
                 '<%= paths.docs %>/build/content/*',
                 '<%= paths.docs %>/build/stuff/*'
             ],
+            libs : [
+                '<%= paths.build %>/libs/*',
+                '<%= paths.docs %>/build/libs/*'
+            ],
             temp : [
                 '<%= paths.temp %>'
             ]
@@ -109,8 +101,6 @@ module.exports = function(grunt) {
                 src : [
                     '<%= components.codemirror.scripts %>',
                     '<%= components.tinycolor.scripts %>',
-                    '<%= components.less.scripts %>',
-                    //'<%= components.requirejs.scripts %>',
                     '<%= paths.src %>/js/polyfill.js',
                     '<%= paths.src %>/js/common.js',
                     '<%= paths.src %>/js/modules.js',
@@ -340,6 +330,27 @@ module.exports = function(grunt) {
                     dest : '<%= paths.docs %>/build/fonts/'
                 }]
             },
+            libs : {
+                files : [{
+                    expand : true,
+                    cwd : '<%= components.less.dist %>',
+                    src : ['**/*.*'],
+                    dest : '<%= paths.build %>/libs/less/'
+                },{
+                    expand : true,
+                    cwd : '<%= components.codemirror.dist %>',
+                    src : ['**/*.*'],
+                    dest : '<%= paths.build %>/libs/codemirror/'
+                }]
+            },
+            libs_docs : {
+                files : [{
+                    expand : true,
+                    cwd : '<%= paths.build %>/libs/',
+                    src : ['**/*.*'],
+                    dest : '<%= paths.docs %>/build/libs/'
+                }]
+            },
             stuff_docs : {
                 files : [{
                     expand: true,
@@ -402,7 +413,7 @@ module.exports = function(grunt) {
         }
     });
     // Custom Tasks
-    grunt.registerTask('default', ['clean', 'pre', 'scripts', 'images', 'styles', 'fonts', 'stuff']);
+    grunt.registerTask('default', ['clean', 'pre', 'scripts', 'images', 'styles', 'fonts', 'libs', 'stuff']);
     grunt.registerTask('optimize', ['clean:temp', 'default', 'uglify', 'cssmin', 'imagemin', 'copy:images_optimize', 'clean:temp']);
 
     grunt.registerTask('scripts', ['concat:scripts', 'concat:scripts_docs']);
@@ -410,6 +421,7 @@ module.exports = function(grunt) {
     grunt.registerTask('styles', ['variables', 'concat:styles', 'concat:styles_docs', 'less:build', 'less:docs']);
     grunt.registerTask('fonts', ['copy:fonts', 'copy:fonts_docs', 'copy:fonts_docs_self']);
     grunt.registerTask('stuff', ['copy:stuff_docs']);
+    grunt.registerTask('libs', ['copy:libs', 'copy:libs_docs']);
     grunt.registerTask('variables', ['concat:variables', 'concat:variables_docs', 'lessvars']);
     grunt.registerTask('pre', ['svgcss:build', 'variables']);
 };

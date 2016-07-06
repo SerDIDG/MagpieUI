@@ -33,8 +33,8 @@ cm.define('Com.BigCalendar', {
         'ajax' : {
             'type' : 'json',
             'method' : 'get',
-            'url' : '',                                             // Request URL. Variables: %baseurl%, %view%, %year%, %month%, %week%, %callback% for JSONP.
-            'params' : {                                            // Params object. %baseurl%, %view%, %year%, %month%, %week%, %callback% for JSONP.
+            'url' : '',                                             // Request URL. Variables: %baseUrl%, %view%, %year%, %month%, %week%, %callback% for JSONP.
+            'params' : {                                            // Params object. %baseUrl%, %view%, %year%, %month%, %week%, %callback% for JSONP.
                 'view' : '%view%',
                 'week' : '%week%',
                 'month' : '%month%',
@@ -170,7 +170,7 @@ function(params){
     that.callbacks.prepare = function(that, config){
         config = that.callbacks.beforePrepare(that, config);
         config['url'] = cm.strReplace(config['url'], {
-            '%baseurl%' : cm._baseUrl,
+            '%baseUrl%' : cm._baseUrl,
             '%view%' : that.viewDetails['view'],
             '%year%' : that.viewDetails['year'],
             '%month%' : that.viewDetails['month'],
@@ -178,7 +178,7 @@ function(params){
             '%query%' : that.viewDetails['query']
         });
         config['params'] = cm.objectReplace(config['params'], {
-            '%baseurl%' : cm._baseUrl,
+            '%baseUrl%' : cm._baseUrl,
             '%view%' : that.viewDetails['view'],
             '%year%' : that.viewDetails['year'],
             '%month%' : that.viewDetails['month'],

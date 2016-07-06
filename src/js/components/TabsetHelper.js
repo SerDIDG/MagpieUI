@@ -38,8 +38,8 @@ cm.define('Com.TabsetHelper', {
         'ajax' : {
             'type' : 'json',
             'method' : 'get',
-            'url' : '',                                             // Request URL. Variables: %baseurl%, %tab%, %callback% for JSONP.
-            'params' : ''                                           // Params object. %tab%, %baseurl%, %callback% for JSONP.
+            'url' : '',                                             // Request URL. Variables: %baseUrl%, %tab%, %callback% for JSONP.
+            'params' : ''                                           // Params object. %tab%, %baseUrl%, %callback% for JSONP.
         },
         'Com.Overlay' : {
             'position' : 'absolute',
@@ -216,11 +216,11 @@ function(params){
         // Prepare
         config['url'] = cm.strReplace(config['url'], {
             '%tab%' : item['id'],
-            '%baseurl%' : cm._baseUrl
+            '%baseUrl%' : cm._baseUrl
         });
         config['params'] = cm.objectReplace(config['params'], {
             '%tab%' : item['id'],
-            '%baseurl%' : cm._baseUrl
+            '%baseUrl%' : cm._baseUrl
         });
         return config;
     };

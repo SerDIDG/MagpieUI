@@ -37,8 +37,8 @@ cm.define('Com.Form', {
             'type' : 'json',
             'method' : 'post',
             'formData' : true,
-            'url' : '',                                             // Request URL. Variables: %baseurl%, %callback% for JSONP.
-            'params' : ''                                           // Params object. %baseurl%, %callback% for JSONP.
+            'url' : '',                                             // Request URL. Variables: %baseUrl%, %callback% for JSONP.
+            'params' : ''                                           // Params object. %baseUrl%, %callback% for JSONP.
         },
         'Com.Notifications' : {},
         'Com.Overlay' : {
@@ -228,10 +228,10 @@ function(params){
     that.callbacks.prepare = function(that, config){
         // Prepare
         config['url'] = cm.strReplace(config['url'], {
-            '%baseurl%' : cm._baseUrl
+            '%baseUrl%' : cm._baseUrl
         });
         config['params'] = cm.objectReplace(config['params'], {
-            '%baseurl%' : cm._baseUrl
+            '%baseUrl%' : cm._baseUrl
         });
         // Get Params
         config['params'] = cm.merge(config['params'], that.getAll());

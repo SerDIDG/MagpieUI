@@ -37,8 +37,8 @@ cm.define('Com.Autocomplete', {
         'ajax' : {
             'type' : 'json',
             'method' : 'get',
-            'url' : '',                                             // Request URL. Variables: %baseurl%, %query%, %callback%.
-            'params' : ''                                           // Params object. Variables: %baseurl%, %query%, %callback%.
+            'url' : '',                                             // Request URL. Variables: %baseUrl%, %query%, %callback%.
+            'params' : ''                                           // Params object. Variables: %baseUrl%, %query%, %callback%.
         },
         'langs' : {
             'loader' : 'Searching for: %query%.'                    // Variable: %query%.
@@ -257,11 +257,11 @@ function(params){
         config = that.callbacks.beforePrepare(that, config, query);
         config['url'] = cm.strReplace(config['url'], {
             '%query%' : query,
-            '%baseurl%' : cm._baseUrl
+            '%baseUrl%' : cm._baseUrl
         });
         config['params'] = cm.objectReplace(config['params'], {
             '%query%' : query,
-            '%baseurl%' : cm._baseUrl
+            '%baseUrl%' : cm._baseUrl
         });
         config = that.callbacks.afterPrepare(that, config, query);
         return config;

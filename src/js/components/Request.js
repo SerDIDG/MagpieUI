@@ -36,8 +36,8 @@ cm.define('Com.Request', {
         'ajax' : {
             'type' : 'json',
             'method' : 'get',
-            'url' : '',                                 // Request URL. Variables: %baseurl%, %callback%.
-            'params' : '',                              // Params object. Variables: %baseurl%, %callback%.
+            'url' : '',                                 // Request URL. Variables: %baseUrl%, %callback%.
+            'params' : '',                              // Params object. Variables: %baseUrl%, %callback%.
             'formData' : false
         },
         'variables' : {},

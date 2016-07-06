@@ -194,7 +194,7 @@ function(params){
         }, item);
         if(!cm.isEmpty(item['image']) && !cm.isNode(item['image'])){
             item['image'] = cm.strReplace(item['image'], {
-                '%baseurl%' : cm._baseUrl
+                '%baseUrl%' : cm._baseUrl
             });
         }
         // Structure

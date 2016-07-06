@@ -29,8 +29,8 @@ cm.define('Com.FormStepsLoader', {
         'ajax' : {
             'type' : 'json',
             'method' : 'POST',
-            'url' : '',                                             // Request URL. Variables: %baseurl%
-            'params' : {                                            // Request URL. Variables: %baseurl%, %request%, %response%
+            'url' : '',                                             // Request URL. Variables: %baseUrl%
+            'params' : {                                            // Request URL. Variables: %baseUrl%, %request%, %response%
                 'request' : '%request%',
                 'response' : '%response%'
             }
@@ -105,10 +105,10 @@ function(params){
     that.callbacks.prepare = function(that, config){
         config = that.callbacks.beforePrepare(that, config);
         config['url'] = cm.strReplace(config['url'], {
-            '%baseurl%' : cm._baseUrl
+            '%baseUrl%' : cm._baseUrl
         });
         config['params'] = cm.objectReplace(config['params'], {
-            '%baseurl%' : cm._baseUrl,
+            '%baseUrl%' : cm._baseUrl,
             '%request%' : cm.getFDO(that.nodes['request']['inner']),
             '%response%' : cm.getFDO(that.nodes['response']['inner'])
         });
