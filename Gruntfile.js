@@ -45,7 +45,7 @@ module.exports = function(grunt) {
                 ]
             },
             tinycolor : {
-                path : '<%= paths.modules %>/tinycolor',
+                path : '<%= paths.modules %>/tinycolor2',
                 scripts : [
                     '<%= components.tinycolor.path %>/tinycolor.js'
                 ]
