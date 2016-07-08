@@ -9,28 +9,13 @@ Developed with PhpStorm.
 
 ## Install
 
-Install throw Bower:
 ```sh
-bower install magpieui
+npm install MagpieUI
 ```
 
 ## Custom build
 
-First install Node.js and update npm:
-```sh
-sudo npm install npm -g
-```
-Install global  modules:
-```sh
-sudo npm install -g grunt-cli
-sudo npm install -g bower
-```
-Install dependency modules:
-```sh
-cd patch_to/magpieui
-sudo npm install
-```
-then run grunt task to execute full build:
+Run grunt task to execute full build:
 ```sh
 grunt
 ```
