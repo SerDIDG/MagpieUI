@@ -99,7 +99,6 @@ module.exports = function(grunt) {
                     banner: '<%= banner %>'
                 },
                 src : [
-                    '<%= components.codemirror.scripts %>',
                     '<%= components.tinycolor.scripts %>',
                     '<%= paths.src %>/js/polyfill.js',
                     '<%= paths.src %>/js/common.js',
@@ -130,6 +129,12 @@ module.exports = function(grunt) {
                     '<%= paths.docs %>/src/js/components.js'
                 ],
                 dest : '<%= paths.docs %>/build/js/<%= pkg.name %>.js'
+            },
+            codemirror : {
+                src : [
+                    '<%= components.codemirror.scripts %>'
+                ],
+                dest : '<%= paths.build %>/libs/codemirror_comp/codemirror.js'
             },
             styles : {
                 options: {
@@ -249,6 +254,10 @@ module.exports = function(grunt) {
             build : {
                 src : ['<%= paths.build %>/js/<%= pkg.name %>.js'],
                 dest : '<%= paths.build %>/js/<%= pkg.name %>.min.js'
+            },
+            codemirror : {
+                src : ['<%= paths.build %>/libs/codemirror_comp/codemirror.js'],
+                dest : '<%= paths.build %>/libs/codemirror_comp/codemirror.min.js'
             }
         },
 
@@ -414,14 +423,14 @@ module.exports = function(grunt) {
     });
     // Custom Tasks
     grunt.registerTask('default', ['clean', 'pre', 'scripts', 'images', 'styles', 'fonts', 'libs', 'stuff']);
-    grunt.registerTask('optimize', ['clean:temp', 'default', 'uglify', 'cssmin', 'imagemin', 'copy:images_optimize', 'clean:temp']);
+    grunt.registerTask('optimize', ['clean:temp', 'default', 'uglify:build', 'cssmin', 'imagemin', 'copy:images_optimize', 'clean:temp']);
 
     grunt.registerTask('scripts', ['concat:scripts', 'concat:scripts_docs']);
     grunt.registerTask('images', ['svgcss:build', 'copy:images', 'copy:images_docs', 'copy:images_docs_self']);
     grunt.registerTask('styles', ['variables', 'concat:styles', 'concat:styles_docs', 'less:build', 'less:docs']);
     grunt.registerTask('fonts', ['copy:fonts', 'copy:fonts_docs', 'copy:fonts_docs_self']);
     grunt.registerTask('stuff', ['copy:stuff_docs']);
-    grunt.registerTask('libs', ['copy:libs', 'copy:libs_docs']);
+    grunt.registerTask('libs', ['concat:codemirror', 'uglify:codemirror', 'copy:libs', 'copy:libs_docs']);
     grunt.registerTask('variables', ['concat:variables', 'concat:variables_docs', 'lessvars']);
     grunt.registerTask('pre', ['svgcss:build', 'variables']);
 };

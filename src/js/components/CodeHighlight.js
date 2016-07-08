@@ -44,24 +44,31 @@ function(params){
     };
 
     var render = function(){
-        if(typeof CodeMirror != 'undefined'){
-            that.components['codemirror'] = CodeMirror.fromTextArea(that.params['node'], {
-                'lineNumbers' : that.params['lineNumbers'],
-                'viewportMargin' : Infinity,
-                'mode' : that.params['language']
-            });
-            that.components['codemirror'].on('change', function(cm){
-                that.params['node'].value = cm.getValue();
-            });
-        }
+        // Code Mirror
+        cm.loadScript({
+            'path' : 'CodeMirror',
+            'src' : '%assetsUrl%/libs/codemirror_comp/codemirror.min.js?%version%',
+            'callback' : function(path){
+                if(path){
+                    that.components['codemirror'] = path.fromTextArea(that.params['node'], {
+                        'lineNumbers' : that.params['lineNumbers'],
+                        'viewportMargin' : Infinity,
+                        'mode' : that.params['language']
+                    });
+                    that.components['codemirror'].on('change', function(cm){
+                        that.params['node'].value = cm.getValue();
+                    });
+                }
+                // Enable / Disable
+                if(that.disabled){
+                    that.disable();
+                }else{
+                    that.enable();
+                }
+            }
+        });
         if(that.params['customEvents']){
             cm.customEvent.add(that.params['node'], 'redraw', that.redraw);
-        }
-        // Enable / Disable
-        if(that.disabled){
-            that.disable();
-        }else{
-            that.enable();
         }
     };
 

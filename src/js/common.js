@@ -961,12 +961,16 @@ cm.getOwnerWindow = function(node){
 };
 
 cm.addScript = function(src, async, callback){
-    src = cm.strReplace(src, {
+    var vars = {
         '%baseUrl%' : cm._baseUrl,
-        '%assetsUrl%' : cm._assetsUrl || cm._baseUrl
-    });
+        '%assetsUrl%' : cm._assetsUrl || cm._baseUrl,
+        '%version%' : cm._version
+    };
+    // Config
+    src = cm.isArray(src) ? cm.objectReplace(src, vars) : cm.strReplace(src, vars);
     async = typeof async != 'undefined' ? async : false;
     callback = typeof callback != 'undefined' ? callback : function(){};
+    // Handler
     var script = document.createElement('script');
     script.src = src;
     script.async = async;
