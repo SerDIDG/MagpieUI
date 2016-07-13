@@ -60,7 +60,6 @@ cm.getConstructor('Com.AbstractFileManager', function(classConstructor, classNam
 
     classProto.load = function(){
         var that = this;
-        cm.log('Load');
         if(!that.isLoaded){
             that.renderController();
         }
@@ -156,7 +155,7 @@ cm.getConstructor('Com.AbstractFileManager', function(classConstructor, classNam
         if(!that.params['max']){
             that.items = files;
         }else if(files.length){
-            max = Math.min(0, that.params['max'], files.length);
+            max = Math.min(that.params['max'], files.length);
             that.items = files.slice(0, max);
         }else{
             that.items = [];

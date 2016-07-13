@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.20.5 (2016-07-08 23:09) ************ */
+/*! ************ MagpieUI v3.20.5 (2016-07-13 20:20) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.5.0
@@ -8303,6 +8303,9 @@ button.is-hidden {
 }
 .pt__grid.is-inline > ul {
   overflow: hidden;
+  white-space: nowrap;
+}
+.pt__grid.is-nowrap > ul {
   white-space: nowrap;
 }
 .pt__grid.is-inrow {

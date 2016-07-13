@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.20.5 (2016-07-08 23:09) ************ */
+/*! ************ MagpieUI v3.20.5 (2016-07-13 20:20) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -4181,7 +4181,6 @@ cm.disallowKeyCode = function(code, rules){
             codes.push(key);
         }
     });
-    cm.log(codes, code);
     return cm.inArray(codes, code.toString());
 };
 
@@ -6945,7 +6944,6 @@ cm.getConstructor('Com.AbstractFileManager', function(classConstructor, classNam
 
     classProto.load = function(){
         var that = this;
-        cm.log('Load');
         if(!that.isLoaded){
             that.renderController();
         }
@@ -7041,7 +7039,7 @@ cm.getConstructor('Com.AbstractFileManager', function(classConstructor, classNam
         if(!that.params['max']){
             that.items = files;
         }else if(files.length){
-            max = Math.min(0, that.params['max'], files.length);
+            max = Math.min(that.params['max'], files.length);
             that.items = files.slice(0, max);
         }else{
             that.items = [];

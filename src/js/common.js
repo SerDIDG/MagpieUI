@@ -2784,7 +2784,6 @@ cm.disallowKeyCode = function(code, rules){
             codes.push(key);
         }
     });
-    cm.log(codes, code);
     return cm.inArray(codes, code.toString());
 };
 
