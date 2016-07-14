@@ -24,6 +24,7 @@ cm.define('Com.Overlay', {
         'showContent' : true,
         'autoOpen' : true,
         'removeOnClose' : true,
+        'destructOnRemove' : false,
         'duration' : 'cm._config.animDurationLong'
     }
 },
@@ -32,6 +33,7 @@ function(params){
         themes = ['transparent', 'default', 'light', 'dark'];
 
     that.nodes = {};
+    that.isDestructed = false;
     that.isOpen = false;
     that.isShowSpinner = false;
     that.isShowContent = false;
@@ -210,6 +212,15 @@ function(params){
         if(cm.isNode(node)){
             that.params['container'] = node;
             node.appendChild(that.nodes['container']);
+        }
+        return that;
+    };
+
+    that.destruct = function(){
+        if(!that.isDestructed){
+            that.isDestructed = true;
+            that.removeFromStack();
+            cm.remove(that.nodes['container']);
         }
         return that;
     };

@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.20.5 (2016-07-13 20:20) ************ */
+/*! ************ MagpieUI v3.20.6 (2016-07-14 21:08) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1426,7 +1426,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.20.5',
+        '_version' : '3.20.6',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -6783,12 +6783,14 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         that.triggerEvent('onValidateParamsStart');
         // Get parameters from provided input
         if(cm.isNode(that.params['node'])){
+            // In WebKit and Blink engines js value is cutoff, use DOM value instead.
+            var value = that.params['node'].getAttribute('value');
             that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
             that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
             that.params['disabled'] = that.params['node'].disabled || that.params['node'].readOnly || that.params['disabled'];
-            that.params['value'] = !cm.isEmpty(that.params['node'].value) ?  that.params['node'].value : that.params['value'];
+            that.params['value'] = !cm.isEmpty(value) ?  value: that.params['value'];
         }
-        that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
+        that.params['value'] = !cm.isEmpty(value) ? that.params['value'] : that.params['defaultValue'];
         that.disabled = that.params['disabled'];
         that.triggerEvent('onValidateParamsEnd');
         return that;
@@ -19349,6 +19351,7 @@ cm.define('Com.Overlay', {
         'showContent' : true,
         'autoOpen' : true,
         'removeOnClose' : true,
+        'destructOnRemove' : false,
         'duration' : 'cm._config.animDurationLong'
     }
 },
@@ -19357,6 +19360,7 @@ function(params){
         themes = ['transparent', 'default', 'light', 'dark'];
 
     that.nodes = {};
+    that.isDestructed = false;
     that.isOpen = false;
     that.isShowSpinner = false;
     that.isShowContent = false;
@@ -19535,6 +19539,15 @@ function(params){
         if(cm.isNode(node)){
             that.params['container'] = node;
             node.appendChild(that.nodes['container']);
+        }
+        return that;
+    };
+
+    that.destruct = function(){
+        if(!that.isDestructed){
+            that.isDestructed = true;
+            that.removeFromStack();
+            cm.remove(that.nodes['container']);
         }
         return that;
     };
