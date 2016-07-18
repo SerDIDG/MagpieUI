@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.20.6 (2016-07-14 21:08) ************ */
+/*! ************ MagpieUI v3.20.6 (2016-07-18 19:49) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.5.0
@@ -5566,6 +5566,14 @@ input[type="reset"].button--xlarge,
 button.button--xlarge {
   min-height: 48px;
   padding: 15px 32px;
+}
+.button.button--xxlarge,
+input[type="button"].button--xxlarge,
+input[type="submit"].button--xxlarge,
+input[type="reset"].button--xxlarge,
+button.button--xxlarge {
+  min-height: 64px;
+  padding: 23px 32px;
 }
 .button.has-icon .icon,
 input[type="button"].has-icon .icon,
@@ -14547,6 +14555,10 @@ button.is-hidden {
 .com__pagination__bar ul li a.button--xlarge {
   min-height: 48px;
   padding: 15px 32px;
+}
+.com__pagination__bar ul li a.button--xxlarge {
+  min-height: 64px;
+  padding: 23px 32px;
 }
 .com__pagination__bar ul li a.has-icon .icon {
   display: inline-block;

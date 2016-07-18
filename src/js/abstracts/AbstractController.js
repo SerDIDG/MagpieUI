@@ -115,7 +115,9 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
 
     classProto.redraw = function(){
         var that = this;
-        that.triggerEvent('onRedraw');
+        animFrame(function(){
+            that.triggerEvent('onRedraw');
+        });
         return that;
     };
 

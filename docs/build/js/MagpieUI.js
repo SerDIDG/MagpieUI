@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.20.6 (2016-07-14 21:08) ************ */
+/*! ************ MagpieUI v3.20.6 (2016-07-18 19:49) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -6249,7 +6249,9 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
 
     classProto.redraw = function(){
         var that = this;
-        that.triggerEvent('onRedraw');
+        animFrame(function(){
+            that.triggerEvent('onRedraw');
+        });
         return that;
     };
 

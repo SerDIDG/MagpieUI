@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.20.6 (2016-07-14 21:08) ************ */
+/*! ************ MagpieUI v3.20.6 (2016-07-18 19:49) ************ */
 @charset "UTF-8";
 
 /*!
@@ -6593,6 +6593,12 @@ select {
     &.button--xlarge {
         @padding: max(ceil((@CmSize-XLarge - @CmFont-Base-LineHeight) / 2), 0px);
         min-height: @CmSize-XLarge;
+        padding: @padding @CmIndent-Large;
+    }
+
+    &.button--xxlarge {
+        @padding: max(ceil((@CmSize-XXLarge - @CmFont-Base-LineHeight) / 2), 0px);
+        min-height: @CmSize-XXLarge;
         padding: @padding @CmIndent-Large;
     }
 

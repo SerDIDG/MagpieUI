@@ -260,6 +260,12 @@
         padding: @padding @CmIndent-Large;
     }
 
+    &.button--xxlarge {
+        @padding: max(ceil((@CmSize-XXLarge - @CmFont-Base-LineHeight) / 2), 0px);
+        min-height: @CmSize-XXLarge;
+        padding: @padding @CmIndent-Large;
+    }
+
     // /* *** ICONS *** */
 
     &.has-icon {
