@@ -20,6 +20,7 @@ cm.define('Com.AbstractInput', {
         'className' : '',
         'ui' : true,
         'size' : 'full',                // default | full
+        'justify' : 'left',
         'maxlength' : 0                 // 0 - infinity
     }
 },
@@ -109,18 +110,20 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
     };
 
     classProto.validateParams = function(){
-        var that = this;
+        var that = this,
+            value;
         that.triggerEvent('onValidateParamsStart');
         // Get parameters from provided input
         if(cm.isNode(that.params['node'])){
             // In WebKit and Blink engines js value is cutoff, use DOM value instead.
-            var value = that.params['node'].getAttribute('value');
+            value = that.params['node'].getAttribute('value');
             that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
             that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
             that.params['disabled'] = that.params['node'].disabled || that.params['node'].readOnly || that.params['disabled'];
-            that.params['value'] = !cm.isEmpty(value) ?  value: that.params['value'];
+            that.params['value'] = !cm.isEmpty(value) ?  value : that.params['value'];
+            that.params['maxlength'] = that.params['node'].getAttribute('maxlength') || that.params['maxlength'];
         }
-        that.params['value'] = !cm.isEmpty(value) ? that.params['value'] : that.params['defaultValue'];
+        that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
         that.disabled = that.params['disabled'];
         that.triggerEvent('onValidateParamsEnd');
         return that;
@@ -173,6 +176,9 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         cm.addClass(that.nodes['container'], that.params['className']);
         if(!cm.isEmpty(that.params['size'])){
             cm.addClass(that.nodes['container'], ['size', that.params['size']].join('-'));
+        }
+        if(!cm.isEmpty(that.params['justify'])){
+            cm.addClass(that.nodes['container'], ['pull', that.params['justify']].join('-'));
         }
         that.triggerEvent('onSetAttributesEnd');
         return that;

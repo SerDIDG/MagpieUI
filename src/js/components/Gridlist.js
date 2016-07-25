@@ -437,7 +437,7 @@ function(params){
                 case 'actions':
                     nodes['actions'] = [];
                     nodes['inner'].appendChild(
-                        nodes['node'] = cm.node('div', {'class' : ['pt__links', col['class']].join(' ')},
+                        nodes['node'] = cm.node('div', {'class' : ['pt__links', 'pull-right', col['class']].join(' ')},
                             cm.node('ul',
                                 nodes['componentNode'] = cm.node('li', {'class' : 'com__menu', 'data-node' : 'ComMenu:{}:button'},
                                     cm.node('a', {'class' : 'label'}, that.lang('actions')),
@@ -455,10 +455,11 @@ function(params){
                             'label' : '',
                             'attr' : {},
                             'events' : {},
-                            'controller' : false,
-                            'controllerParams' : {},
-                            'handler' : function(){}
+                            'constructor' : false,
+                            'constructorParams' : {},
+                            'callback' : function(){}
                         }, actionItem);
+                        // WTF is that?
                         cm.forEach(item['data'], function(itemValue, itemKey){
                             actionItem['attr'] = cm.replaceDeep(actionItem['attr'], new RegExp([cm.strWrap(itemKey, '%'), cm.strWrap(itemKey, '%25')].join('|'), 'g'), itemValue);
                         });
@@ -467,23 +468,21 @@ function(params){
                                 actionItem['_node'] = cm.node('a', actionItem['attr'], actionItem['label'])
                             )
                         );
-                        if(actionItem['controller'] || actionItem['handler']){
-                            cm.addEvent(actionItem['_node'], 'click', function(e){
-                                cm.preventDefault(e);
-                                if(actionItem['_controllerObject']){
-                                    actionItem['_controllerObject'].destruct();
-                                }
-                                if(actionItem['controller']){
-                                    cm.getConstructor(actionItem['controller'], function(classConstructor){
-                                        actionItem['_controllerObject'] = new classConstructor(actionItem['controllerParams']);
-                                        actionItem['_controllerObject'].construct();
-                                    });
-                                }
-                                actionItem['handler'](e, actionItem);
+                        if(actionItem['constructor']){
+                            cm.getConstructor(actionItem['constructor'], function(classConstructor){
+                                actionItem['controller'] = new classConstructor(
+                                    cm.merge(actionItem['constructorParams'], {
+                                        'node' : actionItem['_node'],
+                                        'data' : item['data'],
+                                        'cellItem' : item,
+                                        'actionItem' : actionItem
+                                    })
+                                );
                             });
                         }else{
-                            cm.forEach(actionItem['events'], function(actionEventHandler, actionEventName){
-                                cm.addEvent(actionItem['_node'], actionEventName, actionEventHandler);
+                            cm.addEvent(actionItem['_node'], 'click', function(e){
+                                cm.preventDefault(e);
+                                actionItem['callback'](e, actionItem, item);
                             });
                         }
                         nodes['actions'].push(actionItem['_node']);

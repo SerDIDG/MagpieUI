@@ -33,6 +33,7 @@ cm.define('Com.Form', {
         'loaderDelay' : 'cm._config.loadDelay',
         'showNotifications' : true,
         'responseErrorsKey': 'errors',
+        'data' : {},
         'ajax' : {
             'type' : 'json',
             'method' : 'post',
@@ -112,6 +113,14 @@ function(params){
                         'container' : that.nodes['notifications']
                     })
                 );
+                that.components['notifications'].addEvent('onAdd', function(my){
+                    cm.addClass(that.nodes['notifications'], 'is-show', true);
+                });
+                that.components['notifications'].addEvent('onRemove', function(my){
+                    if(that.components['notifications'].getLength() === 0){
+                        cm.removeClass(that.nodes['notifications'], 'is-show', true);
+                    }
+                });
             });
         }
         // Overlay Loader
@@ -143,7 +152,7 @@ function(params){
     };
 
     var renderField = function(type, params){
-        var fieldParams, field;
+        var field, controller;
         // Merge params
         params = cm.merge({
             'name' : '',
@@ -152,13 +161,17 @@ function(params){
             'container' : that.nodes['fields'],
             'form' : that
         }, params);
+        field = Com.FormFields.get(type);
+        params = cm.merge(cm.clone(field, true), params);
+        // Get value
+        params['value'] = that.params['data'][params['name']];
+        params['dataValue'] = that.params['data'][params['dataName']];
         // Render
-        if(!that.fields[params['name']] && (fieldParams = Com.FormFields.get(type))){
+        if(field && !that.fields[params['name']]){
             cm.getConstructor('Com.FormField', function(classConstructor){
-                params = cm.merge(fieldParams, params);
-                field = new classConstructor(params);
+                controller = new classConstructor(params);
                 if(params['field']){
-                    that.fields[params['name']] = field;
+                    that.fields[params['name']] = controller;
                 }
             });
         }
@@ -331,7 +344,8 @@ function(params){
                 if(that.params['showNotifications']){
                     cm.addClass(that.nodes['notifications'], 'is-show', true);
                     that.components['notifications'].add({
-                        'label' : that.lang(item['message'])
+                        'label' : that.lang(item['message']),
+                        'type' : 'danger'
                     });
                 }
                 if(field = that.getField(item['field'])){
@@ -342,7 +356,8 @@ function(params){
             if(that.params['showNotifications']){
                 cm.addClass(that.nodes['notifications'], 'is-show', true);
                 that.components['notifications'].add({
-                    'label' : that.lang('server_error')
+                    'label' : that.lang('server_error'),
+                    'type' : 'danger'
                 });
             }
         }
@@ -488,10 +503,13 @@ cm.define('Com.FormField', {
         'container' : cm.node('div'),
         'form' : false,
         'name' : '',
+        'value' : null,
+        'dataValue' : null,
         'type' : false,
         'label' : '',
         'help' : null,
         'placeholder' : '',
+        'visible' : true,
         'options' : [],
         'constructor' : false,
         'constructorParams' : {},
@@ -557,14 +575,23 @@ function(params){
 
     that.callbacks.render = function(that){
         var nodes = {};
+        // Structure
         nodes['container'] = cm.node('dl',
             nodes['label'] = cm.node('dt',
                 cm.node('label', that.params['label'])
             ),
             nodes['value'] = cm.node('dd', that.params['node'])
         );
+        !that.params['visible'] && cm.addClass(nodes['container'], 'is-hidden');
+        // Attributes
         if(!cm.isEmpty(that.params['name'])){
             that.params['node'].setAttribute('name', that.params['name']);
+        }
+        if(!cm.isEmpty(that.params['value'])){
+            that.params['node'].setAttribute('value', that.params['value']);
+        }
+        if(!cm.isEmpty(that.params['dataValue'])){
+            that.params['node'].setAttribute('data-value', JSON.stringify(that.params['dataValue']));
         }
         if(!cm.isEmpty(that.params['placeholder'])){
             that.params['node'].setAttribute('placeholder', that.params['placeholder']);
@@ -652,6 +679,23 @@ function(params){
 
 Com.FormFields.add('input', {
     'node' : cm.node('input', {'type' : 'text'}),
+    'callbacks' : {
+        'set' : function(that, value){
+            that.params['node'].value = value;
+            return value;
+        },
+        'get' : function(that){
+            return that.params['node'].value;
+        },
+        'reset' : function(that){
+            that.params['node'].value = '';
+        }
+    }
+});
+
+Com.FormFields.add('hidden', {
+    'node' : cm.node('input', {'type' : 'hidden'}),
+    'visible' : false,
     'callbacks' : {
         'set' : function(that, value){
             that.params['node'].value = value;

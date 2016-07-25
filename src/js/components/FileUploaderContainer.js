@@ -9,6 +9,7 @@ cm.define('Com.FileUploaderContainer', {
         'placeholder' : true,
         'placeholderConstructor' : 'Com.DialogContainer',
         'placeholderParams' : {
+            'renderButtons' : true,
             'params' : {
                 'width' : 900
             }
@@ -34,13 +35,11 @@ cm.getConstructor('Com.FileUploaderContainer', function(classConstructor, classN
         var that = this;
         // Bind context to methods
         that.validateParamsEndHandler = that.validateParamsEnd.bind(that);
-        that.renderControllerProcessHandler = that.renderControllerProcess.bind(that);
         that.getHandler = that.get.bind(that);
         that.completeHandler = that.complete.bind(that);
         that.afterCompleteHandler = that.afterComplete.bind(that);
         // Add events
         that.addEvent('onValidateParamsEnd', that.validateParamsEndHandler);
-        that.addEvent('onRenderControllerProcess', that.renderControllerProcessHandler);
         // Call parent method
         _inherit.prototype.construct.apply(that, arguments);
         return that;
@@ -68,8 +67,11 @@ cm.getConstructor('Com.FileUploaderContainer', function(classConstructor, classN
         });
     };
 
-    classProto.renderControllerProcess = function(){
+    classProto.renderControllerEvents = function(){
         var that = this;
+        // Call parent method
+        _inherit.prototype.renderControllerEvents.apply(that, arguments);
+        // Add specific events
         that.components['controller'].addEvent('onGet', function(my, data){
             that.afterGet(data);
         });
@@ -79,18 +81,20 @@ cm.getConstructor('Com.FileUploaderContainer', function(classConstructor, classN
         return that;
     };
 
-    classProto.renderPlaceholderViewButtons = function(){
+    classProto.renderPlaceholderButtons = function(){
         var that = this;
-        // Structure
-        that.nodes['placeholder']['buttons'] = cm.node('div', {'class' : 'pt__buttons pull-right'},
-            that.nodes['placeholder']['buttonsInner'] = cm.node('div', {'class' : 'inner'},
-                that.nodes['placeholder']['close'] = cm.node('button', {'type' : 'button', 'class' : 'button button-transparent'}, that.lang('close')),
-                that.nodes['placeholder']['save'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('save'))
-            )
-        );
-        // Events
-        cm.addEvent(that.nodes['placeholder']['close'], 'click', that.closeHandler);
-        cm.addEvent(that.nodes['placeholder']['save'], 'click', that.completeHandler);
+        that.components['placeholder'].addButton({
+            'name' : 'close',
+            'label' : that.lang('close'),
+            'style' : 'button-transparent',
+            'callback' : that.closeHandler
+        });
+        that.components['placeholder'].addButton({
+            'name' : 'save',
+            'label' : that.lang('save'),
+            'style' : 'button-primary',
+            'callback' : that.completeHandler
+        });
         return that;
     };
 

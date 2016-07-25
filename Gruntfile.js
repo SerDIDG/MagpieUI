@@ -162,6 +162,7 @@ module.exports = function(grunt) {
                     '<%= paths.src %>/less/parts/**/*.less',
                     '<%= paths.src %>/less/layouts/**/*.less',
                     '<%= paths.src %>/less/components/Input.less',
+                    '<%= paths.src %>/less/components/ToggleBox.less',
                     '<%= paths.src %>/less/components/Tooltip.less',
                     '<%= paths.src %>/less/components/**/*.less'
                 ],

@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.20.7 (2016-07-18 19:53) ************ */
+/*! ************ MagpieUI v3.20.8 (2016-07-25 17:21) ************ */
 @charset "UTF-8";
 
 /*!
@@ -4545,6 +4545,8 @@ span.CodeMirror-selectedtext { background: none; }
 @ComDialog-Light-TitleColor: @CmFont-UI-ColorOpposite;
 @ComDialog-Light-TitleBackground: @CmColor-Primary-DarkDefault;
 
+@ComDialog-Box-Indent: @CmIndent-Medium;
+
 // /* ******* TABSET ******* */
 
 @ComTabset-AdaptiveFrom: @CmUI-AdaptiveFrom;
@@ -6837,6 +6839,10 @@ button {
                 padding: 0;
             }
         }
+
+        &.is-hidden {
+            display: none;
+        }
     }
 
     dt {
@@ -7099,6 +7105,10 @@ button {
 .check-line {
     min-height: @CmForm-FieldHeight;
     line-height: @CmForm-FieldHeight;
+
+    &.pull-center {
+        text-align: center;
+    }
 
     .checkbox {
         @margin: floor((@CmForm-FieldHeight - 13px) / 2);
@@ -7854,17 +7864,14 @@ button {
 }
 
 .pt__box-flat {
-    margin: 0 0 @CmIndent-Medium;
+    .cm__box;
+
     padding: @CmIndent-XSmall;
     background: @CmColor-Secondary-LightHighlight;
     border-radius: @CmBorder-Radius;
     .mx__box-sizing(border-box);
     .mx__background-clip(padding-box);
     .mx__transition(background, @CmUI-Transition-Duration);
-
-    &:last-child {
-        margin: 0;
-    }
 
     > .inner {
         > .title {
@@ -11659,10 +11666,6 @@ button {
                 margin: 0;
                 color: @CmFont-UI-H4-Color;
             }
-
-            img {
-                .cm__image-adaptive;
-            }
         }
     }
 
@@ -11996,6 +11999,307 @@ button {
     &.size-default {
         width: @CmForm-FieldSmallWidth;
     }
+}
+/* ******* COMPONENT: TOGGLE BOX ******* */
+
+.com__togglebox {
+    .cm__box;
+    .mx__transition(all, @CmUI-Transition-Duration);
+
+    > dt {
+        min-height: @ComToggleBox-Size;
+        position: relative;
+        cursor: pointer;
+        .mx__user-select(none);
+        .mx__transition(background, @CmUI-Transition-Duration);
+
+        &:hover {
+            .mx__transition(background color, @CmUI-Transition-DurationReverse);
+        }
+
+        .icon {
+            height: @ComToggleBox-Size;
+            float: right;
+            margin: 0 0 0 @CmIndent-Medium;
+            background-position: 100% 50%;
+
+            &.default {
+                width: @CmSize-Small;
+                .mx__transition(transform, @CmUI-Transition-Duration);
+            }
+        }
+
+        .title {
+            @padding: max(round((@ComToggleBox-Size - @CmFont-UI-H1-LineHeight) / 2), 0px);
+
+            .cm__font--ui-h1;
+            .cm__text-nowrap;
+            display: block;
+            padding: @padding 0;
+            .mx__transition(color, @CmUI-Transition-Duration);
+        }
+
+        .cm__inherit {
+            color: inherit;
+        }
+
+        .pt__links {
+            font-size: @CmFont-Base-Size;
+        }
+
+        .pt__box-editable {
+            margin: 0;
+
+            > .l {
+                .cm__text-nowrap;
+            }
+        }
+
+        &:hover {
+            .title {
+                .mx__transition(background color, @CmUI-Transition-DurationReverse);
+            }
+        }
+    }
+
+    > dd {
+        .clearfix;
+        padding: 0;
+        opacity: 1;
+
+        > .inner {
+            padding: @CmIndent-XSmall 0 0 0;
+        }
+    }
+
+    &.has-hover-icon {
+        > dt {
+            cursor: default;
+        }
+    }
+
+    &.has-title-bg {
+        > dt {
+            padding: @ComToggleBox-HasBackground-TitleIndent;
+            border-radius: @ComToggleBox-HasBackground-TitleBorderRadius;
+        }
+    }
+
+    &.has-content-bg {
+        .cm__empty,
+        .pt__toolbar {
+            margin: 0;
+            border-top: @ComToggleBox-ContentSpaceBorder;
+            background: @ComToggleBox-ContentBackgroundNormal;
+            border-radius: @CmBorder-Radius;
+            .mx__background-clip(padding-box);
+        }
+
+        .pt__box-flat {
+            margin: 0;
+            border-top: @ComToggleBox-ContentSpaceBorder;
+        }
+
+        .pt__toolbar {
+            padding: @CmIndent-XXSmall;
+        }
+
+        .pt__gridlist {
+            .pt__gridlist__has-background;
+            border-top: @ComToggleBox-ContentSpaceBorder;
+
+            td {
+                padding: @CmIndent-XXSmall;
+            }
+
+            th {
+                padding: @CmIndent-XXSmall;
+
+                &.sort {
+                    .inner {
+                        margin: -@CmIndent-XXSmall;
+                        padding: @CmIndent-XXSmall 22px @CmIndent-XXSmall @CmIndent-XXSmall;
+                    }
+                }
+            }
+        }
+    }
+
+    &.is-medium {
+        > dt {
+            min-height: @ComToggleBox-SizeMedium;
+
+            .icon {
+                height: @ComToggleBox-SizeMedium;
+            }
+
+            .title {
+                @padding: max(round((@ComToggleBox-SizeMedium - @CmFont-UI-H4-LineHeight) / 2), 0px);
+
+                .cm__font--ui-h4;
+                padding: @padding 0;
+            }
+        }
+    }
+
+    &.is-base {
+        > dt {
+            min-height: @ComToggleBox-SizeBase;
+
+            .icon {
+                height: @ComToggleBox-SizeBase;
+            }
+
+            .title {
+                @padding: max(round((@ComToggleBox-SizeBase - @CmFont-Base-LineHeight) / 2), 0px);
+
+                .cm__text-wrap;
+                .cm__font;
+                font-weight: @CmFont-Base-BoldWeight;
+                padding: @padding 0;
+                overflow: hidden;
+            }
+        }
+    }
+
+    &.is-ui {
+        > dt {
+            min-height: @ComToggleBox-SizeUI;
+
+            .icon {
+                height: @ComToggleBox-SizeUI;
+            }
+
+            .title {
+                @padding: max(round((@ComToggleBox-SizeUI - @CmFont-UI-LineHeight) / 2), 0px);
+
+                .cm__font--ui;
+                font-weight: @CmFont-UI-BoldWeight;
+                padding: @padding 0;
+            }
+        }
+    }
+
+    &.is-hide {
+        > dd {
+            height: 0;
+            overflow: hidden;
+            opacity: 0;
+        }
+    }
+
+    &.is-show {
+        > dt {
+            .icon {
+                &.default {
+                    .mx__transform(rotate(90deg));
+                }
+            }
+        }
+    }
+
+    .com__togglebox__theme(@ComToggleBox-Theme);
+    .com__togglebox--has-background__title-theme(@ComToggleBox-HasBackground-TitleTheme);
+}
+
+// /* *** MIXINS *** */
+
+.com__togglebox__theme (@theme) {
+    .com__togglebox__title-color(~"@{ComToggleBox-Theme@{theme}-TitleColorNormal}", ~"@{ComToggleBox-Theme@{theme}-TitleColorHover}", ~"@{ComToggleBox-Theme@{theme}-TitleColorActive}");
+    .com__togglebox__title-icon(~"@{ComToggleBox-Theme@{theme}-TitleIcon}");
+}
+
+.com__togglebox--has-background__title-theme (@theme) {
+    &.has-title-bg {
+        .com__togglebox--title-background(~"@{ComToggleBox-Theme@{theme}-TitleBackgroundNormal}", ~"@{ComToggleBox-Theme@{theme}-TitleBackgroundHover}", ~"@{ComToggleBox-Theme@{theme}-TitleBackgroundActive}");
+        .com__togglebox__title-color(~"@{ComToggleBox-Theme@{theme}-TitleColorNormal}", ~"@{ComToggleBox-Theme@{theme}-TitleColorHover}", ~"@{ComToggleBox-Theme@{theme}-TitleColorActive}");
+        .com__togglebox__title-icon(~"@{ComToggleBox-Theme@{theme}-TitleIcon}");
+    }
+}
+
+.com__togglebox__title-color (@normal, @hover, @active) {
+    &.is-hide {
+        > dt {
+            .title {
+                color: @normal;
+            }
+
+            .cm__link {
+                color: @normal;
+
+                &:hover {
+                    color: @hover;
+                }
+            }
+
+            &:hover {
+                .title {
+                    color: @hover;
+                }
+            }
+        }
+    }
+
+    &.is-show {
+        > dt {
+            .title {
+                color: @active;
+            }
+
+            .cm__link {
+                color: @active;
+
+                &:hover {
+                    color: @hover;
+                }
+            }
+
+            &:hover {
+                .title {
+                    color: @hover;
+                }
+            }
+
+        }
+    }
+}
+
+.com__togglebox__title-icon (@image) {
+    > dt {
+        .icon.default {
+            background-image: url("@{image}");
+        }
+    }
+}
+
+.com__togglebox--title-background (@normal, @hover, @active) {
+    &.is-hide {
+        > dt {
+            background: @normal;
+
+            &:hover {
+                background: @hover;
+            }
+        }
+    }
+
+    &.is-show {
+        > dt {
+            background: @active;
+
+            &:hover {
+                background: @hover;
+            }
+        }
+    }
+}
+
+/* ******* COMPONENT: TOGGLE BOX: ADAPTIVE ******* */
+
+@media only screen and (max-width : @ComToggleBox-AdaptiveFrom) {
+
+
+
 }
 /* ******* COMPONENT: TOOLTIP ******* */
 
@@ -12506,6 +12810,10 @@ button {
 
 .com__box-tools {
     max-width: @ComBoxTools-Width;
+
+    &.pull-center {
+        margin: 0 auto;
+    }
 }
 
 .com__box-tools__content {
@@ -14711,7 +15019,7 @@ button {
 }
 /* ******* NOTIFICATION ******* */
 
-.com-notification {
+.com__notifications {
     .cm__box;
 
     ul {
@@ -14731,7 +15039,8 @@ button {
                 margin: 0;
             }
 
-            &.ok {
+            &.ok,
+            &.success {
                 background: #f3fded;
                 border-color: #9ec589;
                 color: #5a714e;
@@ -14741,7 +15050,8 @@ button {
                 }
             }
 
-            &.error {
+            &.error,
+            &.danger {
                 background: #ffe4e4;
                 border-color: #df3e3e;
                 color: #bf0a0a;
@@ -14751,7 +15061,8 @@ button {
                 }
             }
 
-            &.notice {
+            &.notice,
+            &.warning {
                 background: #f8f1d4;
                 border-color: #d2a323;
                 color: #906901;
@@ -16555,302 +16866,6 @@ button {
             rgba(255, 0, 255, 1) calc(5 / 6 * 100%),
             rgba(255, 0, 0, 1) 100%);
     }
-}
-/* ******* COMPONENT: TOGGLE BOX ******* */
-
-.com__togglebox {
-    .cm__box;
-    .mx__transition(all, @CmUI-Transition-Duration);
-
-    > dt {
-        min-height: @ComToggleBox-Size;
-        position: relative;
-        cursor: pointer;
-        .mx__user-select(none);
-        .mx__transition(background, @CmUI-Transition-Duration);
-
-        &:hover {
-            .mx__transition(background color, @CmUI-Transition-DurationReverse);
-        }
-
-        .icon {
-            height: @ComToggleBox-Size;
-            float: right;
-            margin: 0 0 0 @CmIndent-Medium;
-            background-position: 100% 50%;
-
-            &.default {
-                width: @CmSize-Small;
-                .mx__transition(transform, @CmUI-Transition-Duration);
-            }
-        }
-
-        .title {
-            @padding: max(round((@ComToggleBox-Size - @CmFont-UI-H1-LineHeight) / 2), 0px);
-
-            .cm__font--ui-h1;
-            .cm__text-nowrap;
-            display: block;
-            padding: @padding 0;
-            .mx__transition(color, @CmUI-Transition-Duration);
-        }
-
-        .cm__inherit {
-            color: inherit;
-        }
-
-        .pt__links {
-            font-size: @CmFont-Base-Size;
-        }
-
-        .pt__box-editable {
-            margin: 0;
-
-            > .l {
-                .cm__text-nowrap;
-            }
-        }
-
-        &:hover {
-            .title {
-                .mx__transition(background color, @CmUI-Transition-DurationReverse);
-            }
-        }
-    }
-
-    > dd {
-        .clearfix;
-        padding: 0;
-        opacity: 1;
-
-        > .inner {
-            padding: @CmIndent-XSmall 0 0 0;
-        }
-    }
-
-    &.has-hover-icon {
-        > dt {
-            cursor: default;
-        }
-    }
-
-    &.has-title-bg {
-        > dt {
-            padding: @ComToggleBox-HasBackground-TitleIndent;
-            border-radius: @ComToggleBox-HasBackground-TitleBorderRadius;
-        }
-    }
-
-    &.has-content-bg {
-        .cm__empty,
-        .pt__toolbar {
-            margin: 0;
-            border-top: @ComToggleBox-ContentSpaceBorder;
-            background: @ComToggleBox-ContentBackgroundNormal;
-            border-radius: @CmBorder-Radius;
-            .mx__background-clip(padding-box);
-        }
-
-        .pt__toolbar {
-            padding: @CmIndent-XXSmall;
-        }
-
-        .pt__gridlist {
-            .pt__gridlist__has-background;
-            border-top: @ComToggleBox-ContentSpaceBorder;
-
-            td {
-                padding: @CmIndent-XXSmall;
-            }
-
-            th {
-                padding: @CmIndent-XXSmall;
-
-                &.sort {
-                    .inner {
-                        margin: -@CmIndent-XXSmall;
-                        padding: @CmIndent-XXSmall 22px @CmIndent-XXSmall @CmIndent-XXSmall;
-                    }
-                }
-            }
-        }
-    }
-
-    &.is-medium {
-        > dt {
-            min-height: @ComToggleBox-SizeMedium;
-
-            .icon {
-                height: @ComToggleBox-SizeMedium;
-            }
-
-            .title {
-                @padding: max(round((@ComToggleBox-SizeMedium - @CmFont-UI-H4-LineHeight) / 2), 0px);
-
-                .cm__font--ui-h4;
-                padding: @padding 0;
-            }
-        }
-    }
-
-    &.is-base {
-        > dt {
-            min-height: @ComToggleBox-SizeBase;
-
-            .icon {
-                height: @ComToggleBox-SizeBase;
-            }
-
-            .title {
-                @padding: max(round((@ComToggleBox-SizeBase - @CmFont-Base-LineHeight) / 2), 0px);
-
-                .cm__text-wrap;
-                .cm__font;
-                font-weight: @CmFont-Base-BoldWeight;
-                padding: @padding 0;
-                overflow: hidden;
-            }
-        }
-    }
-
-    &.is-ui {
-        > dt {
-            min-height: @ComToggleBox-SizeUI;
-
-            .icon {
-                height: @ComToggleBox-SizeUI;
-            }
-
-            .title {
-                @padding: max(round((@ComToggleBox-SizeUI - @CmFont-UI-LineHeight) / 2), 0px);
-
-                .cm__font--ui;
-                font-weight: @CmFont-UI-BoldWeight;
-                padding: @padding 0;
-            }
-        }
-    }
-
-    &.is-hide {
-        > dd {
-            height: 0;
-            overflow: hidden;
-            opacity: 0;
-        }
-    }
-
-    &.is-show {
-        > dt {
-            .icon {
-                &.default {
-                    .mx__transform(rotate(90deg));
-                }
-            }
-        }
-    }
-
-    .com__togglebox__theme(@ComToggleBox-Theme);
-    .com__togglebox--has-background__title-theme(@ComToggleBox-HasBackground-TitleTheme);
-}
-
-// /* *** MIXINS *** */
-
-.com__togglebox__theme (@theme) {
-    .com__togglebox__title-color(~"@{ComToggleBox-Theme@{theme}-TitleColorNormal}", ~"@{ComToggleBox-Theme@{theme}-TitleColorHover}", ~"@{ComToggleBox-Theme@{theme}-TitleColorActive}");
-    .com__togglebox__title-icon(~"@{ComToggleBox-Theme@{theme}-TitleIcon}");
-}
-
-.com__togglebox--has-background__title-theme (@theme) {
-    &.has-title-bg {
-        .com__togglebox--title-background(~"@{ComToggleBox-Theme@{theme}-TitleBackgroundNormal}", ~"@{ComToggleBox-Theme@{theme}-TitleBackgroundHover}", ~"@{ComToggleBox-Theme@{theme}-TitleBackgroundActive}");
-        .com__togglebox__title-color(~"@{ComToggleBox-Theme@{theme}-TitleColorNormal}", ~"@{ComToggleBox-Theme@{theme}-TitleColorHover}", ~"@{ComToggleBox-Theme@{theme}-TitleColorActive}");
-        .com__togglebox__title-icon(~"@{ComToggleBox-Theme@{theme}-TitleIcon}");
-    }
-}
-
-.com__togglebox__title-color (@normal, @hover, @active) {
-    &.is-hide {
-        > dt {
-            .title {
-                color: @normal;
-            }
-
-            .cm__link {
-                color: @normal;
-
-                &:hover {
-                    color: @hover;
-                }
-            }
-
-            &:hover {
-                .title {
-                    color: @hover;
-                }
-            }
-        }
-    }
-
-    &.is-show {
-        > dt {
-            .title {
-                color: @active;
-            }
-
-            .cm__link {
-                color: @active;
-
-                &:hover {
-                    color: @hover;
-                }
-            }
-
-            &:hover {
-                .title {
-                    color: @hover;
-                }
-            }
-
-        }
-    }
-}
-
-.com__togglebox__title-icon (@image) {
-    > dt {
-        .icon.default {
-            background-image: url("@{image}");
-        }
-    }
-}
-
-.com__togglebox--title-background (@normal, @hover, @active) {
-    &.is-hide {
-        > dt {
-            background: @normal;
-
-            &:hover {
-                background: @hover;
-            }
-        }
-    }
-
-    &.is-show {
-        > dt {
-            background: @active;
-
-            &:hover {
-                background: @hover;
-            }
-        }
-    }
-}
-
-/* ******* COMPONENT: TOGGLE BOX: ADAPTIVE ******* */
-
-@media only screen and (max-width : @ComToggleBox-AdaptiveFrom) {
-
-
-
 }
 /* ******* COMPONENTS: TOOLBAR ******* */
 

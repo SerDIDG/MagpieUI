@@ -32,6 +32,10 @@
                 padding: 0;
             }
         }
+
+        &.is-hidden {
+            display: none;
+        }
     }
 
     dt {
@@ -294,6 +298,10 @@
 .check-line {
     min-height: @CmForm-FieldHeight;
     line-height: @CmForm-FieldHeight;
+
+    &.pull-center {
+        text-align: center;
+    }
 
     .checkbox {
         @margin: floor((@CmForm-FieldHeight - 13px) / 2);

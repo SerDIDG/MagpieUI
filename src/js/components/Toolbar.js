@@ -115,26 +115,28 @@ function(params){
             'label' : '',
             'title' : '',
             'group' : '',
-            'controller' : false,
-            'controllerParams' : {},
-            'handler' : function(){}
+            'constructor' : false,
+            'constructorParams' : {},
+            'callback' : function(){}
         }, item);
         if((group = that.groups[item['group']]) && !group.items[item['name']]){
             item['node'].innerHTML = item['label'];
             item['node'].title = item['title'];
-            cm.addEvent(item['node'], 'click', function(e){
-                cm.preventDefault(e);
-                if(item['controllerObject']){
-                    item['controllerObject'].destruct();
-                }
-                if(item['controller']){
-                    cm.getConstructor(item['controller'], function(classConstructor){
-                        item['controllerObject'] = new classConstructor(item['controllerParams']);
-                        item['controllerObject'].construct();
-                    });
-                }
-                item['handler'](e, item);
-            });
+            // Callbacks
+            if(item['constructor']){
+                cm.getConstructor(item['constructor'], function(classConstructor){
+                    item['controller'] = new classConstructor(
+                        cm.merge(item['constructorParams'], {
+                            'node' : item['node']
+                        })
+                    );
+                });
+            }else{
+                cm.addEvent(item['node'], 'click', function(e){
+                    cm.preventDefault(e);
+                    item['callback'](e, item);
+                });
+            }
             cm.appendChild(item['node'], item['container']);
             cm.appendChild(item['container'], group['node']);
             group.items[item['name']] = item;

@@ -33,6 +33,7 @@ cm.define('Com.Autocomplete', {
         'showListOnEmpty' : false,                                  // Show options list, when input is empty
         'showLoader' : true,                                        // Show ajax spinner in tooltip, for ajax mode only.
         'data' : [],                                                // Examples: [{'value' : 'foo', 'text' : 'Bar'}] or ['Foo', 'Bar'].
+        'value' : {},
         'responseKey' : 'data',                                     // Instead of using filter callback, you can provide response array key
         'ajax' : {
             'type' : 'json',
@@ -95,6 +96,7 @@ function(params){
         that.isAjax = !cm.isEmpty(that.params['ajax']['url']);
         // Prepare data
         that.params['data'] = that.convertData(that.params['data']);
+        that.params['value'] = that.convertDataItem(that.params['value']);
     };
 
     var render = function(){
@@ -117,6 +119,8 @@ function(params){
         );
         // Set input
         that.setInput(that.params['node']);
+        // Set
+        !cm.isEmpty(that.params['value']) && that.set(that.params['value'], false);
     };
 
     var setListItem = function(index){
@@ -523,13 +527,20 @@ function(params){
 
 cm.getConstructor('Com.Autocomplete', function(classConstructor, className, classProto){
     classProto.convertData = function(data){
+        var that = this;
         return data.map(function(item){
-            if(!cm.isObject(item)){
-                return {'text' : item, 'value' : item};
-            }else{
-                return item;
-            }
+            return that.convertDataItem(item);
         });
+    };
+
+    classProto.convertDataItem = function(item){
+        if(cm.isEmpty(item)){
+            return null
+        }else if(!cm.isObject(item)){
+            return {'text' : item, 'value' : item};
+        }else{
+            return item;
+        }
     };
 });
 

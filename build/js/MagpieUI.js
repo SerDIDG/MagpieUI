@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.20.7 (2016-07-18 19:53) ************ */
+/*! ************ MagpieUI v3.20.8 (2016-07-25 17:21) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1426,7 +1426,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.20.7',
+        '_version' : '3.20.8',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -6497,6 +6497,7 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
         cm.getConstructor(that.params['constructor'], function(classObject){
             that.triggerEvent('onRenderControllerStart', arguments);
             // Construct
+            that.renderControllerView();
             that.components['controller'] = that.constructController(classObject);
             // Events
             that.triggerEvent('onRenderControllerProcess', that.components['controller']);
@@ -6506,21 +6507,27 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
         return that;
     };
 
-    classProto.renderControllerEvents = function(){
+    classProto.renderControllerView = function(){
         var that = this;
-        that.components['controller'].addEvent('onOpen', that.afterOpenControllerHandler);
-        that.components['controller'].addEvent('onClose', that.afterCloseControllerHandler);
         return that;
     };
 
     classProto.constructController = function(classObject){
         var that = this;
+        cm.log(that.params['params']);
         return new classObject(
             cm.merge(that.params['params'], {
                 'container' : that.params['placeholder'] ? that.nodes['placeholder']['content'] : that.params['container'],
-                'content' : that.params['params']['content'] || that.nodes['holder'] || that.params['content']
+                'content' : that.params['params']['content'] || that.params['content']
             })
         );
+    };
+
+    classProto.renderControllerEvents = function(){
+        var that = this;
+        that.components['controller'].addEvent('onOpen', that.afterOpenControllerHandler);
+        that.components['controller'].addEvent('onClose', that.afterCloseControllerHandler);
+        return that;
     };
 
     classProto.destructController = function(){
@@ -6569,6 +6576,31 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
 
     /* *** PLACEHOLDER *** */
 
+    classProto.renderPlaceholder = function(){
+        var that = this;
+        cm.getConstructor(that.params['placeholderConstructor'], function(classObject){
+            that.triggerEvent('onRenderPlaceholderStart', arguments);
+            // Construct
+            that.renderPlaceholderView();
+            that.components['placeholder'] = that.constructPlaceholder(classObject);
+            that.renderPlaceholderButtons();
+            // Events
+            that.triggerEvent('onRenderPlaceholderProcess', that.components['placeholder']);
+            that.renderPlaceholderEvents();
+            that.triggerEvent('onRenderPlaceholderEnd', that.components['placeholder']);
+        });
+        return that;
+    };
+
+    classProto.constructPlaceholder = function(classObject){
+        var that = this;
+        return new classObject(
+            cm.merge(that.params['placeholderParams'], {
+                'content' : that.nodes['placeholder']
+            })
+        );
+    };
+
     classProto.renderPlaceholderView = function(){
         var that = this;
         that.triggerEvent('onRenderPlaceholderViewStart');
@@ -6576,41 +6608,19 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
         that.nodes['placeholder'] = {};
         that.nodes['placeholder']['title'] = cm.textNode(that.lang('title'));
         that.nodes['placeholder']['content'] = cm.node('div', {'class' : 'com__container__content'});
-        that.renderPlaceholderViewButtons();
         // Events
-        that.triggerEvent('onRenderPlaceholderViewProcess', that.nodes['placeholder']);
-        that.triggerEvent('onRenderPlaceholderViewEnd', that.nodes['placeholder']);
+        that.triggerEvent('onRenderPlaceholderViewProcess');
+        that.triggerEvent('onRenderPlaceholderViewEnd');
         return that;
     };
 
-    classProto.renderPlaceholderViewButtons = function(){
+    classProto.renderPlaceholderButtons = function(){
         var that = this;
-        // Structure
-        that.nodes['placeholder']['buttons'] = cm.node('div', {'class' : 'pt__buttons pull-right'},
-            that.nodes['placeholder']['buttonsInner'] = cm.node('div', {'class' : 'inner'},
-                that.nodes['placeholder']['close'] = cm.node('button', {'class' : 'button button-primary'}, that.lang('close'))
-            )
-        );
-        // Events
-        cm.addEvent(that.nodes['placeholder']['close'], 'click', that.closeHandler);
-        return that;
-    };
-
-    classProto.renderPlaceholder = function(){
-        var that = this;
-        cm.getConstructor(that.params['placeholderConstructor'], function(classObject){
-            that.triggerEvent('onRenderPlaceholderStart', arguments);
-            // Construct
-            that.renderPlaceholderView();
-            that.components['placeholder'] = new classObject(
-                cm.merge(that.params['placeholderParams'], {
-                    'content' : that.nodes['placeholder']
-                })
-            );
-            // Events
-            that.triggerEvent('onRenderPlaceholderProcess', that.components['placeholder']);
-            that.renderPlaceholderEvents();
-            that.triggerEvent('onRenderPlaceholderEnd', that.components['placeholder']);
+        that.components['placeholder'].addButton({
+            'name' : 'close',
+            'label' : that.lang('close'),
+            'style' : 'button-primary',
+            'callback' : that.closeHandler
         });
         return that;
     };
@@ -6692,6 +6702,7 @@ cm.define('Com.AbstractInput', {
         'className' : '',
         'ui' : true,
         'size' : 'full',                // default | full
+        'justify' : 'left',
         'maxlength' : 0                 // 0 - infinity
     }
 },
@@ -6781,18 +6792,20 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
     };
 
     classProto.validateParams = function(){
-        var that = this;
+        var that = this,
+            value;
         that.triggerEvent('onValidateParamsStart');
         // Get parameters from provided input
         if(cm.isNode(that.params['node'])){
             // In WebKit and Blink engines js value is cutoff, use DOM value instead.
-            var value = that.params['node'].getAttribute('value');
+            value = that.params['node'].getAttribute('value');
             that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
             that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
             that.params['disabled'] = that.params['node'].disabled || that.params['node'].readOnly || that.params['disabled'];
-            that.params['value'] = !cm.isEmpty(value) ?  value: that.params['value'];
+            that.params['value'] = !cm.isEmpty(value) ?  value : that.params['value'];
+            that.params['maxlength'] = that.params['node'].getAttribute('maxlength') || that.params['maxlength'];
         }
-        that.params['value'] = !cm.isEmpty(value) ? that.params['value'] : that.params['defaultValue'];
+        that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
         that.disabled = that.params['disabled'];
         that.triggerEvent('onValidateParamsEnd');
         return that;
@@ -6845,6 +6858,9 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         cm.addClass(that.nodes['container'], that.params['className']);
         if(!cm.isEmpty(that.params['size'])){
             cm.addClass(that.nodes['container'], ['size', that.params['size']].join('-'));
+        }
+        if(!cm.isEmpty(that.params['justify'])){
+            cm.addClass(that.nodes['container'], ['pull', that.params['justify']].join('-'));
         }
         that.triggerEvent('onSetAttributesEnd');
         return that;
@@ -7070,6 +7086,7 @@ cm.define('Com.AbstractFileManagerContainer', {
         'placeholder' : true,
         'placeholderConstructor' : 'Com.DialogContainer',
         'placeholderParams' : {
+            'renderButtons' : true,
             'params' : {
                 'width' : 900
             }
@@ -7128,8 +7145,11 @@ cm.getConstructor('Com.AbstractFileManagerContainer', function(classConstructor,
         });
     };
 
-    classProto.renderControllerProcess = function(){
+    classProto.renderControllerEvents = function(){
         var that = this;
+        // Call parent method
+        _inherit.prototype.renderControllerEvents.apply(that, arguments);
+        // Add specific events
         that.components['controller'].addEvent('onGet', function(my, data){
             that.afterGet(data);
         });
@@ -7139,18 +7159,20 @@ cm.getConstructor('Com.AbstractFileManagerContainer', function(classConstructor,
         return that;
     };
 
-    classProto.renderPlaceholderViewButtons = function(){
+    classProto.renderPlaceholderButtons = function(){
         var that = this;
-        // Structure
-        that.nodes['placeholder']['buttons'] = cm.node('div', {'class' : 'pt__buttons pull-right'},
-            that.nodes['placeholder']['buttonsInner'] = cm.node('div', {'class' : 'inner'},
-                that.nodes['placeholder']['close'] = cm.node('button', {'type' : 'button', 'class' : 'button button-transparent'}, that.lang('close')),
-                that.nodes['placeholder']['save'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('save'))
-            )
-        );
-        // Events
-        cm.addEvent(that.nodes['placeholder']['close'], 'click', that.closeHandler);
-        cm.addEvent(that.nodes['placeholder']['save'], 'click', that.completeHandler);
+        that.components['placeholder'].addButton({
+            'name' : 'close',
+            'label' : that.lang('close'),
+            'style' : 'button-transparent',
+            'callback' : that.closeHandler
+        });
+        that.components['placeholder'].addButton({
+            'name' : 'save',
+            'label' : that.lang('save'),
+            'style' : 'button-primary',
+            'callback' : that.completeHandler
+        });
         return that;
     };
 
@@ -7587,6 +7609,7 @@ cm.define('Com.Form', {
         'loaderDelay' : 'cm._config.loadDelay',
         'showNotifications' : true,
         'responseErrorsKey': 'errors',
+        'data' : {},
         'ajax' : {
             'type' : 'json',
             'method' : 'post',
@@ -7666,6 +7689,14 @@ function(params){
                         'container' : that.nodes['notifications']
                     })
                 );
+                that.components['notifications'].addEvent('onAdd', function(my){
+                    cm.addClass(that.nodes['notifications'], 'is-show', true);
+                });
+                that.components['notifications'].addEvent('onRemove', function(my){
+                    if(that.components['notifications'].getLength() === 0){
+                        cm.removeClass(that.nodes['notifications'], 'is-show', true);
+                    }
+                });
             });
         }
         // Overlay Loader
@@ -7697,7 +7728,7 @@ function(params){
     };
 
     var renderField = function(type, params){
-        var fieldParams, field;
+        var field, controller;
         // Merge params
         params = cm.merge({
             'name' : '',
@@ -7706,13 +7737,17 @@ function(params){
             'container' : that.nodes['fields'],
             'form' : that
         }, params);
+        field = Com.FormFields.get(type);
+        params = cm.merge(cm.clone(field, true), params);
+        // Get value
+        params['value'] = that.params['data'][params['name']];
+        params['dataValue'] = that.params['data'][params['dataName']];
         // Render
-        if(!that.fields[params['name']] && (fieldParams = Com.FormFields.get(type))){
+        if(field && !that.fields[params['name']]){
             cm.getConstructor('Com.FormField', function(classConstructor){
-                params = cm.merge(fieldParams, params);
-                field = new classConstructor(params);
+                controller = new classConstructor(params);
                 if(params['field']){
-                    that.fields[params['name']] = field;
+                    that.fields[params['name']] = controller;
                 }
             });
         }
@@ -7885,7 +7920,8 @@ function(params){
                 if(that.params['showNotifications']){
                     cm.addClass(that.nodes['notifications'], 'is-show', true);
                     that.components['notifications'].add({
-                        'label' : that.lang(item['message'])
+                        'label' : that.lang(item['message']),
+                        'type' : 'danger'
                     });
                 }
                 if(field = that.getField(item['field'])){
@@ -7896,7 +7932,8 @@ function(params){
             if(that.params['showNotifications']){
                 cm.addClass(that.nodes['notifications'], 'is-show', true);
                 that.components['notifications'].add({
-                    'label' : that.lang('server_error')
+                    'label' : that.lang('server_error'),
+                    'type' : 'danger'
                 });
             }
         }
@@ -8042,10 +8079,13 @@ cm.define('Com.FormField', {
         'container' : cm.node('div'),
         'form' : false,
         'name' : '',
+        'value' : null,
+        'dataValue' : null,
         'type' : false,
         'label' : '',
         'help' : null,
         'placeholder' : '',
+        'visible' : true,
         'options' : [],
         'constructor' : false,
         'constructorParams' : {},
@@ -8111,14 +8151,23 @@ function(params){
 
     that.callbacks.render = function(that){
         var nodes = {};
+        // Structure
         nodes['container'] = cm.node('dl',
             nodes['label'] = cm.node('dt',
                 cm.node('label', that.params['label'])
             ),
             nodes['value'] = cm.node('dd', that.params['node'])
         );
+        !that.params['visible'] && cm.addClass(nodes['container'], 'is-hidden');
+        // Attributes
         if(!cm.isEmpty(that.params['name'])){
             that.params['node'].setAttribute('name', that.params['name']);
+        }
+        if(!cm.isEmpty(that.params['value'])){
+            that.params['node'].setAttribute('value', that.params['value']);
+        }
+        if(!cm.isEmpty(that.params['dataValue'])){
+            that.params['node'].setAttribute('data-value', JSON.stringify(that.params['dataValue']));
         }
         if(!cm.isEmpty(that.params['placeholder'])){
             that.params['node'].setAttribute('placeholder', that.params['placeholder']);
@@ -8206,6 +8255,23 @@ function(params){
 
 Com.FormFields.add('input', {
     'node' : cm.node('input', {'type' : 'text'}),
+    'callbacks' : {
+        'set' : function(that, value){
+            that.params['node'].value = value;
+            return value;
+        },
+        'get' : function(that){
+            return that.params['node'].value;
+        },
+        'reset' : function(that){
+            that.params['node'].value = '';
+        }
+    }
+});
+
+Com.FormFields.add('hidden', {
+    'node' : cm.node('input', {'type' : 'hidden'}),
+    'visible' : false,
     'callbacks' : {
         'set' : function(that, value){
             that.params['node'].value = value;
@@ -8887,6 +8953,7 @@ cm.define('Com.Autocomplete', {
         'showListOnEmpty' : false,                                  // Show options list, when input is empty
         'showLoader' : true,                                        // Show ajax spinner in tooltip, for ajax mode only.
         'data' : [],                                                // Examples: [{'value' : 'foo', 'text' : 'Bar'}] or ['Foo', 'Bar'].
+        'value' : {},
         'responseKey' : 'data',                                     // Instead of using filter callback, you can provide response array key
         'ajax' : {
             'type' : 'json',
@@ -8949,6 +9016,7 @@ function(params){
         that.isAjax = !cm.isEmpty(that.params['ajax']['url']);
         // Prepare data
         that.params['data'] = that.convertData(that.params['data']);
+        that.params['value'] = that.convertDataItem(that.params['value']);
     };
 
     var render = function(){
@@ -8971,6 +9039,8 @@ function(params){
         );
         // Set input
         that.setInput(that.params['node']);
+        // Set
+        !cm.isEmpty(that.params['value']) && that.set(that.params['value'], false);
     };
 
     var setListItem = function(index){
@@ -9377,13 +9447,20 @@ function(params){
 
 cm.getConstructor('Com.Autocomplete', function(classConstructor, className, classProto){
     classProto.convertData = function(data){
+        var that = this;
         return data.map(function(item){
-            if(!cm.isObject(item)){
-                return {'text' : item, 'value' : item};
-            }else{
-                return item;
-            }
+            return that.convertDataItem(item);
         });
+    };
+
+    classProto.convertDataItem = function(item){
+        if(cm.isEmpty(item)){
+            return null
+        }else if(!cm.isObject(item)){
+            return {'text' : item, 'value' : item};
+        }else{
+            return item;
+        }
     };
 });
 
@@ -13493,14 +13570,20 @@ cm.define('Com.DialogContainer', {
     'params' : {
         'constructor' : 'Com.Dialog',
         'container' : 'document.body',
+        'renderButtons' : false,
+        'justifyButtons' : 'right',
         'params' : {
             'destructOnRemove' : false,
             'autoOpen' : false
+        },
+        'langs' : {
+            'close' : 'Close'
         }
     }
 },
 function(params){
     var that = this;
+    that.buttons = {};
     // Call parent class construct
     Com.AbstractContainer.apply(that, arguments);
 });
@@ -13529,11 +13612,86 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
         return that;
     };
 
+    classProto.constructController = function(classObject){
+        var that = this;
+        return new classObject(
+            cm.merge(that.params['params'], {
+                'container' : that.params['container'],
+                'title' : that.nodes['title'] || that.params['params']['title'] || that.params['title'],
+                'content' : that.nodes['content'] || that.params['params']['content'] || that.params['content'],
+                'buttons' : that.nodes['buttons'] || that.params['params']['buttons'] || that.params['buttons']
+            })
+        );
+    };
+
+    classProto.renderControllerView = function(){
+        var that = this;
+        that.params['renderButtons'] && that.renderButtonsView();
+        return that;
+    };
+
     classProto.renderControllerEvents = function(){
         var that = this;
         that.components['controller'].addEvent('onOpenStart', that.afterOpenControllerHandler);
         that.components['controller'].addEvent('onCloseEnd', that.afterCloseControllerHandler);
         return that;
+    };
+
+    classProto.renderButtonsView = function(){
+        var that = this;
+        // Structure
+        that.nodes['buttons'] = cm.node('div', {'class' : 'pt__buttons'},
+            that.nodes['buttonsHolder'] = cm.node('div', {'class' : 'inner'})
+        );
+        cm.addClass(that.nodes['buttons'], ['pull', that.params['justifyButtons']].join('-'));
+        // Render buttons
+        cm.forEach(that.buttons, function(item){
+            that.renderButton(item);
+        });
+        return that;
+    };
+
+    classProto.addButton = function(item){
+        var that = this;
+        // Config
+        item = cm.merge({
+            'name' : '',
+            'label' : '',
+            'style' : 'button-primary',
+            'embed' : false,
+            'callback' : function(){}
+        }, item);
+        // Structure
+        item['node'] = cm.node('button', {'class' : ['button', item['style']].join(' ')}, item['label']);
+        cm.addEvent(item['node'], 'click', item['callback']);
+        // Embed
+        that.buttons[item['name']] = item;
+        if(that.nodes['buttonsHolder']){
+            item['embed'] = true;
+            cm.appendChild(item['node'], that.nodes['buttonsHolder']);
+        }
+        return item;
+    };
+
+    classProto.renderButton = function(item){
+        var that = this;
+        // Configure
+        if(that.getButton(item['name'])){
+            item = that.getButton(item['name']);
+        }else{
+            item = that.addButton(item);
+        }
+        // Embed
+        if(!item['embed'] && that.nodes['buttonsHolder']){
+            item['embed'] = true;
+            cm.appendChild(item['node'], that.nodes['buttonsHolder']);
+        }
+        return that;
+    };
+
+    classProto.getButton = function(name){
+        var that = this;
+        return that.buttons[name];
     };
 });
 cm.define('Com.Draganddrop', {
@@ -15714,6 +15872,7 @@ cm.define('Com.FileUploaderContainer', {
         'placeholder' : true,
         'placeholderConstructor' : 'Com.DialogContainer',
         'placeholderParams' : {
+            'renderButtons' : true,
             'params' : {
                 'width' : 900
             }
@@ -15739,13 +15898,11 @@ cm.getConstructor('Com.FileUploaderContainer', function(classConstructor, classN
         var that = this;
         // Bind context to methods
         that.validateParamsEndHandler = that.validateParamsEnd.bind(that);
-        that.renderControllerProcessHandler = that.renderControllerProcess.bind(that);
         that.getHandler = that.get.bind(that);
         that.completeHandler = that.complete.bind(that);
         that.afterCompleteHandler = that.afterComplete.bind(that);
         // Add events
         that.addEvent('onValidateParamsEnd', that.validateParamsEndHandler);
-        that.addEvent('onRenderControllerProcess', that.renderControllerProcessHandler);
         // Call parent method
         _inherit.prototype.construct.apply(that, arguments);
         return that;
@@ -15773,8 +15930,11 @@ cm.getConstructor('Com.FileUploaderContainer', function(classConstructor, classN
         });
     };
 
-    classProto.renderControllerProcess = function(){
+    classProto.renderControllerEvents = function(){
         var that = this;
+        // Call parent method
+        _inherit.prototype.renderControllerEvents.apply(that, arguments);
+        // Add specific events
         that.components['controller'].addEvent('onGet', function(my, data){
             that.afterGet(data);
         });
@@ -15784,18 +15944,20 @@ cm.getConstructor('Com.FileUploaderContainer', function(classConstructor, classN
         return that;
     };
 
-    classProto.renderPlaceholderViewButtons = function(){
+    classProto.renderPlaceholderButtons = function(){
         var that = this;
-        // Structure
-        that.nodes['placeholder']['buttons'] = cm.node('div', {'class' : 'pt__buttons pull-right'},
-            that.nodes['placeholder']['buttonsInner'] = cm.node('div', {'class' : 'inner'},
-                that.nodes['placeholder']['close'] = cm.node('button', {'type' : 'button', 'class' : 'button button-transparent'}, that.lang('close')),
-                that.nodes['placeholder']['save'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('save'))
-            )
-        );
-        // Events
-        cm.addEvent(that.nodes['placeholder']['close'], 'click', that.closeHandler);
-        cm.addEvent(that.nodes['placeholder']['save'], 'click', that.completeHandler);
+        that.components['placeholder'].addButton({
+            'name' : 'close',
+            'label' : that.lang('close'),
+            'style' : 'button-transparent',
+            'callback' : that.closeHandler
+        });
+        that.components['placeholder'].addButton({
+            'name' : 'save',
+            'label' : that.lang('save'),
+            'style' : 'button-primary',
+            'callback' : that.completeHandler
+        });
         return that;
     };
 
@@ -17503,7 +17665,7 @@ function(params){
                 case 'actions':
                     nodes['actions'] = [];
                     nodes['inner'].appendChild(
-                        nodes['node'] = cm.node('div', {'class' : ['pt__links', col['class']].join(' ')},
+                        nodes['node'] = cm.node('div', {'class' : ['pt__links', 'pull-right', col['class']].join(' ')},
                             cm.node('ul',
                                 nodes['componentNode'] = cm.node('li', {'class' : 'com__menu', 'data-node' : 'ComMenu:{}:button'},
                                     cm.node('a', {'class' : 'label'}, that.lang('actions')),
@@ -17521,10 +17683,11 @@ function(params){
                             'label' : '',
                             'attr' : {},
                             'events' : {},
-                            'controller' : false,
-                            'controllerParams' : {},
-                            'handler' : function(){}
+                            'constructor' : false,
+                            'constructorParams' : {},
+                            'callback' : function(){}
                         }, actionItem);
+                        // WTF is that?
                         cm.forEach(item['data'], function(itemValue, itemKey){
                             actionItem['attr'] = cm.replaceDeep(actionItem['attr'], new RegExp([cm.strWrap(itemKey, '%'), cm.strWrap(itemKey, '%25')].join('|'), 'g'), itemValue);
                         });
@@ -17533,23 +17696,21 @@ function(params){
                                 actionItem['_node'] = cm.node('a', actionItem['attr'], actionItem['label'])
                             )
                         );
-                        if(actionItem['controller'] || actionItem['handler']){
-                            cm.addEvent(actionItem['_node'], 'click', function(e){
-                                cm.preventDefault(e);
-                                if(actionItem['_controllerObject']){
-                                    actionItem['_controllerObject'].destruct();
-                                }
-                                if(actionItem['controller']){
-                                    cm.getConstructor(actionItem['controller'], function(classConstructor){
-                                        actionItem['_controllerObject'] = new classConstructor(actionItem['controllerParams']);
-                                        actionItem['_controllerObject'].construct();
-                                    });
-                                }
-                                actionItem['handler'](e, actionItem);
+                        if(actionItem['constructor']){
+                            cm.getConstructor(actionItem['constructor'], function(classConstructor){
+                                actionItem['controller'] = new classConstructor(
+                                    cm.merge(actionItem['constructorParams'], {
+                                        'node' : actionItem['_node'],
+                                        'data' : item['data'],
+                                        'cellItem' : item,
+                                        'actionItem' : actionItem
+                                    })
+                                );
                             });
                         }else{
-                            cm.forEach(actionItem['events'], function(actionEventHandler, actionEventName){
-                                cm.addEvent(actionItem['_node'], actionEventName, actionEventHandler);
+                            cm.addEvent(actionItem['_node'], 'click', function(e){
+                                cm.preventDefault(e);
+                                actionItem['callback'](e, actionItem, item);
                             });
                         }
                         nodes['actions'].push(actionItem['_node']);
@@ -19094,13 +19255,18 @@ cm.define('Com.Notifications', {
     ],
     'events' : [
         'onRenderStart',
-        'onRender'
+        'onRender',
+        'onAdd',
+        'onRemove'
     ],
     'params' : {
         'node' : cm.node('div'),
         'container' : null,
         'name' : '',
-        'embedStructure' : 'append'
+        'embedStructure' : 'append',
+        'langs' : {
+            'close' : 'Close'
+        }
     }
 },
 function(params){
@@ -19163,17 +19329,37 @@ cm.getConstructor('Com.Notifications', function(classConstructor, className, cla
         // Config
         item = cm.merge({
             'label' : '',
+            'type' : 'warning',           // success | warning | danger
             'nodes' : {}
         }, item);
         // Structure
+        item['nodes']['container'] = cm.node('li', {'class' : item['type']},
+            item['nodes']['close'] = cm.node('div', {'class' : 'close'}, that.lang('close')),
+            item['nodes']['descr'] = cm.node('div', {'class' : 'descr'}, item['label'])
+        );
+        // Events
+        cm.addEvent(item['nodes']['close'], 'click', function(){
+            that.remove(item);
+        });
+        // Embed
+        cm.appendChild(item['nodes']['container'], that.nodes['list']);
         // Push
         that.items.push(item);
+        that.triggerEvent('onAdd', item);
         return that;
     };
 
     classProto.remove = function(item){
         var that = this;
+        cm.remove(item['nodes']['container']);
+        cm.arrayRemove(that.items, item);
+        that.triggerEvent('onRemove', item);
         return that;
+    };
+
+    classProto.getLength = function(){
+        var that = this;
+        return that.items.length;
     };
 });
 cm.define('Com.OldBrowserAlert', {
@@ -25942,26 +26128,28 @@ function(params){
             'label' : '',
             'title' : '',
             'group' : '',
-            'controller' : false,
-            'controllerParams' : {},
-            'handler' : function(){}
+            'constructor' : false,
+            'constructorParams' : {},
+            'callback' : function(){}
         }, item);
         if((group = that.groups[item['group']]) && !group.items[item['name']]){
             item['node'].innerHTML = item['label'];
             item['node'].title = item['title'];
-            cm.addEvent(item['node'], 'click', function(e){
-                cm.preventDefault(e);
-                if(item['controllerObject']){
-                    item['controllerObject'].destruct();
-                }
-                if(item['controller']){
-                    cm.getConstructor(item['controller'], function(classConstructor){
-                        item['controllerObject'] = new classConstructor(item['controllerParams']);
-                        item['controllerObject'].construct();
-                    });
-                }
-                item['handler'](e, item);
-            });
+            // Callbacks
+            if(item['constructor']){
+                cm.getConstructor(item['constructor'], function(classConstructor){
+                    item['controller'] = new classConstructor(
+                        cm.merge(item['constructorParams'], {
+                            'node' : item['node']
+                        })
+                    );
+                });
+            }else{
+                cm.addEvent(item['node'], 'click', function(e){
+                    cm.preventDefault(e);
+                    item['callback'](e, item);
+                });
+            }
             cm.appendChild(item['node'], item['container']);
             cm.appendChild(item['container'], group['node']);
             group.items[item['name']] = item;

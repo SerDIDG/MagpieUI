@@ -9,13 +9,18 @@ cm.define('Com.Notifications', {
     ],
     'events' : [
         'onRenderStart',
-        'onRender'
+        'onRender',
+        'onAdd',
+        'onRemove'
     ],
     'params' : {
         'node' : cm.node('div'),
         'container' : null,
         'name' : '',
-        'embedStructure' : 'append'
+        'embedStructure' : 'append',
+        'langs' : {
+            'close' : 'Close'
+        }
     }
 },
 function(params){
@@ -78,16 +83,36 @@ cm.getConstructor('Com.Notifications', function(classConstructor, className, cla
         // Config
         item = cm.merge({
             'label' : '',
+            'type' : 'warning',           // success | warning | danger
             'nodes' : {}
         }, item);
         // Structure
+        item['nodes']['container'] = cm.node('li', {'class' : item['type']},
+            item['nodes']['close'] = cm.node('div', {'class' : 'close'}, that.lang('close')),
+            item['nodes']['descr'] = cm.node('div', {'class' : 'descr'}, item['label'])
+        );
+        // Events
+        cm.addEvent(item['nodes']['close'], 'click', function(){
+            that.remove(item);
+        });
+        // Embed
+        cm.appendChild(item['nodes']['container'], that.nodes['list']);
         // Push
         that.items.push(item);
+        that.triggerEvent('onAdd', item);
         return that;
     };
 
     classProto.remove = function(item){
         var that = this;
+        cm.remove(item['nodes']['container']);
+        cm.arrayRemove(that.items, item);
+        that.triggerEvent('onRemove', item);
         return that;
+    };
+
+    classProto.getLength = function(){
+        var that = this;
+        return that.items.length;
     };
 });

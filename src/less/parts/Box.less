@@ -39,17 +39,14 @@
 }
 
 .pt__box-flat {
-    margin: 0 0 @CmIndent-Medium;
+    .cm__box;
+
     padding: @CmIndent-XSmall;
     background: @CmColor-Secondary-LightHighlight;
     border-radius: @CmBorder-Radius;
     .mx__box-sizing(border-box);
     .mx__background-clip(padding-box);
     .mx__transition(background, @CmUI-Transition-Duration);
-
-    &:last-child {
-        margin: 0;
-    }
 
     > .inner {
         > .title {
