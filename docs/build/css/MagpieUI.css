@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.20.8 (2016-07-25 17:21) ************ */
+/*! ************ MagpieUI v3.20.9 (2016-07-25 19:49) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.5.0
@@ -6968,6 +6968,7 @@ button.is-hidden {
   border-color: #111111;
 }
 .pt__box--clear {
+  margin-bottom: 24px;
   padding: 0;
   background: transparent;
   border: none;
@@ -6975,6 +6976,11 @@ button.is-hidden {
   box-shadow: none;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+}
+.pt__box--clear.bottom,
+.pt__box--clear.is-last,
+.pt__box--clear:last-child {
+  margin-bottom: 0;
 }
 .pt__box-border {
   padding: 12px;
@@ -6990,10 +6996,10 @@ button.is-hidden {
 .pt__box-border.active {
   border: 2px solid #2985e0;
 }
-.pt__box-flat {
+.pt__box--flat {
   margin-bottom: 24px;
   padding: 12px;
-  background: #fafafa;
+  background-color: #fafafa;
   border-radius: 3px;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -7003,16 +7009,19 @@ button.is-hidden {
   -webkit-transition: background 250ms ease-in-out;
   transition: background 250ms ease-in-out;
 }
-.pt__box-flat.bottom,
-.pt__box-flat.is-last,
-.pt__box-flat:last-child {
+.pt__box--flat.bottom,
+.pt__box--flat.is-last,
+.pt__box--flat:last-child {
   margin-bottom: 0;
 }
-.pt__box-flat > .inner > .title {
+.pt__box--flat > .inner > .title {
   margin-bottom: 24px;
 }
-.pt__box-flat.active {
-  background: #f6fafd;
+.pt__box--flat.is-transparent {
+  background-color: transparent;
+}
+.pt__box--flat.active {
+  background-color: #f6fafd;
 }
 /* *** TITLE *** */
 .pt__box-title {
@@ -7512,6 +7521,11 @@ button.is-hidden {
   -ms-flex: 1;
   flex: 1;
 }
+.pt__columns.is-none > .inner > .column {
+  -webkit-flex: none;
+  -ms-flex: none;
+  flex: none;
+}
 .pt__columns.is-space-between > .inner {
   -webkit-justify-content: space-between;
   justify-content: space-between;
@@ -7608,6 +7622,23 @@ button.is-hidden {
 .pt__columns.indent-96px > .inner > .column {
   margin-right: 48px;
   margin-left: 48px;
+}
+/* ******* PARTS: COLUMNS: ADAPTIVE ******* */
+@media only screen and (max-width: 768px) {
+  html.is-adaptive .pt__columns.is-adaptive > .inner {
+    display: block;
+  }
+  html.is-adaptive .pt__columns.is-adaptive > .inner > .column {
+    margin-bottom: 24px;
+    -webkit-flex: none;
+    -ms-flex: none;
+    flex: none;
+  }
+  html.is-adaptive .pt__columns.is-adaptive > .inner > .column.bottom,
+  html.is-adaptive .pt__columns.is-adaptive > .inner > .column.is-last,
+  html.is-adaptive .pt__columns.is-adaptive > .inner > .column:last-child {
+    margin-bottom: 0;
+  }
 }
 /* ******* PARTS: DRAG ******* */
 .pt__drag {
@@ -9940,6 +9971,7 @@ button.is-hidden {
   left: auto;
 }
 .pt__menu-dropdown--clear {
+  margin-bottom: 24px;
   padding: 0;
   background: transparent;
   border: none;
@@ -9947,6 +9979,11 @@ button.is-hidden {
   box-shadow: none;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+}
+.pt__menu-dropdown--clear.bottom,
+.pt__menu-dropdown--clear.is-last,
+.pt__menu-dropdown--clear:last-child {
+  margin-bottom: 0;
 }
 .pt__menu-dropdown--active {
   visibility: visible;
@@ -11372,9 +11409,11 @@ button.is-hidden {
   margin-bottom: 0;
 }
 .com__togglebox > dt {
+  width: auto;
   min-height: 32px;
   position: relative;
   cursor: pointer;
+  float: none;
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
@@ -11459,6 +11498,7 @@ button.is-hidden {
 }
 .com__togglebox > dd {
   padding: 0;
+  margin: 0;
   opacity: 1;
 }
 .com__togglebox > dd:after {
@@ -11490,7 +11530,7 @@ button.is-hidden {
   -moz-background-clip: padding-box;
   background-clip: padding-box;
 }
-.com__togglebox.has-content-bg .pt__box-flat {
+.com__togglebox.has-content-bg .pt__box--flat {
   margin: 0;
   border-top: 1px solid transparent;
 }

@@ -5,9 +5,11 @@
     .mx__transition(all, @CmUI-Transition-Duration);
 
     > dt {
+        width: auto;
         min-height: @ComToggleBox-Size;
         position: relative;
         cursor: pointer;
+        float: none;
         .mx__user-select(none);
         .mx__transition(background, @CmUI-Transition-Duration);
 
@@ -63,6 +65,7 @@
     > dd {
         .clearfix;
         padding: 0;
+        margin: 0;
         opacity: 1;
 
         > .inner {
@@ -93,7 +96,7 @@
             .mx__background-clip(padding-box);
         }
 
-        .pt__box-flat {
+        .pt__box--flat {
             margin: 0;
             border-top: @ComToggleBox-ContentSpaceBorder;
         }

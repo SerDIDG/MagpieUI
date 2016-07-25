@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.20.8 (2016-07-25 17:21) ************ */
+/*! ************ MagpieUI v3.20.9 (2016-07-25 19:49) ************ */
 @charset "UTF-8";
 
 /*!
@@ -4212,6 +4212,7 @@ span.CodeMirror-selectedtext { background: none; }
 
 @PtColumns-Indent: @CmUI-ColumnIndent;
 @PtColumns-Indents: @CmIndents;
+@PtColumns-AdaptiveFrom: @CmUI-AdaptiveFrom;
 
 // /* ******* GRID ******* */
 
@@ -7843,6 +7844,7 @@ button {
 }
 
 .pt__box--clear {
+    .cm__box;
     padding: 0;
     background: transparent;
     border: none;
@@ -7863,11 +7865,10 @@ button {
     }
 }
 
-.pt__box-flat {
+.pt__box--flat {
     .cm__box;
-
     padding: @CmIndent-XSmall;
-    background: @CmColor-Secondary-LightHighlight;
+    background-color: @CmColor-Secondary-LightHighlight;
     border-radius: @CmBorder-Radius;
     .mx__box-sizing(border-box);
     .mx__background-clip(padding-box);
@@ -7879,8 +7880,12 @@ button {
         }
     }
 
+    &.is-transparent {
+        background-color: transparent;
+    }
+
     &.active {
-        background: @CmColor-Primary-LightHighlight;
+        background-color: @CmColor-Primary-LightHighlight;
     }
 }
 
@@ -8314,6 +8319,14 @@ button {
         }
     }
 
+    &.is-none {
+        > .inner {
+            > .column {
+                .mx__flex(none);
+            }
+        }
+    }
+
     &.is-space-between {
         > .inner {
             .mx__justify-content(space-between);
@@ -8345,6 +8358,27 @@ button {
             margin-left: @half;
         }
     }
+}
+
+/* ******* PARTS: COLUMNS: ADAPTIVE ******* */
+
+@media only screen and (max-width : @PtColumns-AdaptiveFrom) {
+
+    html.is-adaptive {
+        .pt__columns {
+            &.is-adaptive {
+                > .inner {
+                    display: block;
+
+                    > .column {
+                        .cm__box;
+                        .mx__flex(none);
+                    }
+                }
+            }
+        }
+    }
+
 }
 /* ******* PARTS: DRAG ******* */
 
@@ -12007,9 +12041,11 @@ button {
     .mx__transition(all, @CmUI-Transition-Duration);
 
     > dt {
+        width: auto;
         min-height: @ComToggleBox-Size;
         position: relative;
         cursor: pointer;
+        float: none;
         .mx__user-select(none);
         .mx__transition(background, @CmUI-Transition-Duration);
 
@@ -12065,6 +12101,7 @@ button {
     > dd {
         .clearfix;
         padding: 0;
+        margin: 0;
         opacity: 1;
 
         > .inner {
@@ -12095,7 +12132,7 @@ button {
             .mx__background-clip(padding-box);
         }
 
-        .pt__box-flat {
+        .pt__box--flat {
             margin: 0;
             border-top: @ComToggleBox-ContentSpaceBorder;
         }

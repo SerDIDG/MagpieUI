@@ -11,6 +11,14 @@
         }
     }
 
+    &.is-none {
+        > .inner {
+            > .column {
+                .mx__flex(none);
+            }
+        }
+    }
+
     &.is-space-between {
         > .inner {
             .mx__justify-content(space-between);
@@ -42,4 +50,25 @@
             margin-left: @half;
         }
     }
+}
+
+/* ******* PARTS: COLUMNS: ADAPTIVE ******* */
+
+@media only screen and (max-width : @PtColumns-AdaptiveFrom) {
+
+    html.is-adaptive {
+        .pt__columns {
+            &.is-adaptive {
+                > .inner {
+                    display: block;
+
+                    > .column {
+                        .cm__box;
+                        .mx__flex(none);
+                    }
+                }
+            }
+        }
+    }
+
 }
