@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.20.9 (2016-07-25 19:57) ************ */
+/*! ************ MagpieUI v3.20.10 (2016-07-26 22:19) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1426,7 +1426,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.20.9',
+        '_version' : '3.20.10',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -1471,7 +1471,8 @@ cm.isFileReader = (function(){return 'FileReader' in window;})();
 cm.isHistoryAPI = !!(window.history && history.pushState);
 cm.isLocalStorage = (function(){try{return 'localStorage' in window && window.localStorage !== null;}catch(e){return false;}})();
 cm.isCanvas = !!document.createElement("canvas").getContext;
-cm.isTouch = 'ontouchstart' in document.documentElement || !!window.maxTouchPoints || !!navigator.maxTouchPoints;
+//cm.isTouch = 'ontouchstart' in document.documentElement || !!window.maxTouchPoints || !!navigator.maxTouchPoints;
+cm.isTouch = false;
 
 /* ******* OBJECTS AND ARRAYS ******* */
 
@@ -6395,6 +6396,7 @@ cm.define('Com.AbstractContainer', {
         'placeholderConstructor' : null,
         'placeholderParams' : {},
         'destructOnClose' : true,
+        'openOnConstruct' : false,
         'langs' : {
             'title' : 'Container',
             'close' : 'Close',
@@ -6487,6 +6489,8 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
         }else{
             cm.addEvent(that.params['node'], 'click', that.openHandler);
         }
+        // Open on construct
+        that.params['openOnConstruct'] && that.open();
         return that;
     };
 
@@ -6514,7 +6518,6 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
 
     classProto.constructController = function(classObject){
         var that = this;
-        cm.log(that.params['params']);
         return new classObject(
             cm.merge(that.params['params'], {
                 'container' : that.params['placeholder'] ? that.nodes['placeholder']['content'] : that.params['container'],
@@ -11650,6 +11653,7 @@ function(params){
         current;
 
     that.isEditing = null;
+    that.pointerType = null;
     that.items = [];
     that.chassis = [];
 
@@ -11862,7 +11866,12 @@ function(params){
         // Push to chassis array
         that.chassis.push(chassis);
         // Add events
+        cm.addEvent(chassis['container'], 'touchstart', function(e){
+            that.pointerType = 'touch';
+            start(e, chassis);
+        });
         cm.addEvent(chassis['container'], 'mousedown', function(e){
+            that.pointerType = 'mouse';
             start(e, chassis);
         });
         // Embed
@@ -11880,17 +11889,19 @@ function(params){
     /* *** DRAG FUNCTIONS *** */
 
     var start = function(e, chassis){
-        // If current exists, we don't need to start another drag event until previous will not stop
-        if(current){
-            return false;
-        }
         cm.preventDefault(e);
+        if(!cm.isTouch && e.button){
+            return;
+        }
+        if(current){
+            return;
+        }
         // Current
         if(e.ctrlKey){
             blockContextMenu();
             setEqualDimensions();
             redrawChassis();
-        }else if(e.button === 0){
+        }else{
             // Hide IFRAMES and EMBED tags
             cm.hideSpecialTags();
             // Get columns
@@ -11918,12 +11929,18 @@ function(params){
             cm.addClass(current['left']['column']['ruler'], 'is-active');
             cm.addClass(current['right']['column']['ruler'], 'is-active');
             cm.addClass(document.body, 'pt__drag__body--horizontal');
-            cm.addEvent(window, 'mousemove', move);
-            cm.addEvent(window, 'mouseup', stop);
-        }else{
-            return false;
+            // Add events
+            switch(that.pointerType){
+                case 'mouse' :
+                    cm.addEvent(window, 'mousemove', move);
+                    cm.addEvent(window, 'mouseup', stop);
+                    break;
+                case 'touch' :
+                    cm.addEvent(window, 'touchmove', move);
+                    cm.addEvent(window, 'touchend', stop);
+                    break;
+            }
         }
-        return true;
     };
 
     var move = function(e){
@@ -11956,8 +11973,17 @@ function(params){
         cm.removeClass(current['left']['column']['ruler'], 'is-active');
         cm.removeClass(current['right']['column']['ruler'], 'is-active');
         cm.removeClass(document.body, 'pt__drag__body--horizontal');
-        cm.removeEvent(window, 'mousemove', move);
-        cm.removeEvent(window, 'mouseup', stop);
+        // Remove events
+        switch(that.pointerType){
+            case 'mouse' :
+                cm.removeEvent(window, 'mousemove', move);
+                cm.removeEvent(window, 'mouseup', stop);
+                break;
+            case 'touch' :
+                cm.removeEvent(window, 'touchmove', move);
+                cm.removeEvent(window, 'touchend', stop);
+                break;
+        }
         current = null;
         // Show IFRAMES and EMBED tags
         cm.showSpecialTags();
@@ -12079,6 +12105,7 @@ function(params){
     that.items = [];
     that.chassis = [];
     that.current = null;
+    that.pointerType = null;
     that.isEditing = null;
     that.isRendered = false;
     that.isAjax = false;
@@ -12167,7 +12194,12 @@ function(params){
         // Push to chassis array
         that.chassis.push(chassis);
         // Add events
+        cm.addEvent(chassis['container'], 'touchstart', function(e){
+            that.pointerType = 'touch';
+            start(e, chassis);
+        });
         cm.addEvent(chassis['container'], 'mousedown', function(e){
+            that.pointerType = 'mouse';
             start(e, chassis);
         });
         // Embed
@@ -12235,8 +12267,17 @@ function(params){
         cm.addClass(that.params['node'], 'is-chassis-active');
         cm.addClass(that.current['chassis']['inner'], 'is-active');
         cm.addClass(document.body, 'pt__drag__body--horizontal');
-        cm.addEvent(window, 'mousemove', move);
-        cm.addEvent(window, 'mouseup', stop);
+        // Add events
+        switch(that.pointerType){
+            case 'mouse' :
+                cm.addEvent(window, 'mousemove', move);
+                cm.addEvent(window, 'mouseup', stop);
+                break;
+            case 'touch' :
+                cm.addEvent(window, 'touchmove', move);
+                cm.addEvent(window, 'touchend', stop);
+                break;
+        }
         that.triggerEvent('onDragStart', that.current);
         return true;
     };
@@ -12267,8 +12308,17 @@ function(params){
         cm.removeClass(that.params['node'], 'is-chassis-active');
         cm.removeClass(that.current['chassis']['inner'], 'is-active');
         cm.removeClass(document.body, 'pt__drag__body--horizontal');
-        cm.removeEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mousemove', move);
-        cm.removeEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mouseup', stop);
+        // Remove events
+        switch(that.pointerType){
+            case 'mouse' :
+                cm.removeEvent(window, 'mousemove', move);
+                cm.removeEvent(window, 'mouseup', stop);
+                break;
+            case 'touch' :
+                cm.removeEvent(window, 'touchmove', move);
+                cm.removeEvent(window, 'touchend', stop);
+                break;
+        }
         // Show IFRAMES and EMBED tags
         cm.showSpecialTags();
         // API onResize event
@@ -13752,6 +13802,8 @@ function(params){
         currentChassis,
         previousArea;
 
+    that.pointerType = null;
+
     /* *** INIT *** */
 
     var init = function(){
@@ -13884,7 +13936,13 @@ function(params){
         draggable['drag-bottom'] = cm.getByAttr('data-com-draganddrop', 'drag-bottom', draggable['node'])[0];
         // Set draggable event on element
         dragNode = draggable['drag'] || draggable['node'];
+        // Add events
+        cm.addEvent(dragNode, 'touchstart', function(e){
+            that.pointerType = 'touch';
+            start(e, draggable);
+        });
         cm.addEvent(dragNode, 'mousedown', function(e){
+            that.pointerType = 'mouse';
             start(e, draggable);
         });
         if(draggable['drag-bottom']){
@@ -14012,8 +14070,17 @@ function(params){
         //checkInt = setInterval(checkPosition, 5);
         // Add move event on document
         cm.addClass(document.body, 'pt__dnd-body');
-        cm.addEvent(window, 'mousemove', move);
-        cm.addEvent(window, 'mouseup', stop);
+        // Add events
+        switch(that.pointerType){
+            case 'mouse' :
+                cm.addEvent(window, 'mousemove', move);
+                cm.addEvent(window, 'mouseup', stop);
+                break;
+            case 'touch' :
+                cm.addEvent(window, 'touchmove', move);
+                cm.addEvent(window, 'touchend', stop);
+                break;
+        }
     };
 
     var move = function(e){
@@ -14150,8 +14217,17 @@ function(params){
         //checkInt && clearInterval(checkInt);
         // Remove move events attached on document
         cm.removeClass(document.body, 'pt__dnd-body');
-        cm.removeEvent(window, 'mousemove', move);
-        cm.removeEvent(window, 'mouseup', stop);
+        // Remove events
+        switch(that.pointerType){
+            case 'mouse' :
+                cm.removeEvent(window, 'mousemove', move);
+                cm.removeEvent(window, 'mouseup', stop);
+                break;
+            case 'touch' :
+                cm.removeEvent(window, 'touchmove', move);
+                cm.removeEvent(window, 'touchend', stop);
+                break;
+        }
         // Calculate height of draggable block, like he already dropped in area, to animate height of fake empty space
         getPosition(current);
         current['node'].style.width = [(currentArea['dimensions']['innerWidth'] - current['dimensions']['margin']['left'] - current['dimensions']['margin']['right']), 'px'].join('');
@@ -14756,7 +14832,8 @@ function(params){
     that.startY = 0;
     that.nodeStartX = 0;
     that.nodeStartY = 0;
-    that.isDrag = false;
+    that.isProcess = false;
+    that.pointerType = null;
     that.dimensions = {
         'target' : {}
     };
@@ -14780,7 +14857,14 @@ function(params){
         // Calculate dimensions and position
         that.getDimensions();
         // Add drag start event
-        cm.addEvent(that.params['target'], 'mousedown', start);
+        cm.addEvent(that.params['target'], 'touchstart', function(e){
+            that.pointerType = 'touch';
+            start(e);
+        });
+        cm.addEvent(that.params['target'], 'mousedown', function(e){
+            that.pointerType = 'mouse';
+            start(e);
+        });
     };
 
     var start = function(e){
@@ -14788,10 +14872,10 @@ function(params){
         if(!cm.isTouch && e.button){
             return;
         }
-        if(that.isDrag){
+        if(that.isProcess){
             return;
         }
-        that.isDrag = true;
+        that.isProcess = true;
         // Hide IFRAMES and EMBED tags
         cm.hideSpecialTags();
         // Check event type and get cursor / finger position
@@ -14804,8 +14888,16 @@ function(params){
         that.nodeStartY = cm.getStyle(that.params['node'], 'top', true);
         setPositionHelper(position, 'onSelect');
         // Add move event on document
-        cm.addEvent(window, 'mousemove', move);
-        cm.addEvent(window, 'mouseup', stop);
+        switch(that.pointerType){
+            case 'mouse' :
+                cm.addEvent(window, 'mousemove', move);
+                cm.addEvent(window, 'mouseup', stop);
+                break;
+            case 'touch' :
+                cm.addEvent(window, 'touchmove', move);
+                cm.addEvent(window, 'touchend', stop);
+                break;
+        }
         // Trigger Event
         that.triggerEvent('onStart');
     };
@@ -14821,13 +14913,21 @@ function(params){
 
     var stop = function(e){
         cm.preventDefault(e);
-        that.isDrag = false;
+        that.isProcess = false;
         // Calculate dimensions and position
         var position = cm.getEventClientPosition(e);
         setPositionHelper(position, 'onSet');
         // Remove move events attached on document
-        cm.removeEvent(window, 'mousemove', move);
-        cm.removeEvent(window, 'mouseup', stop);
+        switch(that.pointerType){
+            case 'mouse' :
+                cm.removeEvent(window, 'mousemove', move);
+                cm.removeEvent(window, 'mouseup', stop);
+                break;
+            case 'touch' :
+                cm.removeEvent(window, 'touchmove', move);
+                cm.removeEvent(window, 'touchend', stop);
+                break;
+        }
         // Show IFRAMES and EMBED tags
         cm.showSpecialTags();
         // Trigger Event
@@ -14848,6 +14948,8 @@ function(params){
             position['left'] -= that.dimensions['target']['absoluteX1'];
             position['top'] -= that.dimensions['target']['absoluteY1'];
         }
+        position['left'] = Math.round(position['left']);
+        position['top'] = Math.round(position['top']);
         position = setPositionAction(position);
         that.triggerEvent(eventName, position);
     };
@@ -17678,7 +17780,6 @@ function(params){
                         )
                     );
                     cm.forEach(col['actions'], function(actionItem){
-                        var actionNode;
                         actionItem = cm.merge({
                             'label' : '',
                             'attr' : {},
@@ -24264,8 +24365,8 @@ function(params){
             'content' : cm.Node('li'),
             'image' : null,
             'isHide' : true,
-            'controller' : false,
-            'controllerParams' : {},
+            'constructor' : false,
+            'constructorParams' : {},
             'onShowStart' : function(that, tab){},
             'onShow' : function(that, tab){},
             'onHideStart' : function(that, tab){},
@@ -24380,20 +24481,17 @@ function(params){
             item['onShowStart'](that, item);
             that.triggerEvent('onTabShowStart', item);
             // Controller
-            if(item['controller']){
-                if(!item['controllerObject'] || !item['controllerObject']._isConstructed){
-                    cm.getConstructor(item['controller'], function(classConstructor){
-                        if(classConstructor.prototype._modules['Controller']){
-                            item['controllerObject'] = new classConstructor(
-                                cm.merge(item['controllerParams'], {
-                                    'container' : item['content']
-                                })
-                            );
-                            item['controllerObject'].construct();
-                        }
-                    });
+            if(item['constructor']){
+                if(item['controller']){
+                    item['controller'].refresh && item['controller'].refresh();
                 }else{
-                    item['controllerObject'].resume();
+                    cm.getConstructor(item['constructor'], function(classConstructor){
+                        item['controller'] = new classConstructor(
+                            cm.merge(item['controllerParams'], {
+                                'container' : item['content']
+                            })
+                        );
+                    });
                 }
             }
             // Show

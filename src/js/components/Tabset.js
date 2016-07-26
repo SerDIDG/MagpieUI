@@ -185,8 +185,8 @@ function(params){
             'content' : cm.Node('li'),
             'image' : null,
             'isHide' : true,
-            'controller' : false,
-            'controllerParams' : {},
+            'constructor' : false,
+            'constructorParams' : {},
             'onShowStart' : function(that, tab){},
             'onShow' : function(that, tab){},
             'onHideStart' : function(that, tab){},
@@ -301,20 +301,17 @@ function(params){
             item['onShowStart'](that, item);
             that.triggerEvent('onTabShowStart', item);
             // Controller
-            if(item['controller']){
-                if(!item['controllerObject'] || !item['controllerObject']._isConstructed){
-                    cm.getConstructor(item['controller'], function(classConstructor){
-                        if(classConstructor.prototype._modules['Controller']){
-                            item['controllerObject'] = new classConstructor(
-                                cm.merge(item['controllerParams'], {
-                                    'container' : item['content']
-                                })
-                            );
-                            item['controllerObject'].construct();
-                        }
-                    });
+            if(item['constructor']){
+                if(item['controller']){
+                    item['controller'].refresh && item['controller'].refresh();
                 }else{
-                    item['controllerObject'].resume();
+                    cm.getConstructor(item['constructor'], function(classConstructor){
+                        item['controller'] = new classConstructor(
+                            cm.merge(item['controllerParams'], {
+                                'container' : item['content']
+                            })
+                        );
+                    });
                 }
             }
             // Show

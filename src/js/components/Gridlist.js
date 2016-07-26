@@ -450,7 +450,6 @@ function(params){
                         )
                     );
                     cm.forEach(col['actions'], function(actionItem){
-                        var actionNode;
                         actionItem = cm.merge({
                             'label' : '',
                             'attr' : {},

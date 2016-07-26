@@ -47,6 +47,7 @@
             height: 24px;
             margin: 0 0 0 -40px;
             display: block;
+            visibility: hidden;
             position: absolute;
             z-index: 3;
             left: 50%;
@@ -55,7 +56,7 @@
             border: @CmBorder-Editable;
             border-radius: @CmBorder-Radius;
             cursor: move;
-            visibility: hidden;
+            touch-action: none;
             .mx__background-clip(border-box);
             .mx__transition(all, @CmUI-Transition-Duration);
 

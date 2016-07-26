@@ -29,7 +29,8 @@ function(params){
     that.startY = 0;
     that.nodeStartX = 0;
     that.nodeStartY = 0;
-    that.isDrag = false;
+    that.isProcess = false;
+    that.pointerType = null;
     that.dimensions = {
         'target' : {}
     };
@@ -53,7 +54,14 @@ function(params){
         // Calculate dimensions and position
         that.getDimensions();
         // Add drag start event
-        cm.addEvent(that.params['target'], 'mousedown', start);
+        cm.addEvent(that.params['target'], 'touchstart', function(e){
+            that.pointerType = 'touch';
+            start(e);
+        });
+        cm.addEvent(that.params['target'], 'mousedown', function(e){
+            that.pointerType = 'mouse';
+            start(e);
+        });
     };
 
     var start = function(e){
@@ -61,10 +69,10 @@ function(params){
         if(!cm.isTouch && e.button){
             return;
         }
-        if(that.isDrag){
+        if(that.isProcess){
             return;
         }
-        that.isDrag = true;
+        that.isProcess = true;
         // Hide IFRAMES and EMBED tags
         cm.hideSpecialTags();
         // Check event type and get cursor / finger position
@@ -77,8 +85,16 @@ function(params){
         that.nodeStartY = cm.getStyle(that.params['node'], 'top', true);
         setPositionHelper(position, 'onSelect');
         // Add move event on document
-        cm.addEvent(window, 'mousemove', move);
-        cm.addEvent(window, 'mouseup', stop);
+        switch(that.pointerType){
+            case 'mouse' :
+                cm.addEvent(window, 'mousemove', move);
+                cm.addEvent(window, 'mouseup', stop);
+                break;
+            case 'touch' :
+                cm.addEvent(window, 'touchmove', move);
+                cm.addEvent(window, 'touchend', stop);
+                break;
+        }
         // Trigger Event
         that.triggerEvent('onStart');
     };
@@ -94,13 +110,21 @@ function(params){
 
     var stop = function(e){
         cm.preventDefault(e);
-        that.isDrag = false;
+        that.isProcess = false;
         // Calculate dimensions and position
         var position = cm.getEventClientPosition(e);
         setPositionHelper(position, 'onSet');
         // Remove move events attached on document
-        cm.removeEvent(window, 'mousemove', move);
-        cm.removeEvent(window, 'mouseup', stop);
+        switch(that.pointerType){
+            case 'mouse' :
+                cm.removeEvent(window, 'mousemove', move);
+                cm.removeEvent(window, 'mouseup', stop);
+                break;
+            case 'touch' :
+                cm.removeEvent(window, 'touchmove', move);
+                cm.removeEvent(window, 'touchend', stop);
+                break;
+        }
         // Show IFRAMES and EMBED tags
         cm.showSpecialTags();
         // Trigger Event
@@ -121,6 +145,8 @@ function(params){
             position['left'] -= that.dimensions['target']['absoluteX1'];
             position['top'] -= that.dimensions['target']['absoluteY1'];
         }
+        position['left'] = Math.round(position['left']);
+        position['top'] = Math.round(position['top']);
         position = setPositionAction(position);
         that.triggerEvent(eventName, position);
     };

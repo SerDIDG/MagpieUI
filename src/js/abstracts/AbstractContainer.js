@@ -21,6 +21,7 @@ cm.define('Com.AbstractContainer', {
         'placeholderConstructor' : null,
         'placeholderParams' : {},
         'destructOnClose' : true,
+        'openOnConstruct' : false,
         'langs' : {
             'title' : 'Container',
             'close' : 'Close',
@@ -113,6 +114,8 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
         }else{
             cm.addEvent(that.params['node'], 'click', that.openHandler);
         }
+        // Open on construct
+        that.params['openOnConstruct'] && that.open();
         return that;
     };
 
@@ -140,7 +143,6 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
 
     classProto.constructController = function(classObject){
         var that = this;
-        cm.log(that.params['params']);
         return new classObject(
             cm.merge(that.params['params'], {
                 'container' : that.params['placeholder'] ? that.nodes['placeholder']['content'] : that.params['container'],

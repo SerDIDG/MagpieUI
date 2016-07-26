@@ -42,6 +42,7 @@ function(params){
     that.items = [];
     that.chassis = [];
     that.current = null;
+    that.pointerType = null;
     that.isEditing = null;
     that.isRendered = false;
     that.isAjax = false;
@@ -130,7 +131,12 @@ function(params){
         // Push to chassis array
         that.chassis.push(chassis);
         // Add events
+        cm.addEvent(chassis['container'], 'touchstart', function(e){
+            that.pointerType = 'touch';
+            start(e, chassis);
+        });
         cm.addEvent(chassis['container'], 'mousedown', function(e){
+            that.pointerType = 'mouse';
             start(e, chassis);
         });
         // Embed
@@ -198,8 +204,17 @@ function(params){
         cm.addClass(that.params['node'], 'is-chassis-active');
         cm.addClass(that.current['chassis']['inner'], 'is-active');
         cm.addClass(document.body, 'pt__drag__body--horizontal');
-        cm.addEvent(window, 'mousemove', move);
-        cm.addEvent(window, 'mouseup', stop);
+        // Add events
+        switch(that.pointerType){
+            case 'mouse' :
+                cm.addEvent(window, 'mousemove', move);
+                cm.addEvent(window, 'mouseup', stop);
+                break;
+            case 'touch' :
+                cm.addEvent(window, 'touchmove', move);
+                cm.addEvent(window, 'touchend', stop);
+                break;
+        }
         that.triggerEvent('onDragStart', that.current);
         return true;
     };
@@ -230,8 +245,17 @@ function(params){
         cm.removeClass(that.params['node'], 'is-chassis-active');
         cm.removeClass(that.current['chassis']['inner'], 'is-active');
         cm.removeClass(document.body, 'pt__drag__body--horizontal');
-        cm.removeEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mousemove', move);
-        cm.removeEvent((cm.is('IE') && cm.isVersion() < 9? document.body : window), 'mouseup', stop);
+        // Remove events
+        switch(that.pointerType){
+            case 'mouse' :
+                cm.removeEvent(window, 'mousemove', move);
+                cm.removeEvent(window, 'mouseup', stop);
+                break;
+            case 'touch' :
+                cm.removeEvent(window, 'touchmove', move);
+                cm.removeEvent(window, 'touchend', stop);
+                break;
+        }
         // Show IFRAMES and EMBED tags
         cm.showSpecialTags();
         // API onResize event

@@ -44,6 +44,7 @@ function(params){
         current;
 
     that.isEditing = null;
+    that.pointerType = null;
     that.items = [];
     that.chassis = [];
 
@@ -256,7 +257,12 @@ function(params){
         // Push to chassis array
         that.chassis.push(chassis);
         // Add events
+        cm.addEvent(chassis['container'], 'touchstart', function(e){
+            that.pointerType = 'touch';
+            start(e, chassis);
+        });
         cm.addEvent(chassis['container'], 'mousedown', function(e){
+            that.pointerType = 'mouse';
             start(e, chassis);
         });
         // Embed
@@ -274,17 +280,19 @@ function(params){
     /* *** DRAG FUNCTIONS *** */
 
     var start = function(e, chassis){
-        // If current exists, we don't need to start another drag event until previous will not stop
-        if(current){
-            return false;
-        }
         cm.preventDefault(e);
+        if(!cm.isTouch && e.button){
+            return;
+        }
+        if(current){
+            return;
+        }
         // Current
         if(e.ctrlKey){
             blockContextMenu();
             setEqualDimensions();
             redrawChassis();
-        }else if(e.button === 0){
+        }else{
             // Hide IFRAMES and EMBED tags
             cm.hideSpecialTags();
             // Get columns
@@ -312,12 +320,18 @@ function(params){
             cm.addClass(current['left']['column']['ruler'], 'is-active');
             cm.addClass(current['right']['column']['ruler'], 'is-active');
             cm.addClass(document.body, 'pt__drag__body--horizontal');
-            cm.addEvent(window, 'mousemove', move);
-            cm.addEvent(window, 'mouseup', stop);
-        }else{
-            return false;
+            // Add events
+            switch(that.pointerType){
+                case 'mouse' :
+                    cm.addEvent(window, 'mousemove', move);
+                    cm.addEvent(window, 'mouseup', stop);
+                    break;
+                case 'touch' :
+                    cm.addEvent(window, 'touchmove', move);
+                    cm.addEvent(window, 'touchend', stop);
+                    break;
+            }
         }
-        return true;
     };
 
     var move = function(e){
@@ -350,8 +364,17 @@ function(params){
         cm.removeClass(current['left']['column']['ruler'], 'is-active');
         cm.removeClass(current['right']['column']['ruler'], 'is-active');
         cm.removeClass(document.body, 'pt__drag__body--horizontal');
-        cm.removeEvent(window, 'mousemove', move);
-        cm.removeEvent(window, 'mouseup', stop);
+        // Remove events
+        switch(that.pointerType){
+            case 'mouse' :
+                cm.removeEvent(window, 'mousemove', move);
+                cm.removeEvent(window, 'mouseup', stop);
+                break;
+            case 'touch' :
+                cm.removeEvent(window, 'touchmove', move);
+                cm.removeEvent(window, 'touchend', stop);
+                break;
+        }
         current = null;
         // Show IFRAMES and EMBED tags
         cm.showSpecialTags();

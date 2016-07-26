@@ -56,6 +56,8 @@ function(params){
         currentChassis,
         previousArea;
 
+    that.pointerType = null;
+
     /* *** INIT *** */
 
     var init = function(){
@@ -188,7 +190,13 @@ function(params){
         draggable['drag-bottom'] = cm.getByAttr('data-com-draganddrop', 'drag-bottom', draggable['node'])[0];
         // Set draggable event on element
         dragNode = draggable['drag'] || draggable['node'];
+        // Add events
+        cm.addEvent(dragNode, 'touchstart', function(e){
+            that.pointerType = 'touch';
+            start(e, draggable);
+        });
         cm.addEvent(dragNode, 'mousedown', function(e){
+            that.pointerType = 'mouse';
             start(e, draggable);
         });
         if(draggable['drag-bottom']){
@@ -316,8 +324,17 @@ function(params){
         //checkInt = setInterval(checkPosition, 5);
         // Add move event on document
         cm.addClass(document.body, 'pt__dnd-body');
-        cm.addEvent(window, 'mousemove', move);
-        cm.addEvent(window, 'mouseup', stop);
+        // Add events
+        switch(that.pointerType){
+            case 'mouse' :
+                cm.addEvent(window, 'mousemove', move);
+                cm.addEvent(window, 'mouseup', stop);
+                break;
+            case 'touch' :
+                cm.addEvent(window, 'touchmove', move);
+                cm.addEvent(window, 'touchend', stop);
+                break;
+        }
     };
 
     var move = function(e){
@@ -454,8 +471,17 @@ function(params){
         //checkInt && clearInterval(checkInt);
         // Remove move events attached on document
         cm.removeClass(document.body, 'pt__dnd-body');
-        cm.removeEvent(window, 'mousemove', move);
-        cm.removeEvent(window, 'mouseup', stop);
+        // Remove events
+        switch(that.pointerType){
+            case 'mouse' :
+                cm.removeEvent(window, 'mousemove', move);
+                cm.removeEvent(window, 'mouseup', stop);
+                break;
+            case 'touch' :
+                cm.removeEvent(window, 'touchmove', move);
+                cm.removeEvent(window, 'touchend', stop);
+                break;
+        }
         // Calculate height of draggable block, like he already dropped in area, to animate height of fake empty space
         getPosition(current);
         current['node'].style.width = [(currentArea['dimensions']['innerWidth'] - current['dimensions']['margin']['left'] - current['dimensions']['margin']['right']), 'px'].join('');
