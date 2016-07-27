@@ -14,35 +14,66 @@ Part['Menu'] = (function(){
         }
     };
 
-    var setEvents = function(item){
-        var target;
-        cm.addEvent(item['node'], 'mouseover', function(e){
-            e = cm.getEvent(e);
-            target = cm.getObjFromEvent(e);
+    var checkPositionHandler = function(e, item){
+        var target = cm.getEventTarget(e);
+        if(!cm.isParent(item['drop'], target, true)){
+            checkPosition(item);
+        }
+    };
+
+    var clickHandler = function(e, item){
+        if(!item['_show']){
+            item['_interval'] && clearTimeout(item['_interval']);
+            item['_interval'] = setTimeout(function(){
+                item['_show'] = false;
+            }, 500);
+            item['_show'] = true;
+            var target = cm.getEventTarget(e);
             if(!cm.isParent(item['drop'], target, true)){
-                checkPosition(item);
-            }
-        });
-        cm.addEvent(item['node'], 'mousedown', function(e){
-            e = cm.getEvent(e);
-            target = cm.getObjFromEvent(e);
-            if(cm.getStyle(item['drop'], 'visibility') == 'hidden' && !cm.isClass(item['node'], 'is-show')){
-                if(!cm.isParent(item['drop'], target, true)){
-                    if(cm.isClass(item['node'], 'is-show')){
-                        cm.removeClass(item['node'], 'is-show');
-                    }else{
-                        cm.preventDefault(e);
-                        cm.addClass(item['node'], 'is-show');
-                    }
+                if(cm.isClass(item['node'], 'active')){
+                    cm.removeClass(item['node'], 'active');
+                }else{
+                    cm.preventDefault(e);
+                    cm.addClass(item['node'], 'active');
                 }
             }
+        }
+    };
+
+    var cancelHandler = function(e, item){
+        var target = cm.getEventTarget(e);
+        if(!cm.isParent(item['node'], target, true)){
+            cm.removeClass(item['node'], 'active');
+        }
+    };
+
+    var setEvents = function(item){
+        cm.addEvent(item['node'], 'pointerenter', function(e){
+            checkPositionHandler(e, item);
+        });
+        cm.addEvent(item['node'], 'touchenter', function(e){
+            checkPositionHandler(e, item);
+        });
+        cm.addEvent(item['node'], 'mouseover', function(e){
+            checkPositionHandler(e, item);
+        });
+        cm.addEvent(item['node'], 'pointerdown', function(e){
+            clickHandler(e, item);
+        });
+        cm.addEvent(item['node'], 'touchstart', function(e){
+            clickHandler(e, item);
+        });
+        cm.addEvent(item['node'], 'mousedown', function(e){
+            clickHandler(e, item);
+        });
+        cm.addEvent(document.body, 'pointerdown', function(e){
+            cancelHandler(e, item);
+        });
+        cm.addEvent(document.body, 'touchstart', function(e){
+            cancelHandler(e, item);
         });
         cm.addEvent(document.body, 'mousedown', function(e){
-            e = cm.getEvent(e);
-            target = cm.getRelatedTarget(e);
-            if(!cm.isParent(item['node'], target, true)){
-                cm.removeClass(item['node'], 'is-show');
-            }
+            cancelHandler(e, item);
         });
         checkPosition(item);
     };

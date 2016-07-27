@@ -16,6 +16,7 @@
     border-color: @PtMenu-BorderColor;
     list-style: none;
     opacity: 0;
+    touch-action: none;
     .mx__position(100%, auto, auto, 0);
     .mx__transition(all, @CmUI-Transition-Duration);
 
@@ -102,8 +103,11 @@
 /* *** MENU *** */
 
 .pt__menu {
+    touch-action: none;
+
     &:hover,
-    &.is-show {
+    &:active,
+    &.active {
         > .pt__menu-dropdown {
             .pt__menu-dropdown--active;
         }

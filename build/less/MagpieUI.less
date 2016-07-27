@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.20.10 (2016-07-26 22:19) ************ */
+/*! ************ MagpieUI v3.20.11 (2016-07-27 20:14) ************ */
 @charset "UTF-8";
 
 /*!
@@ -10482,6 +10482,7 @@ button {
     border-color: @PtMenu-BorderColor;
     list-style: none;
     opacity: 0;
+    touch-action: none;
     .mx__position(100%, auto, auto, 0);
     .mx__transition(all, @CmUI-Transition-Duration);
 
@@ -10568,8 +10569,11 @@ button {
 /* *** MENU *** */
 
 .pt__menu {
+    touch-action: none;
+
     &:hover,
-    &.is-show {
+    &:active,
+    &.active {
         > .pt__menu-dropdown {
             .pt__menu-dropdown--active;
         }
@@ -10672,6 +10676,8 @@ button {
 /* ******* PARTS: RANGE ******* */
 
 .pt__range {
+    touch-action: none;
+
     > .inner {
         position: relative;
     }
@@ -14850,7 +14856,8 @@ button {
             }
         }
 
-        &:hover {
+        &:hover,
+        &:active {
             .input__cover {
                 visibility: visible;
                 opacity: 1;
@@ -15315,6 +15322,7 @@ button {
     .b-range {
         margin-right: @CmIndent-Small;
         border-radius: @CmBorder-Radius;
+        touch-action: none;
 
         > .inner {
             position: relative;

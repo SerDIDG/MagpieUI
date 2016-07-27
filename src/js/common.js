@@ -29,7 +29,7 @@
  ******* */
 
 var cm = {
-        '_version' : '3.20.10',
+        '_version' : '3.20.11',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -74,8 +74,6 @@ cm.isFileReader = (function(){return 'FileReader' in window;})();
 cm.isHistoryAPI = !!(window.history && history.pushState);
 cm.isLocalStorage = (function(){try{return 'localStorage' in window && window.localStorage !== null;}catch(e){return false;}})();
 cm.isCanvas = !!document.createElement("canvas").getContext;
-//cm.isTouch = 'ontouchstart' in document.documentElement || !!window.maxTouchPoints || !!navigator.maxTouchPoints;
-cm.isTouch = false;
 
 /* ******* OBJECTS AND ARRAYS ******* */
 
@@ -552,23 +550,9 @@ cm.getEventClientPosition = function(e){
     return o;
 };
 
-cm.crossEvents = function(key){
-    var events = {
-        'mousedown' : 'touchstart',
-        'mouseup' : 'touchend',
-        'mousemove' : 'touchmove'
-    };
-    return events[key];
-};
-
 cm.addEvent = function(el, type, handler, useCapture){
     if(el){
         useCapture = typeof useCapture == 'undefined' ? false : useCapture;
-        // Process touch events
-        if(cm.isTouch && cm.crossEvents(type)){
-            el.addEventListener(cm.crossEvents(type), handler, useCapture);
-            return el;
-        }
         try{
             el.addEventListener(type, handler, useCapture);
         }catch(e){
@@ -581,11 +565,6 @@ cm.addEvent = function(el, type, handler, useCapture){
 cm.removeEvent = function(el, type, handler, useCapture){
     if(el){
         useCapture = typeof useCapture == 'undefined' ? false : useCapture;
-        // Process touch events
-        if(cm.isTouch && cm.crossEvents(type)){
-            el.removeEventListener(cm.crossEvents(type), handler, useCapture);
-            return el;
-        }
         try{
             el.removeEventListener(type, handler, useCapture);
         }catch(e){
@@ -597,9 +576,6 @@ cm.removeEvent = function(el, type, handler, useCapture){
 
 cm.triggerEvent = function(el, type, params){
     var event;
-    if(cm.isTouch && cm.crossEvents(type)){
-        type = cm.crossEvents(type);
-    }
     if(document.createEvent){
         event = document.createEvent('Event');
         event.initEvent(type, true, true);

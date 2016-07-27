@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.20.10 (2016-07-26 22:19) ************ */
+/*! ************ MagpieUI v3.20.11 (2016-07-27 20:14) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1426,7 +1426,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.20.10',
+        '_version' : '3.20.11',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -1471,8 +1471,6 @@ cm.isFileReader = (function(){return 'FileReader' in window;})();
 cm.isHistoryAPI = !!(window.history && history.pushState);
 cm.isLocalStorage = (function(){try{return 'localStorage' in window && window.localStorage !== null;}catch(e){return false;}})();
 cm.isCanvas = !!document.createElement("canvas").getContext;
-//cm.isTouch = 'ontouchstart' in document.documentElement || !!window.maxTouchPoints || !!navigator.maxTouchPoints;
-cm.isTouch = false;
 
 /* ******* OBJECTS AND ARRAYS ******* */
 
@@ -1949,23 +1947,9 @@ cm.getEventClientPosition = function(e){
     return o;
 };
 
-cm.crossEvents = function(key){
-    var events = {
-        'mousedown' : 'touchstart',
-        'mouseup' : 'touchend',
-        'mousemove' : 'touchmove'
-    };
-    return events[key];
-};
-
 cm.addEvent = function(el, type, handler, useCapture){
     if(el){
         useCapture = typeof useCapture == 'undefined' ? false : useCapture;
-        // Process touch events
-        if(cm.isTouch && cm.crossEvents(type)){
-            el.addEventListener(cm.crossEvents(type), handler, useCapture);
-            return el;
-        }
         try{
             el.addEventListener(type, handler, useCapture);
         }catch(e){
@@ -1978,11 +1962,6 @@ cm.addEvent = function(el, type, handler, useCapture){
 cm.removeEvent = function(el, type, handler, useCapture){
     if(el){
         useCapture = typeof useCapture == 'undefined' ? false : useCapture;
-        // Process touch events
-        if(cm.isTouch && cm.crossEvents(type)){
-            el.removeEventListener(cm.crossEvents(type), handler, useCapture);
-            return el;
-        }
         try{
             el.removeEventListener(type, handler, useCapture);
         }catch(e){
@@ -1994,9 +1973,6 @@ cm.removeEvent = function(el, type, handler, useCapture){
 
 cm.triggerEvent = function(el, type, params){
     var event;
-    if(cm.isTouch && cm.crossEvents(type)){
-        type = cm.crossEvents(type);
-    }
     if(document.createEvent){
         event = document.createEvent('Event');
         event.initEvent(type, true, true);
@@ -5918,35 +5894,66 @@ Part['Menu'] = (function(){
         }
     };
 
-    var setEvents = function(item){
-        var target;
-        cm.addEvent(item['node'], 'mouseover', function(e){
-            e = cm.getEvent(e);
-            target = cm.getObjFromEvent(e);
+    var checkPositionHandler = function(e, item){
+        var target = cm.getEventTarget(e);
+        if(!cm.isParent(item['drop'], target, true)){
+            checkPosition(item);
+        }
+    };
+
+    var clickHandler = function(e, item){
+        if(!item['_show']){
+            item['_interval'] && clearTimeout(item['_interval']);
+            item['_interval'] = setTimeout(function(){
+                item['_show'] = false;
+            }, 500);
+            item['_show'] = true;
+            var target = cm.getEventTarget(e);
             if(!cm.isParent(item['drop'], target, true)){
-                checkPosition(item);
-            }
-        });
-        cm.addEvent(item['node'], 'mousedown', function(e){
-            e = cm.getEvent(e);
-            target = cm.getObjFromEvent(e);
-            if(cm.getStyle(item['drop'], 'visibility') == 'hidden' && !cm.isClass(item['node'], 'is-show')){
-                if(!cm.isParent(item['drop'], target, true)){
-                    if(cm.isClass(item['node'], 'is-show')){
-                        cm.removeClass(item['node'], 'is-show');
-                    }else{
-                        cm.preventDefault(e);
-                        cm.addClass(item['node'], 'is-show');
-                    }
+                if(cm.isClass(item['node'], 'active')){
+                    cm.removeClass(item['node'], 'active');
+                }else{
+                    cm.preventDefault(e);
+                    cm.addClass(item['node'], 'active');
                 }
             }
+        }
+    };
+
+    var cancelHandler = function(e, item){
+        var target = cm.getEventTarget(e);
+        if(!cm.isParent(item['node'], target, true)){
+            cm.removeClass(item['node'], 'active');
+        }
+    };
+
+    var setEvents = function(item){
+        cm.addEvent(item['node'], 'pointerenter', function(e){
+            checkPositionHandler(e, item);
+        });
+        cm.addEvent(item['node'], 'touchenter', function(e){
+            checkPositionHandler(e, item);
+        });
+        cm.addEvent(item['node'], 'mouseover', function(e){
+            checkPositionHandler(e, item);
+        });
+        cm.addEvent(item['node'], 'pointerdown', function(e){
+            clickHandler(e, item);
+        });
+        cm.addEvent(item['node'], 'touchstart', function(e){
+            clickHandler(e, item);
+        });
+        cm.addEvent(item['node'], 'mousedown', function(e){
+            clickHandler(e, item);
+        });
+        cm.addEvent(document.body, 'pointerdown', function(e){
+            cancelHandler(e, item);
+        });
+        cm.addEvent(document.body, 'touchstart', function(e){
+            cancelHandler(e, item);
         });
         cm.addEvent(document.body, 'mousedown', function(e){
-            e = cm.getEvent(e);
-            target = cm.getRelatedTarget(e);
-            if(!cm.isParent(item['node'], target, true)){
-                cm.removeClass(item['node'], 'is-show');
-            }
+            cancelHandler(e, item);
         });
         checkPosition(item);
     };
@@ -11867,11 +11874,9 @@ function(params){
         that.chassis.push(chassis);
         // Add events
         cm.addEvent(chassis['container'], 'touchstart', function(e){
-            that.pointerType = 'touch';
             start(e, chassis);
         });
         cm.addEvent(chassis['container'], 'mousedown', function(e){
-            that.pointerType = 'mouse';
             start(e, chassis);
         });
         // Embed
@@ -11890,12 +11895,13 @@ function(params){
 
     var start = function(e, chassis){
         cm.preventDefault(e);
-        if(!cm.isTouch && e.button){
+        if(e.button){
             return;
         }
         if(current){
             return;
         }
+        that.pointerType = e.type;
         // Current
         if(e.ctrlKey){
             blockContextMenu();
@@ -11931,11 +11937,11 @@ function(params){
             cm.addClass(document.body, 'pt__drag__body--horizontal');
             // Add events
             switch(that.pointerType){
-                case 'mouse' :
+                case 'mousedown' :
                     cm.addEvent(window, 'mousemove', move);
                     cm.addEvent(window, 'mouseup', stop);
                     break;
-                case 'touch' :
+                case 'touchstart' :
                     cm.addEvent(window, 'touchmove', move);
                     cm.addEvent(window, 'touchend', stop);
                     break;
@@ -11975,11 +11981,11 @@ function(params){
         cm.removeClass(document.body, 'pt__drag__body--horizontal');
         // Remove events
         switch(that.pointerType){
-            case 'mouse' :
+            case 'mousedown' :
                 cm.removeEvent(window, 'mousemove', move);
                 cm.removeEvent(window, 'mouseup', stop);
                 break;
-            case 'touch' :
+            case 'touchstart' :
                 cm.removeEvent(window, 'touchmove', move);
                 cm.removeEvent(window, 'touchend', stop);
                 break;
@@ -12195,11 +12201,9 @@ function(params){
         that.chassis.push(chassis);
         // Add events
         cm.addEvent(chassis['container'], 'touchstart', function(e){
-            that.pointerType = 'touch';
             start(e, chassis);
         });
         cm.addEvent(chassis['container'], 'mousedown', function(e){
-            that.pointerType = 'mouse';
             start(e, chassis);
         });
         // Embed
@@ -12232,12 +12236,13 @@ function(params){
 
     var start = function(e, chassis){
         cm.preventDefault(e);
-        if(!cm.isTouch && e.button){
+        if(e.button){
             return;
         }
         if(that.current){
             return;
         }
+        that.pointerType = e.type;
         // Abort ajax handler
         if(that.isProcess){
             that.abort();
@@ -12269,11 +12274,11 @@ function(params){
         cm.addClass(document.body, 'pt__drag__body--horizontal');
         // Add events
         switch(that.pointerType){
-            case 'mouse' :
+            case 'mousedown' :
                 cm.addEvent(window, 'mousemove', move);
                 cm.addEvent(window, 'mouseup', stop);
                 break;
-            case 'touch' :
+            case 'touchstart' :
                 cm.addEvent(window, 'touchmove', move);
                 cm.addEvent(window, 'touchend', stop);
                 break;
@@ -12310,11 +12315,11 @@ function(params){
         cm.removeClass(document.body, 'pt__drag__body--horizontal');
         // Remove events
         switch(that.pointerType){
-            case 'mouse' :
+            case 'mousedown' :
                 cm.removeEvent(window, 'mousemove', move);
                 cm.removeEvent(window, 'mouseup', stop);
                 break;
-            case 'touch' :
+            case 'touchstart' :
                 cm.removeEvent(window, 'touchmove', move);
                 cm.removeEvent(window, 'touchend', stop);
                 break;
@@ -13938,11 +13943,9 @@ function(params){
         dragNode = draggable['drag'] || draggable['node'];
         // Add events
         cm.addEvent(dragNode, 'touchstart', function(e){
-            that.pointerType = 'touch';
             start(e, draggable);
         });
         cm.addEvent(dragNode, 'mousedown', function(e){
-            that.pointerType = 'mouse';
             start(e, draggable);
         });
         if(draggable['drag-bottom']){
@@ -13955,11 +13958,16 @@ function(params){
     /* *** DRAG AND DROP PROCESS ** */
 
     var start = function(e, draggable){
+        cm.preventDefault(e);
+        // If not left mouse button, don't duplicate drag event
+        if(e.button){
+            return;
+        }
         // If current exists, we don't need to start another drag event until previous will not stop
         if(current){
             return;
         }
-        cm.preventDefault(e);
+        that.pointerType = e.type;
         // Hide IFRAMES and EMBED tags
         cm.hideSpecialTags();
         // Check event type and get cursor / finger position
@@ -13968,12 +13976,6 @@ function(params){
             y = position['top'],
             tempCurrentAboveItem,
             tempCurrentPosition;
-        if(!cm.isTouch){
-            // If not left mouse button, don't duplicate drag event
-            if((cm.is('IE') && cm.isVersion() < 9 && e.button != 1) || (!cm.is('IE') && e.button)){
-                return;
-            }
-        }
         pageSize = cm.getPageSize();
         // API onDragStart Event
         that.triggerEvent('onDragStart', {
@@ -14072,11 +14074,11 @@ function(params){
         cm.addClass(document.body, 'pt__dnd-body');
         // Add events
         switch(that.pointerType){
-            case 'mouse' :
+            case 'mousedown' :
                 cm.addEvent(window, 'mousemove', move);
                 cm.addEvent(window, 'mouseup', stop);
                 break;
-            case 'touch' :
+            case 'touchstart' :
                 cm.addEvent(window, 'touchmove', move);
                 cm.addEvent(window, 'touchend', stop);
                 break;
@@ -14219,11 +14221,11 @@ function(params){
         cm.removeClass(document.body, 'pt__dnd-body');
         // Remove events
         switch(that.pointerType){
-            case 'mouse' :
+            case 'mousedown' :
                 cm.removeEvent(window, 'mousemove', move);
                 cm.removeEvent(window, 'mouseup', stop);
                 break;
-            case 'touch' :
+            case 'touchstart' :
                 cm.removeEvent(window, 'touchmove', move);
                 cm.removeEvent(window, 'touchend', stop);
                 break;
@@ -14858,24 +14860,23 @@ function(params){
         that.getDimensions();
         // Add drag start event
         cm.addEvent(that.params['target'], 'touchstart', function(e){
-            that.pointerType = 'touch';
             start(e);
         });
         cm.addEvent(that.params['target'], 'mousedown', function(e){
-            that.pointerType = 'mouse';
             start(e);
         });
     };
 
     var start = function(e){
         cm.preventDefault(e);
-        if(!cm.isTouch && e.button){
+        if(e.button){
             return;
         }
         if(that.isProcess){
             return;
         }
         that.isProcess = true;
+        that.pointerType = e.type;
         // Hide IFRAMES and EMBED tags
         cm.hideSpecialTags();
         // Check event type and get cursor / finger position
@@ -14889,11 +14890,11 @@ function(params){
         setPositionHelper(position, 'onSelect');
         // Add move event on document
         switch(that.pointerType){
-            case 'mouse' :
+            case 'mousedown' :
                 cm.addEvent(window, 'mousemove', move);
                 cm.addEvent(window, 'mouseup', stop);
                 break;
-            case 'touch' :
+            case 'touchstart' :
                 cm.addEvent(window, 'touchmove', move);
                 cm.addEvent(window, 'touchend', stop);
                 break;
@@ -14919,11 +14920,11 @@ function(params){
         setPositionHelper(position, 'onSet');
         // Remove move events attached on document
         switch(that.pointerType){
-            case 'mouse' :
+            case 'mousedown' :
                 cm.removeEvent(window, 'mousemove', move);
                 cm.removeEvent(window, 'mouseup', stop);
                 break;
-            case 'touch' :
+            case 'touchstart' :
                 cm.removeEvent(window, 'touchmove', move);
                 cm.removeEvent(window, 'touchend', stop);
                 break;

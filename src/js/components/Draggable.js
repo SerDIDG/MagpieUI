@@ -55,24 +55,23 @@ function(params){
         that.getDimensions();
         // Add drag start event
         cm.addEvent(that.params['target'], 'touchstart', function(e){
-            that.pointerType = 'touch';
             start(e);
         });
         cm.addEvent(that.params['target'], 'mousedown', function(e){
-            that.pointerType = 'mouse';
             start(e);
         });
     };
 
     var start = function(e){
         cm.preventDefault(e);
-        if(!cm.isTouch && e.button){
+        if(e.button){
             return;
         }
         if(that.isProcess){
             return;
         }
         that.isProcess = true;
+        that.pointerType = e.type;
         // Hide IFRAMES and EMBED tags
         cm.hideSpecialTags();
         // Check event type and get cursor / finger position
@@ -86,11 +85,11 @@ function(params){
         setPositionHelper(position, 'onSelect');
         // Add move event on document
         switch(that.pointerType){
-            case 'mouse' :
+            case 'mousedown' :
                 cm.addEvent(window, 'mousemove', move);
                 cm.addEvent(window, 'mouseup', stop);
                 break;
-            case 'touch' :
+            case 'touchstart' :
                 cm.addEvent(window, 'touchmove', move);
                 cm.addEvent(window, 'touchend', stop);
                 break;
@@ -116,11 +115,11 @@ function(params){
         setPositionHelper(position, 'onSet');
         // Remove move events attached on document
         switch(that.pointerType){
-            case 'mouse' :
+            case 'mousedown' :
                 cm.removeEvent(window, 'mousemove', move);
                 cm.removeEvent(window, 'mouseup', stop);
                 break;
-            case 'touch' :
+            case 'touchstart' :
                 cm.removeEvent(window, 'touchmove', move);
                 cm.removeEvent(window, 'touchend', stop);
                 break;

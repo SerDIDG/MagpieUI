@@ -132,11 +132,9 @@ function(params){
         that.chassis.push(chassis);
         // Add events
         cm.addEvent(chassis['container'], 'touchstart', function(e){
-            that.pointerType = 'touch';
             start(e, chassis);
         });
         cm.addEvent(chassis['container'], 'mousedown', function(e){
-            that.pointerType = 'mouse';
             start(e, chassis);
         });
         // Embed
@@ -169,12 +167,13 @@ function(params){
 
     var start = function(e, chassis){
         cm.preventDefault(e);
-        if(!cm.isTouch && e.button){
+        if(e.button){
             return;
         }
         if(that.current){
             return;
         }
+        that.pointerType = e.type;
         // Abort ajax handler
         if(that.isProcess){
             that.abort();
@@ -206,11 +205,11 @@ function(params){
         cm.addClass(document.body, 'pt__drag__body--horizontal');
         // Add events
         switch(that.pointerType){
-            case 'mouse' :
+            case 'mousedown' :
                 cm.addEvent(window, 'mousemove', move);
                 cm.addEvent(window, 'mouseup', stop);
                 break;
-            case 'touch' :
+            case 'touchstart' :
                 cm.addEvent(window, 'touchmove', move);
                 cm.addEvent(window, 'touchend', stop);
                 break;
@@ -247,11 +246,11 @@ function(params){
         cm.removeClass(document.body, 'pt__drag__body--horizontal');
         // Remove events
         switch(that.pointerType){
-            case 'mouse' :
+            case 'mousedown' :
                 cm.removeEvent(window, 'mousemove', move);
                 cm.removeEvent(window, 'mouseup', stop);
                 break;
-            case 'touch' :
+            case 'touchstart' :
                 cm.removeEvent(window, 'touchmove', move);
                 cm.removeEvent(window, 'touchend', stop);
                 break;

@@ -56,6 +56,7 @@ function(params){
         currentChassis,
         previousArea;
 
+    that.pointerType = null;
     that.currentAreas = [];
     that.currentPlaceholder = null;
     that.currentArea = null;
@@ -198,14 +199,15 @@ function(params){
 
     var start = function(e, widget){
         cm.preventDefault(e);
+        // Prevent drag event not on LMB
+        if(e.button){
+            return;
+        }
         // Prevent multiple drag event
         if(that.currentWidget){
             return;
         }
-        // Prevent drag event not on LMB
-        if(!cm.isTouch && e.button){
-            return;
-        }
+        that.pointerType = e.type;
         // Hide IFRAMES and EMBED tags
         cm.hideSpecialTags();
         cm.addClass(document.body, 'com__dashboard__body');
@@ -227,8 +229,16 @@ function(params){
         checkPlaceholders(that.currentAreas, params);
         getCurrentPlaceholder(that.currentAreas, params);
         // Add events
-        cm.addEvent(window, 'mousemove', move);
-        cm.addEvent(window, 'mouseup', stop);
+        switch(that.pointerType){
+            case 'mousedown' :
+                cm.addEvent(window, 'mousemove', move);
+                cm.addEvent(window, 'mouseup', stop);
+                break;
+            case 'touchstart' :
+                cm.addEvent(window, 'touchmove', move);
+                cm.addEvent(window, 'touchend', stop);
+                break;
+        }
         cm.addScrollEvent(window, scroll);
     };
 
@@ -262,8 +272,16 @@ function(params){
         cm.showSpecialTags();
         cm.removeClass(document.body, 'com__dashboard__body');
         // Remove move events attached on document
-        cm.removeEvent(window, 'mousemove', move);
-        cm.removeEvent(window, 'mouseup', stop);
+        switch(that.pointerType){
+            case 'mousedown' :
+                cm.removeEvent(window, 'mousemove', move);
+                cm.removeEvent(window, 'mouseup', stop);
+                break;
+            case 'touchstart' :
+                cm.removeEvent(window, 'touchmove', move);
+                cm.removeEvent(window, 'touchend', stop);
+                break;
+        }
         cm.removeScrollEvent(window, scroll);
     };
 
@@ -289,11 +307,16 @@ function(params){
     };
 
     var startold = function(e, draggable){
+        cm.preventDefault(e);
+        // If not left mouse button, don't duplicate drag event
+        if(e.button){
+            return;
+        }
         // If current exists, we don't need to start another drag event until previous will not stop
         if(current){
             return;
         }
-        cm.preventDefault(e);
+        that.pointerType = e.type;
         // Hide IFRAMES and EMBED tags
         cm.hideSpecialTags();
         // Check event type and get cursor / finger position
@@ -301,12 +324,6 @@ function(params){
             y = cm._clientPosition['y'],
             tempCurrentAboveItem,
             tempCurrentPosition;
-        if(!cm.isTouch){
-            // If not left mouse button, don't duplicate drag event
-            if((cm.is('IE') && cm.isVersion() < 9 && e.button != 1) || (!cm.is('IE') && e.button)){
-                return;
-            }
-        }
         pageSize = cm.getPageSize();
         // API onDragStart Event
         that.triggerEvent('onDragStart', {
@@ -399,8 +416,17 @@ function(params){
         //checkInt = setInterval(checkPosition, 5);
         // Add move event on document
         cm.addClass(document.body, 'pt__dnd-body');
-        cm.addEvent(window, 'mousemove', move);
-        cm.addEvent(window, 'mouseup', stop);
+        // Add events
+        switch(that.pointerType){
+            case 'mousedown' :
+                cm.addEvent(window, 'mousemove', move);
+                cm.addEvent(window, 'mouseup', stop);
+                break;
+            case 'touchstart' :
+                cm.addEvent(window, 'touchmove', move);
+                cm.addEvent(window, 'touchend', stop);
+                break;
+        }
     };
 
     var moveold = function(e){
@@ -536,8 +562,17 @@ function(params){
         //checkInt && clearInterval(checkInt);
         // Remove move events attached on document
         cm.removeClass(document.body, 'pt__dnd-body');
-        cm.removeEvent(window, 'mousemove', move);
-        cm.removeEvent(window, 'mouseup', stop);
+        // Remove events
+        switch(that.pointerType){
+            case 'mousedown' :
+                cm.removeEvent(window, 'mousemove', move);
+                cm.removeEvent(window, 'mouseup', stop);
+                break;
+            case 'touchstart' :
+                cm.removeEvent(window, 'touchmove', move);
+                cm.removeEvent(window, 'touchend', stop);
+                break;
+        }
         // Calculate height of draggable block, like he already dropped in area, to animate height of fake empty space
         getPosition(current);
         current['node'].style.width = [(currentArea['dimensions']['innerWidth'] - current['dimensions']['margin']['left'] - current['dimensions']['margin']['right']), 'px'].join('');
