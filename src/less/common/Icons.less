@@ -495,3 +495,42 @@
     height: @size;
     line-height: @size;
 }
+
+/* ******* ANIMATED ******* */
+
+.cm-ia__menu {
+    position: relative;
+
+    &:before,
+    &:after {
+        width: 100%;
+        height: 2px;
+        display: block;
+        position: absolute;
+        content: '';
+        background-color: @CmColor-Font-Opposite;
+        .mx__transition(all, @CmUI-Transition-Duration);
+    }
+
+    &:before {
+        .mx__transform(translate(0, -5px));
+        .mx__position(50%, 0, auto, 0);
+    }
+
+    &:after {
+        .mx__transform(translate(0, 5px));
+        .mx__position(auto, 0, 50%, 0);
+    }
+}
+
+.cm-ia__menu--active {
+    &:before {
+        .mx__transform(translate(0, -1px));
+        .mx__transform(rotate(45deg));
+    }
+
+    &:after {
+        .mx__transform(translate(0, 1px));
+        .mx__transform(rotate(-45deg));
+    }
+}

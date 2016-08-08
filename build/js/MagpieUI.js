@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.20.11 (2016-07-27 20:14) ************ */
+/*! ************ MagpieUI v3.20.12 (2016-08-08 20:21) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1426,7 +1426,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.20.11',
+        '_version' : '3.20.12',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -5902,7 +5902,7 @@ Part['Menu'] = (function(){
     };
 
     var clickHandler = function(e, item){
-        if(!item['_show']){
+        if(cm._pageSize['winWidth'] > cm._config.adaptiveFrom && !item['_show']){
             item['_interval'] && clearTimeout(item['_interval']);
             item['_interval'] = setTimeout(function(){
                 item['_show'] = false;
@@ -5910,11 +5910,11 @@ Part['Menu'] = (function(){
             item['_show'] = true;
             var target = cm.getEventTarget(e);
             if(!cm.isParent(item['drop'], target, true)){
-                if(cm.isClass(item['node'], 'active')){
-                    cm.removeClass(item['node'], 'active');
+                if(cm.isClass(item['node'], 'is-show')){
+                    cm.removeClass(item['node'], 'is-show');
                 }else{
                     cm.preventDefault(e);
-                    cm.addClass(item['node'], 'active');
+                    cm.addClass(item['node'], 'is-show');
                 }
             }
         }
@@ -5923,7 +5923,7 @@ Part['Menu'] = (function(){
     var cancelHandler = function(e, item){
         var target = cm.getEventTarget(e);
         if(!cm.isParent(item['node'], target, true)){
-            cm.removeClass(item['node'], 'active');
+            cm.removeClass(item['node'], 'is-show');
         }
     };
 
@@ -19437,7 +19437,7 @@ cm.getConstructor('Com.Notifications', function(classConstructor, className, cla
         // Structure
         item['nodes']['container'] = cm.node('li', {'class' : item['type']},
             item['nodes']['close'] = cm.node('div', {'class' : 'close'}, that.lang('close')),
-            item['nodes']['descr'] = cm.node('div', {'class' : 'descr'}, item['label'])
+            item['nodes']['descr'] = cm.node('div', {'class' : 'descr', 'innerHTML' : item['label']})
         );
         // Events
         cm.addEvent(item['nodes']['close'], 'click', function(){
@@ -22489,6 +22489,8 @@ cm.define('Com.Select', {
         'options' : [],                         // Listing of options, for rendering through java-script. Example: [{'value' : 'foo', 'text' : 'Bar'}].
         'selected' : 0,                         // Option value / array of option values.
         'disabled' : false,
+        'className' : '',
+        'inputClassName' : '',
         'icons' : {
             'arrow' : 'icon default linked'
         },
@@ -22573,6 +22575,7 @@ function(params){
             that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
             that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
             that.params['disabled'] = that.params['node'].disabled || that.params['node'].readOnly || that.params['disabled'];
+            that.params['className'] = that.params['node'].className || that.params['className'];
         }
         that.disabled = that.params['disabled'];
     };
@@ -22587,9 +22590,7 @@ function(params){
         }
         /* *** ATTRIBUTES *** */
         // Add class name
-        if(that.params['node'].className){
-            cm.addClass(nodes['container'], that.params['node'].className);
-        }
+        cm.addClass(nodes['container'], that.params['className']);
         // Title
         if(that.params['showTitleTag'] && that.params['title']){
             nodes['container'].title = that.params['title'];
@@ -22639,6 +22640,7 @@ function(params){
                 nodes['items'] = cm.Node('ul')
             )
         );
+        cm.addClass(nodes['target'], that.params['inputClassName']);
     };
 
     var renderMultiple = function(){

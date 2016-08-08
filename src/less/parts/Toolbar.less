@@ -35,12 +35,8 @@
 
         > li {
             max-width: 100%;
-            margin: 0 @PtToolbar-ItemIndent @CmIndent-Medium 0;
+            margin: 0 0 @CmIndent-Medium 0;
             line-height: @CmForm-FieldHeight;
-
-            &:last-child {
-                margin-right: 0;
-            }
 
             &.label {
                 margin-right: @CmIndent-XXSmall;
@@ -67,32 +63,52 @@
                 width: @CmForm-FieldHeight;
             }
 
+            &.size-xxxsmall,
             &.xxx-small {
                 width: @PtToolbar-XXXSmall;
             }
 
+            &.size-xxsmall,
             &.xx-small {
                 width: @PtToolbar-XXSmall;
             }
 
+            &.size-xsmall,
             &.x-small {
                 width: @PtToolbar-XSmall;
             }
 
+            &.size-small,
             &.small {
                 width: @PtToolbar-Small;
             }
 
+            &.size-medium,
             &.medium {
                 width: @PtToolbar-Medium;
             }
 
+            &.size-large,
             &.large {
                 width: @PtToolbar-Large;
             }
 
+            &.size-xlarge,
             &.x-large {
                 width: @PtToolbar-XLarge;
+            }
+        }
+
+        &.is-flex {
+            width: 100%;
+            .display-flex;
+
+            > li {
+                .mx__flex(1 0 auto);
+
+                &.is-prime {
+                    .mx__flex(1 1 100%);
+                }
             }
         }
 
@@ -164,6 +180,28 @@
             display: block;
         }
     }
+
+    .pt__toolbar--item-indent(@PtToolbar-ItemIndent);
+
+    .for(@PtToolbar-ItemIndents); .-each(@name) {
+        &.item-indent-@{name} {
+            .pt__toolbar--item-indent(@name);
+        }
+    }
+}
+
+/* ******* PARTS: TOOLBAR: MIXINS ********** */
+
+.pt__toolbar--item-indent (@value : @PtToolbar-ItemIndent) {
+    .group {
+        > li {
+            margin-right: @value;
+
+            &:last-child {
+                margin-right: 0;
+            }
+        }
+    }
 }
 
 /* ******* PARTS: TOOLBAR: ADAPTIVE ********** */
@@ -172,73 +210,75 @@
 
     html.is-adaptive {
         .pt__toolbar {
-            > .inner {
-                display: block;
-
-                > .left,
-                > .center,
-                > .right {
-                    width: 100%;
-                    display: block;
-                    float: none;
-                }
-            }
-
-            .group {
-                display: block;
-                margin-top: 0;
-
-                > li {
-                    &.label {
-                        display: block;
-                        margin-right: 0;
-                        margin-bottom: 0;
-                    }
-
-                    &.is-field {
-                        width: 100%;
-                    }
-                }
-
-                &.is-adaptive {
-                    display: block;
-                    margin-left: 0;
-                    margin-right: 0;
-
-                    .button {
-                        width: 100%;
-                        display: block;
-                    }
-
-                    > li {
-                        display: block;
-                        margin-left: 0;
-                        margin-right: 0;
-                    }
-                }
-            }
-
-            &.is-adaptive {
+            &:not(.is-not-adaptive){
                 > .inner {
                     display: block;
 
                     > .left,
                     > .center,
                     > .right {
+                        width: 100%;
                         display: block;
+                        float: none;
                     }
                 }
 
-                .button {
-                    width: 100%;
+                .group {
                     display: block;
+                    margin-top: 0;
+
+                    > li {
+                        &.label {
+                            display: block;
+                            margin-right: 0;
+                            margin-bottom: 0;
+                        }
+
+                        &.is-field {
+                            width: 100%;
+                        }
+                    }
+
+                    &.is-adaptive {
+                        display: block;
+                        margin-left: 0;
+                        margin-right: 0;
+
+                        .button {
+                            width: 100%;
+                            display: block;
+                        }
+
+                        > li {
+                            display: block;
+                            margin-left: 0;
+                            margin-right: 0;
+                        }
+                    }
                 }
 
-                .group,
-                .group > li {
-                    display: block;
-                    margin-left: 0;
-                    margin-right: 0;
+                &.is-adaptive {
+                    > .inner {
+                        display: block;
+
+                        > .left,
+                        > .center,
+                        > .right {
+                            display: block;
+                        }
+                    }
+
+                    .button {
+                        width: 100%;
+                        display: block;
+                    }
+
+                    .group,
+                    .group > li {
+                        display: block;
+                        margin-left: 0;
+                        margin-right: 0;
+                    }
                 }
             }
         }

@@ -90,22 +90,25 @@
 
     > .pull {
         position: absolute;
+        padding: @CmIndent-XXSmall;
+        border-radius: @CmBorder-Radius;
+        background-color: @CmUI-Overlay-Light;
         z-index: 3;
 
         &.top-right {
-            .mx__position(@CmIndent-XSmall, @CmIndent-XSmall, auto, auto);
+            .mx__position(@CmIndent-XXXSmall, @CmIndent-XXXSmall, auto, auto);
         }
 
         &.top-left {
-            .mx__position(@CmIndent-XSmall, auto, auto, @CmIndent-XSmall);
+            .mx__position(@CmIndent-XXXSmall, auto, auto, @CmIndent-XXXSmall);
         }
 
         &.bottom-right {
-            .mx__position(auto, @CmIndent-XSmall, @CmIndent-XSmall, auto);
+            .mx__position(auto, @CmIndent-XXXSmall, @CmIndent-XXXSmall, auto);
         }
 
         &.bottom-left {
-            .mx__position(auto, auto, @CmIndent-XSmall, @CmIndent-XSmall);
+            .mx__position(auto, auto, @CmIndent-XXXSmall, @CmIndent-XXXSmall);
         }
 
         input[type="checkbox"],

@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.20.11 (2016-07-27 20:14) ************ */
+/*! ************ MagpieUI v3.20.12 (2016-08-08 20:21) ************ */
 @charset "UTF-8";
 
 /*!
@@ -4231,6 +4231,7 @@ span.CodeMirror-selectedtext { background: none; }
 
 @PtToolbar-GroupIndent: @CmIndent-Small;
 @PtToolbar-ItemIndent: @CmIndent-XXXSmall;
+@PtToolbar-ItemIndents: @CmUI-ColumnIndent;
 @PtToolbar-XXXSmall: 32px;
 @PtToolbar-XXSmall: 56px;
 @PtToolbar-XSmall: 76px;
@@ -6048,6 +6049,45 @@ span.CodeMirror-selectedtext { background: none; }
     height: @size;
     line-height: @size;
 }
+
+/* ******* ANIMATED ******* */
+
+.cm-ia__menu {
+    position: relative;
+
+    &:before,
+    &:after {
+        width: 100%;
+        height: 2px;
+        display: block;
+        position: absolute;
+        content: '';
+        background-color: @CmColor-Font-Opposite;
+        .mx__transition(all, @CmUI-Transition-Duration);
+    }
+
+    &:before {
+        .mx__transform(translate(0, -5px));
+        .mx__position(50%, 0, auto, 0);
+    }
+
+    &:after {
+        .mx__transform(translate(0, 5px));
+        .mx__position(auto, 0, 50%, 0);
+    }
+}
+
+.cm-ia__menu--active {
+    &:before {
+        .mx__transform(translate(0, -1px));
+        .mx__transform(rotate(45deg));
+    }
+
+    &:after {
+        .mx__transform(translate(0, 1px));
+        .mx__transform(rotate(-45deg));
+    }
+}
 /* ******* COMMON: TAGS ******* */
 
 *,
@@ -6232,11 +6272,7 @@ tbody, thead, td, th, tr {
 /* ******* COMMON: INPUTS ******* */
 
 .input {
-    @padding: max(ceil((@CmForm-FieldHeight - @CmFont-Base-LineHeight - @CmBorder-Width * 2) / 2), 0px);
-
     width: 100%;
-    height: @CmForm-FieldHeight;
-    padding: @padding @CmInput-Padding;
     margin: 0;
     vertical-align: top;
     background: @CmInput-DefaultBackground;
@@ -6287,6 +6323,20 @@ tbody, thead, td, th, tr {
                      1px 0 1px #ffffff,
                      -1px 0 1px #ffffff;
     }
+
+    .input--size(@CmForm-FieldHeight, @CmInput-Padding, @CmBorder-Width, @CmFont-Base-LineHeight);
+
+    &.input--large {
+        .input--size(@CmSize-Large, @CmInput-Padding, @CmBorder-Width, @CmFont-Base-LineHeight);
+    }
+
+    &.input--xlarge {
+        .input--size(@CmSize-XLarge, @CmInput-Padding, @CmBorder-Width, @CmFont-Base-LineHeight);
+    }
+
+    &.input--xxlarge {
+        .input--size(@CmSize-XXLarge, @CmInput-Padding, @CmBorder-Width, @CmFont-Base-LineHeight);
+    }
 }
 
 .textarea {
@@ -6302,6 +6352,27 @@ tbody, thead, td, th, tr {
         padding: 0;
     }
 }
+
+/* *** MIXINS *** */
+
+.input--size (@height: @CmForm-FieldHeight, @padding: @CmInput-Padding, @border: @CmBorder-Width, @lineHeight: @CmFont-Base-LineHeight) {
+    .input--size-helper(@height, @padding, @border, @lineHeight);
+
+    &.is-borderless {
+        .input--size-helper(@height, @padding, 0px, @lineHeight);
+    }
+}
+
+.input--size-helper (@height, @padding, @border, @lineHeight) {
+    @padding_calc: max(ceil((@height - @lineHeight - @border * 2) / 2), 0px);
+
+    height: @height;
+    padding: @padding_calc @padding;
+    border-width: @border;
+
+}
+
+/* *** APPLY *** */
 
 input, select, textarea, button {
     .cm__font;
@@ -6592,6 +6663,12 @@ select {
     }
 
     // /* *** SIZES *** */
+
+    &.button--large {
+        @padding: max(ceil((@CmSize-Large - @CmFont-Base-LineHeight) / 2), 0px);
+        min-height: @CmSize-Large;
+        padding: @padding @CmIndent-Medium;
+    }
 
     &.button--xlarge {
         @padding: max(ceil((@CmSize-XLarge - @CmFont-Base-LineHeight) / 2), 0px);
@@ -9582,22 +9659,25 @@ button {
 
     > .pull {
         position: absolute;
+        padding: @CmIndent-XXSmall;
+        border-radius: @CmBorder-Radius;
+        background-color: @CmUI-Overlay-Light;
         z-index: 3;
 
         &.top-right {
-            .mx__position(@CmIndent-XSmall, @CmIndent-XSmall, auto, auto);
+            .mx__position(@CmIndent-XXXSmall, @CmIndent-XXXSmall, auto, auto);
         }
 
         &.top-left {
-            .mx__position(@CmIndent-XSmall, auto, auto, @CmIndent-XSmall);
+            .mx__position(@CmIndent-XXXSmall, auto, auto, @CmIndent-XXXSmall);
         }
 
         &.bottom-right {
-            .mx__position(auto, @CmIndent-XSmall, @CmIndent-XSmall, auto);
+            .mx__position(auto, @CmIndent-XXXSmall, @CmIndent-XXXSmall, auto);
         }
 
         &.bottom-left {
-            .mx__position(auto, auto, @CmIndent-XSmall, @CmIndent-XSmall);
+            .mx__position(auto, auto, @CmIndent-XXXSmall, @CmIndent-XXXSmall);
         }
 
         input[type="checkbox"],
@@ -9835,19 +9915,38 @@ button {
         }
     }
 
-    .pt__input--size();
+    .pt__input--size(@CmForm-FieldHeight, @CmInput-Padding, @CmBorder-Width, @CmFont-Base-LineHeight);
+
+    &.size-large {
+        .pt__input--size(@CmSize-Large, @CmInput-Padding, @CmBorder-Width, @CmFont-Base-LineHeight);
+    }
+
+    &.size-xlarge {
+        .pt__input--size(@CmSize-XLarge, @CmInput-Padding, @CmBorder-Width, @CmFont-Base-LineHeight);
+    }
+
+    &.size-xxlarge {
+        .pt__input--size(@CmSize-XXLarge, @CmInput-Padding, @CmBorder-Width, @CmFont-Base-LineHeight);
+    }
 }
 
 .pt__input--size (@height: @CmForm-FieldHeight, @paddingX: @CmInput-Padding, @borderWidth: @CmBorder-Width, @lineHeight: @CmFont-Base-LineHeight){
-    @paddingY: max(round((@height - @lineHeight - @borderWidth * 2) / 2), 0px);
+    .pt__input--size-helper(@height, @paddingX, @borderWidth, @lineHeight);
+
+    &.is-borderless {
+        .pt__input--size-helper(@height, @paddingX, 0px, @lineHeight);
+    }
+}
+
+.pt__input--size-helper (@height, @paddingX, @borderWidth, @lineHeight) {
     @iconSize: @height - @borderWidth * 2;
     @iconSizeDouble: @iconSize * 2;
     @iconPadding: @iconSize + @paddingX;
 
+    height: @height;
+
     .input {
-        height: @height;
-        padding: @paddingY @paddingX;
-        border-width: @borderWidth;
+        .input--size(@height, @paddingX, @borderWidth, @lineHeight);
     }
 
     .icon {
@@ -10573,7 +10672,8 @@ button {
 
     &:hover,
     &:active,
-    &.active {
+    &.active,
+    &.is-show {
         > .pt__menu-dropdown {
             .pt__menu-dropdown--active;
         }
@@ -10986,12 +11086,8 @@ button {
 
         > li {
             max-width: 100%;
-            margin: 0 @PtToolbar-ItemIndent @CmIndent-Medium 0;
+            margin: 0 0 @CmIndent-Medium 0;
             line-height: @CmForm-FieldHeight;
-
-            &:last-child {
-                margin-right: 0;
-            }
 
             &.label {
                 margin-right: @CmIndent-XXSmall;
@@ -11018,32 +11114,52 @@ button {
                 width: @CmForm-FieldHeight;
             }
 
+            &.size-xxxsmall,
             &.xxx-small {
                 width: @PtToolbar-XXXSmall;
             }
 
+            &.size-xxsmall,
             &.xx-small {
                 width: @PtToolbar-XXSmall;
             }
 
+            &.size-xsmall,
             &.x-small {
                 width: @PtToolbar-XSmall;
             }
 
+            &.size-small,
             &.small {
                 width: @PtToolbar-Small;
             }
 
+            &.size-medium,
             &.medium {
                 width: @PtToolbar-Medium;
             }
 
+            &.size-large,
             &.large {
                 width: @PtToolbar-Large;
             }
 
+            &.size-xlarge,
             &.x-large {
                 width: @PtToolbar-XLarge;
+            }
+        }
+
+        &.is-flex {
+            width: 100%;
+            .display-flex;
+
+            > li {
+                .mx__flex(1 0 auto);
+
+                &.is-prime {
+                    .mx__flex(1 1 100%);
+                }
             }
         }
 
@@ -11115,6 +11231,28 @@ button {
             display: block;
         }
     }
+
+    .pt__toolbar--item-indent(@PtToolbar-ItemIndent);
+
+    .for(@PtToolbar-ItemIndents); .-each(@name) {
+        &.item-indent-@{name} {
+            .pt__toolbar--item-indent(@name);
+        }
+    }
+}
+
+/* ******* PARTS: TOOLBAR: MIXINS ********** */
+
+.pt__toolbar--item-indent (@value : @PtToolbar-ItemIndent) {
+    .group {
+        > li {
+            margin-right: @value;
+
+            &:last-child {
+                margin-right: 0;
+            }
+        }
+    }
 }
 
 /* ******* PARTS: TOOLBAR: ADAPTIVE ********** */
@@ -11123,73 +11261,75 @@ button {
 
     html.is-adaptive {
         .pt__toolbar {
-            > .inner {
-                display: block;
-
-                > .left,
-                > .center,
-                > .right {
-                    width: 100%;
-                    display: block;
-                    float: none;
-                }
-            }
-
-            .group {
-                display: block;
-                margin-top: 0;
-
-                > li {
-                    &.label {
-                        display: block;
-                        margin-right: 0;
-                        margin-bottom: 0;
-                    }
-
-                    &.is-field {
-                        width: 100%;
-                    }
-                }
-
-                &.is-adaptive {
-                    display: block;
-                    margin-left: 0;
-                    margin-right: 0;
-
-                    .button {
-                        width: 100%;
-                        display: block;
-                    }
-
-                    > li {
-                        display: block;
-                        margin-left: 0;
-                        margin-right: 0;
-                    }
-                }
-            }
-
-            &.is-adaptive {
+            &:not(.is-not-adaptive){
                 > .inner {
                     display: block;
 
                     > .left,
                     > .center,
                     > .right {
+                        width: 100%;
                         display: block;
+                        float: none;
                     }
                 }
 
-                .button {
-                    width: 100%;
+                .group {
                     display: block;
+                    margin-top: 0;
+
+                    > li {
+                        &.label {
+                            display: block;
+                            margin-right: 0;
+                            margin-bottom: 0;
+                        }
+
+                        &.is-field {
+                            width: 100%;
+                        }
+                    }
+
+                    &.is-adaptive {
+                        display: block;
+                        margin-left: 0;
+                        margin-right: 0;
+
+                        .button {
+                            width: 100%;
+                            display: block;
+                        }
+
+                        > li {
+                            display: block;
+                            margin-left: 0;
+                            margin-right: 0;
+                        }
+                    }
                 }
 
-                .group,
-                .group > li {
-                    display: block;
-                    margin-left: 0;
-                    margin-right: 0;
+                &.is-adaptive {
+                    > .inner {
+                        display: block;
+
+                        > .left,
+                        > .center,
+                        > .right {
+                            display: block;
+                        }
+                    }
+
+                    .button {
+                        width: 100%;
+                        display: block;
+                    }
+
+                    .group,
+                    .group > li {
+                        display: block;
+                        margin-left: 0;
+                        margin-right: 0;
+                    }
                 }
             }
         }
@@ -15080,7 +15220,6 @@ button {
             border: 1px solid #a2a2a2;
             border-radius: @CmBorder-Radius;
             font-size: @CmFont-UI-Size;
-            font-weight: @CmFont-Base-BoldWeight;
 
             &:first-child {
                 margin: 0;

@@ -18,19 +18,38 @@
         }
     }
 
-    .pt__input--size();
+    .pt__input--size(@CmForm-FieldHeight, @CmInput-Padding, @CmBorder-Width, @CmFont-Base-LineHeight);
+
+    &.size-large {
+        .pt__input--size(@CmSize-Large, @CmInput-Padding, @CmBorder-Width, @CmFont-Base-LineHeight);
+    }
+
+    &.size-xlarge {
+        .pt__input--size(@CmSize-XLarge, @CmInput-Padding, @CmBorder-Width, @CmFont-Base-LineHeight);
+    }
+
+    &.size-xxlarge {
+        .pt__input--size(@CmSize-XXLarge, @CmInput-Padding, @CmBorder-Width, @CmFont-Base-LineHeight);
+    }
 }
 
 .pt__input--size (@height: @CmForm-FieldHeight, @paddingX: @CmInput-Padding, @borderWidth: @CmBorder-Width, @lineHeight: @CmFont-Base-LineHeight){
-    @paddingY: max(round((@height - @lineHeight - @borderWidth * 2) / 2), 0px);
+    .pt__input--size-helper(@height, @paddingX, @borderWidth, @lineHeight);
+
+    &.is-borderless {
+        .pt__input--size-helper(@height, @paddingX, 0px, @lineHeight);
+    }
+}
+
+.pt__input--size-helper (@height, @paddingX, @borderWidth, @lineHeight) {
     @iconSize: @height - @borderWidth * 2;
     @iconSizeDouble: @iconSize * 2;
     @iconPadding: @iconSize + @paddingX;
 
+    height: @height;
+
     .input {
-        height: @height;
-        padding: @paddingY @paddingX;
-        border-width: @borderWidth;
+        .input--size(@height, @paddingX, @borderWidth, @lineHeight);
     }
 
     .icon {

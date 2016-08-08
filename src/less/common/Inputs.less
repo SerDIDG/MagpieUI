@@ -1,11 +1,7 @@
 /* ******* COMMON: INPUTS ******* */
 
 .input {
-    @padding: max(ceil((@CmForm-FieldHeight - @CmFont-Base-LineHeight - @CmBorder-Width * 2) / 2), 0px);
-
     width: 100%;
-    height: @CmForm-FieldHeight;
-    padding: @padding @CmInput-Padding;
     margin: 0;
     vertical-align: top;
     background: @CmInput-DefaultBackground;
@@ -56,6 +52,20 @@
                      1px 0 1px #ffffff,
                      -1px 0 1px #ffffff;
     }
+
+    .input--size(@CmForm-FieldHeight, @CmInput-Padding, @CmBorder-Width, @CmFont-Base-LineHeight);
+
+    &.input--large {
+        .input--size(@CmSize-Large, @CmInput-Padding, @CmBorder-Width, @CmFont-Base-LineHeight);
+    }
+
+    &.input--xlarge {
+        .input--size(@CmSize-XLarge, @CmInput-Padding, @CmBorder-Width, @CmFont-Base-LineHeight);
+    }
+
+    &.input--xxlarge {
+        .input--size(@CmSize-XXLarge, @CmInput-Padding, @CmBorder-Width, @CmFont-Base-LineHeight);
+    }
 }
 
 .textarea {
@@ -71,6 +81,27 @@
         padding: 0;
     }
 }
+
+/* *** MIXINS *** */
+
+.input--size (@height: @CmForm-FieldHeight, @padding: @CmInput-Padding, @border: @CmBorder-Width, @lineHeight: @CmFont-Base-LineHeight) {
+    .input--size-helper(@height, @padding, @border, @lineHeight);
+
+    &.is-borderless {
+        .input--size-helper(@height, @padding, 0px, @lineHeight);
+    }
+}
+
+.input--size-helper (@height, @padding, @border, @lineHeight) {
+    @padding_calc: max(ceil((@height - @lineHeight - @border * 2) / 2), 0px);
+
+    height: @height;
+    padding: @padding_calc @padding;
+    border-width: @border;
+
+}
+
+/* *** APPLY *** */
 
 input, select, textarea, button {
     .cm__font;

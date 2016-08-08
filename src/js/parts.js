@@ -22,7 +22,7 @@ Part['Menu'] = (function(){
     };
 
     var clickHandler = function(e, item){
-        if(!item['_show']){
+        if(cm._pageSize['winWidth'] > cm._config.adaptiveFrom && !item['_show']){
             item['_interval'] && clearTimeout(item['_interval']);
             item['_interval'] = setTimeout(function(){
                 item['_show'] = false;
@@ -30,11 +30,11 @@ Part['Menu'] = (function(){
             item['_show'] = true;
             var target = cm.getEventTarget(e);
             if(!cm.isParent(item['drop'], target, true)){
-                if(cm.isClass(item['node'], 'active')){
-                    cm.removeClass(item['node'], 'active');
+                if(cm.isClass(item['node'], 'is-show')){
+                    cm.removeClass(item['node'], 'is-show');
                 }else{
                     cm.preventDefault(e);
-                    cm.addClass(item['node'], 'active');
+                    cm.addClass(item['node'], 'is-show');
                 }
             }
         }
@@ -43,7 +43,7 @@ Part['Menu'] = (function(){
     var cancelHandler = function(e, item){
         var target = cm.getEventTarget(e);
         if(!cm.isParent(item['node'], target, true)){
-            cm.removeClass(item['node'], 'active');
+            cm.removeClass(item['node'], 'is-show');
         }
     };
 

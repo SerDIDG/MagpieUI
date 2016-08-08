@@ -89,7 +89,7 @@ cm.getConstructor('Com.Notifications', function(classConstructor, className, cla
         // Structure
         item['nodes']['container'] = cm.node('li', {'class' : item['type']},
             item['nodes']['close'] = cm.node('div', {'class' : 'close'}, that.lang('close')),
-            item['nodes']['descr'] = cm.node('div', {'class' : 'descr'}, item['label'])
+            item['nodes']['descr'] = cm.node('div', {'class' : 'descr', 'innerHTML' : item['label']})
         );
         // Events
         cm.addEvent(item['nodes']['close'], 'click', function(){

@@ -1,0 +1,11 @@
+<svg id="desktop.svg" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+        fill-rule: evenodd;
+      }
+    </style>
+  </defs>
+  <path id="icon" class="cls-1" d="M644,14h28a2,2,0,0,1,2,2V36a2,2,0,0,1-2,2H644a2,2,0,0,1-2-2V16A2,2,0,0,1,644,14Zm1,2h26a1,1,0,0,1,1,1V33a1,1,0,0,1-1,1H645a1,1,0,0,1-1-1V17A1,1,0,0,1,645,16Zm13,19a1,1,0,1,1-1,1A1,1,0,0,1,658,35Zm-2,3h4v6h-4V38Zm-4,6h12l2,2H650Z" transform="translate(-642 -14)"/>
+</svg>

@@ -36,6 +36,8 @@ cm.define('Com.Select', {
         'options' : [],                         // Listing of options, for rendering through java-script. Example: [{'value' : 'foo', 'text' : 'Bar'}].
         'selected' : 0,                         // Option value / array of option values.
         'disabled' : false,
+        'className' : '',
+        'inputClassName' : '',
         'icons' : {
             'arrow' : 'icon default linked'
         },
@@ -120,6 +122,7 @@ function(params){
             that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
             that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
             that.params['disabled'] = that.params['node'].disabled || that.params['node'].readOnly || that.params['disabled'];
+            that.params['className'] = that.params['node'].className || that.params['className'];
         }
         that.disabled = that.params['disabled'];
     };
@@ -134,9 +137,7 @@ function(params){
         }
         /* *** ATTRIBUTES *** */
         // Add class name
-        if(that.params['node'].className){
-            cm.addClass(nodes['container'], that.params['node'].className);
-        }
+        cm.addClass(nodes['container'], that.params['className']);
         // Title
         if(that.params['showTitleTag'] && that.params['title']){
             nodes['container'].title = that.params['title'];
@@ -186,6 +187,7 @@ function(params){
                 nodes['items'] = cm.Node('ul')
             )
         );
+        cm.addClass(nodes['target'], that.params['inputClassName']);
     };
 
     var renderMultiple = function(){

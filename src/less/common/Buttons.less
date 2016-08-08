@@ -254,6 +254,12 @@
 
     // /* *** SIZES *** */
 
+    &.button--large {
+        @padding: max(ceil((@CmSize-Large - @CmFont-Base-LineHeight) / 2), 0px);
+        min-height: @CmSize-Large;
+        padding: @padding @CmIndent-Medium;
+    }
+
     &.button--xlarge {
         @padding: max(ceil((@CmSize-XLarge - @CmFont-Base-LineHeight) / 2), 0px);
         min-height: @CmSize-XLarge;

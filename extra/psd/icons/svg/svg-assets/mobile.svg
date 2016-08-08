@@ -1,0 +1,11 @@
+<svg id="mobile.svg" xmlns="http://www.w3.org/2000/svg" width="20" height="32" viewBox="0 0 20 32">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+        fill-rule: evenodd;
+      }
+    </style>
+  </defs>
+  <path id="icon" class="cls-1" d="M739,14h14a3,3,0,0,1,3,3V43a3,3,0,0,1-3,3H739a3,3,0,0,1-3-3V17A3,3,0,0,1,739,14Zm0,4h14a2,2,0,0,1,2,2V40a2,2,0,0,1-2,2H739a2,2,0,0,1-2-2V20A2,2,0,0,1,739,18Zm5.5-2h3a0.5,0.5,0,0,1,0,1h-3A0.5,0.5,0,0,1,744.5,16ZM746,43a1,1,0,1,1-1,1A1,1,0,0,1,746,43Z" transform="translate(-736 -14)"/>
+</svg>
