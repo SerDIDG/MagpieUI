@@ -47,6 +47,8 @@ cm.define('Com.AbstractController', {
         'node' : cm.node('div'),
         'container' : null,
         'name' : '',
+        'getDataNodes' : true,
+        'getDataConfig' : true,
         'embedStructure' : 'append',
         'renderStructure' : true,
         'embedStructureOnRender' : true,
@@ -80,8 +82,8 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         that.getLESSVariables();
         that.setParams(params);
         that.convertEvents(that.params['events']);
-        that.getDataNodes(that.params['node']);
-        that.getDataConfig(that.params['node']);
+        that.params['getDataNodes'] && that.getDataNodes(that.params['node']);
+        that.params['getDataConfig'] && that.getDataConfig(that.params['node']);
         that.callbacksProcess();
         that.validateParams();
         that.addToStack(that.params['node']);

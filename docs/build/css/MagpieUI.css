@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.20.12 (2016-08-08 20:21) ************ */
+/*! ************ MagpieUI v3.20.13 (2016-08-12 17:15) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.5.0
@@ -15702,16 +15702,16 @@ button.is-hidden {
 .com__notifications:last-child {
   margin-bottom: 0;
 }
-.com__notifications ul {
+.com__notifications > ul {
   margin: 0;
   padding: 0;
   list-style: none;
 }
-.com__notifications ul > li {
+.com__notifications > ul > li {
   margin: 0;
   padding: 0;
 }
-.com__notifications ul li {
+.com__notifications > ul > li {
   margin: 8px 0 0 0;
   padding: 4px 8px;
   background: #f7f7f7;
@@ -15720,43 +15720,43 @@ button.is-hidden {
   border-radius: 3px;
   font-size: 13px;
 }
-.com__notifications ul li:first-child {
+.com__notifications > ul > li:first-child {
   margin: 0;
 }
-.com__notifications ul li.ok,
-.com__notifications ul li.success {
+.com__notifications > ul > li.ok,
+.com__notifications > ul > li.success {
   background: #f3fded;
   border-color: #9ec589;
   color: #5a714e;
 }
-.com__notifications ul li.ok .close,
-.com__notifications ul li.success .close {
+.com__notifications > ul > li.ok .close,
+.com__notifications > ul > li.success .close {
   border-color: #9ec589;
 }
-.com__notifications ul li.error,
-.com__notifications ul li.danger {
+.com__notifications > ul > li.error,
+.com__notifications > ul > li.danger {
   background: #ffe4e4;
   border-color: #df3e3e;
   color: #bf0a0a;
 }
-.com__notifications ul li.error .close,
-.com__notifications ul li.danger .close {
+.com__notifications > ul > li.error .close,
+.com__notifications > ul > li.danger .close {
   border-color: #df3e3e;
 }
-.com__notifications ul li.notice,
-.com__notifications ul li.warning {
+.com__notifications > ul > li.notice,
+.com__notifications > ul > li.warning {
   background: #f8f1d4;
   border-color: #d2a323;
   color: #906901;
 }
-.com__notifications ul li.notice .close,
-.com__notifications ul li.warning .close {
+.com__notifications > ul > li.notice .close,
+.com__notifications > ul > li.warning .close {
   border-color: #d2a323;
 }
-.com__notifications .descr {
+.com__notifications > ul > li .descr {
   overflow: hidden;
 }
-.com__notifications .close {
+.com__notifications > ul > li .close {
   float: right;
   margin-left: 12px;
   padding-left: 12px;
@@ -15766,7 +15766,7 @@ button.is-hidden {
   text-decoration: underline;
   cursor: pointer;
 }
-.com__notifications .close:hover {
+.com__notifications > ul > li .close:hover {
   text-decoration: none;
 }
 /* ******* COMPONENTS: OLD BROWSERS ALERT ******* */

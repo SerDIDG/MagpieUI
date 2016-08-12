@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.20.12 (2016-08-08 20:21) ************ */
+/*! ************ MagpieUI v3.20.13 (2016-08-12 17:15) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1426,7 +1426,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.20.12',
+        '_version' : '3.20.13',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -1653,8 +1653,6 @@ cm.merge = function(o1, o2){
                     o[key] = item;
                 }else if(item._isComponent){
                     o[key] = item;
-                }else if(cm.isObject(item) && item.constructor != Object){
-                    o[key] = item;
                 }else if(cm.isObject(item)){
                     if(cm.isObject(o[key])){
                         o[key] = cm.merge(o[key], item);
@@ -1818,6 +1816,19 @@ cm.isEmpty = function(el){
     }else{
         return false;
     }
+};
+
+cm.objectPath = function(name, obj){
+    obj = typeof obj == 'undefined'? window : obj;
+    name = name.split('.');
+    var findObj = obj,
+        length = name.length;
+    cm.forEach(name, function(item, key){
+        if(findObj){
+            findObj = findObj[item];
+        }
+    });
+    return findObj;
 };
 
 cm.objectSelector = function(name, obj, apply){
@@ -4458,9 +4469,11 @@ cm.ajax = function(o){
     var config = cm.merge({
             'debug' : true,
             'type' : 'json',                                         // text | xml | json | jsonp
-            'method' : 'post',                                       // post | get
+            'method' : 'post',                                       // post | get | put | delete
             'params' : '',
             'url' : '',
+            'modifier' : '',
+            'modifierParams' : {},
             'formData'  : false,
             'headers' : {
                 'Content-Type' : 'application/x-www-form-urlencoded',
@@ -4513,10 +4526,16 @@ cm.ajax = function(o){
             config['params'] = cm.obj2URI(config['params']);
         }
         // Build request link
+        if(!cm.isEmpty(config['modifier']) && !cm.isEmpty(config['modifierParams'])){
+            config['modifier'] = cm.strReplace(config['modifier'], config['modifierParams']);
+            config['url'] += config['modifier'];
+        }else{
+            delete config['modifier'];
+        }
         config['url'] = cm.strReplace(config['url'], {
             '%baseUrl%' : cm._baseUrl
         });
-        if(config['method'] != 'post'){
+        if(!/post|put/.test(config['method'])){
             if(!cm.isEmpty(config['params'])){
                 config['url'] = [config['url'], config['params']].join('?');
             }
@@ -4538,7 +4557,7 @@ cm.ajax = function(o){
         cm.addEvent(config['httpRequestObject'], 'abort', abortHandler);
         // Send
         config['onStart']();
-        if(config['method'] == 'post'){
+        if(/post|put/.test(config['method'])){
             config['httpRequestObject'].send(config['params']);
         }else{
             config['httpRequestObject'].send(null);
@@ -6189,6 +6208,8 @@ cm.define('Com.AbstractController', {
         'node' : cm.node('div'),
         'container' : null,
         'name' : '',
+        'getDataNodes' : true,
+        'getDataConfig' : true,
         'embedStructure' : 'append',
         'renderStructure' : true,
         'embedStructureOnRender' : true,
@@ -6222,8 +6243,8 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         that.getLESSVariables();
         that.setParams(params);
         that.convertEvents(that.params['events']);
-        that.getDataNodes(that.params['node']);
-        that.getDataConfig(that.params['node']);
+        that.params['getDataNodes'] && that.getDataNodes(that.params['node']);
+        that.params['getDataConfig'] && that.getDataConfig(that.params['node']);
         that.callbacksProcess();
         that.validateParams();
         that.addToStack(that.params['node']);
@@ -17673,7 +17694,7 @@ function(params){
             href;
         // Check access
         if(col['access']){
-            text = cm.isEmpty(cm.objectSelector(col['key'], item['data']))? '' : cm.objectSelector(col['key'], item['data']);
+            text = cm.isEmpty(cm.objectPath(col['key'], item['data']))? '' : cm.objectPath(col['key'], item['data']);
             title = cm.isEmpty(col['titleText'])? text : col['titleText'];
             // Structure
             item['nodes']['container'].appendChild(
@@ -19437,8 +19458,14 @@ cm.getConstructor('Com.Notifications', function(classConstructor, className, cla
         // Structure
         item['nodes']['container'] = cm.node('li', {'class' : item['type']},
             item['nodes']['close'] = cm.node('div', {'class' : 'close'}, that.lang('close')),
-            item['nodes']['descr'] = cm.node('div', {'class' : 'descr', 'innerHTML' : item['label']})
+            item['nodes']['descr'] = cm.node('div', {'class' : 'descr'})
         );
+        // Label
+        if(cm.isNode(item['label'])){
+            cm.appendChild(item['label'], item['nodes']['descr']);
+        }else{
+            item['nodes']['descr'].innerHTML = item['label'];
+        }
         // Events
         cm.addEvent(item['nodes']['close'], 'click', function(){
             that.remove(item);

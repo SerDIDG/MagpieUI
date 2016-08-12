@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.20.12 (2016-08-08 20:21) ************ */
+/*! ************ MagpieUI v3.20.13 (2016-08-12 17:15) ************ */
 @charset "UTF-8";
 
 /*!
@@ -15209,10 +15209,10 @@ button {
 .com__notifications {
     .cm__box;
 
-    ul {
+    > ul {
         .cm__list-clear;
 
-        li {
+        > li {
             margin: @CmIndent-XXSmall 0 0 0;
             padding: @CmIndent-XXXSmall @CmIndent-XXSmall;
             background: #f7f7f7;
@@ -15257,25 +15257,25 @@ button {
                     border-color: #d2a323;
                 }
             }
-        }
-    }
 
-    .descr {
-        overflow: hidden;
-    }
+            .descr {
+                overflow: hidden;
+            }
 
-    .close {
-        float: right;
-        margin-left: 12px;
-        padding-left: 12px;
-        border-left: 1px solid;
-        font-size: 11px;
-        color: #666666;
-        text-decoration: underline;
-        cursor: pointer;
+            .close {
+                float: right;
+                margin-left: 12px;
+                padding-left: 12px;
+                border-left: 1px solid;
+                font-size: 11px;
+                color: #666666;
+                text-decoration: underline;
+                cursor: pointer;
 
-        &:hover {
-            text-decoration: none;
+                &:hover {
+                    text-decoration: none;
+                }
+            }
         }
     }
 }

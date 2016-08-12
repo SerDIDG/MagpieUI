@@ -29,7 +29,7 @@
  ******* */
 
 var cm = {
-        '_version' : '3.20.12',
+        '_version' : '3.20.13',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -256,8 +256,6 @@ cm.merge = function(o1, o2){
                     o[key] = item;
                 }else if(item._isComponent){
                     o[key] = item;
-                }else if(cm.isObject(item) && item.constructor != Object){
-                    o[key] = item;
                 }else if(cm.isObject(item)){
                     if(cm.isObject(o[key])){
                         o[key] = cm.merge(o[key], item);
@@ -421,6 +419,19 @@ cm.isEmpty = function(el){
     }else{
         return false;
     }
+};
+
+cm.objectPath = function(name, obj){
+    obj = typeof obj == 'undefined'? window : obj;
+    name = name.split('.');
+    var findObj = obj,
+        length = name.length;
+    cm.forEach(name, function(item, key){
+        if(findObj){
+            findObj = findObj[item];
+        }
+    });
+    return findObj;
 };
 
 cm.objectSelector = function(name, obj, apply){
@@ -3061,9 +3072,11 @@ cm.ajax = function(o){
     var config = cm.merge({
             'debug' : true,
             'type' : 'json',                                         // text | xml | json | jsonp
-            'method' : 'post',                                       // post | get
+            'method' : 'post',                                       // post | get | put | delete
             'params' : '',
             'url' : '',
+            'modifier' : '',
+            'modifierParams' : {},
             'formData'  : false,
             'headers' : {
                 'Content-Type' : 'application/x-www-form-urlencoded',
@@ -3116,10 +3129,16 @@ cm.ajax = function(o){
             config['params'] = cm.obj2URI(config['params']);
         }
         // Build request link
+        if(!cm.isEmpty(config['modifier']) && !cm.isEmpty(config['modifierParams'])){
+            config['modifier'] = cm.strReplace(config['modifier'], config['modifierParams']);
+            config['url'] += config['modifier'];
+        }else{
+            delete config['modifier'];
+        }
         config['url'] = cm.strReplace(config['url'], {
             '%baseUrl%' : cm._baseUrl
         });
-        if(config['method'] != 'post'){
+        if(!/post|put/.test(config['method'])){
             if(!cm.isEmpty(config['params'])){
                 config['url'] = [config['url'], config['params']].join('?');
             }
@@ -3141,7 +3160,7 @@ cm.ajax = function(o){
         cm.addEvent(config['httpRequestObject'], 'abort', abortHandler);
         // Send
         config['onStart']();
-        if(config['method'] == 'post'){
+        if(/post|put/.test(config['method'])){
             config['httpRequestObject'].send(config['params']);
         }else{
             config['httpRequestObject'].send(null);
