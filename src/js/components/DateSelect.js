@@ -38,7 +38,8 @@ function(params){
             'month' : '00',
             'year' : '0000'
         };
-    
+
+    that.isDestructed = false;
     that.previous = cm.clone(defaultDate);
     that.selected = cm.clone(defaultDate);
 
@@ -236,6 +237,15 @@ function(params){
 
     /* ******* PUBLIC ******* */
 
+    that.destruct = function(){
+        var that = this;
+        if(!that.isDestructed){
+            that.isDestructed = true;
+            that.removeFromStack();
+        }
+        return that;
+    };
+
     that.get = function(format){
         format = format || that.params['format'];
         return toStr(that.selected, format);
@@ -251,4 +261,11 @@ function(params){
     };
 
     init();
+});
+
+/* ****** FORM FIELD COMPONENT ******* */
+
+Com.FormFields.add('date-select', {
+    'node' : cm.node('input', {'type' : 'text'}),
+    'constructor' : 'Com.DateSelect'
 });

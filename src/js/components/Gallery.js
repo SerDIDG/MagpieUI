@@ -165,7 +165,7 @@ function(params){
             );
         }else{
             item['nodes']['inner'].appendChild(
-                item['nodes']['content'] = cm.Node('iframe', {'class' : 'descr'})
+                item['nodes']['content'] = cm.Node('iframe', {'class' : 'descr', 'webkitallowfullscreen' : true, 'mozallowfullscreen' : true, 'allowfullscreen' : true})
             );
         }
         // Caption

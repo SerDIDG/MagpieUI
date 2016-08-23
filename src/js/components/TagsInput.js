@@ -48,6 +48,8 @@ function(params){
         items = {},
         isOpen = false;
 
+    that.isDestructed = null;
+    that.value = null;
     that.components = {};
     that.isAutocomplete = false;
 
@@ -268,7 +270,8 @@ function(params){
     };
 
     var setHiddenInputData = function(){
-        nodes['hidden'].value = tags.join(',');
+        that.value = tags.join(',');
+        nodes['hidden'].value = that.value;
     };
 
     var bodyEvent = function(e){
@@ -283,6 +286,24 @@ function(params){
     };
 
     /* ******* MAIN ******* */
+
+    that.destruct = function(){
+        var that = this;
+        if(!that.isDestructed){
+            that.isDestructed = true;
+            that.removeFromStack();
+        }
+        return that;
+    };
+
+    that.get = function(){
+        return that.value || null;
+    };
+
+    that.set = function(value){
+        that.add(value);
+        return that;
+    };
 
     that.add = function(tag /* or tags comma separated or array */){
         var sourceTags;
@@ -321,4 +342,11 @@ function(params){
     };
 
     init();
+});
+
+/* ****** FORM FIELD COMPONENT ******* */
+
+Com.FormFields.add('tags', {
+    'node' : cm.node('input', {'type' : 'text'}),
+    'constructor' : 'Com.TagsInput'
 });

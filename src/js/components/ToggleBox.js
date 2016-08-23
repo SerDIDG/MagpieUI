@@ -133,7 +133,28 @@ function(params){
         that.triggerEvent('onHide');
     };
 
-    /* ******* MAIN ******* */
+    /* ******* PUBLIC ******* */
+
+    that.setTitle = function(node){
+        cm.clearNode(that.nodes['title']);
+        if(cm.isString(node) || cm.isNumber(node)){
+            cm.appendChild(cm.textNode(node), that.nodes['title']);
+        }else{
+            cm.appendNodes(node, that.nodes['title']);
+        }
+        return that;
+    };
+
+    that.setContent = function(node){
+        var parent = that.nodes['content'] || that.nodes['target'];
+        cm.clearNode(parent);
+        if(cm.isString(node) || cm.isNumber(node)){
+            cm.appendChild(cm.textNode(node), parent);
+        }else{
+            cm.appendNodes(node, parent);
+        }
+        return that;
+    };
 
     that.toggle = function(){
         if(that.isCollapsed){

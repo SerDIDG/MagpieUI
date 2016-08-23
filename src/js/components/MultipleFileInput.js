@@ -3,15 +3,12 @@ cm.define('Com.MultipleFileInput', {
     'params' : {
         'embedStructure' : 'replace',
         'className' : 'com__multiple-file-input',
-        'max' : 0,                                  // 0 - infinity
+        'max' : 5,                                  // 0 - infinity
         'local' : true,
         'buttonsAlign' : 'left',
         'inputConstructor' : 'Com.FileInput',
         'inputParams' : {
-            'dropzone' : false,
-            'local' : false,
-            'fileManager' : false,
-            'fileUploader' : false
+            'dropzone' : false
         },
         'fileManager' : false,
         'fileManagerConstructor' : 'Com.AbstractFileManagerContainer',
@@ -56,15 +53,11 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
         // Bind context to methods
         that.validateParamsEndHandler = that.validateParamsEnd.bind(that);
         that.itemAddProcessHandler = that.itemAddProcess.bind(that);
-        that.itemAddEndHandler = that.itemAddEnd.bind(that);
-        that.itemRemoveEndHandler = that.itemRemoveEnd.bind(that);
         that.browseActionHandler = that.browseAction.bind(that);
         that.processFilesHandler = that.processFiles.bind(that);
         // Add events
         that.addEvent('onValidateParamsEnd', that.validateParamsEndHandler);
         that.addEvent('onItemAddProcess', that.itemAddProcessHandler);
-        that.addEvent('onItemAddEnd', that.itemAddEndHandler);
-        that.addEvent('onItemRemoveEnd', that.itemRemoveEndHandler);
         // Call parent method
         _inherit.prototype.construct.apply(that, arguments);
         return that;
@@ -201,26 +194,6 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
         item['controller'].addEvent('onClear', function(){
             that.removeItem(item);
         });
-        return that;
-    };
-
-    classProto.itemAddEnd = function(){
-        var that = this;
-        if(that.params['max'] && (that.items.length == that.params['max'])){
-            cm.addClass(that.myNodes['container'], 'is-hidden');
-        }else if(that.hasButtons){
-            cm.removeClass(that.myNodes['container'], 'is-hidden');
-        }
-        return that;
-    };
-
-    classProto.itemRemoveEnd = function(){
-        var that = this;
-        if(that.params['max'] && (that.items.length == that.params['max'])){
-            cm.addClass(that.myNodes['container'], 'is-hidden');
-        }else if(that.hasButtons){
-            cm.removeClass(that.myNodes['container'], 'is-hidden');
-        }
         return that;
     };
 

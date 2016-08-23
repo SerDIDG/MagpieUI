@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.20.13 (2016-08-12 20:48) ************ */
+/*! ************ MagpieUI v3.21.0 (2016-08-23 20:00) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1426,7 +1426,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.20.13',
+        '_version' : '3.21.0',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -7843,6 +7843,11 @@ function(params){
         }
     };
 
+    var renderSeparator = function(){
+        var node = cm.node('hr');
+        cm.appendChild(node, that.nodes['fields']);
+    };
+
     /* ******* CALLBACKS ******* */
 
     that.callbacks.prepare = function(that, config){
@@ -8000,6 +8005,11 @@ function(params){
                 renderButton(item);
             });
         }
+        return that;
+    };
+
+    that.addSeparator = function(){
+        renderSeparator();
         return that;
     };
 
@@ -8521,7 +8531,10 @@ cm.define('Com.MultipleInput', {
         'onItemAddEnd',
         'onItemRemoveStart',
         'onItemRemoveProcess',
-        'onItemRemoveEnd'
+        'onItemRemoveEnd',
+        'onItemSortStart',
+        'onItemSortProcess',
+        'onItemSortEnd'
     ],
     'params' : {
         'embedStructure' : 'replace',
@@ -8529,14 +8542,21 @@ cm.define('Com.MultipleInput', {
         'inputConstructor' : 'Com.AbstractInput',
         'inputParams' : {},
         'value' : [],
-        'defaultValue' : []
+        'defaultValue' : [],
+        'max' : 5,
+        'sortable' : true,
+        'multiFieldConstructor' : 'Com.MultiField',
+        'multiFieldParams' : {
+            'embedStructure' : 'append',
+            'renderStructure' : true,
+            'embedStructureOnRender' : true,
+            'template' : false,
+            'templateAttributeReplace' : false
+        }
     }
 },
 function(params){
     var that = this;
-    that.nodes = {};
-    that.components = {};
-    that.items = [];
     // Call parent class construct
     Com.AbstractController.apply(that, arguments);
 });
@@ -8546,6 +8566,10 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
 
     classProto.construct = function(params){
         var that = this;
+        // Variables
+        that.nodes = {};
+        that.components = {};
+        that.items = [];
         // Bind context to methods
         that.setHandler = that.set.bind(that);
         that.getHandler = that.get.bind(that);
@@ -8561,6 +8585,234 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
         _inherit.prototype.construct.apply(that, arguments);
         return that;
     };
+
+    classProto.constructProcess = function(){
+        var that = this;
+        // Render inputs provided in DOM
+        cm.forEach(that.nodes['inputs'], function(item){
+            that.addItem({'input' : item['input']}, false);
+        });
+        // Render inputs provided in parameters
+        if(cm.isArray(that.params['value'])){
+            cm.forEach(that.params['value'], function(item){
+                that.addItem({'value' : item}, false);
+            });
+        }
+        return that;
+    };
+
+    classProto.validateParams = function(){
+        var that = this;
+        // Call parent method
+        _inherit.prototype.validateParams.apply(that, arguments);
+        // Configure MultiField
+        that.params['multiFieldParams']['max'] = that.params['max'];
+        that.params['multiFieldParams']['sortable'] = that.params['sortable'];
+        return that;
+    };
+
+    /* *** SYSTEM *** */
+
+    classProto._renderView = function(){
+        var that = this;
+        that.triggerEvent('onRenderViewStart');
+        that.nodes['container'] = cm.node('div', {'class' : 'com__multiple-input'},
+            that.nodes['inner'] = cm.node('div', {'class' : 'inner'},
+                that.nodes['holder'] = cm.node('div', {'class' : 'com__multiple-input__holder'},
+                    that.nodes['items'] = cm.node('div', {'class' : 'com__multiple-input__items is-hidden'}),
+                    that.nodes['content'] = that.renderContent()
+                )
+            )
+        );
+        that.triggerEvent('onRenderViewProcess');
+        that.triggerEvent('onRenderViewEnd');
+        return that;
+    };
+
+    classProto.renderView = function(){
+        var that = this;
+        that.triggerEvent('onRenderViewStart');
+        that.nodes['container'] = cm.node('div', {'class' : 'com__multiple-input'},
+            that.nodes['inner'] = cm.node('div', {'class' : 'inner'},
+                that.nodes['holder'] = cm.node('div', {'class' : 'com__multiple-input__holder'})
+            )
+        );
+        that.triggerEvent('onRenderViewProcess');
+        that.triggerEvent('onRenderViewEnd');
+        return that;
+    };
+
+    classProto.renderViewModel = function(){
+        var that = this;
+        // Call parent method - renderViewModel
+        _inherit.prototype.renderViewModel.apply(that, arguments);
+        // Init Multi Field
+        that.renderMultiField();
+        return that;
+    };
+
+    classProto.renderMultiField = function(){
+        var that = this;
+        cm.getConstructor(that.params['multiFieldConstructor'], function(classObject){
+            that.components['multiField'] = new classObject(
+                cm.merge(that.params['multiFieldParams'], {
+                    'container' : that.nodes['holder']
+                })
+            );
+            that.renderMultiFieldEvents();
+        });
+        return that;
+    };
+
+    classProto.renderMultiFieldEvents = function(){
+        var that = this;
+        that.components['multiField'].addEvent('onItemAdd', function(my, field){
+            that.addItemProcess({}, field, true);
+        });
+        that.components['multiField'].addEvent('onItemRemove', function(my, field){
+            var index = field['index'];
+            var item = that.items[index];
+            that.removeItemProcess(item, field, true);
+        });
+        that.components['multiField'].addEvent('onItemSort', function(my, field){
+            var previousIndex = field['previousIndex'];
+            var item = that.items[previousIndex];
+            that.sortItemProcess(item, field, true);
+        });
+        return that;
+    };
+
+    classProto.renderContent = function(){
+        var that = this;
+        that.triggerEvent('onRenderContentStart');
+        var node = cm.node('div', {'class' : 'com__multiple-input__content'});
+        that.triggerEvent('onRenderContentProcess');
+        that.triggerEvent('onRenderContentEnd');
+        return node;
+    };
+
+    classProto.renderInputView = function(item){
+        var that = this;
+        that.triggerEvent('onRenderInputViewStart');
+        item['input'] = cm.node('input', {'type' : 'hidden'});
+        that.triggerEvent('onRenderInputViewProcess');
+        that.triggerEvent('onRenderInputViewEnd');
+        return item['input'];
+    };
+
+    classProto.renderItemView = function(item){
+        var that = this;
+        that.triggerEvent('onRenderItemViewStart');
+        item['nodes']['container'] = cm.node('div', {'class' : 'com__multiple-input__item'},
+            item['nodes']['inner'] = cm.node('div', {'class' : 'inner'},
+                item['nodes']['input'] = item['input']
+            )
+        );
+        that.triggerEvent('onRenderItemViewProcess');
+        that.triggerEvent('onRenderItemViewEnd');
+        return item['nodes']['container'];
+    };
+
+    /* *** ITEMS *** */
+
+    classProto.addItem = function(item, triggerEvents){
+        var that = this;
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        if(!that.params['max'] || that.items.length < that.params['max']){
+            // Render Fields
+            that.components['multiField'].addItem({}, {
+                'triggerEvents' : false,
+                'callback' : function(field){
+                    that.addItemProcess(item, field, triggerEvents);
+                }
+            });
+        }
+        return null;
+    };
+
+    classProto.addItemProcess = function(item, field, triggerEvents){
+        var that = this;
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        // Merge config
+        item = cm.merge({
+            'input' : null,
+            'container' : null,
+            'name' : that.params['name'],
+            'value' : '',
+            'constructor' : that.params['inputConstructor'],
+            'nodes' : {}
+        }, item);
+        item['field'] = field;
+        // Start
+        that.triggerEvent('onItemAddStart', item);
+        // Render views
+        if(!item['input']){
+            item['input'] = that.renderInputView(item);
+        }
+        item['container'] = that.renderItemView(item);
+        cm.appendChild(item['container'], item['field']['content']);
+        // Process
+        cm.getConstructor(item['constructor'], function(classConstructor){
+            item['controller'] = new classConstructor(
+                cm.merge(that.params['inputParams'], {
+                    'node' : item['input'],
+                    'name' : item['name'],
+                    'value' : item['value']
+                })
+            );
+            that.triggerEvent('onItemAddProcess', item);
+            // Trigger set events
+            triggerEvents && that.triggerEvent('onSelect');
+            triggerEvents && that.triggerEvent('onSet');
+            triggerEvents && that.triggerEvent('onChange');
+        });
+        // Push
+        that.items.push(item);
+        that.triggerEvent('onItemAddEnd', item);
+        return item;
+    };
+
+    classProto.removeItem = function(item, triggerEvents){
+        var that = this;
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        // Render Fields
+        that.components['multiField'].removeItem(item['field'], {
+            'triggerEvents' : false,
+            'callback' : function(field){
+                that.removeItemProcess(item, field, triggerEvents);
+            }
+        });
+        return that;
+    };
+
+    classProto.removeItemProcess = function(item, field, triggerEvents){
+        var that = this;
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        that.triggerEvent('onItemRemoveStart', item);
+        that.items = cm.arrayRemove(that.items, item);
+        that.triggerEvent('onItemRemoveProcess', item);
+        item['controller'] && item['controller'].destruct();
+        that.triggerEvent('onItemRemoveEnd', item);
+        // Trigger set events
+        triggerEvents && that.triggerEvent('onSelect');
+        triggerEvents && that.triggerEvent('onSet');
+        triggerEvents && that.triggerEvent('onChange');
+        return that;
+    };
+
+    classProto.sortItemProcess = function(item, field){
+        var that = this,
+            index = field['index'];
+        that.triggerEvent('onItemSortStart', item);
+        that.triggerEvent('onItemSortProcess', item);
+        // Resort items in array
+        that.items.splice(that.items.indexOf(item), 1);
+        that.items.splice(index, 0, item);
+        // Trigger event
+        that.triggerEvent('onItemSortEnd', item);
+    };
+
+    /* *** PUBLIC *** */
 
     classProto.set = function(value, triggerEvents){
         var that = this;
@@ -8617,133 +8869,6 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
             that.triggerEvent('onDisable');
         }
         return that;
-    };
-
-    classProto.addItem = function(item, triggerEvents){
-        var that = this;
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        if(!that.params['max'] || that.items.length < that.params['max']){
-            that.triggerEvent('onItemAddStart', item);
-            // Merge config
-            item = cm.merge({
-                'input' : null,
-                'container' : null,
-                'name' : that.params['name'],
-                'value' : '',
-                'constructor' : that.params['inputConstructor'],
-                'nodes' : {}
-            }, item);
-            // Render views
-            if(!item['input']){
-                item['input'] = that.renderInputView(item);
-            }
-            item['container'] = that.renderItemView(item);
-            cm.appendChild(item['container'], that.nodes['items']);
-            // Process
-            cm.getConstructor(item['constructor'], function(classConstructor){
-                item['controller'] = new classConstructor(
-                    cm.merge(that.params['inputParams'], {
-                        'node' : item['input'],
-                        'name' : item['name'],
-                        'value' : item['value']
-                    })
-                );
-                that.triggerEvent('onItemAddProcess', item);
-                // Trigger set events
-                triggerEvents && that.triggerEvent('onSelect');
-                triggerEvents && that.triggerEvent('onSet');
-                triggerEvents && that.triggerEvent('onChange');
-            });
-            // Show items container
-            cm.removeClass(that.nodes['items'], 'is-hidden');
-            // Push
-            that.items.push(item);
-            that.triggerEvent('onItemAddEnd', item);
-            return item;
-        }
-        return null;
-    };
-
-    classProto.removeItem = function(item, triggerEvents){
-        var that = this;
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        that.triggerEvent('onItemRemoveStart', item);
-        that.items = cm.arrayRemove(that.items, item);
-        that.triggerEvent('onItemRemoveProcess', item);
-        item['controller'].destruct();
-        cm.remove(item['container']);
-        // Hide items container
-        if(!that.items.length){
-            cm.addClass(that.nodes['items'], 'is-hidden');
-        }
-        that.triggerEvent('onItemRemoveEnd', item);
-        // Trigger set events
-        triggerEvents && that.triggerEvent('onSelect');
-        triggerEvents && that.triggerEvent('onSet');
-        triggerEvents && that.triggerEvent('onChange');
-        return that;
-    };
-
-    classProto.constructProcess = function(){
-        var that = this;
-        // Render inputs provided in DOM
-        cm.forEach(that.nodes['inputs'], function(item){
-            that.addItem({'input' : item['input']}, false);
-        });
-        // Render inputs provided in parameters
-        if(cm.isArray(that.params['value'])){
-            cm.forEach(that.params['value'], function(item){
-                that.addItem({'value' : item}, false);
-            });
-        }
-        return that;
-    };
-
-    classProto.renderView = function(){
-        var that = this;
-        that.triggerEvent('onRenderViewStart');
-        that.nodes['container'] = cm.node('div', {'class' : 'com__multiple-input'},
-            that.nodes['inner'] = cm.node('div', {'class' : 'inner'},
-                that.nodes['holder'] = cm.node('div', {'class' : 'com__multiple-input__holder'},
-                    that.nodes['items'] = cm.node('div', {'class' : 'com__multiple-input__items is-hidden'}),
-                    that.nodes['content'] = that.renderContent()
-                )
-            )
-        );
-        that.triggerEvent('onRenderViewProcess');
-        that.triggerEvent('onRenderViewEnd');
-        return that;
-    };
-
-    classProto.renderContent = function(){
-        var that = this;
-        that.triggerEvent('onRenderContentStart');
-        var node = cm.node('div', {'class' : 'com__multiple-input__content'});
-        that.triggerEvent('onRenderContentProcess');
-        that.triggerEvent('onRenderContentEnd');
-        return node;
-    };
-
-    classProto.renderInputView = function(item){
-        var that = this;
-        that.triggerEvent('onRenderInputViewStart');
-        item['input'] = cm.node('input', {'type' : 'hidden'});
-        that.triggerEvent('onRenderInputViewProcess');
-        that.triggerEvent('onRenderInputViewEnd');
-        return item['input'];
-    };
-
-    classProto.renderItemView = function(item){
-        var that = this;
-        that.triggerEvent('onRenderItemViewStart');
-        item['nodes']['container'] = cm.node('div', {'class' : 'com__multiple-input__item'},
-            item['nodes']['inner'] = cm.node('div', {'class' : 'inner'},
-                item['nodes']['input'] = item['input']
-            )
-        );
-        that.triggerEvent('onRenderItemViewProcess');
-        that.triggerEvent('onRenderItemViewEnd');
-        return item['nodes']['container'];
     };
 });
 cm.define('Com.BoxTools', {
@@ -12476,7 +12601,8 @@ function(params){
             'month' : '00',
             'year' : '0000'
         };
-    
+
+    that.isDestructed = false;
     that.previous = cm.clone(defaultDate);
     that.selected = cm.clone(defaultDate);
 
@@ -12674,6 +12800,15 @@ function(params){
 
     /* ******* PUBLIC ******* */
 
+    that.destruct = function(){
+        var that = this;
+        if(!that.isDestructed){
+            that.isDestructed = true;
+            that.removeFromStack();
+        }
+        return that;
+    };
+
     that.get = function(format){
         format = format || that.params['format'];
         return toStr(that.selected, format);
@@ -12689,6 +12824,13 @@ function(params){
     };
 
     init();
+});
+
+/* ****** FORM FIELD COMPONENT ******* */
+
+Com.FormFields.add('date-select', {
+    'node' : cm.node('input', {'type' : 'text'}),
+    'constructor' : 'Com.DateSelect'
 });
 Com.Elements['Datepicker'] = {};
 
@@ -16805,7 +16947,7 @@ function(params){
             );
         }else{
             item['nodes']['inner'].appendChild(
-                item['nodes']['content'] = cm.Node('iframe', {'class' : 'descr'})
+                item['nodes']['content'] = cm.Node('iframe', {'class' : 'descr', 'webkitallowfullscreen' : true, 'mozallowfullscreen' : true, 'allowfullscreen' : true})
             );
         }
         // Caption
@@ -18777,17 +18919,8 @@ function(params){
     init();
 });
 cm.define('Com.MultiField', {
-    'modules' : [
-        'Params',
-        'Events',
-        'Structure',
-        'DataConfig',
-        'DataNodes',
-        'Stack',
-        'Langs'
-    ],
+    'extend' : 'Com.AbstractController',
     'events' : [
-        'onRender',
         'onItemAdd',
         'onItemRemove',
         'onItemProcess',
@@ -18795,13 +18928,11 @@ cm.define('Com.MultiField', {
         'onItemIndexChange'
     ],
     'params' : {
-        'node' : cm.Node('div'),
-        'container' : null,
-        'name' : '',
         'renderStructure' : false,
         'embedStructure' : 'append',
+        'embedStructureOnRender' : false,
         'renderItems' : 0,
-        'maxItems' : 0,                         // 0 - infinity
+        'max' : 0,                         // 0 - infinity
         'template' : null,                      // Html node or string with items template
         'templateAttributeReplace' : false,
         'templateAttribute' : 'name',           // Replace specified items attribute by pattern, example: data-attribute-name="test[%index%]", available variables: %index%
@@ -18822,112 +18953,124 @@ cm.define('Com.MultiField', {
         }
     }
 }, function(params){
-    var that = this,
-        toolbarHeight = 0,
-        toolbarVisible = true;
+    var that = this;
+    // Call parent class construct
+    Com.AbstractController.apply(that, arguments);
+});
 
-    that.nodes = {
-        'container' : cm.node('div'),
-        'content' : cm.node('ul'),
-        'toolbar' : cm.node('li'),
-        'add' : cm.node('div'),
-        'items' : []
-    };
-    that.components = {};
-    that.items = [];
+cm.getConstructor('Com.MultiField', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
 
-    var init = function(){
-        that.setParams(params);
-        that.convertEvents(that.params['events']);
-        that.getDataNodes(that.params['node']);
-        that.getDataConfig(that.params['node']);
-        validateParams();
-        render();
-        that.addToStack(that.nodes['container']);
-        that.triggerEvent('onRender');
-    };
-
-    var validateParams = function(){
-        // Check sortable
-        if(that.params['sortable']){
-            cm.getConstructor('Com.Sortable', function(classConstructor){
-                that.components['sortable'] = new classConstructor(that.params['Com.Sortable']);
-            });
-            // WTF?
-            if(!that.components['sortable']){
-                that.params['sortable'] = false;
-            }
-        }
+    classProto.construct = function(){
+        var that = this;
+        // Variables
+        that.nodes = {
+            'container' : cm.node('div'),
+            'content' : cm.node('ul'),
+            'toolbar' : cm.node('li'),
+            'add' : cm.node('div'),
+            'items' : []
+        };
+        that.components = {};
+        that.items = [];
+        that.toolbarHeight = 0;
+        that.isToolbarVisible = true;
+        // Bind context to methods
+        // Add events
+        // Call parent method
+        _inherit.prototype.construct.apply(that, arguments);
+        return that;
     };
 
-    var render = function(){
-        // Render Structure
-        if(that.params['renderStructure']){
-            that.nodes['container'] = cm.node('div', {'class' : 'com__multifield'},
-                that.nodes['content'] = cm.node('div', {'class' : 'com__multifield__content'}),
-                that.nodes['toolbar'] = cm.node('div', {'class' : 'com__multifield__toolbar'},
-                    cm.node('div', {'class' : 'com__multifield__item'},
-                        that.nodes['add'] = cm.node('div', {'class' : that.params['icons']['add'], 'title' : that.lang('add')})
-                    )
+    /* *** SYSTEM *** */
+
+    classProto.renderView = function(){
+        var that = this;
+        that.triggerEvent('onRenderViewStart');
+        that.nodes['container'] = cm.node('div', {'class' : 'com__multifield'},
+            that.nodes['content'] = cm.node('div', {'class' : 'com__multifield__content'}),
+            that.nodes['toolbar'] = cm.node('div', {'class' : 'com__multifield__toolbar'},
+                cm.node('div', {'class' : 'com__multifield__item'},
+                    that.nodes['add'] = cm.node('div', {'class' : that.params['icons']['add'], 'title' : that.lang('add')})
                 )
-            );
-            // Append
-            that.embedStructure(that.nodes['container']);
-        }
-        // Add CSS Class
-        cm.addClass(that.nodes['container'], that.params['theme']);
+            )
+        );
+        that.triggerEvent('onRenderViewProcess');
+        that.triggerEvent('onRenderViewEnd');
+        return that;
+    };
+
+    classProto.renderViewModel = function(){
+        var that = this;
+        // Call parent method - renderViewModel
+        _inherit.prototype.renderViewModel.apply(that, arguments);
         // Add button events
         cm.addEvent(that.nodes['add'], 'click', function(e){
             cm.preventDefault(e);
-            renderItem();
+            that.renderItem();
         });
         // Init Sortable
         if(that.params['sortable']){
-            that.components['sortable'].addEvent('onSort', function(my, data){
-                var item = that.items.find(function(item){
-                    return item['container'] === data['node'];
+            cm.getConstructor('Com.Sortable', function(classConstructor, className){
+                that.components['sortable'] = new classConstructor(that.params[className]);
+                that.components['sortable'].addEvent('onSort', function(my, data){
+                    var item = that.items.find(function(item){
+                        return item['container'] === data['node'];
+                    });
+                    if(item){
+                        that.sortItem(item, data['index']);
+                    }
                 });
-                if(item){
-                    sortItem(item, data['index']);
-                }
+                that.components['sortable'].addGroup(that.nodes['content']);
             });
-            that.components['sortable'].addGroup(that.nodes['content']);
         }
         // Process rendered items
-        cm.forEach(that.nodes['items'], processItem);
+        cm.forEach(that.nodes['items'], function(item){
+            that.processItem(item);
+        });
         // Render items
-        cm.forEach(Math.max(that.params['renderItems'] - that.items.length, 0), renderItem);
+        cm.forEach(Math.max(that.params['renderItems'] - that.items.length, 0), function(){
+            that.renderItem();
+        });
+        return that;
     };
 
-    var renderItem = function(){
-        var nodes;
-        if(that.params['maxItems'] == 0 || that.items.length < that.params['maxItems']){
-            var item = {
+    classProto.setAttributes = function(){
+        var that = this;
+        // Call parent method - renderViewModel
+        _inherit.prototype.setAttributes.apply(that, arguments);
+        // Set theme
+        cm.addClass(that.nodes['container'], that.params['theme']);
+        return that;
+    };
+
+    /* *** ITEMS *** */
+
+    classProto.renderItem = function(item, params){
+        var that = this,
+            nodes;
+        if(that.params['max'] == 0 || that.items.length < that.params['max']){
+            // Config
+            item = cm.merge({
                 'isVisible' : false
-            };
+            }, item);
+            params = cm.merge({
+                'callback' : function(){},
+                'triggerEvents' : true
+            }, params);
             // Structure
             item['container'] = cm.node('div', {'class' : 'com__multifield__item', 'data-node' : 'items:[]:container'},
-                item['field'] = cm.node('div', {'class' : 'field', 'data-node' : 'field'}),
+                item['content'] = item['field'] = cm.node('div', {'class' : 'field', 'data-node' : 'field'}),
                 item['remove'] = cm.node('div', {'class' : that.params['icons']['remove'], 'title' : that.lang('remove'), 'data-node' : 'remove'})
             );
             // Template
-            if(cm.isNode(that.params['template'])){
-                cm.appendChild(that.params['template'], item['field']);
-            }else{
-                nodes = cm.strToHTML(that.params['template']);
-                if(!cm.isEmpty(nodes)){
-                    if(cm.isNode(nodes)){
-                        cm.appendChild(nodes, item['field']);
-                    }else{
-                        while(nodes.length){
-                            if(cm.isNode(nodes[0])){
-                                cm.appendChild(nodes[0], item['field']);
-                            }else{
-                                cm.remove(nodes[0]);
-                            }
-                        }
-                    }
+            if(!cm.isEmpty(that.params['template'])){
+                if(cm.isString(that.params['template'])){
+                    nodes = cm.strToHTML(that.params['template']);
+                }else{
+                    nodes = cm.clone(that.params['template'], true);
                 }
+                cm.appendNodes(nodes, item['field']);
             }
             // Sortable
             if(that.params['sortable']){
@@ -18935,15 +19078,18 @@ cm.define('Com.MultiField', {
                 cm.insertFirst(item['drag'], item['container']);
             }
             // Embed
-            that.nodes['content'].appendChild(item['container']);
+            cm.appendChild(item['container'], that.nodes['content']);
             // Process
-            processItem(item);
+            that.processItem(item);
+            // Callback
+            params['callback'](item);
             // Trigger event
-            that.triggerEvent('onItemAdd', item);
+            params['triggerEvents'] && that.triggerEvent('onItemAdd', item);
         }
     };
 
-    var processItem = function(item){
+    classProto.processItem = function(item){
+        var that = this;
         // Register sortable item
         if(that.params['sortable']){
             that.components['sortable'].addItem(item['container'], that.nodes['content']);
@@ -18953,51 +19099,61 @@ cm.define('Com.MultiField', {
         // Events
         cm.addEvent(item['remove'], 'click', function(e){
             cm.preventDefault(e);
-            removeItem(item);
+            that.deleteItem(item);
         });
         // Push
         that.items.push(item);
-        resetIndexes();
+        that.resetIndexes();
         // Animate
-        toggleItemVisibility(item);
+        that.toggleItemVisibility(item);
         // Toggle toolbar visibility
-        toggleToolbarVisibility();
+        that.toggleToolbarVisibility();
         // Trigger event
         that.triggerEvent('onItemProcess', item);
     };
 
-    var removeItem = function(item){
+    classProto.deleteItem = function(item, params){
+        var that = this;
+        params = cm.merge({
+            'callback' : function(){},
+            'triggerEvents' : true
+        }, params);
         // Remove sortable item
         if(that.params['sortable']){
             that.components['sortable'].removeItem(item['container']);
         }
         // Remove from array
         that.items.splice(that.items.indexOf(item), 1);
-        resetIndexes();
+        that.resetIndexes();
         // Animate
-        toggleItemVisibility(item, function(){
+        that.toggleItemVisibility(item, function(){
             // Remove from DOM
             cm.remove(item['container']);
         });
         // Toggle toolbar visibility
-        toggleToolbarVisibility();
+        that.toggleToolbarVisibility();
+        // Callback
+        params['callback'](item);
         // Trigger event
-        that.triggerEvent('onItemRemove', item);
+        params['triggerEvents'] && that.triggerEvent('onItemRemove', item);
     };
 
-    var sortItem = function(item, index){
+    classProto.sortItem = function(item, index){
+        var that = this;
         // Resort items in array
         that.items.splice(that.items.indexOf(item), 1);
         that.items.splice(index, 0, item);
-        resetIndexes();
+        that.resetIndexes();
         // Trigger event
         that.triggerEvent('onItemSort', item);
     };
 
-    var resetIndexes = function(){
+    classProto.resetIndexes = function(){
+        var that = this;
         cm.forEach(that.items, function(item, index){
             if(item['index'] != index){
                 // Set index
+                item['previousIndex'] = item['index'];
                 item['index'] = index;
                 // Process data attributes
                 if(that.params['templateAttributeReplace']){
@@ -19009,19 +19165,16 @@ cm.define('Com.MultiField', {
         });
     };
 
-    var itemInArray = function(item){
-        return !!that.items.find(function(find){
-            return find === item;
-        });
-    };
+    /* *** VISIBILITY *** */
 
-    var toggleToolbarVisibility = function(){
-        if(!toolbarHeight){
-            toolbarHeight = that.nodes['toolbar'].offsetHeight;
+    classProto.toggleToolbarVisibility = function(){
+        var that = this;
+        if(!that.toolbarHeight){
+            that.toolbarHeight = that.nodes['toolbar'].offsetHeight;
         }
-        if(that.params['maxItems'] > 0 && that.items.length == that.params['maxItems']){
-            if(toolbarVisible){
-                toolbarVisible = false;
+        if(that.params['max'] > 0 && that.items.length == that.params['max']){
+            if(that.isToolbarVisible){
+                that.isToolbarVisible = false;
                 that.nodes['toolbar'].style.overflow = 'hidden';
                 cm.transition(that.nodes['toolbar'], {
                     'properties' : {'height' : '0px', 'opacity' : 0},
@@ -19030,11 +19183,11 @@ cm.define('Com.MultiField', {
                 });
             }
         }else{
-            if(!toolbarVisible){
-                toolbarVisible = true;
+            if(!that.isToolbarVisible){
+                that.isToolbarVisible = true;
                 that.nodes['toolbar'].style.overflow = 'hidden';
                 cm.transition(that.nodes['toolbar'], {
-                    'properties' : {'height' : [toolbarHeight, 'px'].join(''), 'opacity' : 1},
+                    'properties' : {'height' : [that.toolbarHeight, 'px'].join(''), 'opacity' : 1},
                     'duration' : that.params['duration'],
                     'easing' : 'ease-in-out',
                     'clear' : true,
@@ -19046,7 +19199,8 @@ cm.define('Com.MultiField', {
         }
     };
 
-    var toggleItemVisibility = function(item, callback){
+    classProto.toggleItemVisibility = function(item, callback){
+        var that = this;
         callback = typeof callback == 'function' ? callback : function(){};
         if(!item['height']){
             item['height'] = item['container'].offsetHeight;
@@ -19082,47 +19236,46 @@ cm.define('Com.MultiField', {
 
     /* ******* PUBLIC ******* */
 
-    that.addItem = function(){
-        renderItem();
+    classProto.addItem = function(item, params){
+        var that = this;
+        that.renderItem(item, params);
         return that;
     };
 
-    that.removeItem = function(item){
+    classProto.removeItem = function(item, params){
+        var that = this;
         if(typeof item == 'number' && that.items[item]){
-            removeItem(that.items[item]);
-        }else if(itemInArray(item)){
-            removeItem(item);
+            that.deleteItem(that.items[item], params);
+        }else if(cm.inArray(that.items, item)){
+            that.deleteItem(item, params);
         }
         return that;
     };
 
-    that.getItem = function(index){
+    classProto.getItem = function(index){
+        var that = this;
         if(that.items[index]){
             return that.items[index];
         }
         return null;
     };
 
-    that.getItems = function(){
+    classProto.getItems = function(){
+        var that = this;
         return that.items;
     };
-
-    init();
 });
 cm.define('Com.MultipleFileInput', {
     'extend' : 'Com.MultipleInput',
     'params' : {
         'embedStructure' : 'replace',
         'className' : 'com__multiple-file-input',
-        'max' : 0,                                  // 0 - infinity
+        'max' : 5,                                  // 0 - infinity
         'local' : true,
         'buttonsAlign' : 'left',
         'inputConstructor' : 'Com.FileInput',
         'inputParams' : {
-            'dropzone' : false,
-            'local' : false,
-            'fileManager' : false,
-            'fileUploader' : false
+            'dropzone' : false
         },
         'fileManager' : false,
         'fileManagerConstructor' : 'Com.AbstractFileManagerContainer',
@@ -19167,15 +19320,11 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
         // Bind context to methods
         that.validateParamsEndHandler = that.validateParamsEnd.bind(that);
         that.itemAddProcessHandler = that.itemAddProcess.bind(that);
-        that.itemAddEndHandler = that.itemAddEnd.bind(that);
-        that.itemRemoveEndHandler = that.itemRemoveEnd.bind(that);
         that.browseActionHandler = that.browseAction.bind(that);
         that.processFilesHandler = that.processFiles.bind(that);
         // Add events
         that.addEvent('onValidateParamsEnd', that.validateParamsEndHandler);
         that.addEvent('onItemAddProcess', that.itemAddProcessHandler);
-        that.addEvent('onItemAddEnd', that.itemAddEndHandler);
-        that.addEvent('onItemRemoveEnd', that.itemRemoveEndHandler);
         // Call parent method
         _inherit.prototype.construct.apply(that, arguments);
         return that;
@@ -19312,26 +19461,6 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
         item['controller'].addEvent('onClear', function(){
             that.removeItem(item);
         });
-        return that;
-    };
-
-    classProto.itemAddEnd = function(){
-        var that = this;
-        if(that.params['max'] && (that.items.length == that.params['max'])){
-            cm.addClass(that.myNodes['container'], 'is-hidden');
-        }else if(that.hasButtons){
-            cm.removeClass(that.myNodes['container'], 'is-hidden');
-        }
-        return that;
-    };
-
-    classProto.itemRemoveEnd = function(){
-        var that = this;
-        if(that.params['max'] && (that.items.length == that.params['max'])){
-            cm.addClass(that.myNodes['container'], 'is-hidden');
-        }else if(that.hasButtons){
-            cm.removeClass(that.myNodes['container'], 'is-hidden');
-        }
         return that;
     };
 
@@ -25269,6 +25398,8 @@ function(params){
         items = {},
         isOpen = false;
 
+    that.isDestructed = null;
+    that.value = null;
     that.components = {};
     that.isAutocomplete = false;
 
@@ -25489,7 +25620,8 @@ function(params){
     };
 
     var setHiddenInputData = function(){
-        nodes['hidden'].value = tags.join(',');
+        that.value = tags.join(',');
+        nodes['hidden'].value = that.value;
     };
 
     var bodyEvent = function(e){
@@ -25504,6 +25636,24 @@ function(params){
     };
 
     /* ******* MAIN ******* */
+
+    that.destruct = function(){
+        var that = this;
+        if(!that.isDestructed){
+            that.isDestructed = true;
+            that.removeFromStack();
+        }
+        return that;
+    };
+
+    that.get = function(){
+        return that.value || null;
+    };
+
+    that.set = function(value){
+        that.add(value);
+        return that;
+    };
 
     that.add = function(tag /* or tags comma separated or array */){
         var sourceTags;
@@ -25542,6 +25692,13 @@ function(params){
     };
 
     init();
+});
+
+/* ****** FORM FIELD COMPONENT ******* */
+
+Com.FormFields.add('tags', {
+    'node' : cm.node('input', {'type' : 'text'}),
+    'constructor' : 'Com.TagsInput'
 });
 cm.define('Com.TimeSelect', {
     'modules' : [
@@ -26057,7 +26214,28 @@ function(params){
         that.triggerEvent('onHide');
     };
 
-    /* ******* MAIN ******* */
+    /* ******* PUBLIC ******* */
+
+    that.setTitle = function(node){
+        cm.clearNode(that.nodes['title']);
+        if(cm.isString(node) || cm.isNumber(node)){
+            cm.appendChild(cm.textNode(node), that.nodes['title']);
+        }else{
+            cm.appendNodes(node, that.nodes['title']);
+        }
+        return that;
+    };
+
+    that.setContent = function(node){
+        var parent = that.nodes['content'] || that.nodes['target'];
+        cm.clearNode(parent);
+        if(cm.isString(node) || cm.isNumber(node)){
+            cm.appendChild(cm.textNode(node), parent);
+        }else{
+            cm.appendNodes(node, parent);
+        }
+        return that;
+    };
 
     that.toggle = function(){
         if(that.isCollapsed){

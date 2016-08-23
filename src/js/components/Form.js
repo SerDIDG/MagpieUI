@@ -236,6 +236,11 @@ function(params){
         }
     };
 
+    var renderSeparator = function(){
+        var node = cm.node('hr');
+        cm.appendChild(node, that.nodes['fields']);
+    };
+
     /* ******* CALLBACKS ******* */
 
     that.callbacks.prepare = function(that, config){
@@ -393,6 +398,11 @@ function(params){
                 renderButton(item);
             });
         }
+        return that;
+    };
+
+    that.addSeparator = function(){
+        renderSeparator();
         return that;
     };
 
