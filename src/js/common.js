@@ -29,7 +29,7 @@
  ******* */
 
 var cm = {
-        '_version' : '3.21.0',
+        '_version' : '3.21.1',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -2664,6 +2664,20 @@ cm.setCSSTranslate = (function(){
             node.style.top = y;
             return node;
         };
+    }
+})();
+
+cm.clearCSSTranslate = (function(){
+    var transform = cm.getSupportedStyle('transform');
+    if(transform){
+        return function(node){
+            node.style[transform] = '';
+        }
+    }else{
+        return function(node){
+            node.style.left = '';
+            node.style.top = '';
+        }
     }
 })();
 

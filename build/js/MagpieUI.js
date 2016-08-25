@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.21.0 (2016-08-23 20:00) ************ */
+/*! ************ MagpieUI v3.21.1 (2016-08-25 21:16) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1426,7 +1426,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.21.0',
+        '_version' : '3.21.1',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -4061,6 +4061,20 @@ cm.setCSSTranslate = (function(){
             node.style.top = y;
             return node;
         };
+    }
+})();
+
+cm.clearCSSTranslate = (function(){
+    var transform = cm.getSupportedStyle('transform');
+    if(transform){
+        return function(node){
+            node.style[transform] = '';
+        }
+    }else{
+        return function(node){
+            node.style.left = '';
+            node.style.top = '';
+        }
     }
 })();
 
@@ -26204,6 +26218,11 @@ function(params){
         that.nodes['target'].style.opacity = 1;
         that.nodes['target'].style.height = 'auto';
         that.nodes['target'].style.overflow = 'visible';
+        // Trigger events
+        cm.customEvent.trigger(that.nodes['target'], 'redraw', {
+            'type' : 'child',
+            'self' : false
+        });
         that.triggerEvent('onShow');
     };
 
@@ -26211,6 +26230,7 @@ function(params){
         that.isProcess = false;
         that.nodes['target'].style.opacity = 0;
         that.nodes['target'].style.height = 0;
+        that.nodes['target'].style.display = 'none';
         that.triggerEvent('onHide');
     };
 
@@ -26263,6 +26283,16 @@ function(params){
             if(isImmediately){
                 expandEnd();
             }else{
+                // Redraw inner content
+                that.nodes['target'].style.height = 'auto';
+                that.nodes['target'].style.display = 'block';
+                // Trigger events
+                cm.customEvent.trigger(that.nodes['target'], 'redraw', {
+                    'type' : 'child',
+                    'self' : false
+                });
+                // Prepare animation
+                that.nodes['target'].style.height = 0;
                 that.nodes['target'].style.overflow = 'hidden';
                 if(!that.nodes['target'].style.opacity){
                     that.nodes['target'].style.opacity = 0;

@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.21.0 (2016-08-23 20:00) ************ */
+/*! ************ MagpieUI v3.21.1 (2016-08-25 21:16) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.5.0
@@ -11030,6 +11030,15 @@ button.is-hidden {
   opacity: 1;
   -webkit-transition: visibility 100ms ease-in-out, opacity 100ms ease-in-out;
   transition: visibility 100ms ease-in-out, opacity 100ms ease-in-out;
+}
+.pt__menu-dropdown--inside {
+  visibility: visible;
+  opacity: 1;
+  position: relative;
+  top: auto;
+  right: auto;
+  bottom: auto;
+  left: auto;
 }
 /* *** MENU *** */
 .pt__menu {

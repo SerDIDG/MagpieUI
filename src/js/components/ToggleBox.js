@@ -123,6 +123,11 @@ function(params){
         that.nodes['target'].style.opacity = 1;
         that.nodes['target'].style.height = 'auto';
         that.nodes['target'].style.overflow = 'visible';
+        // Trigger events
+        cm.customEvent.trigger(that.nodes['target'], 'redraw', {
+            'type' : 'child',
+            'self' : false
+        });
         that.triggerEvent('onShow');
     };
 
@@ -130,6 +135,7 @@ function(params){
         that.isProcess = false;
         that.nodes['target'].style.opacity = 0;
         that.nodes['target'].style.height = 0;
+        that.nodes['target'].style.display = 'none';
         that.triggerEvent('onHide');
     };
 
@@ -182,6 +188,16 @@ function(params){
             if(isImmediately){
                 expandEnd();
             }else{
+                // Redraw inner content
+                that.nodes['target'].style.height = 'auto';
+                that.nodes['target'].style.display = 'block';
+                // Trigger events
+                cm.customEvent.trigger(that.nodes['target'], 'redraw', {
+                    'type' : 'child',
+                    'self' : false
+                });
+                // Prepare animation
+                that.nodes['target'].style.height = 0;
                 that.nodes['target'].style.overflow = 'hidden';
                 if(!that.nodes['target'].style.opacity){
                     that.nodes['target'].style.opacity = 0;
