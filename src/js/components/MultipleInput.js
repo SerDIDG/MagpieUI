@@ -34,8 +34,8 @@ cm.define('Com.MultipleInput', {
         'inputParams' : {},
         'value' : [],
         'defaultValue' : [],
-        'max' : 5,
-        'sortable' : true,
+        'max' : 0,
+        'sortable' : false,
         'multiFieldConstructor' : 'Com.MultiField',
         'multiFieldParams' : {
             'embedStructure' : 'append',

@@ -34,15 +34,23 @@ cm.getConstructor('Com.FileUploaderContainer', function(classConstructor, classN
     classProto.construct = function(){
         var that = this;
         // Bind context to methods
-        that.validateParamsEndHandler = that.validateParamsEnd.bind(that);
         that.getHandler = that.get.bind(that);
         that.completeHandler = that.complete.bind(that);
         that.afterCompleteHandler = that.afterComplete.bind(that);
         // Add events
-        that.addEvent('onValidateParamsEnd', that.validateParamsEndHandler);
         // Call parent method
         _inherit.prototype.construct.apply(that, arguments);
         return that;
+    };
+
+    classProto.validateParams = function(){
+        var that = this;
+        // Call parent method
+        _inherit.prototype.validateParams.apply(that, arguments);
+        // Validate Language Strings
+        that.setLangs({
+            'title' : !that.params['params']['max'] || that.params['params']['max'] > 1 ? that.lang('title_multiple') : that.lang('title_single')
+        });
     };
 
     classProto.get = function(e){
@@ -59,13 +67,7 @@ cm.getConstructor('Com.FileUploaderContainer', function(classConstructor, classN
         return that;
     };
 
-    classProto.validateParamsEnd = function(){
-        var that = this;
-        // Validate Language Strings
-        that.setLangs({
-            'title' : !that.params['params']['max'] || that.params['params']['max'] > 1 ? that.lang('title_multiple') : that.lang('title_single')
-        });
-    };
+    /* *** SYSTEM *** */
 
     classProto.renderControllerEvents = function(){
         var that = this;

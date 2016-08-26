@@ -10,8 +10,8 @@ Com['UA'] = {
     'str' : navigator.userAgent,
     'get' : function(str){
         var that = this,
-            str = (str)? str : that.str,
             arr = {};
+        str = (str)? str : that.str;
         // Check browser
         if(str.indexOf('IEMobile') > -1){
             arr['browser'] = 'IE Mobile';
