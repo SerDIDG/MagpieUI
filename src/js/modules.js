@@ -683,18 +683,18 @@ Mod['Structure'] = {
                 that.replaceStructure(node);
                 break;
             case 'append':
-                that.appendStructure(node);
+                that.appendStructure(node, 'insertLast');
+                break;
+            case 'first':
+                that.appendStructure(node, 'insertFirst');
                 break;
         }
         return that;
     },
-    'appendStructure' : function(node){
+    'appendStructure' : function(node, type){
         var that = this;
-        if(that.params['container']){
-            that.params['container'].appendChild(node);
-        }else if(that.params['node']){
-            that.params['node'].appendChild(node);
-        }
+        var container = that.params['container'] || that.params['node'];
+        container && cm[type](node, container);
         return that;
     },
     'replaceStructure' : function(node){

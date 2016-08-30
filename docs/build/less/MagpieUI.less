@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.21.2 (2016-08-26 17:42) ************ */
+/*! ************ MagpieUI v3.22.0 (2016-08-30 21:06) ************ */
 @charset "UTF-8";
 
 /*!
@@ -15158,27 +15158,7 @@ button {
 }
 /* ******* COMPONENTS: MULTIPLE FILE INPUT ******* */
 
-.com__multiple-file-input__content {
-    &.is-hidden {
-        display: none;
-    }
-}
 
-.com__multiple-file-input__content {
-    margin-top: @CmForm-FieldInnerIndent;
-}
-
-.com__multiple-file-input {
-    .com__multiple-input__items {
-        .cm__scroll-y-a;
-        max-height: (@CmForm-FilesList-Count * (@CmForm-FieldInnerIndent + @CmForm-FieldHeight)) - @CmForm-FieldInnerIndent;
-        margin-bottom: 0;
-
-        &.is-hidden + .com__multiple-file-input__content {
-            margin-top: 0;
-        }
-    }
-}
 /* ******* COMPONENTS: MULTIPLE INPUT ******* */
 
 .com__multiple-input {
@@ -15196,22 +15176,6 @@ button {
 
     &.is-hidden {
         opacity: 0;
-    }
-}
-
-.com__multiple-input__items {
-    margin-bottom: @CmForm-FieldInnerIndent;
-
-    &.is-hidden {
-        display: none;
-    }
-}
-
-.com__multiple-input__item {
-    margin-top: @CmForm-FieldInnerIndent;
-
-    &:first-child {
-        margin-top: 0;
     }
 }
 /* ******* NOTIFICATION ******* */

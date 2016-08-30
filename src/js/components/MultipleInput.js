@@ -7,15 +7,6 @@ cm.define('Com.MultipleInput', {
         'onClear',
         'onDisable',
         'onEnable',
-        'onRenderContentStart',
-        'onRenderContentProcess',
-        'onRenderContentEnd',
-        'onRenderInputViewStart',
-        'onRenderInputViewProcess',
-        'onRenderInputViewEnd',
-        'onRenderItemViewStart',
-        'onRenderItemViewProcess',
-        'onRenderItemViewEnd',
         'onSetAttributes',
         'onItemAddStart',
         'onItemAddProcess',
@@ -30,15 +21,19 @@ cm.define('Com.MultipleInput', {
     'params' : {
         'embedStructure' : 'replace',
         'className' : 'com__multiple-input',
-        'inputConstructor' : 'Com.AbstractInput',
-        'inputParams' : {},
         'value' : [],
         'defaultValue' : [],
         'max' : 0,
         'sortable' : false,
+        'showControls' : true,
+        'showToolbar' : false,
+        'focusInput' : false,
+        'duration' : 'cm._config.animDurationShort',
+        'inputConstructor' : 'Com.AbstractInput',
+        'inputParams' : {},
         'multiFieldConstructor' : 'Com.MultiField',
         'multiFieldParams' : {
-            'embedStructure' : 'append',
+            'embedStructure' : 'first',
             'renderStructure' : true,
             'embedStructureOnRender' : true,
             'template' : false,
@@ -61,6 +56,7 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
         that.nodes = {};
         that.components = {};
         that.items = [];
+        that.isToolbarVisible = true;
         // Bind context to methods
         that.setHandler = that.set.bind(that);
         that.getHandler = that.get.bind(that);
@@ -99,26 +95,11 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
         // Configure MultiField
         that.params['multiFieldParams']['max'] = that.params['max'];
         that.params['multiFieldParams']['sortable'] = that.params['sortable'];
+        that.params['multiFieldParams']['showControls'] = that.params['showControls'];
         return that;
     };
 
     /* *** SYSTEM *** */
-
-    classProto._renderView = function(){
-        var that = this;
-        that.triggerEvent('onRenderViewStart');
-        that.nodes['container'] = cm.node('div', {'class' : 'com__multiple-input'},
-            that.nodes['inner'] = cm.node('div', {'class' : 'inner'},
-                that.nodes['holder'] = cm.node('div', {'class' : 'com__multiple-input__holder'},
-                    that.nodes['items'] = cm.node('div', {'class' : 'com__multiple-input__items is-hidden'}),
-                    that.nodes['content'] = that.renderContent()
-                )
-            )
-        );
-        that.triggerEvent('onRenderViewProcess');
-        that.triggerEvent('onRenderViewEnd');
-        return that;
-    };
 
     classProto.renderView = function(){
         var that = this;
@@ -128,9 +109,23 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
                 that.nodes['holder'] = cm.node('div', {'class' : 'com__multiple-input__holder'})
             )
         );
+        if(that.params['showToolbar']){
+            that.nodes['toolbarContainer'] = that.renderToolbarView();
+            cm.appendChild(that.nodes['toolbarContainer'], that.nodes['holder']);
+        }
         that.triggerEvent('onRenderViewProcess');
         that.triggerEvent('onRenderViewEnd');
         return that;
+    };
+
+    classProto.renderToolbarView = function(){
+        var that = this,
+            nodes = {};
+        // Structure
+        nodes['container'] = cm.node('div', {'class' : 'com__multiple-input__toolbar'});
+        // Push
+        that.nodes['toolbar'] = nodes;
+        return nodes['container'];
     };
 
     classProto.renderViewModel = function(){
@@ -173,35 +168,10 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
         return that;
     };
 
-    classProto.renderContent = function(){
-        var that = this;
-        that.triggerEvent('onRenderContentStart');
-        var node = cm.node('div', {'class' : 'com__multiple-input__content'});
-        that.triggerEvent('onRenderContentProcess');
-        that.triggerEvent('onRenderContentEnd');
-        return node;
-    };
-
     classProto.renderInputView = function(item){
         var that = this;
-        that.triggerEvent('onRenderInputViewStart');
-        item['input'] = cm.node('input', {'type' : 'hidden'});
-        that.triggerEvent('onRenderInputViewProcess');
-        that.triggerEvent('onRenderInputViewEnd');
+        item['input'] = cm.node('input', {'type' : 'text'});
         return item['input'];
-    };
-
-    classProto.renderItemView = function(item){
-        var that = this;
-        that.triggerEvent('onRenderItemViewStart');
-        item['nodes']['container'] = cm.node('div', {'class' : 'com__multiple-input__item'},
-            item['nodes']['inner'] = cm.node('div', {'class' : 'inner'},
-                item['nodes']['input'] = item['input']
-            )
-        );
-        that.triggerEvent('onRenderItemViewProcess');
-        that.triggerEvent('onRenderItemViewEnd');
-        return item['nodes']['container'];
     };
 
     /* *** ITEMS *** */
@@ -234,14 +204,16 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
             'nodes' : {}
         }, item);
         item['field'] = field;
+        item['container'] = item['field']['content'];
+        // Push
+        that.items.push(item);
         // Start
         that.triggerEvent('onItemAddStart', item);
         // Render views
         if(!item['input']){
             item['input'] = that.renderInputView(item);
         }
-        item['container'] = that.renderItemView(item);
-        cm.appendChild(item['container'], item['field']['content']);
+        cm.appendChild(item['input'], item['container']);
         // Process
         cm.getConstructor(item['constructor'], function(classConstructor){
             item['controller'] = new classConstructor(
@@ -252,13 +224,15 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
                 })
             );
             that.triggerEvent('onItemAddProcess', item);
+            that.params['focusInput'] && item['controller'].focus && item['controller'].focus();
             // Trigger set events
             triggerEvents && that.triggerEvent('onSelect');
             triggerEvents && that.triggerEvent('onSet');
             triggerEvents && that.triggerEvent('onChange');
         });
-        // Push
-        that.items.push(item);
+        // Toggle toolbar visibility
+        that.toggleToolbarVisibility();
+        // Complete event
         that.triggerEvent('onItemAddEnd', item);
         return item;
     };
@@ -266,7 +240,7 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
     classProto.removeItem = function(item, triggerEvents){
         var that = this;
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        // Render Fields
+        // Remove Field
         that.components['multiField'].removeItem(item['field'], {
             'triggerEvents' : false,
             'callback' : function(field){
@@ -284,6 +258,8 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
         that.triggerEvent('onItemRemoveProcess', item);
         item['controller'] && item['controller'].destruct();
         that.triggerEvent('onItemRemoveEnd', item);
+        // Toggle toolbar visibility
+        that.toggleToolbarVisibility();
         // Trigger set events
         triggerEvents && that.triggerEvent('onSelect');
         triggerEvents && that.triggerEvent('onSet');
@@ -301,6 +277,61 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
         that.items.splice(index, 0, item);
         // Trigger event
         that.triggerEvent('onItemSortEnd', item);
+    };
+
+    /* *** TOOLBAR *** */
+
+    classProto.toggleToolbarVisibility = function(){
+        var that = this;
+        if(that.params['showToolbar']){
+            if(that.params['max'] > 0 && that.items.length == that.params['max']){
+                that.hideToolbar();
+            }else{
+                that.showToolbar();
+            }
+        }
+        return that;
+    };
+
+    classProto.showToolbar = function(){
+        var that = this,
+            height = 0;
+        if(!that.isToolbarVisible){
+            that.isToolbarVisible = true;
+            // Prepare
+            that.nodes['toolbarContainer'].style.height = '';
+            height = that.nodes['toolbarContainer'].offsetHeight;
+            that.nodes['toolbarContainer'].style.height = '0px';
+            that.nodes['toolbarContainer'].style.overflow = 'hidden';
+            // Animate
+            cm.transition(that.nodes['toolbarContainer'], {
+                'properties' : {'height' : height + 'px', 'opacity' : 1},
+                'duration' : that.params['duration'],
+                'easing' : 'ease-in-out',
+                'clear' : true,
+                'onStop' : function(){
+                    that.nodes['toolbarContainer'].style.overflow = '';
+                    that.nodes['toolbarContainer'].style.height = '';
+                }
+            });
+        }
+        return that;
+    };
+
+    classProto.hideToolbar = function(){
+        var that = this;
+        if(that.isToolbarVisible){
+            that.isToolbarVisible = false;
+            // Prepare
+            that.nodes['toolbarContainer'].style.overflow = 'hidden';
+            // Animate
+            cm.transition(that.nodes['toolbarContainer'], {
+                'properties' : {'height' : '0px', 'opacity' : 0},
+                'duration' : that.params['duration'],
+                'easing' : 'ease-in-out'
+            });
+        }
+        return that;
     };
 
     /* *** PUBLIC *** */

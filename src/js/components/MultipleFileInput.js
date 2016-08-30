@@ -3,11 +3,15 @@ cm.define('Com.MultipleFileInput', {
     'params' : {
         'embedStructure' : 'replace',
         'className' : 'com__multiple-file-input',
-        'max' : 5,                                  // 0 - infinity
         'local' : true,
+        'sortable' : false,
+        'showToolbar' : true,
+        'showControls' : false,
+        'focusInput' : false,
         'buttonsAlign' : 'left',
         'inputConstructor' : 'Com.FileInput',
         'inputParams' : {
+            'embedStructure' : 'replace',
             'dropzone' : false
         },
         'fileManager' : false,
@@ -36,7 +40,6 @@ cm.define('Com.MultipleFileInput', {
 },
 function(params){
     var that = this;
-    that.myNodes = {};
     that.myComponents = {};
     that.dragInterval = null;
     that.isDropzoneShow = false;
@@ -65,12 +68,11 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
 
     classProto.clear = function(){
         var that = this;
-        cm.removeClass(that.myNodes['browseHolder'], 'is-hidden');
+        that.params['showToolbar'] && cm.removeClass(that.nodes['toolbar']['browseHolder'], 'is-hidden');
         // Call parent method
         _inherit.prototype.clear.apply(that, arguments);
         return that;
     };
-
 
     classProto.validateParamsEnd = function(){
         var that = this;
@@ -121,11 +123,11 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
             });
         }
         // Init File Manager
-        if(that.params['fileManager']){
+        if(that.params['showToolbar'] && that.params['fileManager']){
             cm.getConstructor(that.params['fileManagerConstructor'], function(classObject){
                 that.myComponents['fileManager'] = new classObject(
                     cm.merge(that.params['fileManagerParams'], {
-                        'node' : that.myNodes['browseFileManager']
+                        'node' : that.nodes['toolbar']['browseFileManager']
                     })
                 );
                 that.myComponents['fileManager'].addEvent('onComplete', function(my, data){
@@ -134,11 +136,11 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
             });
         }
         // Init File Uploader
-        if(that.params['fileUploader']){
+        if(that.params['showToolbar'] && that.params['fileUploader']){
             cm.getConstructor(that.params['fileUploaderConstructor'], function(classObject){
                 that.myComponents['fileUploader'] = new classObject(
                     cm.merge(that.params['fileUploaderParams'], {
-                        'node' : that.myNodes['browseFileUploader']
+                        'node' : that.nodes['toolbar']['browseFileUploader']
                     })
                 );
                 that.myComponents['fileUploader'].addEvent('onComplete', function(my, data){
@@ -149,44 +151,43 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
         return that;
     };
 
-    classProto.renderContent = function(){
-        var that = this;
-        that.triggerEvent('onRenderContentStart');
+    classProto.renderToolbarView = function(){
+        var that = this,
+            nodes = {};
         // Structure
-        that.myNodes['container'] = cm.node('div', {'class' : 'com__multiple-file-input__content'},
-            that.myNodes['content'] = cm.node('div', {'class' : 'pt__buttons'},
-                that.myNodes['contentInner'] = cm.node('div', {'class' : 'inner'})
+        nodes['container'] = cm.node('div', {'class' : 'com__multiple-input__toolbar'},
+            nodes['content'] = cm.node('div', {'class' : 'pt__buttons'},
+                nodes['contentInner'] = cm.node('div', {'class' : 'inner'})
             )
         );
-        cm.addClass(that.myNodes['content'], ['pull', that.params['buttonsAlign']].join('-'));
+        cm.addClass(nodes['content'], ['pull', that.params['buttonsAlign']].join('-'));
         // Render Browse Buttons
         if(that.params['local']){
-            that.myNodes['browseLocal'] = cm.node('div', {'class' : 'browse-button'},
+            nodes['browseLocal'] = cm.node('div', {'class' : 'browse-button'},
                 cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('_browse_local')),
                 cm.node('div', {'class' : 'inner'},
-                    that.myNodes['input'] = cm.node('input', {'type' : 'file'})
+                    nodes['input'] = cm.node('input', {'type' : 'file'})
                 )
             );
-            that.isMultiple && that.myNodes['input'].setAttribute('multiple', 'multiple');
-            cm.insertFirst(that.myNodes['browseLocal'], that.myNodes['contentInner']);
+            that.isMultiple && nodes['input'].setAttribute('multiple', 'multiple');
+            cm.insertFirst(nodes['browseLocal'], nodes['contentInner']);
         }
         if(that.params['fileManager']){
-            that.myNodes['browseFileManager'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('_browse_filemanager'));
-            cm.insertFirst(that.myNodes['browseFileManager'], that.myNodes['contentInner']);
+            nodes['browseFileManager'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('_browse_filemanager'));
+            cm.insertFirst(nodes['browseFileManager'], nodes['contentInner']);
         }
         if(that.params['fileUploader']){
-            that.myNodes['browseFileUploader'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('browse'));
-            cm.insertFirst(that.myNodes['browseFileUploader'], that.myNodes['contentInner']);
+            nodes['browseFileUploader'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('browse'));
+            cm.insertFirst(nodes['browseFileUploader'], nodes['contentInner']);
         }
         if(!that.hasButtons){
-            cm.addClass(that.myNodes['container'], 'is-hidden');
+            cm.addClass(nodes['container'], 'is-hidden');
         }
         // Events
-        that.triggerEvent('onRenderContentProcess');
-        cm.addEvent(that.myNodes['input'], 'change', that.browseActionHandler);
-        that.triggerEvent('onRenderContentEnd');
+        cm.addEvent(nodes['input'], 'change', that.browseActionHandler);
         // Push
-        return that.myNodes['container'];
+        that.nodes['toolbar'] = nodes;
+        return nodes['container'];
     };
 
     classProto.itemAddProcess = function(my, item){

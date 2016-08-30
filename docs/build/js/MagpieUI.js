@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.21.2 (2016-08-26 17:42) ************ */
+/*! ************ MagpieUI v3.22.0 (2016-08-30 21:06) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1426,7 +1426,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.21.2',
+        '_version' : '3.22.0',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -5708,18 +5708,18 @@ Mod['Structure'] = {
                 that.replaceStructure(node);
                 break;
             case 'append':
-                that.appendStructure(node);
+                that.appendStructure(node, 'insertLast');
+                break;
+            case 'first':
+                that.appendStructure(node, 'insertFirst');
                 break;
         }
         return that;
     },
-    'appendStructure' : function(node){
+    'appendStructure' : function(node, type){
         var that = this;
-        if(that.params['container']){
-            that.params['container'].appendChild(node);
-        }else if(that.params['node']){
-            that.params['node'].appendChild(node);
-        }
+        var container = that.params['container'] || that.params['node'];
+        container && cm[type](node, container);
         return that;
     },
     'replaceStructure' : function(node){
@@ -8530,15 +8530,6 @@ cm.define('Com.MultipleInput', {
         'onClear',
         'onDisable',
         'onEnable',
-        'onRenderContentStart',
-        'onRenderContentProcess',
-        'onRenderContentEnd',
-        'onRenderInputViewStart',
-        'onRenderInputViewProcess',
-        'onRenderInputViewEnd',
-        'onRenderItemViewStart',
-        'onRenderItemViewProcess',
-        'onRenderItemViewEnd',
         'onSetAttributes',
         'onItemAddStart',
         'onItemAddProcess',
@@ -8553,15 +8544,19 @@ cm.define('Com.MultipleInput', {
     'params' : {
         'embedStructure' : 'replace',
         'className' : 'com__multiple-input',
-        'inputConstructor' : 'Com.AbstractInput',
-        'inputParams' : {},
         'value' : [],
         'defaultValue' : [],
         'max' : 0,
         'sortable' : false,
+        'showControls' : true,
+        'showToolbar' : false,
+        'focusInput' : false,
+        'duration' : 'cm._config.animDurationShort',
+        'inputConstructor' : 'Com.AbstractInput',
+        'inputParams' : {},
         'multiFieldConstructor' : 'Com.MultiField',
         'multiFieldParams' : {
-            'embedStructure' : 'append',
+            'embedStructure' : 'first',
             'renderStructure' : true,
             'embedStructureOnRender' : true,
             'template' : false,
@@ -8584,6 +8579,7 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
         that.nodes = {};
         that.components = {};
         that.items = [];
+        that.isToolbarVisible = true;
         // Bind context to methods
         that.setHandler = that.set.bind(that);
         that.getHandler = that.get.bind(that);
@@ -8622,26 +8618,11 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
         // Configure MultiField
         that.params['multiFieldParams']['max'] = that.params['max'];
         that.params['multiFieldParams']['sortable'] = that.params['sortable'];
+        that.params['multiFieldParams']['showControls'] = that.params['showControls'];
         return that;
     };
 
     /* *** SYSTEM *** */
-
-    classProto._renderView = function(){
-        var that = this;
-        that.triggerEvent('onRenderViewStart');
-        that.nodes['container'] = cm.node('div', {'class' : 'com__multiple-input'},
-            that.nodes['inner'] = cm.node('div', {'class' : 'inner'},
-                that.nodes['holder'] = cm.node('div', {'class' : 'com__multiple-input__holder'},
-                    that.nodes['items'] = cm.node('div', {'class' : 'com__multiple-input__items is-hidden'}),
-                    that.nodes['content'] = that.renderContent()
-                )
-            )
-        );
-        that.triggerEvent('onRenderViewProcess');
-        that.triggerEvent('onRenderViewEnd');
-        return that;
-    };
 
     classProto.renderView = function(){
         var that = this;
@@ -8651,9 +8632,23 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
                 that.nodes['holder'] = cm.node('div', {'class' : 'com__multiple-input__holder'})
             )
         );
+        if(that.params['showToolbar']){
+            that.nodes['toolbarContainer'] = that.renderToolbarView();
+            cm.appendChild(that.nodes['toolbarContainer'], that.nodes['holder']);
+        }
         that.triggerEvent('onRenderViewProcess');
         that.triggerEvent('onRenderViewEnd');
         return that;
+    };
+
+    classProto.renderToolbarView = function(){
+        var that = this,
+            nodes = {};
+        // Structure
+        nodes['container'] = cm.node('div', {'class' : 'com__multiple-input__toolbar'});
+        // Push
+        that.nodes['toolbar'] = nodes;
+        return nodes['container'];
     };
 
     classProto.renderViewModel = function(){
@@ -8696,35 +8691,10 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
         return that;
     };
 
-    classProto.renderContent = function(){
-        var that = this;
-        that.triggerEvent('onRenderContentStart');
-        var node = cm.node('div', {'class' : 'com__multiple-input__content'});
-        that.triggerEvent('onRenderContentProcess');
-        that.triggerEvent('onRenderContentEnd');
-        return node;
-    };
-
     classProto.renderInputView = function(item){
         var that = this;
-        that.triggerEvent('onRenderInputViewStart');
-        item['input'] = cm.node('input', {'type' : 'hidden'});
-        that.triggerEvent('onRenderInputViewProcess');
-        that.triggerEvent('onRenderInputViewEnd');
+        item['input'] = cm.node('input', {'type' : 'text'});
         return item['input'];
-    };
-
-    classProto.renderItemView = function(item){
-        var that = this;
-        that.triggerEvent('onRenderItemViewStart');
-        item['nodes']['container'] = cm.node('div', {'class' : 'com__multiple-input__item'},
-            item['nodes']['inner'] = cm.node('div', {'class' : 'inner'},
-                item['nodes']['input'] = item['input']
-            )
-        );
-        that.triggerEvent('onRenderItemViewProcess');
-        that.triggerEvent('onRenderItemViewEnd');
-        return item['nodes']['container'];
     };
 
     /* *** ITEMS *** */
@@ -8757,14 +8727,16 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
             'nodes' : {}
         }, item);
         item['field'] = field;
+        item['container'] = item['field']['content'];
+        // Push
+        that.items.push(item);
         // Start
         that.triggerEvent('onItemAddStart', item);
         // Render views
         if(!item['input']){
             item['input'] = that.renderInputView(item);
         }
-        item['container'] = that.renderItemView(item);
-        cm.appendChild(item['container'], item['field']['content']);
+        cm.appendChild(item['input'], item['container']);
         // Process
         cm.getConstructor(item['constructor'], function(classConstructor){
             item['controller'] = new classConstructor(
@@ -8775,13 +8747,15 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
                 })
             );
             that.triggerEvent('onItemAddProcess', item);
+            that.params['focusInput'] && item['controller'].focus && item['controller'].focus();
             // Trigger set events
             triggerEvents && that.triggerEvent('onSelect');
             triggerEvents && that.triggerEvent('onSet');
             triggerEvents && that.triggerEvent('onChange');
         });
-        // Push
-        that.items.push(item);
+        // Toggle toolbar visibility
+        that.toggleToolbarVisibility();
+        // Complete event
         that.triggerEvent('onItemAddEnd', item);
         return item;
     };
@@ -8789,7 +8763,7 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
     classProto.removeItem = function(item, triggerEvents){
         var that = this;
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        // Render Fields
+        // Remove Field
         that.components['multiField'].removeItem(item['field'], {
             'triggerEvents' : false,
             'callback' : function(field){
@@ -8807,6 +8781,8 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
         that.triggerEvent('onItemRemoveProcess', item);
         item['controller'] && item['controller'].destruct();
         that.triggerEvent('onItemRemoveEnd', item);
+        // Toggle toolbar visibility
+        that.toggleToolbarVisibility();
         // Trigger set events
         triggerEvents && that.triggerEvent('onSelect');
         triggerEvents && that.triggerEvent('onSet');
@@ -8824,6 +8800,61 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
         that.items.splice(index, 0, item);
         // Trigger event
         that.triggerEvent('onItemSortEnd', item);
+    };
+
+    /* *** TOOLBAR *** */
+
+    classProto.toggleToolbarVisibility = function(){
+        var that = this;
+        if(that.params['showToolbar']){
+            if(that.params['max'] > 0 && that.items.length == that.params['max']){
+                that.hideToolbar();
+            }else{
+                that.showToolbar();
+            }
+        }
+        return that;
+    };
+
+    classProto.showToolbar = function(){
+        var that = this,
+            height = 0;
+        if(!that.isToolbarVisible){
+            that.isToolbarVisible = true;
+            // Prepare
+            that.nodes['toolbarContainer'].style.height = '';
+            height = that.nodes['toolbarContainer'].offsetHeight;
+            that.nodes['toolbarContainer'].style.height = '0px';
+            that.nodes['toolbarContainer'].style.overflow = 'hidden';
+            // Animate
+            cm.transition(that.nodes['toolbarContainer'], {
+                'properties' : {'height' : height + 'px', 'opacity' : 1},
+                'duration' : that.params['duration'],
+                'easing' : 'ease-in-out',
+                'clear' : true,
+                'onStop' : function(){
+                    that.nodes['toolbarContainer'].style.overflow = '';
+                    that.nodes['toolbarContainer'].style.height = '';
+                }
+            });
+        }
+        return that;
+    };
+
+    classProto.hideToolbar = function(){
+        var that = this;
+        if(that.isToolbarVisible){
+            that.isToolbarVisible = false;
+            // Prepare
+            that.nodes['toolbarContainer'].style.overflow = 'hidden';
+            // Animate
+            cm.transition(that.nodes['toolbarContainer'], {
+                'properties' : {'height' : '0px', 'opacity' : 0},
+                'duration' : that.params['duration'],
+                'easing' : 'ease-in-out'
+            });
+        }
+        return that;
     };
 
     /* *** PUBLIC *** */
@@ -9148,6 +9179,7 @@ function(params){
     
     that.components = {};
 
+    that.isDestructed = false;
     that.ajaxHandler = null;
     that.isOpen = false;
     that.isAjax = false;
@@ -9343,6 +9375,20 @@ function(params){
         }
     };
 
+    var setEvents = function(){
+        cm.addEvent(that.params['node'], 'input', requestHandler);
+        cm.addEvent(that.params['node'], 'keydown', inputHandler);
+        cm.addEvent(that.params['node'], 'blur', blurHandler);
+        cm.addEvent(that.params['node'], 'click', clickHandler);
+    };
+
+    var unsetEvents = function(){
+        cm.removeEvent(that.params['node'], 'input', requestHandler);
+        cm.removeEvent(that.params['node'], 'keydown', inputHandler);
+        cm.removeEvent(that.params['node'], 'blur', blurHandler);
+        cm.removeEvent(that.params['node'], 'click', clickHandler);
+    };
+
     /* ******* CALLBACKS ******* */
 
     /* *** AJAX *** */
@@ -9510,6 +9556,16 @@ function(params){
 
     /* ******* MAIN ******* */
 
+    that.destruct = function(){
+        var that = this;
+        if(!that.isDestructed){
+            that.isDestructed = true;
+            unsetEvents();
+            that.removeFromStack();
+        }
+        return that;
+    };
+
     that.set = function(item, triggerEvents){
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
         that.previousValue = that.value;
@@ -9531,11 +9587,9 @@ function(params){
 
     that.setInput = function(node){
         if(cm.isNode(node)){
+            unsetEvents();
             that.params['node'] = node;
-            cm.addEvent(that.params['node'], 'input', requestHandler);
-            cm.addEvent(that.params['node'], 'keydown', inputHandler);
-            cm.addEvent(that.params['node'], 'blur', blurHandler);
-            cm.addEvent(that.params['node'], 'click', clickHandler);
+            setEvents();
         }
         return that;
     };
@@ -9605,6 +9659,11 @@ function(params){
         if(that.ajaxHandler && that.ajaxHandler.abort){
             that.ajaxHandler.abort();
         }
+        return that;
+    };
+
+    that.focus = function(){
+        that.params['node'].focus();
         return that;
     };
 
@@ -18947,12 +19006,13 @@ cm.define('Com.MultiField', {
         'renderStructure' : false,
         'embedStructure' : 'append',
         'embedStructureOnRender' : false,
-        'renderItems' : 0,
-        'max' : 0,                         // 0 - infinity
+        'sortable' : true,                      // Use drag and drop to sort items
+        'showControls' : true,
+        'renderItems' : 0,                      // Render count of fields by default
+        'max' : 0,                              // 0 - infinity
         'template' : null,                      // Html node or string with items template
         'templateAttributeReplace' : false,
         'templateAttribute' : 'name',           // Replace specified items attribute by pattern, example: data-attribute-name="test[%index%]", available variables: %index%
-        'sortable' : true,                      // Use drag and drop to sort items
         'duration' : 'cm._config.animDurationShort',
         'theme' : '',
         'langs' : {
@@ -18982,14 +19042,15 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         // Variables
         that.nodes = {
             'container' : cm.node('div'),
-            'content' : cm.node('ul'),
-            'toolbar' : cm.node('li'),
-            'add' : cm.node('div'),
+            'content' : cm.node('div'),
+            'toolbar' : {
+                'container' : cm.node('div'),
+                'add' : cm.node('div')
+            },
             'items' : []
         };
         that.components = {};
         that.items = [];
-        that.toolbarHeight = 0;
         that.isToolbarVisible = true;
         // Bind context to methods
         // Add events
@@ -19004,27 +19065,41 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         var that = this;
         that.triggerEvent('onRenderViewStart');
         that.nodes['container'] = cm.node('div', {'class' : 'com__multifield'},
-            that.nodes['content'] = cm.node('div', {'class' : 'com__multifield__content'}),
-            that.nodes['toolbar'] = cm.node('div', {'class' : 'com__multifield__toolbar'},
-                cm.node('div', {'class' : 'com__multifield__item'},
-                    that.nodes['add'] = cm.node('div', {'class' : that.params['icons']['add'], 'title' : that.lang('add')})
-                )
-            )
+            that.nodes['content'] = cm.node('div', {'class' : 'com__multifield__content'})
         );
+        // Toolbar
+        if(that.params['showControls']){
+            that.nodes['toolbarContainer'] = that.renderToolbarView();
+            cm.appendChild(that.nodes['toolbarContainer'], that.nodes['container']);
+        }
         that.triggerEvent('onRenderViewProcess');
         that.triggerEvent('onRenderViewEnd');
         return that;
+    };
+
+    classProto.renderToolbarView = function(){
+        var that = this,
+            nodes = {};
+        // Structure
+        nodes['container'] = cm.node('div', {'class' : 'com__multifield__toolbar'},
+            nodes['content'] = cm.node('div', {'class' : 'com__multifield__item'},
+                nodes['add'] = cm.node('div', {'class' : that.params['icons']['add'], 'title' : that.lang('add')})
+            )
+        );
+        // Add button events
+        cm.addEvent(nodes['add'], 'click', function(e){
+            cm.preventDefault(e);
+            that.renderItem();
+        });
+        // Push
+        that.nodes['toolbarView'] = nodes;
+        return nodes['container'];
     };
 
     classProto.renderViewModel = function(){
         var that = this;
         // Call parent method - renderViewModel
         _inherit.prototype.renderViewModel.apply(that, arguments);
-        // Add button events
-        cm.addEvent(that.nodes['add'], 'click', function(e){
-            cm.preventDefault(e);
-            that.renderItem();
-        });
         // Init Sortable
         if(that.params['sortable']){
             cm.getConstructor('Com.Sortable', function(classConstructor, className){
@@ -19040,13 +19115,28 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
                 that.components['sortable'].addGroup(that.nodes['content']);
             });
         }
-        // Process rendered items
-        cm.forEach(that.nodes['items'], function(item){
-            that.processItem(item);
-        });
+        // Process collected view
+        if(!that.params['renderStructure']){
+            that.processCollectedView();
+        }
         // Render items
         cm.forEach(Math.max(that.params['renderItems'] - that.items.length, 0), function(){
             that.renderItem();
+        });
+        return that;
+    };
+
+    classProto.processCollectedView = function(){
+        var that = this;
+        // Toolbar
+        that.nodes['toolbarContainer'] = that.nodes['toolbar']['container'];
+        cm.addEvent(that.nodes['toolbar']['add'], 'click', function(e){
+            cm.preventDefault(e);
+            that.renderItem();
+        });
+        // Process rendered items
+        cm.forEach(that.nodes['items'], function(item){
+            that.processItem(item);
         });
         return that;
     };
@@ -19076,8 +19166,7 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
             }, params);
             // Structure
             item['container'] = cm.node('div', {'class' : 'com__multifield__item', 'data-node' : 'items:[]:container'},
-                item['content'] = item['field'] = cm.node('div', {'class' : 'field', 'data-node' : 'field'}),
-                item['remove'] = cm.node('div', {'class' : that.params['icons']['remove'], 'title' : that.lang('remove'), 'data-node' : 'remove'})
+                item['content'] = item['field'] = cm.node('div', {'class' : 'field', 'data-node' : 'field'})
             );
             // Template
             if(!cm.isEmpty(that.params['template'])){
@@ -19088,10 +19177,19 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
                 }
                 cm.appendNodes(nodes, item['field']);
             }
+            // Controls
+            if(that.params['showControls']){
+                item['remove'] = cm.node('div', {'class' : that.params['icons']['remove'], 'title' : that.lang('remove'), 'data-node' : 'remove'});
+                cm.appendChild(item['remove'], item['container']);
+            }
             // Sortable
             if(that.params['sortable']){
                 item['drag'] = cm.node('div', {'class' : that.params['icons']['drag'], 'data-node' : 'drag'});
-                cm.insertFirst(item['drag'], item['container']);
+                if(that.params['showControls']){
+                    cm.insertFirst(item['drag'], item['container']);
+                }else{
+                    cm.appendChild(item['drag'], item['container']);
+                }
             }
             // Embed
             cm.appendChild(item['container'], that.nodes['content']);
@@ -19112,11 +19210,15 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         }else{
             cm.remove(item['drag']);
         }
-        // Events
-        cm.addEvent(item['remove'], 'click', function(e){
-            cm.preventDefault(e);
-            that.deleteItem(item);
-        });
+        // Controls
+        if(that.params['showControls']){
+            cm.addEvent(item['remove'], 'click', function(e){
+                cm.preventDefault(e);
+                that.deleteItem(item);
+            });
+        }else{
+            cm.remove(item['remove']);
+        }
         // Push
         that.items.push(item);
         that.resetIndexes();
@@ -19185,34 +19287,55 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
 
     classProto.toggleToolbarVisibility = function(){
         var that = this;
-        if(!that.toolbarHeight){
-            that.toolbarHeight = that.nodes['toolbar'].offsetHeight;
-        }
-        if(that.params['max'] > 0 && that.items.length == that.params['max']){
-            if(that.isToolbarVisible){
-                that.isToolbarVisible = false;
-                that.nodes['toolbar'].style.overflow = 'hidden';
-                cm.transition(that.nodes['toolbar'], {
-                    'properties' : {'height' : '0px', 'opacity' : 0},
-                    'duration' : that.params['duration'],
-                    'easing' : 'ease-in-out'
-                });
-            }
-        }else{
-            if(!that.isToolbarVisible){
-                that.isToolbarVisible = true;
-                that.nodes['toolbar'].style.overflow = 'hidden';
-                cm.transition(that.nodes['toolbar'], {
-                    'properties' : {'height' : [that.toolbarHeight, 'px'].join(''), 'opacity' : 1},
-                    'duration' : that.params['duration'],
-                    'easing' : 'ease-in-out',
-                    'clear' : true,
-                    'onStop' : function(){
-                        that.nodes['toolbar'].style.overflow = '';
-                    }
-                });
+        if(that.params['showControls']){
+            if(that.params['max'] > 0 && that.items.length == that.params['max']){
+                that.hideToolbar();
+            }else{
+                that.showToolbar();
             }
         }
+        return that;
+    };
+
+    classProto.showToolbar = function(){
+        var that = this,
+            height = 0;
+        if(!that.isToolbarVisible){
+            that.isToolbarVisible = true;
+            // Prepare
+            that.nodes['toolbarContainer'].style.height = '';
+            height = that.nodes['toolbarContainer'].offsetHeight;
+            that.nodes['toolbarContainer'].style.height = '0px';
+            that.nodes['toolbarContainer'].style.overflow = 'hidden';
+            // Animate
+            cm.transition(that.nodes['toolbarContainer'], {
+                'properties' : {'height' : height + 'px', 'opacity' : 1},
+                'duration' : that.params['duration'],
+                'easing' : 'ease-in-out',
+                'clear' : true,
+                'onStop' : function(){
+                    that.nodes['toolbarContainer'].style.overflow = '';
+                    that.nodes['toolbarContainer'].style.height = '';
+                }
+            });
+        }
+        return that;
+    };
+
+    classProto.hideToolbar = function(){
+        var that = this;
+        if(that.isToolbarVisible){
+            that.isToolbarVisible = false;
+            // Prepare
+            that.nodes['toolbarContainer'].style.overflow = 'hidden';
+            // Animate
+            cm.transition(that.nodes['toolbarContainer'], {
+                'properties' : {'height' : '0px', 'opacity' : 0},
+                'duration' : that.params['duration'],
+                'easing' : 'ease-in-out'
+            });
+        }
+        return that;
     };
 
     classProto.toggleItemVisibility = function(item, callback){
@@ -19281,16 +19404,44 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         return that.items;
     };
 });
+cm.define('Com.MultipleAutocomplete', {
+    'extend' : 'Com.MultipleInput',
+    'params' : {
+        'embedStructure' : 'replace',
+        'className' : 'com__multiple-autocomplete',
+        'sortable' : false,
+        'showToolbar' : false,
+        'showControls' : true,
+        'focusInput' : true,
+        'inputConstructor' : 'Com.Autocomplete'
+    }
+},
+function(params){
+    var that = this;
+    // Call parent class construct
+    Com.MultipleInput.apply(that, arguments);
+});
+
+/* ****** FORM FIELD COMPONENT ******* */
+
+Com.FormFields.add('multi-autocomplete', {
+    'node' : cm.node('div'),
+    'constructor' : 'Com.MultipleAutocomplete'
+});
 cm.define('Com.MultipleFileInput', {
     'extend' : 'Com.MultipleInput',
     'params' : {
         'embedStructure' : 'replace',
         'className' : 'com__multiple-file-input',
-        'max' : 5,                                  // 0 - infinity
         'local' : true,
+        'sortable' : false,
+        'showToolbar' : true,
+        'showControls' : false,
+        'focusInput' : false,
         'buttonsAlign' : 'left',
         'inputConstructor' : 'Com.FileInput',
         'inputParams' : {
+            'embedStructure' : 'replace',
             'dropzone' : false
         },
         'fileManager' : false,
@@ -19319,7 +19470,6 @@ cm.define('Com.MultipleFileInput', {
 },
 function(params){
     var that = this;
-    that.myNodes = {};
     that.myComponents = {};
     that.dragInterval = null;
     that.isDropzoneShow = false;
@@ -19348,12 +19498,11 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
 
     classProto.clear = function(){
         var that = this;
-        cm.removeClass(that.myNodes['browseHolder'], 'is-hidden');
+        that.params['showToolbar'] && cm.removeClass(that.nodes['toolbar']['browseHolder'], 'is-hidden');
         // Call parent method
         _inherit.prototype.clear.apply(that, arguments);
         return that;
     };
-
 
     classProto.validateParamsEnd = function(){
         var that = this;
@@ -19404,11 +19553,11 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
             });
         }
         // Init File Manager
-        if(that.params['fileManager']){
+        if(that.params['showToolbar'] && that.params['fileManager']){
             cm.getConstructor(that.params['fileManagerConstructor'], function(classObject){
                 that.myComponents['fileManager'] = new classObject(
                     cm.merge(that.params['fileManagerParams'], {
-                        'node' : that.myNodes['browseFileManager']
+                        'node' : that.nodes['toolbar']['browseFileManager']
                     })
                 );
                 that.myComponents['fileManager'].addEvent('onComplete', function(my, data){
@@ -19417,11 +19566,11 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
             });
         }
         // Init File Uploader
-        if(that.params['fileUploader']){
+        if(that.params['showToolbar'] && that.params['fileUploader']){
             cm.getConstructor(that.params['fileUploaderConstructor'], function(classObject){
                 that.myComponents['fileUploader'] = new classObject(
                     cm.merge(that.params['fileUploaderParams'], {
-                        'node' : that.myNodes['browseFileUploader']
+                        'node' : that.nodes['toolbar']['browseFileUploader']
                     })
                 );
                 that.myComponents['fileUploader'].addEvent('onComplete', function(my, data){
@@ -19432,44 +19581,43 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
         return that;
     };
 
-    classProto.renderContent = function(){
-        var that = this;
-        that.triggerEvent('onRenderContentStart');
+    classProto.renderToolbarView = function(){
+        var that = this,
+            nodes = {};
         // Structure
-        that.myNodes['container'] = cm.node('div', {'class' : 'com__multiple-file-input__content'},
-            that.myNodes['content'] = cm.node('div', {'class' : 'pt__buttons'},
-                that.myNodes['contentInner'] = cm.node('div', {'class' : 'inner'})
+        nodes['container'] = cm.node('div', {'class' : 'com__multiple-input__toolbar'},
+            nodes['content'] = cm.node('div', {'class' : 'pt__buttons'},
+                nodes['contentInner'] = cm.node('div', {'class' : 'inner'})
             )
         );
-        cm.addClass(that.myNodes['content'], ['pull', that.params['buttonsAlign']].join('-'));
+        cm.addClass(nodes['content'], ['pull', that.params['buttonsAlign']].join('-'));
         // Render Browse Buttons
         if(that.params['local']){
-            that.myNodes['browseLocal'] = cm.node('div', {'class' : 'browse-button'},
+            nodes['browseLocal'] = cm.node('div', {'class' : 'browse-button'},
                 cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('_browse_local')),
                 cm.node('div', {'class' : 'inner'},
-                    that.myNodes['input'] = cm.node('input', {'type' : 'file'})
+                    nodes['input'] = cm.node('input', {'type' : 'file'})
                 )
             );
-            that.isMultiple && that.myNodes['input'].setAttribute('multiple', 'multiple');
-            cm.insertFirst(that.myNodes['browseLocal'], that.myNodes['contentInner']);
+            that.isMultiple && nodes['input'].setAttribute('multiple', 'multiple');
+            cm.insertFirst(nodes['browseLocal'], nodes['contentInner']);
         }
         if(that.params['fileManager']){
-            that.myNodes['browseFileManager'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('_browse_filemanager'));
-            cm.insertFirst(that.myNodes['browseFileManager'], that.myNodes['contentInner']);
+            nodes['browseFileManager'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('_browse_filemanager'));
+            cm.insertFirst(nodes['browseFileManager'], nodes['contentInner']);
         }
         if(that.params['fileUploader']){
-            that.myNodes['browseFileUploader'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('browse'));
-            cm.insertFirst(that.myNodes['browseFileUploader'], that.myNodes['contentInner']);
+            nodes['browseFileUploader'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('browse'));
+            cm.insertFirst(nodes['browseFileUploader'], nodes['contentInner']);
         }
         if(!that.hasButtons){
-            cm.addClass(that.myNodes['container'], 'is-hidden');
+            cm.addClass(nodes['container'], 'is-hidden');
         }
         // Events
-        that.triggerEvent('onRenderContentProcess');
-        cm.addEvent(that.myNodes['input'], 'change', that.browseActionHandler);
-        that.triggerEvent('onRenderContentEnd');
+        cm.addEvent(nodes['input'], 'change', that.browseActionHandler);
         // Push
-        return that.myNodes['container'];
+        that.nodes['toolbar'] = nodes;
+        return nodes['container'];
     };
 
     classProto.itemAddProcess = function(my, item){
@@ -19586,9 +19734,9 @@ cm.getConstructor('Com.Notifications', function(classConstructor, className, cla
 
     classProto.clear = function(){
         var that = this;
-        cm.forEach(that.items, function(item){
-            that.remove(item);
-        });
+        while(that.items.length){
+            that.remove(that.items[0]);
+        }
         return that;
     };
 

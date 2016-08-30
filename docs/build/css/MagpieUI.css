@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.21.2 (2016-08-26 17:42) ************ */
+/*! ************ MagpieUI v3.22.0 (2016-08-30 21:06) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.5.0
@@ -15652,22 +15652,6 @@ button.is-hidden {
   border-radius: 3px;
 }
 /* ******* COMPONENTS: MULTIPLE FILE INPUT ******* */
-.com__multiple-file-input__content.is-hidden {
-  display: none;
-}
-.com__multiple-file-input__content {
-  margin-top: 8px;
-}
-.com__multiple-file-input .com__multiple-input__items {
-  -webkit-overflow-scrolling: touch;
-  overflow-x: hidden;
-  overflow-y: auto;
-  max-height: 100px;
-  margin-bottom: 0;
-}
-.com__multiple-file-input .com__multiple-input__items.is-hidden + .com__multiple-file-input__content {
-  margin-top: 0;
-}
 /* ******* COMPONENTS: MULTIPLE INPUT ******* */
 .com__multiple-input {
   position: relative;
@@ -15691,18 +15675,6 @@ button.is-hidden {
 }
 .com__multiple-input__holder.is-hidden {
   opacity: 0;
-}
-.com__multiple-input__items {
-  margin-bottom: 8px;
-}
-.com__multiple-input__items.is-hidden {
-  display: none;
-}
-.com__multiple-input__item {
-  margin-top: 8px;
-}
-.com__multiple-input__item:first-child {
-  margin-top: 0;
 }
 /* ******* NOTIFICATION ******* */
 .com__notifications {

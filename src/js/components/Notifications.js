@@ -72,9 +72,9 @@ cm.getConstructor('Com.Notifications', function(classConstructor, className, cla
 
     classProto.clear = function(){
         var that = this;
-        cm.forEach(that.items, function(item){
-            that.remove(item);
-        });
+        while(that.items.length){
+            that.remove(that.items[0]);
+        }
         return that;
     };
 

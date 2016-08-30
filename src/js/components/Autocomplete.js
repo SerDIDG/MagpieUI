@@ -58,6 +58,7 @@ function(params){
     
     that.components = {};
 
+    that.isDestructed = false;
     that.ajaxHandler = null;
     that.isOpen = false;
     that.isAjax = false;
@@ -253,6 +254,20 @@ function(params){
         }
     };
 
+    var setEvents = function(){
+        cm.addEvent(that.params['node'], 'input', requestHandler);
+        cm.addEvent(that.params['node'], 'keydown', inputHandler);
+        cm.addEvent(that.params['node'], 'blur', blurHandler);
+        cm.addEvent(that.params['node'], 'click', clickHandler);
+    };
+
+    var unsetEvents = function(){
+        cm.removeEvent(that.params['node'], 'input', requestHandler);
+        cm.removeEvent(that.params['node'], 'keydown', inputHandler);
+        cm.removeEvent(that.params['node'], 'blur', blurHandler);
+        cm.removeEvent(that.params['node'], 'click', clickHandler);
+    };
+
     /* ******* CALLBACKS ******* */
 
     /* *** AJAX *** */
@@ -420,6 +435,16 @@ function(params){
 
     /* ******* MAIN ******* */
 
+    that.destruct = function(){
+        var that = this;
+        if(!that.isDestructed){
+            that.isDestructed = true;
+            unsetEvents();
+            that.removeFromStack();
+        }
+        return that;
+    };
+
     that.set = function(item, triggerEvents){
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
         that.previousValue = that.value;
@@ -441,11 +466,9 @@ function(params){
 
     that.setInput = function(node){
         if(cm.isNode(node)){
+            unsetEvents();
             that.params['node'] = node;
-            cm.addEvent(that.params['node'], 'input', requestHandler);
-            cm.addEvent(that.params['node'], 'keydown', inputHandler);
-            cm.addEvent(that.params['node'], 'blur', blurHandler);
-            cm.addEvent(that.params['node'], 'click', clickHandler);
+            setEvents();
         }
         return that;
     };
@@ -515,6 +538,11 @@ function(params){
         if(that.ajaxHandler && that.ajaxHandler.abort){
             that.ajaxHandler.abort();
         }
+        return that;
+    };
+
+    that.focus = function(){
+        that.params['node'].focus();
         return that;
     };
 

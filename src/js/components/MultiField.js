@@ -11,12 +11,13 @@ cm.define('Com.MultiField', {
         'renderStructure' : false,
         'embedStructure' : 'append',
         'embedStructureOnRender' : false,
-        'renderItems' : 0,
-        'max' : 0,                         // 0 - infinity
+        'sortable' : true,                      // Use drag and drop to sort items
+        'showControls' : true,
+        'renderItems' : 0,                      // Render count of fields by default
+        'max' : 0,                              // 0 - infinity
         'template' : null,                      // Html node or string with items template
         'templateAttributeReplace' : false,
         'templateAttribute' : 'name',           // Replace specified items attribute by pattern, example: data-attribute-name="test[%index%]", available variables: %index%
-        'sortable' : true,                      // Use drag and drop to sort items
         'duration' : 'cm._config.animDurationShort',
         'theme' : '',
         'langs' : {
@@ -46,14 +47,15 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         // Variables
         that.nodes = {
             'container' : cm.node('div'),
-            'content' : cm.node('ul'),
-            'toolbar' : cm.node('li'),
-            'add' : cm.node('div'),
+            'content' : cm.node('div'),
+            'toolbar' : {
+                'container' : cm.node('div'),
+                'add' : cm.node('div')
+            },
             'items' : []
         };
         that.components = {};
         that.items = [];
-        that.toolbarHeight = 0;
         that.isToolbarVisible = true;
         // Bind context to methods
         // Add events
@@ -68,27 +70,41 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         var that = this;
         that.triggerEvent('onRenderViewStart');
         that.nodes['container'] = cm.node('div', {'class' : 'com__multifield'},
-            that.nodes['content'] = cm.node('div', {'class' : 'com__multifield__content'}),
-            that.nodes['toolbar'] = cm.node('div', {'class' : 'com__multifield__toolbar'},
-                cm.node('div', {'class' : 'com__multifield__item'},
-                    that.nodes['add'] = cm.node('div', {'class' : that.params['icons']['add'], 'title' : that.lang('add')})
-                )
-            )
+            that.nodes['content'] = cm.node('div', {'class' : 'com__multifield__content'})
         );
+        // Toolbar
+        if(that.params['showControls']){
+            that.nodes['toolbarContainer'] = that.renderToolbarView();
+            cm.appendChild(that.nodes['toolbarContainer'], that.nodes['container']);
+        }
         that.triggerEvent('onRenderViewProcess');
         that.triggerEvent('onRenderViewEnd');
         return that;
+    };
+
+    classProto.renderToolbarView = function(){
+        var that = this,
+            nodes = {};
+        // Structure
+        nodes['container'] = cm.node('div', {'class' : 'com__multifield__toolbar'},
+            nodes['content'] = cm.node('div', {'class' : 'com__multifield__item'},
+                nodes['add'] = cm.node('div', {'class' : that.params['icons']['add'], 'title' : that.lang('add')})
+            )
+        );
+        // Add button events
+        cm.addEvent(nodes['add'], 'click', function(e){
+            cm.preventDefault(e);
+            that.renderItem();
+        });
+        // Push
+        that.nodes['toolbarView'] = nodes;
+        return nodes['container'];
     };
 
     classProto.renderViewModel = function(){
         var that = this;
         // Call parent method - renderViewModel
         _inherit.prototype.renderViewModel.apply(that, arguments);
-        // Add button events
-        cm.addEvent(that.nodes['add'], 'click', function(e){
-            cm.preventDefault(e);
-            that.renderItem();
-        });
         // Init Sortable
         if(that.params['sortable']){
             cm.getConstructor('Com.Sortable', function(classConstructor, className){
@@ -104,13 +120,28 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
                 that.components['sortable'].addGroup(that.nodes['content']);
             });
         }
-        // Process rendered items
-        cm.forEach(that.nodes['items'], function(item){
-            that.processItem(item);
-        });
+        // Process collected view
+        if(!that.params['renderStructure']){
+            that.processCollectedView();
+        }
         // Render items
         cm.forEach(Math.max(that.params['renderItems'] - that.items.length, 0), function(){
             that.renderItem();
+        });
+        return that;
+    };
+
+    classProto.processCollectedView = function(){
+        var that = this;
+        // Toolbar
+        that.nodes['toolbarContainer'] = that.nodes['toolbar']['container'];
+        cm.addEvent(that.nodes['toolbar']['add'], 'click', function(e){
+            cm.preventDefault(e);
+            that.renderItem();
+        });
+        // Process rendered items
+        cm.forEach(that.nodes['items'], function(item){
+            that.processItem(item);
         });
         return that;
     };
@@ -140,8 +171,7 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
             }, params);
             // Structure
             item['container'] = cm.node('div', {'class' : 'com__multifield__item', 'data-node' : 'items:[]:container'},
-                item['content'] = item['field'] = cm.node('div', {'class' : 'field', 'data-node' : 'field'}),
-                item['remove'] = cm.node('div', {'class' : that.params['icons']['remove'], 'title' : that.lang('remove'), 'data-node' : 'remove'})
+                item['content'] = item['field'] = cm.node('div', {'class' : 'field', 'data-node' : 'field'})
             );
             // Template
             if(!cm.isEmpty(that.params['template'])){
@@ -152,10 +182,19 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
                 }
                 cm.appendNodes(nodes, item['field']);
             }
+            // Controls
+            if(that.params['showControls']){
+                item['remove'] = cm.node('div', {'class' : that.params['icons']['remove'], 'title' : that.lang('remove'), 'data-node' : 'remove'});
+                cm.appendChild(item['remove'], item['container']);
+            }
             // Sortable
             if(that.params['sortable']){
                 item['drag'] = cm.node('div', {'class' : that.params['icons']['drag'], 'data-node' : 'drag'});
-                cm.insertFirst(item['drag'], item['container']);
+                if(that.params['showControls']){
+                    cm.insertFirst(item['drag'], item['container']);
+                }else{
+                    cm.appendChild(item['drag'], item['container']);
+                }
             }
             // Embed
             cm.appendChild(item['container'], that.nodes['content']);
@@ -176,11 +215,15 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         }else{
             cm.remove(item['drag']);
         }
-        // Events
-        cm.addEvent(item['remove'], 'click', function(e){
-            cm.preventDefault(e);
-            that.deleteItem(item);
-        });
+        // Controls
+        if(that.params['showControls']){
+            cm.addEvent(item['remove'], 'click', function(e){
+                cm.preventDefault(e);
+                that.deleteItem(item);
+            });
+        }else{
+            cm.remove(item['remove']);
+        }
         // Push
         that.items.push(item);
         that.resetIndexes();
@@ -249,34 +292,55 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
 
     classProto.toggleToolbarVisibility = function(){
         var that = this;
-        if(!that.toolbarHeight){
-            that.toolbarHeight = that.nodes['toolbar'].offsetHeight;
-        }
-        if(that.params['max'] > 0 && that.items.length == that.params['max']){
-            if(that.isToolbarVisible){
-                that.isToolbarVisible = false;
-                that.nodes['toolbar'].style.overflow = 'hidden';
-                cm.transition(that.nodes['toolbar'], {
-                    'properties' : {'height' : '0px', 'opacity' : 0},
-                    'duration' : that.params['duration'],
-                    'easing' : 'ease-in-out'
-                });
-            }
-        }else{
-            if(!that.isToolbarVisible){
-                that.isToolbarVisible = true;
-                that.nodes['toolbar'].style.overflow = 'hidden';
-                cm.transition(that.nodes['toolbar'], {
-                    'properties' : {'height' : [that.toolbarHeight, 'px'].join(''), 'opacity' : 1},
-                    'duration' : that.params['duration'],
-                    'easing' : 'ease-in-out',
-                    'clear' : true,
-                    'onStop' : function(){
-                        that.nodes['toolbar'].style.overflow = '';
-                    }
-                });
+        if(that.params['showControls']){
+            if(that.params['max'] > 0 && that.items.length == that.params['max']){
+                that.hideToolbar();
+            }else{
+                that.showToolbar();
             }
         }
+        return that;
+    };
+
+    classProto.showToolbar = function(){
+        var that = this,
+            height = 0;
+        if(!that.isToolbarVisible){
+            that.isToolbarVisible = true;
+            // Prepare
+            that.nodes['toolbarContainer'].style.height = '';
+            height = that.nodes['toolbarContainer'].offsetHeight;
+            that.nodes['toolbarContainer'].style.height = '0px';
+            that.nodes['toolbarContainer'].style.overflow = 'hidden';
+            // Animate
+            cm.transition(that.nodes['toolbarContainer'], {
+                'properties' : {'height' : height + 'px', 'opacity' : 1},
+                'duration' : that.params['duration'],
+                'easing' : 'ease-in-out',
+                'clear' : true,
+                'onStop' : function(){
+                    that.nodes['toolbarContainer'].style.overflow = '';
+                    that.nodes['toolbarContainer'].style.height = '';
+                }
+            });
+        }
+        return that;
+    };
+
+    classProto.hideToolbar = function(){
+        var that = this;
+        if(that.isToolbarVisible){
+            that.isToolbarVisible = false;
+            // Prepare
+            that.nodes['toolbarContainer'].style.overflow = 'hidden';
+            // Animate
+            cm.transition(that.nodes['toolbarContainer'], {
+                'properties' : {'height' : '0px', 'opacity' : 0},
+                'duration' : that.params['duration'],
+                'easing' : 'ease-in-out'
+            });
+        }
+        return that;
     };
 
     classProto.toggleItemVisibility = function(item, callback){
