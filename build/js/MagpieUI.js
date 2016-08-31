@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.22.0 (2016-08-31 18:03) ************ */
+/*! ************ MagpieUI v3.22.1 (2016-08-31 20:22) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1426,7 +1426,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.22.0',
+        '_version' : '3.22.1',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -18681,7 +18681,9 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
                         that.myNodes['label'] = cm.node('div', {'class' : 'input__label'}),
                         that.myNodes['buttonsInner'] = cm.node('div', {'class' : 'input__buttons'},
                             that.myNodes['clear'] = cm.node('div', {'class' : 'cm__button-wrapper'},
-                                cm.node('button', {'type' : 'button', 'class' : 'button button-danger'}, that.lang('remove'))
+                                cm.node('button', {'type' : 'button', 'class' : 'button button-danger'},
+                                    cm.node('span', that.lang('remove'))
+                                )
                             )
                         )
                     ),
@@ -18696,13 +18698,17 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
         // Render Buttons
         if(that.params['preview']){
             that.myNodes['preview'] = cm.node('div', {'class' : 'cm__button-wrapper'},
-                cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('preview'))
+                cm.node('button', {'type' : 'button', 'class' : 'button button-primary'},
+                    cm.node('span', that.lang('preview'))
+                )
             );
             cm.insertFirst(that.myNodes['preview'], that.myNodes['buttonsInner']);
         }
         if(that.params['local']){
             that.myNodes['browseLocal'] = cm.node('div', {'class' : 'browse-button'},
-                cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('_browse_local')),
+                cm.node('button', {'type' : 'button', 'class' : 'button button-primary'},
+                    cm.node('span', that.lang('_browse_local'))
+                ),
                 cm.node('div', {'class' : 'inner'},
                     that.myNodes['input'] = cm.node('input', {'type' : 'file'})
                 )
@@ -18712,13 +18718,17 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
         }
         if(that.params['fileManager']){
             that.myNodes['browseFileManager'] = cm.node('div', {'class' : 'cm__button-wrapper'},
-                cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('_browse_filemanager'))
+                cm.node('button', {'type' : 'button', 'class' : 'button button-primary'},
+                    cm.node('span', that.lang('_browse_filemanager'))
+                )
             );
             cm.insertFirst(that.myNodes['browseFileManager'], that.myNodes['buttonsInner']);
         }
         if(that.params['fileUploader']){
             that.myNodes['browseFileUploader'] = cm.node('div', {'class' : 'cm__button-wrapper'},
-                cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('browse'))
+                cm.node('button', {'type' : 'button', 'class' : 'button button-primary'},
+                    cm.node('span', that.lang('browse'))
+                )
             );
             cm.insertFirst(that.myNodes['browseFileUploader'], that.myNodes['buttonsInner']);
         }

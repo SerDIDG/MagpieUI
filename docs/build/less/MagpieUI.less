@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.22.0 (2016-08-31 18:03) ************ */
+/*! ************ MagpieUI v3.22.1 (2016-08-31 20:22) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3799,6 +3799,7 @@ span.CodeMirror-selectedtext { background: none; }
 @CmUI-Transition-DurationXLong: 750ms;
 @CmUI-Transition-DurationReverse: 100ms;
 @CmUI-Transition-DurationNone: 0ms;
+@CmUI-Transition-Delay-Hide: 300ms;
 @CmUI-MotionAsymmetric: cubic-bezier(.5,0,.15,1);
 @CmUI-Opacity-Hover: 0.7;
 @CmUI-Shadow: 0 0 8px rgba(0, 0, 0, 0.15);
@@ -8705,8 +8706,9 @@ button {
             border: @CmBorder-Editable;
             border-radius: @CmBorder-Radius;
             opacity: 0;
-            .mx__transition(all, @CmUI-Transition-Duration);
             .mx__position(0, 0, 0, 0);
+            .mx__transition(all, @CmUI-Transition-Duration);
+            .mx__transition-delay(@CmUI-Transition-Delay-Hide);
         }
 
         > .inner {
@@ -8738,6 +8740,7 @@ button {
             touch-action: none;
             .mx__background-clip(border-box);
             .mx__transition(all, @CmUI-Transition-Duration);
+            .mx__transition-delay(@CmUI-Transition-Delay-Hide);
 
             .icon {
                 width: 34px;
@@ -8766,8 +8769,9 @@ button {
             z-index: 4;
             opacity: 0;
             cursor: pointer;
-            .mx__transition(all, @CmUI-Transition-Duration);
             .mx__position(-12px, -12px, auto, auto);
+            .mx__transition(all, @CmUI-Transition-Duration);
+            .mx__transition-delay(@CmUI-Transition-Delay-Hide);
 
             .icon {
                 width: 24px;
@@ -8784,6 +8788,7 @@ button {
                 .pt__menu-dropdown--base;
                 z-index: 1;
                 .mx__position(12px, 12px, auto, auto);
+                .mx__transition-delay(@CmUI-Transition-Delay-Hide);
 
                 &.pull-left,
                 &.pull-right {
@@ -8791,8 +8796,11 @@ button {
                 }
             }
 
-            &:hover {
+            &:hover,
+            &:active,
+            &.is-show {
                 z-index: 14;
+                .mx__transition-delay(@CmUI-Transition-Delay-Hide);
 
                 .icon {
                     background-color: @PtEditable-Drag-HoverBackground;
@@ -8800,6 +8808,7 @@ button {
 
                 .pt__menu-dropdown {
                     .pt__menu-dropdown--active;
+                    .mx__transition-delay(0ms);
                 }
             }
         }
@@ -8809,14 +8818,16 @@ button {
         > .border {
             opacity: 1;
             background: @PtEditable-HoverBackground;
-            .mx__transition(all, @CmUI-Transition-DurationReverse);
             .mx__position(-16px, -16px, -16px, -16px);
+            .mx__transition(all, @CmUI-Transition-DurationReverse);
+            .mx__transition-delay(0ms);
         }
 
         > .drag {
             opacity: 1;
             visibility: visible;
             .mx__transition(all, @CmUI-Transition-DurationReverse);
+            .mx__transition-delay(0ms);
 
             &:not(.is-bottom) {
                 top: -28px;
@@ -8829,8 +8840,9 @@ button {
 
         > .menu {
             opacity: 1;
-            .mx__transition(all, @CmUI-Transition-DurationReverse);
             .mx__position(-28px, -28px, auto, auto);
+            .mx__transition(all, @CmUI-Transition-DurationReverse);
+            .mx__transition-delay(0ms);
         }
     }
 
@@ -14989,6 +15001,7 @@ button {
             border-radius: @CmBorder-Radius;
             .mx__position(0, 0, 0 ,0);
             .mx__transition(all, @CmUI-Transition-Duration);
+            .mx__transition-delay(@CmUI-Transition-Delay-Hide);
         }
 
         .input__label {
@@ -15019,6 +15032,10 @@ button {
                 .mx__flex(1 1 100%);
                 .mx__justify-content(center);
 
+                span {
+                    margin: auto;
+                }
+
                 &.is-hidden {
                     display: none;
                 }
@@ -15030,6 +15047,7 @@ button {
             .input__cover {
                 visibility: visible;
                 opacity: 1;
+                .mx__transition-delay(0ms);
             }
         }
 

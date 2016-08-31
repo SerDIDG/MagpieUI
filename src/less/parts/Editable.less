@@ -26,8 +26,9 @@
             border: @CmBorder-Editable;
             border-radius: @CmBorder-Radius;
             opacity: 0;
-            .mx__transition(all, @CmUI-Transition-Duration);
             .mx__position(0, 0, 0, 0);
+            .mx__transition(all, @CmUI-Transition-Duration);
+            .mx__transition-delay(@CmUI-Transition-Delay-Hide);
         }
 
         > .inner {
@@ -59,6 +60,7 @@
             touch-action: none;
             .mx__background-clip(border-box);
             .mx__transition(all, @CmUI-Transition-Duration);
+            .mx__transition-delay(@CmUI-Transition-Delay-Hide);
 
             .icon {
                 width: 34px;
@@ -87,8 +89,9 @@
             z-index: 4;
             opacity: 0;
             cursor: pointer;
-            .mx__transition(all, @CmUI-Transition-Duration);
             .mx__position(-12px, -12px, auto, auto);
+            .mx__transition(all, @CmUI-Transition-Duration);
+            .mx__transition-delay(@CmUI-Transition-Delay-Hide);
 
             .icon {
                 width: 24px;
@@ -105,6 +108,7 @@
                 .pt__menu-dropdown--base;
                 z-index: 1;
                 .mx__position(12px, 12px, auto, auto);
+                .mx__transition-delay(@CmUI-Transition-Delay-Hide);
 
                 &.pull-left,
                 &.pull-right {
@@ -112,8 +116,11 @@
                 }
             }
 
-            &:hover {
+            &:hover,
+            &:active,
+            &.is-show {
                 z-index: 14;
+                .mx__transition-delay(@CmUI-Transition-Delay-Hide);
 
                 .icon {
                     background-color: @PtEditable-Drag-HoverBackground;
@@ -121,6 +128,7 @@
 
                 .pt__menu-dropdown {
                     .pt__menu-dropdown--active;
+                    .mx__transition-delay(0ms);
                 }
             }
         }
@@ -130,14 +138,16 @@
         > .border {
             opacity: 1;
             background: @PtEditable-HoverBackground;
-            .mx__transition(all, @CmUI-Transition-DurationReverse);
             .mx__position(-16px, -16px, -16px, -16px);
+            .mx__transition(all, @CmUI-Transition-DurationReverse);
+            .mx__transition-delay(0ms);
         }
 
         > .drag {
             opacity: 1;
             visibility: visible;
             .mx__transition(all, @CmUI-Transition-DurationReverse);
+            .mx__transition-delay(0ms);
 
             &:not(.is-bottom) {
                 top: -28px;
@@ -150,8 +160,9 @@
 
         > .menu {
             opacity: 1;
-            .mx__transition(all, @CmUI-Transition-DurationReverse);
             .mx__position(-28px, -28px, auto, auto);
+            .mx__transition(all, @CmUI-Transition-DurationReverse);
+            .mx__transition-delay(0ms);
         }
     }
 
