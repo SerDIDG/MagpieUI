@@ -95,7 +95,7 @@ function(params){
                         ),
                         cm.node('div', {'class' : 'b-bottom'},
                             cm.node('div', {'class' : 'b-preview-inputs'},
-                                that.nodes['inputHEX'] = cm.node('input', {'type' : 'text', 'maxlength' : 7, 'title' : that.lang('hex')})
+                                that.nodes['inputHEX'] = cm.node('input', {'type' : 'text', 'title' : that.lang('hex')})
                             ),
                             cm.node('div', {'class' : 'b-buttons'},
                                 that.nodes['buttonSelect'] = cm.node('div', {'class' : 'button button-primary is-wide'}, that.lang('select'))
@@ -209,12 +209,15 @@ function(params){
     };
 
     var inputHEXHandler = function(){
-        var color = that.nodes['inputHEX'].value;
-        if(!/^#/.test(color)){
-            that.nodes['inputHEX'].value = '#' + color;
-        }else{
-            set(color, true, {'setInput' : false});
-        }
+        var value = that.nodes['inputHEX'].value;
+        var color = cm.removeSpaces(value);
+        // Check for sharp
+        color = (!/^#/.test(color) ? '#' : '') + color;
+        // Reduce length
+        color = cm.reduceText(color, 7, false);
+        // Set
+        that.nodes['inputHEX'].value = color;
+        set(color, true, {'setInput' : false});
     };
 
     var inputHEXKeypressHandler = function(e){

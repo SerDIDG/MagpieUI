@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.22.1 (2016-08-31 20:22) ************ */
+/*! ************ MagpieUI v3.22.2 (2016-08-31 21:14) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1372,7 +1372,7 @@ if (!Function.prototype.bind) {
 
 if(!String.prototype.trim) {
     String.prototype.trim = function(){
-        return this.replace(/^\s+|\s+$/g, '');
+        return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
     };
 }
 
@@ -1426,7 +1426,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.22.1',
+        '_version' : '3.22.2',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -3114,6 +3114,10 @@ cm.reduceText = function(str, length, points){
 
 cm.removeDanger = function(str){
     return str.replace(/(<|>|&lt;|&gt;)/gim, '');
+};
+
+cm.removeSpaces = function(str){
+    return str.replace(/[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+/g, '');
 };
 
 cm.cutHTML = function(str){
@@ -20957,7 +20961,7 @@ function(params){
                         ),
                         cm.node('div', {'class' : 'b-bottom'},
                             cm.node('div', {'class' : 'b-preview-inputs'},
-                                that.nodes['inputHEX'] = cm.node('input', {'type' : 'text', 'maxlength' : 7, 'title' : that.lang('hex')})
+                                that.nodes['inputHEX'] = cm.node('input', {'type' : 'text', 'title' : that.lang('hex')})
                             ),
                             cm.node('div', {'class' : 'b-buttons'},
                                 that.nodes['buttonSelect'] = cm.node('div', {'class' : 'button button-primary is-wide'}, that.lang('select'))
@@ -21071,12 +21075,15 @@ function(params){
     };
 
     var inputHEXHandler = function(){
-        var color = that.nodes['inputHEX'].value;
-        if(!/^#/.test(color)){
-            that.nodes['inputHEX'].value = '#' + color;
-        }else{
-            set(color, true, {'setInput' : false});
-        }
+        var value = that.nodes['inputHEX'].value;
+        var color = cm.removeSpaces(value);
+        // Check for sharp
+        color = (!/^#/.test(color) ? '#' : '') + color;
+        // Reduce length
+        color = cm.reduceText(color, 7, false);
+        // Set
+        that.nodes['inputHEX'].value = color;
+        set(color, true, {'setInput' : false});
     };
 
     var inputHEXKeypressHandler = function(e){

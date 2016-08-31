@@ -29,7 +29,7 @@
  ******* */
 
 var cm = {
-        '_version' : '3.22.1',
+        '_version' : '3.22.2',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -1717,6 +1717,10 @@ cm.reduceText = function(str, length, points){
 
 cm.removeDanger = function(str){
     return str.replace(/(<|>|&lt;|&gt;)/gim, '');
+};
+
+cm.removeSpaces = function(str){
+    return str.replace(/[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+/g, '');
 };
 
 cm.cutHTML = function(str){
