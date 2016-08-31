@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+<html class="is-adaptive">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Parts: Video</title>
+
+    <link type="text/css" rel="stylesheet" href="../../css/MagpieUI.css">
+    <script type="text/javascript" src="../../js/MagpieUI.js"></script>
+
+    <script type="text/javascript">
+        cm.onReady(function(){
+            new Com.Collector()
+                .add('tabset', function(node){
+                    new Com.Tabset({'node' : node});
+                })
+                .construct();
+        });
+
+        cm.onLoad(function(){
+            new Com.Collector()
+                .add('imagebox', function(node){
+                    new Com.ImageBox({'node' : node});
+                })
+                .construct();
+        });
+    </script>
+</head>
+
+<body class="cm__scroll-y-a">
+
+<h1 class="pt__box-title">Parts: Video</h1>
+<hr>
+
+<h2>Full size</h2>
+
+<div class="pt__image__container">
+    <div class="pt__image has-aspect cm__aspect-16x9">
+        <div class="inner">
+            <iframe class="descr" src="https://www.youtube.com/embed/hEfT3MJ4lKc" frameborder="0" allowfullscreen></iframe>
+        </div>
+    </div>
+</div>
+
+<h2>Align: Left</h2>
+
+<div class="pt__image__container pull-left" style="max-width: 500px;">
+    <div class="pt__image has-aspect cm__aspect-16x9">
+        <div class="inner">
+            <iframe class="descr" src="https://www.youtube.com/embed/hEfT3MJ4lKc" frameborder="0" allowfullscreen></iframe>
+        </div>
+    </div>
+</div>
+
+<h2>Align: Center</h2>
+
+<div class="pt__image__container pull-center" style="max-width: 500px;">
+    <div class="pt__image has-aspect cm__aspect-16x9">
+        <div class="inner">
+            <iframe class="descr" src="https://www.youtube.com/embed/hEfT3MJ4lKc" frameborder="0" allowfullscreen></iframe>
+        </div>
+    </div>
+</div>
+
+<h2>Align: Left</h2>
+
+<div class="pt__image__container pull-right" style="max-width: 500px;">
+    <div class="pt__image has-aspect cm__aspect-16x9">
+        <div class="inner">
+            <iframe class="descr" src="https://www.youtube.com/embed/hEfT3MJ4lKc" frameborder="0" allowfullscreen></iframe>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>

@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.22.0 (2016-08-30 21:06) ************ */
+/*! ************ MagpieUI v3.22.0 (2016-08-31 18:03) ************ */
 @charset "UTF-8";
 
 /*!
@@ -9893,6 +9893,25 @@ button {
             opacity: 1;
             .mx__transition(top opacity, @CmUI-Transition-DurationReverse);
         }
+    }
+}
+
+.pt__image__container {
+    .cm__box;
+
+    &.pull-left {
+        .mx__align(left);
+        .cm__box;
+    }
+
+    &.pull-center {
+        .mx__align(center);
+        .cm__box;
+    }
+
+    &.pull-right {
+        .mx__align(right);
+        .cm__box;
     }
 }
 /* ******* PARTS: INPUT ******* */
