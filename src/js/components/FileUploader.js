@@ -19,11 +19,13 @@ cm.define('Com.FileUploader', {
         'fileManagerConstructor' : 'Com.AbstractFileManager',
         'fileManagerParams' : {
             'embedStructure' : 'append',
-            'showStats' : false
+            'showStats' : false,
+            'fullSize' : true
         },
         'Com.Tabset' : {
             'embedStructure' : 'append',
-            'toggleOnHashChange' : false
+            'toggleOnHashChange' : false,
+            'calculateMaxHeight' : true
         },
         'Com.FileStats' : {
             'embedStructure' : 'append',
@@ -163,6 +165,22 @@ cm.getConstructor('Com.FileUploader', function(classConstructor, className, clas
             });
         }
         // Init Tabset
+        that.renderTabset();
+        // Init Stats
+        if(that.params['showStats']){
+            cm.getConstructor('Com.FileStats', function(classObject, className){
+                that.components['stats'] = new classObject(
+                    cm.merge(that.params[className], {
+                        'container' : that.nodes['content']
+                    })
+                );
+            });
+        }
+        return that;
+    };
+
+    classProto.renderTabset = function(){
+        var that = this;
         cm.getConstructor('Com.Tabset', function(classObject, className){
             that.components['tabset'] = new classObject(
                 cm.merge(that.params[className], {
@@ -191,16 +209,6 @@ cm.getConstructor('Com.FileUploader', function(classConstructor, className, clas
             }
             that.components['tabset'].set(that.params['local'] ? 'local' : 'fileManager');
         });
-        // Init Stats
-        if(that.params['showStats']){
-            cm.getConstructor('Com.FileStats', function(classObject, className){
-                that.components['stats'] = new classObject(
-                    cm.merge(that.params[className], {
-                        'container' : that.nodes['content']
-                    })
-                );
-            });
-        }
         return that;
     };
 
@@ -221,7 +229,7 @@ cm.getConstructor('Com.FileUploader', function(classConstructor, className, clas
             nodes = {};
         // Structure
         nodes['li'] = cm.node('li',
-            nodes['container'] = cm.node('div', {'class' : 'com__file-uploader__file-manager'},
+            nodes['container'] = cm.node('div', {'class' : 'com__file-uploader__file-manager is-fullsize'},
                 nodes['holder'] = cm.node('div', {'class' : 'com__file-uploader__holder'})
             )
         );

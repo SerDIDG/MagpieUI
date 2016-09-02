@@ -144,7 +144,7 @@ function(params){
     that.setTitle = function(node){
         cm.clearNode(that.nodes['title']);
         if(cm.isString(node) || cm.isNumber(node)){
-            cm.appendChild(cm.textNode(node), that.nodes['title']);
+            that.nodes['title'].innerHTML = node;
         }else{
             cm.appendNodes(node, that.nodes['title']);
         }
@@ -155,7 +155,7 @@ function(params){
         var parent = that.nodes['content'] || that.nodes['target'];
         cm.clearNode(parent);
         if(cm.isString(node) || cm.isNumber(node)){
-            cm.appendChild(cm.textNode(node), parent);
+            parent.innerHTML = node;
         }else{
             cm.appendNodes(node, parent);
         }

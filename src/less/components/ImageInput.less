@@ -2,7 +2,7 @@
 
 .com__image-input {
     &.size-default {
-        width: @ComImageInput-Height;
+        .com__image-input--size(@ComImageInput-Height, @ComImageInput-Height);
 
         .com__image-input__content {
             .com__image-input__content--default;
@@ -32,6 +32,7 @@
                 }
             }
         }
+
         .input__cover {
             .display-flex;
             visibility: hidden;
@@ -107,6 +108,24 @@
         .input__buttons {
             border-left: none;
             .mx__flex(1);
+        }
+    }
+}
+
+/* *** MIXINS *** */
+
+.com__image-input--size (@width, @height) {
+    max-width: @width;
+
+    .com__image-input__content {
+        .input__holder {
+            .pt__image {
+                > .inner {
+                    > .descr {
+                        height: @height;
+                    }
+                }
+            }
         }
     }
 }

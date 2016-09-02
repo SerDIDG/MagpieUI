@@ -8,6 +8,8 @@ cm.define('Com.elFinderFileManager', {
             dotFiles : false,
             useBrowserHistory : false,
             resizable : false,
+            width : 'auto',
+            height : 'auto',
             commandsOptions : {
                 getfile : {
                     folders : false,
@@ -62,7 +64,7 @@ cm.getConstructor('Com.elFinderFileManager', function(classConstructor, classNam
     classProto.redraw = function(){
         var that = this;
         if(that.components['controller']){
-            that.components['controller'].resize();
+            that.components['controller'].resize('auto', 'auto');
         }
         that.triggerEvent('onRedraw');
         return that;
@@ -85,8 +87,9 @@ cm.getConstructor('Com.elFinderFileManager', function(classConstructor, classNam
                     })
                 );
                 // Show
-                cm.removeClass(that.nodes['holder']['container'], 'is-hidden');
+                cm.removeClass(that.nodes['holder']['container'], 'is-hidden', true);
                 that.components['controller'].show();
+                that.components['controller'].resize('auto', 'auto');
             }else{
                 cm.errorLog({
                     'name' : that._name['full'],

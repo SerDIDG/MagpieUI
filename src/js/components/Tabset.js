@@ -409,7 +409,10 @@ function(params){
             height = Math.max(height, cm.getRealHeight(item['content'], 'offsetRelative'));
         });
         if(height != that.nodes['contentUL'].offsetHeight){
-            that.nodes['contentUL'].style.height = [height, 'px'].join('');
+            that.nodes['contentUL'].style.minHeight = [height, 'px'].join('');
+            cm.forEach(that.tabs, function(item){
+                item['content'].style.minHeight = [height, 'px'].join('');
+            });
         }
     };
 

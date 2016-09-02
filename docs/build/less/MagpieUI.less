@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.22.2 (2016-08-31 21:14) ************ */
+/*! ************ MagpieUI v3.22.3 (2016-09-02 21:23) ************ */
 @charset "UTF-8";
 
 /*!
@@ -8954,8 +8954,13 @@ button {
         }
 
         &.field-indent {
+            .cm__box;
             margin-bottom: @CmForm-FieldInnerIndent;
         }
+    }
+
+    &.is-hidden {
+        display: none;
     }
 
     &.align-center {
@@ -8965,6 +8970,34 @@ button {
     }
 }
 
+/* *** FIELD HINT *** */
+
+.pt__field__hint {
+    &:extend(.cm__inherit all);
+    .cm__font--hint-cursive;
+    text-transform: none;
+}
+
+ul.pt__field__hint {
+    margin: 0;
+    padding: 6px 0 2px;
+    display: block;
+    list-style: none;
+
+    li {
+        margin-top: 4px;
+        line-height: 13px;
+
+        &:first-child {
+            margin: 0;
+        }
+
+        &:before {
+            content: '-';
+            margin-right: 4px;
+        }
+    }
+}
 
 /* ******* PART: FIELD: ADAPTIVE ******* */
 
@@ -14160,6 +14193,24 @@ button {
 .com__file-manager {
     > .inner {
     }
+
+    &.is-fullsize {
+        height: 100%;
+
+        > .inner {
+            height: 100%;
+
+            .com__file-manager__holder {
+                height: 100%;
+
+                > .inner {
+                    height: 100%;
+                    position: absolute;
+                    .mx__position(0, 0, 0, 0);
+                }
+            }
+        }
+    }
 }
 
 .com__file-manager__content {
@@ -14239,6 +14290,17 @@ button {
 
         &:first-child {
             margin-top: 0;
+        }
+    }
+}
+
+.com__file-uploader__file-manager {
+    &.is-fullsize {
+        position: absolute;
+        .mx__position(0, 0, 0, 0);
+
+        .com__file-uploader__holder {
+            height: 100%;
         }
     }
 }
@@ -14961,7 +15023,7 @@ button {
 
 .com__image-input {
     &.size-default {
-        width: @ComImageInput-Height;
+        .com__image-input--size(@ComImageInput-Height, @ComImageInput-Height);
 
         .com__image-input__content {
             .com__image-input__content--default;
@@ -14991,6 +15053,7 @@ button {
                 }
             }
         }
+
         .input__cover {
             .display-flex;
             visibility: hidden;
@@ -15066,6 +15129,24 @@ button {
         .input__buttons {
             border-left: none;
             .mx__flex(1);
+        }
+    }
+}
+
+/* *** MIXINS *** */
+
+.com__image-input--size (@width, @height) {
+    max-width: @width;
+
+    .com__image-input__content {
+        .input__holder {
+            .pt__image {
+                > .inner {
+                    > .descr {
+                        height: @height;
+                    }
+                }
+            }
         }
     }
 }
@@ -17090,6 +17171,14 @@ button {
         > img {
             display: block;
             padding: @CmIndent-Medium;
+        }
+    }
+}
+
+.com__file-manager {
+    &.is-fullsize {
+        .ui-resizable-handle {
+            display:none !important;
         }
     }
 }

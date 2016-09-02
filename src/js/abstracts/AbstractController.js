@@ -38,10 +38,7 @@ cm.define('Com.AbstractController', {
         'onUnsetCustomEvents',
         'onRenderViewStart',
         'onRenderViewProcess',
-        'onRenderViewEnd',
-        'onSetAttributesStart',
-        'onSetAttributesProcess',
-        'onSetAttributesEnd'
+        'onRenderViewEnd'
     ],
     'params' : {
         'node' : cm.node('div'),
@@ -173,10 +170,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
 
     classProto.setAttributes = function(){
         var that = this;
-        that.triggerEvent('onSetAttributesStart');
-        that.triggerEvent('onSetAttributesProcess');
         cm.addClass(that.nodes['container'], that.params['className']);
-        that.triggerEvent('onSetAttributesEnd');
         return that;
     };
 

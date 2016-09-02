@@ -24,19 +24,11 @@ function(params){
 cm.getConstructor('Com.DialogContainer', function(classConstructor, className, classProto){
     var _inherit = classProto._inherit;
 
-    classProto.construct = function(){
+    classProto.validateParams = function(){
         var that = this;
-        // Bind context to methods
-        that.validateParamsEndHandler = that.validateParamsEnd.bind(that);
-        // Add events
-        that.addEvent('onValidateParamsEnd', that.validateParamsEndHandler);
         // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
-        return that;
-    };
-
-    classProto.validateParamsEnd = function(){
-        var that = this;
+        _inherit.prototype.validateParams.apply(that, arguments);
+        // Set Content
         if(cm.isObject(that.params['content'])){
             that.params['params']['title'] = that.params['content']['title'] || that.params['params']['title'];
             that.params['params']['content'] = that.params['content']['content'] || that.params['params']['content'];

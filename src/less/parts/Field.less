@@ -62,8 +62,13 @@
         }
 
         &.field-indent {
+            .cm__box;
             margin-bottom: @CmForm-FieldInnerIndent;
         }
+    }
+
+    &.is-hidden {
+        display: none;
     }
 
     &.align-center {
@@ -73,6 +78,34 @@
     }
 }
 
+/* *** FIELD HINT *** */
+
+.pt__field__hint {
+    &:extend(.cm__inherit all);
+    .cm__font--hint-cursive;
+    text-transform: none;
+}
+
+ul.pt__field__hint {
+    margin: 0;
+    padding: 6px 0 2px;
+    display: block;
+    list-style: none;
+
+    li {
+        margin-top: 4px;
+        line-height: 13px;
+
+        &:first-child {
+            margin: 0;
+        }
+
+        &:before {
+            content: '-';
+            margin-right: 4px;
+        }
+    }
+}
 
 /* ******* PART: FIELD: ADAPTIVE ******* */
 

@@ -141,3 +141,10 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
         return that;
     };
 });
+
+/* ****** FORM FIELD COMPONENT ******* */
+
+Com.FormFields.add('image', {
+    'node' : cm.node('input', {'type' : 'text'}),
+    'constructor' : 'Com.ImageInput'
+});

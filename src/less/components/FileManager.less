@@ -3,6 +3,24 @@
 .com__file-manager {
     > .inner {
     }
+
+    &.is-fullsize {
+        height: 100%;
+
+        > .inner {
+            height: 100%;
+
+            .com__file-manager__holder {
+                height: 100%;
+
+                > .inner {
+                    height: 100%;
+                    position: absolute;
+                    .mx__position(0, 0, 0, 0);
+                }
+            }
+        }
+    }
 }
 
 .com__file-manager__content {

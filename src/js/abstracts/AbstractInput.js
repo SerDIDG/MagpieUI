@@ -158,7 +158,8 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
 
     classProto.setAttributes = function(){
         var that = this;
-        that.triggerEvent('onSetAttributesStart');
+        // Call parent method
+        _inherit.prototype.setAttributes.apply(that, arguments);
         // Data attributes
         cm.forEach(that.params['node'].attributes, function(item){
             if(/^data-(?!node|element|config)/.test(item.name)){
@@ -173,14 +174,12 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
             that.nodes['hidden'].setAttribute('name', that.params['name']);
         }
         // Classes
-        cm.addClass(that.nodes['container'], that.params['className']);
         if(!cm.isEmpty(that.params['size'])){
             cm.addClass(that.nodes['container'], ['size', that.params['size']].join('-'));
         }
         if(!cm.isEmpty(that.params['justify'])){
             cm.addClass(that.nodes['container'], ['pull', that.params['justify']].join('-'));
         }
-        that.triggerEvent('onSetAttributesEnd');
         return that;
     };
 

@@ -7,7 +7,6 @@ cm.define('Com.MultipleInput', {
         'onClear',
         'onDisable',
         'onEnable',
-        'onSetAttributes',
         'onItemAddStart',
         'onItemAddProcess',
         'onItemAddEnd',

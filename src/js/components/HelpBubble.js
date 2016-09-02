@@ -47,10 +47,10 @@ function(params){
         if(that.params['renderStructure']){
             that.nodes['container'] = cm.node('span', {'class' : 'com__help-bubble'},
                 that.nodes['button'] = cm.node('span', {'class' : 'icon default linked'}),
-                that.nodes['content'] = cm.node('span', {'class' : 'com__help-bubble__content'},
-                    that.params['content']
-                )
+                that.nodes['content'] = cm.node('span', {'class' : 'com__help-bubble__content'})
             );
+            // Set Content
+            that.set(that.params['content']);
             // Embed
             if(that.params['container']){
                 that.params['container'].appendChild(that.nodes['container']);
@@ -68,9 +68,11 @@ function(params){
     /* ******* PUBLIC ******* */
 
     that.set = function(node){
-        if(cm.isNode(node)){
-            cm.clearNode(that.nodes['content']);
-            that.nodes['content'].appendChild(node);
+        cm.clearNode(that.nodes['content']);
+        if(cm.isString(node) || cm.isNumber(node)){
+            that.nodes['content'].innerHTML = node;
+        }else{
+            cm.appendNodes(node, that.nodes['content']);
         }
         return that;
     };

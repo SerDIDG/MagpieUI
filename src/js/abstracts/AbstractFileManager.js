@@ -16,6 +16,7 @@ cm.define('Com.AbstractFileManager', {
         'showStats' : true,
         'max' : 0,                                                        // 0 - infinity
         'lazy' : false,
+        'fullSize' : false,
         'Com.FileStats' : {
             'embedStructure' : 'append',
             'toggleBox' : false,
@@ -136,6 +137,15 @@ cm.getConstructor('Com.AbstractFileManager', function(classConstructor, classNam
 
     classProto.renderController = function(){
         var that = this;
+        return that;
+    };
+
+    classProto.setAttributes = function(){
+        var that = this;
+        // Call parent method
+        _inherit.prototype.setAttributes.apply(that, arguments);
+        // Attributes
+        that.params['fullSize'] && cm.addClass(that.nodes['container'], 'is-fullsize');
         return that;
     };
 

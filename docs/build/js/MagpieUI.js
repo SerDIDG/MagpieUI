@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.22.2 (2016-08-31 21:14) ************ */
+/*! ************ MagpieUI v3.22.3 (2016-09-02 21:23) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1426,7 +1426,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.22.2',
+        '_version' : '3.22.3',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -6217,10 +6217,7 @@ cm.define('Com.AbstractController', {
         'onUnsetCustomEvents',
         'onRenderViewStart',
         'onRenderViewProcess',
-        'onRenderViewEnd',
-        'onSetAttributesStart',
-        'onSetAttributesProcess',
-        'onSetAttributesEnd'
+        'onRenderViewEnd'
     ],
     'params' : {
         'node' : cm.node('div'),
@@ -6352,10 +6349,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
 
     classProto.setAttributes = function(){
         var that = this;
-        that.triggerEvent('onSetAttributesStart');
-        that.triggerEvent('onSetAttributesProcess');
         cm.addClass(that.nodes['container'], that.params['className']);
-        that.triggerEvent('onSetAttributesEnd');
         return that;
     };
 
@@ -6889,7 +6883,8 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
 
     classProto.setAttributes = function(){
         var that = this;
-        that.triggerEvent('onSetAttributesStart');
+        // Call parent method
+        _inherit.prototype.setAttributes.apply(that, arguments);
         // Data attributes
         cm.forEach(that.params['node'].attributes, function(item){
             if(/^data-(?!node|element|config)/.test(item.name)){
@@ -6904,14 +6899,12 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
             that.nodes['hidden'].setAttribute('name', that.params['name']);
         }
         // Classes
-        cm.addClass(that.nodes['container'], that.params['className']);
         if(!cm.isEmpty(that.params['size'])){
             cm.addClass(that.nodes['container'], ['size', that.params['size']].join('-'));
         }
         if(!cm.isEmpty(that.params['justify'])){
             cm.addClass(that.nodes['container'], ['pull', that.params['justify']].join('-'));
         }
-        that.triggerEvent('onSetAttributesEnd');
         return that;
     };
 
@@ -6969,6 +6962,7 @@ cm.define('Com.AbstractFileManager', {
         'showStats' : true,
         'max' : 0,                                                        // 0 - infinity
         'lazy' : false,
+        'fullSize' : false,
         'Com.FileStats' : {
             'embedStructure' : 'append',
             'toggleBox' : false,
@@ -7089,6 +7083,15 @@ cm.getConstructor('Com.AbstractFileManager', function(classConstructor, classNam
 
     classProto.renderController = function(){
         var that = this;
+        return that;
+    };
+
+    classProto.setAttributes = function(){
+        var that = this;
+        // Call parent method
+        _inherit.prototype.setAttributes.apply(that, arguments);
+        // Attributes
+        that.params['fullSize'] && cm.addClass(that.nodes['container'], 'is-fullsize');
         return that;
     };
 
@@ -7713,8 +7716,7 @@ function(params){
         // Structure
         if(that.params['renderStructure']){
             that.nodes['container'] = cm.node('div', {'class' : 'com__form'},
-                that.nodes['form'] = cm.node('form', {'class' : 'form'},
-                    that.nodes['fields'] = cm.node('div', {'class' : 'com__form__fields'}))
+                that.nodes['fields'] = cm.node('div', {'class' : 'com__form__fields'})
             );
             // Notifications
             that.nodes['notifications'] = cm.node('div', {'class' : 'com__form__notifications'});
@@ -7726,8 +7728,8 @@ function(params){
             cm.addClass(that.nodes['buttons'], ['pull', that.params['buttonsAlign']].join('-'));
             // Embed
             that.params['renderButtonsSeparator'] && cm.insertFirst(that.nodes['buttonsSeparator'], that.nodes['buttonsContainer']);
-            that.params['renderButtons'] && cm.appendChild(that.nodes['buttonsContainer'], that.nodes['form']);
-            that.params['showNotifications'] && cm.insertFirst(that.nodes['notifications'], that.nodes['form']);
+            that.params['renderButtons'] && cm.appendChild(that.nodes['buttonsContainer'], that.nodes['container']);
+            that.params['showNotifications'] && cm.insertFirst(that.nodes['notifications'], that.nodes['container']);
             that.embedStructure(that.nodes['container']);
         }
         // Notifications
@@ -7767,13 +7769,6 @@ function(params){
                 );
             });
         }
-        // Events
-        cm.addEvent(that.nodes['form'], 'submit', function(e){
-            cm.preventDefault(e);
-            if(!that.isProcess){
-                that.send();
-            }
-        });
     };
 
     var renderField = function(type, params){
@@ -8031,6 +8026,11 @@ function(params){
         return that;
     };
 
+    that.embedNode = function(node){
+        cm.appendChild(node, that.nodes['fields']);
+        return that;
+    };
+
     that.getField = function(name){
         return that.fields[name];
     };
@@ -8146,6 +8146,7 @@ cm.define('Com.FormField', {
         'placeholder' : '',
         'visible' : true,
         'options' : [],
+        'className' : '',                   // is-box
         'constructor' : false,
         'constructorParams' : {},
         'Com.HelpBubble' : {
@@ -8211,13 +8212,15 @@ function(params){
     that.callbacks.render = function(that){
         var nodes = {};
         // Structure
-        nodes['container'] = cm.node('dl',
+        nodes['container'] = cm.node('dl', {'class' : 'pt__field'},
             nodes['label'] = cm.node('dt',
                 cm.node('label', that.params['label'])
             ),
             nodes['value'] = cm.node('dd', that.params['node'])
         );
         !that.params['visible'] && cm.addClass(nodes['container'], 'is-hidden');
+        // Style
+        cm.addClass(nodes['container'], that.params['className']);
         // Attributes
         if(!cm.isEmpty(that.params['name'])){
             that.params['node'].setAttribute('name', that.params['name']);
@@ -8251,7 +8254,7 @@ function(params){
     that.callbacks.renderError = function(that, message){
         that.callbacks.clearError(that);
         cm.addClass(that.nodes['container'], 'error');
-        that.nodes['errors'] = cm.node('ul', {'class' : 'hint'},
+        that.nodes['errors'] = cm.node('ul', {'class' : 'pt__field__hint'},
             cm.node('li', {'class' : 'error'}, message)
         );
         cm.appendChild(that.nodes['errors'], that.nodes['value']);
@@ -8534,7 +8537,6 @@ cm.define('Com.MultipleInput', {
         'onClear',
         'onDisable',
         'onEnable',
-        'onSetAttributes',
         'onItemAddStart',
         'onItemAddProcess',
         'onItemAddEnd',
@@ -13886,19 +13888,11 @@ function(params){
 cm.getConstructor('Com.DialogContainer', function(classConstructor, className, classProto){
     var _inherit = classProto._inherit;
 
-    classProto.construct = function(){
+    classProto.validateParams = function(){
         var that = this;
-        // Bind context to methods
-        that.validateParamsEndHandler = that.validateParamsEnd.bind(that);
-        // Add events
-        that.addEvent('onValidateParamsEnd', that.validateParamsEndHandler);
         // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
-        return that;
-    };
-
-    classProto.validateParamsEnd = function(){
-        var that = this;
+        _inherit.prototype.validateParams.apply(that, arguments);
+        // Set Content
         if(cm.isObject(that.params['content'])){
             that.params['params']['title'] = that.params['content']['title'] || that.params['params']['title'];
             that.params['params']['content'] = that.params['content']['content'] || that.params['params']['content'];
@@ -15979,11 +15973,13 @@ cm.define('Com.FileUploader', {
         'fileManagerConstructor' : 'Com.AbstractFileManager',
         'fileManagerParams' : {
             'embedStructure' : 'append',
-            'showStats' : false
+            'showStats' : false,
+            'fullSize' : true
         },
         'Com.Tabset' : {
             'embedStructure' : 'append',
-            'toggleOnHashChange' : false
+            'toggleOnHashChange' : false,
+            'calculateMaxHeight' : true
         },
         'Com.FileStats' : {
             'embedStructure' : 'append',
@@ -16123,6 +16119,22 @@ cm.getConstructor('Com.FileUploader', function(classConstructor, className, clas
             });
         }
         // Init Tabset
+        that.renderTabset();
+        // Init Stats
+        if(that.params['showStats']){
+            cm.getConstructor('Com.FileStats', function(classObject, className){
+                that.components['stats'] = new classObject(
+                    cm.merge(that.params[className], {
+                        'container' : that.nodes['content']
+                    })
+                );
+            });
+        }
+        return that;
+    };
+
+    classProto.renderTabset = function(){
+        var that = this;
         cm.getConstructor('Com.Tabset', function(classObject, className){
             that.components['tabset'] = new classObject(
                 cm.merge(that.params[className], {
@@ -16151,16 +16163,6 @@ cm.getConstructor('Com.FileUploader', function(classConstructor, className, clas
             }
             that.components['tabset'].set(that.params['local'] ? 'local' : 'fileManager');
         });
-        // Init Stats
-        if(that.params['showStats']){
-            cm.getConstructor('Com.FileStats', function(classObject, className){
-                that.components['stats'] = new classObject(
-                    cm.merge(that.params[className], {
-                        'container' : that.nodes['content']
-                    })
-                );
-            });
-        }
         return that;
     };
 
@@ -16181,7 +16183,7 @@ cm.getConstructor('Com.FileUploader', function(classConstructor, className, clas
             nodes = {};
         // Structure
         nodes['li'] = cm.node('li',
-            nodes['container'] = cm.node('div', {'class' : 'com__file-uploader__file-manager'},
+            nodes['container'] = cm.node('div', {'class' : 'com__file-uploader__file-manager is-fullsize'},
                 nodes['holder'] = cm.node('div', {'class' : 'com__file-uploader__holder'})
             )
         );
@@ -16341,7 +16343,8 @@ cm.define('Com.FileUploaderLocal', {
         'dropzoneConstructor' : 'Com.FileDropzone',
         'dropzoneParams' : {
             'embedStructure' : 'append',
-            'rollover' : false
+            'rollover' : false,
+            'height' : 256
         },
         'showOverlay' : true,
         'overlayDelay' : 'cm._config.loadDelay',
@@ -18486,10 +18489,10 @@ function(params){
         if(that.params['renderStructure']){
             that.nodes['container'] = cm.node('span', {'class' : 'com__help-bubble'},
                 that.nodes['button'] = cm.node('span', {'class' : 'icon default linked'}),
-                that.nodes['content'] = cm.node('span', {'class' : 'com__help-bubble__content'},
-                    that.params['content']
-                )
+                that.nodes['content'] = cm.node('span', {'class' : 'com__help-bubble__content'})
             );
+            // Set Content
+            that.set(that.params['content']);
             // Embed
             if(that.params['container']){
                 that.params['container'].appendChild(that.nodes['container']);
@@ -18507,9 +18510,11 @@ function(params){
     /* ******* PUBLIC ******* */
 
     that.set = function(node){
-        if(cm.isNode(node)){
-            cm.clearNode(that.nodes['content']);
-            that.nodes['content'].appendChild(node);
+        cm.clearNode(that.nodes['content']);
+        if(cm.isString(node) || cm.isNumber(node)){
+            that.nodes['content'].innerHTML = node;
+        }else{
+            cm.appendNodes(node, that.nodes['content']);
         }
         return that;
     };
@@ -18778,6 +18783,13 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
         }
         return that;
     };
+});
+
+/* ****** FORM FIELD COMPONENT ******* */
+
+Com.FormFields.add('image', {
+    'node' : cm.node('input', {'type' : 'text'}),
+    'constructor' : 'Com.ImageInput'
 });
 
 cm.define('Com.ImagePreviewContainer', {
@@ -24929,7 +24941,10 @@ function(params){
             height = Math.max(height, cm.getRealHeight(item['content'], 'offsetRelative'));
         });
         if(height != that.nodes['contentUL'].offsetHeight){
-            that.nodes['contentUL'].style.height = [height, 'px'].join('');
+            that.nodes['contentUL'].style.minHeight = [height, 'px'].join('');
+            cm.forEach(that.tabs, function(item){
+                item['content'].style.minHeight = [height, 'px'].join('');
+            });
         }
     };
 
@@ -26406,7 +26421,7 @@ function(params){
     that.setTitle = function(node){
         cm.clearNode(that.nodes['title']);
         if(cm.isString(node) || cm.isNumber(node)){
-            cm.appendChild(cm.textNode(node), that.nodes['title']);
+            that.nodes['title'].innerHTML = node;
         }else{
             cm.appendNodes(node, that.nodes['title']);
         }
@@ -26417,7 +26432,7 @@ function(params){
         var parent = that.nodes['content'] || that.nodes['target'];
         cm.clearNode(parent);
         if(cm.isString(node) || cm.isNumber(node)){
-            cm.appendChild(cm.textNode(node), parent);
+            parent.innerHTML = node;
         }else{
             cm.appendNodes(node, parent);
         }
@@ -27581,6 +27596,8 @@ cm.define('Com.elFinderFileManager', {
             dotFiles : false,
             useBrowserHistory : false,
             resizable : false,
+            width : 'auto',
+            height : 'auto',
             commandsOptions : {
                 getfile : {
                     folders : false,
@@ -27635,7 +27652,7 @@ cm.getConstructor('Com.elFinderFileManager', function(classConstructor, classNam
     classProto.redraw = function(){
         var that = this;
         if(that.components['controller']){
-            that.components['controller'].resize();
+            that.components['controller'].resize('auto', 'auto');
         }
         that.triggerEvent('onRedraw');
         return that;
@@ -27658,8 +27675,9 @@ cm.getConstructor('Com.elFinderFileManager', function(classConstructor, classNam
                     })
                 );
                 // Show
-                cm.removeClass(that.nodes['holder']['container'], 'is-hidden');
+                cm.removeClass(that.nodes['holder']['container'], 'is-hidden', true);
                 that.components['controller'].show();
+                that.components['controller'].resize('auto', 'auto');
             }else{
                 cm.errorLog({
                     'name' : that._name['full'],

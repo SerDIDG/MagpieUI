@@ -88,8 +88,7 @@ function(params){
         // Structure
         if(that.params['renderStructure']){
             that.nodes['container'] = cm.node('div', {'class' : 'com__form'},
-                that.nodes['form'] = cm.node('form', {'class' : 'form'},
-                    that.nodes['fields'] = cm.node('div', {'class' : 'com__form__fields'}))
+                that.nodes['fields'] = cm.node('div', {'class' : 'com__form__fields'})
             );
             // Notifications
             that.nodes['notifications'] = cm.node('div', {'class' : 'com__form__notifications'});
@@ -101,8 +100,8 @@ function(params){
             cm.addClass(that.nodes['buttons'], ['pull', that.params['buttonsAlign']].join('-'));
             // Embed
             that.params['renderButtonsSeparator'] && cm.insertFirst(that.nodes['buttonsSeparator'], that.nodes['buttonsContainer']);
-            that.params['renderButtons'] && cm.appendChild(that.nodes['buttonsContainer'], that.nodes['form']);
-            that.params['showNotifications'] && cm.insertFirst(that.nodes['notifications'], that.nodes['form']);
+            that.params['renderButtons'] && cm.appendChild(that.nodes['buttonsContainer'], that.nodes['container']);
+            that.params['showNotifications'] && cm.insertFirst(that.nodes['notifications'], that.nodes['container']);
             that.embedStructure(that.nodes['container']);
         }
         // Notifications
@@ -142,13 +141,6 @@ function(params){
                 );
             });
         }
-        // Events
-        cm.addEvent(that.nodes['form'], 'submit', function(e){
-            cm.preventDefault(e);
-            if(!that.isProcess){
-                that.send();
-            }
-        });
     };
 
     var renderField = function(type, params){
@@ -406,6 +398,11 @@ function(params){
         return that;
     };
 
+    that.embedNode = function(node){
+        cm.appendChild(node, that.nodes['fields']);
+        return that;
+    };
+
     that.getField = function(name){
         return that.fields[name];
     };
@@ -521,6 +518,7 @@ cm.define('Com.FormField', {
         'placeholder' : '',
         'visible' : true,
         'options' : [],
+        'className' : '',                   // is-box
         'constructor' : false,
         'constructorParams' : {},
         'Com.HelpBubble' : {
@@ -586,13 +584,15 @@ function(params){
     that.callbacks.render = function(that){
         var nodes = {};
         // Structure
-        nodes['container'] = cm.node('dl',
+        nodes['container'] = cm.node('dl', {'class' : 'pt__field'},
             nodes['label'] = cm.node('dt',
                 cm.node('label', that.params['label'])
             ),
             nodes['value'] = cm.node('dd', that.params['node'])
         );
         !that.params['visible'] && cm.addClass(nodes['container'], 'is-hidden');
+        // Style
+        cm.addClass(nodes['container'], that.params['className']);
         // Attributes
         if(!cm.isEmpty(that.params['name'])){
             that.params['node'].setAttribute('name', that.params['name']);
@@ -626,7 +626,7 @@ function(params){
     that.callbacks.renderError = function(that, message){
         that.callbacks.clearError(that);
         cm.addClass(that.nodes['container'], 'error');
-        that.nodes['errors'] = cm.node('ul', {'class' : 'hint'},
+        that.nodes['errors'] = cm.node('ul', {'class' : 'pt__field__hint'},
             cm.node('li', {'class' : 'error'}, message)
         );
         cm.appendChild(that.nodes['errors'], that.nodes['value']);
