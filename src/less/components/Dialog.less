@@ -42,7 +42,7 @@
         display: inline-block;
         text-align: left;
         vertical-align: middle;
-        .mx__transform(scale(0.9));
+        //.mx__transform(scale(0.9)); - Not working position fixed inside this block
         .mx__transition(all, @ComDialog-Duration, @CmUI-MotionAsymmetric);
 
         > .icon {
@@ -109,7 +109,7 @@
         opacity: 1;
 
         > .window {
-            .mx__transform(scale(1));
+            //.mx__transform(scale(1)); - Not working position fixed inside this block
         }
     }
 }

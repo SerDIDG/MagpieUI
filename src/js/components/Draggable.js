@@ -14,7 +14,7 @@ cm.define('Com.Draggable', {
         'onSelect'
     ],
     'params' : {
-        'node' : cm.Node('div'),            // Node, for drag
+        'node' : cm.node('div'),            // Node, for drag
         'target' : false,                   // Node, for drag target event
         'limiter' : false,                  // Node, for limit draggable in it
         'minY' : false,

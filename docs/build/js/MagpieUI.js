@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.22.3 (2016-09-02 21:23) ************ */
+/*! ************ MagpieUI v3.22.4 (2016-09-05 17:44) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1426,7 +1426,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.22.3',
+        '_version' : '3.22.4',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -8026,7 +8026,7 @@ function(params){
         return that;
     };
 
-    that.embedNode = function(node){
+    that.appendChild = function(node){
         cm.appendChild(node, that.nodes['fields']);
         return that;
     };
@@ -15053,7 +15053,7 @@ cm.define('Com.Draggable', {
         'onSelect'
     ],
     'params' : {
-        'node' : cm.Node('div'),            // Node, for drag
+        'node' : cm.node('div'),            // Node, for drag
         'target' : false,                   // Node, for drag target event
         'limiter' : false,                  // Node, for limit draggable in it
         'minY' : false,
@@ -25579,8 +25579,8 @@ cm.define('Com.TagsInput', {
         },
         'langs' : {
             'tags' : 'Tags',
-            'add' : 'Add Tag',
-            'remove' : 'Remove Tag'
+            'add' : 'Add',
+            'remove' : 'Remove'
         },
         'Com.Autocomplete' : {
             'clearOnEmpty' : false

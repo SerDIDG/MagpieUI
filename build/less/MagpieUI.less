@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.22.3 (2016-09-02 21:23) ************ */
+/*! ************ MagpieUI v3.22.4 (2016-09-05 17:44) ************ */
 @charset "UTF-8";
 
 /*!
@@ -13757,7 +13757,7 @@ ul.pt__field__hint {
         display: inline-block;
         text-align: left;
         vertical-align: middle;
-        .mx__transform(scale(0.9));
+        //.mx__transform(scale(0.9)); - Not working position fixed inside this block
         .mx__transition(all, @ComDialog-Duration, @CmUI-MotionAsymmetric);
 
         > .icon {
@@ -13824,7 +13824,7 @@ ul.pt__field__hint {
         opacity: 1;
 
         > .window {
-            .mx__transform(scale(1));
+            //.mx__transform(scale(1)); - Not working position fixed inside this block
         }
     }
 }

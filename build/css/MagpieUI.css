@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.22.3 (2016-09-02 21:23) ************ */
+/*! ************ MagpieUI v3.22.4 (2016-09-05 17:44) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.5.0
@@ -14155,9 +14155,6 @@ ul.pt__field__hint li:before {
   display: inline-block;
   text-align: left;
   vertical-align: middle;
-  -webkit-transform: scale(0.9);
-  -ms-transform: scale(0.9);
-  transform: scale(0.9);
   -webkit-transition: all 250ms cubic-bezier(0.5, 0, 0.15, 1);
   transition: all 250ms cubic-bezier(0.5, 0, 0.15, 1);
 }
@@ -14205,11 +14202,6 @@ ul.pt__field__hint li:before {
 .com__dialog.is-open {
   visibility: visible;
   opacity: 1;
-}
-.com__dialog.is-open > .window {
-  -webkit-transform: scale(1);
-  -ms-transform: scale(1);
-  transform: scale(1);
 }
 .com__dialog__inner {
   overflow: hidden;

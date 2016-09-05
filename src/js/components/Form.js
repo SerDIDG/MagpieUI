@@ -398,7 +398,7 @@ function(params){
         return that;
     };
 
-    that.embedNode = function(node){
+    that.appendChild = function(node){
         cm.appendChild(node, that.nodes['fields']);
         return that;
     };

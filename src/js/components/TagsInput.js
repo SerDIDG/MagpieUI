@@ -33,8 +33,8 @@ cm.define('Com.TagsInput', {
         },
         'langs' : {
             'tags' : 'Tags',
-            'add' : 'Add Tag',
-            'remove' : 'Remove Tag'
+            'add' : 'Add',
+            'remove' : 'Remove'
         },
         'Com.Autocomplete' : {
             'clearOnEmpty' : false
