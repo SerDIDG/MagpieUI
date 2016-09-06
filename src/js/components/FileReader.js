@@ -23,15 +23,17 @@ cm.define('Com.FileReader', {
 },
 function(params){
     var that = this;
-    that.isDestructed = false;
-    that.nodes = {};
-    that.components = {};
     that.construct(params);
 });
 
 cm.getConstructor('Com.FileReader', function(classConstructor, className, classProto){
     classProto.construct = function(params){
         var that = this;
+        // Variables
+        that.isDestructed = false;
+        that.nodes = {};
+        that.components = {};
+        // Events
         that.triggerEvent('onConstructStart');
         that.setParams(params);
         that.convertEvents(that.params['events']);
@@ -89,6 +91,7 @@ cm.getConstructor('Com.FileReader', function(classConstructor, className, classP
             },
             parsed;
         if(cm.isFile(o)){
+            item['file'] = o;
             item['type'] = o.type;
             item['name'] = o.name;
             item['size'] = o.size;

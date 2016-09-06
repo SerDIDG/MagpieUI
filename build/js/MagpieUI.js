@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.22.4 (2016-09-05 17:44) ************ */
+/*! ************ MagpieUI v3.22.5 (2016-09-06 20:16) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1426,7 +1426,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.22.4',
+        '_version' : '3.22.5',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -8148,7 +8148,9 @@ cm.define('Com.FormField', {
         'options' : [],
         'className' : '',                   // is-box
         'constructor' : false,
-        'constructorParams' : {},
+        'constructorParams' : {
+            'formData' : true
+        },
         'Com.HelpBubble' : {
             'renderStructure' : true
         }
@@ -15485,6 +15487,7 @@ cm.define('Com.FileInput', {
         'className' : 'com__file-input',
         'file' : null,
         'showLink' : true,
+        'autoOpen' : false,
         'local' : true,
         'fileManager' : false,
         'fileManagerConstructor' : 'Com.AbstractFileManagerContainer',
@@ -15552,6 +15555,17 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         return that;
     };
 
+    classProto.get = function(){
+        var that = this,
+            value;
+        if(that.params['formData']){
+            value = that.value['file'] || that.value;
+        }else{
+            value = that.value;
+        }
+        return value;
+    };
+
     classProto.clear = function(){
         var that = this;
         // Call parent method
@@ -15579,10 +15593,12 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         // Dropzone
         that.params['dropzone'] = !that.params['local'] ? false : that.params['dropzone'];
         // File Uploader
+        that.params['fileUploaderParams']['openOnConstruct'] = that.params['autoOpen'];
         that.params['fileUploaderParams']['params']['local'] = that.params['local'];
         that.params['fileUploaderParams']['params']['fileManager'] = that.params['fileManager'];
         // Other
         that.params['local'] = that.params['fileUploader'] ? false : that.params['local'];
+        that.params['fileManagerParams']['openOnConstruct'] = that.params['autoOpen'];
         that.params['fileManager'] = that.params['fileUploader'] ? false : that.params['fileManager'];
         return that;
     };
@@ -15786,15 +15802,17 @@ cm.define('Com.FileReader', {
 },
 function(params){
     var that = this;
-    that.isDestructed = false;
-    that.nodes = {};
-    that.components = {};
     that.construct(params);
 });
 
 cm.getConstructor('Com.FileReader', function(classConstructor, className, classProto){
     classProto.construct = function(params){
         var that = this;
+        // Variables
+        that.isDestructed = false;
+        that.nodes = {};
+        that.components = {};
+        // Events
         that.triggerEvent('onConstructStart');
         that.setParams(params);
         that.convertEvents(that.params['events']);
@@ -15852,6 +15870,7 @@ cm.getConstructor('Com.FileReader', function(classConstructor, className, classP
             },
             parsed;
         if(cm.isFile(o)){
+            item['file'] = o;
             item['type'] = o.type;
             item['name'] = o.name;
             item['size'] = o.size;

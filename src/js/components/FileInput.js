@@ -5,6 +5,7 @@ cm.define('Com.FileInput', {
         'className' : 'com__file-input',
         'file' : null,
         'showLink' : true,
+        'autoOpen' : false,
         'local' : true,
         'fileManager' : false,
         'fileManagerConstructor' : 'Com.AbstractFileManagerContainer',
@@ -72,6 +73,17 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         return that;
     };
 
+    classProto.get = function(){
+        var that = this,
+            value;
+        if(that.params['formData']){
+            value = that.value['file'] || that.value;
+        }else{
+            value = that.value;
+        }
+        return value;
+    };
+
     classProto.clear = function(){
         var that = this;
         // Call parent method
@@ -99,10 +111,12 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         // Dropzone
         that.params['dropzone'] = !that.params['local'] ? false : that.params['dropzone'];
         // File Uploader
+        that.params['fileUploaderParams']['openOnConstruct'] = that.params['autoOpen'];
         that.params['fileUploaderParams']['params']['local'] = that.params['local'];
         that.params['fileUploaderParams']['params']['fileManager'] = that.params['fileManager'];
         // Other
         that.params['local'] = that.params['fileUploader'] ? false : that.params['local'];
+        that.params['fileManagerParams']['openOnConstruct'] = that.params['autoOpen'];
         that.params['fileManager'] = that.params['fileUploader'] ? false : that.params['fileManager'];
         return that;
     };
