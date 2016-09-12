@@ -88,7 +88,9 @@ function(params){
         // Structure
         if(that.params['renderStructure']){
             that.nodes['container'] = cm.node('div', {'class' : 'com__form'},
-                that.nodes['fields'] = cm.node('div', {'class' : 'com__form__fields'})
+                that.nodes['fieldsContainer'] = cm.node('div', {'class' : 'com__form__fields'},
+                    that.nodes['fields'] = cm.node('div', {'class' : 'inner'})
+                )
             );
             // Notifications
             that.nodes['notifications'] = cm.node('div', {'class' : 'com__form__notifications'});
@@ -127,7 +129,7 @@ function(params){
             cm.getConstructor('Com.Overlay', function(classConstructor, className){
                 switch(that.params['loaderCoverage']){
                     case 'fields':
-                        overlayContainer = that.nodes['fields'];
+                        overlayContainer = that.nodes['fieldsContainer'];
                         break;
                     case 'all':
                     default:
@@ -408,9 +410,13 @@ function(params){
     };
 
     that.getAll = function(){
-        var o = {};
+        var o = {},
+            value;
         cm.forEach(that.fields, function(field, name){
-            o[name] = field.get();
+            value = field.get();
+            if(value !== null){
+                o[name] = value;
+            }
         });
         return o;
     };

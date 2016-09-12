@@ -5,14 +5,6 @@
 .pt__listing {
     .cm__box;
 
-    .cm__tags {
-        margin: 0;
-    }
-
-    .pt__box-editable {
-        margin: 0;
-    }
-
     .block {
         margin: @CmIndent-Medium 0 0 0;
 
@@ -31,9 +23,7 @@
     }
 
     ul.list {
-        margin: 0;
-        padding: 0;
-        list-style: none;
+        .cm__list-clear;
 
         > li {
             margin: @CmIndent-XXSmall 0 0 0;
@@ -54,6 +44,26 @@
         .cm__link {
             font-weight: @CmFont-Base-BoldWeight;
         }
+    }
+}
+
+.pt__listing__item {
+    .cm__box;
+}
+
+.pt__listing__field {
+    margin: @CmIndent-XXXSmall 0 0;
+
+    &:first-child {
+        margin: 0;
+    }
+
+    > dt {
+        font-weight: @CmFont-Base-BoldWeight;
+    }
+
+    > dd {
+        padding: 0;
     }
 }
 

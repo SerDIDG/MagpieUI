@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.22.5 (2016-09-06 20:16) ************ */
+/*! ************ MagpieUI v3.22.6 (2016-09-12 20:18) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.5.0
@@ -10739,23 +10739,6 @@ ul.pt__field__hint li:before {
 .pt__listing:last-child {
   margin-bottom: 0;
 }
-.pt__listing .cm__tags,
-.pt__listing h1,
-.pt__listing h2,
-.pt__listing h3,
-.pt__listing h4,
-.pt__listing h5,
-.pt__listing h6,
-.pt__listing p,
-.pt__listing dl,
-.pt__listing ul,
-.pt__listing ol,
-.pt__listing hr {
-  margin: 0;
-}
-.pt__listing .pt__box-editable {
-  margin: 0;
-}
 .pt__listing .block {
   margin: 24px 0 0 0;
 }
@@ -10773,6 +10756,10 @@ ul.pt__field__hint li:before {
   margin: 0;
   padding: 0;
   list-style: none;
+}
+.pt__listing ul.list > li {
+  margin: 0;
+  padding: 0;
 }
 .pt__listing ul.list > li {
   margin: 8px 0 0 0;
@@ -10793,6 +10780,26 @@ ul.pt__field__hint li:before {
 .pt__listing .list-title a,
 .pt__listing .list-title .com__glossary .com__glossary__title {
   font-weight: 600;
+}
+.pt__listing__item {
+  margin-bottom: 24px;
+}
+.pt__listing__item.bottom,
+.pt__listing__item.is-last,
+.pt__listing__item:last-child {
+  margin-bottom: 0;
+}
+.pt__listing__field {
+  margin: 4px 0 0;
+}
+.pt__listing__field:first-child {
+  margin: 0;
+}
+.pt__listing__field > dt {
+  font-weight: 600;
+}
+.pt__listing__field > dd {
+  padding: 0;
 }
 /* *** DEFAULT *** */
 .pt__listing-clear {
@@ -14684,6 +14691,18 @@ ul.pt__field__hint li:before {
   position: relative;
 }
 .com__form__fields:after {
+  content: ".";
+  display: block;
+  clear: both;
+  visibility: hidden;
+  line-height: 0;
+  font-size: 0;
+  height: 0;
+}
+.com__form__fields > .inner {
+  position: relative;
+}
+.com__form__fields > .inner:after {
   content: ".";
   display: block;
   clear: both;

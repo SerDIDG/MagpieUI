@@ -29,7 +29,7 @@
  ******* */
 
 var cm = {
-        '_version' : '3.22.5',
+        '_version' : '3.22.6',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
