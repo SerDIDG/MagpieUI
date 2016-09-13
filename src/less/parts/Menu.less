@@ -8,16 +8,12 @@
 .pt__menu-dropdown--base {
     .pt__box;
     display: block;
-    visibility: hidden;
-    position: absolute;
     margin: 0;
     padding: @PtMenu-IndentY @PtMenu-IndentX;
     border-width: @PtMenu-BorderWidth;
     border-color: @PtMenu-BorderColor;
     list-style: none;
-    opacity: 0;
     touch-action: none;
-    .mx__position(100%, auto, auto, 0);
     .mx__transition(all, @CmUI-Transition-Duration);
 
     li {
@@ -35,19 +31,6 @@
 
             &:hover {
                 text-decoration: none;
-            }
-        }
-
-        ul {
-            @indentX: ~'calc(100% - @{PtMenu-Dropdown-IndentX})';
-            .mx__position(@PtMenu-Dropdown-IndentY - (@PtMenu-BorderWidth + @PtMenu-IndentY), auto, auto, @indentX);
-
-            &.pull-left {
-                .mx__position(@PtMenu-Dropdown-IndentY - (@PtMenu-BorderWidth + @PtMenu-IndentY), auto, auto, @indentX);
-            }
-
-            &.pull-right {
-                .mx__position(@PtMenu-Dropdown-IndentY - (@PtMenu-BorderWidth + @PtMenu-IndentY), @indentX, auto, auto);
             }
         }
 
@@ -80,6 +63,28 @@
             }
         }
     }
+}
+
+.pt__menu-dropdown--position {
+    visibility: hidden;
+    position: absolute;
+    opacity: 0;
+    .mx__position(100%, auto, auto, 0);
+
+    li {
+        ul {
+            @indentX: ~'calc(100% - @{PtMenu-Dropdown-IndentX})';
+            .mx__position(@PtMenu-Dropdown-IndentY - (@PtMenu-BorderWidth + @PtMenu-IndentY), auto, auto, @indentX);
+
+            &.pull-left {
+                .mx__position(@PtMenu-Dropdown-IndentY - (@PtMenu-BorderWidth + @PtMenu-IndentY), auto, auto, @indentX);
+            }
+
+            &.pull-right {
+                .mx__position(@PtMenu-Dropdown-IndentY - (@PtMenu-BorderWidth + @PtMenu-IndentY), @indentX, auto, auto);
+            }
+        }
+    }
 
     &.pull-left {
         .mx__position(100%, auto, auto, 0);
@@ -100,11 +105,7 @@
     .mx__transition(visibility opacity, @CmUI-Transition-DurationReverse);
 }
 
-.pt__menu-dropdown--inside {
-    visibility: visible;
-    opacity: 1;
-    position: relative;
-    .mx__position(auto, auto, auto, auto);
+.pt__menu-dropdown--embed {
 }
 
 /* *** MENU *** */

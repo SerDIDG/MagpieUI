@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.22.6 (2016-09-12 20:18) ************ */
+/*! ************ MagpieUI v3.22.7 (2016-09-13 20:08) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.5.0
@@ -8133,20 +8133,20 @@ button.is-hidden {
   -moz-background-clip: padding-box;
   background-clip: padding-box;
   display: block;
-  visibility: hidden;
-  position: absolute;
   margin: 0;
   padding: 4px 0px;
   border-width: 1px;
   border-color: #cccccc;
   list-style: none;
-  opacity: 0;
   touch-action: none;
+  -webkit-transition: all 250ms ease-in-out;
+  transition: all 250ms ease-in-out;
+  visibility: hidden;
+  position: absolute;
+  opacity: 0;
   top: 100%;
   right: auto;
   left: 0;
-  -webkit-transition: all 250ms ease-in-out;
-  transition: all 250ms ease-in-out;
   z-index: 1;
   top: 12px;
   right: 12px;
@@ -8181,24 +8181,6 @@ button.is-hidden {
 .pt__editable.is-editable > .menu .pt__menu-dropdown li a:hover {
   text-decoration: none;
 }
-.pt__editable.is-editable > .menu .pt__menu-dropdown li ul {
-  top: -5px;
-  right: auto;
-  bottom: auto;
-  left: calc(100% - 0px);
-}
-.pt__editable.is-editable > .menu .pt__menu-dropdown li ul.pull-left {
-  top: -5px;
-  right: auto;
-  bottom: auto;
-  left: calc(100% - 0px);
-}
-.pt__editable.is-editable > .menu .pt__menu-dropdown li ul.pull-right {
-  top: -5px;
-  right: calc(100% - 0px);
-  bottom: auto;
-  left: auto;
-}
 .pt__editable.is-editable > .menu .pt__menu-dropdown li:before {
   display: block;
   height: 0;
@@ -8228,6 +8210,24 @@ button.is-hidden {
   opacity: 1;
   -webkit-transition: visibility 100ms ease-in-out, opacity 100ms ease-in-out;
   transition: visibility 100ms ease-in-out, opacity 100ms ease-in-out;
+}
+.pt__editable.is-editable > .menu .pt__menu-dropdown li ul {
+  top: -5px;
+  right: auto;
+  bottom: auto;
+  left: calc(100% - 0px);
+}
+.pt__editable.is-editable > .menu .pt__menu-dropdown li ul.pull-left {
+  top: -5px;
+  right: auto;
+  bottom: auto;
+  left: calc(100% - 0px);
+}
+.pt__editable.is-editable > .menu .pt__menu-dropdown li ul.pull-right {
+  top: -5px;
+  right: calc(100% - 0px);
+  bottom: auto;
+  left: auto;
 }
 .pt__editable.is-editable > .menu .pt__menu-dropdown.pull-left {
   top: 100%;
@@ -11007,19 +11007,12 @@ ul.pt__field__hint li:before {
   -moz-background-clip: padding-box;
   background-clip: padding-box;
   display: block;
-  visibility: hidden;
-  position: absolute;
   margin: 0;
   padding: 4px 0px;
   border-width: 1px;
   border-color: #cccccc;
   list-style: none;
-  opacity: 0;
   touch-action: none;
-  top: 100%;
-  right: auto;
-  bottom: auto;
-  left: 0;
   -webkit-transition: all 250ms ease-in-out;
   transition: all 250ms ease-in-out;
 }
@@ -11048,24 +11041,6 @@ ul.pt__field__hint li:before {
 }
 .pt__menu-dropdown--base li a:hover {
   text-decoration: none;
-}
-.pt__menu-dropdown--base li ul {
-  top: -5px;
-  right: auto;
-  bottom: auto;
-  left: calc(100% - 0px);
-}
-.pt__menu-dropdown--base li ul.pull-left {
-  top: -5px;
-  right: auto;
-  bottom: auto;
-  left: calc(100% - 0px);
-}
-.pt__menu-dropdown--base li ul.pull-right {
-  top: -5px;
-  right: calc(100% - 0px);
-  bottom: auto;
-  left: auto;
 }
 .pt__menu-dropdown--base li:before {
   display: block;
@@ -11097,13 +11072,40 @@ ul.pt__field__hint li:before {
   -webkit-transition: visibility 100ms ease-in-out, opacity 100ms ease-in-out;
   transition: visibility 100ms ease-in-out, opacity 100ms ease-in-out;
 }
-.pt__menu-dropdown--base.pull-left {
+.pt__menu-dropdown--position {
+  visibility: hidden;
+  position: absolute;
+  opacity: 0;
   top: 100%;
   right: auto;
   bottom: auto;
   left: 0;
 }
-.pt__menu-dropdown--base.pull-right {
+.pt__menu-dropdown--position li ul {
+  top: -5px;
+  right: auto;
+  bottom: auto;
+  left: calc(100% - 0px);
+}
+.pt__menu-dropdown--position li ul.pull-left {
+  top: -5px;
+  right: auto;
+  bottom: auto;
+  left: calc(100% - 0px);
+}
+.pt__menu-dropdown--position li ul.pull-right {
+  top: -5px;
+  right: calc(100% - 0px);
+  bottom: auto;
+  left: auto;
+}
+.pt__menu-dropdown--position.pull-left {
+  top: 100%;
+  right: auto;
+  bottom: auto;
+  left: 0;
+}
+.pt__menu-dropdown--position.pull-right {
   top: 100%;
   right: 0;
   bottom: auto;
@@ -11129,15 +11131,6 @@ ul.pt__field__hint li:before {
   opacity: 1;
   -webkit-transition: visibility 100ms ease-in-out, opacity 100ms ease-in-out;
   transition: visibility 100ms ease-in-out, opacity 100ms ease-in-out;
-}
-.pt__menu-dropdown--inside {
-  visibility: visible;
-  opacity: 1;
-  position: relative;
-  top: auto;
-  right: auto;
-  bottom: auto;
-  left: auto;
 }
 /* *** MENU *** */
 .pt__menu {
@@ -15628,21 +15621,21 @@ ul.pt__field__hint li:before {
   -moz-background-clip: padding-box;
   background-clip: padding-box;
   display: block;
-  visibility: hidden;
-  position: absolute;
   margin: 0;
   padding: 4px 0px;
   border-width: 1px;
   border-color: #cccccc;
   list-style: none;
-  opacity: 0;
   touch-action: none;
+  -webkit-transition: all 250ms ease-in-out, visibility 100ms ease-in-out, opacity 100ms ease-in-out;
+  transition: all 250ms ease-in-out, visibility 100ms ease-in-out, opacity 100ms ease-in-out;
+  visibility: hidden;
+  position: absolute;
+  opacity: 0;
   top: 100%;
   right: auto;
   bottom: auto;
   left: 0;
-  -webkit-transition: all 250ms ease-in-out, visibility 100ms ease-in-out, opacity 100ms ease-in-out;
-  transition: all 250ms ease-in-out, visibility 100ms ease-in-out, opacity 100ms ease-in-out;
   visibility: visible;
   opacity: 1;
   position: static;
@@ -15673,24 +15666,6 @@ ul.pt__field__hint li:before {
 .com__tooltip.com__menu-tooltip .pt__menu .pt__menu-dropdown li a:hover {
   text-decoration: none;
 }
-.com__tooltip.com__menu-tooltip .pt__menu .pt__menu-dropdown li ul {
-  top: -5px;
-  right: auto;
-  bottom: auto;
-  left: calc(100% - 0px);
-}
-.com__tooltip.com__menu-tooltip .pt__menu .pt__menu-dropdown li ul.pull-left {
-  top: -5px;
-  right: auto;
-  bottom: auto;
-  left: calc(100% - 0px);
-}
-.com__tooltip.com__menu-tooltip .pt__menu .pt__menu-dropdown li ul.pull-right {
-  top: -5px;
-  right: calc(100% - 0px);
-  bottom: auto;
-  left: auto;
-}
 .com__tooltip.com__menu-tooltip .pt__menu .pt__menu-dropdown li:before {
   display: block;
   height: 0;
@@ -15720,6 +15695,24 @@ ul.pt__field__hint li:before {
   opacity: 1;
   -webkit-transition: visibility 100ms ease-in-out, opacity 100ms ease-in-out;
   transition: visibility 100ms ease-in-out, opacity 100ms ease-in-out;
+}
+.com__tooltip.com__menu-tooltip .pt__menu .pt__menu-dropdown li ul {
+  top: -5px;
+  right: auto;
+  bottom: auto;
+  left: calc(100% - 0px);
+}
+.com__tooltip.com__menu-tooltip .pt__menu .pt__menu-dropdown li ul.pull-left {
+  top: -5px;
+  right: auto;
+  bottom: auto;
+  left: calc(100% - 0px);
+}
+.com__tooltip.com__menu-tooltip .pt__menu .pt__menu-dropdown li ul.pull-right {
+  top: -5px;
+  right: calc(100% - 0px);
+  bottom: auto;
+  left: auto;
 }
 .com__tooltip.com__menu-tooltip .pt__menu .pt__menu-dropdown.pull-left {
   top: 100%;
@@ -17383,21 +17376,21 @@ html.ie9 .com__palette .b-range {
   -moz-background-clip: padding-box;
   background-clip: padding-box;
   display: block;
-  visibility: hidden;
-  position: absolute;
   margin: 0;
   padding: 4px 0px;
   border-width: 1px;
   border-color: #cccccc;
   list-style: none;
-  opacity: 0;
   touch-action: none;
+  -webkit-transition: all 250ms ease-in-out;
+  transition: all 250ms ease-in-out;
+  visibility: hidden;
+  position: absolute;
+  opacity: 0;
   top: 100%;
   right: auto;
   bottom: auto;
   left: 0;
-  -webkit-transition: all 250ms ease-in-out;
-  transition: all 250ms ease-in-out;
 }
 .com__tabset__head-menu .pt__menu-dropdown li {
   position: relative;
@@ -17424,24 +17417,6 @@ html.ie9 .com__palette .b-range {
 }
 .com__tabset__head-menu .pt__menu-dropdown li a:hover {
   text-decoration: none;
-}
-.com__tabset__head-menu .pt__menu-dropdown li ul {
-  top: -5px;
-  right: auto;
-  bottom: auto;
-  left: calc(100% - 0px);
-}
-.com__tabset__head-menu .pt__menu-dropdown li ul.pull-left {
-  top: -5px;
-  right: auto;
-  bottom: auto;
-  left: calc(100% - 0px);
-}
-.com__tabset__head-menu .pt__menu-dropdown li ul.pull-right {
-  top: -5px;
-  right: calc(100% - 0px);
-  bottom: auto;
-  left: auto;
 }
 .com__tabset__head-menu .pt__menu-dropdown li:before {
   display: block;
@@ -17472,6 +17447,24 @@ html.ie9 .com__palette .b-range {
   opacity: 1;
   -webkit-transition: visibility 100ms ease-in-out, opacity 100ms ease-in-out;
   transition: visibility 100ms ease-in-out, opacity 100ms ease-in-out;
+}
+.com__tabset__head-menu .pt__menu-dropdown li ul {
+  top: -5px;
+  right: auto;
+  bottom: auto;
+  left: calc(100% - 0px);
+}
+.com__tabset__head-menu .pt__menu-dropdown li ul.pull-left {
+  top: -5px;
+  right: auto;
+  bottom: auto;
+  left: calc(100% - 0px);
+}
+.com__tabset__head-menu .pt__menu-dropdown li ul.pull-right {
+  top: -5px;
+  right: calc(100% - 0px);
+  bottom: auto;
+  left: auto;
 }
 .com__tabset__head-menu .pt__menu-dropdown.pull-left {
   top: 100%;
