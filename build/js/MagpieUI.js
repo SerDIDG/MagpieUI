@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.22.7 (2016-09-13 20:08) ************ */
+/*! ************ MagpieUI v3.22.8 (2016-09-21 20:01) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1426,7 +1426,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.22.7',
+        '_version' : '3.22.8',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -4105,7 +4105,7 @@ cm.CSSValuesToArray = function(value){
     if(cm.isEmpty(value)){
         return [0, 0, 0, 0];
     }
-    value = value.replace(/[^0-9\s]/g , '').split(/\s+/);
+    value = value.replace(/[^\d\s-]/g , '').split(/\s+/);
     cm.forEach(value, function(item, key){
         value[key] = cm.isEmpty(item) ? 0 : parseFloat(item);
     });
@@ -4199,6 +4199,20 @@ cm.allowOnlyDigitInputEvent = function(input, callback){
     var value;
     cm.addEvent(input, 'input', function(e){
         value = input.value.replace(/[^\d]/, '');
+        if(input.type == 'number'){
+            input.value = Math.min(parseFloat(value), parseFloat(input.max));
+        }else{
+            input.value = cm.reduceText(value, parseInt(input.maxlength));
+        }
+        callback && callback(e, input.value);
+    });
+    return input;
+};
+
+cm.allowOnlyNumbersInputEvent = function(input, callback){
+    var value;
+    cm.addEvent(input, 'input', function(e){
+        value = input.value.replace(/[^\d-]/, '');
         if(input.type == 'number'){
             input.value = Math.min(parseFloat(value), parseFloat(input.max));
         }else{
@@ -5345,7 +5359,10 @@ Mod['Langs'] = {
             that.build._update['params']['langs'] = {};
         }
         if(that.build._inherit){
-            that.build['params']['langs'] = cm.merge(that.build._inherit.prototype['params']['langs'], that.build['params']['langs']);
+            that.build['params']['langs'] = cm.merge(
+                that.build._inherit.prototype['params']['langs'],
+                that.build['params']['langs']
+            );
         }
     },
     'lang' : function(str, vars){
@@ -5357,12 +5374,16 @@ Mod['Langs'] = {
         if(!str || cm.isEmpty(str)){
             return '';
         }
-        if(typeof that.params['langs'][str] == 'undefined'){
-            that.params['langs'][str] = str;
-        }
-        langStr = that.params['langs'][str];
+        // Get language string from path
+        langStr = cm.objectPath(str, that.params['langs']);
         // Process variables
-        langStr = cm.strReplace(langStr, vars);
+        if(typeof langStr == 'undefined'){
+            langStr = str;
+        }else if(cm.isEmpty(langStr)){
+            langStr = '';
+        }else{
+            langStr = cm.strReplace(langStr, vars);
+        }
         return langStr;
     },
     'updateLangs' : function(){
@@ -8936,6 +8957,7 @@ cm.define('Com.BoxTools', {
         'className' : 'com__box-tools',
         'maxlength' : 3,
         'units' : 'px',
+        'allowNegative' : false,
         'inputs' : [
             {'name' : 'top', 'icon' : 'icon svg__indent-top small linked', 'iconPosition' : 'insideRight'},
             {'name' : 'right', 'icon' : 'icon svg__indent-right small linked', 'iconPosition' : 'insideRight'},
@@ -8950,11 +8972,6 @@ cm.define('Com.BoxTools', {
 },
 function(params){
     var that = this;
-    that.myNodes = {};
-    that.inputs = [];
-    that.rawValue = null;
-    that.isInputsLinked = false;
-    that.lastInput = null;
     // Call parent class construct
     Com.AbstractInput.apply(that, arguments);
 });
@@ -8964,6 +8981,12 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
 
     classProto.construct = function(){
         var that = this;
+        // Variables
+        that.myNodes = {};
+        that.inputs = [];
+        that.rawValue = null;
+        that.isInputsLinked = false;
+        that.lastInput = null;
         // Bind context to methods
         that.linkInputsHandler = that.linkInputs.bind(that);
         that.setValuesHandler = that.setValues.bind(that);
@@ -9040,6 +9063,7 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
             that.lastInput = item;
         });
         cm.addEvent(item['input'], 'blur', that.setValuesHandler);
+        // Keypress events
         cm.addEvent(item['input'], 'keypress', function(e){
             if(cm.isKeyCode(e.keyCode, 'enter')){
                 cm.preventDefault(e);
@@ -9047,18 +9071,31 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
                 item['input'].blur();
             }
         });
-        cm.allowOnlyDigitInputEvent(item['input'], function(e, value){
-            if(that.isInputsLinked){
-                that.rawValue = [value, value, value, value];
-                that.setInputs();
-            }else{
-                that.rawValue[item['i']] = value;
-            }
-            that.selectAction(cm.arrayToCSSValues(that.rawValue, that.params['units']), true);
-        });
+        // Input events
+        if(that.params['allowNegative']){
+            cm.allowOnlyNumbersInputEvent(item['input'], function(e, value){
+                that.inputOnInputEvent(e, value, item);
+            });
+        }else{
+            cm.allowOnlyDigitInputEvent(item['input'], function(e, value){
+                that.inputOnInputEvent(e, value, item);
+            });
+        }
         // Push
         that.inputs.push(item);
         return item['nodes']['container'];
+    };
+
+    classProto.inputOnInputEvent = function(e, value, item){
+        var that = this;
+        if(that.isInputsLinked){
+            that.rawValue = [value, value, value, value];
+            that.setInputs();
+        }else{
+            that.rawValue[item['i']] = value;
+        }
+        that.selectAction(cm.arrayToCSSValues(that.rawValue, that.params['units']), true);
+        return that;
     };
 
     classProto.renderInputContainer = function(item){
@@ -13401,7 +13438,7 @@ cm.define('Com.Dialog', {
         'indentX' : 24,
         'theme' : 'theme-light',        // theme css class name, default: theme-default | theme-black | theme-light
         'className' : '',               // custom css class name
-        'content' : cm.Node('div'),
+        'content' : cm.node('div'),
         'title' : '',
         'buttons' : false,
         'titleOverflow' : false,
@@ -18890,7 +18927,8 @@ cm.define('Com.IndentInput', {
     'params' : {
         'maxlength' : 3,
         'units' : 'px',
-        'defaultValue' : 0
+        'defaultValue' : 0,
+        'allowNegative' : false
     }
 },
 function(params){
@@ -18949,9 +18987,16 @@ cm.getConstructor('Com.IndentInput', function(classConstructor, className, class
                 that.myNodes['input'].blur();
             }
         });
-        cm.allowOnlyDigitInputEvent(that.myNodes['input'], function(e, value){
-            that.selectAction(that.validateValue(value), true);
-        });
+
+        if(that.params['allowNegative']){
+            cm.allowOnlyNumbersInputEvent(that.myNodes['input'], function(e, value){
+                that.selectAction(that.validateValue(value), true);
+            });
+        }else{
+            cm.allowOnlyDigitInputEvent(that.myNodes['input'], function(e, value){
+                that.selectAction(that.validateValue(value), true);
+            });
+        }
         that.triggerEvent('onRenderContentEnd');
         // Push
         return that.myNodes['container'];
@@ -22009,6 +22054,31 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         });
         return that;
     };
+});
+cm.define('Com.Router', {
+    'extend' : 'Com.AbstractController',
+    'params' : {
+        'renderStructure' : false,
+        'renderOnConstruct' : false
+    }
+},
+function(params){
+    var that = this;
+    // Call parent class construct
+    Com.AbstractController.apply(that, arguments);
+});
+
+cm.getConstructor('Com.Router', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.renderViewModel = function(){
+        var that = this;
+        // Call parent method - renderViewModel
+        _inherit.prototype.renderViewModel.apply(that, arguments);
+        return that;
+    };
+
+    /* *** PUBLIC *** */
 });
 cm.define('Com.ScaleTools', {
     'extend' : 'Com.AbstractInput',

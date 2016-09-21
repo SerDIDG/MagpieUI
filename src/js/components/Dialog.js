@@ -29,7 +29,7 @@ cm.define('Com.Dialog', {
         'indentX' : 24,
         'theme' : 'theme-light',        // theme css class name, default: theme-default | theme-black | theme-light
         'className' : '',               // custom css class name
-        'content' : cm.Node('div'),
+        'content' : cm.node('div'),
         'title' : '',
         'buttons' : false,
         'titleOverflow' : false,

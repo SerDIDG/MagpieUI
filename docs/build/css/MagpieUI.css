@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.22.7 (2016-09-13 20:08) ************ */
+/*! ************ MagpieUI v3.22.8 (2016-09-21 20:01) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.5.0
@@ -4755,6 +4755,7 @@ section {
 /* *** SCROLLBAR *** */
 ::-webkit-scrollbar {
   width: 12px;
+  height: 12px;
 }
 ::-webkit-scrollbar-track {
   background-color: #fafafa;

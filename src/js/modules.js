@@ -316,7 +316,10 @@ Mod['Langs'] = {
             that.build._update['params']['langs'] = {};
         }
         if(that.build._inherit){
-            that.build['params']['langs'] = cm.merge(that.build._inherit.prototype['params']['langs'], that.build['params']['langs']);
+            that.build['params']['langs'] = cm.merge(
+                that.build._inherit.prototype['params']['langs'],
+                that.build['params']['langs']
+            );
         }
     },
     'lang' : function(str, vars){
@@ -328,12 +331,16 @@ Mod['Langs'] = {
         if(!str || cm.isEmpty(str)){
             return '';
         }
-        if(typeof that.params['langs'][str] == 'undefined'){
-            that.params['langs'][str] = str;
-        }
-        langStr = that.params['langs'][str];
+        // Get language string from path
+        langStr = cm.objectPath(str, that.params['langs']);
         // Process variables
-        langStr = cm.strReplace(langStr, vars);
+        if(typeof langStr == 'undefined'){
+            langStr = str;
+        }else if(cm.isEmpty(langStr)){
+            langStr = '';
+        }else{
+            langStr = cm.strReplace(langStr, vars);
+        }
         return langStr;
     },
     'updateLangs' : function(){

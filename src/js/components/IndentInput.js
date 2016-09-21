@@ -3,7 +3,8 @@ cm.define('Com.IndentInput', {
     'params' : {
         'maxlength' : 3,
         'units' : 'px',
-        'defaultValue' : 0
+        'defaultValue' : 0,
+        'allowNegative' : false
     }
 },
 function(params){
@@ -62,9 +63,16 @@ cm.getConstructor('Com.IndentInput', function(classConstructor, className, class
                 that.myNodes['input'].blur();
             }
         });
-        cm.allowOnlyDigitInputEvent(that.myNodes['input'], function(e, value){
-            that.selectAction(that.validateValue(value), true);
-        });
+
+        if(that.params['allowNegative']){
+            cm.allowOnlyNumbersInputEvent(that.myNodes['input'], function(e, value){
+                that.selectAction(that.validateValue(value), true);
+            });
+        }else{
+            cm.allowOnlyDigitInputEvent(that.myNodes['input'], function(e, value){
+                that.selectAction(that.validateValue(value), true);
+            });
+        }
         that.triggerEvent('onRenderContentEnd');
         // Push
         return that.myNodes['container'];

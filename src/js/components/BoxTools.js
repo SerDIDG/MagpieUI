@@ -4,6 +4,7 @@ cm.define('Com.BoxTools', {
         'className' : 'com__box-tools',
         'maxlength' : 3,
         'units' : 'px',
+        'allowNegative' : false,
         'inputs' : [
             {'name' : 'top', 'icon' : 'icon svg__indent-top small linked', 'iconPosition' : 'insideRight'},
             {'name' : 'right', 'icon' : 'icon svg__indent-right small linked', 'iconPosition' : 'insideRight'},
@@ -18,11 +19,6 @@ cm.define('Com.BoxTools', {
 },
 function(params){
     var that = this;
-    that.myNodes = {};
-    that.inputs = [];
-    that.rawValue = null;
-    that.isInputsLinked = false;
-    that.lastInput = null;
     // Call parent class construct
     Com.AbstractInput.apply(that, arguments);
 });
@@ -32,6 +28,12 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
 
     classProto.construct = function(){
         var that = this;
+        // Variables
+        that.myNodes = {};
+        that.inputs = [];
+        that.rawValue = null;
+        that.isInputsLinked = false;
+        that.lastInput = null;
         // Bind context to methods
         that.linkInputsHandler = that.linkInputs.bind(that);
         that.setValuesHandler = that.setValues.bind(that);
@@ -108,6 +110,7 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
             that.lastInput = item;
         });
         cm.addEvent(item['input'], 'blur', that.setValuesHandler);
+        // Keypress events
         cm.addEvent(item['input'], 'keypress', function(e){
             if(cm.isKeyCode(e.keyCode, 'enter')){
                 cm.preventDefault(e);
@@ -115,18 +118,31 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
                 item['input'].blur();
             }
         });
-        cm.allowOnlyDigitInputEvent(item['input'], function(e, value){
-            if(that.isInputsLinked){
-                that.rawValue = [value, value, value, value];
-                that.setInputs();
-            }else{
-                that.rawValue[item['i']] = value;
-            }
-            that.selectAction(cm.arrayToCSSValues(that.rawValue, that.params['units']), true);
-        });
+        // Input events
+        if(that.params['allowNegative']){
+            cm.allowOnlyNumbersInputEvent(item['input'], function(e, value){
+                that.inputOnInputEvent(e, value, item);
+            });
+        }else{
+            cm.allowOnlyDigitInputEvent(item['input'], function(e, value){
+                that.inputOnInputEvent(e, value, item);
+            });
+        }
         // Push
         that.inputs.push(item);
         return item['nodes']['container'];
+    };
+
+    classProto.inputOnInputEvent = function(e, value, item){
+        var that = this;
+        if(that.isInputsLinked){
+            that.rawValue = [value, value, value, value];
+            that.setInputs();
+        }else{
+            that.rawValue[item['i']] = value;
+        }
+        that.selectAction(cm.arrayToCSSValues(that.rawValue, that.params['units']), true);
+        return that;
     };
 
     classProto.renderInputContainer = function(item){

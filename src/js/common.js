@@ -29,7 +29,7 @@
  ******* */
 
 var cm = {
-        '_version' : '3.22.7',
+        '_version' : '3.22.8',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -2708,7 +2708,7 @@ cm.CSSValuesToArray = function(value){
     if(cm.isEmpty(value)){
         return [0, 0, 0, 0];
     }
-    value = value.replace(/[^0-9\s]/g , '').split(/\s+/);
+    value = value.replace(/[^\d\s-]/g , '').split(/\s+/);
     cm.forEach(value, function(item, key){
         value[key] = cm.isEmpty(item) ? 0 : parseFloat(item);
     });
@@ -2802,6 +2802,20 @@ cm.allowOnlyDigitInputEvent = function(input, callback){
     var value;
     cm.addEvent(input, 'input', function(e){
         value = input.value.replace(/[^\d]/, '');
+        if(input.type == 'number'){
+            input.value = Math.min(parseFloat(value), parseFloat(input.max));
+        }else{
+            input.value = cm.reduceText(value, parseInt(input.maxlength));
+        }
+        callback && callback(e, input.value);
+    });
+    return input;
+};
+
+cm.allowOnlyNumbersInputEvent = function(input, callback){
+    var value;
+    cm.addEvent(input, 'input', function(e){
+        value = input.value.replace(/[^\d-]/, '');
         if(input.type == 'number'){
             input.value = Math.min(parseFloat(value), parseFloat(input.max));
         }else{
