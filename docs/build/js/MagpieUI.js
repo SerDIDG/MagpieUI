@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.22.8 (2016-09-21 20:01) ************ */
+/*! ************ MagpieUI v3.22.8 (2016-09-21 20:28) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
