@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.22.8 (2016-09-21 20:28) ************ */
+/*! ************ MagpieUI v3.22.9 (2016-09-22 19:11) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1426,7 +1426,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.22.8',
+        '_version' : '3.22.9',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -12289,6 +12289,7 @@ function(params){
         if(typeof that.isEditing !== 'boolean' || !that.isEditing){
             that.isEditing = true;
             cm.addClass(nodes['container'], 'is-editing is-editable');
+            that.redraw();
             that.triggerEvent('enableEditing');
             that.triggerEvent('enableEditable');
         }
@@ -24590,6 +24591,7 @@ function(params){
         if(typeof that.isEditing !== 'boolean' || !that.isEditing){
             that.isEditing = true;
             cm.addClass(that.params['node'], 'is-editing is-editable');
+            that.redraw();
             that.triggerEvent('enableEditing');
             that.triggerEvent('enableEditable');
         }

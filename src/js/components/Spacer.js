@@ -166,6 +166,7 @@ function(params){
         if(typeof that.isEditing !== 'boolean' || !that.isEditing){
             that.isEditing = true;
             cm.addClass(that.params['node'], 'is-editing is-editable');
+            that.redraw();
             that.triggerEvent('enableEditing');
             that.triggerEvent('enableEditable');
         }

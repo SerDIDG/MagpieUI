@@ -403,6 +403,7 @@ function(params){
         if(typeof that.isEditing !== 'boolean' || !that.isEditing){
             that.isEditing = true;
             cm.addClass(nodes['container'], 'is-editing is-editable');
+            that.redraw();
             that.triggerEvent('enableEditing');
             that.triggerEvent('enableEditable');
         }
