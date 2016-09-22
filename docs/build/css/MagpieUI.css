@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.22.9 (2016-09-22 19:11) ************ */
+/*! ************ MagpieUI v3.22.9 (2016-09-22 20:53) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.5.0
@@ -12367,17 +12367,28 @@ ul.pt__field__hint li:before {
 .lt__forum__cell-title hr {
   margin: 0;
 }
+.lt__forum__cell-title .title {
+  font-weight: 600;
+}
 .lt__forum__cell-title .cm__tags--title,
+.lt__forum__cell-title .pt__line-info,
 .lt__forum__cell-title h1,
 .lt__forum__cell-title h2,
 .lt__forum__cell-title h3,
 .lt__forum__cell-title h4,
 .lt__forum__cell-title h5,
 .lt__forum__cell-title h6 {
-  margin: 0 0 8px;
+  margin-bottom: 8px;
 }
-.lt__forum__cell-title .title {
-  font-weight: 600;
+.lt__forum__cell-title .cm__tags--title:last-child,
+.lt__forum__cell-title .pt__line-info:last-child,
+.lt__forum__cell-title h1:last-child,
+.lt__forum__cell-title h2:last-child,
+.lt__forum__cell-title h3:last-child,
+.lt__forum__cell-title h4:last-child,
+.lt__forum__cell-title h5:last-child,
+.lt__forum__cell-title h6:last-child {
+  margin-bottom: 0;
 }
 .lt__forum__cell-last {
   width: 24%;

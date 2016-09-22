@@ -84,12 +84,17 @@
         margin: 0;
     }
 
-    .cm__tags--title {
-        margin: 0 0 @CmIndent-XXSmall;
-    }
-
     .title {
         font-weight: @CmFont-Base-BoldWeight;
+    }
+
+    .cm__tags--title,
+    .pt__line-info {
+        margin-bottom: @CmIndent-XXSmall;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
     }
 }
 

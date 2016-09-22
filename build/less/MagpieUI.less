@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.22.9 (2016-09-22 19:11) ************ */
+/*! ************ MagpieUI v3.22.9 (2016-09-22 20:53) ************ */
 @charset "UTF-8";
 
 /*!
@@ -11855,12 +11855,17 @@ ul.pt__field__hint {
         margin: 0;
     }
 
-    .cm__tags--title {
-        margin: 0 0 @CmIndent-XXSmall;
-    }
-
     .title {
         font-weight: @CmFont-Base-BoldWeight;
+    }
+
+    .cm__tags--title,
+    .pt__line-info {
+        margin-bottom: @CmIndent-XXSmall;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
     }
 }
 
