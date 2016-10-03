@@ -45,6 +45,7 @@ function(params){
         render();
         setLogic();
         set(that.params['height'], false);
+        that.params['isEditing'] && that.enableEditing();
         that.addToStack(that.params['node']);
         that.triggerEvent('onRender');
     };
@@ -93,8 +94,6 @@ function(params){
                 that.disableEditing();
             });
         }
-        // Editing
-        that.params['isEditing'] && that.enableEditing();
     };
 
     var setLogic = function(){

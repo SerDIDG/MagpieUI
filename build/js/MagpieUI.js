@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.22.9 (2016-10-01 20:48) ************ */
+/*! ************ MagpieUI v3.22.10 (2016-10-03 17:45) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1426,7 +1426,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.22.9',
+        '_version' : '3.22.10',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -24546,6 +24546,7 @@ cm.define('Com.Spacer', {
     'params' : {
         'node' : cm.Node('div'),
         'name' : '',
+        'height' : 0,
         'minHeight' : 0,
         'isEditing' : true,
         'customEvents' : true,
@@ -24569,7 +24570,8 @@ function(params){
         validateParams();
         render();
         setLogic();
-        set(parseFloat(that.params['node'].style.height), false);
+        set(that.params['height'], false);
+        that.params['isEditing'] && that.enableEditing();
         that.addToStack(that.params['node']);
         that.triggerEvent('onRender');
     };
@@ -24618,8 +24620,6 @@ function(params){
                 that.disableEditing();
             });
         }
-        // Editing
-        that.params['isEditing'] && that.enableEditing();
     };
 
     var setLogic = function(){
