@@ -20,6 +20,7 @@ cm.define('Com.Spacer', {
     'params' : {
         'node' : cm.Node('div'),
         'name' : '',
+        'height' : 0,
         'minHeight' : 0,
         'isEditing' : true,
         'customEvents' : true,
@@ -43,7 +44,7 @@ function(params){
         validateParams();
         render();
         setLogic();
-        set(parseFloat(that.params['node'].style.height), false);
+        set(that.params['height'], false);
         that.addToStack(that.params['node']);
         that.triggerEvent('onRender');
     };
