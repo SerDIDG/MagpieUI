@@ -220,6 +220,7 @@ function(params){
         that.abort();
         // Clear input
         if(that.params['clearOnEmpty']){
+            cm.log(that.value);
             item = that.getRegisteredItem(that.value);
             if(!item || item['data']['text'] != that.params['node'].value){
                 that.clear();

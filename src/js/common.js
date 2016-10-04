@@ -29,7 +29,7 @@
  ******* */
 
 var cm = {
-        '_version' : '3.22.10',
+        '_version' : '3.22.11',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -423,7 +423,7 @@ cm.isEmpty = function(el){
 
 cm.objectPath = function(name, obj){
     obj = typeof obj == 'undefined'? window : obj;
-    name = name.split('.');
+    name = name.toString().split('.');
     var findObj = obj,
         length = name.length;
     cm.forEach(name, function(item, key){
@@ -436,7 +436,7 @@ cm.objectPath = function(name, obj){
 
 cm.objectSelector = function(name, obj, apply){
     obj = typeof obj == 'undefined'? window : obj;
-    name = name.split('.');
+    name = name.toString().split('.');
     var findObj = obj,
         length = name.length;
     cm.forEach(name, function(item, key){

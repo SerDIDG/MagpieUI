@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.22.10 (2016-10-03 17:45) ************ */
+/*! ************ MagpieUI v3.22.11 (2016-10-04 16:47) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1426,7 +1426,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.22.10',
+        '_version' : '3.22.11',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -1820,7 +1820,7 @@ cm.isEmpty = function(el){
 
 cm.objectPath = function(name, obj){
     obj = typeof obj == 'undefined'? window : obj;
-    name = name.split('.');
+    name = name.toString().split('.');
     var findObj = obj,
         length = name.length;
     cm.forEach(name, function(item, key){
@@ -1833,7 +1833,7 @@ cm.objectPath = function(name, obj){
 
 cm.objectSelector = function(name, obj, apply){
     obj = typeof obj == 'undefined'? window : obj;
-    name = name.split('.');
+    name = name.toString().split('.');
     var findObj = obj,
         length = name.length;
     cm.forEach(name, function(item, key){
@@ -9392,6 +9392,7 @@ function(params){
         that.abort();
         // Clear input
         if(that.params['clearOnEmpty']){
+            cm.log(that.value);
             item = that.getRegisteredItem(that.value);
             if(!item || item['data']['text'] != that.params['node'].value){
                 that.clear();
@@ -22076,6 +22077,8 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         var that = this;
         // Variables
         that.routes = {};
+        that.current = null;
+        that.previous = null;
         // Bind
         that.windowClickEventHandler = that.windowClickEvent.bind(that);
         // Call parent method - construct
@@ -22105,7 +22108,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
     classProto.processLink = function(el){
         var that = this;
         var route = el.getAttribute('href');
-        that.processRoute(route);
+        route && that.processRoute(route);
         return that;
     };
 
@@ -22114,15 +22117,41 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         cm.log(route);
         // Set Window URL
         window.history.pushState({}, '', route);
-        // Find route
-        var item = that.routes[route];
+        // Destruct old route
+        that.destructRoute(that.current);
+        // Construct new route
+        if(that.routes[route]){
+            that.constructRoute(route)
+        }else if(that.routes['/404']){
+            that.constructRoute('/404')
+        }
         return that;
     };
 
-    classProto.renderRoute = function(item){
+    classProto.destructRoute = function(route){
         var that = this;
+        var item = that.routes[route];
+        // Export
+        that.previous = route;
+        // Callbacks
         if(item){
-            // Callbacks
+            if(item['constructor']){
+                item['controller'] && item['controller'].destruct && item['controller'].destruct();
+            }else{
+                item['onDestruct'](item);
+                item['callback'](item);
+            }
+        }
+        return that;
+    };
+
+    classProto.constructRoute = function(route){
+        var that = this;
+        var item = that.routes[route];
+        // Export
+        that.current = route;
+        // Callbacks
+        if(item){
             if(item['constructor']){
                 cm.getConstructor(item['constructor'], function(classConstructor){
                     item['controller'] = new classConstructor(
@@ -22132,10 +22161,9 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
                     );
                 });
             }else{
+                item['onConstruct'](item);
                 item['callback'](item);
             }
-        }else{
-
         }
         return that;
     };
@@ -22147,7 +22175,9 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         var item = cm.merge({
             'constructor' : false,
             'constructorParams' : {},
-            'callback' : function(){}
+            'callback' : function(){},
+            'onConstruct' : function(){},
+            'onDestruct' : function(){}
         }, params);
         // Export
         that.routes[route] = item;
@@ -22162,23 +22192,16 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         return that;
     };
 
-    classProto.trigger = function(route, params){
+    classProto.trigger = function(route){
         var that = this;
-        var item = that.routes[route];
-        // Callbacks
-        if(item){
-            if(item['constructor']){
-                cm.getConstructor(item['constructor'], function(classConstructor){
-                    item['controller'] = new classConstructor(
-                        cm.merge(item['constructorParams'], {
-                            'container' : that.params['container']
-                        })
-                    );
-                });
-            }else{
-                item['callback'](item);
-            }
-        }
+        that.processRoute(route);
+        return that;
+    };
+
+    classProto.start = function(){
+        var that = this;
+        var route = window.location.pathname;
+        that.processRoute(route);
         return that;
     };
 });
