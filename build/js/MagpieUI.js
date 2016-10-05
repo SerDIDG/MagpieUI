@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.22.11 (2016-10-04 16:47) ************ */
+/*! ************ MagpieUI v3.22.12 (2016-10-05 20:19) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1421,12 +1421,13 @@ if(!Date.now){
     -------
 
     Custom Events:
-       scrollSizeChange
+        scrollSizeChange
+        pageSizeChange
 
  ******* */
 
 var cm = {
-        '_version' : '3.22.11',
+        '_version' : '3.22.12',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -3400,6 +3401,8 @@ cm.getPageSize = function(key){
             'winHeight' : de.clientHeight,
             'winWidth' : de.clientWidth
         };
+    o['scrollHeight'] = o['height'] - o['winHeight'];
+    o['scrollWidth'] = o['width'] - o['winWidth'];
     return o[key] || o;
 };
 
@@ -5238,6 +5241,10 @@ Mod['Params'] = {
             }
         });
         return that;
+    },
+    'getParams' : function(){
+        var that = this;
+        return that.params;
     }
 };
 
@@ -6092,14 +6099,17 @@ cm.init = function(){
         // Events
         cm.addEvent(window, 'mousemove', getClientPosition);
         cm.addEvent(window, 'resize', resizeAction);
-        setInterval(checkAction, 500);
+        setInterval(checkAction, 50);
         //cm.addEvent(window, 'scroll', disableHover);
     };
 
     // Actions
 
     var checkAction = function(){
-        checkScrollSize();
+        animFrame(function(){
+            checkScrollSize();
+            checkPageSize();
+        });
     };
 
     var resizeAction = function(){
@@ -6111,6 +6121,7 @@ cm.init = function(){
     };
 
     // Set browser class
+
     var checkBrowser = function(){
         if(typeof Com.UA != 'undefined'){
             Com.UA.setBrowserClass();
@@ -6152,8 +6163,7 @@ cm.init = function(){
     // Get device scroll bar size
 
     var checkScrollSize = (function(){
-        var size = cm._scrollSize;
-
+        var size;
         return function(){
             cm._scrollSize = cm.getScrollBarSize();
             if(size != cm._scrollSize){
@@ -6167,9 +6177,21 @@ cm.init = function(){
         };
     })();
 
-    var checkPageSize = function(){
-        cm._pageSize = cm.getPageSize();
-    };
+    var checkPageSize = (function(){
+        var size, sizeNew;
+        return function(){
+            cm._pageSize = cm.getPageSize();
+            sizeNew = JSON.stringify(cm._pageSize);
+            if(size != sizeNew){
+                size = sizeNew;
+                cm.customEvent.trigger(window, 'pageSizeChange', {
+                    'type' : 'all',
+                    'self' : true,
+                    'pageSize' : cm._pageSize
+                });
+            }
+        };
+    })();
 
     // Disable hover on scroll
 
@@ -15350,11 +15372,11 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
         that.dragDropHandler = that.dragDrop.bind(that);
         that.showDropzoneHandler = that.showDropzone.bind(that);
         that.hideDropzoneHandler = that.hideDropzone.bind(that);
-        that.getLESSVariablesEndHandler = that.getLESSVariablesEnd.bind(that);
+        that.onGetLESSVariablesProcessHandler = that.onGetLESSVariablesProcess.bind(that);
         that.setEventsProcessHander = that.setEventsProcess.bind(that);
         that.unsetEventsProcessHander = that.unsetEventsProcess.bind(that);
         // Add events
-        that.addEvent('onGetLESSVariablesEnd', that.getLESSVariablesEndHandler);
+        that.addEvent('onGetLESSVariablesProcess', that.onGetLESSVariablesProcessHandler);
         that.addEvent('onSetEventsProcess', that.setEventsProcessHander);
         that.addEvent('onUnsetEventsProcess', that.unsetEventsProcessHander);
         // Call parent method
@@ -15371,7 +15393,7 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
         return that;
     };
 
-    classProto.getLESSVariablesEnd = function(){
+    classProto.onGetLESSVariablesProcess = function(){
         var that = this;
         that.params['height'] = cm.getLESSVariable('ComFileDropzone-Height', that.params['height'], true);
         that.params['duration'] = cm.getTransitionDurationFromLESS('ComFileDropzone-Duration', that.params['duration']);
@@ -22061,7 +22083,7 @@ cm.define('Com.Router', {
     'extend' : 'Com.AbstractController',
     'params' : {
         'renderStructure' : false,
-        'renderOnConstruct' : false
+        'embedStructureOnRender' : false
     }
 },
 function(params){
@@ -24593,7 +24615,7 @@ function(params){
         validateParams();
         render();
         setLogic();
-        set(that.params['height'], false);
+        set(parseFloat(that.params['height']), false);
         that.params['isEditing'] && that.enableEditing();
         that.addToStack(that.params['node']);
         that.triggerEvent('onRender');

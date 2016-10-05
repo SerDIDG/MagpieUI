@@ -7,14 +7,17 @@ cm.init = function(){
         // Events
         cm.addEvent(window, 'mousemove', getClientPosition);
         cm.addEvent(window, 'resize', resizeAction);
-        setInterval(checkAction, 500);
+        setInterval(checkAction, 50);
         //cm.addEvent(window, 'scroll', disableHover);
     };
 
     // Actions
 
     var checkAction = function(){
-        checkScrollSize();
+        animFrame(function(){
+            checkScrollSize();
+            checkPageSize();
+        });
     };
 
     var resizeAction = function(){
@@ -26,6 +29,7 @@ cm.init = function(){
     };
 
     // Set browser class
+
     var checkBrowser = function(){
         if(typeof Com.UA != 'undefined'){
             Com.UA.setBrowserClass();
@@ -67,8 +71,7 @@ cm.init = function(){
     // Get device scroll bar size
 
     var checkScrollSize = (function(){
-        var size = cm._scrollSize;
-
+        var size;
         return function(){
             cm._scrollSize = cm.getScrollBarSize();
             if(size != cm._scrollSize){
@@ -82,9 +85,21 @@ cm.init = function(){
         };
     })();
 
-    var checkPageSize = function(){
-        cm._pageSize = cm.getPageSize();
-    };
+    var checkPageSize = (function(){
+        var size, sizeNew;
+        return function(){
+            cm._pageSize = cm.getPageSize();
+            sizeNew = JSON.stringify(cm._pageSize);
+            if(size != sizeNew){
+                size = sizeNew;
+                cm.customEvent.trigger(window, 'pageSizeChange', {
+                    'type' : 'all',
+                    'self' : true,
+                    'pageSize' : cm._pageSize
+                });
+            }
+        };
+    })();
 
     // Disable hover on scroll
 

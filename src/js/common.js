@@ -24,12 +24,13 @@
     -------
 
     Custom Events:
-       scrollSizeChange
+        scrollSizeChange
+        pageSizeChange
 
  ******* */
 
 var cm = {
-        '_version' : '3.22.11',
+        '_version' : '3.22.12',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -2003,6 +2004,8 @@ cm.getPageSize = function(key){
             'winHeight' : de.clientHeight,
             'winWidth' : de.clientWidth
         };
+    o['scrollHeight'] = o['height'] - o['winHeight'];
+    o['scrollWidth'] = o['width'] - o['winWidth'];
     return o[key] || o;
 };
 

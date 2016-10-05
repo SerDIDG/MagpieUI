@@ -39,11 +39,11 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
         that.dragDropHandler = that.dragDrop.bind(that);
         that.showDropzoneHandler = that.showDropzone.bind(that);
         that.hideDropzoneHandler = that.hideDropzone.bind(that);
-        that.getLESSVariablesEndHandler = that.getLESSVariablesEnd.bind(that);
+        that.onGetLESSVariablesProcessHandler = that.onGetLESSVariablesProcess.bind(that);
         that.setEventsProcessHander = that.setEventsProcess.bind(that);
         that.unsetEventsProcessHander = that.unsetEventsProcess.bind(that);
         // Add events
-        that.addEvent('onGetLESSVariablesEnd', that.getLESSVariablesEndHandler);
+        that.addEvent('onGetLESSVariablesProcess', that.onGetLESSVariablesProcessHandler);
         that.addEvent('onSetEventsProcess', that.setEventsProcessHander);
         that.addEvent('onUnsetEventsProcess', that.unsetEventsProcessHander);
         // Call parent method
@@ -60,7 +60,7 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
         return that;
     };
 
-    classProto.getLESSVariablesEnd = function(){
+    classProto.onGetLESSVariablesProcess = function(){
         var that = this;
         that.params['height'] = cm.getLESSVariable('ComFileDropzone-Height', that.params['height'], true);
         that.params['duration'] = cm.getTransitionDurationFromLESS('ComFileDropzone-Duration', that.params['duration']);

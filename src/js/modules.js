@@ -195,6 +195,10 @@ Mod['Params'] = {
             }
         });
         return that;
+    },
+    'getParams' : function(){
+        var that = this;
+        return that.params;
     }
 };
 

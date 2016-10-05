@@ -44,7 +44,7 @@ function(params){
         validateParams();
         render();
         setLogic();
-        set(that.params['height'], false);
+        set(parseFloat(that.params['height']), false);
         that.params['isEditing'] && that.enableEditing();
         that.addToStack(that.params['node']);
         that.triggerEvent('onRender');
