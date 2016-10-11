@@ -21,7 +21,8 @@ cm.define('Com.AbstractInput', {
         'ui' : true,
         'size' : 'full',                // default | full
         'justify' : 'left',
-        'maxlength' : 0                 // 0 - infinity
+        'maxlength' : 0,                // 0 - infinity
+        'setHiddenInput' : true
     }
 },
 function(params){
@@ -191,7 +192,9 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         var that = this;
         that.previousValue = that.value;
         that.value = value;
-        that.nodes['hidden'].value = value;
+        if(that.params['setHiddenInput']){
+            that.nodes['hidden'].value = value;
+        }
         return that;
     };
 

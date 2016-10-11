@@ -42,12 +42,6 @@ cm.define('Com.FileUploaderLocal', {
 },
 function(params){
     var that = this;
-    that.nodes = {};
-    that.components = {};
-    that.items = [];
-    that.isMultiple = false;
-    that.isProccesing = false;
-    that.overlayDelay = null;
     // Call parent class construct
     Com.AbstractController.apply(that, arguments);
 });
@@ -57,6 +51,13 @@ cm.getConstructor('Com.FileUploaderLocal', function(classConstructor, className,
 
     classProto.construct = function(){
         var that = this;
+        // Variables
+        that.nodes = {};
+        that.components = {};
+        that.items = [];
+        that.isMultiple = false;
+        that.isProccesing = false;
+        that.overlayDelay = null;
         // Bind context to methods
         that.browseActionHandler = that.browseAction.bind(that);
         that.processFilesHandler = that.processFiles.bind(that);

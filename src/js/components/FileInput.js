@@ -131,10 +131,12 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         var that = this;
         that.previousValue = that.value;
         that.value = value;
-        if(!cm.isEmpty(value)){
-            that.nodes['hidden'].value = JSON.stringify(value);
-        }else{
-            that.nodes['hidden'].value = ''
+        if(that.params['setHiddenInput']){
+            if(!cm.isEmpty(value)){
+                that.nodes['hidden'].value = JSON.stringify(value);
+            }else{
+                that.nodes['hidden'].value = ''
+            }
         }
         return that;
     };

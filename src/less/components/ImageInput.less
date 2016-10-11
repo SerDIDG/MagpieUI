@@ -8,6 +8,17 @@
             .com__image-input__content--default;
         }
     }
+
+    &.size-full {
+        .com__image-input--size(@ComImageInput-Height, @ComImageInput-Height);
+        max-width: none;
+    }
+
+    &.size-custom {
+        .com__image-input__content {
+            .com__image-input__content--default;
+        }
+    }
 }
 
 .com__image-input__content {
@@ -26,7 +37,6 @@
         .pt__image {
             > .inner {
                 > .descr {
-                    height: @ComImageInput-Height;
                     border: @CmBorder-Default;
                     border-radius: @CmBorder-Radius;
                 }
@@ -43,7 +53,7 @@
             border-radius: @CmBorder-Radius;
             .mx__position(0, 0, 0 ,0);
             .mx__transition(all, @CmUI-Transition-Duration);
-            .mx__transition-delay(@CmUI-Transition-Delay-Hide);
+            .mx__transition-delay(@ComImageInput-CoverDelay);
         }
 
         .input__label {
@@ -89,6 +99,7 @@
             .input__cover {
                 visibility: visible;
                 opacity: 1;
+                .mx__transition(all, @CmUI-Transition-DurationReverse);
                 .mx__transition-delay(0ms);
             }
         }

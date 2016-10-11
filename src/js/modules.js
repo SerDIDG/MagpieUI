@@ -382,6 +382,84 @@ Mod['Langs'] = {
     }
 };
 
+Mod['__Langs__'] = {
+    '_config' : {
+        'extend' : true,
+        'predefine' : false,
+        'require' : ['Extend']
+    },
+    '_construct' : function(){
+        var that = this;
+        if(!that.build['params']['langs']){
+            that.build['params']['langs'] = {};
+        }
+        if(!that.build._update['params']['langs']){
+            that.build._update['params']['langs'] = {};
+        }
+        if(that.build._inherit){
+            that.build['params']['langs'] = cm.merge(
+                that.build._inherit.prototype['params']['langs'],
+                that.build['params']['langs']
+            );
+        }
+    },
+    'lang' : function(str, vars){
+        var that = this,
+            langStr;
+        if(typeof str == 'undefined'){
+            return that.params['langs'];
+        }
+        if(!str || cm.isEmpty(str)){
+            return '';
+        }
+        // Get language string from path
+        langStr = cm.objectPath(str, that.params['langs']);
+        // Process variables
+        if(typeof langStr == 'undefined'){
+
+            langStr = str;
+        }else if(cm.isEmpty(langStr)){
+            langStr = '';
+        }else{
+            langStr = cm.strReplace(langStr, vars);
+        }
+        return langStr;
+    },
+    'updateLangs' : function(){
+        var that = this;
+        if(cm.isFunction(that)){
+            that.prototype.params['langs'] = cm.merge(that.prototype._raw.params['langs'], that.prototype._update.params['langs']);
+            if(that.prototype._inherit){
+                that.prototype._inherit.prototype.updateLangs.call(that.prototype._inherit);
+                that.prototype.params['langs'] = cm.merge(that.prototype._inherit.prototype.params['langs'], that.prototype.params['langs']);
+            }
+        }else{
+            that.params['langs'] = cm.merge(that._raw.params['langs'], that._update.params['langs']);
+            if(that._inherit){
+                that._inherit.prototype.updateLangs.call(that._inherit);
+                that.params['langs'] = cm.merge(that._inherit.prototype.params['langs'], that.params['langs']);
+            }
+        }
+        return that;
+    },
+    'setLangs' : function(o){
+        var that = this;
+        if(cm.isObject(o)){
+            if(cm.isFunction(that)){
+                that.prototype.updateLangs.call(that.prototype);
+                that.prototype.params['langs'] = cm.merge(that.prototype.params['langs'], o);
+                that.prototype._update.params['langs'] = cm.merge(that.prototype._update.params['langs'], o);
+            }else{
+                that.updateLangs();
+                that.params['langs'] = cm.merge(that.params['langs'], o);
+                that._update = cm.clone(that._update);
+                that._update.params['langs'] = cm.merge(that._update.params['langs'], o);
+            }
+        }
+        return that;
+    }
+};
+
 /* ******* DATA CONFIG ******* */
 
 Mod['DataConfig'] = {

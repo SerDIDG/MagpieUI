@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.22.12 (2016-10-05 20:19) ************ */
+/*! ************ MagpieUI v3.22.13 (2016-10-11 19:08) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1427,7 +1427,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.22.12',
+        '_version' : '3.22.13',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -3165,7 +3165,8 @@ cm.getCurrentDate = function(format){
 };
 
 cm.dateFormat = function(date, format, langs){
-    date = !date ? new Date() : new Date(+date);
+    //date = !date ? new Date() : new Date(+date);
+    date = date ? new Date(+date) : null;
     format = cm.isString(format) ? format : cm._config.dateTimeFormat;
     langs = cm.merge({
         'months' : [
@@ -5428,6 +5429,84 @@ Mod['Langs'] = {
     }
 };
 
+Mod['__Langs__'] = {
+    '_config' : {
+        'extend' : true,
+        'predefine' : false,
+        'require' : ['Extend']
+    },
+    '_construct' : function(){
+        var that = this;
+        if(!that.build['params']['langs']){
+            that.build['params']['langs'] = {};
+        }
+        if(!that.build._update['params']['langs']){
+            that.build._update['params']['langs'] = {};
+        }
+        if(that.build._inherit){
+            that.build['params']['langs'] = cm.merge(
+                that.build._inherit.prototype['params']['langs'],
+                that.build['params']['langs']
+            );
+        }
+    },
+    'lang' : function(str, vars){
+        var that = this,
+            langStr;
+        if(typeof str == 'undefined'){
+            return that.params['langs'];
+        }
+        if(!str || cm.isEmpty(str)){
+            return '';
+        }
+        // Get language string from path
+        langStr = cm.objectPath(str, that.params['langs']);
+        // Process variables
+        if(typeof langStr == 'undefined'){
+
+            langStr = str;
+        }else if(cm.isEmpty(langStr)){
+            langStr = '';
+        }else{
+            langStr = cm.strReplace(langStr, vars);
+        }
+        return langStr;
+    },
+    'updateLangs' : function(){
+        var that = this;
+        if(cm.isFunction(that)){
+            that.prototype.params['langs'] = cm.merge(that.prototype._raw.params['langs'], that.prototype._update.params['langs']);
+            if(that.prototype._inherit){
+                that.prototype._inherit.prototype.updateLangs.call(that.prototype._inherit);
+                that.prototype.params['langs'] = cm.merge(that.prototype._inherit.prototype.params['langs'], that.prototype.params['langs']);
+            }
+        }else{
+            that.params['langs'] = cm.merge(that._raw.params['langs'], that._update.params['langs']);
+            if(that._inherit){
+                that._inherit.prototype.updateLangs.call(that._inherit);
+                that.params['langs'] = cm.merge(that._inherit.prototype.params['langs'], that.params['langs']);
+            }
+        }
+        return that;
+    },
+    'setLangs' : function(o){
+        var that = this;
+        if(cm.isObject(o)){
+            if(cm.isFunction(that)){
+                that.prototype.updateLangs.call(that.prototype);
+                that.prototype.params['langs'] = cm.merge(that.prototype.params['langs'], o);
+                that.prototype._update.params['langs'] = cm.merge(that.prototype._update.params['langs'], o);
+            }else{
+                that.updateLangs();
+                that.params['langs'] = cm.merge(that.params['langs'], o);
+                that._update = cm.clone(that._update);
+                that._update.params['langs'] = cm.merge(that._update.params['langs'], o);
+            }
+        }
+        return that;
+    }
+};
+
 /* ******* DATA CONFIG ******* */
 
 Mod['DataConfig'] = {
@@ -6789,7 +6868,8 @@ cm.define('Com.AbstractInput', {
         'ui' : true,
         'size' : 'full',                // default | full
         'justify' : 'left',
-        'maxlength' : 0                 // 0 - infinity
+        'maxlength' : 0,                // 0 - infinity
+        'setHiddenInput' : true
     }
 },
 function(params){
@@ -6959,7 +7039,9 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         var that = this;
         that.previousValue = that.value;
         that.value = value;
-        that.nodes['hidden'].value = value;
+        if(that.params['setHiddenInput']){
+            that.nodes['hidden'].value = value;
+        }
         return that;
     };
 
@@ -15680,10 +15762,12 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         var that = this;
         that.previousValue = that.value;
         that.value = value;
-        if(!cm.isEmpty(value)){
-            that.nodes['hidden'].value = JSON.stringify(value);
-        }else{
-            that.nodes['hidden'].value = ''
+        if(that.params['setHiddenInput']){
+            if(!cm.isEmpty(value)){
+                that.nodes['hidden'].value = JSON.stringify(value);
+            }else{
+                that.nodes['hidden'].value = ''
+            }
         }
         return that;
     };
@@ -16453,12 +16537,6 @@ cm.define('Com.FileUploaderLocal', {
 },
 function(params){
     var that = this;
-    that.nodes = {};
-    that.components = {};
-    that.items = [];
-    that.isMultiple = false;
-    that.isProccesing = false;
-    that.overlayDelay = null;
     // Call parent class construct
     Com.AbstractController.apply(that, arguments);
 });
@@ -16468,6 +16546,13 @@ cm.getConstructor('Com.FileUploaderLocal', function(classConstructor, className,
 
     classProto.construct = function(){
         var that = this;
+        // Variables
+        that.nodes = {};
+        that.components = {};
+        that.items = [];
+        that.isMultiple = false;
+        that.isProccesing = false;
+        that.overlayDelay = null;
         // Bind context to methods
         that.browseActionHandler = that.browseAction.bind(that);
         that.processFilesHandler = that.processFiles.bind(that);
@@ -18732,6 +18817,7 @@ cm.define('Com.ImageInput', {
     'params' : {
         'className' : 'com__image-input',
         'size' : 'default',
+        'aspect' : false,
         'preview' : true,
         'previewConstructor' : 'Com.ImagePreviewContainer',
         'previewParams' : {},
@@ -18790,7 +18876,23 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
                 )
             )
         );
+        // Image Preview size
+        if(that.params['aspect']){
+            cm.addClass(that.myNodes['imageContainer'], 'is-background has-aspect');
+            cm.addClass(that.myNodes['imageContainer'], ['cm__aspect', that.params['aspect']].join('-'));
+        }
         // Render Buttons
+        that.renderButtons();
+        // Events
+        that.triggerEvent('onRenderContentProcess');
+        cm.addEvent(that.myNodes['clear'], 'click', that.clearEventHandler);
+        that.triggerEvent('onRenderContentEnd');
+        // Push
+        return that.myNodes['container'];
+    };
+
+    classProto.renderButtons = function(){
+        var that = this;
         if(that.params['preview']){
             that.myNodes['preview'] = cm.node('div', {'class' : 'cm__button-wrapper'},
                 cm.node('button', {'type' : 'button', 'class' : 'button button-primary'},
@@ -18827,12 +18929,7 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
             );
             cm.insertFirst(that.myNodes['browseFileUploader'], that.myNodes['buttonsInner']);
         }
-        // Events
-        that.triggerEvent('onRenderContentProcess');
-        cm.addEvent(that.myNodes['clear'], 'click', that.clearEventHandler);
-        that.triggerEvent('onRenderContentEnd');
-        // Push
-        return that.myNodes['container'];
+        return that;
     };
 
     classProto.setData = function(){
@@ -25542,6 +25639,14 @@ function(params){
         }
     };
 
+    var unsetHead = function(){
+        var item;
+        if(that.current && that.items[that.current]){
+            item = that.items[that.current];
+            cm.removeClass(item['label']['container'], 'active');
+        }
+    };
+
     /* ******* CALLBACKS ******* */
 
     /* *** AJAX *** */
@@ -25727,6 +25832,12 @@ function(params){
         unset();
         that.previous = null;
         return that;
+    };
+
+    that.unsetHead = function(){
+        unsetHead();
+        return that;
+
     };
 
     that.get = function(){

@@ -3,6 +3,7 @@ cm.define('Com.ImageInput', {
     'params' : {
         'className' : 'com__image-input',
         'size' : 'default',
+        'aspect' : false,
         'preview' : true,
         'previewConstructor' : 'Com.ImagePreviewContainer',
         'previewParams' : {},
@@ -61,7 +62,23 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
                 )
             )
         );
+        // Image Preview size
+        if(that.params['aspect']){
+            cm.addClass(that.myNodes['imageContainer'], 'is-background has-aspect');
+            cm.addClass(that.myNodes['imageContainer'], ['cm__aspect', that.params['aspect']].join('-'));
+        }
         // Render Buttons
+        that.renderButtons();
+        // Events
+        that.triggerEvent('onRenderContentProcess');
+        cm.addEvent(that.myNodes['clear'], 'click', that.clearEventHandler);
+        that.triggerEvent('onRenderContentEnd');
+        // Push
+        return that.myNodes['container'];
+    };
+
+    classProto.renderButtons = function(){
+        var that = this;
         if(that.params['preview']){
             that.myNodes['preview'] = cm.node('div', {'class' : 'cm__button-wrapper'},
                 cm.node('button', {'type' : 'button', 'class' : 'button button-primary'},
@@ -98,12 +115,7 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
             );
             cm.insertFirst(that.myNodes['browseFileUploader'], that.myNodes['buttonsInner']);
         }
-        // Events
-        that.triggerEvent('onRenderContentProcess');
-        cm.addEvent(that.myNodes['clear'], 'click', that.clearEventHandler);
-        that.triggerEvent('onRenderContentEnd');
-        // Push
-        return that.myNodes['container'];
+        return that;
     };
 
     classProto.setData = function(){

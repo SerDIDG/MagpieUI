@@ -208,6 +208,14 @@ function(params){
         }
     };
 
+    var unsetHead = function(){
+        var item;
+        if(that.current && that.items[that.current]){
+            item = that.items[that.current];
+            cm.removeClass(item['label']['container'], 'active');
+        }
+    };
+
     /* ******* CALLBACKS ******* */
 
     /* *** AJAX *** */
@@ -393,6 +401,12 @@ function(params){
         unset();
         that.previous = null;
         return that;
+    };
+
+    that.unsetHead = function(){
+        unsetHead();
+        return that;
+
     };
 
     that.get = function(){

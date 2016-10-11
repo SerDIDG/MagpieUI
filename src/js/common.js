@@ -30,7 +30,7 @@
  ******* */
 
 var cm = {
-        '_version' : '3.22.12',
+        '_version' : '3.22.13',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -1768,7 +1768,8 @@ cm.getCurrentDate = function(format){
 };
 
 cm.dateFormat = function(date, format, langs){
-    date = !date ? new Date() : new Date(+date);
+    //date = !date ? new Date() : new Date(+date);
+    date = date ? new Date(+date) : null;
     format = cm.isString(format) ? format : cm._config.dateTimeFormat;
     langs = cm.merge({
         'months' : [
