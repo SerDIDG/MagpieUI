@@ -458,6 +458,11 @@ function(params){
         return that.items[that.current];
     };
 
+    that.isTabEmpty = function(id){
+        var item = that.getTab(id);
+        return !(item && item['tab']['inner'].childNodes.length);
+    };
+
     that.abort = function(){
         if(that.ajaxHandler && that.ajaxHandler.abort){
             that.ajaxHandler.abort();

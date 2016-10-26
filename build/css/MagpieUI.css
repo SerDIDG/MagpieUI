@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.22.13 (2016-10-11 19:08) ************ */
+/*! ************ MagpieUI v3.22.14 (2016-10-26 18:46) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.5.0
@@ -4545,6 +4545,20 @@ span.CodeMirror-selectedtext {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.cm-i:link,
+[class^="cm-i__"]:link,
+[class*=" cm-i__"]:link,
+.cm-i:visited,
+[class^="cm-i__"]:visited,
+[class*=" cm-i__"]:visited,
+.cm-i:hover,
+[class^="cm-i__"]:hover,
+[class*=" cm-i__"]:hover,
+.cm-i:active,
+[class^="cm-i__"]:active,
+[class*=" cm-i__"]:active {
+  font-family: 'Magpie-UI-Glyphs';
+}
 .cm-i:hover,
 [class^="cm-i__"]:hover,
 [class*=" cm-i__"]:hover {
@@ -5276,10 +5290,15 @@ button.active {
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
 .button:hover,
+.button.hover,
 input[type="button"]:hover,
+input[type="button"].hover,
 input[type="submit"]:hover,
+input[type="submit"].hover,
 input[type="reset"]:hover,
-button:hover {
+input[type="reset"].hover,
+button:hover,
+button.hover {
   background-color: #1d73c9;
   color: #ffffff;
 }
@@ -5306,10 +5325,15 @@ button.button-primary.active {
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
 .button.button-primary:hover,
+.button.button-primary.hover,
 input[type="button"].button-primary:hover,
+input[type="button"].button-primary.hover,
 input[type="submit"].button-primary:hover,
+input[type="submit"].button-primary.hover,
 input[type="reset"].button-primary:hover,
-button.button-primary:hover {
+input[type="reset"].button-primary.hover,
+button.button-primary:hover,
+button.button-primary.hover {
   background-color: #1d73c9;
   color: #ffffff;
 }
@@ -5353,10 +5377,15 @@ button.button-middle.active {
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
 .button.button-middle:hover,
+.button.button-middle.hover,
 input[type="button"].button-middle:hover,
+input[type="button"].button-middle.hover,
 input[type="submit"].button-middle:hover,
+input[type="submit"].button-middle.hover,
 input[type="reset"].button-middle:hover,
-button.button-middle:hover {
+input[type="reset"].button-middle.hover,
+button.button-middle:hover,
+button.button-middle.hover {
   background-color: #8fbfef;
   color: #2985e0;
 }
@@ -5400,10 +5429,15 @@ button.button-secondary.active {
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
 .button.button-secondary:hover,
+.button.button-secondary.hover,
 input[type="button"].button-secondary:hover,
+input[type="button"].button-secondary.hover,
 input[type="submit"].button-secondary:hover,
+input[type="submit"].button-secondary.hover,
 input[type="reset"].button-secondary:hover,
-button.button-secondary:hover {
+input[type="reset"].button-secondary.hover,
+button.button-secondary:hover,
+button.button-secondary.hover {
   background-color: #e8e8e8;
   color: #2985e0;
 }
@@ -5447,10 +5481,15 @@ button.button-success.active {
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
 .button.button-success:hover,
+.button.button-success.hover,
 input[type="button"].button-success:hover,
+input[type="button"].button-success.hover,
 input[type="submit"].button-success:hover,
+input[type="submit"].button-success.hover,
 input[type="reset"].button-success:hover,
-button.button-success:hover {
+input[type="reset"].button-success.hover,
+button.button-success:hover,
+button.button-success.hover {
   background-color: #1f931f;
   color: #ffffff;
 }
@@ -5494,10 +5533,15 @@ button.button-danger.active {
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
 .button.button-danger:hover,
+.button.button-danger.hover,
 input[type="button"].button-danger:hover,
+input[type="button"].button-danger.hover,
 input[type="submit"].button-danger:hover,
+input[type="submit"].button-danger.hover,
 input[type="reset"].button-danger:hover,
-button.button-danger:hover {
+input[type="reset"].button-danger.hover,
+button.button-danger:hover,
+button.button-danger.hover {
   background-color: #bd2828;
   color: #ffffff;
 }
@@ -5541,10 +5585,15 @@ button.button-warning.active {
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
 .button.button-warning:hover,
+.button.button-warning.hover,
 input[type="button"].button-warning:hover,
+input[type="button"].button-warning.hover,
 input[type="submit"].button-warning:hover,
+input[type="submit"].button-warning.hover,
 input[type="reset"].button-warning:hover,
-button.button-warning:hover {
+input[type="reset"].button-warning.hover,
+button.button-warning:hover,
+button.button-warning.hover {
   background-color: #c98a1d;
   color: #ffffff;
 }
@@ -5606,14 +5655,24 @@ button.transparent.active {
 }
 .button.button-transparent:hover,
 .button.transparent:hover,
+.button.button-transparent.hover,
+.button.transparent.hover,
 input[type="button"].button-transparent:hover,
 input[type="button"].transparent:hover,
+input[type="button"].button-transparent.hover,
+input[type="button"].transparent.hover,
 input[type="submit"].button-transparent:hover,
 input[type="submit"].transparent:hover,
+input[type="submit"].button-transparent.hover,
+input[type="submit"].transparent.hover,
 input[type="reset"].button-transparent:hover,
 input[type="reset"].transparent:hover,
+input[type="reset"].button-transparent.hover,
+input[type="reset"].transparent.hover,
 button.button-transparent:hover,
-button.transparent:hover {
+button.transparent:hover,
+button.button-transparent.hover,
+button.transparent.hover {
   background-color: #f2f2f2;
   color: #2985e0;
 }
@@ -5657,10 +5716,15 @@ button.button-white.active {
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
 .button.button-white:hover,
+.button.button-white.hover,
 input[type="button"].button-white:hover,
+input[type="button"].button-white.hover,
 input[type="submit"].button-white:hover,
+input[type="submit"].button-white.hover,
 input[type="reset"].button-white:hover,
-button.button-white:hover {
+input[type="reset"].button-white.hover,
+button.button-white:hover,
+button.button-white.hover {
   background-color: #e9f2fb;
   color: #2985e0;
 }
@@ -16144,7 +16208,8 @@ ul.pt__field__hint li:before {
   color: #ffffff;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
-.com__pagination__bar ul li a:hover {
+.com__pagination__bar ul li a:hover,
+.com__pagination__bar ul li a.hover {
   background-color: #1d73c9;
   color: #ffffff;
 }
@@ -16158,7 +16223,8 @@ ul.pt__field__hint li:before {
   color: #ffffff;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
-.com__pagination__bar ul li a.button-primary:hover {
+.com__pagination__bar ul li a.button-primary:hover,
+.com__pagination__bar ul li a.button-primary.hover {
   background-color: #1d73c9;
   color: #ffffff;
 }
@@ -16181,7 +16247,8 @@ ul.pt__field__hint li:before {
   color: #2985e0;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
-.com__pagination__bar ul li a.button-middle:hover {
+.com__pagination__bar ul li a.button-middle:hover,
+.com__pagination__bar ul li a.button-middle.hover {
   background-color: #8fbfef;
   color: #2985e0;
 }
@@ -16204,7 +16271,8 @@ ul.pt__field__hint li:before {
   color: #2985e0;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
-.com__pagination__bar ul li a.button-secondary:hover {
+.com__pagination__bar ul li a.button-secondary:hover,
+.com__pagination__bar ul li a.button-secondary.hover {
   background-color: #e8e8e8;
   color: #2985e0;
 }
@@ -16227,7 +16295,8 @@ ul.pt__field__hint li:before {
   color: #ffffff;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
-.com__pagination__bar ul li a.button-success:hover {
+.com__pagination__bar ul li a.button-success:hover,
+.com__pagination__bar ul li a.button-success.hover {
   background-color: #1f931f;
   color: #ffffff;
 }
@@ -16250,7 +16319,8 @@ ul.pt__field__hint li:before {
   color: #ffffff;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
-.com__pagination__bar ul li a.button-danger:hover {
+.com__pagination__bar ul li a.button-danger:hover,
+.com__pagination__bar ul li a.button-danger.hover {
   background-color: #bd2828;
   color: #ffffff;
 }
@@ -16273,7 +16343,8 @@ ul.pt__field__hint li:before {
   color: #ffffff;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
-.com__pagination__bar ul li a.button-warning:hover {
+.com__pagination__bar ul li a.button-warning:hover,
+.com__pagination__bar ul li a.button-warning.hover {
   background-color: #c98a1d;
   color: #ffffff;
 }
@@ -16302,7 +16373,9 @@ ul.pt__field__hint li:before {
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
 .com__pagination__bar ul li a.button-transparent:hover,
-.com__pagination__bar ul li a.transparent:hover {
+.com__pagination__bar ul li a.transparent:hover,
+.com__pagination__bar ul li a.button-transparent.hover,
+.com__pagination__bar ul li a.transparent.hover {
   background-color: #f2f2f2;
   color: #2985e0;
 }
@@ -16325,7 +16398,8 @@ ul.pt__field__hint li:before {
   color: #2985e0;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
-.com__pagination__bar ul li a.button-white:hover {
+.com__pagination__bar ul li a.button-white:hover,
+.com__pagination__bar ul li a.button-white.hover {
   background-color: #e9f2fb;
   color: #2985e0;
 }
@@ -16383,7 +16457,8 @@ ul.pt__field__hint li:before {
   color: #2985e0;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
-.com__pagination__bar ul li a:hover {
+.com__pagination__bar ul li a:hover,
+.com__pagination__bar ul li a.hover {
   background-color: #e8e8e8;
   color: #2985e0;
 }
@@ -16399,7 +16474,8 @@ ul.pt__field__hint li:before {
   color: #ffffff;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
-.com__pagination__bar ul li.active a:hover {
+.com__pagination__bar ul li.active a:hover,
+.com__pagination__bar ul li.active a.hover {
   background-color: #1d73c9;
   color: #ffffff;
 }
@@ -16422,7 +16498,9 @@ ul.pt__field__hint li:before {
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
 .com__pagination__bar ul li.prev a:hover,
-.com__pagination__bar ul li.next a:hover {
+.com__pagination__bar ul li.next a:hover,
+.com__pagination__bar ul li.prev a.hover,
+.com__pagination__bar ul li.next a.hover {
   background-color: #f2f2f2;
   color: #2985e0;
 }

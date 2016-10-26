@@ -16,6 +16,7 @@ cm.define('Com.AbstractInput', {
         'value' : '',
         'defaultValue' : '',
         'title' : '',
+        'placeholder' : '',
         'disabled' : false,
         'className' : '',
         'ui' : true,
@@ -27,11 +28,6 @@ cm.define('Com.AbstractInput', {
 },
 function(params){
     var that = this;
-    that.nodes = {};
-    that.components = {};
-    that.previousValue = null;
-    that.value = null;
-    that.disabled = false;
     // Call parent class construct
     Com.AbstractController.apply(that, arguments);
 });
@@ -41,6 +37,12 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
 
     classProto.construct = function(params){
         var that = this;
+        // Variables
+        that.nodes = {};
+        that.components = {};
+        that.previousValue = null;
+        that.value = null;
+        that.disabled = false;
         // Bind context to methods
         that.setHandler = that.set.bind(that);
         that.getHandler = that.get.bind(that);
@@ -123,6 +125,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
             that.params['disabled'] = that.params['node'].disabled || that.params['node'].readOnly || that.params['disabled'];
             that.params['value'] = !cm.isEmpty(value) ?  value : that.params['value'];
             that.params['maxlength'] = that.params['node'].getAttribute('maxlength') || that.params['maxlength'];
+            that.params['placeholder'] = that.params['node'].getAttribute('placeholder') || that.params['placeholder'];
         }
         that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
         that.disabled = that.params['disabled'];
@@ -135,6 +138,8 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         that.set(that.params['value'], false);
         return that;
     };
+
+    /* *** VIEW - VIEW MODEL *** */
 
     classProto.renderView = function(){
         var that = this;
@@ -184,6 +189,8 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         return that;
     };
 
+    /* *** DATA VALUE *** */
+
     classProto.validateValue = function(value){
         return value;
     };
@@ -198,6 +205,13 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         return that;
     };
 
+    classProto.setData = function(){
+        var that = this;
+        return that;
+    };
+
+    /* *** ACTIONS *** */
+
     classProto.selectAction = function(value, triggerEvents){
         var that = this;
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
@@ -209,6 +223,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         var that = this;
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
         that.saveValue(value);
+        that.setData();
         triggerEvents && that.triggerEvent('onSet', that.value);
         return that;
     };

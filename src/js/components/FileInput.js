@@ -64,15 +64,6 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         return that;
     };
 
-    classProto.set = function(){
-        var that = this;
-        // Call parent method
-        _inherit.prototype.set.apply(that, arguments);
-        // Set data
-        that.setData();
-        return that;
-    };
-
     classProto.get = function(){
         var that = this,
             value;
@@ -82,15 +73,6 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
             value = that.value;
         }
         return value;
-    };
-
-    classProto.clear = function(){
-        var that = this;
-        // Call parent method
-        _inherit.prototype.clear.apply(that, arguments);
-        // Set data
-        that.setData();
-        return that;
     };
 
     classProto.initComponentsStart = function(){

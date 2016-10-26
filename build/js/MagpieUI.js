@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.22.13 (2016-10-11 19:08) ************ */
+/*! ************ MagpieUI v3.22.14 (2016-10-26 18:46) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1427,7 +1427,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.22.13',
+        '_version' : '3.22.14',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -6863,6 +6863,7 @@ cm.define('Com.AbstractInput', {
         'value' : '',
         'defaultValue' : '',
         'title' : '',
+        'placeholder' : '',
         'disabled' : false,
         'className' : '',
         'ui' : true,
@@ -6874,11 +6875,6 @@ cm.define('Com.AbstractInput', {
 },
 function(params){
     var that = this;
-    that.nodes = {};
-    that.components = {};
-    that.previousValue = null;
-    that.value = null;
-    that.disabled = false;
     // Call parent class construct
     Com.AbstractController.apply(that, arguments);
 });
@@ -6888,6 +6884,12 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
 
     classProto.construct = function(params){
         var that = this;
+        // Variables
+        that.nodes = {};
+        that.components = {};
+        that.previousValue = null;
+        that.value = null;
+        that.disabled = false;
         // Bind context to methods
         that.setHandler = that.set.bind(that);
         that.getHandler = that.get.bind(that);
@@ -6970,6 +6972,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
             that.params['disabled'] = that.params['node'].disabled || that.params['node'].readOnly || that.params['disabled'];
             that.params['value'] = !cm.isEmpty(value) ?  value : that.params['value'];
             that.params['maxlength'] = that.params['node'].getAttribute('maxlength') || that.params['maxlength'];
+            that.params['placeholder'] = that.params['node'].getAttribute('placeholder') || that.params['placeholder'];
         }
         that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
         that.disabled = that.params['disabled'];
@@ -6982,6 +6985,8 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         that.set(that.params['value'], false);
         return that;
     };
+
+    /* *** VIEW - VIEW MODEL *** */
 
     classProto.renderView = function(){
         var that = this;
@@ -7031,6 +7036,8 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         return that;
     };
 
+    /* *** DATA VALUE *** */
+
     classProto.validateValue = function(value){
         return value;
     };
@@ -7045,6 +7052,13 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         return that;
     };
 
+    classProto.setData = function(){
+        var that = this;
+        return that;
+    };
+
+    /* *** ACTIONS *** */
+
     classProto.selectAction = function(value, triggerEvents){
         var that = this;
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
@@ -7056,6 +7070,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         var that = this;
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
         that.saveValue(value);
+        that.setData();
         triggerEvents && that.triggerEvent('onSet', that.value);
         return that;
     };
@@ -15695,15 +15710,6 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         return that;
     };
 
-    classProto.set = function(){
-        var that = this;
-        // Call parent method
-        _inherit.prototype.set.apply(that, arguments);
-        // Set data
-        that.setData();
-        return that;
-    };
-
     classProto.get = function(){
         var that = this,
             value;
@@ -15713,15 +15719,6 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
             value = that.value;
         }
         return value;
-    };
-
-    classProto.clear = function(){
-        var that = this;
-        // Call parent method
-        _inherit.prototype.clear.apply(that, arguments);
-        // Set data
-        that.setData();
-        return that;
     };
 
     classProto.initComponentsStart = function(){
@@ -25887,6 +25884,11 @@ function(params){
 
     that.getCurrentTab = function(){
         return that.items[that.current];
+    };
+
+    that.isTabEmpty = function(id){
+        var item = that.getTab(id);
+        return !(item && item['tab']['inner'].childNodes.length);
     };
 
     that.abort = function(){

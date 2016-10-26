@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.22.13 (2016-10-11 19:08) ************ */
+/*! ************ MagpieUI v3.22.14 (2016-10-26 18:46) ************ */
 @charset "UTF-8";
 
 /*!
@@ -5891,6 +5891,13 @@ span.CodeMirror-selectedtext { background: none; }
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 
+    &:link,
+    &:visited,
+    &:hover,
+    &:active {
+        font-family: @CmIconVars-Family;
+    }
+
     &:hover {
         text-decoration: none;
     }
@@ -6472,7 +6479,8 @@ select {
             .button.button-primary--active;
         }
 
-        &:hover {
+        &:hover,
+        &.hover {
             .button.button-primary--hover;
         }
     }
@@ -6496,7 +6504,8 @@ select {
             .button.button-middle--active;
         }
 
-        &:hover {
+        &:hover,
+        &.hover {
             .button.button-middle--hover;
         }
     }
@@ -6520,7 +6529,8 @@ select {
             .button.button-secondary--active;
         }
 
-        &:hover {
+        &:hover,
+        &.hover {
             .button.button-secondary--hover;
         }
     }
@@ -6544,7 +6554,8 @@ select {
             .button.button-success--active;
         }
 
-        &:hover {
+        &:hover,
+        &.hover {
             .button.button-success--hover;
         }
     }
@@ -6568,7 +6579,8 @@ select {
             .button.button-danger--active;
         }
 
-        &:hover {
+        &:hover,
+        &.hover {
             .button.button-danger--hover;
         }
     }
@@ -6592,7 +6604,8 @@ select {
             .button.button-warning--active;
         }
 
-        &:hover {
+        &:hover,
+        &.hover {
             .button.button-warning--hover;
         }
     }
@@ -6619,7 +6632,8 @@ select {
             .button.button-transparent--active;
         }
 
-        &:hover {
+        &:hover,
+        &.hover {
             .button.button-transparent--hover;
         }
     }
@@ -6643,7 +6657,8 @@ select {
             .button.button-white--active;
         }
 
-        &:hover {
+        &:hover,
+        &.hover {
             .button.button-white--hover;
         }
     }
