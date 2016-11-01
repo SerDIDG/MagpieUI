@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.22.14 (2016-10-26 18:46) ************ */
+/*! ************ MagpieUI v3.22.15 (2016-11-01 20:23) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1427,7 +1427,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.22.14',
+        '_version' : '3.22.15',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -9314,7 +9314,7 @@ cm.define('Com.Autocomplete', {
     ],
     'params' : {
         'input' : null,                                             // Deprecated, use 'node' parameter instead.
-        'node' : cm.Node('input', {'type' : 'text'}),               // Html input node to decorate.
+        'node' : cm.node('input', {'type' : 'text'}),               // Html input node to decorate.
         'target' : false,                                           // HTML node.
         'container' : 'document.body',
         'name' : '',
@@ -9658,7 +9658,7 @@ function(params){
     that.callbacks.query = function(that, query, items){
         var filteredItems = [];
         cm.forEach(items, function(item){
-            if(item['text'].toLowerCase().indexOf(query.toLowerCase()) > -1){
+            if(item && item['text'].toLowerCase().indexOf(query.toLowerCase()) > -1){
                 filteredItems.push(item);
             }
         });

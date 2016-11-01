@@ -23,7 +23,7 @@ cm.define('Com.Autocomplete', {
     ],
     'params' : {
         'input' : null,                                             // Deprecated, use 'node' parameter instead.
-        'node' : cm.Node('input', {'type' : 'text'}),               // Html input node to decorate.
+        'node' : cm.node('input', {'type' : 'text'}),               // Html input node to decorate.
         'target' : false,                                           // HTML node.
         'container' : 'document.body',
         'name' : '',
@@ -367,7 +367,7 @@ function(params){
     that.callbacks.query = function(that, query, items){
         var filteredItems = [];
         cm.forEach(items, function(item){
-            if(item['text'].toLowerCase().indexOf(query.toLowerCase()) > -1){
+            if(item && item['text'].toLowerCase().indexOf(query.toLowerCase()) > -1){
                 filteredItems.push(item);
             }
         });

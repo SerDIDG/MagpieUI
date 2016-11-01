@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.22.14 (2016-10-26 18:46) ************ */
+/*! ************ MagpieUI v3.22.15 (2016-11-01 20:23) ************ */
 @charset "UTF-8";
 
 /*!
@@ -6112,6 +6112,7 @@ body {
     cursor: default;
     -webkit-text-size-adjust: 100%;
     -webkit-font-smoothing: subpixel-antialiased;
+    /*-moz-osx-font-smoothing: grayscale;*/
 }
 
 img {
@@ -8387,6 +8388,7 @@ button {
 
     &.is-box {
         > .inner {
+            display: block;
             margin-left: 0;
             margin-right: 0;
         }
@@ -13404,7 +13406,7 @@ ul.pt__field__hint {
     .display-flex;
     vertical-align: top;
     .mx__flex(1 1 auto);
-    .mx__flex-direction(column);
+    /*.mx__flex-direction(column);*/
 
     > .inner {
         position: relative;
@@ -13416,7 +13418,7 @@ ul.pt__field__hint {
 
     .ie10 &,
     .ie11 & {
-        .mx__flex-direction(row);
+        /*.mx__flex-direction(row);*/
     }
 
     .ie8 &,
