@@ -62,7 +62,7 @@ cm.define('Com.Datepicker', {
         },
         'Com.Tooltip' : {
             'targetEvent' : 'click',
-            'hideOnReClick' : true,
+            'hideOnReClick' : false,
             'className' : 'com__datepicker__tooltip',
             'top' : 'cm._config.tooltipTop'
         }
@@ -135,7 +135,7 @@ function(params){
         nodes['container'] = cm.Node('div', {'class' : 'com__datepicker-input'},
             nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
             nodes['target'] = cm.Node('div', {'class' : 'pt__input has-icon-right'},
-                nodes['input'] = cm.Node('input', {'type' : 'text', 'readOnly' : 'true'}),
+                nodes['input'] = cm.Node('input', {'type' : 'text'}),
                 nodes['icon'] = cm.Node('div', {'class' : that.params['icons']['datepicker']})
             ),
             nodes['menuContainer'] = cm.Node('div', {'class' : 'form'},
@@ -187,15 +187,7 @@ function(params){
     };
 
     var setLogic = function(){
-        // Add events on input to makes him clear himself when user wants that
-        cm.addEvent(nodes['input'], 'keydown', function(e){
-            e = cm.getEvent(e);
-            cm.preventDefault(e);
-            if(e.keyCode == 8){
-                that.clear();
-                components['menu'].hide(false);
-            }
-        });
+        cm.addEvent(nodes['input'], 'keypress', inputKeypressHandler);
         // Clear Button
         if(that.params['showClearButton']){
             cm.addEvent(nodes['clearButton'], 'click', function(){
@@ -217,8 +209,8 @@ function(params){
                 'content' : nodes['menuContainer'],
                 'target' : nodes['target'],
                 'events' : {
-                    'onShowStart' : show,
-                    'onHideStart' : hide
+                    'onShowStart' : onShow,
+                    'onHideStart' : onHide
                 }
             })
         );
@@ -276,6 +268,26 @@ function(params){
         }
     };
 
+    var inputKeypressHandler = function(e){
+        var value = nodes['input'].value;
+        if(cm.isKey(e, 'enter')){
+            cm.preventDefault(e);
+            var date = new Date(value);
+            if(cm.isEmpty(value) || !cm.isDateValid(date)){
+                that.clear(true);
+            }else{
+                that.set(date, null, true);
+            }
+            components['menu'].hide(false);
+        }
+        if(cm.isKey(e, 'delete')){
+            if(cm.isEmpty(value)){
+                that.clear(true);
+                components['menu'].hide(false);
+            }
+        }
+    };
+
     var setEvents = function(){
         // Add custom event
         if(that.params['customEvents']){
@@ -290,18 +302,15 @@ function(params){
         }
     };
 
-    var show = function(){
-        // Render calendar month
-        if(that.date){
-            components['calendar'].set(that.date.getFullYear(), that.date.getMonth());
-        }
-        components['calendar'].renderMonth();
+    var onShow = function(){
+        renderCalendarMonth();
         // Set classes
         cm.addClass(nodes['container'], 'active');
         that.triggerEvent('onFocus', that.value);
     };
 
-    var hide = function(){
+    var onHide = function(){
+        setInputValues();
         nodes['input'].blur();
         cm.removeClass(nodes['container'], 'active');
         that.triggerEvent('onBlur', that.value);
@@ -321,17 +330,33 @@ function(params){
             }
             // Set value
             that.value = cm.dateFormat(that.date, that.format, that.lang());
-            nodes['input'].value = cm.dateFormat(that.date, that.displayFormat, that.lang());
-            nodes['hidden'].value = that.value;
         }else{
             that.value = cm.dateFormat(false, that.format, that.lang());
-            nodes['input'].value = '';
-            nodes['hidden'].value = cm.dateFormat(false, that.format, that.lang());
         }
+        setInputValues();
+        renderCalendarMonth();
         // Trigger events
         if(triggerEvents){
             that.triggerEvent('onSelect', that.value);
             onChange();
+        }
+    };
+
+    var renderCalendarMonth = function(){
+        // Render calendar month
+        if(that.date){
+            components['calendar'].set(that.date.getFullYear(), that.date.getMonth());
+        }
+        components['calendar'].renderMonth();
+    };
+
+    var setInputValues = function(){
+        if(that.date){
+            nodes['input'].value = cm.dateFormat(that.date, that.displayFormat, that.lang());
+            nodes['hidden'].value = that.value;
+        }else{
+            nodes['input'].value = '';
+            nodes['hidden'].value = cm.dateFormat(false, that.format, that.lang());
         }
     };
     

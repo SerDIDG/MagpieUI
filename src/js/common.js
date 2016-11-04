@@ -30,7 +30,7 @@
  ******* */
 
 var cm = {
-        '_version' : '3.22.15',
+        '_version' : '3.22.16',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -1762,6 +1762,10 @@ cm.toDegrees = function(radians) {
 
 /* ******* DATE AND TIME ******* */
 
+cm.isDateValid = function(date){
+    return (cm.isDate(date) && !isNaN(date.valueOf()));
+};
+
 cm.getCurrentDate = function(format){
     format = format || cm._config.dateTimeFormat;
     return cm.dateFormat(new Date(), format);
@@ -2747,6 +2751,20 @@ cm.URLToCSSURL = function(url){
     return !cm.isEmpty(url) ? 'url("' + url + '")' : 'none';
 };
 
+cm.getCaretPosition = function(input){
+    var position = 0;
+    if(document.selection) {
+        //input.focus();
+        // To get cursor position, get empty selection range
+        var oSel = document.selection.createRange();
+        // Move selection start to 0 position
+        oSel.moveStart('character', -oField.value.length);
+        // The caret position is selection length
+        iCaretPos = oSel.text.length;
+    }
+    return position;
+};
+
 /* ******* VALIDATORS ******* */
 
 cm.keyCodeTable = {
@@ -2762,6 +2780,11 @@ cm.keyCodeTable = {
     39 : 'right',
     40 : 'bottom',
     46 : 'backspace'
+};
+
+cm.isKey = function(e, rules){
+    var keyCode = e.keyCode;
+    return cm.isKeyCode(keyCode, rules);
 };
 
 cm.isKeyCode = function(code, rules){
@@ -2805,7 +2828,7 @@ cm.charCodeIsDigit = function(code){
 cm.allowOnlyDigitInputEvent = function(input, callback){
     var value;
     cm.addEvent(input, 'input', function(e){
-        value = input.value.replace(/[^\d]/, '');
+        value = input.value.replace(/[^\d]/g, '');
         if(input.type == 'number'){
             input.value = Math.min(parseFloat(value), parseFloat(input.max));
         }else{
@@ -2819,7 +2842,7 @@ cm.allowOnlyDigitInputEvent = function(input, callback){
 cm.allowOnlyNumbersInputEvent = function(input, callback){
     var value;
     cm.addEvent(input, 'input', function(e){
-        value = input.value.replace(/[^\d-]/, '');
+        value = input.value.replace(/[^\d-]/g, '');
         if(input.type == 'number'){
             input.value = Math.min(parseFloat(value), parseFloat(input.max));
         }else{
