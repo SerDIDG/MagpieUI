@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.22.16 (2016-11-04 20:52) ************ */
+/*! ************ MagpieUI v3.22.17 (2016-11-08 17:47) ************ */
 @charset "UTF-8";
 
 /*!
@@ -4134,7 +4134,8 @@ span.CodeMirror-selectedtext { background: none; }
 
 @CmForm-FieldHeight: 28px;
 @CmForm-FieldIndent: @CmIndent-Small;
-@CmForm-FieldTitleWidth: 150px;
+@CmForm-FieldTitleWidth: 156px;
+@CmForm-FieldTitleWidthSpaceless: 128px;
 @CmForm-FieldInnerIndent: @CmForm-FieldIndent / 2;
 @CmForm-FieldSmallWidth: 210px;
 @CmForm-ButtonsIndent: @CmIndent-XSmall;
@@ -7199,6 +7200,15 @@ button {
     .label {
         margin-left: @CmForm-FieldInnerIndent;
     }
+
+    &.has-fields {
+        .display-flex;
+
+        > .fields {
+            margin: 0 0 0 @CmIndent-XSmall;
+            .mx__flex(1);
+        }
+    }
 }
 
 .check-line {
@@ -7280,6 +7290,38 @@ button {
 
         dl:first-child {
             margin: 0;
+        }
+    }
+
+    &.has-fields {
+        .display-flex;
+
+        > .fields {
+            margin: 0 0 0 @CmIndent-XSmall;
+            .mx__flex(1);
+        }
+    }
+
+    &.has-field {
+        .display-flex;
+
+        > label {
+            width: @CmForm-FieldTitleWidth;
+            margin: 0 0 0 11px;
+            padding: 0;
+            line-height: @CmIndent-XSmall;
+        }
+
+        > .field {
+            margin: 0 0 0 @CmIndent-Small;
+            line-height: @CmForm-FieldHeight;
+            .mx__flex(1);
+        }
+
+        &.is-spaceless {
+            > label {
+                width: @CmForm-FieldTitleWidthSpaceless;
+            }
         }
     }
 }

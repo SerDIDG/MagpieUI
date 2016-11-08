@@ -293,6 +293,15 @@
     .label {
         margin-left: @CmForm-FieldInnerIndent;
     }
+
+    &.has-fields {
+        .display-flex;
+
+        > .fields {
+            margin: 0 0 0 @CmIndent-XSmall;
+            .mx__flex(1);
+        }
+    }
 }
 
 .check-line {
@@ -374,6 +383,38 @@
 
         dl:first-child {
             margin: 0;
+        }
+    }
+
+    &.has-fields {
+        .display-flex;
+
+        > .fields {
+            margin: 0 0 0 @CmIndent-XSmall;
+            .mx__flex(1);
+        }
+    }
+
+    &.has-field {
+        .display-flex;
+
+        > label {
+            width: @CmForm-FieldTitleWidth;
+            margin: 0 0 0 11px;
+            padding: 0;
+            line-height: @CmIndent-XSmall;
+        }
+
+        > .field {
+            margin: 0 0 0 @CmIndent-Small;
+            line-height: @CmForm-FieldHeight;
+            .mx__flex(1);
+        }
+
+        &.is-spaceless {
+            > label {
+                width: @CmForm-FieldTitleWidthSpaceless;
+            }
         }
     }
 }

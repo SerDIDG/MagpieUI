@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.22.16 (2016-11-04 20:52) ************ */
+/*! ************ MagpieUI v3.22.17 (2016-11-08 17:47) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1427,7 +1427,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.22.16',
+        '_version' : '3.22.17',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -4146,20 +4146,6 @@ cm.arrayToCSSValues = function(a, units){
 
 cm.URLToCSSURL = function(url){
     return !cm.isEmpty(url) ? 'url("' + url + '")' : 'none';
-};
-
-cm.getCaretPosition = function(input){
-    var position = 0;
-    if(document.selection) {
-        //input.focus();
-        // To get cursor position, get empty selection range
-        var oSel = document.selection.createRange();
-        // Move selection start to 0 position
-        oSel.moveStart('character', -oField.value.length);
-        // The caret position is selection length
-        iCaretPos = oSel.text.length;
-    }
-    return position;
 };
 
 /* ******* VALIDATORS ******* */
