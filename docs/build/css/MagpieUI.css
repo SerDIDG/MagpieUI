@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.22.17 (2016-11-08 17:47) ************ */
+/*! ************ MagpieUI v3.22.17 (2016-11-08 17:59) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.5.0
@@ -6462,6 +6462,9 @@ button.is-hidden {
 .check-line .checkbox:checked + label + .unveil {
   display: block;
 }
+.check-line .checkbox:checked + .unveil {
+  display: block;
+}
 .check-line label {
   padding: 5px 24px 5px 8px;
   cursor: pointer;
@@ -6483,6 +6486,10 @@ button.is-hidden {
 }
 .check-line input[type="radio"]:checked + label + .unveil,
 .check-line input[type="checkbox"]:checked + label + .unveil {
+  display: block;
+}
+.check-line input[type="radio"]:checked + .unveil,
+.check-line input[type="checkbox"]:checked + .unveil {
   display: block;
 }
 .check-line .label {
@@ -6537,12 +6544,13 @@ button.is-hidden {
 }
 .check-line.has-field > label {
   width: 156px;
-  margin: 0 0 0 11px;
+  margin: 0 0 0 12px;
   padding: 0;
-  line-height: 12px;
+  line-height: 28px;
 }
 .check-line.has-field > .field {
   margin: 0 0 0 16px;
+  padding: 0;
   line-height: 28px;
   -webkit-flex: 1;
   -ms-flex: 1;
@@ -6558,6 +6566,9 @@ button.is-hidden {
   cursor: pointer;
 }
 .form dd > input[type="checkbox"]:checked + label + .unveil {
+  display: block;
+}
+.form dd > input[type="checkbox"]:checked + .unveil {
   display: block;
 }
 /* *** COLUMNS *** */

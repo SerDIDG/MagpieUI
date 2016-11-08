@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.22.17 (2016-11-08 17:47) ************ */
+/*! ************ MagpieUI v3.22.17 (2016-11-08 17:59) ************ */
 @charset "UTF-8";
 
 /*!
@@ -7230,6 +7230,10 @@ button {
         &:checked + label + .unveil {
             display: block;
         }
+
+        &:checked + .unveil {
+            display: block;
+        }
     }
 
     label {
@@ -7307,13 +7311,14 @@ button {
 
         > label {
             width: @CmForm-FieldTitleWidth;
-            margin: 0 0 0 11px;
+            margin: 0 0 0 @CmIndent-XSmall;
             padding: 0;
-            line-height: @CmIndent-XSmall;
+            line-height: @CmForm-FieldHeight;
         }
 
         > .field {
             margin: 0 0 0 @CmIndent-Small;
+            padding: 0;
             line-height: @CmForm-FieldHeight;
             .mx__flex(1);
         }
