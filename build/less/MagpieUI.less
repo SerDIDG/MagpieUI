@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.22.17 (2016-11-08 17:59) ************ */
+/*! ************ MagpieUI v3.22.18 (2016-11-08 20:29) ************ */
 @charset "UTF-8";
 
 /*!
@@ -13453,10 +13453,9 @@ ul.pt__field__hint {
     .display-flex;
     vertical-align: top;
     .mx__flex(1 1 auto);
-    /*.mx__flex-direction(column);*/
+    .mx__flex-direction(column);
 
     > .inner {
-        width: 100%;
         position: relative;
         border-radius: @CmBorder-Radius;
         .mx__box-sizing(border-box);
@@ -13466,7 +13465,7 @@ ul.pt__field__hint {
 
     .ie10 &,
     .ie11 & {
-        /*.mx__flex-direction(row);*/
+        .mx__flex-direction(row);
     }
 
     .ie8 &,

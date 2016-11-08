@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.22.17 (2016-11-08 17:59) ************ */
+/*! ************ MagpieUI v3.22.18 (2016-11-08 20:29) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.5.0
@@ -13917,10 +13917,11 @@ ul.pt__field__hint li:before {
   -webkit-flex: 1 1 auto;
   -ms-flex: 1 1 auto;
   flex: 1 1 auto;
-  /*.mx__flex-direction(column);*/
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
 }
 .com__column > .inner {
-  width: 100%;
   position: relative;
   border-radius: 3px;
   -moz-box-sizing: border-box;
@@ -13933,7 +13934,9 @@ ul.pt__field__hint li:before {
 }
 .ie10 .com__column,
 .ie11 .com__column {
-  /*.mx__flex-direction(row);*/
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
 }
 .ie8 .com__column,
 .ie9 .com__column {

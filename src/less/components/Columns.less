@@ -4,10 +4,9 @@
     .display-flex;
     vertical-align: top;
     .mx__flex(1 1 auto);
-    /*.mx__flex-direction(column);*/
+    .mx__flex-direction(column);
 
     > .inner {
-        width: 100%;
         position: relative;
         border-radius: @CmBorder-Radius;
         .mx__box-sizing(border-box);
@@ -17,7 +16,7 @@
 
     .ie10 &,
     .ie11 & {
-        /*.mx__flex-direction(row);*/
+        .mx__flex-direction(row);
     }
 
     .ie8 &,
