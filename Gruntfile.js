@@ -84,15 +84,6 @@ module.exports = function(grunt) {
             ]
         },
 
-        bower : {
-            install : {
-                copy : false,
-                cleanup : true,
-                layout : 'byComponent',
-                install : true
-            }
-        },
-
         concat : {
             scripts : {
                 options: {

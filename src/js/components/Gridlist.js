@@ -247,6 +247,7 @@ function(params){
             'urlKey' : false,               // Alternative link href, for type="url"
             'links' : [],                   // Render links menu, for type="links"
             'actions' : [],                 // Render actions menu, for type="actions"
+            'preventDefault' : true,
             'onClick' : false,              // Cell click handler
             'onRender' : false              // Cell onRender handler
         }, item);
@@ -480,7 +481,7 @@ function(params){
                             });
                         }else{
                             cm.addEvent(actionItem['_node'], 'click', function(e){
-                                cm.preventDefault(e);
+                                col['preventDefault'] && cm.preventDefault(e);
                                 actionItem['callback'](e, actionItem, item);
                             });
                         }

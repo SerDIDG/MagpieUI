@@ -18,7 +18,8 @@ cm.define('Com.Menu', {
             'top' : 'targetHeight',
             'targetEvent' : 'hover',
             'hideOnReClick' : true,
-            'theme' : false
+            'theme' : false,
+            'hold' : true
         }
     }
 },

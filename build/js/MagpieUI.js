@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.22.19 (2016-11-09 21:10) ************ */
+/*! ************ MagpieUI v3.22.20 (2016-11-16 21:31) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1427,7 +1427,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.22.19',
+        '_version' : '3.22.20',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -18025,6 +18025,7 @@ function(params){
             'urlKey' : false,               // Alternative link href, for type="url"
             'links' : [],                   // Render links menu, for type="links"
             'actions' : [],                 // Render actions menu, for type="actions"
+            'preventDefault' : true,
             'onClick' : false,              // Cell click handler
             'onRender' : false              // Cell onRender handler
         }, item);
@@ -18258,7 +18259,7 @@ function(params){
                             });
                         }else{
                             cm.addEvent(actionItem['_node'], 'click', function(e){
-                                cm.preventDefault(e);
+                                col['preventDefault'] && cm.preventDefault(e);
                                 actionItem['callback'](e, actionItem, item);
                             });
                         }
@@ -19187,7 +19188,8 @@ cm.define('Com.Menu', {
             'top' : 'targetHeight',
             'targetEvent' : 'hover',
             'hideOnReClick' : true,
-            'theme' : false
+            'theme' : false,
+            'hold' : true
         }
     }
 },
@@ -27110,6 +27112,7 @@ cm.define('Com.Tooltip', {
         'targetEvent' : 'hover',                        // hover | click | none
         'hideOnReClick' : false,                        // Hide tooltip when re-clicking on the target, requires setting value 'targetEvent' : 'click'
         'hideOnOut' : true,
+        'hold' : false,
         'preventClickEvent' : false,                    // Prevent default click event on the target, requires setting value 'targetEvent' : 'click'
         'top' : 0,                                      // Supported properties: targetHeight, selfHeight, number
         'left' : 0,                                     // Supported properties: targetWidth, selfWidth, number
@@ -27127,7 +27130,7 @@ cm.define('Com.Tooltip', {
         'adaptiveY' : true,
         'title' : '',
         'titleTag' : 'h3',
-        'content' : cm.Node('div'),
+        'content' : cm.node('div'),
         'container' : 'document.body'
     }
 },
@@ -27227,6 +27230,11 @@ function(params){
     };
 
     var setTargetEvent = function(){
+        // Hold
+        if(that.params['hold']){
+            cm.appendChild(that.nodes['container'], that.params['target']);
+        }
+        // Event
         switch(that.params['targetEvent']){
             case 'hover' :
                 cm.addEvent(that.params['target'], 'mouseover', targetEvent, true);
@@ -27326,7 +27334,11 @@ function(params){
         clearResizeInterval();
         removeWindowEvent();
         that.nodes['container'].style.display = 'none';
-        cm.remove(that.nodes['container']);
+        if(that.params['hold']){
+            cm.appendChild(that.nodes['container'], that.params['target']);
+        }else{
+            cm.remove(that.nodes['container']);
+        }
         that.isShow = false;
         that.isShowProcess = false;
         that.isHideProcess = false;

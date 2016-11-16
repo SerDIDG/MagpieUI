@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.22.19 (2016-11-09 21:10) ************ */
+/*! ************ MagpieUI v3.22.20 (2016-11-16 21:31) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.5.0
@@ -4005,6 +4005,24 @@ span.CodeMirror-selectedtext {
   background-position: 50% 50%;
   background-repeat: no-repeat;
 }
+.cm__icon.is-cover,
+.icon.is-cover,
+[class^="svg__"].is-cover,
+[class*=" svg__"].is-cover {
+  background-size: cover;
+}
+.cm__icon.is-contain,
+.icon.is-contain,
+[class^="svg__"].is-contain,
+[class*=" svg__"].is-contain {
+  background-size: contain;
+}
+.cm__icon.is-fill,
+.icon.is-fill,
+[class^="svg__"].is-fill,
+[class*=" svg__"].is-fill {
+  background-size: 100% 100%;
+}
 .cm__icon.inline,
 .icon.inline,
 [class^="svg__"].inline,
@@ -4719,6 +4737,10 @@ span.CodeMirror-selectedtext {
   transform: translate(0, 1px) rotate(-45deg);
 }
 /* ******* COMMON: TAGS ******* */
+* {
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
 *,
 *:after,
 *:before {
@@ -9005,11 +9027,21 @@ ul.pt__field__hint li:before {
   width: auto;
 }
 .pt__gridlist table td.cell-date,
-.pt__gridlist table th.cell-date {
+.pt__gridlist table th.cell-date,
+.pt__gridlist table td.cell--date,
+.pt__gridlist table th.cell--date {
   width: 100px;
 }
+.pt__gridlist table td.cell-date-full,
+.pt__gridlist table th.cell-date-full,
+.pt__gridlist table td.cell--date-full,
+.pt__gridlist table th.cell--date-full {
+  width: 10%;
+}
 .pt__gridlist table td.cell-price,
-.pt__gridlist table th.cell-price {
+.pt__gridlist table th.cell-price,
+.pt__gridlist table td.cell--price,
+.pt__gridlist table th.cell--price {
   width: 100px;
 }
 .pt__gridlist table td.cell-auto,
@@ -9017,12 +9049,22 @@ ul.pt__field__hint li:before {
   width: auto;
 }
 .pt__gridlist table td.cell-status,
-.pt__gridlist table th.cell-status {
+.pt__gridlist table th.cell-status,
+.pt__gridlist table td.cell--status,
+.pt__gridlist table th.cell--status {
   width: 100px;
 }
 .pt__gridlist table td.cell-links,
-.pt__gridlist table th.cell-links {
+.pt__gridlist table th.cell-links,
+.pt__gridlist table td.cell--links,
+.pt__gridlist table th.cell--links {
   width: 200px;
+}
+.pt__gridlist table td.cell-actions,
+.pt__gridlist table th.cell-actions,
+.pt__gridlist table td.cell--actions,
+.pt__gridlist table th.cell--actions {
+  width: 100px;
 }
 .pt__gridlist table th {
   font-weight: 600;
@@ -10718,6 +10760,19 @@ ul.pt__field__hint li:before {
   background-color: #c2dbf4;
   -webkit-transition: background 100ms ease-in-out;
   transition: background 100ms ease-in-out;
+}
+.pt__line-share.valign-center > ul {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+  height: 100%;
+  margin-bottom: 0;
+  -webkit-align-items: center;
+  align-items: center;
+}
+.pt__line-share.valign-center > ul > li {
+  margin-bottom: 0;
 }
 .pt__line-share.pull-left > ul {
   text-align: left;

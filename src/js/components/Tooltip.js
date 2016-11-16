@@ -16,6 +16,7 @@ cm.define('Com.Tooltip', {
         'targetEvent' : 'hover',                        // hover | click | none
         'hideOnReClick' : false,                        // Hide tooltip when re-clicking on the target, requires setting value 'targetEvent' : 'click'
         'hideOnOut' : true,
+        'hold' : false,
         'preventClickEvent' : false,                    // Prevent default click event on the target, requires setting value 'targetEvent' : 'click'
         'top' : 0,                                      // Supported properties: targetHeight, selfHeight, number
         'left' : 0,                                     // Supported properties: targetWidth, selfWidth, number
@@ -33,7 +34,7 @@ cm.define('Com.Tooltip', {
         'adaptiveY' : true,
         'title' : '',
         'titleTag' : 'h3',
-        'content' : cm.Node('div'),
+        'content' : cm.node('div'),
         'container' : 'document.body'
     }
 },
@@ -133,6 +134,11 @@ function(params){
     };
 
     var setTargetEvent = function(){
+        // Hold
+        if(that.params['hold']){
+            cm.appendChild(that.nodes['container'], that.params['target']);
+        }
+        // Event
         switch(that.params['targetEvent']){
             case 'hover' :
                 cm.addEvent(that.params['target'], 'mouseover', targetEvent, true);
@@ -232,7 +238,11 @@ function(params){
         clearResizeInterval();
         removeWindowEvent();
         that.nodes['container'].style.display = 'none';
-        cm.remove(that.nodes['container']);
+        if(that.params['hold']){
+            cm.appendChild(that.nodes['container'], that.params['target']);
+        }else{
+            cm.remove(that.nodes['container']);
+        }
         that.isShow = false;
         that.isShowProcess = false;
         that.isHideProcess = false;
