@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.22.20 (2016-11-16 21:31) ************ */
+/*! ************ MagpieUI v3.22.21 (2016-11-22 20:10) ************ */
 @charset "UTF-8";
 
 /*!
@@ -4706,6 +4706,13 @@ span.CodeMirror-selectedtext { background: none; }
             transition-delay: @duration;
 }
 
+.mx__filter (@properties) {
+    .for(@properties); .-each(@property) {
+        -webkit-filter+_: @property;
+                filter+_: @property;
+    }
+}
+
 .mx__transform (@properties) {
     .for(@properties); .-each(@property) {
         -webkit-transform+_: @property;
@@ -5036,6 +5043,12 @@ span.CodeMirror-selectedtext { background: none; }
     }
 }
 
+.cm__flex--center {
+    .mx__align-content(center);
+    .mx__align-items(center);
+    .mx__justify-content(center);
+}
+
 /* *** COUNTER *** */
 
 .cm__counter {
@@ -5190,13 +5203,15 @@ span.CodeMirror-selectedtext { background: none; }
     overflow: auto;
 }
 
-.cm__scroll-y {
+.cm__scroll-y,
+.cm__scroll--y {
     -webkit-overflow-scrolling: touch;
     overflow-x: hidden;
     overflow-y: scroll;
 }
 
-.cm__scroll-y-a {
+.cm__scroll-y-a,
+.cm__scroll--y-auto {
     -webkit-overflow-scrolling: touch;
     overflow-x: hidden;
     overflow-y: auto;
@@ -6116,12 +6131,53 @@ span.CodeMirror-selectedtext { background: none; }
         .mx__transform(rotate(-45deg));
     }
 }
-/* ******* COMMON: TAGS ******* */
 
-* {
-    -webkit-touch-callout: none;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+.cm-ia__menu2 {
+    position: relative;
+
+    div {
+        width: 100%;
+        height: 2px;
+        display: block;
+        position: absolute;
+        margin: auto;
+        content: '';
+        background-color: @CmColor-Font-Opposite;
+        border-radius: 2px;
+        .mx__transition(all, @CmUI-Transition-Duration);
+    }
+
+    div:nth-child(1) {
+        .mx__transform(translate(0, -9px));
+        .mx__position(50%, 0, auto, 0);
+    }
+
+    div:nth-child(2) {
+        .mx__position(0, 0, 0, 0);
+    }
+
+    div:nth-child(3) {
+        .mx__transform(translate(0, 9px));
+        .mx__position(auto, 0, 50%, 0);
+    }
 }
+
+.cm-ia__menu2--active {
+    div:nth-child(1) {
+        .mx__transform(translate(0, -1px));
+        .mx__transform(rotate(45deg));
+    }
+
+    div:nth-child(2) {
+        width: 0;
+    }
+
+    div:nth-child(3) {
+        .mx__transform(translate(0, 1px));
+        .mx__transform(rotate(-45deg));
+    }
+}
+/* ******* COMMON: TAGS ******* */
 
 *,
 *:after,
@@ -8490,7 +8546,8 @@ button {
         .display-flex;
 
         > .column {
-            .mx__flex(1);
+            min-width: 0;
+            .mx__flex(1 1 0);
         }
     }
 
@@ -8511,6 +8568,8 @@ button {
             }
         }
     }
+
+    // /* Indent */
 
     .pt__columns__indent(@PtColumns-Indent);
 
@@ -8535,6 +8594,17 @@ button {
     }
 }
 
+.pt__columns--adaptive {
+    > .inner {
+        display: block;
+
+        > .column {
+            .cm__box;
+            .mx__flex(none);
+        }
+    }
+}
+
 /* ******* PARTS: COLUMNS: ADAPTIVE ******* */
 
 @media only screen and (max-width : @PtColumns-AdaptiveFrom) {
@@ -8542,14 +8612,7 @@ button {
     html.is-adaptive {
         .pt__columns {
             &.is-adaptive {
-                > .inner {
-                    display: block;
-
-                    > .column {
-                        .cm__box;
-                        .mx__flex(none);
-                    }
-                }
+                .pt__columns--adaptive;
             }
         }
     }
@@ -9188,6 +9251,14 @@ ul.pt__field__hint {
         }
     }
 
+    &.is-no-col {
+        > ul {
+            > li {
+                width: auto;
+            }
+        }
+    }
+
     &.is-inline {
         > ul {
             overflow: hidden;
@@ -9209,17 +9280,35 @@ ul.pt__field__hint {
         > ul {
             text-align: left;
         }
+
+        &.is-flexible-out {
+            > ul {
+                .mx__justify-content(left);
+            }
+        }
     }
 
     &.pull-center {
         > ul {
             text-align: center;
         }
+
+        &.is-flexible-out {
+            > ul {
+                .mx__justify-content(center);
+            }
+        }
     }
 
     &.pull-right {
         > ul {
             text-align: right;
+        }
+
+        &.is-flexible-out {
+            > ul {
+                .mx__justify-content(right);
+            }
         }
     }
 
@@ -9263,6 +9352,17 @@ ul.pt__field__hint {
         }
     }
 
+    &.is-flexible-out {
+        > ul {
+            .display-flex;
+
+            > li {
+                width: initial;
+                .mx__flex(0 1 auto);
+            }
+        }
+    }
+
     &.is-flexible-in {
         overflow: visible;
 
@@ -9272,7 +9372,7 @@ ul.pt__field__hint {
 
             > li {
                 .display-flex;
-                .mx__flex(1 1);
+                .mx__flex(1 1 0);
             }
         }
 
@@ -10299,6 +10399,20 @@ ul.pt__field__hint {
         }
     }
 
+    &.align-center {
+        > ul {
+            .display-flex;
+            .cm__flex--center;
+            height: 100%;
+            margin-bottom: 0;
+            .mx__align-items(center);
+
+            > li {
+                margin-bottom: 0;
+            }
+        }
+    }
+
     &.pull-left {
         > ul {
             text-align: left;
@@ -10406,7 +10520,8 @@ ul.pt__field__hint {
 
     &.pull-left,
     &.pull-center,
-    &.pull-justify {
+    &.pull-justify,
+    &.align-center {
         > ul {
             > li {
                 margin-right: @value;
@@ -10595,6 +10710,8 @@ ul.pt__field__hint {
 /* *** LISTING WITH COUNTERS *** */
 
 .pt__listing-counters {
+    .cm__box;
+
     .cm__counter {
         @margin: round((@PtListingCounters-Height - @CmCounter-Size) / 2);
         margin:  @margin 0 0 0;
@@ -12602,6 +12719,14 @@ ul.pt__field__hint {
                 &.default {
                     .mx__transform(rotate(90deg));
                 }
+            }
+        }
+    }
+
+    &.is-wrap {
+        > dt {
+            .title {
+                .cm__text-wrap;
             }
         }
     }

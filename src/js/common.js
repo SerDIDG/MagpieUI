@@ -30,12 +30,13 @@
  ******* */
 
 var cm = {
-        '_version' : '3.22.20',
+        '_version' : '3.22.21',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
         '_deviceType' : 'desktop',
         '_deviceOrientation' : 'landscape',
+        '_adaptive' : false,
         '_baseUrl': [window.location.protocol, window.location.hostname].join('//'),
         '_assetsUrl' : null,
         '_scrollSize' : 0,
@@ -2519,6 +2520,7 @@ cm.getBodyScrollTop = function(){
     return Math.max(
         document.documentElement.scrollTop,
         document.body.scrollTop,
+        window.pageYOffset,
         0
     );
 };
@@ -2527,6 +2529,7 @@ cm.getBodyScrollLeft = function(){
     return Math.max(
         document.documentElement.scrollLeft,
         document.body.scrollLeft,
+        window.pageXOffset,
         0
     );
 };

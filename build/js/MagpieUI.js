@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.22.20 (2016-11-16 21:31) ************ */
+/*! ************ MagpieUI v3.22.21 (2016-11-22 20:09) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1427,12 +1427,13 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.22.20',
+        '_version' : '3.22.21',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
         '_deviceType' : 'desktop',
         '_deviceOrientation' : 'landscape',
+        '_adaptive' : false,
         '_baseUrl': [window.location.protocol, window.location.hostname].join('//'),
         '_assetsUrl' : null,
         '_scrollSize' : 0,
@@ -3916,6 +3917,7 @@ cm.getBodyScrollTop = function(){
     return Math.max(
         document.documentElement.scrollTop,
         document.body.scrollTop,
+        window.pageYOffset,
         0
     );
 };
@@ -3924,6 +3926,7 @@ cm.getBodyScrollLeft = function(){
     return Math.max(
         document.documentElement.scrollLeft,
         document.body.scrollLeft,
+        window.pageXOffset,
         0
     );
 };
@@ -5244,8 +5247,11 @@ Mod['Params'] = {
                     break;
 
                 default:
-                    if(/cm._config./i.test(item)){
+                    if(/^cm._config./i.test(item)){
                         that.params[key] = cm._config[item.replace('cm._config.', '')];
+                    }
+                    if(/^@LESS./i.test(item)){
+                        that.params[key] = window.LESS[item.replace('@LESS.', '')];
                     }
                     break;
             }
@@ -6241,6 +6247,11 @@ cm.init = function(){
             }
             if(width <= cm._config['screenMobile']){
                 cm._deviceType = 'mobile';
+            }
+            if(width <= cm._config['adaptiveFrom']){
+                cm._adaptive = true;
+            }else{
+                cm._adaptive = false;
             }
 
             cm.addClass(html, ['is', cm._deviceType].join('-'));
@@ -13275,7 +13286,7 @@ function(params){
     };
 
     var setLogic = function(){
-        cm.addEvent(nodes['input'], 'keypress', inputKeypressHandler);
+        cm.addEvent(nodes['input'], 'keyup', inputKeypressHandler);
         // Clear Button
         if(that.params['showClearButton']){
             cm.addEvent(nodes['clearButton'], 'click', function(){
@@ -13369,9 +13380,10 @@ function(params){
             components['menu'].hide(false);
         }
         if(cm.isKey(e, 'delete')){
+            cm.log(value);
             if(cm.isEmpty(value)){
                 that.clear(true);
-                components['menu'].hide(false);
+                //components['menu'].hide(false);
             }
         }
     };

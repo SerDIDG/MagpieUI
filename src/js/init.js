@@ -62,6 +62,11 @@ cm.init = function(){
             if(width <= cm._config['screenMobile']){
                 cm._deviceType = 'mobile';
             }
+            if(width <= cm._config['adaptiveFrom']){
+                cm._adaptive = true;
+            }else{
+                cm._adaptive = false;
+            }
 
             cm.addClass(html, ['is', cm._deviceType].join('-'));
             cm.addClass(html, ['is', cm._deviceOrientation].join('-'));

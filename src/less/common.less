@@ -178,6 +178,12 @@
     }
 }
 
+.cm__flex--center {
+    .mx__align-content(center);
+    .mx__align-items(center);
+    .mx__justify-content(center);
+}
+
 /* *** COUNTER *** */
 
 .cm__counter {
@@ -332,13 +338,15 @@
     overflow: auto;
 }
 
-.cm__scroll-y {
+.cm__scroll-y,
+.cm__scroll--y {
     -webkit-overflow-scrolling: touch;
     overflow-x: hidden;
     overflow-y: scroll;
 }
 
-.cm__scroll-y-a {
+.cm__scroll-y-a,
+.cm__scroll--y-auto {
     -webkit-overflow-scrolling: touch;
     overflow-x: hidden;
     overflow-y: auto;

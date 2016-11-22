@@ -102,6 +102,20 @@
         }
     }
 
+    &.align-center {
+        > ul {
+            .display-flex;
+            .cm__flex--center;
+            height: 100%;
+            margin-bottom: 0;
+            .mx__align-items(center);
+
+            > li {
+                margin-bottom: 0;
+            }
+        }
+    }
+
     &.pull-left {
         > ul {
             text-align: left;
@@ -209,7 +223,8 @@
 
     &.pull-left,
     &.pull-center,
-    &.pull-justify {
+    &.pull-justify,
+    &.align-center {
         > ul {
             > li {
                 margin-right: @value;

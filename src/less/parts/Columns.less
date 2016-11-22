@@ -7,7 +7,8 @@
         .display-flex;
 
         > .column {
-            .mx__flex(1);
+            min-width: 0;
+            .mx__flex(1 1 0);
         }
     }
 
@@ -28,6 +29,8 @@
             }
         }
     }
+
+    // /* Indent */
 
     .pt__columns__indent(@PtColumns-Indent);
 
@@ -52,6 +55,17 @@
     }
 }
 
+.pt__columns--adaptive {
+    > .inner {
+        display: block;
+
+        > .column {
+            .cm__box;
+            .mx__flex(none);
+        }
+    }
+}
+
 /* ******* PARTS: COLUMNS: ADAPTIVE ******* */
 
 @media only screen and (max-width : @PtColumns-AdaptiveFrom) {
@@ -59,14 +73,7 @@
     html.is-adaptive {
         .pt__columns {
             &.is-adaptive {
-                > .inner {
-                    display: block;
-
-                    > .column {
-                        .cm__box;
-                        .mx__flex(none);
-                    }
-                }
+                .pt__columns--adaptive;
             }
         }
     }

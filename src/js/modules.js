@@ -188,8 +188,11 @@ Mod['Params'] = {
                     break;
 
                 default:
-                    if(/cm._config./i.test(item)){
+                    if(/^cm._config./i.test(item)){
                         that.params[key] = cm._config[item.replace('cm._config.', '')];
+                    }
+                    if(/^@LESS./i.test(item)){
+                        that.params[key] = window.LESS[item.replace('@LESS.', '')];
                     }
                     break;
             }

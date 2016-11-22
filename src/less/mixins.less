@@ -46,6 +46,13 @@
             transition-delay: @duration;
 }
 
+.mx__filter (@properties) {
+    .for(@properties); .-each(@property) {
+        -webkit-filter+_: @property;
+                filter+_: @property;
+    }
+}
+
 .mx__transform (@properties) {
     .for(@properties); .-each(@property) {
         -webkit-transform+_: @property;

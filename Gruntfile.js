@@ -416,6 +416,7 @@ module.exports = function(grunt) {
     // Custom Tasks
     grunt.registerTask('default', ['clean', 'pre', 'scripts', 'images', 'styles', 'fonts', 'libs', 'stuff']);
     grunt.registerTask('optimize', ['clean:temp', 'default', 'uglify:build', 'cssmin', 'imagemin', 'copy:images_optimize', 'clean:temp']);
+    grunt.registerTask('watcher', ['watch']);
 
     grunt.registerTask('scripts', ['concat:scripts', 'concat:scripts_docs']);
     grunt.registerTask('images', ['svgcss:build', 'copy:images', 'copy:images_docs', 'copy:images_docs_self']);

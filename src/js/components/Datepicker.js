@@ -187,7 +187,7 @@ function(params){
     };
 
     var setLogic = function(){
-        cm.addEvent(nodes['input'], 'keypress', inputKeypressHandler);
+        cm.addEvent(nodes['input'], 'keyup', inputKeypressHandler);
         // Clear Button
         if(that.params['showClearButton']){
             cm.addEvent(nodes['clearButton'], 'click', function(){
@@ -281,9 +281,10 @@ function(params){
             components['menu'].hide(false);
         }
         if(cm.isKey(e, 'delete')){
+            cm.log(value);
             if(cm.isEmpty(value)){
                 that.clear(true);
-                components['menu'].hide(false);
+                //components['menu'].hide(false);
             }
         }
     };
