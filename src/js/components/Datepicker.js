@@ -416,7 +416,8 @@ function(params){
         format = typeof format != 'undefined'? format : that.format;
         triggerEvents = typeof triggerEvents != 'undefined'? triggerEvents : true;
         // Get date
-        if(cm.isEmpty(str)){
+        var pattern = cm.dateFormat(false, format, that.lang());
+        if(cm.isEmpty(str) || str == pattern){
             that.clear();
             return that;
         }else if(cm.isDate(str)){

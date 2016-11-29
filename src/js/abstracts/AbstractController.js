@@ -28,6 +28,7 @@ cm.define('Com.AbstractController', {
         'onDestructProcess',
         'onDestructEnd',
         'onRedraw',
+        'onScroll',
         'onSetEventsStart',
         'onSetEventsProcess',
         'onSetEventsEnd',
@@ -49,9 +50,11 @@ cm.define('Com.AbstractController', {
         'embedStructure' : 'append',
         'renderStructure' : true,
         'embedStructureOnRender' : true,
-        'customEvents' : true,
         'removeOnDestruct' : false,
         'className' : '',
+        'customEvents' : true,
+        'resizeEvent' : true,
+        'scrollEvent' : false,
         'collector' : null,
         'constructCollector' : false,
         'destructCollector' : false
@@ -70,6 +73,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         var that = this;
         // Bind context to methods
         that.redrawHandler = that.redraw.bind(that);
+        that.scrollHandler = that.scroll.bind(that);
         that.destructHandler = that.destruct.bind(that);
         that.constructCollectorHandler = that.constructCollector.bind(that);
         that.destructCollectorHandler = that.destructCollector.bind(that);
@@ -116,6 +120,14 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         var that = this;
         animFrame(function(){
             that.triggerEvent('onRedraw');
+        });
+        return that;
+    };
+
+    classProto.scroll = function(){
+        var that = this;
+        animFrame(function(){
+            that.triggerEvent('onScroll');
         });
         return that;
     };
@@ -178,7 +190,8 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         var that = this;
         that.triggerEvent('onSetEventsStart');
         // Windows events
-        cm.addEvent(window, 'resize', that.redrawHandler);
+        that.params['resizeEvent'] && cm.addEvent(window, 'resize', that.redrawHandler);
+        that.params['scrollEvent'] && cm.addEvent(window, 'scroll', that.scrollHandler);
         that.triggerEvent('onSetEventsProcess');
         // Add custom events
         if(that.params['customEvents']){
@@ -194,7 +207,8 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         var that = this;
         that.triggerEvent('onUnsetEventsStart');
         // Windows events
-        cm.removeEvent(window, 'resize', that.redrawHandler);
+        that.params['resizeEvent'] && cm.removeEvent(window, 'resize', that.redrawHandler);
+        that.params['scrollEvent'] && cm.removeEvent(window, 'scroll', that.scrollHandler);
         that.triggerEvent('onUnsetEventsProcess');
         // Remove custom events
         if(that.params['customEvents']){

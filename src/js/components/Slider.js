@@ -27,6 +27,7 @@ cm.define('Com.Slider', {
         'slideshow' : true,             // Turn on / off slideshow
         'direction' : 'forward',        // Slideshow direction: forward | backward | random
         'pauseOnHover' : true,
+        'pauseOnScroll' : true,
         'fadePrevious' : false,         // Fade out previous slide, needed when using transparency slides
         'buttons' : true,               // Display buttons, can hide exists buttons
         'numericButtons' : false,       // Render slide index on button
@@ -79,6 +80,7 @@ function(params){
 
     var init = function(){
         that.redrawHandler = that.redraw.bind(that);
+        that.scrollHandler = that.scroll.bind(that);
         that.destructHandler = that.destruct.bind(that);
         that.enableEditingHandler = that.enableEditing.bind(that);
         that.disableEditingHandler = that.disableEditing.bind(that);
@@ -158,6 +160,8 @@ function(params){
                 }
             });
         }
+        // Pause slider when in not in screen range
+        scrollPauseHandler();
         // Init animations
         that.anim['slides'] = new cm.Animation(that.nodes['slides']);
         that.anim['slidesInner'] = new cm.Animation(that.nodes['slidesInner']);
@@ -166,6 +170,7 @@ function(params){
     var setEvents = function(){
         // Resize events
         cm.addEvent(window, 'resize', that.redrawHandler);
+        cm.addEvent(window, 'scroll', that.scrollHandler);
         // Add custom event
         if(that.params['customEvents']){
             cm.customEvent.add(that.params['node'], 'redraw', that.redrawHandler);
@@ -178,6 +183,7 @@ function(params){
     var unsetEvents = function(){
         // Resize events
         cm.removeEvent(window, 'resize', that.redrawHandler);
+        cm.removeEvent(window, 'scroll', that.scrollHandler);
         // Add custom event
         if(that.params['customEvents']){
             cm.customEvent.remove(that.params['node'], 'redraw', that.redrawHandler);
@@ -424,6 +430,24 @@ function(params){
     var resizeHandler = function(){
         // Recalculate slider height dependence of height type
         calculateHeight();
+        // Pause slider when in not in screen range
+        scrollPauseHandler();
+    };
+
+    var scrollHandler = function(){
+        // Pause slider when in not in screen range
+        scrollPauseHandler();
+    };
+
+    var scrollPauseHandler = function(){
+        if(that.params['slideshow'] && that.params['pauseOnScroll']){
+            var rect = cm.getRect(that.nodes['container']);
+            if(cm.inRange(0, cm._pageSize['winHeight'], rect['top'], rect['bottom'])){
+                startSlideshow();
+            }else{
+                stopSlideshow();
+            }
+        }
     };
 
     var getDimension = function(value){
@@ -466,7 +490,12 @@ function(params){
     };
 
     that.redraw = function(){
-        resizeHandler();
+        animFrame(resizeHandler);
+        return that;
+    };
+
+    that.scroll = function(){
+        animFrame(scrollHandler);
         return that;
     };
 

@@ -30,7 +30,7 @@
  ******* */
 
 var cm = {
-        '_version' : '3.22.21',
+        '_version' : '3.22.22',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -1733,6 +1733,10 @@ cm.splitNumber = function(str){
     return str.toString().replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
 };
 
+cm.getPercentage = function(num, total){
+    return num / total / 100;
+};
+
 cm.rand = function(min, max){
     return Math.floor(Math.random() * (max - min + 1)) + min;
 };
@@ -2540,6 +2544,10 @@ cm.getBodyScrollHeight = function(){
         document.body.scrollHeight,
         0
     );
+};
+
+cm.getBodyScrollMaxTop = function(){
+    return cm.getBodyScrollHeight() - cm._pageSize['winHeight'];
 };
 
 cm.getSupportedStyle = function(style){
