@@ -265,8 +265,8 @@ function(params){
 
     that.callbacks.filter = function(that, config, response){
         var data = [],
-            dataItem = cm.objectSelector(that.params['responseKey'], response),
-            countItem = cm.objectSelector(that.params['responseCountKey'], response);
+            dataItem = cm.objectPath(that.params['responseKey'], response),
+            countItem = cm.objectPath(that.params['responseCountKey'], response);
         if(dataItem && !cm.isEmpty(dataItem)){
             data = dataItem;
         }

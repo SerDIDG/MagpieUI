@@ -24,7 +24,7 @@ cm.define('Com.ScrollPagination', {
         'onSetCount'
     ],
     'params' : {
-        'node' : cm.Node('div'),
+        'node' : cm.node('div'),
         'container' : null,
         'name' : '',
         'renderStructure' : false,                                  // Render wrapper nodes if not exists in html
@@ -282,9 +282,9 @@ function(params){
 
     that.callbacks.filter = function(that, config, response){
         var data = [],
-            dataItem = cm.objectSelector(that.params['responseKey'], response),
-            countItem = cm.objectSelector(that.params['responseCountKey'], response),
-            tokenItem = cm.objectSelector(that.params['responseTokenKey'], response);
+            dataItem = cm.objectPath(that.params['responseKey'], response),
+            countItem = cm.objectPath(that.params['responseCountKey'], response),
+            tokenItem = cm.objectPath(that.params['responseTokenKey'], response);
         if(!cm.isEmpty(dataItem)){
             if(!that.params['responseHTML'] && that.params['perPage']){
                 data = dataItem.slice(0, that.params['perPage']);

@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.22.23 (2016-12-01 17:10) ************ */
+/*! ************ MagpieUI v3.22.24 (2016-12-01 18:37) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1427,7 +1427,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.22.23',
+        '_version' : '3.22.24',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -9475,8 +9475,6 @@ function(params){
     var inputHandler = function(e){
         var listLength,
             listIndex;
-        e = cm.getEvent(e);
-
         switch(e.keyCode){
             // Enter
             case 13:
@@ -20732,8 +20730,8 @@ function(params){
 
     that.callbacks.filter = function(that, config, response){
         var data = [],
-            dataItem = cm.objectSelector(that.params['responseKey'], response),
-            countItem = cm.objectSelector(that.params['responseCountKey'], response);
+            dataItem = cm.objectPath(that.params['responseKey'], response),
+            countItem = cm.objectPath(that.params['responseCountKey'], response);
         if(dataItem && !cm.isEmpty(dataItem)){
             data = dataItem;
         }
@@ -22693,7 +22691,7 @@ cm.define('Com.ScrollPagination', {
         'onSetCount'
     ],
     'params' : {
-        'node' : cm.Node('div'),
+        'node' : cm.node('div'),
         'container' : null,
         'name' : '',
         'renderStructure' : false,                                  // Render wrapper nodes if not exists in html
@@ -22951,9 +22949,9 @@ function(params){
 
     that.callbacks.filter = function(that, config, response){
         var data = [],
-            dataItem = cm.objectSelector(that.params['responseKey'], response),
-            countItem = cm.objectSelector(that.params['responseCountKey'], response),
-            tokenItem = cm.objectSelector(that.params['responseTokenKey'], response);
+            dataItem = cm.objectPath(that.params['responseKey'], response),
+            countItem = cm.objectPath(that.params['responseCountKey'], response),
+            tokenItem = cm.objectPath(that.params['responseTokenKey'], response);
         if(!cm.isEmpty(dataItem)){
             if(!that.params['responseHTML'] && that.params['perPage']){
                 data = dataItem.slice(0, that.params['perPage']);

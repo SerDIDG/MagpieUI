@@ -142,8 +142,6 @@ function(params){
     var inputHandler = function(e){
         var listLength,
             listIndex;
-        e = cm.getEvent(e);
-
         switch(e.keyCode){
             // Enter
             case 13:
