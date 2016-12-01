@@ -187,7 +187,8 @@ function(params){
     };
 
     var setLogic = function(){
-        cm.addEvent(nodes['input'], 'keyup', inputKeypressHandler);
+        cm.addEvent(nodes['input'], 'keypress', inputKeypressHandler);
+        cm.addEvent(nodes['input'], 'keyup', inputKeyHandler);
         // Clear Button
         if(that.params['showClearButton']){
             cm.addEvent(nodes['clearButton'], 'click', function(){
@@ -269,19 +270,19 @@ function(params){
     };
 
     var inputKeypressHandler = function(e){
+        if(cm.isKey(e, 'enter')){
+            cm.preventDefault(e);
+        }
+    };
+
+    var inputKeyHandler = function(e){
         var value = nodes['input'].value;
         if(cm.isKey(e, 'enter')){
             cm.preventDefault(e);
-            var date = new Date(value);
-            if(cm.isEmpty(value) || !cm.isDateValid(date)){
-                that.clear(true);
-            }else{
-                that.set(date, null, true);
-            }
+            validateInputValue();
             components['menu'].hide(false);
         }
         if(cm.isKey(e, 'delete')){
-            cm.log(value);
             if(cm.isEmpty(value)){
                 that.clear(true);
                 //components['menu'].hide(false);
@@ -311,10 +312,21 @@ function(params){
     };
 
     var onHide = function(){
+        validateInputValue();
         setInputValues();
         nodes['input'].blur();
         cm.removeClass(nodes['container'], 'active');
         that.triggerEvent('onBlur', that.value);
+    };
+
+    var validateInputValue = function(){
+        var value = nodes['input'].value,
+            date = new Date(value);
+        if(cm.isEmpty(value) || !cm.isDateValid(date)){
+            that.clear(true);
+        }else{
+            that.set(date, null, true);
+        }
     };
 
     var set = function(triggerEvents){

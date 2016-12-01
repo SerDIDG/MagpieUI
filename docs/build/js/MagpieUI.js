@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.22.22 (2016-11-29 18:46) ************ */
+/*! ************ MagpieUI v3.22.23 (2016-12-01 17:10) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1427,7 +1427,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.22.22',
+        '_version' : '3.22.23',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -13308,7 +13308,8 @@ function(params){
     };
 
     var setLogic = function(){
-        cm.addEvent(nodes['input'], 'keyup', inputKeypressHandler);
+        cm.addEvent(nodes['input'], 'keypress', inputKeypressHandler);
+        cm.addEvent(nodes['input'], 'keyup', inputKeyHandler);
         // Clear Button
         if(that.params['showClearButton']){
             cm.addEvent(nodes['clearButton'], 'click', function(){
@@ -13390,19 +13391,19 @@ function(params){
     };
 
     var inputKeypressHandler = function(e){
+        if(cm.isKey(e, 'enter')){
+            cm.preventDefault(e);
+        }
+    };
+
+    var inputKeyHandler = function(e){
         var value = nodes['input'].value;
         if(cm.isKey(e, 'enter')){
             cm.preventDefault(e);
-            var date = new Date(value);
-            if(cm.isEmpty(value) || !cm.isDateValid(date)){
-                that.clear(true);
-            }else{
-                that.set(date, null, true);
-            }
+            validateInputValue();
             components['menu'].hide(false);
         }
         if(cm.isKey(e, 'delete')){
-            cm.log(value);
             if(cm.isEmpty(value)){
                 that.clear(true);
                 //components['menu'].hide(false);
@@ -13432,10 +13433,21 @@ function(params){
     };
 
     var onHide = function(){
+        validateInputValue();
         setInputValues();
         nodes['input'].blur();
         cm.removeClass(nodes['container'], 'active');
         that.triggerEvent('onBlur', that.value);
+    };
+
+    var validateInputValue = function(){
+        var value = nodes['input'].value,
+            date = new Date(value);
+        if(cm.isEmpty(value) || !cm.isDateValid(date)){
+            that.clear(true);
+        }else{
+            that.set(date, null, true);
+        }
     };
 
     var set = function(triggerEvents){
@@ -22693,6 +22705,7 @@ cm.define('Com.ScrollPagination', {
         'perPage' : 0,                                              // 0 - render all data in one page
         'startPage' : 1,                                            // Start page
         'startPageToken' : '',
+        'useToken' : false,
         'pageCount' : 0,                                            // Render only count of pages. 0 - infinity
         'showButton' : true,                                        // true - always | once - show once after first loaded page
         'showLoader' : true,
@@ -22703,6 +22716,7 @@ cm.define('Com.ScrollPagination', {
             'class' : 'com__scroll-pagination__page'
         },
         'responseCountKey' : 'count',                               // Take items count from response
+        'responseTokenKey' : 'token',                               // Token key name
         'responseKey' : 'data',                                     // Instead of using filter callback, you can provide response array key
         'responseHTML' : false,                                     // If true, html will append automatically
         'ajax' : {
@@ -22938,7 +22952,8 @@ function(params){
     that.callbacks.filter = function(that, config, response){
         var data = [],
             dataItem = cm.objectSelector(that.params['responseKey'], response),
-            countItem = cm.objectSelector(that.params['responseCountKey'], response);
+            countItem = cm.objectSelector(that.params['responseCountKey'], response),
+            tokenItem = cm.objectSelector(that.params['responseTokenKey'], response);
         if(!cm.isEmpty(dataItem)){
             if(!that.params['responseHTML'] && that.params['perPage']){
                 data = dataItem.slice(0, that.params['perPage']);
@@ -22948,6 +22963,12 @@ function(params){
         }
         if(countItem){
             that.setCount(countItem);
+        }
+        if(tokenItem){
+            that.setToken(that.nextPage, tokenItem);
+        }
+        if(that.params['useToken'] && !tokenItem){
+            that.callbacks.finalize(that);
         }
         return data;
     };

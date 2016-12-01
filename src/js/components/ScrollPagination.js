@@ -36,6 +36,7 @@ cm.define('Com.ScrollPagination', {
         'perPage' : 0,                                              // 0 - render all data in one page
         'startPage' : 1,                                            // Start page
         'startPageToken' : '',
+        'useToken' : false,
         'pageCount' : 0,                                            // Render only count of pages. 0 - infinity
         'showButton' : true,                                        // true - always | once - show once after first loaded page
         'showLoader' : true,
@@ -46,6 +47,7 @@ cm.define('Com.ScrollPagination', {
             'class' : 'com__scroll-pagination__page'
         },
         'responseCountKey' : 'count',                               // Take items count from response
+        'responseTokenKey' : 'token',                               // Token key name
         'responseKey' : 'data',                                     // Instead of using filter callback, you can provide response array key
         'responseHTML' : false,                                     // If true, html will append automatically
         'ajax' : {
@@ -281,7 +283,8 @@ function(params){
     that.callbacks.filter = function(that, config, response){
         var data = [],
             dataItem = cm.objectSelector(that.params['responseKey'], response),
-            countItem = cm.objectSelector(that.params['responseCountKey'], response);
+            countItem = cm.objectSelector(that.params['responseCountKey'], response),
+            tokenItem = cm.objectSelector(that.params['responseTokenKey'], response);
         if(!cm.isEmpty(dataItem)){
             if(!that.params['responseHTML'] && that.params['perPage']){
                 data = dataItem.slice(0, that.params['perPage']);
@@ -291,6 +294,12 @@ function(params){
         }
         if(countItem){
             that.setCount(countItem);
+        }
+        if(tokenItem){
+            that.setToken(that.nextPage, tokenItem);
+        }
+        if(that.params['useToken'] && !tokenItem){
+            that.callbacks.finalize(that);
         }
         return data;
     };
