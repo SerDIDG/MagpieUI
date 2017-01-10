@@ -13,23 +13,39 @@
 
 <h1 class="pt__box-title">Welcome to the Hidden Testplace</h1>
 
-<form class="form" action="http://google.com" method="get">
-    <dl>
-        <dt>Input:</dt>
-        <dd>
-            <input type="text" name="test">
-        </dd>
-    </dl>
-    <dl>
-        <dt>Date Picker:</dt>
-        <dd>
-            <input type="text" name="datepicker1" placeholder="Expires date" data-element="Com.Datepicker" value="0000-00-00" readonly>
-        </dd>
-    </dl>
-    <div class="btn-wrap">
-        <button type="submit">Send</button>
-    </div>
-</form>
+<div class="pt__box-content">
+    <div data-element="Com.Gridlist" data-config='{
+        "columns" : {
+            "editable" : true
+        },
+        "perPage" : 5,
+        "ajax" : {
+            "url" : "%baseUrl%/stuff/ajax.gridlist.json",
+            "params" : {
+                "page" : "%page%",
+                "perPage" : "%perPage%",
+                "orderBy" : "%orderBy%",
+                "sortBy" : "%sortBy%"
+            }
+        },
+        "actions" : [
+            {"label" : "Remove", "type" : "danger"},
+            {"label" : "Edit"}
+        ],
+        "cols" : [
+            {"type" : "checkbox", "width" : "48"},
+            {"key" : "id", "type" : "number", "width" : "48", "title" : "ID"},
+            {"key" : "name", "type" : "number", "width" : "10%", "title" : "Name"},
+            {"key" : "descr", "type" : "text", "width" : "auto", "title" : "Description"},
+            {"key" : "html", "type" : "html", "width" : "15%", "title" : "HTML"},
+            {"key" : "url", "type" : "url", "width" : "15%", "title" : "Link"},
+            {"type" : "actions", "width" : "128", "title" : "Actions", "actions" : [
+                {"label" : "Edit"},
+                {"label" : "Remove"}
+            ]}
+        ]
+    }'></div>
+</div>
 
 </body>
 </html>

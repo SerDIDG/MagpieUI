@@ -26,56 +26,51 @@ cm.getConstructor('Com.IndentInput', function(classConstructor, className, class
         return that;
     };
 
-    classProto.set = function(){
-        var that = this;
-        // Call parent method
-        _inherit.prototype.set.apply(that, arguments);
-        // Set inputs
-        that.setInput();
-        return that;
+    classProto.renderContent = function(){
+        var that = this,
+            nodes = {};
+        that.triggerEvent('onRenderContentStart');
+        // Structure
+        nodes['container'] = cm.node('div', {'class' : 'pt__input'},
+            nodes['input'] = cm.node('input', {'type' : 'text'})
+        );
+        // Attributes
+        if(that.params['maxlength']){
+            nodes['input'].setAttribute('maxlength', that.params['maxlength']);
+        }
+        // Events
+        that.triggerEvent('onRenderContentProcess');
+        cm.addEvent(nodes['input'], 'blur', that.setValueHandler);
+        cm.addEvent(nodes['input'], 'keypress', function(e){
+            if(cm.isKeyCode(e.keyCode, 'enter')){
+                cm.preventDefault(e);
+                that.setValue();
+                nodes['input'].blur();
+            }
+        });
+
+        if(that.params['allowNegative']){
+            cm.allowOnlyNumbersInputEvent(nodes['input'], function(e, value){
+                that.selectAction(that.validateValue(value), true);
+            });
+        }else{
+            cm.allowOnlyDigitInputEvent(nodes['input'], function(e, value){
+                that.selectAction(that.validateValue(value), true);
+            });
+        }
+        that.triggerEvent('onRenderContentEnd');
+        // Push
+        that.nodes['component'] = nodes;
+        return nodes['container'];
     };
+
+    /* *** DATA VALUE *** */
 
     classProto.validateValue = function(value){
         var that = this;
         value = !cm.isEmpty(value) ? value : that.params['defaultValue'];
         that.rawValue = parseInt(value);
         return (that.rawValue + that.params['units']);
-    };
-
-    classProto.renderContent = function(){
-        var that = this;
-        that.triggerEvent('onRenderContentStart');
-        // Structure
-        that.myNodes['container'] = cm.node('div', {'class' : 'pt__input'},
-            that.myNodes['input'] = cm.node('input', {'type' : 'text'})
-        );
-        // Attributes
-        if(that.params['maxlength']){
-            that.myNodes['input'].setAttribute('maxlength', that.params['maxlength']);
-        }
-        // Events
-        that.triggerEvent('onRenderContentProcess');
-        cm.addEvent(that.myNodes['input'], 'blur', that.setValueHandler);
-        cm.addEvent(that.myNodes['input'], 'keypress', function(e){
-            if(cm.isKeyCode(e.keyCode, 'enter')){
-                cm.preventDefault(e);
-                that.setValue();
-                that.myNodes['input'].blur();
-            }
-        });
-
-        if(that.params['allowNegative']){
-            cm.allowOnlyNumbersInputEvent(that.myNodes['input'], function(e, value){
-                that.selectAction(that.validateValue(value), true);
-            });
-        }else{
-            cm.allowOnlyDigitInputEvent(that.myNodes['input'], function(e, value){
-                that.selectAction(that.validateValue(value), true);
-            });
-        }
-        that.triggerEvent('onRenderContentEnd');
-        // Push
-        return that.myNodes['container'];
     };
 
     classProto.setValue = function(triggerEvents){
@@ -85,9 +80,9 @@ cm.getConstructor('Com.IndentInput', function(classConstructor, className, class
         return that;
     };
 
-    classProto.setInput = function(){
+    classProto.setData = function(){
         var that = this;
-        that.myNodes['input'].value = that.rawValue;
+        that.nodes['component']['input'].value = that.rawValue;
         return that;
     };
 });

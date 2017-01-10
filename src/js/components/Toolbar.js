@@ -111,15 +111,28 @@ function(params){
         item = cm.merge({
             'container' : cm.node('li'),
             'node' : cm.node('div', {'class' : 'button'}),
+            'type' : 'primary',                                 // primary, secondary, success, danger, warning
             'name' : '',
             'label' : '',
             'title' : '',
             'group' : '',
+            'disabled' : false,
+            'className' : '',
             'constructor' : false,
             'constructorParams' : {},
             'callback' : function(){}
         }, item);
+        // Validate
+        if(cm.isEmpty(item['name'])){
+            item['name'] = item['label'];
+        }
+        // Render
         if((group = that.groups[item['group']]) && !group.items[item['name']]){
+            // Styles
+            cm.addClass(item['node'], ['button', item['type']].join('-'));
+            cm.addClass(item['node'], item['className']);
+            item['disabled'] && cm.addClass(item['node'], 'button-disabled');
+            // Label and title
             item['node'].innerHTML = item['label'];
             item['node'].title = item['title'];
             // Callbacks
@@ -134,7 +147,7 @@ function(params){
             }else{
                 cm.addEvent(item['node'], 'click', function(e){
                     cm.preventDefault(e);
-                    item['callback'](e, item);
+                    !item['disabled'] && item['callback'](e, item);
                 });
             }
             cm.appendChild(item['node'], item['container']);
@@ -167,6 +180,22 @@ function(params){
         }
         that.triggerEvent('onProcessEnd');
         return that;
+    };
+
+    that.enableButton = function(name, groupName){
+        var item = that.getButton(name, groupName);
+        if(item){
+            item['disabled'] = false;
+            cm.removeClass(item['node'], 'button-disabled');
+        }
+    };
+
+    that.disableButton = function(name, groupName){
+        var item = that.getButton(name, groupName);
+        if(item){
+            item['disabled'] = true;
+            cm.addClass(item['node'], 'button-disabled');
+        }
     };
 
     init();

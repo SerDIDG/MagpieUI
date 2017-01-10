@@ -242,6 +242,41 @@ module.exports = function(grunt) {
             }
         },
 
+        replace: {
+            options: {
+                patterns: [
+                    {
+                        match: 'VERSION',
+                        replacement: '<%= pkg.version %>'
+                    }
+                ]
+            },
+            scripts: {
+                src: ['<%= paths.build %>/js/<%= pkg.name %>.js'],
+                dest: '<%= paths.build %>/js/<%= pkg.name %>.js'
+            },
+            scripts_docs: {
+                src: ['<%= paths.docs %>/build/js/<%= pkg.name %>.js'],
+                dest: '<%= paths.docs %>/build/js/<%= pkg.name %>.js'
+            },
+            styles: {
+                src: ['<%= paths.build %>/less/<%= pkg.name %>.less'],
+                dest: '<%= paths.build %>/less/<%= pkg.name %>.less'
+            },
+            styles_docs: {
+                src: ['<%= paths.docs %>/build/less/<%= pkg.name %>.less'],
+                dest: '<%= paths.docs %>/build/less/<%= pkg.name %>.less'
+            },
+            variables: {
+                src: ['<%= paths.build %>/less/<%= pkg.name %>.variables.less'],
+                dest: '<%= paths.build %>/less/<%= pkg.name %>.variables.less'
+            },
+            variables_docs: {
+                src: ['<%= paths.docs %>/build/less/<%= pkg.name %>.variables.less'],
+                dest: '<%= paths.docs %>/build/less/<%= pkg.name %>.variables.less'
+            }
+        },
+
         uglify : {
             build : {
                 src : ['<%= paths.build %>/js/<%= pkg.name %>.js'],
@@ -418,12 +453,12 @@ module.exports = function(grunt) {
     grunt.registerTask('optimize', ['clean:temp', 'default', 'uglify:build', 'cssmin', 'imagemin', 'copy:images_optimize', 'clean:temp']);
     grunt.registerTask('watcher', ['watch']);
 
-    grunt.registerTask('scripts', ['concat:scripts', 'concat:scripts_docs']);
+    grunt.registerTask('scripts', ['concat:scripts', 'replace:scripts', 'concat:scripts_docs']);
     grunt.registerTask('images', ['svgcss:build', 'copy:images', 'copy:images_docs', 'copy:images_docs_self']);
-    grunt.registerTask('styles', ['variables', 'concat:styles', 'concat:styles_docs', 'less:build', 'less:docs']);
+    grunt.registerTask('styles', ['variables', 'concat:styles', 'replace:styles', 'concat:styles_docs', 'less:build', 'less:docs']);
     grunt.registerTask('fonts', ['copy:fonts', 'copy:fonts_docs', 'copy:fonts_docs_self']);
     grunt.registerTask('stuff', ['copy:stuff_docs']);
     grunt.registerTask('libs', ['concat:codemirror', 'uglify:codemirror', 'copy:libs', 'copy:libs_docs']);
-    grunt.registerTask('variables', ['concat:variables', 'concat:variables_docs', 'lessvars']);
+    grunt.registerTask('variables', ['concat:variables', 'replace:variables', 'concat:variables_docs', 'lessvars']);
     grunt.registerTask('pre', ['svgcss:build', 'variables']);
 };

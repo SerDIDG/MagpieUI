@@ -158,8 +158,8 @@ function(params){
         field = Com.FormFields.get(type);
         params = cm.merge(cm.clone(field, true), params);
         // Get value
-        params['value'] = that.params['data'][params['name']];
-        params['dataValue'] = that.params['data'][params['dataName']];
+        params['value'] = that.params['data'][params['name']] || params['value'];
+        params['dataValue'] = that.params['data'][params['dataName']] || params['dataValue'];
         // Render
         if(field && !that.fields[params['name']]){
             cm.getConstructor('Com.FormField', function(classConstructor){
@@ -563,6 +563,7 @@ function(params){
         that.params['constructorParams']['node'] = that.params['node'];
         that.params['constructorParams']['name'] = that.params['name'];
         that.params['constructorParams']['options'] = that.params['options'];
+        that.params['constructorParams']['value'] = that.params['dataValue'] || that.params['value'];
         that.params['Com.HelpBubble']['content'] = that.params['help'];
         that.params['Com.HelpBubble']['name'] = that.params['name'];
         that.form = that.params['form'];
@@ -711,6 +712,38 @@ Com.FormFields.add('input', {
     }
 });
 
+Com.FormFields.add('email', {
+    'node' : cm.node('input', {'type' : 'email'}),
+    'callbacks' : {
+        'set' : function(that, value){
+            that.params['node'].value = value;
+            return value;
+        },
+        'get' : function(that){
+            return that.params['node'].value;
+        },
+        'reset' : function(that){
+            that.params['node'].value = '';
+        }
+    }
+});
+
+Com.FormFields.add('password', {
+    'node' : cm.node('input', {'type' : 'password'}),
+    'callbacks' : {
+        'set' : function(that, value){
+            that.params['node'].value = value;
+            return value;
+        },
+        'get' : function(that){
+            return that.params['node'].value;
+        },
+        'reset' : function(that){
+            that.params['node'].value = '';
+        }
+    }
+});
+
 Com.FormFields.add('hidden', {
     'node' : cm.node('input', {'type' : 'hidden'}),
     'visible' : false,
@@ -771,6 +804,34 @@ Com.FormFields.add('select', {
     }
 });
 
+Com.FormFields.add('checkbox', {
+    'node' : cm.node('div', {'class' : 'form__check-line'}),
+    'callbacks' : {
+        'controller' : function(that){
+            var nodes = {};
+            nodes['container'] = cm.node('label',
+                nodes['input'] = cm.node('input', {'type' : 'checkbox', 'name' : that.params['name']}),
+                nodes['label'] = cm.node('span', {'class' : 'label'})
+            );
+            var value = typeof that.params['value'] != 'undefined' ? that.params['value'] : that.params['defaultValue'];
+            nodes['input'].checked = !!value;
+            that.params['node'].appendChild(nodes['container']);
+            return nodes;
+        },
+        'set' : function(that, value){
+            that.controller['input'].checked = !!value;
+            return value;
+        },
+        'get' : function(that){
+            return that.controller['input'].checked ? 1 : 0;
+        },
+        'reset' : function(that){
+            var value = typeof that.params['value'] != 'undefined' ? that.params['value'] : that.params['defaultValue'];
+            that.controller['input'].checked = !!value;
+        }
+    }
+});
+
 Com.FormFields.add('radio', {
     'node' : cm.node('div', {'class' : 'form__check-line'}),
     'callbacks' : {
@@ -786,6 +847,7 @@ Com.FormFields.add('radio', {
                     item.nodes['input'] = cm.node('input', {'type' : 'radio', 'name' : that.params['name'], 'value' : option['value']}),
                     item.nodes['label'] = cm.node('span', {'class' : 'label'}, option['text'])
                 );
+                item.nodes['input'].checked = item.config['value'] == that.params['value'];
                 that.params['node'].appendChild(item.nodes['container']);
                 items.push(item);
             });
@@ -829,6 +891,7 @@ Com.FormFields.add('check', {
                     item.nodes['input'] = cm.node('input', {'type' : 'checkbox', 'name' : that.params['name'], 'value' : option['value']}),
                     item.nodes['label'] = cm.node('span', {'class' : 'label'}, option['text'])
                 );
+                item.nodes['input'].checked = cm.inArray(that.params['value'], item.config['value']);
                 that.params['node'].appendChild(item.nodes['container']);
                 items.push(item);
             });

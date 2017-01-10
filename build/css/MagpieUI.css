@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.22.24 (2016-12-01 18:37) ************ */
+/*! ************ MagpieUI v3.24.0 (2017-01-10 20:29) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.5.0
@@ -5826,6 +5826,41 @@ button.button-white--active {
   color: #2985e0;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
 }
+.button.button-disabled,
+input[type="button"].button-disabled,
+input[type="submit"].button-disabled,
+input[type="reset"].button-disabled,
+button.button-disabled {
+  background-color: #e8e8e8;
+  color: #999999;
+  cursor: default;
+}
+.button.button-disabled:active,
+.button.button-disabled.active,
+input[type="button"].button-disabled:active,
+input[type="button"].button-disabled.active,
+input[type="submit"].button-disabled:active,
+input[type="submit"].button-disabled.active,
+input[type="reset"].button-disabled:active,
+input[type="reset"].button-disabled.active,
+button.button-disabled:active,
+button.button-disabled.active {
+  background-color: #e8e8e8;
+  color: #999999;
+}
+.button.button-disabled:hover,
+.button.button-disabled.hover,
+input[type="button"].button-disabled:hover,
+input[type="button"].button-disabled.hover,
+input[type="submit"].button-disabled:hover,
+input[type="submit"].button-disabled.hover,
+input[type="reset"].button-disabled:hover,
+input[type="reset"].button-disabled.hover,
+button.button-disabled:hover,
+button.button-disabled.hover {
+  background-color: #e8e8e8;
+  color: #999999;
+}
 .button.button-clear,
 input[type="button"].button-clear,
 input[type="submit"].button-clear,
@@ -7865,6 +7900,7 @@ button.is-hidden {
 }
 .pt__columns > .inner > .column {
   min-width: 0;
+  position: relative;
   -webkit-flex: 1 1 0;
   -ms-flex: 1 1 0;
   flex: 1 1 0;
@@ -7883,6 +7919,19 @@ button.is-hidden {
   -ms-flex: 1 1 auto;
   flex: 1 1 auto;
 }
+.pt__columns.theme--separators > .inner > .column:after {
+  display: block;
+  position: absolute;
+  border-right: 1px dotted #cccccc;
+  content: '';
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: auto;
+}
+.pt__columns.theme--separators > .inner > .column:last-child:after {
+  display: none;
+}
 .pt__columns > .inner {
   margin-right: -12px;
   margin-left: -12px;
@@ -7890,6 +7939,9 @@ button.is-hidden {
 .pt__columns > .inner > .column {
   margin-right: 12px;
   margin-left: 12px;
+}
+.pt__columns.theme--separators > .inner > .column:after {
+  right: -12px;
 }
 .pt__columns.indent-0px > .inner {
   margin-right: 0px;
@@ -7899,6 +7951,9 @@ button.is-hidden {
   margin-right: 0px;
   margin-left: 0px;
 }
+.pt__columns.indent-0px.theme--separators > .inner > .column:after {
+  right: 0px;
+}
 .pt__columns.indent-4px > .inner {
   margin-right: -2px;
   margin-left: -2px;
@@ -7906,6 +7961,9 @@ button.is-hidden {
 .pt__columns.indent-4px > .inner > .column {
   margin-right: 2px;
   margin-left: 2px;
+}
+.pt__columns.indent-4px.theme--separators > .inner > .column:after {
+  right: -2px;
 }
 .pt__columns.indent-8px > .inner {
   margin-right: -4px;
@@ -7915,6 +7973,9 @@ button.is-hidden {
   margin-right: 4px;
   margin-left: 4px;
 }
+.pt__columns.indent-8px.theme--separators > .inner > .column:after {
+  right: -4px;
+}
 .pt__columns.indent-12px > .inner {
   margin-right: -6px;
   margin-left: -6px;
@@ -7922,6 +7983,9 @@ button.is-hidden {
 .pt__columns.indent-12px > .inner > .column {
   margin-right: 6px;
   margin-left: 6px;
+}
+.pt__columns.indent-12px.theme--separators > .inner > .column:after {
+  right: -6px;
 }
 .pt__columns.indent-16px > .inner {
   margin-right: -8px;
@@ -7931,6 +7995,9 @@ button.is-hidden {
   margin-right: 8px;
   margin-left: 8px;
 }
+.pt__columns.indent-16px.theme--separators > .inner > .column:after {
+  right: -8px;
+}
 .pt__columns.indent-24px > .inner {
   margin-right: -12px;
   margin-left: -12px;
@@ -7938,6 +8005,9 @@ button.is-hidden {
 .pt__columns.indent-24px > .inner > .column {
   margin-right: 12px;
   margin-left: 12px;
+}
+.pt__columns.indent-24px.theme--separators > .inner > .column:after {
+  right: -12px;
 }
 .pt__columns.indent-32px > .inner {
   margin-right: -16px;
@@ -7947,6 +8017,9 @@ button.is-hidden {
   margin-right: 16px;
   margin-left: 16px;
 }
+.pt__columns.indent-32px.theme--separators > .inner > .column:after {
+  right: -16px;
+}
 .pt__columns.indent-48px > .inner {
   margin-right: -24px;
   margin-left: -24px;
@@ -7954,6 +8027,9 @@ button.is-hidden {
 .pt__columns.indent-48px > .inner > .column {
   margin-right: 24px;
   margin-left: 24px;
+}
+.pt__columns.indent-48px.theme--separators > .inner > .column:after {
+  right: -24px;
 }
 .pt__columns.indent-64px > .inner {
   margin-right: -32px;
@@ -7963,6 +8039,9 @@ button.is-hidden {
   margin-right: 32px;
   margin-left: 32px;
 }
+.pt__columns.indent-64px.theme--separators > .inner > .column:after {
+  right: -32px;
+}
 .pt__columns.indent-96px > .inner {
   margin-right: -48px;
   margin-left: -48px;
@@ -7970,6 +8049,9 @@ button.is-hidden {
 .pt__columns.indent-96px > .inner > .column {
   margin-right: 48px;
   margin-left: 48px;
+}
+.pt__columns.indent-96px.theme--separators > .inner > .column:after {
+  right: -48px;
 }
 .pt__columns--adaptive > .inner {
   display: block;
@@ -7984,6 +8066,9 @@ button.is-hidden {
 .pt__columns--adaptive > .inner > .column.is-last,
 .pt__columns--adaptive > .inner > .column:last-child {
   margin-bottom: 0;
+}
+.pt__columns--adaptive.theme--separators > .inner > .column:after {
+  display: none;
 }
 /* ******* PARTS: COLUMNS: ADAPTIVE ******* */
 @media only screen and (max-width: 768px) {
@@ -8000,6 +8085,9 @@ button.is-hidden {
   html.is-adaptive .pt__columns.is-adaptive > .inner > .column.is-last,
   html.is-adaptive .pt__columns.is-adaptive > .inner > .column:last-child {
     margin-bottom: 0;
+  }
+  html.is-adaptive .pt__columns.is-adaptive.theme--separators > .inner > .column:after {
+    display: none;
   }
 }
 /* ******* PARTS: DRAG ******* */
@@ -15717,17 +15805,21 @@ ul.pt__field__hint li:before {
 .com__gridlist:last-child {
   margin-bottom: 0;
 }
+.com__gridlist .pt__gridlist__toolbar,
 .com__gridlist .pt__gridlist__counter,
 .com__gridlist .pt__gridlist,
 .com__gridlist .com__pagination__container {
   margin-bottom: 24px;
 }
+.com__gridlist .pt__gridlist__toolbar.bottom,
 .com__gridlist .pt__gridlist__counter.bottom,
 .com__gridlist .pt__gridlist.bottom,
 .com__gridlist .com__pagination__container.bottom,
+.com__gridlist .pt__gridlist__toolbar.is-last,
 .com__gridlist .pt__gridlist__counter.is-last,
 .com__gridlist .pt__gridlist.is-last,
 .com__gridlist .com__pagination__container.is-last,
+.com__gridlist .pt__gridlist__toolbar:last-child,
 .com__gridlist .pt__gridlist__counter:last-child,
 .com__gridlist .pt__gridlist:last-child,
 .com__gridlist .com__pagination__container:last-child {
@@ -16660,6 +16752,21 @@ ul.pt__field__hint li:before {
   background-color: #d8e8f8;
   color: #2985e0;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
+}
+.com__pagination__bar ul li a.button-disabled {
+  background-color: #e8e8e8;
+  color: #999999;
+  cursor: default;
+}
+.com__pagination__bar ul li a.button-disabled:active,
+.com__pagination__bar ul li a.button-disabled.active {
+  background-color: #e8e8e8;
+  color: #999999;
+}
+.com__pagination__bar ul li a.button-disabled:hover,
+.com__pagination__bar ul li a.button-disabled.hover {
+  background-color: #e8e8e8;
+  color: #999999;
 }
 .com__pagination__bar ul li a.button-clear {
   background: none;

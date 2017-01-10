@@ -13,9 +13,10 @@ cm.define('Com.Menu', {
         'node' : cm.Node('div'),
         'name' : '',
         'event' : 'hover',
+        'top' : 'targetHeight',
+        'left' : 'targetHeight',
         'Com.Tooltip' : {
             'className' : 'com__menu-tooltip',
-            'top' : 'targetHeight',
             'targetEvent' : 'hover',
             'hideOnReClick' : true,
             'theme' : false,
@@ -45,6 +46,8 @@ function(params){
 
     var validateParams = function(){
         that.params['Com.Tooltip']['targetEvent'] = that.params['event'];
+        that.params['Com.Tooltip']['top'] = that.params['top'];
+        that.params['Com.Tooltip']['left'] = that.params['left'];
     };
 
     var render = function(){
@@ -70,6 +73,16 @@ function(params){
     };
 
     /* ******* PUBLIC ******* */
+
+    that.show = function(){
+        that.components['tooltip'] && that.components['tooltip'].show();
+        return that;
+    };
+
+    that.hide = function(){
+        that.components['tooltip'] && that.components['tooltip'].hide();
+        return that;
+    };
 
     init();
 });

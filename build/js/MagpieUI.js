@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.22.24 (2016-12-01 18:37) ************ */
+/*! ************ MagpieUI v3.24.0 (2017-01-10 20:29) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1427,7 +1427,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.22.24',
+        '_version' : '3.24.0',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -1757,9 +1757,10 @@ cm.getLength = function(o){
 cm.inArray = function(a, item){
     if(typeof a == 'string'){
         return a === item;
-    }else{
+    }else if(cm.isArray(a)){
         return a.indexOf(item) > -1;
     }
+    return false
 };
 
 cm.arrayRemove = function(a, item){
@@ -2347,7 +2348,10 @@ cm.getOwnerWindow = function(node){
     return node.ownerDocument.defaultView;
 };
 
+cm._addScriptStack = {};
+
 cm.addScript = function(src, async, callback){
+    var item;
     var vars = {
         '%baseUrl%' : cm._baseUrl,
         '%assetsUrl%' : cm._assetsUrl || cm._baseUrl,
@@ -2357,14 +2361,32 @@ cm.addScript = function(src, async, callback){
     src = cm.isArray(src) ? cm.objectReplace(src, vars) : cm.strReplace(src, vars);
     async = typeof async != 'undefined' ? async : false;
     callback = typeof callback != 'undefined' ? callback : function(){};
-    // Handler
-    var script = document.createElement('script');
-    script.src = src;
-    script.async = async;
-    cm.addEvent(script, 'load', callback);
-    cm.addEvent(script, 'error', callback);
-    cm.appendChild(script, cm.getDocumentHead());
-    return script;
+    // Configure Stack Item
+    if(cm._addScriptStack[src]){
+        item = cm._addScriptStack[src];
+        item['callbacks'].push(callback);
+    }else{
+        item = {
+            'src' : src,
+            'async' : async,
+            'callback' : function(e){
+                while(item['callbacks'].length){
+                    item['callbacks'][0](e);
+                    cm.arrayRemove(item['callbacks'], item['callbacks'][0]);
+                }
+            },
+            'callbacks' : [callback]
+        };
+        cm._addScriptStack[src] = item;
+        // Render Script
+        item['script'] = document.createElement('script');
+        item['script'].src = item['src'];
+        item['script'].async = item['async'];
+        cm.addEvent(item['script'], 'load', item['callback']);
+        cm.addEvent(item['script'], 'error', item['callback']);
+        cm.appendChild(item['script'], cm.getDocumentHead());
+    }
+    return item['script'];
 };
 
 cm.loadScript = function(o){
@@ -4577,7 +4599,9 @@ cm.ajax = function(o){
             delete config['headers']['Content-Type'];
         }else if(cm.isObject(config['params'])){
             config['params'] = cm.objectReplace(config['params'], {
-                '%baseUrl%' : cm._baseUrl
+                '%version%' : cm._version,
+                '%baseUrl%' : cm._baseUrl,
+                '%assetsUrl%' : cm._assetsUrl
             });
             config['params'] = cm.obj2URI(config['params']);
         }
@@ -4589,7 +4613,9 @@ cm.ajax = function(o){
             delete config['modifier'];
         }
         config['url'] = cm.strReplace(config['url'], {
-            '%baseUrl%' : cm._baseUrl
+            '%version%' : cm._version,
+            '%baseUrl%' : cm._baseUrl,
+            '%assetsUrl%' : cm._assetsUrl
         });
         if(!/post|put/.test(config['method'])){
             if(!cm.isEmpty(config['params'])){
@@ -7081,7 +7107,8 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
     /* *** DATA VALUE *** */
 
     classProto.validateValue = function(value){
-        return value;
+        var that = this;
+        return !cm.isEmpty(value) ? value : that.params['defaultValue'];
     };
 
     classProto.saveValue = function(value){
@@ -7112,7 +7139,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         var that = this;
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
         that.saveValue(value);
-        that.setData();
+        that.setData(value);
         triggerEvents && that.triggerEvent('onSet', that.value);
         return that;
     };
@@ -7968,8 +7995,8 @@ function(params){
         field = Com.FormFields.get(type);
         params = cm.merge(cm.clone(field, true), params);
         // Get value
-        params['value'] = that.params['data'][params['name']];
-        params['dataValue'] = that.params['data'][params['dataName']];
+        params['value'] = that.params['data'][params['name']] || params['value'];
+        params['dataValue'] = that.params['data'][params['dataName']] || params['dataValue'];
         // Render
         if(field && !that.fields[params['name']]){
             cm.getConstructor('Com.FormField', function(classConstructor){
@@ -8373,6 +8400,7 @@ function(params){
         that.params['constructorParams']['node'] = that.params['node'];
         that.params['constructorParams']['name'] = that.params['name'];
         that.params['constructorParams']['options'] = that.params['options'];
+        that.params['constructorParams']['value'] = that.params['dataValue'] || that.params['value'];
         that.params['Com.HelpBubble']['content'] = that.params['help'];
         that.params['Com.HelpBubble']['name'] = that.params['name'];
         that.form = that.params['form'];
@@ -8521,6 +8549,38 @@ Com.FormFields.add('input', {
     }
 });
 
+Com.FormFields.add('email', {
+    'node' : cm.node('input', {'type' : 'email'}),
+    'callbacks' : {
+        'set' : function(that, value){
+            that.params['node'].value = value;
+            return value;
+        },
+        'get' : function(that){
+            return that.params['node'].value;
+        },
+        'reset' : function(that){
+            that.params['node'].value = '';
+        }
+    }
+});
+
+Com.FormFields.add('password', {
+    'node' : cm.node('input', {'type' : 'password'}),
+    'callbacks' : {
+        'set' : function(that, value){
+            that.params['node'].value = value;
+            return value;
+        },
+        'get' : function(that){
+            return that.params['node'].value;
+        },
+        'reset' : function(that){
+            that.params['node'].value = '';
+        }
+    }
+});
+
 Com.FormFields.add('hidden', {
     'node' : cm.node('input', {'type' : 'hidden'}),
     'visible' : false,
@@ -8581,6 +8641,34 @@ Com.FormFields.add('select', {
     }
 });
 
+Com.FormFields.add('checkbox', {
+    'node' : cm.node('div', {'class' : 'form__check-line'}),
+    'callbacks' : {
+        'controller' : function(that){
+            var nodes = {};
+            nodes['container'] = cm.node('label',
+                nodes['input'] = cm.node('input', {'type' : 'checkbox', 'name' : that.params['name']}),
+                nodes['label'] = cm.node('span', {'class' : 'label'})
+            );
+            var value = typeof that.params['value'] != 'undefined' ? that.params['value'] : that.params['defaultValue'];
+            nodes['input'].checked = !!value;
+            that.params['node'].appendChild(nodes['container']);
+            return nodes;
+        },
+        'set' : function(that, value){
+            that.controller['input'].checked = !!value;
+            return value;
+        },
+        'get' : function(that){
+            return that.controller['input'].checked ? 1 : 0;
+        },
+        'reset' : function(that){
+            var value = typeof that.params['value'] != 'undefined' ? that.params['value'] : that.params['defaultValue'];
+            that.controller['input'].checked = !!value;
+        }
+    }
+});
+
 Com.FormFields.add('radio', {
     'node' : cm.node('div', {'class' : 'form__check-line'}),
     'callbacks' : {
@@ -8596,6 +8684,7 @@ Com.FormFields.add('radio', {
                     item.nodes['input'] = cm.node('input', {'type' : 'radio', 'name' : that.params['name'], 'value' : option['value']}),
                     item.nodes['label'] = cm.node('span', {'class' : 'label'}, option['text'])
                 );
+                item.nodes['input'].checked = item.config['value'] == that.params['value'];
                 that.params['node'].appendChild(item.nodes['container']);
                 items.push(item);
             });
@@ -8639,6 +8728,7 @@ Com.FormFields.add('check', {
                     item.nodes['input'] = cm.node('input', {'type' : 'checkbox', 'name' : that.params['name'], 'value' : option['value']}),
                     item.nodes['label'] = cm.node('span', {'class' : 'label'}, option['text'])
                 );
+                item.nodes['input'].checked = cm.inArray(that.params['value'], item.config['value']);
                 that.params['node'].appendChild(item.nodes['container']);
                 items.push(item);
             });
@@ -9401,6 +9491,7 @@ function(params){
     that.selectedItemIndex = null;
     that.value = null;
     that.previousValue = null;
+    that.rawValue = null;
 
     var init = function(){
         that.setParams(params);
@@ -9551,12 +9642,23 @@ function(params){
         that.abort();
         // Clear input
         if(that.params['clearOnEmpty']){
-            cm.log(that.value);
-            item = that.getRegisteredItem(that.value);
-            if(!item || item['data']['text'] != that.params['node'].value){
+            item = getSavedItemData(that.value);
+            if(!item || item['text'] != that.params['node'].value){
                 that.clear();
             }
         }
+    };
+
+    var getSavedItemData = function(value){
+        if(that.rawValue && that.rawValue['value'] == value){
+            return that.rawValue
+        }
+        // Get form items list
+        var item = that.getRegisteredItem(value);
+        if(item){
+            return item['data'];
+        }
+        return null;
     };
 
     var onChange = function(){
@@ -9779,9 +9881,10 @@ function(params){
 
     that.set = function(item, triggerEvents){
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        that.rawValue = that.convertDataItem(item);
         that.previousValue = that.value;
-        that.value = typeof item['value'] != 'undefined'? item['value'] : item['text'];
-        that.params['node'].value = item['text'];
+        that.value = that.rawValue['value'];
+        that.params['node'].value = that.rawValue['text'];
         // Trigger events
         if(triggerEvents){
             that.triggerEvent('onSelect', that.value);
@@ -9845,6 +9948,7 @@ function(params){
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
         that.previousValue = that.value;
         that.value = null;
+        that.rawValue = null;
         if(that.params['clearOnEmpty']){
             that.params['node'].value = '';
         }
@@ -9899,6 +10003,9 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
         }else if(!cm.isObject(item)){
             return {'text' : item, 'value' : item};
         }else{
+            if(typeof item['value'] == 'undefined'){
+                item['value'] = item['text']
+            }
             return item;
         }
     };
@@ -17837,35 +17944,64 @@ cm.define('Com.Gridlist', {
         'onCheck',
         'onUnCheck',
         'onRenderStart',
-        'onRenderEnd'
+        'onRenderEnd',
+        'onColumnsChange',
+        'onColumnsResize'
     ],
     'params' : {
         'node' : cm.node('div'),
         'container' : null,
         'embedStructure' : 'append',
+        'customEvents' : true,
         'name' : '',
-        'data' : [],
-        'cols' : [],
+
+        // Data
+        'data' : [],                                                // Array for render static data
+        'cols' : [],                                                // Table columns
+        'actions' : [],                                             // Bulk action buttons
+        'uniqueKey' : 'id',                                         // Unique data key
+
+        // Sorting
         'sort' : true,
         'sortBy' : 'id',                                            // Default sort by key in array
         'orderBy' : 'ASC',
-        'childsBy' : false,                                         // Render child rows after parent, WIP - doesn't work checking / uncheking rows and statuses
-        'pagination' : true,
-        'perPage' : 25,
+        'childsBy' : false,                                         // Render child rows after parent, (WIP - doesn't work checking / uncheking rows and statuses for now)
+
+        // Visibility
         'showCounter' : false,
+        'showBulkActions' : true,
         'className' : '',
         'dateFormat' : 'cm._config.dateTimeFormat',                 // Input date format
         'visibleDateFormat' : 'cm._config.dateTimeFormat',          // Render date format
-        'responseCountKey' : 'count',                               // Ajax data count response key
-        'responseKey' : 'data',                                     // Ajax data response key
-        'ajax' : {                                                  // Ajax, WIP - doesn't work checking / uncheking rows and statuses
+
+        // Pagination and ajax data request
+        'pagination' : true,
+        'perPage' : 25,
+        'responseCountKey' : 'count',                               // Response data count response key
+        'responseKey' : 'data',                                     // Response data response key
+        'ajax' : {
             'type' : 'json',
             'method' : 'get',
             'url' : '',                                             // Request URL. Variables: %orderBy%, %sortBy%, %page%, %offset%, %perPage%, %limit%, %callback% for JSONP.
             'params' : ''                                           // Params object. Variables: %orderBy%, %sortBy%, %page%, %offset%, %perPage%, %limit%, %callback% for JSONP.
         },
+
+        // Columns manipulation
+        'columns' : {
+            'editable' : false,
+            'local' : false,                                        // Save sizes in local storage (TBD)
+            'ajax' : {
+                'type' : 'json',
+                'method' : 'post',
+                'url' : '',                                         // Request URL. Variables: %items%, %callback% for JSONP.
+                'params' : ''                                       // Params object. %items%, %callback% for JSONP.
+            }
+        },
+
+        // Strings and classes
+        'statuses' : ['active', 'success', 'danger', 'warning'],
         'langs' : {
-            'counter' : 'Count: ',
+            'counter' : 'Count: %count%',
             'check_all' : 'Check all',
             'uncheck_all' : 'Uncheck all',
             'empty' : 'Items does not found',
@@ -17877,11 +18013,21 @@ cm.define('Com.Gridlist', {
                 'asc' : 'icon arrow asc'
             }
         },
-        'statuses' : ['active', 'success', 'danger', 'warning'],
+
+        // Components
+        'Com.GridlistHelper' : {
+            'customEvents' : false
+        },
         'Com.Pagination' : {
             'renderStructure' : true,
             'animateSwitch' : true,
             'animatePrevious' : true
+        },
+        'Com.Toolbar' : {
+            'embedStructure' : 'append'
+        },
+        'Com.Menu' : {
+            'left' : '-(selfWidth-targetWidth)'
         }
     }
 },
@@ -17890,11 +18036,14 @@ function(params){
 
     that.nodes = {};
     that.components = {};
+    that.rows = [];
+    that.checked = [];
+    that.actions = [];
     that.isAjax = false;
     that.isCheckedAll = false;
     that.sortBy = null;
     that.orderBy = 'ASC';
-    that.rows = [];
+    that.isActionsDisabled = true;
 
     var init = function(){
         that.setParams(params);
@@ -17920,6 +18069,8 @@ function(params){
         }
         // Pagination
         that.params['Com.Pagination']['perPage'] = that.params['perPage'];
+        // Helper
+        that.params['Com.GridlistHelper']['columns'] = that.params['columns'];
     };
 
     /* *** TABLE RENDER FUNCTION *** */
@@ -17931,6 +18082,10 @@ function(params){
         cm.addClass(that.nodes['container'], that.params['className']);
         // Append
         that.embedStructure(that.nodes['container']);
+        // Render bulk actions
+        if(that.params['showBulkActions'] && that.params['actions'].length){
+            renderBulkActions();
+        }
         // Render table page
         if(that.isAjax){
             // Render dynamic pagination
@@ -17952,13 +18107,92 @@ function(params){
         }else{
             renderEmptiness(that.nodes['container']);
         }
+        // Add custom event
+        if(that.params['customEvents']){
+            cm.customEvent.add(that.params['node'], 'redraw', function(){
+                that.redraw();
+            });
+        }
     };
 
+    /**** BULK ACTIONS ****/
+
+    var renderBulkActions = function(){
+        var nodes = {};
+        // Structure
+        nodes['container'] = cm.node('div', {'class' : 'pt__gridlist__toolbar'});
+        // Component
+        cm.getConstructor('Com.Toolbar', function(classConstructor, className){
+            that.components['toolbar'] = new classConstructor(
+                cm.merge(that.params[className], {
+                    'container' : nodes['container']
+                })
+            );
+            that.components['toolbar'].addGroup({
+                'name' : 'bulk',
+                'position' : 'left'
+            });
+        });
+        // Render buttons
+        cm.forEach(that.params['actions'], renderBulkAction);
+        // Export
+        cm.appendChild(nodes['container'], that.nodes['container']);
+        that.nodes['bulk'] = nodes;
+    };
+
+    var renderBulkAction = function(config){
+        var item = cm.merge({
+            'group' : 'bulk',
+            'name' : '',
+            'label' : '',
+            'title' : '',
+            'disabled' : true,
+            'permanent' : false,            // Сan not be disabled
+            'type' : 'primary',
+            'constructor' : false,
+            'constructorParams' : {},
+            'callback' : function(){}
+        }, config);
+        // Validate
+        if(cm.isEmpty(item['name'])){
+            item['name'] = item['label'];
+        }
+        // Check permanent status
+        if(item['permanent']){
+            item['disabled'] = false;
+        }
+        that.components['toolbar'] && that.components['toolbar'].addButton(item);
+        that.actions.push(item);
+    };
+
+    var enableBulkActions = function(){
+        if(that.isActionsDisabled){
+            that.isActionsDisabled = false;
+            cm.forEach(that.actions, function(item){
+                if(!item['permanent']){
+                    that.components['toolbar'] && that.components['toolbar'].enableButton(item['name'], item['group']);
+                }
+            });
+        }
+    };
+
+    var disableBulkActions = function(){
+        if(!that.isActionsDisabled){
+            that.isActionsDisabled = true;
+            cm.forEach(that.actions, function(item){
+                if(!item['permanent']){
+                    that.components['toolbar'] && that.components['toolbar'].disableButton(item['name'], item['group']);
+                }
+            });
+        }
+    };
+
+    /*** PAGINATION AND TABLE ****/
+
     var renderPagination = function(){
-        var startIndex, endIndex, dataArray;
-        cm.getConstructor('Com.Pagination', function(classConstructor){
+        cm.getConstructor('Com.Pagination', function(classConstructor, className){
             that.components['pagination'] = new classConstructor(
-                cm.merge(that.params['Com.Pagination'], {
+                cm.merge(that.params[className], {
                     'container' : that.nodes['container'],
                     'callbacks' : {
                         'afterPrepare' : function(pagination, config){
@@ -17975,20 +18209,10 @@ function(params){
                     },
                     'events' : {
                         'onPageRender' : function(pagination, data){
-                            if(that.isAjax){
-                                if(data.isError){
-
-                                }else if(data['data'].length){
-                                    renderTable(data['page'], data['data'], data['container']);
-                                }else{
-                                    renderEmptiness(data['container']);
-                                }
-                            }else{
-                                startIndex = that.params['perPage'] * (data['page'] - 1);
-                                endIndex = Math.min(that.params['perPage'] * data['page'], that.params['data'].length);
-                                dataArray = that.params['data'].slice(startIndex, endIndex);
-                                renderTable(data['page'], dataArray, data['container']);
-                            }
+                            renderPaginationPage(data);
+                        },
+                        'onPageRenderEnd' : function(pagination, data){
+                            that.redraw();
                         },
                         'onSetCount' : function(pagination, count){
                             that.params['showCounter'] && renderCounter(count);
@@ -17999,13 +18223,32 @@ function(params){
         });
     };
 
-    var renderCounter = function(count){
-        if(that.nodes['counter']){
-            that.nodes['counter'].innerHTML = that.lang('counter') + count;
+    var renderPaginationPage = function(data){
+        var startIndex, endIndex, dataArray;
+        if(that.isAjax){
+            if(data.isError){
+                // Need to make exception
+            }else if(data['data'].length){
+                renderTable(data['page'], data['data'], data['container']);
+            }else{
+                renderEmptiness(data['container']);
+            }
         }else{
-            that.nodes['counter'] = cm.node('div', {'class' : 'pt__gridlist__counter'}, that.lang('counter') + count);
+            startIndex = that.params['perPage'] * (data['page'] - 1);
+            endIndex = Math.min(that.params['perPage'] * data['page'], that.params['data'].length);
+            dataArray = that.params['data'].slice(startIndex, endIndex);
+            renderTable(data['page'], dataArray, data['container']);
+        }
+    };
+
+    var renderCounter = function(count){
+        if(!that.nodes['counter']){
+            that.nodes['counter'] = cm.node('div', {'class' : 'pt__gridlist__counter'});
             cm.insertFirst(that.nodes['counter'], that.nodes['container']);
         }
+        that.nodes['counter'].innerHTML = cm.strReplace(that.lang('counter'), {
+            '%count%' : count
+        });
     };
 
     var renderEmptiness = function(container){
@@ -18014,18 +18257,13 @@ function(params){
     };
 
     var renderTable = function(page, data, container){
-        /*
-            If pagination not exists we need to clean up table before render new one, cause on each sort will be rendered new table.
-            When pagination exists, each rendered table will be have his own container, and no needs to clean up previous table.
-        */
-        if(!that.params['pagination']){
-            cm.remove(that.nodes['table']);
-        }
         // API onRenderStart event
         that.triggerEvent('onRenderStart', {
             'container' : container,
             'page' : page
         });
+        // Reset table
+        resetTable();
         // Render Table
         that.nodes['table'] = cm.node('div', {'class' : 'pt__gridlist'},
             cm.node('table',
@@ -18043,12 +18281,39 @@ function(params){
         });
         // Append
         cm.appendChild(that.nodes['table'], container);
+        // Render editable columns
+        renderHelper(data);
         // API onRenderEnd event
         that.triggerEvent('onRenderEnd', {
             'container' : container,
             'page' : page,
             'rows' : that.rows
         });
+    };
+
+    var renderHelper = function(){
+        if(that.params['columns']['editable']){
+            cm.getConstructor('Com.GridlistHelper', function(classConstructor, className){
+                that.components['helper'] = new classConstructor(
+                    cm.merge(that.params[className], {
+                        'node' : that.nodes['table'],
+                        'events' : {
+                            'onColumnsChange' : function(helper, data){
+                                that.triggerEvent('onColumnsChange', data);
+                            },
+                            'onColumnsResize' : function(helper, data){
+                                cm.forEach(that.params['cols'], function(column, i){
+                                    if(data[i]['width']){
+                                        column['width'] = data[i]['width'];
+                                    }
+                                });
+                                that.triggerEvent('onColumnsResize', that.params['cols']);
+                            }
+                        }
+                    })
+                );
+            });
+        }
     };
 
     var renderTh = function(item, i){
@@ -18079,10 +18344,16 @@ function(params){
         if(item['access']){
             // Structure
             that.nodes['title'].appendChild(
-                item['nodes']['container'] = cm.node('th', {'width' : item['width']},
+                item['nodes']['container'] = cm.node('th',
                     item['nodes']['inner'] = cm.node('div', {'class' : 'inner'})
                 )
             );
+            // Set column width
+            if(/%|px|auto/.test(item['width'])){
+                item['nodes']['container'].style.width = item['width'];
+            }else{
+                item['nodes']['container'].style.width = parseFloat(item['width']) + 'px';
+            }
             // Insert specific specified content in th
             switch(item['type']){
                 case 'checkbox' :
@@ -18118,7 +18389,9 @@ function(params){
                 cm.addEvent(item['nodes']['inner'], 'click', function(){
                     that.sortBy = item['key'];
                     that.orderBy = that.orderBy == 'ASC' ? 'DESC' : 'ASC';
-                    !that.isAjax && arraySort();
+                    if(!that.isAjax){
+                        arraySort();
+                    }
                     if(that.params['pagination']){
                         that.components['pagination'].rebuild();
                     }else{
@@ -18132,22 +18405,26 @@ function(params){
     var renderRow = function(parentRow, data, i){
         // Config
         var item = {
-            'index' : i,
+            'i' : i,
+            'index' : data[that.params['uniqueKey']],
             'data' : data,
             'childs' : [],
             'isChecked' : data['_checked'] || false,
             'status' : data['_status'] || false,
             'nodes' : {
                 'cols' : []
-            }
+            },
+            'cells' : []
         };
         // Structure
         that.nodes['content'].appendChild(
             item['nodes']['container'] = cm.node('tr')
         );
         // Render cells
-        cm.forEach(that.params['cols'], function(col){
-            renderCell(col, item);
+        cm.forEach(that.params['cols'], function(config){
+            item['cells'].push(
+                renderCell(config, item)
+            );
         });
         // Render childs
         if(that.params['childsBy']){
@@ -18159,206 +18436,260 @@ function(params){
         parentRow.push(item);
     };
 
-    var renderCell = function(col, item){
-        var nodes = {},
-            text,
-            title,
-            href;
+    var renderCell = function(config, row){
+        var item = {
+            'nodes' : {}
+        };
         // Check access
-        if(col['access']){
-            text = cm.isEmpty(cm.objectPath(col['key'], item['data']))? '' : cm.objectPath(col['key'], item['data']);
-            title = cm.isEmpty(col['titleText'])? text : col['titleText'];
+        if(config['access']){
+            item['text'] = cm.isEmpty(cm.objectPath(config['key'], row['data']))? '' : cm.objectPath(config['key'], row['data']);
+            item['title']= cm.isEmpty(config['titleText'])? item['text'] : config['titleText'];
             // Structure
-            item['nodes']['container'].appendChild(
-                nodes['container'] = cm.node('td')
+            row['nodes']['container'].appendChild(
+                item['nodes']['container'] = cm.node('td')
             );
             // Text overflow
-            if(col['textOverflow']){
-                nodes['inner'] = cm.node('div', {'class' : 'inner'});
-                nodes['container'].appendChild(nodes['inner']);
+            if(config['textOverflow']){
+                item['nodes']['inner'] = cm.node('div', {'class' : 'inner'});
+                item['nodes']['container'].appendChild(item['nodes']['inner']);
             }else{
-                nodes['inner'] = nodes['container'];
+                item['nodes']['inner'] = item['nodes']['container'];
             }
             // Insert value by type
-            switch(col['type']){
+            switch(config['type']){
                 case 'number' :
-                    nodes['inner'].innerHTML = cm.splitNumber(text);
+                    renderCellNumber(config, row, item);
                     break;
 
                 case 'date' :
-                    if(that.params['dateFormat'] != that.params['visibleDateFormat']){
-                        nodes['inner'].innerHTML = cm.dateFormat(
-                            cm.parseDate(text, that.params['dateFormat']),
-                            that.params['visibleDateFormat']
-                        );
-                    }else{
-                        nodes['inner'].innerHTML = text;
-                    }
+                    renderCellDate(config, row, item);
                     break;
 
                 case 'icon' :
-                    nodes['inner'].appendChild(
-                        nodes['node'] = cm.node('div', {'class' : col['class']})
-                    );
-                    cm.addClass(nodes['node'], 'icon linked inline');
+                    renderCellIcon(config, row, item);
                     break;
 
                 case 'url' :
-                    text = cm.decode(text);
-                    href = col['urlKey'] && item['data'][col['urlKey']]? cm.decode(item['data'][col['urlKey']]) : text;
-                    nodes['inner'].appendChild(
-                        nodes['node'] = cm.node('a', {'target' : col['target'], 'href' : href}, !cm.isEmpty(col['altText'])? col['altText'] : text)
-                    );
+                    renderCellURL(config, row, item);
                     break;
 
                 case 'checkbox' :
-                    cm.addClass(nodes['container'], 'control');
-                    nodes['inner'].appendChild(
-                        nodes['node'] = cm.node('input', {'type' : 'checkbox'})
-                    );
-                    item['nodes']['checkbox'] = nodes['node'];
-                    if(item['isChecked']){
-                        checkRow(item, false);
-                    }
-                    cm.addEvent(nodes['node'], 'click', function(){
-                        if(!item['isChecked']){
-                            checkRow(item, true);
-                        }else{
-                            unCheckRow(item, true);
-                        }
-                    });
+                    renderCellCheckbox(config, row, item);
                     break;
 
                 case 'links':
-                    nodes['links'] = [];
-                    nodes['inner'].appendChild(
-                        nodes['node'] = cm.node('div', {'class' : ['pt__links', col['class']].join(' ')},
-                            nodes['linksList'] = cm.node('ul')
-                        )
-                    );
-                    cm.forEach(col['links'], function(actionItem){
-                        var actionNode;
-                        actionItem = cm.merge({
-                            'label' : '',
-                            'attr' : {},
-                            'events' : {}
-                        }, actionItem);
-                        cm.forEach(item['data'], function(itemValue, itemKey){
-                            actionItem['attr'] = cm.replaceDeep(actionItem['attr'], new RegExp([cm.strWrap(itemKey, '%'), cm.strWrap(itemKey, '%25')].join('|'), 'g'), itemValue);
-                        });
-                        nodes['linksList'].appendChild(
-                            cm.node('li',
-                                actionNode = cm.node('a', actionItem['attr'], actionItem['label'])
-                            )
-                        );
-                        cm.forEach(actionItem['events'], function(actionEventHandler, actionEventName){
-                            cm.addEvent(actionNode, actionEventName, actionEventHandler);
-                        });
-                        nodes['links'].push(actionNode);
-                    });
+                    renderCellLinks(config, row, item);
                     break;
 
                 case 'actions':
-                    nodes['actions'] = [];
-                    nodes['inner'].appendChild(
-                        nodes['node'] = cm.node('div', {'class' : ['pt__links', 'pull-right', col['class']].join(' ')},
-                            cm.node('ul',
-                                nodes['componentNode'] = cm.node('li', {'class' : 'com__menu', 'data-node' : 'ComMenu:{}:button'},
-                                    cm.node('a', {'class' : 'label'}, that.lang('actions')),
-                                    cm.node('span', {'class' : 'cm-i__chevron-down xx-small inline'}),
-                                    cm.node('div', {'class' : 'pt__menu', 'data-node' : 'ComMenu.target'},
-                                        nodes['actionsList'] = cm.node('ul', {'class' : 'pt__menu-dropdown'})
-                                    )
-                                )
-                            )
-                        )
-                    );
-                    cm.forEach(col['actions'], function(actionItem){
-                        actionItem = cm.merge({
-                            'label' : '',
-                            'attr' : {},
-                            'events' : {},
-                            'constructor' : false,
-                            'constructorParams' : {},
-                            'callback' : function(){}
-                        }, actionItem);
-                        // WTF is that?
-                        cm.forEach(item['data'], function(itemValue, itemKey){
-                            actionItem['attr'] = cm.replaceDeep(actionItem['attr'], new RegExp([cm.strWrap(itemKey, '%'), cm.strWrap(itemKey, '%25')].join('|'), 'g'), itemValue);
-                        });
-                        nodes['actionsList'].appendChild(
-                            cm.node('li',
-                                actionItem['_node'] = cm.node('a', actionItem['attr'], actionItem['label'])
-                            )
-                        );
-                        if(actionItem['constructor']){
-                            cm.getConstructor(actionItem['constructor'], function(classConstructor){
-                                actionItem['controller'] = new classConstructor(
-                                    cm.merge(actionItem['constructorParams'], {
-                                        'node' : actionItem['_node'],
-                                        'data' : item['data'],
-                                        'cellItem' : item,
-                                        'actionItem' : actionItem
-                                    })
-                                );
-                            });
-                        }else{
-                            cm.addEvent(actionItem['_node'], 'click', function(e){
-                                col['preventDefault'] && cm.preventDefault(e);
-                                actionItem['callback'](e, actionItem, item);
-                            });
-                        }
-                        nodes['actions'].push(actionItem['_node']);
-                    });
-                    cm.getConstructor('Com.Menu', function(classConstructor){
-                        col['_component'] = new classConstructor({
-                            'node' : nodes['componentNode']
-                        });
-                    });
+                    renderCellActions(config, row, item);
                     break;
 
                 case 'empty' :
                     break;
 
                 default :
-                    nodes['inner'].innerHTML = text;
+                    renderCellDefault(config, row, item);
                     break;
             }
             // Statuses
-            if(item['status']){
-                setRowStatus(item, item['status']);
+            if(row['status']){
+                setRowStatus(row, row['status']);
             }
             // onHover Title
-            if(col['showTitle']){
-                if(nodes['node']){
-                    nodes['node'].title = title;
+            if(config['showTitle']){
+                if(item['nodes']['node']){
+                    item['nodes']['node'].title = item['title'];
                 }else{
-                    nodes['inner'].title = title;
+                    item['nodes']['inner'].title = item['title'];
                 }
             }
             // onClick handler
-            if(col['onClick']){
-                cm.addEvent(nodes['node'] || nodes['inner'], 'click', function(e){
-                    e = cm.getEvent(e);
-                    cm.preventDefault(e);
+            if(cm.isFunction(config['onClick'])){
+                cm.addEvent(item['nodes']['node'] || item['nodes']['inner'], 'click', function(e){
+                    config['preventDefault'] && cm.preventDefault(e);
                     // Column onClick event
-                    col['onClick'](that, item);
+                    config['onClick'](that, {
+                        'nodes' : item['nodes'],
+                        'col' : config,
+                        'row' : row,
+                        'cell' : item
+                    });
                 });
             }
             // onCellRender handler
-            if(col['onRender']){
-                col['onRender'](that, {
-                    'nodes' : nodes,
-                    'col' : col,
-                    'row' : item
+            if(cm.isFunction(config['onRender'])){
+                config['onRender'](that, {
+                    'nodes' : item['nodes'],
+                    'col' : config,
+                    'row' : row,
+                    'cell' : item
                 });
             }
-            // Push cell to row nodes array
-            item['nodes']['cols'].push(nodes);
+        }
+        return item;
+    };
+
+    /*** CELLS BY TYPES ***/
+
+    var renderCellDefault = function(config, row, item){
+        item['nodes']['inner'].innerHTML = item['text'];
+    };
+
+    var renderCellNumber = function(config, row, item){
+        item['nodes']['inner'].innerHTML = cm.splitNumber(item['text']);
+    };
+
+    var renderCellDate = function(config, row, item){
+        if(that.params['dateFormat'] != that.params['visibleDateFormat']){
+            item['nodes']['inner'].innerHTML = cm.dateFormat(
+                cm.parseDate(item['text'], that.params['dateFormat']),
+                that.params['visibleDateFormat']
+            );
+        }else{
+            item['nodes']['inner'].innerHTML = item['text'];
         }
     };
 
-    /* *** HELPING FUNCTIONS *** */
+    var renderCellIcon = function(config, row, item){
+        item['nodes']['inner'].appendChild(
+            item['nodes']['node'] = cm.node('div', {'class' : config['class']})
+        );
+        cm.addClass(item['nodes']['node'], 'icon linked inline');
+    };
+
+    var renderCellURL = function(config, row, item){
+        item['text'] = cm.decode(item['text']);
+        item['href'] = config['urlKey'] && row['data'][config['urlKey']]? cm.decode(row['data'][config['urlKey']]) : item['text'];
+        item['nodes']['inner'].appendChild(
+            item['nodes']['node'] = cm.node('a', {'target' : config['target'], 'href' : item['href']}, !cm.isEmpty(config['altText'])? config['altText'] : item['text'])
+        );
+    };
+
+    var renderCellCheckbox = function(config, row, item){
+        cm.addClass(item['nodes']['container'], 'control');
+        item['nodes']['inner'].appendChild(
+            item['nodes']['node'] = cm.node('input', {'type' : 'checkbox'})
+        );
+        row['nodes']['checkbox'] = item['nodes']['node'];
+        if(row['isChecked']){
+            checkRow(row, false);
+        }
+        cm.addEvent(item['nodes']['node'], 'click', function(){
+            if(!row['isChecked']){
+                checkRow(row, true);
+            }else{
+                unCheckRow(row, true);
+            }
+        });
+    };
+
+    var renderCellLinks = function(config, row, item){
+        item['nodes']['links'] = [];
+        item['nodes']['inner'].appendChild(
+            item['nodes']['node'] = cm.node('div', {'class' : ['pt__links', config['class']].join(' ')},
+                item['nodes']['linksList'] = cm.node('ul')
+            )
+        );
+        cm.forEach(config['links'], function(actionItem){
+            var actionNode;
+            actionItem = cm.merge({
+                'label' : '',
+                'attr' : {},
+                'events' : {}
+            }, actionItem);
+            cm.forEach(row['data'], function(itemValue, itemKey){
+                actionItem['attr'] = cm.replaceDeep(actionItem['attr'], new RegExp([cm.strWrap(itemKey, '%'), cm.strWrap(itemKey, '%25')].join('|'), 'g'), itemValue);
+            });
+            item['nodes']['linksList'].appendChild(
+                cm.node('li',
+                    actionNode = cm.node('a', actionItem['attr'], actionItem['label'])
+                )
+            );
+            cm.forEach(actionItem['events'], function(actionEventHandler, actionEventName){
+                cm.addEvent(actionNode, actionEventName, actionEventHandler);
+            });
+            item['nodes']['links'].push(actionNode);
+        });
+    };
+
+    var renderCellActions = function(config, row, item){
+        item['nodes']['actions'] = [];
+        item['nodes']['inner'].appendChild(
+            item['nodes']['node'] = cm.node('div', {'class' : ['pt__links', 'pull-right', config['class']].join(' ')},
+                cm.node('ul',
+                    item['nodes']['componentNode'] = cm.node('li', {'class' : 'com__menu', 'data-node' : 'ComMenu:{}:button'},
+                        cm.node('a', {'class' : 'label'}, that.lang('actions')),
+                        cm.node('span', {'class' : 'cm-i__chevron-down xx-small inline'}),
+                        cm.node('div', {'class' : 'pt__menu', 'data-node' : 'ComMenu.target'},
+                            item['nodes']['actionsList'] = cm.node('ul', {'class' : 'pt__menu-dropdown'})
+                        )
+                    )
+                )
+            )
+        );
+        cm.forEach(config['actions'], function(actionItem){
+            actionItem = cm.merge({
+                'label' : '',
+                'attr' : {},
+                'events' : {},
+                'constructor' : false,
+                'constructorParams' : {},
+                'callback' : function(){}
+            }, actionItem);
+            // WTF is that? - that is attribute bindings, for example - href
+            cm.forEach(row['data'], function(itemValue, itemKey){
+                actionItem['attr'] = cm.replaceDeep(actionItem['attr'], new RegExp([cm.strWrap(itemKey, '%'), cm.strWrap(itemKey, '%25')].join('|'), 'g'), itemValue);
+            });
+            item['nodes']['actionsList'].appendChild(
+                cm.node('li',
+                    actionItem['node'] = cm.node('a', actionItem['attr'], actionItem['label'])
+                )
+            );
+            // Render menu component
+            cm.getConstructor('Com.Menu', function(classConstructor, className){
+                item['component'] = new classConstructor(
+                    cm.merge(that.params[className], {
+                        'node' : item['nodes']['componentNode']
+                    })
+                );
+            });
+            if(actionItem['constructor']){
+                cm.getConstructor(actionItem['constructor'], function(classConstructor){
+                    actionItem['controller'] = new classConstructor(
+                        cm.merge(actionItem['constructorParams'], {
+                            'node' : actionItem['node'],
+                            'data' : row['data'],
+                            'rowItem' : row,
+                            'cellItem' : item,
+                            'actionItem' : actionItem
+                        })
+                    );
+                    actionItem['controller'].addEvent('onRenderControllerEnd', function(){
+                        item['component'].hide(false);
+                    });
+                });
+            }else{
+                cm.addEvent(actionItem['node'], 'click', function(e){
+                    config['preventDefault'] && cm.preventDefault(e);
+                    item['component'].hide(false);
+                    actionItem['callback'](e, actionItem, row);
+                });
+            }
+            item['nodes']['actions'].push(actionItem['node']);
+        });
+    };
+
+    /*** HELPING FUNCTIONS ***/
+
+    var resetTable = function(){
+        that.unCheckAll();
+        that.rows = [];
+        that.checked = [];
+        if(!that.params['pagination']){
+            cm.remove(that.nodes['table']);
+        }
+    };
 
     var arraySort = function(){
         // Get item
@@ -18407,34 +18738,54 @@ function(params){
     };
 
     var checkRow = function(row, execute){
-        if(row['nodes']['checkbox']){
-            row['nodes']['checkbox'].checked = true;
-        }
-        row['isChecked'] = true;
-        row['data']['_checked'] = true;
-        if(row['status']){
-            cm.removeClass(row['nodes']['container'], row['status']);
-        }
-        cm.addClass(row['nodes']['container'], 'active');
-        if(execute){
-            // API onCheck Event
-            that.triggerEvent('onCheck', row);
+        if(!row['isChecked']){
+            if(row['nodes']['checkbox']){
+                row['nodes']['checkbox'].checked = true;
+            }
+            row['isChecked'] = true;
+            row['data']['_checked'] = true;
+            if(row['status']){
+                cm.removeClass(row['nodes']['container'], row['status']);
+            }
+            cm.addClass(row['nodes']['container'], 'active');
+            // Set
+            that.checked.push(row);
+            if(that.checked.length){
+                enableBulkActions();
+            }else{
+                disableBulkActions();
+            }
+            // Events
+            if(execute){
+                // API onCheck Event
+                that.triggerEvent('onCheck', row);
+            }
         }
     };
 
     var unCheckRow = function(row, execute){
-        if(row['nodes']['checkbox']){
-            row['nodes']['checkbox'].checked = false;
-        }
-        row['isChecked'] = false;
-        row['data']['_checked'] = false;
-        cm.removeClass(row['nodes']['container'], 'active');
-        if(row['status']){
-            cm.addClass(row['nodes']['container'], row['status']);
-        }
-        if(execute){
-            // API onUnCheck Event
-            that.triggerEvent('onUnCheck', row);
+        if(row['isChecked']){
+            if(row['nodes']['checkbox']){
+                row['nodes']['checkbox'].checked = false;
+            }
+            row['isChecked'] = false;
+            row['data']['_checked'] = false;
+            cm.removeClass(row['nodes']['container'], 'active');
+            if(row['status']){
+                cm.addClass(row['nodes']['container'], row['status']);
+            }
+            // Set
+            cm.arrayRemove(that.checked, row);
+            if(that.checked.length){
+                enableBulkActions();
+            }else{
+                disableBulkActions();
+            }
+            // Events
+            if(execute){
+                // API onUnCheck Event
+                that.triggerEvent('onUnCheck', row);
+            }
         }
     };
 
@@ -18455,7 +18806,7 @@ function(params){
         cm.removeClass(row['nodes']['container'], that.params['statuses'].join(' '));
     };
 
-    /* ******* MAIN ******* */
+    /******* MAIN *******/
 
     that.rebuild = function(){
         if(that.isAjax){
@@ -18464,24 +18815,23 @@ function(params){
         return that;
     };
 
-    that.check = function(index){
-        if(that.params['data'][index]){
-            that.params['data'][index]['_checked'] = true;
-        }
-        cm.forEach(rows, function(row){
-            if(row['index'] == index){
+    that.redraw = function(){
+        that.components['helper'] && that.components['helper'].redraw();
+        return that;
+    };
+
+    that.check = function(id){
+        cm.forEach(that.rows, function(row){
+            if(row['index'] == id){
                 checkRow(row, true);
             }
         });
         return that;
     };
 
-    that.unCheck = function(index){
-        if(that.params['data'][index]){
-            that.params['data'][index]['_checked'] = false;
-        }
+    that.unCheck = function(id){
         cm.forEach(that.rows, function(row){
-            if(row['index'] == index){
+            if(row['index'] == id){
                 unCheckRow(row, true);
             }
         });
@@ -18489,61 +18839,51 @@ function(params){
     };
 
     that.checkAll = function(){
-        that.isCheckedAll = true;
-        that.nodes['checkbox'].checked = true;
-        cm.forEach(that.params['data'], function(row){
-            row['_checked'] = true;
-        });
+        if(that.nodes['checkbox']){
+            that.nodes['checkbox'].checked = true;
+        }
         cm.forEach(that.rows, function(row){
             checkRow(row);
         });
         // API onUnCheckAll Event
-        that.triggerEvent('onCheckAll', that.params['data']);
+        if(!that.isCheckedAll){
+            that.isCheckedAll = true;
+            that.triggerEvent('onCheckAll');
+        }
         return that;
     };
 
     that.unCheckAll = function(){
-        that.isCheckedAll = false;
-        that.nodes['checkbox'].checked = false;
-        cm.forEach(that.params['data'], function(row){
-            row['_checked'] = false;
-        });
+        if(that.nodes['checkbox']){
+            that.nodes['checkbox'].checked = false;
+        }
         cm.forEach(that.rows, function(row){
             unCheckRow(row);
         });
         // API onUnCheckAll Event
-        that.triggerEvent('onUnCheckAll', that.params['data']);
+        if(that.isCheckedAll){
+            that.isCheckedAll = false;
+            that.triggerEvent('onUnCheckAll');
+        }
         return that;
     };
 
     that.getChecked = function(){
-        var checkedRows = [];
-        cm.forEach(that.rows, function(row){
-            row['isChecked'] && checkedRows.push(row);
-        });
-        return checkedRows;
+        return that.checked;
     };
 
-    that.getCheckedData = function(){
-        var checkedRows = [];
-        cm.forEach(that.params['data'], function(row){
-            row['_checked'] && checkedRows.push(row);
-        });
-        return checkedRows;
-    };
-
-    that.setRowStatus = function(index, status){
+    that.setRowStatus = function(id, status){
         cm.forEach(that.rows, function(row){
-            if(row['index'] == index){
+            if(row['index'] == id){
                 setRowStatus(row, status);
             }
         });
         return that;
     };
 
-    that.clearRowStatus = function(index){
+    that.clearRowStatus = function(id){
         cm.forEach(that.rows, function(row){
-            if(row['index'] == index){
+            if(row['index'] == id){
                 clearRowStatus(row);
             }
         });
@@ -19148,56 +19488,51 @@ cm.getConstructor('Com.IndentInput', function(classConstructor, className, class
         return that;
     };
 
-    classProto.set = function(){
-        var that = this;
-        // Call parent method
-        _inherit.prototype.set.apply(that, arguments);
-        // Set inputs
-        that.setInput();
-        return that;
+    classProto.renderContent = function(){
+        var that = this,
+            nodes = {};
+        that.triggerEvent('onRenderContentStart');
+        // Structure
+        nodes['container'] = cm.node('div', {'class' : 'pt__input'},
+            nodes['input'] = cm.node('input', {'type' : 'text'})
+        );
+        // Attributes
+        if(that.params['maxlength']){
+            nodes['input'].setAttribute('maxlength', that.params['maxlength']);
+        }
+        // Events
+        that.triggerEvent('onRenderContentProcess');
+        cm.addEvent(nodes['input'], 'blur', that.setValueHandler);
+        cm.addEvent(nodes['input'], 'keypress', function(e){
+            if(cm.isKeyCode(e.keyCode, 'enter')){
+                cm.preventDefault(e);
+                that.setValue();
+                nodes['input'].blur();
+            }
+        });
+
+        if(that.params['allowNegative']){
+            cm.allowOnlyNumbersInputEvent(nodes['input'], function(e, value){
+                that.selectAction(that.validateValue(value), true);
+            });
+        }else{
+            cm.allowOnlyDigitInputEvent(nodes['input'], function(e, value){
+                that.selectAction(that.validateValue(value), true);
+            });
+        }
+        that.triggerEvent('onRenderContentEnd');
+        // Push
+        that.nodes['component'] = nodes;
+        return nodes['container'];
     };
+
+    /* *** DATA VALUE *** */
 
     classProto.validateValue = function(value){
         var that = this;
         value = !cm.isEmpty(value) ? value : that.params['defaultValue'];
         that.rawValue = parseInt(value);
         return (that.rawValue + that.params['units']);
-    };
-
-    classProto.renderContent = function(){
-        var that = this;
-        that.triggerEvent('onRenderContentStart');
-        // Structure
-        that.myNodes['container'] = cm.node('div', {'class' : 'pt__input'},
-            that.myNodes['input'] = cm.node('input', {'type' : 'text'})
-        );
-        // Attributes
-        if(that.params['maxlength']){
-            that.myNodes['input'].setAttribute('maxlength', that.params['maxlength']);
-        }
-        // Events
-        that.triggerEvent('onRenderContentProcess');
-        cm.addEvent(that.myNodes['input'], 'blur', that.setValueHandler);
-        cm.addEvent(that.myNodes['input'], 'keypress', function(e){
-            if(cm.isKeyCode(e.keyCode, 'enter')){
-                cm.preventDefault(e);
-                that.setValue();
-                that.myNodes['input'].blur();
-            }
-        });
-
-        if(that.params['allowNegative']){
-            cm.allowOnlyNumbersInputEvent(that.myNodes['input'], function(e, value){
-                that.selectAction(that.validateValue(value), true);
-            });
-        }else{
-            cm.allowOnlyDigitInputEvent(that.myNodes['input'], function(e, value){
-                that.selectAction(that.validateValue(value), true);
-            });
-        }
-        that.triggerEvent('onRenderContentEnd');
-        // Push
-        return that.myNodes['container'];
     };
 
     classProto.setValue = function(triggerEvents){
@@ -19207,9 +19542,9 @@ cm.getConstructor('Com.IndentInput', function(classConstructor, className, class
         return that;
     };
 
-    classProto.setInput = function(){
+    classProto.setData = function(){
         var that = this;
-        that.myNodes['input'].value = that.rawValue;
+        that.nodes['component']['input'].value = that.rawValue;
         return that;
     };
 });
@@ -19228,9 +19563,10 @@ cm.define('Com.Menu', {
         'node' : cm.Node('div'),
         'name' : '',
         'event' : 'hover',
+        'top' : 'targetHeight',
+        'left' : 'targetHeight',
         'Com.Tooltip' : {
             'className' : 'com__menu-tooltip',
-            'top' : 'targetHeight',
             'targetEvent' : 'hover',
             'hideOnReClick' : true,
             'theme' : false,
@@ -19260,6 +19596,8 @@ function(params){
 
     var validateParams = function(){
         that.params['Com.Tooltip']['targetEvent'] = that.params['event'];
+        that.params['Com.Tooltip']['top'] = that.params['top'];
+        that.params['Com.Tooltip']['left'] = that.params['left'];
     };
 
     var render = function(){
@@ -19285,6 +19623,16 @@ function(params){
     };
 
     /* ******* PUBLIC ******* */
+
+    that.show = function(){
+        that.components['tooltip'] && that.components['tooltip'].show();
+        return that;
+    };
+
+    that.hide = function(){
+        that.components['tooltip'] && that.components['tooltip'].hide();
+        return that;
+    };
 
     init();
 });
@@ -22278,6 +22626,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         that.previous = null;
         // Bind
         that.windowClickEventHandler = that.windowClickEvent.bind(that);
+        that.popstateEventHandler = that.popstateEvent.bind(that);
         // Call parent method - construct
         _inherit.prototype.construct.apply(that, arguments);
         return that;
@@ -22289,6 +22638,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         _inherit.prototype.renderViewModel.apply(that, arguments);
         // Init location handlers
         cm.addEvent(window, 'click', that.windowClickEventHandler);
+        cm.addEvent(window, 'popstate', that.popstateEventHandler);
         return that;
     };
 
@@ -22302,18 +22652,34 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         return that;
     };
 
+    classProto.popstateEvent = function(e){
+        var that = this;
+        var state = e.state;
+        that.processRoute(state['route']);
+        return that;
+    };
+
     classProto.processLink = function(el){
         var that = this;
         var route = el.getAttribute('href');
-        route && that.processRoute(route);
+        route && that.pushRoute(route);
+        return that;
+    };
+
+    classProto.pushRoute = function(route){
+        var that = this;
+        var state = {
+            'route' : route
+        };
+        // Set Window URL
+        window.history.pushState(state, '', route);
+        // Process route
+        that.processRoute(route);
         return that;
     };
 
     classProto.processRoute = function(route){
         var that = this;
-        cm.log(route);
-        // Set Window URL
-        window.history.pushState({}, '', route);
         // Destruct old route
         that.destructRoute(that.current);
         // Construct new route
@@ -22391,14 +22757,14 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
 
     classProto.trigger = function(route){
         var that = this;
-        that.processRoute(route);
+        that.pushRoute(route);
         return that;
     };
 
     classProto.start = function(){
         var that = this;
         var route = window.location.pathname;
-        that.processRoute(route);
+        that.pushRoute(route);
         return that;
     };
 });
@@ -27117,15 +27483,28 @@ function(params){
         item = cm.merge({
             'container' : cm.node('li'),
             'node' : cm.node('div', {'class' : 'button'}),
+            'type' : 'primary',                                 // primary, secondary, success, danger, warning
             'name' : '',
             'label' : '',
             'title' : '',
             'group' : '',
+            'disabled' : false,
+            'className' : '',
             'constructor' : false,
             'constructorParams' : {},
             'callback' : function(){}
         }, item);
+        // Validate
+        if(cm.isEmpty(item['name'])){
+            item['name'] = item['label'];
+        }
+        // Render
         if((group = that.groups[item['group']]) && !group.items[item['name']]){
+            // Styles
+            cm.addClass(item['node'], ['button', item['type']].join('-'));
+            cm.addClass(item['node'], item['className']);
+            item['disabled'] && cm.addClass(item['node'], 'button-disabled');
+            // Label and title
             item['node'].innerHTML = item['label'];
             item['node'].title = item['title'];
             // Callbacks
@@ -27140,7 +27519,7 @@ function(params){
             }else{
                 cm.addEvent(item['node'], 'click', function(e){
                     cm.preventDefault(e);
-                    item['callback'](e, item);
+                    !item['disabled'] && item['callback'](e, item);
                 });
             }
             cm.appendChild(item['node'], item['container']);
@@ -27173,6 +27552,22 @@ function(params){
         }
         that.triggerEvent('onProcessEnd');
         return that;
+    };
+
+    that.enableButton = function(name, groupName){
+        var item = that.getButton(name, groupName);
+        if(item){
+            item['disabled'] = false;
+            cm.removeClass(item['node'], 'button-disabled');
+        }
+    };
+
+    that.disableButton = function(name, groupName){
+        var item = that.getButton(name, groupName);
+        if(item){
+            item['disabled'] = true;
+            cm.addClass(item['node'], 'button-disabled');
+        }
     };
 
     init();
@@ -27232,6 +27627,9 @@ function(params){
     that.disabled = false;
 
     var init = function(){
+        //
+        that.windowEventHandler = windowEvent.bind(that);
+        that.targetEventHandler = targetEvent.bind(that);
         that.setParams(params);
         that.convertEvents(that.params['events']);
         validateParams();
@@ -27320,10 +27718,10 @@ function(params){
         // Event
         switch(that.params['targetEvent']){
             case 'hover' :
-                cm.addEvent(that.params['target'], 'mouseover', targetEvent, true);
+                cm.addEvent(that.params['target'], 'mouseover', that.targetEventHandler, true);
                 break;
             case 'click' :
-                cm.addEvent(that.params['target'], 'click', targetEvent, true);
+                cm.addEvent(that.params['target'], 'click', that.targetEventHandler, true);
                 break;
         }
     };
@@ -27331,10 +27729,10 @@ function(params){
     var removeTargetEvent = function(){
         switch(that.params['targetEvent']){
             case 'hover' :
-                cm.removeEvent(that.params['target'], 'mouseover', targetEvent);
+                cm.removeEvent(that.params['target'], 'mouseover', that.targetEventHandler);
                 break;
             case 'click' :
-                cm.removeEvent(that.params['target'], 'click', targetEvent);
+                cm.removeEvent(that.params['target'], 'click', that.targetEventHandler);
                 break;
         }
     };
@@ -27393,7 +27791,7 @@ function(params){
             }else if(that.params['delay'] && !that.isShowProcess){
                 that.delayInterval = setTimeout(hideHandler, that.params['delay']);
             }else{
-                hideHandler();
+                hideHandler(false);
             }
         }
     };
@@ -27402,7 +27800,6 @@ function(params){
         if(immediately || !that.params['duration']){
             hideHandlerEnd();
         }else{
-            that.animation.stop();
             that.animation.go({
                 'style' : {'opacity' : 0},
                 'duration' : that.params['duration'],
@@ -27542,11 +27939,11 @@ function(params){
             that.isWindowEvent = true;
             switch(that.params['targetEvent']){
                 case 'hover' :
-                    cm.addEvent(window, 'mousemove', windowEvent);
+                    cm.addEvent(window, 'mousemove', that.windowEventHandler);
                     break;
                 case 'click' :
                 default :
-                    cm.addEvent(window, 'mousedown', windowEvent);
+                    cm.addEvent(window, 'mousedown', that.windowEventHandler);
                     break;
             }
         }
@@ -27557,11 +27954,11 @@ function(params){
             that.isWindowEvent = false;
             switch(that.params['targetEvent']){
                 case 'hover' :
-                    cm.removeEvent(window, 'mousemove', windowEvent);
+                    cm.removeEvent(window, 'mousemove', that.windowEventHandler);
                     break;
                 case 'click' :
                 default :
-                    cm.removeEvent(window, 'mousedown', windowEvent);
+                    cm.removeEvent(window, 'mousedown', that.windowEventHandler);
                     break;
             }
         }

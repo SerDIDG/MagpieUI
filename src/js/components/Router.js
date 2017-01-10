@@ -22,6 +22,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         that.previous = null;
         // Bind
         that.windowClickEventHandler = that.windowClickEvent.bind(that);
+        that.popstateEventHandler = that.popstateEvent.bind(that);
         // Call parent method - construct
         _inherit.prototype.construct.apply(that, arguments);
         return that;
@@ -33,6 +34,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         _inherit.prototype.renderViewModel.apply(that, arguments);
         // Init location handlers
         cm.addEvent(window, 'click', that.windowClickEventHandler);
+        cm.addEvent(window, 'popstate', that.popstateEventHandler);
         return that;
     };
 
@@ -46,18 +48,34 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         return that;
     };
 
+    classProto.popstateEvent = function(e){
+        var that = this;
+        var state = e.state;
+        that.processRoute(state['route']);
+        return that;
+    };
+
     classProto.processLink = function(el){
         var that = this;
         var route = el.getAttribute('href');
-        route && that.processRoute(route);
+        route && that.pushRoute(route);
+        return that;
+    };
+
+    classProto.pushRoute = function(route){
+        var that = this;
+        var state = {
+            'route' : route
+        };
+        // Set Window URL
+        window.history.pushState(state, '', route);
+        // Process route
+        that.processRoute(route);
         return that;
     };
 
     classProto.processRoute = function(route){
         var that = this;
-        cm.log(route);
-        // Set Window URL
-        window.history.pushState({}, '', route);
         // Destruct old route
         that.destructRoute(that.current);
         // Construct new route
@@ -135,14 +153,14 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
 
     classProto.trigger = function(route){
         var that = this;
-        that.processRoute(route);
+        that.pushRoute(route);
         return that;
     };
 
     classProto.start = function(){
         var that = this;
         var route = window.location.pathname;
-        that.processRoute(route);
+        that.pushRoute(route);
         return that;
     };
 });

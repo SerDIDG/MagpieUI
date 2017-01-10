@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.22.24 (2016-12-01 18:37) ************ */
+/*! ************ MagpieUI v3.24.0 (2017-01-10 20:29) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3751,7 +3751,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.16.0';
+@CmVersion: '3.24.0';
 
 // /* ******* PATH ******* */
 
@@ -4027,6 +4027,7 @@ span.CodeMirror-selectedtext { background: none; }
 @CmColor-Font: #666666;
 @CmColor-Font-Opposite: #ffffff;
 @CmColor-Font-Hint: #999999;
+@CmColor-Font-Disabled: #999999;
 @CmColor-Font-Placeholder: #b7b7b7;
 @CmColor-Font-Link: @CmColor-Primary-DarkDefault;
 @CmColor-Font-LinkHover: @CmColor-Primary-DarkHover;
@@ -6753,6 +6754,23 @@ select {
         box-shadow: @CmUI-ShadowInner;
     }
 
+    // /* *** DISABLED *** */
+
+    &.button-disabled {
+        .mx__background__color(@CmColor-Secondary-LightActive, @CmColor-Font-Disabled, @CmFont-Base-ColorOpposite);
+        cursor: default;
+
+        &:active,
+        &.active {
+            .mx__background__color(@CmColor-Secondary-LightActive, @CmColor-Font-Disabled, @CmFont-Base-ColorOpposite);
+        }
+
+        &:hover,
+        &.hover {
+            .mx__background__color(@CmColor-Secondary-LightActive, @CmColor-Font-Disabled, @CmFont-Base-ColorOpposite);
+        }
+    }
+
     // /* *** CLEAR *** */
 
     &.button-clear {
@@ -8547,6 +8565,7 @@ button {
 
         > .column {
             min-width: 0;
+            position: relative;
             .mx__flex(1 1 0);
         }
     }
@@ -8565,6 +8584,26 @@ button {
 
             > .column {
                 .mx__flex(1 1 auto);
+            }
+        }
+    }
+
+    &.theme--separators {
+        > .inner {
+            > .column {
+                &:after {
+                    display: block;
+                    position: absolute;
+                    border-right: @CmBorder-Separator;
+                    content: '';
+                    .mx__position(0, 0, 0, auto);
+                }
+
+                &:last-child {
+                    &:after {
+                        display: none;
+                    }
+                }
             }
         }
     }
@@ -8592,6 +8631,16 @@ button {
             margin-left: @half;
         }
     }
+
+    &.theme--separators {
+        > .inner {
+            > .column {
+                &:after {
+                    right:  -@half;
+                }
+            }
+        }
+    }
 }
 
 .pt__columns--adaptive {
@@ -8601,6 +8650,16 @@ button {
         > .column {
             .cm__box;
             .mx__flex(none);
+        }
+    }
+
+    &.theme--separators {
+        > .inner {
+            > .column {
+                &:after {
+                    display: none;
+                }
+            }
         }
     }
 }
@@ -15253,6 +15312,7 @@ ul.pt__field__hint {
 .com__gridlist {
     .cm__box;
 
+    .pt__gridlist__toolbar,
     .pt__gridlist__counter,
     .pt__gridlist,
     .com__pagination__container {

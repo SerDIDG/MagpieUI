@@ -192,7 +192,8 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
     /* *** DATA VALUE *** */
 
     classProto.validateValue = function(value){
-        return value;
+        var that = this;
+        return !cm.isEmpty(value) ? value : that.params['defaultValue'];
     };
 
     classProto.saveValue = function(value){
@@ -223,7 +224,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         var that = this;
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
         that.saveValue(value);
-        that.setData();
+        that.setData(value);
         triggerEvents && that.triggerEvent('onSet', that.value);
         return that;
     };

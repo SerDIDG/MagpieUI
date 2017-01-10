@@ -68,6 +68,7 @@ function(params){
     that.selectedItemIndex = null;
     that.value = null;
     that.previousValue = null;
+    that.rawValue = null;
 
     var init = function(){
         that.setParams(params);
@@ -218,12 +219,23 @@ function(params){
         that.abort();
         // Clear input
         if(that.params['clearOnEmpty']){
-            cm.log(that.value);
-            item = that.getRegisteredItem(that.value);
-            if(!item || item['data']['text'] != that.params['node'].value){
+            item = getSavedItemData(that.value);
+            if(!item || item['text'] != that.params['node'].value){
                 that.clear();
             }
         }
+    };
+
+    var getSavedItemData = function(value){
+        if(that.rawValue && that.rawValue['value'] == value){
+            return that.rawValue
+        }
+        // Get form items list
+        var item = that.getRegisteredItem(value);
+        if(item){
+            return item['data'];
+        }
+        return null;
     };
 
     var onChange = function(){
@@ -446,9 +458,10 @@ function(params){
 
     that.set = function(item, triggerEvents){
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        that.rawValue = that.convertDataItem(item);
         that.previousValue = that.value;
-        that.value = typeof item['value'] != 'undefined'? item['value'] : item['text'];
-        that.params['node'].value = item['text'];
+        that.value = that.rawValue['value'];
+        that.params['node'].value = that.rawValue['text'];
         // Trigger events
         if(triggerEvents){
             that.triggerEvent('onSelect', that.value);
@@ -512,6 +525,7 @@ function(params){
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
         that.previousValue = that.value;
         that.value = null;
+        that.rawValue = null;
         if(that.params['clearOnEmpty']){
             that.params['node'].value = '';
         }
@@ -566,6 +580,9 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
         }else if(!cm.isObject(item)){
             return {'text' : item, 'value' : item};
         }else{
+            if(typeof item['value'] == 'undefined'){
+                item['value'] = item['text']
+            }
             return item;
         }
     };

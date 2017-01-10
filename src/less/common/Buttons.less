@@ -250,6 +250,23 @@
         box-shadow: @CmUI-ShadowInner;
     }
 
+    // /* *** DISABLED *** */
+
+    &.button-disabled {
+        .mx__background__color(@CmColor-Secondary-LightActive, @CmColor-Font-Disabled, @CmFont-Base-ColorOpposite);
+        cursor: default;
+
+        &:active,
+        &.active {
+            .mx__background__color(@CmColor-Secondary-LightActive, @CmColor-Font-Disabled, @CmFont-Base-ColorOpposite);
+        }
+
+        &:hover,
+        &.hover {
+            .mx__background__color(@CmColor-Secondary-LightActive, @CmColor-Font-Disabled, @CmFont-Base-ColorOpposite);
+        }
+    }
+
     // /* *** CLEAR *** */
 
     &.button-clear {

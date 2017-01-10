@@ -53,6 +53,9 @@ function(params){
     that.disabled = false;
 
     var init = function(){
+        //
+        that.windowEventHandler = windowEvent.bind(that);
+        that.targetEventHandler = targetEvent.bind(that);
         that.setParams(params);
         that.convertEvents(that.params['events']);
         validateParams();
@@ -141,10 +144,10 @@ function(params){
         // Event
         switch(that.params['targetEvent']){
             case 'hover' :
-                cm.addEvent(that.params['target'], 'mouseover', targetEvent, true);
+                cm.addEvent(that.params['target'], 'mouseover', that.targetEventHandler, true);
                 break;
             case 'click' :
-                cm.addEvent(that.params['target'], 'click', targetEvent, true);
+                cm.addEvent(that.params['target'], 'click', that.targetEventHandler, true);
                 break;
         }
     };
@@ -152,10 +155,10 @@ function(params){
     var removeTargetEvent = function(){
         switch(that.params['targetEvent']){
             case 'hover' :
-                cm.removeEvent(that.params['target'], 'mouseover', targetEvent);
+                cm.removeEvent(that.params['target'], 'mouseover', that.targetEventHandler);
                 break;
             case 'click' :
-                cm.removeEvent(that.params['target'], 'click', targetEvent);
+                cm.removeEvent(that.params['target'], 'click', that.targetEventHandler);
                 break;
         }
     };
@@ -214,7 +217,7 @@ function(params){
             }else if(that.params['delay'] && !that.isShowProcess){
                 that.delayInterval = setTimeout(hideHandler, that.params['delay']);
             }else{
-                hideHandler();
+                hideHandler(false);
             }
         }
     };
@@ -223,7 +226,6 @@ function(params){
         if(immediately || !that.params['duration']){
             hideHandlerEnd();
         }else{
-            that.animation.stop();
             that.animation.go({
                 'style' : {'opacity' : 0},
                 'duration' : that.params['duration'],
@@ -363,11 +365,11 @@ function(params){
             that.isWindowEvent = true;
             switch(that.params['targetEvent']){
                 case 'hover' :
-                    cm.addEvent(window, 'mousemove', windowEvent);
+                    cm.addEvent(window, 'mousemove', that.windowEventHandler);
                     break;
                 case 'click' :
                 default :
-                    cm.addEvent(window, 'mousedown', windowEvent);
+                    cm.addEvent(window, 'mousedown', that.windowEventHandler);
                     break;
             }
         }
@@ -378,11 +380,11 @@ function(params){
             that.isWindowEvent = false;
             switch(that.params['targetEvent']){
                 case 'hover' :
-                    cm.removeEvent(window, 'mousemove', windowEvent);
+                    cm.removeEvent(window, 'mousemove', that.windowEventHandler);
                     break;
                 case 'click' :
                 default :
-                    cm.removeEvent(window, 'mousedown', windowEvent);
+                    cm.removeEvent(window, 'mousedown', that.windowEventHandler);
                     break;
             }
         }

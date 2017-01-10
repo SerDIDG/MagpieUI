@@ -30,7 +30,7 @@
  ******* */
 
 var cm = {
-        '_version' : '3.22.24',
+        '_version' : '@@VERSION',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -360,9 +360,10 @@ cm.getLength = function(o){
 cm.inArray = function(a, item){
     if(typeof a == 'string'){
         return a === item;
-    }else{
+    }else if(cm.isArray(a)){
         return a.indexOf(item) > -1;
     }
+    return false
 };
 
 cm.arrayRemove = function(a, item){
@@ -950,7 +951,10 @@ cm.getOwnerWindow = function(node){
     return node.ownerDocument.defaultView;
 };
 
+cm._addScriptStack = {};
+
 cm.addScript = function(src, async, callback){
+    var item;
     var vars = {
         '%baseUrl%' : cm._baseUrl,
         '%assetsUrl%' : cm._assetsUrl || cm._baseUrl,
@@ -960,14 +964,32 @@ cm.addScript = function(src, async, callback){
     src = cm.isArray(src) ? cm.objectReplace(src, vars) : cm.strReplace(src, vars);
     async = typeof async != 'undefined' ? async : false;
     callback = typeof callback != 'undefined' ? callback : function(){};
-    // Handler
-    var script = document.createElement('script');
-    script.src = src;
-    script.async = async;
-    cm.addEvent(script, 'load', callback);
-    cm.addEvent(script, 'error', callback);
-    cm.appendChild(script, cm.getDocumentHead());
-    return script;
+    // Configure Stack Item
+    if(cm._addScriptStack[src]){
+        item = cm._addScriptStack[src];
+        item['callbacks'].push(callback);
+    }else{
+        item = {
+            'src' : src,
+            'async' : async,
+            'callback' : function(e){
+                while(item['callbacks'].length){
+                    item['callbacks'][0](e);
+                    cm.arrayRemove(item['callbacks'], item['callbacks'][0]);
+                }
+            },
+            'callbacks' : [callback]
+        };
+        cm._addScriptStack[src] = item;
+        // Render Script
+        item['script'] = document.createElement('script');
+        item['script'].src = item['src'];
+        item['script'].async = item['async'];
+        cm.addEvent(item['script'], 'load', item['callback']);
+        cm.addEvent(item['script'], 'error', item['callback']);
+        cm.appendChild(item['script'], cm.getDocumentHead());
+    }
+    return item['script'];
 };
 
 cm.loadScript = function(o){
@@ -3180,7 +3202,9 @@ cm.ajax = function(o){
             delete config['headers']['Content-Type'];
         }else if(cm.isObject(config['params'])){
             config['params'] = cm.objectReplace(config['params'], {
-                '%baseUrl%' : cm._baseUrl
+                '%version%' : cm._version,
+                '%baseUrl%' : cm._baseUrl,
+                '%assetsUrl%' : cm._assetsUrl
             });
             config['params'] = cm.obj2URI(config['params']);
         }
@@ -3192,7 +3216,9 @@ cm.ajax = function(o){
             delete config['modifier'];
         }
         config['url'] = cm.strReplace(config['url'], {
-            '%baseUrl%' : cm._baseUrl
+            '%version%' : cm._version,
+            '%baseUrl%' : cm._baseUrl,
+            '%assetsUrl%' : cm._assetsUrl
         });
         if(!/post|put/.test(config['method'])){
             if(!cm.isEmpty(config['params'])){
