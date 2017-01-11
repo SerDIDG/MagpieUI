@@ -55,7 +55,7 @@
                                 {'type' : 'checkbox', 'width' : '48'},
                                 {'key' : 'id', 'type' : 'number', 'width' : '48', 'title' : 'ID'},
                                 {'key' : 'name', 'type' : 'number', 'width' : '10%', 'title' : 'Name'},
-                                {'key' : 'descr', 'type' : 'text', 'width' : 'auto', 'title' : 'Description'},
+                                {'key' : 'descr', 'type' : 'text', 'width' : 'auto', 'title' : 'Description', 'textOverflow' : true},
                                 {'key' : 'html', 'type' : 'html', 'width' : '15%', 'title' : 'HTML'},
                                 {'key' : 'url', 'type' : 'url', 'width' : '15%', 'title' : 'Link'},
                                 {'key' : 'url', 'type' : 'url', 'width' : '15%', 'title' : 'Alternative Text Link', 'altText' : 'Link'},
@@ -82,6 +82,9 @@
                                 }},
                                 {'type' : 'empty', 'width' : '100', 'title' : 'Access Denied', 'access' : false}
                             ],
+                            'columns' : {
+                                'editable' : true
+                            },
                             'sortBy' : 'id',
                             'orderBy' : 'ASC',
                             'perPage' : 5
@@ -105,22 +108,121 @@
 
 <ul class="com__tabset__content-ul" data-element="Com.Tabset">
     <li data-node="tabs:[]:container" data-config='{"id" : "overview", "title" : "Overview"}'>
-        <h2>Initialize in Java-Script:</h2>
-        <pre class="pt__box-code">new Com.Gridlist(o);</pre>
-        <b>Attributes:</b>
+        <h2>Overview</h2>
+        <p>Component for rendering tables of data - gridlists. Supported dynamic pagination, bulk actions, resizable columns, etc.</p>
+
+        <h4>Embedded Modules</h4>
         <ul class="cm__list">
-            <li><b>container</b> <i>[HTML Node]</i> - container node for gridlist, <i>default: cm.Node('div')</i>;</li>
-            <li><b>data</b> <i>[Array]</i> - array of data, <i>default: []</i>:
-                <ul class="margin-none">
-                    <li><b>_checked</b> <i>[Boolean]</i> - mark column as checked, using with column's <b>type</b> = <b>checkbox</b>, <i>default: undefined (false)</i>;</li>
-                </ul>
-            </li>
-            <li><b>cols</b> <i>[Array]</i> - array of columns, <i>default: []</i>:
-                <ul class="margin-none">
-                    <li><b>width</b> <i>[String/Number]</i> - width of column, can be number or percentage or 'auto', <i>default: 'auto'</i>;</li>
-                    <li><b>access</b> <i>[Boolean]</i> - toggle column rendering, if false, column will not be rendered, <i>default: true</i>;</li>
-                    <li><b>type</b> <i>[String]</i> - type of column content, needs to be specified for properly sorting and displaying, <i>default: 'text'</i>:
-                        <ul class="margin-none">
+            <li><code>Params</code></li>
+            <li><code>Events</code></li>
+            <li><code>Langs</code></li>
+            <li><code>Stack</code></li>
+            <li><code>Structure</code></li>
+            <li><code>DataConfig</code></li>
+        </ul>
+
+        <h4>Required Components</h4>
+        <ul class="cm__list">
+            <li><code>Com.GridlistHelper</code> - for resizable columns.</li>
+            <li><code>Com.Pagination</code> - for pagination.</li>
+            <li><code>Com.Toolbar</code> - for bulk actions.</li>
+            <li><code>Com.Menu</code> - for dropdown actions.</li>
+        </ul>
+
+        <h2>Initialize</h2>
+        <h4>Java-script</h4>
+        <div class="cm__box">
+            <textarea readonly data-element="Com.CodeHighlight" data-config='{"language" : "javascript"}'>
+cm.getConstructor('Com.Gridlist', function(classConstructor){
+    new classConstructor();
+});</textarea>
+        </div>
+        <h4>Auto Collector</h4>
+        <p>Required Com.Collector with parameter "autoInit" : true.</p>
+        <div class="cm__box">
+            <textarea readonly data-element="Com.CodeHighlight" data-config='{"language" : "htmlmixed"}'>
+<div data-element="Com.Gridlist" data-config='{}'></div></textarea>
+        </div>
+
+        <h2>Parameters</h2>
+        <h4>Default</h4>
+        <dl>
+            <dt>
+                <code><b>node</b></code>
+            </dt>
+            <dd><code>HTML Node</code>. Html node for embedding gridlist. Default: <code>cm.node('div')</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>name</b></code>
+            </dt>
+            <dd><code>String</code>. Name of class instance. Default: <code>none</code>.</dd>
+        </dl>
+
+        <h4>Data</h4>
+        <dl>
+            <dt>
+                <code><b>uniqueKey</b></code>
+            </dt>
+            <dd><code>String</code>. Unique data key, uses for indexing. Default: <code>id</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>data</b></code>
+            </dt>
+            <dd>
+                <p><code>Array</code>. Array of data. Default: <code>[]</code>.</p>
+                <dl>
+                    <dt>
+                        <code><b>_checked</b></code>
+                    </dt>
+                    <dd><code>Boolean</code>. Mark row as checked. Default: <code>none</code>.</dd>
+                </dl>
+                <dl>
+                    <dt>
+                        <code><b>_status</b></code>
+                    </dt>
+                    <dd><code>String</code>. Mark row with status. Available: <i>active</i>, <i>success</i>, <i>danger</i>, <i>warning</i>. Default: <code>none</code>.</dd>
+                </dl>
+            </dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>cols</b></code>
+            </dt>
+            <dd>
+                <p><code>Array</code>. Array of columns. Default: <code>[]</code>.</p>
+                <dl>
+                    <dt>
+                        <code><b>key</b></code>
+                    </dt>
+                    <dd><code>String</code>. Key of data array, all cells of this column will be display content by this key. Default: <code>none</code>.</dd>
+                </dl>
+                <dl>
+                    <dt>
+                        <code><b>title</b></code>
+                    </dt>
+                    <dd><code>String</code>. Title of column. Default: <code>none</code>.</dd>
+                </dl>
+                <dl>
+                    <dt>
+                        <code><b>width</b></code>
+                    </dt>
+                    <dd><code>String/Number</code>. Width of column, can be number or percentage or 'auto'. Default: <code>auto</code>.</dd>
+                </dl>
+                <dl>
+                    <dt>
+                        <code><b>access</b></code>
+                    </dt>
+                    <dd><code>Boolean</code>. Toggle column rendering, if false, column will not be rendered. Default: <code>true</code>.</dd>
+                </dl>
+                <dl>
+                    <dt>
+                        <code><b>type</b></code>
+                    </dt>
+                    <dd>
+                        <p><code>String</code>. Type of column content, needs to be specified for properly sorting and displaying. Default: <code>text</code>.</p>
+                        <ul class="cm__list">
                             <li><b>text</b> - for text rendering;</li>
                             <li><b>number</b> - for number rendering;</li>
                             <li><b>url</b> - for links rendering;</li>
@@ -129,82 +231,314 @@
                             <li><b>icon</b> - for rendering icon node, sorting not available;</li>
                             <li><b>checkbox</b> - for rendering checkbox node, sorting not available;</li>
                             <li><b>empty</b> - for rendering empty content cells, sorting not available;</li>
+                            <li><b>actions</b> - for rendering actions dropdown;</li>
+                            <li><b>links</b> - for rendering actions menu.</li>
                         </ul>
-                    </li>
-                    <li><b>key</b> <i>[String]</i> - key of data array, all cells of this column will be display content by this key, <i>default: empty</i>;</li>
-                    <li><b>title</b> <i>[Title]</i> - table column th title, <i>default: empty</i>;</li>
-                    <li><b>sort</b> <i>[Boolean]</i> - is column sortable, <i>default: dependence of class config <b>sort</b> attribute</i>;</li>
-                    <li><b>textOverflow</b> <i>[Boolean]</i> - wrap cell content to single line, and overflow it, <i>default: false</i>;</li>
-                    <li><b>class</b> <i>[String]</i> - css class for icon node, when column <b>type</b> is <b>icon</b>, <i>default: empty</i>;</li>
-                    <li><b>target</b> <i>[String]</i> - link opening target, when column <b>type</b> is <b>url</b>, <i>default: '_blank'</i>;</li>
-                    <li><b>showTitle</b> <i>[Boolean]</i> - show title on hover, by default using content of data <b>key</b>, <i>default: false</i>;</li>
-                    <li><b>titleText</b> <i>[String]</i> - alternative title text on hover, prevent default, <i>default: empty</i>;</li>
-                    <li><b>altText</b> <i>[String]</i> - alternative column data text, prevent default, <i>default: empty</i>;</li>
-                    <li><b>urlKey</b> <i>[String]</i> - data key for alternative url href, when column <b>type</b> is <b>url</b>, prevent default, <i>default: false</i>;</li>
-                    <li><b>onClick</b> <i>[Function]</i> - on cell click event handler, when <b>type</b> is <b>icon</b> <b>url</b> <b>checkbox</b>, event will be bind on this nodes, <i>default: false</i>:
-                        <ul class="margin-none">
-                            <li><i>Return attributes: [Object {Gridlist}, Object {'index' : Number, 'data' : Object, 'isChecked' : Boolean, 'nodes' : Object}];</i></li>
-                        </ul>
-                    </li>
-                    <li><b>onRender</b> <i>[Function]</i> - on cell render event handler, <i>default: false</i>:
-                        <ul class="margin-none">
-                            <li><i>Return attributes: [Object {Gridlist}, Object {'nodes' : Object, 'col' : Object, 'row' : Object}];</i></li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-            <li><b>sort</b> <i>[Boolean]</i> - is table sortable, <i>default: true</i>;</li>
-            <li><b>sortBy</b> <i>[String]</i> - which what keys needs to sort the table by default, <i>default: 'id'</i>;</li>
-            <li><b>orderBy</b> <i>[String]</i> - which what ordering direction needs to sort the table by default, <i>default: 'ASC'</i>;</li>
-            <li><b>pagination</b> <i>[Boolean]</i> - use pagination in gridlist, <i>default: true</i>;</li>
-            <li><b>perPage</b> <i>[Number]</i> - display rows per page when gridlist using pagination, <i>default: 25</i>;</li>
-            <li><b>showCounter</b> <i>[Boolean]</i> - display data's length counter at top of the table, <i>default: false</i>;</li>
-            <li><b>dateFormat</b> <i>[Boolean]</i> - input date format when column's <b>type</b> is <b>date</b>, needs to properly sorting, <i>default: '%Y-%m-%d %H:%i:%s'</i>;</li>
-            <li><b>langs</b> <i>[Object]</i> - object of lang strings:
-                <ul class="margin-none">
-                    <li><b>counter</b> <i>[String]</i> - data's length counter title, <i>default: 'Count: '</i>;</li>
-                    <li><b>check-all</b> <i>[String]</i> - table th title checkbox title on hover, <i>default: 'Check all'</i>;</li>
-                    <li><b>uncheck-all</b> <i>[String]</i> - table th title checkbox title on hover, <i>default: 'Uncheck all'</i>;</li>
-                </ul>
-            </li>
-            <li><b>icons</b> <i>[Object]</i> - object of icons css classes:
-                <ul class="margin-none">
-                    <li><b>arrows</b> <i>[Object]</i> - object of sorting arrows icons css classes:
-                        <ul class="margin-none">
-                            <li><i>'desc' : 'icon arrow desc'</i>;</li>
-                            <li><i>'asc' : 'icon arrow asc'</i>;</li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-            <li><b>events</b> <i>[Object]</i> - object of events handlers:
-                <ul class="margin-none">
-                    <li><i>Available events: onSort, onCheckAll, onUnCheckAll, onCheck, onUnCheck, onRenderStart, onRenderEnd</i>;</li>
-                </ul>
-            </li>
-            <li><b>Com.Pagination</b> <i>[Object]</i> - specific configuration of pagination component, <i>default: {}</i>.</li>
-        </ul>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>
+                        <code><b>sort</b></code>
+                    </dt>
+                    <dd><code>Boolean</code>. Disable/Enable sorting in this column. Default: <code>as global</code>.</dd>
+                </dl>
+                <dl>
+                    <dt>
+                        <code><b>altText</b></code>
+                    </dt>
+                    <dd><code>String</code>. Displays alternative text in cell instead of data. Default: <code>none</code>.</dd>
+                </dl>
+                <dl>
+                    <dt>
+                        <code><b>urlKey</b></code>
+                    </dt>
+                    <dd><code>String</code>. Insert href attribute by this key, when column <b>type</b> is <b>url</b>. Default: <code>none</code>.</dd>
+                </dl>
+                <dl>
+                    <dt>
+                        <code><b>showTitle</b></code>
+                    </dt>
+                    <dd><code>Boolean</code>. Show title on hover, by default using content of data <b>key</b>. Default: <code>false</code>.</dd>
+                </dl>
+                <dl>
+                    <dt>
+                        <code><b>titleText</b></code>
+                    </dt>
+                    <dd><code>String</code>. Alternative title text on hover. Default: <code>none</code>.</dd>
+                </dl>
+                <dl>
+                    <dt>
+                        <code><b>textOverflow</b></code>
+                    </dt>
+                    <dd><code>Boolean</code>. Disable/Enable text no-wrap. Default: <code>false</code>.</dd>
+                </dl>
+                <dl>
+                    <dt>
+                        <code><b>preventDefault</b></code>
+                    </dt>
+                    <dd><code>Boolean</code>. Prevent default click/hover event. Default: <code>true</code>.</dd>
+                </dl>
+                <dl>
+                    <dt>
+                        <code><b>target</b></code>
+                    </dt>
+                    <dd><code>String</code>. Open links target, when column <b>type</b> is <b>url</b> <b>type</b> is <b>icon</b>. Default: <code>_blank</code>.</dd>
+                </dl>
+                <dl>
+                    <dt>
+                        <code><b>class</b></code>
+                    </dt>
+                    <dd><code>String</code>. CSS class for icon node, when column <b>type</b> is <b>icon</b>. Default: <code>none</code>.</dd>
+                </dl>
+                <dl>
+                    <dt>
+                        <code><b>onClick</b></code>
+                    </dt>
+                    <dd><code>Function</code>. On cell click event handler. When <b>type</b> is <b>icon</b> <b>url</b> <b>checkbox</b>, event will be bind on this nodes. Default: <code>none</code>.</dd>
+                </dl>
+                <dl>
+                    <dt>
+                        <code><b>onRender</b></code>
+                    </dt>
+                    <dd><code>Function</code>. On cell render event handler. Default: <code>none</code>.</dd>
+                </dl>
+                <dl>
+                    <dt>
+                        <code><b>actions</b></code>
+                    </dt>
+                    <dd>
+                        <p><code>Array</code>. Array of actions for action dropdown, when column <b>type</b> is <b>actions</b>. Default: <code>[]</code>.</p>
+                        <dl>
+                            <dt>
+                                <code><b>label</b></code>
+                            </dt>
+                            <dd><code>String</code>. Label of link.</dd>
+                        </dl>
+                        <dl>
+                            <dt>
+                                <code><b>attr</b></code>
+                            </dt>
+                            <dd><code>Object</code>. Associative array of html attributes, value can contains variables, example %id%</dd>
+                        </dl>
+                        <dl>
+                            <dt>
+                                <code><b>constructor</b></code>
+                            </dt>
+                            <dd><code>String</code>. Class Constructor.</dd>
+                        </dl>
+                        <dl>
+                            <dt>
+                                <code><b>constructorParams</b></code>
+                            </dt>
+                            <dd><code>Object</code>. Class parameters</dd>
+                        </dl>
+                        <dl>
+                            <dt>
+                                <code><b>callback</b></code>
+                            </dt>
+                            <dd><code>Function</code>. Onclick callback.</dd>
+                        </dl>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>
+                        <code><b>links</b></code>
+                    </dt>
+                    <dd>
+                        <p><code>Array</code>. Array of actions for links menu, when column <b>type</b> is <b>links</b>. Default: <code>[]</code>.</p>
+                        <dl>
+                            <dt>
+                                <code><b>label</b></code>
+                            </dt>
+                            <dd><code>String</code>. Label of link.</dd>
+                        </dl>
+                        <dl>
+                            <dt>
+                                <code><b>attr</b></code>
+                            </dt>
+                            <dd><code>Object</code>. Associative array of html attributes, value can contains variables, example %id%</dd>
+                        </dl>
+                        <dl>
+                            <dt>
+                                <code><b>events</b></code>
+                            </dt>
+                            <dd><code>Object</code>. Associative array of dom events.</dd>
+                        </dl>
+                    </dd>
+                </dl>
+            </dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>actions</b></code>
+            </dt>
+            <dd>
+                <p><code>Array</code>. Array of bulk actions. Default: <code>[]</code>.</p>
+                <dl>
+                    <dt>
+                        <code><b>label</b></code>
+                    </dt>
+                    <dd><code>String</code>. Label of link.</dd>
+                </dl>
+                <dl>
+                    <dt>
+                        <code><b>title</b></code>
+                    </dt>
+                    <dd><code>String</code>. Tile on hover.</dd>
+                </dl>
+                <dl>
+                    <dt>
+                        <code><b>permanent</b></code>
+                    </dt>
+                    <dd><code>Boolean</code>. Always enable action. Default: <code>false</code>.</dd>
+                </dl>
+                <dl>
+                    <dt>
+                        <code><b>type</b></code>
+                    </dt>
+                    <dd><code>String</code>. Style of button. Available: <i>primary</i>, <i>secondary</i>, <i>success</i>, <i>danger</i>, <i>warning</i>. Default: <code>primary</code>:</dd>
+                </dl>
+                <dl>
+                    <dt>
+                        <code><b>className</b></code>
+                    </dt>
+                    <dd><code>String</code>. CSS class. Default: <code>none</code>.</dd>
+                </dl>
+                <dl>
+                    <dt>
+                        <code><b>constructor</b></code>
+                    </dt>
+                    <dd><code>String</code>. Class Constructor.</dd>
+                </dl>
+                <dl>
+                    <dt>
+                        <code><b>constructorParams</b></code>
+                    </dt>
+                    <dd><code>Object</code>. Class parameters</dd>
+                </dl>
+                <dl>
+                    <dt>
+                        <code><b>callback</b></code>
+                    </dt>
+                    <dd><code>Function</code>. Onclick callback.</dd>
+                </dl>
+            </dd>
+        </dl>
 
-        <hr>
+        <h4>Sorting</h4>
+        <dl>
+            <dt>
+                <code><b>sort</b></code>
+            </dt>
+            <dd><code>Boolean</code>. Enable/Disable sorting. Default: <code>true</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>sortBy</b></code>
+            </dt>
+            <dd><code>String</code>. Default sorting column by key. Default: <code>id</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>orderBy</b></code>
+            </dt>
+            <dd><code>String</code>. Default: <code>ASC</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>childsBy</b></code>
+            </dt>
+            <dd><code>Boolean</code>. Render child rows after parent, (WIP - doesn't work checking / uncheking rows and statuses for now). Default: <code>false</code>.</dd>
+        </dl>
 
-        <h2>Rendering custom nodes in gridlist cells:</h2>
-        <p class="margin-none">
-            1. Add to column <b>onRender</b> event handler:
-        </p>
-        <pre class="pt__box-code">new Com.Gridlist({
-    'cols' : [
-        {'onRender' : myOnCellRenderHandler}
-    ]
-});</pre>
-        <p class="margin-none">
-            2. Function will be have some useful arguments: function(Object {Gridlist}, Object {'nodes' : Object, 'col' : Object, 'row' : Object}).<br>
-            3. Build what are you want:
-        </p>
-        <pre class="pt__box-code">var myOnCellRenderHandler = function(gridlist, data){
-    data['nodes']['inner'].appendChild(
-        cm.Node('input', {'type' : 'text'})
-    );
-};</pre>
+        <h4>Visibility</h4>
+        <dl>
+            <dt>
+                <code><b>showCounter</b></code>
+            </dt>
+            <dd><code>Boolean</code>. Show items counter. Default: <code>false</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>showBulkActions</b></code>
+            </dt>
+            <dd><code>Boolean</code>. Show toolbar with bulk actions. Default: <code>true</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>className</b></code>
+            </dt>
+            <dd><code>String</code>. CSS class. Default: <code>none</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>dateFormat</b></code>
+            </dt>
+            <dd><code>String</code>. Input date format. Default: <code>'cm._config.dateTimeFormat'</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>visibleDateFormat</b></code>
+            </dt>
+            <dd><code>String</code>. Display date format. Default: <code>'cm._config.dateTimeFormat'</code>.</dd>
+        </dl>
+
+        <h4>Pagination and ajax data request</h4>
+        <dl>
+            <dt>
+                <code><b>pagination</b></code>
+            </dt>
+            <dd><code>Boolean</code>. Enable/Disable pagination. Default: <code>true</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>perPage</b></code>
+            </dt>
+            <dd><code>Number</code>. Rows per page. Default: <code>25</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>responseKey</b></code>
+            </dt>
+            <dd><code>String</code>. Response data response key. Default: <code>data</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>responseCountKey</b></code>
+            </dt>
+            <dd><code>String</code>. Response data count response key. Default: <code>count</code>.</dd>
+        </dl>
+        <dl>
+            <dt>
+                <code><b>ajax</b></code>
+            </dt>
+            <dd><code>Object</code>. Ajax request object. Default: <code>{}</code>.</dd>
+        </dl>
+
+        <h4>Columns manipulation</h4>
+        <dl>
+            <dt>
+                <code><b>columns</b></code>
+            </dt>
+            <dd>
+                <p><code>Object</code>.</p>
+                <dl>
+                    <dt>
+                        <code><b>editable</b></code>
+                    </dt>
+                    <dd><code>Boolean</code>. Enable/Disable resizable columns. Default: <code>false</code>.</dd>
+                </dl>
+                <dl>
+                    <dt>
+                        <code><b>ajax</b></code>
+                    </dt>
+                    <dd><code>Object</code>. Ajax request object. Default: <code>{}</code>.</dd>
+                </dl>
+            </dd>
+        </dl>
+
+        <h4>Other</h4>
+        <p>See in <i>src/js/components/Gridlist.js</i>.</p>
     </li>
 
     <li data-node="tabs:[]:container" data-config='{"id" : "methods", "title" : "Methods"}'>
@@ -217,12 +551,12 @@
         <p>Available events: onSort, onCheckAll, onUnCheckAll, onCheck, onUnCheck, onRenderStart, onRenderEnd.<br>Returns a class of gridlist.</p>
 
         <h2>Check row:</h2>
-        <pre class="pt__box-code">gridlist.check(index);</pre>
-        <p><b>index</b> <i>[Nubmer]</i> - index of row in data.<br>Trigger <b>onCheck</b> event, which returns: [Object {Gridlist}, Object {row}].<br>Returns a class of gridlist.</p>
+        <pre class="pt__box-code">gridlist.check(id);</pre>
+        <p><b>index</b> <i>[Nubmer]</i> - id of row in data.<br>Trigger <b>onCheck</b> event, which returns: [Object {Gridlist}, Object {row}].<br>Returns a class of gridlist.</p>
 
         <h2>Uncheck row:</h2>
-        <pre class="pt__box-code">gridlist.unCheck(index);</pre>
-        <p><b>index</b> <i>[Nubmer]</i> - index of row in data.<br>Trigger <b>onUnCheck</b> event, which returns: [Object {Gridlist}, Object {row}].<br>Returns a class of gridlist.</p>
+        <pre class="pt__box-code">gridlist.unCheck(id);</pre>
+        <p><b>index</b> <i>[Nubmer]</i> - id of row in data.<br>Trigger <b>onUnCheck</b> event, which returns: [Object {Gridlist}, Object {row}].<br>Returns a class of gridlist.</p>
 
         <h2>Check all rows:</h2>
         <pre class="pt__box-code">gridlist.checkAll();</pre>
@@ -232,27 +566,28 @@
         <pre class="pt__box-code">gridlist.unCheckAll();</pre>
         <p>Trigger <b>onUnCheckAll</b> event, which returns: [Object {Gridlist}, Object {data}].<br>Returns a class of gridlist.</p>
 
-        <h2>Get checked rows from rendered rows:</h2>
+        <h2>Get checked rows:</h2>
         <pre class="pt__box-code">gridlist.getChecked();</pre>
-        <p>Returns the object of only rendered rows.</p>
-
-        <h2>Get checked rows from data:</h2>
-        <pre class="pt__box-code">gridlist.getCheckedData();</pre>
-        <p>Returns the object of all exists rows.</p>
+        <p>Returns the object of rows.</p>
 
         <h2>Set row status:</h2>
-        <pre class="pt__box-code">gridlist.setRowStatus(index, status);</pre>
-        <p><b>index</b> <i>[Nubmer]</i> - index of row in data.<br><b>status</b> <i>[String]</i> - status name. Available: active, success, danger, warning.<br>Returns a class of gridlist.</p>
+        <pre class="pt__box-code">gridlist.setRowStatus(id, status);</pre>
+        <p><b>index</b> <i>[Nubmer]</i> - id of row in data.<br><b>status</b> <i>[String]</i> - status name. Available: active, success, danger, warning.<br>Returns a class of gridlist.</p>
 
         <h2>Clear row status:</h2>
-        <pre class="pt__box-code">gridlist.clearRowStatus(index);</pre>
-        <p><b>index</b> <i>[Nubmer]</i> - index of row in data.<br>Returns a class of gridlist.</p>
+        <pre class="pt__box-code">gridlist.clearRowStatus(id);</pre>
+        <p><b>index</b> <i>[Nubmer]</i> - id of row in data.<br>Returns a class of gridlist.</p>
+
+        <h2>Get rows by status:</h2>
+        <pre class="pt__box-code">gridlist.getRowsByStatus(status);</pre>
+        <p><b>status</b> <i>[String]</i> - status name. Available: active, success, danger, warning.<br>Returns the object of rows.</p>
     </li>
 
     <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
         <div class="pt__box-content">
             <h2>Combine two keys to render link cell:</h2>
-            <textarea class="pt__box-code cm-autoresize" readonly>
+            <div class="cm__box">
+                <textarea readonly data-element="Com.CodeHighlight" data-config='{"language" : "javascript"}'>
 new Com.Gridlist({
     'data' : [
         {'id' : '1', 'name' : 'User Userberg', 'url' : 'http://google.com'},
@@ -264,6 +599,7 @@ new Com.Gridlist({
         {'type' : 'url', 'key' : 'name', 'urlKey' : 'url', 'width' : 'auto', 'title' : 'User'}
     ]
 });</textarea>
+            </div>
             <div data-element="gridlist" data-config='{
                 "data" : [
                      {"id" : "1", "name" : "User Userberg", "url" : "http://google.com"},
@@ -279,7 +615,8 @@ new Com.Gridlist({
 
         <div class="pt__box-content">
             <h2>Render links menu:</h2>
-            <textarea class="pt__box-code cm-autoresize" readonly>
+            <div class="cm__box">
+                <textarea readonly data-element="Com.CodeHighlight" data-config='{"language" : "javascript"}'>
 new Com.Gridlist({
     'data' : [
         {'id' : '1', 'name' : 'Lorem 1', 'descr' : 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'},
@@ -296,6 +633,7 @@ new Com.Gridlist({
         ]}
     ]
 });</textarea>
+            </div>
             <div data-element="gridlist" data-config='{
                 "data" : [
                     {"id" : "1", "name" : "Lorem 1", "descr" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit."},
@@ -316,7 +654,8 @@ new Com.Gridlist({
 
         <div class="pt__box-content">
             <h2>Render actions menu:</h2>
-            <textarea class="pt__box-code cm-autoresize" readonly>
+            <div class="cm__box">
+                <textarea readonly data-element="Com.CodeHighlight" data-config='{"language" : "javascript"}'>
 new Com.Gridlist({
     'data' : [
         {'id' : '1', 'name' : 'Lorem 1', 'descr' : 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'},
@@ -328,11 +667,12 @@ new Com.Gridlist({
         {'type' : 'text', 'key' : 'name', 'width' : '20%', 'title' : 'Name'},
         {'type' : 'text', 'key' : 'descr', 'width' : 'auto', 'title': 'Description'},
         {'type' : 'actions', 'width' : '128', 'title' : 'Actions', 'actions' : [
-            {'label' : 'Edit', 'attr' : {'href' : '/edit/%id%'}, 'events' : {/* DOM Events */}},
-            {'label' : 'Remove', 'attr' : {'href' : '/remove/%id%'}, 'events' : {/* DOM Events */}}
+            {'label' : 'Edit', 'attr' : {'href' : '/edit/%id%'}, 'callback' : function(){}},
+            {'label' : 'Remove', 'attr' : {'href' : '/remove/%id%'}, 'callback' : function(){}}
         ]}
     ]
 });</textarea>
+            </div>
             <div data-element="gridlist" data-config='{
                 "data" : [
                     {"id" : "1", "name" : "Lorem 1", "descr" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit."},
@@ -353,7 +693,8 @@ new Com.Gridlist({
 
         <div class="pt__box-content">
             <h2>Render statuses:</h2>
-            <textarea class="pt__box-code cm-autoresize" readonly>
+            <div class="cm__box">
+                <textarea readonly data-element="Com.CodeHighlight" data-config='{"language" : "javascript"}'>
 new Com.Gridlist({
     'data' : [
         {'id' : '1', 'name' : 'Checked column', '_checked' : true},
@@ -368,6 +709,7 @@ new Com.Gridlist({
         {'type' : 'text', 'key' : 'name', 'width' : 'auto', 'title' : 'Name'}
     ]
 });</textarea>
+            </div>
             <div data-element="gridlist" data-config='{
                 "data" : [
                     {"id" : "1", "name" : "Checked column", "_checked" : true},
@@ -385,12 +727,43 @@ new Com.Gridlist({
         </div>
 
         <div class="pt__box-content">
-            <h2>Other:</h2>
-            <div data-element="gridlist-all"></div>
-        </div>
-
-        <div class="pt__box-content">
             <h2>Ajax:</h2>
+            <div class="cm__box">
+                <textarea readonly data-element="Com.CodeHighlight" data-config='{"language" : "javascript"}'>
+new Com.Gridlist({
+    'columns' : {
+        'editable' : true,
+        'ajax' : {}
+    },
+    'pagination' : true,
+    'perPage' : 5,
+    'ajax' : {
+        'url' : '%baseUrl%/stuff/ajax.gridlist.json',
+        'params' : {
+            'page' : '%page%',
+            'perPage' : '%perPage%',
+            'orderBy' : '%orderBy%',
+            'sortBy' : '%sortBy%'
+        }
+    },
+    'actions' : [
+        {'label' : 'Edit', 'callback' : function(){}},
+        {'label' : 'Remove', 'type' : 'danger', 'callback' : function(){}}
+    ],
+    'cols' : [
+        {'type' : 'checkbox', 'width' : '48'},
+        {'key' : 'id', 'type' : 'number', 'width' : '48', 'title' : 'ID'},
+        {'key' : 'name', 'type' : 'number', 'width' : '10%', 'title' : 'Name'},
+        {'key' : 'descr', 'type' : 'text', 'width' : 'auto', 'title' : 'Description'},
+        {'key' : 'html', 'type' : 'html', 'width' : '15%', 'title' : 'HTML'},
+        {'key' : 'url', 'type' : 'url', 'width' : '15%', 'title' : 'Link'},
+        {'type' : 'actions', 'width' : '128', 'title' : 'Actions', 'actions' : [
+            {'label' : 'Edit', 'callback' : function(){}},
+            {'label' : 'Remove', 'callback' : function(){}}
+        ]}
+    ]
+});</textarea>
+            </div>
             <div data-element="Com.Gridlist" data-config='{
                 "columns" : {
                     "editable" : true
@@ -406,8 +779,8 @@ new Com.Gridlist({
                     }
                 },
                 "actions" : [
-                    {"label" : "Remove", "type" : "danger"},
-                    {"label" : "Edit"}
+                    {"label" : "Edit"},
+                    {"label" : "Remove", "type" : "danger"}
                 ],
                 "cols" : [
                     {"type" : "checkbox", "width" : "48"},
@@ -422,6 +795,51 @@ new Com.Gridlist({
                     ]}
                 ]
             }'></div>
+        </div>
+
+        <div class="pt__box-content">
+            <h2>Other:</h2>
+            <div class="cm__box">
+                <textarea readonly data-element="Com.CodeHighlight" data-config='{"language" : "javascript"}'>
+new Com.Gridlist({
+    'cols' : [
+        {'type' : 'checkbox', 'width' : '48'},
+        {'key' : 'id', 'type' : 'number', 'width' : '48', 'title' : 'ID'},
+        {'key' : 'name', 'type' : 'number', 'width' : '10%', 'title' : 'Name'},
+        {'key' : 'descr', 'type' : 'text', 'width' : 'auto', 'title' : 'Description', 'textOverflow' : true},
+        {'key' : 'html', 'type' : 'html', 'width' : '15%', 'title' : 'HTML'},
+        {'key' : 'url', 'type' : 'url', 'width' : '15%', 'title' : 'Link'},
+        {'key' : 'url', 'type' : 'url', 'width' : '15%', 'title' : 'Alternative Text Link', 'altText' : 'Link'},
+        {'type' : 'empty', 'width' : '150', 'title' : 'Custom nodes', 'onRender' : function(gridlist, data){
+            var node = cm.node('div', {'class' : 'pt__links'},
+                cm.node('ul',
+                    cm.node('li',
+                        cm.node('a', 'Add')
+                    ),
+                    cm.node('li',
+                        cm.node('a', 'Edit')
+                    ),
+                    cm.node('li',
+                        cm.node('a', 'Remove')
+                    )
+                )
+            );
+            cm.appendChild(node, data['nodes']['inner']);
+        }},
+        {'type' : 'icon', 'width' : '48', 'class' : 'small edit', 'showTitle' : true, 'titleText' : 'Edit', 'onClick' : function(gridlist, data){
+            cm.log(data);
+        }},
+        {'type' : 'empty', 'width' : '100', 'title' : 'Access Denied', 'access' : false}
+    ],
+    'columns' : {
+        'editable' : true
+    },
+    'sortBy' : 'id',
+    'orderBy' : 'ASC',
+    'perPage' : 5
+});</textarea>
+            </div>
+            <div data-element="gridlist-all"></div>
         </div>
     </li>
 </ul>

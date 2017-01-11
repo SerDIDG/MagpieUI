@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.24.0 (2017-01-10 20:29) ************ */
+/*! ************ MagpieUI v3.24.1 (2017-01-11 20:38) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1427,7 +1427,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.24.0',
+        '_version' : '3.24.1',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -17956,10 +17956,10 @@ cm.define('Com.Gridlist', {
         'name' : '',
 
         // Data
+        'uniqueKey' : 'id',                                         // Unique data key
         'data' : [],                                                // Array for render static data
         'cols' : [],                                                // Table columns
         'actions' : [],                                             // Bulk action buttons
-        'uniqueKey' : 'id',                                         // Unique data key
 
         // Sorting
         'sort' : true,
@@ -17977,8 +17977,8 @@ cm.define('Com.Gridlist', {
         // Pagination and ajax data request
         'pagination' : true,
         'perPage' : 25,
-        'responseCountKey' : 'count',                               // Response data count response key
         'responseKey' : 'data',                                     // Response data response key
+        'responseCountKey' : 'count',                               // Response data count response key
         'ajax' : {
             'type' : 'json',
             'method' : 'get',
@@ -18303,7 +18303,7 @@ function(params){
                             },
                             'onColumnsResize' : function(helper, data){
                                 cm.forEach(that.params['cols'], function(column, i){
-                                    if(data[i]['width']){
+                                    if(data[i] && data[i]['width']){
                                         column['width'] = data[i]['width'];
                                     }
                                 });
@@ -18409,7 +18409,7 @@ function(params){
             'index' : data[that.params['uniqueKey']],
             'data' : data,
             'childs' : [],
-            'isChecked' : data['_checked'] || false,
+            'isChecked' : false,
             'status' : data['_status'] || false,
             'nodes' : {
                 'cols' : []
@@ -18572,7 +18572,7 @@ function(params){
             item['nodes']['node'] = cm.node('input', {'type' : 'checkbox'})
         );
         row['nodes']['checkbox'] = item['nodes']['node'];
-        if(row['isChecked']){
+        if(row['data']['_checked']){
             checkRow(row, false);
         }
         cm.addEvent(item['nodes']['node'], 'click', function(){
@@ -18809,9 +18809,7 @@ function(params){
     /******* MAIN *******/
 
     that.rebuild = function(){
-        if(that.isAjax){
-            that.components['pagination'].rebuild();
-        }
+        that.params['pagination'] && that.components['pagination'].rebuild();
         return that;
     };
 
@@ -18888,6 +18886,20 @@ function(params){
             }
         });
         return that;
+    };
+
+    that.getRowsByStatus = function(status){
+        var rows = [];
+        cm.forEach(that.rows, function(row){
+            if(row['status'] == status){
+                rows.push(row);
+            }
+        });
+        return rows;
+    };
+
+    that.getToolbar = function(){
+        return that.components['toolbar'];
     };
 
     init();
