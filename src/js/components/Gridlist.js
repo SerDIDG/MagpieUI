@@ -512,7 +512,8 @@ function(params){
         };
         // Check access
         if(config['access']){
-            item['text'] = cm.isEmpty(cm.objectPath(config['key'], row['data']))? '' : cm.objectPath(config['key'], row['data']);
+            item['data'] = cm.objectPath(config['key'], row['data']);
+            item['text'] = cm.isEmpty(item['data'])? '' : item['data'];
             item['title']= cm.isEmpty(config['titleText'])? item['text'] : config['titleText'];
             // Structure
             row['nodes']['container'].appendChild(
@@ -684,22 +685,24 @@ function(params){
     };
 
     var renderCellActions = function(config, row, item){
+        var isInArray, isEmpty;
+        // Structure
         item['nodes']['actions'] = [];
-        item['nodes']['inner'].appendChild(
-            item['nodes']['node'] = cm.node('div', {'class' : ['pt__links', 'pull-right', config['class']].join(' ')},
-                cm.node('ul',
-                    item['nodes']['componentNode'] = cm.node('li', {'class' : 'com__menu', 'data-node' : 'ComMenu:{}:button'},
-                        cm.node('a', {'class' : 'label'}, that.lang('actions')),
-                        cm.node('span', {'class' : 'cm-i__chevron-down xx-small inline'}),
-                        cm.node('div', {'class' : 'pt__menu', 'data-node' : 'ComMenu.target'},
-                            item['nodes']['actionsList'] = cm.node('ul', {'class' : 'pt__menu-dropdown'})
-                        )
+        item['nodes']['node'] = cm.node('div', {'class' : ['pt__links', 'pull-right', config['class']].join(' ')},
+            cm.node('ul',
+                item['nodes']['componentNode'] = cm.node('li', {'class' : 'com__menu', 'data-node' : 'ComMenu:{}:button'},
+                    cm.node('a', {'class' : 'label'}, that.lang('actions')),
+                    cm.node('span', {'class' : 'cm-i__chevron-down xx-small inline'}),
+                    cm.node('div', {'class' : 'pt__menu', 'data-node' : 'ComMenu.target'},
+                        item['nodes']['actionsList'] = cm.node('ul', {'class' : 'pt__menu-dropdown'})
                     )
                 )
             )
         );
+        // Items
         cm.forEach(config['actions'], function(actionItem){
             actionItem = cm.merge({
+                'name' : '',
                 'label' : '',
                 'attr' : {},
                 'events' : {},
@@ -707,47 +710,60 @@ function(params){
                 'constructorParams' : {},
                 'callback' : function(){}
             }, actionItem);
-            // WTF is that? - that is attribute bindings, for example - href
-            cm.forEach(row['data'], function(itemValue, itemKey){
-                actionItem['attr'] = cm.replaceDeep(actionItem['attr'], new RegExp([cm.strWrap(itemKey, '%'), cm.strWrap(itemKey, '%25')].join('|'), 'g'), itemValue);
-            });
-            item['nodes']['actionsList'].appendChild(
-                cm.node('li',
-                    actionItem['node'] = cm.node('a', actionItem['attr'], actionItem['label'])
-                )
+            // Check access
+            isEmpty = !cm.isArray(item['data']) || cm.isEmpty(actionItem['name']);
+            isInArray = cm.isArray(item['data']) && cm.inArray(item['data'], actionItem['name']);
+            if(isEmpty || isInArray){
+                renderCellActionItem(config, row, item, actionItem);
+            }
+        });
+        // Embed
+        if(item['nodes']['actions'].length){
+            cm.appendChild(item['nodes']['node'], item['nodes']['inner']);
+        }
+    };
+
+    var renderCellActionItem = function(config, row, item, actionItem){
+        // WTF is that? - that is attribute bindings, for example - href
+        cm.forEach(row['data'], function(itemValue, itemKey){
+            actionItem['attr'] = cm.replaceDeep(actionItem['attr'], new RegExp([cm.strWrap(itemKey, '%'), cm.strWrap(itemKey, '%25')].join('|'), 'g'), itemValue);
+        });
+        item['nodes']['actionsList'].appendChild(
+            cm.node('li',
+                actionItem['node'] = cm.node('a', actionItem['attr'], actionItem['label'])
+            )
+        );
+        // Render menu component
+        cm.getConstructor('Com.Menu', function(classConstructor, className){
+            item['component'] = new classConstructor(
+                cm.merge(that.params[className], {
+                    'node' : item['nodes']['componentNode']
+                })
             );
-            // Render menu component
-            cm.getConstructor('Com.Menu', function(classConstructor, className){
-                item['component'] = new classConstructor(
-                    cm.merge(that.params[className], {
-                        'node' : item['nodes']['componentNode']
+        });
+        if(actionItem['constructor']){
+            cm.getConstructor(actionItem['constructor'], function(classConstructor){
+                actionItem['controller'] = new classConstructor(
+                    cm.merge(actionItem['constructorParams'], {
+                        'node' : actionItem['node'],
+                        'data' : row['data'],
+                        'rowItem' : row,
+                        'cellItem' : item,
+                        'actionItem' : actionItem
                     })
                 );
-            });
-            if(actionItem['constructor']){
-                cm.getConstructor(actionItem['constructor'], function(classConstructor){
-                    actionItem['controller'] = new classConstructor(
-                        cm.merge(actionItem['constructorParams'], {
-                            'node' : actionItem['node'],
-                            'data' : row['data'],
-                            'rowItem' : row,
-                            'cellItem' : item,
-                            'actionItem' : actionItem
-                        })
-                    );
-                    actionItem['controller'].addEvent('onRenderControllerEnd', function(){
-                        item['component'].hide(false);
-                    });
-                });
-            }else{
-                cm.addEvent(actionItem['node'], 'click', function(e){
-                    config['preventDefault'] && cm.preventDefault(e);
+                actionItem['controller'].addEvent('onRenderControllerEnd', function(){
                     item['component'].hide(false);
-                    actionItem['callback'](e, actionItem, row);
                 });
-            }
-            item['nodes']['actions'].push(actionItem['node']);
-        });
+            });
+        }else{
+            cm.addEvent(actionItem['node'], 'click', function(e){
+                config['preventDefault'] && cm.preventDefault(e);
+                item['component'].hide(false);
+                actionItem['callback'](e, actionItem, row);
+            });
+        }
+        item['nodes']['actions'].push(actionItem['node']);
     };
 
     /*** HELPING FUNCTIONS ***/

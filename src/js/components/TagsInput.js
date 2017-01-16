@@ -337,6 +337,13 @@ function(params){
         return that;
     };
 
+    that.reset = function(){
+        cm.forEach(items, function(item){
+            removeTag(item);
+        });
+        return that;
+    };
+
     that.getAutocomplete = function(){
         return that.components['autocomplete'];
     };

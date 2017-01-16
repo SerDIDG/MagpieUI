@@ -409,7 +409,7 @@ function(params){
         return that.fields[name];
     };
 
-    that.getAll = function(){
+    that.get = that.getAll = function(){
         var o = {},
             value;
         cm.forEach(that.fields, function(field, name){
@@ -419,6 +419,15 @@ function(params){
             }
         });
         return o;
+    };
+
+    that.set = function(data){
+        cm.forEach(data, function(value, name){
+            if(that.fields[name]){
+                that.fields[name].set(value);
+            }
+        });
+        return that;
     };
 
     that.getButtonsContainer = function(){
