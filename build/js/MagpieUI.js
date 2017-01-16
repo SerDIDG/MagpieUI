@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.24.2 (2017-01-16 18:34) ************ */
+/*! ************ MagpieUI v3.24.3 (2017-01-16 20:17) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1427,7 +1427,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.24.2',
+        '_version' : '3.24.3',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -17969,6 +17969,7 @@ cm.define('Com.Gridlist', {
         'data' : [],                                                // Array for render static data
         'cols' : [],                                                // Table columns
         'actions' : [],                                             // Bulk action buttons
+        'actionsGroups' : [],
 
         // Sorting
         'sort' : true,
@@ -18137,16 +18138,33 @@ function(params){
                     'container' : nodes['container']
                 })
             );
-            that.components['toolbar'].addGroup({
-                'name' : 'bulk',
-                'position' : 'left'
-            });
+            renderBulkGroups();
         });
         // Render buttons
         cm.forEach(that.params['actions'], renderBulkAction);
         // Export
         cm.appendChild(nodes['container'], that.nodes['container']);
         that.nodes['bulk'] = nodes;
+    };
+
+    var renderBulkGroups = function(){
+        if(!cm.isEmpty(that.params['actionsGroups'])){
+            cm.forEach(that.params['actionsGroups'], renderBulkGroup);
+        }else{
+            renderBulkGroup({
+                'name' : 'bulk',
+                'position' : 'left'
+            });
+        }
+    };
+
+    var renderBulkGroup = function(config){
+        var item = cm.merge({
+            'name' : '',
+            'position' : 'left'
+        }, config);
+        // Add
+        that.components['toolbar'].addGroup(item);
     };
 
     var renderBulkAction = function(config){
@@ -18158,6 +18176,8 @@ function(params){
             'disabled' : true,
             'permanent' : false,            // Сan not be disabled
             'type' : 'primary',
+            'attr' : {},
+            'preventDefault' : true,
             'constructor' : false,
             'constructorParams' : {},
             'callback' : function(){}
@@ -18170,7 +18190,8 @@ function(params){
         if(item['permanent']){
             item['disabled'] = false;
         }
-        that.components['toolbar'] && that.components['toolbar'].addButton(item);
+        // Add
+        that.components['toolbar'].addButton(item);
         that.actions.push(item);
     };
 
@@ -20980,8 +21001,6 @@ function(params){
         }
         // Set start page token
         that.setToken(that.params['startPage'], that.params['startPageToken']);
-        // Loader
-        that.params['Com.Overlay']['container'] = that.nodes['content'];
     };
 
     var render = function(){
@@ -21015,8 +21034,12 @@ function(params){
         // Reset styles and variables
         reset();
         // Overlay
-        cm.getConstructor('Com.Overlay', function(classConstructor){
-            that.components['loader'] = new classConstructor(that.params['Com.Overlay']);
+        cm.getConstructor('Com.Overlay', function(classConstructor, className){
+            that.components['loader'] = new classConstructor(
+                cm.merge(that.params[className], {
+                    'container' : that.nodes['content']
+                })
+            );
         });
         // Animated
         if(that.params['animateSwitch']){
@@ -27486,7 +27509,7 @@ function(params){
             'node' : null,
             'adaptive' : true,
             'name' : '',
-            'position' : 'left',
+            'position' : 'left',            // left | center | right
             'items' : {}
         }, item);
         if(!that.groups[item['name']]){
@@ -27526,7 +27549,7 @@ function(params){
         var group;
         item = cm.merge({
             'container' : cm.node('li'),
-            'node' : cm.node('div', {'class' : 'button'}),
+            'node' : null,
             'type' : 'primary',                                 // primary, secondary, success, danger, warning
             'name' : '',
             'label' : '',
@@ -27534,6 +27557,8 @@ function(params){
             'group' : '',
             'disabled' : false,
             'className' : '',
+            'attr' : {},
+            'preventDefault' : true,
             'constructor' : false,
             'constructorParams' : {},
             'callback' : function(){}
@@ -27544,7 +27569,10 @@ function(params){
         }
         // Render
         if((group = that.groups[item['group']]) && !group.items[item['name']]){
+            // Structure
+            item['node'] = cm.node('a', item['attr']);
             // Styles
+            cm.addClass(item['node'], 'button');
             cm.addClass(item['node'], ['button', item['type']].join('-'));
             cm.addClass(item['node'], item['className']);
             item['disabled'] && cm.addClass(item['node'], 'button-disabled');
@@ -27562,7 +27590,7 @@ function(params){
                 });
             }else{
                 cm.addEvent(item['node'], 'click', function(e){
-                    cm.preventDefault(e);
+                    item['preventDefault'] && cm.preventDefault(e);
                     !item['disabled'] && item['callback'](e, item);
                 });
             }

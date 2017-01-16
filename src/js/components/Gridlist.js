@@ -30,6 +30,7 @@ cm.define('Com.Gridlist', {
         'data' : [],                                                // Array for render static data
         'cols' : [],                                                // Table columns
         'actions' : [],                                             // Bulk action buttons
+        'actionsGroups' : [],
 
         // Sorting
         'sort' : true,
@@ -198,16 +199,33 @@ function(params){
                     'container' : nodes['container']
                 })
             );
-            that.components['toolbar'].addGroup({
-                'name' : 'bulk',
-                'position' : 'left'
-            });
+            renderBulkGroups();
         });
         // Render buttons
         cm.forEach(that.params['actions'], renderBulkAction);
         // Export
         cm.appendChild(nodes['container'], that.nodes['container']);
         that.nodes['bulk'] = nodes;
+    };
+
+    var renderBulkGroups = function(){
+        if(!cm.isEmpty(that.params['actionsGroups'])){
+            cm.forEach(that.params['actionsGroups'], renderBulkGroup);
+        }else{
+            renderBulkGroup({
+                'name' : 'bulk',
+                'position' : 'left'
+            });
+        }
+    };
+
+    var renderBulkGroup = function(config){
+        var item = cm.merge({
+            'name' : '',
+            'position' : 'left'
+        }, config);
+        // Add
+        that.components['toolbar'].addGroup(item);
     };
 
     var renderBulkAction = function(config){
@@ -219,6 +237,8 @@ function(params){
             'disabled' : true,
             'permanent' : false,            // Сan not be disabled
             'type' : 'primary',
+            'attr' : {},
+            'preventDefault' : true,
             'constructor' : false,
             'constructorParams' : {},
             'callback' : function(){}
@@ -231,7 +251,8 @@ function(params){
         if(item['permanent']){
             item['disabled'] = false;
         }
-        that.components['toolbar'] && that.components['toolbar'].addButton(item);
+        // Add
+        that.components['toolbar'].addButton(item);
         that.actions.push(item);
     };
 

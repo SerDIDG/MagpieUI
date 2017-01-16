@@ -70,7 +70,7 @@ function(params){
             'node' : null,
             'adaptive' : true,
             'name' : '',
-            'position' : 'left',
+            'position' : 'left',            // left | center | right
             'items' : {}
         }, item);
         if(!that.groups[item['name']]){
@@ -110,7 +110,7 @@ function(params){
         var group;
         item = cm.merge({
             'container' : cm.node('li'),
-            'node' : cm.node('div', {'class' : 'button'}),
+            'node' : null,
             'type' : 'primary',                                 // primary, secondary, success, danger, warning
             'name' : '',
             'label' : '',
@@ -118,6 +118,8 @@ function(params){
             'group' : '',
             'disabled' : false,
             'className' : '',
+            'attr' : {},
+            'preventDefault' : true,
             'constructor' : false,
             'constructorParams' : {},
             'callback' : function(){}
@@ -128,7 +130,10 @@ function(params){
         }
         // Render
         if((group = that.groups[item['group']]) && !group.items[item['name']]){
+            // Structure
+            item['node'] = cm.node('a', item['attr']);
             // Styles
+            cm.addClass(item['node'], 'button');
             cm.addClass(item['node'], ['button', item['type']].join('-'));
             cm.addClass(item['node'], item['className']);
             item['disabled'] && cm.addClass(item['node'], 'button-disabled');
@@ -146,7 +151,7 @@ function(params){
                 });
             }else{
                 cm.addEvent(item['node'], 'click', function(e){
-                    cm.preventDefault(e);
+                    item['preventDefault'] && cm.preventDefault(e);
                     !item['disabled'] && item['callback'](e, item);
                 });
             }

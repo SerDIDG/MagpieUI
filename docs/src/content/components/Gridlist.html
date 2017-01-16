@@ -731,6 +731,57 @@ new Com.Gridlist({
         </div>
 
         <div class="pt__box-content">
+            <h2>Render bulk actions by custom groups:</h2>
+            <div class="cm__box">
+                <textarea readonly data-element="Com.CodeHighlight" data-config='{"language" : "javascript"}'>
+new Com.Gridlist({
+    'data' : [
+        {'id' : '1', 'name' : 'Lorem 1', 'descr' : 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'},
+        {'id' : '2', 'name' : 'Lorem 2', 'descr' : 'Aliquam fringilla congue quam, sed porttitor lectus.'},
+        {'id' : '3', 'name' : 'Lorem 3', 'descr' : 'Suspendisse commodo suscipit vulputate.'}
+    ],
+    'actions' : [
+        {'label' : 'Add New', 'group' : 'actions', 'permanent' : true, 'attr' : {'href' : 'http://google.com'}},
+        {'label' : 'Remove Selected', 'type' : 'danger'},
+        {'label' : 'Edit Selected'}
+    ],
+    'actionsGroups' : [
+        {'name' : 'actions', 'position' : 'left'},
+        {'name' : 'bulk', 'position' : 'left'}
+    ],
+    'cols' : [
+        {'type' : 'checkbox', 'width' : '48'},
+        {'type' : 'number', 'key' : 'id', 'width' : '48', 'title' : 'ID'},
+        {'type' : 'text', 'key' : 'name', 'width' : '20%', 'title' : 'Name'},
+        {'type' : 'text', 'key' : 'descr', 'width' : 'auto', 'title': 'Description'}
+    ]
+});</textarea>
+            </div>
+            <div data-element="Com.Gridlist" data-config='{
+                "data" : [
+                    {"id" : "1", "name" : "Lorem 1", "descr" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit."},
+                    {"id" : "2", "name" : "Lorem 2", "descr" : "Aliquam fringilla congue quam, sed porttitor lectus."},
+                    {"id" : "3", "name" : "Lorem 3", "descr" : "Suspendisse commodo suscipit vulputate."}
+                ],
+                "actions" : [
+                    {"label" : "Add New", "group" : "actions", "permanent" : true, "attr" : {"href" : "http://google.com"}},
+                    {"label" : "Remove Selected", "type" : "danger"},
+                    {"label" : "Edit Selected"}
+                ],
+                "actionsGroups" : [
+                    {"name" : "actions", "position" : "left"},
+                    {"name" : "bulk", "position" : "left"}
+                ],
+                "cols" : [
+                    {"type" : "checkbox", "width" : "48"},
+                    {"type" : "number", "key" : "id", "width" : "48", "title" : "ID"},
+                    {"type" : "text", "key" : "name", "width" : "20%", "title" : "Name"},
+                    {"type" : "text", "key" : "descr", "width" : "auto", "title" : "Description"}
+                ]
+            }'></div>
+        </div>
+
+        <div class="pt__box-content">
             <h2>Render statuses:</h2>
             <div class="cm__box">
                 <textarea readonly data-element="Com.CodeHighlight" data-config='{"language" : "javascript"}'>

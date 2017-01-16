@@ -130,8 +130,6 @@ function(params){
         }
         // Set start page token
         that.setToken(that.params['startPage'], that.params['startPageToken']);
-        // Loader
-        that.params['Com.Overlay']['container'] = that.nodes['content'];
     };
 
     var render = function(){
@@ -165,8 +163,12 @@ function(params){
         // Reset styles and variables
         reset();
         // Overlay
-        cm.getConstructor('Com.Overlay', function(classConstructor){
-            that.components['loader'] = new classConstructor(that.params['Com.Overlay']);
+        cm.getConstructor('Com.Overlay', function(classConstructor, className){
+            that.components['loader'] = new classConstructor(
+                cm.merge(that.params[className], {
+                    'container' : that.nodes['content']
+                })
+            );
         });
         // Animated
         if(that.params['animateSwitch']){

@@ -20,7 +20,7 @@
         },
         "perPage" : 5,
         "ajax" : {
-            "url" : "%baseUrl%/stuff/ajax.gridlist.json",
+            "url" : "%baseUrl%/stuff/ajax.gridlist.php",
             "params" : {
                 "page" : "%page%",
                 "perPage" : "%perPage%",
@@ -29,8 +29,13 @@
             }
         },
         "actions" : [
-            {"label" : "Remove", "type" : "danger"},
-            {"label" : "Edit"}
+            {"label" : "Add New", "group" : "actions", "permanent" : true, "attr" : {"href" : "http://google.com"}},
+            {"label" : "Remove Selected", "type" : "danger"},
+            {"label" : "Edit Selected"}
+        ],
+        "actionsGroups" : [
+            {"name" : "actions", "position" : "left"},
+            {"name" : "bulk", "position" : "left"}
         ],
         "cols" : [
             {"type" : "checkbox", "width" : "48"},
