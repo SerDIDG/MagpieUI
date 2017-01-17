@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.24.3 (2017-01-16 20:17) ************ */
+/*! ************ MagpieUI v3.24.4 (2017-01-17 20:00) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1427,7 +1427,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.24.3',
+        '_version' : '3.24.4',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -18914,6 +18914,22 @@ function(params){
 
     that.getChecked = function(){
         return that.checked;
+    };
+
+    that.getCheckedData = function(){
+        var rows = [];
+        cm.forEach(that.checked, function(item){
+            rows.push(item['data']);
+        });
+        return rows;
+    };
+
+    that.getCheckedIndexes = function(){
+        var rows = [];
+        cm.forEach(that.checked, function(item){
+            rows.push(item['data'][that.params['uniqueKey']]);
+        });
+        return rows;
     };
 
     that.setRowStatus = function(id, status){

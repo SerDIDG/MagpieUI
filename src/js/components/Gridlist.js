@@ -977,6 +977,22 @@ function(params){
         return that.checked;
     };
 
+    that.getCheckedData = function(){
+        var rows = [];
+        cm.forEach(that.checked, function(item){
+            rows.push(item['data']);
+        });
+        return rows;
+    };
+
+    that.getCheckedIndexes = function(){
+        var rows = [];
+        cm.forEach(that.checked, function(item){
+            rows.push(item['data'][that.params['uniqueKey']]);
+        });
+        return rows;
+    };
+
     that.setRowStatus = function(id, status){
         cm.forEach(that.rows, function(row){
             if(row['index'] == id){
