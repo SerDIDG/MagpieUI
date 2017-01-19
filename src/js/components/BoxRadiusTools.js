@@ -12,6 +12,7 @@ cm.define('Com.BoxRadiusTools', {
 },
 function(params){
     var that = this;
+    // Call parent class construct
     Com.BoxTools.apply(that, arguments);
 });
 
@@ -19,10 +20,12 @@ cm.getConstructor('Com.BoxRadiusTools', function(classConstructor, className, cl
     var _inherit = classProto._inherit;
 
     classProto.renderContent = function(){
-        var that = this;
+        var that = this,
+            nodes = {};
+        that.nodes['content'] = nodes;
         that.triggerEvent('onRenderContentStart');
         // Structure
-        that.myNodes['container'] = cm.node('div', {'class' : 'com__box-tools__content'},
+        nodes['container'] = cm.node('div', {'class' : 'com__box-tools__content'},
             cm.node('div', {'class' : 'b-line'},
                 that.renderInput(that.params['inputs'][0], 0),
                 that.renderInput(that.params['inputs'][1], 1)
@@ -33,7 +36,7 @@ cm.getConstructor('Com.BoxRadiusTools', function(classConstructor, className, cl
             ),
             cm.node('div', {'class' : 'b-line'},
                 cm.node('div', {'class' : 'b-link-container'},
-                    that.myNodes['link'] = cm.node('div', {'class' : 'b-link', 'title' : that.lang('link')},
+                    nodes['link'] = cm.node('div', {'class' : 'b-link', 'title' : that.lang('link')},
                         cm.node('div', {'class' : 'icon'})
                     )
                 )
@@ -41,9 +44,9 @@ cm.getConstructor('Com.BoxRadiusTools', function(classConstructor, className, cl
         );
         // Events
         that.triggerEvent('onRenderContentProcess');
-        cm.addEvent(that.myNodes['link'], 'click', that.linkInputsHandler);
+        cm.addEvent(nodes['link'], 'click', that.linkInputsHandler);
         that.triggerEvent('onRenderContentEnd');
         // Push
-        return that.myNodes['container'];
+        return nodes['container'];
     };
 });

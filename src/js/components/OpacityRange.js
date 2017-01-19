@@ -10,7 +10,6 @@ cm.define('Com.OpacityRange', {
 },
 function(params){
     var that = this;
-    that.myNodes = {};
     Com.AbstractRange.apply(that, arguments);
 });
 
@@ -19,6 +18,7 @@ cm.getConstructor('Com.OpacityRange', function(classConstructor, className, clas
 
     classProto.construct = function(){
         var that = this;
+        that.myNodes = {};
         _inherit.prototype.construct.apply(that, arguments);
         that.setColor(that.params['color']);
         return this;

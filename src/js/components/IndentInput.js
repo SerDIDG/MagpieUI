@@ -9,7 +9,6 @@ cm.define('Com.IndentInput', {
 },
 function(params){
     var that = this;
-    that.myNodes = {};
     // Call parent class construct
     Com.AbstractInput.apply(that, arguments);
 });
@@ -29,6 +28,7 @@ cm.getConstructor('Com.IndentInput', function(classConstructor, className, class
     classProto.renderContent = function(){
         var that = this,
             nodes = {};
+        that.nodes['content'] = nodes;
         that.triggerEvent('onRenderContentStart');
         // Structure
         nodes['container'] = cm.node('div', {'class' : 'pt__input'},
@@ -60,7 +60,6 @@ cm.getConstructor('Com.IndentInput', function(classConstructor, className, class
         }
         that.triggerEvent('onRenderContentEnd');
         // Push
-        that.nodes['component'] = nodes;
         return nodes['container'];
     };
 
@@ -82,7 +81,7 @@ cm.getConstructor('Com.IndentInput', function(classConstructor, className, class
 
     classProto.setData = function(){
         var that = this;
-        that.nodes['component']['input'].value = that.rawValue;
+        that.nodes['content']['input'].value = that.rawValue;
         return that;
     };
 });

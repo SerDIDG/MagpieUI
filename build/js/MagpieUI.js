@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.24.4 (2017-01-17 20:00) ************ */
+/*! ************ MagpieUI v3.24.5 (2017-01-19 19:48) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1427,7 +1427,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.24.4',
+        '_version' : '3.24.5',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -6928,6 +6928,8 @@ cm.define('Com.AbstractInput', {
     ],
     'params' : {
         'embedStructure' : 'replace',
+        'renderStructure' : true,
+        'renderStructureContent' : true,
         'value' : '',
         'defaultValue' : '',
         'title' : '',
@@ -7060,21 +7062,27 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         var that = this;
         that.triggerEvent('onRenderViewStart');
         that.nodes['container'] = cm.node('div', {'class' : 'com__input'},
-            that.nodes['hidden'] = cm.node('input', {'type' : 'hidden'}),
-            that.nodes['content'] = that.renderContent()
+            that.nodes['hidden'] = cm.node('input', {'type' : 'hidden'})
         );
+        if(that.params['renderStructureContent']){
+            that.nodes['contentContainer'] = that.renderContent();
+            cm.appendChild(that.nodes['contentContainer'], that.nodes['container']);
+        }
         that.triggerEvent('onRenderViewProcess');
         that.triggerEvent('onRenderViewEnd');
         return that;
     };
 
     classProto.renderContent = function(){
-        var that = this;
+        var that = this,
+            nodes = {};
         that.triggerEvent('onRenderContentStart');
-        var node = cm.node('div', {'class' : 'input__content'});
+        nodes['container'] = cm.node('div', {'class' : 'input__content'});
         that.triggerEvent('onRenderContentProcess');
         that.triggerEvent('onRenderContentEnd');
-        return node;
+        // Export
+        that.nodes['content'] = nodes;
+        return nodes['container'];
     };
 
     classProto.setAttributes = function(){
@@ -9242,7 +9250,6 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
     classProto.construct = function(){
         var that = this;
         // Variables
-        that.myNodes = {};
         that.inputs = [];
         that.rawValue = null;
         that.isInputsLinked = false;
@@ -9269,17 +9276,19 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
     };
 
     classProto.renderContent = function(){
-        var that = this;
+        var that = this,
+            nodes = {};
+        that.nodes['content'] = nodes;
         that.triggerEvent('onRenderContentStart');
         // Structure
-        that.myNodes['container'] = cm.node('div', {'class' : 'com__box-tools__content'},
+        nodes['container'] = cm.node('div', {'class' : 'com__box-tools__content'},
             cm.node('div', {'class' : 'b-line'},
                 that.renderInput(that.params['inputs'][0], 0)
             ),
             cm.node('div', {'class' : 'b-line'},
                 that.renderInput(that.params['inputs'][3], 3),
                 cm.node('div', {'class' : 'b-link-container'},
-                    that.myNodes['link'] = cm.node('div', {'class' : 'b-link', 'title' : that.lang('link')},
+                    nodes['link'] = cm.node('div', {'class' : 'b-link', 'title' : that.lang('link')},
                         cm.node('div', {'class' : 'icon'})
                     )
                 ),
@@ -9291,10 +9300,10 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
         );
         // Events
         that.triggerEvent('onRenderContentProcess');
-        cm.addEvent(that.myNodes['link'], 'click', that.linkInputsHandler);
+        cm.addEvent(nodes['link'], 'click', that.linkInputsHandler);
         that.triggerEvent('onRenderContentEnd');
-        // Push
-        return that.myNodes['container'];
+        // Export
+        return nodes['container'];
     };
 
     classProto.renderInput = function(item, i){
@@ -9411,8 +9420,8 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
         var that = this;
         if(!that.isInputsLinked){
             that.isInputsLinked = true;
-            cm.addClass(that.myNodes['link'], 'active');
-            that.myNodes['link'].title = that.lang('unlink');
+            cm.addClass(that.nodes['content']['link'], 'active');
+            that.nodes['content']['link'].title = that.lang('unlink');
             if(that.lastInput){
                 that.set(that.lastInput['input'].value);
             }else{
@@ -9424,8 +9433,8 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
             }
         }else{
             that.isInputsLinked = false;
-            cm.removeClass(that.myNodes['link'], 'active');
-            that.myNodes['link'].title = that.lang('link');
+            cm.removeClass(that.nodes['content']['link'], 'active');
+            that.nodes['content']['link'].title = that.lang('link');
         }
         return that;
     };
@@ -10898,6 +10907,7 @@ cm.define('Com.BoxRadiusTools', {
 },
 function(params){
     var that = this;
+    // Call parent class construct
     Com.BoxTools.apply(that, arguments);
 });
 
@@ -10905,10 +10915,12 @@ cm.getConstructor('Com.BoxRadiusTools', function(classConstructor, className, cl
     var _inherit = classProto._inherit;
 
     classProto.renderContent = function(){
-        var that = this;
+        var that = this,
+            nodes = {};
+        that.nodes['content'] = nodes;
         that.triggerEvent('onRenderContentStart');
         // Structure
-        that.myNodes['container'] = cm.node('div', {'class' : 'com__box-tools__content'},
+        nodes['container'] = cm.node('div', {'class' : 'com__box-tools__content'},
             cm.node('div', {'class' : 'b-line'},
                 that.renderInput(that.params['inputs'][0], 0),
                 that.renderInput(that.params['inputs'][1], 1)
@@ -10919,7 +10931,7 @@ cm.getConstructor('Com.BoxRadiusTools', function(classConstructor, className, cl
             ),
             cm.node('div', {'class' : 'b-line'},
                 cm.node('div', {'class' : 'b-link-container'},
-                    that.myNodes['link'] = cm.node('div', {'class' : 'b-link', 'title' : that.lang('link')},
+                    nodes['link'] = cm.node('div', {'class' : 'b-link', 'title' : that.lang('link')},
                         cm.node('div', {'class' : 'icon'})
                     )
                 )
@@ -10927,10 +10939,10 @@ cm.getConstructor('Com.BoxRadiusTools', function(classConstructor, className, cl
         );
         // Events
         that.triggerEvent('onRenderContentProcess');
-        cm.addEvent(that.myNodes['link'], 'click', that.linkInputsHandler);
+        cm.addEvent(nodes['link'], 'click', that.linkInputsHandler);
         that.triggerEvent('onRenderContentEnd');
         // Push
-        return that.myNodes['container'];
+        return nodes['container'];
     };
 });
 cm.define('Com.Calendar', {
@@ -15881,8 +15893,6 @@ cm.define('Com.FileInput', {
 },
 function(params){
     var that = this;
-    that.myNodes = {};
-    that.myComponents = {};
     // Call parent class construct
     Com.AbstractInput.apply(that, arguments);
 });
@@ -15919,7 +15929,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
     classProto.initComponentsStart = function(){
         var that = this;
         cm.getConstructor('Com.FileReader', function(classObject){
-            that.myComponents['validator'] = new classObject();
+            that.components['validator'] = new classObject();
         });
         return that;
     };
@@ -15946,7 +15956,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
 
     classProto.validateValue = function(value){
         var that = this,
-            item = that.myComponents['validator'].validate(value);
+            item = that.components['validator'].validate(value);
         return !cm.isEmpty(item['value']) ? item : '';
     };
 
@@ -15970,21 +15980,21 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         _inherit.prototype.renderViewModel.apply(that, arguments);
         // Init FilerReader
         cm.getConstructor('Com.FileReader', function(classObject, className){
-            that.myComponents['reader'] = new classObject(that.params[className]);
-            that.myComponents['reader'].addEvent('onReadSuccess', function(my, item){
+            that.components['reader'] = new classObject(that.params[className]);
+            that.components['reader'].addEvent('onReadSuccess', function(my, item){
                 that.set(item, true);
             });
         });
         // Init Dropzone
         if(that.params['dropzone']){
             cm.getConstructor(that.params['dropzoneConstructor'], function(classObject){
-                that.myComponents['dropzone'] = new classObject(
+                that.components['dropzone'] = new classObject(
                     cm.merge(that.params['dropzoneParams'], {
-                        'container' : that.myNodes['inner'],
-                        'target' : that.myNodes['content']
+                        'container' : that.nodes['content']['inner'],
+                        'target' : that.nodes['content']['content']
                     })
                 );
-                that.myComponents['dropzone'].addEvent('onDrop', function(my, data){
+                that.components['dropzone'].addEvent('onDrop', function(my, data){
                     that.processFiles(data);
                 });
             });
@@ -15992,12 +16002,12 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         // Init File Manager
         if(that.params['fileManager']){
             cm.getConstructor(that.params['fileManagerConstructor'], function(classObject){
-                that.myComponents['fileManager'] = new classObject(
+                that.components['fileManager'] = new classObject(
                     cm.merge(that.params['fileManagerParams'], {
-                        'node' : that.myNodes['browseFileManager']
+                        'node' : that.nodes['content']['browseFileManager']
                     })
                 );
-                that.myComponents['fileManager'].addEvent('onComplete', function(my, data){
+                that.components['fileManager'].addEvent('onComplete', function(my, data){
                     that.processFiles(data);
                 });
             });
@@ -16005,12 +16015,12 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         // Init File Uploader
         if(that.params['fileUploader']){
             cm.getConstructor(that.params['fileUploaderConstructor'], function(classObject){
-                that.myComponents['fileUploader'] = new classObject(
+                that.components['fileUploader'] = new classObject(
                     cm.merge(that.params['fileUploaderParams'], {
-                        'node' : that.myNodes['browseFileUploader']
+                        'node' : that.nodes['content']['browseFileUploader']
                     })
                 );
-                that.myComponents['fileUploader'].addEvent('onComplete', function(my, data){
+                that.components['fileUploader'].addEvent('onComplete', function(my, data){
                     that.processFiles(data);
                 });
             });
@@ -16019,16 +16029,18 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
     };
 
     classProto.renderContent = function(){
-        var that = this;
+        var that = this,
+            nodes = {};
+        that.nodes['content'] = nodes;
         that.triggerEvent('onRenderContentStart');
         // Structure
-        that.myNodes['container'] = cm.node('div', {'class' : 'com__file-input__content'},
-            that.myNodes['inner'] = cm.node('div', {'class' : 'inner'},
-                that.myNodes['content'] = cm.node('div', {'class' : 'com__file-input__holder'},
+        nodes['container'] = cm.node('div', {'class' : 'com__file-input__content'},
+            nodes['inner'] = cm.node('div', {'class' : 'inner'},
+                nodes['content'] = cm.node('div', {'class' : 'com__file-input__holder'},
                     cm.node('div', {'class' : 'pt__file-line'},
-                        that.myNodes['buttonsInner'] = cm.node('div', {'class' : 'inner'},
-                            that.myNodes['clear'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('remove')),
-                            that.myNodes['label'] = cm.node('div', {'class' : 'label'})
+                        nodes['buttonsInner'] = cm.node('div', {'class' : 'inner'},
+                            nodes['clear'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('remove')),
+                            nodes['label'] = cm.node('div', {'class' : 'label'})
                         )
                     )
                 )
@@ -16036,54 +16048,54 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         );
         // Render Browse Buttons
         if(that.params['local']){
-            that.myNodes['browseLocal'] = cm.node('div', {'class' : 'browse-button'},
+            nodes['browseLocal'] = cm.node('div', {'class' : 'browse-button'},
                 cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('_browse_local')),
                 cm.node('div', {'class' : 'inner'},
-                    that.myNodes['input'] = cm.node('input', {'type' : 'file'})
+                    nodes['input'] = cm.node('input', {'type' : 'file'})
                 )
             );
-            cm.addEvent(that.myNodes['input'], 'change', that.browseActionHandler);
-            cm.insertFirst(that.myNodes['browseLocal'], that.myNodes['buttonsInner']);
+            cm.addEvent(nodes['input'], 'change', that.browseActionHandler);
+            cm.insertFirst(nodes['browseLocal'], nodes['buttonsInner']);
         }
         if(that.params['fileManager']){
-            that.myNodes['browseFileManager'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('_browse_filemanager'));
-            cm.insertFirst(that.myNodes['browseFileManager'], that.myNodes['buttonsInner']);
+            nodes['browseFileManager'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('_browse_filemanager'));
+            cm.insertFirst(nodes['browseFileManager'], nodes['buttonsInner']);
         }
         if(that.params['fileUploader']){
-            that.myNodes['browseFileUploader'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('browse'));
-            cm.insertFirst(that.myNodes['browseFileUploader'], that.myNodes['buttonsInner']);
+            nodes['browseFileUploader'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('browse'));
+            cm.insertFirst(nodes['browseFileUploader'], nodes['buttonsInner']);
         }
         // Events
         that.triggerEvent('onRenderContentProcess');
-        cm.addEvent(that.myNodes['clear'], 'click', that.clearEventHandler);
+        cm.addEvent(nodes['clear'], 'click', that.clearEventHandler);
         that.triggerEvent('onRenderContentEnd');
-        // Push
-        return that.myNodes['container'];
+        // Export
+        return nodes['container'];
     };
 
     classProto.setData = function(){
         var that = this,
             url;
         if(cm.isEmpty(that.value)){
-            cm.clearNode(that.myNodes['label']);
-            cm.addClass(that.myNodes['label'], 'is-hidden');
-            cm.removeClass(that.myNodes['browseLocal'], 'is-hidden');
-            cm.removeClass(that.myNodes['browseFileManager'], 'is-hidden');
-            cm.removeClass(that.myNodes['browseFileUploader'], 'is-hidden');
-            cm.addClass(that.myNodes['clear'], 'is-hidden');
+            cm.clearNode(that.nodes['content']['label']);
+            cm.addClass(that.nodes['content']['label'], 'is-hidden');
+            cm.removeClass(that.nodes['content']['browseLocal'], 'is-hidden');
+            cm.removeClass(that.nodes['content']['browseFileManager'], 'is-hidden');
+            cm.removeClass(that.nodes['content']['browseFileUploader'], 'is-hidden');
+            cm.addClass(that.nodes['content']['clear'], 'is-hidden');
         }else{
-            cm.clearNode(that.myNodes['label']);
+            cm.clearNode(that.nodes['content']['label']);
             if(that.params['showLink']){
-                that.myNodes['link'] = cm.node('a', {'target' : '_blank', 'href' : that.value['url'], 'title' : that.lang('open')}, that.value['name']);
+                that.nodes['content']['link'] = cm.node('a', {'target' : '_blank', 'href' : that.value['url'], 'title' : that.lang('open')}, that.value['name']);
             }else{
-                that.myNodes['link'] = cm.textNode(that.value['name']);
+                that.nodes['content']['link'] = cm.textNode(that.value['name']);
             }
-            cm.appendChild(that.myNodes['link'], that.myNodes['label']);
-            cm.addClass(that.myNodes['browseLocal'], 'is-hidden');
-            cm.addClass(that.myNodes['browseFileManager'], 'is-hidden');
-            cm.addClass(that.myNodes['browseFileUploader'], 'is-hidden');
-            cm.removeClass(that.myNodes['clear'], 'is-hidden');
-            cm.removeClass(that.myNodes['label'], 'is-hidden');
+            cm.appendChild(that.nodes['content']['link'], that.nodes['content']['label']);
+            cm.addClass(that.nodes['content']['browseLocal'], 'is-hidden');
+            cm.addClass(that.nodes['content']['browseFileManager'], 'is-hidden');
+            cm.addClass(that.nodes['content']['browseFileUploader'], 'is-hidden');
+            cm.removeClass(that.nodes['content']['clear'], 'is-hidden');
+            cm.removeClass(that.nodes['content']['label'], 'is-hidden');
         }
         return that;
     };
@@ -16102,7 +16114,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
     classProto.processFiles = function(data){
         var that = this;
         if(cm.isFile(data)){
-            that.myComponents['reader'].read(data);
+            that.components['reader'].read(data);
         }else if(cm.isArray(data)){
             cm.forEach(data, function(file){
                 that.processFiles(file);
@@ -18864,6 +18876,11 @@ function(params){
         return that;
     };
 
+    that.setAction = function(o, mode, update){
+        that.params['pagination'] && that.components['pagination'].setAction(o, mode, update);
+        return that;
+    };
+
     that.check = function(id){
         cm.forEach(that.rows, function(row){
             if(row['index'] == id){
@@ -19335,7 +19352,7 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
             cm.getConstructor(that.params['previewConstructor'], function(classObject){
                 that.components['preview'] = new classObject(
                     cm.merge(that.params['previewParams'], {
-                        'node' : that.myNodes['preview']
+                        'node' : that.nodes['content']['preview']
                     })
                 );
             });
@@ -19343,25 +19360,27 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
     };
 
     classProto.renderContent = function(){
-        var that = this;
+        var that = this,
+            nodes = {};
+        that.nodes['content'] = nodes;
         that.triggerEvent('onRenderContentStart');
         // Structure
-        that.myNodes['container'] = cm.node('div', {'class' : 'com__image-input__content'},
-            that.myNodes['inner'] = cm.node('div', {'class' : 'inner'},
-                that.myNodes['content'] = cm.node('div', {'class' : 'input__holder'},
+        nodes['container'] = cm.node('div', {'class' : 'com__image-input__content'},
+            nodes['inner'] = cm.node('div', {'class' : 'inner'},
+                nodes['content'] = cm.node('div', {'class' : 'input__holder'},
                     cm.node('div', {'class' : 'input__cover'},
-                        that.myNodes['label'] = cm.node('div', {'class' : 'input__label'}),
-                        that.myNodes['buttonsInner'] = cm.node('div', {'class' : 'input__buttons'},
-                            that.myNodes['clear'] = cm.node('div', {'class' : 'cm__button-wrapper'},
+                        nodes['label'] = cm.node('div', {'class' : 'input__label'}),
+                        nodes['buttonsInner'] = cm.node('div', {'class' : 'input__buttons'},
+                            nodes['clear'] = cm.node('div', {'class' : 'cm__button-wrapper'},
                                 cm.node('button', {'type' : 'button', 'class' : 'button button-danger'},
                                     cm.node('span', that.lang('remove'))
                                 )
                             )
                         )
                     ),
-                    that.myNodes['imageContainer'] = cm.node('div', {'class' : 'pt__image is-cover'},
+                    nodes['imageContainer'] = cm.node('div', {'class' : 'pt__image is-cover'},
                         cm.node('div', {'class' : 'inner'},
-                            that.myNodes['image'] = cm.node('div', {'class' : 'descr'})
+                            nodes['image'] = cm.node('div', {'class' : 'descr'})
                         )
                     )
                 )
@@ -19369,56 +19388,56 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
         );
         // Image Preview size
         if(that.params['aspect']){
-            cm.addClass(that.myNodes['imageContainer'], 'is-background has-aspect');
-            cm.addClass(that.myNodes['imageContainer'], ['cm__aspect', that.params['aspect']].join('-'));
+            cm.addClass(nodes['imageContainer'], 'is-background has-aspect');
+            cm.addClass(nodes['imageContainer'], ['cm__aspect', that.params['aspect']].join('-'));
         }
         // Render Buttons
         that.renderButtons();
         // Events
         that.triggerEvent('onRenderContentProcess');
-        cm.addEvent(that.myNodes['clear'], 'click', that.clearEventHandler);
+        cm.addEvent(nodes['clear'], 'click', that.clearEventHandler);
         that.triggerEvent('onRenderContentEnd');
-        // Push
-        return that.myNodes['container'];
+        // Export
+        return nodes['container'];
     };
 
     classProto.renderButtons = function(){
         var that = this;
         if(that.params['preview']){
-            that.myNodes['preview'] = cm.node('div', {'class' : 'cm__button-wrapper'},
+            that.nodes['content']['preview'] = cm.node('div', {'class' : 'cm__button-wrapper'},
                 cm.node('button', {'type' : 'button', 'class' : 'button button-primary'},
                     cm.node('span', that.lang('preview'))
                 )
             );
-            cm.insertFirst(that.myNodes['preview'], that.myNodes['buttonsInner']);
+            cm.insertFirst(that.nodes['content']['preview'], that.nodes['content']['buttonsInner']);
         }
         if(that.params['local']){
-            that.myNodes['browseLocal'] = cm.node('div', {'class' : 'browse-button'},
+            that.nodes['content']['browseLocal'] = cm.node('div', {'class' : 'browse-button'},
                 cm.node('button', {'type' : 'button', 'class' : 'button button-primary'},
                     cm.node('span', that.lang('_browse_local'))
                 ),
                 cm.node('div', {'class' : 'inner'},
-                    that.myNodes['input'] = cm.node('input', {'type' : 'file'})
+                    that.nodes['content']['input'] = cm.node('input', {'type' : 'file'})
                 )
             );
-            cm.addEvent(that.myNodes['input'], 'change', that.browseActionHandler);
-            cm.insertFirst(that.myNodes['browseLocal'], that.myNodes['buttonsInner']);
+            cm.addEvent(that.nodes['content']['input'], 'change', that.browseActionHandler);
+            cm.insertFirst(that.nodes['content']['browseLocal'], that.nodes['content']['buttonsInner']);
         }
         if(that.params['fileManager']){
-            that.myNodes['browseFileManager'] = cm.node('div', {'class' : 'cm__button-wrapper'},
+            that.nodes['content']['browseFileManager'] = cm.node('div', {'class' : 'cm__button-wrapper'},
                 cm.node('button', {'type' : 'button', 'class' : 'button button-primary'},
                     cm.node('span', that.lang('_browse_filemanager'))
                 )
             );
-            cm.insertFirst(that.myNodes['browseFileManager'], that.myNodes['buttonsInner']);
+            cm.insertFirst(that.nodes['content']['browseFileManager'], that.nodes['content']['buttonsInner']);
         }
         if(that.params['fileUploader']){
-            that.myNodes['browseFileUploader'] = cm.node('div', {'class' : 'cm__button-wrapper'},
+            that.nodes['content']['browseFileUploader'] = cm.node('div', {'class' : 'cm__button-wrapper'},
                 cm.node('button', {'type' : 'button', 'class' : 'button button-primary'},
                     cm.node('span', that.lang('browse'))
                 )
             );
-            cm.insertFirst(that.myNodes['browseFileUploader'], that.myNodes['buttonsInner']);
+            cm.insertFirst(that.nodes['content']['browseFileUploader'], that.nodes['content']['buttonsInner']);
         }
         return that;
     };
@@ -19429,31 +19448,31 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
         if(cm.isEmpty(that.value)){
             // Preview
             that.components['preview'] && that.components['preview'].clear();
-            cm.addClass(that.myNodes['preview'], 'is-hidden');
-            that.myNodes['image'].style.backgroundImage = '';
-            cm.addClass(that.myNodes['imageContainer'], 'is-default-image');
+            cm.addClass(that.nodes['content']['preview'], 'is-hidden');
+            that.nodes['content']['image'].style.backgroundImage = '';
+            cm.addClass(that.nodes['content']['imageContainer'], 'is-default-image');
             // Label
-            cm.clearNode(that.myNodes['label']);
-            cm.addClass(that.myNodes['label'], 'is-hidden');
+            cm.clearNode(that.nodes['content']['label']);
+            cm.addClass(that.nodes['content']['label'], 'is-hidden');
             // Remove button
-            cm.addClass(that.myNodes['clear'], 'is-hidden');
+            cm.addClass(that.nodes['content']['clear'], 'is-hidden');
         }else{
             // Preview
             that.components['preview'] && that.components['preview'].set(that.value);
-            cm.removeClass(that.myNodes['preview'], 'is-hidden');
-            that.myNodes['image'].style.backgroundImage = cm.URLToCSSURL(that.value['url']);
-            cm.removeClass(that.myNodes['imageContainer'], 'is-default-image');
+            cm.removeClass(that.nodes['content']['preview'], 'is-hidden');
+            that.nodes['content']['image'].style.backgroundImage = cm.URLToCSSURL(that.value['url']);
+            cm.removeClass(that.nodes['content']['imageContainer'], 'is-default-image');
             // Label
-            cm.clearNode(that.myNodes['label']);
+            cm.clearNode(that.nodes['content']['label']);
             if(that.params['showLink']){
-                that.myNodes['link'] = cm.node('a', {'target' : '_blank', 'href' : that.value['url'], 'title' : that.lang('open')}, that.value['name']);
+                that.nodes['content']['link'] = cm.node('a', {'target' : '_blank', 'href' : that.value['url'], 'title' : that.lang('open')}, that.value['name']);
             }else{
-                that.myNodes['link'] = cm.textNode(that.value['name']);
+                that.nodes['content']['link'] = cm.textNode(that.value['name']);
             }
-            cm.appendChild(that.myNodes['link'], that.myNodes['label']);
-            cm.removeClass(that.myNodes['label'], 'is-hidden');
+            cm.appendChild(that.nodes['content']['link'], that.nodes['content']['label']);
+            cm.removeClass(that.nodes['content']['label'], 'is-hidden');
             // Remove button
-            cm.removeClass(that.myNodes['clear'], 'is-hidden');
+            cm.removeClass(that.nodes['content']['clear'], 'is-hidden');
         }
         return that;
     };
@@ -19545,7 +19564,6 @@ cm.define('Com.IndentInput', {
 },
 function(params){
     var that = this;
-    that.myNodes = {};
     // Call parent class construct
     Com.AbstractInput.apply(that, arguments);
 });
@@ -19565,6 +19583,7 @@ cm.getConstructor('Com.IndentInput', function(classConstructor, className, class
     classProto.renderContent = function(){
         var that = this,
             nodes = {};
+        that.nodes['content'] = nodes;
         that.triggerEvent('onRenderContentStart');
         // Structure
         nodes['container'] = cm.node('div', {'class' : 'pt__input'},
@@ -19596,7 +19615,6 @@ cm.getConstructor('Com.IndentInput', function(classConstructor, className, class
         }
         that.triggerEvent('onRenderContentEnd');
         // Push
-        that.nodes['component'] = nodes;
         return nodes['container'];
     };
 
@@ -19618,7 +19636,7 @@ cm.getConstructor('Com.IndentInput', function(classConstructor, className, class
 
     classProto.setData = function(){
         var that = this;
-        that.nodes['component']['input'].value = that.rawValue;
+        that.nodes['content']['input'].value = that.rawValue;
         return that;
     };
 });
@@ -20617,7 +20635,6 @@ cm.define('Com.OpacityRange', {
 },
 function(params){
     var that = this;
-    that.myNodes = {};
     Com.AbstractRange.apply(that, arguments);
 });
 
@@ -20626,6 +20643,7 @@ cm.getConstructor('Com.OpacityRange', function(classConstructor, className, clas
 
     classProto.construct = function(){
         var that = this;
+        that.myNodes = {};
         _inherit.prototype.construct.apply(that, arguments);
         that.setColor(that.params['color']);
         return this;
@@ -21522,8 +21540,10 @@ function(params){
         // Reset styles and variables
         reset();
         // Set new parameters
-        that.setParams(params);
-        validateParams();
+        if(!cm.isEmpty(params)){
+            that.setParams(params);
+            validateParams();
+        }
         // Render
         set(that.params['startPage']);
     };
@@ -21547,6 +21567,26 @@ function(params){
             that.callbacks.rebuildBars(that);
             that.triggerEvent('onSetCount', count);
         }
+        return that;
+    };
+
+    that.setAction = function(o, mode, update){
+        mode = cm.inArray(['raw', 'update', 'current'], mode)? mode : 'current';
+        switch(mode){
+            case 'raw':
+                that.params['ajax'] = cm.merge(that._raw.params['ajax'], o);
+                break;
+            case 'current':
+                that.params['ajax'] = cm.merge(that.params['ajax'], o);
+                break;
+            case 'update':
+                that.params['ajax'] = cm.merge(that._update.params['ajax'], o);
+                break;
+        }
+        if(update){
+            that._update.params['ajax'] = cm.clone(that.params['ajax']);
+        }
+        that.rebuild();
         return that;
     };
 
@@ -22021,8 +22061,6 @@ cm.define('Com.PositionTools', {
 },
 function(params){
     var that = this;
-    that.myNodes = {};
-    that.options = {};
     // Call parent class construct
     Com.AbstractInput.apply(that, arguments);
 });
@@ -22032,6 +22070,7 @@ cm.getConstructor('Com.PositionTools', function(classConstructor, className, cla
 
     classProto.construct = function(){
         var that = this;
+        that.options = {};
         // Bind context to methods
         // Call parent method
         _inherit.prototype.construct.apply(that, arguments);
@@ -22048,11 +22087,13 @@ cm.getConstructor('Com.PositionTools', function(classConstructor, className, cla
     };
 
     classProto.renderContent = function(){
-        var that = this;
+        var that = this,
+            nodes = {};
+        that.nodes['content'] = nodes;
         that.triggerEvent('onRenderContentStart');
         // Structure
-        that.myNodes['container'] = cm.node('div', {'class' : 'com__position-tools__content'},
-            that.myNodes['inner'] = cm.node('div', {'class' : 'inner'})
+        nodes['container'] = cm.node('div', {'class' : 'com__position-tools__content'},
+            nodes['inner'] = cm.node('div', {'class' : 'inner'})
         );
         cm.forEach(that.params['options'], function(item){
             that.renderOption(item);
@@ -22060,8 +22101,8 @@ cm.getConstructor('Com.PositionTools', function(classConstructor, className, cla
         // Events
         that.triggerEvent('onRenderContentProcess');
         that.triggerEvent('onRenderContentEnd');
-        // Push
-        return that.myNodes['container'];
+        // Export
+        return nodes['container'];
     };
 
     classProto.renderOption = function(item){
@@ -22078,7 +22119,7 @@ cm.getConstructor('Com.PositionTools', function(classConstructor, className, cla
         item['nodes']['container'] = cm.node('div', {'class' : 'option__item'},
             item['nodes']['icon'] = cm.node('div', {'class' : [item['iconType'], item['icon']].join(' ')})
         );
-        cm.appendChild(item['nodes']['container'], that.myNodes['inner']);
+        cm.appendChild(item['nodes']['container'], that.nodes['content']['inner']);
         // Events
         cm.addEvent(item['nodes']['container'], 'click', function(){
             that.set(item['name']);
@@ -22124,8 +22165,6 @@ cm.define('Com.RepeatTools', {
 },
 function(params){
     var that = this;
-    that.myNodes = {};
-    that.options = {};
     // Call parent class construct
     Com.AbstractInput.apply(that, arguments);
 });
@@ -22135,6 +22174,7 @@ cm.getConstructor('Com.RepeatTools', function(classConstructor, className, class
 
     classProto.construct = function(){
         var that = this;
+        that.options = {};
         // Bind context to methods
         // Call parent method
         _inherit.prototype.construct.apply(that, arguments);
@@ -22151,11 +22191,13 @@ cm.getConstructor('Com.RepeatTools', function(classConstructor, className, class
     };
 
     classProto.renderContent = function(){
-        var that = this;
+        var that = this,
+            nodes = {};
+        that.nodes['content'] = nodes;
         that.triggerEvent('onRenderContentStart');
         // Structure
-        that.myNodes['container'] = cm.node('div', {'class' : 'com__repeat-tools__content'},
-            that.myNodes['inner'] = cm.node('div', {'class' : 'inner'})
+        nodes['container'] = cm.node('div', {'class' : 'com__repeat-tools__content'},
+            nodes['inner'] = cm.node('div', {'class' : 'inner'})
         );
         cm.forEach(that.params['options'], function(item){
             that.renderOption(item);
@@ -22163,8 +22205,8 @@ cm.getConstructor('Com.RepeatTools', function(classConstructor, className, class
         // Events
         that.triggerEvent('onRenderContentProcess');
         that.triggerEvent('onRenderContentEnd');
-        // Push
-        return that.myNodes['container'];
+        // Export
+        return nodes['container'];
     };
 
     classProto.renderOption = function(item){
@@ -22180,7 +22222,7 @@ cm.getConstructor('Com.RepeatTools', function(classConstructor, className, class
         item['nodes']['container'] = cm.node('div', {'class' : 'option__item', 'title' : that.lang(item['name'])},
             item['nodes']['icon'] = cm.node('div', {'class' : [item['iconType'], item['icon']].join(' ')})
         );
-        cm.appendChild(item['nodes']['container'], that.myNodes['inner']);
+        cm.appendChild(item['nodes']['container'], that.nodes['content']['inner']);
         // Events
         cm.addEvent(item['nodes']['container'], 'click', function(){
             that.set(item['name']);
@@ -22865,8 +22907,6 @@ cm.define('Com.ScaleTools', {
 },
 function(params){
     var that = this;
-    that.myNodes = {};
-    that.options = {};
     // Call parent class construct
     Com.AbstractInput.apply(that, arguments);
 });
@@ -22876,6 +22916,7 @@ cm.getConstructor('Com.ScaleTools', function(classConstructor, className, classP
 
     classProto.construct = function(){
         var that = this;
+        that.options = {};
         // Bind context to methods
         // Call parent method
         _inherit.prototype.construct.apply(that, arguments);
@@ -22892,11 +22933,13 @@ cm.getConstructor('Com.ScaleTools', function(classConstructor, className, classP
     };
 
     classProto.renderContent = function(){
-        var that = this;
+        var that = this,
+            nodes = {};
+        that.nodes['content'] = nodes;
         that.triggerEvent('onRenderContentStart');
         // Structure
-        that.myNodes['container'] = cm.node('div', {'class' : 'com__scale-tools__content'},
-            that.myNodes['inner'] = cm.node('div', {'class' : 'inner'})
+        nodes['container'] = cm.node('div', {'class' : 'com__scale-tools__content'},
+            nodes['inner'] = cm.node('div', {'class' : 'inner'})
         );
         cm.forEach(that.params['options'], function(item){
             that.renderOption(item);
@@ -22904,8 +22947,8 @@ cm.getConstructor('Com.ScaleTools', function(classConstructor, className, classP
         // Events
         that.triggerEvent('onRenderContentProcess');
         that.triggerEvent('onRenderContentEnd');
-        // Push
-        return that.myNodes['container'];
+        // Export
+        return nodes['container'];
     };
 
     classProto.renderOption = function(item){
@@ -22921,7 +22964,7 @@ cm.getConstructor('Com.ScaleTools', function(classConstructor, className, classP
         item['nodes']['container'] = cm.node('div', {'class' : 'option__item', 'title' : that.lang(item['name'])},
             item['nodes']['icon'] = cm.node('div', {'class' : [item['iconType'], item['icon']].join(' ')})
         );
-        cm.appendChild(item['nodes']['container'], that.myNodes['inner']);
+        cm.appendChild(item['nodes']['container'], that.nodes['content']['inner']);
         // Events
         cm.addEvent(item['nodes']['container'], 'click', function(){
             that.set(item['name']);

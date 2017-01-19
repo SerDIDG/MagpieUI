@@ -19,8 +19,6 @@ cm.define('Com.RepeatTools', {
 },
 function(params){
     var that = this;
-    that.myNodes = {};
-    that.options = {};
     // Call parent class construct
     Com.AbstractInput.apply(that, arguments);
 });
@@ -30,6 +28,7 @@ cm.getConstructor('Com.RepeatTools', function(classConstructor, className, class
 
     classProto.construct = function(){
         var that = this;
+        that.options = {};
         // Bind context to methods
         // Call parent method
         _inherit.prototype.construct.apply(that, arguments);
@@ -46,11 +45,13 @@ cm.getConstructor('Com.RepeatTools', function(classConstructor, className, class
     };
 
     classProto.renderContent = function(){
-        var that = this;
+        var that = this,
+            nodes = {};
+        that.nodes['content'] = nodes;
         that.triggerEvent('onRenderContentStart');
         // Structure
-        that.myNodes['container'] = cm.node('div', {'class' : 'com__repeat-tools__content'},
-            that.myNodes['inner'] = cm.node('div', {'class' : 'inner'})
+        nodes['container'] = cm.node('div', {'class' : 'com__repeat-tools__content'},
+            nodes['inner'] = cm.node('div', {'class' : 'inner'})
         );
         cm.forEach(that.params['options'], function(item){
             that.renderOption(item);
@@ -58,8 +59,8 @@ cm.getConstructor('Com.RepeatTools', function(classConstructor, className, class
         // Events
         that.triggerEvent('onRenderContentProcess');
         that.triggerEvent('onRenderContentEnd');
-        // Push
-        return that.myNodes['container'];
+        // Export
+        return nodes['container'];
     };
 
     classProto.renderOption = function(item){
@@ -75,7 +76,7 @@ cm.getConstructor('Com.RepeatTools', function(classConstructor, className, class
         item['nodes']['container'] = cm.node('div', {'class' : 'option__item', 'title' : that.lang(item['name'])},
             item['nodes']['icon'] = cm.node('div', {'class' : [item['iconType'], item['icon']].join(' ')})
         );
-        cm.appendChild(item['nodes']['container'], that.myNodes['inner']);
+        cm.appendChild(item['nodes']['container'], that.nodes['content']['inner']);
         // Events
         cm.addEvent(item['nodes']['container'], 'click', function(){
             that.set(item['name']);

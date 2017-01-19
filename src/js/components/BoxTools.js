@@ -29,7 +29,6 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
     classProto.construct = function(){
         var that = this;
         // Variables
-        that.myNodes = {};
         that.inputs = [];
         that.rawValue = null;
         that.isInputsLinked = false;
@@ -56,17 +55,19 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
     };
 
     classProto.renderContent = function(){
-        var that = this;
+        var that = this,
+            nodes = {};
+        that.nodes['content'] = nodes;
         that.triggerEvent('onRenderContentStart');
         // Structure
-        that.myNodes['container'] = cm.node('div', {'class' : 'com__box-tools__content'},
+        nodes['container'] = cm.node('div', {'class' : 'com__box-tools__content'},
             cm.node('div', {'class' : 'b-line'},
                 that.renderInput(that.params['inputs'][0], 0)
             ),
             cm.node('div', {'class' : 'b-line'},
                 that.renderInput(that.params['inputs'][3], 3),
                 cm.node('div', {'class' : 'b-link-container'},
-                    that.myNodes['link'] = cm.node('div', {'class' : 'b-link', 'title' : that.lang('link')},
+                    nodes['link'] = cm.node('div', {'class' : 'b-link', 'title' : that.lang('link')},
                         cm.node('div', {'class' : 'icon'})
                     )
                 ),
@@ -78,10 +79,10 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
         );
         // Events
         that.triggerEvent('onRenderContentProcess');
-        cm.addEvent(that.myNodes['link'], 'click', that.linkInputsHandler);
+        cm.addEvent(nodes['link'], 'click', that.linkInputsHandler);
         that.triggerEvent('onRenderContentEnd');
-        // Push
-        return that.myNodes['container'];
+        // Export
+        return nodes['container'];
     };
 
     classProto.renderInput = function(item, i){
@@ -198,8 +199,8 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
         var that = this;
         if(!that.isInputsLinked){
             that.isInputsLinked = true;
-            cm.addClass(that.myNodes['link'], 'active');
-            that.myNodes['link'].title = that.lang('unlink');
+            cm.addClass(that.nodes['content']['link'], 'active');
+            that.nodes['content']['link'].title = that.lang('unlink');
             if(that.lastInput){
                 that.set(that.lastInput['input'].value);
             }else{
@@ -211,8 +212,8 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
             }
         }else{
             that.isInputsLinked = false;
-            cm.removeClass(that.myNodes['link'], 'active');
-            that.myNodes['link'].title = that.lang('link');
+            cm.removeClass(that.nodes['content']['link'], 'active');
+            that.nodes['content']['link'].title = that.lang('link');
         }
         return that;
     };

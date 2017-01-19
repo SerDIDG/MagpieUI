@@ -13,6 +13,8 @@ cm.define('Com.AbstractInput', {
     ],
     'params' : {
         'embedStructure' : 'replace',
+        'renderStructure' : true,
+        'renderStructureContent' : true,
         'value' : '',
         'defaultValue' : '',
         'title' : '',
@@ -145,21 +147,27 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         var that = this;
         that.triggerEvent('onRenderViewStart');
         that.nodes['container'] = cm.node('div', {'class' : 'com__input'},
-            that.nodes['hidden'] = cm.node('input', {'type' : 'hidden'}),
-            that.nodes['content'] = that.renderContent()
+            that.nodes['hidden'] = cm.node('input', {'type' : 'hidden'})
         );
+        if(that.params['renderStructureContent']){
+            that.nodes['contentContainer'] = that.renderContent();
+            cm.appendChild(that.nodes['contentContainer'], that.nodes['container']);
+        }
         that.triggerEvent('onRenderViewProcess');
         that.triggerEvent('onRenderViewEnd');
         return that;
     };
 
     classProto.renderContent = function(){
-        var that = this;
+        var that = this,
+            nodes = {};
         that.triggerEvent('onRenderContentStart');
-        var node = cm.node('div', {'class' : 'input__content'});
+        nodes['container'] = cm.node('div', {'class' : 'input__content'});
         that.triggerEvent('onRenderContentProcess');
         that.triggerEvent('onRenderContentEnd');
-        return node;
+        // Export
+        that.nodes['content'] = nodes;
+        return nodes['container'];
     };
 
     classProto.setAttributes = function(){

@@ -925,6 +925,11 @@ function(params){
         return that;
     };
 
+    that.setAction = function(o, mode, update){
+        that.params['pagination'] && that.components['pagination'].setAction(o, mode, update);
+        return that;
+    };
+
     that.check = function(id){
         cm.forEach(that.rows, function(row){
             if(row['index'] == id){
