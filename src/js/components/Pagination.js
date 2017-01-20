@@ -685,6 +685,10 @@ function(params){
         return that;
     };
 
+    that.getAction = function(){
+        return that.params['ajax'];
+    };
+
     that.setPage = function(){
         that.previousPage = that.currentPage;
         that.currentPage = that.page;

@@ -930,6 +930,10 @@ function(params){
         return that;
     };
 
+    that.getAction = function(){
+        return that.params['pagination'] && that.params['pagination'].getAction() || {};
+    };
+
     that.check = function(id){
         cm.forEach(that.rows, function(row){
             if(row['index'] == id){

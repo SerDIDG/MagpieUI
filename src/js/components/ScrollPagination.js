@@ -469,6 +469,26 @@ function(params){
 
     /* ******* PUBLIC ******* */
 
+    that.rebuild = function(params){
+        // Cleanup
+        if(that.isProcess){
+            that.abort();
+        }
+        that.pages = {};
+        that.currentPage = null;
+        that.previousPage = null;
+        // Set new parameters
+        if(!cm.isEmpty(params)){
+            that.setParams(params);
+            validateParams();
+        }
+        // Reset styles and variables
+        reset();
+        that.triggerEvent('onRebuild');
+        // Render new pge
+        set();
+    };
+
     that.set = function(){
         set();
         return that;
@@ -498,29 +518,35 @@ function(params){
         return that;
     };
 
+    that.setAction = function(o, mode, update){
+        mode = cm.inArray(['raw', 'update', 'current'], mode)? mode : 'current';
+        switch(mode){
+            case 'raw':
+                that.params['ajax'] = cm.merge(that._raw.params['ajax'], o);
+                break;
+            case 'current':
+                that.params['ajax'] = cm.merge(that.params['ajax'], o);
+                break;
+            case 'update':
+                that.params['ajax'] = cm.merge(that._update.params['ajax'], o);
+                break;
+        }
+        if(update){
+            that._update.params['ajax'] = cm.clone(that.params['ajax']);
+        }
+        that.rebuild();
+        return that;
+    };
+
+    that.getAction = function(){
+        return that.params['ajax'];
+    };
+
     that.setPage = function(){
         that.previousPage = that.currentPage;
         that.currentPage = that.nextPage;
         that.nextPage++;
         return that;
-    };
-
-    that.rebuild = function(params){
-        // Cleanup
-        if(that.isProcess){
-            that.abort();
-        }
-        that.pages = {};
-        that.currentPage = null;
-        that.previousPage = null;
-        // Set new parameters
-        that.setParams(params);
-        validateParams();
-        // Reset styles and variables
-        reset();
-        that.triggerEvent('onRebuild');
-        // Render new pge
-        set();
     };
 
     that.isPageVisible = function(page, scrollRect){
