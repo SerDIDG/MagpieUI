@@ -934,6 +934,10 @@ function(params){
         return that.components['pagination'] && that.components['pagination'].getAction() || {};
     };
 
+    that.getCurrentAction = function(){
+        return that.components['pagination'] && that.components['pagination'].getCurrentAction() || {};
+    };
+
     that.check = function(id){
         cm.forEach(that.rows, function(row){
             if(row['index'] == id){

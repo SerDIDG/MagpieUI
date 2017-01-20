@@ -84,6 +84,7 @@ function(params){
     that.pages = {};
     that.ajaxHandler = null;
     that.loaderDelay = null;
+    that.currentAction = null;
 
     that.isAjax = false;
     that.isProcess = false;
@@ -243,6 +244,7 @@ function(params){
 
     that.callbacks.request = function(that, config){
         config = that.callbacks.prepare(that, config);
+        that.currentAction = config;
         // Return ajax handler (XMLHttpRequest) to providing abort method.
         return cm.ajax(
             cm.merge(config, {
@@ -687,6 +689,10 @@ function(params){
 
     that.getAction = function(){
         return that.params['ajax'];
+    };
+
+    that.getCurrentAction = function(){
+        return that.currentAction;
     };
 
     that.setPage = function(){

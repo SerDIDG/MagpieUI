@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.24.7 (2017-01-20 18:38) ************ */
+/*! ************ MagpieUI v3.24.8 (2017-01-20 19:03) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1427,7 +1427,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.24.7',
+        '_version' : '3.24.8',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -18887,6 +18887,10 @@ function(params){
         return that.components['pagination'] && that.components['pagination'].getAction() || {};
     };
 
+    that.getCurrentAction = function(){
+        return that.components['pagination'] && that.components['pagination'].getCurrentAction() || {};
+    };
+
     that.check = function(id){
         cm.forEach(that.rows, function(row){
             if(row['index'] == id){
@@ -20995,6 +20999,7 @@ function(params){
     that.pages = {};
     that.ajaxHandler = null;
     that.loaderDelay = null;
+    that.currentAction = null;
 
     that.isAjax = false;
     that.isProcess = false;
@@ -21154,6 +21159,7 @@ function(params){
 
     that.callbacks.request = function(that, config){
         config = that.callbacks.prepare(that, config);
+        that.currentAction = config;
         // Return ajax handler (XMLHttpRequest) to providing abort method.
         return cm.ajax(
             cm.merge(config, {
@@ -21598,6 +21604,10 @@ function(params){
 
     that.getAction = function(){
         return that.params['ajax'];
+    };
+
+    that.getCurrentAction = function(){
+        return that.currentAction;
     };
 
     that.setPage = function(){
@@ -23240,6 +23250,7 @@ function(params){
     that.pages = {};
     that.ajaxHandler = null;
     that.loaderDelay = null;
+    that.currentAction = null;
 
     that.isAjax = false;
     that.isProcess = false;
@@ -23420,6 +23431,7 @@ function(params){
 
     that.callbacks.request = function(that, config){
         config = that.callbacks.prepare(that, config);
+        that.currentAction = config;
         // Return ajax handler (XMLHttpRequest) to providing abort method.
         return cm.ajax(
             cm.merge(config, {
@@ -23702,6 +23714,10 @@ function(params){
 
     that.getAction = function(){
         return that.params['ajax'];
+    };
+
+    that.getCurrentAction = function(){
+        return that.currentAction;
     };
 
     that.setPage = function(){
