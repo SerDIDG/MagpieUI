@@ -916,7 +916,7 @@ function(params){
     /******* MAIN *******/
 
     that.rebuild = function(){
-        that.params['pagination'] && that.components['pagination'].rebuild();
+        that.components['pagination'] && that.components['pagination'].rebuild();
         return that;
     };
 
@@ -926,12 +926,12 @@ function(params){
     };
 
     that.setAction = function(o, mode, update){
-        that.params['pagination'] && that.components['pagination'].setAction(o, mode, update);
+        that.components['pagination'] && that.components['pagination'].setAction(o, mode, update);
         return that;
     };
 
     that.getAction = function(){
-        return that.params['pagination'] && that.params['pagination'].getAction() || {};
+        return that.components['pagination'] && that.components['pagination'].getAction() || {};
     };
 
     that.check = function(id){

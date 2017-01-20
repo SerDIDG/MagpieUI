@@ -1246,8 +1246,10 @@ cm.remove = function(node){
 };
 
 cm.clearNode = function(node){
-    while(node.childNodes.length){
-        node.removeChild(node.firstChild);
+    if(cm.isNode(node)){
+        while(node.childNodes.length){
+            node.removeChild(node.firstChild);
+        }
     }
     return node;
 };

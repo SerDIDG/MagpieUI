@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.24.6 (2017-01-20 18:07) ************ */
+/*! ************ MagpieUI v3.24.7 (2017-01-20 18:38) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1427,7 +1427,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.24.6',
+        '_version' : '3.24.7',
         '_loadTime' : Date.now(),
         '_debug' : true,
         '_debugAlert' : false,
@@ -2643,8 +2643,10 @@ cm.remove = function(node){
 };
 
 cm.clearNode = function(node){
-    while(node.childNodes.length){
-        node.removeChild(node.firstChild);
+    if(cm.isNode(node)){
+        while(node.childNodes.length){
+            node.removeChild(node.firstChild);
+        }
     }
     return node;
 };
@@ -18867,7 +18869,7 @@ function(params){
     /******* MAIN *******/
 
     that.rebuild = function(){
-        that.params['pagination'] && that.components['pagination'].rebuild();
+        that.components['pagination'] && that.components['pagination'].rebuild();
         return that;
     };
 
@@ -18877,12 +18879,12 @@ function(params){
     };
 
     that.setAction = function(o, mode, update){
-        that.params['pagination'] && that.components['pagination'].setAction(o, mode, update);
+        that.components['pagination'] && that.components['pagination'].setAction(o, mode, update);
         return that;
     };
 
     that.getAction = function(){
-        return that.params['pagination'] && that.params['pagination'].getAction() || {};
+        return that.components['pagination'] && that.components['pagination'].getAction() || {};
     };
 
     that.check = function(id){
