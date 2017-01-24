@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.24.8 (2017-01-20 19:03) ************ */
+/*! ************ MagpieUI v3.24.9 (2017-01-24 19:04) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.5.0
@@ -7808,8 +7808,7 @@ button.is-hidden {
   display: -ms-flexbox;
   display: flex;
   -ms-flex-pack: center;
-  margin-right: -6px;
-  margin-left: -6px;
+  margin: -6px;
 }
 .pt__buttons .button-alike,
 .pt__buttons .button,
@@ -7821,7 +7820,7 @@ button.is-hidden {
 .pt__buttons input[type="submit"],
 .pt__buttons input[type="reset"],
 .pt__buttons button {
-  margin: 0 6px;
+  margin: 6px;
 }
 .pt__buttons.pull-right > .inner {
   -webkit-justify-content: flex-end;
@@ -7849,10 +7848,21 @@ button.is-hidden {
   -ms-flex: 1 1 0;
   flex: 1 1 0;
 }
+.pt__buttons.pull-top > .inner {
+  -webkit-align-items: flex-start;
+  align-items: flex-start;
+}
+.pt__buttons.pull-middle > .inner {
+  -webkit-align-items: center;
+  align-items: center;
+}
+.pt__buttons.pull-bottom > .inner {
+  -webkit-align-items: flex-end;
+  align-items: flex-end;
+}
 .pt__buttons.is-box > .inner {
   display: block;
-  margin-left: 0;
-  margin-right: 0;
+  margin: 0;
 }
 .pt__buttons.is-box .button-alike,
 .pt__buttons.is-box .button,
@@ -7864,11 +7874,7 @@ button.is-hidden {
 .pt__buttons.is-box input[type="submit"],
 .pt__buttons.is-box input[type="reset"],
 .pt__buttons.is-box button {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
   width: 100%;
-  display: block;
   margin: 12px 0 0 0;
 }
 .pt__buttons.is-box .button-alike:first-child,
@@ -7882,6 +7888,67 @@ button.is-hidden {
 .pt__buttons.is-box input[type="reset"]:first-child,
 .pt__buttons.is-box button:first-child {
   margin: 0;
+}
+.pt__buttons--box > .inner {
+  display: block;
+  margin: 0;
+}
+.pt__buttons--box .button-alike,
+.pt__buttons--box .button,
+.pt__buttons--box .browse-button,
+.pt__buttons--box .cm__button-wrapper,
+.pt__buttons--box .com__menu,
+.pt__buttons--box .com__pagination__bar ul li a,
+.pt__buttons--box input[type="button"],
+.pt__buttons--box input[type="submit"],
+.pt__buttons--box input[type="reset"],
+.pt__buttons--box button {
+  width: 100%;
+  margin: 12px 0 0 0;
+}
+.pt__buttons--box .button-alike:first-child,
+.pt__buttons--box .button:first-child,
+.pt__buttons--box .browse-button:first-child,
+.pt__buttons--box .cm__button-wrapper:first-child,
+.pt__buttons--box .com__menu:first-child,
+.pt__buttons--box .com__pagination__bar ul li a:first-child,
+.pt__buttons--box input[type="button"]:first-child,
+.pt__buttons--box input[type="submit"]:first-child,
+.pt__buttons--box input[type="reset"]:first-child,
+.pt__buttons--box button:first-child {
+  margin: 0;
+}
+/* ******* PARTS: BUTTONS: ADAPTIVE ******* */
+@media only screen and (max-width: 640px) {
+  html.is-adaptive .pt__buttons.is-adaptive > .inner {
+    display: block;
+    margin: 0;
+  }
+  html.is-adaptive .pt__buttons.is-adaptive .button-alike,
+  html.is-adaptive .pt__buttons.is-adaptive .button,
+  html.is-adaptive .pt__buttons.is-adaptive .browse-button,
+  html.is-adaptive .pt__buttons.is-adaptive .cm__button-wrapper,
+  html.is-adaptive .pt__buttons.is-adaptive .com__menu,
+  html.is-adaptive .pt__buttons.is-adaptive .com__pagination__bar ul li a,
+  html.is-adaptive .pt__buttons.is-adaptive input[type="button"],
+  html.is-adaptive .pt__buttons.is-adaptive input[type="submit"],
+  html.is-adaptive .pt__buttons.is-adaptive input[type="reset"],
+  html.is-adaptive .pt__buttons.is-adaptive button {
+    width: 100%;
+    margin: 12px 0 0 0;
+  }
+  html.is-adaptive .pt__buttons.is-adaptive .button-alike:first-child,
+  html.is-adaptive .pt__buttons.is-adaptive .button:first-child,
+  html.is-adaptive .pt__buttons.is-adaptive .browse-button:first-child,
+  html.is-adaptive .pt__buttons.is-adaptive .cm__button-wrapper:first-child,
+  html.is-adaptive .pt__buttons.is-adaptive .com__menu:first-child,
+  html.is-adaptive .pt__buttons.is-adaptive .com__pagination__bar ul li a:first-child,
+  html.is-adaptive .pt__buttons.is-adaptive input[type="button"]:first-child,
+  html.is-adaptive .pt__buttons.is-adaptive input[type="submit"]:first-child,
+  html.is-adaptive .pt__buttons.is-adaptive input[type="reset"]:first-child,
+  html.is-adaptive .pt__buttons.is-adaptive button:first-child {
+    margin: 0;
+  }
 }
 /* ******* PARTS: COLUMNS ******* */
 .pt__columns {

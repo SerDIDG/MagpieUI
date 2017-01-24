@@ -1,0 +1,125 @@
+<!DOCTYPE HTML>
+<html class="is-adaptive is-docs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Parts: Buttons</title>
+
+    <link type="text/css" rel="stylesheet" href="../../css/MagpieUI.css">
+    <script type="text/javascript" src="../../js/MagpieUI.js"></script>
+
+    <script type="text/javascript">
+        cm.onReady(function(){
+            // Components
+            new Com.Collector()
+                    .addEvent('onConstruct', function(collector, data){
+                        Part.Menu();
+                        Part.Autoresize(data['node']);
+                    })
+                    .construct();
+        });
+    </script>
+</head>
+
+<body>
+
+<h1 class="pt__box-title">Parts: Buttons</h1>
+<hr>
+
+<div class="cm__box">
+    <h2>Pull Left</h2>
+    <div class="pt__buttons is-adaptive pull-left">
+        <div class="inner">
+            <a class="button button-primary">Sample</a>
+        </div>
+    </div>
+</div>
+
+<div class="cm__box">
+    <h2>Pull Center</h2>
+    <div class="pt__buttons is-adaptive pull-center">
+        <div class="inner">
+            <a class="button button-primary">Sample</a>
+        </div>
+    </div>
+</div>
+
+<div class="cm__box">
+    <h2>Pull Right</h2>
+    <div class="pt__buttons is-adaptive pull-right">
+        <div class="inner">
+            <a class="button button-primary">Sample</a>
+        </div>
+    </div>
+</div>
+
+<div class="cm__box">
+    <h2>Pull Justify</h2>
+    <div class="pt__buttons is-adaptive pull-justify">
+        <div class="inner">
+            <a class="button button-primary">Sample</a>
+        </div>
+    </div>
+</div>
+
+<div class="cm__box">
+    <h2>Text Wrap</h2>
+    <div class="pt__buttons is-adaptive pull-justify">
+        <div class="inner">
+            <a class="button button-primary is-wrap">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc laoreet metus vitae risus mattis rutrum. Cras non pulvinar enim. Aenean vitae dui est. Integer bibendum venenatis ex vel sagittis. Ut viverra velit diam. Integer et sem faucibus, rhoncus purus in, ultricies erat. Aenean sagittis est quis mollis tristique. Quisque tincidunt, turpis vitae efficitur efficitur, lectus mauris ornare tellus, sit amet lacinia justo nunc id massa. In hac habitasse platea dictumst.</a>
+        </div>
+    </div>
+</div>
+
+<div class="cm__box">
+    <h2>Text No-wrap</h2>
+    <div class="pt__buttons is-adaptive pull-justify">
+        <div class="inner">
+            <a class="button button-primary is-nowrap">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc laoreet metus vitae risus mattis rutrum. Cras non pulvinar enim. Aenean vitae dui est. Integer bibendum venenatis ex vel sagittis. Ut viverra velit diam. Integer et sem faucibus, rhoncus purus in, ultricies erat. Aenean sagittis est quis mollis tristique. Quisque tincidunt, turpis vitae efficitur efficitur, lectus mauris ornare tellus, sit amet lacinia justo nunc id massa. In hac habitasse platea dictumst.</a>
+        </div>
+    </div>
+</div>
+
+<div class="cm__box">
+    <h2>Styles</h2>
+    <div class="pt__buttons is-adaptive pull-justify">
+        <div class="inner">
+            <a class="button button-primary">Primary</a>
+            <a class="button button-middle">Middle</a>
+            <a class="button button-secondary">Secondary</a>
+            <a class="button button-success">Success</a>
+            <a class="button button-danger">Danger</a>
+            <a class="button button-warning">Warning</a>
+            <a class="button button-transparent">Transparent</a>
+            <a class="button button-white">White</a>
+        </div>
+    </div>
+</div>
+
+<div class="cm__box">
+    <h2>Sizes</h2>
+    <div class="pt__buttons is-adaptive pull-left pull-top">
+        <div class="inner">
+            <a class="button button-primary">Default</a>
+            <a class="button button-primary button--large">Large</a>
+            <a class="button button-primary button--xlarge">X Large</a>
+            <a class="button button-primary button--xxlarge">XX Large</a>
+        </div>
+    </div>
+</div>
+
+<div class="cm__box">
+    <h2>Box</h2>
+    <div class="pt__buttons is-adaptive is-box">
+        <div class="inner">
+            <a class="button button-primary">Default</a>
+            <a class="button button-primary button--large">Large</a>
+            <a class="button button-primary button--xlarge">X Large</a>
+            <a class="button button-primary button--xxlarge">XX Large</a>
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>
