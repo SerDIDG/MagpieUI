@@ -51,7 +51,7 @@ function(params){
     };
 
     var getLESSVariables = function(){
-        that.params['duration'] = cm.getLESSVariable('PtOverlay-Duration', that.params['duration']);
+        that.params['duration'] = cm.getTransitionDurationFromLESS('PtOverlay-Duration', that.params['duration']);
     };
 
     var validateParams = function(){
@@ -128,6 +128,7 @@ function(params){
             cm.removeClass(that.nodes['container'], 'is-open');
             // Remove immediately animation hack
             that.openInterval && clearTimeout(that.openInterval);
+            cm.log(Date.now());
             if(isImmediately){
                 that.openInterval = setTimeout(function(){
                     cm.removeClass(that.nodes['container'], 'is-immediately');
@@ -135,6 +136,7 @@ function(params){
                 }, 5);
             }else{
                 that.openInterval = setTimeout(function(){
+                    cm.log(Date.now());
                     closeHelper();
                 }, that.params['duration'] + 5);
             }

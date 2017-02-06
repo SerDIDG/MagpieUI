@@ -100,7 +100,7 @@ function(params){
                 hashHandler();
             }
         }else{
-            if(id = getValidID(id)){
+            if(id = getValidID(id, true)){
                 set(id);
             }
         }
@@ -391,16 +391,17 @@ function(params){
 
     var hashHandler = function(){
         var id = window.location.hash.replace('#', '');
-        if(id = getValidID(id)){
+        if(id = getValidID(id, false)){
             set(id);
         }
     };
 
-    var getValidID = function(id){
+    var getValidID = function(id, getDefault){
+        getDefault = getDefault || !that.active;
         if(cm.isEmpty(that.tabsListing) || cm.isEmpty(that.tabs)){
             return null;
         }
-        return id && that.tabs[id]? id : that.tabsListing[0]['id'];
+        return (id && that.tabs[id])? id : (getDefault) ? that.tabsListing[0]['id'] : null;
     };
 
     var calculateMaxHeight = function(){

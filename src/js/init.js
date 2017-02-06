@@ -1,5 +1,7 @@
 cm.init = function(){
     var init = function(){
+        cm._isDocumentReady = true;
+        // Helpers
         checkBrowser();
         checkType();
         checkScrollSize();
@@ -132,4 +134,14 @@ cm.init = function(){
     init();
 };
 
+cm.load = function(){
+    cm._isDocumentLoad = true;
+    // Redraw components and modules after full page loading
+    cm.customEvent.trigger(document.body, 'redraw', {
+        'type' : 'child',
+        'self' : false
+    });
+};
+
 cm.onReady(cm.init, false);
+cm.onLoad(cm.load, false);

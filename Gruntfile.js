@@ -303,7 +303,10 @@ module.exports = function(grunt) {
                 files : [{
                     expand : true,
                     cwd : '<%= paths.build %>/img/',
-                    src : ['**/*.*'],
+                    src : [
+                        '**/*.*',
+                        '!animated/**/*.*'
+                    ],
                     dest : '<%= paths.temp %>/img/'
                 }]
             }

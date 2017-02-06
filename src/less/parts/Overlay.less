@@ -27,7 +27,7 @@
         height: 32px;
         margin: auto;
         z-index: 1;
-        background: url('@{CmPath-Images}/parts/ajax-loader.gif');
+        background: url('@{CmPath-Images}/animated/loader.png');
     }
 
     .overlay__content {
@@ -48,6 +48,10 @@
 
     &.theme-dark {
         background-color: @PtOverlay-Dark;
+
+        .overlay__spinner {
+            background-image: url('@{CmPath-Images}/animated/loader-white.png');
+        }
     }
 
     &.is-immediately {

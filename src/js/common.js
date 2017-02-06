@@ -32,6 +32,8 @@
 var cm = {
         '_version' : '@@VERSION',
         '_loadTime' : Date.now(),
+        '_isDocumentReady' : false,
+        '_isDocumentLoad' : false,
         '_debug' : true,
         '_debugAlert' : false,
         '_deviceType' : 'desktop',
@@ -46,7 +48,7 @@ var cm = {
             'animDuration' : 250,
             'animDurationShort' : 150,
             'animDurationLong' : 500,
-            'loadDelay' : 350,
+            'loadDelay' : 500,
             'hideDelay' : 250,
             'hideDelayShort' : 150,
             'hideDelayLong' : 500,
@@ -2821,6 +2823,18 @@ cm.isKeyCode = function(code, rules){
     return isMath;
 };
 
+cm.handleKey = function(e, rules, callback){
+    if(!cm.isInputFocused() && cm.isKey(e, rules)){
+        callback && callback(e);
+    }
+};
+
+cm.isInputFocused = function(){
+    var el = document.activeElement,
+        tagName = el.tagName.toLowerCase();
+    return tagName === 'textarea' || (tagName === 'input' &&  !/button|file/.test(el.type));
+};
+
 cm.allowKeyCode = function(code, rules){
     var codes = [];
     cm.forEach(cm.keyCodeTable, function(item, key){
@@ -3540,8 +3554,9 @@ cm.defineHelper = function(name, data, handler){
             handler.prototype = Object.create(classConstructor.prototype);
             that.build._inheritName = className;
             that.build._inherit = classConstructor;
-            // Merge modules
+            // Merge raw params
             that.build._raw['modules'] = cm.merge(that.build._inherit.prototype._raw['modules'], that.build._raw['modules']);
+            that.build._raw['events'] = cm.merge(that.build._inherit.prototype._raw['events'], that.build._raw['events']);
             // Add to extend stack
             if(cm._defineExtendStack[className]){
                 cm._defineExtendStack[className].push(name);

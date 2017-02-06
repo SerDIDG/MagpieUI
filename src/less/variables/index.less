@@ -63,9 +63,10 @@
 @CmUI-Shadow-Right: 2px 0 5px rgba(0,0,0,0.15);
 @CmUI-Shadow-Left: -2px 0 5px rgba(0,0,0,0.15);
 @CmUI-Overlay: @CmUI-Overlay-Light;
-@CmUI-Overlay-Dark: rgba(0, 0, 0, 0.7);
-@CmUI-Overlay-Light: rgba(255, 255, 255, 0.7);
-@CmUI-Overlay-Duration: @CmUI-Transition-Duration;
+@CmUI-Overlay-Fade: 0.7;
+@CmUI-Overlay-Dark: rgba(0, 0, 0, @CmUI-Overlay-Fade);
+@CmUI-Overlay-Light: rgba(255, 255, 255, @CmUI-Overlay-Fade);
+@CmUI-Overlay-Duration: @CmUI-Transition-DurationLong;
 @CmUI-AdaptiveFrom: @CmScreen-TabletPortrait;
 @CmUI-TooltipWidth: 320px;
 @CmUI-ColumnIndent: @CmIndent-Medium;

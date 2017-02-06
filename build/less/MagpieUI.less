@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.24.9 (2017-01-24 19:04) ************ */
+/*! ************ MagpieUI v3.24.11 (2017-02-06 19:55) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3725,7 +3725,7 @@ span.CodeMirror-selectedtext { background: none; }
 
 @CmIconVars-Family: 'Magpie-UI-Glyphs';
 @CmIconVars-Color: @CmColor-Icon;
-@CmIconVars-Version: 14;
+@CmIconVars-Version: @CmVersion;
 
 @CmIcon-Magnify: '\e600';
 @CmIcon-Reduce: '\e601';
@@ -3751,7 +3751,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.24.9';
+@CmVersion: '3.24.11';
 
 // /* ******* PATH ******* */
 
@@ -3811,9 +3811,10 @@ span.CodeMirror-selectedtext { background: none; }
 @CmUI-Shadow-Right: 2px 0 5px rgba(0,0,0,0.15);
 @CmUI-Shadow-Left: -2px 0 5px rgba(0,0,0,0.15);
 @CmUI-Overlay: @CmUI-Overlay-Light;
-@CmUI-Overlay-Dark: rgba(0, 0, 0, 0.7);
-@CmUI-Overlay-Light: rgba(255, 255, 255, 0.7);
-@CmUI-Overlay-Duration: @CmUI-Transition-Duration;
+@CmUI-Overlay-Fade: 0.7;
+@CmUI-Overlay-Dark: rgba(0, 0, 0, @CmUI-Overlay-Fade);
+@CmUI-Overlay-Light: rgba(255, 255, 255, @CmUI-Overlay-Fade);
+@CmUI-Overlay-Duration: @CmUI-Transition-DurationLong;
 @CmUI-AdaptiveFrom: @CmScreen-TabletPortrait;
 @CmUI-TooltipWidth: 320px;
 @CmUI-ColumnIndent: @CmIndent-Medium;
@@ -11134,7 +11135,7 @@ ul.pt__field__hint {
         height: 32px;
         margin: auto;
         z-index: 1;
-        background: url('@{CmPath-Images}/parts/ajax-loader.gif');
+        background: url('@{CmPath-Images}/animated/loader.png');
     }
 
     .overlay__content {
@@ -11155,6 +11156,10 @@ ul.pt__field__hint {
 
     &.theme-dark {
         background-color: @PtOverlay-Dark;
+
+        .overlay__spinner {
+            background-image: url('@{CmPath-Images}/animated/loader-white.png');
+        }
     }
 
     &.is-immediately {

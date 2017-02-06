@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.24.9 (2017-01-24 19:04) ************ */
+/*! ************ MagpieUI v3.24.11 (2017-02-06 19:55) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1427,8 +1427,10 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.24.9',
+        '_version' : '3.24.11',
         '_loadTime' : Date.now(),
+        '_isDocumentReady' : false,
+        '_isDocumentLoad' : false,
         '_debug' : true,
         '_debugAlert' : false,
         '_deviceType' : 'desktop',
@@ -1443,7 +1445,7 @@ var cm = {
             'animDuration' : 250,
             'animDurationShort' : 150,
             'animDurationLong' : 500,
-            'loadDelay' : 350,
+            'loadDelay' : 500,
             'hideDelay' : 250,
             'hideDelayShort' : 150,
             'hideDelayLong' : 500,
@@ -4218,6 +4220,18 @@ cm.isKeyCode = function(code, rules){
     return isMath;
 };
 
+cm.handleKey = function(e, rules, callback){
+    if(!cm.isInputFocused() && cm.isKey(e, rules)){
+        callback && callback(e);
+    }
+};
+
+cm.isInputFocused = function(){
+    var el = document.activeElement,
+        tagName = el.tagName.toLowerCase();
+    return tagName === 'textarea' || (tagName === 'input' &&  !/button|file/.test(el.type));
+};
+
 cm.allowKeyCode = function(code, rules){
     var codes = [];
     cm.forEach(cm.keyCodeTable, function(item, key){
@@ -4937,8 +4951,9 @@ cm.defineHelper = function(name, data, handler){
             handler.prototype = Object.create(classConstructor.prototype);
             that.build._inheritName = className;
             that.build._inherit = classConstructor;
-            // Merge modules
+            // Merge raw params
             that.build._raw['modules'] = cm.merge(that.build._inherit.prototype._raw['modules'], that.build._raw['modules']);
+            that.build._raw['events'] = cm.merge(that.build._inherit.prototype._raw['events'], that.build._raw['events']);
             // Add to extend stack
             if(cm._defineExtendStack[className]){
                 cm._defineExtendStack[className].push(name);
@@ -6222,6 +6237,8 @@ Part['Autoresize'] = (function(){
 })();
 cm.init = function(){
     var init = function(){
+        cm._isDocumentReady = true;
+        // Helpers
         checkBrowser();
         checkType();
         checkScrollSize();
@@ -6354,7 +6371,17 @@ cm.init = function(){
     init();
 };
 
+cm.load = function(){
+    cm._isDocumentLoad = true;
+    // Redraw components and modules after full page loading
+    cm.customEvent.trigger(document.body, 'redraw', {
+        'type' : 'child',
+        'self' : false
+    });
+};
+
 cm.onReady(cm.init, false);
+cm.onLoad(cm.load, false);
 cm.define('Com.AbstractController', {
     'modules' : [
         'Params',
@@ -6368,6 +6395,7 @@ cm.define('Com.AbstractController', {
         'Stack'
     ],
     'events' : [
+        'onConstruct',
         'onConstructStart',
         'onConstructProcess',
         'onConstructEnd',
@@ -6381,14 +6409,21 @@ cm.define('Com.AbstractController', {
         'onValidateParamsEnd',
         'onRenderStart',
         'onRender',
+        'onRenderEnd',
+        'onBeforeRender',
+        'onAfterRender',
+        'onRenderViewModel',
+        'onDestruct',
         'onDestructStart',
         'onDestructProcess',
         'onDestructEnd',
         'onRedraw',
         'onScroll',
+        'onSetEvents',
         'onSetEventsStart',
         'onSetEventsProcess',
         'onSetEventsEnd',
+        'onUnsetEvents',
         'onUnsetEventsStart',
         'onUnsetEventsProcess',
         'onUnsetEventsEnd',
@@ -6409,6 +6444,7 @@ cm.define('Com.AbstractController', {
         'embedStructureOnRender' : true,
         'removeOnDestruct' : false,
         'className' : '',
+        'controllerEvents' : false,
         'customEvents' : true,
         'resizeEvent' : true,
         'scrollEvent' : false,
@@ -6440,17 +6476,22 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         that.getLESSVariables();
         that.setParams(params);
         that.convertEvents(that.params['events']);
+        that.params['controllerEvents'] && that.bindControllerEvents();
         that.params['getDataNodes'] && that.getDataNodes(that.params['node']);
         that.params['getDataConfig'] && that.getDataConfig(that.params['node']);
         that.callbacksProcess();
         that.validateParams();
         that.addToStack(that.params['node']);
+        that.triggerEvent('onConstruct');
         that.triggerEvent('onRenderStart');
+        that.triggerEvent('onBeforeRender');
         that.render();
+        that.triggerEvent('onAfterRender');
         that.setEvents();
         that.triggerEvent('onConstructProcess');
         that.addToStack(that.nodes['container']);
         that.triggerEvent('onRender');
+        that.triggerEvent('onRenderEnd');
         that.triggerEvent('onConstructEnd');
         return that;
     };
@@ -6460,6 +6501,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         if(!that.isDestructed){
             that.triggerEvent('onDestructStart');
             that.isDestructed = true;
+            that.triggerEvent('onDestruct');
             that.triggerEvent('onDestructProcess');
             cm.customEvent.trigger(that.getStackNode(), 'destruct', {
                 'type' : 'child',
@@ -6485,6 +6527,20 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         var that = this;
         animFrame(function(){
             that.triggerEvent('onScroll');
+        });
+        return that;
+    };
+
+    classProto.bindControllerEvents = function(){
+        var that = this;
+        cm.forEach(that._raw['events'], function(name){
+            if(!that[name]){
+                that[name] = function(){};
+            }
+            if(!that[name + 'Handler']){
+                that[name + 'Handler'] = that[name].bind(that);
+            }
+            that.addEvent(name, that[name + 'Handler']);
         });
         return that;
     };
@@ -6534,6 +6590,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
 
     classProto.renderViewModel = function(){
         var that = this;
+        that.triggerEvent('onRenderViewModel');
         return that;
     };
 
@@ -6549,6 +6606,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         // Windows events
         that.params['resizeEvent'] && cm.addEvent(window, 'resize', that.redrawHandler);
         that.params['scrollEvent'] && cm.addEvent(window, 'scroll', that.scrollHandler);
+        that.triggerEvent('onSetEvents');
         that.triggerEvent('onSetEventsProcess');
         // Add custom events
         if(that.params['customEvents']){
@@ -6566,6 +6624,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         // Windows events
         that.params['resizeEvent'] && cm.removeEvent(window, 'resize', that.redrawHandler);
         that.params['scrollEvent'] && cm.removeEvent(window, 'scroll', that.scrollHandler);
+        that.triggerEvent('onUnsetEvents');
         that.triggerEvent('onUnsetEventsProcess');
         // Remove custom events
         if(that.params['customEvents']){
@@ -6971,9 +7030,9 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         that.clearEventHandler = that.clearEvent.bind(that);
         that.setActionHandler = that.setAction.bind(that);
         that.selectActionHandler = that.selectAction.bind(that);
-        that.constructProcessHandler = that.constructProcess.bind(that);
+        that.afterRenderHandler = that.afterRender.bind(that);
         // Add events
-        that.addEvent('onConstructProcess', that.constructProcessHandler);
+        that.addEvent('onAfterRender', that.afterRenderHandler);
         // Call parent method
         _inherit.prototype.construct.apply(that, arguments);
         return that;
@@ -6996,9 +7055,11 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
 
     classProto.clear = function(triggerEvents){
         var that = this;
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        triggerEvents && that.triggerEvent('onClear');
-        that.set(that.params['defaultValue'], triggerEvents);
+        if(!that.isDestructed){
+            triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+            triggerEvents && that.triggerEvent('onClear');
+            that.set(that.params['defaultValue'], triggerEvents);
+        }
         return that;
     };
 
@@ -7052,7 +7113,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         return that;
     };
 
-    classProto.constructProcess = function(){
+    classProto.afterRender = function(){
         var that = this;
         that.set(that.params['value'], false);
         return that;
@@ -20733,7 +20794,7 @@ function(params){
     };
 
     var getLESSVariables = function(){
-        that.params['duration'] = cm.getLESSVariable('PtOverlay-Duration', that.params['duration']);
+        that.params['duration'] = cm.getTransitionDurationFromLESS('PtOverlay-Duration', that.params['duration']);
     };
 
     var validateParams = function(){
@@ -20810,6 +20871,7 @@ function(params){
             cm.removeClass(that.nodes['container'], 'is-open');
             // Remove immediately animation hack
             that.openInterval && clearTimeout(that.openInterval);
+            cm.log(Date.now());
             if(isImmediately){
                 that.openInterval = setTimeout(function(){
                     cm.removeClass(that.nodes['container'], 'is-immediately');
@@ -20817,6 +20879,7 @@ function(params){
                 }, 5);
             }else{
                 that.openInterval = setTimeout(function(){
+                    cm.log(Date.now());
                     closeHelper();
                 }, that.params['duration'] + 5);
             }
@@ -25625,7 +25688,7 @@ function(params){
                 hashHandler();
             }
         }else{
-            if(id = getValidID(id)){
+            if(id = getValidID(id, true)){
                 set(id);
             }
         }
@@ -25916,16 +25979,17 @@ function(params){
 
     var hashHandler = function(){
         var id = window.location.hash.replace('#', '');
-        if(id = getValidID(id)){
+        if(id = getValidID(id, false)){
             set(id);
         }
     };
 
-    var getValidID = function(id){
+    var getValidID = function(id, getDefault){
+        getDefault = getDefault || !that.active;
         if(cm.isEmpty(that.tabsListing) || cm.isEmpty(that.tabs)){
             return null;
         }
-        return id && that.tabs[id]? id : that.tabsListing[0]['id'];
+        return (id && that.tabs[id])? id : (getDefault) ? that.tabsListing[0]['id'] : null;
     };
 
     var calculateMaxHeight = function(){

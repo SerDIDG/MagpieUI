@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.24.9 (2017-01-24 19:04) ************ */
+/*! ************ MagpieUI v3.24.11 (2017-02-06 19:55) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.5.0
@@ -3433,8 +3433,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?14');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix14') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?14') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?14') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?14#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.24.11');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.24.11') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.24.11') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.24.11') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.24.11#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -11625,8 +11625,8 @@ ul.pt__field__hint li:before {
   right: 0;
   bottom: 0;
   left: 0;
-  -webkit-transition: all 250ms ease-in-out;
-  transition: all 250ms ease-in-out;
+  -webkit-transition: all 500ms ease-in-out;
+  transition: all 500ms ease-in-out;
 }
 .pt__overlay .overlay__spinner,
 .pt__overlay .overlay__content {
@@ -11637,8 +11637,8 @@ ul.pt__field__hint li:before {
   right: 0;
   bottom: 0;
   left: 0;
-  -webkit-transition: all 250ms ease-in-out;
-  transition: all 250ms ease-in-out;
+  -webkit-transition: all 500ms ease-in-out;
+  transition: all 500ms ease-in-out;
 }
 .pt__overlay .overlay__spinner.is-show,
 .pt__overlay .overlay__content.is-show {
@@ -11650,7 +11650,7 @@ ul.pt__field__hint li:before {
   height: 32px;
   margin: auto;
   z-index: 1;
-  background: url('../img/MagpieUI/parts/ajax-loader.gif');
+  background: url('../img/MagpieUI/animated/loader.png');
 }
 .pt__overlay .overlay__content {
   z-index: 2;
@@ -11666,6 +11666,9 @@ ul.pt__field__hint li:before {
 }
 .pt__overlay.theme-dark {
   background-color: rgba(0, 0, 0, 0.7);
+}
+.pt__overlay.theme-dark .overlay__spinner {
+  background-image: url('../img/MagpieUI/animated/loader-white.png');
 }
 .pt__overlay.is-immediately {
   -webkit-transition: none !important;

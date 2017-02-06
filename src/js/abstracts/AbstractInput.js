@@ -54,9 +54,9 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         that.clearEventHandler = that.clearEvent.bind(that);
         that.setActionHandler = that.setAction.bind(that);
         that.selectActionHandler = that.selectAction.bind(that);
-        that.constructProcessHandler = that.constructProcess.bind(that);
+        that.afterRenderHandler = that.afterRender.bind(that);
         // Add events
-        that.addEvent('onConstructProcess', that.constructProcessHandler);
+        that.addEvent('onAfterRender', that.afterRenderHandler);
         // Call parent method
         _inherit.prototype.construct.apply(that, arguments);
         return that;
@@ -79,9 +79,11 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
 
     classProto.clear = function(triggerEvents){
         var that = this;
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        triggerEvents && that.triggerEvent('onClear');
-        that.set(that.params['defaultValue'], triggerEvents);
+        if(!that.isDestructed){
+            triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+            triggerEvents && that.triggerEvent('onClear');
+            that.set(that.params['defaultValue'], triggerEvents);
+        }
         return that;
     };
 
@@ -135,7 +137,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         return that;
     };
 
-    classProto.constructProcess = function(){
+    classProto.afterRender = function(){
         var that = this;
         that.set(that.params['value'], false);
         return that;
