@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.24.11 (2017-02-06 19:55) ************ */
+/*! ************ MagpieUI v3.24.12 (2017-02-13 19:00) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1427,7 +1427,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.24.11',
+        '_version' : '3.24.12',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -18055,6 +18055,7 @@ cm.define('Com.Gridlist', {
         // Visibility
         'showCounter' : false,
         'showBulkActions' : true,
+        'textOverflow' : false,
         'className' : '',
         'dateFormat' : 'cm._config.dateTimeFormat',                 // Input date format
         'visibleDateFormat' : 'cm._config.dateTimeFormat',          // Render date format
@@ -18431,7 +18432,7 @@ function(params){
             'key' : '',                     // Data array key
             'title' : '',                   // Table th title
             'sort' : that.params['sort'],   // Sort this column or not
-            'textOverflow' : false,         // Overflow long text to single line
+            'textOverflow' : null,          // Overflow long text to single line
             'class' : '',		            // Icon css class, for type="icon"
             'target' : '_blank',            // Link target, for type="url"
             'showTitle' : false,            // Show title on hover
@@ -18444,7 +18445,9 @@ function(params){
             'onClick' : false,              // Cell click handler
             'onRender' : false              // Cell onRender handler
         }, item);
+        // Validate
         item['nodes'] = {};
+        item['textOverflow'] = cm.isBoolean(item['textOverflow'])? item['textOverflow'] : that.params['textOverflow'];
         // Check access
         if(item['access']){
             // Structure
@@ -19711,6 +19714,92 @@ cm.getConstructor('Com.IndentInput', function(classConstructor, className, class
         return that;
     };
 });
+cm.define('Com.IntegerInput', {
+    'extend' : 'Com.AbstractInput',
+    'params' : {
+        'maxlength' : 3,
+        'defaultValue' : 0,
+        'allowNegative' : false
+    }
+},
+function(params){
+    var that = this;
+    // Call parent class construct
+    Com.AbstractInput.apply(that, arguments);
+});
+
+cm.getConstructor('Com.IntegerInput', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.construct = function(){
+        var that = this;
+        // Bind context to methods
+        that.setValueHandler = that.setValue.bind(that);
+        // Call parent method
+        _inherit.prototype.construct.apply(that, arguments);
+        return that;
+    };
+
+    classProto.renderContent = function(){
+        var that = this,
+            nodes = {};
+        that.nodes['content'] = nodes;
+        that.triggerEvent('onRenderContentStart');
+        // Structure
+        nodes['container'] = cm.node('div', {'class' : 'pt__input'},
+            nodes['input'] = cm.node('input', {'type' : 'text'})
+        );
+        // Attributes
+        if(that.params['maxlength']){
+            nodes['input'].setAttribute('maxlength', that.params['maxlength']);
+        }
+        // Events
+        that.triggerEvent('onRenderContentProcess');
+        cm.addEvent(nodes['input'], 'blur', that.setValueHandler);
+        cm.addEvent(nodes['input'], 'keypress', function(e){
+            if(cm.isKeyCode(e.keyCode, 'enter')){
+                cm.preventDefault(e);
+                that.setValue();
+                nodes['input'].blur();
+            }
+        });
+
+        if(that.params['allowNegative']){
+            cm.allowOnlyNumbersInputEvent(nodes['input'], function(e, value){
+                that.selectAction(that.validateValue(value), true);
+            });
+        }else{
+            cm.allowOnlyDigitInputEvent(nodes['input'], function(e, value){
+                that.selectAction(that.validateValue(value), true);
+            });
+        }
+        that.triggerEvent('onRenderContentEnd');
+        // Push
+        return nodes['container'];
+    };
+
+    /* *** DATA VALUE *** */
+
+    classProto.validateValue = function(value){
+        var that = this;
+        value = !cm.isEmpty(value) ? value : that.params['defaultValue'];
+        that.rawValue = parseInt(value);
+        return that.rawValue;
+    };
+
+    classProto.setValue = function(triggerEvents){
+        var that = this;
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        that.set(that.rawValue, triggerEvents);
+        return that;
+    };
+
+    classProto.setData = function(){
+        var that = this;
+        that.nodes['content']['input'].value = that.rawValue;
+        return that;
+    };
+});
 cm.define('Com.Menu', {
     'modules' : [
         'Params',
@@ -20871,7 +20960,6 @@ function(params){
             cm.removeClass(that.nodes['container'], 'is-open');
             // Remove immediately animation hack
             that.openInterval && clearTimeout(that.openInterval);
-            cm.log(Date.now());
             if(isImmediately){
                 that.openInterval = setTimeout(function(){
                     cm.removeClass(that.nodes['container'], 'is-immediately');
@@ -20879,7 +20967,6 @@ function(params){
                 }, 5);
             }else{
                 that.openInterval = setTimeout(function(){
-                    cm.log(Date.now());
                     closeHelper();
                 }, that.params['duration'] + 5);
             }

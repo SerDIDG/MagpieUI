@@ -41,6 +41,7 @@ cm.define('Com.Gridlist', {
         // Visibility
         'showCounter' : false,
         'showBulkActions' : true,
+        'textOverflow' : false,
         'className' : '',
         'dateFormat' : 'cm._config.dateTimeFormat',                 // Input date format
         'visibleDateFormat' : 'cm._config.dateTimeFormat',          // Render date format
@@ -417,7 +418,7 @@ function(params){
             'key' : '',                     // Data array key
             'title' : '',                   // Table th title
             'sort' : that.params['sort'],   // Sort this column or not
-            'textOverflow' : false,         // Overflow long text to single line
+            'textOverflow' : null,          // Overflow long text to single line
             'class' : '',		            // Icon css class, for type="icon"
             'target' : '_blank',            // Link target, for type="url"
             'showTitle' : false,            // Show title on hover
@@ -430,7 +431,9 @@ function(params){
             'onClick' : false,              // Cell click handler
             'onRender' : false              // Cell onRender handler
         }, item);
+        // Validate
         item['nodes'] = {};
+        item['textOverflow'] = cm.isBoolean(item['textOverflow'])? item['textOverflow'] : that.params['textOverflow'];
         // Check access
         if(item['access']){
             // Structure

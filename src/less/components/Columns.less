@@ -2,14 +2,15 @@
 
 .com__column {
     .display-flex;
+    min-width: 0;
     vertical-align: top;
     .mx__flex(1 1 auto);
-    .mx__flex-direction(column);
+    /* .mx__flex-direction(column); */
 
     > .inner {
+        min-width: 0;
         position: relative;
         border-radius: @CmBorder-Radius;
-        .mx__box-sizing(border-box);
         .mx__flex(1);
         .mx__transition(background-color, @CmUI-Transition-Duration);
     }
