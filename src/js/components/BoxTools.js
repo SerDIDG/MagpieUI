@@ -1,6 +1,7 @@
 cm.define('Com.BoxTools', {
     'extend' : 'Com.AbstractInput',
     'params' : {
+        'controllerEvents' : true,
         'className' : 'com__box-tools',
         'maxlength' : 3,
         'units' : 'px',
@@ -26,7 +27,7 @@ function(params){
 cm.getConstructor('Com.BoxTools', function(classConstructor, className, classProto){
     var _inherit = classProto._inherit;
 
-    classProto.construct = function(){
+    classProto.onConstruct = function(){
         var that = this;
         // Variables
         that.inputs = [];
@@ -36,9 +37,23 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
         // Bind context to methods
         that.linkInputsHandler = that.linkInputs.bind(that);
         that.setValuesHandler = that.setValues.bind(that);
-        // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
         return that;
+    };
+
+    classProto.onEnable = function(){
+        var that = this;
+        cm.forEach(that.inputs, function(item){
+            cm.removeClass(item['nodes']['inner'], 'disabled');
+            item['input'].disabled = false;
+        });
+    };
+
+    classProto.onDisable = function(){
+        var that = this;
+        cm.forEach(that.inputs, function(item){
+            cm.addClass(item['nodes']['inner'], 'disabled');
+            item['input'].disabled = true;
+        });
     };
 
     classProto.set = function(){
@@ -197,23 +212,25 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
 
     classProto.linkInputs = function(){
         var that = this;
-        if(!that.isInputsLinked){
-            that.isInputsLinked = true;
-            cm.addClass(that.nodes['content']['link'], 'active');
-            that.nodes['content']['link'].title = that.lang('unlink');
-            if(that.lastInput){
-                that.set(that.lastInput['input'].value);
+        if(!that.disabled){
+            if(!that.isInputsLinked){
+                that.isInputsLinked = true;
+                cm.addClass(that.nodes['content']['link'], 'active');
+                that.nodes['content']['link'].title = that.lang('unlink');
+                if(that.lastInput){
+                    that.set(that.lastInput['input'].value);
+                }else{
+                    var value = 0;
+                    cm.forEach(that.inputs, function(item){
+                        value = Math.max(value, parseInt(item['input'].value));
+                    });
+                    that.set(value);
+                }
             }else{
-                var value = 0;
-                cm.forEach(that.inputs, function(item){
-                    value = Math.max(value, parseInt(item['input'].value));
-                });
-                that.set(value);
+                that.isInputsLinked = false;
+                cm.removeClass(that.nodes['content']['link'], 'active');
+                that.nodes['content']['link'].title = that.lang('link');
             }
-        }else{
-            that.isInputsLinked = false;
-            cm.removeClass(that.nodes['content']['link'], 'active');
-            that.nodes['content']['link'].title = that.lang('link');
         }
         return that;
     };

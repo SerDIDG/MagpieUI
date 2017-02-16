@@ -76,7 +76,7 @@ cm.define('Com.Gridlist', {
             'counter' : 'Count: %count%',
             'check_all' : 'Check all',
             'uncheck_all' : 'Uncheck all',
-            'empty' : 'Items does not found',
+            'empty' : 'No items',
             'actions' : 'Actions'
         },
         'icons' : {

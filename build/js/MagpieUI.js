@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.24.12 (2017-02-13 19:00) ************ */
+/*! ************ MagpieUI v3.24.13 (2017-02-16 19:41) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1427,7 +1427,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.24.12',
+        '_version' : '3.24.13',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -7065,10 +7065,10 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
 
     classProto.enable = function(){
         var that = this;
-        if(!that.disabled){
+        if(that.disabled){
             that.disabled = false;
             cm.removeClass(that.nodes['container'], 'disabled');
-            cm.removeClass(that.nodes['content'], 'disabled');
+            cm.removeClass(that.nodes['contentContainer'], 'disabled');
             that.triggerEvent('onEnable');
         }
         return that;
@@ -7076,10 +7076,10 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
 
     classProto.disable = function(){
         var that = this;
-        if(that.disabled){
+        if(!that.disabled){
             that.disabled = true;
             cm.addClass(that.nodes['container'], 'disabled');
-            cm.addClass(that.nodes['content'], 'disabled');
+            cm.addClass(that.nodes['contentContainer'], 'disabled');
             that.triggerEvent('onDisable');
         }
         return that;
@@ -7108,7 +7108,6 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
             that.params['placeholder'] = that.params['node'].getAttribute('placeholder') || that.params['placeholder'];
         }
         that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
-        that.disabled = that.params['disabled'];
         that.triggerEvent('onValidateParamsEnd');
         return that;
     };
@@ -7116,6 +7115,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
     classProto.afterRender = function(){
         var that = this;
         that.set(that.params['value'], false);
+        that.params['disabled'] && that.disable();
         return that;
     };
 
@@ -8722,7 +8722,7 @@ Com.FormFields.add('select', {
 });
 
 Com.FormFields.add('checkbox', {
-    'node' : cm.node('div', {'class' : 'form__check-line'}),
+    'node' : cm.node('div', {'class' : 'pt__check-line'}),
     'callbacks' : {
         'controller' : function(that){
             var nodes = {};
@@ -8750,7 +8750,7 @@ Com.FormFields.add('checkbox', {
 });
 
 Com.FormFields.add('radio', {
-    'node' : cm.node('div', {'class' : 'form__check-line'}),
+    'node' : cm.node('div', {'class' : 'pt__check-line'}),
     'callbacks' : {
         'controller' : function(that){
             var items = [],
@@ -8794,7 +8794,7 @@ Com.FormFields.add('radio', {
 });
 
 Com.FormFields.add('check', {
-    'node' : cm.node('div', {'class' : 'form__check-line'}),
+    'node' : cm.node('div', {'class' : 'pt__check-line'}),
     'callbacks' : {
         'controller' : function(that){
             var items = [],
@@ -9285,6 +9285,7 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
 cm.define('Com.BoxTools', {
     'extend' : 'Com.AbstractInput',
     'params' : {
+        'controllerEvents' : true,
         'className' : 'com__box-tools',
         'maxlength' : 3,
         'units' : 'px',
@@ -9310,7 +9311,7 @@ function(params){
 cm.getConstructor('Com.BoxTools', function(classConstructor, className, classProto){
     var _inherit = classProto._inherit;
 
-    classProto.construct = function(){
+    classProto.onConstruct = function(){
         var that = this;
         // Variables
         that.inputs = [];
@@ -9320,9 +9321,23 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
         // Bind context to methods
         that.linkInputsHandler = that.linkInputs.bind(that);
         that.setValuesHandler = that.setValues.bind(that);
-        // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
         return that;
+    };
+
+    classProto.onEnable = function(){
+        var that = this;
+        cm.forEach(that.inputs, function(item){
+            cm.removeClass(item['nodes']['inner'], 'disabled');
+            item['input'].disabled = false;
+        });
+    };
+
+    classProto.onDisable = function(){
+        var that = this;
+        cm.forEach(that.inputs, function(item){
+            cm.addClass(item['nodes']['inner'], 'disabled');
+            item['input'].disabled = true;
+        });
     };
 
     classProto.set = function(){
@@ -9481,23 +9496,25 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
 
     classProto.linkInputs = function(){
         var that = this;
-        if(!that.isInputsLinked){
-            that.isInputsLinked = true;
-            cm.addClass(that.nodes['content']['link'], 'active');
-            that.nodes['content']['link'].title = that.lang('unlink');
-            if(that.lastInput){
-                that.set(that.lastInput['input'].value);
+        if(!that.disabled){
+            if(!that.isInputsLinked){
+                that.isInputsLinked = true;
+                cm.addClass(that.nodes['content']['link'], 'active');
+                that.nodes['content']['link'].title = that.lang('unlink');
+                if(that.lastInput){
+                    that.set(that.lastInput['input'].value);
+                }else{
+                    var value = 0;
+                    cm.forEach(that.inputs, function(item){
+                        value = Math.max(value, parseInt(item['input'].value));
+                    });
+                    that.set(value);
+                }
             }else{
-                var value = 0;
-                cm.forEach(that.inputs, function(item){
-                    value = Math.max(value, parseInt(item['input'].value));
-                });
-                that.set(value);
+                that.isInputsLinked = false;
+                cm.removeClass(that.nodes['content']['link'], 'active');
+                that.nodes['content']['link'].title = that.lang('link');
             }
-        }else{
-            that.isInputsLinked = false;
-            cm.removeClass(that.nodes['content']['link'], 'active');
-            that.nodes['content']['link'].title = that.lang('link');
         }
         return that;
     };
@@ -18090,7 +18107,7 @@ cm.define('Com.Gridlist', {
             'counter' : 'Count: %count%',
             'check_all' : 'Check all',
             'uncheck_all' : 'Uncheck all',
-            'empty' : 'Items does not found',
+            'empty' : 'No items',
             'actions' : 'Actions'
         },
         'icons' : {
@@ -21339,7 +21356,7 @@ function(params){
         if(dataItem && !cm.isEmpty(dataItem)){
             data = dataItem;
         }
-        if(countItem){
+        if(countItem != 'undefined'){
             that.setCount(countItem);
         }
         return data;
@@ -21719,7 +21736,10 @@ function(params){
     };
 
     that.setCount = function(count){
-        if(count && (count = parseInt(count.toString())) && count != that.params['count']){
+        if(count != 'undefined'){
+            count = parseInt(count.toString());
+        }
+        if(cm.isNumber(count) && count != that.params['count']){
             that.params['count'] = count;
             if(that.params['pageCount'] == 0 && that.params['count'] && that.params['perPage']){
                 that.pageCount = Math.ceil(that.params['count'] / that.params['perPage']);
@@ -22214,6 +22234,7 @@ function(params){
 cm.define('Com.PositionTools', {
     'extend' : 'Com.AbstractInput',
     'params' : {
+        'controllerEvents' : true,
         'className' : 'com__position-tools',
         'defaultValue' : 'center center',
         'options' : [
@@ -22238,12 +22259,10 @@ function(params){
 cm.getConstructor('Com.PositionTools', function(classConstructor, className, classProto){
     var _inherit = classProto._inherit;
 
-    classProto.construct = function(){
+    classProto.onConstruct = function(){
         var that = this;
         that.options = {};
         // Bind context to methods
-        // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
         return that;
     };
 
@@ -22292,7 +22311,7 @@ cm.getConstructor('Com.PositionTools', function(classConstructor, className, cla
         cm.appendChild(item['nodes']['container'], that.nodes['content']['inner']);
         // Events
         cm.addEvent(item['nodes']['container'], 'click', function(){
-            that.set(item['name']);
+            !that.disabled && that.set(item['name']);
         });
         // Push
         that.options[item['name']] = item;
@@ -22304,12 +22323,12 @@ cm.getConstructor('Com.PositionTools', function(classConstructor, className, cla
             item;
         if(that.options[that.previousValue]){
             item = that.options[that.previousValue];
-            cm.removeClass(item['nodes']['container'], 'is-active');
+            cm.removeClass(item['nodes']['container'], 'active');
             cm.replaceClass(item['nodes']['icon'], item['iconActive'], item['icon']);
         }
         if(that.options[that.value]){
             item = that.options[that.value];
-            cm.addClass(item['nodes']['container'], 'is-active');
+            cm.addClass(item['nodes']['container'], 'active');
             cm.replaceClass(item['nodes']['icon'], item['icon'], item['iconActive']);
         }
     };

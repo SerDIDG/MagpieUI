@@ -814,7 +814,7 @@ Com.FormFields.add('select', {
 });
 
 Com.FormFields.add('checkbox', {
-    'node' : cm.node('div', {'class' : 'form__check-line'}),
+    'node' : cm.node('div', {'class' : 'pt__check-line'}),
     'callbacks' : {
         'controller' : function(that){
             var nodes = {};
@@ -842,7 +842,7 @@ Com.FormFields.add('checkbox', {
 });
 
 Com.FormFields.add('radio', {
-    'node' : cm.node('div', {'class' : 'form__check-line'}),
+    'node' : cm.node('div', {'class' : 'pt__check-line'}),
     'callbacks' : {
         'controller' : function(that){
             var items = [],
@@ -886,7 +886,7 @@ Com.FormFields.add('radio', {
 });
 
 Com.FormFields.add('check', {
-    'node' : cm.node('div', {'class' : 'form__check-line'}),
+    'node' : cm.node('div', {'class' : 'pt__check-line'}),
     'callbacks' : {
         'controller' : function(that){
             var items = [],

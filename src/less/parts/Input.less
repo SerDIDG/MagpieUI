@@ -18,6 +18,17 @@
         }
     }
 
+    &.disabled {
+        .input {
+            cursor: default;
+        }
+
+        .icon {
+            cursor: default;
+            opacity: @CmUI-Opacity-Hover;
+        }
+    }
+
     .pt__input--size(@CmForm-FieldHeight, @CmInput-Padding, @CmBorder-Width, @CmFont-Base-LineHeight);
 
     &.size-large {

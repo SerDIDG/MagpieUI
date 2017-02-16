@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.24.12 (2017-02-13 19:00) ************ */
+/*! ************ MagpieUI v3.24.13 (2017-02-16 19:41) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3751,7 +3751,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.24.12';
+@CmVersion: '3.24.13';
 
 // /* ******* PATH ******* */
 
@@ -7268,51 +7268,6 @@ button {
 
 /* *** CHECKBOX / RADIO LINE *** */
 
-.form__check-line {
-    min-height: @CmForm-FieldHeight;
-    line-height: @CmForm-FieldHeight;
-
-    input[type="radio"],
-    input[type="checkbox"] {
-        @margin: floor((@CmForm-FieldHeight - 13px) / 2);
-
-        margin: @margin 0 @margin 0;
-        vertical-align: top;
-        padding: 0;
-        cursor: pointer;
-    }
-
-    label {
-        @padding: round((@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2);
-        padding: @padding 0 @padding 0;
-        margin-right: @CmIndent-Medium;
-        cursor: pointer;
-        vertical-align: baseline;
-        line-height: @CmFont-Base-LineHeight;
-
-        &:first-child {
-            margin-left: 0;
-        }
-
-        &:last-child {
-            margin-right: 0;
-        }
-    }
-
-    .label {
-        margin-left: @CmForm-FieldInnerIndent;
-    }
-
-    &.has-fields {
-        .display-flex;
-
-        > .fields {
-            margin: 0 0 0 @CmIndent-XSmall;
-            .mx__flex(1);
-        }
-    }
-}
-
 .check-line {
     min-height: @CmForm-FieldHeight;
     line-height: @CmForm-FieldHeight;
@@ -8592,6 +8547,54 @@ button {
     }
 
 }
+.pt__check-line {
+    min-height: @CmForm-FieldHeight;
+    line-height: @CmForm-FieldHeight;
+
+    input[type="radio"],
+    input[type="checkbox"] {
+        @margin: floor((@CmForm-FieldHeight - 13px) / 2);
+
+        margin: @margin 0 @margin 0;
+        vertical-align: top;
+        padding: 0;
+        cursor: pointer;
+    }
+
+    label {
+        @padding: round((@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2);
+        padding: @padding 0 @padding 0;
+        margin-right: @CmIndent-Medium;
+        cursor: pointer;
+        vertical-align: baseline;
+        line-height: @CmFont-Base-LineHeight;
+
+        &:first-child {
+            margin-left: 0;
+        }
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+
+    .label {
+        margin-left: @CmForm-FieldInnerIndent;
+    }
+
+    &.has-fields {
+        .display-flex;
+
+        > .fields {
+            margin: 0 0 0 @CmIndent-XSmall;
+            .mx__flex(1);
+        }
+    }
+
+    &.pull-center {
+        text-align: center;
+    }
+}
 /* ******* PARTS: COLUMNS ******* */
 
 .pt__columns {
@@ -8604,6 +8607,14 @@ button {
             min-width: 0;
             position: relative;
             .mx__flex(1 1 0);
+
+            &.column--auto {
+                .mx__flex(1 1 auto);
+            }
+
+            &.column--none {
+                .mx__flex(none);
+            }
         }
     }
 
@@ -8611,6 +8622,14 @@ button {
         > .inner {
             > .column {
                 .mx__flex(none);
+
+                &.column--auto {
+                    .mx__flex(1 1 auto);
+                }
+
+                &.column--none {
+                    .mx__flex(none);
+                }
             }
         }
     }
@@ -8621,6 +8640,14 @@ button {
 
             > .column {
                 .mx__flex(1 1 auto);
+
+                &.column--auto {
+                    .mx__flex(1 1 auto);
+                }
+
+                &.column--none {
+                    .mx__flex(none);
+                }
             }
         }
     }
@@ -10292,6 +10319,17 @@ ul.pt__field__hint {
     &.no-label {
         .input {
             font-size: 0;
+        }
+    }
+
+    &.disabled {
+        .input {
+            cursor: default;
+        }
+
+        .icon {
+            cursor: default;
+            opacity: @CmUI-Opacity-Hover;
         }
     }
 
@@ -13507,6 +13545,21 @@ ul.pt__field__hint {
     .b-link-container {
         margin: 0 @ComBoxTools-LinkIndent;
     }
+
+    &.disabled {
+        .b-link {
+            background-color: @CmColor-Secondary-LightHover;
+            cursor: default;
+
+            &.active {
+                background-color: @CmColor-Secondary-LightActiveHover;
+            }
+
+            .icon {
+                opacity: @CmUI-Opacity-Hover;
+            }
+        }
+    }
 }
 
 .com__box-tools--radius {
@@ -14356,6 +14409,12 @@ ul.pt__field__hint {
                 }
             }
         }
+
+        &.has-close-background {
+            > .bg {
+                cursor: url("@{CmPath-Images}/icons/medium/close-white.png"), auto;
+            }
+        }
     }
 
     // /* *** BLACK *** */
@@ -14394,6 +14453,12 @@ ul.pt__field__hint {
                         padding-top: @ComDialog-Indent
                     }
                 }
+            }
+        }
+
+        &.has-close-background {
+            > .bg {
+                cursor: url("@{CmPath-Images}/icons/medium/close.png"), auto;
             }
         }
 
@@ -16147,7 +16212,7 @@ ul.pt__field__hint {
             background-color: @CmColor-Secondary-LightActiveHover;
         }
 
-        &.is-active {
+        &.active {
             background-color: @CmColor-Primary-DarkDefault;
             box-shadow: @CmUI-ShadowInner;
 
@@ -16160,6 +16225,21 @@ ul.pt__field__hint {
             width: 100%;
             height: 100%;
             .mx__transition(all, @CmUI-Transition-Duration);
+        }
+    }
+
+    &.disabled {
+        .option__item {
+            background-color: @CmColor-Secondary-LightHover;
+            cursor: default;
+
+            &.active {
+                background-color: @CmColor-Secondary-LightActiveHover;
+            }
+
+            .icon {
+                opacity: @CmUI-Opacity-Hover;
+            }
         }
     }
 }

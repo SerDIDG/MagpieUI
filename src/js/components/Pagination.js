@@ -274,7 +274,7 @@ function(params){
         if(dataItem && !cm.isEmpty(dataItem)){
             data = dataItem;
         }
-        if(countItem){
+        if(countItem != 'undefined'){
             that.setCount(countItem);
         }
         return data;
@@ -654,7 +654,10 @@ function(params){
     };
 
     that.setCount = function(count){
-        if(count && (count = parseInt(count.toString())) && count != that.params['count']){
+        if(count != 'undefined'){
+            count = parseInt(count.toString());
+        }
+        if(cm.isNumber(count) && count != that.params['count']){
             that.params['count'] = count;
             if(that.params['pageCount'] == 0 && that.params['count'] && that.params['perPage']){
                 that.pageCount = Math.ceil(that.params['count'] / that.params['perPage']);

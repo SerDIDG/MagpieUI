@@ -1,6 +1,7 @@
 cm.define('Com.PositionTools', {
     'extend' : 'Com.AbstractInput',
     'params' : {
+        'controllerEvents' : true,
         'className' : 'com__position-tools',
         'defaultValue' : 'center center',
         'options' : [
@@ -25,12 +26,10 @@ function(params){
 cm.getConstructor('Com.PositionTools', function(classConstructor, className, classProto){
     var _inherit = classProto._inherit;
 
-    classProto.construct = function(){
+    classProto.onConstruct = function(){
         var that = this;
         that.options = {};
         // Bind context to methods
-        // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
         return that;
     };
 
@@ -79,7 +78,7 @@ cm.getConstructor('Com.PositionTools', function(classConstructor, className, cla
         cm.appendChild(item['nodes']['container'], that.nodes['content']['inner']);
         // Events
         cm.addEvent(item['nodes']['container'], 'click', function(){
-            that.set(item['name']);
+            !that.disabled && that.set(item['name']);
         });
         // Push
         that.options[item['name']] = item;
@@ -91,12 +90,12 @@ cm.getConstructor('Com.PositionTools', function(classConstructor, className, cla
             item;
         if(that.options[that.previousValue]){
             item = that.options[that.previousValue];
-            cm.removeClass(item['nodes']['container'], 'is-active');
+            cm.removeClass(item['nodes']['container'], 'active');
             cm.replaceClass(item['nodes']['icon'], item['iconActive'], item['icon']);
         }
         if(that.options[that.value]){
             item = that.options[that.value];
-            cm.addClass(item['nodes']['container'], 'is-active');
+            cm.addClass(item['nodes']['container'], 'active');
             cm.replaceClass(item['nodes']['icon'], item['icon'], item['iconActive']);
         }
     };

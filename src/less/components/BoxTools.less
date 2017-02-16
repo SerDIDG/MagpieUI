@@ -66,6 +66,21 @@
     .b-link-container {
         margin: 0 @ComBoxTools-LinkIndent;
     }
+
+    &.disabled {
+        .b-link {
+            background-color: @CmColor-Secondary-LightHover;
+            cursor: default;
+
+            &.active {
+                background-color: @CmColor-Secondary-LightActiveHover;
+            }
+
+            .icon {
+                opacity: @CmUI-Opacity-Hover;
+            }
+        }
+    }
 }
 
 .com__box-tools--radius {

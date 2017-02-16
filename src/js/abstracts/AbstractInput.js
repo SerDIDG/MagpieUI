@@ -89,10 +89,10 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
 
     classProto.enable = function(){
         var that = this;
-        if(!that.disabled){
+        if(that.disabled){
             that.disabled = false;
             cm.removeClass(that.nodes['container'], 'disabled');
-            cm.removeClass(that.nodes['content'], 'disabled');
+            cm.removeClass(that.nodes['contentContainer'], 'disabled');
             that.triggerEvent('onEnable');
         }
         return that;
@@ -100,10 +100,10 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
 
     classProto.disable = function(){
         var that = this;
-        if(that.disabled){
+        if(!that.disabled){
             that.disabled = true;
             cm.addClass(that.nodes['container'], 'disabled');
-            cm.addClass(that.nodes['content'], 'disabled');
+            cm.addClass(that.nodes['contentContainer'], 'disabled');
             that.triggerEvent('onDisable');
         }
         return that;
@@ -132,7 +132,6 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
             that.params['placeholder'] = that.params['node'].getAttribute('placeholder') || that.params['placeholder'];
         }
         that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
-        that.disabled = that.params['disabled'];
         that.triggerEvent('onValidateParamsEnd');
         return that;
     };
@@ -140,6 +139,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
     classProto.afterRender = function(){
         var that = this;
         that.set(that.params['value'], false);
+        that.params['disabled'] && that.disable();
         return that;
     };
 

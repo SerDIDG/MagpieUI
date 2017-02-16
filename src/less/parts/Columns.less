@@ -10,6 +10,14 @@
             min-width: 0;
             position: relative;
             .mx__flex(1 1 0);
+
+            &.column--auto {
+                .mx__flex(1 1 auto);
+            }
+
+            &.column--none {
+                .mx__flex(none);
+            }
         }
     }
 
@@ -17,6 +25,14 @@
         > .inner {
             > .column {
                 .mx__flex(none);
+
+                &.column--auto {
+                    .mx__flex(1 1 auto);
+                }
+
+                &.column--none {
+                    .mx__flex(none);
+                }
             }
         }
     }
@@ -27,6 +43,14 @@
 
             > .column {
                 .mx__flex(1 1 auto);
+
+                &.column--auto {
+                    .mx__flex(1 1 auto);
+                }
+
+                &.column--none {
+                    .mx__flex(none);
+                }
             }
         }
     }

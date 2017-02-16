@@ -24,7 +24,7 @@
             background-color: @CmColor-Secondary-LightActiveHover;
         }
 
-        &.is-active {
+        &.active {
             background-color: @CmColor-Primary-DarkDefault;
             box-shadow: @CmUI-ShadowInner;
 
@@ -37,6 +37,21 @@
             width: 100%;
             height: 100%;
             .mx__transition(all, @CmUI-Transition-Duration);
+        }
+    }
+
+    &.disabled {
+        .option__item {
+            background-color: @CmColor-Secondary-LightHover;
+            cursor: default;
+
+            &.active {
+                background-color: @CmColor-Secondary-LightActiveHover;
+            }
+
+            .icon {
+                opacity: @CmUI-Opacity-Hover;
+            }
         }
     }
 }
