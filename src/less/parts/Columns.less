@@ -21,6 +21,17 @@
         }
     }
 
+    &.field-indent,
+    &.field-inner-indent {
+        .cm__box;
+        margin-bottom: @CmForm-FieldInnerIndent;
+    }
+
+    &.field-outer-indent {
+        .cm__box;
+        margin-bottom: @CmForm-FieldIndent;
+    }
+
     &.is-none {
         > .inner {
             > .column {

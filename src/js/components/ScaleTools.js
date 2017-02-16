@@ -3,6 +3,7 @@ cm.define('Com.ScaleTools', {
     'params' : {
         'className' : 'com__scale-tools',
         'defaultValue' : 'original',
+        'fieldStyle' : 'row',                   // row | block
         'options' : [
             {'name' : 'original', 'icon' : 'svg__scale-original'},
             {'name' : 'contain', 'icon' : 'svg__scale-contain'},
@@ -53,6 +54,8 @@ cm.getConstructor('Com.ScaleTools', function(classConstructor, className, classP
         nodes['container'] = cm.node('div', {'class' : 'com__scale-tools__content'},
             nodes['inner'] = cm.node('div', {'class' : 'inner'})
         );
+        cm.addClass(nodes['container'], ['style', that.params['fieldStyle']].join('-'));
+        // Render options
         cm.forEach(that.params['options'], function(item){
             that.renderOption(item);
         });

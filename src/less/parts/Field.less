@@ -61,9 +61,15 @@
             }
         }
 
-        &.field-indent {
+        &.field-indent,
+        &.field-inner-indent {
             .cm__box;
             margin-bottom: @CmForm-FieldInnerIndent;
+        }
+
+        &.field-outer-indent {
+            .cm__box;
+            margin-bottom: @CmForm-FieldIndent;
         }
     }
 
@@ -76,6 +82,13 @@
             text-align: center;
         }
     }
+}
+
+.pt__field-label {
+    display: block;
+    margin: 0;
+    padding: ((@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2) 0;
+    line-height: @CmFont-Base-LineHeight;
 }
 
 /* *** FIELD HINT *** */

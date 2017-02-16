@@ -4,6 +4,7 @@ cm.define('Com.PositionTools', {
         'controllerEvents' : true,
         'className' : 'com__position-tools',
         'defaultValue' : 'center center',
+        'fieldSize' : 'medium',                      // medium (24px) | large (32px)
         'options' : [
             {'name' : 'left top', 'icon' : 'svg__position-topleft', 'iconActive' : 'svg__position-topleft--light'},
             {'name' : 'center top', 'icon' : 'svg__position-topcenter', 'iconActive' : 'svg__position-topcenter--light'},
@@ -51,6 +52,8 @@ cm.getConstructor('Com.PositionTools', function(classConstructor, className, cla
         nodes['container'] = cm.node('div', {'class' : 'com__position-tools__content'},
             nodes['inner'] = cm.node('div', {'class' : 'inner'})
         );
+        cm.addClass(nodes['container'], ['size', that.params['fieldSize']].join('-'));
+        // Render Options
         cm.forEach(that.params['options'], function(item){
             that.renderOption(item);
         });

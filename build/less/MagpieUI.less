@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.24.13 (2017-02-16 19:41) ************ */
+/*! ************ MagpieUI v3.24.14 (2017-02-16 23:21) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3751,7 +3751,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.24.13';
+@CmVersion: '3.24.14';
 
 // /* ******* PATH ******* */
 
@@ -4491,15 +4491,18 @@ span.CodeMirror-selectedtext { background: none; }
 @ComPositionTools-Item-Size: @CmSize-Medium;
 @ComPositionTools-Item-Indent: @CmIndent-XXXSmall;
 
+@ComPositionTools-Item-Large-Size: @CmSize-Large;
+@ComPositionTools-Item-Large-Indent: @CmIndent-XXXSmall;
+
 // /* ******* REPEAT TOOLS ******* */
 
 @ComRepeatTools-Item-Size: 38px;
-@ComRepeatTools-Item-Indent: 6px;
+@ComRepeatTools-Item-Indent: @CmIndent-XXXSmall;
 
 // /* ******* SCALE TOOLS ******* */
 
 @ComScaleTools-Item-Size: 38px;
-@ComScaleTools-Item-Indent: 6px;
+@ComScaleTools-Item-Indent: @CmIndent-XXXSmall;
 
 // /* ******* DATEPICKER ******* */
 
@@ -8559,11 +8562,14 @@ button {
         vertical-align: top;
         padding: 0;
         cursor: pointer;
+
+        &:checked + .unveil,
+        &:checked + .label + .unveil {
+            display: block;
+        }
     }
 
     label {
-        @padding: round((@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2);
-        padding: @padding 0 @padding 0;
         margin-right: @CmIndent-Medium;
         cursor: pointer;
         vertical-align: baseline;
@@ -8579,11 +8585,27 @@ button {
     }
 
     .label {
+        display: inline-block;
         margin-left: @CmForm-FieldInnerIndent;
+    }
+
+    > .fields {
+        &.unveil {
+            display: none;
+        }
     }
 
     &.has-fields {
         .display-flex;
+
+        label {
+            margin-right: 0;
+        }
+
+        .label {
+            @padding: round((@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2);
+            padding: @padding 0 @padding 0;
+        }
 
         > .fields {
             margin: 0 0 0 @CmIndent-XSmall;
@@ -8616,6 +8638,17 @@ button {
                 .mx__flex(none);
             }
         }
+    }
+
+    &.field-indent,
+    &.field-inner-indent {
+        .cm__box;
+        margin-bottom: @CmForm-FieldInnerIndent;
+    }
+
+    &.field-outer-indent {
+        .cm__box;
+        margin-bottom: @CmForm-FieldIndent;
     }
 
     &.is-none {
@@ -9237,9 +9270,15 @@ button {
             }
         }
 
-        &.field-indent {
+        &.field-indent,
+        &.field-inner-indent {
             .cm__box;
             margin-bottom: @CmForm-FieldInnerIndent;
+        }
+
+        &.field-outer-indent {
+            .cm__box;
+            margin-bottom: @CmForm-FieldIndent;
         }
     }
 
@@ -9252,6 +9291,13 @@ button {
             text-align: center;
         }
     }
+}
+
+.pt__field-label {
+    display: block;
+    margin: 0;
+    padding: ((@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2) 0;
+    line-height: @CmFont-Base-LineHeight;
 }
 
 /* *** FIELD HINT *** */
@@ -16242,6 +16288,21 @@ ul.pt__field__hint {
             }
         }
     }
+
+    &.size-large {
+        @half_indent: @ComPositionTools-Item-Large-Indent / 2;
+
+        > .inner {
+            width: (@ComPositionTools-Item-Large-Size + @ComPositionTools-Item-Large-Indent) * 3;
+            margin: -@half_indent;
+        }
+
+        .option__item {
+            width: @ComPositionTools-Item-Large-Size;
+            height: @ComPositionTools-Item-Large-Size;
+            margin: @half_indent;
+        }
+    }
 }
 /* ******* COMPONENTS: RANGE ******* */
 
@@ -16257,7 +16318,7 @@ ul.pt__field__hint {
         .display-flex;
         width: (@ComRepeatTools-Item-Size + @ComRepeatTools-Item-Indent) * 4;
         margin: -@half_indent;
-        .mx__flex-flow(row nowrap);
+        .mx__flex-flow(row wrap);
     }
 
     .option__item {
@@ -16288,6 +16349,12 @@ ul.pt__field__hint {
         .icon {
             width: 100%;
             height: 100%;
+        }
+    }
+
+    &.style-block {
+        > .inner {
+            width: (@ComScaleTools-Item-Size + @ComScaleTools-Item-Indent) * 2;
         }
     }
 }
@@ -16338,7 +16405,7 @@ ul.pt__field__hint {
         .display-flex;
         width: (@ComScaleTools-Item-Size + @ComScaleTools-Item-Indent) * 4;
         margin: -@half_indent;
-        .mx__flex-flow(row nowrap);
+        .mx__flex-flow(row wrap);
     }
 
     .option__item {
@@ -16369,6 +16436,12 @@ ul.pt__field__hint {
         .icon {
             width: 100%;
             height: 100%;
+        }
+    }
+
+    &.style-block {
+        > .inner {
+            width: (@ComScaleTools-Item-Size + @ComScaleTools-Item-Indent) * 2;
         }
     }
 }

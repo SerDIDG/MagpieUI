@@ -54,4 +54,19 @@
             }
         }
     }
+
+    &.size-large {
+        @half_indent: @ComPositionTools-Item-Large-Indent / 2;
+
+        > .inner {
+            width: (@ComPositionTools-Item-Large-Size + @ComPositionTools-Item-Large-Indent) * 3;
+            margin: -@half_indent;
+        }
+
+        .option__item {
+            width: @ComPositionTools-Item-Large-Size;
+            height: @ComPositionTools-Item-Large-Size;
+            margin: @half_indent;
+        }
+    }
 }

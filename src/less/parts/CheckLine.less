@@ -10,11 +10,14 @@
         vertical-align: top;
         padding: 0;
         cursor: pointer;
+
+        &:checked + .unveil,
+        &:checked + .label + .unveil {
+            display: block;
+        }
     }
 
     label {
-        @padding: round((@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2);
-        padding: @padding 0 @padding 0;
         margin-right: @CmIndent-Medium;
         cursor: pointer;
         vertical-align: baseline;
@@ -30,11 +33,27 @@
     }
 
     .label {
+        display: inline-block;
         margin-left: @CmForm-FieldInnerIndent;
+    }
+
+    > .fields {
+        &.unveil {
+            display: none;
+        }
     }
 
     &.has-fields {
         .display-flex;
+
+        label {
+            margin-right: 0;
+        }
+
+        .label {
+            @padding: round((@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2);
+            padding: @padding 0 @padding 0;
+        }
 
         > .fields {
             margin: 0 0 0 @CmIndent-XSmall;

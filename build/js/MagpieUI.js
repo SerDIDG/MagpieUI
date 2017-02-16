@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.24.13 (2017-02-16 19:41) ************ */
+/*! ************ MagpieUI v3.24.14 (2017-02-16 23:21) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1427,7 +1427,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.24.13',
+        '_version' : '3.24.14',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -22237,6 +22237,7 @@ cm.define('Com.PositionTools', {
         'controllerEvents' : true,
         'className' : 'com__position-tools',
         'defaultValue' : 'center center',
+        'fieldSize' : 'medium',                      // medium (24px) | large (32px)
         'options' : [
             {'name' : 'left top', 'icon' : 'svg__position-topleft', 'iconActive' : 'svg__position-topleft--light'},
             {'name' : 'center top', 'icon' : 'svg__position-topcenter', 'iconActive' : 'svg__position-topcenter--light'},
@@ -22284,6 +22285,8 @@ cm.getConstructor('Com.PositionTools', function(classConstructor, className, cla
         nodes['container'] = cm.node('div', {'class' : 'com__position-tools__content'},
             nodes['inner'] = cm.node('div', {'class' : 'inner'})
         );
+        cm.addClass(nodes['container'], ['size', that.params['fieldSize']].join('-'));
+        // Render Options
         cm.forEach(that.params['options'], function(item){
             that.renderOption(item);
         });
@@ -22338,6 +22341,7 @@ cm.define('Com.RepeatTools', {
     'params' : {
         'className' : 'com__repeat-tools',
         'defaultValue' : 'no-repeat',
+        'fieldStyle' : 'row',                   // row | block
         'options' : [
             {'name' : 'no-repeat', 'icon' : 'svg__repeat-no'},
             {'name' : 'repeat-x', 'icon' : 'svg__repeat-horizontal'},
@@ -22388,6 +22392,8 @@ cm.getConstructor('Com.RepeatTools', function(classConstructor, className, class
         nodes['container'] = cm.node('div', {'class' : 'com__repeat-tools__content'},
             nodes['inner'] = cm.node('div', {'class' : 'inner'})
         );
+        cm.addClass(nodes['container'], ['style', that.params['fieldStyle']].join('-'));
+        // Render options
         cm.forEach(that.params['options'], function(item){
             that.renderOption(item);
         });
@@ -23080,6 +23086,7 @@ cm.define('Com.ScaleTools', {
     'params' : {
         'className' : 'com__scale-tools',
         'defaultValue' : 'original',
+        'fieldStyle' : 'row',                   // row | block
         'options' : [
             {'name' : 'original', 'icon' : 'svg__scale-original'},
             {'name' : 'contain', 'icon' : 'svg__scale-contain'},
@@ -23130,6 +23137,8 @@ cm.getConstructor('Com.ScaleTools', function(classConstructor, className, classP
         nodes['container'] = cm.node('div', {'class' : 'com__scale-tools__content'},
             nodes['inner'] = cm.node('div', {'class' : 'inner'})
         );
+        cm.addClass(nodes['container'], ['style', that.params['fieldStyle']].join('-'));
+        // Render options
         cm.forEach(that.params['options'], function(item){
             that.renderOption(item);
         });

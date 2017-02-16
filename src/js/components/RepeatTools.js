@@ -3,6 +3,7 @@ cm.define('Com.RepeatTools', {
     'params' : {
         'className' : 'com__repeat-tools',
         'defaultValue' : 'no-repeat',
+        'fieldStyle' : 'row',                   // row | block
         'options' : [
             {'name' : 'no-repeat', 'icon' : 'svg__repeat-no'},
             {'name' : 'repeat-x', 'icon' : 'svg__repeat-horizontal'},
@@ -53,6 +54,8 @@ cm.getConstructor('Com.RepeatTools', function(classConstructor, className, class
         nodes['container'] = cm.node('div', {'class' : 'com__repeat-tools__content'},
             nodes['inner'] = cm.node('div', {'class' : 'inner'})
         );
+        cm.addClass(nodes['container'], ['style', that.params['fieldStyle']].join('-'));
+        // Render options
         cm.forEach(that.params['options'], function(item){
             that.renderOption(item);
         });
