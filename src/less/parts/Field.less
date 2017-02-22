@@ -38,7 +38,8 @@
         }
     }
 
-    &.is-box {
+    &.is-box,
+    &.is-form-box {
         .cm__box;
 
         > dt {
@@ -71,6 +72,11 @@
             .cm__box;
             margin-bottom: @CmForm-FieldIndent;
         }
+    }
+
+    &.is-form-box {
+        .cm__box;
+        margin-bottom: @CmForm-FieldIndent;
     }
 
     &.is-hidden {

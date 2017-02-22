@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.24.14 (2017-02-16 23:21) ************ */
+/*! ************ MagpieUI v3.24.15 (2017-02-22 16:09) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1427,7 +1427,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.24.14',
+        '_version' : '3.24.15',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -4261,10 +4261,14 @@ cm.allowOnlyDigitInputEvent = function(input, callback){
     var value;
     cm.addEvent(input, 'input', function(e){
         value = input.value.replace(/[^\d]/g, '');
-        if(input.type == 'number'){
-            input.value = Math.min(parseFloat(value), parseFloat(input.max));
+        if(!cm.isEmpty(input.maxlength) || !cm.isEmpty(input.max)){
+            if(input.type == 'number'){
+                input.value = Math.min(parseFloat(value), parseFloat(input.max));
+            }else{
+                input.value = cm.reduceText(value, parseInt(input.maxlength));
+            }
         }else{
-            input.value = cm.reduceText(value, parseInt(input.maxlength));
+            input.value = value;
         }
         callback && callback(e, input.value);
     });
@@ -4275,10 +4279,14 @@ cm.allowOnlyNumbersInputEvent = function(input, callback){
     var value;
     cm.addEvent(input, 'input', function(e){
         value = input.value.replace(/[^\d-]/g, '');
-        if(input.type == 'number'){
-            input.value = Math.min(parseFloat(value), parseFloat(input.max));
+        if(!cm.isEmpty(input.maxlength) || !cm.isEmpty(input.max)){
+            if(input.type == 'number'){
+                input.value = Math.min(parseFloat(value), parseFloat(input.max));
+            }else{
+                input.value = cm.reduceText(value, parseInt(input.maxlength));
+            }
         }else{
-            input.value = cm.reduceText(value, parseInt(input.maxlength));
+            input.value = value;
         }
         callback && callback(e, input.value);
     });
@@ -6404,6 +6412,7 @@ cm.define('Com.AbstractController', {
         'onGetLESSVariablesStart',
         'onGetLESSVariablesProcess',
         'onGetLESSVariablesEnd',
+        'onValidateParams',
         'onValidateParamsStart',
         'onValidateParamsProcess',
         'onValidateParamsEnd',
@@ -6563,6 +6572,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
     classProto.validateParams = function(){
         var that = this;
         that.triggerEvent('onValidateParamsStart');
+        that.triggerEvent('onValidateParams');
         that.triggerEvent('onValidateParamsProcess');
         that.triggerEvent('onValidateParamsEnd');
         return that;
@@ -6983,6 +6993,7 @@ cm.define('Com.AbstractInput', {
         'onClear',
         'onDisable',
         'onEnable',
+        'onRenderContent',
         'onRenderContentStart',
         'onRenderContentProcess',
         'onRenderContentEnd'
@@ -7141,6 +7152,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
             nodes = {};
         that.triggerEvent('onRenderContentStart');
         nodes['container'] = cm.node('div', {'class' : 'input__content'});
+        that.triggerEvent('onRenderContent');
         that.triggerEvent('onRenderContentProcess');
         that.triggerEvent('onRenderContentEnd');
         // Export
@@ -7520,6 +7532,208 @@ cm.getConstructor('Com.AbstractFileManagerContainer', function(classConstructor,
         var that = this;
         that.triggerEvent('onComplete', data);
         that.close();
+        return that;
+    };
+});
+cm.define('Com.AbstractFormField', {
+    'extend' : 'Com.AbstractController',
+    'events' : [
+        'onRenderContent',
+        'onRenderContentStart',
+        'onRenderContentProcess',
+        'onRenderContentEnd'
+    ],
+    'params' : {
+        'renderStructure' : true,
+        'embedStructureOnRender' : true,
+        'controllerEvents' : true,
+        'renderStructureContent' : true,
+        'form' : false,
+        'value' : null,
+        'dataValue' : null,
+        'maxlength' : 0,
+        'type' : false,
+        'label' : '',
+        'help' : null,
+        'placeholder' : '',
+        'visible' : true,
+        'options' : [],
+        'constructor' : false,
+        'constructorParams' : {
+            'formData' : true
+        },
+        'Com.HelpBubble' : {
+            'renderStructure' : true
+        }
+    }
+},
+function(params){
+    var that = this;
+    // Call parent class construct
+    Com.AbstractController.apply(that, arguments);
+});
+
+
+cm.getConstructor('Com.AbstractFormField', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    /******* SYSTEM *******/
+
+    classProto.onDestruct = function(){
+        var that = this;
+        that.controller && cm.isFunction(that.controller.destruct) && that.controller.destruct();
+    };
+
+    classProto.onValidateParams = function(){
+        var that = this;
+        that.params['constructorParams']['name'] = that.params['name'];
+        that.params['constructorParams']['options'] = that.params['options'];
+        that.params['constructorParams']['value'] = that.params['dataValue'] || that.params['value'];
+        that.params['constructorParams']['maxlength'] = that.params['maxlength'];
+        that.params['Com.HelpBubble']['content'] = that.params['help'];
+        that.params['Com.HelpBubble']['name'] = that.params['name'];
+        that.components['form'] = that.params['form'];
+    };
+
+    /******* VIEW - MODEL *******/
+
+    classProto.renderView = function(){
+        var that = this;
+        that.triggerEvent('onRenderViewStart');
+        that.nodes['container'] = cm.node('dl', {'class' : 'pt__field'},
+            that.nodes['label'] = cm.node('dt',
+                cm.node('label', that.params['label'])
+            ),
+            that.nodes['value'] = cm.node('dd', that.params['node'])
+        );
+        // Render custom structure
+        if(that.params['renderStructureContent']){
+            that.nodes['contentContainer'] = that.renderContent();
+            cm.appendChild(that.nodes['contentContainer'], that.nodes['value']);
+        }
+        that.triggerEvent('onRenderViewProcess');
+        that.triggerEvent('onRenderViewEnd');
+    };
+
+    classProto.renderContent = function(){
+        var that = this,
+            nodes = {};
+        that.triggerEvent('onRenderContentStart');
+        nodes['container'] = cm.node('div', {'class' : 'input__content'},
+            nodes['input'] = that.params['node']
+        );
+        that.triggerEvent('onRenderContent');
+        that.triggerEvent('onRenderContentProcess');
+        that.triggerEvent('onRenderContentEnd');
+        // Export
+        that.nodes['content'] = nodes;
+        return nodes['container'];
+    };
+
+    classProto.setAttributes = function(){
+        var that = this;
+        // Call parent method
+        _inherit.prototype.setAttributes.apply(that, arguments);
+        // Attributes
+        if(!cm.isEmpty(that.params['name'])){
+            that.nodes['content']['input'].setAttribute('name', that.params['name']);
+        }
+        if(!cm.isEmpty(that.params['value'])){
+            that.nodes['content']['input'].setAttribute('value', that.params['value']);
+        }
+        if(!cm.isEmpty(that.params['dataValue'])){
+            that.nodes['content']['input'].setAttribute('data-value', JSON.stringify(that.params['dataValue']));
+        }
+        if(!cm.isEmpty(that.params['placeholder'])){
+            that.nodes['content']['input'].setAttribute('placeholder', that.params['placeholder']);
+        }
+        if(!cm.isEmpty(that.params['maxlength'])){
+            that.nodes['content']['input'].setAttribute('maxlength', that.params['maxlength']);
+        }
+        // Classes
+        if(!that.params['visible']){
+            cm.addClass(that.nodes['container'], 'is-hidden');
+        }
+    };
+
+    classProto.renderViewModel = function(){
+        var that = this;
+        // Call parent method - renderViewModel
+        _inherit.prototype.renderViewModel.apply(that, arguments);
+        // Help Bubble
+        if(!cm.isEmpty(that.params['help'])){
+            cm.getConstructor('Com.HelpBubble', function(classConstructor){
+                that.components['help'] = new classConstructor(
+                    cm.merge(that.params['Com.HelpBubble'], {
+                        'container' : that.nodes['label']
+                    })
+                );
+            });
+        }
+        // Controller component
+        if(that.params['constructor']){
+            that.renderController();
+        }
+        return that;
+    };
+
+    classProto.renderController = function(){
+        var that = this;
+        cm.getConstructor(that.params['constructor'], function(classObject){
+            that.components['controller'] = new classObject(
+                cm.merge(that.params['constructorParams'], {
+                    'node' : that.nodes['content']['input']
+                })
+            );
+        });
+    };
+
+    /******* DATA *******/
+
+    classProto.set = function(value){
+        var that = this;
+        that.components['controller'] && cm.isFunction(that.components['controller'].set) && that.components['controller'].set(value);
+        return that;
+    };
+
+    classProto.get = function(){
+        var that = this;
+        return that.components['controller'] && cm.isFunction(that.components['controller'].get) ? that.components['controller'].get() : null;
+    };
+
+    classProto.reset = function(){
+        var that = this;
+        that.components['controller'] && cm.isFunction(that.components['controller'].reset) && that.components['controller'].reset();
+        return that;
+    };
+
+    classProto.enable = function(){
+        var that = this;
+        return that.components['controller'] && cm.isFunction(that.components['controller'].enable) ? that.components['controller'].enable() : null;
+    };
+
+    classProto.disable = function(){
+        var that = this;
+        return that.components['controller'] && cm.isFunction(that.components['controller'].disable) ? that.components['controller'].disable() : null;
+    };
+
+    /******* MESSAGES *******/
+
+    classProto.renderError = function(message){
+        var that = this;
+        that.clearError();
+        cm.addClass(that.nodes['container'], 'error');
+        that.nodes['errors'] = cm.node('ul', {'class' : 'pt__field__hint'},
+            cm.node('li', {'class' : 'error'}, message)
+        );
+        cm.appendChild(that.nodes['errors'], that.nodes['value']);
+        return that;
+    };
+
+    classProto.clearError = function(){
+        var that = this;
+        cm.removeClass(that.nodes['container'], 'error');
+        cm.remove(that.nodes['errors']);
         return that;
     };
 });
@@ -8065,13 +8279,15 @@ function(params){
         }, params);
         field = Com.FormFields.get(type);
         params = cm.merge(cm.clone(field, true), params);
-        // Get value
+        // Validate
+        params['fieldConstructor'] = !params['fieldConstructor']? 'Com.FormField' : params['fieldConstructor'];
         params['value'] = that.params['data'][params['name']] || params['value'];
         params['dataValue'] = that.params['data'][params['dataName']] || params['dataValue'];
         // Render
         if(field && !that.fields[params['name']]){
-            cm.getConstructor('Com.FormField', function(classConstructor){
+            cm.getConstructor(params['fieldConstructor'], function(classConstructor){
                 controller = new classConstructor(params);
+                // Save
                 if(params['field']){
                     that.fields[params['name']] = controller;
                 }
@@ -8407,6 +8623,8 @@ Com.FormFields = (function(){
         'add' : function(type, params){
             stack[type] = cm.merge({
                 'node' : cm.node('div'),
+                'fieldConstructor' : null,
+                'constructor' : null,
                 'type' : type,
                 'field' : true
             }, params);
@@ -19731,6 +19949,14 @@ cm.getConstructor('Com.IndentInput', function(classConstructor, className, class
         return that;
     };
 });
+
+/* ****** FORM FIELD COMPONENT ******* */
+
+Com.FormFields.add('indent-input', {
+    'node' : cm.node('input', {'type' : 'text'}),
+    'fieldConstructor' : 'Com.AbstractFormField',
+    'constructor' : 'Com.IndentInput'
+});
 cm.define('Com.IntegerInput', {
     'extend' : 'Com.AbstractInput',
     'params' : {
@@ -19816,6 +20042,14 @@ cm.getConstructor('Com.IntegerInput', function(classConstructor, className, clas
         that.nodes['content']['input'].value = that.rawValue;
         return that;
     };
+});
+
+/* ****** FORM FIELD COMPONENT ******* */
+
+Com.FormFields.add('integer-input', {
+    'node' : cm.node('input', {'type' : 'text'}),
+    'fieldConstructor' : 'Com.AbstractFormField',
+    'constructor' : 'Com.IntegerInput'
 });
 cm.define('Com.Menu', {
     'modules' : [
@@ -21736,7 +21970,7 @@ function(params){
     };
 
     that.setCount = function(count){
-        if(count != 'undefined'){
+        if(typeof count != 'undefined'){
             count = parseInt(count.toString());
         }
         if(cm.isNumber(count) && count != that.params['count']){
@@ -24647,6 +24881,7 @@ function(params){
 
 Com.FormFields.add('select', {
     'node' : cm.node('select'),
+    'fieldConstructor' : 'Com.AbstractFormField',
     'constructor' : 'Com.Select'
 });
 cm.define('Com.Slider', {

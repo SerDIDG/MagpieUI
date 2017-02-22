@@ -2,7 +2,8 @@ cm.define('Com.MyController', {
     'extend' : 'Com.AbstractController',
     'params' : {
         'renderStructure' : false,
-        'embedStructureOnRender' : false
+        'embedStructureOnRender' : false,
+        'controllerEvents' : true
     }
 },
 function(params){

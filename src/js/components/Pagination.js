@@ -654,7 +654,7 @@ function(params){
     };
 
     that.setCount = function(count){
-        if(count != 'undefined'){
+        if(typeof count != 'undefined'){
             count = parseInt(count.toString());
         }
         if(cm.isNumber(count) && count != that.params['count']){

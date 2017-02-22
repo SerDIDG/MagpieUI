@@ -157,13 +157,15 @@ function(params){
         }, params);
         field = Com.FormFields.get(type);
         params = cm.merge(cm.clone(field, true), params);
-        // Get value
+        // Validate
+        params['fieldConstructor'] = !params['fieldConstructor']? 'Com.FormField' : params['fieldConstructor'];
         params['value'] = that.params['data'][params['name']] || params['value'];
         params['dataValue'] = that.params['data'][params['dataName']] || params['dataValue'];
         // Render
         if(field && !that.fields[params['name']]){
-            cm.getConstructor('Com.FormField', function(classConstructor){
+            cm.getConstructor(params['fieldConstructor'], function(classConstructor){
                 controller = new classConstructor(params);
+                // Save
                 if(params['field']){
                     that.fields[params['name']] = controller;
                 }
@@ -499,6 +501,8 @@ Com.FormFields = (function(){
         'add' : function(type, params){
             stack[type] = cm.merge({
                 'node' : cm.node('div'),
+                'fieldConstructor' : null,
+                'constructor' : null,
                 'type' : type,
                 'field' : true
             }, params);

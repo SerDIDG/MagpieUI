@@ -20,6 +20,7 @@ cm.define('Com.AbstractController', {
         'onGetLESSVariablesStart',
         'onGetLESSVariablesProcess',
         'onGetLESSVariablesEnd',
+        'onValidateParams',
         'onValidateParamsStart',
         'onValidateParamsProcess',
         'onValidateParamsEnd',
@@ -179,6 +180,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
     classProto.validateParams = function(){
         var that = this;
         that.triggerEvent('onValidateParamsStart');
+        that.triggerEvent('onValidateParams');
         that.triggerEvent('onValidateParamsProcess');
         that.triggerEvent('onValidateParamsEnd');
         return that;

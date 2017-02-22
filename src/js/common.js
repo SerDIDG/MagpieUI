@@ -2864,10 +2864,14 @@ cm.allowOnlyDigitInputEvent = function(input, callback){
     var value;
     cm.addEvent(input, 'input', function(e){
         value = input.value.replace(/[^\d]/g, '');
-        if(input.type == 'number'){
-            input.value = Math.min(parseFloat(value), parseFloat(input.max));
+        if(!cm.isEmpty(input.maxlength) || !cm.isEmpty(input.max)){
+            if(input.type == 'number'){
+                input.value = Math.min(parseFloat(value), parseFloat(input.max));
+            }else{
+                input.value = cm.reduceText(value, parseInt(input.maxlength));
+            }
         }else{
-            input.value = cm.reduceText(value, parseInt(input.maxlength));
+            input.value = value;
         }
         callback && callback(e, input.value);
     });
@@ -2878,10 +2882,14 @@ cm.allowOnlyNumbersInputEvent = function(input, callback){
     var value;
     cm.addEvent(input, 'input', function(e){
         value = input.value.replace(/[^\d-]/g, '');
-        if(input.type == 'number'){
-            input.value = Math.min(parseFloat(value), parseFloat(input.max));
+        if(!cm.isEmpty(input.maxlength) || !cm.isEmpty(input.max)){
+            if(input.type == 'number'){
+                input.value = Math.min(parseFloat(value), parseFloat(input.max));
+            }else{
+                input.value = cm.reduceText(value, parseInt(input.maxlength));
+            }
         }else{
-            input.value = cm.reduceText(value, parseInt(input.maxlength));
+            input.value = value;
         }
         callback && callback(e, input.value);
     });

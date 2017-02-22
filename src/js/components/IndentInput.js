@@ -85,3 +85,11 @@ cm.getConstructor('Com.IndentInput', function(classConstructor, className, class
         return that;
     };
 });
+
+/* ****** FORM FIELD COMPONENT ******* */
+
+Com.FormFields.add('indent-input', {
+    'node' : cm.node('input', {'type' : 'text'}),
+    'fieldConstructor' : 'Com.AbstractFormField',
+    'constructor' : 'Com.IndentInput'
+});

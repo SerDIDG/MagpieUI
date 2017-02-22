@@ -7,6 +7,7 @@ cm.define('Com.AbstractInput', {
         'onClear',
         'onDisable',
         'onEnable',
+        'onRenderContent',
         'onRenderContentStart',
         'onRenderContentProcess',
         'onRenderContentEnd'
@@ -165,6 +166,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
             nodes = {};
         that.triggerEvent('onRenderContentStart');
         nodes['container'] = cm.node('div', {'class' : 'input__content'});
+        that.triggerEvent('onRenderContent');
         that.triggerEvent('onRenderContentProcess');
         that.triggerEvent('onRenderContentEnd');
         // Export

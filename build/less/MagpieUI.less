@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.24.14 (2017-02-16 23:21) ************ */
+/*! ************ MagpieUI v3.24.15 (2017-02-22 16:09) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3751,7 +3751,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.24.14';
+@CmVersion: '3.24.15';
 
 // /* ******* PATH ******* */
 
@@ -9247,7 +9247,8 @@ button {
         }
     }
 
-    &.is-box {
+    &.is-box,
+    &.is-form-box {
         .cm__box;
 
         > dt {
@@ -9280,6 +9281,11 @@ button {
             .cm__box;
             margin-bottom: @CmForm-FieldIndent;
         }
+    }
+
+    &.is-form-box {
+        .cm__box;
+        margin-bottom: @CmForm-FieldIndent;
     }
 
     &.is-hidden {
