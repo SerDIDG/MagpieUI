@@ -50,6 +50,7 @@ function(params){
         try{
             eval(value);
         }catch(e){
+            cm.log(e);
         }
     };
 

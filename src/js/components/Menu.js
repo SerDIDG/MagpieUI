@@ -19,7 +19,7 @@ cm.define('Com.Menu', {
             'className' : 'com__menu-tooltip',
             'targetEvent' : 'hover',
             'hideOnReClick' : true,
-            'theme' : false,
+            'theme' : null,
             'hold' : true
         }
     }

@@ -1,4 +1,4 @@
-/* ******* PARTS: BUTTONS ******* */
+/* ******* COMMON: BUTTONS ******* */
 
 .button {
     @padding: max(ceil((@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2), 0px);
@@ -18,11 +18,13 @@
     font-size: @CmFont-Base-Size;
     white-space: nowrap;
     cursor: pointer;
+    outline: @CmButton-OutlineWidth dashed transparent;
+    outline-offset: @CmButton-OutlineOffset;
     .mx__appearance(none);
     .mx__box-sizing(border-box);
     .mx__background-clip(border-box);
     .mx__user-select(none);
-    .mx__transition(background-color color box-shadow, @CmUI-Transition-Duration);
+    .mx__transition(background-color color box-shadow outline, @CmUI-Transition-Duration);
 
     &.is-wrap {
         .cm__text-wrap;
@@ -40,6 +42,11 @@
         display: block;
     }
 
+    &:focus {
+        outline: @CmButton-OutlineWidth dashed transparent;
+        outline-offset: @CmButton-OutlineOffset;
+    }
+
     &:hover {
         text-decoration: none;
         .mx__transition(background-color color box-shadow, @CmUI-Transition-DurationReverse);
@@ -52,6 +59,11 @@
     &.button-primary {
         .mx__background__color(@CmColor-Primary-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
 
+        &:focus,
+        &.focus {
+            .button.button-primary--focus;
+        }
+
         &:active,
         &.active {
             .button.button-primary--active;
@@ -61,6 +73,10 @@
         &.hover {
             .button.button-primary--hover;
         }
+    }
+
+    &.button-primary--focus {
+        outline-color: @CmColor-Primary-DarkDefault;
     }
 
     &.button-primary--hover {
@@ -77,6 +93,11 @@
     &.button-middle {
         .mx__background__color(@CmColor-Primary-MiddleDefault, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
 
+        &:focus,
+        &.focus {
+            .button.button-middle--focus;
+        }
+
         &:active,
         &.active {
             .button.button-middle--active;
@@ -86,6 +107,10 @@
         &.hover {
             .button.button-middle--hover;
         }
+    }
+
+    &.button-middle--focus {
+        outline-color: @CmColor-Primary-MiddleDefault;
     }
 
     &.button-middle--hover {
@@ -102,6 +127,11 @@
     &.button-secondary {
         .mx__background__color(@CmColor-Secondary-LightHighlight, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
 
+        &:focus,
+        &.focus {
+            .button.button-secondary--focus;
+        }
+
         &:active,
         &.active {
             .button.button-secondary--active;
@@ -111,6 +141,10 @@
         &.hover {
             .button.button-secondary--hover;
         }
+    }
+
+    &.button-secondary--focus {
+        outline-color: @CmColor-Secondary-LightHighlight;
     }
 
     &.button-secondary--hover {
@@ -127,6 +161,11 @@
     &.button-success {
         .mx__background__color(@CmColor-Success-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
 
+        &:focus,
+        &.focus {
+            .button.button-success--focus;
+        }
+
         &:active,
         &.active {
             .button.button-success--active;
@@ -136,6 +175,10 @@
         &.hover {
             .button.button-success--hover;
         }
+    }
+
+    &.button-success--focus {
+        outline-color: @CmColor-Secondary-LightHighlight;
     }
 
     &.button-success--hover {
@@ -152,6 +195,11 @@
     &.button-danger {
         .mx__background__color(@CmColor-Danger-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
 
+        &:focus,
+        &.focus {
+            .button.button-danger--focus;
+        }
+
         &:active,
         &.active {
             .button.button-danger--active;
@@ -161,6 +209,10 @@
         &.hover {
             .button.button-danger--hover;
         }
+    }
+
+    &.button-danger--focus {
+        outline-color: @CmColor-Danger-DarkDefault;
     }
 
     &.button-danger--hover {
@@ -177,6 +229,11 @@
     &.button-warning {
         .mx__background__color(@CmColor-Warning-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
 
+        &:focus,
+        &.focus {
+            .button.button-warning--focus;
+        }
+
         &:active,
         &.active {
             .button.button-warning--active;
@@ -186,6 +243,10 @@
         &.hover {
             .button.button-warning--hover;
         }
+    }
+
+    &.button-warning--focus {
+        outline-color: @CmColor-Warning-DarkDefault;
     }
 
     &.button-warning--hover {
@@ -205,6 +266,11 @@
         box-shadow: none;
         border: none;
 
+        &:focus,
+        &.focus {
+            .button.button-transparent--focus;
+        }
+
         &:active,
         &.active {
             .button.button-transparent--active;
@@ -214,6 +280,10 @@
         &.hover {
             .button.button-transparent--hover;
         }
+    }
+
+    &.button-transparent--focus {
+        outline-color: @CmColor-Primary-DarkDefault;
     }
 
     &.button-transparent--hover {
@@ -230,6 +300,11 @@
     &.button-white {
         .mx__background__color(#ffffff, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
 
+        &:focus,
+        &.focus {
+            .button.button-white--focus;
+        }
+
         &:active,
         &.active {
             .button.button-white--active;
@@ -239,6 +314,10 @@
         &.hover {
             .button.button-white--hover;
         }
+    }
+
+    &.button-white--focus {
+        outline-color: @CmColor-Primary-DarkDefault;
     }
 
     &.button-white--hover {
@@ -256,11 +335,15 @@
         .mx__background__color(@CmColor-Secondary-LightActive, @CmColor-Font-Disabled, @CmFont-Base-ColorOpposite);
         cursor: default;
 
+        &:focus,
+        &.focus {
+            outline: none;
+        }
+
         &:active,
         &.active {
             .mx__background__color(@CmColor-Secondary-LightActive, @CmColor-Font-Disabled, @CmFont-Base-ColorOpposite);
         }
-
         &:hover,
         &.hover {
             .mx__background__color(@CmColor-Secondary-LightActive, @CmColor-Font-Disabled, @CmFont-Base-ColorOpposite);

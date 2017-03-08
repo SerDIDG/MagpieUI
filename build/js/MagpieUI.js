@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.24.16 (2017-02-22 19:00) ************ */
+/*! ************ MagpieUI v3.25.0 (2017-03-07 20:52) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1350,6 +1350,85 @@ if ( 'function' !== typeof Array.prototype.reduceRight ) {
     };
 }
 
+// Production steps of ECMA-262, Edition 6, 22.1.2.1
+if (!Array.from) {
+    Array.from = (function () {
+        var toStr = Object.prototype.toString;
+        var isCallable = function (fn) {
+            return typeof fn === 'function' || toStr.call(fn) === '[object Function]';
+        };
+        var toInteger = function (value) {
+            var number = Number(value);
+            if (isNaN(number)) { return 0; }
+            if (number === 0 || !isFinite(number)) { return number; }
+            return (number > 0 ? 1 : -1) * Math.floor(Math.abs(number));
+        };
+        var maxSafeInteger = Math.pow(2, 53) - 1;
+        var toLength = function (value) {
+            var len = toInteger(value);
+            return Math.min(Math.max(len, 0), maxSafeInteger);
+        };
+
+        // The length property of the from method is 1.
+        return function from(arrayLike/*, mapFn, thisArg */) {
+            // 1. Let C be the this value.
+            var C = this;
+
+            // 2. Let items be ToObject(arrayLike).
+            var items = Object(arrayLike);
+
+            // 3. ReturnIfAbrupt(items).
+            if (arrayLike == null) {
+                throw new TypeError('Array.from requires an array-like object - not null or undefined');
+            }
+
+            // 4. If mapfn is undefined, then let mapping be false.
+            var mapFn = arguments.length > 1 ? arguments[1] : void undefined;
+            var T;
+            if (typeof mapFn !== 'undefined') {
+                // 5. else
+                // 5. a If IsCallable(mapfn) is false, throw a TypeError exception.
+                if (!isCallable(mapFn)) {
+                    throw new TypeError('Array.from: when provided, the second argument must be a function');
+                }
+
+                // 5. b. If thisArg was supplied, let T be thisArg; else let T be undefined.
+                if (arguments.length > 2) {
+                    T = arguments[2];
+                }
+            }
+
+            // 10. Let lenValue be Get(items, "length").
+            // 11. Let len be ToLength(lenValue).
+            var len = toLength(items.length);
+
+            // 13. If IsConstructor(C) is true, then
+            // 13. a. Let A be the result of calling the [[Construct]] internal method
+            // of C with an argument list containing the single item len.
+            // 14. a. Else, Let A be ArrayCreate(len).
+            var A = isCallable(C) ? Object(new C(len)) : new Array(len);
+
+            // 16. Let k be 0.
+            var k = 0;
+            // 17. Repeat, while k < len… (also steps a - h)
+            var kValue;
+            while (k < len) {
+                kValue = items[k];
+                if (mapFn) {
+                    A[k] = typeof T === 'undefined' ? mapFn(kValue, k) : mapFn.call(T, kValue, k);
+                } else {
+                    A[k] = kValue;
+                }
+                k += 1;
+            }
+            // 18. Let putStatus be Put(A, "length", len, true).
+            A.length = len;
+            // 20. Return A.
+            return A;
+        };
+    }());
+}
+
 if (!Function.prototype.bind) {
     Function.prototype.bind = function(oThis) {
         if (typeof this !== 'function') {
@@ -1427,7 +1506,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.24.16',
+        '_version' : '3.25.0',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -1809,7 +1888,7 @@ cm.objectReplace = function(o, vars){
     return newO;
 };
 
-cm.isEmpty = function(el){
+cm.isEmptyOld = function(el){
     if(!el){
         return true;
     }else if(typeof el == 'string' || cm.isArray(el)){
@@ -1821,6 +1900,22 @@ cm.isEmpty = function(el){
     }else{
         return false;
     }
+};
+
+cm.isEmpty = function(value){
+    if(value === 'undefined' || value === undefined || value === null){
+        return true;
+    }
+    if(cm.isBoolean(value)){
+        return value === false;
+    }
+    if(cm.isString(value) || cm.isArray(value)){
+        return value.length === 0;
+    }
+    if(cm.isObject(value)){
+        return cm.getLength(value) === 0;
+    }
+    return false;
 };
 
 cm.objectPath = function(name, obj){
@@ -3066,6 +3161,19 @@ cm.getValue = function(name, node){
     return value;
 };
 
+cm.getSelectValue = function(node){
+    if(!cm.isNode(node)){
+        return null;
+    }
+    if(!node.multiple){
+        return node.value;
+    }
+    var options = node.querySelectorAll('option:checked');
+    return Array.from(options).map(function(option){
+        return option.value;
+    });
+};
+
 /* ******* STRINGS ******* */
 
 cm.toFixed = function(n, x){
@@ -3352,7 +3460,7 @@ cm.addClass = function(node, str, useHack){
         useHack = node.clientHeight;
     }
     if(node.classList){
-        cm.forEach(str.split(/\s+/), function(item){
+        cm.forEach(str.toString().split(/\s+/), function(item){
             if(!cm.isEmpty(item)){
                 node.classList.add(item);
             }
@@ -3374,7 +3482,7 @@ cm.removeClass = function(node, str, useHack){
         useHack = node.clientHeight;
     }
     if(node.classList){
-        cm.forEach(str.split(/\s+/), function(item){
+        cm.forEach(str.toString().split(/\s+/), function(item){
             if(!cm.isEmpty(item)){
                 node.classList.remove(item);
             }
@@ -4258,10 +4366,12 @@ cm.charCodeIsDigit = function(code){
 };
 
 cm.allowOnlyDigitInputEvent = function(input, callback){
-    var value;
+    var value, isMaxlength, isMax;
     cm.addEvent(input, 'input', function(e){
         value = input.value.replace(/[^\d]/g, '');
-        if(!cm.isEmpty(input.maxlength) || !cm.isEmpty(input.max)){
+        isMaxlength = !cm.isEmpty(input.maxlength) && input.maxlength > 0;
+        isMax = !cm.isEmpty(input.max) && input.max > 0;
+        if(isMaxlength || isMax){
             if(input.type == 'number'){
                 input.value = Math.min(parseFloat(value), parseFloat(input.max));
             }else{
@@ -4276,10 +4386,12 @@ cm.allowOnlyDigitInputEvent = function(input, callback){
 };
 
 cm.allowOnlyNumbersInputEvent = function(input, callback){
-    var value;
+    var value, isMaxlength, isMax;
     cm.addEvent(input, 'input', function(e){
         value = input.value.replace(/[^\d-]/g, '');
-        if(!cm.isEmpty(input.maxlength) || !cm.isEmpty(input.max)){
+        isMaxlength = !cm.isEmpty(input.maxlength) && input.maxlength > 0;
+        isMax = !cm.isEmpty(input.max) && input.max > 0;
+        if(isMaxlength || isMax){
             if(input.type == 'number'){
                 input.value = Math.min(parseFloat(value), parseFloat(input.max));
             }else{
@@ -6582,8 +6694,8 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         var that = this;
         // Structure
         that.params['renderStructure'] && that.renderView();
-        that.renderViewModel();
         that.setAttributes();
+        that.renderViewModel();
         // Append
         that.params['embedStructureOnRender'] && that.embedStructure(that.nodes['container']);
         return that;
@@ -6681,6 +6793,7 @@ cm.define('Com.AbstractContainer', {
         'onClose',
         'onRenderControllerStart',
         'onRenderControllerProcess',
+        'onRenderController',
         'onRenderControllerEnd',
         'onRenderPlaceholderStart',
         'onRenderPlaceholderProcess',
@@ -6807,6 +6920,7 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
             // Events
             that.triggerEvent('onRenderControllerProcess', that.components['controller']);
             that.renderControllerEvents();
+            that.triggerEvent('onRenderController', that.components['controller']);
             that.triggerEvent('onRenderControllerEnd', that.components['controller']);
         });
         return that;
@@ -7150,13 +7264,14 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
     classProto.renderContent = function(){
         var that = this,
             nodes = {};
+        that.nodes['content'] = nodes;
+        // Structure
         that.triggerEvent('onRenderContentStart');
         nodes['container'] = cm.node('div', {'class' : 'input__content'});
         that.triggerEvent('onRenderContent');
         that.triggerEvent('onRenderContentProcess');
         that.triggerEvent('onRenderContentEnd');
         // Export
-        that.nodes['content'] = nodes;
         return nodes['container'];
     };
 
@@ -7538,15 +7653,14 @@ cm.getConstructor('Com.AbstractFileManagerContainer', function(classConstructor,
 cm.define('Com.AbstractFormField', {
     'extend' : 'Com.AbstractController',
     'events' : [
-        'onRenderContent',
-        'onRenderContentStart',
-        'onRenderContentProcess',
-        'onRenderContentEnd'
+        'onChange',
+        'onSelect'
     ],
     'params' : {
         'renderStructure' : true,
         'embedStructureOnRender' : true,
         'controllerEvents' : true,
+        'renderStructureField' : true,
         'renderStructureContent' : true,
         'form' : false,
         'value' : null,
@@ -7573,7 +7687,6 @@ function(params){
     Com.AbstractController.apply(that, arguments);
 });
 
-
 cm.getConstructor('Com.AbstractFormField', function(classConstructor, className, classProto){
     var _inherit = classProto._inherit;
 
@@ -7587,8 +7700,9 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.onValidateParams = function(){
         var that = this;
         that.params['constructorParams']['name'] = that.params['name'];
-        that.params['constructorParams']['options'] = that.params['options'];
+        that.params['constructorParams']['options'] = !cm.isEmpty(that.params['options']) ? that.params['options'] : that.params['constructorParams']['options'];
         that.params['constructorParams']['value'] = that.params['dataValue'] || that.params['value'];
+        that.params['constructorParams']['defaultValue'] = that.params['defaultValue'];
         that.params['constructorParams']['maxlength'] = that.params['maxlength'];
         that.params['Com.HelpBubble']['content'] = that.params['help'];
         that.params['Com.HelpBubble']['name'] = that.params['name'];
@@ -7600,33 +7714,43 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.renderView = function(){
         var that = this;
         that.triggerEvent('onRenderViewStart');
-        that.nodes['container'] = cm.node('dl', {'class' : 'pt__field'},
-            that.nodes['label'] = cm.node('dt',
-                cm.node('label', that.params['label'])
-            ),
-            that.nodes['value'] = cm.node('dd', that.params['node'])
-        );
+        // Render field structure
+        if(that.params['renderStructureField']){
+            that.renderFiled();
+        }
         // Render custom structure
         if(that.params['renderStructureContent']){
             that.nodes['contentContainer'] = that.renderContent();
+        }
+        // Embed
+        if(that.params['renderStructureField']){
             cm.appendChild(that.nodes['contentContainer'], that.nodes['value']);
+        }else{
+            that.nodes['container'] = that.nodes['contentContainer'];
         }
         that.triggerEvent('onRenderViewProcess');
         that.triggerEvent('onRenderViewEnd');
     };
 
+    classProto.renderFiled = function(){
+        var that = this;
+        that.nodes['container'] = cm.node('dl', {'class' : 'pt__field'},
+            that.nodes['label'] = cm.node('dt',
+                cm.node('label', that.params['label'])
+            ),
+            that.nodes['value'] = cm.node('dd')
+        );
+    };
+
     classProto.renderContent = function(){
         var that = this,
             nodes = {};
-        that.triggerEvent('onRenderContentStart');
-        nodes['container'] = cm.node('div', {'class' : 'input__content'},
+        that.nodes['content'] = nodes;
+        // Structure
+        nodes['container'] = cm.node('div', {'class' : 'pt__field__content'},
             nodes['input'] = that.params['node']
         );
-        that.triggerEvent('onRenderContent');
-        that.triggerEvent('onRenderContentProcess');
-        that.triggerEvent('onRenderContentEnd');
         // Export
-        that.nodes['content'] = nodes;
         return nodes['container'];
     };
 
@@ -7640,6 +7764,8 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         }
         if(!cm.isEmpty(that.params['value'])){
             that.nodes['content']['input'].setAttribute('value', that.params['value']);
+        }else if(!cm.isEmpty(that.params['defaultValue'])){
+            that.nodes['content']['input'].setAttribute('value', that.params['defaultValue']);
         }
         if(!cm.isEmpty(that.params['dataValue'])){
             that.nodes['content']['input'].setAttribute('data-value', JSON.stringify(that.params['dataValue']));
@@ -7682,10 +7808,24 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         cm.getConstructor(that.params['constructor'], function(classObject){
             that.components['controller'] = new classObject(
                 cm.merge(that.params['constructorParams'], {
-                    'node' : that.nodes['content']['input']
+                    'node' : that.nodes['content']['input'],
+                    'form' : that.components['form'],
+                    'formField' : that
                 })
             );
+            that.renderControllerEvents();
         });
+    };
+
+    classProto.renderControllerEvents = function(){
+        var that = this;
+        that.components['controller'].addEvent('onSelect', function(controller, data){
+            that.triggerEvent('onSelect', data);
+        });
+        that.components['controller'].addEvent('onChange', function(controller, data){
+            that.triggerEvent('onChange', data);
+        });
+        return that;
     };
 
     /******* DATA *******/
@@ -7734,6 +7874,102 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         var that = this;
         cm.removeClass(that.nodes['container'], 'error');
         cm.remove(that.nodes['errors']);
+        return that;
+    };
+
+    /******* OTHER *******/
+
+    classProto.getName = function(){
+        var that = this;
+        return that.params['name'];
+    };
+
+    classProto.getContainer = function(){
+        var that = this;
+        return that.nodes['container'];
+    };
+});
+cm.define('Com.AbstractInputContainer', {
+    'extend' : 'Com.AbstractController',
+    'events' : [
+        'onRenderControllerStart',
+        'onRenderControllerProcess',
+        'onRenderController',
+        'onRenderControllerEnd'
+    ],
+    'params' : {
+        'renderStructure' : false,
+        'embedStructureOnRender' : false,
+        'controllerEvents' : true,
+        'constructor' : 'Com.AbstractInput',
+        'params' : {}
+    }
+},
+function(params){
+    var that = this;
+    // Call parent class construct
+    Com.AbstractController.apply(that, arguments);
+});
+
+cm.getConstructor('Com.AbstractInputContainer', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.renderViewModel = function(){
+        var that = this;
+        // Render Select
+        that.renderController();
+        return that;
+    };
+
+    classProto.renderController = function(){
+        var that = this,
+            params;
+        cm.getConstructor(that.params['constructor'], function(classConstructor){
+            that.triggerEvent('onRenderControllerStart');
+            params = that.validateControllerParams();
+            that.components['controller'] = new classConstructor(params);
+            that.triggerEvent('onRenderControllerProcess', that.components['controller']);
+            that.triggerEvent('onRenderController', that.components['controller']);
+            that.triggerEvent('onRenderControllerEnd', that.components['controller']);
+        });
+    };
+
+    classProto.validateControllerParams = function(){
+        var that = this;
+        return cm.merge(that.params['params'], {
+            'node' : that.params['node'],
+            'value' : that.params['value'],
+            'defaultValue' : that.params['defaultValue']
+        });
+    };
+
+    /******* PUBLIC *******/
+
+    classProto.set = function(value){
+        var that = this;
+        that.components['controller'] && cm.isFunction(that.components['controller'].set) && that.components['controller'].set(value);
+        return that;
+    };
+
+    classProto.get = function(){
+        var that = this;
+        return that.components['controller'] && cm.isFunction(that.components['controller'].get)  && that.components['controller'].get();
+    };
+
+    classProto.reset = function(){
+        var that = this;
+        return that.components['controller'] && cm.isFunction(that.components['controller'].reset)  && that.components['controller'].reset();
+    };
+
+    classProto.enable = function(){
+        var that = this;
+        that.components['controller'] && cm.isFunction(that.components['controller'].enable)  && that.components['controller'].enable();
+        return that;
+    };
+
+    classProto.disable = function(){
+        var that = this;
+        that.components['controller'] && cm.isFunction(that.components['controller'].disable)  && that.components['controller'].disable();
         return that;
     };
 });
@@ -8834,15 +9070,24 @@ function(params){
 Com.FormFields.add('input', {
     'node' : cm.node('input', {'type' : 'text'}),
     'callbacks' : {
+        'controller' : function(that){
+            that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
+            that.set(that.params['value'], false);
+        },
         'set' : function(that, value){
-            that.params['node'].value = value;
+            if(!cm.isEmpty(value)){
+                that.params['node'].value = value;
+            }else{
+                that.params['node'].value = '';
+            }
             return value;
         },
         'get' : function(that){
             return that.params['node'].value;
         },
         'reset' : function(that){
-            that.params['node'].value = '';
+            var value = !cm.isEmpty(that.params['defaultValue']) ? that.params['defaultValue'] : '';
+            that.params['node'].value = value;
         }
     }
 });
@@ -8850,15 +9095,24 @@ Com.FormFields.add('input', {
 Com.FormFields.add('email', {
     'node' : cm.node('input', {'type' : 'email'}),
     'callbacks' : {
+        'controller' : function(that){
+            that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
+            that.set(that.params['value'], false);
+        },
         'set' : function(that, value){
-            that.params['node'].value = value;
+            if(!cm.isEmpty(value)){
+                that.params['node'].value = value;
+            }else{
+                that.params['node'].value = '';
+            }
             return value;
         },
         'get' : function(that){
             return that.params['node'].value;
         },
         'reset' : function(that){
-            that.params['node'].value = '';
+            var value = !cm.isEmpty(that.params['defaultValue']) ? that.params['defaultValue'] : '';
+            that.params['node'].value = value;
         }
     }
 });
@@ -8866,15 +9120,24 @@ Com.FormFields.add('email', {
 Com.FormFields.add('password', {
     'node' : cm.node('input', {'type' : 'password'}),
     'callbacks' : {
+        'controller' : function(that){
+            that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
+            that.set(that.params['value'], false);
+        },
         'set' : function(that, value){
-            that.params['node'].value = value;
+            if(!cm.isEmpty(value)){
+                that.params['node'].value = value;
+            }else{
+                that.params['node'].value = '';
+            }
             return value;
         },
         'get' : function(that){
             return that.params['node'].value;
         },
         'reset' : function(that){
-            that.params['node'].value = '';
+            var value = !cm.isEmpty(that.params['defaultValue']) ? that.params['defaultValue'] : '';
+            that.params['node'].value = value;
         }
     }
 });
@@ -8883,15 +9146,24 @@ Com.FormFields.add('hidden', {
     'node' : cm.node('input', {'type' : 'hidden'}),
     'visible' : false,
     'callbacks' : {
+        'controller' : function(that){
+            that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
+            that.set(that.params['value'], false);
+        },
         'set' : function(that, value){
-            that.params['node'].value = value;
+            if(!cm.isEmpty(value)){
+                that.params['node'].value = value;
+            }else{
+                that.params['node'].value = '';
+            }
             return value;
         },
         'get' : function(that){
             return that.params['node'].value;
         },
         'reset' : function(that){
-            that.params['node'].value = '';
+            var value = !cm.isEmpty(that.params['defaultValue']) ? that.params['defaultValue'] : '';
+            that.params['node'].value = value;
         }
     }
 });
@@ -8899,15 +9171,24 @@ Com.FormFields.add('hidden', {
 Com.FormFields.add('textarea', {
     'node' : cm.node('textarea'),
     'callbacks' : {
+        'controller' : function(that){
+            that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
+            that.set(that.params['value'], false);
+        },
         'set' : function(that, value){
-            that.params['node'].value = value;
+            if(!cm.isEmpty(value)){
+                that.params['node'].value = value;
+            }else{
+                that.params['node'].value = '';
+            }
             return value;
         },
         'get' : function(that){
             return that.params['node'].value;
         },
         'reset' : function(that){
-            that.params['node'].value = '';
+            var value = !cm.isEmpty(that.params['defaultValue']) ? that.params['defaultValue'] : '';
+            that.params['node'].value = value;
         }
     }
 });
@@ -8944,25 +9225,28 @@ Com.FormFields.add('checkbox', {
     'callbacks' : {
         'controller' : function(that){
             var nodes = {};
+            var value = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
+            var checked = !(cm.isEmpty(value) || value === 0 || value === '0' || value === false);
             nodes['container'] = cm.node('label',
                 nodes['input'] = cm.node('input', {'type' : 'checkbox', 'name' : that.params['name']}),
-                nodes['label'] = cm.node('span', {'class' : 'label'})
+                nodes['label'] = cm.node('span', {'class' : 'label'}, that.params['placeholder'])
             );
-            var value = typeof that.params['value'] != 'undefined' ? that.params['value'] : that.params['defaultValue'];
-            nodes['input'].checked = !!value;
+            nodes['input'].checked = checked;
             that.params['node'].appendChild(nodes['container']);
             return nodes;
-        },
+        }, 
         'set' : function(that, value){
-            that.controller['input'].checked = !!value;
+            var checked = !(cm.isEmpty(value) || value === 0 || value === '0' || value === false);
+            that.controller['input'].checked = checked;
             return value;
         },
         'get' : function(that){
             return that.controller['input'].checked ? 1 : 0;
         },
         'reset' : function(that){
-            var value = typeof that.params['value'] != 'undefined' ? that.params['value'] : that.params['defaultValue'];
-            that.controller['input'].checked = !!value;
+            var value = that.params['defaultValue'];
+            var checked = !(cm.isEmpty(value) || value === 0 || value === '0' || value === false);
+            that.controller['input'].checked = checked;
         }
     }
 });
@@ -8972,6 +9256,7 @@ Com.FormFields.add('radio', {
     'callbacks' : {
         'controller' : function(that){
             var items = [],
+                value = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'],
                 item;
             cm.forEach(that.params['options'], function(option){
                 item = {
@@ -8982,7 +9267,7 @@ Com.FormFields.add('radio', {
                     item.nodes['input'] = cm.node('input', {'type' : 'radio', 'name' : that.params['name'], 'value' : option['value']}),
                     item.nodes['label'] = cm.node('span', {'class' : 'label'}, option['text'])
                 );
-                item.nodes['input'].checked = item.config['value'] == that.params['value'];
+                item.nodes['input'].checked = item.config['value'] == value;
                 that.params['node'].appendChild(item.nodes['container']);
                 items.push(item);
             });
@@ -9005,7 +9290,7 @@ Com.FormFields.add('radio', {
         },
         'reset' : function(that){
             cm.forEach(that.controller, function(item){
-                item.nodes['input'].checked = false;
+                item.nodes['input'].checked = item.config['value'] == that.params['defaultValue'];
             });
         }
     }
@@ -9017,6 +9302,7 @@ Com.FormFields.add('check', {
         'controller' : function(that){
             var items = [],
                 item;
+            that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
             cm.forEach(that.params['options'], function(option){
                 item = {
                     'config' : option,
@@ -9105,1233 +9391,6 @@ Com.FormFields.add('buttons', {
             return buttons;
         }
     }
-});
-cm.define('Com.MultipleInput', {
-    'extend' : 'Com.AbstractController',
-    'events' : [
-        'onSet',
-        'onSelect',
-        'onChange',
-        'onClear',
-        'onDisable',
-        'onEnable',
-        'onItemAddStart',
-        'onItemAddProcess',
-        'onItemAddEnd',
-        'onItemRemoveStart',
-        'onItemRemoveProcess',
-        'onItemRemoveEnd',
-        'onItemSortStart',
-        'onItemSortProcess',
-        'onItemSortEnd'
-    ],
-    'params' : {
-        'embedStructure' : 'replace',
-        'className' : 'com__multiple-input',
-        'value' : [],
-        'defaultValue' : [],
-        'max' : 0,
-        'sortable' : false,
-        'showControls' : true,
-        'showToolbar' : false,
-        'focusInput' : false,
-        'duration' : 'cm._config.animDurationShort',
-        'inputConstructor' : 'Com.AbstractInput',
-        'inputParams' : {},
-        'multiFieldConstructor' : 'Com.MultiField',
-        'multiFieldParams' : {
-            'embedStructure' : 'first',
-            'renderStructure' : true,
-            'embedStructureOnRender' : true,
-            'template' : false,
-            'templateAttributeReplace' : false
-        }
-    }
-},
-function(params){
-    var that = this;
-    // Call parent class construct
-    Com.AbstractController.apply(that, arguments);
-});
-
-cm.getConstructor('Com.MultipleInput', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
-    classProto.construct = function(params){
-        var that = this;
-        // Variables
-        that.nodes = {};
-        that.components = {};
-        that.items = [];
-        that.isToolbarVisible = true;
-        // Bind context to methods
-        that.setHandler = that.set.bind(that);
-        that.getHandler = that.get.bind(that);
-        that.clearHandler = that.clear.bind(that);
-        that.enableHandler = that.enable.bind(that);
-        that.disableHandler = that.disable.bind(that);
-        that.addItemHandler = that.addItem.bind(that);
-        that.removeItemHandler = that.removeItem.bind(that);
-        that.constructProcessHandler = that.constructProcess.bind(that);
-        // Add events
-        that.addEvent('onConstructProcess', that.constructProcessHandler);
-        // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
-        return that;
-    };
-
-    classProto.constructProcess = function(){
-        var that = this;
-        // Render inputs provided in DOM
-        cm.forEach(that.nodes['inputs'], function(item){
-            that.addItem({'input' : item['input']}, false);
-        });
-        // Render inputs provided in parameters
-        if(cm.isArray(that.params['value'])){
-            cm.forEach(that.params['value'], function(item){
-                that.addItem({'value' : item}, false);
-            });
-        }
-        return that;
-    };
-
-    classProto.validateParams = function(){
-        var that = this;
-        // Call parent method
-        _inherit.prototype.validateParams.apply(that, arguments);
-        // Configure MultiField
-        that.params['multiFieldParams']['max'] = that.params['max'];
-        that.params['multiFieldParams']['sortable'] = that.params['sortable'];
-        that.params['multiFieldParams']['showControls'] = that.params['showControls'];
-        return that;
-    };
-
-    /* *** SYSTEM *** */
-
-    classProto.renderView = function(){
-        var that = this;
-        that.triggerEvent('onRenderViewStart');
-        that.nodes['container'] = cm.node('div', {'class' : 'com__multiple-input'},
-            that.nodes['inner'] = cm.node('div', {'class' : 'inner'},
-                that.nodes['holder'] = cm.node('div', {'class' : 'com__multiple-input__holder'})
-            )
-        );
-        if(that.params['showToolbar']){
-            that.nodes['toolbarContainer'] = that.renderToolbarView();
-            cm.appendChild(that.nodes['toolbarContainer'], that.nodes['holder']);
-        }
-        that.triggerEvent('onRenderViewProcess');
-        that.triggerEvent('onRenderViewEnd');
-        return that;
-    };
-
-    classProto.renderToolbarView = function(){
-        var that = this,
-            nodes = {};
-        // Structure
-        nodes['container'] = cm.node('div', {'class' : 'com__multiple-input__toolbar'});
-        // Push
-        that.nodes['toolbar'] = nodes;
-        return nodes['container'];
-    };
-
-    classProto.renderViewModel = function(){
-        var that = this;
-        // Call parent method - renderViewModel
-        _inherit.prototype.renderViewModel.apply(that, arguments);
-        // Init Multi Field
-        that.renderMultiField();
-        return that;
-    };
-
-    classProto.renderMultiField = function(){
-        var that = this;
-        cm.getConstructor(that.params['multiFieldConstructor'], function(classObject){
-            that.components['multiField'] = new classObject(
-                cm.merge(that.params['multiFieldParams'], {
-                    'container' : that.nodes['holder']
-                })
-            );
-            that.renderMultiFieldEvents();
-        });
-        return that;
-    };
-
-    classProto.renderMultiFieldEvents = function(){
-        var that = this;
-        that.components['multiField'].addEvent('onItemAdd', function(my, field){
-            that.addItemProcess({}, field, true);
-        });
-        that.components['multiField'].addEvent('onItemRemove', function(my, field){
-            var index = field['index'];
-            var item = that.items[index];
-            that.removeItemProcess(item, field, true);
-        });
-        that.components['multiField'].addEvent('onItemSort', function(my, field){
-            var previousIndex = field['previousIndex'];
-            var item = that.items[previousIndex];
-            that.sortItemProcess(item, field, true);
-        });
-        return that;
-    };
-
-    classProto.renderInputView = function(item){
-        var that = this;
-        item['input'] = cm.node('input', {'type' : 'text'});
-        return item['input'];
-    };
-
-    /* *** ITEMS *** */
-
-    classProto.addItem = function(item, triggerEvents){
-        var that = this;
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        if(!that.params['max'] || that.items.length < that.params['max']){
-            // Render Fields
-            that.components['multiField'].addItem({}, {
-                'triggerEvents' : false,
-                'callback' : function(field){
-                    that.addItemProcess(item, field, triggerEvents);
-                }
-            });
-        }
-        return null;
-    };
-
-    classProto.addItemProcess = function(item, field, triggerEvents){
-        var that = this;
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        // Merge config
-        item = cm.merge({
-            'input' : null,
-            'container' : null,
-            'name' : that.params['name'],
-            'value' : '',
-            'constructor' : that.params['inputConstructor'],
-            'nodes' : {}
-        }, item);
-        item['field'] = field;
-        item['container'] = item['field']['content'];
-        // Push
-        that.items.push(item);
-        // Start
-        that.triggerEvent('onItemAddStart', item);
-        // Render views
-        if(!item['input']){
-            item['input'] = that.renderInputView(item);
-        }
-        cm.appendChild(item['input'], item['container']);
-        // Process
-        cm.getConstructor(item['constructor'], function(classConstructor){
-            item['controller'] = new classConstructor(
-                cm.merge(that.params['inputParams'], {
-                    'node' : item['input'],
-                    'name' : item['name'],
-                    'value' : item['value']
-                })
-            );
-            that.triggerEvent('onItemAddProcess', item);
-            that.params['focusInput'] && item['controller'].focus && item['controller'].focus();
-            // Trigger set events
-            triggerEvents && that.triggerEvent('onSelect');
-            triggerEvents && that.triggerEvent('onSet');
-            triggerEvents && that.triggerEvent('onChange');
-        });
-        // Toggle toolbar visibility
-        that.toggleToolbarVisibility();
-        // Complete event
-        that.triggerEvent('onItemAddEnd', item);
-        return item;
-    };
-
-    classProto.removeItem = function(item, triggerEvents){
-        var that = this;
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        // Remove Field
-        that.components['multiField'].removeItem(item['field'], {
-            'triggerEvents' : false,
-            'callback' : function(field){
-                that.removeItemProcess(item, field, triggerEvents);
-            }
-        });
-        return that;
-    };
-
-    classProto.removeItemProcess = function(item, field, triggerEvents){
-        var that = this;
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        that.triggerEvent('onItemRemoveStart', item);
-        that.items = cm.arrayRemove(that.items, item);
-        that.triggerEvent('onItemRemoveProcess', item);
-        item['controller'] && item['controller'].destruct();
-        that.triggerEvent('onItemRemoveEnd', item);
-        // Toggle toolbar visibility
-        that.toggleToolbarVisibility();
-        // Trigger set events
-        triggerEvents && that.triggerEvent('onSelect');
-        triggerEvents && that.triggerEvent('onSet');
-        triggerEvents && that.triggerEvent('onChange');
-        return that;
-    };
-
-    classProto.sortItemProcess = function(item, field){
-        var that = this,
-            index = field['index'];
-        that.triggerEvent('onItemSortStart', item);
-        that.triggerEvent('onItemSortProcess', item);
-        // Resort items in array
-        that.items.splice(that.items.indexOf(item), 1);
-        that.items.splice(index, 0, item);
-        // Trigger event
-        that.triggerEvent('onItemSortEnd', item);
-    };
-
-    /* *** TOOLBAR *** */
-
-    classProto.toggleToolbarVisibility = function(){
-        var that = this;
-        if(that.params['showToolbar']){
-            if(that.params['max'] > 0 && that.items.length == that.params['max']){
-                that.hideToolbar();
-            }else{
-                that.showToolbar();
-            }
-        }
-        return that;
-    };
-
-    classProto.showToolbar = function(){
-        var that = this,
-            height = 0;
-        if(!that.isToolbarVisible){
-            that.isToolbarVisible = true;
-            // Prepare
-            that.nodes['toolbarContainer'].style.height = '';
-            height = that.nodes['toolbarContainer'].offsetHeight;
-            that.nodes['toolbarContainer'].style.height = '0px';
-            that.nodes['toolbarContainer'].style.overflow = 'hidden';
-            // Animate
-            cm.transition(that.nodes['toolbarContainer'], {
-                'properties' : {'height' : height + 'px', 'opacity' : 1},
-                'duration' : that.params['duration'],
-                'easing' : 'ease-in-out',
-                'clear' : true,
-                'onStop' : function(){
-                    that.nodes['toolbarContainer'].style.overflow = '';
-                    that.nodes['toolbarContainer'].style.height = '';
-                }
-            });
-        }
-        return that;
-    };
-
-    classProto.hideToolbar = function(){
-        var that = this;
-        if(that.isToolbarVisible){
-            that.isToolbarVisible = false;
-            // Prepare
-            that.nodes['toolbarContainer'].style.overflow = 'hidden';
-            // Animate
-            cm.transition(that.nodes['toolbarContainer'], {
-                'properties' : {'height' : '0px', 'opacity' : 0},
-                'duration' : that.params['duration'],
-                'easing' : 'ease-in-out'
-            });
-        }
-        return that;
-    };
-
-    /* *** PUBLIC *** */
-
-    classProto.set = function(value, triggerEvents){
-        var that = this;
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        cm.forEach(that.items, function(item){
-            that.removeItem(item, false);
-        });
-        cm.forEach(value, function(item){
-            that.addItem({'value' : item}, false);
-        });
-        // Trigger set events
-        triggerEvents && that.triggerEvent('onSelect');
-        triggerEvents && that.triggerEvent('onSet');
-        triggerEvents && that.triggerEvent('onChange');
-        return that;
-    };
-
-    classProto.get = function(){
-        var that = this,
-            data = [],
-            value;
-        cm.forEach(that.items, function(item){
-            value = (item['controller'] && item['controller'].get) ? item['controller'].get() : null;
-            value && data.push(value);
-        });
-        return data;
-    };
-
-    classProto.clear = function(triggerEvents){
-        var that = this;
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        triggerEvents && that.triggerEvent('onClear');
-        that.set(that.params['defaultValue'], triggerEvents);
-        return that;
-    };
-
-    classProto.enable = function(){
-        var that = this;
-        if(!that.disabled){
-            that.disabled = false;
-            cm.removeClass(that.nodes['container'], 'disabled');
-            cm.removeClass(that.nodes['content'], 'disabled');
-            that.triggerEvent('onEnable');
-        }
-        return that;
-    };
-
-    classProto.disable = function(){
-        var that = this;
-        if(that.disabled){
-            that.disabled = true;
-            cm.addClass(that.nodes['container'], 'disabled');
-            cm.addClass(that.nodes['content'], 'disabled');
-            that.triggerEvent('onDisable');
-        }
-        return that;
-    };
-});
-cm.define('Com.BoxTools', {
-    'extend' : 'Com.AbstractInput',
-    'params' : {
-        'controllerEvents' : true,
-        'className' : 'com__box-tools',
-        'maxlength' : 3,
-        'units' : 'px',
-        'allowNegative' : false,
-        'inputs' : [
-            {'name' : 'top', 'icon' : 'icon svg__indent-top small linked', 'iconPosition' : 'insideRight'},
-            {'name' : 'right', 'icon' : 'icon svg__indent-right small linked', 'iconPosition' : 'insideRight'},
-            {'name' : 'bottom', 'icon' : 'icon svg__indent-bottom small linked', 'iconPosition' : 'insideRight'},
-            {'name' : 'left', 'icon' : 'icon svg__indent-left small linked', 'iconPosition' : 'insideRight'}
-        ],
-        'langs' : {
-            'link' : 'Link',
-            'unlink' : 'Unlink'
-        }
-    }
-},
-function(params){
-    var that = this;
-    // Call parent class construct
-    Com.AbstractInput.apply(that, arguments);
-});
-
-cm.getConstructor('Com.BoxTools', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
-    classProto.onConstruct = function(){
-        var that = this;
-        // Variables
-        that.inputs = [];
-        that.rawValue = null;
-        that.isInputsLinked = false;
-        that.lastInput = null;
-        // Bind context to methods
-        that.linkInputsHandler = that.linkInputs.bind(that);
-        that.setValuesHandler = that.setValues.bind(that);
-        return that;
-    };
-
-    classProto.onEnable = function(){
-        var that = this;
-        cm.forEach(that.inputs, function(item){
-            cm.removeClass(item['nodes']['inner'], 'disabled');
-            item['input'].disabled = false;
-        });
-    };
-
-    classProto.onDisable = function(){
-        var that = this;
-        cm.forEach(that.inputs, function(item){
-            cm.addClass(item['nodes']['inner'], 'disabled');
-            item['input'].disabled = true;
-        });
-    };
-
-    classProto.set = function(){
-        var that = this;
-        _inherit.prototype.set.apply(that, arguments);
-        that.setInputs();
-        return that;
-    };
-
-    classProto.validateValue = function(value){
-        var that = this;
-        that.rawValue = cm.CSSValuesToArray(value);
-        return cm.arrayToCSSValues(that.rawValue, that.params['units']);
-    };
-
-    classProto.renderContent = function(){
-        var that = this,
-            nodes = {};
-        that.nodes['content'] = nodes;
-        that.triggerEvent('onRenderContentStart');
-        // Structure
-        nodes['container'] = cm.node('div', {'class' : 'com__box-tools__content'},
-            cm.node('div', {'class' : 'b-line'},
-                that.renderInput(that.params['inputs'][0], 0)
-            ),
-            cm.node('div', {'class' : 'b-line'},
-                that.renderInput(that.params['inputs'][3], 3),
-                cm.node('div', {'class' : 'b-link-container'},
-                    nodes['link'] = cm.node('div', {'class' : 'b-link', 'title' : that.lang('link')},
-                        cm.node('div', {'class' : 'icon'})
-                    )
-                ),
-                that.renderInput(that.params['inputs'][1], 1)
-            ),
-            cm.node('div', {'class' : 'b-line'},
-                that.renderInput(that.params['inputs'][2], 2)
-            )
-        );
-        // Events
-        that.triggerEvent('onRenderContentProcess');
-        cm.addEvent(nodes['link'], 'click', that.linkInputsHandler);
-        that.triggerEvent('onRenderContentEnd');
-        // Export
-        return nodes['container'];
-    };
-
-    classProto.renderInput = function(item, i){
-        var that = this;
-        item = cm.merge({
-            'i' : i,
-            'icon' : 'small',
-            'iconPosition' : 'leftInside',
-            'name' : '',
-            'nodes' : {}
-        }, item);
-        // Structure
-        item['nodes'] = that.renderInputContainer(item);
-        item['input'] = item['nodes']['input'];
-        // Attributes
-        if(that.params['maxlength']){
-            item['input'].setAttribute('maxlength', that.params['maxlength']);
-        }
-        // Events
-        cm.addEvent(item['nodes']['icon'], 'click', function(e){
-            cm.preventDefault(e);
-            item['input'].setSelectionRange(0, item['input'].value.length);
-            item['input'].focus();
-        });
-        cm.addEvent(item['input'], 'focus', function(){
-            that.lastInput = item;
-        });
-        cm.addEvent(item['input'], 'blur', that.setValuesHandler);
-        // Keypress events
-        cm.addEvent(item['input'], 'keypress', function(e){
-            if(cm.isKeyCode(e.keyCode, 'enter')){
-                cm.preventDefault(e);
-                that.setValues();
-                item['input'].blur();
-            }
-        });
-        // Input events
-        if(that.params['allowNegative']){
-            cm.allowOnlyNumbersInputEvent(item['input'], function(e, value){
-                that.inputOnInputEvent(e, value, item);
-            });
-        }else{
-            cm.allowOnlyDigitInputEvent(item['input'], function(e, value){
-                that.inputOnInputEvent(e, value, item);
-            });
-        }
-        // Push
-        that.inputs.push(item);
-        return item['nodes']['container'];
-    };
-
-    classProto.inputOnInputEvent = function(e, value, item){
-        var that = this;
-        if(that.isInputsLinked){
-            that.rawValue = [value, value, value, value];
-            that.setInputs();
-        }else{
-            that.rawValue[item['i']] = value;
-        }
-        that.selectAction(cm.arrayToCSSValues(that.rawValue, that.params['units']), true);
-        return that;
-    };
-
-    classProto.renderInputContainer = function(item){
-        var that = this,
-            nodes = {};
-        // Structure
-        nodes['container'] = cm.node('div', {'class' : 'b-container'},
-            nodes['inner'] = cm.node('div', {'class' : 'pt__input'},
-                nodes['input'] = cm.node('input', {'type' : 'text'})
-            )
-        );
-        if(!cm.isEmpty(item['title'])){
-            nodes['inner'].setAttribute('title', item['title']);
-        }
-        nodes['icon'] = cm.node('div', {'class' : item['icon']});
-        switch(item['iconPosition']){
-            case 'insideLeft':
-                cm.addClass(nodes['inner'], 'is-less-indent');
-                cm.insertFirst(nodes['icon'], nodes['inner']);
-                break;
-            case 'insideRight':
-                cm.addClass(nodes['inner'], 'is-less-indent');
-                cm.insertLast(nodes['icon'], nodes['inner']);
-                break;
-            case 'outsideLeft':
-                cm.addClass(nodes['inner'], 'is-icon-outside');
-                cm.insertFirst(nodes['icon'], nodes['inner']);
-                break;
-            case 'outsideRight':
-                cm.addClass(nodes['inner'], 'is-icon-outside');
-                cm.insertLast(nodes['icon'], nodes['inner']);
-                break;
-        }
-        return nodes;
-    };
-
-    classProto.setInputs = function(){
-        var that = this;
-        cm.forEach(that.inputs, function(item){
-            item['input'].value = that.rawValue[item['i']];
-        });
-        return that;
-    };
-
-    classProto.setValues = function(triggerEvents){
-        var that = this;
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        that.set(cm.arrayToCSSValues(that.rawValue, that.params['units']), triggerEvents);
-        return that;
-    };
-
-    classProto.linkInputs = function(){
-        var that = this;
-        if(!that.disabled){
-            if(!that.isInputsLinked){
-                that.isInputsLinked = true;
-                cm.addClass(that.nodes['content']['link'], 'active');
-                that.nodes['content']['link'].title = that.lang('unlink');
-                if(that.lastInput){
-                    that.set(that.lastInput['input'].value);
-                }else{
-                    var value = 0;
-                    cm.forEach(that.inputs, function(item){
-                        value = Math.max(value, parseInt(item['input'].value));
-                    });
-                    that.set(value);
-                }
-            }else{
-                that.isInputsLinked = false;
-                cm.removeClass(that.nodes['content']['link'], 'active');
-                that.nodes['content']['link'].title = that.lang('link');
-            }
-        }
-        return that;
-    };
-});
-cm.define('Com.Autocomplete', {
-    'modules' : [
-        'Params',
-        'Events',
-        'Langs',
-        'DataConfig',
-        'Storage',
-        'Callbacks',
-        'Stack'
-    ],
-    'require' : [
-        'Com.Tooltip'
-    ],
-    'events' : [
-        'onRenderStart',
-        'onRender',
-        'onClear',
-        'onSelect',
-        'onChange',
-        'onClickSelect',
-        'onAbort',
-        'onError'
-    ],
-    'params' : {
-        'input' : null,                                             // Deprecated, use 'node' parameter instead.
-        'node' : cm.node('input', {'type' : 'text'}),               // Html input node to decorate.
-        'target' : false,                                           // HTML node.
-        'container' : 'document.body',
-        'name' : '',
-        'minLength' : 3,
-        'delay' : 'cm._config.requestDelay',
-        'clearOnEmpty' : true,                                      // Clear input and value if item didn't selected from tooltip
-        'showListOnEmpty' : false,                                  // Show options list, when input is empty
-        'showLoader' : true,                                        // Show ajax spinner in tooltip, for ajax mode only.
-        'data' : [],                                                // Examples: [{'value' : 'foo', 'text' : 'Bar'}] or ['Foo', 'Bar'].
-        'value' : {},
-        'responseKey' : 'data',                                     // Instead of using filter callback, you can provide response array key
-        'ajax' : {
-            'type' : 'json',
-            'method' : 'get',
-            'url' : '',                                             // Request URL. Variables: %baseUrl%, %query%, %callback%.
-            'params' : ''                                           // Params object. Variables: %baseUrl%, %query%, %callback%.
-        },
-        'langs' : {
-            'loader' : 'Searching for: %query%.'                    // Variable: %query%.
-        },
-        'Com.Tooltip' : {
-            'hideOnOut' : true,
-            'targetEvent' : 'none',
-            'className' : 'com__ac-tooltip',
-            'width' : 'targetWidth',
-            'top' : 'targetHeight + 4'
-        }
-    }
-},
-function(params){
-    var that = this;
-    
-    that.components = {};
-
-    that.isDestructed = false;
-    that.ajaxHandler = null;
-    that.isOpen = false;
-    that.isAjax = false;
-    that.requestDelay = null;
-
-    that.registeredItems = [];
-    that.selectedItemIndex = null;
-    that.value = null;
-    that.previousValue = null;
-    that.rawValue = null;
-
-    var init = function(){
-        that.setParams(params);
-        preValidateParams();
-        that.convertEvents(that.params['events']);
-        that.getDataConfig(that.params['node']);
-        that.callbacksProcess();
-        validateParams();
-        that.addToStack(that.params['node']);
-        that.triggerEvent('onRenderStart');
-        render();
-        that.addToStack(that.params['node']);
-        that.triggerEvent('onRender');
-    };
-
-    var preValidateParams = function(){
-        if(cm.isNode(that.params['input'])){
-            that.params['node'] = that.params['input'];
-        }
-    };
-
-    var validateParams = function(){
-        if(!that.params['target']){
-            that.params['target'] = that.params['node'];
-        }
-        // If URL parameter exists, use ajax data
-        that.isAjax = !cm.isEmpty(that.params['ajax']['url']);
-        // Prepare data
-        that.params['data'] = that.convertData(that.params['data']);
-        that.params['value'] = that.convertDataItem(that.params['value']);
-    };
-
-    var render = function(){
-        // Init tooltip
-        that.components['tooltip'] = new Com.Tooltip(
-            cm.merge(that.params['Com.Tooltip'], {
-                'container' : that.params['container'],
-                'target' : that.params['target'],
-                'events' : {
-                    'onShowStart' : function(){
-                        that.isOpen = true;
-                        cm.addEvent(document, 'mousedown', bodyEvent);
-                    },
-                    'onHideStart' : function(){
-                        that.isOpen = false;
-                        cm.removeEvent(document, 'mousedown', bodyEvent);
-                    }
-                }
-            })
-        );
-        // Set input
-        that.setInput(that.params['node']);
-        // Set
-        !cm.isEmpty(that.params['value']) && that.set(that.params['value'], false);
-    };
-
-    var setListItem = function(index){
-        var previousItem = that.registeredItems[that.selectedItemIndex],
-            item = that.registeredItems[index];
-        if(previousItem){
-            cm.removeClass(previousItem['node'], 'active');
-        }
-        if(item){
-            cm.addClass(item['node'], 'active');
-            that.components['tooltip'].scrollToNode(item['node']);
-        }
-        that.selectedItemIndex = index;
-        // Set input data
-        set(that.selectedItemIndex);
-    };
-
-    var inputHandler = function(e){
-        var listLength,
-            listIndex;
-        switch(e.keyCode){
-            // Enter
-            case 13:
-                clear();
-                that.hide();
-                break;
-            // Arrow Up
-            case 38:
-                listLength = that.registeredItems.length;
-                if(listLength){
-                    if(that.selectedItemIndex === null){
-                        listIndex = listLength - 1;
-                    }else if(that.selectedItemIndex - 1 >= 0){
-                        listIndex = that.selectedItemIndex - 1;
-                    }else{
-                        listIndex = listLength - 1;
-                    }
-                    setListItem(listIndex);
-                }
-                break;
-            // Arrow Down
-            case 40:
-                listLength = that.registeredItems.length;
-                if(listLength){
-                    if(that.selectedItemIndex === null){
-                        listIndex = 0;
-                    }else if(that.selectedItemIndex + 1 < listLength){
-                        listIndex = that.selectedItemIndex + 1;
-                    }else{
-                        listIndex = 0;
-                    }
-                    setListItem(listIndex);
-                }
-                break;
-        }
-    };
-
-    var requestHandler = function(){
-        var query = that.params['node'].value,
-            config = cm.clone(that.params['ajax']);
-        // Clear tooltip ajax/static delay and filtered items list
-        that.requestDelay && clearTimeout(that.requestDelay);
-        that.selectedItemIndex = null;
-        that.registeredItems = [];
-        that.abort();
-        // Request
-        if(that.params['showListOnEmpty'] || query.length >= that.params['minLength']){
-            that.requestDelay = setTimeout(function(){
-                if(that.isAjax){
-                    if(that.params['showLoader']){
-                        that.callbacks.loader(that, config, query);
-                    }
-                    that.ajaxHandler = that.callbacks.request(that, config, query);
-                }else{
-                    that.callbacks.data(that, query, that.params['data']);
-                }
-            }, that.params['delay']);
-        }else{
-            that.hide();
-        }
-    };
-
-    var set = function(index){
-        var item = that.registeredItems[index];
-        if(item){
-            that.setRegistered(item, true);
-        }
-    };
-
-    var clear = function(){
-        var item;
-        // Kill timeout interval and ajax request
-        that.requestDelay && clearTimeout(that.requestDelay);
-        that.abort();
-        // Clear input
-        if(that.params['clearOnEmpty']){
-            item = getSavedItemData(that.value);
-            if(!item || item['text'] != that.params['node'].value){
-                that.clear();
-            }
-        }
-    };
-
-    var getSavedItemData = function(value){
-        if(that.rawValue && that.rawValue['value'] == value){
-            return that.rawValue
-        }
-        // Get form items list
-        var item = that.getRegisteredItem(value);
-        if(item){
-            return item['data'];
-        }
-        return null;
-    };
-
-    var onChange = function(){
-        if(that.value != that.previousValue){
-            that.triggerEvent('onChange', that.value);
-        }
-    };
-
-    var blurHandler = function(){
-        if(!that.isOpen){
-            clear();
-        }
-    };
-
-    var clickHandler = function(){
-        if(that.params['showListOnEmpty']){
-            requestHandler();
-        }
-    };
-
-    var bodyEvent = function(e){
-        e = cm.getEvent(e);
-        var target = cm.getEventTarget(e);
-        if(!that.isOwnNode(target)){
-            clear();
-            that.hide();
-        }
-    };
-
-    var setEvents = function(){
-        cm.addEvent(that.params['node'], 'input', requestHandler);
-        cm.addEvent(that.params['node'], 'keydown', inputHandler);
-        cm.addEvent(that.params['node'], 'blur', blurHandler);
-        cm.addEvent(that.params['node'], 'click', clickHandler);
-    };
-
-    var unsetEvents = function(){
-        cm.removeEvent(that.params['node'], 'input', requestHandler);
-        cm.removeEvent(that.params['node'], 'keydown', inputHandler);
-        cm.removeEvent(that.params['node'], 'blur', blurHandler);
-        cm.removeEvent(that.params['node'], 'click', clickHandler);
-    };
-
-    /* ******* CALLBACKS ******* */
-
-    /* *** AJAX *** */
-
-    that.callbacks.prepare = function(that, config, query){
-        config = that.callbacks.beforePrepare(that, config, query);
-        config['url'] = cm.strReplace(config['url'], {
-            '%query%' : query,
-            '%baseUrl%' : cm._baseUrl
-        });
-        config['params'] = cm.objectReplace(config['params'], {
-            '%query%' : query,
-            '%baseUrl%' : cm._baseUrl
-        });
-        config = that.callbacks.afterPrepare(that, config, query);
-        return config;
-    };
-
-    that.callbacks.beforePrepare = function(that, config, query){
-        return config;
-    };
-
-    that.callbacks.afterPrepare = function(that, config, query){
-        return config;
-    };
-
-    that.callbacks.request = function(that, config, query){
-        config = that.callbacks.prepare(that, config, query);
-        // Return ajax handler (XMLHttpRequest) to providing abort method.
-        return cm.ajax(
-            cm.merge(config, {
-                'onSuccess' : function(response){
-                    that.callbacks.response(that, config, query, response);
-                },
-                'onError' : function(){
-                    that.callbacks.error(that, config, query);
-                }
-            })
-        );
-    };
-
-    that.callbacks.filter = function(that, config, query, response){
-        var data = [],
-            dataItem = cm.objectSelector(that.params['responseKey'], response);
-        if(dataItem && !cm.isEmpty(dataItem)){
-            data = dataItem;
-        }
-        return data;
-    };
-
-    that.callbacks.response = function(that, config, query, response){
-        if(response){
-            response = that.callbacks.filter(that, config, query, response);
-        }
-        if(!cm.isEmpty(response)){
-            that.callbacks.render(that, that.convertData(response));
-        }else{
-            that.callbacks.render(that, []);
-        }
-    };
-
-    that.callbacks.error = function(that, config, query){
-        that.hide();
-        that.triggerEvent('onError');
-    };
-
-    that.callbacks.loader = function(that, config, query){
-        var nodes = {};
-        // Render Structure
-        nodes['container'] = cm.Node('div', {'class' : 'pt__listing-items disabled'},
-            cm.Node('ul',
-                cm.Node('li',
-                    cm.Node('a',
-                        cm.Node('span', {'class' : 'icon small loader-circle'}),
-                        cm.Node('span', that.lang('loader', {'%query%' : query}))
-                    )
-                )
-            )
-        );
-        // Embed nodes to Tooltip
-        that.callbacks.embed(that, nodes['container']);
-        // Show Tooltip
-        that.show();
-    };
-
-    /* *** STATIC DATA *** */
-
-    that.callbacks.data = function(that, query, items){
-        // Filter data
-        items = that.callbacks.query(that, query, items);
-        that.callbacks.render(that, items);
-    };
-
-    /* *** HELPERS *** */
-
-    that.callbacks.query = function(that, query, items){
-        var filteredItems = [];
-        cm.forEach(items, function(item){
-            if(item && item['text'].toLowerCase().indexOf(query.toLowerCase()) > -1){
-                filteredItems.push(item);
-            }
-        });
-        return filteredItems;
-    };
-
-    that.callbacks.render = function(that, items){
-        if(items.length){
-            // Render List Nodes
-            that.callbacks.renderList(that, items);
-            // Show menu
-            that.show();
-        }else{
-            that.hide();
-        }
-    };
-
-    that.callbacks.renderList = function(that, items){
-        var nodes = {};
-        // Render structure
-        nodes['container'] = cm.Node('div', {'class' : 'pt__listing-items'},
-            nodes['items'] = cm.Node('ul')
-        );
-        // Render List Items
-        cm.forEach(items, function(item, i){
-            that.callbacks.renderItem(that, nodes['items'], item, i);
-        });
-        // Embed nodes to Tooltip
-        that.callbacks.embed(that, nodes['container']);
-    };
-
-    that.callbacks.renderItem = function(that, container, item, i){
-        var nodes = {};
-        // Render Structure of List Item
-        nodes['container'] = cm.Node('li',
-            cm.Node('a', {'innerHTML' : item['text']})
-        );
-        // Highlight selected option
-        if(that.value == item['value']){
-            cm.addClass(nodes['container'], 'active');
-            that.selectedItemIndex = i;
-        }
-        // Register item
-        that.callbacks.registerItem(that, nodes['container'], item, i);
-        // Embed Item to List
-        cm.appendChild(nodes['container'], container);
-    };
-
-    that.callbacks.registerItem = function(that, node, item, i){
-        var regItem = {
-            'data' : item,
-            'node' : node,
-            'i' : i
-        };
-        cm.addEvent(regItem['node'], 'click', function(){
-            that.setRegistered(regItem, true);
-            that.triggerEvent('onClickSelect', that.value);
-            that.hide();
-        });
-        that.registeredItems.push(regItem);
-    };
-
-    that.callbacks.embed = function(that, container){
-        that.components['tooltip'].setContent(container);
-    };
-
-    /* ******* MAIN ******* */
-
-    that.destruct = function(){
-        var that = this;
-        if(!that.isDestructed){
-            that.isDestructed = true;
-            unsetEvents();
-            that.removeFromStack();
-        }
-        return that;
-    };
-
-    that.set = function(item, triggerEvents){
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        that.rawValue = that.convertDataItem(item);
-        that.previousValue = that.value;
-        that.value = that.rawValue['value'];
-        that.params['node'].value = that.rawValue['text'];
-        // Trigger events
-        if(triggerEvents){
-            that.triggerEvent('onSelect', that.value);
-            onChange();
-        }
-        return that;
-    };
-
-    that.setRegistered = function(item, triggerEvents){
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        that.set(item['data'], triggerEvents);
-        return that;
-    };
-
-    that.setInput = function(node){
-        if(cm.isNode(node)){
-            unsetEvents();
-            that.params['node'] = node;
-            setEvents();
-        }
-        return that;
-    };
-
-    that.setTarget = function(node){
-        if(cm.isNode(node)){
-            that.params['target'] = node;
-            that.components['tooltip'].setTarget(node);
-        }
-        return that;
-    };
-
-    that.get = function(){
-        return that.value;
-    };
-
-    that.getItem = function(value){
-        var item;
-        if(value){
-            cm.forEach(that.params['data'], function(dataItem){
-                if(dataItem['value'] == value){
-                    item = dataItem;
-                }
-            });
-        }
-        return item;
-    };
-
-    that.getRegisteredItem = function(value){
-        var item;
-        if(value){
-            cm.forEach(that.registeredItems, function(regItem){
-                if(regItem['data']['value'] == value){
-                    item = regItem;
-                }
-            });
-        }
-        return item;
-    };
-
-    that.clear = function(triggerEvents){
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        that.previousValue = that.value;
-        that.value = null;
-        that.rawValue = null;
-        if(that.params['clearOnEmpty']){
-            that.params['node'].value = '';
-        }
-        // Trigger events
-        if(triggerEvents){
-            that.triggerEvent('onClear', that.value);
-            onChange();
-        }
-        return that;
-    };
-
-    that.show = function(){
-        that.components['tooltip'].show();
-        return that;
-    };
-
-    that.hide = function(){
-        that.components['tooltip'].hide();
-        return that;
-    };
-
-    that.abort = function(){
-        if(that.ajaxHandler && that.ajaxHandler.abort){
-            that.ajaxHandler.abort();
-        }
-        return that;
-    };
-
-    that.focus = function(){
-        that.params['node'].focus();
-        return that;
-    };
-
-    that.isOwnNode = function(node){
-        return cm.isParent(that.params['target'], node, true) || that.components['tooltip'].isOwnNode(node);
-    };
-
-    init();
-});
-
-cm.getConstructor('Com.Autocomplete', function(classConstructor, className, classProto){
-    classProto.convertData = function(data){
-        var that = this;
-        return data.map(function(item){
-            return that.convertDataItem(item);
-        });
-    };
-
-    classProto.convertDataItem = function(item){
-        if(cm.isEmpty(item)){
-            return null
-        }else if(!cm.isObject(item)){
-            return {'text' : item, 'value' : item};
-        }else{
-            if(typeof item['value'] == 'undefined'){
-                item['value'] = item['text']
-            }
-            return item;
-        }
-    };
-});
-
-/* ****** FORM FIELD COMPONENT ******* */
-
-Com.FormFields.add('autocomplete', {
-    'node' : cm.node('input', {'type' : 'text'}),
-    'constructor' : 'Com.Autocomplete'
 });
 /* ******* COMPONENTS: BIG CALENDAR ******* */
 
@@ -11191,58 +10250,6 @@ function(params){
     var that = this;
     Com.AbstractCalendarView.apply(that, arguments);
 });
-cm.define('Com.BoxRadiusTools', {
-    'extend' : 'Com.BoxTools',
-    'params' : {
-        'className' : 'com__box-tools com__box-tools--radius',
-        'inputs' : [
-            {'name' : 'topleft', 'icon' : 'icon svg__radius-topleft small linked', 'iconPosition' : 'outsideLeft'},
-            {'name' : 'topright', 'icon' : 'icon svg__radius-topright small linked', 'iconPosition' : 'outsideRight'},
-            {'name' : 'bottomright', 'icon' : 'icon svg__radius-bottomright small linked', 'iconPosition' : 'outsideRight'},
-            {'name' : 'bottomleft', 'icon' : 'icon svg__radius-bottomleft small linked', 'iconPosition' : 'outsideLeft'}
-        ]
-    }
-},
-function(params){
-    var that = this;
-    // Call parent class construct
-    Com.BoxTools.apply(that, arguments);
-});
-
-cm.getConstructor('Com.BoxRadiusTools', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
-    classProto.renderContent = function(){
-        var that = this,
-            nodes = {};
-        that.nodes['content'] = nodes;
-        that.triggerEvent('onRenderContentStart');
-        // Structure
-        nodes['container'] = cm.node('div', {'class' : 'com__box-tools__content'},
-            cm.node('div', {'class' : 'b-line'},
-                that.renderInput(that.params['inputs'][0], 0),
-                that.renderInput(that.params['inputs'][1], 1)
-            ),
-            cm.node('div', {'class' : 'b-line'},
-                that.renderInput(that.params['inputs'][3], 3),
-                that.renderInput(that.params['inputs'][2], 2)
-            ),
-            cm.node('div', {'class' : 'b-line'},
-                cm.node('div', {'class' : 'b-link-container'},
-                    nodes['link'] = cm.node('div', {'class' : 'b-link', 'title' : that.lang('link')},
-                        cm.node('div', {'class' : 'icon'})
-                    )
-                )
-            )
-        );
-        // Events
-        that.triggerEvent('onRenderContentProcess');
-        cm.addEvent(nodes['link'], 'click', that.linkInputsHandler);
-        that.triggerEvent('onRenderContentEnd');
-        // Push
-        return nodes['container'];
-    };
-});
 cm.define('Com.Calendar', {
     'modules' : [
         'Params',
@@ -11671,235 +10678,6 @@ function(params){
 
     init();
 });
-cm.define('Com.CheckTrigger', {
-    'extend' : 'Com.AbstractController',
-    'params' : {
-        'renderStructure' : false,
-        'embedStructureOnRender' : false,
-        'controllerEvents' : true,
-        'checked' : false,
-        'unchecked' : false
-    }
-},
-function(params){
-    var that = this;
-    // Call parent class construct
-    Com.AbstractController.apply(that, arguments);
-});
-
-cm.getConstructor('Com.CheckTrigger', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
-    classProto.onConstruct = function(){
-        var that = this;
-        that.checked = false;
-        that.checkedA = [];
-        that.uncheckedA = [];
-        // Bind context to methods
-        that.toggleHandler = that.toggle.bind(that);
-    };
-
-    classProto.onValidateParams = function(){
-        var that = this;
-        that.checked = that.params['node'].checked;
-    };
-
-    classProto.renderViewModel = function(){
-        var that = this;
-        // Add check event
-        cm.addEvent(that.params['node'], 'change', that.toggleHandler);
-        // Find components
-        if(cm.isObject(that.params['checked'])){
-            that.find(that.params['checked'], that.checkedA);
-        }else if(cm.isString(that.params['checked'])){
-            that.find({'type' : 'input', 'name' : that.params['checked']}, that.checkedA);
-        }
-        if(cm.isObject(that.params['unchecked'])){
-            that.find(that.params['unchecked'], that.uncheckedA);
-        }else if(cm.isString(that.params['unchecked'])){
-            that.find({'type' : 'input', 'name' : that.params['unchecked']}, that.uncheckedA);
-        }
-    };
-
-    classProto.find = function(o, parent){
-        var that = this;
-        o = cm.merge({
-            'type' : 'controller',  // controller | input
-            'className' : null,
-            'classObject' : null,
-            'name' : null,
-            'container' : null,
-            'node' : null,
-            'method' : 'disable'
-        }, o);
-        // Find by type
-        switch(o['type']){
-            case 'controller':
-                new cm.Finder(o['className'], o['name'], o['container'], function(classObject){
-                    var item = cm.merge(o, {
-                        'classObject' : classObject
-                    });
-                    parent.push(item);
-                    that.toggle();
-                });
-                break;
-            case 'input':
-                var nodes = cm.getByName(o['name'], o['container']);
-                cm.forEach(nodes, function(node){
-                    var item = cm.merge(o, {
-                        'node' : node
-                    });
-                    parent.push(item);
-                    that.toggle();
-                });
-                break;
-        }
-    };
-
-    classProto.toggle = function(){
-        var that = this;
-        that.checked = that.params['node'].checked;
-        if(that.checked){
-            that.enableTrigger(that.checkedA);
-            that.disableTrigger(that.uncheckedA);
-        }else{
-            that.disableTrigger(that.checkedA);
-            that.enableTrigger(that.uncheckedA);
-        }
-        return that;
-    };
-
-    classProto.enableTrigger = function(o){
-        var that = this;
-        cm.forEach(o, function(item){
-            switch(item['type']){
-                case 'controller':
-                    item['classObject'] && cm.isFunction(item['classObject'].enable) && item['classObject'].enable();
-                    break;
-                case 'input':
-                    if(cm.isNode(item['node'])){
-                        item['node'].disabled = false;
-                        item['node'].focus();
-                    }
-                    break;
-            }
-        });
-        return that;
-    };
-
-    classProto.disableTrigger = function(o){
-        var that = this;
-        cm.forEach(o, function(item){
-            switch(item['type']){
-                case 'controller':
-                    item['classObject'] && cm.isFunction(item['classObject'].disable) && item['classObject'].disable();
-                    break;
-                case 'input':
-                    if(cm.isNode(item['node'])){
-                        item['node'].disabled = true;
-                        item['node'].blur();
-                    }
-                    break;
-            }
-        });
-        return that;
-    };
-});
-cm.define('Com.CodeHighlight', {
-    'modules' : [
-        'Params',
-        'Events',
-        'DataConfig',
-        'Stack'
-    ],
-    'events' : [
-        'onRender'
-    ],
-    'params' : {
-        'node' : cm.Node('div'),
-        'name' : '',
-        'language' : 'javascript',
-        'lineNumbers' : true,
-        'customEvents' : true,
-        'disabled' : false,
-        'title' :''
-    }
-},
-function(params){
-    var that = this;
-
-    that.components = {};
-    that.disabled = false;
-
-    var init = function(){
-        that.setParams(params);
-        that.convertEvents(that.params['events']);
-        that.getDataConfig(that.params['node']);
-        validateParams();
-        render();
-        that.addToStack(that.params['node']);
-        that.triggerEvent('onRender');
-    };
-
-    var validateParams = function(){
-        if(cm.isNode(that.params['node'])){
-            that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
-            that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
-            that.params['disabled'] = that.params['node'].disabled || that.params['node'].readOnly || that.params['disabled'];
-        }
-        that.disabled = that.params['disabled'];
-    };
-
-    var render = function(){
-        // Code Mirror
-        cm.loadScript({
-            'path' : 'CodeMirror',
-            'src' : '%assetsUrl%/libs/codemirror_comp/codemirror.min.js?%version%',
-            'callback' : function(path){
-                if(path){
-                    that.components['codemirror'] = path.fromTextArea(that.params['node'], {
-                        'lineNumbers' : that.params['lineNumbers'],
-                        'viewportMargin' : Infinity,
-                        'mode' : that.params['language']
-                    });
-                    that.components['codemirror'].on('change', function(cm){
-                        that.params['node'].value = cm.getValue();
-                    });
-                }
-                // Enable / Disable
-                if(that.disabled){
-                    that.disable();
-                }else{
-                    that.enable();
-                }
-            }
-        });
-        if(that.params['customEvents']){
-            cm.customEvent.add(that.params['node'], 'redraw', that.redraw);
-        }
-    };
-
-    /* ******* PUBLIC ******* */
-
-    that.redraw = function(){
-        that.components['codemirror'] && that.components['codemirror'].refresh();
-        return that;
-    };
-
-    that.disable = function(){
-        that.disabled = true;
-        that.components['codemirror'] && that.components['codemirror'].setOption('readOnly', 'nocursor');
-        return that;
-    };
-
-    that.enable = function(){
-        that.disabled = false;
-        that.components['codemirror'] && that.components['codemirror'].setOption('readOnly', false);
-        return that;
-    };
-
-    init();
-});
 cm.define('Com.CollapsibleLayout', {
     'modules' : [
         'Params',
@@ -12320,285 +11098,6 @@ function(params){
             'name' : 'Com.Collector',
             'message' : ['Destruct time', (Date.now() - timer), 'ms.'].join(' ')
         });
-        return that;
-    };
-
-    init();
-});
-cm.define('Com.ColorPicker', {
-    'modules' : [
-        'Params',
-        'Events',
-        'Langs',
-        'Structure',
-        'DataConfig',
-        'Storage',
-        'Stack'
-    ],
-    'require' : [
-        'Com.Tooltip',
-        'Com.Palette'
-    ],
-    'events' : [
-        'onRender',
-        'onSelect',
-        'onChange',
-        'onClear'
-    ],
-    'params' : {
-        'input' : null,                                     // Deprecated, use 'node' parameter instead.
-        'node' : cm.node('input', {'type' : 'text'}),
-        'container' : null,
-        'embedStructure' : 'replace',
-        'name' : '',
-        'value' : null,                                     // Color string: transparent | hex | rgba.
-        'defaultValue' : 'transparent',
-        'title' : '',
-        'showLabel' : true,
-        'showClearButton' : false,
-        'showTitleTooltip' : true,
-        'renderInBody' : true,
-        'disabled' : false,
-        'size' : 'default',                                 // default | full
-        'icons' : {
-            'picker' : 'icon default linked',
-            'clear' : 'icon default linked'
-        },
-        'langs' : {
-            'Transparent' : 'Transparent',
-            'Clear' : 'Clear'
-        },
-        'Com.Tooltip' : {
-            'targetEvent' : 'click',
-            'hideOnReClick' : true,
-            'className' : 'com__colorpicker__tooltip',
-            'top' : 'cm._config.tooltipTop'
-        },
-        'Com.Palette' : {
-            'setOnInit' : false
-        }
-    }
-},
-function(params){
-    var that = this;
-
-    that.nodes = {};
-    that.components = {};
-    that.value = null;
-    that.previousValue = null;
-    that.disabled = false;
-
-    var init = function(){
-        that.setParams(params);
-        preValidateParams();
-        that.convertEvents(that.params['events']);
-        that.getDataConfig(that.params['node']);
-        validateParams();
-        render();
-        setLogic();
-        // Add to stack
-        that.addToStack(that.nodes['container']);
-        // Set
-        that.set(that.value, false);
-        // Trigger render event
-        that.triggerEvent('onRender', that.value);
-    };
-
-    var preValidateParams = function(){
-        if(cm.isNode(that.params['input'])){
-            that.params['node'] = that.params['input'];
-        }
-    };
-
-    var validateParams = function(){
-        if(cm.isNode(that.params['node'])){
-            that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
-            that.params['disabled'] = that.params['node'].disabled || that.params['disabled'];
-            that.value = that.params['node'].value;
-            that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
-        }
-        that.value = that.params['value'] || that.value || that.params['defaultValue'];
-        that.disabled = that.params['disabled'];
-        that.params['Com.Palette']['name'] = [that.params['name'], 'palette'].join('-');
-    };
-
-    var render = function(){
-        /* *** RENDER STRUCTURE *** */
-        that.nodes['container'] = cm.Node('div', {'class' : 'com__colorpicker'},
-            that.nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
-            that.nodes['target'] = cm.Node('div', {'class' : 'pt__input'},
-                that.nodes['input'] = cm.Node('input', {'type' : 'text', 'readOnly' : 'true'}),
-                that.nodes['icon'] = cm.Node('div', {'class' : that.params['icons']['picker']})
-            ),
-            that.nodes['menuContainer'] = cm.Node('div', {'class' : 'form'},
-                that.nodes['paletteContainer'] = cm.Node('div')
-            )
-        );
-        /* *** ATTRIBUTES *** */
-        // Size
-        if(!cm.isEmpty(that.params['size'])){
-            cm.addClass(that.nodes['container'], ['size', that.params['size']].join('-'));
-        }
-        // Title
-        if(that.params['showTitleTooltip'] && !cm.isEmpty(that.params['title'])){
-            that.nodes['container'].title = that.params['title'];
-        }
-        // ID
-        if(that.params['node'].id){
-            that.nodes['container'].id = that.params['node'].id;
-        }
-        // Name
-        if(that.params['name']){
-            that.nodes['hidden'].setAttribute('name', that.params['name']);
-        }
-        // Label
-        if(!that.params['showLabel']){
-            cm.addClass(that.nodes['target'], 'is-no-label');
-        }
-        // Clear Button
-        if(that.params['showClearButton']){
-            cm.addClass(that.nodes['container'], 'has-clear-button');
-            that.nodes['container'].appendChild(
-                that.nodes['clearButton'] = cm.Node('div', {'class' : that.params['icons']['clear'], 'title' : that.lang('Clear')})
-            );
-        }
-        /* *** INSERT INTO DOM *** */
-        that.embedStructure(that.nodes['container']);
-    };
-
-    var setLogic = function(){
-        // Add events on input to makes him clear himself when user wants that
-        cm.addEvent(that.nodes['input'], 'keydown', function(e){
-            e = cm.getEvent(e);
-            cm.preventDefault(e);
-            if(e.keyCode == 8){
-                that.clear();
-                that.components['tooltip'].hide();
-            }
-        });
-        // Clear Button
-        if(that.params['showClearButton']){
-            cm.addEvent(that.nodes['clearButton'], 'click', function(){
-                that.clear();
-                that.components['tooltip'].hide();
-            });
-        }
-        // Render tooltip
-        that.components['tooltip'] = new Com.Tooltip(
-            cm.merge(that.params['Com.Tooltip'], {
-                'container' : that.params['renderInBody'] ? document.body : that.nodes['container'],
-                'content' : that.nodes['menuContainer'],
-                'target' : that.nodes['target'],
-                'events' : {
-                    'onShowStart' : show,
-                    'onHideStart' : hide
-                }
-            })
-        );
-        // Render palette
-        that.components['palette'] = new Com.Palette(
-            cm.merge(that.params['Com.Palette'], {
-                'node' : that.nodes['menuContainer'],
-                'events' : {
-                    'onChange' : function(my, value){
-                        set(my.get('rgb'), true);
-                        that.components['tooltip'].hide();
-                    }
-                }
-            })
-        );
-        // Enable / Disable
-        if(that.disabled){
-            that.disable();
-        }else{
-            that.enable();
-        }
-    };
-
-    var set = function(color, triggerEvents){
-        that.previousValue = that.value;
-        if(cm.isEmpty(color)){
-            color = that.params['defaultValue'];
-        }
-        that.value = color;
-        that.components['palette'].set(that.value, false);
-        that.nodes['hidden'].value = that.components['palette'].get('rgb');
-        if(that.value == 'transparent'){
-            if(that.params['showLabel']){
-                that.nodes['input'].value = that.lang('Transparent');
-            }
-            cm.replaceClass(that.nodes['input'], 'input-dark input-light', 'input-transparent');
-        }else{
-            if(that.params['showLabel']){
-                that.nodes['input'].value = that.components['palette'].get('hex');
-            }
-            that.nodes['input'].style.backgroundColor = that.components['palette'].get('hex');
-            if(that.components['palette'].isDark()){
-                cm.replaceClass(that.nodes['input'], 'input-transparent input-light', 'input-dark');
-            }else{
-                cm.replaceClass(that.nodes['input'], 'input-transparent input-dark', 'input-light');
-            }
-        }
-        if(triggerEvents){
-            that.triggerEvent('onSelect', that.value);
-            eventOnChange();
-        }
-    };
-
-    var hide = function(){
-        that.nodes['input'].blur();
-        cm.removeClass(that.nodes['container'], 'active');
-        that.components['palette'].set(that.value, false);
-    };
-
-    var show = function(){
-        cm.addClass(that.nodes['container'], 'active');
-        that.components['palette'].redraw();
-    };
-
-    var eventOnChange = function(){
-        if(that.value != that.previousValue){
-            that.triggerEvent('onChange', that.value);
-        }
-    };
-
-    /* ******* MAIN ******* */
-
-    that.set = function(color, triggerEvents){
-        triggerEvents = typeof triggerEvents != 'undefined'? triggerEvents : true;
-        set(color, triggerEvents);
-        return that;
-    };
-
-    that.get = function(){
-        return that.value;
-    };
-
-    that.clear = function(triggerEvents){
-        triggerEvents = typeof triggerEvents != 'undefined'? triggerEvents : true;
-        // Set default color value
-        set(that.params['defaultValue'], false);
-        // Trigger events
-        if(triggerEvents){
-            that.triggerEvent('onClear', that.value);
-            eventOnChange();
-        }
-        return that;
-    };
-
-    that.disable = function(){
-        that.disabled = true;
-        cm.addClass(that.nodes['container'], 'disabled');
-        that.nodes['input'].disabled = true;
-        that.components['tooltip'].disable();
-        return that;
-    };
-
-    that.enable = function(){
-        that.disabled = false;
-        cm.removeClass(that.nodes['container'], 'disabled');
-        that.nodes['input'].disabled = false;
-        that.components['tooltip'].enable();
         return that;
     };
 
@@ -13402,767 +11901,6 @@ function(params){
             redrawChassis();
         }
         return that;
-    };
-
-    init();
-});
-cm.define('Com.DateSelect', {
-    'modules' : [
-        'Params',
-        'DataConfig',
-        'Langs',
-        'Events',
-        'Structure',
-        'Stack'
-    ],
-    'events' : [
-        'onSelect',
-        'onChange'
-    ],
-    'params' : {
-        'input' : null,                                 // Deprecated, use 'node' parameter instead.
-        'node' : cm.Node('input', {'type' : 'text'}),
-        'name' : '',
-        'embedStructure' : 'replace',
-        'container' : null,
-        'format' : 'cm._config.dateFormat',
-        'startYear' : 1950,
-        'endYear' : new Date().getFullYear() + 10,
-        'renderSelectsInBody' : true,
-        'langs' : {
-            'Day' : 'Day',
-            'Month' : 'Month',
-            'Year' : 'Year',
-            'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-        }
-    }
-},
-function(params){
-    var that = this,
-        nodes = {},
-        components = {},
-        defaultDate = {
-            'day' : '00',
-            'month' : '00',
-            'year' : '0000'
-        };
-
-    that.isDestructed = false;
-    that.previous = cm.clone(defaultDate);
-    that.selected = cm.clone(defaultDate);
-
-    var init = function(){
-        that.setParams(params);
-        preValidateParams();
-        that.convertEvents(that.params['events']);
-        that.getDataConfig(that.params['node']);
-        validateParams();
-        render();
-        that.addToStack(nodes['container']);
-        // Set selected date
-        set(that.params['node'].value);
-    };
-
-    var preValidateParams = function(){
-        if(cm.isNode(that.params['input'])){
-            that.params['node'] = that.params['input'];
-        }
-    };
-
-    var validateParams = function(){
-        if(cm.isNode(that.params['node'])){
-            that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
-        }
-    };
-
-    var render = function(){
-        // Structure
-        nodes['container'] = cm.Node('div', {'class' : 'com__dateselect'},
-            nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
-            cm.Node('div', {'class' : 'pt__toolbar bottom'},
-                cm.Node('div', {'class' : 'inner clear'},
-                    cm.Node('ul', {'class' : 'group'},
-                        nodes['year'] = cm.Node('li', {'class' : 'is-field small'}),
-                        nodes['month'] = cm.Node('li', {'class' : 'is-field medium'}),
-                        nodes['day'] = cm.Node('li', {'class' : 'is-field x-small'})
-                    )
-                )
-            )
-        );
-        renderSelects();
-        // Attributes
-        if(that.params['name']){
-            nodes['hidden'].setAttribute('name', that.params['name']);
-        }
-        // Append
-        that.embedStructure(nodes['container']);
-    };
-
-    var renderSelects = function(){
-        var data, i;
-        // Days
-        data = [
-            {'value' : '00', 'text' : that.lang('Day')}
-        ];
-        for(i = 1; i <= 31; i++){
-            data.push({'value' : cm.addLeadZero(i), 'text' : i});
-        }
-        components['day'] = new Com.Select({
-            'container' : nodes['day'],
-            'options' : data,
-            'renderInBody' : that.params['renderSelectsInBody'],
-            'events' : {
-                'onChange' :  function(select, item){
-                    that.previous = cm.clone(that.selected);
-                    that.selected['day'] = item;
-                    setMisc(true);
-                }
-            }
-        });
-        // Months
-        data = [
-            {'value' : '00', 'text' : that.lang('Month')}
-        ];
-        cm.forEach(that.lang('months'), function(month, i){
-            data.push({'value' : cm.addLeadZero(parseInt(i + 1)), 'text' : month});
-        });
-        components['month'] = new Com.Select({
-            'container' : nodes['month'],
-            'options' : data,
-            'renderInBody' : that.params['renderSelectsInBody'],
-            'events' : {
-                'onChange' : function(select, item){
-                    that.previous = cm.clone(that.selected);
-                    that.selected['month'] = item;
-                    setMisc(true);
-                }
-            }
-        });
-        // Years
-        data = [
-            {'value' : '0000', 'text' : that.lang('Year')}
-        ];
-        for(i = that.params['endYear']; i >= that.params['startYear']; i--){
-            data.push({'value' : i, 'text' : i});
-        }
-        components['year'] = new Com.Select({
-            'container' : nodes['year'],
-            'options' : data,
-            'renderInBody' : that.params['renderSelectsInBody'],
-            'events' : {
-                'onChange' : function(select, item){
-                    that.previous = cm.clone(that.selected);
-                    that.selected['year'] = item;
-                    setMisc(true);
-                }
-            }
-        });
-    };
-
-    var set = function(str, execute){
-        that.previous = cm.clone(that.selected);
-        if(!str || str == toStr(defaultDate)){
-            that.selected = cm.clone(defaultDate);
-        }else{
-            if(str instanceof Date){
-                that.selected = fromStr(cm.parseDate(str));
-            }else{
-                that.selected = fromStr(str);
-            }
-        }
-        components['day'].set(that.selected['day'], false);
-        components['month'].set(that.selected['month'], false);
-        components['year'].set(that.selected['year'], false);
-        setMisc(execute);
-    };
-
-    var setMisc = function(execute){
-        nodes['hidden'].value = toStr(that.selected);
-        if(execute){
-            // API onSelect event
-            that.triggerEvent('onSelect', toStr(that.selected));
-            // API onChange event
-            if(toStr(that.selected) != toStr(that.previous)){
-                that.triggerEvent('onChange', toStr(that.selected));
-            }
-        }
-    };
-
-    var fromStr = function(str, format){
-        var o = {},
-            convertFormats = {
-                '%Y' : 'YYYY',
-                '%m' : 'mm',
-                '%d' : 'dd'
-            },
-            formats = {
-                'YYYY' : function(value){
-                    o['year'] = value;
-                },
-                'mm' : function(value){
-                    o['month'] = value;
-                },
-                'dd' : function(value){
-                    o['day'] = value;
-                }
-            },
-            fromIndex = 0;
-        format = format || that.params['format'];
-        // Parse
-        cm.forEach(convertFormats, function(item, key){
-            format = format.replace(key, item);
-        });
-        cm.forEach(formats, function(item, key){
-            fromIndex = format.indexOf(key);
-            while(fromIndex != -1){
-                item(str.substr(fromIndex, key.length));
-                fromIndex = format.indexOf(key, fromIndex + 1);
-            }
-        });
-        return o;
-    };
-
-    var toStr = function(o, format){
-        var str = format || that.params['format'],
-            formats = function(o){
-                return {
-                    '%Y' : function(){
-                        return o['year'];
-                    },
-                    '%m' : function(){
-                        return o['month'];
-                    },
-                    '%d' : function(){
-                        return o['day'];
-                    }
-                };
-            };
-        cm.forEach(formats(o), function(item, key){
-            str = str.replace(key, item);
-        });
-        return str;
-    };
-
-    /* ******* PUBLIC ******* */
-
-    that.destruct = function(){
-        var that = this;
-        if(!that.isDestructed){
-            that.isDestructed = true;
-            that.removeFromStack();
-        }
-        return that;
-    };
-
-    that.get = function(format){
-        format = format || that.params['format'];
-        return toStr(that.selected, format);
-    };
-
-    that.getDate = function(){
-        return that.selected;
-    };
-
-    that.set = function(str){
-        set(str, true);
-        return that;
-    };
-
-    init();
-});
-
-/* ****** FORM FIELD COMPONENT ******* */
-
-Com.FormFields.add('date-select', {
-    'node' : cm.node('input', {'type' : 'text'}),
-    'constructor' : 'Com.DateSelect'
-});
-Com.Elements['Datepicker'] = {};
-
-Com['GetDatepicker'] = function(id){
-    return Com.Elements.Datepicker[id] || null;
-};
-
-cm.define('Com.Datepicker', {
-    'modules' : [
-        'Params',
-        'Events',
-        'DataConfig',
-        'Structure',
-        'Langs',
-        'Stack'
-    ],
-    'events' : [
-        'onRender',
-        'onSelect',
-        'onChange',
-        'onClear',
-        'onFocus',
-        'onBlur'
-    ],
-    'params' : {
-        'input' : null,                                                     // Deprecated, use 'node' parameter instead.
-        'node' : cm.node('input', {'type' : 'text'}),
-        'container' : null,
-        'name' : '',
-        'embedStructure' : 'replace',
-        'customEvents' : true,
-        'renderInBody' : true,
-        'format' : 'cm._config.dateFormat',
-        'displayFormat' : 'cm._config.displayDateFormat',
-        'isDateTime' : false,
-        'dateTimeFormat' : 'cm._config.dateTimeFormat',
-        'displayDateTimeFormat' : 'cm._config.displayDateTimeFormat',
-        'minutesInterval' : 1,
-        'startYear' : 1950,                                                 // number | current
-        'endYear' : 'current + 10',                                         // number | current
-        'startWeekDay' : 0,
-        'showTodayButton' : true,
-        'showClearButton' : false,
-        'showTitleTooltip' : true,
-        'showPlaceholder' : true,
-        'title' : '',
-        'placeholder' : '',
-        'menuMargin' : 4,
-        'value' : 0,
-        'disabled' : false,
-        'icons' : {
-            'datepicker' : 'icon default linked',
-            'clear' : 'icon default linked'
-        },
-        'langs' : {
-            'daysAbbr' : ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
-            'days' : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-            'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-            'Clear date' : 'Clear date',
-            'Today' : 'Today',
-            'Now' : 'Now',
-            'Time' : 'Time:'
-        },
-        'Com.Tooltip' : {
-            'targetEvent' : 'click',
-            'hideOnReClick' : false,
-            'className' : 'com__datepicker__tooltip',
-            'top' : 'cm._config.tooltipTop'
-        }
-    }
-},
-function(params){
-    var that = this,
-        nodes = {},
-        components = {};
-
-    that.date = null;
-    that.value = null;
-    that.previousValue = null;
-    that.format = null;
-    that.displayFormat = null;
-    that.disabled = false;
-    that.isDestructed = null;
-
-    var init = function(){
-        that.destructHandler = that.destruct.bind(that);
-        that.setParams(params);
-        preValidateParams();
-        that.convertEvents(that.params['events']);
-        that.getDataConfig(that.params['node']);
-        validateParams();
-        render();
-        setLogic();
-        setEvents();
-        // Add to stack
-        that.addToStack(nodes['container']);
-        // Set selected date
-        if(that.params['value']){
-            that.set(that.params['value'], that.format, false);
-        }else{
-            that.set(that.params['node'].value, that.format, false);
-        }
-        // Trigger events
-        that.triggerEvent('onRender', that.value);
-    };
-
-    var preValidateParams = function(){
-        if(cm.isNode(that.params['input'])){
-            that.params['node'] = that.params['input'];
-        }
-    };
-
-    var validateParams = function(){
-        if(cm.isNode(that.params['node'])){
-            that.params['placeholder'] = that.params['node'].getAttribute('placeholder') || that.params['placeholder'];
-            that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
-            that.params['disabled'] = that.params['node'].disabled || that.params['disabled'];
-            that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
-        }
-        if(that.params['value'] == 'now'){
-            that.params['value'] = new Date();
-        }
-        if(/current/.test(that.params['startYear'])){
-            that.params['startYear'] = eval(cm.strReplace(that.params['startYear'], {'current' : new Date().getFullYear()}));
-        }
-        if(/current/.test(that.params['endYear'])){
-            that.params['endYear'] = eval(cm.strReplace(that.params['endYear'], {'current' : new Date().getFullYear()}));
-        }
-        that.format = that.params['isDateTime']? that.params['dateTimeFormat'] : that.params['format'];
-        that.displayFormat = that.params['isDateTime']? that.params['displayDateTimeFormat'] : that.params['displayFormat'];
-        that.disabled = that.params['disabled'];
-    };
-
-    var render = function(){
-        /* *** RENDER STRUCTURE *** */
-        nodes['container'] = cm.Node('div', {'class' : 'com__datepicker-input'},
-            nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
-            nodes['target'] = cm.Node('div', {'class' : 'pt__input has-icon-right'},
-                nodes['input'] = cm.Node('input', {'type' : 'text'}),
-                nodes['icon'] = cm.Node('div', {'class' : that.params['icons']['datepicker']})
-            ),
-            nodes['menuContainer'] = cm.Node('div', {'class' : 'form'},
-                nodes['calendarContainer'] = cm.Node('div', {'class' : 'calendar-holder'})
-            )
-        );
-        /* *** ATTRIBUTES *** */
-        // Title
-        if(that.params['showTitleTooltip'] && !cm.isEmpty(that.params['title'])){
-            nodes['container'].title = that.params['title'];
-        }
-        // ID
-        if(that.params['node'].id){
-            nodes['container'].id = that.params['node'].id;
-        }
-        // Set hidden input attributes
-        if(that.params['name']){
-            nodes['hidden'].setAttribute('name', that.params['name']);
-        }
-        // Placeholder
-        if(that.params['showPlaceholder'] && !cm.isEmpty(that.params['placeholder'])){
-            nodes['input'].setAttribute('placeholder', that.params['placeholder']);
-        }
-        // Clear Button
-        if(that.params['showClearButton']){
-            cm.addClass(nodes['container'], 'has-clear-button');
-            nodes['container'].appendChild(
-                nodes['clearButton'] = cm.Node('div', {'class' : that.params['icons']['clear'], 'title' : that.lang('Clear date')})
-            );
-        }
-        // Today / Now Button
-        if(that.params['showTodayButton']){
-            nodes['menuContainer'].appendChild(
-                nodes['todayButton'] = cm.Node('div', {'class' : 'button today is-wide'}, that.lang(that.params['isDateTime']? 'Now' : 'Today'))
-            );
-        }
-        // Time Select
-        if(that.params['isDateTime']){
-            nodes['timeHolder'] = cm.Node('div', {'class' : 'time-holder'},
-                cm.Node('dl', {'class' : 'form-box'},
-                    cm.Node('dt', that.lang('Time')),
-                    nodes['timeContainer'] = cm.Node('dd')
-                )
-            );
-            cm.insertAfter(nodes['timeHolder'], nodes['calendarContainer']);
-        }
-        /* *** INSERT INTO DOM *** */
-        that.embedStructure(nodes['container']);
-    };
-
-    var setLogic = function(){
-        cm.addEvent(nodes['input'], 'keypress', inputKeypressHandler);
-        cm.addEvent(nodes['input'], 'keyup', inputKeyHandler);
-        // Clear Button
-        if(that.params['showClearButton']){
-            cm.addEvent(nodes['clearButton'], 'click', function(){
-                that.clear();
-                components['menu'].hide(false);
-            });
-        }
-        // Today / Now Button
-        if(that.params['showTodayButton']){
-            cm.addEvent(nodes['todayButton'], 'click', function(){
-                that.set(new Date());
-                components['menu'].hide(false);
-            });
-        }
-        // Render tooltip
-        components['menu'] = new Com.Tooltip(
-            cm.merge(that.params['Com.Tooltip'], {
-                'container' : that.params['renderInBody'] ? document.body : nodes['container'],
-                'content' : nodes['menuContainer'],
-                'target' : nodes['target'],
-                'events' : {
-                    'onShowStart' : onShow,
-                    'onHideStart' : onHide
-                }
-            })
-        );
-        // Render calendar
-        components['calendar'] = new Com.Calendar({
-            'node' : nodes['calendarContainer'],
-            'renderSelectsInBody' : false,
-            'className' : 'com__datepicker-calendar',
-            'startYear' : that.params['startYear'],
-            'endYear' : that.params['endYear'],
-            'startWeekDay' : that.params['startWeekDay'],
-            'langs' : that.params['langs'],
-            'renderMonthOnInit' : false,
-            'events' : {
-                'onMonthRender' : function(){
-                    if(that.date){
-                        components['calendar'].selectDay(that.date);
-                    }
-                },
-                'onDayClick' : function(calendar, params){
-                    if(!that.date){
-                        that.date = new Date();
-                    }
-                    components['calendar'].unSelectDay(that.date);
-                    that.date.setDate(params['day']);
-                    components['calendar'].selectDay(that.date);
-                    set(true);
-                    if(!that.params['isDateTime']){
-                        components['menu'].hide(false);
-                    }
-                }
-            }
-        });
-        // Render Time Select
-        if(that.params['isDateTime']){
-            components['time'] = new Com.TimeSelect({
-                'container' : nodes['timeContainer'],
-                'renderSelectsInBody' : false,
-                'minutesInterval' : that.params['minutesInterval']
-            });
-            components['time'].addEvent('onChange', function(){
-                if(!that.date){
-                    that.date = new Date();
-                }
-                components['calendar'].set(that.date.getFullYear(), that.date.getMonth(), false);
-                components['calendar'].selectDay(that.date);
-                set(true);
-            });
-        }
-        // Enable / Disable
-        if(that.disabled){
-            that.disable();
-        }else{
-            that.enable();
-        }
-    };
-
-    var inputKeypressHandler = function(e){
-        if(cm.isKey(e, 'enter')){
-            cm.preventDefault(e);
-        }
-    };
-
-    var inputKeyHandler = function(e){
-        var value = nodes['input'].value;
-        if(cm.isKey(e, 'enter')){
-            cm.preventDefault(e);
-            validateInputValue();
-            components['menu'].hide(false);
-        }
-        if(cm.isKey(e, 'delete')){
-            if(cm.isEmpty(value)){
-                that.clear(true);
-                //components['menu'].hide(false);
-            }
-        }
-    };
-
-    var setEvents = function(){
-        // Add custom event
-        if(that.params['customEvents']){
-            cm.customEvent.add(nodes['container'], 'destruct', that.destructHandler);
-        }
-    };
-
-    var unsetEvents = function(){
-        // Add custom event
-        if(that.params['customEvents']){
-            cm.customEvent.remove(nodes['container'], 'destruct', that.destructHandler);
-        }
-    };
-
-    var onShow = function(){
-        renderCalendarMonth();
-        // Set classes
-        cm.addClass(nodes['container'], 'active');
-        that.triggerEvent('onFocus', that.value);
-    };
-
-    var onHide = function(){
-        validateInputValue();
-        setInputValues();
-        nodes['input'].blur();
-        cm.removeClass(nodes['container'], 'active');
-        that.triggerEvent('onBlur', that.value);
-    };
-
-    var validateInputValue = function(){
-        var value = nodes['input'].value,
-            date = new Date(value);
-        if(cm.isEmpty(value) || !cm.isDateValid(date)){
-            that.clear(true);
-        }else{
-            that.set(date, null, true);
-        }
-    };
-
-    var set = function(triggerEvents){
-        that.previousValue = that.value;
-        if(that.date){
-            // Set date
-            that.date.setFullYear(components['calendar'].getFullYear());
-            that.date.setMonth(components['calendar'].getMonth());
-            // Set time
-            if(that.params['isDateTime']){
-                that.date.setHours(components['time'].getHours());
-                that.date.setMinutes(components['time'].getMinutes());
-                that.date.setSeconds(0);
-            }
-            // Set value
-            that.value = cm.dateFormat(that.date, that.format, that.lang());
-        }else{
-            that.value = cm.dateFormat(false, that.format, that.lang());
-        }
-        setInputValues();
-        renderCalendarMonth();
-        // Trigger events
-        if(triggerEvents){
-            that.triggerEvent('onSelect', that.value);
-            onChange();
-        }
-    };
-
-    var renderCalendarMonth = function(){
-        // Render calendar month
-        if(that.date){
-            components['calendar'].set(that.date.getFullYear(), that.date.getMonth());
-        }
-        components['calendar'].renderMonth();
-    };
-
-    var setInputValues = function(){
-        if(that.date){
-            nodes['input'].value = cm.dateFormat(that.date, that.displayFormat, that.lang());
-            nodes['hidden'].value = that.value;
-        }else{
-            nodes['input'].value = '';
-            nodes['hidden'].value = cm.dateFormat(false, that.format, that.lang());
-        }
-    };
-    
-    var onChange = function(){
-        if(!that.previousValue || (!that.value && that.previousValue) || (that.value != that.previousValue)){
-            that.triggerEvent('onChange', that.value);
-        }
-    };
-
-    /* ******* MAIN ******* */
-
-    that.destruct = function(){
-        var that = this;
-        if(!that.isDestructed){
-            that.isDestructed = true;
-            cm.customEvent.trigger(nodes['calendarContainer'], 'destruct', {
-                'type' : 'child',
-                'self' : false
-            });
-            unsetEvents();
-            that.removeFromStack();
-        }
-        return that;
-    };
-
-    that.get = function(format){
-        format = typeof format != 'undefined'? format : that.format;
-        return cm.dateFormat(that.date, format, that.lang());
-    };
-
-    that.getDate = function(){
-        return that.date;
-    };
-
-    that.getFullYear = function(){
-        return that.date? that.date.getFullYear() : null;
-    };
-
-    that.getMonth = function(){
-        return that.date? that.date.getMonth() : null;
-    };
-
-    that.getDay = function(){
-        return that.date? that.date.getDate() : null;
-    };
-
-    that.getHours = function(){
-        return that.date? that.date.getHours() : null;
-    };
-
-    that.getMinutes = function(){
-        return that.date? that.date.getMinutes() : null;
-    };
-
-    that.set = function(str, format, triggerEvents){
-        format = typeof format != 'undefined'? format : that.format;
-        triggerEvents = typeof triggerEvents != 'undefined'? triggerEvents : true;
-        // Get date
-        var pattern = cm.dateFormat(false, format, that.lang());
-        if(cm.isEmpty(str) || str == pattern){
-            that.clear();
-            return that;
-        }else if(cm.isDate(str)){
-            that.date = str;
-        }else{
-            that.date = cm.parseDate(str, format);
-        }
-        // Set parameters into components
-        components['calendar'].set(that.date.getFullYear(), that.date.getMonth(), false);
-        if(that.params['isDateTime']){
-            components['time'].set(that.date, null, false);
-        }
-        // Set date
-        set(triggerEvents);
-        return that;
-    };
-
-    that.clear = function(triggerEvents){
-        triggerEvents = typeof triggerEvents != 'undefined'? triggerEvents : true;
-        // Clear date
-        that.date = null;
-        // Clear components
-        components['calendar'].clear(false);
-        if(that.params['isDateTime']){
-            components['time'].clear(false);
-        }
-        // Set date
-        set(false);
-        // Trigger events
-        if(triggerEvents){
-            that.triggerEvent('onClear', that.value);
-            onChange();
-        }
-        return that;
-    };
-
-    that.disable = function(){
-        that.disabled = true;
-        cm.addClass(nodes['container'], 'disabled');
-        nodes['input'].disabled = true;
-        components['menu'].disable();
-        return that;
-    };
-
-    that.enable = function(){
-        that.disabled = false;
-        cm.removeClass(nodes['container'], 'disabled');
-        nodes['input'].disabled = false;
-        components['menu'].enable();
-        return that;
-    };
-
-    that.getNodes = function(key){
-        return nodes[key] || nodes;
     };
 
     init();
@@ -16282,287 +14020,6 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
         }
         return that;
     };
-});
-cm.define('Com.FileInput', {
-    'extend' : 'Com.AbstractInput',
-    'params' : {
-        'embedStructure' : 'replace',
-        'className' : 'com__file-input',
-        'file' : null,
-        'showLink' : true,
-        'autoOpen' : false,
-        'local' : true,
-        'fileManager' : false,
-        'fileManagerConstructor' : 'Com.AbstractFileManagerContainer',
-        'fileManagerParams' : {
-            'params' : {
-                'max' : 1
-            }
-        },
-        'fileUploader' : false,
-        'fileUploaderConstructor' : 'Com.FileUploaderContainer',
-        'fileUploaderParams' : {
-            'params' : {
-                'max' : 1
-            }
-        },
-        'dropzone' : true,
-        'dropzoneConstructor' : 'Com.FileDropzone',
-        'dropzoneParams' : {
-            'embedStructure' : 'append',
-            'max' : 1,
-            'rollover' : true
-        },
-        'langs' : {
-            'browse' : 'Browse',
-            'browse_local' : 'Browse Local',
-            'browse_filemanager' : 'Browse File Manager',
-            'remove' : 'Remove',
-            'open' : 'Open'
-        },
-        'Com.FileReader' : {}
-    }
-},
-function(params){
-    var that = this;
-    // Call parent class construct
-    Com.AbstractInput.apply(that, arguments);
-});
-
-cm.getConstructor('Com.FileInput', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
-    classProto.construct = function(){
-        var that = this;
-        // Bind context to methods
-        that.initComponentsStartHandler = that.initComponentsStart.bind(that);
-        that.validateParamsEndHandler = that.validateParamsEnd.bind(that);
-        that.browseActionHandler = that.browseAction.bind(that);
-        that.processFilesHandler = that.processFiles.bind(that);
-        // Add events
-        that.addEvent('onInitComponentsStart', that.initComponentsStartHandler);
-        that.addEvent('onValidateParamsEnd', that.validateParamsEndHandler);
-        // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
-        return that;
-    };
-
-    classProto.get = function(){
-        var that = this,
-            value;
-        if(that.params['formData']){
-            value = that.value['file'] || that.value;
-        }else{
-            value = that.value;
-        }
-        return value;
-    };
-
-    classProto.initComponentsStart = function(){
-        var that = this;
-        cm.getConstructor('Com.FileReader', function(classObject){
-            that.components['validator'] = new classObject();
-        });
-        return that;
-    };
-
-    classProto.validateParamsEnd = function(){
-        var that = this;
-        // Validate Language Strings
-        that.setLangs({
-            '_browse_local' : that.params['fileManager'] ? that.lang('browse_local') : that.lang('browse'),
-            '_browse_filemanager' : that.params['local'] ? that.lang('browse_filemanager') : that.lang('browse')
-        });
-        // Dropzone
-        that.params['dropzone'] = !that.params['local'] ? false : that.params['dropzone'];
-        // File Uploader
-        that.params['fileUploaderParams']['openOnConstruct'] = that.params['autoOpen'];
-        that.params['fileUploaderParams']['params']['local'] = that.params['local'];
-        that.params['fileUploaderParams']['params']['fileManager'] = that.params['fileManager'];
-        // Other
-        that.params['local'] = that.params['fileUploader'] ? false : that.params['local'];
-        that.params['fileManagerParams']['openOnConstruct'] = that.params['autoOpen'];
-        that.params['fileManager'] = that.params['fileUploader'] ? false : that.params['fileManager'];
-        return that;
-    };
-
-    classProto.validateValue = function(value){
-        var that = this,
-            item = that.components['validator'].validate(value);
-        return !cm.isEmpty(item['value']) ? item : '';
-    };
-
-    classProto.saveValue = function(value){
-        var that = this;
-        that.previousValue = that.value;
-        that.value = value;
-        if(that.params['setHiddenInput']){
-            if(!cm.isEmpty(value)){
-                that.nodes['hidden'].value = JSON.stringify(value);
-            }else{
-                that.nodes['hidden'].value = ''
-            }
-        }
-        return that;
-    };
-
-    classProto.renderViewModel = function(){
-        var that = this;
-        // Call parent method - renderViewModel
-        _inherit.prototype.renderViewModel.apply(that, arguments);
-        // Init FilerReader
-        cm.getConstructor('Com.FileReader', function(classObject, className){
-            that.components['reader'] = new classObject(that.params[className]);
-            that.components['reader'].addEvent('onReadSuccess', function(my, item){
-                that.set(item, true);
-            });
-        });
-        // Init Dropzone
-        if(that.params['dropzone']){
-            cm.getConstructor(that.params['dropzoneConstructor'], function(classObject){
-                that.components['dropzone'] = new classObject(
-                    cm.merge(that.params['dropzoneParams'], {
-                        'container' : that.nodes['content']['inner'],
-                        'target' : that.nodes['content']['content']
-                    })
-                );
-                that.components['dropzone'].addEvent('onDrop', function(my, data){
-                    that.processFiles(data);
-                });
-            });
-        }
-        // Init File Manager
-        if(that.params['fileManager']){
-            cm.getConstructor(that.params['fileManagerConstructor'], function(classObject){
-                that.components['fileManager'] = new classObject(
-                    cm.merge(that.params['fileManagerParams'], {
-                        'node' : that.nodes['content']['browseFileManager']
-                    })
-                );
-                that.components['fileManager'].addEvent('onComplete', function(my, data){
-                    that.processFiles(data);
-                });
-            });
-        }
-        // Init File Uploader
-        if(that.params['fileUploader']){
-            cm.getConstructor(that.params['fileUploaderConstructor'], function(classObject){
-                that.components['fileUploader'] = new classObject(
-                    cm.merge(that.params['fileUploaderParams'], {
-                        'node' : that.nodes['content']['browseFileUploader']
-                    })
-                );
-                that.components['fileUploader'].addEvent('onComplete', function(my, data){
-                    that.processFiles(data);
-                });
-            });
-        }
-        return that;
-    };
-
-    classProto.renderContent = function(){
-        var that = this,
-            nodes = {};
-        that.nodes['content'] = nodes;
-        that.triggerEvent('onRenderContentStart');
-        // Structure
-        nodes['container'] = cm.node('div', {'class' : 'com__file-input__content'},
-            nodes['inner'] = cm.node('div', {'class' : 'inner'},
-                nodes['content'] = cm.node('div', {'class' : 'com__file-input__holder'},
-                    cm.node('div', {'class' : 'pt__file-line'},
-                        nodes['buttonsInner'] = cm.node('div', {'class' : 'inner'},
-                            nodes['clear'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('remove')),
-                            nodes['label'] = cm.node('div', {'class' : 'label'})
-                        )
-                    )
-                )
-            )
-        );
-        // Render Browse Buttons
-        if(that.params['local']){
-            nodes['browseLocal'] = cm.node('div', {'class' : 'browse-button'},
-                cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('_browse_local')),
-                cm.node('div', {'class' : 'inner'},
-                    nodes['input'] = cm.node('input', {'type' : 'file'})
-                )
-            );
-            cm.addEvent(nodes['input'], 'change', that.browseActionHandler);
-            cm.insertFirst(nodes['browseLocal'], nodes['buttonsInner']);
-        }
-        if(that.params['fileManager']){
-            nodes['browseFileManager'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('_browse_filemanager'));
-            cm.insertFirst(nodes['browseFileManager'], nodes['buttonsInner']);
-        }
-        if(that.params['fileUploader']){
-            nodes['browseFileUploader'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('browse'));
-            cm.insertFirst(nodes['browseFileUploader'], nodes['buttonsInner']);
-        }
-        // Events
-        that.triggerEvent('onRenderContentProcess');
-        cm.addEvent(nodes['clear'], 'click', that.clearEventHandler);
-        that.triggerEvent('onRenderContentEnd');
-        // Export
-        return nodes['container'];
-    };
-
-    classProto.setData = function(){
-        var that = this,
-            url;
-        if(cm.isEmpty(that.value)){
-            cm.clearNode(that.nodes['content']['label']);
-            cm.addClass(that.nodes['content']['label'], 'is-hidden');
-            cm.removeClass(that.nodes['content']['browseLocal'], 'is-hidden');
-            cm.removeClass(that.nodes['content']['browseFileManager'], 'is-hidden');
-            cm.removeClass(that.nodes['content']['browseFileUploader'], 'is-hidden');
-            cm.addClass(that.nodes['content']['clear'], 'is-hidden');
-        }else{
-            cm.clearNode(that.nodes['content']['label']);
-            if(that.params['showLink']){
-                that.nodes['content']['link'] = cm.node('a', {'target' : '_blank', 'href' : that.value['url'], 'title' : that.lang('open')}, that.value['name']);
-            }else{
-                that.nodes['content']['link'] = cm.textNode(that.value['name']);
-            }
-            cm.appendChild(that.nodes['content']['link'], that.nodes['content']['label']);
-            cm.addClass(that.nodes['content']['browseLocal'], 'is-hidden');
-            cm.addClass(that.nodes['content']['browseFileManager'], 'is-hidden');
-            cm.addClass(that.nodes['content']['browseFileUploader'], 'is-hidden');
-            cm.removeClass(that.nodes['content']['clear'], 'is-hidden');
-            cm.removeClass(that.nodes['content']['label'], 'is-hidden');
-        }
-        return that;
-    };
-
-    /* *** PROCESS FILES *** */
-
-    classProto.browseAction = function(e){
-        var that = this,
-            file = e.target.files[0];
-        cm.preventDefault(e);
-        // Read File
-        that.processFiles(file);
-        return that;
-    };
-
-    classProto.processFiles = function(data){
-        var that = this;
-        if(cm.isFile(data)){
-            that.components['reader'].read(data);
-        }else if(cm.isArray(data)){
-            cm.forEach(data, function(file){
-                that.processFiles(file);
-            })
-        }else if(!cm.isEmpty(data)){
-            that.set(data, true);
-        }
-        return that;
-    };
-});
-
-/* ****** FORM FIELD COMPONENT ******* */
-
-Com.FormFields.add('file-input', {
-    'node' : cm.node('input'),
-    'constructor' : 'Com.FileInput'
 });
 cm.define('Com.FileReader', {
     'modules' : [
@@ -19763,171 +17220,6 @@ function(params){
 
     init();
 });
-cm.define('Com.ImageInput', {
-    'extend' : 'Com.FileInput',
-    'params' : {
-        'className' : 'com__image-input',
-        'size' : 'default',
-        'aspect' : false,
-        'preview' : true,
-        'previewConstructor' : 'Com.ImagePreviewContainer',
-        'previewParams' : {},
-        'langs' : {
-            'preview' : 'Preview'
-        }
-    }
-},
-function(params){
-    var that = this;
-    // Call parent class construct
-    Com.FileInput.apply(that, arguments);
-});
-
-cm.getConstructor('Com.ImageInput', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
-    classProto.renderViewModel = function(){
-        var that = this;
-        // Call parent method - renderViewModel
-        _inherit.prototype.renderViewModel.apply(that, arguments);
-        // Init Preview
-        if(that.params['preview']){
-            cm.getConstructor(that.params['previewConstructor'], function(classObject){
-                that.components['preview'] = new classObject(
-                    cm.merge(that.params['previewParams'], {
-                        'node' : that.nodes['content']['preview']
-                    })
-                );
-            });
-        }
-    };
-
-    classProto.renderContent = function(){
-        var that = this,
-            nodes = {};
-        that.nodes['content'] = nodes;
-        that.triggerEvent('onRenderContentStart');
-        // Structure
-        nodes['container'] = cm.node('div', {'class' : 'com__image-input__content'},
-            nodes['inner'] = cm.node('div', {'class' : 'inner'},
-                nodes['content'] = cm.node('div', {'class' : 'input__holder'},
-                    cm.node('div', {'class' : 'input__cover'},
-                        nodes['label'] = cm.node('div', {'class' : 'input__label'}),
-                        nodes['buttonsInner'] = cm.node('div', {'class' : 'input__buttons'},
-                            nodes['clear'] = cm.node('div', {'class' : 'cm__button-wrapper'},
-                                cm.node('button', {'type' : 'button', 'class' : 'button button-danger'},
-                                    cm.node('span', that.lang('remove'))
-                                )
-                            )
-                        )
-                    ),
-                    nodes['imageContainer'] = cm.node('div', {'class' : 'pt__image is-cover'},
-                        cm.node('div', {'class' : 'inner'},
-                            nodes['image'] = cm.node('div', {'class' : 'descr'})
-                        )
-                    )
-                )
-            )
-        );
-        // Image Preview size
-        if(that.params['aspect']){
-            cm.addClass(nodes['imageContainer'], 'is-background has-aspect');
-            cm.addClass(nodes['imageContainer'], ['cm__aspect', that.params['aspect']].join('-'));
-        }
-        // Render Buttons
-        that.renderButtons();
-        // Events
-        that.triggerEvent('onRenderContentProcess');
-        cm.addEvent(nodes['clear'], 'click', that.clearEventHandler);
-        that.triggerEvent('onRenderContentEnd');
-        // Export
-        return nodes['container'];
-    };
-
-    classProto.renderButtons = function(){
-        var that = this;
-        if(that.params['preview']){
-            that.nodes['content']['preview'] = cm.node('div', {'class' : 'cm__button-wrapper'},
-                cm.node('button', {'type' : 'button', 'class' : 'button button-primary'},
-                    cm.node('span', that.lang('preview'))
-                )
-            );
-            cm.insertFirst(that.nodes['content']['preview'], that.nodes['content']['buttonsInner']);
-        }
-        if(that.params['local']){
-            that.nodes['content']['browseLocal'] = cm.node('div', {'class' : 'browse-button'},
-                cm.node('button', {'type' : 'button', 'class' : 'button button-primary'},
-                    cm.node('span', that.lang('_browse_local'))
-                ),
-                cm.node('div', {'class' : 'inner'},
-                    that.nodes['content']['input'] = cm.node('input', {'type' : 'file'})
-                )
-            );
-            cm.addEvent(that.nodes['content']['input'], 'change', that.browseActionHandler);
-            cm.insertFirst(that.nodes['content']['browseLocal'], that.nodes['content']['buttonsInner']);
-        }
-        if(that.params['fileManager']){
-            that.nodes['content']['browseFileManager'] = cm.node('div', {'class' : 'cm__button-wrapper'},
-                cm.node('button', {'type' : 'button', 'class' : 'button button-primary'},
-                    cm.node('span', that.lang('_browse_filemanager'))
-                )
-            );
-            cm.insertFirst(that.nodes['content']['browseFileManager'], that.nodes['content']['buttonsInner']);
-        }
-        if(that.params['fileUploader']){
-            that.nodes['content']['browseFileUploader'] = cm.node('div', {'class' : 'cm__button-wrapper'},
-                cm.node('button', {'type' : 'button', 'class' : 'button button-primary'},
-                    cm.node('span', that.lang('browse'))
-                )
-            );
-            cm.insertFirst(that.nodes['content']['browseFileUploader'], that.nodes['content']['buttonsInner']);
-        }
-        return that;
-    };
-
-    classProto.setData = function(){
-        var that = this,
-            url;
-        if(cm.isEmpty(that.value)){
-            // Preview
-            that.components['preview'] && that.components['preview'].clear();
-            cm.addClass(that.nodes['content']['preview'], 'is-hidden');
-            that.nodes['content']['image'].style.backgroundImage = '';
-            cm.addClass(that.nodes['content']['imageContainer'], 'is-default-image');
-            // Label
-            cm.clearNode(that.nodes['content']['label']);
-            cm.addClass(that.nodes['content']['label'], 'is-hidden');
-            // Remove button
-            cm.addClass(that.nodes['content']['clear'], 'is-hidden');
-        }else{
-            // Preview
-            that.components['preview'] && that.components['preview'].set(that.value);
-            cm.removeClass(that.nodes['content']['preview'], 'is-hidden');
-            that.nodes['content']['image'].style.backgroundImage = cm.URLToCSSURL(that.value['url']);
-            cm.removeClass(that.nodes['content']['imageContainer'], 'is-default-image');
-            // Label
-            cm.clearNode(that.nodes['content']['label']);
-            if(that.params['showLink']){
-                that.nodes['content']['link'] = cm.node('a', {'target' : '_blank', 'href' : that.value['url'], 'title' : that.lang('open')}, that.value['name']);
-            }else{
-                that.nodes['content']['link'] = cm.textNode(that.value['name']);
-            }
-            cm.appendChild(that.nodes['content']['link'], that.nodes['content']['label']);
-            cm.removeClass(that.nodes['content']['label'], 'is-hidden');
-            // Remove button
-            cm.removeClass(that.nodes['content']['clear'], 'is-hidden');
-        }
-        return that;
-    };
-});
-
-/* ****** FORM FIELD COMPONENT ******* */
-
-Com.FormFields.add('image', {
-    'node' : cm.node('input', {'type' : 'text'}),
-    'constructor' : 'Com.ImageInput'
-});
-
 cm.define('Com.ImagePreviewContainer', {
     'extend' : 'Com.AbstractContainer',
     'params' : {
@@ -19996,195 +17288,6 @@ cm.getConstructor('Com.ImagePreviewContainer', function(classConstructor, classN
         return that;
     };
 });
-cm.define('Com.IndentInput', {
-    'extend' : 'Com.AbstractInput',
-    'params' : {
-        'maxlength' : 3,
-        'units' : 'px',
-        'defaultValue' : 0,
-        'allowNegative' : false
-    }
-},
-function(params){
-    var that = this;
-    // Call parent class construct
-    Com.AbstractInput.apply(that, arguments);
-});
-
-cm.getConstructor('Com.IndentInput', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
-    classProto.construct = function(){
-        var that = this;
-        // Bind context to methods
-        that.setValueHandler = that.setValue.bind(that);
-        // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
-        return that;
-    };
-
-    classProto.renderContent = function(){
-        var that = this,
-            nodes = {};
-        that.nodes['content'] = nodes;
-        that.triggerEvent('onRenderContentStart');
-        // Structure
-        nodes['container'] = cm.node('div', {'class' : 'pt__input'},
-            nodes['input'] = cm.node('input', {'type' : 'text'})
-        );
-        // Attributes
-        if(that.params['maxlength']){
-            nodes['input'].setAttribute('maxlength', that.params['maxlength']);
-        }
-        // Events
-        that.triggerEvent('onRenderContentProcess');
-        cm.addEvent(nodes['input'], 'blur', that.setValueHandler);
-        cm.addEvent(nodes['input'], 'keypress', function(e){
-            if(cm.isKeyCode(e.keyCode, 'enter')){
-                cm.preventDefault(e);
-                that.setValue();
-                nodes['input'].blur();
-            }
-        });
-
-        if(that.params['allowNegative']){
-            cm.allowOnlyNumbersInputEvent(nodes['input'], function(e, value){
-                that.selectAction(that.validateValue(value), true);
-            });
-        }else{
-            cm.allowOnlyDigitInputEvent(nodes['input'], function(e, value){
-                that.selectAction(that.validateValue(value), true);
-            });
-        }
-        that.triggerEvent('onRenderContentEnd');
-        // Push
-        return nodes['container'];
-    };
-
-    /* *** DATA VALUE *** */
-
-    classProto.validateValue = function(value){
-        var that = this;
-        value = !cm.isEmpty(value) ? value : that.params['defaultValue'];
-        that.rawValue = parseInt(value);
-        return (that.rawValue + that.params['units']);
-    };
-
-    classProto.setValue = function(triggerEvents){
-        var that = this;
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        that.set(that.rawValue, triggerEvents);
-        return that;
-    };
-
-    classProto.setData = function(){
-        var that = this;
-        that.nodes['content']['input'].value = that.rawValue;
-        return that;
-    };
-});
-
-/* ****** FORM FIELD COMPONENT ******* */
-
-Com.FormFields.add('indent-input', {
-    'node' : cm.node('input', {'type' : 'text'}),
-    'fieldConstructor' : 'Com.AbstractFormField',
-    'constructor' : 'Com.IndentInput'
-});
-cm.define('Com.IntegerInput', {
-    'extend' : 'Com.AbstractInput',
-    'params' : {
-        'maxlength' : 3,
-        'defaultValue' : 0,
-        'allowNegative' : false
-    }
-},
-function(params){
-    var that = this;
-    // Call parent class construct
-    Com.AbstractInput.apply(that, arguments);
-});
-
-cm.getConstructor('Com.IntegerInput', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
-    classProto.construct = function(){
-        var that = this;
-        // Bind context to methods
-        that.setValueHandler = that.setValue.bind(that);
-        // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
-        return that;
-    };
-
-    classProto.renderContent = function(){
-        var that = this,
-            nodes = {};
-        that.nodes['content'] = nodes;
-        that.triggerEvent('onRenderContentStart');
-        // Structure
-        nodes['container'] = cm.node('div', {'class' : 'pt__input'},
-            nodes['input'] = cm.node('input', {'type' : 'text'})
-        );
-        // Attributes
-        if(that.params['maxlength']){
-            nodes['input'].setAttribute('maxlength', that.params['maxlength']);
-        }
-        // Events
-        that.triggerEvent('onRenderContentProcess');
-        cm.addEvent(nodes['input'], 'blur', that.setValueHandler);
-        cm.addEvent(nodes['input'], 'keypress', function(e){
-            if(cm.isKeyCode(e.keyCode, 'enter')){
-                cm.preventDefault(e);
-                that.setValue();
-                nodes['input'].blur();
-            }
-        });
-
-        if(that.params['allowNegative']){
-            cm.allowOnlyNumbersInputEvent(nodes['input'], function(e, value){
-                that.selectAction(that.validateValue(value), true);
-            });
-        }else{
-            cm.allowOnlyDigitInputEvent(nodes['input'], function(e, value){
-                that.selectAction(that.validateValue(value), true);
-            });
-        }
-        that.triggerEvent('onRenderContentEnd');
-        // Push
-        return nodes['container'];
-    };
-
-    /* *** DATA VALUE *** */
-
-    classProto.validateValue = function(value){
-        var that = this;
-        value = !cm.isEmpty(value) ? value : that.params['defaultValue'];
-        that.rawValue = parseInt(value);
-        return that.rawValue;
-    };
-
-    classProto.setValue = function(triggerEvents){
-        var that = this;
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        that.set(that.rawValue, triggerEvents);
-        return that;
-    };
-
-    classProto.setData = function(){
-        var that = this;
-        that.nodes['content']['input'].value = that.rawValue;
-        return that;
-    };
-});
-
-/* ****** FORM FIELD COMPONENT ******* */
-
-Com.FormFields.add('integer-input', {
-    'node' : cm.node('input', {'type' : 'text'}),
-    'fieldConstructor' : 'Com.AbstractFormField',
-    'constructor' : 'Com.IntegerInput'
-});
 cm.define('Com.Menu', {
     'modules' : [
         'Params',
@@ -20206,7 +17309,7 @@ cm.define('Com.Menu', {
             'className' : 'com__menu-tooltip',
             'targetEvent' : 'hover',
             'hideOnReClick' : true,
-            'theme' : false,
+            'theme' : null,
             'hold' : true
         }
     }
@@ -20684,262 +17787,6 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         return that.items;
     };
 });
-cm.define('Com.MultipleAutocomplete', {
-    'extend' : 'Com.MultipleInput',
-    'params' : {
-        'embedStructure' : 'replace',
-        'className' : 'com__multiple-autocomplete',
-        'sortable' : false,
-        'showToolbar' : false,
-        'showControls' : true,
-        'focusInput' : true,
-        'inputConstructor' : 'Com.Autocomplete'
-    }
-},
-function(params){
-    var that = this;
-    // Call parent class construct
-    Com.MultipleInput.apply(that, arguments);
-});
-
-/* ****** FORM FIELD COMPONENT ******* */
-
-Com.FormFields.add('multi-autocomplete', {
-    'node' : cm.node('div'),
-    'constructor' : 'Com.MultipleAutocomplete'
-});
-cm.define('Com.MultipleFileInput', {
-    'extend' : 'Com.MultipleInput',
-    'params' : {
-        'embedStructure' : 'replace',
-        'className' : 'com__multiple-file-input',
-        'local' : true,
-        'sortable' : false,
-        'showToolbar' : true,
-        'showControls' : false,
-        'focusInput' : false,
-        'buttonsAlign' : 'left',
-        'inputConstructor' : 'Com.FileInput',
-        'inputParams' : {
-            'embedStructure' : 'replace',
-            'dropzone' : false
-        },
-        'fileManager' : false,
-        'fileManagerConstructor' : 'Com.AbstractFileManagerContainer',
-        'fileManagerParams' : {
-            'params' : {}
-        },
-        'fileUploader' : false,
-        'fileUploaderConstructor' : 'Com.FileUploaderContainer',
-        'fileUploaderParams' : {
-            'params' : {}
-        },
-        'dropzone' : true,
-        'dropzoneConstructor' : 'Com.FileDropzone',
-        'dropzoneParams' : {
-            'embedStructure' : 'append',
-            'rollover' : true
-        },
-        'langs' : {
-            'browse' : 'Browse',
-            'browse_local' : 'Browse Local',
-            'browse_filemanager' : 'Browse File Manager'
-        },
-        'Com.FileReader' : {}
-    }
-},
-function(params){
-    var that = this;
-    that.myComponents = {};
-    that.dragInterval = null;
-    that.isDropzoneShow = false;
-    that.hasButtons = false;
-    // Call parent class construct
-    Com.MultipleInput.apply(that, arguments);
-});
-
-cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
-    classProto.construct = function(){
-        var that = this;
-        // Bind context to methods
-        that.validateParamsEndHandler = that.validateParamsEnd.bind(that);
-        that.itemAddProcessHandler = that.itemAddProcess.bind(that);
-        that.browseActionHandler = that.browseAction.bind(that);
-        that.processFilesHandler = that.processFiles.bind(that);
-        // Add events
-        that.addEvent('onValidateParamsEnd', that.validateParamsEndHandler);
-        that.addEvent('onItemAddProcess', that.itemAddProcessHandler);
-        // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
-        return that;
-    };
-
-    classProto.clear = function(){
-        var that = this;
-        that.params['showToolbar'] && cm.removeClass(that.nodes['toolbar']['browseHolder'], 'is-hidden');
-        // Call parent method
-        _inherit.prototype.clear.apply(that, arguments);
-        return that;
-    };
-
-    classProto.validateParamsEnd = function(){
-        var that = this;
-        that.isMultiple = !that.params['max'] || that.params['max'] > 1;
-        // Validate Language Strings
-        that.setLangs({
-            '_browse_local' : that.params['fileManager'] ? that.lang('browse_local') : that.lang('browse'),
-            '_browse_filemanager' : that.params['local'] ? that.lang('browse_filemanager') : that.lang('browse')
-        });
-        // Components parameters
-        that.params['dropzoneParams']['max'] = that.params['max'];
-        that.params['fileManagerParams']['params']['max'] = that.params['max'];
-        that.params['fileUploaderParams']['params']['max'] = that.params['max'];
-        // File Uploader
-        that.params['fileUploaderParams']['params']['local'] = that.params['local'];
-        that.params['fileUploaderParams']['params']['fileManager'] = that.params['fileManager'];
-        // Other
-        that.params['dropzone'] = !that.params['local'] ? false : that.params['dropzone'];
-        that.params['local'] = that.params['fileUploader'] ? false : that.params['local'];
-        that.params['fileManager'] = that.params['fileUploader'] ? false : that.params['fileManager'];
-        that.hasButtons = that.params['local'] || that.params['fileManager'] || that.params['fileUploader'];
-        return that;
-    };
-
-    classProto.renderViewModel = function(){
-        var that = this;
-        // Call parent method - renderViewModel
-        _inherit.prototype.renderViewModel.apply(that, arguments);
-        // Init FilerReader
-        cm.getConstructor('Com.FileReader', function(classObject, className){
-            that.myComponents['reader'] = new classObject(that.params[className]);
-            that.myComponents['reader'].addEvent('onReadSuccess', function(my, item){
-                that.addItem({'value' : item}, true);
-            });
-        });
-        // Init Dropzone
-        if(that.params['dropzone']){
-            cm.getConstructor(that.params['dropzoneConstructor'], function(classObject){
-                that.myComponents['dropzone'] = new classObject(
-                    cm.merge(that.params['dropzoneParams'], {
-                        'container' : that.nodes['inner'],
-                        'target' : that.nodes['holder']
-                    })
-                );
-                that.myComponents['dropzone'].addEvent('onDrop', function(my, data){
-                    that.processFiles(data);
-                });
-            });
-        }
-        // Init File Manager
-        if(that.params['showToolbar'] && that.params['fileManager']){
-            cm.getConstructor(that.params['fileManagerConstructor'], function(classObject){
-                that.myComponents['fileManager'] = new classObject(
-                    cm.merge(that.params['fileManagerParams'], {
-                        'node' : that.nodes['toolbar']['browseFileManager']
-                    })
-                );
-                that.myComponents['fileManager'].addEvent('onComplete', function(my, data){
-                    that.processFiles(data);
-                });
-            });
-        }
-        // Init File Uploader
-        if(that.params['showToolbar'] && that.params['fileUploader']){
-            cm.getConstructor(that.params['fileUploaderConstructor'], function(classObject){
-                that.myComponents['fileUploader'] = new classObject(
-                    cm.merge(that.params['fileUploaderParams'], {
-                        'node' : that.nodes['toolbar']['browseFileUploader']
-                    })
-                );
-                that.myComponents['fileUploader'].addEvent('onComplete', function(my, data){
-                    that.processFiles(data);
-                });
-            });
-        }
-        return that;
-    };
-
-    classProto.renderToolbarView = function(){
-        var that = this,
-            nodes = {};
-        // Structure
-        nodes['container'] = cm.node('div', {'class' : 'com__multiple-input__toolbar'},
-            nodes['content'] = cm.node('div', {'class' : 'pt__buttons'},
-                nodes['contentInner'] = cm.node('div', {'class' : 'inner'})
-            )
-        );
-        cm.addClass(nodes['content'], ['pull', that.params['buttonsAlign']].join('-'));
-        // Render Browse Buttons
-        if(that.params['local']){
-            nodes['browseLocal'] = cm.node('div', {'class' : 'browse-button'},
-                cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('_browse_local')),
-                cm.node('div', {'class' : 'inner'},
-                    nodes['input'] = cm.node('input', {'type' : 'file'})
-                )
-            );
-            that.isMultiple && nodes['input'].setAttribute('multiple', 'multiple');
-            cm.insertFirst(nodes['browseLocal'], nodes['contentInner']);
-        }
-        if(that.params['fileManager']){
-            nodes['browseFileManager'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('_browse_filemanager'));
-            cm.insertFirst(nodes['browseFileManager'], nodes['contentInner']);
-        }
-        if(that.params['fileUploader']){
-            nodes['browseFileUploader'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('browse'));
-            cm.insertFirst(nodes['browseFileUploader'], nodes['contentInner']);
-        }
-        if(!that.hasButtons){
-            cm.addClass(nodes['container'], 'is-hidden');
-        }
-        // Events
-        cm.addEvent(nodes['input'], 'change', that.browseActionHandler);
-        // Push
-        that.nodes['toolbar'] = nodes;
-        return nodes['container'];
-    };
-
-    classProto.itemAddProcess = function(my, item){
-        var that = this;
-        item['controller'].addEvent('onClear', function(){
-            that.removeItem(item);
-        });
-        return that;
-    };
-
-    /* *** PROCESS FILES *** */
-
-    classProto.browseAction = function(e){
-        var that = this,
-            length = that.params['max'] ? Math.min(e.target.files.length, (that.params['max'] - that.items.length)) : e.target.files.length;
-        cm.forEach(length, function(i){
-            that.processFiles(e.target.files[i]);
-        });
-        return that;
-    };
-
-    classProto.processFiles = function(data){
-        var that = this;
-        if(cm.isFile(data)){
-            that.myComponents['reader'].read(data);
-        }else if(cm.isArray(data)){
-            cm.forEach(data, function(file){
-                that.processFiles(file);
-            })
-        }else if(!cm.isEmpty(data)){
-            that.addItem({'value' : data}, true);
-        }
-        return that;
-    };
-});
-
-/* ****** FORM FIELD COMPONENT ******* */
-
-Com.FormFields.add('multi-file-input', {
-    'node' : cm.node('div'),
-    'constructor' : 'Com.MultipleFileInput'
-});
 cm.define('Com.Notifications', {
     'modules' : [
         'Params',
@@ -21167,53 +18014,6 @@ function(params){
     /* ******* MAIN ******* */
 
     init();
-});
-cm.define('Com.OpacityRange', {
-    'extend' : 'Com.AbstractRange',
-    'params' : {
-        'className' : 'com__opacity-range',
-        'min' : 100,
-        'max' : 0,
-        'value' : 100,
-        'color' : 'red'
-    }
-},
-function(params){
-    var that = this;
-    Com.AbstractRange.apply(that, arguments);
-});
-
-cm.getConstructor('Com.OpacityRange', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
-    classProto.construct = function(){
-        var that = this;
-        that.myNodes = {};
-        _inherit.prototype.construct.apply(that, arguments);
-        that.setColor(that.params['color']);
-        return this;
-    };
-
-    classProto.renderContent = function(){
-        var that = this;
-        that.myNodes['content'] = cm.node('div', {'class' : 'com__opacity-range__content'},
-            that.myNodes['inner'] = cm.node('div', {'class' : 'inner range-helper'})
-        );
-        return that.myNodes['content'];
-    };
-
-    classProto.setColor = function(color){
-        var that = this;
-        switch(that.params['direction']){
-            case 'horizontal':
-                that.myNodes['inner'].style.background = 'linear-gradient(to right, ' + color + ', rgba(255,255,255,0))';
-                break;
-            case 'vertical':
-                that.myNodes['inner'].style.background = 'linear-gradient(to bottom, ' + color + ', rgba(255,255,255,0))';
-                break;
-        }
-        return that;
-    };
 });
 cm.define('Com.Overlay', {
     'modules' : [
@@ -22599,215 +19399,6 @@ function(params){
 
     init();
 });
-cm.define('Com.PositionTools', {
-    'extend' : 'Com.AbstractInput',
-    'params' : {
-        'controllerEvents' : true,
-        'className' : 'com__position-tools',
-        'defaultValue' : 'center center',
-        'fieldSize' : 'medium',                      // medium (24px) | large (32px)
-        'options' : [
-            {'name' : 'left top', 'icon' : 'svg__position-topleft', 'iconActive' : 'svg__position-topleft--light'},
-            {'name' : 'center top', 'icon' : 'svg__position-topcenter', 'iconActive' : 'svg__position-topcenter--light'},
-            {'name' : 'right top', 'icon' : 'svg__position-topright', 'iconActive' : 'svg__position-topright--light'},
-            {'name' : 'left center', 'icon' : 'svg__position-middleleft', 'iconActive' : 'svg__position-middleleft--light'},
-            {'name' : 'center center', 'icon' : 'svg__position-middlecenter', 'iconActive' : 'svg__position-middlecenter--light'},
-            {'name' : 'right center', 'icon' : 'svg__position-middleright', 'iconActive' : 'svg__position-middleright--light'},
-            {'name' : 'left bottom', 'icon' : 'svg__position-bottomleft', 'iconActive' : 'svg__position-bottomleft--light'},
-            {'name' : 'center bottom', 'icon' : 'svg__position-bottomcenter', 'iconActive' : 'svg__position-bottomcenter--light'},
-            {'name' : 'right bottom', 'icon' : 'svg__position-bottomright', 'iconActive' : 'svg__position-bottomright--light'}
-        ]
-    }
-},
-function(params){
-    var that = this;
-    // Call parent class construct
-    Com.AbstractInput.apply(that, arguments);
-});
-
-cm.getConstructor('Com.PositionTools', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
-    classProto.onConstruct = function(){
-        var that = this;
-        that.options = {};
-        // Bind context to methods
-        return that;
-    };
-
-    classProto.set = function(){
-        var that = this;
-        // Call parent method
-        _inherit.prototype.set.apply(that, arguments);
-        // Set inputs
-        that.setOption();
-        return that;
-    };
-
-    classProto.renderContent = function(){
-        var that = this,
-            nodes = {};
-        that.nodes['content'] = nodes;
-        that.triggerEvent('onRenderContentStart');
-        // Structure
-        nodes['container'] = cm.node('div', {'class' : 'com__position-tools__content'},
-            nodes['inner'] = cm.node('div', {'class' : 'inner'})
-        );
-        cm.addClass(nodes['container'], ['size', that.params['fieldSize']].join('-'));
-        // Render Options
-        cm.forEach(that.params['options'], function(item){
-            that.renderOption(item);
-        });
-        // Events
-        that.triggerEvent('onRenderContentProcess');
-        that.triggerEvent('onRenderContentEnd');
-        // Export
-        return nodes['container'];
-    };
-
-    classProto.renderOption = function(item){
-        var that = this;
-        // Config
-        item = cm.merge({
-            'iconType' : 'icon',
-            'icon' : '',
-            'iconActive' : '',
-            'name' : '',
-            'nodes' : {}
-        }, item);
-        // Structure
-        item['nodes']['container'] = cm.node('div', {'class' : 'option__item'},
-            item['nodes']['icon'] = cm.node('div', {'class' : [item['iconType'], item['icon']].join(' ')})
-        );
-        cm.appendChild(item['nodes']['container'], that.nodes['content']['inner']);
-        // Events
-        cm.addEvent(item['nodes']['container'], 'click', function(){
-            !that.disabled && that.set(item['name']);
-        });
-        // Push
-        that.options[item['name']] = item;
-        return that;
-    };
-
-    classProto.setOption = function(){
-        var that = this,
-            item;
-        if(that.options[that.previousValue]){
-            item = that.options[that.previousValue];
-            cm.removeClass(item['nodes']['container'], 'active');
-            cm.replaceClass(item['nodes']['icon'], item['iconActive'], item['icon']);
-        }
-        if(that.options[that.value]){
-            item = that.options[that.value];
-            cm.addClass(item['nodes']['container'], 'active');
-            cm.replaceClass(item['nodes']['icon'], item['icon'], item['iconActive']);
-        }
-    };
-});
-cm.define('Com.RepeatTools', {
-    'extend' : 'Com.AbstractInput',
-    'params' : {
-        'className' : 'com__repeat-tools',
-        'defaultValue' : 'no-repeat',
-        'fieldStyle' : 'row',                   // row | block
-        'options' : [
-            {'name' : 'no-repeat', 'icon' : 'svg__repeat-no'},
-            {'name' : 'repeat-x', 'icon' : 'svg__repeat-horizontal'},
-            {'name' : 'repeat-y', 'icon' : 'svg__repeat-vertical'},
-            {'name' : 'repeat', 'icon' : 'svg__repeat-both'}
-        ],
-        'langs' : {
-            'no-repeat' : 'No',
-            'repeat-x' : 'Horizontally',
-            'repeat-y' : 'Vertically',
-            'repeat' : 'Both'
-        }
-    }
-},
-function(params){
-    var that = this;
-    // Call parent class construct
-    Com.AbstractInput.apply(that, arguments);
-});
-
-cm.getConstructor('Com.RepeatTools', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
-    classProto.construct = function(){
-        var that = this;
-        that.options = {};
-        // Bind context to methods
-        // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
-        return that;
-    };
-
-    classProto.set = function(){
-        var that = this;
-        // Call parent method
-        _inherit.prototype.set.apply(that, arguments);
-        // Set inputs
-        that.setOption();
-        return that;
-    };
-
-    classProto.renderContent = function(){
-        var that = this,
-            nodes = {};
-        that.nodes['content'] = nodes;
-        that.triggerEvent('onRenderContentStart');
-        // Structure
-        nodes['container'] = cm.node('div', {'class' : 'com__repeat-tools__content'},
-            nodes['inner'] = cm.node('div', {'class' : 'inner'})
-        );
-        cm.addClass(nodes['container'], ['style', that.params['fieldStyle']].join('-'));
-        // Render options
-        cm.forEach(that.params['options'], function(item){
-            that.renderOption(item);
-        });
-        // Events
-        that.triggerEvent('onRenderContentProcess');
-        that.triggerEvent('onRenderContentEnd');
-        // Export
-        return nodes['container'];
-    };
-
-    classProto.renderOption = function(item){
-        var that = this;
-        // Config
-        item = cm.merge({
-            'iconType' : 'icon',
-            'icon' : '',
-            'name' : '',
-            'nodes' : {}
-        }, item);
-        // Structure
-        item['nodes']['container'] = cm.node('div', {'class' : 'option__item', 'title' : that.lang(item['name'])},
-            item['nodes']['icon'] = cm.node('div', {'class' : [item['iconType'], item['icon']].join(' ')})
-        );
-        cm.appendChild(item['nodes']['container'], that.nodes['content']['inner']);
-        // Events
-        cm.addEvent(item['nodes']['container'], 'click', function(){
-            that.set(item['name']);
-        });
-        // Push
-        that.options[item['name']] = item;
-        return that;
-    };
-
-    classProto.setOption = function(){
-        var that = this,
-            item;
-        if(that.options[that.previousValue]){
-            item = that.options[that.previousValue];
-            cm.removeClass(item['nodes']['container'], 'is-active');
-        }
-        if(that.options[that.value]){
-            item = that.options[that.value];
-            cm.addClass(item['nodes']['container'], 'is-active');
-        }
-    };
-});
 cm.define('Com.Request', {
     'modules' : [
         'Params',
@@ -23447,110 +20038,6 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         var route = window.location.pathname;
         that.pushRoute(route);
         return that;
-    };
-});
-cm.define('Com.ScaleTools', {
-    'extend' : 'Com.AbstractInput',
-    'params' : {
-        'className' : 'com__scale-tools',
-        'defaultValue' : 'original',
-        'fieldStyle' : 'row',                   // row | block
-        'options' : [
-            {'name' : 'original', 'icon' : 'svg__scale-original'},
-            {'name' : 'contain', 'icon' : 'svg__scale-contain'},
-            {'name' : 'cover', 'icon' : 'svg__scale-cover'},
-            {'name' : '100% 100%', 'icon' : 'svg__scale-fill'}
-        ],
-        'langs' : {
-            'original' : 'Original',
-            'contain' : 'Contain',
-            'cover' : 'Cover',
-            '100% 100%' : 'Fill'
-        }
-    }
-},
-function(params){
-    var that = this;
-    // Call parent class construct
-    Com.AbstractInput.apply(that, arguments);
-});
-
-cm.getConstructor('Com.ScaleTools', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
-    classProto.construct = function(){
-        var that = this;
-        that.options = {};
-        // Bind context to methods
-        // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
-        return that;
-    };
-
-    classProto.set = function(){
-        var that = this;
-        // Call parent method
-        _inherit.prototype.set.apply(that, arguments);
-        // Set inputs
-        that.setOption();
-        return that;
-    };
-
-    classProto.renderContent = function(){
-        var that = this,
-            nodes = {};
-        that.nodes['content'] = nodes;
-        that.triggerEvent('onRenderContentStart');
-        // Structure
-        nodes['container'] = cm.node('div', {'class' : 'com__scale-tools__content'},
-            nodes['inner'] = cm.node('div', {'class' : 'inner'})
-        );
-        cm.addClass(nodes['container'], ['style', that.params['fieldStyle']].join('-'));
-        // Render options
-        cm.forEach(that.params['options'], function(item){
-            that.renderOption(item);
-        });
-        // Events
-        that.triggerEvent('onRenderContentProcess');
-        that.triggerEvent('onRenderContentEnd');
-        // Export
-        return nodes['container'];
-    };
-
-    classProto.renderOption = function(item){
-        var that = this;
-        // Config
-        item = cm.merge({
-            'iconType' : 'icon',
-            'icon' : '',
-            'name' : '',
-            'nodes' : {}
-        }, item);
-        // Structure
-        item['nodes']['container'] = cm.node('div', {'class' : 'option__item', 'title' : that.lang(item['name'])},
-            item['nodes']['icon'] = cm.node('div', {'class' : [item['iconType'], item['icon']].join(' ')})
-        );
-        cm.appendChild(item['nodes']['container'], that.nodes['content']['inner']);
-        // Events
-        cm.addEvent(item['nodes']['container'], 'click', function(){
-            that.set(item['name']);
-        });
-        // Push
-        that.options[item['name']] = item;
-        return that;
-    };
-
-    classProto.setOption = function(){
-        var that = this,
-            item;
-        if(that.options[that.previousValue]){
-            item = that.options[that.previousValue];
-            cm.removeClass(item['nodes']['container'], 'is-active');
-        }
-        if(that.options[that.value]){
-            item = that.options[that.value];
-            cm.addClass(item['nodes']['container'], 'is-active');
-        }
     };
 });
 Com['Scroll'] = function(o){
@@ -24308,715 +20795,6 @@ function(params){
     };
 
     init();
-});
-Com.Elements['Selects'] = {};
-
-Com['GetSelect'] = function(id){
-    return Com.Elements.Selects[id] || null;
-};
-
-cm.define('Com.Select', {
-    'modules' : [
-        'Params',
-        'Events',
-        'Structure',
-        'DataConfig',
-        'Stack'
-    ],
-    'events' : [
-        'onRender',
-        'onRenderStart',
-        'onSelect',
-        'onChange',
-        'onReset',
-        'onFocus',
-        'onBlur'
-    ],
-    'params' : {
-        'select' : null,                        // Deprecated, use 'node' parameter instead.
-        'node' : cm.Node('select'),             // Html select node to decorate.
-        'container' : null,                    // Component container that is required in case content is rendered without available select.
-        'name' : '',
-        'embedStructure' : 'replace',
-        'customEvents' : true,
-        'renderInBody' : true,                  // Render dropdowns in document.body, else they will be rendrered in component container.
-        'multiple' : false,                     // Render multiple select.
-        'placeholder' : '',
-        'showTitleTag' : true,                  // Copy title from available select node to component container. Will be shown on hover.
-        'title' : false,                        // Title text. Will be shown on hover.
-        'options' : [],                         // Listing of options, for rendering through java-script. Example: [{'value' : 'foo', 'text' : 'Bar'}].
-        'selected' : 0,                         // Option value / array of option values.
-        'disabled' : false,
-        'className' : '',
-        'inputClassName' : '',
-        'icons' : {
-            'arrow' : 'icon default linked'
-        },
-        'Com.Tooltip' : {
-            'targetEvent' : 'click',
-            'hideOnReClick' : true,
-            'className' : 'com__select__tooltip',
-            'width' : 'targetWidth',
-            'top' : 'cm._config.tooltipTop'
-        }
-    }
-},
-function(params){
-    var that = this,
-        nodes = {
-            'menu' : {}
-        },
-        components = {},
-        options = {},
-        optionsList = [],
-        optionsLength = 0,
-        groups = [],
-
-        oldActive,
-        active;
-
-    that.disabled = false;
-    that.isDestructed = null;
-
-    /* *** CLASS FUNCTIONS *** */
-
-    var init = function(){
-        that.destructHandler = that.destruct.bind(that);
-        that.setParams(params);
-        preValidateParams();
-        that.convertEvents(that.params['events']);
-        that.getDataConfig(that.params['node']);
-        validateParams();
-        that.addToStack(that.params['node']);
-        that.triggerEvent('onRenderStart');
-        render();
-        setMiscEvents();
-        setEvents();
-        // Set selected option
-        if(that.params['multiple']){
-            active = [];
-            if(that.params['selected'] && cm.isArray(that.params['selected'])){
-                cm.forEach(that.params['selected'], function(item){
-                    if(options[item]){
-                        set(options[item], true);
-                    }
-                });
-            }else{
-                cm.forEach(that.params['node'].options, function(item){
-                    item.selected && set(options[item.value]);
-                });
-            }
-        }else{
-            if(that.params['selected'] && options[that.params['selected']]){
-                set(options[that.params['selected']]);
-            }else if(options[that.params['node'].value]){
-                set(options[that.params['node'].value]);
-            }else if(optionsLength){
-                set(optionsList[0]);
-            }
-        }
-        // Final events
-        that.addToStack(nodes['container']);
-        that.triggerEvent('onRender', active);
-    };
-
-    var preValidateParams = function(){
-        if(cm.isNode(that.params['select'])){
-            that.params['node'] = that.params['select'];
-        }
-    };
-
-    var validateParams = function(){
-        if(cm.isNode(that.params['node'])){
-            that.params['placeholder'] = that.params['node'].getAttribute('placeholder') || that.params['placeholder'];
-            that.params['multiple'] = that.params['node'].multiple;
-            that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
-            that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
-            that.params['disabled'] = that.params['node'].disabled || that.params['node'].readOnly || that.params['disabled'];
-            that.params['className'] = that.params['node'].className || that.params['className'];
-        }
-        that.disabled = that.params['disabled'];
-    };
-
-    var render = function(){
-        var tabindex;
-        /* *** RENDER STRUCTURE *** */
-        if(that.params['multiple']){
-            renderMultiple();
-        }else{
-            renderSingle();
-        }
-        /* *** ATTRIBUTES *** */
-        // Add class name
-        cm.addClass(nodes['container'], that.params['className']);
-        // Title
-        if(that.params['showTitleTag'] && that.params['title']){
-            nodes['container'].title = that.params['title'];
-        }
-        // Tabindex
-        if(tabindex = that.params['node'].getAttribute('tabindex')){
-            nodes['container'].setAttribute('tabindex', tabindex);
-        }
-        // ID
-        if(that.params['node'].id){
-            nodes['container'].id = that.params['node'].id;
-        }
-        // Data
-        cm.forEach(that.params['node'].attributes, function(item){
-            if(/^data-(?!node|element)/.test(item.name)){
-                nodes['hidden'].setAttribute(item.name, item.value);
-                nodes['container'].setAttribute(item.name, item.value);
-            }
-        });
-        // Set hidden input attributes
-        if(that.params['name']){
-            nodes['hidden'].setAttribute('name', that.params['name']);
-        }
-        // Placeholder
-        if(!cm.isEmpty(that.params['placeholder'])){
-            nodes['items'].appendChild(
-                nodes['placeholder'] = cm.Node('li', {'class' : 'title'}, that.params['placeholder'])
-            );
-        }
-        /* *** RENDER OPTIONS *** */
-        collectSelectOptions();
-        cm.forEach(that.params['options'], function(item){
-            renderOption(item);
-        });
-        /* *** INSERT INTO DOM *** */
-        that.embedStructure(nodes['container']);
-    };
-
-    var renderSingle = function(){
-        nodes['container'] = cm.Node('div', {'class' : 'com__select'},
-            nodes['hidden'] = cm.Node('select', {'class' : 'display-none'}),
-            nodes['target'] = cm.Node('div', {'class' : 'pt__input'},
-                nodes['text'] = cm.Node('input', {'type' : 'text', 'readOnly' : 'true'}),
-                nodes['arrow'] = cm.Node('div', {'class' : that.params['icons']['arrow']})
-            ),
-            nodes['scroll'] = cm.Node('div', {'class' : 'pt__listing-items'},
-                nodes['items'] = cm.Node('ul')
-            )
-        );
-        cm.addClass(nodes['target'], that.params['inputClassName']);
-    };
-
-    var renderMultiple = function(){
-        nodes['container'] = cm.Node('div', {'class' : 'com__select-multi'},
-            nodes['hidden'] = cm.Node('select', {'class' : 'display-none', 'multiple' : true}),
-            nodes['inner'] = cm.Node('div', {'class' : 'inner'},
-                nodes['scroll'] = cm.Node('div', {'class' : 'pt__listing-items'},
-                    nodes['items'] = cm.Node('ul')
-                )
-            )
-        );
-    };
-
-    var setMiscEvents = function(){
-        if(!that.params['multiple']){
-            // Switch items on arrows press
-            cm.addEvent(nodes['container'], 'keydown', function(e){
-                if(optionsLength){
-                    var item = options[active],
-                        index = optionsList.indexOf(item),
-                        option;
-
-                    switch(e.keyCode){
-                        case 38:
-                            cm.preventDefault(e);
-                            if(index - 1 >= 0){
-                                option = optionsList[index - 1];
-                            }else{
-                                option = optionsList[optionsLength - 1];
-                            }
-                            break;
-
-                        case 40:
-                            cm.preventDefault(e);
-                            if(index + 1 < optionsLength){
-                                option = optionsList[index + 1];
-                            }else{
-                                option = optionsList[0];
-                            }
-                            break;
-
-                        case 13:
-                            components['menu'].hide();
-                            break;
-                    }
-
-                    if(option){
-                        set(option, true);
-                        scrollToItem(option);
-                    }
-                }
-            });
-            cm.addEvent(nodes['container'], 'focus', function(){
-                cm.addEvent(window, 'keydown', blockDocumentArrows);
-            });
-            cm.addEvent(nodes['container'], 'blur', function(){
-                cm.removeEvent(window, 'keydown', blockDocumentArrows);
-            });
-            // Render tooltip
-            components['menu'] = new Com.Tooltip(
-                cm.merge(that.params['Com.Tooltip'], {
-                    'container' : that.params['renderInBody']? document.body : nodes['container'],
-                    'content' : nodes['scroll'],
-                    'target' : nodes['target'],
-                    'disabled' : !optionsLength,
-                    'events' : {
-                        'onShowStart' : show,
-                        'onHideStart' : hide
-                    }
-                })
-            );
-            nodes['menu'] = components['menu'].getNodes();
-        }
-        // Enable / Disable
-        if(that.disabled){
-            that.disable();
-        }else{
-            that.enable();
-        }
-    };
-
-    var setEvents = function(){
-        // Add custom event
-        if(that.params['customEvents']){
-            cm.customEvent.add(nodes['container'], 'destruct', that.destructHandler);
-        }
-    };
-
-    var unsetEvents = function(){
-        // Add custom event
-        if(that.params['customEvents']){
-            cm.customEvent.remove(nodes['container'], 'destruct', that.destructHandler);
-        }
-    };
-
-    /* *** COLLECTORS *** */
-
-    var collectSelectOptions = function(){
-        var myChildes = that.params['node'].childNodes;
-        cm.forEach(myChildes, function(myChild, i){
-            if(cm.isElementNode(myChild)){
-                if(myChild.tagName.toLowerCase() == 'optgroup'){
-                    var myOptionsNodes = myChild.querySelectorAll('option');
-                    var myOptions = [];
-                    cm.forEach(myOptionsNodes, function(optionNode){
-                        myOptions.push({
-                            'value' : optionNode.value,
-                            'text' : optionNode.innerHTML,
-                            'className' : optionNode.className
-                        });
-                    });
-                    renderGroup(myChild.getAttribute('label'), myOptions);
-                }else if(myChild.tagName.toLowerCase() == 'option'){
-                    renderOption({
-                        'value' : myChild.value,
-                        'text' : myChild.innerHTML,
-                        'className' : myChild.className
-                    });
-                }
-            }
-        });
-    };
-
-    /* *** GROUPS *** */
-
-    var renderGroup = function(myName, myOptions){
-        // Config
-        var item = {
-            'name' : myName,
-            'options' : myOptions
-        };
-        // Structure
-        item['optgroup'] = cm.Node('optgroup', {'label' : myName});
-        item['container'] = cm.Node('li', {'class' : 'group'},
-            item['items'] = cm.Node('ul', {'class' : 'pt__listing-items'})
-        );
-        if(!cm.isEmpty(myName)){
-            cm.insertFirst(
-                cm.Node('div', {'class' : 'title', 'innerHTML' : myName}),
-                item['container']
-            );
-        }
-        // Render options
-        cm.forEach(myOptions, function(myOption){
-            renderOption(myOption, item);
-        });
-        // Append
-        nodes['items'].appendChild(item['container']);
-        nodes['hidden'].appendChild(item['optgroup']);
-        // Push to groups array
-        groups.push(item);
-    };
-
-    /* *** OPTIONS *** */
-
-    var renderOption = function(item, group){
-        // Check for exists
-        if(options[item['value']]){
-            removeOption(options[item['value']]);
-        }
-        // Config
-        item = cm.merge({
-            'selected' : false,
-            'value' : '',
-            'text' : '',
-            'className' : '',
-            'group': null
-        }, item);
-        // Add link to group
-        item['group'] = group;
-        // Structure
-        item['node'] = cm.Node('li', {'class' : item['className']},
-            cm.Node('a', {'innerHTML' : item['text']})
-        );
-        item['option'] = cm.Node('option', {'value' : item['value'], 'innerHTML' : item['text']});
-        // Label onlick event
-        cm.addEvent(item['node'], 'click', function(){
-            if(!that.disabled){
-                set(item, true);
-            }
-            !that.params['multiple'] && components['menu'].hide(false);
-        });
-        // Append
-        if(group){
-            group['items'].appendChild(item['node']);
-            group['optgroup'].appendChild(item['option']);
-        }else{
-            nodes['items'].appendChild(item['node']);
-            nodes['hidden'].appendChild(item['option']);
-        }
-        // Push
-        optionsList.push(options[item['value']] = item);
-        optionsLength = optionsList.length;
-        return true;
-    };
-
-    var editOption = function(option, text){
-        var value = typeof option['value'] != 'undefined'? option['value'] : option['text'];
-        option['text'] = text;
-        option['node'].innerHTML = text;
-        option['option'].innerHTML = text;
-
-        if(!that.params['multiple'] && value === active){
-            nodes['text'].value = cm.decode(text);
-        }
-    };
-
-    var removeOption = function(option){
-        var value = typeof option['value'] != 'undefined'? option['value'] : option['text'];
-        // Remove option from list and array
-        cm.remove(option['node']);
-        cm.remove(option['option']);
-        optionsList = optionsList.filter(function(item){
-            return option != item;
-        });
-        optionsLength = optionsList.length;
-        delete options[option['value']];
-        // Set new active option, if current active is nominated for remove
-        if(that.params['multiple']){
-            active = active.filter(function(item){
-                return value != item;
-            });
-        }else{
-            if(value === active){
-                if(optionsLength){
-                    set(optionsList[0], true);
-                }else{
-                    active = null;
-                    nodes['text'].value = '';
-                }
-            }
-        }
-    };
-
-    /* *** SETTERS *** */
-
-    var set = function(option, execute){
-        if(option){
-            if(that.params['multiple']){
-                setMultiple(option);
-            }else{
-                setSingle(option);
-            }
-        }
-        if(execute){
-            that.triggerEvent('onSelect', active);
-            onChange();
-        }
-    };
-
-    var setMultiple = function(option){
-        var value = typeof option['value'] != 'undefined'? option['value'] : option['text'];
-
-        if(option['selected']){
-            deselectMultiple(option);
-        }else{
-            active.push(value);
-            option['option'].selected = true;
-            option['selected'] = true;
-            cm.addClass(option['node'], 'active');
-        }
-    };
-
-    var setSingle = function(option){
-        oldActive = active;
-        active = typeof option['value'] != 'undefined'? option['value'] : option['text'];
-        optionsList.forEach(function(item){
-            cm.removeClass(item['node'], 'active');
-        });
-        if(option['group']){
-            nodes['text'].value = [cm.decode(option['group']['name']), cm.decode(option['text'])].join(' > ');
-        }else{
-            nodes['text'].value = cm.decode(option['text']);
-        }
-        option['option'].selected = true;
-        nodes['hidden'].value = active;
-        cm.addClass(option['node'], 'active');
-    };
-
-    var deselectMultiple = function(option){
-        var value = typeof option['value'] != 'undefined'? option['value'] : option['text'];
-
-        active = active.filter(function(item){
-            return value != item;
-        });
-        option['option'].selected = false;
-        option['selected'] = false;
-        cm.removeClass(option['node'], 'active');
-    };
-
-    var onChange = function(){
-        if(that.params['multiple'] || active != oldActive){
-            that.triggerEvent('onChange', active);
-        }
-    };
-
-    /* *** DROPDOWN *** */
-
-    var show = function(){
-        if(!optionsLength){
-            components['menu'].hide();
-        }else{
-            // Set classes
-            cm.addClass(nodes['container'], 'active');
-            nodes['text'].focus();
-            // Scroll to active element
-            if(active && options[active]){
-                scrollToItem(options[active]);
-            }
-        }
-        that.triggerEvent('onFocus', active);
-    };
-
-    var hide = function(){
-        nodes['text'].blur();
-        cm.removeClass(nodes['container'], 'active');
-        that.triggerEvent('onBlur', active);
-    };
-
-    var scrollToItem = function(option){
-        nodes['menu']['content'].scrollTop = option['node'].offsetTop - nodes['menu']['content'].offsetTop;
-    };
-
-    /* *** HELPERS *** */
-
-    var blockDocumentArrows = function(e){
-        e = cm.getEvent(e);
-        if(e.keyCode == 38 || e.keyCode == 40){
-            cm.preventDefault(e);
-        }
-    };
-
-    /* ******* MAIN ******* */
-
-    that.destruct = function(){
-        var that = this;
-        if(!that.isDestructed){
-            that.isDestructed = true;
-            unsetEvents();
-            that.removeFromStack();
-        }
-        return that;
-    };
-
-    that.get = function(){
-        return active || null;
-    };
-
-    that.set = function(value, triggerEvents){
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        // Select option and execute events
-        if(typeof value != 'undefined'){
-            if(cm.isArray(value)){
-                cm.forEach(value, function(item){
-                    if(options[item]){
-                        set(options[item], false);
-                    }
-                });
-                if(triggerEvents){
-                    that.triggerEvent('onSelect', active);
-                    that.triggerEvent('onChange', active);
-                }
-            }else if(options[value]){
-                set(options[value], triggerEvents);
-            }
-        }
-        return that;
-    };
-
-    that.reset = function(triggerEvents){
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        if(that.params['multiple']){
-            that.deselectAll(triggerEvents);
-        }else{
-            if(optionsLength){
-                set(optionsList[0], triggerEvents);
-            }
-        }
-    };
-
-    that.selectAll = function(triggerEvents){
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        if(that.params['multiple']){
-            cm.forEach(options, deselectMultiple);
-            cm.forEach(options, setMultiple);
-            if(triggerEvents){
-                that.triggerEvent('onSelect', active);
-                onChange();
-            }
-        }
-        return that;
-    };
-
-    that.deselectAll = function(triggerEvents){
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        if(that.params['multiple']){
-            cm.forEach(options, deselectMultiple);
-            if(triggerEvents){
-                that.triggerEvent('onSelect', active);
-                onChange();
-            }
-        }
-        return that;
-    };
-
-    that.addOption = function(value, text){
-        if(cm.isArray(arguments[0])){
-            renderOption(arguments[0]);
-        }else{
-            renderOption({
-                'value' : value,
-                'text' : text
-            });
-        }
-        // Enable / Disable Menu
-        if(!that.params['multiple'] && !that.disabled && optionsLength){
-            components['menu'].enable();
-        }
-        return that;
-    };
-
-    that.addOptions = function(arr){
-        cm.forEach(arr, function(item){
-            renderOption(item);
-        });
-        return that;
-    };
-
-    that.editOption = function(value, text){
-        if(typeof value != 'undefined' && options[value]){
-            editOption(options[value], text);
-        }
-        return that;
-    };
-
-    that.removeOption = function(value){
-        if(typeof value != 'undefined' && options[value]){
-            removeOption(options[value]);
-        }
-        // Enable / Disable Menu
-        if(!that.params['multiple'] && !optionsList){
-            components['menu'].disable();
-        }
-        return that;
-    };
-
-    that.removeOptionsAll = function(){
-        cm.forEach(options, function(item){
-            removeOption(item);
-        });
-        return that;
-    };
-
-    that.getOption = function(value){
-        if(typeof value != 'undefined' && options[value]){
-            return options[value];
-        }
-        return null;
-    };
-
-    that.getOptions = function(arr){
-        var optionsArr = [];
-        cm.forEach(arr, function(item){
-            if(options[item]){
-                optionsArr.push(options[item]);
-            }
-        });
-        return optionsArr;
-    };
-
-    that.getOptionsAll = that.getAllOptions = function(){
-        var result = [];
-        cm.forEach(optionsList, function(item){
-            result.push({
-                'text' : item['text'],
-                'value' : item['value']
-            });
-        });
-        return result;
-    };
-
-    that.disable = function(){
-        that.disabled = true;
-        cm.addClass(nodes['container'], 'disabled');
-        cm.addClass(nodes['scroll'], 'disabled');
-        if(!that.params['multiple']){
-            nodes['text'].disabled = true;
-            components['menu'].disable();
-        }
-        return that;
-    };
-
-    that.enable = function(){
-        that.disabled = false;
-        cm.removeClass(nodes['container'], 'disabled');
-        cm.removeClass(nodes['scroll'], 'disabled');
-        if(!that.params['multiple']){
-            nodes['text'].disabled = false;
-            if(optionsLength){
-                components['menu'].enable();
-            }
-        }
-        return that;
-    };
-
-    that.getNodes = function(key){
-        return nodes[key] || nodes;
-    };
-
-    init();
-});
-
-/* ****** FORM FIELD COMPONENT ******* */
-
-Com.FormFields.add('select', {
-    'node' : cm.node('select'),
-    'fieldConstructor' : 'Com.AbstractFormField',
-    'constructor' : 'Com.Select'
 });
 cm.define('Com.Slider', {
     'modules' : [
@@ -27104,642 +22882,6 @@ function(params){
 
     init();
 });
-cm.define('Com.TagsInput', {
-    'modules' : [
-        'Params',
-        'Events',
-        'Langs',
-        'Structure',
-        'DataConfig',
-        'Stack'
-    ],
-    'require' : [
-        'Com.Autocomplete'
-    ],
-    'events' : [
-        'onRender',
-        'onAdd',
-        'onRemove',
-        'onChange',
-        'onOpen',
-        'onClose'
-    ],
-    'params' : {
-        'input' : null,                                 // Deprecated, use 'node' parameter instead.
-        'node' : cm.node('input', {'type' : 'text'}),
-        'container' : null,
-        'name' : '',
-        'embedStructure' : 'replace',
-        'data' : [],
-        'maxSingleTagLength': 255,
-        'autocomplete' : false,
-        'icons' : {
-            'add' : 'icon default linked',
-            'remove' : 'icon default linked'
-        },
-        'langs' : {
-            'tags' : 'Tags',
-            'add' : 'Add',
-            'remove' : 'Remove'
-        },
-        'Com.Autocomplete' : {
-            'clearOnEmpty' : false
-        }
-    }
-},
-function(params){
-    var that = this,
-        nodes = {},
-        tags = [],
-        items = {},
-        isOpen = false;
-
-    that.isDestructed = null;
-    that.value = null;
-    that.components = {};
-    that.isAutocomplete = false;
-
-    var init = function(){
-        var sourceTags;
-        preValidateParams();
-        // Init modules
-        that.setParams(params);
-        that.convertEvents(that.params['events']);
-        that.getDataConfig(that.params['node']);
-        // Render
-        validateParams();
-        render();
-        setLogic();
-        that.addToStack(nodes['container']);
-        that.triggerEvent('onRender');
-        // Set tags
-        sourceTags = that.params['data'].concat(
-            that.params['node'].value.split(',')
-        );
-        cm.forEach(sourceTags, function(tag){
-            addTag(tag);
-        });
-    };
-
-    var preValidateParams = function(){
-        if(cm.isNode(that.params['input'])){
-            that.params['node'] = that.params['input'];
-        }
-    };
-
-    var validateParams = function(){
-        if(cm.isNode(that.params['node'])){
-            that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
-        }
-        that.isAutocomplete = that.params['autocomplete'];
-    };
-
-    var render = function(){
-        // Structure
-        nodes['container'] = cm.Node('div', {'class' : 'com__tags-input'},
-            nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
-            nodes['inner'] = cm.Node('div', {'class' : 'inner'})
-        );
-        // Render add button
-        renderAddButton();
-        // Attributes
-        if(that.params['name']){
-            nodes['hidden'].setAttribute('name', that.params['name']);
-        }
-        // Append
-        that.embedStructure(nodes['container']);
-
-    };
-
-    var setLogic = function(){
-        // Autocomplete
-        cm.getConstructor('Com.Autocomplete', function(classConstructor){
-            that.components['autocomplete'] = new classConstructor(
-                cm.merge(that.params['Com.Autocomplete'], {
-                    'events' : {
-                        'onClickSelect' : function(){
-                            addAdderTags(true);
-                        }
-                    }
-                })
-            );
-        });
-    };
-
-    var renderAddButton = function(){
-        nodes['inner'].appendChild(
-            nodes['addButtonContainer'] = cm.Node('div', {'class' : 'item'},
-                nodes['addButton'] = cm.Node('div', {'class' : that.params['icons']['add'], 'title' : that.lang('add')})
-            )
-        );
-        // Add event on "Add Tag" button
-        cm.addEvent(nodes['addButton'], 'click', openAdder);
-    };
-
-    var openAdder = function(){
-        var item = {};
-        if(!isOpen){
-            isOpen = true;
-            // Structure
-            item['container'] = cm.Node('div', {'class' : 'item adder'},
-                item['input'] = cm.Node('input', {'type' : 'text', 'maxlength' : that.params['maxSingleTagLength'], 'class' : 'input'})
-            );
-            cm.insertBefore(item['container'], nodes['addButtonContainer']);
-            // Show
-            item['anim'] = new cm.Animation(item['container']);
-            item['anim'].go({'style' : {'width' : [cm.getRealWidth(item['container']), 'px'].join(''), 'opacity' : 1}, 'duration' : 200, 'anim' : 'smooth', 'onStop' : function(){
-                item['container'].style.overflow = 'visible';
-                item['input'].focus();
-                // API onOpen Event
-                that.triggerEvent('onOpen');
-            }});
-            // Bind autocomplete
-            if(that.isAutocomplete){
-                that.components['autocomplete'].setTarget(item['input']);
-                that.components['autocomplete'].setInput(item['input']);
-            }
-            // Set new tag on enter or on comma
-            cm.addEvent(item['input'], 'keypress', function(e){
-                e = cm.getEvent(e);
-                if(e.keyCode == 13 || e.charCode == 44){
-                    cm.preventDefault(e);
-                    addAdderTags(true);
-                    that.isAutocomplete && that.components['autocomplete'].hide();
-                }
-                if(e.keyCode == 27){
-                    cm.preventDefault(e);
-                    addAdderTags(true);
-                    closeAdder(nodes['adder']);
-                }
-            });
-            // Hide adder on document click
-            cm.addEvent(document, 'mousedown', bodyEvent);
-            // Add to nodes array
-            nodes['adder'] = item;
-        }else{
-            addAdderTags(true);
-        }
-    };
-
-    var closeAdder = function(item){
-        cm.removeEvent(document, 'mousedown', bodyEvent);
-        nodes['adder']['input'].blur();
-        that.isAutocomplete && that.components['autocomplete'].hide();
-        item['container'].style.overflow = 'hidden';
-        item['anim'].go({'style' : {'width' : '0px', 'opacity' : 0}, 'duration' : 200, 'anim' : 'smooth', 'onStop' : function(){
-            cm.remove(item['container']);
-            nodes['adder'] = null;
-            isOpen = false;
-            // API onClose Event
-            that.triggerEvent('onClose');
-        }});
-    };
-
-    var addAdderTags = function(execute){
-        var sourceTags = nodes['adder']['input'].value.split(',');
-        cm.forEach(sourceTags, function(tag){
-            addTag(tag, execute);
-        });
-        nodes['adder']['input'].value = '';
-        nodes['adder']['input'].focus();
-        that.isAutocomplete && that.components['autocomplete'].clear();
-    };
-
-    var addTag = function(tag, execute){
-        tag = tag.trim();
-        if(tag && tag.length && !/^[\s]*$/.test(tag) && !cm.inArray(tags, tag)){
-            tags.push(tag);
-            renderTag(tag);
-            setHiddenInputData();
-            // Execute events
-            if(execute){
-                // API onChange Event
-                that.triggerEvent('onChange', {'tag' : tag});
-                // API onAdd Event
-                that.triggerEvent('onAdd', {'tag' : tag});
-            }
-        }
-    };
-
-    var renderTag = function(tag){
-        var item = {
-            'tag' : tag
-        };
-        // Structure
-        item['container'] = cm.Node('div', {'class' : 'item'},
-            cm.Node('div', {'class' : 'text', 'title' : tag}, tag),
-            item['button'] = cm.Node('div', {'class' : that.params['icons']['remove'], 'title' : that.lang('remove')})
-        );
-        item['anim'] = new cm.Animation(item['container']);
-        // Append
-        if(isOpen){
-            cm.addClass(item['container'], 'closed');
-            cm.insertBefore(item['container'], nodes['adder']['container']);
-            // Show
-            item['anim'].go({'style' : {'width' : [cm.getRealWidth(item['container']), 'px'].join(''), 'opacity' : 1}, 'duration' : 200, 'anim' : 'smooth', 'onStop' : function(){
-                cm.removeClass(item['container'], 'closed');
-            }});
-        }else{
-            cm.insertBefore(item['container'], nodes['addButtonContainer']);
-        }
-        // Add click event on "Remove Tag" button
-        cm.addEvent(item['button'], 'click', function(){
-            if(isOpen){
-                nodes['adder']['input'].focus();
-            }
-            removeTag(item);
-        });
-        // Push to global array
-        items[tag] = item;
-    };
-
-    var removeTag = function(item){
-        // Remove tag from data
-        tags = tags.filter(function(tag){
-            return item['tag'] != tag;
-        });
-        delete items[item['tag']];
-        setHiddenInputData();
-        // API onChange Event
-        that.triggerEvent('onChange', {
-            'tag' : item['tag']
-        });
-        // API onRemove Event
-        that.triggerEvent('onRemove', {
-            'tag' : item['tag']
-        });
-        // Animate
-        item['anim'].go({'style' : {'width' : '0px', 'opacity' : 0}, 'duration' : 200, 'anim' : 'smooth', 'onStop' : function(){
-            cm.remove(item['container']);
-            item = null;
-        }});
-    };
-
-    var setHiddenInputData = function(){
-        that.value = tags.join(',');
-        nodes['hidden'].value = that.value;
-    };
-
-    var bodyEvent = function(e){
-        if(isOpen){
-            e = cm.getEvent(e);
-            var target = cm.getEventTarget(e);
-            if(!cm.isParent(nodes['container'], target, true) && !that.components['autocomplete'].isOwnNode(target)){
-                addAdderTags(true);
-                closeAdder(nodes['adder']);
-            }
-        }
-    };
-
-    /* ******* MAIN ******* */
-
-    that.destruct = function(){
-        var that = this;
-        if(!that.isDestructed){
-            that.isDestructed = true;
-            that.removeFromStack();
-        }
-        return that;
-    };
-
-    that.get = function(){
-        return that.value || null;
-    };
-
-    that.set = function(value){
-        that.add(value);
-        return that;
-    };
-
-    that.add = function(tag /* or tags comma separated or array */){
-        var sourceTags;
-        if(!tag){
-            sourceTags = [];
-        }else if(cm.isArray(tag)){
-            sourceTags = tag;
-        }else{
-            sourceTags = tag.split(',');
-        }
-        cm.forEach(sourceTags, function(tag){
-            addTag(tag, true);
-        });
-        return that;
-    };
-
-    that.remove = function(tag){
-        var sourceTags;
-        if(!tag){
-            sourceTags = [];
-        }else if(cm.isArray(tag)){
-            sourceTags = tag;
-        }else{
-            sourceTags = tag.split(',');
-        }
-        cm.forEach(sourceTags, function(tag){
-            if(cm.inArray(tags, tag)){
-                removeTag(items[tag]);
-            }
-        });
-        return that;
-    };
-
-    that.reset = function(){
-        cm.forEach(items, function(item){
-            removeTag(item);
-        });
-        return that;
-    };
-
-    that.getAutocomplete = function(){
-        return that.components['autocomplete'];
-    };
-
-    init();
-});
-
-/* ****** FORM FIELD COMPONENT ******* */
-
-Com.FormFields.add('tags', {
-    'node' : cm.node('input', {'type' : 'text'}),
-    'constructor' : 'Com.TagsInput'
-});
-cm.define('Com.TimeSelect', {
-    'modules' : [
-        'Params',
-        'Events',
-        'Langs',
-        'Structure',
-        'DataConfig',
-        'Stack'
-    ],
-    'events' : [
-        'onRender',
-        'onSelect',
-        'onChange',
-        'onClear'
-    ],
-    'params' : {
-        'input' : null,                                  // Deprecated, use 'node' parameter instead.
-        'node' : cm.Node('input', {'type' : 'text'}),
-        'container' : null,
-        'embedStructure' : 'replace',
-        'name' : '',
-        'renderSelectsInBody' : true,
-        'format' : 'cm._config.timeFormat',
-        'showTitleTag' : true,
-        'title' : false,
-        'withHours' : true,
-        'hoursInterval' : 0,
-        'withMinutes' : true,
-        'minutesInterval' : 0,
-        'withSeconds' : false,
-        'secondsInterval' : 0,
-        'selected' : 0,
-        'langs' : {
-            'separator' : ':',
-            'Hours' : 'HH',
-            'Minutes' : 'MM',
-            'Seconds' : 'SS',
-            'HoursTitle' : 'Hours',
-            'MinutesTitle' : 'Minutes',
-            'SecondsTitle' : 'Seconds'
-        }
-    }
-},
-function(params){
-    var that = this,
-        nodes = {},
-        components = {};
-
-    that.date = new Date();
-    that.value = 0;
-    that.previousValue = 0;
-
-    var init = function(){
-        that.setParams(params);
-        preValidateParams();
-        that.convertEvents(that.params['events']);
-        that.getDataConfig(that.params['node']);
-        validateParams();
-        render();
-        setMiscEvents();
-        that.addToStack(nodes['container']);
-        // Set selected time
-        if(that.params['selected']){
-            that.set(that.params['selected'], that.params['format'], false);
-        }else{
-            that.set(that.params['node'].value, that.params['format'], false);
-        }
-    };
-
-    var preValidateParams = function(){
-        if(cm.isNode(that.params['input'])){
-            that.params['node'] = that.params['input'];
-        }
-    };
-
-    var validateParams = function(){
-        if(cm.isNode(that.params['node'])){
-            that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
-            that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
-        }
-        if(cm.isEmpty(that.params['hoursInterval'])){
-            that.params['hoursInterval'] = 1;
-        }
-        if(cm.isEmpty(that.params['minutesInterval'])){
-            that.params['minutesInterval'] = 1;
-        }
-        if(cm.isEmpty(that.params['secondsInterval'])){
-            that.params['secondsInterval'] = 1;
-        }
-    };
-
-    var render = function(){
-        var hours = 0,
-            minutes = 0,
-            seconds = 0;
-        /* *** STRUCTURE *** */
-        nodes['container'] = cm.Node('div', {'class' : 'com__timeselect'},
-            nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
-            nodes['inner'] = cm.Node('div', {'class' : 'inner'})
-        );
-        /* *** ITEMS *** */
-        // Hours
-        if(that.params['withHours']){
-            if(nodes['inner'].childNodes.length){
-                nodes['inner'].appendChild(cm.Node('div', {'class' : 'sep'}, that.lang('separator')));
-            }
-            nodes['inner'].appendChild(cm.Node('div', {'class' : 'field'},
-                nodes['selectHours'] = cm.Node('select', {'placeholder' : that.lang('Hours'), 'title' : that.lang('HoursTitle')})
-            ));
-            while(hours < 24){
-                nodes['selectHours'].appendChild(
-                    cm.Node('option', {'value' : hours},cm.addLeadZero(hours))
-                );
-                hours += that.params['hoursInterval'];
-            }
-        }
-        // Minutes
-        if(that.params['withMinutes']){
-            if(nodes['inner'].childNodes.length){
-                nodes['inner'].appendChild(cm.Node('div', {'class' : 'sep'}, that.lang('separator')));
-            }
-            nodes['inner'].appendChild(cm.Node('div', {'class' : 'field'},
-                nodes['selectMinutes'] = cm.Node('select', {'placeholder' : that.lang('Minutes'), 'title' : that.lang('MinutesTitle')})
-            ));
-            while(minutes < 60){
-                nodes['selectMinutes'].appendChild(
-                    cm.Node('option', {'value' : minutes}, cm.addLeadZero(minutes))
-                );
-                minutes += that.params['minutesInterval'];
-            }
-        }
-        // Seconds
-        if(that.params['withSeconds']){
-            if(nodes['inner'].childNodes.length){
-                nodes['inner'].appendChild(cm.Node('div', {'class' : 'sep'}, that.lang('separator')));
-            }
-            nodes['inner'].appendChild(cm.Node('div', {'class' : 'field'},
-                nodes['selectSeconds'] = cm.Node('select', {'placeholder' : that.lang('Seconds'), 'title' : that.lang('SecondsTitle')})
-            ));
-            while(seconds < 60){
-                nodes['selectSeconds'].appendChild(
-                    cm.Node('option', {'value' : seconds},cm.addLeadZero(seconds))
-                );
-                seconds += that.params['secondsInterval'];
-            }
-        }
-        /* *** ATTRIBUTES *** */
-        // Title
-        if(that.params['showTitleTag'] && that.params['title']){
-            nodes['container'].title = that.params['title'];
-        }
-        // Name
-        if(that.params['name']){
-            nodes['hidden'].setAttribute('name', that.params['name']);
-        }
-        /* *** INSERT INTO DOM *** */
-        that.embedStructure(nodes['container']);
-    };
-
-    var setMiscEvents = function(){
-        // Hours select
-        if(that.params['withHours']){
-            components['selectHours'] = new Com.Select({
-                    'select' : nodes['selectHours'],
-                    'renderInBody' : that.params['renderSelectsInBody']
-                }).addEvent('onChange', function(){
-                    set(true);
-                });
-        }
-        // Minutes select
-        if(that.params['withMinutes']){
-            components['selectMinutes'] = new Com.Select({
-                    'select' : nodes['selectMinutes'],
-                    'renderInBody' : that.params['renderSelectsInBody']
-                }).addEvent('onChange', function(){
-                    set(true);
-                });
-        }
-        // Seconds select
-        if(that.params['withSeconds']){
-            components['selectSeconds'] = new Com.Select({
-                    'select' : nodes['selectSeconds'],
-                    'renderInBody' : that.params['renderSelectsInBody']
-                })
-                .addEvent('onChange', function(){
-                    set(true);
-                });
-        }
-        // Trigger onRender Event
-        that.triggerEvent('onRender');
-    };
-
-    var set = function(triggerEvents){
-        that.previousValue = that.value;
-        that.params['withHours'] && that.date.setHours(components['selectHours'].get());
-        that.params['withMinutes'] && that.date.setMinutes(components['selectMinutes'].get());
-        that.params['withSeconds'] && that.date.setSeconds(components['selectSeconds'].get());
-        that.value = cm.dateFormat(that.date, that.params['format']);
-        nodes['hidden'].value = that.value;
-        // Trigger events
-        if(triggerEvents){
-            that.triggerEvent('onSelect', that.value);
-            onChange();
-        }
-    };
-
-    var onChange = function(){
-        if(!that.previousValue || (!that.value && that.previousValue) || (that.value != that.previousValue)){
-            that.triggerEvent('onChange', that.value);
-        }
-    };
-
-    /* ******* MAIN ******* */
-
-    that.set = function(str, format, triggerEvents){
-        format = typeof format != 'undefined'? format : that.params['format'];
-        triggerEvents = typeof triggerEvents != 'undefined'? triggerEvents : true;
-        // Get time
-        if(cm.isEmpty(str) || typeof str == 'string' && new RegExp(cm.dateFormat(false, that.params['format'])).test(str)){
-            that.clear();
-            return that;
-        }else if(typeof str == 'object'){
-            that.date = str;
-        }else{
-            that.date = cm.parseDate(str, format);
-        }
-        // Set components
-        that.params['withHours'] && components['selectHours'].set(that.date.getHours(), false);
-        that.params['withMinutes'] && components['selectMinutes'].set(that.date.getMinutes(), false);
-        that.params['withSeconds'] && components['selectSeconds'].set(that.date.getSeconds(), false);
-        // Set time
-        set(triggerEvents);
-        return that;
-    };
-
-    that.get = function(){
-        return that.value;
-    };
-
-    that.getDate = function(){
-        return that.date;
-    };
-
-    that.getHours = function(){
-        return that.date.getHours();
-    };
-
-    that.getMinutes = function(){
-        return that.date.getMinutes();
-    };
-
-    that.getSeconds = function(){
-        return that.date.getSeconds();
-    };
-
-    that.clear = function(triggerEvents){
-        triggerEvents = typeof triggerEvents != 'undefined'? triggerEvents : true;
-        // Clear time
-        that.date.setHours(0);
-        that.date.setMinutes(0);
-        that.date.setSeconds(0);
-        // Clear components
-        that.params['withHours'] && components['selectHours'].set(that.date.getHours(), false);
-        that.params['withMinutes'] && components['selectMinutes'].set(that.date.getMinutes(), false);
-        that.params['withSeconds'] && components['selectSeconds'].set(that.date.getSeconds(), false);
-        // Set time
-        set(false);
-        // Trigger events
-        if(triggerEvents){
-            that.triggerEvent('onClear', that.value);
-            onChange();
-        }
-        return that;
-    };
-
-    init();
-});
 cm.define('Com.Timer', {
     'modules' : [
         'Params',
@@ -27822,25 +22964,6 @@ function(params){
     };
 
     init();
-});
-cm.define('Com.TintRange', {
-    'extend' : 'Com.AbstractRange',
-    'params' : {
-        'className' : 'com__tint-range',
-        'min' : 360,
-        'max' : 0,
-        'value' : 360
-    }
-},
-function(params){
-    var that = this;
-    Com.AbstractRange.apply(that, arguments);
-});
-
-cm.getConstructor('Com.TintRange', function(classConstructor, className, classProto){
-    classProto.renderContent = function(){
-        return cm.node('div', {'class' : 'com__tint-range__content'});
-    };
 });
 cm.define('Com.ToggleBox', {
     'modules' : [
@@ -28116,7 +23239,7 @@ cm.define('Com.Toolbar', {
         'container' : null,
         'name' : '',
         'embedStructure' : 'append',
-        'flex' : false
+        'adaptive' : true
     }
 },
 function(params){
@@ -28147,7 +23270,7 @@ function(params){
                 )
             )
         );
-        that.params['flex'] && cm.addClass(that.nodes['part'], 'is-adaptive');
+        that.params['adaptive'] && cm.addClass(that.nodes['part'], 'is-adaptive');
         // Append
         that.embedStructure(that.nodes['container']);
     };
@@ -28202,6 +23325,47 @@ function(params){
         }
         that.triggerEvent('onProcessEnd');
         return that;
+    };
+
+    that.addField = function(item){
+        var group;
+        item = cm.merge({
+            'container' : cm.node('li'),
+            'node' : null,
+            'name' : '',
+            'size' : null,
+            'hidden' : false
+        }, item);
+        // Render
+        if((group = that.groups[item['group']]) && !group.items[item['name']]){
+            // Styles
+            item['size'] && cm.addClass(item['container'], item['size']);
+            item['hidden'] && cm.addClass(item['container'], 'is-hidden');
+            // Embed
+            if(cm.isNode(item['node'])){
+                cm.appendChild(item['node'], item['container']);
+            }
+            cm.appendChild(item['container'], group['node']);
+            group.items[item['name']] = item;
+        }
+        that.triggerEvent('onProcessEnd');
+        return that;
+    };
+
+    that.showField = function(name, groupName){
+        var item = that.getField(name, groupName);
+        if(item){
+            item['hidden'] = false;
+            cm.removeClass(item['container'], 'is-hidden');
+        }
+    };
+
+    that.hideField = function(name, groupName){
+        var item = that.getField(name, groupName);
+        if(item){
+            item['hidden'] = true;
+            cm.addClass(item['container'], 'is-hidden');
+        }
     };
 
     that.addButton = function(item){
@@ -28261,7 +23425,7 @@ function(params){
         return that;
     };
 
-    that.getButton = function(name, groupName){
+    that.getField = that.getButton = function(name, groupName){
         var item, group;
         if((group = that.groups[groupName]) && (item = group.items[name])){
             return item;
@@ -29347,4 +24511,5377 @@ function(params){
     var that = this;
     // Call parent class construct
     Com.AbstractFileManagerContainer.apply(that, arguments);
+});
+cm.define('Com.MultipleInput', {
+    'extend' : 'Com.AbstractController',
+    'events' : [
+        'onSet',
+        'onSelect',
+        'onChange',
+        'onClear',
+        'onDisable',
+        'onEnable',
+        'onItemAddStart',
+        'onItemAddProcess',
+        'onItemAddEnd',
+        'onItemRemoveStart',
+        'onItemRemoveProcess',
+        'onItemRemoveEnd',
+        'onItemSortStart',
+        'onItemSortProcess',
+        'onItemSortEnd'
+    ],
+    'params' : {
+        'embedStructure' : 'replace',
+        'className' : 'com__multiple-input',
+        'value' : [],
+        'defaultValue' : [],
+        'max' : 0,
+        'sortable' : false,
+        'showControls' : true,
+        'showToolbar' : false,
+        'focusInput' : false,
+        'duration' : 'cm._config.animDurationShort',
+        'inputConstructor' : 'Com.AbstractInput',
+        'inputParams' : {},
+        'multiFieldConstructor' : 'Com.MultiField',
+        'multiFieldParams' : {
+            'embedStructure' : 'first',
+            'renderStructure' : true,
+            'embedStructureOnRender' : true,
+            'template' : false,
+            'templateAttributeReplace' : false
+        }
+    }
+},
+function(params){
+    var that = this;
+    // Call parent class construct
+    Com.AbstractController.apply(that, arguments);
+});
+
+cm.getConstructor('Com.MultipleInput', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.construct = function(params){
+        var that = this;
+        // Variables
+        that.nodes = {};
+        that.components = {};
+        that.items = [];
+        that.isToolbarVisible = true;
+        // Bind context to methods
+        that.setHandler = that.set.bind(that);
+        that.getHandler = that.get.bind(that);
+        that.clearHandler = that.clear.bind(that);
+        that.enableHandler = that.enable.bind(that);
+        that.disableHandler = that.disable.bind(that);
+        that.addItemHandler = that.addItem.bind(that);
+        that.removeItemHandler = that.removeItem.bind(that);
+        that.constructProcessHandler = that.constructProcess.bind(that);
+        // Add events
+        that.addEvent('onConstructProcess', that.constructProcessHandler);
+        // Call parent method
+        _inherit.prototype.construct.apply(that, arguments);
+        return that;
+    };
+
+    classProto.constructProcess = function(){
+        var that = this;
+        // Render inputs provided in DOM
+        cm.forEach(that.nodes['inputs'], function(item){
+            that.addItem({'input' : item['input']}, false);
+        });
+        // Render inputs provided in parameters
+        if(cm.isArray(that.params['value'])){
+            cm.forEach(that.params['value'], function(item){
+                that.addItem({'value' : item}, false);
+            });
+        }
+        return that;
+    };
+
+    classProto.validateParams = function(){
+        var that = this;
+        // Call parent method
+        _inherit.prototype.validateParams.apply(that, arguments);
+        // Configure MultiField
+        that.params['multiFieldParams']['max'] = that.params['max'];
+        that.params['multiFieldParams']['sortable'] = that.params['sortable'];
+        that.params['multiFieldParams']['showControls'] = that.params['showControls'];
+        return that;
+    };
+
+    /* *** SYSTEM *** */
+
+    classProto.renderView = function(){
+        var that = this;
+        that.triggerEvent('onRenderViewStart');
+        that.nodes['container'] = cm.node('div', {'class' : 'com__multiple-input'},
+            that.nodes['inner'] = cm.node('div', {'class' : 'inner'},
+                that.nodes['holder'] = cm.node('div', {'class' : 'com__multiple-input__holder'})
+            )
+        );
+        if(that.params['showToolbar']){
+            that.nodes['toolbarContainer'] = that.renderToolbarView();
+            cm.appendChild(that.nodes['toolbarContainer'], that.nodes['holder']);
+        }
+        that.triggerEvent('onRenderViewProcess');
+        that.triggerEvent('onRenderViewEnd');
+        return that;
+    };
+
+    classProto.renderToolbarView = function(){
+        var that = this,
+            nodes = {};
+        // Structure
+        nodes['container'] = cm.node('div', {'class' : 'com__multiple-input__toolbar'});
+        // Push
+        that.nodes['toolbar'] = nodes;
+        return nodes['container'];
+    };
+
+    classProto.renderViewModel = function(){
+        var that = this;
+        // Call parent method - renderViewModel
+        _inherit.prototype.renderViewModel.apply(that, arguments);
+        // Init Multi Field
+        that.renderMultiField();
+        return that;
+    };
+
+    classProto.renderMultiField = function(){
+        var that = this;
+        cm.getConstructor(that.params['multiFieldConstructor'], function(classObject){
+            that.components['multiField'] = new classObject(
+                cm.merge(that.params['multiFieldParams'], {
+                    'container' : that.nodes['holder']
+                })
+            );
+            that.renderMultiFieldEvents();
+        });
+        return that;
+    };
+
+    classProto.renderMultiFieldEvents = function(){
+        var that = this;
+        that.components['multiField'].addEvent('onItemAdd', function(my, field){
+            that.addItemProcess({}, field, true);
+        });
+        that.components['multiField'].addEvent('onItemRemove', function(my, field){
+            var index = field['index'];
+            var item = that.items[index];
+            that.removeItemProcess(item, field, true);
+        });
+        that.components['multiField'].addEvent('onItemSort', function(my, field){
+            var previousIndex = field['previousIndex'];
+            var item = that.items[previousIndex];
+            that.sortItemProcess(item, field, true);
+        });
+        return that;
+    };
+
+    classProto.renderInputView = function(item){
+        var that = this;
+        item['input'] = cm.node('input', {'type' : 'text'});
+        return item['input'];
+    };
+
+    /* *** ITEMS *** */
+
+    classProto.addItem = function(item, triggerEvents){
+        var that = this;
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        if(!that.params['max'] || that.items.length < that.params['max']){
+            // Render Fields
+            that.components['multiField'].addItem({}, {
+                'triggerEvents' : false,
+                'callback' : function(field){
+                    that.addItemProcess(item, field, triggerEvents);
+                }
+            });
+        }
+        return null;
+    };
+
+    classProto.addItemProcess = function(item, field, triggerEvents){
+        var that = this;
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        // Merge config
+        item = cm.merge({
+            'input' : null,
+            'container' : null,
+            'name' : that.params['name'],
+            'value' : '',
+            'constructor' : that.params['inputConstructor'],
+            'nodes' : {}
+        }, item);
+        item['field'] = field;
+        item['container'] = item['field']['content'];
+        // Push
+        that.items.push(item);
+        // Start
+        that.triggerEvent('onItemAddStart', item);
+        // Render views
+        if(!item['input']){
+            item['input'] = that.renderInputView(item);
+        }
+        cm.appendChild(item['input'], item['container']);
+        // Process
+        cm.getConstructor(item['constructor'], function(classConstructor){
+            item['controller'] = new classConstructor(
+                cm.merge(that.params['inputParams'], {
+                    'node' : item['input'],
+                    'name' : item['name'],
+                    'value' : item['value']
+                })
+            );
+            that.triggerEvent('onItemAddProcess', item);
+            that.params['focusInput'] && item['controller'].focus && item['controller'].focus();
+            // Trigger set events
+            triggerEvents && that.triggerEvent('onSelect');
+            triggerEvents && that.triggerEvent('onSet');
+            triggerEvents && that.triggerEvent('onChange');
+        });
+        // Toggle toolbar visibility
+        that.toggleToolbarVisibility();
+        // Complete event
+        that.triggerEvent('onItemAddEnd', item);
+        return item;
+    };
+
+    classProto.removeItem = function(item, triggerEvents){
+        var that = this;
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        // Remove Field
+        that.components['multiField'].removeItem(item['field'], {
+            'triggerEvents' : false,
+            'callback' : function(field){
+                that.removeItemProcess(item, field, triggerEvents);
+            }
+        });
+        return that;
+    };
+
+    classProto.removeItemProcess = function(item, field, triggerEvents){
+        var that = this;
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        that.triggerEvent('onItemRemoveStart', item);
+        that.items = cm.arrayRemove(that.items, item);
+        that.triggerEvent('onItemRemoveProcess', item);
+        item['controller'] && item['controller'].destruct();
+        that.triggerEvent('onItemRemoveEnd', item);
+        // Toggle toolbar visibility
+        that.toggleToolbarVisibility();
+        // Trigger set events
+        triggerEvents && that.triggerEvent('onSelect');
+        triggerEvents && that.triggerEvent('onSet');
+        triggerEvents && that.triggerEvent('onChange');
+        return that;
+    };
+
+    classProto.sortItemProcess = function(item, field){
+        var that = this,
+            index = field['index'];
+        that.triggerEvent('onItemSortStart', item);
+        that.triggerEvent('onItemSortProcess', item);
+        // Resort items in array
+        that.items.splice(that.items.indexOf(item), 1);
+        that.items.splice(index, 0, item);
+        // Trigger event
+        that.triggerEvent('onItemSortEnd', item);
+    };
+
+    /* *** TOOLBAR *** */
+
+    classProto.toggleToolbarVisibility = function(){
+        var that = this;
+        if(that.params['showToolbar']){
+            if(that.params['max'] > 0 && that.items.length == that.params['max']){
+                that.hideToolbar();
+            }else{
+                that.showToolbar();
+            }
+        }
+        return that;
+    };
+
+    classProto.showToolbar = function(){
+        var that = this,
+            height = 0;
+        if(!that.isToolbarVisible){
+            that.isToolbarVisible = true;
+            // Prepare
+            that.nodes['toolbarContainer'].style.height = '';
+            height = that.nodes['toolbarContainer'].offsetHeight;
+            that.nodes['toolbarContainer'].style.height = '0px';
+            that.nodes['toolbarContainer'].style.overflow = 'hidden';
+            // Animate
+            cm.transition(that.nodes['toolbarContainer'], {
+                'properties' : {'height' : height + 'px', 'opacity' : 1},
+                'duration' : that.params['duration'],
+                'easing' : 'ease-in-out',
+                'clear' : true,
+                'onStop' : function(){
+                    that.nodes['toolbarContainer'].style.overflow = '';
+                    that.nodes['toolbarContainer'].style.height = '';
+                }
+            });
+        }
+        return that;
+    };
+
+    classProto.hideToolbar = function(){
+        var that = this;
+        if(that.isToolbarVisible){
+            that.isToolbarVisible = false;
+            // Prepare
+            that.nodes['toolbarContainer'].style.overflow = 'hidden';
+            // Animate
+            cm.transition(that.nodes['toolbarContainer'], {
+                'properties' : {'height' : '0px', 'opacity' : 0},
+                'duration' : that.params['duration'],
+                'easing' : 'ease-in-out'
+            });
+        }
+        return that;
+    };
+
+    /* *** PUBLIC *** */
+
+    classProto.set = function(value, triggerEvents){
+        var that = this;
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        cm.forEach(that.items, function(item){
+            that.removeItem(item, false);
+        });
+        cm.forEach(value, function(item){
+            that.addItem({'value' : item}, false);
+        });
+        // Trigger set events
+        triggerEvents && that.triggerEvent('onSelect');
+        triggerEvents && that.triggerEvent('onSet');
+        triggerEvents && that.triggerEvent('onChange');
+        return that;
+    };
+
+    classProto.get = function(){
+        var that = this,
+            data = [],
+            value;
+        cm.forEach(that.items, function(item){
+            value = (item['controller'] && item['controller'].get) ? item['controller'].get() : null;
+            value && data.push(value);
+        });
+        return data;
+    };
+
+    classProto.clear = function(triggerEvents){
+        var that = this;
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        triggerEvents && that.triggerEvent('onClear');
+        that.set(that.params['defaultValue'], triggerEvents);
+        return that;
+    };
+
+    classProto.enable = function(){
+        var that = this;
+        if(!that.disabled){
+            that.disabled = false;
+            cm.removeClass(that.nodes['container'], 'disabled');
+            cm.removeClass(that.nodes['content'], 'disabled');
+            that.triggerEvent('onEnable');
+        }
+        return that;
+    };
+
+    classProto.disable = function(){
+        var that = this;
+        if(that.disabled){
+            that.disabled = true;
+            cm.addClass(that.nodes['container'], 'disabled');
+            cm.addClass(that.nodes['content'], 'disabled');
+            that.triggerEvent('onDisable');
+        }
+        return that;
+    };
+});
+cm.define('Com.BoxTools', {
+    'extend' : 'Com.AbstractInput',
+    'params' : {
+        'controllerEvents' : true,
+        'className' : 'com__box-tools',
+        'maxlength' : 3,
+        'units' : 'px',
+        'allowNegative' : false,
+        'inputs' : [
+            {'name' : 'top', 'icon' : 'icon svg__indent-top small linked', 'iconPosition' : 'insideRight'},
+            {'name' : 'right', 'icon' : 'icon svg__indent-right small linked', 'iconPosition' : 'insideRight'},
+            {'name' : 'bottom', 'icon' : 'icon svg__indent-bottom small linked', 'iconPosition' : 'insideRight'},
+            {'name' : 'left', 'icon' : 'icon svg__indent-left small linked', 'iconPosition' : 'insideRight'}
+        ],
+        'langs' : {
+            'link' : 'Link',
+            'unlink' : 'Unlink'
+        }
+    }
+},
+function(params){
+    var that = this;
+    // Call parent class construct
+    Com.AbstractInput.apply(that, arguments);
+});
+
+cm.getConstructor('Com.BoxTools', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.onConstruct = function(){
+        var that = this;
+        // Variables
+        that.inputs = [];
+        that.rawValue = null;
+        that.isInputsLinked = false;
+        that.lastInput = null;
+        // Bind context to methods
+        that.linkInputsHandler = that.linkInputs.bind(that);
+        that.setValuesHandler = that.setValues.bind(that);
+        return that;
+    };
+
+    classProto.onEnable = function(){
+        var that = this;
+        cm.forEach(that.inputs, function(item){
+            cm.removeClass(item['nodes']['inner'], 'disabled');
+            item['input'].disabled = false;
+        });
+    };
+
+    classProto.onDisable = function(){
+        var that = this;
+        cm.forEach(that.inputs, function(item){
+            cm.addClass(item['nodes']['inner'], 'disabled');
+            item['input'].disabled = true;
+        });
+    };
+
+    classProto.set = function(){
+        var that = this;
+        _inherit.prototype.set.apply(that, arguments);
+        that.setInputs();
+        return that;
+    };
+
+    classProto.validateValue = function(value){
+        var that = this;
+        that.rawValue = cm.CSSValuesToArray(value);
+        return cm.arrayToCSSValues(that.rawValue, that.params['units']);
+    };
+
+    classProto.renderContent = function(){
+        var that = this,
+            nodes = {};
+        that.nodes['content'] = nodes;
+        that.triggerEvent('onRenderContentStart');
+        // Structure
+        nodes['container'] = cm.node('div', {'class' : 'com__box-tools__content'},
+            cm.node('div', {'class' : 'b-line'},
+                that.renderInput(that.params['inputs'][0], 0)
+            ),
+            cm.node('div', {'class' : 'b-line'},
+                that.renderInput(that.params['inputs'][3], 3),
+                cm.node('div', {'class' : 'b-link-container'},
+                    nodes['link'] = cm.node('div', {'class' : 'b-link', 'title' : that.lang('link')},
+                        cm.node('div', {'class' : 'icon'})
+                    )
+                ),
+                that.renderInput(that.params['inputs'][1], 1)
+            ),
+            cm.node('div', {'class' : 'b-line'},
+                that.renderInput(that.params['inputs'][2], 2)
+            )
+        );
+        // Events
+        that.triggerEvent('onRenderContentProcess');
+        cm.addEvent(nodes['link'], 'click', that.linkInputsHandler);
+        that.triggerEvent('onRenderContentEnd');
+        // Export
+        return nodes['container'];
+    };
+
+    classProto.renderInput = function(item, i){
+        var that = this;
+        item = cm.merge({
+            'i' : i,
+            'icon' : 'small',
+            'iconPosition' : 'leftInside',
+            'name' : '',
+            'nodes' : {}
+        }, item);
+        // Structure
+        item['nodes'] = that.renderInputContainer(item);
+        item['input'] = item['nodes']['input'];
+        // Attributes
+        if(that.params['maxlength']){
+            item['input'].setAttribute('maxlength', that.params['maxlength']);
+        }
+        // Events
+        cm.addEvent(item['nodes']['icon'], 'click', function(e){
+            cm.preventDefault(e);
+            item['input'].setSelectionRange(0, item['input'].value.length);
+            item['input'].focus();
+        });
+        cm.addEvent(item['input'], 'focus', function(){
+            that.lastInput = item;
+        });
+        cm.addEvent(item['input'], 'blur', that.setValuesHandler);
+        // Keypress events
+        cm.addEvent(item['input'], 'keypress', function(e){
+            if(cm.isKeyCode(e.keyCode, 'enter')){
+                cm.preventDefault(e);
+                that.setValues();
+                item['input'].blur();
+            }
+        });
+        // Input events
+        if(that.params['allowNegative']){
+            cm.allowOnlyNumbersInputEvent(item['input'], function(e, value){
+                that.inputOnInputEvent(e, value, item);
+            });
+        }else{
+            cm.allowOnlyDigitInputEvent(item['input'], function(e, value){
+                that.inputOnInputEvent(e, value, item);
+            });
+        }
+        // Push
+        that.inputs.push(item);
+        return item['nodes']['container'];
+    };
+
+    classProto.inputOnInputEvent = function(e, value, item){
+        var that = this;
+        if(that.isInputsLinked){
+            that.rawValue = [value, value, value, value];
+            that.setInputs();
+        }else{
+            that.rawValue[item['i']] = value;
+        }
+        that.selectAction(cm.arrayToCSSValues(that.rawValue, that.params['units']), true);
+        return that;
+    };
+
+    classProto.renderInputContainer = function(item){
+        var that = this,
+            nodes = {};
+        // Structure
+        nodes['container'] = cm.node('div', {'class' : 'b-container'},
+            nodes['inner'] = cm.node('div', {'class' : 'pt__input'},
+                nodes['input'] = cm.node('input', {'type' : 'text'})
+            )
+        );
+        if(!cm.isEmpty(item['title'])){
+            nodes['inner'].setAttribute('title', item['title']);
+        }
+        nodes['icon'] = cm.node('div', {'class' : item['icon']});
+        switch(item['iconPosition']){
+            case 'insideLeft':
+                cm.addClass(nodes['inner'], 'is-less-indent');
+                cm.insertFirst(nodes['icon'], nodes['inner']);
+                break;
+            case 'insideRight':
+                cm.addClass(nodes['inner'], 'is-less-indent');
+                cm.insertLast(nodes['icon'], nodes['inner']);
+                break;
+            case 'outsideLeft':
+                cm.addClass(nodes['inner'], 'is-icon-outside');
+                cm.insertFirst(nodes['icon'], nodes['inner']);
+                break;
+            case 'outsideRight':
+                cm.addClass(nodes['inner'], 'is-icon-outside');
+                cm.insertLast(nodes['icon'], nodes['inner']);
+                break;
+        }
+        return nodes;
+    };
+
+    classProto.setInputs = function(){
+        var that = this;
+        cm.forEach(that.inputs, function(item){
+            item['input'].value = that.rawValue[item['i']];
+        });
+        return that;
+    };
+
+    classProto.setValues = function(triggerEvents){
+        var that = this;
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        that.set(cm.arrayToCSSValues(that.rawValue, that.params['units']), triggerEvents);
+        return that;
+    };
+
+    classProto.linkInputs = function(){
+        var that = this;
+        if(!that.disabled){
+            if(!that.isInputsLinked){
+                that.isInputsLinked = true;
+                cm.addClass(that.nodes['content']['link'], 'active');
+                that.nodes['content']['link'].title = that.lang('unlink');
+                if(that.lastInput){
+                    that.set(that.lastInput['input'].value);
+                }else{
+                    var value = 0;
+                    cm.forEach(that.inputs, function(item){
+                        value = Math.max(value, parseInt(item['input'].value));
+                    });
+                    that.set(value);
+                }
+            }else{
+                that.isInputsLinked = false;
+                cm.removeClass(that.nodes['content']['link'], 'active');
+                that.nodes['content']['link'].title = that.lang('link');
+            }
+        }
+        return that;
+    };
+});
+cm.define('Com.Autocomplete', {
+    'modules' : [
+        'Params',
+        'Events',
+        'Langs',
+        'DataConfig',
+        'Storage',
+        'Callbacks',
+        'Stack'
+    ],
+    'require' : [
+        'Com.Tooltip'
+    ],
+    'events' : [
+        'onRenderStart',
+        'onRender',
+        'onClear',
+        'onSelect',
+        'onChange',
+        'onClickSelect',
+        'onAbort',
+        'onError'
+    ],
+    'params' : {
+        'input' : null,                                             // Deprecated, use 'node' parameter instead.
+        'node' : cm.node('input', {'type' : 'text'}),               // Html input node to decorate.
+        'target' : false,                                           // HTML node.
+        'container' : 'document.body',
+        'name' : '',
+        'minLength' : 3,
+        'delay' : 'cm._config.requestDelay',
+        'clearOnEmpty' : true,                                      // Clear input and value if item didn't selected from tooltip
+        'showListOnEmpty' : false,                                  // Show options list, when input is empty
+        'showLoader' : true,                                        // Show ajax spinner in tooltip, for ajax mode only.
+        'data' : [],                                                // Examples: [{'value' : 'foo', 'text' : 'Bar'}] or ['Foo', 'Bar'].
+        'value' : {},
+        'responseKey' : 'data',                                     // Instead of using filter callback, you can provide response array key
+        'ajax' : {
+            'type' : 'json',
+            'method' : 'get',
+            'url' : '',                                             // Request URL. Variables: %baseUrl%, %query%, %callback%.
+            'params' : ''                                           // Params object. Variables: %baseUrl%, %query%, %callback%.
+        },
+        'langs' : {
+            'loader' : 'Searching for: %query%.'                    // Variable: %query%.
+        },
+        'Com.Tooltip' : {
+            'hideOnOut' : true,
+            'targetEvent' : 'none',
+            'className' : 'com__ac-tooltip',
+            'width' : 'targetWidth',
+            'top' : 'targetHeight + 4'
+        }
+    }
+},
+function(params){
+    var that = this;
+    
+    that.components = {};
+
+    that.isDestructed = false;
+    that.ajaxHandler = null;
+    that.isOpen = false;
+    that.isAjax = false;
+    that.requestDelay = null;
+
+    that.registeredItems = [];
+    that.selectedItemIndex = null;
+    that.value = null;
+    that.previousValue = null;
+    that.rawValue = null;
+
+    var init = function(){
+        that.setParams(params);
+        preValidateParams();
+        that.convertEvents(that.params['events']);
+        that.getDataConfig(that.params['node']);
+        that.callbacksProcess();
+        validateParams();
+        that.addToStack(that.params['node']);
+        that.triggerEvent('onRenderStart');
+        render();
+        that.addToStack(that.params['node']);
+        that.triggerEvent('onRender');
+    };
+
+    var preValidateParams = function(){
+        if(cm.isNode(that.params['input'])){
+            that.params['node'] = that.params['input'];
+        }
+    };
+
+    var validateParams = function(){
+        if(!that.params['target']){
+            that.params['target'] = that.params['node'];
+        }
+        // If URL parameter exists, use ajax data
+        that.isAjax = !cm.isEmpty(that.params['ajax']['url']);
+        // Prepare data
+        that.params['data'] = that.convertData(that.params['data']);
+        that.params['value'] = that.convertDataItem(that.params['value']);
+    };
+
+    var render = function(){
+        // Init tooltip
+        that.components['tooltip'] = new Com.Tooltip(
+            cm.merge(that.params['Com.Tooltip'], {
+                'container' : that.params['container'],
+                'target' : that.params['target'],
+                'events' : {
+                    'onShowStart' : function(){
+                        that.isOpen = true;
+                        cm.addEvent(document, 'mousedown', bodyEvent);
+                    },
+                    'onHideStart' : function(){
+                        that.isOpen = false;
+                        cm.removeEvent(document, 'mousedown', bodyEvent);
+                    }
+                }
+            })
+        );
+        // Set input
+        that.setInput(that.params['node']);
+        // Set
+        !cm.isEmpty(that.params['value']) && that.set(that.params['value'], false);
+    };
+
+    var setListItem = function(index){
+        var previousItem = that.registeredItems[that.selectedItemIndex],
+            item = that.registeredItems[index];
+        if(previousItem){
+            cm.removeClass(previousItem['node'], 'active');
+        }
+        if(item){
+            cm.addClass(item['node'], 'active');
+            that.components['tooltip'].scrollToNode(item['node']);
+        }
+        that.selectedItemIndex = index;
+        // Set input data
+        set(that.selectedItemIndex);
+    };
+
+    var inputHandler = function(e){
+        var listLength,
+            listIndex;
+        switch(e.keyCode){
+            // Enter
+            case 13:
+                clear();
+                that.hide();
+                break;
+            // Arrow Up
+            case 38:
+                listLength = that.registeredItems.length;
+                if(listLength){
+                    if(that.selectedItemIndex === null){
+                        listIndex = listLength - 1;
+                    }else if(that.selectedItemIndex - 1 >= 0){
+                        listIndex = that.selectedItemIndex - 1;
+                    }else{
+                        listIndex = listLength - 1;
+                    }
+                    setListItem(listIndex);
+                }
+                break;
+            // Arrow Down
+            case 40:
+                listLength = that.registeredItems.length;
+                if(listLength){
+                    if(that.selectedItemIndex === null){
+                        listIndex = 0;
+                    }else if(that.selectedItemIndex + 1 < listLength){
+                        listIndex = that.selectedItemIndex + 1;
+                    }else{
+                        listIndex = 0;
+                    }
+                    setListItem(listIndex);
+                }
+                break;
+        }
+    };
+
+    var requestHandler = function(){
+        var query = that.params['node'].value,
+            config = cm.clone(that.params['ajax']);
+        // Clear tooltip ajax/static delay and filtered items list
+        that.requestDelay && clearTimeout(that.requestDelay);
+        that.selectedItemIndex = null;
+        that.registeredItems = [];
+        that.abort();
+        // Request
+        if(that.params['showListOnEmpty'] || query.length >= that.params['minLength']){
+            that.requestDelay = setTimeout(function(){
+                if(that.isAjax){
+                    if(that.params['showLoader']){
+                        that.callbacks.loader(that, config, query);
+                    }
+                    that.ajaxHandler = that.callbacks.request(that, config, query);
+                }else{
+                    that.callbacks.data(that, query, that.params['data']);
+                }
+            }, that.params['delay']);
+        }else{
+            that.hide();
+        }
+    };
+
+    var set = function(index){
+        var item = that.registeredItems[index];
+        if(item){
+            that.setRegistered(item, true);
+        }
+    };
+
+    var clear = function(){
+        var item;
+        // Kill timeout interval and ajax request
+        that.requestDelay && clearTimeout(that.requestDelay);
+        that.abort();
+        // Clear input
+        if(that.params['clearOnEmpty']){
+            item = getSavedItemData(that.value);
+            if(!item || item['text'] != that.params['node'].value){
+                that.clear();
+            }
+        }
+    };
+
+    var getSavedItemData = function(value){
+        if(that.rawValue && that.rawValue['value'] == value){
+            return that.rawValue
+        }
+        // Get form items list
+        var item = that.getRegisteredItem(value);
+        if(item){
+            return item['data'];
+        }
+        return null;
+    };
+
+    var onChange = function(){
+        if(that.value != that.previousValue){
+            that.triggerEvent('onChange', that.value);
+        }
+    };
+
+    var blurHandler = function(){
+        if(!that.isOpen){
+            clear();
+        }
+    };
+
+    var clickHandler = function(){
+        if(that.params['showListOnEmpty']){
+            requestHandler();
+        }
+    };
+
+    var bodyEvent = function(e){
+        e = cm.getEvent(e);
+        var target = cm.getEventTarget(e);
+        if(!that.isOwnNode(target)){
+            clear();
+            that.hide();
+        }
+    };
+
+    var setEvents = function(){
+        cm.addEvent(that.params['node'], 'input', requestHandler);
+        cm.addEvent(that.params['node'], 'keydown', inputHandler);
+        cm.addEvent(that.params['node'], 'blur', blurHandler);
+        cm.addEvent(that.params['node'], 'click', clickHandler);
+    };
+
+    var unsetEvents = function(){
+        cm.removeEvent(that.params['node'], 'input', requestHandler);
+        cm.removeEvent(that.params['node'], 'keydown', inputHandler);
+        cm.removeEvent(that.params['node'], 'blur', blurHandler);
+        cm.removeEvent(that.params['node'], 'click', clickHandler);
+    };
+
+    /* ******* CALLBACKS ******* */
+
+    /* *** AJAX *** */
+
+    that.callbacks.prepare = function(that, config, query){
+        config = that.callbacks.beforePrepare(that, config, query);
+        config['url'] = cm.strReplace(config['url'], {
+            '%query%' : query,
+            '%baseUrl%' : cm._baseUrl
+        });
+        config['params'] = cm.objectReplace(config['params'], {
+            '%query%' : query,
+            '%baseUrl%' : cm._baseUrl
+        });
+        config = that.callbacks.afterPrepare(that, config, query);
+        return config;
+    };
+
+    that.callbacks.beforePrepare = function(that, config, query){
+        return config;
+    };
+
+    that.callbacks.afterPrepare = function(that, config, query){
+        return config;
+    };
+
+    that.callbacks.request = function(that, config, query){
+        config = that.callbacks.prepare(that, config, query);
+        // Return ajax handler (XMLHttpRequest) to providing abort method.
+        return cm.ajax(
+            cm.merge(config, {
+                'onSuccess' : function(response){
+                    that.callbacks.response(that, config, query, response);
+                },
+                'onError' : function(){
+                    that.callbacks.error(that, config, query);
+                }
+            })
+        );
+    };
+
+    that.callbacks.filter = function(that, config, query, response){
+        var data = [],
+            dataItem = cm.objectSelector(that.params['responseKey'], response);
+        if(dataItem && !cm.isEmpty(dataItem)){
+            data = dataItem;
+        }
+        return data;
+    };
+
+    that.callbacks.response = function(that, config, query, response){
+        if(response){
+            response = that.callbacks.filter(that, config, query, response);
+        }
+        if(!cm.isEmpty(response)){
+            that.callbacks.render(that, that.convertData(response));
+        }else{
+            that.callbacks.render(that, []);
+        }
+    };
+
+    that.callbacks.error = function(that, config, query){
+        that.hide();
+        that.triggerEvent('onError');
+    };
+
+    that.callbacks.loader = function(that, config, query){
+        var nodes = {};
+        // Render Structure
+        nodes['container'] = cm.Node('div', {'class' : 'pt__listing-items disabled'},
+            cm.Node('ul',
+                cm.Node('li',
+                    cm.Node('a',
+                        cm.Node('span', {'class' : 'icon small loader-circle'}),
+                        cm.Node('span', that.lang('loader', {'%query%' : query}))
+                    )
+                )
+            )
+        );
+        // Embed nodes to Tooltip
+        that.callbacks.embed(that, nodes['container']);
+        // Show Tooltip
+        that.show();
+    };
+
+    /* *** STATIC DATA *** */
+
+    that.callbacks.data = function(that, query, items){
+        // Filter data
+        items = that.callbacks.query(that, query, items);
+        that.callbacks.render(that, items);
+    };
+
+    /* *** HELPERS *** */
+
+    that.callbacks.query = function(that, query, items){
+        var filteredItems = [];
+        cm.forEach(items, function(item){
+            if(item && item['text'].toLowerCase().indexOf(query.toLowerCase()) > -1){
+                filteredItems.push(item);
+            }
+        });
+        return filteredItems;
+    };
+
+    that.callbacks.render = function(that, items){
+        if(items.length){
+            // Render List Nodes
+            that.callbacks.renderList(that, items);
+            // Show menu
+            that.show();
+        }else{
+            that.hide();
+        }
+    };
+
+    that.callbacks.renderList = function(that, items){
+        var nodes = {};
+        // Render structure
+        nodes['container'] = cm.Node('div', {'class' : 'pt__listing-items'},
+            nodes['items'] = cm.Node('ul')
+        );
+        // Render List Items
+        cm.forEach(items, function(item, i){
+            that.callbacks.renderItem(that, nodes['items'], item, i);
+        });
+        // Embed nodes to Tooltip
+        that.callbacks.embed(that, nodes['container']);
+    };
+
+    that.callbacks.renderItem = function(that, container, item, i){
+        var nodes = {};
+        // Render Structure of List Item
+        nodes['container'] = cm.Node('li',
+            cm.Node('a', {'innerHTML' : item['text']})
+        );
+        // Highlight selected option
+        if(that.value == item['value']){
+            cm.addClass(nodes['container'], 'active');
+            that.selectedItemIndex = i;
+        }
+        // Register item
+        that.callbacks.registerItem(that, nodes['container'], item, i);
+        // Embed Item to List
+        cm.appendChild(nodes['container'], container);
+    };
+
+    that.callbacks.registerItem = function(that, node, item, i){
+        var regItem = {
+            'data' : item,
+            'node' : node,
+            'i' : i
+        };
+        cm.addEvent(regItem['node'], 'click', function(){
+            that.setRegistered(regItem, true);
+            that.triggerEvent('onClickSelect', that.value);
+            that.hide();
+        });
+        that.registeredItems.push(regItem);
+    };
+
+    that.callbacks.embed = function(that, container){
+        that.components['tooltip'].setContent(container);
+    };
+
+    /* ******* MAIN ******* */
+
+    that.destruct = function(){
+        var that = this;
+        if(!that.isDestructed){
+            that.isDestructed = true;
+            unsetEvents();
+            that.removeFromStack();
+        }
+        return that;
+    };
+
+    that.set = function(item, triggerEvents){
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        that.rawValue = that.convertDataItem(item);
+        that.previousValue = that.value;
+        that.value = that.rawValue['value'];
+        that.params['node'].value = that.rawValue['text'];
+        // Trigger events
+        if(triggerEvents){
+            that.triggerEvent('onSelect', that.value);
+            onChange();
+        }
+        return that;
+    };
+
+    that.setRegistered = function(item, triggerEvents){
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        that.set(item['data'], triggerEvents);
+        return that;
+    };
+
+    that.setInput = function(node){
+        if(cm.isNode(node)){
+            unsetEvents();
+            that.params['node'] = node;
+            setEvents();
+        }
+        return that;
+    };
+
+    that.setTarget = function(node){
+        if(cm.isNode(node)){
+            that.params['target'] = node;
+            that.components['tooltip'].setTarget(node);
+        }
+        return that;
+    };
+
+    that.get = function(){
+        return that.value;
+    };
+
+    that.getItem = function(value){
+        var item;
+        if(value){
+            cm.forEach(that.params['data'], function(dataItem){
+                if(dataItem['value'] == value){
+                    item = dataItem;
+                }
+            });
+        }
+        return item;
+    };
+
+    that.getRegisteredItem = function(value){
+        var item;
+        if(value){
+            cm.forEach(that.registeredItems, function(regItem){
+                if(regItem['data']['value'] == value){
+                    item = regItem;
+                }
+            });
+        }
+        return item;
+    };
+
+    that.clear = function(triggerEvents){
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        that.previousValue = that.value;
+        that.value = null;
+        that.rawValue = null;
+        if(that.params['clearOnEmpty']){
+            that.params['node'].value = '';
+        }
+        // Trigger events
+        if(triggerEvents){
+            that.triggerEvent('onClear', that.value);
+            onChange();
+        }
+        return that;
+    };
+
+    that.show = function(){
+        that.components['tooltip'].show();
+        return that;
+    };
+
+    that.hide = function(){
+        that.components['tooltip'].hide();
+        return that;
+    };
+
+    that.abort = function(){
+        if(that.ajaxHandler && that.ajaxHandler.abort){
+            that.ajaxHandler.abort();
+        }
+        return that;
+    };
+
+    that.focus = function(){
+        that.params['node'].focus();
+        return that;
+    };
+
+    that.isOwnNode = function(node){
+        return cm.isParent(that.params['target'], node, true) || that.components['tooltip'].isOwnNode(node);
+    };
+
+    init();
+});
+
+cm.getConstructor('Com.Autocomplete', function(classConstructor, className, classProto){
+    classProto.convertData = function(data){
+        var that = this;
+        return data.map(function(item){
+            return that.convertDataItem(item);
+        });
+    };
+
+    classProto.convertDataItem = function(item){
+        if(cm.isEmpty(item)){
+            return null
+        }else if(!cm.isObject(item)){
+            return {'text' : item, 'value' : item};
+        }else{
+            if(typeof item['value'] == 'undefined'){
+                item['value'] = item['text']
+            }
+            return item;
+        }
+    };
+});
+
+/* ****** FORM FIELD COMPONENT ******* */
+
+Com.FormFields.add('autocomplete', {
+    'node' : cm.node('input', {'type' : 'text'}),
+    'constructor' : 'Com.Autocomplete'
+});
+cm.define('Com.BoxRadiusTools', {
+    'extend' : 'Com.BoxTools',
+    'params' : {
+        'className' : 'com__box-tools com__box-tools--radius',
+        'inputs' : [
+            {'name' : 'topleft', 'icon' : 'icon svg__radius-topleft small linked', 'iconPosition' : 'outsideLeft'},
+            {'name' : 'topright', 'icon' : 'icon svg__radius-topright small linked', 'iconPosition' : 'outsideRight'},
+            {'name' : 'bottomright', 'icon' : 'icon svg__radius-bottomright small linked', 'iconPosition' : 'outsideRight'},
+            {'name' : 'bottomleft', 'icon' : 'icon svg__radius-bottomleft small linked', 'iconPosition' : 'outsideLeft'}
+        ]
+    }
+},
+function(params){
+    var that = this;
+    // Call parent class construct
+    Com.BoxTools.apply(that, arguments);
+});
+
+cm.getConstructor('Com.BoxRadiusTools', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.renderContent = function(){
+        var that = this,
+            nodes = {};
+        that.nodes['content'] = nodes;
+        that.triggerEvent('onRenderContentStart');
+        // Structure
+        nodes['container'] = cm.node('div', {'class' : 'com__box-tools__content'},
+            cm.node('div', {'class' : 'b-line'},
+                that.renderInput(that.params['inputs'][0], 0),
+                that.renderInput(that.params['inputs'][1], 1)
+            ),
+            cm.node('div', {'class' : 'b-line'},
+                that.renderInput(that.params['inputs'][3], 3),
+                that.renderInput(that.params['inputs'][2], 2)
+            ),
+            cm.node('div', {'class' : 'b-line'},
+                cm.node('div', {'class' : 'b-link-container'},
+                    nodes['link'] = cm.node('div', {'class' : 'b-link', 'title' : that.lang('link')},
+                        cm.node('div', {'class' : 'icon'})
+                    )
+                )
+            )
+        );
+        // Events
+        that.triggerEvent('onRenderContentProcess');
+        cm.addEvent(nodes['link'], 'click', that.linkInputsHandler);
+        that.triggerEvent('onRenderContentEnd');
+        // Push
+        return nodes['container'];
+    };
+});
+cm.define('Com.CheckTrigger', {
+    'extend' : 'Com.AbstractController',
+    'params' : {
+        'renderStructure' : false,
+        'embedStructureOnRender' : false,
+        'controllerEvents' : true,
+        'checked' : false,
+        'unchecked' : false
+    }
+},
+function(params){
+    var that = this;
+    // Call parent class construct
+    Com.AbstractController.apply(that, arguments);
+});
+
+cm.getConstructor('Com.CheckTrigger', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.onConstruct = function(){
+        var that = this;
+        that.checked = false;
+        that.checkedA = [];
+        that.uncheckedA = [];
+        // Bind context to methods
+        that.toggleHandler = that.toggle.bind(that);
+    };
+
+    classProto.onValidateParams = function(){
+        var that = this;
+        that.checked = that.params['node'].checked;
+    };
+
+    classProto.renderViewModel = function(){
+        var that = this;
+        // Add check event
+        cm.addEvent(that.params['node'], 'change', that.toggleHandler);
+        // Find components
+        if(cm.isObject(that.params['checked'])){
+            that.find(that.params['checked'], that.checkedA);
+        }else if(cm.isString(that.params['checked'])){
+            that.find({'type' : 'input', 'name' : that.params['checked']}, that.checkedA);
+        }
+        if(cm.isObject(that.params['unchecked'])){
+            that.find(that.params['unchecked'], that.uncheckedA);
+        }else if(cm.isString(that.params['unchecked'])){
+            that.find({'type' : 'input', 'name' : that.params['unchecked']}, that.uncheckedA);
+        }
+    };
+
+    classProto.find = function(o, parent){
+        var that = this;
+        o = cm.merge({
+            'type' : 'controller',  // controller | input
+            'className' : null,
+            'classObject' : null,
+            'name' : null,
+            'container' : null,
+            'node' : null,
+            'method' : 'disable'
+        }, o);
+        // Find by type
+        switch(o['type']){
+            case 'controller':
+                new cm.Finder(o['className'], o['name'], o['container'], function(classObject){
+                    var item = cm.merge(o, {
+                        'classObject' : classObject
+                    });
+                    parent.push(item);
+                    that.toggle();
+                });
+                break;
+            case 'input':
+                var nodes = cm.getByName(o['name'], o['container']);
+                cm.forEach(nodes, function(node){
+                    var item = cm.merge(o, {
+                        'node' : node
+                    });
+                    parent.push(item);
+                    that.toggle();
+                });
+                break;
+        }
+    };
+
+    classProto.toggle = function(){
+        var that = this;
+        that.checked = that.params['node'].checked;
+        if(that.checked){
+            that.enableTrigger(that.checkedA);
+            that.disableTrigger(that.uncheckedA);
+        }else{
+            that.disableTrigger(that.checkedA);
+            that.enableTrigger(that.uncheckedA);
+        }
+        return that;
+    };
+
+    classProto.enableTrigger = function(o){
+        var that = this;
+        cm.forEach(o, function(item){
+            switch(item['type']){
+                case 'controller':
+                    item['classObject'] && cm.isFunction(item['classObject'].enable) && item['classObject'].enable();
+                    break;
+                case 'input':
+                    if(cm.isNode(item['node'])){
+                        item['node'].disabled = false;
+                        item['node'].focus();
+                    }
+                    break;
+            }
+        });
+        return that;
+    };
+
+    classProto.disableTrigger = function(o){
+        var that = this;
+        cm.forEach(o, function(item){
+            switch(item['type']){
+                case 'controller':
+                    item['classObject'] && cm.isFunction(item['classObject'].disable) && item['classObject'].disable();
+                    break;
+                case 'input':
+                    if(cm.isNode(item['node'])){
+                        item['node'].disabled = true;
+                        item['node'].blur();
+                    }
+                    break;
+            }
+        });
+        return that;
+    };
+});
+cm.define('Com.CodeHighlight', {
+    'modules' : [
+        'Params',
+        'Events',
+        'DataConfig',
+        'Stack'
+    ],
+    'events' : [
+        'onRender'
+    ],
+    'params' : {
+        'node' : cm.Node('div'),
+        'name' : '',
+        'language' : 'javascript',
+        'lineNumbers' : true,
+        'customEvents' : true,
+        'disabled' : false,
+        'title' :''
+    }
+},
+function(params){
+    var that = this;
+
+    that.components = {};
+    that.disabled = false;
+
+    var init = function(){
+        that.setParams(params);
+        that.convertEvents(that.params['events']);
+        that.getDataConfig(that.params['node']);
+        validateParams();
+        render();
+        that.addToStack(that.params['node']);
+        that.triggerEvent('onRender');
+    };
+
+    var validateParams = function(){
+        if(cm.isNode(that.params['node'])){
+            that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
+            that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
+            that.params['disabled'] = that.params['node'].disabled || that.params['node'].readOnly || that.params['disabled'];
+        }
+        that.disabled = that.params['disabled'];
+    };
+
+    var render = function(){
+        // Code Mirror
+        cm.loadScript({
+            'path' : 'CodeMirror',
+            'src' : '%assetsUrl%/libs/codemirror_comp/codemirror.min.js?%version%',
+            'callback' : function(path){
+                if(path){
+                    that.components['codemirror'] = path.fromTextArea(that.params['node'], {
+                        'lineNumbers' : that.params['lineNumbers'],
+                        'viewportMargin' : Infinity,
+                        'mode' : that.params['language']
+                    });
+                    that.components['codemirror'].on('change', function(cm){
+                        that.params['node'].value = cm.getValue();
+                    });
+                }
+                // Enable / Disable
+                if(that.disabled){
+                    that.disable();
+                }else{
+                    that.enable();
+                }
+            }
+        });
+        if(that.params['customEvents']){
+            cm.customEvent.add(that.params['node'], 'redraw', that.redraw);
+        }
+    };
+
+    /* ******* PUBLIC ******* */
+
+    that.redraw = function(){
+        that.components['codemirror'] && that.components['codemirror'].refresh();
+        return that;
+    };
+
+    that.disable = function(){
+        that.disabled = true;
+        that.components['codemirror'] && that.components['codemirror'].setOption('readOnly', 'nocursor');
+        return that;
+    };
+
+    that.enable = function(){
+        that.disabled = false;
+        that.components['codemirror'] && that.components['codemirror'].setOption('readOnly', false);
+        return that;
+    };
+
+    init();
+});
+cm.define('Com.ColorPicker', {
+    'modules' : [
+        'Params',
+        'Events',
+        'Langs',
+        'Structure',
+        'DataConfig',
+        'Storage',
+        'Stack'
+    ],
+    'require' : [
+        'Com.Tooltip',
+        'Com.Palette'
+    ],
+    'events' : [
+        'onRender',
+        'onSelect',
+        'onChange',
+        'onClear'
+    ],
+    'params' : {
+        'input' : null,                                     // Deprecated, use 'node' parameter instead.
+        'node' : cm.node('input', {'type' : 'text'}),
+        'container' : null,
+        'embedStructure' : 'replace',
+        'name' : '',
+        'value' : null,                                     // Color string: transparent | hex | rgba.
+        'defaultValue' : 'transparent',
+        'title' : '',
+        'showLabel' : true,
+        'showClearButton' : false,
+        'showTitleTooltip' : true,
+        'renderInBody' : true,
+        'disabled' : false,
+        'size' : 'default',                                 // default | full
+        'icons' : {
+            'picker' : 'icon default linked',
+            'clear' : 'icon default linked'
+        },
+        'langs' : {
+            'Transparent' : 'Transparent',
+            'Clear' : 'Clear'
+        },
+        'Com.Tooltip' : {
+            'targetEvent' : 'click',
+            'hideOnReClick' : true,
+            'className' : 'com__colorpicker__tooltip',
+            'top' : 'cm._config.tooltipTop'
+        },
+        'Com.Palette' : {
+            'setOnInit' : false
+        }
+    }
+},
+function(params){
+    var that = this;
+
+    that.nodes = {};
+    that.components = {};
+    that.value = null;
+    that.previousValue = null;
+    that.disabled = false;
+
+    var init = function(){
+        that.setParams(params);
+        preValidateParams();
+        that.convertEvents(that.params['events']);
+        that.getDataConfig(that.params['node']);
+        validateParams();
+        render();
+        setLogic();
+        // Add to stack
+        that.addToStack(that.nodes['container']);
+        // Set
+        that.set(that.value, false);
+        // Trigger render event
+        that.triggerEvent('onRender', that.value);
+    };
+
+    var preValidateParams = function(){
+        if(cm.isNode(that.params['input'])){
+            that.params['node'] = that.params['input'];
+        }
+    };
+
+    var validateParams = function(){
+        if(cm.isNode(that.params['node'])){
+            that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
+            that.params['disabled'] = that.params['node'].disabled || that.params['disabled'];
+            that.value = that.params['node'].value;
+            that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
+        }
+        that.value = that.params['value'] || that.value || that.params['defaultValue'];
+        that.disabled = that.params['disabled'];
+        that.params['Com.Palette']['name'] = [that.params['name'], 'palette'].join('-');
+    };
+
+    var render = function(){
+        /* *** RENDER STRUCTURE *** */
+        that.nodes['container'] = cm.Node('div', {'class' : 'com__colorpicker'},
+            that.nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
+            that.nodes['target'] = cm.Node('div', {'class' : 'pt__input'},
+                that.nodes['input'] = cm.Node('input', {'type' : 'text', 'readOnly' : 'true'}),
+                that.nodes['icon'] = cm.Node('div', {'class' : that.params['icons']['picker']})
+            ),
+            that.nodes['menuContainer'] = cm.Node('div', {'class' : 'form'},
+                that.nodes['paletteContainer'] = cm.Node('div')
+            )
+        );
+        /* *** ATTRIBUTES *** */
+        // Size
+        if(!cm.isEmpty(that.params['size'])){
+            cm.addClass(that.nodes['container'], ['size', that.params['size']].join('-'));
+        }
+        // Title
+        if(that.params['showTitleTooltip'] && !cm.isEmpty(that.params['title'])){
+            that.nodes['container'].title = that.params['title'];
+        }
+        // ID
+        if(that.params['node'].id){
+            that.nodes['container'].id = that.params['node'].id;
+        }
+        // Name
+        if(that.params['name']){
+            that.nodes['hidden'].setAttribute('name', that.params['name']);
+        }
+        // Label
+        if(!that.params['showLabel']){
+            cm.addClass(that.nodes['target'], 'is-no-label');
+        }
+        // Clear Button
+        if(that.params['showClearButton']){
+            cm.addClass(that.nodes['container'], 'has-clear-button');
+            that.nodes['container'].appendChild(
+                that.nodes['clearButton'] = cm.Node('div', {'class' : that.params['icons']['clear'], 'title' : that.lang('Clear')})
+            );
+        }
+        /* *** INSERT INTO DOM *** */
+        that.embedStructure(that.nodes['container']);
+    };
+
+    var setLogic = function(){
+        // Add events on input to makes him clear himself when user wants that
+        cm.addEvent(that.nodes['input'], 'keydown', function(e){
+            e = cm.getEvent(e);
+            cm.preventDefault(e);
+            if(e.keyCode == 8){
+                that.clear();
+                that.components['tooltip'].hide();
+            }
+        });
+        // Clear Button
+        if(that.params['showClearButton']){
+            cm.addEvent(that.nodes['clearButton'], 'click', function(){
+                that.clear();
+                that.components['tooltip'].hide();
+            });
+        }
+        // Render tooltip
+        that.components['tooltip'] = new Com.Tooltip(
+            cm.merge(that.params['Com.Tooltip'], {
+                'container' : that.params['renderInBody'] ? document.body : that.nodes['container'],
+                'content' : that.nodes['menuContainer'],
+                'target' : that.nodes['target'],
+                'events' : {
+                    'onShowStart' : show,
+                    'onHideStart' : hide
+                }
+            })
+        );
+        // Render palette
+        that.components['palette'] = new Com.Palette(
+            cm.merge(that.params['Com.Palette'], {
+                'node' : that.nodes['menuContainer'],
+                'events' : {
+                    'onChange' : function(my, value){
+                        set(my.get('rgb'), true);
+                        that.components['tooltip'].hide();
+                    }
+                }
+            })
+        );
+        // Enable / Disable
+        if(that.disabled){
+            that.disable();
+        }else{
+            that.enable();
+        }
+    };
+
+    var set = function(color, triggerEvents){
+        that.previousValue = that.value;
+        if(cm.isEmpty(color)){
+            color = that.params['defaultValue'];
+        }
+        that.value = color;
+        that.components['palette'].set(that.value, false);
+        that.nodes['hidden'].value = that.components['palette'].get('rgb');
+        if(that.value == 'transparent'){
+            if(that.params['showLabel']){
+                that.nodes['input'].value = that.lang('Transparent');
+            }
+            cm.replaceClass(that.nodes['input'], 'input-dark input-light', 'input-transparent');
+        }else{
+            if(that.params['showLabel']){
+                that.nodes['input'].value = that.components['palette'].get('hex');
+            }
+            that.nodes['input'].style.backgroundColor = that.components['palette'].get('hex');
+            if(that.components['palette'].isDark()){
+                cm.replaceClass(that.nodes['input'], 'input-transparent input-light', 'input-dark');
+            }else{
+                cm.replaceClass(that.nodes['input'], 'input-transparent input-dark', 'input-light');
+            }
+        }
+        if(triggerEvents){
+            that.triggerEvent('onSelect', that.value);
+            eventOnChange();
+        }
+    };
+
+    var hide = function(){
+        that.nodes['input'].blur();
+        cm.removeClass(that.nodes['container'], 'active');
+        that.components['palette'].set(that.value, false);
+    };
+
+    var show = function(){
+        cm.addClass(that.nodes['container'], 'active');
+        that.components['palette'].redraw();
+    };
+
+    var eventOnChange = function(){
+        if(that.value != that.previousValue){
+            that.triggerEvent('onChange', that.value);
+        }
+    };
+
+    /* ******* MAIN ******* */
+
+    that.set = function(color, triggerEvents){
+        triggerEvents = typeof triggerEvents != 'undefined'? triggerEvents : true;
+        set(color, triggerEvents);
+        return that;
+    };
+
+    that.get = function(){
+        return that.value;
+    };
+
+    that.clear = function(triggerEvents){
+        triggerEvents = typeof triggerEvents != 'undefined'? triggerEvents : true;
+        // Set default color value
+        set(that.params['defaultValue'], false);
+        // Trigger events
+        if(triggerEvents){
+            that.triggerEvent('onClear', that.value);
+            eventOnChange();
+        }
+        return that;
+    };
+
+    that.disable = function(){
+        that.disabled = true;
+        cm.addClass(that.nodes['container'], 'disabled');
+        that.nodes['input'].disabled = true;
+        that.components['tooltip'].disable();
+        return that;
+    };
+
+    that.enable = function(){
+        that.disabled = false;
+        cm.removeClass(that.nodes['container'], 'disabled');
+        that.nodes['input'].disabled = false;
+        that.components['tooltip'].enable();
+        return that;
+    };
+
+    init();
+});
+cm.define('Com.DateSelect', {
+    'modules' : [
+        'Params',
+        'DataConfig',
+        'Langs',
+        'Events',
+        'Structure',
+        'Stack'
+    ],
+    'events' : [
+        'onSelect',
+        'onChange'
+    ],
+    'params' : {
+        'input' : null,                                 // Deprecated, use 'node' parameter instead.
+        'node' : cm.Node('input', {'type' : 'text'}),
+        'name' : '',
+        'embedStructure' : 'replace',
+        'container' : null,
+        'fields' : ['year', 'month', 'day'],
+        'format' : 'cm._config.dateFormat',
+        'startYear' : 1950,                             // number | current
+        'endYear' : 'current + 10',                     // number | current
+        'renderSelectsInBody' : true,
+        'langs' : {
+            'Day' : 'Day',
+            'Month' : 'Month',
+            'Year' : 'Year',
+            'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+        }
+    }
+},
+function(params){
+    var that = this,
+        nodes = {},
+        components = {},
+        defaultDate = {
+            'day' : '00',
+            'month' : '00',
+            'year' : '0000'
+        };
+
+    that.isDestructed = false;
+    that.previous = cm.clone(defaultDate);
+    that.selected = cm.clone(defaultDate);
+
+    var init = function(){
+        that.setParams(params);
+        preValidateParams();
+        that.convertEvents(that.params['events']);
+        that.getDataConfig(that.params['node']);
+        validateParams();
+        render();
+        that.addToStack(nodes['container']);
+        // Set selected date
+        set(that.params['node'].value);
+    };
+
+    var preValidateParams = function(){
+        if(cm.isNode(that.params['input'])){
+            that.params['node'] = that.params['input'];
+        }
+    };
+
+    var validateParams = function(){
+        if(cm.isNode(that.params['node'])){
+            that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
+        }
+        if(that.params['value'] == 'now'){
+            that.params['value'] = new Date();
+        }
+        if(/current/.test(that.params['startYear'])){
+            that.params['startYear'] = eval(cm.strReplace(that.params['startYear'], {'current' : new Date().getFullYear()}));
+        }
+        if(/current/.test(that.params['endYear'])){
+            that.params['endYear'] = eval(cm.strReplace(that.params['endYear'], {'current' : new Date().getFullYear()}));
+        }
+    };
+
+    var render = function(){
+        // Structure
+        nodes['container'] = cm.Node('div', {'class' : 'com__dateselect'},
+            nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
+            cm.Node('div', {'class' : 'pt__toolbar bottom'},
+                cm.Node('div', {'class' : 'inner clear'},
+                    nodes['fields'] = cm.Node('ul', {'class' : 'group'})
+                )
+            )
+        );
+        renderFields();
+        // Attributes
+        if(that.params['name']){
+            nodes['hidden'].setAttribute('name', that.params['name']);
+        }
+        // Append
+        that.embedStructure(nodes['container']);
+    };
+
+    var renderFields = function(){
+        cm.forEach(that.params['fields'], function(item){
+            switch(item){
+                case 'year':
+                    renderYearField();
+                    break;
+                case 'month':
+                    renderMonthField();
+                    break;
+                case 'day':
+                    renderDayField();
+                    break;
+            }
+        });
+    };
+
+    var renderYearField = function(){
+        // Structure
+        nodes['year'] = cm.Node('li', {'class' : 'is-field small'});
+        cm.appendChild(nodes['year'], nodes['fields']);
+        // Render component
+        var data = [
+            {'value' : '0000', 'text' : that.lang('Year')}
+        ], i;
+        for(i = that.params['endYear']; i >= that.params['startYear']; i--){
+            data.push({'value' : i, 'text' : i});
+        }
+        components['year'] = new Com.Select({
+            'container' : nodes['year'],
+            'options' : data,
+            'renderInBody' : that.params['renderSelectsInBody'],
+            'events' : {
+                'onChange' : function(select, item){
+                    that.previous = cm.clone(that.selected);
+                    that.selected['year'] = item;
+                    setMisc(true);
+                }
+            }
+        });
+    };
+
+    var renderMonthField = function(){
+        // Structure
+        nodes['month'] = cm.Node('li', {'class' : 'is-field medium'});
+        cm.appendChild(nodes['month'], nodes['fields']);
+        // Render component
+        var data = [
+            {'value' : '00', 'text' : that.lang('Month')}
+        ];
+        cm.forEach(that.lang('months'), function(month, i){
+            data.push({'value' : cm.addLeadZero(parseInt(i + 1)), 'text' : month});
+        });
+        components['month'] = new Com.Select({
+            'container' : nodes['month'],
+            'options' : data,
+            'renderInBody' : that.params['renderSelectsInBody'],
+            'events' : {
+                'onChange' : function(select, item){
+                    that.previous = cm.clone(that.selected);
+                    that.selected['month'] = item;
+                    setMisc(true);
+                }
+            }
+        });
+    };
+
+    var renderDayField = function(){
+        // Structure
+        nodes['day'] = cm.Node('li', {'class' : 'is-field x-small'});
+        cm.appendChild(nodes['day'], nodes['fields']);
+        // Render component
+        var data = [
+            {'value' : '00', 'text' : that.lang('Day')}
+        ], i;
+        for(i = 1; i <= 31; i++){
+            data.push({'value' : cm.addLeadZero(i), 'text' : i});
+        }
+        components['day'] = new Com.Select({
+            'container' : nodes['day'],
+            'options' : data,
+            'renderInBody' : that.params['renderSelectsInBody'],
+            'events' : {
+                'onChange' :  function(select, item){
+                    that.previous = cm.clone(that.selected);
+                    that.selected['day'] = item;
+                    setMisc(true);
+                }
+            }
+        });
+    };
+
+    var set = function(str, execute){
+        that.previous = cm.clone(that.selected);
+        if(!str || str == toStr(defaultDate)){
+            that.selected = cm.clone(defaultDate);
+        }else{
+            if(str instanceof Date){
+                that.selected = fromStr(cm.parseDate(str));
+            }else{
+                that.selected = fromStr(str);
+            }
+        }
+        components['day'] && components['day'].set(that.selected['day'], false);
+        components['month'] && components['month'].set(that.selected['month'], false);
+        components['year'] && components['year'].set(that.selected['year'], false);
+        setMisc(execute);
+    };
+
+    var setMisc = function(execute){
+        nodes['hidden'].value = toStr(that.selected);
+        if(execute){
+            // API onSelect event
+            that.triggerEvent('onSelect', toStr(that.selected));
+            // API onChange event
+            if(toStr(that.selected) != toStr(that.previous)){
+                that.triggerEvent('onChange', toStr(that.selected));
+            }
+        }
+    };
+
+    var fromStr = function(str, format){
+        var o = {},
+            convertFormats = {
+                '%Y' : 'YYYY',
+                '%m' : 'mm',
+                '%d' : 'dd'
+            },
+            formats = {
+                'YYYY' : function(value){
+                    o['year'] = value;
+                },
+                'mm' : function(value){
+                    o['month'] = value;
+                },
+                'dd' : function(value){
+                    o['day'] = value;
+                }
+            },
+            fromIndex = 0;
+        format = format || that.params['format'];
+        // Parse
+        cm.forEach(convertFormats, function(item, key){
+            format = format.replace(key, item);
+        });
+        cm.forEach(formats, function(item, key){
+            fromIndex = format.indexOf(key);
+            while(fromIndex != -1){
+                item(str.substr(fromIndex, key.length));
+                fromIndex = format.indexOf(key, fromIndex + 1);
+            }
+        });
+        return o;
+    };
+
+    var toStr = function(o, format){
+        var str = format || that.params['format'],
+            formats = function(o){
+                return {
+                    '%Y' : function(){
+                        return o['year'];
+                    },
+                    '%m' : function(){
+                        return o['month'];
+                    },
+                    '%d' : function(){
+                        return o['day'];
+                    }
+                };
+            };
+        cm.forEach(formats(o), function(item, key){
+            str = str.replace(key, item);
+        });
+        return str;
+    };
+
+    /* ******* PUBLIC ******* */
+
+    that.destruct = function(){
+        var that = this;
+        if(!that.isDestructed){
+            that.isDestructed = true;
+            that.removeFromStack();
+        }
+        return that;
+    };
+
+    that.get = function(format){
+        format = format || that.params['format'];
+        return toStr(that.selected, format);
+    };
+
+    that.getDate = function(){
+        return that.selected;
+    };
+
+    that.set = function(str){
+        set(str, true);
+        return that;
+    };
+
+    init();
+});
+
+/* ****** FORM FIELD COMPONENT ******* */
+
+Com.FormFields.add('date-select', {
+    'node' : cm.node('input', {'type' : 'text'}),
+    'fieldConstructor' : 'Com.AbstractFormField',
+    'constructor' : 'Com.DateSelect'
+});
+Com.Elements['Datepicker'] = {};
+
+Com['GetDatepicker'] = function(id){
+    return Com.Elements.Datepicker[id] || null;
+};
+
+cm.define('Com.Datepicker', {
+    'modules' : [
+        'Params',
+        'Events',
+        'DataConfig',
+        'Structure',
+        'Langs',
+        'Stack'
+    ],
+    'events' : [
+        'onRender',
+        'onSelect',
+        'onChange',
+        'onClear',
+        'onFocus',
+        'onBlur'
+    ],
+    'params' : {
+        'input' : null,                                                     // Deprecated, use 'node' parameter instead.
+        'node' : cm.node('input', {'type' : 'text'}),
+        'container' : null,
+        'name' : '',
+        'embedStructure' : 'replace',
+        'customEvents' : true,
+        'renderInBody' : true,
+        'format' : 'cm._config.dateFormat',
+        'displayFormat' : 'cm._config.displayDateFormat',
+        'isDateTime' : false,
+        'dateTimeFormat' : 'cm._config.dateTimeFormat',
+        'displayDateTimeFormat' : 'cm._config.displayDateTimeFormat',
+        'minutesInterval' : 1,
+        'startYear' : 1950,                                                 // number | current
+        'endYear' : 'current + 10',                                         // number | current
+        'startWeekDay' : 0,
+        'showTodayButton' : true,
+        'showClearButton' : false,
+        'showTitleTooltip' : true,
+        'showPlaceholder' : true,
+        'title' : '',
+        'placeholder' : '',
+        'menuMargin' : 4,
+        'value' : 0,
+        'disabled' : false,
+        'icons' : {
+            'datepicker' : 'icon default linked',
+            'clear' : 'icon default linked'
+        },
+        'langs' : {
+            'daysAbbr' : ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+            'days' : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+            'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            'Clear date' : 'Clear date',
+            'Today' : 'Today',
+            'Now' : 'Now',
+            'Time' : 'Time:'
+        },
+        'Com.Tooltip' : {
+            'targetEvent' : 'click',
+            'hideOnReClick' : false,
+            'className' : 'com__datepicker__tooltip',
+            'top' : 'cm._config.tooltipTop'
+        }
+    }
+},
+function(params){
+    var that = this,
+        nodes = {},
+        components = {};
+
+    that.date = null;
+    that.value = null;
+    that.previousValue = null;
+    that.format = null;
+    that.displayFormat = null;
+    that.disabled = false;
+    that.isDestructed = null;
+
+    var init = function(){
+        that.destructHandler = that.destruct.bind(that);
+        that.setParams(params);
+        preValidateParams();
+        that.convertEvents(that.params['events']);
+        that.getDataConfig(that.params['node']);
+        validateParams();
+        render();
+        setLogic();
+        setEvents();
+        // Add to stack
+        that.addToStack(nodes['container']);
+        // Set selected date
+        if(that.params['value']){
+            that.set(that.params['value'], that.format, false);
+        }else{
+            that.set(that.params['node'].value, that.format, false);
+        }
+        // Trigger events
+        that.triggerEvent('onRender', that.value);
+    };
+
+    var preValidateParams = function(){
+        if(cm.isNode(that.params['input'])){
+            that.params['node'] = that.params['input'];
+        }
+    };
+
+    var validateParams = function(){
+        if(cm.isNode(that.params['node'])){
+            that.params['placeholder'] = that.params['node'].getAttribute('placeholder') || that.params['placeholder'];
+            that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
+            that.params['disabled'] = that.params['node'].disabled || that.params['disabled'];
+            that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
+        }
+        if(that.params['value'] == 'now'){
+            that.params['value'] = new Date();
+        }
+        if(/current/.test(that.params['startYear'])){
+            that.params['startYear'] = eval(cm.strReplace(that.params['startYear'], {'current' : new Date().getFullYear()}));
+        }
+        if(/current/.test(that.params['endYear'])){
+            that.params['endYear'] = eval(cm.strReplace(that.params['endYear'], {'current' : new Date().getFullYear()}));
+        }
+        that.format = that.params['isDateTime']? that.params['dateTimeFormat'] : that.params['format'];
+        that.displayFormat = that.params['isDateTime']? that.params['displayDateTimeFormat'] : that.params['displayFormat'];
+        that.disabled = that.params['disabled'];
+    };
+
+    var render = function(){
+        /* *** RENDER STRUCTURE *** */
+        nodes['container'] = cm.Node('div', {'class' : 'com__datepicker-input'},
+            nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
+            nodes['target'] = cm.Node('div', {'class' : 'pt__input has-icon-right'},
+                nodes['input'] = cm.Node('input', {'type' : 'text'}),
+                nodes['icon'] = cm.Node('div', {'class' : that.params['icons']['datepicker']})
+            ),
+            nodes['menuContainer'] = cm.Node('div', {'class' : 'form'},
+                nodes['calendarContainer'] = cm.Node('div', {'class' : 'calendar-holder'})
+            )
+        );
+        /* *** ATTRIBUTES *** */
+        // Title
+        if(that.params['showTitleTooltip'] && !cm.isEmpty(that.params['title'])){
+            nodes['container'].title = that.params['title'];
+        }
+        // ID
+        if(that.params['node'].id){
+            nodes['container'].id = that.params['node'].id;
+        }
+        // Set hidden input attributes
+        if(that.params['name']){
+            nodes['hidden'].setAttribute('name', that.params['name']);
+        }
+        // Placeholder
+        if(that.params['showPlaceholder'] && !cm.isEmpty(that.params['placeholder'])){
+            nodes['input'].setAttribute('placeholder', that.params['placeholder']);
+        }
+        // Clear Button
+        if(that.params['showClearButton']){
+            cm.addClass(nodes['container'], 'has-clear-button');
+            nodes['container'].appendChild(
+                nodes['clearButton'] = cm.Node('div', {'class' : that.params['icons']['clear'], 'title' : that.lang('Clear date')})
+            );
+        }
+        // Today / Now Button
+        if(that.params['showTodayButton']){
+            nodes['menuContainer'].appendChild(
+                nodes['todayButton'] = cm.Node('div', {'class' : 'button today is-wide'}, that.lang(that.params['isDateTime']? 'Now' : 'Today'))
+            );
+        }
+        // Time Select
+        if(that.params['isDateTime']){
+            nodes['timeHolder'] = cm.Node('div', {'class' : 'time-holder'},
+                cm.Node('dl', {'class' : 'form-box'},
+                    cm.Node('dt', that.lang('Time')),
+                    nodes['timeContainer'] = cm.Node('dd')
+                )
+            );
+            cm.insertAfter(nodes['timeHolder'], nodes['calendarContainer']);
+        }
+        /* *** INSERT INTO DOM *** */
+        that.embedStructure(nodes['container']);
+    };
+
+    var setLogic = function(){
+        cm.addEvent(nodes['input'], 'keypress', inputKeypressHandler);
+        cm.addEvent(nodes['input'], 'keyup', inputKeyHandler);
+        // Clear Button
+        if(that.params['showClearButton']){
+            cm.addEvent(nodes['clearButton'], 'click', function(){
+                that.clear();
+                components['menu'].hide(false);
+            });
+        }
+        // Today / Now Button
+        if(that.params['showTodayButton']){
+            cm.addEvent(nodes['todayButton'], 'click', function(){
+                that.set(new Date());
+                components['menu'].hide(false);
+            });
+        }
+        // Render tooltip
+        components['menu'] = new Com.Tooltip(
+            cm.merge(that.params['Com.Tooltip'], {
+                'container' : that.params['renderInBody'] ? document.body : nodes['container'],
+                'content' : nodes['menuContainer'],
+                'target' : nodes['target'],
+                'events' : {
+                    'onShowStart' : onShow,
+                    'onHideStart' : onHide
+                }
+            })
+        );
+        // Render calendar
+        components['calendar'] = new Com.Calendar({
+            'node' : nodes['calendarContainer'],
+            'renderSelectsInBody' : false,
+            'className' : 'com__datepicker-calendar',
+            'startYear' : that.params['startYear'],
+            'endYear' : that.params['endYear'],
+            'startWeekDay' : that.params['startWeekDay'],
+            'langs' : that.params['langs'],
+            'renderMonthOnInit' : false,
+            'events' : {
+                'onMonthRender' : function(){
+                    if(that.date){
+                        components['calendar'].selectDay(that.date);
+                    }
+                },
+                'onDayClick' : function(calendar, params){
+                    if(!that.date){
+                        that.date = new Date();
+                    }
+                    components['calendar'].unSelectDay(that.date);
+                    that.date.setDate(params['day']);
+                    components['calendar'].selectDay(that.date);
+                    set(true);
+                    if(!that.params['isDateTime']){
+                        components['menu'].hide(false);
+                    }
+                }
+            }
+        });
+        // Render Time Select
+        if(that.params['isDateTime']){
+            components['time'] = new Com.TimeSelect({
+                'container' : nodes['timeContainer'],
+                'renderSelectsInBody' : false,
+                'minutesInterval' : that.params['minutesInterval']
+            });
+            components['time'].addEvent('onChange', function(){
+                if(!that.date){
+                    that.date = new Date();
+                }
+                components['calendar'].set(that.date.getFullYear(), that.date.getMonth(), false);
+                components['calendar'].selectDay(that.date);
+                set(true);
+            });
+        }
+        // Enable / Disable
+        if(that.disabled){
+            that.disable();
+        }else{
+            that.enable();
+        }
+    };
+
+    var inputKeypressHandler = function(e){
+        if(cm.isKey(e, 'enter')){
+            cm.preventDefault(e);
+        }
+    };
+
+    var inputKeyHandler = function(e){
+        var value = nodes['input'].value;
+        if(cm.isKey(e, 'enter')){
+            cm.preventDefault(e);
+            validateInputValue();
+            components['menu'].hide(false);
+        }
+        if(cm.isKey(e, 'delete')){
+            if(cm.isEmpty(value)){
+                that.clear(true);
+                //components['menu'].hide(false);
+            }
+        }
+    };
+
+    var setEvents = function(){
+        // Add custom event
+        if(that.params['customEvents']){
+            cm.customEvent.add(nodes['container'], 'destruct', that.destructHandler);
+        }
+    };
+
+    var unsetEvents = function(){
+        // Add custom event
+        if(that.params['customEvents']){
+            cm.customEvent.remove(nodes['container'], 'destruct', that.destructHandler);
+        }
+    };
+
+    var onShow = function(){
+        renderCalendarMonth();
+        // Set classes
+        cm.addClass(nodes['container'], 'active');
+        that.triggerEvent('onFocus', that.value);
+    };
+
+    var onHide = function(){
+        validateInputValue();
+        setInputValues();
+        nodes['input'].blur();
+        cm.removeClass(nodes['container'], 'active');
+        that.triggerEvent('onBlur', that.value);
+    };
+
+    var validateInputValue = function(){
+        var value = nodes['input'].value,
+            date = new Date(value);
+        if(cm.isEmpty(value) || !cm.isDateValid(date)){
+            that.clear(true);
+        }else{
+            that.set(date, null, true);
+        }
+    };
+
+    var set = function(triggerEvents){
+        that.previousValue = that.value;
+        if(that.date){
+            // Set date
+            that.date.setFullYear(components['calendar'].getFullYear());
+            that.date.setMonth(components['calendar'].getMonth());
+            // Set time
+            if(that.params['isDateTime']){
+                that.date.setHours(components['time'].getHours());
+                that.date.setMinutes(components['time'].getMinutes());
+                that.date.setSeconds(0);
+            }
+            // Set value
+            that.value = cm.dateFormat(that.date, that.format, that.lang());
+        }else{
+            that.value = cm.dateFormat(false, that.format, that.lang());
+        }
+        setInputValues();
+        renderCalendarMonth();
+        // Trigger events
+        if(triggerEvents){
+            that.triggerEvent('onSelect', that.value);
+            onChange();
+        }
+    };
+
+    var renderCalendarMonth = function(){
+        // Render calendar month
+        if(that.date){
+            components['calendar'].set(that.date.getFullYear(), that.date.getMonth());
+        }
+        components['calendar'].renderMonth();
+    };
+
+    var setInputValues = function(){
+        if(that.date){
+            nodes['input'].value = cm.dateFormat(that.date, that.displayFormat, that.lang());
+            nodes['hidden'].value = that.value;
+        }else{
+            nodes['input'].value = '';
+            nodes['hidden'].value = cm.dateFormat(false, that.format, that.lang());
+        }
+    };
+    
+    var onChange = function(){
+        if(!that.previousValue || (!that.value && that.previousValue) || (that.value != that.previousValue)){
+            that.triggerEvent('onChange', that.value);
+        }
+    };
+
+    /* ******* MAIN ******* */
+
+    that.destruct = function(){
+        var that = this;
+        if(!that.isDestructed){
+            that.isDestructed = true;
+            cm.customEvent.trigger(nodes['calendarContainer'], 'destruct', {
+                'type' : 'child',
+                'self' : false
+            });
+            unsetEvents();
+            that.removeFromStack();
+        }
+        return that;
+    };
+
+    that.get = function(format){
+        format = typeof format != 'undefined'? format : that.format;
+        return cm.dateFormat(that.date, format, that.lang());
+    };
+
+    that.getDate = function(){
+        return that.date;
+    };
+
+    that.getFullYear = function(){
+        return that.date? that.date.getFullYear() : null;
+    };
+
+    that.getMonth = function(){
+        return that.date? that.date.getMonth() : null;
+    };
+
+    that.getDay = function(){
+        return that.date? that.date.getDate() : null;
+    };
+
+    that.getHours = function(){
+        return that.date? that.date.getHours() : null;
+    };
+
+    that.getMinutes = function(){
+        return that.date? that.date.getMinutes() : null;
+    };
+
+    that.set = function(str, format, triggerEvents){
+        format = typeof format != 'undefined'? format : that.format;
+        triggerEvents = typeof triggerEvents != 'undefined'? triggerEvents : true;
+        // Get date
+        var pattern = cm.dateFormat(false, format, that.lang());
+        if(cm.isEmpty(str) || str == pattern){
+            that.clear();
+            return that;
+        }else if(cm.isDate(str)){
+            that.date = str;
+        }else{
+            that.date = cm.parseDate(str, format);
+        }
+        // Set parameters into components
+        components['calendar'].set(that.date.getFullYear(), that.date.getMonth(), false);
+        if(that.params['isDateTime']){
+            components['time'].set(that.date, null, false);
+        }
+        // Set date
+        set(triggerEvents);
+        return that;
+    };
+
+    that.clear = function(triggerEvents){
+        triggerEvents = typeof triggerEvents != 'undefined'? triggerEvents : true;
+        // Clear date
+        that.date = null;
+        // Clear components
+        components['calendar'].clear(false);
+        if(that.params['isDateTime']){
+            components['time'].clear(false);
+        }
+        // Set date
+        set(false);
+        // Trigger events
+        if(triggerEvents){
+            that.triggerEvent('onClear', that.value);
+            onChange();
+        }
+        return that;
+    };
+
+    that.disable = function(){
+        that.disabled = true;
+        cm.addClass(nodes['container'], 'disabled');
+        nodes['input'].disabled = true;
+        components['menu'].disable();
+        return that;
+    };
+
+    that.enable = function(){
+        that.disabled = false;
+        cm.removeClass(nodes['container'], 'disabled');
+        nodes['input'].disabled = false;
+        components['menu'].enable();
+        return that;
+    };
+
+    that.getNodes = function(key){
+        return nodes[key] || nodes;
+    };
+
+    init();
+});
+cm.define('Com.FileInput', {
+    'extend' : 'Com.AbstractInput',
+    'params' : {
+        'embedStructure' : 'replace',
+        'className' : 'com__file-input',
+        'file' : null,
+        'showLink' : true,
+        'autoOpen' : false,
+        'local' : true,
+        'fileManager' : false,
+        'fileManagerConstructor' : 'Com.AbstractFileManagerContainer',
+        'fileManagerParams' : {
+            'params' : {
+                'max' : 1
+            }
+        },
+        'fileUploader' : false,
+        'fileUploaderConstructor' : 'Com.FileUploaderContainer',
+        'fileUploaderParams' : {
+            'params' : {
+                'max' : 1
+            }
+        },
+        'dropzone' : true,
+        'dropzoneConstructor' : 'Com.FileDropzone',
+        'dropzoneParams' : {
+            'embedStructure' : 'append',
+            'max' : 1,
+            'rollover' : true
+        },
+        'langs' : {
+            'browse' : 'Browse',
+            'browse_local' : 'Browse Local',
+            'browse_filemanager' : 'Browse File Manager',
+            'remove' : 'Remove',
+            'open' : 'Open'
+        },
+        'Com.FileReader' : {}
+    }
+},
+function(params){
+    var that = this;
+    // Call parent class construct
+    Com.AbstractInput.apply(that, arguments);
+});
+
+cm.getConstructor('Com.FileInput', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.construct = function(){
+        var that = this;
+        // Bind context to methods
+        that.initComponentsStartHandler = that.initComponentsStart.bind(that);
+        that.validateParamsEndHandler = that.validateParamsEnd.bind(that);
+        that.browseActionHandler = that.browseAction.bind(that);
+        that.processFilesHandler = that.processFiles.bind(that);
+        // Add events
+        that.addEvent('onInitComponentsStart', that.initComponentsStartHandler);
+        that.addEvent('onValidateParamsEnd', that.validateParamsEndHandler);
+        // Call parent method
+        _inherit.prototype.construct.apply(that, arguments);
+        return that;
+    };
+
+    classProto.get = function(){
+        var that = this,
+            value;
+        if(that.params['formData']){
+            value = that.value['file'] || that.value;
+        }else{
+            value = that.value;
+        }
+        return value;
+    };
+
+    classProto.initComponentsStart = function(){
+        var that = this;
+        cm.getConstructor('Com.FileReader', function(classObject){
+            that.components['validator'] = new classObject();
+        });
+        return that;
+    };
+
+    classProto.validateParamsEnd = function(){
+        var that = this;
+        // Validate Language Strings
+        that.setLangs({
+            '_browse_local' : that.params['fileManager'] ? that.lang('browse_local') : that.lang('browse'),
+            '_browse_filemanager' : that.params['local'] ? that.lang('browse_filemanager') : that.lang('browse')
+        });
+        // Dropzone
+        that.params['dropzone'] = !that.params['local'] ? false : that.params['dropzone'];
+        // File Uploader
+        that.params['fileUploaderParams']['openOnConstruct'] = that.params['autoOpen'];
+        that.params['fileUploaderParams']['params']['local'] = that.params['local'];
+        that.params['fileUploaderParams']['params']['fileManager'] = that.params['fileManager'];
+        // Other
+        that.params['local'] = that.params['fileUploader'] ? false : that.params['local'];
+        that.params['fileManagerParams']['openOnConstruct'] = that.params['autoOpen'];
+        that.params['fileManager'] = that.params['fileUploader'] ? false : that.params['fileManager'];
+        return that;
+    };
+
+    classProto.validateValue = function(value){
+        var that = this,
+            item = that.components['validator'].validate(value);
+        return !cm.isEmpty(item['value']) ? item : '';
+    };
+
+    classProto.saveValue = function(value){
+        var that = this;
+        that.previousValue = that.value;
+        that.value = value;
+        if(that.params['setHiddenInput']){
+            if(!cm.isEmpty(value)){
+                that.nodes['hidden'].value = JSON.stringify(value);
+            }else{
+                that.nodes['hidden'].value = ''
+            }
+        }
+        return that;
+    };
+
+    classProto.renderViewModel = function(){
+        var that = this;
+        // Call parent method - renderViewModel
+        _inherit.prototype.renderViewModel.apply(that, arguments);
+        // Init FilerReader
+        cm.getConstructor('Com.FileReader', function(classObject, className){
+            that.components['reader'] = new classObject(that.params[className]);
+            that.components['reader'].addEvent('onReadSuccess', function(my, item){
+                that.set(item, true);
+            });
+        });
+        // Init Dropzone
+        if(that.params['dropzone']){
+            cm.getConstructor(that.params['dropzoneConstructor'], function(classObject){
+                that.components['dropzone'] = new classObject(
+                    cm.merge(that.params['dropzoneParams'], {
+                        'container' : that.nodes['content']['inner'],
+                        'target' : that.nodes['content']['content']
+                    })
+                );
+                that.components['dropzone'].addEvent('onDrop', function(my, data){
+                    that.processFiles(data);
+                });
+            });
+        }
+        // Init File Manager
+        if(that.params['fileManager']){
+            cm.getConstructor(that.params['fileManagerConstructor'], function(classObject){
+                that.components['fileManager'] = new classObject(
+                    cm.merge(that.params['fileManagerParams'], {
+                        'node' : that.nodes['content']['browseFileManager']
+                    })
+                );
+                that.components['fileManager'].addEvent('onComplete', function(my, data){
+                    that.processFiles(data);
+                });
+            });
+        }
+        // Init File Uploader
+        if(that.params['fileUploader']){
+            cm.getConstructor(that.params['fileUploaderConstructor'], function(classObject){
+                that.components['fileUploader'] = new classObject(
+                    cm.merge(that.params['fileUploaderParams'], {
+                        'node' : that.nodes['content']['browseFileUploader']
+                    })
+                );
+                that.components['fileUploader'].addEvent('onComplete', function(my, data){
+                    that.processFiles(data);
+                });
+            });
+        }
+        return that;
+    };
+
+    classProto.renderContent = function(){
+        var that = this,
+            nodes = {};
+        that.nodes['content'] = nodes;
+        that.triggerEvent('onRenderContentStart');
+        // Structure
+        nodes['container'] = cm.node('div', {'class' : 'com__file-input__content'},
+            nodes['inner'] = cm.node('div', {'class' : 'inner'},
+                nodes['content'] = cm.node('div', {'class' : 'com__file-input__holder'},
+                    cm.node('div', {'class' : 'pt__file-line'},
+                        nodes['buttonsInner'] = cm.node('div', {'class' : 'inner'},
+                            nodes['clear'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('remove')),
+                            nodes['label'] = cm.node('div', {'class' : 'label'})
+                        )
+                    )
+                )
+            )
+        );
+        // Render Browse Buttons
+        if(that.params['local']){
+            nodes['browseLocal'] = cm.node('div', {'class' : 'browse-button'},
+                cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('_browse_local')),
+                cm.node('div', {'class' : 'inner'},
+                    nodes['input'] = cm.node('input', {'type' : 'file'})
+                )
+            );
+            cm.addEvent(nodes['input'], 'change', that.browseActionHandler);
+            cm.insertFirst(nodes['browseLocal'], nodes['buttonsInner']);
+        }
+        if(that.params['fileManager']){
+            nodes['browseFileManager'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('_browse_filemanager'));
+            cm.insertFirst(nodes['browseFileManager'], nodes['buttonsInner']);
+        }
+        if(that.params['fileUploader']){
+            nodes['browseFileUploader'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('browse'));
+            cm.insertFirst(nodes['browseFileUploader'], nodes['buttonsInner']);
+        }
+        // Events
+        that.triggerEvent('onRenderContentProcess');
+        cm.addEvent(nodes['clear'], 'click', that.clearEventHandler);
+        that.triggerEvent('onRenderContentEnd');
+        // Export
+        return nodes['container'];
+    };
+
+    classProto.setData = function(){
+        var that = this,
+            url;
+        if(cm.isEmpty(that.value)){
+            cm.clearNode(that.nodes['content']['label']);
+            cm.addClass(that.nodes['content']['label'], 'is-hidden');
+            cm.removeClass(that.nodes['content']['browseLocal'], 'is-hidden');
+            cm.removeClass(that.nodes['content']['browseFileManager'], 'is-hidden');
+            cm.removeClass(that.nodes['content']['browseFileUploader'], 'is-hidden');
+            cm.addClass(that.nodes['content']['clear'], 'is-hidden');
+        }else{
+            cm.clearNode(that.nodes['content']['label']);
+            if(that.params['showLink']){
+                that.nodes['content']['link'] = cm.node('a', {'target' : '_blank', 'href' : that.value['url'], 'title' : that.lang('open')}, that.value['name']);
+            }else{
+                that.nodes['content']['link'] = cm.textNode(that.value['name']);
+            }
+            cm.appendChild(that.nodes['content']['link'], that.nodes['content']['label']);
+            cm.addClass(that.nodes['content']['browseLocal'], 'is-hidden');
+            cm.addClass(that.nodes['content']['browseFileManager'], 'is-hidden');
+            cm.addClass(that.nodes['content']['browseFileUploader'], 'is-hidden');
+            cm.removeClass(that.nodes['content']['clear'], 'is-hidden');
+            cm.removeClass(that.nodes['content']['label'], 'is-hidden');
+        }
+        return that;
+    };
+
+    /* *** PROCESS FILES *** */
+
+    classProto.browseAction = function(e){
+        var that = this,
+            file = e.target.files[0];
+        cm.preventDefault(e);
+        // Read File
+        that.processFiles(file);
+        return that;
+    };
+
+    classProto.processFiles = function(data){
+        var that = this;
+        if(cm.isFile(data)){
+            that.components['reader'].read(data);
+        }else if(cm.isArray(data)){
+            cm.forEach(data, function(file){
+                that.processFiles(file);
+            })
+        }else if(!cm.isEmpty(data)){
+            that.set(data, true);
+        }
+        return that;
+    };
+});
+
+/* ****** FORM FIELD COMPONENT ******* */
+
+Com.FormFields.add('file-input', {
+    'node' : cm.node('input'),
+    'constructor' : 'Com.FileInput'
+});
+cm.define('Com.ImageInput', {
+    'extend' : 'Com.FileInput',
+    'params' : {
+        'className' : 'com__image-input',
+        'size' : 'default',
+        'aspect' : false,
+        'preview' : true,
+        'previewConstructor' : 'Com.ImagePreviewContainer',
+        'previewParams' : {},
+        'langs' : {
+            'preview' : 'Preview'
+        }
+    }
+},
+function(params){
+    var that = this;
+    // Call parent class construct
+    Com.FileInput.apply(that, arguments);
+});
+
+cm.getConstructor('Com.ImageInput', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.renderViewModel = function(){
+        var that = this;
+        // Call parent method - renderViewModel
+        _inherit.prototype.renderViewModel.apply(that, arguments);
+        // Init Preview
+        if(that.params['preview']){
+            cm.getConstructor(that.params['previewConstructor'], function(classObject){
+                that.components['preview'] = new classObject(
+                    cm.merge(that.params['previewParams'], {
+                        'node' : that.nodes['content']['preview']
+                    })
+                );
+            });
+        }
+    };
+
+    classProto.renderContent = function(){
+        var that = this,
+            nodes = {};
+        that.nodes['content'] = nodes;
+        that.triggerEvent('onRenderContentStart');
+        // Structure
+        nodes['container'] = cm.node('div', {'class' : 'com__image-input__content'},
+            nodes['inner'] = cm.node('div', {'class' : 'inner'},
+                nodes['content'] = cm.node('div', {'class' : 'input__holder'},
+                    cm.node('div', {'class' : 'input__cover'},
+                        nodes['label'] = cm.node('div', {'class' : 'input__label'}),
+                        nodes['buttonsInner'] = cm.node('div', {'class' : 'input__buttons'},
+                            nodes['clear'] = cm.node('div', {'class' : 'cm__button-wrapper'},
+                                cm.node('button', {'type' : 'button', 'class' : 'button button-danger'},
+                                    cm.node('span', that.lang('remove'))
+                                )
+                            )
+                        )
+                    ),
+                    nodes['imageContainer'] = cm.node('div', {'class' : 'pt__image is-cover'},
+                        cm.node('div', {'class' : 'inner'},
+                            nodes['image'] = cm.node('div', {'class' : 'descr'})
+                        )
+                    )
+                )
+            )
+        );
+        // Image Preview size
+        if(that.params['aspect']){
+            cm.addClass(nodes['imageContainer'], 'is-background has-aspect');
+            cm.addClass(nodes['imageContainer'], ['cm__aspect', that.params['aspect']].join('-'));
+        }
+        // Render Buttons
+        that.renderButtons();
+        // Events
+        that.triggerEvent('onRenderContentProcess');
+        cm.addEvent(nodes['clear'], 'click', that.clearEventHandler);
+        that.triggerEvent('onRenderContentEnd');
+        // Export
+        return nodes['container'];
+    };
+
+    classProto.renderButtons = function(){
+        var that = this;
+        if(that.params['preview']){
+            that.nodes['content']['preview'] = cm.node('div', {'class' : 'cm__button-wrapper'},
+                cm.node('button', {'type' : 'button', 'class' : 'button button-primary'},
+                    cm.node('span', that.lang('preview'))
+                )
+            );
+            cm.insertFirst(that.nodes['content']['preview'], that.nodes['content']['buttonsInner']);
+        }
+        if(that.params['local']){
+            that.nodes['content']['browseLocal'] = cm.node('div', {'class' : 'browse-button'},
+                cm.node('button', {'type' : 'button', 'class' : 'button button-primary'},
+                    cm.node('span', that.lang('_browse_local'))
+                ),
+                cm.node('div', {'class' : 'inner'},
+                    that.nodes['content']['input'] = cm.node('input', {'type' : 'file'})
+                )
+            );
+            cm.addEvent(that.nodes['content']['input'], 'change', that.browseActionHandler);
+            cm.insertFirst(that.nodes['content']['browseLocal'], that.nodes['content']['buttonsInner']);
+        }
+        if(that.params['fileManager']){
+            that.nodes['content']['browseFileManager'] = cm.node('div', {'class' : 'cm__button-wrapper'},
+                cm.node('button', {'type' : 'button', 'class' : 'button button-primary'},
+                    cm.node('span', that.lang('_browse_filemanager'))
+                )
+            );
+            cm.insertFirst(that.nodes['content']['browseFileManager'], that.nodes['content']['buttonsInner']);
+        }
+        if(that.params['fileUploader']){
+            that.nodes['content']['browseFileUploader'] = cm.node('div', {'class' : 'cm__button-wrapper'},
+                cm.node('button', {'type' : 'button', 'class' : 'button button-primary'},
+                    cm.node('span', that.lang('browse'))
+                )
+            );
+            cm.insertFirst(that.nodes['content']['browseFileUploader'], that.nodes['content']['buttonsInner']);
+        }
+        return that;
+    };
+
+    classProto.setData = function(){
+        var that = this,
+            url;
+        if(cm.isEmpty(that.value)){
+            // Preview
+            that.components['preview'] && that.components['preview'].clear();
+            cm.addClass(that.nodes['content']['preview'], 'is-hidden');
+            that.nodes['content']['image'].style.backgroundImage = '';
+            cm.addClass(that.nodes['content']['imageContainer'], 'is-default-image');
+            // Label
+            cm.clearNode(that.nodes['content']['label']);
+            cm.addClass(that.nodes['content']['label'], 'is-hidden');
+            // Remove button
+            cm.addClass(that.nodes['content']['clear'], 'is-hidden');
+        }else{
+            // Preview
+            that.components['preview'] && that.components['preview'].set(that.value);
+            cm.removeClass(that.nodes['content']['preview'], 'is-hidden');
+            that.nodes['content']['image'].style.backgroundImage = cm.URLToCSSURL(that.value['url']);
+            cm.removeClass(that.nodes['content']['imageContainer'], 'is-default-image');
+            // Label
+            cm.clearNode(that.nodes['content']['label']);
+            if(that.params['showLink']){
+                that.nodes['content']['link'] = cm.node('a', {'target' : '_blank', 'href' : that.value['url'], 'title' : that.lang('open')}, that.value['name']);
+            }else{
+                that.nodes['content']['link'] = cm.textNode(that.value['name']);
+            }
+            cm.appendChild(that.nodes['content']['link'], that.nodes['content']['label']);
+            cm.removeClass(that.nodes['content']['label'], 'is-hidden');
+            // Remove button
+            cm.removeClass(that.nodes['content']['clear'], 'is-hidden');
+        }
+        return that;
+    };
+});
+
+/* ****** FORM FIELD COMPONENT ******* */
+
+Com.FormFields.add('image', {
+    'node' : cm.node('input', {'type' : 'text'}),
+    'fieldConstructor' : 'Com.AbstractFormField',
+    'constructor' : 'Com.ImageInput'
+});
+
+cm.define('Com.IndentInput', {
+    'extend' : 'Com.AbstractInput',
+    'params' : {
+        'maxlength' : 3,
+        'units' : 'px',
+        'defaultValue' : 0,
+        'allowNegative' : false
+    }
+},
+function(params){
+    var that = this;
+    // Call parent class construct
+    Com.AbstractInput.apply(that, arguments);
+});
+
+cm.getConstructor('Com.IndentInput', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.construct = function(){
+        var that = this;
+        // Bind context to methods
+        that.setValueHandler = that.setValue.bind(that);
+        // Call parent method
+        _inherit.prototype.construct.apply(that, arguments);
+        return that;
+    };
+
+    classProto.renderContent = function(){
+        var that = this,
+            nodes = {};
+        that.nodes['content'] = nodes;
+        that.triggerEvent('onRenderContentStart');
+        // Structure
+        nodes['container'] = cm.node('div', {'class' : 'pt__input'},
+            nodes['input'] = cm.node('input', {'type' : 'text'})
+        );
+        // Attributes
+        if(!cm.isEmpty(that.params['maxlength']) && that.params['maxlength'] > 0){
+            nodes['input'].setAttribute('maxlength', that.params['maxlength']);
+        }
+        // Events
+        that.triggerEvent('onRenderContentProcess');
+        cm.addEvent(nodes['input'], 'blur', that.setValueHandler);
+        cm.addEvent(nodes['input'], 'keypress', function(e){
+            if(cm.isKeyCode(e.keyCode, 'enter')){
+                cm.preventDefault(e);
+                that.setValue();
+                nodes['input'].blur();
+            }
+        });
+
+        if(that.params['allowNegative']){
+            cm.allowOnlyNumbersInputEvent(nodes['input'], function(e, value){
+                that.selectAction(that.validateValue(value), true);
+            });
+        }else{
+            cm.allowOnlyDigitInputEvent(nodes['input'], function(e, value){
+                that.selectAction(that.validateValue(value), true);
+            });
+        }
+        that.triggerEvent('onRenderContentEnd');
+        // Push
+        return nodes['container'];
+    };
+
+    /* *** DATA VALUE *** */
+
+    classProto.validateValue = function(value){
+        var that = this;
+        value = !cm.isEmpty(value) ? value : that.params['defaultValue'];
+        value = parseInt(value);
+        that.rawValue = !isNaN(value) ? value : '';
+        return (that.rawValue + that.params['units']);
+    };
+
+    classProto.setValue = function(triggerEvents){
+        var that = this;
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        that.set(that.rawValue, triggerEvents);
+        return that;
+    };
+
+    classProto.setData = function(){
+        var that = this;
+        that.nodes['content']['input'].value = that.rawValue;
+        return that;
+    };
+});
+
+/* ****** FORM FIELD COMPONENT ******* */
+
+Com.FormFields.add('indent', {
+    'node' : cm.node('input', {'type' : 'text'}),
+    'fieldConstructor' : 'Com.AbstractFormField',
+    'constructor' : 'Com.IndentInput'
+});
+cm.define('Com.IntegerInput', {
+    'extend' : 'Com.AbstractInput',
+    'params' : {
+        'maxlength' : 3,
+        'defaultValue' : 0,
+        'allowNegative' : false
+    }
+},
+function(params){
+    var that = this;
+    // Call parent class construct
+    Com.AbstractInput.apply(that, arguments);
+});
+
+cm.getConstructor('Com.IntegerInput', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.construct = function(){
+        var that = this;
+        // Bind context to methods
+        that.setValueHandler = that.setValue.bind(that);
+        // Call parent method
+        _inherit.prototype.construct.apply(that, arguments);
+        return that;
+    };
+
+    classProto.renderContent = function(){
+        var that = this,
+            nodes = {};
+        that.nodes['content'] = nodes;
+        that.triggerEvent('onRenderContentStart');
+        // Structure
+        nodes['container'] = cm.node('div', {'class' : 'pt__input'},
+            nodes['input'] = cm.node('input', {'type' : 'text'})
+        );
+        // Attributes
+        if(!cm.isEmpty(that.params['maxlength']) && that.params['maxlength'] > 0){
+            nodes['input'].setAttribute('maxlength', that.params['maxlength']);
+        }
+        // Events
+        that.triggerEvent('onRenderContentProcess');
+        cm.addEvent(nodes['input'], 'blur', that.setValueHandler);
+        cm.addEvent(nodes['input'], 'keypress', function(e){
+            if(cm.isKeyCode(e.keyCode, 'enter')){
+                cm.preventDefault(e);
+                that.setValue();
+                nodes['input'].blur();
+            }
+        });
+
+        if(that.params['allowNegative']){
+            cm.allowOnlyNumbersInputEvent(nodes['input'], function(e, value){
+                that.selectAction(that.validateValue(value), true);
+            });
+        }else{
+            cm.allowOnlyDigitInputEvent(nodes['input'], function(e, value){
+                that.selectAction(that.validateValue(value), true);
+            });
+        }
+        that.triggerEvent('onRenderContentEnd');
+        // Push
+        return nodes['container'];
+    };
+
+    /* *** DATA VALUE *** */
+
+    classProto.validateValue = function(value){
+        var that = this;
+        value = !cm.isEmpty(value) ? value : that.params['defaultValue'];
+        value = parseInt(value);
+        that.rawValue = !isNaN(value) ? value : '';
+        return that.rawValue;
+    };
+
+    classProto.setValue = function(triggerEvents){
+        var that = this;
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        that.set(that.rawValue, triggerEvents);
+        return that;
+    };
+
+    classProto.setData = function(){
+        var that = this;
+        that.nodes['content']['input'].value = that.rawValue;
+        return that;
+    };
+});
+
+/* ****** FORM FIELD COMPONENT ******* */
+
+Com.FormFields.add('integer', {
+    'node' : cm.node('input', {'type' : 'text'}),
+    'fieldConstructor' : 'Com.AbstractFormField',
+    'constructor' : 'Com.IntegerInput'
+});
+cm.define('Com.MultipleAutocomplete', {
+    'extend' : 'Com.MultipleInput',
+    'params' : {
+        'embedStructure' : 'replace',
+        'className' : 'com__multiple-autocomplete',
+        'sortable' : false,
+        'showToolbar' : false,
+        'showControls' : true,
+        'focusInput' : true,
+        'inputConstructor' : 'Com.Autocomplete'
+    }
+},
+function(params){
+    var that = this;
+    // Call parent class construct
+    Com.MultipleInput.apply(that, arguments);
+});
+
+/* ****** FORM FIELD COMPONENT ******* */
+
+Com.FormFields.add('multi-autocomplete', {
+    'node' : cm.node('div'),
+    'constructor' : 'Com.MultipleAutocomplete'
+});
+cm.define('Com.MultipleFileInput', {
+    'extend' : 'Com.MultipleInput',
+    'params' : {
+        'embedStructure' : 'replace',
+        'className' : 'com__multiple-file-input',
+        'local' : true,
+        'sortable' : false,
+        'showToolbar' : true,
+        'showControls' : false,
+        'focusInput' : false,
+        'buttonsAlign' : 'left',
+        'inputConstructor' : 'Com.FileInput',
+        'inputParams' : {
+            'embedStructure' : 'replace',
+            'dropzone' : false
+        },
+        'fileManager' : false,
+        'fileManagerConstructor' : 'Com.AbstractFileManagerContainer',
+        'fileManagerParams' : {
+            'params' : {}
+        },
+        'fileUploader' : false,
+        'fileUploaderConstructor' : 'Com.FileUploaderContainer',
+        'fileUploaderParams' : {
+            'params' : {}
+        },
+        'dropzone' : true,
+        'dropzoneConstructor' : 'Com.FileDropzone',
+        'dropzoneParams' : {
+            'embedStructure' : 'append',
+            'rollover' : true
+        },
+        'langs' : {
+            'browse' : 'Browse',
+            'browse_local' : 'Browse Local',
+            'browse_filemanager' : 'Browse File Manager'
+        },
+        'Com.FileReader' : {}
+    }
+},
+function(params){
+    var that = this;
+    that.myComponents = {};
+    that.dragInterval = null;
+    that.isDropzoneShow = false;
+    that.hasButtons = false;
+    // Call parent class construct
+    Com.MultipleInput.apply(that, arguments);
+});
+
+cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.construct = function(){
+        var that = this;
+        // Bind context to methods
+        that.validateParamsEndHandler = that.validateParamsEnd.bind(that);
+        that.itemAddProcessHandler = that.itemAddProcess.bind(that);
+        that.browseActionHandler = that.browseAction.bind(that);
+        that.processFilesHandler = that.processFiles.bind(that);
+        // Add events
+        that.addEvent('onValidateParamsEnd', that.validateParamsEndHandler);
+        that.addEvent('onItemAddProcess', that.itemAddProcessHandler);
+        // Call parent method
+        _inherit.prototype.construct.apply(that, arguments);
+        return that;
+    };
+
+    classProto.clear = function(){
+        var that = this;
+        that.params['showToolbar'] && cm.removeClass(that.nodes['toolbar']['browseHolder'], 'is-hidden');
+        // Call parent method
+        _inherit.prototype.clear.apply(that, arguments);
+        return that;
+    };
+
+    classProto.validateParamsEnd = function(){
+        var that = this;
+        that.isMultiple = !that.params['max'] || that.params['max'] > 1;
+        // Validate Language Strings
+        that.setLangs({
+            '_browse_local' : that.params['fileManager'] ? that.lang('browse_local') : that.lang('browse'),
+            '_browse_filemanager' : that.params['local'] ? that.lang('browse_filemanager') : that.lang('browse')
+        });
+        // Components parameters
+        that.params['dropzoneParams']['max'] = that.params['max'];
+        that.params['fileManagerParams']['params']['max'] = that.params['max'];
+        that.params['fileUploaderParams']['params']['max'] = that.params['max'];
+        // File Uploader
+        that.params['fileUploaderParams']['params']['local'] = that.params['local'];
+        that.params['fileUploaderParams']['params']['fileManager'] = that.params['fileManager'];
+        // Other
+        that.params['dropzone'] = !that.params['local'] ? false : that.params['dropzone'];
+        that.params['local'] = that.params['fileUploader'] ? false : that.params['local'];
+        that.params['fileManager'] = that.params['fileUploader'] ? false : that.params['fileManager'];
+        that.hasButtons = that.params['local'] || that.params['fileManager'] || that.params['fileUploader'];
+        return that;
+    };
+
+    classProto.renderViewModel = function(){
+        var that = this;
+        // Call parent method - renderViewModel
+        _inherit.prototype.renderViewModel.apply(that, arguments);
+        // Init FilerReader
+        cm.getConstructor('Com.FileReader', function(classObject, className){
+            that.myComponents['reader'] = new classObject(that.params[className]);
+            that.myComponents['reader'].addEvent('onReadSuccess', function(my, item){
+                that.addItem({'value' : item}, true);
+            });
+        });
+        // Init Dropzone
+        if(that.params['dropzone']){
+            cm.getConstructor(that.params['dropzoneConstructor'], function(classObject){
+                that.myComponents['dropzone'] = new classObject(
+                    cm.merge(that.params['dropzoneParams'], {
+                        'container' : that.nodes['inner'],
+                        'target' : that.nodes['holder']
+                    })
+                );
+                that.myComponents['dropzone'].addEvent('onDrop', function(my, data){
+                    that.processFiles(data);
+                });
+            });
+        }
+        // Init File Manager
+        if(that.params['showToolbar'] && that.params['fileManager']){
+            cm.getConstructor(that.params['fileManagerConstructor'], function(classObject){
+                that.myComponents['fileManager'] = new classObject(
+                    cm.merge(that.params['fileManagerParams'], {
+                        'node' : that.nodes['toolbar']['browseFileManager']
+                    })
+                );
+                that.myComponents['fileManager'].addEvent('onComplete', function(my, data){
+                    that.processFiles(data);
+                });
+            });
+        }
+        // Init File Uploader
+        if(that.params['showToolbar'] && that.params['fileUploader']){
+            cm.getConstructor(that.params['fileUploaderConstructor'], function(classObject){
+                that.myComponents['fileUploader'] = new classObject(
+                    cm.merge(that.params['fileUploaderParams'], {
+                        'node' : that.nodes['toolbar']['browseFileUploader']
+                    })
+                );
+                that.myComponents['fileUploader'].addEvent('onComplete', function(my, data){
+                    that.processFiles(data);
+                });
+            });
+        }
+        return that;
+    };
+
+    classProto.renderToolbarView = function(){
+        var that = this,
+            nodes = {};
+        // Structure
+        nodes['container'] = cm.node('div', {'class' : 'com__multiple-input__toolbar'},
+            nodes['content'] = cm.node('div', {'class' : 'pt__buttons'},
+                nodes['contentInner'] = cm.node('div', {'class' : 'inner'})
+            )
+        );
+        cm.addClass(nodes['content'], ['pull', that.params['buttonsAlign']].join('-'));
+        // Render Browse Buttons
+        if(that.params['local']){
+            nodes['browseLocal'] = cm.node('div', {'class' : 'browse-button'},
+                cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('_browse_local')),
+                cm.node('div', {'class' : 'inner'},
+                    nodes['input'] = cm.node('input', {'type' : 'file'})
+                )
+            );
+            that.isMultiple && nodes['input'].setAttribute('multiple', 'multiple');
+            cm.insertFirst(nodes['browseLocal'], nodes['contentInner']);
+        }
+        if(that.params['fileManager']){
+            nodes['browseFileManager'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('_browse_filemanager'));
+            cm.insertFirst(nodes['browseFileManager'], nodes['contentInner']);
+        }
+        if(that.params['fileUploader']){
+            nodes['browseFileUploader'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('browse'));
+            cm.insertFirst(nodes['browseFileUploader'], nodes['contentInner']);
+        }
+        if(!that.hasButtons){
+            cm.addClass(nodes['container'], 'is-hidden');
+        }
+        // Events
+        cm.addEvent(nodes['input'], 'change', that.browseActionHandler);
+        // Push
+        that.nodes['toolbar'] = nodes;
+        return nodes['container'];
+    };
+
+    classProto.itemAddProcess = function(my, item){
+        var that = this;
+        item['controller'].addEvent('onClear', function(){
+            that.removeItem(item);
+        });
+        return that;
+    };
+
+    /* *** PROCESS FILES *** */
+
+    classProto.browseAction = function(e){
+        var that = this,
+            length = that.params['max'] ? Math.min(e.target.files.length, (that.params['max'] - that.items.length)) : e.target.files.length;
+        cm.forEach(length, function(i){
+            that.processFiles(e.target.files[i]);
+        });
+        return that;
+    };
+
+    classProto.processFiles = function(data){
+        var that = this;
+        if(cm.isFile(data)){
+            that.myComponents['reader'].read(data);
+        }else if(cm.isArray(data)){
+            cm.forEach(data, function(file){
+                that.processFiles(file);
+            })
+        }else if(!cm.isEmpty(data)){
+            that.addItem({'value' : data}, true);
+        }
+        return that;
+    };
+});
+
+/* ****** FORM FIELD COMPONENT ******* */
+
+Com.FormFields.add('multi-file-input', {
+    'node' : cm.node('div'),
+    'constructor' : 'Com.MultipleFileInput'
+});
+cm.define('Com.OpacityRange', {
+    'extend' : 'Com.AbstractRange',
+    'params' : {
+        'className' : 'com__opacity-range',
+        'min' : 100,
+        'max' : 0,
+        'value' : 100,
+        'color' : 'red'
+    }
+},
+function(params){
+    var that = this;
+    Com.AbstractRange.apply(that, arguments);
+});
+
+cm.getConstructor('Com.OpacityRange', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.construct = function(){
+        var that = this;
+        that.myNodes = {};
+        _inherit.prototype.construct.apply(that, arguments);
+        that.setColor(that.params['color']);
+        return this;
+    };
+
+    classProto.renderContent = function(){
+        var that = this;
+        that.myNodes['content'] = cm.node('div', {'class' : 'com__opacity-range__content'},
+            that.myNodes['inner'] = cm.node('div', {'class' : 'inner range-helper'})
+        );
+        return that.myNodes['content'];
+    };
+
+    classProto.setColor = function(color){
+        var that = this;
+        switch(that.params['direction']){
+            case 'horizontal':
+                that.myNodes['inner'].style.background = 'linear-gradient(to right, ' + color + ', rgba(255,255,255,0))';
+                break;
+            case 'vertical':
+                that.myNodes['inner'].style.background = 'linear-gradient(to bottom, ' + color + ', rgba(255,255,255,0))';
+                break;
+        }
+        return that;
+    };
+});
+cm.define('Com.PositionTools', {
+    'extend' : 'Com.AbstractInput',
+    'params' : {
+        'controllerEvents' : true,
+        'className' : 'com__position-tools',
+        'defaultValue' : 'center center',
+        'fieldSize' : 'medium',                      // medium (24px) | large (32px)
+        'options' : [
+            {'name' : 'left top', 'icon' : 'svg__position-topleft', 'iconActive' : 'svg__position-topleft--light'},
+            {'name' : 'center top', 'icon' : 'svg__position-topcenter', 'iconActive' : 'svg__position-topcenter--light'},
+            {'name' : 'right top', 'icon' : 'svg__position-topright', 'iconActive' : 'svg__position-topright--light'},
+            {'name' : 'left center', 'icon' : 'svg__position-middleleft', 'iconActive' : 'svg__position-middleleft--light'},
+            {'name' : 'center center', 'icon' : 'svg__position-middlecenter', 'iconActive' : 'svg__position-middlecenter--light'},
+            {'name' : 'right center', 'icon' : 'svg__position-middleright', 'iconActive' : 'svg__position-middleright--light'},
+            {'name' : 'left bottom', 'icon' : 'svg__position-bottomleft', 'iconActive' : 'svg__position-bottomleft--light'},
+            {'name' : 'center bottom', 'icon' : 'svg__position-bottomcenter', 'iconActive' : 'svg__position-bottomcenter--light'},
+            {'name' : 'right bottom', 'icon' : 'svg__position-bottomright', 'iconActive' : 'svg__position-bottomright--light'}
+        ]
+    }
+},
+function(params){
+    var that = this;
+    // Call parent class construct
+    Com.AbstractInput.apply(that, arguments);
+});
+
+cm.getConstructor('Com.PositionTools', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.onConstruct = function(){
+        var that = this;
+        that.options = {};
+        // Bind context to methods
+        return that;
+    };
+
+    classProto.set = function(){
+        var that = this;
+        // Call parent method
+        _inherit.prototype.set.apply(that, arguments);
+        // Set inputs
+        that.setOption();
+        return that;
+    };
+
+    classProto.renderContent = function(){
+        var that = this,
+            nodes = {};
+        that.nodes['content'] = nodes;
+        that.triggerEvent('onRenderContentStart');
+        // Structure
+        nodes['container'] = cm.node('div', {'class' : 'com__position-tools__content'},
+            nodes['inner'] = cm.node('div', {'class' : 'inner'})
+        );
+        cm.addClass(nodes['container'], ['size', that.params['fieldSize']].join('-'));
+        // Render Options
+        cm.forEach(that.params['options'], function(item){
+            that.renderOption(item);
+        });
+        // Events
+        that.triggerEvent('onRenderContentProcess');
+        that.triggerEvent('onRenderContentEnd');
+        // Export
+        return nodes['container'];
+    };
+
+    classProto.renderOption = function(item){
+        var that = this;
+        // Config
+        item = cm.merge({
+            'iconType' : 'icon',
+            'icon' : '',
+            'iconActive' : '',
+            'name' : '',
+            'nodes' : {}
+        }, item);
+        // Structure
+        item['nodes']['container'] = cm.node('div', {'class' : 'option__item'},
+            item['nodes']['icon'] = cm.node('div', {'class' : [item['iconType'], item['icon']].join(' ')})
+        );
+        cm.appendChild(item['nodes']['container'], that.nodes['content']['inner']);
+        // Events
+        cm.addEvent(item['nodes']['container'], 'click', function(){
+            !that.disabled && that.set(item['name']);
+        });
+        // Push
+        that.options[item['name']] = item;
+        return that;
+    };
+
+    classProto.setOption = function(){
+        var that = this,
+            item;
+        if(that.options[that.previousValue]){
+            item = that.options[that.previousValue];
+            cm.removeClass(item['nodes']['container'], 'active');
+            cm.replaceClass(item['nodes']['icon'], item['iconActive'], item['icon']);
+        }
+        if(that.options[that.value]){
+            item = that.options[that.value];
+            cm.addClass(item['nodes']['container'], 'active');
+            cm.replaceClass(item['nodes']['icon'], item['icon'], item['iconActive']);
+        }
+    };
+});
+cm.define('Com.RepeatTools', {
+    'extend' : 'Com.AbstractInput',
+    'params' : {
+        'className' : 'com__repeat-tools',
+        'defaultValue' : 'no-repeat',
+        'fieldStyle' : 'row',                   // row | block
+        'options' : [
+            {'name' : 'no-repeat', 'icon' : 'svg__repeat-no'},
+            {'name' : 'repeat-x', 'icon' : 'svg__repeat-horizontal'},
+            {'name' : 'repeat-y', 'icon' : 'svg__repeat-vertical'},
+            {'name' : 'repeat', 'icon' : 'svg__repeat-both'}
+        ],
+        'langs' : {
+            'no-repeat' : 'No',
+            'repeat-x' : 'Horizontally',
+            'repeat-y' : 'Vertically',
+            'repeat' : 'Both'
+        }
+    }
+},
+function(params){
+    var that = this;
+    // Call parent class construct
+    Com.AbstractInput.apply(that, arguments);
+});
+
+cm.getConstructor('Com.RepeatTools', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.construct = function(){
+        var that = this;
+        that.options = {};
+        // Bind context to methods
+        // Call parent method
+        _inherit.prototype.construct.apply(that, arguments);
+        return that;
+    };
+
+    classProto.set = function(){
+        var that = this;
+        // Call parent method
+        _inherit.prototype.set.apply(that, arguments);
+        // Set inputs
+        that.setOption();
+        return that;
+    };
+
+    classProto.renderContent = function(){
+        var that = this,
+            nodes = {};
+        that.nodes['content'] = nodes;
+        that.triggerEvent('onRenderContentStart');
+        // Structure
+        nodes['container'] = cm.node('div', {'class' : 'com__repeat-tools__content'},
+            nodes['inner'] = cm.node('div', {'class' : 'inner'})
+        );
+        cm.addClass(nodes['container'], ['style', that.params['fieldStyle']].join('-'));
+        // Render options
+        cm.forEach(that.params['options'], function(item){
+            that.renderOption(item);
+        });
+        // Events
+        that.triggerEvent('onRenderContentProcess');
+        that.triggerEvent('onRenderContentEnd');
+        // Export
+        return nodes['container'];
+    };
+
+    classProto.renderOption = function(item){
+        var that = this;
+        // Config
+        item = cm.merge({
+            'iconType' : 'icon',
+            'icon' : '',
+            'name' : '',
+            'nodes' : {}
+        }, item);
+        // Structure
+        item['nodes']['container'] = cm.node('div', {'class' : 'option__item', 'title' : that.lang(item['name'])},
+            item['nodes']['icon'] = cm.node('div', {'class' : [item['iconType'], item['icon']].join(' ')})
+        );
+        cm.appendChild(item['nodes']['container'], that.nodes['content']['inner']);
+        // Events
+        cm.addEvent(item['nodes']['container'], 'click', function(){
+            that.set(item['name']);
+        });
+        // Push
+        that.options[item['name']] = item;
+        return that;
+    };
+
+    classProto.setOption = function(){
+        var that = this,
+            item;
+        if(that.options[that.previousValue]){
+            item = that.options[that.previousValue];
+            cm.removeClass(item['nodes']['container'], 'is-active');
+        }
+        if(that.options[that.value]){
+            item = that.options[that.value];
+            cm.addClass(item['nodes']['container'], 'is-active');
+        }
+    };
+});
+cm.define('Com.ScaleTools', {
+    'extend' : 'Com.AbstractInput',
+    'params' : {
+        'className' : 'com__scale-tools',
+        'defaultValue' : 'auto',
+        'fieldStyle' : 'row',                   // row | block
+        'options' : [
+            {'name' : 'auto', 'icon' : 'svg__scale-auto'},
+            {'name' : 'contain', 'icon' : 'svg__scale-contain'},
+            {'name' : 'cover', 'icon' : 'svg__scale-cover'},
+            {'name' : '100% 100%', 'icon' : 'svg__scale-fill'}
+        ],
+        'langs' : {
+            'auto' : 'Auto',
+            'contain' : 'Contain',
+            'cover' : 'Cover',
+            '100% 100%' : 'Fill'
+        }
+    }
+},
+function(params){
+    var that = this;
+    // Call parent class construct
+    Com.AbstractInput.apply(that, arguments);
+});
+
+cm.getConstructor('Com.ScaleTools', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.construct = function(){
+        var that = this;
+        that.options = {};
+        // Bind context to methods
+        // Call parent method
+        _inherit.prototype.construct.apply(that, arguments);
+        return that;
+    };
+
+    classProto.set = function(){
+        var that = this;
+        // Call parent method
+        _inherit.prototype.set.apply(that, arguments);
+        // Set inputs
+        that.setOption();
+        return that;
+    };
+
+    classProto.renderContent = function(){
+        var that = this,
+            nodes = {};
+        that.nodes['content'] = nodes;
+        that.triggerEvent('onRenderContentStart');
+        // Structure
+        nodes['container'] = cm.node('div', {'class' : 'com__scale-tools__content'},
+            nodes['inner'] = cm.node('div', {'class' : 'inner'})
+        );
+        cm.addClass(nodes['container'], ['style', that.params['fieldStyle']].join('-'));
+        // Render options
+        cm.forEach(that.params['options'], function(item){
+            that.renderOption(item);
+        });
+        // Events
+        that.triggerEvent('onRenderContentProcess');
+        that.triggerEvent('onRenderContentEnd');
+        // Export
+        return nodes['container'];
+    };
+
+    classProto.renderOption = function(item){
+        var that = this;
+        // Config
+        item = cm.merge({
+            'iconType' : 'icon',
+            'icon' : '',
+            'name' : '',
+            'nodes' : {}
+        }, item);
+        // Structure
+        item['nodes']['container'] = cm.node('div', {'class' : 'option__item', 'title' : that.lang(item['name'])},
+            item['nodes']['icon'] = cm.node('div', {'class' : [item['iconType'], item['icon']].join(' ')})
+        );
+        cm.appendChild(item['nodes']['container'], that.nodes['content']['inner']);
+        // Events
+        cm.addEvent(item['nodes']['container'], 'click', function(){
+            that.set(item['name']);
+        });
+        // Push
+        that.options[item['name']] = item;
+        return that;
+    };
+
+    classProto.setOption = function(){
+        var that = this,
+            item;
+        if(that.options[that.previousValue]){
+            item = that.options[that.previousValue];
+            cm.removeClass(item['nodes']['container'], 'is-active');
+        }
+        if(that.options[that.value]){
+            item = that.options[that.value];
+            cm.addClass(item['nodes']['container'], 'is-active');
+        }
+    };
+});
+Com.Elements['Selects'] = {};
+
+Com['GetSelect'] = function(id){
+    return Com.Elements.Selects[id] || null;
+};
+
+cm.define('Com.Select', {
+    'modules' : [
+        'Params',
+        'Events',
+        'Structure',
+        'DataConfig',
+        'Stack'
+    ],
+    'events' : [
+        'onRender',
+        'onRenderStart',
+        'onSelect',
+        'onChange',
+        'onReset',
+        'onFocus',
+        'onBlur'
+    ],
+    'params' : {
+        'select' : null,                        // Deprecated, use 'node' parameter instead.
+        'node' : cm.Node('select'),             // Html select node to decorate.
+        'container' : null,                    // Component container that is required in case content is rendered without available select.
+        'name' : '',
+        'embedStructure' : 'replace',
+        'customEvents' : true,
+        'renderInBody' : true,                  // Render dropdowns in document.body, else they will be rendrered in component container.
+        'multiple' : false,                     // Render multiple select.
+        'placeholder' : '',
+        'showTitleTag' : true,                  // Copy title from available select node to component container. Will be shown on hover.
+        'title' : false,                        // Title text. Will be shown on hover.
+        'options' : [],                         // Listing of options, for rendering through java-script. Example: [{'value' : 'foo', 'text' : 'Bar'}].
+        'selected' : 0,                         // Deprecated, use 'value' parameter instead.
+        'value' : null,                         // Option value / array of option values.
+        'defaultValue' : null,
+        'disabled' : false,
+        'className' : '',
+        'inputClassName' : '',
+        'icons' : {
+            'arrow' : 'icon default linked'
+        },
+        'Com.Tooltip' : {
+            'targetEvent' : 'click',
+            'hideOnReClick' : true,
+            'className' : 'com__select__tooltip',
+            'width' : 'targetWidth',
+            'top' : 'cm._config.tooltipTop'
+        }
+    }
+},
+function(params){
+    var that = this,
+        nodes = {
+            'menu' : {}
+        },
+        components = {},
+        options = {},
+        optionsList = [],
+        optionsLength = 0,
+        groups = [],
+
+        oldActive,
+        active;
+
+    that.disabled = false;
+    that.isDestructed = null;
+
+    /* *** CLASS FUNCTIONS *** */
+
+    var init = function(){
+        that.destructHandler = that.destruct.bind(that);
+        that.setParams(params);
+        preValidateParams();
+        that.convertEvents(that.params['events']);
+        that.getDataConfig(that.params['node']);
+        validateParams();
+        that.addToStack(that.params['node']);
+        that.triggerEvent('onRenderStart');
+        render();
+        setMiscEvents();
+        setEvents();
+        // Set selected option
+        if(that.params['multiple']){
+            active = [];
+            if(that.params['value'] && cm.isArray(that.params['value'])){
+                cm.forEach(that.params['value'], function(item){
+                    if(options[item]){
+                        set(options[item], true);
+                    }
+                });
+            }else{
+                cm.forEach(that.params['node'].options, function(item){
+                    item.selected && set(options[item.value]);
+                });
+            }
+        }else{
+            if(that.params['value'] && options[that.params['value']]){
+                set(options[that.params['value']]);
+            }else if(options[that.params['node'].value]){
+                set(options[that.params['node'].value]);
+            }else if(optionsLength){
+                set(optionsList[0]);
+            }
+        }
+        // Final events
+        that.addToStack(nodes['container']);
+        that.triggerEvent('onRender', active);
+    };
+
+    var preValidateParams = function(){
+        if(cm.isNode(that.params['select'])){
+            that.params['node'] = that.params['select'];
+        }
+    };
+
+    var validateParams = function(){
+        var value;
+        if(cm.isNode(that.params['node'])){
+            value = cm.getSelectValue(that.params['node']);
+            that.params['value'] = !cm.isEmpty(that.params['selected']) ? that.params['selected'] : that.params['value'];
+            that.params['value'] = !cm.isEmpty(value) ? value : that.params['value'];
+            that.params['placeholder'] = that.params['node'].getAttribute('placeholder') || that.params['placeholder'];
+            that.params['multiple'] = that.params['node'].multiple;
+            that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
+            that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
+            that.params['disabled'] = that.params['node'].disabled || that.params['node'].readOnly || that.params['disabled'];
+            that.params['className'] = that.params['node'].className || that.params['className'];
+        }
+        that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
+        that.disabled = that.params['disabled'];
+    };
+
+    var render = function(){
+        var tabindex;
+        /* *** RENDER STRUCTURE *** */
+        if(that.params['multiple']){
+            renderMultiple();
+        }else{
+            renderSingle();
+        }
+        /* *** ATTRIBUTES *** */
+        // Add class name
+        cm.addClass(nodes['container'], that.params['className']);
+        // Title
+        if(that.params['showTitleTag'] && that.params['title']){
+            nodes['container'].title = that.params['title'];
+        }
+        // Tabindex
+        if(tabindex = that.params['node'].getAttribute('tabindex')){
+            nodes['container'].setAttribute('tabindex', tabindex);
+        }
+        // ID
+        if(that.params['node'].id){
+            nodes['container'].id = that.params['node'].id;
+        }
+        // Data
+        cm.forEach(that.params['node'].attributes, function(item){
+            if(/^data-(?!node|element)/.test(item.name)){
+                nodes['hidden'].setAttribute(item.name, item.value);
+                nodes['container'].setAttribute(item.name, item.value);
+            }
+        });
+        // Set hidden input attributes
+        if(that.params['name']){
+            nodes['hidden'].setAttribute('name', that.params['name']);
+        }
+        // Placeholder
+        if(!cm.isEmpty(that.params['placeholder'])){
+            nodes['items'].appendChild(
+                nodes['placeholder'] = cm.Node('li', {'class' : 'title'}, that.params['placeholder'])
+            );
+        }
+        /* *** RENDER OPTIONS *** */
+        collectSelectOptions();
+        cm.forEach(that.params['options'], function(item){
+            renderOption(item);
+        });
+        /* *** INSERT INTO DOM *** */
+        that.embedStructure(nodes['container']);
+    };
+
+    var renderSingle = function(){
+        nodes['container'] = cm.Node('div', {'class' : 'com__select'},
+            nodes['hidden'] = cm.Node('select', {'class' : 'display-none'}),
+            nodes['target'] = cm.Node('div', {'class' : 'pt__input'},
+                nodes['text'] = cm.Node('input', {'type' : 'text', 'readOnly' : 'true'}),
+                nodes['arrow'] = cm.Node('div', {'class' : that.params['icons']['arrow']})
+            ),
+            nodes['scroll'] = cm.Node('div', {'class' : 'pt__listing-items'},
+                nodes['items'] = cm.Node('ul')
+            )
+        );
+        cm.addClass(nodes['target'], that.params['inputClassName']);
+    };
+
+    var renderMultiple = function(){
+        nodes['container'] = cm.Node('div', {'class' : 'com__select-multi'},
+            nodes['hidden'] = cm.Node('select', {'class' : 'display-none', 'multiple' : true}),
+            nodes['inner'] = cm.Node('div', {'class' : 'inner'},
+                nodes['scroll'] = cm.Node('div', {'class' : 'pt__listing-items'},
+                    nodes['items'] = cm.Node('ul')
+                )
+            )
+        );
+    };
+
+    var setMiscEvents = function(){
+        if(!that.params['multiple']){
+            // Switch items on arrows press
+            cm.addEvent(nodes['container'], 'keydown', function(e){
+                if(optionsLength){
+                    var item = options[active],
+                        index = optionsList.indexOf(item),
+                        option;
+
+                    switch(e.keyCode){
+                        case 38:
+                            cm.preventDefault(e);
+                            if(index - 1 >= 0){
+                                option = optionsList[index - 1];
+                            }else{
+                                option = optionsList[optionsLength - 1];
+                            }
+                            break;
+
+                        case 40:
+                            cm.preventDefault(e);
+                            if(index + 1 < optionsLength){
+                                option = optionsList[index + 1];
+                            }else{
+                                option = optionsList[0];
+                            }
+                            break;
+
+                        case 13:
+                            components['menu'].hide();
+                            break;
+                    }
+
+                    if(option){
+                        set(option, true);
+                        scrollToItem(option);
+                    }
+                }
+            });
+            cm.addEvent(nodes['container'], 'focus', function(){
+                cm.addEvent(window, 'keydown', blockDocumentArrows);
+            });
+            cm.addEvent(nodes['container'], 'blur', function(){
+                cm.removeEvent(window, 'keydown', blockDocumentArrows);
+            });
+            // Render tooltip
+            components['menu'] = new Com.Tooltip(
+                cm.merge(that.params['Com.Tooltip'], {
+                    'container' : that.params['renderInBody']? document.body : nodes['container'],
+                    'content' : nodes['scroll'],
+                    'target' : nodes['target'],
+                    'disabled' : !optionsLength,
+                    'events' : {
+                        'onShowStart' : show,
+                        'onHideStart' : hide
+                    }
+                })
+            );
+            nodes['menu'] = components['menu'].getNodes();
+        }
+        // Enable / Disable
+        if(that.disabled){
+            that.disable();
+        }else{
+            that.enable();
+        }
+    };
+
+    var setEvents = function(){
+        // Add custom event
+        if(that.params['customEvents']){
+            cm.customEvent.add(nodes['container'], 'destruct', that.destructHandler);
+        }
+    };
+
+    var unsetEvents = function(){
+        // Add custom event
+        if(that.params['customEvents']){
+            cm.customEvent.remove(nodes['container'], 'destruct', that.destructHandler);
+        }
+    };
+
+    /* *** COLLECTORS *** */
+
+    var collectSelectOptions = function(){
+        var myChildes = that.params['node'].childNodes;
+        cm.forEach(myChildes, function(myChild, i){
+            if(cm.isElementNode(myChild)){
+                if(myChild.tagName.toLowerCase() == 'optgroup'){
+                    var myOptionsNodes = myChild.querySelectorAll('option');
+                    var myOptions = [];
+                    cm.forEach(myOptionsNodes, function(optionNode){
+                        myOptions.push({
+                            'value' : optionNode.value,
+                            'text' : optionNode.innerHTML,
+                            'className' : optionNode.className
+                        });
+                    });
+                    renderGroup(myChild.getAttribute('label'), myOptions);
+                }else if(myChild.tagName.toLowerCase() == 'option'){
+                    renderOption({
+                        'value' : myChild.value,
+                        'text' : myChild.innerHTML,
+                        'className' : myChild.className
+                    });
+                }
+            }
+        });
+    };
+
+    /* *** GROUPS *** */
+
+    var renderGroup = function(myName, myOptions){
+        // Config
+        var item = {
+            'name' : myName,
+            'options' : myOptions
+        };
+        // Structure
+        item['optgroup'] = cm.Node('optgroup', {'label' : myName});
+        item['container'] = cm.Node('li', {'class' : 'group'},
+            item['items'] = cm.Node('ul', {'class' : 'pt__listing-items'})
+        );
+        if(!cm.isEmpty(myName)){
+            cm.insertFirst(
+                cm.Node('div', {'class' : 'title', 'innerHTML' : myName}),
+                item['container']
+            );
+        }
+        // Render options
+        cm.forEach(myOptions, function(myOption){
+            renderOption(myOption, item);
+        });
+        // Append
+        nodes['items'].appendChild(item['container']);
+        nodes['hidden'].appendChild(item['optgroup']);
+        // Push to groups array
+        groups.push(item);
+    };
+
+    /* *** OPTIONS *** */
+
+    var renderOption = function(item, group){
+        // Check for exists
+        if(options[item['value']]){
+            removeOption(options[item['value']]);
+        }
+        // Config
+        item = cm.merge({
+            'selected' : false,
+            'value' : '',
+            'text' : '',
+            'className' : '',
+            'group': null
+        }, item);
+        // Add link to group
+        item['group'] = group;
+        // Structure
+        item['node'] = cm.Node('li', {'class' : item['className']},
+            cm.Node('a', {'innerHTML' : item['text']})
+        );
+        item['option'] = cm.Node('option', {'value' : item['value'], 'innerHTML' : item['text']});
+        // Label onlick event
+        cm.addEvent(item['node'], 'click', function(){
+            if(!that.disabled){
+                set(item, true);
+            }
+            !that.params['multiple'] && components['menu'].hide(false);
+        });
+        // Append
+        if(group){
+            group['items'].appendChild(item['node']);
+            group['optgroup'].appendChild(item['option']);
+        }else{
+            nodes['items'].appendChild(item['node']);
+            nodes['hidden'].appendChild(item['option']);
+        }
+        // Push
+        optionsList.push(options[item['value']] = item);
+        optionsLength = optionsList.length;
+        return true;
+    };
+
+    var editOption = function(option, text){
+        var value = typeof option['value'] != 'undefined'? option['value'] : option['text'];
+        option['text'] = text;
+        option['node'].innerHTML = text;
+        option['option'].innerHTML = text;
+
+        if(!that.params['multiple'] && value === active){
+            nodes['text'].value = cm.decode(text);
+        }
+    };
+
+    var removeOption = function(option){
+        var value = typeof option['value'] != 'undefined'? option['value'] : option['text'];
+        // Remove option from list and array
+        cm.remove(option['node']);
+        cm.remove(option['option']);
+        optionsList = optionsList.filter(function(item){
+            return option != item;
+        });
+        optionsLength = optionsList.length;
+        delete options[option['value']];
+        // Set new active option, if current active is nominated for remove
+        if(that.params['multiple']){
+            active = active.filter(function(item){
+                return value != item;
+            });
+        }else{
+            if(value === active){
+                if(optionsLength){
+                    set(optionsList[0], true);
+                }else{
+                    active = null;
+                    nodes['text'].value = '';
+                }
+            }
+        }
+    };
+
+    /* *** SETTERS *** */
+
+    var set = function(option, execute){
+        if(option){
+            if(that.params['multiple']){
+                setMultiple(option);
+            }else{
+                setSingle(option);
+            }
+        }
+        if(execute){
+            that.triggerEvent('onSelect', active);
+            onChange();
+        }
+    };
+
+    var setMultiple = function(option){
+        var value = typeof option['value'] != 'undefined'? option['value'] : option['text'];
+
+        if(option['selected']){
+            deselectMultiple(option);
+        }else{
+            active.push(value);
+            option['option'].selected = true;
+            option['selected'] = true;
+            cm.addClass(option['node'], 'active');
+        }
+    };
+
+    var setSingle = function(option){
+        oldActive = active;
+        active = typeof option['value'] != 'undefined'? option['value'] : option['text'];
+        optionsList.forEach(function(item){
+            cm.removeClass(item['node'], 'active');
+        });
+        if(option['group']){
+            nodes['text'].value = [cm.decode(option['group']['name']), cm.decode(option['text'])].join(' > ');
+        }else{
+            nodes['text'].value = cm.decode(option['text']);
+        }
+        option['option'].selected = true;
+        nodes['hidden'].value = active;
+        cm.addClass(option['node'], 'active');
+    };
+
+    var deselectMultiple = function(option){
+        var value = typeof option['value'] != 'undefined'? option['value'] : option['text'];
+
+        active = active.filter(function(item){
+            return value != item;
+        });
+        option['option'].selected = false;
+        option['selected'] = false;
+        cm.removeClass(option['node'], 'active');
+    };
+
+    var onChange = function(){
+        if(that.params['multiple'] || active != oldActive){
+            that.triggerEvent('onChange', active);
+        }
+    };
+
+    /* *** DROPDOWN *** */
+
+    var show = function(){
+        if(!optionsLength){
+            components['menu'].hide();
+        }else{
+            // Set classes
+            cm.addClass(nodes['container'], 'active');
+            nodes['text'].focus();
+            // Scroll to active element
+            if(active && options[active]){
+                scrollToItem(options[active]);
+            }
+        }
+        that.triggerEvent('onFocus', active);
+    };
+
+    var hide = function(){
+        nodes['text'].blur();
+        cm.removeClass(nodes['container'], 'active');
+        that.triggerEvent('onBlur', active);
+    };
+
+    var scrollToItem = function(option){
+        nodes['menu']['content'].scrollTop = option['node'].offsetTop - nodes['menu']['content'].offsetTop;
+    };
+
+    /* *** HELPERS *** */
+
+    var blockDocumentArrows = function(e){
+        e = cm.getEvent(e);
+        if(e.keyCode == 38 || e.keyCode == 40){
+            cm.preventDefault(e);
+        }
+    };
+
+    /* ******* MAIN ******* */
+
+    that.destruct = function(){
+        var that = this;
+        if(!that.isDestructed){
+            that.isDestructed = true;
+            unsetEvents();
+            that.removeFromStack();
+        }
+        return that;
+    };
+
+    that.get = function(){
+        return active;
+    };
+
+    that.set = function(value, triggerEvents){
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        // Select option and execute events
+        if(typeof value != 'undefined'){
+            if(cm.isArray(value)){
+                cm.forEach(value, function(item){
+                    if(options[item]){
+                        set(options[item], false);
+                    }
+                });
+                if(triggerEvents){
+                    that.triggerEvent('onSelect', active);
+                    that.triggerEvent('onChange', active);
+                }
+            }else if(options[value]){
+                set(options[value], triggerEvents);
+            }
+        }
+        return that;
+    };
+
+    that.reset = function(triggerEvents){
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        if(that.params['multiple']){
+            that.deselectAll(triggerEvents);
+        }else{
+            if(optionsLength){
+                set(optionsList[0], triggerEvents);
+            }
+        }
+    };
+
+    that.selectAll = function(triggerEvents){
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        if(that.params['multiple']){
+            cm.forEach(options, deselectMultiple);
+            cm.forEach(options, setMultiple);
+            if(triggerEvents){
+                that.triggerEvent('onSelect', active);
+                onChange();
+            }
+        }
+        return that;
+    };
+
+    that.deselectAll = function(triggerEvents){
+        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        if(that.params['multiple']){
+            cm.forEach(options, deselectMultiple);
+            if(triggerEvents){
+                that.triggerEvent('onSelect', active);
+                onChange();
+            }
+        }
+        return that;
+    };
+
+    that.addOption = function(value, text){
+        if(cm.isObject(arguments[0])){
+            renderOption(arguments[0]);
+        }else{
+            renderOption({
+                'value' : value,
+                'text' : text
+            });
+        }
+        // Enable / Disable Menu
+        if(!that.params['multiple'] && !that.disabled && optionsLength){
+            components['menu'].enable();
+        }
+        return that;
+    };
+
+    that.addOptions = function(arr){
+        cm.forEach(arr, function(item){
+            renderOption(item);
+        });
+        return that;
+    };
+
+    that.editOption = function(value, text){
+        if(typeof value != 'undefined' && options[value]){
+            editOption(options[value], text);
+        }
+        return that;
+    };
+
+    that.removeOption = function(value){
+        if(typeof value != 'undefined' && options[value]){
+            removeOption(options[value]);
+        }
+        // Enable / Disable Menu
+        if(!that.params['multiple'] && !optionsList){
+            components['menu'].disable();
+        }
+        return that;
+    };
+
+    that.removeOptionsAll = function(){
+        cm.forEach(options, function(item){
+            removeOption(item);
+        });
+        return that;
+    };
+
+    that.getOption = function(value){
+        if(typeof value != 'undefined' && options[value]){
+            return options[value];
+        }
+        return null;
+    };
+
+    that.getOptions = function(arr){
+        var optionsArr = [];
+        cm.forEach(arr, function(item){
+            if(options[item]){
+                optionsArr.push(options[item]);
+            }
+        });
+        return optionsArr;
+    };
+
+    that.getOptionsAll = that.getAllOptions = function(){
+        var result = [];
+        cm.forEach(optionsList, function(item){
+            result.push({
+                'text' : item['text'],
+                'value' : item['value']
+            });
+        });
+        return result;
+    };
+
+    that.disable = function(){
+        that.disabled = true;
+        cm.addClass(nodes['container'], 'disabled');
+        cm.addClass(nodes['scroll'], 'disabled');
+        if(!that.params['multiple']){
+            nodes['text'].disabled = true;
+            components['menu'].disable();
+        }
+        return that;
+    };
+
+    that.enable = function(){
+        that.disabled = false;
+        cm.removeClass(nodes['container'], 'disabled');
+        cm.removeClass(nodes['scroll'], 'disabled');
+        if(!that.params['multiple']){
+            nodes['text'].disabled = false;
+            if(optionsLength){
+                components['menu'].enable();
+            }
+        }
+        return that;
+    };
+
+    that.getNodes = function(key){
+        return nodes[key] || nodes;
+    };
+
+    init();
+});
+
+/* ****** FORM FIELD COMPONENT ******* */
+
+Com.FormFields.add('select', {
+    'node' : cm.node('select'),
+    'fieldConstructor' : 'Com.AbstractFormField',
+    'constructor' : 'Com.Select'
+});
+cm.define('Com.SelectFieldTrigger', {
+    'extend' : 'Com.AbstractController',
+    'params' : {
+        'renderStructure' : true,
+        'embedStructureOnRender' : true,
+        'controllerEvents' : true,
+        'triggerName' : null,
+        'options' : [],
+        'Com.Toolbar' : {
+            'embedStructure' : 'append'
+        }
+    }
+},
+function(params){
+    var that = this;
+    // Call parent class construct
+    Com.AbstractController.apply(that, arguments);
+});
+
+cm.getConstructor('Com.SelectFieldTrigger', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    /******* SYSTEM *******/
+
+    classProto.onConstruct = function(){
+        var that = this;
+        // Variables
+        that.fields = {};
+        // Bind context
+        that.changeEventHandler = that.changeEvent.bind(that);
+    };
+
+    classProto.onValidateParams = function(){
+        var that = this;
+        that.components['form'] = that.params['form'];
+        that.components['formField'] = that.params['formField'];
+    };
+
+    classProto.onRender = function(){
+        var that = this;
+        that.toggle();
+    };
+
+    /******* VIEW MODEL *******/
+
+    classProto.renderView = function(){
+        var that = this;
+        that.triggerEvent('onRenderViewStart');
+        that.nodes['container'] = cm.node('div', {'class' : 'app__select-trigger'});
+        that.triggerEvent('onRenderViewProcess');
+        that.triggerEvent('onRenderViewEnd');
+        return that;
+    };
+
+    classProto.renderViewModel = function(){
+        var that = this;
+        // Call parent method - renderViewModel
+        _inherit.prototype.renderViewModel.apply(that, arguments);
+        // Collect Fields
+        that.getTriggerField();
+        that.getFields();
+        // Render Toolbar
+        that.renderToolbar();
+    };
+
+    classProto.getTriggerField = function(){
+        var that = this;
+        that.components['trigger'] = that.components['form'].getField(that.params['triggerName']);
+        that.components['trigger'].addEvent('onChange', that.changeEventHandler);
+    };
+
+    classProto.getFields = function(){
+        var that = this;
+        cm.forEach(that.params['options'], function(option){
+            cm.forEach(option['fields'], function(field){
+                if(cm.isObject(field)){
+                    that.processField(option['value'], field);
+                }else{
+                    that.processField(option['value'], {'name' : field});
+                }
+            });
+        });
+    };
+
+    classProto.processField = function(value, data){
+        var that = this;
+        data = cm.merge({
+            'value' : value,
+            'name' : null,
+            'size' : null,
+            'controller' : null,
+            'container' : null
+        }, data);
+        // Controller
+        data['controller'] = that.components['form'].getField(data['name']);
+        data['container'] = data['controller'].getContainer();
+        // Export
+        that.fields[data['name']] = data;
+    };
+
+    classProto.renderToolbar = function(){
+        var that = this;
+        // Toolbar
+        cm.getConstructor('Com.Toolbar', function(classConstructor, className){
+            that.components['toolbar'] = new classConstructor(
+                cm.merge(that.params[className], {
+                    'container' : that.nodes['container']
+                })
+            );
+            that.components['toolbar']
+                .addGroup({
+                    'name' : 'trigger',
+                    'position' : 'left'
+                })
+                .addGroup({
+                    'name' : 'fields',
+                    'position' : 'left'
+                })
+                .addField({
+                    'group' : 'trigger',
+                    'name' : 'trigger',
+                    'node' : that.components['trigger'].getContainer()
+                })
+        });
+        // Fields
+        cm.forEach(that.fields, function(field, name){
+            that.components['toolbar'].addField({
+                'group' : 'fields',
+                'name' : field['name'],
+                'node' : field['container'],
+                'size' : field['size'],
+                'hidden' : true
+            });
+        })
+    };
+
+    /******* HANDLERS *******/
+
+    classProto.changeEvent = function(){
+        var that = this;
+        that.toggle();
+    };
+
+    classProto.toggle = function(){
+        var that = this;
+        var value = that.components['trigger'].get();
+        cm.forEach(that.fields, function(field, name){
+            if(field['value'] === value){
+                that.components['toolbar'].showField(field['name'], 'fields');
+            }else{
+                that.components['toolbar'].hideField(field['name'], 'fields');
+            }
+        });
+    };
+});
+
+/* ****** FORM FIELD COMPONENT ******* */
+
+Com.FormFields.add('select-field-trigger', {
+    'isField' : false,
+    'fieldConstructor' : 'Com.AbstractFormField',
+    'constructor' : 'Com.SelectFieldTrigger'
+});
+cm.define('Com.TagsInput', {
+    'modules' : [
+        'Params',
+        'Events',
+        'Langs',
+        'Structure',
+        'DataConfig',
+        'Stack'
+    ],
+    'require' : [
+        'Com.Autocomplete'
+    ],
+    'events' : [
+        'onRender',
+        'onAdd',
+        'onRemove',
+        'onChange',
+        'onOpen',
+        'onClose'
+    ],
+    'params' : {
+        'input' : null,                                 // Deprecated, use 'node' parameter instead.
+        'node' : cm.node('input', {'type' : 'text'}),
+        'container' : null,
+        'name' : '',
+        'embedStructure' : 'replace',
+        'data' : [],
+        'maxSingleTagLength': 255,
+        'autocomplete' : false,
+        'icons' : {
+            'add' : 'icon default linked',
+            'remove' : 'icon default linked'
+        },
+        'langs' : {
+            'tags' : 'Tags',
+            'add' : 'Add',
+            'remove' : 'Remove'
+        },
+        'Com.Autocomplete' : {
+            'clearOnEmpty' : false
+        }
+    }
+},
+function(params){
+    var that = this,
+        nodes = {},
+        tags = [],
+        items = {},
+        isOpen = false;
+
+    that.isDestructed = null;
+    that.value = null;
+    that.components = {};
+    that.isAutocomplete = false;
+
+    var init = function(){
+        var sourceTags;
+        preValidateParams();
+        // Init modules
+        that.setParams(params);
+        that.convertEvents(that.params['events']);
+        that.getDataConfig(that.params['node']);
+        // Render
+        validateParams();
+        render();
+        setLogic();
+        that.addToStack(nodes['container']);
+        that.triggerEvent('onRender');
+        // Set tags
+        sourceTags = that.params['data'].concat(
+            that.params['node'].value.split(',')
+        );
+        cm.forEach(sourceTags, function(tag){
+            addTag(tag);
+        });
+    };
+
+    var preValidateParams = function(){
+        if(cm.isNode(that.params['input'])){
+            that.params['node'] = that.params['input'];
+        }
+    };
+
+    var validateParams = function(){
+        if(cm.isNode(that.params['node'])){
+            that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
+        }
+        that.isAutocomplete = that.params['autocomplete'];
+    };
+
+    var render = function(){
+        // Structure
+        nodes['container'] = cm.Node('div', {'class' : 'com__tags-input'},
+            nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
+            nodes['inner'] = cm.Node('div', {'class' : 'inner'})
+        );
+        // Render add button
+        renderAddButton();
+        // Attributes
+        if(that.params['name']){
+            nodes['hidden'].setAttribute('name', that.params['name']);
+        }
+        // Append
+        that.embedStructure(nodes['container']);
+
+    };
+
+    var setLogic = function(){
+        // Autocomplete
+        cm.getConstructor('Com.Autocomplete', function(classConstructor){
+            that.components['autocomplete'] = new classConstructor(
+                cm.merge(that.params['Com.Autocomplete'], {
+                    'events' : {
+                        'onClickSelect' : function(){
+                            addAdderTags(true);
+                        }
+                    }
+                })
+            );
+        });
+    };
+
+    var renderAddButton = function(){
+        nodes['inner'].appendChild(
+            nodes['addButtonContainer'] = cm.Node('div', {'class' : 'item'},
+                nodes['addButton'] = cm.Node('div', {'class' : that.params['icons']['add'], 'title' : that.lang('add')})
+            )
+        );
+        // Add event on "Add Tag" button
+        cm.addEvent(nodes['addButton'], 'click', openAdder);
+    };
+
+    var openAdder = function(){
+        var item = {};
+        if(!isOpen){
+            isOpen = true;
+            // Structure
+            item['container'] = cm.Node('div', {'class' : 'item adder'},
+                item['input'] = cm.Node('input', {'type' : 'text', 'maxlength' : that.params['maxSingleTagLength'], 'class' : 'input'})
+            );
+            cm.insertBefore(item['container'], nodes['addButtonContainer']);
+            // Show
+            item['anim'] = new cm.Animation(item['container']);
+            item['anim'].go({'style' : {'width' : [cm.getRealWidth(item['container']), 'px'].join(''), 'opacity' : 1}, 'duration' : 200, 'anim' : 'smooth', 'onStop' : function(){
+                item['container'].style.overflow = 'visible';
+                item['input'].focus();
+                // API onOpen Event
+                that.triggerEvent('onOpen');
+            }});
+            // Bind autocomplete
+            if(that.isAutocomplete){
+                that.components['autocomplete'].setTarget(item['input']);
+                that.components['autocomplete'].setInput(item['input']);
+            }
+            // Set new tag on enter or on comma
+            cm.addEvent(item['input'], 'keypress', function(e){
+                e = cm.getEvent(e);
+                if(e.keyCode == 13 || e.charCode == 44){
+                    cm.preventDefault(e);
+                    addAdderTags(true);
+                    that.isAutocomplete && that.components['autocomplete'].hide();
+                }
+                if(e.keyCode == 27){
+                    cm.preventDefault(e);
+                    addAdderTags(true);
+                    closeAdder(nodes['adder']);
+                }
+            });
+            // Hide adder on document click
+            cm.addEvent(document, 'mousedown', bodyEvent);
+            // Add to nodes array
+            nodes['adder'] = item;
+        }else{
+            addAdderTags(true);
+        }
+    };
+
+    var closeAdder = function(item){
+        cm.removeEvent(document, 'mousedown', bodyEvent);
+        nodes['adder']['input'].blur();
+        that.isAutocomplete && that.components['autocomplete'].hide();
+        item['container'].style.overflow = 'hidden';
+        item['anim'].go({'style' : {'width' : '0px', 'opacity' : 0}, 'duration' : 200, 'anim' : 'smooth', 'onStop' : function(){
+            cm.remove(item['container']);
+            nodes['adder'] = null;
+            isOpen = false;
+            // API onClose Event
+            that.triggerEvent('onClose');
+        }});
+    };
+
+    var addAdderTags = function(execute){
+        var sourceTags = nodes['adder']['input'].value.split(',');
+        cm.forEach(sourceTags, function(tag){
+            addTag(tag, execute);
+        });
+        nodes['adder']['input'].value = '';
+        nodes['adder']['input'].focus();
+        that.isAutocomplete && that.components['autocomplete'].clear();
+    };
+
+    var addTag = function(tag, execute){
+        tag = tag.trim();
+        if(tag && tag.length && !/^[\s]*$/.test(tag) && !cm.inArray(tags, tag)){
+            tags.push(tag);
+            renderTag(tag);
+            setHiddenInputData();
+            // Execute events
+            if(execute){
+                // API onChange Event
+                that.triggerEvent('onChange', {'tag' : tag});
+                // API onAdd Event
+                that.triggerEvent('onAdd', {'tag' : tag});
+            }
+        }
+    };
+
+    var renderTag = function(tag){
+        var item = {
+            'tag' : tag
+        };
+        // Structure
+        item['container'] = cm.Node('div', {'class' : 'item'},
+            cm.Node('div', {'class' : 'text', 'title' : tag}, tag),
+            item['button'] = cm.Node('div', {'class' : that.params['icons']['remove'], 'title' : that.lang('remove')})
+        );
+        item['anim'] = new cm.Animation(item['container']);
+        // Append
+        if(isOpen){
+            cm.addClass(item['container'], 'closed');
+            cm.insertBefore(item['container'], nodes['adder']['container']);
+            // Show
+            item['anim'].go({'style' : {'width' : [cm.getRealWidth(item['container']), 'px'].join(''), 'opacity' : 1}, 'duration' : 200, 'anim' : 'smooth', 'onStop' : function(){
+                cm.removeClass(item['container'], 'closed');
+            }});
+        }else{
+            cm.insertBefore(item['container'], nodes['addButtonContainer']);
+        }
+        // Add click event on "Remove Tag" button
+        cm.addEvent(item['button'], 'click', function(){
+            if(isOpen){
+                nodes['adder']['input'].focus();
+            }
+            removeTag(item);
+        });
+        // Push to global array
+        items[tag] = item;
+    };
+
+    var removeTag = function(item){
+        // Remove tag from data
+        tags = tags.filter(function(tag){
+            return item['tag'] != tag;
+        });
+        delete items[item['tag']];
+        setHiddenInputData();
+        // API onChange Event
+        that.triggerEvent('onChange', {
+            'tag' : item['tag']
+        });
+        // API onRemove Event
+        that.triggerEvent('onRemove', {
+            'tag' : item['tag']
+        });
+        // Animate
+        item['anim'].go({'style' : {'width' : '0px', 'opacity' : 0}, 'duration' : 200, 'anim' : 'smooth', 'onStop' : function(){
+            cm.remove(item['container']);
+            item = null;
+        }});
+    };
+
+    var setHiddenInputData = function(){
+        that.value = tags.join(',');
+        nodes['hidden'].value = that.value;
+    };
+
+    var bodyEvent = function(e){
+        if(isOpen){
+            e = cm.getEvent(e);
+            var target = cm.getEventTarget(e);
+            if(!cm.isParent(nodes['container'], target, true) && !that.components['autocomplete'].isOwnNode(target)){
+                addAdderTags(true);
+                closeAdder(nodes['adder']);
+            }
+        }
+    };
+
+    /* ******* MAIN ******* */
+
+    that.destruct = function(){
+        var that = this;
+        if(!that.isDestructed){
+            that.isDestructed = true;
+            that.removeFromStack();
+        }
+        return that;
+    };
+
+    that.get = function(){
+        return that.value || null;
+    };
+
+    that.set = function(value){
+        that.add(value);
+        return that;
+    };
+
+    that.add = function(tag /* or tags comma separated or array */){
+        var sourceTags;
+        if(!tag){
+            sourceTags = [];
+        }else if(cm.isArray(tag)){
+            sourceTags = tag;
+        }else{
+            sourceTags = tag.split(',');
+        }
+        cm.forEach(sourceTags, function(tag){
+            addTag(tag, true);
+        });
+        return that;
+    };
+
+    that.remove = function(tag){
+        var sourceTags;
+        if(!tag){
+            sourceTags = [];
+        }else if(cm.isArray(tag)){
+            sourceTags = tag;
+        }else{
+            sourceTags = tag.split(',');
+        }
+        cm.forEach(sourceTags, function(tag){
+            if(cm.inArray(tags, tag)){
+                removeTag(items[tag]);
+            }
+        });
+        return that;
+    };
+
+    that.reset = function(){
+        cm.forEach(items, function(item){
+            removeTag(item);
+        });
+        return that;
+    };
+
+    that.getAutocomplete = function(){
+        return that.components['autocomplete'];
+    };
+
+    init();
+});
+
+/* ****** FORM FIELD COMPONENT ******* */
+
+Com.FormFields.add('tags', {
+    'node' : cm.node('input', {'type' : 'text'}),
+    'constructor' : 'Com.TagsInput'
+});
+cm.define('Com.TimeSelect', {
+    'modules' : [
+        'Params',
+        'Events',
+        'Langs',
+        'Structure',
+        'DataConfig',
+        'Stack'
+    ],
+    'events' : [
+        'onRender',
+        'onSelect',
+        'onChange',
+        'onClear'
+    ],
+    'params' : {
+        'input' : null,                                  // Deprecated, use 'node' parameter instead.
+        'node' : cm.Node('input', {'type' : 'text'}),
+        'container' : null,
+        'embedStructure' : 'replace',
+        'name' : '',
+        'renderSelectsInBody' : true,
+        'format' : 'cm._config.timeFormat',
+        'showTitleTag' : true,
+        'title' : false,
+        'withHours' : true,
+        'hoursInterval' : 0,
+        'withMinutes' : true,
+        'minutesInterval' : 0,
+        'withSeconds' : false,
+        'secondsInterval' : 0,
+        'selected' : 0,
+        'langs' : {
+            'separator' : ':',
+            'Hours' : 'HH',
+            'Minutes' : 'MM',
+            'Seconds' : 'SS',
+            'HoursTitle' : 'Hours',
+            'MinutesTitle' : 'Minutes',
+            'SecondsTitle' : 'Seconds'
+        }
+    }
+},
+function(params){
+    var that = this,
+        nodes = {},
+        components = {};
+
+    that.date = new Date();
+    that.value = 0;
+    that.previousValue = 0;
+
+    var init = function(){
+        that.setParams(params);
+        preValidateParams();
+        that.convertEvents(that.params['events']);
+        that.getDataConfig(that.params['node']);
+        validateParams();
+        render();
+        setMiscEvents();
+        that.addToStack(nodes['container']);
+        // Set selected time
+        if(that.params['selected']){
+            that.set(that.params['selected'], that.params['format'], false);
+        }else{
+            that.set(that.params['node'].value, that.params['format'], false);
+        }
+    };
+
+    var preValidateParams = function(){
+        if(cm.isNode(that.params['input'])){
+            that.params['node'] = that.params['input'];
+        }
+    };
+
+    var validateParams = function(){
+        if(cm.isNode(that.params['node'])){
+            that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
+            that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
+        }
+        if(cm.isEmpty(that.params['hoursInterval']) || that.params['hoursInterval'] === 0){
+            that.params['hoursInterval'] = 1;
+        }
+        if(cm.isEmpty(that.params['minutesInterval']) || that.params['minutesInterval'] === 0){
+            that.params['minutesInterval'] = 1;
+        }
+        if(cm.isEmpty(that.params['secondsInterval']) || that.params['secondsInterval'] === 0){
+            that.params['secondsInterval'] = 1;
+        }
+    };
+
+    var render = function(){
+        var hours = 0,
+            minutes = 0,
+            seconds = 0;
+        /* *** STRUCTURE *** */
+        nodes['container'] = cm.Node('div', {'class' : 'com__timeselect'},
+            nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
+            nodes['inner'] = cm.Node('div', {'class' : 'inner'})
+        );
+        /* *** ITEMS *** */
+        // Hours
+        if(that.params['withHours']){
+            if(nodes['inner'].childNodes.length){
+                nodes['inner'].appendChild(cm.Node('div', {'class' : 'sep'}, that.lang('separator')));
+            }
+            nodes['inner'].appendChild(cm.Node('div', {'class' : 'field'},
+                nodes['selectHours'] = cm.Node('select', {'placeholder' : that.lang('Hours'), 'title' : that.lang('HoursTitle')})
+            ));
+            while(hours < 24){
+                nodes['selectHours'].appendChild(
+                    cm.Node('option', {'value' : hours},cm.addLeadZero(hours))
+                );
+                hours += that.params['hoursInterval'];
+            }
+        }
+        // Minutes
+        if(that.params['withMinutes']){
+            if(nodes['inner'].childNodes.length){
+                nodes['inner'].appendChild(cm.Node('div', {'class' : 'sep'}, that.lang('separator')));
+            }
+            nodes['inner'].appendChild(cm.Node('div', {'class' : 'field'},
+                nodes['selectMinutes'] = cm.Node('select', {'placeholder' : that.lang('Minutes'), 'title' : that.lang('MinutesTitle')})
+            ));
+            while(minutes < 60){
+                nodes['selectMinutes'].appendChild(
+                    cm.Node('option', {'value' : minutes}, cm.addLeadZero(minutes))
+                );
+                minutes += that.params['minutesInterval'];
+            }
+        }
+        // Seconds
+        if(that.params['withSeconds']){
+            if(nodes['inner'].childNodes.length){
+                nodes['inner'].appendChild(cm.Node('div', {'class' : 'sep'}, that.lang('separator')));
+            }
+            nodes['inner'].appendChild(cm.Node('div', {'class' : 'field'},
+                nodes['selectSeconds'] = cm.Node('select', {'placeholder' : that.lang('Seconds'), 'title' : that.lang('SecondsTitle')})
+            ));
+            while(seconds < 60){
+                nodes['selectSeconds'].appendChild(
+                    cm.Node('option', {'value' : seconds},cm.addLeadZero(seconds))
+                );
+                seconds += that.params['secondsInterval'];
+            }
+        }
+        /* *** ATTRIBUTES *** */
+        // Title
+        if(that.params['showTitleTag'] && that.params['title']){
+            nodes['container'].title = that.params['title'];
+        }
+        // Name
+        if(that.params['name']){
+            nodes['hidden'].setAttribute('name', that.params['name']);
+        }
+        /* *** INSERT INTO DOM *** */
+        that.embedStructure(nodes['container']);
+    };
+
+    var setMiscEvents = function(){
+        // Hours select
+        if(that.params['withHours']){
+            components['selectHours'] = new Com.Select({
+                    'select' : nodes['selectHours'],
+                    'renderInBody' : that.params['renderSelectsInBody']
+                }).addEvent('onChange', function(){
+                    set(true);
+                });
+        }
+        // Minutes select
+        if(that.params['withMinutes']){
+            components['selectMinutes'] = new Com.Select({
+                    'select' : nodes['selectMinutes'],
+                    'renderInBody' : that.params['renderSelectsInBody']
+                }).addEvent('onChange', function(){
+                    set(true);
+                });
+        }
+        // Seconds select
+        if(that.params['withSeconds']){
+            components['selectSeconds'] = new Com.Select({
+                    'select' : nodes['selectSeconds'],
+                    'renderInBody' : that.params['renderSelectsInBody']
+                })
+                .addEvent('onChange', function(){
+                    set(true);
+                });
+        }
+        // Trigger onRender Event
+        that.triggerEvent('onRender');
+    };
+
+    var set = function(triggerEvents){
+        that.previousValue = that.value;
+        that.params['withHours'] && that.date.setHours(components['selectHours'].get());
+        that.params['withMinutes'] && that.date.setMinutes(components['selectMinutes'].get());
+        that.params['withSeconds'] && that.date.setSeconds(components['selectSeconds'].get());
+        that.value = cm.dateFormat(that.date, that.params['format']);
+        nodes['hidden'].value = that.value;
+        // Trigger events
+        if(triggerEvents){
+            that.triggerEvent('onSelect', that.value);
+            onChange();
+        }
+    };
+
+    var onChange = function(){
+        if(!that.previousValue || (!that.value && that.previousValue) || (that.value != that.previousValue)){
+            that.triggerEvent('onChange', that.value);
+        }
+    };
+
+    /* ******* MAIN ******* */
+
+    that.set = function(str, format, triggerEvents){
+        format = typeof format != 'undefined'? format : that.params['format'];
+        triggerEvents = typeof triggerEvents != 'undefined'? triggerEvents : true;
+        // Get time
+        if(cm.isEmpty(str) || typeof str == 'string' && new RegExp(cm.dateFormat(false, that.params['format'])).test(str)){
+            that.clear();
+            return that;
+        }else if(typeof str == 'object'){
+            that.date = str;
+        }else{
+            that.date = cm.parseDate(str, format);
+        }
+        // Set components
+        that.params['withHours'] && components['selectHours'].set(that.date.getHours(), false);
+        that.params['withMinutes'] && components['selectMinutes'].set(that.date.getMinutes(), false);
+        that.params['withSeconds'] && components['selectSeconds'].set(that.date.getSeconds(), false);
+        // Set time
+        set(triggerEvents);
+        return that;
+    };
+
+    that.get = function(){
+        return that.value;
+    };
+
+    that.getDate = function(){
+        return that.date;
+    };
+
+    that.getHours = function(){
+        return that.date.getHours();
+    };
+
+    that.getMinutes = function(){
+        return that.date.getMinutes();
+    };
+
+    that.getSeconds = function(){
+        return that.date.getSeconds();
+    };
+
+    that.clear = function(triggerEvents){
+        triggerEvents = typeof triggerEvents != 'undefined'? triggerEvents : true;
+        // Clear time
+        that.date.setHours(0);
+        that.date.setMinutes(0);
+        that.date.setSeconds(0);
+        // Clear components
+        that.params['withHours'] && components['selectHours'].set(that.date.getHours(), false);
+        that.params['withMinutes'] && components['selectMinutes'].set(that.date.getMinutes(), false);
+        that.params['withSeconds'] && components['selectSeconds'].set(that.date.getSeconds(), false);
+        // Set time
+        set(false);
+        // Trigger events
+        if(triggerEvents){
+            that.triggerEvent('onClear', that.value);
+            onChange();
+        }
+        return that;
+    };
+
+    init();
+});
+cm.define('Com.TintRange', {
+    'extend' : 'Com.AbstractRange',
+    'params' : {
+        'className' : 'com__tint-range',
+        'min' : 360,
+        'max' : 0,
+        'value' : 360
+    }
+},
+function(params){
+    var that = this;
+    Com.AbstractRange.apply(that, arguments);
+});
+
+cm.getConstructor('Com.TintRange', function(classConstructor, className, classProto){
+    classProto.renderContent = function(){
+        return cm.node('div', {'class' : 'com__tint-range__content'});
+    };
 });

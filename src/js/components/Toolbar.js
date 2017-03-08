@@ -18,7 +18,7 @@ cm.define('Com.Toolbar', {
         'container' : null,
         'name' : '',
         'embedStructure' : 'append',
-        'flex' : false
+        'adaptive' : true
     }
 },
 function(params){
@@ -49,7 +49,7 @@ function(params){
                 )
             )
         );
-        that.params['flex'] && cm.addClass(that.nodes['part'], 'is-adaptive');
+        that.params['adaptive'] && cm.addClass(that.nodes['part'], 'is-adaptive');
         // Append
         that.embedStructure(that.nodes['container']);
     };
@@ -104,6 +104,47 @@ function(params){
         }
         that.triggerEvent('onProcessEnd');
         return that;
+    };
+
+    that.addField = function(item){
+        var group;
+        item = cm.merge({
+            'container' : cm.node('li'),
+            'node' : null,
+            'name' : '',
+            'size' : null,
+            'hidden' : false
+        }, item);
+        // Render
+        if((group = that.groups[item['group']]) && !group.items[item['name']]){
+            // Styles
+            item['size'] && cm.addClass(item['container'], item['size']);
+            item['hidden'] && cm.addClass(item['container'], 'is-hidden');
+            // Embed
+            if(cm.isNode(item['node'])){
+                cm.appendChild(item['node'], item['container']);
+            }
+            cm.appendChild(item['container'], group['node']);
+            group.items[item['name']] = item;
+        }
+        that.triggerEvent('onProcessEnd');
+        return that;
+    };
+
+    that.showField = function(name, groupName){
+        var item = that.getField(name, groupName);
+        if(item){
+            item['hidden'] = false;
+            cm.removeClass(item['container'], 'is-hidden');
+        }
+    };
+
+    that.hideField = function(name, groupName){
+        var item = that.getField(name, groupName);
+        if(item){
+            item['hidden'] = true;
+            cm.addClass(item['container'], 'is-hidden');
+        }
     };
 
     that.addButton = function(item){
@@ -163,7 +204,7 @@ function(params){
         return that;
     };
 
-    that.getButton = function(name, groupName){
+    that.getField = that.getButton = function(name, groupName){
         var item, group;
         if((group = that.groups[groupName]) && (item = group.items[name])){
             return item;

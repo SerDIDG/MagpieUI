@@ -34,7 +34,9 @@ cm.define('Com.Select', {
         'showTitleTag' : true,                  // Copy title from available select node to component container. Will be shown on hover.
         'title' : false,                        // Title text. Will be shown on hover.
         'options' : [],                         // Listing of options, for rendering through java-script. Example: [{'value' : 'foo', 'text' : 'Bar'}].
-        'selected' : 0,                         // Option value / array of option values.
+        'selected' : 0,                         // Deprecated, use 'value' parameter instead.
+        'value' : null,                         // Option value / array of option values.
+        'defaultValue' : null,
         'disabled' : false,
         'className' : '',
         'inputClassName' : '',
@@ -84,8 +86,8 @@ function(params){
         // Set selected option
         if(that.params['multiple']){
             active = [];
-            if(that.params['selected'] && cm.isArray(that.params['selected'])){
-                cm.forEach(that.params['selected'], function(item){
+            if(that.params['value'] && cm.isArray(that.params['value'])){
+                cm.forEach(that.params['value'], function(item){
                     if(options[item]){
                         set(options[item], true);
                     }
@@ -96,8 +98,8 @@ function(params){
                 });
             }
         }else{
-            if(that.params['selected'] && options[that.params['selected']]){
-                set(options[that.params['selected']]);
+            if(that.params['value'] && options[that.params['value']]){
+                set(options[that.params['value']]);
             }else if(options[that.params['node'].value]){
                 set(options[that.params['node'].value]);
             }else if(optionsLength){
@@ -116,7 +118,11 @@ function(params){
     };
 
     var validateParams = function(){
+        var value;
         if(cm.isNode(that.params['node'])){
+            value = cm.getSelectValue(that.params['node']);
+            that.params['value'] = !cm.isEmpty(that.params['selected']) ? that.params['selected'] : that.params['value'];
+            that.params['value'] = !cm.isEmpty(value) ? value : that.params['value'];
             that.params['placeholder'] = that.params['node'].getAttribute('placeholder') || that.params['placeholder'];
             that.params['multiple'] = that.params['node'].multiple;
             that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
@@ -124,6 +130,7 @@ function(params){
             that.params['disabled'] = that.params['node'].disabled || that.params['node'].readOnly || that.params['disabled'];
             that.params['className'] = that.params['node'].className || that.params['className'];
         }
+        that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
         that.disabled = that.params['disabled'];
     };
 
@@ -533,7 +540,7 @@ function(params){
     };
 
     that.get = function(){
-        return active || null;
+        return active;
     };
 
     that.set = function(value, triggerEvents){
@@ -594,7 +601,7 @@ function(params){
     };
 
     that.addOption = function(value, text){
-        if(cm.isArray(arguments[0])){
+        if(cm.isObject(arguments[0])){
             renderOption(arguments[0]);
         }else{
             renderOption({

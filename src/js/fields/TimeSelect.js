@@ -78,13 +78,13 @@ function(params){
             that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
             that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
         }
-        if(cm.isEmpty(that.params['hoursInterval'])){
+        if(cm.isEmpty(that.params['hoursInterval']) || that.params['hoursInterval'] === 0){
             that.params['hoursInterval'] = 1;
         }
-        if(cm.isEmpty(that.params['minutesInterval'])){
+        if(cm.isEmpty(that.params['minutesInterval']) || that.params['minutesInterval'] === 0){
             that.params['minutesInterval'] = 1;
         }
-        if(cm.isEmpty(that.params['secondsInterval'])){
+        if(cm.isEmpty(that.params['secondsInterval']) || that.params['secondsInterval'] === 0){
             that.params['secondsInterval'] = 1;
         }
     };

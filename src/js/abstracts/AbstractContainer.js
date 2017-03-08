@@ -5,6 +5,7 @@ cm.define('Com.AbstractContainer', {
         'onClose',
         'onRenderControllerStart',
         'onRenderControllerProcess',
+        'onRenderController',
         'onRenderControllerEnd',
         'onRenderPlaceholderStart',
         'onRenderPlaceholderProcess',
@@ -131,6 +132,7 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
             // Events
             that.triggerEvent('onRenderControllerProcess', that.components['controller']);
             that.renderControllerEvents();
+            that.triggerEvent('onRenderController', that.components['controller']);
             that.triggerEvent('onRenderControllerEnd', that.components['controller']);
         });
         return that;

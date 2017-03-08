@@ -164,13 +164,14 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
     classProto.renderContent = function(){
         var that = this,
             nodes = {};
+        that.nodes['content'] = nodes;
+        // Structure
         that.triggerEvent('onRenderContentStart');
         nodes['container'] = cm.node('div', {'class' : 'input__content'});
         that.triggerEvent('onRenderContent');
         that.triggerEvent('onRenderContentProcess');
         that.triggerEvent('onRenderContentEnd');
         // Export
-        that.nodes['content'] = nodes;
         return nodes['container'];
     };
 

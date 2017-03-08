@@ -190,8 +190,8 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         var that = this;
         // Structure
         that.params['renderStructure'] && that.renderView();
-        that.renderViewModel();
         that.setAttributes();
+        that.renderViewModel();
         // Append
         that.params['embedStructureOnRender'] && that.embedStructure(that.nodes['container']);
         return that;

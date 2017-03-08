@@ -712,15 +712,24 @@ function(params){
 Com.FormFields.add('input', {
     'node' : cm.node('input', {'type' : 'text'}),
     'callbacks' : {
+        'controller' : function(that){
+            that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
+            that.set(that.params['value'], false);
+        },
         'set' : function(that, value){
-            that.params['node'].value = value;
+            if(!cm.isEmpty(value)){
+                that.params['node'].value = value;
+            }else{
+                that.params['node'].value = '';
+            }
             return value;
         },
         'get' : function(that){
             return that.params['node'].value;
         },
         'reset' : function(that){
-            that.params['node'].value = '';
+            var value = !cm.isEmpty(that.params['defaultValue']) ? that.params['defaultValue'] : '';
+            that.params['node'].value = value;
         }
     }
 });
@@ -728,15 +737,24 @@ Com.FormFields.add('input', {
 Com.FormFields.add('email', {
     'node' : cm.node('input', {'type' : 'email'}),
     'callbacks' : {
+        'controller' : function(that){
+            that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
+            that.set(that.params['value'], false);
+        },
         'set' : function(that, value){
-            that.params['node'].value = value;
+            if(!cm.isEmpty(value)){
+                that.params['node'].value = value;
+            }else{
+                that.params['node'].value = '';
+            }
             return value;
         },
         'get' : function(that){
             return that.params['node'].value;
         },
         'reset' : function(that){
-            that.params['node'].value = '';
+            var value = !cm.isEmpty(that.params['defaultValue']) ? that.params['defaultValue'] : '';
+            that.params['node'].value = value;
         }
     }
 });
@@ -744,15 +762,24 @@ Com.FormFields.add('email', {
 Com.FormFields.add('password', {
     'node' : cm.node('input', {'type' : 'password'}),
     'callbacks' : {
+        'controller' : function(that){
+            that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
+            that.set(that.params['value'], false);
+        },
         'set' : function(that, value){
-            that.params['node'].value = value;
+            if(!cm.isEmpty(value)){
+                that.params['node'].value = value;
+            }else{
+                that.params['node'].value = '';
+            }
             return value;
         },
         'get' : function(that){
             return that.params['node'].value;
         },
         'reset' : function(that){
-            that.params['node'].value = '';
+            var value = !cm.isEmpty(that.params['defaultValue']) ? that.params['defaultValue'] : '';
+            that.params['node'].value = value;
         }
     }
 });
@@ -761,15 +788,24 @@ Com.FormFields.add('hidden', {
     'node' : cm.node('input', {'type' : 'hidden'}),
     'visible' : false,
     'callbacks' : {
+        'controller' : function(that){
+            that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
+            that.set(that.params['value'], false);
+        },
         'set' : function(that, value){
-            that.params['node'].value = value;
+            if(!cm.isEmpty(value)){
+                that.params['node'].value = value;
+            }else{
+                that.params['node'].value = '';
+            }
             return value;
         },
         'get' : function(that){
             return that.params['node'].value;
         },
         'reset' : function(that){
-            that.params['node'].value = '';
+            var value = !cm.isEmpty(that.params['defaultValue']) ? that.params['defaultValue'] : '';
+            that.params['node'].value = value;
         }
     }
 });
@@ -777,15 +813,24 @@ Com.FormFields.add('hidden', {
 Com.FormFields.add('textarea', {
     'node' : cm.node('textarea'),
     'callbacks' : {
+        'controller' : function(that){
+            that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
+            that.set(that.params['value'], false);
+        },
         'set' : function(that, value){
-            that.params['node'].value = value;
+            if(!cm.isEmpty(value)){
+                that.params['node'].value = value;
+            }else{
+                that.params['node'].value = '';
+            }
             return value;
         },
         'get' : function(that){
             return that.params['node'].value;
         },
         'reset' : function(that){
-            that.params['node'].value = '';
+            var value = !cm.isEmpty(that.params['defaultValue']) ? that.params['defaultValue'] : '';
+            that.params['node'].value = value;
         }
     }
 });
@@ -822,25 +867,28 @@ Com.FormFields.add('checkbox', {
     'callbacks' : {
         'controller' : function(that){
             var nodes = {};
+            var value = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
+            var checked = !(cm.isEmpty(value) || value === 0 || value === '0' || value === false);
             nodes['container'] = cm.node('label',
                 nodes['input'] = cm.node('input', {'type' : 'checkbox', 'name' : that.params['name']}),
-                nodes['label'] = cm.node('span', {'class' : 'label'})
+                nodes['label'] = cm.node('span', {'class' : 'label'}, that.params['placeholder'])
             );
-            var value = typeof that.params['value'] != 'undefined' ? that.params['value'] : that.params['defaultValue'];
-            nodes['input'].checked = !!value;
+            nodes['input'].checked = checked;
             that.params['node'].appendChild(nodes['container']);
             return nodes;
-        },
+        }, 
         'set' : function(that, value){
-            that.controller['input'].checked = !!value;
+            var checked = !(cm.isEmpty(value) || value === 0 || value === '0' || value === false);
+            that.controller['input'].checked = checked;
             return value;
         },
         'get' : function(that){
             return that.controller['input'].checked ? 1 : 0;
         },
         'reset' : function(that){
-            var value = typeof that.params['value'] != 'undefined' ? that.params['value'] : that.params['defaultValue'];
-            that.controller['input'].checked = !!value;
+            var value = that.params['defaultValue'];
+            var checked = !(cm.isEmpty(value) || value === 0 || value === '0' || value === false);
+            that.controller['input'].checked = checked;
         }
     }
 });
@@ -850,6 +898,7 @@ Com.FormFields.add('radio', {
     'callbacks' : {
         'controller' : function(that){
             var items = [],
+                value = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'],
                 item;
             cm.forEach(that.params['options'], function(option){
                 item = {
@@ -860,7 +909,7 @@ Com.FormFields.add('radio', {
                     item.nodes['input'] = cm.node('input', {'type' : 'radio', 'name' : that.params['name'], 'value' : option['value']}),
                     item.nodes['label'] = cm.node('span', {'class' : 'label'}, option['text'])
                 );
-                item.nodes['input'].checked = item.config['value'] == that.params['value'];
+                item.nodes['input'].checked = item.config['value'] == value;
                 that.params['node'].appendChild(item.nodes['container']);
                 items.push(item);
             });
@@ -883,7 +932,7 @@ Com.FormFields.add('radio', {
         },
         'reset' : function(that){
             cm.forEach(that.controller, function(item){
-                item.nodes['input'].checked = false;
+                item.nodes['input'].checked = item.config['value'] == that.params['defaultValue'];
             });
         }
     }
@@ -895,6 +944,7 @@ Com.FormFields.add('check', {
         'controller' : function(that){
             var items = [],
                 item;
+            that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
             cm.forEach(that.params['options'], function(option){
                 item = {
                     'config' : option,

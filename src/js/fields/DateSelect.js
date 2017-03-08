@@ -17,9 +17,10 @@ cm.define('Com.DateSelect', {
         'name' : '',
         'embedStructure' : 'replace',
         'container' : null,
+        'fields' : ['year', 'month', 'day'],
         'format' : 'cm._config.dateFormat',
-        'startYear' : 1950,
-        'endYear' : new Date().getFullYear() + 10,
+        'startYear' : 1950,                             // number | current
+        'endYear' : 'current + 10',                     // number | current
         'renderSelectsInBody' : true,
         'langs' : {
             'Day' : 'Day',
@@ -65,6 +66,15 @@ function(params){
         if(cm.isNode(that.params['node'])){
             that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
         }
+        if(that.params['value'] == 'now'){
+            that.params['value'] = new Date();
+        }
+        if(/current/.test(that.params['startYear'])){
+            that.params['startYear'] = eval(cm.strReplace(that.params['startYear'], {'current' : new Date().getFullYear()}));
+        }
+        if(/current/.test(that.params['endYear'])){
+            that.params['endYear'] = eval(cm.strReplace(that.params['endYear'], {'current' : new Date().getFullYear()}));
+        }
     };
 
     var render = function(){
@@ -73,15 +83,11 @@ function(params){
             nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
             cm.Node('div', {'class' : 'pt__toolbar bottom'},
                 cm.Node('div', {'class' : 'inner clear'},
-                    cm.Node('ul', {'class' : 'group'},
-                        nodes['year'] = cm.Node('li', {'class' : 'is-field small'}),
-                        nodes['month'] = cm.Node('li', {'class' : 'is-field medium'}),
-                        nodes['day'] = cm.Node('li', {'class' : 'is-field x-small'})
-                    )
+                    nodes['fields'] = cm.Node('ul', {'class' : 'group'})
                 )
             )
         );
-        renderSelects();
+        renderFields();
         // Attributes
         if(that.params['name']){
             nodes['hidden'].setAttribute('name', that.params['name']);
@@ -90,50 +96,30 @@ function(params){
         that.embedStructure(nodes['container']);
     };
 
-    var renderSelects = function(){
-        var data, i;
-        // Days
-        data = [
-            {'value' : '00', 'text' : that.lang('Day')}
-        ];
-        for(i = 1; i <= 31; i++){
-            data.push({'value' : cm.addLeadZero(i), 'text' : i});
-        }
-        components['day'] = new Com.Select({
-            'container' : nodes['day'],
-            'options' : data,
-            'renderInBody' : that.params['renderSelectsInBody'],
-            'events' : {
-                'onChange' :  function(select, item){
-                    that.previous = cm.clone(that.selected);
-                    that.selected['day'] = item;
-                    setMisc(true);
-                }
+    var renderFields = function(){
+        cm.forEach(that.params['fields'], function(item){
+            switch(item){
+                case 'year':
+                    renderYearField();
+                    break;
+                case 'month':
+                    renderMonthField();
+                    break;
+                case 'day':
+                    renderDayField();
+                    break;
             }
         });
-        // Months
-        data = [
-            {'value' : '00', 'text' : that.lang('Month')}
-        ];
-        cm.forEach(that.lang('months'), function(month, i){
-            data.push({'value' : cm.addLeadZero(parseInt(i + 1)), 'text' : month});
-        });
-        components['month'] = new Com.Select({
-            'container' : nodes['month'],
-            'options' : data,
-            'renderInBody' : that.params['renderSelectsInBody'],
-            'events' : {
-                'onChange' : function(select, item){
-                    that.previous = cm.clone(that.selected);
-                    that.selected['month'] = item;
-                    setMisc(true);
-                }
-            }
-        });
-        // Years
-        data = [
+    };
+
+    var renderYearField = function(){
+        // Structure
+        nodes['year'] = cm.Node('li', {'class' : 'is-field small'});
+        cm.appendChild(nodes['year'], nodes['fields']);
+        // Render component
+        var data = [
             {'value' : '0000', 'text' : that.lang('Year')}
-        ];
+        ], i;
         for(i = that.params['endYear']; i >= that.params['startYear']; i--){
             data.push({'value' : i, 'text' : i});
         }
@@ -151,6 +137,56 @@ function(params){
         });
     };
 
+    var renderMonthField = function(){
+        // Structure
+        nodes['month'] = cm.Node('li', {'class' : 'is-field medium'});
+        cm.appendChild(nodes['month'], nodes['fields']);
+        // Render component
+        var data = [
+            {'value' : '00', 'text' : that.lang('Month')}
+        ];
+        cm.forEach(that.lang('months'), function(month, i){
+            data.push({'value' : cm.addLeadZero(parseInt(i + 1)), 'text' : month});
+        });
+        components['month'] = new Com.Select({
+            'container' : nodes['month'],
+            'options' : data,
+            'renderInBody' : that.params['renderSelectsInBody'],
+            'events' : {
+                'onChange' : function(select, item){
+                    that.previous = cm.clone(that.selected);
+                    that.selected['month'] = item;
+                    setMisc(true);
+                }
+            }
+        });
+    };
+
+    var renderDayField = function(){
+        // Structure
+        nodes['day'] = cm.Node('li', {'class' : 'is-field x-small'});
+        cm.appendChild(nodes['day'], nodes['fields']);
+        // Render component
+        var data = [
+            {'value' : '00', 'text' : that.lang('Day')}
+        ], i;
+        for(i = 1; i <= 31; i++){
+            data.push({'value' : cm.addLeadZero(i), 'text' : i});
+        }
+        components['day'] = new Com.Select({
+            'container' : nodes['day'],
+            'options' : data,
+            'renderInBody' : that.params['renderSelectsInBody'],
+            'events' : {
+                'onChange' :  function(select, item){
+                    that.previous = cm.clone(that.selected);
+                    that.selected['day'] = item;
+                    setMisc(true);
+                }
+            }
+        });
+    };
+
     var set = function(str, execute){
         that.previous = cm.clone(that.selected);
         if(!str || str == toStr(defaultDate)){
@@ -162,9 +198,9 @@ function(params){
                 that.selected = fromStr(str);
             }
         }
-        components['day'].set(that.selected['day'], false);
-        components['month'].set(that.selected['month'], false);
-        components['year'].set(that.selected['year'], false);
+        components['day'] && components['day'].set(that.selected['day'], false);
+        components['month'] && components['month'].set(that.selected['month'], false);
+        components['year'] && components['year'].set(that.selected['year'], false);
         setMisc(execute);
     };
 
@@ -267,5 +303,6 @@ function(params){
 
 Com.FormFields.add('date-select', {
     'node' : cm.node('input', {'type' : 'text'}),
+    'fieldConstructor' : 'Com.AbstractFormField',
     'constructor' : 'Com.DateSelect'
 });

@@ -2,16 +2,16 @@ cm.define('Com.ScaleTools', {
     'extend' : 'Com.AbstractInput',
     'params' : {
         'className' : 'com__scale-tools',
-        'defaultValue' : 'original',
+        'defaultValue' : 'auto',
         'fieldStyle' : 'row',                   // row | block
         'options' : [
-            {'name' : 'original', 'icon' : 'svg__scale-original'},
+            {'name' : 'auto', 'icon' : 'svg__scale-auto'},
             {'name' : 'contain', 'icon' : 'svg__scale-contain'},
             {'name' : 'cover', 'icon' : 'svg__scale-cover'},
             {'name' : '100% 100%', 'icon' : 'svg__scale-fill'}
         ],
         'langs' : {
-            'original' : 'Original',
+            'auto' : 'Auto',
             'contain' : 'Contain',
             'cover' : 'Cover',
             '100% 100%' : 'Fill'

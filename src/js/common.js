@@ -412,7 +412,7 @@ cm.objectReplace = function(o, vars){
     return newO;
 };
 
-cm.isEmpty = function(el){
+cm.isEmptyOld = function(el){
     if(!el){
         return true;
     }else if(typeof el == 'string' || cm.isArray(el)){
@@ -424,6 +424,22 @@ cm.isEmpty = function(el){
     }else{
         return false;
     }
+};
+
+cm.isEmpty = function(value){
+    if(value === 'undefined' || value === undefined || value === null){
+        return true;
+    }
+    if(cm.isBoolean(value)){
+        return value === false;
+    }
+    if(cm.isString(value) || cm.isArray(value)){
+        return value.length === 0;
+    }
+    if(cm.isObject(value)){
+        return cm.getLength(value) === 0;
+    }
+    return false;
 };
 
 cm.objectPath = function(name, obj){
@@ -1669,6 +1685,19 @@ cm.getValue = function(name, node){
     return value;
 };
 
+cm.getSelectValue = function(node){
+    if(!cm.isNode(node)){
+        return null;
+    }
+    if(!node.multiple){
+        return node.value;
+    }
+    var options = node.querySelectorAll('option:checked');
+    return Array.from(options).map(function(option){
+        return option.value;
+    });
+};
+
 /* ******* STRINGS ******* */
 
 cm.toFixed = function(n, x){
@@ -1955,7 +1984,7 @@ cm.addClass = function(node, str, useHack){
         useHack = node.clientHeight;
     }
     if(node.classList){
-        cm.forEach(str.split(/\s+/), function(item){
+        cm.forEach(str.toString().split(/\s+/), function(item){
             if(!cm.isEmpty(item)){
                 node.classList.add(item);
             }
@@ -1977,7 +2006,7 @@ cm.removeClass = function(node, str, useHack){
         useHack = node.clientHeight;
     }
     if(node.classList){
-        cm.forEach(str.split(/\s+/), function(item){
+        cm.forEach(str.toString().split(/\s+/), function(item){
             if(!cm.isEmpty(item)){
                 node.classList.remove(item);
             }
@@ -2861,10 +2890,12 @@ cm.charCodeIsDigit = function(code){
 };
 
 cm.allowOnlyDigitInputEvent = function(input, callback){
-    var value;
+    var value, isMaxlength, isMax;
     cm.addEvent(input, 'input', function(e){
         value = input.value.replace(/[^\d]/g, '');
-        if(!cm.isEmpty(input.maxlength) || !cm.isEmpty(input.max)){
+        isMaxlength = !cm.isEmpty(input.maxlength) && input.maxlength > 0;
+        isMax = !cm.isEmpty(input.max) && input.max > 0;
+        if(isMaxlength || isMax){
             if(input.type == 'number'){
                 input.value = Math.min(parseFloat(value), parseFloat(input.max));
             }else{
@@ -2879,10 +2910,12 @@ cm.allowOnlyDigitInputEvent = function(input, callback){
 };
 
 cm.allowOnlyNumbersInputEvent = function(input, callback){
-    var value;
+    var value, isMaxlength, isMax;
     cm.addEvent(input, 'input', function(e){
         value = input.value.replace(/[^\d-]/g, '');
-        if(!cm.isEmpty(input.maxlength) || !cm.isEmpty(input.max)){
+        isMaxlength = !cm.isEmpty(input.maxlength) && input.maxlength > 0;
+        isMax = !cm.isEmpty(input.max) && input.max > 0;
+        if(isMaxlength || isMax){
             if(input.type == 'number'){
                 input.value = Math.min(parseFloat(value), parseFloat(input.max));
             }else{

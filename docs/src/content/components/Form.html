@@ -29,57 +29,74 @@
                         <textarea data-element="Com.CodeHighlight" data-node="text">
 .clear()
 .add('select', {
-  'label' : 'Select:',
-  'name' : 'select',
-  'help' : 'This is help text in tooltip.',
-  'options' : [
-    {'value' : 'foo', 'text' : 'Bar'},
-    {'value' : 'bar', 'text' : 'Foo'}
-  ]
+    'label' : 'Select:',
+    'name' : 'select',
+    'help' : 'This is help text in tooltip.',
+    'options' : [
+        {'value' : 'foo', 'text' : 'Foo'},
+        {'value' : 'bar', 'text' : 'Bar'}
+    ]
 })
 .add('input', {
-  'label' : 'Input:',
-  'name' : 'input'
+    'label' : 'Input:',
+    'name' : 'input'
 })
 .add('textarea', {
-  'label' : 'Text:',
-  'name' : 'text'
+    'label' : 'Text:',
+    'name' : 'text'
 })
 .add('radio', {
-  'label' : 'Radio:',
-  'name' : 'radio',
-  'options' : [
-    {'value' : 'foo', 'text' : 'Bar'},
-    {'value' : 'bar', 'text' : 'Foo'}
-  ]
+    'label' : 'Radio:',
+    'name' : 'radio',
+    'defaultValue' : 'foo',
+    'options' : [
+        {'value' : 'foo', 'text' : 'Foo'},
+        {'value' : 'bar', 'text' : 'Bar'}
+    ]
 })
-.add('check', {
-  'label' : 'Checkbox:',
-  'name' : 'check',
-  'options' : [
-    {'value' : 'foo', 'text' : 'Bar'},
-    {'value' : 'bar', 'text' : 'Foo'}
-  ]
+.add('checkbox', {
+    'label' : 'Checkbox:',
+    'name' : 'checkbox'
 })
-.add('integer-input', {
-  'label' : 'Integer Input:',
-  'name' : 'integer'
+.add('checkbox', {
+    'name' : 'checkbox-no-label',
+    'defaultValue' : 1,
+    'placeholder' : 'Chekbox with placeholder instead of label, and default value',
+    'className' : 'is-no-label'
 })
-.add('image-input', {
-  'label' : 'Image Input:',
-  'name' : 'image'
+.add('integer', {
+    'label' : 'Integer Input:',
+    'name' : 'integer',
+    'maxlength' : 12
+})
+.add('integer', {
+    'label' : 'Integer Input with negative:',
+    'name' : 'integer-negative',
+    'maxlength' : 12,
+    'constructorParams' : {
+        'allowNegative' : true
+    }
+})
+.add('indent', {
+    'label' : 'Indent Input:',
+    'name' : 'indent',
+    'defaultValue' : 0,
+    'maxlength' : 3
+})
+.add('image', {
+    'label' : 'Image Input:',
+    'name' : 'image'
 })
 .addButtons([
-  {
-    'label' : 'Send',
-    'action' : 'submit',
-    'name' : 'send'
-  },
-  {
-    'label' : 'Reset',
-    'action' : 'reset',
-    'name' : 'reset'
-  }
+    {
+        'label' : 'Send',
+        'action' : 'submit',
+        'name' : 'send'
+    },{
+        'label' : 'Reset',
+        'action' : 'reset',
+        'name' : 'reset'
+    }
 ]);
                         </textarea>
                     </dd>

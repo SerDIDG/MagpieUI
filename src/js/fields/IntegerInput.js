@@ -1,8 +1,7 @@
-cm.define('Com.IndentInput', {
+cm.define('Com.IntegerInput', {
     'extend' : 'Com.AbstractInput',
     'params' : {
         'maxlength' : 3,
-        'units' : 'px',
         'defaultValue' : 0,
         'allowNegative' : false
     }
@@ -13,7 +12,7 @@ function(params){
     Com.AbstractInput.apply(that, arguments);
 });
 
-cm.getConstructor('Com.IndentInput', function(classConstructor, className, classProto){
+cm.getConstructor('Com.IntegerInput', function(classConstructor, className, classProto){
     var _inherit = classProto._inherit;
 
     classProto.construct = function(){
@@ -35,7 +34,7 @@ cm.getConstructor('Com.IndentInput', function(classConstructor, className, class
             nodes['input'] = cm.node('input', {'type' : 'text'})
         );
         // Attributes
-        if(that.params['maxlength']){
+        if(!cm.isEmpty(that.params['maxlength']) && that.params['maxlength'] > 0){
             nodes['input'].setAttribute('maxlength', that.params['maxlength']);
         }
         // Events
@@ -68,8 +67,9 @@ cm.getConstructor('Com.IndentInput', function(classConstructor, className, class
     classProto.validateValue = function(value){
         var that = this;
         value = !cm.isEmpty(value) ? value : that.params['defaultValue'];
-        that.rawValue = parseInt(value);
-        return (that.rawValue + that.params['units']);
+        value = parseInt(value);
+        that.rawValue = !isNaN(value) ? value : '';
+        return that.rawValue;
     };
 
     classProto.setValue = function(triggerEvents){
@@ -88,8 +88,8 @@ cm.getConstructor('Com.IndentInput', function(classConstructor, className, class
 
 /* ****** FORM FIELD COMPONENT ******* */
 
-Com.FormFields.add('indent-input', {
+Com.FormFields.add('integer', {
     'node' : cm.node('input', {'type' : 'text'}),
     'fieldConstructor' : 'Com.AbstractFormField',
-    'constructor' : 'Com.IndentInput'
+    'constructor' : 'Com.IntegerInput'
 });

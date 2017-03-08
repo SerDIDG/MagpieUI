@@ -1,15 +1,14 @@
 cm.define('Com.AbstractFormField', {
     'extend' : 'Com.AbstractController',
     'events' : [
-        'onRenderContent',
-        'onRenderContentStart',
-        'onRenderContentProcess',
-        'onRenderContentEnd'
+        'onChange',
+        'onSelect'
     ],
     'params' : {
         'renderStructure' : true,
         'embedStructureOnRender' : true,
         'controllerEvents' : true,
+        'renderStructureField' : true,
         'renderStructureContent' : true,
         'form' : false,
         'value' : null,
@@ -36,7 +35,6 @@ function(params){
     Com.AbstractController.apply(that, arguments);
 });
 
-
 cm.getConstructor('Com.AbstractFormField', function(classConstructor, className, classProto){
     var _inherit = classProto._inherit;
 
@@ -50,8 +48,9 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.onValidateParams = function(){
         var that = this;
         that.params['constructorParams']['name'] = that.params['name'];
-        that.params['constructorParams']['options'] = that.params['options'];
+        that.params['constructorParams']['options'] = !cm.isEmpty(that.params['options']) ? that.params['options'] : that.params['constructorParams']['options'];
         that.params['constructorParams']['value'] = that.params['dataValue'] || that.params['value'];
+        that.params['constructorParams']['defaultValue'] = that.params['defaultValue'];
         that.params['constructorParams']['maxlength'] = that.params['maxlength'];
         that.params['Com.HelpBubble']['content'] = that.params['help'];
         that.params['Com.HelpBubble']['name'] = that.params['name'];
@@ -63,33 +62,43 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.renderView = function(){
         var that = this;
         that.triggerEvent('onRenderViewStart');
-        that.nodes['container'] = cm.node('dl', {'class' : 'pt__field'},
-            that.nodes['label'] = cm.node('dt',
-                cm.node('label', that.params['label'])
-            ),
-            that.nodes['value'] = cm.node('dd', that.params['node'])
-        );
+        // Render field structure
+        if(that.params['renderStructureField']){
+            that.renderFiled();
+        }
         // Render custom structure
         if(that.params['renderStructureContent']){
             that.nodes['contentContainer'] = that.renderContent();
+        }
+        // Embed
+        if(that.params['renderStructureField']){
             cm.appendChild(that.nodes['contentContainer'], that.nodes['value']);
+        }else{
+            that.nodes['container'] = that.nodes['contentContainer'];
         }
         that.triggerEvent('onRenderViewProcess');
         that.triggerEvent('onRenderViewEnd');
     };
 
+    classProto.renderFiled = function(){
+        var that = this;
+        that.nodes['container'] = cm.node('dl', {'class' : 'pt__field'},
+            that.nodes['label'] = cm.node('dt',
+                cm.node('label', that.params['label'])
+            ),
+            that.nodes['value'] = cm.node('dd')
+        );
+    };
+
     classProto.renderContent = function(){
         var that = this,
             nodes = {};
-        that.triggerEvent('onRenderContentStart');
-        nodes['container'] = cm.node('div', {'class' : 'input__content'},
+        that.nodes['content'] = nodes;
+        // Structure
+        nodes['container'] = cm.node('div', {'class' : 'pt__field__content'},
             nodes['input'] = that.params['node']
         );
-        that.triggerEvent('onRenderContent');
-        that.triggerEvent('onRenderContentProcess');
-        that.triggerEvent('onRenderContentEnd');
         // Export
-        that.nodes['content'] = nodes;
         return nodes['container'];
     };
 
@@ -103,6 +112,8 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         }
         if(!cm.isEmpty(that.params['value'])){
             that.nodes['content']['input'].setAttribute('value', that.params['value']);
+        }else if(!cm.isEmpty(that.params['defaultValue'])){
+            that.nodes['content']['input'].setAttribute('value', that.params['defaultValue']);
         }
         if(!cm.isEmpty(that.params['dataValue'])){
             that.nodes['content']['input'].setAttribute('data-value', JSON.stringify(that.params['dataValue']));
@@ -145,10 +156,24 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         cm.getConstructor(that.params['constructor'], function(classObject){
             that.components['controller'] = new classObject(
                 cm.merge(that.params['constructorParams'], {
-                    'node' : that.nodes['content']['input']
+                    'node' : that.nodes['content']['input'],
+                    'form' : that.components['form'],
+                    'formField' : that
                 })
             );
+            that.renderControllerEvents();
         });
+    };
+
+    classProto.renderControllerEvents = function(){
+        var that = this;
+        that.components['controller'].addEvent('onSelect', function(controller, data){
+            that.triggerEvent('onSelect', data);
+        });
+        that.components['controller'].addEvent('onChange', function(controller, data){
+            that.triggerEvent('onChange', data);
+        });
+        return that;
     };
 
     /******* DATA *******/
@@ -198,5 +223,17 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         cm.removeClass(that.nodes['container'], 'error');
         cm.remove(that.nodes['errors']);
         return that;
+    };
+
+    /******* OTHER *******/
+
+    classProto.getName = function(){
+        var that = this;
+        return that.params['name'];
+    };
+
+    classProto.getContainer = function(){
+        var that = this;
+        return that.nodes['container'];
     };
 });

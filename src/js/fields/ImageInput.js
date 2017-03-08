@@ -160,5 +160,6 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
 
 Com.FormFields.add('image', {
     'node' : cm.node('input', {'type' : 'text'}),
+    'fieldConstructor' : 'Com.AbstractFormField',
     'constructor' : 'Com.ImageInput'
 });
