@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.25.0 (2017-03-07 20:52) ************ */
+/*! ************ MagpieUI v3.25.1 (2017-03-24 20:04) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1506,7 +1506,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.25.0',
+        '_version' : '3.25.1',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -3134,7 +3134,7 @@ cm.setSelect = function(o, value){
     }
     var options = o.getElementsByTagName('option');
     cm.forEach(options, function(node){
-        node.selected = (typeof value == 'object'? cm.inArray(node.value, value) : node.value == value);
+        node.selected = cm.isArray(value) ? cm.inArray(node.value, value) : node.value == value;
     });
     return o;
 };
@@ -6592,12 +6592,12 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         that.constructCollectorHandler = that.constructCollector.bind(that);
         that.destructCollectorHandler = that.destructCollector.bind(that);
         // Configure class
+        that.params['controllerEvents'] && that.bindControllerEvents();
         that.triggerEvent('onConstructStart');
         that.initComponents();
         that.getLESSVariables();
         that.setParams(params);
         that.convertEvents(that.params['events']);
-        that.params['controllerEvents'] && that.bindControllerEvents();
         that.params['getDataNodes'] && that.getDataNodes(that.params['node']);
         that.params['getDataConfig'] && that.getDataConfig(that.params['node']);
         that.callbacksProcess();
@@ -7105,6 +7105,7 @@ cm.define('Com.AbstractInput', {
         'onSelect',
         'onChange',
         'onClear',
+        'onReset',
         'onDisable',
         'onEnable',
         'onRenderContent',
@@ -7145,6 +7146,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         that.components = {};
         that.previousValue = null;
         that.value = null;
+        that.rawValue = null;
         that.disabled = false;
         // Bind context to methods
         that.setHandler = that.set.bind(that);
@@ -7178,11 +7180,17 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         return that.value;
     };
 
-    classProto.clear = function(triggerEvents){
+    classProto.getRaw = function(){
+        var that = this;
+        return that.rawValue;
+    };
+
+    classProto.reset = classProto.clear = function(triggerEvents){
         var that = this;
         if(!that.isDestructed){
             triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
             triggerEvents && that.triggerEvent('onClear');
+            triggerEvents && that.triggerEvent('onReset');
             that.set(that.params['defaultValue'], triggerEvents);
         }
         return that;
@@ -7306,7 +7314,9 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
 
     classProto.validateValue = function(value){
         var that = this;
-        return !cm.isEmpty(value) ? value : that.params['defaultValue'];
+        value = !cm.isEmpty(value) ? value : that.params['defaultValue'];
+        that.rawValue = value;
+        return value;
     };
 
     classProto.saveValue = function(value){
@@ -7314,7 +7324,11 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         that.previousValue = that.value;
         that.value = value;
         if(that.params['setHiddenInput']){
-            that.nodes['hidden'].value = value;
+            if(!cm.isEmpty(value)){
+                that.nodes['hidden'].value = JSON.stringify(value);
+            }else{
+                that.nodes['hidden'].value = ''
+            }
         }
         return that;
     };
@@ -7654,7 +7668,8 @@ cm.define('Com.AbstractFormField', {
     'extend' : 'Com.AbstractController',
     'events' : [
         'onChange',
-        'onSelect'
+        'onSelect',
+        'onReset'
     ],
     'params' : {
         'renderStructure' : true,
@@ -7692,6 +7707,11 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
 
     /******* SYSTEM *******/
 
+    classProto.onConstructStart = function(){
+        var that = this;
+        that.nodeTagName = null;
+    };
+
     classProto.onDestruct = function(){
         var that = this;
         that.controller && cm.isFunction(that.controller.destruct) && that.controller.destruct();
@@ -7699,14 +7719,16 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
 
     classProto.onValidateParams = function(){
         var that = this;
+        that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
         that.params['constructorParams']['name'] = that.params['name'];
         that.params['constructorParams']['options'] = !cm.isEmpty(that.params['options']) ? that.params['options'] : that.params['constructorParams']['options'];
-        that.params['constructorParams']['value'] = that.params['dataValue'] || that.params['value'];
+        that.params['constructorParams']['value'] = !cm.isEmpty(that.params['dataValue']) ? that.params['dataValue'] : that.params['value'];
         that.params['constructorParams']['defaultValue'] = that.params['defaultValue'];
         that.params['constructorParams']['maxlength'] = that.params['maxlength'];
         that.params['Com.HelpBubble']['content'] = that.params['help'];
         that.params['Com.HelpBubble']['name'] = that.params['name'];
         that.components['form'] = that.params['form'];
+        that.nodeTagName = that.params['node'].tagName.toLowerCase();
     };
 
     /******* VIEW - MODEL *******/
@@ -7750,6 +7772,19 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         nodes['container'] = cm.node('div', {'class' : 'pt__field__content'},
             nodes['input'] = that.params['node']
         );
+        // Options
+        if(!cm.isEmpty(that.params['options'])){
+            switch(that.nodeTagName){
+                case 'select' :
+                    cm.forEach(that.params['options'], function(item){
+                        cm.appendChild(
+                            cm.node('option', {'value' : item['value'], 'innerHTML' : item['text']}),
+                            nodes['input']
+                        );
+                    });
+                    break;
+            }
+        }
         // Export
         return nodes['container'];
     };
@@ -7763,9 +7798,14 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             that.nodes['content']['input'].setAttribute('name', that.params['name']);
         }
         if(!cm.isEmpty(that.params['value'])){
-            that.nodes['content']['input'].setAttribute('value', that.params['value']);
-        }else if(!cm.isEmpty(that.params['defaultValue'])){
-            that.nodes['content']['input'].setAttribute('value', that.params['defaultValue']);
+            switch(that.nodeTagName){
+                case 'select' :
+                    cm.setSelect(that.nodes['content']['input'], that.params['value']);
+                    break;
+                default :
+                    that.nodes['content']['input'].setAttribute('value', that.params['value']);
+                    break;
+            }
         }
         if(!cm.isEmpty(that.params['dataValue'])){
             that.nodes['content']['input'].setAttribute('data-value', JSON.stringify(that.params['dataValue']));
@@ -7773,7 +7813,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         if(!cm.isEmpty(that.params['placeholder'])){
             that.nodes['content']['input'].setAttribute('placeholder', that.params['placeholder']);
         }
-        if(!cm.isEmpty(that.params['maxlength'])){
+        if(!cm.isEmpty(that.params['maxlength']) && that.params['maxlength'] > 0){
             that.nodes['content']['input'].setAttribute('maxlength', that.params['maxlength']);
         }
         // Classes
@@ -7825,6 +7865,9 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.components['controller'].addEvent('onChange', function(controller, data){
             that.triggerEvent('onChange', data);
         });
+        that.components['controller'].addEvent('onReset', function(controller, data){
+            that.triggerEvent('onReset', data);
+        });
         return that;
     };
 
@@ -7839,6 +7882,11 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.get = function(){
         var that = this;
         return that.components['controller'] && cm.isFunction(that.components['controller'].get) ? that.components['controller'].get() : null;
+    };
+
+    classProto.getRaw = function(){
+        var that = this;
+        return that.components['controller'] && cm.isFunction(that.components['controller'].getRaw) ? that.components['controller'].getRaw() : that.get();
     };
 
     classProto.reset = function(){
@@ -7895,7 +7943,10 @@ cm.define('Com.AbstractInputContainer', {
         'onRenderControllerStart',
         'onRenderControllerProcess',
         'onRenderController',
-        'onRenderControllerEnd'
+        'onRenderControllerEnd',
+        'onSelect',
+        'onChange',
+        'onReset'
     ],
     'params' : {
         'renderStructure' : false,
@@ -7914,6 +7965,21 @@ function(params){
 cm.getConstructor('Com.AbstractInputContainer', function(classConstructor, className, classProto){
     var _inherit = classProto._inherit;
 
+    classProto.construct = function(){
+        var that = this;
+        that.resetHandler = that.reset.bind(that);
+        that.enableHandler = that.enable.bind(that);
+        that.disableHandler = that.disable.bind(that);
+        // Call parent method
+        _inherit.prototype.construct.apply(that, arguments);
+    };
+
+    classProto.onValidateParams = function(){
+        var that = this;
+        that.components['formField'] = that.params['formField'];
+        that.components['form'] = that.params['form'];
+    };
+
     classProto.renderViewModel = function(){
         var that = this;
         // Render Select
@@ -7929,6 +7995,7 @@ cm.getConstructor('Com.AbstractInputContainer', function(classConstructor, class
             params = that.validateControllerParams();
             that.components['controller'] = new classConstructor(params);
             that.triggerEvent('onRenderControllerProcess', that.components['controller']);
+            that.renderControllerEvents();
             that.triggerEvent('onRenderController', that.components['controller']);
             that.triggerEvent('onRenderControllerEnd', that.components['controller']);
         });
@@ -7943,6 +8010,20 @@ cm.getConstructor('Com.AbstractInputContainer', function(classConstructor, class
         });
     };
 
+    classProto.renderControllerEvents = function(){
+        var that = this;
+        that.components['controller'].addEvent('onSelect', function(controller, data){
+            that.triggerEvent('onSelect', data);
+        });
+        that.components['controller'].addEvent('onChange', function(controller, data){
+            that.triggerEvent('onChange', data);
+        });
+        that.components['controller'].addEvent('onReset', function(controller, data){
+            that.triggerEvent('onReset', data);
+        });
+        return that;
+    };
+
     /******* PUBLIC *******/
 
     classProto.set = function(value){
@@ -7954,6 +8035,11 @@ cm.getConstructor('Com.AbstractInputContainer', function(classConstructor, class
     classProto.get = function(){
         var that = this;
         return that.components['controller'] && cm.isFunction(that.components['controller'].get)  && that.components['controller'].get();
+    };
+
+    classProto.getRaw = function(){
+        var that = this;
+        return that.components['controller'] && cm.isFunction(that.components['controller'].getRaw)  && that.components['controller'].getRaw() || that.get();
     };
 
     classProto.reset = function(){
@@ -8522,11 +8608,9 @@ function(params){
         // Render
         if(field && !that.fields[params['name']]){
             cm.getConstructor(params['fieldConstructor'], function(classConstructor){
-                controller = new classConstructor(params);
+                params['controller'] = new classConstructor(params);
                 // Save
-                if(params['field']){
-                    that.fields[params['name']] = controller;
-                }
+                that.fields[params['name']] = params;
             });
         }
     };
@@ -8627,8 +8711,8 @@ function(params){
                 'onAbort' : function(){
                     that.callbacks.abort(that, config);
                 },
-                'onEnd' : function(){
-                    that.callbacks.end(that, config);
+                'onEnd' : function(response){
+                    that.callbacks.end(that, config, response);
                 }
             })
         );
@@ -8695,7 +8779,7 @@ function(params){
             that.components['notifications'].clear();
         }
         cm.forEach(that.fields, function(field){
-            field.clearError();
+            field['controller'].clearError();
         });
         // Render new errors messages
         if(cm.isArray(errors)){
@@ -8708,7 +8792,7 @@ function(params){
                     });
                 }
                 if(field = that.getField(item['field'])){
-                    field.renderError(item['message']);
+                    field['controller'].renderError(item['message']);
                 }
             });
         }else{
@@ -8728,7 +8812,7 @@ function(params){
         if(!that._isDestructed){
             that._isDestructed = true;
             cm.forEach(that.fields, function(field){
-                field.destruct();
+                field['controller'].destruct();
             });
             that.removeFromStack();
             cm.remove(that.nodes['container']);
@@ -8769,22 +8853,41 @@ function(params){
         return that.fields[name];
     };
 
-    that.get = that.getAll = function(){
+    that.get = function(){
         var o = {},
             value;
         cm.forEach(that.fields, function(field, name){
-            value = field.get();
-            if(value !== null){
-                o[name] = value;
+            if(field['field'] && !field['system']){
+                value = field['controller'].get();
+                if(!cm.isEmpty(value)){
+                    o[name] = value;
+                }
+            }
+        });
+        return o;
+    };
+
+    that.getAll = function(){
+        var o = {},
+            value;
+        cm.forEach(that.fields, function(field, name){
+            if(!field['system']){
+                value = field['controller'].get();
+                if(!cm.isEmpty(value)){
+                    o[name] = value;
+                }
             }
         });
         return o;
     };
 
     that.set = function(data){
+        var field, setValue;
         cm.forEach(data, function(value, name){
-            if(that.fields[name]){
-                that.fields[name].set(value);
+            field = that.fields[name];
+            if(field && !field['system']){
+                setValue = data[field['dataName']] || value;
+                that.fields[name]['controller'].set(setValue);
             }
         });
         return that;
@@ -8796,7 +8899,7 @@ function(params){
 
     that.clear = function(){
         cm.forEach(that.fields, function(field){
-            field.destruct();
+            field['controller'].destruct();
         });
         that.fields = {};
         cm.clearNode(that.nodes['fields']);
@@ -8811,7 +8914,7 @@ function(params){
     that.reset = function(){
         cm.removeClass(that.nodes['notificationsContainer'], 'is-show');
         cm.forEach(that.fields, function(field){
-            field.reset();
+            field['controller'].reset();
         });
         return that;
     };
@@ -8847,6 +8950,14 @@ function(params){
         return that;
     };
 
+    that.getName = function(){
+        return that.params['name'];
+    };
+
+    that.getContainer = function(){
+        return that.nodes['container'];
+    };
+
     init();
 });
 
@@ -8862,7 +8973,8 @@ Com.FormFields = (function(){
                 'fieldConstructor' : null,
                 'constructor' : null,
                 'type' : type,
-                'field' : true
+                'field' : true,
+                'system' : false
             }, params);
         },
         'get' : function(type){
@@ -9344,6 +9456,7 @@ Com.FormFields.add('check', {
 Com.FormFields.add('buttons', {
     'node' : cm.node('div', {'class' : 'btn-wrap'}),
     'field' : false,
+    'system' : true,
     'callbacks' : {
         'render' : function(that){
             var nodes = {};
@@ -22438,7 +22551,7 @@ cm.define('Com.TabsetHelper', {
         'name' : '',
         'active' : null,
         'items' : [],
-        'targetEvent' : 'click',                                    // click | hover
+        'targetEvent' : 'click',                                    // click | hover | none
         'setFirstTabImmediately' : true,
         'showLoader' : true,
         'loaderDelay' : 'cm._config.loadDelay',                     // in ms
@@ -22509,7 +22622,6 @@ function(params){
                 that.targetEvent = 'mouseover';
                 break;
             case 'click':
-            default:
                 that.targetEvent = 'click';
                 break;
         }
@@ -22530,6 +22642,7 @@ function(params){
 
     var renderTab = function(item){
         item = cm.merge({
+            'index' : that.itemsList.length,
             'id' : '',
             'title' : '',
             'tab' : {
@@ -22556,26 +22669,27 @@ function(params){
                 cm.addClass(item['label']['container'], 'hidden');
                 cm.addClass(item['tab']['container'], 'hidden');
             }
-            cm.addEvent(item['label']['container'], that.targetEvent, function(){
-                that.triggerEvent('onLabelTarget', {
-                    'item' : item
+            if(that.targetEvent){
+                cm.addEvent(item['label']['container'], that.targetEvent, function(){
+                    that.triggerEvent('onLabelTarget', {
+                        'item' : item
+                    });
+                    set(item['id']);
                 });
-                set(item['id']);
-            });
+            }
         }
     };
 
     var set = function(id){
-        var item;
-        if(that.current != id){
+        var item = that.items[id];
+        if(item && that.current != id){
             that.triggerEvent('onTabShowStart', {
-                'item' : that.items[id]
+                'item' : item
             });
             // Hide previous tab
             unset();
             // Show new tab
             that.current = id;
-            item = that.items[that.current];
             item.isShow = true;
             if(!that.previous && that.params['setFirstTabImmediately']){
                 cm.addClass(item['tab']['container'], 'is-immediately');
@@ -22866,6 +22980,10 @@ function(params){
 
     that.getCurrentTab = function(){
         return that.items[that.current];
+    };
+
+    that.getTabsCount = function(){
+        return that.itemsList.length;
     };
 
     that.isTabEmpty = function(id){
@@ -24935,7 +25053,7 @@ function(params){
 cm.getConstructor('Com.BoxTools', function(classConstructor, className, classProto){
     var _inherit = classProto._inherit;
 
-    classProto.onConstruct = function(){
+    classProto.onConstructStart = function(){
         var that = this;
         // Variables
         that.inputs = [];
@@ -25160,11 +25278,14 @@ cm.define('Com.Autocomplete', {
         'onRenderStart',
         'onRender',
         'onClear',
+        'onReset',
         'onSelect',
         'onChange',
         'onClickSelect',
         'onAbort',
-        'onError'
+        'onError',
+        'onRenderListStart',
+        'onRenderListEnd'
     ],
     'params' : {
         'input' : null,                                             // Deprecated, use 'node' parameter instead.
@@ -25542,6 +25663,7 @@ function(params){
 
     that.callbacks.renderList = function(that, items){
         var nodes = {};
+        cm.triggerEvent('onRenderListStart');
         // Render structure
         nodes['container'] = cm.Node('div', {'class' : 'pt__listing-items'},
             nodes['items'] = cm.Node('ul')
@@ -25552,6 +25674,7 @@ function(params){
         });
         // Embed nodes to Tooltip
         that.callbacks.embed(that, nodes['container']);
+        cm.triggerEvent('onRenderListEnd', that.registeredItems);
     };
 
     that.callbacks.renderItem = function(that, container, item, i){
@@ -25642,6 +25765,10 @@ function(params){
         return that.value;
     };
 
+    that.getRaw = function(){
+        return that.rawValue;
+    };
+
     that.getItem = function(value){
         var item;
         if(value){
@@ -25666,7 +25793,7 @@ function(params){
         return item;
     };
 
-    that.clear = function(triggerEvents){
+    that.reset = that.clear = function(triggerEvents){
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
         that.previousValue = that.value;
         that.value = null;
@@ -25677,6 +25804,7 @@ function(params){
         // Trigger events
         if(triggerEvents){
             that.triggerEvent('onClear', that.value);
+            that.triggerEvent('onReset', that.value);
             onChange();
         }
         return that;
@@ -25737,6 +25865,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
 
 Com.FormFields.add('autocomplete', {
     'node' : cm.node('input', {'type' : 'text'}),
+    'fieldConstructor' : 'Com.AbstractFormField',
     'constructor' : 'Com.Autocomplete'
 });
 cm.define('Com.BoxRadiusTools', {
@@ -25810,7 +25939,7 @@ function(params){
 cm.getConstructor('Com.CheckTrigger', function(classConstructor, className, classProto){
     var _inherit = classProto._inherit;
 
-    classProto.onConstruct = function(){
+    classProto.onConstructStart = function(){
         var that = this;
         that.checked = false;
         that.checkedA = [];
@@ -27105,6 +27234,7 @@ cm.define('Com.FileInput', {
         'file' : null,
         'showLink' : true,
         'autoOpen' : false,
+        'formData' : false,
         'local' : true,
         'fileManager' : false,
         'fileManagerConstructor' : 'Com.AbstractFileManagerContainer',
@@ -27165,9 +27295,9 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         var that = this,
             value;
         if(that.params['formData']){
-            value = that.value['file'] || that.value;
+            value = that.value['file'] || that.value  || '';
         }else{
-            value = that.value;
+            value = that.value  || '';
         }
         return value;
     };
@@ -27203,7 +27333,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
     classProto.validateValue = function(value){
         var that = this,
             item = that.components['validator'].validate(value);
-        return !cm.isEmpty(item['value']) ? item : '';
+        return (!cm.isEmpty(item['value']) || !cm.isEmpty(item['file'])) ? item : '';
     };
 
     classProto.saveValue = function(value){
@@ -27374,9 +27504,59 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
 
 /* ****** FORM FIELD COMPONENT ******* */
 
-Com.FormFields.add('file-input', {
-    'node' : cm.node('input'),
+Com.FormFields.add('file', {
+    'node' : cm.node('input', {'type' : 'text'}),
+    'fieldConstructor' : 'Com.AbstractFormField',
     'constructor' : 'Com.FileInput'
+});
+cm.define('Com.HiddenStoreField', {
+    'extend' : 'Com.AbstractInputContainer',
+    'params' : {
+        'constructor' : 'Com.AbstractInput',
+        'storeRaw' : false,
+        'triggerName' : null
+    }
+},
+function(params){
+    var that = this;
+    // Call parent class construct
+    Com.AbstractInputContainer.apply(that, arguments);
+});
+
+cm.getConstructor('Com.HiddenStoreField', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.onConstructStart = function(){
+        var that = this;
+        // Binds
+        that.processDataHandler = that.processData.bind(that);
+    };
+
+    classProto.onRenderController = function(){
+        var that = this;
+        // Get trigger field
+        var field = that.components['form'].getField(that.params['triggerName']);
+        if(field){
+            that.components['trigger'] = field['controller'];
+            that.components['trigger'].addEvent('onChange', that.processDataHandler);
+            that.components['trigger'].addEvent('onReset', that.resetHandler);
+        }
+    };
+
+    classProto.processData = function(){
+        var that = this,
+            data = that.params['storeRaw'] ? that.components['trigger'].getRaw() : that.components['trigger'].get();
+        that.set(data);
+    };
+});
+
+/* ****** FORM FIELD COMPONENT ******* */
+
+Com.FormFields.add('hidden-store', {
+    'node' : cm.node('input', {'type' : 'hidden'}),
+    'visible' : false,
+    'fieldConstructor' : 'Com.AbstractFormField',
+    'constructor' : 'Com.HiddenStoreField'
 });
 cm.define('Com.ImageInput', {
     'extend' : 'Com.FileInput',
@@ -28067,7 +28247,7 @@ function(params){
 cm.getConstructor('Com.PositionTools', function(classConstructor, className, classProto){
     var _inherit = classProto._inherit;
 
-    classProto.onConstruct = function(){
+    classProto.onConstructStart = function(){
         var that = this;
         that.options = {};
         // Bind context to methods
@@ -28926,6 +29106,7 @@ function(params){
                 set(optionsList[0], triggerEvents);
             }
         }
+        that.triggerEvent('onReset', active);
     };
 
     that.selectAll = function(triggerEvents){
@@ -28994,7 +29175,7 @@ function(params){
         return that;
     };
 
-    that.removeOptionsAll = function(){
+    that.removeOptions = that.removeOptionsAll = function(){
         cm.forEach(options, function(item){
             removeOption(item);
         });
@@ -29008,17 +29189,7 @@ function(params){
         return null;
     };
 
-    that.getOptions = function(arr){
-        var optionsArr = [];
-        cm.forEach(arr, function(item){
-            if(options[item]){
-                optionsArr.push(options[item]);
-            }
-        });
-        return optionsArr;
-    };
-
-    that.getOptionsAll = that.getAllOptions = function(){
+    that.getOptions = that.getOptionsAll = that.getAllOptions = function(){
         var result = [];
         cm.forEach(optionsList, function(item){
             result.push({
@@ -29033,6 +29204,7 @@ function(params){
         that.disabled = true;
         cm.addClass(nodes['container'], 'disabled');
         cm.addClass(nodes['scroll'], 'disabled');
+        cm.addClass(nodes['target'], 'disabled');
         if(!that.params['multiple']){
             nodes['text'].disabled = true;
             components['menu'].disable();
@@ -29044,6 +29216,7 @@ function(params){
         that.disabled = false;
         cm.removeClass(nodes['container'], 'disabled');
         cm.removeClass(nodes['scroll'], 'disabled');
+        cm.removeClass(nodes['target'], 'disabled');
         if(!that.params['multiple']){
             nodes['text'].disabled = false;
             if(optionsLength){
@@ -29091,7 +29264,7 @@ cm.getConstructor('Com.SelectFieldTrigger', function(classConstructor, className
 
     /******* SYSTEM *******/
 
-    classProto.onConstruct = function(){
+    classProto.onConstructStart = function(){
         var that = this;
         // Variables
         that.fields = {};
@@ -29134,8 +29307,11 @@ cm.getConstructor('Com.SelectFieldTrigger', function(classConstructor, className
 
     classProto.getTriggerField = function(){
         var that = this;
-        that.components['trigger'] = that.components['form'].getField(that.params['triggerName']);
-        that.components['trigger'].addEvent('onChange', that.changeEventHandler);
+        var field = that.components['form'].getField(that.params['triggerName']);
+        if(field){
+            that.components['trigger'] = field['controller'];
+            that.components['trigger'].addEvent('onChange', that.changeEventHandler);
+        }
     };
 
     classProto.getFields = function(){
@@ -29157,12 +29333,16 @@ cm.getConstructor('Com.SelectFieldTrigger', function(classConstructor, className
             'value' : value,
             'name' : null,
             'size' : null,
+            'field' : null,
             'controller' : null,
             'container' : null
         }, data);
         // Controller
-        data['controller'] = that.components['form'].getField(data['name']);
-        data['container'] = data['controller'].getContainer();
+        data['field'] = that.components['form'].getField(data['name']);
+        if(data['field']){
+            data['controller'] = data['field']['controller'];
+            data['container'] = data['controller'].getContainer();
+        }
         // Export
         that.fields[data['name']] = data;
     };
@@ -29226,7 +29406,7 @@ cm.getConstructor('Com.SelectFieldTrigger', function(classConstructor, className
 /* ****** FORM FIELD COMPONENT ******* */
 
 Com.FormFields.add('select-field-trigger', {
-    'isField' : false,
+    'field' : false,
     'fieldConstructor' : 'Com.AbstractFormField',
     'constructor' : 'Com.SelectFieldTrigger'
 });
@@ -29248,7 +29428,8 @@ cm.define('Com.TagsInput', {
         'onRemove',
         'onChange',
         'onOpen',
-        'onClose'
+        'onClose',
+        'onReset'
     ],
     'params' : {
         'input' : null,                                 // Deprecated, use 'node' parameter instead.
@@ -29473,13 +29654,13 @@ function(params){
             if(isOpen){
                 nodes['adder']['input'].focus();
             }
-            removeTag(item);
+            removeTag(item, false);
         });
         // Push to global array
         items[tag] = item;
     };
 
-    var removeTag = function(item){
+    var removeTag = function(item, isImmediately){
         // Remove tag from data
         tags = tags.filter(function(tag){
             return item['tag'] != tag;
@@ -29495,10 +29676,15 @@ function(params){
             'tag' : item['tag']
         });
         // Animate
-        item['anim'].go({'style' : {'width' : '0px', 'opacity' : 0}, 'duration' : 200, 'anim' : 'smooth', 'onStop' : function(){
+        if(isImmediately){
             cm.remove(item['container']);
             item = null;
-        }});
+        }else{
+            item['anim'].go({'style' : {'width' : '0px', 'opacity' : 0}, 'duration' : 200, 'anim' : 'smooth', 'onStop' : function(){
+                cm.remove(item['container']);
+                item = null;
+            }});
+        }
     };
 
     var setHiddenInputData = function(){
@@ -29571,8 +29757,9 @@ function(params){
 
     that.reset = function(){
         cm.forEach(items, function(item){
-            removeTag(item);
+            removeTag(item, true);
         });
+        that.triggerEvent('onReset');
         return that;
     };
 
@@ -29587,6 +29774,7 @@ function(params){
 
 Com.FormFields.add('tags', {
     'node' : cm.node('input', {'type' : 'text'}),
+    'fieldConstructor' : 'Com.AbstractFormField',
     'constructor' : 'Com.TagsInput'
 });
 cm.define('Com.TimeSelect', {

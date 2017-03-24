@@ -1658,7 +1658,7 @@ cm.setSelect = function(o, value){
     }
     var options = o.getElementsByTagName('option');
     cm.forEach(options, function(node){
-        node.selected = (typeof value == 'object'? cm.inArray(node.value, value) : node.value == value);
+        node.selected = cm.isArray(value) ? cm.inArray(node.value, value) : node.value == value;
     });
     return o;
 };

@@ -27,7 +27,7 @@ function(params){
 cm.getConstructor('Com.BoxTools', function(classConstructor, className, classProto){
     var _inherit = classProto._inherit;
 
-    classProto.onConstruct = function(){
+    classProto.onConstructStart = function(){
         var that = this;
         // Variables
         that.inputs = [];

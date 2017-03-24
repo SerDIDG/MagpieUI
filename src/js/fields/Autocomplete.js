@@ -15,11 +15,14 @@ cm.define('Com.Autocomplete', {
         'onRenderStart',
         'onRender',
         'onClear',
+        'onReset',
         'onSelect',
         'onChange',
         'onClickSelect',
         'onAbort',
-        'onError'
+        'onError',
+        'onRenderListStart',
+        'onRenderListEnd'
     ],
     'params' : {
         'input' : null,                                             // Deprecated, use 'node' parameter instead.
@@ -397,6 +400,7 @@ function(params){
 
     that.callbacks.renderList = function(that, items){
         var nodes = {};
+        cm.triggerEvent('onRenderListStart');
         // Render structure
         nodes['container'] = cm.Node('div', {'class' : 'pt__listing-items'},
             nodes['items'] = cm.Node('ul')
@@ -407,6 +411,7 @@ function(params){
         });
         // Embed nodes to Tooltip
         that.callbacks.embed(that, nodes['container']);
+        cm.triggerEvent('onRenderListEnd', that.registeredItems);
     };
 
     that.callbacks.renderItem = function(that, container, item, i){
@@ -497,6 +502,10 @@ function(params){
         return that.value;
     };
 
+    that.getRaw = function(){
+        return that.rawValue;
+    };
+
     that.getItem = function(value){
         var item;
         if(value){
@@ -521,7 +530,7 @@ function(params){
         return item;
     };
 
-    that.clear = function(triggerEvents){
+    that.reset = that.clear = function(triggerEvents){
         triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
         that.previousValue = that.value;
         that.value = null;
@@ -532,6 +541,7 @@ function(params){
         // Trigger events
         if(triggerEvents){
             that.triggerEvent('onClear', that.value);
+            that.triggerEvent('onReset', that.value);
             onChange();
         }
         return that;
@@ -592,5 +602,6 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
 
 Com.FormFields.add('autocomplete', {
     'node' : cm.node('input', {'type' : 'text'}),
+    'fieldConstructor' : 'Com.AbstractFormField',
     'constructor' : 'Com.Autocomplete'
 });

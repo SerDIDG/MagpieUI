@@ -6,6 +6,7 @@ cm.define('Com.FileInput', {
         'file' : null,
         'showLink' : true,
         'autoOpen' : false,
+        'formData' : false,
         'local' : true,
         'fileManager' : false,
         'fileManagerConstructor' : 'Com.AbstractFileManagerContainer',
@@ -66,9 +67,9 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         var that = this,
             value;
         if(that.params['formData']){
-            value = that.value['file'] || that.value;
+            value = that.value['file'] || that.value  || '';
         }else{
-            value = that.value;
+            value = that.value  || '';
         }
         return value;
     };
@@ -104,7 +105,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
     classProto.validateValue = function(value){
         var that = this,
             item = that.components['validator'].validate(value);
-        return !cm.isEmpty(item['value']) ? item : '';
+        return (!cm.isEmpty(item['value']) || !cm.isEmpty(item['file'])) ? item : '';
     };
 
     classProto.saveValue = function(value){
@@ -275,7 +276,8 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
 
 /* ****** FORM FIELD COMPONENT ******* */
 
-Com.FormFields.add('file-input', {
-    'node' : cm.node('input'),
+Com.FormFields.add('file', {
+    'node' : cm.node('input', {'type' : 'text'}),
+    'fieldConstructor' : 'Com.AbstractFormField',
     'constructor' : 'Com.FileInput'
 });

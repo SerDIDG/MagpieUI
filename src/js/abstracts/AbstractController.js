@@ -88,12 +88,12 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         that.constructCollectorHandler = that.constructCollector.bind(that);
         that.destructCollectorHandler = that.destructCollector.bind(that);
         // Configure class
+        that.params['controllerEvents'] && that.bindControllerEvents();
         that.triggerEvent('onConstructStart');
         that.initComponents();
         that.getLESSVariables();
         that.setParams(params);
         that.convertEvents(that.params['events']);
-        that.params['controllerEvents'] && that.bindControllerEvents();
         that.params['getDataNodes'] && that.getDataNodes(that.params['node']);
         that.params['getDataConfig'] && that.getDataConfig(that.params['node']);
         that.callbacksProcess();

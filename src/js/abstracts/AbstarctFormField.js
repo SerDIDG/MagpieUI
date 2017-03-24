@@ -2,7 +2,8 @@ cm.define('Com.AbstractFormField', {
     'extend' : 'Com.AbstractController',
     'events' : [
         'onChange',
-        'onSelect'
+        'onSelect',
+        'onReset'
     ],
     'params' : {
         'renderStructure' : true,
@@ -40,6 +41,11 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
 
     /******* SYSTEM *******/
 
+    classProto.onConstructStart = function(){
+        var that = this;
+        that.nodeTagName = null;
+    };
+
     classProto.onDestruct = function(){
         var that = this;
         that.controller && cm.isFunction(that.controller.destruct) && that.controller.destruct();
@@ -47,14 +53,16 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
 
     classProto.onValidateParams = function(){
         var that = this;
+        that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
         that.params['constructorParams']['name'] = that.params['name'];
         that.params['constructorParams']['options'] = !cm.isEmpty(that.params['options']) ? that.params['options'] : that.params['constructorParams']['options'];
-        that.params['constructorParams']['value'] = that.params['dataValue'] || that.params['value'];
+        that.params['constructorParams']['value'] = !cm.isEmpty(that.params['dataValue']) ? that.params['dataValue'] : that.params['value'];
         that.params['constructorParams']['defaultValue'] = that.params['defaultValue'];
         that.params['constructorParams']['maxlength'] = that.params['maxlength'];
         that.params['Com.HelpBubble']['content'] = that.params['help'];
         that.params['Com.HelpBubble']['name'] = that.params['name'];
         that.components['form'] = that.params['form'];
+        that.nodeTagName = that.params['node'].tagName.toLowerCase();
     };
 
     /******* VIEW - MODEL *******/
@@ -98,6 +106,19 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         nodes['container'] = cm.node('div', {'class' : 'pt__field__content'},
             nodes['input'] = that.params['node']
         );
+        // Options
+        if(!cm.isEmpty(that.params['options'])){
+            switch(that.nodeTagName){
+                case 'select' :
+                    cm.forEach(that.params['options'], function(item){
+                        cm.appendChild(
+                            cm.node('option', {'value' : item['value'], 'innerHTML' : item['text']}),
+                            nodes['input']
+                        );
+                    });
+                    break;
+            }
+        }
         // Export
         return nodes['container'];
     };
@@ -111,9 +132,14 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             that.nodes['content']['input'].setAttribute('name', that.params['name']);
         }
         if(!cm.isEmpty(that.params['value'])){
-            that.nodes['content']['input'].setAttribute('value', that.params['value']);
-        }else if(!cm.isEmpty(that.params['defaultValue'])){
-            that.nodes['content']['input'].setAttribute('value', that.params['defaultValue']);
+            switch(that.nodeTagName){
+                case 'select' :
+                    cm.setSelect(that.nodes['content']['input'], that.params['value']);
+                    break;
+                default :
+                    that.nodes['content']['input'].setAttribute('value', that.params['value']);
+                    break;
+            }
         }
         if(!cm.isEmpty(that.params['dataValue'])){
             that.nodes['content']['input'].setAttribute('data-value', JSON.stringify(that.params['dataValue']));
@@ -121,7 +147,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         if(!cm.isEmpty(that.params['placeholder'])){
             that.nodes['content']['input'].setAttribute('placeholder', that.params['placeholder']);
         }
-        if(!cm.isEmpty(that.params['maxlength'])){
+        if(!cm.isEmpty(that.params['maxlength']) && that.params['maxlength'] > 0){
             that.nodes['content']['input'].setAttribute('maxlength', that.params['maxlength']);
         }
         // Classes
@@ -173,6 +199,9 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.components['controller'].addEvent('onChange', function(controller, data){
             that.triggerEvent('onChange', data);
         });
+        that.components['controller'].addEvent('onReset', function(controller, data){
+            that.triggerEvent('onReset', data);
+        });
         return that;
     };
 
@@ -187,6 +216,11 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.get = function(){
         var that = this;
         return that.components['controller'] && cm.isFunction(that.components['controller'].get) ? that.components['controller'].get() : null;
+    };
+
+    classProto.getRaw = function(){
+        var that = this;
+        return that.components['controller'] && cm.isFunction(that.components['controller'].getRaw) ? that.components['controller'].getRaw() : that.get();
     };
 
     classProto.reset = function(){

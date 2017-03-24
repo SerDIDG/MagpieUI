@@ -164,11 +164,9 @@ function(params){
         // Render
         if(field && !that.fields[params['name']]){
             cm.getConstructor(params['fieldConstructor'], function(classConstructor){
-                controller = new classConstructor(params);
+                params['controller'] = new classConstructor(params);
                 // Save
-                if(params['field']){
-                    that.fields[params['name']] = controller;
-                }
+                that.fields[params['name']] = params;
             });
         }
     };
@@ -269,8 +267,8 @@ function(params){
                 'onAbort' : function(){
                     that.callbacks.abort(that, config);
                 },
-                'onEnd' : function(){
-                    that.callbacks.end(that, config);
+                'onEnd' : function(response){
+                    that.callbacks.end(that, config, response);
                 }
             })
         );
@@ -337,7 +335,7 @@ function(params){
             that.components['notifications'].clear();
         }
         cm.forEach(that.fields, function(field){
-            field.clearError();
+            field['controller'].clearError();
         });
         // Render new errors messages
         if(cm.isArray(errors)){
@@ -350,7 +348,7 @@ function(params){
                     });
                 }
                 if(field = that.getField(item['field'])){
-                    field.renderError(item['message']);
+                    field['controller'].renderError(item['message']);
                 }
             });
         }else{
@@ -370,7 +368,7 @@ function(params){
         if(!that._isDestructed){
             that._isDestructed = true;
             cm.forEach(that.fields, function(field){
-                field.destruct();
+                field['controller'].destruct();
             });
             that.removeFromStack();
             cm.remove(that.nodes['container']);
@@ -411,22 +409,41 @@ function(params){
         return that.fields[name];
     };
 
-    that.get = that.getAll = function(){
+    that.get = function(){
         var o = {},
             value;
         cm.forEach(that.fields, function(field, name){
-            value = field.get();
-            if(value !== null){
-                o[name] = value;
+            if(field['field'] && !field['system']){
+                value = field['controller'].get();
+                if(!cm.isEmpty(value)){
+                    o[name] = value;
+                }
+            }
+        });
+        return o;
+    };
+
+    that.getAll = function(){
+        var o = {},
+            value;
+        cm.forEach(that.fields, function(field, name){
+            if(!field['system']){
+                value = field['controller'].get();
+                if(!cm.isEmpty(value)){
+                    o[name] = value;
+                }
             }
         });
         return o;
     };
 
     that.set = function(data){
+        var field, setValue;
         cm.forEach(data, function(value, name){
-            if(that.fields[name]){
-                that.fields[name].set(value);
+            field = that.fields[name];
+            if(field && !field['system']){
+                setValue = data[field['dataName']] || value;
+                that.fields[name]['controller'].set(setValue);
             }
         });
         return that;
@@ -438,7 +455,7 @@ function(params){
 
     that.clear = function(){
         cm.forEach(that.fields, function(field){
-            field.destruct();
+            field['controller'].destruct();
         });
         that.fields = {};
         cm.clearNode(that.nodes['fields']);
@@ -453,7 +470,7 @@ function(params){
     that.reset = function(){
         cm.removeClass(that.nodes['notificationsContainer'], 'is-show');
         cm.forEach(that.fields, function(field){
-            field.reset();
+            field['controller'].reset();
         });
         return that;
     };
@@ -489,6 +506,14 @@ function(params){
         return that;
     };
 
+    that.getName = function(){
+        return that.params['name'];
+    };
+
+    that.getContainer = function(){
+        return that.nodes['container'];
+    };
+
     init();
 });
 
@@ -504,7 +529,8 @@ Com.FormFields = (function(){
                 'fieldConstructor' : null,
                 'constructor' : null,
                 'type' : type,
-                'field' : true
+                'field' : true,
+                'system' : false
             }, params);
         },
         'get' : function(type){
@@ -986,6 +1012,7 @@ Com.FormFields.add('check', {
 Com.FormFields.add('buttons', {
     'node' : cm.node('div', {'class' : 'btn-wrap'}),
     'field' : false,
+    'system' : true,
     'callbacks' : {
         'render' : function(that){
             var nodes = {};

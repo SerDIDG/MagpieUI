@@ -16,7 +16,8 @@ cm.define('Com.TagsInput', {
         'onRemove',
         'onChange',
         'onOpen',
-        'onClose'
+        'onClose',
+        'onReset'
     ],
     'params' : {
         'input' : null,                                 // Deprecated, use 'node' parameter instead.
@@ -241,13 +242,13 @@ function(params){
             if(isOpen){
                 nodes['adder']['input'].focus();
             }
-            removeTag(item);
+            removeTag(item, false);
         });
         // Push to global array
         items[tag] = item;
     };
 
-    var removeTag = function(item){
+    var removeTag = function(item, isImmediately){
         // Remove tag from data
         tags = tags.filter(function(tag){
             return item['tag'] != tag;
@@ -263,10 +264,15 @@ function(params){
             'tag' : item['tag']
         });
         // Animate
-        item['anim'].go({'style' : {'width' : '0px', 'opacity' : 0}, 'duration' : 200, 'anim' : 'smooth', 'onStop' : function(){
+        if(isImmediately){
             cm.remove(item['container']);
             item = null;
-        }});
+        }else{
+            item['anim'].go({'style' : {'width' : '0px', 'opacity' : 0}, 'duration' : 200, 'anim' : 'smooth', 'onStop' : function(){
+                cm.remove(item['container']);
+                item = null;
+            }});
+        }
     };
 
     var setHiddenInputData = function(){
@@ -339,8 +345,9 @@ function(params){
 
     that.reset = function(){
         cm.forEach(items, function(item){
-            removeTag(item);
+            removeTag(item, true);
         });
+        that.triggerEvent('onReset');
         return that;
     };
 
@@ -355,5 +362,6 @@ function(params){
 
 Com.FormFields.add('tags', {
     'node' : cm.node('input', {'type' : 'text'}),
+    'fieldConstructor' : 'Com.AbstractFormField',
     'constructor' : 'Com.TagsInput'
 });

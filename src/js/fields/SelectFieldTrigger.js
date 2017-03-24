@@ -22,7 +22,7 @@ cm.getConstructor('Com.SelectFieldTrigger', function(classConstructor, className
 
     /******* SYSTEM *******/
 
-    classProto.onConstruct = function(){
+    classProto.onConstructStart = function(){
         var that = this;
         // Variables
         that.fields = {};
@@ -65,8 +65,11 @@ cm.getConstructor('Com.SelectFieldTrigger', function(classConstructor, className
 
     classProto.getTriggerField = function(){
         var that = this;
-        that.components['trigger'] = that.components['form'].getField(that.params['triggerName']);
-        that.components['trigger'].addEvent('onChange', that.changeEventHandler);
+        var field = that.components['form'].getField(that.params['triggerName']);
+        if(field){
+            that.components['trigger'] = field['controller'];
+            that.components['trigger'].addEvent('onChange', that.changeEventHandler);
+        }
     };
 
     classProto.getFields = function(){
@@ -88,12 +91,16 @@ cm.getConstructor('Com.SelectFieldTrigger', function(classConstructor, className
             'value' : value,
             'name' : null,
             'size' : null,
+            'field' : null,
             'controller' : null,
             'container' : null
         }, data);
         // Controller
-        data['controller'] = that.components['form'].getField(data['name']);
-        data['container'] = data['controller'].getContainer();
+        data['field'] = that.components['form'].getField(data['name']);
+        if(data['field']){
+            data['controller'] = data['field']['controller'];
+            data['container'] = data['controller'].getContainer();
+        }
         // Export
         that.fields[data['name']] = data;
     };
@@ -157,7 +164,7 @@ cm.getConstructor('Com.SelectFieldTrigger', function(classConstructor, className
 /* ****** FORM FIELD COMPONENT ******* */
 
 Com.FormFields.add('select-field-trigger', {
-    'isField' : false,
+    'field' : false,
     'fieldConstructor' : 'Com.AbstractFormField',
     'constructor' : 'Com.SelectFieldTrigger'
 });

@@ -4,7 +4,10 @@ cm.define('Com.AbstractInputContainer', {
         'onRenderControllerStart',
         'onRenderControllerProcess',
         'onRenderController',
-        'onRenderControllerEnd'
+        'onRenderControllerEnd',
+        'onSelect',
+        'onChange',
+        'onReset'
     ],
     'params' : {
         'renderStructure' : false,
@@ -23,6 +26,21 @@ function(params){
 cm.getConstructor('Com.AbstractInputContainer', function(classConstructor, className, classProto){
     var _inherit = classProto._inherit;
 
+    classProto.construct = function(){
+        var that = this;
+        that.resetHandler = that.reset.bind(that);
+        that.enableHandler = that.enable.bind(that);
+        that.disableHandler = that.disable.bind(that);
+        // Call parent method
+        _inherit.prototype.construct.apply(that, arguments);
+    };
+
+    classProto.onValidateParams = function(){
+        var that = this;
+        that.components['formField'] = that.params['formField'];
+        that.components['form'] = that.params['form'];
+    };
+
     classProto.renderViewModel = function(){
         var that = this;
         // Render Select
@@ -38,6 +56,7 @@ cm.getConstructor('Com.AbstractInputContainer', function(classConstructor, class
             params = that.validateControllerParams();
             that.components['controller'] = new classConstructor(params);
             that.triggerEvent('onRenderControllerProcess', that.components['controller']);
+            that.renderControllerEvents();
             that.triggerEvent('onRenderController', that.components['controller']);
             that.triggerEvent('onRenderControllerEnd', that.components['controller']);
         });
@@ -52,6 +71,20 @@ cm.getConstructor('Com.AbstractInputContainer', function(classConstructor, class
         });
     };
 
+    classProto.renderControllerEvents = function(){
+        var that = this;
+        that.components['controller'].addEvent('onSelect', function(controller, data){
+            that.triggerEvent('onSelect', data);
+        });
+        that.components['controller'].addEvent('onChange', function(controller, data){
+            that.triggerEvent('onChange', data);
+        });
+        that.components['controller'].addEvent('onReset', function(controller, data){
+            that.triggerEvent('onReset', data);
+        });
+        return that;
+    };
+
     /******* PUBLIC *******/
 
     classProto.set = function(value){
@@ -63,6 +96,11 @@ cm.getConstructor('Com.AbstractInputContainer', function(classConstructor, class
     classProto.get = function(){
         var that = this;
         return that.components['controller'] && cm.isFunction(that.components['controller'].get)  && that.components['controller'].get();
+    };
+
+    classProto.getRaw = function(){
+        var that = this;
+        return that.components['controller'] && cm.isFunction(that.components['controller'].getRaw)  && that.components['controller'].getRaw() || that.get();
     };
 
     classProto.reset = function(){

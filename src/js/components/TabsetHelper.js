@@ -28,7 +28,7 @@ cm.define('Com.TabsetHelper', {
         'name' : '',
         'active' : null,
         'items' : [],
-        'targetEvent' : 'click',                                    // click | hover
+        'targetEvent' : 'click',                                    // click | hover | none
         'setFirstTabImmediately' : true,
         'showLoader' : true,
         'loaderDelay' : 'cm._config.loadDelay',                     // in ms
@@ -99,7 +99,6 @@ function(params){
                 that.targetEvent = 'mouseover';
                 break;
             case 'click':
-            default:
                 that.targetEvent = 'click';
                 break;
         }
@@ -120,6 +119,7 @@ function(params){
 
     var renderTab = function(item){
         item = cm.merge({
+            'index' : that.itemsList.length,
             'id' : '',
             'title' : '',
             'tab' : {
@@ -146,26 +146,27 @@ function(params){
                 cm.addClass(item['label']['container'], 'hidden');
                 cm.addClass(item['tab']['container'], 'hidden');
             }
-            cm.addEvent(item['label']['container'], that.targetEvent, function(){
-                that.triggerEvent('onLabelTarget', {
-                    'item' : item
+            if(that.targetEvent){
+                cm.addEvent(item['label']['container'], that.targetEvent, function(){
+                    that.triggerEvent('onLabelTarget', {
+                        'item' : item
+                    });
+                    set(item['id']);
                 });
-                set(item['id']);
-            });
+            }
         }
     };
 
     var set = function(id){
-        var item;
-        if(that.current != id){
+        var item = that.items[id];
+        if(item && that.current != id){
             that.triggerEvent('onTabShowStart', {
-                'item' : that.items[id]
+                'item' : item
             });
             // Hide previous tab
             unset();
             // Show new tab
             that.current = id;
-            item = that.items[that.current];
             item.isShow = true;
             if(!that.previous && that.params['setFirstTabImmediately']){
                 cm.addClass(item['tab']['container'], 'is-immediately');
@@ -456,6 +457,10 @@ function(params){
 
     that.getCurrentTab = function(){
         return that.items[that.current];
+    };
+
+    that.getTabsCount = function(){
+        return that.itemsList.length;
     };
 
     that.isTabEmpty = function(id){

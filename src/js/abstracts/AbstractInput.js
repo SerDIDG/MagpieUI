@@ -5,6 +5,7 @@ cm.define('Com.AbstractInput', {
         'onSelect',
         'onChange',
         'onClear',
+        'onReset',
         'onDisable',
         'onEnable',
         'onRenderContent',
@@ -45,6 +46,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         that.components = {};
         that.previousValue = null;
         that.value = null;
+        that.rawValue = null;
         that.disabled = false;
         // Bind context to methods
         that.setHandler = that.set.bind(that);
@@ -78,11 +80,17 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         return that.value;
     };
 
-    classProto.clear = function(triggerEvents){
+    classProto.getRaw = function(){
+        var that = this;
+        return that.rawValue;
+    };
+
+    classProto.reset = classProto.clear = function(triggerEvents){
         var that = this;
         if(!that.isDestructed){
             triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
             triggerEvents && that.triggerEvent('onClear');
+            triggerEvents && that.triggerEvent('onReset');
             that.set(that.params['defaultValue'], triggerEvents);
         }
         return that;
@@ -206,7 +214,9 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
 
     classProto.validateValue = function(value){
         var that = this;
-        return !cm.isEmpty(value) ? value : that.params['defaultValue'];
+        value = !cm.isEmpty(value) ? value : that.params['defaultValue'];
+        that.rawValue = value;
+        return value;
     };
 
     classProto.saveValue = function(value){
@@ -214,7 +224,11 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         that.previousValue = that.value;
         that.value = value;
         if(that.params['setHiddenInput']){
-            that.nodes['hidden'].value = value;
+            if(!cm.isEmpty(value)){
+                that.nodes['hidden'].value = JSON.stringify(value);
+            }else{
+                that.nodes['hidden'].value = ''
+            }
         }
         return that;
     };

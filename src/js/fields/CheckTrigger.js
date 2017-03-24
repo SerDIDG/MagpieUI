@@ -17,7 +17,7 @@ function(params){
 cm.getConstructor('Com.CheckTrigger', function(classConstructor, className, classProto){
     var _inherit = classProto._inherit;
 
-    classProto.onConstruct = function(){
+    classProto.onConstructStart = function(){
         var that = this;
         that.checked = false;
         that.checkedA = [];

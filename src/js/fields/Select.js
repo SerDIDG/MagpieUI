@@ -573,6 +573,7 @@ function(params){
                 set(optionsList[0], triggerEvents);
             }
         }
+        that.triggerEvent('onReset', active);
     };
 
     that.selectAll = function(triggerEvents){
@@ -641,7 +642,7 @@ function(params){
         return that;
     };
 
-    that.removeOptionsAll = function(){
+    that.removeOptions = that.removeOptionsAll = function(){
         cm.forEach(options, function(item){
             removeOption(item);
         });
@@ -655,17 +656,7 @@ function(params){
         return null;
     };
 
-    that.getOptions = function(arr){
-        var optionsArr = [];
-        cm.forEach(arr, function(item){
-            if(options[item]){
-                optionsArr.push(options[item]);
-            }
-        });
-        return optionsArr;
-    };
-
-    that.getOptionsAll = that.getAllOptions = function(){
+    that.getOptions = that.getOptionsAll = that.getAllOptions = function(){
         var result = [];
         cm.forEach(optionsList, function(item){
             result.push({
@@ -680,6 +671,7 @@ function(params){
         that.disabled = true;
         cm.addClass(nodes['container'], 'disabled');
         cm.addClass(nodes['scroll'], 'disabled');
+        cm.addClass(nodes['target'], 'disabled');
         if(!that.params['multiple']){
             nodes['text'].disabled = true;
             components['menu'].disable();
@@ -691,6 +683,7 @@ function(params){
         that.disabled = false;
         cm.removeClass(nodes['container'], 'disabled');
         cm.removeClass(nodes['scroll'], 'disabled');
+        cm.removeClass(nodes['target'], 'disabled');
         if(!that.params['multiple']){
             nodes['text'].disabled = false;
             if(optionsLength){
