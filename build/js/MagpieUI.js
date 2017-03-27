@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.25.1 (2017-03-24 20:04) ************ */
+/*! ************ MagpieUI v3.25.2 (2017-03-27 15:53) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1506,7 +1506,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.25.1',
+        '_version' : '3.25.2',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -7325,7 +7325,11 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         that.value = value;
         if(that.params['setHiddenInput']){
             if(!cm.isEmpty(value)){
-                that.nodes['hidden'].value = JSON.stringify(value);
+                if(cm.isObject(value) || cm.isArray(value)){
+                    that.nodes['hidden'].value = JSON.stringify(value);
+                }else{
+                    that.nodes['hidden'].value = value;
+                }
             }else{
                 that.nodes['hidden'].value = ''
             }

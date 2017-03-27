@@ -225,7 +225,11 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         that.value = value;
         if(that.params['setHiddenInput']){
             if(!cm.isEmpty(value)){
-                that.nodes['hidden'].value = JSON.stringify(value);
+                if(cm.isObject(value) || cm.isArray(value)){
+                    that.nodes['hidden'].value = JSON.stringify(value);
+                }else{
+                    that.nodes['hidden'].value = value;
+                }
             }else{
                 that.nodes['hidden'].value = ''
             }
