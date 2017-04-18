@@ -152,7 +152,7 @@ cm.getConstructor('Com.SelectFieldTrigger', function(classConstructor, className
         var that = this;
         var value = that.components['trigger'].get();
         cm.forEach(that.fields, function(field, name){
-            if(field['value'] === value){
+            if(field['value'] == value){
                 that.components['toolbar'].showField(field['name'], 'fields');
             }else{
                 that.components['toolbar'].hideField(field['name'], 'fields');

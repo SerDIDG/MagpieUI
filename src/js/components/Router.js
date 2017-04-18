@@ -30,8 +30,6 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
 
     classProto.renderViewModel = function(){
         var that = this;
-        // Call parent method - renderViewModel
-        _inherit.prototype.renderViewModel.apply(that, arguments);
         // Init location handlers
         cm.addEvent(window, 'click', that.windowClickEventHandler);
         cm.addEvent(window, 'popstate', that.popstateEventHandler);
@@ -51,7 +49,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
     classProto.popstateEvent = function(e){
         var that = this;
         var state = e.state;
-        that.processRoute(state['route']);
+        state && that.processRoute(state['route']);
         return that;
     };
 
@@ -62,13 +60,14 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         return that;
     };
 
-    classProto.pushRoute = function(route){
+    classProto.pushRoute = function(route, hash){
         var that = this;
         var state = {
             'route' : route
         };
+        var location = !cm.isEmpty(hash) ? [route, hash].join('#') : route;
         // Set Window URL
-        window.history.pushState(state, '', route);
+        window.history.pushState(state, '', location);
         // Process route
         that.processRoute(route);
         return that;
@@ -160,7 +159,8 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
     classProto.start = function(){
         var that = this;
         var route = window.location.pathname;
-        that.pushRoute(route);
+        var hash = window.location.hash.slice(1);
+        that.pushRoute(route, hash);
         return that;
     };
 });

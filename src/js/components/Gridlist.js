@@ -5,6 +5,7 @@ cm.define('Com.Gridlist', {
         'Langs',
         'Structure',
         'DataConfig',
+        'Callbacks',
         'Stack'
     ],
     'events' : [
@@ -121,6 +122,7 @@ function(params){
         that.setParams(params);
         that.convertEvents(that.params['events']);
         that.getDataConfig(that.params['node']);
+        that.callbacksProcess();
         validateParams();
         render();
         that.addToStack(that.nodes['container']);
@@ -129,6 +131,8 @@ function(params){
     var validateParams = function(){
         that.sortBy = that.params['sortBy'];
         that.orderBy = that.params['orderBy'];
+        // Data
+        that.params['data'] = that.callbacks.filter(that, that.params['data']);
         // Ajax
         if(!cm.isEmpty(that.params['ajax']['url'])){
             that.isAjax = true;
@@ -159,10 +163,20 @@ function(params){
             renderBulkActions();
         }
         // Render table page
+        renderInitialTable();
+        // Add custom event
+        if(that.params['customEvents']){
+            cm.customEvent.add(that.params['node'], 'redraw', function(){
+                that.redraw();
+            });
+        }
+    };
+
+    var renderInitialTable = function(){
         if(that.isAjax){
             // Render dynamic pagination
             renderPagination();
-        }else if(that.params['data'].length){
+        }else if(!cm.isEmpty(that.params['data'])){
             // Counter
             if(that.params['showCounter']){
                 renderCounter(that.params['data'].length);
@@ -178,12 +192,6 @@ function(params){
             }
         }else{
             renderEmptiness(that.nodes['container']);
-        }
-        // Add custom event
-        if(that.params['customEvents']){
-            cm.customEvent.add(that.params['node'], 'redraw', function(){
-                that.redraw();
-            });
         }
     };
 
@@ -318,9 +326,10 @@ function(params){
     var renderPaginationPage = function(data){
         var startIndex, endIndex, dataArray;
         if(that.isAjax){
-            if(data.isError){
-                // Need to make exception
-            }else if(data['data'].length){
+            if(!cm.isEmpty(data['data'])){
+                data['data'] = that.callbacks.filter(that, data['data']);
+            }
+            if(!cm.isEmpty(data['data'])){
                 renderTable(data['page'], data['data'], data['container']);
             }else{
                 renderEmptiness(data['container']);
@@ -914,6 +923,12 @@ function(params){
         row['status'] = null;
         row['data']['_status'] = null;
         cm.removeClass(row['nodes']['container'], that.params['statuses'].join(' '));
+    };
+
+    /******* CALLBACKS *******/
+
+    that.callbacks.filter = function(that, data){
+        return data;
     };
 
     /******* MAIN *******/

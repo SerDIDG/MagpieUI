@@ -89,21 +89,12 @@ function(params){
     };
 
     var render = function(){
-        var id = that.params['active'];
+        // Init hash change handler
         if(that.params['toggleOnHashChange']){
-            // Init hash change handler
             initHashChange();
-            // Set first active tab
-            if(id && that.tabs[id]){
-                set(id);
-            }else{
-                hashHandler();
-            }
-        }else{
-            if(id = getValidID(id, true)){
-                set(id);
-            }
         }
+        // Set initial tab
+        setInitial();
     };
 
     var renderView = function(){
@@ -269,6 +260,13 @@ function(params){
         delete that.tabs[item['id']];
     };
 
+    var setInitial = function(){
+        var id = getInitialID();
+        if(isValidID(id)){
+            set(id);
+        }
+    };
+
     var set = function(id){
         var item, previous;
         if(!that.isProcess && id != that.active){
@@ -390,18 +388,41 @@ function(params){
     };
 
     var hashHandler = function(){
-        var id = window.location.hash.replace('#', '');
-        if(id = getValidID(id, false)){
+        var id = window.location.hash.slice(1);
+        if(isValidID(id)){
             set(id);
         }
     };
 
-    var getValidID = function(id, getDefault){
-        getDefault = getDefault || !that.active;
+    var getInitialID = function(){
+        var id;
         if(cm.isEmpty(that.tabsListing) || cm.isEmpty(that.tabs)){
             return null;
         }
-        return (id && that.tabs[id])? id : (getDefault) ? that.tabsListing[0]['id'] : null;
+        // Get tab from hash is exists
+        if(that.params['toggleOnHashChange']){
+            id = window.location.hash.slice(1);
+            if(isValidID(id)){
+                return id;
+            }
+        }
+        // Get tab from parameters if exists
+        id = that.params['active'];
+        if(isValidID(id)){
+            return id;
+        }
+        // Get first tab in list
+        return that.tabsListing[0]['id'];
+    };
+
+    var getTabByID = function(id){
+        if(id && that.tabs[id]){
+            return that.tabs[id];
+        }
+    };
+
+    var isValidID = function(id){
+        return !!getTabByID(id);
     };
 
     var calculateMaxHeight = function(){
@@ -430,6 +451,11 @@ function(params){
         render();
         return that;
     };
+
+    that.reset = function(){
+        setInitial();
+        return that;
+    };
     
     that.destruct = function(){
         that.remove();
@@ -437,7 +463,7 @@ function(params){
     };
 
     that.set = function(id){
-        if(id && that.tabs[id]){
+        if(isValidID(id)){
             set(id);
         }
         return that;
@@ -452,10 +478,7 @@ function(params){
     };
 
     that.get = function(id){
-        if(id && that.tabs[id]){
-            return that.tabs[id];
-        }
-        return null;
+        return getTabByID(id);
     };
 
     that.getTabs = function(){
@@ -509,52 +532,3 @@ function(params){
 
     init();
 });
-
-/* ******* COMPONENTS: TABSET: MODULE TAB CONTROLLER ******* */
-
-Mod['TabController'] = {
-    '_config' : {
-        'extend' : true,
-        'predefine' : false,
-        'require' : ['Extend']
-    },
-    '_construct' : function(){
-        var that = this;
-        that._isConstructed = false;
-        that._isDestructed = false;
-        that._isPaused = false;
-    },
-    'construct' : function(){
-        var that = this;
-        that._isConstructed = true;
-        that._isDestructed = false;
-        that._isPaused = false;
-        return that;
-    },
-    'destruct' : function(){
-        var that = this;
-        if(that._isConstructed && !that._isDestructed){
-            that._isConstructed = false;
-            that._isDestructed = true;
-            cm.customEvent.trigger(that.params['node'], 'destruct', {
-                'type' : 'child',
-                'self' : false
-            });
-            that.removeFromStack && that.removeFromStack();
-            cm.remove(that.params['node']);
-        }
-        return that;
-    },
-    'refresh' : function(){
-        var that = this;
-        that._isPaused = false;
-        return that;
-    },
-    'pause' : function(){
-        var that = this;
-        if(!that._isPaused){
-            that._isPaused = true;
-        }
-        return that;
-    }
-};

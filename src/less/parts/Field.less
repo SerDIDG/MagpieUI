@@ -32,6 +32,36 @@
         }
     }
 
+    &.error,
+    &.danger {
+        > dt {
+            color: @CmColor-Danger-DarkDefault;
+        }
+
+        .pt__field__error {
+            color: @CmColor-Danger-DarkDefault;
+        }
+
+        .input {
+            border: 1px solid @CmColor-Danger-DarkDefault;
+        }
+    }
+
+    &.ok,
+    &.success {
+        > dt {
+            color: @CmColor-Success-DarkDefault;
+        }
+
+        .pt__field__error {
+            color: @CmColor-Success-DarkDefault;
+        }
+
+        .input {
+            border: 1px solid @CmColor-Success-DarkDefault;
+        }
+    }
+
     &.is-text {
         > dt {
             padding: 0;

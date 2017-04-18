@@ -1,0 +1,99 @@
+/* ******* NOTIFICATION ******* */
+
+.com__notifications {
+    .cm__box;
+
+    > ul {
+        .cm__list-clear;
+
+        > li {
+            margin: @CmIndent-XXSmall 0 0 0;
+            padding: @CmIndent-XXXSmall @CmIndent-XXSmall;
+            background: #f7f7f7;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+            border: 1px solid #a2a2a2;
+            border-radius: @CmBorder-Radius;
+            font-size: @CmFont-UI-Size;
+
+            &:first-child {
+                margin: 0;
+            }
+
+            > .descr {
+                overflow: hidden;
+
+                > .more {
+                    margin: 0 0 0 @CmIndent-XXSmall;
+                    font-size: 11px;
+                    color: #666666;
+                    text-decoration: underline;
+                    cursor: pointer;
+
+                    &:hover {
+                        text-decoration: none;
+                    }
+                }
+            }
+
+            > .close {
+                float: right;
+                margin-left: 12px;
+                padding-left: 12px;
+                border-left: 1px solid;
+                font-size: 11px;
+                color: #666666;
+                text-decoration: underline;
+                cursor: pointer;
+
+                &:hover {
+                    text-decoration: none;
+                }
+            }
+
+            > .messages {
+                height: 0;
+                overflow: hidden;
+                clear: both;
+
+                > ul {
+                    .cm__list;
+                    .cm__font--hint-cursive;
+                    padding-top: @CmIndent-XXSmall;
+                }
+            }
+
+            &.ok,
+            &.success {
+                background: #f3fded;
+                border-color: #9ec589;
+                color: #5a714e;
+
+                > .close {
+                    border-color: #9ec589;
+                }
+            }
+
+            &.error,
+            &.danger {
+                background: #ffe4e4;
+                border-color: #df3e3e;
+                color: #bf0a0a;
+
+                > .close {
+                    border-color: #df3e3e;
+                }
+            }
+
+            &.notice,
+            &.warning {
+                background: #f8f1d4;
+                border-color: #d2a323;
+                color: #906901;
+
+                > .close {
+                    border-color: #d2a323;
+                }
+            }
+        }
+    }
+}

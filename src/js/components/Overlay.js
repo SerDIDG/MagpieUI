@@ -19,6 +19,7 @@ cm.define('Com.Overlay', {
         'container' : 'document.body',
         'appendMode' : 'appendChild',
         'theme' : 'default',            // transparent | default | light | dark
+        'className' : '',
         'position' : 'fixed',
         'showSpinner' : true,
         'showContent' : true,
@@ -64,6 +65,8 @@ function(params){
             that.nodes['spinner'] = cm.Node('div', {'class' : 'overlay__spinner'}),
             that.nodes['content'] = cm.Node('div', {'class' : 'overlay__content'})
         );
+        // CSS Class
+        cm.addClass(that.nodes['container'], that.params['className']);
         // Set position
         that.nodes['container'].style.position = that.params['position'];
         // Show spinner

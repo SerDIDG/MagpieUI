@@ -23,11 +23,14 @@
     }
 
     .overlay__spinner {
-        width: 32px;
-        height: 32px;
+        .cm-animate.animated.spin;
+        width: @PtOverlay-Spinner-Size;
+        height: @PtOverlay-Spinner-Size;
         margin: auto;
         z-index: 1;
-        background: url('@{CmPath-Images}/animated/loader.png');
+        border: @PtOverlay-Spinner-BorderSize solid @PtOverlay-Spinner-DefaultBackground;
+        border-top-color: @PtOverlay-Spinner-ActiveBackground;
+        border-radius: 50%;
     }
 
     .overlay__content {
@@ -48,10 +51,6 @@
 
     &.theme-dark {
         background-color: @PtOverlay-Dark;
-
-        .overlay__spinner {
-            background-image: url('@{CmPath-Images}/animated/loader-white.png');
-        }
     }
 
     &.is-immediately {

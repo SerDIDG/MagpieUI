@@ -78,6 +78,7 @@ cm.isFileReader = (function(){return 'FileReader' in window;})();
 cm.isHistoryAPI = !!(window.history && history.pushState);
 cm.isLocalStorage = (function(){try{return 'localStorage' in window && window.localStorage !== null;}catch(e){return false;}})();
 cm.isCanvas = !!document.createElement("canvas").getContext;
+cm.hasBeacon = !!(navigator.sendBeacon);
 
 /* ******* OBJECTS AND ARRAYS ******* */
 
@@ -286,7 +287,7 @@ cm.merge = function(o1, o2){
     return o;
 };
 
-cm.extend = function(o1, o2){
+cm.extend = function(o1, o2, deep){
     if(!o1){
         return o2;
     }
@@ -299,16 +300,17 @@ cm.extend = function(o1, o2){
         return o;
     }
     if(cm.isObject(o1)){
-        o = {};
-        cm.forEach(o1, function(item, key){
-            o[key] = item;
-        });
+        o = cm.clone(o1);
         cm.forEach(o2, function(item, key){
-            o[key] = item;
+            if(deep){
+                o[key] = cm.extend(o[key], item);
+            }else{
+                o[key] = item;
+            }
         });
         return o;
     }
-    return null;
+    return o2;
 };
 
 cm.clone = function(o, cloneNode){
@@ -1668,7 +1670,7 @@ cm.toggleRadio = function(name, value, node){
     var els = cm.getByName(name, node);
     for(var i = 0; i < els.length; i++){
         if(els[i].value == value){
-            els[i].checked = true;
+            els[i].checked = els[i].value == value;
         }
     }
 };
@@ -1957,6 +1959,22 @@ cm.parseDate = function(str, format){
     });
 
     return date;
+};
+
+cm.parseFormatDate = function(str, format, displayFormat, langs){
+    format = format || cm._config['dateFormat'];
+    displayFormat = displayFormat || cm._config['displayDateFormat'];
+    var date = cm.parseDate(str, format);
+    var formated = cm.dateFormat(date, displayFormat, langs);
+    return formated;
+};
+
+cm.parseFormatDateTime = function(str, format, displayFormat, langs){
+    format = format || cm._config['dateTimeFormat'];
+    displayFormat = displayFormat || cm._config['displayDateTimeFormat'];
+    var date = cm.parseDate(str, format);
+    var formated = cm.dateFormat(date, displayFormat, langs);
+    return formated;
 };
 
 cm.getWeek = function(date){
@@ -3218,6 +3236,8 @@ cm.ajax = function(o){
                 'X-Requested-With' : 'XMLHttpRequest'
             },
             'withCredentials' : false,
+            'async' : true,
+            'beacon' : false,
             'onStart' : function(){},
             'onEnd' : function(){},
             'onSuccess' : function(){},
@@ -3285,7 +3305,7 @@ cm.ajax = function(o){
     };
 
     var send = function(){
-        config['httpRequestObject'].open(config['method'], config['url'], true);
+        config['httpRequestObject'].open(config['method'], config['url'], config['async']);
         // Set Headers
         if('withCredentials' in config['httpRequestObject']){
             config['httpRequestObject'].withCredentials = config['withCredentials'];
@@ -3299,7 +3319,9 @@ cm.ajax = function(o){
         cm.addEvent(config['httpRequestObject'], 'abort', abortHandler);
         // Send
         config['onStart']();
-        if(/post|put/.test(config['method'])){
+        if(config['beacon'] && cm.hasBeacon){
+            navigator.sendBeacon(config['url'], config['params']);
+        }else if(/post|put/.test(config['method'])){
             config['httpRequestObject'].send(config['params']);
         }else{
             config['httpRequestObject'].send(null);
@@ -3721,7 +3743,9 @@ cm.Finder = function(className, name, parentNode, callback, params){
             'childs' : false
         }, params);
         // Search in constructed classes
-        finder = cm.find(className, name, parentNode, callback);
+        finder = cm.find(className, name, parentNode, callback, {
+            'childs' : params['childs']
+        });
         // Bind event when no one constructed class found
         if(!finder || !finder.length || params['multiple']){
             isEventBind = true;

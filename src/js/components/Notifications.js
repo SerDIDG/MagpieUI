@@ -1,64 +1,41 @@
 cm.define('Com.Notifications', {
-    'modules' : [
-        'Params',
-        'Events',
-        'Langs',
-        'Structure',
-        'DataConfig',
-        'Stack'
-    ],
+    'extend' : 'Com.AbstractController',
     'events' : [
-        'onRenderStart',
-        'onRender',
         'onAdd',
         'onRemove'
     ],
     'params' : {
-        'node' : cm.node('div'),
-        'container' : null,
-        'name' : '',
+        'renderStructure' : true,
+        'embedStructureOnRender' : true,
         'embedStructure' : 'append',
+        'Com.ToggleBox' : {
+            'toggleTitle' : false,
+            'className' : null
+        },
         'langs' : {
-            'close' : 'Close'
+            'close' : 'Close',
+            'more' : 'Read more'
         }
     }
 },
 function(params){
     var that = this;
-
-    that.nodes = {};
-    that.items = [];
-    that.components = {};
-
-    var init = function(){
-        that.setParams(params);
-        that.convertEvents(that.params['events']);
-        that.getDataConfig(that.params['node']);
-        that.validateParams();
-        that.addToStack(that.params['node']);
-        that.triggerEvent('onRenderStart');
-        that.render();
-        that.addToStack(that.nodes['container']);
-        that.triggerEvent('onRender');
-    };
-
-    /* ******* PUBLIC ******* */
-
-    init();
+    // Call parent class construct
+    Com.AbstractController.apply(that, arguments);
 });
 
 cm.getConstructor('Com.Notifications', function(classConstructor, className, classProto){
-    classProto.validateParams = function(){
+    var _inherit = classProto._inherit;
+
+    classProto.construct = function(){
         var that = this;
-        return that;
+        that.items = [];
+        // Call parent method - renderViewModel
+        _inherit.prototype.construct.apply(that, arguments);
     };
 
-    classProto.render = function(){
+    classProto.validateParams = function(){
         var that = this;
-        // Structure
-        that.renderView();
-        // Append
-        that.embedStructure(that.nodes['container']);
         return that;
     };
 
@@ -84,18 +61,44 @@ cm.getConstructor('Com.Notifications', function(classConstructor, className, cla
         item = cm.merge({
             'label' : '',
             'type' : 'warning',           // success | warning | danger
+            'messages' : [],
+            'collapsed' : true,
             'nodes' : {}
         }, item);
         // Structure
         item['nodes']['container'] = cm.node('li', {'class' : item['type']},
             item['nodes']['close'] = cm.node('div', {'class' : 'close'}, that.lang('close')),
-            item['nodes']['descr'] = cm.node('div', {'class' : 'descr'})
+            item['nodes']['descr'] = cm.node('div', {'class' : 'descr'}),
+            item['nodes']['messages'] = cm.node('div', {'class' : 'messages'},
+                item['nodes']['messagesList'] = cm.node('ul')
+            )
         );
         // Label
-        if(cm.isNode(item['label'])){
-            cm.appendChild(item['label'], item['nodes']['descr']);
-        }else{
-            item['nodes']['descr'].innerHTML = item['label'];
+        if(!cm.isNode(item['label']) || !cm.isTextNode(item['label'])){
+            item['label'] = cm.node('span', {'innerHTML' : item['label']});
+        }
+        cm.appendChild(item['label'], item['nodes']['descr']);
+        // Messages
+        if(!cm.isEmpty(item['messages'])){
+            // Button
+            item['nodes']['button'] = cm.node('a', {'class' : 'more'}, that.lang('more'));
+            cm.appendChild(item['nodes']['button'], item['nodes']['descr']);
+            // List
+            cm.forEach(item['messages'], function(message){
+                cm.appendChild(cm.node('li', message), item['nodes']['messagesList']);
+            });
+            // Toggle
+            cm.getConstructor('Com.ToggleBox', function(classConstructor){
+                item['controller'] = new classConstructor(
+                    cm.merge(that.params['Com.ToggleBox'], {
+                        'nodes' : {
+                            'container' : item['nodes']['container'],
+                            'button' : item['nodes']['button'],
+                            'target' : item['nodes']['messages']
+                        }
+                    })
+                );
+            });
         }
         // Events
         cm.addEvent(item['nodes']['close'], 'click', function(){

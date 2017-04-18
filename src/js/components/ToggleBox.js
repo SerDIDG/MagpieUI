@@ -21,7 +21,7 @@ cm.define('Com.ToggleBox', {
         'name' : '',
         'renderStructure' : false,
         'embedStructure' : 'replace',
-        'duration' : 500,
+        'duration' : 'cm._config.animDurationLong',
         'remember' : false,                                 // Remember toggle state
         'toggleTitle' : false,                              // Change title on toggle
         'container' : false,
@@ -92,7 +92,7 @@ function(params){
                 that.nodes['content'].appendChild(that.params['node']);
             }
             // Set events
-            if(that.params['eventNode'] == 'button'){
+            if(that.params['eventNode'] === 'button'){
                 cm.addClass(that.nodes['container'], 'has-hover-icon');
                 cm.addEvent(that.nodes['button'], 'click', that.toggle);
             }else{

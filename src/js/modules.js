@@ -88,7 +88,7 @@ Mod['Extend'] = {
                 });
             }
             // Construct module
-            if(typeof o._construct == 'function'){
+            if(cm.isFunction(o._construct)){
                 // Construct
                 o._construct.call(that);
             }else{
@@ -114,14 +114,20 @@ Mod['Component'] = {
     '_construct' : function(){
         var that = this;
         that.build._isComponent = true;
-        if(typeof that.build['params']['consoleLogErrors'] == 'undefined'){
+        if(typeof that.build['params']['consoleLogErrors'] === 'undefined'){
             that.build['params']['consoleLogErrors'] = true;
         }
+    },
+    'renderComponent' : function(){
+        var that = this;
+        cm.forEach(that._modules, function(module){
+            cm.isFunction(module._render) && module._render.call(that);
+        })
     },
     'cloneComponent' : function(params){
         var that = this,
             component;
-        cm.getConstructor(that._name['full'], function(classConstructor){
+        cm.getConstructor(that._className, function(classConstructor){
             component = new classConstructor(
                 cm.merge(that.params, params)
             );
@@ -148,6 +154,12 @@ Mod['Params'] = {
         }
         if(that.build._inherit){
             that.build['params'] = cm.merge(that.build._inherit.prototype['params'], that.build['params']);
+        }
+    },
+    '_render' : function(){
+        var that = this;
+        if(that._inherit){
+            that.params = cm.merge(that._inherit.prototype['params'], that.params);
         }
     },
     'setParams' : function(params, replace){
@@ -199,9 +211,9 @@ Mod['Params'] = {
         });
         return that;
     },
-    'getParams' : function(){
+    'getParams' : function(key){
         var that = this;
-        return that.params;
+        return key ? that.params[key] : that.params;
     }
 };
 
@@ -223,15 +235,22 @@ Mod['Events'] = {
             that.build['params']['events'] = {};
         }
         if(that.build._inherit){
-            that.build['params']['events'] = cm.merge(that.build._inherit.prototype['params']['events'], that.build['params']['events']);
-            that.build['events'] = cm.merge(that.build._inherit.prototype['events'], that.build['events']);
+            that.build['params']['events'] = cm.extend(that.build._inherit.prototype['params']['events'], that.build['params']['events'], true);
+            that.build['events'] = cm.extend(that.build._inherit.prototype['events'], that.build['events'], true);
+        }
+    },
+    '_render' : function(){
+        var that = this;
+        if(that._inherit){
+            that.params['events'] = cm.extend(that._inherit.prototype['params']['events'], that.params['events'], true);
+            that.events = cm.extend(that._inherit.prototype['events'], that.events, true);
         }
     },
     'addEvent' : function(event, handler){
         var that = this;
         that.events = cm.clone(that.events);
         if(that.events[event]){
-            if(typeof handler == 'function'){
+            if(cm.isFunction(handler)){
                 that.events[event].push(handler);
             }else{
                 cm.errorLog({
@@ -259,9 +278,9 @@ Mod['Events'] = {
         var that = this;
         that.events = cm.clone(that.events);
         if(that.events[event]){
-            if(typeof handler == 'function'){
+            if(cm.isFunction(handler)){
                 that.events[event] = that.events[event].filter(function(item){
-                    return item != handler;
+                    return item !== handler;
                 });
             }else{
                 cm.errorLog({
@@ -326,6 +345,15 @@ Mod['Langs'] = {
             that.build['params']['langs'] = cm.merge(
                 that.build._inherit.prototype['params']['langs'],
                 that.build['params']['langs']
+            );
+        }
+    },
+    '_render' : function(){
+        var that = this;
+        if(that._inherit){
+            that.params['langs'] = cm.merge(
+                that._inherit.prototype['params']['langs'],
+                that.params['langs']
             );
         }
     },
@@ -574,11 +602,11 @@ Mod['Storage'] = {
     },
     'storageRead' : function(key){
         var that = this,
-            storage = JSON.parse(cm.storageGet(that._name['full'])) || {};
+            storage = JSON.parse(cm.storageGet(that._className)) || {};
         if(cm.isEmpty(that.params['name'])){
             cm.errorLog({
                 'type' : 'error',
-                'name' : that._name['full'],
+                'name' : that._className,
                 'message' : 'Storage cannot be read because "name" parameter not provided.'
             });
             return null;
@@ -586,7 +614,7 @@ Mod['Storage'] = {
         if(!storage[that.params['name']] || typeof storage[that.params['name']][key] == 'undefined'){
             cm.errorLog({
                 'type' : 'attention',
-                'name' : that._name['full'],
+                'name' : that._className,
                 'message' : ['Parameter', cm.strWrap(key, '"'), 'does not exist or is not set in component with name', cm.strWrap(that.params['name'], '"'), '.'].join(' ')
             });
             return null;
@@ -595,11 +623,11 @@ Mod['Storage'] = {
     },
     'storageReadAll' : function(){
         var that = this,
-            storage = JSON.parse(cm.storageGet(that._name['full'])) || {};
+            storage = JSON.parse(cm.storageGet(that._className)) || {};
         if(cm.isEmpty(that.params['name'])){
             cm.errorLog({
                 'type' : 'error',
-                'name' : that._name['full'],
+                'name' : that._className,
                 'message' : 'Storage cannot be read because "name" parameter not provided.'
             });
             return {};
@@ -607,7 +635,7 @@ Mod['Storage'] = {
         if(!storage[that.params['name']]){
             cm.errorLog({
                 'type' : 'attention',
-                'name' : that._name['full'],
+                'name' : that._className,
                 'message' : 'Storage is empty.'
             });
             return {};
@@ -616,11 +644,11 @@ Mod['Storage'] = {
     },
     'storageWrite' : function(key, value){
         var that = this,
-            storage = JSON.parse(cm.storageGet(that._name['full'])) || {};
+            storage = JSON.parse(cm.storageGet(that._className)) || {};
         if(cm.isEmpty(that.params['name'])){
             cm.errorLog({
                 'type' : 'error',
-                'name' : that._name['full'],
+                'name' : that._className,
                 'message' : 'Storage cannot be written because "name" parameter not provided.'
             });
             return {};
@@ -629,22 +657,40 @@ Mod['Storage'] = {
             storage[that.params['name']] = {};
         }
         storage[that.params['name']][key] = value;
-        cm.storageSet(that._name['full'], JSON.stringify(storage));
+        cm.storageSet(that._className, JSON.stringify(storage));
         return storage[that.params['name']];
     },
     'storageWriteAll' : function(data){
         var that = this,
-            storage = JSON.parse(cm.storageGet(that._name['full'])) || {};
+            storage = JSON.parse(cm.storageGet(that._className)) || {};
         if(cm.isEmpty(that.params['name'])){
             cm.errorLog({
                 'type' : 'error',
-                'name' : that._name['full'],
+                'name' : that._className,
                 'message' : 'Storage cannot be written because "name" parameter not provided.'
             });
             return {};
         }
         storage[that.params['name']] = data;
-        cm.storageSet(that._name['full'], JSON.stringify(storage));
+        cm.storageSet(that._className, JSON.stringify(storage));
+        return storage[that.params['name']];
+    },
+    'storageClear' : function(key){
+        var that = this,
+            storage = JSON.parse(cm.storageGet(that._className)) || {};
+        if(cm.isEmpty(that.params['name'])){
+            cm.errorLog({
+                'type' : 'error',
+                'name' : that._className,
+                'message' : 'Storage cannot be written because "name" parameter not provided.'
+            });
+            return {};
+        }
+        if(!storage[that.params['name']]){
+            storage[that.params['name']] = {};
+        }
+        delete storage[that.params['name']][key];
+        cm.storageSet(that._className, JSON.stringify(storage));
         return storage[that.params['name']];
     }
 };
@@ -807,7 +853,7 @@ Mod['Structure'] = {
 
 /* ******* CONTROLLER ******* */
 
-Mod['Controller'] = {
+Mod['__Controller__'] = {
     '_config' : {
         'extend' : true,
         'predefine' : false,

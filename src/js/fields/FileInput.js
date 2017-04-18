@@ -67,7 +67,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         var that = this,
             value;
         if(that.params['formData']){
-            value = that.value['file'] || that.value  || '';
+            value = that.value['file'] || that.value['value'] || that.value['value']   || '';
         }else{
             value = that.value  || '';
         }

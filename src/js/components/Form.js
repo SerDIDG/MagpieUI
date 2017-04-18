@@ -48,6 +48,7 @@ cm.define('Com.Form', {
             'removeOnClose' : true
         },
         'langs' : {
+            'form_error' : 'Form is not filled correctly.',
             'server_error' : 'An unexpected error has occurred. Please try again later.'
         }
     }
@@ -252,6 +253,7 @@ function(params){
 
     that.callbacks.request = function(that, config){
         config = that.callbacks.prepare(that, config);
+        that.callbacks.clearError(that);
         // Return ajax handler (XMLHttpRequest) to providing abort method.
         return cm.ajax(
             cm.merge(config, {
@@ -313,7 +315,7 @@ function(params){
     };
 
     that.callbacks.error = function(that, config, message){
-        that.callbacks.renderError(that, config, message);
+        that.callbacks.renderError(that, message);
         that.triggerEvent('onError');
     };
 
@@ -327,30 +329,28 @@ function(params){
 
     /* *** RENDER *** */
 
-    that.callbacks.renderError = function(that, config, errors){
-        var field;
+    that.callbacks.renderError = function(that, errors){
+        var field, messages = [];
         // Clear old errors messages
-        if(that.params['showNotifications']){
-            cm.removeClass(that.nodes['notifications'], 'is-show', true);
-            that.components['notifications'].clear();
-        }
-        cm.forEach(that.fields, function(field){
-            field['controller'].clearError();
-        });
+        that.callbacks.clearError(that);
         // Render new errors messages
         if(cm.isArray(errors)){
             cm.forEach(errors, function(item){
-                if(that.params['showNotifications']){
-                    cm.addClass(that.nodes['notifications'], 'is-show', true);
-                    that.components['notifications'].add({
-                        'label' : that.lang(item['message']),
-                        'type' : 'danger'
-                    });
-                }
+                messages.push(that.lang(item['message']));
+                // Render form errors
                 if(field = that.getField(item['field'])){
                     field['controller'].renderError(item['message']);
                 }
             });
+            if(that.params['showNotifications']){
+                cm.addClass(that.nodes['notifications'], 'is-show', true);
+                that.components['notifications'].add({
+                    'label' : that.lang('form_error'),
+                    'type' : 'danger',
+                    'messages' : messages,
+                    'collapsed' : true
+                });
+            }
         }else{
             if(that.params['showNotifications']){
                 cm.addClass(that.nodes['notifications'], 'is-show', true);
@@ -360,6 +360,17 @@ function(params){
                 });
             }
         }
+    };
+
+    that.callbacks.clearError = function(that){
+        var field;
+        if(that.params['showNotifications']){
+            cm.removeClass(that.nodes['notifications'], 'is-show', true);
+            that.components['notifications'].clear();
+        }
+        cm.forEach(that.fields, function(field){
+            field['controller'].clearError();
+        });
     };
 
     /* ******* PUBLIC ******* */
@@ -429,9 +440,10 @@ function(params){
         cm.forEach(that.fields, function(field, name){
             if(!field['system']){
                 value = field['controller'].get();
-                if(!cm.isEmpty(value)){
-                    o[name] = value;
-                }
+                //if(!cm.isEmpty(value)){
+                //    o[name] = value;
+                //}
+                o[name] = value;
             }
         });
         return o;
@@ -464,14 +476,15 @@ function(params){
         });
         that.buttons = {};
         cm.clearNode(that.nodes['buttons']);
+        that.clearError();
         return that;
     };
 
     that.reset = function(){
-        cm.removeClass(that.nodes['notificationsContainer'], 'is-show');
         cm.forEach(that.fields, function(field){
             field['controller'].reset();
         });
+        that.clearError();
         return that;
     };
 
@@ -503,6 +516,11 @@ function(params){
         if(update){
             that._update.params['ajax'] = cm.clone(that.params['ajax']);
         }
+        return that;
+    };
+
+    that.clearError = function(){
+        that.callbacks.clearError(that);
         return that;
     };
 
@@ -674,7 +692,7 @@ function(params){
     that.callbacks.renderError = function(that, message){
         that.callbacks.clearError(that);
         cm.addClass(that.nodes['container'], 'error');
-        that.nodes['errors'] = cm.node('ul', {'class' : 'pt__field__hint'},
+        that.nodes['errors'] = cm.node('ul', {'class' : 'pt__field__error pt__field__hint'},
             cm.node('li', {'class' : 'error'}, message)
         );
         cm.appendChild(that.nodes['errors'], that.nodes['value']);

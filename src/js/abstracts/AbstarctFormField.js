@@ -245,7 +245,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         var that = this;
         that.clearError();
         cm.addClass(that.nodes['container'], 'error');
-        that.nodes['errors'] = cm.node('ul', {'class' : 'pt__field__hint'},
+        that.nodes['errors'] = cm.node('ul', {'class' : 'pt__field__error pt__field__hint'},
             cm.node('li', {'class' : 'error'}, message)
         );
         cm.appendChild(that.nodes['errors'], that.nodes['value']);

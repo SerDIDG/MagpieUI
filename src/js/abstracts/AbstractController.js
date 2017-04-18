@@ -90,6 +90,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         // Configure class
         that.params['controllerEvents'] && that.bindControllerEvents();
         that.triggerEvent('onConstructStart');
+        that.renderComponent();
         that.initComponents();
         that.getLESSVariables();
         that.setParams(params);

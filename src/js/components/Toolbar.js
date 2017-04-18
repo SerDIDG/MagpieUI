@@ -158,6 +158,7 @@ function(params){
             'title' : '',
             'group' : '',
             'disabled' : false,
+            'hidden' : false,
             'className' : '',
             'attr' : {},
             'preventDefault' : true,
@@ -178,6 +179,7 @@ function(params){
             cm.addClass(item['node'], ['button', item['type']].join('-'));
             cm.addClass(item['node'], item['className']);
             item['disabled'] && cm.addClass(item['node'], 'button-disabled');
+            item['hidden'] && cm.addClass(item['container'], 'is-hidden');
             // Label and title
             item['node'].innerHTML = item['label'];
             item['node'].title = item['title'];
@@ -241,6 +243,22 @@ function(params){
         if(item){
             item['disabled'] = true;
             cm.addClass(item['node'], 'button-disabled');
+        }
+    };
+
+    that.showButton = function(name, groupName){
+        var item = that.getButton(name, groupName);
+        if(item){
+            item['hidden'] = false;
+            cm.removeClass(item['container'], 'is-hidden');
+        }
+    };
+
+    that.hideButton = function(name, groupName){
+        var item = that.getButton(name, groupName);
+        if(item){
+            item['hidden'] = true;
+            cm.addClass(item['container'], 'is-hidden');
         }
     };
 
