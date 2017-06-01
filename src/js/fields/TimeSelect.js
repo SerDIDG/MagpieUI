@@ -29,16 +29,16 @@ cm.define('Com.TimeSelect', {
         'minutesInterval' : 0,
         'withSeconds' : false,
         'secondsInterval' : 0,
-        'selected' : 0,
-        'langs' : {
-            'separator' : ':',
-            'Hours' : 'HH',
-            'Minutes' : 'MM',
-            'Seconds' : 'SS',
-            'HoursTitle' : 'Hours',
-            'MinutesTitle' : 'Minutes',
-            'SecondsTitle' : 'Seconds'
-        }
+        'selected' : 0
+    },
+    'strings' : {
+        'separator' : ':',
+        'Hours' : 'HH',
+        'Minutes' : 'MM',
+        'Seconds' : 'SS',
+        'HoursTitle' : 'Hours',
+        'MinutesTitle' : 'Minutes',
+        'SecondsTitle' : 'Seconds'
     }
 },
 function(params){

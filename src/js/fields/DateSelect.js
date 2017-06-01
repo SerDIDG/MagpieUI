@@ -21,13 +21,13 @@ cm.define('Com.DateSelect', {
         'format' : 'cm._config.dateFormat',
         'startYear' : 1950,                             // number | current
         'endYear' : 'current + 10',                     // number | current
-        'renderSelectsInBody' : true,
-        'langs' : {
-            'Day' : 'Day',
-            'Month' : 'Month',
-            'Year' : 'Year',
-            'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-        }
+        'renderSelectsInBody' : true
+    },
+    'strings' : {
+        'Day' : 'Day',
+        'Month' : 'Month',
+        'Year' : 'Year',
+        'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
     }
 },
 function(params){

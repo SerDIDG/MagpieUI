@@ -53,21 +53,19 @@
                         case 'youtube' :
                             var apiKey = 'AIzaSyAqlbfLg5KtgnYVi1eJRsoHpmno_wzJ6mc';
                             var callbacks = {
-                                'filter' : function(that, config, query, response){
-                                    var data = [],
-                                        newItem;
+                                'filter' : function(that, params){
+                                    params['data'] = [];
                                     // Here we filter youtube data and prepare clear object to render
-                                    if(response['items'] && !cm.isEmpty(response['items'])){
-                                        cm.forEach(response['items'], function(item){
-                                            newItem = {
+                                    if(!cm.isEmpty(params['response']['items'])){
+                                        cm.forEach(params['response']['items'], function(item){
+                                            params['data'].push({
                                                 'value' : item['snippet']['resourceId']['videoId'],
                                                 'text' : item['snippet']['title']
-                                            };
-                                            data.push(newItem);
+                                            });
                                         });
                                     }
                                     // We request just 50 last items, so we need to filter it by query
-                                    data = that.callbacks.query(that, query, data);
+                                    params['data'] = that.callbacks.query(that, params);
                                     // Return filtered response
                                     return data;
                                 }

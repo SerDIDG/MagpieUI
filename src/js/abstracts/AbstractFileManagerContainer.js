@@ -16,13 +16,13 @@ cm.define('Com.AbstractFileManagerContainer', {
             'params' : {
                 'width' : 900
             }
-        },
-        'langs' : {
-            'title_single' : 'Please select file',
-            'title_multiple' : 'Please select files',
-            'close' : 'Cancel',
-            'save' : 'Select'
         }
+    },
+    'strings' : {
+        'title_single' : 'Please select file',
+        'title_multiple' : 'Please select files',
+        'close' : 'Cancel',
+        'save' : 'Select'
     }
 },
 function(params){

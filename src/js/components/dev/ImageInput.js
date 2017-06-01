@@ -20,12 +20,12 @@ cm.define('Com.ImageInput', {
         'value' : null,
         'disabled' : false,
         'type' : 'file',              // base64 | file
-        'langs' : {
-            'no_image' : 'No Image',
-            'browse' : 'Browse',
-            'remove' : 'Remove'
-        },
         'Com.GalleryPopup' : {}
+    },
+    'strings' : {
+        'no_image' : 'No Image',
+        'browse' : 'Browse',
+        'remove' : 'Remove'
     }
 },
 function(params){

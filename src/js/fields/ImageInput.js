@@ -6,10 +6,10 @@ cm.define('Com.ImageInput', {
         'aspect' : false,
         'preview' : true,
         'previewConstructor' : 'Com.ImagePreviewContainer',
-        'previewParams' : {},
-        'langs' : {
-            'preview' : 'Preview'
-        }
+        'previewParams' : {}
+    },
+    'strings' : {
+        'preview' : 'Preview'
     }
 },
 function(params){

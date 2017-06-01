@@ -49,11 +49,11 @@ cm.define('Com.Dialog', {
         'icons' : {
             'closeInside' : 'icon default linked',
             'closeOutside' : 'icon default linked'
-        },
-        'langs' : {
-            'closeTitle' : 'Close',
-            'close' : ''
         }
+    },
+    'strings' : {
+        'closeTitle' : 'Close',
+        'close' : ''
     }
 },
 function(params){

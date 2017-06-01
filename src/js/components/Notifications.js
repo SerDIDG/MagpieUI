@@ -8,14 +8,15 @@ cm.define('Com.Notifications', {
         'renderStructure' : true,
         'embedStructureOnRender' : true,
         'embedStructure' : 'append',
+        'icon' : 'icon small remove linked',
         'Com.ToggleBox' : {
             'toggleTitle' : false,
             'className' : null
-        },
-        'langs' : {
-            'close' : 'Close',
-            'more' : 'Read more'
         }
+    },
+    'strings' : {
+        'close' : 'Close',
+        'more' : 'Read more'
     }
 },
 function(params){
@@ -67,14 +68,14 @@ cm.getConstructor('Com.Notifications', function(classConstructor, className, cla
         }, item);
         // Structure
         item['nodes']['container'] = cm.node('li', {'class' : item['type']},
-            item['nodes']['close'] = cm.node('div', {'class' : 'close'}, that.lang('close')),
+            item['nodes']['close'] = cm.node('div', {'class' : that.params['icon'], 'title' : that.lang('close')}),
             item['nodes']['descr'] = cm.node('div', {'class' : 'descr'}),
             item['nodes']['messages'] = cm.node('div', {'class' : 'messages'},
                 item['nodes']['messagesList'] = cm.node('ul')
             )
         );
         // Label
-        if(!cm.isNode(item['label']) || !cm.isTextNode(item['label'])){
+        if(!cm.isNode(item['label']) && !cm.isTextNode(item['label'])){
             item['label'] = cm.node('span', {'innerHTML' : item['label']});
         }
         cm.appendChild(item['label'], item['nodes']['descr']);

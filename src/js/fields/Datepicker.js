@@ -51,21 +51,21 @@ cm.define('Com.Datepicker', {
             'datepicker' : 'icon default linked',
             'clear' : 'icon default linked'
         },
-        'langs' : {
-            'daysAbbr' : ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
-            'days' : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-            'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-            'Clear date' : 'Clear date',
-            'Today' : 'Today',
-            'Now' : 'Now',
-            'Time' : 'Time:'
-        },
         'Com.Tooltip' : {
             'targetEvent' : 'click',
             'hideOnReClick' : false,
             'className' : 'com__datepicker__tooltip',
             'top' : 'cm._config.tooltipTop'
         }
+    },
+    'strings' : {
+        'daysAbbr' : ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+        'days' : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+        'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+        'Clear date' : 'Clear date',
+        'Today' : 'Today',
+        'Now' : 'Now',
+        'Time' : 'Time:'
     }
 },
 function(params){

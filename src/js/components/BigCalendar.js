@@ -42,15 +42,15 @@ cm.define('Com.BigCalendar', {
                 'query' : '%query%'
             }
         },
-        'langs' : {
-            'server_error' : 'An unexpected error has occurred. Please try again later.'
-        },
         'Com.Overlay' : {
             'position' : 'absolute',
             'autoOpen' : false,
             'removeOnClose' : true,
             'appendMode' : 'insertFirst'
         }
+    },
+    'strings' : {
+        'server_error' : 'An unexpected error has occurred. Please try again later.'
     }
 },
 function(params){

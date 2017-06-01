@@ -203,7 +203,8 @@
                 margin-top: 0;
             }
 
-            a {
+            > a,
+            > .inner {
                 //&:extend(.cm__link all);
                 display: block;
                 padding: @PtListingItems-PaddingY @PtListingItems-PaddingX;
@@ -244,7 +245,8 @@
             }
 
             &.active {
-                > a {
+                > a,
+                > .inner {
                     background-color: @CmColor-Primary-LightActive;
                 }
             }
@@ -254,14 +256,16 @@
     &:not(.disabled) {
         ul {
             li {
-                a {
+                > a,
+                > .inner {
                     &:hover {
                         background-color: @CmColor-Secondary-LightHover;
                     }
                 }
 
                 &.active {
-                    > a {
+                    > a,
+                    > .inner {
                         &:hover {
                             background-color: @CmColor-Primary-LightActiveHover;
                         }
@@ -274,7 +278,8 @@
     &.disabled {
         ul {
             li {
-                a {
+                > a,
+                > .inner {
                     cursor: default;
                 }
             }

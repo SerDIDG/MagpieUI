@@ -319,7 +319,10 @@ cm.clone = function(o, cloneNode){
         return o;
     }
     // Arrays
-    if(cm.isType(o, /Array|Arguments|StyleSheetList|CSSRuleList|HTMLCollection|NodeList|DOMTokenList|FileList/)){
+    if(cm.isType(o, 'Arguments')){
+        return [].slice.call(o);
+    }
+    if(cm.isType(o, /Array|StyleSheetList|CSSRuleList|HTMLCollection|NodeList|DOMTokenList|FileList/)){
         newO = [];
         cm.forEach(o, function(item){
             newO.push(cm.clone(item, cloneNode));
@@ -429,7 +432,7 @@ cm.isEmptyOld = function(el){
 };
 
 cm.isEmpty = function(value){
-    if(value === 'undefined' || value === undefined || value === null){
+    if(cm.isUndefined(value)){
         return true;
     }
     if(cm.isBoolean(value)){
@@ -442,6 +445,10 @@ cm.isEmpty = function(value){
         return cm.getLength(value) === 0;
     }
     return false;
+};
+
+cm.isUndefined = function(value){
+    return typeof value === 'undefined' || value === undefined || value === null;
 };
 
 cm.objectPath = function(name, obj){
@@ -943,10 +950,10 @@ cm.onImageLoad = function(src, handler, delay){
         timePassed = 0;
 
     images.forEach(function(item, i){
-        nodes[i] = cm.Node('img', {'alt' : ''});
+        nodes[i] = cm.node('img', {'alt' : ''});
         nodes[i].onload = function(){
             isLoad++;
-            if(isLoad == imagesLength){
+            if(isLoad === imagesLength){
                 timePassed = Date.now() - timeStart;
                 delay = timePassed < delay ? delay - timePassed : 0;
 
@@ -1845,7 +1852,23 @@ cm.dateFormat = function(date, format, langs){
             'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
         ]
     }, langs);
-
+    var convertFormats = {
+        '%Y%' : '%Y',
+        '%m%' : '%m',
+        '%n%' : '%n',
+        '%F%' : '%F',
+        '%d%' : '%d',
+        '%j%' : '%j',
+        '%l%' : '%l',
+        '%a%' : '%a',
+        '%A%' : '%A',
+        '%g%' : '%g',
+        '%G%' : '%G',
+        '%h%' : '%h',
+        '%H%' : '%H',
+        '%i%' : '%i',
+        '%s%' : '%s'
+    };
     var formats = function(date){
         return {
             '%Y' : function(){
@@ -1895,10 +1918,8 @@ cm.dateFormat = function(date, format, langs){
             }
         };
     };
-
-    cm.forEach(formats(date), function(item, key){
-        format = format.replace(key, item);
-    });
+    format = cm.strReplace(format, convertFormats);
+    format = cm.strReplace(format, formats(date));
     return format;
 };
 
@@ -1906,9 +1927,14 @@ cm.parseDate = function(str, format){
     if(!str){
         return null;
     }
-
     var date = new Date(),
         convertFormats = {
+            '%Y%' : 'YYYY',
+            '%m%' : 'mm',
+            '%d%' : 'dd',
+            '%H%' : 'HH',
+            '%i%' : 'ii',
+            '%s%' : 'ss',
             '%Y' : 'YYYY',
             '%m' : 'mm',
             '%d' : 'dd',
@@ -1943,13 +1969,8 @@ cm.parseDate = function(str, format){
             }
         },
         fromIndex = 0;
-
-    format = format || cm._config['dateTimeFormat'];
-
-    cm.forEach(convertFormats, function(item, key){
-        format = format.replace(key, item);
-    });
-
+    format = cm.isString(format) ? format : cm._config['dateTimeFormat'];
+    format = cm.strReplace(format, convertFormats);
     cm.forEach(formats, function(item, key){
         fromIndex = format.indexOf(key);
         while(fromIndex != -1){
@@ -1957,7 +1978,6 @@ cm.parseDate = function(str, format){
             fromIndex = format.indexOf(key, fromIndex + 1);
         }
     });
-
     return date;
 };
 
@@ -2800,7 +2820,7 @@ cm.CSSValuesToArray = function(value){
     if(cm.isEmpty(value)){
         return [0, 0, 0, 0];
     }
-    value = value.replace(/[^\d\s-]/g , '').split(/\s+/);
+    value = value.toString().replace(/[^\d\s-]/g , '').split(/\s+/);
     cm.forEach(value, function(item, key){
         value[key] = cm.isEmpty(item) ? 0 : parseFloat(item);
     });
@@ -3609,7 +3629,8 @@ cm.defineHelper = function(name, data, handler){
         '_className' : name,
         '_constructor' : handler,
         '_modules' : {},
-        'params' : data['params']
+        'params' : data['params'],
+        'strings' : data['strings']
     };
     // Inheritance
     if(data['extend']){

@@ -8,10 +8,10 @@ cm.define('Com.DialogContainer', {
         'params' : {
             'destructOnRemove' : false,
             'autoOpen' : false
-        },
-        'langs' : {
-            'close' : 'Close'
         }
+    },
+    'strings' : {
+        'close' : 'Close'
     }
 },
 function(params){

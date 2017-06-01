@@ -12,11 +12,11 @@ cm.define('Com.FileDropzone', {
         'rollover' : true,
         'max' : 0,                                  // 0 - infinity
         'duration' : 'cm._config.animDuration',
-        'langs' : {
-            'drop_single' : 'drop file here',
-            'drop_multiple' : 'drop files here'
-        },
         'Com.FileReader' : {}
+    },
+    'strings' : {
+        'drop_single' : 'drop file here',
+        'drop_multiple' : 'drop files here'
     }
 },
 function(params){

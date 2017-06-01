@@ -17,14 +17,14 @@ cm.define('Com.CalendarEvents', {
         'endYear' : new Date().getFullYear() + 10,
         'startWeekDay' : 0,
         'target' : '_blank',
-        'langs' : {
-            'daysAbbr' : ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
-            'days' : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-            'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-        },
         'Com.Tooltip' : {
             'className' : 'com__calendar-events__tooltip'
         }
+    },
+    'strings' : {
+        'daysAbbr' : ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+        'days' : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+        'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
     }
 },
 function(params){

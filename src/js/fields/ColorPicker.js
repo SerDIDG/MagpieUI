@@ -37,10 +37,6 @@ cm.define('Com.ColorPicker', {
             'picker' : 'icon default linked',
             'clear' : 'icon default linked'
         },
-        'langs' : {
-            'Transparent' : 'Transparent',
-            'Clear' : 'Clear'
-        },
         'Com.Tooltip' : {
             'targetEvent' : 'click',
             'hideOnReClick' : true,
@@ -50,6 +46,10 @@ cm.define('Com.ColorPicker', {
         'Com.Palette' : {
             'setOnInit' : false
         }
+    },
+    'strings' : {
+        'Transparent' : 'Transparent',
+        'Clear' : 'Clear'
     }
 },
 function(params){

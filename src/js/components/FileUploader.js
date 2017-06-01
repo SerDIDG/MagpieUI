@@ -31,15 +31,15 @@ cm.define('Com.FileUploader', {
             'embedStructure' : 'append',
             'toggleBox' : false,
             'inline' : true
-        },
-        'langs' : {
-            'tab_local' : 'Select From PC',
-            'tab_filemanager' : 'File Manager',
-            'browse_local_single' : 'Choose file',
-            'browse_local_multiple' : 'Choose files',
-            'or' : 'or',
-            'browse' : 'Browse'
         }
+    },
+    'strings' : {
+        'tab_local' : 'Select From PC',
+        'tab_filemanager' : 'File Manager',
+        'browse_local_single' : 'Choose file',
+        'browse_local_multiple' : 'Choose files',
+        'or' : 'or',
+        'browse' : 'Browse'
     }
 },
 function(params){

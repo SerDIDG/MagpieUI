@@ -1,7 +1,7 @@
 cm.define('Com.TintRange', {
     'extend' : 'Com.AbstractRange',
     'params' : {
-        'className' : 'com__tint-range',
+        'className' : 'com__range',
         'min' : 360,
         'max' : 0,
         'value' : 360
@@ -13,7 +13,21 @@ function(params){
 });
 
 cm.getConstructor('Com.TintRange', function(classConstructor, className, classProto){
-    classProto.renderContent = function(){
-        return cm.node('div', {'class' : 'com__tint-range__content'});
+    classProto.renderRangeContent = function(){
+        var that = this,
+            nodes = {};
+        that.nodes['rangeContent'] = nodes;
+        // Structure
+        nodes['container'] = cm.node('div', {'class' : 'com__tint-range__content'});
+        // Export
+        return nodes['container'];
     };
+});
+
+/* ****** FORM FIELD COMPONENT ******* */
+
+Com.FormFields.add('tint-range', {
+    'node' : cm.node('input', {'type' : 'text'}),
+    'fieldConstructor' : 'Com.AbstractFormField',
+    'constructor' : 'Com.TintRange'
 });

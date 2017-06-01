@@ -11,11 +11,11 @@ cm.define('Com.BoxTools', {
             {'name' : 'right', 'icon' : 'icon svg__indent-right small linked', 'iconPosition' : 'insideRight'},
             {'name' : 'bottom', 'icon' : 'icon svg__indent-bottom small linked', 'iconPosition' : 'insideRight'},
             {'name' : 'left', 'icon' : 'icon svg__indent-left small linked', 'iconPosition' : 'insideRight'}
-        ],
-        'langs' : {
-            'link' : 'Link',
-            'unlink' : 'Unlink'
-        }
+        ]
+    },
+    'strings' : {
+        'link' : 'Link',
+        'unlink' : 'Unlink'
     }
 },
 function(params){
@@ -54,19 +54,6 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
             cm.addClass(item['nodes']['inner'], 'disabled');
             item['input'].disabled = true;
         });
-    };
-
-    classProto.set = function(){
-        var that = this;
-        _inherit.prototype.set.apply(that, arguments);
-        that.setInputs();
-        return that;
-    };
-
-    classProto.validateValue = function(value){
-        var that = this;
-        that.rawValue = cm.CSSValuesToArray(value);
-        return cm.arrayToCSSValues(that.rawValue, that.params['units']);
     };
 
     classProto.renderContent = function(){
@@ -152,12 +139,12 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
     classProto.inputOnInputEvent = function(e, value, item){
         var that = this;
         if(that.isInputsLinked){
-            that.rawValue = [value, value, value, value];
+            that.tempRawValue = [value, value, value, value];
             that.setInputs();
         }else{
-            that.rawValue[item['i']] = value;
+            that.tempRawValue[item['i']] = value;
         }
-        that.selectAction(cm.arrayToCSSValues(that.rawValue, that.params['units']), true);
+        that.selectAction(cm.arrayToCSSValues(that.tempRawValue, that.params['units']), true);
         return that;
     };
 
@@ -198,15 +185,15 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
     classProto.setInputs = function(){
         var that = this;
         cm.forEach(that.inputs, function(item){
-            item['input'].value = that.rawValue[item['i']];
+            item['input'].value = that.tempRawValue[item['i']];
         });
         return that;
     };
 
     classProto.setValues = function(triggerEvents){
         var that = this;
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        that.set(cm.arrayToCSSValues(that.rawValue, that.params['units']), triggerEvents);
+        triggerEvents = cm.isUndefined(triggerEvents) ? true : triggerEvents;
+        that.set(cm.arrayToCSSValues(that.tempRawValue, that.params['units']), triggerEvents);
         return that;
     };
 
@@ -233,5 +220,23 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
             }
         }
         return that;
+    };
+
+    /*** DATA ***/
+
+    classProto.setData = function(){
+        var that = this;
+        that.setInputs();
+        return that;
+    };
+
+    classProto.validateValue = function(value){
+        var that = this;
+        return cm.arrayToCSSValues(cm.CSSValuesToArray(value), that.params['units']);
+    };
+
+    classProto.saveRawValue = function(value){
+        var that = this;
+        that.tempRawValue = cm.CSSValuesToArray(value);
     };
 });

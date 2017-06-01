@@ -18,12 +18,12 @@ cm.define('Com.OldBrowserAlert', {
             'Chrome' : 40,
             'Safari' : 6,
             'Opera' : 26
-        },
-        'langs' : {
-            'title' : 'Thank you for visiting our site!',
-            'descr' : 'It seems that you are using an outdated browser <b>(%browser% %version%)</b>. As a result, we cannot provide you with the best user experience while visiting our site. Please upgrade your <b>%browser%</b> to version <b>%minimum_version%</b> or above, or use another standards based browser such as Firefox, Chrome or Safari, by clicking on the icons below.',
-            'continue' : 'Skip for now'
         }
+    },
+    'strings' : {
+        'title' : 'Thank you for visiting our site!',
+        'descr' : 'It seems that you are using an outdated browser <b>(%browser% %version%)</b>. As a result, we cannot provide you with the best user experience while visiting our site. Please upgrade your <b>%browser%</b> to version <b>%minimum_version%</b> or above, or use another standards based browser such as Firefox, Chrome or Safari, by clicking on the icons below.',
+        'continue' : 'Skip for now'
     }
 },
 function(params){

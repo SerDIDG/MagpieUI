@@ -7,17 +7,17 @@ cm.define('Com.FileStats', {
         'usage' : 0,
         'inline' : false,
         'toggleBox' : true,
-        'langs' : {
-            'stats' : 'Statistics',
-            'mfu' : 'You can upload up to %mfu% files at a time.',
-            'umf' : 'Max file size: %umf%.',
-            'quote' : 'Total storage: %quote%.',
-            'usage' : 'Storage used: %usage%.',
-            'quote_unlimited' : 'Unlimited'
-        },
         'Com.ToggleBox' : {
             'renderStructure' : true
         }
+    },
+    'strings' : {
+        'stats' : 'Statistics',
+        'mfu' : 'You can upload up to %mfu% files at a time.',
+        'umf' : 'Max file size: %umf%.',
+        'quote' : 'Total storage: %quote%.',
+        'usage' : 'Storage used: %usage%.',
+        'quote_unlimited' : 'Unlimited'
     }
 },
 function(params){

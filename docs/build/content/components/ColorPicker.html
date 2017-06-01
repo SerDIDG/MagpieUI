@@ -20,7 +20,29 @@
 
     <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
         <h2>Default:</h2>
-        <input type="text" readonly data-element="Com.ColorPicker" value="transparent">
+        <dl class="pt__field">
+            <dd>
+                <input type="text" readonly data-element="Com.ColorPicker" value="transparent">
+            </dd>
+        </dl>
+        <h2>Show Clear Button:</h2>
+        <dl class="pt__field">
+            <dd>
+                <input type="text" readonly data-element="Com.ColorPicker" value="transparent" data-config='{"showClearButton" : true}'>
+            </dd>
+        </dl>
+        <h2>RGBA Test:</h2>
+        <dl class="pt__field">
+            <dd>
+                <input type="text" readonly data-element="Com.ColorPicker" value="rgba(0, 255, 25, 0.5)">
+            </dd>
+        </dl>
+        <h2>HEX Test:</h2>
+        <dl class="pt__field">
+            <dd>
+                <input type="text" readonly data-element="Com.ColorPicker" value="#103091">
+            </dd>
+        </dl>
     </li>
 </ul>
 

@@ -61,12 +61,12 @@ cm.define('Com.Pagination', {
             'position' : 'absolute',
             'autoOpen' : false,
             'removeOnClose' : true
-        },
-        'langs' : {
-            'prev' : 'Previous',
-            'next' : 'Next',
-            'server_error' : 'An unexpected error has occurred. Please try again later.'
         }
+    },
+    'strings' : {
+        'prev' : 'Previous',
+        'next' : 'Next',
+        'server_error' : 'An unexpected error has occurred. Please try again later.'
     }
 },
 function(params){

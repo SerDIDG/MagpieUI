@@ -20,10 +20,6 @@ cm.define('Com.MultiField', {
         'templateAttribute' : 'name',           // Replace specified items attribute by pattern, example: data-attribute-name="test[%index%]", available variables: %index%
         'duration' : 'cm._config.animDurationShort',
         'theme' : '',
-        'langs' : {
-            'add' : 'Add',
-            'remove' : 'Remove'
-        },
         'icons' : {
             'drag' : 'icon drag linked',
             'add' : 'icon add linked',
@@ -32,8 +28,13 @@ cm.define('Com.MultiField', {
         'Com.Sortable' : {
             'process' : false
         }
+    },
+    'strings' : {
+        'add' : 'Add',
+        'remove' : 'Remove'
     }
-}, function(params){
+},
+function(params){
     var that = this;
     // Call parent class construct
     Com.AbstractController.apply(that, arguments);

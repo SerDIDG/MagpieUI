@@ -9,13 +9,13 @@ cm.define('Com.RepeatTools', {
             {'name' : 'repeat-x', 'icon' : 'svg__repeat-horizontal'},
             {'name' : 'repeat-y', 'icon' : 'svg__repeat-vertical'},
             {'name' : 'repeat', 'icon' : 'svg__repeat-both'}
-        ],
-        'langs' : {
-            'no-repeat' : 'No',
-            'repeat-x' : 'Horizontally',
-            'repeat-y' : 'Vertically',
-            'repeat' : 'Both'
-        }
+        ]
+    },
+    'strings' : {
+        'no-repeat' : 'No',
+        'repeat-x' : 'Horizontally',
+        'repeat-y' : 'Vertically',
+        'repeat' : 'Both'
     }
 },
 function(params){

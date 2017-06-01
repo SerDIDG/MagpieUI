@@ -30,12 +30,12 @@ cm.define('Com.MultipleFileInput', {
             'embedStructure' : 'append',
             'rollover' : true
         },
-        'langs' : {
-            'browse' : 'Browse',
-            'browse_local' : 'Browse Local',
-            'browse_filemanager' : 'Browse File Manager'
-        },
         'Com.FileReader' : {}
+    },
+    'strings' : {
+        'browse' : 'Browse',
+        'browse_local' : 'Browse Local',
+        'browse_filemanager' : 'Browse File Manager'
     }
 },
 function(params){

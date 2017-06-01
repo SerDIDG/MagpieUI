@@ -9,13 +9,13 @@ cm.define('Com.ScaleTools', {
             {'name' : 'contain', 'icon' : 'svg__scale-contain'},
             {'name' : 'cover', 'icon' : 'svg__scale-cover'},
             {'name' : '100% 100%', 'icon' : 'svg__scale-fill'}
-        ],
-        'langs' : {
-            'auto' : 'Auto',
-            'contain' : 'Contain',
-            'cover' : 'Cover',
-            '100% 100%' : 'Fill'
-        }
+        ]
+    },
+    'strings' : {
+        'auto' : 'Auto',
+        'contain' : 'Contain',
+        'cover' : 'Cover',
+        '100% 100%' : 'Fill'
     }
 },
 function(params){

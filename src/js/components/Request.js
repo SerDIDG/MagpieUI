@@ -45,9 +45,6 @@ cm.define('Com.Request', {
         'overlayContainer' : 'document.body',
         'overlayDelay' : 'cm._config.loadDelay',
         'animateDuration' : 'cm._config.animDuration',
-        'langs' : {
-            'server_error' : 'An unexpected error has occurred. Please try again later.'
-        },
         'Com.Overlay' : {
             'autoOpen' : false,
             'removeOnClose' : true,
@@ -56,6 +53,9 @@ cm.define('Com.Request', {
             'position' : 'absolute',
             'theme' : 'light'
         }
+    },
+    'strings' : {
+        'server_error' : 'An unexpected error has occurred. Please try again later.'
     }
 },
 function(params){

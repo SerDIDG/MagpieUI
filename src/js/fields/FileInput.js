@@ -29,14 +29,14 @@ cm.define('Com.FileInput', {
             'max' : 1,
             'rollover' : true
         },
-        'langs' : {
-            'browse' : 'Browse',
-            'browse_local' : 'Browse Local',
-            'browse_filemanager' : 'Browse File Manager',
-            'remove' : 'Remove',
-            'open' : 'Open'
-        },
         'Com.FileReader' : {}
+    },
+    'strings' : {
+        'browse' : 'Browse',
+        'browse_local' : 'Browse Local',
+        'browse_filemanager' : 'Browse File Manager',
+        'remove' : 'Remove',
+        'open' : 'Open'
     }
 },
 function(params){
@@ -61,17 +61,6 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         // Call parent method
         _inherit.prototype.construct.apply(that, arguments);
         return that;
-    };
-
-    classProto.get = function(){
-        var that = this,
-            value;
-        if(that.params['formData']){
-            value = that.value['file'] || that.value['value'] || that.value['value']   || '';
-        }else{
-            value = that.value  || '';
-        }
-        return value;
     };
 
     classProto.initComponentsStart = function(){
@@ -102,25 +91,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         return that;
     };
 
-    classProto.validateValue = function(value){
-        var that = this,
-            item = that.components['validator'].validate(value);
-        return (!cm.isEmpty(item['value']) || !cm.isEmpty(item['file'])) ? item : '';
-    };
-
-    classProto.saveValue = function(value){
-        var that = this;
-        that.previousValue = that.value;
-        that.value = value;
-        if(that.params['setHiddenInput']){
-            if(!cm.isEmpty(value)){
-                that.nodes['hidden'].value = JSON.stringify(value);
-            }else{
-                that.nodes['hidden'].value = ''
-            }
-        }
-        return that;
-    };
+    /*** VIEW MODEL ***/
 
     classProto.renderViewModel = function(){
         var that = this;
@@ -221,6 +192,50 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         return nodes['container'];
     };
 
+    /* *** PROCESS FILES *** */
+
+    classProto.browseAction = function(e){
+        var that = this,
+            file = e.target.files[0];
+        cm.preventDefault(e);
+        // Read File
+        that.processFiles(file);
+        return that;
+    };
+
+    classProto.processFiles = function(data){
+        var that = this;
+        if(cm.isFile(data)){
+            that.components['reader'].read(data);
+        }else if(cm.isArray(data)){
+            cm.forEach(data, function(file){
+                that.processFiles(file);
+            })
+        }else if(!cm.isEmpty(data)){
+            that.set(data, true);
+        }
+        return that;
+    };
+
+    /* *** DATA *** */
+
+    classProto.get = function(){
+        var that = this,
+            value;
+        if(that.params['formData']){
+            value = that.value['file'] || that.value['value'] || that.value['value']   || '';
+        }else{
+            value = that.value  || '';
+        }
+        return value;
+    };
+
+    classProto.validateValue = function(value){
+        var that = this,
+            item = that.components['validator'].validate(value);
+        return (!cm.isEmpty(item['value']) || !cm.isEmpty(item['file'])) ? item : '';
+    };
+
     classProto.setData = function(){
         var that = this,
             url;
@@ -244,31 +259,6 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
             cm.addClass(that.nodes['content']['browseFileUploader'], 'is-hidden');
             cm.removeClass(that.nodes['content']['clear'], 'is-hidden');
             cm.removeClass(that.nodes['content']['label'], 'is-hidden');
-        }
-        return that;
-    };
-
-    /* *** PROCESS FILES *** */
-
-    classProto.browseAction = function(e){
-        var that = this,
-            file = e.target.files[0];
-        cm.preventDefault(e);
-        // Read File
-        that.processFiles(file);
-        return that;
-    };
-
-    classProto.processFiles = function(data){
-        var that = this;
-        if(cm.isFile(data)){
-            that.components['reader'].read(data);
-        }else if(cm.isArray(data)){
-            cm.forEach(data, function(file){
-                that.processFiles(file);
-            })
-        }else if(!cm.isEmpty(data)){
-            that.set(data, true);
         }
         return that;
     };

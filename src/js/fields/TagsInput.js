@@ -32,14 +32,14 @@ cm.define('Com.TagsInput', {
             'add' : 'icon default linked',
             'remove' : 'icon default linked'
         },
-        'langs' : {
-            'tags' : 'Tags',
-            'add' : 'Add',
-            'remove' : 'Remove'
-        },
         'Com.Autocomplete' : {
             'clearOnEmpty' : false
         }
+    },
+    'strings' : {
+        'tags' : 'Tags',
+        'add' : 'Add',
+        'remove' : 'Remove'
     }
 },
 function(params){
@@ -303,7 +303,7 @@ function(params){
     };
 
     that.get = function(){
-        return that.value || null;
+        return !cm.isEmpty(that.value) ? that.value : '';
     };
 
     that.set = function(value){

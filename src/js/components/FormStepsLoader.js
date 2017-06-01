@@ -35,14 +35,14 @@ cm.define('Com.FormStepsLoader', {
                 'response' : '%response%'
             }
         },
-        'langs' : {
-            'server_error' : 'An unexpected error has occurred. Please try again later.'
-        },
         'Com.Overlay' : {
             'position' : 'absolute',
             'autoOpen' : false,
             'removeOnClose' : true
         }
+    },
+    'strings' : {
+        'server_error' : 'An unexpected error has occurred. Please try again later.'
     }
 },
 function(params){

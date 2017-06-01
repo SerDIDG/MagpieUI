@@ -293,6 +293,23 @@
         }
     }
 
+    &.is-loading {
+        > .inner {
+            > .descr {
+                opacity: 0;
+                .mx__transition(opacity, @CmUI-Transition-Duration);
+            }
+        }
+    }
+
+    &.is-loaded {
+        > .inner {
+            > .descr {
+                opacity: 1;
+            }
+        }
+    }
+
     &.has-border {
         > .inner {
             border: @CmBorder-Box;

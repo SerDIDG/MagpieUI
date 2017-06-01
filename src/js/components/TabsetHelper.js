@@ -45,10 +45,10 @@ cm.define('Com.TabsetHelper', {
             'position' : 'absolute',
             'autoOpen' : false,
             'removeOnClose' : true
-        },
-        'langs' : {
-            'server_error' : 'An unexpected error has occurred. Please try again later.'
         }
+    },
+    'strings' : {
+        'server_error' : 'An unexpected error has occurred. Please try again later.'
     }
 },
 function(params){

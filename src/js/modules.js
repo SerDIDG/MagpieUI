@@ -164,49 +164,57 @@ Mod['Params'] = {
     },
     'setParams' : function(params, replace){
         var that = this;
-        replace = typeof replace == 'undefined'? false : replace;
+        replace = cm.isUndefined(replace) ? false : replace;
         that.params = cm.merge(replace ? that._raw.params : that.params, params);
         that._update = cm.clone(that._update);
         that._update.params = cm.merge(that._update.params, that.params);
         // Validate params
         cm.forEach(that.params, function(item, key){
-            switch(item){
-                case 'document.window':
-                    that.params[key] = window;
-                    break;
-
-                case 'document.html':
-                    if(cm.getDocumentHtml()){
-                        that.params[key] = cm.getDocumentHtml();
-                    }
-                    break;
-
-                case 'document.body':
-                    if(document.body){
-                        that.params[key] = document.body;
-                    }
-                    break;
-
-                case 'top.document.body':
-                    if(window.top.document.body){
-                        that.params[key] = window.top.document.body;
-                    }
-                    break;
-
-                case 'document.head':
-                    if(cm.getDocumentHead()){
-                        that.params[key] = cm.getDocumentHead();
-                    }
+            switch(key){
+                case 'langs':
+                    cm.isFunction(that.setLangs) && that.setLangs(item);
                     break;
 
                 default:
-                    if(/^cm._config./i.test(item)){
-                        that.params[key] = cm._config[item.replace('cm._config.', '')];
+                    switch(item){
+                        case 'document.window':
+                            that.params[key] = window;
+                            break;
+
+                        case 'document.html':
+                            if(cm.getDocumentHtml()){
+                                that.params[key] = cm.getDocumentHtml();
+                            }
+                            break;
+
+                        case 'document.body':
+                            if(document.body){
+                                that.params[key] = document.body;
+                            }
+                            break;
+
+                        case 'top.document.body':
+                            if(window.top.document.body){
+                                that.params[key] = window.top.document.body;
+                            }
+                            break;
+
+                        case 'document.head':
+                            if(cm.getDocumentHead()){
+                                that.params[key] = cm.getDocumentHead();
+                            }
+                            break;
+
+                        default:
+                            if(/^cm._config./i.test(item)){
+                                that.params[key] = cm._config[item.replace('cm._config.', '')];
+                            }
+                            if(/^@LESS./i.test(item)){
+                                that.params[key] = window.LESS[item.replace('@LESS.', '')];
+                            }
+                            break;
                     }
-                    if(/^@LESS./i.test(item)){
-                        that.params[key] = window.LESS[item.replace('@LESS.', '')];
-                    }
-                    break;
+                    break
             }
         });
         return that;
@@ -298,10 +306,12 @@ Mod['Events'] = {
         return that;
     },
     'triggerEvent' : function(event, params){
-        var that = this;
+        var that = this,
+            args = cm.clone(arguments);
+        args[0] = that;
         if(that.events[event]){
             cm.forEach(that.events[event], function(item){
-                item(that, params);
+                item.apply(that, args);
             });
         }else{
             cm.errorLog({
@@ -335,156 +345,53 @@ Mod['Langs'] = {
     },
     '_construct' : function(){
         var that = this;
+        if(!that.build['strings']){
+            that.build['strings'] = {};
+        }
         if(!that.build['params']['langs']){
             that.build['params']['langs'] = {};
-        }
-        if(!that.build._update['params']['langs']){
-            that.build._update['params']['langs'] = {};
-        }
-        if(that.build._inherit){
-            that.build['params']['langs'] = cm.merge(
-                that.build._inherit.prototype['params']['langs'],
-                that.build['params']['langs']
-            );
         }
     },
     '_render' : function(){
         var that = this;
-        if(that._inherit){
-            that.params['langs'] = cm.merge(
-                that._inherit.prototype['params']['langs'],
-                that.params['langs']
-            );
-        }
+        that.strings = cm.merge(that.strings, that.params['langs']);
     },
     'lang' : function(str, vars){
         var that = this,
             langStr;
-        if(typeof str == 'undefined'){
-            return that.params['langs'];
-        }
-        if(!str || cm.isEmpty(str)){
+        if(cm.isUndefined(str) || cm.isEmpty(str)){
             return '';
         }
-        // Get language string from path
+        // Try to get string from current controller params array
         langStr = cm.objectPath(str, that.params['langs']);
-        // Process variables
-        if(typeof langStr == 'undefined'){
-            langStr = str;
-        }else if(cm.isEmpty(langStr)){
-            langStr = '';
-        }else{
-            langStr = cm.strReplace(langStr, vars);
+        // Try to get string from current controller strings array
+        if(cm.isUndefined(langStr)){
+            langStr = cm.objectPath(str, that.strings);
         }
+        // Try to get string from parent controller
+        if(cm.isUndefined(langStr) && that._inherit){
+            langStr = that._inherit.prototype.lang(str);
+        }
+        // We tried everything we could
+        if(cm.isUndefined(langStr)){
+            langStr = str;
+        }
+        // Process variable
+        langStr = cm.strReplace(langStr, vars);
         return langStr;
     },
-    'updateLangs' : function(){
-        var that = this;
-        if(cm.isFunction(that)){
-            that.prototype.params['langs'] = cm.merge(that.prototype._raw.params['langs'], that.prototype._update.params['langs']);
-            if(that.prototype._inherit){
-                that.prototype._inherit.prototype.updateLangs.call(that.prototype._inherit);
-                that.prototype.params['langs'] = cm.merge(that.prototype._inherit.prototype.params['langs'], that.prototype.params['langs']);
-            }
-        }else{
-            that.params['langs'] = cm.merge(that._raw.params['langs'], that._update.params['langs']);
-            if(that._inherit){
-                that._inherit.prototype.updateLangs.call(that._inherit);
-                that.params['langs'] = cm.merge(that._inherit.prototype.params['langs'], that.params['langs']);
-            }
-        }
-        return that;
+    'langObject' : function(str){
+        var that = this,
+            o = that.lang(str);
+        return cm.isObject(o) ? o : {};
     },
     'setLangs' : function(o){
         var that = this;
         if(cm.isObject(o)){
             if(cm.isFunction(that)){
-                that.prototype.updateLangs.call(that.prototype);
-                that.prototype.params['langs'] = cm.merge(that.prototype.params['langs'], o);
-                that.prototype._update.params['langs'] = cm.merge(that.prototype._update.params['langs'], o);
+                that.prototype.strings = cm.merge(that.prototype.strings, o);
             }else{
-                that.updateLangs();
-                that.params['langs'] = cm.merge(that.params['langs'], o);
-                that._update = cm.clone(that._update);
-                that._update.params['langs'] = cm.merge(that._update.params['langs'], o);
-            }
-        }
-        return that;
-    }
-};
-
-Mod['__Langs__'] = {
-    '_config' : {
-        'extend' : true,
-        'predefine' : false,
-        'require' : ['Extend']
-    },
-    '_construct' : function(){
-        var that = this;
-        if(!that.build['params']['langs']){
-            that.build['params']['langs'] = {};
-        }
-        if(!that.build._update['params']['langs']){
-            that.build._update['params']['langs'] = {};
-        }
-        if(that.build._inherit){
-            that.build['params']['langs'] = cm.merge(
-                that.build._inherit.prototype['params']['langs'],
-                that.build['params']['langs']
-            );
-        }
-    },
-    'lang' : function(str, vars){
-        var that = this,
-            langStr;
-        if(typeof str == 'undefined'){
-            return that.params['langs'];
-        }
-        if(!str || cm.isEmpty(str)){
-            return '';
-        }
-        // Get language string from path
-        langStr = cm.objectPath(str, that.params['langs']);
-        // Process variables
-        if(typeof langStr == 'undefined'){
-
-            langStr = str;
-        }else if(cm.isEmpty(langStr)){
-            langStr = '';
-        }else{
-            langStr = cm.strReplace(langStr, vars);
-        }
-        return langStr;
-    },
-    'updateLangs' : function(){
-        var that = this;
-        if(cm.isFunction(that)){
-            that.prototype.params['langs'] = cm.merge(that.prototype._raw.params['langs'], that.prototype._update.params['langs']);
-            if(that.prototype._inherit){
-                that.prototype._inherit.prototype.updateLangs.call(that.prototype._inherit);
-                that.prototype.params['langs'] = cm.merge(that.prototype._inherit.prototype.params['langs'], that.prototype.params['langs']);
-            }
-        }else{
-            that.params['langs'] = cm.merge(that._raw.params['langs'], that._update.params['langs']);
-            if(that._inherit){
-                that._inherit.prototype.updateLangs.call(that._inherit);
-                that.params['langs'] = cm.merge(that._inherit.prototype.params['langs'], that.params['langs']);
-            }
-        }
-        return that;
-    },
-    'setLangs' : function(o){
-        var that = this;
-        if(cm.isObject(o)){
-            if(cm.isFunction(that)){
-                that.prototype.updateLangs.call(that.prototype);
-                that.prototype.params['langs'] = cm.merge(that.prototype.params['langs'], o);
-                that.prototype._update.params['langs'] = cm.merge(that.prototype._update.params['langs'], o);
-            }else{
-                that.updateLangs();
-                that.params['langs'] = cm.merge(that.params['langs'], o);
-                that._update = cm.clone(that._update);
-                that._update.params['langs'] = cm.merge(that._update.params['langs'], o);
+                that.strings = cm.merge(that.strings, o);
             }
         }
         return that;
@@ -557,10 +464,10 @@ Mod['DataNodes'] = {
     'getDataNodes' : function(container, dataMarker, className){
         var that = this,
             sourceNodes = {};
-        container = typeof container == 'undefined'? document.body : container;
+        container = typeof container === 'undefined'? document.body : container;
         if(container){
-            dataMarker = typeof dataMarker == 'undefined'? that.params['nodesDataMarker'] : dataMarker;
-            className = typeof className == 'undefined'? that.params['nodesMarker'] : className;
+            dataMarker = typeof dataMarker === 'undefined'? that.params['nodesDataMarker'] : dataMarker;
+            className = typeof className === 'undefined'? that.params['nodesMarker'] : className;
             if(className){
                 sourceNodes = cm.getNodes(container, dataMarker)[className] || {};
             }else{
@@ -574,9 +481,9 @@ Mod['DataNodes'] = {
     'getDataNodesObject' : function(container, dataMarker, className){
         var that = this,
             sourceNodes = {};
-        container = typeof container == 'undefined'? document.body : container;
-        dataMarker = typeof dataMarker == 'undefined'? that.params['nodesDataMarker'] : dataMarker;
-        className = typeof className == 'undefined'? that.params['nodesMarker'] : className;
+        container = typeof container === 'undefined'? document.body : container;
+        dataMarker = typeof dataMarker === 'undefined'? that.params['nodesDataMarker'] : dataMarker;
+        className = typeof className === 'undefined'? that.params['nodesMarker'] : className;
         if(className){
             sourceNodes = cm.getNodes(container, dataMarker)[className] || {};
         }else{
@@ -710,6 +617,17 @@ Mod['Callbacks'] = {
         }
         that.build['callbacks'] = {};
         that.build['_callbacks'] = {};
+        if(that.build._inherit){
+            that.build['params']['callbacks'] = cm.extend(that.build._inherit.prototype['params']['callbacks'], that.build['params']['callbacks']);
+            that.build['callbacks'] = cm.extend(that.build._inherit.prototype['callbacks'], that.build['callbacks']);
+        }
+    },
+    '_render' : function(){
+        var that = this;
+        if(that._inherit){
+            that.params['callbacks'] = cm.merge(that._inherit.prototype['params']['callbacks'], that.params['callbacks']);
+            that.callbacks = cm.extend(that._inherit.prototype['callbacks'], that.callbacks);
+        }
     },
     'callbacksProcess' : function(){
         var that = this;

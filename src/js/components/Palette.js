@@ -8,7 +8,6 @@ cm.define('Com.Palette', {
         'Stack'
     ],
     'require' : [
-        'Com.Draggable',
         'tinycolor'
     ],
     'events' : [
@@ -27,21 +26,29 @@ cm.define('Com.Palette', {
         'value' : 'transparent',
         'defaultValue' : 'rgb(255, 255, 255)',
         'setOnInit' : true,
-        'langs' : {
-            'new' : 'new',
-            'previous' : 'previous',
-            'select' : 'Select',
-            'hue' : 'Hue',
-            'opacity' : 'Opacity',
-            'hex' : 'HEX'
+        'Com.TintRange' : {
+            'direction' : 'vertical',
+            'theme' : 'theme--arrows',
+            'setHiddenInput' : false
+        },
+        'Com.OpacityRange' : {
+            'direction' : 'vertical',
+            'theme' : 'theme--arrows',
+            'setHiddenInput' : false
         }
+    },
+    'strings' : {
+        'new' : 'new',
+        'previous' : 'previous',
+        'select' : 'Select',
+        'hue' : 'Hue',
+        'opacity' : 'Opacity',
+        'hex' : 'HEX'
     }
 },
 function(params){
     var that = this,
-        rangeContext,
-        paletteContext,
-        opacityContext;
+        paletteContext;
 
     that.nodes = {};
     that.components = {};
@@ -72,16 +79,10 @@ function(params){
                     )
                 ),
                 cm.node('div', {'class' : 'b-range', 'title' : that.lang('hue')},
-                    that.nodes['rangeZone'] = cm.node('div', {'class' : 'inner'},
-                        that.nodes['rangeDrag'] = cm.node('div', {'class' : 'drag'}),
-                        that.nodes['rangeCanvas'] = cm.node('canvas', {'width' : '100%', 'height' : '100%'})
-                    )
+                    that.nodes['tintZone'] = cm.node('div', {'class' : 'inner'})
                 ),
                 cm.node('div', {'class' : 'b-range b-opacity', 'title' : that.lang('opacity')},
-                    that.nodes['opacityZone'] = cm.node('div', {'class' : 'inner'},
-                        that.nodes['opacityDrag'] = cm.node('div', {'class' : 'drag'}),
-                        that.nodes['opacityCanvas'] = cm.node('canvas', {'width' : '100%', 'height' : '100%'})
-                    )
+                    that.nodes['opacityZone'] = cm.node('div', {'class' : 'inner'})
                 ),
                 cm.node('div', {'class' : 'b-stuff'},
                     cm.node('div', {'class' : 'inner'},
@@ -107,10 +108,6 @@ function(params){
         );
         // Render canvas
         paletteContext = that.nodes['paletteCanvas'].getContext('2d');
-        rangeContext = that.nodes['rangeCanvas'].getContext('2d');
-        opacityContext = that.nodes['opacityCanvas'].getContext('2d');
-        renderRangeCanvas();
-        //renderOpacityCanvas();
         // Add events
         cm.addEvent(that.nodes['inputHEX'], 'input', inputHEXHandler);
         cm.addEvent(that.nodes['inputHEX'], 'keypress', inputHEXKeypressHandler);
@@ -129,66 +126,46 @@ function(params){
                     var dimensions = my.getDimensions();
                     that.value['v'] = cm.toFixed((100 - (100 / dimensions['limiter']['absoluteHeight']) * data['top']) / 100, 2);
                     that.value['s'] = cm.toFixed(((100 / dimensions['limiter']['absoluteWidth']) * data['left']) / 100, 2);
-                    if(that.value['a'] == 0){
+                    if(that.value['a'] === 0){
                         that.value['a'] = 1;
-                        setOpacityDrag();
                     }
-                    renderOpacityCanvas();
                     setColor();
+                    setOpacityDrag();
                 }
             }
         });
-        that.components['rangeDrag'] = new Com.Draggable({
-            'target' : that.nodes['rangeZone'],
-            'node' : that.nodes['rangeDrag'],
-            'limiter' : that.nodes['rangeZone'],
-            'direction' : 'vertical',
-            'events' : {
-                'onSelect' : function(my, data){
-                    var dimensions = my.getDimensions();
-                    that.value['h'] = Math.floor(360 - (360 / 100) * ((100 / dimensions['limiter']['absoluteHeight']) * data['top']));
-                    if(that.value['a'] == 0){
-                        that.value['a'] = 1;
-                        setOpacityDrag();
-                    }
-                    renderPaletteCanvas();
-                    renderOpacityCanvas();
-                    setColor();
+        // Tint Range
+        cm.getConstructor('Com.TintRange', function(classConstructor, className){
+            that.components['tint'] = new classConstructor(
+                cm.merge(that.params[className], {
+                    'container' : that.nodes['tintZone']
+                })
+            );
+            that.components['tint'].addEvent('onSelect', function(my, data){
+                that.value['h'] = data;
+                if(that.value['a'] === 0){
+                    that.value['a'] = 1;
                 }
-            }
+                setColor();
+                setOpacityDrag();
+                renderPaletteCanvas();
+            });
         });
-        that.components['opacityDrag'] = new Com.Draggable({
-            'target' : that.nodes['opacityZone'],
-            'node' : that.nodes['opacityDrag'],
-            'limiter' : that.nodes['opacityZone'],
-            'direction' : 'vertical',
-            'events' : {
-                'onSelect' : function(my, data){
-                    var dimensions = my.getDimensions();
-                    that.value['a'] = cm.toFixed((100 - (100 / dimensions['limiter']['absoluteHeight']) * data['top']) / 100, 2);
-                    setColor();
-                }
-            }
+        // Opacity Range
+        cm.getConstructor('Com.OpacityRange', function(classConstructor, className){
+            that.components['opacity'] = new classConstructor(
+                cm.merge(that.params[className], {
+                    'container' : that.nodes['opacityZone']
+                })
+            );
+            that.components['opacity'].addEvent('onSelect', function(my, data){
+                that.value['a'] = cm.toFixed(data / 100, 2);
+                setColor();
+            });
         });
     };
 
     /* *** COLORS *** */
-
-    var setRangeDrag = function(){
-        var dimensions = that.components['rangeDrag'].getDimensions(),
-            position = {
-                'left' : 0,
-                'top' : 0
-            };
-        if(that.value['h'] == 0){
-            position['top'] = 0;
-        }else if(that.value['h'] == 360){
-            position['top'] = dimensions['limiter']['absoluteHeight'];
-        }else{
-            position['top'] = dimensions['limiter']['absoluteHeight'] - (dimensions['limiter']['absoluteHeight'] / 100) * ((100 / 360) * that.value['h']);
-        }
-        that.components['rangeDrag'].setPosition(position, false);
-    };
 
     var setPaletteDrag = function(){
         var dimensions = that.components['paletteDrag'].getDimensions(),
@@ -199,13 +176,18 @@ function(params){
         that.components['paletteDrag'].setPosition(position, false);
     };
 
+    var setTintRange = function(){
+        var value = cm.toFixed(that.value['h'], 0);
+        that.components['tint'].set(value, false);
+        that.components['tint'].redraw();
+    };
+
     var setOpacityDrag = function(){
-        var dimensions = that.components['opacityDrag'].getDimensions(),
-            position = {
-                'left' : 0,
-                'top' : dimensions['limiter']['absoluteHeight'] - (dimensions['limiter']['absoluteHeight'] / 100) * (that.value['a'] * 100)
-            };
-        that.components['opacityDrag'].setPosition(position, false);
+        var color = that.get();
+        var value = cm.toFixed(that.value['a'] * 100, 0);
+        that.components['opacity'].setColor(color);
+        that.components['opacity'].set(value, false);
+        that.components['opacity'].redraw();
     };
 
     var inputHEXHandler = function(){
@@ -302,19 +284,6 @@ function(params){
 
     /* *** CANVAS *** */
 
-    var renderRangeCanvas = function(){
-        var gradient = rangeContext.createLinearGradient(0, 0, 0, 100);
-        gradient.addColorStop(0, 'rgb(255, 0, 0)');
-        gradient.addColorStop(1/6, 'rgb(255, 0, 255)');
-        gradient.addColorStop(2/6, 'rgb(0, 0, 255)');
-        gradient.addColorStop(3/6, 'rgb(0, 255, 255)');
-        gradient.addColorStop(4/6, 'rgb(0, 255, 0)');
-        gradient.addColorStop(5/6, 'rgb(255, 255, 0)');
-        gradient.addColorStop(1, 'rgb(255, 0, 0)');
-        rangeContext.fillStyle = gradient;
-        rangeContext.fillRect(0, 0, 100, 100);
-    };
-
     var renderPaletteCanvas = function(){
         var gradient;
         // Fill color
@@ -335,24 +304,11 @@ function(params){
         paletteContext.fillRect(0, 0, 100, 100);
     };
 
-    var renderOpacityCanvas = function(){
-        opacityContext.clearRect(0, 0, 100, 100);
-        var gradient = opacityContext.createLinearGradient(0, 0, 0, 100),
-            startColor = cm.clone(that.value),
-            endColor = cm.clone(that.value);
-        startColor['a'] = 1;
-        endColor['a'] = 0;
-        opacityContext.fillStyle = gradient;
-        gradient.addColorStop(0, tinycolor(startColor).toRgbString());
-        gradient.addColorStop(1, tinycolor(endColor).toRgbString());
-        opacityContext.fillRect(0, 0, 100, 100);
-    };
-
     /* ******* MAIN ******* */
 
     that.set = function(color, triggerEvent, params){
-        triggerEvent = typeof triggerEvent == 'undefined'? true : triggerEvent;
-        params = typeof params == 'undefined' ? {} : params;
+        triggerEvent = cm.isUndefined(triggerEvent) ? true : triggerEvent;
+        params = cm.isUndefined(triggerEvent) ? {} : params;
         // Render new color
         set(color, triggerEvent, params);
         // Render previous color
@@ -397,18 +353,17 @@ function(params){
     };
 
     that.redraw = function(triggerEvent, params){
-        triggerEvent = typeof triggerEvent == 'undefined'? true : triggerEvent;
-        params = typeof params == 'undefined'? {} : params;
+        triggerEvent = cm.isUndefined(triggerEvent) ? true : triggerEvent;
+        params = cm.isUndefined(triggerEvent) ? {} : params;
         params = cm.merge({
             'setInput' : true
         }, params);
         setOpacityDrag();
-        setRangeDrag();
+        setTintRange();
         setPaletteDrag();
         setPreviewNew();
         setPaletteDragColor();
         renderPaletteCanvas();
-        renderOpacityCanvas();
         if(params['setInput']){
             setPreviewInputs();
         }

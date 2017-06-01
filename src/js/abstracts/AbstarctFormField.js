@@ -3,7 +3,12 @@ cm.define('Com.AbstractFormField', {
     'events' : [
         'onChange',
         'onSelect',
-        'onReset'
+        'onReset',
+        'onRequestStart',
+        'onRequestEnd',
+        'onRequestSuccess',
+        'onRequestError',
+        'onRequestAbort'
     ],
     'params' : {
         'renderStructure' : true,
@@ -25,6 +30,12 @@ cm.define('Com.AbstractFormField', {
         'constructorParams' : {
             'formData' : true
         },
+        'preload' : false,
+        'responseKey' : 'data',
+        'ajax' : {
+            'type' : 'json',
+            'method' : 'get'
+        },
         'Com.HelpBubble' : {
             'renderStructure' : true
         }
@@ -43,11 +54,24 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
 
     classProto.onConstructStart = function(){
         var that = this;
+        that.isAjax = false;
+        that.isProcess = false;
+        that.isPreloaded = false;
         that.nodeTagName = null;
+    };
+
+    classProto.onConstructEnd = function(){
+        var that = this;
+        if(that.isAjax){
+            that.ajaxHandler = that.callbacks.request(that, cm.clone(that.params['ajax']));
+        }
     };
 
     classProto.onDestruct = function(){
         var that = this;
+        if(that.isAjax){
+            that.ajaxHandler.abort();
+        }
         that.controller && cm.isFunction(that.controller.destruct) && that.controller.destruct();
     };
 
@@ -59,10 +83,14 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.params['constructorParams']['value'] = !cm.isEmpty(that.params['dataValue']) ? that.params['dataValue'] : that.params['value'];
         that.params['constructorParams']['defaultValue'] = that.params['defaultValue'];
         that.params['constructorParams']['maxlength'] = that.params['maxlength'];
+        that.params['constructorParams']['ajax'] = that.params['ajax'];
         that.params['Com.HelpBubble']['content'] = that.params['help'];
         that.params['Com.HelpBubble']['name'] = that.params['name'];
         that.components['form'] = that.params['form'];
         that.nodeTagName = that.params['node'].tagName.toLowerCase();
+        if(that.params['preload'] && !cm.isEmpty(that.params['ajax']) && !cm.isEmpty(that.params['ajax']['url'])){
+            that.isAjax = true;
+        }
     };
 
     /******* VIEW - MODEL *******/
@@ -108,19 +136,25 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         );
         // Options
         if(!cm.isEmpty(that.params['options'])){
-            switch(that.nodeTagName){
-                case 'select' :
-                    cm.forEach(that.params['options'], function(item){
-                        cm.appendChild(
-                            cm.node('option', {'value' : item['value'], 'innerHTML' : item['text']}),
-                            nodes['input']
-                        );
-                    });
-                    break;
-            }
+            that.renderOptions(that.params['options']);
         }
         // Export
         return nodes['container'];
+    };
+
+    classProto.renderOptions = function(options){
+        var that = this;
+        switch(that.nodeTagName){
+            case 'select' :
+                cm.forEach(options, function(item){
+                    cm.appendChild(
+                        cm.node('option', {'value' : item['value'], 'innerHTML' : item['text']}),
+                        that.nodes['content']['input']
+                    );
+                });
+                cm.setSelect(that.nodes['content']['input'], that.params['value']);
+                break;
+        }
     };
 
     classProto.setAttributes = function(){
@@ -171,7 +205,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             });
         }
         // Controller component
-        if(that.params['constructor']){
+        if(!that.isAjax || that.isPreloaded){
             that.renderController();
         }
         return that;
@@ -179,16 +213,18 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
 
     classProto.renderController = function(){
         var that = this;
-        cm.getConstructor(that.params['constructor'], function(classObject){
-            that.components['controller'] = new classObject(
-                cm.merge(that.params['constructorParams'], {
-                    'node' : that.nodes['content']['input'],
-                    'form' : that.components['form'],
-                    'formField' : that
-                })
-            );
-            that.renderControllerEvents();
-        });
+        if(that.params['constructor']){
+            cm.getConstructor(that.params['constructor'], function(classObject){
+                that.components['controller'] = new classObject(
+                    cm.merge(that.params['constructorParams'], {
+                        'node' : that.nodes['content']['input'],
+                        'form' : that.components['form'],
+                        'formField' : that
+                    })
+                );
+                that.renderControllerEvents();
+            });
+        }
     };
 
     classProto.renderControllerEvents = function(){
@@ -269,5 +305,110 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.getContainer = function(){
         var that = this;
         return that.nodes['container'];
+    };
+
+    /******* CALLBACKS *******/
+
+    classProto.callbacks.prepare = function(that, config){
+        // Prepare
+        config['url'] = cm.strReplace(config['url'], {
+            '%baseUrl%' : cm._baseUrl
+        });
+        config['params'] = cm.objectReplace(config['params'], {
+            '%baseUrl%' : cm._baseUrl
+        });
+        return config;
+    };
+
+    classProto.callbacks.request = function(that, config){
+        config = that.callbacks.prepare(that, config);
+        // Return ajax handler (XMLHttpRequest) to providing abort method.
+        return cm.ajax(
+            cm.merge(config, {
+                'onStart' : function(){
+                    that.callbacks.start(that, config);
+                },
+                'onSuccess' : function(response){
+                    that.callbacks.response(that, config, response);
+                },
+                'onError' : function(){
+                    that.callbacks.error(that, config);
+                },
+                'onAbort' : function(){
+                    that.callbacks.abort(that, config);
+                },
+                'onEnd' : function(response){
+                    that.callbacks.end(that, config, response);
+                }
+            })
+        );
+    };
+
+    classProto.callbacks.start = function(that, config){
+        that.isProcess = true;
+        that.triggerEvent('onRequestStart');
+    };
+
+    classProto.callbacks.end = function(that, config){
+        that.isProcess = false;
+        that.isPreloaded = true;
+        that.renderController();
+        that.triggerEvent('onRequestEnd');
+    };
+
+    classProto.callbacks.response = function(that, config, response){
+        if(!cm.isEmpty(response)){
+            response = that.callbacks.filter(that, config, response);
+        }
+        if(!cm.isEmpty(response)){
+            that.callbacks.success(that, that.callbacks.convert(that, response));
+        }else{
+            that.callbacks.error(that, config);
+        }
+    };
+
+    /*** DATA ***/
+
+    classProto.callbacks.filter = function(that, config, response){
+        var data = [],
+            dataItem = cm.objectPath(that.params['responseKey'], response);
+        if(dataItem && !cm.isEmpty(dataItem)){
+            data = dataItem;
+        }
+        return data;
+    };
+
+    classProto.callbacks.convert = function(that, data){
+        return data.map(function(item){
+            return that.callbacks.convertItem(that, item);
+        });
+    };
+
+    classProto.callbacks.convertItem = function(that, item){
+        if(cm.isEmpty(item)){
+            return null
+        }else if(!cm.isObject(item)){
+            return {'text' : item, 'value' : item};
+        }else{
+            if(cm.isUndefined(item['value'])){
+                item['value'] = item['text']
+            }
+            return item;
+        }
+    };
+
+    /*** EVENTS ***/
+
+    classProto.callbacks.success = function(that, response){
+        that.renderOptions(response);
+        that.triggerEvent('onRequestSuccess', response);
+    };
+
+    classProto.callbacks.error = function(that, config){
+        that.triggerEvent('onRequestError');
+    };
+
+    classProto.callbacks.abort = function(that, config){
+        that.triggerEvent('onRequestAbort');
     };
 });

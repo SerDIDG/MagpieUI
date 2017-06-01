@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.26.0 (2017-04-18 17:58) ************ */
+/*! ************ MagpieUI v3.28.7 (2017-06-01 19:44) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.5.0
@@ -3433,8 +3433,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.26.0');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.26.0') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.26.0') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.26.0') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.26.0#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.28.7');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.28.7') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.28.7') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.28.7') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.28.7#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -5024,6 +5024,7 @@ tr {
 /* ******* COMMON: INPUTS ******* */
 .input,
 input[type="text"],
+input[type="search"],
 input[type="email"],
 input[type="number"],
 input[type="time"],
@@ -5051,6 +5052,7 @@ select {
 }
 .input:hover,
 input[type="text"]:hover,
+input[type="search"]:hover,
 input[type="email"]:hover,
 input[type="number"]:hover,
 input[type="time"]:hover,
@@ -5064,6 +5066,8 @@ select:hover {
 .input:focus,
 input[type="text"].input-focus,
 input[type="text"]:focus,
+input[type="search"].input-focus,
+input[type="search"]:focus,
 input[type="email"].input-focus,
 input[type="email"]:focus,
 input[type="number"].input-focus,
@@ -5083,6 +5087,8 @@ select:focus {
 .input[disabled],
 input[type="text"].input-disabled,
 input[type="text"][disabled],
+input[type="search"].input-disabled,
+input[type="search"][disabled],
 input[type="email"].input-disabled,
 input[type="email"][disabled],
 input[type="number"].input-disabled,
@@ -5100,6 +5106,7 @@ select[disabled] {
 }
 .input.input-dark,
 input[type="text"].input-dark,
+input[type="search"].input-dark,
 input[type="email"].input-dark,
 input[type="number"].input-dark,
 input[type="time"].input-dark,
@@ -5111,6 +5118,7 @@ select.input-dark {
 }
 .input.input-light,
 input[type="text"].input-light,
+input[type="search"].input-light,
 input[type="email"].input-light,
 input[type="number"].input-light,
 input[type="time"].input-light,
@@ -5121,6 +5129,7 @@ select.input-light {
 }
 .input.input-transparent,
 input[type="text"].input-transparent,
+input[type="search"].input-transparent,
 input[type="email"].input-transparent,
 input[type="number"].input-transparent,
 input[type="time"].input-transparent,
@@ -5133,6 +5142,7 @@ select.input-transparent {
 }
 .input.is-borderless,
 input[type="text"].is-borderless,
+input[type="search"].is-borderless,
 input[type="email"].is-borderless,
 input[type="number"].is-borderless,
 input[type="time"].is-borderless,
@@ -5145,6 +5155,7 @@ select.is-borderless {
 }
 .input.input--large,
 input[type="text"].input--large,
+input[type="search"].input--large,
 input[type="email"].input--large,
 input[type="number"].input--large,
 input[type="time"].input--large,
@@ -5157,6 +5168,7 @@ select.input--large {
 }
 .input.input--large.is-borderless,
 input[type="text"].input--large.is-borderless,
+input[type="search"].input--large.is-borderless,
 input[type="email"].input--large.is-borderless,
 input[type="number"].input--large.is-borderless,
 input[type="time"].input--large.is-borderless,
@@ -5169,6 +5181,7 @@ select.input--large.is-borderless {
 }
 .input.input--xlarge,
 input[type="text"].input--xlarge,
+input[type="search"].input--xlarge,
 input[type="email"].input--xlarge,
 input[type="number"].input--xlarge,
 input[type="time"].input--xlarge,
@@ -5181,6 +5194,7 @@ select.input--xlarge {
 }
 .input.input--xlarge.is-borderless,
 input[type="text"].input--xlarge.is-borderless,
+input[type="search"].input--xlarge.is-borderless,
 input[type="email"].input--xlarge.is-borderless,
 input[type="number"].input--xlarge.is-borderless,
 input[type="time"].input--xlarge.is-borderless,
@@ -5193,6 +5207,7 @@ select.input--xlarge.is-borderless {
 }
 .input.input--xxlarge,
 input[type="text"].input--xxlarge,
+input[type="search"].input--xxlarge,
 input[type="email"].input--xxlarge,
 input[type="number"].input--xxlarge,
 input[type="time"].input--xxlarge,
@@ -5205,6 +5220,7 @@ select.input--xxlarge {
 }
 .input.input--xxlarge.is-borderless,
 input[type="text"].input--xxlarge.is-borderless,
+input[type="search"].input--xxlarge.is-borderless,
 input[type="email"].input--xxlarge.is-borderless,
 input[type="number"].input--xxlarge.is-borderless,
 input[type="time"].input--xxlarge.is-borderless,
@@ -6295,6 +6311,15 @@ button.is-hidden {
   margin: 0;
   padding: 0;
 }
+.cm__list-clear--soft {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cm__list-clear--soft li {
+  margin: 0;
+  padding: 0;
+}
 .cm__list-table {
   width: 100%;
   display: table;
@@ -7054,6 +7079,7 @@ button.is-hidden {
 }
 .form dl.error .input,
 .form dl.error input[type="text"],
+.form dl.error input[type="search"],
 .form dl.error input[type="email"],
 .form dl.error input[type="number"],
 .form dl.error input[type="time"],
@@ -7074,6 +7100,7 @@ button.is-hidden {
 }
 .form dl.ok .input,
 .form dl.ok input[type="text"],
+.form dl.ok input[type="search"],
 .form dl.ok input[type="email"],
 .form dl.ok input[type="number"],
 .form dl.ok input[type="time"],
@@ -9032,6 +9059,8 @@ button.is-hidden {
 .pt__field.danger .input,
 .pt__field.error input[type="text"],
 .pt__field.danger input[type="text"],
+.pt__field.error input[type="search"],
+.pt__field.danger input[type="search"],
 .pt__field.error input[type="email"],
 .pt__field.danger input[type="email"],
 .pt__field.error input[type="number"],
@@ -9058,6 +9087,8 @@ button.is-hidden {
 .pt__field.success .input,
 .pt__field.ok input[type="text"],
 .pt__field.success input[type="text"],
+.pt__field.ok input[type="search"],
+.pt__field.success input[type="search"],
 .pt__field.ok input[type="email"],
 .pt__field.success input[type="email"],
 .pt__field.ok input[type="number"],
@@ -10214,6 +10245,14 @@ ul.pt__field__hint li:before {
   background-color: #858585;
   background-size: cover;
 }
+.pt__image.is-loading > .inner > .descr {
+  opacity: 0;
+  -webkit-transition: opacity 250ms ease-in-out;
+  transition: opacity 250ms ease-in-out;
+}
+.pt__image.is-loaded > .inner > .descr {
+  opacity: 1;
+}
 .pt__image.has-border > .inner {
   border: 2px solid #cccccc;
 }
@@ -10294,6 +10333,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.no-label .input,
 .pt__input.no-label input[type="text"],
+.pt__input.no-label input[type="search"],
 .pt__input.no-label input[type="email"],
 .pt__input.no-label input[type="number"],
 .pt__input.no-label input[type="time"],
@@ -10304,6 +10344,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.disabled .input,
 .pt__input.disabled input[type="text"],
+.pt__input.disabled input[type="search"],
 .pt__input.disabled input[type="email"],
 .pt__input.disabled input[type="number"],
 .pt__input.disabled input[type="time"],
@@ -10318,6 +10359,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input .input,
 .pt__input input[type="text"],
+.pt__input input[type="search"],
 .pt__input input[type="email"],
 .pt__input input[type="number"],
 .pt__input input[type="time"],
@@ -10330,6 +10372,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input .input.is-borderless,
 .pt__input input[type="text"].is-borderless,
+.pt__input input[type="search"].is-borderless,
 .pt__input input[type="email"].is-borderless,
 .pt__input input[type="number"].is-borderless,
 .pt__input input[type="time"].is-borderless,
@@ -10358,6 +10401,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input:not(.is-icon-outside):not(.is-no-label) .input:not(:first-child),
 .pt__input:not(.is-icon-outside):not(.is-no-label) input[type="text"]:not(:first-child),
+.pt__input:not(.is-icon-outside):not(.is-no-label) input[type="search"]:not(:first-child),
 .pt__input:not(.is-icon-outside):not(.is-no-label) input[type="email"]:not(:first-child),
 .pt__input:not(.is-icon-outside):not(.is-no-label) input[type="number"]:not(:first-child),
 .pt__input:not(.is-icon-outside):not(.is-no-label) input[type="time"]:not(:first-child),
@@ -10368,6 +10412,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input:not(.is-icon-outside):not(.is-no-label) .input:not(:last-child),
 .pt__input:not(.is-icon-outside):not(.is-no-label) input[type="text"]:not(:last-child),
+.pt__input:not(.is-icon-outside):not(.is-no-label) input[type="search"]:not(:last-child),
 .pt__input:not(.is-icon-outside):not(.is-no-label) input[type="email"]:not(:last-child),
 .pt__input:not(.is-icon-outside):not(.is-no-label) input[type="number"]:not(:last-child),
 .pt__input:not(.is-icon-outside):not(.is-no-label) input[type="time"]:not(:last-child),
@@ -10378,6 +10423,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input:not(.is-icon-outside):not(.is-no-label).is-less-indent .input:not(:first-child),
 .pt__input:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="text"]:not(:first-child),
+.pt__input:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="search"]:not(:first-child),
 .pt__input:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="email"]:not(:first-child),
 .pt__input:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="number"]:not(:first-child),
 .pt__input:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="time"]:not(:first-child),
@@ -10388,6 +10434,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input:not(.is-icon-outside):not(.is-no-label).is-less-indent .input:not(:last-child),
 .pt__input:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="text"]:not(:last-child),
+.pt__input:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="search"]:not(:last-child),
 .pt__input:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="email"]:not(:last-child),
 .pt__input:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="number"]:not(:last-child),
 .pt__input:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="time"]:not(:last-child),
@@ -10398,6 +10445,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.is-icon-outside .input:not(:first-child),
 .pt__input.is-icon-outside input[type="text"]:not(:first-child),
+.pt__input.is-icon-outside input[type="search"]:not(:first-child),
 .pt__input.is-icon-outside input[type="email"]:not(:first-child),
 .pt__input.is-icon-outside input[type="number"]:not(:first-child),
 .pt__input.is-icon-outside input[type="time"]:not(:first-child),
@@ -10409,6 +10457,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.is-icon-outside .input:not(:last-child),
 .pt__input.is-icon-outside input[type="text"]:not(:last-child),
+.pt__input.is-icon-outside input[type="search"]:not(:last-child),
 .pt__input.is-icon-outside input[type="email"]:not(:last-child),
 .pt__input.is-icon-outside input[type="number"]:not(:last-child),
 .pt__input.is-icon-outside input[type="time"]:not(:last-child),
@@ -10420,6 +10469,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.is-icon-outside .input:not(:first-child):not(:last-child),
 .pt__input.is-icon-outside input[type="text"]:not(:first-child):not(:last-child),
+.pt__input.is-icon-outside input[type="search"]:not(:first-child):not(:last-child),
 .pt__input.is-icon-outside input[type="email"]:not(:first-child):not(:last-child),
 .pt__input.is-icon-outside input[type="number"]:not(:first-child):not(:last-child),
 .pt__input.is-icon-outside input[type="time"]:not(:first-child):not(:last-child),
@@ -10430,6 +10480,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.is-no-label .input,
 .pt__input.is-no-label input[type="text"],
+.pt__input.is-no-label input[type="search"],
 .pt__input.is-no-label input[type="email"],
 .pt__input.is-no-label input[type="number"],
 .pt__input.is-no-label input[type="time"],
@@ -10444,6 +10495,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.is-borderless .input,
 .pt__input.is-borderless input[type="text"],
+.pt__input.is-borderless input[type="search"],
 .pt__input.is-borderless input[type="email"],
 .pt__input.is-borderless input[type="number"],
 .pt__input.is-borderless input[type="time"],
@@ -10456,6 +10508,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.is-borderless .input.is-borderless,
 .pt__input.is-borderless input[type="text"].is-borderless,
+.pt__input.is-borderless input[type="search"].is-borderless,
 .pt__input.is-borderless input[type="email"].is-borderless,
 .pt__input.is-borderless input[type="number"].is-borderless,
 .pt__input.is-borderless input[type="time"].is-borderless,
@@ -10484,6 +10537,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.is-borderless:not(.is-icon-outside):not(.is-no-label) .input:not(:first-child),
 .pt__input.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="text"]:not(:first-child),
+.pt__input.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="search"]:not(:first-child),
 .pt__input.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="email"]:not(:first-child),
 .pt__input.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="number"]:not(:first-child),
 .pt__input.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="time"]:not(:first-child),
@@ -10494,6 +10548,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.is-borderless:not(.is-icon-outside):not(.is-no-label) .input:not(:last-child),
 .pt__input.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="text"]:not(:last-child),
+.pt__input.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="search"]:not(:last-child),
 .pt__input.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="email"]:not(:last-child),
 .pt__input.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="number"]:not(:last-child),
 .pt__input.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="time"]:not(:last-child),
@@ -10504,6 +10559,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent .input:not(:first-child),
 .pt__input.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="text"]:not(:first-child),
+.pt__input.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="search"]:not(:first-child),
 .pt__input.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="email"]:not(:first-child),
 .pt__input.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="number"]:not(:first-child),
 .pt__input.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="time"]:not(:first-child),
@@ -10514,6 +10570,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent .input:not(:last-child),
 .pt__input.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="text"]:not(:last-child),
+.pt__input.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="search"]:not(:last-child),
 .pt__input.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="email"]:not(:last-child),
 .pt__input.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="number"]:not(:last-child),
 .pt__input.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="time"]:not(:last-child),
@@ -10524,6 +10581,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.is-borderless.is-icon-outside .input:not(:first-child),
 .pt__input.is-borderless.is-icon-outside input[type="text"]:not(:first-child),
+.pt__input.is-borderless.is-icon-outside input[type="search"]:not(:first-child),
 .pt__input.is-borderless.is-icon-outside input[type="email"]:not(:first-child),
 .pt__input.is-borderless.is-icon-outside input[type="number"]:not(:first-child),
 .pt__input.is-borderless.is-icon-outside input[type="time"]:not(:first-child),
@@ -10535,6 +10593,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.is-borderless.is-icon-outside .input:not(:last-child),
 .pt__input.is-borderless.is-icon-outside input[type="text"]:not(:last-child),
+.pt__input.is-borderless.is-icon-outside input[type="search"]:not(:last-child),
 .pt__input.is-borderless.is-icon-outside input[type="email"]:not(:last-child),
 .pt__input.is-borderless.is-icon-outside input[type="number"]:not(:last-child),
 .pt__input.is-borderless.is-icon-outside input[type="time"]:not(:last-child),
@@ -10546,6 +10605,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.is-borderless.is-icon-outside .input:not(:first-child):not(:last-child),
 .pt__input.is-borderless.is-icon-outside input[type="text"]:not(:first-child):not(:last-child),
+.pt__input.is-borderless.is-icon-outside input[type="search"]:not(:first-child):not(:last-child),
 .pt__input.is-borderless.is-icon-outside input[type="email"]:not(:first-child):not(:last-child),
 .pt__input.is-borderless.is-icon-outside input[type="number"]:not(:first-child):not(:last-child),
 .pt__input.is-borderless.is-icon-outside input[type="time"]:not(:first-child):not(:last-child),
@@ -10556,6 +10616,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.is-borderless.is-no-label .input,
 .pt__input.is-borderless.is-no-label input[type="text"],
+.pt__input.is-borderless.is-no-label input[type="search"],
 .pt__input.is-borderless.is-no-label input[type="email"],
 .pt__input.is-borderless.is-no-label input[type="number"],
 .pt__input.is-borderless.is-no-label input[type="time"],
@@ -10570,6 +10631,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-large .input,
 .pt__input.size-large input[type="text"],
+.pt__input.size-large input[type="search"],
 .pt__input.size-large input[type="email"],
 .pt__input.size-large input[type="number"],
 .pt__input.size-large input[type="time"],
@@ -10582,6 +10644,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-large .input.is-borderless,
 .pt__input.size-large input[type="text"].is-borderless,
+.pt__input.size-large input[type="search"].is-borderless,
 .pt__input.size-large input[type="email"].is-borderless,
 .pt__input.size-large input[type="number"].is-borderless,
 .pt__input.size-large input[type="time"].is-borderless,
@@ -10610,6 +10673,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-large:not(.is-icon-outside):not(.is-no-label) .input:not(:first-child),
 .pt__input.size-large:not(.is-icon-outside):not(.is-no-label) input[type="text"]:not(:first-child),
+.pt__input.size-large:not(.is-icon-outside):not(.is-no-label) input[type="search"]:not(:first-child),
 .pt__input.size-large:not(.is-icon-outside):not(.is-no-label) input[type="email"]:not(:first-child),
 .pt__input.size-large:not(.is-icon-outside):not(.is-no-label) input[type="number"]:not(:first-child),
 .pt__input.size-large:not(.is-icon-outside):not(.is-no-label) input[type="time"]:not(:first-child),
@@ -10620,6 +10684,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-large:not(.is-icon-outside):not(.is-no-label) .input:not(:last-child),
 .pt__input.size-large:not(.is-icon-outside):not(.is-no-label) input[type="text"]:not(:last-child),
+.pt__input.size-large:not(.is-icon-outside):not(.is-no-label) input[type="search"]:not(:last-child),
 .pt__input.size-large:not(.is-icon-outside):not(.is-no-label) input[type="email"]:not(:last-child),
 .pt__input.size-large:not(.is-icon-outside):not(.is-no-label) input[type="number"]:not(:last-child),
 .pt__input.size-large:not(.is-icon-outside):not(.is-no-label) input[type="time"]:not(:last-child),
@@ -10630,6 +10695,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-large:not(.is-icon-outside):not(.is-no-label).is-less-indent .input:not(:first-child),
 .pt__input.size-large:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="text"]:not(:first-child),
+.pt__input.size-large:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="search"]:not(:first-child),
 .pt__input.size-large:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="email"]:not(:first-child),
 .pt__input.size-large:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="number"]:not(:first-child),
 .pt__input.size-large:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="time"]:not(:first-child),
@@ -10640,6 +10706,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-large:not(.is-icon-outside):not(.is-no-label).is-less-indent .input:not(:last-child),
 .pt__input.size-large:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="text"]:not(:last-child),
+.pt__input.size-large:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="search"]:not(:last-child),
 .pt__input.size-large:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="email"]:not(:last-child),
 .pt__input.size-large:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="number"]:not(:last-child),
 .pt__input.size-large:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="time"]:not(:last-child),
@@ -10650,6 +10717,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-large.is-icon-outside .input:not(:first-child),
 .pt__input.size-large.is-icon-outside input[type="text"]:not(:first-child),
+.pt__input.size-large.is-icon-outside input[type="search"]:not(:first-child),
 .pt__input.size-large.is-icon-outside input[type="email"]:not(:first-child),
 .pt__input.size-large.is-icon-outside input[type="number"]:not(:first-child),
 .pt__input.size-large.is-icon-outside input[type="time"]:not(:first-child),
@@ -10661,6 +10729,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-large.is-icon-outside .input:not(:last-child),
 .pt__input.size-large.is-icon-outside input[type="text"]:not(:last-child),
+.pt__input.size-large.is-icon-outside input[type="search"]:not(:last-child),
 .pt__input.size-large.is-icon-outside input[type="email"]:not(:last-child),
 .pt__input.size-large.is-icon-outside input[type="number"]:not(:last-child),
 .pt__input.size-large.is-icon-outside input[type="time"]:not(:last-child),
@@ -10672,6 +10741,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-large.is-icon-outside .input:not(:first-child):not(:last-child),
 .pt__input.size-large.is-icon-outside input[type="text"]:not(:first-child):not(:last-child),
+.pt__input.size-large.is-icon-outside input[type="search"]:not(:first-child):not(:last-child),
 .pt__input.size-large.is-icon-outside input[type="email"]:not(:first-child):not(:last-child),
 .pt__input.size-large.is-icon-outside input[type="number"]:not(:first-child):not(:last-child),
 .pt__input.size-large.is-icon-outside input[type="time"]:not(:first-child):not(:last-child),
@@ -10682,6 +10752,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-large.is-no-label .input,
 .pt__input.size-large.is-no-label input[type="text"],
+.pt__input.size-large.is-no-label input[type="search"],
 .pt__input.size-large.is-no-label input[type="email"],
 .pt__input.size-large.is-no-label input[type="number"],
 .pt__input.size-large.is-no-label input[type="time"],
@@ -10696,6 +10767,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-large.is-borderless .input,
 .pt__input.size-large.is-borderless input[type="text"],
+.pt__input.size-large.is-borderless input[type="search"],
 .pt__input.size-large.is-borderless input[type="email"],
 .pt__input.size-large.is-borderless input[type="number"],
 .pt__input.size-large.is-borderless input[type="time"],
@@ -10708,6 +10780,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-large.is-borderless .input.is-borderless,
 .pt__input.size-large.is-borderless input[type="text"].is-borderless,
+.pt__input.size-large.is-borderless input[type="search"].is-borderless,
 .pt__input.size-large.is-borderless input[type="email"].is-borderless,
 .pt__input.size-large.is-borderless input[type="number"].is-borderless,
 .pt__input.size-large.is-borderless input[type="time"].is-borderless,
@@ -10736,6 +10809,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-large.is-borderless:not(.is-icon-outside):not(.is-no-label) .input:not(:first-child),
 .pt__input.size-large.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="text"]:not(:first-child),
+.pt__input.size-large.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="search"]:not(:first-child),
 .pt__input.size-large.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="email"]:not(:first-child),
 .pt__input.size-large.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="number"]:not(:first-child),
 .pt__input.size-large.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="time"]:not(:first-child),
@@ -10746,6 +10820,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-large.is-borderless:not(.is-icon-outside):not(.is-no-label) .input:not(:last-child),
 .pt__input.size-large.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="text"]:not(:last-child),
+.pt__input.size-large.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="search"]:not(:last-child),
 .pt__input.size-large.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="email"]:not(:last-child),
 .pt__input.size-large.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="number"]:not(:last-child),
 .pt__input.size-large.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="time"]:not(:last-child),
@@ -10756,6 +10831,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-large.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent .input:not(:first-child),
 .pt__input.size-large.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="text"]:not(:first-child),
+.pt__input.size-large.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="search"]:not(:first-child),
 .pt__input.size-large.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="email"]:not(:first-child),
 .pt__input.size-large.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="number"]:not(:first-child),
 .pt__input.size-large.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="time"]:not(:first-child),
@@ -10766,6 +10842,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-large.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent .input:not(:last-child),
 .pt__input.size-large.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="text"]:not(:last-child),
+.pt__input.size-large.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="search"]:not(:last-child),
 .pt__input.size-large.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="email"]:not(:last-child),
 .pt__input.size-large.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="number"]:not(:last-child),
 .pt__input.size-large.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="time"]:not(:last-child),
@@ -10776,6 +10853,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-large.is-borderless.is-icon-outside .input:not(:first-child),
 .pt__input.size-large.is-borderless.is-icon-outside input[type="text"]:not(:first-child),
+.pt__input.size-large.is-borderless.is-icon-outside input[type="search"]:not(:first-child),
 .pt__input.size-large.is-borderless.is-icon-outside input[type="email"]:not(:first-child),
 .pt__input.size-large.is-borderless.is-icon-outside input[type="number"]:not(:first-child),
 .pt__input.size-large.is-borderless.is-icon-outside input[type="time"]:not(:first-child),
@@ -10787,6 +10865,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-large.is-borderless.is-icon-outside .input:not(:last-child),
 .pt__input.size-large.is-borderless.is-icon-outside input[type="text"]:not(:last-child),
+.pt__input.size-large.is-borderless.is-icon-outside input[type="search"]:not(:last-child),
 .pt__input.size-large.is-borderless.is-icon-outside input[type="email"]:not(:last-child),
 .pt__input.size-large.is-borderless.is-icon-outside input[type="number"]:not(:last-child),
 .pt__input.size-large.is-borderless.is-icon-outside input[type="time"]:not(:last-child),
@@ -10798,6 +10877,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-large.is-borderless.is-icon-outside .input:not(:first-child):not(:last-child),
 .pt__input.size-large.is-borderless.is-icon-outside input[type="text"]:not(:first-child):not(:last-child),
+.pt__input.size-large.is-borderless.is-icon-outside input[type="search"]:not(:first-child):not(:last-child),
 .pt__input.size-large.is-borderless.is-icon-outside input[type="email"]:not(:first-child):not(:last-child),
 .pt__input.size-large.is-borderless.is-icon-outside input[type="number"]:not(:first-child):not(:last-child),
 .pt__input.size-large.is-borderless.is-icon-outside input[type="time"]:not(:first-child):not(:last-child),
@@ -10808,6 +10888,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-large.is-borderless.is-no-label .input,
 .pt__input.size-large.is-borderless.is-no-label input[type="text"],
+.pt__input.size-large.is-borderless.is-no-label input[type="search"],
 .pt__input.size-large.is-borderless.is-no-label input[type="email"],
 .pt__input.size-large.is-borderless.is-no-label input[type="number"],
 .pt__input.size-large.is-borderless.is-no-label input[type="time"],
@@ -10822,6 +10903,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xlarge .input,
 .pt__input.size-xlarge input[type="text"],
+.pt__input.size-xlarge input[type="search"],
 .pt__input.size-xlarge input[type="email"],
 .pt__input.size-xlarge input[type="number"],
 .pt__input.size-xlarge input[type="time"],
@@ -10834,6 +10916,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xlarge .input.is-borderless,
 .pt__input.size-xlarge input[type="text"].is-borderless,
+.pt__input.size-xlarge input[type="search"].is-borderless,
 .pt__input.size-xlarge input[type="email"].is-borderless,
 .pt__input.size-xlarge input[type="number"].is-borderless,
 .pt__input.size-xlarge input[type="time"].is-borderless,
@@ -10862,6 +10945,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xlarge:not(.is-icon-outside):not(.is-no-label) .input:not(:first-child),
 .pt__input.size-xlarge:not(.is-icon-outside):not(.is-no-label) input[type="text"]:not(:first-child),
+.pt__input.size-xlarge:not(.is-icon-outside):not(.is-no-label) input[type="search"]:not(:first-child),
 .pt__input.size-xlarge:not(.is-icon-outside):not(.is-no-label) input[type="email"]:not(:first-child),
 .pt__input.size-xlarge:not(.is-icon-outside):not(.is-no-label) input[type="number"]:not(:first-child),
 .pt__input.size-xlarge:not(.is-icon-outside):not(.is-no-label) input[type="time"]:not(:first-child),
@@ -10872,6 +10956,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xlarge:not(.is-icon-outside):not(.is-no-label) .input:not(:last-child),
 .pt__input.size-xlarge:not(.is-icon-outside):not(.is-no-label) input[type="text"]:not(:last-child),
+.pt__input.size-xlarge:not(.is-icon-outside):not(.is-no-label) input[type="search"]:not(:last-child),
 .pt__input.size-xlarge:not(.is-icon-outside):not(.is-no-label) input[type="email"]:not(:last-child),
 .pt__input.size-xlarge:not(.is-icon-outside):not(.is-no-label) input[type="number"]:not(:last-child),
 .pt__input.size-xlarge:not(.is-icon-outside):not(.is-no-label) input[type="time"]:not(:last-child),
@@ -10882,6 +10967,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xlarge:not(.is-icon-outside):not(.is-no-label).is-less-indent .input:not(:first-child),
 .pt__input.size-xlarge:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="text"]:not(:first-child),
+.pt__input.size-xlarge:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="search"]:not(:first-child),
 .pt__input.size-xlarge:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="email"]:not(:first-child),
 .pt__input.size-xlarge:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="number"]:not(:first-child),
 .pt__input.size-xlarge:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="time"]:not(:first-child),
@@ -10892,6 +10978,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xlarge:not(.is-icon-outside):not(.is-no-label).is-less-indent .input:not(:last-child),
 .pt__input.size-xlarge:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="text"]:not(:last-child),
+.pt__input.size-xlarge:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="search"]:not(:last-child),
 .pt__input.size-xlarge:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="email"]:not(:last-child),
 .pt__input.size-xlarge:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="number"]:not(:last-child),
 .pt__input.size-xlarge:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="time"]:not(:last-child),
@@ -10902,6 +10989,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xlarge.is-icon-outside .input:not(:first-child),
 .pt__input.size-xlarge.is-icon-outside input[type="text"]:not(:first-child),
+.pt__input.size-xlarge.is-icon-outside input[type="search"]:not(:first-child),
 .pt__input.size-xlarge.is-icon-outside input[type="email"]:not(:first-child),
 .pt__input.size-xlarge.is-icon-outside input[type="number"]:not(:first-child),
 .pt__input.size-xlarge.is-icon-outside input[type="time"]:not(:first-child),
@@ -10913,6 +11001,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xlarge.is-icon-outside .input:not(:last-child),
 .pt__input.size-xlarge.is-icon-outside input[type="text"]:not(:last-child),
+.pt__input.size-xlarge.is-icon-outside input[type="search"]:not(:last-child),
 .pt__input.size-xlarge.is-icon-outside input[type="email"]:not(:last-child),
 .pt__input.size-xlarge.is-icon-outside input[type="number"]:not(:last-child),
 .pt__input.size-xlarge.is-icon-outside input[type="time"]:not(:last-child),
@@ -10924,6 +11013,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xlarge.is-icon-outside .input:not(:first-child):not(:last-child),
 .pt__input.size-xlarge.is-icon-outside input[type="text"]:not(:first-child):not(:last-child),
+.pt__input.size-xlarge.is-icon-outside input[type="search"]:not(:first-child):not(:last-child),
 .pt__input.size-xlarge.is-icon-outside input[type="email"]:not(:first-child):not(:last-child),
 .pt__input.size-xlarge.is-icon-outside input[type="number"]:not(:first-child):not(:last-child),
 .pt__input.size-xlarge.is-icon-outside input[type="time"]:not(:first-child):not(:last-child),
@@ -10934,6 +11024,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xlarge.is-no-label .input,
 .pt__input.size-xlarge.is-no-label input[type="text"],
+.pt__input.size-xlarge.is-no-label input[type="search"],
 .pt__input.size-xlarge.is-no-label input[type="email"],
 .pt__input.size-xlarge.is-no-label input[type="number"],
 .pt__input.size-xlarge.is-no-label input[type="time"],
@@ -10948,6 +11039,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xlarge.is-borderless .input,
 .pt__input.size-xlarge.is-borderless input[type="text"],
+.pt__input.size-xlarge.is-borderless input[type="search"],
 .pt__input.size-xlarge.is-borderless input[type="email"],
 .pt__input.size-xlarge.is-borderless input[type="number"],
 .pt__input.size-xlarge.is-borderless input[type="time"],
@@ -10960,6 +11052,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xlarge.is-borderless .input.is-borderless,
 .pt__input.size-xlarge.is-borderless input[type="text"].is-borderless,
+.pt__input.size-xlarge.is-borderless input[type="search"].is-borderless,
 .pt__input.size-xlarge.is-borderless input[type="email"].is-borderless,
 .pt__input.size-xlarge.is-borderless input[type="number"].is-borderless,
 .pt__input.size-xlarge.is-borderless input[type="time"].is-borderless,
@@ -10988,6 +11081,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xlarge.is-borderless:not(.is-icon-outside):not(.is-no-label) .input:not(:first-child),
 .pt__input.size-xlarge.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="text"]:not(:first-child),
+.pt__input.size-xlarge.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="search"]:not(:first-child),
 .pt__input.size-xlarge.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="email"]:not(:first-child),
 .pt__input.size-xlarge.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="number"]:not(:first-child),
 .pt__input.size-xlarge.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="time"]:not(:first-child),
@@ -10998,6 +11092,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xlarge.is-borderless:not(.is-icon-outside):not(.is-no-label) .input:not(:last-child),
 .pt__input.size-xlarge.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="text"]:not(:last-child),
+.pt__input.size-xlarge.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="search"]:not(:last-child),
 .pt__input.size-xlarge.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="email"]:not(:last-child),
 .pt__input.size-xlarge.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="number"]:not(:last-child),
 .pt__input.size-xlarge.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="time"]:not(:last-child),
@@ -11008,6 +11103,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xlarge.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent .input:not(:first-child),
 .pt__input.size-xlarge.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="text"]:not(:first-child),
+.pt__input.size-xlarge.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="search"]:not(:first-child),
 .pt__input.size-xlarge.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="email"]:not(:first-child),
 .pt__input.size-xlarge.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="number"]:not(:first-child),
 .pt__input.size-xlarge.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="time"]:not(:first-child),
@@ -11018,6 +11114,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xlarge.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent .input:not(:last-child),
 .pt__input.size-xlarge.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="text"]:not(:last-child),
+.pt__input.size-xlarge.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="search"]:not(:last-child),
 .pt__input.size-xlarge.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="email"]:not(:last-child),
 .pt__input.size-xlarge.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="number"]:not(:last-child),
 .pt__input.size-xlarge.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="time"]:not(:last-child),
@@ -11028,6 +11125,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xlarge.is-borderless.is-icon-outside .input:not(:first-child),
 .pt__input.size-xlarge.is-borderless.is-icon-outside input[type="text"]:not(:first-child),
+.pt__input.size-xlarge.is-borderless.is-icon-outside input[type="search"]:not(:first-child),
 .pt__input.size-xlarge.is-borderless.is-icon-outside input[type="email"]:not(:first-child),
 .pt__input.size-xlarge.is-borderless.is-icon-outside input[type="number"]:not(:first-child),
 .pt__input.size-xlarge.is-borderless.is-icon-outside input[type="time"]:not(:first-child),
@@ -11039,6 +11137,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xlarge.is-borderless.is-icon-outside .input:not(:last-child),
 .pt__input.size-xlarge.is-borderless.is-icon-outside input[type="text"]:not(:last-child),
+.pt__input.size-xlarge.is-borderless.is-icon-outside input[type="search"]:not(:last-child),
 .pt__input.size-xlarge.is-borderless.is-icon-outside input[type="email"]:not(:last-child),
 .pt__input.size-xlarge.is-borderless.is-icon-outside input[type="number"]:not(:last-child),
 .pt__input.size-xlarge.is-borderless.is-icon-outside input[type="time"]:not(:last-child),
@@ -11050,6 +11149,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xlarge.is-borderless.is-icon-outside .input:not(:first-child):not(:last-child),
 .pt__input.size-xlarge.is-borderless.is-icon-outside input[type="text"]:not(:first-child):not(:last-child),
+.pt__input.size-xlarge.is-borderless.is-icon-outside input[type="search"]:not(:first-child):not(:last-child),
 .pt__input.size-xlarge.is-borderless.is-icon-outside input[type="email"]:not(:first-child):not(:last-child),
 .pt__input.size-xlarge.is-borderless.is-icon-outside input[type="number"]:not(:first-child):not(:last-child),
 .pt__input.size-xlarge.is-borderless.is-icon-outside input[type="time"]:not(:first-child):not(:last-child),
@@ -11060,6 +11160,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xlarge.is-borderless.is-no-label .input,
 .pt__input.size-xlarge.is-borderless.is-no-label input[type="text"],
+.pt__input.size-xlarge.is-borderless.is-no-label input[type="search"],
 .pt__input.size-xlarge.is-borderless.is-no-label input[type="email"],
 .pt__input.size-xlarge.is-borderless.is-no-label input[type="number"],
 .pt__input.size-xlarge.is-borderless.is-no-label input[type="time"],
@@ -11074,6 +11175,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xxlarge .input,
 .pt__input.size-xxlarge input[type="text"],
+.pt__input.size-xxlarge input[type="search"],
 .pt__input.size-xxlarge input[type="email"],
 .pt__input.size-xxlarge input[type="number"],
 .pt__input.size-xxlarge input[type="time"],
@@ -11086,6 +11188,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xxlarge .input.is-borderless,
 .pt__input.size-xxlarge input[type="text"].is-borderless,
+.pt__input.size-xxlarge input[type="search"].is-borderless,
 .pt__input.size-xxlarge input[type="email"].is-borderless,
 .pt__input.size-xxlarge input[type="number"].is-borderless,
 .pt__input.size-xxlarge input[type="time"].is-borderless,
@@ -11114,6 +11217,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xxlarge:not(.is-icon-outside):not(.is-no-label) .input:not(:first-child),
 .pt__input.size-xxlarge:not(.is-icon-outside):not(.is-no-label) input[type="text"]:not(:first-child),
+.pt__input.size-xxlarge:not(.is-icon-outside):not(.is-no-label) input[type="search"]:not(:first-child),
 .pt__input.size-xxlarge:not(.is-icon-outside):not(.is-no-label) input[type="email"]:not(:first-child),
 .pt__input.size-xxlarge:not(.is-icon-outside):not(.is-no-label) input[type="number"]:not(:first-child),
 .pt__input.size-xxlarge:not(.is-icon-outside):not(.is-no-label) input[type="time"]:not(:first-child),
@@ -11124,6 +11228,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xxlarge:not(.is-icon-outside):not(.is-no-label) .input:not(:last-child),
 .pt__input.size-xxlarge:not(.is-icon-outside):not(.is-no-label) input[type="text"]:not(:last-child),
+.pt__input.size-xxlarge:not(.is-icon-outside):not(.is-no-label) input[type="search"]:not(:last-child),
 .pt__input.size-xxlarge:not(.is-icon-outside):not(.is-no-label) input[type="email"]:not(:last-child),
 .pt__input.size-xxlarge:not(.is-icon-outside):not(.is-no-label) input[type="number"]:not(:last-child),
 .pt__input.size-xxlarge:not(.is-icon-outside):not(.is-no-label) input[type="time"]:not(:last-child),
@@ -11134,6 +11239,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xxlarge:not(.is-icon-outside):not(.is-no-label).is-less-indent .input:not(:first-child),
 .pt__input.size-xxlarge:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="text"]:not(:first-child),
+.pt__input.size-xxlarge:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="search"]:not(:first-child),
 .pt__input.size-xxlarge:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="email"]:not(:first-child),
 .pt__input.size-xxlarge:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="number"]:not(:first-child),
 .pt__input.size-xxlarge:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="time"]:not(:first-child),
@@ -11144,6 +11250,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xxlarge:not(.is-icon-outside):not(.is-no-label).is-less-indent .input:not(:last-child),
 .pt__input.size-xxlarge:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="text"]:not(:last-child),
+.pt__input.size-xxlarge:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="search"]:not(:last-child),
 .pt__input.size-xxlarge:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="email"]:not(:last-child),
 .pt__input.size-xxlarge:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="number"]:not(:last-child),
 .pt__input.size-xxlarge:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="time"]:not(:last-child),
@@ -11154,6 +11261,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xxlarge.is-icon-outside .input:not(:first-child),
 .pt__input.size-xxlarge.is-icon-outside input[type="text"]:not(:first-child),
+.pt__input.size-xxlarge.is-icon-outside input[type="search"]:not(:first-child),
 .pt__input.size-xxlarge.is-icon-outside input[type="email"]:not(:first-child),
 .pt__input.size-xxlarge.is-icon-outside input[type="number"]:not(:first-child),
 .pt__input.size-xxlarge.is-icon-outside input[type="time"]:not(:first-child),
@@ -11165,6 +11273,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xxlarge.is-icon-outside .input:not(:last-child),
 .pt__input.size-xxlarge.is-icon-outside input[type="text"]:not(:last-child),
+.pt__input.size-xxlarge.is-icon-outside input[type="search"]:not(:last-child),
 .pt__input.size-xxlarge.is-icon-outside input[type="email"]:not(:last-child),
 .pt__input.size-xxlarge.is-icon-outside input[type="number"]:not(:last-child),
 .pt__input.size-xxlarge.is-icon-outside input[type="time"]:not(:last-child),
@@ -11176,6 +11285,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xxlarge.is-icon-outside .input:not(:first-child):not(:last-child),
 .pt__input.size-xxlarge.is-icon-outside input[type="text"]:not(:first-child):not(:last-child),
+.pt__input.size-xxlarge.is-icon-outside input[type="search"]:not(:first-child):not(:last-child),
 .pt__input.size-xxlarge.is-icon-outside input[type="email"]:not(:first-child):not(:last-child),
 .pt__input.size-xxlarge.is-icon-outside input[type="number"]:not(:first-child):not(:last-child),
 .pt__input.size-xxlarge.is-icon-outside input[type="time"]:not(:first-child):not(:last-child),
@@ -11186,6 +11296,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xxlarge.is-no-label .input,
 .pt__input.size-xxlarge.is-no-label input[type="text"],
+.pt__input.size-xxlarge.is-no-label input[type="search"],
 .pt__input.size-xxlarge.is-no-label input[type="email"],
 .pt__input.size-xxlarge.is-no-label input[type="number"],
 .pt__input.size-xxlarge.is-no-label input[type="time"],
@@ -11200,6 +11311,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xxlarge.is-borderless .input,
 .pt__input.size-xxlarge.is-borderless input[type="text"],
+.pt__input.size-xxlarge.is-borderless input[type="search"],
 .pt__input.size-xxlarge.is-borderless input[type="email"],
 .pt__input.size-xxlarge.is-borderless input[type="number"],
 .pt__input.size-xxlarge.is-borderless input[type="time"],
@@ -11212,6 +11324,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xxlarge.is-borderless .input.is-borderless,
 .pt__input.size-xxlarge.is-borderless input[type="text"].is-borderless,
+.pt__input.size-xxlarge.is-borderless input[type="search"].is-borderless,
 .pt__input.size-xxlarge.is-borderless input[type="email"].is-borderless,
 .pt__input.size-xxlarge.is-borderless input[type="number"].is-borderless,
 .pt__input.size-xxlarge.is-borderless input[type="time"].is-borderless,
@@ -11240,6 +11353,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xxlarge.is-borderless:not(.is-icon-outside):not(.is-no-label) .input:not(:first-child),
 .pt__input.size-xxlarge.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="text"]:not(:first-child),
+.pt__input.size-xxlarge.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="search"]:not(:first-child),
 .pt__input.size-xxlarge.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="email"]:not(:first-child),
 .pt__input.size-xxlarge.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="number"]:not(:first-child),
 .pt__input.size-xxlarge.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="time"]:not(:first-child),
@@ -11250,6 +11364,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xxlarge.is-borderless:not(.is-icon-outside):not(.is-no-label) .input:not(:last-child),
 .pt__input.size-xxlarge.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="text"]:not(:last-child),
+.pt__input.size-xxlarge.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="search"]:not(:last-child),
 .pt__input.size-xxlarge.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="email"]:not(:last-child),
 .pt__input.size-xxlarge.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="number"]:not(:last-child),
 .pt__input.size-xxlarge.is-borderless:not(.is-icon-outside):not(.is-no-label) input[type="time"]:not(:last-child),
@@ -11260,6 +11375,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xxlarge.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent .input:not(:first-child),
 .pt__input.size-xxlarge.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="text"]:not(:first-child),
+.pt__input.size-xxlarge.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="search"]:not(:first-child),
 .pt__input.size-xxlarge.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="email"]:not(:first-child),
 .pt__input.size-xxlarge.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="number"]:not(:first-child),
 .pt__input.size-xxlarge.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="time"]:not(:first-child),
@@ -11270,6 +11386,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xxlarge.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent .input:not(:last-child),
 .pt__input.size-xxlarge.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="text"]:not(:last-child),
+.pt__input.size-xxlarge.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="search"]:not(:last-child),
 .pt__input.size-xxlarge.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="email"]:not(:last-child),
 .pt__input.size-xxlarge.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="number"]:not(:last-child),
 .pt__input.size-xxlarge.is-borderless:not(.is-icon-outside):not(.is-no-label).is-less-indent input[type="time"]:not(:last-child),
@@ -11280,6 +11397,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xxlarge.is-borderless.is-icon-outside .input:not(:first-child),
 .pt__input.size-xxlarge.is-borderless.is-icon-outside input[type="text"]:not(:first-child),
+.pt__input.size-xxlarge.is-borderless.is-icon-outside input[type="search"]:not(:first-child),
 .pt__input.size-xxlarge.is-borderless.is-icon-outside input[type="email"]:not(:first-child),
 .pt__input.size-xxlarge.is-borderless.is-icon-outside input[type="number"]:not(:first-child),
 .pt__input.size-xxlarge.is-borderless.is-icon-outside input[type="time"]:not(:first-child),
@@ -11291,6 +11409,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xxlarge.is-borderless.is-icon-outside .input:not(:last-child),
 .pt__input.size-xxlarge.is-borderless.is-icon-outside input[type="text"]:not(:last-child),
+.pt__input.size-xxlarge.is-borderless.is-icon-outside input[type="search"]:not(:last-child),
 .pt__input.size-xxlarge.is-borderless.is-icon-outside input[type="email"]:not(:last-child),
 .pt__input.size-xxlarge.is-borderless.is-icon-outside input[type="number"]:not(:last-child),
 .pt__input.size-xxlarge.is-borderless.is-icon-outside input[type="time"]:not(:last-child),
@@ -11302,6 +11421,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xxlarge.is-borderless.is-icon-outside .input:not(:first-child):not(:last-child),
 .pt__input.size-xxlarge.is-borderless.is-icon-outside input[type="text"]:not(:first-child):not(:last-child),
+.pt__input.size-xxlarge.is-borderless.is-icon-outside input[type="search"]:not(:first-child):not(:last-child),
 .pt__input.size-xxlarge.is-borderless.is-icon-outside input[type="email"]:not(:first-child):not(:last-child),
 .pt__input.size-xxlarge.is-borderless.is-icon-outside input[type="number"]:not(:first-child):not(:last-child),
 .pt__input.size-xxlarge.is-borderless.is-icon-outside input[type="time"]:not(:first-child):not(:last-child),
@@ -11312,6 +11432,7 @@ ul.pt__field__hint li:before {
 }
 .pt__input.size-xxlarge.is-borderless.is-no-label .input,
 .pt__input.size-xxlarge.is-borderless.is-no-label input[type="text"],
+.pt__input.size-xxlarge.is-borderless.is-no-label input[type="search"],
 .pt__input.size-xxlarge.is-borderless.is-no-label input[type="email"],
 .pt__input.size-xxlarge.is-borderless.is-no-label input[type="number"],
 .pt__input.size-xxlarge.is-borderless.is-no-label input[type="time"],
@@ -11603,6 +11724,97 @@ ul.pt__field__hint li:before {
     display: none !important;
   }
 }
+/* ******* PARTS: LIST ******* */
+.pt__list > ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.pt__list > ul > li {
+  margin: 1px 0 0 0;
+}
+.pt__list > ul > li:first-child {
+  margin-top: 0;
+}
+.pt__list__item {
+  display: block;
+  padding: 2px 4px;
+  background-color: transparent;
+  color: #666666;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-transition: all 250ms ease-in-out;
+  transition: all 250ms ease-in-out;
+}
+.pt__list__item > .inner {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+  -webkit-align-content: center;
+  align-content: center;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+}
+.pt__list__item > .inner > .image {
+  margin: 0 8px 0 0;
+  -webkit-flex: 0 1;
+  -ms-flex: 0 1;
+  flex: 0 1;
+}
+.pt__list__item > .inner > .content {
+  overflow: hidden;
+  -webkit-flex: auto;
+  -ms-flex: auto;
+  flex: auto;
+}
+.pt__list__item > .inner > .content .icon {
+  display: inline-block;
+  vertical-align: top;
+  margin: 0 8px 0 0;
+}
+.pt__list__item > .inner > .content .icon.small {
+  margin-top: 1px;
+}
+.pt__list__item > .inner > .content .hint {
+  font: 400 11px/18px 'Open Sans', arial, helvetica, sans-serif;
+  color: #999999;
+}
+.pt__list__item.is-nowrap > .inner > .content .title,
+.pt__list__item.is-nowrap > .inner > .content .hint {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.pt__list__item:hover,
+.pt__list__item.hover {
+  text-decoration: none;
+  -webkit-transition: all 100ms ease-in-out;
+  transition: all 100ms ease-in-out;
+}
+.pt__list__item:active,
+.pt__list__item:focus,
+.pt__list__item.active {
+  text-decoration: none;
+  background-color: #d8e8f8;
+}
+.pt__list__item:not(.disabled):hover,
+.pt__list__item:not(.disabled).hover {
+  background-color: #f2f2f2;
+}
+.pt__list__item:not(.disabled):active:hover,
+.pt__list__item:not(.disabled):focus:hover,
+.pt__list__item:not(.disabled).active:hover,
+.pt__list__item:not(.disabled):active.hover,
+.pt__list__item:not(.disabled):focus.hover,
+.pt__list__item:not(.disabled).active.hover {
+  background-color: #c2dbf4;
+}
+.pt__list__item.disabled {
+  cursor: default;
+}
 /* ******* PART: LISTING ******* */
 /* *** LISTING CONTENT *** */
 .pt__listing {
@@ -11831,7 +12043,8 @@ ul.pt__field__hint li:before {
 .pt__listing-items ul li:first-child {
   margin-top: 0;
 }
-.pt__listing-items ul li a {
+.pt__listing-items ul li > a,
+.pt__listing-items ul li > .inner {
   display: block;
   padding: 2px 4px;
   background-color: transparent;
@@ -11841,15 +12054,18 @@ ul.pt__field__hint li:before {
   -webkit-transition: all 250ms ease-in-out;
   transition: all 250ms ease-in-out;
 }
-.pt__listing-items ul li a .icon {
+.pt__listing-items ul li > a .icon,
+.pt__listing-items ul li > .inner .icon {
   display: inline-block;
   vertical-align: top;
   margin: 0 8px 0 0;
 }
-.pt__listing-items ul li a .icon.small {
+.pt__listing-items ul li > a .icon.small,
+.pt__listing-items ul li > .inner .icon.small {
   margin-top: 1px;
 }
-.pt__listing-items ul li a:hover {
+.pt__listing-items ul li > a:hover,
+.pt__listing-items ul li > .inner:hover {
   text-decoration: none;
   -webkit-transition: all 100ms ease-in-out;
   transition: all 100ms ease-in-out;
@@ -11865,16 +12081,20 @@ ul.pt__field__hint li:before {
 .pt__listing-items ul li .pt__listing-items:first-child {
   margin-top: 0;
 }
-.pt__listing-items ul li.active > a {
+.pt__listing-items ul li.active > a,
+.pt__listing-items ul li.active > .inner {
   background-color: #d8e8f8;
 }
-.pt__listing-items:not(.disabled) ul li a:hover {
+.pt__listing-items:not(.disabled) ul li > a:hover,
+.pt__listing-items:not(.disabled) ul li > .inner:hover {
   background-color: #f2f2f2;
 }
-.pt__listing-items:not(.disabled) ul li.active > a:hover {
+.pt__listing-items:not(.disabled) ul li.active > a:hover,
+.pt__listing-items:not(.disabled) ul li.active > .inner:hover {
   background-color: #c2dbf4;
 }
-.pt__listing-items.disabled ul li a {
+.pt__listing-items.disabled ul li > a,
+.pt__listing-items.disabled ul li > .inner {
   cursor: default;
 }
 /* ******* PARTS: MENU ******* */
@@ -16801,6 +17021,13 @@ ul.pt__field__hint li:before {
 .com__notifications > ul > li > .descr > .more:hover {
   text-decoration: none;
 }
+.com__notifications > ul > li > .icon {
+  float: right;
+  margin: 0 0 0 12px;
+}
+.com__notifications > ul > li > .icon.small {
+  margin-top: 1px;
+}
 .com__notifications > ul > li > .close {
   float: right;
   margin-left: 12px;
@@ -17530,27 +17757,22 @@ ul.pt__field__hint li:before {
 .com__palette .b-palette,
 .com__palette .b-range {
   margin-right: 16px;
-  border-radius: 3px;
   touch-action: none;
-}
-.com__palette .b-palette > .inner,
-.com__palette .b-range > .inner {
-  position: relative;
-}
-.com__palette .b-palette canvas,
-.com__palette .b-range canvas {
-  width: 100%;
-  height: 100%;
-  display: block;
-  border-radius: 3px;
 }
 html.ie9 .com__palette .b-palette,
 html.ie9 .com__palette .b-range {
   float: left;
 }
 .com__palette .b-palette > .inner {
+  position: relative;
   overflow: hidden;
   cursor: crosshair;
+}
+.com__palette .b-palette canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: 3px;
 }
 .com__palette .b-palette .drag {
   width: 16px;
@@ -17566,61 +17788,14 @@ html.ie9 .com__palette .b-range {
 .com__palette .b-palette .drag.is-light {
   border-color: #000000;
 }
-.com__palette .b-range {
-  border-radius: 3px;
-}
 .com__palette .b-range > .inner {
   width: 24px;
-  cursor: row-resize;
 }
-.com__palette .b-range .drag {
-  height: 8px;
-  position: absolute;
-  margin: -4px 0 0;
-  top: 0;
-  right: 0;
-  bottom: auto;
-  left: 0;
-  /*
-            height: 6px;
-            position: absolute;
-            margin: -3px -4px 0;
-            background: #fff;
-            border: 1px solid #111111;
-            border-radius: 3px;
-            .mx__position(0, 0, auto, 0);
-            */
+.com__palette .b-range > .inner .pt__range.is-vertical > .inner {
+  width: 24px;
 }
-.com__palette .b-range .drag:before {
-  width: 0;
-  height: 0;
-  display: block;
-  position: absolute;
-  content: '';
-  border-style: solid;
-  border-width: 4px 0 4px 6px;
-  border-color: transparent transparent transparent #000000;
-  top: 0;
-  right: auto;
-  bottom: auto;
-  left: -7px;
-}
-.com__palette .b-range .drag:after {
-  width: 0;
-  height: 0;
-  display: block;
-  position: absolute;
-  content: '';
-  border-style: solid;
-  border-width: 4px 6px 4px 0;
-  border-color: transparent #000000 transparent transparent;
-  top: 0;
-  right: -7px;
-  bottom: auto;
-  left: auto;
-}
-.com__palette .b-opacity {
-  background-image: url("../img/MagpieUI/parts/transparent.png");
+.com__palette .b-range > .inner .pt__range.is-horizontal > .inner {
+  height: 200px;
 }
 .com__palette .b-stuff {
   float: left;
@@ -17665,6 +17840,16 @@ html.ie9 .com__palette .b-range {
 .com__palette .b-range > .inner,
 .com__palette .b-stuff > .inner {
   height: 200px;
+}
+.com__palette .b-palette > .inner .pt__range.is-vertical > .inner,
+.com__palette .b-range > .inner .pt__range.is-vertical > .inner,
+.com__palette .b-stuff > .inner .pt__range.is-vertical > .inner {
+  height: 200px;
+}
+.com__palette .b-palette > .inner .pt__range.is-horizontal > .inner,
+.com__palette .b-range > .inner .pt__range.is-horizontal > .inner,
+.com__palette .b-stuff > .inner .pt__range.is-horizontal > .inner {
+  width: 200px;
 }
 .com__palette .b-palette > .inner {
   width: 200px;
@@ -19097,6 +19282,7 @@ html.ie9 .com__palette .b-range {
 }
 .com__tags-input > .inner .item .input,
 .com__tags-input > .inner .item input[type="text"],
+.com__tags-input > .inner .item input[type="search"],
 .com__tags-input > .inner .item input[type="email"],
 .com__tags-input > .inner .item input[type="number"],
 .com__tags-input > .inner .item input[type="time"],

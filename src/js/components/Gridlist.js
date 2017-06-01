@@ -73,13 +73,6 @@ cm.define('Com.Gridlist', {
 
         // Strings and classes
         'statuses' : ['active', 'success', 'danger', 'warning'],
-        'langs' : {
-            'counter' : 'Count: %count%',
-            'check_all' : 'Check all',
-            'uncheck_all' : 'Uncheck all',
-            'empty' : 'No items',
-            'actions' : 'Actions'
-        },
         'icons' : {
             'arrow' : {
                 'desc' : 'icon arrow desc',
@@ -102,6 +95,13 @@ cm.define('Com.Gridlist', {
         'Com.Menu' : {
             'left' : '-(selfWidth-targetWidth)'
         }
+    },
+    'strings' : {
+        'counter' : 'Count: %count%',
+        'check_all' : 'Check all',
+        'uncheck_all' : 'Uncheck all',
+        'empty' : 'No items',
+        'actions' : 'Actions'
     }
 },
 function(params){

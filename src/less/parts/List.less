@@ -1,0 +1,100 @@
+/* ******* PARTS: LIST ******* */
+
+.pt__list {
+    > ul {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+
+        > li {
+            margin: @PtList-Indent 0 0 0;
+
+            &:first-child {
+                margin-top: 0;
+            }
+        }
+    }
+}
+
+.pt__list__item {
+    display: block;
+    padding: @PtList-PaddingY @PtList-PaddingX;
+    background-color: @CmColor-Secondary-LightDefault;
+    color: @CmFont-Base-Color;
+    text-decoration: none;
+    cursor: pointer;
+    .mx__transition(all, @CmUI-Transition-Duration);
+
+    > .inner {
+        .display-flex;
+        .cm__flex--center;
+
+        > .image {
+            margin: 0 @PtList-ImageIndent 0 0;
+            .mx__flex(0 1);
+        }
+
+        > .content {
+            overflow: hidden;
+            .mx__flex(auto);
+
+            .icon {
+                display: inline-block;
+                vertical-align: top;
+                margin: 0 @CmIndent-XXSmall 0 0;
+
+                &.small {
+                    margin-top: (@CmFont-Base-LineHeight - @CmSize-Small) / 2;
+                }
+            }
+
+            .hint {
+                .cm__font--hint;
+            }
+        }
+    }
+
+    &.is-nowrap {
+        > .inner {
+            > .content {
+                .title,
+                .hint {
+                    .cm__text-nowrap;
+                }
+            }
+        }
+    }
+
+    &:hover,
+    &.hover {
+        text-decoration: none;
+        .mx__transition(all, @CmUI-Transition-DurationReverse);
+    }
+
+    &:active,
+    &:focus,
+    &.active {
+        text-decoration: none;
+        background-color: @CmColor-Primary-LightActive;
+    }
+
+    &:not(.disabled) {
+        &:hover,
+        &.hover {
+            background-color: @CmColor-Secondary-LightHover;
+        }
+
+        &:active,
+        &:focus,
+        &.active {
+            &:hover,
+            &.hover {
+                background-color: @CmColor-Primary-LightActiveHover;
+            }
+        }
+    }
+
+    &.disabled {
+        cursor: default;
+    }
+}

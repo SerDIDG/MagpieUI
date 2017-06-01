@@ -33,6 +33,7 @@ cm.define('Com.Form', {
         'loaderDelay' : 'cm._config.loadDelay',
         'showNotifications' : true,
         'responseErrorsKey': 'errors',
+        'responseKey': 'data',
         'data' : {},
         'ajax' : {
             'type' : 'json',
@@ -46,11 +47,11 @@ cm.define('Com.Form', {
             'position' : 'absolute',
             'autoOpen' : false,
             'removeOnClose' : true
-        },
-        'langs' : {
-            'form_error' : 'Form is not filled correctly.',
-            'server_error' : 'An unexpected error has occurred. Please try again later.'
         }
+    },
+    'strings' : {
+        'form_error' : 'Form is not filled correctly.',
+        'server_error' : 'An unexpected error has occurred. Please try again later.'
     }
 },
 function(params){
@@ -66,6 +67,7 @@ function(params){
     that.isProcess = false;
 
     var init = function(){
+        that.renderComponent();
         that.setParams(params);
         that.convertEvents(that.params['events']);
         that.getDataNodes(that.params['node']);
@@ -304,10 +306,11 @@ function(params){
     that.callbacks.response = function(that, config, response){
         if(!cm.isEmpty(response)){
             var errors = cm.objectSelector(that.params['responseErrorsKey'], response);
+            var data = cm.objectSelector(that.params['responseKey'], response);
             if(!cm.isEmpty(errors)){
                 that.callbacks.error(that, config, errors);
             }else{
-                that.callbacks.success(that, response);
+                that.callbacks.success(that, data);
             }
         }else{
             that.callbacks.error(that, config);
@@ -316,11 +319,11 @@ function(params){
 
     that.callbacks.error = function(that, config, message){
         that.callbacks.renderError(that, message);
-        that.triggerEvent('onError');
+        that.triggerEvent('onError', message);
     };
 
-    that.callbacks.success = function(that, response){
-        that.triggerEvent('onSuccess', response);
+    that.callbacks.success = function(that, data){
+        that.triggerEvent('onSuccess', data);
     };
 
     that.callbacks.abort = function(that, config){
@@ -443,7 +446,9 @@ function(params){
                 //if(!cm.isEmpty(value)){
                 //    o[name] = value;
                 //}
-                o[name] = value;
+                if(!cm.isUndefined(value)){
+                    o[name] = value;
+                }
             }
         });
         return o;
@@ -516,6 +521,11 @@ function(params){
         if(update){
             that._update.params['ajax'] = cm.clone(that.params['ajax']);
         }
+        return that;
+    };
+
+    that.renderError = function(o){
+        that.callbacks.renderError(that, o);
         return that;
     };
 

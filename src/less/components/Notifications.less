@@ -35,10 +35,19 @@
                 }
             }
 
+            > .icon {
+                float: right;
+                margin: 0 0 0 @CmIndent-XSmall;
+
+                &.small {
+                    margin-top: round((@CmFont-Base-LineHeight - @CmSize-Small) / 2);
+                }
+            }
+
             > .close {
                 float: right;
-                margin-left: 12px;
-                padding-left: 12px;
+                margin-left: @CmIndent-XSmall;
+                padding-left: @CmIndent-XSmall;
                 border-left: 1px solid;
                 font-size: 11px;
                 color: #666666;

@@ -22,12 +22,12 @@ cm.define('Com.AbstractContainer', {
         'placeholderConstructor' : null,
         'placeholderParams' : {},
         'destructOnClose' : true,
-        'openOnConstruct' : false,
-        'langs' : {
-            'title' : 'Container',
-            'close' : 'Close',
-            'save' : 'Save'
-        }
+        'openOnConstruct' : false
+    },
+    'strings' : {
+        'title' : 'Container',
+        'close' : 'Close',
+        'save' : 'Save'
     }
 },
 function(params){
@@ -104,19 +104,23 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
         that.params['params']['node'] = that.params['node'];
         that.params['params']['container'] = that.params['container'];
         that.triggerEvent('onValidateParamsEnd');
-        return that;
     };
 
     classProto.render = function(){
         var that = this;
         // Add Event
         if(that.nodes['button']){
-            cm.addEvent(that.nodes['button'], 'click', that.openHandler);
+            that.setTarget(that.nodes['button']);
         }else{
-            cm.addEvent(that.params['node'], 'click', that.openHandler);
+            that.setTarget(that.params['node']);
         }
         // Open on construct
         that.params['openOnConstruct'] && that.open();
+    };
+
+    classProto.setTarget = function(node){
+        var that = this;
+        cm.addEvent(node, 'click', that.openHandler);
         return that;
     };
 

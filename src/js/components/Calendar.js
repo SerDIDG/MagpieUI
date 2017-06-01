@@ -21,12 +21,12 @@ cm.define('Com.Calendar', {
         'endYear' : 'current + 10',                                         // number | current
         'renderMonthOnInit' : true,
         'startWeekDay' : 0,
-        'renderSelectsInBody' : true,
-        'langs' : {
-            'daysAbbr' : ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
-            'days' : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-            'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-        }
+        'renderSelectsInBody' : true
+    },
+    'strings' : {
+        'daysAbbr' : ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+        'days' : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+        'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
     }
 },
 function(params){

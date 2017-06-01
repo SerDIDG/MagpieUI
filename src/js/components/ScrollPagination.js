@@ -55,10 +55,11 @@ cm.define('Com.ScrollPagination', {
             'method' : 'get',
             'url' : '',                                             // Request URL. Variables: %baseUrl%, %page%, %offset%, %token%, %limit%, %perPage%, %callback% for JSONP.
             'params' : ''                                           // Params object. %baseUrl%, %page%, %offset%, %token%, %limit%, %perPage%, %callback% for JSONP.
-        },
-        'langs' : {
-            'load_more' : 'Load More'
         }
+    },
+    'strings' : {
+        'load_more' : 'Load More',
+        'server_error' : 'An unexpected error has occurred. Please try again later.'
     }
 },
 function(params){

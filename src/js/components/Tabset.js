@@ -29,6 +29,8 @@ cm.define('Com.Tabset', {
         'embedStructure' : 'replace',
         'toggleOnHashChange' : true,
         'renderOnInit' : true,
+        'removeOnDestruct' : true,
+        'customEvents' : true,
         'active' : null,
         'className' : '',
         'tabsPosition' : 'top',         // top | right | bottom | left
@@ -60,6 +62,7 @@ function(params){
     that.active = false;
     that.previous = false;
     that.isProcess = false;
+    that.isDestructed = false;
     
     var init = function(){
         getLESSVariables();
@@ -161,6 +164,9 @@ function(params){
         Part.Menu && Part.Menu();
         cm.addEvent(window, 'resize', resizeHandler);
         that.addToStack(that.nodes['container']);
+        if(that.params['customEvents']){
+            cm.customEvent.add(that.nodes['container'], 'destruct', that.destruct);
+        }
         that.triggerEvent('onRender');
     };
 
@@ -458,8 +464,19 @@ function(params){
     };
     
     that.destruct = function(){
-        that.remove();
-        that.removeFromStack();
+        if(!that.isDestructed){
+            that.isDestructed = true;
+            cm.customEvent.trigger(that.nodes['container'], 'destruct', {
+                'type' : 'child',
+                'self' : false
+            });
+            if(that.params['customEvents']){
+                cm.customEvent.remove(that.nodes['container'], 'destruct', that.destruct);
+            }
+            that.params['removeOnDestruct'] && that.remove();
+            that.removeFromStack();
+        }
+        return that;
     };
 
     that.set = function(id){

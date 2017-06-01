@@ -18,19 +18,7 @@
     .b-palette,
     .b-range {
         margin-right: @CmIndent-Small;
-        border-radius: @CmBorder-Radius;
         touch-action: none;
-
-        > .inner {
-            position: relative;
-        }
-
-        canvas {
-            width: 100%;
-            height: 100%;
-            display: block;
-            border-radius: @CmBorder-Radius;
-        }
 
         html.ie9 & {
             float: left;
@@ -39,9 +27,17 @@
 
     .b-palette {
          > .inner {
+             position: relative;
              overflow: hidden;
              cursor: crosshair;
          }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            border-radius: @CmBorder-Radius;
+        }
 
         .drag {
             width: @ComColorPalette-Drag-Size;
@@ -62,56 +58,17 @@
     }
 
     .b-range {
-        border-radius: @CmBorder-Radius;
-
         > .inner {
             width: @CmSize-Medium;
-            cursor: row-resize;
-        }
 
-        .drag {
-            height: 8px;
-            position: absolute;
-            margin: -4px 0 0;
-            .mx__position(0, 0, auto, 0);
-            /*
-            height: 6px;
-            position: absolute;
-            margin: -3px -4px 0;
-            background: #fff;
-            border: 1px solid #111111;
-            border-radius: 3px;
-            .mx__position(0, 0, auto, 0);
-            */
-            
-            &:before {
-                width: 0;
-                height: 0;
-                display: block;
-                position: absolute;
-                content: '';
-                border-style: solid;
-                border-width: 4px 0 4px 6px;
-                border-color: transparent transparent transparent #000000;
-                .mx__position(0, auto, auto, -7px);
+            .pt__range.is-vertical > .inner {
+                width: @CmSize-Medium;
             }
 
-            &:after {
-                width: 0;
-                height: 0;
-                display: block;
-                position: absolute;
-                content: '';
-                border-style: solid;
-                border-width: 4px 6px 4px 0;
-                border-color: transparent #000000 transparent transparent;
-                .mx__position(0, -7px, auto, auto);
+            .pt__range.is-horizontal > .inner {
+                height: @ComColorPalette-Size;
             }
         }
-    }
-
-    .b-opacity {
-        background-image: url("@{CmPath-Images}/parts/transparent.png");
     }
 
     .b-stuff {
@@ -171,6 +128,14 @@
     .b-stuff {
         > .inner {
             height: @ComColorPalette-Size;
+
+            .pt__range.is-vertical > .inner {
+                height: @ComColorPalette-Size;
+            }
+
+            .pt__range.is-horizontal > .inner {
+                width: @ComColorPalette-Size;
+            }
         }
     }
 

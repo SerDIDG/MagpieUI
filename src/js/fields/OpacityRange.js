@@ -1,7 +1,7 @@
 cm.define('Com.OpacityRange', {
     'extend' : 'Com.AbstractRange',
     'params' : {
-        'className' : 'com__opacity-range',
+        'className' : 'com__range',
         'min' : 100,
         'max' : 0,
         'value' : 100,
@@ -16,32 +16,41 @@ function(params){
 cm.getConstructor('Com.OpacityRange', function(classConstructor, className, classProto){
     var _inherit = classProto._inherit;
 
-    classProto.construct = function(){
+    classProto.onConstructEnd = function(){
         var that = this;
-        that.myNodes = {};
-        _inherit.prototype.construct.apply(that, arguments);
+        // Set color
         that.setColor(that.params['color']);
-        return this;
     };
 
-    classProto.renderContent = function(){
-        var that = this;
-        that.myNodes['content'] = cm.node('div', {'class' : 'com__opacity-range__content'},
-            that.myNodes['inner'] = cm.node('div', {'class' : 'inner range-helper'})
+    classProto.renderRangeContent = function(){
+        var that = this,
+            nodes = {};
+        that.nodes['rangeContent'] = nodes;
+        // Structure
+        nodes['container'] = cm.node('div', {'class' : 'com__opacity-range__content'},
+            nodes['inner'] = cm.node('div', {'class' : 'inner range-helper'})
         );
-        return that.myNodes['content'];
+        // Export
+        return nodes['container'];
     };
 
     classProto.setColor = function(color){
         var that = this;
         switch(that.params['direction']){
             case 'horizontal':
-                that.myNodes['inner'].style.background = 'linear-gradient(to right, ' + color + ', rgba(255,255,255,0))';
+                that.nodes['rangeContent']['inner'].style.background = 'linear-gradient(to right, ' + color + ', rgba(255,255,255,0))';
                 break;
             case 'vertical':
-                that.myNodes['inner'].style.background = 'linear-gradient(to bottom, ' + color + ', rgba(255,255,255,0))';
+                that.nodes['rangeContent']['inner'].style.background = 'linear-gradient(to bottom, ' + color + ', rgba(255,255,255,0))';
                 break;
         }
-        return that;
     };
+});
+
+/* ****** FORM FIELD COMPONENT ******* */
+
+Com.FormFields.add('opacity-range', {
+    'node' : cm.node('input', {'type' : 'text'}),
+    'fieldConstructor' : 'Com.AbstractFormField',
+    'constructor' : 'Com.OpacityRange'
 });

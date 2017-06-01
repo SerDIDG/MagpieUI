@@ -31,13 +31,13 @@ cm.define('Com.FileUploaderLocal', {
             'position' : 'absolute',
             'theme' : 'light'
         },
-        'Com.FileReader' : {},
-        'langs' : {
-            'browse_local_single' : 'Choose file',
-            'browse_local_multiple' : 'Choose files',
-            'or' : 'or',
-            'browse' : 'Browse'
-        }
+        'Com.FileReader' : {}
+    },
+    'strings' : {
+        'browse_local_single' : 'Choose file',
+        'browse_local_multiple' : 'Choose files',
+        'or' : 'or',
+        'browse' : 'Browse'
     }
 },
 function(params){

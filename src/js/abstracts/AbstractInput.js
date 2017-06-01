@@ -47,6 +47,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         that.previousValue = null;
         that.value = null;
         that.rawValue = null;
+        that.tempRawValue = null;
         that.disabled = false;
         // Bind context to methods
         that.setHandler = that.set.bind(that);
@@ -67,8 +68,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
 
     classProto.set = function(value, triggerEvents){
         var that = this;
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        value = that.validateValue(value);
+        triggerEvents = cm.isUndefined(triggerEvents) ? true : triggerEvents;
         that.selectAction(value, triggerEvents);
         that.setAction(value, triggerEvents);
         that.changeAction(triggerEvents);
@@ -88,7 +88,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
     classProto.reset = classProto.clear = function(triggerEvents){
         var that = this;
         if(!that.isDestructed){
-            triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+            triggerEvents = cm.isUndefined(triggerEvents) ? true : triggerEvents;
             triggerEvents && that.triggerEvent('onClear');
             triggerEvents && that.triggerEvent('onReset');
             that.set(that.params['defaultValue'], triggerEvents);
@@ -140,6 +140,8 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
             that.params['maxlength'] = that.params['node'].getAttribute('maxlength') || that.params['maxlength'];
             that.params['placeholder'] = that.params['node'].getAttribute('placeholder') || that.params['placeholder'];
         }
+        that.triggerEvent('onValidateParams');
+        that.triggerEvent('onValidateParamsProcess');
         that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
         that.triggerEvent('onValidateParamsEnd');
         return that;
@@ -215,7 +217,6 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
     classProto.validateValue = function(value){
         var that = this;
         value = !cm.isEmpty(value) ? value : that.params['defaultValue'];
-        that.rawValue = value;
         return value;
     };
 
@@ -223,6 +224,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         var that = this;
         that.previousValue = that.value;
         that.value = value;
+        that.rawValue = that.tempRawValue;
         if(that.params['setHiddenInput']){
             if(!cm.isEmpty(value)){
                 if(cm.isObject(value) || cm.isArray(value)){
@@ -237,23 +239,36 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         return that;
     };
 
+    classProto.saveRawValue = function(value){
+        var that = this;
+        that.tempRawValue = value;
+    };
+
     classProto.setData = function(){
         var that = this;
-        return that;
+    };
+
+    classProto.selectData = function(){
+        var that = this;
     };
 
     /* *** ACTIONS *** */
 
     classProto.selectAction = function(value, triggerEvents){
         var that = this;
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        triggerEvents = cm.isUndefined(triggerEvents) ? true : triggerEvents;
+        value = that.validateValue(value);
+        that.saveRawValue(value);
+        that.selectData(value);
         triggerEvents && that.triggerEvent('onSelect', value);
         return that;
     };
 
     classProto.setAction = function(value, triggerEvents){
         var that = this;
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        triggerEvents = cm.isUndefined(triggerEvents) ? true : triggerEvents;
+        value = that.validateValue(value);
+        that.saveRawValue(value);
         that.saveValue(value);
         that.setData(value);
         triggerEvents && that.triggerEvent('onSet', that.value);
@@ -262,8 +277,8 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
 
     classProto.changeAction = function(triggerEvents){
         var that = this;
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
-        if(triggerEvents && that.value != that.previousValue){
+        triggerEvents = cm.isUndefined(triggerEvents) ? true : triggerEvents;
+        if(triggerEvents && that.value !== that.previousValue){
             that.triggerEvent('onChange', that.value);
         }
         return that;
