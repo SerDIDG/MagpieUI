@@ -62,21 +62,73 @@
             overflow: hidden;
             position: absolute;
             z-index: 3;
-            background: rgba(0,0,0,0.7);
+            background: @CmUI-Overlay-Dark;
             opacity: 0;
-            .mx__transition(bottom opacity, @CmUI-Transition-Duration);
+            .mx__transition(bottom opacity visibility, @CmUI-Transition-Duration);
             .mx__position(auto, 0, -@title-bottom, 0);
 
             .inner {
                 .cm__font;
-                .cm__text-overflow;
-                padding: @PtImage-TitlePaddingTop 8px;
+                .cm__text-nowrap;
+                padding: @PtImage-TitlePaddingTop @CmIndent-XXSmall;
                 font-weight: @CmFont-Base-BoldWeight;
-                color: #fff;
+                color: @CmFont-Base-ColorOpposite;
 
                 & * {
-                    color: #fff;
+                    color: @CmFont-Base-ColorOpposite;
                 }
+            }
+
+            &.is-nowrap {
+                .inner {
+                    .cm__text-nowrap;
+                }
+            }
+
+            &.is-wrap {
+                .inner {
+                    .cm__text-wrap;
+                }
+            }
+
+            &.pull-center {
+                .inner {
+                    text-align: center;
+                }
+            }
+
+            &.pull-left {
+                .inner {
+                    text-align: left;
+                }
+            }
+
+            &.pull-right {
+                .inner {
+                    text-align: right;
+                }
+            }
+
+            &.success {
+                background: fade(@CmColor-Success-DarkDefault, @CmUI-Overlay-FadeP);
+            }
+
+            &.warning {
+                background: fade(@CmColor-Warning-DarkDefault, @CmUI-Overlay-FadeP);
+            }
+
+            &.danger {
+                background: fade(@CmColor-Danger-DarkDefault, @CmUI-Overlay-FadeP);
+            }
+
+            &.is-hide {
+                opacity: 0;
+                visibility: hidden;
+            }
+
+            &.is-show {
+                opacity: 1;
+                visibility: visible;
             }
         }
     }
@@ -86,6 +138,17 @@
         z-index: 2;
         cursor: pointer;
         .mx__position(0,0,0,0);
+    }
+
+    > .overlay {
+        position: absolute;
+        z-index: 2;
+        cursor: pointer;
+        .mx__position(0,0,0,0);
+
+        &.to-top {
+            .mx__linear-gradient(~"to top, transparent 50%, @{CmUI-Overlay-Dark} 100%");
+        }
     }
 
     > .pull {

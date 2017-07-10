@@ -18,9 +18,11 @@ cm.define('Com.Overlay', {
         'name' : '',
         'container' : 'document.body',
         'appendMode' : 'appendChild',
-        'theme' : 'default',            // transparent | default | light | dark
+        'theme' : 'default',                // transparent | default | light | dark
         'className' : '',
         'position' : 'fixed',
+        'lazy' : false,
+        'delay' : 'cm._config.loadDelay',
         'showSpinner' : true,
         'showContent' : true,
         'autoOpen' : true,
@@ -39,6 +41,7 @@ function(params){
     that.isShowSpinner = false;
     that.isShowContent = false;
     that.openInterval = null;
+    that.delayInterval = null;
 
     var init = function(){
         getLESSVariables();
@@ -77,12 +80,12 @@ function(params){
         that.setTheme(that.params['theme']);
     };
 
-    var openHelper = function(){
+    var triggerOpenEvents = function(){
         that.triggerEvent('onOpen')
             .triggerEvent('onOpenEnd');
     };
 
-    var closeHelper = function(){
+    var triggerCloseEvents = function(){
         that.triggerEvent('onClose')
             .triggerEvent('onCloseEnd');
         if(that.params['removeOnClose']){
@@ -90,59 +93,74 @@ function(params){
         }
     };
 
+    var openProcess = function(isImmediately){
+        that.isOpen = true;
+        // Set immediately animation hack
+        if(isImmediately){
+            cm.addClass(that.nodes['container'], 'is-immediately');
+        }
+        if(!cm.inDOM(that.nodes['container'])){
+            cm[that.params['appendMode']](that.nodes['container'], that.params['container']);
+        }
+        that.triggerEvent('onOpenStart');
+        cm.addClass(that.nodes['container'], 'is-open', true);
+        // Remove immediately animation hack
+        that.openInterval && clearTimeout(that.openInterval);
+        if(isImmediately){
+            that.openInterval = setTimeout(function(){
+                cm.removeClass(that.nodes['container'], 'is-immediately');
+                triggerOpenEvents();
+            }, 5);
+        }else{
+            that.openInterval = setTimeout(function(){
+                triggerOpenEvents();
+            }, that.params['duration'] + 5);
+        }
+    };
+
+    var closeProcess = function(isImmediately){
+        that.isOpen = false;
+        // Set immediately animation hack
+        if(isImmediately){
+            cm.addClass(that.nodes['container'], 'is-immediately');
+        }
+        that.triggerEvent('onCloseStart');
+        cm.removeClass(that.nodes['container'], 'is-open');
+        // Remove immediately animation hack
+        that.openInterval && clearTimeout(that.openInterval);
+        if(isImmediately){
+            that.openInterval = setTimeout(function(){
+                cm.removeClass(that.nodes['container'], 'is-immediately');
+                triggerCloseEvents();
+            }, 5);
+        }else{
+            that.openInterval = setTimeout(function(){
+                triggerCloseEvents();
+            }, that.params['duration'] + 5);
+        }
+    };
+
     /* ******* MAIN ******* */
 
     that.open = function(isImmediately){
         if(!that.isOpen){
-            that.isOpen = true;
-            // Set immediately animation hack
-            if(isImmediately){
-                cm.addClass(that.nodes['container'], 'is-immediately');
-            }
-            if(!cm.inDOM(that.nodes['container'])){
-                cm[that.params['appendMode']](that.nodes['container'], that.params['container']);
-            }
-            that.triggerEvent('onOpenStart');
-            cm.addClass(that.nodes['container'], 'is-open', true);
-            // Remove immediately animation hack
-            that.openInterval && clearTimeout(that.openInterval);
-            if(isImmediately){
-                that.openInterval = setTimeout(function(){
-                    cm.removeClass(that.nodes['container'], 'is-immediately');
-                    openHelper();
-                }, 5);
+            if(that.params['lazy'] && !isImmediately){
+                that.delayInterval && clearTimeout(that.delayInterval);
+                that.delayInterval = setTimeout(function(){
+                    openProcess(isImmediately);
+                }, that.params['delay']);
             }else{
-                that.openInterval = setTimeout(function(){
-                    openHelper();
-                }, that.params['duration'] + 5);
+                openProcess(isImmediately);
             }
         }
         return that;
     };
 
     that.close = function(isImmediately){
+        that.delayInterval && clearTimeout(that.delayInterval);
         if(that.isOpen){
-            that.isOpen = false;
-            // Set immediately animation hack
-            if(isImmediately){
-                cm.addClass(that.nodes['container'], 'is-immediately');
-            }
-            that.triggerEvent('onCloseStart');
-            cm.removeClass(that.nodes['container'], 'is-open');
-            // Remove immediately animation hack
-            that.openInterval && clearTimeout(that.openInterval);
-            if(isImmediately){
-                that.openInterval = setTimeout(function(){
-                    cm.removeClass(that.nodes['container'], 'is-immediately');
-                    closeHelper();
-                }, 5);
-            }else{
-                that.openInterval = setTimeout(function(){
-                    closeHelper();
-                }, that.params['duration'] + 5);
-            }
+            closeProcess(isImmediately);
         }
-        // Close Event
         return that;
     };
     

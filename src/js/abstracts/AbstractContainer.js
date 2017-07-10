@@ -43,6 +43,7 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
 
     classProto.construct = function(){
         var that = this;
+        that.targetNode = null;
         // Bind context to methods
         that.destructProcessHandler = that.destructProcess.bind(that);
         that.openHandler = that.open.bind(that);
@@ -120,7 +121,14 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
 
     classProto.setTarget = function(node){
         var that = this;
-        cm.addEvent(node, 'click', that.openHandler);
+        if(that.targetNode){
+            cm.removeEvent(that.targetNode, 'click', that.openHandler);
+            that.targetNode = null;
+        }
+        if(cm.isNode(node)){
+            that.targetNode = node;
+            cm.addEvent(node, 'click', that.openHandler);
+        }
         return that;
     };
 

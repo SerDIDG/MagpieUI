@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.28.7 (2017-06-01 19:44) ************ */
+/*! ************ MagpieUI v3.28.10 (2017-07-10 18:56) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1506,7 +1506,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.28.7',
+        '_version' : '3.28.10',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -6841,6 +6841,7 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
 
     classProto.construct = function(){
         var that = this;
+        that.targetNode = null;
         // Bind context to methods
         that.destructProcessHandler = that.destructProcess.bind(that);
         that.openHandler = that.open.bind(that);
@@ -6918,7 +6919,14 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
 
     classProto.setTarget = function(node){
         var that = this;
-        cm.addEvent(node, 'click', that.openHandler);
+        if(that.targetNode){
+            cm.removeEvent(that.targetNode, 'click', that.openHandler);
+            that.targetNode = null;
+        }
+        if(cm.isNode(node)){
+            that.targetNode = node;
+            cm.addEvent(node, 'click', that.openHandler);
+        }
         return that;
     };
 
@@ -18250,9 +18258,11 @@ cm.define('Com.Overlay', {
         'name' : '',
         'container' : 'document.body',
         'appendMode' : 'appendChild',
-        'theme' : 'default',            // transparent | default | light | dark
+        'theme' : 'default',                // transparent | default | light | dark
         'className' : '',
         'position' : 'fixed',
+        'lazy' : false,
+        'delay' : 'cm._config.loadDelay',
         'showSpinner' : true,
         'showContent' : true,
         'autoOpen' : true,
@@ -18271,6 +18281,7 @@ function(params){
     that.isShowSpinner = false;
     that.isShowContent = false;
     that.openInterval = null;
+    that.delayInterval = null;
 
     var init = function(){
         getLESSVariables();
@@ -18309,12 +18320,12 @@ function(params){
         that.setTheme(that.params['theme']);
     };
 
-    var openHelper = function(){
+    var triggerOpenEvents = function(){
         that.triggerEvent('onOpen')
             .triggerEvent('onOpenEnd');
     };
 
-    var closeHelper = function(){
+    var triggerCloseEvents = function(){
         that.triggerEvent('onClose')
             .triggerEvent('onCloseEnd');
         if(that.params['removeOnClose']){
@@ -18322,59 +18333,74 @@ function(params){
         }
     };
 
+    var openProcess = function(isImmediately){
+        that.isOpen = true;
+        // Set immediately animation hack
+        if(isImmediately){
+            cm.addClass(that.nodes['container'], 'is-immediately');
+        }
+        if(!cm.inDOM(that.nodes['container'])){
+            cm[that.params['appendMode']](that.nodes['container'], that.params['container']);
+        }
+        that.triggerEvent('onOpenStart');
+        cm.addClass(that.nodes['container'], 'is-open', true);
+        // Remove immediately animation hack
+        that.openInterval && clearTimeout(that.openInterval);
+        if(isImmediately){
+            that.openInterval = setTimeout(function(){
+                cm.removeClass(that.nodes['container'], 'is-immediately');
+                triggerOpenEvents();
+            }, 5);
+        }else{
+            that.openInterval = setTimeout(function(){
+                triggerOpenEvents();
+            }, that.params['duration'] + 5);
+        }
+    };
+
+    var closeProcess = function(isImmediately){
+        that.isOpen = false;
+        // Set immediately animation hack
+        if(isImmediately){
+            cm.addClass(that.nodes['container'], 'is-immediately');
+        }
+        that.triggerEvent('onCloseStart');
+        cm.removeClass(that.nodes['container'], 'is-open');
+        // Remove immediately animation hack
+        that.openInterval && clearTimeout(that.openInterval);
+        if(isImmediately){
+            that.openInterval = setTimeout(function(){
+                cm.removeClass(that.nodes['container'], 'is-immediately');
+                triggerCloseEvents();
+            }, 5);
+        }else{
+            that.openInterval = setTimeout(function(){
+                triggerCloseEvents();
+            }, that.params['duration'] + 5);
+        }
+    };
+
     /* ******* MAIN ******* */
 
     that.open = function(isImmediately){
         if(!that.isOpen){
-            that.isOpen = true;
-            // Set immediately animation hack
-            if(isImmediately){
-                cm.addClass(that.nodes['container'], 'is-immediately');
-            }
-            if(!cm.inDOM(that.nodes['container'])){
-                cm[that.params['appendMode']](that.nodes['container'], that.params['container']);
-            }
-            that.triggerEvent('onOpenStart');
-            cm.addClass(that.nodes['container'], 'is-open', true);
-            // Remove immediately animation hack
-            that.openInterval && clearTimeout(that.openInterval);
-            if(isImmediately){
-                that.openInterval = setTimeout(function(){
-                    cm.removeClass(that.nodes['container'], 'is-immediately');
-                    openHelper();
-                }, 5);
+            if(that.params['lazy'] && !isImmediately){
+                that.delayInterval && clearTimeout(that.delayInterval);
+                that.delayInterval = setTimeout(function(){
+                    openProcess(isImmediately);
+                }, that.params['delay']);
             }else{
-                that.openInterval = setTimeout(function(){
-                    openHelper();
-                }, that.params['duration'] + 5);
+                openProcess(isImmediately);
             }
         }
         return that;
     };
 
     that.close = function(isImmediately){
+        that.delayInterval && clearTimeout(that.delayInterval);
         if(that.isOpen){
-            that.isOpen = false;
-            // Set immediately animation hack
-            if(isImmediately){
-                cm.addClass(that.nodes['container'], 'is-immediately');
-            }
-            that.triggerEvent('onCloseStart');
-            cm.removeClass(that.nodes['container'], 'is-open');
-            // Remove immediately animation hack
-            that.openInterval && clearTimeout(that.openInterval);
-            if(isImmediately){
-                that.openInterval = setTimeout(function(){
-                    cm.removeClass(that.nodes['container'], 'is-immediately');
-                    closeHelper();
-                }, 5);
-            }else{
-                that.openInterval = setTimeout(function(){
-                    closeHelper();
-                }, that.params['duration'] + 5);
-            }
+            closeProcess(isImmediately);
         }
-        // Close Event
         return that;
     };
     
@@ -28034,6 +28060,83 @@ Com.FormFields.add('indent', {
     'node' : cm.node('input', {'type' : 'text'}),
     'fieldConstructor' : 'Com.AbstractFormField',
     'constructor' : 'Com.IndentInput'
+});
+cm.define('Com.InputTrigger', {
+    'extend' : 'Com.AbstractController',
+    'events' : [
+        'onChange',
+        'onInput',
+        'onClick'
+    ],
+    'params' : {
+        'renderStructure' : false,
+        'embedStructureOnRender' : false,
+        'controllerEvents' : true,
+        'type' : 'radio',
+        'triggerDefault' : false
+    }
+},
+function(params){
+    var that = this;
+    // Call parent class construct
+    Com.AbstractController.apply(that, arguments);
+});
+
+cm.getConstructor('Com.InputTrigger', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.onConstructStart = function(){
+        var that = this;
+        that.inputs = [];
+        // Bind context to methods
+        that.changeHandler = that.change.bind(that);
+        that.inputHandler = that.input.bind(that);
+        that.clickHandler = that.click.bind(that);
+    };
+
+    classProto.renderViewModel = function(){
+        var that = this;
+        // Find inputs
+        that.inputs = cm.getByAttr('type', that.params['type'], that.params['node']);
+        // Process
+        cm.forEach(that.inputs, function(node){
+            cm.addEvent(node, 'input', that.inputHandler);
+            cm.addEvent(node, 'change', that.changeHandler);
+            cm.addEvent(node, 'click', that.clickHandler);
+            // Default
+            if(that.params['triggerDefault']){
+                cm.triggerEvent(node, 'change');
+            }
+        });
+    };
+
+    classProto.change = function(e){
+        var that = this,
+            node = cm.getEventTarget(e),
+            value = node.value,
+            isCheckable = /radio|checkbox/.test(node.type),
+            isChecked = !isCheckable || (isCheckable && node.checked);
+        if(isChecked){
+            that.triggerEvent('onChange', node, value);
+        }
+        return that;
+    };
+
+    classProto.input = function(e){
+        var that = this,
+            node = cm.getEventTarget(e),
+            value = node.value;
+        that.triggerEvent('onInput', node, value);
+        return that;
+    };
+
+    classProto.click = function(e){
+        var that = this,
+            node = cm.getEventTarget(e),
+            value = node.value;
+        that.triggerEvent('onClick', node, value);
+        return that;
+    };
 });
 cm.define('Com.IntegerInput', {
     'extend' : 'Com.AbstractInput',
