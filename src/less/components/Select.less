@@ -29,7 +29,7 @@
         .mx__user-select(none);
 
         > .inner > .scroll {
-            max-height: @ComSelect-ListCount * (@CmFont-Base-LineHeight + @PtListingItems-Indent + @PtListingItems-PaddingY * 2) - @PtListingItems-Indent;
+            max-height: @ComSelect-MaxHeight;
         }
     }
 }
@@ -47,7 +47,13 @@
     }
 
     .pt__listing-items > ul {
-        max-height: @ComSelect-MultiListCount * (@CmFont-Base-LineHeight + @PtListingItems-Indent + @PtListingItems-PaddingY * 2) - @PtListingItems-Indent;
+        max-height: @ComSelect-MaxHeight;
+    }
+
+    &.is-max {
+        .pt__listing-items > ul {
+            height: @ComSelect-MaxHeight;
+        }
     }
 
     &.disabled {

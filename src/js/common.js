@@ -313,6 +313,22 @@ cm.extend = function(o1, o2, deep){
     return o2;
 };
 
+cm.extract = function(o1, o2){
+    if(!o1){
+        return o2;
+    }
+    if(!o2){
+        return o1;
+    }
+    var o;
+    if(cm.isArray(o1)){
+        o = o1.filter(function(value){
+            return !cm.inArray(o2, value);
+        });
+    }
+    return o;
+};
+
 cm.clone = function(o, cloneNode){
     var newO;
     if(!o){
@@ -591,9 +607,15 @@ cm.getEventClientPosition = function(e){
     return o;
 };
 
+cm.getElementAbove = function(e){
+    var x = e.clientX || cm._clientPosition['left'],
+        y = e.clientY || cm._clientPosition['top'];
+    return document.elementFromPoint(x, y);
+};
+
 cm.addEvent = function(el, type, handler, useCapture){
     if(el){
-        useCapture = typeof useCapture == 'undefined' ? false : useCapture;
+        useCapture = cm.isUndefined(useCapture)? false : useCapture;
         try{
             el.addEventListener(type, handler, useCapture);
         }catch(e){
@@ -3453,6 +3475,14 @@ cm.parseJSON = function(str){
         }
     }
     return o;
+};
+
+cm.stringifyJSON = function(o){
+    if(cm.isObject(o) || cm.isArray(o)){
+        return JSON.stringify(o);
+    }else {
+        return o;
+    }
 };
 
 cm.obj2URI = function(obj, prefix){

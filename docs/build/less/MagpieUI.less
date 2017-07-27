@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.28.10 (2017-07-10 18:56) ************ */
+/*! ************ MagpieUI v3.29.0 (2017-07-27 17:22) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3751,7 +3751,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.28.10';
+@CmVersion: '3.29.0';
 
 // /* ******* PATH ******* */
 
@@ -4684,6 +4684,7 @@ span.CodeMirror-selectedtext { background: none; }
 
 @ComSelect-ListCount: 7;
 @ComSelect-MultiListCount: 5;
+@ComSelect-MaxHeight: @ComSelect-MultiListCount * (@CmFont-Base-LineHeight + @PtListingItems-Indent + @PtListingItems-PaddingY * 2) - @PtListingItems-Indent;
 
 // /* ******* AUTOCOMPLETE ******* */
 
@@ -11440,6 +11441,10 @@ ul.pt__field__hint {
                     background-color: @CmColor-Primary-LightActive;
                 }
             }
+
+            &.hidden {
+                display: none;
+            }
         }
     }
 
@@ -16986,7 +16991,7 @@ ul.pt__field__hint {
         .mx__user-select(none);
 
         > .inner > .scroll {
-            max-height: @ComSelect-ListCount * (@CmFont-Base-LineHeight + @PtListingItems-Indent + @PtListingItems-PaddingY * 2) - @PtListingItems-Indent;
+            max-height: @ComSelect-MaxHeight;
         }
     }
 }
@@ -17004,7 +17009,13 @@ ul.pt__field__hint {
     }
 
     .pt__listing-items > ul {
-        max-height: @ComSelect-MultiListCount * (@CmFont-Base-LineHeight + @PtListingItems-Indent + @PtListingItems-PaddingY * 2) - @PtListingItems-Indent;
+        max-height: @ComSelect-MaxHeight;
+    }
+
+    &.is-max {
+        .pt__listing-items > ul {
+            height: @ComSelect-MaxHeight;
+        }
     }
 
     &.disabled {
@@ -18103,6 +18114,48 @@ ul.pt__field__hint {
 
 .com__toolbar {
     .cm__box;
+}
+.com__two-side__content {
+    > .inner {
+        .display-flex;
+        .cm__flex--center;
+
+        > .column {
+            width: 50%;
+            .mx__flex(1 1 auto);
+        }
+
+        > .controls {
+            min-width: @CmSize-XXLarge;
+            margin: 0 @CmIndent-Medium;
+            .mx__flex(0 1 auto);
+
+            .button {
+                .cm__box;
+                margin-bottom: @CmIndent-XXSmall;
+            }
+        }
+    }
+}
+
+@media only screen and (max-width : @CmUI-AdaptiveFrom) {
+
+    html.is-adaptive {
+        .com__two-side__content {
+            > .inner {
+                display: block;
+
+                > .column {
+                    width: auto;
+                }
+
+                > .controls {
+                    margin: @CmIndent-Medium 0;
+                }
+            }
+        }
+    }
+
 }
 /* ******* COMPONENTS: ZOOM ******* */
 

@@ -1,0 +1,37 @@
+<!DOCTYPE HTML>
+<html class="is-adaptive">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Components: Two Side Multi Select</title>
+
+    <link type="text/css" rel="stylesheet" href="../../css/MagpieUI.css">
+    <script type="text/javascript" src="../../js/MagpieUI.js"></script>
+</head>
+
+<body>
+
+<h1 class="pt__box-title">Components: Two Side Multi Select</h1>
+
+<ul class="com__tabset__content-ul" data-element="Com.Tabset">
+    <li data-node="tabs:[]:container" data-config='{"id" : "overview", "title" : "Overview"}'></li>
+
+    <li data-node="tabs:[]:container" data-config='{"id" : "methods", "title" : "Methods"}'></li>
+
+    <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
+        <select data-element="Com.TwoSideMultiSelect" name="test" multiple>
+            <option value="1">Sponge Bob</option>
+            <option value="2">User Userberg</option>
+            <option value="3" selected>User Userbergovich</option>
+            <option value="4" selected>User Userbergini</option>
+            <option value="5">User Userbergovski</option>
+            <option value="6">User Userbergoff</option>
+            <option value="7">User Userberegovoy</option>
+            <option value="8">User Userbergosyan</option>
+            <option value="9">User Userbergovenko</option>
+        </select>
+    </li>
+</ul>
+
+</body>
+</html>

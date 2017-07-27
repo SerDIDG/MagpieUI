@@ -16,6 +16,7 @@ cm.define('Com.AbstractInput', {
     'params' : {
         'embedStructure' : 'replace',
         'renderStructure' : true,
+        'renderHiddenContent' : true,
         'renderStructureContent' : true,
         'value' : '',
         'defaultValue' : '',
@@ -126,25 +127,32 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
     };
 
     classProto.validateParams = function(){
-        var that = this,
-            value;
+        var that = this;
         that.triggerEvent('onValidateParamsStart');
         // Get parameters from provided input
         if(cm.isNode(that.params['node'])){
-            // In WebKit and Blink engines js value is cutoff, use DOM value instead.
-            value = that.params['node'].getAttribute('value');
             that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
             that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
             that.params['disabled'] = that.params['node'].disabled || that.params['node'].readOnly || that.params['disabled'];
-            that.params['value'] = !cm.isEmpty(value) ?  value : that.params['value'];
             that.params['maxlength'] = that.params['node'].getAttribute('maxlength') || that.params['maxlength'];
             that.params['placeholder'] = that.params['node'].getAttribute('placeholder') || that.params['placeholder'];
         }
         that.triggerEvent('onValidateParams');
         that.triggerEvent('onValidateParamsProcess');
-        that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
+        that.validateParamsValue();
         that.triggerEvent('onValidateParamsEnd');
         return that;
+    };
+
+    classProto.validateParamsValue = function(){
+        var that = this,
+            value;
+        if(cm.isNode(that.params['node'])){
+            // In WebKit and Blink engines js value is cutoff, use DOM value instead.
+            value = that.params['node'].getAttribute('value');
+            that.params['value'] = !cm.isEmpty(value) ?  value : that.params['value'];
+        }
+        that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
     };
 
     classProto.afterRender = function(){
@@ -159,9 +167,15 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
     classProto.renderView = function(){
         var that = this;
         that.triggerEvent('onRenderViewStart');
-        that.nodes['container'] = cm.node('div', {'class' : 'com__input'},
-            that.nodes['hidden'] = cm.node('input', {'type' : 'hidden'})
-        );
+        that.nodes['container'] = cm.node('div', {'class' : 'com__input'});
+        // Hidden input holder
+        if(that.params['renderHiddenContent']){
+            that.nodes['hiddenContainer'] = that.renderHiddenContent();
+            that.nodes['hidden'] = that.nodes['hiddenContent']['input'];
+            cm.appendChild(that.nodes['hiddenContainer'], that.nodes['container']);
+        }
+        // Component content
+        cm.appendChild(that.nodes['contentContainer'], that.nodes['container']);
         if(that.params['renderStructureContent']){
             that.nodes['contentContainer'] = that.renderContent();
             cm.appendChild(that.nodes['contentContainer'], that.nodes['container']);
@@ -169,6 +183,16 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         that.triggerEvent('onRenderViewProcess');
         that.triggerEvent('onRenderViewEnd');
         return that;
+    };
+
+    classProto.renderHiddenContent = function(){
+        var that = this,
+            nodes = {};
+        that.nodes['hiddenContent'] = nodes;
+        // Structure
+        nodes['container'] = nodes['input'] = cm.node('input', {'type' : 'hidden'})
+        // Export
+        return nodes['container'];
     };
 
     classProto.renderContent = function(){
@@ -222,21 +246,26 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
 
     classProto.saveValue = function(value){
         var that = this;
-        that.previousValue = that.value;
+        that.previousValue = cm.clone(that.value);
         that.value = value;
         that.rawValue = that.tempRawValue;
         if(that.params['setHiddenInput']){
-            if(!cm.isEmpty(value)){
-                if(cm.isObject(value) || cm.isArray(value)){
-                    that.nodes['hidden'].value = JSON.stringify(value);
-                }else{
-                    that.nodes['hidden'].value = value;
-                }
-            }else{
-                that.nodes['hidden'].value = ''
-            }
+            that.saveHiddenValue(value);
         }
         return that;
+    };
+
+    classProto.saveHiddenValue = function(value){
+        var that = this;
+        if(!cm.isEmpty(value)){
+            if(cm.isObject(value) || cm.isArray(value)){
+                that.nodes['hidden'].value = cm.stringifyJSON(value);
+            }else{
+                that.nodes['hidden'].value = value;
+            }
+        }else{
+            that.nodes['hidden'].value = ''
+        }
     };
 
     classProto.saveRawValue = function(value){
@@ -244,11 +273,11 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         that.tempRawValue = value;
     };
 
-    classProto.setData = function(){
+    classProto.setData = function(value){
         var that = this;
     };
 
-    classProto.selectData = function(){
+    classProto.selectData = function(value){
         var that = this;
     };
 
@@ -278,7 +307,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
     classProto.changeAction = function(triggerEvents){
         var that = this;
         triggerEvents = cm.isUndefined(triggerEvents) ? true : triggerEvents;
-        if(triggerEvents && that.value !== that.previousValue){
+        if(triggerEvents && cm.stringifyJSON(that.value) !== cm.stringifyJSON(that.previousValue)){
             that.triggerEvent('onChange', that.value);
         }
         return that;

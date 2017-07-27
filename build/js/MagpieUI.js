@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.28.10 (2017-07-10 18:56) ************ */
+/*! ************ MagpieUI v3.29.0 (2017-07-27 17:22) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1506,7 +1506,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.28.10',
+        '_version' : '3.29.0',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -1789,6 +1789,22 @@ cm.extend = function(o1, o2, deep){
     return o2;
 };
 
+cm.extract = function(o1, o2){
+    if(!o1){
+        return o2;
+    }
+    if(!o2){
+        return o1;
+    }
+    var o;
+    if(cm.isArray(o1)){
+        o = o1.filter(function(value){
+            return !cm.inArray(o2, value);
+        });
+    }
+    return o;
+};
+
 cm.clone = function(o, cloneNode){
     var newO;
     if(!o){
@@ -2067,9 +2083,15 @@ cm.getEventClientPosition = function(e){
     return o;
 };
 
+cm.getElementAbove = function(e){
+    var x = e.clientX || cm._clientPosition['left'],
+        y = e.clientY || cm._clientPosition['top'];
+    return document.elementFromPoint(x, y);
+};
+
 cm.addEvent = function(el, type, handler, useCapture){
     if(el){
-        useCapture = typeof useCapture == 'undefined' ? false : useCapture;
+        useCapture = cm.isUndefined(useCapture)? false : useCapture;
         try{
             el.addEventListener(type, handler, useCapture);
         }catch(e){
@@ -4931,6 +4953,14 @@ cm.parseJSON = function(str){
     return o;
 };
 
+cm.stringifyJSON = function(o){
+    if(cm.isObject(o) || cm.isArray(o)){
+        return JSON.stringify(o);
+    }else {
+        return o;
+    }
+};
+
 cm.obj2URI = function(obj, prefix){
     var str = [];
     cm.forEach(obj, function(item, key){
@@ -7138,6 +7168,7 @@ cm.define('Com.AbstractInput', {
     'params' : {
         'embedStructure' : 'replace',
         'renderStructure' : true,
+        'renderHiddenContent' : true,
         'renderStructureContent' : true,
         'value' : '',
         'defaultValue' : '',
@@ -7248,25 +7279,32 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
     };
 
     classProto.validateParams = function(){
-        var that = this,
-            value;
+        var that = this;
         that.triggerEvent('onValidateParamsStart');
         // Get parameters from provided input
         if(cm.isNode(that.params['node'])){
-            // In WebKit and Blink engines js value is cutoff, use DOM value instead.
-            value = that.params['node'].getAttribute('value');
             that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
             that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
             that.params['disabled'] = that.params['node'].disabled || that.params['node'].readOnly || that.params['disabled'];
-            that.params['value'] = !cm.isEmpty(value) ?  value : that.params['value'];
             that.params['maxlength'] = that.params['node'].getAttribute('maxlength') || that.params['maxlength'];
             that.params['placeholder'] = that.params['node'].getAttribute('placeholder') || that.params['placeholder'];
         }
         that.triggerEvent('onValidateParams');
         that.triggerEvent('onValidateParamsProcess');
-        that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
+        that.validateParamsValue();
         that.triggerEvent('onValidateParamsEnd');
         return that;
+    };
+
+    classProto.validateParamsValue = function(){
+        var that = this,
+            value;
+        if(cm.isNode(that.params['node'])){
+            // In WebKit and Blink engines js value is cutoff, use DOM value instead.
+            value = that.params['node'].getAttribute('value');
+            that.params['value'] = !cm.isEmpty(value) ?  value : that.params['value'];
+        }
+        that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
     };
 
     classProto.afterRender = function(){
@@ -7281,9 +7319,15 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
     classProto.renderView = function(){
         var that = this;
         that.triggerEvent('onRenderViewStart');
-        that.nodes['container'] = cm.node('div', {'class' : 'com__input'},
-            that.nodes['hidden'] = cm.node('input', {'type' : 'hidden'})
-        );
+        that.nodes['container'] = cm.node('div', {'class' : 'com__input'});
+        // Hidden input holder
+        if(that.params['renderHiddenContent']){
+            that.nodes['hiddenContainer'] = that.renderHiddenContent();
+            that.nodes['hidden'] = that.nodes['hiddenContent']['input'];
+            cm.appendChild(that.nodes['hiddenContainer'], that.nodes['container']);
+        }
+        // Component content
+        cm.appendChild(that.nodes['contentContainer'], that.nodes['container']);
         if(that.params['renderStructureContent']){
             that.nodes['contentContainer'] = that.renderContent();
             cm.appendChild(that.nodes['contentContainer'], that.nodes['container']);
@@ -7291,6 +7335,16 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         that.triggerEvent('onRenderViewProcess');
         that.triggerEvent('onRenderViewEnd');
         return that;
+    };
+
+    classProto.renderHiddenContent = function(){
+        var that = this,
+            nodes = {};
+        that.nodes['hiddenContent'] = nodes;
+        // Structure
+        nodes['container'] = nodes['input'] = cm.node('input', {'type' : 'hidden'})
+        // Export
+        return nodes['container'];
     };
 
     classProto.renderContent = function(){
@@ -7344,21 +7398,26 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
 
     classProto.saveValue = function(value){
         var that = this;
-        that.previousValue = that.value;
+        that.previousValue = cm.clone(that.value);
         that.value = value;
         that.rawValue = that.tempRawValue;
         if(that.params['setHiddenInput']){
-            if(!cm.isEmpty(value)){
-                if(cm.isObject(value) || cm.isArray(value)){
-                    that.nodes['hidden'].value = JSON.stringify(value);
-                }else{
-                    that.nodes['hidden'].value = value;
-                }
-            }else{
-                that.nodes['hidden'].value = ''
-            }
+            that.saveHiddenValue(value);
         }
         return that;
+    };
+
+    classProto.saveHiddenValue = function(value){
+        var that = this;
+        if(!cm.isEmpty(value)){
+            if(cm.isObject(value) || cm.isArray(value)){
+                that.nodes['hidden'].value = cm.stringifyJSON(value);
+            }else{
+                that.nodes['hidden'].value = value;
+            }
+        }else{
+            that.nodes['hidden'].value = ''
+        }
     };
 
     classProto.saveRawValue = function(value){
@@ -7366,11 +7425,11 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         that.tempRawValue = value;
     };
 
-    classProto.setData = function(){
+    classProto.setData = function(value){
         var that = this;
     };
 
-    classProto.selectData = function(){
+    classProto.selectData = function(value){
         var that = this;
     };
 
@@ -7400,7 +7459,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
     classProto.changeAction = function(triggerEvents){
         var that = this;
         triggerEvents = cm.isUndefined(triggerEvents) ? true : triggerEvents;
-        if(triggerEvents && that.value !== that.previousValue){
+        if(triggerEvents && cm.stringifyJSON(that.value) !== cm.stringifyJSON(that.previousValue)){
             that.triggerEvent('onChange', that.value);
         }
         return that;
@@ -28883,7 +28942,7 @@ cm.define('Com.Select', {
     ],
     'params' : {
         'select' : null,                        // Deprecated, use 'node' parameter instead.
-        'node' : cm.Node('select'),             // Html select node to decorate.
+        'node' : cm.node('select'),             // Html select node to decorate.
         'container' : null,                    // Component container that is required in case content is rendered without available select.
         'name' : '',
         'embedStructure' : 'replace',
@@ -29031,7 +29090,7 @@ function(params){
         // Placeholder
         if(!cm.isEmpty(that.params['placeholder'])){
             nodes['items'].appendChild(
-                nodes['placeholder'] = cm.Node('li', {'class' : 'title'}, that.params['placeholder'])
+                nodes['placeholder'] = cm.node('li', {'class' : 'title'}, that.params['placeholder'])
             );
         }
         /* *** RENDER OPTIONS *** */
@@ -29044,25 +29103,25 @@ function(params){
     };
 
     var renderSingle = function(){
-        nodes['container'] = cm.Node('div', {'class' : 'com__select'},
-            nodes['hidden'] = cm.Node('select', {'class' : 'display-none'}),
-            nodes['target'] = cm.Node('div', {'class' : 'pt__input'},
-                nodes['text'] = cm.Node('input', {'type' : 'text', 'readOnly' : 'true'}),
-                nodes['arrow'] = cm.Node('div', {'class' : that.params['icons']['arrow']})
+        nodes['container'] = cm.node('div', {'class' : 'com__select'},
+            nodes['hidden'] = cm.node('select', {'class' : 'display-none'}),
+            nodes['target'] = cm.node('div', {'class' : 'pt__input'},
+                nodes['text'] = cm.node('input', {'type' : 'text', 'readOnly' : 'true'}),
+                nodes['arrow'] = cm.node('div', {'class' : that.params['icons']['arrow']})
             ),
-            nodes['scroll'] = cm.Node('div', {'class' : 'pt__listing-items'},
-                nodes['items'] = cm.Node('ul')
+            nodes['scroll'] = cm.node('div', {'class' : 'pt__listing-items'},
+                nodes['items'] = cm.node('ul')
             )
         );
         cm.addClass(nodes['target'], that.params['inputClassName']);
     };
 
     var renderMultiple = function(){
-        nodes['container'] = cm.Node('div', {'class' : 'com__select-multi'},
-            nodes['hidden'] = cm.Node('select', {'class' : 'display-none', 'multiple' : true}),
-            nodes['inner'] = cm.Node('div', {'class' : 'inner'},
-                nodes['scroll'] = cm.Node('div', {'class' : 'pt__listing-items'},
-                    nodes['items'] = cm.Node('ul')
+        nodes['container'] = cm.node('div', {'class' : 'com__select-multi'},
+            nodes['hidden'] = cm.node('select', {'class' : 'display-none', 'multiple' : true}),
+            nodes['inner'] = cm.node('div', {'class' : 'inner'},
+                nodes['scroll'] = cm.node('div', {'class' : 'pt__listing-items'},
+                    nodes['items'] = cm.node('ul')
                 )
             )
         );
@@ -29156,7 +29215,7 @@ function(params){
         var myChildes = that.params['node'].childNodes;
         cm.forEach(myChildes, function(myChild, i){
             if(cm.isElementNode(myChild)){
-                if(myChild.tagName.toLowerCase() == 'optgroup'){
+                if(myChild.tagName.toLowerCase() === 'optgroup'){
                     var myOptionsNodes = myChild.querySelectorAll('option');
                     var myOptions = [];
                     cm.forEach(myOptionsNodes, function(optionNode){
@@ -29167,7 +29226,7 @@ function(params){
                         });
                     });
                     renderGroup(myChild.getAttribute('label'), myOptions);
-                }else if(myChild.tagName.toLowerCase() == 'option'){
+                }else if(myChild.tagName.toLowerCase() === 'option'){
                     renderOption({
                         'value' : myChild.value,
                         'text' : myChild.innerHTML,
@@ -29187,13 +29246,13 @@ function(params){
             'options' : myOptions
         };
         // Structure
-        item['optgroup'] = cm.Node('optgroup', {'label' : myName});
-        item['container'] = cm.Node('li', {'class' : 'group'},
-            item['items'] = cm.Node('ul', {'class' : 'pt__listing-items'})
+        item['optgroup'] = cm.node('optgroup', {'label' : myName});
+        item['container'] = cm.node('li', {'class' : 'group'},
+            item['items'] = cm.node('ul', {'class' : 'pt__listing-items'})
         );
         if(!cm.isEmpty(myName)){
             cm.insertFirst(
-                cm.Node('div', {'class' : 'title', 'innerHTML' : myName}),
+                cm.node('div', {'class' : 'title', 'innerHTML' : myName}),
                 item['container']
             );
         }
@@ -29217,6 +29276,7 @@ function(params){
         }
         // Config
         item = cm.merge({
+            'hidden' : false,
             'selected' : false,
             'value' : '',
             'text' : '',
@@ -29226,10 +29286,10 @@ function(params){
         // Add link to group
         item['group'] = group;
         // Structure
-        item['node'] = cm.Node('li', {'class' : item['className']},
-            cm.Node('a', {'innerHTML' : item['text']})
+        item['node'] = cm.node('li', {'class' : item['className']},
+            cm.node('a', {'innerHTML' : item['text']})
         );
-        item['option'] = cm.Node('option', {'value' : item['value'], 'innerHTML' : item['text']});
+        item['option'] = cm.node('option', {'value' : item['value'], 'innerHTML' : item['text']});
         // Label onlick event
         cm.addEvent(item['node'], 'click', function(){
             if(!that.disabled){
@@ -29252,7 +29312,7 @@ function(params){
     };
 
     var editOption = function(option, text){
-        var value = typeof option['value'] != 'undefined'? option['value'] : option['text'];
+        var value = !cm.isUndefined(option['value'])? option['value'] : option['text'];
         option['text'] = text;
         option['node'].innerHTML = text;
         option['option'].innerHTML = text;
@@ -29263,7 +29323,7 @@ function(params){
     };
 
     var removeOption = function(option){
-        var value = typeof option['value'] != 'undefined'? option['value'] : option['text'];
+        var value = !cm.isUndefined(option['value'])? option['value'] : option['text'];
         // Remove option from list and array
         cm.remove(option['node']);
         cm.remove(option['option']);
@@ -29306,21 +29366,19 @@ function(params){
     };
 
     var setMultiple = function(option){
-        var value = typeof option['value'] != 'undefined'? option['value'] : option['text'];
+        var value = !cm.isUndefined(option['value'])? option['value'] : option['text'];
 
         if(option['selected']){
             deselectMultiple(option);
         }else{
             active.push(value);
-            option['option'].selected = true;
-            option['selected'] = true;
-            cm.addClass(option['node'], 'active');
+            setOption(option);
         }
     };
 
     var setSingle = function(option){
         oldActive = active;
-        active = typeof option['value'] != 'undefined'? option['value'] : option['text'];
+        active = !cm.isUndefined(option['value'])? option['value'] : option['text'];
         optionsList.forEach(function(item){
             cm.removeClass(item['node'], 'active');
         });
@@ -29329,24 +29387,30 @@ function(params){
         }else{
             nodes['text'].value = cm.decode(option['text']);
         }
-        option['option'].selected = true;
         nodes['hidden'].value = active;
+        setOption(option);
+    };
+
+    var setOption = function(option){
+        option['option'].selected = true;
+        option['selected'] = true;
         cm.addClass(option['node'], 'active');
     };
 
     var deselectMultiple = function(option){
-        var value = typeof option['value'] != 'undefined'? option['value'] : option['text'];
-
+        var value = !cm.isUndefined(option['value'])? option['value'] : option['text'];
+        // Filter selected
         active = active.filter(function(item){
             return value != item;
         });
+        // Deselect option
         option['option'].selected = false;
         option['selected'] = false;
         cm.removeClass(option['node'], 'active');
     };
 
     var onChange = function(){
-        if(that.params['multiple'] || active != oldActive){
+        if(cm.stringifyJSON(active) !== cm.stringifyJSON(oldActive)){
             that.triggerEvent('onChange', active);
         }
     };
@@ -29382,7 +29446,7 @@ function(params){
 
     var blockDocumentArrows = function(e){
         e = cm.getEvent(e);
-        if(e.keyCode == 38 || e.keyCode == 40){
+        if(e.keyCode === 38 || e.keyCode === 40){
             cm.preventDefault(e);
         }
     };
@@ -29404,9 +29468,9 @@ function(params){
     };
 
     that.set = function(value, triggerEvents){
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        triggerEvents = cm.isUndefined(triggerEvents)? true : triggerEvents;
         // Select option and execute events
-        if(typeof value != 'undefined'){
+        if(!cm.isUndefined(value)){
             if(cm.isArray(value)){
                 cm.forEach(value, function(item){
                     if(options[item]){
@@ -29425,7 +29489,7 @@ function(params){
     };
 
     that.reset = function(triggerEvents){
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        triggerEvents = cm.isUndefined(triggerEvents)? true : triggerEvents;
         if(that.params['multiple']){
             that.deselectAll(triggerEvents);
         }else{
@@ -29437,7 +29501,7 @@ function(params){
     };
 
     that.selectAll = function(triggerEvents){
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        triggerEvents = cm.isUndefined(triggerEvents)? true : triggerEvents;
         if(that.params['multiple']){
             cm.forEach(options, deselectMultiple);
             cm.forEach(options, setMultiple);
@@ -29450,7 +29514,7 @@ function(params){
     };
 
     that.deselectAll = function(triggerEvents){
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        triggerEvents = cm.isUndefined(triggerEvents)? true : triggerEvents;
         if(that.params['multiple']){
             cm.forEach(options, deselectMultiple);
             if(triggerEvents){
@@ -29485,14 +29549,14 @@ function(params){
     };
 
     that.editOption = function(value, text){
-        if(typeof value != 'undefined' && options[value]){
+        if(!cm.isUndefined(value) && options[value]){
             editOption(options[value], text);
         }
         return that;
     };
 
     that.removeOption = function(value){
-        if(typeof value != 'undefined' && options[value]){
+        if(!cm.isUndefined(value) && options[value]){
             removeOption(options[value]);
         }
         // Enable / Disable Menu
@@ -29510,7 +29574,7 @@ function(params){
     };
 
     that.getOption = function(value){
-        if(typeof value != 'undefined' && options[value]){
+        if(!cm.isUndefined(value) && options[value]){
             return options[value];
         }
         return null;
@@ -29525,6 +29589,24 @@ function(params){
             });
         });
         return result;
+    };
+
+    that.hideOption = function(value){
+        var option;
+        if(!cm.isUndefined(value) && options[value]){
+            option = options[value];
+            option['hidden'] = true;
+            cm.addClass(option['node'], 'hidden');
+        }
+    };
+
+    that.showOption = function(value){
+        var option;
+        if(!cm.isUndefined(value) && options[value]){
+            option = options[value];
+            option['hidden'] = false;
+            cm.removeClass(option['node'], 'hidden');
+        }
     };
 
     that.disable = function(){
@@ -30413,4 +30495,249 @@ Com.FormFields.add('tint-range', {
     'node' : cm.node('input', {'type' : 'text'}),
     'fieldConstructor' : 'Com.AbstractFormField',
     'constructor' : 'Com.TintRange'
+});
+cm.define('Com.TwoSideMultiSelect', {
+    'extend' : 'Com.AbstractInput',
+    'params' : {
+        'controllerEvents' : true,
+        'className' : 'com__two-side-multi-select',
+        'setHiddenInput' : true,
+        'defaultValue' : [],
+        'options' : [],
+        'selectConstructor' : 'Com.Select',
+        'selectParams' : {
+            'node' : cm.node('select', {'multiple' : true}),
+            'multiple' : true,
+            'className' : 'is-max'
+        }
+    },
+    'strings' : {
+        'add' : '>>',
+        'remove' : '<<',
+        'addTitle' : 'Add',
+        'removeTitle' : 'Remove'
+    }
+},
+function(params){
+    var that = this;
+    // Call parent class construct
+    Com.AbstractInput.apply(that, arguments);
+});
+
+cm.getConstructor('Com.TwoSideMultiSelect', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.onConstructStart = function(){
+        var that = this;
+        // Variables
+        that.value = [];
+        that.options = {};
+        // Binds
+        that.keyPressHandler = that.keyPressHelper.bind(that);
+        that.moveToLeftHandler = that.moveToLeft.bind(that);
+        that.moveToRightHandler = that.moveToRight.bind(that);
+    };
+
+    classProto.validateParamsValue = function(){
+        var that = this,
+            value;
+        if(cm.isNode(that.params['node'])){
+            value = cm.getSelectValue(that.params['node']);
+            that.params['value'] = !cm.isEmpty(value) ?  value : that.params['value'];
+        }
+        that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
+    };
+
+    classProto.onSetEvents = function(){
+        var that = this;
+        cm.addEvent(window, 'keypress', that.keyPressHandler);
+    };
+
+    classProto.onUnsetEvents = function(){
+        var that = this;
+        cm.removeEvent(window, 'keypress', that.keyPressHandler);
+    };
+
+    /*** VIEW MODEL ***/
+
+    classProto.renderHiddenContent = function(){
+        var that = this,
+            nodes = {};
+        that.nodes['hiddenContent'] = nodes;
+        // Structure
+        nodes['container'] = nodes['input'] = cm.node('select', {'class' : 'display-none', 'multiple' : true});
+        // Export
+        return nodes['container'];
+    };
+
+    classProto.renderContent = function(){
+        var that = this,
+            nodes = {};
+        that.nodes['content'] = nodes;
+        that.triggerEvent('onRenderContentStart');
+        // Structure
+        nodes['container'] = cm.node('div', {'class' : 'com__two-side__content'},
+            nodes['inner'] = cm.node('div', {'class' : 'inner'},
+                nodes['firstColumn'] = cm.node('div', {'class' : 'column column--first'}),
+                nodes['controls'] = cm.node('div', {'class' : 'controls'},
+                    nodes['moveToRight'] = cm.node('button', {'class' : 'button button-primary is-box', 'title' : that.lang('addTitle')}, that.lang('add')),
+                    nodes['moveToLeft'] = cm.node('button', {'class' : 'button button-primary is-box', 'title' : that.lang('removeTitle')}, that.lang('remove'))
+                ),
+                nodes['secondColumn'] = cm.node('div', {'class' : 'column column--second'})
+            )
+        );
+        // Events
+        that.triggerEvent('onRenderContentProcess');
+        cm.addEvent(nodes['moveToRight'], 'click', that.moveToRightHandler);
+        cm.addEvent(nodes['moveToLeft'], 'click', that.moveToLeftHandler);
+        that.triggerEvent('onRenderContentEnd');
+        // Export
+        return nodes['container'];
+    };
+
+    classProto.renderViewModel = function(){
+        var that = this;
+        // Call parent method
+        _inherit.prototype.renderViewModel.apply(that, arguments);
+        // Render selects
+        cm.getConstructor(that.params['selectConstructor'], function(classConstructor){
+            that.components['firstSelect'] = new classConstructor(
+                cm.merge(that.params['selectParams'], {
+                    'container' : that.nodes['content']['firstColumn']
+                })
+            );
+            that.components['secondSelect'] = new classConstructor(
+                cm.merge(that.params['selectParams'], {
+                    'container' : that.nodes['content']['secondColumn']
+                })
+            );
+        });
+        // Collect and render options
+        that.collectOptions();
+        // Render data options
+        cm.forEach(that.params['options'], function(item){
+            that.renderOption(item);
+        });
+    };
+
+    /*** OPTIONS ***/
+
+    classProto.collectOptions = function(){
+        var that = this;
+        cm.forEach(that.params['node'].options, function(item){
+            that.renderOption({
+                'value' : item.value,
+                'text' : item.innerHTML
+            });
+        });
+    };
+
+    classProto.renderOption = function(item){
+        var that = this;
+        // Validate
+        item = cm.merge({
+            'value' : null,
+            'text' : null
+        }, item);
+        item['value'] = !cm.isUndefined(item['value'])? item['value'] : item['text'];
+        // Render hidden option
+        item['option'] = cm.node('option', {'value' : item['value'], 'innerHTML' : item['text']});
+        that.nodes['hidden'].appendChild(item['option']);
+        // Add options
+        that.components['firstSelect'].addOption(item['value'], item['text']);
+        that.options[item['value']] = item;
+    };
+
+    /*** MOVE ***/
+
+    classProto.moveToLeft = function(){
+        var that = this,
+            selected = that.components['secondSelect'].get();
+        if(!cm.isEmpty(selected)){
+            that.components['secondSelect'].deselectAll();
+            selected = cm.extract(that.value, selected);
+            that.set(selected, true);
+        }
+    };
+
+    classProto.moveToRight = function(){
+        var that = this,
+            selected = that.components['firstSelect'].get();
+        if(!cm.isEmpty(selected)){
+            that.components['firstSelect'].deselectAll();
+            selected = cm.extend(that.value, selected);
+            that.set(selected, true);
+        }
+    };
+
+    classProto.moveOptionToLeft = function(item){
+        var that = this;
+        if(item['selected']){
+            item['selected'] = false;
+            that.components['secondSelect'].removeOption(item['value']);
+            that.components['firstSelect'].showOption(item['value']);
+        }
+    };
+
+    classProto.moveOptionToRight = function(item){
+        var that = this;
+        if(!item['selected']){
+            item['selected'] = true;
+            that.components['secondSelect'].addOption(item['value'], item['text']);
+            that.components['firstSelect'].hideOption(item['value']);
+        }
+    };
+
+    /*** EVENTS ***/
+
+    classProto.keyPressHelper = function(e){
+        var that = this,
+            target = cm.getElementAbove(e);
+        cm.handleKey(e, 'enter', function(e){
+            if(cm.isParent(that.nodes['content']['firstColumn'], target, true)){
+                cm.preventDefault(e);
+                that.moveToRight();
+            }
+            if(cm.isParent(that.nodes['content']['secondColumn'], target, true)){
+                cm.preventDefault(e);
+                that.moveToLeft();
+            }
+        });
+    };
+
+    /*** VALUE ***/
+
+    classProto.saveHiddenValue = function(value){
+        var that = this,
+            isInArray,
+            isSelected;
+        cm.forEach(that.options, function(item){
+            if(!cm.isEmpty(value)){
+                isInArray = cm.isArray(value) && cm.inArray(value, item['value']);
+                isSelected = isInArray || item['value'] === value;
+                item['option'].selected = isSelected;
+            }else{
+                item['option'].selected = false;
+            }
+        });
+    };
+
+    classProto.setData = function(value){
+        var that = this,
+            isInArray,
+            isSelected;
+        cm.forEach(that.options, function(item){
+            if(!cm.isEmpty(value)){
+                isInArray = cm.isArray(value) && cm.inArray(value, item['value']);
+                isSelected = isInArray || item['value'] === value;
+                if(isSelected){
+                    that.moveOptionToRight(item);
+                }else{
+                    that.moveOptionToLeft(item);
+                }
+            }else{
+                that.moveOptionToLeft(item);
+            }
+        });
+    };
 });

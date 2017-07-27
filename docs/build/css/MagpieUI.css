@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.28.10 (2017-07-10 18:56) ************ */
+/*! ************ MagpieUI v3.29.0 (2017-07-27 17:22) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.5.0
@@ -3433,8 +3433,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.28.10');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.28.10') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.28.10') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.28.10') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.28.10#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.29.0');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.29.0') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.29.0') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.29.0') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.29.0#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -12137,6 +12137,9 @@ ul.pt__field__hint li:before {
 .pt__listing-items ul li.active > .inner {
   background-color: #d8e8f8;
 }
+.pt__listing-items ul li.hidden {
+  display: none;
+}
 .pt__listing-items:not(.disabled) ul li > a:hover,
 .pt__listing-items:not(.disabled) ul li > .inner:hover {
   background-color: #f2f2f2;
@@ -18218,7 +18221,7 @@ html.ie9 .com__palette .b-range {
   user-select: none;
 }
 .com__tooltip.com__select__tooltip > .inner > .scroll {
-  max-height: 160px;
+  max-height: 114px;
 }
 /* Select Multiple */
 .com__select-multi {
@@ -18312,6 +18315,9 @@ html.ie9 .com__palette .b-range {
 }
 .com__select-multi .pt__listing-items > ul {
   max-height: 114px;
+}
+.com__select-multi.is-max .pt__listing-items > ul {
+  height: 114px;
 }
 .com__select-multi.disabled .inner {
   background-color: #fafafa;
@@ -19427,6 +19433,67 @@ html.ie9 .com__timeselect > .inner > .sep {
 .com__toolbar.is-last,
 .com__toolbar:last-child {
   margin-bottom: 0;
+}
+.com__two-side__content > .inner {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+  -webkit-align-content: center;
+  align-content: center;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+}
+.com__two-side__content > .inner > .column {
+  width: 50%;
+  -webkit-flex: 1 1 auto;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+}
+.com__two-side__content > .inner > .controls {
+  min-width: 64px;
+  margin: 0 24px;
+  -webkit-flex: 0 1 auto;
+  -ms-flex: 0 1 auto;
+  flex: 0 1 auto;
+}
+.com__two-side__content > .inner > .controls .button,
+.com__two-side__content > .inner > .controls input[type="button"],
+.com__two-side__content > .inner > .controls input[type="submit"],
+.com__two-side__content > .inner > .controls input[type="reset"],
+.com__two-side__content > .inner > .controls button {
+  margin-bottom: 24px;
+  margin-bottom: 8px;
+}
+.com__two-side__content > .inner > .controls .button.bottom,
+.com__two-side__content > .inner > .controls .button.is-last,
+.com__two-side__content > .inner > .controls .button:last-child,
+.com__two-side__content > .inner > .controls input[type="button"].bottom,
+.com__two-side__content > .inner > .controls input[type="button"].is-last,
+.com__two-side__content > .inner > .controls input[type="button"]:last-child,
+.com__two-side__content > .inner > .controls input[type="submit"].bottom,
+.com__two-side__content > .inner > .controls input[type="submit"].is-last,
+.com__two-side__content > .inner > .controls input[type="submit"]:last-child,
+.com__two-side__content > .inner > .controls input[type="reset"].bottom,
+.com__two-side__content > .inner > .controls input[type="reset"].is-last,
+.com__two-side__content > .inner > .controls input[type="reset"]:last-child,
+.com__two-side__content > .inner > .controls button.bottom,
+.com__two-side__content > .inner > .controls button.is-last,
+.com__two-side__content > .inner > .controls button:last-child {
+  margin-bottom: 0;
+}
+@media only screen and (max-width: 768px) {
+  html.is-adaptive .com__two-side__content > .inner {
+    display: block;
+  }
+  html.is-adaptive .com__two-side__content > .inner > .column {
+    width: auto;
+  }
+  html.is-adaptive .com__two-side__content > .inner > .controls {
+    margin: 24px 0;
+  }
 }
 /* ******* COMPONENTS: ZOOM ******* */
 .com__zoom {

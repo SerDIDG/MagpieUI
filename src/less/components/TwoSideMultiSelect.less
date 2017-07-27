@@ -1,0 +1,42 @@
+.com__two-side__content {
+    > .inner {
+        .display-flex;
+        .cm__flex--center;
+
+        > .column {
+            width: 50%;
+            .mx__flex(1 1 auto);
+        }
+
+        > .controls {
+            min-width: @CmSize-XXLarge;
+            margin: 0 @CmIndent-Medium;
+            .mx__flex(0 1 auto);
+
+            .button {
+                .cm__box;
+                margin-bottom: @CmIndent-XXSmall;
+            }
+        }
+    }
+}
+
+@media only screen and (max-width : @CmUI-AdaptiveFrom) {
+
+    html.is-adaptive {
+        .com__two-side__content {
+            > .inner {
+                display: block;
+
+                > .column {
+                    width: auto;
+                }
+
+                > .controls {
+                    margin: @CmIndent-Medium 0;
+                }
+            }
+        }
+    }
+
+}
