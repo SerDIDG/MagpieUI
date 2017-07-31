@@ -12,7 +12,8 @@
         margin-bottom: 0;
     }
 
-    > dt {
+    > dt,
+    > .field__title {
         width: @CmForm-FieldTitleWidth;
         display: block;
         margin: 0;
@@ -21,7 +22,8 @@
         line-height: @CmFont-Base-LineHeight;
     }
 
-    > dd {
+    > dd,
+    > .field__descr {
         display: block;
         margin: 0 0 0 (@CmForm-FieldTitleWidth + @CmForm-FieldIndent);
         padding: 0;
@@ -34,7 +36,8 @@
 
     &.error,
     &.danger {
-        > dt {
+        > dt,
+        > .field__title {
             color: @CmColor-Danger-DarkDefault;
         }
 
@@ -49,7 +52,8 @@
 
     &.ok,
     &.success {
-        > dt {
+        > dt,
+        > .field__title {
             color: @CmColor-Success-DarkDefault;
         }
 
@@ -63,17 +67,20 @@
     }
 
     &.is-text {
-        > dt {
+        > dt,
+        > .field__title {
             padding: 0;
         }
     }
 
     &.is-no-label {
-        > dt {
+        > dt,
+        > .field__title {
             display: none;
         }
 
-        > dd {
+        > dd,
+        > .field__descr {
             margin-left: 0;
         }
     }
@@ -82,12 +89,14 @@
     &.is-form-box {
         .cm__box;
 
-        > dt {
+        > dt,
+        > .field__title {
             width: auto;
             float: none;
         }
 
-        > dd {
+        > dd,
+        > .field__descr {
             margin: 0 0 @CmForm-FieldInnerIndent 0;
             padding: 0;
 
@@ -97,7 +106,8 @@
         }
 
         &.is-no-label {
-            > dt {
+            > dt,
+            > .field__title {
                 display: none;
             }
         }
@@ -124,7 +134,8 @@
     }
 
     &.align-center {
-        > dt {
+        > dt,
+        > .field__title {
             text-align: center;
         }
     }
@@ -172,12 +183,14 @@ ul.pt__field__hint {
 
     html.is-adaptive {
         .pt__field {
-            > dt {
+            > dt,
+            > .field__title {
                 width: auto;
                 float: none;
             }
 
-            > dd {
+            > dd,
+            > .field__descr {
                 margin: 0 0 @CmForm-FieldInnerIndent;
 
                 &:last-child {

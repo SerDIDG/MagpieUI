@@ -6,6 +6,7 @@ cm.define('Com.TwoSideMultiSelect', {
         'setHiddenInput' : true,
         'defaultValue' : [],
         'options' : [],
+        'showLabels' : false,
         'selectConstructor' : 'Com.Select',
         'selectParams' : {
             'node' : cm.node('select', {'multiple' : true}),
@@ -14,6 +15,8 @@ cm.define('Com.TwoSideMultiSelect', {
         }
     },
     'strings' : {
+        'firstLabel' : 'Left:',
+        'secondLabel' : 'Right:',
         'add' : '>>',
         'remove' : '<<',
         'addTitle' : 'Add',
@@ -88,6 +91,18 @@ cm.getConstructor('Com.TwoSideMultiSelect', function(classConstructor, className
                 nodes['secondColumn'] = cm.node('div', {'class' : 'column column--second'})
             )
         );
+        // Labels
+        if(that.params['showLabels']){
+            cm.appendChild(
+                cm.node('div', {'class' : 'label'}, that.lang('firstLabel')),
+                nodes['firstColumn']
+            );
+            cm.appendChild(
+                cm.node('div', {'class' : 'label'}, that.lang('secondLabel')),
+                nodes['secondColumn']
+            );
+            cm.addClass(nodes['container'], 'has-labels');
+        }
         // Events
         that.triggerEvent('onRenderContentProcess');
         cm.addEvent(nodes['moveToRight'], 'click', that.moveToRightHandler);

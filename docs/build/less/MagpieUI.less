@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.29.1 (2017-07-31 17:46) ************ */
+/*! ************ MagpieUI v3.29.2 (2017-07-31 19:47) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3751,7 +3751,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.29.1';
+@CmVersion: '3.29.2';
 
 // /* ******* PATH ******* */
 
@@ -9386,7 +9386,8 @@ button {
         margin-bottom: 0;
     }
 
-    > dt {
+    > dt,
+    > .field__title {
         width: @CmForm-FieldTitleWidth;
         display: block;
         margin: 0;
@@ -9395,7 +9396,8 @@ button {
         line-height: @CmFont-Base-LineHeight;
     }
 
-    > dd {
+    > dd,
+    > .field__descr {
         display: block;
         margin: 0 0 0 (@CmForm-FieldTitleWidth + @CmForm-FieldIndent);
         padding: 0;
@@ -9408,7 +9410,8 @@ button {
 
     &.error,
     &.danger {
-        > dt {
+        > dt,
+        > .field__title {
             color: @CmColor-Danger-DarkDefault;
         }
 
@@ -9423,7 +9426,8 @@ button {
 
     &.ok,
     &.success {
-        > dt {
+        > dt,
+        > .field__title {
             color: @CmColor-Success-DarkDefault;
         }
 
@@ -9437,17 +9441,20 @@ button {
     }
 
     &.is-text {
-        > dt {
+        > dt,
+        > .field__title {
             padding: 0;
         }
     }
 
     &.is-no-label {
-        > dt {
+        > dt,
+        > .field__title {
             display: none;
         }
 
-        > dd {
+        > dd,
+        > .field__descr {
             margin-left: 0;
         }
     }
@@ -9456,12 +9463,14 @@ button {
     &.is-form-box {
         .cm__box;
 
-        > dt {
+        > dt,
+        > .field__title {
             width: auto;
             float: none;
         }
 
-        > dd {
+        > dd,
+        > .field__descr {
             margin: 0 0 @CmForm-FieldInnerIndent 0;
             padding: 0;
 
@@ -9471,7 +9480,8 @@ button {
         }
 
         &.is-no-label {
-            > dt {
+            > dt,
+            > .field__title {
                 display: none;
             }
         }
@@ -9498,7 +9508,8 @@ button {
     }
 
     &.align-center {
-        > dt {
+        > dt,
+        > .field__title {
             text-align: center;
         }
     }
@@ -9546,12 +9557,14 @@ ul.pt__field__hint {
 
     html.is-adaptive {
         .pt__field {
-            > dt {
+            > dt,
+            > .field__title {
                 width: auto;
                 float: none;
             }
 
-            > dd {
+            > dd,
+            > .field__descr {
                 margin: 0 0 @CmForm-FieldInnerIndent;
 
                 &:last-child {
@@ -18122,7 +18135,12 @@ ul.pt__field__hint {
 
         > .column {
             width: 50%;
+            overflow: hidden;
             .mx__flex(1 1 auto);
+
+            > .label {
+                margin: 0 0 @CmForm-FieldInnerIndent 0;
+            }
         }
 
         > .controls {
@@ -18133,6 +18151,15 @@ ul.pt__field__hint {
             .button {
                 .cm__box;
                 margin-bottom: @CmIndent-XXSmall;
+            }
+        }
+    }
+
+    &.has-labels {
+        > .inner {
+            > .controls {
+                @padding: @CmForm-FieldInnerIndent + @CmFont-Base-LineHeight;
+                padding: @padding 0 0 0;
             }
         }
     }
@@ -18151,6 +18178,14 @@ ul.pt__field__hint {
 
                 > .controls {
                     margin: @CmIndent-Medium 0;
+                }
+            }
+
+            &.has-labels {
+                > .inner {
+                    > .controls {
+                        padding: 0;
+                    }
                 }
             }
         }

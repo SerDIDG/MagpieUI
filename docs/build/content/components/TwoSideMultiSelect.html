@@ -19,7 +19,23 @@
     <li data-node="tabs:[]:container" data-config='{"id" : "methods", "title" : "Methods"}'></li>
 
     <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
-        <select data-element="Com.TwoSideMultiSelect" name="test" multiple>
+        <h2>Default:</h2>
+        <select name="test" multiple data-element="Com.TwoSideMultiSelect">
+            <option value="1">Sponge Bob</option>
+            <option value="2">User Userberg</option>
+            <option value="3" selected>User Userbergovich</option>
+            <option value="4" selected>User Userbergini</option>
+            <option value="5">User Userbergovski</option>
+            <option value="6">User Userbergoff</option>
+            <option value="7">User Userberegovoy</option>
+            <option value="8">User Userbergosyan</option>
+            <option value="9">User Userbergovenko</option>
+        </select>
+
+        <hr>
+
+        <h2>Labels:</h2>
+        <select name="test" multiple data-element="Com.TwoSideMultiSelect" data-config='{"showLabels" : true, "langs" : {"firstLabel" : "All Users:", "secondLabel" : "Admins:"}}'>
             <option value="1">Sponge Bob</option>
             <option value="2">User Userberg</option>
             <option value="3" selected>User Userbergovich</option>

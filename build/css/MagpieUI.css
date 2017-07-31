@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.29.1 (2017-07-31 17:46) ************ */
+/*! ************ MagpieUI v3.29.2 (2017-07-31 19:47) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.5.0
@@ -3433,8 +3433,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.29.1');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.29.1') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.29.1') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.29.1') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.29.1#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.29.2');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.29.2') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.29.2') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.29.2') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.29.2#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -9033,7 +9033,8 @@ button.is-hidden {
 .pt__field:last-child {
   margin-bottom: 0;
 }
-.pt__field > dt {
+.pt__field > dt,
+.pt__field > .field__title {
   width: 156px;
   display: block;
   margin: 0;
@@ -9041,17 +9042,21 @@ button.is-hidden {
   float: left;
   line-height: 18px;
 }
-.pt__field > dd {
+.pt__field > dd,
+.pt__field > .field__descr {
   display: block;
   margin: 0 0 0 172px;
   padding: 0;
   position: relative;
 }
-.pt__field > dd:first-child {
+.pt__field > dd:first-child,
+.pt__field > .field__descr:first-child {
   margin: 0;
 }
 .pt__field.error > dt,
-.pt__field.danger > dt {
+.pt__field.danger > dt,
+.pt__field.error > .field__title,
+.pt__field.danger > .field__title {
   color: #d43535;
 }
 .pt__field.error .pt__field__error,
@@ -9079,7 +9084,9 @@ button.is-hidden {
   border: 1px solid #d43535;
 }
 .pt__field.ok > dt,
-.pt__field.success > dt {
+.pt__field.success > dt,
+.pt__field.ok > .field__title,
+.pt__field.success > .field__title {
   color: #25b125;
 }
 .pt__field.ok .pt__field__error,
@@ -9106,13 +9113,16 @@ button.is-hidden {
 .pt__field.success select {
   border: 1px solid #25b125;
 }
-.pt__field.is-text > dt {
+.pt__field.is-text > dt,
+.pt__field.is-text > .field__title {
   padding: 0;
 }
-.pt__field.is-no-label > dt {
+.pt__field.is-no-label > dt,
+.pt__field.is-no-label > .field__title {
   display: none;
 }
-.pt__field.is-no-label > dd {
+.pt__field.is-no-label > dd,
+.pt__field.is-no-label > .field__descr {
   margin-left: 0;
 }
 .pt__field.is-box,
@@ -9128,21 +9138,29 @@ button.is-hidden {
   margin-bottom: 0;
 }
 .pt__field.is-box > dt,
-.pt__field.is-form-box > dt {
+.pt__field.is-form-box > dt,
+.pt__field.is-box > .field__title,
+.pt__field.is-form-box > .field__title {
   width: auto;
   float: none;
 }
 .pt__field.is-box > dd,
-.pt__field.is-form-box > dd {
+.pt__field.is-form-box > dd,
+.pt__field.is-box > .field__descr,
+.pt__field.is-form-box > .field__descr {
   margin: 0 0 8px 0;
   padding: 0;
 }
 .pt__field.is-box > dd:last-child,
-.pt__field.is-form-box > dd:last-child {
+.pt__field.is-form-box > dd:last-child,
+.pt__field.is-box > .field__descr:last-child,
+.pt__field.is-form-box > .field__descr:last-child {
   margin: 0;
 }
 .pt__field.is-box.is-no-label > dt,
-.pt__field.is-form-box.is-no-label > dt {
+.pt__field.is-form-box.is-no-label > dt,
+.pt__field.is-box.is-no-label > .field__title,
+.pt__field.is-form-box.is-no-label > .field__title {
   display: none;
 }
 .pt__field.is-box.field-indent,
@@ -9191,7 +9209,8 @@ button.is-hidden {
 .pt__field.is-hidden {
   display: none;
 }
-.pt__field.align-center > dt {
+.pt__field.align-center > dt,
+.pt__field.align-center > .field__title {
   text-align: center;
 }
 .pt__field-label {
@@ -9226,14 +9245,17 @@ ul.pt__field__hint li:before {
 }
 /* ******* PART: FIELD: ADAPTIVE ******* */
 @media only screen and (max-width: 640px) {
-  html.is-adaptive .pt__field > dt {
+  html.is-adaptive .pt__field > dt,
+  html.is-adaptive .pt__field > .field__title {
     width: auto;
     float: none;
   }
-  html.is-adaptive .pt__field > dd {
+  html.is-adaptive .pt__field > dd,
+  html.is-adaptive .pt__field > .field__descr {
     margin: 0 0 8px;
   }
-  html.is-adaptive .pt__field > dd:last-child {
+  html.is-adaptive .pt__field > dd:last-child,
+  html.is-adaptive .pt__field > .field__descr:last-child {
     margin: 0;
   }
 }
@@ -19448,9 +19470,13 @@ html.ie9 .com__timeselect > .inner > .sep {
 }
 .com__two-side__content > .inner > .column {
   width: 50%;
+  overflow: hidden;
   -webkit-flex: 1 1 auto;
   -ms-flex: 1 1 auto;
   flex: 1 1 auto;
+}
+.com__two-side__content > .inner > .column > .label {
+  margin: 0 0 8px 0;
 }
 .com__two-side__content > .inner > .controls {
   min-width: 64px;
@@ -19484,6 +19510,9 @@ html.ie9 .com__timeselect > .inner > .sep {
 .com__two-side__content > .inner > .controls button:last-child {
   margin-bottom: 0;
 }
+.com__two-side__content.has-labels > .inner > .controls {
+  padding: 26px 0 0 0;
+}
 @media only screen and (max-width: 768px) {
   html.is-adaptive .com__two-side__content > .inner {
     display: block;
@@ -19493,6 +19522,9 @@ html.ie9 .com__timeselect > .inner > .sep {
   }
   html.is-adaptive .com__two-side__content > .inner > .controls {
     margin: 24px 0;
+  }
+  html.is-adaptive .com__two-side__content.has-labels > .inner > .controls {
+    padding: 0;
   }
 }
 /* ******* COMPONENTS: ZOOM ******* */

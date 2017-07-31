@@ -5,7 +5,12 @@
 
         > .column {
             width: 50%;
+            overflow: hidden;
             .mx__flex(1 1 auto);
+
+            > .label {
+                margin: 0 0 @CmForm-FieldInnerIndent 0;
+            }
         }
 
         > .controls {
@@ -16,6 +21,15 @@
             .button {
                 .cm__box;
                 margin-bottom: @CmIndent-XXSmall;
+            }
+        }
+    }
+
+    &.has-labels {
+        > .inner {
+            > .controls {
+                @padding: @CmForm-FieldInnerIndent + @CmFont-Base-LineHeight;
+                padding: @padding 0 0 0;
             }
         }
     }
@@ -34,6 +48,14 @@
 
                 > .controls {
                     margin: @CmIndent-Medium 0;
+                }
+            }
+
+            &.has-labels {
+                > .inner {
+                    > .controls {
+                        padding: 0;
+                    }
                 }
             }
         }
