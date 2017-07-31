@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.29.0 (2017-07-27 17:22) ************ */
+/*! ************ MagpieUI v3.29.1 (2017-07-31 17:46) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1506,7 +1506,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.29.0',
+        '_version' : '3.29.1',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -30580,8 +30580,8 @@ cm.getConstructor('Com.TwoSideMultiSelect', function(classConstructor, className
             nodes['inner'] = cm.node('div', {'class' : 'inner'},
                 nodes['firstColumn'] = cm.node('div', {'class' : 'column column--first'}),
                 nodes['controls'] = cm.node('div', {'class' : 'controls'},
-                    nodes['moveToRight'] = cm.node('button', {'class' : 'button button-primary is-box', 'title' : that.lang('addTitle')}, that.lang('add')),
-                    nodes['moveToLeft'] = cm.node('button', {'class' : 'button button-primary is-box', 'title' : that.lang('removeTitle')}, that.lang('remove'))
+                    nodes['moveToRight'] = cm.node('button', {'class' : 'button button-primary is-box', 'type' : 'button', 'title' : that.lang('addTitle')}, that.lang('add')),
+                    nodes['moveToLeft'] = cm.node('button', {'class' : 'button button-primary is-box', 'type' : 'button', 'title' : that.lang('removeTitle')}, that.lang('remove'))
                 ),
                 nodes['secondColumn'] = cm.node('div', {'class' : 'column column--second'})
             )
