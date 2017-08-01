@@ -368,7 +368,7 @@ function(params){
         item['group'] = group;
         // Structure
         item['node'] = cm.node('li', {'class' : item['className']},
-            cm.node('a', {'innerHTML' : item['text']})
+            cm.node('a', {'innerHTML' : item['text'], 'title' : item['text']})
         );
         item['option'] = cm.node('option', {'value' : item['value'], 'innerHTML' : item['text']});
         // Label onlick event

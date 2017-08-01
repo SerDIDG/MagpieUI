@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.29.2 (2017-07-31 19:49) ************ */
+/*! ************ MagpieUI v3.29.3 (2017-08-01 17:40) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1506,7 +1506,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.29.2',
+        '_version' : '3.29.3',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -29287,7 +29287,7 @@ function(params){
         item['group'] = group;
         // Structure
         item['node'] = cm.node('li', {'class' : item['className']},
-            cm.node('a', {'innerHTML' : item['text']})
+            cm.node('a', {'innerHTML' : item['text'], 'title' : item['text']})
         );
         item['option'] = cm.node('option', {'value' : item['value'], 'innerHTML' : item['text']});
         // Label onlick event
