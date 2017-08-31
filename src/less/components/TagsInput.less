@@ -2,63 +2,59 @@
 
 .com__tags-input {
     > .inner {
-        font-size: 0;
+        .input;
+        height: auto;
+        padding: 0;
 
-        .item {
-            height: @CmForm-FieldHeight;
-            margin: 0 @ComTagsInput-itemIndent 0 0;
-            display: inline-block;
-            vertical-align: top;
-            white-space: nowrap;
+        .tags {
+            .clearfix;
+            padding: 0 @CmIndent-XXXSmall 0;
 
-            .text {
-                .cm__font;
-                .cm__text-overflow;
-                max-width: @ComTagsInput-itemWidth;
-                display: inline-block;
-                vertical-align: top;
-                line-height: @CmForm-FieldHeight;
-            }
+            .item {
+                max-width: 33.33%;
+                padding: @CmIndent-XXSmall @CmIndent-XXXSmall 0 @CmIndent-XXXSmall;
+                float: left;
 
-            .icon {
-                width: @CmForm-FieldHeight;
-                height: @CmForm-FieldHeight;
-                margin: 0 0 0 @CmIndent-XXXSmall;
-                display: inline-block;
-                vertical-align: top;
+                > .inner {
+                    @icon_padding: @CmSize-Medium + @CmIndent-XXSmall;
+                    height: @CmSize-Medium;
+                    padding: 0 @icon_padding 0 @CmIndent-XXSmall;
+                    position: relative;
+                    background-color: @CmColor-Success-DarkDefault;
+                    border-radius: @CmBorder-Radius;
+                    line-height: @CmSize-Medium;
 
-                &.default {
-                    .icon.small.remove;
-                }
+                    .text {
+                        .cm__text-overflow;
+                        .cm__font--hint;
+                        color: @CmColor-Font-Opposite;
+                        line-height: @CmSize-Medium;
+                    }
 
-                &:first-child {
-                    margin: 0;
+                    .icon {
+                        position: absolute;
+                        width: @CmSize-Medium;
+                        height: @CmSize-Medium;
+                        .mx__position(0, 0, 0, auto);
 
-                    &.default {
-                        .icon.small.add;
+                        &.default {
+                            .icon.small.remove-white;
+                        }
                     }
                 }
             }
+        }
 
-            .input {
-                width: @ComTagsInput-inputWidth;
-                margin: 0;
-            }
+        .adder {
+            .input.is-borderless;
+            .input.input-transparent;
+            margin: -@CmInput-BorderWidth;
+        }
+    }
 
-            &.closed,
-            &.adder {
-                width: 0;
-                opacity: 0;
-                overflow: hidden;
-            }
-
-            &.adder {
-                text-overflow: clip;
-            }
-
-            &:last-child {
-                margin: 0;
-            }
+    &.active {
+        > .inner {
+            .input.input-focus;
         }
     }
 }

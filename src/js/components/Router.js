@@ -1,5 +1,8 @@
 cm.define('Com.Router', {
     'extend' : 'Com.AbstractController',
+    'events' : [
+        'onChange'
+    ],
     'params' : {
         'renderStructure' : false,
         'embedStructureOnRender' : false
@@ -39,7 +42,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
     classProto.windowClickEvent = function(e){
         var that = this,
             target = cm.getEventTarget(e);
-        if(cm.isNode(target) && target.tagName.toLowerCase() == 'a'){
+        if(cm.isTagName(target, 'a')){
             cm.preventDefault(e);
             that.processLink(target);
         }
@@ -123,6 +126,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
                 item['callback'](item);
             }
         }
+        that.triggerEvent('onChange', item);
         return that;
     };
 
@@ -131,6 +135,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
     classProto.add = function(route, params){
         var that = this;
         var item = cm.merge({
+            'route' : route,
             'constructor' : false,
             'constructorParams' : {},
             'callback' : function(){},

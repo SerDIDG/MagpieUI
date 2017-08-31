@@ -5,7 +5,7 @@
     margin: 0;
     vertical-align: top;
     background: @CmInput-DefaultBackground;
-    border: @CmBorder-Default;
+    border: @CmInput-BorderWidth @CmInput-BorderStyle @CmInput-DefaultBorder;
     border-radius: @CmBorder-Radius;
     box-shadow: none;
     cursor: text;
@@ -13,21 +13,22 @@
     .mx__background-clip(padding-box);
     .mx__transition(background border-color color box-shadow text-shadow, @CmUI-Transition-Duration);
 
+    &.input-hover,
     &:hover {
         background: @CmInput-HoverBackground;
-        border-color: @CmColor-BorderHover;
+        border-color: @CmInput-HoverBorder;
     }
 
     &.input-focus,
     &:focus {
         background: @CmInput-ActiveBackground;
-        border-color: @CmColor-BorderActive;
+        border-color: @CmInput-ActiveBorder;
     }
 
     &.input-disabled,
     &[disabled] {
         background-color: @CmInput-DisabledBackground;
-        border-color: @CmColor-BorderDisabled;
+        border-color: @CmInput-DisableBorder;
     }
 
     &.input-dark {
@@ -43,6 +44,21 @@
     }
 
     &.input-transparent {
+        background: transparent;
+        border-color: transparent;
+        box-shadow: none;
+    }
+
+    &.input-clear {
+        .input.input-transparent;
+        height: auto;
+        min-height: 0;
+        padding: 0;
+        border: none;
+        border-radius: 0;
+    }
+
+    &.input-checkers {
         background-color: #fdffff;
         background-image: url("@{CmPath-Images}/parts/transparent.png");
         text-shadow: 0 0 5px #ffffff,
@@ -93,10 +109,11 @@
 }
 
 .input--size-helper (@height, @padding, @border, @lineHeight) {
-    @padding_calc: max(ceil((@height - @lineHeight - @border * 2) / 2), 0px);
+    @padding_calc: max(ceil((@height - @lineHeight - @border * 2) / 2), 0);
+    @padding_x: max(ceil((@height - @lineHeight - @border * 2) / 2), @padding);
 
     height: @height;
-    padding: @padding_calc @padding;
+    padding: @padding_calc @padding_x;
     border-width: @border;
 
 }

@@ -153,7 +153,7 @@ function(params){
         }
         if(item){
             cm.addClass(item['container'], 'active');
-            that.components['tooltip'].scrollToNode(item['node']);
+            that.components['tooltip'].scrollToNode(item['container']);
         }
         that.selectedItemIndex = index;
         // Set input data
@@ -397,7 +397,7 @@ function(params){
     that.callbacks.query = function(that, params){
         var filteredItems = [];
         cm.forEach(params['data'], function(item){
-            if(item && item['text'].toLowerCase().indexOf(query.toLowerCase()) > -1){
+            if(item && item['text'].toLowerCase().indexOf(params['query'].toLowerCase()) > -1){
                 filteredItems.push(item);
             }
         });

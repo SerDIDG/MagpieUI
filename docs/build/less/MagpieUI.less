@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.29.3 (2017-08-01 17:40) ************ */
+/*! ************ MagpieUI v3.29.5 (2017-08-31 19:14) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3751,7 +3751,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.29.3';
+@CmVersion: '3.29.5';
 
 // /* ******* PATH ******* */
 
@@ -4141,15 +4141,16 @@ span.CodeMirror-selectedtext { background: none; }
 
 @CmBorder-Radius: 3px;
 @CmBorder-Width: 1px;
+@CmBorder-Style: solid;
 @CmBorder-BoxWidth: 2px;
 @CmBorder-TemporaryWidth: @CmBorder-BoxWidth;
-@CmBorder-Default: @CmBorder-Width solid @CmColor-Border;
+@CmBorder-Default: @CmBorder-Width @CmBorder-Style @CmColor-Border;
 @CmBorder-Separator: @CmBorder-Width dotted @CmColor-Border;
 @CmBorder-Editable: @CmBorder-Width dashed @CmColor-BorderActive;
-@CmBorder-Box: @CmBorder-BoxWidth solid @CmColor-Border;
-@CmBorder-BoxHover: @CmBorder-BoxWidth solid @CmColor-BorderHover;
-@CmBorder-BoxActive: @CmBorder-BoxWidth solid @CmColor-BorderActive;
-@CmBorder-BoxSelected: @CmBorder-BoxWidth solid @CmColor-BorderSelected;
+@CmBorder-Box: @CmBorder-BoxWidth @CmBorder-Style @CmColor-Border;
+@CmBorder-BoxHover: @CmBorder-BoxWidth @CmBorder-Style @CmColor-BorderHover;
+@CmBorder-BoxActive: @CmBorder-BoxWidth @CmBorder-Style @CmColor-BorderActive;
+@CmBorder-BoxSelected: @CmBorder-BoxWidth @CmBorder-Style @CmColor-BorderSelected;
 @CmBorder-Temporary: @CmBorder-TemporaryWidth dashed @CmColor-Border;
 @CmBorder-TemporaryHover: @CmBorder-TemporaryWidth dashed @CmColor-BorderHover;
 @CmBorder-TemporaryActive: @CmBorder-TemporaryWidth dashed @CmColor-BorderActive;
@@ -4164,10 +4165,16 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* INPUTS ******* */
 
 @CmInput-Padding: 6px;
+@CmInput-BorderWidth: @CmBorder-Width;
+@CmInput-BorderStyle: @CmBorder-Style;
 @CmInput-DefaultBackground: @CmColor-Background;
+@CmInput-DefaultBorder: @CmColor-Border;
 @CmInput-HoverBackground: @CmInput-DefaultBackground;
+@CmInput-HoverBorder: @CmColor-BorderHover;
 @CmInput-ActiveBackground: @CmInput-DefaultBackground;
+@CmInput-ActiveBorder: @CmColor-BorderActive;
 @CmInput-DisabledBackground: @CmColor-Secondary-LightHighlight;
+@CmInput-DisableBorder: @CmColor-BorderDisabled;
 @CmTextarea-Height: 100px;
 @CmSelect-Size: 7;
 
@@ -4180,7 +4187,7 @@ span.CodeMirror-selectedtext { background: none; }
 
 // /* ******* FORM ******* */
 
-@CmForm-FieldHeight: 28px;
+@CmForm-FieldHeight: 32px;
 @CmForm-FieldIndent: @CmIndent-Small;
 @CmForm-FieldTitleWidth: 156px;
 @CmForm-FieldTitleWidthSpaceless: 128px;
@@ -6430,7 +6437,7 @@ tbody, thead, td, th, tr {
     margin: 0;
     vertical-align: top;
     background: @CmInput-DefaultBackground;
-    border: @CmBorder-Default;
+    border: @CmInput-BorderWidth @CmInput-BorderStyle @CmInput-DefaultBorder;
     border-radius: @CmBorder-Radius;
     box-shadow: none;
     cursor: text;
@@ -6438,21 +6445,22 @@ tbody, thead, td, th, tr {
     .mx__background-clip(padding-box);
     .mx__transition(background border-color color box-shadow text-shadow, @CmUI-Transition-Duration);
 
+    &.input-hover,
     &:hover {
         background: @CmInput-HoverBackground;
-        border-color: @CmColor-BorderHover;
+        border-color: @CmInput-HoverBorder;
     }
 
     &.input-focus,
     &:focus {
         background: @CmInput-ActiveBackground;
-        border-color: @CmColor-BorderActive;
+        border-color: @CmInput-ActiveBorder;
     }
 
     &.input-disabled,
     &[disabled] {
         background-color: @CmInput-DisabledBackground;
-        border-color: @CmColor-BorderDisabled;
+        border-color: @CmInput-DisableBorder;
     }
 
     &.input-dark {
@@ -6468,6 +6476,21 @@ tbody, thead, td, th, tr {
     }
 
     &.input-transparent {
+        background: transparent;
+        border-color: transparent;
+        box-shadow: none;
+    }
+
+    &.input-clear {
+        .input.input-transparent;
+        height: auto;
+        min-height: 0;
+        padding: 0;
+        border: none;
+        border-radius: 0;
+    }
+
+    &.input-checkers {
         background-color: #fdffff;
         background-image: url("@{CmPath-Images}/parts/transparent.png");
         text-shadow: 0 0 5px #ffffff,
@@ -6518,10 +6541,11 @@ tbody, thead, td, th, tr {
 }
 
 .input--size-helper (@height, @padding, @border, @lineHeight) {
-    @padding_calc: max(ceil((@height - @lineHeight - @border * 2) / 2), 0px);
+    @padding_calc: max(ceil((@height - @lineHeight - @border * 2) / 2), 0);
+    @padding_x: max(ceil((@height - @lineHeight - @border * 2) / 2), @padding);
 
     height: @height;
-    padding: @padding_calc @padding;
+    padding: @padding_calc @padding_x;
     border-width: @border;
 
 }
@@ -7400,6 +7424,18 @@ button {
 
     &.hidden {
         display: none;
+    }
+
+    &.success {
+        .cm__color__success;
+    }
+
+    &.warning {
+        .cm__color__warning;
+    }
+
+    &.danger {
+        .cm__color__danger;
     }
 }
 
@@ -9528,6 +9564,18 @@ button {
     &:extend(.cm__inherit all);
     .cm__font--hint-cursive;
     text-transform: none;
+
+    &.success {
+        .cm__color__success;
+    }
+
+    &.warning {
+        .cm__color__warning;
+    }
+
+    &.danger {
+        .cm__color__danger;
+    }
 }
 
 ul.pt__field__hint {
@@ -17019,6 +17067,7 @@ ul.pt__field__hint {
         height: auto;
         min-height: @CmForm-FieldHeight;
         padding: @CmIndent-XXXSmall;
+        cursor: default;
     }
 
     .pt__listing-items > ul {
@@ -17992,63 +18041,59 @@ ul.pt__field__hint {
 
 .com__tags-input {
     > .inner {
-        font-size: 0;
+        .input;
+        height: auto;
+        padding: 0;
 
-        .item {
-            height: @CmForm-FieldHeight;
-            margin: 0 @ComTagsInput-itemIndent 0 0;
-            display: inline-block;
-            vertical-align: top;
-            white-space: nowrap;
+        .tags {
+            .clearfix;
+            padding: 0 @CmIndent-XXXSmall 0;
 
-            .text {
-                .cm__font;
-                .cm__text-overflow;
-                max-width: @ComTagsInput-itemWidth;
-                display: inline-block;
-                vertical-align: top;
-                line-height: @CmForm-FieldHeight;
-            }
+            .item {
+                max-width: 33.33%;
+                padding: @CmIndent-XXSmall @CmIndent-XXXSmall 0 @CmIndent-XXXSmall;
+                float: left;
 
-            .icon {
-                width: @CmForm-FieldHeight;
-                height: @CmForm-FieldHeight;
-                margin: 0 0 0 @CmIndent-XXXSmall;
-                display: inline-block;
-                vertical-align: top;
+                > .inner {
+                    @icon_padding: @CmSize-Medium + @CmIndent-XXSmall;
+                    height: @CmSize-Medium;
+                    padding: 0 @icon_padding 0 @CmIndent-XXSmall;
+                    position: relative;
+                    background-color: @CmColor-Success-DarkDefault;
+                    border-radius: @CmBorder-Radius;
+                    line-height: @CmSize-Medium;
 
-                &.default {
-                    .icon.small.remove;
-                }
+                    .text {
+                        .cm__text-overflow;
+                        .cm__font--hint;
+                        color: @CmColor-Font-Opposite;
+                        line-height: @CmSize-Medium;
+                    }
 
-                &:first-child {
-                    margin: 0;
+                    .icon {
+                        position: absolute;
+                        width: @CmSize-Medium;
+                        height: @CmSize-Medium;
+                        .mx__position(0, 0, 0, auto);
 
-                    &.default {
-                        .icon.small.add;
+                        &.default {
+                            .icon.small.remove-white;
+                        }
                     }
                 }
             }
+        }
 
-            .input {
-                width: @ComTagsInput-inputWidth;
-                margin: 0;
-            }
+        .adder {
+            .input.is-borderless;
+            .input.input-transparent;
+            margin: -@CmInput-BorderWidth;
+        }
+    }
 
-            &.closed,
-            &.adder {
-                width: 0;
-                opacity: 0;
-                overflow: hidden;
-            }
-
-            &.adder {
-                text-overflow: clip;
-            }
-
-            &:last-child {
-                margin: 0;
-            }
+    &.active {
+        > .inner {
+            .input.input-focus;
         }
     }
 }

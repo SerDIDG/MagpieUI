@@ -196,20 +196,20 @@ function(params){
         that.value = color;
         that.components['palette'].set(that.value, false);
         that.nodes['hidden'].value = that.components['palette'].get('rgb');
-        if(that.value == 'transparent'){
+        if(that.value === 'transparent'){
             if(that.params['showLabel']){
                 that.nodes['input'].value = that.lang('Transparent');
             }
-            cm.replaceClass(that.nodes['input'], 'input-dark input-light', 'input-transparent');
+            cm.replaceClass(that.nodes['input'], 'input-dark input-light', 'input-checkers');
         }else{
             if(that.params['showLabel']){
                 that.nodes['input'].value = that.components['palette'].get('hex');
             }
             that.nodes['input'].style.backgroundColor = that.components['palette'].get('hex');
             if(that.components['palette'].isDark()){
-                cm.replaceClass(that.nodes['input'], 'input-transparent input-light', 'input-dark');
+                cm.replaceClass(that.nodes['input'], 'input-checkers input-light', 'input-dark');
             }else{
-                cm.replaceClass(that.nodes['input'], 'input-transparent input-dark', 'input-light');
+                cm.replaceClass(that.nodes['input'], 'input-checkers input-dark', 'input-light');
             }
         }
         if(triggerEvents){

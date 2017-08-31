@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.29.3 (2017-08-01 17:40) ************ */
+/*! ************ MagpieUI v3.29.5 (2017-08-31 19:14) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1506,7 +1506,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.29.3',
+        '_version' : '3.29.5',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -1638,31 +1638,35 @@ cm.isNode = function(node){
 
 cm.isTextNode = function(node){
     try{
-        return !!(node && node.nodeType && node.nodeType == 3);
+        return !!(node && node.nodeType && node.nodeType === 3);
     }catch(e){}
     return false;
 };
 
 cm.isElementNode = function(node){
     try{
-        return !!(node && node.nodeType && node.nodeType == 1);
+        return !!(node && node.nodeType && node.nodeType === 1);
     }catch(e){}
     return false;
 };
 
+cm.isTagName = function(node, tag){
+    return cm.isElementNode(node) && node.tagName.toLowerCase() === tag.toLowerCase();
+};
+
 cm.isPlainObject = function(obj) {
-    if (typeof obj == 'object' && obj !== null) {
-        if (typeof Object.getPrototypeOf == 'function') {
+    if (typeof obj === 'object' && obj !== null) {
+        if (typeof Object.getPrototypeOf === 'function') {
             var proto = Object.getPrototypeOf(obj);
             return proto === Object.prototype || proto === null;
         }
-        return Object.prototype.toString.call(obj) == '[object Object]';
+        return Object.prototype.toString.call(obj) === '[object Object]';
     }
     return false;
 };
 
 cm.forEach = function(o, callback){
-    if(!o || !(callback && typeof callback == 'function')){
+    if(!o || !(callback && typeof callback === 'function')){
         return o;
     }
     var i, l;
@@ -20134,6 +20138,9 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
 });
 cm.define('Com.Router', {
     'extend' : 'Com.AbstractController',
+    'events' : [
+        'onChange'
+    ],
     'params' : {
         'renderStructure' : false,
         'embedStructureOnRender' : false
@@ -20173,7 +20180,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
     classProto.windowClickEvent = function(e){
         var that = this,
             target = cm.getEventTarget(e);
-        if(cm.isNode(target) && target.tagName.toLowerCase() == 'a'){
+        if(cm.isTagName(target, 'a')){
             cm.preventDefault(e);
             that.processLink(target);
         }
@@ -20257,6 +20264,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
                 item['callback'](item);
             }
         }
+        that.triggerEvent('onChange', item);
         return that;
     };
 
@@ -20265,6 +20273,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
     classProto.add = function(route, params){
         var that = this;
         var item = cm.merge({
+            'route' : route,
             'constructor' : false,
             'constructorParams' : {},
             'callback' : function(){},
@@ -25576,7 +25585,7 @@ function(params){
         }
         if(item){
             cm.addClass(item['container'], 'active');
-            that.components['tooltip'].scrollToNode(item['node']);
+            that.components['tooltip'].scrollToNode(item['container']);
         }
         that.selectedItemIndex = index;
         // Set input data
@@ -25820,7 +25829,7 @@ function(params){
     that.callbacks.query = function(that, params){
         var filteredItems = [];
         cm.forEach(params['data'], function(item){
-            if(item && item['text'].toLowerCase().indexOf(query.toLowerCase()) > -1){
+            if(item && item['text'].toLowerCase().indexOf(params['query'].toLowerCase()) > -1){
                 filteredItems.push(item);
             }
         });
@@ -26657,20 +26666,20 @@ function(params){
         that.value = color;
         that.components['palette'].set(that.value, false);
         that.nodes['hidden'].value = that.components['palette'].get('rgb');
-        if(that.value == 'transparent'){
+        if(that.value === 'transparent'){
             if(that.params['showLabel']){
                 that.nodes['input'].value = that.lang('Transparent');
             }
-            cm.replaceClass(that.nodes['input'], 'input-dark input-light', 'input-transparent');
+            cm.replaceClass(that.nodes['input'], 'input-dark input-light', 'input-checkers');
         }else{
             if(that.params['showLabel']){
                 that.nodes['input'].value = that.components['palette'].get('hex');
             }
             that.nodes['input'].style.backgroundColor = that.components['palette'].get('hex');
             if(that.components['palette'].isDark()){
-                cm.replaceClass(that.nodes['input'], 'input-transparent input-light', 'input-dark');
+                cm.replaceClass(that.nodes['input'], 'input-checkers input-light', 'input-dark');
             }else{
-                cm.replaceClass(that.nodes['input'], 'input-transparent input-dark', 'input-light');
+                cm.replaceClass(that.nodes['input'], 'input-checkers input-dark', 'input-light');
             }
         }
         if(triggerEvents){
@@ -29848,6 +29857,7 @@ cm.define('Com.TagsInput', {
         'embedStructure' : 'replace',
         'data' : [],
         'maxSingleTagLength': 255,
+        'max' : 0,                                      // Not implemented
         'autocomplete' : false,
         'icons' : {
             'add' : 'icon default linked',
@@ -29860,15 +29870,15 @@ cm.define('Com.TagsInput', {
     'strings' : {
         'tags' : 'Tags',
         'add' : 'Add',
-        'remove' : 'Remove'
+        'remove' : 'Remove',
+        'placeholder' : 'Add tags...'
     }
 },
 function(params){
     var that = this,
         nodes = {},
         tags = [],
-        items = {},
-        isOpen = false;
+        items = {};
 
     that.isDestructed = null;
     that.value = null;
@@ -29876,7 +29886,7 @@ function(params){
     that.isAutocomplete = false;
 
     var init = function(){
-        var sourceTags;
+        var sourceTags, splitTags;
         preValidateParams();
         // Init modules
         that.setParams(params);
@@ -29885,13 +29895,11 @@ function(params){
         // Render
         validateParams();
         render();
-        setLogic();
         that.addToStack(nodes['container']);
         that.triggerEvent('onRender');
         // Set tags
-        sourceTags = that.params['data'].concat(
-            that.params['node'].value.split(',')
-        );
+        splitTags = that.params['node'].value.split(',');
+        sourceTags = cm.extend(that.params['data'], splitTags);
         cm.forEach(sourceTags, function(tag){
             addTag(tag);
         });
@@ -29912,12 +29920,13 @@ function(params){
 
     var render = function(){
         // Structure
-        nodes['container'] = cm.Node('div', {'class' : 'com__tags-input'},
-            nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
-            nodes['inner'] = cm.Node('div', {'class' : 'inner'})
+        nodes['container'] = cm.node('div', {'class' : 'com__tags-input'},
+            nodes['hidden'] = cm.node('input', {'type' : 'hidden'}),
+            nodes['inner'] = cm.node('div', {'class' : 'inner'},
+                nodes['tags'] = cm.node('div', {'class' : 'tags'})
+            )
         );
-        // Render add button
-        renderAddButton();
+        renderInput();
         // Attributes
         if(that.params['name']){
             nodes['hidden'].setAttribute('name', that.params['name']);
@@ -29927,97 +29936,56 @@ function(params){
 
     };
 
-    var setLogic = function(){
+    var renderInput = function(){
+        // Structure
+        nodes['input'] = cm.node('input', {'type' : 'text', 'maxlength' : that.params['maxSingleTagLength'], 'class' : 'adder', 'placeholder' : that.lang('placeholder')});
+        cm.appendChild(nodes['input'], nodes['inner']);
         // Autocomplete
-        cm.getConstructor('Com.Autocomplete', function(classConstructor){
-            that.components['autocomplete'] = new classConstructor(
-                cm.merge(that.params['Com.Autocomplete'], {
+        if(that.isAutocomplete){
+            cm.getConstructor('Com.Autocomplete', function(classConstructor){
+                that.components['autocomplete'] = new classConstructor(cm.merge(that.params['Com.Autocomplete'], {
                     'events' : {
                         'onClickSelect' : function(){
                             addAdderTags(true);
                         }
                     }
-                })
-            );
-        });
-    };
-
-    var renderAddButton = function(){
-        nodes['inner'].appendChild(
-            nodes['addButtonContainer'] = cm.Node('div', {'class' : 'item'},
-                nodes['addButton'] = cm.Node('div', {'class' : that.params['icons']['add'], 'title' : that.lang('add')})
-            )
-        );
-        // Add event on "Add Tag" button
-        cm.addEvent(nodes['addButton'], 'click', openAdder);
-    };
-
-    var openAdder = function(){
-        var item = {};
-        if(!isOpen){
-            isOpen = true;
-            // Structure
-            item['container'] = cm.Node('div', {'class' : 'item adder'},
-                item['input'] = cm.Node('input', {'type' : 'text', 'maxlength' : that.params['maxSingleTagLength'], 'class' : 'input'})
-            );
-            cm.insertBefore(item['container'], nodes['addButtonContainer']);
-            // Show
-            item['anim'] = new cm.Animation(item['container']);
-            item['anim'].go({'style' : {'width' : [cm.getRealWidth(item['container']), 'px'].join(''), 'opacity' : 1}, 'duration' : 200, 'anim' : 'smooth', 'onStop' : function(){
-                item['container'].style.overflow = 'visible';
-                item['input'].focus();
-                // API onOpen Event
-                that.triggerEvent('onOpen');
-            }});
-            // Bind autocomplete
-            if(that.isAutocomplete){
-                that.components['autocomplete'].setTarget(item['input']);
-                that.components['autocomplete'].setInput(item['input']);
-            }
-            // Set new tag on enter or on comma
-            cm.addEvent(item['input'], 'keypress', function(e){
-                e = cm.getEvent(e);
-                if(e.keyCode == 13 || e.charCode == 44){
-                    cm.preventDefault(e);
-                    addAdderTags(true);
-                    that.isAutocomplete && that.components['autocomplete'].hide();
-                }
-                if(e.keyCode == 27){
-                    cm.preventDefault(e);
-                    addAdderTags(true);
-                    closeAdder(nodes['adder']);
-                }
+                }));
             });
-            // Hide adder on document click
-            cm.addEvent(document, 'mousedown', bodyEvent);
-            // Add to nodes array
-            nodes['adder'] = item;
-        }else{
-            addAdderTags(true);
+            that.components['autocomplete'].setTarget(nodes['input']);
+            that.components['autocomplete'].setInput(nodes['input']);
         }
-    };
-
-    var closeAdder = function(item){
-        cm.removeEvent(document, 'mousedown', bodyEvent);
-        nodes['adder']['input'].blur();
-        that.isAutocomplete && that.components['autocomplete'].hide();
-        item['container'].style.overflow = 'hidden';
-        item['anim'].go({'style' : {'width' : '0px', 'opacity' : 0}, 'duration' : 200, 'anim' : 'smooth', 'onStop' : function(){
-            cm.remove(item['container']);
-            nodes['adder'] = null;
-            isOpen = false;
-            // API onClose Event
-            that.triggerEvent('onClose');
-        }});
+        // Add new tag on comma
+        cm.addEvent(nodes['input'], 'keypress', function(e){
+            if(e.charCode === 44 || e.charCode === 59){
+                cm.preventDefault(e);
+                addAdderTags(true);
+                that.isAutocomplete && that.components['autocomplete'].hide();
+            }
+        });
+        // Add new tag on enter or escape
+        cm.addEvent(nodes['input'], 'keydown', function(e){
+            if(cm.isKey(e, ['enter', 'escape'])){
+                cm.preventDefault(e);
+                addAdderTags(true);
+                that.isAutocomplete && that.components['autocomplete'].hide();
+            }
+        });
+        cm.addEvent(nodes['input'], 'focus', function(){
+            cm.addClass(nodes['container'], 'active');
+        });
+        cm.addEvent(nodes['input'], 'blur', function(){
+            addAdderTags(true);
+            cm.removeClass(nodes['container'], 'active');
+        });
     };
 
     var addAdderTags = function(execute){
-        var sourceTags = nodes['adder']['input'].value.split(',');
+        var sourceTags = nodes['input'].value.split(',');
         cm.forEach(sourceTags, function(tag){
             addTag(tag, execute);
         });
-        nodes['adder']['input'].value = '';
-        nodes['adder']['input'].focus();
+        nodes['input'].value = '';
+        nodes['input'].focus();
         that.isAutocomplete && that.components['autocomplete'].clear();
     };
 
@@ -30042,38 +30010,26 @@ function(params){
             'tag' : tag
         };
         // Structure
-        item['container'] = cm.Node('div', {'class' : 'item'},
-            cm.Node('div', {'class' : 'text', 'title' : tag}, tag),
-            item['button'] = cm.Node('div', {'class' : that.params['icons']['remove'], 'title' : that.lang('remove')})
+        item['container'] = cm.node('div', {'class' : 'item'},
+            cm.node('div', {'class' : 'inner'},
+                cm.node('div', {'class' : 'text', 'title' : tag}, tag),
+                item['button'] = cm.node('div', {'class' : that.params['icons']['remove'], 'title' : that.lang('remove')})
+            )
         );
         item['anim'] = new cm.Animation(item['container']);
         // Append
-        if(isOpen){
-            cm.addClass(item['container'], 'closed');
-            cm.insertBefore(item['container'], nodes['adder']['container']);
-            // Show
-            item['anim'].go({'style' : {'width' : [cm.getRealWidth(item['container']), 'px'].join(''), 'opacity' : 1}, 'duration' : 200, 'anim' : 'smooth', 'onStop' : function(){
-                cm.removeClass(item['container'], 'closed');
-            }});
-        }else{
-            cm.insertBefore(item['container'], nodes['addButtonContainer']);
-        }
+        cm.appendChild(item['container'], nodes['tags']);
         // Add click event on "Remove Tag" button
         cm.addEvent(item['button'], 'click', function(){
-            if(isOpen){
-                nodes['adder']['input'].focus();
-            }
-            removeTag(item, false);
+            removeTag(item);
         });
         // Push to global array
         items[tag] = item;
     };
 
-    var removeTag = function(item, isImmediately){
+    var removeTag = function(item){
         // Remove tag from data
-        tags = tags.filter(function(tag){
-            return item['tag'] != tag;
-        });
+        tags = cm.arrayRemove(tags, item['tag']);
         delete items[item['tag']];
         setHiddenInputData();
         // API onChange Event
@@ -30084,32 +30040,14 @@ function(params){
         that.triggerEvent('onRemove', {
             'tag' : item['tag']
         });
-        // Animate
-        if(isImmediately){
-            cm.remove(item['container']);
-            item = null;
-        }else{
-            item['anim'].go({'style' : {'width' : '0px', 'opacity' : 0}, 'duration' : 200, 'anim' : 'smooth', 'onStop' : function(){
-                cm.remove(item['container']);
-                item = null;
-            }});
-        }
+        // Hide
+        cm.remove(item['container']);
+        item = null;
     };
 
     var setHiddenInputData = function(){
         that.value = tags.join(',');
         nodes['hidden'].value = that.value;
-    };
-
-    var bodyEvent = function(e){
-        if(isOpen){
-            e = cm.getEvent(e);
-            var target = cm.getEventTarget(e);
-            if(!cm.isParent(nodes['container'], target, true) && !that.components['autocomplete'].isOwnNode(target)){
-                addAdderTags(true);
-                closeAdder(nodes['adder']);
-            }
-        }
     };
 
     /* ******* MAIN ******* */

@@ -162,31 +162,35 @@ cm.isNode = function(node){
 
 cm.isTextNode = function(node){
     try{
-        return !!(node && node.nodeType && node.nodeType == 3);
+        return !!(node && node.nodeType && node.nodeType === 3);
     }catch(e){}
     return false;
 };
 
 cm.isElementNode = function(node){
     try{
-        return !!(node && node.nodeType && node.nodeType == 1);
+        return !!(node && node.nodeType && node.nodeType === 1);
     }catch(e){}
     return false;
 };
 
+cm.isTagName = function(node, tag){
+    return cm.isElementNode(node) && node.tagName.toLowerCase() === tag.toLowerCase();
+};
+
 cm.isPlainObject = function(obj) {
-    if (typeof obj == 'object' && obj !== null) {
-        if (typeof Object.getPrototypeOf == 'function') {
+    if (typeof obj === 'object' && obj !== null) {
+        if (typeof Object.getPrototypeOf === 'function') {
             var proto = Object.getPrototypeOf(obj);
             return proto === Object.prototype || proto === null;
         }
-        return Object.prototype.toString.call(obj) == '[object Object]';
+        return Object.prototype.toString.call(obj) === '[object Object]';
     }
     return false;
 };
 
 cm.forEach = function(o, callback){
-    if(!o || !(callback && typeof callback == 'function')){
+    if(!o || !(callback && typeof callback === 'function')){
         return o;
     }
     var i, l;

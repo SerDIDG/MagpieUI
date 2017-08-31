@@ -33,7 +33,7 @@
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.29.3';
+@CmVersion: '3.29.5';
 
 // /* ******* PATH ******* */
 
@@ -423,15 +423,16 @@
 
 @CmBorder-Radius: 3px;
 @CmBorder-Width: 1px;
+@CmBorder-Style: solid;
 @CmBorder-BoxWidth: 2px;
 @CmBorder-TemporaryWidth: @CmBorder-BoxWidth;
-@CmBorder-Default: @CmBorder-Width solid @CmColor-Border;
+@CmBorder-Default: @CmBorder-Width @CmBorder-Style @CmColor-Border;
 @CmBorder-Separator: @CmBorder-Width dotted @CmColor-Border;
 @CmBorder-Editable: @CmBorder-Width dashed @CmColor-BorderActive;
-@CmBorder-Box: @CmBorder-BoxWidth solid @CmColor-Border;
-@CmBorder-BoxHover: @CmBorder-BoxWidth solid @CmColor-BorderHover;
-@CmBorder-BoxActive: @CmBorder-BoxWidth solid @CmColor-BorderActive;
-@CmBorder-BoxSelected: @CmBorder-BoxWidth solid @CmColor-BorderSelected;
+@CmBorder-Box: @CmBorder-BoxWidth @CmBorder-Style @CmColor-Border;
+@CmBorder-BoxHover: @CmBorder-BoxWidth @CmBorder-Style @CmColor-BorderHover;
+@CmBorder-BoxActive: @CmBorder-BoxWidth @CmBorder-Style @CmColor-BorderActive;
+@CmBorder-BoxSelected: @CmBorder-BoxWidth @CmBorder-Style @CmColor-BorderSelected;
 @CmBorder-Temporary: @CmBorder-TemporaryWidth dashed @CmColor-Border;
 @CmBorder-TemporaryHover: @CmBorder-TemporaryWidth dashed @CmColor-BorderHover;
 @CmBorder-TemporaryActive: @CmBorder-TemporaryWidth dashed @CmColor-BorderActive;
@@ -446,10 +447,16 @@
 // /* ******* INPUTS ******* */
 
 @CmInput-Padding: 6px;
+@CmInput-BorderWidth: @CmBorder-Width;
+@CmInput-BorderStyle: @CmBorder-Style;
 @CmInput-DefaultBackground: @CmColor-Background;
+@CmInput-DefaultBorder: @CmColor-Border;
 @CmInput-HoverBackground: @CmInput-DefaultBackground;
+@CmInput-HoverBorder: @CmColor-BorderHover;
 @CmInput-ActiveBackground: @CmInput-DefaultBackground;
+@CmInput-ActiveBorder: @CmColor-BorderActive;
 @CmInput-DisabledBackground: @CmColor-Secondary-LightHighlight;
+@CmInput-DisableBorder: @CmColor-BorderDisabled;
 @CmTextarea-Height: 100px;
 @CmSelect-Size: 7;
 
@@ -462,7 +469,7 @@
 
 // /* ******* FORM ******* */
 
-@CmForm-FieldHeight: 28px;
+@CmForm-FieldHeight: 32px;
 @CmForm-FieldIndent: @CmIndent-Small;
 @CmForm-FieldTitleWidth: 156px;
 @CmForm-FieldTitleWidthSpaceless: 128px;
