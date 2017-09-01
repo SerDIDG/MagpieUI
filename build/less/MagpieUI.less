@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.30.0 (2017-08-31 19:22) ************ */
+/*! ************ MagpieUI v3.30.1 (2017-09-01 18:19) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3751,7 +3751,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.30.0';
+@CmVersion: '3.30.1';
 
 // /* ******* PATH ******* */
 
@@ -6541,7 +6541,7 @@ tbody, thead, td, th, tr {
 }
 
 .input--size-helper (@height, @padding, @border, @lineHeight) {
-    @padding_calc: max(ceil((@height - @lineHeight - @border * 2) / 2), 0);
+    @padding_calc: max(ceil((@height - @lineHeight - @border * 2) / 2), 0px);
     @padding_x: max(ceil((@height - @lineHeight - @border * 2) / 2), @padding);
 
     height: @height;
@@ -18050,7 +18050,7 @@ ul.pt__field__hint {
             padding: 0 @CmIndent-XXXSmall 0;
 
             .item {
-                max-width: 33.33%;
+                max-width: 50%;
                 padding: @CmIndent-XXSmall @CmIndent-XXXSmall 0 @CmIndent-XXXSmall;
                 float: left;
 
