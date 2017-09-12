@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.30.2 (2017-09-06 19:46) ************ */
+/*! ************ MagpieUI v3.30.3 (2017-09-12 19:31) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3751,7 +3751,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.30.2';
+@CmVersion: '3.30.3';
 
 // /* ******* PATH ******* */
 
@@ -3823,6 +3823,8 @@ span.CodeMirror-selectedtext { background: none; }
 @CmUI-TooltipWidth: 320px;
 @CmUI-ColumnIndent: @CmIndent-Medium;
 @CmUI-BoxIndent: @CmIndent-Medium;
+@CmUI-GoogleFont: Open Sans;
+@CmUI-GoogleFont-Weight: 100,300,400,600,700,800;
 
 // /* ************************************************ */
 // /* ******* COLORS ******* */
@@ -4103,7 +4105,7 @@ span.CodeMirror-selectedtext { background: none; }
 
 @CmFont-Base-LineHeight: 18px;
 @CmFont-Base-LineHeightSmall: 18px;
-@CmFont-Base-Family: 'Open Sans', arial, helvetica, sans-serif;
+@CmFont-Base-Family: @CmUI-GoogleFont, arial, helvetica, sans-serif;
 @CmFont-Base-Size: 13px;
 @CmFont-Base-SizeSmall: 11px;
 @CmFont-Base-Weight: @CmFont-Base-NormalWeight;
@@ -4122,7 +4124,7 @@ span.CodeMirror-selectedtext { background: none; }
 @CmFont-UI-LineHeight: 18px;
 @CmFont-UI-Size: 13px;
 @CmFont-UI-SizeSmall: 11px;
-@CmFont-UI-Family: 'Open Sans', arial, helvetica, sans-serif;
+@CmFont-UI-Family: @CmUI-GoogleFont, arial, helvetica, sans-serif;
 @CmFont-UI-Weight: @CmFont-UI-NormalWeight;
 @CmFont-UI-Color: @CmColor-Font;
 @CmFont-UI-ColorOpposite: @CmColor-Font-Opposite;
@@ -4937,7 +4939,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: COMMON ******* */
 // /* ************************************************ */
 
-@import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
+@import '//fonts.googleapis.com/css?family=@{CmUI-GoogleFont}:@{CmUI-GoogleFont-Weight})';
 
 @font-face {
     font-family: @CmIconVars-Family;
@@ -6993,12 +6995,12 @@ select {
                 margin-right: @CmIndent-XXSmall;
             }
         }
-    }
 
-    &.has-icon-medium {
-        .icon {
-            @margin: round((@CmFont-Base-LineHeight - @CmSize-Medium) / 2);
-            margin-top: @margin;
+        &.valign-middle {
+            .icon,
+            .label {
+                vertical-align: middle;
+            }
         }
     }
 
@@ -7006,6 +7008,23 @@ select {
         .icon {
             @margin: round((@CmFont-Base-LineHeight - @CmSize-Small) / 2);
             margin-top: @margin;
+            margin-bottom: @margin;
+        }
+    }
+
+    &.has-icon-medium {
+        .icon {
+            @margin: round((@CmFont-Base-LineHeight - @CmSize-Medium) / 2);
+            margin-top: @margin;
+            margin-bottom: @margin;
+        }
+    }
+
+    &.has-icon-large {
+        .icon {
+            @margin: round((@CmFont-Base-LineHeight - @CmSize-Large) / 2);
+            margin-top: @margin;
+            margin-bottom: @margin;
         }
     }
 }

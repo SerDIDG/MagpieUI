@@ -33,7 +33,7 @@
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.30.2';
+@CmVersion: '3.30.3';
 
 // /* ******* PATH ******* */
 
@@ -105,6 +105,8 @@
 @CmUI-TooltipWidth: 320px;
 @CmUI-ColumnIndent: @CmIndent-Medium;
 @CmUI-BoxIndent: @CmIndent-Medium;
+@CmUI-GoogleFont: Open Sans;
+@CmUI-GoogleFont-Weight: 100,300,400,600,700,800;
 
 // /* ************************************************ */
 // /* ******* COLORS ******* */
@@ -385,7 +387,7 @@
 
 @CmFont-Base-LineHeight: 18px;
 @CmFont-Base-LineHeightSmall: 18px;
-@CmFont-Base-Family: 'Open Sans', arial, helvetica, sans-serif;
+@CmFont-Base-Family: @CmUI-GoogleFont, arial, helvetica, sans-serif;
 @CmFont-Base-Size: 13px;
 @CmFont-Base-SizeSmall: 11px;
 @CmFont-Base-Weight: @CmFont-Base-NormalWeight;
@@ -404,7 +406,7 @@
 @CmFont-UI-LineHeight: 18px;
 @CmFont-UI-Size: 13px;
 @CmFont-UI-SizeSmall: 11px;
-@CmFont-UI-Family: 'Open Sans', arial, helvetica, sans-serif;
+@CmFont-UI-Family: @CmUI-GoogleFont, arial, helvetica, sans-serif;
 @CmFont-UI-Weight: @CmFont-UI-NormalWeight;
 @CmFont-UI-Color: @CmColor-Font;
 @CmFont-UI-ColorOpposite: @CmColor-Font-Opposite;

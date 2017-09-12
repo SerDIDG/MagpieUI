@@ -404,12 +404,12 @@
                 margin-right: @CmIndent-XXSmall;
             }
         }
-    }
 
-    &.has-icon-medium {
-        .icon {
-            @margin: round((@CmFont-Base-LineHeight - @CmSize-Medium) / 2);
-            margin-top: @margin;
+        &.valign-middle {
+            .icon,
+            .label {
+                vertical-align: middle;
+            }
         }
     }
 
@@ -417,6 +417,23 @@
         .icon {
             @margin: round((@CmFont-Base-LineHeight - @CmSize-Small) / 2);
             margin-top: @margin;
+            margin-bottom: @margin;
+        }
+    }
+
+    &.has-icon-medium {
+        .icon {
+            @margin: round((@CmFont-Base-LineHeight - @CmSize-Medium) / 2);
+            margin-top: @margin;
+            margin-bottom: @margin;
+        }
+    }
+
+    &.has-icon-large {
+        .icon {
+            @margin: round((@CmFont-Base-LineHeight - @CmSize-Large) / 2);
+            margin-top: @margin;
+            margin-bottom: @margin;
         }
     }
 }
