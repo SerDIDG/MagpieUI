@@ -1727,10 +1727,15 @@ cm.getSelectValue = function(node){
     if(!node.multiple){
         return node.value;
     }
-    var options = node.querySelectorAll('option:checked');
-    return Array.from(options).map(function(option){
-        return option.value;
-    });
+    var options,
+        selected = [];
+    try{
+        options = node.querySelectorAll('option:checked');
+        selected = Array.from(options).map(function(option){
+            return option.value;
+        });
+    }catch(e){}
+    return selected;
 };
 
 /* ******* STRINGS ******* */
@@ -1744,7 +1749,7 @@ cm.toNumber = function(str){
 };
 
 cm.is = function(str){
-    if(typeof Com.UA == 'undefined'){
+    if(cm.isUndefined(Com.UA)){
         cm.log('Error. UA.js is not exists or not loaded. Method "cm.is()" returns false.');
         return false;
     }
@@ -1752,7 +1757,7 @@ cm.is = function(str){
 };
 
 cm.isVersion = function(){
-    if(typeof Com.UA == 'undefined'){
+    if(cm.isUndefined(Com.UA)){
         cm.log('Error. UA.js is not exists or not loaded. Method "cm.isVersion()" returns null.');
         return null;
     }
@@ -1760,7 +1765,7 @@ cm.isVersion = function(){
 };
 
 cm.isMobile = function(){
-    if(typeof Com.UA == 'undefined'){
+    if(cm.isUndefined(Com.UA)){
         cm.log('Error. UA.js is not exists or not loaded. Method "cm.isMobile()" returns false.');
         return false;
     }

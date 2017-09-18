@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.30.3 (2017-09-12 19:31) ************ */
+/*! ************ MagpieUI v3.30.4 (2017-09-18 18:42) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1506,7 +1506,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.30.3',
+        '_version' : '3.30.4',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -3203,10 +3203,15 @@ cm.getSelectValue = function(node){
     if(!node.multiple){
         return node.value;
     }
-    var options = node.querySelectorAll('option:checked');
-    return Array.from(options).map(function(option){
-        return option.value;
-    });
+    var options,
+        selected = [];
+    try{
+        options = node.querySelectorAll('option:checked');
+        selected = Array.from(options).map(function(option){
+            return option.value;
+        });
+    }catch(e){}
+    return selected;
 };
 
 /* ******* STRINGS ******* */
@@ -3220,7 +3225,7 @@ cm.toNumber = function(str){
 };
 
 cm.is = function(str){
-    if(typeof Com.UA == 'undefined'){
+    if(cm.isUndefined(Com.UA)){
         cm.log('Error. UA.js is not exists or not loaded. Method "cm.is()" returns false.');
         return false;
     }
@@ -3228,7 +3233,7 @@ cm.is = function(str){
 };
 
 cm.isVersion = function(){
-    if(typeof Com.UA == 'undefined'){
+    if(cm.isUndefined(Com.UA)){
         cm.log('Error. UA.js is not exists or not loaded. Method "cm.isVersion()" returns null.');
         return null;
     }
@@ -3236,7 +3241,7 @@ cm.isVersion = function(){
 };
 
 cm.isMobile = function(){
-    if(typeof Com.UA == 'undefined'){
+    if(cm.isUndefined(Com.UA)){
         cm.log('Error. UA.js is not exists or not loaded. Method "cm.isMobile()" returns false.');
         return false;
     }
