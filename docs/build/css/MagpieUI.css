@@ -1,6 +1,6 @@
 @charset "UTF-8";
-@import '//fonts.googleapis.com/css?family=Open Sans:100, 300, 400, 600, 700, 800)';
-/*! ************ MagpieUI v3.30.4 (2017-09-18 18:42) ************ */
+@import url('//fonts.googleapis.com/css?family=Open Sans:100, 300, 400, 600, 700, 800');
+/*! ************ MagpieUI v3.30.5 (2017-09-20 19:19) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.5.0
@@ -3433,8 +3433,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.30.4');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.30.4') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.30.4') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.30.4') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.30.4#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.30.5');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.30.5') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.30.5') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.30.5') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.30.5#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
 }
