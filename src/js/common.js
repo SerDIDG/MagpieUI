@@ -1015,8 +1015,8 @@ cm.addScript = function(src, async, callback){
     };
     // Config
     src = cm.isArray(src) ? cm.objectReplace(src, vars) : cm.strReplace(src, vars);
-    async = typeof async != 'undefined' ? async : false;
-    callback = typeof callback != 'undefined' ? callback : function(){};
+    async = !cm.isUndefined(async) ? async : false;
+    callback = !cm.isUndefined(callback) ? callback : function(){};
     // Configure Stack Item
     if(cm._addScriptStack[src]){
         item = cm._addScriptStack[src];

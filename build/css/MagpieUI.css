@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url('//fonts.googleapis.com/css?family=Open Sans:100, 300, 400, 600, 700, 800');
-/*! ************ MagpieUI v3.30.5 (2017-09-20 19:19) ************ */
+/*! ************ MagpieUI v3.30.6 (2017-09-25 19:54) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.5.0
@@ -3433,8 +3433,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.30.5');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.30.5') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.30.5') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.30.5') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.30.5#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.30.6');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.30.6') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.30.6') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.30.6') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.30.6#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -15909,47 +15909,6 @@ ul.pt__field__hint li:before {
 .com__file-stats__list.is-inline > ul > li:last-child {
   margin-right: 0;
 }
-/* ******* COMPONENTS: FILE UPLOADER ******* */
-.com__file-uploader__dropzone {
-  position: relative;
-}
-.com__file-uploader__title {
-  font: 300 16px/24px Open Sans, arial, helvetica, sans-serif;
-  color: #666666;
-  text-align: center;
-}
-.com__file-uploader__files {
-  margin-top: 24px;
-}
-.com__file-uploader__files:first-child {
-  margin-top: 0;
-}
-.com__file-uploader__files.is-hidden {
-  display: none;
-}
-.com__file-uploader__local {
-  position: relative;
-}
-.com__file-uploader__local .com__file-uploader__title,
-.com__file-uploader__local .com__file-uploader__holder,
-.com__file-uploader__local .com__file-uploader__dropzone {
-  margin-top: 12px;
-}
-.com__file-uploader__local .com__file-uploader__title:first-child,
-.com__file-uploader__local .com__file-uploader__holder:first-child,
-.com__file-uploader__local .com__file-uploader__dropzone:first-child {
-  margin-top: 0;
-}
-.com__file-uploader__file-manager.is-fullsize {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-}
-.com__file-uploader__file-manager.is-fullsize .com__file-uploader__holder {
-  height: 100%;
-}
 /* ******* COMPONENTS: FORM ******* */
 .com__form {
   margin-bottom: 24px;
@@ -19745,7 +19704,4 @@ html.ie9 .com__timeselect > .inner > .sep {
 .com__zoom > .inner > img {
   display: block;
   padding: 24px;
-}
-.com__file-manager.is-fullsize .ui-resizable-handle {
-  display: none !important;
 }
