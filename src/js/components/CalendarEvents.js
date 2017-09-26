@@ -18,7 +18,7 @@ cm.define('Com.CalendarEvents', {
         'startWeekDay' : 0,
         'target' : '_blank',
         'Com.Tooltip' : {
-            'className' : 'module__calendar-events__tooltip'
+            'className' : 'com__calendar-events__tooltip'
         }
     },
     'strings' : {
@@ -44,7 +44,7 @@ function(params){
 
     var render = function(){
         // Structure
-        that.nodes['container'] = cm.node('div', {'class' : 'module__calendar-events'});
+        that.nodes['container'] = cm.node('div', {'class' : 'com__calendar-events'});
         // Render calendar
         that.components['calendar'] = new Com.Calendar({
             'node' : that.nodes['container'],
@@ -85,7 +85,7 @@ function(params){
 
         if((data = that.params['data'][params['year']]) && (data = data[(params['month'] + 1)]) && (data = data[params['day']])){
             // Structure
-            myNodes['content'] = cm.node('div', {'class' : 'pt__listing module__calendar-events-listing'},
+            myNodes['content'] = cm.node('div', {'class' : 'pt__listing com__calendar-events__listing'},
                 myNodes['list'] = cm.node('ul', {'class' : 'list'})
             );
             // Foreach events
