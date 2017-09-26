@@ -53,7 +53,7 @@ cm.getConstructor('Com.FileReader', function(classConstructor, className, classP
 
     classProto.read = function(file, callback){
         var that = this;
-        callback = typeof callback == 'function' ? callback : function(){};
+        callback = cm.isFunction(callback) ? callback : function(){};
         if(cm.isFileReader && cm.isFile(file)){
             that.triggerEvent('onReadStart', file);
             // Config
