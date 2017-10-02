@@ -267,23 +267,26 @@ function(params){
             scrollLeft = cm.getScrollLeft(window);
         // Calculate size
         (function(){
-            var width;
-            if(that.params['width'] != 'auto'){
-                width = Math.max(
-                    eval(
-                        that.params['minWidth']
-                            .toString()
-                            .replace('targetWidth', targetWidth)
-                            .replace('selfWidth', selfWidth)
-                    ),
-                    eval(
-                        that.params['width']
-                            .toString()
-                            .replace('targetWidth', targetWidth)
-                            .replace('selfWidth', selfWidth)
-                    )
+            var width = 0,
+                minWidth = 0;
+            if(that.params['minWidth'] !== 'auto'){
+                minWidth = eval(
+                    that.params['minWidth']
+                        .toString()
+                        .replace('targetWidth', targetWidth)
+                        .replace('selfWidth', selfWidth)
                 );
-                if(width != selfWidth){
+                that.nodes['container'].style.minWidth =  [minWidth, 'px'].join('');
+            }
+            if(that.params['width'] !== 'auto'){
+                width = eval(
+                    that.params['width']
+                        .toString()
+                        .replace('targetWidth', targetWidth)
+                        .replace('selfWidth', selfWidth)
+                );
+                width = Math.max(minWidth, width);
+                if(width !== selfWidth){
                     that.nodes['container'].style.width =  [width, 'px'].join('');
                     selfWidth = that.nodes['container'].offsetWidth;
                     selfHeight = that.nodes['container'].offsetHeight;

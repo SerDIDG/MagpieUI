@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.30.8 (2017-09-26 16:34) ************ */
+/*! ************ MagpieUI v3.30.9 (2017-10-02 18:24) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1506,7 +1506,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.30.8',
+        '_version' : '3.30.9',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -16124,7 +16124,8 @@ cm.define('Com.Menu', {
         'name' : '',
         'event' : 'hover',
         'top' : 'targetHeight',
-        'left' : 'targetHeight',
+        'left' : 0,
+        'minWidth' : 'targetWidth',
         'Com.Tooltip' : {
             'className' : 'com__menu-tooltip',
             'targetEvent' : 'hover',
@@ -16158,6 +16159,7 @@ function(params){
         that.params['Com.Tooltip']['targetEvent'] = that.params['event'];
         that.params['Com.Tooltip']['top'] = that.params['top'];
         that.params['Com.Tooltip']['left'] = that.params['left'];
+        that.params['Com.Tooltip']['minWidth'] = that.params['minWidth'];
     };
 
     var render = function(){
@@ -16165,7 +16167,7 @@ function(params){
         cm.getConstructor('Com.Tooltip', function(classConstructor){
             that.components['tooltip'] = new classConstructor(
                 cm.merge(that.params['Com.Tooltip'], {
-                    'target' : that.nodes['button'],
+                    'target' : that.nodes['container'] || that.nodes['button'],
                     'content' : that.nodes['target'],
                     'events' : {
                         'onShowStart' : function(){
@@ -22557,23 +22559,26 @@ function(params){
             scrollLeft = cm.getScrollLeft(window);
         // Calculate size
         (function(){
-            var width;
-            if(that.params['width'] != 'auto'){
-                width = Math.max(
-                    eval(
-                        that.params['minWidth']
-                            .toString()
-                            .replace('targetWidth', targetWidth)
-                            .replace('selfWidth', selfWidth)
-                    ),
-                    eval(
-                        that.params['width']
-                            .toString()
-                            .replace('targetWidth', targetWidth)
-                            .replace('selfWidth', selfWidth)
-                    )
+            var width = 0,
+                minWidth = 0;
+            if(that.params['minWidth'] !== 'auto'){
+                minWidth = eval(
+                    that.params['minWidth']
+                        .toString()
+                        .replace('targetWidth', targetWidth)
+                        .replace('selfWidth', selfWidth)
                 );
-                if(width != selfWidth){
+                that.nodes['container'].style.minWidth =  [minWidth, 'px'].join('');
+            }
+            if(that.params['width'] !== 'auto'){
+                width = eval(
+                    that.params['width']
+                        .toString()
+                        .replace('targetWidth', targetWidth)
+                        .replace('selfWidth', selfWidth)
+                );
+                width = Math.max(minWidth, width);
+                if(width !== selfWidth){
                     that.nodes['container'].style.width =  [width, 'px'].join('');
                     selfWidth = that.nodes['container'].offsetWidth;
                     selfHeight = that.nodes['container'].offsetHeight;

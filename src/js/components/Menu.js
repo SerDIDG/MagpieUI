@@ -14,7 +14,8 @@ cm.define('Com.Menu', {
         'name' : '',
         'event' : 'hover',
         'top' : 'targetHeight',
-        'left' : 'targetHeight',
+        'left' : 0,
+        'minWidth' : 'targetWidth',
         'Com.Tooltip' : {
             'className' : 'com__menu-tooltip',
             'targetEvent' : 'hover',
@@ -48,6 +49,7 @@ function(params){
         that.params['Com.Tooltip']['targetEvent'] = that.params['event'];
         that.params['Com.Tooltip']['top'] = that.params['top'];
         that.params['Com.Tooltip']['left'] = that.params['left'];
+        that.params['Com.Tooltip']['minWidth'] = that.params['minWidth'];
     };
 
     var render = function(){
@@ -55,7 +57,7 @@ function(params){
         cm.getConstructor('Com.Tooltip', function(classConstructor){
             that.components['tooltip'] = new classConstructor(
                 cm.merge(that.params['Com.Tooltip'], {
-                    'target' : that.nodes['button'],
+                    'target' : that.nodes['container'] || that.nodes['button'],
                     'content' : that.nodes['target'],
                     'events' : {
                         'onShowStart' : function(){
