@@ -26,22 +26,6 @@
     .mx__user-select(none);
     .mx__transition(background-color color box-shadow outline, @CmUI-Transition-Duration);
 
-    &.is-wrap {
-        .cm__text-wrap;
-    }
-
-    &.is-hidden {
-        display: none;
-    }
-
-    &.is-wide,
-    &.is-box,
-    &.wide {
-        width: 100%;
-        margin: 0;
-        display: block;
-    }
-
     &:focus {
         outline: @CmButton-OutlineWidth dashed transparent;
         outline-offset: @CmButton-OutlineOffset;
@@ -434,6 +418,33 @@
             @margin: round((@CmFont-Base-LineHeight - @CmSize-Large) / 2);
             margin-top: @margin;
             margin-bottom: @margin;
+        }
+    }
+
+    // /* *** FLAGS *** */
+
+    &.is-wrap {
+        .cm__text-wrap;
+    }
+
+    &.is-hidden {
+        display: none;
+    }
+
+    &.is-wide,
+    &.is-box,
+    &.wide {
+        width: 100%;
+        margin: 0;
+        display: block;
+    }
+
+    &.is-static {
+        cursor: default;
+
+        &:focus,
+        &.focus {
+            outline: none;
         }
     }
 }

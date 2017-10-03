@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.30.9 (2017-10-02 18:24) ************ */
+/*! ************ MagpieUI v3.30.11 (2017-10-03 19:34) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3752,7 +3752,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.30.9';
+@CmVersion: '3.30.11';
 
 // /* ******* PATH ******* */
 
@@ -6577,22 +6577,6 @@ select {
     .mx__user-select(none);
     .mx__transition(background-color color box-shadow outline, @CmUI-Transition-Duration);
 
-    &.is-wrap {
-        .cm__text-wrap;
-    }
-
-    &.is-hidden {
-        display: none;
-    }
-
-    &.is-wide,
-    &.is-box,
-    &.wide {
-        width: 100%;
-        margin: 0;
-        display: block;
-    }
-
     &:focus {
         outline: @CmButton-OutlineWidth dashed transparent;
         outline-offset: @CmButton-OutlineOffset;
@@ -6985,6 +6969,33 @@ select {
             @margin: round((@CmFont-Base-LineHeight - @CmSize-Large) / 2);
             margin-top: @margin;
             margin-bottom: @margin;
+        }
+    }
+
+    // /* *** FLAGS *** */
+
+    &.is-wrap {
+        .cm__text-wrap;
+    }
+
+    &.is-hidden {
+        display: none;
+    }
+
+    &.is-wide,
+    &.is-box,
+    &.wide {
+        width: 100%;
+        margin: 0;
+        display: block;
+    }
+
+    &.is-static {
+        cursor: default;
+
+        &:focus,
+        &.focus {
+            outline: none;
         }
     }
 }
@@ -9900,117 +9911,117 @@ ul.pt__field__hint {
         width: 100%;
         table-layout: fixed;
         border-collapse: separate;
+    }
 
-        td, th {
-            min-height: @CmFont-UI-LineHeight;
-            vertical-align: top;
+    td, th {
+        min-height: @CmFont-UI-LineHeight;
+        vertical-align: top;
+        text-align: left;
+        padding: @PtGridlist-Cell-Padding;
+        line-height: @CmFont-UI-LineHeight;
+        .mx__background-clip(padding-box);
+
+        > .inner {
+            .cm__text-overflow;
+            display: block;
+            position: relative;
+            word-wrap: normal;
+            text-decoration: none;
+        }
+
+        &.pull-left {
             text-align: left;
-            padding: @PtGridlist-Cell-Padding;
-            line-height: @CmFont-UI-LineHeight;
-            .mx__background-clip(padding-box);
+        }
 
-            > .inner {
-                .cm__text-overflow;
+        &.pull-center {
+            text-align: center;
+        }
+
+        &.pull-right {
+            text-align: right;
+        }
+
+        &.cell-title {
+            width: 20%;
+        }
+
+        &.cell-description {
+            width: auto;
+        }
+
+        &.cell-date,
+        &.cell--date {
+            width: 100px;
+        }
+
+        &.cell-date-full,
+        &.cell--date-full{
+            width: 10%;
+        }
+
+        &.cell-price,
+        &.cell--price {
+            width: 100px;
+        }
+
+        &.cell-auto {
+            width: auto;
+        }
+
+        &.cell-status,
+        &.cell--status{
+            width: 100px;
+        }
+
+        &.cell-links,
+        &.cell--links{
+            width: 200px;
+        }
+
+        &.cell-actions,
+        &.cell--actions {
+            width: 100px;
+        }
+    }
+
+    th {
+        font-weight: @CmFont-Base-BoldWeight;
+        font-size: @PtGridlist-Title-FontSize;
+        .mx__user-select(none);
+
+        &.sort {
+            .mx__transition(background-color, @CmUI-Transition-Duration);
+
+            .inner {
                 display: block;
-                position: relative;
-                word-wrap: normal;
-                text-decoration: none;
+                margin: -@PtGridlist-Cell-Padding;
+                padding: @PtGridlist-Cell-Padding 20px @PtGridlist-Cell-Padding @PtGridlist-Cell-Padding;
+                cursor: pointer;
             }
 
-            &.pull-left {
-                text-align: left;
-            }
-
-            &.pull-center {
-                text-align: center;
-            }
-
-            &.pull-right {
-                text-align: right;
-            }
-
-            &.cell-title {
-                width: 20%;
-            }
-
-            &.cell-description {
-                width: auto;
-            }
-
-            &.cell-date,
-            &.cell--date {
-                width: 100px;
-            }
-
-            &.cell-date-full,
-            &.cell--date-full{
-                width: 10%;
-            }
-
-            &.cell-price,
-            &.cell--price {
-                width: 100px;
-            }
-
-            &.cell-auto {
-                width: auto;
-            }
-
-            &.cell-status,
-            &.cell--status{
-                width: 100px;
-            }
-
-            &.cell-links,
-            &.cell--links{
-                width: 200px;
-            }
-
-            &.cell-actions,
-            &.cell--actions {
-                width: 100px;
+            .arrow {
+                display: block;
+                position: absolute;
+                top: 50%;
+                right: @PtGridlist-Cell-Padding;
+                margin: -3px 0 0 0;
             }
         }
+    }
 
-        th {
-            font-weight: @CmFont-Base-BoldWeight;
-            font-size: @PtGridlist-Title-FontSize;
-            .mx__user-select(none);
+    td {
+        vertical-align: top;
+        border-top: @PtGridlist-Cell-SpaceBorder;
+        word-wrap: break-word;
+        font-size: @PtGridlist-Cell-FontSize;
+    }
 
-            &.sort {
-                .mx__transition(background-color, @CmUI-Transition-Duration);
-
-                .inner {
-                    display: block;
-                    margin: -@PtGridlist-Cell-Padding;
-                    padding: @PtGridlist-Cell-Padding 20px @PtGridlist-Cell-Padding @PtGridlist-Cell-Padding;
-                    cursor: pointer;
-                }
-
-                .arrow {
-                    display: block;
-                    position: absolute;
-                    top: 50%;
-                    right: @PtGridlist-Cell-Padding;
-                    margin: -3px 0 0 0;
-                }
-            }
-        }
-
-        td {
-            vertical-align: top;
-            border-top: @PtGridlist-Cell-SpaceBorder;
-            word-wrap: break-word;
-            font-size: @PtGridlist-Cell-FontSize;
-        }
-
-        tbody, thead {
-            &:first-child {
-                tr {
-                    &:first-child {
-                        td, th {
-                            border: none;
-                        }
+    tbody, thead {
+        &:first-child {
+            tr {
+                &:first-child {
+                    td, th {
+                        border: none;
                     }
                 }
             }
@@ -10022,10 +10033,8 @@ ul.pt__field__hint {
     }
 
     &.valign-middle {
-        table {
-            td {
-                vertical-align: middle;
-            }
+        td {
+            vertical-align: middle;
         }
     }
 
@@ -10069,6 +10078,8 @@ ul.pt__field__hint {
 
 .pt__gridlist {
     .control {
+        vertical-align: middle;
+
         .icon {
             display: inline-block;
             vertical-align: middle;
@@ -15630,6 +15641,18 @@ ul.pt__field__hint {
 .com__menu {
     .button {
         margin: 0 !important;
+    }
+
+    > .label {
+        margin: 0 @CmIndent-XXXSmall;
+
+        &:first-child {
+            margin-left: 0;
+        }
+
+        &:last-child {
+            margin-right: 0;
+        }
     }
 
     .pt__menu {

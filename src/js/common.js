@@ -1738,6 +1738,22 @@ cm.getSelectValue = function(node){
     return selected;
 };
 
+cm.setInputMaxLength = function(input, maxlength, max, min){
+    if(cm.isNode(input)){
+        var type = input.getAttribute('type'),
+            value = 0;
+        if(type === 'number'){
+            value = max || '9'.repeat(maxlength);
+            value && input.setAttribute('max', value);
+            min && input.setAttribute('max', min);
+        }else{
+            value = maxlength || max;
+            value && input.setAttribute('maxlength', value);
+        }
+    }
+    return input;
+};
+
 /* ******* STRINGS ******* */
 
 cm.toFixed = function(n, x){

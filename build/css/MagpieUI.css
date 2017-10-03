@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url('//fonts.googleapis.com/css?family=Open Sans:100, 300, 400, 600, 700, 800');
-/*! ************ MagpieUI v3.30.9 (2017-10-02 18:24) ************ */
+/*! ************ MagpieUI v3.30.11 (2017-10-03 19:34) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.5.0
@@ -3436,8 +3436,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.30.9');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.30.9') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.30.9') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.30.9') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.30.9#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.30.11');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.30.11') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.30.11') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.30.11') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.30.11#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -5376,41 +5376,6 @@ button {
   background-color: #2985e0;
   color: #ffffff;
 }
-.button.is-wrap,
-input[type="button"].is-wrap,
-input[type="submit"].is-wrap,
-input[type="reset"].is-wrap,
-button.is-wrap {
-  overflow: visible;
-  white-space: normal;
-  text-overflow: clip;
-}
-.button.is-hidden,
-input[type="button"].is-hidden,
-input[type="submit"].is-hidden,
-input[type="reset"].is-hidden,
-button.is-hidden {
-  display: none;
-}
-.button.is-wide,
-.button.is-box,
-.button.wide,
-input[type="button"].is-wide,
-input[type="button"].is-box,
-input[type="button"].wide,
-input[type="submit"].is-wide,
-input[type="submit"].is-box,
-input[type="submit"].wide,
-input[type="reset"].is-wide,
-input[type="reset"].is-box,
-input[type="reset"].wide,
-button.is-wide,
-button.is-box,
-button.wide {
-  width: 100%;
-  margin: 0;
-  display: block;
-}
 .button:focus,
 input[type="button"]:focus,
 input[type="submit"]:focus,
@@ -6219,6 +6184,60 @@ input[type="reset"].has-icon-large .icon,
 button.has-icon-large .icon {
   margin-top: -7px;
   margin-bottom: -7px;
+}
+.button.is-wrap,
+input[type="button"].is-wrap,
+input[type="submit"].is-wrap,
+input[type="reset"].is-wrap,
+button.is-wrap {
+  overflow: visible;
+  white-space: normal;
+  text-overflow: clip;
+}
+.button.is-hidden,
+input[type="button"].is-hidden,
+input[type="submit"].is-hidden,
+input[type="reset"].is-hidden,
+button.is-hidden {
+  display: none;
+}
+.button.is-wide,
+.button.is-box,
+.button.wide,
+input[type="button"].is-wide,
+input[type="button"].is-box,
+input[type="button"].wide,
+input[type="submit"].is-wide,
+input[type="submit"].is-box,
+input[type="submit"].wide,
+input[type="reset"].is-wide,
+input[type="reset"].is-box,
+input[type="reset"].wide,
+button.is-wide,
+button.is-box,
+button.wide {
+  width: 100%;
+  margin: 0;
+  display: block;
+}
+.button.is-static,
+input[type="button"].is-static,
+input[type="submit"].is-static,
+input[type="reset"].is-static,
+button.is-static {
+  cursor: default;
+}
+.button.is-static:focus,
+.button.is-static.focus,
+input[type="button"].is-static:focus,
+input[type="button"].is-static.focus,
+input[type="submit"].is-static:focus,
+input[type="submit"].is-static.focus,
+input[type="reset"].is-static:focus,
+input[type="reset"].is-static.focus,
+button.is-static:focus,
+button.is-static.focus {
+  outline: none;
 }
 input[type="button"]::-moz-focus-inner,
 input[type="submit"]::-moz-focus-inner,
@@ -9766,8 +9785,8 @@ ul.pt__field__hint li:before {
   table-layout: fixed;
   border-collapse: separate;
 }
-.pt__gridlist table td,
-.pt__gridlist table th {
+.pt__gridlist td,
+.pt__gridlist th {
   min-height: 18px;
   vertical-align: top;
   text-align: left;
@@ -9777,8 +9796,8 @@ ul.pt__field__hint li:before {
   -moz-background-clip: padding-box;
   background-clip: padding-box;
 }
-.pt__gridlist table td > .inner,
-.pt__gridlist table th > .inner {
+.pt__gridlist td > .inner,
+.pt__gridlist th > .inner {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -9787,100 +9806,100 @@ ul.pt__field__hint li:before {
   word-wrap: normal;
   text-decoration: none;
 }
-.pt__gridlist table td.pull-left,
-.pt__gridlist table th.pull-left {
+.pt__gridlist td.pull-left,
+.pt__gridlist th.pull-left {
   text-align: left;
 }
-.pt__gridlist table td.pull-center,
-.pt__gridlist table th.pull-center {
+.pt__gridlist td.pull-center,
+.pt__gridlist th.pull-center {
   text-align: center;
 }
-.pt__gridlist table td.pull-right,
-.pt__gridlist table th.pull-right {
+.pt__gridlist td.pull-right,
+.pt__gridlist th.pull-right {
   text-align: right;
 }
-.pt__gridlist table td.cell-title,
-.pt__gridlist table th.cell-title {
+.pt__gridlist td.cell-title,
+.pt__gridlist th.cell-title {
   width: 20%;
 }
-.pt__gridlist table td.cell-description,
-.pt__gridlist table th.cell-description {
+.pt__gridlist td.cell-description,
+.pt__gridlist th.cell-description {
   width: auto;
 }
-.pt__gridlist table td.cell-date,
-.pt__gridlist table th.cell-date,
-.pt__gridlist table td.cell--date,
-.pt__gridlist table th.cell--date {
+.pt__gridlist td.cell-date,
+.pt__gridlist th.cell-date,
+.pt__gridlist td.cell--date,
+.pt__gridlist th.cell--date {
   width: 100px;
 }
-.pt__gridlist table td.cell-date-full,
-.pt__gridlist table th.cell-date-full,
-.pt__gridlist table td.cell--date-full,
-.pt__gridlist table th.cell--date-full {
+.pt__gridlist td.cell-date-full,
+.pt__gridlist th.cell-date-full,
+.pt__gridlist td.cell--date-full,
+.pt__gridlist th.cell--date-full {
   width: 10%;
 }
-.pt__gridlist table td.cell-price,
-.pt__gridlist table th.cell-price,
-.pt__gridlist table td.cell--price,
-.pt__gridlist table th.cell--price {
+.pt__gridlist td.cell-price,
+.pt__gridlist th.cell-price,
+.pt__gridlist td.cell--price,
+.pt__gridlist th.cell--price {
   width: 100px;
 }
-.pt__gridlist table td.cell-auto,
-.pt__gridlist table th.cell-auto {
+.pt__gridlist td.cell-auto,
+.pt__gridlist th.cell-auto {
   width: auto;
 }
-.pt__gridlist table td.cell-status,
-.pt__gridlist table th.cell-status,
-.pt__gridlist table td.cell--status,
-.pt__gridlist table th.cell--status {
+.pt__gridlist td.cell-status,
+.pt__gridlist th.cell-status,
+.pt__gridlist td.cell--status,
+.pt__gridlist th.cell--status {
   width: 100px;
 }
-.pt__gridlist table td.cell-links,
-.pt__gridlist table th.cell-links,
-.pt__gridlist table td.cell--links,
-.pt__gridlist table th.cell--links {
+.pt__gridlist td.cell-links,
+.pt__gridlist th.cell-links,
+.pt__gridlist td.cell--links,
+.pt__gridlist th.cell--links {
   width: 200px;
 }
-.pt__gridlist table td.cell-actions,
-.pt__gridlist table th.cell-actions,
-.pt__gridlist table td.cell--actions,
-.pt__gridlist table th.cell--actions {
+.pt__gridlist td.cell-actions,
+.pt__gridlist th.cell-actions,
+.pt__gridlist td.cell--actions,
+.pt__gridlist th.cell--actions {
   width: 100px;
 }
-.pt__gridlist table th {
+.pt__gridlist th {
   font-weight: 600;
   font-size: 13px;
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
 }
-.pt__gridlist table th.sort {
+.pt__gridlist th.sort {
   -webkit-transition: background-color 250ms ease-in-out;
   transition: background-color 250ms ease-in-out;
 }
-.pt__gridlist table th.sort .inner {
+.pt__gridlist th.sort .inner {
   display: block;
   margin: -6px;
   padding: 6px 20px 6px 6px;
   cursor: pointer;
 }
-.pt__gridlist table th.sort .arrow {
+.pt__gridlist th.sort .arrow {
   display: block;
   position: absolute;
   top: 50%;
   right: 6px;
   margin: -3px 0 0 0;
 }
-.pt__gridlist table td {
+.pt__gridlist td {
   vertical-align: top;
   border-top: 1px solid transparent;
   word-wrap: break-word;
   font-size: 13px;
 }
-.pt__gridlist table tbody:first-child tr:first-child td,
-.pt__gridlist table thead:first-child tr:first-child td,
-.pt__gridlist table tbody:first-child tr:first-child th,
-.pt__gridlist table thead:first-child tr:first-child th {
+.pt__gridlist tbody:first-child tr:first-child td,
+.pt__gridlist thead:first-child tr:first-child td,
+.pt__gridlist tbody:first-child tr:first-child th,
+.pt__gridlist thead:first-child tr:first-child th {
   border: none;
 }
 .pt__gridlist.has-background th {
@@ -9940,7 +9959,7 @@ ul.pt__field__hint li:before {
 .pt__gridlist.has-background tr:hover td {
   background-color: #f2f2f2;
 }
-.pt__gridlist.valign-middle table td {
+.pt__gridlist.valign-middle td {
   vertical-align: middle;
 }
 .pt__gridlist.is-editable > .com__columns__chassis {
@@ -9970,6 +9989,9 @@ ul.pt__field__hint li:before {
   text-align: left;
 }
 /* *** STUFF *** */
+.pt__gridlist .control {
+  vertical-align: middle;
+}
 .pt__gridlist .control .icon {
   display: inline-block;
   vertical-align: middle;
@@ -16504,6 +16526,15 @@ ul.pt__field__hint li:before {
 .com__menu button {
   margin: 0 !important;
 }
+.com__menu > .label {
+  margin: 0 4px;
+}
+.com__menu > .label:first-child {
+  margin-left: 0;
+}
+.com__menu > .label:last-child {
+  margin-right: 0;
+}
 .com__menu .pt__menu {
   display: none;
 }
@@ -17033,21 +17064,6 @@ ul.pt__field__hint li:before {
   padding-left: 6px;
   padding-right: 6px;
 }
-.com__pagination__bar ul li a.is-wrap {
-  overflow: visible;
-  white-space: normal;
-  text-overflow: clip;
-}
-.com__pagination__bar ul li a.is-hidden {
-  display: none;
-}
-.com__pagination__bar ul li a.is-wide,
-.com__pagination__bar ul li a.is-box,
-.com__pagination__bar ul li a.wide {
-  width: 100%;
-  margin: 0;
-  display: block;
-}
 .com__pagination__bar ul li a:focus {
   outline: 1px dashed transparent;
   outline-offset: 1px;
@@ -17396,6 +17412,28 @@ ul.pt__field__hint li:before {
 .com__pagination__bar ul li a.has-icon-large .icon {
   margin-top: -7px;
   margin-bottom: -7px;
+}
+.com__pagination__bar ul li a.is-wrap {
+  overflow: visible;
+  white-space: normal;
+  text-overflow: clip;
+}
+.com__pagination__bar ul li a.is-hidden {
+  display: none;
+}
+.com__pagination__bar ul li a.is-wide,
+.com__pagination__bar ul li a.is-box,
+.com__pagination__bar ul li a.wide {
+  width: 100%;
+  margin: 0;
+  display: block;
+}
+.com__pagination__bar ul li a.is-static {
+  cursor: default;
+}
+.com__pagination__bar ul li a.is-static:focus,
+.com__pagination__bar ul li a.is-static.focus {
+  outline: none;
 }
 .com__pagination__bar ul li a:focus,
 .com__pagination__bar ul li a.focus {

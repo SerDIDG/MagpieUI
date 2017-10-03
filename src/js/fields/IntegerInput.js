@@ -1,9 +1,12 @@
 cm.define('Com.IntegerInput', {
     'extend' : 'Com.AbstractInput',
     'params' : {
+        'controllerEvents' : true,
         'maxlength' : 3,
+        'max' : 0,
         'defaultValue' : 0,
-        'allowNegative' : false
+        'allowNegative' : false,
+        'type' : 'text'
     }
 },
 function(params){
@@ -24,6 +27,17 @@ cm.getConstructor('Com.IntegerInput', function(classConstructor, className, clas
         return that;
     };
 
+    classProto.onValidateParams = function(){
+        var that = this;
+        if(cm.isNode(that.params['node'])){
+            that.params['type'] = that.params['node'].getAttribute('type') || that.params['max'];
+            that.params['max'] = that.params['node'].getAttribute('max') || that.params['max'];
+        }
+        return that;
+    };
+
+    /*** VIEW MODEL ***/
+
     classProto.renderContent = function(){
         var that = this,
             nodes = {};
@@ -31,12 +45,10 @@ cm.getConstructor('Com.IntegerInput', function(classConstructor, className, clas
         that.triggerEvent('onRenderContentStart');
         // Structure
         nodes['container'] = cm.node('div', {'class' : 'pt__input'},
-            nodes['input'] = cm.node('input', {'type' : 'text'})
+            nodes['input'] = cm.node('input', {'type' : that.params['type']})
         );
         // Attributes
-        if(!cm.isEmpty(that.params['maxlength']) && that.params['maxlength'] > 0){
-            nodes['input'].setAttribute('maxlength', that.params['maxlength']);
-        }
+        cm.setInputMaxLength(nodes['input'], that.params['maxlength'], that.params['max']);
         // Events
         that.triggerEvent('onRenderContentProcess');
         cm.addEvent(nodes['input'], 'blur', that.setValueHandler);
@@ -62,7 +74,7 @@ cm.getConstructor('Com.IntegerInput', function(classConstructor, className, clas
         return nodes['container'];
     };
 
-    /* *** DATA VALUE *** */
+    /*** DATA VALUE ***/
 
     classProto.validateValue = function(value){
         var that = this;
@@ -74,7 +86,7 @@ cm.getConstructor('Com.IntegerInput', function(classConstructor, className, clas
 
     classProto.setValue = function(triggerEvents){
         var that = this;
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        triggerEvents = cm.isUndefined(triggerEvents)? true : triggerEvents;
         that.set(that.rawValue, triggerEvents);
         return that;
     };

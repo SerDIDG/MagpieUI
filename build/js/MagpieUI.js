@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.30.9 (2017-10-02 18:24) ************ */
+/*! ************ MagpieUI v3.30.11 (2017-10-03 19:34) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1449,6 +1449,48 @@ if (!Function.prototype.bind) {
     };
 }
 
+if (!String.prototype.repeat) {
+    String.prototype.repeat = function(count) {
+        'use strict';
+        if (this == null) {
+            throw new TypeError('can\'t convert ' + this + ' to object');
+        }
+        var str = '' + this;
+        count = +count;
+        if (count != count) {
+            count = 0;
+        }
+        if (count < 0) {
+            throw new RangeError('repeat count must be non-negative');
+        }
+        if (count == Infinity) {
+            throw new RangeError('repeat count must be less than infinity');
+        }
+        count = Math.floor(count);
+        if (str.length == 0 || count == 0) {
+            return '';
+        }
+        // Обеспечение того, что count является 31-битным целым числом, позволяет нам значительно
+        // соптимизировать главную часть функции. Впрочем, большинство современных (на август
+        // 2014 года) браузеров не обрабатывают строки, длиннее 1 << 28 символов, так что:
+        if (str.length * count >= 1 << 28) {
+            throw new RangeError('repeat count must not overflow maximum string size');
+        }
+        var rpt = '';
+        for (;;) {
+            if ((count & 1) == 1) {
+                rpt += str;
+            }
+            count >>>= 1;
+            if (count == 0) {
+                break;
+            }
+            str += str;
+        }
+        return rpt;
+    }
+}
+
 if(!String.prototype.trim) {
     String.prototype.trim = function(){
         return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
@@ -1506,7 +1548,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.30.9',
+        '_version' : '3.30.11',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -3212,6 +3254,22 @@ cm.getSelectValue = function(node){
         });
     }catch(e){}
     return selected;
+};
+
+cm.setInputMaxLength = function(input, maxlength, max, min){
+    if(cm.isNode(input)){
+        var type = input.getAttribute('type'),
+            value = 0;
+        if(type === 'number'){
+            value = max || '9'.repeat(maxlength);
+            value && input.setAttribute('max', value);
+            min && input.setAttribute('max', min);
+        }else{
+            value = maxlength || max;
+            value && input.setAttribute('maxlength', value);
+        }
+    }
+    return input;
 };
 
 /* ******* STRINGS ******* */
@@ -26604,9 +26662,12 @@ cm.getConstructor('Com.InputTrigger', function(classConstructor, className, clas
 cm.define('Com.IntegerInput', {
     'extend' : 'Com.AbstractInput',
     'params' : {
+        'controllerEvents' : true,
         'maxlength' : 3,
+        'max' : 0,
         'defaultValue' : 0,
-        'allowNegative' : false
+        'allowNegative' : false,
+        'type' : 'text'
     }
 },
 function(params){
@@ -26627,6 +26688,17 @@ cm.getConstructor('Com.IntegerInput', function(classConstructor, className, clas
         return that;
     };
 
+    classProto.onValidateParams = function(){
+        var that = this;
+        if(cm.isNode(that.params['node'])){
+            that.params['type'] = that.params['node'].getAttribute('type') || that.params['max'];
+            that.params['max'] = that.params['node'].getAttribute('max') || that.params['max'];
+        }
+        return that;
+    };
+
+    /*** VIEW MODEL ***/
+
     classProto.renderContent = function(){
         var that = this,
             nodes = {};
@@ -26634,12 +26706,10 @@ cm.getConstructor('Com.IntegerInput', function(classConstructor, className, clas
         that.triggerEvent('onRenderContentStart');
         // Structure
         nodes['container'] = cm.node('div', {'class' : 'pt__input'},
-            nodes['input'] = cm.node('input', {'type' : 'text'})
+            nodes['input'] = cm.node('input', {'type' : that.params['type']})
         );
         // Attributes
-        if(!cm.isEmpty(that.params['maxlength']) && that.params['maxlength'] > 0){
-            nodes['input'].setAttribute('maxlength', that.params['maxlength']);
-        }
+        cm.setInputMaxLength(nodes['input'], that.params['maxlength'], that.params['max']);
         // Events
         that.triggerEvent('onRenderContentProcess');
         cm.addEvent(nodes['input'], 'blur', that.setValueHandler);
@@ -26665,7 +26735,7 @@ cm.getConstructor('Com.IntegerInput', function(classConstructor, className, clas
         return nodes['container'];
     };
 
-    /* *** DATA VALUE *** */
+    /*** DATA VALUE ***/
 
     classProto.validateValue = function(value){
         var that = this;
@@ -26677,7 +26747,7 @@ cm.getConstructor('Com.IntegerInput', function(classConstructor, className, clas
 
     classProto.setValue = function(triggerEvents){
         var that = this;
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        triggerEvents = cm.isUndefined(triggerEvents)? true : triggerEvents;
         that.set(that.rawValue, triggerEvents);
         return that;
     };
