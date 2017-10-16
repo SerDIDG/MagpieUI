@@ -155,7 +155,6 @@ function(params){
             addTag(tag, execute);
         });
         nodes['input'].value = '';
-        nodes['input'].focus();
         that.isAutocomplete && that.components['autocomplete'].clear();
     };
 
