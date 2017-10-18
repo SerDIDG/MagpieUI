@@ -56,9 +56,10 @@ function(params){
 
     that.components = {};
     that.nodes = {
-        'container': cm.Node('div'),
+        'container': cm.node('div'),
         'labels' : [],
-        'tabs' : []
+        'tabs' : [],
+        'select' : cm.node('select')
     };
 
     that.ajaxHandler = null;
@@ -111,6 +112,8 @@ function(params){
         cm.forEach(that.params['items'], function(item){
             renderTab(item);
         });
+        // Process select
+        that.processSelect(that.nodes['select']);
         // Overlay
         cm.getConstructor('Com.Overlay', function(classConstructor){
             that.components['loader'] = new classConstructor(that.params['Com.Overlay']);
@@ -178,6 +181,9 @@ function(params){
             }
             cm.addClass(item['tab']['container'], 'active');
             cm.addClass(item['label']['container'], 'active');
+            // Set select menu
+            cm.setSelect(that.nodes['select'], that.current);
+            // Trigger events
             if(item.isAjax && (!that.params['cache'] || (that.params['cache'] && !item.isCached))){
                 that.ajaxHandler = that.callbacks.request(that, item, cm.merge(that.params['ajax'], item['ajax']));
             }else{
@@ -427,11 +433,12 @@ function(params){
     };
 
     that.processTabs = function(tabs, labels){
-        var items = [],
+        var itemsToProcess = tabs.length ?  tabs : labels,
+            items = [],
             label,
             config,
             item;
-        cm.forEach(tabs, function(tab, key){
+        cm.forEach(itemsToProcess, function(tab, key){
             label = labels[key];
             config = cm.merge(that.getNodeDataConfig(tab['container']), that.getNodeDataConfig(label['container']));
             item = cm.merge(config, {
@@ -442,6 +449,12 @@ function(params){
         });
         that.addTabs(items);
         return that;
+    };
+
+    that.processSelect = function(container){
+        cm.addEvent(container, 'change', function(){
+            that.set(container.value);
+        })
     };
 
     that.getTab = function(id){

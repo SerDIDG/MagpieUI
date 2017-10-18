@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url('//fonts.googleapis.com/css?family=Open Sans:100, 300, 400, 600, 700, 800');
-/*! ************ MagpieUI v3.30.12 (2017-10-16 21:33) ************ */
+/*! ************ MagpieUI v3.30.13 (2017-10-18 21:18) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.5.0
@@ -3436,8 +3436,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.30.12');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.30.12') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.30.12') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.30.12') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.30.12#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.30.13');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.30.13') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.30.13') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.30.13') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.30.13#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -8950,8 +8950,10 @@ button.is-hidden {
   cursor: pointer;
   display: block;
   padding: 2px 12px;
-  text-decoration: none;
+  overflow: hidden;
   white-space: nowrap;
+  text-overflow: ellipsis;
+  text-decoration: none;
   color: #666666;
 }
 .pt__editable.is-editable > .menu .pt__menu-dropdown li a:hover {
@@ -9023,6 +9025,12 @@ button.is-hidden {
   right: 0;
   bottom: auto;
   left: auto;
+}
+.pt__editable.is-editable > .menu .pt__menu-dropdown.pull-justify {
+  top: 100%;
+  right: 0;
+  bottom: auto;
+  left: 0;
 }
 .pt__editable.is-editable > .menu .pt__menu-dropdown.pull-left,
 .pt__editable.is-editable > .menu .pt__menu-dropdown.pull-right {
@@ -12312,8 +12320,10 @@ ul.pt__field__hint li:before {
   cursor: pointer;
   display: block;
   padding: 2px 12px;
-  text-decoration: none;
+  overflow: hidden;
   white-space: nowrap;
+  text-overflow: ellipsis;
+  text-decoration: none;
   color: #666666;
 }
 .pt__menu-dropdown--base li a:hover {
@@ -12394,6 +12404,12 @@ ul.pt__field__hint li:before {
   right: 0;
   bottom: auto;
   left: auto;
+}
+.pt__menu-dropdown--position.pull-justify {
+  top: 100%;
+  right: 0;
+  bottom: auto;
+  left: 0;
 }
 .pt__menu-dropdown--clear {
   margin-bottom: 24px;
@@ -13181,11 +13197,11 @@ ul.pt__field__hint li:before {
     margin-left: 0;
     margin-right: 0;
   }
-  html.is-adaptive .pt__toolbar:not(.is-not-adaptive) .group.is-adaptive .button,
-  html.is-adaptive .pt__toolbar:not(.is-not-adaptive) .group.is-adaptive input[type="button"],
-  html.is-adaptive .pt__toolbar:not(.is-not-adaptive) .group.is-adaptive input[type="submit"],
-  html.is-adaptive .pt__toolbar:not(.is-not-adaptive) .group.is-adaptive input[type="reset"],
-  html.is-adaptive .pt__toolbar:not(.is-not-adaptive) .group.is-adaptive button {
+  html.is-adaptive .pt__toolbar:not(.is-not-adaptive) .group.is-adaptive .button:not(.icon),
+  html.is-adaptive .pt__toolbar:not(.is-not-adaptive) .group.is-adaptive input[type="button"]:not(.icon),
+  html.is-adaptive .pt__toolbar:not(.is-not-adaptive) .group.is-adaptive input[type="submit"]:not(.icon),
+  html.is-adaptive .pt__toolbar:not(.is-not-adaptive) .group.is-adaptive input[type="reset"]:not(.icon),
+  html.is-adaptive .pt__toolbar:not(.is-not-adaptive) .group.is-adaptive button:not(.icon) {
     width: 100%;
     display: block;
   }
@@ -13202,11 +13218,11 @@ ul.pt__field__hint li:before {
   html.is-adaptive .pt__toolbar:not(.is-not-adaptive).is-adaptive > .inner > .right {
     display: block;
   }
-  html.is-adaptive .pt__toolbar:not(.is-not-adaptive).is-adaptive .button,
-  html.is-adaptive .pt__toolbar:not(.is-not-adaptive).is-adaptive input[type="button"],
-  html.is-adaptive .pt__toolbar:not(.is-not-adaptive).is-adaptive input[type="submit"],
-  html.is-adaptive .pt__toolbar:not(.is-not-adaptive).is-adaptive input[type="reset"],
-  html.is-adaptive .pt__toolbar:not(.is-not-adaptive).is-adaptive button {
+  html.is-adaptive .pt__toolbar:not(.is-not-adaptive).is-adaptive .button:not(.icon),
+  html.is-adaptive .pt__toolbar:not(.is-not-adaptive).is-adaptive input[type="button"]:not(.icon),
+  html.is-adaptive .pt__toolbar:not(.is-not-adaptive).is-adaptive input[type="submit"]:not(.icon),
+  html.is-adaptive .pt__toolbar:not(.is-not-adaptive).is-adaptive input[type="reset"]:not(.icon),
+  html.is-adaptive .pt__toolbar:not(.is-not-adaptive).is-adaptive button:not(.icon) {
     width: 100%;
     display: block;
   }
@@ -16583,8 +16599,10 @@ ul.pt__field__hint li:before {
   cursor: pointer;
   display: block;
   padding: 2px 12px;
-  text-decoration: none;
+  overflow: hidden;
   white-space: nowrap;
+  text-overflow: ellipsis;
+  text-decoration: none;
   color: #666666;
 }
 .com__tooltip.com__menu-tooltip .pt__menu .pt__menu-dropdown li a:hover {
@@ -16656,6 +16674,12 @@ ul.pt__field__hint li:before {
   right: 0;
   bottom: auto;
   left: auto;
+}
+.com__tooltip.com__menu-tooltip .pt__menu .pt__menu-dropdown.pull-justify {
+  top: 100%;
+  right: 0;
+  bottom: auto;
+  left: 0;
 }
 /* ******* COMPONENTS: MULTI FIELD  ******* */
 .com__multifield__content {
@@ -18519,8 +18543,10 @@ html.ie9 .com__palette .b-range {
   cursor: pointer;
   display: block;
   padding: 2px 12px;
-  text-decoration: none;
+  overflow: hidden;
   white-space: nowrap;
+  text-overflow: ellipsis;
+  text-decoration: none;
   color: #666666;
 }
 .com__tabset__head-menu .pt__menu-dropdown li a:hover {
@@ -18592,6 +18618,12 @@ html.ie9 .com__palette .b-range {
   right: 0;
   bottom: auto;
   left: auto;
+}
+.com__tabset__head-menu .pt__menu-dropdown.pull-justify {
+  top: 100%;
+  right: 0;
+  bottom: auto;
+  left: 0;
 }
 .com__tabset__head-menu .pt__menu-dropdown.pull-left,
 .com__tabset__head-menu .pt__menu-dropdown.pull-right {
