@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.30.13 (2017-10-18 21:18) ************ */
+/*! ************ MagpieUI v3.30.14 (2017-10-31 18:17) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3752,7 +3752,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.30.13';
+@CmVersion: '3.30.14';
 
 // /* ******* PATH ******* */
 
@@ -4233,6 +4233,7 @@ span.CodeMirror-selectedtext { background: none; }
 
 @PtMenu-ItemIndentY: 2px;
 @PtMenu-ItemIndentX: @CmIndent-XSmall;
+@PtMenu-ItemColor: @CmFont-Base-Color;
 @PtMenu-SeparatorIndentX: @PtMenu-ItemIndentX;
 @PtMenu-SeparatorSize: @PtBox-BorderWidth;
 @PtMenu-SeparatorColor: @PtBox-BorderColor;
@@ -11550,11 +11551,12 @@ ul.pt__field__hint {
     touch-action: none;
     .mx__transition(all, @CmUI-Transition-Duration);
 
-    li {
+    > li {
         position: relative;
         margin-top: @PtMenu-SeparatorSize;
+        color: @PtMenu-ItemColor;
 
-        a {
+        > a {
             .cm__font;
             .cm__font--link;
             display: block;
@@ -11563,7 +11565,7 @@ ul.pt__field__hint {
             white-space: nowrap;
             text-overflow: ellipsis;
             text-decoration: none;
-            color: @CmFont-Base-Color;
+            color: @PtMenu-ItemColor;
 
             &:hover {
                 text-decoration: none;
@@ -11607,8 +11609,8 @@ ul.pt__field__hint {
     opacity: 0;
     .mx__position(100%, auto, auto, 0);
 
-    li {
-        ul {
+    > li {
+        > ul {
             @indentX: ~'calc(100% - @{PtMenu-Dropdown-IndentX})';
             .mx__position(@PtMenu-Dropdown-IndentY - (@PtMenu-BorderWidth + @PtMenu-IndentY), auto, auto, @indentX);
 

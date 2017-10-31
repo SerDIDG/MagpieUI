@@ -110,14 +110,6 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
         return that;
     };
 
-    /* *** PROCESS FILES *** */
-
-    classProto.processFile = function(file){
-        var that = this;
-        that.components['reader'].read(file);
-        return that;
-    };
-
     /* *** DROPZONE *** */
 
     classProto.dragOver = function(e){

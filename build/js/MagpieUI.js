@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.30.13 (2017-10-18 21:18) ************ */
+/*! ************ MagpieUI v3.30.14 (2017-10-31 18:17) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1548,7 +1548,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.30.13',
+        '_version' : '3.30.14',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -6395,7 +6395,7 @@ Part['Menu'] = (function(){
     };
 
     return function(container){
-        container = typeof container == 'undefined'? document.body : container;
+        container = cm.isUndefined(container)? document.body : container;
         var menus = cm.getByClass('pt__menu', container),
             items = [],
             item;
@@ -6426,7 +6426,7 @@ Part['Autoresize'] = (function(){
 
     var process = function(node){
         if(!cm.inArray(processedNodes, node)){
-            if(cm.isNode(node) && node.tagName.toLowerCase() == 'textarea'){
+            if(cm.isNode(node) && node.tagName.toLowerCase() === 'textarea'){
                 var resizeInt,
                     rows,
                     oldRows,
@@ -6456,7 +6456,7 @@ Part['Autoresize'] = (function(){
     };
 
     return function(container){
-        container = typeof container == 'undefined'? document.body : container;
+        container = cm.isUndefined(container)? document.body : container;
         nodes = cm.getByClass('cm-autoresize', container);
         cm.forEach(nodes, process);
     };
@@ -13385,14 +13385,6 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
             cm.removeClass(that.nodes['container'], 'is-hidden');
             that.params['container'].style.height = that.params['height'] + 'px';
         }
-        return that;
-    };
-
-    /* *** PROCESS FILES *** */
-
-    classProto.processFile = function(file){
-        var that = this;
-        that.components['reader'].read(file);
         return that;
     };
 

@@ -79,7 +79,7 @@ Part['Menu'] = (function(){
     };
 
     return function(container){
-        container = typeof container == 'undefined'? document.body : container;
+        container = cm.isUndefined(container)? document.body : container;
         var menus = cm.getByClass('pt__menu', container),
             items = [],
             item;
@@ -110,7 +110,7 @@ Part['Autoresize'] = (function(){
 
     var process = function(node){
         if(!cm.inArray(processedNodes, node)){
-            if(cm.isNode(node) && node.tagName.toLowerCase() == 'textarea'){
+            if(cm.isNode(node) && node.tagName.toLowerCase() === 'textarea'){
                 var resizeInt,
                     rows,
                     oldRows,
@@ -140,7 +140,7 @@ Part['Autoresize'] = (function(){
     };
 
     return function(container){
-        container = typeof container == 'undefined'? document.body : container;
+        container = cm.isUndefined(container)? document.body : container;
         nodes = cm.getByClass('cm-autoresize', container);
         cm.forEach(nodes, process);
     };
