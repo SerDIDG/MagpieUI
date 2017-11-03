@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url('//fonts.googleapis.com/css?family=Open Sans:100, 300, 400, 600, 700, 800');
-/*! ************ MagpieUI v3.30.14 (2017-10-31 18:17) ************ */
+/*! ************ MagpieUI v3.30.14 (2017-11-03 18:46) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.5.0
@@ -8966,6 +8966,10 @@ button.is-hidden {
 }
 .pt__editable.is-editable > .menu .pt__menu-dropdown > li > a:hover {
   text-decoration: none;
+  color: #1d73c9;
+}
+.pt__editable.is-editable > .menu .pt__menu-dropdown > li > a:active {
+  color: #16599c;
 }
 .pt__editable.is-editable > .menu .pt__menu-dropdown > li:before {
   display: block;
@@ -12337,6 +12341,10 @@ ul.pt__field__hint li:before {
 }
 .pt__menu-dropdown--base > li > a:hover {
   text-decoration: none;
+  color: #1d73c9;
+}
+.pt__menu-dropdown--base > li > a:active {
+  color: #16599c;
 }
 .pt__menu-dropdown--base > li:before {
   display: block;
@@ -16617,6 +16625,10 @@ ul.pt__field__hint li:before {
 }
 .com__tooltip.com__menu-tooltip .pt__menu .pt__menu-dropdown > li > a:hover {
   text-decoration: none;
+  color: #1d73c9;
+}
+.com__tooltip.com__menu-tooltip .pt__menu .pt__menu-dropdown > li > a:active {
+  color: #16599c;
 }
 .com__tooltip.com__menu-tooltip .pt__menu .pt__menu-dropdown > li:before {
   display: block;
@@ -18562,6 +18574,10 @@ html.ie9 .com__palette .b-range {
 }
 .com__tabset__head-menu .pt__menu-dropdown > li > a:hover {
   text-decoration: none;
+  color: #1d73c9;
+}
+.com__tabset__head-menu .pt__menu-dropdown > li > a:active {
+  color: #16599c;
 }
 .com__tabset__head-menu .pt__menu-dropdown > li:before {
   display: block;

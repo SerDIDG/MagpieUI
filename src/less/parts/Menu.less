@@ -19,7 +19,7 @@
     > li {
         position: relative;
         margin-top: @PtMenu-SeparatorSize;
-        color: @PtMenu-ItemColor;
+        color: @PtMenu-Item-Color;
 
         > a {
             .cm__font;
@@ -30,10 +30,15 @@
             white-space: nowrap;
             text-overflow: ellipsis;
             text-decoration: none;
-            color: @PtMenu-ItemColor;
+            color: @PtMenu-Item-Color;
 
             &:hover {
                 text-decoration: none;
+                color: @PtMenu-Item-HoverColor;
+            }
+
+            &:active {
+                color: @PtMenu-Item-ActiveColor;
             }
         }
 

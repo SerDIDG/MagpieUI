@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.30.14 (2017-10-31 18:17) ************ */
+/*! ************ MagpieUI v3.30.14 (2017-11-03 18:46) ************ */
 @charset "UTF-8";
 
 /*!
@@ -4233,7 +4233,9 @@ span.CodeMirror-selectedtext { background: none; }
 
 @PtMenu-ItemIndentY: 2px;
 @PtMenu-ItemIndentX: @CmIndent-XSmall;
-@PtMenu-ItemColor: @CmFont-Base-Color;
+@PtMenu-Item-Color: @CmFont-Base-Color;
+@PtMenu-Item-HoverColor: @CmColor-Font-LinkHover;
+@PtMenu-Item-ActiveColor: @CmColor-Font-LinkActive;
 @PtMenu-SeparatorIndentX: @PtMenu-ItemIndentX;
 @PtMenu-SeparatorSize: @PtBox-BorderWidth;
 @PtMenu-SeparatorColor: @PtBox-BorderColor;
@@ -11554,7 +11556,7 @@ ul.pt__field__hint {
     > li {
         position: relative;
         margin-top: @PtMenu-SeparatorSize;
-        color: @PtMenu-ItemColor;
+        color: @PtMenu-Item-Color;
 
         > a {
             .cm__font;
@@ -11565,10 +11567,15 @@ ul.pt__field__hint {
             white-space: nowrap;
             text-overflow: ellipsis;
             text-decoration: none;
-            color: @PtMenu-ItemColor;
+            color: @PtMenu-Item-Color;
 
             &:hover {
                 text-decoration: none;
+                color: @PtMenu-Item-HoverColor;
+            }
+
+            &:active {
+                color: @PtMenu-Item-ActiveColor;
             }
         }
 
