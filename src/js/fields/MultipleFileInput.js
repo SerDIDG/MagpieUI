@@ -7,6 +7,7 @@ cm.define('Com.MultipleFileInput', {
         'sortable' : false,
         'showToolbar' : true,
         'showControls' : false,
+        'showList' : true,
         'focusInput' : false,
         'buttonsAlign' : 'left',
         'inputConstructor' : 'Com.FileInput',
@@ -219,6 +220,16 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
             })
         }else if(!cm.isEmpty(data)){
             that.addItem({'value' : data}, true);
+        }
+        return that;
+    };
+
+    /* *** PUBLIC *** */
+
+    classProto.browse = function(){
+        var that = this;
+        if(that.params['local']){
+            that.nodes['toolbar']['input'].click();
         }
         return that;
     };

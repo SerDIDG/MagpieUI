@@ -24,6 +24,7 @@ cm.define('Com.AbstractInput', {
         'placeholder' : '',
         'disabled' : false,
         'className' : '',
+        'contentClassName' : '',
         'ui' : true,
         'size' : 'full',                // default | full
         'justify' : 'left',
@@ -169,9 +170,9 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         that.triggerEvent('onRenderViewStart');
         that.nodes['container'] = cm.node('div', {'class' : 'com__input'});
         // Hidden input holder
+        that.nodes['hiddenContainer'] = that.renderHiddenContent();
+        that.nodes['hidden'] = that.nodes['hiddenContent']['input'];
         if(that.params['renderHiddenContent']){
-            that.nodes['hiddenContainer'] = that.renderHiddenContent();
-            that.nodes['hidden'] = that.nodes['hiddenContent']['input'];
             cm.appendChild(that.nodes['hiddenContainer'], that.nodes['container']);
         }
         // Component content
@@ -190,7 +191,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
             nodes = {};
         that.nodes['hiddenContent'] = nodes;
         // Structure
-        nodes['container'] = nodes['input'] = cm.node('input', {'type' : 'hidden'})
+        nodes['container'] = nodes['input'] = cm.node('input', {'type' : 'hidden'});
         // Export
         return nodes['container'];
     };
@@ -213,18 +214,16 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         var that = this;
         // Call parent method
         _inherit.prototype.setAttributes.apply(that, arguments);
+        // Hidden
+        that.setHiddenAttributes();
         // Data attributes
         cm.forEach(that.params['node'].attributes, function(item){
             if(/^data-(?!node|element|config)/.test(item.name)){
-                that.nodes['hidden'].setAttribute(item.name, item.value);
                 that.nodes['container'].setAttribute(item.name, item.value);
             }
         });
         if(that.params['title']){
             that.nodes['container'].setAttribute('title', that.lang(that.params['title']));
-        }
-        if(that.params['name']){
-            that.nodes['hidden'].setAttribute('name', that.params['name']);
         }
         // Classes
         if(!cm.isEmpty(that.params['size'])){
@@ -233,7 +232,21 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         if(!cm.isEmpty(that.params['justify'])){
             cm.addClass(that.nodes['container'], ['pull', that.params['justify']].join('-'));
         }
+        cm.addClass(that.nodes['content']['container'], that.params['contentClassName']);
         return that;
+    };
+
+    classProto.setHiddenAttributes = function(){
+        var that = this;
+        // Data attributes
+        cm.forEach(that.params['node'].attributes, function(item){
+            if(/^data-(?!node|element|config)/.test(item.name)){
+                that.nodes['hidden'].setAttribute(item.name, item.value);
+            }
+        });
+        if(!cm.isEmpty(that.params['name'])){
+            that.nodes['hidden'].setAttribute('name', that.params['name']);
+        }
     };
 
     /* *** DATA VALUE *** */

@@ -40,6 +40,7 @@ var cm = {
         '_deviceOrientation' : 'landscape',
         '_adaptive' : false,
         '_baseUrl': [window.location.protocol, window.location.hostname].join('//'),
+        '_pathUrl' : '',
         '_assetsUrl' : null,
         '_scrollSize' : 0,
         '_pageSize' : {},
@@ -64,6 +65,10 @@ var cm = {
             'displayDateFormat' : '%F %j, %Y',
             'displayDateTimeFormat' : '%F %j, %Y, %H:%i',
             'tooltipTop' : 'targetHeight + 4'
+        },
+        '_strings' : {
+            'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            'days' : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
         }
     },
     Mod = {},
@@ -400,6 +405,28 @@ cm.arrayRemove = function(a, item){
 
 cm.arrayIndex = function(a, item){
     return Array.prototype.indexOf.call(a, item);
+};
+
+cm.arraySort = function(a, key, dir){
+    if(!cm.isArray(a)){
+        return a;
+    }
+    var newA = cm.clone(a);
+    dir = cm.isUndefined(dir) ? 'asc' : dir.toLowerCase();
+    dir = cm.inArray(['asc', 'desc'], dir) ? dir : 'asc';
+    switch(dir){
+        case 'asc':
+            newA.sort(function(a, b){
+                return (a[key] < b[key]) ? 1 : ((a[key] > b[key]) ? -1 : 0);
+            });
+            break;
+        case 'desc' :
+            newA.sort(function(a, b){
+                return (a[key] < b[key]) ? -1 : ((a[key] > b[key]) ? 1 : 0);
+            });
+            break;
+    }
+    return newA;
 };
 
 cm.objectToArray = function(o){
@@ -1435,7 +1462,7 @@ cm.strToHTML = function(str){
     }
     var node = cm.Node('div');
     node.insertAdjacentHTML('beforeend', str);
-    return node.childNodes.length == 1? node.firstChild : node.childNodes;
+    return node.childNodes.length === 1? node.firstChild : node.childNodes;
 };
 
 cm.getNodes = function(container, marker){
@@ -1754,6 +1781,22 @@ cm.setInputMaxLength = function(input, maxlength, max, min){
     return input;
 };
 
+cm.constraintsPattern = function(pattern, match, message){
+    var test;
+    return function(value){
+        if(cm.isRegExp(pattern)){
+            if(cm.isEmpty(value)){
+                test = true;
+            }else{
+                test = pattern.test(value);
+            }
+        }else{
+            test = pattern === value;
+        }
+        return match? test : !test;
+    }
+};
+
 /* ******* STRINGS ******* */
 
 cm.toFixed = function(n, x){
@@ -1892,12 +1935,8 @@ cm.dateFormat = function(date, format, langs){
     date = date ? new Date(+date) : null;
     format = cm.isString(format) ? format : cm._config.dateTimeFormat;
     langs = cm.merge({
-        'months' : [
-            'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'
-        ],
-        'days' : [
-            'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
-        ]
+        'months' : cm._strings.months,
+        'days' : cm._strings.days
     }, langs);
     var convertFormats = {
         '%Y%' : '%Y',
@@ -1991,17 +2030,17 @@ cm.parseDate = function(str, format){
         },
         formats = {
             'YYYY' : function(value){
-                if(value != '0000'){
+                if(value !== '0000'){
                     date.setFullYear(value);
                 }
             },
             'mm' : function(value){
-                if(value != '00'){
+                if(value !== '00'){
                     date.setMonth(value - 1);
                 }
             },
             'dd' : function(value){
-                if(value != '00'){
+                if(value !== '00'){
                     date.setDate(value);
                 }
             },
@@ -2020,7 +2059,7 @@ cm.parseDate = function(str, format){
     format = cm.strReplace(format, convertFormats);
     cm.forEach(formats, function(item, key){
         fromIndex = format.indexOf(key);
-        while(fromIndex != -1){
+        while(fromIndex !== -1){
             item(str.substr(fromIndex, key.length));
             fromIndex = format.indexOf(key, fromIndex + 1);
         }
@@ -2248,8 +2287,8 @@ cm.getRect = function(node){
             'bottom' : Math.round(o['bottom']),
             'left' : Math.round(o['left'])
         };
-        rect['width'] = typeof o['width'] != 'undefined' ? Math.round(o['width']) : o['right'] - o['left'];
-        rect['height'] = typeof o['height'] != 'undefined' ? Math.round(o['height']) : o['bottom'] - o['top'];
+        rect['width'] = !cm.isUndefined(o['width']) ? Math.round(o['width']) : o['right'] - o['left'];
+        rect['height'] = !cm.isUndefined(o['height']) ? Math.round(o['height']) : o['bottom'] - o['top'];
         return rect;
     }
     return {
@@ -2267,7 +2306,7 @@ cm.getFullRect = function(node, styleObject){
         return null;
     }
     var dimensions = {};
-    styleObject = typeof styleObject == 'undefined' ? cm.getStyleObject(node) : styleObject;
+    styleObject = cm.isUndefined(styleObject) ? cm.getStyleObject(node) : styleObject;
     // Get size and position
     dimensions['width'] = node.offsetWidth;
     dimensions['height'] = node.offsetHeight;
@@ -2308,7 +2347,7 @@ cm.getNodeIndents = function(node, styleObject){
     if(!cm.isNode(node)){
         return null;
     }
-    styleObject = typeof styleObject == 'undefined' ? cm.getStyleObject(node) : styleObject;
+    styleObject = cm.isUndefined(styleObject) ? cm.getStyleObject(node) : styleObject;
     // Get size and position
     var o = {};
     o['margin'] = {
@@ -2330,8 +2369,8 @@ cm.getNodeOffset = function(node, styleObject, o, offsets){
     if(!cm.isNode(node)){
         return null;
     }
-    styleObject = typeof styleObject == 'undefined' ? cm.getStyleObject(node) : styleObject;
-    o = !o || typeof o == 'undefined' ? cm.getNodeIndents(node, styleObject) : o;
+    styleObject = cm.isUndefined(styleObject) ? cm.getStyleObject(node) : styleObject;
+    o = cm.isUndefined(o) ? cm.getNodeIndents(node, styleObject) : o;
     // Get size and position
     o['offset'] = cm.getRect(node);
     if(offsets){
@@ -2365,7 +2404,7 @@ cm.getRealWidth = function(node, applyWidth){
     nodeWidth = node.offsetWidth;
     node.style.width = 'auto';
     width = node.offsetWidth;
-    node.style.width = typeof applyWidth == 'undefined' ? [nodeWidth, 'px'].join('') : applyWidth;
+    node.style.width = cn.isUndefined(applyWidth) ? [nodeWidth, 'px'].join('') : applyWidth;
     return width;
 };
 
@@ -2764,7 +2803,7 @@ cm.getCSSRule = function(ruleName){
                 cssRules = styleSheet.rules;
             }
             cm.forEach(cssRules, function(cssRule){
-                if(cssRule.selectorText == ruleName){
+                if(cssRule.selectorText === ruleName){
                     matchedRules.push(cssRule);
                 }
             });
@@ -2775,9 +2814,9 @@ cm.getCSSRule = function(ruleName){
 
 cm.addCSSRule = function(sheet, selector, rules, index){
     if(document.styleSheets){
-        sheet = typeof sheet == 'undefined' || !sheet ? document.styleSheets[0] : sheet;
-        rules = typeof rules == 'undefined' || !rules ? '' : rules;
-        index = typeof index == 'undefined' || !index ? -1 : index;
+        sheet = cm.isUndefined(sheet) || !sheet ? document.styleSheets[0] : sheet;
+        rules = cm.isUndefined(rules) || !rules ? '' : rules;
+        index = cm.isUndefined(index) || !index ? -1 : index;
         if('insertRule' in sheet){
             sheet.insertRule(selector + '{' + rules + '}', index);
         }else if('addRule' in sheet){
@@ -2796,7 +2835,7 @@ cm.removeCSSRule = function(ruleName){
                 cssRules = styleSheet.rules;
             }
             cm.forEachReverse(cssRules, function(cssRule, i){
-                if(cssRule.selectorText == ruleName){
+                if(cssRule.selectorText === ruleName){
                     if(styleSheet.cssRules){
                         styleSheet.deleteRule(i);
                     }else{
@@ -2812,17 +2851,17 @@ cm.setCSSTranslate = (function(){
     var transform = cm.getSupportedStyle('transform');
     if(transform){
         return function(node, x, y, z, additional){
-            x = typeof x != 'undefined' && x != 'auto' ? x : 0;
-            y = typeof y != 'undefined' && y != 'auto' ? y : 0;
-            z = typeof z != 'undefined' && z != 'auto' ? z : 0;
-            additional = typeof additional != 'undefined' ? additional : '';
+            x = !cm.isUndefined(x) && x !== 'auto' ? x : 0;
+            y = !cm.isUndefined(y) && y !== 'auto' ? y : 0;
+            z = !cm.isUndefined(z) && z !== 'auto' ? z : 0;
+            additional = !cm.isUndefined(additional) ? additional : '';
             node.style[transform] = ['translate3d(', x, ',', y, ',', z,')', additional].join(' ');
             return node;
         };
     }else{
         return function(node, x, y, z, additional){
-            x = typeof x != 'undefined' ? x : 0;
-            y = typeof y != 'undefined' ? y : 0;
+            x = !cm.isUndefined(x) ? x : 0;
+            y = !cm.isUndefined(y) ? y : 0;
             node.style.left = x;
             node.style.top = y;
             return node;
@@ -2889,12 +2928,12 @@ cm.CSSValuesToArray = function(value){
 };
 
 cm.arrayToCSSValues = function(a, units){
-    units = typeof units != 'undefined' ? units : 'px';
+    units = !cm.isUndefined(units) ? units : 'px';
     cm.forEach(a, function(item, key){
         a[key] = cm.isEmpty(item) ? 0 : parseFloat(item);
     });
     return a.reduce(function(prev, next, index, a){
-        return [prev + units, next + ((index == a.length - 1) ? units : '')].join(' ');
+        return [prev + units, next + ((index === a.length - 1) ? units : '')].join(' ');
     });
 };
 
@@ -2930,7 +2969,7 @@ cm.isKeyCode = function(code, rules){
         rules = rules.split(/\s+/);
     }
     cm.forEach(rules, function(rule){
-        if(cm.keyCodeTable[code] == rule){
+        if(cm.keyCodeTable[code] === rule){
             isMath = true;
         }
     });
@@ -2981,7 +3020,7 @@ cm.allowOnlyDigitInputEvent = function(input, callback){
         isMaxlength = !cm.isEmpty(input.maxlength) && input.maxlength > 0;
         isMax = !cm.isEmpty(input.max) && input.max > 0;
         if(isMaxlength || isMax){
-            if(input.type == 'number'){
+            if(input.type === 'number'){
                 input.value = Math.min(parseFloat(value), parseFloat(input.max));
             }else{
                 input.value = cm.reduceText(value, parseInt(input.maxlength));
@@ -3001,7 +3040,7 @@ cm.allowOnlyNumbersInputEvent = function(input, callback){
         isMaxlength = !cm.isEmpty(input.maxlength) && input.maxlength > 0;
         isMax = !cm.isEmpty(input.max) && input.max > 0;
         if(isMaxlength || isMax){
-            if(input.type == 'number'){
+            if(input.type === 'number'){
                 input.value = Math.min(parseFloat(value), parseFloat(input.max));
             }else{
                 input.value = cm.reduceText(value, parseInt(input.maxlength));
@@ -3056,7 +3095,7 @@ cm.Animation = function(o){
             properties.forEach(function(item){
                 var val = item['old'] + (item['new'] - item['old']) * delta(progress);
 
-                if(item['name'] == 'opacity'){
+                if(item['name'] === 'opacity'){
                     cm.setOpacity(obj, val);
                 }else if(/color/i.test(item['name'])){
                     var r = parseInt((item['new'][0] - item['old'][0]) * delta(progress) + item['old'][0]);
@@ -3067,7 +3106,7 @@ cm.Animation = function(o){
                     obj[item['name']] = val;
                 }else if(/x1|x2|y1|y2/.test(item['name'])){
                     obj.setAttribute(item['name'], Math.round(val));
-                }else if(item['name'] == 'docScrollTop'){
+                }else if(item['name'] === 'docScrollTop'){
                     cm.setBodyScrollTop(val);
                 }else{
                     obj.style[item['name']] = Math.round(val) + item['dimension'];
@@ -3076,7 +3115,7 @@ cm.Animation = function(o){
             return false;
         }
         properties.forEach(function(item){
-            if(item['name'] == 'opacity'){
+            if(item['name'] === 'opacity'){
                 cm.setOpacity(obj, item['new']);
             }else if(/color/i.test(item['name'])){
                 obj.style[item['name']] = cm.rgb2hex(item['new'][0], item['new'][1], item['new'][2]);
@@ -3084,7 +3123,7 @@ cm.Animation = function(o){
                 obj[item['name']] = item['new'];
             }else if(/x1|x2|y1|y2/.test(item['name'])){
                 obj.setAttribute(item['name'], item['new']);
-            }else if(item['name'] == 'docScrollTop'){
+            }else if(item['name'] === 'docScrollTop'){
                 cm.setBodyScrollTop(item['new']);
             }else{
                 obj.style[item['name']] = item['new'] + item['dimension'];
@@ -3264,10 +3303,10 @@ cm.cookieGet = function(name){
     var end = 0;
     if(cookie.length > 0){
         offset = cookie.indexOf(search);
-        if(offset != -1){
+        if(offset !== -1){
             offset += search.length;
             end = cookie.indexOf(";", offset);
-            if(end == -1){
+            if(end === -1){
                 end = cookie.length;
             }
             setStr = encodeURI(cookie.substring(offset, end));
@@ -3322,7 +3361,7 @@ cm.ajax = function(o){
 
     var init = function(){
         validate();
-        if(config['type'] == 'jsonp'){
+        if(config['type'] === 'jsonp'){
             returnObject = {
                 'abort' : abortJSONP
             };
@@ -3348,7 +3387,8 @@ cm.ajax = function(o){
             config['params'] = cm.objectReplace(config['params'], {
                 '%version%' : cm._version,
                 '%baseUrl%' : cm._baseUrl,
-                '%assetsUrl%' : cm._assetsUrl
+                '%assetsUrl%' : cm._assetsUrl,
+                '%pathUrl%' : cm._pathUrl
             });
             config['params'] = cm.obj2URI(config['params']);
         }
@@ -3362,7 +3402,8 @@ cm.ajax = function(o){
         config['url'] = cm.strReplace(config['url'], {
             '%version%' : cm._version,
             '%baseUrl%' : cm._baseUrl,
-            '%assetsUrl%' : cm._assetsUrl
+            '%assetsUrl%' : cm._assetsUrl,
+            '%pathUrl%' : cm._pathUrl
         });
         if(!/post|put/.test(config['method'])){
             if(!cm.isEmpty(config['params'])){
@@ -3396,12 +3437,12 @@ cm.ajax = function(o){
     };
 
     var loadHandler = function(e){
-        if(config['httpRequestObject'].readyState == 4){
+        if(config['httpRequestObject'].readyState === 4){
             response = config['httpRequestObject'][responseType];
-            if(config['type'] == 'json'){
+            if(config['type'] === 'json'){
                 response = cm.parseJSON(response);
             }
-            if(config['httpRequestObject'].status == 200){
+            if(config['httpRequestObject'].status === 200){
                 config['onSuccess'](response, e);
             }else{
                 config['onError'](e);
@@ -3430,7 +3471,7 @@ cm.ajax = function(o){
     };
 
     var deprecatedHandler = function(){
-        if(typeof config['handler'] == 'function'){
+        if(cm.isFunction(config['handler'])){
             cm.errorLog({'type' : 'attention', 'name' : 'cm.ajax', 'message' : 'Parameter "handler" is deprecated. Use "onSuccess", "onError" or "onAbort" callbacks instead.'});
             config['handler'].apply(config['handler'], arguments);
         }
@@ -3544,8 +3585,8 @@ cm.formData2URI = function(fd){
 };
 
 cm.xml2arr = function(o){
-    o = o.nodeType == 9 ? cm.firstEl(o) : o;
-    if(o.nodeType == 3 || o.nodeType == 4){
+    o = o.nodeType === 9 ? cm.firstEl(o) : o;
+    if(o.nodeType === 3 || o.nodeType === 4){
         //Need to be change
         var n = cm.nextEl(o);
         if(!n){
@@ -3553,7 +3594,7 @@ cm.xml2arr = function(o){
         }
         o = n;
     }
-    if(o.nodeType == 1){
+    if(o.nodeType === 1){
         var res = {};
         res[o.tagName] = {};
         var els = o.childNodes;
@@ -3586,13 +3627,13 @@ cm.responseInArray = function(xmldoc){
     var data = [];
     var els = response.childNodes;
     for(var i = 0; els.length > i; i++){
-        if(els[i].nodeType != 1){
+        if(els[i].nodeType !== 1){
             continue;
         }
         var kids = els[i].childNodes;
         var tmp = [];
         for(var k = 0; kids.length > k; k++){
-            if(kids[k].nodeType == 1){
+            if(kids[k].nodeType === 1){
                 tmp[kids[k].tagName] = kids[k].firstChild ? kids[k].firstChild.nodeValue : '';
             }
         }
@@ -3736,8 +3777,8 @@ cm.define = (function(){
 
 cm.getConstructor = function(className, callback){
     var classConstructor;
-    callback = typeof callback != 'undefined' ? callback : function(){};
-    if(!className || className == '*'){
+    callback = cm.isFunction(callback) ? callback : function(){};
+    if(!className || className === '*'){
         cm.forEach(cm._defineStack, function(classConstructor){
             callback(classConstructor, className, classConstructor.prototype);
         });
@@ -3764,12 +3805,12 @@ cm.find = function(className, name, parentNode, callback, params){
     var items = [],
         processed = {};
     // Config
-    callback = typeof callback == 'function' ? callback : function(){};
+    callback = cm.isFunction(callback) ? callback : function(){};
     params = cm.merge({
         'childs' : false
     }, params);
     // Process
-    if(!className || className == '*'){
+    if(!className || className === '*'){
         cm.forEach(cm._defineStack, function(classConstructor){
             if(classConstructor.prototype.findInStack){
                 items = cm.extend(items, classConstructor.prototype.findInStack(name, parentNode, callback));
@@ -3812,7 +3853,7 @@ cm.Finder = function(className, name, parentNode, callback, params){
         var finder;
         // Merge params
         parentNode = parentNode || document.body;
-        callback = typeof callback == 'function' ? callback : function(){};
+        callback = cm.isFunction(callback) ? callback : function(){};
         params = cm.merge({
             'event' : 'onRender',
             'multiple' : false,
@@ -3851,4 +3892,10 @@ cm.Finder = function(className, name, parentNode, callback, params){
     };
 
     init();
+};
+
+cm.setStrings = function(className, strings){
+    cm.getConstructor(className, function(classConstructor, className, classProto){
+        classProto.setLangs(strings);
+    });
 };

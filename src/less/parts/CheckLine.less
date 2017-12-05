@@ -2,24 +2,12 @@
     min-height: @CmForm-FieldHeight;
     line-height: @CmForm-FieldHeight;
 
-    input[type="radio"],
-    input[type="checkbox"] {
-        @margin: floor((@CmForm-FieldHeight - 13px) / 2);
-
-        margin: @margin 0 @margin 0;
-        vertical-align: top;
-        padding: 0;
-        cursor: pointer;
-
-        &:checked + .unveil,
-        &:checked + .label + .unveil {
-            display: block;
-        }
-    }
-
     label {
+        @padding: floor((@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2);
         margin-right: @CmIndent-Medium;
+        padding: @padding 0;
         cursor: pointer;
+        display: inline-block;
         vertical-align: baseline;
         line-height: @CmFont-Base-LineHeight;
 
@@ -32,9 +20,23 @@
         }
     }
 
+    input[type="radio"],
+    input[type="checkbox"] {
+        @margin: floor((@CmFont-Base-LineHeight - 13px) / 2);
+
+        margin: @margin @CmForm-FieldInnerIndent @margin 0;
+        vertical-align: top;
+        padding: 0;
+        cursor: pointer;
+
+        &:checked + .unveil,
+        &:checked + .label + .unveil {
+            display: block;
+        }
+    }
+
     .label {
-        display: inline-block;
-        margin-left: @CmForm-FieldInnerIndent;
+        display: inline;
     }
 
     > .fields {
@@ -43,15 +45,22 @@
         }
     }
 
+    &.pull-center {
+        text-align: center;
+    }
+
     &.has-fields {
         .display-flex;
 
         label {
-            margin-right: 0;
+            display: block;
+            margin: 0;
+            padding: 0;
         }
 
         .label {
             @padding: round((@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2);
+            display: inline-block;
             padding: @padding 0 @padding 0;
         }
 
@@ -61,7 +70,19 @@
         }
     }
 
-    &.pull-center {
-        text-align: center;
+    &.is-box {
+        label {
+            display: block;
+        }
+
+        input[type="radio"],
+        input[type="checkbox"] {
+            float: left;
+        }
+
+        .label {
+            overflow: hidden;
+            display: block;
+        }
     }
 }

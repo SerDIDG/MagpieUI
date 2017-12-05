@@ -13,6 +13,7 @@ cm.define('Com.MultiField', {
         'embedStructureOnRender' : false,
         'sortable' : true,                      // Use drag and drop to sort items
         'showControls' : true,
+        'showList' : true,
         'renderItems' : 0,                      // Render count of fields by default
         'max' : 0,                              // 0 - infinity
         'template' : null,                      // Html node or string with items template
@@ -70,9 +71,12 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
     classProto.renderView = function(){
         var that = this;
         that.triggerEvent('onRenderViewStart');
-        that.nodes['container'] = cm.node('div', {'class' : 'com__multifield'},
-            that.nodes['content'] = cm.node('div', {'class' : 'com__multifield__content'})
-        );
+        that.nodes['container'] = cm.node('div', {'class' : 'com__multifield'});
+        that.nodes['content'] = cm.node('div', {'class' : 'com__multifield__content'});
+        // List
+        if(that.params['showList']){
+            cm.appendChild(that.nodes['content'], that.nodes['container']);
+        }
         // Toolbar
         if(that.params['showControls']){
             that.nodes['toolbarContainer'] = that.renderToolbarView();

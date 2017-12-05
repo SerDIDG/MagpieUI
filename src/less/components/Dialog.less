@@ -2,8 +2,6 @@
 
 .com__dialog {
     .com__dialog-font;
-    width: 100%;
-    height: 100%;
     display: none;
     visibility: hidden;
     position: fixed;
@@ -203,7 +201,7 @@
 
             > .inner {
                 background-color: @ComDialog-Default-Background;
-                border-radius: @CmBorder-Radius;
+                border-radius: @ComDialog-Radius;
 
                 > .title {
                     .cm__font--ui-h1;
@@ -284,7 +282,7 @@
 
             > .icon {
                 &.default {
-                    .icon.medium.close;
+                    .icon.medium.close-white;
                 }
             }
         }
@@ -323,7 +321,7 @@
             > .window {
                 > .icon {
                     &.default {
-                        .icon.medium.close;
+                        .icon.medium.close-white;
                     }
                 }
             }

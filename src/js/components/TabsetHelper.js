@@ -1,19 +1,15 @@
 cm.define('Com.TabsetHelper', {
-    'modules' : [
-        'Params',
-        'Events',
-        'Langs',
-        'Callbacks',
-        'DataNodes',
-        'DataConfig',
-        'Stack'
-    ],
+    'extend' : 'Com.AbstractController',
     'events' : [
-        'onRender',
         'onTabShowStart',
         'onTabShow',
+        'onTabShowEnd',
         'onTabHideStart',
         'onTabHide',
+        'onTabHideEnd',
+        'onTabRemoveStart',
+        'onTabRemove',
+        'onTabRemoveEnd',
         'onLabelTarget',
         'onRequestStart',
         'onRequestEnd',
@@ -21,28 +17,34 @@ cm.define('Com.TabsetHelper', {
         'onRequestSuccess',
         'onRequestAbort',
         'onContentRenderStart',
-        'onContentRender'
+        'onContentRender',
+        'onContentRenderEnd'
     ],
     'params' : {
-        'node' : cm.Node('div'),
-        'name' : '',
+        'renderStructure' : false,
+        'embedStructureOnRender' : false,
+        'controllerEvents' : true,
+        'renderTabView' : false,
+        'setInitialTab' : false,                                    // Set possible initial tab even if "active" is not defined
+        'setInitialTabImmediately' : true,                          // Set initial tab without animation
         'active' : null,
         'items' : [],
         'targetEvent' : 'click',                                    // click | hover | none
-        'setFirstTabImmediately' : true,
+        'toggleOnHashChange' : false,                               // URL hash change handler
         'showLoader' : true,
-        'loaderDelay' : 'cm._config.loadDelay',                     // in ms
         'responseKey' : 'data',                                     // Instead of using filter callback, you can provide response array key
         'responseHTML' : true,                                      // If true, html will append automatically
-        'cache' : false,
+        'cache' : false,                                            // Cache ajax tab content
         'ajax' : {
             'type' : 'json',
             'method' : 'get',
             'url' : '',                                             // Request URL. Variables: %baseUrl%, %tab%, %callback% for JSONP.
             'params' : ''                                           // Params object. %tab%, %baseUrl%, %callback% for JSONP.
         },
-        'Com.Overlay' : {
+        'overlayConstructor' : 'Com.Overlay',
+        'overlayParams' : {
             'position' : 'absolute',
+            'lazy' : true,
             'autoOpen' : false,
             'removeOnClose' : true
         }
@@ -53,43 +55,41 @@ cm.define('Com.TabsetHelper', {
 },
 function(params){
     var that = this;
+    // Call parent class construct
+    Com.AbstractController.apply(that, arguments);
+});
 
-    that.components = {};
-    that.nodes = {
-        'container': cm.node('div'),
-        'labels' : [],
-        'tabs' : [],
-        'select' : cm.node('select')
+cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    /*** SYSTEM ***/
+
+    classProto.construct = function(){
+        var that = this;
+        // Variables
+        that.nodes = {
+            'container': cm.node('div'),
+            'labels' : [],
+            'tabs' : [],
+            'select' : cm.node('select')
+        };
+        that.ajaxHandler = null;
+        that.isAjax = false;
+        that.isProcess = false;
+        that.targetEvent = null;
+        that.current = false;
+        that.previous = false;
+        that.items = {};
+        that.itemsList = [];
+        // Binds
+        that.hashChangeHandler = that.hashChange.bind(that);
+        // Call parent method
+        _inherit.prototype.construct.apply(that, arguments);
     };
 
-    that.ajaxHandler = null;
-    that.isAjax = false;
-    that.isProcess = false;
-    that.loaderDelay = null;
-    that.targetEvent = null;
-
-    that.current = false;
-    that.previous = false;
-    that.items = {};
-    that.itemsList = [];
-
-    var init = function(){
-        that.setParams(params);
-        that.convertEvents(that.params['events']);
-        that.getDataNodes(that.params['node']);
-        that.getDataConfig(that.params['node']);
-        that.callbacksProcess();
-        validateParams();
-        render();
-        that.addToStack(that.params['node']);
-        that.triggerEvent('onRender');
-        // Set active tab
-        if(that.params['active'] && that.items[that.params['active']]){
-            set(that.params['active']);
-        }
-    };
-
-    var validateParams = function(){
+    classProto.validateParams = function(){
+        var that = this;
+        that.triggerEvent('onValidateParamsStart');
         // Ajax
         if(!cm.isEmpty(that.params['ajax']['url'])){
             that.isAjax = true;
@@ -100,340 +100,68 @@ function(params){
                 that.targetEvent = 'mouseover';
                 break;
             case 'click':
+            default:
                 that.targetEvent = 'click';
                 break;
         }
+        that.triggerEvent('onValidateParams');
+        that.triggerEvent('onValidateParamsProcess');
+        that.triggerEvent('onValidateParamsEnd');
     };
 
-    var render = function(){
+    classProto.onSetEvents = function(){
+        var that = this;
+        that.params['toggleOnHashChange'] && cm.addEvent(window, 'hashchange', that.hashChangeHandler);
+        return that;
+    };
+
+    classProto.onUnsetEvents = function(){
+        var that = this;
+        that.params['toggleOnHashChange'] && cm.removeEvent(window, 'hashchange', that.hashChangeHandler);
+        return that;
+    };
+
+    classProto.onConstructEnd = function(){
+        var that = this;
+        that.setInitialTab();
+    };
+
+    /******* VIEW MODEL *******/
+
+    classProto.renderViewModel = function(){
+        var that = this;
+        // Call parent method
+        _inherit.prototype.renderViewModel.apply(that, arguments);
         // Process tabs
         that.processTabs(that.nodes['tabs'], that.nodes['labels']);
         // Process tabs in parameters
         cm.forEach(that.params['items'], function(item){
-            renderTab(item);
+            that.renderTab(item);
         });
         // Process select
         that.processSelect(that.nodes['select']);
         // Overlay
-        cm.getConstructor('Com.Overlay', function(classConstructor){
-            that.components['loader'] = new classConstructor(that.params['Com.Overlay']);
+        cm.getConstructor(that.params['overlayConstructor'], function(classConstructor){
+            that.components['loader'] = new classConstructor(that.params['overlayParams']);
         });
+        return that;
     };
+    
+    /******* TABS *******/
 
-    var renderTab = function(item){
-        item = cm.merge({
-            'index' : that.itemsList.length,
-            'id' : '',
-            'title' : '',
-            'tab' : {
-                'container' : cm.node('li'),
-                'inner' : cm.node('div')
-            },
-            'label' : {
-                'container' : cm.node('li'),
-                'link' : cm.node('a')
-            },
-            'isHidden' : false,
-            'isShow' : false,
-            'isAjax' : false,
-            'isCached' : false,
-            'ajax' : {}
-        }, item);
-        if(!cm.isEmpty(item['ajax']['url'])){
-            item.isAjax = true;
-        }
-        if(!cm.isEmpty(item['id']) && !that.items[item['id']]){
-            that.itemsList.push(item);
-            that.items[item['id']] = item;
-            if(item.isHidden){
-                cm.addClass(item['label']['container'], 'hidden');
-                cm.addClass(item['tab']['container'], 'hidden');
-            }
-            if(that.targetEvent){
-                cm.addEvent(item['label']['container'], that.targetEvent, function(){
-                    that.triggerEvent('onLabelTarget', {
-                        'item' : item
-                    });
-                    set(item['id']);
-                });
-            }
-        }
-    };
-
-    var set = function(id){
-        var item = that.items[id];
-        if(item && that.current != id){
-            that.triggerEvent('onTabShowStart', {
-                'item' : item
+    classProto.processTab = function(tab, label){
+        var that = this,
+            config = cm.merge(that.getNodeDataConfig(tab['container']), that.getNodeDataConfig(label['container'])),
+            item = cm.merge(config, {
+                'tab' : tab,
+                'label' : label
             });
-            // Hide previous tab
-            unset();
-            // Show new tab
-            that.current = id;
-            item.isShow = true;
-            if(!that.previous && that.params['setFirstTabImmediately']){
-                cm.addClass(item['tab']['container'], 'is-immediately');
-                cm.addClass(item['label']['container'], 'is-immediately');
-                setTimeout(function(){
-                    cm.removeClass(item['tab']['container'], 'is-immediately');
-                    cm.removeClass(item['label']['container'], 'is-immediately');
-                }, 5);
-            }
-            cm.addClass(item['tab']['container'], 'active');
-            cm.addClass(item['label']['container'], 'active');
-            // Set select menu
-            cm.setSelect(that.nodes['select'], that.current);
-            // Trigger events
-            if(item.isAjax && (!that.params['cache'] || (that.params['cache'] && !item.isCached))){
-                that.ajaxHandler = that.callbacks.request(that, item, cm.merge(that.params['ajax'], item['ajax']));
-            }else{
-                that.triggerEvent('onTabShow', {
-                    'item' : item
-                });
-            }
-        }
+        that.addTab(item);
     };
 
-    var unset = function(){
-        var item;
-        if(that.current && that.items[that.current]){
-            item = that.items[that.current];
-            if(that.isProcess){
-                that.abort();
-            }
-            that.previous = that.current;
-            item.isShow = false;
-            that.triggerEvent('onTabHideStart', {
-                'item' : item
-            });
-            cm.removeClass(item['tab']['container'], 'active');
-            cm.removeClass(item['label']['container'], 'active');
-            that.triggerEvent('onTabHide', {
-                'item' : item
-            });
-            that.current = null;
-        }
-    };
-
-    var unsetHead = function(){
-        var item;
-        if(that.current && that.items[that.current]){
-            item = that.items[that.current];
-            cm.removeClass(item['label']['container'], 'active');
-        }
-    };
-
-    /* ******* CALLBACKS ******* */
-
-    /* *** AJAX *** */
-
-    that.callbacks.prepare = function(that, item, config){
-        // Prepare
-        config['url'] = cm.strReplace(config['url'], {
-            '%tab%' : item['id'],
-            '%baseUrl%' : cm._baseUrl
-        });
-        config['params'] = cm.objectReplace(config['params'], {
-            '%tab%' : item['id'],
-            '%baseUrl%' : cm._baseUrl
-        });
-        return config;
-    };
-
-    that.callbacks.request = function(that, item, config){
-        config = that.callbacks.prepare(that, item, config);
-        // Return ajax handler (XMLHttpRequest) to providing abort method.
-        return cm.ajax(
-            cm.merge(config, {
-                'onStart' : function(){
-                    that.callbacks.start(that, item, config);
-                },
-                'onSuccess' : function(response){
-                    that.callbacks.response(that, item, config, response);
-                },
-                'onError' : function(){
-                    that.callbacks.error(that, item, config);
-                },
-                'onAbort' : function(){
-                    that.callbacks.abort(that, item, config);
-                },
-                'onEnd' : function(){
-                    that.callbacks.end(that, item,  config);
-                }
-            })
-        );
-    };
-
-    that.callbacks.start = function(that, item, config){
-        that.isProcess = true;
-        // Show Loader
-        if(that.params['showLoader']){
-            that.loaderDelay = setTimeout(function(){
-                if(that.components['loader'] && !that.components['loader'].isOpen){
-                    that.components['loader']
-                        .embed(item['tab']['container'])
-                        .open();
-                }
-            }, that.params['loaderDelay']);
-        }
-        that.triggerEvent('onRequestStart', {
-            'item' : item
-        });
-    };
-
-    that.callbacks.end = function(that, item, config){
-        that.isProcess = false;
-        // Hide Loader
-        if(that.params['showLoader']){
-            that.loaderDelay && clearTimeout(that.loaderDelay);
-            if(that.components['loader'] && that.components['loader'].isOpen){
-                that.components['loader'].close();
-            }
-        }
-        that.triggerEvent('onRequestEnd', {
-            'item' : item
-        });
-    };
-
-    that.callbacks.filter = function(that, item, config, response){
-        var data,
-            dataItem = cm.objectSelector(that.params['responseKey'], response);
-        if(dataItem && !cm.isEmpty(dataItem)){
-            data = dataItem;
-        }
-        return data;
-    };
-
-    that.callbacks.response = function(that, item, config, response){
-        if(!cm.isEmpty(response)){
-            response = that.callbacks.filter(that, item, config, response);
-        }
-        if(!cm.isEmpty(response)){
-            that.callbacks.success(that, item, response);
-        }else{
-            that.callbacks.error(that, item, config);
-        }
-    };
-
-    that.callbacks.error = function(that, item, config){
-        that.callbacks.renderError(that, item, config);
-        that.triggerEvent('onRequestError', {
-            'item' : item
-        });
-    };
-
-    that.callbacks.success = function(that, item, response){
-        that.callbacks.render(that, item, response);
-        that.triggerEvent('onRequestSuccess', {
-            'tab' : item,
-            'response' : response
-        });
-    };
-
-    that.callbacks.abort = function(that, item, config){
-        that.triggerEvent('onRequestAbort', {
-            'item' : item
-        });
-    };
-
-    /* *** RENDER *** */
-
-    that.callbacks.render = function(that, item, data){
-        item['data'] = data;
-        item.isCached = true;
-        // Render
-        that.triggerEvent('onContentRenderStart', {
-            'item' : item,
-            'data' : data
-        });
-        that.callbacks.renderContent(that, item, data);
-        that.triggerEvent('onContentRender', {
-            'item' : item,
-            'data' : data
-        });
-        that.triggerEvent('onTabShow', {
-            'item' : item,
-            'data' : data
-        });
-    };
-
-    that.callbacks.renderContent = function(that, item, data){
-        var nodes;
-        if(that.params['responseHTML']){
-            cm.clearNode(item['tab']['inner']);
-            nodes = cm.strToHTML(data);
-            if(!cm.isEmpty(nodes)){
-                if(cm.isNode(nodes)){
-                    item['tab']['inner'].appendChild(nodes);
-                }else{
-                    while(nodes.length){
-                        if(cm.isNode(nodes[0])){
-                            item['tab']['inner'].appendChild(nodes[0]);
-                        }else{
-                            cm.remove(nodes[0]);
-                        }
-                    }
-                }
-            }
-        }
-    };
-
-    that.callbacks.renderError = function(that, item, config){
-        if(that.params['responseHTML']){
-            cm.clearNode(item['tab']['inner']);
-            item['tab']['inner'].appendChild(
-                cm.node('div', {'class' : 'cm__empty'}, that.lang('server_error'))
-            );
-        }
-    };
-
-    /* ******* PUBLIC ******* */
-
-    that.set = function(id){
-        if(id && that.items[id]){
-            set(id);
-        }
-        return that;
-    };
-
-    that.setByIndex = function(index){
-        var item;
-        if(item = that.itemsList[index]){
-            set(item['id']);
-        }
-        return that;
-    };
-
-    that.unset = function(){
-        unset();
-        that.previous = null;
-        return that;
-    };
-
-    that.unsetHead = function(){
-        unsetHead();
-        return that;
-
-    };
-
-    that.get = function(){
-        return that.current;
-    };
-
-    that.addTab = function(item){
-        renderTab(item);
-        return that;
-    };
-
-    that.addTabs = function(items){
-        cm.forEach(items, function(item){
-            renderTab(item);
-        });
-        return that;
-    };
-
-    that.processTabs = function(tabs, labels){
-        var itemsToProcess = tabs.length ?  tabs : labels,
+    classProto.processTabs = function(tabs, labels){
+        var that = this,
+            itemsToProcess = tabs.length ?  tabs : labels,
             items = [],
             label,
             config,
@@ -451,42 +179,473 @@ function(params){
         return that;
     };
 
-    that.processSelect = function(container){
+    classProto.renderTab = function(item){
+        var that = this;
+        // Merge tab configuration
+        item = cm.merge({
+            'index' : that.itemsList.length,
+            'id' : '',
+            'title' : '',
+            'content' : null,
+            'tab' : {
+                'container' : cm.node('li'),
+                'inner' : cm.node('div')
+            },
+            'label' : {
+                'container' : cm.node('li'),
+                'link' : cm.node('a')
+            },
+            'menu' : {
+                'container' : cm.node('li'),
+                'link' : cm.node('a')
+            },
+            'constructor' : false,
+            'constructorParams' : {},
+            'isHidden' : false,
+            'isShow' : false,
+            'isAjax' : false,
+            'isCached' : false,
+            'ajax' : {}
+        }, item);
+        // Render tab view
+        if(that.params['renderTabView']){
+            that.renderTabView(item);
+        }
+        // Check for ajax
+        if(!cm.isEmpty(item['ajax']['url'])){
+            item.isAjax = true;
+        }
+        // Push
+        if(!cm.isEmpty(item['id']) && !that.items[item['id']]){
+            that.itemsList.push(item);
+            that.items[item['id']] = item;
+            // Hide nodes
+            if(item.isHidden){
+                cm.addClass(item['label']['container'], 'hidden');
+                cm.addClass(item['menu']['container'], 'hidden');
+                cm.addClass(item['tab']['container'], 'hidden');
+            }
+            // Target events
+            that.renderTabTarget(item, item['label']['container']);
+            that.renderTabTarget(item, item['menu']['container']);
+        }
+        return that;
+    };
+
+    classProto.renderTabTarget = function(item, node){
+        var that = this;
+        if(that.targetEvent){
+            cm.addEvent(node, that.targetEvent, function(){
+                that.triggerEvent('onLabelTarget', item);
+                // Set
+                if(that.params['toggleOnHashChange']){
+                    window.location.href = [window.location.href.split('#')[0], item['id']].join('#');
+                }else{
+                    that.setTab(item['id']);
+                }
+            });
+        }
+    };
+
+    classProto.renderTabView = function(item){
+        var that = this;
+    };
+
+    classProto.removeTab = function(id){
+        var that = this,
+            item = that.items[id];
+        if(item){
+            that.triggerEvent('onTabRemove', item);
+            // Set new active tab, if current active is nominated for remove
+            if(item['id'] === that.current){
+                that.setByIndex(0);
+            }
+            // Remove tab from list and array
+            cm.remove(item['tab']['container']);
+            cm.remove(item['label']['container']);
+            that.itemsList = cm.arrayRemove(that.itemsList, item);
+            delete that.items[item['id']];
+            that.triggerEvent('onTabRemove', item);
+            that.triggerEvent('onTabRemoveEnd', item);
+        }
+        return that;
+    };
+    
+    /*** SET / UNSET ***/
+
+    classProto.setTab = function(id){
+        var that = this,
+            item = that.items[id];
+        if(item && that.current !== id){
+            that.triggerEvent('onTabShowStart', item);
+            // Hide previous tab
+            that.unsetTab(that.current);
+            // Show new tab
+            that.previous = that.current;
+            that.current = id;
+            item.isShow = true;
+            if(!that.previous && that.params['setInitialTabImmediately']){
+                cm.addClass(item['tab']['container'], 'is-immediately');
+                cm.addClass(item['label']['container'], 'is-immediately');
+                setTimeout(function(){
+                    cm.removeClass(item['tab']['container'], 'is-immediately');
+                    cm.removeClass(item['label']['container'], 'is-immediately');
+                }, 5);
+            }
+            cm.addClass(item['tab']['container'], 'active');
+            cm.addClass(item['label']['container'], 'active');
+            // Set select menu
+            cm.setSelect(that.nodes['select'], that.current);
+            // Trigger events
+            if(item['constructor']){
+                // Controller
+                if(item['controller']){
+                    item['controller'].refresh && item['controller'].refresh();
+                }else{
+                    cm.getConstructor(item['constructor'], function(classConstructor){
+                        item['controller'] = new classConstructor(
+                            cm.merge(item['controllerParams'], {
+                                'container' : item['tab']['inner'],
+                                'events' : {
+                                    'onLoadEnd' : function(){
+                                        that.tabShowEnd(item, {});
+                                    }
+                                }
+                            })
+                        );
+                    });
+                }
+            }else if(item.isAjax && (!that.params['cache'] || (that.params['cache'] && !item.isCached))){
+                that.ajaxHandler = classProto.callbacks.request(that, {
+                    'config' : cm.merge(that.params['ajax'], item['ajax'])
+                }, item);
+            }else{
+                that.tabShowEnd(item, {});
+            }
+        }
+        return that;
+    };
+
+    classProto.unsetTab = function(id){
+        var that = this,
+            item = that.items[id];
+        if(item){
+            if(that.isProcess){
+                that.abort();
+            }
+            that.triggerEvent('onTabHideStart', {
+                'item' : item
+            });
+            item.isShow = false;
+            cm.removeClass(item['tab']['container'], 'active');
+            cm.removeClass(item['label']['container'], 'active');
+            that.triggerEvent('onTabHide', item);
+            that.triggerEvent('onTabHideEnd', item);
+        }
+        return that;
+    };
+
+    classProto.unsetHead = function(){
+        var that = this,
+            item = that.items[that.current];
+        if(item){
+            cm.removeClass(item['label']['container'], 'active');
+        }
+        return that;
+    };
+
+    classProto.getInitialTab = function(){
+        var that = this;
+        var id;
+        if(cm.isEmpty(that.itemsList) || cm.isEmpty(that.items)){
+            return null;
+        }
+        // Get tab from hash is exists
+        if(that.params['toggleOnHashChange']){
+            id = window.location.hash.slice(1);
+            if(that.isValidTab(id)){
+                return id;
+            }
+        }
+        // Get tab from parameters if exists
+        id = that.params['active'];
+        if(that.isValidTab(id)){
+            return id;
+        }
+        // Get first tab in list
+        return that.itemsList[0]['id'];
+    };
+
+    classProto.setInitialTab = function(){
+        var that = this,
+            id;
+        // Set default active tab
+        if(that.params['setInitialTab']){
+            id = that.getInitialTab();
+        }else{
+            id = that.params['active']
+        }
+        if(that.isValidTab(id)){
+            that.setTab(id);
+        }
+    };
+
+    classProto.isValidTab = function(id){
+        var that = this;
+        return !!that.getTab(id);
+    };
+
+    /*** SHOW / HIDE ***/
+
+    classProto.tabShowEnd = function(item, params){
+        var that = this;
+        cm.customEvent.trigger(item['tab']['container'], 'redraw', {
+            'type' : 'child',
+            'self' : false
+        });
+        that.triggerEvent('onTabShow', item, params);
+        that.triggerEvent('onTabShowEnd', item, params);
+    };
+
+    /******* SELECT *******/
+
+    classProto.processSelect = function(container){
+        var that = this;
         cm.addEvent(container, 'change', function(){
-            that.set(container.value);
+            that.setTab(container.value);
         })
     };
 
-    that.getTab = function(id){
+    /******* URL HASH HANDLING *******/
+
+    classProto.hashChange = function(){
+        var that = this,
+            id = window.location.hash.slice(1);
+        if(that.isValidTab(id)){
+            that.setTab(id);
+        }
+    };
+
+    /******* CALLBACKS *******/
+
+    /*** AJAX ***/
+
+    classProto.callbacks.prepare = function(that, params, item){
+        params['config'] = that.callbacks.beforePrepare(that, params, item);
+        params['config']['url'] = cm.strReplace(params['config']['url'], {
+            '%tab%' : item['id'],
+            '%baseUrl%' : cm._baseUrl
+        });
+        params['config']['params'] = cm.objectReplace(params['config']['params'], {
+            '%tab%' : item['id'],
+            '%baseUrl%' : cm._baseUrl
+        });
+        params['config'] = that.callbacks.afterPrepare(that, params, item);
+        return params['config'];
+    };
+
+    classProto.callbacks.beforePrepare = function(that, params, item){
+        return params['config'];
+    };
+
+    classProto.callbacks.afterPrepare = function(that, params, item){
+        return params['config'];
+    };
+
+    classProto.callbacks.request = function(that, params, item){
+        params = cm.merge({
+            'response' : null,
+            'config' : null,
+            'data' : null
+        }, params);
+        // Validate config
+        params['config'] = that.callbacks.prepare(that, params, item);
+        // Return ajax handler (XMLHttpRequest) to providing abort method.
+        return cm.ajax(
+            cm.merge(params['config'], {
+                'onStart' : function(){
+                    classProto.callbacks.start(that, params, item);
+                },
+                'onSuccess' : function(response){
+                    params['response'] = response;
+                    classProto.callbacks.response(that, params, item);
+                },
+                'onError' : function(){
+                    classProto.callbacks.error(that, params, item);
+                },
+                'onAbort' : function(){
+                    classProto.callbacks.abort(that, params, item);
+                },
+                'onEnd' : function(){
+                    classProto.callbacks.end(that, params, item);
+                }
+            })
+        );
+    };
+
+    classProto.callbacks.start = function(that, params, item){
+        that.isProcess = true;
+        // Show Loader
+        if(that.params['showLoader']){
+            that.components['loader']
+                .embed(item['tab']['container'])
+                .open();
+        }
+        that.triggerEvent('onRequestStart', item, params);
+    };
+
+    classProto.callbacks.end = function(that, params, item){
+        that.isProcess = false;
+        // Hide Loader
+        if(that.params['showLoader']){
+            that.components['loader'].close();
+        }
+        that.triggerEvent('onRequestEnd', item, params);
+    };
+
+    classProto.callbacks.filter = function(that, params, item){
+        var data,
+            dataItem = cm.objectSelector(that.params['responseKey'], params['response']);
+        if(dataItem && !cm.isEmpty(dataItem)){
+            data = dataItem;
+        }
+        return data;
+    };
+
+    classProto.callbacks.response = function(that, params, item){
+        if(!cm.isEmpty(params['response'])){
+            params['data'] = classProto.callbacks.filter(that, params, item);
+        }
+        if(!cm.isEmpty(params['data'])){
+            classProto.callbacks.success(that, params, item);
+        }else{
+            classProto.callbacks.error(that, params, item);
+        }
+    };
+
+    classProto.callbacks.error = function(that, params, item){
+        classProto.callbacks.renderError(that, params, item);
+        that.triggerEvent('onRequestError', item, params);
+    };
+
+    classProto.callbacks.success = function(that, params, item){
+        classProto.callbacks.render(that, params);
+        that.triggerEvent('onRequestSuccess', item, params);
+    };
+
+    classProto.callbacks.abort = function(that, params, item){
+        that.triggerEvent('onRequestAbort', item, params);
+    };
+
+    /*** RENDER ***/
+
+    classProto.callbacks.render = function(that, params, item){
+        item['data'] = params['data'];
+        item.isCached = true;
+        // Render
+        that.triggerEvent('onContentRenderStart', item, params);
+        classProto.callbacks.renderContent(that, params, item);
+        that.triggerEvent('onContentRender', item, params);
+        that.triggerEvent('onContentRenderEnd', item, params);
+        // Show tab
+        that.tabShowEnd(item, params);
+    };
+
+    classProto.callbacks.renderContent = function(that, params, item){
+        var nodes;
+        if(that.params['responseHTML']){
+            nodes = cm.strToHTML(params['data']);
+            cm.clearNode(item['tab']['inner']);
+            cm.appendNodes(nodes, item['tab']['inner']);
+        }
+    };
+
+    classProto.callbacks.renderError = function(that, params, item){
+        if(that.params['responseHTML']){
+            cm.clearNode(item['tab']['inner']);
+            item['tab']['inner'].appendChild(
+                cm.node('div', {'class' : 'cm__empty'}, that.lang('server_error'))
+            );
+        }
+    };
+
+    /******* PUBLIC *******/
+
+    classProto.set = function(id){
+        var that = this,
+            item = that.items[id];
+        item && that.setTab(id);
+        return that;
+    };
+
+    classProto.setByIndex = function(index){
+        var that = this,
+            item = that.itemsList[index];
+        item && that.setTab(item['id']);
+        return that;
+    };
+
+    classProto.unset = function(){
+        var that = this;
+        that.unsetTab(that.current);
+        that.current = null;
+        that.previous = null;
+        return that;
+    };
+
+    classProto.get = function(){
+        var that = this;
+        return that.current;
+    };
+
+    classProto.addTab = function(item){
+        var that = this;
+        that.renderTab(item);
+        return that;
+    };
+
+    classProto.addTabs = function(items){
+        var that = this;
+        cm.forEach(items, function(item){
+            that.renderTab(item);
+        });
+        return that;
+    };
+
+    classProto.getTab = function(id){
+        var that = this;
         if(id && that.items[id]){
             return that.items[id];
         }
         return null;
     };
 
-    that.getTabs = function(){
+    classProto.getTabs = function(){
+        var that = this;
         return that.items;
     };
 
-    that.getCurrentTab = function(){
+    classProto.getCurrentTab = function(){
+        var that = this;
         return that.items[that.current];
     };
 
-    that.getTabsCount = function(){
+    classProto.getTabsCount = function(){
+        var that = this;
         return that.itemsList.length;
     };
 
-    that.isTabEmpty = function(id){
+    classProto.isTabEmpty = function(id){
+        var that = this;
         var item = that.getTab(id);
         return !(item && item['tab']['inner'].childNodes.length);
     };
 
-    that.abort = function(){
+    classProto.abort = function(){
+        var that = this;
         if(that.ajaxHandler && that.ajaxHandler.abort){
             that.ajaxHandler.abort();
         }
         return that;
     };
-
-    init();
 });

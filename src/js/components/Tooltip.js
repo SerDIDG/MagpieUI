@@ -342,8 +342,8 @@ function(params){
                 positionLeft = left + leftAdd;
             }
             // Fix scroll position for absolute
-            if(that.params['position'] == 'absolute'){
-                if(that.params['container'] == document.body){
+            if(that.params['position'] === 'absolute'){
+                if(that.params['container'] === document.body){
                     positionTop += scrollTop;
                     positionLeft += scrollLeft;
                 }else{
@@ -354,10 +354,10 @@ function(params){
             positionTop = Math.round(positionTop);
             positionLeft = Math.round(positionLeft);
             // Apply styles
-            if(positionTop != that.nodes['container'].offsetTop){
+            if(positionTop !== that.nodes['container'].offsetTop){
                 that.nodes['container'].style.top =  [positionTop, 'px'].join('');
             }
-            if(positionLeft != that.nodes['container'].offsetLeft){
+            if(positionLeft !== that.nodes['container'].offsetLeft){
                 that.nodes['container'].style.left = [positionLeft, 'px'].join('');
             }
         })();

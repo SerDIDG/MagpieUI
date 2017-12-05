@@ -9,7 +9,6 @@
     border-radius: @CmBorder-Radius;
     box-shadow: none;
     cursor: text;
-    .mx__box-sizing();
     .mx__background-clip(padding-box);
     .mx__transition(background border-color color box-shadow text-shadow, @CmUI-Transition-Duration);
 
@@ -124,7 +123,7 @@ input, select, textarea, button {
     .cm__font;
     margin: 0;
     outline: none;
-    .mx__placeholder(@CmColor-Font-Placeholder);
+    .mx__placeholder(@CmFont-Placeholder-Color, @CmFont-Placeholder-Size, @CmFont-Placeholder-Style);
 }
 
 input[type="file"] {
@@ -146,6 +145,10 @@ input[type="password"],
 textarea,
 select {
     &:extend(.input all);
+}
+
+input[type="search"] {
+    -webkit-appearance: none;
 }
 
 textarea {

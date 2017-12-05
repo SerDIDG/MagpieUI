@@ -33,6 +33,7 @@ cm.define('Com.Tabset', {
         'customEvents' : true,
         'active' : null,
         'className' : '',
+        'tabsAlign' : 'left',           // left | center | right | justify
         'tabsPosition' : 'top',         // top | right | bottom | left
         'tabsFlexible' : false,
         'tabsWidth' : 256,              // Only for tabsPosition left or right
@@ -86,7 +87,10 @@ function(params){
         if(!cm.inArray(['top', 'right', 'bottom', 'left'], that.params['tabsPosition'])){
             that.params['tabsPosition'] = 'top';
         }
-        if(typeof that.params['tabsWidth'] == 'number'){
+        if(!cm.inArray(['left', 'center', 'right', 'justify'], that.params['tabsAlign'])){
+            that.params['tabsAlign'] = 'left';
+        }
+        if(cm.isNumber(that.params['tabsWidth'])){
             that.params['tabsWidth'] = [that.params['tabsWidth'], 'px'].join('');
         }
     };
@@ -148,6 +152,9 @@ function(params){
         /* *** ATTRIBUTES *** */
         // CSS
         cm.addClass(that.nodes['container'], ['is-tabs', that.params['tabsPosition']].join('-'));
+        if(/top|bottom/.test(that.params['tabsPosition'])){
+            cm.addClass(that.nodes['container'], ['is-tabs-pull', that.params['tabsAlign']].join('-'));
+        }
         if(that.params['tabsFlexible']){
             cm.addClass(that.nodes['container'], 'is-tabs-flexible');
         }
@@ -237,7 +244,7 @@ function(params){
             cm.addEvent(item['a'], 'click', function(e){
                 e = cm.getEvent(e);
                 cm.preventDefault(e);
-                if(that.active != tab['id']){
+                if(that.active !== tab['id']){
                     window.location.href = [window.location.href.split('#')[0], tab['id']].join('#');
                 }
             });
@@ -260,9 +267,7 @@ function(params){
         cm.remove(item['tab']['container']);
         cm.remove(item['menu']['container']);
         cm.remove(item['content']);
-        that.tabsListing = that.tabsListing.filter(function(tab){
-            return item['id'] != tab['id'];
-        });
+        that.tabsListing = cm.arrayRemove(that.tabsListing, item);
         delete that.tabs[item['id']];
     };
 
@@ -275,27 +280,13 @@ function(params){
 
     var set = function(id){
         var item, previous;
-        if(!that.isProcess && id != that.active){
+        if(!that.isProcess && id !== that.active){
             that.isProcess = true;
             // Hide Previous Tab
             if(that.active && that.tabs[that.active]){
                 that.previous = that.active;
                 previous = that.tabs[that.previous];
                 previous['isHide'] = true;
-                // Hide Start Event
-                previous['onHideStart'](that, previous);
-                that.triggerEvent('onTabHideStart', previous);
-                // Controller
-                if(previous['controllerObject']){
-                    previous['controllerObject'].suspend();
-                }
-                // Hide
-                cm.removeClass(previous['tab']['container'], 'active');
-                cm.removeClass(previous['menu']['container'], 'active');
-                cm.removeClass(previous['content'], 'active');
-                // Hide End Event
-                previous['onHide'](that, previous);
-                that.triggerEvent('onTabHide', previous);
             }
             // Show New Tab
             that.active = id;
@@ -319,25 +310,41 @@ function(params){
                 }
             }
             // Show
-            item['content'].style.display = 'block';
-            cm.addClass(item['tab']['container'], 'active');
-            cm.addClass(item['menu']['container'], 'active');
-            cm.addClass(item['content'], 'active', true);
-            that.nodes['headerTitleText'].innerHTML = item['title'];
-            // Animate
-            if(!that.params['switchManually']){
-                if(that.previous && that.params['animateSwitch'] && !that.params['calculateMaxHeight']){
-                    animateSwitch();
-                }else{
-                    if(that.params['calculateMaxHeight']){
-                        calculateMaxHeight();
-                    }
-                    if(that.previous){
-                        that.tabs[that.previous]['content'].style.display = 'none';
-                    }
-                    switchTab();
-                }
+            switchTabHandler(item, previous);
+        }
+    };
+
+    var switchTabHandler = function(item, previous){
+        // Hide previous tab
+        if(previous){
+            // Hide Start Event
+            previous['onHideStart'](that, previous);
+            that.triggerEvent('onTabHideStart', previous);
+            // Hide
+            cm.removeClass(previous['tab']['container'], 'active');
+            cm.removeClass(previous['menu']['container'], 'active');
+            cm.removeClass(previous['content'], 'active');
+            // Hide End Event
+            previous['onHide'](that, previous);
+            that.triggerEvent('onTabHide', previous);
+        }
+        // Show active tab
+        item['content'].style.display = 'block';
+        cm.addClass(item['tab']['container'], 'active');
+        cm.addClass(item['menu']['container'], 'active');
+        cm.addClass(item['content'], 'active', true);
+        that.nodes['headerTitleText'].innerHTML = item['title'];
+        // Animate
+        if(that.previous && that.params['animateSwitch'] && !that.params['calculateMaxHeight']){
+            animateSwitch();
+        }else{
+            if(that.params['calculateMaxHeight']){
+                calculateMaxHeight();
             }
+            if(that.previous){
+                that.tabs[that.previous]['content'].style.display = 'none';
+            }
+            switchTab();
         }
     };
 

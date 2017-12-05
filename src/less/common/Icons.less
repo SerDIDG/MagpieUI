@@ -50,11 +50,11 @@
 
     &.linked {
         cursor: pointer;
-        .mx__transition(opacity, @CmUI-Transition-Duration);
+        .mx__transition(all, @CmUI-Transition-Duration);
 
         &:hover {
             opacity: @CmUI-Opacity-Hover;
-            .mx__transition(opacity, @CmUI-Transition-DurationReverse);
+            .mx__transition(all, @CmUI-Transition-DurationReverse);
         }
     }
 
@@ -516,6 +516,15 @@
 }
 
 /* ******* ANIMATED ******* */
+
+.cm-ia__spinner {
+    .cm-animate.animated.spin;
+    margin: auto;
+    z-index: 1;
+    border: @CmIconIA-Spinner-BorderSize solid @CmIconIA-Spinner-DefaultBackground;
+    border-top-color: @CmIconIA-Spinner-ActiveBackground;
+    border-radius: 50%;
+}
 
 .cm-ia__menu {
     position: relative;

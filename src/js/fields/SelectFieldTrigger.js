@@ -5,6 +5,7 @@ cm.define('Com.SelectFieldTrigger', {
         'embedStructureOnRender' : true,
         'controllerEvents' : true,
         'triggerName' : null,
+        'triggerFieldSize' : null,
         'options' : [],
         'Com.Toolbar' : {
             'embedStructure' : 'append'
@@ -126,7 +127,8 @@ cm.getConstructor('Com.SelectFieldTrigger', function(classConstructor, className
                 .addField({
                     'group' : 'trigger',
                     'name' : 'trigger',
-                    'node' : that.components['trigger'].getContainer()
+                    'node' : that.components['trigger'].getContainer(),
+                    'size' : that.params['triggerFieldSize']
                 })
         });
         // Fields

@@ -4,6 +4,7 @@ cm.define('Com.DialogContainer', {
         'constructor' : 'Com.Dialog',
         'container' : 'document.body',
         'renderButtons' : false,
+        'renderTitle' : true,
         'justifyButtons' : 'right',
         'params' : {
             'destructOnRemove' : false,
@@ -34,6 +35,7 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
             that.params['params']['content'] = that.params['content']['content'] || that.params['params']['content'];
             that.params['params']['buttons'] = that.params['content']['buttons'] || that.params['params']['buttons'];
         }
+        that.params['params']['showTitle'] = that.params['renderTitle'];
         return that;
     };
 

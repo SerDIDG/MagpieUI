@@ -54,6 +54,9 @@ cm.define('Com.Autocomplete', {
             'list' : 'pt__list',
             'listItem' : 'pt__list__item'
         },
+        'icons' : {
+            'search' : 'icon default linked'
+        },
         'Com.Tooltip' : {
             'hideOnOut' : true,
             'targetEvent' : 'none',
@@ -650,7 +653,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
         nodes['container'] = cm.node('li', {'class' : that.params['classes']['listItem']},
             cm.node('div', {'class' : 'inner'},
                 cm.node('div', {'class' : 'content'},
-                    cm.node('span', {'class' : 'icon small loader-circle'}),
+                    cm.node('span', {'class' : 'icon small cm-ia__spinner'}),
                     cm.node('span', {'innerHTML' : that.lang('loader', {'%query%' : params['query']})})
                 )
             )

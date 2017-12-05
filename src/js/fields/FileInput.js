@@ -262,6 +262,16 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         }
         return that;
     };
+
+    /* *** PUBLIC *** */
+
+    classProto.browse = function(){
+        var that = this;
+        if(that.params['local']){
+            that.nodes['content']['input'].click();
+        }
+        return that;
+    };
 });
 
 /* ****** FORM FIELD COMPONENT ******* */

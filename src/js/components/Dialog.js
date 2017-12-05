@@ -30,13 +30,13 @@ cm.define('Com.Dialog', {
         'theme' : 'theme-light',        // theme css class name, default: theme-default | theme-black | theme-light
         'className' : '',               // custom css class name
         'content' : cm.node('div'),
+        'showTitle' : true,
         'title' : '',
         'buttons' : false,
         'titleOverflow' : false,
         'titleReserve': true,
         'closeButtonOutside' : false,
         'closeButton' : true,
-        'closeTitle' : true,
         'closeOnBackground' : false,
         'openTime' : null,
         'duration' : 'cm._config.animDuration',
@@ -88,7 +88,7 @@ function(params){
     };
     
     var validateParams = function(){
-        if(that.params['size'] == 'fullscreen'){
+        if(/full|fullscreen/.test(that.params['size'])){
             that.params['width'] = '100%';
             that.params['height'] = '100%';
             that.params['indentX'] = 0;
@@ -96,6 +96,9 @@ function(params){
         }
         if(that.params['openTime'] !== undefined && that.params['openTime'] !== null){
             that.params['duration'] = that.params['openTime'];
+        }
+        if(!that.params['showTitle']){
+            that.params['titleReserve'] = false;
         }
     };
 
@@ -116,8 +119,11 @@ function(params){
         // Add CSS Classes
         !cm.isEmpty(that.params['theme']) && cm.addClass(nodes['container'], that.params['theme']);
         !cm.isEmpty(that.params['className']) && cm.addClass(nodes['container'], that.params['className']);
-        if(that.params['size'] == 'fullscreen'){
+        if(that.params['size'] === 'fullscreen'){
             cm.addClass(nodes['container'], 'is-fullscreen');
+        }
+        if(that.params['size'] === 'full'){
+            cm.addClass(nodes['container'], 'is-full');
         }
         if(that.params['titleReserve']){
             cm.addClass(nodes['container'], 'is-title-reserve');
@@ -125,29 +131,21 @@ function(params){
         // Render close button
         if(that.params['closeButtonOutside']){
             nodes['bg'].appendChild(
-                nodes['closeOutside'] = cm.Node('div', {'class' : that.params['icons']['closeOutside']}, that.lang('close'))
+                nodes['closeOutside'] = cm.Node('div', {'class' : that.params['icons']['closeOutside'], 'title' : that.lang('closeTitle')}, that.lang('close'))
             );
-            if(that.params['closeTitle']){
-                nodes['closeOutside'].title = that.lang('closeTitle');
-            }
             cm.addEvent(nodes['closeOutside'], 'click', close);
         }
         if(that.params['closeButton']){
             cm.addClass(nodes['container'], 'has-close-inside');
             nodes['window'].appendChild(
-                nodes['closeInside'] = cm.Node('div', {'class' : that.params['icons']['closeInside']}, that.lang('close'))
+                nodes['closeInside'] = cm.Node('div', {'class' : that.params['icons']['closeInside'], 'title' : that.lang('closeTitle')}, that.lang('close'))
             );
-            if(that.params['closeTitle']){
-                nodes['closeInside'].title = that.lang('closeTitle');
-            }
             cm.addEvent(nodes['closeInside'], 'click', close);
         }
         if(that.params['closeOnBackground']){
             cm.addClass(nodes['container'], 'has-close-background');
             cm.addEvent(nodes['bg'], 'click', close);
-            if(that.params['closeTitle']){
-                nodes['bg'].title = that.lang('closeTitle');
-            }
+            nodes['bg'].title = that.lang('closeTitle');
         }
         // Set title
         renderTitle(that.params['title']);
@@ -173,7 +171,7 @@ function(params){
     };
 
     var renderTitle = function(title){
-        if(!cm.isEmpty(title)){
+        if(that.params['showTitle'] && !cm.isEmpty(title)){
             cm.removeClass(nodes['container'], 'has-no-title');
             // Remove old nodes
             cm.remove(nodes['title']);
@@ -228,8 +226,9 @@ function(params){
     };
 
     var resize = function(){
-        var winHeight = nodes['container'].offsetHeight - (that.params['indentY'] * 2),
-            winWidth = nodes['container'].offsetWidth - (that.params['indentX'] * 2),
+        var winOffset = cm.getNodeOffset(nodes['container']),
+            winHeight = winOffset['inner']['height'] - (that.params['indentY'] * 2),
+            winWidth = winOffset['inner']['width'] - (that.params['indentX'] * 2),
             windowHeight = nodes['window'].offsetHeight,
             windowWidth = nodes['window'].offsetWidth,
             insetHeight = nodes['inner'].offsetHeight,
@@ -251,7 +250,7 @@ function(params){
         NAHeight = winHeight - AHeight;
         AWidth = winWidth;
         // Calculate min / max height
-        if(that.params['maxHeight'] == 'auto'){
+        if(that.params['maxHeight'] === 'auto'){
             maxHeight = AHeight;
         }else if(/%/.test(that.params['maxHeight'])){
             maxHeight = ((winHeight / 100) * parseFloat(that.params['maxHeight'])) - NAHeight;
@@ -261,7 +260,7 @@ function(params){
             }
             maxHeight = that.params['maxHeight'] - NAHeight;
         }
-        if(that.params['minHeight'] == 'auto'){
+        if(that.params['minHeight'] === 'auto'){
             minHeight = 0;
         }else if(/%/.test(that.params['minHeight'])){
             minHeight = ((winHeight / 100) * parseFloat(that.params['minHeight'])) - NAHeight;
@@ -272,7 +271,7 @@ function(params){
             minHeight = that.params['minHeight'] - NAHeight;
         }
         // Calculate height
-        if(that.params['height'] == 'auto'){
+        if(that.params['height'] === 'auto'){
             if(insetHeight < minHeight){
                 setHeight = minHeight;
             }else if(insetHeight > maxHeight){
@@ -394,9 +393,8 @@ function(params){
     };
 
     var windowClickEvent = function(e){
-        e = cm.getEvent(e);
         // ESC key
-        if(e.keyCode == 27){
+        if(cm.isKey(e, 'escape')){
             that.isFocus && close();
         }
     };

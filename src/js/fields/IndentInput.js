@@ -48,7 +48,6 @@ cm.getConstructor('Com.IndentInput', function(classConstructor, className, class
                 nodes['input'].blur();
             }
         });
-
         if(that.params['allowNegative']){
             cm.allowOnlyNumbersInputEvent(nodes['input'], function(e, value){
                 that.selectAction(that.validateValue(value), true);
@@ -75,7 +74,7 @@ cm.getConstructor('Com.IndentInput', function(classConstructor, className, class
 
     classProto.setValue = function(triggerEvents){
         var that = this;
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        triggerEvents = cm.isUndefined(triggerEvents)? true : triggerEvents;
         that.set(that.rawValue, triggerEvents);
         return that;
     };

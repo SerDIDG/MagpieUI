@@ -23,9 +23,15 @@ cm.define('Com.AbstractFormField', {
         'type' : false,
         'label' : '',
         'help' : null,
+        'icon' : false,
         'placeholder' : '',
         'visible' : true,
         'options' : [],
+        'constraints' : [
+            /* cm.constraintsPattern(/^\s*$/g, false, message), */
+            /* cm.constraintsPattern(10, false, message) */
+        ],
+        'required' : false,
         'constructor' : false,
         'constructorParams' : {
             'formData' : true
@@ -39,6 +45,9 @@ cm.define('Com.AbstractFormField', {
         'Com.HelpBubble' : {
             'renderStructure' : true
         }
+    },
+    'strings' : {
+        'required' : 'This field if required.'
     }
 },
 function(params){
@@ -134,6 +143,14 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         nodes['container'] = cm.node('div', {'class' : 'pt__field__content'},
             nodes['input'] = that.params['node']
         );
+        // Icon
+        if(that.params['icon']){
+            nodes['field'] = cm.node('div', {'class' : 'pt__input'},
+                nodes['input'],
+                cm.node('div', {'class' : that.params['icon']})
+            );
+            cm.appendChild(nodes['field'], nodes['container']);
+        }
         // Options
         if(!cm.isEmpty(that.params['options'])){
             that.renderOptions(that.params['options']);
@@ -273,6 +290,47 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.disable = function(){
         var that = this;
         return that.components['controller'] && cm.isFunction(that.components['controller'].disable) ? that.components['controller'].disable() : null;
+    };
+
+    classProto.validateValue = function(){
+        var that = this,
+            isValid = true,
+            value = that.get();
+        if(that.params['required']){
+            if(that.components['controller'] && cm.isFunction(that.components['controller'].validate)){
+                isValid = that.components['controller'].validate();
+            }else{
+                isValid = !cm.isEmpty(value);
+            }
+        }
+        /*
+        var test;
+        if(!cm.isEmpty(that.params['constraints'])){
+            if(that.components['controller'] && cm.isFunction(that.components['controller'].validate)){
+                isValid = that.components['controller'].validate(that.params['constraints']);
+            }else{
+                cm.forEach(that.params['constraints'], function(item){
+                    test = item(value);
+                    if(!test){
+                        isValid = false;
+                    }
+                });
+            }
+        }
+        */
+        return isValid;
+    };
+
+    classProto.validate = function(){
+        var that = this,
+            message = that.lang('required'),
+            isValid = that.validateValue();
+        if(isValid){
+            that.clearError();
+        }else{
+            that.renderError(message);
+        }
+        return isValid;
     };
 
     /******* MESSAGES *******/

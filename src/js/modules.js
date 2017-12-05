@@ -518,7 +518,7 @@ Mod['Storage'] = {
             });
             return null;
         }
-        if(!storage[that.params['name']] || typeof storage[that.params['name']][key] == 'undefined'){
+        if(!storage[that.params['name']] || cm.isUndefined(storage[that.params['name']][key])){
             cm.errorLog({
                 'type' : 'attention',
                 'name' : that._className,
@@ -725,10 +725,10 @@ Mod['Structure'] = {
     },
     '_construct' : function(){
         var that = this;
-        if(typeof that.build['params']['renderStructure'] == 'undefined'){
+        if(cm.isUndefined(that.build['params']['renderStructure'])){
             that.build['params']['renderStructure'] = true;
         }
-        if(typeof that.build['params']['embedStructure'] == 'undefined'){
+        if(cm.isUndefined(that.build['params']['embedStructure'])){
             that.build['params']['embedStructure'] = 'append';
         }
     },

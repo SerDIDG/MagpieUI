@@ -21,7 +21,12 @@ cm.define('Com.DateSelect', {
         'format' : 'cm._config.dateFormat',
         'startYear' : 1950,                             // number | current
         'endYear' : 'current + 10',                     // number | current
-        'renderSelectsInBody' : true
+        'renderSelectsInBody' : true,
+        'fieldSizes' : {
+            'year' : 'small',
+            'month' : 'medium',
+            'day' : 'x-small'
+        }
     },
     'strings' : {
         'Day' : 'Day',
@@ -66,7 +71,7 @@ function(params){
         if(cm.isNode(that.params['node'])){
             that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
         }
-        if(that.params['value'] == 'now'){
+        if(that.params['value'] === 'now'){
             that.params['value'] = new Date();
         }
         if(/current/.test(that.params['startYear'])){
@@ -114,7 +119,8 @@ function(params){
 
     var renderYearField = function(){
         // Structure
-        nodes['year'] = cm.Node('li', {'class' : 'is-field small'});
+        nodes['year'] = cm.Node('li', {'class' : 'is-field'});
+        cm.addClass(nodes['year'], that.params['fieldSizes']['year']);
         cm.appendChild(nodes['year'], nodes['fields']);
         // Render component
         var data = [
@@ -139,7 +145,8 @@ function(params){
 
     var renderMonthField = function(){
         // Structure
-        nodes['month'] = cm.Node('li', {'class' : 'is-field medium'});
+        nodes['month'] = cm.Node('li', {'class' : 'is-field'});
+        cm.addClass(nodes['month'], that.params['fieldSizes']['month']);
         cm.appendChild(nodes['month'], nodes['fields']);
         // Render component
         var data = [
@@ -164,7 +171,8 @@ function(params){
 
     var renderDayField = function(){
         // Structure
-        nodes['day'] = cm.Node('li', {'class' : 'is-field x-small'});
+        nodes['day'] = cm.Node('li', {'class' : 'is-field'});
+        cm.addClass(nodes['day'], that.params['fieldSizes']['day']);
         cm.appendChild(nodes['day'], nodes['fields']);
         // Render component
         var data = [

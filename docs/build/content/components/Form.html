@@ -39,14 +39,24 @@
 })
 .add('input', {
     'label' : 'Input:',
-    'name' : 'input'
+    'name' : 'input',
+    'placeholder' : 'Placeholder text',
+    'required' : true
+})
+.add('password', {
+    'label' : 'Password:',
+    'name' : 'password'
+})
+.add('email', {
+    'label' : 'Email:',
+    'name' : 'email'
 })
 .add('textarea', {
     'label' : 'Text:',
     'name' : 'text'
 })
 .add('radio', {
-    'label' : 'Radio:',
+    'label' : 'Radio inline:',
     'name' : 'radio',
     'defaultValue' : 'foo',
     'options' : [
@@ -54,16 +64,29 @@
         {'value' : 'bar', 'text' : 'Bar'}
     ]
 })
+.add('radio', {
+    'label' : 'Radio box:',
+    'name' : 'radio-box',
+    'defaultValue' : 'foo',
+    'options' : [
+        {'value' : 'foo', 'text' : 'Foo'},
+        {'value' : 'bar', 'text' : 'Bar'}
+    ],
+    'constructorParams' : {
+        'inline' : false
+    }
+})
 .add('checkbox', {
     'label' : 'Checkbox:',
     'name' : 'checkbox'
 })
 .add('checkbox', {
     'name' : 'checkbox-no-label',
-    'defaultValue' : 1,
+    'defaultValue' : true,
     'placeholder' : 'Chekbox with placeholder instead of label, and default value',
     'className' : 'is-no-label'
 })
+.addSeparator()
 .add('integer', {
     'label' : 'Integer Input:',
     'name' : 'integer',
@@ -87,17 +110,15 @@
     'label' : 'Image Input:',
     'name' : 'image'
 })
-.addButtons([
-    {
-        'label' : 'Send',
-        'action' : 'submit',
-        'name' : 'send'
-    },{
-        'label' : 'Reset',
-        'action' : 'reset',
-        'name' : 'reset'
-    }
-]);
+.addButtons([{
+    'label' : 'Send',
+    'action' : 'submit',
+    'name' : 'send'
+},{
+    'label' : 'Reset',
+    'action' : 'reset',
+    'name' : 'reset'
+}]);
                         </textarea>
                     </dd>
                 </dl>
@@ -106,7 +127,7 @@
                 </div>
             </div>
             <hr>
-            <div data-element="Com.Form" data-config='{"name" : "dynamic"}'></div>
+            <div data-element="Com.Form" data-config='{"name" : "dynamic", "validate" : true}'></div>
         </div>
     </li>
 </ul>

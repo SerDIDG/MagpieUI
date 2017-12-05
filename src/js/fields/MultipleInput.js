@@ -10,9 +10,11 @@ cm.define('Com.MultipleInput', {
         'onItemAddStart',
         'onItemAddProcess',
         'onItemAddEnd',
+        'onItemAdd',
         'onItemRemoveStart',
         'onItemRemoveProcess',
         'onItemRemoveEnd',
+        'onItemRemove',
         'onItemSortStart',
         'onItemSortProcess',
         'onItemSortEnd'
@@ -26,6 +28,7 @@ cm.define('Com.MultipleInput', {
         'sortable' : false,
         'showControls' : true,
         'showToolbar' : false,
+        'showList' : true,
         'focusInput' : false,
         'duration' : 'cm._config.animDurationShort',
         'inputConstructor' : 'Com.AbstractInput',
@@ -95,6 +98,7 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
         that.params['multiFieldParams']['max'] = that.params['max'];
         that.params['multiFieldParams']['sortable'] = that.params['sortable'];
         that.params['multiFieldParams']['showControls'] = that.params['showControls'];
+        that.params['multiFieldParams']['showList'] = that.params['showList'];
         return that;
     };
 
@@ -177,7 +181,7 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
 
     classProto.addItem = function(item, triggerEvents){
         var that = this;
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        triggerEvents = cm.isUndefined(triggerEvents) ? true : triggerEvents;
         if(!that.params['max'] || that.items.length < that.params['max']){
             // Render Fields
             that.components['multiField'].addItem({}, {
@@ -192,7 +196,7 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
 
     classProto.addItemProcess = function(item, field, triggerEvents){
         var that = this;
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        triggerEvents = cm.isUndefined(triggerEvents) ? true : triggerEvents;
         // Merge config
         item = cm.merge({
             'input' : null,
@@ -233,12 +237,13 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
         that.toggleToolbarVisibility();
         // Complete event
         that.triggerEvent('onItemAddEnd', item);
+        that.triggerEvent('onItemAdd', item);
         return item;
     };
 
     classProto.removeItem = function(item, triggerEvents){
         var that = this;
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        triggerEvents = cm.isUndefined(triggerEvents) ? true : triggerEvents;
         // Remove Field
         that.components['multiField'].removeItem(item['field'], {
             'triggerEvents' : false,
@@ -251,12 +256,13 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
 
     classProto.removeItemProcess = function(item, field, triggerEvents){
         var that = this;
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        triggerEvents = cm.isUndefined(triggerEvents) ? true : triggerEvents;
         that.triggerEvent('onItemRemoveStart', item);
         that.items = cm.arrayRemove(that.items, item);
         that.triggerEvent('onItemRemoveProcess', item);
         item['controller'] && item['controller'].destruct();
         that.triggerEvent('onItemRemoveEnd', item);
+        that.triggerEvent('onItemRemove', item);
         // Toggle toolbar visibility
         that.toggleToolbarVisibility();
         // Trigger set events
@@ -283,7 +289,7 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
     classProto.toggleToolbarVisibility = function(){
         var that = this;
         if(that.params['showToolbar']){
-            if(that.params['max'] > 0 && that.items.length == that.params['max']){
+            if(that.params['max'] > 0 && that.items.length === that.params['max']){
                 that.hideToolbar();
             }else{
                 that.showToolbar();
@@ -337,7 +343,7 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
 
     classProto.set = function(value, triggerEvents){
         var that = this;
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        triggerEvents = cm.isUndefined(triggerEvents) ? true : triggerEvents;
         cm.forEach(that.items, function(item){
             that.removeItem(item, false);
         });
@@ -364,7 +370,7 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
 
     classProto.clear = function(triggerEvents){
         var that = this;
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        triggerEvents = cm.isUndefined(triggerEvents) ? true : triggerEvents;
         triggerEvents && that.triggerEvent('onClear');
         that.set(that.params['defaultValue'], triggerEvents);
         return that;

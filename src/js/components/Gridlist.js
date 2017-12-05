@@ -16,6 +16,7 @@ cm.define('Com.Gridlist', {
         'onUnCheck',
         'onRenderStart',
         'onRenderEnd',
+        'onLoadEnd',
         'onColumnsChange',
         'onColumnsResize'
     ],
@@ -313,6 +314,7 @@ function(params){
                         },
                         'onPageRenderEnd' : function(pagination, data){
                             that.redraw();
+                            that.triggerEvent('onLoadEnd');
                         },
                         'onSetCount' : function(pagination, count){
                             that.params['showCounter'] && renderCounter(count);
@@ -466,7 +468,7 @@ function(params){
                     );
                     item['nodes']['checkbox'].checked = that.isCheckedAll;
                     cm.addEvent(item['nodes']['checkbox'], 'click', function(){
-                        if(that.isCheckedAll == true){
+                        if(that.isCheckedAll){
                             that.unCheckAll();
                         }else{
                             that.checkAll();
@@ -484,14 +486,14 @@ function(params){
             // Render sort arrow and set function on click to th
             if(item['sort'] && !/icon|empty|actions|links|checkbox/.test(item['type'])){
                 cm.addClass(item['nodes']['container'], 'sort');
-                if(item['key'] == that.sortBy){
+                if(item['key'] === that.sortBy){
                     item['nodes']['inner'].appendChild(
                         cm.node('div', {'class' : that.params['icons']['arrow'][that.orderBy.toLowerCase()]})
                     );
                 }
                 cm.addEvent(item['nodes']['inner'], 'click', function(){
                     that.sortBy = item['key'];
-                    that.orderBy = that.orderBy == 'ASC' ? 'DESC' : 'ASC';
+                    that.orderBy = that.orderBy === 'ASC' ? 'DESC' : 'ASC';
                     if(!that.isAjax){
                         arraySort();
                     }
@@ -954,6 +956,11 @@ function(params){
 
     that.getCurrentAction = function(){
         return that.components['pagination'] && that.components['pagination'].getCurrentAction() || {};
+    };
+
+    that.abort = function(){
+        that.components['pagination'] && that.components['pagination'].abort();
+        return that;
     };
 
     that.check = function(id){

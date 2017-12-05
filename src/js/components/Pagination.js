@@ -55,9 +55,10 @@ cm.define('Com.Pagination', {
             'type' : 'json',
             'method' : 'get',
             'url' : '',                                             // Request URL. Variables: %baseUrl%, %page%, %offset%, %token%, %perPage%, %limit%, %callback% for JSONP.
-            'params' : ''                                           // Params object. %baseUrl%, %page%, %offset%, %token%, %perPage%, %limit%, %callback% for JSONP.
+            'params' : ''                                           // Params object. Variables: %baseUrl%, %page%, %offset%, %token%, %perPage%, %limit%, %callback% for JSONP.
         },
         'Com.Overlay' : {
+            'lazy' : true,
             'position' : 'absolute',
             'autoOpen' : false,
             'removeOnClose' : true
@@ -83,7 +84,6 @@ function(params){
     that.animations = {};
     that.pages = {};
     that.ajaxHandler = null;
-    that.loaderDelay = null;
     that.currentAction = null;
 
     that.isAjax = false;
@@ -588,12 +588,9 @@ function(params){
         that.isProcess = true;
         // Show Loader
         if(that.params['showLoader']){
-            that.loaderDelay = setTimeout(function(){
-                if(that.components['loader'] && !that.components['loader'].isOpen){
-                    that.components['loader'].open();
-                }
-            }, that.params['loaderDelay']);
+            that.components['loader'] && that.components['loader'].open();
         }
+        cm.addClass(that.nodes['container'], 'is-loading');
         that.triggerEvent('onStart');
     };
 
@@ -601,11 +598,9 @@ function(params){
         that.isProcess = false;
         // Hide Loader
         if(that.params['showLoader']){
-            that.loaderDelay && clearTimeout(that.loaderDelay);
-            if(that.components['loader'] && that.components['loader'].isOpen){
-                that.components['loader'].close();
-            }
+            that.components['loader'] && that.components['loader'].close();
         }
+        cm.removeClass(that.nodes['container'], 'is-loading');
         that.triggerEvent('onEnd');
     };
 
@@ -654,7 +649,7 @@ function(params){
     };
 
     that.setCount = function(count){
-        if(typeof count != 'undefined'){
+        if(!cm.isUndefined(count)){
             count = parseInt(count.toString());
         }
         if(cm.isNumber(count) && count != that.params['count']){

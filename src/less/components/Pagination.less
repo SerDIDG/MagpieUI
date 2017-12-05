@@ -8,6 +8,12 @@
             .mx__transition(opacity visibility, @ComPagination-Duration);
         }
     }
+
+    &.is-loading {
+        .com__pagination__content {
+            min-height: @PtOverlay-Spinner-Size;
+        }
+    }
 }
 
 .com__pagination__content {

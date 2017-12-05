@@ -103,6 +103,7 @@ module.exports = function(grunt) {
                     '<%= paths.src %>/js/abstracts/AbstractFileManagerContainer.js',
                     '<%= paths.src %>/js/abstracts/**/*.js',
                     '<%= paths.src %>/js/components/Form.js',
+                    '<%= paths.src %>/js/components/TabsetHelper.js',
                     '<%= paths.src %>/js/components/**/*.js',
                     '<%= paths.src %>/js/fields/MultipleInput.js',
                     '<%= paths.src %>/js/fields/BoxTools.js',

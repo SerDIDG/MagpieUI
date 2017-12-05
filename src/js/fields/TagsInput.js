@@ -101,6 +101,13 @@ function(params){
         if(that.params['name']){
             nodes['hidden'].setAttribute('name', that.params['name']);
         }
+        // Events
+        cm.addEvent(nodes['container'], 'click', function(e){
+            var target = cm.getEventTarget(e);
+            if(!cm.isParent(nodes['tags'], target, true)){
+                nodes['input'].focus();
+            }
+        });
         // Append
         that.embedStructure(nodes['container']);
 

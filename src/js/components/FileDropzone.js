@@ -7,11 +7,10 @@ cm.define('Com.FileDropzone', {
     'params' : {
         'embedStructure' : 'append',
         'target' : null,
-        'height' : 128,
-        'animated' : true,
         'rollover' : true,
         'max' : 0,                                  // 0 - infinity
-        'duration' : 'cm._config.animDuration',
+        '_height' : 128,
+        '_duration' : 'cm._config.animDuration',
         'Com.FileReader' : {}
     },
     'strings' : {
@@ -21,10 +20,6 @@ cm.define('Com.FileDropzone', {
 },
 function(params){
     var that = this;
-    that.nodes = {};
-    that.components = {};
-    that.dragInterval = null;
-    that.isDropzoneShow = false;
     // Call parent class construct
     Com.AbstractController.apply(that, arguments);
 });
@@ -34,6 +29,9 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
 
     classProto.construct = function(){
         var that = this;
+        that.dragInterval = null;
+        that.isShow = true;
+        that.isHighlighted = false;
         // Bind context to methods
         that.dragOverHandler = that.dragOver.bind(that);
         that.dragDropHandler = that.dragDrop.bind(that);
@@ -62,8 +60,12 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
 
     classProto.onGetLESSVariablesProcess = function(){
         var that = this;
-        that.params['height'] = cm.getLESSVariable('ComFileDropzone-Height', that.params['height'], true);
-        that.params['duration'] = cm.getTransitionDurationFromLESS('ComFileDropzone-Duration', that.params['duration']);
+        if(!that.params['height']){
+            that.params['height'] = cm.getLESSVariable('ComFileDropzone-Height', that.params['_height'], true);
+        }
+        if(!that.params['duration']){
+            that.params['duration'] = cm.getTransitionDurationFromLESS('ComFileDropzone-Duration', that.params['_duration']);
+        }
         return that;
     };
 
@@ -105,7 +107,9 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
             that.components['animation'] = new cm.Animation(that.params['container']);
         }else{
             cm.removeClass(that.nodes['container'], 'is-hidden');
-            that.params['container'].style.height = that.params['height'] + 'px';
+            if(that.params['height']){
+                that.params['container'].style.height = that.params['height'] + 'px';
+            }
         }
         return that;
     };
@@ -117,6 +121,7 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
             target = cm.getEventTarget(e);
         cm.preventDefault(e);
         // Show dropzone
+        that.show();
         that.showDropzone();
         // Hide dropzone if event not triggering inside the current document window (hax)
         that.dragInterval && clearTimeout(that.dragInterval);
@@ -134,18 +139,19 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
         var that = this,
             target = cm.getEventTarget(e),
             data = [],
-            length = 0;
+            files = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length ? e.dataTransfer.files : [],
+            length = that.params['max'] ? Math.min(files.length, that.params['max']) : files.length;
         cm.preventDefault(e);
         // Hide dropzone and reset his state
         that.dragInterval && clearTimeout(that.dragInterval);
+        that.hide();
         that.hideDropzone();
         // Process file
         if(cm.isParent(that.nodes['container'], target, true)){
-            if(e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length){
-                length = that.params['max'] ? Math.min(e.dataTransfer.files.length, that.params['max']) : e.dataTransfer.files.length;
+            if(length){
                 cm.forEach(length, function(i){
-                    data.push(e.dataTransfer.files[i]);
-                    that.triggerEvent('onDrop', e.dataTransfer.files[i]);
+                    data.push(files[i]);
+                    that.triggerEvent('onDrop', files[i]);
                 });
                 that.triggerEvent('onSelect', data);
             }
@@ -153,13 +159,29 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
         return that;
     };
 
+    classProto.show = function(){
+        var that = this;
+        if(!that.isShow){
+            that.isShow = true;
+            cm.replaceClass(that.nodes['container'], 'is-hidden', 'is-show');
+        }
+    };
+
+    classProto.hide = function(){
+        var that = this;
+        if(that.isShow){
+            that.isShow = false;
+            cm.replaceClass(that.nodes['container'], 'is-show', 'is-hidden');
+        }
+    };
+
     classProto.showDropzone = function(){
         var that = this,
             height;
-        if(!that.isDropzoneShow){
-            that.isDropzoneShow = true;
+        if(!that.isHighlighted){
+            that.isHighlighted = true;
             // Set classes
-            cm.removeClass(that.nodes['container'], 'is-highlight');
+            cm.addClass(that.nodes['container'], 'is-highlight');
             // Animate
             if(that.params['rollover']){
                 // Set classes
@@ -181,8 +203,8 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
     classProto.hideDropzone = function(){
         var that = this,
             height;
-        if(that.isDropzoneShow){
-            that.isDropzoneShow = false;
+        if(that.isHighlighted){
+            that.isHighlighted = false;
             // Set classes
             cm.removeClass(that.nodes['container'], 'is-highlight');
             // Animate

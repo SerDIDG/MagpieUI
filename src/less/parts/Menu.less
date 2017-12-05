@@ -31,10 +31,12 @@
             text-overflow: ellipsis;
             text-decoration: none;
             color: @PtMenu-Item-Color;
+            .mx__transition(all, @CmUI-Transition-Duration);
 
             &:hover {
                 text-decoration: none;
                 color: @PtMenu-Item-HoverColor;
+                .mx__transition(all, @CmUI-Transition-DurationReverse);
             }
 
             &:active {
@@ -96,6 +98,11 @@
 
     &.pull-left {
         .mx__position(100%, auto, auto, 0);
+    }
+
+    &.pull-center {
+        .mx__position(100%, auto, auto, 50%);
+        .mx__transform(translateX(-50%));
     }
 
     &.pull-right {

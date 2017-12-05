@@ -84,24 +84,23 @@
             background-clip: @value;
 }
 
-.mx__placeholder (@color) {
-    &::-webkit-input-placeholder {
-        .mx__placeholder__content(@color);
-    }
-    &:-moz-placeholder {
-        .mx__placeholder__content(@color);
-    }
-    &::-moz-placeholder {
-        .mx__placeholder__content(@color);
-    }
+.mx__placeholder (@color, @size: inherit, @style: inherit) {
     &:-ms-input-placeholder {
-        .mx__placeholder__content(@color);
+        .mx__placeholder__content(@color, @size, @style);
+    }
+    &::-webkit-input-placeholder {
+        .mx__placeholder__content(@color, @size, @style);
+    }
+    &::placeholder {
+        .mx__placeholder__content(@color, @size, @style);
     }
 }
 
-.mx__placeholder__content (@color) {
+.mx__placeholder__content (@color, @size: inherit, @style: inherit) {
     opacity: 1;
     color: @color;
+    font-size: @size;
+    font-style: @style;
 }
 
 .mx__flex (@value: auto) {
