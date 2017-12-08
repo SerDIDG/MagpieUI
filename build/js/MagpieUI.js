@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.31.0 (2017-12-05 20:46) ************ */
+/*! ************ MagpieUI v3.31.1 (2017-12-08 19:41) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1548,7 +1548,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.31.0',
+        '_version' : '3.31.1',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -10141,7 +10141,7 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
     };
 
     classProto.callbacks.success = function(that, params, item){
-        classProto.callbacks.render(that, params);
+        classProto.callbacks.render(that, params, item);
         that.triggerEvent('onRequestSuccess', item, params);
     };
 

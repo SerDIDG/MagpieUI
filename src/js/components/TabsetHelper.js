@@ -529,7 +529,7 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
     };
 
     classProto.callbacks.success = function(that, params, item){
-        classProto.callbacks.render(that, params);
+        classProto.callbacks.render(that, params, item);
         that.triggerEvent('onRequestSuccess', item, params);
     };
 
