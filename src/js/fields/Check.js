@@ -115,7 +115,7 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto)
         // Structure
         nodes['container'] = cm.node('label',
             nodes['input'] = cm.node('input', {'type' : that.params['type']}),
-            nodes['label'] = cm.node('span', {'class' : 'label'}, item['text'])
+            nodes['label'] = cm.node('span', {'class' : 'label', 'innerHTML' : item['text']})
         );
         item['input'] = nodes['input'];
         // Attributes

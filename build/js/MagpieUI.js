@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.31.1 (2017-12-08 19:41) ************ */
+/*! ************ MagpieUI v3.31.2 (2017-12-12 20:32) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1548,7 +1548,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.31.1',
+        '_version' : '3.31.2',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -17135,9 +17135,8 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
     /* *** ITEMS *** */
 
     classProto.renderItem = function(item, params){
-        var that = this,
-            nodes;
-        if(that.params['max'] == 0 || that.items.length < that.params['max']){
+        var that = this;
+        if(that.params['max'] === 0 || that.items.length < that.params['max']){
             // Config
             item = cm.merge({
                 'isVisible' : false
@@ -17151,14 +17150,7 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
                 item['content'] = item['field'] = cm.node('div', {'class' : 'field', 'data-node' : 'field'})
             );
             // Template
-            if(!cm.isEmpty(that.params['template'])){
-                if(cm.isString(that.params['template'])){
-                    nodes = cm.strToHTML(that.params['template']);
-                }else{
-                    nodes = cm.clone(that.params['template'], true);
-                }
-                cm.appendNodes(nodes, item['field']);
-            }
+            that.renderItemTemplate(that.params['template'], item);
             // Controls
             if(that.params['showControls']){
                 item['remove'] = cm.node('div', {'class' : that.params['icons']['remove'], 'title' : that.lang('remove'), 'data-node' : 'remove'});
@@ -17181,6 +17173,19 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
             params['callback'](item);
             // Trigger event
             params['triggerEvents'] && that.triggerEvent('onItemAdd', item);
+        }
+    };
+
+    classProto.renderItemTemplate = function(data, item){
+        var that = this,
+            nodes;
+        if(!cm.isEmpty(data)){
+            if(cm.isString(data)){
+                nodes = cm.strToHTML(data);
+            }else{
+                nodes = cm.clone(data, true);
+            }
+            cm.appendNodes(nodes, item['field']);
         }
     };
 
@@ -17251,7 +17256,7 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
     classProto.resetIndexes = function(){
         var that = this;
         cm.forEach(that.items, function(item, index){
-            if(item['index'] != index){
+            if(item['index'] !== index){
                 // Set index
                 item['previousIndex'] = item['index'];
                 item['index'] = index;
@@ -17270,7 +17275,7 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
     classProto.toggleToolbarVisibility = function(){
         var that = this;
         if(that.params['showControls']){
-            if(that.params['max'] > 0 && that.items.length == that.params['max']){
+            if(that.params['max'] > 0 && that.items.length === that.params['max']){
                 that.hideToolbar();
             }else{
                 that.showToolbar();
@@ -17322,11 +17327,11 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
 
     classProto.toggleItemVisibility = function(item, callback){
         var that = this;
-        callback = typeof callback == 'function' ? callback : function(){};
+        callback = cm.isFunction(callback) ? callback : function(){};
         if(!item['height']){
             item['height'] = item['container'].offsetHeight;
         }
-        if(typeof item['isVisible'] == 'undefined'){
+        if(cm.isUndefined(item['isVisible'])){
             item['isVisible'] = true;
         }else if(item['isVisible']){
             item['isVisible'] = false;
@@ -17355,7 +17360,23 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         }
     };
 
+    /* ******* TEMPLATE ******* */
+
+    classProto.setTemplate = function(data){
+        var that = this;
+        that.params['template'] = data;
+        return that;
+    };
+
     /* ******* PUBLIC ******* */
+
+    classProto.clear = function(){
+        var that = this;
+        cm.forEach(that.items, function(item){
+            that.deleteItem(item);
+        });
+        return that;
+    };
 
     classProto.addItem = function(item, params){
         var that = this;
@@ -17365,7 +17386,7 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
 
     classProto.removeItem = function(item, params){
         var that = this;
-        if(typeof item == 'number' && that.items[item]){
+        if(cm.isNumber(item) && that.items[item]){
             that.deleteItem(that.items[item], params);
         }else if(cm.inArray(that.items, item)){
             that.deleteItem(item, params);
@@ -25273,7 +25294,7 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto)
         // Structure
         nodes['container'] = cm.node('label',
             nodes['input'] = cm.node('input', {'type' : that.params['type']}),
-            nodes['label'] = cm.node('span', {'class' : 'label'}, item['text'])
+            nodes['label'] = cm.node('span', {'class' : 'label', 'innerHTML' : item['text']})
         );
         item['input'] = nodes['input'];
         // Attributes
