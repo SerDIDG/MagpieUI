@@ -121,6 +121,17 @@ Com.FormFields.add('email', {
     }
 });
 
+Com.FormFields.add('phone', {
+    'node' : cm.node('input', {'type' : 'phone'}),
+    'value' : '',
+    'defaultValue' : '',
+    'fieldConstructor' : 'Com.AbstractFormField',
+    'constructor' : 'Com.Input',
+    'constructorParams' : {
+        'type' : 'phone'
+    }
+});
+
 Com.FormFields.add('number', {
     'node' : cm.node('input', {'type' : 'number'}),
     'value' : '',

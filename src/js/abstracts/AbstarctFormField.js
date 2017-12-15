@@ -47,7 +47,8 @@ cm.define('Com.AbstractFormField', {
         }
     },
     'strings' : {
-        'required' : 'This field if required.'
+        'required' : 'This field is required.',
+        '*' : '*'
     }
 },
 function(params){
@@ -133,6 +134,11 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             ),
             that.nodes['value'] = cm.node('dd')
         );
+        // Required
+        if(that.params['required']){
+            that.nodes['required'] = cm.node('span', {'class' : 'required'}, that.lang('*'));
+            cm.appendChild(that.nodes['required'], that.nodes['label']);
+        }
     };
 
     classProto.renderContent = function(){

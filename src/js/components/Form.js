@@ -102,7 +102,9 @@ function(params){
             // Buttons
             that.nodes['buttonsSeparator'] = cm.node('hr');
             that.nodes['buttonsContainer'] = cm.node('div', {'class' : 'com__form__buttons'},
-                that.nodes['buttons'] = cm.node('div', {'class' : 'btn-wrap'})
+                that.nodes['buttons'] = cm.node('div', {'class' : 'pt__buttons'},
+                    that.nodes['buttonsHolder'] = cm.node('div', {'class' : 'inner'})
+                )
             );
             cm.addClass(that.nodes['buttons'], ['pull', that.params['buttonsAlign']].join('-'));
             // Embed
@@ -231,7 +233,7 @@ function(params){
                     });
                     break;
             }
-            cm.appendChild(params['node'], that.nodes['buttons']);
+            cm.appendChild(params['node'], that.nodes['buttonsHolder']);
         }
     };
 
@@ -482,7 +484,7 @@ function(params){
             cm.remove(button.node);
         });
         that.buttons = {};
-        cm.clearNode(that.nodes['buttons']);
+        cm.clearNode(that.nodes['buttonsHolder']);
         that.clearError();
         return that;
     };

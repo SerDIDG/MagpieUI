@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.31.2 (2017-12-12 20:32) ************ */
+/*! ************ MagpieUI v3.31.3 (2017-12-15 20:17) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1548,7 +1548,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.31.2',
+        '_version' : '3.31.3',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -7940,7 +7940,8 @@ cm.define('Com.AbstractFormField', {
         }
     },
     'strings' : {
-        'required' : 'This field if required.'
+        'required' : 'This field is required.',
+        '*' : '*'
     }
 },
 function(params){
@@ -8026,6 +8027,11 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             ),
             that.nodes['value'] = cm.node('dd')
         );
+        // Required
+        if(that.params['required']){
+            that.nodes['required'] = cm.node('span', {'class' : 'required'}, that.lang('*'));
+            cm.appendChild(that.nodes['required'], that.nodes['label']);
+        }
     };
 
     classProto.renderContent = function(){
@@ -8852,7 +8858,9 @@ function(params){
             // Buttons
             that.nodes['buttonsSeparator'] = cm.node('hr');
             that.nodes['buttonsContainer'] = cm.node('div', {'class' : 'com__form__buttons'},
-                that.nodes['buttons'] = cm.node('div', {'class' : 'btn-wrap'})
+                that.nodes['buttons'] = cm.node('div', {'class' : 'pt__buttons'},
+                    that.nodes['buttonsHolder'] = cm.node('div', {'class' : 'inner'})
+                )
             );
             cm.addClass(that.nodes['buttons'], ['pull', that.params['buttonsAlign']].join('-'));
             // Embed
@@ -8981,7 +8989,7 @@ function(params){
                     });
                     break;
             }
-            cm.appendChild(params['node'], that.nodes['buttons']);
+            cm.appendChild(params['node'], that.nodes['buttonsHolder']);
         }
     };
 
@@ -9232,7 +9240,7 @@ function(params){
             cm.remove(button.node);
         });
         that.buttons = {};
-        cm.clearNode(that.nodes['buttons']);
+        cm.clearNode(that.nodes['buttonsHolder']);
         that.clearError();
         return that;
     };
@@ -27434,6 +27442,17 @@ Com.FormFields.add('email', {
     'constructor' : 'Com.Input',
     'constructorParams' : {
         'type' : 'email'
+    }
+});
+
+Com.FormFields.add('phone', {
+    'node' : cm.node('input', {'type' : 'phone'}),
+    'value' : '',
+    'defaultValue' : '',
+    'fieldConstructor' : 'Com.AbstractFormField',
+    'constructor' : 'Com.Input',
+    'constructorParams' : {
+        'type' : 'phone'
     }
 });
 
