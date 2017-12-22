@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.31.3 (2017-12-15 20:17) ************ */
+/*! ************ MagpieUI v3.31.4 (2017-12-22 19:32) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1548,7 +1548,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.31.3',
+        '_version' : '3.31.4',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -25355,7 +25355,7 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto)
         if(!cm.isEmpty(that.params['options'])){
             if(that.params['multiple']){
                 cm.forEach(that.hidden, function(item){
-                    item['input'].checked = cm.inArray(item['value'], value)
+                    item['input'].checked = cm.inArray(value, item['value']);
                 });
             }else{
                 cm.forEach(that.hidden, function(item){
@@ -25372,7 +25372,7 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto)
         if(!cm.isEmpty(that.params['options'])){
             if(that.params['multiple']){
                 cm.forEach(that.inputs, function(item){
-                    item['input'].checked = cm.inArray(item['value'], value)
+                    item['input'].checked = cm.inArray(value, item['value']);
                 });
             }else{
                 cm.forEach(that.inputs, function(item){

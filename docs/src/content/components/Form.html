@@ -80,6 +80,17 @@
     'label' : 'Checkbox:',
     'name' : 'checkbox'
 })
+.add('check', {
+    'label' : 'Multi checkbox:',
+    'name' : 'multi-check-box',
+    'options' : [
+        {'value' : 'yes', 'text' : 'Yes'},
+        {'value' : 'no', 'text' : 'No'}
+    ],
+    'constructorParams' : {
+        'inline' : false
+    }
+})
 .add('checkbox', {
     'name' : 'checkbox-no-label',
     'defaultValue' : true,

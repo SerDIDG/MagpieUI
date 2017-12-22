@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.31.3 (2017-12-15 20:17) ************ */
+/*! ************ MagpieUI v3.31.4 (2017-12-22 19:32) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3760,7 +3760,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.31.3';
+@CmVersion: '3.31.4';
 
 // /* ******* PATH ******* */
 
@@ -9479,6 +9479,10 @@ button {
         padding: ((@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2) 0;
         float: left;
         line-height: @CmFont-Base-LineHeight;
+
+        span.required {
+            margin: 0 0 0 @CmIndent-XXXSmall;
+        }
     }
 
     > dd,

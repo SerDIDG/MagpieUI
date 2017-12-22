@@ -168,7 +168,7 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto)
         if(!cm.isEmpty(that.params['options'])){
             if(that.params['multiple']){
                 cm.forEach(that.hidden, function(item){
-                    item['input'].checked = cm.inArray(item['value'], value)
+                    item['input'].checked = cm.inArray(value, item['value']);
                 });
             }else{
                 cm.forEach(that.hidden, function(item){
@@ -185,7 +185,7 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto)
         if(!cm.isEmpty(that.params['options'])){
             if(that.params['multiple']){
                 cm.forEach(that.inputs, function(item){
-                    item['input'].checked = cm.inArray(item['value'], value)
+                    item['input'].checked = cm.inArray(value, item['value']);
                 });
             }else{
                 cm.forEach(that.inputs, function(item){
