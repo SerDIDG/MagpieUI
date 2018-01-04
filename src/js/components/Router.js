@@ -58,7 +58,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
 
     classProto.processLink = function(el){
         var that = this;
-        var route = el.getAttribute('href');
+        var route = el.getAttribute('href').replace(/^\./, '');
         route && that.pushRoute(route);
         return that;
     };
@@ -68,7 +68,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         var state = {
             'route' : route
         };
-        var location = !cm.isEmpty(hash) ? [route, hash].join('#') : route;
+        var location = cm._baseUrl + (!cm.isEmpty(hash) ? [route, hash].join('#') : route);
         // Set Window URL
         window.history.pushState(state, '', location);
         // Process route
@@ -117,7 +117,8 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
                 cm.getConstructor(item['constructor'], function(classConstructor){
                     item['controller'] = new classConstructor(
                         cm.merge(item['constructorParams'], {
-                            'container' : that.params['container']
+                            'container' : that.params['container'],
+                            'route' : route
                         })
                     );
                 });
@@ -163,7 +164,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
 
     classProto.start = function(){
         var that = this;
-        var route = window.location.pathname;
+        var route = window.location.href.replace(cm._baseUrl, '');
         var hash = window.location.hash.slice(1);
         that.pushRoute(route, hash);
         return that;

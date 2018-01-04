@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.31.4 (2017-12-22 19:32) ************ */
+/*! ************ MagpieUI v3.31.5 (2018-01-04 21:50) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1548,7 +1548,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.31.4',
+        '_version' : '3.31.5',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -4905,7 +4905,7 @@ cm.ajax = function(o){
             config['params'] = cm.objectReplace(config['params'], {
                 '%version%' : cm._version,
                 '%baseUrl%' : cm._baseUrl,
-                '%assetsUrl%' : cm._assetsUrl,
+                '%assetsUrl%' : cm._assetsUrl || cm._baseUrl,
                 '%pathUrl%' : cm._pathUrl
             });
             config['params'] = cm.obj2URI(config['params']);
@@ -4920,7 +4920,7 @@ cm.ajax = function(o){
         config['url'] = cm.strReplace(config['url'], {
             '%version%' : cm._version,
             '%baseUrl%' : cm._baseUrl,
-            '%assetsUrl%' : cm._assetsUrl,
+            '%assetsUrl%' : cm._assetsUrl || cm._baseUrl,
             '%pathUrl%' : cm._pathUrl
         });
         if(!/post|put/.test(config['method'])){
@@ -17806,6 +17806,7 @@ function(params){
     };
 
     that.close = function(isImmediately){
+        that.openInterval && clearTimeout(that.openInterval);
         that.delayInterval && clearTimeout(that.delayInterval);
         if(that.isOpen){
             closeProcess(isImmediately);
@@ -17839,7 +17840,7 @@ function(params){
         if(cm.inArray(themes, theme)){
             cm.addClass(that.nodes['container'], ['theme', theme].join('-'));
             cm.forEach(themes, function(item){
-                if(item != theme){
+                if(item !== theme){
                     cm.removeClass(that.nodes['container'], ['theme', item].join('-'));
                 }
             });
@@ -17881,7 +17882,7 @@ function(params){
     that.embed = function(node){
         if(cm.isNode(node)){
             that.params['container'] = node;
-            node.appendChild(that.nodes['container']);
+            //cm[that.params['appendMode']](that.nodes['container'], that.params['container']);
         }
         return that;
     };
@@ -19537,7 +19538,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
 
     classProto.processLink = function(el){
         var that = this;
-        var route = el.getAttribute('href');
+        var route = el.getAttribute('href').replace(/^\./, '');
         route && that.pushRoute(route);
         return that;
     };
@@ -19547,7 +19548,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         var state = {
             'route' : route
         };
-        var location = !cm.isEmpty(hash) ? [route, hash].join('#') : route;
+        var location = cm._baseUrl + (!cm.isEmpty(hash) ? [route, hash].join('#') : route);
         // Set Window URL
         window.history.pushState(state, '', location);
         // Process route
@@ -19596,7 +19597,8 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
                 cm.getConstructor(item['constructor'], function(classConstructor){
                     item['controller'] = new classConstructor(
                         cm.merge(item['constructorParams'], {
-                            'container' : that.params['container']
+                            'container' : that.params['container'],
+                            'route' : route
                         })
                     );
                 });
@@ -19642,7 +19644,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
 
     classProto.start = function(){
         var that = this;
-        var route = window.location.pathname;
+        var route = window.location.href.replace(cm._baseUrl, '');
         var hash = window.location.hash.slice(1);
         that.pushRoute(route, hash);
         return that;

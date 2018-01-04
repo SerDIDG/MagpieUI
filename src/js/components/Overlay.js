@@ -157,6 +157,7 @@ function(params){
     };
 
     that.close = function(isImmediately){
+        that.openInterval && clearTimeout(that.openInterval);
         that.delayInterval && clearTimeout(that.delayInterval);
         if(that.isOpen){
             closeProcess(isImmediately);
@@ -190,7 +191,7 @@ function(params){
         if(cm.inArray(themes, theme)){
             cm.addClass(that.nodes['container'], ['theme', theme].join('-'));
             cm.forEach(themes, function(item){
-                if(item != theme){
+                if(item !== theme){
                     cm.removeClass(that.nodes['container'], ['theme', item].join('-'));
                 }
             });
@@ -232,7 +233,7 @@ function(params){
     that.embed = function(node){
         if(cm.isNode(node)){
             that.params['container'] = node;
-            node.appendChild(that.nodes['container']);
+            //cm[that.params['appendMode']](that.nodes['container'], that.params['container']);
         }
         return that;
     };

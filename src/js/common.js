@@ -3387,7 +3387,7 @@ cm.ajax = function(o){
             config['params'] = cm.objectReplace(config['params'], {
                 '%version%' : cm._version,
                 '%baseUrl%' : cm._baseUrl,
-                '%assetsUrl%' : cm._assetsUrl,
+                '%assetsUrl%' : cm._assetsUrl || cm._baseUrl,
                 '%pathUrl%' : cm._pathUrl
             });
             config['params'] = cm.obj2URI(config['params']);
@@ -3402,7 +3402,7 @@ cm.ajax = function(o){
         config['url'] = cm.strReplace(config['url'], {
             '%version%' : cm._version,
             '%baseUrl%' : cm._baseUrl,
-            '%assetsUrl%' : cm._assetsUrl,
+            '%assetsUrl%' : cm._assetsUrl || cm._baseUrl,
             '%pathUrl%' : cm._pathUrl
         });
         if(!/post|put/.test(config['method'])){
