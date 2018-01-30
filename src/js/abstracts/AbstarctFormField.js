@@ -93,6 +93,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.params['constructorParams']['value'] = !cm.isEmpty(that.params['dataValue']) ? that.params['dataValue'] : that.params['value'];
         that.params['constructorParams']['defaultValue'] = that.params['defaultValue'];
         that.params['constructorParams']['maxlength'] = that.params['maxlength'];
+        that.params['constructorParams']['placeholder'] = that.params['placeholder'];
         that.params['constructorParams']['ajax'] = that.params['ajax'];
         that.params['Com.HelpBubble']['content'] = that.params['help'];
         that.params['Com.HelpBubble']['name'] = that.params['name'];

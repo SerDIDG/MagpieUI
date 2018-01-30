@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.31.5 (2018-01-04 22:04) ************ */
+/*! ************ MagpieUI v3.31.6 (2018-01-30 18:30) ************ */
 // TinyColor v1.3.0
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1548,7 +1548,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.31.5',
+        '_version' : '3.31.6',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -4504,6 +4504,12 @@ cm.isInputFocused = function(){
     var el = document.activeElement,
         tagName = el.tagName.toLowerCase();
     return tagName === 'textarea' || (tagName === 'input' &&  !/button|file/.test(el.type));
+};
+
+cm.isFormInputFocused = function(){
+    var el = document.activeElement,
+        tagName = el.tagName.toLowerCase();
+    return tagName === 'input' &&  !/button|file/.test(el.type);
 };
 
 cm.allowKeyCode = function(code, rules){
@@ -7986,6 +7992,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.params['constructorParams']['value'] = !cm.isEmpty(that.params['dataValue']) ? that.params['dataValue'] : that.params['value'];
         that.params['constructorParams']['defaultValue'] = that.params['defaultValue'];
         that.params['constructorParams']['maxlength'] = that.params['maxlength'];
+        that.params['constructorParams']['placeholder'] = that.params['placeholder'];
         that.params['constructorParams']['ajax'] = that.params['ajax'];
         that.params['Com.HelpBubble']['content'] = that.params['help'];
         that.params['Com.HelpBubble']['name'] = that.params['name'];

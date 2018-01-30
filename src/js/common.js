@@ -2988,6 +2988,12 @@ cm.isInputFocused = function(){
     return tagName === 'textarea' || (tagName === 'input' &&  !/button|file/.test(el.type));
 };
 
+cm.isFormInputFocused = function(){
+    var el = document.activeElement,
+        tagName = el.tagName.toLowerCase();
+    return tagName === 'input' &&  !/button|file/.test(el.type);
+};
+
 cm.allowKeyCode = function(code, rules){
     var codes = [];
     cm.forEach(cm.keyCodeTable, function(item, key){
