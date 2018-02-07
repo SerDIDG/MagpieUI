@@ -170,21 +170,28 @@ function(params){
         animFrame(resize);
     };
 
-    var renderTitle = function(title){
-        if(that.params['showTitle'] && !cm.isEmpty(title)){
-            cm.removeClass(nodes['container'], 'has-no-title');
-            // Remove old nodes
-            cm.remove(nodes['title']);
-            // Render new nodes
-            nodes['title'] = cm.Node('div', {'class' : 'title'}, title);
-            if(that.params['titleOverflow']){
-                cm.addClass(nodes['title'], 'cm__text-overflow');
-            }
-            cm.insertFirst(nodes['title'], nodes['windowInner']);
-        }else{
-            cm.addClass(nodes['container'], 'has-no-title');
-        }
-    };
+	var renderTitle = function(title){
+		if(that.params['showTitle']){
+			cm.removeClass(nodes['container'], 'has-no-title');
+			// Remove old nodes
+			cm.remove(nodes['title']);
+			// Render new nodes
+			nodes['title'] = cm.Node('div', {'class' : 'title'});
+			if(!cm.isEmpty(title)){
+				if(cm.isNode(title)){
+					cm.appendChild(title, nodes['title']);
+				}else{
+					cm.appendChild(cm.textNode(title), nodes['title']);
+				}
+				if(that.params['titleOverflow']){
+					cm.addClass(nodes['title'], 'cm__text-overflow');
+				}
+			}
+			cm.insertFirst(nodes['title'], nodes['windowInner']);
+		}else{
+			cm.addClass(nodes['container'], 'has-no-title');
+		}
+	};
 
     var renderContent = function(node){
         if(!nodes['descr']){
