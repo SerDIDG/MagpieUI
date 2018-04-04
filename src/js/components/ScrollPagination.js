@@ -1,16 +1,6 @@
 cm.define('Com.ScrollPagination', {
-    'modules' : [
-        'Params',
-        'Events',
-        'Langs',
-        'Structure',
-        'DataConfig',
-        'DataNodes',
-        'Callbacks',
-        'Stack'
-    ],
+    'extend' : 'Com.AbstractController',
     'events' : [
-        'onRender',
         'onRebuild',
         'onStart',
         'onAbort',
@@ -21,16 +11,20 @@ cm.define('Com.ScrollPagination', {
         'onPageHide',
         'onEnd',
         'onFinalize',
-        'onSetCount'
+        'onSetCount',
+        'onButtonShow',
+        'onButtonHide'
     ],
     'params' : {
-        'node' : cm.node('div'),
-        'container' : null,
-        'name' : '',
+        'controllerEvents' : true,
         'renderStructure' : false,                                  // Render wrapper nodes if not exists in html
+        'embedStructureOnRender' : false,
         'embedStructure' : 'append',
+        'resizeEvent' : true,
+        'scrollEvent' : true,
         'scrollNode' : window,
         'scrollIndent' : 'Math.min(%scrollHeight% / 2, 600)',       // Variables: %blockHeight%.
+        'disabled' : false,
         'data' : [],                                                // Static data
         'count' : 0,
         'perPage' : 0,                                              // 0 - render all data in one page
@@ -38,7 +32,7 @@ cm.define('Com.ScrollPagination', {
         'startPageToken' : '',
         'useToken' : false,
         'pageCount' : 0,                                            // Render only count of pages. 0 - infinity
-        'showButton' : true,                                        // true - always | once - show once after first loaded page
+        'showButton' : true,                                        // true - always | once - show once after first loaded page | none - don't show and don't scroll
         'showLoader' : true,
         'loaderDelay' : 'cm._config.loadDelay',
         'stopOnESC' : true,
@@ -49,6 +43,7 @@ cm.define('Com.ScrollPagination', {
         'responseCountKey' : 'count',                               // Take items count from response
         'responseTokenKey' : 'token',                               // Token key name
         'responseKey' : 'data',                                     // Instead of using filter callback, you can provide response array key
+        'responseErrorsKey': 'errors',
         'responseHTML' : false,                                     // If true, html will append automatically
         'ajax' : {
             'type' : 'json',
@@ -64,49 +59,62 @@ cm.define('Com.ScrollPagination', {
 },
 function(params){
     var that = this;
+    // Call parent class construct
+    Com.AbstractController.apply(that, arguments);
+});
 
-    that.nodes = {
-        'container' : cm.Node('div'),
-        'scroll' : null,
-        'bar' : cm.Node('div'),
-        'content' : cm.Node('div'),
-        'pages' : cm.Node('div'),
-        'button' : cm.Node('div'),
-        'loader' : cm.Node('div')
+
+cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.construct = function(){
+        var that = this;
+        // variables
+        that.nodes = {
+            'container' : cm.node('div'),
+            'scroll' : null,
+            'bar' : cm.node('div'),
+            'barHolder' : cm.node('div'),
+            'content' : cm.node('div'),
+            'pages' : cm.node('div'),
+            'button' : cm.node('div'),
+            'loader' : cm.node('div')
+        };
+
+        that.pages = {};
+        that.ajaxHandler = null;
+        that.loaderDelay = null;
+        that.currentAction = null;
+
+        that.isAjax = false;
+        that.isProcess = false;
+        that.isFinalize = false;
+        that.isButton = false;
+        that.isDisabled = false;
+
+        that.page = null;
+        that.pageToken = null;
+        that.currentPage = null;
+        that.previousPage = null;
+        that.nextPage = null;
+        that.pageCount = 0;
+        // Binds
+        that.keyDownEventHandler = that.keyDownEvent.bind(that);
+        // Call parent method - renderViewModel
+        _inherit.prototype.construct.apply(that, arguments);
     };
 
-    that.components = {};
-    that.pages = {};
-    that.ajaxHandler = null;
-    that.loaderDelay = null;
-    that.currentAction = null;
-
-    that.isAjax = false;
-    that.isProcess = false;
-    that.isFinalize = false;
-    that.isButton = false;
-
-    that.page = null;
-    that.pageToken = null;
-    that.currentPage = null;
-    that.previousPage = null;
-    that.nextPage = null;
-    that.pageCount = 0;
-
-    var init = function(){
-        that.setParams(params);
-        that.convertEvents(that.params['events']);
-        that.getDataNodes(that.params['node']);
-        that.getDataConfig(that.params['node']);
-        that.callbacksProcess();
-        validateParams();
-        render();
-        that.addToStack(that.nodes['container']);
-        that.triggerEvent('onRender');
-        set();
+    classProto.onConstructEnd = function(){
+        var that = this;
+        that.set();
     };
 
-    var validateParams = function(){
+    classProto.validateParams = function(){
+        var that = this;
+        that.triggerEvent('onValidateParamsStart');
+        that.triggerEvent('onValidateParams');
+        that.triggerEvent('onValidateParamsProcess');
+        that.isDisabled = that.params['disabled'];
         // Set Scroll Node
         if(that.nodes['scroll']){
             that.params['scrollNode'] = that.nodes['scroll'];
@@ -117,7 +125,7 @@ function(params){
         }else{
             that.params['showLoader'] = false;
         }
-        if(that.params['pageCount'] == 0 && that.params['perPage'] && that.params['count']){
+        if(that.params['pageCount'] === 0 && that.params['perPage'] && that.params['count']){
             that.pageCount = Math.ceil(that.params['count'] / that.params['perPage']);
         }else{
             that.pageCount = that.params['pageCount'];
@@ -126,79 +134,24 @@ function(params){
         that.setToken(that.params['startPage'], that.params['startPageToken']);
         // Set next page token
         that.nextPage = that.params['startPage'];
+        that.triggerEvent('onValidateParamsEnd');
     };
 
-    var render = function(){
-        // Render Structure
-        if(that.params['renderStructure']){
-            that.nodes['container'] = cm.Node('div', {'class' : 'com__scroll-pagination'},
-                that.nodes['content'] = cm.Node('div', {'class' : 'com__scroll-pagination__content'},
-                    that.nodes['pages'] = cm.Node('div', {'class' : 'com__scroll-pagination__pages'})
-                ),
-                that.nodes['bar'] = cm.Node('div', {'class' : 'com__scroll-pagination__bar'},
-                    that.nodes['button'] = cm.Node('div', {'class' : 'button button-primary'}, that.lang('load_more')),
-                    that.nodes['loader'] = cm.Node('div', {'class' : 'button button-clear has-icon has-icon has-icon-small'},
-                        cm.Node('div', {'class' : 'icon small loader'})
-                    )
-                )
-            );
-            // Append
-            that.embedStructure(that.nodes['container']);
-        }
-        // Reset styles and variables
-        reset();
-        // Events
-        cm.addEvent(that.nodes['button'], 'click', function(e){
-            e = cm.getEvent(e);
-            cm.preventDefault(e);
-            set();
-        });
-        if(that.params['stopOnESC']){
-            cm.addEvent(window, 'keydown', ESCHandler);
-        }
-        cm.addScrollEvent(that.params['scrollNode'], scrollHandler);
-        cm.addEvent(window, 'resize', resizeHandler);
-    };
-
-    var reset = function(){
-        // Clear render pages
-        cm.clearNode(that.nodes['pages']);
-        // Load More Button
-        if(!that.params['showButton']){
-            that.callbacks.hideButton(that);
-        }else{
-            that.callbacks.showButton(that);
-        }
-        // Hide Loader
-        cm.addClass(that.nodes['loader'], 'is-hidden');
-    };
-
-    var set = function(){
-        var config;
-        if(!that.isProcess && !that.isFinalize){
-            // Preset next page and page token
-            that.page = that.nextPage;
-            that.pageToken = that.pages[that.page]? that.pages[that.page]['token'] : '';
-            // Request
-            if(that.isAjax){
-                config = cm.clone(that.params['ajax']);
-                that.ajaxHandler = that.callbacks.request(that, config);
-            }else{
-                that.callbacks.data(that, that.params['data']);
-            }
-        }
-    };
-
-    var scrollHandler = function(){
-        var scrollRect = cm.getRect(that.params['scrollNode']),
+    classProto.onScroll = function(){
+        var that = this,
+            scrollRect = cm.getRect(that.params['scrollNode']),
             pagesRect = cm.getRect(that.nodes['pages']),
             scrollIndent;
-        if((!that.params['showButton'] || (that.params['showButton'] == 'once' && that.params['startPage'] != that.currentPage)) && !cm.isProcess && !that.isFinalize && !that.isButton){
+        if(
+            !that.isDisabled &&
+            (!that.params['showButton'] || that.params['showButton'] !== 'none' || (that.params['showButton'] === 'once' && that.params['startPage'] !== that.currentPage)) &&
+            !cm.isProcess && !that.isFinalize && !that.isButton
+        ){
             scrollIndent = eval(cm.strReplace(that.params['scrollIndent'], {
                 '%scrollHeight%' : scrollRect['bottom'] - scrollRect['top']
             }));
             if(pagesRect['bottom'] - scrollRect['bottom'] <= scrollIndent){
-                set();
+                that.set();
             }
         }
         // Show / Hide non visible pages
@@ -207,28 +160,78 @@ function(params){
         });
     };
 
-    var ESCHandler = function(e){
-        e = cm.getEvent(e);
-
-        if(e.keyCode == 27){
-            if(!cm.isProcess && !cm.isFinalize){
-                that.callbacks.showButton(that);
-            }
-        }
-    };
-
-    var resizeHandler = function(){
-        // Show / Hide non visible pages
+    classProto.onRedraw = function(){
+        var that = this;
         cm.forEach(that.pages, function(page){
             that.isPageVisible(page);
         });
     };
 
-    /* ******* CALLBACKS ******* */
+    /******* VIEW - MODEL *******/
 
-    /* *** AJAX *** */
+    classProto.renderView = function(){
+        var that = this;
+        that.nodes['container'] = cm.node('div', {'class' : 'com__scroll-pagination'},
+            that.nodes['content'] = cm.node('div', {'class' : 'com__scroll-pagination__content'},
+                that.nodes['pages'] = cm.node('div', {'class' : 'com__scroll-pagination__pages'})
+            ),
+            that.nodes['bar'] = cm.node('div', {'class' : 'com__scroll-pagination__bar'},
+                that.nodes['button'] = cm.node('div', {'class' : 'button button-primary'}, that.lang('load_more')),
+                that.nodes['loader'] = cm.node('div', {'class' : 'button button-clear has-icon has-icon has-icon-small'},
+                    cm.node('div', {'class' : 'icon small loader'})
+                )
+            )
+        );
+    };
 
-    that.callbacks.prepare = function(that, config){
+    classProto.renderViewModel = function(){
+        var that = this;
+        // Call parent method - renderViewModel
+        _inherit.prototype.renderViewModel.apply(that, arguments);
+        // Reset styles and variables
+        that.resetStyles();
+        // Events
+        cm.addEvent(that.nodes['button'], 'click', function(e){
+            e = cm.getEvent(e);
+            cm.preventDefault(e);
+            that.set();
+        });
+        if(that.params['stopOnESC']){
+            cm.addEvent(window, 'keydown', that.keyDownEventHandler);
+        }
+        return that;
+    };
+
+    /******* HELPERS *******/
+
+    classProto.resetStyles = function(){
+        var that = this;
+        // Clear render pages
+        cm.clearNode(that.nodes['pages']);
+        // Load More Button
+        if(!that.params['showButton'] || that.params['showButton'] === 'none'){
+            that.callbacks.hideButton(that);
+        }else{
+            that.callbacks.showButton(that);
+        }
+        // Hide Loader
+        cm.addClass(that.nodes['loader'], 'is-hidden');
+    };
+
+    classProto.keyDownEvent = function(e){
+        var that = this;
+        cm.handleKey(e, 'escape', function(){
+            if(!cm.isProcess && !cm.isFinalize && that.params['showButton'] !== 'none'){
+                that.callbacks.showButton(that);
+            }
+        });
+    };
+
+    /******* CALLBACKS *******/
+
+    /*** AJAX ***/
+
+    classProto.callbacks.prepare = function(that, config){
         config = that.callbacks.beforePrepare(that, config);
         config['url'] = cm.strReplace(config['url'], {
             '%perPage%' : that.params['perPage'],
@@ -250,15 +253,15 @@ function(params){
         return config;
     };
 
-    that.callbacks.beforePrepare = function(that, config){
+    classProto.callbacks.beforePrepare = function(that, config){
         return config;
     };
 
-    that.callbacks.afterPrepare = function(that, config){
+    classProto.callbacks.afterPrepare = function(that, config){
         return config;
     };
 
-    that.callbacks.request = function(that, config){
+    classProto.callbacks.request = function(that, config){
         config = that.callbacks.prepare(that, config);
         that.currentAction = config;
         // Return ajax handler (XMLHttpRequest) to providing abort method.
@@ -283,31 +286,34 @@ function(params){
         );
     };
 
-    that.callbacks.filter = function(that, config, response){
+    classProto.callbacks.filter = function(that, config, response){
         var data = [],
+            errorsItem = cm.objectPath(that.params['responseErrorsKey'], response),
             dataItem = cm.objectPath(that.params['responseKey'], response),
             countItem = cm.objectPath(that.params['responseCountKey'], response),
             tokenItem = cm.objectPath(that.params['responseTokenKey'], response);
-        if(!cm.isEmpty(dataItem)){
-            if(!that.params['responseHTML'] && that.params['perPage']){
-                data = dataItem.slice(0, that.params['perPage']);
-            }else{
-                data = dataItem;
+        if(cm.isEmpty(errorsItem)){
+            if(!cm.isEmpty(dataItem)){
+                if(!that.params['responseHTML'] && that.params['perPage']){
+                    data = dataItem.slice(0, that.params['perPage']);
+                }else{
+                    data = dataItem;
+                }
             }
-        }
-        if(countItem){
-            that.setCount(countItem);
-        }
-        if(tokenItem){
-            that.setToken(that.nextPage, tokenItem);
-        }
-        if(that.params['useToken'] && !tokenItem){
-            that.callbacks.finalize(that);
+            if(countItem){
+                that.setCount(countItem);
+            }
+            if(tokenItem){
+                that.setToken(that.nextPage, tokenItem);
+            }
+            if(that.params['useToken'] && !tokenItem){
+                that.callbacks.finalize(that);
+            }
         }
         return data;
     };
 
-    that.callbacks.response = function(that, config, response){
+    classProto.callbacks.response = function(that, config, response){
         // Set next page
         that.setPage();
         // Response
@@ -321,24 +327,24 @@ function(params){
         }
     };
 
-    that.callbacks.error = function(that, config){
+    classProto.callbacks.error = function(that, config){
         that.callbacks.finalize(that);
         that.triggerEvent('onError');
     };
 
-    that.callbacks.abort = function(that, config){
+    classProto.callbacks.abort = function(that, config){
         that.triggerEvent('onAbort');
     };
 
     /* *** STATIC *** */
 
-    that.callbacks.data = function(that, data){
+    classProto.callbacks.data = function(that, data){
         var length, start, end, pageData;
         that.callbacks.start(that);
         that.setPage();
         if(!cm.isEmpty(data)){
             // Get page data and render
-            if(that.params['perPage'] == 0){
+            if(that.params['perPage'] === 0){
                 that.callbacks.render(that, data);
                 that.callbacks.finalize(that);
             }else if(that.params['perPage'] > 0){
@@ -363,17 +369,17 @@ function(params){
 
     /* *** RENDER *** */
 
-    that.callbacks.renderContainer = function(that, page){
-        return cm.Node(that.params['pageTag'], that.params['pageAttributes']);
+    classProto.callbacks.renderContainer = function(that, page){
+        return cm.node(that.params['pageTag'], that.params['pageAttributes']);
     };
 
-    that.callbacks.render = function(that, data){
+    classProto.callbacks.render = function(that, data){
         var scrollTop = cm.getScrollTop(that.params['scrollNode']),
             page = {
                 'page' : that.page,
                 'token' : that.pageToken,
                 'pages' : that.nodes['pages'],
-                'container' : cm.Node(that.params['pageTag']),
+                'container' : cm.node(that.params['pageTag']),
                 'data' : data,
                 'isVisible' : false
             };
@@ -382,36 +388,25 @@ function(params){
         that.triggerEvent('onPageRender', page);
         that.callbacks.renderPage(that, page);
         // Embed
-        that.nodes['pages'].appendChild(page['container']);
+        cm.appendChild(page['container'], that.nodes['pages']);
+        cm.addClass(page['container'], 'is-loaded', true);
         // Restore scroll position
         cm.setScrollTop(that.params['scrollNode'], scrollTop);
         that.triggerEvent('onPageRenderEnd', page);
         that.isPageVisible(page);
     };
 
-    that.callbacks.renderPage = function(that, page){
+    classProto.callbacks.renderPage = function(that, page){
         var nodes;
         if(that.params['responseHTML']){
             nodes = cm.strToHTML(page['data']);
-            if(!cm.isEmpty(nodes)){
-                if(cm.isNode(nodes)){
-                    page['container'].appendChild(nodes);
-                }else{
-                    while(nodes.length){
-                        if(cm.isNode(nodes[0])){
-                            page['container'].appendChild(nodes[0]);
-                        }else{
-                            cm.remove(nodes[0]);
-                        }
-                    }
-                }
-            }
+            cm.appendNodes(nodes, page['container']);
         }
     };
 
     /* *** HELPERS *** */
 
-    that.callbacks.start = function(that){
+    classProto.callbacks.start = function(that){
         that.isProcess = true;
         // Show Loader
         if(that.params['showLoader']){
@@ -428,13 +423,13 @@ function(params){
         that.triggerEvent('onStart');
     };
 
-    that.callbacks.end = function(that){
+    classProto.callbacks.end = function(that){
         that.isProcess = false;
         // Hide Loader
         that.loaderDelay && clearTimeout(that.loaderDelay);
         cm.addClass(that.nodes['loader'], 'is-hidden');
         // Check pages count
-        if(that.pageCount > 0 && that.pageCount == that.currentPage){
+        if(that.pageCount > 0 && that.pageCount === that.currentPage){
             that.callbacks.finalize(that);
         }
         // Show / Hide Load More Button
@@ -442,7 +437,7 @@ function(params){
         that.triggerEvent('onEnd');
     };
 
-    that.callbacks.finalize = function(that){
+    classProto.callbacks.finalize = function(that){
         if(!that.isFinalize){
             that.isFinalize = true;
             that.callbacks.hideButton(that);
@@ -450,29 +445,37 @@ function(params){
         }
     };
 
-    that.callbacks.toggleButton = function(that){
-        if(!that.isFinalize && (that.params['showButton'] === true || (that.params['showButton'] == 'once' && that.params['startPage'] == that.page))){
+    classProto.callbacks.toggleButton = function(that){
+        if(
+            !that.isFinalize && 
+            (that.params['showButton'] === true || (that.params['showButton'] === 'once' && that.params['startPage'] === that.page))
+        ){
             that.callbacks.showButton(that);
         }else{
             that.callbacks.hideButton(that);
         }
     };
 
-    that.callbacks.showButton = function(that){
+    classProto.callbacks.showButton = function(that){
         that.isButton = true;
         cm.removeClass(that.nodes['button'], 'is-hidden');
         cm.removeClass(that.nodes['bar'], 'is-hidden');
+        cm.removeClass(that.nodes['barHolder'], 'is-hidden');
+        that.triggerEvent('onButtonShow');
     };
 
-    that.callbacks.hideButton = function(that){
+    classProto.callbacks.hideButton = function(that){
         that.isButton = false;
         cm.addClass(that.nodes['button'], 'is-hidden');
         cm.addClass(that.nodes['bar'], 'is-hidden');
+        cm.addClass(that.nodes['barHolder'], 'is-hidden');
+        that.triggerEvent('onButtonHide');
     };
 
     /* ******* PUBLIC ******* */
 
-    that.rebuild = function(params){
+    classProto.rebuild = function(params){
+        var that = this;
         // Cleanup
         if(that.isProcess){
             that.abort();
@@ -492,12 +495,26 @@ function(params){
         set();
     };
 
-    that.set = function(){
-        set();
+    classProto.set = function(){
+        var that = this,
+            config;
+        if(!that.isProcess && !that.isFinalize){
+            // Preset next page and page token
+            that.page = that.nextPage;
+            that.pageToken = that.pages[that.page]? that.pages[that.page]['token'] : '';
+            // Request
+            if(that.isAjax){
+                config = cm.clone(that.params['ajax']);
+                that.ajaxHandler = that.callbacks.request(that, config);
+            }else{
+                that.callbacks.data(that, that.params['data']);
+            }
+        }
         return that;
     };
 
-    that.setToken = function(page, token){
+    classProto.setToken = function(page, token){
+        var that = this;
         if(!that.pages[page]){
             that.pages[page] = {};
         }
@@ -505,15 +522,16 @@ function(params){
         return that;
     };
 
-    that.setCount = function(count){
-        if(count && (count = parseInt(count.toString())) && count != that.params['count']){
+    classProto.setCount = function(count){
+        var that = this;
+        if(count && (count = parseInt(count.toString())) && count !== that.params['count']){
             that.params['count'] = count;
-            if(that.params['pageCount'] == 0 && that.params['count'] && that.params['perPage']){
+            if(that.params['pageCount'] === 0 && that.params['count'] && that.params['perPage']){
                 that.pageCount = Math.ceil(that.params['count'] / that.params['perPage']);
             }else{
                 that.pageCount = that.params['pageCount'];
             }
-            if(that.pageCount > 0 && that.pageCount == that.currentPage){
+            if(that.pageCount > 0 && that.pageCount === that.currentPage){
                 that.callbacks.finalize(that);
             }
             that.triggerEvent('onSetCount', count);
@@ -521,7 +539,8 @@ function(params){
         return that;
     };
 
-    that.setAction = function(o, mode, update){
+    classProto.setAction = function(o, mode, update){
+        var that = this;
         mode = cm.inArray(['raw', 'update', 'current'], mode)? mode : 'current';
         switch(mode){
             case 'raw':
@@ -541,24 +560,28 @@ function(params){
         return that;
     };
 
-    that.getAction = function(){
+    classProto.getAction = function(){
+        var that = this;
         return that.params['ajax'];
     };
 
-    that.getCurrentAction = function(){
+    classProto.getCurrentAction = function(){
+        var that = this;
         return that.currentAction;
     };
 
-    that.setPage = function(){
+    classProto.setPage = function(){
+        var that = this;
         that.previousPage = that.currentPage;
         that.currentPage = that.nextPage;
         that.nextPage++;
         return that;
     };
 
-    that.isPageVisible = function(page, scrollRect){
+    classProto.isPageVisible = function(page, scrollRect){
+        var that = this;
         if(page['container']){
-            scrollRect = typeof scrollRect == 'undefined' ? cm.getRect(that.params['scrollNode']) : scrollRect;
+            scrollRect = cm.isUndefined(scrollRect) ? cm.getRect(that.params['scrollNode']) : scrollRect;
             var pageRect = cm.getRect(page['container']);
 
             if(cm.inRange(pageRect['top'], pageRect['bottom'], scrollRect['top'], scrollRect['bottom'])){
@@ -579,16 +602,34 @@ function(params){
         return false;
     };
 
-    that.abort = function(){
+    classProto.abort = function(){
+        var that = this;
         if(that.ajaxHandler && that.ajaxHandler.abort){
             that.ajaxHandler.abort();
         }
         return that;
     };
 
-    that.isParent = function(node, flag){
-        return cm.isParent(that.nodes['container'], node, flag);
+    classProto.disable = function(){
+        var that = this;
+        that.isDisabled = true;
+        return that;
     };
 
-    init();
+    classProto.enable = function(){
+        var that = this;
+        that.isDisabled = false;
+        return that;
+    };
+
+    classProto.embedButton = function(node){
+        var that = this;
+        that.nodes['barHolder'] = node;
+        cm.appendChild(that.nodes['bar'], node);
+    };
+
+    classProto.isParent = function(node, flag){
+        var that = this;
+        return cm.isParent(that.nodes['container'], node, flag);
+    };
 });

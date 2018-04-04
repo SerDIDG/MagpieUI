@@ -20,6 +20,7 @@ cm.define('Com.GalleryPopup', {
         'theme' : 'theme-black',
         'showCounter' : true,
         'showTitle' : true,
+        'showZoom' : true,
         'data' : [],
         'openOnSelfClick' : false,
         'Com.Dialog' : {
@@ -52,9 +53,10 @@ function(params){
     };
 
     var validateParams = function(){
+        that.params['Com.Gallery']['zoom'] = that.params['showZoom'];
         that.params['Com.Dialog']['theme'] = that.params['theme'];
         that.params['Com.Dialog']['size'] = that.params['size'];
-        if(that.params['size'] == 'fullscreen'){
+        if(that.params['size'] === 'fullscreen'){
             that.params['Com.Dialog']['documentScroll'] = false;
         }
     };
@@ -65,7 +67,7 @@ function(params){
             nodes['galleryContainer'] = cm.Node('div', {'class' : 'inner'})
         );
         // Set aspect ration
-        if(that.params['aspectRatio'] != 'auto'){
+        if(that.params['aspectRatio'] !== 'auto'){
             cm.addClass(nodes['container'], ['cm__aspect', that.params['aspectRatio']].join('-'));
         }
     };

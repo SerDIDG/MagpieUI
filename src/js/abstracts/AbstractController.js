@@ -17,6 +17,7 @@ cm.define('Com.AbstractController', {
         'onConstructEnd',
         'onInitComponentsStart',
         'onInitComponentsEnd',
+        'onGetLESSVariables',
         'onGetLESSVariablesStart',
         'onGetLESSVariablesProcess',
         'onGetLESSVariablesEnd',
@@ -64,7 +65,9 @@ cm.define('Com.AbstractController', {
         'controllerEvents' : false,
         'customEvents' : true,
         'resizeEvent' : true,
+        'resizeNode' : window,
         'scrollEvent' : false,
+        'scrollNode' : window,
         'collector' : null,
         'constructCollector' : false,
         'destructCollector' : false
@@ -105,9 +108,9 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         that.triggerEvent('onBeforeRender');
         that.render();
         that.triggerEvent('onAfterRender');
-        that.setEvents();
         that.triggerEvent('onConstructProcess');
         that.addToStack(that.nodes['container']);
+        that.setEvents();
         that.triggerEvent('onRender');
         that.triggerEvent('onRenderEnd');
         that.triggerEvent('onConstructEnd');
@@ -173,6 +176,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
     classProto.getLESSVariables = function(){
         var that = this;
         that.triggerEvent('onGetLESSVariablesStart');
+        that.triggerEvent('onGetLESSVariables');
         that.triggerEvent('onGetLESSVariablesProcess');
         that.triggerEvent('onGetLESSVariablesEnd');
         return that;
@@ -223,8 +227,8 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         var that = this;
         that.triggerEvent('onSetEventsStart');
         // Windows events
-        that.params['resizeEvent'] && cm.addEvent(window, 'resize', that.redrawHandler);
-        that.params['scrollEvent'] && cm.addEvent(window, 'scroll', that.scrollHandler);
+        that.params['resizeEvent'] && cm.addEvent(that.params['resizeNode'], 'resize', that.redrawHandler);
+        that.params['scrollEvent'] && cm.addEvent(that.params['scrollNode'], 'scroll', that.scrollHandler);
         that.triggerEvent('onSetEvents');
         that.triggerEvent('onSetEventsProcess');
         // Add custom events
@@ -241,8 +245,8 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         var that = this;
         that.triggerEvent('onUnsetEventsStart');
         // Windows events
-        that.params['resizeEvent'] && cm.removeEvent(window, 'resize', that.redrawHandler);
-        that.params['scrollEvent'] && cm.removeEvent(window, 'scroll', that.scrollHandler);
+        that.params['resizeEvent'] && cm.removeEvent(that.params['resizeNode'], 'resize', that.redrawHandler);
+        that.params['scrollEvent'] && cm.removeEvent(that.params['scrollNode'], 'scroll', that.scrollHandler);
         that.triggerEvent('onUnsetEvents');
         that.triggerEvent('onUnsetEventsProcess');
         // Remove custom events

@@ -1,6 +1,6 @@
 {
   "name": "MagpieUI",
-  "version": "3.31.6",
+  "version": "3.32.0",
   "description": "Collection of JavaScript and CSS snippets.",
   "license": "MIT",
   "author": {
@@ -10,11 +10,11 @@
   },
   "repository": "SerDIDG/MagpieUI",
   "dependencies": {
-    "animate.css": "^3.5.1",
-    "codemirror": "^5.15.2",
+    "animate.css": "^3.6.1",
+    "codemirror": "^5.34.0",
     "grunt-cli": "^0.1.13",
-    "less": "^2.7.1",
-    "tinycolor2": "^1.3.0"
+    "less": "^2.7.3",
+    "tinycolor2": "^1.4.1"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
@@ -22,17 +22,17 @@
     "grunt-contrib-concat": "~0.5.1",
     "grunt-contrib-copy": "^0.8.2",
     "grunt-contrib-cssmin": "~0.14.0",
-    "grunt-contrib-imagemin": "~1.0.0",
-    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-contrib-imagemin": "^1.0.1",
+    "grunt-contrib-jshint": "^1.1.0",
     "grunt-contrib-less": "~1.0.1",
     "grunt-contrib-uglify": "~0.5.0",
     "grunt-contrib-watch": "~0.6.0",
     "grunt-less-imports": "^1.1.0",
-    "grunt-lessvars": "^0.3.0",
+    "grunt-lessvars": "^0.3.1",
     "grunt-replace": "^1.0.1",
-    "grunt-svg-css": "^0.2.8",
-    "grunt-svgmin": "^3.2.0",
+    "grunt-svg-css": "^0.2.9",
+    "grunt-svgmin": "^3.3.0",
     "load-grunt-tasks": "~3.3.0",
-    "time-grunt": "^1.2.2"
+    "time-grunt": "^1.4.0"
   }
 }

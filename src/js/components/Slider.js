@@ -21,6 +21,7 @@ cm.define('Com.Slider', {
         'node' : cm.Node('div'),
         'name' : '',
         'customEvents' : true,
+        'renderStructure' : false,
         'isEditing' : false,
         'time' : 500,                   // Fade time
         'delay' : 4000,                 // Delay before slide will be changed
@@ -120,6 +121,10 @@ function(params){
 
     var renderSlider = function(){
         var transitionRule = cm.getSupportedStyle('transition');
+        // Render Structure
+        if(that.params['renderStructure']){
+            renderView();
+        }
         // Collect items
         cm.forEach(that.nodes['items'], collectItem);
         // Arrows
@@ -165,6 +170,10 @@ function(params){
         // Init animations
         that.anim['slides'] = new cm.Animation(that.nodes['slides']);
         that.anim['slidesInner'] = new cm.Animation(that.nodes['slidesInner']);
+    };
+
+    var renderView = function(){
+
     };
 
     var setEvents = function(){
@@ -224,12 +233,12 @@ function(params){
                 height = Math.max(height, cm.getRealHeight(item.nodes['inner'], 'offsetRelative'));
             }
         });
-        if(minHeightDimension == '%'){
+        if(minHeightDimension === '%'){
             height = Math.max(height, (that.nodes['inner'].offsetWidth / 100 * that.params['minHeight']));
         }else{
             height = Math.max(height, that.params['minHeight']);
         }
-        if(height != that.nodes['inner'].offsetHeight){
+        if(height !== that.nodes['inner'].offsetHeight){
             that.nodes['inner'].style.height = [height, 'px'].join('');
         }
     };
@@ -244,12 +253,12 @@ function(params){
                 height = Math.max(height, cm.getRealHeight(item.nodes['inner'], 'offsetRelative'));
             }
         }
-        if(minHeightDimension == '%'){
+        if(minHeightDimension === '%'){
             height = Math.max(height, (that.nodes['inner'].offsetWidth / 100 * that.params['minHeight']));
         }else{
             height = Math.max(height, that.params['minHeight']);
         }
-        if(height != that.nodes['inner'].offsetHeight){
+        if(height !== that.nodes['inner'].offsetHeight){
             that.nodes['inner'].style.height = [height, 'px'].join('');
         }
     };
@@ -377,7 +386,7 @@ function(params){
         }
         cm.addClass(current['bar']['container'], 'active');
         // Move bar
-        if(that.params['barDirection'] == 'vertical'){
+        if(that.params['barDirection'] === 'vertical'){
             top = current['bar']['container'].offsetTop - (that.nodes['layout-inner'].offsetHeight / 2) + (current['bar']['container'].offsetHeight / 2);
             components['scroll'].scrollY(top);
         }else{
@@ -512,14 +521,14 @@ function(params){
 
     that.next = function(){
         that.direction = 'next';
-        var i = ((that.current + 1) == that.items.length) ? 0 : (that.current + 1);
+        var i = ((that.current + 1) === that.items.length) ? 0 : (that.current + 1);
         set(i);
         return that;
     };
 
     that.prev = function(){
         that.direction = 'prev';
-        var i = (that.current == 0) ? (that.items.length - 1) : (that.current - 1);
+        var i = (that.current === 0) ? (that.items.length - 1) : (that.current - 1);
         set(i);
         return that;
     };
@@ -666,7 +675,7 @@ Com.SliderEffects['push'] = function(slider, current, previous, callback){
 Com.SliderEffects['pull'] = function(slider, current, previous, callback){
     if(slider.itemsLength > 1 && previous && current != previous){
         // Hide previous slide
-        var style = slider.direction == 'next' ? '-100%' : '100%';
+        var style = slider.direction === 'next' ? '-100%' : '100%';
         previous['nodes']['container'].style.zIndex = 1;
         previous['anim'].go({'style' : {'left' : style}, 'duration' : slider.params['time'], 'anim' : slider.params['transition'], 'onStop' : function(){
             previous['nodes']['container'].style.display = 'none';
@@ -675,9 +684,9 @@ Com.SliderEffects['pull'] = function(slider, current, previous, callback){
         // Set visible new slide and animate it
         current['nodes']['container'].style.zIndex = 2;
         current['nodes']['container'].style.display = 'block';
-        if(slider.direction == 'next'){
+        if(slider.direction === 'next'){
             current['nodes']['container'].style.left = '100%';
-        }else if(slider.direction == 'prev'){
+        }else if(slider.direction === 'prev'){
             current['nodes']['container'].style.left = '-100%';
         }
         current['anim'].go({'style' : {'left' : '0%'}, 'duration' : slider.params['time'], 'anim' : slider.params['transition'], 'onStop' : callback});
@@ -699,9 +708,9 @@ Com.SliderEffects['pull-overlap'] = function(slider, current, previous, callback
         // Set visible new slide and animate it
         current['nodes']['container'].style.zIndex = 2;
         current['nodes']['container'].style.display = 'block';
-        if(slider.direction == 'next'){
+        if(slider.direction === 'next'){
             current['nodes']['container'].style.left = '100%';
-        }else if(slider.direction == 'prev'){
+        }else if(slider.direction === 'prev'){
             current['nodes']['container'].style.left = '-100%';
         }
         current['anim'].go({'style' : {'left' : '0%'}, 'duration' : slider.params['time'], 'anim' : slider.params['transition'], 'onStop' : callback});
@@ -715,7 +724,7 @@ Com.SliderEffects['pull-overlap'] = function(slider, current, previous, callback
 Com.SliderEffects['pull-parallax'] = function(slider, current, previous, callback){
     if(slider.itemsLength > 1 && previous && current != previous){
         // Hide previous slide
-        var style = slider.direction == 'next' ? '-50%' : '50%';
+        var style = slider.direction === 'next' ? '-50%' : '50%';
         previous['nodes']['container'].style.zIndex = 1;
         previous['anim'].go({'style' : {'left' : style}, 'duration' : slider.params['time'], 'anim' : slider.params['transition'], 'onStop' : function(){
             previous['nodes']['container'].style.display = 'none';
@@ -724,12 +733,47 @@ Com.SliderEffects['pull-parallax'] = function(slider, current, previous, callbac
         // Set visible new slide and animate it
         current['nodes']['container'].style.zIndex = 2;
         current['nodes']['container'].style.display = 'block';
-        if(slider.direction == 'next'){
+        if(slider.direction === 'next'){
             current['nodes']['container'].style.left = '100%';
-        }else if(slider.direction == 'prev'){
+        }else if(slider.direction === 'prev'){
             current['nodes']['container'].style.left = '-100%';
         }
         current['anim'].go({'style' : {'left' : '0%'}, 'duration' : slider.params['time'], 'anim' : slider.params['transition'], 'onStop' : callback});
+    }else{
+        callback();
+    }
+};
+
+Com.SliderEffects['pull-parallax-css'] = function(slider, current, previous, callback){
+    if(slider.itemsLength > 1 && previous && current != previous){
+        // Hide previous slide
+        var style = slider.direction === 'next' ? '-50%' : '50%';
+        previous['nodes']['container'].style.zIndex = 1;
+        cm.transition(previous['nodes']['container'], {
+            'properties' : {
+                'transform' : 'translateX('+style+')'
+            },
+            'duration' : slider.params['time'],
+            'onStop' : function(){
+                previous['nodes']['container'].style.display = 'none';
+                cm.setCSSTranslate(previous['nodes']['container'], '100%', 0, 0);
+            }
+        });
+        // Set visible new slide and animate it
+        current['nodes']['container'].style.zIndex = 2;
+        current['nodes']['container'].style.display = 'block';
+        if(slider.direction === 'next'){
+            cm.setCSSTranslate(current['nodes']['container'], '100%', 0, 0);
+        }else if(slider.direction === 'prev'){
+            cm.setCSSTranslate(current['nodes']['container'], '-100%', 0, 0);
+        }
+        cm.transition(current['nodes']['container'], {
+            'properties' : {
+                'transform' : 'translateX(0%)'
+            },
+            'duration' : slider.params['time'],
+            'onStop' : callback
+        });
     }else{
         callback();
     }

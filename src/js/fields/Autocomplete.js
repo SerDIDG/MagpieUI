@@ -31,6 +31,7 @@ cm.define('Com.Autocomplete', {
         'container' : 'document.body',
         'name' : '',
         'minLength' : 3,
+        'direction' : 'auto',                                       // auto | start
         'className' : '',
         'delay' : 'cm._config.requestDelay',
         'clearOnEmpty' : true,                                      // Clear input and value if item didn't selected from tooltip
@@ -400,11 +401,23 @@ function(params){
     that.callbacks.query = function(that, params){
         var filteredItems = [];
         cm.forEach(params['data'], function(item){
-            if(item && item['text'].toLowerCase().indexOf(params['query'].toLowerCase()) > -1){
+            if(that.callbacks.isContain(that, item['text'], params['query'])){
                 filteredItems.push(item);
             }
         });
         return filteredItems;
+    };
+
+    that.callbacks.isContain = function(that, text, query){
+        text = text.toLowerCase();
+        query = query.toLowerCase();
+        // Direction
+        switch(that.params['direction']){
+            case 'start':
+                return new RegExp('^' + query, 'i').test(text);
+            default:
+                return text.indexOf(query) > -1;
+        }
     };
 
     that.callbacks.render = function(that, params){

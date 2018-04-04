@@ -42,6 +42,9 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto)
         }
         // Attributes
         cm.setInputMaxLength(nodes['input'], that.params['maxlength'], that.params['max']);
+        if(!cm.isEmpty(that.params['placeholder'])){
+            nodes['input'].placeholder = that.params['placeholder'];
+        }
         // Events
         that.triggerEvent('onRenderContentProcess');
         cm.addEvent(nodes['input'], 'blur', that.setValueHandler);

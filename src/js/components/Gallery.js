@@ -135,7 +135,7 @@ function(params){
         item = cm.merge({
             'index' : items.length,
             'isLoad' : false,
-            'type' : 'image',        // image | iframe
+            'type' : null,        // image | iframe
             'nodes' : {},
             'src' : '',
             'title' : '',
@@ -146,6 +146,7 @@ function(params){
             /(\.jpg|\.png|\.gif|\.jpeg|\.bmp|\.tga)$/gi.test(item['src'])
             || /^data:image/gi.test(item['src'])
             || /^image/gi.test(item['mime'])
+            || item['type'] === 'image'
         ){
             item['type'] = 'image';
         }else{
@@ -159,7 +160,7 @@ function(params){
             item['nodes']['inner'] = cm.Node('div', {'class' : 'inner'})
         );
         // Render by type
-        if(item['type'] == 'image'){
+        if(item['type'] === 'image'){
             item['nodes']['inner'].appendChild(
                 item['nodes']['content'] = cm.Node('img', {'class' : 'descr', 'alt' : item['title'], 'title' : item['title']})
             );
@@ -169,7 +170,7 @@ function(params){
             );
         }
         // Caption
-        if(that.params['showCaption'] && !cm.isEmpty(item['title'] && item['type'] == 'image')){
+        if(that.params['showCaption'] && !cm.isEmpty(item['title'] && item['type'] === 'image')){
             item['nodes']['inner'].appendChild(
                 cm.Node('div', {'class' : 'title'},
                     cm.Node('div', {'class' : 'inner'}, item['title'])
@@ -201,14 +202,14 @@ function(params){
                 'previous' : itemOld
             });
             // If current active item not equal new item - process with new item, else redraw window alignment and dimensions
-            if(i != that.current){
+            if(i !== that.current){
                 // API onSet
                 that.triggerEvent('onChange', {
                     'current' : item,
                     'previous' : itemOld
                 });
                 // Check type
-                if(item['type'] == 'image'){
+                if(item['type'] === 'image'){
                     setItemImage(i, item, itemOld);
                 }else{
                     setItemIframe(i, item, itemOld);
@@ -272,7 +273,7 @@ function(params){
             itemOld['nodes']['container'].style.zIndex = 1;
             item['nodes']['container'].style.zIndex = 2;
         }
-        if(item['type'] == 'image'){
+        if(item['type'] === 'image'){
             that.nodes['holder'].appendChild(item['nodes']['container']);
         }
         // Animate Slide
@@ -289,11 +290,11 @@ function(params){
     };
 
     var next = function(){
-        set((that.current == items.length - 1)? 0 : that.current + 1);
+        set((that.current === items.length - 1)? 0 : that.current + 1);
     };
 
     var prev = function(){
-        set((that.current == 0)? items.length - 1 : that.current - 1);
+        set((that.current === 0)? items.length - 1 : that.current - 1);
     };
 
     var zoom = function(){
@@ -331,7 +332,7 @@ function(params){
     };
 
     that.clear = function(){
-        if(that.current && items[that.current]){
+        if(!cm.isEmpty(that.current) && items[that.current]){
             cm.remove(items[that.current]['nodes']['container']);
         }
         that.current = null;

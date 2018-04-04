@@ -382,6 +382,11 @@ cm.clone = function(o, cloneNode){
 };
 
 cm.getLength = function(o){
+    // Array
+    if(cm.isArray(o)){
+        return o.length;
+    }
+    // Object
     var i = 0;
     cm.forEach(o, function(){
         i++;
@@ -390,7 +395,7 @@ cm.getLength = function(o){
 };
 
 cm.inArray = function(a, item){
-    if(typeof a == 'string'){
+    if(typeof a === 'string'){
         return a === item;
     }else if(cm.isArray(a)){
         return a.indexOf(item) > -1;
@@ -499,11 +504,12 @@ cm.isUndefined = function(value){
 };
 
 cm.objectPath = function(name, obj){
-    obj = typeof obj == 'undefined'? window : obj;
+    if(cm.isUndefined(obj) || cm.isUndefined(name)){
+        return obj;
+    }
     name = name.toString().split('.');
-    var findObj = obj,
-        length = name.length;
-    cm.forEach(name, function(item, key){
+    var findObj = obj;
+    cm.forEach(name, function(item){
         if(findObj){
             findObj = findObj[item];
         }
@@ -512,7 +518,9 @@ cm.objectPath = function(name, obj){
 };
 
 cm.objectSelector = function(name, obj, apply){
-    obj = typeof obj == 'undefined'? window : obj;
+    if(cm.isUndefined(obj) || cm.isUndefined(name)){
+        return obj;
+    }
     name = name.toString().split('.');
     var findObj = obj,
         length = name.length;
@@ -520,7 +528,7 @@ cm.objectSelector = function(name, obj, apply){
         if(!findObj[item]){
             findObj[item] = {};
         }
-        if(apply && key == length -1){
+        if(apply && key === length -1){
             findObj[item] = apply;
         }
         findObj = findObj[item];
@@ -780,7 +788,7 @@ cm.customEvent = (function(){
             _stack[type].push({
                 'node' : node,
                 'type' : type,
-                'handler' : typeof handler == 'function' ? handler : function(){}
+                'handler' : cm.isFunction(handler) ? handler : function(){}
             });
             return node;
         },
@@ -789,7 +797,7 @@ cm.customEvent = (function(){
                 _stack[type] = [];
             }
             _stack[type] = _stack[type].filter(function(item){
-                return item['node'] != node && item['handler'] != handler;
+                return item['node'] !== node && item['handler'] !== handler;
             });
             return node;
         },
@@ -805,7 +813,7 @@ cm.customEvent = (function(){
             }, params);
             if(_stack[type]){
                 _stack[type].sort(function(a, b){
-                    if(params['type'] == 'parent'){
+                    if(params['type'] === 'parent'){
                         return cm.getNodeOffsetIndex(b['node']) > cm.getNodeOffsetIndex(a['node']);
                     }
                     return cm.getNodeOffsetIndex(a['node']) - cm.getNodeOffsetIndex(b['node']);
@@ -841,7 +849,7 @@ cm.customEvent = (function(){
 })();
 
 cm.onLoad = function(handler, isMessage){
-    isMessage = typeof isMessage == 'undefined'? true : isMessage;
+    isMessage = cm.isUndefined(isMessage) ? true : isMessage;
     var called = false;
     var execute = function(){
         if(called){
@@ -863,7 +871,7 @@ cm.onLoad = function(handler, isMessage){
 };
 
 cm.onReady = function(handler, isMessage){
-    isMessage = typeof isMessage == 'undefined'? true : isMessage;
+    isMessage = cm.isUndefined(isMessage) ? true : isMessage;
     var called = false;
     var execute = function(){
         if(called){
@@ -1047,12 +1055,18 @@ cm.addScript = function(src, async, callback){
     // Configure Stack Item
     if(cm._addScriptStack[src]){
         item = cm._addScriptStack[src];
-        item['callbacks'].push(callback);
+        if(!item['loaded']){
+            item['callbacks'].push(callback);
+        }else{
+            callback();
+        }
     }else{
         item = {
             'src' : src,
             'async' : async,
+            'loaded' : false,
             'callback' : function(e){
+                item['loaded'] = true;
                 while(item['callbacks'].length){
                     item['callbacks'][0](e);
                     cm.arrayRemove(item['callbacks'], item['callbacks'][0]);
@@ -1079,12 +1093,12 @@ cm.loadScript = function(o){
         'async' : true,
         'callback' : function(){}
     }, o);
-    var path = cm.objectSelector(o['path'], window);
+    var path = cm.objectPath(o['path'], window);
     if(!cm.isEmpty(path)){
         o['callback'](path);
     }else{
         cm.addScript(o['src'], o['async'], function(){
-            path = cm.objectSelector(o['path'], window);
+            path = cm.objectPath(o['path'], window);
             if(!cm.isEmpty(path)){
                 o['callback'](path);
             }else{
@@ -1336,7 +1350,7 @@ cm.clearNode = function(node){
 
 cm.prevEl = function(node){
     node = node.previousSibling;
-    if(node && node.nodeType && node.nodeType != 1){
+    if(node && node.nodeType && node.nodeType !== 1){
         node = cm.prevEl(node);
     }
     return node;
@@ -1344,7 +1358,7 @@ cm.prevEl = function(node){
 
 cm.nextEl = function(node){
     node = node.nextSibling;
-    if(node && node.nodeType && node.nodeType != 1){
+    if(node && node.nodeType && node.nodeType !== 1){
         node = cm.nextEl(node);
     }
     return node;
@@ -1355,7 +1369,7 @@ cm.firstEl = function(node){
         return null;
     }
     node = node.firstChild;
-    if(node.nodeType != 1){
+    if(node.nodeType !== 1){
         node = cm.nextEl(node);
     }
     return node;
@@ -1478,7 +1492,7 @@ cm.getNodes = function(container, marker){
 
         cm.forEach(separators, function(separator){
             altProcessedObj = [];
-            if(separator.indexOf('.') == -1){
+            if(separator.indexOf('.') === -1){
                 process(node, separator, obj, altProcessedObj);
             }else{
                 pathway(node, separator, altProcessedObj);
@@ -1495,7 +1509,7 @@ cm.getNodes = function(container, marker){
         cm.forEach(separators, function(separator, i){
             if(i === 0 && cm.isEmpty(separator)){
                 obj = nodes;
-            }else if((i + 1) == separators.length){
+            }else if((i + 1) === separators.length){
                 process(node, separator, obj, processedObj);
             }else{
                 if(!obj[separator]){
@@ -1509,10 +1523,10 @@ cm.getNodes = function(container, marker){
     var process = function(node, attr, obj, processedObj){
         var separators = attr? attr.split(':') : [],
             arr;
-        if(separators.length == 1){
+        if(separators.length === 1){
             obj[separators[0]] = node;
-        }else if(separators.length == 2 || separators.length == 3){
-            if(separators[1] == '[]'){
+        }else if(separators.length === 2 || separators.length === 3){
+            if(separators[1] === '[]'){
                 if(!obj[separators[0]]){
                     obj[separators[0]] = [];
                 }
@@ -1522,7 +1536,7 @@ cm.getNodes = function(container, marker){
                 }
                 find(node, arr, processedObj);
                 obj[separators[0]].push(arr);
-            }else if(separators[1] == '{}'){
+            }else if(separators[1] === '{}'){
                 if(!obj[separators[0]]){
                     obj[separators[0]] = {};
                 }
@@ -1863,12 +1877,31 @@ cm.strReplace = function(str, vars){
 };
 
 cm.reduceText = function(str, length, points){
-    points = typeof points == 'undefined' ? false : points;
+    points = cm.isUndefined(points) ? false : points;
     if(str.length > length){
-        return str.slice(0, length) + ((points) ? '...' : '');
+        return str.slice(0, length) + ((points) ? '…' : '');
     }else{
         return str;
     }
+};
+
+cm.reduceTextSmart = function(str, length, points){
+    if(str.length <= length){
+        return str;
+    }
+    var split = str.split(/[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+/),
+        newStr = '',
+        testStr = '',
+        i = 0;
+    while(split[i] && testStr.length <= length){
+        newStr = testStr;
+        testStr += ' ' + split[i];
+        i++;
+    }
+    if(!cm.isUndefined(points)){
+        newStr += '…';
+    }
+    return newStr;
 };
 
 cm.removeDanger = function(str){
@@ -1904,7 +1937,7 @@ cm.addLeadZero = function(x){
     return x < 10 ? '0' + x : x;
 };
 
-cm.getNumberDeclension = function(number, titles){
+cm.getNumberDeclension = function(number, titles /* ['найдена', 'найдено', 'найдены'] */){
     var cases = [2, 0, 1, 1, 1, 2];
     return titles[
         (number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]
@@ -1932,7 +1965,14 @@ cm.getCurrentDate = function(format){
 
 cm.dateFormat = function(date, format, langs){
     //date = !date ? new Date() : new Date(+date);
-    date = date ? new Date(+date) : null;
+    if(cm.isDate(date)){
+        date = new Date(+date);
+    }else if(cm.isString(date)){
+        date = new Date(date);
+    }
+    if(isNaN(date)){
+        date = null;
+    }
     format = cm.isString(format) ? format : cm._config.dateTimeFormat;
     langs = cm.merge({
         'months' : cm._strings.months,
@@ -3338,6 +3378,7 @@ cm.ajax = function(o){
             'debug' : true,
             'type' : 'json',                                         // text | xml | json | jsonp
             'method' : 'post',                                       // post | get | put | delete
+            'paramsType' : 'uri',                                    // uri | json
             'params' : '',
             'url' : '',
             'modifier' : '',
@@ -3396,7 +3437,12 @@ cm.ajax = function(o){
                 '%assetsUrl%' : cm._assetsUrl || cm._baseUrl,
                 '%pathUrl%' : cm._pathUrl
             });
-            config['params'] = cm.obj2URI(config['params']);
+            if(config['paramsType'] === 'json'){
+                config['headers']['Content-Type'] = 'application/json';
+                config['params'] = cm.stringifyJSON(config['params']);
+            }else{
+                config['params'] = cm.obj2URI(config['params']);
+            }
         }
         // Build request link
         if(!cm.isEmpty(config['modifier']) && !cm.isEmpty(config['modifierParams'])){

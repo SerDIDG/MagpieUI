@@ -29,6 +29,7 @@ cm.define('Com.Request', {
         'className' : '',
         'autoSend' : false,
         'responseKey' : 'data',
+        'responseErrorsKey' : 'errors',
         'responseHTML' : true,
         'responseHTMLKey' : 'data',
         'responseStatusKey' : 'data.success',
@@ -43,9 +44,9 @@ cm.define('Com.Request', {
         'variables' : {},
         'showOverlay' : true,
         'overlayContainer' : 'document.body',
-        'overlayDelay' : 'cm._config.loadDelay',
         'animateDuration' : 'cm._config.animDuration',
         'Com.Overlay' : {
+            'lazy' : true,
             'autoOpen' : false,
             'removeOnClose' : true,
             'showSpinner' : true,
@@ -68,7 +69,6 @@ function(params){
     that.responceDataFiltered = null;
     that.responceDataHTML = null;
     that.responceDataStatus = null;
-    that.overlayDelay = null;
     that.isProcess = false;
     that.isError = false;
     that.isRendering = false;
@@ -88,7 +88,7 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         that.render();
         that.addToStack(that.nodes['container']);
         that.triggerEvent('onRender');
-        that.params['autoSend'] && that.set();
+        that.params['autoSend'] && that.send();
         return that;
     };
 
@@ -253,11 +253,7 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         that.isProcess = true;
         // Show Overlay
         if(that.params['showOverlay']){
-            that.overlayDelay = setTimeout(function(){
-                if(that.components['overlay'] && !that.components['overlay'].isOpen){
-                    that.components['overlay'].open();
-                }
-            }, that.params['overlayDelay']);
+            that.components['overlay'] && that.components['overlay'].open();
         }
         that.triggerEvent('onStart');
         return that;
@@ -268,10 +264,7 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         that.isProcess = false;
         // Hide Overlay
         if(that.params['showOverlay']){
-            that.overlayDelay && clearTimeout(that.overlayDelay);
-            if(that.components['overlay'] && that.components['overlay'].isOpen){
-                that.components['overlay'].close();
-            }
+            that.components['overlay'] && that.components['overlay'].close();
         }
         that.triggerEvent('onEnd');
         return that;
@@ -279,17 +272,20 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
 
     classProto.filter = function(){
         var that = this,
-            dataFiltered = cm.objectSelector(that.params['responseKey'], that.responceData),
-            dataStatus = cm.objectSelector(that.params['responseStatusKey'], that.responceData),
+            errorsItem = cm.objectPath(that.params['responseErrorsKey'], that.responceData),
+            dataFiltered = cm.objectPath(that.params['responseKey'], that.responceData),
+            dataStatus = cm.objectPath(that.params['responseStatusKey'], that.responceData),
             dataHTML;
-        if(cm.isEmpty(that.params['responseHTMLKey'])){
-            dataHTML = cm.objectSelector(that.params['responseKey'], that.responceData);
-        }else{
-            dataHTML = cm.objectSelector(that.params['responseHTMLKey'], that.responceData);
+        if(cm.isEmpty(errorsItem)){
+            if(cm.isEmpty(that.params['responseHTMLKey'])){
+                dataHTML = cm.objectPath(that.params['responseKey'], that.responceData);
+            }else{
+                dataHTML = cm.objectPath(that.params['responseHTMLKey'], that.responceData);
+            }
+            that.responceDataFiltered = !cm.isEmpty(dataFiltered) ? dataFiltered : [];
+            that.responceDataHTML = !cm.isEmpty(dataHTML) ? dataHTML : '';
+            that.responceDataStatus = !cm.isEmpty(dataStatus) ? dataStatus : false;
         }
-        that.responceDataFiltered = !cm.isEmpty(dataFiltered) ? dataFiltered : [];
-        that.responceDataHTML = !cm.isEmpty(dataHTML) ? dataHTML : '';
-        that.responceDataStatus = !cm.isEmpty(dataStatus) ? dataStatus : false;
     };
 
     classProto.response = function(){

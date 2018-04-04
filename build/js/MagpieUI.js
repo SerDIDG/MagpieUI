@@ -1,18 +1,17 @@
-/*! ************ MagpieUI v3.31.6 (2018-01-30 18:30) ************ */
-// TinyColor v1.3.0
+/*! ************ MagpieUI v3.32.0 (2018-04-04 19:20) ************ */
+// TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
 
-(function() {
+(function(Math) {
 
 var trimLeft = /^\s+/,
     trimRight = /\s+$/,
     tinyCounter = 0,
-    math = Math,
-    mathRound = math.round,
-    mathMin = math.min,
-    mathMax = math.max,
-    mathRandom = math.random;
+    mathRound = Math.round,
+    mathMin = Math.min,
+    mathMax = Math.max,
+    mathRandom = Math.random;
 
 function tinycolor (color, opts) {
 
@@ -120,11 +119,11 @@ tinycolor.prototype = {
     toHexString: function(allow3Char) {
         return '#' + this.toHex(allow3Char);
     },
-    toHex8: function() {
-        return rgbaToHex(this._r, this._g, this._b, this._a);
+    toHex8: function(allow4Char) {
+        return rgbaToHex(this._r, this._g, this._b, this._a, allow4Char);
     },
-    toHex8String: function() {
-        return '#' + this.toHex8();
+    toHex8String: function(allow4Char) {
+        return '#' + this.toHex8(allow4Char);
     },
     toRgb: function() {
         return { r: mathRound(this._r), g: mathRound(this._g), b: mathRound(this._b), a: this._a };
@@ -154,13 +153,13 @@ tinycolor.prototype = {
         return hexNames[rgbToHex(this._r, this._g, this._b, true)] || false;
     },
     toFilter: function(secondColor) {
-        var hex8String = '#' + rgbaToHex(this._r, this._g, this._b, this._a);
+        var hex8String = '#' + rgbaToArgbHex(this._r, this._g, this._b, this._a);
         var secondHex8String = hex8String;
         var gradientType = this._gradientType ? "GradientType = 1, " : "";
 
         if (secondColor) {
             var s = tinycolor(secondColor);
-            secondHex8String = s.toHex8String();
+            secondHex8String = '#' + rgbaToArgbHex(s._r, s._g, s._b, s._a);
         }
 
         return "progid:DXImageTransform.Microsoft.gradient("+gradientType+"startColorstr="+hex8String+",endColorstr="+secondHex8String+")";
@@ -171,7 +170,7 @@ tinycolor.prototype = {
 
         var formattedString = false;
         var hasAlpha = this._a < 1 && this._a >= 0;
-        var needsAlphaFormat = !formatSet && hasAlpha && (format === "hex" || format === "hex6" || format === "hex3" || format === "name");
+        var needsAlphaFormat = !formatSet && hasAlpha && (format === "hex" || format === "hex6" || format === "hex3" || format === "hex4" || format === "hex8" || format === "name");
 
         if (needsAlphaFormat) {
             // Special case for "transparent", all other non-alpha formats
@@ -192,6 +191,9 @@ tinycolor.prototype = {
         }
         if (format === "hex3") {
             formattedString = this.toHexString(true);
+        }
+        if (format === "hex4") {
+            formattedString = this.toHex8String(true);
         }
         if (format === "hex8") {
             formattedString = this.toHex8String();
@@ -305,6 +307,9 @@ function inputToRGB(color) {
 
     var rgb = { r: 0, g: 0, b: 0 };
     var a = 1;
+    var s = null;
+    var v = null;
+    var l = null;
     var ok = false;
     var format = false;
 
@@ -313,22 +318,22 @@ function inputToRGB(color) {
     }
 
     if (typeof color == "object") {
-        if (color.hasOwnProperty("r") && color.hasOwnProperty("g") && color.hasOwnProperty("b")) {
+        if (isValidCSSUnit(color.r) && isValidCSSUnit(color.g) && isValidCSSUnit(color.b)) {
             rgb = rgbToRgb(color.r, color.g, color.b);
             ok = true;
             format = String(color.r).substr(-1) === "%" ? "prgb" : "rgb";
         }
-        else if (color.hasOwnProperty("h") && color.hasOwnProperty("s") && color.hasOwnProperty("v")) {
-            color.s = convertToPercentage(color.s);
-            color.v = convertToPercentage(color.v);
-            rgb = hsvToRgb(color.h, color.s, color.v);
+        else if (isValidCSSUnit(color.h) && isValidCSSUnit(color.s) && isValidCSSUnit(color.v)) {
+            s = convertToPercentage(color.s);
+            v = convertToPercentage(color.v);
+            rgb = hsvToRgb(color.h, s, v);
             ok = true;
             format = "hsv";
         }
-        else if (color.hasOwnProperty("h") && color.hasOwnProperty("s") && color.hasOwnProperty("l")) {
-            color.s = convertToPercentage(color.s);
-            color.l = convertToPercentage(color.l);
-            rgb = hslToRgb(color.h, color.s, color.l);
+        else if (isValidCSSUnit(color.h) && isValidCSSUnit(color.s) && isValidCSSUnit(color.l)) {
+            s = convertToPercentage(color.s);
+            l = convertToPercentage(color.l);
+            rgb = hslToRgb(color.h, s, l);
             ok = true;
             format = "hsl";
         }
@@ -475,7 +480,7 @@ function rgbToHsv(r, g, b) {
     s = bound01(s, 100);
     v = bound01(v, 100);
 
-    var i = math.floor(h),
+    var i = Math.floor(h),
         f = h - i,
         p = v * (1 - s),
         q = v * (1 - f * s),
@@ -510,9 +515,29 @@ function rgbToHex(r, g, b, allow3Char) {
 
 // `rgbaToHex`
 // Converts an RGBA color plus alpha transparency to hex
-// Assumes r, g, b and a are contained in the set [0, 255]
-// Returns an 8 character hex
-function rgbaToHex(r, g, b, a) {
+// Assumes r, g, b are contained in the set [0, 255] and
+// a in [0, 1]. Returns a 4 or 8 character rgba hex
+function rgbaToHex(r, g, b, a, allow4Char) {
+
+    var hex = [
+        pad2(mathRound(r).toString(16)),
+        pad2(mathRound(g).toString(16)),
+        pad2(mathRound(b).toString(16)),
+        pad2(convertDecimalToHex(a))
+    ];
+
+    // Return a 4 character hex if possible
+    if (allow4Char && hex[0].charAt(0) == hex[0].charAt(1) && hex[1].charAt(0) == hex[1].charAt(1) && hex[2].charAt(0) == hex[2].charAt(1) && hex[3].charAt(0) == hex[3].charAt(1)) {
+        return hex[0].charAt(0) + hex[1].charAt(0) + hex[2].charAt(0) + hex[3].charAt(0);
+    }
+
+    return hex.join("");
+}
+
+// `rgbaToArgbHex`
+// Converts an RGBA color to an ARGB Hex8 string
+// Rarely used, but required for "toFilter()"
+function rgbaToArgbHex(r, g, b, a) {
 
     var hex = [
         pad2(convertDecimalToHex(a)),
@@ -594,7 +619,7 @@ function darken (color, amount) {
 // Values outside of this range will be wrapped into this range.
 function spin(color, amount) {
     var hsl = tinycolor(color).toHsl();
-    var hue = (mathRound(hsl.h) + amount) % 360;
+    var hue = (hsl.h + amount) % 360;
     hsl.h = hue < 0 ? 360 + hue : hue;
     return tinycolor(hsl);
 }
@@ -681,26 +706,12 @@ tinycolor.mix = function(color1, color2, amount) {
     var rgb2 = tinycolor(color2).toRgb();
 
     var p = amount / 100;
-    var w = p * 2 - 1;
-    var a = rgb2.a - rgb1.a;
-
-    var w1;
-
-    if (w * a == -1) {
-        w1 = w;
-    } else {
-        w1 = (w + a) / (1 + w * a);
-    }
-
-    w1 = (w1 + 1) / 2;
-
-    var w2 = 1 - w1;
 
     var rgba = {
-        r: rgb2.r * w1 + rgb1.r * w2,
-        g: rgb2.g * w1 + rgb1.g * w2,
-        b: rgb2.b * w1 + rgb1.b * w2,
-        a: rgb2.a * p  + rgb1.a * (1 - p)
+        r: ((rgb2.r - rgb1.r) * p) + rgb1.r,
+        g: ((rgb2.g - rgb1.g) * p) + rgb1.g,
+        b: ((rgb2.b - rgb1.b) * p) + rgb1.b,
+        a: ((rgb2.a - rgb1.a) * p) + rgb1.a
     };
 
     return tinycolor(rgba);
@@ -986,7 +997,7 @@ function bound01(n, max) {
     }
 
     // Handle floating point rounding errors
-    if ((math.abs(n - max) < 0.000001)) {
+    if ((Math.abs(n - max) < 0.000001)) {
         return 1;
     }
 
@@ -1056,6 +1067,7 @@ var matchers = (function() {
     var PERMISSIVE_MATCH4 = "[\\s|\\(]+(" + CSS_UNIT + ")[,|\\s]+(" + CSS_UNIT + ")[,|\\s]+(" + CSS_UNIT + ")[,|\\s]+(" + CSS_UNIT + ")\\s*\\)?";
 
     return {
+        CSS_UNIT: new RegExp(CSS_UNIT),
         rgb: new RegExp("rgb" + PERMISSIVE_MATCH3),
         rgba: new RegExp("rgba" + PERMISSIVE_MATCH4),
         hsl: new RegExp("hsl" + PERMISSIVE_MATCH3),
@@ -1064,9 +1076,17 @@ var matchers = (function() {
         hsva: new RegExp("hsva" + PERMISSIVE_MATCH4),
         hex3: /^#?([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/,
         hex6: /^#?([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/,
+        hex4: /^#?([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/,
         hex8: /^#?([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/
     };
 })();
+
+// `isValidCSSUnit`
+// Take in a single string / number and check to see if it looks like a CSS unit
+// (see `matchers` above for definition).
+function isValidCSSUnit(color) {
+    return !!matchers.CSS_UNIT.exec(color);
+}
 
 // `stringInputToObject`
 // Permissive string parsing.  Take in a number of formats, and output an object
@@ -1108,10 +1128,10 @@ function stringInputToObject(color) {
     }
     if ((match = matchers.hex8.exec(color))) {
         return {
-            a: convertHexToDecimal(match[1]),
-            r: parseIntFromHex(match[2]),
-            g: parseIntFromHex(match[3]),
-            b: parseIntFromHex(match[4]),
+            r: parseIntFromHex(match[1]),
+            g: parseIntFromHex(match[2]),
+            b: parseIntFromHex(match[3]),
+            a: convertHexToDecimal(match[4]),
             format: named ? "name" : "hex8"
         };
     }
@@ -1121,6 +1141,15 @@ function stringInputToObject(color) {
             g: parseIntFromHex(match[2]),
             b: parseIntFromHex(match[3]),
             format: named ? "name" : "hex"
+        };
+    }
+    if ((match = matchers.hex4.exec(color))) {
+        return {
+            r: parseIntFromHex(match[1] + '' + match[1]),
+            g: parseIntFromHex(match[2] + '' + match[2]),
+            b: parseIntFromHex(match[3] + '' + match[3]),
+            a: convertHexToDecimal(match[4] + '' + match[4]),
+            format: named ? "name" : "hex8"
         };
     }
     if ((match = matchers.hex3.exec(color))) {
@@ -1164,7 +1193,7 @@ else {
     window.tinycolor = tinycolor;
 }
 
-})();
+})(Math);
 
 /*
 
@@ -1548,7 +1577,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.31.6',
+        '_version' : '3.32.0',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -1900,6 +1929,11 @@ cm.clone = function(o, cloneNode){
 };
 
 cm.getLength = function(o){
+    // Array
+    if(cm.isArray(o)){
+        return o.length;
+    }
+    // Object
     var i = 0;
     cm.forEach(o, function(){
         i++;
@@ -1908,7 +1942,7 @@ cm.getLength = function(o){
 };
 
 cm.inArray = function(a, item){
-    if(typeof a == 'string'){
+    if(typeof a === 'string'){
         return a === item;
     }else if(cm.isArray(a)){
         return a.indexOf(item) > -1;
@@ -2017,11 +2051,12 @@ cm.isUndefined = function(value){
 };
 
 cm.objectPath = function(name, obj){
-    obj = typeof obj == 'undefined'? window : obj;
+    if(cm.isUndefined(obj) || cm.isUndefined(name)){
+        return obj;
+    }
     name = name.toString().split('.');
-    var findObj = obj,
-        length = name.length;
-    cm.forEach(name, function(item, key){
+    var findObj = obj;
+    cm.forEach(name, function(item){
         if(findObj){
             findObj = findObj[item];
         }
@@ -2030,7 +2065,9 @@ cm.objectPath = function(name, obj){
 };
 
 cm.objectSelector = function(name, obj, apply){
-    obj = typeof obj == 'undefined'? window : obj;
+    if(cm.isUndefined(obj) || cm.isUndefined(name)){
+        return obj;
+    }
     name = name.toString().split('.');
     var findObj = obj,
         length = name.length;
@@ -2038,7 +2075,7 @@ cm.objectSelector = function(name, obj, apply){
         if(!findObj[item]){
             findObj[item] = {};
         }
-        if(apply && key == length -1){
+        if(apply && key === length -1){
             findObj[item] = apply;
         }
         findObj = findObj[item];
@@ -2298,7 +2335,7 @@ cm.customEvent = (function(){
             _stack[type].push({
                 'node' : node,
                 'type' : type,
-                'handler' : typeof handler == 'function' ? handler : function(){}
+                'handler' : cm.isFunction(handler) ? handler : function(){}
             });
             return node;
         },
@@ -2307,7 +2344,7 @@ cm.customEvent = (function(){
                 _stack[type] = [];
             }
             _stack[type] = _stack[type].filter(function(item){
-                return item['node'] != node && item['handler'] != handler;
+                return item['node'] !== node && item['handler'] !== handler;
             });
             return node;
         },
@@ -2323,7 +2360,7 @@ cm.customEvent = (function(){
             }, params);
             if(_stack[type]){
                 _stack[type].sort(function(a, b){
-                    if(params['type'] == 'parent'){
+                    if(params['type'] === 'parent'){
                         return cm.getNodeOffsetIndex(b['node']) > cm.getNodeOffsetIndex(a['node']);
                     }
                     return cm.getNodeOffsetIndex(a['node']) - cm.getNodeOffsetIndex(b['node']);
@@ -2359,7 +2396,7 @@ cm.customEvent = (function(){
 })();
 
 cm.onLoad = function(handler, isMessage){
-    isMessage = typeof isMessage == 'undefined'? true : isMessage;
+    isMessage = cm.isUndefined(isMessage) ? true : isMessage;
     var called = false;
     var execute = function(){
         if(called){
@@ -2381,7 +2418,7 @@ cm.onLoad = function(handler, isMessage){
 };
 
 cm.onReady = function(handler, isMessage){
-    isMessage = typeof isMessage == 'undefined'? true : isMessage;
+    isMessage = cm.isUndefined(isMessage) ? true : isMessage;
     var called = false;
     var execute = function(){
         if(called){
@@ -2565,12 +2602,18 @@ cm.addScript = function(src, async, callback){
     // Configure Stack Item
     if(cm._addScriptStack[src]){
         item = cm._addScriptStack[src];
-        item['callbacks'].push(callback);
+        if(!item['loaded']){
+            item['callbacks'].push(callback);
+        }else{
+            callback();
+        }
     }else{
         item = {
             'src' : src,
             'async' : async,
+            'loaded' : false,
             'callback' : function(e){
+                item['loaded'] = true;
                 while(item['callbacks'].length){
                     item['callbacks'][0](e);
                     cm.arrayRemove(item['callbacks'], item['callbacks'][0]);
@@ -2597,12 +2640,12 @@ cm.loadScript = function(o){
         'async' : true,
         'callback' : function(){}
     }, o);
-    var path = cm.objectSelector(o['path'], window);
+    var path = cm.objectPath(o['path'], window);
     if(!cm.isEmpty(path)){
         o['callback'](path);
     }else{
         cm.addScript(o['src'], o['async'], function(){
-            path = cm.objectSelector(o['path'], window);
+            path = cm.objectPath(o['path'], window);
             if(!cm.isEmpty(path)){
                 o['callback'](path);
             }else{
@@ -2854,7 +2897,7 @@ cm.clearNode = function(node){
 
 cm.prevEl = function(node){
     node = node.previousSibling;
-    if(node && node.nodeType && node.nodeType != 1){
+    if(node && node.nodeType && node.nodeType !== 1){
         node = cm.prevEl(node);
     }
     return node;
@@ -2862,7 +2905,7 @@ cm.prevEl = function(node){
 
 cm.nextEl = function(node){
     node = node.nextSibling;
-    if(node && node.nodeType && node.nodeType != 1){
+    if(node && node.nodeType && node.nodeType !== 1){
         node = cm.nextEl(node);
     }
     return node;
@@ -2873,7 +2916,7 @@ cm.firstEl = function(node){
         return null;
     }
     node = node.firstChild;
-    if(node.nodeType != 1){
+    if(node.nodeType !== 1){
         node = cm.nextEl(node);
     }
     return node;
@@ -2996,7 +3039,7 @@ cm.getNodes = function(container, marker){
 
         cm.forEach(separators, function(separator){
             altProcessedObj = [];
-            if(separator.indexOf('.') == -1){
+            if(separator.indexOf('.') === -1){
                 process(node, separator, obj, altProcessedObj);
             }else{
                 pathway(node, separator, altProcessedObj);
@@ -3013,7 +3056,7 @@ cm.getNodes = function(container, marker){
         cm.forEach(separators, function(separator, i){
             if(i === 0 && cm.isEmpty(separator)){
                 obj = nodes;
-            }else if((i + 1) == separators.length){
+            }else if((i + 1) === separators.length){
                 process(node, separator, obj, processedObj);
             }else{
                 if(!obj[separator]){
@@ -3027,10 +3070,10 @@ cm.getNodes = function(container, marker){
     var process = function(node, attr, obj, processedObj){
         var separators = attr? attr.split(':') : [],
             arr;
-        if(separators.length == 1){
+        if(separators.length === 1){
             obj[separators[0]] = node;
-        }else if(separators.length == 2 || separators.length == 3){
-            if(separators[1] == '[]'){
+        }else if(separators.length === 2 || separators.length === 3){
+            if(separators[1] === '[]'){
                 if(!obj[separators[0]]){
                     obj[separators[0]] = [];
                 }
@@ -3040,7 +3083,7 @@ cm.getNodes = function(container, marker){
                 }
                 find(node, arr, processedObj);
                 obj[separators[0]].push(arr);
-            }else if(separators[1] == '{}'){
+            }else if(separators[1] === '{}'){
                 if(!obj[separators[0]]){
                     obj[separators[0]] = {};
                 }
@@ -3381,12 +3424,31 @@ cm.strReplace = function(str, vars){
 };
 
 cm.reduceText = function(str, length, points){
-    points = typeof points == 'undefined' ? false : points;
+    points = cm.isUndefined(points) ? false : points;
     if(str.length > length){
-        return str.slice(0, length) + ((points) ? '...' : '');
+        return str.slice(0, length) + ((points) ? '…' : '');
     }else{
         return str;
     }
+};
+
+cm.reduceTextSmart = function(str, length, points){
+    if(str.length <= length){
+        return str;
+    }
+    var split = str.split(/[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+/),
+        newStr = '',
+        testStr = '',
+        i = 0;
+    while(split[i] && testStr.length <= length){
+        newStr = testStr;
+        testStr += ' ' + split[i];
+        i++;
+    }
+    if(!cm.isUndefined(points)){
+        newStr += '…';
+    }
+    return newStr;
 };
 
 cm.removeDanger = function(str){
@@ -3422,7 +3484,7 @@ cm.addLeadZero = function(x){
     return x < 10 ? '0' + x : x;
 };
 
-cm.getNumberDeclension = function(number, titles){
+cm.getNumberDeclension = function(number, titles /* ['найдена', 'найдено', 'найдены'] */){
     var cases = [2, 0, 1, 1, 1, 2];
     return titles[
         (number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]
@@ -3450,7 +3512,14 @@ cm.getCurrentDate = function(format){
 
 cm.dateFormat = function(date, format, langs){
     //date = !date ? new Date() : new Date(+date);
-    date = date ? new Date(+date) : null;
+    if(cm.isDate(date)){
+        date = new Date(+date);
+    }else if(cm.isString(date)){
+        date = new Date(date);
+    }
+    if(isNaN(date)){
+        date = null;
+    }
     format = cm.isString(format) ? format : cm._config.dateTimeFormat;
     langs = cm.merge({
         'months' : cm._strings.months,
@@ -4856,6 +4925,7 @@ cm.ajax = function(o){
             'debug' : true,
             'type' : 'json',                                         // text | xml | json | jsonp
             'method' : 'post',                                       // post | get | put | delete
+            'paramsType' : 'uri',                                    // uri | json
             'params' : '',
             'url' : '',
             'modifier' : '',
@@ -4914,7 +4984,12 @@ cm.ajax = function(o){
                 '%assetsUrl%' : cm._assetsUrl || cm._baseUrl,
                 '%pathUrl%' : cm._pathUrl
             });
-            config['params'] = cm.obj2URI(config['params']);
+            if(config['paramsType'] === 'json'){
+                config['headers']['Content-Type'] = 'application/json';
+                config['params'] = cm.stringifyJSON(config['params']);
+            }else{
+                config['params'] = cm.obj2URI(config['params']);
+            }
         }
         // Build request link
         if(!cm.isEmpty(config['modifier']) && !cm.isEmpty(config['modifierParams'])){
@@ -6680,6 +6755,7 @@ cm.define('Com.AbstractController', {
         'onConstructEnd',
         'onInitComponentsStart',
         'onInitComponentsEnd',
+        'onGetLESSVariables',
         'onGetLESSVariablesStart',
         'onGetLESSVariablesProcess',
         'onGetLESSVariablesEnd',
@@ -6727,7 +6803,9 @@ cm.define('Com.AbstractController', {
         'controllerEvents' : false,
         'customEvents' : true,
         'resizeEvent' : true,
+        'resizeNode' : window,
         'scrollEvent' : false,
+        'scrollNode' : window,
         'collector' : null,
         'constructCollector' : false,
         'destructCollector' : false
@@ -6768,9 +6846,9 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         that.triggerEvent('onBeforeRender');
         that.render();
         that.triggerEvent('onAfterRender');
-        that.setEvents();
         that.triggerEvent('onConstructProcess');
         that.addToStack(that.nodes['container']);
+        that.setEvents();
         that.triggerEvent('onRender');
         that.triggerEvent('onRenderEnd');
         that.triggerEvent('onConstructEnd');
@@ -6836,6 +6914,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
     classProto.getLESSVariables = function(){
         var that = this;
         that.triggerEvent('onGetLESSVariablesStart');
+        that.triggerEvent('onGetLESSVariables');
         that.triggerEvent('onGetLESSVariablesProcess');
         that.triggerEvent('onGetLESSVariablesEnd');
         return that;
@@ -6886,8 +6965,8 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         var that = this;
         that.triggerEvent('onSetEventsStart');
         // Windows events
-        that.params['resizeEvent'] && cm.addEvent(window, 'resize', that.redrawHandler);
-        that.params['scrollEvent'] && cm.addEvent(window, 'scroll', that.scrollHandler);
+        that.params['resizeEvent'] && cm.addEvent(that.params['resizeNode'], 'resize', that.redrawHandler);
+        that.params['scrollEvent'] && cm.addEvent(that.params['scrollNode'], 'scroll', that.scrollHandler);
         that.triggerEvent('onSetEvents');
         that.triggerEvent('onSetEventsProcess');
         // Add custom events
@@ -6904,8 +6983,8 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         var that = this;
         that.triggerEvent('onUnsetEventsStart');
         // Windows events
-        that.params['resizeEvent'] && cm.removeEvent(window, 'resize', that.redrawHandler);
-        that.params['scrollEvent'] && cm.removeEvent(window, 'scroll', that.scrollHandler);
+        that.params['resizeEvent'] && cm.removeEvent(that.params['resizeNode'], 'resize', that.redrawHandler);
+        that.params['scrollEvent'] && cm.removeEvent(that.params['scrollNode'], 'scroll', that.scrollHandler);
         that.triggerEvent('onUnsetEvents');
         that.triggerEvent('onUnsetEventsProcess');
         // Remove custom events
@@ -8029,11 +8108,14 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.renderFiled = function(){
         var that = this;
         that.nodes['container'] = cm.node('dl', {'class' : 'pt__field'},
-            that.nodes['label'] = cm.node('dt',
-                cm.node('label', that.params['label'])
-            ),
+            that.nodes['label'] = cm.node('dt'),
             that.nodes['value'] = cm.node('dd')
         );
+        // Label
+        if(!cm.isEmpty(that.params['label'])){
+            that.nodes['labelText'] = cm.node('label', that.params['label']);
+            cm.appendChild(that.nodes['labelText'], that.params['label']);
+        }
         // Required
         if(that.params['required']){
             that.nodes['required'] = cm.node('span', {'class' : 'required'}, that.lang('*'));
@@ -12104,14 +12186,21 @@ function(params){
     };
 
     var renderTitle = function(title){
-        if(that.params['showTitle'] && !cm.isEmpty(title)){
+        if(that.params['showTitle']){
             cm.removeClass(nodes['container'], 'has-no-title');
             // Remove old nodes
             cm.remove(nodes['title']);
             // Render new nodes
-            nodes['title'] = cm.Node('div', {'class' : 'title'}, title);
-            if(that.params['titleOverflow']){
-                cm.addClass(nodes['title'], 'cm__text-overflow');
+            nodes['title'] = cm.Node('div', {'class' : 'title'});
+            if(!cm.isEmpty(title)){
+                if(cm.isNode(title)){
+                    cm.appendChild(title, nodes['title']);
+                }else{
+                    cm.appendChild(cm.textNode(title), nodes['title']);
+                }
+                if(that.params['titleOverflow']){
+                    cm.addClass(nodes['title'], 'cm__text-overflow');
+                }
             }
             cm.insertFirst(nodes['title'], nodes['windowInner']);
         }else{
@@ -14695,7 +14784,7 @@ function(params){
         item = cm.merge({
             'index' : items.length,
             'isLoad' : false,
-            'type' : 'image',        // image | iframe
+            'type' : null,        // image | iframe
             'nodes' : {},
             'src' : '',
             'title' : '',
@@ -14706,6 +14795,7 @@ function(params){
             /(\.jpg|\.png|\.gif|\.jpeg|\.bmp|\.tga)$/gi.test(item['src'])
             || /^data:image/gi.test(item['src'])
             || /^image/gi.test(item['mime'])
+            || item['type'] === 'image'
         ){
             item['type'] = 'image';
         }else{
@@ -14719,7 +14809,7 @@ function(params){
             item['nodes']['inner'] = cm.Node('div', {'class' : 'inner'})
         );
         // Render by type
-        if(item['type'] == 'image'){
+        if(item['type'] === 'image'){
             item['nodes']['inner'].appendChild(
                 item['nodes']['content'] = cm.Node('img', {'class' : 'descr', 'alt' : item['title'], 'title' : item['title']})
             );
@@ -14729,7 +14819,7 @@ function(params){
             );
         }
         // Caption
-        if(that.params['showCaption'] && !cm.isEmpty(item['title'] && item['type'] == 'image')){
+        if(that.params['showCaption'] && !cm.isEmpty(item['title'] && item['type'] === 'image')){
             item['nodes']['inner'].appendChild(
                 cm.Node('div', {'class' : 'title'},
                     cm.Node('div', {'class' : 'inner'}, item['title'])
@@ -14761,14 +14851,14 @@ function(params){
                 'previous' : itemOld
             });
             // If current active item not equal new item - process with new item, else redraw window alignment and dimensions
-            if(i != that.current){
+            if(i !== that.current){
                 // API onSet
                 that.triggerEvent('onChange', {
                     'current' : item,
                     'previous' : itemOld
                 });
                 // Check type
-                if(item['type'] == 'image'){
+                if(item['type'] === 'image'){
                     setItemImage(i, item, itemOld);
                 }else{
                     setItemIframe(i, item, itemOld);
@@ -14832,7 +14922,7 @@ function(params){
             itemOld['nodes']['container'].style.zIndex = 1;
             item['nodes']['container'].style.zIndex = 2;
         }
-        if(item['type'] == 'image'){
+        if(item['type'] === 'image'){
             that.nodes['holder'].appendChild(item['nodes']['container']);
         }
         // Animate Slide
@@ -14849,11 +14939,11 @@ function(params){
     };
 
     var next = function(){
-        set((that.current == items.length - 1)? 0 : that.current + 1);
+        set((that.current === items.length - 1)? 0 : that.current + 1);
     };
 
     var prev = function(){
-        set((that.current == 0)? items.length - 1 : that.current - 1);
+        set((that.current === 0)? items.length - 1 : that.current - 1);
     };
 
     var zoom = function(){
@@ -14891,7 +14981,7 @@ function(params){
     };
 
     that.clear = function(){
-        if(that.current && items[that.current]){
+        if(!cm.isEmpty(that.current) && items[that.current]){
             cm.remove(items[that.current]['nodes']['container']);
         }
         that.current = null;
@@ -15051,6 +15141,7 @@ cm.define('Com.GalleryPopup', {
         'theme' : 'theme-black',
         'showCounter' : true,
         'showTitle' : true,
+        'showZoom' : true,
         'data' : [],
         'openOnSelfClick' : false,
         'Com.Dialog' : {
@@ -15083,9 +15174,10 @@ function(params){
     };
 
     var validateParams = function(){
+        that.params['Com.Gallery']['zoom'] = that.params['showZoom'];
         that.params['Com.Dialog']['theme'] = that.params['theme'];
         that.params['Com.Dialog']['size'] = that.params['size'];
-        if(that.params['size'] == 'fullscreen'){
+        if(that.params['size'] === 'fullscreen'){
             that.params['Com.Dialog']['documentScroll'] = false;
         }
     };
@@ -15096,7 +15188,7 @@ function(params){
             nodes['galleryContainer'] = cm.Node('div', {'class' : 'inner'})
         );
         // Set aspect ration
-        if(that.params['aspectRatio'] != 'auto'){
+        if(that.params['aspectRatio'] !== 'auto'){
             cm.addClass(nodes['container'], ['cm__aspect', that.params['aspectRatio']].join('-'));
         }
     };
@@ -15213,6 +15305,60 @@ function(params){
     };
 
     init();
+});
+cm.define('Com.GalleryPopupContainer', {
+    'extend' : 'Com.AbstractContainer',
+    'params' : {
+        'constructor' : 'Com.GalleryPopup',
+        'data' : {},
+        'params' : {}
+    }
+},
+function(params){
+    var that = this;
+    that.buttons = {};
+    // Call parent class construct
+    Com.AbstractContainer.apply(that, arguments);
+});
+
+cm.getConstructor('Com.GalleryPopupContainer', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.validateParams = function(){
+        var that = this;
+        // Call parent method
+        _inherit.prototype.validateParams.apply(that, arguments);
+        // Set Data
+        that.params['params']['data'] = that.params['data'];
+        return that;
+    };
+
+    classProto.validateParams = function(){
+        var that = this;
+        // Call parent method
+        _inherit.prototype.validateParams.apply(that, arguments);
+        return that;
+    };
+
+    classProto.constructController = function(classObject){
+        var that = this;
+        return new classObject(
+            cm.merge(that.params['params'], {
+                'data' : [that.params['data']]
+            })
+        );
+    };
+
+    classProto.set = function(data){
+        var that = this;
+        that.params['data'] = data;
+        if(that.components['controller']){
+            that.components['controller'].clear();
+            that.components['controller'].add(data);
+            that.components['controller'].set(0);
+        }
+        return that;
+    };
 });
 cm.define('Com.Glossary', {
     'modules' : [
@@ -19041,6 +19187,7 @@ cm.define('Com.Request', {
         'className' : '',
         'autoSend' : false,
         'responseKey' : 'data',
+        'responseErrorsKey' : 'errors',
         'responseHTML' : true,
         'responseHTMLKey' : 'data',
         'responseStatusKey' : 'data.success',
@@ -19055,9 +19202,9 @@ cm.define('Com.Request', {
         'variables' : {},
         'showOverlay' : true,
         'overlayContainer' : 'document.body',
-        'overlayDelay' : 'cm._config.loadDelay',
         'animateDuration' : 'cm._config.animDuration',
         'Com.Overlay' : {
+            'lazy' : true,
             'autoOpen' : false,
             'removeOnClose' : true,
             'showSpinner' : true,
@@ -19080,7 +19227,6 @@ function(params){
     that.responceDataFiltered = null;
     that.responceDataHTML = null;
     that.responceDataStatus = null;
-    that.overlayDelay = null;
     that.isProcess = false;
     that.isError = false;
     that.isRendering = false;
@@ -19100,7 +19246,7 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         that.render();
         that.addToStack(that.nodes['container']);
         that.triggerEvent('onRender');
-        that.params['autoSend'] && that.set();
+        that.params['autoSend'] && that.send();
         return that;
     };
 
@@ -19265,11 +19411,7 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         that.isProcess = true;
         // Show Overlay
         if(that.params['showOverlay']){
-            that.overlayDelay = setTimeout(function(){
-                if(that.components['overlay'] && !that.components['overlay'].isOpen){
-                    that.components['overlay'].open();
-                }
-            }, that.params['overlayDelay']);
+            that.components['overlay'] && that.components['overlay'].open();
         }
         that.triggerEvent('onStart');
         return that;
@@ -19280,10 +19422,7 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         that.isProcess = false;
         // Hide Overlay
         if(that.params['showOverlay']){
-            that.overlayDelay && clearTimeout(that.overlayDelay);
-            if(that.components['overlay'] && that.components['overlay'].isOpen){
-                that.components['overlay'].close();
-            }
+            that.components['overlay'] && that.components['overlay'].close();
         }
         that.triggerEvent('onEnd');
         return that;
@@ -19291,17 +19430,20 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
 
     classProto.filter = function(){
         var that = this,
-            dataFiltered = cm.objectSelector(that.params['responseKey'], that.responceData),
-            dataStatus = cm.objectSelector(that.params['responseStatusKey'], that.responceData),
+            errorsItem = cm.objectPath(that.params['responseErrorsKey'], that.responceData),
+            dataFiltered = cm.objectPath(that.params['responseKey'], that.responceData),
+            dataStatus = cm.objectPath(that.params['responseStatusKey'], that.responceData),
             dataHTML;
-        if(cm.isEmpty(that.params['responseHTMLKey'])){
-            dataHTML = cm.objectSelector(that.params['responseKey'], that.responceData);
-        }else{
-            dataHTML = cm.objectSelector(that.params['responseHTMLKey'], that.responceData);
+        if(cm.isEmpty(errorsItem)){
+            if(cm.isEmpty(that.params['responseHTMLKey'])){
+                dataHTML = cm.objectPath(that.params['responseKey'], that.responceData);
+            }else{
+                dataHTML = cm.objectPath(that.params['responseHTMLKey'], that.responceData);
+            }
+            that.responceDataFiltered = !cm.isEmpty(dataFiltered) ? dataFiltered : [];
+            that.responceDataHTML = !cm.isEmpty(dataHTML) ? dataHTML : '';
+            that.responceDataStatus = !cm.isEmpty(dataStatus) ? dataStatus : false;
         }
-        that.responceDataFiltered = !cm.isEmpty(dataFiltered) ? dataFiltered : [];
-        that.responceDataHTML = !cm.isEmpty(dataHTML) ? dataHTML : '';
-        that.responceDataStatus = !cm.isEmpty(dataStatus) ? dataStatus : false;
     };
 
     classProto.response = function(){
@@ -19508,6 +19650,8 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         var that = this;
         // Variables
         that.routes = {};
+        that.routesBinds = {};
+        that.dataStorage = {};
         that.current = null;
         that.previous = null;
         // Bind
@@ -19515,7 +19659,6 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         that.popstateEventHandler = that.popstateEvent.bind(that);
         // Call parent method - construct
         _inherit.prototype.construct.apply(that, arguments);
-        return that;
     };
 
     classProto.renderViewModel = function(){
@@ -19523,71 +19666,111 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         // Init location handlers
         cm.addEvent(window, 'click', that.windowClickEventHandler);
         cm.addEvent(window, 'popstate', that.popstateEventHandler);
-        return that;
     };
 
     classProto.windowClickEvent = function(e){
         var that = this,
-            target = cm.getEventTarget(e);
+            target;
+        // Process route only on LMB without pressed ctrl or meta keys
+        if(e.button || e.metaKey || e.ctrlKey){
+            return;
+        }
+        // Get event target
+        target = cm.getEventTarget(e);
+        // Process route only on inner link
         if(cm.isTagName(target, 'a')){
             cm.preventDefault(e);
             that.processLink(target);
         }
-        return that;
     };
 
     classProto.popstateEvent = function(e){
-        var that = this;
-        var state = e.state;
-        state && that.processRoute(state['route']);
-        return that;
+        var that = this,
+            state = e.state;
+        if(state){
+            that.processRoute(state);
+        }else{
+            //that.start();
+        }
     };
 
     classProto.processLink = function(el){
-        var that = this;
-        var route = el.getAttribute('href').replace(/^\./, '');
-        route && that.pushRoute(route);
-        return that;
+        var that = this,
+            href = el.getAttribute('href');
+        if(!cm.isEmpty(href)){
+            href = that.prepareRoute(href);
+            that.pushRoute(href[0], href[1]);
+        }
     };
 
     classProto.pushRoute = function(route, hash){
-        var that = this;
-        var state = {
-            'route' : route
-        };
-        var location = cm._baseUrl + (!cm.isEmpty(hash) ? [route, hash].join('#') : route);
+        var that = this,
+            state = {
+                'route' : route,
+                'hash' : hash,
+                'location' : that.prepareHref(route)
+            };
+        // Check data storage
+        if(that.dataStorage[state['route']]){
+            state['data'] = that.dataStorage[state['route']];
+        }
+        that.dataStorage = {};
+        // Check hash
+        if(!cm.isEmpty(state['hash'])){
+            state['href'] = state['location'] + '#' + state['hash'];
+        }
+        // Set scroll
+        cm.setBodyScrollTop(0);
         // Set Window URL
-        window.history.pushState(state, '', location);
+        window.history.pushState(state, '', state['location']);
         // Process route
-        that.processRoute(route);
-        return that;
+        that.processRoute(state);
+        // Process hash
+        if(!cm.isEmpty(state['href'])){
+            // TODO fix empty state object after changing hash
+            window.location.hash = '#' + state['hash'];
+            // window.history.pushState(state, '', state['href']);
+        }
     };
 
-    classProto.processRoute = function(route){
-        var that = this;
+    classProto.processRoute = function(state){
+        var that = this,
+            match,
+            matchItem,
+            matchCaptures,
+            route;
         // Destruct old route
         that.destructRoute(that.current);
-        // Construct new route
-        if(that.routes[route]){
-            that.constructRoute(route)
-        }else if(that.routes['/404']){
-            that.constructRoute('/404')
+        // Match route
+        cm.forEach(that.routes, function(rTtem){
+            if(match = state['route'].match(rTtem['regexp'])){
+                matchCaptures = match;
+                matchItem = rTtem;
+            }
+        });
+        if(!matchItem){
+            matchItem = that.get('/404');
         }
-        return that;
+        route = cm.merge(matchItem, state);
+        // Get captures
+        if(matchCaptures){
+            route['captures'] = that.mapCaptures(route['map'], matchCaptures);
+        }
+        // Construct route
+        that.constructRoute(route);
     };
 
     classProto.destructRoute = function(route){
         var that = this;
-        var item = that.routes[route];
         // Export
         that.previous = route;
         // Callbacks
-        if(item){
-            if(item['constructor']){
-                item['controller'] && item['controller'].destruct && item['controller'].destruct();
+        if(route){
+            if(route['constructor']){
+                route['controller'] && route['controller'].destruct && route['controller'].destruct();
             }else{
-                item['onDestruct'](item);
-                item['callback'](item);
+                route['onDestruct'](route);
+                route['callback'](route);
             }
         }
         return that;
@@ -19595,65 +19778,195 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
 
     classProto.constructRoute = function(route){
         var that = this;
-        var item = that.routes[route];
         // Export
         that.current = route;
         // Callbacks
-        if(item){
-            if(item['constructor']){
-                cm.getConstructor(item['constructor'], function(classConstructor){
-                    item['controller'] = new classConstructor(
-                        cm.merge(item['constructorParams'], {
-                            'container' : that.params['container'],
-                            'route' : route
-                        })
-                    );
-                });
-            }else{
-                item['onConstruct'](item);
-                item['callback'](item);
+        if(route['constructor']){
+            cm.getConstructor(route['constructor'], function(classConstructor){
+                route['controller'] = new classConstructor(
+                    cm.merge(route['constructorParams'], {
+                        'container' : that.params['container'],
+                        'route' : route
+                    })
+                );
+            });
+        }else{
+            route['onConstruct'](route);
+            route['callback'](route);
+        }
+        that.triggerEvent('onChange', route);
+        return that;
+    };
+
+    /* *** HELPERS *** */
+
+    classProto.prepareRoute = function(route){
+        var that = this;
+        route = route
+            .replace(new RegExp('^' + window.location.protocol), '')
+            .replace(new RegExp('^//www.'), '//')
+            .replace(new RegExp('^' + cm._baseUrl), '')
+            .split('#');
+        return route;
+    };
+
+    classProto.prepareHref = function(route){
+        var that = this,
+            baseUrl = cm._baseUrl,
+            hasWWW = new RegExp('^www.').test(window.location.host);
+        if(hasWWW){
+            baseUrl = baseUrl.replace(new RegExp('^//'), '//www.');
+        }
+        return window.location.protocol + baseUrl + route;
+    };
+
+    classProto.getMap = function(route){
+        var machRX = /({(\w+)})/g,
+            map = {},
+            count = 0,
+            match;
+        while(match = machRX.exec(route)){
+            count++;
+            if(match[2]){
+                map[count] = match[2];
             }
         }
-        that.triggerEvent('onChange', item);
-        return that;
+        return map;
+    };
+
+    classProto.mapCaptures = function(map, captures) {
+        var result = {};
+        cm.forEach(map, function(id, key){
+            result[id] = captures[key];
+        });
+        return result;
     };
 
     /* *** PUBLIC *** */
 
-    classProto.add = function(route, params){
+    classProto.embed = function(node){
         var that = this;
-        var item = cm.merge({
-            'route' : route,
-            'constructor' : false,
-            'constructorParams' : {},
-            'callback' : function(){},
-            'onConstruct' : function(){},
-            'onDestruct' : function(){}
-        }, params);
+        that.params['container'] = node;
+    };
+
+    classProto.add = function(route, params){
+        var that = this,
+            item = cm.merge({
+                'route' : route,
+                'originRoute' : route,
+                'name' : null,
+                'regexp' : null,
+                'map' : [],
+                'captures' : {},
+                'constructor' : false,
+                'constructorParams' : {},
+                'callback' : function(){},
+                'onConstruct' : function(){},
+                'onDestruct' : function(){}
+            }, params);
+        // RegExp
+        item['regexp'] = new RegExp('^' + route.replace(/({\w+})/g, '([\\s\\S]+?)') + '$');
+        item['map'] = that.getMap(route);
+        // Binds
+        if(cm.isString(item['name'])){
+            that.routesBinds[item['name']] = route;
+        }else if(cm.isArray(item['name'])){
+            cm.forEach(item['name'], function(name){
+                that.routesBinds[name] = route;
+            });
+        }
         // Export
         that.routes[route] = item;
         return that;
     };
+    
+    classProto.get = function(route){
+        var that = this;
+        if(that.routesBinds[route]){
+            route = that.routesBinds[route];
+        }
+        return that.routes[route];
+    };
+
+    classProto.getURL = function(route, hash, params, data){
+        var that = this,
+            item;
+        if(item = that.get(route)){
+            route = item['route'];
+        }
+        if(cm.isObject(params)){
+            route = route.replace(/{(\w+)}/g, function(math, p1){
+                return params[p1] || '';
+            });
+        }
+        if(!/^\//.test(route)){
+            route = '/' + route;
+        }
+        // Save into data storage
+        that.dataStorage[route] = data;
+        // Add hash
+        if(!cm.isEmpty(hash)){
+            route = route + '#' + hash;
+        }
+        return route;
+    };
+
+    classProto.getFullURL = function(route, hash, params, data){
+        var that = this;
+        return that.prepareHref(that.getURL(route, hash, params, data));
+    };
+
+    classProto.set = function(route, hash){
+        var that = this;
+        if(that.routesBinds[route]){
+            route = that.routesBinds[route];
+        }
+        that.trigger(route, hash);
+        return that;
+    };
+
+    classProto.summon = function(route, hash){
+        var that = this,
+            item;
+        if(that.routesBinds[route]){
+            route = that.routesBinds[route];
+        }
+        if(item = that.routes[route]){
+            that.destructRoute(that.current);
+            that.constructRoute(item);
+        }
+        return that;
+    };
 
     classProto.remove = function(route){
-        var that = this;
-        if(that.routes[route]){
+        var that = this,
+            item;
+        if(that.routesBinds[route]){
+            route = that.routesBinds[route];
+        }
+        if(item = that.routes[route]){
+            if(cm.isString(item['name'])){
+                delete that.routesBinds[item['name']];
+            }else if(cm.isArray(item['name'])){
+                cm.forEach(item['name'], function(name){
+                    delete that.routesBinds[name];
+                })
+            }
             delete that.routes[route];
         }
         return that;
     };
 
-    classProto.trigger = function(route){
+    classProto.trigger = function(route, hash){
         var that = this;
-        that.pushRoute(route);
+        that.pushRoute(route, hash);
         return that;
     };
 
     classProto.start = function(){
-        var that = this;
-        var route = window.location.href.replace(cm._baseUrl, '');
-        var hash = window.location.hash.slice(1);
-        that.pushRoute(route, hash);
+        var that = this,
+            href = that.prepareRoute(window.location.href);
+        that.trigger(href[0], href[1]);
         return that;
     };
 });
@@ -19821,18 +20134,8 @@ Com['Scroll'] = function(o){
     init();
 };
 cm.define('Com.ScrollPagination', {
-    'modules' : [
-        'Params',
-        'Events',
-        'Langs',
-        'Structure',
-        'DataConfig',
-        'DataNodes',
-        'Callbacks',
-        'Stack'
-    ],
+    'extend' : 'Com.AbstractController',
     'events' : [
-        'onRender',
         'onRebuild',
         'onStart',
         'onAbort',
@@ -19843,16 +20146,20 @@ cm.define('Com.ScrollPagination', {
         'onPageHide',
         'onEnd',
         'onFinalize',
-        'onSetCount'
+        'onSetCount',
+        'onButtonShow',
+        'onButtonHide'
     ],
     'params' : {
-        'node' : cm.node('div'),
-        'container' : null,
-        'name' : '',
+        'controllerEvents' : true,
         'renderStructure' : false,                                  // Render wrapper nodes if not exists in html
+        'embedStructureOnRender' : false,
         'embedStructure' : 'append',
+        'resizeEvent' : true,
+        'scrollEvent' : true,
         'scrollNode' : window,
         'scrollIndent' : 'Math.min(%scrollHeight% / 2, 600)',       // Variables: %blockHeight%.
+        'disabled' : false,
         'data' : [],                                                // Static data
         'count' : 0,
         'perPage' : 0,                                              // 0 - render all data in one page
@@ -19860,7 +20167,7 @@ cm.define('Com.ScrollPagination', {
         'startPageToken' : '',
         'useToken' : false,
         'pageCount' : 0,                                            // Render only count of pages. 0 - infinity
-        'showButton' : true,                                        // true - always | once - show once after first loaded page
+        'showButton' : true,                                        // true - always | once - show once after first loaded page | none - don't show and don't scroll
         'showLoader' : true,
         'loaderDelay' : 'cm._config.loadDelay',
         'stopOnESC' : true,
@@ -19871,6 +20178,7 @@ cm.define('Com.ScrollPagination', {
         'responseCountKey' : 'count',                               // Take items count from response
         'responseTokenKey' : 'token',                               // Token key name
         'responseKey' : 'data',                                     // Instead of using filter callback, you can provide response array key
+        'responseErrorsKey': 'errors',
         'responseHTML' : false,                                     // If true, html will append automatically
         'ajax' : {
             'type' : 'json',
@@ -19886,49 +20194,62 @@ cm.define('Com.ScrollPagination', {
 },
 function(params){
     var that = this;
+    // Call parent class construct
+    Com.AbstractController.apply(that, arguments);
+});
 
-    that.nodes = {
-        'container' : cm.Node('div'),
-        'scroll' : null,
-        'bar' : cm.Node('div'),
-        'content' : cm.Node('div'),
-        'pages' : cm.Node('div'),
-        'button' : cm.Node('div'),
-        'loader' : cm.Node('div')
+
+cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.construct = function(){
+        var that = this;
+        // variables
+        that.nodes = {
+            'container' : cm.node('div'),
+            'scroll' : null,
+            'bar' : cm.node('div'),
+            'barHolder' : cm.node('div'),
+            'content' : cm.node('div'),
+            'pages' : cm.node('div'),
+            'button' : cm.node('div'),
+            'loader' : cm.node('div')
+        };
+
+        that.pages = {};
+        that.ajaxHandler = null;
+        that.loaderDelay = null;
+        that.currentAction = null;
+
+        that.isAjax = false;
+        that.isProcess = false;
+        that.isFinalize = false;
+        that.isButton = false;
+        that.isDisabled = false;
+
+        that.page = null;
+        that.pageToken = null;
+        that.currentPage = null;
+        that.previousPage = null;
+        that.nextPage = null;
+        that.pageCount = 0;
+        // Binds
+        that.keyDownEventHandler = that.keyDownEvent.bind(that);
+        // Call parent method - renderViewModel
+        _inherit.prototype.construct.apply(that, arguments);
     };
 
-    that.components = {};
-    that.pages = {};
-    that.ajaxHandler = null;
-    that.loaderDelay = null;
-    that.currentAction = null;
-
-    that.isAjax = false;
-    that.isProcess = false;
-    that.isFinalize = false;
-    that.isButton = false;
-
-    that.page = null;
-    that.pageToken = null;
-    that.currentPage = null;
-    that.previousPage = null;
-    that.nextPage = null;
-    that.pageCount = 0;
-
-    var init = function(){
-        that.setParams(params);
-        that.convertEvents(that.params['events']);
-        that.getDataNodes(that.params['node']);
-        that.getDataConfig(that.params['node']);
-        that.callbacksProcess();
-        validateParams();
-        render();
-        that.addToStack(that.nodes['container']);
-        that.triggerEvent('onRender');
-        set();
+    classProto.onConstructEnd = function(){
+        var that = this;
+        that.set();
     };
 
-    var validateParams = function(){
+    classProto.validateParams = function(){
+        var that = this;
+        that.triggerEvent('onValidateParamsStart');
+        that.triggerEvent('onValidateParams');
+        that.triggerEvent('onValidateParamsProcess');
+        that.isDisabled = that.params['disabled'];
         // Set Scroll Node
         if(that.nodes['scroll']){
             that.params['scrollNode'] = that.nodes['scroll'];
@@ -19939,7 +20260,7 @@ function(params){
         }else{
             that.params['showLoader'] = false;
         }
-        if(that.params['pageCount'] == 0 && that.params['perPage'] && that.params['count']){
+        if(that.params['pageCount'] === 0 && that.params['perPage'] && that.params['count']){
             that.pageCount = Math.ceil(that.params['count'] / that.params['perPage']);
         }else{
             that.pageCount = that.params['pageCount'];
@@ -19948,79 +20269,24 @@ function(params){
         that.setToken(that.params['startPage'], that.params['startPageToken']);
         // Set next page token
         that.nextPage = that.params['startPage'];
+        that.triggerEvent('onValidateParamsEnd');
     };
 
-    var render = function(){
-        // Render Structure
-        if(that.params['renderStructure']){
-            that.nodes['container'] = cm.Node('div', {'class' : 'com__scroll-pagination'},
-                that.nodes['content'] = cm.Node('div', {'class' : 'com__scroll-pagination__content'},
-                    that.nodes['pages'] = cm.Node('div', {'class' : 'com__scroll-pagination__pages'})
-                ),
-                that.nodes['bar'] = cm.Node('div', {'class' : 'com__scroll-pagination__bar'},
-                    that.nodes['button'] = cm.Node('div', {'class' : 'button button-primary'}, that.lang('load_more')),
-                    that.nodes['loader'] = cm.Node('div', {'class' : 'button button-clear has-icon has-icon has-icon-small'},
-                        cm.Node('div', {'class' : 'icon small loader'})
-                    )
-                )
-            );
-            // Append
-            that.embedStructure(that.nodes['container']);
-        }
-        // Reset styles and variables
-        reset();
-        // Events
-        cm.addEvent(that.nodes['button'], 'click', function(e){
-            e = cm.getEvent(e);
-            cm.preventDefault(e);
-            set();
-        });
-        if(that.params['stopOnESC']){
-            cm.addEvent(window, 'keydown', ESCHandler);
-        }
-        cm.addScrollEvent(that.params['scrollNode'], scrollHandler);
-        cm.addEvent(window, 'resize', resizeHandler);
-    };
-
-    var reset = function(){
-        // Clear render pages
-        cm.clearNode(that.nodes['pages']);
-        // Load More Button
-        if(!that.params['showButton']){
-            that.callbacks.hideButton(that);
-        }else{
-            that.callbacks.showButton(that);
-        }
-        // Hide Loader
-        cm.addClass(that.nodes['loader'], 'is-hidden');
-    };
-
-    var set = function(){
-        var config;
-        if(!that.isProcess && !that.isFinalize){
-            // Preset next page and page token
-            that.page = that.nextPage;
-            that.pageToken = that.pages[that.page]? that.pages[that.page]['token'] : '';
-            // Request
-            if(that.isAjax){
-                config = cm.clone(that.params['ajax']);
-                that.ajaxHandler = that.callbacks.request(that, config);
-            }else{
-                that.callbacks.data(that, that.params['data']);
-            }
-        }
-    };
-
-    var scrollHandler = function(){
-        var scrollRect = cm.getRect(that.params['scrollNode']),
+    classProto.onScroll = function(){
+        var that = this,
+            scrollRect = cm.getRect(that.params['scrollNode']),
             pagesRect = cm.getRect(that.nodes['pages']),
             scrollIndent;
-        if((!that.params['showButton'] || (that.params['showButton'] == 'once' && that.params['startPage'] != that.currentPage)) && !cm.isProcess && !that.isFinalize && !that.isButton){
+        if(
+            !that.isDisabled &&
+            (!that.params['showButton'] || that.params['showButton'] !== 'none' || (that.params['showButton'] === 'once' && that.params['startPage'] !== that.currentPage)) &&
+            !cm.isProcess && !that.isFinalize && !that.isButton
+        ){
             scrollIndent = eval(cm.strReplace(that.params['scrollIndent'], {
                 '%scrollHeight%' : scrollRect['bottom'] - scrollRect['top']
             }));
             if(pagesRect['bottom'] - scrollRect['bottom'] <= scrollIndent){
-                set();
+                that.set();
             }
         }
         // Show / Hide non visible pages
@@ -20029,28 +20295,78 @@ function(params){
         });
     };
 
-    var ESCHandler = function(e){
-        e = cm.getEvent(e);
-
-        if(e.keyCode == 27){
-            if(!cm.isProcess && !cm.isFinalize){
-                that.callbacks.showButton(that);
-            }
-        }
-    };
-
-    var resizeHandler = function(){
-        // Show / Hide non visible pages
+    classProto.onRedraw = function(){
+        var that = this;
         cm.forEach(that.pages, function(page){
             that.isPageVisible(page);
         });
     };
 
-    /* ******* CALLBACKS ******* */
+    /******* VIEW - MODEL *******/
 
-    /* *** AJAX *** */
+    classProto.renderView = function(){
+        var that = this;
+        that.nodes['container'] = cm.node('div', {'class' : 'com__scroll-pagination'},
+            that.nodes['content'] = cm.node('div', {'class' : 'com__scroll-pagination__content'},
+                that.nodes['pages'] = cm.node('div', {'class' : 'com__scroll-pagination__pages'})
+            ),
+            that.nodes['bar'] = cm.node('div', {'class' : 'com__scroll-pagination__bar'},
+                that.nodes['button'] = cm.node('div', {'class' : 'button button-primary'}, that.lang('load_more')),
+                that.nodes['loader'] = cm.node('div', {'class' : 'button button-clear has-icon has-icon has-icon-small'},
+                    cm.node('div', {'class' : 'icon small loader'})
+                )
+            )
+        );
+    };
 
-    that.callbacks.prepare = function(that, config){
+    classProto.renderViewModel = function(){
+        var that = this;
+        // Call parent method - renderViewModel
+        _inherit.prototype.renderViewModel.apply(that, arguments);
+        // Reset styles and variables
+        that.resetStyles();
+        // Events
+        cm.addEvent(that.nodes['button'], 'click', function(e){
+            e = cm.getEvent(e);
+            cm.preventDefault(e);
+            that.set();
+        });
+        if(that.params['stopOnESC']){
+            cm.addEvent(window, 'keydown', that.keyDownEventHandler);
+        }
+        return that;
+    };
+
+    /******* HELPERS *******/
+
+    classProto.resetStyles = function(){
+        var that = this;
+        // Clear render pages
+        cm.clearNode(that.nodes['pages']);
+        // Load More Button
+        if(!that.params['showButton'] || that.params['showButton'] === 'none'){
+            that.callbacks.hideButton(that);
+        }else{
+            that.callbacks.showButton(that);
+        }
+        // Hide Loader
+        cm.addClass(that.nodes['loader'], 'is-hidden');
+    };
+
+    classProto.keyDownEvent = function(e){
+        var that = this;
+        cm.handleKey(e, 'escape', function(){
+            if(!cm.isProcess && !cm.isFinalize && that.params['showButton'] !== 'none'){
+                that.callbacks.showButton(that);
+            }
+        });
+    };
+
+    /******* CALLBACKS *******/
+
+    /*** AJAX ***/
+
+    classProto.callbacks.prepare = function(that, config){
         config = that.callbacks.beforePrepare(that, config);
         config['url'] = cm.strReplace(config['url'], {
             '%perPage%' : that.params['perPage'],
@@ -20072,15 +20388,15 @@ function(params){
         return config;
     };
 
-    that.callbacks.beforePrepare = function(that, config){
+    classProto.callbacks.beforePrepare = function(that, config){
         return config;
     };
 
-    that.callbacks.afterPrepare = function(that, config){
+    classProto.callbacks.afterPrepare = function(that, config){
         return config;
     };
 
-    that.callbacks.request = function(that, config){
+    classProto.callbacks.request = function(that, config){
         config = that.callbacks.prepare(that, config);
         that.currentAction = config;
         // Return ajax handler (XMLHttpRequest) to providing abort method.
@@ -20105,31 +20421,34 @@ function(params){
         );
     };
 
-    that.callbacks.filter = function(that, config, response){
+    classProto.callbacks.filter = function(that, config, response){
         var data = [],
+            errorsItem = cm.objectPath(that.params['responseErrorsKey'], response),
             dataItem = cm.objectPath(that.params['responseKey'], response),
             countItem = cm.objectPath(that.params['responseCountKey'], response),
             tokenItem = cm.objectPath(that.params['responseTokenKey'], response);
-        if(!cm.isEmpty(dataItem)){
-            if(!that.params['responseHTML'] && that.params['perPage']){
-                data = dataItem.slice(0, that.params['perPage']);
-            }else{
-                data = dataItem;
+        if(cm.isEmpty(errorsItem)){
+            if(!cm.isEmpty(dataItem)){
+                if(!that.params['responseHTML'] && that.params['perPage']){
+                    data = dataItem.slice(0, that.params['perPage']);
+                }else{
+                    data = dataItem;
+                }
             }
-        }
-        if(countItem){
-            that.setCount(countItem);
-        }
-        if(tokenItem){
-            that.setToken(that.nextPage, tokenItem);
-        }
-        if(that.params['useToken'] && !tokenItem){
-            that.callbacks.finalize(that);
+            if(countItem){
+                that.setCount(countItem);
+            }
+            if(tokenItem){
+                that.setToken(that.nextPage, tokenItem);
+            }
+            if(that.params['useToken'] && !tokenItem){
+                that.callbacks.finalize(that);
+            }
         }
         return data;
     };
 
-    that.callbacks.response = function(that, config, response){
+    classProto.callbacks.response = function(that, config, response){
         // Set next page
         that.setPage();
         // Response
@@ -20143,24 +20462,24 @@ function(params){
         }
     };
 
-    that.callbacks.error = function(that, config){
+    classProto.callbacks.error = function(that, config){
         that.callbacks.finalize(that);
         that.triggerEvent('onError');
     };
 
-    that.callbacks.abort = function(that, config){
+    classProto.callbacks.abort = function(that, config){
         that.triggerEvent('onAbort');
     };
 
     /* *** STATIC *** */
 
-    that.callbacks.data = function(that, data){
+    classProto.callbacks.data = function(that, data){
         var length, start, end, pageData;
         that.callbacks.start(that);
         that.setPage();
         if(!cm.isEmpty(data)){
             // Get page data and render
-            if(that.params['perPage'] == 0){
+            if(that.params['perPage'] === 0){
                 that.callbacks.render(that, data);
                 that.callbacks.finalize(that);
             }else if(that.params['perPage'] > 0){
@@ -20185,17 +20504,17 @@ function(params){
 
     /* *** RENDER *** */
 
-    that.callbacks.renderContainer = function(that, page){
-        return cm.Node(that.params['pageTag'], that.params['pageAttributes']);
+    classProto.callbacks.renderContainer = function(that, page){
+        return cm.node(that.params['pageTag'], that.params['pageAttributes']);
     };
 
-    that.callbacks.render = function(that, data){
+    classProto.callbacks.render = function(that, data){
         var scrollTop = cm.getScrollTop(that.params['scrollNode']),
             page = {
                 'page' : that.page,
                 'token' : that.pageToken,
                 'pages' : that.nodes['pages'],
-                'container' : cm.Node(that.params['pageTag']),
+                'container' : cm.node(that.params['pageTag']),
                 'data' : data,
                 'isVisible' : false
             };
@@ -20204,36 +20523,25 @@ function(params){
         that.triggerEvent('onPageRender', page);
         that.callbacks.renderPage(that, page);
         // Embed
-        that.nodes['pages'].appendChild(page['container']);
+        cm.appendChild(page['container'], that.nodes['pages']);
+        cm.addClass(page['container'], 'is-loaded', true);
         // Restore scroll position
         cm.setScrollTop(that.params['scrollNode'], scrollTop);
         that.triggerEvent('onPageRenderEnd', page);
         that.isPageVisible(page);
     };
 
-    that.callbacks.renderPage = function(that, page){
+    classProto.callbacks.renderPage = function(that, page){
         var nodes;
         if(that.params['responseHTML']){
             nodes = cm.strToHTML(page['data']);
-            if(!cm.isEmpty(nodes)){
-                if(cm.isNode(nodes)){
-                    page['container'].appendChild(nodes);
-                }else{
-                    while(nodes.length){
-                        if(cm.isNode(nodes[0])){
-                            page['container'].appendChild(nodes[0]);
-                        }else{
-                            cm.remove(nodes[0]);
-                        }
-                    }
-                }
-            }
+            cm.appendNodes(nodes, page['container']);
         }
     };
 
     /* *** HELPERS *** */
 
-    that.callbacks.start = function(that){
+    classProto.callbacks.start = function(that){
         that.isProcess = true;
         // Show Loader
         if(that.params['showLoader']){
@@ -20250,13 +20558,13 @@ function(params){
         that.triggerEvent('onStart');
     };
 
-    that.callbacks.end = function(that){
+    classProto.callbacks.end = function(that){
         that.isProcess = false;
         // Hide Loader
         that.loaderDelay && clearTimeout(that.loaderDelay);
         cm.addClass(that.nodes['loader'], 'is-hidden');
         // Check pages count
-        if(that.pageCount > 0 && that.pageCount == that.currentPage){
+        if(that.pageCount > 0 && that.pageCount === that.currentPage){
             that.callbacks.finalize(that);
         }
         // Show / Hide Load More Button
@@ -20264,7 +20572,7 @@ function(params){
         that.triggerEvent('onEnd');
     };
 
-    that.callbacks.finalize = function(that){
+    classProto.callbacks.finalize = function(that){
         if(!that.isFinalize){
             that.isFinalize = true;
             that.callbacks.hideButton(that);
@@ -20272,29 +20580,37 @@ function(params){
         }
     };
 
-    that.callbacks.toggleButton = function(that){
-        if(!that.isFinalize && (that.params['showButton'] === true || (that.params['showButton'] == 'once' && that.params['startPage'] == that.page))){
+    classProto.callbacks.toggleButton = function(that){
+        if(
+            !that.isFinalize && 
+            (that.params['showButton'] === true || (that.params['showButton'] === 'once' && that.params['startPage'] === that.page))
+        ){
             that.callbacks.showButton(that);
         }else{
             that.callbacks.hideButton(that);
         }
     };
 
-    that.callbacks.showButton = function(that){
+    classProto.callbacks.showButton = function(that){
         that.isButton = true;
         cm.removeClass(that.nodes['button'], 'is-hidden');
         cm.removeClass(that.nodes['bar'], 'is-hidden');
+        cm.removeClass(that.nodes['barHolder'], 'is-hidden');
+        that.triggerEvent('onButtonShow');
     };
 
-    that.callbacks.hideButton = function(that){
+    classProto.callbacks.hideButton = function(that){
         that.isButton = false;
         cm.addClass(that.nodes['button'], 'is-hidden');
         cm.addClass(that.nodes['bar'], 'is-hidden');
+        cm.addClass(that.nodes['barHolder'], 'is-hidden');
+        that.triggerEvent('onButtonHide');
     };
 
     /* ******* PUBLIC ******* */
 
-    that.rebuild = function(params){
+    classProto.rebuild = function(params){
+        var that = this;
         // Cleanup
         if(that.isProcess){
             that.abort();
@@ -20314,12 +20630,26 @@ function(params){
         set();
     };
 
-    that.set = function(){
-        set();
+    classProto.set = function(){
+        var that = this,
+            config;
+        if(!that.isProcess && !that.isFinalize){
+            // Preset next page and page token
+            that.page = that.nextPage;
+            that.pageToken = that.pages[that.page]? that.pages[that.page]['token'] : '';
+            // Request
+            if(that.isAjax){
+                config = cm.clone(that.params['ajax']);
+                that.ajaxHandler = that.callbacks.request(that, config);
+            }else{
+                that.callbacks.data(that, that.params['data']);
+            }
+        }
         return that;
     };
 
-    that.setToken = function(page, token){
+    classProto.setToken = function(page, token){
+        var that = this;
         if(!that.pages[page]){
             that.pages[page] = {};
         }
@@ -20327,15 +20657,16 @@ function(params){
         return that;
     };
 
-    that.setCount = function(count){
-        if(count && (count = parseInt(count.toString())) && count != that.params['count']){
+    classProto.setCount = function(count){
+        var that = this;
+        if(count && (count = parseInt(count.toString())) && count !== that.params['count']){
             that.params['count'] = count;
-            if(that.params['pageCount'] == 0 && that.params['count'] && that.params['perPage']){
+            if(that.params['pageCount'] === 0 && that.params['count'] && that.params['perPage']){
                 that.pageCount = Math.ceil(that.params['count'] / that.params['perPage']);
             }else{
                 that.pageCount = that.params['pageCount'];
             }
-            if(that.pageCount > 0 && that.pageCount == that.currentPage){
+            if(that.pageCount > 0 && that.pageCount === that.currentPage){
                 that.callbacks.finalize(that);
             }
             that.triggerEvent('onSetCount', count);
@@ -20343,7 +20674,8 @@ function(params){
         return that;
     };
 
-    that.setAction = function(o, mode, update){
+    classProto.setAction = function(o, mode, update){
+        var that = this;
         mode = cm.inArray(['raw', 'update', 'current'], mode)? mode : 'current';
         switch(mode){
             case 'raw':
@@ -20363,24 +20695,28 @@ function(params){
         return that;
     };
 
-    that.getAction = function(){
+    classProto.getAction = function(){
+        var that = this;
         return that.params['ajax'];
     };
 
-    that.getCurrentAction = function(){
+    classProto.getCurrentAction = function(){
+        var that = this;
         return that.currentAction;
     };
 
-    that.setPage = function(){
+    classProto.setPage = function(){
+        var that = this;
         that.previousPage = that.currentPage;
         that.currentPage = that.nextPage;
         that.nextPage++;
         return that;
     };
 
-    that.isPageVisible = function(page, scrollRect){
+    classProto.isPageVisible = function(page, scrollRect){
+        var that = this;
         if(page['container']){
-            scrollRect = typeof scrollRect == 'undefined' ? cm.getRect(that.params['scrollNode']) : scrollRect;
+            scrollRect = cm.isUndefined(scrollRect) ? cm.getRect(that.params['scrollNode']) : scrollRect;
             var pageRect = cm.getRect(page['container']);
 
             if(cm.inRange(pageRect['top'], pageRect['bottom'], scrollRect['top'], scrollRect['bottom'])){
@@ -20401,18 +20737,36 @@ function(params){
         return false;
     };
 
-    that.abort = function(){
+    classProto.abort = function(){
+        var that = this;
         if(that.ajaxHandler && that.ajaxHandler.abort){
             that.ajaxHandler.abort();
         }
         return that;
     };
 
-    that.isParent = function(node, flag){
-        return cm.isParent(that.nodes['container'], node, flag);
+    classProto.disable = function(){
+        var that = this;
+        that.isDisabled = true;
+        return that;
     };
 
-    init();
+    classProto.enable = function(){
+        var that = this;
+        that.isDisabled = false;
+        return that;
+    };
+
+    classProto.embedButton = function(node){
+        var that = this;
+        that.nodes['barHolder'] = node;
+        cm.appendChild(that.nodes['bar'], node);
+    };
+
+    classProto.isParent = function(node, flag){
+        var that = this;
+        return cm.isParent(that.nodes['container'], node, flag);
+    };
 });
 cm.define('Com.Slider', {
     'modules' : [
@@ -20437,6 +20791,7 @@ cm.define('Com.Slider', {
         'node' : cm.Node('div'),
         'name' : '',
         'customEvents' : true,
+        'renderStructure' : false,
         'isEditing' : false,
         'time' : 500,                   // Fade time
         'delay' : 4000,                 // Delay before slide will be changed
@@ -20536,6 +20891,10 @@ function(params){
 
     var renderSlider = function(){
         var transitionRule = cm.getSupportedStyle('transition');
+        // Render Structure
+        if(that.params['renderStructure']){
+            renderView();
+        }
         // Collect items
         cm.forEach(that.nodes['items'], collectItem);
         // Arrows
@@ -20581,6 +20940,10 @@ function(params){
         // Init animations
         that.anim['slides'] = new cm.Animation(that.nodes['slides']);
         that.anim['slidesInner'] = new cm.Animation(that.nodes['slidesInner']);
+    };
+
+    var renderView = function(){
+
     };
 
     var setEvents = function(){
@@ -20640,12 +21003,12 @@ function(params){
                 height = Math.max(height, cm.getRealHeight(item.nodes['inner'], 'offsetRelative'));
             }
         });
-        if(minHeightDimension == '%'){
+        if(minHeightDimension === '%'){
             height = Math.max(height, (that.nodes['inner'].offsetWidth / 100 * that.params['minHeight']));
         }else{
             height = Math.max(height, that.params['minHeight']);
         }
-        if(height != that.nodes['inner'].offsetHeight){
+        if(height !== that.nodes['inner'].offsetHeight){
             that.nodes['inner'].style.height = [height, 'px'].join('');
         }
     };
@@ -20660,12 +21023,12 @@ function(params){
                 height = Math.max(height, cm.getRealHeight(item.nodes['inner'], 'offsetRelative'));
             }
         }
-        if(minHeightDimension == '%'){
+        if(minHeightDimension === '%'){
             height = Math.max(height, (that.nodes['inner'].offsetWidth / 100 * that.params['minHeight']));
         }else{
             height = Math.max(height, that.params['minHeight']);
         }
-        if(height != that.nodes['inner'].offsetHeight){
+        if(height !== that.nodes['inner'].offsetHeight){
             that.nodes['inner'].style.height = [height, 'px'].join('');
         }
     };
@@ -20793,7 +21156,7 @@ function(params){
         }
         cm.addClass(current['bar']['container'], 'active');
         // Move bar
-        if(that.params['barDirection'] == 'vertical'){
+        if(that.params['barDirection'] === 'vertical'){
             top = current['bar']['container'].offsetTop - (that.nodes['layout-inner'].offsetHeight / 2) + (current['bar']['container'].offsetHeight / 2);
             components['scroll'].scrollY(top);
         }else{
@@ -20928,14 +21291,14 @@ function(params){
 
     that.next = function(){
         that.direction = 'next';
-        var i = ((that.current + 1) == that.items.length) ? 0 : (that.current + 1);
+        var i = ((that.current + 1) === that.items.length) ? 0 : (that.current + 1);
         set(i);
         return that;
     };
 
     that.prev = function(){
         that.direction = 'prev';
-        var i = (that.current == 0) ? (that.items.length - 1) : (that.current - 1);
+        var i = (that.current === 0) ? (that.items.length - 1) : (that.current - 1);
         set(i);
         return that;
     };
@@ -21082,7 +21445,7 @@ Com.SliderEffects['push'] = function(slider, current, previous, callback){
 Com.SliderEffects['pull'] = function(slider, current, previous, callback){
     if(slider.itemsLength > 1 && previous && current != previous){
         // Hide previous slide
-        var style = slider.direction == 'next' ? '-100%' : '100%';
+        var style = slider.direction === 'next' ? '-100%' : '100%';
         previous['nodes']['container'].style.zIndex = 1;
         previous['anim'].go({'style' : {'left' : style}, 'duration' : slider.params['time'], 'anim' : slider.params['transition'], 'onStop' : function(){
             previous['nodes']['container'].style.display = 'none';
@@ -21091,9 +21454,9 @@ Com.SliderEffects['pull'] = function(slider, current, previous, callback){
         // Set visible new slide and animate it
         current['nodes']['container'].style.zIndex = 2;
         current['nodes']['container'].style.display = 'block';
-        if(slider.direction == 'next'){
+        if(slider.direction === 'next'){
             current['nodes']['container'].style.left = '100%';
-        }else if(slider.direction == 'prev'){
+        }else if(slider.direction === 'prev'){
             current['nodes']['container'].style.left = '-100%';
         }
         current['anim'].go({'style' : {'left' : '0%'}, 'duration' : slider.params['time'], 'anim' : slider.params['transition'], 'onStop' : callback});
@@ -21115,9 +21478,9 @@ Com.SliderEffects['pull-overlap'] = function(slider, current, previous, callback
         // Set visible new slide and animate it
         current['nodes']['container'].style.zIndex = 2;
         current['nodes']['container'].style.display = 'block';
-        if(slider.direction == 'next'){
+        if(slider.direction === 'next'){
             current['nodes']['container'].style.left = '100%';
-        }else if(slider.direction == 'prev'){
+        }else if(slider.direction === 'prev'){
             current['nodes']['container'].style.left = '-100%';
         }
         current['anim'].go({'style' : {'left' : '0%'}, 'duration' : slider.params['time'], 'anim' : slider.params['transition'], 'onStop' : callback});
@@ -21131,7 +21494,7 @@ Com.SliderEffects['pull-overlap'] = function(slider, current, previous, callback
 Com.SliderEffects['pull-parallax'] = function(slider, current, previous, callback){
     if(slider.itemsLength > 1 && previous && current != previous){
         // Hide previous slide
-        var style = slider.direction == 'next' ? '-50%' : '50%';
+        var style = slider.direction === 'next' ? '-50%' : '50%';
         previous['nodes']['container'].style.zIndex = 1;
         previous['anim'].go({'style' : {'left' : style}, 'duration' : slider.params['time'], 'anim' : slider.params['transition'], 'onStop' : function(){
             previous['nodes']['container'].style.display = 'none';
@@ -21140,12 +21503,47 @@ Com.SliderEffects['pull-parallax'] = function(slider, current, previous, callbac
         // Set visible new slide and animate it
         current['nodes']['container'].style.zIndex = 2;
         current['nodes']['container'].style.display = 'block';
-        if(slider.direction == 'next'){
+        if(slider.direction === 'next'){
             current['nodes']['container'].style.left = '100%';
-        }else if(slider.direction == 'prev'){
+        }else if(slider.direction === 'prev'){
             current['nodes']['container'].style.left = '-100%';
         }
         current['anim'].go({'style' : {'left' : '0%'}, 'duration' : slider.params['time'], 'anim' : slider.params['transition'], 'onStop' : callback});
+    }else{
+        callback();
+    }
+};
+
+Com.SliderEffects['pull-parallax-css'] = function(slider, current, previous, callback){
+    if(slider.itemsLength > 1 && previous && current != previous){
+        // Hide previous slide
+        var style = slider.direction === 'next' ? '-50%' : '50%';
+        previous['nodes']['container'].style.zIndex = 1;
+        cm.transition(previous['nodes']['container'], {
+            'properties' : {
+                'transform' : 'translateX('+style+')'
+            },
+            'duration' : slider.params['time'],
+            'onStop' : function(){
+                previous['nodes']['container'].style.display = 'none';
+                cm.setCSSTranslate(previous['nodes']['container'], '100%', 0, 0);
+            }
+        });
+        // Set visible new slide and animate it
+        current['nodes']['container'].style.zIndex = 2;
+        current['nodes']['container'].style.display = 'block';
+        if(slider.direction === 'next'){
+            cm.setCSSTranslate(current['nodes']['container'], '100%', 0, 0);
+        }else if(slider.direction === 'prev'){
+            cm.setCSSTranslate(current['nodes']['container'], '-100%', 0, 0);
+        }
+        cm.transition(current['nodes']['container'], {
+            'properties' : {
+                'transform' : 'translateX(0%)'
+            },
+            'duration' : slider.params['time'],
+            'onStop' : callback
+        });
     }else{
         callback();
     }
@@ -24415,6 +24813,7 @@ cm.define('Com.Autocomplete', {
         'container' : 'document.body',
         'name' : '',
         'minLength' : 3,
+        'direction' : 'auto',                                       // auto | start
         'className' : '',
         'delay' : 'cm._config.requestDelay',
         'clearOnEmpty' : true,                                      // Clear input and value if item didn't selected from tooltip
@@ -24784,11 +25183,23 @@ function(params){
     that.callbacks.query = function(that, params){
         var filteredItems = [];
         cm.forEach(params['data'], function(item){
-            if(item && item['text'].toLowerCase().indexOf(params['query'].toLowerCase()) > -1){
+            if(that.callbacks.isContain(that, item['text'], params['query'])){
                 filteredItems.push(item);
             }
         });
         return filteredItems;
+    };
+
+    that.callbacks.isContain = function(that, text, query){
+        text = text.toLowerCase();
+        query = query.toLowerCase();
+        // Direction
+        switch(that.params['direction']){
+            case 'start':
+                return new RegExp('^' + query, 'i').test(text);
+            default:
+                return text.indexOf(query) > -1;
+        }
     };
 
     that.callbacks.render = function(that, params){
@@ -25141,6 +25552,123 @@ Com.FormFields.add('autocomplete', {
     'node' : cm.node('input', {'type' : 'search', 'autocomplete' : 'off'}),
     'fieldConstructor' : 'Com.AbstractFormField',
     'constructor' : 'Com.Autocomplete'
+});
+cm.define('Com.AutocompleteField', {
+    'extend' : 'Com.AbstractInput',
+    'params' : {
+        'controllerEvents' : true,
+        'type' : 'text',
+        'autocompleteConstructor' : 'Com.Autocomplete',
+        'autocompleteParams' : {
+            'minLength' : 1,
+            'direction' : 'start'
+        }
+    }
+},
+function(params){
+    var that = this;
+    // Call parent class construct
+    Com.AbstractInput.apply(that, arguments);
+});
+
+cm.getConstructor('Com.AutocompleteField', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.construct = function(){
+        var that = this;
+        that.options = [];
+        // Call parent method
+        _inherit.prototype.construct.apply(that, arguments);
+        return that;
+    };
+
+    classProto.validateParams = function(){
+        var that = this;
+        // Call parent method
+        _inherit.prototype.validateParams.apply(that, arguments);
+        // Collect Options
+        var options = that.params['node'].options;
+        cm.forEach(options, function(node){
+            that.options.push({
+                'value' : node.value,
+                'text' : node.innerHTML
+            });
+        });
+    };
+
+    classProto.validateParamsValue = function(){
+        var that = this,
+            value;
+        if(cm.isNode(that.params['node'])){
+            value = cm.getSelectValue(that.params['node']);
+            that.params['value'] = !cm.isEmpty(value) ?  value : that.params['value'];
+        }
+        that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
+    };
+
+    /*** VIEW MODEL ***/
+
+    classProto.renderContent = function(){
+        var that = this,
+            nodes = {};
+        that.nodes['content'] = nodes;
+        that.triggerEvent('onRenderContentStart');
+        // Structure
+        nodes['container'] = cm.node('div', {'class' : 'pt__input'},
+            nodes['input'] = cm.node('input', {'type' : that.params['type']})
+        );
+        // Attributes
+        if(!cm.isEmpty(that.params['placeholder'])){
+            nodes['input'].placeholder = that.params['placeholder'];
+        }
+        // Events
+        that.triggerEvent('onRenderContentProcess');
+        that.triggerEvent('onRenderContentEnd');
+        // Push
+        return nodes['container'];
+    };
+
+    classProto.renderViewModel = function(){
+        var that = this;
+        // Call parent method - renderViewModel
+        _inherit.prototype.renderViewModel.apply(that, arguments);
+        // Init Autocomplete
+        cm.getConstructor(that.params['autocompleteConstructor'], function(classConstructor){
+            that.components['autocomplete'] = new classConstructor(
+                cm.merge(that.params['autocompleteParams'], {
+                    'node' : that.nodes['content']['input'],
+                    'data' : that.options
+                })
+            );
+            that.components['autocomplete'].addEvent('onChange', function(autocomplete, value){
+                that.set(value, true);
+            })
+        })
+    };
+
+    /* *** DATA VALUE *** */
+
+    classProto.setData = function(){
+        var that = this,
+            value = that.value,
+            item = that.getOption(that.value);
+        if(item){
+            value = !cm.isEmpty(item['text']) ? item['text'] : item['value'];
+        }
+        that.nodes['content']['input'].value = value;
+        return that;
+    };
+
+    classProto.getOption = function(value){
+        var that = this,
+            item;
+        cm.forEach(that.options, function(option){
+            if(option['value'] === value){
+                item = option;
+            }
+        });
+        return item;
+    };
 });
 cm.define('Com.BoxRadiusTools', {
     'extend' : 'Com.BoxTools',
@@ -27375,6 +27903,9 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto)
         }
         // Attributes
         cm.setInputMaxLength(nodes['input'], that.params['maxlength'], that.params['max']);
+        if(!cm.isEmpty(that.params['placeholder'])){
+            nodes['input'].placeholder = that.params['placeholder'];
+        }
         // Events
         that.triggerEvent('onRenderContentProcess');
         cm.addEvent(nodes['input'], 'blur', that.setValueHandler);

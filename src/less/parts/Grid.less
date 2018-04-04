@@ -219,6 +219,26 @@
 .pt__grid__indent (@indent: @PtGrid-Indent) when (@indent > 0) {
     @half__indent: @indent / 2;
 
+    &.has-outer-page-indent {
+        > ul {
+            margin: 0 @half__indent;
+
+            &:first-child {
+                margin: 0 @half__indent;
+            }
+        }
+    }
+
+    &.has-page-indent {
+        > ul {
+            margin: 0 -@half__indent;
+
+            &:first-child {
+                margin: 0 -@half__indent;
+            }
+        }
+    }
+
     > ul {
         margin: @half__indent -@half__indent -@half__indent;
 
@@ -234,7 +254,7 @@
 
 // /* ******* PARTS: GRID: ADAPTIVE ******* */
 
-@media only screen and (max-width: @CmUI-AdaptiveFrom) {
+@media only screen and (max-width: @PtGrid-AdaptiveFrom) {
 
     html.is-adaptive {
         .pt__grid {

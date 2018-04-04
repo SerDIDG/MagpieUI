@@ -130,11 +130,14 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.renderFiled = function(){
         var that = this;
         that.nodes['container'] = cm.node('dl', {'class' : 'pt__field'},
-            that.nodes['label'] = cm.node('dt',
-                cm.node('label', that.params['label'])
-            ),
+            that.nodes['label'] = cm.node('dt'),
             that.nodes['value'] = cm.node('dd')
         );
+        // Label
+        if(!cm.isEmpty(that.params['label'])){
+            that.nodes['labelText'] = cm.node('label', that.params['label']);
+            cm.appendChild(that.nodes['labelText'], that.params['label']);
+        }
         // Required
         if(that.params['required']){
             that.nodes['required'] = cm.node('span', {'class' : 'required'}, that.lang('*'));

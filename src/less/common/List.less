@@ -53,6 +53,27 @@
     }
 }
 
+.cm__list-inline--clear {
+    text-align: left;
+
+    > li {
+        display: inline-block;
+        vertical-align: top;
+    }
+
+    &.pull-left {
+        text-align: left;
+    }
+
+    &.pull-center {
+        text-align: center;
+    }
+
+    &.pull-right {
+        text-align: right;
+    }
+}
+
 .cm__list-flex {
     .display-flex;
     .mx__justify-content(flex-start);

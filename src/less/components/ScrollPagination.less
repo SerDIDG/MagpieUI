@@ -10,8 +10,15 @@
 }
 
 .com__scroll-pagination__page {
+    opacity: 0;
+    .mx__transition(opacity, @CmUI-Transition-Duration);
+
     &.is-hidden {
         visibility: hidden;
+    }
+
+    &.is-loaded {
+        opacity: 1;
     }
 }
 

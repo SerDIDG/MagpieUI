@@ -20,6 +20,7 @@
 // /* ******* SIZES ******* */
 
 @CmSize-None: 0px;
+@CmSize-XXXXSmall: 2px;
 @CmSize-XXXSmall: 4px;
 @CmSize-XXSmall: 8px;
 @CmSize-XSmall: 12px;
@@ -31,6 +32,7 @@
 @CmSize-XXXLarge: 96px;
 
 @CmIndent-None: @CmSize-None;
+@CmIndent-XXXXSmall: @CmSize-XXXXSmall;
 @CmIndent-XXXSmall: @CmSize-XXXSmall;
 @CmIndent-XXSmall: @CmSize-XXSmall;
 @CmIndent-XSmall: @CmSize-XSmall;
@@ -41,7 +43,7 @@
 @CmIndent-XXLarge: @CmSize-XXLarge;
 @CmIndent-XXXLarge: @CmSize-XXXLarge;
 
-@CmIndents: @CmIndent-None @CmIndent-XXXSmall @CmIndent-XXSmall @CmIndent-XSmall @CmIndent-Small @CmIndent-Medium @CmIndent-Large @CmIndent-XLarge @CmIndent-XXLarge @CmIndent-XXXLarge;
+@CmIndents: @CmIndent-None @CmSize-XXXXSmall @CmIndent-XXXSmall @CmIndent-XXSmall @CmIndent-XSmall @CmIndent-Small @CmIndent-Medium @CmIndent-Large @CmIndent-XLarge @CmIndent-XXLarge @CmIndent-XXXLarge;
 
 // /* ******* UI ******* */
 
@@ -543,6 +545,7 @@
 
 @PtGrid-Indent: @CmUI-ColumnIndent;
 @PtGrid-Indents: @CmIndents;
+@PtGrid-AdaptiveFrom: @CmUI-AdaptiveFrom;
 
 // /* ******* SELECTABLE*** */
 

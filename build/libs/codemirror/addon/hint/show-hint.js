@@ -121,7 +121,6 @@
       var picked = (this.widget && this.widget.picked) || (first && this.options.completeSingle);
       if (this.widget) this.widget.close();
 
-      if (data && this.data && isNewCompletion(this.data, data)) return;
       this.data = data;
 
       if (data && data.list.length) {
@@ -134,11 +133,6 @@
       }
     }
   };
-
-  function isNewCompletion(old, nw) {
-    var moved = CodeMirror.cmpPos(nw.from, old.from)
-    return moved > 0 && old.to.ch - old.from.ch != nw.to.ch - nw.from.ch
-  }
 
   function parseOptions(cm, pos, options) {
     var editor = cm.options.hintOptions;
@@ -229,6 +223,9 @@
     var winH = window.innerHeight || Math.max(document.body.offsetHeight, document.documentElement.offsetHeight);
     (completion.options.container || document.body).appendChild(hints);
     var box = hints.getBoundingClientRect(), overlapY = box.bottom - winH;
+    var scrolls = hints.scrollHeight > hints.clientHeight + 1
+    var startScroll = cm.getScrollInfo();
+
     if (overlapY > 0) {
       var height = box.bottom - box.top, curTop = pos.top - (pos.bottom - box.top);
       if (curTop - height > 0) { // Fits above cursor
@@ -253,6 +250,8 @@
       }
       hints.style.left = (left = pos.left - overlapX) + "px";
     }
+    if (scrolls) for (var node = hints.firstChild; node; node = node.nextSibling)
+      node.style.paddingRight = cm.display.nativeBarWidth + "px"
 
     cm.addKeyMap(this.keyMap = buildKeyMap(completion, {
       moveFocus: function(n, avoidWrap) { widget.changeActive(widget.selectedHint + n, avoidWrap); },
@@ -270,7 +269,6 @@
       cm.on("focus", this.onFocus = function() { clearTimeout(closingOnBlur); });
     }
 
-    var startScroll = cm.getScrollInfo();
     cm.on("scroll", this.onScroll = function() {
       var curScroll = cm.getScrollInfo(), editor = cm.getWrapperElement().getBoundingClientRect();
       var newTop = top + startScroll.top - curScroll.top;
@@ -298,7 +296,7 @@
       setTimeout(function(){cm.focus();}, 20);
     });
 
-    CodeMirror.signal(data, "select", completions[0], hints.firstChild);
+    CodeMirror.signal(data, "select", completions[this.selectedHint], hints.childNodes[this.selectedHint]);
     return true;
   }
 
