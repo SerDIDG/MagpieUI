@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url('//fonts.googleapis.com/css?family=Open Sans:100, 300, 400, 600, 700, 800');
-/*! ************ MagpieUI v3.32.0 (2018-04-04 19:20) ************ */
+/*! ************ MagpieUI v3.32.1 (2018-04-26 18:54) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.6.0
@@ -3506,8 +3506,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.32.0');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.32.0') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.32.0') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.32.0') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.32.0#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.32.1');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.32.1') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.32.1') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.32.1') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.32.1#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -8064,11 +8064,11 @@ button.is-hidden {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.pt__box-item .is-wrap .title,
-.pt__box-item .is-wrap .author,
-.pt__box-item .is-wrap .date,
-.pt__box-item .is-wrap .count,
-.pt__box-item .is-wrap .status {
+.pt__box-item.is-wrap .title,
+.pt__box-item.is-wrap .author,
+.pt__box-item.is-wrap .date,
+.pt__box-item.is-wrap .count,
+.pt__box-item.is-wrap .status {
   overflow: visible;
   white-space: normal;
   text-overflow: clip;
@@ -19865,17 +19865,17 @@ html.ie9 .com__palette .b-range {
 }
 /* ******* COMPONENTS: TABSET: ADAPTIVE ******* */
 @media only screen and (max-width: 768px) {
-  html.is-adaptive .com__tabset {
+  html.is-adaptive .com__tabset.is-adaptive {
     display: block !important;
   }
-  html.is-adaptive .com__tabset .com__tabset__head-title {
+  html.is-adaptive .com__tabset.is-adaptive .com__tabset__head-title {
     display: block !important;
   }
-  html.is-adaptive .com__tabset .com__tabset__head-tabs {
+  html.is-adaptive .com__tabset.is-adaptive .com__tabset__head-tabs {
     width: auto !important;
     display: none !important;
   }
-  html.is-adaptive .com__tabset .com__tabset__content {
+  html.is-adaptive .com__tabset.is-adaptive .com__tabset__content {
     width: auto !important;
     display: block !important;
     border-radius: 0 0 3px 3px;

@@ -110,27 +110,25 @@ function(params){
             // Embed
             that.params['renderButtonsSeparator'] && cm.insertFirst(that.nodes['buttonsSeparator'], that.nodes['buttonsContainer']);
             that.params['renderButtons'] && cm.appendChild(that.nodes['buttonsContainer'], that.nodes['container']);
-            that.params['showNotifications'] && cm.insertFirst(that.nodes['notifications'], that.nodes['container']);
+            cm.insertFirst(that.nodes['notifications'], that.nodes['container']);
             that.embedStructure(that.nodes['container']);
         }
         // Notifications
-        if(that.params['showNotifications']){
-            cm.getConstructor('Com.Notifications', function(classConstructor, className){
-                that.components['notifications'] = new classConstructor(
-                    cm.merge(that.params[className], {
-                        'container' : that.nodes['notifications']
-                    })
-                );
-                that.components['notifications'].addEvent('onAdd', function(my){
-                    cm.addClass(that.nodes['notifications'], 'is-show', true);
-                });
-                that.components['notifications'].addEvent('onRemove', function(my){
-                    if(that.components['notifications'].getLength() === 0){
-                        cm.removeClass(that.nodes['notifications'], 'is-show', true);
-                    }
-                });
+        cm.getConstructor('Com.Notifications', function(classConstructor, className){
+            that.components['notifications'] = new classConstructor(
+                cm.merge(that.params[className], {
+                    'container' : that.nodes['notifications']
+                })
+            );
+            that.components['notifications'].addEvent('onAdd', function(my){
+                cm.addClass(that.nodes['notifications'], 'is-show', true);
             });
-        }
+            that.components['notifications'].addEvent('onRemove', function(my){
+                if(that.components['notifications'].getLength() === 0){
+                    cm.removeClass(that.nodes['notifications'], 'is-show', true);
+                }
+            });
+        });
         // Overlay Loader
         if(that.params['showLoader']){
             cm.getConstructor('Com.Overlay', function(classConstructor, className){
@@ -336,6 +334,11 @@ function(params){
 
     /* *** RENDER *** */
 
+    that.callbacks.renderNotification = function(that, o){
+        cm.addClass(that.nodes['notifications'], 'is-show', true);
+        that.components['notifications'].add(o);
+    };
+
     that.callbacks.renderError = function(that, errors){
         var field, messages = [];
         // Clear old errors messages
@@ -350,8 +353,7 @@ function(params){
                 }
             });
             if(that.params['showNotifications']){
-                cm.addClass(that.nodes['notifications'], 'is-show', true);
-                that.components['notifications'].add({
+                that.callbacks.renderNotification({
                     'label' : that.lang('form_error'),
                     'type' : 'danger',
                     'messages' : messages,
@@ -360,8 +362,7 @@ function(params){
             }
         }else{
             if(that.params['showNotifications']){
-                cm.addClass(that.nodes['notifications'], 'is-show', true);
-                that.components['notifications'].add({
+                that.callbacks.renderNotification({
                     'label' : that.lang('server_error'),
                     'type' : 'danger'
                 });
@@ -370,11 +371,10 @@ function(params){
     };
 
     that.callbacks.clearError = function(that){
-        var field;
-        if(that.params['showNotifications']){
-            cm.removeClass(that.nodes['notifications'], 'is-show', true);
-            that.components['notifications'].clear();
-        }
+        // Clear notification
+        cm.removeClass(that.nodes['notifications'], 'is-show', true);
+        that.components['notifications'].clear();
+        // Clear field errors
         cm.forEach(that.fields, function(field){
             field['controller'].clearError();
         });
@@ -539,6 +539,11 @@ function(params){
         if(update){
             that._update.params['ajax'] = cm.clone(that.params['ajax']);
         }
+        return that;
+    };
+
+    that.renderNotification = function(o){
+        that.callbacks.renderNotification(that, o);
         return that;
     };
 

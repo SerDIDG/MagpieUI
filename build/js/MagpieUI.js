@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.32.0 (2018-04-04 19:20) ************ */
+/*! ************ MagpieUI v3.32.1 (2018-04-26 18:54) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1577,7 +1577,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.32.0',
+        '_version' : '3.32.1',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -1629,6 +1629,7 @@ var cm = {
 cm.isFileReader = (function(){return 'FileReader' in window;})();
 cm.isHistoryAPI = !!(window.history && history.pushState);
 cm.isLocalStorage = (function(){try{return 'localStorage' in window && window.localStorage !== null;}catch(e){return false;}})();
+cm.isSessionStorage = (function(){try{return 'sessionStorage' in window && window.sessionStorage !== null;}catch(e){return false;}})();
 cm.isCanvas = !!document.createElement("canvas").getContext;
 cm.hasBeacon = !!(navigator.sendBeacon);
 
@@ -4878,9 +4879,31 @@ cm.storageGet = function(key, cookie){
 cm.storageRemove = function(key, cookie){
     cookie = cookie !== false;
     if(cm.isLocalStorage){
-        localStorage.removeItem(key);
+        window.localStorage.removeItem(key);
     }else if(cookie){
         cm.cookieRemove(key);
+    }
+};
+
+cm.sessionStorageSet = function(key, value){
+    if(cm.isSessionStorage){
+        try{
+            window.sessionStorage.setItem(key, value);
+        }catch(e){
+        }
+    }
+};
+
+cm.sessionStorageGet = function(key){
+    if(cm.isSessionStorage){
+        return window.sessionStorage.getItem(key);
+    }
+    return null;
+};
+
+cm.sessionStorageRemove = function(key){
+    if(cm.isSessionStorage){
+        window.sessionStorage.removeItem(key);
     }
 };
 
@@ -6007,9 +6030,10 @@ Mod['Storage'] = {
             that.build['params']['name'] = '';
         }
     },
-    'storageRead' : function(key){
+    'storageRead' : function(key, session){
         var that = this,
-            storage = JSON.parse(cm.storageGet(that._className)) || {};
+            method = session ? 'sessionStorageGet' : 'storageGet',
+            storage = JSON.parse(cm[method](that._className)) || {};
         if(cm.isEmpty(that.params['name'])){
             cm.errorLog({
                 'type' : 'error',
@@ -6028,9 +6052,10 @@ Mod['Storage'] = {
         }
         return storage[that.params['name']][key];
     },
-    'storageReadAll' : function(){
+    'storageReadAll' : function(session){
         var that = this,
-            storage = JSON.parse(cm.storageGet(that._className)) || {};
+            method = session ? 'sessionStorageGet' : 'storageGet',
+            storage = JSON.parse(cm[method](that._className)) || {};
         if(cm.isEmpty(that.params['name'])){
             cm.errorLog({
                 'type' : 'error',
@@ -6049,9 +6074,10 @@ Mod['Storage'] = {
         }
         return storage[that.params['name']];
     },
-    'storageWrite' : function(key, value){
+    'storageWrite' : function(key, value, session){
         var that = this,
-            storage = JSON.parse(cm.storageGet(that._className)) || {};
+            method = session ? 'sessionStorageGet' : 'storageGet',
+            storage = JSON.parse(cm[method](that._className)) || {};
         if(cm.isEmpty(that.params['name'])){
             cm.errorLog({
                 'type' : 'error',
@@ -6064,12 +6090,14 @@ Mod['Storage'] = {
             storage[that.params['name']] = {};
         }
         storage[that.params['name']][key] = value;
-        cm.storageSet(that._className, JSON.stringify(storage));
+        method = session ? 'sessionStorageSet' : 'storageSet';
+        cm[method](that._className, JSON.stringify(storage));
         return storage[that.params['name']];
     },
-    'storageWriteAll' : function(data){
+    'storageWriteAll' : function(data, session){
         var that = this,
-            storage = JSON.parse(cm.storageGet(that._className)) || {};
+            method = session ? 'sessionStorageGet' : 'storageGet',
+            storage = JSON.parse(cm[method](that._className)) || {};
         if(cm.isEmpty(that.params['name'])){
             cm.errorLog({
                 'type' : 'error',
@@ -6079,12 +6107,14 @@ Mod['Storage'] = {
             return {};
         }
         storage[that.params['name']] = data;
-        cm.storageSet(that._className, JSON.stringify(storage));
+        method = session ? 'sessionStorageSet' : 'storageSet';
+        cm[method](that._className, JSON.stringify(storage));
         return storage[that.params['name']];
     },
-    'storageClear' : function(key){
+    'storageClear' : function(key, session){
         var that = this,
-            storage = JSON.parse(cm.storageGet(that._className)) || {};
+            method = session ? 'sessionStorageGet' : 'storageGet',
+            storage = JSON.parse(cm[method](that._className)) || {};
         if(cm.isEmpty(that.params['name'])){
             cm.errorLog({
                 'type' : 'error',
@@ -6097,7 +6127,8 @@ Mod['Storage'] = {
             storage[that.params['name']] = {};
         }
         delete storage[that.params['name']][key];
-        cm.storageSet(that._className, JSON.stringify(storage));
+        method = session ? 'sessionStorageSet' : 'storageSet';
+        cm[method](that._className, JSON.stringify(storage));
         return storage[that.params['name']];
     }
 };
@@ -8280,6 +8311,11 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         return that.components['controller'] && cm.isFunction(that.components['controller'].disable) ? that.components['controller'].disable() : null;
     };
 
+    classProto.focus = function(){
+        var that = this;
+        return that.components['controller'] && cm.isFunction(that.components['controller'].focus) ? that.components['controller'].focus() : null;
+    };
+
     classProto.validateValue = function(){
         var that = this,
             isValid = true,
@@ -8955,27 +8991,25 @@ function(params){
             // Embed
             that.params['renderButtonsSeparator'] && cm.insertFirst(that.nodes['buttonsSeparator'], that.nodes['buttonsContainer']);
             that.params['renderButtons'] && cm.appendChild(that.nodes['buttonsContainer'], that.nodes['container']);
-            that.params['showNotifications'] && cm.insertFirst(that.nodes['notifications'], that.nodes['container']);
+            cm.insertFirst(that.nodes['notifications'], that.nodes['container']);
             that.embedStructure(that.nodes['container']);
         }
         // Notifications
-        if(that.params['showNotifications']){
-            cm.getConstructor('Com.Notifications', function(classConstructor, className){
-                that.components['notifications'] = new classConstructor(
-                    cm.merge(that.params[className], {
-                        'container' : that.nodes['notifications']
-                    })
-                );
-                that.components['notifications'].addEvent('onAdd', function(my){
-                    cm.addClass(that.nodes['notifications'], 'is-show', true);
-                });
-                that.components['notifications'].addEvent('onRemove', function(my){
-                    if(that.components['notifications'].getLength() === 0){
-                        cm.removeClass(that.nodes['notifications'], 'is-show', true);
-                    }
-                });
+        cm.getConstructor('Com.Notifications', function(classConstructor, className){
+            that.components['notifications'] = new classConstructor(
+                cm.merge(that.params[className], {
+                    'container' : that.nodes['notifications']
+                })
+            );
+            that.components['notifications'].addEvent('onAdd', function(my){
+                cm.addClass(that.nodes['notifications'], 'is-show', true);
             });
-        }
+            that.components['notifications'].addEvent('onRemove', function(my){
+                if(that.components['notifications'].getLength() === 0){
+                    cm.removeClass(that.nodes['notifications'], 'is-show', true);
+                }
+            });
+        });
         // Overlay Loader
         if(that.params['showLoader']){
             cm.getConstructor('Com.Overlay', function(classConstructor, className){
@@ -9181,6 +9215,11 @@ function(params){
 
     /* *** RENDER *** */
 
+    that.callbacks.renderNotification = function(that, o){
+        cm.addClass(that.nodes['notifications'], 'is-show', true);
+        that.components['notifications'].add(o);
+    };
+
     that.callbacks.renderError = function(that, errors){
         var field, messages = [];
         // Clear old errors messages
@@ -9195,8 +9234,7 @@ function(params){
                 }
             });
             if(that.params['showNotifications']){
-                cm.addClass(that.nodes['notifications'], 'is-show', true);
-                that.components['notifications'].add({
+                that.callbacks.renderNotification({
                     'label' : that.lang('form_error'),
                     'type' : 'danger',
                     'messages' : messages,
@@ -9205,8 +9243,7 @@ function(params){
             }
         }else{
             if(that.params['showNotifications']){
-                cm.addClass(that.nodes['notifications'], 'is-show', true);
-                that.components['notifications'].add({
+                that.callbacks.renderNotification({
                     'label' : that.lang('server_error'),
                     'type' : 'danger'
                 });
@@ -9215,11 +9252,10 @@ function(params){
     };
 
     that.callbacks.clearError = function(that){
-        var field;
-        if(that.params['showNotifications']){
-            cm.removeClass(that.nodes['notifications'], 'is-show', true);
-            that.components['notifications'].clear();
-        }
+        // Clear notification
+        cm.removeClass(that.nodes['notifications'], 'is-show', true);
+        that.components['notifications'].clear();
+        // Clear field errors
         cm.forEach(that.fields, function(field){
             field['controller'].clearError();
         });
@@ -9384,6 +9420,11 @@ function(params){
         if(update){
             that._update.params['ajax'] = cm.clone(that.params['ajax']);
         }
+        return that;
+    };
+
+    that.renderNotification = function(o){
+        that.callbacks.renderNotification(that, o);
         return that;
     };
 
@@ -9910,6 +9951,7 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
             },
             'constructor' : false,
             'constructorParams' : {},
+            'className' : '',
             'isHidden' : false,
             'isShow' : false,
             'isAjax' : false,
@@ -9923,6 +9965,12 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
         // Check for ajax
         if(!cm.isEmpty(item['ajax']['url'])){
             item.isAjax = true;
+        }
+        // Class name
+        if(!cm.isEmpty(item['className'])){
+            cm.addClass(item['label']['container'], item['className']);
+            cm.addClass(item['menu']['container'], item['className']);
+            cm.addClass(item['tab']['container'], item['className']);
         }
         // Push
         if(!cm.isEmpty(item['id']) && !that.items[item['id']]){
@@ -20166,6 +20214,7 @@ cm.define('Com.ScrollPagination', {
         'startPage' : 1,                                            // Start page
         'startPageToken' : '',
         'useToken' : false,
+        'autoSend' : true,
         'pageCount' : 0,                                            // Render only count of pages. 0 - infinity
         'showButton' : true,                                        // true - always | once - show once after first loaded page | none - don't show and don't scroll
         'showLoader' : true,
@@ -20241,7 +20290,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
 
     classProto.onConstructEnd = function(){
         var that = this;
-        that.set();
+        that.params['autoSend'] && that.set();
     };
 
     classProto.validateParams = function(){
@@ -20616,18 +20665,23 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
             that.abort();
         }
         that.pages = {};
+        that.page = null;
+        that.pageToken = null;
         that.currentPage = null;
         that.previousPage = null;
+        that.nextPage = null;
+        that.pageCount = 0;
+        that.isFinalize = false;
         // Set new parameters
         if(!cm.isEmpty(params)){
             that.setParams(params);
-            validateParams();
         }
+        that.validateParams();
         // Reset styles and variables
-        reset();
+        that.resetStyles();
         that.triggerEvent('onRebuild');
         // Render new pge
-        set();
+        that.set();
     };
 
     classProto.set = function(){
@@ -21972,7 +22026,7 @@ function(params){
 
     var renderView = function(){
         /* *** STRUCTURE *** */
-        that.nodes['container'] = cm.Node('div', {'class' : 'com__tabset'},
+        that.nodes['container'] = cm.Node('div', {'class' : 'com__tabset is-adaptive'},
             that.nodes['content'] = cm.Node('div', {'class' : 'com__tabset__content'},
                 that.nodes['contentUL'] = cm.Node('ul')
             )
@@ -22449,6 +22503,7 @@ cm.define('Com.Tabset2', {
         'tabsWidth' : 256,                                          // Only for tabsPosition left or right
         'showTabs' : true,
         'showTabsTitle' : true,                                     // Show title tooltip
+        'showContent' : true,
         'switchManually' : false,                                   // Change tab manually, not implemented yet
         'animateSwitch' : true,
         'animateDuration' : 300,
@@ -22469,6 +22524,7 @@ cm.define('Com.Tabset2', {
 
         /* STYLES */
 
+        'adaptive' : true,
         'className' : '',
         'icons' : {
             'menu' : 'icon default linked'
@@ -22513,10 +22569,9 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
         var that = this;
         // Structure
         that.triggerEvent('onRenderViewStart');
-        that.nodes['container'] = cm.node('div', {'class' : 'com__tabset'},
-            that.nodes['content'] = cm.node('div', {'class' : 'com__tabset__content'},
-                that.nodes['contentUL'] = cm.node('ul')
-            )
+        that.nodes['container'] = that.nodes['inner'] = cm.node('div', {'class' : 'com__tabset'});
+        that.nodes['content'] = cm.node('div', {'class' : 'com__tabset__content'},
+            that.nodes['contentUL'] = cm.node('ul')
         );
         that.nodes['headerTitle'] = cm.node('div', {'class' : 'com__tabset__head-title'},
             that.nodes['headerTitleText'] = cm.node('div', {'class' : 'com__tabset__head-text'}),
@@ -22529,6 +22584,10 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
             that.nodes['headerUL'] = cm.node('ul')
         );
         that.triggerEvent('onRenderViewProcess');
+        // Adaptive
+        if(that.params['adaptive']){
+            cm.addClass(that.nodes['container'], 'is-adaptive');
+        }
         // Set Tabs Width
         if(/left|right/.test(that.params['tabsPosition'])){
             that.nodes['headerTabs'].style.width = that.params['tabsWidth'];
@@ -22546,13 +22605,22 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
         if(that.params['animateSwitch']){
             cm.addClass(that.nodes['content'], 'is-animated');
         }
+        // Embed Content
+        if(that.params['showContent']){
+            cm.appendChild(that.nodes['content'], that.nodes['inner']);
+        }
         // Embed Tabs
         if(that.params['showTabs']){
-            cm.insertBefore(that.nodes['headerTitle'], that.nodes['content']);
-            if(/bottom|right/.test(that.params['tabsPosition'])){
-                cm.insertAfter(that.nodes['headerTabs'], that.nodes['content']);
+            if(that.params['showContent']){
+                cm.insertBefore(that.nodes['headerTitle'], that.nodes['content']);
+                if(/bottom|right/.test(that.params['tabsPosition'])){
+                    cm.insertAfter(that.nodes['headerTabs'], that.nodes['content']);
+                }else{
+                    cm.insertBefore(that.nodes['headerTabs'], that.nodes['content']);
+                }
             }else{
-                cm.insertBefore(that.nodes['headerTabs'], that.nodes['content']);
+                cm.appendChild(that.nodes['headerTitle'], that.nodes['inner']);
+                cm.appendChild(that.nodes['headerTabs'], that.nodes['inner']);
             }
         }
         that.triggerEvent('onRenderViewEnd');
@@ -23261,6 +23329,9 @@ cm.define('Com.Tooltip', {
         'preventClickEvent' : false,                    // Prevent default click event on the target, requires setting value 'targetEvent' : 'click'
         'top' : 0,                                      // Supported properties: targetHeight, selfHeight, number
         'left' : 0,                                     // Supported properties: targetWidth, selfWidth, number
+        'adaptiveFrom' : null,
+        'adaptiveTop' : null,
+        'adaptiveLeft' : null,
         'width' : 'auto',                               // Supported properties: targetWidth, auto, number
         'minWidth' : 0,
         'duration' : 'cm._config.animDurationShort',
@@ -23369,7 +23440,7 @@ function(params){
 
     var targetEvent = function(){
         if(!that.disabled){
-            if(that.isShow && that.params['targetEvent'] == 'click' && that.params['hideOnReClick']){
+            if(that.isShow && that.params['targetEvent'] === 'click' && that.params['hideOnReClick']){
                 hide();
             }else{
                 show();
@@ -23505,7 +23576,14 @@ function(params){
             selfWidth = that.nodes['container'].offsetWidth,
             pageSize = cm.getPageSize(),
             scrollTop = cm.getScrollTop(window),
-            scrollLeft = cm.getScrollLeft(window);
+            scrollLeft = cm.getScrollLeft(window),
+            paramsTop = that.params['top'],
+            paramsLeft = that.params['left'];
+        // Validate
+        if(!cm.isEmpty(that.params['adaptiveFrom']) && that.params['adaptiveFrom'] >= pageSize['winWidth']){
+            paramsTop = !cm.isEmpty(that.params['adaptiveTop']) ? that.params['adaptiveTop'] : paramsTop;
+            paramsLeft = !cm.isEmpty(that.params['adaptiveLeft']) ? that.params['adaptiveLeft'] : paramsLeft;
+        }
         // Calculate size
         (function(){
             var width = 0,
@@ -23517,6 +23595,7 @@ function(params){
                         .replace('targetWidth', targetWidth)
                         .replace('selfWidth', selfWidth)
                 );
+                minWidth = Math.min(pageSize['winWidth'], minWidth);
                 that.nodes['container'].style.minWidth =  [minWidth, 'px'].join('');
             }
             if(that.params['width'] !== 'auto'){
@@ -23527,6 +23606,7 @@ function(params){
                         .replace('selfWidth', selfWidth)
                 );
                 width = Math.max(minWidth, width);
+                width = Math.min(pageSize['winWidth'], width);
                 if(width !== selfWidth){
                     that.nodes['container'].style.width =  [width, 'px'].join('');
                     selfWidth = that.nodes['container'].offsetWidth;
@@ -23538,15 +23618,13 @@ function(params){
         (function(){
             var top = cm.getRealY(that.params['target']),
                 topAdd = eval(
-                    that.params['top']
-                        .toString()
+                    paramsTop.toString()
                         .replace('targetHeight', targetHeight)
                         .replace('selfHeight', selfHeight)
                 ),
                 left =  cm.getRealX(that.params['target']),
                 leftAdd = eval(
-                    that.params['left']
-                        .toString()
+                    paramsLeft.toString()
                         .replace('targetWidth', targetWidth)
                         .replace('selfWidth', selfWidth)
                 ),
@@ -25362,9 +25440,13 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     /*** DATA ***/
 
     classProto.callbacks.convert = function(that, data){
-        return data.map(function(item){
-            return that.callbacks.convertItem(that, item);
-        });
+        if(cm.isObject(data)){
+            return that.callbacks.convertObject(that, data);
+        }else{
+            return data.map(function(item){
+                return that.callbacks.convertItem(that, item);
+            });
+        }
     };
 
     classProto.callbacks.convertItem = function(that, item){
@@ -25378,6 +25460,14 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
             }
             return item;
         }
+    };
+
+    classProto.callbacks.convertObject = function(that, data){
+        var a = [];
+        cm.forEach(data, function(text, value){
+            a.push({'text' : text, 'value' : value});
+        });
+        return a;
     };
 
     /*** LIST ***/
@@ -27909,7 +27999,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto)
         // Events
         that.triggerEvent('onRenderContentProcess');
         cm.addEvent(nodes['input'], 'blur', that.setValueHandler);
-        cm.addEvent(nodes['input'], 'blur', that.setValueHandler);
+        cm.addEvent(nodes['input'], 'change', that.setValueHandler);
         cm.addEvent(nodes['input'], 'keypress', function(e){
             if(cm.isKeyCode(e.keyCode, 'enter')){
                 cm.preventDefault(e);
@@ -27935,6 +28025,12 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto)
     classProto.setData = function(){
         var that = this;
         that.nodes['content']['input'].value = that.value;
+        return that;
+    };
+
+    classProto.focus = function(){
+        var that = this;
+        that.nodes['content']['input'].focus();
         return that;
     };
 });

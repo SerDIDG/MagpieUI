@@ -25,6 +25,7 @@ cm.define('Com.Tabset2', {
         'tabsWidth' : 256,                                          // Only for tabsPosition left or right
         'showTabs' : true,
         'showTabsTitle' : true,                                     // Show title tooltip
+        'showContent' : true,
         'switchManually' : false,                                   // Change tab manually, not implemented yet
         'animateSwitch' : true,
         'animateDuration' : 300,
@@ -45,6 +46,7 @@ cm.define('Com.Tabset2', {
 
         /* STYLES */
 
+        'adaptive' : true,
         'className' : '',
         'icons' : {
             'menu' : 'icon default linked'
@@ -89,10 +91,9 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
         var that = this;
         // Structure
         that.triggerEvent('onRenderViewStart');
-        that.nodes['container'] = cm.node('div', {'class' : 'com__tabset'},
-            that.nodes['content'] = cm.node('div', {'class' : 'com__tabset__content'},
-                that.nodes['contentUL'] = cm.node('ul')
-            )
+        that.nodes['container'] = that.nodes['inner'] = cm.node('div', {'class' : 'com__tabset'});
+        that.nodes['content'] = cm.node('div', {'class' : 'com__tabset__content'},
+            that.nodes['contentUL'] = cm.node('ul')
         );
         that.nodes['headerTitle'] = cm.node('div', {'class' : 'com__tabset__head-title'},
             that.nodes['headerTitleText'] = cm.node('div', {'class' : 'com__tabset__head-text'}),
@@ -105,6 +106,10 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
             that.nodes['headerUL'] = cm.node('ul')
         );
         that.triggerEvent('onRenderViewProcess');
+        // Adaptive
+        if(that.params['adaptive']){
+            cm.addClass(that.nodes['container'], 'is-adaptive');
+        }
         // Set Tabs Width
         if(/left|right/.test(that.params['tabsPosition'])){
             that.nodes['headerTabs'].style.width = that.params['tabsWidth'];
@@ -122,13 +127,22 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
         if(that.params['animateSwitch']){
             cm.addClass(that.nodes['content'], 'is-animated');
         }
+        // Embed Content
+        if(that.params['showContent']){
+            cm.appendChild(that.nodes['content'], that.nodes['inner']);
+        }
         // Embed Tabs
         if(that.params['showTabs']){
-            cm.insertBefore(that.nodes['headerTitle'], that.nodes['content']);
-            if(/bottom|right/.test(that.params['tabsPosition'])){
-                cm.insertAfter(that.nodes['headerTabs'], that.nodes['content']);
+            if(that.params['showContent']){
+                cm.insertBefore(that.nodes['headerTitle'], that.nodes['content']);
+                if(/bottom|right/.test(that.params['tabsPosition'])){
+                    cm.insertAfter(that.nodes['headerTabs'], that.nodes['content']);
+                }else{
+                    cm.insertBefore(that.nodes['headerTabs'], that.nodes['content']);
+                }
             }else{
-                cm.insertBefore(that.nodes['headerTabs'], that.nodes['content']);
+                cm.appendChild(that.nodes['headerTitle'], that.nodes['inner']);
+                cm.appendChild(that.nodes['headerTabs'], that.nodes['inner']);
             }
         }
         that.triggerEvent('onRenderViewEnd');

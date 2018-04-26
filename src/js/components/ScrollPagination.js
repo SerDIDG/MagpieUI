@@ -31,6 +31,7 @@ cm.define('Com.ScrollPagination', {
         'startPage' : 1,                                            // Start page
         'startPageToken' : '',
         'useToken' : false,
+        'autoSend' : true,
         'pageCount' : 0,                                            // Render only count of pages. 0 - infinity
         'showButton' : true,                                        // true - always | once - show once after first loaded page | none - don't show and don't scroll
         'showLoader' : true,
@@ -106,7 +107,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
 
     classProto.onConstructEnd = function(){
         var that = this;
-        that.set();
+        that.params['autoSend'] && that.set();
     };
 
     classProto.validateParams = function(){
@@ -481,18 +482,23 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
             that.abort();
         }
         that.pages = {};
+        that.page = null;
+        that.pageToken = null;
         that.currentPage = null;
         that.previousPage = null;
+        that.nextPage = null;
+        that.pageCount = 0;
+        that.isFinalize = false;
         // Set new parameters
         if(!cm.isEmpty(params)){
             that.setParams(params);
-            validateParams();
         }
+        that.validateParams();
         // Reset styles and variables
-        reset();
+        that.resetStyles();
         that.triggerEvent('onRebuild');
         // Render new pge
-        set();
+        that.set();
     };
 
     classProto.set = function(){

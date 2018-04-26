@@ -106,7 +106,7 @@ function(params){
 
     var renderView = function(){
         /* *** STRUCTURE *** */
-        that.nodes['container'] = cm.Node('div', {'class' : 'com__tabset'},
+        that.nodes['container'] = cm.Node('div', {'class' : 'com__tabset is-adaptive'},
             that.nodes['content'] = cm.Node('div', {'class' : 'com__tabset__content'},
                 that.nodes['contentUL'] = cm.Node('ul')
             )

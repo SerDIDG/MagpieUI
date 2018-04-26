@@ -48,7 +48,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto)
         // Events
         that.triggerEvent('onRenderContentProcess');
         cm.addEvent(nodes['input'], 'blur', that.setValueHandler);
-        cm.addEvent(nodes['input'], 'blur', that.setValueHandler);
+        cm.addEvent(nodes['input'], 'change', that.setValueHandler);
         cm.addEvent(nodes['input'], 'keypress', function(e){
             if(cm.isKeyCode(e.keyCode, 'enter')){
                 cm.preventDefault(e);
@@ -74,6 +74,12 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto)
     classProto.setData = function(){
         var that = this;
         that.nodes['content']['input'].value = that.value;
+        return that;
+    };
+
+    classProto.focus = function(){
+        var that = this;
+        that.nodes['content']['input'].focus();
         return that;
     };
 });

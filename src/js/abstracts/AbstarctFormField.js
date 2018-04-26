@@ -302,6 +302,11 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         return that.components['controller'] && cm.isFunction(that.components['controller'].disable) ? that.components['controller'].disable() : null;
     };
 
+    classProto.focus = function(){
+        var that = this;
+        return that.components['controller'] && cm.isFunction(that.components['controller'].focus) ? that.components['controller'].focus() : null;
+    };
+
     classProto.validateValue = function(){
         var that = this,
             isValid = true,

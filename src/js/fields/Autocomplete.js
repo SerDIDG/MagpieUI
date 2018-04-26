@@ -580,9 +580,13 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     /*** DATA ***/
 
     classProto.callbacks.convert = function(that, data){
-        return data.map(function(item){
-            return that.callbacks.convertItem(that, item);
-        });
+        if(cm.isObject(data)){
+            return that.callbacks.convertObject(that, data);
+        }else{
+            return data.map(function(item){
+                return that.callbacks.convertItem(that, item);
+            });
+        }
     };
 
     classProto.callbacks.convertItem = function(that, item){
@@ -596,6 +600,14 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
             }
             return item;
         }
+    };
+
+    classProto.callbacks.convertObject = function(that, data){
+        var a = [];
+        cm.forEach(data, function(text, value){
+            a.push({'text' : text, 'value' : value});
+        });
+        return a;
     };
 
     /*** LIST ***/

@@ -201,6 +201,7 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
             },
             'constructor' : false,
             'constructorParams' : {},
+            'className' : '',
             'isHidden' : false,
             'isShow' : false,
             'isAjax' : false,
@@ -214,6 +215,12 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
         // Check for ajax
         if(!cm.isEmpty(item['ajax']['url'])){
             item.isAjax = true;
+        }
+        // Class name
+        if(!cm.isEmpty(item['className'])){
+            cm.addClass(item['label']['container'], item['className']);
+            cm.addClass(item['menu']['container'], item['className']);
+            cm.addClass(item['tab']['container'], item['className']);
         }
         // Push
         if(!cm.isEmpty(item['id']) && !that.items[item['id']]){

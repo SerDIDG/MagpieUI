@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.32.0 (2018-04-04 19:20) ************ */
+/*! ************ MagpieUI v3.32.1 (2018-04-26 18:54) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3922,7 +3922,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.32.0';
+@CmVersion: '3.32.1';
 
 // /* ******* PATH ******* */
 
@@ -8741,11 +8741,11 @@ button {
         .date,
         .count,
         .status {
-            .cm__text-overflow;
+            .cm__text-nowrap;
         }
     }
 
-    .is-wrap {
+    &.is-wrap {
         .title,
         .author,
         .date,
@@ -17887,21 +17887,23 @@ ul.pt__field__hint {
 
     html.is-adaptive {
         .com__tabset {
-            display: block !important;
-
-            .com__tabset__head-title {
+            &.is-adaptive {
                 display: block !important;
-            }
 
-            .com__tabset__head-tabs {
-                width: auto !important;
-                display: none !important;
-            }
+                .com__tabset__head-title {
+                    display: block !important;
+                }
 
-            .com__tabset__content {
-                width: auto !important;
-                display: block !important;
-                border-radius: 0 0 @ComTabset-BorderRadius @ComTabset-BorderRadius;
+                .com__tabset__head-tabs {
+                    width: auto !important;
+                    display: none !important;
+                }
+
+                .com__tabset__content {
+                    width: auto !important;
+                    display: block !important;
+                    border-radius: 0 0 @ComTabset-BorderRadius @ComTabset-BorderRadius;
+                }
             }
         }
     }

@@ -20,6 +20,9 @@ cm.define('Com.Tooltip', {
         'preventClickEvent' : false,                    // Prevent default click event on the target, requires setting value 'targetEvent' : 'click'
         'top' : 0,                                      // Supported properties: targetHeight, selfHeight, number
         'left' : 0,                                     // Supported properties: targetWidth, selfWidth, number
+        'adaptiveFrom' : null,
+        'adaptiveTop' : null,
+        'adaptiveLeft' : null,
         'width' : 'auto',                               // Supported properties: targetWidth, auto, number
         'minWidth' : 0,
         'duration' : 'cm._config.animDurationShort',
@@ -128,7 +131,7 @@ function(params){
 
     var targetEvent = function(){
         if(!that.disabled){
-            if(that.isShow && that.params['targetEvent'] == 'click' && that.params['hideOnReClick']){
+            if(that.isShow && that.params['targetEvent'] === 'click' && that.params['hideOnReClick']){
                 hide();
             }else{
                 show();
@@ -264,7 +267,14 @@ function(params){
             selfWidth = that.nodes['container'].offsetWidth,
             pageSize = cm.getPageSize(),
             scrollTop = cm.getScrollTop(window),
-            scrollLeft = cm.getScrollLeft(window);
+            scrollLeft = cm.getScrollLeft(window),
+            paramsTop = that.params['top'],
+            paramsLeft = that.params['left'];
+        // Validate
+        if(!cm.isEmpty(that.params['adaptiveFrom']) && that.params['adaptiveFrom'] >= pageSize['winWidth']){
+            paramsTop = !cm.isEmpty(that.params['adaptiveTop']) ? that.params['adaptiveTop'] : paramsTop;
+            paramsLeft = !cm.isEmpty(that.params['adaptiveLeft']) ? that.params['adaptiveLeft'] : paramsLeft;
+        }
         // Calculate size
         (function(){
             var width = 0,
@@ -276,6 +286,7 @@ function(params){
                         .replace('targetWidth', targetWidth)
                         .replace('selfWidth', selfWidth)
                 );
+                minWidth = Math.min(pageSize['winWidth'], minWidth);
                 that.nodes['container'].style.minWidth =  [minWidth, 'px'].join('');
             }
             if(that.params['width'] !== 'auto'){
@@ -286,6 +297,7 @@ function(params){
                         .replace('selfWidth', selfWidth)
                 );
                 width = Math.max(minWidth, width);
+                width = Math.min(pageSize['winWidth'], width);
                 if(width !== selfWidth){
                     that.nodes['container'].style.width =  [width, 'px'].join('');
                     selfWidth = that.nodes['container'].offsetWidth;
@@ -297,15 +309,13 @@ function(params){
         (function(){
             var top = cm.getRealY(that.params['target']),
                 topAdd = eval(
-                    that.params['top']
-                        .toString()
+                    paramsTop.toString()
                         .replace('targetHeight', targetHeight)
                         .replace('selfHeight', selfHeight)
                 ),
                 left =  cm.getRealX(that.params['target']),
                 leftAdd = eval(
-                    that.params['left']
-                        .toString()
+                    paramsLeft.toString()
                         .replace('targetWidth', targetWidth)
                         .replace('selfWidth', selfWidth)
                 ),

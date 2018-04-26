@@ -82,6 +82,7 @@ var cm = {
 cm.isFileReader = (function(){return 'FileReader' in window;})();
 cm.isHistoryAPI = !!(window.history && history.pushState);
 cm.isLocalStorage = (function(){try{return 'localStorage' in window && window.localStorage !== null;}catch(e){return false;}})();
+cm.isSessionStorage = (function(){try{return 'sessionStorage' in window && window.sessionStorage !== null;}catch(e){return false;}})();
 cm.isCanvas = !!document.createElement("canvas").getContext;
 cm.hasBeacon = !!(navigator.sendBeacon);
 
@@ -3331,9 +3332,31 @@ cm.storageGet = function(key, cookie){
 cm.storageRemove = function(key, cookie){
     cookie = cookie !== false;
     if(cm.isLocalStorage){
-        localStorage.removeItem(key);
+        window.localStorage.removeItem(key);
     }else if(cookie){
         cm.cookieRemove(key);
+    }
+};
+
+cm.sessionStorageSet = function(key, value){
+    if(cm.isSessionStorage){
+        try{
+            window.sessionStorage.setItem(key, value);
+        }catch(e){
+        }
+    }
+};
+
+cm.sessionStorageGet = function(key){
+    if(cm.isSessionStorage){
+        return window.sessionStorage.getItem(key);
+    }
+    return null;
+};
+
+cm.sessionStorageRemove = function(key){
+    if(cm.isSessionStorage){
+        window.sessionStorage.removeItem(key);
     }
 };
 
