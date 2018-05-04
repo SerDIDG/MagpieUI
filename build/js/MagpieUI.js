@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.32.1 (2018-04-26 18:54) ************ */
+/*! ************ MagpieUI v3.32.2 (2018-05-04 16:58) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1577,7 +1577,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.32.1',
+        '_version' : '3.32.2',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -20390,8 +20390,6 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
 
     classProto.resetStyles = function(){
         var that = this;
-        // Clear render pages
-        cm.clearNode(that.nodes['pages']);
         // Load More Button
         if(!that.params['showButton'] || that.params['showButton'] === 'none'){
             that.callbacks.hideButton(that);
@@ -20567,6 +20565,11 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
                 'data' : data,
                 'isVisible' : false
             };
+        // Clear container
+        if(that.page === that.params['startPage']){
+            cm.clearNode(that.nodes['pages']);
+        }
+        // Render page
         page['container'] = that.callbacks.renderContainer(that, page);
         that.pages[that.page] = page;
         that.triggerEvent('onPageRender', page);
@@ -25759,6 +25762,12 @@ cm.getConstructor('Com.AutocompleteField', function(classConstructor, className,
         });
         return item;
     };
+});
+
+Com.FormFields.add('autocomplete-field', {
+    'node' : cm.node('select'),
+    'fieldConstructor' : 'Com.AbstractFormField',
+    'constructor' : 'Com.AutocompleteField'
 });
 cm.define('Com.BoxRadiusTools', {
     'extend' : 'Com.BoxTools',

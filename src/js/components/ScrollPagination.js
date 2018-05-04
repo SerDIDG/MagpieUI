@@ -207,8 +207,6 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
 
     classProto.resetStyles = function(){
         var that = this;
-        // Clear render pages
-        cm.clearNode(that.nodes['pages']);
         // Load More Button
         if(!that.params['showButton'] || that.params['showButton'] === 'none'){
             that.callbacks.hideButton(that);
@@ -384,6 +382,11 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
                 'data' : data,
                 'isVisible' : false
             };
+        // Clear container
+        if(that.page === that.params['startPage']){
+            cm.clearNode(that.nodes['pages']);
+        }
+        // Render page
         page['container'] = that.callbacks.renderContainer(that, page);
         that.pages[that.page] = page;
         that.triggerEvent('onPageRender', page);

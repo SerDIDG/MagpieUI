@@ -115,3 +115,9 @@ cm.getConstructor('Com.AutocompleteField', function(classConstructor, className,
         return item;
     };
 });
+
+Com.FormFields.add('autocomplete-field', {
+    'node' : cm.node('select'),
+    'fieldConstructor' : 'Com.AbstractFormField',
+    'constructor' : 'Com.AutocompleteField'
+});
