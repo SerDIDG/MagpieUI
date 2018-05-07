@@ -136,7 +136,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         // Label
         if(!cm.isEmpty(that.params['label'])){
             that.nodes['labelText'] = cm.node('label', that.params['label']);
-            cm.appendChild(that.nodes['labelText'], that.params['label']);
+            cm.appendChild(that.nodes['labelText'], that.nodes['label']);
         }
         // Required
         if(that.params['required']){
@@ -170,14 +170,13 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     };
 
     classProto.renderOptions = function(options){
-        var that = this;
+        var that = this,
+            option;
         switch(that.nodeTagName){
             case 'select' :
                 cm.forEach(options, function(item){
-                    cm.appendChild(
-                        cm.node('option', {'value' : item['value'], 'innerHTML' : item['text']}),
-                        that.nodes['content']['input']
-                    );
+                    option = cm.node('option', {'value' : item['value'], 'innerHTML' : item['text']});
+                    cm.appendChild(option, that.nodes['content']['input']);
                 });
                 cm.setSelect(that.nodes['content']['input'], that.params['value']);
                 break;

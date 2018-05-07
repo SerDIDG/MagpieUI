@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.32.2 (2018-05-04 16:58) ************ */
+/*! ************ MagpieUI v3.32.2 (2018-05-07 16:25) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -8145,7 +8145,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         // Label
         if(!cm.isEmpty(that.params['label'])){
             that.nodes['labelText'] = cm.node('label', that.params['label']);
-            cm.appendChild(that.nodes['labelText'], that.params['label']);
+            cm.appendChild(that.nodes['labelText'], that.nodes['label']);
         }
         // Required
         if(that.params['required']){
@@ -8179,14 +8179,13 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     };
 
     classProto.renderOptions = function(options){
-        var that = this;
+        var that = this,
+            option;
         switch(that.nodeTagName){
             case 'select' :
                 cm.forEach(options, function(item){
-                    cm.appendChild(
-                        cm.node('option', {'value' : item['value'], 'innerHTML' : item['text']}),
-                        that.nodes['content']['input']
-                    );
+                    option = cm.node('option', {'value' : item['value'], 'innerHTML' : item['text']});
+                    cm.appendChild(option, that.nodes['content']['input']);
                 });
                 cm.setSelect(that.nodes['content']['input'], that.params['value']);
                 break;
@@ -24902,6 +24901,7 @@ cm.define('Com.Autocomplete', {
         'listItemNowrap' : false,
         'showLoader' : true,                                        // Show ajax spinner in tooltip, for ajax mode only.
         'data' : [],                                                // Examples: [{'value' : 'foo', 'text' : 'Bar'}] or ['Foo', 'Bar'].
+        'options' : [],
         'value' : {},
         'showSuggestion' : false,                                   // Show suggestion option when search query was empty
         'suggestionConstructor' : 'Com.AbstractContainer',
@@ -24979,6 +24979,7 @@ function(params){
         // If URL parameter exists, use ajax data
         that.isAjax = !cm.isEmpty(that.params['ajax']['url']);
         // Prepare data
+        that.params['data'] = cm.merge(that.params['data'], that.params['options']);
         that.params['data'] = that.callbacks.convert(that, that.params['data']);
         that.params['value'] = that.callbacks.convertItem(that, that.params['value']);
         // Tooltip

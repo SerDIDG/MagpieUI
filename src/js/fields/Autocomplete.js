@@ -39,6 +39,7 @@ cm.define('Com.Autocomplete', {
         'listItemNowrap' : false,
         'showLoader' : true,                                        // Show ajax spinner in tooltip, for ajax mode only.
         'data' : [],                                                // Examples: [{'value' : 'foo', 'text' : 'Bar'}] or ['Foo', 'Bar'].
+        'options' : [],
         'value' : {},
         'showSuggestion' : false,                                   // Show suggestion option when search query was empty
         'suggestionConstructor' : 'Com.AbstractContainer',
@@ -116,6 +117,7 @@ function(params){
         // If URL parameter exists, use ajax data
         that.isAjax = !cm.isEmpty(that.params['ajax']['url']);
         // Prepare data
+        that.params['data'] = cm.merge(that.params['data'], that.params['options']);
         that.params['data'] = that.callbacks.convert(that, that.params['data']);
         that.params['value'] = that.callbacks.convertItem(that, that.params['value']);
         // Tooltip

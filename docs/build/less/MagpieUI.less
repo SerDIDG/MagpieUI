@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.32.2 (2018-05-04 16:58) ************ */
+/*! ************ MagpieUI v3.32.2 (2018-05-07 16:25) ************ */
 @charset "UTF-8";
 
 /*!
@@ -4393,6 +4393,7 @@ span.CodeMirror-selectedtext { background: none; }
 
 @PtBox-BorderWidth: @CmBorder-Width;
 @PtBox-BorderColor: @CmColor-Border;
+@PtBox-Padding: @CmIndent-XXXSmall;
 @PtBoxItem-Sizes: 50 80 150;
 @PtBoxItem-DescrLines: 1;
 @PtBoxContent-Indent: @CmIndent-XLarge;
@@ -8446,7 +8447,7 @@ button {
 /* ******* PART: BOX ******* */
 
 .pt__box {
-    padding: @CmIndent-XXXSmall;
+    padding: @PtBox-Padding;
     background: @CmColor-Background;
     border: @CmBorder-Default;
     border-width: @PtBox-BorderWidth;
@@ -13481,6 +13482,10 @@ ul.pt__field__hint {
     &.size-default {
         width: @CmForm-FieldSmallWidth;
     }
+
+    .input__content {
+        position: relative;
+    }
 }
 /* ******* COMPONENT: TOGGLE BOX ******* */
 
@@ -13818,7 +13823,9 @@ ul.pt__field__hint {
         }
 
         > .scroll {
+            @indent: (@PtBox-BorderWidth + @PtBox-Padding) * 2;
             .cm__scroll-y-a;
+            max-height: ~"calc(100vh - @{indent})";
         }
     }
 }
