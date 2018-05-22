@@ -18,7 +18,8 @@ cm.define('Com.Form', {
         'onSuccess',
         'onSendStart',
         'onSend',
-        'onSendEnd'
+        'onSendEnd',
+        'onChange'
     ],
     'params' : {
         'node' : cm.node('div'),
@@ -170,6 +171,9 @@ function(params){
         if(field && !that.fields[params['name']]){
             cm.getConstructor(params['fieldConstructor'], function(classConstructor){
                 params['controller'] = new classConstructor(params);
+                params['controller'].addEvent('onChange', function(){
+                    that.triggerEvent('onChange');
+                });
                 // Save
                 that.fields[params['name']] = params;
             });

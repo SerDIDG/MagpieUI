@@ -81,7 +81,7 @@ function(params){
     that.construct(params);
 });
 
-cm.getConstructor('Com.AbstractController', function(classConstructor, className, classProto){
+cm.getConstructor('Com.AbstractController', function(classConstructor, className, classProto, classInherit){
     classProto.construct = function(params){
         var that = this;
         // Bind context to methods

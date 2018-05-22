@@ -22,9 +22,15 @@
         }
 
         > .scroll {
-            @indent: (@PtBox-BorderWidth + @PtBox-Padding) * 2;
-            .cm__scroll-y-a;
-            max-height: ~"calc(100vh - @{indent})";
+            &.is-auto {
+                .cm__scroll-y-a;
+            }
+
+            &.is-scroll {
+                .cm__scroll-y-a;
+                @indent: (@PtBox-BorderWidth + @PtBox-Padding) * 2;
+                max-height: ~"calc(100vh - @{indent})";
+            }
         }
     }
 }

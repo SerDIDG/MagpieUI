@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.32.2 (2018-05-07 16:25) ************ */
+/*! ************ MagpieUI v3.33.0 (2018-05-22 20:59) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1379,6 +1379,58 @@ if ( 'function' !== typeof Array.prototype.reduceRight ) {
     };
 }
 
+// https://tc39.github.io/ecma262/#sec-array.prototype.includes
+if (!Array.prototype.includes) {
+    Object.defineProperty(Array.prototype, 'includes', {
+        value: function(searchElement, fromIndex) {
+
+            if (this == null) {
+                throw new TypeError('"this" is null or not defined');
+            }
+
+            // 1. Let O be ? ToObject(this value).
+            var o = Object(this);
+
+            // 2. Let len be ? ToLength(? Get(O, "length")).
+            var len = o.length >>> 0;
+
+            // 3. If len is 0, return false.
+            if (len === 0) {
+                return false;
+            }
+
+            // 4. Let n be ? ToInteger(fromIndex).
+            //    (If fromIndex is undefined, this step produces the value 0.)
+            var n = fromIndex | 0;
+
+            // 5. If n ≥ 0, then
+            //  a. Let k be n.
+            // 6. Else n < 0,
+            //  a. Let k be len + n.
+            //  b. If k < 0, let k be 0.
+            var k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
+
+            function sameValueZero(x, y) {
+                return x === y || (typeof x === 'number' && typeof y === 'number' && isNaN(x) && isNaN(y));
+            }
+
+            // 7. Repeat, while k < len
+            while (k < len) {
+                // a. Let elementK be the result of ? Get(O, ! ToString(k)).
+                // b. If SameValueZero(searchElement, elementK) is true, return true.
+                if (sameValueZero(o[k], searchElement)) {
+                    return true;
+                }
+                // c. Increase k by 1.
+                k++;
+            }
+
+            // 8. Return false
+            return false;
+        }
+    });
+}
+
 // Production steps of ECMA-262, Edition 6, 22.1.2.1
 if (!Array.from) {
     Array.from = (function () {
@@ -1577,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.32.2',
+        '_version' : '3.33.0',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -1943,9 +1995,10 @@ cm.getLength = function(o){
 };
 
 cm.inArray = function(a, item){
-    if(typeof a === 'string'){
+    if(typeof a === 'string'){  //TODO: WFT?
         return a === item;
-    }else if(cm.isArray(a)){
+    }
+    if(cm.isArray(a)){
         return a.indexOf(item) > -1;
     }
     return false
@@ -1953,6 +2006,13 @@ cm.inArray = function(a, item){
 
 cm.arrayRemove = function(a, item){
     a.splice(a.indexOf(item), 1);
+    return a;
+};
+
+cm.arrayAdd = function(a, item){
+    if(!cm.inArray(a, item)){
+        a.push(item);
+    }
     return a;
 };
 
@@ -1983,12 +2043,14 @@ cm.arraySort = function(a, key, dir){
 };
 
 cm.objectToArray = function(o){
-    if(typeof(o) != 'object'){
+    if(!cm.isObject(o)){
         return [o];
     }
     var a = [];
     cm.forEach(o, function(item){
-        a.push(item);
+        if(!cm.isEmpty(item)){
+            a.push(item);
+        }
     });
     return a;
 };
@@ -1996,7 +2058,7 @@ cm.objectToArray = function(o){
 cm.arrayToObject = function(a){
     var o = {};
     a.forEach(function(item, i){
-        if(typeof item == 'object'){
+        if(typeof item === 'object'){
             o[i] = item;
         }else{
             o[item] = item;
@@ -2015,20 +2077,6 @@ cm.objectReplace = function(o, vars){
         }
     });
     return newO;
-};
-
-cm.isEmptyOld = function(el){
-    if(!el){
-        return true;
-    }else if(typeof el == 'string' || cm.isArray(el)){
-        return el.length === 0;
-    }else if(cm.isObject(el)){
-        return cm.getLength(el) === 0;
-    }else if(typeof el == 'number'){
-        return el === 0;
-    }else{
-        return false;
-    }
 };
 
 cm.isEmpty = function(value){
@@ -2102,7 +2150,7 @@ cm.sort = function(o){
 cm.replaceDeep = function(o, from, to){
     var newO = cm.clone(o);
     cm.forEach(newO, function(value, key){
-        if(typeof value == 'object'){
+        if(typeof value === 'object'){
             newO[key] = cm.replaceDeep(value, from, to);
         }else{
             newO[key] = value.replace(from, to);
@@ -2203,28 +2251,20 @@ cm.getElementAbove = function(e){
 cm.addEvent = function(el, type, handler, useCapture){
     if(el){
         useCapture = cm.isUndefined(useCapture)? false : useCapture;
-        try{
-            el.addEventListener(type, handler, useCapture);
-        }catch(e){
-            el.attachEvent('on' + type, handler);
-        }
+        el.addEventListener(type, handler, useCapture);
     }
     return el;
 };
 
 cm.removeEvent = function(el, type, handler, useCapture){
     if(el){
-        useCapture = typeof useCapture == 'undefined' ? false : useCapture;
-        try{
-            el.removeEventListener(type, handler, useCapture);
-        }catch(e){
-            el.detachEvent('on' + type, handler);
-        }
+        useCapture = cm.isUndefined(useCapture) ? false : useCapture;
+        el.removeEventListener(type, handler, useCapture);
     }
     return el;
 };
 
-cm.triggerEvent = function(el, type, params){
+cm.triggerEvent = function(el, type){
     var event;
     if(document.createEvent){
         event = document.createEvent('Event');
@@ -2239,89 +2279,6 @@ cm.triggerEvent = function(el, type, params){
     }else if(el.fireEvent){
         el.fireEvent('on' + event.eventType, event);
     }
-    return el;
-};
-
-cm.customEventsStack = [
-    /* {'el' : node, 'type' : 'customEventType', 'handler' : function, 'misc' : {'eventType' : [function]}} */
-];
-
-cm.addCustomEvent = function(el, type, handler, useCapture, preventDefault){
-    useCapture = typeof(useCapture) == 'undefined' ? true : useCapture;
-    preventDefault = typeof(preventDefault) == 'undefined' ? false : preventDefault;
-
-    var events = {
-        'tap' : function(){
-            var x = 0,
-                fault = 4,
-                y = 0;
-            // Generate events
-            return {
-                'click' : [
-                    function(e){
-                        if(preventDefault){
-                            e.preventDefault();
-                        }
-                    }
-                ],
-                'touchstart' : [
-                    function(e){
-                        x = e.changedTouches[0].screenX;
-                        y = e.changedTouches[0].screenY;
-                        if(preventDefault){
-                            e.preventDefault();
-                        }
-                    }
-                ],
-                'touchend' : [
-                    function(e){
-                        if(
-                            Math.abs(e.changedTouches[0].screenX - x) > fault ||
-                            Math.abs(e.changedTouches[0].screenY - y) > fault
-                        ){
-                            return;
-                        }
-                        if(preventDefault){
-                            e.preventDefault();
-                        }
-                        handler(e);
-                    }
-                ]
-            };
-        }
-    };
-    // Process custom event
-    if(events[type]){
-        var miscEvents = events[type]();
-        // Push generated events to stack
-        cm.customEventsStack.push({
-            'el' : el,
-            'type' : type,
-            'handler' : handler,
-            'misc' : miscEvents
-        });
-        // Bind generated events
-        cm.forEach(miscEvents, function(miscFunctions, eventType){
-            cm.forEach(miscFunctions, function(miscFunction){
-                el.addEventListener(eventType, miscFunction, useCapture);
-            });
-        });
-    }
-    return el;
-};
-
-cm.removeCustomEvent = function(el, type, handler, useCapture){
-    cm.customEventsStack = cm.customEventsStack.filter(function(item){
-        if(item['el'] === el && item['type'] == type && item['handler'] === handler){
-            cm.forEach(item['misc'], function(miscFunctions, eventType){
-                cm.forEach(miscFunctions, function(miscFunction){
-                    el.removeEventListener(eventType, miscFunction, useCapture);
-                });
-            });
-            return false;
-        }
-        return true;
-    });
     return el;
 };
 
@@ -2442,7 +2399,7 @@ cm.onReady = function(handler, isMessage){
 };
 
 cm.addScrollEvent = function(node, callback, useCapture){
-    useCapture = typeof useCapture == 'undefined' ? false : useCapture;
+    useCapture = cm.isUndefined(useCapture) ? false : useCapture;
     if(cm.isWindow(node)){
         cm.addEvent(node, 'scroll', callback, useCapture);
     }else if(cm.isNode(node)){
@@ -2456,7 +2413,7 @@ cm.addScrollEvent = function(node, callback, useCapture){
 };
 
 cm.removeScrollEvent = function(node, callback, useCapture){
-    useCapture = typeof useCapture == 'undefined' ? false : useCapture;
+    useCapture = cm.isUndefined(useCapture) ? false : useCapture;
     if(cm.isWindow(node)){
         cm.removeEvent(node, 'scroll', callback, useCapture);
     }if(cm.isNode(node)){
@@ -2496,7 +2453,7 @@ cm.removeIsolateScrolling = function(node){
 };
 
 cm.isCenterButton = function(e){
-    return e.button == ((cm.is('IE') && cm.isVersion() < 9) ? 4 : 1);
+    return e.button === 1;
 };
 
 cm.debounce = function(func, wait, immediate){
@@ -2667,54 +2624,29 @@ cm.getEl = function(str){
 
 cm.getByClass = function(str, node){
     node = node || document;
-    if(node.getElementsByClassName){
-        return node.getElementsByClassName(str);
-    }
-    var els = node.getElementsByTagName('*'),
-        arr = [];
-    for(var i = 0, l = els.length; i < l; i++){
-        cm.isClass(els[i], str) && arr.push(els[i]);
-    }
-    return arr;
+    return node.getElementsByClassName(str);
 };
 
 cm.getByAttr = function(attr, value, element){
     var p = element || document;
-    if(p.querySelectorAll){
-        return p.querySelectorAll("[" + attr + "='" + value + "']");
-    }
-    var elements = p.getElementsByTagName('*');
-    var stack = [];
-    for(var i = 0, ln = elements.length; i < ln; i++){
-        if(elements[i].getAttribute(attr) == value){
-            stack.push(elements[i]);
-        }
-    }
-    return stack;
+    return p.querySelectorAll('[' + attr + '="' + value + '"]');
 };
 
 cm.getByName = function(name, node){
-    if(node){
-        var arr = [],
-            els = node.getElementsByTagName('*');
-        for(var i = 0, l = els.length; i < l; i++){
-            if(els[i].name == name){
-                arr.push(els[i]);
-            }
-        }
-        return arr;
+    if(cm.isNode(node)){
+        return node.querySelectorAll('[name="' + name + '"]');
     }else{
         return document.getElementsByName(name);
     }
 };
 
 cm.getParentByTagName = function(tagName, node){
-    if(!tagName || !node || !node.parentNode){
+    if(!cm.isEmpty(tagName) || !cm.hasParentNode(node)){
         return null;
     }
     var el = node.parentNode;
     do{
-        if(el.tagName && el.tagName.toLowerCase() == tagName.toLowerCase()){
+        if(el.tagName && el.tagName.toLowerCase() === tagName.toLowerCase()){
             return el;
         }
     }while(el = el.parentNode);
@@ -2755,14 +2687,19 @@ cm.node = cm.Node = function(){
             if(cm.isObject(value)){
                 value = JSON.stringify(value);
             }
-            if(key == 'style'){
-                el.style.cssText = value;
-            }else if(key == 'class'){
-                el.className = value;
-            }else if(key == 'innerHTML'){
-                el.innerHTML = value;
-            }else{
-                el.setAttribute(key, value);
+            switch(key){
+                case 'style':
+                    el.style.cssText = value;
+                    break;
+                case 'class':
+                    el.className = value;
+                    break;
+                case 'innerHTML':
+                    el.innerHTML = value;
+                    break;
+                default:
+                    el.setAttribute(key, value);
+                    break;
             }
         });
         i = 2;
@@ -2770,8 +2707,8 @@ cm.node = cm.Node = function(){
         i = 1;
     }
     for(var ln = args.length; i < ln; i++){
-        if(typeof args[i] != 'undefined'){
-            if(typeof args[i] == 'string' || typeof args[i] == 'number'){
+        if(typeof args[i] !== 'undefined'){
+            if(typeof args[i] === 'string' || typeof args[i] === 'number'){
                 cm.appendChild(cm.textNode(args[i]), el);
             }else{
                 cm.appendChild(args[i], el);
@@ -2796,40 +2733,30 @@ cm.wrap = function(target, node){
     return target;
 };
 
-cm.inDOM = function(o){
-    if(o){
-        var el = o.parentNode;
-        while(el){
-            if(el == document){
-                return true;
-            }
-            el = el.parentNode;
-        }
-    }
-    return false;
+cm.inDOM = function(node){
+    return node === document.body || document.body.contains(node);
 };
 
 cm.hasParentNode = function(o){
-    if(o){
-        return !!o.parentNode;
+    if(!cm.isNode(o)){
+        return false;
     }
-    return false;
+    return !!o.parentNode;
 };
 
-cm.isParent = function(p, o, flag){
-    if(cm.isNode(o) && o.parentNode){
-        if(cm.isWindow(p) && cm.inDOM(o)){
+cm.isParent = function(p, node, flag){
+    if(flag && p === node){
+        return true;
+    }
+    if(cm.isNode(node)){
+        if(cm.isWindow(p) && cm.inDOM(node)){
             return true;
         }
-
-        var el = o.parentNode;
-        do{
-            if(el == p){
-                return true;
-            }
-        }while(el = el.parentNode);
+        if(p.contains(node) && p !== node){
+            return true
+        }
     }
-    return (flag) ? p === o : false;
+    return false;
 };
 
 cm.isParentByClass = function(parentClass, o){
@@ -2856,7 +2783,7 @@ cm.getData = function(node, name){
 };
 
 cm.getTextValue = cm.getTxtVal = function(o){
-    return o.nodeType == 1 && o.firstChild ? o.firstChild.nodeValue : '';
+    return o.nodeType === 1 && o.firstChild ? o.firstChild.nodeValue : '';
 };
 
 cm.getTextNodesStr = function(node){
@@ -2870,7 +2797,7 @@ cm.getTextNodesStr = function(node){
         }else if(cm.isNode(node)){
             childs = node.childNodes;
             cm.forEach(childs, function(child){
-                if(child.nodeType == 1){
+                if(child.nodeType === 1){
                     str += cm.getTextNodesStr(child);
                 }else{
                     str += child.nodeValue;
@@ -3113,7 +3040,7 @@ cm.getNodes = function(container, marker){
 };
 
 cm.processDataAttributes = function(node, name, vars){
-    vars = typeof vars != 'undefined' ? vars : {};
+    vars = !cm.isUndefined(vars) ? vars : {};
     var marker = ['data-attributes', name].join('-'),
         nodes = node.querySelectorAll('[' + marker + ']'),
         value;
@@ -3148,7 +3075,7 @@ cm.setFDO = function(o, form){
                     break;
 
                 default:
-                    if(el[i].tagName.toLowerCase() == 'select'){
+                    if(cm.isTagName(el[i], 'select')){
                         cm.setSelect(el[i], item);
                     }else{
                         el[i].value = item;
@@ -3184,7 +3111,7 @@ cm.getFDO = function(o, chbx){
             name = name.replace(/\[.*\]$/, '');
             data[name] = (function(i, obj){
                 var index = indexes[i];
-                var next = typeof(indexes[i + 1]) != 'undefined';
+                var next = !cm.isUndefined(indexes[i + 1]);
                 if(index === ''){
                     if(obj && obj instanceof Array){
                         obj.push(next ? arguments.callee(i + 1, obj) : value);
@@ -3222,7 +3149,7 @@ cm.getFDO = function(o, chbx){
                         case 'checkbox':
                             if(elements[d][i].checked){
                                 setValue(elements[d][i].name, elements[d][i].value || 1);
-                            }else if(typeof(chbx) != 'undefined' && chbx !== false){
+                            }else if(!cm.isUndefined(chbx) && chbx !== false){
                                 setValue(elements[d][i].name, chbx);
                             }
                             break;
@@ -3258,15 +3185,15 @@ cm.getFDO = function(o, chbx){
 cm.clearForm = function(o){
     var formEls = cm.getByClass('formData', o);
     for(var i = 0, ln = formEls.length; i < ln; i++){
-        if(formEls[i].tagName.toLowerCase() == 'input'){
-            if(formEls[i].type.toLowerCase() == 'checkbox' || formEls[i].type.toLowerCase() == 'radio'){
+        if(cm.isTagName(formEls[i], 'input')){
+            if(formEls[i].type.toLowerCase() === 'checkbox' || formEls[i].type.toLowerCase() === 'radio'){
                 formEls[i].checked = false;
             }else{
                 formEls[i].value = '';
             }
-        }else if(formEls[i].tagName.toLowerCase() == 'textarea'){
+        }else if(cm.isTagName(formEls[i], 'textarea')){
             formEls[i].value = '';
-        }else if(formEls[i].tagName.toLowerCase() == 'select'){
+        }else if(cm.isTagName(formEls[i], 'select')){
             var opts = formEls[i].getElementsByTagName('option');
             for(var d = 0, lnd = opts.length; d < lnd; d++){
                 opts[d].selected = false;
@@ -3485,7 +3412,7 @@ cm.addLeadZero = function(x){
     return x < 10 ? '0' + x : x;
 };
 
-cm.getNumberDeclension = function(number, titles /* ['найдена', 'найдено', 'найдены'] */){
+cm.plural = cm.getNumberDeclension = function(number, titles /* ['найдена', 'найдено', 'найдены'] */){
     var cases = [2, 0, 1, 1, 1, 2];
     return titles[
         (number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]
@@ -3659,16 +3586,14 @@ cm.parseFormatDate = function(str, format, displayFormat, langs){
     format = format || cm._config['dateFormat'];
     displayFormat = displayFormat || cm._config['displayDateFormat'];
     var date = cm.parseDate(str, format);
-    var formated = cm.dateFormat(date, displayFormat, langs);
-    return formated;
+    return cm.dateFormat(date, displayFormat, langs);
 };
 
 cm.parseFormatDateTime = function(str, format, displayFormat, langs){
     format = format || cm._config['dateTimeFormat'];
     displayFormat = displayFormat || cm._config['displayDateTimeFormat'];
     var date = cm.parseDate(str, format);
-    var formated = cm.dateFormat(date, displayFormat, langs);
-    return formated;
+    return cm.dateFormat(date, displayFormat, langs);
 };
 
 cm.getWeek = function(date){
@@ -3683,7 +3608,7 @@ cm.getWeeksInYear = function(year){
     year = !year ? new Date().getFullYear() : year;
     var date = new Date(year, 11, 31),
         week = cm.getWeek(date);
-    return week == 1 ? cm.getWeek(date.setDate(24)) : week;
+    return week === 1 ? cm.getWeek(date.setDate(24)) : week;
 };
 
 /* ******* STYLES ******* */
@@ -3695,18 +3620,11 @@ cm.addClass = function(node, str, useHack){
     if(useHack){
         useHack = node.clientHeight;
     }
-    if(node.classList){
-        cm.forEach(str.toString().split(/\s+/), function(item){
-            if(!cm.isEmpty(item)){
-                node.classList.add(item);
-            }
-        });
-    }else{
-        var add = cm.arrayToObject(typeof(str) == 'object' ? str : str.split(/\s+/)),
-            current = cm.arrayToObject(node && node.className ? node.className.split(/\s+/) : []);
-        current = cm.merge(current, add);
-        node.className = cm.objectToArray(current).join(' ');
-    }
+    cm.forEach(str.toString().split(/\s+/), function(item){
+        if(!cm.isEmpty(item)){
+            node.classList.add(item);
+        }
+    });
     return node;
 };
 
@@ -3717,23 +3635,11 @@ cm.removeClass = function(node, str, useHack){
     if(useHack){
         useHack = node.clientHeight;
     }
-    if(node.classList){
-        cm.forEach(str.toString().split(/\s+/), function(item){
-            if(!cm.isEmpty(item)){
-                node.classList.remove(item);
-            }
-        });
-    }else{
-        var remove = cm.arrayToObject(typeof(str) == 'object' ? str : str.split(/\s+/)),
-            current = node && node.className ? node.className.split(/\s+/) : [],
-            ready = [];
-        current.forEach(function(item){
-            if(!remove[item]){
-                ready.push(item);
-            }
-        });
-        node.className = ready.join(' ');
-    }
+    cm.forEach(str.toString().split(/\s+/), function(item){
+        if(!cm.isEmpty(item)){
+            node.classList.remove(item);
+        }
+    });
     return node;
 };
 
@@ -3745,7 +3651,7 @@ cm.replaceClass = function(node, oldClass, newClass, useHack){
 };
 
 cm.hasClass = cm.isClass = function(node, cssClass){
-    var hasClass, classes;
+    var classes;
     if(!cm.isNode(node)){
         return false;
     }
@@ -3753,13 +3659,7 @@ cm.hasClass = cm.isClass = function(node, cssClass){
         return node.classList.contains(cssClass);
     }else{
         classes = node.className ? node.className.split(/\s+/) : [];
-        hasClass = false;
-        cm.forEach(classes, function(item){
-            if(item == cssClass){
-                hasClass = true;
-            }
-        });
-        return hasClass;
+        return cm.inArray(classes, cssClass);
     }
 };
 
@@ -3798,22 +3698,19 @@ cm.getScrollBarSize = (function(){
 })();
 
 cm.setOpacity = function(node, value){
-    if(node){
-        if(cm.is('ie') && cm.isVersion() < 9){
-            node.style.filter = "alpha(opacity=" + (Math.floor(value * 100)) + ")";
-        }else{
-            node.style.opacity = value;
-        }
+    if(cm.isNode(node)){
+        node.style.opacity = value;
     }
     return node;
 };
 
 cm.getX = function(o){
-    var x = 0, p = o;
+    var x = 0,
+        p = o;
     try{
         while(p){
             x += p.offsetLeft;
-            if(p != o){
+            if(p !== o){
                 x += cm.getStyle(p, 'borderLeftWidth', true) || 0;
             }
             p = p.offsetParent;
@@ -3825,11 +3722,12 @@ cm.getX = function(o){
 };
 
 cm.getY = function(o){
-    var y = 0, p = o;
+    var y = 0,
+        p = o;
     try{
         while(p){
             y += p.offsetTop;
-            if(p != o){
+            if(p !== o){
                 y += cm.getStyle(p, 'borderTopWidth', true) || 0;
             }
             p = p.offsetParent;
@@ -3992,7 +3890,7 @@ cm.getRealWidth = function(node, applyWidth){
     nodeWidth = node.offsetWidth;
     node.style.width = 'auto';
     width = node.offsetWidth;
-    node.style.width = cn.isUndefined(applyWidth) ? [nodeWidth, 'px'].join('') : applyWidth;
+    node.style.width = cm.isUndefined(applyWidth) ? [nodeWidth, 'px'].join('') : applyWidth;
     return width;
 };
 
@@ -4006,8 +3904,8 @@ cm.getRealHeight = function(node, type, applyType){
         return 0;
     }
     styleObject = cm.getStyleObject(node);
-    type = typeof type == 'undefined' || !cm.inArray(types, type)? 'offset' : type;
-    applyType = typeof applyType == 'undefined' || !cm.inArray(types, applyType) ? false : applyType;
+    type = cm.isUndefined(type) || !cm.inArray(types, type)? 'offset' : type;
+    applyType = cm.isUndefined(applyType) || !cm.inArray(types, applyType) ? false : applyType;
     cm.forEach(types, function(type){
         height[type] = 0;
     });
@@ -4069,7 +3967,7 @@ cm.addStyles = function(node, str){
             style = item.split(':');
             // Add style to element
             style[2] = cm.styleStrToKey(style[0]);
-            if(style[0] == 'float'){
+            if(style[0] === 'float'){
                 node.style[style[2][0]] = style[1];
                 node.style[style[2][1]] = style[1];
             }else{
@@ -4119,21 +4017,21 @@ cm.getCurrentStyle = function(obj, name, dimension){
         case 'top':
         case 'left':
             var Name = name.charAt(0).toUpperCase() + name.substr(1, name.length - 1);
-            if(dimension == '%' && !obj.style[name].match(/%/)){
+            if(dimension === '%' && !obj.style[name].match(/%/)){
                 var el = (/body/i.test(obj.parentNode.tagName) || /top|left/i.test(Name)) ? 'client' : 'offset';
                 var pv = (/width|left/i.test(Name)) ? obj.parentNode[el + 'Width'] : obj.parentNode[el + 'Height'];
                 return 100 * ( obj['offset' + Name] / pv );
-            }else if(dimension == '%' && /%/.test(obj.style[name])){
+            }else if(dimension === '%' && /%/.test(obj.style[name])){
                 var display = obj.style.display;
                 obj.style.display = 'none';
                 var style = cm.getCSSStyle(obj, name, true) || 0;
                 obj.style.display = display;
                 return style;
-            }else if(dimension == 'px' && /px/.test(obj.style[name])){
+            }else if(dimension === 'px' && /px/.test(obj.style[name])){
                 return cm.getCSSStyle(obj, name, true) || 0;
             }
             return obj['offset' + Name];
-            break;
+
         case 'opacity':
             if(cm.is('ie') && cm.isVersion() < 9){
                 var reg = /alpha\(opacity=(.*)\)/;
@@ -4143,7 +4041,7 @@ cm.getCurrentStyle = function(obj, name, dimension){
                 var val = parseFloat(obj.style.opacity || cm.getCSSStyle(obj, 'opacity'));
                 return (!isNaN(val)) ? val : 1;
             }
-            break;
+
         case 'color':
         case 'backgroundColor':
         case 'borderColor':
@@ -4152,20 +4050,20 @@ cm.getCurrentStyle = function(obj, name, dimension){
                 return val = val.match(/\d+/g), [parseInt(val[0]), parseInt(val[1]), parseInt(val[2])];
             }
             return cm.hex2rgb(val.match(/[\w\d]+/)[0]);
-            break;
+
         case 'docScrollTop':
             return cm.getBodyScrollTop();
-            break;
+
         case 'scrollLeft':
         case 'scrollTop':
             return obj[name];
-            break;
+
         case 'x1':
         case 'x2':
         case 'y1':
         case 'y2':
             return parseInt(obj.getAttribute(name));
-            break;
+
         default:
             return cm.getCSSStyle(obj, name, true) || 0;
     }
@@ -4194,7 +4092,7 @@ cm.rgb2hex = function(r, g, b){
         rgb[i] = Number(rgb[i]).toString(16);
         if(rgb[i] == '0'){
             rgb[i] = '00';
-        }else if(rgb[i].length == 1){
+        }else if(rgb[i].length === 1){
             rgb[i] = '0' + rgb[i];
         }
     }
@@ -4203,7 +4101,7 @@ cm.rgb2hex = function(r, g, b){
 
 cm.styleStrToKey = function(line){
     line = line.replace(/\s/g, '');
-    if(line == 'float'){
+    if(line === 'float'){
         line = ['cssFloat', 'styleFloat'];
     }else if(line.match('-')){
         var st = line.split('-');
@@ -4317,23 +4215,27 @@ cm.getBodyScrollMaxTop = function(){
     return cm.getBodyScrollHeight() - cm._pageSize['winHeight'];
 };
 
-cm.getSupportedStyle = function(style){
-    var upper = cm.styleStrToKey(style).replace(style.charAt(0), style.charAt(0).toUpperCase()),
-        styles = [
-            cm.styleStrToKey(style),
-            ['Webkit', upper].join(''),
-            ['Moz', upper].join(''),
-            ['O', upper].join(''),
-            ['ms', upper].join('')
-        ];
-    style = false;
-    cm.forEach(styles, function(item){
-        if(typeof document.createElement('div').style[item] != 'undefined' && !style){
-            style = item;
-        }
-    });
-    return style;
-};
+cm.getSupportedStyle = (function(){
+    var node = document.createElement('div');
+
+    return function(style){
+        var upper = cm.styleStrToKey(style).replace(style.charAt(0), style.charAt(0).toUpperCase()),
+            styles = [
+                cm.styleStrToKey(style),
+                ['Webkit', upper].join(''),
+                ['Moz', upper].join(''),
+                ['O', upper].join(''),
+                ['ms', upper].join('')
+            ];
+        style = false;
+        cm.forEach(styles, function(item){
+            if(!cm.isUndefined(node.style[item]) && !style){
+                style = item;
+            }
+        });
+        return style;
+    }
+})();
 
 cm.getTransitionDurationFromRule = function(rule){
     var openDurationRule = cm.getCSSRule(rule)[0],
@@ -4937,8 +4839,8 @@ cm.cookieRemove = function(name){
     document.cookie = encodeURI(name) + '=;expires=' + date;
 };
 
-cm.cookieDate = function(num){
-    return 'expires=' + (new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * num)).toUTCString() + ';';
+cm.cookieDate = function(days){
+    return 'expires=' + (new Date(Date.now() + 1000 * 60 * 60 * 24 * days)).toUTCString() + ';';
 };
 
 /* ******* AJAX ******* */
@@ -5174,13 +5076,29 @@ cm.stringifyJSON = function(o){
 };
 
 cm.obj2URI = function(obj, prefix){
-    var str = [];
+    var str = [],
+        keyPrefix;
     cm.forEach(obj, function(item, key){
-        var k = prefix ? prefix + "[" + key + "]" : key,
-            v = item;
-        str.push(typeof v == "object" ? cm.obj2URI(v, k) : k + "=" + encodeURIComponent(v));
+        keyPrefix = !cm.isEmpty(prefix) ? prefix + "[" + key + "]" : key;
+        str.push(typeof item === 'object' ? cm.obj2URI(item, keyPrefix) : keyPrefix + '=' + encodeURIComponent(item));
     });
-    return str.join("&");
+    return str.join('&');
+};
+
+cm.obj2Filter = function(obj, prefix, skipEmpty){
+    var data = {},
+        keyPrefix;
+    cm.forEach(obj, function(item, key){
+        if(!skipEmpty || !cm.isEmpty(item)){
+            keyPrefix = !cm.isEmpty(prefix) ? prefix + '=' + key : key;
+            if(cm.isObject(item)){
+                data = cm.merge(data, cm.obj2Filter(item, keyPrefix, skipEmpty))
+            }else{
+                data[keyPrefix] = item;
+            }
+        }
+    });
+    return data;
 };
 
 cm.obj2FormData = function(o){
@@ -5222,7 +5140,7 @@ cm.xml2arr = function(o){
         var els = o.childNodes;
         for(var i = 0, ln = els.length; i < ln; i++){
             var childs = arguments.callee(els[i]);
-            if(typeof(childs) == 'object'){
+            if(typeof(childs) === 'object'){
                 for(var key in childs){
                     if(!res[o.tagName][key]){
                         res[o.tagName][key] = childs[key];
@@ -5402,7 +5320,7 @@ cm.getConstructor = function(className, callback){
     callback = cm.isFunction(callback) ? callback : function(){};
     if(!className || className === '*'){
         cm.forEach(cm._defineStack, function(classConstructor){
-            callback(classConstructor, className, classConstructor.prototype);
+            callback(classConstructor, className, classConstructor.prototype, classConstructor.prototype._inherit);
         });
         return cm._defineStack;
     }else{
@@ -5417,7 +5335,7 @@ cm.getConstructor = function(className, callback){
             }
             return false;
         }else{
-            callback(classConstructor, className, classConstructor.prototype);
+            callback(classConstructor, className, classConstructor.prototype, classConstructor.prototype._inherit);
             return classConstructor;
         }
     }
@@ -5528,9 +5446,7 @@ Mod['Extend'] = {
         'extend' : true,
         'predefine' : true
     },
-    '_construct' : function(){
-        var that = this;
-    },
+    '_construct' : function(){},
     '_extend' : function(name, o){
         var that = this;
         if(!that.build._modules[name]){
@@ -5555,7 +5471,7 @@ Mod['Extend'] = {
                 });
             }
             // Construct module
-            if(typeof o._construct == 'function'){
+            if(cm.isFunction(o._construct)){
                 // Construct
                 o._construct.call(that);
             }else{
@@ -5649,7 +5565,7 @@ Mod['Component'] = {
     },
     'cloneComponent' : function(params){
         var that = this,
-            component;
+            component = null;
         cm.getConstructor(that._className, function(classConstructor){
             component = new classConstructor(
                 cm.merge(that.params, params)
@@ -5931,7 +5847,7 @@ Mod['DataConfig'] = {
     },
     '_construct' : function(){
         var that = this;
-        if(typeof that.build['params']['configDataMarker'] == 'undefined'){
+        if(cm.isUndefined(that.build['params']['configDataMarker'])){
             that.build['params']['configDataMarker'] = 'data-config';
         }
     },
@@ -6222,7 +6138,8 @@ Mod['Stack'] = {
     'isAppropriateToStack' : function(name, parent, callback){
         var that = this,
             item = that._stackItem;
-        if((cm.isEmpty(name) || item['name'] == name) && cm.isParent(parent, item['node'], true)){
+        callback = cm.isFunction(callback) ? callback : function(){};
+        if((cm.isEmpty(name) || item['name'] === name) && cm.isParent(parent, item['node'], true)){
             callback(item['class'], item, name);
             return true;
         }
@@ -6231,9 +6148,9 @@ Mod['Stack'] = {
     'findInStack' : function(name, parent, callback){
         var that = this,
             items = [];
-        callback = typeof callback == 'function' ? callback : function(){};
+        callback = cm.isFunction(callback) ? callback : function(){};
         cm.forEach(that._stack, function(item){
-            if((cm.isEmpty(name) || item['name'] == name) && (cm.isEmpty(parent) || cm.isParent(parent, item['node'], true))){
+            if((cm.isEmpty(name) || item['name'] === name) && (cm.isEmpty(parent) || cm.isParent(parent, item['node'], true))){
                 items.push(item);
                 callback(item['class'], item, name);
             }
@@ -6296,180 +6213,6 @@ Mod['Structure'] = {
             cm.insertBefore(node, that.params['node']);
         }
         cm.remove(that.params['node']);
-        return that;
-    }
-};
-
-/* ******* CONTROLLER ******* */
-
-Mod['__Controller__'] = {
-    '_config' : {
-        'extend' : true,
-        'predefine' : false,
-        'require' : ['Extend']
-    },
-    '_construct' : function(){
-        var that = this;
-        if(typeof that.build['params']['removeOnDestruct'] == 'undefined'){
-            that.build['params']['removeOnDestruct'] = true;
-        }
-        if(that.build['params']['customEvents'] !== false){
-            that.build['params']['customEvents'] = cm.merge({
-                'destruct' : true,
-                'redraw' : true,
-                'refresh' : true,
-                'resume' : true,
-                'suspend' : true
-            }, that.build['params']['customEvents']);
-        }
-        if(that.build['params']['triggerCustomEvents'] !== false){
-            that.build['params']['triggerCustomEvents'] = cm.merge({
-                'destruct' : true,
-                'redraw' : true,
-                'refresh' : true,
-                'resume' : true,
-                'suspend' : true
-            }, that.build['params']['triggerCustomEvents']);
-        }
-        that.build._isConstructed = false;
-        that.build._isDestructed = false;
-        that.build._isSuspended = false;
-    },
-    'construct' : function(){
-        var that = this;
-        var node = that._modules['Stack'] ? that.getStackNode() : that.params['node'];
-        if(!that._isConstructed){
-            that._isConstructed = true;
-            that._isDestructed = false;
-            that._isSuspended = false;
-            if(that.params['customEvents']){
-                if(that.params['customEvents'] === true){
-                    cm.customEvent.add(node, 'destruct', that.destruct);
-                    cm.customEvent.add(node, 'redraw', that.redraw);
-                    cm.customEvent.add(node, 'refresh', that.refresh);
-                    cm.customEvent.add(node, 'resume', that.resume);
-                    cm.customEvent.add(node, 'suspend', that.suspend);
-                }else{
-                    cm.forEach(that.params['customEvents'], function(bool, key){
-                        bool && cm.customEvent.add(node, 'destruct', that[key]);
-                    });
-                }
-            }
-            that.constructHook(node);
-        }
-        return that;
-    },
-    'destruct' : function(){
-        var that = this;
-        if(that._isConstructed && !that._isDestructed){
-            var node = that._modules['Stack'] ? that.getStackNode() : that.params['node'];
-            that._isConstructed = false;
-            that._isDestructed = true;
-            that.destructHook(node);
-            if(that.params['triggerCustomEvents'] && (that.params['triggerCustomEvents'] === true || that.params['triggerCustomEvents']['destruct'])){
-                cm.customEvent.trigger(node, 'destruct', {
-                    'type' : 'child',
-                    'self' : false
-                });
-            }
-            if(that.params['customEvents']){
-                if(that.params['customEvents'] === true){
-                    cm.customEvent.remove(node, 'destruct', that.destruct);
-                    cm.customEvent.remove(node, 'redraw', that.redraw);
-                    cm.customEvent.remove(node, 'refresh', that.refresh);
-                    cm.customEvent.remove(node, 'resume', that.resume);
-                    cm.customEvent.remove(node, 'suspend', that.suspend);
-                }else{
-                    cm.forEach(that.params['customEvents'], function(bool, key){
-                        bool && cm.customEvent.remove(node, 'destruct', that[key]);
-                    });
-                }
-            }
-            that._modules['Stack'] && that.removeFromStack();
-            that.params['removeOnDestruct'] && cm.remove(node);
-        }
-        return that;
-    },
-    'resume' : function(){
-        var that = this;
-        if(that._isSuspended){
-            var node = that._modules['Stack'] ? that.getStackNode() : that.params['node'];
-            that._isSuspended = false;
-            that.resumeHook(node);
-            if(that.params['triggerCustomEvents'] && (that.params['triggerCustomEvents'] === true || that.params['triggerCustomEvents']['resume'])){
-                cm.customEvent.trigger(node, 'resume', {
-                    'type' : 'child',
-                    'self' : false
-                });
-            }
-        }
-        return that;
-    },
-    'suspend' : function(){
-        var that = this;
-        if(!that._isSuspended){
-            var node = that._modules['Stack'] ? that.getStackNode() : that.params['node'];
-            that._isSuspended = true;
-            that.suspendHook(node);
-            if(that.params['triggerCustomEvents'] && (that.params['triggerCustomEvents'] === true || that.params['triggerCustomEvents']['suspend'])){
-                cm.customEvent.trigger(node, 'suspend', {
-                    'type' : 'child',
-                    'self' : false
-                });
-            }
-        }
-        return that;
-    },
-    'refresh' : function(){
-        var that = this;
-        if(!that._isSuspended){
-            var node = that._modules['Stack'] ? that.getStackNode() : that.params['node'];
-            that.refreshHook(node);
-            if(that.params['triggerCustomEvents'] && (that.params['triggerCustomEvents'] === true || that.params['triggerCustomEvents']['refresh'])){
-                cm.customEvent.trigger(node, 'refresh', {
-                    'type' : 'child',
-                    'self' : false
-                });
-            }
-        }
-        return that;
-    },
-    'redraw' : function(){
-        var that = this;
-        if(!that._isSuspended){
-            var node = that._modules['Stack'] ? that.getStackNode() : that.params['node'];
-            that.redrawHook(node);
-            if(that.params['triggerCustomEvents'] && (that.params['triggerCustomEvents'] === true || that.params['triggerCustomEvents']['redraw'])){
-                cm.customEvent.trigger(node, 'redraw', {
-                    'type' : 'child',
-                    'self' : false
-                });
-            }
-        }
-        return that;
-    },
-    'constructHook' : function(node){
-        var that = this;
-        return that;
-    },
-    'destructHook' : function(node){
-        var that = this;
-        return that;
-    },
-    'resumeHook' : function(node){
-        var that = this;
-        return that;
-    },
-    'suspendHook' : function(node){
-        var that = this;
-        return that;
-    },
-    'refreshHook' : function(node){
-        var that = this;
-        return that;
-    },
-    'redrawHook' : function(node){
-        var that = this;
         return that;
     }
 };
@@ -6850,7 +6593,7 @@ function(params){
     that.construct(params);
 });
 
-cm.getConstructor('Com.AbstractController', function(classConstructor, className, classProto){
+cm.getConstructor('Com.AbstractController', function(classConstructor, className, classProto, classInherit){
     classProto.construct = function(params){
         var that = this;
         // Bind context to methods
@@ -7420,9 +7163,7 @@ function(params){
     Com.AbstractController.apply(that, arguments);
 });
 
-cm.getConstructor('Com.AbstractInput', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
+cm.getConstructor('Com.AbstractInput', function(classConstructor, className, classProto, classInherit){
     classProto.construct = function(params){
         var that = this;
         // Variables
@@ -7446,7 +7187,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         // Add events
         that.addEvent('onAfterRender', that.afterRenderHandler);
         // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
+        classInherit.prototype.construct.apply(that, arguments);
         return that;
     };
 
@@ -7595,7 +7336,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
     classProto.setAttributes = function(){
         var that = this;
         // Call parent method
-        _inherit.prototype.setAttributes.apply(that, arguments);
+        classInherit.prototype.setAttributes.apply(that, arguments);
         // Hidden
         that.setHiddenAttributes();
         // Data attributes
@@ -8166,8 +7907,11 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         if(that.params['icon']){
             nodes['field'] = cm.node('div', {'class' : 'pt__input'},
                 nodes['input'],
-                cm.node('div', {'class' : that.params['icon']})
+                nodes['icon'] = cm.node('div', {'class' : that.params['icon']})
             );
+            cm.addEvent(nodes['icon'], 'click', function(){
+                that.focus();
+            });
             cm.appendChild(nodes['field'], nodes['container']);
         }
         // Options
@@ -8898,7 +8642,8 @@ cm.define('Com.Form', {
         'onSuccess',
         'onSendStart',
         'onSend',
-        'onSendEnd'
+        'onSendEnd',
+        'onChange'
     ],
     'params' : {
         'node' : cm.node('div'),
@@ -9050,6 +8795,9 @@ function(params){
         if(field && !that.fields[params['name']]){
             cm.getConstructor(params['fieldConstructor'], function(classConstructor){
                 params['controller'] = new classConstructor(params);
+                params['controller'].addEvent('onChange', function(){
+                    that.triggerEvent('onChange');
+                });
                 // Save
                 that.fields[params['name']] = params;
             });
@@ -9752,9 +9500,11 @@ cm.define('Com.TabsetHelper', {
     'events' : [
         'onTabShowStart',
         'onTabShow',
+        'onTabShowProcess',
         'onTabShowEnd',
         'onTabHideStart',
         'onTabHide',
+        'onTabHideProcess',
         'onTabHideEnd',
         'onTabRemoveStart',
         'onTabRemove',
@@ -10040,6 +9790,7 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
             that.previous = that.current;
             that.current = id;
             item.isShow = true;
+            that.triggerEvent('onTabShowProcess', item);
             if(!that.previous && that.params['setInitialTabImmediately']){
                 cm.addClass(item['tab']['container'], 'is-immediately');
                 cm.addClass(item['label']['container'], 'is-immediately');
@@ -10048,8 +9799,8 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
                     cm.removeClass(item['label']['container'], 'is-immediately');
                 }, 5);
             }
-            cm.addClass(item['tab']['container'], 'active');
-            cm.addClass(item['label']['container'], 'active');
+            cm.addClass(item['tab']['container'], 'active', true);
+            cm.addClass(item['label']['container'], 'active', true);
             // Set select menu
             cm.setSelect(that.nodes['select'], that.current);
             // Trigger events
@@ -10089,10 +9840,9 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
             if(that.isProcess){
                 that.abort();
             }
-            that.triggerEvent('onTabHideStart', {
-                'item' : item
-            });
+            that.triggerEvent('onTabHideStart', item);
             item.isShow = false;
+            that.triggerEvent('onTabHideProcess', item);
             cm.removeClass(item['tab']['container'], 'active');
             cm.removeClass(item['label']['container'], 'active');
             that.triggerEvent('onTabHide', item);
@@ -10176,7 +9926,7 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
 
     classProto.hashChange = function(){
         var that = this,
-            id = window.location.hash.slice(1);
+            id = decodeURIComponent(window.location.hash.slice(1));
         if(that.isValidTab(id)){
             that.setTab(id);
         }
@@ -11047,7 +10797,7 @@ function(params){
     var findNodes = function(parentNode, name){
         var nodes = [];
         // Find element in specified node
-        if(parentNode.getAttribute(that.params['attribute']) == name){
+        if(parentNode.getAttribute(that.params['attribute']) === name){
             nodes.push(parentNode);
         }
         // Search for nodes in specified node
@@ -11176,7 +10926,7 @@ function(params){
                 'construct' : construct,
                 'destruct' : destruct
             };
-            if(typeof priority != 'undefined' && cm.isNumber(priority)){
+            if(!cm.isUndefined(priority) && cm.isNumber(priority)){
                 that.stackList.splice(priority, 0, item);
             }else{
                 that.stackList.push(item);
@@ -11189,7 +10939,7 @@ function(params){
 
     that.remove = function(name, construct, destruct){
         if(name){
-            if(typeof construct == 'undefined'){
+            if(cm.isUndefined(construct)){
                 that.stackList = that.stackList.filter(function(item){
                     return !(item['name'] === name);
                 });
@@ -11660,7 +11410,7 @@ function(params){
     /* ******* PUBLIC ******* */
 
     that.enableEditing = function(){
-        if(typeof that.isEditing !== 'boolean' || !that.isEditing){
+        if(!cm.isBoolean(that.isEditing) || !that.isEditing){
             that.isEditing = true;
             cm.addClass(nodes['container'], 'is-editing is-editable');
             that.redraw();
@@ -11671,7 +11421,7 @@ function(params){
     };
 
     that.disableEditing = function(){
-        if(typeof that.isEditing !== 'boolean' || that.isEditing){
+        if(!cm.isBoolean(that.isEditing) || that.isEditing){
             that.isEditing = false;
             cm.removeClass(nodes['container'], 'is-editing is-editable');
             that.triggerEvent('disableEditing');
@@ -11687,7 +11437,7 @@ function(params){
 
     that.setColumnsCount = function(count){
         var itemsLength = that.items.length;
-        if(!count || itemsLength == count){
+        if(!count || itemsLength === count){
             return that;
         }
         if(itemsLength < count){
@@ -15405,6 +15155,147 @@ cm.getConstructor('Com.GalleryPopupContainer', function(classConstructor, classN
             that.components['controller'].set(0);
         }
         return that;
+    };
+});
+cm.define('Com.Geocoder', {
+    'extend' : 'Com.AbstractController',
+    'events' : [
+        'onLoad'
+    ],
+    'params' : {
+        'controllerEvents' : true,
+        'renderStructure' : false,
+        'embedStructureOnRender' : false,
+        'apiKey' : '',
+        'apiLink' : 'https://maps.googleapis.com/maps/api/js?key=%key%'
+    }
+},
+function(params){
+    var that = this;
+    // Call parent class construct
+    Com.AbstractController.apply(that, arguments);
+});
+
+cm.getConstructor('Com.Geocoder', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.onConstructStart = function(){
+        var that = this;
+        // Binds
+        that.loadScriptEndHanlder = that.loadScriptEnd.bind(that);
+    };
+
+    classProto.onValidateParams = function(){
+        var that = this;
+        that.apiLink = cm.strReplace(that.params['apiLink'], {'%key%' : that.params['apiKey']});
+    };
+
+    classProto.renderViewModel = function(){
+        var that = this;
+        // Call parent method - renderViewModel
+        _inherit.prototype.renderViewModel.apply(that, arguments);
+        // Load Google Maps Script
+        cm.loadScript({
+            'path' : 'google.maps.Geocoder',
+            'src' : that.apiLink,
+            'callback' : that.loadScriptEndHanlder
+        });
+        return that;
+    };
+
+    classProto.loadScriptEnd = function(handler){
+        var that = this;
+        that.components['geocoder'] = new handler();
+        that.triggerEvent('onLoad');
+    };
+
+    classProto.get = function(data, error, success){
+        var that = this,
+            args = arguments;
+        if(that.components['geocoder']){
+            that.process.apply(that, args);
+        }else{
+            cm.loadScript({
+                'path' : 'google.maps.Geocoder',
+                'src' : that.apiLink,
+                'callback' : function(){
+                    that.process.apply(that, args);
+                }
+            });
+        }
+    };
+
+    classProto.process = function(data, success, error){
+        var that = this;
+        that.components['geocoder'].geocode(data, function(results, status) {
+            if(status === 'OK'){
+                cm.isFunction(success) && success(results, status);
+            }else{
+                cm.isFunction(error) && error(status);
+            }
+        });
+    };
+});
+cm.define('Com.Geolocation', {
+    'extend' : 'Com.AbstractController',
+    'events' : [
+        'onRequest',
+        'onSuccess',
+        'onError'
+    ],
+    'params' : {
+        'controllerEvents' : true,
+        'renderStructure' : false,
+        'embedStructureOnRender' : false,
+        'autoRequest' : true,
+        'default' : {                       // New York
+            'lat' : 40.7127837,
+            'lng' : -74.0059413
+        },
+        'options' : {
+            'enableHighAccuracy' : false,
+            'maximumAge' : 30000,
+            'timeout' : 27000
+        }
+    }
+},
+function(params){
+    var that = this;
+    // Call parent class construct
+    Com.AbstractController.apply(that, arguments);
+});
+
+cm.getConstructor('Com.Geolocation', function(classConstructor, className, classProto){
+    var _inherit = classProto._inherit;
+
+    classProto.renderViewModel = function(){
+        var that = this;
+        // Call parent method - renderViewModel
+        _inherit.prototype.renderViewModel.apply(that, arguments);
+        // Get use location
+        that.params['autoRequest'] && that.request();
+        return that;
+    };
+
+    classProto.request = function(){
+        var that = this,
+            position;
+        if(navigator.geolocation){
+            navigator.geolocation.getCurrentPosition(function(position){
+                position = {
+                    'lat' : position.coords.latitude,
+                    'lng' : position.coords.longitude
+                };
+                that.triggerEvent('onRequest', position);
+                that.triggerEvent('onSuccess', position);
+            }, function(){
+                that.triggerEvent('onRequest', that.params['defaultPosition']);
+                that.triggerEvent('onError', that.params['defaultPosition']);
+            }, that.params['options']);
+        }else{
+            that.triggerEvent('onRequest', that.params['defaultPosition']);
+            that.triggerEvent('onError', that.params['defaultPosition']);
+        }
     };
 });
 cm.define('Com.Glossary', {
@@ -19690,9 +19581,7 @@ function(params){
     Com.AbstractController.apply(that, arguments);
 });
 
-cm.getConstructor('Com.Router', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
+cm.getConstructor('Com.Router', function(classConstructor, className, classProto, classInherit){
     classProto.construct = function(){
         var that = this;
         // Variables
@@ -19705,7 +19594,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         that.windowClickEventHandler = that.windowClickEvent.bind(that);
         that.popstateEventHandler = that.popstateEvent.bind(that);
         // Call parent method - construct
-        _inherit.prototype.construct.apply(that, arguments);
+        classInherit.prototype.construct.apply(that, arguments);
     };
 
     classProto.renderViewModel = function(){
@@ -22698,6 +22587,27 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
         return nodes;
     };
 
+    /*** TOGGLE ***/
+
+    classProto.onTabShowProcess = function(that, item){
+        clearTimeout(item['switchInt']);
+        item['tab']['container'].style.display = 'block';
+    };
+
+    classProto.onTabShowEnd = function(that, item){
+        var previous = that.previous;
+        var previousItem = that.items[previous];
+        if(previous && previous !== item){
+            if(that.params['animateSwitch']){
+                previousItem['switchInt'] = setTimeout(function(){
+                    previousItem['tab']['container'].style.display = 'none';
+                }, that.params['animateDuration']);
+            }else{
+                previousItem['tab']['container'].style.display = 'none';
+            }
+        }
+    };
+
     /******* PUBLIC *******/
 
     classProto.reset = function(){
@@ -23323,12 +23233,14 @@ cm.define('Com.Tooltip', {
         'onHide'
     ],
     'params' : {
-        'target' : cm.Node('div'),
+        'target' : cm.node('div'),
         'targetEvent' : 'hover',                        // hover | click | none
         'hideOnReClick' : false,                        // Hide tooltip when re-clicking on the target, requires setting value 'targetEvent' : 'click'
         'hideOnOut' : true,
         'hold' : false,
+        'holdTarget' : false,
         'preventClickEvent' : false,                    // Prevent default click event on the target, requires setting value 'targetEvent' : 'click'
+        'positionTarget' : false,                       // Override target node for calculation position and dimensions
         'top' : 0,                                      // Supported properties: targetHeight, selfHeight, number
         'left' : 0,                                     // Supported properties: targetWidth, selfWidth, number
         'adaptiveFrom' : null,
@@ -23336,6 +23248,7 @@ cm.define('Com.Tooltip', {
         'adaptiveLeft' : null,
         'width' : 'auto',                               // Supported properties: targetWidth, auto, number
         'minWidth' : 0,
+        'scroll' : 'auto',                              // auto, scroll, visible
         'duration' : 'cm._config.animDurationShort',
         'delay' : 0,
         'resizeInterval' : 5,
@@ -23393,6 +23306,7 @@ function(params){
                 that.nodes['content'] = cm.Node('div', {'class' : 'scroll'})
             )
         );
+        cm.isString(that.params['scroll']) && cm.addClass(that.nodes['content'], ['is', that.params['scroll']].join('-'));
         // Add position style
         that.nodes['container'].style.position = that.params['position'];
         // Add theme css class
@@ -23453,7 +23367,8 @@ function(params){
     var setTargetEvent = function(){
         // Hold
         if(that.params['hold']){
-            cm.appendChild(that.nodes['container'], that.params['target']);
+            var holdTarget = that.params['holdTarget'] || that.params['target'];
+            cm.appendChild(that.nodes['container'], holdTarget);
         }
         // Event
         switch(that.params['targetEvent']){
@@ -23555,7 +23470,8 @@ function(params){
         removeWindowEvent();
         that.nodes['container'].style.display = 'none';
         if(that.params['hold']){
-            cm.appendChild(that.nodes['container'], that.params['target']);
+            var holdTarget = that.params['holdTarget'] || that.params['target'];
+            cm.appendChild(that.nodes['container'], holdTarget);
         }else{
             cm.remove(that.nodes['container']);
         }
@@ -23572,8 +23488,9 @@ function(params){
     };
 
     var resize = function(){
-        var targetWidth =  that.params['target'].offsetWidth,
-            targetHeight = that.params['target'].offsetHeight,
+        var target = that.params['positionTarget'] || that.params['target'],
+            targetWidth =  target.offsetWidth,
+            targetHeight = target.offsetHeight,
             selfHeight = that.nodes['container'].offsetHeight,
             selfWidth = that.nodes['container'].offsetWidth,
             pageSize = cm.getPageSize(),
@@ -23618,13 +23535,13 @@ function(params){
         })();
         // Calculate position
         (function(){
-            var top = cm.getRealY(that.params['target']),
+            var top = cm.getRealY(target),
                 topAdd = eval(
                     paramsTop.toString()
                         .replace('targetHeight', targetHeight)
                         .replace('selfHeight', selfHeight)
                 ),
-                left =  cm.getRealX(that.params['target']),
+                left =  cm.getRealX(target),
                 leftAdd = eval(
                     paramsLeft.toString()
                         .replace('targetWidth', targetWidth)
@@ -23637,8 +23554,8 @@ function(params){
                 positionTop = Math.max(
                     Math.min(
                         ((top + topAdd + selfHeight > pageSize['winHeight'])
-                                ? (top - topAdd - selfHeight + targetHeight)
-                                : (top + topAdd)
+                            ? (top - topAdd - selfHeight + targetHeight)
+                            : (top + topAdd)
                         ),
                         (pageSize['winHeight'] - selfHeight)
                     ),
@@ -23652,8 +23569,8 @@ function(params){
                 positionLeft = Math.max(
                     Math.min(
                         ((left + leftAdd + selfWidth > pageSize['winWidth'])
-                                ? (left - leftAdd - selfWidth + targetWidth)
-                                : (left + leftAdd)
+                            ? (left - leftAdd - selfWidth + targetWidth)
+                            : (left + leftAdd)
                         ),
                         (pageSize['winWidth'] - selfWidth)
                     ),
@@ -23747,8 +23664,15 @@ function(params){
 
     that.setTarget = function(node){
         removeTargetEvent();
-        that.params['target'] = node || cm.Node('div');
+        that.params['target'] = node || cm.node('div');
         setTargetEvent();
+        return that;
+    };
+
+    that.setContainer = function(node){
+        if(cm.isNode(node)){
+            that.params['container'] = node;
+        }
         return that;
     };
 
@@ -24890,7 +24814,7 @@ cm.define('Com.Autocomplete', {
         'input' : null,                                             // Deprecated, use 'node' parameter instead.
         'node' : cm.node('input', {'type' : 'text'}),               // Html input node to decorate.
         'target' : false,                                           // HTML node.
-        'container' : 'document.body',
+        'container' : 'document.body',                              // 'document.body', 'targetParent'
         'name' : '',
         'minLength' : 3,
         'direction' : 'auto',                                       // auto | start
@@ -24903,6 +24827,7 @@ cm.define('Com.Autocomplete', {
         'data' : [],                                                // Examples: [{'value' : 'foo', 'text' : 'Bar'}] or ['Foo', 'Bar'].
         'options' : [],
         'value' : {},
+        'defaultValue' : '',
         'showSuggestion' : false,                                   // Show suggestion option when search query was empty
         'suggestionConstructor' : 'Com.AbstractContainer',
         'suggestionParams' : {},
@@ -24981,7 +24906,8 @@ function(params){
         // Prepare data
         that.params['data'] = cm.merge(that.params['data'], that.params['options']);
         that.params['data'] = that.callbacks.convert(that, that.params['data']);
-        that.params['value'] = that.callbacks.convertItem(that, that.params['value']);
+        // Value
+        that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
         // Tooltip
         that.params['Com.Tooltip']['className'] = [
             'com__ac-tooltip',
@@ -25111,14 +25037,16 @@ function(params){
     };
 
     var clear = function(){
-        var item;
+        var item,
+            value;
         // Kill timeout interval and ajax request
         that.requestDelay && clearTimeout(that.requestDelay);
         that.abort();
         // Clear input
         if(that.params['clearOnEmpty']){
             item = getSavedItemData(that.value);
-            if(!item || item['text'] != that.params['node'].value){
+            value = that.params['node'].value;
+            if(!item || item['text'] != value){
                 that.clear();
             }
         }
@@ -25137,7 +25065,7 @@ function(params){
     };
 
     var onChange = function(){
-        if(that.value != that.previousValue){
+        if(that.value !== that.previousValue){
             that.triggerEvent('onChange', that.value);
         }
     };
@@ -25344,9 +25272,15 @@ function(params){
     };
 
     that.setInput = function(node){
+        var tooltipContainer = that.params['container'];
         if(cm.isNode(node)){
             unsetEvents();
             that.params['node'] = node;
+            // Set tooltip container
+            if(tooltipContainer === 'targetParent'){
+                tooltipContainer = that.params['node'].parentNode;
+            }
+            that.components['tooltip'].setContainer(tooltipContainer);
             setEvents();
         }
         return that;
@@ -27965,7 +27899,9 @@ cm.define('Com.Input', {
         'controllerEvents' : true,
         'maxlength' : 0,
         'max' : 0,
-        'type' : 'text'
+        'type' : 'text',
+        'lazy' : false,
+        'delay' : 'cm._config.requestDelay'
     }
 },
 function(params){
@@ -27974,15 +27910,16 @@ function(params){
     Com.AbstractInput.apply(that, arguments);
 });
 
-cm.getConstructor('Com.Input', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
+cm.getConstructor('Com.Input', function(classConstructor, className, classProto, classInherit){
     classProto.construct = function(){
         var that = this;
+        // Variables
+        that.lazyDelay = null;
         // Bind context to methods
         that.setValueHandler = that.setValue.bind(that);
+        that.lazyValueHandler = that.lazyValue.bind(that);
         // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
+        classInherit.prototype.construct.apply(that, arguments);
         return that;
     };
 
@@ -28008,21 +27945,35 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto)
         }
         // Events
         that.triggerEvent('onRenderContentProcess');
-        cm.addEvent(nodes['input'], 'blur', that.setValueHandler);
-        cm.addEvent(nodes['input'], 'change', that.setValueHandler);
-        cm.addEvent(nodes['input'], 'keypress', function(e){
-            if(cm.isKeyCode(e.keyCode, 'enter')){
-                cm.preventDefault(e);
-                that.setValue();
-                nodes['input'].blur();
-            }
-        });
+        that.renderContentEvents();
         that.triggerEvent('onRenderContentEnd');
         // Push
         return nodes['container'];
     };
 
+    classProto.renderContentEvents = function(){
+        var that = this;
+        that.params['lazy'] && cm.addEvent(that.nodes['content']['input'], 'input', that.lazyValueHandler);
+        cm.addEvent(that.nodes['content']['input'], 'blur', that.setValueHandler);
+        cm.addEvent(that.nodes['content']['input'], 'change', that.setValueHandler);
+        cm.addEvent(that.nodes['content']['input'], 'keypress', function(e){
+            if(cm.isKeyCode(e.keyCode, 'enter')){
+                cm.preventDefault(e);
+                that.setValue();
+                that.nodes['content']['input'].blur();
+            }
+        });
+    };
+
     /* *** DATA VALUE *** */
+
+    classProto.lazyValue = function(){
+        var that = this;
+        that.lazyDelay && clearTimeout(that.lazyDelay);
+        that.lazyDelay = setTimeout(function(){
+            that.setValue(true);
+        }, that.params['delay']);
+    };
 
     classProto.setValue = function(triggerEvents){
         var that = this,

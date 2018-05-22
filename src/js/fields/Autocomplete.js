@@ -28,7 +28,7 @@ cm.define('Com.Autocomplete', {
         'input' : null,                                             // Deprecated, use 'node' parameter instead.
         'node' : cm.node('input', {'type' : 'text'}),               // Html input node to decorate.
         'target' : false,                                           // HTML node.
-        'container' : 'document.body',
+        'container' : 'document.body',                              // 'document.body', 'targetParent'
         'name' : '',
         'minLength' : 3,
         'direction' : 'auto',                                       // auto | start
@@ -41,6 +41,7 @@ cm.define('Com.Autocomplete', {
         'data' : [],                                                // Examples: [{'value' : 'foo', 'text' : 'Bar'}] or ['Foo', 'Bar'].
         'options' : [],
         'value' : {},
+        'defaultValue' : '',
         'showSuggestion' : false,                                   // Show suggestion option when search query was empty
         'suggestionConstructor' : 'Com.AbstractContainer',
         'suggestionParams' : {},
@@ -119,7 +120,8 @@ function(params){
         // Prepare data
         that.params['data'] = cm.merge(that.params['data'], that.params['options']);
         that.params['data'] = that.callbacks.convert(that, that.params['data']);
-        that.params['value'] = that.callbacks.convertItem(that, that.params['value']);
+        // Value
+        that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
         // Tooltip
         that.params['Com.Tooltip']['className'] = [
             'com__ac-tooltip',
@@ -249,14 +251,16 @@ function(params){
     };
 
     var clear = function(){
-        var item;
+        var item,
+            value;
         // Kill timeout interval and ajax request
         that.requestDelay && clearTimeout(that.requestDelay);
         that.abort();
         // Clear input
         if(that.params['clearOnEmpty']){
             item = getSavedItemData(that.value);
-            if(!item || item['text'] != that.params['node'].value){
+            value = that.params['node'].value;
+            if(!item || item['text'] != value){
                 that.clear();
             }
         }
@@ -275,7 +279,7 @@ function(params){
     };
 
     var onChange = function(){
-        if(that.value != that.previousValue){
+        if(that.value !== that.previousValue){
             that.triggerEvent('onChange', that.value);
         }
     };
@@ -482,9 +486,15 @@ function(params){
     };
 
     that.setInput = function(node){
+        var tooltipContainer = that.params['container'];
         if(cm.isNode(node)){
             unsetEvents();
             that.params['node'] = node;
+            // Set tooltip container
+            if(tooltipContainer === 'targetParent'){
+                tooltipContainer = that.params['node'].parentNode;
+            }
+            that.components['tooltip'].setContainer(tooltipContainer);
             setEvents();
         }
         return that;

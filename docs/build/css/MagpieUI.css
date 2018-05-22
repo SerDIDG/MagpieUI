@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url('//fonts.googleapis.com/css?family=Open Sans:100, 300, 400, 600, 700, 800');
-/*! ************ MagpieUI v3.32.2 (2018-05-07 16:25) ************ */
+/*! ************ MagpieUI v3.33.0 (2018-05-22 20:59) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.6.0
@@ -3506,8 +3506,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.32.2');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.32.2') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.32.2') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.32.2') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.32.2#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.33.0');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.33.0') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.33.0') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.33.0') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.33.0#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -10134,11 +10134,15 @@ ul.pt__field__hint li:before {
   text-align: right;
 }
 .pt__gridlist td.cell-title,
-.pt__gridlist th.cell-title {
+.pt__gridlist th.cell-title,
+.pt__gridlist td.cell--title,
+.pt__gridlist th.cell--title {
   width: 20%;
 }
 .pt__gridlist td.cell-description,
-.pt__gridlist th.cell-description {
+.pt__gridlist th.cell-description,
+.pt__gridlist td.cell--description,
+.pt__gridlist th.cell--description {
   width: auto;
 }
 .pt__gridlist td.cell-date,
@@ -10160,7 +10164,9 @@ ul.pt__field__hint li:before {
   width: 100px;
 }
 .pt__gridlist td.cell-auto,
-.pt__gridlist th.cell-auto {
+.pt__gridlist th.cell-auto,
+.pt__gridlist td.cell--auto,
+.pt__gridlist th.cell--auto {
   width: auto;
 }
 .pt__gridlist td.cell-status,
@@ -10906,12 +10912,14 @@ ul.pt__field__hint li:before {
   height: 30px;
   width: 30px;
 }
+.pt__input .icon.pull-left,
 .pt__input .icon:first-child {
   top: 1px;
   right: auto;
   bottom: auto;
   left: 1px;
 }
+.pt__input .icon.pull-right,
 .pt__input .icon:last-child {
   top: 1px;
   right: 1px;
@@ -11086,12 +11094,14 @@ ul.pt__field__hint li:before {
   height: 32px;
   width: 32px;
 }
+.pt__input.is-borderless .icon.pull-left,
 .pt__input.is-borderless .icon:first-child {
   top: 0px;
   right: auto;
   bottom: auto;
   left: 0px;
 }
+.pt__input.is-borderless .icon.pull-right,
 .pt__input.is-borderless .icon:last-child {
   top: 0px;
   right: 0px;
@@ -11266,12 +11276,14 @@ ul.pt__field__hint li:before {
   height: 30px;
   width: 30px;
 }
+.pt__input.size-large .icon.pull-left,
 .pt__input.size-large .icon:first-child {
   top: 1px;
   right: auto;
   bottom: auto;
   left: 1px;
 }
+.pt__input.size-large .icon.pull-right,
 .pt__input.size-large .icon:last-child {
   top: 1px;
   right: 1px;
@@ -11446,12 +11458,14 @@ ul.pt__field__hint li:before {
   height: 32px;
   width: 32px;
 }
+.pt__input.size-large.is-borderless .icon.pull-left,
 .pt__input.size-large.is-borderless .icon:first-child {
   top: 0px;
   right: auto;
   bottom: auto;
   left: 0px;
 }
+.pt__input.size-large.is-borderless .icon.pull-right,
 .pt__input.size-large.is-borderless .icon:last-child {
   top: 0px;
   right: 0px;
@@ -11626,12 +11640,14 @@ ul.pt__field__hint li:before {
   height: 46px;
   width: 46px;
 }
+.pt__input.size-xlarge .icon.pull-left,
 .pt__input.size-xlarge .icon:first-child {
   top: 1px;
   right: auto;
   bottom: auto;
   left: 1px;
 }
+.pt__input.size-xlarge .icon.pull-right,
 .pt__input.size-xlarge .icon:last-child {
   top: 1px;
   right: 1px;
@@ -11806,12 +11822,14 @@ ul.pt__field__hint li:before {
   height: 48px;
   width: 48px;
 }
+.pt__input.size-xlarge.is-borderless .icon.pull-left,
 .pt__input.size-xlarge.is-borderless .icon:first-child {
   top: 0px;
   right: auto;
   bottom: auto;
   left: 0px;
 }
+.pt__input.size-xlarge.is-borderless .icon.pull-right,
 .pt__input.size-xlarge.is-borderless .icon:last-child {
   top: 0px;
   right: 0px;
@@ -11986,12 +12004,14 @@ ul.pt__field__hint li:before {
   height: 62px;
   width: 62px;
 }
+.pt__input.size-xxlarge .icon.pull-left,
 .pt__input.size-xxlarge .icon:first-child {
   top: 1px;
   right: auto;
   bottom: auto;
   left: 1px;
 }
+.pt__input.size-xxlarge .icon.pull-right,
 .pt__input.size-xxlarge .icon:last-child {
   top: 1px;
   right: 1px;
@@ -12166,12 +12186,14 @@ ul.pt__field__hint li:before {
   height: 64px;
   width: 64px;
 }
+.pt__input.size-xxlarge.is-borderless .icon.pull-left,
 .pt__input.size-xxlarge.is-borderless .icon:first-child {
   top: 0px;
   right: auto;
   bottom: auto;
   left: 0px;
 }
+.pt__input.size-xxlarge.is-borderless .icon.pull-right,
 .pt__input.size-xxlarge.is-borderless .icon:last-child {
   top: 0px;
   right: 0px;
@@ -15110,7 +15132,12 @@ ul.pt__field__hint li:before {
 .com__tooltip > .inner > .title hr {
   margin: 0;
 }
-.com__tooltip > .inner > .scroll {
+.com__tooltip > .inner > .scroll.is-auto {
+  -webkit-overflow-scrolling: touch;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.com__tooltip > .inner > .scroll.is-scroll {
   -webkit-overflow-scrolling: touch;
   overflow-x: hidden;
   overflow-y: auto;
@@ -15432,8 +15459,7 @@ ul.pt__field__hint li:before {
   -webkit-flex: 1;
   -ms-flex: 1;
   flex: 1;
-  -webkit-transition: background-color 250ms ease-in-out;
-  transition: background-color 250ms ease-in-out;
+  /*.mx__transition(background-color, @CmUI-Transition-Duration);*/
 }
 .ie10 .com__column,
 .ie11 .com__column {

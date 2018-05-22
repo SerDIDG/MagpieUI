@@ -12,12 +12,14 @@ cm.define('Com.Tooltip', {
         'onHide'
     ],
     'params' : {
-        'target' : cm.Node('div'),
+        'target' : cm.node('div'),
         'targetEvent' : 'hover',                        // hover | click | none
         'hideOnReClick' : false,                        // Hide tooltip when re-clicking on the target, requires setting value 'targetEvent' : 'click'
         'hideOnOut' : true,
         'hold' : false,
+        'holdTarget' : false,
         'preventClickEvent' : false,                    // Prevent default click event on the target, requires setting value 'targetEvent' : 'click'
+        'positionTarget' : false,                       // Override target node for calculation position and dimensions
         'top' : 0,                                      // Supported properties: targetHeight, selfHeight, number
         'left' : 0,                                     // Supported properties: targetWidth, selfWidth, number
         'adaptiveFrom' : null,
@@ -25,6 +27,7 @@ cm.define('Com.Tooltip', {
         'adaptiveLeft' : null,
         'width' : 'auto',                               // Supported properties: targetWidth, auto, number
         'minWidth' : 0,
+        'scroll' : 'auto',                              // auto, scroll, visible
         'duration' : 'cm._config.animDurationShort',
         'delay' : 0,
         'resizeInterval' : 5,
@@ -82,6 +85,7 @@ function(params){
                 that.nodes['content'] = cm.Node('div', {'class' : 'scroll'})
             )
         );
+        cm.isString(that.params['scroll']) && cm.addClass(that.nodes['content'], ['is', that.params['scroll']].join('-'));
         // Add position style
         that.nodes['container'].style.position = that.params['position'];
         // Add theme css class
@@ -142,7 +146,8 @@ function(params){
     var setTargetEvent = function(){
         // Hold
         if(that.params['hold']){
-            cm.appendChild(that.nodes['container'], that.params['target']);
+            var holdTarget = that.params['holdTarget'] || that.params['target'];
+            cm.appendChild(that.nodes['container'], holdTarget);
         }
         // Event
         switch(that.params['targetEvent']){
@@ -244,7 +249,8 @@ function(params){
         removeWindowEvent();
         that.nodes['container'].style.display = 'none';
         if(that.params['hold']){
-            cm.appendChild(that.nodes['container'], that.params['target']);
+            var holdTarget = that.params['holdTarget'] || that.params['target'];
+            cm.appendChild(that.nodes['container'], holdTarget);
         }else{
             cm.remove(that.nodes['container']);
         }
@@ -261,8 +267,9 @@ function(params){
     };
 
     var resize = function(){
-        var targetWidth =  that.params['target'].offsetWidth,
-            targetHeight = that.params['target'].offsetHeight,
+        var target = that.params['positionTarget'] || that.params['target'],
+            targetWidth =  target.offsetWidth,
+            targetHeight = target.offsetHeight,
             selfHeight = that.nodes['container'].offsetHeight,
             selfWidth = that.nodes['container'].offsetWidth,
             pageSize = cm.getPageSize(),
@@ -307,13 +314,13 @@ function(params){
         })();
         // Calculate position
         (function(){
-            var top = cm.getRealY(that.params['target']),
+            var top = cm.getRealY(target),
                 topAdd = eval(
                     paramsTop.toString()
                         .replace('targetHeight', targetHeight)
                         .replace('selfHeight', selfHeight)
                 ),
-                left =  cm.getRealX(that.params['target']),
+                left =  cm.getRealX(target),
                 leftAdd = eval(
                     paramsLeft.toString()
                         .replace('targetWidth', targetWidth)
@@ -326,8 +333,8 @@ function(params){
                 positionTop = Math.max(
                     Math.min(
                         ((top + topAdd + selfHeight > pageSize['winHeight'])
-                                ? (top - topAdd - selfHeight + targetHeight)
-                                : (top + topAdd)
+                            ? (top - topAdd - selfHeight + targetHeight)
+                            : (top + topAdd)
                         ),
                         (pageSize['winHeight'] - selfHeight)
                     ),
@@ -341,8 +348,8 @@ function(params){
                 positionLeft = Math.max(
                     Math.min(
                         ((left + leftAdd + selfWidth > pageSize['winWidth'])
-                                ? (left - leftAdd - selfWidth + targetWidth)
-                                : (left + leftAdd)
+                            ? (left - leftAdd - selfWidth + targetWidth)
+                            : (left + leftAdd)
                         ),
                         (pageSize['winWidth'] - selfWidth)
                     ),
@@ -436,8 +443,15 @@ function(params){
 
     that.setTarget = function(node){
         removeTargetEvent();
-        that.params['target'] = node || cm.Node('div');
+        that.params['target'] = node || cm.node('div');
         setTargetEvent();
+        return that;
+    };
+
+    that.setContainer = function(node){
+        if(cm.isNode(node)){
+            that.params['container'] = node;
+        }
         return that;
     };
 

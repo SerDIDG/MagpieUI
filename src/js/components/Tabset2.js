@@ -218,6 +218,27 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
         return nodes;
     };
 
+    /*** TOGGLE ***/
+
+    classProto.onTabShowProcess = function(that, item){
+        clearTimeout(item['switchInt']);
+        item['tab']['container'].style.display = 'block';
+    };
+
+    classProto.onTabShowEnd = function(that, item){
+        var previous = that.previous;
+        var previousItem = that.items[previous];
+        if(previous && previous !== item){
+            if(that.params['animateSwitch']){
+                previousItem['switchInt'] = setTimeout(function(){
+                    previousItem['tab']['container'].style.display = 'none';
+                }, that.params['animateDuration']);
+            }else{
+                previousItem['tab']['container'].style.display = 'none';
+            }
+        }
+    };
+
     /******* PUBLIC *******/
 
     classProto.reset = function(){

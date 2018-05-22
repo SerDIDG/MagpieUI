@@ -55,7 +55,7 @@ function(params){
     var findNodes = function(parentNode, name){
         var nodes = [];
         // Find element in specified node
-        if(parentNode.getAttribute(that.params['attribute']) == name){
+        if(parentNode.getAttribute(that.params['attribute']) === name){
             nodes.push(parentNode);
         }
         // Search for nodes in specified node
@@ -184,7 +184,7 @@ function(params){
                 'construct' : construct,
                 'destruct' : destruct
             };
-            if(typeof priority != 'undefined' && cm.isNumber(priority)){
+            if(!cm.isUndefined(priority) && cm.isNumber(priority)){
                 that.stackList.splice(priority, 0, item);
             }else{
                 that.stackList.push(item);
@@ -197,7 +197,7 @@ function(params){
 
     that.remove = function(name, construct, destruct){
         if(name){
-            if(typeof construct == 'undefined'){
+            if(cm.isUndefined(construct)){
                 that.stackList = that.stackList.filter(function(item){
                     return !(item['name'] === name);
                 });

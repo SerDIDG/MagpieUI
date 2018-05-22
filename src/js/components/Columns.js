@@ -400,7 +400,7 @@ function(params){
     /* ******* PUBLIC ******* */
 
     that.enableEditing = function(){
-        if(typeof that.isEditing !== 'boolean' || !that.isEditing){
+        if(!cm.isBoolean(that.isEditing) || !that.isEditing){
             that.isEditing = true;
             cm.addClass(nodes['container'], 'is-editing is-editable');
             that.redraw();
@@ -411,7 +411,7 @@ function(params){
     };
 
     that.disableEditing = function(){
-        if(typeof that.isEditing !== 'boolean' || that.isEditing){
+        if(!cm.isBoolean(that.isEditing) || that.isEditing){
             that.isEditing = false;
             cm.removeClass(nodes['container'], 'is-editing is-editable');
             that.triggerEvent('disableEditing');
@@ -427,7 +427,7 @@ function(params){
 
     that.setColumnsCount = function(count){
         var itemsLength = that.items.length;
-        if(!count || itemsLength == count){
+        if(!count || itemsLength === count){
             return that;
         }
         if(itemsLength < count){

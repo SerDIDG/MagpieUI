@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.32.2 (2018-05-07 16:25) ************ */
+/*! ************ MagpieUI v3.33.0 (2018-05-22 20:59) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3922,7 +3922,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.32.2';
+@CmVersion: '3.33.0';
 
 // /* ******* PATH ******* */
 
@@ -3967,6 +3967,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* UI ******* */
 
 @CmUI-Transition-Duration: 250ms;
+@CmUI-Transition-DurationMedium: 150ms;
 @CmUI-Transition-DurationShort: 100ms;
 @CmUI-Transition-DurationLong: 500ms;
 @CmUI-Transition-DurationXLong: 750ms;
@@ -10220,11 +10221,13 @@ ul.pt__field__hint {
             text-align: right;
         }
 
-        &.cell-title {
+        &.cell-title,
+        &.cell--title {
             width: 20%;
         }
 
-        &.cell-description {
+        &.cell-description,
+        &.cell--description {
             width: auto;
         }
 
@@ -10243,7 +10246,8 @@ ul.pt__field__hint {
             width: 100px;
         }
 
-        &.cell-auto {
+        &.cell-auto,
+        &.cell--auto {
             width: auto;
         }
 
@@ -11068,10 +11072,12 @@ ul.pt__field__hint {
         height: @iconSize;
         width: @iconSize;
 
+        &.pull-left,
         &:first-child {
             .mx__position(@borderWidth, auto, auto, @borderWidth);
         }
 
+        &.pull-right,
         &:last-child {
             .mx__position(@borderWidth, @borderWidth, auto, auto);
         }
@@ -13823,9 +13829,15 @@ ul.pt__field__hint {
         }
 
         > .scroll {
-            @indent: (@PtBox-BorderWidth + @PtBox-Padding) * 2;
-            .cm__scroll-y-a;
-            max-height: ~"calc(100vh - @{indent})";
+            &.is-auto {
+                .cm__scroll-y-a;
+            }
+
+            &.is-scroll {
+                .cm__scroll-y-a;
+                @indent: (@PtBox-BorderWidth + @PtBox-Padding) * 2;
+                max-height: ~"calc(100vh - @{indent})";
+            }
         }
     }
 }
@@ -14190,7 +14202,7 @@ ul.pt__field__hint {
         position: relative;
         border-radius: @CmBorder-Radius;
         .mx__flex(1);
-        .mx__transition(background-color, @CmUI-Transition-Duration);
+        /*.mx__transition(background-color, @CmUI-Transition-Duration);*/
     }
 
     .ie10 &,

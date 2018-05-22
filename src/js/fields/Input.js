@@ -4,7 +4,9 @@ cm.define('Com.Input', {
         'controllerEvents' : true,
         'maxlength' : 0,
         'max' : 0,
-        'type' : 'text'
+        'type' : 'text',
+        'lazy' : false,
+        'delay' : 'cm._config.requestDelay'
     }
 },
 function(params){
@@ -13,15 +15,16 @@ function(params){
     Com.AbstractInput.apply(that, arguments);
 });
 
-cm.getConstructor('Com.Input', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
+cm.getConstructor('Com.Input', function(classConstructor, className, classProto, classInherit){
     classProto.construct = function(){
         var that = this;
+        // Variables
+        that.lazyDelay = null;
         // Bind context to methods
         that.setValueHandler = that.setValue.bind(that);
+        that.lazyValueHandler = that.lazyValue.bind(that);
         // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
+        classInherit.prototype.construct.apply(that, arguments);
         return that;
     };
 
@@ -47,21 +50,35 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto)
         }
         // Events
         that.triggerEvent('onRenderContentProcess');
-        cm.addEvent(nodes['input'], 'blur', that.setValueHandler);
-        cm.addEvent(nodes['input'], 'change', that.setValueHandler);
-        cm.addEvent(nodes['input'], 'keypress', function(e){
-            if(cm.isKeyCode(e.keyCode, 'enter')){
-                cm.preventDefault(e);
-                that.setValue();
-                nodes['input'].blur();
-            }
-        });
+        that.renderContentEvents();
         that.triggerEvent('onRenderContentEnd');
         // Push
         return nodes['container'];
     };
 
+    classProto.renderContentEvents = function(){
+        var that = this;
+        that.params['lazy'] && cm.addEvent(that.nodes['content']['input'], 'input', that.lazyValueHandler);
+        cm.addEvent(that.nodes['content']['input'], 'blur', that.setValueHandler);
+        cm.addEvent(that.nodes['content']['input'], 'change', that.setValueHandler);
+        cm.addEvent(that.nodes['content']['input'], 'keypress', function(e){
+            if(cm.isKeyCode(e.keyCode, 'enter')){
+                cm.preventDefault(e);
+                that.setValue();
+                that.nodes['content']['input'].blur();
+            }
+        });
+    };
+
     /* *** DATA VALUE *** */
+
+    classProto.lazyValue = function(){
+        var that = this;
+        that.lazyDelay && clearTimeout(that.lazyDelay);
+        that.lazyDelay = setTimeout(function(){
+            that.setValue(true);
+        }, that.params['delay']);
+    };
 
     classProto.setValue = function(triggerEvents){
         var that = this,

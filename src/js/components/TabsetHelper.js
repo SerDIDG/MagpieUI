@@ -3,9 +3,11 @@ cm.define('Com.TabsetHelper', {
     'events' : [
         'onTabShowStart',
         'onTabShow',
+        'onTabShowProcess',
         'onTabShowEnd',
         'onTabHideStart',
         'onTabHide',
+        'onTabHideProcess',
         'onTabHideEnd',
         'onTabRemoveStart',
         'onTabRemove',
@@ -291,6 +293,7 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
             that.previous = that.current;
             that.current = id;
             item.isShow = true;
+            that.triggerEvent('onTabShowProcess', item);
             if(!that.previous && that.params['setInitialTabImmediately']){
                 cm.addClass(item['tab']['container'], 'is-immediately');
                 cm.addClass(item['label']['container'], 'is-immediately');
@@ -299,8 +302,8 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
                     cm.removeClass(item['label']['container'], 'is-immediately');
                 }, 5);
             }
-            cm.addClass(item['tab']['container'], 'active');
-            cm.addClass(item['label']['container'], 'active');
+            cm.addClass(item['tab']['container'], 'active', true);
+            cm.addClass(item['label']['container'], 'active', true);
             // Set select menu
             cm.setSelect(that.nodes['select'], that.current);
             // Trigger events
@@ -340,10 +343,9 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
             if(that.isProcess){
                 that.abort();
             }
-            that.triggerEvent('onTabHideStart', {
-                'item' : item
-            });
+            that.triggerEvent('onTabHideStart', item);
             item.isShow = false;
+            that.triggerEvent('onTabHideProcess', item);
             cm.removeClass(item['tab']['container'], 'active');
             cm.removeClass(item['label']['container'], 'active');
             that.triggerEvent('onTabHide', item);
@@ -427,7 +429,7 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
 
     classProto.hashChange = function(){
         var that = this,
-            id = window.location.hash.slice(1);
+            id = decodeURIComponent(window.location.hash.slice(1));
         if(that.isValidTab(id)){
             that.setTab(id);
         }

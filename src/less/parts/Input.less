@@ -75,10 +75,12 @@
         height: @iconSize;
         width: @iconSize;
 
+        &.pull-left,
         &:first-child {
             .mx__position(@borderWidth, auto, auto, @borderWidth);
         }
 
+        &.pull-right,
         &:last-child {
             .mx__position(@borderWidth, @borderWidth, auto, auto);
         }

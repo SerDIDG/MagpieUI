@@ -8,17 +8,15 @@ cm.define('Com.MyController', {
 },
 function(params){
     var that = this;
-    // Call parent class construct
+    // Call parent class construct in current context
     Com.AbstractController.apply(that, arguments);
 });
 
-cm.getConstructor('Com.MyController', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
+cm.getConstructor('Com.MyController', function(classConstructor, className, classProto, classInherit){
     classProto.renderViewModel = function(){
         var that = this;
         // Call parent method - renderViewModel
-        _inherit.prototype.renderViewModel.apply(that, arguments);
+        classInherit.prototype.renderViewModel.apply(that, arguments);
         return that;
     };
 });

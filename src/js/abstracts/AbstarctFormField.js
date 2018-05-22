@@ -157,8 +157,11 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         if(that.params['icon']){
             nodes['field'] = cm.node('div', {'class' : 'pt__input'},
                 nodes['input'],
-                cm.node('div', {'class' : that.params['icon']})
+                nodes['icon'] = cm.node('div', {'class' : that.params['icon']})
             );
+            cm.addEvent(nodes['icon'], 'click', function(){
+                that.focus();
+            });
             cm.appendChild(nodes['field'], nodes['container']);
         }
         // Options
