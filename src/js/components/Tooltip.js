@@ -20,13 +20,16 @@ cm.define('Com.Tooltip', {
         'holdTarget' : false,
         'preventClickEvent' : false,                    // Prevent default click event on the target, requires setting value 'targetEvent' : 'click'
         'positionTarget' : false,                       // Override target node for calculation position and dimensions
-        'top' : 0,                                      // Supported properties: targetHeight, selfHeight, number
-        'left' : 0,                                     // Supported properties: targetWidth, selfWidth, number
+        'top' : 0,                                      // Supported properties: targetHeight, selfHeight, screenHeight, number
+        'left' : 0,                                     // Supported properties: targetWidth, selfWidth, screenWidth, number
+        'width' : 'auto',                               // Supported properties: targetWidth, screenWidth, auto, number
+        'height' : 'auto',
+        'minWidth' : 0,
         'adaptiveFrom' : null,
         'adaptiveTop' : null,
         'adaptiveLeft' : null,
-        'width' : 'auto',                               // Supported properties: targetWidth, auto, number
-        'minWidth' : 0,
+        'adaptiveWidth' : null,
+        'adaptiveHeight' : null,
         'scroll' : 'auto',                              // auto, scroll, visible
         'duration' : 'cm._config.animDurationShort',
         'delay' : 0,
@@ -273,57 +276,81 @@ function(params){
             selfHeight = that.nodes['container'].offsetHeight,
             selfWidth = that.nodes['container'].offsetWidth,
             pageSize = cm.getPageSize(),
+            screenWidth = pageSize['winWidth'],
+            screenHeight = pageSize['winHeight'],
             scrollTop = cm.getScrollTop(window),
             scrollLeft = cm.getScrollLeft(window),
             paramsTop = that.params['top'],
-            paramsLeft = that.params['left'];
+            paramsLeft = that.params['left'],
+            paramsWidth = that.params['width'],
+            paramsHeight = that.params['height'];
         // Validate
-        if(!cm.isEmpty(that.params['adaptiveFrom']) && that.params['adaptiveFrom'] >= pageSize['winWidth']){
+        if(!cm.isEmpty(that.params['adaptiveFrom']) && that.params['adaptiveFrom'] >= screenWidth){
             paramsTop = !cm.isEmpty(that.params['adaptiveTop']) ? that.params['adaptiveTop'] : paramsTop;
             paramsLeft = !cm.isEmpty(that.params['adaptiveLeft']) ? that.params['adaptiveLeft'] : paramsLeft;
+            paramsWidth = !cm.isEmpty(that.params['adaptiveWidth']) ? that.params['adaptiveWidth'] : paramsWidth;
+            paramsHeight = !cm.isEmpty(that.params['adaptiveHeight']) ? that.params['adaptiveHeight'] : paramsHeight;
         }
         // Calculate size
         (function(){
             var width = 0,
+                height = 0,
                 minWidth = 0;
             if(that.params['minWidth'] !== 'auto'){
                 minWidth = eval(
                     that.params['minWidth']
                         .toString()
                         .replace('targetWidth', targetWidth)
+                        .replace('screenWidth', screenWidth)
                         .replace('selfWidth', selfWidth)
                 );
-                minWidth = Math.min(pageSize['winWidth'], minWidth);
+                minWidth = Math.min(screenWidth, minWidth);
                 that.nodes['container'].style.minWidth =  [minWidth, 'px'].join('');
             }
-            if(that.params['width'] !== 'auto'){
+            if(paramsWidth !== 'auto'){
                 width = eval(
-                    that.params['width']
+                    paramsWidth
                         .toString()
                         .replace('targetWidth', targetWidth)
+                        .replace('screenWidth', screenWidth)
                         .replace('selfWidth', selfWidth)
                 );
                 width = Math.max(minWidth, width);
-                width = Math.min(pageSize['winWidth'], width);
+                width = Math.min(screenWidth, width);
                 if(width !== selfWidth){
                     that.nodes['container'].style.width =  [width, 'px'].join('');
-                    selfWidth = that.nodes['container'].offsetWidth;
-                    selfHeight = that.nodes['container'].offsetHeight;
                 }
             }
+            if(paramsHeight !== 'auto'){
+                height = eval(
+                    paramsHeight
+                        .toString()
+                        .replace('targetHeight', targetHeight)
+                        .replace('screenHeight', screenHeight)
+                        .replace('selfHeight', selfHeight)
+                );
+                height = Math.min(screenHeight, height);
+                that.nodes['content'].style.maxHeight =  [height, 'px'].join('');
+            }
+            selfWidth = that.nodes['container'].offsetWidth;
+            selfHeight = that.nodes['container'].offsetHeight;
         })();
         // Calculate position
         (function(){
             var top = cm.getRealY(target),
                 topAdd = eval(
-                    paramsTop.toString()
+                    paramsTop
+                        .toString()
                         .replace('targetHeight', targetHeight)
+                        .replace('screenHeight', screenHeight)
                         .replace('selfHeight', selfHeight)
                 ),
                 left =  cm.getRealX(target),
                 leftAdd = eval(
-                    paramsLeft.toString()
+                    paramsLeft
+                        .toString()
                         .replace('targetWidth', targetWidth)
+                        .replace('screenWidth', screenWidth)
                         .replace('selfWidth', selfWidth)
                 ),
                 positionTop,
@@ -332,11 +359,11 @@ function(params){
             if(that.params['adaptiveY']){
                 positionTop = Math.max(
                     Math.min(
-                        ((top + topAdd + selfHeight > pageSize['winHeight'])
+                        ((top + topAdd + selfHeight > screenHeight)
                             ? (top - topAdd - selfHeight + targetHeight)
                             : (top + topAdd)
                         ),
-                        (pageSize['winHeight'] - selfHeight)
+                        (screenHeight - selfHeight)
                     ),
                     0
                 );
@@ -347,11 +374,11 @@ function(params){
             if(that.params['adaptiveX']){
                 positionLeft = Math.max(
                     Math.min(
-                        ((left + leftAdd + selfWidth > pageSize['winWidth'])
+                        ((left + leftAdd + selfWidth > screenWidth)
                             ? (left - leftAdd - selfWidth + targetWidth)
                             : (left + leftAdd)
                         ),
-                        (pageSize['winWidth'] - selfWidth)
+                        (screenWidth - selfWidth)
                     ),
                     0
                 );

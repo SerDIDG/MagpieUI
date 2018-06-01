@@ -222,6 +222,7 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
 
     classProto.onTabShowProcess = function(that, item){
         clearTimeout(item['switchInt']);
+        that.nodes['headerTitleText'].innerHTML = item['title'];
         item['tab']['container'].style.display = 'block';
     };
 

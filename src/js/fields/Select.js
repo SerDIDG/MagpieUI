@@ -548,6 +548,14 @@ function(params){
         return active;
     };
 
+    that.getText = function(){
+        var option = options[active];
+        if(option){
+            return option['text'];
+        }
+        return null;
+    };
+
     that.set = function(value, triggerEvents){
         triggerEvents = cm.isUndefined(triggerEvents)? true : triggerEvents;
         // Select option and execute events

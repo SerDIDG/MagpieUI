@@ -37,7 +37,7 @@ cm.getConstructor('Com.Geocoder', function(classConstructor, className, classPro
         _inherit.prototype.renderViewModel.apply(that, arguments);
         // Load Google Maps Script
         cm.loadScript({
-            'path' : 'google.maps.Geocoder',
+            'path' : 'google.maps',
             'src' : that.apiLink,
             'callback' : that.loadScriptEndHanlder
         });
@@ -46,7 +46,7 @@ cm.getConstructor('Com.Geocoder', function(classConstructor, className, classPro
 
     classProto.loadScriptEnd = function(handler){
         var that = this;
-        that.components['geocoder'] = new handler();
+        that.components['geocoder'] = new handler.Geocoder();
         that.triggerEvent('onLoad');
     };
 
@@ -57,7 +57,7 @@ cm.getConstructor('Com.Geocoder', function(classConstructor, className, classPro
             that.process.apply(that, args);
         }else{
             cm.loadScript({
-                'path' : 'google.maps.Geocoder',
+                'path' : 'google.maps',
                 'src' : that.apiLink,
                 'callback' : function(){
                     that.process.apply(that, args);

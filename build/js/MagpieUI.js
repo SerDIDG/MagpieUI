@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.33.0 (2018-05-22 20:59) ************ */
+/*! ************ MagpieUI v3.33.1 (2018-06-01 18:27) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.33.0',
+        '_version' : '3.33.1',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -7145,6 +7145,7 @@ cm.define('Com.AbstractInput', {
         'renderStructureContent' : true,
         'value' : '',
         'defaultValue' : '',
+        'isValueOption' : false,
         'title' : '',
         'placeholder' : '',
         'disabled' : false,
@@ -7154,7 +7155,8 @@ cm.define('Com.AbstractInput', {
         'size' : 'full',                // default | full
         'justify' : 'left',
         'maxlength' : 0,                // 0 - infinity
-        'setHiddenInput' : true
+        'setHiddenInput' : true,
+        'setContentInput' : true
     }
 },
 function(params){
@@ -7171,6 +7173,8 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         that.components = {};
         that.previousValue = null;
         that.value = null;
+        that.valueText = null;
+        that.valueOption = null;
         that.rawValue = null;
         that.tempRawValue = null;
         that.disabled = false;
@@ -7203,6 +7207,11 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
     classProto.get = function(){
         var that = this;
         return that.value;
+    };
+
+    classProto.getText = function(){
+        var that = this;
+        return that.valueText;
     };
 
     classProto.getRaw = function(){
@@ -7270,10 +7279,15 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
 
     classProto.validateParamsValue = function(){
         var that = this,
+            dataValue,
             value;
         if(cm.isNode(that.params['node'])){
             // In WebKit and Blink engines js value is cutoff, use DOM value instead.
+            dataValue = that.params['node'].getAttribute('data-value');
             value = that.params['node'].getAttribute('value');
+            if(that.params['isValueOption'] && !cm.isEmpty(dataValue)){
+                value = cm.parseJSON(dataValue);
+            }
             that.params['value'] = !cm.isEmpty(value) ?  value : that.params['value'];
         }
         that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
@@ -7376,17 +7390,45 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
 
     classProto.validateValue = function(value){
         var that = this;
-        value = !cm.isEmpty(value) ? value : that.params['defaultValue'];
+        value = that.validateValueHelper(value);
+        value = !cm.isEmpty(value) ? value : that.validateValueHelper(that.params['defaultValue']);
         return value;
     };
 
+    classProto.validateValueHelper = function(value){
+        var that = this;
+        if(that.params['isValueOption'] && !cm.isEmpty(value)){
+            if(cm.isObject(value)){
+                value['value'] = !cm.isEmpty(value['value']) ? value['value'] : value['text'];
+                value['text'] = !cm.isEmpty(value['text']) ? value['text'] : value['value'];
+            }else{
+                value = {
+                    'value' : value,
+                    'text' : value
+                };
+            }
+        }
+        return value;
+    };
+
+
     classProto.saveValue = function(value){
         var that = this;
-        that.previousValue = cm.clone(that.value);
-        that.value = value;
         that.rawValue = that.tempRawValue;
+        that.previousValue = cm.clone(that.value);
+        if(that.params['isValueOption']){
+            that.value = value['value'];
+            that.valueText = value['text'];
+            that.valueOption = value;
+        }else{
+            that.value = value;
+            that.valueText = value;
+        }
         if(that.params['setHiddenInput']){
-            that.saveHiddenValue(value);
+            that.saveHiddenValue(that.value);
+        }
+        if(that.params['setContentInput']){
+            that.setData(that.valueText);
         }
         return that;
     };
@@ -7435,7 +7477,6 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         value = that.validateValue(value);
         that.saveRawValue(value);
         that.saveValue(value);
-        that.setData(value);
         triggerEvents && that.triggerEvent('onSet', that.value);
         return that;
     };
@@ -7768,7 +7809,9 @@ cm.define('Com.AbstractFormField', {
         'renderStructureContent' : true,
         'form' : false,
         'value' : null,
+        'defaultValue' : null,
         'dataValue' : null,
+        'isOptionValue' : false,
         'maxlength' : 0,
         'type' : false,
         'label' : '',
@@ -7837,7 +7880,8 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
 
     classProto.onValidateParams = function(){
         var that = this;
-        that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
+        that.validateParamsValue();
+        // Constructor params
         that.params['constructorParams']['name'] = that.params['name'];
         that.params['constructorParams']['options'] = !cm.isEmpty(that.params['options']) ? that.params['options'] : that.params['constructorParams']['options'];
         that.params['constructorParams']['value'] = !cm.isEmpty(that.params['dataValue']) ? that.params['dataValue'] : that.params['value'];
@@ -7845,6 +7889,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.params['constructorParams']['maxlength'] = that.params['maxlength'];
         that.params['constructorParams']['placeholder'] = that.params['placeholder'];
         that.params['constructorParams']['ajax'] = that.params['ajax'];
+        // Components
         that.params['Com.HelpBubble']['content'] = that.params['help'];
         that.params['Com.HelpBubble']['name'] = that.params['name'];
         that.components['form'] = that.params['form'];
@@ -7852,6 +7897,30 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         if(that.params['preload'] && !cm.isEmpty(that.params['ajax']) && !cm.isEmpty(that.params['ajax']['url'])){
             that.isAjax = true;
         }
+    };
+
+    classProto.validateParamsValue = function(){
+        var that = this;
+        that.params['value'] = that.validateParamsValueHelper(that.params['value']);
+        that.params['defaultValue'] = that.validateParamsValueHelper(that.params['defaultValue']);
+        that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
+        that.params['dataValue'] = !cm.isEmpty(that.params['dataValue']) ? that.params['dataValue'] : that.params['isOptionValue'] ? that.params['value'] : null;
+    };
+
+    classProto.validateParamsValueHelper = function(value){
+        var that = this;
+        if(that.params['isValueOption'] && !cm.isEmpty(value)){
+            if(cm.isObject(value)){
+                value['value'] = !cm.isEmpty(value['value']) ? value['value'] : value['text'];
+                value['text'] = !cm.isEmpty(value['text']) ? value['text'] : value['value'];
+            }else{
+                value = {
+                    'value' : value,
+                    'text' : value
+                };
+            }
+        }
+        return value;
     };
 
     /******* VIEW - MODEL *******/
@@ -7937,7 +8006,8 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     };
 
     classProto.setAttributes = function(){
-        var that = this;
+        var that = this,
+            value;
         // Call parent method
         _inherit.prototype.setAttributes.apply(that, arguments);
         // Attributes
@@ -7945,12 +8015,17 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             that.nodes['content']['input'].setAttribute('name', that.params['name']);
         }
         if(!cm.isEmpty(that.params['value'])){
+            if(that.params['isOptionValue']){
+                value = that.params['value']['value'];
+            }else{
+                value = that.params['value'];
+            }
             switch(that.nodeTagName){
                 case 'select' :
-                    cm.setSelect(that.nodes['content']['input'], that.params['value']);
+                    cm.setSelect(that.nodes['content']['input'], value);
                     break;
                 default :
-                    that.nodes['content']['input'].setAttribute('value', that.params['value']);
+                    that.nodes['content']['input'].setAttribute('value', value);
                     break;
             }
         }
@@ -8036,6 +8111,11 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.getRaw = function(){
         var that = this;
         return that.components['controller'] && cm.isFunction(that.components['controller'].getRaw) ? that.components['controller'].getRaw() : that.get();
+    };
+
+    classProto.getText = function(){
+        var that = this;
+        return that.components['controller'] && cm.isFunction(that.components['controller'].getText) ? that.components['controller'].getText() : that.get();
     };
 
     classProto.reset = function(){
@@ -15196,7 +15276,7 @@ cm.getConstructor('Com.Geocoder', function(classConstructor, className, classPro
         _inherit.prototype.renderViewModel.apply(that, arguments);
         // Load Google Maps Script
         cm.loadScript({
-            'path' : 'google.maps.Geocoder',
+            'path' : 'google.maps',
             'src' : that.apiLink,
             'callback' : that.loadScriptEndHanlder
         });
@@ -15205,7 +15285,7 @@ cm.getConstructor('Com.Geocoder', function(classConstructor, className, classPro
 
     classProto.loadScriptEnd = function(handler){
         var that = this;
-        that.components['geocoder'] = new handler();
+        that.components['geocoder'] = new handler.Geocoder();
         that.triggerEvent('onLoad');
     };
 
@@ -15216,7 +15296,7 @@ cm.getConstructor('Com.Geocoder', function(classConstructor, className, classPro
             that.process.apply(that, args);
         }else{
             cm.loadScript({
-                'path' : 'google.maps.Geocoder',
+                'path' : 'google.maps',
                 'src' : that.apiLink,
                 'callback' : function(){
                     that.process.apply(that, args);
@@ -21303,7 +21383,7 @@ Com.SliderEffects = {};
 /* *** NONE *** */
 
 Com.SliderEffects['none'] = function(slider, current, previous, callback){
-    if(slider.itemsLength > 1 && previous && current != previous){
+    if(slider.itemsLength > 1 && previous && current !== previous){
         previous['nodes']['container'].style.display = 'none';
         previous['nodes']['container'].style.zIndex = 1;
         current['nodes']['container'].style.zIndex = 2;
@@ -21315,7 +21395,7 @@ Com.SliderEffects['none'] = function(slider, current, previous, callback){
 /* *** DEV *** */
 
 Com.SliderEffects['edit'] = function(slider, current, previous, callback){
-    if(slider.itemsLength > 1 && previous && current != previous){
+    if(slider.itemsLength > 1 && previous && current !== previous){
         previous['nodes']['container'].style.display = 'none';
         previous['nodes']['container'].style.zIndex = 1;
         current['nodes']['container'].style.zIndex = 2;
@@ -21334,7 +21414,7 @@ Com.SliderEffects['fade'] = function(slider, current, previous, callback){
         cm.setOpacity(item['nodes']['container'], 0);
     };
 
-    if(slider.itemsLength > 1 && previous && current != previous){
+    if(slider.itemsLength > 1 && previous && current !== previous){
         // Hide previous slide
         previous['nodes']['container'].style.zIndex = 1;
         if(slider.params['fadePrevious']){
@@ -21363,7 +21443,7 @@ Com.SliderEffects['fade-out'] = function(slider, current, previous, callback){
         cm.setOpacity(item['nodes']['container'], 0);
     };
 
-    if(slider.itemsLength > 1 && previous && current != previous){
+    if(slider.itemsLength > 1 && previous && current !== previous){
         // Hide previous slide
         previous['nodes']['container'].style.zIndex = 1;
         previous['anim'].go({'style' : {'opacity' : 0}, 'duration' : slider.params['time'], 'anim' : slider.params['transition'], 'onStop' : function(){
@@ -21388,7 +21468,7 @@ Com.SliderEffects['push'] = function(slider, current, previous, callback){
 /* *** PULL *** */
 
 Com.SliderEffects['pull'] = function(slider, current, previous, callback){
-    if(slider.itemsLength > 1 && previous && current != previous){
+    if(slider.itemsLength > 1 && previous && current !== previous){
         // Hide previous slide
         var style = slider.direction === 'next' ? '-100%' : '100%';
         previous['nodes']['container'].style.zIndex = 1;
@@ -21413,7 +21493,7 @@ Com.SliderEffects['pull'] = function(slider, current, previous, callback){
 /* *** PULL OVERLAP *** */
 
 Com.SliderEffects['pull-overlap'] = function(slider, current, previous, callback){
-    if(slider.itemsLength > 1 && previous && current != previous){
+    if(slider.itemsLength > 1 && previous && current !== previous){
         // Hide previous slide
         previous['nodes']['container'].style.zIndex = 1;
         setTimeout(function(){
@@ -21437,7 +21517,7 @@ Com.SliderEffects['pull-overlap'] = function(slider, current, previous, callback
 /* *** PULL PARALLAX *** */
 
 Com.SliderEffects['pull-parallax'] = function(slider, current, previous, callback){
-    if(slider.itemsLength > 1 && previous && current != previous){
+    if(slider.itemsLength > 1 && previous && current !== previous){
         // Hide previous slide
         var style = slider.direction === 'next' ? '-50%' : '50%';
         previous['nodes']['container'].style.zIndex = 1;
@@ -21460,7 +21540,7 @@ Com.SliderEffects['pull-parallax'] = function(slider, current, previous, callbac
 };
 
 Com.SliderEffects['pull-parallax-css'] = function(slider, current, previous, callback){
-    if(slider.itemsLength > 1 && previous && current != previous){
+    if(slider.itemsLength > 1 && previous && current !== previous){
         // Hide previous slide
         var style = slider.direction === 'next' ? '-50%' : '50%';
         previous['nodes']['container'].style.zIndex = 1;
@@ -21469,6 +21549,7 @@ Com.SliderEffects['pull-parallax-css'] = function(slider, current, previous, cal
                 'transform' : 'translateX('+style+')'
             },
             'duration' : slider.params['time'],
+            'delayOut' : 30,
             'onStop' : function(){
                 previous['nodes']['container'].style.display = 'none';
                 cm.setCSSTranslate(previous['nodes']['container'], '100%', 0, 0);
@@ -21487,6 +21568,7 @@ Com.SliderEffects['pull-parallax-css'] = function(slider, current, previous, cal
                 'transform' : 'translateX(0%)'
             },
             'duration' : slider.params['time'],
+            'delayOut' : 30,
             'onStop' : callback
         });
     }else{
@@ -22591,6 +22673,7 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
 
     classProto.onTabShowProcess = function(that, item){
         clearTimeout(item['switchInt']);
+        that.nodes['headerTitleText'].innerHTML = item['title'];
         item['tab']['container'].style.display = 'block';
     };
 
@@ -23241,13 +23324,16 @@ cm.define('Com.Tooltip', {
         'holdTarget' : false,
         'preventClickEvent' : false,                    // Prevent default click event on the target, requires setting value 'targetEvent' : 'click'
         'positionTarget' : false,                       // Override target node for calculation position and dimensions
-        'top' : 0,                                      // Supported properties: targetHeight, selfHeight, number
-        'left' : 0,                                     // Supported properties: targetWidth, selfWidth, number
+        'top' : 0,                                      // Supported properties: targetHeight, selfHeight, screenHeight, number
+        'left' : 0,                                     // Supported properties: targetWidth, selfWidth, screenWidth, number
+        'width' : 'auto',                               // Supported properties: targetWidth, screenWidth, auto, number
+        'height' : 'auto',
+        'minWidth' : 0,
         'adaptiveFrom' : null,
         'adaptiveTop' : null,
         'adaptiveLeft' : null,
-        'width' : 'auto',                               // Supported properties: targetWidth, auto, number
-        'minWidth' : 0,
+        'adaptiveWidth' : null,
+        'adaptiveHeight' : null,
         'scroll' : 'auto',                              // auto, scroll, visible
         'duration' : 'cm._config.animDurationShort',
         'delay' : 0,
@@ -23494,57 +23580,81 @@ function(params){
             selfHeight = that.nodes['container'].offsetHeight,
             selfWidth = that.nodes['container'].offsetWidth,
             pageSize = cm.getPageSize(),
+            screenWidth = pageSize['winWidth'],
+            screenHeight = pageSize['winHeight'],
             scrollTop = cm.getScrollTop(window),
             scrollLeft = cm.getScrollLeft(window),
             paramsTop = that.params['top'],
-            paramsLeft = that.params['left'];
+            paramsLeft = that.params['left'],
+            paramsWidth = that.params['width'],
+            paramsHeight = that.params['height'];
         // Validate
-        if(!cm.isEmpty(that.params['adaptiveFrom']) && that.params['adaptiveFrom'] >= pageSize['winWidth']){
+        if(!cm.isEmpty(that.params['adaptiveFrom']) && that.params['adaptiveFrom'] >= screenWidth){
             paramsTop = !cm.isEmpty(that.params['adaptiveTop']) ? that.params['adaptiveTop'] : paramsTop;
             paramsLeft = !cm.isEmpty(that.params['adaptiveLeft']) ? that.params['adaptiveLeft'] : paramsLeft;
+            paramsWidth = !cm.isEmpty(that.params['adaptiveWidth']) ? that.params['adaptiveWidth'] : paramsWidth;
+            paramsHeight = !cm.isEmpty(that.params['adaptiveHeight']) ? that.params['adaptiveHeight'] : paramsHeight;
         }
         // Calculate size
         (function(){
             var width = 0,
+                height = 0,
                 minWidth = 0;
             if(that.params['minWidth'] !== 'auto'){
                 minWidth = eval(
                     that.params['minWidth']
                         .toString()
                         .replace('targetWidth', targetWidth)
+                        .replace('screenWidth', screenWidth)
                         .replace('selfWidth', selfWidth)
                 );
-                minWidth = Math.min(pageSize['winWidth'], minWidth);
+                minWidth = Math.min(screenWidth, minWidth);
                 that.nodes['container'].style.minWidth =  [minWidth, 'px'].join('');
             }
-            if(that.params['width'] !== 'auto'){
+            if(paramsWidth !== 'auto'){
                 width = eval(
-                    that.params['width']
+                    paramsWidth
                         .toString()
                         .replace('targetWidth', targetWidth)
+                        .replace('screenWidth', screenWidth)
                         .replace('selfWidth', selfWidth)
                 );
                 width = Math.max(minWidth, width);
-                width = Math.min(pageSize['winWidth'], width);
+                width = Math.min(screenWidth, width);
                 if(width !== selfWidth){
                     that.nodes['container'].style.width =  [width, 'px'].join('');
-                    selfWidth = that.nodes['container'].offsetWidth;
-                    selfHeight = that.nodes['container'].offsetHeight;
                 }
             }
+            if(paramsHeight !== 'auto'){
+                height = eval(
+                    paramsHeight
+                        .toString()
+                        .replace('targetHeight', targetHeight)
+                        .replace('screenHeight', screenHeight)
+                        .replace('selfHeight', selfHeight)
+                );
+                height = Math.min(screenHeight, height);
+                that.nodes['content'].style.maxHeight =  [height, 'px'].join('');
+            }
+            selfWidth = that.nodes['container'].offsetWidth;
+            selfHeight = that.nodes['container'].offsetHeight;
         })();
         // Calculate position
         (function(){
             var top = cm.getRealY(target),
                 topAdd = eval(
-                    paramsTop.toString()
+                    paramsTop
+                        .toString()
                         .replace('targetHeight', targetHeight)
+                        .replace('screenHeight', screenHeight)
                         .replace('selfHeight', selfHeight)
                 ),
                 left =  cm.getRealX(target),
                 leftAdd = eval(
-                    paramsLeft.toString()
+                    paramsLeft
+                        .toString()
                         .replace('targetWidth', targetWidth)
+                        .replace('screenWidth', screenWidth)
                         .replace('selfWidth', selfWidth)
                 ),
                 positionTop,
@@ -23553,11 +23663,11 @@ function(params){
             if(that.params['adaptiveY']){
                 positionTop = Math.max(
                     Math.min(
-                        ((top + topAdd + selfHeight > pageSize['winHeight'])
+                        ((top + topAdd + selfHeight > screenHeight)
                             ? (top - topAdd - selfHeight + targetHeight)
                             : (top + topAdd)
                         ),
-                        (pageSize['winHeight'] - selfHeight)
+                        (screenHeight - selfHeight)
                     ),
                     0
                 );
@@ -23568,11 +23678,11 @@ function(params){
             if(that.params['adaptiveX']){
                 positionLeft = Math.max(
                     Math.min(
-                        ((left + leftAdd + selfWidth > pageSize['winWidth'])
+                        ((left + leftAdd + selfWidth > screenWidth)
                             ? (left - leftAdd - selfWidth + targetWidth)
                             : (left + leftAdd)
                         ),
-                        (pageSize['winWidth'] - selfWidth)
+                        (screenWidth - selfWidth)
                     ),
                     0
                 );
@@ -29443,6 +29553,14 @@ function(params){
 
     that.get = function(){
         return active;
+    };
+
+    that.getText = function(){
+        var option = options[active];
+        if(option){
+            return option['text'];
+        }
+        return null;
     };
 
     that.set = function(value, triggerEvents){

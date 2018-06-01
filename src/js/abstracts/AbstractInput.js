@@ -20,6 +20,7 @@ cm.define('Com.AbstractInput', {
         'renderStructureContent' : true,
         'value' : '',
         'defaultValue' : '',
+        'isValueOption' : false,
         'title' : '',
         'placeholder' : '',
         'disabled' : false,
@@ -29,7 +30,8 @@ cm.define('Com.AbstractInput', {
         'size' : 'full',                // default | full
         'justify' : 'left',
         'maxlength' : 0,                // 0 - infinity
-        'setHiddenInput' : true
+        'setHiddenInput' : true,
+        'setContentInput' : true
     }
 },
 function(params){
@@ -46,6 +48,8 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         that.components = {};
         that.previousValue = null;
         that.value = null;
+        that.valueText = null;
+        that.valueOption = null;
         that.rawValue = null;
         that.tempRawValue = null;
         that.disabled = false;
@@ -78,6 +82,11 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
     classProto.get = function(){
         var that = this;
         return that.value;
+    };
+
+    classProto.getText = function(){
+        var that = this;
+        return that.valueText;
     };
 
     classProto.getRaw = function(){
@@ -145,10 +154,15 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
 
     classProto.validateParamsValue = function(){
         var that = this,
+            dataValue,
             value;
         if(cm.isNode(that.params['node'])){
             // In WebKit and Blink engines js value is cutoff, use DOM value instead.
+            dataValue = that.params['node'].getAttribute('data-value');
             value = that.params['node'].getAttribute('value');
+            if(that.params['isValueOption'] && !cm.isEmpty(dataValue)){
+                value = cm.parseJSON(dataValue);
+            }
             that.params['value'] = !cm.isEmpty(value) ?  value : that.params['value'];
         }
         that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
@@ -251,17 +265,45 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
 
     classProto.validateValue = function(value){
         var that = this;
-        value = !cm.isEmpty(value) ? value : that.params['defaultValue'];
+        value = that.validateValueHelper(value);
+        value = !cm.isEmpty(value) ? value : that.validateValueHelper(that.params['defaultValue']);
         return value;
     };
 
+    classProto.validateValueHelper = function(value){
+        var that = this;
+        if(that.params['isValueOption'] && !cm.isEmpty(value)){
+            if(cm.isObject(value)){
+                value['value'] = !cm.isEmpty(value['value']) ? value['value'] : value['text'];
+                value['text'] = !cm.isEmpty(value['text']) ? value['text'] : value['value'];
+            }else{
+                value = {
+                    'value' : value,
+                    'text' : value
+                };
+            }
+        }
+        return value;
+    };
+
+
     classProto.saveValue = function(value){
         var that = this;
-        that.previousValue = cm.clone(that.value);
-        that.value = value;
         that.rawValue = that.tempRawValue;
+        that.previousValue = cm.clone(that.value);
+        if(that.params['isValueOption']){
+            that.value = value['value'];
+            that.valueText = value['text'];
+            that.valueOption = value;
+        }else{
+            that.value = value;
+            that.valueText = value;
+        }
         if(that.params['setHiddenInput']){
-            that.saveHiddenValue(value);
+            that.saveHiddenValue(that.value);
+        }
+        if(that.params['setContentInput']){
+            that.setData(that.valueText);
         }
         return that;
     };
@@ -310,7 +352,6 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         value = that.validateValue(value);
         that.saveRawValue(value);
         that.saveValue(value);
-        that.setData(value);
         triggerEvents && that.triggerEvent('onSet', that.value);
         return that;
     };

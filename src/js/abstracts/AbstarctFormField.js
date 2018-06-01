@@ -18,7 +18,9 @@ cm.define('Com.AbstractFormField', {
         'renderStructureContent' : true,
         'form' : false,
         'value' : null,
+        'defaultValue' : null,
         'dataValue' : null,
+        'isOptionValue' : false,
         'maxlength' : 0,
         'type' : false,
         'label' : '',
@@ -87,7 +89,8 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
 
     classProto.onValidateParams = function(){
         var that = this;
-        that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
+        that.validateParamsValue();
+        // Constructor params
         that.params['constructorParams']['name'] = that.params['name'];
         that.params['constructorParams']['options'] = !cm.isEmpty(that.params['options']) ? that.params['options'] : that.params['constructorParams']['options'];
         that.params['constructorParams']['value'] = !cm.isEmpty(that.params['dataValue']) ? that.params['dataValue'] : that.params['value'];
@@ -95,6 +98,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.params['constructorParams']['maxlength'] = that.params['maxlength'];
         that.params['constructorParams']['placeholder'] = that.params['placeholder'];
         that.params['constructorParams']['ajax'] = that.params['ajax'];
+        // Components
         that.params['Com.HelpBubble']['content'] = that.params['help'];
         that.params['Com.HelpBubble']['name'] = that.params['name'];
         that.components['form'] = that.params['form'];
@@ -102,6 +106,30 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         if(that.params['preload'] && !cm.isEmpty(that.params['ajax']) && !cm.isEmpty(that.params['ajax']['url'])){
             that.isAjax = true;
         }
+    };
+
+    classProto.validateParamsValue = function(){
+        var that = this;
+        that.params['value'] = that.validateParamsValueHelper(that.params['value']);
+        that.params['defaultValue'] = that.validateParamsValueHelper(that.params['defaultValue']);
+        that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
+        that.params['dataValue'] = !cm.isEmpty(that.params['dataValue']) ? that.params['dataValue'] : that.params['isOptionValue'] ? that.params['value'] : null;
+    };
+
+    classProto.validateParamsValueHelper = function(value){
+        var that = this;
+        if(that.params['isValueOption'] && !cm.isEmpty(value)){
+            if(cm.isObject(value)){
+                value['value'] = !cm.isEmpty(value['value']) ? value['value'] : value['text'];
+                value['text'] = !cm.isEmpty(value['text']) ? value['text'] : value['value'];
+            }else{
+                value = {
+                    'value' : value,
+                    'text' : value
+                };
+            }
+        }
+        return value;
     };
 
     /******* VIEW - MODEL *******/
@@ -187,7 +215,8 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     };
 
     classProto.setAttributes = function(){
-        var that = this;
+        var that = this,
+            value;
         // Call parent method
         _inherit.prototype.setAttributes.apply(that, arguments);
         // Attributes
@@ -195,12 +224,17 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             that.nodes['content']['input'].setAttribute('name', that.params['name']);
         }
         if(!cm.isEmpty(that.params['value'])){
+            if(that.params['isOptionValue']){
+                value = that.params['value']['value'];
+            }else{
+                value = that.params['value'];
+            }
             switch(that.nodeTagName){
                 case 'select' :
-                    cm.setSelect(that.nodes['content']['input'], that.params['value']);
+                    cm.setSelect(that.nodes['content']['input'], value);
                     break;
                 default :
-                    that.nodes['content']['input'].setAttribute('value', that.params['value']);
+                    that.nodes['content']['input'].setAttribute('value', value);
                     break;
             }
         }
@@ -286,6 +320,11 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.getRaw = function(){
         var that = this;
         return that.components['controller'] && cm.isFunction(that.components['controller'].getRaw) ? that.components['controller'].getRaw() : that.get();
+    };
+
+    classProto.getText = function(){
+        var that = this;
+        return that.components['controller'] && cm.isFunction(that.components['controller'].getText) ? that.components['controller'].getText() : that.get();
     };
 
     classProto.reset = function(){

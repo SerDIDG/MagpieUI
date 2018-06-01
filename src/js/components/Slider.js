@@ -588,7 +588,7 @@ Com.SliderEffects = {};
 /* *** NONE *** */
 
 Com.SliderEffects['none'] = function(slider, current, previous, callback){
-    if(slider.itemsLength > 1 && previous && current != previous){
+    if(slider.itemsLength > 1 && previous && current !== previous){
         previous['nodes']['container'].style.display = 'none';
         previous['nodes']['container'].style.zIndex = 1;
         current['nodes']['container'].style.zIndex = 2;
@@ -600,7 +600,7 @@ Com.SliderEffects['none'] = function(slider, current, previous, callback){
 /* *** DEV *** */
 
 Com.SliderEffects['edit'] = function(slider, current, previous, callback){
-    if(slider.itemsLength > 1 && previous && current != previous){
+    if(slider.itemsLength > 1 && previous && current !== previous){
         previous['nodes']['container'].style.display = 'none';
         previous['nodes']['container'].style.zIndex = 1;
         current['nodes']['container'].style.zIndex = 2;
@@ -619,7 +619,7 @@ Com.SliderEffects['fade'] = function(slider, current, previous, callback){
         cm.setOpacity(item['nodes']['container'], 0);
     };
 
-    if(slider.itemsLength > 1 && previous && current != previous){
+    if(slider.itemsLength > 1 && previous && current !== previous){
         // Hide previous slide
         previous['nodes']['container'].style.zIndex = 1;
         if(slider.params['fadePrevious']){
@@ -648,7 +648,7 @@ Com.SliderEffects['fade-out'] = function(slider, current, previous, callback){
         cm.setOpacity(item['nodes']['container'], 0);
     };
 
-    if(slider.itemsLength > 1 && previous && current != previous){
+    if(slider.itemsLength > 1 && previous && current !== previous){
         // Hide previous slide
         previous['nodes']['container'].style.zIndex = 1;
         previous['anim'].go({'style' : {'opacity' : 0}, 'duration' : slider.params['time'], 'anim' : slider.params['transition'], 'onStop' : function(){
@@ -673,7 +673,7 @@ Com.SliderEffects['push'] = function(slider, current, previous, callback){
 /* *** PULL *** */
 
 Com.SliderEffects['pull'] = function(slider, current, previous, callback){
-    if(slider.itemsLength > 1 && previous && current != previous){
+    if(slider.itemsLength > 1 && previous && current !== previous){
         // Hide previous slide
         var style = slider.direction === 'next' ? '-100%' : '100%';
         previous['nodes']['container'].style.zIndex = 1;
@@ -698,7 +698,7 @@ Com.SliderEffects['pull'] = function(slider, current, previous, callback){
 /* *** PULL OVERLAP *** */
 
 Com.SliderEffects['pull-overlap'] = function(slider, current, previous, callback){
-    if(slider.itemsLength > 1 && previous && current != previous){
+    if(slider.itemsLength > 1 && previous && current !== previous){
         // Hide previous slide
         previous['nodes']['container'].style.zIndex = 1;
         setTimeout(function(){
@@ -722,7 +722,7 @@ Com.SliderEffects['pull-overlap'] = function(slider, current, previous, callback
 /* *** PULL PARALLAX *** */
 
 Com.SliderEffects['pull-parallax'] = function(slider, current, previous, callback){
-    if(slider.itemsLength > 1 && previous && current != previous){
+    if(slider.itemsLength > 1 && previous && current !== previous){
         // Hide previous slide
         var style = slider.direction === 'next' ? '-50%' : '50%';
         previous['nodes']['container'].style.zIndex = 1;
@@ -745,7 +745,7 @@ Com.SliderEffects['pull-parallax'] = function(slider, current, previous, callbac
 };
 
 Com.SliderEffects['pull-parallax-css'] = function(slider, current, previous, callback){
-    if(slider.itemsLength > 1 && previous && current != previous){
+    if(slider.itemsLength > 1 && previous && current !== previous){
         // Hide previous slide
         var style = slider.direction === 'next' ? '-50%' : '50%';
         previous['nodes']['container'].style.zIndex = 1;
@@ -754,6 +754,7 @@ Com.SliderEffects['pull-parallax-css'] = function(slider, current, previous, cal
                 'transform' : 'translateX('+style+')'
             },
             'duration' : slider.params['time'],
+            'delayOut' : 30,
             'onStop' : function(){
                 previous['nodes']['container'].style.display = 'none';
                 cm.setCSSTranslate(previous['nodes']['container'], '100%', 0, 0);
@@ -772,6 +773,7 @@ Com.SliderEffects['pull-parallax-css'] = function(slider, current, previous, cal
                 'transform' : 'translateX(0%)'
             },
             'duration' : slider.params['time'],
+            'delayOut' : 30,
             'onStop' : callback
         });
     }else{
