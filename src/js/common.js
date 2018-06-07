@@ -2576,6 +2576,32 @@ cm.getScrollHeight = function(node){
     return 0;
 };
 
+cm.getScrollOffsetHeight = function(node){
+    if(cm.isWindow(node)){
+        return cm._pageSize['winHeight'];
+    }
+    if(cm.isNode(node)){
+        if(/body|html/gi.test(node.tagName)){
+            return cm._pageSize['winHeight'];
+        }
+        return node.offsetHeight;
+    }
+    return 0;
+};
+
+cm.getScrollTopMax = function(node){
+    if(cm.isWindow(node)){
+        return cm.getBodyScrollMaxTop();
+    }
+    if(cm.isNode(node)){
+        if(/body|html/gi.test(node.tagName)){
+            return cm.getBodyScrollMaxTop();
+        }
+        return node.scrollHeight - node.offsetHeight;
+    }
+    return 0;
+};
+
 cm.setBodyScrollTop = function(num){
     document.documentElement.scrollTop = num;
     document.body.scrollTop = num;

@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.33.2 (2018-06-07 19:58) ************ */
+/*! ************ MagpieUI v3.33.2 (2018-06-08 01:01) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -3884,6 +3884,36 @@ cm.getNodeOffset = function(node, styleObject, o, offsets){
     return o;
 };
 
+cm.getNodeOffset2 = function(node, styleObject, o, offsets){
+
+    // Get size and position
+    o['offset'] = {
+        'width' : 0,
+        'height' : 0,
+        'top' : 0,
+        'right' : 0,
+        'bottom' : 0,
+        'left': 0
+    };
+    o['inner'] = {
+        'width' : 0,
+        'height' : 0,
+        'top' : 0,
+        'right' : 0,
+        'bottom' : 0,
+        'left': 0
+    };
+    o['outer'] = {
+        'width' : 0,
+        'height' : 0,
+        'top' : 0,
+        'right' : 0,
+        'bottom' : 0,
+        'left': 0
+    };
+    return o;
+};
+
 cm.getRealWidth = function(node, applyWidth){
     var nodeWidth = 0,
         width = 0;
@@ -4171,6 +4201,32 @@ cm.getScrollHeight = function(node){
             return cm.getBodyScrollHeight();
         }
         return node.scrollHeight;
+    }
+    return 0;
+};
+
+cm.getScrollOffsetHeight = function(node){
+    if(cm.isWindow(node)){
+        return cm._pageSize['winHeight'];
+    }
+    if(cm.isNode(node)){
+        if(/body|html/gi.test(node.tagName)){
+            return cm._pageSize['winHeight'];
+        }
+        return node.offsetHeight;
+    }
+    return 0;
+};
+
+cm.getScrollTopMax = function(node){
+    if(cm.isWindow(node)){
+        return cm.getBodyScrollMaxTop();
+    }
+    if(cm.isNode(node)){
+        if(/body|html/gi.test(node.tagName)){
+            return cm.getBodyScrollMaxTop();
+        }
+        return node.scrollHeight - node.offsetHeight;
     }
     return 0;
 };
@@ -13323,7 +13379,7 @@ function(params){
     /* *** POSITION CALCULATION FUNCTIONS *** */
 
     var getPosition = function(item){
-        item['dimensions'] = cm.extend(item['dimensions'], cm.getFullRect(item['node']));
+        item['dimensions'] = cm.extend(item['dimensions'], cm.getFullRect(item['node'], item['styleObject']));
     };
 
     var getPositions = function(arr){
