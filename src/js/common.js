@@ -2616,6 +2616,64 @@ cm.getBodyScrollMaxTop = function(){
     return cm.getBodyScrollHeight() - cm._pageSize['winHeight'];
 };
 
+cm.scrollTo = function(node, parent, params, callback){
+    if(!cm.isNode(node)){
+        return null;
+    }
+    // If parent not specified - scroll window
+    parent = !cm.isUndefined(parent) ? parent : window;
+    // Variables
+    var scrollHeight = cm.getScrollHeight(parent),
+        scrollOffsetHeight = cm.getScrollOffsetHeight(parent),
+        scrollMax = cm.getScrollTopMax(parent),
+        scrollAnimation;
+    // Do not process when parent scroll's height match parent's offset height
+    if(scrollHeight === scrollOffsetHeight){
+        return node;
+    }
+    // Validate
+    callback = cm.isFunction(callback) ? callback : function(){};
+    params = cm.merge({
+        'behavior' : 'smooth',
+        'block' : 'start',
+        'top' : 'auto',
+        'duration' : cm._config.animDuration
+    }, params);
+    // Calculate top value
+    if(params['top'] === 'auto'){
+        switch(params['block']){
+            case 'end':
+                params['top'] = Math.max(Math.min(node.offsetTop + scrollOffsetHeight, scrollMax), 0);
+                break;
+
+            case 'center':
+                params['top'] = Math.max(Math.min(node.offsetTop - ((scrollOffsetHeight - node.offsetHeight) / 2), scrollMax), 0);
+                break;
+
+            case 'start':
+            default:
+                params['top'] = Math.max(Math.min(node.offsetTop, scrollMax), 0);
+                break;
+        }
+    }
+    // Animate
+    if(params['behavior'] === 'instant'){
+        cm.setScrollTop(parent, params['top']);
+        callback();
+    }else{
+        scrollAnimation = new cm.Animation(parent);
+        scrollAnimation.go({
+            'anim' : params['behavior'],
+            'duration' : params['duration'],
+            'onStop' : callback,
+            'style' : {
+                'scrollTop' : params['top']
+            }
+        });
+    }
+    return node;
+};
+
 cm.getSupportedStyle = (function(){
     var node = document.createElement('div');
 

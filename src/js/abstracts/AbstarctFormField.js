@@ -411,6 +411,11 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
 
     /******* OTHER *******/
 
+    classProto.getController = function(){
+        var that = this;
+        return that.components['controller'];
+    };
+
     classProto.getName = function(){
         var that = this;
         return that.params['name'];

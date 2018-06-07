@@ -169,23 +169,32 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
 
     /* *** HELPERS *** */
 
+    classProto.prepareBaseUrl = function(www){
+        var that = this,
+            hasWWW = new RegExp('^www.').test(window.location.host),
+            baseUrl = cm._baseUrl
+                .replace(new RegExp('^' + window.location.protocol), '')
+                .replace(new RegExp('^//www.'), '//');
+        if(www && hasWWW){
+            baseUrl = baseUrl.replace(new RegExp('^//'), '//www.');
+        }
+        return baseUrl;
+    };
+
     classProto.prepareRoute = function(route){
-        var that = this;
+        var that = this,
+            baseUrl = that.prepareBaseUrl();
         route = route
             .replace(new RegExp('^' + window.location.protocol), '')
             .replace(new RegExp('^//www.'), '//')
-            .replace(new RegExp('^' + cm._baseUrl), '')
+            .replace(new RegExp('^' + baseUrl), '')
             .split('#');
         return route;
     };
 
     classProto.prepareHref = function(route){
         var that = this,
-            baseUrl = cm._baseUrl,
-            hasWWW = new RegExp('^www.').test(window.location.host);
-        if(hasWWW){
-            baseUrl = baseUrl.replace(new RegExp('^//'), '//www.');
-        }
+            baseUrl = that.prepareBaseUrl(true);
         return window.location.protocol + baseUrl + route;
     };
 

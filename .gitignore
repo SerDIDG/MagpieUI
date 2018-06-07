@@ -1,6 +1,7 @@
 .DS_Store
 .idea
 .git
+package-lock.json
 _dev
 _old
 js/components/old

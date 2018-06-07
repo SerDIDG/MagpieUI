@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.33.1 (2018-06-01 18:27) ************ */
+/*! ************ MagpieUI v3.33.2 (2018-06-07 19:58) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.33.1',
+        '_version' : '3.33.2',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -4213,6 +4213,64 @@ cm.getBodyScrollHeight = function(){
 
 cm.getBodyScrollMaxTop = function(){
     return cm.getBodyScrollHeight() - cm._pageSize['winHeight'];
+};
+
+cm.scrollTo = function(node, parent, params, callback){
+    if(!cm.isNode(node)){
+        return null;
+    }
+    // If parent not specified - scroll window
+    parent = !cm.isUndefined(parent) ? parent : window;
+    // Variables
+    var scrollHeight = cm.getScrollHeight(parent),
+        scrollOffsetHeight = cm.getScrollOffsetHeight(parent),
+        scrollMax = cm.getScrollTopMax(parent),
+        scrollAnimation;
+    // Do not process when parent scroll's height match parent's offset height
+    if(scrollHeight === scrollOffsetHeight){
+        return node;
+    }
+    // Validate
+    callback = cm.isFunction(callback) ? callback : function(){};
+    params = cm.merge({
+        'behavior' : 'smooth',
+        'block' : 'start',
+        'top' : 'auto',
+        'duration' : cm._config.animDuration
+    }, params);
+    // Calculate top value
+    if(params['top'] === 'auto'){
+        switch(params['block']){
+            case 'end':
+                params['top'] = Math.max(Math.min(node.offsetTop + scrollOffsetHeight, scrollMax), 0);
+                break;
+
+            case 'center':
+                params['top'] = Math.max(Math.min(node.offsetTop - ((scrollOffsetHeight - node.offsetHeight) / 2), scrollMax), 0);
+                break;
+
+            case 'start':
+            default:
+                params['top'] = Math.max(Math.min(node.offsetTop, scrollMax), 0);
+                break;
+        }
+    }
+    // Animate
+    if(params['behavior'] === 'instant'){
+        cm.setScrollTop(parent, params['top']);
+        callback();
+    }else{
+        scrollAnimation = new cm.Animation(parent);
+        scrollAnimation.go({
+            'anim' : params['behavior'],
+            'duration' : params['duration'],
+            'onStop' : callback,
+            'style' : {
+                'scrollTop' : params['top']
+            }
+        });
+    }
+    return node;
 };
 
 cm.getSupportedStyle = (function(){
@@ -8202,6 +8260,11 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
 
     /******* OTHER *******/
 
+    classProto.getController = function(){
+        var that = this;
+        return that.components['controller'];
+    };
+
     classProto.getName = function(){
         var that = this;
         return that.params['name'];
@@ -8874,10 +8937,11 @@ function(params){
         // Render
         if(field && !that.fields[params['name']]){
             cm.getConstructor(params['fieldConstructor'], function(classConstructor){
-                params['controller'] = new classConstructor(params);
-                params['controller'].addEvent('onChange', function(){
+                params['fieldController'] = params['controller'] = new classConstructor(params);
+                params['fieldController'].addEvent('onChange', function(){
                     that.triggerEvent('onChange');
                 });
+                params['constructorController'] = cm.isFunction(params['fieldController'].getController) && params['fieldController'].getController();
                 // Save
                 that.fields[params['name']] = params;
             });
@@ -9061,7 +9125,7 @@ function(params){
                 }
             });
             if(that.params['showNotifications']){
-                that.callbacks.renderNotification({
+                that.callbacks.renderNotification(that, {
                     'label' : that.lang('form_error'),
                     'type' : 'danger',
                     'messages' : messages,
@@ -9070,7 +9134,7 @@ function(params){
             }
         }else{
             if(that.params['showNotifications']){
-                that.callbacks.renderNotification({
+                that.callbacks.renderNotification(that, {
                     'label' : that.lang('server_error'),
                     'type' : 'danger'
                 });
@@ -13259,7 +13323,7 @@ function(params){
     /* *** POSITION CALCULATION FUNCTIONS *** */
 
     var getPosition = function(item){
-        item['dimensions'] = cm.extend(item['dimensions'], cm.getFullRect(item['node'], item['styleObject']));
+        item['dimensions'] = cm.extend(item['dimensions'], cm.getFullRect(item['node']));
     };
 
     var getPositions = function(arr){
@@ -19816,23 +19880,32 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
 
     /* *** HELPERS *** */
 
+    classProto.prepareBaseUrl = function(www){
+        var that = this,
+            hasWWW = new RegExp('^www.').test(window.location.host),
+            baseUrl = cm._baseUrl
+                .replace(new RegExp('^' + window.location.protocol), '')
+                .replace(new RegExp('^//www.'), '//');
+        if(www && hasWWW){
+            baseUrl = baseUrl.replace(new RegExp('^//'), '//www.');
+        }
+        return baseUrl;
+    };
+
     classProto.prepareRoute = function(route){
-        var that = this;
+        var that = this,
+            baseUrl = that.prepareBaseUrl();
         route = route
             .replace(new RegExp('^' + window.location.protocol), '')
             .replace(new RegExp('^//www.'), '//')
-            .replace(new RegExp('^' + cm._baseUrl), '')
+            .replace(new RegExp('^' + baseUrl), '')
             .split('#');
         return route;
     };
 
     classProto.prepareHref = function(route){
         var that = this,
-            baseUrl = cm._baseUrl,
-            hasWWW = new RegExp('^www.').test(window.location.host);
-        if(hasWWW){
-            baseUrl = baseUrl.replace(new RegExp('^//'), '//www.');
-        }
+            baseUrl = that.prepareBaseUrl(true);
         return window.location.protocol + baseUrl + route;
     };
 

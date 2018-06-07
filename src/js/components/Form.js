@@ -170,10 +170,11 @@ function(params){
         // Render
         if(field && !that.fields[params['name']]){
             cm.getConstructor(params['fieldConstructor'], function(classConstructor){
-                params['controller'] = new classConstructor(params);
-                params['controller'].addEvent('onChange', function(){
+                params['fieldController'] = params['controller'] = new classConstructor(params);
+                params['fieldController'].addEvent('onChange', function(){
                     that.triggerEvent('onChange');
                 });
+                params['constructorController'] = cm.isFunction(params['fieldController'].getController) && params['fieldController'].getController();
                 // Save
                 that.fields[params['name']] = params;
             });
@@ -357,7 +358,7 @@ function(params){
                 }
             });
             if(that.params['showNotifications']){
-                that.callbacks.renderNotification({
+                that.callbacks.renderNotification(that, {
                     'label' : that.lang('form_error'),
                     'type' : 'danger',
                     'messages' : messages,
@@ -366,7 +367,7 @@ function(params){
             }
         }else{
             if(that.params['showNotifications']){
-                that.callbacks.renderNotification({
+                that.callbacks.renderNotification(that, {
                     'label' : that.lang('server_error'),
                     'type' : 'danger'
                 });
