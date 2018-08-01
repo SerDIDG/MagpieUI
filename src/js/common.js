@@ -64,7 +64,10 @@ var cm = {
             'timeFormat' : '%H:%i:%s',
             'displayDateFormat' : '%F %j, %Y',
             'displayDateTimeFormat' : '%F %j, %Y, %H:%i',
-            'tooltipTop' : 'targetHeight + 4'
+            'tooltipIndent' : 4,
+            'tooltipTop' : 'targetHeight + 4',
+            'tooltipDown' : 'targetHeight + 4',
+            'tooltipUp' : '- (selfHeight + 4)'
         },
         '_strings' : {
             'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
@@ -395,8 +398,12 @@ cm.getLength = function(o){
     return i;
 };
 
+cm.arrayIndex = function(a, item){
+    return Array.prototype.indexOf.call(a, item);
+};
+
 cm.inArray = function(a, item){
-    if(typeof a === 'string'){  //TODO: WFT?
+    if(typeof a === 'string'){
         return a === item;
     }
     if(cm.isArray(a)){
@@ -406,7 +413,10 @@ cm.inArray = function(a, item){
 };
 
 cm.arrayRemove = function(a, item){
-    a.splice(a.indexOf(item), 1);
+    var index = cm.arrayIndex(a, item);
+    if(index > -1){
+        a.splice(index, 1);
+    }
     return a;
 };
 
@@ -415,10 +425,6 @@ cm.arrayAdd = function(a, item){
         a.push(item);
     }
     return a;
-};
-
-cm.arrayIndex = function(a, item){
-    return Array.prototype.indexOf.call(a, item);
 };
 
 cm.arraySort = function(a, key, dir){
@@ -498,6 +504,21 @@ cm.isEmpty = function(value){
 
 cm.isUndefined = function(value){
     return typeof value === 'undefined' || value === undefined || value === null;
+};
+
+cm.objectFormPath = function(name, apply){
+    var newO = {},
+        tempO = newO,
+        nameO = name.toString().split('.'),
+        nameL = nameO.length;
+    nameO.map(function(item, i){
+        if(apply && (nameL === i + 1)){
+            tempO[item] = apply;
+        }else{
+            tempO = tempO[item] = {};
+        }
+    });
+    return newO;
 };
 
 cm.objectPath = function(name, obj){
@@ -708,6 +729,9 @@ cm.customEvent = (function(){
             return node;
         },
         'trigger' : function(node, type, params){
+            if(!node){
+                return null;
+            }
             var stopPropagation = false;
             params = cm.merge({
                 'target' : node,
@@ -1655,35 +1679,56 @@ cm.getSelectValue = function(node){
     return selected;
 };
 
-cm.setInputMaxLength = function(input, maxlength, max, min){
+cm.setInputMaxLength = function(input, maxLength, max){
     if(cm.isNode(input)){
-        var type = input.getAttribute('type'),
-            value = 0;
-        if(type === 'number'){
-            value = max || '9'.repeat(maxlength);
-            value && input.setAttribute('max', value);
-            min && input.setAttribute('max', min);
+        var value = 0;
+        if(input.type === 'number'){
+            value = max || '9'.repeat(maxLength);
+            if(value){
+                input.max = value;
+            }
         }else{
-            value = maxlength || max;
-            value && input.setAttribute('maxlength', value);
+            value = maxLength || max;
+            if(value){
+                input.maxLength = value;
+            }
+        }
+    }
+    return input;
+};
+
+cm.setInputMinLength = function(input, minLength, min){
+    if(cm.isNode(input)){
+        var value = 0;
+        if(input.type === 'number'){
+            value = min || minLength ? ('1' + '0'.repeat(minLength - 1)) : 0;
+            if(value){
+                input.min = value;
+            }
+        }else{
+            value = minLength || min;
+            if(value){
+                input.minLength = value;
+            }
         }
     }
     return input;
 };
 
 cm.constraintsPattern = function(pattern, match, message){
-    var test;
-    return function(value){
-        if(cm.isRegExp(pattern)){
-            if(cm.isEmpty(value)){
-                test = true;
-            }else{
-                test = pattern.test(value);
-            }
+    var test,
+        testPattern;
+    return function(data){
+        testPattern = cm.isFunction(pattern) ? pattern(data) : pattern;
+        if(cm.isRegExp(testPattern)){
+            test = testPattern.test(data['value']);
         }else{
-            test = pattern === value;
+            test = testPattern === data['value'];
         }
-        return match? test : !test;
+        data['pattern'] = testPattern;
+        data['message'] = message;
+        data['valid'] = match? test : !test;
+        return data;
     }
 };
 
@@ -2957,6 +3002,10 @@ cm.handleKey = function(e, rules, callback){
     }
 };
 
+cm.isLinkClick = function(e){
+    return !(e.button || e.metaKey || e.ctrlKey);
+};
+
 cm.isInputFocused = function(){
     var el = document.activeElement,
         tagName = el.tagName.toLowerCase();
@@ -3454,10 +3503,10 @@ cm.ajax = function(o){
             if(config['httpRequestObject'].status === 200){
                 config['onSuccess'](response, e);
             }else{
-                config['onError'](e);
+                config['onError'](response, e);
             }
             deprecatedHandler(response);
-            config['onEnd'](e);
+            config['onEnd'](response, e);
         }
     };
 
@@ -3570,14 +3619,15 @@ cm.obj2URI = function(obj, prefix){
     return str.join('&');
 };
 
-cm.obj2Filter = function(obj, prefix, skipEmpty){
+cm.obj2Filter = function(obj, prefix, separator, skipEmpty){
     var data = {},
         keyPrefix;
+    separator = !cm.isUndefined(separator) ? separator : '=';
     cm.forEach(obj, function(item, key){
         if(!skipEmpty || !cm.isEmpty(item)){
-            keyPrefix = !cm.isEmpty(prefix) ? prefix + '=' + key : key;
+            keyPrefix = !cm.isEmpty(prefix) ? prefix + separator + key : key;
             if(cm.isObject(item)){
-                data = cm.merge(data, cm.obj2Filter(item, keyPrefix, skipEmpty))
+                data = cm.merge(data, cm.obj2Filter(item, keyPrefix, separator, skipEmpty))
             }else{
                 data[keyPrefix] = item;
             }
@@ -3917,6 +3967,12 @@ cm.Finder = function(className, name, parentNode, callback, params){
     };
 
     init();
+};
+
+cm.setParams = function(className, params){
+    cm.getConstructor(className, function(classConstructor, className, classProto){
+        classProto.setParams(params);
+    });
 };
 
 cm.setStrings = function(className, strings){

@@ -23,16 +23,16 @@ cm.define('Com.ScrollPagination', {
         'resizeEvent' : true,
         'scrollEvent' : true,
         'scrollNode' : window,
-        'scrollIndent' : 'Math.min(%scrollHeight% / 2, 600)',       // Variables: %blockHeight%.
+        'scrollIndent' : 'Math.max(%scrollHeight% / 2, 600)',       // Variables: %blockHeight%.
         'disabled' : false,
         'data' : [],                                                // Static data
         'count' : 0,
         'perPage' : 0,                                              // 0 - render all data in one page
         'startPage' : 1,                                            // Start page
         'startPageToken' : '',
+        'pageCount' : 0,                                            // Render only count of pages. 0 - infinity
         'useToken' : false,
         'autoSend' : true,
-        'pageCount' : 0,                                            // Render only count of pages. 0 - infinity
         'showButton' : true,                                        // true - always | once - show once after first loaded page | none - don't show and don't scroll
         'showLoader' : true,
         'loaderDelay' : 'cm._config.loadDelay',
@@ -64,10 +64,7 @@ function(params){
     Com.AbstractController.apply(that, arguments);
 });
 
-
-cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
+cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, classProto, classInherit){
     classProto.construct = function(){
         var that = this;
         // variables
@@ -102,7 +99,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         // Binds
         that.keyDownEventHandler = that.keyDownEvent.bind(that);
         // Call parent method - renderViewModel
-        _inherit.prototype.construct.apply(that, arguments);
+        classInherit.prototype.construct.apply(that, arguments);
     };
 
     classProto.onConstructEnd = function(){
@@ -172,6 +169,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
 
     classProto.renderView = function(){
         var that = this;
+        // Render Structure
         that.nodes['container'] = cm.node('div', {'class' : 'com__scroll-pagination'},
             that.nodes['content'] = cm.node('div', {'class' : 'com__scroll-pagination__content'},
                 that.nodes['pages'] = cm.node('div', {'class' : 'com__scroll-pagination__pages'})
@@ -188,7 +186,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
     classProto.renderViewModel = function(){
         var that = this;
         // Call parent method - renderViewModel
-        _inherit.prototype.renderViewModel.apply(that, arguments);
+        classInherit.prototype.renderViewModel.apply(that, arguments);
         // Reset styles and variables
         that.resetStyles();
         // Events
@@ -200,7 +198,6 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         if(that.params['stopOnESC']){
             cm.addEvent(window, 'keydown', that.keyDownEventHandler);
         }
-        return that;
     };
 
     /******* HELPERS *******/
@@ -502,6 +499,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         that.triggerEvent('onRebuild');
         // Render new pge
         that.set();
+        return that;
     };
 
     classProto.set = function(){
@@ -533,7 +531,10 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
 
     classProto.setCount = function(count){
         var that = this;
-        if(count && (count = parseInt(count.toString())) && count !== that.params['count']){
+        if(!cm.isUndefined(count)){
+            count = parseInt(count.toString());
+        }
+        if(cm.isNumber(count) && count !== that.params['count']){
             that.params['count'] = count;
             if(that.params['pageCount'] === 0 && that.params['count'] && that.params['perPage']){
                 that.pageCount = Math.ceil(that.params['count'] / that.params['perPage']);
@@ -550,7 +551,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
 
     classProto.setAction = function(o, mode, update){
         var that = this;
-        mode = cm.inArray(['raw', 'update', 'current'], mode)? mode : 'current';
+        mode = cm.inArray(['raw', 'update', 'current'], mode) ? mode : 'current';
         switch(mode){
             case 'raw':
                 that.params['ajax'] = cm.merge(that._raw.params['ajax'], o);

@@ -156,7 +156,6 @@
     &.is-animated {
         > ul {
             > li {
-                visibility: hidden;
                 position: absolute;
                 z-index: 1;
                 overflow: hidden;
@@ -165,7 +164,6 @@
                 .mx__transition(opacity visibility, @ComTabset-Duration);
 
                 &.active {
-                    visibility: visible;
                     position: relative;
                     z-index: 2;
                     overflow: visible;

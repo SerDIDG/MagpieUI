@@ -2,16 +2,21 @@ cm.define('Com.Tooltip', {
     'modules' : [
         'Params',
         'Events',
-        'Langs'
+        'Langs',
+        'Stack'
     ],
     'events' : [
         'onRender',
         'onShowStart',
         'onShow',
+        'onShowEnd',
         'onHideStart',
-        'onHide'
+        'onHide',
+        'onHideEnd'
     ],
     'params' : {
+        'customEvents' : true,
+        'name' : '',
         'target' : cm.node('div'),
         'targetEvent' : 'hover',                        // hover | click | none
         'hideOnReClick' : false,                        // Hide tooltip when re-clicking on the target, requires setting value 'targetEvent' : 'click'
@@ -55,6 +60,7 @@ function(params){
     that.delayInterval = null;
     that.resizeInterval = null;
 
+    that.isDestructed = false;
     that.isHideProcess = false;
     that.isShowProcess = false;
     that.isShow = false;
@@ -62,13 +68,16 @@ function(params){
     that.disabled = false;
 
     var init = function(){
-        //
+        // Bind context
         that.windowEventHandler = windowEvent.bind(that);
         that.targetEventHandler = targetEvent.bind(that);
+        that.destructHandler = that.destruct.bind(that);
+        // Params
         that.setParams(params);
         that.convertEvents(that.params['events']);
         validateParams();
         render();
+        that.addToStack(that.nodes['container']);
         setMiscEvents();
         that.triggerEvent('onRender');
     };
@@ -132,6 +141,10 @@ function(params){
             cm.addEvent(that.params['target'], 'click', function(e){
                 cm.preventDefault(e);
             });
+        }
+        // Add custom events
+        if(that.params['customEvents']){
+            cm.customEvent.add(that.getStackNode(), 'destruct', that.destructHandler);
         }
         setTargetEvent();
     };
@@ -216,6 +229,7 @@ function(params){
         that.isShowProcess = false;
         that.isHideProcess = false;
         that.triggerEvent('onShow');
+        that.triggerEvent('onShowEnd');
     };
 
     var hide = function(immediately){
@@ -234,6 +248,8 @@ function(params){
     };
 
     var hideHandler = function(immediately){
+        that.triggerEvent('onHideStart');
+        // Animate
         if(immediately || !that.params['duration']){
             hideHandlerEnd();
         }else{
@@ -247,7 +263,6 @@ function(params){
     };
 
     var hideHandlerEnd = function(){
-        that.triggerEvent('onHideStart');
         clearResizeInterval();
         removeWindowEvent();
         that.nodes['container'].style.display = 'none';
@@ -261,6 +276,7 @@ function(params){
         that.isShowProcess = false;
         that.isHideProcess = false;
         that.triggerEvent('onHide');
+        that.triggerEvent('onHideEnd');
     };
 
     var resizeHelper = function(){
@@ -516,6 +532,20 @@ function(params){
     that.remove = function(){
         hide(true);
         removeTargetEvent();
+        return that;
+    };
+
+    that.destruct = function(){
+        if(!that.isDestructed){
+            that.isDestructed = true;
+            cm.customEvent.trigger(that.getStackNode(), 'destruct', {
+                'type' : 'child',
+                'self' : false
+            });
+            cm.customEvent.remove(that.getStackNode(), 'destruct', that.destructHandler);
+            that.removeFromStack();
+            that.remove();
+        }
         return that;
     };
 

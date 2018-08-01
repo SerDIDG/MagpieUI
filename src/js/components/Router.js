@@ -5,7 +5,8 @@ cm.define('Com.Router', {
     ],
     'params' : {
         'renderStructure' : false,
-        'embedStructureOnRender' : false
+        'embedStructureOnRender' : false,
+        'route' : null
     }
 },
 function(params){
@@ -74,11 +75,16 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
 
     classProto.pushRoute = function(route, hash){
         var that = this,
-            state = {
-                'route' : route,
-                'hash' : hash,
-                'location' : that.prepareHref(route)
-            };
+            state;
+        // Validate state
+        if(cm.isEmpty(route)){
+            route = that.current['route'];
+        }
+        state = {
+            'route' : route,
+            'hash' : hash,
+            'location' : that.prepareHref(route)
+        };
         // Check data storage
         if(that.dataStorage[state['route']]){
             state['data'] = that.dataStorage[state['route']];
@@ -104,17 +110,20 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
 
     classProto.processRoute = function(state){
         var that = this,
-            match,
+            isMatch,
+            hasAccess,
             matchItem,
             matchCaptures,
             route;
         // Destruct old route
         that.destructRoute(that.current);
         // Match route
-        cm.forEach(that.routes, function(rTtem){
-            if(match = state['route'].match(rTtem['regexp'])){
-                matchCaptures = match;
-                matchItem = rTtem;
+        cm.forEach(that.routes, function(routeItem){
+            isMatch = state['route'].match(routeItem['regexp']);
+            hasAccess = that.checkRouteAccess(routeItem);
+            if(isMatch && hasAccess){
+                matchCaptures = isMatch;
+                matchItem = routeItem;
             }
         });
         if(!matchItem){
@@ -186,8 +195,9 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
             baseUrl = that.prepareBaseUrl();
         route = route
             .replace(new RegExp('^' + window.location.protocol), '')
-            .replace(new RegExp('^//www.'), '//')
+            .replace(new RegExp('^//www\\.'), '//')
             .replace(new RegExp('^' + baseUrl), '')
+            .replace(new RegExp('^\\.'), '')
             .split('#');
         return route;
     };
@@ -220,6 +230,11 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         return result;
     };
 
+    classProto.checkRouteAccess = function(route){
+        var that = this;
+        return true;
+    };
+
     /* *** PUBLIC *** */
 
     classProto.embed = function(node){
@@ -233,6 +248,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
                 'route' : route,
                 'originRoute' : route,
                 'name' : null,
+                'access' : 'all',
                 'regexp' : null,
                 'map' : [],
                 'captures' : {},
@@ -277,7 +293,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
                 return params[p1] || '';
             });
         }
-        if(!/^\//.test(route)){
+        if(!/^(\/|\.\/)/.test(route)){
             route = '/' + route;
         }
         // Save into data storage
@@ -343,8 +359,13 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
 
     classProto.start = function(){
         var that = this,
+            href;
+        if(!cm.isEmpty(that.params['route'])){
+            that.set(that.params['route']);
+        }else{
             href = that.prepareRoute(window.location.href);
-        that.trigger(href[0], href[1]);
+            that.trigger(href[0], href[1]);
+        }
         return that;
     };
 });

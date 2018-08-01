@@ -33,81 +33,82 @@
         }
     }
 
-    > .window {
-        max-width: 100%;
-        position: relative;
-        z-index: 2;
-        display: inline-block;
-        text-align: left;
-        vertical-align: middle;
-        //.mx__transform(scale(0.9)); - Not working position fixed inside this block
-        .mx__transition(all, @ComDialog-Duration, @CmUI-MotionAsymmetric);
-
-        > .icon {
-            position: absolute;
-            z-index: 4;
-        }
-
-        > .inner {
-            overflow: hidden;
-
-            > .title {
-                position: relative;
-                z-index: 2;
-            }
-
-            > .descr {
-                position: relative;
-                z-index: 1;
-
-                > .scroll {
-                    position: relative;
-                    overflow: hidden;
-
-                    > .inner {
-                        overflow: hidden;
-                    }
-
-                    &.is-scroll {
-                        overflow-x: hidden;
-                        overflow-y: auto;
-                    }
-
-                    &.is-no-scroll {
-                        > .inner {
-                            height: 100%;
-                        }
-                    }
-                }
-            }
-
-            > .buttons {
-                position: relative;
-                z-index: 3;
-                margin: 0;
-
-                hr,
-                .btn-wrap {
-                    &:first-child {
-                        margin-top: 0;
-                    }
-                }
-            }
-        }
-    }
-
-    &.has-close-background {
-        > .bg {
-            cursor: pointer;
-        }
-    }
-
     &.is-open {
         visibility: visible;
         opacity: 1;
+    }
+}
 
-        > .window {
-            //.mx__transform(scale(1)); - Not working position fixed inside this block
+.com__dialog__window {
+    max-width: 100%;
+    position: relative;
+    z-index: 2;
+    display: inline-block;
+    text-align: left;
+    vertical-align: middle;
+
+    > .icon {
+        position: absolute;
+        z-index: 4;
+    }
+
+    > .inner {
+        overflow: hidden;
+
+        > .title {
+            position: relative;
+            z-index: 2;
+        }
+
+        > .descr {
+            position: relative;
+            z-index: 1;
+
+            > .scroll {
+                position: relative;
+                overflow: hidden;
+
+                > .inner {
+                    overflow: hidden;
+                }
+
+                &.is-scroll {
+                    overflow-x: hidden;
+                    overflow-y: auto;
+                }
+
+                &.is-no-scroll {
+                    > .inner {
+                        height: 100%;
+                    }
+                }
+            }
+        }
+
+        > .buttons {
+            position: relative;
+            z-index: 3;
+            margin: 0;
+
+            hr,
+            .btn-wrap,
+            .pt__buttons {
+                &:first-child {
+                    margin-top: 0;
+                }
+            }
+        }
+    }
+
+    &.is-animate {
+        opacity: 0;
+        .mx__transform(scale(0.9)); // TODO: Not working position fixed inside this block
+        .mx__transition(all, @ComDialog-Duration, @CmUI-MotionAsymmetric);
+
+        &.is-open {
+            opacity: 1;
+            .mx__transform(scale(1)); // TODO: Not working position fixed inside this block
+            .mx__transition(all, @ComDialog-WindowDuration, @CmUI-MotionAsymmetric);
         }
     }
 }
@@ -161,13 +162,10 @@
 /* ******* COMPONENT: DIALOG: THEMES ******* */
 
 .com__dialog {
+
     // /* *** DEFAULT *** */
 
     &.theme-default {
-        @titleHeight: @ComDialog-TitleIndent * 2 + @CmFont-UI-H1-LineHeight;
-
-        .com__dialog-font--theme-default;
-
         > .bg {
             background: @ComDialog-Overlay;
 
@@ -189,90 +187,15 @@
                 }
             }
         }
-
-        > .window {
-            > .icon {
-                .cm__size__medium;
-
-                &.default {
-                    .icon.medium.close;
-                }
-            }
-
-            > .inner {
-                background-color: @ComDialog-Default-Background;
-                border-radius: @ComDialog-Radius;
-
-                > .title {
-                    .cm__font--ui-h1;
-                }
-
-                > .descr {
-                    > .scroll > .inner {
-                        padding: 0 @ComDialog-Indent;
-                    }
-
-                    &:first-child {
-                        > .scroll > .inner {
-                            padding-top: @ComDialog-Indent
-                        }
-                    }
-
-                    &:last-child {
-                        > .scroll > .inner {
-                            padding-bottom: @ComDialog-Indent
-                        }
-                    }
-                }
-
-                > .buttons {
-                    padding: @ComDialog-Indent;
-                }
-            }
-        }
-
-        &.is-fullscreen {
-            > .window {
-                > .inner {
-                    border-radius: 0;
-                }
-            }
-        }
-
-        .com__dialog__title-height(@titleHeight);
-        .com__dialog__title-indent(@ComDialog-Indent);
     }
 
     // /* *** BLACK *** */
 
     &.theme-black {
         &:extend(.com__dialog.theme-default all);
-        .com__dialog-font--theme-black;
-
-        > .window {
-            > .icon {
-                &.default {
-                    .icon.medium.close-white;
-                }
-            }
-
-            > .inner {
-                background-color: @ComDialog-Black-Background;
-
-                > .title {
-                    color: @ComDialog-Black-TitleColor;
-                }
-            }
-        }
-
-        &.has-close-background {
-            > .bg {
-                cursor: url("@{CmPath-Images}/icons/medium/close-white.png"), auto;
-            }
-        }
     }
 
-    // /* *** BLACK *** */
+    // /* *** LIGHT *** */
 
     &.theme-light {
         &:extend(.com__dialog.theme-default all);
@@ -286,43 +209,89 @@
                 }
             }
         }
+    }
+}
 
-        > .window {
-            > .icon {
-                &.default {
-                    .icon.medium.close-white;
-                }
+.com__dialog__window {
+
+    // /* *** DEFAULT *** */
+
+    &.theme-default {
+        @titleHeight: @ComDialog-TitleIndent * 2 + @CmFont-UI-H1-LineHeight;
+        .com__dialog-font--theme-default;
+
+        > .icon {
+            .cm__size__medium;
+
+            &.default {
+                .icon.medium.close;
             }
+        }
 
+        > .inner {
+            background-color: @ComDialog-Default-Background;
+            border-radius: @ComDialog-Radius;
+
+            > .title {
+                .cm__font--ui-h1;
+            }
+        }
+
+        &.is-fullscreen {
             > .inner {
-                background-color: @ComDialog-Light-Background;
-                box-shadow: @CmUI-Shadow-BottomLarge;
-
-                > .title {
-                    color: @ComDialog-Light-TitleColor;
-                    background-color: @ComDialog-Light-TitleBackground;
-                }
-
-                > .descr {
-                    > .scroll > .inner {
-                        padding-top: @ComDialog-Indent
-                    }
-                }
+                border-radius: 0;
             }
         }
 
-        &.has-close-background {
-            > .bg {
-                cursor: url("@{CmPath-Images}/icons/medium/close.png"), auto;
+        .com__dialog__title-height(@titleHeight);
+        .com__dialog__title-indent(@ComDialog-Indent);
+        .com__dialog__content-indent(@ComDialog-Indent);
+    }
+
+    // /* *** BLACK *** */
+
+    &.theme-black {
+        &:extend(.com__dialog__window.theme-default all);
+        .com__dialog-font--theme-black;
+
+        > .icon {
+            &.default {
+                .icon.medium.close-white;
             }
         }
 
-        &.has-no-title {
-            > .window {
-                > .icon {
-                    &.default {
-                        .icon.medium.close-white;
-                    }
+        > .inner {
+            background-color: @ComDialog-Black-Background;
+
+            > .title {
+                color: @ComDialog-Black-TitleColor;
+            }
+        }
+    }
+
+    // /* *** LIGHT *** */
+
+    &.theme-light {
+        &:extend(.com__dialog__window.theme-default all);
+
+        > .icon {
+            &.default {
+                .icon.medium.close-white;
+            }
+        }
+
+        > .inner {
+            background-color: @ComDialog-Light-Background;
+            box-shadow: @CmUI-Shadow-BottomLarge;
+
+            > .title {
+                color: @ComDialog-Light-TitleColor;
+                background-color: @ComDialog-Light-TitleBackground;
+            }
+
+            > .descr {
+                .com__dialog__inner {
+                    padding-top: @ComDialog-Indent
                 }
             }
         }
@@ -330,6 +299,7 @@
         .com__dialog__title-height(@CmSize-XLarge);
         .com__dialog__title-indent(@ComDialog-TitleIndent);
     }
+
 }
 
 /* *** FONT *** */
@@ -347,30 +317,52 @@
 
 /* *** MIXINS *** */
 
+.com__dialog__content-indent (@value: @ComDialog-Indent) {
+    > .inner {
+        > .descr {
+            .com__dialog__inner {
+                padding: 0 @value;
+            }
+
+            &:first-child {
+                .com__dialog__inner {
+                    padding-top: @value
+                }
+            }
+
+            &:last-child {
+                .com__dialog__inner {
+                    padding-bottom: @value
+                }
+            }
+        }
+
+        > .buttons {
+            padding: @value;
+        }
+    }
+}
+
 .com__dialog__title-height (@value) {
     @indent: round((@value - @CmFont-UI-H1-LineHeight) / 2);
 
-    > .window {
-        > .icon {
-            top: round((@value - @CmSize-Medium) / 2);
-        }
+    > .icon {
+        top: round((@value - @CmSize-Medium) / 2);
+    }
 
-        > .inner {
-            > .title {
-                min-height: @value;
-                padding-top: @indent;
-                padding-bottom: @indent;
-            }
+    > .inner {
+        > .title {
+            min-height: @value;
+            padding-top: @indent;
+            padding-bottom: @indent;
         }
     }
 
     &.is-title-reserve {
-        > .window {
-            > .inner {
-                > .descr {
-                    &:first-child {
-                        padding-top: @value;
-                    }
+        > .inner {
+            > .descr {
+                &:first-child {
+                    padding-top: @value;
                 }
             }
         }
@@ -378,34 +370,28 @@
 }
 
 .com__dialog__title-indent (@value) {
-    > .window {
-        > .icon {
-            right: @value;
-        }
+    > .icon {
+        right: @value;
+    }
 
-        > .inner {
-            > .title {
-                padding-left: @value;
-            }
+    > .inner {
+        > .title {
+            padding-left: @value;
         }
     }
 
     &.has-close-inside {
-        > .window {
-            > .inner {
-                > .title {
-                    padding-right: @value * 2 + @CmSize-Medium;
-                }
+        > .inner {
+            > .title {
+                padding-right: @value * 2 + @CmSize-Medium;
             }
         }
     }
 
     &:not(.is-title-reserve){
         &.has-no-title {
-            > .window {
-                > .icon {
-                    right: -@value - @CmIndent-Medium;
-                }
+            > .icon {
+                right: -@value - @CmIndent-Medium;
             }
         }
     }

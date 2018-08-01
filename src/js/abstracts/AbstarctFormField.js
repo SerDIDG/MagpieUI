@@ -1,6 +1,11 @@
 cm.define('Com.AbstractFormField', {
     'extend' : 'Com.AbstractController',
     'events' : [
+        'onShow',
+        'onHide',
+        'onFocus',
+        'onBlur',
+        'onValidate',
         'onChange',
         'onSelect',
         'onReset',
@@ -13,29 +18,41 @@ cm.define('Com.AbstractFormField', {
     'params' : {
         'renderStructure' : true,
         'embedStructureOnRender' : true,
+        'removeOnDestruct' : false,
         'controllerEvents' : true,
         'renderStructureField' : true,
         'renderStructureContent' : true,
+        'renderError' : true,
         'form' : false,
+        'rawValue' : false,
         'value' : null,
         'defaultValue' : null,
         'dataValue' : null,
         'isOptionValue' : false,
-        'maxlength' : 0,
+        'setHiddenValue' : true,
+        'minLength' : 0,
+        'maxLength' : 0,
+        'min' : 0,
+        'max' : 0,
         'type' : false,
         'label' : '',
         'help' : null,
         'icon' : false,
         'placeholder' : '',
+        'title' : '',
         'visible' : true,
+        'renderName' : false,
         'options' : [],
         'constraints' : [
             /* cm.constraintsPattern(/^\s*$/g, false, message), */
             /* cm.constraintsPattern(10, false, message) */
+            /* cm.constraintsPattern(function, true, message) */
         ],
         'required' : false,
+        'requiredAsterisk' : true,
         'constructor' : false,
         'constructorParams' : {
+            'removeOnDestruct' : false,
             'formData' : true
         },
         'preload' : false,
@@ -50,6 +67,8 @@ cm.define('Com.AbstractFormField', {
     },
     'strings' : {
         'required' : 'This field is required.',
+        'too_short' : 'Value should be at least %count% characters.',
+        'too_long' : 'Value should be less than %count% characters.',
         '*' : '*'
     }
 },
@@ -66,10 +85,15 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
 
     classProto.onConstructStart = function(){
         var that = this;
+        // Variables
+        that.isVisible = null;
         that.isAjax = false;
         that.isProcess = false;
         that.isPreloaded = false;
         that.nodeTagName = null;
+        // Bind context
+        that.focusHandler = that.focus.bind(that);
+        that.blurHandler = that.blur.bind(that);
     };
 
     classProto.onConstructEnd = function(){
@@ -90,19 +114,31 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.onValidateParams = function(){
         var that = this;
         that.validateParamsValue();
+        // Validate
+        if(that.params['required'] && that.params['requiredAsterisk'] && !cm.isEmpty(that.params['placeholder'])){
+            that.params['placeholder'] += ' *';
+        }
         // Constructor params
         that.params['constructorParams']['name'] = that.params['name'];
+        that.params['constructorParams']['visibleName'] = that.params['visibleName'];
+        that.params['constructorParams']['renderName'] = that.params['renderName'];
         that.params['constructorParams']['options'] = !cm.isEmpty(that.params['options']) ? that.params['options'] : that.params['constructorParams']['options'];
         that.params['constructorParams']['value'] = !cm.isEmpty(that.params['dataValue']) ? that.params['dataValue'] : that.params['value'];
         that.params['constructorParams']['defaultValue'] = that.params['defaultValue'];
-        that.params['constructorParams']['maxlength'] = that.params['maxlength'];
+        that.params['constructorParams']['required'] = that.params['required'];
+        that.params['constructorParams']['minLength'] = that.params['minLength'];
+        that.params['constructorParams']['maxLength'] = that.params['maxLength'];
+        that.params['constructorParams']['min'] = that.params['min'];
+        that.params['constructorParams']['max'] = that.params['max'];
         that.params['constructorParams']['placeholder'] = that.params['placeholder'];
+        that.params['constructorParams']['title'] = that.params['title'];
         that.params['constructorParams']['ajax'] = that.params['ajax'];
         // Components
         that.params['Com.HelpBubble']['content'] = that.params['help'];
         that.params['Com.HelpBubble']['name'] = that.params['name'];
         that.components['form'] = that.params['form'];
         that.nodeTagName = that.params['node'].tagName.toLowerCase();
+        // Ajax
         if(that.params['preload'] && !cm.isEmpty(that.params['ajax']) && !cm.isEmpty(that.params['ajax']['url'])){
             that.isAjax = true;
         }
@@ -167,7 +203,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             cm.appendChild(that.nodes['labelText'], that.nodes['label']);
         }
         // Required
-        if(that.params['required']){
+        if(that.params['required'] && that.params['requiredAsterisk']){
             that.nodes['required'] = cm.node('span', {'class' : 'required'}, that.lang('*'));
             cm.appendChild(that.nodes['required'], that.nodes['label']);
         }
@@ -187,9 +223,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
                 nodes['input'],
                 nodes['icon'] = cm.node('div', {'class' : that.params['icon']})
             );
-            cm.addEvent(nodes['icon'], 'click', function(){
-                that.focus();
-            });
+            cm.addEvent(nodes['icon'], 'click', that.focusHandler);
             cm.appendChild(nodes['field'], nodes['container']);
         }
         // Options
@@ -223,7 +257,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         if(!cm.isEmpty(that.params['name'])){
             that.nodes['content']['input'].setAttribute('name', that.params['name']);
         }
-        if(!cm.isEmpty(that.params['value'])){
+        if(!cm.isEmpty(that.params['value']) && that.params['setHiddenValue']){
             if(that.params['isOptionValue']){
                 value = that.params['value']['value'];
             }else{
@@ -244,12 +278,14 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         if(!cm.isEmpty(that.params['placeholder'])){
             that.nodes['content']['input'].setAttribute('placeholder', that.params['placeholder']);
         }
-        if(!cm.isEmpty(that.params['maxlength']) && that.params['maxlength'] > 0){
-            that.nodes['content']['input'].setAttribute('maxlength', that.params['maxlength']);
+        if(!cm.isEmpty(that.params['title'])){
+            that.nodes['content']['input'].setAttribute('title', that.params['title']);
         }
         // Classes
         if(!that.params['visible']){
-            cm.addClass(that.nodes['container'], 'is-hidden');
+            that.hide(false);
+        }else{
+            that.show(false);
         }
     };
 
@@ -292,6 +328,12 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
 
     classProto.renderControllerEvents = function(){
         var that = this;
+        that.components['controller'].addEvent('onFocus', function(controller, data){
+            that.triggerEvent('onFocus', data);
+        });
+        that.components['controller'].addEvent('onBlur', function(controller, data){
+            that.triggerEvent('onBlur', data);
+        });
         that.components['controller'].addEvent('onSelect', function(controller, data){
             that.triggerEvent('onSelect', data);
         });
@@ -314,6 +356,9 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
 
     classProto.get = function(){
         var that = this;
+        if(that.params['rawValue']){
+            return that.getRaw();
+        }
         return that.components['controller'] && cm.isFunction(that.components['controller'].get) ? that.components['controller'].get() : null;
     };
 
@@ -333,60 +378,70 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         return that;
     };
 
-    classProto.enable = function(){
-        var that = this;
-        return that.components['controller'] && cm.isFunction(that.components['controller'].enable) ? that.components['controller'].enable() : null;
-    };
-
-    classProto.disable = function(){
-        var that = this;
-        return that.components['controller'] && cm.isFunction(that.components['controller'].disable) ? that.components['controller'].disable() : null;
-    };
-
-    classProto.focus = function(){
-        var that = this;
-        return that.components['controller'] && cm.isFunction(that.components['controller'].focus) ? that.components['controller'].focus() : null;
-    };
-
     classProto.validateValue = function(){
         var that = this,
-            isValid = true,
-            value = that.get();
-        if(that.params['required']){
-            if(that.components['controller'] && cm.isFunction(that.components['controller'].validate)){
-                isValid = that.components['controller'].validate();
-            }else{
-                isValid = !cm.isEmpty(value);
-            }
+            constraintsData,
+            data = {
+                'field' : that,
+                'form' : that.components['form'],
+                'valid' : true,
+                'message' : null,
+                'value' : that.get()
+            };
+        if(that.params['required'] && cm.isEmpty(data['value'])){
+            data['valid'] = false;
+            data['message'] = that.lang('required');
+            return data;
         }
-        /*
-        var test;
-        if(!cm.isEmpty(that.params['constraints'])){
-            if(that.components['controller'] && cm.isFunction(that.components['controller'].validate)){
-                isValid = that.components['controller'].validate(that.params['constraints']);
-            }else{
-                cm.forEach(that.params['constraints'], function(item){
-                    test = item(value);
-                    if(!test){
-                        isValid = false;
-                    }
-                });
-            }
+        if(that.params['minLength'] && data['value'].length < that.params['minLength']){
+            data['valid'] = false;
+            data['message'] = that.lang('too_short', {
+                '%count%' : that.params['minLength']
+            });
+            return data;
         }
-        */
-        return isValid;
+        if(that.params['maxLength'] && data['value'].length > that.params['maxLength']){
+            data['valid'] = false;
+            data['message'] = that.lang('too_long', {
+                '%count%' : that.params['maxLength']
+            });
+            return data;
+        }
+        if(!cm.isEmpty(that.params['constraints']) && (constraintsData = that.validateConstraints(data))){
+            return constraintsData;
+        }
+        if(that.components['controller'] && cm.isFunction(that.components['controller'].validate)){
+            return that.components['controller'].validate(data);
+        }
+        return data;
+    };
+
+    classProto.validateConstraints = function(data){
+        var that = this,
+            constraintsTest,
+            constraintsData;
+        constraintsTest = that.params['constraints'].some(function(item){
+            if(cm.isFunction(item)){
+                constraintsData = item(data);
+                return !constraintsData['valid'];
+            }
+        });
+        if(constraintsTest){
+            return constraintsData;
+        }
+        return false;
     };
 
     classProto.validate = function(){
         var that = this,
-            message = that.lang('required'),
-            isValid = that.validateValue();
-        if(isValid){
+            data = that.validateValue();
+        if(data['valid']){
             that.clearError();
         }else{
-            that.renderError(message);
+            that.renderError(data['message']);
         }
-        return isValid;
+        that.triggerEvent('onValidate', data);
+        return data['valid'];
     };
 
     /******* MESSAGES *******/
@@ -394,11 +449,13 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.renderError = function(message){
         var that = this;
         that.clearError();
-        cm.addClass(that.nodes['container'], 'error');
-        that.nodes['errors'] = cm.node('ul', {'class' : 'pt__field__error pt__field__hint'},
-            cm.node('li', {'class' : 'error'}, message)
-        );
-        cm.appendChild(that.nodes['errors'], that.nodes['value']);
+        if(that.params['renderError']){
+            cm.addClass(that.nodes['container'], 'error');
+            that.nodes['errors'] = cm.node('ul', {'class' : 'pt__field__error pt__field__hint'},
+                cm.node('li', {'class' : 'error'}, message)
+            );
+            cm.appendChild(that.nodes['errors'], that.nodes['value']);
+        }
         return that;
     };
 
@@ -409,7 +466,53 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         return that;
     };
 
-    /******* OTHER *******/
+    /******* PUBLIC *******/
+
+    classProto.show = function(triggerEvent){
+        var that = this;
+        triggerEvent = cm.isUndefined(triggerEvent) ? true : triggerEvent;
+        if(!cm.isBoolean(that.isVisible) || !that.isVisible){
+            that.isVisible = true;
+            cm.removeClass(that.nodes['container'], 'is-hidden');
+            triggerEvent && that.triggerEvent('onShow', that.get());
+        }
+        return that;
+    };
+
+    classProto.hide = function(triggerEvent){
+        var that = this;
+        triggerEvent = cm.isUndefined(triggerEvent) ? true : triggerEvent;
+        if(!cm.isBoolean(that.isVisible) || that.isVisible){
+            that.isVisible = false;
+            cm.addClass(that.nodes['container'], 'is-hidden');
+            triggerEvent && that.triggerEvent('onHide', that.get());
+        }
+        return that;
+    };
+
+    classProto.enable = function(){
+        var that = this;
+        that.components['controller'] && cm.isFunction(that.components['controller'].enable) && that.components['controller'].enable();
+        return that;
+    };
+
+    classProto.disable = function(){
+        var that = this;
+        that.components['controller'] && cm.isFunction(that.components['controller'].disable) && that.components['controller'].disable();
+        return that;
+    };
+
+    classProto.focus = function(){
+        var that = this;
+        that.components['controller'] && cm.isFunction(that.components['controller'].focus) && that.components['controller'].focus();
+        return that;
+    };
+
+    classProto.blur = function(){
+        var that = this;
+        that.components['controller'] && cm.isFunction(that.components['controller'].blur) && that.components['controller'].blur();
+        return that;
+    };
 
     classProto.getController = function(){
         var that = this;

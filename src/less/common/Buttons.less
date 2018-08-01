@@ -249,6 +249,7 @@
     &.button-transparent,
     &.transparent {
         .mx__background__color(@CmColor-Secondary-LightDefault, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
+        background-image: none;
         box-shadow: none;
         border: none;
 
@@ -364,6 +365,20 @@
         @padding: max(ceil((@CmSize-XXLarge - @CmFont-Base-LineHeight) / 2), 0px);
         min-height: @CmSize-XXLarge;
         padding: @padding @CmIndent-Large;
+    }
+
+    @media only screen and (min-width: (@CmUI-AdaptiveFrom + 1px)) {
+        &.button--large {
+            .button.button--large;
+        }
+
+        &.button--xlarge {
+            .button.button--xlarge;
+        }
+
+        &.button--desktop-xxlarge {
+            .button.button--xxlarge;
+        }
     }
 
     // /* *** ICONS *** */

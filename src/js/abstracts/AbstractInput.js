@@ -3,6 +3,7 @@ cm.define('Com.AbstractInput', {
     'events' : [
         'onSet',
         'onSelect',
+        'onInput',
         'onChange',
         'onClear',
         'onReset',
@@ -26,10 +27,15 @@ cm.define('Com.AbstractInput', {
         'disabled' : false,
         'className' : '',
         'contentClassName' : '',
+        'adaptive' : true,
         'ui' : true,
         'size' : 'full',                // default | full
         'justify' : 'left',
-        'maxlength' : 0,                // 0 - infinity
+        'required' : false,
+        'minLength' : 0,
+        'maxLength' : 0,                // 0 - infinity
+        'min' : 0,
+        'max' : 0,
         'setHiddenInput' : true,
         'setContentInput' : true
     }
@@ -142,7 +148,11 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
             that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
             that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
             that.params['disabled'] = that.params['node'].disabled || that.params['node'].readOnly || that.params['disabled'];
-            that.params['maxlength'] = that.params['node'].getAttribute('maxlength') || that.params['maxlength'];
+            that.params['required'] = that.params['node'].required || that.params['required'];
+            that.params['minLength'] = that.params['node'].getAttribute('minlength') || that.params['minLength'];
+            that.params['maxLength'] = that.params['node'].getAttribute('maxlength') || that.params['maxLength'];
+            that.params['min'] = that.params['node'].getAttribute('min') || that.params['min'];
+            that.params['max'] = that.params['node'].getAttribute('max') || that.params['max'];
             that.params['placeholder'] = that.params['node'].getAttribute('placeholder') || that.params['placeholder'];
         }
         that.triggerEvent('onValidateParams');
@@ -238,6 +248,9 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
             that.nodes['container'].setAttribute('title', that.lang(that.params['title']));
         }
         // Classes
+        if(that.params['adaptive']){
+            cm.addClass(that.nodes['container'], 'is-adaptive');
+        }
         if(!cm.isEmpty(that.params['size'])){
             cm.addClass(that.nodes['container'], ['size', that.params['size']].join('-'));
         }
@@ -250,6 +263,20 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
 
     classProto.setHiddenAttributes = function(){
         var that = this;
+        that.nodes['hidden'].required = that.params['required'];
+        // Min / Max length
+        if(!cm.isEmpty(that.params['minLength']) && that.params['minLength'] > 0){
+            that.nodes['hidden'].minlength = that.params['minLength']
+        }
+        if(!cm.isEmpty(that.params['maxLength']) && that.params['maxLength'] > 0){
+            that.nodes['hidden'].maxlength = that.params['maxLength'];
+        }
+        if(!cm.isEmpty(that.params['min']) && that.params['min'] > 0){
+            that.nodes['hidden'].min = that.params['min'];
+        }
+        if(!cm.isEmpty(that.params['max']) && that.params['max'] > 0){
+            that.nodes['hidden'].max = that.params['max'];
+        }
         // Data attributes
         cm.forEach(that.params['node'].attributes, function(item){
             if(/^data-(?!node|element|config)/.test(item.name)){
@@ -285,7 +312,6 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         }
         return value;
     };
-
 
     classProto.saveValue = function(value){
         var that = this;
@@ -343,6 +369,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         that.saveRawValue(value);
         that.selectData(value);
         triggerEvents && that.triggerEvent('onSelect', value);
+        triggerEvents && that.triggerEvent('onInput', value);
         return that;
     };
 

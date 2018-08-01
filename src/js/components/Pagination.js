@@ -1,16 +1,7 @@
 cm.define('Com.Pagination', {
-    'modules' : [
-        'Params',
-        'Events',
-        'Langs',
-        'Structure',
-        'DataConfig',
-        'DataNodes',
-        'Callbacks',
-        'Stack'
-    ],
+    'extend' : 'Com.AbstractController',
     'events' : [
-        'onRender',
+        'onRebuild',
         'onStart',
         'onAbort',
         'onError',
@@ -21,10 +12,9 @@ cm.define('Com.Pagination', {
         'onSetCount'
     ],
     'params' : {
-        'node' : cm.Node('div'),
-        'container' : null,
-        'name' : '',
-        'renderStructure' : false,                                  // Render wrapper nodes if not exists in html
+        'controllerEvents' : true,
+        'renderStructure' : true,                                   // Render wrapper nodes if not exists in html
+        'embedStructureOnRender' : true,
         'embedStructure' : 'append',
         'scrollNode' : window,
         'data' : [],                                                // Static data
@@ -33,6 +23,7 @@ cm.define('Com.Pagination', {
         'startPage' : 1,                                            // Start page
         'startPageToken' : '',
         'pageCount' : 0,
+        'autoSend' : true,
         'showLoader' : true,
         'loaderDelay' : 'cm._config.loadDelay',
         'barPosition' : 'bottom',                                   // top | bottom | both, require renderStructure
@@ -49,6 +40,7 @@ cm.define('Com.Pagination', {
         },
         'responseCountKey' : 'count',                               // Take items count from response
         'responseKey' : 'data',                                     // Instead of using filter callback, you can provide response array key
+        'responseErrorsKey': 'errors',
         'responseHTML' : false,                                     // If true, html will append automatically
         'cache' : true,                                             // Cache response data
         'ajax' : {
@@ -57,7 +49,8 @@ cm.define('Com.Pagination', {
             'url' : '',                                             // Request URL. Variables: %baseUrl%, %page%, %offset%, %token%, %perPage%, %limit%, %callback% for JSONP.
             'params' : ''                                           // Params object. Variables: %baseUrl%, %page%, %offset%, %token%, %perPage%, %limit%, %callback% for JSONP.
         },
-        'Com.Overlay' : {
+        'overlayConstructor' : 'Com.Overlay',
+        'overlayParams' : {
             'lazy' : true,
             'position' : 'absolute',
             'autoOpen' : false,
@@ -72,49 +65,55 @@ cm.define('Com.Pagination', {
 },
 function(params){
     var that = this;
+    // Call parent class construct
+    Com.AbstractController.apply(that, arguments);
+});
 
-    that.nodes = {
-        'container' : cm.Node('div'),
-        'content' : cm.Node('div'),
-        'pages' : cm.Node('div'),
-        'bar' : []
+cm.getConstructor('Com.Pagination', function(classConstructor, className, classProto, classInherit){
+    classProto.construct = function(){
+        var that = this;
+        // variables
+        that.nodes = {
+            'container' : cm.node('div'),
+            'content' : cm.node('div'),
+            'pages' : cm.node('div'),
+            'bar' : []
+        };
+
+        that.components = {};
+        that.animations = {};
+        that.pages = {};
+        that.ajaxHandler = null;
+        that.currentAction = null;
+
+        that.isAjax = false;
+        that.isProcess = false;
+        that.isRendering = false;
+
+        that.page = null;
+        that.pageToken = null;
+        that.currentPage = null;
+        that.previousPage = null;
+        that.pageCount = 0;
+        // Call parent method - renderViewModel
+        classInherit.prototype.construct.apply(that, arguments);
     };
 
-    that.components = {};
-    that.animations = {};
-    that.pages = {};
-    that.ajaxHandler = null;
-    that.currentAction = null;
-
-    that.isAjax = false;
-    that.isProcess = false;
-    that.isRendering = false;
-
-    that.page = null;
-    that.pageToken = null;
-    that.currentPage = null;
-    that.previousPage = null;
-    that.pageCount = 0;
-
-    var init = function(){
-        getLESSVariables();
-        that.setParams(params);
-        that.convertEvents(that.params['events']);
-        that.getDataNodes(that.params['node']);
-        that.getDataConfig(that.params['node']);
-        that.callbacksProcess();
-        validateParams();
-        render();
-        that.addToStack(that.nodes['container']);
-        that.triggerEvent('onRender');
-        set(that.params['startPage']);
+    classProto.onConstructEnd = function(){
+        var that = this;
+        that.params['autoSend'] && that.set(that.params['startPage']);
     };
 
-    var getLESSVariables = function(){
+    classProto.getLESSVariables = function(){
+        var that = this;
         that.params['animateDuration'] = cm.getTransitionDurationFromLESS('ComPagination-Duration', that.params['animateDuration']);
     };
 
-    var validateParams = function(){
+    classProto.validateParams = function(){
+        var that = this;
+        that.triggerEvent('onValidateParamsStart');
+        that.triggerEvent('onValidateParams');
+        that.triggerEvent('onValidateParamsProcess');
         // If URL parameter exists, use ajax data
         if(!cm.isEmpty(that.params['ajax']['url'])){
             that.isAjax = true;
@@ -124,49 +123,53 @@ function(params){
             }
             that.params['showLoader'] = false;
         }
-        if(that.params['pageCount'] == 0 && that.params['count'] && that.params['perPage']){
+        if(that.params['pageCount'] === 0 && that.params['count'] && that.params['perPage']){
             that.pageCount = Math.ceil(that.params['count'] / that.params['perPage']);
         }else{
             that.pageCount = that.params['pageCount'];
         }
         // Set start page token
         that.setToken(that.params['startPage'], that.params['startPageToken']);
+        that.triggerEvent('onValidateParamsEnd');
     };
 
-    var render = function(){
+    classProto.renderView = function(){
+        var that = this;
         // Render Structure
-        if(that.params['renderStructure']){
-            that.nodes['container'] = cm.Node('div', {'class' : 'com__pagination'},
-                that.nodes['content'] = cm.Node('div', {'class' : 'com__pagination__content'},
-                    that.nodes['pages'] = cm.Node('div', {'class' : 'com__pagination__pages'})
-                )
+        that.nodes['container'] = cm.node('div', {'class' : 'com__pagination'},
+            that.nodes['content'] = cm.node('div', {'class' : 'com__pagination__content'},
+                that.nodes['pages'] = cm.node('div', {'class' : 'com__pagination__pages'})
+            )
+        );
+        // Bars
+        if(/top|both/.test(that.params['barPosition'])){
+            that.nodes['bar'].push(
+                that.callbacks.renderBar(that, {
+                    'align' : that.params['barAlign'],
+                    'position' : 'top'
+                })
             );
-            // Bars
-            if(/top|both/.test(that.params['barPosition'])){
-                that.nodes['bar'].push(
-                    that.callbacks.renderBar(that, {
-                        'align' : that.params['barAlign'],
-                        'position' : 'top'
-                    })
-                );
-            }
-            if(/bottom|both/.test(that.params['barPosition'])){
-                that.nodes['bar'].push(
-                    that.callbacks.renderBar(that, {
-                        'align' : that.params['barAlign'],
-                        'position' : 'bottom'
-                    })
-                );
-            }
-            // Append
-            that.embedStructure(that.nodes['container']);
         }
+        if(/bottom|both/.test(that.params['barPosition'])){
+            that.nodes['bar'].push(
+                that.callbacks.renderBar(that, {
+                    'align' : that.params['barAlign'],
+                    'position' : 'bottom'
+                })
+            );
+        }
+    };
+
+    classProto.renderViewModel = function(){
+        var that = this;
+        // Call parent method - renderViewModel
+        classInherit.prototype.renderViewModel.apply(that, arguments);
         // Reset styles and variables
-        reset();
+        that.resetStyles();
         // Overlay
-        cm.getConstructor('Com.Overlay', function(classConstructor, className){
+        cm.getConstructor(that.params['overlayConstructor'], function(classConstructor){
             that.components['loader'] = new classConstructor(
-                cm.merge(that.params[className], {
+                cm.merge(that.params['overlayParams'], {
                     'container' : that.nodes['content']
                 })
             );
@@ -178,41 +181,17 @@ function(params){
         that.animations['content'] = new cm.Animation(that.nodes['content']);
     };
 
-    var reset = function(){
+    classProto.resetStyles = function(){
+        var that = this;
         // Clear render pages
-        cm.clearNode(that.nodes['pages']);
-    };
-
-    var set = function(page){
-        var config;
-        if(that.isProcess){
-            that.abort();
-        }
-        if((!that.pageCount || page <= that.pageCount) && !that.isProcess && !that.isRendering){
-            // Preset next page and page token
-            that.page = page;
-            that.pageToken = that.pages[that.page]? that.pages[that.page]['token'] : '';
-            // Render bars
-            that.callbacks.rebuildBars(that);
-            // Request
-            if(!that.currentPage || page != that.currentPage){
-                if(that.params['cache'] && that.pages[that.page] && that.pages[that.page]['isRendered']){
-                    that.callbacks.cached(that, that.pages[that.page]['data']);
-                }else if(that.isAjax){
-                    config = cm.clone(that.params['ajax']);
-                    that.ajaxHandler = that.callbacks.request(that, config);
-                }else{
-                    that.callbacks.data(that, that.params['data']);
-                }
-            }
-        }
+        //cm.clearNode(that.nodes['pages']);
     };
 
     /* ******* CALLBACKS ******* */
 
     /* *** AJAX *** */
 
-    that.callbacks.prepare = function(that, config){
+    classProto.callbacks.prepare = function(that, config){
         config = that.callbacks.beforePrepare(that, config);
         config['url'] = cm.strReplace(config['url'], {
             '%perPage%' : that.params['perPage'],
@@ -234,15 +213,15 @@ function(params){
         return config;
     };
 
-    that.callbacks.beforePrepare = function(that, config){
+    classProto.callbacks.beforePrepare = function(that, config){
         return config;
     };
 
-    that.callbacks.afterPrepare = function(that, config){
+    classProto.callbacks.afterPrepare = function(that, config){
         return config;
     };
 
-    that.callbacks.request = function(that, config){
+    classProto.callbacks.request = function(that, config){
         config = that.callbacks.prepare(that, config);
         that.currentAction = config;
         // Return ajax handler (XMLHttpRequest) to providing abort method.
@@ -267,20 +246,24 @@ function(params){
         );
     };
 
-    that.callbacks.filter = function(that, config, response){
+    classProto.callbacks.filter = function(that, config, response){
         var data = [],
+            errorsItem = cm.objectPath(that.params['responseErrorsKey'], response),
             dataItem = cm.objectPath(that.params['responseKey'], response),
             countItem = cm.objectPath(that.params['responseCountKey'], response);
-        if(dataItem && !cm.isEmpty(dataItem)){
-            data = dataItem;
-        }
-        if(countItem != 'undefined'){
-            that.setCount(countItem);
+        if(cm.isEmpty(errorsItem)){
+            if(!cm.isEmpty(dataItem)){
+                data = dataItem;
+            }
+            if(!cm.isEmpty(countItem)){
+                that.setCount(countItem);
+            }
         }
         return data;
     };
 
-    that.callbacks.response = function(that, config, response){
+    classProto.callbacks.response = function(that, config, response){
+        // Set next page
         that.setPage();
         // Response
         if(response){
@@ -289,24 +272,24 @@ function(params){
         that.callbacks.render(that, response);
     };
 
-    that.callbacks.error = function(that, config){
+    classProto.callbacks.error = function(that, config){
         that.triggerEvent('onError');
         that.callbacks.response(that, config);
     };
 
-    that.callbacks.abort = function(that, config){
+    classProto.callbacks.abort = function(that, config){
         that.triggerEvent('onAbort');
     };
 
     /* *** STATIC *** */
 
-    that.callbacks.data = function(that, data){
+    classProto.callbacks.data = function(that, data){
         var length, start, end, pageData;
         that.callbacks.start(that);
         that.setPage();
         if(!cm.isEmpty(data)){
             // Get page data and render
-            if(that.params['perPage'] == 0){
+            if(that.params['perPage'] === 0){
                 that.callbacks.render(that, data);
             }else if(that.params['perPage'] > 0){
                 length = data.length;
@@ -323,7 +306,7 @@ function(params){
         that.callbacks.end(that);
     };
 
-    that.callbacks.cached = function(that, data){
+    classProto.callbacks.cached = function(that, data){
         that.callbacks.start(that);
         that.setPage();
         that.callbacks.render(that, data);
@@ -332,11 +315,11 @@ function(params){
 
     /* *** RENDER PAGE *** */
 
-    that.callbacks.renderContainer = function(that, page){
+    classProto.callbacks.renderContainer = function(that, page){
         return cm.node(that.params['pageTag'], that.params['pageAttributes']);
     };
 
-    that.callbacks.render = function(that, data){
+    classProto.callbacks.render = function(that, data){
         that.isRendering = true;
         var page = {
             'page' : that.page,
@@ -348,9 +331,13 @@ function(params){
             'isRendered' : true,
             'isError' : !data
         };
+        // Clear container
+        if(that.page === that.params['startPage']){
+            cm.clearNode(that.nodes['pages']);
+        }
+        // Render page
         page['container'] = that.callbacks.renderContainer(that, page);
         that.pages[that.page] = page;
-        // Render
         that.triggerEvent('onPageRender', page);
         if(page['data']){
             that.callbacks.renderPage(that, page);
@@ -358,7 +345,7 @@ function(params){
             that.callbacks.renderError(that, page);
         }
         // Embed
-        that.nodes['pages'].appendChild(page['container']);
+        cm.appendChild(page['container'], that.nodes['pages']);
         cm.addClass(page['container'], 'is-visible', true);
         that.triggerEvent('onPageRenderEnd', page);
         // Switch
@@ -367,27 +354,15 @@ function(params){
         }
     };
 
-    that.callbacks.renderPage = function(that, page){
+    classProto.callbacks.renderPage = function(that, page){
         var nodes;
         if(that.params['responseHTML']){
             nodes = cm.strToHTML(page['data']);
-            if(!cm.isEmpty(nodes)){
-                if(cm.isNode(nodes)){
-                    page['container'].appendChild(nodes);
-                }else{
-                    while(nodes.length){
-                        if(cm.isNode(nodes[0])){
-                            page['container'].appendChild(nodes[0]);
-                        }else{
-                            cm.remove(nodes[0]);
-                        }
-                    }
-                }
-            }
+            cm.appendNodes(nodes, page['container']);
         }
     };
 
-    that.callbacks.renderError = function(that, page){
+    classProto.callbacks.renderError = function(that, page){
         if(that.params['responseHTML']){
             page['container'].appendChild(
                 cm.node('div', {'class' : 'cm__empty'}, that.lang('server_error'))
@@ -395,7 +370,7 @@ function(params){
         }
     };
 
-    that.callbacks.switchPage = function(that, page){
+    classProto.callbacks.switchPage = function(that, page){
         var contentRect = cm.getRect(that.nodes['content']),
             pageRect = cm.getRect(page['container']);
         // Hide previous page
@@ -418,7 +393,7 @@ function(params){
         }
     };
 
-    that.callbacks.hidePage = function(that, page){
+    classProto.callbacks.hidePage = function(that, page){
         page['isVisible'] = false;
         if(that.params['animateSwitch']){
             if(that.params['animatePrevious']){
@@ -440,15 +415,15 @@ function(params){
 
     /* *** RENDER BAR *** */
 
-    that.callbacks.renderBar = function(that, params){
+    classProto.callbacks.renderBar = function(that, params){
         params = cm.merge({
             'align' : 'left',
             'position' : 'bottom'
         }, params);
         var item = {};
         // Structure
-        item['container'] = cm.Node('div', {'class' : 'com__pagination__bar'},
-            item['items'] = cm.Node('ul')
+        item['container'] = cm.node('div', {'class' : 'com__pagination__bar'},
+            item['items'] = cm.node('ul')
         );
         cm.addClass(item['container'], ['pull', params['align']].join('-'));
         // Embed
@@ -463,13 +438,13 @@ function(params){
         return item;
     };
 
-    that.callbacks.rebuildBars = function(that){
+    classProto.callbacks.rebuildBars = function(that){
         cm.forEach(that.nodes['bar'], function(item){
             that.callbacks.rebuildBar(that, item);
         });
     };
 
-    that.callbacks.rebuildBar = function(that, item){
+    classProto.callbacks.rebuildBar = function(that, item){
         // Clear items
         cm.clearNode(item['items']);
         // Show / Hide
@@ -482,7 +457,7 @@ function(params){
         }
     };
 
-    that.callbacks.renderBarItems = function(that, item){
+    classProto.callbacks.renderBarItems = function(that, item){
         var dots = false;
         // Previous page buttons
         that.callbacks.renderBarArrow(that, item, {
@@ -494,7 +469,7 @@ function(params){
         // Page buttons
         cm.forEach(that.pageCount, function(page){
             ++page;
-            if(page == that.page){
+            if(page === that.page){
                 that.callbacks.renderBarItem(that, item, {
                     'page' : page,
                     'isActive' : true
@@ -527,7 +502,7 @@ function(params){
         });
     };
 
-    that.callbacks.renderBarArrow = function(that, item, params){
+    classProto.callbacks.renderBarArrow = function(that, item, params){
         params = cm.merge({
             'text' : '',
             'title' : '',
@@ -535,8 +510,8 @@ function(params){
             'callback' : function(){}
         }, params);
         // Structure
-        params['container'] = cm.Node('li', {'class' : params['className']},
-            params['link'] = cm.Node('a', {'title' : params['title']}, params['text'])
+        params['container'] = cm.node('li', {'class' : params['className']},
+            params['link'] = cm.node('a', {'title' : params['title']}, params['text'])
         );
         // Events
         cm.addEvent(params['link'], 'click', function(e){
@@ -548,25 +523,25 @@ function(params){
         item['items'].appendChild(params['container']);
     };
 
-    that.callbacks.renderBarPoints = function(that, item, params){
+    classProto.callbacks.renderBarPoints = function(that, item, params){
         params = cm.merge({
             'text' : '...',
             'className' : 'points'
         }, params);
         // Structure
-        params['container'] = cm.Node('li', {'class' : params['className']}, params['text']);
+        params['container'] = cm.node('li', {'class' : params['className']}, params['text']);
         // Append
         item['items'].appendChild(params['container']);
     };
 
-    that.callbacks.renderBarItem = function(that, item, params){
+    classProto.callbacks.renderBarItem = function(that, item, params){
         params = cm.merge({
             'page' : null,
             'isActive' : false
         }, params);
         // Structure
-        params['container'] = cm.Node('li',
-            params['link'] = cm.Node('a', params['page'])
+        params['container'] = cm.node('li',
+            params['link'] = cm.node('a', params['page'])
         );
         // Active Class
         if(params['isActive']){
@@ -584,7 +559,7 @@ function(params){
 
     /* *** HELPERS *** */
 
-    that.callbacks.start = function(that){
+    classProto.callbacks.start = function(that){
         that.isProcess = true;
         // Show Loader
         if(that.params['showLoader']){
@@ -594,7 +569,7 @@ function(params){
         that.triggerEvent('onStart');
     };
 
-    that.callbacks.end = function(that){
+    classProto.callbacks.end = function(that){
         that.isProcess = false;
         // Hide Loader
         if(that.params['showLoader']){
@@ -606,41 +581,72 @@ function(params){
 
     /* ******* PUBLIC ******* */
 
-    that.set = function(page){
-        set(page);
-        return that;
-    };
-
-    that.next = function(){
-        set(that.pageCount == that.currentPage ? 1 : that.currentPage + 1);
-        return that;
-    };
-
-    that.prev = function(){
-        set(that.currentPage - 1 || that.pageCount);
-        return that;
-    };
-
-    that.rebuild = function(params){
+    classProto.rebuild = function(params){
+        var that = this;
         // Cleanup
         if(that.isProcess){
             that.abort();
         }
         that.pages = {};
+        that.page = null;
+        that.pageToken = null;
         that.currentPage = null;
         that.previousPage = null;
-        // Reset styles and variables
-        reset();
+        that.pageCount = 0;
         // Set new parameters
         if(!cm.isEmpty(params)){
             that.setParams(params);
-            validateParams();
         }
+        that.validateParams();
+        // Reset styles and variables
+        that.resetStyles();
+        that.triggerEvent('onRebuild');
         // Render
-        set(that.params['startPage']);
+        that.set(that.params['startPage']);
+        return that;
     };
 
-    that.setToken = function(page, token){
+    classProto.set = function(page){
+        var that = this,
+            config;
+        if(that.isProcess){
+            that.abort();
+        }
+        if((!that.pageCount || page <= that.pageCount) && !that.isProcess && !that.isRendering){
+            // Preset next page and page token
+            that.page = page;
+            that.pageToken = that.pages[that.page]? that.pages[that.page]['token'] : '';
+            // Render bars
+            that.callbacks.rebuildBars(that);
+            // Request
+            if(!that.currentPage || page !== that.currentPage){
+                if(that.params['cache'] && that.pages[that.page] && that.pages[that.page]['isRendered']){
+                    that.callbacks.cached(that, that.pages[that.page]['data']);
+                }else if(that.isAjax){
+                    config = cm.clone(that.params['ajax']);
+                    that.ajaxHandler = that.callbacks.request(that, config);
+                }else{
+                    that.callbacks.data(that, that.params['data']);
+                }
+            }
+        }
+        return that;
+    };
+
+    classProto.next = function(){
+        var that = this;
+        that.set(that.pageCount === that.currentPage ? 1 : that.currentPage + 1);
+        return that;
+    };
+
+    classProto.prev = function(){
+        var that = this;
+        that.set(that.currentPage - 1 || that.pageCount);
+        return that;
+    };
+
+    classProto.setToken = function(page, token){
+        var that = this;
         if(!that.pages[page]){
             that.pages[page] = {};
         }
@@ -648,13 +654,14 @@ function(params){
         return that;
     };
 
-    that.setCount = function(count){
+    classProto.setCount = function(count){
+        var that = this;
         if(!cm.isUndefined(count)){
             count = parseInt(count.toString());
         }
-        if(cm.isNumber(count) && count != that.params['count']){
+        if(cm.isNumber(count) && count !== that.params['count']){
             that.params['count'] = count;
-            if(that.params['pageCount'] == 0 && that.params['count'] && that.params['perPage']){
+            if(that.params['pageCount'] === 0 && that.params['count'] && that.params['perPage']){
                 that.pageCount = Math.ceil(that.params['count'] / that.params['perPage']);
             }else{
                 that.pageCount = that.params['pageCount'];
@@ -665,8 +672,9 @@ function(params){
         return that;
     };
 
-    that.setAction = function(o, mode, update){
-        mode = cm.inArray(['raw', 'update', 'current'], mode)? mode : 'current';
+    classProto.setAction = function(o, mode, update){
+        var that = this;
+        mode = cm.inArray(['raw', 'update', 'current'], mode) ? mode : 'current';
         switch(mode){
             case 'raw':
                 that.params['ajax'] = cm.merge(that._raw.params['ajax'], o);
@@ -685,30 +693,33 @@ function(params){
         return that;
     };
 
-    that.getAction = function(){
+    classProto.getAction = function(){
+        var that = this;
         return that.params['ajax'];
     };
 
-    that.getCurrentAction = function(){
+    classProto.getCurrentAction = function(){
+        var that = this;
         return that.currentAction;
     };
 
-    that.setPage = function(){
+    classProto.setPage = function(){
+        var that = this;
         that.previousPage = that.currentPage;
         that.currentPage = that.page;
         return that;
     };
 
-    that.abort = function(){
+    classProto.abort = function(){
+        var that = this;
         if(that.ajaxHandler && that.ajaxHandler.abort){
             that.ajaxHandler.abort();
         }
         return that;
     };
 
-    that.isOwnNode = that.isParent = function(node, flag){
+    classProto.isOwnNode = classProto.isParent = function(node, flag){
+        var that = this;
         return cm.isParent(that.nodes['container'], node, flag);
     };
-
-    init();
 });

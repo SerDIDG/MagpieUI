@@ -18,7 +18,7 @@ cm.define('Com.Slider', {
         'disableEditable'
     ],
     'params' : {
-        'node' : cm.Node('div'),
+        'node' : cm.node('div'),
         'name' : '',
         'customEvents' : true,
         'renderStructure' : false,
@@ -776,6 +776,36 @@ Com.SliderEffects['pull-parallax-css'] = function(slider, current, previous, cal
             'delayOut' : 30,
             'onStop' : callback
         });
+    }else{
+        callback();
+    }
+};
+
+Com.SliderEffects['custom'] = function(slider, current, previous, callback){
+    if(slider.itemsLength && current !== previous){
+        // Hide previous
+        if(previous){
+            cm.addClass(previous['nodes']['container'], 'hide', true);
+            cm.addClass(previous['nodes']['container'], slider.direction, true);
+        }
+        // Show current
+        if(previous){
+            cm.addClass(current['nodes']['container'], 'show');
+            cm.addClass(current['nodes']['container'], slider.direction);
+        }
+        cm.addClass(current['nodes']['container'], 'active', true);
+        cm.removeClass(current['nodes']['container'], 'show', true);
+        cm.removeClass(current['nodes']['container'], slider.direction, true);
+        // Delays
+        setTimeout(function(){
+            // Previous
+            if(previous){
+                cm.removeClass(previous['nodes']['container'], slider.direction);
+                cm.removeClass(previous['nodes']['container'], 'active hide');
+            }
+            // Callback
+            callback();
+        }, slider.params['time']);
     }else{
         callback();
     }

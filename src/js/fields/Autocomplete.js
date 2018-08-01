@@ -14,6 +14,8 @@ cm.define('Com.Autocomplete', {
     'events' : [
         'onRenderStart',
         'onRender',
+        'onFocus',
+        'onBlur',
         'onClear',
         'onReset',
         'onSelect',
@@ -284,10 +286,15 @@ function(params){
         }
     };
 
+    var focusHandler = function(){
+        that.triggerEvent('onFocus', that.value);
+    };
+
     var blurHandler = function(){
         if(!that.isOpen){
             clear();
         }
+        that.triggerEvent('onBlur', that.value);
     };
 
     var clickHandler = function(){
@@ -308,6 +315,7 @@ function(params){
     var setEvents = function(){
         cm.addEvent(that.params['node'], 'input', requestHandler);
         cm.addEvent(that.params['node'], 'keydown', inputHandler);
+        cm.addEvent(that.params['node'], 'focus', focusHandler);
         cm.addEvent(that.params['node'], 'blur', blurHandler);
         cm.addEvent(that.params['node'], 'click', clickHandler);
     };
@@ -315,6 +323,7 @@ function(params){
     var unsetEvents = function(){
         cm.removeEvent(that.params['node'], 'input', requestHandler);
         cm.removeEvent(that.params['node'], 'keydown', inputHandler);
+        cm.removeEvent(that.params['node'], 'focus', focusHandler);
         cm.removeEvent(that.params['node'], 'blur', blurHandler);
         cm.removeEvent(that.params['node'], 'click', clickHandler);
     };

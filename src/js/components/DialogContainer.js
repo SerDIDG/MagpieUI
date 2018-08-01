@@ -3,6 +3,7 @@ cm.define('Com.DialogContainer', {
     'params' : {
         'constructor' : 'Com.Dialog',
         'container' : 'document.body',
+        'destructOnClose' : false,
         'renderButtons' : false,
         'renderTitle' : true,
         'justifyButtons' : 'right',
@@ -60,6 +61,7 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
     classProto.renderControllerEvents = function(){
         var that = this;
         that.components['controller'].addEvent('onOpenStart', that.afterOpenControllerHandler);
+        that.components['controller'].addEvent('onOpenEnd', that.afterOpenControllerEndHandler);
         that.components['controller'].addEvent('onCloseEnd', that.afterCloseControllerHandler);
         return that;
     };

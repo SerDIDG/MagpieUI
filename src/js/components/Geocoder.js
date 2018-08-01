@@ -17,9 +17,7 @@ function(params){
     Com.AbstractController.apply(that, arguments);
 });
 
-cm.getConstructor('Com.Geocoder', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
+cm.getConstructor('Com.Geocoder', function(classConstructor, className, classProto, classInherit){
     classProto.onConstructStart = function(){
         var that = this;
         // Binds
@@ -34,14 +32,13 @@ cm.getConstructor('Com.Geocoder', function(classConstructor, className, classPro
     classProto.renderViewModel = function(){
         var that = this;
         // Call parent method - renderViewModel
-        _inherit.prototype.renderViewModel.apply(that, arguments);
+        classInherit.prototype.renderViewModel.apply(that, arguments);
         // Load Google Maps Script
         cm.loadScript({
             'path' : 'google.maps',
             'src' : that.apiLink,
             'callback' : that.loadScriptEndHanlder
         });
-        return that;
     };
 
     classProto.loadScriptEnd = function(handler){

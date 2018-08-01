@@ -2,7 +2,11 @@ cm.define('Com.AbstractContainer', {
     'extend' : 'Com.AbstractController',
     'events' : [
         'onOpen',
+        'onOpenEnd',
         'onClose',
+        'onOpenPlaceholder',
+        'onOpenPlaceholderEnd',
+        'onClosePlaceholder',
         'onRenderControllerStart',
         'onRenderControllerProcess',
         'onRenderController',
@@ -16,6 +20,7 @@ cm.define('Com.AbstractContainer', {
     ],
     'params' : {
         'embedStructure' : 'none',
+        'controllerEvents' : true,
         'constructor' : null,
         'params' : {},
         'placeholder' : false,
@@ -32,31 +37,40 @@ cm.define('Com.AbstractContainer', {
 },
 function(params){
     var that = this;
-    that.nodes = {};
-    that.components = {};
     // Call parent class construct
     Com.AbstractController.apply(that, arguments);
 });
 
-cm.getConstructor('Com.AbstractContainer', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
+cm.getConstructor('Com.AbstractContainer', function(classConstructor, className, classProto, classInherit){
     classProto.construct = function(){
         var that = this;
         that.targetNode = null;
         // Bind context to methods
-        that.destructProcessHandler = that.destructProcess.bind(that);
         that.openHandler = that.open.bind(that);
         that.closeHandler = that.close.bind(that);
         that.afterOpenControllerHandler = that.afterOpenController.bind(that);
+        that.afterOpenControllerEndHandler = that.afterOpenControllerEnd.bind(that);
         that.afterCloseControllerHandler = that.afterCloseController.bind(that);
         that.afterOpenPlaceholderHandler = that.afterOpenPlaceholder.bind(that);
+        that.afterOpenPlaceholderEndHandler = that.afterOpenPlaceholderEnd.bind(that);
         that.afterClosePlaceholderHandler = that.afterClosePlaceholder.bind(that);
-        // Add events
-        that.addEvent('onDestructProcess', that.destructProcessHandler);
         // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
-        return that;
+        classInherit.prototype.construct.apply(that, arguments);
+    };
+
+    classProto.onDestructProcess = function(){
+        var that = this;
+        that.destructPlaceholder();
+        that.destructController();
+    };
+
+    classProto.validateParams = function(){
+        var that = this;
+        that.triggerEvent('onValidateParamsStart');
+        that.triggerEvent('onValidateParamsProcess');
+        that.params['params']['node'] = that.params['node'];
+        that.params['params']['container'] = that.params['container'];
+        that.triggerEvent('onValidateParamsEnd');
     };
 
     classProto.open = function(e){
@@ -89,22 +103,6 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
     classProto.getPlaceholder = function(){
         var that = this;
         return that.components['placeholder'];
-    };
-
-    classProto.destructProcess = function(){
-        var that = this;
-        that.destructPlaceholder();
-        that.destructController();
-        return that;
-    };
-
-    classProto.validateParams = function(){
-        var that = this;
-        that.triggerEvent('onValidateParamsStart');
-        that.triggerEvent('onValidateParamsProcess');
-        that.params['params']['node'] = that.params['node'];
-        that.params['params']['container'] = that.params['container'];
-        that.triggerEvent('onValidateParamsEnd');
     };
 
     classProto.render = function(){
@@ -147,12 +145,10 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
             that.triggerEvent('onRenderController', that.components['controller']);
             that.triggerEvent('onRenderControllerEnd', that.components['controller']);
         });
-        return that;
     };
 
     classProto.renderControllerView = function(){
         var that = this;
-        return that;
     };
 
     classProto.constructController = function(classObject){
@@ -168,14 +164,13 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
     classProto.renderControllerEvents = function(){
         var that = this;
         that.components['controller'].addEvent('onOpen', that.afterOpenControllerHandler);
+        that.components['controller'].addEvent('onOpenEnd', that.afterOpenControllerEndHandler);
         that.components['controller'].addEvent('onClose', that.afterCloseControllerHandler);
-        return that;
     };
 
     classProto.destructController = function(){
         var that = this;
         that.components['controller'] && that.components['controller'].destruct && that.components['controller'].destruct();
-        return that;
     };
 
     classProto.openController = function(){
@@ -188,7 +183,6 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
         }else{
             that.afterOpenController();
         }
-        return that;
     };
 
     classProto.closeController = function(){
@@ -198,13 +192,16 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
         }else{
             that.afterCloseController();
         }
-        return that;
     };
 
     classProto.afterOpenController = function(){
         var that = this;
         that.triggerEvent('onOpen', that.components['controller']);
-        return that;
+    };
+
+    classProto.afterOpenControllerEnd = function(){
+        var that = this;
+        that.triggerEvent('onOpenEnd', that.components['controller']);
     };
 
     classProto.afterCloseController = function(){
@@ -213,7 +210,6 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
             that.destructController();
         }
         that.triggerEvent('onClose', that.components['controller']);
-        return that;
     };
 
     /* *** PLACEHOLDER *** */
@@ -231,7 +227,6 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
             that.renderPlaceholderEvents();
             that.triggerEvent('onRenderPlaceholderEnd', that.components['placeholder']);
         });
-        return that;
     };
 
     classProto.constructPlaceholder = function(classObject){
@@ -253,7 +248,6 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
         // Events
         that.triggerEvent('onRenderPlaceholderViewProcess');
         that.triggerEvent('onRenderPlaceholderViewEnd');
-        return that;
     };
 
     classProto.renderPlaceholderButtons = function(){
@@ -264,20 +258,18 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
             'style' : 'button-primary',
             'callback' : that.closeHandler
         });
-        return that;
     };
 
     classProto.renderPlaceholderEvents = function(){
         var that = this;
         that.components['placeholder'].addEvent('onOpen', that.afterOpenPlaceholderHandler);
+        that.components['placeholder'].addEvent('onOpenEnd', that.afterOpenPlaceholderEndHandler);
         that.components['placeholder'].addEvent('onClose', that.afterClosePlaceholderHandler);
-        return that;
     };
 
     classProto.destructPlaceholder = function(){
         var that = this;
         that.components['placeholder'] && that.components['placeholder'].destruct && that.components['placeholder'].destruct();
-        return that;
     };
 
     classProto.openPlaceholder = function(){
@@ -290,7 +282,6 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
         }else{
             that.afterOpenPlaceholder();
         }
-        return that;
     };
 
     classProto.closePlaceholder = function(){
@@ -300,15 +291,19 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
         }else{
             that.afterClosePlaceholder();
         }
-        return that;
     };
 
     classProto.afterOpenPlaceholder = function(){
         var that = this;
         that.openController();
         that.constructCollector();
-        that.triggerEvent('onOpen', that.components['placeholder']);
-        return that;
+        that.triggerEvent('onOpenPlaceholder', that.components['placeholder']);
+    };
+
+    classProto.afterOpenPlaceholderEnd = function(){
+        var that = this;
+        that.afterOpenControllerEnd();
+        that.triggerEvent('onOpenPlaceholderEnd', that.components['placeholder']);
     };
 
     classProto.afterClosePlaceholder = function(){
@@ -318,7 +313,6 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
             that.destructPlaceholder();
             that.destructCollector();
         }
-        that.triggerEvent('onClose', that.components['placeholder']);
-        return that;
+        that.triggerEvent('onClosePlaceholder', that.components['placeholder']);
     };
 });

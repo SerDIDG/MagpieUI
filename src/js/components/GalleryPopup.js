@@ -21,6 +21,7 @@ cm.define('Com.GalleryPopup', {
         'showCounter' : true,
         'showTitle' : true,
         'showZoom' : true,
+        'autoPlay' : false,
         'data' : [],
         'openOnSelfClick' : false,
         'Com.Dialog' : {
@@ -56,6 +57,7 @@ function(params){
         that.params['Com.Gallery']['zoom'] = that.params['showZoom'];
         that.params['Com.Dialog']['theme'] = that.params['theme'];
         that.params['Com.Dialog']['size'] = that.params['size'];
+        that.params['Com.Dialog']['autoplay'] = that.params['autoPlay'];
         if(that.params['size'] === 'fullscreen'){
             that.params['Com.Dialog']['documentScroll'] = false;
         }
@@ -63,7 +65,7 @@ function(params){
 
     var render = function(){
         // Structure
-        nodes['container'] = cm.Node('div', {'class' : 'com__gallery-preview bottom'},
+        nodes['container'] = cm.Node('div', {'class' : 'com__gallery-preview'},
             nodes['galleryContainer'] = cm.Node('div', {'class' : 'inner'})
         );
         // Set aspect ration

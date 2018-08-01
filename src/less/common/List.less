@@ -123,3 +123,32 @@
     }
 }
 
+.cm__list-horizontal {
+    .cm__list-clear;
+    .cm__list-inline--clear;
+
+    li {
+        vertical-align: top;
+
+        &:after {
+            margin: 0 @CmIndent-XXXSmall;
+            content: '・';
+        }
+
+        &:last-child:after {
+            display: none;
+        }
+    }
+}
+
+.cm__list-flat {
+    .cm__list-clear;
+
+    li {
+        display: block;
+
+        &:after {
+            display: none;
+        }
+    }
+}

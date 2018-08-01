@@ -52,7 +52,7 @@ cm.define('Com.AbstractController', {
         'onRenderViewEnd'
     ],
     'params' : {
-        'node' : cm.node('div'),
+        'node' : null,
         'container' : null,
         'name' : '',
         'getDataNodes' : true,
@@ -60,6 +60,7 @@ cm.define('Com.AbstractController', {
         'embedStructure' : 'append',
         'renderStructure' : true,
         'embedStructureOnRender' : true,
+        'redrawOnRender' : true,
         'removeOnDestruct' : false,
         'className' : '',
         'controllerEvents' : false,
@@ -196,9 +197,13 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         // Structure
         that.params['renderStructure'] && that.renderView();
         that.setAttributes();
+        // Render model
         that.renderViewModel();
         // Append
-        that.params['embedStructureOnRender'] && that.embedStructure(that.nodes['container']);
+        if(that.params['embedStructureOnRender']){
+            that.embedStructure(that.nodes['container']);
+            that.params['redrawOnRender'] && that.redraw();
+        }
         return that;
     };
 

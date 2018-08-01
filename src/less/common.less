@@ -3,7 +3,7 @@
 // /* ******* MAGPIE UI: COMMON ******* */
 // /* ************************************************ */
 
-@import url('//fonts.googleapis.com/css?family=@{CmUI-GoogleFont}:@{CmUI-GoogleFont-Weight}');
+@import url(~'//fonts.googleapis.com/css?family=@{CmUI-GoogleFont}:@{CmUI-GoogleFont-Weight}');
 
 @font-face {
     font-family: @CmIconVars-Family;
@@ -187,6 +187,11 @@
 .cm__flex--middle {
     .mx__align-content(center);
     .mx__align-items(center);
+}
+
+.cm__flex--left {
+    .mx__align-content(flex-start);
+    .mx__align-items(flex-start);
 }
 
 /* *** COUNTER *** */

@@ -48,7 +48,7 @@ cm.define('Com.Select', {
             'hideOnReClick' : true,
             'className' : 'com__select__tooltip',
             'width' : 'targetWidth',
-            'top' : 'cm._config.tooltipTop'
+            'top' : cm._config.tooltipDown
         }
     }
 },

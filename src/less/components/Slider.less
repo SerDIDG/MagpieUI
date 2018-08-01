@@ -310,6 +310,20 @@
             }
         }
     }
+
+    &.effect-custom {
+        > ul {
+            > li {
+                display: none;
+                position: absolute;
+                .mx__position(0, auto, auto, 0);
+
+                &:first-child {
+                    display: block;
+                }
+            }
+        }
+    }
 }
 
 /* ******* ADAPTIVE ******* */

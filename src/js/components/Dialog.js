@@ -27,6 +27,7 @@ cm.define('Com.Dialog', {
         'position' : 'fixed',
         'indentY' : 24,
         'indentX' : 24,
+        'animate' : false,
         'theme' : 'theme-light',        // theme css class name, default: theme-default | theme-black | theme-light
         'className' : '',               // custom css class name
         'content' : cm.node('div'),
@@ -37,7 +38,7 @@ cm.define('Com.Dialog', {
         'titleReserve': true,
         'closeButtonOutside' : false,
         'closeButton' : true,
-        'closeOnBackground' : false,
+        'closeOnBackground' : true,
         'openTime' : null,
         'duration' : 'cm._config.animDuration',
         'autoOpen' : true,
@@ -65,8 +66,18 @@ function(params){
     that.isFocus = false;
     that.isRemoved = false;
     that.isDestructed = false;
+    that.isMaximize = false;
     that.openInterval = null;
     that.resizeInterval = null;
+    that.originalSize = {};
+    that.maximizeSize = {
+        'width' : '100%',
+        'height' : '100%',
+        'minHeight' : 0,
+        'maxHeight' : 'auto',
+        'indentX' : 0,
+        'indentY' : 0
+    };
 
     var init = function(){
         getLESSVariables();
@@ -88,12 +99,6 @@ function(params){
     };
     
     var validateParams = function(){
-        if(/full|fullscreen/.test(that.params['size'])){
-            that.params['width'] = '100%';
-            that.params['height'] = '100%';
-            that.params['indentX'] = 0;
-            that.params['indentY'] = 0;
-        }
         if(that.params['openTime'] !== undefined && that.params['openTime'] !== null){
             that.params['duration'] = that.params['openTime'];
         }
@@ -106,27 +111,31 @@ function(params){
         // Structure
         nodes['container'] = cm.Node('div', {'class' : 'com__dialog'},
             nodes['bg'] = cm.Node('div', {'class' : 'bg'}),
-            nodes['window'] = cm.Node('div', {'class' : 'window'},
+            nodes['window'] = cm.Node('div', {'class' : 'com__dialog__window window'},
                 nodes['windowInner'] = cm.Node('div', {'class' : 'inner'})
             )
         );
         if(that.params['appendOnRender']){
             that.params['container'].appendChild(nodes['container']);
         }
-        // Set that.params styles
+        // Set params styles
         nodes['container'].style.position = that.params['position'];
         nodes['window'].style.width = that.params['width'] + 'px';
         // Add CSS Classes
-        !cm.isEmpty(that.params['theme']) && cm.addClass(nodes['container'], that.params['theme']);
-        !cm.isEmpty(that.params['className']) && cm.addClass(nodes['container'], that.params['className']);
-        if(that.params['size'] === 'fullscreen'){
-            cm.addClass(nodes['container'], 'is-fullscreen');
+        cm.addClass(nodes['container'], that.params['theme']);
+        cm.addClass(nodes['window'], that.params['theme']);
+        cm.addClass(nodes['container'], that.params['className']);
+        if(that.params['animate']){
+            cm.addClass(nodes['container'], 'is-animate');
+            cm.addClass(nodes['window'], 'is-animate');
         }
         if(that.params['size'] === 'full'){
             cm.addClass(nodes['container'], 'is-full');
+            cm.addClass(nodes['window'], 'is-full');
         }
         if(that.params['titleReserve']){
             cm.addClass(nodes['container'], 'is-title-reserve');
+            cm.addClass(nodes['window'], 'is-title-reserve');
         }
         // Render close button
         if(that.params['closeButtonOutside']){
@@ -173,6 +182,7 @@ function(params){
     var renderTitle = function(title){
         if(that.params['showTitle']){
             cm.removeClass(nodes['container'], 'has-no-title');
+            cm.removeClass(nodes['window'], 'has-no-title');
             // Remove old nodes
             cm.remove(nodes['title']);
             // Render new nodes
@@ -190,6 +200,7 @@ function(params){
             cm.insertFirst(nodes['title'], nodes['windowInner']);
         }else{
             cm.addClass(nodes['container'], 'has-no-title');
+            cm.addClass(nodes['window'], 'has-no-title');
         }
     };
 
@@ -223,6 +234,17 @@ function(params){
             // Render new nodes
             nodes['buttons'] = cm.Node('div', {'class' : 'buttons'}, node);
             cm.insertLast(nodes['buttons'], nodes['windowInner']);
+        }
+    };
+
+    var stateHelper = function(){
+        if(
+            /full|fullscreen/.test(that.params['size'])
+            || cm.getPageSize('winWidth') <= cm._config.screenTabletPortrait
+        ){
+            that.maximize();
+        }else{
+            that.restore();
         }
     };
 
@@ -309,7 +331,7 @@ function(params){
         }
         setWidth = Math.min(setWidth, AWidth);
         // Set window height
-        if(windowHeight != setHeight + NAHeight || contentHeight != insetHeight){
+        if(windowHeight !== setHeight + NAHeight || contentHeight !== insetHeight){
             contentHeight = insetHeight;
             if(insetHeight <= setHeight){
                 cm.removeClass(nodes['scroll'], 'is-scroll');
@@ -319,7 +341,7 @@ function(params){
             nodes['scroll'].style.height = [setHeight, 'px'].join('');
         }
         // Set window width
-        if(windowWidth != setWidth){
+        if(windowWidth !== setWidth){
             nodes['window'].style.width = [setWidth, 'px'].join('');
         }
     };
@@ -336,6 +358,7 @@ function(params){
                 that.params['container'].appendChild(nodes['container']);
             }
             nodes['container'].style.display = 'block';
+            stateHelper();
             resizeHelper();
             // Show / Hide Document Scroll
             if(!that.params['documentScroll']){
@@ -343,8 +366,10 @@ function(params){
             }
             // Add close event on Esc press
             cm.addEvent(window, 'keydown', windowClickEvent);
+            cm.addEvent(window, 'resize', windowResizeEvent);
             // Animate
             cm.addClass(nodes['container'], 'is-open', true);
+            cm.addClass(nodes['window'], 'is-open', true);
             that.openInterval && clearTimeout(that.openInterval);
             that.openInterval = setTimeout(function(){
                 params['onEnd']();
@@ -366,12 +391,14 @@ function(params){
             that.isFocus = false;
             // Remove close event on Esc press
             cm.removeEvent(window, 'keydown', windowClickEvent);
+            cm.removeEvent(window, 'resize', windowResizeEvent);
             // Show / Hide Document Scroll
             if(!that.params['documentScroll']){
                 cm.removeClass(cm.getDocumentHtml(), 'cm__scroll--none');
             }
             // Animate
             cm.removeClass(nodes['container'], 'is-open', true);
+            cm.removeClass(nodes['window'], 'is-open', true);
             that.openInterval && clearTimeout(that.openInterval);
             that.openInterval = setTimeout(function(){
                 clearResizeInterval();
@@ -397,6 +424,10 @@ function(params){
             // Remove dialog container node
             cm.remove(nodes['container']);
         }
+    };
+
+    var windowResizeEvent = function(e){
+        stateHelper();
     };
 
     var windowClickEvent = function(e){
@@ -462,6 +493,31 @@ function(params){
 
     that.setMaxHeight = function(height){
         that.params['maxHeight'] = height;
+        return that;
+    };
+
+    that.maximize = function(){
+        if(!that.isMaximize){
+            that.isMaximize = true;
+            cm.forEach(that.maximizeSize, function(value, key){
+                that.originalSize[key] = that.params[key];
+                that.params[key] = value;
+            });
+            cm.addClass(nodes['container'], 'is-fullscreen');
+            cm.addClass(nodes['window'], 'is-fullscreen');
+        }
+        return that;
+    };
+
+    that.restore = function(){
+        if(that.isMaximize){
+            that.isMaximize = false;
+            cm.forEach(that.originalSize, function(value, key){
+                that.params[key] = value;
+            });
+            cm.removeClass(nodes['container'], 'is-fullscreen');
+            cm.removeClass(nodes['window'], 'is-fullscreen');
+        }
         return that;
     };
 

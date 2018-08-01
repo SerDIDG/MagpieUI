@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.33.2 (2018-06-07 20:33) ************ */
+/*! ************ MagpieUI v3.34.0 (2018-08-01 19:22) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3922,7 +3922,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.33.2';
+@CmVersion: '3.34.0';
 
 // /* ******* PATH ******* */
 
@@ -3997,8 +3997,8 @@ span.CodeMirror-selectedtext { background: none; }
 @CmUI-TooltipWidth: 320px;
 @CmUI-ColumnIndent: @CmIndent-Medium;
 @CmUI-BoxIndent: @CmIndent-Medium;
-@CmUI-GoogleFont: Open Sans;
-@CmUI-GoogleFont-Weight: 100,300,400,600,700,800;
+@CmUI-GoogleFont: "Open+Sans";
+@CmUI-GoogleFont-Weight: "100,300,400,600,700,800";
 
 // /* ************************************************ */
 // /* ******* COLORS ******* */
@@ -4746,6 +4746,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* DIALOG ******* */
 
 @ComDialog-Duration: @CmUI-Transition-Duration;
+@ComDialog-WindowDuration: @CmUI-Transition-DurationLong;
 @ComDialog-Indent: @CmIndent-Medium;
 @ComDialog-Radius: @CmBorder-Radius;
 @ComDialog-TitleIndent: @CmIndent-XSmall;
@@ -4885,6 +4886,11 @@ span.CodeMirror-selectedtext { background: none; }
     -webkit-user-select: @value;
        -moz-user-select: @value;
             user-select: @value;
+}
+
+.mx__outline-radius (@value) {
+    -moz-outline-radius: @value;
+         outline-radius: @value;
 }
 
 .mx__position (@top: auto, @right: auto, @bottom: auto, @left: auto) {
@@ -5078,7 +5084,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: COMMON ******* */
 // /* ************************************************ */
 
-@import url('//fonts.googleapis.com/css?family=@{CmUI-GoogleFont}:@{CmUI-GoogleFont-Weight}');
+@import url(~'//fonts.googleapis.com/css?family=@{CmUI-GoogleFont}:@{CmUI-GoogleFont-Weight}');
 
 @font-face {
     font-family: @CmIconVars-Family;
@@ -5262,6 +5268,11 @@ span.CodeMirror-selectedtext { background: none; }
 .cm__flex--middle {
     .mx__align-content(center);
     .mx__align-items(center);
+}
+
+.cm__flex--left {
+    .mx__align-content(flex-start);
+    .mx__align-items(flex-start);
 }
 
 /* *** COUNTER *** */
@@ -6736,6 +6747,10 @@ select {
 
 input[type="search"] {
     -webkit-appearance: none;
+
+    &::-webkit-search-cancel-button {
+        -webkit-appearance: none;
+    }
 }
 
 textarea {
@@ -6996,6 +7011,7 @@ select {
     &.button-transparent,
     &.transparent {
         .mx__background__color(@CmColor-Secondary-LightDefault, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
+        background-image: none;
         box-shadow: none;
         border: none;
 
@@ -7111,6 +7127,20 @@ select {
         @padding: max(ceil((@CmSize-XXLarge - @CmFont-Base-LineHeight) / 2), 0px);
         min-height: @CmSize-XXLarge;
         padding: @padding @CmIndent-Large;
+    }
+
+    @media only screen and (min-width: (@CmUI-AdaptiveFrom + 1px)) {
+        &.button--large {
+            .button.button--large;
+        }
+
+        &.button--xlarge {
+            .button.button--xlarge;
+        }
+
+        &.button--desktop-xxlarge {
+            .button.button--xxlarge;
+        }
     }
 
     // /* *** ICONS *** */
@@ -7393,7 +7423,35 @@ button {
     }
 }
 
+.cm__list-horizontal {
+    .cm__list-clear;
+    .cm__list-inline--clear;
 
+    li {
+        vertical-align: top;
+
+        &:after {
+            margin: 0 @CmIndent-XXXSmall;
+            content: '・';
+        }
+
+        &:last-child:after {
+            display: none;
+        }
+    }
+}
+
+.cm__list-flat {
+    .cm__list-clear;
+
+    li {
+        display: block;
+
+        &:after {
+            display: none;
+        }
+    }
+}
 /* ******* PART: FORM ******* */
 
 .form {
@@ -8951,7 +9009,7 @@ button {
 
     .button-alike {
         width: 100%;
-        margin: @CmForm-ButtonsIndent 0 0 0;
+        margin: @CmForm-FieldIndent 0 0 0;
 
         &:first-child {
             margin: 0;
@@ -9152,6 +9210,14 @@ button {
 
     .pt__columns__indent(@PtColumns-Indent);
 
+    &.indent-field {
+        .pt__columns__indent(@CmForm-FieldIndent);
+    }
+
+    &.indent-field-inner {
+        .pt__columns__indent(@CmForm-FieldInnerIndent);
+    }
+
     .for(@PtColumns-Indents); .-each(@name) {
         &.indent-@{name} {
             .pt__columns__indent(@name);
@@ -9199,6 +9265,22 @@ button {
                 &:after {
                     display: none;
                 }
+            }
+        }
+    }
+
+    &.indent-field {
+        > .inner {
+            > .column {
+                margin-bottom: @CmForm-FieldIndent;
+            }
+        }
+    }
+
+    &.indent-field-inner {
+        > .inner {
+            > .column {
+                margin-bottom: @CmForm-FieldInnerIndent;
             }
         }
     }
@@ -14583,81 +14665,82 @@ ul.pt__field__hint {
         }
     }
 
-    > .window {
-        max-width: 100%;
-        position: relative;
-        z-index: 2;
-        display: inline-block;
-        text-align: left;
-        vertical-align: middle;
-        //.mx__transform(scale(0.9)); - Not working position fixed inside this block
-        .mx__transition(all, @ComDialog-Duration, @CmUI-MotionAsymmetric);
-
-        > .icon {
-            position: absolute;
-            z-index: 4;
-        }
-
-        > .inner {
-            overflow: hidden;
-
-            > .title {
-                position: relative;
-                z-index: 2;
-            }
-
-            > .descr {
-                position: relative;
-                z-index: 1;
-
-                > .scroll {
-                    position: relative;
-                    overflow: hidden;
-
-                    > .inner {
-                        overflow: hidden;
-                    }
-
-                    &.is-scroll {
-                        overflow-x: hidden;
-                        overflow-y: auto;
-                    }
-
-                    &.is-no-scroll {
-                        > .inner {
-                            height: 100%;
-                        }
-                    }
-                }
-            }
-
-            > .buttons {
-                position: relative;
-                z-index: 3;
-                margin: 0;
-
-                hr,
-                .btn-wrap {
-                    &:first-child {
-                        margin-top: 0;
-                    }
-                }
-            }
-        }
-    }
-
-    &.has-close-background {
-        > .bg {
-            cursor: pointer;
-        }
-    }
-
     &.is-open {
         visibility: visible;
         opacity: 1;
+    }
+}
 
-        > .window {
-            //.mx__transform(scale(1)); - Not working position fixed inside this block
+.com__dialog__window {
+    max-width: 100%;
+    position: relative;
+    z-index: 2;
+    display: inline-block;
+    text-align: left;
+    vertical-align: middle;
+
+    > .icon {
+        position: absolute;
+        z-index: 4;
+    }
+
+    > .inner {
+        overflow: hidden;
+
+        > .title {
+            position: relative;
+            z-index: 2;
+        }
+
+        > .descr {
+            position: relative;
+            z-index: 1;
+
+            > .scroll {
+                position: relative;
+                overflow: hidden;
+
+                > .inner {
+                    overflow: hidden;
+                }
+
+                &.is-scroll {
+                    overflow-x: hidden;
+                    overflow-y: auto;
+                }
+
+                &.is-no-scroll {
+                    > .inner {
+                        height: 100%;
+                    }
+                }
+            }
+        }
+
+        > .buttons {
+            position: relative;
+            z-index: 3;
+            margin: 0;
+
+            hr,
+            .btn-wrap,
+            .pt__buttons {
+                &:first-child {
+                    margin-top: 0;
+                }
+            }
+        }
+    }
+
+    &.is-animate {
+        opacity: 0;
+        .mx__transform(scale(0.9)); // TODO: Not working position fixed inside this block
+        .mx__transition(all, @ComDialog-Duration, @CmUI-MotionAsymmetric);
+
+        &.is-open {
+            opacity: 1;
+            .mx__transform(scale(1)); // TODO: Not working position fixed inside this block
+            .mx__transition(all, @ComDialog-WindowDuration, @CmUI-MotionAsymmetric);
         }
     }
 }
@@ -14711,13 +14794,10 @@ ul.pt__field__hint {
 /* ******* COMPONENT: DIALOG: THEMES ******* */
 
 .com__dialog {
+
     // /* *** DEFAULT *** */
 
     &.theme-default {
-        @titleHeight: @ComDialog-TitleIndent * 2 + @CmFont-UI-H1-LineHeight;
-
-        .com__dialog-font--theme-default;
-
         > .bg {
             background: @ComDialog-Overlay;
 
@@ -14739,90 +14819,15 @@ ul.pt__field__hint {
                 }
             }
         }
-
-        > .window {
-            > .icon {
-                .cm__size__medium;
-
-                &.default {
-                    .icon.medium.close;
-                }
-            }
-
-            > .inner {
-                background-color: @ComDialog-Default-Background;
-                border-radius: @ComDialog-Radius;
-
-                > .title {
-                    .cm__font--ui-h1;
-                }
-
-                > .descr {
-                    > .scroll > .inner {
-                        padding: 0 @ComDialog-Indent;
-                    }
-
-                    &:first-child {
-                        > .scroll > .inner {
-                            padding-top: @ComDialog-Indent
-                        }
-                    }
-
-                    &:last-child {
-                        > .scroll > .inner {
-                            padding-bottom: @ComDialog-Indent
-                        }
-                    }
-                }
-
-                > .buttons {
-                    padding: @ComDialog-Indent;
-                }
-            }
-        }
-
-        &.is-fullscreen {
-            > .window {
-                > .inner {
-                    border-radius: 0;
-                }
-            }
-        }
-
-        .com__dialog__title-height(@titleHeight);
-        .com__dialog__title-indent(@ComDialog-Indent);
     }
 
     // /* *** BLACK *** */
 
     &.theme-black {
         &:extend(.com__dialog.theme-default all);
-        .com__dialog-font--theme-black;
-
-        > .window {
-            > .icon {
-                &.default {
-                    .icon.medium.close-white;
-                }
-            }
-
-            > .inner {
-                background-color: @ComDialog-Black-Background;
-
-                > .title {
-                    color: @ComDialog-Black-TitleColor;
-                }
-            }
-        }
-
-        &.has-close-background {
-            > .bg {
-                cursor: url("@{CmPath-Images}/icons/medium/close-white.png"), auto;
-            }
-        }
     }
 
-    // /* *** BLACK *** */
+    // /* *** LIGHT *** */
 
     &.theme-light {
         &:extend(.com__dialog.theme-default all);
@@ -14836,43 +14841,89 @@ ul.pt__field__hint {
                 }
             }
         }
+    }
+}
 
-        > .window {
-            > .icon {
-                &.default {
-                    .icon.medium.close-white;
-                }
+.com__dialog__window {
+
+    // /* *** DEFAULT *** */
+
+    &.theme-default {
+        @titleHeight: @ComDialog-TitleIndent * 2 + @CmFont-UI-H1-LineHeight;
+        .com__dialog-font--theme-default;
+
+        > .icon {
+            .cm__size__medium;
+
+            &.default {
+                .icon.medium.close;
             }
+        }
 
+        > .inner {
+            background-color: @ComDialog-Default-Background;
+            border-radius: @ComDialog-Radius;
+
+            > .title {
+                .cm__font--ui-h1;
+            }
+        }
+
+        &.is-fullscreen {
             > .inner {
-                background-color: @ComDialog-Light-Background;
-                box-shadow: @CmUI-Shadow-BottomLarge;
-
-                > .title {
-                    color: @ComDialog-Light-TitleColor;
-                    background-color: @ComDialog-Light-TitleBackground;
-                }
-
-                > .descr {
-                    > .scroll > .inner {
-                        padding-top: @ComDialog-Indent
-                    }
-                }
+                border-radius: 0;
             }
         }
 
-        &.has-close-background {
-            > .bg {
-                cursor: url("@{CmPath-Images}/icons/medium/close.png"), auto;
+        .com__dialog__title-height(@titleHeight);
+        .com__dialog__title-indent(@ComDialog-Indent);
+        .com__dialog__content-indent(@ComDialog-Indent);
+    }
+
+    // /* *** BLACK *** */
+
+    &.theme-black {
+        &:extend(.com__dialog__window.theme-default all);
+        .com__dialog-font--theme-black;
+
+        > .icon {
+            &.default {
+                .icon.medium.close-white;
             }
         }
 
-        &.has-no-title {
-            > .window {
-                > .icon {
-                    &.default {
-                        .icon.medium.close-white;
-                    }
+        > .inner {
+            background-color: @ComDialog-Black-Background;
+
+            > .title {
+                color: @ComDialog-Black-TitleColor;
+            }
+        }
+    }
+
+    // /* *** LIGHT *** */
+
+    &.theme-light {
+        &:extend(.com__dialog__window.theme-default all);
+
+        > .icon {
+            &.default {
+                .icon.medium.close-white;
+            }
+        }
+
+        > .inner {
+            background-color: @ComDialog-Light-Background;
+            box-shadow: @CmUI-Shadow-BottomLarge;
+
+            > .title {
+                color: @ComDialog-Light-TitleColor;
+                background-color: @ComDialog-Light-TitleBackground;
+            }
+
+            > .descr {
+                .com__dialog__inner {
+                    padding-top: @ComDialog-Indent
                 }
             }
         }
@@ -14880,6 +14931,7 @@ ul.pt__field__hint {
         .com__dialog__title-height(@CmSize-XLarge);
         .com__dialog__title-indent(@ComDialog-TitleIndent);
     }
+
 }
 
 /* *** FONT *** */
@@ -14897,30 +14949,52 @@ ul.pt__field__hint {
 
 /* *** MIXINS *** */
 
+.com__dialog__content-indent (@value: @ComDialog-Indent) {
+    > .inner {
+        > .descr {
+            .com__dialog__inner {
+                padding: 0 @value;
+            }
+
+            &:first-child {
+                .com__dialog__inner {
+                    padding-top: @value
+                }
+            }
+
+            &:last-child {
+                .com__dialog__inner {
+                    padding-bottom: @value
+                }
+            }
+        }
+
+        > .buttons {
+            padding: @value;
+        }
+    }
+}
+
 .com__dialog__title-height (@value) {
     @indent: round((@value - @CmFont-UI-H1-LineHeight) / 2);
 
-    > .window {
-        > .icon {
-            top: round((@value - @CmSize-Medium) / 2);
-        }
+    > .icon {
+        top: round((@value - @CmSize-Medium) / 2);
+    }
 
-        > .inner {
-            > .title {
-                min-height: @value;
-                padding-top: @indent;
-                padding-bottom: @indent;
-            }
+    > .inner {
+        > .title {
+            min-height: @value;
+            padding-top: @indent;
+            padding-bottom: @indent;
         }
     }
 
     &.is-title-reserve {
-        > .window {
-            > .inner {
-                > .descr {
-                    &:first-child {
-                        padding-top: @value;
-                    }
+        > .inner {
+            > .descr {
+                &:first-child {
+                    padding-top: @value;
                 }
             }
         }
@@ -14928,34 +15002,28 @@ ul.pt__field__hint {
 }
 
 .com__dialog__title-indent (@value) {
-    > .window {
-        > .icon {
-            right: @value;
-        }
+    > .icon {
+        right: @value;
+    }
 
-        > .inner {
-            > .title {
-                padding-left: @value;
-            }
+    > .inner {
+        > .title {
+            padding-left: @value;
         }
     }
 
     &.has-close-inside {
-        > .window {
-            > .inner {
-                > .title {
-                    padding-right: @value * 2 + @CmSize-Medium;
-                }
+        > .inner {
+            > .title {
+                padding-right: @value * 2 + @CmSize-Medium;
             }
         }
     }
 
     &:not(.is-title-reserve){
         &.has-no-title {
-            > .window {
-                > .icon {
-                    right: -@value - @CmIndent-Medium;
-                }
+            > .icon {
+                right: -@value - @CmIndent-Medium;
             }
         }
     }
@@ -17258,6 +17326,20 @@ ul.pt__field__hint {
             }
         }
     }
+
+    &.effect-custom {
+        > ul {
+            > li {
+                display: none;
+                position: absolute;
+                .mx__position(0, auto, auto, 0);
+
+                &:first-child {
+                    display: block;
+                }
+            }
+        }
+    }
 }
 
 /* ******* ADAPTIVE ******* */
@@ -17525,7 +17607,6 @@ ul.pt__field__hint {
     &.is-animated {
         > ul {
             > li {
-                visibility: hidden;
                 position: absolute;
                 z-index: 1;
                 overflow: hidden;
@@ -17534,7 +17615,6 @@ ul.pt__field__hint {
                 .mx__transition(opacity visibility, @ComTabset-Duration);
 
                 &.active {
-                    visibility: visible;
                     position: relative;
                     z-index: 2;
                     overflow: visible;

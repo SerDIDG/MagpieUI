@@ -169,6 +169,7 @@ Mod['Params'] = {
         // Validate params
         cm.forEach(that.params, function(item, key){
             switch(key){
+                case 'strings':
                 case 'langs':
                     cm.isFunction(that.setLangs) && that.setLangs(item);
                     break;
@@ -327,7 +328,13 @@ Mod['Events'] = {
     'convertEvents' : function(o){
         var that = this;
         cm.forEach(o, function(item, key){
-            that.addEvent(key, item);
+            if(cm.isArray(item)){
+                cm.forEach(item, function(itemA){
+                    that.addEvent(key, itemA);
+                });
+            }else{
+                that.addEvent(key, item);
+            }
         });
         return that;
     }

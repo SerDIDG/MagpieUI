@@ -27,16 +27,21 @@ cm.define('Com.Form', {
         'name' : '',
         'renderStructure' : true,
         'embedStructure' : 'append',
+        'removeOnDestruct' : true,
         'renderButtons' : true,
         'renderButtonsSeparator' : true,
         'buttonsAlign' : 'right',
+        'renderNames' : false,                                      // Render visual input name attribute
         'showLoader' : true,
         'loaderCoverage' : 'fields',                                // fields, all
         'loaderDelay' : 'cm._config.loadDelay',
         'showNotifications' : true,
+        'showSuccessNotification' : false,
         'responseErrorsKey': 'errors',
+        'responseMessageKey' : 'message',
         'responseKey': 'data',
         'validate' : false,
+        'validateOnChange' : false,
         'data' : {},
         'ajax' : {
             'type' : 'json',
@@ -54,7 +59,8 @@ cm.define('Com.Form', {
     },
     'strings' : {
         'form_error' : 'Form is not filled correctly.',
-        'server_error' : 'An unexpected error has occurred. Please try again later.'
+        'server_error' : 'An unexpected error has occurred. Please try again later.',
+        'success_message' : 'Form successfully sent'
     }
 },
 function(params){
@@ -103,7 +109,7 @@ function(params){
             // Buttons
             that.nodes['buttonsSeparator'] = cm.node('hr');
             that.nodes['buttonsContainer'] = cm.node('div', {'class' : 'com__form__buttons'},
-                that.nodes['buttons'] = cm.node('div', {'class' : 'pt__buttons'},
+                that.nodes['buttons'] = cm.node('div', {'class' : 'pt__buttons is-adaptive'},
                     that.nodes['buttonsHolder'] = cm.node('div', {'class' : 'inner'})
                 )
             );
@@ -152,33 +158,50 @@ function(params){
     };
 
     var renderField = function(type, params){
-        var field, controller;
+        var field = Com.FormFields.get(type);
         // Merge params
         params = cm.merge({
+            'form' : that,
+            'system' : false,
+            'send' : true,
             'name' : '',
+            'sendPath' : null,
             'label' : '',
             'options' : [],
             'container' : that.nodes['fields'],
-            'form' : that
+            'renderName' : null
         }, params);
-        field = Com.FormFields.get(type);
         params = cm.merge(cm.clone(field, true), params);
         // Validate
-        params['fieldConstructor'] = !params['fieldConstructor']? 'Com.FormField' : params['fieldConstructor'];
+        params['fieldConstructor'] = cm.isEmpty(params['fieldConstructor']) ? 'Com.FormField' : params['fieldConstructor'];
         params['value'] = that.params['data'][params['name']] || params['value'];
         params['dataValue'] = that.params['data'][params['dataName']] || params['dataValue'];
-        // Render
+        params['renderName'] = cm.isBoolean(params['renderName']) ? params['renderName'] : that.params['renderNames'];
+        // Render controller
         if(field && !that.fields[params['name']]){
-            cm.getConstructor(params['fieldConstructor'], function(classConstructor){
-                params['fieldController'] = params['controller'] = new classConstructor(params);
-                params['fieldController'].addEvent('onChange', function(){
-                    that.triggerEvent('onChange');
-                });
-                params['constructorController'] = cm.isFunction(params['fieldController'].getController) && params['fieldController'].getController();
-                // Save
-                that.fields[params['name']] = params;
-            });
+            renderFieldController(params);
         }
+    };
+    
+    var renderFieldController = function(params){
+        cm.getConstructor(params['fieldConstructor'], function(classConstructor){
+            params['fieldController'] = params['controller'] = new classConstructor(params);
+            params['constructorController'] = cm.isFunction(params['fieldController'].getController) && params['fieldController'].getController();
+            // Events
+            params['fieldController'].addEvent('onBlur', function(){
+                if(that.params['validateOnChange']){
+                    params['fieldController'].validate();
+                }
+            });
+            params['fieldController'].addEvent('onChange', function(){
+                if(that.params['validateOnChange']){
+                    params['fieldController'].validate();
+                }
+                that.triggerEvent('onChange');
+            });
+            // Save
+            that.fields[params['name']] = params;
+        });
     };
 
     var renderButton = function(params){
@@ -256,7 +279,7 @@ function(params){
             '%baseUrl%' : cm._baseUrl
         });
         // Get Params
-        config['params'] = cm.merge(config['params'], that.getAll());
+        config['params'] = cm.merge(config['params'], that.get('sendPath'));
         return config;
     };
 
@@ -272,8 +295,8 @@ function(params){
                 'onSuccess' : function(response){
                     that.callbacks.response(that, config, response);
                 },
-                'onError' : function(){
-                    that.callbacks.error(that, config);
+                'onError' : function(response){
+                    that.callbacks.error(that, config, response);
                 },
                 'onAbort' : function(){
                     that.callbacks.abort(that, config);
@@ -311,11 +334,13 @@ function(params){
     };
 
     that.callbacks.response = function(that, config, response){
+        var errors,
+            data;
         if(!cm.isEmpty(response)){
-            var errors = cm.objectSelector(that.params['responseErrorsKey'], response);
-            var data = cm.objectSelector(that.params['responseKey'], response);
+            errors = cm.objectSelector(that.params['responseErrorsKey'], response);
+            data = cm.objectSelector(that.params['responseKey'], response);
             if(!cm.isEmpty(errors)){
-                that.callbacks.error(that, config, errors);
+                that.callbacks.error(that, config, response);
             }else{
                 that.callbacks.success(that, data);
             }
@@ -324,12 +349,24 @@ function(params){
         }
     };
 
-    that.callbacks.error = function(that, config, message){
-        that.callbacks.renderError(that, message);
-        that.triggerEvent('onError', message);
+    that.callbacks.error = function(that, config, response){
+        var errors,
+            message;
+        if(!cm.isEmpty(response)){
+            errors = cm.objectSelector(that.params['responseErrorsKey'], response);
+            message = cm.objectSelector(that.params['responseMessageKey'], response);
+        }
+        that.callbacks.renderError(that, errors, message);
+        that.triggerEvent('onError', errors, message);
     };
 
     that.callbacks.success = function(that, data){
+        if(that.params['showNotifications'] && that.params['showSuccessNotification']){
+            that.callbacks.renderNotification(that, {
+                'label' : that.lang('success_message'),
+                'type' : 'success'
+            });
+        }
         that.triggerEvent('onSuccess', data);
     };
 
@@ -344,25 +381,36 @@ function(params){
         that.components['notifications'].add(o);
     };
 
-    that.callbacks.renderError = function(that, errors){
-        var field, messages = [];
+    that.callbacks.renderError = function(that, errors, message){
+        var field,
+            fieldName,
+            label = !cm.isEmpty(message) ? message : that.lang('form_error'),
+            messages = [];
         // Clear old errors messages
         that.callbacks.clearError(that);
         // Render new errors messages
-        if(cm.isArray(errors)){
-            cm.forEach(errors, function(item){
+        if(cm.isArray(errors) || cm.isObject(errors)){
+            cm.forEach(errors, function(item, key){
                 messages.push(that.lang(item['message']));
                 // Render form errors
-                if(field = that.getField(item['field'])){
+                fieldName = item['field'] || key;
+                if(field = that.getField(fieldName)){
                     field['controller'].renderError(item['message']);
                 }
             });
             if(that.params['showNotifications']){
                 that.callbacks.renderNotification(that, {
-                    'label' : that.lang('form_error'),
+                    'label' : label,
                     'type' : 'danger',
                     'messages' : messages,
                     'collapsed' : true
+                });
+            }
+        }else if(!cm.isEmpty(message)){
+            if(that.params['showNotifications']){
+                that.callbacks.renderNotification(that, {
+                    'label' : message,
+                    'type' : 'danger'
                 });
             }
         }else{
@@ -377,8 +425,7 @@ function(params){
 
     that.callbacks.clearError = function(that){
         // Clear notification
-        cm.removeClass(that.nodes['notifications'], 'is-show', true);
-        that.components['notifications'].clear();
+        that.clearNotification();
         // Clear field errors
         cm.forEach(that.fields, function(field){
             field['controller'].clearError();
@@ -394,7 +441,7 @@ function(params){
                 field['controller'].destruct();
             });
             that.removeFromStack();
-            cm.remove(that.nodes['container']);
+            that.params['removeOnDestruct'] && cm.remove(that.nodes['container']);
         }
         return that;
     };
@@ -432,35 +479,65 @@ function(params){
         return that.fields[name];
     };
 
-    that.get = function(){
+    that.get = function(type){
         var o = {},
-            value;
-        cm.forEach(that.fields, function(field, name){
-            if(field['field'] && !field['system']){
-                value = field['controller'].get();
-                if(!cm.isEmpty(value)){
+            handler,
+            pathHandler,
+            value,
+            path;
+        // Validate
+        type = cm.inArray(['all', 'fields', 'send', 'sendPath', 'system'], type) ? type : 'fields';
+        // Handler
+        handler = function(field, name){
+            value = field['controller'].get();
+            if(!cm.isEmpty(value)){
+                o[name] = value;
+            }
+        };
+        pathHandler = function(field, name){
+            value = field['controller'].get();
+            if(!cm.isEmpty(value)){
+                if(!cm.isEmpty(field['sendPath'])){
+                    path = cm.objectFormPath(field['sendPath'], value);
+                    o = cm.merge(o, path);
+                }else{
                     o[name] = value;
                 }
+            }
+        };
+        // Get
+        cm.forEach(that.fields, function(field, name){
+            switch(type){
+                case 'all':
+                    handler(field, name);
+                    break;
+                case 'fields':
+                    if(!field['system']){
+                        handler(field, name);
+                    }
+                    break;
+                case 'send':
+                    if(field['send'] && !field['system']){
+                        handler(field, name);
+                    }
+                    break;
+                case 'sendPath':
+                    if(field['send'] && !field['system']){
+                        pathHandler(field, name);
+                    }
+                    break;
+                case 'system':
+                    if(field['system']){
+                        handler(field, name);
+                    }
+                    break;
             }
         });
         return o;
     };
 
     that.getAll = function(){
-        var o = {},
-            value;
-        cm.forEach(that.fields, function(field, name){
-            if(!field['system']){
-                value = field['controller'].get();
-                //if(!cm.isEmpty(value)){
-                //    o[name] = value;
-                //}
-                if(!cm.isUndefined(value)){
-                    o[name] = value;
-                }
-            }
-        });
-        return o;
+        return that.get('all');
     };
 
     that.set = function(data){
@@ -549,6 +626,12 @@ function(params){
 
     that.renderNotification = function(o){
         that.callbacks.renderNotification(that, o);
+        return that;
+    };
+
+    that.clearNotification = function(){
+        cm.removeClass(that.nodes['notifications'], 'is-show', true);
+        that.components['notifications'].clear();
         return that;
     };
 
@@ -776,8 +859,8 @@ function(params){
         return that;
     };
 
-    that.renderError = function(message){
-        that.callbacks.renderError(that, message);
+    that.renderError = function(errors, message){
+        that.callbacks.renderError(that, errors, message);
         return that;
     };
 

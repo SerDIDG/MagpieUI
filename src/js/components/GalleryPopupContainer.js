@@ -16,22 +16,6 @@ function(params){
 cm.getConstructor('Com.GalleryPopupContainer', function(classConstructor, className, classProto){
     var _inherit = classProto._inherit;
 
-    classProto.validateParams = function(){
-        var that = this;
-        // Call parent method
-        _inherit.prototype.validateParams.apply(that, arguments);
-        // Set Data
-        that.params['params']['data'] = that.params['data'];
-        return that;
-    };
-
-    classProto.validateParams = function(){
-        var that = this;
-        // Call parent method
-        _inherit.prototype.validateParams.apply(that, arguments);
-        return that;
-    };
-
     classProto.constructController = function(classObject){
         var that = this;
         return new classObject(
