@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.34.0 (2018-08-01 19:21) ************ */
+/*! ************ MagpieUI v3.34.1 (2018-08-01 20:17) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.34.0',
+        '_version' : '3.34.1',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -7510,11 +7510,13 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         // Hidden
         that.setHiddenAttributes();
         // Data attributes
-        cm.forEach(that.params['node'].attributes, function(item){
-            if(/^data-(?!node|element|config)/.test(item.name)){
-                that.nodes['container'].setAttribute(item.name, item.value);
-            }
-        });
+        if(cm.isNode(that.params['node'])){
+            cm.forEach(that.params['node'].attributes, function(item){
+                if(/^data-(?!node|element|config)/.test(item.name)){
+                    that.nodes['container'].setAttribute(item.name, item.value);
+                }
+            });
+        }
         if(that.params['title']){
             that.nodes['container'].setAttribute('title', that.lang(that.params['title']));
         }
@@ -7549,11 +7551,13 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
             that.nodes['hidden'].max = that.params['max'];
         }
         // Data attributes
-        cm.forEach(that.params['node'].attributes, function(item){
-            if(/^data-(?!node|element|config)/.test(item.name)){
-                that.nodes['hidden'].setAttribute(item.name, item.value);
-            }
-        });
+        if(cm.isNode(that.params['node'])){
+            cm.forEach(that.params['node'].attributes, function(item){
+                if(/^data-(?!node|element|config)/.test(item.name)){
+                    that.nodes['hidden'].setAttribute(item.name, item.value);
+                }
+            });
+        }
         if(!cm.isEmpty(that.params['name'])){
             that.nodes['hidden'].setAttribute('name', that.params['name']);
         }
@@ -18612,6 +18616,9 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
         that.currentPage = null;
         that.previousPage = null;
         that.pageCount = 0;
+        // Bind context
+        that.nextHanlder = that.next.bind(that);
+        that.prevHanlder = that.prev.bind(that);
         // Call parent method - renderViewModel
         classInherit.prototype.construct.apply(that, arguments);
     };
@@ -18701,7 +18708,7 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
     classProto.resetStyles = function(){
         var that = this;
         // Clear render pages
-        //cm.clearNode(that.nodes['pages']);
+        cm.clearNode(that.nodes['pages']);
     };
 
     /* ******* CALLBACKS ******* */
@@ -18848,10 +18855,6 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
             'isRendered' : true,
             'isError' : !data
         };
-        // Clear container
-        if(that.page === that.params['startPage']){
-            cm.clearNode(that.nodes['pages']);
-        }
         // Render page
         page['container'] = that.callbacks.renderContainer(that, page);
         that.pages[that.page] = page;
@@ -18981,7 +18984,7 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
             'text' : '<',
             'title' : that.lang('prev'),
             'className' : 'prev',
-            'callback' : that.prev
+            'callback' : that.prevHanlder
         });
         // Page buttons
         cm.forEach(that.pageCount, function(page){
@@ -19015,7 +19018,7 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
             'text' : '>',
             'title' : that.lang('next'),
             'className' : 'next',
-            'callback' : that.next
+            'callback' : that.nextHanlder
         });
     };
 

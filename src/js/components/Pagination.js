@@ -95,6 +95,9 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
         that.currentPage = null;
         that.previousPage = null;
         that.pageCount = 0;
+        // Bind context
+        that.nextHanlder = that.next.bind(that);
+        that.prevHanlder = that.prev.bind(that);
         // Call parent method - renderViewModel
         classInherit.prototype.construct.apply(that, arguments);
     };
@@ -184,7 +187,7 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
     classProto.resetStyles = function(){
         var that = this;
         // Clear render pages
-        //cm.clearNode(that.nodes['pages']);
+        cm.clearNode(that.nodes['pages']);
     };
 
     /* ******* CALLBACKS ******* */
@@ -331,10 +334,6 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
             'isRendered' : true,
             'isError' : !data
         };
-        // Clear container
-        if(that.page === that.params['startPage']){
-            cm.clearNode(that.nodes['pages']);
-        }
         // Render page
         page['container'] = that.callbacks.renderContainer(that, page);
         that.pages[that.page] = page;
@@ -464,7 +463,7 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
             'text' : '<',
             'title' : that.lang('prev'),
             'className' : 'prev',
-            'callback' : that.prev
+            'callback' : that.prevHanlder
         });
         // Page buttons
         cm.forEach(that.pageCount, function(page){
@@ -498,7 +497,7 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
             'text' : '>',
             'title' : that.lang('next'),
             'className' : 'next',
-            'callback' : that.next
+            'callback' : that.nextHanlder
         });
     };
 

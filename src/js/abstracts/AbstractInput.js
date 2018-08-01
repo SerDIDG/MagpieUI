@@ -239,11 +239,13 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         // Hidden
         that.setHiddenAttributes();
         // Data attributes
-        cm.forEach(that.params['node'].attributes, function(item){
-            if(/^data-(?!node|element|config)/.test(item.name)){
-                that.nodes['container'].setAttribute(item.name, item.value);
-            }
-        });
+        if(cm.isNode(that.params['node'])){
+            cm.forEach(that.params['node'].attributes, function(item){
+                if(/^data-(?!node|element|config)/.test(item.name)){
+                    that.nodes['container'].setAttribute(item.name, item.value);
+                }
+            });
+        }
         if(that.params['title']){
             that.nodes['container'].setAttribute('title', that.lang(that.params['title']));
         }
@@ -278,11 +280,13 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
             that.nodes['hidden'].max = that.params['max'];
         }
         // Data attributes
-        cm.forEach(that.params['node'].attributes, function(item){
-            if(/^data-(?!node|element|config)/.test(item.name)){
-                that.nodes['hidden'].setAttribute(item.name, item.value);
-            }
-        });
+        if(cm.isNode(that.params['node'])){
+            cm.forEach(that.params['node'].attributes, function(item){
+                if(/^data-(?!node|element|config)/.test(item.name)){
+                    that.nodes['hidden'].setAttribute(item.name, item.value);
+                }
+            });
+        }
         if(!cm.isEmpty(that.params['name'])){
             that.nodes['hidden'].setAttribute('name', that.params['name']);
         }
