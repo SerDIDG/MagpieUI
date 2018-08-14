@@ -121,8 +121,8 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
     classProto.destruct = function(){
         var that = this;
         if(!that.isDestructed){
-            that.triggerEvent('onDestructStart');
             that.isDestructed = true;
+            that.triggerEvent('onDestructStart');
             that.triggerEvent('onDestruct');
             that.triggerEvent('onDestructProcess');
             cm.customEvent.trigger(that.getStackNode(), 'destruct', {

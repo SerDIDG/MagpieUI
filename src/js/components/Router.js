@@ -249,6 +249,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
                 'originRoute' : route,
                 'name' : null,
                 'access' : 'all',
+                'pattern' : '([\\s\\S]+?)',
                 'regexp' : null,
                 'map' : [],
                 'captures' : {},
@@ -259,7 +260,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
                 'onDestruct' : function(){}
             }, params);
         // RegExp
-        item['regexp'] = new RegExp('^' + route.replace(/({\w+})/g, '([\\s\\S]+?)') + '$');
+        item['regexp'] = new RegExp('^' + route.replace(/({\w+})/g, item['pattern']) + '$');
         item['map'] = that.getMap(route);
         // Binds
         if(cm.isString(item['name'])){

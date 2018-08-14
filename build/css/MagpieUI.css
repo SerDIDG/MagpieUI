@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.34.1 (2018-08-01 20:17) ************ */
+/*! ************ MagpieUI v3.34.2 (2018-08-14 20:53) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.6.0
@@ -3396,6 +3396,12 @@ span.CodeMirror-selectedtext {
 .svg__chevron-down {
   background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%20%20%3Cdefs%3E%20%20%20%20%3Cstyle%3E%20%20%20%20%20%20.cls-1%20%7B%20%20%20%20%20%20%20%20fill%3A%20%235e5e5e%3B%20%20%20%20%20%20%20%20fill-rule%3A%20evenodd%3B%20%20%20%20%20%20%7D%20%20%20%20%3C%2Fstyle%3E%20%20%3C%2Fdefs%3E%20%20%3Cpath%20class%3D%22cls-1%22%20d%3D%22M10.939%2C16.425L4.575%2C10.061A1.5%2C1.5%2C0%2C1%2C1%2C6.7%2C7.939l5.3%2C5.3%2C5.3-5.3a1.5%2C1.5%2C0%2C1%2C1%2C2.121%2C2.121l-6.364%2C6.364A1.5%2C1.5%2C0%2C0%2C1%2C10.939%2C16.425Z%22%20%2F%3E%3C%2Fsvg%3E");
 }
+.svg__close-white {
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%20%20%3Cdefs%3E%20%20%20%20%3Cstyle%3E%20%20%20%20%20%20.cls-1%20%7B%20%20%20%20%20%20%20%20fill%3A%20%23ffffff%3B%20%20%20%20%20%20%20%20fill-rule%3A%20evenodd%3B%20%20%20%20%20%20%7D%20%20%20%20%3C%2Fstyle%3E%20%20%3C%2Fdefs%3E%20%20%3Cpath%20class%3D%22cls-1%22%20d%3D%22M20.485%2C19.071l-1.414%2C1.414L12%2C13.414%2C4.929%2C20.485%2C3.515%2C19.071%2C10.586%2C12%2C3.515%2C4.929%2C4.929%2C3.515%2C12%2C10.586l7.071-7.071%2C1.414%2C1.414L13.414%2C12Z%22%2F%3E%3C%2Fsvg%3E");
+}
+.svg__close {
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%20%20%3Cdefs%3E%20%20%20%20%3Cstyle%3E%20%20%20%20%20%20.cls-1%20%7B%20%20%20%20%20%20%20%20fill%3A%20%235e5e5e%3B%20%20%20%20%20%20%20%20fill-rule%3A%20evenodd%3B%20%20%20%20%20%20%7D%20%20%20%20%3C%2Fstyle%3E%20%20%3C%2Fdefs%3E%20%20%3Cpath%20class%3D%22cls-1%22%20d%3D%22M20.485%2C19.071l-1.414%2C1.414L12%2C13.414%2C4.929%2C20.485%2C3.515%2C19.071%2C10.586%2C12%2C3.515%2C4.929%2C4.929%2C3.515%2C12%2C10.586l7.071-7.071%2C1.414%2C1.414L13.414%2C12Z%22%2F%3E%3C%2Fsvg%3E");
+}
 .svg__indent-bottom {
   background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20id%3D%22indent-bottom.svg%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%3E%20%20%3Cdefs%3E%20%20%20%20%3Cstyle%3E%20%20%20%20%20%20.cls-1%20%7B%20%20%20%20%20%20%20%20fill%3A%20%232d6ec9%3B%20%20%20%20%20%20%7D%20%20%20%20%20%20.cls-2%20%7B%20%20%20%20%20%20%20%20fill%3A%20%235e5e5e%3B%20%20%20%20%20%20%20%20fill-rule%3A%20evenodd%3B%20%20%20%20%20%20%7D%20%20%20%20%3C%2Fstyle%3E%20%20%3C%2Fdefs%3E%20%20%3Crect%20id%3D%22Rounded_Rectangle_12%22%20data-name%3D%22Rounded%20Rectangle%2012%22%20class%3D%22cls-1%22%20y%3D%2212%22%20width%3D%2216%22%20height%3D%224%22%2F%3E%20%20%3Cpath%20class%3D%22cls-2%22%20d%3D%22M4%2C4H20V17H4V4ZM5%2C5H19V16H5V5Z%22%20transform%3D%22translate(-4%20-4)%22%2F%3E%3C%2Fsvg%3E");
 }
@@ -3506,8 +3512,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.34.1');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.34.1') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.34.1') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.34.1') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.34.1#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.34.2');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.34.2') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.34.2') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.34.2') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.34.2#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -10631,7 +10637,6 @@ ul.pt__field__hint li:before {
   white-space: nowrap;
   text-overflow: ellipsis;
   padding: 4px 8px;
-  font-weight: 600;
   color: #ffffff;
 }
 .pt__image > .inner > .title .inner * {
@@ -16049,7 +16054,6 @@ ul.pt__field__hint li:before {
   width: 24px;
   height: 24px;
   font-size: 0;
-  opacity: 0.4;
   -webkit-transition: opacity 250ms ease-in-out;
   transition: opacity 250ms ease-in-out;
   top: 24px;
@@ -16061,11 +16065,6 @@ ul.pt__field__hint li:before {
 .com__dialog.theme-black > .bg > .icon.default,
 .com__dialog.theme-light > .bg > .icon.default {
   background-image: url("../img/icons/medium/close-white.png");
-}
-.com__dialog.theme-default > .bg:hover > .icon,
-.com__dialog.theme-black > .bg:hover > .icon,
-.com__dialog.theme-light > .bg:hover > .icon {
-  opacity: 1;
 }
 .com__dialog.theme-light > .bg {
   background: rgba(255, 255, 255, 0.7);
@@ -20210,14 +20209,14 @@ html.ie9 .com__palette .b-range {
   padding: 0 4px 0;
 }
 .com__tags-input > .inner .tags .item {
-  max-width: 50%;
+  max-width: calc(50% - 8px);
   margin: 8px 4px 0 4px;
   cursor: default;
   float: left;
 }
 .com__tags-input > .inner .tags .item > .inner {
   height: 24px;
-  padding: 0 32px 0 8px;
+  padding: 0 24px 0 8px;
   position: relative;
   background-color: #25b125;
   border-radius: 3px;
@@ -20242,7 +20241,8 @@ html.ie9 .com__palette .b-range {
   left: auto;
 }
 .com__tags-input > .inner .tags .item > .inner .icon.default {
-  background-image: url("../img/icons/small/remove-white.png");
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%20%20%3Cdefs%3E%20%20%20%20%3Cstyle%3E%20%20%20%20%20%20.cls-1%20%7B%20%20%20%20%20%20%20%20fill%3A%20%23ffffff%3B%20%20%20%20%20%20%20%20fill-rule%3A%20evenodd%3B%20%20%20%20%20%20%7D%20%20%20%20%3C%2Fstyle%3E%20%20%3C%2Fdefs%3E%20%20%3Cpath%20class%3D%22cls-1%22%20d%3D%22M20.485%2C19.071l-1.414%2C1.414L12%2C13.414%2C4.929%2C20.485%2C3.515%2C19.071%2C10.586%2C12%2C3.515%2C4.929%2C4.929%2C3.515%2C12%2C10.586l7.071-7.071%2C1.414%2C1.414L13.414%2C12Z%22%2F%3E%3C%2Fsvg%3E");
+  background-size: 16px;
 }
 .com__tags-input > .inner .adder {
   height: 32px;

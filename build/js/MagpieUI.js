@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.34.1 (2018-08-01 20:17) ************ */
+/*! ************ MagpieUI v3.34.2 (2018-08-14 20:53) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.34.1',
+        '_version' : '3.34.2',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -1660,9 +1660,11 @@ var cm = {
             'screenMobilePortrait' : 480,
             'dateFormat' : '%Y-%m-%d',
             'dateTimeFormat' : '%Y-%m-%d %H:%i:%s',
+            'dateFormatCase' : 'nominative',
             'timeFormat' : '%H:%i:%s',
             'displayDateFormat' : '%F %j, %Y',
             'displayDateTimeFormat' : '%F %j, %Y, %H:%i',
+            'displayDateFormatCase' : 'nominative',
             'tooltipIndent' : 4,
             'tooltipTop' : 'targetHeight + 4',
             'tooltipDown' : 'targetHeight + 4',
@@ -1993,6 +1995,16 @@ cm.getLength = function(o){
     var i = 0;
     cm.forEach(o, function(){
         i++;
+    });
+    return i;
+};
+
+cm.getCount = function(o){
+    var i = 0;
+    cm.forEach(o, function(item){
+        if(!cm.isUndefined(item)){
+            i++;
+        }
     });
     return i;
 };
@@ -2560,6 +2572,63 @@ cm.onImageLoad = function(src, handler, delay){
     });
 
     return isMany ? nodes : nodes[0];
+};
+
+cm.fileFromDataTransfer = function(e, callback){
+    var types = ['url', 'text/plain', 'text/uri-list'],
+        image = new Image(),
+        canvas = document.createElement('canvas'),
+        dt = e.dataTransfer,
+        tempData,
+        data,
+        dataURL,
+        blob,
+        file;
+    // Get URL from HTML
+    tempData = dt.getData('text/html');
+    if(!cm.isEmpty(tempData)){
+        tempData = cm.strToHTML(tempData);
+        if(!cm.isEmpty(tempData)){
+            tempData = tempData.querySelector('img');
+            if(!cm.isEmpty(tempData)){
+                data = tempData.src;
+            }
+        }
+    }
+    // Get URL
+    if(cm.isEmpty(data)){
+        cm.forEach(types, function(type){
+            tempData = dt.getData(type);
+            if(!cm.isEmpty(tempData)){
+                data = tempData
+            }
+        });
+    }
+    // Get Data URL
+    image.crossOrigin = 'anonymous';
+    cm.addEvent(image, 'load', function(){
+        var that = this;
+        canvas.width = that.naturalWidth;
+        canvas.height = that.naturalHeight;
+        canvas.getContext('2d').drawImage(that, 0, 0);
+        dataURL = canvas.toDataURL('image/png');
+        blob = cm.dataURItoBlob(dataURL);
+        file = new File([blob], data);
+        cm.isFunction(callback) && callback(file);
+    });
+    image.src = data;
+    return data;
+};
+
+cm.dataURItoBlob = function(dataURI){
+    var byteString = atob(dataURI.split(',')[1]);
+    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    var ab = new ArrayBuffer(byteString.length);
+    var ia = new Uint8Array(ab);
+    for (var i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([ab], {'type': mimeString});
 };
 
 /* ******* NODES ******* */
@@ -3483,7 +3552,7 @@ cm.getCurrentDate = function(format){
     return cm.dateFormat(new Date(), format);
 };
 
-cm.dateFormat = function(date, format, langs){
+cm.dateFormat = function(date, format, langs, formatCase){
     //date = !date ? new Date() : new Date(+date);
     if(cm.isDate(date)){
         date = new Date(+date);
@@ -3493,11 +3562,19 @@ cm.dateFormat = function(date, format, langs){
     if(isNaN(date)){
         date = null;
     }
+    // Validate format
     format = cm.isString(format) ? format : cm._config.dateTimeFormat;
+    formatCase = cm.isString(formatCase) ? formatCase : cm._config.dateFormatCase;
+    // Validate language strings
     langs = cm.merge({
         'months' : cm._strings.months,
         'days' : cm._strings.days
     }, langs);
+    // Validate language case
+    if(cm.isObject(langs['months']) && langs['months'][formatCase]){
+        langs['months'] = langs['months'][formatCase]
+    }
+    // Define format variables
     var convertFormats = {
         '%Y%' : '%Y',
         '%m%' : '%m',
@@ -3615,7 +3692,7 @@ cm.parseDate = function(str, format){
             }
         },
         fromIndex = 0;
-    format = cm.isString(format) ? format : cm._config['dateTimeFormat'];
+    format = cm.isString(format) ? format : cm._config.dateTimeFormat;
     format = cm.strReplace(format, convertFormats);
     cm.forEach(formats, function(item, key){
         fromIndex = format.indexOf(key);
@@ -3627,18 +3704,20 @@ cm.parseDate = function(str, format){
     return date;
 };
 
-cm.parseFormatDate = function(str, format, displayFormat, langs){
-    format = format || cm._config['dateFormat'];
-    displayFormat = displayFormat || cm._config['displayDateFormat'];
+cm.parseFormatDate = function(str, format, displayFormat, langs, formatCase){
+    format = format || cm._config.dateFormat;
+    displayFormat = displayFormat || cm._config.displayDateFormat;
+    formatCase = formatCase|| cm._config.displayDateFormatCase;
     var date = cm.parseDate(str, format);
-    return cm.dateFormat(date, displayFormat, langs);
+    return cm.dateFormat(date, displayFormat, langs, formatCase);
 };
 
-cm.parseFormatDateTime = function(str, format, displayFormat, langs){
-    format = format || cm._config['dateTimeFormat'];
-    displayFormat = displayFormat || cm._config['displayDateTimeFormat'];
+cm.parseFormatDateTime = function(str, format, displayFormat, langs, formatCase){
+    format = format || cm._config.dateTimeFormat;
+    displayFormat = displayFormat || cm._config.displayDateTimeFormat;
+    formatCase = formatCase|| cm._config.displayDateFormatCase;
     var date = cm.parseDate(str, format);
-    return cm.dateFormat(date, displayFormat, langs);
+    return cm.dateFormat(date, displayFormat, langs, formatCase);
 };
 
 cm.getWeek = function(date){
@@ -6780,8 +6859,8 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
     classProto.destruct = function(){
         var that = this;
         if(!that.isDestructed){
-            that.triggerEvent('onDestructStart');
             that.isDestructed = true;
+            that.triggerEvent('onDestructStart');
             that.triggerEvent('onDestruct');
             that.triggerEvent('onDestructProcess');
             cm.customEvent.trigger(that.getStackNode(), 'destruct', {
@@ -7020,6 +7099,7 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
     classProto.validateParams = function(){
         var that = this;
         that.triggerEvent('onValidateParamsStart');
+        that.triggerEvent('onValidateParams');
         that.triggerEvent('onValidateParamsProcess');
         that.params['params']['node'] = that.params['node'];
         that.params['params']['container'] = that.params['container'];
@@ -8356,7 +8436,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
                 'message' : null,
                 'value' : that.get()
             };
-        if(that.params['required'] && cm.isEmpty(data['value'])){
+        if(cm.isEmpty(data['value'])){
             data['valid'] = false;
             data['message'] = that.lang('required');
             return data;
@@ -8402,7 +8482,11 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
 
     classProto.validate = function(){
         var that = this,
-            data = that.validateValue();
+            data;
+        if(!that.params['required']){
+            return true;
+        }
+        data = that.validateValue();
         if(data['valid']){
             that.clearError();
         }else{
@@ -9178,12 +9262,12 @@ function(params){
             params['constructorController'] = cm.isFunction(params['fieldController'].getController) && params['fieldController'].getController();
             // Events
             params['fieldController'].addEvent('onBlur', function(){
-                if(that.params['validateOnChange']){
+                if(that.params['validate'] && that.params['validateOnChange']){
                     params['fieldController'].validate();
                 }
             });
             params['fieldController'].addEvent('onChange', function(){
-                if(that.params['validateOnChange']){
+                if(that.params['validate'] && that.params['validateOnChange']){
                     params['fieldController'].validate();
                 }
                 that.triggerEvent('onChange');
@@ -9568,17 +9652,23 @@ function(params){
         return that;
     };
 
+    that.validate = function(){
+        var isValid = true;
+        cm.forEach(that.fields, function(field, name){
+            if(field['field'] && !field['system']){
+                if(field['controller'].validate && !field['controller'].validate()){
+                    isValid = false;
+                }
+            }
+        });
+        return isValid;
+    };
+
     that.send = function(){
         var isValid = true;
         // Validate
         if(that.params['validate']){
-            cm.forEach(that.fields, function(field, name){
-                if(field['field'] && !field['system']){
-                    if(field['controller'].validate && !field['controller'].validate()){
-                        isValid = false;
-                    }
-                }
-            });
+            isValid = that.validate();
         }
         // Send
         if(isValid){
@@ -12845,13 +12935,14 @@ function(params){
     Com.AbstractContainer.apply(that, arguments);
 });
 
-cm.getConstructor('Com.DialogContainer', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
-    classProto.validateParams = function(){
+cm.getConstructor('Com.DialogContainer', function(classConstructor, className, classProto, classInherit){
+    classProto.onConstructStart = function(){
         var that = this;
-        // Call parent method
-        _inherit.prototype.validateParams.apply(that, arguments);
+        that.buttons = {};
+    };
+
+    classProto.onValidateParams = function(){
+        var that = this;
         // Set Content
         if(cm.isObject(that.params['content'])){
             that.params['params']['title'] = that.params['content']['title'] || that.params['params']['title'];
@@ -12859,7 +12950,6 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
             that.params['params']['buttons'] = that.params['content']['buttons'] || that.params['params']['buttons'];
         }
         that.params['params']['showTitle'] = that.params['renderTitle'];
-        return that;
     };
 
     classProto.constructController = function(classObject){
@@ -14272,7 +14362,6 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
         that.addEvent('onUnsetEventsProcess', that.unsetEventsProcessHander);
         // Call parent method
         _inherit.prototype.construct.apply(that, arguments);
-        return that;
     };
 
     classProto.validateParams = function(){
@@ -14281,7 +14370,6 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
         that.setLangs({
             'drop' : !that.params['max'] || that.params['max'] > 1 ? that.lang('drop_multiple') : that.lang('drop_single')
         });
-        return that;
     };
 
     classProto.onGetLESSVariablesProcess = function(){
@@ -14292,21 +14380,18 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
         if(!that.params['duration']){
             that.params['duration'] = cm.getTransitionDurationFromLESS('ComFileDropzone-Duration', that.params['_duration']);
         }
-        return that;
     };
 
     classProto.setEventsProcess = function(){
         var that = this;
         cm.addEvent(window, 'dragover', that.dragOverHandler);
         cm.addEvent(window, 'drop', that.dragDropHandler);
-        return that;
     };
 
     classProto.unsetEventsProcess = function(){
         var that = this;
         cm.removeEvent(window, 'dragover', that.dragOverHandler);
         cm.removeEvent(window, 'drop', that.dragDropHandler);
-        return that;
     };
 
     classProto.renderView = function(){
@@ -14322,7 +14407,6 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
         );
         that.triggerEvent('onRenderViewProcess');
         that.triggerEvent('onRenderViewEnd');
-        return that;
     };
 
     classProto.renderViewModel = function(){
@@ -14337,7 +14421,6 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
                 that.params['container'].style.height = that.params['height'] + 'px';
             }
         }
-        return that;
     };
 
     /* *** DROPZONE *** */
@@ -14358,31 +14441,45 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
         }else{
             cm.removeClass(that.nodes['container'], 'is-highlight');
         }
-        return that;
     };
 
     classProto.dragDrop = function(e){
         var that = this,
-            target = cm.getEventTarget(e),
-            data = [],
-            files = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length ? e.dataTransfer.files : [],
-            length = that.params['max'] ? Math.min(files.length, that.params['max']) : files.length;
-        cm.preventDefault(e);
+            target = cm.getEventTarget(e);
+        if(cm.isParent(that.nodes['container'], target, true)){
+            cm.stopPropagation(e);
+            cm.preventDefault(e);
+            // Get files
+            if(e.dataTransfer){
+                if(e.dataTransfer.files && e.dataTransfer.files.length){
+                    // Dropped files from local
+                    that.processFiles(e.dataTransfer.files);
+                }else{
+                    // Dropped files from another browser window
+                    cm.fileFromDataTransfer(e, function(file){
+                        that.processFiles([file]);
+                    });
+                }
+            }
+        }
         // Hide dropzone and reset his state
         that.dragInterval && clearTimeout(that.dragInterval);
         that.hide();
         that.hideDropzone();
+    };
+    
+    classProto.processFiles = function(files){
+        var that = this,
+            data = [],
+            length = that.params['max'] ? Math.min(files.length, that.params['max']) : files.length;;
         // Process file
-        if(cm.isParent(that.nodes['container'], target, true)){
-            if(length){
-                cm.forEach(length, function(i){
-                    data.push(files[i]);
-                    that.triggerEvent('onDrop', files[i]);
-                });
-                that.triggerEvent('onSelect', data);
-            }
+        cm.forEach(length, function(i){
+            data.push(files[i]);
+            that.triggerEvent('onDrop', files[i]);
+        });
+        if(data.length){
+            that.triggerEvent('onSelect', data);
         }
-        return that;
     };
 
     classProto.show = function(){
@@ -14423,7 +14520,6 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
                 });
             }
         }
-        return that;
     };
 
     classProto.hideDropzone = function(){
@@ -14451,7 +14547,6 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
                 });
             }
         }
-        return that;
     };
 });
 cm.define('Com.FileReader', {
@@ -20352,6 +20447,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
                 'originRoute' : route,
                 'name' : null,
                 'access' : 'all',
+                'pattern' : '([\\s\\S]+?)',
                 'regexp' : null,
                 'map' : [],
                 'captures' : {},
@@ -20362,7 +20458,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
                 'onDestruct' : function(){}
             }, params);
         // RegExp
-        item['regexp'] = new RegExp('^' + route.replace(/({\w+})/g, '([\\s\\S]+?)') + '$');
+        item['regexp'] = new RegExp('^' + route.replace(/({\w+})/g, item['pattern']) + '$');
         item['map'] = that.getMap(route);
         // Binds
         if(cm.isString(item['name'])){
@@ -25028,18 +25124,20 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
                 })
             );
             that.triggerEvent('onItemAddProcess', item);
+            // Focus input after add
             that.params['focusInput'] && item['controller'].focus && item['controller'].focus();
             // Trigger set events
-            triggerEvents && that.triggerEvent('onSelect');
-            triggerEvents && that.triggerEvent('onSet');
-            triggerEvents && that.triggerEvent('onChange');
+            if(triggerEvents){
+                that.triggerEvent('onSelect');
+                that.triggerEvent('onSet');
+                that.triggerEvent('onChange');
+            }
         });
         // Toggle toolbar visibility
         that.toggleToolbarVisibility();
         // Complete event
         that.triggerEvent('onItemAddEnd', item);
         that.triggerEvent('onItemAdd', item);
-        return item;
     };
 
     classProto.removeItem = function(item, triggerEvents){
@@ -25067,10 +25165,11 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
         // Toggle toolbar visibility
         that.toggleToolbarVisibility();
         // Trigger set events
-        triggerEvents && that.triggerEvent('onSelect');
-        triggerEvents && that.triggerEvent('onSet');
-        triggerEvents && that.triggerEvent('onChange');
-        return that;
+        if(triggerEvents){
+            that.triggerEvent('onSelect');
+            that.triggerEvent('onSet');
+            that.triggerEvent('onChange');
+        }
     };
 
     classProto.sortItemProcess = function(item, field){
@@ -25152,9 +25251,11 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
             that.addItem({'value' : item}, false);
         });
         // Trigger set events
-        triggerEvents && that.triggerEvent('onSelect');
-        triggerEvents && that.triggerEvent('onSet');
-        triggerEvents && that.triggerEvent('onChange');
+        if(triggerEvents){
+            that.triggerEvent('onSelect');
+            that.triggerEvent('onSet');
+            that.triggerEvent('onChange');
+        };
         return that;
     };
 
@@ -28006,6 +28107,7 @@ function(params){
 cm.define('Com.FileInput', {
     'extend' : 'Com.AbstractInput',
     'params' : {
+        'controllerEvents' : true,
         'embedStructure' : 'replace',
         'className' : 'com__file-input',
         'file' : null,
@@ -28050,33 +28152,24 @@ function(params){
     Com.AbstractInput.apply(that, arguments);
 });
 
-cm.getConstructor('Com.FileInput', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
+cm.getConstructor('Com.FileInput', function(classConstructor, className, classProto, classInherit){
     classProto.construct = function(){
         var that = this;
         // Bind context to methods
-        that.initComponentsStartHandler = that.initComponentsStart.bind(that);
-        that.validateParamsEndHandler = that.validateParamsEnd.bind(that);
         that.browseActionHandler = that.browseAction.bind(that);
         that.processFilesHandler = that.processFiles.bind(that);
-        // Add events
-        that.addEvent('onInitComponentsStart', that.initComponentsStartHandler);
-        that.addEvent('onValidateParamsEnd', that.validateParamsEndHandler);
         // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
-        return that;
+        classInherit.prototype.construct.apply(that, arguments);
     };
 
-    classProto.initComponentsStart = function(){
+    classProto.onInitComponentsStart = function(){
         var that = this;
         cm.getConstructor('Com.FileReader', function(classObject){
             that.components['validator'] = new classObject();
         });
-        return that;
     };
 
-    classProto.validateParamsEnd = function(){
+    classProto.onValidateParamsEnd = function(){
         var that = this;
         // Validate Language Strings
         that.setLangs({
@@ -28093,7 +28186,18 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         that.params['local'] = that.params['fileUploader'] ? false : that.params['local'];
         that.params['fileManagerParams']['openOnConstruct'] = that.params['autoOpen'];
         that.params['fileManager'] = that.params['fileUploader'] ? false : that.params['fileManager'];
-        return that;
+    };
+
+    classProto.onReset = function(){
+        var that = this;
+        // Release file object url to clear from memory
+        that.releaseFileURL();
+    };
+
+    classProto.onDestruct = function(){
+        var that = this;
+        // Release file object url to clear from memory
+        that.releaseFileURL();
     };
 
     /*** VIEW MODEL ***/
@@ -28101,7 +28205,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
     classProto.renderViewModel = function(){
         var that = this;
         // Call parent method - renderViewModel
-        _inherit.prototype.renderViewModel.apply(that, arguments);
+        classInherit.prototype.renderViewModel.apply(that, arguments);
         // Init FilerReader
         cm.getConstructor('Com.FileReader', function(classObject, className){
             that.components['reader'] = new classObject(that.params[className]);
@@ -28220,6 +28324,13 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
             that.set(data, true);
         }
         return that;
+    };
+
+    classProto.releaseFileURL = function(){
+        var that = this;
+        if(!cm.isEmpty(that.value) && !cm.isEmpty(that.value['url'])){
+            window.URL.revokeObjectURL(that.value['url']);
+        }
     };
 
     /* *** DATA *** */
@@ -28355,13 +28466,11 @@ function(params){
     Com.FileInput.apply(that, arguments);
 });
 
-cm.getConstructor('Com.ImageInput', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
+cm.getConstructor('Com.ImageInput', function(classConstructor, className, classProto, classInherit){
     classProto.renderViewModel = function(){
         var that = this;
         // Call parent method - renderViewModel
-        _inherit.prototype.renderViewModel.apply(that, arguments);
+        classInherit.prototype.renderViewModel.apply(that, arguments);
         // Init Preview
         if(that.params['preview']){
             cm.getConstructor(that.params['previewConstructor'], function(classObject){
@@ -29068,6 +29177,7 @@ function(params){
 
 Com.FormFields.add('multi-autocomplete', {
     'node' : cm.node('div'),
+    'fieldConstructor' : 'Com.AbstractFormField',
     'constructor' : 'Com.MultipleAutocomplete'
 });
 cm.define('Com.MultipleFileInput', {
@@ -29311,6 +29421,7 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
 
 Com.FormFields.add('multi-file-input', {
     'node' : cm.node('div'),
+    'fieldConstructor' : 'Com.AbstractFormField',
     'constructor' : 'Com.MultipleFileInput'
 });
 cm.define('Com.OpacityRange', {

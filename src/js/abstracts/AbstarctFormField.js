@@ -388,7 +388,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
                 'message' : null,
                 'value' : that.get()
             };
-        if(that.params['required'] && cm.isEmpty(data['value'])){
+        if(cm.isEmpty(data['value'])){
             data['valid'] = false;
             data['message'] = that.lang('required');
             return data;
@@ -434,7 +434,11 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
 
     classProto.validate = function(){
         var that = this,
-            data = that.validateValue();
+            data;
+        if(!that.params['required']){
+            return true;
+        }
+        data = that.validateValue();
         if(data['valid']){
             that.clearError();
         }else{

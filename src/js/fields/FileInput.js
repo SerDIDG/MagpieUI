@@ -1,6 +1,7 @@
 cm.define('Com.FileInput', {
     'extend' : 'Com.AbstractInput',
     'params' : {
+        'controllerEvents' : true,
         'embedStructure' : 'replace',
         'className' : 'com__file-input',
         'file' : null,
@@ -45,33 +46,24 @@ function(params){
     Com.AbstractInput.apply(that, arguments);
 });
 
-cm.getConstructor('Com.FileInput', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
+cm.getConstructor('Com.FileInput', function(classConstructor, className, classProto, classInherit){
     classProto.construct = function(){
         var that = this;
         // Bind context to methods
-        that.initComponentsStartHandler = that.initComponentsStart.bind(that);
-        that.validateParamsEndHandler = that.validateParamsEnd.bind(that);
         that.browseActionHandler = that.browseAction.bind(that);
         that.processFilesHandler = that.processFiles.bind(that);
-        // Add events
-        that.addEvent('onInitComponentsStart', that.initComponentsStartHandler);
-        that.addEvent('onValidateParamsEnd', that.validateParamsEndHandler);
         // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
-        return that;
+        classInherit.prototype.construct.apply(that, arguments);
     };
 
-    classProto.initComponentsStart = function(){
+    classProto.onInitComponentsStart = function(){
         var that = this;
         cm.getConstructor('Com.FileReader', function(classObject){
             that.components['validator'] = new classObject();
         });
-        return that;
     };
 
-    classProto.validateParamsEnd = function(){
+    classProto.onValidateParamsEnd = function(){
         var that = this;
         // Validate Language Strings
         that.setLangs({
@@ -88,7 +80,18 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         that.params['local'] = that.params['fileUploader'] ? false : that.params['local'];
         that.params['fileManagerParams']['openOnConstruct'] = that.params['autoOpen'];
         that.params['fileManager'] = that.params['fileUploader'] ? false : that.params['fileManager'];
-        return that;
+    };
+
+    classProto.onReset = function(){
+        var that = this;
+        // Release file object url to clear from memory
+        that.releaseFileURL();
+    };
+
+    classProto.onDestruct = function(){
+        var that = this;
+        // Release file object url to clear from memory
+        that.releaseFileURL();
     };
 
     /*** VIEW MODEL ***/
@@ -96,7 +99,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
     classProto.renderViewModel = function(){
         var that = this;
         // Call parent method - renderViewModel
-        _inherit.prototype.renderViewModel.apply(that, arguments);
+        classInherit.prototype.renderViewModel.apply(that, arguments);
         // Init FilerReader
         cm.getConstructor('Com.FileReader', function(classObject, className){
             that.components['reader'] = new classObject(that.params[className]);
@@ -215,6 +218,13 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
             that.set(data, true);
         }
         return that;
+    };
+
+    classProto.releaseFileURL = function(){
+        var that = this;
+        if(!cm.isEmpty(that.value) && !cm.isEmpty(that.value['url'])){
+            window.URL.revokeObjectURL(that.value['url']);
+        }
     };
 
     /* *** DATA *** */

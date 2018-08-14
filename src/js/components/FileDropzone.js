@@ -46,7 +46,6 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
         that.addEvent('onUnsetEventsProcess', that.unsetEventsProcessHander);
         // Call parent method
         _inherit.prototype.construct.apply(that, arguments);
-        return that;
     };
 
     classProto.validateParams = function(){
@@ -55,7 +54,6 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
         that.setLangs({
             'drop' : !that.params['max'] || that.params['max'] > 1 ? that.lang('drop_multiple') : that.lang('drop_single')
         });
-        return that;
     };
 
     classProto.onGetLESSVariablesProcess = function(){
@@ -66,21 +64,18 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
         if(!that.params['duration']){
             that.params['duration'] = cm.getTransitionDurationFromLESS('ComFileDropzone-Duration', that.params['_duration']);
         }
-        return that;
     };
 
     classProto.setEventsProcess = function(){
         var that = this;
         cm.addEvent(window, 'dragover', that.dragOverHandler);
         cm.addEvent(window, 'drop', that.dragDropHandler);
-        return that;
     };
 
     classProto.unsetEventsProcess = function(){
         var that = this;
         cm.removeEvent(window, 'dragover', that.dragOverHandler);
         cm.removeEvent(window, 'drop', that.dragDropHandler);
-        return that;
     };
 
     classProto.renderView = function(){
@@ -96,7 +91,6 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
         );
         that.triggerEvent('onRenderViewProcess');
         that.triggerEvent('onRenderViewEnd');
-        return that;
     };
 
     classProto.renderViewModel = function(){
@@ -111,7 +105,6 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
                 that.params['container'].style.height = that.params['height'] + 'px';
             }
         }
-        return that;
     };
 
     /* *** DROPZONE *** */
@@ -132,31 +125,45 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
         }else{
             cm.removeClass(that.nodes['container'], 'is-highlight');
         }
-        return that;
     };
 
     classProto.dragDrop = function(e){
         var that = this,
-            target = cm.getEventTarget(e),
-            data = [],
-            files = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length ? e.dataTransfer.files : [],
-            length = that.params['max'] ? Math.min(files.length, that.params['max']) : files.length;
-        cm.preventDefault(e);
+            target = cm.getEventTarget(e);
+        if(cm.isParent(that.nodes['container'], target, true)){
+            cm.stopPropagation(e);
+            cm.preventDefault(e);
+            // Get files
+            if(e.dataTransfer){
+                if(e.dataTransfer.files && e.dataTransfer.files.length){
+                    // Dropped files from local
+                    that.processFiles(e.dataTransfer.files);
+                }else{
+                    // Dropped files from another browser window
+                    cm.fileFromDataTransfer(e, function(file){
+                        that.processFiles([file]);
+                    });
+                }
+            }
+        }
         // Hide dropzone and reset his state
         that.dragInterval && clearTimeout(that.dragInterval);
         that.hide();
         that.hideDropzone();
+    };
+    
+    classProto.processFiles = function(files){
+        var that = this,
+            data = [],
+            length = that.params['max'] ? Math.min(files.length, that.params['max']) : files.length;;
         // Process file
-        if(cm.isParent(that.nodes['container'], target, true)){
-            if(length){
-                cm.forEach(length, function(i){
-                    data.push(files[i]);
-                    that.triggerEvent('onDrop', files[i]);
-                });
-                that.triggerEvent('onSelect', data);
-            }
+        cm.forEach(length, function(i){
+            data.push(files[i]);
+            that.triggerEvent('onDrop', files[i]);
+        });
+        if(data.length){
+            that.triggerEvent('onSelect', data);
         }
-        return that;
     };
 
     classProto.show = function(){
@@ -197,7 +204,6 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
                 });
             }
         }
-        return that;
     };
 
     classProto.hideDropzone = function(){
@@ -225,6 +231,5 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
                 });
             }
         }
-        return that;
     };
 });

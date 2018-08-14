@@ -189,12 +189,12 @@ function(params){
             params['constructorController'] = cm.isFunction(params['fieldController'].getController) && params['fieldController'].getController();
             // Events
             params['fieldController'].addEvent('onBlur', function(){
-                if(that.params['validateOnChange']){
+                if(that.params['validate'] && that.params['validateOnChange']){
                     params['fieldController'].validate();
                 }
             });
             params['fieldController'].addEvent('onChange', function(){
-                if(that.params['validateOnChange']){
+                if(that.params['validate'] && that.params['validateOnChange']){
                     params['fieldController'].validate();
                 }
                 that.triggerEvent('onChange');
@@ -579,17 +579,23 @@ function(params){
         return that;
     };
 
+    that.validate = function(){
+        var isValid = true;
+        cm.forEach(that.fields, function(field, name){
+            if(field['field'] && !field['system']){
+                if(field['controller'].validate && !field['controller'].validate()){
+                    isValid = false;
+                }
+            }
+        });
+        return isValid;
+    };
+
     that.send = function(){
         var isValid = true;
         // Validate
         if(that.params['validate']){
-            cm.forEach(that.fields, function(field, name){
-                if(field['field'] && !field['system']){
-                    if(field['controller'].validate && !field['controller'].validate()){
-                        isValid = false;
-                    }
-                }
-            });
+            isValid = that.validate();
         }
         // Send
         if(isValid){

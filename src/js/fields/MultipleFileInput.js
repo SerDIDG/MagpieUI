@@ -239,5 +239,6 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
 
 Com.FormFields.add('multi-file-input', {
     'node' : cm.node('div'),
+    'fieldConstructor' : 'Com.AbstractFormField',
     'constructor' : 'Com.MultipleFileInput'
 });

@@ -10,15 +10,14 @@
             padding: 0 @CmIndent-XXXSmall 0;
 
             .item {
-                max-width: 50%;
+                max-width: ~"calc(50% - @{CmIndent-XXSmall})";
                 margin: @CmIndent-XXSmall @CmIndent-XXXSmall 0 @CmIndent-XXXSmall;
                 cursor: default;
                 float: left;
 
                 > .inner {
-                    @icon_padding: @CmSize-Medium + @CmIndent-XXSmall;
                     height: @CmSize-Medium;
-                    padding: 0 @icon_padding 0 @CmIndent-XXSmall;
+                    padding: 0 @CmSize-Medium 0 @CmIndent-XXSmall;
                     position: relative;
                     background-color: @CmColor-Success-DarkDefault;
                     border-radius: @CmBorder-Radius;
@@ -38,7 +37,8 @@
                         .mx__position(0, 0, 0, auto);
 
                         &.default {
-                            .icon.small.remove-white;
+                            .svg__close-white;
+                            background-size: @CmSize-Small;
                         }
                     }
                 }

@@ -67,6 +67,7 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
     classProto.validateParams = function(){
         var that = this;
         that.triggerEvent('onValidateParamsStart');
+        that.triggerEvent('onValidateParams');
         that.triggerEvent('onValidateParamsProcess');
         that.params['params']['node'] = that.params['node'];
         that.params['params']['container'] = that.params['container'];

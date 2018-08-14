@@ -227,18 +227,20 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
                 })
             );
             that.triggerEvent('onItemAddProcess', item);
+            // Focus input after add
             that.params['focusInput'] && item['controller'].focus && item['controller'].focus();
             // Trigger set events
-            triggerEvents && that.triggerEvent('onSelect');
-            triggerEvents && that.triggerEvent('onSet');
-            triggerEvents && that.triggerEvent('onChange');
+            if(triggerEvents){
+                that.triggerEvent('onSelect');
+                that.triggerEvent('onSet');
+                that.triggerEvent('onChange');
+            }
         });
         // Toggle toolbar visibility
         that.toggleToolbarVisibility();
         // Complete event
         that.triggerEvent('onItemAddEnd', item);
         that.triggerEvent('onItemAdd', item);
-        return item;
     };
 
     classProto.removeItem = function(item, triggerEvents){
@@ -266,10 +268,11 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
         // Toggle toolbar visibility
         that.toggleToolbarVisibility();
         // Trigger set events
-        triggerEvents && that.triggerEvent('onSelect');
-        triggerEvents && that.triggerEvent('onSet');
-        triggerEvents && that.triggerEvent('onChange');
-        return that;
+        if(triggerEvents){
+            that.triggerEvent('onSelect');
+            that.triggerEvent('onSet');
+            that.triggerEvent('onChange');
+        }
     };
 
     classProto.sortItemProcess = function(item, field){
@@ -351,9 +354,11 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
             that.addItem({'value' : item}, false);
         });
         // Trigger set events
-        triggerEvents && that.triggerEvent('onSelect');
-        triggerEvents && that.triggerEvent('onSet');
-        triggerEvents && that.triggerEvent('onChange');
+        if(triggerEvents){
+            that.triggerEvent('onSelect');
+            that.triggerEvent('onSet');
+            that.triggerEvent('onChange');
+        };
         return that;
     };
 

@@ -61,9 +61,11 @@ var cm = {
             'screenMobilePortrait' : 480,
             'dateFormat' : '%Y-%m-%d',
             'dateTimeFormat' : '%Y-%m-%d %H:%i:%s',
+            'dateFormatCase' : 'nominative',
             'timeFormat' : '%H:%i:%s',
             'displayDateFormat' : '%F %j, %Y',
             'displayDateTimeFormat' : '%F %j, %Y, %H:%i',
+            'displayDateFormatCase' : 'nominative',
             'tooltipIndent' : 4,
             'tooltipTop' : 'targetHeight + 4',
             'tooltipDown' : 'targetHeight + 4',
@@ -394,6 +396,16 @@ cm.getLength = function(o){
     var i = 0;
     cm.forEach(o, function(){
         i++;
+    });
+    return i;
+};
+
+cm.getCount = function(o){
+    var i = 0;
+    cm.forEach(o, function(item){
+        if(!cm.isUndefined(item)){
+            i++;
+        }
     });
     return i;
 };
@@ -961,6 +973,63 @@ cm.onImageLoad = function(src, handler, delay){
     });
 
     return isMany ? nodes : nodes[0];
+};
+
+cm.fileFromDataTransfer = function(e, callback){
+    var types = ['url', 'text/plain', 'text/uri-list'],
+        image = new Image(),
+        canvas = document.createElement('canvas'),
+        dt = e.dataTransfer,
+        tempData,
+        data,
+        dataURL,
+        blob,
+        file;
+    // Get URL from HTML
+    tempData = dt.getData('text/html');
+    if(!cm.isEmpty(tempData)){
+        tempData = cm.strToHTML(tempData);
+        if(!cm.isEmpty(tempData)){
+            tempData = tempData.querySelector('img');
+            if(!cm.isEmpty(tempData)){
+                data = tempData.src;
+            }
+        }
+    }
+    // Get URL
+    if(cm.isEmpty(data)){
+        cm.forEach(types, function(type){
+            tempData = dt.getData(type);
+            if(!cm.isEmpty(tempData)){
+                data = tempData
+            }
+        });
+    }
+    // Get Data URL
+    image.crossOrigin = 'anonymous';
+    cm.addEvent(image, 'load', function(){
+        var that = this;
+        canvas.width = that.naturalWidth;
+        canvas.height = that.naturalHeight;
+        canvas.getContext('2d').drawImage(that, 0, 0);
+        dataURL = canvas.toDataURL('image/png');
+        blob = cm.dataURItoBlob(dataURL);
+        file = new File([blob], data);
+        cm.isFunction(callback) && callback(file);
+    });
+    image.src = data;
+    return data;
+};
+
+cm.dataURItoBlob = function(dataURI){
+    var byteString = atob(dataURI.split(',')[1]);
+    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    var ab = new ArrayBuffer(byteString.length);
+    var ia = new Uint8Array(ab);
+    for (var i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([ab], {'type': mimeString});
 };
 
 /* ******* NODES ******* */
@@ -1884,7 +1953,7 @@ cm.getCurrentDate = function(format){
     return cm.dateFormat(new Date(), format);
 };
 
-cm.dateFormat = function(date, format, langs){
+cm.dateFormat = function(date, format, langs, formatCase){
     //date = !date ? new Date() : new Date(+date);
     if(cm.isDate(date)){
         date = new Date(+date);
@@ -1894,11 +1963,19 @@ cm.dateFormat = function(date, format, langs){
     if(isNaN(date)){
         date = null;
     }
+    // Validate format
     format = cm.isString(format) ? format : cm._config.dateTimeFormat;
+    formatCase = cm.isString(formatCase) ? formatCase : cm._config.dateFormatCase;
+    // Validate language strings
     langs = cm.merge({
         'months' : cm._strings.months,
         'days' : cm._strings.days
     }, langs);
+    // Validate language case
+    if(cm.isObject(langs['months']) && langs['months'][formatCase]){
+        langs['months'] = langs['months'][formatCase]
+    }
+    // Define format variables
     var convertFormats = {
         '%Y%' : '%Y',
         '%m%' : '%m',
@@ -2016,7 +2093,7 @@ cm.parseDate = function(str, format){
             }
         },
         fromIndex = 0;
-    format = cm.isString(format) ? format : cm._config['dateTimeFormat'];
+    format = cm.isString(format) ? format : cm._config.dateTimeFormat;
     format = cm.strReplace(format, convertFormats);
     cm.forEach(formats, function(item, key){
         fromIndex = format.indexOf(key);
@@ -2028,18 +2105,20 @@ cm.parseDate = function(str, format){
     return date;
 };
 
-cm.parseFormatDate = function(str, format, displayFormat, langs){
-    format = format || cm._config['dateFormat'];
-    displayFormat = displayFormat || cm._config['displayDateFormat'];
+cm.parseFormatDate = function(str, format, displayFormat, langs, formatCase){
+    format = format || cm._config.dateFormat;
+    displayFormat = displayFormat || cm._config.displayDateFormat;
+    formatCase = formatCase|| cm._config.displayDateFormatCase;
     var date = cm.parseDate(str, format);
-    return cm.dateFormat(date, displayFormat, langs);
+    return cm.dateFormat(date, displayFormat, langs, formatCase);
 };
 
-cm.parseFormatDateTime = function(str, format, displayFormat, langs){
-    format = format || cm._config['dateTimeFormat'];
-    displayFormat = displayFormat || cm._config['displayDateTimeFormat'];
+cm.parseFormatDateTime = function(str, format, displayFormat, langs, formatCase){
+    format = format || cm._config.dateTimeFormat;
+    displayFormat = displayFormat || cm._config.displayDateTimeFormat;
+    formatCase = formatCase|| cm._config.displayDateFormatCase;
     var date = cm.parseDate(str, format);
-    return cm.dateFormat(date, displayFormat, langs);
+    return cm.dateFormat(date, displayFormat, langs, formatCase);
 };
 
 cm.getWeek = function(date){

@@ -23,13 +23,14 @@ function(params){
     Com.AbstractContainer.apply(that, arguments);
 });
 
-cm.getConstructor('Com.DialogContainer', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
-    classProto.validateParams = function(){
+cm.getConstructor('Com.DialogContainer', function(classConstructor, className, classProto, classInherit){
+    classProto.onConstructStart = function(){
         var that = this;
-        // Call parent method
-        _inherit.prototype.validateParams.apply(that, arguments);
+        that.buttons = {};
+    };
+
+    classProto.onValidateParams = function(){
+        var that = this;
         // Set Content
         if(cm.isObject(that.params['content'])){
             that.params['params']['title'] = that.params['content']['title'] || that.params['params']['title'];
@@ -37,7 +38,6 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
             that.params['params']['buttons'] = that.params['content']['buttons'] || that.params['params']['buttons'];
         }
         that.params['params']['showTitle'] = that.params['renderTitle'];
-        return that;
     };
 
     classProto.constructController = function(classObject){

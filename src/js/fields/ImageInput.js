@@ -18,13 +18,11 @@ function(params){
     Com.FileInput.apply(that, arguments);
 });
 
-cm.getConstructor('Com.ImageInput', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
+cm.getConstructor('Com.ImageInput', function(classConstructor, className, classProto, classInherit){
     classProto.renderViewModel = function(){
         var that = this;
         // Call parent method - renderViewModel
-        _inherit.prototype.renderViewModel.apply(that, arguments);
+        classInherit.prototype.renderViewModel.apply(that, arguments);
         // Init Preview
         if(that.params['preview']){
             cm.getConstructor(that.params['previewConstructor'], function(classObject){

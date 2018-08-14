@@ -20,5 +20,6 @@ function(params){
 
 Com.FormFields.add('multi-autocomplete', {
     'node' : cm.node('div'),
+    'fieldConstructor' : 'Com.AbstractFormField',
     'constructor' : 'Com.MultipleAutocomplete'
 });
