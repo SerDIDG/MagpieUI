@@ -127,10 +127,10 @@ function(params){
                     'container' : that.nodes['notifications']
                 })
             );
-            that.components['notifications'].addEvent('onAdd', function(my){
+            that.components['notifications'].addEvent('onAdd', function(){
                 cm.addClass(that.nodes['notifications'], 'is-show', true);
             });
-            that.components['notifications'].addEvent('onRemove', function(my){
+            that.components['notifications'].addEvent('onRemove', function(){
                 if(that.components['notifications'].getLength() === 0){
                     cm.removeClass(that.nodes['notifications'], 'is-show', true);
                 }
@@ -376,28 +376,24 @@ function(params){
 
     /* *** RENDER *** */
 
-    that.callbacks.renderNotification = function(that, o){
-        cm.addClass(that.nodes['notifications'], 'is-show', true);
-        that.components['notifications'].add(o);
+    that.callbacks.clearError = function(that){
+        // Clear notification
+        that.clearNotification();
+        // Clear field errors
+        cm.forEach(that.fields, function(field){
+            field['controller'].clearError();
+        });
     };
 
     that.callbacks.renderError = function(that, errors, message){
-        var field,
-            fieldName,
-            label = !cm.isEmpty(message) ? message : that.lang('form_error'),
-            messages = [];
+        var hasMessage = !cm.isEmpty(message) && cm.isString(message),
+            label = hasMessage ? message : that.lang('form_error'),
+            messages;
         // Clear old errors messages
         that.callbacks.clearError(that);
         // Render new errors messages
         if(cm.isArray(errors) || cm.isObject(errors)){
-            cm.forEach(errors, function(item, key){
-                messages.push(that.lang(item['message']));
-                // Render form errors
-                fieldName = item['field'] || key;
-                if(field = that.getField(fieldName)){
-                    field['controller'].renderError(item['message']);
-                }
-            });
+            messages = that.callbacks.renderErrorMessages(that, errors);
             if(that.params['showNotifications']){
                 that.callbacks.renderNotification(that, {
                     'label' : label,
@@ -406,10 +402,10 @@ function(params){
                     'collapsed' : true
                 });
             }
-        }else if(!cm.isEmpty(message)){
+        }else if(hasMessage){
             if(that.params['showNotifications']){
                 that.callbacks.renderNotification(that, {
-                    'label' : message,
+                    'label' : label,
                     'type' : 'danger'
                 });
             }
@@ -423,13 +419,34 @@ function(params){
         }
     };
 
-    that.callbacks.clearError = function(that){
-        // Clear notification
-        that.clearNotification();
-        // Clear field errors
-        cm.forEach(that.fields, function(field){
-            field['controller'].clearError();
+    that.callbacks.renderErrorMessages = function(that, errors){
+        var field,
+            fieldName,
+            fieldMessage,
+            messages = [];
+        cm.forEach(errors, function(item, key){
+            // Get field
+            fieldName = item['field'] || key;
+            field = that.getField(fieldName);
+            // Render field messages
+            if(cm.isArray(item['message'])){
+                cm.forEach(item['message'], function(messageItem){
+                    fieldMessage = that.lang(messageItem);
+                    messages.push(fieldMessage);
+                    field && field['controller'].renderError(fieldMessage);
+                })
+            }else{
+                fieldMessage = that.lang(item['message']);
+                messages.push(fieldMessage);
+                field && field['controller'].renderError(fieldMessage);
+            }
         });
+        return messages;
+    };
+
+    that.callbacks.renderNotification = function(that, o){
+        cm.addClass(that.nodes['notifications'], 'is-show', true);
+        that.components['notifications'].add(o);
     };
 
     /* ******* PUBLIC ******* */

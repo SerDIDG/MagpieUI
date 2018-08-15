@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.34.2 (2018-08-14 20:53) ************ */
+/*! ************ MagpieUI v3.34.3 (2018-08-15 20:56) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.34.2',
+        '_version' : '3.34.3',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -9200,10 +9200,10 @@ function(params){
                     'container' : that.nodes['notifications']
                 })
             );
-            that.components['notifications'].addEvent('onAdd', function(my){
+            that.components['notifications'].addEvent('onAdd', function(){
                 cm.addClass(that.nodes['notifications'], 'is-show', true);
             });
-            that.components['notifications'].addEvent('onRemove', function(my){
+            that.components['notifications'].addEvent('onRemove', function(){
                 if(that.components['notifications'].getLength() === 0){
                     cm.removeClass(that.nodes['notifications'], 'is-show', true);
                 }
@@ -9449,28 +9449,24 @@ function(params){
 
     /* *** RENDER *** */
 
-    that.callbacks.renderNotification = function(that, o){
-        cm.addClass(that.nodes['notifications'], 'is-show', true);
-        that.components['notifications'].add(o);
+    that.callbacks.clearError = function(that){
+        // Clear notification
+        that.clearNotification();
+        // Clear field errors
+        cm.forEach(that.fields, function(field){
+            field['controller'].clearError();
+        });
     };
 
     that.callbacks.renderError = function(that, errors, message){
-        var field,
-            fieldName,
-            label = !cm.isEmpty(message) ? message : that.lang('form_error'),
-            messages = [];
+        var hasMessage = !cm.isEmpty(message) && cm.isString(message),
+            label = hasMessage ? message : that.lang('form_error'),
+            messages;
         // Clear old errors messages
         that.callbacks.clearError(that);
         // Render new errors messages
         if(cm.isArray(errors) || cm.isObject(errors)){
-            cm.forEach(errors, function(item, key){
-                messages.push(that.lang(item['message']));
-                // Render form errors
-                fieldName = item['field'] || key;
-                if(field = that.getField(fieldName)){
-                    field['controller'].renderError(item['message']);
-                }
-            });
+            messages = that.callbacks.renderErrorMessages(that, errors);
             if(that.params['showNotifications']){
                 that.callbacks.renderNotification(that, {
                     'label' : label,
@@ -9479,10 +9475,10 @@ function(params){
                     'collapsed' : true
                 });
             }
-        }else if(!cm.isEmpty(message)){
+        }else if(hasMessage){
             if(that.params['showNotifications']){
                 that.callbacks.renderNotification(that, {
-                    'label' : message,
+                    'label' : label,
                     'type' : 'danger'
                 });
             }
@@ -9496,13 +9492,34 @@ function(params){
         }
     };
 
-    that.callbacks.clearError = function(that){
-        // Clear notification
-        that.clearNotification();
-        // Clear field errors
-        cm.forEach(that.fields, function(field){
-            field['controller'].clearError();
+    that.callbacks.renderErrorMessages = function(that, errors){
+        var field,
+            fieldName,
+            fieldMessage,
+            messages = [];
+        cm.forEach(errors, function(item, key){
+            // Get field
+            fieldName = item['field'] || key;
+            field = that.getField(fieldName);
+            // Render field messages
+            if(cm.isArray(item['message'])){
+                cm.forEach(item['message'], function(messageItem){
+                    fieldMessage = that.lang(messageItem);
+                    messages.push(fieldMessage);
+                    field && field['controller'].renderError(fieldMessage);
+                })
+            }else{
+                fieldMessage = that.lang(item['message']);
+                messages.push(fieldMessage);
+                field && field['controller'].renderError(fieldMessage);
+            }
         });
+        return messages;
+    };
+
+    that.callbacks.renderNotification = function(that, o){
+        cm.addClass(that.nodes['notifications'], 'is-show', true);
+        that.components['notifications'].add(o);
     };
 
     /* ******* PUBLIC ******* */
@@ -20271,7 +20288,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         }
     };
 
-    classProto.pushRoute = function(route, hash){
+    classProto.pushRoute = function(route, hash, params){
         var that = this,
             state;
         // Validate state
@@ -20281,7 +20298,11 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         state = {
             'route' : route,
             'hash' : hash,
-            'location' : that.prepareHref(route)
+            'location' : that.prepareHref(route),
+            'params' : cm.merge({
+                'pushState' : true,
+                'replaceState' : false
+            }, params)
         };
         // Check data storage
         if(that.dataStorage[state['route']]){
@@ -20295,7 +20316,11 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         // Set scroll
         cm.setBodyScrollTop(0);
         // Set Window URL
-        window.history.pushState(state, '', state['location']);
+        if(state.params['replaceState']){
+            window.history.replaceState(state, '', state['location']);
+        }else if(state.params['pushState']){
+            window.history.pushState(state, '', state['location']);
+        }
         // Process route
         that.processRoute(state);
         // Process hash
@@ -20451,6 +20476,8 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
                 'regexp' : null,
                 'map' : [],
                 'captures' : {},
+                //'pushState' : true,
+                //'replaceState' : false,
                 'constructor' : false,
                 'constructorParams' : {},
                 'callback' : function(){},
@@ -20509,16 +20536,26 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         return that.prepareHref(that.getURL(route, hash, params, data));
     };
 
-    classProto.set = function(route, hash){
+    classProto.getCurrent = function(){
+        var that = this;
+        return that.current;
+    };
+
+    classProto.getPrevious = function(){
+        var that = this;
+        return that.previous;
+    };
+
+    classProto.set = function(route, hash, params){
         var that = this;
         if(that.routesBinds[route]){
             route = that.routesBinds[route];
         }
-        that.trigger(route, hash);
+        that.trigger(route, hash, params);
         return that;
     };
 
-    classProto.summon = function(route, hash){
+    classProto.summon = function(route, hash, params){
         var that = this,
             item;
         if(that.routesBinds[route]){
@@ -20550,9 +20587,9 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         return that;
     };
 
-    classProto.trigger = function(route, hash){
+    classProto.trigger = function(route, hash, params){
         var that = this;
-        that.pushRoute(route, hash);
+        that.pushRoute(route, hash, params);
         return that;
     };
 

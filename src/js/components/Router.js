@@ -73,7 +73,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         }
     };
 
-    classProto.pushRoute = function(route, hash){
+    classProto.pushRoute = function(route, hash, params){
         var that = this,
             state;
         // Validate state
@@ -83,7 +83,11 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         state = {
             'route' : route,
             'hash' : hash,
-            'location' : that.prepareHref(route)
+            'location' : that.prepareHref(route),
+            'params' : cm.merge({
+                'pushState' : true,
+                'replaceState' : false
+            }, params)
         };
         // Check data storage
         if(that.dataStorage[state['route']]){
@@ -97,7 +101,11 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         // Set scroll
         cm.setBodyScrollTop(0);
         // Set Window URL
-        window.history.pushState(state, '', state['location']);
+        if(state.params['replaceState']){
+            window.history.replaceState(state, '', state['location']);
+        }else if(state.params['pushState']){
+            window.history.pushState(state, '', state['location']);
+        }
         // Process route
         that.processRoute(state);
         // Process hash
@@ -253,6 +261,8 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
                 'regexp' : null,
                 'map' : [],
                 'captures' : {},
+                //'pushState' : true,
+                //'replaceState' : false,
                 'constructor' : false,
                 'constructorParams' : {},
                 'callback' : function(){},
@@ -311,16 +321,26 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         return that.prepareHref(that.getURL(route, hash, params, data));
     };
 
-    classProto.set = function(route, hash){
+    classProto.getCurrent = function(){
+        var that = this;
+        return that.current;
+    };
+
+    classProto.getPrevious = function(){
+        var that = this;
+        return that.previous;
+    };
+
+    classProto.set = function(route, hash, params){
         var that = this;
         if(that.routesBinds[route]){
             route = that.routesBinds[route];
         }
-        that.trigger(route, hash);
+        that.trigger(route, hash, params);
         return that;
     };
 
-    classProto.summon = function(route, hash){
+    classProto.summon = function(route, hash, params){
         var that = this,
             item;
         if(that.routesBinds[route]){
@@ -352,9 +372,9 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         return that;
     };
 
-    classProto.trigger = function(route, hash){
+    classProto.trigger = function(route, hash, params){
         var that = this;
-        that.pushRoute(route, hash);
+        that.pushRoute(route, hash, params);
         return that;
     };
 
