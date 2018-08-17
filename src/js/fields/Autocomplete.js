@@ -478,8 +478,8 @@ function(params){
         triggerEvents = typeof triggerEvents === 'undefined'? true : triggerEvents;
         that.rawValue = that.callbacks.convertItem(that, item);
         that.previousValue = that.value;
-        that.value = that.rawValue['value'];
-        that.params['node'].value = that.rawValue['text'];
+        that.value = !cm.isEmpty(that.rawValue) ? that.rawValue['value'] : null;
+        that.params['node'].value = !cm.isEmpty(that.rawValue) ? that.rawValue['text'] : '';
         // Trigger events
         if(triggerEvents){
             that.triggerEvent('onSelect', that.value);
@@ -612,7 +612,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
 
     classProto.callbacks.convertItem = function(that, item){
         if(cm.isEmpty(item)){
-            return null
+            return null;
         }else if(!cm.isObject(item)){
             return {'text' : item, 'value' : item};
         }else{

@@ -19,7 +19,8 @@ cm.define('Com.Form', {
         'onSendStart',
         'onSend',
         'onSendEnd',
-        'onChange'
+        'onChange',
+        'onInput'
     ],
     'params' : {
         'node' : cm.node('div'),
@@ -42,6 +43,8 @@ cm.define('Com.Form', {
         'responseKey': 'data',
         'validate' : false,
         'validateOnChange' : false,
+        'validateOnInput' : false,
+        'sendEmptyFields' : false,
         'data' : {},
         'ajax' : {
             'type' : 'json',
@@ -198,6 +201,12 @@ function(params){
                     params['fieldController'].validate();
                 }
                 that.triggerEvent('onChange');
+            });
+            params['fieldController'].addEvent('onInput', function(){
+                if(that.params['validate'] && that.params['validateOnInput']){
+                    params['fieldController'].validate();
+                }
+                that.triggerEvent('onInput');
             });
             // Save
             that.fields[params['name']] = params;
@@ -507,13 +516,13 @@ function(params){
         // Handler
         handler = function(field, name){
             value = field['controller'].get();
-            if(!cm.isEmpty(value)){
+            if(that.params['sendEmptyFields'] || !cm.isEmpty(value)){
                 o[name] = value;
             }
         };
         pathHandler = function(field, name){
             value = field['controller'].get();
-            if(!cm.isEmpty(value)){
+            if(that.params['sendEmptyFields'] || !cm.isEmpty(value)){
                 if(!cm.isEmpty(field['sendPath'])){
                     path = cm.objectFormPath(field['sendPath'], value);
                     o = cm.merge(o, path);
@@ -896,33 +905,6 @@ function(params){
 });
 
 /* ******* COMPONENT: FORM FIELD: DECORATORS ******* */
-
-Com.FormFields.add('select', {
-    'node' : cm.node('select'),
-    'callbacks' : {
-        'controller' : function(that){
-            var nodes,
-                items = [];
-            cm.forEach(that.params['options'], function(item){
-                nodes = {};
-                nodes['container'] = cm.node('option', {'value' : item['value']}, item['text']);
-                that.params['node'].appendChild(nodes['container']);
-                items.push(nodes);
-            });
-            return items;
-        },
-        'set' : function(that, value){
-            that.params['node'].value = value;
-            return value;
-        },
-        'get' : function(that){
-            return that.params['node'].value;
-        },
-        'reset' : function(that){
-            that.params['node'].value = '';
-        }
-    }
-});
 
 Com.FormFields.add('buttons', {
     'node' : cm.node('div', {'class' : 'pt__buttons pull-right'}),

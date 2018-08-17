@@ -7,6 +7,7 @@ cm.define('Com.AbstractFormField', {
         'onBlur',
         'onValidate',
         'onChange',
+        'onInput',
         'onSelect',
         'onReset',
         'onRequestStart',
@@ -40,6 +41,7 @@ cm.define('Com.AbstractFormField', {
         'icon' : false,
         'placeholder' : '',
         'title' : '',
+        'hint' : '',
         'visible' : true,
         'renderName' : false,
         'options' : [],
@@ -183,8 +185,8 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         }
         // Embed
         if(that.params['renderStructureField']){
-            cm.appendChild(that.nodes['contentContainer'], that.nodes['value']);
-        }else{
+            cm.insertFirst(that.nodes['contentContainer'], that.nodes['value']);
+        }else if(that.params['renderStructureContent']){
             that.nodes['container'] = that.nodes['contentContainer'];
         }
         that.triggerEvent('onRenderViewProcess');
@@ -206,6 +208,10 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         if(that.params['required'] && that.params['requiredAsterisk']){
             that.nodes['required'] = cm.node('span', {'class' : 'required'}, that.lang('*'));
             cm.appendChild(that.nodes['required'], that.nodes['label']);
+        }
+        // Hints
+        if(!cm.isEmpty(that.params['hint'])){
+            that.renderHint(that.params['hint']);
         }
     };
 
@@ -337,6 +343,9 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.components['controller'].addEvent('onSelect', function(controller, data){
             that.triggerEvent('onSelect', data);
         });
+        that.components['controller'].addEvent('onInput', function(controller, data){
+            that.triggerEvent('onInput', data);
+        });
         that.components['controller'].addEvent('onChange', function(controller, data){
             that.triggerEvent('onChange', data);
         });
@@ -450,13 +459,22 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
 
     /******* MESSAGES *******/
 
+    classProto.renderHint = function(message){
+        var that = this;
+        that.nodes['hints'] = cm.node('ul', {'class' : 'pt__field__hint'},
+            cm.node('li', {'innerHTML' : message})
+        );
+        cm.appendChild(that.nodes['hints'], that.nodes['value']);
+        return that;
+    };
+
     classProto.renderError = function(message){
         var that = this;
         that.clearError();
         if(that.params['renderError']){
             cm.addClass(that.nodes['container'], 'error');
             that.nodes['errors'] = cm.node('ul', {'class' : 'pt__field__error pt__field__hint'},
-                cm.node('li', {'class' : 'error'}, message)
+                cm.node('li', {'class' : 'error', 'innerHTML' : message})
             );
             cm.appendChild(that.nodes['errors'], that.nodes['value']);
         }

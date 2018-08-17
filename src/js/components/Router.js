@@ -6,7 +6,8 @@ cm.define('Com.Router', {
     'params' : {
         'renderStructure' : false,
         'embedStructureOnRender' : false,
-        'route' : null
+        'route' : null,
+        'addLeadPoint' : true
     }
 },
 function(params){
@@ -47,11 +48,30 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         }
         // Get event target
         target = cm.getEventTarget(e);
+        target = that.getTargetLink(target);
         // Process route only on inner link
         if(cm.isTagName(target, 'a')){
             cm.preventDefault(e);
             that.processLink(target);
         }
+    };
+
+    classProto.getTargetLink = function(el){
+        var that = this;
+        if(!cm.isElementNode(el)){
+            return false;
+        }
+        if(
+            el.tagName.toLowerCase() === 'a' &&
+            el.target !== "_blank" &&
+            that.prepareUrl(el.href).indexOf(that.prepareBaseUrl()) !== -1
+        ){
+            return el;
+        }
+        if(el = that.getTargetLink(el.parentNode)){
+            return el;
+        }
+        return false;
     };
 
     classProto.popstateEvent = function(e){
@@ -186,12 +206,18 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
 
     /* *** HELPERS *** */
 
+    classProto.prepareUrl = function(url){
+        var that = this;
+        url = url
+            .replace(new RegExp('^(http|https):'), '')
+            .replace(new RegExp('^//www\\.'), '//');
+        return url;
+    };
+
     classProto.prepareBaseUrl = function(www){
         var that = this,
             hasWWW = new RegExp('^www.').test(window.location.host),
-            baseUrl = cm._baseUrl
-                .replace(new RegExp('^' + window.location.protocol), '')
-                .replace(new RegExp('^//www.'), '//');
+            baseUrl = that.prepareUrl(cm._baseUrl);
         if(www && hasWWW){
             baseUrl = baseUrl.replace(new RegExp('^//'), '//www.');
         }
@@ -201,9 +227,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
     classProto.prepareRoute = function(route){
         var that = this,
             baseUrl = that.prepareBaseUrl();
-        route = route
-            .replace(new RegExp('^' + window.location.protocol), '')
-            .replace(new RegExp('^//www\\.'), '//')
+        route = that.prepareUrl(route)
             .replace(new RegExp('^' + baseUrl), '')
             .replace(new RegExp('^\\.'), '')
             .split('#');
@@ -296,19 +320,26 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
     classProto.getURL = function(route, hash, params, data){
         var that = this,
             item;
+        // Get route
         if(item = that.get(route)){
             route = item['route'];
         }
+        // Set url params
         if(cm.isObject(params)){
             route = route.replace(/{(\w+)}/g, function(math, p1){
                 return params[p1] || '';
             });
         }
+        // Save into data storage
+        that.dataStorage[route] = data;
+        // Add lead slash if not exists
         if(!/^(\/|\.\/)/.test(route)){
             route = '/' + route;
         }
-        // Save into data storage
-        that.dataStorage[route] = data;
+        // Add lead point if not exists
+        if(that.params['addLeadPoint'] && !/^\./.test(route)){
+            route = '.' + route;
+        }
         // Add hash
         if(!cm.isEmpty(hash)){
             route = route + '#' + hash;

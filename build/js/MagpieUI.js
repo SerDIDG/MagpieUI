@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.34.3 (2018-08-15 20:56) ************ */
+/*! ************ MagpieUI v3.34.4 (2018-08-17 21:12) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.34.3',
+        '_version' : '3.34.4',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -8055,6 +8055,7 @@ cm.define('Com.AbstractFormField', {
         'onBlur',
         'onValidate',
         'onChange',
+        'onInput',
         'onSelect',
         'onReset',
         'onRequestStart',
@@ -8088,6 +8089,7 @@ cm.define('Com.AbstractFormField', {
         'icon' : false,
         'placeholder' : '',
         'title' : '',
+        'hint' : '',
         'visible' : true,
         'renderName' : false,
         'options' : [],
@@ -8231,8 +8233,8 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         }
         // Embed
         if(that.params['renderStructureField']){
-            cm.appendChild(that.nodes['contentContainer'], that.nodes['value']);
-        }else{
+            cm.insertFirst(that.nodes['contentContainer'], that.nodes['value']);
+        }else if(that.params['renderStructureContent']){
             that.nodes['container'] = that.nodes['contentContainer'];
         }
         that.triggerEvent('onRenderViewProcess');
@@ -8254,6 +8256,10 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         if(that.params['required'] && that.params['requiredAsterisk']){
             that.nodes['required'] = cm.node('span', {'class' : 'required'}, that.lang('*'));
             cm.appendChild(that.nodes['required'], that.nodes['label']);
+        }
+        // Hints
+        if(!cm.isEmpty(that.params['hint'])){
+            that.renderHint(that.params['hint']);
         }
     };
 
@@ -8385,6 +8391,9 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.components['controller'].addEvent('onSelect', function(controller, data){
             that.triggerEvent('onSelect', data);
         });
+        that.components['controller'].addEvent('onInput', function(controller, data){
+            that.triggerEvent('onInput', data);
+        });
         that.components['controller'].addEvent('onChange', function(controller, data){
             that.triggerEvent('onChange', data);
         });
@@ -8498,13 +8507,22 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
 
     /******* MESSAGES *******/
 
+    classProto.renderHint = function(message){
+        var that = this;
+        that.nodes['hints'] = cm.node('ul', {'class' : 'pt__field__hint'},
+            cm.node('li', {'innerHTML' : message})
+        );
+        cm.appendChild(that.nodes['hints'], that.nodes['value']);
+        return that;
+    };
+
     classProto.renderError = function(message){
         var that = this;
         that.clearError();
         if(that.params['renderError']){
             cm.addClass(that.nodes['container'], 'error');
             that.nodes['errors'] = cm.node('ul', {'class' : 'pt__field__error pt__field__hint'},
-                cm.node('li', {'class' : 'error'}, message)
+                cm.node('li', {'class' : 'error', 'innerHTML' : message})
             );
             cm.appendChild(that.nodes['errors'], that.nodes['value']);
         }
@@ -9092,7 +9110,8 @@ cm.define('Com.Form', {
         'onSendStart',
         'onSend',
         'onSendEnd',
-        'onChange'
+        'onChange',
+        'onInput'
     ],
     'params' : {
         'node' : cm.node('div'),
@@ -9115,6 +9134,8 @@ cm.define('Com.Form', {
         'responseKey': 'data',
         'validate' : false,
         'validateOnChange' : false,
+        'validateOnInput' : false,
+        'sendEmptyFields' : false,
         'data' : {},
         'ajax' : {
             'type' : 'json',
@@ -9271,6 +9292,12 @@ function(params){
                     params['fieldController'].validate();
                 }
                 that.triggerEvent('onChange');
+            });
+            params['fieldController'].addEvent('onInput', function(){
+                if(that.params['validate'] && that.params['validateOnInput']){
+                    params['fieldController'].validate();
+                }
+                that.triggerEvent('onInput');
             });
             // Save
             that.fields[params['name']] = params;
@@ -9580,13 +9607,13 @@ function(params){
         // Handler
         handler = function(field, name){
             value = field['controller'].get();
-            if(!cm.isEmpty(value)){
+            if(that.params['sendEmptyFields'] || !cm.isEmpty(value)){
                 o[name] = value;
             }
         };
         pathHandler = function(field, name){
             value = field['controller'].get();
-            if(!cm.isEmpty(value)){
+            if(that.params['sendEmptyFields'] || !cm.isEmpty(value)){
                 if(!cm.isEmpty(field['sendPath'])){
                     path = cm.objectFormPath(field['sendPath'], value);
                     o = cm.merge(o, path);
@@ -9969,33 +9996,6 @@ function(params){
 });
 
 /* ******* COMPONENT: FORM FIELD: DECORATORS ******* */
-
-Com.FormFields.add('select', {
-    'node' : cm.node('select'),
-    'callbacks' : {
-        'controller' : function(that){
-            var nodes,
-                items = [];
-            cm.forEach(that.params['options'], function(item){
-                nodes = {};
-                nodes['container'] = cm.node('option', {'value' : item['value']}, item['text']);
-                that.params['node'].appendChild(nodes['container']);
-                items.push(nodes);
-            });
-            return items;
-        },
-        'set' : function(that, value){
-            that.params['node'].value = value;
-            return value;
-        },
-        'get' : function(that){
-            return that.params['node'].value;
-        },
-        'reset' : function(that){
-            that.params['node'].value = '';
-        }
-    }
-});
 
 Com.FormFields.add('buttons', {
     'node' : cm.node('div', {'class' : 'pt__buttons pull-right'}),
@@ -20221,7 +20221,8 @@ cm.define('Com.Router', {
     'params' : {
         'renderStructure' : false,
         'embedStructureOnRender' : false,
-        'route' : null
+        'route' : null,
+        'addLeadPoint' : true
     }
 },
 function(params){
@@ -20262,11 +20263,30 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         }
         // Get event target
         target = cm.getEventTarget(e);
+        target = that.getTargetLink(target);
         // Process route only on inner link
         if(cm.isTagName(target, 'a')){
             cm.preventDefault(e);
             that.processLink(target);
         }
+    };
+
+    classProto.getTargetLink = function(el){
+        var that = this;
+        if(!cm.isElementNode(el)){
+            return false;
+        }
+        if(
+            el.tagName.toLowerCase() === 'a' &&
+            el.target !== "_blank" &&
+            that.prepareUrl(el.href).indexOf(that.prepareBaseUrl()) !== -1
+        ){
+            return el;
+        }
+        if(el = that.getTargetLink(el.parentNode)){
+            return el;
+        }
+        return false;
     };
 
     classProto.popstateEvent = function(e){
@@ -20401,12 +20421,18 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
 
     /* *** HELPERS *** */
 
+    classProto.prepareUrl = function(url){
+        var that = this;
+        url = url
+            .replace(new RegExp('^(http|https):'), '')
+            .replace(new RegExp('^//www\\.'), '//');
+        return url;
+    };
+
     classProto.prepareBaseUrl = function(www){
         var that = this,
             hasWWW = new RegExp('^www.').test(window.location.host),
-            baseUrl = cm._baseUrl
-                .replace(new RegExp('^' + window.location.protocol), '')
-                .replace(new RegExp('^//www.'), '//');
+            baseUrl = that.prepareUrl(cm._baseUrl);
         if(www && hasWWW){
             baseUrl = baseUrl.replace(new RegExp('^//'), '//www.');
         }
@@ -20416,9 +20442,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
     classProto.prepareRoute = function(route){
         var that = this,
             baseUrl = that.prepareBaseUrl();
-        route = route
-            .replace(new RegExp('^' + window.location.protocol), '')
-            .replace(new RegExp('^//www\\.'), '//')
+        route = that.prepareUrl(route)
             .replace(new RegExp('^' + baseUrl), '')
             .replace(new RegExp('^\\.'), '')
             .split('#');
@@ -20511,19 +20535,26 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
     classProto.getURL = function(route, hash, params, data){
         var that = this,
             item;
+        // Get route
         if(item = that.get(route)){
             route = item['route'];
         }
+        // Set url params
         if(cm.isObject(params)){
             route = route.replace(/{(\w+)}/g, function(math, p1){
                 return params[p1] || '';
             });
         }
+        // Save into data storage
+        that.dataStorage[route] = data;
+        // Add lead slash if not exists
         if(!/^(\/|\.\/)/.test(route)){
             route = '/' + route;
         }
-        // Save into data storage
-        that.dataStorage[route] = data;
+        // Add lead point if not exists
+        if(that.params['addLeadPoint'] && !/^\./.test(route)){
+            route = '.' + route;
+        }
         // Add hash
         if(!cm.isEmpty(hash)){
             route = route + '#' + hash;
@@ -26059,8 +26090,8 @@ function(params){
         triggerEvents = typeof triggerEvents === 'undefined'? true : triggerEvents;
         that.rawValue = that.callbacks.convertItem(that, item);
         that.previousValue = that.value;
-        that.value = that.rawValue['value'];
-        that.params['node'].value = that.rawValue['text'];
+        that.value = !cm.isEmpty(that.rawValue) ? that.rawValue['value'] : null;
+        that.params['node'].value = !cm.isEmpty(that.rawValue) ? that.rawValue['text'] : '';
         // Trigger events
         if(triggerEvents){
             that.triggerEvent('onSelect', that.value);
@@ -26193,7 +26224,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
 
     classProto.callbacks.convertItem = function(that, item){
         if(cm.isEmpty(item)){
-            return null
+            return null;
         }else if(!cm.isObject(item)){
             return {'text' : item, 'value' : item};
         }else{
