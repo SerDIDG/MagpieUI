@@ -116,7 +116,7 @@ function(params){
             that.params['disabled'] = that.params['node'].disabled || that.params['disabled'];
             that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
         }
-        if(that.params['value'] == 'now'){
+        if(that.params['value'] === 'now'){
             that.params['value'] = new Date();
         }
         if(/current/.test(that.params['startYear'])){
@@ -396,7 +396,7 @@ function(params){
     };
 
     that.get = function(format){
-        format = typeof format != 'undefined'? format : that.format;
+        format = !cm.isUndefined(format) ? format : that.format;
         return cm.dateFormat(that.date, format, that.lang());
     };
 
@@ -425,11 +425,11 @@ function(params){
     };
 
     that.set = function(str, format, triggerEvents){
-        format = typeof format != 'undefined'? format : that.format;
-        triggerEvents = typeof triggerEvents != 'undefined'? triggerEvents : true;
+        format = !cm.isUndefined(format) ? format : that.format;
+        triggerEvents = !cm.isUndefined(triggerEvents) ? triggerEvents : true;
         // Get date
         var pattern = cm.dateFormat(false, format, that.lang());
-        if(cm.isEmpty(str) || str == pattern){
+        if(cm.isEmpty(str) || str === pattern){
             that.clear();
             return that;
         }else if(cm.isDate(str)){
@@ -448,7 +448,7 @@ function(params){
     };
 
     that.clear = function(triggerEvents){
-        triggerEvents = typeof triggerEvents != 'undefined'? triggerEvents : true;
+        triggerEvents = !cm.isUndefined(triggerEvents) ? triggerEvents : true;
         // Clear date
         that.date = null;
         // Clear components
@@ -487,4 +487,12 @@ function(params){
     };
 
     init();
+});
+
+/* ****** FORM FIELD COMPONENT ******* */
+
+Com.FormFields.add('date-picker', {
+    'node' : cm.node('input', {'type' : 'text'}),
+    'fieldConstructor' : 'Com.AbstractFormField',
+    'constructor' : 'Com.Datepicker'
 });

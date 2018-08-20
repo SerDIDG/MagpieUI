@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.34.4 (2018-08-17 21:12) ************ */
+/*! ************ MagpieUI v3.34.5 (2018-08-20 21:07) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3924,7 +3924,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.34.4';
+@CmVersion: '3.34.5';
 
 // /* ******* PATH ******* */
 
@@ -9825,6 +9825,23 @@ button {
         }
     }
 
+    &.is-check-line {
+        .display-flex;
+        .mx__align-content(space-between);
+
+        > dt,
+        > .field__title {
+            width: auto;
+            float: none;
+            .mx__flex(auto);
+        }
+
+        > dd,
+        > .field__descr {
+            margin-left: @CmForm-FieldInnerIndent;
+        }
+    }
+
     &.is-box,
     &.is-form-box {
         .cm__box;
@@ -9939,6 +9956,8 @@ ul.pt__field__hint {
 
     html.is-adaptive {
         .pt__field {
+            display: block;
+
             > dt,
             > .field__title {
                 width: auto;
@@ -9948,6 +9967,7 @@ ul.pt__field__hint {
             > dd,
             > .field__descr {
                 margin: 0 0 @CmForm-FieldInnerIndent;
+                float: none;
 
                 &:last-child {
                     margin: 0;
