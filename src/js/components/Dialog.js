@@ -415,10 +415,10 @@ function(params){
         }
     };
 
-    var remove = function(){
+    var remove = function(forceRemove){
         if(!that.isRemoved){
             that.isRemoved = true;
-            if(that.params['destructOnRemove']){
+            if(forceRemove || that.params['destructOnRemove']){
                 that.destruct();
             }
             // Remove dialog container node
@@ -521,17 +521,17 @@ function(params){
         return that;
     };
 
-    that.remove = function(){
+    that.remove = function(forceRemove){
         if(that.isOpen){
             close({
                 'onEnd' : function(){
-                    if(!that.params['removeOnClose']){
-                        remove();
+                    if(forceRemove || !that.params['removeOnClose']){
+                        remove(forceRemove);
                     }
                 }
             });
         }else{
-            remove();
+            remove(forceRemove);
         }
         return that;
     };
@@ -544,7 +544,7 @@ function(params){
                 'self' : false
             });
             that.removeFromStack();
-            cm.remove(nodes['container']);
+            that.remove(true);
         }
         return that;
     };

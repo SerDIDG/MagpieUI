@@ -1,20 +1,17 @@
 cm.define('Com.GalleryPopup', {
-    'modules' : [
-        'Params',
-        'DataConfig',
-        'Events',
-        'Stack'
-    ],
+    'extend' : 'Com.AbstractController',
     'events' : [
-        'onRenderStart',
-        'onRender',
         'onOpen',
+        'onOpenEnd',
         'onClose',
         'onChange'
     ],
     'params' : {
-        'node' : cm.Node('div'),
-        'name' : '',
+        'controllerEvents' : true,
+        'renderStructure' : true,
+        'embedStructure' : 'append',
+        'embedStructureOnRender' : false,
+        'removeOnDestruct' : true,
         'size' : 'fullscreen',                   // fullscreen | auto
         'aspectRatio' : 'auto',                  // auto | 1x1 | 4x3 | 3x2 | 16x10 | 16x9 | 2x1 | 21x9 | 35x10 | 3x4 | 2x3 | 10x16 | 9x16 | 1x2
         'theme' : 'theme-black',
@@ -24,97 +21,115 @@ cm.define('Com.GalleryPopup', {
         'autoPlay' : false,
         'data' : [],
         'openOnSelfClick' : false,
-        'Com.Dialog' : {
+        'placeholderConstructor' : 'Com.Dialog',
+        'placeholderParams' : {
             'width' : '700',
+            'scroll' : false,
             'autoOpen' : false,
             'titleOverflow' : true,
             'closeOnBackground' : true,
             'className' : 'com__gallery-popup'
         },
-        'Com.Gallery' : {
+        'galleryConstructor' : 'Com.Gallery',
+        'galleryParams' : {
             'showCaption' : false
         }
     }
 },
 function(params){
-    var that = this,
-        nodes = {},
-        components = {};
+    var that = this;
+    // Call parent class construct
+    Com.AbstractController.apply(that, arguments);
+});
 
-    var init = function(){
-        that.setParams(params);
-        that.convertEvents(that.params['events']);
-        that.getDataConfig(that.params['node']);
-        that.addToStack(that.params['node']);
-        validateParams();
-        that.triggerEvent('onRenderStart');
-        render();
-        setLogic();
-        that.triggerEvent('onRender');
+cm.getConstructor('Com.GalleryPopup', function(classConstructor, className, classProto, classInherit){
+    classProto.onConstructStart = function(){
+        var that = this;
+        // Bind context
+        that.openHandler = that.open.bind(that);
+        that.closeHandler = that.close.bind(that);
+        that.nextHandler = that.next.bind(that);
+        that.prevHandler = that.prev.bind(that);
+        that.keyPressEventHandler = that.keyPressEvent.bind(that);
+        that.changeEventHandler = that.changeEvent.bind(that);
     };
 
-    var validateParams = function(){
-        that.params['Com.Gallery']['zoom'] = that.params['showZoom'];
-        that.params['Com.Dialog']['theme'] = that.params['theme'];
-        that.params['Com.Dialog']['size'] = that.params['size'];
-        that.params['Com.Dialog']['autoplay'] = that.params['autoPlay'];
+    classProto.onValidateParams = function(){
+        var that = this;
+        that.params['galleryParams']['zoom'] = that.params['showZoom'];
+        that.params['galleryParams']['autoplay'] = that.params['autoPlay'];
+        that.params['placeholderParams']['theme'] = that.params['theme'];
+        that.params['placeholderParams']['size'] = that.params['size'];
         if(that.params['size'] === 'fullscreen'){
-            that.params['Com.Dialog']['documentScroll'] = false;
+            that.params['placeholderParams']['documentScroll'] = false;
         }
     };
 
-    var render = function(){
+    classProto.onDestruct = function(){
+        var that = this;
+        that.components['dialog'] && cm.isFunction(that.components['dialog'].destruct) && that.components['dialog'].destruct();
+        that.components['gallery'] && cm.isFunction(that.components['gallery'].destruct) && that.components['gallery'].destruct();
+    };
+
+    classProto.renderView = function(){
+        var that = this;
         // Structure
-        nodes['container'] = cm.Node('div', {'class' : 'com__gallery-preview'},
-            nodes['galleryContainer'] = cm.Node('div', {'class' : 'inner'})
+        that.nodes['container'] = cm.node('div', {'class' : 'com__gallery-preview'},
+            that.nodes['galleryContainer'] = cm.node('div', {'class' : 'inner'})
         );
         // Set aspect ration
         if(that.params['aspectRatio'] !== 'auto'){
-            cm.addClass(nodes['container'], ['cm__aspect', that.params['aspectRatio']].join('-'));
+            cm.addClass(that.nodes['container'], ['cm__aspect', that.params['aspectRatio']].join('-'));
         }
     };
 
-    var setLogic = function(){
+    classProto.renderViewModel = function(){
+        var that = this;
+        // Call parent method - renderViewModel
+        classInherit.prototype.renderViewModel.apply(that, arguments);
         // Dialog
-        cm.getConstructor('Com.Dialog', function(classConstructor){
-            components['dialog'] = new classConstructor(
-                    cm.merge(that.params['Com.Dialog'], {
-                        'content' : nodes['container']
-                    })
-                )
-                .addEvent('onOpen', function(){
-                    cm.addEvent(window, 'keydown', keyboardEvents);
-                    that.triggerEvent('onOpen');
+        cm.getConstructor(that.params['placeholderConstructor'], function(classConstructor){
+            that.components['dialog'] = new classConstructor(
+                cm.merge(that.params['placeholderParams'], {
+                    'content' : that.nodes['container']
                 })
-                .addEvent('onClose', function(){
-                    components['gallery'].stop();
-                    cm.removeEvent(window, 'keydown', keyboardEvents);
-                    that.triggerEvent('onClose');
-                });
+            );
+            that.components['dialog'].addEvent('onOpen', function(){
+                cm.addEvent(window, 'keydown', that.keyPressEventHandler);
+                that.triggerEvent('onOpen');
+            });
+            that.components['dialog'].addEvent('onClose', function(){
+                that.components['gallery'].stop();
+                cm.removeEvent(window, 'keydown', that.keyPressEventHandler);
+                that.triggerEvent('onClose');
+            });
         });
         // Gallery
-        cm.getConstructor('Com.Gallery', function(classConstructor){
-            components['gallery'] = new classConstructor(
-                    cm.merge(that.params['Com.Gallery'], {
-                        'node' : that.params['node'],
-                        'container' : nodes['galleryContainer'],
-                        'data' : that.params['data']
-                    })
-                )
-                .addEvent('onSet', components['dialog'].open)
-                .addEvent('onChange', onChange);
+        cm.getConstructor(that.params['galleryConstructor'], function(classConstructor){
+            that.components['gallery'] = new classConstructor(
+                cm.merge(that.params['galleryParams'], {
+                    'node' : that.params['node'],
+                    'container' : that.nodes['galleryContainer'],
+                    'data' : that.params['data']
+                })
+            );
+            that.components['gallery'].addEvent('onChange', that.changeEventHandler);
+            that.components['gallery'].addEvent('onSet', function(){
+                that.components['dialog'].open();
+            });
         });
         // Node's self click
         if(that.params['openOnSelfClick']){
-            cm.addEvent(that.params['node'], 'click', that.open);
+            cm.addEvent(that.params['node'], 'click', that.openHandler);
         }
     };
 
-    var onChange = function(gallery, data){
-        var title;
+    classProto.changeEvent = function(gallery, data){
+        var that = this,
+            title;
         // Set caption
         if(that.params['showCounter']){
-            title = [(data['current']['index'] + 1), gallery.getCount()].join('/');
+            title = [(data['current']['index'] + 1), that.components['gallery'].getCount()].join('/');
         }
         if(that.params['showTitle']){
             if(that.params['showCounter']){
@@ -126,64 +141,68 @@ function(params){
             }
         }
         if(that.params['showCounter'] || that.params['showTitle']){
-            components['dialog'].setTitle(title);
+            that.components['dialog'].setTitle(title);
         }
         that.triggerEvent('onChange', data);
     };
 
-    var keyboardEvents = function(e){
-        e = cm.getEvent(e);
-        switch(e.keyCode){
-            case 37:
-                components['dialog'].isFocus && components['gallery'].prev();
-                break;
-            case 39:
-                components['dialog'].isFocus && components['gallery'].next();
-                break;
-        }
+    classProto.keyPressEvent = function(e){
+        var that = this;
+        cm.handleKey(e, 'left', function(){
+            that.components['dialog'].isFocus && that.prev();
+        });
+        cm.handleKey(e, 'right', function(){
+            that.components['dialog'].isFocus && that.next();
+        });
     };
 
-    /* ******* MAIN ******* */
+    /******* PUBLIC *******/
 
-    that.open = function(){
+    classProto.open = function(){
+        var that = this;
         that.set(0);
         return that;
     };
 
-    that.close = function(){
-        components['dialog'].close();
+    classProto.close = function(){
+        var that = this;
+        that.components['dialog'].close();
         return that;
     };
 
-    that.set = function(i){
-        components['gallery'].set(i);
+    classProto.set = function(i){
+        var that = this;
+        that.components['gallery'].set(i);
         return that;
     };
 
-    that.next = function(){
-        components['gallery'].next();
+    classProto.next = function(){
+        var that = this;
+        that.components['gallery'].next();
         return that;
     };
 
-    that.prev = function(){
-        components['gallery'].prev();
+    classProto.prev = function(){
+        var that = this;
+        that.components['gallery'].prev();
         return that;
     };
 
-    that.add = function(item){
-        components['gallery'].add(item);
+    classProto.add = function(item){
+        var that = this;
+        that.components['gallery'].add(item);
         return that;
     };
 
-    that.collect = function(node){
-        components['gallery'].collect(node);
+    classProto.collect = function(node){
+        var that = this;
+        that.components['gallery'].collect(node);
         return that;
     };
 
-    that.clear = function(){
-        components['gallery'].clear();
+    classProto.clear = function(){
+        var that = this;
+        that.components['gallery'].clear();
         return that;
     };
-
-    init();
 });

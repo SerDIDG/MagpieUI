@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.34.5 (2018-08-20 21:07) ************ */
+/*! ************ MagpieUI v3.34.6 (2018-09-10 20:00) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3924,7 +3924,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.34.5';
+@CmVersion: '3.34.6';
 
 // /* ******* PATH ******* */
 
@@ -6814,14 +6814,14 @@ select {
             .button.button-primary--focus;
         }
 
-        &:active,
-        &.active {
-            .button.button-primary--active;
-        }
-
         &:hover,
         &.hover {
             .button.button-primary--hover;
+        }
+
+        &:active,
+        &.active {
+            .button.button-primary--active;
         }
     }
 
@@ -6848,14 +6848,14 @@ select {
             .button.button-middle--focus;
         }
 
-        &:active,
-        &.active {
-            .button.button-middle--active;
-        }
-
         &:hover,
         &.hover {
             .button.button-middle--hover;
+        }
+
+        &:active,
+        &.active {
+            .button.button-middle--active;
         }
     }
 
@@ -6882,14 +6882,14 @@ select {
             .button.button-secondary--focus;
         }
 
-        &:active,
-        &.active {
-            .button.button-secondary--active;
-        }
-
         &:hover,
         &.hover {
             .button.button-secondary--hover;
+        }
+
+        &:active,
+        &.active {
+            .button.button-secondary--active;
         }
     }
 
@@ -6916,14 +6916,14 @@ select {
             .button.button-success--focus;
         }
 
-        &:active,
-        &.active {
-            .button.button-success--active;
-        }
-
         &:hover,
         &.hover {
             .button.button-success--hover;
+        }
+
+        &:active,
+        &.active {
+            .button.button-success--active;
         }
     }
 
@@ -6950,14 +6950,14 @@ select {
             .button.button-danger--focus;
         }
 
-        &:active,
-        &.active {
-            .button.button-danger--active;
-        }
-
         &:hover,
         &.hover {
             .button.button-danger--hover;
+        }
+
+        &:active,
+        &.active {
+            .button.button-danger--active;
         }
     }
 
@@ -6984,14 +6984,14 @@ select {
             .button.button-warning--focus;
         }
 
-        &:active,
-        &.active {
-            .button.button-warning--active;
-        }
-
         &:hover,
         &.hover {
             .button.button-warning--hover;
+        }
+
+        &:active,
+        &.active {
+            .button.button-warning--active;
         }
     }
 
@@ -7022,14 +7022,14 @@ select {
             .button.button-transparent--focus;
         }
 
-        &:active,
-        &.active {
-            .button.button-transparent--active;
-        }
-
         &:hover,
         &.hover {
             .button.button-transparent--hover;
+        }
+
+        &:active,
+        &.active {
+            .button.button-transparent--active;
         }
     }
 
@@ -7056,14 +7056,14 @@ select {
             .button.button-white--focus;
         }
 
-        &:active,
-        &.active {
-            .button.button-white--active;
-        }
-
         &:hover,
         &.hover {
             .button.button-white--hover;
+        }
+
+        &:active,
+        &.active {
+            .button.button-white--active;
         }
     }
 
@@ -7091,12 +7091,13 @@ select {
             outline: none;
         }
 
-        &:active,
-        &.active {
-            .mx__background__color(@CmColor-Secondary-LightActive, @CmColor-Font-Disabled, @CmFont-Base-ColorOpposite);
-        }
         &:hover,
         &.hover {
+            .mx__background__color(@CmColor-Secondary-LightActive, @CmColor-Font-Disabled, @CmFont-Base-ColorOpposite);
+        }
+
+        &:active,
+        &.active {
             .mx__background__color(@CmColor-Secondary-LightActive, @CmColor-Font-Disabled, @CmFont-Base-ColorOpposite);
         }
     }
@@ -17380,14 +17381,16 @@ ul.pt__field__hint {
 .com__slider-layout {
     .cm__box;
 
-    .com__slider {
-        margin: 0;
+    > .inner {
+        > .com__gallery-preview {
+            > .inner {
+                position: relative;
+            }
+        }
     }
 
-    .com__gallery-preview {
-        > .inner {
-            position: relative;
-        }
+    .com__slider {
+        margin: 0;
     }
 }
 /* ******* COMPONENTS: SPACER ******* */

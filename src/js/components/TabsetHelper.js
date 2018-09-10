@@ -307,31 +307,7 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
             // Set select menu
             cm.setSelect(that.nodes['select'], that.current);
             // Trigger events
-            if(item['constructor']){
-                // Controller
-                if(item['controller']){
-                    item['controller'].refresh && item['controller'].refresh();
-                }else{
-                    cm.getConstructor(item['constructor'], function(classConstructor){
-                        item['controller'] = new classConstructor(
-                            cm.merge(item['controllerParams'], {
-                                'container' : item['tab']['inner'],
-                                'events' : {
-                                    'onLoadEnd' : function(){
-                                        that.tabShowEnd(item, {});
-                                    }
-                                }
-                            })
-                        );
-                    });
-                }
-            }else if(item.isAjax && (!that.params['cache'] || (that.params['cache'] && !item.isCached))){
-                that.ajaxHandler = classProto.callbacks.request(that, {
-                    'config' : cm.merge(that.params['ajax'], item['ajax'])
-                }, item);
-            }else{
-                that.tabShowEnd(item, {});
-            }
+            that.refreshTab(that.current);
         }
         return that;
     };
@@ -352,6 +328,36 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
             that.triggerEvent('onTabHideEnd', item);
         }
         return that;
+    };
+
+    classProto.refreshTab = function(id){
+        var that = this,
+            item = that.items[id];
+        if(item['constructor']){
+            // Controller
+            if(item['controller']){
+                item['controller'].refresh && item['controller'].refresh();
+            }else{
+                cm.getConstructor(item['constructor'], function(classConstructor){
+                    item['controller'] = new classConstructor(
+                        cm.merge(item['controllerParams'], {
+                            'container' : item['tab']['inner'],
+                            'events' : {
+                                'onLoadEnd' : function(){
+                                    that.tabShowEnd(item, {});
+                                }
+                            }
+                        })
+                    );
+                });
+            }
+        }else if(item.isAjax && (!that.params['cache'] || (that.params['cache'] && !item.isCached))){
+            that.ajaxHandler = classProto.callbacks.request(that, {
+                'config' : cm.merge(that.params['ajax'], item['ajax'])
+            }, item);
+        }else{
+            that.tabShowEnd(item, {});
+        }
     };
 
     classProto.unsetHead = function(){
@@ -605,6 +611,14 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
     classProto.get = function(){
         var that = this;
         return that.current;
+    };
+
+    classProto.refresh = function(){
+        var that = this;
+        if(!cm.isUndefined(that.current)){
+            that.refreshTab(that.current);
+        }
+        return that;
     };
 
     classProto.addTab = function(item){

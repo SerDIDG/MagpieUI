@@ -3,13 +3,15 @@
 .com__slider-layout {
     .cm__box;
 
-    .com__slider {
-        margin: 0;
+    > .inner {
+        > .com__gallery-preview {
+            > .inner {
+                position: relative;
+            }
+        }
     }
 
-    .com__gallery-preview {
-        > .inner {
-            position: relative;
-        }
+    .com__slider {
+        margin: 0;
     }
 }

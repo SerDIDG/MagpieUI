@@ -73,7 +73,6 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         that.addEvent('onAfterRender', that.afterRenderHandler);
         // Call parent method
         classInherit.prototype.construct.apply(that, arguments);
-        return that;
     };
 
     classProto.set = function(value, triggerEvents){

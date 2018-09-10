@@ -36,7 +36,6 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
         that.inputKeyPressHanlder = that.inputKeyPress.bind(that);
         // Call parent method
         classInherit.prototype.construct.apply(that, arguments);
-        return that;
     };
 
     /*** VIEW MODEL ***/

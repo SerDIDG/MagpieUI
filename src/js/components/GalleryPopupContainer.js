@@ -2,20 +2,18 @@ cm.define('Com.GalleryPopupContainer', {
     'extend' : 'Com.AbstractContainer',
     'params' : {
         'constructor' : 'Com.GalleryPopup',
+        'destructOnClose' : false,
         'data' : {},
         'params' : {}
     }
 },
 function(params){
     var that = this;
-    that.buttons = {};
     // Call parent class construct
     Com.AbstractContainer.apply(that, arguments);
 });
 
-cm.getConstructor('Com.GalleryPopupContainer', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
+cm.getConstructor('Com.GalleryPopupContainer', function(classConstructor, className, classProto, classInherit){
     classProto.constructController = function(classObject){
         var that = this;
         return new classObject(
