@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.34.6 (2018-09-10 20:00) ************ */
+/*! ************ MagpieUI v3.34.7 (2018-09-10 20:35) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.34.6',
+        '_version' : '3.34.7',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -10256,12 +10256,17 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
             'constructor' : false,
             'constructorParams' : {},
             'className' : '',
+            'cache' : null,
+            'ajax' : {},
             'isHidden' : false,
             'isShow' : false,
             'isAjax' : false,
-            'isCached' : false,
-            'ajax' : {}
+            'isCached' : false
         }, item);
+        // Cache
+        if(!cm.isBoolean(item['cache'])){
+            item['cache'] = that.params['cache'];
+        }
         // Render tab view
         if(that.params['renderTabView']){
             that.renderTabView(item);
@@ -10403,7 +10408,7 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
                     );
                 });
             }
-        }else if(item.isAjax && (!that.params['cache'] || (that.params['cache'] && !item.isCached))){
+        }else if(item.isAjax && (!item['cache'] || (item['cache'] && !item.isCached))){
             that.ajaxHandler = classProto.callbacks.request(that, {
                 'config' : cm.merge(that.params['ajax'], item['ajax'])
             }, item);
@@ -10466,12 +10471,13 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
 
     classProto.tabShowEnd = function(item, params){
         var that = this;
-        cm.customEvent.trigger(item['tab']['container'], 'redraw', {
-            'type' : 'child',
-            'self' : false
-        });
-        that.triggerEvent('onTabShow', item, params);
-        that.triggerEvent('onTabShowEnd', item, params);
+        if(item['id'] === that.current){
+            cm.customEvent.trigger(item['tab']['container'], 'redraw', {
+                'type' : 'child', 'self' : false
+            });
+            that.triggerEvent('onTabShow', item, params);
+            that.triggerEvent('onTabShowEnd', item, params);
+        }
     };
 
     /******* SELECT *******/
