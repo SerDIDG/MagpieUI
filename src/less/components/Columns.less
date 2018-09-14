@@ -184,11 +184,13 @@
                 }
             }
 
-            &:not(.is-not-adaptive) {
+            &.is-adaptive {
                 > .inner {
                     margin: 0;
 
                     > .container {
+                        width: auto !important;
+                        height: auto;
                         display: block;
 
                         > .com__column {
@@ -203,12 +205,6 @@
                             }
                         }
                     }
-                }
-
-                .com__column {
-                    width: auto !important;
-                    height: auto;
-                    display: block;
                 }
             }
         }

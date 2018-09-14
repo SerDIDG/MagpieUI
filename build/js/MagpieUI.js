@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.34.7 (2018-09-10 20:35) ************ */
+/*! ************ MagpieUI v3.34.8 (2018-09-14 20:30) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.34.7',
+        '_version' : '3.34.8',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -16117,6 +16117,7 @@ cm.define('Com.Gridlist', {
         },
         'Com.Pagination' : {
             'renderStructure' : true,
+            'embedStructureOnRender' : true,
             'animateSwitch' : true,
             'animatePrevious' : true
         },
@@ -18682,8 +18683,8 @@ cm.define('Com.Pagination', {
     ],
     'params' : {
         'controllerEvents' : true,
-        'renderStructure' : true,                                   // Render wrapper nodes if not exists in html
-        'embedStructureOnRender' : true,
+        'renderStructure' : false,                                  // Render wrapper nodes if not exists in html
+        'embedStructureOnRender' : false,
         'embedStructure' : 'append',
         'scrollNode' : window,
         'data' : [],                                                // Static data

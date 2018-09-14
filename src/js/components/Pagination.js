@@ -13,8 +13,8 @@ cm.define('Com.Pagination', {
     ],
     'params' : {
         'controllerEvents' : true,
-        'renderStructure' : true,                                   // Render wrapper nodes if not exists in html
-        'embedStructureOnRender' : true,
+        'renderStructure' : false,                                  // Render wrapper nodes if not exists in html
+        'embedStructureOnRender' : false,
         'embedStructure' : 'append',
         'scrollNode' : window,
         'data' : [],                                                // Static data

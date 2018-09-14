@@ -87,6 +87,7 @@ cm.define('Com.Gridlist', {
         },
         'Com.Pagination' : {
             'renderStructure' : true,
+            'embedStructureOnRender' : true,
             'animateSwitch' : true,
             'animatePrevious' : true
         },
