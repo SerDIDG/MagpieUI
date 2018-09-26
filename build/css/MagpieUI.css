@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.34.8 (2018-09-14 20:30) ************ */
+/*! ************ MagpieUI v3.34.8 (2018-09-26 21:10) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.6.0
@@ -9842,6 +9842,24 @@ ul.pt__field__hint li:before {
   width: auto;
   overflow: visible;
 }
+.pt__grid.is-flex > ul {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+  -webkit-flex-flow: row wrap;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+}
+.pt__grid.is-flex > ul > li {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+  -webkit-flex: auto;
+  -ms-flex: auto;
+  flex: auto;
+}
 .pt__grid.is-flexible {
   overflow: visible;
 }
@@ -16508,6 +16526,22 @@ ul.pt__field__hint li:before {
   font-size: 0;
   height: 0;
 }
+.com__form__section {
+  margin-bottom: 24px;
+}
+.com__form__section.bottom,
+.com__form__section.is-last,
+.com__form__section:last-child {
+  margin-bottom: 0;
+}
+.com__form__item {
+  margin-bottom: 24px;
+}
+.com__form__item.bottom,
+.com__form__item.is-last,
+.com__form__item:last-child {
+  margin-bottom: 0;
+}
 /* ******* COMPONENTS: FORM STEPS LOADER ******* */
 .com__form-steps-loader {
   margin-bottom: 24px;
@@ -17207,6 +17241,16 @@ ul.pt__field__hint li:before {
 .com__gridlist .pt__gridlist__counter:last-child,
 .com__gridlist .pt__gridlist:last-child,
 .com__gridlist .com__pagination__container:last-child {
+  margin-bottom: 0;
+}
+.com__gridlist__container {
+  margin-bottom: 24px;
+  -webkit-overflow-scrolling: touch;
+  overflow: auto;
+}
+.com__gridlist__container.bottom,
+.com__gridlist__container.is-last,
+.com__gridlist__container:last-child {
   margin-bottom: 0;
 }
 .com__help-bubble {

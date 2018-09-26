@@ -124,6 +124,18 @@
         }
     }
 
+    &.is-flex {
+        > ul {
+            .display-flex;
+            .mx__flex-flow(row wrap);
+
+            > li {
+                .display-flex;
+                .mx__flex(auto);
+            }
+        }
+    }
+
     &.is-flexible {
         overflow: visible;
 

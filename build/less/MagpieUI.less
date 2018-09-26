@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.34.8 (2018-09-14 20:30) ************ */
+/*! ************ MagpieUI v3.34.8 (2018-09-26 21:10) ************ */
 @charset "UTF-8";
 
 /*!
@@ -10135,6 +10135,18 @@ ul.pt__field__hint {
         }
     }
 
+    &.is-flex {
+        > ul {
+            .display-flex;
+            .mx__flex-flow(row wrap);
+
+            > li {
+                .display-flex;
+                .mx__flex(auto);
+            }
+        }
+    }
+
     &.is-flexible {
         overflow: visible;
 
@@ -15224,6 +15236,14 @@ ul.pt__field__hint {
     margin: @CmForm-FieldIndent 0 0 0;
     position: relative;
 }
+
+.com__form__section {
+    .cm__box;
+}
+
+.com__form__item {
+    .cm__box;
+}
 /* ******* COMPONENTS: FORM STEPS LOADER ******* */
 
 .com__form-steps-loader {
@@ -15875,6 +15895,11 @@ ul.pt__field__hint {
     .com__pagination__container {
         .cm__box;
     }
+}
+
+.com__gridlist__container {
+    .cm__box;
+    .cm__scroll--auto;
 }
 .com__help-bubble {
     margin: 0 @CmIndent-XXXSmall;

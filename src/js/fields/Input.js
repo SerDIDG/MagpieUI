@@ -34,6 +34,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
         that.selectValueHandler = that.selectValue.bind(that);
         that.lazyValueHandler = that.lazyValue.bind(that);
         that.inputKeyPressHanlder = that.inputKeyPress.bind(that);
+        that.iconEventHanlder = that.iconEvent.bind(that);
         // Call parent method
         classInherit.prototype.construct.apply(that, arguments);
     };
@@ -103,7 +104,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
         cm.addEvent(that.nodes['content']['input'], 'blur', that.blurEventHandler);
         cm.addEvent(that.nodes['content']['input'], 'change', that.setValueHandler);
         cm.addEvent(that.nodes['content']['input'], 'keypress', that.inputKeyPressHanlder);
-        cm.addEvent(that.nodes['content']['icon'], 'click', that.focusHandler);
+        cm.addEvent(that.nodes['content']['icon'], 'click', that.iconEventHanlder);
     };
 
     /*** EVENTS ***/
@@ -136,6 +137,15 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
         that.setValue(true);
         that.triggerEvent('onBlur', that.value);
     };
+
+    classProto.iconEvent = function(e){
+        var that = this,
+            value = that.nodes['content']['input'].value;
+        cm.preventDefault(e);
+        that.nodes['content']['input'].setSelectionRange(0, value.length);
+        that.focus();
+    };
+
     /*** DATA VALUE ***/
 
     classProto.lazyValue = function(triggerEvents){

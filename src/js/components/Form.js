@@ -277,6 +277,14 @@ function(params){
         cm.appendChild(node, that.nodes['fields']);
     };
 
+    var removeField = function(name){
+        var item = that.getField(name);
+        if(item){
+            item['fieldController'] && cm.isFunction(item['fieldController'].destruct) && item['fieldController'].destruct();
+            delete that.fields[name];
+        }
+    };
+
     /* ******* CALLBACKS ******* */
 
     that.callbacks.prepare = function(that, config){
@@ -580,6 +588,11 @@ function(params){
 
     that.getButtonsContainer = function(){
         return that.nodes['buttonsContainer'];
+    };
+
+    that.removeField = function(name){
+        removeField(name);
+        return that;
     };
 
     that.clear = function(){
