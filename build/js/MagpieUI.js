@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.34.8 (2018-09-26 21:10) ************ */
+/*! ************ MagpieUI v3.34.9 (2018-09-27 19:06) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.34.8',
+        '_version' : '3.34.9',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -1640,7 +1640,7 @@ var cm = {
         '_adaptive' : false,
         '_baseUrl': [window.location.protocol, window.location.hostname].join('//'),
         '_pathUrl' : '',
-        '_assetsUrl' : null,
+        '_assetsUrl' : [window.location.protocol, window.location.hostname].join('//'),
         '_scrollSize' : 0,
         '_pageSize' : {},
         '_clientPosition' : {'left' : 0, 'top' : 0},
@@ -1670,6 +1670,12 @@ var cm = {
             'tooltipDown' : 'targetHeight + 4',
             'tooltipUp' : '- (selfHeight + 4)'
         },
+        '_variables' : {
+            '%baseUrl%' : 'cm._baseUrl',
+            '%assetsUrl%' : 'cm._assetsUrl',
+            '%pathUrl%' : 'cm._pathUrl',
+            '%version%' : 'cm._version'
+        },
         '_strings' : {
             'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
             'days' : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
@@ -1689,6 +1695,16 @@ cm.isLocalStorage = (function(){try{return 'localStorage' in window && window.lo
 cm.isSessionStorage = (function(){try{return 'sessionStorage' in window && window.sessionStorage !== null;}catch(e){return false;}})();
 cm.isCanvas = !!document.createElement("canvas").getContext;
 cm.hasBeacon = !!(navigator.sendBeacon);
+
+/* ******* COMMON ******* */
+
+cm._getVariables = function(){
+    var data = {};
+    cm.forEach(cm._variables, function(value, name){
+        data[name] = cm.reducePath(value, window);
+    });
+    return data;
+};
 
 /* ******* OBJECTS AND ARRAYS ******* */
 
@@ -2163,6 +2179,16 @@ cm.objectSelector = function(name, obj, apply){
         findObj = findObj[item];
     });
     return findObj;
+};
+
+cm.reducePath = function(name, obj){
+    if(cm.isUndefined(obj) || cm.isUndefined(name)){
+        return obj;
+    }
+    name = name.toString().split('.');
+    return name.reduce(function(object, property){
+        return object[property];
+    }, obj);
 };
 
 cm.sort = function(o){
@@ -2640,12 +2666,8 @@ cm.getOwnerWindow = function(node){
 cm._addScriptStack = {};
 
 cm.addScript = function(src, async, callback){
-    var item;
-    var vars = {
-        '%baseUrl%' : cm._baseUrl,
-        '%assetsUrl%' : cm._assetsUrl || cm._baseUrl,
-        '%version%' : cm._version
-    };
+    var item,
+        vars = cm._getVariables();
     // Config
     src = cm.isArray(src) ? cm.objectReplace(src, vars) : cm.strReplace(src, vars);
     async = !cm.isUndefined(async) ? async : false;
@@ -5082,6 +5104,7 @@ cm.ajax = function(o){
             'onAbort' : function(){},
             'handler' : false
         }, o),
+        vars = cm._getVariables(),
         responseType,
         response,
         callbackName,
@@ -5115,12 +5138,7 @@ cm.ajax = function(o){
             config['params'] = cm.obj2FormData(config['params']);
             delete config['headers']['Content-Type'];
         }else if(cm.isObject(config['params'])){
-            config['params'] = cm.objectReplace(config['params'], {
-                '%version%' : cm._version,
-                '%baseUrl%' : cm._baseUrl,
-                '%assetsUrl%' : cm._assetsUrl || cm._baseUrl,
-                '%pathUrl%' : cm._pathUrl
-            });
+            config['params'] = cm.objectReplace(config['params'], vars);
             if(config['paramsType'] === 'json'){
                 config['headers']['Content-Type'] = 'application/json';
                 config['params'] = cm.stringifyJSON(config['params']);
@@ -5135,12 +5153,7 @@ cm.ajax = function(o){
         }else{
             delete config['modifier'];
         }
-        config['url'] = cm.strReplace(config['url'], {
-            '%version%' : cm._version,
-            '%baseUrl%' : cm._baseUrl,
-            '%assetsUrl%' : cm._assetsUrl || cm._baseUrl,
-            '%pathUrl%' : cm._pathUrl
-        });
+        config['url'] = cm.strReplace(config['url'], vars);
         if(!/post|put/.test(config['method'])){
             if(!cm.isEmpty(config['params'])){
                 config['url'] = [config['url'], config['params']].join('?');
