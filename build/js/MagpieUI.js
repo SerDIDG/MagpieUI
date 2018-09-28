@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.34.9 (2018-09-27 19:06) ************ */
+/*! ************ MagpieUI v3.34.11 (2018-09-28 21:08) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.34.9',
+        '_version' : '3.34.11',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -8098,6 +8098,7 @@ cm.define('Com.AbstractFormField', {
         'type' : false,
         'label' : '',
         'help' : null,
+        'helpType' : 'tooltip', // tooltip | container
         'icon' : false,
         'placeholder' : '',
         'title' : '',
@@ -8196,8 +8197,10 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.params['constructorParams']['title'] = that.params['title'];
         that.params['constructorParams']['ajax'] = that.params['ajax'];
         // Components
+        that.params['Com.HelpBubble']['title'] = that.params['label'];
         that.params['Com.HelpBubble']['content'] = that.params['help'];
         that.params['Com.HelpBubble']['name'] = that.params['name'];
+        that.params['Com.HelpBubble']['type'] = that.params['helpType'];
         that.components['form'] = that.params['form'];
         that.nodeTagName = that.params['node'].tagName.toLowerCase();
         // Ajax
@@ -8593,6 +8596,18 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.blur = function(){
         var that = this;
         that.components['controller'] && cm.isFunction(that.components['controller'].blur) && that.components['controller'].blur();
+        return that;
+    };
+
+    classProto.setRequired = function(){
+        var that = this;
+        that.params['required'] = true;
+        return that;
+    };
+
+    classProto.unsetRequired = function(){
+        var that = this;
+        that.params['required'] = false;
         return that;
     };
 
@@ -9375,9 +9390,12 @@ function(params){
         }
     };
 
-    var renderSeparator = function(){
-        var node = cm.node('hr');
-        cm.appendChild(node, that.nodes['fields']);
+    var renderSeparator = function(params){
+        params = cm.merge({
+            'node' : cm.node('hr'),
+            'container' : that.nodes['fields']
+        }, params);
+        cm.appendChild(params['node'], params['container']);
     };
 
     var removeField = function(name){
@@ -9602,8 +9620,8 @@ function(params){
         return that;
     };
 
-    that.addSeparator = function(){
-        renderSeparator();
+    that.addSeparator = function(params){
+        renderSeparator(params);
         return that;
     };
 
@@ -17428,9 +17446,16 @@ cm.define('Com.HelpBubble', {
         'name' : '',
         'renderStructure' : false,
         'container' : false,
+        'title' : null,
         'content' : cm.node('span'),
+        'type' : 'tooltip', // tooltip | container
         'Com.Tooltip' : {
             'className' : 'com__help-bubble__tooltip'
+        },
+        'containerConstructor' : 'Com.DialogContainer',
+        'containerParams' : {
+            'renderTitle' : true,
+            'destructOnClose' : true
         }
     }
 },
@@ -17469,13 +17494,31 @@ function(params){
                 that.params['container'].appendChild(that.nodes['container']);
             }
         }
-        // Render tooltip
-        cm.getConstructor('Com.Tooltip', function(classConstructor){
-            that.components['tooltip'] = new classConstructor(that.params['Com.Tooltip']);
-            that.components['tooltip']
-                .setTarget(that.nodes['button'])
-                .setContent(that.nodes['content']);
-        });
+        // Container
+        switch(that.params['type']){
+            case 'container':
+                // Render container
+                cm.getConstructor(that.params['containerConstructor'], function(classConstructor){
+                    that.components['container'] = new classConstructor(
+                        cm.merge(that.params['containerParams'], {
+                            'node' : that.nodes['button'],
+                            'title' : that.params['title'],
+                            'content' : that.nodes['content']
+                        })
+                    );
+                });
+                break;
+
+            default:
+                // Render tooltip
+                cm.getConstructor('Com.Tooltip', function(classConstructor){
+                    that.components['tooltip'] = new classConstructor(that.params['Com.Tooltip']);
+                    that.components['tooltip']
+                        .setTarget(that.nodes['button'])
+                        .setContent(that.nodes['content']);
+                });
+                break;
+        }
     };
 
     /* ******* PUBLIC ******* */

@@ -272,9 +272,12 @@ function(params){
         }
     };
 
-    var renderSeparator = function(){
-        var node = cm.node('hr');
-        cm.appendChild(node, that.nodes['fields']);
+    var renderSeparator = function(params){
+        params = cm.merge({
+            'node' : cm.node('hr'),
+            'container' : that.nodes['fields']
+        }, params);
+        cm.appendChild(params['node'], params['container']);
     };
 
     var removeField = function(name){
@@ -499,8 +502,8 @@ function(params){
         return that;
     };
 
-    that.addSeparator = function(){
-        renderSeparator();
+    that.addSeparator = function(params){
+        renderSeparator(params);
         return that;
     };
 

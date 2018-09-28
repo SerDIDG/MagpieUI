@@ -220,7 +220,13 @@ ul.pt__field__hint {
 
     html.is-adaptive {
         .pt__field {
-            display: block;
+            &.is-check-line {
+                display: block;
+            }
+
+            &.is-hidden {
+                display: none;
+            }
 
             > dt,
             > .field__title {

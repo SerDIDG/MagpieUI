@@ -38,6 +38,7 @@ cm.define('Com.AbstractFormField', {
         'type' : false,
         'label' : '',
         'help' : null,
+        'helpType' : 'tooltip', // tooltip | container
         'icon' : false,
         'placeholder' : '',
         'title' : '',
@@ -136,8 +137,10 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.params['constructorParams']['title'] = that.params['title'];
         that.params['constructorParams']['ajax'] = that.params['ajax'];
         // Components
+        that.params['Com.HelpBubble']['title'] = that.params['label'];
         that.params['Com.HelpBubble']['content'] = that.params['help'];
         that.params['Com.HelpBubble']['name'] = that.params['name'];
+        that.params['Com.HelpBubble']['type'] = that.params['helpType'];
         that.components['form'] = that.params['form'];
         that.nodeTagName = that.params['node'].tagName.toLowerCase();
         // Ajax
@@ -533,6 +536,18 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.blur = function(){
         var that = this;
         that.components['controller'] && cm.isFunction(that.components['controller'].blur) && that.components['controller'].blur();
+        return that;
+    };
+
+    classProto.setRequired = function(){
+        var that = this;
+        that.params['required'] = true;
+        return that;
+    };
+
+    classProto.unsetRequired = function(){
+        var that = this;
+        that.params['required'] = false;
         return that;
     };
 

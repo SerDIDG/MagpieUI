@@ -15,9 +15,16 @@ cm.define('Com.HelpBubble', {
         'name' : '',
         'renderStructure' : false,
         'container' : false,
+        'title' : null,
         'content' : cm.node('span'),
+        'type' : 'tooltip', // tooltip | container
         'Com.Tooltip' : {
             'className' : 'com__help-bubble__tooltip'
+        },
+        'containerConstructor' : 'Com.DialogContainer',
+        'containerParams' : {
+            'renderTitle' : true,
+            'destructOnClose' : true
         }
     }
 },
@@ -56,13 +63,31 @@ function(params){
                 that.params['container'].appendChild(that.nodes['container']);
             }
         }
-        // Render tooltip
-        cm.getConstructor('Com.Tooltip', function(classConstructor){
-            that.components['tooltip'] = new classConstructor(that.params['Com.Tooltip']);
-            that.components['tooltip']
-                .setTarget(that.nodes['button'])
-                .setContent(that.nodes['content']);
-        });
+        // Container
+        switch(that.params['type']){
+            case 'container':
+                // Render container
+                cm.getConstructor(that.params['containerConstructor'], function(classConstructor){
+                    that.components['container'] = new classConstructor(
+                        cm.merge(that.params['containerParams'], {
+                            'node' : that.nodes['button'],
+                            'title' : that.params['title'],
+                            'content' : that.nodes['content']
+                        })
+                    );
+                });
+                break;
+
+            default:
+                // Render tooltip
+                cm.getConstructor('Com.Tooltip', function(classConstructor){
+                    that.components['tooltip'] = new classConstructor(that.params['Com.Tooltip']);
+                    that.components['tooltip']
+                        .setTarget(that.nodes['button'])
+                        .setContent(that.nodes['content']);
+                });
+                break;
+        }
     };
 
     /* ******* PUBLIC ******* */
