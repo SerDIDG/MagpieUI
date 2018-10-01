@@ -76,6 +76,7 @@ function(params){
     that.ajaxHandler = null;
     that.loaderDelay = null;
 
+    that.isAjax = false;
     that.isProcess = false;
 
     var init = function(){
@@ -96,6 +97,8 @@ function(params){
     var validateParams = function(){
         that.params['buttonsAlign'] = cm.inArray(['left', 'center', 'right', 'justify'], that.params['buttonsAlign']) ? that.params['buttonsAlign'] : 'right';
         that.params['loaderCoverage'] = cm.inArray(['fields', 'all'], that.params['loaderCoverage']) ? that.params['loaderCoverage'] : 'all';
+        // Ajax
+        that.isAjax = that.params['ajax'] && !cm.isEmpty(that.params['ajax']['url']);
     };
 
     var render = function(){
@@ -641,7 +644,14 @@ function(params){
         }
         // Send
         if(isValid){
-            that.ajaxHandler = that.callbacks.request(that, cm.clone(that.params['ajax']));
+            if(that.isAjax){
+                that.ajaxHandler = that.callbacks.request(that, cm.clone(that.params['ajax']));
+            }else{
+                that.callbacks.clearError(that);
+                that.triggerEvent('onSendStart', that.get());
+                that.triggerEvent('onSend', that.get());
+                that.triggerEvent('onSendEnd', that.get());
+            }
         }
         return that;
     };

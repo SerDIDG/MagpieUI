@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.34.11 (2018-09-28 21:08) ************ */
+/*! ************ MagpieUI v3.34.12 (2018-10-01 19:09) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.34.11',
+        '_version' : '3.34.12',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -6701,7 +6701,7 @@ cm.init = function(){
         return function(){
             cm._pageSize = cm.getPageSize();
             sizeNew = JSON.stringify(cm._pageSize);
-            if(size != sizeNew){
+            if(size !== sizeNew){
                 size = sizeNew;
                 cm.customEvent.trigger(window, 'pageSizeChange', {
                     'type' : 'all',
@@ -9194,6 +9194,7 @@ function(params){
     that.ajaxHandler = null;
     that.loaderDelay = null;
 
+    that.isAjax = false;
     that.isProcess = false;
 
     var init = function(){
@@ -9214,6 +9215,8 @@ function(params){
     var validateParams = function(){
         that.params['buttonsAlign'] = cm.inArray(['left', 'center', 'right', 'justify'], that.params['buttonsAlign']) ? that.params['buttonsAlign'] : 'right';
         that.params['loaderCoverage'] = cm.inArray(['fields', 'all'], that.params['loaderCoverage']) ? that.params['loaderCoverage'] : 'all';
+        // Ajax
+        that.isAjax = that.params['ajax'] && !cm.isEmpty(that.params['ajax']['url']);
     };
 
     var render = function(){
@@ -9759,7 +9762,14 @@ function(params){
         }
         // Send
         if(isValid){
-            that.ajaxHandler = that.callbacks.request(that, cm.clone(that.params['ajax']));
+            if(that.isAjax){
+                that.ajaxHandler = that.callbacks.request(that, cm.clone(that.params['ajax']));
+            }else{
+                that.callbacks.clearError(that);
+                that.triggerEvent('onSendStart', that.get());
+                that.triggerEvent('onSend', that.get());
+                that.triggerEvent('onSendEnd', that.get());
+            }
         }
         return that;
     };

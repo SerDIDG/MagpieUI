@@ -97,7 +97,7 @@ cm.init = function(){
         return function(){
             cm._pageSize = cm.getPageSize();
             sizeNew = JSON.stringify(cm._pageSize);
-            if(size != sizeNew){
+            if(size !== sizeNew){
                 size = sizeNew;
                 cm.customEvent.trigger(window, 'pageSizeChange', {
                     'type' : 'all',
