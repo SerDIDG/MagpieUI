@@ -213,7 +213,8 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
                     that.responceData = data;
                     that.response();
                 },
-                'onError' : function(){
+                'onError' : function(data){
+                    that.responceData = data;
                     that.error();
                 },
                 'onAbort' : function(){
@@ -305,7 +306,12 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         var that = this;
         that.isError = true;
         that.renderError();
-        that.triggerEvent('onError');
+        that.triggerEvent('onError', {
+            'response' : that.responceData,
+            'status' : that.responceDataStatus,
+            'filtered' : that.responceDataFiltered,
+            'html' : that.responceDataHTML
+        });
         return that;
     };
 

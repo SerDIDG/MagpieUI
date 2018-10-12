@@ -360,27 +360,37 @@ cm.extract = function(o1, o2){
     return o;
 };
 
-cm.clone = function(o, cloneNode){
+cm.clone = function(o, cloneNode, deep){
     var newO;
     if(!o){
         return o;
     }
+    cloneNode = cm.isUndefined(cloneNode) ? false : cloneNode;
+    deep = cm.isUndefined(deep) ? true : deep;
     // Arrays
     if(cm.isType(o, 'Arguments')){
         return [].slice.call(o);
     }
     if(cm.isType(o, /Array|StyleSheetList|CSSRuleList|HTMLCollection|NodeList|DOMTokenList|FileList/)){
-        newO = [];
-        cm.forEach(o, function(item){
-            newO.push(cm.clone(item, cloneNode));
-        });
-        return newO;
+        if(deep){
+            newO = [];
+            cm.forEach(o, function(item){
+                newO.push(cm.clone(item, cloneNode));
+            });
+            return newO;
+        }else{
+            return [].slice.call(o);
+        }
     }
     // Objects
     if(cm.isObject(o) && !o._isComponent){
         newO = {};
         cm.forEach(o, function(item, key){
-            newO[key] = cm.clone(item, cloneNode);
+            if(deep){
+                newO[key] = cm.clone(item, cloneNode);
+            }else{
+                newO[key] = item;
+            }
         });
         return newO;
     }
@@ -4055,7 +4065,6 @@ cm.Finder = function(className, name, parentNode, callback, params){
                 classConstructor.prototype.removeEvent(params['event'], watcher);
             });
         }
-        return that;
     };
 
     init();

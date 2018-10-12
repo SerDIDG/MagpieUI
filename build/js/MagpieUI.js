@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.34.13 (2018-10-08 16:58) ************ */
+/*! ************ MagpieUI v3.34.14 (2018-10-12 20:44) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.34.13',
+        '_version' : '3.34.14',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -1959,27 +1959,37 @@ cm.extract = function(o1, o2){
     return o;
 };
 
-cm.clone = function(o, cloneNode){
+cm.clone = function(o, cloneNode, deep){
     var newO;
     if(!o){
         return o;
     }
+    cloneNode = cm.isUndefined(cloneNode) ? false : cloneNode;
+    deep = cm.isUndefined(deep) ? true : deep;
     // Arrays
     if(cm.isType(o, 'Arguments')){
         return [].slice.call(o);
     }
     if(cm.isType(o, /Array|StyleSheetList|CSSRuleList|HTMLCollection|NodeList|DOMTokenList|FileList/)){
-        newO = [];
-        cm.forEach(o, function(item){
-            newO.push(cm.clone(item, cloneNode));
-        });
-        return newO;
+        if(deep){
+            newO = [];
+            cm.forEach(o, function(item){
+                newO.push(cm.clone(item, cloneNode));
+            });
+            return newO;
+        }else{
+            return [].slice.call(o);
+        }
     }
     // Objects
     if(cm.isObject(o) && !o._isComponent){
         newO = {};
         cm.forEach(o, function(item, key){
-            newO[key] = cm.clone(item, cloneNode);
+            if(deep){
+                newO[key] = cm.clone(item, cloneNode);
+            }else{
+                newO[key] = item;
+            }
         });
         return newO;
     }
@@ -5654,7 +5664,6 @@ cm.Finder = function(className, name, parentNode, callback, params){
                 classConstructor.prototype.removeEvent(params['event'], watcher);
             });
         }
-        return that;
     };
 
     init();
@@ -5979,12 +5988,14 @@ Mod['Events'] = {
     },
     'triggerEvent' : function(event, params){
         var that = this,
-            args = cm.clone(arguments);
+            args = cm.clone(arguments),
+            events;
         args[0] = that;
         if(that.events[event]){
-            cm.forEach(that.events[event], function(item){
-                item.apply(that, args);
-            });
+            events = that.events[event].slice();
+            for(var i = 0, l = events.length; i < l; i++){
+                events[i].apply(that, args);
+            }
         }else{
             cm.errorLog({
                 'type' : 'attention',
@@ -20073,7 +20084,8 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
                     that.responceData = data;
                     that.response();
                 },
-                'onError' : function(){
+                'onError' : function(data){
+                    that.responceData = data;
                     that.error();
                 },
                 'onAbort' : function(){
@@ -20165,7 +20177,12 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         var that = this;
         that.isError = true;
         that.renderError();
-        that.triggerEvent('onError');
+        that.triggerEvent('onError', {
+            'response' : that.responceData,
+            'status' : that.responceDataStatus,
+            'filtered' : that.responceDataFiltered,
+            'html' : that.responceDataHTML
+        });
         return that;
     };
 
@@ -20702,15 +20719,21 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         return that;
     };
 
-    classProto.summon = function(route, hash, params){
+    classProto.summon = function(route, hash, params, data){
         var that = this,
+            state,
             item;
+        // Get route
         if(that.routesBinds[route]){
             route = that.routesBinds[route];
         }
         if(item = that.routes[route]){
+            // Process state
+            state = cm.clone(item);
+            state['data'] = data;
+            // Process route
             that.destructRoute(that.current);
-            that.constructRoute(item);
+            that.constructRoute(state);
         }
         return that;
     };

@@ -306,12 +306,14 @@ Mod['Events'] = {
     },
     'triggerEvent' : function(event, params){
         var that = this,
-            args = cm.clone(arguments);
+            args = cm.clone(arguments),
+            events;
         args[0] = that;
         if(that.events[event]){
-            cm.forEach(that.events[event], function(item){
-                item.apply(that, args);
-            });
+            events = that.events[event].slice();
+            for(var i = 0, l = events.length; i < l; i++){
+                events[i].apply(that, args);
+            }
         }else{
             cm.errorLog({
                 'type' : 'attention',

@@ -371,15 +371,21 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         return that;
     };
 
-    classProto.summon = function(route, hash, params){
+    classProto.summon = function(route, hash, params, data){
         var that = this,
+            state,
             item;
+        // Get route
         if(that.routesBinds[route]){
             route = that.routesBinds[route];
         }
         if(item = that.routes[route]){
+            // Process state
+            state = cm.clone(item);
+            state['data'] = data;
+            // Process route
             that.destructRoute(that.current);
-            that.constructRoute(item);
+            that.constructRoute(state);
         }
         return that;
     };
