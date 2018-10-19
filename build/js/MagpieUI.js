@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.34.14 (2018-10-12 20:44) ************ */
+/*! ************ MagpieUI v3.34.16 (2018-10-19 18:21) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.34.14',
+        '_version' : '3.34.16',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -2766,7 +2766,7 @@ cm.getByName = function(name, node){
 };
 
 cm.getParentByTagName = function(tagName, node){
-    if(!cm.isEmpty(tagName) || !cm.hasParentNode(node)){
+    if(cm.isEmpty(tagName) || !cm.hasParentNode(node)){
         return null;
     }
     var el = node.parentNode;

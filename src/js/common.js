@@ -1167,7 +1167,7 @@ cm.getByName = function(name, node){
 };
 
 cm.getParentByTagName = function(tagName, node){
-    if(!cm.isEmpty(tagName) || !cm.hasParentNode(node)){
+    if(cm.isEmpty(tagName) || !cm.hasParentNode(node)){
         return null;
     }
     var el = node.parentNode;
