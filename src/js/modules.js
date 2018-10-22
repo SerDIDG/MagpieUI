@@ -471,10 +471,10 @@ Mod['DataNodes'] = {
     'getDataNodes' : function(container, dataMarker, className){
         var that = this,
             sourceNodes = {};
-        container = typeof container === 'undefined'? document.body : container;
+        container = cm.isUndefined(container) ? document.body : container;
         if(container){
-            dataMarker = typeof dataMarker === 'undefined'? that.params['nodesDataMarker'] : dataMarker;
-            className = typeof className === 'undefined'? that.params['nodesMarker'] : className;
+            dataMarker = cm.isUndefined(dataMarker) ? that.params['nodesDataMarker'] : dataMarker;
+            className = cm.isUndefined(className) ? that.params['nodesMarker'] : className;
             if(className){
                 sourceNodes = cm.getNodes(container, dataMarker)[className] || {};
             }else{
@@ -683,10 +683,11 @@ Mod['Stack'] = {
         that.build['_stack'] = [];
     },
     'addToStack' : function(node){
-        var that = this;
+        var that = this,
+            name = !cm.isEmpty(that.params['name']) ? that.params['name'].toString() : that.params['name'];
         if(!that._stackItem){
             that._stackItem = {
-                'name' : that.params['name'],
+                'name' : name,
                 'node' : node,
                 'class' : that,
                 'className' : that._name['full']
@@ -706,8 +707,9 @@ Mod['Stack'] = {
     'isAppropriateToStack' : function(name, parent, callback){
         var that = this,
             item = that._stackItem;
+        name = !cm.isEmpty(name) ? name.toString() : name;
         callback = cm.isFunction(callback) ? callback : function(){};
-        if((cm.isEmpty(name) || item['name'] === name) && cm.isParent(parent, item['node'], true)){
+        if((cm.isEmpty(name) || item['name'] === name) && (cm.isEmpty(parent) || cm.isParent(parent, item['node'], true))){
             callback(item['class'], item, name);
             return true;
         }
@@ -716,6 +718,7 @@ Mod['Stack'] = {
     'findInStack' : function(name, parent, callback){
         var that = this,
             items = [];
+        name = !cm.isEmpty(name) ? name.toString() : name;
         callback = cm.isFunction(callback) ? callback : function(){};
         cm.forEach(that._stack, function(item){
             if((cm.isEmpty(name) || item['name'] === name) && (cm.isEmpty(parent) || cm.isParent(parent, item['node'], true))){

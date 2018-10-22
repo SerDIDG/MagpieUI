@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.34.16 (2018-10-19 18:21) ************ */
+/*! ************ MagpieUI v3.34.17 (2018-10-22 21:28) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.34.16',
+        '_version' : '3.34.17',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -5628,7 +5628,7 @@ cm.Finder = function(className, name, parentNode, callback, params){
     var init = function(){
         var finder;
         // Merge params
-        parentNode = parentNode || document.body;
+        //parentNode = parentNode || document.body;
         callback = cm.isFunction(callback) ? callback : function(){};
         params = cm.merge({
             'event' : 'onRender',
@@ -6153,10 +6153,10 @@ Mod['DataNodes'] = {
     'getDataNodes' : function(container, dataMarker, className){
         var that = this,
             sourceNodes = {};
-        container = typeof container === 'undefined'? document.body : container;
+        container = cm.isUndefined(container) ? document.body : container;
         if(container){
-            dataMarker = typeof dataMarker === 'undefined'? that.params['nodesDataMarker'] : dataMarker;
-            className = typeof className === 'undefined'? that.params['nodesMarker'] : className;
+            dataMarker = cm.isUndefined(dataMarker) ? that.params['nodesDataMarker'] : dataMarker;
+            className = cm.isUndefined(className) ? that.params['nodesMarker'] : className;
             if(className){
                 sourceNodes = cm.getNodes(container, dataMarker)[className] || {};
             }else{
@@ -6365,10 +6365,11 @@ Mod['Stack'] = {
         that.build['_stack'] = [];
     },
     'addToStack' : function(node){
-        var that = this;
+        var that = this,
+            name = !cm.isEmpty(that.params['name']) ? that.params['name'].toString() : that.params['name'];
         if(!that._stackItem){
             that._stackItem = {
-                'name' : that.params['name'],
+                'name' : name,
                 'node' : node,
                 'class' : that,
                 'className' : that._name['full']
@@ -6388,8 +6389,9 @@ Mod['Stack'] = {
     'isAppropriateToStack' : function(name, parent, callback){
         var that = this,
             item = that._stackItem;
+        name = !cm.isEmpty(name) ? name.toString() : name;
         callback = cm.isFunction(callback) ? callback : function(){};
-        if((cm.isEmpty(name) || item['name'] === name) && cm.isParent(parent, item['node'], true)){
+        if((cm.isEmpty(name) || item['name'] === name) && (cm.isEmpty(parent) || cm.isParent(parent, item['node'], true))){
             callback(item['class'], item, name);
             return true;
         }
@@ -6398,6 +6400,7 @@ Mod['Stack'] = {
     'findInStack' : function(name, parent, callback){
         var that = this,
             items = [];
+        name = !cm.isEmpty(name) ? name.toString() : name;
         callback = cm.isFunction(callback) ? callback : function(){};
         cm.forEach(that._stack, function(item){
             if((cm.isEmpty(name) || item['name'] === name) && (cm.isEmpty(parent) || cm.isParent(parent, item['node'], true))){
@@ -15673,6 +15676,11 @@ cm.getConstructor('Com.GalleryPopup', function(classConstructor, className, clas
         that.prevHandler = that.prev.bind(that);
         that.keyPressEventHandler = that.keyPressEvent.bind(that);
         that.changeEventHandler = that.changeEvent.bind(that);
+    };
+
+    classProto.onConstructEnd = function(){
+        var that = this;
+        that.addToStack(that.params['node']);
     };
 
     classProto.onValidateParams = function(){

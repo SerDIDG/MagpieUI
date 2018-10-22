@@ -4029,7 +4029,7 @@ cm.Finder = function(className, name, parentNode, callback, params){
     var init = function(){
         var finder;
         // Merge params
-        parentNode = parentNode || document.body;
+        //parentNode = parentNode || document.body;
         callback = cm.isFunction(callback) ? callback : function(){};
         params = cm.merge({
             'event' : 'onRender',

@@ -54,6 +54,11 @@ cm.getConstructor('Com.GalleryPopup', function(classConstructor, className, clas
         that.changeEventHandler = that.changeEvent.bind(that);
     };
 
+    classProto.onConstructEnd = function(){
+        var that = this;
+        that.addToStack(that.params['node']);
+    };
+
     classProto.onValidateParams = function(){
         var that = this;
         that.params['galleryParams']['zoom'] = that.params['showZoom'];
