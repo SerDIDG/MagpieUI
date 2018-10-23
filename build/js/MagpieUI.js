@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.34.17 (2018-10-22 21:28) ************ */
+/*! ************ MagpieUI v3.34.18 (2018-10-23 17:12) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.34.17',
+        '_version' : '3.34.18',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -6366,7 +6366,7 @@ Mod['Stack'] = {
     },
     'addToStack' : function(node){
         var that = this,
-            name = !cm.isEmpty(that.params['name']) ? that.params['name'].toString() : that.params['name'];
+            name = cm.isNumber(that.params['name']) ? that.params['name'].toString() : that.params['name'];
         if(!that._stackItem){
             that._stackItem = {
                 'name' : name,
@@ -6389,7 +6389,7 @@ Mod['Stack'] = {
     'isAppropriateToStack' : function(name, parent, callback){
         var that = this,
             item = that._stackItem;
-        name = !cm.isEmpty(name) ? name.toString() : name;
+        name = cm.isNumber(name) ? name.toString() : name;
         callback = cm.isFunction(callback) ? callback : function(){};
         if((cm.isEmpty(name) || item['name'] === name) && (cm.isEmpty(parent) || cm.isParent(parent, item['node'], true))){
             callback(item['class'], item, name);
@@ -6400,7 +6400,7 @@ Mod['Stack'] = {
     'findInStack' : function(name, parent, callback){
         var that = this,
             items = [];
-        name = !cm.isEmpty(name) ? name.toString() : name;
+        name = cm.isNumber(name) ? name.toString() : name;
         callback = cm.isFunction(callback) ? callback : function(){};
         cm.forEach(that._stack, function(item){
             if((cm.isEmpty(name) || item['name'] === name) && (cm.isEmpty(parent) || cm.isParent(parent, item['node'], true))){
