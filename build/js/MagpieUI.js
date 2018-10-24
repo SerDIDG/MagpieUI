@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.34.20 (2018-10-24 19:50) ************ */
+/*! ************ MagpieUI v3.34.22 (2018-10-24 20:13) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.34.20',
+        '_version' : '3.34.22',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -7545,9 +7545,13 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
             dataValue,
             value;
         if(cm.isNode(that.params['node'])){
-            // In WebKit and Blink engines js value is cutoff, use DOM value instead.
             dataValue = that.params['node'].getAttribute('data-value');
+            // First try to take original value, than real time js value
             value = that.params['node'].getAttribute('value');
+            if(cm.isEmpty(value)){
+                value = that.params['node'].value;
+            }
+            // Parse JSON
             if(that.params['isValueOption'] && !cm.isEmpty(dataValue)){
                 value = cm.parseJSON(dataValue);
             }
