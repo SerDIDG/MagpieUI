@@ -1,6 +1,7 @@
 cm.define('Com.ImageInput', {
     'extend' : 'Com.FileInput',
     'params' : {
+        'hiddenType' : 'textarea',
         'className' : 'com__image-input',
         'size' : 'default',
         'aspect' : false,

@@ -3,3 +3,4 @@ if(cm._baseUrl.indexOf('serdidg.github.io') > -1){
 }else{
     cm._baseUrl = [cm._baseUrl, 'docs/build'].join('/');
 }
+cm._assetsUrl = cm._baseUrl;

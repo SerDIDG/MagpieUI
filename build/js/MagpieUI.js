@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.34.18 (2018-10-23 17:12) ************ */
+/*! ************ MagpieUI v3.34.20 (2018-10-24 19:50) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.34.18',
+        '_version' : '3.34.20',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -7397,6 +7397,7 @@ cm.define('Com.AbstractInput', {
         'renderStructure' : true,
         'renderHiddenContent' : true,
         'renderStructureContent' : true,
+        'hiddenType' : 'hidden',
         'value' : '',
         'defaultValue' : '',
         'isValueOption' : false,
@@ -7590,7 +7591,15 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
             nodes = {};
         that.nodes['hiddenContent'] = nodes;
         // Structure
-        nodes['container'] = nodes['input'] = cm.node('input', {'type' : 'hidden'});
+        switch(that.params['hiddenType']){
+            case 'textarea' :
+                nodes['container'] = nodes['input'] = cm.node('textarea', {'class' : 'display-none'});
+                break;
+            case 'hidden':
+            default:
+                nodes['container'] = nodes['input'] = cm.node('input', {'type' : 'hidden'});
+                break;
+        }
         // Export
         return nodes['container'];
     };
@@ -28333,6 +28342,7 @@ cm.define('Com.FileInput', {
         'controllerEvents' : true,
         'embedStructure' : 'replace',
         'className' : 'com__file-input',
+        'hiddenType' : 'textarea',
         'file' : null,
         'showLink' : true,
         'autoOpen' : false,
@@ -28672,6 +28682,7 @@ Com.FormFields.add('hidden-store', {
 cm.define('Com.ImageInput', {
     'extend' : 'Com.FileInput',
     'params' : {
+        'hiddenType' : 'textarea',
         'className' : 'com__image-input',
         'size' : 'default',
         'aspect' : false,

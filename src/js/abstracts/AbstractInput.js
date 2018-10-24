@@ -19,6 +19,7 @@ cm.define('Com.AbstractInput', {
         'renderStructure' : true,
         'renderHiddenContent' : true,
         'renderStructureContent' : true,
+        'hiddenType' : 'hidden',
         'value' : '',
         'defaultValue' : '',
         'isValueOption' : false,
@@ -212,7 +213,15 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
             nodes = {};
         that.nodes['hiddenContent'] = nodes;
         // Structure
-        nodes['container'] = nodes['input'] = cm.node('input', {'type' : 'hidden'});
+        switch(that.params['hiddenType']){
+            case 'textarea' :
+                nodes['container'] = nodes['input'] = cm.node('textarea', {'class' : 'display-none'});
+                break;
+            case 'hidden':
+            default:
+                nodes['container'] = nodes['input'] = cm.node('input', {'type' : 'hidden'});
+                break;
+        }
         // Export
         return nodes['container'];
     };
