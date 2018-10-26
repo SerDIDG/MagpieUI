@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.34.22 (2018-10-24 20:13) ************ */
+/*! ************ MagpieUI v3.34.23 (2018-10-26 19:16) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.34.22',
+        '_version' : '3.34.23',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -14588,7 +14588,7 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
     classProto.processFiles = function(files){
         var that = this,
             data = [],
-            length = that.params['max'] ? Math.min(files.length, that.params['max']) : files.length;;
+            length = that.params['max'] ? Math.min(files.length, that.params['max']) : files.length;
         // Process file
         cm.forEach(length, function(i){
             data.push(files[i]);

@@ -155,7 +155,7 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
     classProto.processFiles = function(files){
         var that = this,
             data = [],
-            length = that.params['max'] ? Math.min(files.length, that.params['max']) : files.length;;
+            length = that.params['max'] ? Math.min(files.length, that.params['max']) : files.length;
         // Process file
         cm.forEach(length, function(i){
             data.push(files[i]);
