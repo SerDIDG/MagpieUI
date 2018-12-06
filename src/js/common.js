@@ -46,6 +46,7 @@ var cm = {
         '_pageSize' : {},
         '_clientPosition' : {'left' : 0, 'top' : 0},
         '_config' : {
+            'redrawOnLoad' : true,
             'animDuration' : 250,
             'animDurationShort' : 150,
             'animDurationLong' : 500,
@@ -3155,12 +3156,12 @@ cm.charCodeIsDigit = function(code){
 };
 
 cm.allowOnlyDigitInputEvent = function(input, callback){
-    var value, isMaxlength, isMax;
+    var value, isMaxLength, isMax;
     cm.addEvent(input, 'input', function(e){
         value = input.value.replace(/[^\d]/g, '');
-        isMaxlength = !cm.isEmpty(input.maxlength) && input.maxlength > 0;
+        isMaxLength = !cm.isEmpty(input.maxlength) && input.maxlength > 0;
         isMax = !cm.isEmpty(input.max) && input.max > 0;
-        if(isMaxlength || isMax){
+        if(isMaxLength || isMax){
             if(input.type === 'number'){
                 input.value = Math.min(parseFloat(value), parseFloat(input.max));
             }else{

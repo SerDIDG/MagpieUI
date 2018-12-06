@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.34.23 (2018-10-26 19:16) ************ */
+/*! ************ MagpieUI v3.34.24 (2018-12-06 20:17) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3924,7 +3924,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.34.23';
+@CmVersion: '3.34.24';
 
 // /* ******* PATH ******* */
 
@@ -4902,18 +4902,18 @@ span.CodeMirror-selectedtext { background: none; }
     left: @left;
 }
 
-.mx__transition (@properties, @duration: @CmUI-Transition-Duration, @function: ease-in-out) {
+.mx__transition (@properties, @duration: @CmUI-Transition-Duration, @function: ease-in-out, @delay: 0ms) {
     .for(@properties); .-each(@property) {
         .property(@property) when (@property = transform) {
-            -webkit-transition+: -webkit-transform @duration @function;
-                    transition+: -webkit-transform @duration @function;
-                    transition+: -ms-transform @duration @function;
-                    transition+: transform @duration @function;
+            -webkit-transition+: -webkit-transform @duration @function @delay;
+                    transition+: -webkit-transform @duration @function @delay;
+                    transition+: -ms-transform @duration @function @delay;
+                    transition+: transform @duration @function @delay;
         }
 
         .property(@property) when not (@property = transform) {
-            -webkit-transition+: @property @duration @function;
-                    transition+: @property @duration @function;
+            -webkit-transition+: @property @duration @function @delay;
+                    transition+: @property @duration @function @delay;
         }
 
         .property(@property);
@@ -5241,7 +5241,7 @@ span.CodeMirror-selectedtext { background: none; }
 }
 
 .cm__box-reverse {
-    margin-top: @CmIndent-Medium;
+    margin-top: @CmUI-BoxIndent;
 
     &:first-child {
         margin-top: 0;
@@ -6749,7 +6749,11 @@ select {
 }
 
 input[type="search"] {
-    -webkit-appearance: none;
+    -webkit-appearance: textfield;
+
+    &::-webkit-search-decoration {
+        -webkit-appearance: none;
+    }
 
     &::-webkit-search-cancel-button {
         -webkit-appearance: none;
@@ -7231,6 +7235,18 @@ select {
         }
     }
 }
+
+/* *** MIXINS *** */
+
+.button--size (@height, @lineHeight: @CmFont-Base-LineHeight) {
+    @padding: max(ceil((@height - @lineHeight) / 2), 0px);
+    min-height: @height;
+    padding-top: @padding;
+    padding-bottom: @padding;
+    line-height: @lineHeight;
+}
+
+/* *** APPLY *** */
 
 input[type="button"],
 input[type="submit"],

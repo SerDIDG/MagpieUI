@@ -467,6 +467,18 @@
     }
 }
 
+/* *** MIXINS *** */
+
+.button--size (@height, @lineHeight: @CmFont-Base-LineHeight) {
+    @padding: max(ceil((@height - @lineHeight) / 2), 0px);
+    min-height: @height;
+    padding-top: @padding;
+    padding-bottom: @padding;
+    line-height: @lineHeight;
+}
+
+/* *** APPLY *** */
+
 input[type="button"],
 input[type="submit"],
 input[type="reset"],

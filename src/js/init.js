@@ -33,7 +33,7 @@ cm.init = function(){
     // Set browser class
 
     var checkBrowser = function(){
-        if(typeof Com.UA != 'undefined'){
+        if(typeof Com.UA !== 'undefined'){
             Com.UA.setBrowserClass();
         }
     };
@@ -81,7 +81,7 @@ cm.init = function(){
         var size;
         return function(){
             cm._scrollSize = cm.getScrollBarSize();
-            if(size != cm._scrollSize){
+            if(size !== cm._scrollSize){
                 size = cm._scrollSize;
                 cm.customEvent.trigger(window, 'scrollSizeChange', {
                     'type' : 'all',
@@ -137,10 +137,12 @@ cm.init = function(){
 cm.load = function(){
     cm._isDocumentLoad = true;
     // Redraw components and modules after full page loading
-    cm.customEvent.trigger(document.body, 'redraw', {
-        'type' : 'child',
-        'self' : false
-    });
+    if(cm._config.redrawOnLoad){
+        cm.customEvent.trigger(document.body, 'redraw', {
+            'type' : 'child',
+            'self' : false
+        });
+    }
 };
 
 cm.onReady(cm.init, false);

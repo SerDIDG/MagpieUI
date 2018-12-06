@@ -154,7 +154,6 @@ function(params){
         if(that.params['closeOnBackground']){
             cm.addClass(nodes['container'], 'has-close-background');
             cm.addEvent(nodes['bg'], 'click', close);
-            nodes['bg'].title = that.lang('closeTitle');
         }
         // Set title
         renderTitle(that.params['title']);

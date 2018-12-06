@@ -1,0 +1,12 @@
+<svg id="circle-redo.svg" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+        fill-rule: evenodd;
+      }
+    </style>
+  </defs>
+  <path id="icon" class="cls-1" d="M482,106a24,24,0,1,1-24,24A24,24,0,0,1,482,106Zm0,3a21,21,0,1,1-21,21A21,21,0,0,1,482,109Z" transform="translate(-458 -106)"/>
+  <path id="arrow" class="cls-1" d="M481.527,117a12.411,12.411,0,0,1,9.865,5l3.6-2.16L495,132.2l-10.322-6.176L488,124.035A8.563,8.563,0,0,0,481.527,121a9.006,9.006,0,0,0,0,18v4A13.009,13.009,0,0,1,481.527,117Z" transform="translate(-458 -106)"/>
+</svg>

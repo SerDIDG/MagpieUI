@@ -28,18 +28,18 @@
     left: @left;
 }
 
-.mx__transition (@properties, @duration: @CmUI-Transition-Duration, @function: ease-in-out) {
+.mx__transition (@properties, @duration: @CmUI-Transition-Duration, @function: ease-in-out, @delay: 0ms) {
     .for(@properties); .-each(@property) {
         .property(@property) when (@property = transform) {
-            -webkit-transition+: -webkit-transform @duration @function;
-                    transition+: -webkit-transform @duration @function;
-                    transition+: -ms-transform @duration @function;
-                    transition+: transform @duration @function;
+            -webkit-transition+: -webkit-transform @duration @function @delay;
+                    transition+: -webkit-transform @duration @function @delay;
+                    transition+: -ms-transform @duration @function @delay;
+                    transition+: transform @duration @function @delay;
         }
 
         .property(@property) when not (@property = transform) {
-            -webkit-transition+: @property @duration @function;
-                    transition+: @property @duration @function;
+            -webkit-transition+: @property @duration @function @delay;
+                    transition+: @property @duration @function @delay;
         }
 
         .property(@property);

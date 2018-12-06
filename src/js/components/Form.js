@@ -173,6 +173,7 @@ function(params){
             'name' : '',
             'sendPath' : null,
             'label' : '',
+            'required' : false,
             'options' : [],
             'container' : that.nodes['fields'],
             'renderName' : null
@@ -195,18 +196,18 @@ function(params){
             params['constructorController'] = cm.isFunction(params['fieldController'].getController) && params['fieldController'].getController();
             // Events
             params['fieldController'].addEvent('onBlur', function(){
-                if(that.params['validate'] && that.params['validateOnChange']){
+                if(that.params['validate'] && that.params['validateOnChange'] && params['required']){
                     params['fieldController'].validate();
                 }
             });
             params['fieldController'].addEvent('onChange', function(){
-                if(that.params['validate'] && that.params['validateOnChange']){
+                if(that.params['validate'] && that.params['validateOnChange'] && params['required']){
                     params['fieldController'].validate();
                 }
                 that.triggerEvent('onChange');
             });
             params['fieldController'].addEvent('onInput', function(){
-                if(that.params['validate'] && that.params['validateOnInput']){
+                if(that.params['validate'] && that.params['validateOnInput'] && params['required']){
                     params['fieldController'].validate();
                 }
                 that.triggerEvent('onInput');
@@ -519,6 +520,21 @@ function(params){
         return that.fields[name];
     };
 
+    that.setFieldParams = function(name, params){
+        var field = that.getField(name);
+        if(field){
+            field = cm.merge(field, params);
+            // Save
+            that.fields[name] = field;
+        }
+        return that;
+    };
+
+    that.removeField = function(name){
+        removeField(name);
+        return that;
+    };
+
     that.get = function(type){
         var o = {},
             handler,
@@ -592,15 +608,6 @@ function(params){
         return that;
     };
 
-    that.getButtonsContainer = function(){
-        return that.nodes['buttonsContainer'];
-    };
-
-    that.removeField = function(name){
-        removeField(name);
-        return that;
-    };
-
     that.clear = function(){
         cm.forEach(that.fields, function(field){
             field['controller'].destruct();
@@ -627,7 +634,7 @@ function(params){
     that.validate = function(){
         var isValid = true;
         cm.forEach(that.fields, function(field, name){
-            if(field['field'] && !field['system']){
+            if(field['field'] && !field['system'] && field['required']){
                 if(field['controller'].validate && !field['controller'].validate()){
                     isValid = false;
                 }
@@ -679,6 +686,7 @@ function(params){
         if(update){
             that._update.params['ajax'] = cm.clone(that.params['ajax']);
         }
+        that.isAjax = that.params['ajax'] && !cm.isEmpty(that.params['ajax']['url']);
         return that;
     };
 
@@ -709,6 +717,10 @@ function(params){
 
     that.getContainer = function(){
         return that.nodes['container'];
+    };
+
+    that.getButtonsContainer = function(){
+        return that.nodes['buttonsContainer'];
     };
 
     init();

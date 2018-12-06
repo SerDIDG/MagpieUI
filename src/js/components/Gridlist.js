@@ -648,11 +648,8 @@ function(params){
     };
 
     var renderCellDate = function(config, row, item){
-        if(that.params['dateFormat'] != that.params['visibleDateFormat']){
-            item['nodes']['inner'].innerHTML = cm.dateFormat(
-                cm.parseDate(item['text'], that.params['dateFormat']),
-                that.params['visibleDateFormat']
-            );
+        if(that.params['dateFormat'] !== that.params['visibleDateFormat']){
+            item['nodes']['inner'].innerHTML = cm.parseFormatDateTime(item['text'], that.params['dateFormat'], that.params['visibleDateFormat']);
         }else{
             item['nodes']['inner'].innerHTML = item['text'];
         }

@@ -148,7 +148,11 @@ select {
 }
 
 input[type="search"] {
-    -webkit-appearance: none;
+    -webkit-appearance: textfield;
+
+    &::-webkit-search-decoration {
+        -webkit-appearance: none;
+    }
 
     &::-webkit-search-cancel-button {
         -webkit-appearance: none;

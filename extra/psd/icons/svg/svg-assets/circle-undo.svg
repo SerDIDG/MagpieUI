@@ -1,0 +1,12 @@
+<svg id="circle-undo.svg" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+        fill-rule: evenodd;
+      }
+    </style>
+  </defs>
+  <path id="icon" class="cls-1" d="M425,106a24,24,0,1,1-24,24A24,24,0,0,1,425,106Zm0,3a21,21,0,1,1-21,21A21,21,0,0,1,425,109Z" transform="translate(-401 -106)"/>
+  <path id="arrow" class="cls-1" d="M425.473,117a12.411,12.411,0,0,0-9.865,5l-3.6-2.16L412,132.2l10.322-6.176L419,124.035A8.563,8.563,0,0,1,425.473,121a9.006,9.006,0,0,1,0,18v4A13.009,13.009,0,0,0,425.473,117Z" transform="translate(-401 -106)"/>
+</svg>

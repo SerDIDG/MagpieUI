@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.34.23 (2018-10-26 19:16) ************ */
+/*! ************ MagpieUI v3.34.24 (2018-12-06 20:17) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.34.23',
+        '_version' : '3.34.24',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -1645,6 +1645,7 @@ var cm = {
         '_pageSize' : {},
         '_clientPosition' : {'left' : 0, 'top' : 0},
         '_config' : {
+            'redrawOnLoad' : true,
             'animDuration' : 250,
             'animDurationShort' : 150,
             'animDurationLong' : 500,
@@ -4754,12 +4755,12 @@ cm.charCodeIsDigit = function(code){
 };
 
 cm.allowOnlyDigitInputEvent = function(input, callback){
-    var value, isMaxlength, isMax;
+    var value, isMaxLength, isMax;
     cm.addEvent(input, 'input', function(e){
         value = input.value.replace(/[^\d]/g, '');
-        isMaxlength = !cm.isEmpty(input.maxlength) && input.maxlength > 0;
+        isMaxLength = !cm.isEmpty(input.maxlength) && input.maxlength > 0;
         isMax = !cm.isEmpty(input.max) && input.max > 0;
-        if(isMaxlength || isMax){
+        if(isMaxLength || isMax){
             if(input.type === 'number'){
                 input.value = Math.min(parseFloat(value), parseFloat(input.max));
             }else{
@@ -6651,7 +6652,7 @@ cm.init = function(){
     // Set browser class
 
     var checkBrowser = function(){
-        if(typeof Com.UA != 'undefined'){
+        if(typeof Com.UA !== 'undefined'){
             Com.UA.setBrowserClass();
         }
     };
@@ -6699,7 +6700,7 @@ cm.init = function(){
         var size;
         return function(){
             cm._scrollSize = cm.getScrollBarSize();
-            if(size != cm._scrollSize){
+            if(size !== cm._scrollSize){
                 size = cm._scrollSize;
                 cm.customEvent.trigger(window, 'scrollSizeChange', {
                     'type' : 'all',
@@ -6755,10 +6756,12 @@ cm.init = function(){
 cm.load = function(){
     cm._isDocumentLoad = true;
     // Redraw components and modules after full page loading
-    cm.customEvent.trigger(document.body, 'redraw', {
-        'type' : 'child',
-        'self' : false
-    });
+    if(cm._config.redrawOnLoad){
+        cm.customEvent.trigger(document.body, 'redraw', {
+            'type' : 'child',
+            'self' : false
+        });
+    }
 };
 
 cm.onReady(cm.init, false);
@@ -6902,7 +6905,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         return that;
     };
 
-    classProto.redraw = function(){
+    classProto.redraw = function(e){
         var that = this;
         animFrame(function(){
             that.triggerEvent('onRedraw');
@@ -9318,6 +9321,7 @@ function(params){
             'name' : '',
             'sendPath' : null,
             'label' : '',
+            'required' : false,
             'options' : [],
             'container' : that.nodes['fields'],
             'renderName' : null
@@ -9340,18 +9344,18 @@ function(params){
             params['constructorController'] = cm.isFunction(params['fieldController'].getController) && params['fieldController'].getController();
             // Events
             params['fieldController'].addEvent('onBlur', function(){
-                if(that.params['validate'] && that.params['validateOnChange']){
+                if(that.params['validate'] && that.params['validateOnChange'] && params['required']){
                     params['fieldController'].validate();
                 }
             });
             params['fieldController'].addEvent('onChange', function(){
-                if(that.params['validate'] && that.params['validateOnChange']){
+                if(that.params['validate'] && that.params['validateOnChange'] && params['required']){
                     params['fieldController'].validate();
                 }
                 that.triggerEvent('onChange');
             });
             params['fieldController'].addEvent('onInput', function(){
-                if(that.params['validate'] && that.params['validateOnInput']){
+                if(that.params['validate'] && that.params['validateOnInput'] && params['required']){
                     params['fieldController'].validate();
                 }
                 that.triggerEvent('onInput');
@@ -9664,6 +9668,21 @@ function(params){
         return that.fields[name];
     };
 
+    that.setFieldParams = function(name, params){
+        var field = that.getField(name);
+        if(field){
+            field = cm.merge(field, params);
+            // Save
+            that.fields[name] = field;
+        }
+        return that;
+    };
+
+    that.removeField = function(name){
+        removeField(name);
+        return that;
+    };
+
     that.get = function(type){
         var o = {},
             handler,
@@ -9737,15 +9756,6 @@ function(params){
         return that;
     };
 
-    that.getButtonsContainer = function(){
-        return that.nodes['buttonsContainer'];
-    };
-
-    that.removeField = function(name){
-        removeField(name);
-        return that;
-    };
-
     that.clear = function(){
         cm.forEach(that.fields, function(field){
             field['controller'].destruct();
@@ -9772,7 +9782,7 @@ function(params){
     that.validate = function(){
         var isValid = true;
         cm.forEach(that.fields, function(field, name){
-            if(field['field'] && !field['system']){
+            if(field['field'] && !field['system'] && field['required']){
                 if(field['controller'].validate && !field['controller'].validate()){
                     isValid = false;
                 }
@@ -9824,6 +9834,7 @@ function(params){
         if(update){
             that._update.params['ajax'] = cm.clone(that.params['ajax']);
         }
+        that.isAjax = that.params['ajax'] && !cm.isEmpty(that.params['ajax']['url']);
         return that;
     };
 
@@ -9854,6 +9865,10 @@ function(params){
 
     that.getContainer = function(){
         return that.nodes['container'];
+    };
+
+    that.getButtonsContainer = function(){
+        return that.nodes['buttonsContainer'];
     };
 
     init();
@@ -12622,7 +12637,6 @@ function(params){
         if(that.params['closeOnBackground']){
             cm.addClass(nodes['container'], 'has-close-background');
             cm.addEvent(nodes['bg'], 'click', close);
-            nodes['bg'].title = that.lang('closeTitle');
         }
         // Set title
         renderTitle(that.params['title']);
@@ -16764,11 +16778,8 @@ function(params){
     };
 
     var renderCellDate = function(config, row, item){
-        if(that.params['dateFormat'] != that.params['visibleDateFormat']){
-            item['nodes']['inner'].innerHTML = cm.dateFormat(
-                cm.parseDate(item['text'], that.params['dateFormat']),
-                that.params['visibleDateFormat']
-            );
+        if(that.params['dateFormat'] !== that.params['visibleDateFormat']){
+            item['nodes']['inner'].innerHTML = cm.parseFormatDateTime(item['text'], that.params['dateFormat'], that.params['visibleDateFormat']);
         }else{
             item['nodes']['inner'].innerHTML = item['text'];
         }
