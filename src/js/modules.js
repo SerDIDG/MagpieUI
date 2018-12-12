@@ -13,7 +13,8 @@ Mod['Extend'] = {
             o._config = cm.merge({
                 'extend' : false,
                 'predefine' : false,
-                'require' : []
+                'require' : [],
+                'events' : []
             }, o._config);
             // Check Requires
             cm.forEach(o._config['require'], function(module){
@@ -28,6 +29,10 @@ Mod['Extend'] = {
                         that.build[key] = item;
                     }
                 });
+            }
+            // Extend class events
+            if(!cm.isEmpty(o._config['events'])){
+                that.build._raw['events'] = cm.extend(that.build._raw['events'], o._config['events']);
             }
             // Construct module
             if(cm.isFunction(o._construct)){
@@ -69,7 +74,8 @@ Mod['Extend'] = {
             o._config = cm.merge({
                 'extend' : false,
                 'predefine' : false,
-                'require' : []
+                'require' : [],
+                'events' : []
             }, o._config);
             // Check Requires
             cm.forEach(o._config['require'], function(module){
@@ -84,6 +90,10 @@ Mod['Extend'] = {
                         cm._defineStack[that._name['full']].prototype[key] = item;
                     }
                 });
+            }
+            // Extend events
+            if(!cm.isEmpty(o._config['events'])){
+                cm._defineStack[that._name['full']].prototype._raw['events'] = cm.extend(cm._defineStack[that._name['full']].prototype._raw['events'], o._config['events']);
             }
             // Construct module
             if(cm.isFunction(o._construct)){
@@ -140,7 +150,8 @@ Mod['Params'] = {
     '_config' : {
         'extend' : true,
         'predefine' : false,
-        'require' : ['Extend']
+        'require' : ['Extend'],
+        'events' : ['onSetParams']
     },
     '_construct' : function(){
         var that = this;
@@ -216,6 +227,7 @@ Mod['Params'] = {
                     break
             }
         });
+        that.triggerEvent('onSetParams');
         return that;
     },
     'getParams' : function(key){

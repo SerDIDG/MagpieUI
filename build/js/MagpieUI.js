@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.34.24 (2018-12-06 20:17) ************ */
+/*! ************ MagpieUI v3.34.25 (2018-12-12 19:24) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.34.24',
+        '_version' : '3.34.25',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -5696,7 +5696,8 @@ Mod['Extend'] = {
             o._config = cm.merge({
                 'extend' : false,
                 'predefine' : false,
-                'require' : []
+                'require' : [],
+                'events' : []
             }, o._config);
             // Check Requires
             cm.forEach(o._config['require'], function(module){
@@ -5711,6 +5712,10 @@ Mod['Extend'] = {
                         that.build[key] = item;
                     }
                 });
+            }
+            // Extend class events
+            if(!cm.isEmpty(o._config['events'])){
+                that.build._raw['events'] = cm.extend(that.build._raw['events'], o._config['events']);
             }
             // Construct module
             if(cm.isFunction(o._construct)){
@@ -5752,7 +5757,8 @@ Mod['Extend'] = {
             o._config = cm.merge({
                 'extend' : false,
                 'predefine' : false,
-                'require' : []
+                'require' : [],
+                'events' : []
             }, o._config);
             // Check Requires
             cm.forEach(o._config['require'], function(module){
@@ -5767,6 +5773,10 @@ Mod['Extend'] = {
                         cm._defineStack[that._name['full']].prototype[key] = item;
                     }
                 });
+            }
+            // Extend events
+            if(!cm.isEmpty(o._config['events'])){
+                cm._defineStack[that._name['full']].prototype._raw['events'] = cm.extend(cm._defineStack[that._name['full']].prototype._raw['events'], o._config['events']);
             }
             // Construct module
             if(cm.isFunction(o._construct)){
@@ -5823,7 +5833,8 @@ Mod['Params'] = {
     '_config' : {
         'extend' : true,
         'predefine' : false,
-        'require' : ['Extend']
+        'require' : ['Extend'],
+        'events' : ['onSetParams']
     },
     '_construct' : function(){
         var that = this;
@@ -5899,6 +5910,7 @@ Mod['Params'] = {
                     break
             }
         });
+        that.triggerEvent('onSetParams');
         return that;
     },
     'getParams' : function(key){
@@ -9168,7 +9180,9 @@ cm.define('Com.Form', {
         'onSend',
         'onSendEnd',
         'onChange',
-        'onInput'
+        'onInput',
+        'onClear',
+        'onReset'
     ],
     'params' : {
         'node' : cm.node('div'),
@@ -9768,6 +9782,7 @@ function(params){
         that.buttons = {};
         cm.clearNode(that.nodes['buttonsHolder']);
         that.clearError();
+        that.triggerEvent('onClear');
         return that;
     };
 
@@ -9776,6 +9791,7 @@ function(params){
             field['controller'].reset();
         });
         that.clearError();
+        that.triggerEvent('onReset');
         return that;
     };
 

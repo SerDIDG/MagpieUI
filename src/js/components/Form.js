@@ -20,7 +20,9 @@ cm.define('Com.Form', {
         'onSend',
         'onSendEnd',
         'onChange',
-        'onInput'
+        'onInput',
+        'onClear',
+        'onReset'
     ],
     'params' : {
         'node' : cm.node('div'),
@@ -620,6 +622,7 @@ function(params){
         that.buttons = {};
         cm.clearNode(that.nodes['buttonsHolder']);
         that.clearError();
+        that.triggerEvent('onClear');
         return that;
     };
 
@@ -628,6 +631,7 @@ function(params){
             field['controller'].reset();
         });
         that.clearError();
+        that.triggerEvent('onReset');
         return that;
     };
 
