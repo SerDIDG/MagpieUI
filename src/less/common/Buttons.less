@@ -20,8 +20,9 @@
     cursor: pointer;
     outline: @CmButton-OutlineWidth dashed transparent;
     outline-offset: @CmButton-OutlineOffset;
-    -moz-outline-radius: @CmBorder-Radius;
-         outline-radius: @CmBorder-Radius;
+    -webkit-outline-radius: @CmBorder-Radius;
+       -moz-outline-radius: @CmBorder-Radius;
+            outline-radius: @CmBorder-Radius;
     .mx__appearance(none);
     .mx__box-sizing(border-box);
     .mx__background-clip(border-box);
@@ -469,12 +470,13 @@
 
 /* *** MIXINS *** */
 
-.button--size (@height, @lineHeight: @CmFont-Base-LineHeight) {
-    @padding: max(ceil((@height - @lineHeight) / 2), 0px);
+.button--size (@height, @lineHeight: @CmFont-Base-LineHeight, @border: 0px) {
+    @padding: max(ceil((@height - @lineHeight - @border) / 2), 0px);
     min-height: @height;
     padding-top: @padding;
     padding-bottom: @padding;
     line-height: @lineHeight;
+    border-width: @border;
 }
 
 /* *** APPLY *** */

@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.34.25 (2018-12-12 19:24) ************ */
+/*! ************ MagpieUI v3.35.0 (2018-12-13 21:29) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.34.25',
+        '_version' : '3.35.0',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -5910,7 +5910,10 @@ Mod['Params'] = {
                     break
             }
         });
-        that.triggerEvent('onSetParams');
+        // Trigger event if module defined
+        if(that._modules['Events']){
+            that.triggerEvent('onSetParams');
+        }
         return that;
     },
     'getParams' : function(key){
@@ -8566,10 +8569,21 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
 
     classProto.renderHint = function(message){
         var that = this;
+        that.clearHint();
         that.nodes['hints'] = cm.node('ul', {'class' : 'pt__field__hint'},
             cm.node('li', {'innerHTML' : message})
         );
-        cm.appendChild(that.nodes['hints'], that.nodes['value']);
+        if(that.params['renderError'] && that.nodes['errors']){
+            cm.insertBefore(that.nodes['hints'], that.nodes['errors']);
+        }else{
+            cm.appendChild(that.nodes['hints'], that.nodes['value']);
+        }
+        return that;
+    };
+
+    classProto.clearHint = function(){
+        var that = this;
+        cm.remove(that.nodes['hints']);
         return that;
     };
 
@@ -8581,7 +8595,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             that.nodes['errors'] = cm.node('ul', {'class' : 'pt__field__error pt__field__hint'},
                 cm.node('li', {'class' : 'error', 'innerHTML' : message})
             );
-            cm.appendChild(that.nodes['errors'], that.nodes['value']);
+            cm.insertLast(that.nodes['errors'], that.nodes['value']);
         }
         return that;
     };

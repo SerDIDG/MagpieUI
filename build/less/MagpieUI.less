@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.34.25 (2018-12-12 19:24) ************ */
+/*! ************ MagpieUI v3.35.0 (2018-12-13 21:29) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3924,7 +3924,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.34.25';
+@CmVersion: '3.35.0';
 
 // /* ******* PATH ******* */
 
@@ -6024,7 +6024,7 @@ span.CodeMirror-selectedtext { background: none; }
     // /* *** MEDIUM *** */
 
     &.medium {
-        .for(check ui-arrow-left ui-arrow-right ui-arrow-white-left ui-arrow-white-right arrow-white-left arrow-white-right arrow-white-top arrow-white-bottom datepicker select-arrow close close-white menu menu-white settings settings-white plus-white palette); .-each(@name) {
+        .for(check ui-arrow-left ui-arrow-right ui-arrow-white-left ui-arrow-white-right arrow-white-left arrow-white-right arrow-white-top arrow-white-bottom datepicker select-arrow close close-white menu menu-white settings settings-white plus-white palette google google-dark linkedin twitter facebook); .-each(@name) {
             &.@{name} {
                 background-image: url("@{CmPath-Images}/icons/medium/@{name}.png");
             }
@@ -6034,7 +6034,7 @@ span.CodeMirror-selectedtext { background: none; }
     // /* *** LARGE *** */
 
     &.large {
-        .for(message message-draft message-pending page page-draft page-pending page-featured google linkedin twitter facebook favorite); .-each(@name) {
+        .for(message message-draft message-pending page page-draft page-pending page-featured google google-dark linkedin twitter facebook favorite); .-each(@name) {
             &.@{name} {
                 background-image: url("@{CmPath-Images}/icons/large/@{name}.png");
             }
@@ -6789,8 +6789,9 @@ select {
     cursor: pointer;
     outline: @CmButton-OutlineWidth dashed transparent;
     outline-offset: @CmButton-OutlineOffset;
-    -moz-outline-radius: @CmBorder-Radius;
-         outline-radius: @CmBorder-Radius;
+    -webkit-outline-radius: @CmBorder-Radius;
+       -moz-outline-radius: @CmBorder-Radius;
+            outline-radius: @CmBorder-Radius;
     .mx__appearance(none);
     .mx__box-sizing(border-box);
     .mx__background-clip(border-box);
@@ -7238,12 +7239,13 @@ select {
 
 /* *** MIXINS *** */
 
-.button--size (@height, @lineHeight: @CmFont-Base-LineHeight) {
-    @padding: max(ceil((@height - @lineHeight) / 2), 0px);
+.button--size (@height, @lineHeight: @CmFont-Base-LineHeight, @border: 0px) {
+    @padding: max(ceil((@height - @lineHeight - @border) / 2), 0px);
     min-height: @height;
     padding-top: @padding;
     padding-bottom: @padding;
     line-height: @lineHeight;
+    border-width: @border;
 }
 
 /* *** APPLY *** */
@@ -11439,7 +11441,7 @@ ul.pt__field__hint {
             }
 
             &.google {
-                .icon.large.google;
+                .icon.large.google-dark;
             }
 
             &.linkedin {

@@ -227,7 +227,10 @@ Mod['Params'] = {
                     break
             }
         });
-        that.triggerEvent('onSetParams');
+        // Trigger event if module defined
+        if(that._modules['Events']){
+            that.triggerEvent('onSetParams');
+        }
         return that;
     },
     'getParams' : function(key){

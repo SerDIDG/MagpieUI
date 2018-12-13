@@ -464,10 +464,21 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
 
     classProto.renderHint = function(message){
         var that = this;
+        that.clearHint();
         that.nodes['hints'] = cm.node('ul', {'class' : 'pt__field__hint'},
             cm.node('li', {'innerHTML' : message})
         );
-        cm.appendChild(that.nodes['hints'], that.nodes['value']);
+        if(that.params['renderError'] && that.nodes['errors']){
+            cm.insertBefore(that.nodes['hints'], that.nodes['errors']);
+        }else{
+            cm.appendChild(that.nodes['hints'], that.nodes['value']);
+        }
+        return that;
+    };
+
+    classProto.clearHint = function(){
+        var that = this;
+        cm.remove(that.nodes['hints']);
         return that;
     };
 
@@ -479,7 +490,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             that.nodes['errors'] = cm.node('ul', {'class' : 'pt__field__error pt__field__hint'},
                 cm.node('li', {'class' : 'error', 'innerHTML' : message})
             );
-            cm.appendChild(that.nodes['errors'], that.nodes['value']);
+            cm.insertLast(that.nodes['errors'], that.nodes['value']);
         }
         return that;
     };

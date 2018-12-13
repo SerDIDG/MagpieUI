@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.34.25 (2018-12-12 19:24) ************ */
+/*! ************ MagpieUI v3.35.0 (2018-12-13 21:29) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.6.0
@@ -3512,8 +3512,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.34.25');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.34.25') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.34.25') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.34.25') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.34.25#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.35.0');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.35.0') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.35.0') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.35.0') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.35.0#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -4518,6 +4518,21 @@ span.CodeMirror-selectedtext {
 .icon.medium.palette {
   background-image: url("../img/MagpieUI/icons/medium/palette.png");
 }
+.icon.medium.google {
+  background-image: url("../img/MagpieUI/icons/medium/google.png");
+}
+.icon.medium.google-dark {
+  background-image: url("../img/MagpieUI/icons/medium/google-dark.png");
+}
+.icon.medium.linkedin {
+  background-image: url("../img/MagpieUI/icons/medium/linkedin.png");
+}
+.icon.medium.twitter {
+  background-image: url("../img/MagpieUI/icons/medium/twitter.png");
+}
+.icon.medium.facebook {
+  background-image: url("../img/MagpieUI/icons/medium/facebook.png");
+}
 .icon.large.message {
   background-image: url("../img/MagpieUI/icons/large/message.png");
 }
@@ -4541,6 +4556,9 @@ span.CodeMirror-selectedtext {
 }
 .icon.large.google {
   background-image: url("../img/MagpieUI/icons/large/google.png");
+}
+.icon.large.google-dark {
+  background-image: url("../img/MagpieUI/icons/large/google-dark.png");
 }
 .icon.large.linkedin {
   background-image: url("../img/MagpieUI/icons/large/linkedin.png");
@@ -5463,6 +5481,7 @@ button {
   cursor: pointer;
   outline: 1px dashed transparent;
   outline-offset: 1px;
+  -webkit-outline-radius: 3px;
   -moz-outline-radius: 3px;
   outline-radius: 3px;
   -webkit-appearance: none;
@@ -12657,7 +12676,7 @@ ul.pt__field__hint li:before {
   background-image: url("../img/MagpieUI/icons/large/twitter.png");
 }
 .pt__line-share .icon.default.google {
-  background-image: url("../img/MagpieUI/icons/large/google.png");
+  background-image: url("../img/MagpieUI/icons/large/google-dark.png");
 }
 .pt__line-share .icon.default.linkedin {
   background-image: url("../img/MagpieUI/icons/large/linkedin.png");
@@ -18022,6 +18041,7 @@ ul.pt__field__hint li:before {
   cursor: pointer;
   outline: 1px dashed transparent;
   outline-offset: 1px;
+  -webkit-outline-radius: 3px;
   -moz-outline-radius: 3px;
   outline-radius: 3px;
   -webkit-appearance: none;
