@@ -2,6 +2,7 @@ cm.define('Com.OpacityRange', {
     'extend' : 'Com.AbstractRange',
     'params' : {
         'className' : 'com__range',
+        'theme' : 'theme--arrows',
         'min' : 100,
         'max' : 0,
         'value' : 100,

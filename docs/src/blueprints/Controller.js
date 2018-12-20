@@ -17,6 +17,5 @@ cm.getConstructor('Com.MyController', function(classConstructor, className, clas
         var that = this;
         // Call parent method - renderViewModel
         classInherit.prototype.renderViewModel.apply(that, arguments);
-        return that;
     };
 });

@@ -3,3 +3,36 @@
 .com__range {
     .cm__box;
 }
+
+.com__range__field {
+    .bar {
+        height: @CmSize-XXSmall;
+        margin: auto;
+        position: absolute;
+        border-radius: @CmBorder-Radius;
+        background: @CmColor-Secondary-LightActive;
+        .mx__position(0, 0, 0, 0);
+
+        .range {
+            position: absolute;
+            border-radius: @CmBorder-Radius;
+            background: @CmColor-Primary-LightActiveHover;
+            .mx__position(0, auto, 0, auto);
+        }
+    }
+
+    .min,
+    .max {
+        .cm__font--hint;
+        position: absolute;
+        top: -@CmSize-XXSmall;
+    }
+
+    .min {
+        left: 0;
+    }
+
+    .max {
+        right: 0;
+    }
+}

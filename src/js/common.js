@@ -476,12 +476,20 @@ cm.arraySort = function(a, key, dir){
     switch(dir){
         case 'asc':
             newA.sort(function(a, b){
-                return (a[key] < b[key]) ? 1 : ((a[key] > b[key]) ? -1 : 0);
+                if(key){
+                    return (a[key] < b[key]) ? 1 : ((a[key] > b[key]) ? -1 : 0);
+                }else{
+                    return (a < b) ? 1 : ((a > b) ? -1 : 0);
+                }
             });
             break;
         case 'desc' :
             newA.sort(function(a, b){
-                return (a[key] < b[key]) ? -1 : ((a[key] > b[key]) ? 1 : 0);
+                if(key){
+                    return (a[key] < b[key]) ? -1 : ((a[key] > b[key]) ? 1 : 0);
+                }else{
+                    return (a < b) ? -1 : ((a > b) ? 1 : 0);
+                }
             });
             break;
     }

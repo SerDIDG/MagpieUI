@@ -5,13 +5,15 @@ cm.define('Com.AbstractRange', {
         'embedStructureOnRender' : true,
         'controllerEvents' : true,
         'className' : 'com__range',
-        'theme' : 'theme--arrows is-input',
+        'theme' : 'theme--arrows',
         'min' : 0,
         'max' : 100,
         'value' : 0,
+        'range' : false,
         'direction' : 'horizontal',
         'showCounter' : true,
-        'Com.Draggable' : {}
+        'draggableConstructor' : 'Com.AbstractRangeDrag',
+        'draggableParams' : {}
     }
 },
 function(params){
@@ -20,17 +22,30 @@ function(params){
     Com.AbstractInput.apply(that, arguments);
 });
 
-cm.getConstructor('Com.AbstractRange', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
+cm.getConstructor('Com.AbstractRange', function(classConstructor, className, classProto, classInherit){
+    classProto.onConstructStart = function(){
+        var that = this;
+        // Variables
+        that.components['draggable'] = [];
+        that.sort = 'asc';
+    };
 
     classProto.onRedraw = function(){
         var that = this;
-        that.setDraggable(that.value);
+        that.setData();
     };
 
     classProto.onValidateParamsEnd = function(){
         var that = this;
-        that.params['Com.Draggable']['direction'] = that.params['direction'];
+        // Sort
+        that.sort = (that.params['min'] > that.params['max']) ? 'asc' : 'desc';
+        that.targetDraggable = !that.params['range'];
+        // Configure draggable
+        that.params['draggableParams']['theme'] = that.params['theme'];
+        that.params['draggableParams']['direction'] = that.params['direction'];
+        that.params['draggableParams']['targetDraggable'] = that.targetDraggable;
+        that.params['draggableParams']['min'] = that.params['min'];
+        that.params['draggableParams']['max'] = that.params['max'];
     };
 
     /*** VIEW MODEL ***/
@@ -38,51 +53,12 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
     classProto.renderViewModel = function(){
         var that = this;
         // Call parent method - renderViewModel
-        _inherit.prototype.renderViewModel.apply(that, arguments);
+        classInherit.prototype.renderViewModel.apply(that, arguments);
         // Draggable
-        cm.getConstructor('Com.Draggable', function(classConstructor, className){
-            that.components['draggable'] = new classConstructor(
-                cm.merge(that.params[className], {
-                    'target' : that.nodes['content']['inner'],
-                    'node' : that.nodes['content']['drag'],
-                    'limiter' : that.nodes['content']['inner'],
-                    'events' : {
-                        'onStart' : function(){
-                            switch(that.params['direction']){
-                                case 'horizontal':
-                                    cm.addClass(document.body, 'cm__cursor--col-resize');
-                                    break;
-
-                                case 'vertical':
-                                    cm.addClass(document.body, 'cm__cursor--row-resize');
-                                    break;
-                            }
-                            that.showCounter();
-                        },
-                        'onStop' : function(){
-                            switch(that.params['direction']){
-                                case 'horizontal':
-                                    cm.removeClass(document.body, 'cm__cursor--col-resize');
-                                    break;
-
-                                case 'vertical':
-                                    cm.removeClass(document.body, 'cm__cursor--row-resize');
-                                    break;
-                            }
-                            that.hideCounter();
-                        },
-                        'onSelect' : function(my, data){
-                            var value = that.getRangeValue(data);
-                            that.selectAction(value, true);
-                        },
-                        'onSet' : function(my, data){
-                            var value = that.getRangeValue(data);
-                            that.set(value, true);
-                        }
-                    }
-                })
-            );
-        });
+        that.renderDraggable();
+        if(that.params['range']){
+            that.renderDraggable();
+        }
     };
 
     classProto.renderContent = function(){
@@ -94,9 +70,6 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
         nodes['container'] = cm.node('div', {'class' : 'com__range__content'},
             nodes['range'] = cm.node('div', {'class' : 'pt__range'},
                 nodes['inner'] = cm.node('div', {'class' : 'inner'},
-                    nodes['drag'] = cm.node('div', {'class' : 'drag'},
-                        nodes['dragContent'] = that.renderDraggable()
-                    ),
                     nodes['range'] = cm.node('div', {'class' : 'range'},
                         nodes['rangeContent'] = that.renderRangeContent()
                     )
@@ -104,30 +77,23 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
             )
         );
         that.triggerEvent('onRenderContentProcess');
-        // Counter
-        nodes['counter'] = that.renderCounter();
-        if(that.params['showCounter']){
-            cm.insertFirst(nodes['counter'], nodes['drag']);
-        }
         // Classes
         cm.addClass(nodes['rangeContent'], 'range-helper');
         cm.addClass(nodes['container'], that.params['theme']);
         cm.addClass(nodes['range'], that.params['theme']);
-        cm.addClass(nodes['dragContent'], that.params['theme']);
         cm.addClass(nodes['rangeContent'], that.params['theme']);
+        that.targetDraggable && cm.addClass(nodes['range'], 'is-draggable');
         // Direction classes
         switch(that.params['direction']){
             case 'horizontal':
                 cm.addClass(nodes['container'], 'is-horizontal');
                 cm.addClass(nodes['range'], 'is-horizontal');
-                cm.addClass(nodes['dragContent'], 'is-horizontal');
                 cm.addClass(nodes['rangeContent'], 'is-horizontal');
                 break;
 
             case 'vertical':
                 cm.addClass(nodes['container'], 'is-vertical');
                 cm.addClass(nodes['range'], 'is-vertical');
-                cm.addClass(nodes['dragContent'], 'is-vertical');
                 cm.addClass(nodes['rangeContent'], 'is-vertical');
                 break;
         }
@@ -135,35 +101,6 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
         that.triggerEvent('onRenderContentEnd');
         // Export
         return nodes['container'];
-    };
-
-    /*** COUNTER ***/
-
-    classProto.renderCounter = function(){
-        var that = this,
-            nodes = {};
-        that.nodes['counterContent'] = nodes;
-        // Structure
-        nodes['container'] = nodes['inner'] = cm.node('div', {'class' : 'counter'});
-        // Export
-        return nodes['container'];
-    };
-
-    classProto.showCounter = function(){
-        var that = this;
-        cm.addClass(that.nodes['counterContent']['container'], 'is-show');
-        return that;
-    };
-
-    classProto.hideCounter = function(){
-        var that = this;
-        cm.removeClass(that.nodes['counterContent']['container'], 'is-show');
-        return that;
-    };
-
-    classProto.setCounter = function(value){
-        var that = this;
-        that.nodes['counterContent']['inner'].innerHTML = value;
     };
 
     /*** RANGE ***/
@@ -178,86 +115,90 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
         return nodes['container'];
     };
 
+    /*** DRAGGABLE ***/
+
     classProto.renderDraggable = function(){
-        var that = this,
-            nodes = {};
-        that.nodes['dragContent'] = nodes;
-        // Structure
-        nodes['container'] = cm.node('div', {'class' : 'drag__content'});
-        // Export
-        return nodes['container'];
-    };
-
-    classProto.getRangeValue = function(data){
-        var that = this,
-            dimensions = that.components['draggable'].getDimensions(),
-            xn = that.params['max'] - that.params['min'],
-            yn,
-            zn,
-            value;
-        switch(that.params['direction']){
-            case 'horizontal':
-                yn = dimensions['limiter']['absoluteWidth'];
-                zn = (xn / yn) * data['left'];
-                value = Math.floor(zn) + that.params['min'];
-                break;
-
-            case 'vertical':
-                yn = dimensions['limiter']['absoluteHeight'];
-                zn = (xn / yn) * data['top'];
-                value = Math.floor(zn) + that.params['min'];
-                break;
-        }
-        return value;
-    };
-
-    classProto.setDraggable = function(value){
-        var that = this,
-            position = {
-                'top' : 0,
-                'left' : 0
-            },
-            dimensions = that.components['draggable'].getDimensions(),
-            xn = that.params['max'] - that.params['min'],
-            yn,
-            zn;
-        value = value - that.params['min'];
-        switch(that.params['direction']){
-            case 'horizontal':
-                yn = dimensions['limiter']['absoluteWidth'];
-                zn = (yn / xn) * value;
-                position['left'] = Math.floor(zn);
-                break;
-
-            case 'vertical':
-                yn = dimensions['limiter']['absoluteHeight'];
-                zn = (yn / xn ) * value;
-                position['top'] = Math.floor(zn);
-                break;
-        }
-        that.components['draggable'].setPosition(position, false);
+        var that = this;
+        cm.getConstructor(that.params['draggableConstructor'], function(classConstructor){
+            that.components['draggable'].push(
+                new classConstructor(
+                    cm.merge(that.params['draggableParams'], {
+                        'node' : that.nodes['content']['inner'],
+                        'events' : {
+                            'onStart' : function(){
+                                that.setEditing();
+                            },
+                            'onStop' : function(){
+                                that.unsetEditing();
+                            },
+                            'onSelect' : function(my, value){
+                                that.setValues();
+                                that.selectAction(that.tempRawValue.join('-'), true);
+                            },
+                            'onSet' : function(my, value){
+                                that.setValues();
+                                that.set(that.tempRawValue.join('-'), true);
+                            }
+                        }
+                    })
+                )
+            );
+        });
     };
 
     /*** DATA ***/
 
+    classProto.setValues = function(){
+        var that = this;
+        that.tempRawValue = [];
+        cm.forEach(that.components['draggable'], function(item){
+            that.tempRawValue.push(item.get());
+        });
+        that.tempRawValue = cm.arraySort(that.tempRawValue, false, that.sort);
+    };
+
     classProto.validateValue = function(value){
-        var that = this;
-        if(that.params['max'] > that.params['min']){
-            value = Math.min(Math.max(value, that.params['min']), that.params['max']);
-        }else{
-            value = Math.max(Math.min(value, that.params['min']), that.params['max']);
-        }
-        return value;
+        var that = this,
+            values = value.toString().split('-');
+        cm.forEach(values, function(item, i){
+            if(that.params['max'] > that.params['min']){
+                values[i] = Math.min(Math.max(parseFloat(item), that.params['min']), that.params['max']);
+            }else{
+                values[i] = Math.max(Math.min(parseFloat(item), that.params['min']), that.params['max']);
+            }
+        });
+        that.values = cm.arraySort(values, false, that.sort);
+        return values.join('-');
     };
 
-    classProto.selectData = function(value){
+    classProto.saveRawValue = function(value){
         var that = this;
-        that.setCounter(value);
+        that.tempRawValue = value.toString().split('-');
+        that.tempRawValue = cm.arraySort(that.tempRawValue, false, that.sort);
     };
 
-    classProto.setData = function(value){
+    classProto.setData = function(){
         var that = this;
-        that.setCounter(value);
-        that.setDraggable();
+        cm.forEach(that.components['draggable'], function(item, i){
+            item.set(that.tempRawValue[i], false);
+        });
+    };
+
+    /*** PUBLIC ***/
+
+    classProto.setEditing = function(){
+        var that = this;
+        cm.addClass(that.nodes['content']['container'], 'is-editing');
+        cm.addClass(that.nodes['content']['range'], 'is-editing');
+        cm.addClass(that.nodes['content']['rangeContent'], 'is-editing');
+        return that;
+    };
+
+    classProto.unsetEditing = function(){
+        var that = this;
+        cm.removeClass(that.nodes['content']['container'], 'is-editing');
+        cm.removeClass(that.nodes['content']['range'], 'is-editing');
+        cm.removeClass(that.nodes['content']['rangeContent'], 'is-editing');
+        return that;
     };
 });

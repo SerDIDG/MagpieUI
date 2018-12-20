@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.35.0 (2018-12-13 21:29) ************ */
+/*! ************ MagpieUI v3.36.0 (2018-12-20 22:48) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3924,7 +3924,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.35.0';
+@CmVersion: '3.36.0';
 
 // /* ******* PATH ******* */
 
@@ -12264,22 +12264,34 @@ ul.pt__field__hint {
     &.is-vertical {
         > .inner {
             height: @PtRange-Height;
+        }
+    }
+
+    &.is-vertical {
+        &.is-draggable {
+            > .inner {
+                cursor: row-resize;
+            }
+        }
+
+        .drag {
             cursor: row-resize;
         }
     }
 
     &.is-horizontal {
-        > .inner {
+        &.is-draggable {
+            > .inner {
+                cursor: col-resize;
+            }
+        }
+
+        .drag {
             cursor: col-resize;
         }
     }
 
-    .pt__range__size(@PtRange-Size);
-
-    &.is-input {
-        .pt__range__size(@CmForm-FieldHeight);
-    }
-
+    &.is-editing,
     &:hover {
         .drag {
             .counter {
@@ -12287,6 +12299,8 @@ ul.pt__field__hint {
             }
         }
     }
+
+    .pt__range__size(@CmForm-FieldHeight);
 }
 
 .pt__range__size (@value: @PtRange-Size) {
@@ -12306,6 +12320,53 @@ ul.pt__field__hint {
 /* ******* PARTS: RANGE: THEMES ******* */
 
 .pt__range {
+    &.theme--default {
+        .drag {
+            .cm__size__small;
+            border-radius: 100%;
+            background: @CmColor-Primary-DarkDefault;
+
+            .counter {
+                .cm__font--hint;
+                padding: 0 @CmIndent-XXXSmall;
+                background: @CmUI-Overlay-Dark;
+                border-radius: @CmBorder-Radius;
+                color: @CmColor-Font-Opposite;
+                .mx__position(auto, auto, 100%, 50%);
+                .mx__transform(translate(-50%, -@CmIndent-XXSmall));
+
+                &:before {
+                    width: 0;
+                    height: 0;
+                    display: block;
+                    margin: auto;
+                    position: absolute;
+                    border-style: solid;
+                    border-width: 6px 4px 0 4px;
+                    border-color: @CmUI-Overlay-Dark transparent transparent;
+                    content: '';
+                    .mx__position(100%, 0, auto, 0);
+                }
+            }
+        }
+
+        &.is-vertical {
+            .drag {
+                margin: -(@CmSize-Small / 2) auto 0 auto;
+                left: 0;
+                right: 0;
+            }
+        }
+
+        &.is-horizontal {
+            .drag {
+                margin: auto 0 auto -(@CmSize-Small / 2);
+                top: 0;
+                bottom: 0;
+            }
+        }
+    }
+
     &.theme--arrows {
         .drag {
             &:before,
@@ -12766,6 +12827,7 @@ ul.pt__field__hint {
                 &.is-adaptive {
                     > .inner {
                         display: block;
+                        margin: 0;
 
                         > .left,
                         > .center,
@@ -12784,6 +12846,10 @@ ul.pt__field__hint {
                         display: block;
                         margin-left: 0;
                         margin-right: 0;
+
+                        &:last-child {
+                            margin-bottom: 0;
+                        }
                     }
                 }
             }
@@ -16770,6 +16836,39 @@ ul.pt__field__hint {
 
 .com__range {
     .cm__box;
+}
+
+.com__range__field {
+    .bar {
+        height: @CmSize-XXSmall;
+        margin: auto;
+        position: absolute;
+        border-radius: @CmBorder-Radius;
+        background: @CmColor-Secondary-LightActive;
+        .mx__position(0, 0, 0, 0);
+
+        .range {
+            position: absolute;
+            border-radius: @CmBorder-Radius;
+            background: @CmColor-Primary-LightActiveHover;
+            .mx__position(0, auto, 0, auto);
+        }
+    }
+
+    .min,
+    .max {
+        .cm__font--hint;
+        position: absolute;
+        top: -@CmSize-XXSmall;
+    }
+
+    .min {
+        left: 0;
+    }
+
+    .max {
+        right: 0;
+    }
 }
 /* ******* COMPONENTS: REPEAT TOOLS ******* */
 

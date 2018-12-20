@@ -2,6 +2,7 @@ cm.define('Com.TintRange', {
     'extend' : 'Com.AbstractRange',
     'params' : {
         'className' : 'com__range',
+        'theme' : 'theme--arrows',
         'min' : 360,
         'max' : 0,
         'value' : 360

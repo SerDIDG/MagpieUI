@@ -34,6 +34,7 @@ function(params){
     that.dimensions = {
         'target' : {}
     };
+    that.position = null;
 
     var init = function(){
         that.setParams(params);
@@ -147,7 +148,8 @@ function(params){
         position['left'] = Math.round(position['left']);
         position['top'] = Math.round(position['top']);
         position = setPositionAction(position);
-        that.triggerEvent(eventName, position);
+        that.position = position;
+        that.triggerEvent(eventName, that.position);
     };
 
     var setPositionAction = function(position){
@@ -211,14 +213,19 @@ function(params){
             'left' : 0,
             'top' : 0
         }, position);
-        triggerEvents = typeof triggerEvents == 'undefined'? true : triggerEvents;
+        triggerEvents = cm.isUndefined(triggerEvents) ? true : triggerEvents;
         position = setPositionAction(position);
+        that.position = position;
         // Trigger Event
         if(triggerEvents){
-            that.triggerEvent('onSelect', position);
-            that.triggerEvent('onSet', position);
+            that.triggerEvent('onSelect', that.position);
+            that.triggerEvent('onSet', that.position);
         }
         return that;
+    };
+
+    that.get = function(){
+        return that.position;
     };
 
     init();

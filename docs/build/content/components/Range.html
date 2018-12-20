@@ -19,6 +19,16 @@
     <li data-node="tabs:[]:container" data-config='{"id" : "methods", "title" : "Methods"}'></li>
 
     <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
+        <h2>Default Range</h2>
+        <h3>Single</h3>
+        <input type="text" data-element="Com.Range" data-config='{"direction" : "horizontal"}'>
+        <h3>Range</h3>
+        <input type="text" value="0-100" data-element="Com.Range" data-config='{"direction" : "horizontal", "range" : true}'>
+        <h3>Range 1980-2018</h3>
+        <input type="text" value="1980-2018" data-element="Com.Range" data-config='{"direction" : "horizontal", "range" : true, "min" : 1980, "max" : 2018}'>
+
+        <hr>
+
         <h2>Tint Range</h2>
         <h3>Horizontal</h3>
         <input type="text" data-element="Com.TintRange" data-config='{"direction" : "horizontal"}'>

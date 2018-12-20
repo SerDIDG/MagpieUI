@@ -264,6 +264,7 @@
                 &.is-adaptive {
                     > .inner {
                         display: block;
+                        margin: 0;
 
                         > .left,
                         > .center,
@@ -282,6 +283,10 @@
                         display: block;
                         margin-left: 0;
                         margin-right: 0;
+
+                        &:last-child {
+                            margin-bottom: 0;
+                        }
                     }
                 }
             }
