@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.0 (2018-12-20 22:48) ************ */
+/*! ************ MagpieUI v3.36.0 (2018-12-20 23:02) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -2093,6 +2093,10 @@ cm.arraySort = function(a, key, dir){
             break;
     }
     return newA;
+};
+
+cm.arrayParseFloat = function(a){
+    return a.map(Number.parseFloat);
 };
 
 cm.objectToArray = function(o){
@@ -9093,6 +9097,7 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
     classProto.saveRawValue = function(value){
         var that = this;
         that.tempRawValue = value.toString().split('-');
+        that.tempRawValue = cm.arrayParseFloat(that.tempRawValue);
         that.tempRawValue = cm.arraySort(that.tempRawValue, false, that.sort);
     };
 

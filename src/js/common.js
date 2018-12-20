@@ -496,6 +496,10 @@ cm.arraySort = function(a, key, dir){
     return newA;
 };
 
+cm.arrayParseFloat = function(a){
+    return a.map(Number.parseFloat);
+};
+
 cm.objectToArray = function(o){
     if(!cm.isObject(o)){
         return [o];

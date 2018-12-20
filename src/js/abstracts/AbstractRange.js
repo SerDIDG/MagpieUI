@@ -174,6 +174,7 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
     classProto.saveRawValue = function(value){
         var that = this;
         that.tempRawValue = value.toString().split('-');
+        that.tempRawValue = cm.arrayParseFloat(that.tempRawValue);
         that.tempRawValue = cm.arraySort(that.tempRawValue, false, that.sort);
     };
 
