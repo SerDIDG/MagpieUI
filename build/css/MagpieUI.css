@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.36.2 (2018-12-21 21:02) ************ */
+/*! ************ MagpieUI v3.36.3 (2018-12-21 21:36) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.6.0
@@ -3512,8 +3512,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.36.2');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.36.2') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.36.2') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.36.2') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.36.2#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.36.3');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.36.3') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.36.3') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.36.3') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.36.3#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -9264,6 +9264,46 @@ button.is-hidden {
 .pt__editable.is-editable > .menu .pt__menu-dropdown > li > a:active {
   color: #16599c;
 }
+.pt__editable.is-editable > .menu .pt__menu-dropdown > li.has-icon > a {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+  white-space: nowrap;
+  -webkit-transition: all 250ms ease-in-out 0ms;
+  transition: all 250ms ease-in-out 0ms;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-flex-flow: row nowrap;
+  -ms-flex-flow: row nowrap;
+  flex-flow: row nowrap;
+}
+.pt__editable.is-editable > .menu .pt__menu-dropdown > li.has-icon > a .image {
+  width: 24px;
+  height: 24px;
+  position: relative;
+}
+.pt__editable.is-editable > .menu .pt__menu-dropdown > li.has-icon > a .image img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  margin: auto;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+.pt__editable.is-editable > .menu .pt__menu-dropdown > li.has-icon > a .title {
+  margin: 0 8px;
+}
+.pt__editable.is-editable > .menu .pt__menu-dropdown > li.has-icon > a .title:first-child {
+  margin-left: 0;
+}
+.pt__editable.is-editable > .menu .pt__menu-dropdown > li.has-icon > a .title:last-child {
+  margin-right: 0;
+}
 .pt__editable.is-editable > .menu .pt__menu-dropdown > li:before {
   display: block;
   height: 0;
@@ -13259,6 +13299,46 @@ ul.pt__field__hint li:before {
 .pt__menu-dropdown--base > li > a:active {
   color: #16599c;
 }
+.pt__menu-dropdown--base > li.has-icon > a {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+  white-space: nowrap;
+  -webkit-transition: all 250ms ease-in-out 0ms;
+  transition: all 250ms ease-in-out 0ms;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-flex-flow: row nowrap;
+  -ms-flex-flow: row nowrap;
+  flex-flow: row nowrap;
+}
+.pt__menu-dropdown--base > li.has-icon > a .image {
+  width: 24px;
+  height: 24px;
+  position: relative;
+}
+.pt__menu-dropdown--base > li.has-icon > a .image img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  margin: auto;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+.pt__menu-dropdown--base > li.has-icon > a .title {
+  margin: 0 8px;
+}
+.pt__menu-dropdown--base > li.has-icon > a .title:first-child {
+  margin-left: 0;
+}
+.pt__menu-dropdown--base > li.has-icon > a .title:last-child {
+  margin-right: 0;
+}
 .pt__menu-dropdown--base > li:before {
   display: block;
   height: 0;
@@ -13375,6 +13455,46 @@ ul.pt__field__hint li:before {
   opacity: 1;
   -webkit-transition: visibility 100ms ease-in-out 0ms, opacity 100ms ease-in-out 0ms;
   transition: visibility 100ms ease-in-out 0ms, opacity 100ms ease-in-out 0ms;
+}
+.pt__menu__item--icon > a {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+  white-space: nowrap;
+  -webkit-transition: all 250ms ease-in-out 0ms;
+  transition: all 250ms ease-in-out 0ms;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-flex-flow: row nowrap;
+  -ms-flex-flow: row nowrap;
+  flex-flow: row nowrap;
+}
+.pt__menu__item--icon > a .image {
+  width: 24px;
+  height: 24px;
+  position: relative;
+}
+.pt__menu__item--icon > a .image img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  margin: auto;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+.pt__menu__item--icon > a .title {
+  margin: 0 8px;
+}
+.pt__menu__item--icon > a .title:first-child {
+  margin-left: 0;
+}
+.pt__menu__item--icon > a .title:last-child {
+  margin-right: 0;
 }
 /* ******* PARTS: OVERLAY ******* */
 .pt__overlay {
@@ -17658,6 +17778,46 @@ ul.pt__field__hint li:before {
 .com__tooltip.com__menu-tooltip .pt__menu .pt__menu-dropdown > li > a:active {
   color: #16599c;
 }
+.com__tooltip.com__menu-tooltip .pt__menu .pt__menu-dropdown > li.has-icon > a {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+  white-space: nowrap;
+  -webkit-transition: all 250ms ease-in-out 0ms;
+  transition: all 250ms ease-in-out 0ms;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-flex-flow: row nowrap;
+  -ms-flex-flow: row nowrap;
+  flex-flow: row nowrap;
+}
+.com__tooltip.com__menu-tooltip .pt__menu .pt__menu-dropdown > li.has-icon > a .image {
+  width: 24px;
+  height: 24px;
+  position: relative;
+}
+.com__tooltip.com__menu-tooltip .pt__menu .pt__menu-dropdown > li.has-icon > a .image img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  margin: auto;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+.com__tooltip.com__menu-tooltip .pt__menu .pt__menu-dropdown > li.has-icon > a .title {
+  margin: 0 8px;
+}
+.com__tooltip.com__menu-tooltip .pt__menu .pt__menu-dropdown > li.has-icon > a .title:first-child {
+  margin-left: 0;
+}
+.com__tooltip.com__menu-tooltip .pt__menu .pt__menu-dropdown > li.has-icon > a .title:last-child {
+  margin-right: 0;
+}
 .com__tooltip.com__menu-tooltip .pt__menu .pt__menu-dropdown > li:before {
   display: block;
   height: 0;
@@ -19724,6 +19884,46 @@ html.ie9 .com__palette .b-range {
 }
 .com__tabset__head-menu .pt__menu-dropdown > li > a:active {
   color: #16599c;
+}
+.com__tabset__head-menu .pt__menu-dropdown > li.has-icon > a {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+  white-space: nowrap;
+  -webkit-transition: all 250ms ease-in-out 0ms;
+  transition: all 250ms ease-in-out 0ms;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-flex-flow: row nowrap;
+  -ms-flex-flow: row nowrap;
+  flex-flow: row nowrap;
+}
+.com__tabset__head-menu .pt__menu-dropdown > li.has-icon > a .image {
+  width: 24px;
+  height: 24px;
+  position: relative;
+}
+.com__tabset__head-menu .pt__menu-dropdown > li.has-icon > a .image img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  margin: auto;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+.com__tabset__head-menu .pt__menu-dropdown > li.has-icon > a .title {
+  margin: 0 8px;
+}
+.com__tabset__head-menu .pt__menu-dropdown > li.has-icon > a .title:first-child {
+  margin-left: 0;
+}
+.com__tabset__head-menu .pt__menu-dropdown > li.has-icon > a .title:last-child {
+  margin-right: 0;
 }
 .com__tabset__head-menu .pt__menu-dropdown > li:before {
   display: block;
