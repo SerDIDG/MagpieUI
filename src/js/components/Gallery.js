@@ -128,6 +128,9 @@ function(params){
             'src' : item['link'].getAttribute('href') || '',
             'title' : item['link'].getAttribute('title') || ''
         }, item);
+        if(item['container']){
+            item = cm.merge(that.getNodeDataConfig(item['container']), item);
+        }
         processItem(item);
     };
 

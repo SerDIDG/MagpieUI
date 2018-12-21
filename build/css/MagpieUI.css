@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.36.0 (2018-12-20 22:48) ************ */
+/*! ************ MagpieUI v3.36.2 (2018-12-21 21:02) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.6.0
@@ -3512,8 +3512,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.36.0');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.36.0') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.36.0') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.36.0') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.36.0#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.36.2');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.36.2') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.36.2') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.36.2') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.36.2#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -10222,6 +10222,27 @@ ul.pt__field__hint li:before {
 .pt__grid.indent-96px > ul > li {
   padding: 48px;
 }
+/* *** TILES *** */
+.pt__grid--tiles > ul {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+  -webkit-flex-flow: row wrap;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+}
+.pt__grid--tiles > ul > li {
+  -webkit-flex: auto;
+  -ms-flex: auto;
+  flex: auto;
+}
+.pt__grid--tiles .pt__image {
+  height: 100%;
+}
+.pt__grid--tiles .pt__image > .inner > .descr {
+  height: 100%;
+}
 /* ******* PARTS: GRID: MIXINS ******* */
 @media only screen and (max-width: 768px) {
   html.is-adaptive .pt__grid:not(.is-not-adaptive) > ul {
@@ -10231,6 +10252,12 @@ ul.pt__field__hint li:before {
   html.is-adaptive .pt__grid:not(.is-not-adaptive) > ul > li {
     width: 100%;
     display: block;
+  }
+  html.is-adaptive .pt__grid--tiles > ul {
+    display: block;
+  }
+  html.is-adaptive .pt__grid--tiles > ul > li {
+    width: auto !important;
   }
 }
 /* ******* PARTS: GRIDLIST ******* */
