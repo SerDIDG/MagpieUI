@@ -212,7 +212,7 @@
         .mx__flex-flow(row wrap);
 
         > li {
-            .mx__flex(auto);
+            .mx__flex(0 1 auto);
         }
     }
 
@@ -222,6 +222,14 @@
         > .inner {
             > .descr {
                 height: 100%;
+            }
+        }
+    }
+
+    .is-stretch {
+        > ul {
+            > li {
+                .mx__flex(auto);
             }
         }
     }
