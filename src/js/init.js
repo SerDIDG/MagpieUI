@@ -84,7 +84,7 @@ cm.init = function(){
             if(size !== cm._scrollSize){
                 size = cm._scrollSize;
                 cm.customEvent.trigger(window, 'scrollSizeChange', {
-                    'type' : 'all',
+                    'direction' : 'all',
                     'self' : true,
                     'scrollSize' : cm._scrollSize
                 });
@@ -100,7 +100,7 @@ cm.init = function(){
             if(size !== sizeNew){
                 size = sizeNew;
                 cm.customEvent.trigger(window, 'pageSizeChange', {
-                    'type' : 'all',
+                    'direction' : 'all',
                     'self' : true,
                     'pageSize' : cm._pageSize
                 });
@@ -139,7 +139,7 @@ cm.load = function(){
     // Redraw components and modules after full page loading
     if(cm._config.redrawOnLoad){
         cm.customEvent.trigger(document.body, 'redraw', {
-            'type' : 'child',
+            'direction' : 'child',
             'self' : false
         });
     }

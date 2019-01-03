@@ -796,7 +796,8 @@ cm.customEvent = (function(){
             var stopPropagation = false;
             params = cm.merge({
                 'target' : node,
-                'type' : 'all',            // child | parent | all
+                'type' : type,
+                'direction' : 'all',            // child | parent | all
                 'self' : true,
                 'stopPropagation' : function(){
                     stopPropagation = true;
@@ -804,7 +805,7 @@ cm.customEvent = (function(){
             }, params);
             if(_stack[type]){
                 _stack[type].sort(function(a, b){
-                    if(params['type'] === 'parent'){
+                    if(params['direction'] === 'parent'){
                         return cm.getNodeOffsetIndex(b['node']) > cm.getNodeOffsetIndex(a['node']);
                     }
                     return cm.getNodeOffsetIndex(a['node']) - cm.getNodeOffsetIndex(b['node']);
@@ -814,7 +815,7 @@ cm.customEvent = (function(){
                         if(params['self'] && node === item['node']){
                             item['handler'](params);
                         }
-                        switch(params['type']){
+                        switch(params['direction']){
                             case 'child':
                                 if(cm.isParent(node, item['node'], false)){
                                     item['handler'](params);

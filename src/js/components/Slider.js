@@ -368,7 +368,7 @@ function(params){
                 });
                 // Trigger custom event
                 cm.customEvent.trigger(current['nodes']['container'], 'redraw', {
-                    'type' : 'child',
+                    'direction' : 'child',
                     'self' : false
                 });
             });

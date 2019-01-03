@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.4 (2018-12-25 20:03) ************ */
+/*! ************ MagpieUI v3.36.5 (2019-01-03 18:26) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.4',
+        '_version' : '3.36.5',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -2395,7 +2395,8 @@ cm.customEvent = (function(){
             var stopPropagation = false;
             params = cm.merge({
                 'target' : node,
-                'type' : 'all',            // child | parent | all
+                'type' : type,
+                'direction' : 'all',            // child | parent | all
                 'self' : true,
                 'stopPropagation' : function(){
                     stopPropagation = true;
@@ -2403,7 +2404,7 @@ cm.customEvent = (function(){
             }, params);
             if(_stack[type]){
                 _stack[type].sort(function(a, b){
-                    if(params['type'] === 'parent'){
+                    if(params['direction'] === 'parent'){
                         return cm.getNodeOffsetIndex(b['node']) > cm.getNodeOffsetIndex(a['node']);
                     }
                     return cm.getNodeOffsetIndex(a['node']) - cm.getNodeOffsetIndex(b['node']);
@@ -2413,7 +2414,7 @@ cm.customEvent = (function(){
                         if(params['self'] && node === item['node']){
                             item['handler'](params);
                         }
-                        switch(params['type']){
+                        switch(params['direction']){
                             case 'child':
                                 if(cm.isParent(node, item['node'], false)){
                                     item['handler'](params);
@@ -6730,7 +6731,7 @@ cm.init = function(){
             if(size !== cm._scrollSize){
                 size = cm._scrollSize;
                 cm.customEvent.trigger(window, 'scrollSizeChange', {
-                    'type' : 'all',
+                    'direction' : 'all',
                     'self' : true,
                     'scrollSize' : cm._scrollSize
                 });
@@ -6746,7 +6747,7 @@ cm.init = function(){
             if(size !== sizeNew){
                 size = sizeNew;
                 cm.customEvent.trigger(window, 'pageSizeChange', {
-                    'type' : 'all',
+                    'direction' : 'all',
                     'self' : true,
                     'pageSize' : cm._pageSize
                 });
@@ -6785,7 +6786,7 @@ cm.load = function(){
     // Redraw components and modules after full page loading
     if(cm._config.redrawOnLoad){
         cm.customEvent.trigger(document.body, 'redraw', {
-            'type' : 'child',
+            'direction' : 'child',
             'self' : false
         });
     }
@@ -6921,7 +6922,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
             that.triggerEvent('onDestruct');
             that.triggerEvent('onDestructProcess');
             cm.customEvent.trigger(that.getStackNode(), 'destruct', {
-                'type' : 'child',
+                'direction' : 'child',
                 'self' : false
             });
             that.unsetEvents();
@@ -10775,7 +10776,8 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
         var that = this;
         if(item['id'] === that.current){
             cm.customEvent.trigger(item['tab']['container'], 'redraw', {
-                'type' : 'child', 'self' : false
+                'direction' : 'child',
+                'self' : false
             });
             that.triggerEvent('onTabShow', item, params);
             that.triggerEvent('onTabShowEnd', item, params);
@@ -13228,7 +13230,7 @@ function(params){
         if(!that.isDestructed){
             that.isDestructed = true;
             cm.customEvent.trigger(nodes['container'], 'destruct', {
-                'type' : 'child',
+                'direction' : 'child',
                 'self' : false
             });
             that.removeFromStack();
@@ -20562,7 +20564,7 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
             cm.appendNodes(that.nodes['inner'].childNodes, that.nodes['temporary']);
             cm.appendChild(that.nodes['temporary'], that.nodes['inner']);
             cm.customEvent.trigger(that.nodes['temporary'], 'destruct', {
-                'type' : 'child',
+                'direction' : 'child',
                 'self' : false
             });
         }
@@ -22201,7 +22203,7 @@ function(params){
                 });
                 // Trigger custom event
                 cm.customEvent.trigger(current['nodes']['container'], 'redraw', {
-                    'type' : 'child',
+                    'direction' : 'child',
                     'self' : false
                 });
             });
@@ -23316,7 +23318,7 @@ function(params){
         that.isProcess = false;
         // Trigger custom event
         cm.customEvent.trigger(that.tabs[that.active]['content'], 'redraw', {
-            'type' : 'child',
+            'direction' : 'child',
             'self' : false
         });
     };
@@ -23435,7 +23437,7 @@ function(params){
         if(!that.isDestructed){
             that.isDestructed = true;
             cm.customEvent.trigger(that.nodes['container'], 'destruct', {
-                'type' : 'child',
+                'direction' : 'child',
                 'self' : false
             });
             if(that.params['customEvents']){
@@ -23977,7 +23979,7 @@ function(params){
         that.nodes['target'].style.overflow = 'visible';
         // Trigger events
         cm.customEvent.trigger(that.nodes['target'], 'redraw', {
-            'type' : 'child',
+            'direction' : 'child',
             'self' : false
         });
         that.triggerEvent('onShow');
@@ -24045,7 +24047,7 @@ function(params){
                 that.nodes['target'].style.display = 'block';
                 // Trigger events
                 cm.customEvent.trigger(that.nodes['target'], 'redraw', {
-                    'type' : 'child',
+                    'direction' : 'child',
                     'self' : false
                 });
                 // Prepare animation
@@ -24911,7 +24913,7 @@ function(params){
         if(!that.isDestructed){
             that.isDestructed = true;
             cm.customEvent.trigger(that.getStackNode(), 'destruct', {
-                'type' : 'child',
+                'direction' : 'child',
                 'self' : false
             });
             cm.customEvent.remove(that.getStackNode(), 'destruct', that.destructHandler);
@@ -28457,7 +28459,7 @@ function(params){
         if(!that.isDestructed){
             that.isDestructed = true;
             cm.customEvent.trigger(nodes['calendarContainer'], 'destruct', {
-                'type' : 'child',
+                'direction' : 'child',
                 'self' : false
             });
             unsetEvents();

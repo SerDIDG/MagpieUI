@@ -539,7 +539,7 @@ function(params){
         if(!that.isDestructed){
             that.isDestructed = true;
             cm.customEvent.trigger(that.getStackNode(), 'destruct', {
-                'type' : 'child',
+                'direction' : 'child',
                 'self' : false
             });
             cm.customEvent.remove(that.getStackNode(), 'destruct', that.destructHandler);

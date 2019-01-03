@@ -125,7 +125,7 @@ function(params){
         that.nodes['target'].style.overflow = 'visible';
         // Trigger events
         cm.customEvent.trigger(that.nodes['target'], 'redraw', {
-            'type' : 'child',
+            'direction' : 'child',
             'self' : false
         });
         that.triggerEvent('onShow');
@@ -193,7 +193,7 @@ function(params){
                 that.nodes['target'].style.display = 'block';
                 // Trigger events
                 cm.customEvent.trigger(that.nodes['target'], 'redraw', {
-                    'type' : 'child',
+                    'direction' : 'child',
                     'self' : false
                 });
                 // Prepare animation

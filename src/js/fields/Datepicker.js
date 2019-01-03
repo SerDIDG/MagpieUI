@@ -386,7 +386,7 @@ function(params){
         if(!that.isDestructed){
             that.isDestructed = true;
             cm.customEvent.trigger(nodes['calendarContainer'], 'destruct', {
-                'type' : 'child',
+                'direction' : 'child',
                 'self' : false
             });
             unsetEvents();

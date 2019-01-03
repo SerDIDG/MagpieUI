@@ -355,7 +355,7 @@ function(params){
         that.isProcess = false;
         // Trigger custom event
         cm.customEvent.trigger(that.tabs[that.active]['content'], 'redraw', {
-            'type' : 'child',
+            'direction' : 'child',
             'self' : false
         });
     };
@@ -474,7 +474,7 @@ function(params){
         if(!that.isDestructed){
             that.isDestructed = true;
             cm.customEvent.trigger(that.nodes['container'], 'destruct', {
-                'type' : 'child',
+                'direction' : 'child',
                 'self' : false
             });
             if(that.params['customEvents']){

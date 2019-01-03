@@ -443,7 +443,7 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
             cm.appendNodes(that.nodes['inner'].childNodes, that.nodes['temporary']);
             cm.appendChild(that.nodes['temporary'], that.nodes['inner']);
             cm.customEvent.trigger(that.nodes['temporary'], 'destruct', {
-                'type' : 'child',
+                'direction' : 'child',
                 'self' : false
             });
         }

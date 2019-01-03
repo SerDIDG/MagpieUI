@@ -126,7 +126,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
             that.triggerEvent('onDestruct');
             that.triggerEvent('onDestructProcess');
             cm.customEvent.trigger(that.getStackNode(), 'destruct', {
-                'type' : 'child',
+                'direction' : 'child',
                 'self' : false
             });
             that.unsetEvents();

@@ -421,7 +421,8 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
         var that = this;
         if(item['id'] === that.current){
             cm.customEvent.trigger(item['tab']['container'], 'redraw', {
-                'type' : 'child', 'self' : false
+                'direction' : 'child',
+                'self' : false
             });
             that.triggerEvent('onTabShow', item, params);
             that.triggerEvent('onTabShowEnd', item, params);
