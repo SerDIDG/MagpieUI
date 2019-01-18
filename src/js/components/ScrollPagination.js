@@ -36,6 +36,7 @@ cm.define('Com.ScrollPagination', {
         'showButton' : true,                                        // true - always | once - show once after first loaded page | none - don't show and don't scroll
         'showLoader' : true,
         'loaderDelay' : 'cm._config.loadDelay',
+        'setDelay' : 'cm._config.loadDelay',
         'stopOnESC' : true,
         'pageTag' : 'div',
         'pageAttributes' : {
@@ -82,6 +83,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         that.pages = {};
         that.ajaxHandler = null;
         that.loaderDelay = null;
+        that.setDelay = null;
         that.currentAction = null;
 
         that.isAjax = false;
@@ -98,6 +100,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         that.pageCount = 0;
         // Binds
         that.keyDownEventHandler = that.keyDownEvent.bind(that);
+        that.setHandler = that.set.bind(that);
         // Call parent method - renderViewModel
         classInherit.prototype.construct.apply(that, arguments);
     };
@@ -136,25 +139,13 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
     };
 
     classProto.onScroll = function(){
-        var that = this,
-            scrollRect = cm.getRect(that.params['scrollNode']),
-            pagesRect = cm.getRect(that.nodes['pages']),
-            scrollIndent;
-        if(
-            !that.isDisabled &&
-            (!that.params['showButton'] || that.params['showButton'] !== 'none' || (that.params['showButton'] === 'once' && that.params['startPage'] !== that.currentPage)) &&
-            !cm.isProcess && !that.isFinalize && !that.isButton
-        ){
-            scrollIndent = eval(cm.strReplace(that.params['scrollIndent'], {
-                '%scrollHeight%' : scrollRect['bottom'] - scrollRect['top']
-            }));
-            if(pagesRect['bottom'] - scrollRect['bottom'] <= scrollIndent){
-                that.set();
-            }
+        var that = this;
+        if(that.checkForRequest()){
+            that.set();
         }
         // Show / Hide non visible pages
         cm.forEach(that.pages, function(page){
-            that.isPageVisible(page, scrollRect);
+            that.isPageVisible(page);
         });
     };
 
@@ -221,6 +212,32 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
                 that.callbacks.showButton(that);
             }
         });
+    };
+
+    classProto.checkForRequest = function(){
+        var that = this,
+            scrollRect = cm.getRect(that.params['scrollNode']),
+            pagesRect = cm.getRect(that.nodes['pages']),
+            scrollIndent;
+        if(!that.isDisabled && !cm.isProcess && !that.isFinalize && !that.isButton && !that.checkForButton()){
+            scrollIndent = eval(
+                cm.strReplace(that.params['scrollIndent'], {
+                    '%scrollHeight%' : scrollRect['bottom'] - scrollRect['top']
+                })
+            );
+            if(pagesRect['bottom'] - scrollRect['bottom'] <= scrollIndent){
+                return true;
+            }
+        }
+        return false;
+    };
+
+    classProto.checkForButton = function(){
+        var that = this;
+        if(that.params['showButton'] === true || (that.params['showButton'] === 'once' && that.params['startPage'] === that.page)){
+            return true;
+        }
+        return false;
     };
 
     /******* CALLBACKS *******/
@@ -436,6 +453,10 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         // Show / Hide Load More Button
         that.callbacks.toggleButton(that);
         that.triggerEvent('onEnd');
+        // Request more pages if has empty space below
+        if(that.checkForRequest()){
+            that.setDelay = setTimeout(that.setHandler, that.params['setDelay']);
+        }
     };
 
     classProto.callbacks.finalize = function(that){
@@ -447,10 +468,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
     };
 
     classProto.callbacks.toggleButton = function(that){
-        if(
-            !that.isFinalize && 
-            (that.params['showButton'] === true || (that.params['showButton'] === 'once' && that.params['startPage'] === that.page))
-        ){
+        if(!that.isFinalize && that.checkForButton()){
             that.callbacks.showButton(that);
         }else{
             that.callbacks.hideButton(that);
@@ -505,6 +523,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
     classProto.set = function(){
         var that = this,
             config;
+        that.setDelay && clearTimeout(that.setDelay);
         if(!that.isProcess && !that.isFinalize){
             // Preset next page and page token
             that.page = that.nextPage;

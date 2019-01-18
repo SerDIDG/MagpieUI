@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.5 (2019-01-03 18:26) ************ */
+/*! ************ MagpieUI v3.36.6 (2019-01-18 19:19) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.5',
+        '_version' : '3.36.6',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -7853,17 +7853,14 @@ function(params){
     Com.AbstractController.apply(that, arguments);
 });
 
-cm.getConstructor('Com.AbstractFileManager', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
+cm.getConstructor('Com.AbstractFileManager', function(classConstructor, className, classProto, classInherit){
     classProto.construct = function(){
         var that = this;
         // Bind context to methods
         that.completeHandler = that.complete.bind(that);
         // Add events
         // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
-        return that;
+        classInherit.prototype.construct.apply(that, arguments);
     };
 
     classProto.validateParams = function(){
@@ -7962,7 +7959,7 @@ cm.getConstructor('Com.AbstractFileManager', function(classConstructor, classNam
     classProto.setAttributes = function(){
         var that = this;
         // Call parent method
-        _inherit.prototype.setAttributes.apply(that, arguments);
+        classInherit.prototype.setAttributes.apply(that, arguments);
         // Attributes
         that.params['fullSize'] && cm.addClass(that.nodes['container'], 'is-fullsize');
         return that;
@@ -15923,11 +15920,6 @@ cm.getConstructor('Com.GalleryPopup', function(classConstructor, className, clas
         that.changeEventHandler = that.changeEvent.bind(that);
     };
 
-    classProto.onConstructEnd = function(){
-        var that = this;
-        that.addToStack(that.params['node']);
-    };
-
     classProto.onValidateParams = function(){
         var that = this;
         that.params['galleryParams']['zoom'] = that.params['showZoom'];
@@ -17944,17 +17936,10 @@ function(params){
 });
 
 
-cm.getConstructor('Com.ImagePreviewContainer', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
-    classProto.construct = function(){
+cm.getConstructor('Com.ImagePreviewContainer', function(classConstructor, className, classProto, classInherit){
+    classProto.onRenderControllerProcess = function(){
         var that = this;
-        // Bind context to methods
-        that.renderControllerProcessHandler = that.renderControllerProcess.bind(that);
-        // Add events
-        that.addEvent('onRenderControllerProcess', that.renderControllerProcessHandler);
-        // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
+        that.setController();
         return that;
     };
 
@@ -17969,12 +17954,6 @@ cm.getConstructor('Com.ImagePreviewContainer', function(classConstructor, classN
     classProto.clear = function(){
         var that = this;
         that.components['controller'] && that.components['controller'].clear();
-        return that;
-    };
-
-    classProto.renderControllerProcess = function(){
-        var that = this;
-        that.setController();
         return that;
     };
 
@@ -21226,6 +21205,7 @@ cm.define('Com.ScrollPagination', {
         'showButton' : true,                                        // true - always | once - show once after first loaded page | none - don't show and don't scroll
         'showLoader' : true,
         'loaderDelay' : 'cm._config.loadDelay',
+        'setDelay' : 'cm._config.loadDelay',
         'stopOnESC' : true,
         'pageTag' : 'div',
         'pageAttributes' : {
@@ -21272,6 +21252,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         that.pages = {};
         that.ajaxHandler = null;
         that.loaderDelay = null;
+        that.setDelay = null;
         that.currentAction = null;
 
         that.isAjax = false;
@@ -21288,6 +21269,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         that.pageCount = 0;
         // Binds
         that.keyDownEventHandler = that.keyDownEvent.bind(that);
+        that.setHandler = that.set.bind(that);
         // Call parent method - renderViewModel
         classInherit.prototype.construct.apply(that, arguments);
     };
@@ -21326,25 +21308,13 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
     };
 
     classProto.onScroll = function(){
-        var that = this,
-            scrollRect = cm.getRect(that.params['scrollNode']),
-            pagesRect = cm.getRect(that.nodes['pages']),
-            scrollIndent;
-        if(
-            !that.isDisabled &&
-            (!that.params['showButton'] || that.params['showButton'] !== 'none' || (that.params['showButton'] === 'once' && that.params['startPage'] !== that.currentPage)) &&
-            !cm.isProcess && !that.isFinalize && !that.isButton
-        ){
-            scrollIndent = eval(cm.strReplace(that.params['scrollIndent'], {
-                '%scrollHeight%' : scrollRect['bottom'] - scrollRect['top']
-            }));
-            if(pagesRect['bottom'] - scrollRect['bottom'] <= scrollIndent){
-                that.set();
-            }
+        var that = this;
+        if(that.checkForRequest()){
+            that.set();
         }
         // Show / Hide non visible pages
         cm.forEach(that.pages, function(page){
-            that.isPageVisible(page, scrollRect);
+            that.isPageVisible(page);
         });
     };
 
@@ -21411,6 +21381,32 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
                 that.callbacks.showButton(that);
             }
         });
+    };
+
+    classProto.checkForRequest = function(){
+        var that = this,
+            scrollRect = cm.getRect(that.params['scrollNode']),
+            pagesRect = cm.getRect(that.nodes['pages']),
+            scrollIndent;
+        if(!that.isDisabled && !cm.isProcess && !that.isFinalize && !that.isButton && !that.checkForButton()){
+            scrollIndent = eval(
+                cm.strReplace(that.params['scrollIndent'], {
+                    '%scrollHeight%' : scrollRect['bottom'] - scrollRect['top']
+                })
+            );
+            if(pagesRect['bottom'] - scrollRect['bottom'] <= scrollIndent){
+                return true;
+            }
+        }
+        return false;
+    };
+
+    classProto.checkForButton = function(){
+        var that = this;
+        if(that.params['showButton'] === true || (that.params['showButton'] === 'once' && that.params['startPage'] === that.page)){
+            return true;
+        }
+        return false;
     };
 
     /******* CALLBACKS *******/
@@ -21626,6 +21622,10 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         // Show / Hide Load More Button
         that.callbacks.toggleButton(that);
         that.triggerEvent('onEnd');
+        // Request more pages if has empty space below
+        if(that.checkForRequest()){
+            that.setDelay = setTimeout(that.setHandler, that.params['setDelay']);
+        }
     };
 
     classProto.callbacks.finalize = function(that){
@@ -21637,10 +21637,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
     };
 
     classProto.callbacks.toggleButton = function(that){
-        if(
-            !that.isFinalize && 
-            (that.params['showButton'] === true || (that.params['showButton'] === 'once' && that.params['startPage'] === that.page))
-        ){
+        if(!that.isFinalize && that.checkForButton()){
             that.callbacks.showButton(that);
         }else{
             that.callbacks.hideButton(that);
@@ -21695,6 +21692,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
     classProto.set = function(){
         var that = this,
             config;
+        that.setDelay && clearTimeout(that.setDelay);
         if(!that.isProcess && !that.isFinalize){
             // Preset next page and page token
             that.page = that.nextPage;
@@ -24150,14 +24148,14 @@ function(params){
     var render = function(){
         // Structure
         that.nodes['container'] = cm.node('div', {'class' : 'com__toolbar'},
-            that.nodes['part'] = cm.node('div', {'class' : 'pt__toolbar'},
-                cm.node('div', {'class' : 'inner clear'},
+            that.nodes['toolbar'] = cm.node('div', {'class' : 'pt__toolbar'},
+                that.nodes['inner'] = cm.node('div', {'class' : 'inner'},
                     that.nodes['left'] = cm.node('div', {'class' : 'left'}),
                     that.nodes['right'] = cm.node('div', {'class' : 'right'})
                 )
             )
         );
-        that.params['adaptive'] && cm.addClass(that.nodes['part'], 'is-adaptive');
+        that.params['adaptive'] && cm.addClass(that.nodes['toolbar'], 'is-adaptive');
         // Append
         that.embedStructure(that.nodes['container']);
     };
@@ -24177,8 +24175,9 @@ function(params){
             'container' : cm.node('ul', {'class' : 'group'}),
             'node' : null,
             'adaptive' : true,
+            'flex' : false,
             'name' : '',
-            'position' : 'left',            // left | center | right
+            'position' : 'left',            // left | center | right | justify
             'items' : {}
         }, item);
         if(!that.groups[item['name']]){
@@ -24186,8 +24185,12 @@ function(params){
                 item['node'] = item['container'];
             }
             item['adaptive'] && cm.addClass(item['container'], 'is-adaptive');
+            item['flex'] && cm.addClass(item['container'], 'is-flex');
+            // Position
             if(/left|right/.test(item['position'])){
                 cm.appendChild(item['container'], that.nodes[item['position']]);
+            }else if(item['position'] === 'justify'){
+                cm.appendChild(item['container'], that.nodes['inner']);
             }
             that.groups[item['name']] = item;
         }
@@ -24221,13 +24224,22 @@ function(params){
             'node' : null,
             'name' : '',
             'size' : null,
-            'hidden' : false
+            'hidden' : false,
+            'group' : null
         }, item);
         // Render
         if((group = that.groups[item['group']]) && !group.items[item['name']]){
             // Styles
             item['size'] && cm.addClass(item['container'], item['size']);
             item['hidden'] && cm.addClass(item['container'], 'is-hidden');
+            // Controller
+            cm.getConstructor(item['constructor'], function(classConstructor){
+                item['controller'] = new classConstructor(
+                    cm.merge(item['controllerParams'], {
+                        'container' : item['container']
+                    })
+                );
+            });
             // Embed
             if(cm.isNode(item['node'])){
                 cm.appendChild(item['node'], item['container']);
@@ -26801,7 +26813,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
 /* ****** FORM FIELD COMPONENT ******* */
 
 Com.FormFields.add('autocomplete', {
-    'node' : cm.node('input', {'type' : 'search', 'autocomplete' : 'off'}),
+    'node' : cm.node('input', {'type' : 'search', 'autocomplete' : 'none'}),
     'fieldConstructor' : 'Com.AbstractFormField',
     'constructor' : 'Com.Autocomplete'
 });

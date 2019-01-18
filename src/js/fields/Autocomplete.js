@@ -800,7 +800,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
 /* ****** FORM FIELD COMPONENT ******* */
 
 Com.FormFields.add('autocomplete', {
-    'node' : cm.node('input', {'type' : 'search', 'autocomplete' : 'off'}),
+    'node' : cm.node('input', {'type' : 'search', 'autocomplete' : 'none'}),
     'fieldConstructor' : 'Com.AbstractFormField',
     'constructor' : 'Com.Autocomplete'
 });

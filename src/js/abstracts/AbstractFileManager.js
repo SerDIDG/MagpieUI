@@ -34,17 +34,14 @@ function(params){
     Com.AbstractController.apply(that, arguments);
 });
 
-cm.getConstructor('Com.AbstractFileManager', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
+cm.getConstructor('Com.AbstractFileManager', function(classConstructor, className, classProto, classInherit){
     classProto.construct = function(){
         var that = this;
         // Bind context to methods
         that.completeHandler = that.complete.bind(that);
         // Add events
         // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
-        return that;
+        classInherit.prototype.construct.apply(that, arguments);
     };
 
     classProto.validateParams = function(){
@@ -143,7 +140,7 @@ cm.getConstructor('Com.AbstractFileManager', function(classConstructor, classNam
     classProto.setAttributes = function(){
         var that = this;
         // Call parent method
-        _inherit.prototype.setAttributes.apply(that, arguments);
+        classInherit.prototype.setAttributes.apply(that, arguments);
         // Attributes
         that.params['fullSize'] && cm.addClass(that.nodes['container'], 'is-fullsize');
         return that;

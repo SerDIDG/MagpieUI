@@ -16,17 +16,10 @@ function(params){
 });
 
 
-cm.getConstructor('Com.ImagePreviewContainer', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
-    classProto.construct = function(){
+cm.getConstructor('Com.ImagePreviewContainer', function(classConstructor, className, classProto, classInherit){
+    classProto.onRenderControllerProcess = function(){
         var that = this;
-        // Bind context to methods
-        that.renderControllerProcessHandler = that.renderControllerProcess.bind(that);
-        // Add events
-        that.addEvent('onRenderControllerProcess', that.renderControllerProcessHandler);
-        // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
+        that.setController();
         return that;
     };
 
@@ -41,12 +34,6 @@ cm.getConstructor('Com.ImagePreviewContainer', function(classConstructor, classN
     classProto.clear = function(){
         var that = this;
         that.components['controller'] && that.components['controller'].clear();
-        return that;
-    };
-
-    classProto.renderControllerProcess = function(){
-        var that = this;
-        that.setController();
         return that;
     };
 

@@ -42,14 +42,14 @@ function(params){
     var render = function(){
         // Structure
         that.nodes['container'] = cm.node('div', {'class' : 'com__toolbar'},
-            that.nodes['part'] = cm.node('div', {'class' : 'pt__toolbar'},
-                cm.node('div', {'class' : 'inner clear'},
+            that.nodes['toolbar'] = cm.node('div', {'class' : 'pt__toolbar'},
+                that.nodes['inner'] = cm.node('div', {'class' : 'inner'},
                     that.nodes['left'] = cm.node('div', {'class' : 'left'}),
                     that.nodes['right'] = cm.node('div', {'class' : 'right'})
                 )
             )
         );
-        that.params['adaptive'] && cm.addClass(that.nodes['part'], 'is-adaptive');
+        that.params['adaptive'] && cm.addClass(that.nodes['toolbar'], 'is-adaptive');
         // Append
         that.embedStructure(that.nodes['container']);
     };
@@ -69,8 +69,9 @@ function(params){
             'container' : cm.node('ul', {'class' : 'group'}),
             'node' : null,
             'adaptive' : true,
+            'flex' : false,
             'name' : '',
-            'position' : 'left',            // left | center | right
+            'position' : 'left',            // left | center | right | justify
             'items' : {}
         }, item);
         if(!that.groups[item['name']]){
@@ -78,8 +79,12 @@ function(params){
                 item['node'] = item['container'];
             }
             item['adaptive'] && cm.addClass(item['container'], 'is-adaptive');
+            item['flex'] && cm.addClass(item['container'], 'is-flex');
+            // Position
             if(/left|right/.test(item['position'])){
                 cm.appendChild(item['container'], that.nodes[item['position']]);
+            }else if(item['position'] === 'justify'){
+                cm.appendChild(item['container'], that.nodes['inner']);
             }
             that.groups[item['name']] = item;
         }
@@ -113,13 +118,22 @@ function(params){
             'node' : null,
             'name' : '',
             'size' : null,
-            'hidden' : false
+            'hidden' : false,
+            'group' : null
         }, item);
         // Render
         if((group = that.groups[item['group']]) && !group.items[item['name']]){
             // Styles
             item['size'] && cm.addClass(item['container'], item['size']);
             item['hidden'] && cm.addClass(item['container'], 'is-hidden');
+            // Controller
+            cm.getConstructor(item['constructor'], function(classConstructor){
+                item['controller'] = new classConstructor(
+                    cm.merge(item['controllerParams'], {
+                        'container' : item['container']
+                    })
+                );
+            });
             // Embed
             if(cm.isNode(item['node'])){
                 cm.appendChild(item['node'], item['container']);
