@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.6 (2019-01-18 19:19) ************ */
+/*! ************ MagpieUI v3.36.7 (2019-02-06 21:26) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.6',
+        '_version' : '3.36.7',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -15537,7 +15537,7 @@ function(params){
         }, item);
         // Check type
         if(
-            /(\.jpg|\.png|\.gif|\.jpeg|\.bmp|\.tga)$/gi.test(item['src'])
+            /\.(jpg|png|gif|jpeg|bmp|tga|svg|webp|tiff)$/gi.test(item['src'])
             || /^data:image/gi.test(item['src'])
             || /^image/gi.test(item['mime'])
             || item['type'] === 'image'
@@ -15560,7 +15560,7 @@ function(params){
             );
         }else{
             item['nodes']['inner'].appendChild(
-                item['nodes']['content'] = cm.Node('iframe', {'class' : 'descr', 'webkitallowfullscreen' : true, 'mozallowfullscreen' : true, 'allowfullscreen' : true})
+                item['nodes']['content'] = cm.Node('iframe', {'class' : 'descr', 'allowfullscreen' : true})
             );
         }
         // Caption
@@ -15877,7 +15877,7 @@ cm.define('Com.GalleryPopup', {
         'renderStructure' : true,
         'embedStructure' : 'append',
         'embedStructureOnRender' : false,
-        'removeOnDestruct' : true,
+        'removeOnDestruct' : false,
         'size' : 'fullscreen',                   // fullscreen | auto
         'aspectRatio' : 'auto',                  // auto | 1x1 | 4x3 | 3x2 | 16x10 | 16x9 | 2x1 | 21x9 | 35x10 | 3x4 | 2x3 | 10x16 | 9x16 | 1x2
         'theme' : 'theme-black',
@@ -15918,6 +15918,11 @@ cm.getConstructor('Com.GalleryPopup', function(classConstructor, className, clas
         that.prevHandler = that.prev.bind(that);
         that.keyPressEventHandler = that.keyPressEvent.bind(that);
         that.changeEventHandler = that.changeEvent.bind(that);
+    };
+
+    classProto.onConstructEnd = function(){
+        var that = this;
+        that.addToStack(that.params['node']);
     };
 
     classProto.onValidateParams = function(){
@@ -17925,7 +17930,8 @@ cm.define('Com.ImagePreviewContainer', {
         'params' : {
             'showCounter' : false,
             'showTitle' : true
-        }
+        },
+        'placeholder' : false
     }
 },
 function(params){
@@ -23181,7 +23187,7 @@ function(params){
         // Structure
         item['container'] = cm.Node('li',
             item['a'] = cm.Node('a',
-                cm.node('div', {'class' : 'title'}, tab['title'])
+                item['title'] = cm.node('div', {'class' : 'title'}, tab['title'])
             )
         );
         // Image
@@ -23715,7 +23721,7 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
         // Structure
         nodes['container'] = cm.Node('li',
             nodes['link'] = cm.Node('a',
-                cm.node('div', {'class' : 'title'}, item['title'])
+                nodes['title'] = cm.node('div', {'class' : 'title'}, item['title'])
             )
         );
         // Image
