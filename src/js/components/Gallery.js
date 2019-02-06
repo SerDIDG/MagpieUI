@@ -146,7 +146,7 @@ function(params){
         }, item);
         // Check type
         if(
-            /(\.jpg|\.png|\.gif|\.jpeg|\.bmp|\.tga)$/gi.test(item['src'])
+            /\.(jpg|png|gif|jpeg|bmp|tga|svg|webp|tiff)$/gi.test(item['src'])
             || /^data:image/gi.test(item['src'])
             || /^image/gi.test(item['mime'])
             || item['type'] === 'image'
@@ -169,7 +169,7 @@ function(params){
             );
         }else{
             item['nodes']['inner'].appendChild(
-                item['nodes']['content'] = cm.Node('iframe', {'class' : 'descr', 'webkitallowfullscreen' : true, 'mozallowfullscreen' : true, 'allowfullscreen' : true})
+                item['nodes']['content'] = cm.Node('iframe', {'class' : 'descr', 'allowfullscreen' : true})
             );
         }
         // Caption

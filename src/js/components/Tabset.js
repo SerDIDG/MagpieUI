@@ -220,7 +220,7 @@ function(params){
         // Structure
         item['container'] = cm.Node('li',
             item['a'] = cm.Node('a',
-                cm.node('div', {'class' : 'title'}, tab['title'])
+                item['title'] = cm.node('div', {'class' : 'title'}, tab['title'])
             )
         );
         // Image

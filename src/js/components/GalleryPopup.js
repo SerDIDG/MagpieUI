@@ -11,7 +11,7 @@ cm.define('Com.GalleryPopup', {
         'renderStructure' : true,
         'embedStructure' : 'append',
         'embedStructureOnRender' : false,
-        'removeOnDestruct' : true,
+        'removeOnDestruct' : false,
         'size' : 'fullscreen',                   // fullscreen | auto
         'aspectRatio' : 'auto',                  // auto | 1x1 | 4x3 | 3x2 | 16x10 | 16x9 | 2x1 | 21x9 | 35x10 | 3x4 | 2x3 | 10x16 | 9x16 | 1x2
         'theme' : 'theme-black',
@@ -52,6 +52,11 @@ cm.getConstructor('Com.GalleryPopup', function(classConstructor, className, clas
         that.prevHandler = that.prev.bind(that);
         that.keyPressEventHandler = that.keyPressEvent.bind(that);
         that.changeEventHandler = that.changeEvent.bind(that);
+    };
+
+    classProto.onConstructEnd = function(){
+        var that = this;
+        that.addToStack(that.params['node']);
     };
 
     classProto.onValidateParams = function(){

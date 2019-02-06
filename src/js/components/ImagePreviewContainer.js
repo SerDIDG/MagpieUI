@@ -5,7 +5,8 @@ cm.define('Com.ImagePreviewContainer', {
         'params' : {
             'showCounter' : false,
             'showTitle' : true
-        }
+        },
+        'placeholder' : false
     }
 },
 function(params){

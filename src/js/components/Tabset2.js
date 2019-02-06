@@ -196,7 +196,7 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
         // Structure
         nodes['container'] = cm.Node('li',
             nodes['link'] = cm.Node('a',
-                cm.node('div', {'class' : 'title'}, item['title'])
+                nodes['title'] = cm.node('div', {'class' : 'title'}, item['title'])
             )
         );
         // Image
