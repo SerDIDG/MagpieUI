@@ -129,7 +129,7 @@ function(params){
             // Controller
             cm.getConstructor(item['constructor'], function(classConstructor){
                 item['controller'] = new classConstructor(
-                    cm.merge(item['controllerParams'], {
+                    cm.merge(item['constructorParams'], {
                         'container' : item['container']
                     })
                 );

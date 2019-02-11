@@ -13,6 +13,7 @@ cm.define('Com.AbstractFileManager', {
     ],
     'params' : {
         'embedStructure' : 'replace',
+        'controllerEvents' : true,
         'showStats' : true,
         'max' : 0,                                                        // 0 - infinity
         'lazy' : false,

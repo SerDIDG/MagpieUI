@@ -5,6 +5,7 @@ cm.define('Com.ScrollPagination', {
         'onStart',
         'onAbort',
         'onError',
+        'onEmpty',
         'onPageRender',
         'onPageRenderEnd',
         'onPageShow',
@@ -234,10 +235,10 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
 
     classProto.checkForButton = function(){
         var that = this;
-        if(that.params['showButton'] === true || (that.params['showButton'] === 'once' && that.params['startPage'] === that.page)){
-            return true;
-        }
-        return false;
+        return (
+            that.params['showButton'] === true ||
+            (that.params['showButton'] === 'once' && that.params['startPage'] === that.page)
+        );
     };
 
     /******* CALLBACKS *******/
@@ -336,6 +337,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         if(!cm.isEmpty(response)){
             that.callbacks.render(that, response);
         }else{
+            that.triggerEvent('onEmpty');
             that.callbacks.finalize(that);
         }
     };

@@ -315,11 +315,13 @@
         }
 
         .pt__grid--tiles {
-            > ul {
-                display: block;
+            &:not(.is-not-adaptive) {
+                > ul {
+                    display: block;
 
-                > li {
-                    width: auto !important;
+                    > li {
+                        width: auto !important;
+                    }
                 }
             }
         }

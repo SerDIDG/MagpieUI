@@ -33,6 +33,7 @@ cm.define('Com.Tabset', {
         'customEvents' : true,
         'active' : null,
         'className' : '',
+        'adaptive' : true,
         'tabsAlign' : 'left',           // left | center | right | justify
         'tabsPosition' : 'top',         // top | right | bottom | left
         'tabsFlexible' : false,
@@ -106,7 +107,7 @@ function(params){
 
     var renderView = function(){
         /* *** STRUCTURE *** */
-        that.nodes['container'] = cm.Node('div', {'class' : 'com__tabset is-adaptive'},
+        that.nodes['container'] = cm.Node('div', {'class' : 'com__tabset'},
             that.nodes['content'] = cm.Node('div', {'class' : 'com__tabset__content'},
                 that.nodes['contentUL'] = cm.Node('ul')
             )
@@ -121,6 +122,9 @@ function(params){
         that.nodes['headerTabs'] = cm.Node('div', {'class' : 'com__tabset__head-tabs'},
             that.nodes['headerUL'] = cm.Node('ul')
         );
+        if(that.params['adaptive']){
+            cm.addEvent(that.nodes['container'], 'is-adaptive');
+        }
         if(that.params['animateSwitch']){
             cm.addClass(that.nodes['content'], 'is-animated');
         }
