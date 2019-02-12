@@ -23,7 +23,7 @@ cm.define('Com.Tabset', {
         'onTabHide'
     ],
     'params' : {
-        'node' : cm.Node('div'),        // Tabs contained node
+        'node' : cm.node('div'),                // Tabs contained node
         'container' : null,
         'name' : '',
         'embedStructure' : 'replace',
@@ -31,19 +31,21 @@ cm.define('Com.Tabset', {
         'renderOnInit' : true,
         'removeOnDestruct' : true,
         'customEvents' : true,
+        'setInitialTab' : true,                 // Set possible initial tab even if "active" is not defined
+        'setInitialTabImmediately' : true,      // Set initial tab without animation
+        'unsetOnReClick' : false,
         'active' : null,
         'className' : '',
         'adaptive' : true,
-        'tabsAlign' : 'left',           // left | center | right | justify
-        'tabsPosition' : 'top',         // top | right | bottom | left
+        'tabsAlign' : 'left',                   // left | center | right | justify
+        'tabsPosition' : 'top',                 // top | right | bottom | left
         'tabsFlexible' : false,
-        'tabsWidth' : 256,              // Only for tabsPosition left or right
+        'tabsWidth' : 256,                      // Only for tabsPosition left or right
         'showTabs' : true,
-        'showTabsTitle' : true,         // Show title tooltip
-        'switchManually' : false,       // Change tab manually, not implemented yet
+        'showTabsTitle' : true,                 // Show title tooltip
         'animateSwitch' : true,
-        'animateDuration' : 300,
         'calculateMaxHeight' : false,
+        'animateDuration' : 'cm._config.animDuration',
         'tabs' : [],
         'icons' : {
             'menu' : 'icon default linked'
@@ -54,7 +56,7 @@ function(params){
     var that = this,
         hashInterval,
         resizeInterval;
-    
+
     that.nodes = {
         'tabs' : []
     };
@@ -63,9 +65,10 @@ function(params){
     that.tabsListing = [];
     that.active = false;
     that.previous = false;
+    that.isInitial = null;
     that.isProcess = false;
     that.isDestructed = false;
-    
+
     var init = function(){
         getLESSVariables();
         that.setParams(params);
@@ -98,9 +101,7 @@ function(params){
 
     var render = function(){
         // Init hash change handler
-        if(that.params['toggleOnHashChange']){
-            initHashChange();
-        }
+        that.params['toggleOnHashChange'] && cm.addEvent(window, 'hashchange', hashHandler);
         // Set initial tab
         setInitial();
     };
@@ -123,7 +124,7 @@ function(params){
             that.nodes['headerUL'] = cm.Node('ul')
         );
         if(that.params['adaptive']){
-            cm.addEvent(that.nodes['container'], 'is-adaptive');
+            cm.addClass(that.nodes['container'], 'is-adaptive');
         }
         if(that.params['animateSwitch']){
             cm.addClass(that.nodes['content'], 'is-animated');
@@ -244,21 +245,19 @@ function(params){
             }
         }
         // Add click event
-        if(that.params['toggleOnHashChange']){
-            cm.addEvent(item['a'], 'click', function(e){
-                e = cm.getEvent(e);
-                cm.preventDefault(e);
-                if(that.active !== tab['id']){
-                    window.location.href = [window.location.href.split('#')[0], tab['id']].join('#');
+        cm.addEvent(item['a'], 'click', function(e){
+            e = cm.getEvent(e);
+            cm.preventDefault(e);
+            if(that.params['unsetOnReClick'] && that.active === tab['id']){
+                that.unset();
+            }else{
+                if(that.params['toggleOnHashChange']){
+                    window.location.hash = tab['id'];
+                }else{
+                    set(tab['id']);
                 }
-            });
-        }else{
-            cm.addEvent(item['a'], 'click', function(e){
-                e = cm.getEvent(e);
-                cm.preventDefault(e);
-                set(tab['id']);
-            });
-        }
+            }
+        });
         return item;
     };
 
@@ -276,27 +275,34 @@ function(params){
     };
 
     var setInitial = function(){
-        var id = getInitialID();
+        var id;
+        // Set default active tab
+        if(that.params['setInitialTab']){
+            id = getInitialID();
+        }else{
+            id = that.params['active']
+        }
         if(isValidID(id)){
             set(id);
         }
     };
 
     var set = function(id){
-        var item, previous;
-        if(!that.isProcess && id !== that.active){
+        var item = that.tabs[id];
+        if(item && id !== that.active && !that.isProcess){
             that.isProcess = true;
             // Hide Previous Tab
-            if(that.active && that.tabs[that.active]){
-                that.previous = that.active;
-                previous = that.tabs[that.previous];
-                previous['isHide'] = true;
+            unsetTab(that.active);
+            that.previous = that.active;
+            that.active = id;
+            // Initial tab
+            if(!cm.isBoolean(that.isInitial)){
+                that.isInitial = !that.previous && that.params['setInitialTabImmediately'] && that.params['setInitialTab'];
+            }else{
+                that.isInitial = false;
             }
             // Show New Tab
-            that.active = id;
-            item = that.tabs[that.active];
             item['isHide'] = false;
-            // Show Start Event
             item['onShowStart'](that, item);
             that.triggerEvent('onTabShowStart', item);
             // Controller
@@ -306,7 +312,7 @@ function(params){
                 }else{
                     cm.getConstructor(item['constructor'], function(classConstructor){
                         item['controller'] = new classConstructor(
-                            cm.merge(item['controllerParams'], {
+                            cm.merge(item['constructorParams'], {
                                 'container' : item['content']
                             })
                         );
@@ -314,24 +320,11 @@ function(params){
                 }
             }
             // Show
-            switchTabHandler(item, previous);
+            switchTabHandler(item);
         }
     };
 
-    var switchTabHandler = function(item, previous){
-        // Hide previous tab
-        if(previous){
-            // Hide Start Event
-            previous['onHideStart'](that, previous);
-            that.triggerEvent('onTabHideStart', previous);
-            // Hide
-            cm.removeClass(previous['tab']['container'], 'active');
-            cm.removeClass(previous['menu']['container'], 'active');
-            cm.removeClass(previous['content'], 'active');
-            // Hide End Event
-            previous['onHide'](that, previous);
-            that.triggerEvent('onTabHide', previous);
-        }
+    var switchTabHandler = function(item){
         // Show active tab
         item['content'].style.display = 'block';
         cm.addClass(item['tab']['container'], 'active');
@@ -339,7 +332,7 @@ function(params){
         cm.addClass(item['content'], 'active', true);
         that.nodes['headerTitleText'].innerHTML = item['title'];
         // Animate
-        if(that.previous && that.params['animateSwitch'] && !that.params['calculateMaxHeight']){
+        if(!that.isInitial && that.params['animateSwitch'] && !that.params['calculateMaxHeight']){
             animateSwitch();
         }else{
             if(that.params['calculateMaxHeight']){
@@ -348,20 +341,42 @@ function(params){
             if(that.previous){
                 that.tabs[that.previous]['content'].style.display = 'none';
             }
-            switchTab();
+            showActiveTab();
         }
     };
 
-    var switchTab = function(){
+    var unsetTab = function(id){
+        var item = that.tabs[id];
+        if(item){
+            // Hide Start Event
+            item['onHideStart'](that, item);
+            that.triggerEvent('onTabHideStart', item);
+            item['isHide'] = true;
+            // Hide
+            cm.removeClass(item['tab']['container'], 'active');
+            cm.removeClass(item['menu']['container'], 'active');
+            cm.removeClass(item['content'], 'active');
+            // Hide End Event
+            item['onHide'](that, item);
+            that.triggerEvent('onTabHide', item);
+        }
+    };
+
+    var showActiveTab = function(){
+        var item = that.tabs[that.active];
         // Show End Event
-        that.tabs[that.active]['onShow'](that, that.tabs[that.active]);
-        that.triggerEvent('onTabShow', that.tabs[that.active]);
-        that.isProcess = false;
-        // Trigger custom event
-        cm.customEvent.trigger(that.tabs[that.active]['content'], 'redraw', {
-            'direction' : 'child',
-            'self' : false
-        });
+        if(item){
+            item['onShow'](that, item);
+            that.triggerEvent('onTabShow', item);
+            that.isProcess = false;
+            // Trigger custom event
+            cm.customEvent.trigger(item['content'], 'redraw', {
+                'direction' : 'child',
+                'self' : false
+            });
+        }else{
+            that.isProcess = false;
+        }
     };
 
     /* *** HELPERS *** */
@@ -385,23 +400,8 @@ function(params){
             }
             that.nodes['contentUL'].style.overflow = 'visible';
             that.nodes['contentUL'].style.height = 'auto';
-            switchTab();
+            showActiveTab();
         }});
-    };
-
-    var initHashChange = function(){
-        var hash;
-        if("onhashchange" in window && !cm.is('IE7')){
-            cm.addEvent(window, 'hashchange', hashHandler);
-        }else{
-            hash = window.location.hash;
-            hashInterval = setInterval(function(){
-                if(hash != window.location.hash){
-                    hash = window.location.hash;
-                    hashHandler();
-                }
-            }, 25);
-        }
     };
 
     var hashHandler = function(){
@@ -447,7 +447,7 @@ function(params){
         cm.forEach(that.tabs, function(item){
             height = Math.max(height, cm.getRealHeight(item['content'], 'offsetRelative'));
         });
-        if(height != that.nodes['contentUL'].offsetHeight){
+        if(height !== that.nodes['contentUL'].offsetHeight){
             that.nodes['contentUL'].style.minHeight = [height, 'px'].join('');
             cm.forEach(that.tabs, function(item){
                 item['content'].style.minHeight = [height, 'px'].join('');
@@ -461,7 +461,7 @@ function(params){
             calculateMaxHeight();
         }
     };
-    
+
     /* ******* MAIN ******* */
 
     that.render = function(){
@@ -473,7 +473,7 @@ function(params){
         setInitial();
         return that;
     };
-    
+
     that.destruct = function(){
         if(!that.isDestructed){
             that.isDestructed = true;
@@ -502,6 +502,25 @@ function(params){
         if(item = that.tabsListing[index]){
             set(item['id']);
         }
+        return that;
+    };
+
+    that.unset = function(){
+        that.previous = that.active;
+        that.active = null;
+        unsetTab(that.previous);
+        animateSwitch();
+        // Reset
+        that.previous = null;
+        that.active = null;
+        if(that.params['toggleOnHashChange']){
+            window.location.hash = '';
+        }
+        return that;
+    };
+
+    that.reset = function(){
+        setInitial();
         return that;
     };
 

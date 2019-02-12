@@ -253,7 +253,7 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
                 that.triggerEvent('onLabelTarget', item);
                 // Set
                 if(that.params['toggleOnHashChange']){
-                    window.location.href = [window.location.href.split('#')[0], item['id']].join('#');
+                    window.location.hash = item['id'];
                 }else{
                     that.setTab(item['id']);
                 }
@@ -345,7 +345,7 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
             }else{
                 cm.getConstructor(item['constructor'], function(classConstructor){
                     item['controller'] = new classConstructor(
-                        cm.merge(item['controllerParams'], {
+                        cm.merge(item['constructorParams'], {
                             'container' : item['tab']['inner'],
                             'events' : {
                                 'onLoadEnd' : function(){
@@ -610,6 +610,10 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
     classProto.unset = function(){
         var that = this;
         that.unsetTab(that.current);
+        // Reset
+        if(that.params['toggleOnHashChange']){
+            window.location.hash = '';
+        }
         that.current = null;
         that.previous = null;
         return that;

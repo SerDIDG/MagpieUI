@@ -35,7 +35,7 @@
 
 <h1 class="pt__box-title">Components: Tabset</h1>
 
-<ul class="com__tabset__content-ul" data-element="Com.Tabset">
+<ul class="com__tabset__content-ul" data-element="Com.Tabset" data-config='{"name" : "main"}'>
     <li data-node="tabs:[]:container" data-config='{"id" : "overview", "title" : "Overview"}'>
         <h2>Overview</h2>
         <p>This component render tabset.</p>
@@ -471,7 +471,7 @@ new Com.Tabset({
 
     <li data-node="tabs:[]:container" data-config='{"id" : "garage", "title" : "Garage"}'>
         <h2>Components in Tabset</h2>
-        <ul class="com__tabset__content-ul" data-element="Com.Tabset" data-config='{"toggleOnHashChange" : false}'>
+        <ul class="com__tabset__content-ul" data-element="Com.Tabset" data-config='{"name" : "garage", "toggleOnHashChange" : false, "adaptive" : false}'>
             <li data-node="tabs:[]:container" data-config='{"id" : "gridlist", "title" : "Gridlist"}'>
                 <div class="pt__gridlist" data-element="gridlist-helper">
                     <table>
