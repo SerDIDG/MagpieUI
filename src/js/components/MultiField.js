@@ -11,14 +11,14 @@ cm.define('Com.MultiField', {
         'renderStructure' : false,
         'embedStructure' : 'append',
         'embedStructureOnRender' : false,
-        'sortable' : true,                      // Use drag and drop to sort items
+        'sortable' : true,                              // Use drag and drop to sort items
         'showControls' : true,
         'showList' : true,
-        'renderItems' : 0,                      // Render count of fields by default
-        'max' : 0,                              // 0 - infinity
-        'template' : null,                      // Html node or string with items template
+        'renderItems' : 0,                              // Render count of fields by default
+        'max' : 0,                                      // 0 - infinity
+        'template' : null,                              // Html node or string with items template
         'templateAttributeReplace' : false,
-        'templateAttribute' : 'name',           // Replace specified items attribute by pattern, example: data-attribute-name="test[%index%]", available variables: %index%
+        'templateAttribute' : 'name',                   // Replace specified items attribute by pattern, example: data-attribute-name="test[%index%]", available variables: %index%
         'duration' : 'cm._config.animDurationShort',
         'theme' : '',
         'icons' : {
@@ -41,9 +41,7 @@ function(params){
     Com.AbstractController.apply(that, arguments);
 });
 
-cm.getConstructor('Com.MultiField', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
+cm.getConstructor('Com.MultiField', function(classConstructor, className, classProto, classInherit){
     classProto.construct = function(){
         var that = this;
         // Variables
@@ -59,11 +57,8 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         that.components = {};
         that.items = [];
         that.isToolbarVisible = true;
-        // Bind context to methods
-        // Add events
         // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
-        return that;
+        classInherit.prototype.construct.apply(that, arguments);
     };
 
     /* *** SYSTEM *** */
@@ -84,7 +79,6 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         }
         that.triggerEvent('onRenderViewProcess');
         that.triggerEvent('onRenderViewEnd');
-        return that;
     };
 
     classProto.renderToolbarView = function(){
@@ -109,7 +103,7 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
     classProto.renderViewModel = function(){
         var that = this;
         // Call parent method - renderViewModel
-        _inherit.prototype.renderViewModel.apply(that, arguments);
+        classInherit.prototype.renderViewModel.apply(that, arguments);
         // Init Sortable
         if(that.params['sortable']){
             cm.getConstructor('Com.Sortable', function(classConstructor, className){
@@ -133,7 +127,6 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         cm.forEach(Math.max(that.params['renderItems'] - that.items.length, 0), function(){
             that.renderItem();
         });
-        return that;
     };
 
     classProto.processCollectedView = function(){
@@ -148,16 +141,14 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         cm.forEach(that.nodes['items'], function(item){
             that.processItem(item);
         });
-        return that;
     };
 
     classProto.setAttributes = function(){
         var that = this;
         // Call parent method - renderViewModel
-        _inherit.prototype.setAttributes.apply(that, arguments);
+        classInherit.prototype.setAttributes.apply(that, arguments);
         // Set theme
         cm.addClass(that.nodes['container'], that.params['theme']);
-        return that;
     };
 
     /* *** ITEMS *** */
