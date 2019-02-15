@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.10 (2019-02-13 21:31) ************ */
+/*! ************ MagpieUI v3.36.11 (2019-02-15 21:20) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.10',
+        '_version' : '3.36.11',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -7076,7 +7076,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
 
     classProto.destructCollector = function(){
         var that = this;
-        if(that.params['constructCollector']){
+        if(that.params['destructCollector']){
             if(that.params['collector']){
                 that.params['collector'].destruct(that.getStackNode());
             }else{
@@ -18645,7 +18645,6 @@ function(params){
     Com.AbstractContainer.apply(that, arguments);
 });
 
-
 cm.getConstructor('Com.ImagePreviewContainer', function(classConstructor, className, classProto, classInherit){
     classProto.onRenderControllerProcess = function(){
         var that = this;
@@ -18671,7 +18670,7 @@ cm.getConstructor('Com.ImagePreviewContainer', function(classConstructor, classN
         var that = this;
         that.item = {
             'src' : item['url'],
-            'mime' : item['type'],
+            'mime' : item['mime'] || item['type'],
             'title' : item['name']
         };
         return that;
@@ -29152,9 +29151,10 @@ Com.FormFields.add('image', {
 cm.define('Com.IndentInput', {
     'extend' : 'Com.AbstractInput',
     'params' : {
-        'maxlength' : 3,
+        'maxLength' : 3,
         'units' : 'px',
-        'defaultValue' : 0,
+        'defaultValue' : '',
+        'allowCustom' : false,
         'allowNegative' : false
     }
 },
@@ -29164,16 +29164,13 @@ function(params){
     Com.AbstractInput.apply(that, arguments);
 });
 
-cm.getConstructor('Com.IndentInput', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
+cm.getConstructor('Com.IndentInput', function(classConstructor, className, classProto, classInherit){
     classProto.construct = function(){
         var that = this;
         // Bind context to methods
         that.setValueHandler = that.setValue.bind(that);
         // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
-        return that;
+        classInherit.prototype.construct.apply(that, arguments);
     };
 
     classProto.renderContent = function(){
@@ -29185,10 +29182,12 @@ cm.getConstructor('Com.IndentInput', function(classConstructor, className, class
         nodes['container'] = cm.node('div', {'class' : 'pt__input'},
             nodes['input'] = cm.node('input', {'type' : 'text'})
         );
-        // Attributes
-        if(!cm.isEmpty(that.params['maxlength']) && that.params['maxlength'] > 0){
-            nodes['input'].setAttribute('maxlength', that.params['maxlength']);
+        // Placeholder
+        if(!cm.isEmpty(that.params['placeholder'])){
+            nodes['input'].placeholder = that.params['placeholder'];
         }
+        // Min / Max length
+        cm.setInputMaxLength(nodes['input'], that.params['maxLength'], that.params['max']);
         // Events
         that.triggerEvent('onRenderContentProcess');
         cm.addEvent(nodes['input'], 'blur', that.setValueHandler);
@@ -29199,7 +29198,11 @@ cm.getConstructor('Com.IndentInput', function(classConstructor, className, class
                 nodes['input'].blur();
             }
         });
-        if(that.params['allowNegative']){
+        if(that.params['allowCustom']){
+            cm.addEvent(nodes['input'], 'input', function(e){
+                that.selectAction(nodes['input'].value, true);
+            });
+        }else if(that.params['allowNegative']){
             cm.allowOnlyNumbersInputEvent(nodes['input'], function(e, value){
                 that.selectAction(that.validateValue(value), true);
             });
@@ -29217,10 +29220,8 @@ cm.getConstructor('Com.IndentInput', function(classConstructor, className, class
 
     classProto.validateValue = function(value){
         var that = this;
-        value = !cm.isEmpty(value) ? value : that.params['defaultValue'];
-        value = parseInt(value);
-        that.rawValue = !isNaN(value) ? value : '';
-        return (that.rawValue + that.params['units']);
+        that.rawValue = !cm.isEmpty(value) ? value : that.params['defaultValue'];
+        return cm.isEmpty(that.rawValue) || isNaN(that.rawValue) ? that.rawValue : (that.rawValue + that.params['units']);
     };
 
     classProto.setValue = function(triggerEvents){

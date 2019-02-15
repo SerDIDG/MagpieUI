@@ -280,7 +280,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
 
     classProto.destructCollector = function(){
         var that = this;
-        if(that.params['constructCollector']){
+        if(that.params['destructCollector']){
             if(that.params['collector']){
                 that.params['collector'].destruct(that.getStackNode());
             }else{

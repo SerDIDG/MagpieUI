@@ -16,7 +16,6 @@ function(params){
     Com.AbstractContainer.apply(that, arguments);
 });
 
-
 cm.getConstructor('Com.ImagePreviewContainer', function(classConstructor, className, classProto, classInherit){
     classProto.onRenderControllerProcess = function(){
         var that = this;
@@ -42,7 +41,7 @@ cm.getConstructor('Com.ImagePreviewContainer', function(classConstructor, classN
         var that = this;
         that.item = {
             'src' : item['url'],
-            'mime' : item['type'],
+            'mime' : item['mime'] || item['type'],
             'title' : item['name']
         };
         return that;

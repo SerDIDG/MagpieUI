@@ -1,9 +1,10 @@
 cm.define('Com.IndentInput', {
     'extend' : 'Com.AbstractInput',
     'params' : {
-        'maxlength' : 3,
+        'maxLength' : 3,
         'units' : 'px',
-        'defaultValue' : 0,
+        'defaultValue' : '',
+        'allowCustom' : false,
         'allowNegative' : false
     }
 },
@@ -13,16 +14,13 @@ function(params){
     Com.AbstractInput.apply(that, arguments);
 });
 
-cm.getConstructor('Com.IndentInput', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
+cm.getConstructor('Com.IndentInput', function(classConstructor, className, classProto, classInherit){
     classProto.construct = function(){
         var that = this;
         // Bind context to methods
         that.setValueHandler = that.setValue.bind(that);
         // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
-        return that;
+        classInherit.prototype.construct.apply(that, arguments);
     };
 
     classProto.renderContent = function(){
@@ -34,10 +32,12 @@ cm.getConstructor('Com.IndentInput', function(classConstructor, className, class
         nodes['container'] = cm.node('div', {'class' : 'pt__input'},
             nodes['input'] = cm.node('input', {'type' : 'text'})
         );
-        // Attributes
-        if(!cm.isEmpty(that.params['maxlength']) && that.params['maxlength'] > 0){
-            nodes['input'].setAttribute('maxlength', that.params['maxlength']);
+        // Placeholder
+        if(!cm.isEmpty(that.params['placeholder'])){
+            nodes['input'].placeholder = that.params['placeholder'];
         }
+        // Min / Max length
+        cm.setInputMaxLength(nodes['input'], that.params['maxLength'], that.params['max']);
         // Events
         that.triggerEvent('onRenderContentProcess');
         cm.addEvent(nodes['input'], 'blur', that.setValueHandler);
@@ -48,7 +48,11 @@ cm.getConstructor('Com.IndentInput', function(classConstructor, className, class
                 nodes['input'].blur();
             }
         });
-        if(that.params['allowNegative']){
+        if(that.params['allowCustom']){
+            cm.addEvent(nodes['input'], 'input', function(e){
+                that.selectAction(nodes['input'].value, true);
+            });
+        }else if(that.params['allowNegative']){
             cm.allowOnlyNumbersInputEvent(nodes['input'], function(e, value){
                 that.selectAction(that.validateValue(value), true);
             });
@@ -66,10 +70,8 @@ cm.getConstructor('Com.IndentInput', function(classConstructor, className, class
 
     classProto.validateValue = function(value){
         var that = this;
-        value = !cm.isEmpty(value) ? value : that.params['defaultValue'];
-        value = parseInt(value);
-        that.rawValue = !isNaN(value) ? value : '';
-        return (that.rawValue + that.params['units']);
+        that.rawValue = !cm.isEmpty(value) ? value : that.params['defaultValue'];
+        return cm.isEmpty(that.rawValue) || isNaN(that.rawValue) ? that.rawValue : (that.rawValue + that.params['units']);
     };
 
     classProto.setValue = function(triggerEvents){
