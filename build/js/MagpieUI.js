@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.11 (2019-02-15 21:20) ************ */
+/*! ************ MagpieUI v3.36.12 (2019-02-20 19:40) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.11',
+        '_version' : '3.36.12',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -16790,6 +16790,7 @@ cm.define('Com.GalleryScrollPagination', {
         'renderStructure' : true,
         'embedStructureOnRender' : true,
         'pageTag' : 'ul',
+        'gridClass' : null,
         'columns' : 4,
         'indent' : '12px',
         'adaptive' : true
@@ -16810,6 +16811,7 @@ cm.getConstructor('Com.GalleryScrollPagination', function(classConstructor, clas
         cm.addClass(that.nodes['pages'], 'pt__grid');
         cm.addClass(that.nodes['pages'], ['col', that.params['columns']].join('-'));
         cm.addClass(that.nodes['pages'], ['indent', that.params['indent']].join('-'));
+        cm.addClass(that.nodes['pages'], that.params['gridClass']);
         if(that.params['adaptive']){
             cm.addClass(that.nodes['pages'], 'is-adaptive');
         }else{

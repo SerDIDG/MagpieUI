@@ -7,6 +7,7 @@
         .cm__list-clear;
         .cm__list-inline;
         margin: 0 0 -@CmIndent-XXSmall 0;
+        line-height: @CmFont-Base-LineHeight;
 
         li {
             .cm__font;
@@ -21,6 +22,13 @@
                 &:first-child,
                 &:last-child {
                     display: none;
+                }
+            }
+
+            &.active {
+                a {
+                    color: @CmFont-Base-Color;
+                    text-decoration: none;
                 }
             }
         }

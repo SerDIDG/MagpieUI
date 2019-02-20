@@ -4,6 +4,7 @@ cm.define('Com.GalleryScrollPagination', {
         'renderStructure' : true,
         'embedStructureOnRender' : true,
         'pageTag' : 'ul',
+        'gridClass' : null,
         'columns' : 4,
         'indent' : '12px',
         'adaptive' : true
@@ -24,6 +25,7 @@ cm.getConstructor('Com.GalleryScrollPagination', function(classConstructor, clas
         cm.addClass(that.nodes['pages'], 'pt__grid');
         cm.addClass(that.nodes['pages'], ['col', that.params['columns']].join('-'));
         cm.addClass(that.nodes['pages'], ['indent', that.params['indent']].join('-'));
+        cm.addClass(that.nodes['pages'], that.params['gridClass']);
         if(that.params['adaptive']){
             cm.addClass(that.nodes['pages'], 'is-adaptive');
         }else{

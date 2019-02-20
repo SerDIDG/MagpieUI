@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.11 (2019-02-15 21:20) ************ */
+/*! ************ MagpieUI v3.36.12 (2019-02-20 19:40) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3924,7 +3924,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.36.11';
+@CmVersion: '3.36.12';
 
 // /* ******* PATH ******* */
 
@@ -4277,6 +4277,7 @@ span.CodeMirror-selectedtext { background: none; }
 
 @CmFont-Base-LightWeight: 300;
 @CmFont-Base-NormalWeight: 400;
+@CmFont-Base-MediumWeight: 500;
 @CmFont-Base-BoldWeight: 600;
 
 @CmFont-Base-LineHeight: 18px;
@@ -4524,6 +4525,7 @@ span.CodeMirror-selectedtext { background: none; }
 @PtGridlist-Title-HasBackground-Hover: @PtGridlist-Cell-HasBackground-Hover;
 @PtGridlist-Cell-HasBackground-Default: @CmColor-Secondary-LightHighlight;
 @PtGridlist-Cell-HasBackground-Hover: @CmColor-Secondary-LightHover;
+@PtGridlist-Cell-HasBackground-Active: @CmColor-Secondary-LightActive;
 
 // /* ******* DRAG AND DROP ******* */
 
@@ -6050,7 +6052,7 @@ span.CodeMirror-selectedtext { background: none; }
     }
 
     &.large {
-        .for(archive default doc exe flash image movie music pdf pps ttf txt xls); .-each(@name) {
+        .for(folder archive default doc exe flash image movie music pdf pps ttf txt xls); .-each(@name) {
             &.file-@{name} {
                 background-image: url("@{CmPath-Images}/icons/large/files/@{name}.png");
             }
@@ -8936,6 +8938,7 @@ button {
         .cm__list-clear;
         .cm__list-inline;
         margin: 0 0 -@CmIndent-XXSmall 0;
+        line-height: @CmFont-Base-LineHeight;
 
         li {
             .cm__font;
@@ -8950,6 +8953,13 @@ button {
                 &:first-child,
                 &:last-child {
                     display: none;
+                }
+            }
+
+            &.active {
+                a {
+                    color: @CmFont-Base-Color;
+                    text-decoration: none;
                 }
             }
         }
@@ -10160,6 +10170,12 @@ ul.pt__field__hint {
         }
     }
 
+    &.is-grid {
+        > ul {
+            display: grid;
+        }
+    }
+
     &.is-flex {
         > ul {
             .display-flex;
@@ -10223,6 +10239,10 @@ ul.pt__field__hint {
         .loop((@counter - 1));
 
         &.col-@{counter} {
+            .pt__grid__col(@counter);
+        }
+
+        &.size-@{counter} {
             .pt__grid__size(@counter);
         }
     }
@@ -10271,13 +10291,59 @@ ul.pt__field__hint {
     }
 }
 
+/* *** FILES *** */
+
+.pt__grid--files {
+    .pt__image {
+        border: @CmBorder-Box;
+        border-radius: @CmBorder-Radius;
+        .mx__transition(all, @CmUI-Transition-Duration);
+
+        &:hover,
+        &.hover {
+            border: @CmBorder-BoxHover;
+            .mx__transition(all, @CmUI-Transition-DurationReverse);
+        }
+
+        &:active,
+        &.active {
+            border: @CmBorder-BoxActive;
+        }
+
+        > .inner {
+            .title {
+                > .inner {
+                    line-height: @CmSize-Medium;
+                    text-align: left;
+                }
+
+                .icon {
+                    .cm__size__medium;
+                    display: inline-block;
+                    margin: 0 @CmIndent-XXXSmall 0 0;
+                    vertical-align: top;
+                    background-size: contain;
+                }
+            }
+        }
+    }
+}
+
 /* ******* PARTS: GRID: MIXINS ******* */
 
-.pt__grid__size (@count: 1) {
+.pt__grid__col (@count: 1) {
     @size: 100% / @count;
 
     > ul > li {
         width: @size;
+    }
+}
+
+.pt__grid__size (@count: 1) {
+    @size: round(1280px / @count);
+
+    > ul {
+        grid-template-columns: ~'repeat(auto-fill, minmax(@{size}, 1fr))';
     }
 }
 
@@ -10597,6 +10663,12 @@ ul.pt__field__hint {
             }
         }
 
+        &:active {
+            td {
+                background-color: @PtGridlist-Cell-ActiveBackground;
+            }
+        }
+
         &.success,
         &.valid {
             td {
@@ -10670,6 +10742,12 @@ ul.pt__field__hint {
         &:hover {
             td {
                 background-color: @PtGridlist-Cell-HasBackground-Hover;
+            }
+        }
+
+        &:active {
+            td {
+                background-color: @PtGridlist-Cell-HasBackground-Active;
             }
         }
     }
@@ -13260,7 +13338,7 @@ ul.pt__field__hint {
     }
 
     .title {
-        font-weight: @CmFont-Base-BoldWeight;
+        font-weight: @CmFont-Base-MediumWeight;
     }
 }
 

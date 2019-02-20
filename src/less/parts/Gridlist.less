@@ -231,6 +231,12 @@
             }
         }
 
+        &:active {
+            td {
+                background-color: @PtGridlist-Cell-ActiveBackground;
+            }
+        }
+
         &.success,
         &.valid {
             td {
@@ -304,6 +310,12 @@
         &:hover {
             td {
                 background-color: @PtGridlist-Cell-HasBackground-Hover;
+            }
+        }
+
+        &:active {
+            td {
+                background-color: @PtGridlist-Cell-HasBackground-Active;
             }
         }
     }
