@@ -3729,10 +3729,16 @@ cm.obj2URI = function(obj, prefix){
     var str = [],
         keyPrefix;
     cm.forEach(obj, function(item, key){
-        keyPrefix = !cm.isEmpty(prefix) ? prefix + "[" + key + "]" : key;
-        str.push(typeof item === 'object' ? cm.obj2URI(item, keyPrefix) : keyPrefix + '=' + encodeURIComponent(item));
+        if(!cm.isUndefined(item)){
+            keyPrefix = !cm.isEmpty(prefix) ? prefix + "[" + key + "]" : key;
+            if(typeof item === 'object'){
+                str.push(cm.obj2URI(item, keyPrefix));
+            }else{
+                str.push([keyPrefix, encodeURIComponent(item)].join('='));
+            }
+        }
     });
-    return str.join('&');
+    return !cm.isEmpty(str) ? str.join('&') : null;
 };
 
 cm.obj2Filter = function(obj, prefix, separator, skipEmpty){

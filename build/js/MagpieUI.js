@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.12 (2019-02-20 19:40) ************ */
+/*! ************ MagpieUI v3.36.13 (2019-02-22 22:47) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.12',
+        '_version' : '3.36.13',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -5328,10 +5328,16 @@ cm.obj2URI = function(obj, prefix){
     var str = [],
         keyPrefix;
     cm.forEach(obj, function(item, key){
-        keyPrefix = !cm.isEmpty(prefix) ? prefix + "[" + key + "]" : key;
-        str.push(typeof item === 'object' ? cm.obj2URI(item, keyPrefix) : keyPrefix + '=' + encodeURIComponent(item));
+        if(!cm.isUndefined(item)){
+            keyPrefix = !cm.isEmpty(prefix) ? prefix + "[" + key + "]" : key;
+            if(typeof item === 'object'){
+                str.push(cm.obj2URI(item, keyPrefix));
+            }else{
+                str.push([keyPrefix, encodeURIComponent(item)].join('='));
+            }
+        }
     });
-    return str.join('&');
+    return !cm.isEmpty(str) ? str.join('&') : null;
 };
 
 cm.obj2Filter = function(obj, prefix, separator, skipEmpty){
@@ -11608,9 +11614,11 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         return that;
     };
 
-    classProto.setAction = function(o, mode, update){
+    classProto.setAction = function(o, mode, update, rebuild){
         var that = this;
         mode = cm.inArray(['raw', 'update', 'current'], mode) ? mode : 'current';
+        update = cm.isUndefined(update) ? false : update;
+        rebuild = cm.isUndefined(rebuild) ? true : rebuild;
         switch(mode){
             case 'raw':
                 that.params['ajax'] = cm.merge(that._raw.params['ajax'], o);
@@ -11625,7 +11633,9 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         if(update){
             that._update.params['ajax'] = cm.clone(that.params['ajax']);
         }
-        that.rebuild();
+        if(rebuild){
+            that.rebuild();
+        }
         return that;
     };
 
@@ -29288,6 +29298,16 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
         classInherit.prototype.construct.apply(that, arguments);
     };
 
+    classProto.onEnable = function(){
+        var that = this;
+        that.nodes['content']['input'].disabled = false;
+    };
+
+    classProto.onDisable = function(){
+        var that = this;
+        that.nodes['content']['input'].disabled = true;
+    };
+
     /*** VIEW MODEL ***/
 
     classProto.renderContent = function(){
@@ -29428,7 +29448,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
         return that;
     };
 
-    /******* PUBLUC *******/
+    /******* PUBLIC *******/
 
     classProto.focus = function(){
         var that = this;

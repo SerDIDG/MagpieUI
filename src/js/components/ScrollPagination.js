@@ -570,9 +570,11 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         return that;
     };
 
-    classProto.setAction = function(o, mode, update){
+    classProto.setAction = function(o, mode, update, rebuild){
         var that = this;
         mode = cm.inArray(['raw', 'update', 'current'], mode) ? mode : 'current';
+        update = cm.isUndefined(update) ? false : update;
+        rebuild = cm.isUndefined(rebuild) ? true : rebuild;
         switch(mode){
             case 'raw':
                 that.params['ajax'] = cm.merge(that._raw.params['ajax'], o);
@@ -587,7 +589,9 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         if(update){
             that._update.params['ajax'] = cm.clone(that.params['ajax']);
         }
-        that.rebuild();
+        if(rebuild){
+            that.rebuild();
+        }
         return that;
     };
 

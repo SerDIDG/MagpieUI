@@ -39,6 +39,16 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
         classInherit.prototype.construct.apply(that, arguments);
     };
 
+    classProto.onEnable = function(){
+        var that = this;
+        that.nodes['content']['input'].disabled = false;
+    };
+
+    classProto.onDisable = function(){
+        var that = this;
+        that.nodes['content']['input'].disabled = true;
+    };
+
     /*** VIEW MODEL ***/
 
     classProto.renderContent = function(){
@@ -179,7 +189,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
         return that;
     };
 
-    /******* PUBLUC *******/
+    /******* PUBLIC *******/
 
     classProto.focus = function(){
         var that = this;
