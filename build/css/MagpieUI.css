@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.36.13 (2019-02-22 22:47) ************ */
+/*! ************ MagpieUI v3.36.14 (2019-03-01 19:06) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.6.0
@@ -3512,8 +3512,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.36.13');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.36.13') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.36.13') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.36.13') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.36.13#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.36.14');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.36.14') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.36.14') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.36.14') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.36.14#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -5025,7 +5025,8 @@ p,
 dl,
 ul,
 ol,
-hr {
+hr,
+address {
   margin-bottom: 24px;
   padding: 0;
   margin: 0 0 18px;
@@ -5065,7 +5066,10 @@ ol.is-last,
 ol:last-child,
 hr.bottom,
 hr.is-last,
-hr:last-child {
+hr:last-child,
+address.bottom,
+address.is-last,
+address:last-child {
   margin-bottom: 0;
 }
 h1 {
@@ -8069,7 +8073,8 @@ button.is-hidden {
 .pt__box-editable dl,
 .pt__box-editable ul,
 .pt__box-editable ol,
-.pt__box-editable hr {
+.pt__box-editable hr,
+.pt__box-editable address {
   margin-bottom: 0;
 }
 .pt__box-editable > .r {
@@ -9118,6 +9123,7 @@ button.is-hidden {
   z-index: 1;
   border: 1px dashed #2985e0;
   border-radius: 3px;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.4);
   opacity: 0;
   top: 0;
   right: 0;
@@ -9151,6 +9157,7 @@ button.is-hidden {
   background: #fafafa;
   border: 1px dashed #2985e0;
   border-radius: 3px;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.4);
   cursor: move;
   touch-action: none;
   -webkit-background-clip: border-box;
@@ -10840,7 +10847,8 @@ ul.pt__field__hint li:before {
 .pt__image > .inner > .text dl,
 .pt__image > .inner > .text ul,
 .pt__image > .inner > .text ol,
-.pt__image > .inner > .text hr {
+.pt__image > .inner > .text hr,
+.pt__image > .inner > .text address {
   color: #ffffff;
 }
 .pt__image > .inner > iframe.descr {
@@ -14651,7 +14659,8 @@ ul.pt__field__hint li:before {
 .lt__comment .comment-text dl,
 .lt__comment .comment-text ul,
 .lt__comment .comment-text ol,
-.lt__comment .comment-text hr {
+.lt__comment .comment-text hr,
+.lt__comment .comment-text address {
   margin: 0;
 }
 .lt__comment .comment-text img {
@@ -14750,7 +14759,8 @@ ul.pt__field__hint li:before {
 .lt__filegridlist__cell-title dl,
 .lt__filegridlist__cell-title ul,
 .lt__filegridlist__cell-title ol,
-.lt__filegridlist__cell-title hr {
+.lt__filegridlist__cell-title hr,
+.lt__filegridlist__cell-title address {
   margin: 0;
 }
 .lt__filegridlist__cell-title .cm__tags--title,
@@ -14869,7 +14879,8 @@ ul.pt__field__hint li:before {
 .lt__forum__cell-title dl,
 .lt__forum__cell-title ul,
 .lt__forum__cell-title ol,
-.lt__forum__cell-title hr {
+.lt__forum__cell-title hr,
+.lt__forum__cell-title address {
   margin: 0;
 }
 .lt__forum__cell-title .title {
@@ -15054,7 +15065,8 @@ ul.pt__field__hint li:before {
 .lt__post .post-abstract dl,
 .lt__post .post-abstract ul,
 .lt__post .post-abstract ol,
-.lt__post .post-abstract hr {
+.lt__post .post-abstract hr,
+.lt__post .post-abstract address {
   margin: 0;
 }
 .lt__post .pt__toolbar,
@@ -15307,6 +15319,7 @@ ul.pt__field__hint li:before {
 .com__togglebox > dt ul,
 .com__togglebox > dt ol,
 .com__togglebox > dt hr,
+.com__togglebox > dt address,
 .com__togglebox > dt h1,
 .com__togglebox > dt h2,
 .com__togglebox > dt h3,
@@ -15318,6 +15331,7 @@ ul.pt__field__hint li:before {
 .com__togglebox > dt ul,
 .com__togglebox > dt ol,
 .com__togglebox > dt hr,
+.com__togglebox > dt address,
 .com__togglebox > dt .form .hint,
 .com__togglebox > dt .pt__box-item .title,
 .com__togglebox > dt .pt__box-item .descr,
@@ -15638,7 +15652,8 @@ ul.pt__field__hint li:before {
 .com__tooltip > .inner > .title dl,
 .com__tooltip > .inner > .title ul,
 .com__tooltip > .inner > .title ol,
-.com__tooltip > .inner > .title hr {
+.com__tooltip > .inner > .title hr,
+.com__tooltip > .inner > .title address {
   margin: 0;
 }
 .com__tooltip > .inner > .scroll.is-auto {
@@ -16560,6 +16575,7 @@ ul.pt__field__hint li:before {
 .com__dialog__window.theme-black ul,
 .com__dialog__window.theme-black ol,
 .com__dialog__window.theme-black hr,
+.com__dialog__window.theme-black address,
 .com__dialog__window.theme-black h1,
 .com__dialog__window.theme-black h2,
 .com__dialog__window.theme-black h3,
@@ -16571,6 +16587,7 @@ ul.pt__field__hint li:before {
 .com__dialog__window.theme-black ul,
 .com__dialog__window.theme-black ol,
 .com__dialog__window.theme-black hr,
+.com__dialog__window.theme-black address,
 .com__dialog__window.theme-black .form .hint,
 .com__dialog__window.theme-black .pt__box-item .title,
 .com__dialog__window.theme-black .pt__box-item .descr,
@@ -16646,6 +16663,7 @@ ul.pt__field__hint li:before {
 .com__dialog-font--theme-black ul,
 .com__dialog-font--theme-black ol,
 .com__dialog-font--theme-black hr,
+.com__dialog-font--theme-black address,
 .com__dialog-font--theme-black h1,
 .com__dialog-font--theme-black h2,
 .com__dialog-font--theme-black h3,
@@ -16657,6 +16675,7 @@ ul.pt__field__hint li:before {
 .com__dialog-font--theme-black ul,
 .com__dialog-font--theme-black ol,
 .com__dialog-font--theme-black hr,
+.com__dialog-font--theme-black address,
 .com__dialog-font--theme-black .form .hint,
 .com__dialog-font--theme-black .pt__box-item .title,
 .com__dialog-font--theme-black .pt__box-item .descr,
@@ -19611,7 +19630,8 @@ html.ie9 .com__palette .b-range {
 .com__slider > .inner > .slides > ul > li > .text dl,
 .com__slider > .inner > .slides > ul > li > .text ul,
 .com__slider > .inner > .slides > ul > li > .text ol,
-.com__slider > .inner > .slides > ul > li > .text hr {
+.com__slider > .inner > .slides > ul > li > .text hr,
+.com__slider > .inner > .slides > ul > li > .text address {
   color: #fff;
 }
 .com__slider > .inner > .slides > ul > li > .slide-area {

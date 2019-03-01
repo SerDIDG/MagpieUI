@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.13 (2019-02-22 22:47) ************ */
+/*! ************ MagpieUI v3.36.14 (2019-03-01 19:06) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3924,7 +3924,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.36.13';
+@CmVersion: '3.36.14';
 
 // /* ******* PATH ******* */
 
@@ -6502,7 +6502,7 @@ a {
     }
 }
 
-h1, h2, h3, h4, h5, h6, p, dl, ul, ol, hr {
+h1, h2, h3, h4, h5, h6, p, dl, ul, ol, hr, address {
     &:extend(.cm__tags all);
     &:extend(.cm__inherit all);
 }
@@ -6512,7 +6512,7 @@ h1, h2, h3, h4, h5, h6 {
     &:extend(.cm__inherit all);
 }
 
-p, dl, ul, ol, hr {
+p, dl, ul, ol, hr, address {
     &:extend(.cm__tags--base all);
     &:extend(.cm__inherit all);
 }
@@ -9578,6 +9578,7 @@ button {
             z-index: 1;
             border: @CmBorder-Editable;
             border-radius: @CmBorder-Radius;
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.4);
             opacity: 0;
             .mx__position(0, 0, 0, 0);
             .mx__transition(all, @CmUI-Transition-Duration);
@@ -9609,6 +9610,7 @@ button {
             background: @PtEditable-Drag-DefaultBackground;
             border: @CmBorder-Editable;
             border-radius: @CmBorder-Radius;
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.4);
             cursor: move;
             touch-action: none;
             .mx__background-clip(border-box);
