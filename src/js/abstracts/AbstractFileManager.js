@@ -14,11 +14,12 @@ cm.define('Com.AbstractFileManager', {
     'params' : {
         'embedStructure' : 'replace',
         'controllerEvents' : true,
-        'showStats' : true,
         'max' : 0,                                                        // 0 - infinity
         'lazy' : false,
         'fullSize' : false,
-        'Com.FileStats' : {
+        'showStats' : true,
+        'statsConstructor' : 'Com.FileStats',
+        'statsParams' : {
             'embedStructure' : 'append',
             'toggleBox' : false,
             'inline' : true
@@ -92,7 +93,7 @@ cm.getConstructor('Com.AbstractFileManager', function(classConstructor, classNam
             nodes = {};
         that.triggerEvent('onRenderHolderStart');
         // Structure
-        nodes['container'] = cm.node('div', {'class' : 'com__file-manager__holder is-hidden'},
+        nodes['container'] = cm.node('div', {'class' : 'com__file-manager__holder'},
             nodes['inner'] = cm.node('div', {'class' : 'inner'})
         );
         // Events
@@ -107,7 +108,7 @@ cm.getConstructor('Com.AbstractFileManager', function(classConstructor, classNam
             nodes = {};
         that.triggerEvent('onRenderContentStart');
         // Structure
-        nodes['container'] = cm.node('div', {'class' : 'com__file-manager__content is-hidden'});
+        nodes['container'] = cm.node('div', {'class' : 'com__file-manager__content'});
         // Events
         that.triggerEvent('onRenderContentProcess');
         that.nodes['content'] = nodes;
@@ -118,14 +119,15 @@ cm.getConstructor('Com.AbstractFileManager', function(classConstructor, classNam
     classProto.renderViewModel = function(){
         var that = this;
         if(that.params['showStats']){
-            cm.getConstructor('Com.FileStats', function(classObject, className){
-                cm.removeClass(that.nodes['content']['container'], 'is-hidden');
+            cm.getConstructor(that.params['statsConstructor'], function(classObject){
                 that.components['stats'] = new classObject(
-                    cm.merge(that.params[className], {
+                    cm.merge(that.params['statsParams'], {
                         'container' : that.nodes['content']['container']
                     })
                 );
             });
+        }else{
+            cm.remove(that.nodes['content']['container']);
         }
         if(!that.params['lazy']){
             that.renderController();

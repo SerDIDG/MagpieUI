@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.14 (2019-03-01 19:06) ************ */
+/*! ************ MagpieUI v3.36.15 (2019-03-06 20:21) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.14',
+        '_version' : '3.36.15',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -7839,11 +7839,12 @@ cm.define('Com.AbstractFileManager', {
     'params' : {
         'embedStructure' : 'replace',
         'controllerEvents' : true,
-        'showStats' : true,
         'max' : 0,                                                        // 0 - infinity
         'lazy' : false,
         'fullSize' : false,
-        'Com.FileStats' : {
+        'showStats' : true,
+        'statsConstructor' : 'Com.FileStats',
+        'statsParams' : {
             'embedStructure' : 'append',
             'toggleBox' : false,
             'inline' : true
@@ -7917,7 +7918,7 @@ cm.getConstructor('Com.AbstractFileManager', function(classConstructor, classNam
             nodes = {};
         that.triggerEvent('onRenderHolderStart');
         // Structure
-        nodes['container'] = cm.node('div', {'class' : 'com__file-manager__holder is-hidden'},
+        nodes['container'] = cm.node('div', {'class' : 'com__file-manager__holder'},
             nodes['inner'] = cm.node('div', {'class' : 'inner'})
         );
         // Events
@@ -7932,7 +7933,7 @@ cm.getConstructor('Com.AbstractFileManager', function(classConstructor, classNam
             nodes = {};
         that.triggerEvent('onRenderContentStart');
         // Structure
-        nodes['container'] = cm.node('div', {'class' : 'com__file-manager__content is-hidden'});
+        nodes['container'] = cm.node('div', {'class' : 'com__file-manager__content'});
         // Events
         that.triggerEvent('onRenderContentProcess');
         that.nodes['content'] = nodes;
@@ -7943,14 +7944,15 @@ cm.getConstructor('Com.AbstractFileManager', function(classConstructor, classNam
     classProto.renderViewModel = function(){
         var that = this;
         if(that.params['showStats']){
-            cm.getConstructor('Com.FileStats', function(classObject, className){
-                cm.removeClass(that.nodes['content']['container'], 'is-hidden');
+            cm.getConstructor(that.params['statsConstructor'], function(classObject){
                 that.components['stats'] = new classObject(
-                    cm.merge(that.params[className], {
+                    cm.merge(that.params['statsParams'], {
                         'container' : that.nodes['content']['container']
                     })
                 );
             });
+        }else{
+            cm.remove(that.nodes['content']['container']);
         }
         if(!that.params['lazy']){
             that.renderController();
@@ -11065,6 +11067,7 @@ cm.define('Com.ScrollPagination', {
         'renderStructure' : false,                                  // Render wrapper nodes if not exists in html
         'embedStructureOnRender' : false,
         'embedStructure' : 'append',
+        'clearOnRebuild' : false,
         'resizeEvent' : true,
         'scrollEvent' : true,
         'scrollNode' : window,
@@ -11444,7 +11447,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
             };
         // Clear container
         if(that.page === that.params['startPage']){
-            cm.clearNode(that.nodes['pages']);
+            that.clear();
         }
         // Render page
         page['container'] = that.callbacks.renderContainer(that, page);
@@ -11560,9 +11563,18 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         that.validateParams();
         // Reset styles and variables
         that.resetStyles();
+        if(that.params['clearOnRebuild']){
+            that.clear();
+        }
         that.triggerEvent('onRebuild');
         // Render new pge
         that.set();
+        return that;
+    };
+
+    classProto.clear = function(){
+        var that = this;
+        cm.clearNode(that.nodes['pages']);
         return that;
     };
 
@@ -18433,6 +18445,7 @@ cm.define('Com.HelpBubble', {
         'title' : null,
         'content' : cm.node('span'),
         'type' : 'tooltip', // tooltip | container
+        'showLabel' : false,
         'Com.Tooltip' : {
             'className' : 'com__help-bubble__tooltip'
         },
@@ -18468,9 +18481,16 @@ function(params){
         // Render structure
         if(that.params['renderStructure']){
             that.nodes['container'] = cm.node('span', {'class' : 'com__help-bubble'},
-                that.nodes['button'] = cm.node('span', {'class' : 'icon default linked'}),
+                that.nodes['button'] = cm.node('span', {'class' : 'com__help-bubble__title'},
+                    cm.node('span', {'class' : 'icon default linked'})
+                ),
                 that.nodes['content'] = cm.node('span', {'class' : 'com__help-bubble__content'})
             );
+            // Label
+            if(that.params['showLabel']){
+                that.nodes['label'] = cm.node('span', {'class' : 'label'}, that.params['title']);
+                cm.appendChild(that.nodes['label'], that.nodes['button']);
+            }
             // Set Content
             that.set(that.params['content']);
             // Embed
@@ -20842,6 +20862,7 @@ cm.define('Com.Request', {
         'autoSend' : false,
         'responseKey' : 'data',
         'responseErrorsKey' : 'errors',
+        'responseMessageKey' : 'message',
         'responseHTML' : true,
         'responseHTMLKey' : 'data',
         'responseStatusKey' : 'data.success',
@@ -21115,14 +21136,22 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
     };
 
     classProto.error = function(){
-        var that = this;
+        var that = this,
+            errors,
+            message;
         that.isError = true;
+        if(!cm.isEmpty(that.responceData)){
+            errors = cm.objectSelector(that.params['responseErrorsKey'], that.responceData);
+            message = cm.objectSelector(that.params['responseMessageKey'], that.responceData);
+        }
         that.renderError();
         that.triggerEvent('onError', {
             'response' : that.responceData,
             'status' : that.responceDataStatus,
             'filtered' : that.responceDataFiltered,
-            'html' : that.responceDataHTML
+            'html' : that.responceDataHTML,
+            'errors' : errors,
+            'message' : message
         });
         return that;
     };

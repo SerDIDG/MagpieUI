@@ -21,6 +21,7 @@ cm.define('Com.ScrollPagination', {
         'renderStructure' : false,                                  // Render wrapper nodes if not exists in html
         'embedStructureOnRender' : false,
         'embedStructure' : 'append',
+        'clearOnRebuild' : false,
         'resizeEvent' : true,
         'scrollEvent' : true,
         'scrollNode' : window,
@@ -400,7 +401,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
             };
         // Clear container
         if(that.page === that.params['startPage']){
-            cm.clearNode(that.nodes['pages']);
+            that.clear();
         }
         // Render page
         page['container'] = that.callbacks.renderContainer(that, page);
@@ -516,9 +517,18 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         that.validateParams();
         // Reset styles and variables
         that.resetStyles();
+        if(that.params['clearOnRebuild']){
+            that.clear();
+        }
         that.triggerEvent('onRebuild');
         // Render new pge
         that.set();
+        return that;
+    };
+
+    classProto.clear = function(){
+        var that = this;
+        cm.clearNode(that.nodes['pages']);
         return that;
     };
 

@@ -9,14 +9,18 @@
         height: 100%;
 
         > .inner {
+            .display-flex;
             height: 100%;
+            .mx__flex-flow(column nowrap);
 
             .com__file-manager__holder {
                 height: 100%;
+                position: relative;
 
                 > .inner {
                     height: 100%;
                     position: absolute;
+                    overflow: hidden;
                     .mx__position(0, 0, 0, 0);
                 }
             }

@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.36.14 (2019-03-01 19:06) ************ */
+/*! ************ MagpieUI v3.36.15 (2019-03-06 20:21) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.6.0
@@ -3512,8 +3512,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.36.14');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.36.14') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.36.14') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.36.14') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.36.14#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.36.15');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.36.15') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.36.15') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.36.15') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.36.15#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -3661,6 +3661,26 @@ span.CodeMirror-selectedtext {
   align-content: flex-start;
   -webkit-align-items: flex-start;
   align-items: flex-start;
+}
+/* *** SCROLLBAR *** */
+.cm__scrollbar::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+  opacity: 0;
+}
+.cm__scrollbar::-webkit-scrollbar-track {
+  background-color: rgba(250, 250, 250, 0.5);
+  border-radius: 3px;
+}
+.cm__scrollbar::-webkit-scrollbar-thumb {
+  background-color: #dbdbdb;
+  border-radius: 3px;
+}
+.cm__scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #cccccc;
+}
+.cm__scrollbar:hover::-webkit-scrollbar {
+  opacity: 1;
 }
 /* *** COUNTER *** */
 .cm__counter {
@@ -4971,23 +4991,6 @@ footer,
 section {
   display: block;
 }
-/* *** SCROLLBAR *** */
-/*
-::-webkit-scrollbar {
-    width: @CmScrollBar-Size;
-    height: @CmScrollBar-Size;
-}
-::-webkit-scrollbar-track {
-    background-color: @CmScrollBar-TrackBackground;
-    border-left: 1px solid @CmScrollBar-TrackColor;
-}
-::-webkit-scrollbar-thumb {
-    background-color: @CmScrollBar-TrackColor;
-}
-::-webkit-scrollbar-thumb:hover {
-    background-color: @CmScrollBar-TrackColorHover;
-}
-*/
 /* *** CONTENT TAGS *** */
 .cm__link,
 .link,
@@ -16772,14 +16775,23 @@ ul.pt__field__hint li:before {
   height: 100%;
 }
 .com__file-manager.is-fullsize > .inner {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
   height: 100%;
+  -webkit-flex-flow: column nowrap;
+  -ms-flex-flow: column nowrap;
+  flex-flow: column nowrap;
 }
 .com__file-manager.is-fullsize > .inner .com__file-manager__holder {
   height: 100%;
+  position: relative;
 }
 .com__file-manager.is-fullsize > .inner .com__file-manager__holder > .inner {
   height: 100%;
   position: absolute;
+  overflow: hidden;
   top: 0;
   right: 0;
   bottom: 0;
@@ -16801,6 +16813,18 @@ ul.pt__field__hint li:before {
   margin-top: 0;
 }
 /* ******* COMPONENTS: FILE STATISTICS ******* */
+.com__file-stats {
+  margin-bottom: 24px;
+  margin-top: 24px;
+}
+.com__file-stats.bottom,
+.com__file-stats.is-last,
+.com__file-stats:last-child {
+  margin-bottom: 0;
+}
+.com__file-stats:first-child {
+  margin-top: 0;
+}
 .com__file-stats__list > ul {
   margin: 0;
   padding: 0;
@@ -17626,7 +17650,23 @@ ul.pt__field__hint li:before {
   height: 16px;
   background-image: url("../img/icons/small/help.png");
   display: inline-block;
-  vertical-align: text-top;
+  vertical-align: text-bottom;
+}
+.com__help-bubble .com__help-bubble__title {
+  display: inline-block;
+  vertical-align: top;
+}
+.com__help-bubble .com__help-bubble__title .icon {
+  width: 16px;
+  height: 16px;
+  background-image: url("../img/icons/small/help.png");
+  display: inline-block;
+  vertical-align: middle;
+}
+.com__help-bubble .com__help-bubble__title .label {
+  margin: 0 0 0 12px;
+  display: inline-block;
+  vertical-align: middle;
 }
 .com__help-bubble .com__help-bubble__content {
   display: none;

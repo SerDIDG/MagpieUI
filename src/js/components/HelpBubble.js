@@ -18,6 +18,7 @@ cm.define('Com.HelpBubble', {
         'title' : null,
         'content' : cm.node('span'),
         'type' : 'tooltip', // tooltip | container
+        'showLabel' : false,
         'Com.Tooltip' : {
             'className' : 'com__help-bubble__tooltip'
         },
@@ -53,9 +54,16 @@ function(params){
         // Render structure
         if(that.params['renderStructure']){
             that.nodes['container'] = cm.node('span', {'class' : 'com__help-bubble'},
-                that.nodes['button'] = cm.node('span', {'class' : 'icon default linked'}),
+                that.nodes['button'] = cm.node('span', {'class' : 'com__help-bubble__title'},
+                    cm.node('span', {'class' : 'icon default linked'})
+                ),
                 that.nodes['content'] = cm.node('span', {'class' : 'com__help-bubble__content'})
             );
+            // Label
+            if(that.params['showLabel']){
+                that.nodes['label'] = cm.node('span', {'class' : 'label'}, that.params['title']);
+                cm.appendChild(that.nodes['label'], that.nodes['button']);
+            }
             // Set Content
             that.set(that.params['content']);
             // Embed

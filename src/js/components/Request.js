@@ -30,6 +30,7 @@ cm.define('Com.Request', {
         'autoSend' : false,
         'responseKey' : 'data',
         'responseErrorsKey' : 'errors',
+        'responseMessageKey' : 'message',
         'responseHTML' : true,
         'responseHTMLKey' : 'data',
         'responseStatusKey' : 'data.success',
@@ -303,14 +304,22 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
     };
 
     classProto.error = function(){
-        var that = this;
+        var that = this,
+            errors,
+            message;
         that.isError = true;
+        if(!cm.isEmpty(that.responceData)){
+            errors = cm.objectSelector(that.params['responseErrorsKey'], that.responceData);
+            message = cm.objectSelector(that.params['responseMessageKey'], that.responceData);
+        }
         that.renderError();
         that.triggerEvent('onError', {
             'response' : that.responceData,
             'status' : that.responceDataStatus,
             'filtered' : that.responceDataFiltered,
-            'html' : that.responceDataHTML
+            'html' : that.responceDataHTML,
+            'errors' : errors,
+            'message' : message
         });
         return that;
     };
