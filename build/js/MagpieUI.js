@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.15 (2019-03-06 20:21) ************ */
+/*! ************ MagpieUI v3.36.16 (2019-03-07 20:31) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.15',
+        '_version' : '3.36.16',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -3442,6 +3442,14 @@ cm.constraintsPattern = function(pattern, match, message){
         data['pattern'] = testPattern;
         data['message'] = message;
         data['valid'] = match? test : !test;
+        return data;
+    }
+};
+
+cm.constraintsCallback = function(callback, message){
+    return function(data){
+        data['message'] = message;
+        data['valid'] = cm.isFunction(callback) ? callback(data) : function(){};
         return data;
     }
 };
@@ -9432,6 +9440,7 @@ function(params){
     that.components = {};
     that.fields = {};
     that.buttons = {};
+    that.constraints = [];
     that.ajaxHandler = null;
     that.loaderDelay = null;
 
@@ -9867,6 +9876,13 @@ function(params){
 
     that.addSeparator = function(params){
         renderSeparator(params);
+        return that;
+    };
+
+    that.addConstraint = function(constraint){
+        if(cm.isFunction(constraint)){
+            that.constraints.push(constraint);
+        }
         return that;
     };
 
@@ -18426,27 +18442,18 @@ function(params){
     init();
 });
 cm.define('Com.HelpBubble', {
-    'modules' : [
-        'Params',
-        'Events',
-        'Langs',
-        'DataConfig',
-        'DataNodes',
-        'Stack'
-    ],
-    'events' : [
-        'onRender'
-    ],
+    'extend' : 'Com.AbstractController',
     'params' : {
-        'node' : cm.Node('div'),
-        'name' : '',
         'renderStructure' : false,
-        'container' : false,
+        'embedStructureOnRender' : false,
+        'controllerEvents' : true,
         'title' : null,
         'content' : cm.node('span'),
-        'type' : 'tooltip', // tooltip | container
+        'type' : 'tooltip',                             // tooltip | container
+        'showIcon' : true,
         'showLabel' : false,
-        'Com.Tooltip' : {
+        'tooltipConstructor' : 'Com.Tooltip',
+        'tooltipParams' : {
             'className' : 'com__help-bubble__tooltip'
         },
         'containerConstructor' : 'Com.DialogContainer',
@@ -18458,47 +18465,43 @@ cm.define('Com.HelpBubble', {
 },
 function(params){
     var that = this;
+    // Call parent class construct in current context
+    Com.AbstractController.apply(that, arguments);
+});
 
-    that.nodes = {
-        'container' : cm.node('span'),
-        'button' : cm.node('span'),
-        'content' : cm.node('span')
+cm.getConstructor('Com.HelpBubble', function(classConstructor, className, classProto, classInherit){
+    classProto.onDestruct = function(){
+        var that = this;
+        that.components['container'] && cm.isFunction(that.components['container'].destruct) && that.components['container'].destruct();
+        that.components['tooltip'] && cm.isFunction(that.components['tooltip'].destruct) && that.components['tooltip'].destruct();
     };
 
-    that.components = {};
-
-    var init = function(){
-        that.setParams(params);
-        that.convertEvents(that.params['events']);
-        that.getDataNodes(that.params['node']);
-        that.getDataConfig(that.params['node']);
-        render();
-        that.addToStack(that.nodes['container']);
-        that.triggerEvent('onRender');
-    };
-
-    var render = function(){
-        // Render structure
-        if(that.params['renderStructure']){
-            that.nodes['container'] = cm.node('span', {'class' : 'com__help-bubble'},
-                that.nodes['button'] = cm.node('span', {'class' : 'com__help-bubble__title'},
-                    cm.node('span', {'class' : 'icon default linked'})
-                ),
-                that.nodes['content'] = cm.node('span', {'class' : 'com__help-bubble__content'})
-            );
-            // Label
-            if(that.params['showLabel']){
-                that.nodes['label'] = cm.node('span', {'class' : 'label'}, that.params['title']);
-                cm.appendChild(that.nodes['label'], that.nodes['button']);
-            }
-            // Set Content
-            that.set(that.params['content']);
-            // Embed
-            if(that.params['container']){
-                that.params['container'].appendChild(that.nodes['container']);
-            }
+    classProto.renderView = function(){
+        var that = this;
+        // Structure
+        that.nodes['container'] = cm.node('span', {'class' : 'com__help-bubble'},
+            that.nodes['button'] = cm.node('a', {'class' : 'com__help-bubble__title'}),
+            that.nodes['content'] = cm.node('span', {'class' : 'com__help-bubble__content'})
+        );
+        // Icon
+        if(that.params['showIcon']){
+            that.nodes['icon'] = cm.node('span', {'class' : 'icon default linked'});
+            cm.appendChild(that.nodes['icon'], that.nodes['button']);
         }
-        // Container
+        // Label
+        if(that.params['showLabel']){
+            that.nodes['label'] = cm.node('span', {'class' : 'label'}, that.params['title']);
+            cm.appendChild(that.nodes['label'], that.nodes['button']);
+        }
+        // Set Content
+        that.set(that.params['content']);
+    };
+
+    classProto.renderViewModel = function(){
+        var that = this;
+        // Call parent method - renderViewModel
+        classInherit.prototype.renderViewModel.apply(that, arguments);
+        // Init Placeholder
         switch(that.params['type']){
             case 'container':
                 // Render container
@@ -18515,8 +18518,8 @@ function(params){
 
             default:
                 // Render tooltip
-                cm.getConstructor('Com.Tooltip', function(classConstructor){
-                    that.components['tooltip'] = new classConstructor(that.params['Com.Tooltip']);
+                cm.getConstructor(that.params['tooltipConstructor'], function(classConstructor){
+                    that.components['tooltip'] = new classConstructor(that.params['tooltipParams']);
                     that.components['tooltip']
                         .setTarget(that.nodes['button'])
                         .setContent(that.nodes['content']);
@@ -18527,7 +18530,8 @@ function(params){
 
     /* ******* PUBLIC ******* */
 
-    that.set = function(node){
+    classProto.set = function(node){
+        var that = this;
         cm.clearNode(that.nodes['content']);
         if(cm.isString(node) || cm.isNumber(node)){
             that.nodes['content'].innerHTML = node;
@@ -18536,8 +18540,6 @@ function(params){
         }
         return that;
     };
-
-    init();
 });
 cm.define('Com.ImageBox', {
     'modules' : [

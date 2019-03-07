@@ -75,6 +75,7 @@ function(params){
     that.components = {};
     that.fields = {};
     that.buttons = {};
+    that.constraints = [];
     that.ajaxHandler = null;
     that.loaderDelay = null;
 
@@ -510,6 +511,13 @@ function(params){
 
     that.addSeparator = function(params){
         renderSeparator(params);
+        return that;
+    };
+
+    that.addConstraint = function(constraint){
+        if(cm.isFunction(constraint)){
+            that.constraints.push(constraint);
+        }
         return that;
     };
 

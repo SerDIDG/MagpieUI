@@ -1847,6 +1847,14 @@ cm.constraintsPattern = function(pattern, match, message){
     }
 };
 
+cm.constraintsCallback = function(callback, message){
+    return function(data){
+        data['message'] = message;
+        data['valid'] = cm.isFunction(callback) ? callback(data) : function(){};
+        return data;
+    }
+};
+
 /* ******* STRINGS ******* */
 
 cm.toFixed = function(n, x){
