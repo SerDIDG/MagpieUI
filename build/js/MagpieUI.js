@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.16 (2019-03-07 20:31) ************ */
+/*! ************ MagpieUI v3.36.17 (2019-03-14 19:12) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.16',
+        '_version' : '3.36.17',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -4429,7 +4429,9 @@ cm.scrollTo = function(node, parent, params, callback){
     var scrollHeight = cm.getScrollHeight(parent),
         scrollOffsetHeight = cm.getScrollOffsetHeight(parent),
         scrollMax = cm.getScrollTopMax(parent),
-        scrollAnimation;
+        scrollAnimation,
+        scrollAnimationStyle = {},
+        nodeOffsetTop;
     // Do not process when parent scroll's height match parent's offset height
     if(scrollHeight === scrollOffsetHeight){
         return node;
@@ -4437,28 +4439,35 @@ cm.scrollTo = function(node, parent, params, callback){
     // Validate
     callback = cm.isFunction(callback) ? callback : function(){};
     params = cm.merge({
+        'type' : 'auto',
         'behavior' : 'smooth',
         'block' : 'start',
         'top' : 'auto',
         'duration' : cm._config.animDuration
     }, params);
+    // Check type
+    if(params['type'] === 'auto'){
+        params['type'] = (cm.isWindow(parent) || parent === document.body) ? 'docScrollTop' : 'scrollTop';
+    }
+    nodeOffsetTop = (params['type'] === 'docScrollTop') ? cm.getY(node) : node.offsetTop;
     // Calculate top value
     if(params['top'] === 'auto'){
         switch(params['block']){
             case 'end':
-                params['top'] = Math.max(Math.min(node.offsetTop + scrollOffsetHeight, scrollMax), 0);
+                params['top'] = Math.max(Math.min(nodeOffsetTop + scrollOffsetHeight, scrollMax), 0);
                 break;
 
             case 'center':
-                params['top'] = Math.max(Math.min(node.offsetTop - ((scrollOffsetHeight - node.offsetHeight) / 2), scrollMax), 0);
+                params['top'] = Math.max(Math.min(nodeOffsetTop - ((scrollOffsetHeight - node.offsetHeight) / 2), scrollMax), 0);
                 break;
 
             case 'start':
             default:
-                params['top'] = Math.max(Math.min(node.offsetTop, scrollMax), 0);
+                params['top'] = Math.max(Math.min(nodeOffsetTop, scrollMax), 0);
                 break;
         }
     }
+    scrollAnimationStyle[params['type']] = params['top'];
     // Animate
     if(params['behavior'] === 'instant'){
         cm.setScrollTop(parent, params['top']);
@@ -4469,9 +4478,7 @@ cm.scrollTo = function(node, parent, params, callback){
             'anim' : params['behavior'],
             'duration' : params['duration'],
             'onStop' : callback,
-            'style' : {
-                'scrollTop' : params['top']
-            }
+            'style' : scrollAnimationStyle
         });
     }
     return node;
@@ -8619,10 +8626,12 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.clearError();
         if(that.params['renderError']){
             cm.addClass(that.nodes['container'], 'error');
-            that.nodes['errors'] = cm.node('ul', {'class' : 'pt__field__error pt__field__hint'},
-                cm.node('li', {'class' : 'error', 'innerHTML' : message})
-            );
-            cm.insertLast(that.nodes['errors'], that.nodes['value']);
+            if(!cm.isEmpty(message)){
+                that.nodes['errors'] = cm.node('ul', {'class' : 'pt__field__error pt__field__hint'},
+                    cm.node('li', {'class' : 'error', 'innerHTML' : message})
+                );
+                cm.insertLast(that.nodes['errors'], that.nodes['value']);
+            }
         }
         return that;
     };
@@ -9378,6 +9387,7 @@ cm.define('Com.Form', {
     'events' : [
         'onRenderStart',
         'onRender',
+        'onValidate',
         'onError',
         'onAbort',
         'onSuccess',
@@ -9405,6 +9415,7 @@ cm.define('Com.Form', {
         'loaderDelay' : 'cm._config.loadDelay',
         'showNotifications' : true,
         'showSuccessNotification' : false,
+        'showValidationNotification' : false,
         'responseErrorsKey': 'errors',
         'responseMessageKey' : 'message',
         'responseKey': 'data',
@@ -9595,7 +9606,7 @@ function(params){
         }, params);
         // Render
         if(!that.buttons[params['name']]){
-            params['node'] = cm.node('button', {'name' : params['name']}, params['label']);
+            params['node'] = cm.node('button', {'name' : params['name'], 'class' : params['class']}, params['label']);
             switch(params['action']){
                 case 'submit':
                     params['node'].type = 'submit';
@@ -9633,7 +9644,6 @@ function(params){
 
                 case 'custom':
                 default:
-                    cm.addClass(params['node'], params['class']);
                     cm.addEvent(params['node'], 'click', function(e){
                         cm.preventDefault(e);
                         cm.isFunction(params['handler']) && params['handler'](that, params, e);
@@ -9658,6 +9668,46 @@ function(params){
             item['fieldController'] && cm.isFunction(item['fieldController'].destruct) && item['fieldController'].destruct();
             delete that.fields[name];
         }
+    };
+
+    /* *** VALIDATE *** */
+
+    var validateHelper = function(){
+        var constraintsData,
+            data = {
+                'form' : that,
+                'valid' : true,
+                'message' : null
+            };
+        // Constraints
+        if(!cm.isEmpty(that.constraints) && (constraintsData = validateConstraints(data))){
+            data = cm.merge(data, constraintsData);
+        }
+        // Fields
+        cm.forEach(that.fields, function(field, name){
+            if(field['field'] && !field['system'] && field['required']){
+                if(field['controller'].validate && !field['controller'].validate()){
+                    data['message'] = that.lang('form_error');
+                    data['valid'] = false;
+                }
+            }
+        });
+        return data;
+    };
+
+    var validateConstraints = function(data){
+        var constraintsTest,
+            constraintsData;
+        constraintsTest = that.constraints.some(function(item){
+            if(cm.isFunction(item)){
+                constraintsData = item(data);
+                return !constraintsData['valid'];
+            }
+        });
+        if(constraintsTest){
+            return constraintsData;
+        }
+        return false;
     };
 
     /* ******* CALLBACKS ******* */
@@ -10009,29 +10059,36 @@ function(params){
     };
 
     that.validate = function(){
-        var isValid = true;
-        cm.forEach(that.fields, function(field, name){
-            if(field['field'] && !field['system'] && field['required']){
-                if(field['controller'].validate && !field['controller'].validate()){
-                    isValid = false;
-                }
+        var data = validateHelper();
+        // Clear previous notifications
+        that.clearNotification();
+        // Show new notifications if exists
+        if(!data['valid']){
+            if(that.params['showNotifications'] && that.params['showValidationNotification']){
+                that.renderNotification({
+                    'label' : data['message'],
+                    'type' : 'danger'
+                });
             }
-        });
-        return isValid;
+        }
+        that.triggerEvent('onValidate', data);
+        return data;
     };
 
     that.send = function(){
-        var isValid = true;
+        var data = {
+            'valid' : true
+        };
         // Validate
         if(that.params['validate']){
-            isValid = that.validate();
+            data = that.validate();
         }
         // Send
-        if(isValid){
+        if(data['valid']){
             if(that.isAjax){
                 that.ajaxHandler = that.callbacks.request(that, cm.clone(that.params['ajax']));
             }else{
-                that.callbacks.clearError(that);
+                that.clearError(that);
                 that.triggerEvent('onSendStart', that.get());
                 that.triggerEvent('onSend', that.get());
                 that.triggerEvent('onSendEnd', that.get());
@@ -10078,8 +10135,8 @@ function(params){
         return that;
     };
 
-    that.renderError = function(o){
-        that.callbacks.renderError(that, o);
+    that.renderError = function(errors, message){
+        that.callbacks.renderError(that, errors, message);
         return that;
     };
 
@@ -10320,6 +10377,11 @@ function(params){
 });
 
 /* ******* COMPONENT: FORM FIELD: DECORATORS ******* */
+
+Com.FormFields.add('empty', {
+    'field' : false,
+    'fieldConstructor' : 'Com.AbstractFormField'
+});
 
 Com.FormFields.add('buttons', {
     'node' : cm.node('div', {'class' : 'pt__buttons pull-right'}),
@@ -16158,7 +16220,7 @@ function(params){
         that.triggerEvent('onRenderStart');
         render();
         // Collect items
-        cm.forEach(that.nodes['items'], collectItem);
+        cm.forEach(that.nodes['items'], that.collectItem);
         // Process config items
         cm.forEach(that.params['data'], processItem);
         afterRender();
@@ -16218,20 +16280,6 @@ function(params){
             that.nodes['next'].style.display = '';
             that.nodes['prev'].style.display = '';
         }
-    };
-
-    var collectItem = function(item){
-        if(!item['link']){
-            item['link'] = cm.node('a');
-        }
-        item = cm.merge({
-            'src' : item['link'].getAttribute('href') || '',
-            'title' : item['link'].getAttribute('title') || ''
-        }, item);
-        if(item['container']){
-            item = cm.merge(that.getNodeDataConfig(item['container']), item);
-        }
-        processItem(item);
     };
 
     var processItem = function(item){
@@ -16459,11 +16507,26 @@ function(params){
         if(cm.isNode(node)){
             nodes = cm.getNodes(node);
             // Collect items
-            if(nodes['items']){
-                cm.forEach(nodes['items'], collectItem);
+            if(!cm.isEmpty(nodes['items'])){
+                cm.forEach(nodes['items'], that.collectItem);
                 afterRender();
             }
         }
+        return that;
+    };
+
+    that.collectItem = function(item){
+        if(!item['link']){
+            item['link'] = cm.node('a');
+        }
+        item = cm.merge({
+            'src' : item['link'].getAttribute('href') || '',
+            'title' : item['link'].getAttribute('title') || ''
+        }, item);
+        if(item['container']){
+            item = cm.merge(that.getNodeDataConfig(item['container']), item);
+        }
+        processItem(item);
         return that;
     };
 
@@ -16777,6 +16840,12 @@ cm.getConstructor('Com.GalleryPopup', function(classConstructor, className, clas
     classProto.collect = function(node){
         var that = this;
         that.components['gallery'].collect(node);
+        return that;
+    };
+
+    classProto.collectItem = function(node){
+        var that = this;
+        that.components['gallery'].collectItem(node);
         return that;
     };
 
@@ -18542,63 +18611,70 @@ cm.getConstructor('Com.HelpBubble', function(classConstructor, className, classP
     };
 });
 cm.define('Com.ImageBox', {
-    'modules' : [
-        'Params',
-        'Events',
-        'DataConfig',
-        'DataNodes',
-        'Stack'
-    ],
-    'events' : [
-        'onRender'
-    ],
+    'extend' : 'Com.AbstractController',
     'params' : {
-        'node' : cm.Node('div'),
-        'name' : '',
+        'renderStructure' : false,
+        'embedStructureOnRender' : false,
+        'controllerEvents' : true,
+        'customEvents' : true,
         'animated' : false,
         'effect' : 'none',
         'zoom' : false,
         'scrollNode' : window,
-        'Com.GalleryPopup' : {}
+        'Com.GalleryPopup' : {
+            'showCounter' : false
+        }
     }
 },
 function(params){
-    var that = this,
-        dimensions = {},
-        pageDimensions = {};
+    var that = this;
+    // Call parent class construct in current context
+    Com.AbstractController.apply(that, arguments);
+});
 
-    that.nodes = {
-        'items' : []
-    };
-    that.components = {};
-    that.processed = false;
-
-    var init = function(){
-        that.setParams(params);
-        that.convertEvents(that.params['events']);
-        that.getDataConfig(that.params['node']);
-        that.getDataNodes(that.params['node']);
-        validateParams();
-        render();
-        that.addToStack(that.params['node']);
-        that.triggerEvent('onRender');
-    };
-
-    var validateParams = function(){
-        that.params['Com.GalleryPopup']['node'] = that.params['node'];
+cm.getConstructor('Com.ImageBox', function(classConstructor, className, classProto, classInherit){
+    classProto.onConstructStart = function(){
+        var that = this;
+        // Variables
+        that.nodes = {
+            'item' : {},
+            'buttons' : {
+                'preview' : cm.node('div')
+            }
+        };
+        that.dimensions = {};
+        that.pageDimensions = {};
+        that.isProcessed = false;
+        // Binds
+        that.animProcessHandler = that.animProcess.bind(that);
     };
 
-    var render = function(){
+    classProto.onRedraw = function(){
+        var that = this;
+        if(that.params['animated']){
+            that.animRestore();
+            that.animProcess();
+        }
+    };
+
+    classProto.renderViewModel = function(){
+        var that = this;
+        // Call parent method - renderViewModel
+        classInherit.prototype.renderViewModel.apply(that, arguments);
+        // Animation
         if(that.params['animated']){
             cm.addClass(that.params['node'], 'cm-animate');
             cm.addClass(that.params['node'], ['pre', that.params['effect']].join('-'));
-            cm.addEvent(that.params['scrollNode'], 'scroll', process);
-            process();
+            cm.addEvent(that.params['scrollNode'], 'scroll', that.animProcessHandler);
+            that.animProcess();
         }
+        // Zoom
         if(that.params['zoom']){
             cm.getConstructor('Com.GalleryPopup', function(classConstructor){
                 that.components['popup'] = new classConstructor(that.params['Com.GalleryPopup']);
             });
+            that.components['popup'].collectItem(that.nodes.item);
+            cm.addEvent(that.nodes.buttons['preview'], 'click', that.components['popup'].openHandler);
         }
         // Add custom event
         cm.customEvent.add(that.params['node'], 'redraw', function(){
@@ -18606,60 +18682,57 @@ function(params){
         });
     };
 
-    var process = function(){
-        if(!that.processed){
-            getDimensions();
-            getPageDimensions();
+    /* ******* HELPERS ******* */
+
+    classProto.getDimensions = function(){
+        var that = this;
+        that.dimensions = cm.getRect(that.params['node']);
+    };
+
+    classProto.getPageDimensions = function(){
+        var that = this;
+        that.pageDimensions = cm.getPageSize();
+    };
+
+    /* ******* PUBLIC ******* */
+
+    classProto.animProcess = function(){
+        var that = this;
+        if(!that.isProcessed){
+            that.getDimensions();
+            that.getPageDimensions();
             // Rules for different block sizes.
-            if(dimensions['height'] < pageDimensions['winHeight']){
+            if(that.dimensions['height'] < that.pageDimensions['winHeight']){
                 // Rules for block, which size is smaller than page's.
                 if(
-                    dimensions['top'] >= 0 &&
-                    dimensions['bottom'] <= pageDimensions['winHeight']
+                    that.dimensions['top'] >= 0 &&
+                    that.dimensions['bottom'] <= that.pageDimensions['winHeight']
                 ){
-                    set();
+                    that.animSet();
                 }
             }else{
                 // Rules for block, which size is larger than page's.
                 if(
-                    (dimensions['top'] < 0 && dimensions['bottom'] >= pageDimensions['winHeight'] / 2) ||
-                    (dimensions['bottom'] > pageDimensions['winHeight'] && dimensions['top'] <= pageDimensions['winHeight'] / 2)
+                    (that.dimensions['top'] < 0 && that.dimensions['bottom'] >= that.pageDimensions['winHeight'] / 2) ||
+                    (that.dimensions['bottom'] > that.pageDimensions['winHeight'] && that.dimensions['top'] <= that.pageDimensions['winHeight'] / 2)
                 ){
-                    set();
+                    that.animSet();
                 }
             }
         }
     };
 
-    var set = function(){
-        that.processed = true;
+    classProto.animSet = function(){
+        var that = this;
+        that.isProcessed = true;
         cm.addClass(that.params['node'], ['animated', that.params['effect']].join(' '));
     };
 
-    var restore = function(){
-        that.processed = false;
+    classProto.animRestore = function(){
+        var that = this;
+        that.isProcessed = false;
         cm.removeClass(that.params['node'], ['animated', that.params['effect']].join(' '));
     };
-    
-    var getDimensions = function(){
-        dimensions = cm.getRect(that.params['node']);
-    };
-
-    var getPageDimensions = function(){
-        pageDimensions = cm.getPageSize();
-    };
-
-    /* ******* PUBLIC ******* */
-
-    that.redraw = function(){
-        if(that.params['animated']){
-            restore();
-            process();
-        }
-        return that;
-    };
-
-    init();
 });
 cm.define('Com.ImagePreviewContainer', {
     'extend' : 'Com.AbstractContainer',

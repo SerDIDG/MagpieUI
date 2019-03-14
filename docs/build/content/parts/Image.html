@@ -79,6 +79,44 @@
         </div>
         <hr>
 
+        <h2>Background: Cover</h2>
+        <div style="max-width: 500px">
+            <h3>Cover</h3>
+            <div class="pt__image is-centered is-cover has-aspect cm__aspect-4x3">
+                <div class="inner">
+                    <div class="descr" style="background-image: url('../../img/examples/slider/3.jpg');"></div>
+                </div>
+            </div>
+        </div>
+        <hr>
+
+        <h2>Background: Contain</h2>
+        <div style="max-width: 500px">
+            <div class="pt__image is-centered is-contain has-aspect cm__aspect-4x3">
+                <div class="inner">
+                    <div class="descr" style="background-image: url('../../img/examples/slider/3.jpg');"></div>
+                </div>
+            </div>
+        </div>
+        <hr>
+
+        <h2>Buttons</h2>
+        <div style="max-width: 500px">
+            <div class="pt__image">
+                <a class="inner">
+                    <img class="descr" src="../../img/examples/gallery/8.jpg" alt="">
+                </a>
+                <div class="overlay on-hover is-light"></div>
+                <div class="pt__buttons is-box">
+                    <div class="inner">
+                        <a class="button button-primary">Preview</a>
+                        <a class="button button-danger">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+
         <h2>Image Box Hover</h2>
         <div style="max-width: 500px">
             <div class="pt__image is-hover">
@@ -288,10 +326,21 @@
 
     <li data-node="tabs:[]:container" data-config='{"id" : "zoom", "title" : "Zoom"}'>
         <div style="width: 320px">
-            <div class="pt__image is-zoom" data-element="Com.ImageBox" data-config='{"zoom" : true}'>
-                <a class="inner" data-node="items:[]:link" title="Some title text" href="../../img/examples/gallery/1.jpg">
-                    <img class="descr" src="../../img/examples/gallery/1.jpg" alt="">
+            <div class="pt__image is-zoom" data-element="Com.ImageBox" data-node="ComImageBox:{}:container" data-config='{"zoom" : true}'>
+                <a class="inner" data-node="item:{}:link" title="Some title text" href="../../img/examples/gallery/1.jpg">
+                    <img class="descr" data-node="image" src="../../img/examples/gallery/1.jpg" alt="">
                 </a>
+            </div>
+            <div class="pt__image" data-element="Com.ImageBox" data-node="ComImageBox:{}:container" data-config='{"zoom" : true}'>
+                <a class="inner" data-node="item:{}:link" title="Some title text" href="../../img/examples/gallery/8.jpg">
+                    <img class="descr" data-node="image" src="../../img/examples/gallery/8.jpg" alt="">
+                </a>
+                <div class="overlay on-hover is-light"></div>
+                <div class="pt__buttons is-box" data-node="buttons:{}:container">
+                    <div class="inner">
+                        <a class="button button-primary" data-node="preview">Preview</a>
+                    </div>
+                </div>
             </div>
         </div>
     </li>

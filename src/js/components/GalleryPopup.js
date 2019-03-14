@@ -205,6 +205,12 @@ cm.getConstructor('Com.GalleryPopup', function(classConstructor, className, clas
         return that;
     };
 
+    classProto.collectItem = function(node){
+        var that = this;
+        that.components['gallery'].collectItem(node);
+        return that;
+    };
+
     classProto.clear = function(){
         var that = this;
         that.components['gallery'].clear();

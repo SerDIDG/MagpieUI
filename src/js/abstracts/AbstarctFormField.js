@@ -487,10 +487,12 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.clearError();
         if(that.params['renderError']){
             cm.addClass(that.nodes['container'], 'error');
-            that.nodes['errors'] = cm.node('ul', {'class' : 'pt__field__error pt__field__hint'},
-                cm.node('li', {'class' : 'error', 'innerHTML' : message})
-            );
-            cm.insertLast(that.nodes['errors'], that.nodes['value']);
+            if(!cm.isEmpty(message)){
+                that.nodes['errors'] = cm.node('ul', {'class' : 'pt__field__error pt__field__hint'},
+                    cm.node('li', {'class' : 'error', 'innerHTML' : message})
+                );
+                cm.insertLast(that.nodes['errors'], that.nodes['value']);
+            }
         }
         return that;
     };

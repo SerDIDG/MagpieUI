@@ -58,7 +58,7 @@ function(params){
         that.triggerEvent('onRenderStart');
         render();
         // Collect items
-        cm.forEach(that.nodes['items'], collectItem);
+        cm.forEach(that.nodes['items'], that.collectItem);
         // Process config items
         cm.forEach(that.params['data'], processItem);
         afterRender();
@@ -118,20 +118,6 @@ function(params){
             that.nodes['next'].style.display = '';
             that.nodes['prev'].style.display = '';
         }
-    };
-
-    var collectItem = function(item){
-        if(!item['link']){
-            item['link'] = cm.node('a');
-        }
-        item = cm.merge({
-            'src' : item['link'].getAttribute('href') || '',
-            'title' : item['link'].getAttribute('title') || ''
-        }, item);
-        if(item['container']){
-            item = cm.merge(that.getNodeDataConfig(item['container']), item);
-        }
-        processItem(item);
     };
 
     var processItem = function(item){
@@ -359,11 +345,26 @@ function(params){
         if(cm.isNode(node)){
             nodes = cm.getNodes(node);
             // Collect items
-            if(nodes['items']){
-                cm.forEach(nodes['items'], collectItem);
+            if(!cm.isEmpty(nodes['items'])){
+                cm.forEach(nodes['items'], that.collectItem);
                 afterRender();
             }
         }
+        return that;
+    };
+
+    that.collectItem = function(item){
+        if(!item['link']){
+            item['link'] = cm.node('a');
+        }
+        item = cm.merge({
+            'src' : item['link'].getAttribute('href') || '',
+            'title' : item['link'].getAttribute('title') || ''
+        }, item);
+        if(item['container']){
+            item = cm.merge(that.getNodeDataConfig(item['container']), item);
+        }
+        processItem(item);
         return that;
     };
 

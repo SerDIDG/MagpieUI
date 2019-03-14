@@ -13,6 +13,7 @@ cm.define('Com.Form', {
     'events' : [
         'onRenderStart',
         'onRender',
+        'onValidate',
         'onError',
         'onAbort',
         'onSuccess',
@@ -40,6 +41,7 @@ cm.define('Com.Form', {
         'loaderDelay' : 'cm._config.loadDelay',
         'showNotifications' : true,
         'showSuccessNotification' : false,
+        'showValidationNotification' : false,
         'responseErrorsKey': 'errors',
         'responseMessageKey' : 'message',
         'responseKey': 'data',
@@ -230,7 +232,7 @@ function(params){
         }, params);
         // Render
         if(!that.buttons[params['name']]){
-            params['node'] = cm.node('button', {'name' : params['name']}, params['label']);
+            params['node'] = cm.node('button', {'name' : params['name'], 'class' : params['class']}, params['label']);
             switch(params['action']){
                 case 'submit':
                     params['node'].type = 'submit';
@@ -268,7 +270,6 @@ function(params){
 
                 case 'custom':
                 default:
-                    cm.addClass(params['node'], params['class']);
                     cm.addEvent(params['node'], 'click', function(e){
                         cm.preventDefault(e);
                         cm.isFunction(params['handler']) && params['handler'](that, params, e);
@@ -293,6 +294,46 @@ function(params){
             item['fieldController'] && cm.isFunction(item['fieldController'].destruct) && item['fieldController'].destruct();
             delete that.fields[name];
         }
+    };
+
+    /* *** VALIDATE *** */
+
+    var validateHelper = function(){
+        var constraintsData,
+            data = {
+                'form' : that,
+                'valid' : true,
+                'message' : null
+            };
+        // Constraints
+        if(!cm.isEmpty(that.constraints) && (constraintsData = validateConstraints(data))){
+            data = cm.merge(data, constraintsData);
+        }
+        // Fields
+        cm.forEach(that.fields, function(field, name){
+            if(field['field'] && !field['system'] && field['required']){
+                if(field['controller'].validate && !field['controller'].validate()){
+                    data['message'] = that.lang('form_error');
+                    data['valid'] = false;
+                }
+            }
+        });
+        return data;
+    };
+
+    var validateConstraints = function(data){
+        var constraintsTest,
+            constraintsData;
+        constraintsTest = that.constraints.some(function(item){
+            if(cm.isFunction(item)){
+                constraintsData = item(data);
+                return !constraintsData['valid'];
+            }
+        });
+        if(constraintsTest){
+            return constraintsData;
+        }
+        return false;
     };
 
     /* ******* CALLBACKS ******* */
@@ -644,29 +685,36 @@ function(params){
     };
 
     that.validate = function(){
-        var isValid = true;
-        cm.forEach(that.fields, function(field, name){
-            if(field['field'] && !field['system'] && field['required']){
-                if(field['controller'].validate && !field['controller'].validate()){
-                    isValid = false;
-                }
+        var data = validateHelper();
+        // Clear previous notifications
+        that.clearNotification();
+        // Show new notifications if exists
+        if(!data['valid']){
+            if(that.params['showNotifications'] && that.params['showValidationNotification']){
+                that.renderNotification({
+                    'label' : data['message'],
+                    'type' : 'danger'
+                });
             }
-        });
-        return isValid;
+        }
+        that.triggerEvent('onValidate', data);
+        return data;
     };
 
     that.send = function(){
-        var isValid = true;
+        var data = {
+            'valid' : true
+        };
         // Validate
         if(that.params['validate']){
-            isValid = that.validate();
+            data = that.validate();
         }
         // Send
-        if(isValid){
+        if(data['valid']){
             if(that.isAjax){
                 that.ajaxHandler = that.callbacks.request(that, cm.clone(that.params['ajax']));
             }else{
-                that.callbacks.clearError(that);
+                that.clearError(that);
                 that.triggerEvent('onSendStart', that.get());
                 that.triggerEvent('onSend', that.get());
                 that.triggerEvent('onSendEnd', that.get());
@@ -713,8 +761,8 @@ function(params){
         return that;
     };
 
-    that.renderError = function(o){
-        that.callbacks.renderError(that, o);
+    that.renderError = function(errors, message){
+        that.callbacks.renderError(that, errors, message);
         return that;
     };
 
@@ -955,6 +1003,11 @@ function(params){
 });
 
 /* ******* COMPONENT: FORM FIELD: DECORATORS ******* */
+
+Com.FormFields.add('empty', {
+    'field' : false,
+    'fieldConstructor' : 'Com.AbstractFormField'
+});
 
 Com.FormFields.add('buttons', {
     'node' : cm.node('div', {'class' : 'pt__buttons pull-right'}),

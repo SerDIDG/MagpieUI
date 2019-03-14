@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.16 (2019-03-07 20:31) ************ */
+/*! ************ MagpieUI v3.36.17 (2019-03-14 19:12) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3924,7 +3924,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.36.16';
+@CmVersion: '3.36.17';
 
 // /* ******* PATH ******* */
 
@@ -4432,8 +4432,10 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* IMAGE ******* */
 
 @PtImage-Background: @CmColor-Secondary-LightHighlight;
-@PtImage-TitlePaddingTop: @CmIndent-XXXSmall;
 @PtImage-Color: @CmFont-UI-ColorOpposite;
+@PtImage-Padding: @CmIndent-XXSmall;
+@PtImage-TitlePaddingTop: @CmIndent-XXXSmall;
+@PtImage-ButtonsIndent: @PtImage-Padding;
 
 // /* ******* RANGE ******* */
 
@@ -10820,6 +10822,7 @@ ul.pt__field__hint {
     .cm__box;
     display: block;
     position: relative;
+    overflow: hidden;
     cursor: default;
     background: transparent 50% 50% no-repeat;
     background-size: contain;
@@ -10946,30 +10949,76 @@ ul.pt__field__hint {
         }
     }
 
-    > label {
-        position: absolute;
-        z-index: 2;
-        cursor: pointer;
-        .mx__position(0,0,0,0);
-    }
+    // /* *** OVERLAY *** */
 
     > .overlay {
         position: absolute;
         z-index: 2;
-        cursor: pointer;
-        .mx__position(0,0,0,0);
+        .mx__position(0, 0, 0, 0);
+        .mx__transition(all, @CmUI-Transition-Duration);
 
         &.to-top {
             .mx__linear-gradient(~"to top, transparent 50%, @{CmUI-Overlay-Dark} 100%");
         }
+
+        &.is-light {
+            background-color: @CmUI-Overlay-Light;
+        }
+
+        &.is-dark {
+            background-color: @CmUI-Overlay-Dark;
+        }
+
+        &.on-hover {
+            opacity: 0;
+        }
+    }
+
+    &:hover {
+        > .overlay.on-hover {
+            opacity: 1;
+        }
+    }
+
+    // /* *** BUTTONS ***/
+
+    .pt__buttons {
+        margin: 0;
+        padding: @PtImage-ButtonsIndent;
+        z-index: 5;
+        position: absolute;
+        transform: translateY(100%);
+        .mx__position(auto, 0, 0, 0);
+        .mx__transition(all, @CmUI-Transition-Duration);
+
+        &.is-box {
+            .button-alike {
+                margin: @PtImage-ButtonsIndent 0 0 0;
+            }
+        }
+    }
+
+    &:hover {
+        .pt__buttons {
+            transform: translateY(0);
+        }
+    }
+
+    // /* *** TOOLS AND CHECKBOX *** /
+
+    > label {
+        position: absolute;
+        z-index: 3;
+        cursor: pointer;
+        .mx__position(0, 0, 0, 0);
     }
 
     > .pull {
         position: absolute;
-        padding: @CmIndent-XXSmall;
+        padding: @PtImage-Padding;
         border-radius: @CmBorder-Radius;
         background-color: @CmUI-Overlay-Light;
-        z-index: 3;
+        z-index: 4;
 
         &.top-right {
             .mx__position(@CmIndent-XXXSmall, @CmIndent-XXXSmall, auto, auto);
@@ -11001,6 +11050,8 @@ ul.pt__field__hint {
             }
         }
     }
+
+    // /* *** STATES ***/
 
     &:hover,
     &.is-title-fixed {
@@ -17876,6 +17927,7 @@ ul.pt__field__hint {
     .pt__menu-dropdown {
         .pt__menu-dropdown--base;
         .pt__menu-dropdown--position;
+        .pt__menu-dropdown--position.pull-right;
 
         &.pull-left,
         &.pull-right {
