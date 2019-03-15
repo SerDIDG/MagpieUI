@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.36.17 (2019-03-14 19:12) ************ */
+/*! ************ MagpieUI v3.36.19 (2019-03-15 21:43) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.6.0
@@ -3512,8 +3512,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.36.17');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.36.17') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.36.17') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.36.17') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.36.17#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.36.19');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.36.19') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.36.19') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.36.19') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.36.19#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -4996,8 +4996,7 @@ section {
 .link,
 .link--inner,
 a,
-.com__glossary .com__glossary__title,
-.com__help-bubble .com__help-bubble__title .label {
+.com__glossary .com__glossary__title {
   text-decoration: underline;
   color: #2985e0;
   outline: none;
@@ -5007,8 +5006,7 @@ a,
 .link:hover,
 .link--inner:hover,
 a:hover,
-.com__glossary .com__glossary__title:hover,
-.com__help-bubble .com__help-bubble__title .label:hover {
+.com__glossary .com__glossary__title:hover {
   text-decoration: none;
   color: #1d73c9;
 }
@@ -5016,8 +5014,7 @@ a:hover,
 .link:active,
 .link--inner:active,
 a:active,
-.com__glossary .com__glossary__title:active,
-.com__help-bubble .com__help-bubble__title .label:active {
+.com__glossary .com__glossary__title:active {
   color: #16599c;
 }
 .cm__tags,
@@ -8353,6 +8350,24 @@ button.is-hidden {
   -ms-flex-pack: center;
   margin: -6px;
 }
+.pt__buttons > .inner > .left,
+.pt__buttons > .inner > .right {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+}
+.pt__buttons > .inner > .left {
+  -webkit-justify-content: flex-start;
+  justify-content: flex-start;
+}
+.pt__buttons > .inner > .right {
+  -webkit-justify-content: flex-end;
+  justify-content: flex-end;
+}
 .pt__buttons .button-alike,
 .pt__buttons .button,
 .pt__buttons .browse-button,
@@ -8407,6 +8422,15 @@ button.is-hidden {
   display: block;
   margin: 0;
 }
+.pt__buttons.is-box > .inner > .left,
+.pt__buttons.is-box > .inner > .right {
+  width: 100%;
+  margin: 16px 0 0 0;
+}
+.pt__buttons.is-box > .inner > .left:first-child,
+.pt__buttons.is-box > .inner > .right:first-child {
+  margin: 0;
+}
 .pt__buttons.is-box .button-alike,
 .pt__buttons.is-box .button,
 .pt__buttons.is-box .browse-button,
@@ -8434,6 +8458,15 @@ button.is-hidden {
 }
 .pt__buttons--box > .inner {
   display: block;
+  margin: 0;
+}
+.pt__buttons--box > .inner > .left,
+.pt__buttons--box > .inner > .right {
+  width: 100%;
+  margin: 16px 0 0 0;
+}
+.pt__buttons--box > .inner > .left:first-child,
+.pt__buttons--box > .inner > .right:first-child {
   margin: 0;
 }
 .pt__buttons--box .button-alike,
@@ -8465,6 +8498,15 @@ button.is-hidden {
 @media only screen and (max-width: 640px) {
   html.is-adaptive .pt__buttons.is-adaptive > .inner {
     display: block;
+    margin: 0;
+  }
+  html.is-adaptive .pt__buttons.is-adaptive > .inner > .left,
+  html.is-adaptive .pt__buttons.is-adaptive > .inner > .right {
+    width: 100%;
+    margin: 16px 0 0 0;
+  }
+  html.is-adaptive .pt__buttons.is-adaptive > .inner > .left:first-child,
+  html.is-adaptive .pt__buttons.is-adaptive > .inner > .right:first-child {
     margin: 0;
   }
   html.is-adaptive .pt__buttons.is-adaptive .button-alike,
@@ -13157,8 +13199,7 @@ ul.pt__field__hint li:before {
 .pt__listing .list-title .link,
 .pt__listing .list-title .link--inner,
 .pt__listing .list-title a,
-.pt__listing .list-title .com__glossary .com__glossary__title,
-.pt__listing .list-title .com__help-bubble .com__help-bubble__title .label {
+.pt__listing .list-title .com__glossary .com__glossary__title {
   font-weight: 600;
 }
 .pt__listing__item {
@@ -15387,8 +15428,7 @@ ul.pt__field__hint li:before {
 .com__togglebox > dt .pt__box-item .author,
 .com__togglebox > dt .pt__field__hint,
 .com__togglebox > dt .com__glossary .com__glossary__title,
-.com__togglebox > dt .com__glossary .com__glossary__title,
-.com__togglebox > dt .com__help-bubble .com__help-bubble__title .label {
+.com__togglebox > dt .com__glossary .com__glossary__title {
   color: inherit;
 }
 .com__togglebox > dt .pt__links {
@@ -15584,16 +15624,14 @@ ul.pt__field__hint li:before {
 .com__togglebox.is-hide > dt .link,
 .com__togglebox.is-hide > dt .link--inner,
 .com__togglebox.is-hide > dt a,
-.com__togglebox.is-hide > dt .com__glossary .com__glossary__title,
-.com__togglebox.is-hide > dt .com__help-bubble .com__help-bubble__title .label {
+.com__togglebox.is-hide > dt .com__glossary .com__glossary__title {
   color: #666666;
 }
 .com__togglebox.is-hide > dt .cm__link:hover,
 .com__togglebox.is-hide > dt .link:hover,
 .com__togglebox.is-hide > dt .link--inner:hover,
 .com__togglebox.is-hide > dt a:hover,
-.com__togglebox.is-hide > dt .com__glossary .com__glossary__title:hover,
-.com__togglebox.is-hide > dt .com__help-bubble .com__help-bubble__title .label:hover {
+.com__togglebox.is-hide > dt .com__glossary .com__glossary__title:hover {
   color: #1d73c9;
 }
 .com__togglebox.is-hide > dt:hover .title {
@@ -15606,16 +15644,14 @@ ul.pt__field__hint li:before {
 .com__togglebox.is-show > dt .link,
 .com__togglebox.is-show > dt .link--inner,
 .com__togglebox.is-show > dt a,
-.com__togglebox.is-show > dt .com__glossary .com__glossary__title,
-.com__togglebox.is-show > dt .com__help-bubble .com__help-bubble__title .label {
+.com__togglebox.is-show > dt .com__glossary .com__glossary__title {
   color: #666666;
 }
 .com__togglebox.is-show > dt .cm__link:hover,
 .com__togglebox.is-show > dt .link:hover,
 .com__togglebox.is-show > dt .link--inner:hover,
 .com__togglebox.is-show > dt a:hover,
-.com__togglebox.is-show > dt .com__glossary .com__glossary__title:hover,
-.com__togglebox.is-show > dt .com__help-bubble .com__help-bubble__title .label:hover {
+.com__togglebox.is-show > dt .com__glossary .com__glossary__title:hover {
   color: #1d73c9;
 }
 .com__togglebox.is-show > dt:hover .title {
@@ -15643,16 +15679,14 @@ ul.pt__field__hint li:before {
 .com__togglebox.has-title-bg.is-hide > dt .link,
 .com__togglebox.has-title-bg.is-hide > dt .link--inner,
 .com__togglebox.has-title-bg.is-hide > dt a,
-.com__togglebox.has-title-bg.is-hide > dt .com__glossary .com__glossary__title,
-.com__togglebox.has-title-bg.is-hide > dt .com__help-bubble .com__help-bubble__title .label {
+.com__togglebox.has-title-bg.is-hide > dt .com__glossary .com__glossary__title {
   color: #666666;
 }
 .com__togglebox.has-title-bg.is-hide > dt .cm__link:hover,
 .com__togglebox.has-title-bg.is-hide > dt .link:hover,
 .com__togglebox.has-title-bg.is-hide > dt .link--inner:hover,
 .com__togglebox.has-title-bg.is-hide > dt a:hover,
-.com__togglebox.has-title-bg.is-hide > dt .com__glossary .com__glossary__title:hover,
-.com__togglebox.has-title-bg.is-hide > dt .com__help-bubble .com__help-bubble__title .label:hover {
+.com__togglebox.has-title-bg.is-hide > dt .com__glossary .com__glossary__title:hover {
   color: #1d73c9;
 }
 .com__togglebox.has-title-bg.is-hide > dt:hover .title {
@@ -15665,16 +15699,14 @@ ul.pt__field__hint li:before {
 .com__togglebox.has-title-bg.is-show > dt .link,
 .com__togglebox.has-title-bg.is-show > dt .link--inner,
 .com__togglebox.has-title-bg.is-show > dt a,
-.com__togglebox.has-title-bg.is-show > dt .com__glossary .com__glossary__title,
-.com__togglebox.has-title-bg.is-show > dt .com__help-bubble .com__help-bubble__title .label {
+.com__togglebox.has-title-bg.is-show > dt .com__glossary .com__glossary__title {
   color: #666666;
 }
 .com__togglebox.has-title-bg.is-show > dt .cm__link:hover,
 .com__togglebox.has-title-bg.is-show > dt .link:hover,
 .com__togglebox.has-title-bg.is-show > dt .link--inner:hover,
 .com__togglebox.has-title-bg.is-show > dt a:hover,
-.com__togglebox.has-title-bg.is-show > dt .com__glossary .com__glossary__title:hover,
-.com__togglebox.has-title-bg.is-show > dt .com__help-bubble .com__help-bubble__title .label:hover {
+.com__togglebox.has-title-bg.is-show > dt .com__glossary .com__glossary__title:hover {
   color: #1d73c9;
 }
 .com__togglebox.has-title-bg.is-show > dt:hover .title {
@@ -16652,8 +16684,7 @@ ul.pt__field__hint li:before {
 .com__dialog__window.theme-black .pt__box-item .author,
 .com__dialog__window.theme-black .pt__field__hint,
 .com__dialog__window.theme-black .com__glossary .com__glossary__title,
-.com__dialog__window.theme-black .com__glossary .com__glossary__title,
-.com__dialog__window.theme-black .com__help-bubble .com__help-bubble__title .label {
+.com__dialog__window.theme-black .com__glossary .com__glossary__title {
   color: #ffffff;
 }
 .com__dialog__window.theme-black > .icon.default {
@@ -16741,8 +16772,7 @@ ul.pt__field__hint li:before {
 .com__dialog-font--theme-black .pt__box-item .author,
 .com__dialog-font--theme-black .pt__field__hint,
 .com__dialog-font--theme-black .com__glossary .com__glossary__title,
-.com__dialog-font--theme-black .com__glossary .com__glossary__title,
-.com__dialog-font--theme-black .com__help-bubble .com__help-bubble__title .label {
+.com__dialog-font--theme-black .com__glossary .com__glossary__title {
   color: #ffffff;
 }
 /* *** MIXINS *** */
@@ -17724,15 +17754,11 @@ ul.pt__field__hint li:before {
   vertical-align: middle;
 }
 .com__help-bubble .com__help-bubble__title .label {
-  text-decoration: none;
-  border-bottom: 1px dashed;
   margin: 0 0 0 12px;
   display: inline-block;
   vertical-align: middle;
-}
-.com__help-bubble .com__help-bubble__title .label:hover {
-  text-decoration: none;
-  border-bottom-color: transparent;
+  text-decoration: underline;
+  text-decoration-style: dashed;
 }
 .com__help-bubble .com__help-bubble__title .label:last-child {
   margin-left: 0;
@@ -17838,8 +17864,7 @@ ul.pt__field__hint li:before {
 .com__image-input__content .input__holder .input__label .link,
 .com__image-input__content .input__holder .input__label .link--inner,
 .com__image-input__content .input__holder .input__label a,
-.com__image-input__content .input__holder .input__label .com__glossary .com__glossary__title,
-.com__image-input__content .input__holder .input__label .com__help-bubble .com__help-bubble__title .label {
+.com__image-input__content .input__holder .input__label .com__glossary .com__glossary__title {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
