@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.19 (2019-03-15 21:43) ************ */
+/*! ************ MagpieUI v3.36.20 (2019-03-20 19:47) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3924,7 +3924,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.36.19';
+@CmVersion: '3.36.20';
 
 // /* ******* PATH ******* */
 
@@ -4363,7 +4363,7 @@ span.CodeMirror-selectedtext { background: none; }
 
 // /* ******* SCROLLBAR ******* */
 
-@CmScrollBar-Size: @CmSize-XSmall;
+@CmScrollBar-Size: @CmSize-XXSmall;
 @CmScrollBar-Radius: @CmBorder-Radius;
 @CmScrollBar-TrackBackground: fade(@CmColor-Secondary-LightHighlight, 50%);
 @CmScrollBar-ThumbColor: @CmColor-Secondary-LightActiveHover;
@@ -5289,7 +5289,6 @@ span.CodeMirror-selectedtext { background: none; }
     &::-webkit-scrollbar {
         width: @CmScrollBar-Size;
         height: @CmScrollBar-Size;
-        opacity: 0;
     }
     &::-webkit-scrollbar-track {
         background-color: @CmScrollBar-TrackBackground;
@@ -5301,12 +5300,6 @@ span.CodeMirror-selectedtext { background: none; }
     }
     &::-webkit-scrollbar-thumb:hover {
         background-color: @CmScrollBar-ThumbColorHover;
-    }
-
-    &:hover {
-        &::-webkit-scrollbar {
-            opacity: 1;
-        }
     }
 }
 
@@ -5382,6 +5375,18 @@ span.CodeMirror-selectedtext { background: none; }
     .cm__font--cursive;
     padding: @CmIndent-XSmall;
     text-align: center;
+
+    &:before,
+    &:after {
+        margin: 0 4px;
+        content: '-';
+    }
+}
+
+.cm__empty--inline {
+    &:extend(.cm__inherit all);
+    .cm__font--cursive;
+    text-align: left;
 
     &:before,
     &:after {
@@ -9285,6 +9290,10 @@ button {
         .pt__columns__indent(@CmForm-FieldInnerIndent);
     }
 
+    &.indent-buttons {
+        .pt__columns__indent(@CmForm-ButtonsIndent);
+    }
+
     .for(@PtColumns-Indents); .-each(@name) {
         &.indent-@{name} {
             .pt__columns__indent(@name);
@@ -9336,18 +9345,16 @@ button {
         }
     }
 
-    &.indent-field {
-        > .inner {
-            > .column {
-                margin-bottom: @CmForm-FieldIndent;
-            }
-        }
-    }
-
+    &.indent-field,
+    &.indent-buttons,
     &.indent-field-inner {
         > .inner {
             > .column {
-                margin-bottom: @CmForm-FieldInnerIndent;
+                margin-bottom: @CmForm-FieldIndent;
+
+                &:last-child {
+                    margin-bottom: 0;
+                }
             }
         }
     }
@@ -12921,6 +12928,14 @@ ul.pt__field__hint {
 
                 &.is-prime {
                     .mx__flex(1 1 100%);
+                }
+
+                &.is-auto {
+                    .mx__flex(1 1 auto);
+                }
+
+                &.is-none {
+                    .mx__flex(none);
                 }
             }
         }

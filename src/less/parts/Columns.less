@@ -98,6 +98,10 @@
         .pt__columns__indent(@CmForm-FieldInnerIndent);
     }
 
+    &.indent-buttons {
+        .pt__columns__indent(@CmForm-ButtonsIndent);
+    }
+
     .for(@PtColumns-Indents); .-each(@name) {
         &.indent-@{name} {
             .pt__columns__indent(@name);
@@ -149,18 +153,16 @@
         }
     }
 
-    &.indent-field {
-        > .inner {
-            > .column {
-                margin-bottom: @CmForm-FieldIndent;
-            }
-        }
-    }
-
+    &.indent-field,
+    &.indent-buttons,
     &.indent-field-inner {
         > .inner {
             > .column {
-                margin-bottom: @CmForm-FieldInnerIndent;
+                margin-bottom: @CmForm-FieldIndent;
+
+                &:last-child {
+                    margin-bottom: 0;
+                }
             }
         }
     }

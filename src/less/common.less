@@ -201,7 +201,6 @@
     &::-webkit-scrollbar {
         width: @CmScrollBar-Size;
         height: @CmScrollBar-Size;
-        opacity: 0;
     }
     &::-webkit-scrollbar-track {
         background-color: @CmScrollBar-TrackBackground;
@@ -213,12 +212,6 @@
     }
     &::-webkit-scrollbar-thumb:hover {
         background-color: @CmScrollBar-ThumbColorHover;
-    }
-
-    &:hover {
-        &::-webkit-scrollbar {
-            opacity: 1;
-        }
     }
 }
 
@@ -294,6 +287,18 @@
     .cm__font--cursive;
     padding: @CmIndent-XSmall;
     text-align: center;
+
+    &:before,
+    &:after {
+        margin: 0 4px;
+        content: '-';
+    }
+}
+
+.cm__empty--inline {
+    &:extend(.cm__inherit all);
+    .cm__font--cursive;
+    text-align: left;
 
     &:before,
     &:after {
