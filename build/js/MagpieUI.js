@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.20 (2019-03-20 19:47) ************ */
+/*! ************ MagpieUI v3.36.21 (2019-03-21 18:55) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.20',
+        '_version' : '3.36.21',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -20951,9 +20951,10 @@ cm.define('Com.Request', {
         },
         'variables' : {},
         'showOverlay' : true,
-        'overlayContainer' : 'document.body',
         'animateDuration' : 'cm._config.animDuration',
-        'Com.Overlay' : {
+        'overlayContainer' : 'document.body',
+        'overlayConstructor' : 'Com.Overlay',
+        'overlayParams' : {
             'lazy' : true,
             'autoOpen' : false,
             'removeOnClose' : true,
@@ -21031,19 +21032,19 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         that.setAttributes();
         // Overlay
         if(that.params['responseHTML']){
-            that.params['Com.Overlay']['container'] =
-                that.params['Com.Overlay']['container']
+            that.params['overlayParams']['container'] =
+                that.params['overlayParams']['container']
                 || that.params['overlayContainer']
                 || that.nodes['container']
                 || document.body;
         }else{
-            that.params['Com.Overlay']['container'] =
-                that.params['Com.Overlay']['container']
+            that.params['overlayParams']['container'] =
+                that.params['overlayParams']['container']
                 || that.params['overlayContainer']
                 || document.body;
         }
-        cm.getConstructor('Com.Overlay', function(classConstructor, className){
-            that.components['overlay'] = new classConstructor(that.params[className]);
+        cm.getConstructor(that.params['overlayConstructor'], function(classConstructor){
+            that.components['overlay'] = new classConstructor(that.params['overlayParams']);
         });
         // Append
         that.embedStructure(that.nodes['container']);

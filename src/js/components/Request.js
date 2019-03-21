@@ -44,9 +44,10 @@ cm.define('Com.Request', {
         },
         'variables' : {},
         'showOverlay' : true,
-        'overlayContainer' : 'document.body',
         'animateDuration' : 'cm._config.animDuration',
-        'Com.Overlay' : {
+        'overlayContainer' : 'document.body',
+        'overlayConstructor' : 'Com.Overlay',
+        'overlayParams' : {
             'lazy' : true,
             'autoOpen' : false,
             'removeOnClose' : true,
@@ -124,19 +125,19 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         that.setAttributes();
         // Overlay
         if(that.params['responseHTML']){
-            that.params['Com.Overlay']['container'] =
-                that.params['Com.Overlay']['container']
+            that.params['overlayParams']['container'] =
+                that.params['overlayParams']['container']
                 || that.params['overlayContainer']
                 || that.nodes['container']
                 || document.body;
         }else{
-            that.params['Com.Overlay']['container'] =
-                that.params['Com.Overlay']['container']
+            that.params['overlayParams']['container'] =
+                that.params['overlayParams']['container']
                 || that.params['overlayContainer']
                 || document.body;
         }
-        cm.getConstructor('Com.Overlay', function(classConstructor, className){
-            that.components['overlay'] = new classConstructor(that.params[className]);
+        cm.getConstructor(that.params['overlayConstructor'], function(classConstructor){
+            that.components['overlay'] = new classConstructor(that.params['overlayParams']);
         });
         // Append
         that.embedStructure(that.nodes['container']);

@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.20 (2019-03-20 19:47) ************ */
+/*! ************ MagpieUI v3.36.21 (2019-03-21 18:55) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3924,7 +3924,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.36.20';
+@CmVersion: '3.36.21';
 
 // /* ******* PATH ******* */
 
@@ -4783,6 +4783,7 @@ span.CodeMirror-selectedtext { background: none; }
 @ComTabset-Duration: @CmUI-Transition-Duration;
 @ComTabset-Column-Width: 256px;
 @ComTabset-Content-Background: @CmColor-Background;
+@ComTabset-Content-Padding: @CmIndent-Medium;
 @ComTabset-Tabs-Height: @CmForm-FieldHeight;
 @ComTabset-Tabs-Indent: @CmIndent-XXXSmall;
 @ComTabset-Tabs-IndentInner: @CmIndent-XSmall;
@@ -18057,7 +18058,7 @@ ul.pt__field__hint {
 .com__tabset__content {
     position: relative;
     z-index: 1;
-    padding: @CmIndent-Medium;
+    padding: @ComTabset-Content-Padding;
     background: @ComTabset-Content-Background;
     border: @ComTabset-Border;
     border-radius: @ComTabset-BorderRadius;
