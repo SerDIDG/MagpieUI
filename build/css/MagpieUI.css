@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.36.21 (2019-03-21 18:55) ************ */
+/*! ************ MagpieUI v3.36.22 (2019-03-22 18:54) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.6.0
@@ -3512,8 +3512,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.36.21');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.36.21') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.36.21') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.36.21') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.36.21#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.36.22');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.36.22') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.36.22') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.36.22') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.36.22#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -17539,8 +17539,8 @@ ul.pt__field__hint li:before {
 .com__gallery-layout.size-1 .com__gallery-bar {
   width: 100%;
 }
-.com__gallery-layout.size-1 .com__gallery-bar .pt__grid > ul {
-  grid-template-columns: repeat(auto-fill, minmax(1280px, 1fr));
+.com__gallery-layout.size-1 .com__gallery-bar .pt__grid > ul > li {
+  width: 100%;
 }
 .com__gallery-layout.size-2 > .inner {
   padding: 0 50%;
@@ -17548,8 +17548,8 @@ ul.pt__field__hint li:before {
 .com__gallery-layout.size-2 .com__gallery-bar {
   width: 50%;
 }
-.com__gallery-layout.size-2 .com__gallery-bar .pt__grid > ul {
-  grid-template-columns: repeat(auto-fill, minmax(640px, 1fr));
+.com__gallery-layout.size-2 .com__gallery-bar .pt__grid > ul > li {
+  width: 50%;
 }
 .com__gallery-layout.size-3 > .inner {
   padding: 0 33.33333333%;
@@ -17557,8 +17557,8 @@ ul.pt__field__hint li:before {
 .com__gallery-layout.size-3 .com__gallery-bar {
   width: 33.33333333%;
 }
-.com__gallery-layout.size-3 .com__gallery-bar .pt__grid > ul {
-  grid-template-columns: repeat(auto-fill, minmax(427px, 1fr));
+.com__gallery-layout.size-3 .com__gallery-bar .pt__grid > ul > li {
+  width: 33.33333333%;
 }
 .com__gallery-layout.size-4 > .inner {
   padding: 0 25%;
@@ -17566,8 +17566,8 @@ ul.pt__field__hint li:before {
 .com__gallery-layout.size-4 .com__gallery-bar {
   width: 25%;
 }
-.com__gallery-layout.size-4 .com__gallery-bar .pt__grid > ul {
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+.com__gallery-layout.size-4 .com__gallery-bar .pt__grid > ul > li {
+  width: 25%;
 }
 .com__gallery-layout.size-5 > .inner {
   padding: 0 20%;
@@ -17575,8 +17575,8 @@ ul.pt__field__hint li:before {
 .com__gallery-layout.size-5 .com__gallery-bar {
   width: 20%;
 }
-.com__gallery-layout.size-5 .com__gallery-bar .pt__grid > ul {
-  grid-template-columns: repeat(auto-fill, minmax(256px, 1fr));
+.com__gallery-layout.size-5 .com__gallery-bar .pt__grid > ul > li {
+  width: 20%;
 }
 .com__gallery-layout.size-6 > .inner {
   padding: 0 16.66666667%;
@@ -17584,8 +17584,8 @@ ul.pt__field__hint li:before {
 .com__gallery-layout.size-6 .com__gallery-bar {
   width: 16.66666667%;
 }
-.com__gallery-layout.size-6 .com__gallery-bar .pt__grid > ul {
-  grid-template-columns: repeat(auto-fill, minmax(213px, 1fr));
+.com__gallery-layout.size-6 .com__gallery-bar .pt__grid > ul > li {
+  width: 16.66666667%;
 }
 .com__gallery-layout.size-7 > .inner {
   padding: 0 14.28571429%;
@@ -17593,8 +17593,8 @@ ul.pt__field__hint li:before {
 .com__gallery-layout.size-7 .com__gallery-bar {
   width: 14.28571429%;
 }
-.com__gallery-layout.size-7 .com__gallery-bar .pt__grid > ul {
-  grid-template-columns: repeat(auto-fill, minmax(183px, 1fr));
+.com__gallery-layout.size-7 .com__gallery-bar .pt__grid > ul > li {
+  width: 14.28571429%;
 }
 .com__gallery-layout.size-8 > .inner {
   padding: 0 12.5%;
@@ -17602,8 +17602,8 @@ ul.pt__field__hint li:before {
 .com__gallery-layout.size-8 .com__gallery-bar {
   width: 12.5%;
 }
-.com__gallery-layout.size-8 .com__gallery-bar .pt__grid > ul {
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+.com__gallery-layout.size-8 .com__gallery-bar .pt__grid > ul > li {
+  width: 12.5%;
 }
 .com__gallery-layout.size-9 > .inner {
   padding: 0 11.11111111%;
@@ -17611,8 +17611,8 @@ ul.pt__field__hint li:before {
 .com__gallery-layout.size-9 .com__gallery-bar {
   width: 11.11111111%;
 }
-.com__gallery-layout.size-9 .com__gallery-bar .pt__grid > ul {
-  grid-template-columns: repeat(auto-fill, minmax(142px, 1fr));
+.com__gallery-layout.size-9 .com__gallery-bar .pt__grid > ul > li {
+  width: 11.11111111%;
 }
 .com__gallery-layout.size-10 > .inner {
   padding: 0 10%;
@@ -17620,8 +17620,8 @@ ul.pt__field__hint li:before {
 .com__gallery-layout.size-10 .com__gallery-bar {
   width: 10%;
 }
-.com__gallery-layout.size-10 .com__gallery-bar .pt__grid > ul {
-  grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
+.com__gallery-layout.size-10 .com__gallery-bar .pt__grid > ul > li {
+  width: 10%;
 }
 .com__gallery-layout.size-11 > .inner {
   padding: 0 9.09090909%;
@@ -17629,8 +17629,8 @@ ul.pt__field__hint li:before {
 .com__gallery-layout.size-11 .com__gallery-bar {
   width: 9.09090909%;
 }
-.com__gallery-layout.size-11 .com__gallery-bar .pt__grid > ul {
-  grid-template-columns: repeat(auto-fill, minmax(116px, 1fr));
+.com__gallery-layout.size-11 .com__gallery-bar .pt__grid > ul > li {
+  width: 9.09090909%;
 }
 .com__gallery-layout.size-12 > .inner {
   padding: 0 8.33333333%;
@@ -17638,8 +17638,8 @@ ul.pt__field__hint li:before {
 .com__gallery-layout.size-12 .com__gallery-bar {
   width: 8.33333333%;
 }
-.com__gallery-layout.size-12 .com__gallery-bar .pt__grid > ul {
-  grid-template-columns: repeat(auto-fill, minmax(107px, 1fr));
+.com__gallery-layout.size-12 .com__gallery-bar .pt__grid > ul > li {
+  width: 8.33333333%;
 }
 .com__gallery-layout.is-bar-top > .inner,
 .com__gallery-layout.is-bar-bottom > .inner,

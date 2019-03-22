@@ -3,7 +3,7 @@ cm.define('Com.BoxTools', {
     'params' : {
         'controllerEvents' : true,
         'className' : 'com__box-tools',
-        'maxlength' : 3,
+        'maxlength' : 5,
         'units' : 'px',
         'allowNegative' : false,
         'inputs' : [

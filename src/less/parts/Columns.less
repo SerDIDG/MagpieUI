@@ -133,6 +133,18 @@
     }
 }
 
+.pt__columns__indent-mobile (@value : @CmForm-FieldIndent) {
+    > .inner {
+        > .column {
+            margin-bottom: @value;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+}
+
 .pt__columns--adaptive {
     > .inner {
         display: block;
@@ -156,15 +168,7 @@
     &.indent-field,
     &.indent-buttons,
     &.indent-field-inner {
-        > .inner {
-            > .column {
-                margin-bottom: @CmForm-FieldIndent;
-
-                &:last-child {
-                    margin-bottom: 0;
-                }
-            }
-        }
+        .pt__columns__indent-mobile(@CmForm-FieldIndent);
     }
 }
 

@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.21 (2019-03-21 18:55) ************ */
+/*! ************ MagpieUI v3.36.22 (2019-03-22 18:54) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3924,7 +3924,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.36.21';
+@CmVersion: '3.36.22';
 
 // /* ******* PATH ******* */
 
@@ -9326,6 +9326,18 @@ button {
     }
 }
 
+.pt__columns__indent-mobile (@value : @CmForm-FieldIndent) {
+    > .inner {
+        > .column {
+            margin-bottom: @value;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+}
+
 .pt__columns--adaptive {
     > .inner {
         display: block;
@@ -9349,15 +9361,7 @@ button {
     &.indent-field,
     &.indent-buttons,
     &.indent-field-inner {
-        > .inner {
-            > .column {
-                margin-bottom: @CmForm-FieldIndent;
-
-                &:last-child {
-                    margin-bottom: 0;
-                }
-            }
-        }
+        .pt__columns__indent-mobile(@CmForm-FieldIndent);
     }
 }
 
@@ -16129,7 +16133,7 @@ ul.pt__field__hint {
                 width: @size;
 
                 .pt__grid {
-                    .pt__grid__size(@counter);
+                    .pt__grid__col(@counter);
                 }
             }
         }

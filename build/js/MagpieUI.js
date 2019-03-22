@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.21 (2019-03-21 18:55) ************ */
+/*! ************ MagpieUI v3.36.22 (2019-03-22 18:54) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.21',
+        '_version' : '3.36.22',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -25950,7 +25950,7 @@ cm.define('Com.BoxTools', {
     'params' : {
         'controllerEvents' : true,
         'className' : 'com__box-tools',
-        'maxlength' : 3,
+        'maxlength' : 5,
         'units' : 'px',
         'allowNegative' : false,
         'inputs' : [
