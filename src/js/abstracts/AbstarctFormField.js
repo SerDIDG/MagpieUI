@@ -290,6 +290,10 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         if(!cm.isEmpty(that.params['title'])){
             that.nodes['content']['input'].setAttribute('title', that.params['title']);
         }
+        // Aria label
+        if(cm.isEmpty(that.params['label']) && cm.isEmpty(that.params['title']) && !cm.isEmpty(that.params['placeholder'])){
+            that.nodes['content']['input'].setAttribute('aria-label', that.params['placeholder']);
+        }
         // Classes
         if(!that.params['visible']){
             that.hide(false);

@@ -58,7 +58,8 @@ cm.define('Com.Form', {
             'params' : ''                                           // Params object. %baseUrl%, %callback% for JSONP.
         },
         'Com.Notifications' : {},
-        'Com.Overlay' : {
+        'overlayConstructor' : 'Com.Overlay',
+        'overlayParams' : {
             'position' : 'absolute',
             'autoOpen' : false,
             'removeOnClose' : true
@@ -149,7 +150,7 @@ function(params){
         });
         // Overlay Loader
         if(that.params['showLoader']){
-            cm.getConstructor('Com.Overlay', function(classConstructor, className){
+            cm.getConstructor(that.params['overlayConstructor'], function(classConstructor){
                 switch(that.params['loaderCoverage']){
                     case 'fields':
                         overlayContainer = that.nodes['fieldsContainer'];
@@ -160,7 +161,7 @@ function(params){
                         break;
                 }
                 that.components['loader'] = new classConstructor(
-                    cm.merge(that.params[className], {
+                    cm.merge(that.params['overlayParams'], {
                         'container' : overlayContainer
                     })
                 );
@@ -227,12 +228,23 @@ function(params){
             'name' : '',
             'label' : '',
             'class' : '',
+            'spinner' : false,
+            'spinnerClass' : '',
             'action' : 'submit',          // submit | reset | clear | custom
             'handler' : function(){}
         }, params);
         // Render
         if(!that.buttons[params['name']]){
-            params['node'] = cm.node('button', {'name' : params['name'], 'class' : params['class']}, params['label']);
+            params['node'] = cm.node('button', {'name' : params['name'], 'class' : ['button', params['class']].join(' ')},
+                params['labelNode'] = cm.node('div', {'class' : 'label is-show'}, params['label'])
+            );
+            // Spinner
+            if(params['spinner']){
+                params['spinnerNode'] = cm.node('div', {'class' : ['icon', params['spinnerClass']].join(' ')});
+                cm.appendChild(params['spinnerNode'], params['node']);
+                cm.addClass(params['node'], 'button-spinner');
+            }
+            // Actions
             switch(params['action']){
                 case 'submit':
                     params['node'].type = 'submit';
@@ -277,7 +289,25 @@ function(params){
                     break;
             }
             cm.appendChild(params['node'], that.nodes['buttonsHolder']);
+            // Export
+            that.buttons[params['name']] = params;
         }
+    };
+
+    var toggleButtons = function(){
+        cm.forEach(that.buttons, function(item){
+            if(that.isProcess){
+                if(item['spinner']){
+                    cm.removeClass(item['labelNode'], 'is-show');
+                    cm.addClass(item['spinnerNode'], 'is-show');
+                }
+            }else{
+                if(item['spinner']){
+                    cm.addClass(item['labelNode'], 'is-show');
+                    cm.removeClass(item['spinnerNode'], 'is-show');
+                }
+            }
+        });
     };
 
     var renderSeparator = function(params){
@@ -378,6 +408,9 @@ function(params){
 
     that.callbacks.start = function(that, config){
         that.isProcess = true;
+        cm.addClass(that.nodes['container'], 'is-submitting');
+        // Toggle buttons
+        toggleButtons();
         // Show Loader
         if(that.params['showLoader']){
             that.loaderDelay = setTimeout(function(){
@@ -391,6 +424,9 @@ function(params){
 
     that.callbacks.end = function(that, config){
         that.isProcess = false;
+        cm.removeClass(that.nodes['container'], 'is-submitting');
+        // Toggle buttons
+        toggleButtons();
         // Hide Loader
         if(that.params['showLoader']){
             that.loaderDelay && clearTimeout(that.loaderDelay);

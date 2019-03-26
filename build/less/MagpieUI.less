@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.22 (2019-03-22 18:54) ************ */
+/*! ************ MagpieUI v3.36.23 (2019-03-26 21:56) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3924,7 +3924,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.36.22';
+@CmVersion: '3.36.23';
 
 // /* ******* PATH ******* */
 
@@ -6768,7 +6768,7 @@ select {
 }
 
 input[type="search"] {
-    -webkit-appearance: textfield;
+    -webkit-appearance: none;
 
     &::-webkit-search-decoration {
         -webkit-appearance: none;
@@ -6806,21 +6806,12 @@ select {
     font-size: @CmFont-Base-Size;
     white-space: nowrap;
     cursor: pointer;
-    outline: @CmButton-OutlineWidth dashed transparent;
-    outline-offset: @CmButton-OutlineOffset;
-    -webkit-outline-radius: @CmBorder-Radius;
-       -moz-outline-radius: @CmBorder-Radius;
-            outline-radius: @CmBorder-Radius;
+    outline: none;
     .mx__appearance(none);
     .mx__box-sizing(border-box);
     .mx__background-clip(border-box);
     .mx__user-select(none);
-    .mx__transition(background color box-shadow outline, @CmUI-Transition-Duration);
-
-    &:focus {
-        outline: @CmButton-OutlineWidth dashed transparent;
-        outline-offset: @CmButton-OutlineOffset;
-    }
+    .mx__transition(background color box-shadow, @CmUI-Transition-Duration);
 
     &:hover {
         text-decoration: none;
@@ -6851,7 +6842,6 @@ select {
     }
 
     &.button-primary--focus {
-        outline-color: @CmColor-Primary-DarkDefault;
     }
 
     &.button-primary--hover {
@@ -6885,7 +6875,6 @@ select {
     }
 
     &.button-middle--focus {
-        outline-color: @CmColor-Primary-MiddleDefault;
     }
 
     &.button-middle--hover {
@@ -6919,7 +6908,6 @@ select {
     }
 
     &.button-secondary--focus {
-        outline-color: @CmColor-Secondary-LightHighlight;
     }
 
     &.button-secondary--hover {
@@ -6953,7 +6941,6 @@ select {
     }
 
     &.button-success--focus {
-        outline-color: @CmColor-Secondary-LightHighlight;
     }
 
     &.button-success--hover {
@@ -6987,7 +6974,6 @@ select {
     }
 
     &.button-danger--focus {
-        outline-color: @CmColor-Danger-DarkDefault;
     }
 
     &.button-danger--hover {
@@ -7021,7 +7007,6 @@ select {
     }
 
     &.button-warning--focus {
-        outline-color: @CmColor-Warning-DarkDefault;
     }
 
     &.button-warning--hover {
@@ -7059,7 +7044,6 @@ select {
     }
 
     &.button-transparent--focus {
-        outline-color: @CmColor-Primary-DarkDefault;
     }
 
     &.button-transparent--hover {
@@ -7093,7 +7077,6 @@ select {
     }
 
     &.button-white--focus {
-        outline-color: @CmColor-Primary-DarkDefault;
     }
 
     &.button-white--hover {
@@ -7225,6 +7208,33 @@ select {
             @margin: round((@CmFont-Base-LineHeight - @CmSize-Large) / 2);
             margin-top: @margin;
             margin-bottom: @margin;
+        }
+    }
+
+    // /* *** SPINNER *** */
+
+    &.button-spinner {
+        .label,
+        .icon {
+            visibility: hidden;
+            opacity: 0;
+            .mx__transition(all, @PtOverlay-Duration);
+
+            &.is-show {
+                visibility: visible;
+                opacity: 1;
+            }
+
+            &.is-hide {
+                visibility: hidden;
+                opacity: 0;
+            }
+        }
+
+        .icon {
+            .cm-ia__spinner;
+            position: absolute;
+            .mx__position(0, 0, 0, 0);
         }
     }
 

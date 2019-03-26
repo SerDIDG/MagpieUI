@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.22 (2019-03-22 18:54) ************ */
+/*! ************ MagpieUI v3.36.23 (2019-03-26 21:56) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.22',
+        '_version' : '3.36.23',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -7455,6 +7455,7 @@ cm.define('Com.AbstractInput', {
         'isValueOption' : false,
         'title' : '',
         'placeholder' : '',
+        'ariaLabel' : '',
         'disabled' : false,
         'className' : '',
         'contentClassName' : '',
@@ -7584,6 +7585,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
             that.params['min'] = that.params['node'].getAttribute('min') || that.params['min'];
             that.params['max'] = that.params['node'].getAttribute('max') || that.params['max'];
             that.params['placeholder'] = that.params['node'].getAttribute('placeholder') || that.params['placeholder'];
+            that.params['ariaLabel'] = that.params['node'].getAttribute('aria-label') || that.params['ariaLabel'];
         }
         that.triggerEvent('onValidateParams');
         that.triggerEvent('onValidateParamsProcess');
@@ -8428,6 +8430,10 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         }
         if(!cm.isEmpty(that.params['title'])){
             that.nodes['content']['input'].setAttribute('title', that.params['title']);
+        }
+        // Aria label
+        if(cm.isEmpty(that.params['label']) && cm.isEmpty(that.params['title']) && !cm.isEmpty(that.params['placeholder'])){
+            that.nodes['content']['input'].setAttribute('aria-label', that.params['placeholder']);
         }
         // Classes
         if(!that.params['visible']){
@@ -9432,7 +9438,8 @@ cm.define('Com.Form', {
             'params' : ''                                           // Params object. %baseUrl%, %callback% for JSONP.
         },
         'Com.Notifications' : {},
-        'Com.Overlay' : {
+        'overlayConstructor' : 'Com.Overlay',
+        'overlayParams' : {
             'position' : 'absolute',
             'autoOpen' : false,
             'removeOnClose' : true
@@ -9523,7 +9530,7 @@ function(params){
         });
         // Overlay Loader
         if(that.params['showLoader']){
-            cm.getConstructor('Com.Overlay', function(classConstructor, className){
+            cm.getConstructor(that.params['overlayConstructor'], function(classConstructor){
                 switch(that.params['loaderCoverage']){
                     case 'fields':
                         overlayContainer = that.nodes['fieldsContainer'];
@@ -9534,7 +9541,7 @@ function(params){
                         break;
                 }
                 that.components['loader'] = new classConstructor(
-                    cm.merge(that.params[className], {
+                    cm.merge(that.params['overlayParams'], {
                         'container' : overlayContainer
                     })
                 );
@@ -9601,12 +9608,23 @@ function(params){
             'name' : '',
             'label' : '',
             'class' : '',
+            'spinner' : false,
+            'spinnerClass' : '',
             'action' : 'submit',          // submit | reset | clear | custom
             'handler' : function(){}
         }, params);
         // Render
         if(!that.buttons[params['name']]){
-            params['node'] = cm.node('button', {'name' : params['name'], 'class' : params['class']}, params['label']);
+            params['node'] = cm.node('button', {'name' : params['name'], 'class' : ['button', params['class']].join(' ')},
+                params['labelNode'] = cm.node('div', {'class' : 'label is-show'}, params['label'])
+            );
+            // Spinner
+            if(params['spinner']){
+                params['spinnerNode'] = cm.node('div', {'class' : ['icon', params['spinnerClass']].join(' ')});
+                cm.appendChild(params['spinnerNode'], params['node']);
+                cm.addClass(params['node'], 'button-spinner');
+            }
+            // Actions
             switch(params['action']){
                 case 'submit':
                     params['node'].type = 'submit';
@@ -9651,7 +9669,25 @@ function(params){
                     break;
             }
             cm.appendChild(params['node'], that.nodes['buttonsHolder']);
+            // Export
+            that.buttons[params['name']] = params;
         }
+    };
+
+    var toggleButtons = function(){
+        cm.forEach(that.buttons, function(item){
+            if(that.isProcess){
+                if(item['spinner']){
+                    cm.removeClass(item['labelNode'], 'is-show');
+                    cm.addClass(item['spinnerNode'], 'is-show');
+                }
+            }else{
+                if(item['spinner']){
+                    cm.addClass(item['labelNode'], 'is-show');
+                    cm.removeClass(item['spinnerNode'], 'is-show');
+                }
+            }
+        });
     };
 
     var renderSeparator = function(params){
@@ -9752,6 +9788,9 @@ function(params){
 
     that.callbacks.start = function(that, config){
         that.isProcess = true;
+        cm.addClass(that.nodes['container'], 'is-submitting');
+        // Toggle buttons
+        toggleButtons();
         // Show Loader
         if(that.params['showLoader']){
             that.loaderDelay = setTimeout(function(){
@@ -9765,6 +9804,9 @@ function(params){
 
     that.callbacks.end = function(that, config){
         that.isProcess = false;
+        cm.removeClass(that.nodes['container'], 'is-submitting');
+        // Toggle buttons
+        toggleButtons();
         // Hide Loader
         if(that.params['showLoader']){
             that.loaderDelay && clearTimeout(that.loaderDelay);
@@ -19573,10 +19615,10 @@ cm.define('Com.Overlay', {
     }
 },
 function(params){
-    var that = this,
-        themes = ['transparent', 'default', 'light', 'dark'];
+    var that = this;
 
     that.nodes = {};
+    that.currentTheme = null;
     that.isDestructed = false;
     that.isOpen = false;
     that.isShowSpinner = false;
@@ -19729,14 +19771,9 @@ function(params){
     };
 
     that.setTheme = function(theme){
-        if(cm.inArray(themes, theme)){
-            cm.addClass(that.nodes['container'], ['theme', theme].join('-'));
-            cm.forEach(themes, function(item){
-                if(item !== theme){
-                    cm.removeClass(that.nodes['container'], ['theme', item].join('-'));
-                }
-            });
-        }
+        that.currentTheme && cm.removeClass(that.nodes['container'], ['theme', that.currentTheme].join('-'));
+        theme && cm.addClass(that.nodes['container'], ['theme', theme].join('-'));
+        that.currentTheme = theme;
         return that;
     };
 
@@ -29465,6 +29502,9 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
             if(that.nodes['content']['icon']){
                 that.nodes['content']['icon'].title = that.params['title'];
             }
+        }
+        if(!cm.isEmpty(that.params['ariaLabel'])){
+            that.nodes['content']['input'].setAttribute('aria-label', that.params['ariaLabel']);
         }
         if(that.params['renderName']){
             that.nodes['content']['input'].name = that.params['visibleName'] || that.params['name'];

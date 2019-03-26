@@ -32,10 +32,10 @@ cm.define('Com.Overlay', {
     }
 },
 function(params){
-    var that = this,
-        themes = ['transparent', 'default', 'light', 'dark'];
+    var that = this;
 
     that.nodes = {};
+    that.currentTheme = null;
     that.isDestructed = false;
     that.isOpen = false;
     that.isShowSpinner = false;
@@ -188,14 +188,9 @@ function(params){
     };
 
     that.setTheme = function(theme){
-        if(cm.inArray(themes, theme)){
-            cm.addClass(that.nodes['container'], ['theme', theme].join('-'));
-            cm.forEach(themes, function(item){
-                if(item !== theme){
-                    cm.removeClass(that.nodes['container'], ['theme', item].join('-'));
-                }
-            });
-        }
+        that.currentTheme && cm.removeClass(that.nodes['container'], ['theme', that.currentTheme].join('-'));
+        theme && cm.addClass(that.nodes['container'], ['theme', theme].join('-'));
+        that.currentTheme = theme;
         return that;
     };
 

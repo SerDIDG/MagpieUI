@@ -102,6 +102,9 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
                 that.nodes['content']['icon'].title = that.params['title'];
             }
         }
+        if(!cm.isEmpty(that.params['ariaLabel'])){
+            that.nodes['content']['input'].setAttribute('aria-label', that.params['ariaLabel']);
+        }
         if(that.params['renderName']){
             that.nodes['content']['input'].name = that.params['visibleName'] || that.params['name'];
         }
