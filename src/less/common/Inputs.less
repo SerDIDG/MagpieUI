@@ -84,9 +84,11 @@
 }
 
 .textarea {
+    @padding: max(ceil((@CmForm-FieldHeight - @CmFont-Base-LineHeight - @CmBorder-Width * 2) / 2), @CmInput-Padding);
+
     height: @CmTextarea-Height;
-    min-height: @CmFont-Base-LineHeight + ((@CmInput-Padding + @CmBorder-Width ) * 2);
-    padding: @CmInput-Padding;
+    min-height: @CmForm-FieldHeight;
+    padding: @padding;
     resize: vertical;
 }
 
@@ -114,7 +116,6 @@
     height: @height;
     padding: @padding_calc @padding_x;
     border-width: @border;
-
 }
 
 /* *** APPLY *** */

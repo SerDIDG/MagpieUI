@@ -90,6 +90,7 @@ function(params){
     that.selectedItemIndex = null;
     that.value = null;
     that.previousValue = null;
+    that.valueText = null;
     that.rawValue = null;
 
     var init = function(){
@@ -214,6 +215,7 @@ function(params){
         var query = that.params['node'].value,
             config = cm.clone(that.params['ajax']);
         // Clear tooltip ajax/static delay and filtered items list
+        that.valueText = query;
         that.requestDelay && clearTimeout(that.requestDelay);
         that.selectedItemIndex = null;
         that.registeredItems = [];
@@ -479,7 +481,8 @@ function(params){
         that.rawValue = that.callbacks.convertItem(that, item);
         that.previousValue = that.value;
         that.value = !cm.isEmpty(that.rawValue) ? that.rawValue['value'] : null;
-        that.params['node'].value = !cm.isEmpty(that.rawValue) ? that.rawValue['text'] : '';
+        that.valueText = !cm.isEmpty(that.rawValue) ? that.rawValue['text'] : '';
+        that.params['node'].value = that.valueText;
         // Trigger events
         if(triggerEvents){
             that.triggerEvent('onSelect', that.value);
@@ -521,6 +524,10 @@ function(params){
         return that.value;
     };
 
+    that.getText = function(){
+        return that.valueText;
+    };
+
     that.getRaw = function(){
         return that.rawValue;
     };
@@ -554,6 +561,7 @@ function(params){
         that.previousValue = that.value;
         that.value = null;
         that.rawValue = null;
+        that.valueText = null;
         if(that.params['clearOnEmpty']){
             that.params['node'].value = '';
         }

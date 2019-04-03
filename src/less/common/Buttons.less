@@ -430,16 +430,18 @@
         .icon {
             visibility: hidden;
             opacity: 0;
-            .mx__transition(all, @PtOverlay-Duration);
-
-            &.is-show {
-                visibility: visible;
-                opacity: 1;
-            }
+            .mx__transition(all, @CmUI-Transition-Duration);
 
             &.is-hide {
                 visibility: hidden;
                 opacity: 0;
+                .mx__transform(scale(0));
+            }
+
+            &.is-show {
+                visibility: visible;
+                opacity: 1;
+                .mx__transform(scale(1));
             }
         }
 

@@ -442,7 +442,7 @@ cm.arrayIndex = function(a, item){
 };
 
 cm.inArray = function(a, item){
-    if(typeof a === 'string'){
+    if(cm.isString(a)){
         return a === item;
     }
     if(cm.isArray(a)){
@@ -1921,6 +1921,7 @@ cm.strReplace = function(str, vars){
 };
 
 cm.reduceText = function(str, length, points){
+    str = str.toString();
     points = cm.isUndefined(points) ? false : points;
     if(str.length > length){
         return str.slice(0, length) + ((points) ? '…' : '');
@@ -2008,7 +2009,6 @@ cm.getCurrentDate = function(format){
 };
 
 cm.dateFormat = function(date, format, langs, formatCase){
-    //date = !date ? new Date() : new Date(+date);
     if(cm.isDate(date)){
         date = new Date(+date);
     }else if(cm.isString(date)){
@@ -2105,7 +2105,7 @@ cm.parseDate = function(str, format){
     if(!str){
         return null;
     }
-    var date = new Date(),
+    var date = new Date(0),
         convertFormats = {
             '%Y%' : 'YYYY',
             '%m%' : 'mm',
@@ -2176,8 +2176,12 @@ cm.parseFormatDateTime = function(str, format, displayFormat, langs, formatCase)
 };
 
 cm.getWeek = function(date){
-    date = !date ? new Date() : new Date(+date);
-    var d = new Date(+date);
+    var d = new Date();
+    if(cm.isDate(date)){
+        d = new Date(+date);
+    }else if(cm.isString(date)){
+        d = new Date(date);
+    }
     d.setHours(0,0,0);
     d.setDate(d.getDate()+4-(d.getDay()||7));
     return Math.ceil((((d-new Date(d.getFullYear(),0,1))/8.64e7)+1)/7);
@@ -3184,36 +3188,35 @@ cm.charCodeIsDigit = function(code){
 };
 
 cm.allowOnlyDigitInputEvent = function(input, callback){
-    var value, isMaxLength, isMax;
-    cm.addEvent(input, 'input', function(e){
-        value = input.value.replace(/[^\d]/g, '');
-        isMaxLength = !cm.isEmpty(input.maxlength) && input.maxlength > 0;
-        isMax = !cm.isEmpty(input.max) && input.max > 0;
-        if(isMaxLength || isMax){
-            if(input.type === 'number'){
-                input.value = Math.min(parseFloat(value), parseFloat(input.max));
-            }else{
-                input.value = cm.reduceText(value, parseInt(input.maxlength));
-            }
-        }else{
-            input.value = value;
-        }
-        callback && callback(e, input.value);
-    });
-    return input;
+    return cm.allowOnlyNumbersInputEvent(input, callback, {'allowNegative' : false, 'allowFloat' : false});
 };
 
-cm.allowOnlyNumbersInputEvent = function(input, callback){
-    var value, isMaxlength, isMax;
+cm.allowOnlyNumbersInputEvent = function(input, callback, params){
+    var regexp, value, isMaxlength, isMax;
+    // Validate
+    params = cm.merge({
+        'allowNegative' : false,
+        'allowFloat' : false
+    }, params);
+    if(params['allowNegative'] && params['allowFloat']){
+        regexp = /[^\d-.]/g;
+    }else if(params['allowNegative']){
+        regexp = /[^\d-]/g;
+    }else if(params['allowFloat']){
+        regexp = /[^\d.]/g;
+    }else{
+        regexp = /[^\d]/g;
+    }
+    // Add events
     cm.addEvent(input, 'input', function(e){
-        value = input.value.replace(/[^\d-]/g, '');
+        value = input.value.replace(regexp, '');
         isMaxlength = !cm.isEmpty(input.maxlength) && input.maxlength > 0;
         isMax = !cm.isEmpty(input.max) && input.max > 0;
         if(isMaxlength || isMax){
             if(input.type === 'number'){
                 input.value = Math.min(parseFloat(value), parseFloat(input.max));
             }else{
-                input.value = cm.reduceText(value, parseInt(input.maxlength));
+                input.value = cm.reduceText(value, parseFloat(input.maxlength));
             }
         }else{
             input.value = value;

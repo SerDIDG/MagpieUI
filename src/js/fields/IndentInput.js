@@ -5,7 +5,8 @@ cm.define('Com.IndentInput', {
         'units' : 'px',
         'defaultValue' : '',
         'allowCustom' : false,
-        'allowNegative' : false
+        'allowNegative' : false,
+        'allowFloat' : false
     }
 },
 function(params){
@@ -25,6 +26,10 @@ cm.getConstructor('Com.IndentInput', function(classConstructor, className, class
 
     classProto.renderContent = function(){
         var that = this,
+            params = {
+                'allowNegative' : that.params['allowNegative'],
+                'allowFloat' : that.params['allowFloat']
+            },
             nodes = {};
         that.nodes['content'] = nodes;
         that.triggerEvent('onRenderContentStart');
@@ -52,14 +57,10 @@ cm.getConstructor('Com.IndentInput', function(classConstructor, className, class
             cm.addEvent(nodes['input'], 'input', function(e){
                 that.selectAction(nodes['input'].value, true);
             });
-        }else if(that.params['allowNegative']){
+        }else{
             cm.allowOnlyNumbersInputEvent(nodes['input'], function(e, value){
                 that.selectAction(that.validateValue(value), true);
-            });
-        }else{
-            cm.allowOnlyDigitInputEvent(nodes['input'], function(e, value){
-                that.selectAction(that.validateValue(value), true);
-            });
+            }, params);
         }
         that.triggerEvent('onRenderContentEnd');
         // Push

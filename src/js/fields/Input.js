@@ -23,6 +23,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     classProto.construct = function(){
         var that = this;
         // Variables
+        that.isFocus = false;
         that.lazyDelay = null;
         // Bind context to methods
         that.focusHandler = that.focus.bind(that);
@@ -73,11 +74,14 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
             nodes['container'] = nodes['input'] = cm.node('textarea');
         }else{
             nodes['container'] = cm.node('div', {'class' : 'pt__input'},
-                nodes['input'] = cm.node('input', {'type' : that.params['type']})
+                nodes['inner'] = cm.node('div', {'class' : 'inner'},
+                    nodes['input'] = cm.node('input', {'type' : that.params['type']})
+                )
             );
+            // Icon
             if(that.params['icon']){
                 nodes['icon'] = cm.node('div', {'class' : that.params['icon']});
-                cm.appendChild(nodes['icon'], nodes['container']);
+                cm.appendChild(nodes['icon'], nodes['inner']);
             }
         }
         return nodes;
@@ -90,6 +94,9 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
         cm.setInputMinLength(that.nodes['content']['input'], that.params['minLength'], that.params['min']);
         cm.setInputMaxLength(that.nodes['content']['input'], that.params['maxLength'], that.params['max']);
         // Placeholder / Title
+        if(!cm.isEmpty(that.params['id'])){
+            that.nodes['content']['input'].setAttribute('id', that.params['id']);
+        }
         if(!cm.isEmpty(that.params['placeholder'])){
             that.nodes['content']['input'].placeholder = that.params['placeholder'];
             if(that.nodes['content']['icon']){
@@ -124,7 +131,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
 
     classProto.inputKeyPress = function(e){
         var that = this;
-        if(cm.isKeyCode(e.keyCode, 'enter')){
+        if(that.params['type'] !== 'textarea' && cm.isKeyCode(e.keyCode, 'enter')){
             cm.preventDefault(e);
             that.setValue();
             that.nodes['content']['input'].blur();
@@ -142,11 +149,13 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
 
     classProto.focusEvent = function(){
         var that = this;
+        that.isFocus = true;
         that.triggerEvent('onFocus', that.value);
     };
 
     classProto.blurEvent = function(){
         var that = this;
+        that.isFocus = false;
         that.setValue(true);
         that.triggerEvent('onBlur', that.value);
     };

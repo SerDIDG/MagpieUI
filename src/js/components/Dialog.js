@@ -146,6 +146,7 @@ function(params){
         }
         if(that.params['closeButton']){
             cm.addClass(nodes['container'], 'has-close-inside');
+            cm.addClass(nodes['window'], 'has-close-inside');
             nodes['window'].appendChild(
                 nodes['closeInside'] = cm.Node('div', {'class' : that.params['icons']['closeInside'], 'title' : that.lang('closeTitle')}, that.lang('close'))
             );

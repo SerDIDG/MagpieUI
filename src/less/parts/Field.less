@@ -214,6 +214,60 @@ ul.pt__field__hint {
     }
 }
 
+/* *** CONTENT *** */
+
+.pt__field__content {
+    .placeholder {
+        .cm__font--placeholder;
+        .cm__text-nowrap;
+        position: absolute;
+        padding: 0 @CmInput-Padding;
+        cursor: text;
+        pointer-events: none;
+        .mx__position(0, 0, 0, 0);
+        .mx__transition(all, @CmUI-Transition-Duration, @CmUI-MotionAsymmetric);
+
+        &.pull-top {
+            font-size: @CmFont-Placeholder-SizeSmall;
+            line-height: @CmFont-Base-LineHeight;
+            .mx__transition(all, @CmUI-Transition-DurationReverse, @CmUI-MotionAsymmetric);
+        }
+    }
+
+    .pt__field__content--size-helper(@CmForm-FieldHeight, @CmInput-Padding, @CmBorder-Width, @CmFont-Base-LineHeight);
+}
+
+
+// /* *** MIXINS *** */
+
+.pt__filed--size (@size, @indent: @CmForm-FieldIndent) {
+    > dt,
+    > .field__title {
+        width: @size;
+    }
+
+    > dd,
+    > .field__descr {
+        margin-left: @size + @indent;
+    }
+}
+
+.pt__field__content--size-helper (@height, @paddingX, @borderWidth, @lineHeight) {
+    @inputPadding: max(ceil((@height - @lineHeight - @borderWidth * 2) / 2), @paddingX);
+
+    .placeholder {
+        line-height: @height;
+        padding: 0 (@inputPadding + @borderWidth);
+    }
+
+    &.is-placeholder-above {
+        .input {
+            padding-top: ceil(@inputPadding * 0.75 * 2);
+            padding-bottom: ceil(@inputPadding * 0.25 * 2);
+        }
+    }
+}
+
 /* ******* PART: FIELD: ADAPTIVE ******* */
 
 @media only screen and (max-width: @CmScreen-Mobile) {

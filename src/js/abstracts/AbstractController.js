@@ -60,7 +60,7 @@ cm.define('Com.AbstractController', {
         'embedStructure' : 'append',
         'renderStructure' : true,
         'embedStructureOnRender' : true,
-        'redrawOnRender' : true,
+        'redrawOnRender' : 'immediately',
         'removeOnDestruct' : false,
         'className' : '',
         'controllerEvents' : false,
@@ -137,19 +137,36 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         return that;
     };
 
-    classProto.redraw = function(e){
+    classProto.redraw = function(params){
         var that = this;
-        animFrame(function(){
-            that.triggerEvent('onRedraw');
-        });
+        switch(params){
+            case 'full':
+                cm.customEvent.trigger(that.nodes['container'], 'redraw', {
+                    'direction' : 'child',
+                    'self' : true
+                });
+                break;
+            case 'immediately':
+                that.triggerEvent('onRedraw');
+                break;
+            default:
+                animFrame(function(){
+                    that.triggerEvent('onRedraw');
+                });
+                break;
+        }
         return that;
     };
 
-    classProto.scroll = function(){
+    classProto.scroll = function(params){
         var that = this;
-        animFrame(function(){
+        if(params === 'immediately'){
             that.triggerEvent('onScroll');
-        });
+        }else{
+            animFrame(function(){
+                that.triggerEvent('onScroll');
+            });
+        }
         return that;
     };
 
@@ -202,7 +219,11 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         // Append
         if(that.params['embedStructureOnRender']){
             that.embedStructure(that.nodes['container']);
-            that.params['redrawOnRender'] && that.redraw();
+            if(that.params['redrawOnRender'] === true){
+                that.redraw();
+            }else if(cm.isString(that.params['redrawOnRender'])){
+                that.redraw(that.params['redrawOnRender'])
+            }
         }
         return that;
     };

@@ -23,6 +23,7 @@ cm.define('Com.AbstractInput', {
         'value' : '',
         'defaultValue' : '',
         'isValueOption' : false,
+        'id' : '',
         'title' : '',
         'placeholder' : '',
         'ariaLabel' : '',
@@ -146,6 +147,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         that.triggerEvent('onValidateParamsStart');
         // Get parameters from provided input
         if(cm.isNode(that.params['node'])){
+            that.params['id'] = that.params['node'].getAttribute('id') || that.params['id'];
             that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
             that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
             that.params['disabled'] = that.params['node'].disabled || that.params['node'].readOnly || that.params['disabled'];

@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.36.23 (2019-03-26 21:56) ************ */
+/*! ************ MagpieUI v3.36.24 (2019-04-03 21:01) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.6.0
@@ -3512,8 +3512,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.36.23');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.36.23') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.36.23') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.36.23') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.36.23#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.36.24');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.36.24') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.36.24') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.36.24') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.36.24#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -3926,6 +3926,11 @@ span.CodeMirror-selectedtext {
 .cm__font--hint {
   font: 400 11px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #999999;
+}
+.cm__font--placeholder {
+  font-size: inherit;
+  font-style: inherit;
+  color: #b7b7b7;
 }
 .cm__font--hint-cursive {
   font: 400 11px/18px "Open+Sans", arial, helvetica, sans-serif;
@@ -6179,21 +6184,8 @@ button.button-spinner .label,
 button.button-spinner .icon {
   visibility: hidden;
   opacity: 0;
-  -webkit-transition: all 500ms ease-in-out 0ms;
-  transition: all 500ms ease-in-out 0ms;
-}
-.button.button-spinner .label.is-show,
-.button.button-spinner .icon.is-show,
-input[type="button"].button-spinner .label.is-show,
-input[type="button"].button-spinner .icon.is-show,
-input[type="submit"].button-spinner .label.is-show,
-input[type="submit"].button-spinner .icon.is-show,
-input[type="reset"].button-spinner .label.is-show,
-input[type="reset"].button-spinner .icon.is-show,
-button.button-spinner .label.is-show,
-button.button-spinner .icon.is-show {
-  visibility: visible;
-  opacity: 1;
+  -webkit-transition: all 250ms ease-in-out 0ms;
+  transition: all 250ms ease-in-out 0ms;
 }
 .button.button-spinner .label.is-hide,
 .button.button-spinner .icon.is-hide,
@@ -6207,6 +6199,25 @@ button.button-spinner .label.is-hide,
 button.button-spinner .icon.is-hide {
   visibility: hidden;
   opacity: 0;
+  -webkit-transform: scale(0);
+  -ms-transform: scale(0);
+  transform: scale(0);
+}
+.button.button-spinner .label.is-show,
+.button.button-spinner .icon.is-show,
+input[type="button"].button-spinner .label.is-show,
+input[type="button"].button-spinner .icon.is-show,
+input[type="submit"].button-spinner .label.is-show,
+input[type="submit"].button-spinner .icon.is-show,
+input[type="reset"].button-spinner .label.is-show,
+input[type="reset"].button-spinner .icon.is-show,
+button.button-spinner .label.is-show,
+button.button-spinner .icon.is-show {
+  visibility: visible;
+  opacity: 1;
+  -webkit-transform: scale(1);
+  -ms-transform: scale(1);
+  transform: scale(1);
 }
 .button.button-spinner .icon,
 input[type="button"].button-spinner .icon,
@@ -9688,6 +9699,47 @@ ul.pt__field__hint li:first-child {
 ul.pt__field__hint li:before {
   content: '-';
   margin-right: 4px;
+}
+/* *** CONTENT *** */
+.pt__field__content .placeholder {
+  font-size: inherit;
+  font-style: inherit;
+  color: #b7b7b7;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  position: absolute;
+  padding: 0 6px;
+  cursor: text;
+  pointer-events: none;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  -webkit-transition: all 250ms cubic-bezier(0.5, 0, 0.15, 1) 0ms;
+  transition: all 250ms cubic-bezier(0.5, 0, 0.15, 1) 0ms;
+}
+.pt__field__content .placeholder.pull-top {
+  font-size: 11px;
+  line-height: 18px;
+  -webkit-transition: all 100ms cubic-bezier(0.5, 0, 0.15, 1) 0ms;
+  transition: all 100ms cubic-bezier(0.5, 0, 0.15, 1) 0ms;
+}
+.pt__field__content .placeholder {
+  line-height: 32px;
+  padding: 0 7px;
+}
+.pt__field__content.is-placeholder-above .input,
+.pt__field__content.is-placeholder-above input[type="text"],
+.pt__field__content.is-placeholder-above input[type="search"],
+.pt__field__content.is-placeholder-above input[type="email"],
+.pt__field__content.is-placeholder-above input[type="number"],
+.pt__field__content.is-placeholder-above input[type="time"],
+.pt__field__content.is-placeholder-above input[type="password"],
+.pt__field__content.is-placeholder-above textarea,
+.pt__field__content.is-placeholder-above select {
+  padding-top: 9px;
+  padding-bottom: 3px;
 }
 /* ******* PART: FIELD: ADAPTIVE ******* */
 @media only screen and (max-width: 640px) {
@@ -18777,18 +18829,24 @@ ul.pt__field__hint li:before {
 .com__pagination__bar ul li a.button-spinner .icon {
   visibility: hidden;
   opacity: 0;
-  -webkit-transition: all 500ms ease-in-out 0ms;
-  transition: all 500ms ease-in-out 0ms;
-}
-.com__pagination__bar ul li a.button-spinner .label.is-show,
-.com__pagination__bar ul li a.button-spinner .icon.is-show {
-  visibility: visible;
-  opacity: 1;
+  -webkit-transition: all 250ms ease-in-out 0ms;
+  transition: all 250ms ease-in-out 0ms;
 }
 .com__pagination__bar ul li a.button-spinner .label.is-hide,
 .com__pagination__bar ul li a.button-spinner .icon.is-hide {
   visibility: hidden;
   opacity: 0;
+  -webkit-transform: scale(0);
+  -ms-transform: scale(0);
+  transform: scale(0);
+}
+.com__pagination__bar ul li a.button-spinner .label.is-show,
+.com__pagination__bar ul li a.button-spinner .icon.is-show {
+  visibility: visible;
+  opacity: 1;
+  -webkit-transform: scale(1);
+  -ms-transform: scale(1);
+  transform: scale(1);
 }
 .com__pagination__bar ul li a.button-spinner .icon {
   animation: spin 2s linear infinite;

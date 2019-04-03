@@ -2,11 +2,11 @@ cm.define('Com.IntegerInput', {
     'extend' : 'Com.AbstractInput',
     'params' : {
         'controllerEvents' : true,
-        'maxlength' : 3,
+        'maxLength' : 3,
         'max' : 0,
         'defaultValue' : 0,
         'allowNegative' : false,
-        'type' : 'text'
+        'allowFloat' : false
     }
 },
 function(params){
@@ -15,16 +15,13 @@ function(params){
     Com.AbstractInput.apply(that, arguments);
 });
 
-cm.getConstructor('Com.IntegerInput', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
+cm.getConstructor('Com.IntegerInput', function(classConstructor, className, classProto, classInherit){
     classProto.construct = function(){
         var that = this;
         // Bind context to methods
         that.setValueHandler = that.setValue.bind(that);
         // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
-        return that;
+        classInherit.prototype.construct.apply(that, arguments);
     };
 
     classProto.onValidateParams = function(){
@@ -33,13 +30,16 @@ cm.getConstructor('Com.IntegerInput', function(classConstructor, className, clas
             that.params['type'] = that.params['node'].getAttribute('type') || that.params['max'];
             that.params['max'] = that.params['node'].getAttribute('max') || that.params['max'];
         }
-        return that;
     };
 
     /*** VIEW MODEL ***/
 
     classProto.renderContent = function(){
         var that = this,
+            params = {
+                'allowNegative' : that.params['allowNegative'],
+                'allowFloat' : that.params['allowFloat']
+            },
             nodes = {};
         that.nodes['content'] = nodes;
         that.triggerEvent('onRenderContentStart');
@@ -48,7 +48,7 @@ cm.getConstructor('Com.IntegerInput', function(classConstructor, className, clas
             nodes['input'] = cm.node('input', {'type' : that.params['type']})
         );
         // Attributes
-        cm.setInputMaxLength(nodes['input'], that.params['maxlength'], that.params['max']);
+        cm.setInputMaxLength(nodes['input'], that.params['maxLength'], that.params['max']);
         // Events
         that.triggerEvent('onRenderContentProcess');
         cm.addEvent(nodes['input'], 'blur', that.setValueHandler);
@@ -59,16 +59,9 @@ cm.getConstructor('Com.IntegerInput', function(classConstructor, className, clas
                 nodes['input'].blur();
             }
         });
-
-        if(that.params['allowNegative']){
-            cm.allowOnlyNumbersInputEvent(nodes['input'], function(e, value){
-                that.selectAction(that.validateValue(value), true);
-            });
-        }else{
-            cm.allowOnlyDigitInputEvent(nodes['input'], function(e, value){
-                that.selectAction(that.validateValue(value), true);
-            });
-        }
+        cm.allowOnlyNumbersInputEvent(nodes['input'], function(e, value){
+            that.selectAction(that.validateValue(value), true);
+        }, params);
         that.triggerEvent('onRenderContentEnd');
         // Push
         return nodes['container'];
@@ -79,7 +72,7 @@ cm.getConstructor('Com.IntegerInput', function(classConstructor, className, clas
     classProto.validateValue = function(value){
         var that = this;
         value = !cm.isEmpty(value) ? value : that.params['defaultValue'];
-        value = parseInt(value);
+        value = parseFloat(value);
         that.rawValue = !isNaN(value) ? value : '';
         return that.rawValue;
     };

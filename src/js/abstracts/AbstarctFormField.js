@@ -41,6 +41,7 @@ cm.define('Com.AbstractFormField', {
         'helpType' : 'tooltip', // tooltip | container
         'icon' : false,
         'placeholder' : '',
+        'showPlaceholderAbove' : false,
         'title' : '',
         'hint' : '',
         'visible' : true,
@@ -81,22 +82,28 @@ function(params){
     Com.AbstractController.apply(that, arguments);
 });
 
-cm.getConstructor('Com.AbstractFormField', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
+cm.getConstructor('Com.AbstractFormField', function(classConstructor, className, classProto, classInherit){
     /******* SYSTEM *******/
 
     classProto.onConstructStart = function(){
         var that = this;
         // Variables
+        that._name = null;
         that.isVisible = null;
         that.isAjax = false;
         that.isProcess = false;
         that.isPreloaded = false;
+        that.isFocus = false;
         that.nodeTagName = null;
         // Bind context
         that.focusHandler = that.focus.bind(that);
         that.blurHandler = that.blur.bind(that);
+        that.focusEventHandler = that.focusEvent.bind(that);
+        that.blurEventHandler = that.blurEvent.bind(that);
+        that.inputEventHandler = that.inputEvent.bind(that);
+        that.selectEventHandler = that.selectEvent.bind(that);
+        that.changeEventHandler = that.changeEvent.bind(that);
+        that.resetEventHandler = that.resetEvent.bind(that);
     };
 
     classProto.onConstructEnd = function(){
@@ -117,11 +124,13 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.onValidateParams = function(){
         var that = this;
         that.validateParamsValue();
+        that._name = that.params['formName'] + '[' + that.params['name'] + ']';
         // Validate
         if(that.params['required'] && that.params['requiredAsterisk'] && !cm.isEmpty(that.params['placeholder'])){
             that.params['placeholder'] += ' *';
         }
         // Constructor params
+        that.params['constructorParams']['id'] = that.params['id'];
         that.params['constructorParams']['name'] = that.params['name'];
         that.params['constructorParams']['visibleName'] = that.params['visibleName'];
         that.params['constructorParams']['renderName'] = that.params['renderName'];
@@ -133,7 +142,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.params['constructorParams']['maxLength'] = that.params['maxLength'];
         that.params['constructorParams']['min'] = that.params['min'];
         that.params['constructorParams']['max'] = that.params['max'];
-        that.params['constructorParams']['placeholder'] = that.params['placeholder'];
+        that.params['constructorParams']['placeholder'] = !that.params['showPlaceholderAbove'] ? that.params['placeholder'] : '';
         that.params['constructorParams']['title'] = that.params['title'];
         that.params['constructorParams']['ajax'] = that.params['ajax'];
         // Components
@@ -204,7 +213,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         );
         // Label
         if(!cm.isEmpty(that.params['label'])){
-            that.nodes['labelText'] = cm.node('label', that.params['label']);
+            that.nodes['labelText'] = cm.node('label', {'for' : that._name}, that.params['label']);
             cm.appendChild(that.nodes['labelText'], that.nodes['label']);
         }
         // Required
@@ -235,6 +244,12 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             cm.addEvent(nodes['icon'], 'click', that.focusHandler);
             cm.appendChild(nodes['field'], nodes['container']);
         }
+        // Placeholder
+        if(that.params['showPlaceholderAbove'] && !cm.isEmpty(that.params['placeholder'])){
+            nodes['placeholder'] = cm.node('label', {'class' : 'placeholder', 'innerHTML' : that.params['placeholder'], 'for' : that._name});
+            cm.appendChild(nodes['placeholder'], nodes['container']);
+            cm.addClass(nodes['container'], 'is-placeholder-above');
+        }
         // Options
         if(!cm.isEmpty(that.params['options'])){
             that.renderOptions(that.params['options']);
@@ -261,8 +276,11 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         var that = this,
             value;
         // Call parent method
-        _inherit.prototype.setAttributes.apply(that, arguments);
+        classInherit.prototype.setAttributes.apply(that, arguments);
         // Attributes
+        if(!cm.isEmpty(that._name)){
+            that.nodes['content']['input'].setAttribute('id', that._name);
+        }
         if(!cm.isEmpty(that.params['name'])){
             that.nodes['content']['input'].setAttribute('name', that.params['name']);
         }
@@ -284,15 +302,14 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         if(!cm.isEmpty(that.params['dataValue'])){
             that.nodes['content']['input'].setAttribute('data-value', JSON.stringify(that.params['dataValue']));
         }
-        if(!cm.isEmpty(that.params['placeholder'])){
+        if(!cm.isEmpty(that.params['placeholder']) && !that.params['showPlaceholderAbove']){
             that.nodes['content']['input'].setAttribute('placeholder', that.params['placeholder']);
+            if(cm.isEmpty(that.params['label']) && cm.isEmpty(that.params['title'])){
+                that.nodes['content']['input'].setAttribute('aria-label', that.params['placeholder']);
+            }
         }
         if(!cm.isEmpty(that.params['title'])){
             that.nodes['content']['input'].setAttribute('title', that.params['title']);
-        }
-        // Aria label
-        if(cm.isEmpty(that.params['label']) && cm.isEmpty(that.params['title']) && !cm.isEmpty(that.params['placeholder'])){
-            that.nodes['content']['input'].setAttribute('aria-label', that.params['placeholder']);
         }
         // Classes
         if(!that.params['visible']){
@@ -305,7 +322,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.renderViewModel = function(){
         var that = this;
         // Call parent method - renderViewModel
-        _inherit.prototype.renderViewModel.apply(that, arguments);
+        classInherit.prototype.renderViewModel.apply(that, arguments);
         // Help Bubble
         if(!cm.isEmpty(that.params['help'])){
             cm.getConstructor('Com.HelpBubble', function(classConstructor){
@@ -335,38 +352,76 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
                     })
                 );
                 that.renderControllerEvents();
+                that.togglePlaceholder();
             });
         }
     };
 
     classProto.renderControllerEvents = function(){
         var that = this;
-        that.components['controller'].addEvent('onFocus', function(controller, data){
-            that.triggerEvent('onFocus', data);
-        });
-        that.components['controller'].addEvent('onBlur', function(controller, data){
-            that.triggerEvent('onBlur', data);
-        });
-        that.components['controller'].addEvent('onSelect', function(controller, data){
-            that.triggerEvent('onSelect', data);
-        });
-        that.components['controller'].addEvent('onInput', function(controller, data){
-            that.triggerEvent('onInput', data);
-        });
-        that.components['controller'].addEvent('onChange', function(controller, data){
-            that.triggerEvent('onChange', data);
-        });
-        that.components['controller'].addEvent('onReset', function(controller, data){
-            that.triggerEvent('onReset', data);
-        });
+        that.components['controller'].addEvent('onFocus', that.focusEventHandler);
+        that.components['controller'].addEvent('onBlur', that.blurEventHandler);
+        that.components['controller'].addEvent('onSelect', that.selectEventHandler);
+        that.components['controller'].addEvent('onInput', that.inputEventHandler);
+        that.components['controller'].addEvent('onChange', that.changeEventHandler);
+        that.components['controller'].addEvent('onReset', that.resetEventHandler);
         return that;
+    };
+
+    classProto.togglePlaceholder = function(){
+        var that = this;
+        if(that.params['showPlaceholderAbove']){
+            if(that.isFocus || !cm.isEmpty(that.getText())){
+                cm.addClass(that.nodes['content']['placeholder'], 'pull-top');
+            }else{
+                cm.removeClass(that.nodes['content']['placeholder'], 'pull-top');
+            }
+        }
+    };
+
+    /******* EVENTS *******/
+
+    classProto.focusEvent = function(controller, data){
+        var that = this;
+        that.isFocus = true;
+        that.togglePlaceholder();
+        that.triggerEvent('onFocus', data);
+    };
+
+    classProto.blurEvent = function(controller, data){
+        var that = this;
+        that.isFocus = false;
+        that.togglePlaceholder();
+        that.triggerEvent('onBlur', data);
+    };
+
+    classProto.inputEvent = function(controller, data){
+        var that = this;
+        that.triggerEvent('onInput', data);
+    };
+
+    classProto.selectEvent = function(controller, data){
+        var that = this;
+        that.triggerEvent('onSelect', data);
+    };
+
+    classProto.changeEvent = function(controller, data){
+        var that = this;
+        that.togglePlaceholder();
+        that.triggerEvent('onChange', data);
+    };
+
+    classProto.resetEvent = function(controller, data){
+        var that = this;
+        that.togglePlaceholder();
+        that.triggerEvent('onReset', data);
     };
 
     /******* DATA *******/
 
-    classProto.set = function(value){
+    classProto.set = function(value, triggerEvents){
         var that = this;
-        that.components['controller'] && cm.isFunction(that.components['controller'].set) && that.components['controller'].set(value);
+        that.components['controller'] && cm.isFunction(that.components['controller'].set) && that.components['controller'].set(value, triggerEvents);
         return that;
     };
 

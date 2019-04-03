@@ -174,6 +174,7 @@ function(params){
         // Merge params
         params = cm.merge({
             'form' : that,
+            'formName' : that.params['name'],
             'system' : false,
             'send' : true,
             'name' : '',
@@ -298,13 +299,13 @@ function(params){
         cm.forEach(that.buttons, function(item){
             if(that.isProcess){
                 if(item['spinner']){
-                    cm.removeClass(item['labelNode'], 'is-show');
-                    cm.addClass(item['spinnerNode'], 'is-show');
+                    cm.replaceClass(item['labelNode'], 'is-show', 'is-hide');
+                    cm.replaceClass(item['spinnerNode'], 'is-hide', 'is-show');
                 }
             }else{
                 if(item['spinner']){
-                    cm.addClass(item['labelNode'], 'is-show');
-                    cm.removeClass(item['spinnerNode'], 'is-show');
+                    cm.replaceClass(item['labelNode'], 'is-hide', 'is-show');
+                    cm.replaceClass(item['spinnerNode'], 'is-show', 'is-hide');
                 }
             }
         });
@@ -683,13 +684,13 @@ function(params){
         return that.get('all');
     };
 
-    that.set = function(data){
+    that.set = function(data, triggerEvents){
         var field, setValue;
         cm.forEach(data, function(value, name){
             field = that.fields[name];
             if(field && !field['system']){
                 setValue = data[field['dataName']] || value;
-                that.fields[name]['controller'].set(setValue);
+                that.fields[name]['controller'].set(setValue, triggerEvents);
             }
         });
         return that;
