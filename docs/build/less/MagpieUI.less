@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.24 (2019-04-03 21:01) ************ */
+/*! ************ MagpieUI v3.36.25 (2019-04-04 19:44) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3924,7 +3924,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.36.24';
+@CmVersion: '3.36.25';
 
 // /* ******* PATH ******* */
 
@@ -4758,6 +4758,7 @@ span.CodeMirror-selectedtext { background: none; }
 @ComDialog-Indent: @CmIndent-Medium;
 @ComDialog-Radius: @CmBorder-Radius;
 @ComDialog-TitleIndent: @CmIndent-XSmall;
+@ComDialog-IconSize: @CmSize-Medium;
 @ComDialog-Overlay: @CmUI-Overlay-Dark;
 
 @ComDialog-Default-Background: @CmColor-Background;
@@ -4769,6 +4770,11 @@ span.CodeMirror-selectedtext { background: none; }
 @ComDialog-Light-Background: @CmColor-Background;
 @ComDialog-Light-TitleColor: @CmFont-UI-ColorOpposite;
 @ComDialog-Light-TitleBackground: @CmColor-Primary-DarkDefault;
+
+@ComDialog-Compact-Indent: @CmIndent-XSmall;
+@ComDialog-Compact-TitleHeight: @CmForm-FieldHeight;
+@ComDialog-Compact-TitleIndent: @ComDialog-Compact-Indent;
+@ComDialog-Compact-IconSize: @CmForm-FieldHeight;
 
 @ComDialog-Box-Indent: @CmIndent-Medium;
 
@@ -11587,8 +11593,11 @@ ul.pt__field__hint {
 /* ****** PART: LINE: INFO ******* */
 
 .pt__line-info {
-    .clearfix;
+    .display-flex;
+    .mx__flex-flow(row wrap);
+    .mx__align-items(center);
 
+    .icon,
     .item,
     .category,
     .author,
@@ -11596,7 +11605,6 @@ ul.pt__field__hint {
     .hash,
     .links,
     .status {
-        float: left;
         margin: 0 @CmIndent-XSmall 0 0;
         line-height: inherit;
         font-size: inherit;
@@ -15309,6 +15317,12 @@ ul.pt__field__hint {
             }
         }
     }
+
+    // /* *** COMPACT *** */
+
+    &.theme-compact {
+        &:extend(.com__dialog.theme-light all);
+    }
 }
 
 .com__dialog__window {
@@ -15320,8 +15334,6 @@ ul.pt__field__hint {
         .com__dialog-font--theme-default;
 
         > .icon {
-            .cm__size__medium;
-
             &.default {
                 .icon.medium.close;
             }
@@ -15342,8 +15354,8 @@ ul.pt__field__hint {
             }
         }
 
-        .com__dialog__title-height(@titleHeight);
-        .com__dialog__title-indent(@ComDialog-Indent);
+        .com__dialog__title-height(@titleHeight, @ComDialog-IconSize);
+        .com__dialog__title-indent(@ComDialog-Indent, @ComDialog-IconSize);
         .com__dialog__content-indent(@ComDialog-Indent);
     }
 
@@ -15395,8 +15407,35 @@ ul.pt__field__hint {
             }
         }
 
-        .com__dialog__title-height(@CmSize-XLarge);
-        .com__dialog__title-indent(@ComDialog-TitleIndent);
+        .com__dialog__title-height(@CmSize-XLarge, @ComDialog-IconSize);
+        .com__dialog__title-indent(@ComDialog-TitleIndent, @ComDialog-IconSize);
+        .com__dialog__content-indent(@ComDialog-Indent, @ComDialog-Indent);
+    }
+
+    // /* *** COMPACT *** */
+
+    &.theme-compact {
+        &:extend(.com__dialog__window.theme-light all);
+
+        > .icon {
+            &.default {
+                .svg__close-white;
+                right: 0;
+                background-size: 18px 18px;
+            }
+        }
+
+        > .inner {
+            > .title {
+                .cm__font--ui-h4;
+                line-height: @ComDialog-Compact-TitleHeight;
+                color: @ComDialog-Light-TitleColor;
+            }
+        }
+
+        .com__dialog__title-height(@ComDialog-Compact-TitleHeight, @ComDialog-Compact-IconSize);
+        .com__dialog__title-indent(@ComDialog-Compact-TitleIndent, @ComDialog-Compact-IconSize, 0px);
+        .com__dialog__content-indent(@ComDialog-Compact-Indent, @ComDialog-Compact-Indent);
     }
 
 }
@@ -15416,42 +15455,44 @@ ul.pt__field__hint {
 
 /* *** MIXINS *** */
 
-.com__dialog__content-indent (@value: @ComDialog-Indent) {
+.com__dialog__content-indent (@indent: @ComDialog-Indent, @top: 0px) {
     > .inner {
         > .descr {
             .com__dialog__inner {
-                padding: 0 @value;
+                padding: @top @indent 0;
             }
 
             &:first-child {
                 .com__dialog__inner {
-                    padding-top: @value
+                    padding-top: @indent
                 }
             }
 
             &:last-child {
                 .com__dialog__inner {
-                    padding-bottom: @value
+                    padding-bottom: @indent
                 }
             }
         }
 
         > .buttons {
-            padding: @value;
+            padding: @indent;
         }
     }
 }
 
-.com__dialog__title-height (@value) {
-    @indent: round((@value - @CmFont-UI-H1-LineHeight) / 2);
+.com__dialog__title-height (@height, @icon_size: @ComDialog-IconSize) {
+    @indent: round((@height - @CmFont-UI-H1-LineHeight) / 2);
 
     > .icon {
-        top: round((@value - @CmSize-Medium) / 2);
+        width: @icon_size;
+        height: @icon_size;
+        top: round((@height - @icon_size) / 2);
     }
 
     > .inner {
         > .title {
-            min-height: @value;
+            min-height: @height;
             padding-top: @indent;
             padding-bottom: @indent;
         }
@@ -15461,28 +15502,28 @@ ul.pt__field__hint {
         > .inner {
             > .descr {
                 &:first-child {
-                    padding-top: @value;
+                    padding-top: @height;
                 }
             }
         }
     }
 }
 
-.com__dialog__title-indent (@value) {
+.com__dialog__title-indent (@indent: @ComDialog-TitleIndent, @icon_size: @ComDialog-IconSize, @icon_indent: @ComDialog-TitleIndent) {
     > .icon {
-        right: @value;
+        right: @icon_indent;
     }
 
     > .inner {
         > .title {
-            padding-left: @value;
+            padding-left: @indent;
         }
     }
 
     &.has-close-inside {
         > .inner {
             > .title {
-                padding-right: @value * 2 + @CmSize-Medium;
+                padding-right: @indent + @icon_indent + @icon_size;
             }
         }
     }
@@ -15490,7 +15531,7 @@ ul.pt__field__hint {
     &:not(.is-title-reserve){
         &.has-no-title {
             > .icon {
-                right: -@value - @CmIndent-Medium;
+                right: -@icon_indent - @icon_size;
             }
         }
     }
@@ -15624,32 +15665,6 @@ ul.pt__field__hint {
 .com__file-stats {
     .cm__box;
     .cm__box-reverse;
-}
-
-.com__file-stats__list {
-    > ul {
-        .cm__list-clear;
-    }
-
-    &.is-inline {
-        > ul {
-            display: flex;
-            .mx__flex-flow(row wrap);
-            .mx__align-items(center);
-
-            > li {
-                margin-right: @CmIndent-XSmall;
-
-                &:last-child {
-                    margin-right: 0;
-                }
-            }
-        }
-    }
-
-    .com__help-bubble {
-        vertical-align: top;
-    }
 }
 /* ******* COMPONENTS: FORM ******* */
 

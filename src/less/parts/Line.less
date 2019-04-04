@@ -3,8 +3,11 @@
 /* ****** PART: LINE: INFO ******* */
 
 .pt__line-info {
-    .clearfix;
+    .display-flex;
+    .mx__flex-flow(row wrap);
+    .mx__align-items(center);
 
+    .icon,
     .item,
     .category,
     .author,
@@ -12,7 +15,6 @@
     .hash,
     .links,
     .status {
-        float: left;
         margin: 0 @CmIndent-XSmall 0 0;
         line-height: inherit;
         font-size: inherit;

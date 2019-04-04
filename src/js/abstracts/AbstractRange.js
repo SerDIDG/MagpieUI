@@ -4,6 +4,7 @@ cm.define('Com.AbstractRange', {
         'renderStructure' : true,
         'embedStructureOnRender' : true,
         'controllerEvents' : true,
+        'redrawOnRender' : true,
         'className' : 'com__range',
         'theme' : 'theme--arrows',
         'min' : 0,
@@ -180,9 +181,11 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
 
     classProto.setData = function(){
         var that = this;
-        cm.forEach(that.components['draggable'], function(item, i){
-            item.set(that.tempRawValue[i], false);
-        });
+        if(!cm.isEmpty(that.tempRawValue)){
+            cm.forEach(that.components['draggable'], function(item, i){
+                item.set(that.tempRawValue[i], false);
+            });
+        }
     };
 
     /*** PUBLIC ***/

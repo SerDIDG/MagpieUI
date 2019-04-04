@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.24 (2019-04-03 21:01) ************ */
+/*! ************ MagpieUI v3.36.25 (2019-04-04 19:44) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.24',
+        '_version' : '3.36.25',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -9038,6 +9038,7 @@ cm.define('Com.AbstractRange', {
         'renderStructure' : true,
         'embedStructureOnRender' : true,
         'controllerEvents' : true,
+        'redrawOnRender' : true,
         'className' : 'com__range',
         'theme' : 'theme--arrows',
         'min' : 0,
@@ -9214,9 +9215,11 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
 
     classProto.setData = function(){
         var that = this;
-        cm.forEach(that.components['draggable'], function(item, i){
-            item.set(that.tempRawValue[i], false);
-        });
+        if(!cm.isEmpty(that.tempRawValue)){
+            cm.forEach(that.components['draggable'], function(item, i){
+                item.set(that.tempRawValue[i], false);
+            });
+        }
     };
 
     /*** PUBLIC ***/
@@ -15909,12 +15912,7 @@ cm.define('Com.FileStats', {
         'mfu' : 0,                                                    // Max files per upload
         'umf' : 0,                                                    // Max file size
         'quote' : 0,
-        'usage' : 0,
-        'inline' : false,
-        'toggleBox' : true,
-        'Com.ToggleBox' : {
-            'renderStructure' : true
-        }
+        'usage' : 0
     },
     'strings' : {
         'stats' : 'Statistics',
@@ -15947,38 +15945,17 @@ cm.getConstructor('Com.FileStats', function(classConstructor, className, classPr
         that.triggerEvent('onRenderViewStart');
         // Structure
         that.nodes['container'] = cm.node('div', {'class' : 'com__file-stats'},
-            that.nodes['content'] = cm.node('div', {'class' : 'com__file-stats__list'},
-                that.nodes['list'] = cm.node('ul',
-                    cm.node('li', that.lang('mfu', vars)),
-                    cm.node('li', that.lang('umf', vars)),
-                    cm.node('li', that.lang('quote', vars)),
-                    cm.node('li', that.lang('usage', vars))
-                )
+            that.nodes['content'] = cm.node('div', {'class' : 'pt__line-info'},
+                cm.node('div', {'class' : 'icon small info'}),
+                cm.node('div', {'class' : 'item'}, that.lang('mfu', vars)),
+                cm.node('div', {'class' : 'item'}, that.lang('umf', vars)),
+                cm.node('div', {'class' : 'item'}, that.lang('quote', vars)),
+                cm.node('div', {'class' : 'item'}, that.lang('usage', vars))
             )
         );
-        if(that.params['inline']){
-            cm.insertFirst(cm.node('li', {'class' : 'icon small info'}), that.nodes['list']);
-            cm.addClass(that.nodes['content'], 'is-inline');
-        }
         // Events
         that.triggerEvent('onRenderViewProcess');
         that.triggerEvent('onRenderViewEnd');
-        return that;
-    };
-
-    classProto.renderViewModel = function(){
-        var that = this;
-        // Init ToggleBox
-        if(that.params['toggleBox']){
-            cm.getConstructor('Com.ToggleBox', function(classObject, className){
-                that.components['togglebox'] = new classObject(
-                    cm.merge(that.params[className], {
-                        'node' : that.nodes['content'],
-                        'title' : that.lang('stats')
-                    })
-                );
-            });
-        }
         return that;
     };
 });
