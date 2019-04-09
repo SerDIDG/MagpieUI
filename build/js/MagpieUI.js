@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.25 (2019-04-04 19:44) ************ */
+/*! ************ MagpieUI v3.36.26 (2019-04-09 03:18) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.25',
+        '_version' : '3.36.26',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -7167,7 +7167,8 @@ cm.define('Com.AbstractContainer', {
     'strings' : {
         'title' : 'Container',
         'close' : 'Close',
-        'save' : 'Save'
+        'save' : 'Save',
+        'help' : ''
     }
 },
 function(params){
@@ -7381,6 +7382,7 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
         that.nodes['placeholder'] = {};
         that.nodes['placeholder']['title'] = cm.textNode(that.lang('title'));
         that.nodes['placeholder']['content'] = cm.node('div', {'class' : 'com__container__content'});
+        that.nodes['placeholder']['help'] = that.lang('help');
         // Events
         that.triggerEvent('onRenderPlaceholderViewProcess');
         that.triggerEvent('onRenderPlaceholderViewEnd');
@@ -13619,12 +13621,27 @@ cm.define('Com.Dialog', {
         'content' : cm.node('div'),
         'showTitle' : true,
         'title' : '',
-        'buttons' : false,
         'titleOverflow' : false,
         'titleReserve': true,
         'closeButtonOutside' : false,
         'closeButton' : true,
         'closeOnBackground' : true,
+        'buttons' : false,
+        'showHelp' : false,
+        'help' : '',
+        'helpConstructor' : 'Com.Tooltip',
+        'helpParams' : {
+            'hold' : true,
+            'targetEvent' : 'click',
+            'hideOnReClick' : true,
+            'className' : 'com__dialog__tooltip',
+            'animate' : 'drop-bottom-left',
+            'width' : 'targetWidth -16',
+            'top' : 8,
+            'left' : 8,
+            'position' : 'absolute',
+            'duration' : 'cm._config.animDuration'
+        },
         'openTime' : null,
         'duration' : 'cm._config.animDuration',
         'autoOpen' : true,
@@ -13635,12 +13652,16 @@ cm.define('Com.Dialog', {
         'documentScroll' : false,
         'icons' : {
             'closeInside' : 'icon default linked',
-            'closeOutside' : 'icon default linked'
+            'closeOutside' : 'icon default linked',
+            'helpInside' : 'icon help linked',
+            'helpOutside' : 'icon help linked'
         }
     },
     'strings' : {
         'closeTitle' : 'Close',
-        'close' : ''
+        'close' : '',
+        'helpTitle' : 'Help',
+        'help' : ''
     }
 },
 function(params){
@@ -13648,6 +13669,7 @@ function(params){
         contentHeight,
         nodes = {};
 
+    that.components = {};
     that.isOpen = false;
     that.isFocus = false;
     that.isRemoved = false;
@@ -13742,12 +13764,20 @@ function(params){
             cm.addClass(nodes['container'], 'has-close-background');
             cm.addEvent(nodes['bg'], 'click', close);
         }
+        // Render help button
+        if(that.params['showHelp']){
+            nodes['window'].appendChild(
+                nodes['helpInside'] = cm.Node('div', {'class' : that.params['icons']['helpInside'], 'title' : that.lang('helpTitle')}, that.lang('help'))
+            );
+        }
         // Set title
         renderTitle(that.params['title']);
         // Embed content
         renderContent(that.params['content']);
         // Embed buttons
         renderButtons(that.params['buttons']);
+        // Set title
+        renderHelp(that.params['help']);
         // Events
         cm.addEvent(nodes['container'], 'mouseover', function(e){
             var target = cm.getEventTarget(e);
@@ -13820,6 +13850,33 @@ function(params){
             // Render new nodes
             nodes['buttons'] = cm.Node('div', {'class' : 'buttons'}, node);
             cm.insertLast(nodes['buttons'], nodes['windowInner']);
+        }
+    };
+
+    var renderHelp = function(node){
+        if(that.params['showHelp']){
+            if(!nodes['help']){
+                nodes['help'] = cm.node('div', {'class' : 'com__dialog__help'});
+                // Render tooltip
+                cm.getConstructor(that.params['helpConstructor'], function(classConstructor){
+                    that.components['help'] = new classConstructor(
+                        cm.merge(that.params['helpParams'], {
+                            'target' : nodes['helpInside'],
+                            'content' : nodes['help'],
+                            'positionTarget' : nodes['inner'],
+                            'container' : nodes['container'],
+                            'holdTarget' : nodes['container']
+                        })
+                    );
+                });
+            }
+            cm.clearNode(nodes['help']);
+            // Append
+            if(cm.isNode(node)){
+                cm.appendChild(node, nodes['help']);
+            }else{
+                nodes['help'].innerHTML = node;
+            }
         }
     };
 
@@ -14153,6 +14210,7 @@ cm.define('Com.DialogContainer', {
         'destructOnClose' : false,
         'renderButtons' : false,
         'renderTitle' : true,
+        'renderHelp' : false,
         'justifyButtons' : 'right',
         'params' : {
             'destructOnRemove' : false,
@@ -14183,8 +14241,10 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
             that.params['params']['title'] = that.params['content']['title'] || that.params['params']['title'];
             that.params['params']['content'] = that.params['content']['content'] || that.params['params']['content'];
             that.params['params']['buttons'] = that.params['content']['buttons'] || that.params['params']['buttons'];
+            that.params['params']['help'] = that.params['content']['help'] || that.params['params']['help'];
         }
         that.params['params']['showTitle'] = that.params['renderTitle'];
+        that.params['params']['showHelp'] = that.params['renderHelp'];
     };
 
     classProto.constructController = function(classObject){
@@ -14194,7 +14254,8 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
                 'container' : that.params['container'],
                 'title' : that.nodes['title'] || that.params['params']['title'] || that.params['title'],
                 'content' : that.nodes['content'] || that.params['params']['content'] || that.params['content'],
-                'buttons' : that.nodes['buttons'] || that.params['params']['buttons'] || that.params['buttons']
+                'buttons' : that.nodes['buttons'] || that.params['params']['buttons'] || that.params['buttons'],
+                'help' : that.nodes['help'] || that.params['params']['help'] || that.params['help']
             })
         );
     };
@@ -24702,6 +24763,8 @@ cm.define('Com.Tooltip', {
         'position' : 'absolute',
         'className' : '',
         'theme' : 'theme-default',
+        'animate' : false,
+        'arrow' : false,
         'adaptive' : true,
         'adaptiveX' : true,
         'adaptiveY' : true,
@@ -24761,6 +24824,8 @@ function(params){
         that.nodes['container'].style.position = that.params['position'];
         // Add theme css class
         !cm.isEmpty(that.params['theme']) && cm.addClass(that.nodes['container'], that.params['theme']);
+        !cm.isEmpty(that.params['animate']) && cm.addClass(that.nodes['container'], ['animate', that.params['animate']].join('--'));
+        !cm.isEmpty(that.params['arrow']) && cm.addClass(that.nodes['container'], ['arrow', that.params['arrow']].join('--'));
         // Add css class
         !cm.isEmpty(that.params['className']) && cm.addClass(that.nodes['container'], that.params['className']);
         // Set title
@@ -24869,6 +24934,7 @@ function(params){
         resizeHelper();
         that.triggerEvent('onShowStart');
         // Animate
+        cm.replaceClass(that.nodes['container'], 'id-hide', 'is-show', true);
         if(immediately || !that.params['duration']){
             showHandlerEnd();
         }else{
@@ -24909,6 +24975,7 @@ function(params){
     var hideHandler = function(immediately){
         that.triggerEvent('onHideStart');
         // Animate
+        cm.replaceClass(that.nodes['container'], 'is-show', 'id-hide', true);
         if(immediately || !that.params['duration']){
             hideHandlerEnd();
         }else{

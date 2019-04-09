@@ -33,6 +33,20 @@
             }
         }
     }
+
+    &.animate--drop-bottom-left {
+        .mx__transition(transform, @CmUI-Transition-Duration, @CmUI-MotionAsymmetric);
+        .mx__transform-origin(right top);
+        .mx__transform(scale(0));
+
+        &.is-hide {
+            .mx__transform(scale(0));
+        }
+
+        &.is-show {
+            .mx__transform(scale(1));
+        }
+    }
 }
 
 /* ******* COMPONENT: TOOLTIP: THEMES ******* */

@@ -122,6 +122,32 @@
     height: 100%;
 }
 
+/* *** TOOLTIP *** */
+
+.com__tooltip.com__dialog__tooltip {
+    text-align: left;
+    .mx__transform-origin(~'calc(100% - 52px) -8px');
+
+    > .inner {
+        padding: @ComDialog-Indent;
+        border-color: @CmColor-Background;
+        box-shadow: none;
+        .mx__filter(drop-shadow(@CmUI-Shadow-BottomLarge));
+
+        &::before {
+            width: 0;
+            height: 0;
+            display: block;
+            position: absolute;
+            border-style: solid;
+            border-width: 0 12px 14px 12px;
+            border-color: transparent transparent @CmColor-Background transparent;
+            content: '';
+            .mx__position(-14px, 40px, auto, auto);
+        }
+    }
+}
+
 /* *** FONT *** */
 
 .com__dialog-font {
@@ -253,7 +279,11 @@
 
         > .icon {
             &.default {
-                .icon.medium.close-white;
+                .svg__circle-close-white;
+            }
+
+            &.help {
+                .svg__circle-help-white;
             }
         }
 
@@ -273,7 +303,11 @@
 
         > .icon {
             &.default {
-                .icon.medium.close-white;
+                .svg__circle-close-white;
+            }
+
+            &.help {
+                .svg__circle-help-white;
             }
         }
 
@@ -397,7 +431,13 @@
 
 .com__dialog__title-indent (@indent: @ComDialog-TitleIndent, @icon_size: @ComDialog-IconSize, @icon_indent: @ComDialog-TitleIndent) {
     > .icon {
-        right: @icon_indent;
+        &.default {
+            right: @icon_indent;
+        }
+
+        &.help {
+            right: @icon_size + (@icon_indent * 2);
+        }
     }
 
     > .inner {
@@ -417,7 +457,13 @@
     &:not(.is-title-reserve){
         &.has-no-title {
             > .icon {
-                right: -@icon_indent - @icon_size;
+                &.default {
+                    right: -(@icon_indent + @icon_size);
+                }
+
+                &.help {
+                    right: -(@icon_indent + @icon_size) * 2;
+                }
             }
         }
     }

@@ -6,6 +6,7 @@ cm.define('Com.DialogContainer', {
         'destructOnClose' : false,
         'renderButtons' : false,
         'renderTitle' : true,
+        'renderHelp' : false,
         'justifyButtons' : 'right',
         'params' : {
             'destructOnRemove' : false,
@@ -36,8 +37,10 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
             that.params['params']['title'] = that.params['content']['title'] || that.params['params']['title'];
             that.params['params']['content'] = that.params['content']['content'] || that.params['params']['content'];
             that.params['params']['buttons'] = that.params['content']['buttons'] || that.params['params']['buttons'];
+            that.params['params']['help'] = that.params['content']['help'] || that.params['params']['help'];
         }
         that.params['params']['showTitle'] = that.params['renderTitle'];
+        that.params['params']['showHelp'] = that.params['renderHelp'];
     };
 
     classProto.constructController = function(classObject){
@@ -47,7 +50,8 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
                 'container' : that.params['container'],
                 'title' : that.nodes['title'] || that.params['params']['title'] || that.params['title'],
                 'content' : that.nodes['content'] || that.params['params']['content'] || that.params['content'],
-                'buttons' : that.nodes['buttons'] || that.params['params']['buttons'] || that.params['buttons']
+                'buttons' : that.nodes['buttons'] || that.params['params']['buttons'] || that.params['buttons'],
+                'help' : that.nodes['help'] || that.params['params']['help'] || that.params['help']
             })
         );
     };

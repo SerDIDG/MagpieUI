@@ -43,6 +43,8 @@ cm.define('Com.Tooltip', {
         'position' : 'absolute',
         'className' : '',
         'theme' : 'theme-default',
+        'animate' : false,
+        'arrow' : false,
         'adaptive' : true,
         'adaptiveX' : true,
         'adaptiveY' : true,
@@ -102,6 +104,8 @@ function(params){
         that.nodes['container'].style.position = that.params['position'];
         // Add theme css class
         !cm.isEmpty(that.params['theme']) && cm.addClass(that.nodes['container'], that.params['theme']);
+        !cm.isEmpty(that.params['animate']) && cm.addClass(that.nodes['container'], ['animate', that.params['animate']].join('--'));
+        !cm.isEmpty(that.params['arrow']) && cm.addClass(that.nodes['container'], ['arrow', that.params['arrow']].join('--'));
         // Add css class
         !cm.isEmpty(that.params['className']) && cm.addClass(that.nodes['container'], that.params['className']);
         // Set title
@@ -210,6 +214,7 @@ function(params){
         resizeHelper();
         that.triggerEvent('onShowStart');
         // Animate
+        cm.replaceClass(that.nodes['container'], 'id-hide', 'is-show', true);
         if(immediately || !that.params['duration']){
             showHandlerEnd();
         }else{
@@ -250,6 +255,7 @@ function(params){
     var hideHandler = function(immediately){
         that.triggerEvent('onHideStart');
         // Animate
+        cm.replaceClass(that.nodes['container'], 'is-show', 'id-hide', true);
         if(immediately || !that.params['duration']){
             hideHandlerEnd();
         }else{

@@ -32,7 +32,8 @@ cm.define('Com.AbstractContainer', {
     'strings' : {
         'title' : 'Container',
         'close' : 'Close',
-        'save' : 'Save'
+        'save' : 'Save',
+        'help' : ''
     }
 },
 function(params){
@@ -246,6 +247,7 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
         that.nodes['placeholder'] = {};
         that.nodes['placeholder']['title'] = cm.textNode(that.lang('title'));
         that.nodes['placeholder']['content'] = cm.node('div', {'class' : 'com__container__content'});
+        that.nodes['placeholder']['help'] = that.lang('help');
         // Events
         that.triggerEvent('onRenderPlaceholderViewProcess');
         that.triggerEvent('onRenderPlaceholderViewEnd');

@@ -33,12 +33,27 @@ cm.define('Com.Dialog', {
         'content' : cm.node('div'),
         'showTitle' : true,
         'title' : '',
-        'buttons' : false,
         'titleOverflow' : false,
         'titleReserve': true,
         'closeButtonOutside' : false,
         'closeButton' : true,
         'closeOnBackground' : true,
+        'buttons' : false,
+        'showHelp' : false,
+        'help' : '',
+        'helpConstructor' : 'Com.Tooltip',
+        'helpParams' : {
+            'hold' : true,
+            'targetEvent' : 'click',
+            'hideOnReClick' : true,
+            'className' : 'com__dialog__tooltip',
+            'animate' : 'drop-bottom-left',
+            'width' : 'targetWidth -16',
+            'top' : 8,
+            'left' : 8,
+            'position' : 'absolute',
+            'duration' : 'cm._config.animDuration'
+        },
         'openTime' : null,
         'duration' : 'cm._config.animDuration',
         'autoOpen' : true,
@@ -49,12 +64,16 @@ cm.define('Com.Dialog', {
         'documentScroll' : false,
         'icons' : {
             'closeInside' : 'icon default linked',
-            'closeOutside' : 'icon default linked'
+            'closeOutside' : 'icon default linked',
+            'helpInside' : 'icon help linked',
+            'helpOutside' : 'icon help linked'
         }
     },
     'strings' : {
         'closeTitle' : 'Close',
-        'close' : ''
+        'close' : '',
+        'helpTitle' : 'Help',
+        'help' : ''
     }
 },
 function(params){
@@ -62,6 +81,7 @@ function(params){
         contentHeight,
         nodes = {};
 
+    that.components = {};
     that.isOpen = false;
     that.isFocus = false;
     that.isRemoved = false;
@@ -156,12 +176,20 @@ function(params){
             cm.addClass(nodes['container'], 'has-close-background');
             cm.addEvent(nodes['bg'], 'click', close);
         }
+        // Render help button
+        if(that.params['showHelp']){
+            nodes['window'].appendChild(
+                nodes['helpInside'] = cm.Node('div', {'class' : that.params['icons']['helpInside'], 'title' : that.lang('helpTitle')}, that.lang('help'))
+            );
+        }
         // Set title
         renderTitle(that.params['title']);
         // Embed content
         renderContent(that.params['content']);
         // Embed buttons
         renderButtons(that.params['buttons']);
+        // Set title
+        renderHelp(that.params['help']);
         // Events
         cm.addEvent(nodes['container'], 'mouseover', function(e){
             var target = cm.getEventTarget(e);
@@ -234,6 +262,33 @@ function(params){
             // Render new nodes
             nodes['buttons'] = cm.Node('div', {'class' : 'buttons'}, node);
             cm.insertLast(nodes['buttons'], nodes['windowInner']);
+        }
+    };
+
+    var renderHelp = function(node){
+        if(that.params['showHelp']){
+            if(!nodes['help']){
+                nodes['help'] = cm.node('div', {'class' : 'com__dialog__help'});
+                // Render tooltip
+                cm.getConstructor(that.params['helpConstructor'], function(classConstructor){
+                    that.components['help'] = new classConstructor(
+                        cm.merge(that.params['helpParams'], {
+                            'target' : nodes['helpInside'],
+                            'content' : nodes['help'],
+                            'positionTarget' : nodes['inner'],
+                            'container' : nodes['container'],
+                            'holdTarget' : nodes['container']
+                        })
+                    );
+                });
+            }
+            cm.clearNode(nodes['help']);
+            // Append
+            if(cm.isNode(node)){
+                cm.appendChild(node, nodes['help']);
+            }else{
+                nodes['help'].innerHTML = node;
+            }
         }
     };
 
