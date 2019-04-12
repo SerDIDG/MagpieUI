@@ -5,7 +5,7 @@ Collection of JavaScript and CSS snippets to fast build UI.
 
 Attention! Newer versions of MagpieUI library may not be compatible with the previous ones!
 
-Developed with PhpStorm.
+Developed with [PhpStorm](https://www.jetbrains.com/?from=MagpieUI).
 
 ## Install
 
