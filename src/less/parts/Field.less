@@ -225,12 +225,18 @@ ul.pt__field__hint {
         cursor: text;
         pointer-events: none;
         .mx__position(0, 0, 0, 0);
-        .mx__transition(all, @CmUI-Transition-Duration, @CmUI-MotionAsymmetric);
+        .mx__user-select(none);
+
+        span {
+            display: block;
+            .mx__transform-origin(left top);
+            .mx__transition(all, @CmUI-Transition-Duration, @CmUI-MotionAsymmetric);
+        }
 
         &.pull-top {
-            font-size: @CmFont-Placeholder-SizeSmall;
-            line-height: @CmFont-Base-LineHeight;
-            .mx__transition(all, @CmUI-Transition-DurationReverse, @CmUI-MotionAsymmetric);
+            span {
+                .mx__transform(scale(0.75) translateY(-6px));
+            }
         }
     }
 

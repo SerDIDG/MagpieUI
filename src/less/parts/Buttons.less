@@ -14,6 +14,15 @@
         > .right {
             .display-flex;
             .mx__flex(1);
+            .mx__align-items(flex-start);
+
+            &.column--auto {
+                .mx__flex(1 1 auto);
+            }
+
+            &.column--none {
+                .mx__flex(none);
+            }
         }
 
         > .left {

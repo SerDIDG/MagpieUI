@@ -63,7 +63,7 @@ function(params){
                 that.pass = that.params['count'] - that.left;
                 o = getLeftTime();
                 that.triggerEvent('onTick', o);
-                if(that.left == 0){
+                if(that.left === 0){
                     that.stop();
                     that.triggerEvent('onEnd', o);
                 }else{

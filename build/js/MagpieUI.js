@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.26 (2019-04-09 03:18) ************ */
+/*! ************ MagpieUI v3.36.27 (2019-04-12 19:36) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.26',
+        '_version' : '3.36.27',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -8415,7 +8415,9 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         }
         // Placeholder
         if(that.params['showPlaceholderAbove'] && !cm.isEmpty(that.params['placeholder'])){
-            nodes['placeholder'] = cm.node('label', {'class' : 'placeholder', 'innerHTML' : that.params['placeholder'], 'for' : that._name});
+            nodes['placeholder'] = cm.node('label', {'class' : 'placeholder', 'for' : that._name},
+                cm.node('span', {'innerHTML' : that.params['placeholder']})
+            );
             cm.appendChild(nodes['placeholder'], nodes['container']);
             cm.addClass(nodes['container'], 'is-placeholder-above');
         }
@@ -13863,7 +13865,7 @@ function(params){
                         cm.merge(that.params['helpParams'], {
                             'target' : nodes['helpInside'],
                             'content' : nodes['help'],
-                            'positionTarget' : nodes['inner'],
+                            'positionTarget' : nodes['descr'],
                             'container' : nodes['container'],
                             'holdTarget' : nodes['container']
                         })
@@ -24166,7 +24168,7 @@ function(params){
                 that.pass = that.params['count'] - that.left;
                 o = getLeftTime();
                 that.triggerEvent('onTick', o);
-                if(that.left == 0){
+                if(that.left === 0){
                     that.stop();
                     that.triggerEvent('onEnd', o);
                 }else{

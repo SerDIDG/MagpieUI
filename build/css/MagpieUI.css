@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.36.26 (2019-04-09 03:18) ************ */
+/*! ************ MagpieUI v3.36.27 (2019-04-12 19:36) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.6.0
@@ -3518,8 +3518,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.36.26');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.36.26') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.36.26') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.36.26') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.36.26#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.36.27');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.36.27') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.36.27') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.36.27') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.36.27#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -8255,6 +8255,20 @@ button.is-hidden {
   -webkit-flex: 1;
   -ms-flex: 1;
   flex: 1;
+  -webkit-align-items: flex-start;
+  align-items: flex-start;
+}
+.pt__buttons > .inner > .left.column--auto,
+.pt__buttons > .inner > .right.column--auto {
+  -webkit-flex: 1 1 auto;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+}
+.pt__buttons > .inner > .left.column--none,
+.pt__buttons > .inner > .right.column--none {
+  -webkit-flex: none;
+  -ms-flex: none;
+  flex: none;
 }
 .pt__buttons > .inner > .left {
   -webkit-justify-content: flex-start;
@@ -9722,14 +9736,23 @@ ul.pt__field__hint li:before {
   right: 0;
   bottom: 0;
   left: 0;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+.pt__field__content .placeholder span {
+  display: block;
+  -webkit-transform-origin: left top;
+  -moz-transform-origin: left top;
+  -ms-transform-origin: left top;
+  transform-origin: left top;
   -webkit-transition: all 250ms cubic-bezier(0.5, 0, 0.15, 1) 0ms;
   transition: all 250ms cubic-bezier(0.5, 0, 0.15, 1) 0ms;
 }
-.pt__field__content .placeholder.pull-top {
-  font-size: 11px;
-  line-height: 18px;
-  -webkit-transition: all 100ms cubic-bezier(0.5, 0, 0.15, 1) 0ms;
-  transition: all 100ms cubic-bezier(0.5, 0, 0.15, 1) 0ms;
+.pt__field__content .placeholder.pull-top span {
+  -webkit-transform: scale(0.75) translateY(-6px);
+  -ms-transform: scale(0.75) translateY(-6px);
+  transform: scale(0.75) translateY(-6px);
 }
 .pt__field__content .placeholder {
   line-height: 32px;
@@ -12768,6 +12791,11 @@ ul.pt__field__hint li:before {
 .pt__line-info .status:last-child {
   margin: 0;
 }
+.pt__line-info .icon {
+  -webkit-flex: none;
+  -ms-flex: none;
+  flex: none;
+}
 .pt__line-info .status.danger,
 .pt__line-info .status.error {
   color: #d43535;
@@ -12788,6 +12816,11 @@ ul.pt__field__hint li:before {
 .pt__line-info .category span,
 .pt__line-info .author span {
   font-weight: 600;
+}
+.pt__line-info.is-nowrap {
+  -webkit-flex-flow: row nowrap;
+  -ms-flex-flow: row nowrap;
+  flex-flow: row nowrap;
 }
 /* ******* PART: LINE: SHARE ******* */
 .pt__line-share {

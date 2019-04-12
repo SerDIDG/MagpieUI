@@ -275,7 +275,7 @@ function(params){
                         cm.merge(that.params['helpParams'], {
                             'target' : nodes['helpInside'],
                             'content' : nodes['help'],
-                            'positionTarget' : nodes['inner'],
+                            'positionTarget' : nodes['descr'],
                             'container' : nodes['container'],
                             'holdTarget' : nodes['container']
                         })

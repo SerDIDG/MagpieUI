@@ -246,7 +246,9 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         }
         // Placeholder
         if(that.params['showPlaceholderAbove'] && !cm.isEmpty(that.params['placeholder'])){
-            nodes['placeholder'] = cm.node('label', {'class' : 'placeholder', 'innerHTML' : that.params['placeholder'], 'for' : that._name});
+            nodes['placeholder'] = cm.node('label', {'class' : 'placeholder', 'for' : that._name},
+                cm.node('span', {'innerHTML' : that.params['placeholder']})
+            );
             cm.appendChild(nodes['placeholder'], nodes['container']);
             cm.addClass(nodes['container'], 'is-placeholder-above');
         }
