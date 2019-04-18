@@ -2105,8 +2105,8 @@ cm.parseDate = function(str, format){
     if(!str){
         return null;
     }
-    var date = new Date(0),
-        convertFormats = {
+    var date = new Date(),
+        convert = {
             '%Y%' : 'YYYY',
             '%m%' : 'mm',
             '%d%' : 'dd',
@@ -2120,43 +2120,45 @@ cm.parseDate = function(str, format){
             '%i' : 'ii',
             '%s' : 'ss'
         },
-        formats = {
+        helpers = {
             'YYYY' : function(value){
-                if(value !== '0000'){
-                    date.setFullYear(value);
-                }
+                return (value !== '0000') ? value : date.getFullYear();
             },
             'mm' : function(value){
-                if(value !== '00'){
-                    date.setMonth(value - 1);
-                }
+                return (value !== '00') ? value - 1 : date.getMonth();
             },
             'dd' : function(value){
-                if(value !== '00'){
-                    date.setDate(value);
-                }
+                return (value !== '00') ? value : date.getDate();
             },
             'HH' : function(value){
-                date.setHours(value);
+                return value;
             },
             'ii' : function(value){
-                date.setMinutes(value);
+                return value;
             },
             'ss' : function(value){
-                date.setSeconds(value);
+                return value;
             }
+        },
+        parsed = {
+            'YYYY' : '0000',
+            'mm' : '00',
+            'dd' : '00',
+            'HH' : '00',
+            'ii' : '00',
+            'ss' : '00'
         },
         fromIndex = 0;
     format = cm.isString(format) ? format : cm._config.dateTimeFormat;
-    format = cm.strReplace(format, convertFormats);
-    cm.forEach(formats, function(item, key){
+    format = cm.strReplace(format, convert);
+    cm.forEach(helpers, function(item, key){
         fromIndex = format.indexOf(key);
         while(fromIndex !== -1){
-            item(str.substr(fromIndex, key.length));
+            parsed[key] = item(str.substr(fromIndex, key.length));
             fromIndex = format.indexOf(key, fromIndex + 1);
         }
     });
-    return date;
+    return new Date(parsed['YYYY'], parsed['mm'], parsed['dd'], parsed['HH'], parsed['ii'], parsed['ss']);
 };
 
 cm.parseFormatDate = function(str, format, displayFormat, langs, formatCase){

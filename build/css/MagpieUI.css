@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url(//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800);
-/*! ************ MagpieUI v3.36.27 (2019-04-12 19:36) ************ */
+/*! ************ MagpieUI v3.36.28 (2019-04-18 22:34) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.6.0
@@ -3518,8 +3518,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.36.27');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.36.27') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.36.27') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.36.27') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.36.27#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.36.28');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.36.28') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.36.28') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.36.28') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.36.28#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
