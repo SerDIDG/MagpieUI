@@ -66,7 +66,8 @@ cm.define('Com.AbstractFormField', {
             'method' : 'get'
         },
         'Com.HelpBubble' : {
-            'renderStructure' : true
+            'renderStructure' : true,
+            'embedStructureOnRender' : true
         }
     },
     'strings' : {

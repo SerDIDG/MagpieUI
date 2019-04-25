@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.28 (2019-04-18 22:34) ************ */
+/*! ************ MagpieUI v3.36.29 (2019-04-25 19:15) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.28',
+        '_version' : '3.36.29',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -3500,6 +3500,10 @@ cm.decode = (function(){
 
     };
 })();
+
+cm.RegExpEscape = function(s) {
+    return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+};
 
 cm.strWrap = function(str, symbol){
     str = str.toString();
@@ -8237,7 +8241,8 @@ cm.define('Com.AbstractFormField', {
             'method' : 'get'
         },
         'Com.HelpBubble' : {
-            'renderStructure' : true
+            'renderStructure' : true,
+            'embedStructureOnRender' : true
         }
     },
     'strings' : {

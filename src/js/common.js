@@ -1902,6 +1902,10 @@ cm.decode = (function(){
     };
 })();
 
+cm.RegExpEscape = function(s) {
+    return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+};
+
 cm.strWrap = function(str, symbol){
     str = str.toString();
     return ['', str, ''].join(symbol);
