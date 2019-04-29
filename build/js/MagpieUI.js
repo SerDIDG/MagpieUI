@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.29 (2019-04-25 19:15) ************ */
+/*! ************ MagpieUI v3.36.30 (2019-04-29 11:20) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.29',
+        '_version' : '3.36.30',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -17344,6 +17344,7 @@ cm.define('Com.Gridlist', {
         'onUnCheckAll',
         'onCheck',
         'onUnCheck',
+        'onRender',
         'onRenderStart',
         'onRenderEnd',
         'onLoadEnd',
@@ -17373,6 +17374,7 @@ cm.define('Com.Gridlist', {
         // Visibility
         'showCounter' : false,
         'showBulkActions' : true,
+        'showTitle' : false,
         'textOverflow' : false,
         'className' : '',
         'dateFormat' : 'cm._config.dateTimeFormat',                 // Input date format
@@ -17458,6 +17460,7 @@ function(params){
         validateParams();
         render();
         that.addToStack(that.nodes['container']);
+        that.triggerEvent('onRender');
     };
 
     var validateParams = function(){
@@ -17760,10 +17763,12 @@ function(params){
             'key' : '',                     // Data array key
             'title' : '',                   // Table th title
             'sort' : that.params['sort'],   // Sort this column or not
-            'textOverflow' : null,          // Overflow long text to single line
+            'sortKey' : '',                 // Sort key
             'class' : '',		            // Icon css class, for type="icon"
             'target' : '_blank',            // Link target, for type="url"
-            'showTitle' : false,            // Show title on hover
+            'rel' : '',                     // Link rel, for type="url"
+            'textOverflow' : null,          // Overflow long text to single line
+            'showTitle' : null,             // Show title on hover
             'titleText' : '',               // Alternative title text, if not specified - will be shown key text
             'altText' : '',                 // Alternative column text
             'urlKey' : false,               // Alternative link href, for type="url"
@@ -17775,6 +17780,7 @@ function(params){
         }, item);
         // Validate
         item['nodes'] = {};
+        item['showTitle'] = cm.isBoolean(item['showTitle'])? item['showTitle'] : that.params['showTitle'];
         item['textOverflow'] = cm.isBoolean(item['textOverflow'])? item['textOverflow'] : that.params['textOverflow'];
         // Check access
         if(item['access']){
@@ -17823,7 +17829,7 @@ function(params){
                     );
                 }
                 cm.addEvent(item['nodes']['inner'], 'click', function(){
-                    that.sortBy = item['key'];
+                    that.sortBy = !cm.isEmpty(item['sortKey']) ? item['sortKey'] : item['key'];
                     that.orderBy = that.orderBy === 'ASC' ? 'DESC' : 'ASC';
                     if(!that.isAjax){
                         arraySort();
@@ -17996,7 +18002,7 @@ function(params){
         item['text'] = cm.decode(item['text']);
         item['href'] = config['urlKey'] && row['data'][config['urlKey']]? cm.decode(row['data'][config['urlKey']]) : item['text'];
         item['nodes']['inner'].appendChild(
-            item['nodes']['node'] = cm.node('a', {'target' : config['target'], 'href' : item['href']}, !cm.isEmpty(config['altText'])? config['altText'] : item['text'])
+            item['nodes']['node'] = cm.node('a', {'target' : config['target'], 'rel' : config['rel'], 'href' : item['href']}, !cm.isEmpty(config['altText'])? config['altText'] : item['text'])
         );
     };
 
