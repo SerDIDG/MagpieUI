@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.30 (2019-04-29 11:20) ************ */
+/*! ************ MagpieUI v3.36.31 (2019-05-01 21:03) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3926,7 +3926,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.36.30';
+@CmVersion: '3.36.31';
 
 // /* ******* PATH ******* */
 
@@ -4371,6 +4371,9 @@ span.CodeMirror-selectedtext { background: none; }
 @CmScrollBar-TrackBackground: fade(@CmColor-Secondary-LightHighlight, 50%);
 @CmScrollBar-ThumbColor: @CmColor-Secondary-LightActiveHover;
 @CmScrollBar-ThumbColorHover: @CmColor-Secondary-MiddleDefault;
+
+@CmScrollBar-Light-ThumbColor: @CmColor-Primary-LightHighlight;
+@CmScrollBar-Light-ThumbColorHover: @CmColor-Primary-LightHover;
 
 // /* ******* FORM ******* */
 
@@ -5306,10 +5309,32 @@ span.CodeMirror-selectedtext { background: none; }
     }
     &::-webkit-scrollbar-thumb {
         background-color: @CmScrollBar-ThumbColor;
+        background-clip: padding-box;
+        border: 1px solid transparent;
         border-radius: @CmScrollBar-Radius;
     }
     &::-webkit-scrollbar-thumb:hover {
         background-color: @CmScrollBar-ThumbColorHover;
+    }
+}
+
+.cm__scrollbar--light {
+    &::-webkit-scrollbar {
+        width: @CmScrollBar-Size;
+        height: @CmScrollBar-Size;
+    }
+    &::-webkit-scrollbar-track {
+        background-color: @CmScrollBar-TrackBackground;
+        border-radius: @CmScrollBar-Radius;
+    }
+    &::-webkit-scrollbar-thumb {
+        background-color: @CmScrollBar-Light-ThumbColor;
+        background-clip: padding-box;
+        border: 1px solid transparent;
+        border-radius: @CmScrollBar-Radius;
+    }
+    &::-webkit-scrollbar-thumb:hover {
+        background-color: @CmScrollBar-Light-ThumbColorHover;
     }
 }
 
@@ -15226,8 +15251,8 @@ ul.pt__field__hint {
                 }
 
                 &.is-scroll {
-                    overflow-x: hidden;
-                    overflow-y: auto;
+                    .cm__scrollbar;
+                    .cm__scroll-y-a;
                 }
 
                 &.is-no-scroll {

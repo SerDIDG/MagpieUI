@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.30 (2019-04-29 11:20) ************ */
+/*! ************ MagpieUI v3.36.31 (2019-05-01 21:03) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.30',
+        '_version' : '3.36.31',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -17823,7 +17823,7 @@ function(params){
             // Render sort arrow and set function on click to th
             if(item['sort'] && !/icon|empty|actions|links|checkbox/.test(item['type'])){
                 cm.addClass(item['nodes']['container'], 'sort');
-                if(item['key'] === that.sortBy){
+                if(item['sortKey'] === that.sortBy || item['key'] === that.sortBy){
                     item['nodes']['inner'].appendChild(
                         cm.node('div', {'class' : that.params['icons']['arrow'][that.orderBy.toLowerCase()]})
                     );

@@ -493,7 +493,7 @@ function(params){
             // Render sort arrow and set function on click to th
             if(item['sort'] && !/icon|empty|actions|links|checkbox/.test(item['type'])){
                 cm.addClass(item['nodes']['container'], 'sort');
-                if(item['key'] === that.sortBy){
+                if(item['sortKey'] === that.sortBy || item['key'] === that.sortBy){
                     item['nodes']['inner'].appendChild(
                         cm.node('div', {'class' : that.params['icons']['arrow'][that.orderBy.toLowerCase()]})
                     );
