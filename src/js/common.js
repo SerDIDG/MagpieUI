@@ -3492,8 +3492,10 @@ cm.sessionStorageRemove = function(key){
     }
 };
 
-cm.cookieSet = function(name, value, expires){
-    document.cookie = encodeURI(name) + "=" + encodeURI(value) + ';' + (expires ? cm.cookieDate(expires) : '');
+cm.cookieSet = function(name, value, expires, path){
+    path = 'path=' + (!cm.isEmpty(path) ? encodeURI(path) : '/');
+    expires = !cm.isEmpty(expires) ? cm.cookieDate(expires) : '';
+    document.cookie = encodeURI(name) + "=" + encodeURI(value) + ';' + path + ';' + expires;
 };
 
 cm.cookieGet = function(name){

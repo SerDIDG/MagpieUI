@@ -229,8 +229,13 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
             baseUrl = that.prepareBaseUrl();
         route = that.prepareUrl(route)
             .replace(new RegExp('^' + baseUrl), '')
-            .replace(new RegExp('^\\.'), '')
-            .split('#');
+            .replace(new RegExp('^\\.'), '');
+        // Add lead slash if not exists
+        if(!/^(\/|\.\/)/.test(route)){
+            route = '/' + route;
+        }
+        // Split hash
+        route = route.split('#');
         return route;
     };
 
@@ -371,6 +376,13 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         return that;
     };
 
+    classProto.setURL = function(route, hash, params){
+        var that = this;
+        route = that.prepareRoute(route);
+        that.trigger(route[0], hash || route[1], params);
+        return that;
+    };
+
     classProto.summon = function(route, hash, params, data){
         var that = this,
             state,
@@ -421,8 +433,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         if(!cm.isEmpty(that.params['route'])){
             that.set(that.params['route']);
         }else{
-            href = that.prepareRoute(window.location.href);
-            that.trigger(href[0], href[1]);
+            that.setURL(window.location.href);
         }
         return that;
     };

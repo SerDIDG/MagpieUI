@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.32 (2019-05-03 21:15) ************ */
+/*! ************ MagpieUI v3.36.33 (2019-05-03 22:47) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.32',
+        '_version' : '3.36.33',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -5091,8 +5091,10 @@ cm.sessionStorageRemove = function(key){
     }
 };
 
-cm.cookieSet = function(name, value, expires){
-    document.cookie = encodeURI(name) + "=" + encodeURI(value) + ';' + (expires ? cm.cookieDate(expires) : '');
+cm.cookieSet = function(name, value, expires, path){
+    path = 'path=' + (!cm.isEmpty(path) ? encodeURI(path) : '/');
+    expires = !cm.isEmpty(expires) ? cm.cookieDate(expires) : '';
+    document.cookie = encodeURI(name) + "=" + encodeURI(value) + ';' + path + ';' + expires;
 };
 
 cm.cookieGet = function(name){
@@ -21796,8 +21798,13 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
             baseUrl = that.prepareBaseUrl();
         route = that.prepareUrl(route)
             .replace(new RegExp('^' + baseUrl), '')
-            .replace(new RegExp('^\\.'), '')
-            .split('#');
+            .replace(new RegExp('^\\.'), '');
+        // Add lead slash if not exists
+        if(!/^(\/|\.\/)/.test(route)){
+            route = '/' + route;
+        }
+        // Split hash
+        route = route.split('#');
         return route;
     };
 
@@ -21938,6 +21945,13 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         return that;
     };
 
+    classProto.setURL = function(route, hash, params){
+        var that = this;
+        route = that.prepareRoute(route);
+        that.trigger(route[0], hash || route[1], params);
+        return that;
+    };
+
     classProto.summon = function(route, hash, params, data){
         var that = this,
             state,
@@ -21988,8 +22002,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         if(!cm.isEmpty(that.params['route'])){
             that.set(that.params['route']);
         }else{
-            href = that.prepareRoute(window.location.href);
-            that.trigger(href[0], href[1]);
+            that.setURL(window.location.href);
         }
         return that;
     };
