@@ -212,7 +212,7 @@ function(params){
     };
 
     var requestHandler = function(){
-        var query = that.params['node'].value,
+        var query = that.params['node'].value.trim(),
             config = cm.clone(that.params['ajax']);
         // Clear tooltip ajax/static delay and filtered items list
         that.valueText = query;
@@ -426,8 +426,8 @@ function(params){
     };
 
     that.callbacks.isContain = function(that, text, query){
-        text = text.toLowerCase();
-        query = query.toLowerCase();
+        text = text.trim().toLowerCase();
+        query = query.trim().toLowerCase();
         // Direction
         switch(that.params['direction']){
             case 'start':

@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.31 (2019-05-01 21:03) ************ */
+/*! ************ MagpieUI v3.36.32 (2019-05-03 21:15) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.31',
+        '_version' : '3.36.32',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -26580,7 +26580,7 @@ function(params){
     };
 
     var requestHandler = function(){
-        var query = that.params['node'].value,
+        var query = that.params['node'].value.trim(),
             config = cm.clone(that.params['ajax']);
         // Clear tooltip ajax/static delay and filtered items list
         that.valueText = query;
@@ -26794,8 +26794,8 @@ function(params){
     };
 
     that.callbacks.isContain = function(that, text, query){
-        text = text.toLowerCase();
-        query = query.toLowerCase();
+        text = text.trim().toLowerCase();
+        query = query.trim().toLowerCase();
         // Direction
         switch(that.params['direction']){
             case 'start':
@@ -28760,7 +28760,7 @@ function(params){
     };
 
     var onHide = function(){
-        validateInputValue();
+        //validateInputValue();
         setInputValues();
         nodes['input'].blur();
         cm.removeClass(nodes['container'], 'active');
@@ -28813,16 +28813,16 @@ function(params){
 
     var setInputValues = function(){
         if(that.date){
-            nodes['input'].value = cm.dateFormat(that.date, that.displayFormat, that.lang());
+            nodes['input'].value = cm.dateFormat(that.date, that.displayFormat, that.strings);
             nodes['hidden'].value = that.value;
         }else{
             nodes['input'].value = '';
-            nodes['hidden'].value = cm.dateFormat(false, that.format, that.lang());
+            nodes['hidden'].value = cm.dateFormat(false, that.format, that.strings);
         }
     };
     
     var onChange = function(){
-        if(!that.previousValue || (!that.value && that.previousValue) || (that.value != that.previousValue)){
+        if(!that.previousValue || (!that.value && that.previousValue) || (that.value !== that.previousValue)){
             that.triggerEvent('onChange', that.value);
         }
     };

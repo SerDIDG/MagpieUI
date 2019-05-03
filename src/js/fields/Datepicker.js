@@ -312,7 +312,7 @@ function(params){
     };
 
     var onHide = function(){
-        validateInputValue();
+        //validateInputValue();
         setInputValues();
         nodes['input'].blur();
         cm.removeClass(nodes['container'], 'active');
@@ -365,16 +365,16 @@ function(params){
 
     var setInputValues = function(){
         if(that.date){
-            nodes['input'].value = cm.dateFormat(that.date, that.displayFormat, that.lang());
+            nodes['input'].value = cm.dateFormat(that.date, that.displayFormat, that.strings);
             nodes['hidden'].value = that.value;
         }else{
             nodes['input'].value = '';
-            nodes['hidden'].value = cm.dateFormat(false, that.format, that.lang());
+            nodes['hidden'].value = cm.dateFormat(false, that.format, that.strings);
         }
     };
     
     var onChange = function(){
-        if(!that.previousValue || (!that.value && that.previousValue) || (that.value != that.previousValue)){
+        if(!that.previousValue || (!that.value && that.previousValue) || (that.value !== that.previousValue)){
             that.triggerEvent('onChange', that.value);
         }
     };
