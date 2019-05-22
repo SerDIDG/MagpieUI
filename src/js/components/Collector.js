@@ -139,13 +139,15 @@ function(params){
                     item['destruct'] && item['destruct'](node, item['priority']);
                 });
             });
-        }else{
+        }else if(cm.isWindow(window)){
             cm.forEach(processArray, function(item){
                 cm.forEach(that.stackNodes[item['name']], function(node){
                     item['destruct'] && item['destruct'](node, item['priority']);
                 });
             });
-            that.stackNodes = [];
+            cm.forEach(that.stackNodes, function(item, name){
+                that.stackNodes[name] = [];
+            });
         }
     };
 
@@ -161,13 +163,13 @@ function(params){
                     item['destruct'] && item['destruct'](node, item['priority']);
                 });
             });
-        }else{
+        }else if(cm.isWindow(window)){
             cm.forEach(processArray, function(item){
                 cm.forEach(that.stackNodes[item['name']], function(node){
                     item['destruct'] && item['destruct'](node, item['priority']);
                 });
             });
-            delete that.stackNodes[name];
+            that.stackNodes[name] = [];
         }
     };
 

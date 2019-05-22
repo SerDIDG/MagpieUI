@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.33 (2019-05-03 22:47) ************ */
+/*! ************ MagpieUI v3.36.34 (2019-05-22 20:49) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3926,7 +3926,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.36.33';
+@CmVersion: '3.36.34';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -7313,7 +7313,7 @@ select {
 /* *** MIXINS *** */
 
 .button--size (@height, @lineHeight: @CmFont-Base-LineHeight, @border: 0px) {
-    @padding: max(ceil((@height - @lineHeight - @border) / 2), 0px);
+    @padding: max(ceil((@height - @lineHeight - (@border * 2)) / 2), 0px);
     min-height: @height;
     padding-top: @padding;
     padding-bottom: @padding;

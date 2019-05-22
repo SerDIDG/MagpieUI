@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.33 (2019-05-03 22:47) ************ */
+/*! ************ MagpieUI v3.36.34 (2019-05-22 20:49) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.33',
+        '_version' : '3.36.34',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -12668,13 +12668,15 @@ function(params){
                     item['destruct'] && item['destruct'](node, item['priority']);
                 });
             });
-        }else{
+        }else if(cm.isWindow(window)){
             cm.forEach(processArray, function(item){
                 cm.forEach(that.stackNodes[item['name']], function(node){
                     item['destruct'] && item['destruct'](node, item['priority']);
                 });
             });
-            that.stackNodes = [];
+            cm.forEach(that.stackNodes, function(item, name){
+                that.stackNodes[name] = [];
+            });
         }
     };
 
@@ -12690,13 +12692,13 @@ function(params){
                     item['destruct'] && item['destruct'](node, item['priority']);
                 });
             });
-        }else{
+        }else if(cm.isWindow(window)){
             cm.forEach(processArray, function(item){
                 cm.forEach(that.stackNodes[item['name']], function(node){
                     item['destruct'] && item['destruct'](node, item['priority']);
                 });
             });
-            delete that.stackNodes[name];
+            that.stackNodes[name] = [];
         }
     };
 

@@ -483,7 +483,7 @@
 /* *** MIXINS *** */
 
 .button--size (@height, @lineHeight: @CmFont-Base-LineHeight, @border: 0px) {
-    @padding: max(ceil((@height - @lineHeight - @border) / 2), 0px);
+    @padding: max(ceil((@height - @lineHeight - (@border * 2)) / 2), 0px);
     min-height: @height;
     padding-top: @padding;
     padding-bottom: @padding;
