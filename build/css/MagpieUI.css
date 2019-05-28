@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url('//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800');
-/*! ************ MagpieUI v3.36.34 (2019-05-22 20:49) ************ */
+/*! ************ MagpieUI v3.36.35 (2019-05-28 21:18) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.6.0
@@ -3518,8 +3518,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.36.34');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.36.34') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.36.34') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.36.34') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.36.34#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.36.35');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.36.35') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.36.35') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.36.35') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.36.35#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -5278,6 +5278,7 @@ select.input-disabled,
 select[disabled] {
   background-color: #fafafa;
   border-color: #e8e8e8;
+  cursor: default;
 }
 .input.input-dark,
 input[type="text"].input-dark,
@@ -12836,6 +12837,18 @@ ul.pt__field__hint li:before {
 .pt__line-info .author span {
   font-weight: 600;
 }
+.pt__line-info.pull-left {
+  -webkit-justify-content: flex-start;
+  justify-content: flex-start;
+}
+.pt__line-info.pull-center {
+  -webkit-justify-content: center;
+  justify-content: center;
+}
+.pt__line-info.pull-right {
+  -webkit-justify-content: flex-end;
+  justify-content: flex-end;
+}
 .pt__line-info.is-nowrap {
   -webkit-flex-flow: row nowrap;
   -ms-flex-flow: row nowrap;
@@ -19792,6 +19805,7 @@ html.ie9 .com__palette .b-range {
 .com__select-multi .inner[disabled] {
   background-color: #fafafa;
   border-color: #e8e8e8;
+  cursor: default;
 }
 .com__select-multi .inner.input-dark {
   color: #ffffff;
@@ -21032,6 +21046,7 @@ html.ie9 .com__palette .b-range {
 .com__tags-input > .inner[disabled] {
   background-color: #fafafa;
   border-color: #e8e8e8;
+  cursor: default;
 }
 .com__tags-input > .inner.input-dark {
   color: #ffffff;

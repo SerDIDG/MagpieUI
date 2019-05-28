@@ -31,6 +31,7 @@ cm.define('Com.Request', {
         'responseKey' : 'data',
         'responseErrorsKey' : 'errors',
         'responseMessageKey' : 'message',
+        'responseCodeKey' : 'code',
         'responseHTML' : true,
         'responseHTMLKey' : 'data',
         'responseStatusKey' : 'data.success',
@@ -307,11 +308,13 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
     classProto.error = function(){
         var that = this,
             errors,
-            message;
+            message,
+            code;
         that.isError = true;
         if(!cm.isEmpty(that.responceData)){
             errors = cm.objectSelector(that.params['responseErrorsKey'], that.responceData);
             message = cm.objectSelector(that.params['responseMessageKey'], that.responceData);
+            code = cm.objectSelector(that.params['responseCodeKey'], that.responceData);
         }
         that.renderError();
         that.triggerEvent('onError', {
@@ -320,7 +323,8 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
             'filtered' : that.responceDataFiltered,
             'html' : that.responceDataHTML,
             'errors' : errors,
-            'message' : message
+            'message' : message,
+            'code' : code
         });
         return that;
     };

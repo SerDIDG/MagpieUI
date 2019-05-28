@@ -119,7 +119,9 @@ function(params){
             'name' : '',
             'size' : null,
             'hidden' : false,
-            'group' : null
+            'group' : null,
+            'constructor' : false,
+            'constructorParams' : {}
         }, item);
         // Render
         if((group = that.groups[item['group']]) && !group.items[item['name']]){
@@ -127,13 +129,15 @@ function(params){
             item['size'] && cm.addClass(item['container'], item['size']);
             item['hidden'] && cm.addClass(item['container'], 'is-hidden');
             // Controller
-            cm.getConstructor(item['constructor'], function(classConstructor){
-                item['controller'] = new classConstructor(
-                    cm.merge(item['constructorParams'], {
-                        'container' : item['container']
-                    })
-                );
-            });
+            if(item['constructor']){
+                cm.getConstructor(item['constructor'], function(classConstructor){
+                    item['controller'] = new classConstructor(
+                        cm.merge(item['constructorParams'], {
+                            'container' : item['container']
+                        })
+                    );
+                });
+            }
             // Embed
             if(cm.isNode(item['node'])){
                 cm.appendChild(item['node'], item['container']);

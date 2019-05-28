@@ -45,6 +45,7 @@ cm.define('Com.AbstractFormField', {
         'title' : '',
         'hint' : '',
         'visible' : true,
+        'disabled' : false,
         'renderName' : false,
         'options' : [],
         'constraints' : [
@@ -139,6 +140,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.params['constructorParams']['value'] = !cm.isEmpty(that.params['dataValue']) ? that.params['dataValue'] : that.params['value'];
         that.params['constructorParams']['defaultValue'] = that.params['defaultValue'];
         that.params['constructorParams']['required'] = that.params['required'];
+        that.params['constructorParams']['disabled'] = that.params['disabled'];
         that.params['constructorParams']['minLength'] = that.params['minLength'];
         that.params['constructorParams']['maxLength'] = that.params['maxLength'];
         that.params['constructorParams']['min'] = that.params['min'];
@@ -313,6 +315,9 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         }
         if(!cm.isEmpty(that.params['title'])){
             that.nodes['content']['input'].setAttribute('title', that.params['title']);
+        }
+        if(that.params['disabled']){
+            that.nodes['content']['input'].setAttribute('disabled', 'disabled');
         }
         // Classes
         if(!that.params['visible']){

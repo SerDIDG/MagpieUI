@@ -203,6 +203,7 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
             },
             'constructor' : false,
             'constructorParams' : {},
+            'constructorEventName' : 'onLoadEnd',
             'className' : '',
             'cache' : null,
             'ajax' : {},
@@ -337,21 +338,21 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
 
     classProto.refreshTab = function(id){
         var that = this,
-            item = that.items[id];
+            item = that.items[id],
+            controllerEvents = {};
         if(item['constructor']){
             // Controller
             if(item['controller']){
                 item['controller'].refresh && item['controller'].refresh();
             }else{
                 cm.getConstructor(item['constructor'], function(classConstructor){
+                    controllerEvents[item['constructorEventName']] = function(){
+                        that.tabShowEnd(item, {});
+                    };
                     item['controller'] = new classConstructor(
                         cm.merge(item['constructorParams'], {
                             'container' : item['tab']['inner'],
-                            'events' : {
-                                'onLoadEnd' : function(){
-                                    that.tabShowEnd(item, {});
-                                }
-                            }
+                            'events' : controllerEvents
                         })
                     );
                 });

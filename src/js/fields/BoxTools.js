@@ -6,6 +6,7 @@ cm.define('Com.BoxTools', {
         'maxlength' : 5,
         'units' : 'px',
         'allowNegative' : false,
+        'allowFloat' : false,
         'inputs' : [
             {'name' : 'top', 'icon' : 'icon svg__indent-top small linked', 'iconPosition' : 'insideRight'},
             {'name' : 'right', 'icon' : 'icon svg__indent-right small linked', 'iconPosition' : 'insideRight'},
@@ -88,7 +89,12 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
     };
 
     classProto.renderInput = function(item, i){
-        var that = this;
+        var that = this,
+            params = {
+                'allowNegative' : that.params['allowNegative'],
+                'allowFloat' : that.params['allowFloat']
+            };
+        // Validate
         item = cm.merge({
             'i' : i,
             'icon' : 'small',
@@ -122,15 +128,9 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
             }
         });
         // Input events
-        if(that.params['allowNegative']){
-            cm.allowOnlyNumbersInputEvent(item['input'], function(e, value){
-                that.inputOnInputEvent(e, value, item);
-            });
-        }else{
-            cm.allowOnlyDigitInputEvent(item['input'], function(e, value){
-                that.inputOnInputEvent(e, value, item);
-            });
-        }
+        cm.allowOnlyNumbersInputEvent(item['input'], function(e, value){
+            that.inputOnInputEvent(e, value, item);
+        }, params);
         // Push
         that.inputs.push(item);
         return item['nodes']['container'];

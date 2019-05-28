@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.34 (2019-05-22 20:49) ************ */
+/*! ************ MagpieUI v3.36.35 (2019-05-28 21:18) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.34',
+        '_version' : '3.36.35',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -8222,6 +8222,7 @@ cm.define('Com.AbstractFormField', {
         'title' : '',
         'hint' : '',
         'visible' : true,
+        'disabled' : false,
         'renderName' : false,
         'options' : [],
         'constraints' : [
@@ -8316,6 +8317,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.params['constructorParams']['value'] = !cm.isEmpty(that.params['dataValue']) ? that.params['dataValue'] : that.params['value'];
         that.params['constructorParams']['defaultValue'] = that.params['defaultValue'];
         that.params['constructorParams']['required'] = that.params['required'];
+        that.params['constructorParams']['disabled'] = that.params['disabled'];
         that.params['constructorParams']['minLength'] = that.params['minLength'];
         that.params['constructorParams']['maxLength'] = that.params['maxLength'];
         that.params['constructorParams']['min'] = that.params['min'];
@@ -8490,6 +8492,9 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         }
         if(!cm.isEmpty(that.params['title'])){
             that.nodes['content']['input'].setAttribute('title', that.params['title']);
+        }
+        if(that.params['disabled']){
+            that.nodes['content']['input'].setAttribute('disabled', 'disabled');
         }
         // Classes
         if(!that.params['visible']){
@@ -9519,9 +9524,10 @@ cm.define('Com.Form', {
         'showNotifications' : true,
         'showSuccessNotification' : false,
         'showValidationNotification' : false,
+        'responseKey': 'data',
         'responseErrorsKey': 'errors',
         'responseMessageKey' : 'message',
-        'responseKey': 'data',
+        'responseCodeKey' : 'code',
         'validate' : false,
         'validateOnChange' : false,
         'validateOnInput' : false,
@@ -9933,13 +9939,20 @@ function(params){
 
     that.callbacks.error = function(that, config, response){
         var errors,
-            message;
+            message,
+            code;
         if(!cm.isEmpty(response)){
             errors = cm.objectSelector(that.params['responseErrorsKey'], response);
             message = cm.objectSelector(that.params['responseMessageKey'], response);
+            code = cm.objectSelector(that.params['responseCodeKey'], response);
         }
         that.callbacks.renderError(that, errors, message);
-        that.triggerEvent('onError', errors, message);
+        that.triggerEvent('onError', {
+            'response' : response,
+            'errors' : errors,
+            'message' : message,
+            'code' : code
+        });
     };
 
     that.callbacks.success = function(that, data){
@@ -10011,14 +10024,20 @@ function(params){
             fieldName = item['field'] || key;
             field = that.getField(fieldName);
             // Render field messages
-            if(cm.isArray(item['message'])){
-                cm.forEach(item['message'], function(messageItem){
-                    fieldMessage = that.lang(messageItem);
+            if(cm.isObject(item)){
+                if(cm.isArray(item['message'])){
+                    cm.forEach(item['message'], function(messageItem){
+                        fieldMessage = that.lang(messageItem);
+                        messages.push(fieldMessage);
+                        field && field['controller'].renderError(fieldMessage);
+                    })
+                }else if(!cm.isEmpty(item['message'])){
+                    fieldMessage = that.lang(item['message']);
                     messages.push(fieldMessage);
                     field && field['controller'].renderError(fieldMessage);
-                })
-            }else{
-                fieldMessage = that.lang(item['message']);
+                }
+            }else if(!cm.isEmpty(item)){
+                fieldMessage = that.lang(item);
                 messages.push(fieldMessage);
                 field && field['controller'].renderError(fieldMessage);
             }
@@ -10782,6 +10801,7 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
             },
             'constructor' : false,
             'constructorParams' : {},
+            'constructorEventName' : 'onLoadEnd',
             'className' : '',
             'cache' : null,
             'ajax' : {},
@@ -10916,21 +10936,21 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
 
     classProto.refreshTab = function(id){
         var that = this,
-            item = that.items[id];
+            item = that.items[id],
+            controllerEvents = {};
         if(item['constructor']){
             // Controller
             if(item['controller']){
                 item['controller'].refresh && item['controller'].refresh();
             }else{
                 cm.getConstructor(item['constructor'], function(classConstructor){
+                    controllerEvents[item['constructorEventName']] = function(){
+                        that.tabShowEnd(item, {});
+                    };
                     item['controller'] = new classConstructor(
                         cm.merge(item['constructorParams'], {
                             'container' : item['tab']['inner'],
-                            'events' : {
-                                'onLoadEnd' : function(){
-                                    that.tabShowEnd(item, {});
-                                }
-                            }
+                            'events' : controllerEvents
                         })
                     );
                 });
@@ -21115,6 +21135,7 @@ cm.define('Com.Request', {
         'responseKey' : 'data',
         'responseErrorsKey' : 'errors',
         'responseMessageKey' : 'message',
+        'responseCodeKey' : 'code',
         'responseHTML' : true,
         'responseHTMLKey' : 'data',
         'responseStatusKey' : 'data.success',
@@ -21391,11 +21412,13 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
     classProto.error = function(){
         var that = this,
             errors,
-            message;
+            message,
+            code;
         that.isError = true;
         if(!cm.isEmpty(that.responceData)){
             errors = cm.objectSelector(that.params['responseErrorsKey'], that.responceData);
             message = cm.objectSelector(that.params['responseMessageKey'], that.responceData);
+            code = cm.objectSelector(that.params['responseCodeKey'], that.responceData);
         }
         that.renderError();
         that.triggerEvent('onError', {
@@ -21404,7 +21427,8 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
             'filtered' : that.responceDataFiltered,
             'html' : that.responceDataHTML,
             'errors' : errors,
-            'message' : message
+            'message' : message,
+            'code' : code
         });
         return that;
     };
@@ -24589,7 +24613,9 @@ function(params){
             'name' : '',
             'size' : null,
             'hidden' : false,
-            'group' : null
+            'group' : null,
+            'constructor' : false,
+            'constructorParams' : {}
         }, item);
         // Render
         if((group = that.groups[item['group']]) && !group.items[item['name']]){
@@ -24597,13 +24623,15 @@ function(params){
             item['size'] && cm.addClass(item['container'], item['size']);
             item['hidden'] && cm.addClass(item['container'], 'is-hidden');
             // Controller
-            cm.getConstructor(item['constructor'], function(classConstructor){
-                item['controller'] = new classConstructor(
-                    cm.merge(item['constructorParams'], {
-                        'container' : item['container']
-                    })
-                );
-            });
+            if(item['constructor']){
+                cm.getConstructor(item['constructor'], function(classConstructor){
+                    item['controller'] = new classConstructor(
+                        cm.merge(item['constructorParams'], {
+                            'container' : item['container']
+                        })
+                    );
+                });
+            }
             // Embed
             if(cm.isNode(item['node'])){
                 cm.appendChild(item['node'], item['container']);
@@ -26147,6 +26175,7 @@ cm.define('Com.BoxTools', {
         'maxlength' : 5,
         'units' : 'px',
         'allowNegative' : false,
+        'allowFloat' : false,
         'inputs' : [
             {'name' : 'top', 'icon' : 'icon svg__indent-top small linked', 'iconPosition' : 'insideRight'},
             {'name' : 'right', 'icon' : 'icon svg__indent-right small linked', 'iconPosition' : 'insideRight'},
@@ -26229,7 +26258,12 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
     };
 
     classProto.renderInput = function(item, i){
-        var that = this;
+        var that = this,
+            params = {
+                'allowNegative' : that.params['allowNegative'],
+                'allowFloat' : that.params['allowFloat']
+            };
+        // Validate
         item = cm.merge({
             'i' : i,
             'icon' : 'small',
@@ -26263,15 +26297,9 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
             }
         });
         // Input events
-        if(that.params['allowNegative']){
-            cm.allowOnlyNumbersInputEvent(item['input'], function(e, value){
-                that.inputOnInputEvent(e, value, item);
-            });
-        }else{
-            cm.allowOnlyDigitInputEvent(item['input'], function(e, value){
-                that.inputOnInputEvent(e, value, item);
-            });
-        }
+        cm.allowOnlyNumbersInputEvent(item['input'], function(e, value){
+            that.inputOnInputEvent(e, value, item);
+        }, params);
         // Push
         that.inputs.push(item);
         return item['nodes']['container'];
@@ -28497,6 +28525,7 @@ cm.define('Com.Datepicker', {
         'isDateTime' : false,
         'dateTimeFormat' : 'cm._config.dateTimeFormat',
         'displayDateTimeFormat' : 'cm._config.displayDateTimeFormat',
+        'setEmptyDateByFormat' : true,
         'minutesInterval' : 1,
         'startYear' : 1950,                                                 // number | current
         'endYear' : 'current + 10',                                         // number | current
@@ -28832,7 +28861,11 @@ function(params){
             nodes['hidden'].value = that.value;
         }else{
             nodes['input'].value = '';
-            nodes['hidden'].value = cm.dateFormat(false, that.format, that.strings);
+            if(that.params['setEmptyDateByFormat']){
+                nodes['hidden'].value = cm.dateFormat(false, that.format, that.strings);
+            }else{
+                nodes['hidden'].value = '';
+            }
         }
     };
     
@@ -28860,7 +28893,11 @@ function(params){
 
     that.get = function(format){
         format = !cm.isUndefined(format) ? format : that.format;
-        return cm.dateFormat(that.date, format, that.lang());
+        if(that.date || that.params['setEmptyDateByFormat']){
+            return cm.dateFormat(that.date, format, that.strings);
+        }else{
+            return '';
+        }
     };
 
     that.getDate = function(){

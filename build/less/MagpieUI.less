@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.34 (2019-05-22 20:49) ************ */
+/*! ************ MagpieUI v3.36.35 (2019-05-28 21:18) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3926,7 +3926,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.36.34';
+@CmVersion: '3.36.35';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -6689,6 +6689,7 @@ tbody, thead, td, th, tr {
     &[disabled] {
         background-color: @CmInput-DisabledBackground;
         border-color: @CmInput-DisableBorder;
+        cursor: default;
     }
 
     &.input-dark {
@@ -11687,6 +11688,18 @@ ul.pt__field__hint {
         a, span {
             font-weight: @CmFont-Base-BoldWeight;
         }
+    }
+
+    &.pull-left {
+        .mx__justify-content(flex-start);
+    }
+
+    &.pull-center {
+        .mx__justify-content(center);
+    }
+
+    &.pull-right {
+        .mx__justify-content(flex-end);
     }
 
     &.is-nowrap {

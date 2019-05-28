@@ -34,6 +34,7 @@ cm.define('Com.Datepicker', {
         'isDateTime' : false,
         'dateTimeFormat' : 'cm._config.dateTimeFormat',
         'displayDateTimeFormat' : 'cm._config.displayDateTimeFormat',
+        'setEmptyDateByFormat' : true,
         'minutesInterval' : 1,
         'startYear' : 1950,                                                 // number | current
         'endYear' : 'current + 10',                                         // number | current
@@ -369,7 +370,11 @@ function(params){
             nodes['hidden'].value = that.value;
         }else{
             nodes['input'].value = '';
-            nodes['hidden'].value = cm.dateFormat(false, that.format, that.strings);
+            if(that.params['setEmptyDateByFormat']){
+                nodes['hidden'].value = cm.dateFormat(false, that.format, that.strings);
+            }else{
+                nodes['hidden'].value = '';
+            }
         }
     };
     
@@ -397,7 +402,11 @@ function(params){
 
     that.get = function(format){
         format = !cm.isUndefined(format) ? format : that.format;
-        return cm.dateFormat(that.date, format, that.lang());
+        if(that.date || that.params['setEmptyDateByFormat']){
+            return cm.dateFormat(that.date, format, that.strings);
+        }else{
+            return '';
+        }
     };
 
     that.getDate = function(){

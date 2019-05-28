@@ -42,9 +42,10 @@ cm.define('Com.Form', {
         'showNotifications' : true,
         'showSuccessNotification' : false,
         'showValidationNotification' : false,
+        'responseKey': 'data',
         'responseErrorsKey': 'errors',
         'responseMessageKey' : 'message',
-        'responseKey': 'data',
+        'responseCodeKey' : 'code',
         'validate' : false,
         'validateOnChange' : false,
         'validateOnInput' : false,
@@ -456,13 +457,20 @@ function(params){
 
     that.callbacks.error = function(that, config, response){
         var errors,
-            message;
+            message,
+            code;
         if(!cm.isEmpty(response)){
             errors = cm.objectSelector(that.params['responseErrorsKey'], response);
             message = cm.objectSelector(that.params['responseMessageKey'], response);
+            code = cm.objectSelector(that.params['responseCodeKey'], response);
         }
         that.callbacks.renderError(that, errors, message);
-        that.triggerEvent('onError', errors, message);
+        that.triggerEvent('onError', {
+            'response' : response,
+            'errors' : errors,
+            'message' : message,
+            'code' : code
+        });
     };
 
     that.callbacks.success = function(that, data){
@@ -534,14 +542,20 @@ function(params){
             fieldName = item['field'] || key;
             field = that.getField(fieldName);
             // Render field messages
-            if(cm.isArray(item['message'])){
-                cm.forEach(item['message'], function(messageItem){
-                    fieldMessage = that.lang(messageItem);
+            if(cm.isObject(item)){
+                if(cm.isArray(item['message'])){
+                    cm.forEach(item['message'], function(messageItem){
+                        fieldMessage = that.lang(messageItem);
+                        messages.push(fieldMessage);
+                        field && field['controller'].renderError(fieldMessage);
+                    })
+                }else if(!cm.isEmpty(item['message'])){
+                    fieldMessage = that.lang(item['message']);
                     messages.push(fieldMessage);
                     field && field['controller'].renderError(fieldMessage);
-                })
-            }else{
-                fieldMessage = that.lang(item['message']);
+                }
+            }else if(!cm.isEmpty(item)){
+                fieldMessage = that.lang(item);
                 messages.push(fieldMessage);
                 field && field['controller'].renderError(fieldMessage);
             }
