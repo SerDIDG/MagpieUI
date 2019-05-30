@@ -3,8 +3,8 @@ cm.define('Com.ImageInput', {
     'params' : {
         'hiddenType' : 'textarea',
         'className' : 'com__image-input',
-        'size' : 'default',
-        'aspect' : false,
+        'size' : 'default',                     // default, full, custom
+        'aspect' : false,                       // 1x1, 3x2, etc
         'preview' : true,
         'previewConstructor' : 'Com.ImagePreviewContainer',
         'previewParams' : {}

@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.35 (2019-05-28 21:18) ************ */
+/*! ************ MagpieUI v3.36.36 (2019-05-30 19:58) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.35',
+        '_version' : '3.36.36',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -29344,8 +29344,8 @@ cm.define('Com.ImageInput', {
     'params' : {
         'hiddenType' : 'textarea',
         'className' : 'com__image-input',
-        'size' : 'default',
-        'aspect' : false,
+        'size' : 'default',                     // default, full, custom
+        'aspect' : false,                       // 1x1, 3x2, etc
         'preview' : true,
         'previewConstructor' : 'Com.ImagePreviewContainer',
         'previewParams' : {}
