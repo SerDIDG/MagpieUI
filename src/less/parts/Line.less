@@ -4,9 +4,11 @@
 
 .pt__line-info {
     .display-flex;
+    .cm__list-clear--soft;
     .mx__flex-flow(row wrap);
     .mx__align-items(center);
 
+    >li,
     .icon,
     .item,
     .category,
@@ -50,7 +52,8 @@
     }
 
     .category,
-    .author {
+    .author,
+    .name {
         a, span {
             font-weight: @CmFont-Base-BoldWeight;
         }
@@ -70,6 +73,25 @@
 
     &.is-nowrap {
         .mx__flex-flow(row nowrap);
+    }
+
+    &.is-box {
+        display: block;
+    }
+
+    &.has-separator {
+        > li {
+            margin-right: @CmIndent-XXSmall;
+
+            &:after {
+                margin-left: @CmIndent-XXSmall;
+                content: '・';
+            }
+
+            &:last-child:after  {
+                display: none;
+            }
+        }
     }
 }
 

@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.36 (2019-05-30 19:58) ************ */
+/*! ************ MagpieUI v3.36.37 (2019-05-31 19:32) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3926,7 +3926,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.36.36';
+@CmVersion: '3.36.37';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -11638,9 +11638,11 @@ ul.pt__field__hint {
 
 .pt__line-info {
     .display-flex;
+    .cm__list-clear--soft;
     .mx__flex-flow(row wrap);
     .mx__align-items(center);
 
+    >li,
     .icon,
     .item,
     .category,
@@ -11684,7 +11686,8 @@ ul.pt__field__hint {
     }
 
     .category,
-    .author {
+    .author,
+    .name {
         a, span {
             font-weight: @CmFont-Base-BoldWeight;
         }
@@ -11704,6 +11707,25 @@ ul.pt__field__hint {
 
     &.is-nowrap {
         .mx__flex-flow(row nowrap);
+    }
+
+    &.is-box {
+        display: block;
+    }
+
+    &.has-separator {
+        > li {
+            margin-right: @CmIndent-XXSmall;
+
+            &:after {
+                margin-left: @CmIndent-XXSmall;
+                content: '・';
+            }
+
+            &:last-child:after  {
+                display: none;
+            }
+        }
     }
 }
 
@@ -13910,7 +13932,8 @@ ul.pt__field__hint {
     .post-tags,
     .post-image,
     .post-columns,
-    .post-items {
+    .post-items,
+    .post-read {
         margin: @CmIndent-Small 0 0 0;
 
         &:first-child {
@@ -13950,7 +13973,8 @@ ul.pt__field__hint {
         .post-tags,
         .post-image,
         .post-columns,
-        .post-items {
+        .post-items,
+        .post-read {
             margin: @CmIndent-Medium 0 0 0;
 
             &:first-child {
