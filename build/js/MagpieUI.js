@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.37 (2019-05-31 19:32) ************ */
+/*! ************ MagpieUI v3.36.38 (2019-06-03 19:14) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.37',
+        '_version' : '3.36.38',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -5133,7 +5133,7 @@ cm.ajax = function(o){
     var config = cm.merge({
             'debug' : true,
             'type' : 'json',                                         // text | xml | json | jsonp
-            'method' : 'post',                                       // post | get | put | delete
+            'method' : 'POST',                                       // POST | GET | PUT | PATCH | DELETE
             'paramsType' : 'uri',                                    // uri | json
             'params' : '',
             'url' : '',
@@ -5180,7 +5180,7 @@ cm.ajax = function(o){
         config['httpRequestObject'] = cm.createXmlHttpRequestObject();
         config['type'] = config['type'].toLowerCase();
         responseType =  /text|json/.test(config['type']) ? 'responseText' : 'responseXML';
-        config['method'] = config['method'].toLowerCase();
+        config['method'] = config['method'].toUpperCase();
         // Convert params object to URI string
         if(config['params'] instanceof FormData) {
             delete config['headers']['Content-Type'];
@@ -5204,7 +5204,7 @@ cm.ajax = function(o){
             delete config['modifier'];
         }
         config['url'] = cm.strReplace(config['url'], vars);
-        if(!/post|put/.test(config['method'])){
+        if(!/POST|PUT|PATCH/.test(config['method'])){
             if(!cm.isEmpty(config['params'])){
                 config['url'] = [config['url'], config['params']].join('?');
             }
@@ -5228,7 +5228,7 @@ cm.ajax = function(o){
         config['onStart']();
         if(config['beacon'] && cm.hasBeacon){
             navigator.sendBeacon(config['url'], config['params']);
-        }else if(/post|put/.test(config['method'])){
+        }else if(/POST|PUT|PATCH/.test(config['method'])){
             config['httpRequestObject'].send(config['params']);
         }else{
             config['httpRequestObject'].send(null);

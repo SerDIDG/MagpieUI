@@ -296,3 +296,39 @@
         }
     }
 }
+
+/* ******* PART: LINE: FILTER ******* */
+
+.pt__line-filter {
+    > ul {
+        .cm__list-horizontal;
+
+        li {
+            &.active {
+                font-weight: @CmFont-Base-BoldWeight;
+            }
+
+            &:after {
+                margin: 0;
+            }
+        }
+    }
+
+    &.pull-left {
+        > ul {
+            text-align: left;
+        }
+    }
+
+    &.pull-center {
+        > ul {
+            text-align: center;
+        }
+    }
+
+    &.pull-right {
+        > ul {
+            text-align: right;
+        }
+    }
+}

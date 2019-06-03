@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.37 (2019-05-31 19:32) ************ */
+/*! ************ MagpieUI v3.36.38 (2019-06-03 19:14) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3926,7 +3926,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.36.37';
+@CmVersion: '3.36.38';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -9902,6 +9902,7 @@ button {
 
         span.required {
             margin: 0 0 0 @CmIndent-XXXSmall;
+            color: @CmColor-Danger-DarkDefault;
         }
     }
 
@@ -9930,6 +9931,7 @@ button {
 
         .input {
             border: 1px solid @CmColor-Danger-DarkDefault;
+            background-color: @CmColor-Danger-LightHighlight;
         }
     }
 
@@ -9946,6 +9948,7 @@ button {
 
         .input {
             border: 1px solid @CmColor-Success-DarkDefault;
+            background-color: @CmColor-Success-LightHighlight;
         }
     }
 
@@ -11927,6 +11930,42 @@ ul.pt__field__hint {
                     margin-left: 0;
                 }
             }
+        }
+    }
+}
+
+/* ******* PART: LINE: FILTER ******* */
+
+.pt__line-filter {
+    > ul {
+        .cm__list-horizontal;
+
+        li {
+            &.active {
+                font-weight: @CmFont-Base-BoldWeight;
+            }
+
+            &:after {
+                margin: 0;
+            }
+        }
+    }
+
+    &.pull-left {
+        > ul {
+            text-align: left;
+        }
+    }
+
+    &.pull-center {
+        > ul {
+            text-align: center;
+        }
+    }
+
+    &.pull-right {
+        > ul {
+            text-align: right;
         }
     }
 }
