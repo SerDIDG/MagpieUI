@@ -371,15 +371,23 @@ function(params){
     /* ******* CALLBACKS ******* */
 
     that.callbacks.prepare = function(that, config){
-        // Prepare
+        config = that.callbacks.beforePrepare(that, config);
         config['url'] = cm.strReplace(config['url'], {
             '%baseUrl%' : cm._baseUrl
         });
         config['params'] = cm.objectReplace(config['params'], {
             '%baseUrl%' : cm._baseUrl
         });
-        // Get Params
         config['params'] = cm.merge(config['params'], that.get('sendPath'));
+        config = that.callbacks.afterPrepare(that, config);
+        return config;
+    };
+
+    that.callbacks.beforePrepare = function(that, config){
+        return config;
+    };
+
+    that.callbacks.afterPrepare = function(that, config){
         return config;
     };
 

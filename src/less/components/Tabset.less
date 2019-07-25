@@ -248,20 +248,6 @@
         width: calc(~'100% - @{ComTabset-Column-Width}');
         .mx__flex(1 1 auto);
     }
-
-    .ie9 & {
-        width: 100%;
-        display: table;
-        table-layout: fixed;
-
-        > .com__tabset__head-tabs {
-            display: table-cell;
-        }
-
-        > .com__tabset__content {
-            display: table-cell;
-        }
-    }
 }
 
 .com__tabset--horizontal () {
@@ -343,16 +329,6 @@
 
             &:last-child {
                 margin-right: 0;
-            }
-        }
-    }
-
-    .ie9 & {
-        ul {
-            .clearfix;
-
-            li {
-                float: left;
             }
         }
     }

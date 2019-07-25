@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.38 (2019-06-03 19:14) ************ */
+/*! ************ MagpieUI v3.36.39 (2019-07-25 20:44) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.38',
+        '_version' : '3.36.39',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -6133,7 +6133,7 @@ Mod['Langs'] = {
     'langObject' : function(str){
         var that = this,
             o = that.lang(str);
-        return cm.isObject(o) ? o : {};
+        return cm.isObject(o) || cm.inArray(o) ? o : {};
     },
     'setLangs' : function(o){
         var that = this;
@@ -9853,15 +9853,23 @@ function(params){
     /* ******* CALLBACKS ******* */
 
     that.callbacks.prepare = function(that, config){
-        // Prepare
+        config = that.callbacks.beforePrepare(that, config);
         config['url'] = cm.strReplace(config['url'], {
             '%baseUrl%' : cm._baseUrl
         });
         config['params'] = cm.objectReplace(config['params'], {
             '%baseUrl%' : cm._baseUrl
         });
-        // Get Params
         config['params'] = cm.merge(config['params'], that.get('sendPath'));
+        config = that.callbacks.afterPrepare(that, config);
+        return config;
+    };
+
+    that.callbacks.beforePrepare = function(that, config){
+        return config;
+    };
+
+    that.callbacks.afterPrepare = function(that, config){
         return config;
     };
 
@@ -13106,7 +13114,7 @@ function(params){
         }
         that.pointerType = e.type;
         // Current
-        if(e.ctrlKey){
+        if(e.ctrlKey || e.metaKey){
             blockContextMenu();
             setEqualDimensions();
             redrawChassis();

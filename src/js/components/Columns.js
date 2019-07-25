@@ -287,7 +287,7 @@ function(params){
         }
         that.pointerType = e.type;
         // Current
-        if(e.ctrlKey){
+        if(e.ctrlKey || e.metaKey){
             blockContextMenu();
             setEqualDimensions();
             redrawChassis();
