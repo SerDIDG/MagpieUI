@@ -405,7 +405,7 @@ Mod['Langs'] = {
     'langObject' : function(str){
         var that = this,
             o = that.lang(str);
-        return cm.isObject(o) || cm.inArray(o) ? o : {};
+        return cm.isObject(o) || cm.isArray(o) ? o : {};
     },
     'setLangs' : function(o){
         var that = this;
