@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.40 (2019-08-05 21:21) ************ */
+/*! ************ MagpieUI v3.36.41 (2019-08-13 21:26) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.40',
+        '_version' : '3.36.41',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -8201,6 +8201,7 @@ cm.define('Com.AbstractFormField', {
         'renderStructureField' : true,
         'renderStructureContent' : true,
         'renderError' : true,
+        'renderErrorMessage' : true,
         'form' : false,
         'rawValue' : false,
         'value' : null,
@@ -8232,6 +8233,7 @@ cm.define('Com.AbstractFormField', {
         ],
         'required' : false,
         'requiredAsterisk' : true,
+        'validate' : false,
         'constructor' : false,
         'constructorParams' : {
             'removeOnDestruct' : false,
@@ -8267,7 +8269,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.onConstructStart = function(){
         var that = this;
         // Variables
-        that._name = null;
+        that.attributeName = null;
         that.isVisible = null;
         that.isAjax = false;
         that.isProcess = false;
@@ -8303,7 +8305,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.onValidateParams = function(){
         var that = this;
         that.validateParamsValue();
-        that._name = that.params['formName'] + '[' + that.params['name'] + ']';
+        that.attributeName = that.params['formName'] + '[' + that.params['name'] + ']';
         // Validate
         if(that.params['required'] && that.params['requiredAsterisk'] && !cm.isEmpty(that.params['placeholder'])){
             that.params['placeholder'] += ' *';
@@ -8317,6 +8319,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.params['constructorParams']['value'] = !cm.isEmpty(that.params['dataValue']) ? that.params['dataValue'] : that.params['value'];
         that.params['constructorParams']['defaultValue'] = that.params['defaultValue'];
         that.params['constructorParams']['required'] = that.params['required'];
+        that.params['constructorParams']['validate'] = that.params['validate'];
         that.params['constructorParams']['disabled'] = that.params['disabled'];
         that.params['constructorParams']['minLength'] = that.params['minLength'];
         that.params['constructorParams']['maxLength'] = that.params['maxLength'];
@@ -8391,9 +8394,12 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             that.nodes['label'] = cm.node('dt'),
             that.nodes['value'] = cm.node('dd')
         );
+        if(!that.nodes['messages']){
+            that.nodes['messages'] = that.nodes['value'];
+        }
         // Label
         if(!cm.isEmpty(that.params['label'])){
-            that.nodes['labelText'] = cm.node('label', {'for' : that._name}, that.params['label']);
+            that.nodes['labelText'] = cm.node('label', {'for' : that.attributeName}, that.params['label']);
             cm.appendChild(that.nodes['labelText'], that.nodes['label']);
         }
         // Required
@@ -8426,7 +8432,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         }
         // Placeholder
         if(that.params['showPlaceholderAbove'] && !cm.isEmpty(that.params['placeholder'])){
-            nodes['placeholder'] = cm.node('label', {'class' : 'placeholder', 'for' : that._name},
+            nodes['placeholder'] = cm.node('label', {'class' : 'placeholder', 'for' : that.attributeName},
                 cm.node('span', {'innerHTML' : that.params['placeholder']})
             );
             cm.appendChild(nodes['placeholder'], nodes['container']);
@@ -8460,8 +8466,8 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         // Call parent method
         classInherit.prototype.setAttributes.apply(that, arguments);
         // Attributes
-        if(!cm.isEmpty(that._name)){
-            that.nodes['content']['input'].setAttribute('id', that._name);
+        if(!cm.isEmpty(that.attributeName)){
+            that.nodes['content']['input'].setAttribute('id', that.attributeName);
         }
         if(!cm.isEmpty(that.params['name'])){
             that.nodes['content']['input'].setAttribute('name', that.params['name']);
@@ -8637,6 +8643,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.validateValue = function(){
         var that = this,
             constraintsData,
+            testData,
             data = {
                 'field' : that,
                 'form' : that.components['form'],
@@ -8645,9 +8652,14 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
                 'value' : that.get()
             };
         if(cm.isEmpty(data['value'])){
-            data['valid'] = false;
-            data['message'] = that.lang('required');
-            return data;
+            if(that.params['required']){
+                data['valid'] = false;
+                data['message'] = that.lang('required');
+                return data;
+            }else{
+                data['valid'] = true;
+                return data;
+            }
         }
         if(that.params['minLength'] && data['value'].length < that.params['minLength']){
             data['valid'] = false;
@@ -8663,8 +8675,12 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             });
             return data;
         }
-        if(!cm.isEmpty(that.params['constraints']) && (constraintsData = that.validateConstraints(data))){
-            return constraintsData;
+        if(!cm.isEmpty(that.params['constraints'])){
+            testData = cm.clone(data);
+            constraintsData = that.validateConstraints(testData);
+            if(constraintsData){
+                return constraintsData;
+            }
         }
         if(that.components['controller'] && cm.isFunction(that.components['controller'].validate)){
             return that.components['controller'].validate(data);
@@ -8672,26 +8688,10 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         return data;
     };
 
-    classProto.validateConstraints = function(data){
-        var that = this,
-            constraintsTest,
-            constraintsData;
-        constraintsTest = that.params['constraints'].some(function(item){
-            if(cm.isFunction(item)){
-                constraintsData = item(data);
-                return !constraintsData['valid'];
-            }
-        });
-        if(constraintsTest){
-            return constraintsData;
-        }
-        return false;
-    };
-
     classProto.validate = function(){
         var that = this,
             data;
-        if(!that.params['required']){
+        if(!that.params['required'] && !that.params['validate']){
             return true;
         }
         data = that.validateValue();
@@ -8704,6 +8704,41 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         return data['valid'];
     };
 
+    /*** CONSTRAINTS ***/
+
+    classProto.addConstraint = function(constraint){
+        var that = this;
+        if(cm.isFunction(constraint)){
+            that.params['constraints'] = cm.arrayAdd(that.params['constraints'], constraint);
+        }
+        return that;
+    };
+
+    classProto.removeConstraint = function(constraint){
+        var that = this;
+        if(cm.isFunction(constraint)){
+            that.params['constraints'] = cm.arrayRemove(that.params['constraints'], constraint);
+        }
+        return that;
+    };
+
+    classProto.validateConstraints = function(data){
+        var that = this,
+            constraintsTest,
+            constraintsData;
+        constraintsTest = that.params['constraints'].some(function(item){
+            if(cm.isFunction(item)){
+                constraintsData = item(data);
+                return !constraintsData['valid'];
+            }
+            return false;
+        });
+        if(constraintsTest){
+            return constraintsData;
+        }
+        return false;
+    };
+
     /******* MESSAGES *******/
 
     classProto.renderHint = function(message){
@@ -8712,10 +8747,10 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.nodes['hints'] = cm.node('ul', {'class' : 'pt__field__hint'},
             cm.node('li', {'innerHTML' : message})
         );
-        if(that.params['renderError'] && that.nodes['errors']){
+        if(that.params['renderError'] && that.nodes['errors'] && cm.inDOM(that.nodes['errors'])){
             cm.insertBefore(that.nodes['hints'], that.nodes['errors']);
         }else{
-            cm.appendChild(that.nodes['hints'], that.nodes['value']);
+            cm.appendChild(that.nodes['hints'], that.nodes['messages']);
         }
         return that;
     };
@@ -8731,11 +8766,11 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.clearError();
         if(that.params['renderError']){
             cm.addClass(that.nodes['container'], 'error');
-            if(!cm.isEmpty(message)){
+            if(that.params['renderErrorMessage'] && !cm.isEmpty(message)){
                 that.nodes['errors'] = cm.node('ul', {'class' : 'pt__field__error pt__field__hint'},
                     cm.node('li', {'class' : 'error', 'innerHTML' : message})
                 );
-                cm.insertLast(that.nodes['errors'], that.nodes['value']);
+                cm.insertLast(that.nodes['errors'], that.nodes['messages']);
             }
         }
         return that;
@@ -9664,6 +9699,7 @@ function(params){
             'sendPath' : null,
             'label' : '',
             'required' : false,
+            'validate' : false,
             'options' : [],
             'container' : that.nodes['fields'],
             'renderName' : null
@@ -9683,21 +9719,21 @@ function(params){
     var renderFieldController = function(params){
         cm.getConstructor(params['fieldConstructor'], function(classConstructor){
             params['fieldController'] = params['controller'] = new classConstructor(params);
-            params['constructorController'] = cm.isFunction(params['fieldController'].getController) && params['fieldController'].getController();
+            params['inputController'] = params['constructorController'] = cm.isFunction(params['fieldController'].getController) && params['fieldController'].getController();
             // Events
             params['fieldController'].addEvent('onBlur', function(){
-                if(that.params['validate'] && that.params['validateOnChange'] && params['required']){
+                if(that.params['validate'] && that.params['validateOnChange'] && (params['required'] || params['validate'])){
                     params['fieldController'].validate();
                 }
             });
             params['fieldController'].addEvent('onChange', function(){
-                if(that.params['validate'] && that.params['validateOnChange'] && params['required']){
+                if(that.params['validate'] && that.params['validateOnChange'] && (params['required'] || params['validate'])){
                     params['fieldController'].validate();
                 }
                 that.triggerEvent('onChange');
             });
             params['fieldController'].addEvent('onInput', function(){
-                if(that.params['validate'] && that.params['validateOnInput'] && params['required']){
+                if(that.params['validate'] && that.params['validateOnInput'] && (params['required'] || params['validate'])){
                     params['fieldController'].validate();
                 }
                 that.triggerEvent('onInput');
@@ -9813,25 +9849,30 @@ function(params){
     /* *** VALIDATE *** */
 
     var validateHelper = function(){
-        var constraintsData,
+        var isFieldValidatable,
+            constraintsData,
+            testData,
             data = {
                 'form' : that,
                 'valid' : true,
                 'message' : null
             };
-        // Constraints
-        if(!cm.isEmpty(that.constraints) && (constraintsData = validateConstraints(data))){
-            data = cm.merge(data, constraintsData);
-        }
         // Fields
         cm.forEach(that.fields, function(field, name){
-            if(field['field'] && !field['system'] && field['required']){
-                if(field['controller'].validate && !field['controller'].validate()){
-                    data['message'] = that.lang('form_error');
-                    data['valid'] = false;
-                }
+            isFieldValidatable = field['field'] && !field['system'] && (field['required'] || field['validate']) && cm.isFunction(field['controller'].validate);
+            if(isFieldValidatable && !field['controller'].validate()){
+                data['message'] = that.lang('form_error');
+                data['valid'] = false;
             }
         });
+        // Constraints
+        if(!cm.isEmpty(that.constraints)){
+            testData = cm.clone(data);
+            constraintsData = validateConstraints(testData);
+            if(constraintsData){
+                data = cm.merge(data, constraintsData);
+            }
+        }
         return data;
     };
 
@@ -9843,6 +9884,7 @@ function(params){
                 constraintsData = item(data);
                 return !constraintsData['valid'];
             }
+            return false;
         });
         if(constraintsTest){
             return constraintsData;
@@ -10098,7 +10140,14 @@ function(params){
 
     that.addConstraint = function(constraint){
         if(cm.isFunction(constraint)){
-            that.constraints.push(constraint);
+            cm.arrayAdd(that.constraints, constraint);
+        }
+        return that;
+    };
+
+    that.removeConstraint = function(constraint){
+        if(cm.isFunction(constraint)){
+            cm.arrayRemove(that.constraints, constraint);
         }
         return that;
     };
@@ -29635,8 +29684,11 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     classProto.construct = function(){
         var that = this;
         // Variables
+        that.selectionStartInitial = null;
+        that.selectionEndInitial = null;
         that.isFocus = false;
         that.lazyDelay = null;
+        that.constraints = {};
         // Bind context to methods
         that.focusHandler = that.focus.bind(that);
         that.blurHandler = that.blur.bind(that);
@@ -29646,6 +29698,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
         that.setValueHandler = that.setValue.bind(that);
         that.selectValueHandler = that.selectValue.bind(that);
         that.lazyValueHandler = that.lazyValue.bind(that);
+        that.inputKeyDownHanlder = that.inputKeyDown.bind(that);
         that.inputKeyPressHanlder = that.inputKeyPress.bind(that);
         that.iconEventHanlder = that.iconEvent.bind(that);
         // Call parent method
@@ -29735,11 +29788,18 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
         cm.addEvent(that.nodes['content']['input'], 'focus', that.focusEventHandler);
         cm.addEvent(that.nodes['content']['input'], 'blur', that.blurEventHandler);
         cm.addEvent(that.nodes['content']['input'], 'change', that.setValueHandler);
+        cm.addEvent(that.nodes['content']['input'], 'keydown', that.inputKeyDownHanlder);
         cm.addEvent(that.nodes['content']['input'], 'keypress', that.inputKeyPressHanlder);
         cm.addEvent(that.nodes['content']['icon'], 'click', that.iconEventHanlder);
     };
 
     /*** EVENTS ***/
+
+    classProto.inputKeyDown = function(e){
+        var that = this;
+        that.selectionStartInitial = that.nodes['content']['input'].selectionStart;
+        that.selectionEndInitial = that.nodes['content']['input'].selectionStart;
+    };
 
     classProto.inputKeyPress = function(e){
         var that = this;
@@ -29753,6 +29813,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
 
     classProto.inputEvent = function(){
         var that = this;
+        that.execConstraint('onInput', false);
         that.selectValue(true);
         if(that.params['lazy']){
             that.lazyValue(true);
@@ -29762,12 +29823,14 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     classProto.focusEvent = function(){
         var that = this;
         that.isFocus = true;
+        that.execConstraint('onFocus', false);
         that.triggerEvent('onFocus', that.value);
     };
 
     classProto.blurEvent = function(){
         var that = this;
         that.isFocus = false;
+        that.execConstraint('onBlur', false);
         that.setValue(true);
         that.triggerEvent('onBlur', that.value);
     };
@@ -29778,6 +29841,55 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
         cm.preventDefault(e);
         that.nodes['content']['input'].setSelectionRange(0, value.length);
         that.focus();
+    };
+
+    /*** CONSTRAINT ***/
+
+    classProto.addConstraint = function(eventName, handler){
+        var that = this;
+        if(cm.isFunction(handler)){
+            that.constraints[eventName] = handler;
+        }
+        return that;
+    };
+
+    classProto.removeConstraint = function(eventName, handler){
+        var that = this;
+        that.constraints[eventName] = null;
+        return that;
+    };
+
+    classProto.execConstraint = function(eventName, triggerEvents){
+        var that = this,
+            selectionStart,
+            value,
+            valueBounded;
+        triggerEvents = cm.isUndefined(triggerEvents)? true : triggerEvents;
+        if(cm.isFunction(that.constraints[eventName])){
+            selectionStart = that.nodes['content']['input'].selectionStart;
+            value = that.nodes['content']['input'].value;
+            valueBounded = that.constraints[eventName](value);
+            // Set bounded value
+            that.nodes['content']['input'].value = that.constraints[eventName](value);
+            // Restore caret position
+            if(value.indexOf(valueBounded) > -1 || value === valueBounded){
+                that.nodes['content']['input'].setSelectionRange(selectionStart, selectionStart);
+            }else{
+                that.nodes['content']['input'].setSelectionRange(that.selectionStartInitial, that.selectionStartInitial);
+            }
+            // Trigger events
+            if(triggerEvents){
+                switch(eventName){
+                    case 'onInput':
+                        that.selectValue(true);
+                        break;
+                    case 'onChange':
+                        that.setValue(true);
+                        break;
+                }
+            }
+        }
+        return that;
     };
 
     /*** DATA VALUE ***/
@@ -29807,9 +29919,9 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
         return that;
     };
 
-    classProto.setData = function(){
+    classProto.setData = function(value){
         var that = this;
-        that.nodes['content']['input'].value = that.value;
+        that.nodes['content']['input'].value = !cm.isUndefined(value) ? value : that.value;
         return that;
     };
 

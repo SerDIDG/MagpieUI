@@ -24,6 +24,7 @@ cm.define('Com.AbstractFormField', {
         'renderStructureField' : true,
         'renderStructureContent' : true,
         'renderError' : true,
+        'renderErrorMessage' : true,
         'form' : false,
         'rawValue' : false,
         'value' : null,
@@ -55,6 +56,7 @@ cm.define('Com.AbstractFormField', {
         ],
         'required' : false,
         'requiredAsterisk' : true,
+        'validate' : false,
         'constructor' : false,
         'constructorParams' : {
             'removeOnDestruct' : false,
@@ -90,7 +92,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.onConstructStart = function(){
         var that = this;
         // Variables
-        that._name = null;
+        that.attributeName = null;
         that.isVisible = null;
         that.isAjax = false;
         that.isProcess = false;
@@ -126,7 +128,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.onValidateParams = function(){
         var that = this;
         that.validateParamsValue();
-        that._name = that.params['formName'] + '[' + that.params['name'] + ']';
+        that.attributeName = that.params['formName'] + '[' + that.params['name'] + ']';
         // Validate
         if(that.params['required'] && that.params['requiredAsterisk'] && !cm.isEmpty(that.params['placeholder'])){
             that.params['placeholder'] += ' *';
@@ -140,6 +142,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.params['constructorParams']['value'] = !cm.isEmpty(that.params['dataValue']) ? that.params['dataValue'] : that.params['value'];
         that.params['constructorParams']['defaultValue'] = that.params['defaultValue'];
         that.params['constructorParams']['required'] = that.params['required'];
+        that.params['constructorParams']['validate'] = that.params['validate'];
         that.params['constructorParams']['disabled'] = that.params['disabled'];
         that.params['constructorParams']['minLength'] = that.params['minLength'];
         that.params['constructorParams']['maxLength'] = that.params['maxLength'];
@@ -214,9 +217,12 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             that.nodes['label'] = cm.node('dt'),
             that.nodes['value'] = cm.node('dd')
         );
+        if(!that.nodes['messages']){
+            that.nodes['messages'] = that.nodes['value'];
+        }
         // Label
         if(!cm.isEmpty(that.params['label'])){
-            that.nodes['labelText'] = cm.node('label', {'for' : that._name}, that.params['label']);
+            that.nodes['labelText'] = cm.node('label', {'for' : that.attributeName}, that.params['label']);
             cm.appendChild(that.nodes['labelText'], that.nodes['label']);
         }
         // Required
@@ -249,7 +255,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         }
         // Placeholder
         if(that.params['showPlaceholderAbove'] && !cm.isEmpty(that.params['placeholder'])){
-            nodes['placeholder'] = cm.node('label', {'class' : 'placeholder', 'for' : that._name},
+            nodes['placeholder'] = cm.node('label', {'class' : 'placeholder', 'for' : that.attributeName},
                 cm.node('span', {'innerHTML' : that.params['placeholder']})
             );
             cm.appendChild(nodes['placeholder'], nodes['container']);
@@ -283,8 +289,8 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         // Call parent method
         classInherit.prototype.setAttributes.apply(that, arguments);
         // Attributes
-        if(!cm.isEmpty(that._name)){
-            that.nodes['content']['input'].setAttribute('id', that._name);
+        if(!cm.isEmpty(that.attributeName)){
+            that.nodes['content']['input'].setAttribute('id', that.attributeName);
         }
         if(!cm.isEmpty(that.params['name'])){
             that.nodes['content']['input'].setAttribute('name', that.params['name']);
@@ -460,6 +466,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.validateValue = function(){
         var that = this,
             constraintsData,
+            testData,
             data = {
                 'field' : that,
                 'form' : that.components['form'],
@@ -468,9 +475,14 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
                 'value' : that.get()
             };
         if(cm.isEmpty(data['value'])){
-            data['valid'] = false;
-            data['message'] = that.lang('required');
-            return data;
+            if(that.params['required']){
+                data['valid'] = false;
+                data['message'] = that.lang('required');
+                return data;
+            }else{
+                data['valid'] = true;
+                return data;
+            }
         }
         if(that.params['minLength'] && data['value'].length < that.params['minLength']){
             data['valid'] = false;
@@ -486,8 +498,12 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             });
             return data;
         }
-        if(!cm.isEmpty(that.params['constraints']) && (constraintsData = that.validateConstraints(data))){
-            return constraintsData;
+        if(!cm.isEmpty(that.params['constraints'])){
+            testData = cm.clone(data);
+            constraintsData = that.validateConstraints(testData);
+            if(constraintsData){
+                return constraintsData;
+            }
         }
         if(that.components['controller'] && cm.isFunction(that.components['controller'].validate)){
             return that.components['controller'].validate(data);
@@ -495,26 +511,10 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         return data;
     };
 
-    classProto.validateConstraints = function(data){
-        var that = this,
-            constraintsTest,
-            constraintsData;
-        constraintsTest = that.params['constraints'].some(function(item){
-            if(cm.isFunction(item)){
-                constraintsData = item(data);
-                return !constraintsData['valid'];
-            }
-        });
-        if(constraintsTest){
-            return constraintsData;
-        }
-        return false;
-    };
-
     classProto.validate = function(){
         var that = this,
             data;
-        if(!that.params['required']){
+        if(!that.params['required'] && !that.params['validate']){
             return true;
         }
         data = that.validateValue();
@@ -527,6 +527,41 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         return data['valid'];
     };
 
+    /*** CONSTRAINTS ***/
+
+    classProto.addConstraint = function(constraint){
+        var that = this;
+        if(cm.isFunction(constraint)){
+            that.params['constraints'] = cm.arrayAdd(that.params['constraints'], constraint);
+        }
+        return that;
+    };
+
+    classProto.removeConstraint = function(constraint){
+        var that = this;
+        if(cm.isFunction(constraint)){
+            that.params['constraints'] = cm.arrayRemove(that.params['constraints'], constraint);
+        }
+        return that;
+    };
+
+    classProto.validateConstraints = function(data){
+        var that = this,
+            constraintsTest,
+            constraintsData;
+        constraintsTest = that.params['constraints'].some(function(item){
+            if(cm.isFunction(item)){
+                constraintsData = item(data);
+                return !constraintsData['valid'];
+            }
+            return false;
+        });
+        if(constraintsTest){
+            return constraintsData;
+        }
+        return false;
+    };
+
     /******* MESSAGES *******/
 
     classProto.renderHint = function(message){
@@ -535,10 +570,10 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.nodes['hints'] = cm.node('ul', {'class' : 'pt__field__hint'},
             cm.node('li', {'innerHTML' : message})
         );
-        if(that.params['renderError'] && that.nodes['errors']){
+        if(that.params['renderError'] && that.nodes['errors'] && cm.inDOM(that.nodes['errors'])){
             cm.insertBefore(that.nodes['hints'], that.nodes['errors']);
         }else{
-            cm.appendChild(that.nodes['hints'], that.nodes['value']);
+            cm.appendChild(that.nodes['hints'], that.nodes['messages']);
         }
         return that;
     };
@@ -554,11 +589,11 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.clearError();
         if(that.params['renderError']){
             cm.addClass(that.nodes['container'], 'error');
-            if(!cm.isEmpty(message)){
+            if(that.params['renderErrorMessage'] && !cm.isEmpty(message)){
                 that.nodes['errors'] = cm.node('ul', {'class' : 'pt__field__error pt__field__hint'},
                     cm.node('li', {'class' : 'error', 'innerHTML' : message})
                 );
-                cm.insertLast(that.nodes['errors'], that.nodes['value']);
+                cm.insertLast(that.nodes['errors'], that.nodes['messages']);
             }
         }
         return that;

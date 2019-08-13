@@ -182,6 +182,7 @@ function(params){
             'sendPath' : null,
             'label' : '',
             'required' : false,
+            'validate' : false,
             'options' : [],
             'container' : that.nodes['fields'],
             'renderName' : null
@@ -201,21 +202,21 @@ function(params){
     var renderFieldController = function(params){
         cm.getConstructor(params['fieldConstructor'], function(classConstructor){
             params['fieldController'] = params['controller'] = new classConstructor(params);
-            params['constructorController'] = cm.isFunction(params['fieldController'].getController) && params['fieldController'].getController();
+            params['inputController'] = params['constructorController'] = cm.isFunction(params['fieldController'].getController) && params['fieldController'].getController();
             // Events
             params['fieldController'].addEvent('onBlur', function(){
-                if(that.params['validate'] && that.params['validateOnChange'] && params['required']){
+                if(that.params['validate'] && that.params['validateOnChange'] && (params['required'] || params['validate'])){
                     params['fieldController'].validate();
                 }
             });
             params['fieldController'].addEvent('onChange', function(){
-                if(that.params['validate'] && that.params['validateOnChange'] && params['required']){
+                if(that.params['validate'] && that.params['validateOnChange'] && (params['required'] || params['validate'])){
                     params['fieldController'].validate();
                 }
                 that.triggerEvent('onChange');
             });
             params['fieldController'].addEvent('onInput', function(){
-                if(that.params['validate'] && that.params['validateOnInput'] && params['required']){
+                if(that.params['validate'] && that.params['validateOnInput'] && (params['required'] || params['validate'])){
                     params['fieldController'].validate();
                 }
                 that.triggerEvent('onInput');
@@ -331,25 +332,30 @@ function(params){
     /* *** VALIDATE *** */
 
     var validateHelper = function(){
-        var constraintsData,
+        var isFieldValidatable,
+            constraintsData,
+            testData,
             data = {
                 'form' : that,
                 'valid' : true,
                 'message' : null
             };
-        // Constraints
-        if(!cm.isEmpty(that.constraints) && (constraintsData = validateConstraints(data))){
-            data = cm.merge(data, constraintsData);
-        }
         // Fields
         cm.forEach(that.fields, function(field, name){
-            if(field['field'] && !field['system'] && field['required']){
-                if(field['controller'].validate && !field['controller'].validate()){
-                    data['message'] = that.lang('form_error');
-                    data['valid'] = false;
-                }
+            isFieldValidatable = field['field'] && !field['system'] && (field['required'] || field['validate']) && cm.isFunction(field['controller'].validate);
+            if(isFieldValidatable && !field['controller'].validate()){
+                data['message'] = that.lang('form_error');
+                data['valid'] = false;
             }
         });
+        // Constraints
+        if(!cm.isEmpty(that.constraints)){
+            testData = cm.clone(data);
+            constraintsData = validateConstraints(testData);
+            if(constraintsData){
+                data = cm.merge(data, constraintsData);
+            }
+        }
         return data;
     };
 
@@ -361,6 +367,7 @@ function(params){
                 constraintsData = item(data);
                 return !constraintsData['valid'];
             }
+            return false;
         });
         if(constraintsTest){
             return constraintsData;
@@ -616,7 +623,14 @@ function(params){
 
     that.addConstraint = function(constraint){
         if(cm.isFunction(constraint)){
-            that.constraints.push(constraint);
+            cm.arrayAdd(that.constraints, constraint);
+        }
+        return that;
+    };
+
+    that.removeConstraint = function(constraint){
+        if(cm.isFunction(constraint)){
+            cm.arrayRemove(that.constraints, constraint);
         }
         return that;
     };
