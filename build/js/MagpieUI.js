@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.41 (2019-08-13 21:26) ************ */
+/*! ************ MagpieUI v3.36.42 (2019-08-27 22:37) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.41',
+        '_version' : '3.36.42',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -21847,6 +21847,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
                         'route' : route
                     })
                 );
+                route['controller'].triggerEvent('onConstructComplete');
             });
         }else{
             route['onConstruct'](route);
@@ -22080,8 +22081,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
     };
 
     classProto.start = function(){
-        var that = this,
-            href;
+        var that = this;
         if(!cm.isEmpty(that.params['route'])){
             that.set(that.params['route']);
         }else{

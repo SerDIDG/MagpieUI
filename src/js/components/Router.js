@@ -195,6 +195,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
                         'route' : route
                     })
                 );
+                route['controller'].triggerEvent('onConstructComplete');
             });
         }else{
             route['onConstruct'](route);
@@ -428,8 +429,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
     };
 
     classProto.start = function(){
-        var that = this,
-            href;
+        var that = this;
         if(!cm.isEmpty(that.params['route'])){
             that.set(that.params['route']);
         }else{
