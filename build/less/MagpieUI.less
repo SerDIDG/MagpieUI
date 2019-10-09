@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.42 (2019-08-27 22:37) ************ */
+/*! ************ MagpieUI v3.36.43 (2019-10-09 19:50) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3926,7 +3926,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.36.42';
+@CmVersion: '3.36.43';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -15055,6 +15055,44 @@ ul.pt__field__hint {
     }
 }
 
+.com__columns--mobile {
+    > .inner {
+        margin: 0;
+
+        > .container {
+            display: block;
+
+            > .com__column {
+                width: auto !important;
+                height: auto;
+                display: block;
+                margin: @CmIndent-Medium 0 0 0;
+
+                &:first-child {
+                    margin: 0;
+                }
+
+                > .inner {
+                    margin: 0;
+                }
+            }
+        }
+    }
+}
+
+.com__columns--mobile-reverse {
+    > .inner {
+        > .container {
+            display: flex;
+            flex-direction: column-reverse;
+
+            > .com__column {
+                margin: 0 0 @CmIndent-Medium;
+            }
+        }
+    }
+}
+
 // /* *** MIXINS *** */
 
 .com__columns__indent (@indent: @ComColumns-Indent) {
@@ -15085,26 +15123,7 @@ ul.pt__field__hint {
 
             &.is-adaptive {
                 > .inner {
-                    margin: 0;
-
-                    > .container {
-                        display: block;
-
-                        > .com__column {
-                            width: auto !important;
-                            height: auto;
-                            display: block;
-                            margin: @CmIndent-Medium 0 0 0;
-
-                            &:first-child {
-                                margin: 0;
-                            }
-
-                            > .inner {
-                                margin: 0;
-                            }
-                        }
-                    }
+                    .com__columns--mobile;
                 }
             }
         }

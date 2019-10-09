@@ -24,9 +24,7 @@ function(params){
     Com.AbstractController.apply(that, arguments);
 });
 
-cm.getConstructor('Com.FileDropzone', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
+cm.getConstructor('Com.FileDropzone', function(classConstructor, className, classProto, classInherit){
     classProto.construct = function(){
         var that = this;
         that.dragInterval = null;
@@ -45,7 +43,7 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
         that.addEvent('onSetEventsProcess', that.setEventsProcessHander);
         that.addEvent('onUnsetEventsProcess', that.unsetEventsProcessHander);
         // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
+        classInherit.prototype.construct.apply(that, arguments);
     };
 
     classProto.validateParams = function(){

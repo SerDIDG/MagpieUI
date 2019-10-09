@@ -8,6 +8,7 @@ cm.define('Com.FileInput', {
         'file' : null,
         'showLink' : true,
         'autoOpen' : false,
+        'placeholder' : null,
         'formData' : false,
         'local' : true,
         'fileManager' : false,
@@ -163,7 +164,8 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
                     cm.node('div', {'class' : 'pt__file-line'},
                         nodes['buttonsInner'] = cm.node('div', {'class' : 'inner'},
                             nodes['clear'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('remove')),
-                            nodes['label'] = cm.node('div', {'class' : 'label'})
+                            nodes['label'] = cm.node('div', {'class' : 'label'}),
+                            nodes['placeholder'] = cm.node('div', {'class' : 'label', 'innerHTML' : that.params['placeholder']})
                         )
                     )
                 )
@@ -248,9 +250,13 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
     };
 
     classProto.setData = function(){
-        var that = this,
-            url;
+        var that = this;
         if(cm.isEmpty(that.value)){
+            if(!cm.isEmpty(that.params['placeholder'])){
+                cm.removeClass(that.nodes['content']['placeholder'], 'is-hidden');
+            }else{
+                cm.addClass(that.nodes['content']['placeholder'], 'is-hidden');
+            }
             cm.clearNode(that.nodes['content']['label']);
             cm.addClass(that.nodes['content']['label'], 'is-hidden');
             cm.removeClass(that.nodes['content']['browseLocal'], 'is-hidden');
@@ -258,6 +264,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
             cm.removeClass(that.nodes['content']['browseFileUploader'], 'is-hidden');
             cm.addClass(that.nodes['content']['clear'], 'is-hidden');
         }else{
+            cm.addClass(that.nodes['content']['placeholder'], 'is-hidden');
             cm.clearNode(that.nodes['content']['label']);
             if(that.params['showLink']){
                 that.nodes['content']['link'] = cm.node('a', {'target' : '_blank', 'href' : that.value['url'], 'title' : that.lang('open')}, that.value['name']);

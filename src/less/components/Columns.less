@@ -156,6 +156,44 @@
     }
 }
 
+.com__columns--mobile {
+    > .inner {
+        margin: 0;
+
+        > .container {
+            display: block;
+
+            > .com__column {
+                width: auto !important;
+                height: auto;
+                display: block;
+                margin: @CmIndent-Medium 0 0 0;
+
+                &:first-child {
+                    margin: 0;
+                }
+
+                > .inner {
+                    margin: 0;
+                }
+            }
+        }
+    }
+}
+
+.com__columns--mobile-reverse {
+    > .inner {
+        > .container {
+            display: flex;
+            flex-direction: column-reverse;
+
+            > .com__column {
+                margin: 0 0 @CmIndent-Medium;
+            }
+        }
+    }
+}
+
 // /* *** MIXINS *** */
 
 .com__columns__indent (@indent: @ComColumns-Indent) {
@@ -186,26 +224,7 @@
 
             &.is-adaptive {
                 > .inner {
-                    margin: 0;
-
-                    > .container {
-                        display: block;
-
-                        > .com__column {
-                            width: auto !important;
-                            height: auto;
-                            display: block;
-                            margin: @CmIndent-Medium 0 0 0;
-
-                            &:first-child {
-                                margin: 0;
-                            }
-
-                            > .inner {
-                                margin: 0;
-                            }
-                        }
-                    }
+                    .com__columns--mobile;
                 }
             }
         }

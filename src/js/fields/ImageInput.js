@@ -120,8 +120,7 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
     };
 
     classProto.setData = function(){
-        var that = this,
-            url;
+        var that = this;
         if(cm.isEmpty(that.value)){
             // Preview
             that.components['preview'] && that.components['preview'].clear();

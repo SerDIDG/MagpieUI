@@ -204,19 +204,19 @@ function(params){
             params['fieldController'] = params['controller'] = new classConstructor(params);
             params['inputController'] = params['constructorController'] = cm.isFunction(params['fieldController'].getController) && params['fieldController'].getController();
             // Events
-            params['fieldController'].addEvent('onBlur', function(){
-                if(that.params['validate'] && that.params['validateOnChange'] && (params['required'] || params['validate'])){
+            params['fieldController'].addEvent('onBlur', function(field){
+                if(that.params['validate'] && that.params['validateOnChange'] && (field.params['required'] || field.params['validate'])){
                     params['fieldController'].validate();
                 }
             });
-            params['fieldController'].addEvent('onChange', function(){
-                if(that.params['validate'] && that.params['validateOnChange'] && (params['required'] || params['validate'])){
+            params['fieldController'].addEvent('onChange', function(field){
+                if(that.params['validate'] && that.params['validateOnChange'] && (field.params['required'] || field.params['validate'])){
                     params['fieldController'].validate();
                 }
                 that.triggerEvent('onChange');
             });
-            params['fieldController'].addEvent('onInput', function(){
-                if(that.params['validate'] && that.params['validateOnInput'] && (params['required'] || params['validate'])){
+            params['fieldController'].addEvent('onInput', function(field){
+                if(that.params['validate'] && that.params['validateOnInput'] && (field.params['required'] || field.params['validate'])){
                     params['fieldController'].validate();
                 }
                 that.triggerEvent('onInput');
@@ -332,7 +332,8 @@ function(params){
     /* *** VALIDATE *** */
 
     var validateHelper = function(){
-        var isFieldValidatable,
+        var fieldParams,
+            isFieldValidatable,
             constraintsData,
             testData,
             data = {
@@ -342,7 +343,8 @@ function(params){
             };
         // Fields
         cm.forEach(that.fields, function(field, name){
-            isFieldValidatable = field['field'] && !field['system'] && (field['required'] || field['validate']) && cm.isFunction(field['controller'].validate);
+            fieldParams = field['controller'].getParams();
+            isFieldValidatable = field['field'] && !field['system'] && (fieldParams['required'] || fieldParams['validate']) && cm.isFunction(field['controller'].validate);
             if(isFieldValidatable && !field['controller'].validate()){
                 data['message'] = that.lang('form_error');
                 data['valid'] = false;

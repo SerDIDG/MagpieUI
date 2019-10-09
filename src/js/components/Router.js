@@ -104,16 +104,14 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
             'route' : route,
             'hash' : hash,
             'location' : that.prepareHref(route),
+            'match' : [],
             'params' : cm.merge({
                 'pushState' : true,
                 'replaceState' : false
             }, params)
         };
         // Check data storage
-        if(that.dataStorage[state['route']]){
-            state['data'] = that.dataStorage[state['route']];
-        }
-        that.dataStorage = {};
+        state['data'] = that.getStorageData(state['route'], state, state['params']['data']);
         // Check hash
         if(!cm.isEmpty(state['hash'])){
             state['href'] = state['location'] + '#' + state['hash'];
@@ -148,10 +146,16 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         // Match route
         cm.forEach(that.routes, function(routeItem){
             isMatch = state['route'].match(routeItem['regexp']);
-            hasAccess = that.checkRouteAccess(routeItem);
-            if(isMatch && hasAccess){
-                matchCaptures = isMatch;
-                matchItem = routeItem;
+            if(isMatch){
+                hasAccess = that.checkRouteAccess(routeItem);
+                if(hasAccess){
+                    matchCaptures = isMatch;
+                    matchItem = routeItem;
+                }else{
+                    state['match'].push(
+                        cm.clone(routeItem)
+                    );
+                }
             }
         });
         if(!matchItem){
@@ -162,8 +166,16 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         if(matchCaptures){
             route['captures'] = that.mapCaptures(route['map'], matchCaptures);
         }
-        // Construct route
-        that.constructRoute(route);
+        // Handle redirect
+        if(!cm.isEmpty(route.redirectTo)){
+            that.redirect(route.redirectTo, route.hash, {
+                'captures' : route['captures'],
+                'data' : route['data']
+            });
+        }else{
+            // Construct route
+            that.constructRoute(route);
+        }
     };
 
     classProto.destructRoute = function(route){
@@ -268,9 +280,36 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         return result;
     };
 
+    classProto.fillCaptures = function(route, params){
+        // Set url params
+        if(cm.isObject(params)){
+            route = route.replace(/{(\w+)}/g, function(math, p1){
+                return params[p1] || '';
+            });
+        }
+        return route;
+    };
+
     classProto.checkRouteAccess = function(route){
         var that = this;
         return true;
+    };
+
+    classProto.getStorageData = function(route, routeItem, paramsData){
+        var that = this,
+            data = {};
+        // Get default route data
+        if(routeItem){
+            data = cm.merge(data, routeItem['data']);
+        }
+        // Check data storage
+        if(that.dataStorage[route]){
+            data = cm.merge(data, that.dataStorage[route]);
+            that.dataStorage = {};
+        }
+        // Override data
+        data = cm.merge(data, paramsData);
+        return data;
     };
 
     /* *** PUBLIC *** */
@@ -291,6 +330,8 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
                 'regexp' : null,
                 'map' : [],
                 'captures' : {},
+                'redirectTo' : null,
+                'data' : {},
                 //'pushState' : true,
                 //'replaceState' : false,
                 'constructor' : false,
@@ -323,19 +364,15 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         return that.routes[route];
     };
 
-    classProto.getURL = function(route, hash, params, data){
+    classProto.getURL = function(route, hash, urlParams, data){
         var that = this,
             item;
         // Get route
         if(item = that.get(route)){
             route = item['route'];
         }
-        // Set url params
-        if(cm.isObject(params)){
-            route = route.replace(/{(\w+)}/g, function(math, p1){
-                return params[p1] || '';
-            });
-        }
+        // fill url params
+        route = that.fillCaptures(route, urlParams);
         // Save into data storage
         that.dataStorage[route] = data;
         // Add lead slash if not exists
@@ -353,9 +390,9 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         return route;
     };
 
-    classProto.getFullURL = function(route, hash, params, data){
+    classProto.getFullURL = function(route, hash, urlParams, data){
         var that = this;
-        return that.prepareHref(that.getURL(route, hash, params, data));
+        return that.prepareHref(that.getURL(route, hash, urlParams, data));
     };
 
     classProto.getCurrent = function(){
@@ -384,7 +421,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         return that;
     };
 
-    classProto.summon = function(route, hash, params, data){
+    classProto.summon = function(route, hash, params){
         var that = this,
             state,
             item;
@@ -395,7 +432,8 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         if(item = that.routes[route]){
             // Process state
             state = cm.clone(item);
-            state['data'] = data;
+            state['params'] = cm.merge(state['params'], params);
+            state['data'] = that.getStorageData(state['route'], state, params['data']);
             // Process route
             that.destructRoute(that.current);
             that.constructRoute(state);
@@ -428,12 +466,28 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         return that;
     };
 
+    classProto.redirect = function(route, hash, params){
+        var that = this,
+            href = that.getURL(route, hash, params['captures']);
+        // Override push / replace state params
+        params = cm.merge(params, {
+            'pushState' : false,
+            'replaceState' : true
+        });
+        that.setURL(href, hash, params);
+        return that;
+    };
+
     classProto.start = function(){
-        var that = this;
+        var that = this,
+            params = {
+                'pushState' : false,
+                'replaceState' : true
+            };
         if(!cm.isEmpty(that.params['route'])){
-            that.set(that.params['route']);
+            that.set(that.params['route'], null, params);
         }else{
-            that.setURL(window.location.href);
+            that.setURL(window.location.href, null, params);
         }
         return that;
     };

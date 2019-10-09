@@ -4127,3 +4127,19 @@ cm.setStrings = function(className, strings){
         classProto.setLangs(strings);
     });
 };
+
+cm.getString = function(className, str){
+    var data;
+    cm.getConstructor(className, function(classConstructor, className, classProto){
+        data = classProto.lang(str);
+    });
+    return data;
+};
+
+cm.getStrings = function(className, o){
+    var data;
+    cm.getConstructor(className, function(classConstructor, className, classProto){
+        data = classProto.langObject(o);
+    });
+    return data;
+};

@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.42 (2019-08-27 22:37) ************ */
+/*! ************ MagpieUI v3.36.43 (2019-10-09 19:50) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.42',
+        '_version' : '3.36.43',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -5726,6 +5726,22 @@ cm.setStrings = function(className, strings){
         classProto.setLangs(strings);
     });
 };
+
+cm.getString = function(className, str){
+    var data;
+    cm.getConstructor(className, function(classConstructor, className, classProto){
+        data = classProto.lang(str);
+    });
+    return data;
+};
+
+cm.getStrings = function(className, o){
+    var data;
+    cm.getConstructor(className, function(classConstructor, className, classProto){
+        data = classProto.langObject(o);
+    });
+    return data;
+};
 /* ******* EXTEND ******* */
 
 Mod['Extend'] = {
@@ -9721,19 +9737,19 @@ function(params){
             params['fieldController'] = params['controller'] = new classConstructor(params);
             params['inputController'] = params['constructorController'] = cm.isFunction(params['fieldController'].getController) && params['fieldController'].getController();
             // Events
-            params['fieldController'].addEvent('onBlur', function(){
-                if(that.params['validate'] && that.params['validateOnChange'] && (params['required'] || params['validate'])){
+            params['fieldController'].addEvent('onBlur', function(field){
+                if(that.params['validate'] && that.params['validateOnChange'] && (field.params['required'] || field.params['validate'])){
                     params['fieldController'].validate();
                 }
             });
-            params['fieldController'].addEvent('onChange', function(){
-                if(that.params['validate'] && that.params['validateOnChange'] && (params['required'] || params['validate'])){
+            params['fieldController'].addEvent('onChange', function(field){
+                if(that.params['validate'] && that.params['validateOnChange'] && (field.params['required'] || field.params['validate'])){
                     params['fieldController'].validate();
                 }
                 that.triggerEvent('onChange');
             });
-            params['fieldController'].addEvent('onInput', function(){
-                if(that.params['validate'] && that.params['validateOnInput'] && (params['required'] || params['validate'])){
+            params['fieldController'].addEvent('onInput', function(field){
+                if(that.params['validate'] && that.params['validateOnInput'] && (field.params['required'] || field.params['validate'])){
                     params['fieldController'].validate();
                 }
                 that.triggerEvent('onInput');
@@ -9849,7 +9865,8 @@ function(params){
     /* *** VALIDATE *** */
 
     var validateHelper = function(){
-        var isFieldValidatable,
+        var fieldParams,
+            isFieldValidatable,
             constraintsData,
             testData,
             data = {
@@ -9859,7 +9876,8 @@ function(params){
             };
         // Fields
         cm.forEach(that.fields, function(field, name){
-            isFieldValidatable = field['field'] && !field['system'] && (field['required'] || field['validate']) && cm.isFunction(field['controller'].validate);
+            fieldParams = field['controller'].getParams();
+            isFieldValidatable = field['field'] && !field['system'] && (fieldParams['required'] || fieldParams['validate']) && cm.isFunction(field['controller'].validate);
             if(isFieldValidatable && !field['controller'].validate()){
                 data['message'] = that.lang('form_error');
                 data['valid'] = false;
@@ -15733,9 +15751,7 @@ function(params){
     Com.AbstractController.apply(that, arguments);
 });
 
-cm.getConstructor('Com.FileDropzone', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
+cm.getConstructor('Com.FileDropzone', function(classConstructor, className, classProto, classInherit){
     classProto.construct = function(){
         var that = this;
         that.dragInterval = null;
@@ -15754,7 +15770,7 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
         that.addEvent('onSetEventsProcess', that.setEventsProcessHander);
         that.addEvent('onUnsetEventsProcess', that.unsetEventsProcessHander);
         // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
+        classInherit.prototype.construct.apply(that, arguments);
     };
 
     classProto.validateParams = function(){
@@ -21756,16 +21772,14 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
             'route' : route,
             'hash' : hash,
             'location' : that.prepareHref(route),
+            'match' : [],
             'params' : cm.merge({
                 'pushState' : true,
                 'replaceState' : false
             }, params)
         };
         // Check data storage
-        if(that.dataStorage[state['route']]){
-            state['data'] = that.dataStorage[state['route']];
-        }
-        that.dataStorage = {};
+        state['data'] = that.getStorageData(state['route'], state, state['params']['data']);
         // Check hash
         if(!cm.isEmpty(state['hash'])){
             state['href'] = state['location'] + '#' + state['hash'];
@@ -21800,10 +21814,16 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         // Match route
         cm.forEach(that.routes, function(routeItem){
             isMatch = state['route'].match(routeItem['regexp']);
-            hasAccess = that.checkRouteAccess(routeItem);
-            if(isMatch && hasAccess){
-                matchCaptures = isMatch;
-                matchItem = routeItem;
+            if(isMatch){
+                hasAccess = that.checkRouteAccess(routeItem);
+                if(hasAccess){
+                    matchCaptures = isMatch;
+                    matchItem = routeItem;
+                }else{
+                    state['match'].push(
+                        cm.clone(routeItem)
+                    );
+                }
             }
         });
         if(!matchItem){
@@ -21814,8 +21834,16 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         if(matchCaptures){
             route['captures'] = that.mapCaptures(route['map'], matchCaptures);
         }
-        // Construct route
-        that.constructRoute(route);
+        // Handle redirect
+        if(!cm.isEmpty(route.redirectTo)){
+            that.redirect(route.redirectTo, route.hash, {
+                'captures' : route['captures'],
+                'data' : route['data']
+            });
+        }else{
+            // Construct route
+            that.constructRoute(route);
+        }
     };
 
     classProto.destructRoute = function(route){
@@ -21920,9 +21948,36 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         return result;
     };
 
+    classProto.fillCaptures = function(route, params){
+        // Set url params
+        if(cm.isObject(params)){
+            route = route.replace(/{(\w+)}/g, function(math, p1){
+                return params[p1] || '';
+            });
+        }
+        return route;
+    };
+
     classProto.checkRouteAccess = function(route){
         var that = this;
         return true;
+    };
+
+    classProto.getStorageData = function(route, routeItem, paramsData){
+        var that = this,
+            data = {};
+        // Get default route data
+        if(routeItem){
+            data = cm.merge(data, routeItem['data']);
+        }
+        // Check data storage
+        if(that.dataStorage[route]){
+            data = cm.merge(data, that.dataStorage[route]);
+            that.dataStorage = {};
+        }
+        // Override data
+        data = cm.merge(data, paramsData);
+        return data;
     };
 
     /* *** PUBLIC *** */
@@ -21943,6 +21998,8 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
                 'regexp' : null,
                 'map' : [],
                 'captures' : {},
+                'redirectTo' : null,
+                'data' : {},
                 //'pushState' : true,
                 //'replaceState' : false,
                 'constructor' : false,
@@ -21975,19 +22032,15 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         return that.routes[route];
     };
 
-    classProto.getURL = function(route, hash, params, data){
+    classProto.getURL = function(route, hash, urlParams, data){
         var that = this,
             item;
         // Get route
         if(item = that.get(route)){
             route = item['route'];
         }
-        // Set url params
-        if(cm.isObject(params)){
-            route = route.replace(/{(\w+)}/g, function(math, p1){
-                return params[p1] || '';
-            });
-        }
+        // fill url params
+        route = that.fillCaptures(route, urlParams);
         // Save into data storage
         that.dataStorage[route] = data;
         // Add lead slash if not exists
@@ -22005,9 +22058,9 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         return route;
     };
 
-    classProto.getFullURL = function(route, hash, params, data){
+    classProto.getFullURL = function(route, hash, urlParams, data){
         var that = this;
-        return that.prepareHref(that.getURL(route, hash, params, data));
+        return that.prepareHref(that.getURL(route, hash, urlParams, data));
     };
 
     classProto.getCurrent = function(){
@@ -22036,7 +22089,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         return that;
     };
 
-    classProto.summon = function(route, hash, params, data){
+    classProto.summon = function(route, hash, params){
         var that = this,
             state,
             item;
@@ -22047,7 +22100,8 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         if(item = that.routes[route]){
             // Process state
             state = cm.clone(item);
-            state['data'] = data;
+            state['params'] = cm.merge(state['params'], params);
+            state['data'] = that.getStorageData(state['route'], state, params['data']);
             // Process route
             that.destructRoute(that.current);
             that.constructRoute(state);
@@ -22080,12 +22134,28 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         return that;
     };
 
+    classProto.redirect = function(route, hash, params){
+        var that = this,
+            href = that.getURL(route, hash, params['captures']);
+        // Override push / replace state params
+        params = cm.merge(params, {
+            'pushState' : false,
+            'replaceState' : true
+        });
+        that.setURL(href, hash, params);
+        return that;
+    };
+
     classProto.start = function(){
-        var that = this;
+        var that = this,
+            params = {
+                'pushState' : false,
+                'replaceState' : true
+            };
         if(!cm.isEmpty(that.params['route'])){
-            that.set(that.params['route']);
+            that.set(that.params['route'], null, params);
         }else{
-            that.setURL(window.location.href);
+            that.setURL(window.location.href, null, params);
         }
         return that;
     };
@@ -29063,6 +29133,7 @@ cm.define('Com.FileInput', {
         'file' : null,
         'showLink' : true,
         'autoOpen' : false,
+        'placeholder' : null,
         'formData' : false,
         'local' : true,
         'fileManager' : false,
@@ -29218,7 +29289,8 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
                     cm.node('div', {'class' : 'pt__file-line'},
                         nodes['buttonsInner'] = cm.node('div', {'class' : 'inner'},
                             nodes['clear'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('remove')),
-                            nodes['label'] = cm.node('div', {'class' : 'label'})
+                            nodes['label'] = cm.node('div', {'class' : 'label'}),
+                            nodes['placeholder'] = cm.node('div', {'class' : 'label', 'innerHTML' : that.params['placeholder']})
                         )
                     )
                 )
@@ -29303,9 +29375,13 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
     };
 
     classProto.setData = function(){
-        var that = this,
-            url;
+        var that = this;
         if(cm.isEmpty(that.value)){
+            if(!cm.isEmpty(that.params['placeholder'])){
+                cm.removeClass(that.nodes['content']['placeholder'], 'is-hidden');
+            }else{
+                cm.addClass(that.nodes['content']['placeholder'], 'is-hidden');
+            }
             cm.clearNode(that.nodes['content']['label']);
             cm.addClass(that.nodes['content']['label'], 'is-hidden');
             cm.removeClass(that.nodes['content']['browseLocal'], 'is-hidden');
@@ -29313,6 +29389,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
             cm.removeClass(that.nodes['content']['browseFileUploader'], 'is-hidden');
             cm.addClass(that.nodes['content']['clear'], 'is-hidden');
         }else{
+            cm.addClass(that.nodes['content']['placeholder'], 'is-hidden');
             cm.clearNode(that.nodes['content']['label']);
             if(that.params['showLink']){
                 that.nodes['content']['link'] = cm.node('a', {'target' : '_blank', 'href' : that.value['url'], 'title' : that.lang('open')}, that.value['name']);
@@ -29518,8 +29595,7 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
     };
 
     classProto.setData = function(){
-        var that = this,
-            url;
+        var that = this;
         if(cm.isEmpty(that.value)){
             // Preview
             that.components['preview'] && that.components['preview'].clear();
