@@ -146,7 +146,7 @@ cm.isString = function(o){
 };
 
 cm.isNumber = function(o){
-    return Object.prototype.toString.call(o) === '[object Number]';
+    return Object.prototype.toString.call(o) === '[object Number]' && !isNaN(o);
 };
 
 cm.isArray = Array.isArray || function(o){

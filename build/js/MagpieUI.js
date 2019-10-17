@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.43 (2019-10-09 19:50) ************ */
+/*! ************ MagpieUI v3.36.44 (2019-10-17 19:47) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.43',
+        '_version' : '3.36.44',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -1745,7 +1745,7 @@ cm.isString = function(o){
 };
 
 cm.isNumber = function(o){
-    return Object.prototype.toString.call(o) === '[object Number]';
+    return Object.prototype.toString.call(o) === '[object Number]' && !isNaN(o);
 };
 
 cm.isArray = Array.isArray || function(o){
