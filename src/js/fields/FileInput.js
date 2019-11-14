@@ -165,7 +165,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
                         nodes['buttonsInner'] = cm.node('div', {'class' : 'inner'},
                             nodes['clear'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('remove')),
                             nodes['label'] = cm.node('div', {'class' : 'label'}),
-                            nodes['placeholder'] = cm.node('div', {'class' : 'label', 'innerHTML' : that.params['placeholder']})
+                            nodes['placeholder'] = cm.node('div', {'class' : 'label label-placeholder', 'innerHTML' : that.params['placeholder']})
                         )
                     )
                 )

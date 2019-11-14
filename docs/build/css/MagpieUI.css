@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url('//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800');
-/*! ************ MagpieUI v3.36.44 (2019-10-17 19:47) ************ */
+/*! ************ MagpieUI v3.36.45 (2019-11-14 18:53) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.6.0
@@ -3518,8 +3518,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.36.44');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.36.44') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.36.44') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.36.44') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.36.44#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.36.45');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.36.45') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.36.45') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.36.45') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.36.45#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -9867,6 +9867,9 @@ ul.pt__field__hint li:before {
 }
 .pt__file-line .label.is-hidden {
   opacity: 0;
+}
+.pt__file-line .label-placeholder.is-hidden {
+  display: none;
 }
 .pt__file-line.is-hidden {
   display: none;
@@ -16426,22 +16429,22 @@ ul.pt__field__hint li:before {
   html.is-adaptive .com__columns.is-editable .com__columns__chassis {
     display: none;
   }
-  html.is-adaptive .com__columns.is-adaptive > .inner > .inner {
+  html.is-adaptive .com__columns.is-adaptive > .inner {
     margin: 0;
   }
-  html.is-adaptive .com__columns.is-adaptive > .inner > .inner > .container {
+  html.is-adaptive .com__columns.is-adaptive > .inner > .container {
     display: block;
   }
-  html.is-adaptive .com__columns.is-adaptive > .inner > .inner > .container > .com__column {
+  html.is-adaptive .com__columns.is-adaptive > .inner > .container > .com__column {
     width: auto !important;
     height: auto;
     display: block;
     margin: 24px 0 0 0;
   }
-  html.is-adaptive .com__columns.is-adaptive > .inner > .inner > .container > .com__column:first-child {
+  html.is-adaptive .com__columns.is-adaptive > .inner > .container > .com__column:first-child {
     margin: 0;
   }
-  html.is-adaptive .com__columns.is-adaptive > .inner > .inner > .container > .com__column > .inner {
+  html.is-adaptive .com__columns.is-adaptive > .inner > .container > .com__column > .inner {
     margin: 0;
   }
 }

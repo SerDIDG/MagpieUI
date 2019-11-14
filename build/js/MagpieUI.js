@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.44 (2019-10-17 19:47) ************ */
+/*! ************ MagpieUI v3.36.45 (2019-11-14 18:53) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.44',
+        '_version' : '3.36.45',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -29290,7 +29290,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
                         nodes['buttonsInner'] = cm.node('div', {'class' : 'inner'},
                             nodes['clear'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('remove')),
                             nodes['label'] = cm.node('div', {'class' : 'label'}),
-                            nodes['placeholder'] = cm.node('div', {'class' : 'label', 'innerHTML' : that.params['placeholder']})
+                            nodes['placeholder'] = cm.node('div', {'class' : 'label label-placeholder', 'innerHTML' : that.params['placeholder']})
                         )
                     )
                 )
