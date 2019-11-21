@@ -1703,18 +1703,12 @@ cm.getFDO = function(o, chbx){
                     }
                     break;
 
-                case 'textarea':
                 case 'select':
-                    if(elements[d][i].multiple){
-                        var opts = elements[d][i].getElementsByTagName('option');
-                        for(var j in opts){
-                            if(opts[j].selected){
-                                setValue(elements[d][i].name, opts[j].value);
-                            }
-                        }
-                    }else{
-                        setValue(elements[d][i].name, elements[d][i].value);
-                    }
+                    setValue(elements[d][i].name, cm.getSelectValue(elements[d][i]));
+                    break;
+
+                case 'textarea':
+                    setValue(elements[d][i].name, elements[d][i].value);
                     break;
             }
         }
@@ -1776,6 +1770,13 @@ cm.getValue = function(name, node){
     return value;
 };
 
+cm.getSelectedOptions = function(node){
+    if(!cm.isNode(node)){
+        return null;
+    }
+    return node.selectedOptions ? node.selectedOptions : node.querySelectorAll('option:checked');
+};
+
 cm.getSelectValue = function(node){
     if(!cm.isNode(node)){
         return null;
@@ -1786,7 +1787,7 @@ cm.getSelectValue = function(node){
     var options,
         selected = [];
     try{
-        options = node.querySelectorAll('option:checked');
+        options = cm.getSelectedOptions(node);
         selected = Array.from(options).map(function(option){
             return option.value;
         });

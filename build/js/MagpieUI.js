@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.45 (2019-11-14 18:53) ************ */
+/*! ************ MagpieUI v3.36.46 (2019-11-21 19:50) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.45',
+        '_version' : '3.36.46',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -3302,18 +3302,12 @@ cm.getFDO = function(o, chbx){
                     }
                     break;
 
-                case 'textarea':
                 case 'select':
-                    if(elements[d][i].multiple){
-                        var opts = elements[d][i].getElementsByTagName('option');
-                        for(var j in opts){
-                            if(opts[j].selected){
-                                setValue(elements[d][i].name, opts[j].value);
-                            }
-                        }
-                    }else{
-                        setValue(elements[d][i].name, elements[d][i].value);
-                    }
+                    setValue(elements[d][i].name, cm.getSelectValue(elements[d][i]));
+                    break;
+
+                case 'textarea':
+                    setValue(elements[d][i].name, elements[d][i].value);
                     break;
             }
         }
@@ -3375,6 +3369,13 @@ cm.getValue = function(name, node){
     return value;
 };
 
+cm.getSelectedOptions = function(node){
+    if(!cm.isNode(node)){
+        return null;
+    }
+    return node.selectedOptions ? node.selectedOptions : node.querySelectorAll('option:checked');
+};
+
 cm.getSelectValue = function(node){
     if(!cm.isNode(node)){
         return null;
@@ -3385,7 +3386,7 @@ cm.getSelectValue = function(node){
     var options,
         selected = [];
     try{
-        options = node.querySelectorAll('option:checked');
+        options = cm.getSelectedOptions(node);
         selected = Array.from(options).map(function(option){
             return option.value;
         });
@@ -31027,8 +31028,8 @@ cm.define('Com.Select', {
     ],
     'params' : {
         'select' : null,                        // Deprecated, use 'node' parameter instead.
-        'node' : cm.node('select'),             // Html select node to decorate.
-        'container' : null,                    // Component container that is required in case content is rendered without available select.
+        'node' : null,                          // Html select node to decorate.
+        'container' : null,                     // Component container that is required in case content is rendered without available select.
         'name' : '',
         'embedStructure' : 'replace',
         'customEvents' : true,
@@ -31042,8 +31043,10 @@ cm.define('Com.Select', {
         'value' : null,                         // Option value / array of option values.
         'defaultValue' : null,
         'disabled' : false,
+        'id' : '',
         'className' : '',
         'inputClassName' : '',
+        'tabindex' : 0,
         'icons' : {
             'arrow' : 'icon default linked'
         },
@@ -31096,16 +31099,10 @@ function(params){
                         set(options[item], true);
                     }
                 });
-            }else{
-                cm.forEach(that.params['node'].options, function(item){
-                    item.selected && set(options[item.value]);
-                });
             }
         }else{
             if(that.params['value'] && options[that.params['value']]){
                 set(options[that.params['value']]);
-            }else if(options[that.params['node'].value]){
-                set(options[that.params['node'].value]);
             }else if(optionsLength){
                 set(optionsList[0]);
             }
@@ -31133,13 +31130,14 @@ function(params){
             that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
             that.params['disabled'] = that.params['node'].disabled || that.params['node'].readOnly || that.params['disabled'];
             that.params['className'] = that.params['node'].className || that.params['className'];
+            that.params['tabindex'] = that.params['node'].getAttribute('tabindex') || that.params['tabindex'];
+            that.params['id'] = that.params['node'].id || that.params['id'];
         }
         that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
         that.disabled = that.params['disabled'];
     };
 
     var render = function(){
-        var tabindex;
         /* *** RENDER STRUCTURE *** */
         if(that.params['multiple']){
             renderMultiple();
@@ -31154,20 +31152,22 @@ function(params){
             nodes['container'].title = that.params['title'];
         }
         // Tabindex
-        if(tabindex = that.params['node'].getAttribute('tabindex')){
-            nodes['container'].setAttribute('tabindex', tabindex);
+        if(that.params['tabindex']){
+            nodes['container'].setAttribute('tabindex', that.params['tabindex']);
         }
         // ID
-        if(that.params['node'].id){
-            nodes['container'].id = that.params['node'].id;
+        if(that.params['id']){
+            nodes['container'].id = that.params['id'];
         }
-        // Data
-        cm.forEach(that.params['node'].attributes, function(item){
-            if(/^data-(?!node|element)/.test(item.name)){
-                nodes['hidden'].setAttribute(item.name, item.value);
-                nodes['container'].setAttribute(item.name, item.value);
-            }
-        });
+        // Data attributes
+        if(cm.isNode(that.params['node'])){
+            cm.forEach(that.params['node'].attributes, function(item){
+                if(/^data-(?!node|element)/.test(item.name)){
+                    nodes['hidden'].setAttribute(item.name, item.value);
+                    nodes['container'].setAttribute(item.name, item.value);
+                }
+            });
+        }
         // Set hidden input attributes
         if(that.params['name']){
             nodes['hidden'].setAttribute('name', that.params['name']);
@@ -31179,7 +31179,9 @@ function(params){
             );
         }
         /* *** RENDER OPTIONS *** */
-        collectSelectOptions();
+        if(cm.isNode(that.params['node'])){
+            collectSelectOptions();
+        }
         cm.forEach(that.params['options'], function(item){
             renderOption(item);
         });
