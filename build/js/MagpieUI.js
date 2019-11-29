@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.47 (2019-11-29 20:54) ************ */
+/*! ************ MagpieUI v3.36.48 (2019-11-29 22:14) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.47',
+        '_version' : '3.36.48',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -3241,35 +3241,30 @@ cm.getFDO = function(o, chbx){
 
     var setValue = function(name, value){
         if(/\[.*\]$/.test(name)){
-            if(cm.isArray(value)){
-                name = name.replace(/\[.*\]$/, '');
-                data[name] = value;
-            }else{
-                var indexes = [];
-                var re = /\[(.*?)\]/g;
-                var results = null;
-                while(results = re.exec(name)){
-                    indexes.push(results[1]);
-                }
-                name = name.replace(/\[.*\]$/, '');
-                data[name] = (function(i, obj){
-                    var index = indexes[i];
-                    var next = !cm.isUndefined(indexes[i + 1]);
-                    if(index === ''){
-                        if(obj && obj instanceof Array){
-                            obj.push(next ? arguments.callee(i + 1, obj) : value);
-                        }else{
-                            obj = [next? arguments.callee(i+1, obj) : value];
-                        }
-                    }else{
-                        if(!obj || !(obj instanceof Object)){
-                            obj = {};
-                        }
-                        obj[index] = next ? arguments.callee(i + 1, obj[index]) : value;
-                    }
-                    return obj;
-                })(0, data[name]);
+            var indexes = [];
+            var re = /\[(.*?)\]/g;
+            var results = null;
+            while(results = re.exec(name)){
+                indexes.push(results[1]);
             }
+            name = name.replace(/\[.*\]$/, '');
+            data[name] = (function(i, obj){
+                var index = indexes[i];
+                var next = !cm.isUndefined(indexes[i + 1]);
+                if(index === ''){
+                    if(obj && obj instanceof Array){
+                        obj.push(next ? arguments.callee(i + 1, obj) : value);
+                    }else{
+                        obj = [next? arguments.callee(i+1, obj) : value];
+                    }
+                }else{
+                    if(!obj || !(obj instanceof Object)){
+                        obj = {};
+                    }
+                    obj[index] = next ? arguments.callee(i + 1, obj[index]) : value;
+                }
+                return obj;
+            })(0, data[name]);
         }else{
             data[name] = value;
         }
@@ -3308,7 +3303,16 @@ cm.getFDO = function(o, chbx){
                     break;
 
                 case 'select':
-                    setValue(elements[d][i].name, cm.getSelectValue(elements[d][i]));
+                    if(elements[d][i].multiple){
+                        var opts = elements[d][i].getElementsByTagName('option');
+                        for(var j in opts){
+                            if(opts[j].selected){
+                                setValue(elements[d][i].name, opts[j].value);
+                            }
+                        }
+                    }else{
+                        setValue(elements[d][i].name, elements[d][i].value);
+                    }
                     break;
 
                 case 'textarea':
