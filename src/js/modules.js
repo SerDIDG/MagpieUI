@@ -795,7 +795,7 @@ Mod['Structure'] = {
             }else{
                 that.params['container'].appendChild(node);
             }
-        }else if(that.params['node'].parentNode){
+        }else if(that.params['node']){
             cm.insertBefore(node, that.params['node']);
         }
         cm.remove(that.params['node']);

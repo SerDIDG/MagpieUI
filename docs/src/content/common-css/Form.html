@@ -333,11 +333,11 @@
     </li>
 
     <li data-node="tabs:[]:container" data-config='{"id" : "selects", "title" : "Selects"}'>
-        <div class="form">
+        <form class="form" id="form--selects">
             <dl>
                 <dt>Select:</dt>
                 <dd>
-                    <select data-someattr="123" name="select1" data-element="Com.Select">
+                    <select data-someattr="123" name="test--select1" data-element="Com.Select">
                         <option value="1">One</option>
                         <option value="2" selected>Two</option>
                         <option value="3">Three</option>
@@ -354,7 +354,24 @@
             <dl>
                 <dt>Select Multiple:</dt>
                 <dd>
-                    <select multiple name="select2"  data-element="Com.Select">
+                    <select multiple name="test--select2"  data-element="Com.Select">
+                        <option value="1" selected>One</option>
+                        <option value="2" selected>Two</option>
+                        <option value="3">Three</option>
+                        <option value="4">Four</option>
+                        <option value="5">Five</option>
+                        <option value="6">Six</option>
+                        <option value="7" selected>Seven</option>
+                        <option value="8">Eight</option>
+                        <option value="9">Nine</option>
+                        <option value="10">Ten</option>
+                    </select>
+                </dd>
+            </dl>
+            <dl>
+                <dt>Select Multiple with []:</dt>
+                <dd>
+                    <select multiple name="test--select3[]"  data-element="Com.Select">
                         <option value="1" selected>One</option>
                         <option value="2" selected>Two</option>
                         <option value="3">Three</option>
@@ -371,7 +388,7 @@
             <dl>
                 <dt>Two-side multiple select:</dt>
                 <dd>
-                    <select data-element="Com.TwoSideMultiSelect" name="test--select3" multiple>
+                    <select data-element="Com.TwoSideMultiSelect" name="test--select4" multiple>
                         <option value="1">Sponge Bob</option>
                         <option value="2">User Userberg</option>
                         <option value="3" selected>User Userbergovich</option>
@@ -384,7 +401,7 @@
                     </select>
                 </dd>
             </dl>
-        </div>
+        </form>
     </li>
 
     <li data-node="tabs:[]:container" data-config='{"id" : "checkboxes", "title" : "Checkboxes"}'>
