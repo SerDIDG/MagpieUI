@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.48 (2019-11-29 22:14) ************ */
+/*! ************ MagpieUI v3.36.49 (2019-12-13 20:39) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.48',
+        '_version' : '3.36.49',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -8248,6 +8248,7 @@ cm.define('Com.AbstractFormField', {
         'showPlaceholderAbove' : false,
         'title' : '',
         'hint' : '',
+        'messagePosition' : 'content', // label | content
         'visible' : true,
         'disabled' : false,
         'renderName' : false,
@@ -8421,11 +8422,19 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             that.nodes['value'] = cm.node('dd')
         );
         if(!that.nodes['messages']){
-            that.nodes['messages'] = that.nodes['value'];
+            switch(that.params['messagePosition']){
+                case 'label':
+                    that.nodes['messages'] = that.nodes['label'];
+                    break;
+                case 'content':
+                case 'value':
+                    that.nodes['messages'] = that.nodes['value'];
+                    break;
+            }
         }
         // Label
         if(!cm.isEmpty(that.params['label'])){
-            that.nodes['labelText'] = cm.node('label', {'for' : that.attributeName}, that.params['label']);
+            that.nodes['labelText'] = cm.node('label', {'for' : that.attributeName, 'innerHTML' : that.params['label']});
             cm.appendChild(that.nodes['labelText'], that.nodes['label']);
         }
         // Required
