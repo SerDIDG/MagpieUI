@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url('//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800');
-/*! ************ MagpieUI v3.36.50 (2020-01-20 20:10) ************ */
+/*! ************ MagpieUI v3.36.51 (2020-01-21 19:34) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.6.0
@@ -3518,8 +3518,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.36.50');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.36.50') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.36.50') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.36.50') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.36.50#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.36.51');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.36.51') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.36.51') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.36.51') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.36.51#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -18656,6 +18656,9 @@ ul.pt__field__hint li:before {
 .com__notifications.is-last,
 .com__notifications:last-child {
   margin-bottom: 0;
+}
+.com__notifications.is-hidden {
+  display: none;
 }
 .com__notifications > ul {
   margin: 0;

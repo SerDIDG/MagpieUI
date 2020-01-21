@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.50 (2020-01-20 20:10) ************ */
+/*! ************ MagpieUI v3.36.51 (2020-01-21 19:34) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.50',
+        '_version' : '3.36.51',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
