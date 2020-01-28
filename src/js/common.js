@@ -3108,9 +3108,12 @@ cm.CSSValuesToArray = function(value){
 };
 
 cm.arrayToCSSValues = function(a, units){
+    var value;
     units = !cm.isUndefined(units) ? units : 'px';
     cm.forEach(a, function(item, key){
-        a[key] = cm.isEmpty(item) ? 0 : parseFloat(item);
+        value = cm.isEmpty(item) ? 0 : parseFloat(item);
+        value = isNaN(value) ? 0 : value;
+        a[key] = value;
     });
     return a.reduce(function(prev, next, index, a){
         return [prev + units, next + ((index === a.length - 1) ? units : '')].join(' ');

@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.51 (2020-01-21 19:34) ************ */
+/*! ************ MagpieUI v3.36.52 (2020-01-28 20:55) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.51',
+        '_version' : '3.36.52',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -4707,9 +4707,12 @@ cm.CSSValuesToArray = function(value){
 };
 
 cm.arrayToCSSValues = function(a, units){
+    var value;
     units = !cm.isUndefined(units) ? units : 'px';
     cm.forEach(a, function(item, key){
-        a[key] = cm.isEmpty(item) ? 0 : parseFloat(item);
+        value = cm.isEmpty(item) ? 0 : parseFloat(item);
+        value = isNaN(value) ? 0 : value;
+        a[key] = value;
     });
     return a.reduce(function(prev, next, index, a){
         return [prev + units, next + ((index === a.length - 1) ? units : '')].join(' ');
