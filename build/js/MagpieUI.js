@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.52 (2020-01-28 20:55) ************ */
+/*! ************ MagpieUI v3.36.53 (2020-02-27 20:53) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.52',
+        '_version' : '3.36.53',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -28715,6 +28715,7 @@ function(params){
         components = {};
 
     that.date = null;
+    that.previousDate = null;
     that.value = null;
     that.previousValue = null;
     that.format = null;
@@ -28873,13 +28874,11 @@ function(params){
                     }
                 },
                 'onDayClick' : function(calendar, params){
-                    if(!that.date){
-                        that.date = new Date();
-                    }
-                    components['calendar'].unSelectDay(that.date);
-                    that.date.setDate(params['day']);
+                    setDate(null, null, params['day']);
+                    components['calendar'].unSelectDay(that.previousDate);
                     components['calendar'].selectDay(that.date);
                     set(true);
+                    // Hide datepicker tooltip
                     if(!that.params['isDateTime']){
                         components['menu'].hide(false);
                     }
@@ -28894,9 +28893,7 @@ function(params){
                 'minutesInterval' : that.params['minutesInterval']
             });
             components['time'].addEvent('onChange', function(){
-                if(!that.date){
-                    that.date = new Date();
-                }
+                setDate();
                 components['calendar'].set(that.date.getFullYear(), that.date.getMonth(), false);
                 components['calendar'].selectDay(that.date);
                 set(true);
@@ -28974,14 +28971,7 @@ function(params){
         that.previousValue = that.value;
         if(that.date){
             // Set date
-            that.date.setFullYear(components['calendar'].getFullYear());
-            that.date.setMonth(components['calendar'].getMonth());
-            // Set time
-            if(that.params['isDateTime']){
-                that.date.setHours(components['time'].getHours());
-                that.date.setMinutes(components['time'].getMinutes());
-                that.date.setSeconds(0);
-            }
+            setDate();
             // Set value
             that.value = cm.dateFormat(that.date, that.format, that.lang());
         }else{
@@ -28993,6 +28983,30 @@ function(params){
         if(triggerEvents){
             that.triggerEvent('onSelect', that.value);
             onChange();
+        }
+    };
+
+    var setDate = function(year, month, day, hours, minutes, seconds){
+        if(!that.date){
+            that.date = new Date();
+            that.previousDate = null;
+        }else{
+            that.previousDate = cm.clone(that.date);
+        }
+        // Set date
+        year = cm.isUndefined(year) ? components['calendar'].getFullYear() : year;
+        month = cm.isUndefined(month) ? components['calendar'].getMonth() : month;
+        !cm.isEmpty(year) && that.date.setFullYear(year);
+        !cm.isEmpty(month) && that.date.setMonth(month);
+        !cm.isEmpty(day) && that.date.setDate(day);
+        // Set time
+        if(that.params['isDateTime']){
+            hours = cm.isUndefined(hours) ? components['time'].getHours() : hours;
+            minutes = cm.isUndefined(minutes) ? components['time'].getMinutes() : minutes;
+            seconds = cm.isUndefined(seconds) ? 0 : seconds;
+            !cm.isEmpty(hours) && that.date.setHours(hours);
+            !cm.isEmpty(minutes) && that.date.setMinutes(minutes);
+            !cm.isEmpty(seconds) && that.date.setSeconds(seconds);
         }
     };
 
