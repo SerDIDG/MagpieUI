@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.53 (2020-02-27 20:53) ************ */
+/*! ************ MagpieUI v3.36.54 (2020-03-02 20:43) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.36.53',
+        '_version' : '3.36.54',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -21849,7 +21849,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
             }
         });
         if(!matchItem){
-            matchItem = that.get('/404');
+            matchItem = that.get('error');
         }
         route = cm.merge(matchItem, state);
         // Get captures
@@ -22115,6 +22115,10 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         var that = this,
             state,
             item;
+        // Params
+        params = cm.merge({
+            'data' : {}
+        }, params);
         // Get route
         if(that.routesBinds[route]){
             route = that.routesBinds[route];

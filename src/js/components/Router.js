@@ -159,7 +159,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
             }
         });
         if(!matchItem){
-            matchItem = that.get('/404');
+            matchItem = that.get('error');
         }
         route = cm.merge(matchItem, state);
         // Get captures
@@ -425,6 +425,10 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         var that = this,
             state,
             item;
+        // Params
+        params = cm.merge({
+            'data' : {}
+        }, params);
         // Get route
         if(that.routesBinds[route]){
             route = that.routesBinds[route];
