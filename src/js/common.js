@@ -731,6 +731,14 @@ cm.getElementAbove = function(e){
     return document.elementFromPoint(x, y);
 };
 
+cm.onSchedule = function(callback){
+    animFrame(function(){
+        animFrame(function(){
+            callback();
+        });
+    });
+};
+
 cm.addEvent = function(el, type, handler, useCapture){
     if(el){
         useCapture = cm.isUndefined(useCapture)? false : useCapture;

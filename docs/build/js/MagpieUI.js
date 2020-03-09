@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.54 (2020-03-02 20:43) ************ */
+/*! ************ MagpieUI v3.36.54 (2020-03-06 20:28) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -2328,6 +2328,14 @@ cm.getElementAbove = function(e){
     var x = e.clientX || cm._clientPosition['left'],
         y = e.clientY || cm._clientPosition['top'];
     return document.elementFromPoint(x, y);
+};
+
+cm.onSchedule = function(callback){
+    animFrame(function(){
+        animFrame(function(){
+            callback();
+        });
+    });
 };
 
 cm.addEvent = function(el, type, handler, useCapture){
