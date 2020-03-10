@@ -5,6 +5,9 @@ cm.define('Com.ImageInput', {
         'className' : 'com__image-input',
         'size' : 'default',                     // default, full, custom
         'aspect' : false,                       // 1x1, 3x2, etc
+        'types' : {
+            'video' : /video\/(mp4|webm|ogg|avi)/
+        },
         'preview' : true,
         'previewConstructor' : 'Com.ImagePreviewContainer',
         'previewParams' : {}
@@ -122,22 +125,12 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
     classProto.setData = function(){
         var that = this;
         if(cm.isEmpty(that.value)){
-            // Preview
-            that.components['preview'] && that.components['preview'].clear();
-            cm.addClass(that.nodes['content']['preview'], 'is-hidden');
-            that.nodes['content']['image'].style.backgroundImage = '';
-            cm.addClass(that.nodes['content']['imageContainer'], 'is-default-image');
             // Label
             cm.clearNode(that.nodes['content']['label']);
             cm.addClass(that.nodes['content']['label'], 'is-hidden');
             // Remove button
             cm.addClass(that.nodes['content']['clear'], 'is-hidden');
         }else{
-            // Preview
-            that.components['preview'] && that.components['preview'].set(that.value);
-            cm.removeClass(that.nodes['content']['preview'], 'is-hidden');
-            that.nodes['content']['image'].style.backgroundImage = cm.URLToCSSURL(that.value['url']);
-            cm.removeClass(that.nodes['content']['imageContainer'], 'is-default-image');
             // Label
             cm.clearNode(that.nodes['content']['label']);
             if(that.params['showLink']){
@@ -149,6 +142,37 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
             cm.removeClass(that.nodes['content']['label'], 'is-hidden');
             // Remove button
             cm.removeClass(that.nodes['content']['clear'], 'is-hidden');
+        }
+        // Preview
+        that.setPreviewData();
+        return that;
+    };
+
+    classProto.setPreviewData = function(){
+        var that = this;
+        // Clear
+        that.nodes['content']['image'].style.backgroundImage = '';
+        cm.remove(that.nodes['content']['video']);
+        // Set
+        if(cm.isEmpty(that.value)){
+            that.components['preview'] && that.components['preview'].clear();
+            cm.addClass(that.nodes['content']['preview'], 'is-hidden');
+            cm.addClass(that.nodes['content']['imageContainer'], 'is-default-image');
+        }else{
+            that.components['preview'] && that.components['preview'].set(that.value);
+            if(that.params.types.video.test(that.value.type)){
+                that.nodes['content']['video'] = cm.node('video',
+                    cm.node('source', {'src' : that.value['url']})
+                );
+                that.nodes['content']['video'].muted = true;
+                that.nodes['content']['video'].autoplay = true;
+                that.nodes['content']['video'].loop = true;
+                cm.appendChild(that.nodes['content']['video'], that.nodes['content']['image']);
+            }else{
+                that.nodes['content']['image'].style.backgroundImage = cm.URLToCSSURL(that.value['url']);
+            }
+            cm.removeClass(that.nodes['content']['preview'], 'is-hidden');
+            cm.removeClass(that.nodes['content']['imageContainer'], 'is-default-image');
         }
         return that;
     };

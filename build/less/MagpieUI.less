@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.36.55 (2020-03-09 21:35) ************ */
+/*! ************ MagpieUI v3.37.0 (2020-03-10 21:52) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3927,7 +3927,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.36.55';
+@CmVersion: '3.37.0';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -16781,6 +16781,13 @@ ul.pt__field__hint {
                 > .inner {
                     > .descr {
                         height: @height;
+
+                        video {
+                            width: 100%;
+                            height: 100%;
+                            object-fit: cover;
+                            object-position: center center;
+                        }
                     }
                 }
             }
