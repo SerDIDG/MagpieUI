@@ -47,6 +47,8 @@ var cm = {
         '_clientPosition' : {'left' : 0, 'top' : 0},
         '_config' : {
             'redrawOnLoad' : true,
+            'motionAsymmetric' : 'cubic-bezier(.5,0,.15,1)',
+            'motionSmooth' : 'ease-in-out',
             'animDuration' : 250,
             'animDurationShort' : 150,
             'animDurationLong' : 500,

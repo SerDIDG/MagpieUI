@@ -4,9 +4,11 @@ cm.define('Com.FileInput', {
         'controllerEvents' : true,
         'embedStructure' : 'replace',
         'className' : 'com__file-input',
+        'size' : 'default',                     // default, full, custom
         'hiddenType' : 'textarea',
         'file' : null,
         'showLink' : true,
+        'showFilename' : true,
         'autoOpen' : false,
         'placeholder' : null,
         'formData' : false,
@@ -266,12 +268,14 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         }else{
             cm.addClass(that.nodes['content']['placeholder'], 'is-hidden');
             cm.clearNode(that.nodes['content']['label']);
-            if(that.params['showLink']){
-                that.nodes['content']['link'] = cm.node('a', {'target' : '_blank', 'href' : that.value['url'], 'title' : that.lang('open')}, that.value['name']);
-            }else{
-                that.nodes['content']['link'] = cm.textNode(that.value['name']);
+            if(that.params['showFilename']){
+                if(that.params['showLink']){
+                    that.nodes['content']['link'] = cm.node('a', {'target' : '_blank', 'href' : that.value['url'], 'title' : that.lang('open')}, that.value['name']);
+                }else{
+                    that.nodes['content']['link'] = cm.textNode(that.value['name']);
+                }
+                cm.appendChild(that.nodes['content']['link'], that.nodes['content']['label']);
             }
-            cm.appendChild(that.nodes['content']['link'], that.nodes['content']['label']);
             cm.addClass(that.nodes['content']['browseLocal'], 'is-hidden');
             cm.addClass(that.nodes['content']['browseFileManager'], 'is-hidden');
             cm.addClass(that.nodes['content']['browseFileUploader'], 'is-hidden');

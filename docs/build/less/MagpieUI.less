@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.37.0 (2020-03-10 21:52) ************ */
+/*! ************ MagpieUI v3.38.0 (2020-03-19 21:03) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3927,7 +3927,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.37.0';
+@CmVersion: '3.38.0';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -8682,6 +8682,12 @@ button {
     }
 }
 
+.pt__box-title--flat {
+    .pt__box-title;
+    .cm__font--ui-h1;
+    margin-bottom: @CmIndent-XXSmall;
+}
+
 /* *** CONTENT *** */
 
 .pt__box-content {
@@ -9239,6 +9245,15 @@ button {
         }
     }
 
+    &.has-fields-box {
+        input[type="radio"],
+        input[type="checkbox"] {
+            @margin: floor((@CmForm-FieldHeight - 13px) / 2);
+            margin-top: @margin;
+            margin-bottom: @margin;
+        }
+    }
+
     &.is-box {
         label {
             display: block;
@@ -9577,11 +9592,20 @@ button {
 .pt__dnd-body * {
     cursor: move !important;
     .mx__user-select(none);
+
+    .pt__dnd-area {
+        pointer-events: none;
+    }
+}
+
+.pt__dnd-item {
+    pointer-events: none;
 }
 
 .pt__dnd-helper {
     position: fixed;
     z-index: 9000;
+    pointer-events: none;
     .mx__user-select(none);
 
     &.is-drop {
@@ -10028,6 +10052,13 @@ button {
 
         &.is-no-indent {
             margin: 0;
+        }
+
+        &.is-first {
+            > dt,
+            > .field__title {
+                padding-top: 0;
+            }
         }
     }
 
@@ -15804,6 +15835,17 @@ ul.pt__field__hint {
 }
 /* ******* COMPONENTS: FILE INPUT ******* */
 
+.com__file-input {
+    &.size-full {
+        .pt__file-line {
+            .button-alike {
+                width: 100%;
+                margin: 0;
+            }
+        }
+    }
+}
+
 .com__file-input__content {
     position: relative;
 
@@ -16686,6 +16728,13 @@ ul.pt__field__hint {
                 > .descr {
                     border: @CmBorder-Default;
                     border-radius: @CmBorder-Radius;
+
+                    video {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                        object-position: center center;
+                    }
                 }
             }
         }
@@ -16725,6 +16774,7 @@ ul.pt__field__hint {
 
             .button-alike {
                 .display-flex;
+                min-height: auto;
                 margin: @half_buttons_indent;
                 padding-top: 0;
                 padding-bottom: 0;
@@ -16781,13 +16831,6 @@ ul.pt__field__hint {
                 > .inner {
                     > .descr {
                         height: @height;
-
-                        video {
-                            width: 100%;
-                            height: 100%;
-                            object-fit: cover;
-                            object-position: center center;
-                        }
                     }
                 }
             }
@@ -16914,6 +16957,7 @@ ul.pt__field__hint {
             > .field {
                 padding: @CmIndent-XSmall;
                 border: @CmBorder-Width dashed @CmColor-Border;
+                background: @CmColor-Background;
                 border-radius: @CmBorder-Radius;
             }
         }

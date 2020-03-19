@@ -175,7 +175,7 @@
     </li>
 
     <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Examples"}'>
-        <h2>Render structure via Java-Script</h2>
+        <h2>Render component structure and field template via Java-Script</h2>
         <textarea class="pt__box-code cm-autoresize" readonly>
 <script type="text/javascript">
     new Com.MultiField({
@@ -198,7 +198,7 @@
 
         <hr>
 
-        <h2>Render template via Java-Script</h2>
+        <h2>Render field template via Java-Script</h2>
         <textarea class="pt__box-code cm-autoresize" readonly>
 <script type="text/javascript">
     new Com.MultiField({
@@ -248,7 +248,7 @@
 
         <hr>
 
-        <h2>Set template in parameter</h2>
+        <h2>Set field template via config or parameter</h2>
         <textarea class="pt__box-code cm-autoresize" readonly>
 <script type="text/javascript">
     new Com.MultiField({
@@ -328,6 +328,79 @@
             <div class="com__multifield__toolbar" data-node="toolbar:{}:container">
                 <div class="com__multifield__item">
                     <div class="icon add linked" data-node="add" title="Add"></div>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>Limit max field count</h2>
+        <div class="com__multifield" data-element="multifield" data-node="ComMultiField:{}:container" data-config='{"max" : 3, "template":"<input type=\"text\">"}'>
+            <div class="com__multifield__content" data-node="content">
+                <div class="com__multifield__item" data-node="items:[]:container">
+                    <div class="icon drag linked" data-node="drag"></div>
+                    <div class="field" data-node="field">
+                        <input type="text">
+                    </div>
+                    <div class="icon remove linked" data-node="remove" title="Remove"></div>
+                </div>
+            </div>
+            <div class="com__multifield__toolbar" data-node="toolbar:{}:container">
+                <div class="com__multifield__item">
+                    <div class="icon add linked" data-node="add" title="Add"></div>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>Only edit pre-rendered fields</h2>
+        <div class="com__multifield" data-element="multifield" data-node="ComMultiField:{}:container" data-config='{"mode" : "edit"}'>
+            <div class="com__multifield__content" data-node="content">
+                <div class="com__multifield__item" data-node="items:[]:container" data-config='{"id" : "input"}'>
+                    <div class="icon drag linked" data-node="drag"></div>
+                    <div class="field" data-node="field">
+                        <input type="hidden" autocomplete="off" value="1" data-node="field-hidden-visible">
+                        <input type="hidden" autocomplete="off" data-node="field-hidden-index">
+                        <input type="text">
+                    </div>
+                    <div class="icon remove linked" data-node="remove" title="Remove"></div>
+                </div>
+                <div class="com__multifield__item" data-node="items:[]:container" data-config='{"id" : "textarea"}'>
+                    <div class="icon drag linked" data-node="drag"></div>
+                    <div class="field" data-node="field">
+                        <input type="hidden" autocomplete="off" value="0" data-node="field-hidden-visible">
+                        <input type="hidden" autocomplete="off" data-node="field-hidden-index">
+                        <textarea></textarea>
+                    </div>
+                    <div class="icon remove linked" data-node="remove" title="Remove"></div>
+                </div>
+                <div class="com__multifield__item" data-node="items:[]:container" data-config='{"id" : "select"}'>
+                    <div class="icon drag linked" data-node="drag"></div>
+                    <div class="field" data-node="field">
+                        <input type="hidden" autocomplete="off" value="1" data-node="field-hidden-visible">
+                        <input type="hidden" autocomplete="off" data-node="field-hidden-index">
+                        <select data-element="Com.Select"></select>
+                    </div>
+                    <div class="icon remove linked" data-node="remove" title="Remove"></div>
+                </div>
+            </div>
+            <div class="com__multifield__toolbar" data-node="toolbar:{}:container">
+                <div class="pt__buttons pull-center">
+                    <div class="inner">
+                        <div class="button button-transparent has-icon has-icon-small" data-node="buttons:[]:container" data-config='{"id" : "input"}'>
+                            <div class="icon small add"></div>
+                            <div class="label">Add input</div>
+                        </div>
+                        <div class="button button-transparent has-icon has-icon-small" data-node="buttons:[]:container" data-config='{"id" : "textarea"}'>
+                            <div class="icon small add"></div>
+                            <div class="label">Add textarea</div>
+                        </div>
+                        <div class="button button-transparent has-icon has-icon-small" data-node="buttons:[]:container" data-config='{"id" : "select"}'>
+                            <div class="icon small add"></div>
+                            <div class="label">Add select</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

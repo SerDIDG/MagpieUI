@@ -39,6 +39,13 @@
                 > .descr {
                     border: @CmBorder-Default;
                     border-radius: @CmBorder-Radius;
+
+                    video {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                        object-position: center center;
+                    }
                 }
             }
         }
@@ -78,6 +85,7 @@
 
             .button-alike {
                 .display-flex;
+                min-height: auto;
                 margin: @half_buttons_indent;
                 padding-top: 0;
                 padding-bottom: 0;
@@ -134,13 +142,6 @@
                 > .inner {
                     > .descr {
                         height: @height;
-
-                        video {
-                            width: 100%;
-                            height: 100%;
-                            object-fit: cover;
-                            object-position: center center;
-                        }
                     }
                 }
             }

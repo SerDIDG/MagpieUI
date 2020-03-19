@@ -268,7 +268,7 @@ function(params){
         // Unset area from draggable item
         unsetDraggableFromArea(current);
         // Insert draggable element to body
-        if(that.params['draggableContainer'] && that.params['draggableContainer'] != 'selfParent'){
+        if(that.params['draggableContainer'] && that.params['draggableContainer'] !== 'selfParent'){
             that.params['draggableContainer'].appendChild(current['node']);
         }
         cm.addClass(current['node'], 'pt__dnd-helper');
@@ -316,6 +316,10 @@ function(params){
         currentArea = current['area'];
         currentAboveItem = tempCurrentAboveItem;
         currentPosition = tempCurrentPosition;
+        if(that.params['limit']){
+            getPosition(currentArea);
+            currentArea['node'].style.minHeight = currentArea['dimensions']['height']  + 'px';
+        }
         cm.addClass(currentArea['node'], 'is-active');
         // Set check position event
         //checkInt = setInterval(checkPosition, 5);
@@ -358,8 +362,8 @@ function(params){
                 if(that.params['limit']){
                     if(posY < current['area']['dimensions']['y1']){
                         styleY = [current['area']['dimensions']['y1'], 'px'].join('');
-                    }else if(posY > current['area']['dimensions']['y2']){
-                        styleY = [current['area']['dimensions']['y2'], 'px'].join('');
+                    }else if(posY + current['dimensions']['absoluteHeight'] > current['area']['dimensions']['y2']){
+                        styleY = [current['area']['dimensions']['y2'] - current['dimensions']['absoluteHeight'], 'px'].join('');
                     }else{
                         styleY = [posY, 'px'].join('');
                     }
@@ -516,6 +520,9 @@ function(params){
         }
         // Unset active area classname
         if(currentArea){
+            if(that.params['limit']){
+                currentArea['node'].style.minHeight = '';
+            }
             cm.removeClass(currentArea['node'], 'is-active');
         }
         // Un Highlight Areas

@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.37.0 (2020-03-10 21:52) ************ */
+/*! ************ MagpieUI v3.38.0 (2020-03-19 21:03) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.37.0',
+        '_version' : '3.38.0',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -1646,6 +1646,8 @@ var cm = {
         '_clientPosition' : {'left' : 0, 'top' : 0},
         '_config' : {
             'redrawOnLoad' : true,
+            'motionAsymmetric' : 'cubic-bezier(.5,0,.15,1)',
+            'motionSmooth' : 'ease-in-out',
             'animDuration' : 250,
             'animDurationShort' : 150,
             'animDurationLong' : 500,
@@ -14739,7 +14741,7 @@ function(params){
         // Unset area from draggable item
         unsetDraggableFromArea(current);
         // Insert draggable element to body
-        if(that.params['draggableContainer'] && that.params['draggableContainer'] != 'selfParent'){
+        if(that.params['draggableContainer'] && that.params['draggableContainer'] !== 'selfParent'){
             that.params['draggableContainer'].appendChild(current['node']);
         }
         cm.addClass(current['node'], 'pt__dnd-helper');
@@ -14787,6 +14789,10 @@ function(params){
         currentArea = current['area'];
         currentAboveItem = tempCurrentAboveItem;
         currentPosition = tempCurrentPosition;
+        if(that.params['limit']){
+            getPosition(currentArea);
+            currentArea['node'].style.minHeight = currentArea['dimensions']['height']  + 'px';
+        }
         cm.addClass(currentArea['node'], 'is-active');
         // Set check position event
         //checkInt = setInterval(checkPosition, 5);
@@ -14829,8 +14835,8 @@ function(params){
                 if(that.params['limit']){
                     if(posY < current['area']['dimensions']['y1']){
                         styleY = [current['area']['dimensions']['y1'], 'px'].join('');
-                    }else if(posY > current['area']['dimensions']['y2']){
-                        styleY = [current['area']['dimensions']['y2'], 'px'].join('');
+                    }else if(posY + current['dimensions']['absoluteHeight'] > current['area']['dimensions']['y2']){
+                        styleY = [current['area']['dimensions']['y2'] - current['dimensions']['absoluteHeight'], 'px'].join('');
                     }else{
                         styleY = [posY, 'px'].join('');
                     }
@@ -14987,6 +14993,9 @@ function(params){
         }
         // Unset active area classname
         if(currentArea){
+            if(that.params['limit']){
+                currentArea['node'].style.minHeight = '';
+            }
             cm.removeClass(currentArea['node'], 'is-active');
         }
         // Un Highlight Areas
@@ -19188,8 +19197,15 @@ cm.define('Com.MultiField', {
     'extend' : 'Com.AbstractController',
     'events' : [
         'onItemAdd',
+        'onItemAddEnd',
         'onItemRemove',
+        'onItemRemoveEnd',
+        'onItemShow',
+        'onItemShowEnd',
+        'onItemHide',
+        'onItemHideEnd',
         'onItemProcess',
+        'onItemProcessEnd',
         'onItemSort',
         'onItemIndexChange'
     ],
@@ -19197,6 +19213,7 @@ cm.define('Com.MultiField', {
         'renderStructure' : false,
         'embedStructure' : 'append',
         'embedStructureOnRender' : false,
+        'mode' : 'create',                              // create - add /remove fields by provided template, edit - show / hide only pre-rendered fields
         'sortable' : true,                              // Use drag and drop to sort items
         'showControls' : true,
         'showList' : true,
@@ -19236,12 +19253,14 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
             'content' : cm.node('div'),
             'toolbar' : {
                 'container' : cm.node('div'),
-                'add' : cm.node('div')
+                'add' : cm.node('div'),
+                'buttons' : []
             },
             'items' : []
         };
         that.components = {};
         that.items = [];
+        that.buttons = [];
         that.isToolbarVisible = true;
         // Call parent method
         classInherit.prototype.construct.apply(that, arguments);
@@ -19277,10 +19296,14 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
             )
         );
         // Add button events
-        cm.addEvent(nodes['add'], 'click', function(e){
-            cm.preventDefault(e);
-            that.renderItem();
-        });
+        if(that.params['mode'] === 'create'){
+            cm.addEvent(nodes['add'], 'click', function(e){
+                cm.preventDefault(e);
+                that.renderItem();
+            });
+        }else{
+            cm.remove(that.nodes['toolbar']['add']);
+        }
         // Push
         that.nodes['toolbarView'] = nodes;
         return nodes['container'];
@@ -19310,19 +19333,29 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
             that.processCollectedView();
         }
         // Render items
-        cm.forEach(Math.max(that.params['renderItems'] - that.items.length, 0), function(){
-            that.renderItem();
-        });
+        if(that.params['mode'] === 'create'){
+            var length = Math.max(that.params['renderItems'] - that.items.length, 0);
+            cm.forEach(length, function(e){
+                that.renderItem();
+            });
+        }
     };
 
     classProto.processCollectedView = function(){
         var that = this;
         // Toolbar
         that.nodes['toolbarContainer'] = that.nodes['toolbar']['container'];
-        cm.addEvent(that.nodes['toolbar']['add'], 'click', function(e){
-            cm.preventDefault(e);
-            that.renderItem();
-        });
+        if(that.params['mode'] === 'create'){
+            cm.addEvent(that.nodes['toolbar']['add'], 'click', function(e){
+                cm.preventDefault(e);
+                that.renderItem();
+            });
+        }else{
+            cm.remove(that.nodes['toolbar']['add']);
+            cm.forEach(that.nodes['toolbar']['buttons'], function(item){
+                that.processButtons(item);
+            });
+        }
         // Process rendered items
         cm.forEach(that.nodes['items'], function(item){
             that.processItem(item);
@@ -19337,6 +19370,110 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         cm.addClass(that.nodes['container'], that.params['theme']);
     };
 
+    /* *** TOOLBAR *** */
+
+    classProto.processButtons = function(item){
+        var that = this;
+        // Config
+        item = cm.merge({
+            'id' : null,
+            'visible' : null
+        }, item);
+        // Data config
+        item = cm.merge(item, that.getNodeDataConfig(item['container']));
+        // Events
+        cm.addEvent(item['container'], 'click', function(e){
+            cm.preventDefault(e);
+            var listItem = that.getItemById(item['id']);
+            if(listItem && !listItem.visible){
+                that.showItem(listItem);
+            }
+        });
+        // Push
+        that.buttons.push(item);
+    };
+
+    classProto.toggleToolbarVisibility = function(item){
+        var that = this;
+        if(that.params['showControls']){
+            var buttonItem = that.getButtonById(item['id']);
+            if(buttonItem && !item['visible']){
+                that.showButton(buttonItem);
+            }
+            if(that.params['mode'] === 'create'){
+                if(that.params['max'] > 0 && that.items.length === that.params['max']){
+                    that.hideToolbar();
+                }else{
+                    that.showToolbar();
+                }
+            }else{
+                if(that.isAllItemsVisible()){
+                    that.hideToolbar();
+                }else{
+                    that.showToolbar();
+                }
+            }
+            if(buttonItem && item['visible']){
+                that.hideButton(buttonItem);
+            }
+        }
+    };
+
+    classProto.showButton = function(item){
+        var that = this;
+        item['visible'] = true;
+        cm.removeClass(item['container'], 'is-hidden');
+    };
+
+    classProto.hideButton = function(item){
+        var that = this;
+        item['visible'] = false;
+        cm.addClass(item['container'], 'is-hidden');
+    };
+
+    classProto.showToolbar = function(){
+        var that = this;
+        if(!that.isToolbarVisible){
+            that.isToolbarVisible = true;
+            // Prepare
+            that.nodes['toolbarContainer'].style.overflow = 'hidden';
+
+            // Animate
+            cm.transition(that.nodes['toolbarContainer'], {
+                'properties' : {
+                    'height' : that.nodes['toolbarContainer'].scrollHeight + 'px',
+                    'opacity' : 1
+                },
+                'duration' : that.params['duration'],
+                'easing' : cm._config.motionSmooth,
+                'clear' : true,
+                'onStop' : function(){
+                    that.nodes['toolbarContainer'].style.overflow = '';
+                }
+            });
+        }
+        return that;
+    };
+
+    classProto.hideToolbar = function(){
+        var that = this;
+        if(that.isToolbarVisible){
+            that.isToolbarVisible = false;
+            // Prepare
+            that.nodes['toolbarContainer'].style.overflow = 'hidden';
+            // Animate
+            cm.transition(that.nodes['toolbarContainer'], {
+                'properties' : {
+                    'height' : '0px',
+                    'opacity' : 0
+                },
+                'duration' : that.params['duration'],
+                'easing' : cm._config.motionSmooth
+            });
+        }
+        return that;
+    };
+
     /* *** ITEMS *** */
 
     classProto.renderItem = function(item, params){
@@ -19344,12 +19481,21 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         if(that.params['max'] === 0 || that.items.length < that.params['max']){
             // Config
             item = cm.merge({
-                'isVisible' : false
+                'id' : null,
+                'showControls' : null,
+                'sortable' : null,
+                'visible' : null
             }, item);
             params = cm.merge({
-                'callback' : function(){},
-                'triggerEvents' : true
+                'triggerEvents' : true,
+                'callback' : function(){}
             }, params);
+            if(!cm.isBoolean(item['showControls'])){
+                item['showControls'] = that.params['showControls'];
+            }
+            if(!cm.isBoolean(item['sortable'])){
+                item['sortable'] = that.params['sortable'];
+            }
             // Structure
             item['container'] = cm.node('div', {'class' : 'com__multifield__item', 'data-node' : 'items:[]:container'},
                 item['content'] = item['field'] = cm.node('div', {'class' : 'field', 'data-node' : 'field'})
@@ -19357,12 +19503,12 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
             // Template
             that.renderItemTemplate(that.params['template'], item);
             // Controls
-            if(that.params['showControls']){
+            if(that.params['showControls'] && item['showControls']){
                 item['remove'] = cm.node('div', {'class' : that.params['icons']['remove'], 'title' : that.lang('remove'), 'data-node' : 'remove'});
                 cm.appendChild(item['remove'], item['container']);
             }
             // Sortable
-            if(that.params['sortable']){
+            if(that.params['sortable'] && item['sortable']){
                 item['drag'] = cm.node('div', {'class' : that.params['icons']['drag'], 'data-node' : 'drag'});
                 if(that.params['showControls']){
                     cm.insertFirst(item['drag'], item['container']);
@@ -19373,79 +19519,202 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
             // Embed
             cm.appendChild(item['container'], that.nodes['content']);
             // Process
-            that.processItem(item);
-            // Callback
-            params['callback'](item);
-            // Trigger event
             params['triggerEvents'] && that.triggerEvent('onItemAdd', item);
+            that.processItem(item, {
+                'triggerEvents' : params['triggerEvents'],
+                'callback' : function(){
+                    params['triggerEvents'] && that.triggerEvent('onItemAddEnd', item);
+                    params['callback'](item);
+                }
+            });
         }
     };
 
-    classProto.renderItemTemplate = function(data, item){
-        var that = this,
-            nodes;
-        if(!cm.isEmpty(data)){
-            if(cm.isString(data)){
-                nodes = cm.strToHTML(data);
-            }else{
-                nodes = cm.clone(data, true);
-            }
-            cm.appendNodes(nodes, item['field']);
-        }
-    };
-
-    classProto.processItem = function(item){
+    classProto.processItem = function(item, params){
         var that = this;
-        // Register sortable item
-        if(that.params['sortable']){
-            that.components['sortable'].addItem(item['container'], that.nodes['content']);
-        }else{
-            cm.remove(item['drag']);
+        // Config
+        item = cm.merge({
+            'id' : null,
+            'fieldForEnable' : null,
+            'showControls' : null,
+            'sortable' : null,
+            'visible' : null
+        }, item);
+        params = cm.merge({
+            'triggerEvents' : true,
+            'callback' : function(){}
+        }, params);
+        // Data config
+        item = cm.merge(item, that.getNodeDataConfig(item['container']));
+        // Validate
+        if(!cm.isBoolean(item['showControls'])){
+            item['showControls'] = that.params['showControls'];
+        }
+        if(!cm.isBoolean(item['sortable'])){
+            item['sortable'] = that.params['sortable'];
+        }
+        if(!cm.isBoolean(item['visible'])){
+            if(item['field-hidden-visible'] && !cm.isEmpty(item['field-hidden-visible'].value)){
+                item.visible = item['field-hidden-visible'].value === '1';
+            }else{
+                item.visible = true;
+            }
         }
         // Controls
-        if(that.params['showControls']){
+        if(that.params['showControls'] && item['showControls']){
             cm.addEvent(item['remove'], 'click', function(e){
                 cm.preventDefault(e);
-                that.deleteItem(item);
+                if(that.params['mode'] === 'create'){
+                    that.deleteItem(item);
+                }else{
+                    that.hideItem(item);
+                }
             });
         }else{
             cm.remove(item['remove']);
         }
+        // Register sortable item
+        if(that.params['sortable'] && item['sortable']){
+            that.components['sortable'].addItem(item['container'], that.nodes['content']);
+        }else{
+            cm.remove(item['drag']);
+        }
         // Push
         that.items.push(item);
         that.resetIndexes();
-        // Animate
-        that.toggleItemVisibility(item);
-        // Toggle toolbar visibility
-        that.toggleToolbarVisibility();
-        // Trigger event
-        that.triggerEvent('onItemProcess', item);
+        // Toggle item visibility
+        params['triggerEvents'] && that.triggerEvent('onItemProcess', item);
+        if(item.visible){
+            that.showItem(item, {
+                'triggerEvents' : true,
+                'callback' : function(){
+                    params['triggerEvents'] && that.triggerEvent('onItemProcessEnd', item);
+                    params['callback'](item);
+                }
+            });
+        }else{
+            that.hideItem(item, {
+                'triggerEvents' : true,
+                'callback' : function(){
+                    params['triggerEvents'] && that.triggerEvent('onItemProcessEnd', item);
+                    params['callback'](item);
+                }
+            });
+        }
     };
 
     classProto.deleteItem = function(item, params){
         var that = this;
         params = cm.merge({
-            'callback' : function(){},
-            'triggerEvents' : true
+            'triggerEvents' : true,
+            'callback' : function(){}
         }, params);
         // Remove sortable item
-        if(that.params['sortable']){
+        if(that.params['sortable'] && item['sortable']){
             that.components['sortable'].removeItem(item['container']);
         }
         // Remove from array
         that.items.splice(that.items.indexOf(item), 1);
         that.resetIndexes();
-        // Animate
-        that.toggleItemVisibility(item, function(){
-            // Remove from DOM
-            cm.remove(item['container']);
-        });
-        // Toggle toolbar visibility
-        that.toggleToolbarVisibility();
-        // Callback
-        params['callback'](item);
-        // Trigger event
+        // Toggle item visibility
         params['triggerEvents'] && that.triggerEvent('onItemRemove', item);
+        that.hideItem(item, {
+            'triggerEvents' : params['triggerEvents'],
+            'callback' : function(){
+                cm.remove(item['container']);
+                params['triggerEvents'] && that.triggerEvent('onItemRemoveEnd', item);
+                params['callback'](item);
+            }
+        });
+    };
+
+    classProto.hideItem = function(item, params){
+        var that = this;
+        params = cm.merge({
+            'triggerEvents' : true,
+            'callback' : function(){}
+        }, params);
+        // Process
+        item['visible'] = false;
+        if(item['field-hidden-visible']){
+            item['field-hidden-visible'].value = 0;
+        }
+        params['triggerEvents'] && that.triggerEvent('onItemHide', item);
+        that.hideItemVisibility(item, {
+            'triggerEvents' : params['triggerEvents'],
+            'callback' : function(){
+                params['triggerEvents'] && that.triggerEvent('onItemHideEnd', item);
+                params['callback'](item);
+            }
+        });
+        that.toggleToolbarVisibility(item);
+    };
+
+    classProto.hideItemVisibility = function(item, params){
+        var that = this;
+        params = cm.merge({
+            'callback' : function(){},
+            'triggerEvents' : true
+        }, params);
+        // Process
+        item['container'].style.overflow = 'hidden';
+        item['container'].style.height = item['container'].scrollHeight + 'px';
+        cm.transition(item['container'], {
+            'properties' : {
+                'height' : '0px',
+                'opacity' : 0
+            },
+            'duration' : that.params['duration'],
+            'easing' : cm._config.motionSmooth,
+            'onStop' : function(){
+                params['callback'](item);
+            }
+        });
+    };
+
+    classProto.showItem = function(item, params){
+        var that = this;
+        params = cm.merge({
+            'triggerEvents' : true,
+            'callback' : function(){}
+        }, params);
+        // Process
+        item['visible'] = true;
+        if(item['field-hidden-visible']){
+            item['field-hidden-visible'].value = 1;
+        }
+        params['triggerEvents'] && that.triggerEvent('onItemShow', item);
+        that.showItemVisibility(item, {
+            'triggerEvents' : params['triggerEvents'],
+            'callback' : function(){
+                params['triggerEvents'] && that.triggerEvent('onItemShowEnd', item);
+                params['callback'](item);
+            }
+        });
+        that.toggleToolbarVisibility(item);
+    };
+
+    classProto.showItemVisibility = function(item, params){
+        var that = this;
+        params = cm.merge({
+            'triggerEvents' : true,
+            'callback' : function(){}
+        }, params);
+        // Process
+        item['container'].style.overflow = 'hidden';
+        item['container'].style.height = '0px';
+        cm.transition(item['container'], {
+            'properties' : {
+                'height' : item['container'].scrollHeight + 'px',
+                'opacity' : 1
+            },
+            'duration' : that.params['duration'],
+            'easing' : cm._config.motionSmooth,
+            'clear' : true,
+            'onStop' : function(){
+                params['callback'](item);
+            }
+        });
     };
 
     classProto.sortItem = function(item, index){
@@ -19469,100 +19738,14 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
                 if(that.params['templateAttributeReplace']){
                     cm.processDataAttributes(item['field'], that.params['templateAttribute'], {'%index%' : index});
                 }
+                // Hidden field
+                if(item['field-hidden-index']){
+                    item['field-hidden-index'].value = index;
+                }
                 // Trigger event
                 that.triggerEvent('onItemIndexChange', item);
             }
         });
-    };
-
-    /* *** VISIBILITY *** */
-
-    classProto.toggleToolbarVisibility = function(){
-        var that = this;
-        if(that.params['showControls']){
-            if(that.params['max'] > 0 && that.items.length === that.params['max']){
-                that.hideToolbar();
-            }else{
-                that.showToolbar();
-            }
-        }
-        return that;
-    };
-
-    classProto.showToolbar = function(){
-        var that = this,
-            height = 0;
-        if(!that.isToolbarVisible){
-            that.isToolbarVisible = true;
-            // Prepare
-            that.nodes['toolbarContainer'].style.height = '';
-            height = that.nodes['toolbarContainer'].offsetHeight;
-            that.nodes['toolbarContainer'].style.height = '0px';
-            that.nodes['toolbarContainer'].style.overflow = 'hidden';
-            // Animate
-            cm.transition(that.nodes['toolbarContainer'], {
-                'properties' : {'height' : height + 'px', 'opacity' : 1},
-                'duration' : that.params['duration'],
-                'easing' : 'ease-in-out',
-                'clear' : true,
-                'onStop' : function(){
-                    that.nodes['toolbarContainer'].style.overflow = '';
-                    that.nodes['toolbarContainer'].style.height = '';
-                }
-            });
-        }
-        return that;
-    };
-
-    classProto.hideToolbar = function(){
-        var that = this;
-        if(that.isToolbarVisible){
-            that.isToolbarVisible = false;
-            // Prepare
-            that.nodes['toolbarContainer'].style.overflow = 'hidden';
-            // Animate
-            cm.transition(that.nodes['toolbarContainer'], {
-                'properties' : {'height' : '0px', 'opacity' : 0},
-                'duration' : that.params['duration'],
-                'easing' : 'ease-in-out'
-            });
-        }
-        return that;
-    };
-
-    classProto.toggleItemVisibility = function(item, callback){
-        var that = this;
-        callback = cm.isFunction(callback) ? callback : function(){};
-        if(!item['height']){
-            item['height'] = item['container'].offsetHeight;
-        }
-        if(cm.isUndefined(item['isVisible'])){
-            item['isVisible'] = true;
-        }else if(item['isVisible']){
-            item['isVisible'] = false;
-            item['container'].style.overflow = 'hidden';
-            cm.transition(item['container'], {
-                'properties' : {'height' : '0px', 'opacity' : 0},
-                'duration' : that.params['duration'],
-                'easing' : 'ease-in-out',
-                'onStop' : callback
-            });
-        }else{
-            item['isVisible'] = true;
-            item['container'].style.overflow = 'hidden';
-            item['container'].style.height = '0px';
-            item['container'].style.opacity = 0;
-            cm.transition(item['container'], {
-                'properties' : {'height' : [item['height'], 'px'].join(''), 'opacity' : 1},
-                'duration' : that.params['duration'],
-                'easing' : 'ease-in-out',
-                'clear' : true,
-                'onStop' : function(){
-                    item['container'].style.overflow = '';
-                    callback();
-                }
-            });
-        }
     };
 
     /* ******* TEMPLATE ******* */
@@ -19571,6 +19754,19 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         var that = this;
         that.params['template'] = data;
         return that;
+    };
+
+    classProto.renderItemTemplate = function(data, item){
+        var that = this,
+            nodes;
+        if(!cm.isEmpty(data)){
+            if(cm.isString(data)){
+                nodes = cm.strToHTML(data);
+            }else{
+                nodes = cm.clone(data, true);
+            }
+            cm.appendNodes(nodes, item['field']);
+        }
     };
 
     /* ******* PUBLIC ******* */
@@ -19607,9 +19803,42 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         return null;
     };
 
+    classProto.getItemById = function(id){
+        var that = this;
+        if(cm.isEmpty(id)){
+            return;
+        }
+        return that.items.find(function(item){
+            return item['id'] === id;
+        });
+    };
+
     classProto.getItems = function(){
         var that = this;
         return that.items;
+    };
+
+    classProto.getButtonById = function(id){
+        var that = this;
+        if(cm.isEmpty(id)){
+            return;
+        }
+        return that.buttons.find(function(item){
+            return item['id'] === id;
+        });
+    };
+
+    classProto.getButtons = function(){
+        var that = this;
+        return that.buttons;
+    };
+
+    classProto.isAllItemsVisible = function(){
+        var that = this;
+        var items = that.items.filter(function(item){
+            return item['visible'];
+        });
+        return that.items.length === items.length;
     };
 });
 cm.define('Com.Notifications', {
@@ -23179,6 +23408,7 @@ cm.define('Com.Sortable', {
     'events' : [
         'onRender',
         'onRemove',
+        'onStart',
         'onSort'
     ],
     'params' : {
@@ -23213,6 +23443,7 @@ function(params){
     var render = function(){
         // Init drag'n'drop class
         that.components['dd'] = new Com.Draganddrop(that.params['Com.Draganddrop'])
+            .addEvent('onDragStart', onStart)
             .addEvent('onRemove', onRemove)
             .addEvent('onDrop', onSort);
         // Process items
@@ -23221,6 +23452,10 @@ function(params){
         }
         // Trigger render event
         that.triggerEvent('onRender');
+    };
+
+    var onStart = function(dd, widget){
+        that.triggerEvent('onStart', widget);
     };
 
     var onRemove = function(dd, widget){
@@ -29177,9 +29412,11 @@ cm.define('Com.FileInput', {
         'controllerEvents' : true,
         'embedStructure' : 'replace',
         'className' : 'com__file-input',
+        'size' : 'default',                     // default, full, custom
         'hiddenType' : 'textarea',
         'file' : null,
         'showLink' : true,
+        'showFilename' : true,
         'autoOpen' : false,
         'placeholder' : null,
         'formData' : false,
@@ -29439,12 +29676,14 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         }else{
             cm.addClass(that.nodes['content']['placeholder'], 'is-hidden');
             cm.clearNode(that.nodes['content']['label']);
-            if(that.params['showLink']){
-                that.nodes['content']['link'] = cm.node('a', {'target' : '_blank', 'href' : that.value['url'], 'title' : that.lang('open')}, that.value['name']);
-            }else{
-                that.nodes['content']['link'] = cm.textNode(that.value['name']);
+            if(that.params['showFilename']){
+                if(that.params['showLink']){
+                    that.nodes['content']['link'] = cm.node('a', {'target' : '_blank', 'href' : that.value['url'], 'title' : that.lang('open')}, that.value['name']);
+                }else{
+                    that.nodes['content']['link'] = cm.textNode(that.value['name']);
+                }
+                cm.appendChild(that.nodes['content']['link'], that.nodes['content']['label']);
             }
-            cm.appendChild(that.nodes['content']['link'], that.nodes['content']['label']);
             cm.addClass(that.nodes['content']['browseLocal'], 'is-hidden');
             cm.addClass(that.nodes['content']['browseFileManager'], 'is-hidden');
             cm.addClass(that.nodes['content']['browseFileUploader'], 'is-hidden');

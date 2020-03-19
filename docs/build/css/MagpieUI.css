@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url('//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800');
-/*! ************ MagpieUI v3.37.0 (2020-03-10 21:52) ************ */
+/*! ************ MagpieUI v3.38.0 (2020-03-19 21:03) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.6.0
@@ -3521,8 +3521,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.37.0');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.37.0') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.37.0') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.37.0') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.37.0#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.38.0');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.38.0') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.38.0') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.38.0') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.38.0#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -7866,6 +7866,26 @@ button.is-hidden {
 .pt__box-title.pull-right {
   text-align: right;
 }
+.pt__box-title--flat {
+  margin-bottom: 24px;
+  font: 300 24px/32px "Open+Sans", arial, helvetica, sans-serif;
+  color: #666666;
+  margin-bottom: 8px;
+}
+.pt__box-title--flat.bottom,
+.pt__box-title--flat.is-last,
+.pt__box-title--flat:last-child {
+  margin-bottom: 0;
+}
+.pt__box-title--flat.pull-left {
+  text-align: left;
+}
+.pt__box-title--flat.pull-center {
+  text-align: center;
+}
+.pt__box-title--flat.pull-right {
+  text-align: right;
+}
 /* *** CONTENT *** */
 .pt__box-content {
   margin: 0 0 48px;
@@ -8533,6 +8553,11 @@ button.is-hidden {
   -ms-flex: 1;
   flex: 1;
 }
+.pt__check-line.has-fields-box input[type="radio"],
+.pt__check-line.has-fields-box input[type="checkbox"] {
+  margin-top: 9px;
+  margin-bottom: 9px;
+}
 .pt__check-line.is-box label {
   display: block;
 }
@@ -9009,9 +9034,17 @@ button.is-hidden {
   -moz-user-select: none;
   user-select: none;
 }
+.pt__dnd-body .pt__dnd-area,
+.pt__dnd-body * .pt__dnd-area {
+  pointer-events: none;
+}
+.pt__dnd-item {
+  pointer-events: none;
+}
 .pt__dnd-helper {
   position: fixed;
   z-index: 9000;
+  pointer-events: none;
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
@@ -9694,6 +9727,12 @@ button.is-hidden {
 .pt__field.is-box.is-no-indent,
 .pt__field.is-form-box.is-no-indent {
   margin: 0;
+}
+.pt__field.is-box.is-first > dt,
+.pt__field.is-form-box.is-first > dt,
+.pt__field.is-box.is-first > .field__title,
+.pt__field.is-form-box.is-first > .field__title {
+  padding-top: 0;
 }
 .pt__field.is-form-box {
   margin-bottom: 24px;
@@ -17199,6 +17238,19 @@ ul.pt__field__hint li:before {
   opacity: 0;
 }
 /* ******* COMPONENTS: FILE INPUT ******* */
+.com__file-input.size-full .pt__file-line .button-alike,
+.com__file-input.size-full .pt__file-line .button,
+.com__file-input.size-full .pt__file-line .browse-button,
+.com__file-input.size-full .pt__file-line .cm__button-wrapper,
+.com__file-input.size-full .pt__file-line .com__menu,
+.com__file-input.size-full .pt__file-line .com__pagination__bar ul li a,
+.com__file-input.size-full .pt__file-line input[type="button"],
+.com__file-input.size-full .pt__file-line input[type="submit"],
+.com__file-input.size-full .pt__file-line input[type="reset"],
+.com__file-input.size-full .pt__file-line button {
+  width: 100%;
+  margin: 0;
+}
 .com__file-input__content {
   position: relative;
 }
@@ -18181,12 +18233,6 @@ ul.pt__field__hint li:before {
 .com__image-input.size-default .com__image-input__content .input__holder .pt__image > .inner > .descr {
   height: 128px;
 }
-.com__image-input.size-default .com__image-input__content .input__holder .pt__image > .inner > .descr video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center center;
-}
 .com__image-input.size-default .com__image-input__content .input__holder .input__label {
   display: none;
 }
@@ -18202,12 +18248,6 @@ ul.pt__field__hint li:before {
 }
 .com__image-input.size-full .com__image-input__content .input__holder .pt__image > .inner > .descr {
   height: 128px;
-}
-.com__image-input.size-full .com__image-input__content .input__holder .pt__image > .inner > .descr video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center center;
 }
 .com__image-input.size-custom .com__image-input__content .input__holder .input__label {
   display: none;
@@ -18232,6 +18272,12 @@ ul.pt__field__hint li:before {
 .com__image-input__content .input__holder .pt__image > .inner > .descr {
   border: 1px solid #cccccc;
   border-radius: 3px;
+}
+.com__image-input__content .input__holder .pt__image > .inner > .descr video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
 }
 .com__image-input__content .input__holder .input__cover {
   display: -webkit-flex;
@@ -18303,6 +18349,7 @@ ul.pt__field__hint li:before {
   display: -ms-flexbox;
   display: flex;
   -ms-flex-pack: center;
+  min-height: auto;
   margin: 2px;
   padding-top: 0;
   padding-bottom: 0;
@@ -18632,6 +18679,7 @@ ul.pt__field__hint li:before {
 .com__multifield.theme-cards .com__multifield__item > .field {
   padding: 12px;
   border: 1px dashed #cccccc;
+  background: #ffffff;
   border-radius: 3px;
 }
 /* ******* COMPONENTS: MULTIPLE FILE INPUT ******* */

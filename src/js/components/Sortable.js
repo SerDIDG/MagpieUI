@@ -8,6 +8,7 @@ cm.define('Com.Sortable', {
     'events' : [
         'onRender',
         'onRemove',
+        'onStart',
         'onSort'
     ],
     'params' : {
@@ -42,6 +43,7 @@ function(params){
     var render = function(){
         // Init drag'n'drop class
         that.components['dd'] = new Com.Draganddrop(that.params['Com.Draganddrop'])
+            .addEvent('onDragStart', onStart)
             .addEvent('onRemove', onRemove)
             .addEvent('onDrop', onSort);
         // Process items
@@ -50,6 +52,10 @@ function(params){
         }
         // Trigger render event
         that.triggerEvent('onRender');
+    };
+
+    var onStart = function(dd, widget){
+        that.triggerEvent('onStart', widget);
     };
 
     var onRemove = function(dd, widget){

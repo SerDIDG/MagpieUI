@@ -4,11 +4,20 @@
 .pt__dnd-body * {
     cursor: move !important;
     .mx__user-select(none);
+
+    .pt__dnd-area {
+        pointer-events: none;
+    }
+}
+
+.pt__dnd-item {
+    pointer-events: none;
 }
 
 .pt__dnd-helper {
     position: fixed;
     z-index: 9000;
+    pointer-events: none;
     .mx__user-select(none);
 
     &.is-drop {

@@ -70,6 +70,15 @@
         }
     }
 
+    &.has-fields-box {
+        input[type="radio"],
+        input[type="checkbox"] {
+            @margin: floor((@CmForm-FieldHeight - 13px) / 2);
+            margin-top: @margin;
+            margin-bottom: @margin;
+        }
+    }
+
     &.is-box {
         label {
             display: block;
