@@ -10,7 +10,7 @@
     }
 
     &.size-full {
-        .com__image-input--size(@ComImageInput-Height, @ComImageInput-Height);
+        .com__image-input--size(@ComImageInput-Height, @ComImageInput-Height, contain);
         max-width: none;
     }
 
@@ -133,7 +133,7 @@
 
 /* *** MIXINS *** */
 
-.com__image-input--size (@width, @height) {
+.com__image-input--size (@width, @height, @image-size: cover) {
     max-width: @width;
 
     .com__image-input__content {
@@ -142,6 +142,7 @@
                 > .inner {
                     > .descr {
                         height: @height;
+                        background-size: @image-size;
                     }
                 }
             }
