@@ -9,6 +9,15 @@
         }
     }
 
+    &.size-wide {
+        .com__image-input--size(@ComImageInput-Height, @ComImageInput-Height);
+        max-width: none;
+
+        .com__image-input__content {
+            .com__image-input__content--default;
+        }
+    }
+
     &.size-full {
         .com__image-input--size(@ComImageInput-Height, @ComImageInput-Height, contain);
         max-width: none;
