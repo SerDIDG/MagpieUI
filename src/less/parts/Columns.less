@@ -21,6 +21,16 @@
         }
     }
 
+    &.valign-middle {
+        > .inner {
+            > .column {
+                display: flex;
+                .mx__flex-direction(column);
+                .mx__justify-content(center);
+            }
+        }
+    }
+
     &.field-indent,
     &.field-inner-indent {
         .cm__box;

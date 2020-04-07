@@ -468,13 +468,15 @@ cm.arrayAdd = function(a, item){
     return a;
 };
 
-cm.arraySort = function(a, key, dir){
+cm.arraySort = function(a, key, dir, clone){
+    var newA;
     if(!cm.isArray(a)){
         return a;
     }
-    var newA = cm.clone(a);
     dir = cm.isUndefined(dir) ? 'asc' : dir.toLowerCase();
     dir = cm.inArray(['asc', 'desc'], dir) ? dir : 'asc';
+    clone = cm.isUndefined(clone) ? true : clone;
+    newA = clone ? cm.clone(a) : a;
     switch(dir){
         case 'asc':
             newA.sort(function(a, b){
@@ -617,19 +619,13 @@ cm.reducePath = function(name, obj){
     }, obj);
 };
 
-cm.sort = function(o){
-    var a = [];
-    cm.forEach(o, function(item, key){
-        a.push({'key' : key, 'value' : item});
+cm.sort = function(o, dir){
+    var keys = cm.arraySort(Object.keys(o), null, dir),
+        sorted = {};
+    cm.forEach(keys, function(key){
+        sorted[key] = o[key];
     });
-    a.sort(function(a, b){
-        return (a['key'] < b['key']) ? -1 : ((a['key'] > b['key']) ? 1 : 0);
-    });
-    o = {};
-    a.forEach(function(item){
-        o[item['key']] = item['value'];
-    });
-    return o;
+    return sorted;
 };
 
 cm.replaceDeep = function(o, from, to){

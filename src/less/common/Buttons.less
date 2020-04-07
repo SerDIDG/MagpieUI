@@ -23,11 +23,11 @@
     .mx__box-sizing(border-box);
     .mx__background-clip(border-box);
     .mx__user-select(none);
-    .mx__transition(background color box-shadow, @CmUI-Transition-Duration);
+    .mx__transition(background color box-shadow border-color, @CmUI-Transition-Duration);
 
     &:hover {
         text-decoration: none;
-        .mx__transition(background color box-shadow, @CmUI-Transition-DurationReverse);
+        .mx__transition(background color box-shadow border-color, @CmUI-Transition-DurationReverse);
     }
 
     .button.button-primary;
@@ -381,6 +381,7 @@
         .label {
             display: inline-block;
             vertical-align: top;
+            text-decoration: inherit;
 
             &:not(:first-child){
                 margin-left: @CmIndent-XXSmall;

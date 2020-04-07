@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.38.3 (2020-04-01 19:58) ************ */
+/*! ************ MagpieUI v3.38.4 (2020-04-07 21:46) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3927,7 +3927,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.38.3';
+@CmVersion: '3.38.4';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -6850,11 +6850,11 @@ select {
     .mx__box-sizing(border-box);
     .mx__background-clip(border-box);
     .mx__user-select(none);
-    .mx__transition(background color box-shadow, @CmUI-Transition-Duration);
+    .mx__transition(background color box-shadow border-color, @CmUI-Transition-Duration);
 
     &:hover {
         text-decoration: none;
-        .mx__transition(background color box-shadow, @CmUI-Transition-DurationReverse);
+        .mx__transition(background color box-shadow border-color, @CmUI-Transition-DurationReverse);
     }
 
     .button.button-primary;
@@ -7208,6 +7208,7 @@ select {
         .label {
             display: inline-block;
             vertical-align: top;
+            text-decoration: inherit;
 
             &:not(:first-child){
                 margin-left: @CmIndent-XXSmall;
@@ -9293,6 +9294,16 @@ button {
 
             &.column--none {
                 .mx__flex(none);
+            }
+        }
+    }
+
+    &.valign-middle {
+        > .inner {
+            > .column {
+                display: flex;
+                .mx__flex-direction(column);
+                .mx__justify-content(center);
             }
         }
     }
