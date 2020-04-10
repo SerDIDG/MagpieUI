@@ -31,6 +31,8 @@ cm.define('Com.Dialog', {
         'theme' : 'theme-light',        // theme css class name, default: theme-default | theme-black | theme-light
         'className' : '',               // custom css class name
         'content' : cm.node('div'),
+        'contentValign' : 'top',        // top, center, bottom
+        'scroll' : true,                // content scroll
         'showTitle' : true,
         'title' : '',
         'titleOverflow' : false,
@@ -60,7 +62,6 @@ cm.define('Com.Dialog', {
         'appendOnRender' : false,
         'removeOnClose' : true,
         'destructOnRemove' : false,
-        'scroll' : true,
         'documentScroll' : false,
         'icons' : {
             'closeInside' : 'icon default linked',
@@ -241,6 +242,9 @@ function(params){
             );
             if(!that.params['scroll']){
                 cm.addClass(nodes['scroll'], 'is-no-scroll');
+            }
+            if(cm.inArray(['top', 'center', 'bottom'], that.params['contentValign'])){
+                cm.addClass(nodes['scroll'], ['is-valign', that.params['contentValign']].join('-'));
             }
             if(nodes['title']){
                 cm.insertAfter(nodes['descr'], nodes['title']);

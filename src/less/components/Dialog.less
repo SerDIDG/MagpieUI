@@ -82,6 +82,17 @@
                         height: 100%;
                     }
                 }
+
+                &.is-valign-center {
+                    display: flex;
+                    .mx__flex-direction(column);
+
+                    > .inner {
+                        width: 100%;
+                        margin: auto;
+                        overflow: visible;
+                    }
+                }
             }
         }
 
