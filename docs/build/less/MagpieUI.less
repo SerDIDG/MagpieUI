@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.38.6 (2020-04-10 21:05) ************ */
+/*! ************ MagpieUI v3.38.7 (2020-04-22 20:58) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3927,7 +3927,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.38.6';
+@CmVersion: '3.38.7';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -5301,6 +5301,8 @@ span.CodeMirror-selectedtext { background: none; }
 /* *** SCROLLBAR *** */
 
 .cm__scrollbar {
+    scrollbar-width: thin;
+
     &::-webkit-scrollbar {
         width: @CmScrollBar-Size;
         height: @CmScrollBar-Size;
@@ -5321,6 +5323,8 @@ span.CodeMirror-selectedtext { background: none; }
 }
 
 .cm__scrollbar--light {
+    scrollbar-width: thin;
+
     &::-webkit-scrollbar {
         width: @CmScrollBar-Size;
         height: @CmScrollBar-Size;
