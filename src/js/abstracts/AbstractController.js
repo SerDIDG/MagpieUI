@@ -285,28 +285,30 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         return that;
     };
 
-    classProto.constructCollector = function(){
+    classProto.constructCollector = function(node){
         var that = this;
+        node = cm.isUndefined(node) ? that.getStackNode() : node;
         if(that.params['constructCollector']){
             if(that.params['collector']){
-                that.params['collector'].construct(that.getStackNode());
+                that.params['collector'].construct(node);
             }else{
                 cm.find('Com.Collector', null, null, function(classObject){
-                    classObject.construct(that.getStackNode());
+                    classObject.construct(node);
                 });
             }
         }
         return that;
     };
 
-    classProto.destructCollector = function(){
+    classProto.destructCollector = function(node){
         var that = this;
+        node = cm.isUndefined(node) ? that.getStackNode() : node;
         if(that.params['destructCollector']){
             if(that.params['collector']){
-                that.params['collector'].destruct(that.getStackNode());
+                that.params['collector'].destruct(node);
             }else{
                 cm.find('Com.Collector', null, null, function(classObject){
-                    classObject.destruct(that.getStackNode());
+                    classObject.destruct(node);
                 });
             }
         }

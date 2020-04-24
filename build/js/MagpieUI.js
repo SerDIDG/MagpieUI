@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.38.7 (2020-04-22 20:58) ************ */
+/*! ************ MagpieUI v3.38.8 (2020-04-24 23:22) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.38.7',
+        '_version' : '3.38.8',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -7148,28 +7148,30 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         return that;
     };
 
-    classProto.constructCollector = function(){
+    classProto.constructCollector = function(node){
         var that = this;
+        node = cm.isUndefined(node) ? that.getStackNode() : node;
         if(that.params['constructCollector']){
             if(that.params['collector']){
-                that.params['collector'].construct(that.getStackNode());
+                that.params['collector'].construct(node);
             }else{
                 cm.find('Com.Collector', null, null, function(classObject){
-                    classObject.construct(that.getStackNode());
+                    classObject.construct(node);
                 });
             }
         }
         return that;
     };
 
-    classProto.destructCollector = function(){
+    classProto.destructCollector = function(node){
         var that = this;
+        node = cm.isUndefined(node) ? that.getStackNode() : node;
         if(that.params['destructCollector']){
             if(that.params['collector']){
-                that.params['collector'].destruct(that.getStackNode());
+                that.params['collector'].destruct(node);
             }else{
                 cm.find('Com.Collector', null, null, function(classObject){
-                    classObject.destruct(that.getStackNode());
+                    classObject.destruct(node);
                 });
             }
         }
