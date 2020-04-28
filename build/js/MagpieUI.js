@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.38.8 (2020-04-24 23:22) ************ */
+/*! ************ MagpieUI v3.38.9 (2020-04-28 21:18) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.38.8',
+        '_version' : '3.38.9',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -18213,10 +18213,13 @@ function(params){
                 'label' : '',
                 'attr' : {},
                 'events' : {},
+                'preventDefault' : null,
                 'constructor' : false,
                 'constructorParams' : {},
                 'callback' : function(){}
             }, actionItem);
+            // Validate
+            actionItem['preventDefault'] = cm.isBoolean(actionItem['preventDefault']) ? actionItem['preventDefault'] : config['preventDefault'];
             // Check access
             isEmpty = !cm.isArray(item['data']) || cm.isEmpty(actionItem['name']);
             isInArray = cm.isArray(item['data']) && cm.inArray(item['data'], actionItem['name']);
@@ -18265,7 +18268,7 @@ function(params){
             });
         }else{
             cm.addEvent(actionItem['node'], 'click', function(e){
-                config['preventDefault'] && cm.preventDefault(e);
+                actionItem['preventDefault'] && cm.preventDefault(e);
                 item['component'].hide(false);
                 actionItem['callback'](e, actionItem, row);
             });

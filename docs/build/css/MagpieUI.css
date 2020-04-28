@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url('//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800');
-/*! ************ MagpieUI v3.38.8 (2020-04-24 23:22) ************ */
+/*! ************ MagpieUI v3.38.9 (2020-04-28 21:19) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.6.0
@@ -3521,8 +3521,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.38.8');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.38.8') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.38.8') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.38.8') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.38.8#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.38.9');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.38.9') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.38.9') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.38.9') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.38.9#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -3722,7 +3722,7 @@ span.CodeMirror-selectedtext {
   border: 1px solid #2985e0;
   border-radius: 3px;
   text-align: center;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 16px;
   color: #2985e0;
   -webkit-background-clip: border-box;
@@ -3771,7 +3771,7 @@ span.CodeMirror-selectedtext {
 }
 /* *** EMPTY *** */
 .cm__empty {
-  font: 400 13px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 14px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #666666;
   font-style: italic;
   padding: 12px;
@@ -3783,7 +3783,7 @@ span.CodeMirror-selectedtext {
   content: '-';
 }
 .cm__empty--inline {
-  font: 400 13px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 14px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #666666;
   font-style: italic;
   text-align: left;
@@ -3927,20 +3927,20 @@ span.CodeMirror-selectedtext {
 /* ******* COMMON: FONT ******* */
 /* *** BASE *** */
 .cm__font {
-  font: 400 13px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 14px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #666666;
 }
 .cm__font--small {
-  font: 400 11px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 12px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #666666;
 }
 .cm__font--cursive {
-  font: 400 13px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 14px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #666666;
   font-style: italic;
 }
 .cm__font--small-cursive {
-  font: 400 11px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 12px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #666666;
   font-style: italic;
 }
@@ -3958,7 +3958,7 @@ span.CodeMirror-selectedtext {
   color: #16599c;
 }
 .cm__font--hint {
-  font: 400 11px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 12px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #999999;
 }
 .cm__font--placeholder {
@@ -3967,7 +3967,7 @@ span.CodeMirror-selectedtext {
   color: #b7b7b7;
 }
 .cm__font--hint-cursive {
-  font: 400 11px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 12px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #999999;
   font-style: italic;
 }
@@ -3980,20 +3980,20 @@ span.CodeMirror-selectedtext {
 }
 /* *** UI *** */
 .cm__font--ui {
-  font: 400 13px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 14px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #666666;
 }
 .cm__font--ui-small {
-  font: 400 11px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 12px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #666666;
 }
 .cm__font--ui-cursive {
-  font: 400 13px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 14px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #666666;
   font-style: italic;
 }
 .cm__font--ui-small-cursive {
-  font: 400 11px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 12px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #666666;
   font-style: italic;
 }
@@ -4993,7 +4993,7 @@ span.CodeMirror-selectedtext {
   box-sizing: border-box;
 }
 body {
-  font: 400 13px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 14px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #666666;
   margin: 0;
   padding: 0;
@@ -5465,7 +5465,7 @@ input,
 select,
 textarea,
 button {
-  font: 400 13px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 14px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #666666;
   margin: 0;
   outline: none;
@@ -5533,7 +5533,7 @@ button {
   text-align: center;
   text-decoration: none;
   line-height: 18px;
-  font-size: 13px;
+  font-size: 14px;
   white-space: nowrap;
   cursor: pointer;
   outline: none;
@@ -6455,7 +6455,7 @@ button.is-hidden {
   text-align: right;
 }
 .cm__list-inline--base > li {
-  font: 400 13px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 14px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #666666;
 }
 .cm__list-inline--clear {
@@ -6963,7 +6963,7 @@ button.is-hidden {
 }
 /* *** HINT ***  */
 .form .hint {
-  font: 400 11px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 12px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #999999;
   font-style: italic;
   text-transform: none;
@@ -7502,7 +7502,7 @@ button.is-hidden {
   margin: 0;
 }
 .cm__form__icons-inside .text {
-  font: 400 13px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 14px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #666666;
   display: inline-block;
   vertical-align: middle;
@@ -8080,7 +8080,7 @@ button.is-hidden {
 .pt__box-item .date,
 .pt__box-item .count,
 .pt__box-item .status {
-  font-size: 11px;
+  font-size: 12px;
   color: #999999;
 }
 .pt__box-item .status.danger {
@@ -8115,7 +8115,7 @@ button.is-hidden {
   margin-bottom: 0;
 }
 .pt__box-item .hint {
-  font: 400 11px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 12px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #999999;
   font-style: italic;
 }
@@ -8265,7 +8265,7 @@ button.is-hidden {
   text-align: right;
 }
 .pt__breadcrumbs ul li {
-  font: 400 13px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 14px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #666666;
   margin: 0 8px 8px 0;
 }
@@ -8610,6 +8610,10 @@ button.is-hidden {
   -webkit-flex: none;
   -ms-flex: none;
   flex: none;
+}
+.pt__columns .column__sticky {
+  position: sticky;
+  top: 0;
 }
 .pt__columns.valign-middle > .inner > .column {
   display: flex;
@@ -9303,7 +9307,7 @@ button.is-hidden {
   color: #666666;
 }
 .pt__editable.is-editable > .menu .pt__menu-dropdown > li > a {
-  font: 400 13px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 14px/18px "Open+Sans", arial, helvetica, sans-serif;
   text-decoration: underline;
   color: #2985e0;
   outline: none;
@@ -9780,7 +9784,7 @@ button.is-hidden {
 }
 /* *** FIELD HINT *** */
 .pt__field__hint {
-  font: 400 11px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 12px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #999999;
   font-style: italic;
   text-transform: none;
@@ -9972,7 +9976,7 @@ ul.pt__field__hint li:before {
   text-align: right;
 }
 .pt__grid > ul > li {
-  font: 400 13px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 14px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #666666;
   width: 100%;
   overflow: hidden;
@@ -10662,7 +10666,7 @@ ul.pt__field__hint li:before {
 }
 .pt__gridlist th {
   font-weight: 600;
-  font-size: 13px;
+  font-size: 14px;
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
@@ -10688,7 +10692,7 @@ ul.pt__field__hint li:before {
   vertical-align: top;
   border-top: 1px solid transparent;
   word-wrap: break-word;
-  font-size: 13px;
+  font-size: 14px;
 }
 .pt__gridlist tbody:first-child tr:first-child td,
 .pt__gridlist thead:first-child tr:first-child td,
@@ -10803,7 +10807,7 @@ ul.pt__field__hint li:before {
   margin: 0;
 }
 .pt__gridlist .cm__form__icons-inside .text {
-  font-size: 13px;
+  font-size: 14px;
 }
 /* ******* PARTS: GRIDLIST: ADAPTIVE ******* */
 @media only screen and (max-width: 768px) {
@@ -10995,7 +10999,7 @@ ul.pt__field__hint li:before {
   left: 0;
 }
 .pt__image > .inner > .title .inner {
-  font: 400 13px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 14px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #666666;
   overflow: hidden;
   white-space: nowrap;
@@ -13070,7 +13074,7 @@ ul.pt__field__hint li:before {
 }
 .pt__line-share .label,
 .pt__line-share .count {
-  font: 400 11px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 12px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #666666;
   display: inline-block;
   vertical-align: top;
@@ -13286,7 +13290,7 @@ ul.pt__field__hint li:before {
   margin-top: 1px;
 }
 .pt__list__item > .inner > .content .hint {
-  font: 400 11px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 12px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #999999;
 }
 .pt__list__item.is-nowrap > .inner > .content .title,
@@ -13361,7 +13365,7 @@ ul.pt__field__hint li:before {
   margin: 0;
 }
 .pt__listing .list-info {
-  font: 400 11px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 12px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #999999;
 }
 .pt__listing .list-title {
@@ -13637,7 +13641,7 @@ ul.pt__field__hint li:before {
   color: #666666;
 }
 .pt__menu-dropdown--base > li > a {
-  font: 400 13px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 14px/18px "Open+Sans", arial, helvetica, sans-serif;
   text-decoration: underline;
   color: #2985e0;
   outline: none;
@@ -14020,7 +14024,7 @@ ul.pt__field__hint li:before {
   background: #2985e0;
 }
 .pt__range.theme--default .drag .counter {
-  font: 400 11px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 12px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #999999;
   padding: 0 4px;
   background: rgba(0, 0, 0, 0.7);
@@ -14069,7 +14073,7 @@ ul.pt__field__hint li:before {
   border-style: solid;
 }
 .pt__range.theme--arrows .drag .counter {
-  font: 400 11px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 12px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #999999;
   color: #ffffff;
   text-shadow: 0 0 1px #000000, 0 0 2px #000000;
@@ -14187,7 +14191,7 @@ ul.pt__field__hint li:before {
   background: #2985e0;
 }
 .pt__ruler.is-small .counter {
-  font: 400 13px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 14px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #666666;
 }
 .pt__ruler.is-horizontal {
@@ -14317,7 +14321,7 @@ ul.pt__field__hint li:before {
   text-align: right;
 }
 .pt__toolbar .group > li {
-  font: 400 13px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 14px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #666666;
 }
 .pt__toolbar .group:last-child {
@@ -14910,7 +14914,7 @@ ul.pt__field__hint li:before {
   margin: 0;
 }
 .lt__comment .comment-info {
-  font: 400 11px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 12px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #999999;
   line-height: 14px;
 }
@@ -14943,7 +14947,7 @@ ul.pt__field__hint li:before {
   display: block;
 }
 .lt__comment .comment-actions {
-  font: 400 11px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 12px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #999999;
   line-height: 12px;
 }
@@ -15250,12 +15254,12 @@ ul.pt__field__hint li:before {
   vertical-align: top;
 }
 .lt__forum-post > .inner > .r .date {
-  font: 400 11px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 12px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #999999;
   color: #666666;
 }
 .lt__forum-post > .inner > .r .pt__box-editable {
-  font: 400 11px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 12px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #999999;
   margin: 0;
   color: #666666;
@@ -15310,7 +15314,7 @@ ul.pt__field__hint li:before {
 }
 .lt__post .post-info,
 .lt__post .post-tags {
-  font: 400 11px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 12px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #999999;
 }
 .lt__post .post-info .pt__line-info {
@@ -15626,7 +15630,7 @@ ul.pt__field__hint li:before {
   color: inherit;
 }
 .com__togglebox > dt .pt__links {
-  font-size: 13px;
+  font-size: 14px;
 }
 .com__togglebox > dt .pt__box-editable {
   margin: 0;
@@ -15778,7 +15782,7 @@ ul.pt__field__hint li:before {
   overflow: visible;
   white-space: normal;
   text-overflow: clip;
-  font: 400 13px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 14px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #666666;
   font-weight: 600;
   padding: 3px 0;
@@ -15791,7 +15795,7 @@ ul.pt__field__hint li:before {
   height: 24px;
 }
 .com__togglebox.is-ui > dt .title {
-  font: 400 13px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 14px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #666666;
   font-weight: 600;
   padding: 3px 0;
@@ -16147,7 +16151,7 @@ ul.pt__field__hint li:before {
   border-radius: 2px;
   text-align: center;
   line-height: 21px;
-  font-size: 11px;
+  font-size: 12px;
   cursor: pointer;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -18529,7 +18533,7 @@ ul.pt__field__hint li:before {
   color: #666666;
 }
 .com__tooltip.com__menu-tooltip .pt__menu .pt__menu-dropdown > li > a {
-  font: 400 13px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 14px/18px "Open+Sans", arial, helvetica, sans-serif;
   text-decoration: underline;
   color: #2985e0;
   outline: none;
@@ -18800,7 +18804,7 @@ ul.pt__field__hint li:before {
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
   border: 1px solid #a2a2a2;
   border-radius: 3px;
-  font-size: 13px;
+  font-size: 14px;
 }
 .com__notifications > ul > li:first-child {
   margin: 0;
@@ -18846,7 +18850,7 @@ ul.pt__field__hint li:before {
 .com__notifications > ul > li > .messages > ul {
   margin-bottom: 24px;
   list-style: disc;
-  font: 400 11px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 12px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #999999;
   font-style: italic;
   padding-top: 8px;
@@ -19039,7 +19043,7 @@ ul.pt__field__hint li:before {
   text-align: right;
 }
 .com__pagination__bar ul > li {
-  font: 400 13px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 14px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #666666;
 }
 .com__pagination__bar ul li {
@@ -19063,7 +19067,7 @@ ul.pt__field__hint li:before {
   text-align: center;
   text-decoration: none;
   line-height: 18px;
-  font-size: 13px;
+  font-size: 14px;
   white-space: nowrap;
   cursor: pointer;
   outline: none;
@@ -19601,7 +19605,7 @@ html.ie9 .com__palette .b-range {
   left: 0;
 }
 .com__palette .b-preview-color .b-title {
-  font: 400 13px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 14px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #666666;
   text-align: center;
 }
@@ -19745,7 +19749,7 @@ html.ie9 .com__palette .b-range {
 }
 .com__range__field .min,
 .com__range__field .max {
-  font: 400 11px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 12px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #999999;
   position: absolute;
   top: -8px;
@@ -20544,7 +20548,7 @@ html.ie9 .com__palette .b-range {
   border-bottom: none;
   border-radius: 3px 3px 0 0;
   line-height: 32px;
-  font-size: 13px;
+  font-size: 14px;
   background-color: #fafafa;
   color: #666666;
 }
@@ -20598,7 +20602,7 @@ html.ie9 .com__palette .b-range {
   color: #666666;
 }
 .com__tabset__head-menu .pt__menu-dropdown > li > a {
-  font: 400 13px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 14px/18px "Open+Sans", arial, helvetica, sans-serif;
   text-decoration: underline;
   color: #2985e0;
   outline: none;
@@ -20779,10 +20783,10 @@ html.ie9 .com__palette .b-range {
   display: -ms-flexbox;
   display: flex;
   -ms-flex-pack: center;
-  font: 400 13px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 14px/18px "Open+Sans", arial, helvetica, sans-serif;
   padding: 0 12px;
   line-height: 32px;
-  font-size: 13px;
+  font-size: 14px;
   text-decoration: none;
   color: #666666;
   -webkit-align-items: center;
@@ -21343,7 +21347,7 @@ html.ie9 .com__palette .b-range {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  font: 400 11px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 12px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #999999;
   color: #ffffff;
   line-height: 24px;
@@ -21396,7 +21400,7 @@ html.ie9 .com__palette .b-range {
   flex: 1 1;
 }
 .com__timeselect > .inner > .sep {
-  font: 400 13px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 14px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #666666;
   width: 12px;
   text-align: center;

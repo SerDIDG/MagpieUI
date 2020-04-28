@@ -745,10 +745,13 @@ function(params){
                 'label' : '',
                 'attr' : {},
                 'events' : {},
+                'preventDefault' : null,
                 'constructor' : false,
                 'constructorParams' : {},
                 'callback' : function(){}
             }, actionItem);
+            // Validate
+            actionItem['preventDefault'] = cm.isBoolean(actionItem['preventDefault']) ? actionItem['preventDefault'] : config['preventDefault'];
             // Check access
             isEmpty = !cm.isArray(item['data']) || cm.isEmpty(actionItem['name']);
             isInArray = cm.isArray(item['data']) && cm.inArray(item['data'], actionItem['name']);
@@ -797,7 +800,7 @@ function(params){
             });
         }else{
             cm.addEvent(actionItem['node'], 'click', function(e){
-                config['preventDefault'] && cm.preventDefault(e);
+                actionItem['preventDefault'] && cm.preventDefault(e);
                 item['component'].hide(false);
                 actionItem['callback'](e, actionItem, row);
             });
