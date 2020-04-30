@@ -1785,11 +1785,12 @@ cm.getValue = function(name, node){
     return value;
 };
 
-cm.getSelectedOptions = function(node){
+cm.getSelectedOptions = function(node, index){
     if(!cm.isNode(node)){
         return null;
     }
-    return node.selectedOptions ? node.selectedOptions : node.querySelectorAll('option:checked');
+    var options = node.selectedOptions ? node.selectedOptions : node.querySelectorAll('option:checked');
+    return !cm.isUndefined(index) ? options[index] : options;
 };
 
 cm.getSelectValue = function(node){

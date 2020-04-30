@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.38.9 (2020-04-28 21:19) ************ */
+/*! ************ MagpieUI v3.38.10 (2020-04-30 09:47) ************ */
 @charset "UTF-8";
 
 /*!
@@ -3927,7 +3927,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.38.9';
+@CmVersion: '3.38.10';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -6790,7 +6790,9 @@ input, select, textarea, button {
 }
 
 input[type="file"] {
+    height: @CmForm-FieldHeight;
     width: 100%;
+    line-height: @CmForm-FieldHeight;
     cursor: pointer;
 }
 
@@ -7585,6 +7587,12 @@ button {
         &.is-text {
             dt {
                 padding: 0;
+            }
+        }
+
+        &.is-disabled {
+            dt {
+                color: @CmColor-Font-Disabled;
             }
         }
 
@@ -9090,6 +9098,12 @@ button {
 
     .button-alike {
         margin: @buttonIndent;
+    }
+
+    .hint {
+        margin: @buttonIndent;
+        flex: auto;
+        align-self: center;
     }
 
     /* *** ALIGN *** */
@@ -15879,17 +15893,6 @@ ul.pt__field__hint {
     }
 }
 /* ******* COMPONENTS: FILE INPUT ******* */
-
-.com__file-input {
-    &.size-full {
-        .pt__file-line {
-            .button-alike {
-                width: 100%;
-                margin: 0;
-            }
-        }
-    }
-}
 
 .com__file-input__content {
     position: relative;

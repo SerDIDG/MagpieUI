@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url('//fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700,800');
-/*! ************ MagpieUI v3.38.9 (2020-04-28 21:19) ************ */
+/*! ************ MagpieUI v3.38.10 (2020-04-30 09:47) ************ */
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.6.0
@@ -3521,8 +3521,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.38.9');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.38.9') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.38.9') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.38.9') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.38.9#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.38.10');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.38.10') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.38.10') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.38.10') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.38.10#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -5498,7 +5498,9 @@ button::placeholder {
   font-style: inherit;
 }
 input[type="file"] {
+  height: 32px;
   width: 100%;
+  line-height: 32px;
   cursor: pointer;
 }
 input[type="radio"],
@@ -6603,6 +6605,9 @@ button.is-hidden {
 }
 .form dl.is-text dt {
   padding: 0;
+}
+.form dl.is-disabled dt {
+  color: #999999;
 }
 .form dl.is-hidden {
   display: none;
@@ -8346,6 +8351,11 @@ button.is-hidden {
 .pt__buttons input[type="reset"],
 .pt__buttons button {
   margin: 6px;
+}
+.pt__buttons .hint {
+  margin: 6px;
+  flex: auto;
+  align-self: center;
 }
 .pt__buttons.pull-right > .inner {
   -webkit-justify-content: flex-end;
@@ -17288,19 +17298,6 @@ ul.pt__field__hint li:before {
   opacity: 0;
 }
 /* ******* COMPONENTS: FILE INPUT ******* */
-.com__file-input.size-full .pt__file-line .button-alike,
-.com__file-input.size-full .pt__file-line .button,
-.com__file-input.size-full .pt__file-line .browse-button,
-.com__file-input.size-full .pt__file-line .cm__button-wrapper,
-.com__file-input.size-full .pt__file-line .com__menu,
-.com__file-input.size-full .pt__file-line .com__pagination__bar ul li a,
-.com__file-input.size-full .pt__file-line input[type="button"],
-.com__file-input.size-full .pt__file-line input[type="submit"],
-.com__file-input.size-full .pt__file-line input[type="reset"],
-.com__file-input.size-full .pt__file-line button {
-  width: 100%;
-  margin: 0;
-}
 .com__file-input__content {
   position: relative;
 }

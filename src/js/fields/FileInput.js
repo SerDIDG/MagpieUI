@@ -4,7 +4,7 @@ cm.define('Com.FileInput', {
         'controllerEvents' : true,
         'embedStructure' : 'replace',
         'className' : 'com__file-input',
-        'size' : 'default',                     // default, full, custom
+        'size' : 'full',                     // default, full, custom
         'hiddenType' : 'textarea',
         'file' : null,
         'showLink' : true,

@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.38.9 (2020-04-28 21:18) ************ */
+/*! ************ MagpieUI v3.38.10 (2020-04-30 09:47) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.38.9',
+        '_version' : '3.38.10',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -3384,11 +3384,12 @@ cm.getValue = function(name, node){
     return value;
 };
 
-cm.getSelectedOptions = function(node){
+cm.getSelectedOptions = function(node, index){
     if(!cm.isNode(node)){
         return null;
     }
-    return node.selectedOptions ? node.selectedOptions : node.querySelectorAll('option:checked');
+    var options = node.selectedOptions ? node.selectedOptions : node.querySelectorAll('option:checked');
+    return !cm.isUndefined(index) ? options[index] : options;
 };
 
 cm.getSelectValue = function(node){
@@ -29458,7 +29459,7 @@ cm.define('Com.FileInput', {
         'controllerEvents' : true,
         'embedStructure' : 'replace',
         'className' : 'com__file-input',
-        'size' : 'default',                     // default, full, custom
+        'size' : 'full',                     // default, full, custom
         'hiddenType' : 'textarea',
         'file' : null,
         'showLink' : true,
