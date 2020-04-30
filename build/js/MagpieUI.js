@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.38.10 (2020-04-30 09:47) ************ */
+/*! ************ MagpieUI v3.38.11 (2020-04-30 21:28) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.38.10',
+        '_version' : '3.38.11',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -29974,7 +29974,7 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
                     cm.node('source', {'src' : that.value['url']})
                 );
                 that.nodes['content']['video'].muted = true;
-                that.nodes['content']['video'].autoplay = true;
+                that.nodes['content']['video'].autoplay = false;
                 that.nodes['content']['video'].loop = true;
                 cm.appendChild(that.nodes['content']['video'], that.nodes['content']['image']);
             }else{

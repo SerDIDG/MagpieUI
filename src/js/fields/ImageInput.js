@@ -165,7 +165,7 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
                     cm.node('source', {'src' : that.value['url']})
                 );
                 that.nodes['content']['video'].muted = true;
-                that.nodes['content']['video'].autoplay = true;
+                that.nodes['content']['video'].autoplay = false;
                 that.nodes['content']['video'].loop = true;
                 cm.appendChild(that.nodes['content']['video'], that.nodes['content']['image']);
             }else{
