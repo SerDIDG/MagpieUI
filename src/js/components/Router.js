@@ -168,7 +168,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         cm.forEach(that.routes, function(routeItem){
             isMatch = state['route'].match(routeItem['regexp']);
             if(isMatch){
-                hasAccess = that.checkRouteAccess(routeItem);
+                hasAccess = that.checkRoleAccess(routeItem['access']);
                 if(hasAccess){
                     matchCaptures = isMatch;
                     matchItem = routeItem;
@@ -217,14 +217,34 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
     };
 
     classProto.constructRoute = function(route){
-        var that = this;
+        var that = this,
+            constructor,
+            constructorParams;
         // Export
         that.current = route;
         // Callbacks
         if(route['constructor']){
-            cm.getConstructor(route['constructor'], function(classConstructor){
+            if(cm.isObject(route['constructor'])){
+                cm.forEach(route['constructor'], function(item, key){
+                    if(that.checkRoleAccess(key)){
+                        constructor = item;
+                    }
+                });
+            }else{
+                constructor = route['constructor'];
+            }
+            if(cm.isObject(route['constructorParams'])){
+                cm.forEach(route['constructorParams'], function(item, key){
+                    if(that.checkRoleAccess(key)){
+                        constructorParams = item;
+                    }
+                });
+            }else{
+                constructorParams = route['constructorParams'];
+            }
+            cm.getConstructor(constructor, function(classConstructor){
                 route['controller'] = new classConstructor(
-                    cm.merge(route['constructorParams'], {
+                    cm.merge(constructorParams, {
                         'container' : that.params['container'],
                         'route' : route
                     })
@@ -323,7 +343,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         return route;
     };
 
-    classProto.checkRouteAccess = function(route){
+    classProto.checkRoleAccess = function(role){
         var that = this;
         return true;
     };

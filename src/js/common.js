@@ -99,6 +99,7 @@ cm.isLocalStorage = (function(){try{return 'localStorage' in window && window.lo
 cm.isSessionStorage = (function(){try{return 'sessionStorage' in window && window.sessionStorage !== null;}catch(e){return false;}})();
 cm.isCanvas = !!document.createElement("canvas").getContext;
 cm.hasBeacon = !!(navigator.sendBeacon);
+cm.hasPointerEvent = !!(window.PointerEvent);
 
 /* ******* COMMON ******* */
 

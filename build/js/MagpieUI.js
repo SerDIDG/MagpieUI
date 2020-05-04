@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.38.11 (2020-04-30 21:28) ************ */
+/*! ************ MagpieUI v3.38.12 (2020-05-04 22:47) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.38.11',
+        '_version' : '3.38.12',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -1698,6 +1698,7 @@ cm.isLocalStorage = (function(){try{return 'localStorage' in window && window.lo
 cm.isSessionStorage = (function(){try{return 'sessionStorage' in window && window.sessionStorage !== null;}catch(e){return false;}})();
 cm.isCanvas = !!document.createElement("canvas").getContext;
 cm.hasBeacon = !!(navigator.sendBeacon);
+cm.hasPointerEvent = !!(window.PointerEvent);
 
 /* ******* COMMON ******* */
 
@@ -22101,7 +22102,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         cm.forEach(that.routes, function(routeItem){
             isMatch = state['route'].match(routeItem['regexp']);
             if(isMatch){
-                hasAccess = that.checkRouteAccess(routeItem);
+                hasAccess = that.checkRoleAccess(routeItem['access']);
                 if(hasAccess){
                     matchCaptures = isMatch;
                     matchItem = routeItem;
@@ -22150,14 +22151,34 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
     };
 
     classProto.constructRoute = function(route){
-        var that = this;
+        var that = this,
+            constructor,
+            constructorParams;
         // Export
         that.current = route;
         // Callbacks
         if(route['constructor']){
-            cm.getConstructor(route['constructor'], function(classConstructor){
+            if(cm.isObject(route['constructor'])){
+                cm.forEach(route['constructor'], function(item, key){
+                    if(that.checkRoleAccess(key)){
+                        constructor = item;
+                    }
+                });
+            }else{
+                constructor = route['constructor'];
+            }
+            if(cm.isObject(route['constructorParams'])){
+                cm.forEach(route['constructorParams'], function(item, key){
+                    if(that.checkRoleAccess(key)){
+                        constructorParams = item;
+                    }
+                });
+            }else{
+                constructorParams = route['constructorParams'];
+            }
+            cm.getConstructor(constructor, function(classConstructor){
                 route['controller'] = new classConstructor(
-                    cm.merge(route['constructorParams'], {
+                    cm.merge(constructorParams, {
                         'container' : that.params['container'],
                         'route' : route
                     })
@@ -22256,7 +22277,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         return route;
     };
 
-    classProto.checkRouteAccess = function(route){
+    classProto.checkRoleAccess = function(role){
         var that = this;
         return true;
     };
