@@ -9,30 +9,28 @@
     "url": "https://github.com/SerDIDG"
   },
   "repository": "SerDIDG/MagpieUI",
-  "dependencies": {
-    "animate.css": "^3.6.1",
-    "codemirror": "^5.34.0",
-    "grunt-cli": "^1.3.2",
-    "less": "^2.7.3",
-    "tinycolor2": "^1.4.1"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "grunt": "^0.4.5",
+    "@lodder/time-grunt": "^4.0.0",
+    "animate.css": "^3.7.2",
+    "codemirror": "^5.53.2",
+    "grunt": "^1.1.0",
+    "grunt-cli": "^1.3.2",
     "grunt-contrib-clean": "^2.0.0",
     "grunt-contrib-concat": "~1.0.1",
     "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-cssmin": "~3.0.0",
-    "grunt-contrib-imagemin": "^1.0.1",
+    "grunt-contrib-imagemin": "^3.1.0",
     "grunt-contrib-jshint": "^2.0.0",
-    "grunt-contrib-less": "~1.0.1",
-    "grunt-contrib-uglify": "~0.5.0",
+    "grunt-contrib-less": "^2.0.0",
+    "grunt-contrib-uglify": "^4.0.1",
     "grunt-contrib-watch": "~1.1.0",
     "grunt-less-imports": "^1.1.0",
     "grunt-lessvars": "^0.3.1",
     "grunt-replace": "^1.0.1",
     "grunt-svg-css": "^0.2.9",
-    "grunt-svgmin": "^3.3.0",
-    "load-grunt-tasks": "~3.5.2",
-    "time-grunt": "^2.0.0"
+    "less": "^2.7.3",
+    "load-grunt-tasks": "^4.0.0",
+    "tinycolor2": "^1.4.1"
   }
 }

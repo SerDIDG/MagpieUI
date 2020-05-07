@@ -2,7 +2,7 @@ module.exports = function(grunt) {
     // Load all grunt tasks
     require('load-grunt-tasks')(grunt);
     // Display how match time it took to build each task
-    require('time-grunt')(grunt);
+    require('@lodder/time-grunt')(grunt);
     // Project configuration.
     grunt.initConfig({
         pkg : grunt.file.readJSON('package.json'),

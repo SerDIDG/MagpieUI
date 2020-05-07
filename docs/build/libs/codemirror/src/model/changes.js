@@ -15,7 +15,7 @@ import { changeEnd, computeSelAfterChange } from "./change_measurement.js"
 import { isWholeLineUpdate, linkedDocs, updateDoc } from "./document_data.js"
 import { addChangeToHistory, historyChangeFromChange, mergeOldSpans, pushSelectionToHistory } from "./history.js"
 import { Range, Selection } from "./selection.js"
-import { setSelection, setSelectionNoUndo } from "./selection_updates.js"
+import { setSelection, setSelectionNoUndo, skipAtomic } from "./selection_updates.js"
 
 // UPDATING
 
@@ -38,7 +38,10 @@ function filterChange(doc, change, update) {
   signal(doc, "beforeChange", doc, obj)
   if (doc.cm) signal(doc.cm, "beforeChange", doc.cm, obj)
 
-  if (obj.canceled) return null
+  if (obj.canceled) {
+    if (doc.cm) doc.cm.curOp.updateInput = 2
+    return null
+  }
   return {from: obj.from, to: obj.to, text: obj.text, origin: obj.origin}
 }
 
@@ -85,7 +88,8 @@ function makeChangeInner(doc, change) {
 
 // Revert a change stored in a document's history.
 export function makeChangeFromHistory(doc, type, allowSelectionOnly) {
-  if (doc.cm && doc.cm.state.suppressEdits && !allowSelectionOnly) return
+  let suppress = doc.cm && doc.cm.state.suppressEdits
+  if (suppress && !allowSelectionOnly) return
 
   let hist = doc.history, event, selAfter = doc.sel
   let source = type == "undo" ? hist.done : hist.undone, dest = type == "undo" ? hist.undone : hist.done
@@ -110,8 +114,10 @@ export function makeChangeFromHistory(doc, type, allowSelectionOnly) {
         return
       }
       selAfter = event
-    }
-    else break
+    } else if (suppress) {
+      source.push(event)
+      return
+    } else break
   }
 
   // Build up a reverse change object to add to the opposite history
@@ -196,6 +202,9 @@ function makeChangeSingleDoc(doc, change, selAfter, spans) {
   if (doc.cm) makeChangeSingleDocInEditor(doc.cm, change, spans)
   else updateDoc(doc, change, spans)
   setSelectionNoUndo(doc, selAfter, sel_dontScroll)
+
+  if (doc.cantEdit && skipAtomic(doc, Pos(doc.firstLine(), 0)))
+    doc.cantEdit = false
 }
 
 // Handle the interaction of a change to a document with the editor

@@ -39,7 +39,7 @@ export class LineWidget {
     this.height = null
     let diff = widgetHeight(this) - oldH
     if (!diff) return
-    updateLineHeight(line, line.height + diff)
+    if (!lineIsHidden(this.doc, line)) updateLineHeight(line, line.height + diff)
     if (cm) {
       runInOp(cm, () => {
         cm.curOp.forceUpdate = true
@@ -73,6 +73,6 @@ export function addLineWidget(doc, handle, node, options) {
     }
     return true
   })
-  signalLater(cm, "lineWidgetAdded", cm, widget, typeof handle == "number" ? handle : lineNo(handle))
+  if (cm) signalLater(cm, "lineWidgetAdded", cm, widget, typeof handle == "number" ? handle : lineNo(handle))
   return widget
 }
