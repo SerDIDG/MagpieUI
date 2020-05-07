@@ -33,6 +33,6 @@
     "grunt-svg-css": "^0.2.9",
     "grunt-svgmin": "^3.3.0",
     "load-grunt-tasks": "~3.3.0",
-    "time-grunt": "^1.4.0"
+    "time-grunt": "^2.0.0"
   }
 }
