@@ -358,7 +358,7 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
             that.triggerEvent('onSelect');
             that.triggerEvent('onSet');
             that.triggerEvent('onChange');
-        };
+        }
         return that;
     };
 

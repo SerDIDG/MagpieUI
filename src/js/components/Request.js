@@ -99,6 +99,7 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         var that = this;
         if(!that.isDestructed){
             that.isDestructed = true;
+            that.components['overlay'] && that.components['overlay'].destruct();
             that.removeFromStack();
         }
         return that;
@@ -137,9 +138,11 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
                 || that.params['overlayContainer']
                 || document.body;
         }
-        cm.getConstructor(that.params['overlayConstructor'], function(classConstructor){
-            that.components['overlay'] = new classConstructor(that.params['overlayParams']);
-        });
+        if(that.params['showOverlay']){
+            cm.getConstructor(that.params['overlayConstructor'], function(classConstructor){
+                that.components['overlay'] = new classConstructor(that.params['overlayParams']);
+            });
+        }
         // Append
         that.embedStructure(that.nodes['container']);
         return that;

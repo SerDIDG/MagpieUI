@@ -1908,15 +1908,31 @@ cm.isMobile = function(){
 };
 
 cm.decode = (function(){
-    var node = document.createElement('textarea');
-    return function(str){
-        if(str){
-            node.innerHTML = str;
+    var node = cm.node('textarea', {'class' : 'cm__textarea-clipboard'});
+    return function(text){
+        if(!cm.isEmpty(text)){
+            node.innerHTML = text;
             return node.value;
         }else{
             return '';
         }
 
+    };
+})();
+
+cm.copyToClipboard = (function(){
+    var node = cm.node('textarea', {'class' : 'cm__textarea-clipboard'}),
+        successful;
+    cm.insertFirst(node, document.body);
+    return function(text){
+        if(!cm.isEmpty(text)){
+            node.value = text;
+            node.select();
+            successful = document.execCommand('copy');
+            if(!successful){
+                cm.errorLog({'type' : 'error', 'name' : 'cm.copyToClipboard', 'message' : 'Unable to copy text to clipboard!'});
+            }
+        }
     };
 })();
 

@@ -1,11 +1,1 @@
-<svg id="position-bottomcenter.svg" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12">
-  <defs>
-    <style>
-      .cls-1 {
-        fill: #5e5e5e;
-        fill-rule: evenodd;
-      }
-    </style>
-  </defs>
-  <path id="icon" class="cls-1" d="M6,10l6,6,6-6L16.5,8.5,13,12V4H11v8L7.5,8.5Z" transform="translate(-6 -4)"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"><path d="M0 6l6 6 6-6-1.5-1.5L7 8V0H5v8L1.5 4.5z" fill="#5e5e5e" fill-rule="evenodd"/></svg>

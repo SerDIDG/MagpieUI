@@ -89,12 +89,13 @@ function(params){
         that.triggerEvent('onClose')
             .triggerEvent('onCloseEnd');
         if(that.params['removeOnClose']){
-            cm.remove(that.nodes['container']);
+            that.remove();
         }
     };
 
-    var openProcess = function(isImmediately){
+    var openProcess = function(isImmediately, callback){
         that.isOpen = true;
+        callback = cm.isFunction(callback) ? callback : function(){};
         // Set immediately animation hack
         if(isImmediately){
             cm.addClass(that.nodes['container'], 'is-immediately');
@@ -110,16 +111,19 @@ function(params){
             that.openInterval = setTimeout(function(){
                 cm.removeClass(that.nodes['container'], 'is-immediately');
                 triggerOpenEvents();
+                callback();
             }, 5);
         }else{
             that.openInterval = setTimeout(function(){
                 triggerOpenEvents();
+                callback();
             }, that.params['duration'] + 5);
         }
     };
 
-    var closeProcess = function(isImmediately){
+    var closeProcess = function(isImmediately, callback){
         that.isOpen = false;
+        callback = cm.isFunction(callback) ? callback : function(){};
         // Set immediately animation hack
         if(isImmediately){
             cm.addClass(that.nodes['container'], 'is-immediately');
@@ -132,10 +136,12 @@ function(params){
             that.openInterval = setTimeout(function(){
                 cm.removeClass(that.nodes['container'], 'is-immediately');
                 triggerCloseEvents();
+                callback();
             }, 5);
         }else{
             that.openInterval = setTimeout(function(){
                 triggerCloseEvents();
+                callback();
             }, that.params['duration'] + 5);
         }
     };
@@ -156,11 +162,11 @@ function(params){
         return that;
     };
 
-    that.close = function(isImmediately){
+    that.close = function(isImmediately, callback){
         that.openInterval && clearTimeout(that.openInterval);
         that.delayInterval && clearTimeout(that.delayInterval);
         if(that.isOpen){
-            closeProcess(isImmediately);
+            closeProcess(isImmediately, callback);
         }
         return that;
     };
@@ -175,13 +181,13 @@ function(params){
 
     that.remove = function(){
         if(that.isOpen){
-            that.close();
-            if(!that.params['removeOnClose']){
-                setTimeout(function(){
-                    cm.remove(that.nodes['container']);
-                }, that.params['duration'] + 5);
-            }
+            that.close(function(){
+                if(!that.params['removeOnClose']){
+                    that.remove();
+                }
+            });
         }else{
+            that.params['destructOnRemove'] && that.destruct();
             cm.remove(that.nodes['container']);
         }
         return that;

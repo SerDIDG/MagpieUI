@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.38.12 (2020-05-07 07:34) ************ */
+/*! ************ MagpieUI v3.38.13 (2020-05-14 21:57) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.38.12',
+        '_version' : '3.38.13',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -3507,15 +3507,31 @@ cm.isMobile = function(){
 };
 
 cm.decode = (function(){
-    var node = document.createElement('textarea');
-    return function(str){
-        if(str){
-            node.innerHTML = str;
+    var node = cm.node('textarea', {'class' : 'cm__textarea-clipboard'});
+    return function(text){
+        if(!cm.isEmpty(text)){
+            node.innerHTML = text;
             return node.value;
         }else{
             return '';
         }
 
+    };
+})();
+
+cm.copyToClipboard = (function(){
+    var node = cm.node('textarea', {'class' : 'cm__textarea-clipboard'}),
+        successful;
+    cm.insertFirst(node, document.body);
+    return function(text){
+        if(!cm.isEmpty(text)){
+            node.value = text;
+            node.select();
+            successful = document.execCommand('copy');
+            if(!successful){
+                cm.errorLog({'type' : 'error', 'name' : 'cm.copyToClipboard', 'message' : 'Unable to copy text to clipboard!'});
+            }
+        }
     };
 })();
 
@@ -14179,18 +14195,18 @@ function(params){
             // Remove close event on Esc press
             cm.removeEvent(window, 'keydown', windowClickEvent);
             cm.removeEvent(window, 'resize', windowResizeEvent);
-            // Show / Hide Document Scroll
-            if(!that.params['documentScroll']){
-                cm.removeClass(cm.getDocumentHtml(), 'cm__scroll--none');
-            }
             // Animate
             cm.removeClass(nodes['container'], 'is-open', true);
             cm.removeClass(nodes['window'], 'is-open', true);
             that.openInterval && clearTimeout(that.openInterval);
             that.openInterval = setTimeout(function(){
                 clearResizeInterval();
-                nodes['container'].style.display = 'none';
+                // Show / Hide Document Scroll
+                if(!that.params['documentScroll']){
+                    cm.removeClass(cm.getDocumentHtml(), 'cm__scroll--none');
+                }
                 // Remove Window
+                nodes['container'].style.display = 'none';
                 that.params['removeOnClose'] && remove();
                 params['onEnd']();
                 // Close Event
@@ -20171,12 +20187,13 @@ function(params){
         that.triggerEvent('onClose')
             .triggerEvent('onCloseEnd');
         if(that.params['removeOnClose']){
-            cm.remove(that.nodes['container']);
+            that.remove();
         }
     };
 
-    var openProcess = function(isImmediately){
+    var openProcess = function(isImmediately, callback){
         that.isOpen = true;
+        callback = cm.isFunction(callback) ? callback : function(){};
         // Set immediately animation hack
         if(isImmediately){
             cm.addClass(that.nodes['container'], 'is-immediately');
@@ -20192,16 +20209,19 @@ function(params){
             that.openInterval = setTimeout(function(){
                 cm.removeClass(that.nodes['container'], 'is-immediately');
                 triggerOpenEvents();
+                callback();
             }, 5);
         }else{
             that.openInterval = setTimeout(function(){
                 triggerOpenEvents();
+                callback();
             }, that.params['duration'] + 5);
         }
     };
 
-    var closeProcess = function(isImmediately){
+    var closeProcess = function(isImmediately, callback){
         that.isOpen = false;
+        callback = cm.isFunction(callback) ? callback : function(){};
         // Set immediately animation hack
         if(isImmediately){
             cm.addClass(that.nodes['container'], 'is-immediately');
@@ -20214,10 +20234,12 @@ function(params){
             that.openInterval = setTimeout(function(){
                 cm.removeClass(that.nodes['container'], 'is-immediately');
                 triggerCloseEvents();
+                callback();
             }, 5);
         }else{
             that.openInterval = setTimeout(function(){
                 triggerCloseEvents();
+                callback();
             }, that.params['duration'] + 5);
         }
     };
@@ -20238,11 +20260,11 @@ function(params){
         return that;
     };
 
-    that.close = function(isImmediately){
+    that.close = function(isImmediately, callback){
         that.openInterval && clearTimeout(that.openInterval);
         that.delayInterval && clearTimeout(that.delayInterval);
         if(that.isOpen){
-            closeProcess(isImmediately);
+            closeProcess(isImmediately, callback);
         }
         return that;
     };
@@ -20257,13 +20279,13 @@ function(params){
 
     that.remove = function(){
         if(that.isOpen){
-            that.close();
-            if(!that.params['removeOnClose']){
-                setTimeout(function(){
-                    cm.remove(that.nodes['container']);
-                }, that.params['duration'] + 5);
-            }
+            that.close(function(){
+                if(!that.params['removeOnClose']){
+                    that.remove();
+                }
+            });
         }else{
+            that.params['destructOnRemove'] && that.destruct();
             cm.remove(that.nodes['container']);
         }
         return that;
@@ -21542,6 +21564,7 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         var that = this;
         if(!that.isDestructed){
             that.isDestructed = true;
+            that.components['overlay'] && that.components['overlay'].destruct();
             that.removeFromStack();
         }
         return that;
@@ -21580,9 +21603,11 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
                 || that.params['overlayContainer']
                 || document.body;
         }
-        cm.getConstructor(that.params['overlayConstructor'], function(classConstructor){
-            that.components['overlay'] = new classConstructor(that.params['overlayParams']);
-        });
+        if(that.params['showOverlay']){
+            cm.getConstructor(that.params['overlayConstructor'], function(classConstructor){
+                that.components['overlay'] = new classConstructor(that.params['overlayParams']);
+            });
+        }
         // Append
         that.embedStructure(that.nodes['container']);
         return that;
@@ -26586,7 +26611,7 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
             that.triggerEvent('onSelect');
             that.triggerEvent('onSet');
             that.triggerEvent('onChange');
-        };
+        }
         return that;
     };
 

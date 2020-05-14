@@ -451,18 +451,18 @@ function(params){
             // Remove close event on Esc press
             cm.removeEvent(window, 'keydown', windowClickEvent);
             cm.removeEvent(window, 'resize', windowResizeEvent);
-            // Show / Hide Document Scroll
-            if(!that.params['documentScroll']){
-                cm.removeClass(cm.getDocumentHtml(), 'cm__scroll--none');
-            }
             // Animate
             cm.removeClass(nodes['container'], 'is-open', true);
             cm.removeClass(nodes['window'], 'is-open', true);
             that.openInterval && clearTimeout(that.openInterval);
             that.openInterval = setTimeout(function(){
                 clearResizeInterval();
-                nodes['container'].style.display = 'none';
+                // Show / Hide Document Scroll
+                if(!that.params['documentScroll']){
+                    cm.removeClass(cm.getDocumentHtml(), 'cm__scroll--none');
+                }
                 // Remove Window
+                nodes['container'].style.display = 'none';
                 that.params['removeOnClose'] && remove();
                 params['onEnd']();
                 // Close Event

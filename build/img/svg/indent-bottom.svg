@@ -1,16 +1,1 @@
-<svg id="indent-bottom.svg" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-  <defs>
-    <style>
-      .cls-1 {
-        fill: #2d6ec9;
-      }
-
-      .cls-2 {
-        fill: #5e5e5e;
-        fill-rule: evenodd;
-      }
-    </style>
-  </defs>
-  <rect id="Rounded_Rectangle_12" data-name="Rounded Rectangle 12" class="cls-1" y="12" width="16" height="4"/>
-  <path class="cls-2" d="M4,4H20V17H4V4ZM5,5H19V16H5V5Z" transform="translate(-4 -4)"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><path data-name="Rounded Rectangle 12" fill="#2d6ec9" d="M0 12h16v4H0z"/><path d="M0 0h16v13H0V0zm1 1h14v11H1V1z" fill="#5e5e5e" fill-rule="evenodd"/></svg>

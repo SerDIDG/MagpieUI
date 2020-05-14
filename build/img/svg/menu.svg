@@ -1,11 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-  <defs>
-    <style>
-      .cls-1 {
-        fill: #5e5e5e;
-        fill-rule: evenodd;
-      }
-    </style>
-  </defs>
-  <path id="menu.svg" class="cls-1" d="M1.931,4H22V6H1.931V4Zm0,7H22v2H1.931V11Zm0,7H22v2H1.931V18Z" transform="translate(0.031)"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M1.962 4h20.069v2H1.962V4zm0 7h20.069v2H1.962v-2zm0 7h20.069v2H1.962v-2z" fill="#5e5e5e" fill-rule="evenodd"/></svg>
