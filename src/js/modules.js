@@ -745,7 +745,7 @@ Mod['Stack'] = {
     },
     'getStackNode' : function(){
         var that = this;
-        return that._stackItem['node'];
+        return that._stackItem ? that._stackItem['node'] : null;
     }
 };
 

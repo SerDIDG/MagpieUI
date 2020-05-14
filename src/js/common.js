@@ -616,7 +616,7 @@ cm.reducePath = function(name, obj){
     }
     name = name.toString().split('.');
     return name.reduce(function(object, property){
-        return object[property];
+        return cm.isUndefined(object) ? undefined : object[property];
     }, obj);
 };
 
