@@ -42,6 +42,7 @@ cm.define('Com.AbstractFormField', {
         'helpType' : 'tooltip', // tooltip | container
         'icon' : false,
         'placeholder' : '',
+        'autocomplete' : null,
         'showPlaceholderAbove' : false,
         'title' : '',
         'hint' : '',
@@ -150,6 +151,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.params['constructorParams']['min'] = that.params['min'];
         that.params['constructorParams']['max'] = that.params['max'];
         that.params['constructorParams']['placeholder'] = !that.params['showPlaceholderAbove'] ? that.params['placeholder'] : '';
+        that.params['constructorParams']['autocomplete'] = that.params['autocomplete'];
         that.params['constructorParams']['title'] = that.params['title'];
         that.params['constructorParams']['ajax'] = that.params['ajax'];
         // Components
@@ -327,6 +329,9 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             if(cm.isEmpty(that.params['label']) && cm.isEmpty(that.params['title'])){
                 that.nodes['content']['input'].setAttribute('aria-label', that.params['placeholder']);
             }
+        }
+        if(!cm.isEmpty(that.params['autocomplete'])){
+            that.nodes['content']['input'].setAttribute('autocomplete', that.params['autocomplete']);
         }
         if(!cm.isEmpty(that.params['title'])){
             that.nodes['content']['input'].setAttribute('title', that.params['title']);

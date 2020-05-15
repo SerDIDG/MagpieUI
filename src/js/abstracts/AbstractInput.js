@@ -26,6 +26,7 @@ cm.define('Com.AbstractInput', {
         'id' : '',
         'title' : '',
         'placeholder' : '',
+        'autocomplete' : null,
         'ariaLabel' : '',
         'disabled' : false,
         'className' : '',
@@ -157,6 +158,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
             that.params['min'] = that.params['node'].getAttribute('min') || that.params['min'];
             that.params['max'] = that.params['node'].getAttribute('max') || that.params['max'];
             that.params['placeholder'] = that.params['node'].getAttribute('placeholder') || that.params['placeholder'];
+            that.params['autocomplete'] = that.params['node'].getAttribute('autocomplete') || that.params['autocomplete'];
             that.params['ariaLabel'] = that.params['node'].getAttribute('aria-label') || that.params['ariaLabel'];
         }
         that.triggerEvent('onValidateParams');

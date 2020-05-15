@@ -49,6 +49,7 @@ cm.define('Com.Autocomplete', {
         'suggestionParams' : {},
         'suggestionQueryName' : 'text',
         'responseKey' : 'data',                                     // Instead of using filter callback, you can provide response array key
+        'preloadData' : false,
         'ajax' : {
             'type' : 'json',
             'method' : 'get',
@@ -83,6 +84,7 @@ function(params){
     that.ajaxHandler = null;
     that.isOpen = false;
     that.isAjax = false;
+    that.ajaxParams = {};
     that.requestDelay = null;
 
     that.registeredItems = [];
@@ -196,6 +198,7 @@ function(params){
                 break;
             // Arrow Down
             case 40:
+                cm.log(that.registeredItems);
                 listLength = that.registeredItems.length;
                 if(listLength){
                     if(that.selectedItemIndex === null){
@@ -213,7 +216,8 @@ function(params){
 
     var requestHandler = function(){
         var query = that.params['node'].value.trim(),
-            config = cm.clone(that.params['ajax']);
+            config = cm.clone(that.params['ajax']),
+            delay = that.params['showListOnEmpty'] && cm.isEmpty(query) ? 0 : that.params['delay'];
         // Clear tooltip ajax/static delay and filtered items list
         that.valueText = query;
         that.requestDelay && clearTimeout(that.requestDelay);
@@ -223,7 +227,12 @@ function(params){
         // Request
         if(that.params['showListOnEmpty'] || query.length >= that.params['minLength']){
             that.requestDelay = setTimeout(function(){
-                if(that.isAjax){
+                if(that.params['preloadData'] && !cm.isEmpty(that.ajaxParams['data'])){
+                    that.callbacks.data(that, {
+                        'data' : that.ajaxParams['data'],
+                        'query' : query
+                    });
+                }else if(that.isAjax){
                     if(that.params['showLoader']){
                         that.callbacks.renderLoader(that, {
                             'config' : config,
@@ -241,7 +250,7 @@ function(params){
                         'query' : query
                     });
                 }
-            }, that.params['delay']);
+            }, delay);
         }else{
             that.hide();
         }
@@ -365,6 +374,8 @@ function(params){
         }, params);
         // Validate config
         params['config'] = that.callbacks.prepare(that, params);
+        // Export
+        that.ajaxParams = params;
         // Return ajax handler (XMLHttpRequest) to providing abort method.
         return cm.ajax(
             cm.merge(params['config'], {

@@ -107,6 +107,9 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
                 that.nodes['content']['icon'].title = that.params['placeholder'];
             }
         }
+        if(!cm.isEmpty(that.params['autocomplete'])){
+            that.nodes['content']['input'].setAttribute('autocomplete', that.params['autocomplete']);
+        }
         if(!cm.isEmpty(that.params['title'])){
             that.nodes['content']['input'].title = that.params['title'];
             if(that.nodes['content']['icon']){

@@ -297,6 +297,8 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
     classProto.prepareHref = function(route){
         var that = this,
             baseUrl = that.prepareBaseUrl(true);
+        // Remove lead point
+        route = route.replace(new RegExp('^\\.'), '');
         return window.location.protocol + baseUrl + route;
     };
 

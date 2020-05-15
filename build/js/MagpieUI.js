@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.38.14 (2020-05-14 22:56) ************ */
+/*! ************ MagpieUI v3.38.15 (2020-05-16 02:10) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.38.14',
+        '_version' : '3.38.15',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -7545,6 +7545,7 @@ cm.define('Com.AbstractInput', {
         'id' : '',
         'title' : '',
         'placeholder' : '',
+        'autocomplete' : null,
         'ariaLabel' : '',
         'disabled' : false,
         'className' : '',
@@ -7676,6 +7677,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
             that.params['min'] = that.params['node'].getAttribute('min') || that.params['min'];
             that.params['max'] = that.params['node'].getAttribute('max') || that.params['max'];
             that.params['placeholder'] = that.params['node'].getAttribute('placeholder') || that.params['placeholder'];
+            that.params['autocomplete'] = that.params['node'].getAttribute('autocomplete') || that.params['autocomplete'];
             that.params['ariaLabel'] = that.params['node'].getAttribute('aria-label') || that.params['ariaLabel'];
         }
         that.triggerEvent('onValidateParams');
@@ -8274,6 +8276,7 @@ cm.define('Com.AbstractFormField', {
         'helpType' : 'tooltip', // tooltip | container
         'icon' : false,
         'placeholder' : '',
+        'autocomplete' : null,
         'showPlaceholderAbove' : false,
         'title' : '',
         'hint' : '',
@@ -8382,6 +8385,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.params['constructorParams']['min'] = that.params['min'];
         that.params['constructorParams']['max'] = that.params['max'];
         that.params['constructorParams']['placeholder'] = !that.params['showPlaceholderAbove'] ? that.params['placeholder'] : '';
+        that.params['constructorParams']['autocomplete'] = that.params['autocomplete'];
         that.params['constructorParams']['title'] = that.params['title'];
         that.params['constructorParams']['ajax'] = that.params['ajax'];
         // Components
@@ -8559,6 +8563,9 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             if(cm.isEmpty(that.params['label']) && cm.isEmpty(that.params['title'])){
                 that.nodes['content']['input'].setAttribute('aria-label', that.params['placeholder']);
             }
+        }
+        if(!cm.isEmpty(that.params['autocomplete'])){
+            that.nodes['content']['input'].setAttribute('autocomplete', that.params['autocomplete']);
         }
         if(!cm.isEmpty(that.params['title'])){
             that.nodes['content']['input'].setAttribute('title', that.params['title']);
@@ -22256,6 +22263,8 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
     classProto.prepareHref = function(route){
         var that = this,
             baseUrl = that.prepareBaseUrl(true);
+        // Remove lead point
+        route = route.replace(new RegExp('^\\.'), '');
         return window.location.protocol + baseUrl + route;
     };
 
@@ -26949,6 +26958,7 @@ cm.define('Com.Autocomplete', {
         'suggestionParams' : {},
         'suggestionQueryName' : 'text',
         'responseKey' : 'data',                                     // Instead of using filter callback, you can provide response array key
+        'preloadData' : false,
         'ajax' : {
             'type' : 'json',
             'method' : 'get',
@@ -26983,6 +26993,7 @@ function(params){
     that.ajaxHandler = null;
     that.isOpen = false;
     that.isAjax = false;
+    that.ajaxParams = {};
     that.requestDelay = null;
 
     that.registeredItems = [];
@@ -27096,6 +27107,7 @@ function(params){
                 break;
             // Arrow Down
             case 40:
+                cm.log(that.registeredItems);
                 listLength = that.registeredItems.length;
                 if(listLength){
                     if(that.selectedItemIndex === null){
@@ -27113,7 +27125,8 @@ function(params){
 
     var requestHandler = function(){
         var query = that.params['node'].value.trim(),
-            config = cm.clone(that.params['ajax']);
+            config = cm.clone(that.params['ajax']),
+            delay = that.params['showListOnEmpty'] && cm.isEmpty(query) ? 0 : that.params['delay'];
         // Clear tooltip ajax/static delay and filtered items list
         that.valueText = query;
         that.requestDelay && clearTimeout(that.requestDelay);
@@ -27123,7 +27136,12 @@ function(params){
         // Request
         if(that.params['showListOnEmpty'] || query.length >= that.params['minLength']){
             that.requestDelay = setTimeout(function(){
-                if(that.isAjax){
+                if(that.params['preloadData'] && !cm.isEmpty(that.ajaxParams['data'])){
+                    that.callbacks.data(that, {
+                        'data' : that.ajaxParams['data'],
+                        'query' : query
+                    });
+                }else if(that.isAjax){
                     if(that.params['showLoader']){
                         that.callbacks.renderLoader(that, {
                             'config' : config,
@@ -27141,7 +27159,7 @@ function(params){
                         'query' : query
                     });
                 }
-            }, that.params['delay']);
+            }, delay);
         }else{
             that.hide();
         }
@@ -27265,6 +27283,8 @@ function(params){
         }, params);
         // Validate config
         params['config'] = that.callbacks.prepare(that, params);
+        // Export
+        that.ajaxParams = params;
         // Return ajax handler (XMLHttpRequest) to providing abort method.
         return cm.ajax(
             cm.merge(params['config'], {
@@ -30247,6 +30267,9 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
             if(that.nodes['content']['icon']){
                 that.nodes['content']['icon'].title = that.params['placeholder'];
             }
+        }
+        if(!cm.isEmpty(that.params['autocomplete'])){
+            that.nodes['content']['input'].setAttribute('autocomplete', that.params['autocomplete']);
         }
         if(!cm.isEmpty(that.params['title'])){
             that.nodes['content']['input'].title = that.params['title'];
