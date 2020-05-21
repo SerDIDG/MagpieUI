@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.38.15 (2020-05-16 02:10) ************ */
+/*! ************ MagpieUI v3.38.16 (2020-05-21 22:30) ************ */
 
 @charset "UTF-8";
 /*!
@@ -4510,7 +4510,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.38.15';
+@CmVersion: '3.38.16';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -10713,9 +10713,10 @@ button {
 }
 
 .pt__field-label {
+    @padding: max(round((@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2), 0);
     display: block;
     margin: 0;
-    padding: ((@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2) 0;
+    padding: @padding 0;
     line-height: @CmFont-Base-LineHeight;
 }
 
@@ -10740,14 +10741,14 @@ button {
 }
 
 ul.pt__field__hint {
+    @padding: max(min(round((@CmForm-FieldIndent - @CmFont-Base-LineHeightSmall) / 2), 4px), 0);
     margin: 0;
-    padding: 6px 0 2px;
+    padding: @padding 0;
     display: block;
     list-style: none;
 
     li {
         margin-top: 4px;
-        line-height: 13px;
 
         &:first-child {
             margin: 0;
@@ -10767,6 +10768,7 @@ ul.pt__field__hint {
         .cm__font--placeholder;
         .cm__text-nowrap;
         position: absolute;
+        z-index: 2;
         padding: 0 @CmInput-Padding;
         cursor: text;
         pointer-events: none;

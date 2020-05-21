@@ -556,7 +556,7 @@ function(params){
             messages = [];
         cm.forEach(errors, function(item, key){
             // Get field
-            fieldName = item['field'] || key;
+            fieldName = item && item['field'] ? item['field'] : key;
             field = that.getField(fieldName);
             // Render field messages
             if(cm.isObject(item)){

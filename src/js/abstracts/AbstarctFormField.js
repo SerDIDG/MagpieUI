@@ -286,7 +286,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         switch(that.nodeTagName){
             case 'select' :
                 cm.forEach(options, function(item){
-                    option = cm.node('option', {'value' : item['value'], 'innerHTML' : item['text']});
+                    option = cm.node('option', {'value' : item['value'], 'disabled' : item['disabled'], 'innerHTML' : item['text']});
                     cm.appendChild(option, that.nodes['content']['input']);
                 });
                 cm.setSelect(that.nodes['content']['input'], that.params['value']);

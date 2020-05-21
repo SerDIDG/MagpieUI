@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.38.15 (2020-05-16 02:10) ************ */
+/*! ************ MagpieUI v3.38.16 (2020-05-21 22:30) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.38.15',
+        '_version' : '3.38.16',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -8520,7 +8520,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         switch(that.nodeTagName){
             case 'select' :
                 cm.forEach(options, function(item){
-                    option = cm.node('option', {'value' : item['value'], 'innerHTML' : item['text']});
+                    option = cm.node('option', {'value' : item['value'], 'disabled' : item['disabled'], 'innerHTML' : item['text']});
                     cm.appendChild(option, that.nodes['content']['input']);
                 });
                 cm.setSelect(that.nodes['content']['input'], that.params['value']);
@@ -10144,7 +10144,7 @@ function(params){
             messages = [];
         cm.forEach(errors, function(item, key){
             // Get field
-            fieldName = item['field'] || key;
+            fieldName = item && item['field'] ? item['field'] : key;
             field = that.getField(fieldName);
             // Render field messages
             if(cm.isObject(item)){
@@ -31466,6 +31466,7 @@ cm.define('Com.Select', {
         'title' : false,                        // Title text. Will be shown on hover.
         'options' : [],                         // Listing of options, for rendering through java-script. Example: [{'value' : 'foo', 'text' : 'Bar'}].
         'selected' : 0,                         // Deprecated, use 'value' parameter instead.
+        'setInitialValue' : true,
         'value' : null,                         // Option value / array of option values.
         'defaultValue' : null,
         'disabled' : false,
@@ -31529,7 +31530,7 @@ function(params){
         }else{
             if(that.params['value'] && options[that.params['value']]){
                 set(options[that.params['value']]);
-            }else if(optionsLength){
+            }else if(that.params['setInitialValue'] && optionsLength){
                 set(optionsList[0]);
             }
         }
@@ -31791,6 +31792,7 @@ function(params){
         item = cm.merge({
             'hidden' : false,
             'selected' : false,
+            'disabled' : false,
             'value' : '',
             'text' : '',
             'className' : '',
@@ -31805,11 +31807,14 @@ function(params){
         item['option'] = cm.node('option', {'value' : item['value'], 'innerHTML' : item['text']});
         // Label onlick event
         cm.addEvent(item['node'], 'click', function(){
-            if(!that.disabled){
+            if(!item['disabled'] && !that.disabled){
                 set(item, true);
             }
             !that.params['multiple'] && components['menu'].hide(false);
         });
+        // Hidden / Disabled
+        item['hidden'] && cm.addClass(item['node'], 'hidden');
+        item['disabled'] && cm.addClass(item['node'], 'disabled');
         // Append
         if(group){
             group['items'].appendChild(item['node']);
@@ -31880,7 +31885,6 @@ function(params){
 
     var setMultiple = function(option){
         var value = !cm.isUndefined(option['value'])? option['value'] : option['text'];
-
         if(option['selected']){
             deselectMultiple(option);
         }else{
