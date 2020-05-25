@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.38.16 (2020-05-21 22:30) ************ */
+/*! ************ MagpieUI v3.38.17 (2020-05-25 05:14) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.38.16',
+        '_version' : '3.38.17',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -2139,6 +2139,12 @@ cm.objectReplace = function(o, vars){
         }
     });
     return newO;
+};
+
+cm.getDiffCompare = function(item1, item2){
+    var newO = {};
+    cm.diffCompare(newO, item1, item2, 'key');
+    return newO['key'];
 };
 
 cm.isEmpty = function(value){
@@ -3521,16 +3527,18 @@ cm.decode = (function(){
 
 cm.copyToClipboard = (function(){
     var node = cm.node('textarea', {'class' : 'cm__textarea-clipboard'}),
-        successful;
+        success;
     cm.insertFirst(node, document.body);
-    return function(text){
+    return function(text, callback){
+        callback = cm.isFunction(callback) ? callback : function(){};
         if(!cm.isEmpty(text)){
             node.value = text;
             node.select();
-            successful = document.execCommand('copy');
-            if(!successful){
+            success = document.execCommand('copy');
+            if(!success){
                 cm.errorLog({'type' : 'error', 'name' : 'cm.copyToClipboard', 'message' : 'Unable to copy text to clipboard!'});
             }
+            callback(success);
         }
     };
 })();
@@ -5029,6 +5037,7 @@ cm.transition = function(node, params){
             'easing' : 'ease-in-out',
             'delayIn' : 0,
             'delayOut' : 0,
+            'immediately' : false,
             'clear' : false,
             'onStop' : function(){}
         }, params);
@@ -5048,26 +5057,33 @@ cm.transition = function(node, params){
             dimension = cm.getStyleDimension(value);
             node.style[key] = cm.getCurrentStyle(node, key, dimension) + dimension;
         });
-        // Set
-        setTimeout(function(){
-            node.style[rule] = transitions;
-            // Set new styles
+        if(params['immediately']){
+            set();
+            end();
+        }else{
+            setTimeout(set, params['delayIn']);
+            setTimeout(end, params['duration'] + params['delayIn'] + params['delayOut']);
+        }
+    };
+
+    var set = function(){
+        node.style[rule] = transitions;
+        // Set new styles
+        cm.forEach(params['properties'], function(value, key){
+            key = cm.styleStrToKey(key);
+            node.style[key] = value;
+        });
+    };
+
+    var end = function(){
+        node.style[rule]  = '';
+        if(params['clear']){
             cm.forEach(params['properties'], function(value, key){
                 key = cm.styleStrToKey(key);
-                node.style[key] = value;
+                node.style[key] = '';
             });
-        }, params['delayIn']);
-        // End
-        setTimeout(function(){
-            node.style[rule]  = '';
-            if(params['clear']){
-                cm.forEach(params['properties'], function(value, key){
-                    key = cm.styleStrToKey(key);
-                    node.style[key] = '';
-                });
-            }
-            params['onStop'](node);
-        }, params['duration'] + params['delayIn'] + params['delayOut']);
+        }
+        params['onStop'](node);
     };
 
     init();
@@ -6879,6 +6895,128 @@ cm.load = function(){
 
 cm.onReady(cm.init, false);
 cm.onLoad(cm.load, false);
+/**
+ * Find the differences between two objects and push to a new object
+ * (c) 2019 Chris Ferdinandi & Jascha Brinkmann, MIT License, https://gomakethings.com & https://twitter.com/jaschaio
+ * @param  {Object} obj1 The original object
+ * @param  {Object} obj2 The object to compare against it
+ * @return {Object}      An object of differences between the two
+ */
+cm.diff = function (obj1, obj2) {
+
+    // Make sure an object to compare is provided
+    if (!obj2 || Object.prototype.toString.call(obj2) !== '[object Object]') {
+        return obj1;
+    }
+
+    //
+    // Variables
+    //
+
+    var diffs = {};
+    var key;
+
+    //
+    // Compare our objects
+    //
+
+    // Loop through the first object
+    for (key in obj1) {
+        if (obj1.hasOwnProperty(key)) {
+            cm.diffCompare(diffs, obj1[key], obj2[key], key);
+        }
+    }
+
+    // Loop through the second object and find missing items
+    for (key in obj2) {
+        if (obj2.hasOwnProperty(key)) {
+            if (!obj1[key] && obj1[key] !== obj2[key] ) {
+                diffs[key] = obj2[key];
+            }
+        }
+    }
+
+    // Return the object of differences
+    return diffs;
+
+};
+
+/**
+ * Compare two items and push non-matches to object
+ * @param  {Object} diffs The diffs object
+ * @param  {*}      item1 The first item
+ * @param  {*}      item2 The second item
+ * @param  {String} key   The key in our object
+ */
+cm.diffCompare = function (diffs, item1, item2, key) {
+
+    // Get the object type
+    var type1 = Object.prototype.toString.call(item1);
+    var type2 = Object.prototype.toString.call(item2);
+
+    // If type2 is undefined it has been removed
+    if (type2 === '[object Undefined]') {
+        diffs[key] = null;
+        return;
+    }
+
+    // If items are different types
+    if (type1 !== type2) {
+        diffs[key] = item2;
+        return;
+    }
+
+    // If an object, compare recursively
+    if (type1 === '[object Object]') {
+        var objDiff = cm.diff(item1, item2);
+        if (Object.keys(objDiff).length > 0) {
+            diffs[key] = objDiff;
+        }
+        return;
+    }
+
+    // If an array, compare
+    if (type1 === '[object Array]') {
+        if (!cm.diffArraysMatch(item1, item2)) {
+            diffs[key] = item2;
+        }
+        return;
+    }
+
+    // Else if it's a function, convert to a string and compare
+    // Otherwise, just compare
+    if (type1 === '[object Function]') {
+        if (item1.toString() !== item2.toString()) {
+            diffs[key] = item2;
+        }
+    } else {
+        if (item1 !== item2 ) {
+            diffs[key] = item2;
+        }
+    }
+
+};
+
+/**
+ * Check if two arrays are equal
+ * @param  {Array}   arr1 The first array
+ * @param  {Array}   arr2 The second array
+ * @return {Boolean}      If true, both arrays are equal
+ */
+cm.diffArraysMatch = function (arr1, arr2) {
+
+    // Check if the arrays are the same length
+    if (arr1.length !== arr2.length) return false;
+
+    // Check if all items exist and are in the same order
+    for (var i = 0; i < arr1.length; i++) {
+        if (arr1[i] !== arr2[i]) return false;
+    }
+
+    // Otherwise, return true
+    return true;
+
+};
 cm.define('Com.AbstractController', {
     'modules' : [
         'Params',
@@ -8688,11 +8826,14 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     };
 
     classProto.get = function(){
-        var that = this;
+        var that = this,
+            value;
         if(that.params['rawValue']){
-            return that.getRaw();
+            value = that.getRaw();
+        }else{
+            value = that.components['controller'] && cm.isFunction(that.components['controller'].get) ? that.components['controller'].get() : null;
         }
-        return that.components['controller'] && cm.isFunction(that.components['controller'].get) ? that.components['controller'].get() : null;
+        return value;
     };
 
     classProto.getRaw = function(){
@@ -9638,6 +9779,7 @@ cm.define('Com.Form', {
         'validateOnChange' : false,
         'validateOnInput' : false,
         'sendEmptyFields' : false,
+        'sendOnlyChangedFields' : false,
         'data' : {},
         'ajax' : {
             'type' : 'json',
@@ -9762,6 +9904,7 @@ function(params){
         var field = Com.FormFields.get(type);
         // Merge params
         params = cm.merge({
+            'originValue' : null,
             'form' : that,
             'formName' : that.params['name'],
             'system' : false,
@@ -9809,6 +9952,8 @@ function(params){
                 }
                 that.triggerEvent('onInput');
             });
+            // Save processed origin data to compare before send
+            params['originValue'] = params['fieldController'].get();
             // Save
             that.fields[params['name']] = params;
         });
@@ -10260,13 +10405,19 @@ function(params){
         // Handler
         handler = function(field, name){
             value = field['controller'].get();
-            if(that.params['sendEmptyFields'] || !cm.isEmpty(value)){
+            if(that.params['sendOnlyChangedFields']){
+                value = cm.getDiffCompare(field['originValue'], value);
+            }
+            if(!cm.isUndefined(value) && (that.params['sendEmptyFields'] || !cm.isEmpty(value))){
                 o[name] = value;
             }
         };
         pathHandler = function(field, name){
             value = field['controller'].get();
-            if(that.params['sendEmptyFields'] || !cm.isEmpty(value)){
+            if(that.params['sendOnlyChangedFields']){
+                value = cm.getDiffCompare(field['originValue'], value);
+            }
+            if(!cm.isUndefined(value) && (that.params['sendEmptyFields'] || !cm.isEmpty(value))){
                 if(!cm.isEmpty(field['sendPath'])){
                     path = cm.objectFormPath(field['sendPath'], value);
                     o = cm.merge(o, path);
@@ -19518,6 +19669,7 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
             }, item);
             params = cm.merge({
                 'triggerEvents' : true,
+                'immediately' : false,
                 'callback' : function(){}
             }, params);
             if(!cm.isBoolean(item['showControls'])){
@@ -19552,6 +19704,7 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
             params['triggerEvents'] && that.triggerEvent('onItemAdd', item);
             that.processItem(item, {
                 'triggerEvents' : params['triggerEvents'],
+                'immediately' : params['immediately'],
                 'callback' : function(){
                     params['triggerEvents'] && that.triggerEvent('onItemAddEnd', item);
                     params['callback'](item);
@@ -19572,6 +19725,7 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         }, item);
         params = cm.merge({
             'triggerEvents' : true,
+            'immediately' : false,
             'callback' : function(){}
         }, params);
         // Data config
@@ -19617,6 +19771,7 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         if(item.visible){
             that.showItem(item, {
                 'triggerEvents' : true,
+                'immediately' : params['immediately'],
                 'callback' : function(){
                     params['triggerEvents'] && that.triggerEvent('onItemProcessEnd', item);
                     params['callback'](item);
@@ -19625,6 +19780,7 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         }else{
             that.hideItem(item, {
                 'triggerEvents' : true,
+                'immediately' : params['immediately'],
                 'callback' : function(){
                     params['triggerEvents'] && that.triggerEvent('onItemProcessEnd', item);
                     params['callback'](item);
@@ -19662,6 +19818,7 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         var that = this;
         params = cm.merge({
             'triggerEvents' : true,
+            'immediately' : false,
             'callback' : function(){}
         }, params);
         // Process
@@ -19672,6 +19829,7 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         params['triggerEvents'] && that.triggerEvent('onItemHide', item);
         that.hideItemVisibility(item, {
             'triggerEvents' : params['triggerEvents'],
+            'immediately' : params['immediately'],
             'callback' : function(){
                 params['triggerEvents'] && that.triggerEvent('onItemHideEnd', item);
                 params['callback'](item);
@@ -19684,12 +19842,14 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         var that = this;
         params = cm.merge({
             'callback' : function(){},
+            'immediately' : false,
             'triggerEvents' : true
         }, params);
         // Process
         item['container'].style.overflow = 'hidden';
         item['container'].style.height = item['container'].scrollHeight + 'px';
         cm.transition(item['container'], {
+            'immediately' : params['immediately'],
             'properties' : {
                 'height' : '0px',
                 'opacity' : 0
@@ -19706,6 +19866,7 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         var that = this;
         params = cm.merge({
             'triggerEvents' : true,
+            'immediately' : false,
             'callback' : function(){}
         }, params);
         // Process
@@ -19716,6 +19877,7 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         params['triggerEvents'] && that.triggerEvent('onItemShow', item);
         that.showItemVisibility(item, {
             'triggerEvents' : params['triggerEvents'],
+            'immediately' : params['immediately'],
             'callback' : function(){
                 params['triggerEvents'] && that.triggerEvent('onItemShowEnd', item);
                 params['callback'](item);
@@ -19728,12 +19890,14 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         var that = this;
         params = cm.merge({
             'triggerEvents' : true,
+            'immediately' : false,
             'callback' : function(){}
         }, params);
         // Process
         item['container'].style.overflow = 'hidden';
         item['container'].style.height = '0px';
         cm.transition(item['container'], {
+            'immediately' : params['immediately'],
             'properties' : {
                 'height' : item['container'].scrollHeight + 'px',
                 'opacity' : 1
@@ -25296,6 +25460,7 @@ cm.define('Com.Tooltip', {
         'target' : cm.node('div'),
         'targetEvent' : 'hover',                        // hover | click | none
         'hideOnReClick' : false,                        // Hide tooltip when re-clicking on the target, requires setting value 'targetEvent' : 'click'
+        'hideOnSelfClick' : false,
         'hideOnOut' : true,
         'hold' : false,
         'holdTarget' : false,
@@ -25420,6 +25585,12 @@ function(params){
         if(that.params['preventClickEvent']){
             cm.addEvent(that.params['target'], 'click', function(e){
                 cm.preventDefault(e);
+            });
+        }
+        // Hide on self click
+        if(that.params['hideOnSelfClick']){
+            cm.addEvent(that.nodes['container'], 'click', function(){
+                that.hide();
             });
         }
         // Add custom events
@@ -26311,9 +26482,7 @@ function(params){
     Com.AbstractController.apply(that, arguments);
 });
 
-cm.getConstructor('Com.MultipleInput', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
+cm.getConstructor('Com.MultipleInput', function(classConstructor, className, classProto, classInherit){
     classProto.construct = function(params){
         var that = this;
         // Variables
@@ -26330,38 +26499,35 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
         that.addItemHandler = that.addItem.bind(that);
         that.removeItemHandler = that.removeItem.bind(that);
         that.constructProcessHandler = that.constructProcess.bind(that);
-        // Add events
+        // TODO: Add events
         that.addEvent('onConstructProcess', that.constructProcessHandler);
         // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
-        return that;
+        classInherit.prototype.construct.apply(that, arguments);
     };
 
     classProto.constructProcess = function(){
         var that = this;
         // Render inputs provided in DOM
         cm.forEach(that.nodes['inputs'], function(item){
-            that.addItem({'input' : item['input']}, false);
+            that.addItem({'input' : item['input']}, false, true);
         });
         // Render inputs provided in parameters
         if(cm.isArray(that.params['value'])){
             cm.forEach(that.params['value'], function(item){
-                that.addItem({'value' : item}, false);
+                that.addItem({'value' : item}, false, true);
             });
         }
-        return that;
     };
 
     classProto.validateParams = function(){
         var that = this;
         // Call parent method
-        _inherit.prototype.validateParams.apply(that, arguments);
+        classInherit.prototype.validateParams.apply(that, arguments);
         // Configure MultiField
         that.params['multiFieldParams']['max'] = that.params['max'];
         that.params['multiFieldParams']['sortable'] = that.params['sortable'];
         that.params['multiFieldParams']['showControls'] = that.params['showControls'];
         that.params['multiFieldParams']['showList'] = that.params['showList'];
-        return that;
     };
 
     /* *** SYSTEM *** */
@@ -26380,7 +26546,6 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
         }
         that.triggerEvent('onRenderViewProcess');
         that.triggerEvent('onRenderViewEnd');
-        return that;
     };
 
     classProto.renderToolbarView = function(){
@@ -26396,10 +26561,9 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
     classProto.renderViewModel = function(){
         var that = this;
         // Call parent method - renderViewModel
-        _inherit.prototype.renderViewModel.apply(that, arguments);
+        classInherit.prototype.renderViewModel.apply(that, arguments);
         // Init Multi Field
         that.renderMultiField();
-        return that;
     };
 
     classProto.renderMultiField = function(){
@@ -26441,13 +26605,14 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
 
     /* *** ITEMS *** */
 
-    classProto.addItem = function(item, triggerEvents){
+    classProto.addItem = function(item, triggerEvents, immediately){
         var that = this;
         triggerEvents = cm.isUndefined(triggerEvents) ? true : triggerEvents;
         if(!that.params['max'] || that.items.length < that.params['max']){
             // Render Fields
             that.components['multiField'].addItem({}, {
                 'triggerEvents' : false,
+                'immediately' : immediately,
                 'callback' : function(field){
                     that.addItemProcess(item, field, triggerEvents);
                 }

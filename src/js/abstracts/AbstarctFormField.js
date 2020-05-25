@@ -454,11 +454,14 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     };
 
     classProto.get = function(){
-        var that = this;
+        var that = this,
+            value;
         if(that.params['rawValue']){
-            return that.getRaw();
+            value = that.getRaw();
+        }else{
+            value = that.components['controller'] && cm.isFunction(that.components['controller'].get) ? that.components['controller'].get() : null;
         }
-        return that.components['controller'] && cm.isFunction(that.components['controller'].get) ? that.components['controller'].get() : null;
+        return value;
     };
 
     classProto.getRaw = function(){

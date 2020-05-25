@@ -20,6 +20,7 @@ cm.define('Com.Tooltip', {
         'target' : cm.node('div'),
         'targetEvent' : 'hover',                        // hover | click | none
         'hideOnReClick' : false,                        // Hide tooltip when re-clicking on the target, requires setting value 'targetEvent' : 'click'
+        'hideOnSelfClick' : false,
         'hideOnOut' : true,
         'hold' : false,
         'holdTarget' : false,
@@ -144,6 +145,12 @@ function(params){
         if(that.params['preventClickEvent']){
             cm.addEvent(that.params['target'], 'click', function(e){
                 cm.preventDefault(e);
+            });
+        }
+        // Hide on self click
+        if(that.params['hideOnSelfClick']){
+            cm.addEvent(that.nodes['container'], 'click', function(){
+                that.hide();
             });
         }
         // Add custom events

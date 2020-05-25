@@ -293,6 +293,7 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
             }, item);
             params = cm.merge({
                 'triggerEvents' : true,
+                'immediately' : false,
                 'callback' : function(){}
             }, params);
             if(!cm.isBoolean(item['showControls'])){
@@ -327,6 +328,7 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
             params['triggerEvents'] && that.triggerEvent('onItemAdd', item);
             that.processItem(item, {
                 'triggerEvents' : params['triggerEvents'],
+                'immediately' : params['immediately'],
                 'callback' : function(){
                     params['triggerEvents'] && that.triggerEvent('onItemAddEnd', item);
                     params['callback'](item);
@@ -347,6 +349,7 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         }, item);
         params = cm.merge({
             'triggerEvents' : true,
+            'immediately' : false,
             'callback' : function(){}
         }, params);
         // Data config
@@ -392,6 +395,7 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         if(item.visible){
             that.showItem(item, {
                 'triggerEvents' : true,
+                'immediately' : params['immediately'],
                 'callback' : function(){
                     params['triggerEvents'] && that.triggerEvent('onItemProcessEnd', item);
                     params['callback'](item);
@@ -400,6 +404,7 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         }else{
             that.hideItem(item, {
                 'triggerEvents' : true,
+                'immediately' : params['immediately'],
                 'callback' : function(){
                     params['triggerEvents'] && that.triggerEvent('onItemProcessEnd', item);
                     params['callback'](item);
@@ -437,6 +442,7 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         var that = this;
         params = cm.merge({
             'triggerEvents' : true,
+            'immediately' : false,
             'callback' : function(){}
         }, params);
         // Process
@@ -447,6 +453,7 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         params['triggerEvents'] && that.triggerEvent('onItemHide', item);
         that.hideItemVisibility(item, {
             'triggerEvents' : params['triggerEvents'],
+            'immediately' : params['immediately'],
             'callback' : function(){
                 params['triggerEvents'] && that.triggerEvent('onItemHideEnd', item);
                 params['callback'](item);
@@ -459,12 +466,14 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         var that = this;
         params = cm.merge({
             'callback' : function(){},
+            'immediately' : false,
             'triggerEvents' : true
         }, params);
         // Process
         item['container'].style.overflow = 'hidden';
         item['container'].style.height = item['container'].scrollHeight + 'px';
         cm.transition(item['container'], {
+            'immediately' : params['immediately'],
             'properties' : {
                 'height' : '0px',
                 'opacity' : 0
@@ -481,6 +490,7 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         var that = this;
         params = cm.merge({
             'triggerEvents' : true,
+            'immediately' : false,
             'callback' : function(){}
         }, params);
         // Process
@@ -491,6 +501,7 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         params['triggerEvents'] && that.triggerEvent('onItemShow', item);
         that.showItemVisibility(item, {
             'triggerEvents' : params['triggerEvents'],
+            'immediately' : params['immediately'],
             'callback' : function(){
                 params['triggerEvents'] && that.triggerEvent('onItemShowEnd', item);
                 params['callback'](item);
@@ -503,12 +514,14 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         var that = this;
         params = cm.merge({
             'triggerEvents' : true,
+            'immediately' : false,
             'callback' : function(){}
         }, params);
         // Process
         item['container'].style.overflow = 'hidden';
         item['container'].style.height = '0px';
         cm.transition(item['container'], {
+            'immediately' : params['immediately'],
             'properties' : {
                 'height' : item['container'].scrollHeight + 'px',
                 'opacity' : 1

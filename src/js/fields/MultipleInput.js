@@ -49,9 +49,7 @@ function(params){
     Com.AbstractController.apply(that, arguments);
 });
 
-cm.getConstructor('Com.MultipleInput', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
+cm.getConstructor('Com.MultipleInput', function(classConstructor, className, classProto, classInherit){
     classProto.construct = function(params){
         var that = this;
         // Variables
@@ -68,38 +66,35 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
         that.addItemHandler = that.addItem.bind(that);
         that.removeItemHandler = that.removeItem.bind(that);
         that.constructProcessHandler = that.constructProcess.bind(that);
-        // Add events
+        // TODO: Add events
         that.addEvent('onConstructProcess', that.constructProcessHandler);
         // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
-        return that;
+        classInherit.prototype.construct.apply(that, arguments);
     };
 
     classProto.constructProcess = function(){
         var that = this;
         // Render inputs provided in DOM
         cm.forEach(that.nodes['inputs'], function(item){
-            that.addItem({'input' : item['input']}, false);
+            that.addItem({'input' : item['input']}, false, true);
         });
         // Render inputs provided in parameters
         if(cm.isArray(that.params['value'])){
             cm.forEach(that.params['value'], function(item){
-                that.addItem({'value' : item}, false);
+                that.addItem({'value' : item}, false, true);
             });
         }
-        return that;
     };
 
     classProto.validateParams = function(){
         var that = this;
         // Call parent method
-        _inherit.prototype.validateParams.apply(that, arguments);
+        classInherit.prototype.validateParams.apply(that, arguments);
         // Configure MultiField
         that.params['multiFieldParams']['max'] = that.params['max'];
         that.params['multiFieldParams']['sortable'] = that.params['sortable'];
         that.params['multiFieldParams']['showControls'] = that.params['showControls'];
         that.params['multiFieldParams']['showList'] = that.params['showList'];
-        return that;
     };
 
     /* *** SYSTEM *** */
@@ -118,7 +113,6 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
         }
         that.triggerEvent('onRenderViewProcess');
         that.triggerEvent('onRenderViewEnd');
-        return that;
     };
 
     classProto.renderToolbarView = function(){
@@ -134,10 +128,9 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
     classProto.renderViewModel = function(){
         var that = this;
         // Call parent method - renderViewModel
-        _inherit.prototype.renderViewModel.apply(that, arguments);
+        classInherit.prototype.renderViewModel.apply(that, arguments);
         // Init Multi Field
         that.renderMultiField();
-        return that;
     };
 
     classProto.renderMultiField = function(){
@@ -179,13 +172,14 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
 
     /* *** ITEMS *** */
 
-    classProto.addItem = function(item, triggerEvents){
+    classProto.addItem = function(item, triggerEvents, immediately){
         var that = this;
         triggerEvents = cm.isUndefined(triggerEvents) ? true : triggerEvents;
         if(!that.params['max'] || that.items.length < that.params['max']){
             // Render Fields
             that.components['multiField'].addItem({}, {
                 'triggerEvents' : false,
+                'immediately' : immediately,
                 'callback' : function(field){
                     that.addItemProcess(item, field, triggerEvents);
                 }

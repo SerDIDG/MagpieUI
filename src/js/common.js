@@ -542,6 +542,12 @@ cm.objectReplace = function(o, vars){
     return newO;
 };
 
+cm.getDiffCompare = function(item1, item2){
+    var newO = {};
+    cm.diffCompare(newO, item1, item2, 'key');
+    return newO['key'];
+};
+
 cm.isEmpty = function(value){
     if(cm.isUndefined(value)){
         return true;
@@ -1922,16 +1928,18 @@ cm.decode = (function(){
 
 cm.copyToClipboard = (function(){
     var node = cm.node('textarea', {'class' : 'cm__textarea-clipboard'}),
-        successful;
+        success;
     cm.insertFirst(node, document.body);
-    return function(text){
+    return function(text, callback){
+        callback = cm.isFunction(callback) ? callback : function(){};
         if(!cm.isEmpty(text)){
             node.value = text;
             node.select();
-            successful = document.execCommand('copy');
-            if(!successful){
+            success = document.execCommand('copy');
+            if(!success){
                 cm.errorLog({'type' : 'error', 'name' : 'cm.copyToClipboard', 'message' : 'Unable to copy text to clipboard!'});
             }
+            callback(success);
         }
     };
 })();
@@ -3430,6 +3438,7 @@ cm.transition = function(node, params){
             'easing' : 'ease-in-out',
             'delayIn' : 0,
             'delayOut' : 0,
+            'immediately' : false,
             'clear' : false,
             'onStop' : function(){}
         }, params);
@@ -3449,26 +3458,33 @@ cm.transition = function(node, params){
             dimension = cm.getStyleDimension(value);
             node.style[key] = cm.getCurrentStyle(node, key, dimension) + dimension;
         });
-        // Set
-        setTimeout(function(){
-            node.style[rule] = transitions;
-            // Set new styles
+        if(params['immediately']){
+            set();
+            end();
+        }else{
+            setTimeout(set, params['delayIn']);
+            setTimeout(end, params['duration'] + params['delayIn'] + params['delayOut']);
+        }
+    };
+
+    var set = function(){
+        node.style[rule] = transitions;
+        // Set new styles
+        cm.forEach(params['properties'], function(value, key){
+            key = cm.styleStrToKey(key);
+            node.style[key] = value;
+        });
+    };
+
+    var end = function(){
+        node.style[rule]  = '';
+        if(params['clear']){
             cm.forEach(params['properties'], function(value, key){
                 key = cm.styleStrToKey(key);
-                node.style[key] = value;
+                node.style[key] = '';
             });
-        }, params['delayIn']);
-        // End
-        setTimeout(function(){
-            node.style[rule]  = '';
-            if(params['clear']){
-                cm.forEach(params['properties'], function(value, key){
-                    key = cm.styleStrToKey(key);
-                    node.style[key] = '';
-                });
-            }
-            params['onStop'](node);
-        }, params['duration'] + params['delayIn'] + params['delayOut']);
+        }
+        params['onStop'](node);
     };
 
     init();

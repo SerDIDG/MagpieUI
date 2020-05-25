@@ -50,6 +50,7 @@ cm.define('Com.Form', {
         'validateOnChange' : false,
         'validateOnInput' : false,
         'sendEmptyFields' : false,
+        'sendOnlyChangedFields' : false,
         'data' : {},
         'ajax' : {
             'type' : 'json',
@@ -174,6 +175,7 @@ function(params){
         var field = Com.FormFields.get(type);
         // Merge params
         params = cm.merge({
+            'originValue' : null,
             'form' : that,
             'formName' : that.params['name'],
             'system' : false,
@@ -221,6 +223,8 @@ function(params){
                 }
                 that.triggerEvent('onInput');
             });
+            // Save processed origin data to compare before send
+            params['originValue'] = params['fieldController'].get();
             // Save
             that.fields[params['name']] = params;
         });
@@ -672,13 +676,19 @@ function(params){
         // Handler
         handler = function(field, name){
             value = field['controller'].get();
-            if(that.params['sendEmptyFields'] || !cm.isEmpty(value)){
+            if(that.params['sendOnlyChangedFields']){
+                value = cm.getDiffCompare(field['originValue'], value);
+            }
+            if(!cm.isUndefined(value) && (that.params['sendEmptyFields'] || !cm.isEmpty(value))){
                 o[name] = value;
             }
         };
         pathHandler = function(field, name){
             value = field['controller'].get();
-            if(that.params['sendEmptyFields'] || !cm.isEmpty(value)){
+            if(that.params['sendOnlyChangedFields']){
+                value = cm.getDiffCompare(field['originValue'], value);
+            }
+            if(!cm.isUndefined(value) && (that.params['sendEmptyFields'] || !cm.isEmpty(value))){
                 if(!cm.isEmpty(field['sendPath'])){
                     path = cm.objectFormPath(field['sendPath'], value);
                     o = cm.merge(o, path);
