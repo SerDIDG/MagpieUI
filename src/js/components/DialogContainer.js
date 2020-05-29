@@ -47,6 +47,7 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
         var that = this;
         return new classObject(
             cm.merge(that.params['params'], {
+                'opener' : that,
                 'container' : that.params['container'],
                 'title' : that.nodes['title'] || that.params['params']['title'] || that.params['title'],
                 'content' : that.nodes['content'] || that.params['params']['content'] || that.params['content'],
@@ -67,7 +68,6 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
         that.components['controller'].addEvent('onOpenStart', that.afterOpenControllerHandler);
         that.components['controller'].addEvent('onOpenEnd', that.afterOpenControllerEndHandler);
         that.components['controller'].addEvent('onCloseEnd', that.afterCloseControllerHandler);
-        return that;
     };
 
     classProto.renderButtonsView = function(){

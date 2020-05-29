@@ -23,16 +23,14 @@ function(params){
     Com.AbstractController.apply(that, arguments);
 });
 
-cm.getConstructor('Com.AbstractInputContainer', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
+cm.getConstructor('Com.AbstractInputContainer', function(classConstructor, className, classProto, classInherit){
     classProto.construct = function(){
         var that = this;
         that.resetHandler = that.reset.bind(that);
         that.enableHandler = that.enable.bind(that);
         that.disableHandler = that.disable.bind(that);
         // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
+        classInherit.prototype.construct.apply(that, arguments);
     };
 
     classProto.onValidateParams = function(){

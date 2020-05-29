@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.38.17 (2020-05-25 05:14) ************ */
+/*! ************ MagpieUI v3.38.18 (2020-05-29 21:13) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.38.17',
+        '_version' : '3.38.18',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -7381,6 +7381,8 @@ function(params){
 cm.getConstructor('Com.AbstractContainer', function(classConstructor, className, classProto, classInherit){
     classProto.construct = function(){
         var that = this;
+        // Variables
+        that.isOpen = false;
         that.targetNode = null;
         // Bind context to methods
         that.openHandler = that.open.bind(that);
@@ -7493,6 +7495,7 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
         var that = this;
         return new classObject(
             cm.merge(that.params['params'], {
+                'opener' : that,
                 'container' : that.params['placeholder'] ? that.nodes['placeholder']['content'] : that.params['container'],
                 'content' : that.params['params']['content'] || that.params['content']
             })
@@ -7534,16 +7537,19 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
 
     classProto.afterOpenController = function(){
         var that = this;
+        that.isOpen = true;
         that.triggerEvent('onOpen', that.components['controller']);
     };
 
     classProto.afterOpenControllerEnd = function(){
         var that = this;
+        that.isOpen = true;
         that.triggerEvent('onOpenEnd', that.components['controller']);
     };
 
     classProto.afterCloseController = function(){
         var that = this;
+        that.isOpen = false;
         if(that.params['destructOnClose']){
             that.destructController();
         }
@@ -7571,6 +7577,7 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
         var that = this;
         return new classObject(
             cm.merge(that.params['placeholderParams'], {
+                'opener' : that,
                 'content' : that.nodes['placeholder']
             })
         );
@@ -9200,16 +9207,14 @@ function(params){
     Com.AbstractController.apply(that, arguments);
 });
 
-cm.getConstructor('Com.AbstractInputContainer', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
+cm.getConstructor('Com.AbstractInputContainer', function(classConstructor, className, classProto, classInherit){
     classProto.construct = function(){
         var that = this;
         that.resetHandler = that.reset.bind(that);
         that.enableHandler = that.enable.bind(that);
         that.disableHandler = that.disable.bind(that);
         // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
+        classInherit.prototype.construct.apply(that, arguments);
     };
 
     classProto.onValidateParams = function(){
@@ -9767,7 +9772,6 @@ cm.define('Com.Form', {
         'renderNames' : false,                                      // Render visual input name attribute
         'showLoader' : true,
         'loaderCoverage' : 'fields',                                // fields, all
-        'loaderDelay' : 'cm._config.loadDelay',
         'showNotifications' : true,
         'showSuccessNotification' : false,
         'showValidationNotification' : false,
@@ -9793,7 +9797,8 @@ cm.define('Com.Form', {
         'overlayParams' : {
             'position' : 'absolute',
             'autoOpen' : false,
-            'removeOnClose' : true
+            'removeOnClose' : true,
+            'lazy' : true
         }
     },
     'strings' : {
@@ -9811,7 +9816,6 @@ function(params){
     that.buttons = {};
     that.constraints = [];
     that.ajaxHandler = null;
-    that.loaderDelay = null;
 
     that.isAjax = false;
     that.isProcess = false;
@@ -10165,11 +10169,7 @@ function(params){
         toggleButtons();
         // Show Loader
         if(that.params['showLoader']){
-            that.loaderDelay = setTimeout(function(){
-                if(that.components['loader'] && !that.components['loader'].isOpen){
-                    that.components['loader'].open();
-                }
-            }, that.params['loaderDelay']);
+            that.showLoader();
         }
         that.triggerEvent('onSendStart');
     };
@@ -10181,10 +10181,7 @@ function(params){
         toggleButtons();
         // Hide Loader
         if(that.params['showLoader']){
-            that.loaderDelay && clearTimeout(that.loaderDelay);
-            if(that.components['loader'] && that.components['loader'].isOpen){
-                that.components['loader'].close();
-            }
+            that.hideLoader();
         }
         that.triggerEvent('onSendEnd');
     };
@@ -10584,6 +10581,17 @@ function(params){
         that.callbacks.clearError(that);
         return that;
     };
+
+    that.showLoader = function(isImmediately){
+        that.components['loader'] && that.components['loader'].open(isImmediately);
+        return that;
+    };
+
+    that.hideLoader = function(isImmediately){
+        that.components['loader'] && that.components['loader'].close(isImmediately);
+        return that;
+    };
+
 
     that.getName = function(){
         return that.params['name'];
@@ -14569,6 +14577,7 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
         var that = this;
         return new classObject(
             cm.merge(that.params['params'], {
+                'opener' : that,
                 'container' : that.params['container'],
                 'title' : that.nodes['title'] || that.params['params']['title'] || that.params['title'],
                 'content' : that.nodes['content'] || that.params['params']['content'] || that.params['content'],
@@ -14589,7 +14598,6 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
         that.components['controller'].addEvent('onOpenStart', that.afterOpenControllerHandler);
         that.components['controller'].addEvent('onOpenEnd', that.afterOpenControllerEndHandler);
         that.components['controller'].addEvent('onCloseEnd', that.afterCloseControllerHandler);
-        return that;
     };
 
     classProto.renderButtonsView = function(){
@@ -20048,7 +20056,8 @@ cm.define('Com.Notifications', {
         'icon' : 'icon small remove linked',
         'Com.ToggleBox' : {
             'toggleTitle' : false,
-            'className' : null
+            'className' : null,
+            'duration' : 'cm._config.animDuration',
         }
     },
     'strings' : {
@@ -20062,19 +20071,12 @@ function(params){
     Com.AbstractController.apply(that, arguments);
 });
 
-cm.getConstructor('Com.Notifications', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
+cm.getConstructor('Com.Notifications', function(classConstructor, className, classProto, classInherit){
     classProto.construct = function(){
         var that = this;
         that.items = [];
-        // Call parent method - renderViewModel
-        _inherit.prototype.construct.apply(that, arguments);
-    };
-
-    classProto.validateParams = function(){
-        var that = this;
-        return that;
+        // Call parent method - construct
+        classInherit.prototype.construct.apply(that, arguments);
     };
 
     classProto.renderView = function(){
@@ -20082,7 +20084,6 @@ cm.getConstructor('Com.Notifications', function(classConstructor, className, cla
         that.nodes['container'] = cm.node('div', {'class' : 'com__notifications'},
             that.nodes['list'] = cm.node('ul')
         );
-        return that;
     };
 
     classProto.clear = function(){
@@ -20113,14 +20114,14 @@ cm.getConstructor('Com.Notifications', function(classConstructor, className, cla
         );
         // Label
         if(!cm.isNode(item['label']) && !cm.isTextNode(item['label'])){
-            item['label'] = cm.node('span', {'innerHTML' : item['label']});
+            item['label'] = cm.node('div', {'innerHTML' : item['label']});
         }
         cm.appendChild(item['label'], item['nodes']['descr']);
         // Messages
         if(!cm.isEmpty(item['messages'])){
             // Button
             item['nodes']['button'] = cm.node('a', {'class' : 'more'}, that.lang('more'));
-            cm.appendChild(item['nodes']['button'], item['nodes']['descr']);
+            cm.insertFirst(item['nodes']['button'], item['nodes']['descr']);
             // List
             cm.forEach(item['messages'], function(message){
                 cm.appendChild(cm.node('li', message), item['nodes']['messagesList']);
@@ -20295,6 +20296,7 @@ cm.define('Com.Overlay', {
         'showSpinner' : true,
         'showContent' : true,
         'autoOpen' : true,
+        'autoClose' : false,                // ToDo: implement
         'removeOnClose' : true,
         'destructOnRemove' : false,
         'duration' : 'cm._config.animDurationLong'
@@ -22291,7 +22293,8 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
             hasAccess,
             matchItem,
             matchCaptures,
-            route;
+            route,
+            redirectTo;
         // Destruct old route
         that.destructRoute(that.current);
         // Match route
@@ -22319,13 +22322,23 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
             route['captures'] = that.mapCaptures(route['map'], matchCaptures);
         }
         // Handle redirect
-        if(!cm.isEmpty(route.redirectTo)){
-            that.redirect(route.redirectTo, route.hash, {
+        if(!cm.isEmpty(route['redirectTo'])){
+            if(cm.isObject(route['redirectTo'])){
+                cm.forEach(route['redirectTo'], function(item, key){
+                    if(that.checkRoleAccess(key)){
+                        redirectTo = item;
+                    }
+                });
+            }else{
+                redirectTo = route['redirectTo'];
+            }
+        }
+        if(redirectTo){
+            that.redirect(redirectTo, route.hash, {
                 'captures' : route['captures'],
                 'data' : route['data']
             });
         }else{
-            // Construct route
             that.constructRoute(route);
         }
     };
@@ -22347,13 +22360,11 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
     };
 
     classProto.constructRoute = function(route){
-        var that = this,
-            constructor,
-            constructorParams;
+        var that = this, constructor, constructorParams;
         // Export
         that.current = route;
         // Callbacks
-        if(route['constructor']){
+        if(!cm.isEmpty(route['constructor'])){
             if(cm.isObject(route['constructor'])){
                 cm.forEach(route['constructor'], function(item, key){
                     if(that.checkRoleAccess(key)){
@@ -22372,6 +22383,8 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
             }else{
                 constructorParams = route['constructorParams'];
             }
+        }
+        if(constructor){
             cm.getConstructor(constructor, function(classConstructor){
                 route['controller'] = new classConstructor(
                     cm.merge(constructorParams, {
@@ -30003,9 +30016,7 @@ function(params){
     Com.AbstractInputContainer.apply(that, arguments);
 });
 
-cm.getConstructor('Com.HiddenStoreField', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
+cm.getConstructor('Com.HiddenStoreField', function(classConstructor, className, classProto, classInherit){
     classProto.onConstructStart = function(){
         var that = this;
         // Binds

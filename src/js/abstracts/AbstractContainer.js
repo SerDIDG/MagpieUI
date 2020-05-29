@@ -45,6 +45,8 @@ function(params){
 cm.getConstructor('Com.AbstractContainer', function(classConstructor, className, classProto, classInherit){
     classProto.construct = function(){
         var that = this;
+        // Variables
+        that.isOpen = false;
         that.targetNode = null;
         // Bind context to methods
         that.openHandler = that.open.bind(that);
@@ -157,6 +159,7 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
         var that = this;
         return new classObject(
             cm.merge(that.params['params'], {
+                'opener' : that,
                 'container' : that.params['placeholder'] ? that.nodes['placeholder']['content'] : that.params['container'],
                 'content' : that.params['params']['content'] || that.params['content']
             })
@@ -198,16 +201,19 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
 
     classProto.afterOpenController = function(){
         var that = this;
+        that.isOpen = true;
         that.triggerEvent('onOpen', that.components['controller']);
     };
 
     classProto.afterOpenControllerEnd = function(){
         var that = this;
+        that.isOpen = true;
         that.triggerEvent('onOpenEnd', that.components['controller']);
     };
 
     classProto.afterCloseController = function(){
         var that = this;
+        that.isOpen = false;
         if(that.params['destructOnClose']){
             that.destructController();
         }
@@ -235,6 +241,7 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
         var that = this;
         return new classObject(
             cm.merge(that.params['placeholderParams'], {
+                'opener' : that,
                 'content' : that.nodes['placeholder']
             })
         );

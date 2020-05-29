@@ -11,7 +11,8 @@ cm.define('Com.Notifications', {
         'icon' : 'icon small remove linked',
         'Com.ToggleBox' : {
             'toggleTitle' : false,
-            'className' : null
+            'className' : null,
+            'duration' : 'cm._config.animDuration',
         }
     },
     'strings' : {
@@ -25,19 +26,12 @@ function(params){
     Com.AbstractController.apply(that, arguments);
 });
 
-cm.getConstructor('Com.Notifications', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
+cm.getConstructor('Com.Notifications', function(classConstructor, className, classProto, classInherit){
     classProto.construct = function(){
         var that = this;
         that.items = [];
-        // Call parent method - renderViewModel
-        _inherit.prototype.construct.apply(that, arguments);
-    };
-
-    classProto.validateParams = function(){
-        var that = this;
-        return that;
+        // Call parent method - construct
+        classInherit.prototype.construct.apply(that, arguments);
     };
 
     classProto.renderView = function(){
@@ -45,7 +39,6 @@ cm.getConstructor('Com.Notifications', function(classConstructor, className, cla
         that.nodes['container'] = cm.node('div', {'class' : 'com__notifications'},
             that.nodes['list'] = cm.node('ul')
         );
-        return that;
     };
 
     classProto.clear = function(){
@@ -76,14 +69,14 @@ cm.getConstructor('Com.Notifications', function(classConstructor, className, cla
         );
         // Label
         if(!cm.isNode(item['label']) && !cm.isTextNode(item['label'])){
-            item['label'] = cm.node('span', {'innerHTML' : item['label']});
+            item['label'] = cm.node('div', {'innerHTML' : item['label']});
         }
         cm.appendChild(item['label'], item['nodes']['descr']);
         // Messages
         if(!cm.isEmpty(item['messages'])){
             // Button
             item['nodes']['button'] = cm.node('a', {'class' : 'more'}, that.lang('more'));
-            cm.appendChild(item['nodes']['button'], item['nodes']['descr']);
+            cm.insertFirst(item['nodes']['button'], item['nodes']['descr']);
             // List
             cm.forEach(item['messages'], function(message){
                 cm.appendChild(cm.node('li', message), item['nodes']['messagesList']);

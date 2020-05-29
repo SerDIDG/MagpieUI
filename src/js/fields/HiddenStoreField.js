@@ -12,9 +12,7 @@ function(params){
     Com.AbstractInputContainer.apply(that, arguments);
 });
 
-cm.getConstructor('Com.HiddenStoreField', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
+cm.getConstructor('Com.HiddenStoreField', function(classConstructor, className, classProto, classInherit){
     classProto.onConstructStart = function(){
         var that = this;
         // Binds

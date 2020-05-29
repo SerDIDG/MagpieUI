@@ -161,7 +161,8 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
             hasAccess,
             matchItem,
             matchCaptures,
-            route;
+            route,
+            redirectTo;
         // Destruct old route
         that.destructRoute(that.current);
         // Match route
@@ -189,13 +190,23 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
             route['captures'] = that.mapCaptures(route['map'], matchCaptures);
         }
         // Handle redirect
-        if(!cm.isEmpty(route.redirectTo)){
-            that.redirect(route.redirectTo, route.hash, {
+        if(!cm.isEmpty(route['redirectTo'])){
+            if(cm.isObject(route['redirectTo'])){
+                cm.forEach(route['redirectTo'], function(item, key){
+                    if(that.checkRoleAccess(key)){
+                        redirectTo = item;
+                    }
+                });
+            }else{
+                redirectTo = route['redirectTo'];
+            }
+        }
+        if(redirectTo){
+            that.redirect(redirectTo, route.hash, {
                 'captures' : route['captures'],
                 'data' : route['data']
             });
         }else{
-            // Construct route
             that.constructRoute(route);
         }
     };
@@ -217,13 +228,11 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
     };
 
     classProto.constructRoute = function(route){
-        var that = this,
-            constructor,
-            constructorParams;
+        var that = this, constructor, constructorParams;
         // Export
         that.current = route;
         // Callbacks
-        if(route['constructor']){
+        if(!cm.isEmpty(route['constructor'])){
             if(cm.isObject(route['constructor'])){
                 cm.forEach(route['constructor'], function(item, key){
                     if(that.checkRoleAccess(key)){
@@ -242,6 +251,8 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
             }else{
                 constructorParams = route['constructorParams'];
             }
+        }
+        if(constructor){
             cm.getConstructor(constructor, function(classConstructor){
                 route['controller'] = new classConstructor(
                     cm.merge(constructorParams, {

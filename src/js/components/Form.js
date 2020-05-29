@@ -38,7 +38,6 @@ cm.define('Com.Form', {
         'renderNames' : false,                                      // Render visual input name attribute
         'showLoader' : true,
         'loaderCoverage' : 'fields',                                // fields, all
-        'loaderDelay' : 'cm._config.loadDelay',
         'showNotifications' : true,
         'showSuccessNotification' : false,
         'showValidationNotification' : false,
@@ -64,7 +63,8 @@ cm.define('Com.Form', {
         'overlayParams' : {
             'position' : 'absolute',
             'autoOpen' : false,
-            'removeOnClose' : true
+            'removeOnClose' : true,
+            'lazy' : true
         }
     },
     'strings' : {
@@ -82,7 +82,6 @@ function(params){
     that.buttons = {};
     that.constraints = [];
     that.ajaxHandler = null;
-    that.loaderDelay = null;
 
     that.isAjax = false;
     that.isProcess = false;
@@ -436,11 +435,7 @@ function(params){
         toggleButtons();
         // Show Loader
         if(that.params['showLoader']){
-            that.loaderDelay = setTimeout(function(){
-                if(that.components['loader'] && !that.components['loader'].isOpen){
-                    that.components['loader'].open();
-                }
-            }, that.params['loaderDelay']);
+            that.showLoader();
         }
         that.triggerEvent('onSendStart');
     };
@@ -452,10 +447,7 @@ function(params){
         toggleButtons();
         // Hide Loader
         if(that.params['showLoader']){
-            that.loaderDelay && clearTimeout(that.loaderDelay);
-            if(that.components['loader'] && that.components['loader'].isOpen){
-                that.components['loader'].close();
-            }
+            that.hideLoader();
         }
         that.triggerEvent('onSendEnd');
     };
@@ -855,6 +847,17 @@ function(params){
         that.callbacks.clearError(that);
         return that;
     };
+
+    that.showLoader = function(isImmediately){
+        that.components['loader'] && that.components['loader'].open(isImmediately);
+        return that;
+    };
+
+    that.hideLoader = function(isImmediately){
+        that.components['loader'] && that.components['loader'].close(isImmediately);
+        return that;
+    };
+
 
     that.getName = function(){
         return that.params['name'];

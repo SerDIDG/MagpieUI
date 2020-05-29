@@ -26,6 +26,7 @@ cm.define('Com.Overlay', {
         'showSpinner' : true,
         'showContent' : true,
         'autoOpen' : true,
+        'autoClose' : false,                // ToDo: implement
         'removeOnClose' : true,
         'destructOnRemove' : false,
         'duration' : 'cm._config.animDurationLong'
