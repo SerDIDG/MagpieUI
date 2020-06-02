@@ -2164,7 +2164,9 @@ cm.parseDate = function(str, format){
             '%d' : 'dd',
             '%H' : 'HH',
             '%i' : 'ii',
-            '%s' : 'ss'
+            '%s' : 'ss',
+            '%v' : 'vvv',
+            '$e' : 'e'
         },
         helpers = {
             'YYYY' : function(value){
@@ -2184,6 +2186,12 @@ cm.parseDate = function(str, format){
             },
             'ss' : function(value){
                 return value;
+            },
+            'vv' : function(value){
+                return value;
+            },
+            'e' : function(value){
+                return value;
             }
         },
         parsed = {
@@ -2192,7 +2200,9 @@ cm.parseDate = function(str, format){
             'dd' : '00',
             'HH' : '00',
             'ii' : '00',
-            'ss' : '00'
+            'ss' : '00',
+            'vvv' : '000',
+            'e' : 'Z'
         },
         fromIndex = 0;
     format = cm.isString(format) ? format : cm._config.dateTimeFormat;
@@ -2204,7 +2214,7 @@ cm.parseDate = function(str, format){
             fromIndex = format.indexOf(key, fromIndex + 1);
         }
     });
-    return new Date(parsed['YYYY'], parsed['mm'], parsed['dd'], parsed['HH'], parsed['ii'], parsed['ss']);
+    return new Date(parsed['YYYY'], parsed['mm'], parsed['dd'], parsed['HH'], parsed['ii'], parsed['ss'], parsed['vvv']);
 };
 
 cm.parseFormatDate = function(str, format, displayFormat, langs, formatCase){

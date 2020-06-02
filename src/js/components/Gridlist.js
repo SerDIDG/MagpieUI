@@ -301,15 +301,7 @@ function(params){
                     'container' : that.nodes['container'],
                     'callbacks' : {
                         'afterPrepare' : function(pagination, config){
-                            config['url'] = cm.strReplace(config['url'], {
-                                '%sortBy%' : that.sortBy,
-                                '%orderBy%' : that.orderBy
-                            });
-                            config['params'] = cm.objectReplace(config['params'], {
-                                '%sortBy%' : that.sortBy,
-                                '%orderBy%' : that.orderBy
-                            });
-                            return config;
+                            return that.callbacks.paginationAfterPrepare(that, pagination, config)
                         }
                     },
                     'events' : {
@@ -938,6 +930,18 @@ function(params){
 
     that.callbacks.filter = function(that, data){
         return data;
+    };
+
+    that.callbacks.paginationAfterPrepare = function(that, pagination, config){
+        config['url'] = cm.strReplace(config['url'], {
+            '%sortBy%' : that.sortBy,
+            '%orderBy%' : that.orderBy
+        });
+        config['params'] = cm.objectReplace(config['params'], {
+            '%sortBy%' : that.sortBy,
+            '%orderBy%' : that.orderBy
+        });
+        return config;
     };
 
     /******* MAIN *******/

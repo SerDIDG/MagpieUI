@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.38.18 (2020-05-29 21:13) ************ */
+/*! ************ MagpieUI v3.38.19 (2020-06-02 21:52) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.38.18',
+        '_version' : '3.38.19',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -3763,7 +3763,9 @@ cm.parseDate = function(str, format){
             '%d' : 'dd',
             '%H' : 'HH',
             '%i' : 'ii',
-            '%s' : 'ss'
+            '%s' : 'ss',
+            '%v' : 'vvv',
+            '$e' : 'e'
         },
         helpers = {
             'YYYY' : function(value){
@@ -3783,6 +3785,12 @@ cm.parseDate = function(str, format){
             },
             'ss' : function(value){
                 return value;
+            },
+            'vv' : function(value){
+                return value;
+            },
+            'e' : function(value){
+                return value;
             }
         },
         parsed = {
@@ -3791,7 +3799,9 @@ cm.parseDate = function(str, format){
             'dd' : '00',
             'HH' : '00',
             'ii' : '00',
-            'ss' : '00'
+            'ss' : '00',
+            'vvv' : '000',
+            'e' : 'Z'
         },
         fromIndex = 0;
     format = cm.isString(format) ? format : cm._config.dateTimeFormat;
@@ -3803,7 +3813,7 @@ cm.parseDate = function(str, format){
             fromIndex = format.indexOf(key, fromIndex + 1);
         }
     });
-    return new Date(parsed['YYYY'], parsed['mm'], parsed['dd'], parsed['HH'], parsed['ii'], parsed['ss']);
+    return new Date(parsed['YYYY'], parsed['mm'], parsed['dd'], parsed['HH'], parsed['ii'], parsed['ss'], parsed['vvv']);
 };
 
 cm.parseFormatDate = function(str, format, displayFormat, langs, formatCase){
@@ -17953,15 +17963,7 @@ function(params){
                     'container' : that.nodes['container'],
                     'callbacks' : {
                         'afterPrepare' : function(pagination, config){
-                            config['url'] = cm.strReplace(config['url'], {
-                                '%sortBy%' : that.sortBy,
-                                '%orderBy%' : that.orderBy
-                            });
-                            config['params'] = cm.objectReplace(config['params'], {
-                                '%sortBy%' : that.sortBy,
-                                '%orderBy%' : that.orderBy
-                            });
-                            return config;
+                            return that.callbacks.paginationAfterPrepare(that, pagination, config)
                         }
                     },
                     'events' : {
@@ -18590,6 +18592,18 @@ function(params){
 
     that.callbacks.filter = function(that, data){
         return data;
+    };
+
+    that.callbacks.paginationAfterPrepare = function(that, pagination, config){
+        config['url'] = cm.strReplace(config['url'], {
+            '%sortBy%' : that.sortBy,
+            '%orderBy%' : that.orderBy
+        });
+        config['params'] = cm.objectReplace(config['params'], {
+            '%sortBy%' : that.sortBy,
+            '%orderBy%' : that.orderBy
+        });
+        return config;
     };
 
     /******* MAIN *******/
