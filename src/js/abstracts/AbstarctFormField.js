@@ -306,9 +306,11 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         if(!cm.isEmpty(that.params['name'])){
             that.nodes['content']['input'].setAttribute('name', that.params['name']);
         }
-        if(!cm.isEmpty(that.params['value']) && that.params['setHiddenValue']){
+        if(!cm.isEmpty(that.params['value']) && !that.params['rawValue'] && that.params['setHiddenValue']){
             if(that.params['isOptionValue']){
                 value = that.params['value']['value'];
+            }else if(cm.isObject(that.params['value']) || cm.isArray(that.params['value'])){
+                value = cm.stringifyJSON(that.params['value']);
             }else{
                 value = that.params['value'];
             }
@@ -322,7 +324,12 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             }
         }
         if(!cm.isEmpty(that.params['dataValue'])){
-            that.nodes['content']['input'].setAttribute('data-value', JSON.stringify(that.params['dataValue']));
+            if(cm.isObject(that.params['dataValue']) || cm.isArray(that.params['dataValue'])){
+                value = cm.stringifyJSON(that.params['dataValue']);
+            }else{
+                value = that.params['dataValue'];
+            }
+            that.nodes['content']['input'].setAttribute('data-value', value);
         }
         if(!cm.isEmpty(that.params['placeholder']) && !that.params['showPlaceholderAbove']){
             that.nodes['content']['input'].setAttribute('placeholder', that.params['placeholder']);

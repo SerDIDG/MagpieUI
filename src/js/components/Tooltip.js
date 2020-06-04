@@ -20,9 +20,11 @@ cm.define('Com.Tooltip', {
         'target' : cm.node('div'),
         'targetEvent' : 'hover',                        // hover | click | none
         'hideOnReClick' : false,                        // Hide tooltip when re-clicking on the target, requires setting value 'targetEvent' : 'click'
-        'hideOnSelfClick' : false,
-        'hideOnOut' : true,
-        'hold' : false,
+        'hideOnSelfClick' : false,                      // Hide tooltip when clicked on own content
+        'hideOnOut' : true,                             // Hide content when clicked / mouseover outside own content
+        'autoHide' : false,
+        'autoHideDelay' : 'cm._config.autoHideDelay',
+        'hold' : false,                                 // After close hold content in specified node from 'holdTarget' parameter
         'holdTarget' : false,
         'preventClickEvent' : false,                    // Prevent default click event on the target, requires setting value 'targetEvent' : 'click'
         'positionTarget' : false,                       // Override target node for calculation position and dimensions
@@ -62,6 +64,7 @@ function(params){
     that.animation = null;
     that.delayInterval = null;
     that.resizeInterval = null;
+    that.autoHideInterval = null;
 
     that.isDestructed = false;
     that.isHideProcess = false;
@@ -204,6 +207,7 @@ function(params){
             setWindowEvent();
             // Show Handler
             clearDelayInterval();
+            clearAutoHideInterval();
             if(immediately){
                 showHandler(immediately);
             }else if(that.params['delay'] && !that.isHideProcess){
@@ -240,6 +244,7 @@ function(params){
         that.isShow = true;
         that.isShowProcess = false;
         that.isHideProcess = false;
+        autoHideHandler();
         that.triggerEvent('onShow');
         that.triggerEvent('onShowEnd');
     };
@@ -249,6 +254,7 @@ function(params){
             that.isHideProcess = true;
             // Hide Handler
             clearDelayInterval();
+            clearAutoHideInterval();
             if(immediately){
                 hideHandler(immediately);
             }else if(that.params['delay'] && !that.isShowProcess){
@@ -290,6 +296,13 @@ function(params){
         that.isHideProcess = false;
         that.triggerEvent('onHide');
         that.triggerEvent('onHideEnd');
+    };
+
+    var autoHideHandler = function(){
+        if(that.params['autoHide']){
+            clearAutoHideInterval();
+            that.autoHideInterval = setTimeout(hide, that.params['autoHideDelay']);
+        }
     };
 
     var resizeHelper = function(){
@@ -483,6 +496,11 @@ function(params){
     var clearDelayInterval = function(){
         that.delayInterval && clearTimeout(that.delayInterval);
         that.delayInterval = null;
+    };
+
+    var clearAutoHideInterval = function(){
+        that.autoHideInterval && clearTimeout(that.autoHideInterval);
+        that.autoHideInterval = null;
     };
 
     /* ******* MAIN ******* */

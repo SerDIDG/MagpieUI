@@ -138,6 +138,7 @@ module.exports = function(grunt) {
                 src : [
                     '<%= components.animatecss.styles %>',
                     '<%= components.codemirror.styles %>',
+                    '<%= paths.src %>/less/helpers/**/*.less',
                     '<%= paths.src %>/less/extra/*.less',
                     '<%= paths.src %>/less/variables/*.less',
                     '<%= paths.src %>/less/mixins.less',

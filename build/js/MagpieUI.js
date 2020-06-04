@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.38.19 (2020-06-02 21:52) ************ */
+/*! ************ MagpieUI v3.38.20 (2020-06-04 21:32) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.38.19',
+        '_version' : '3.38.20',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -1655,6 +1655,7 @@ var cm = {
             'hideDelay' : 250,
             'hideDelayShort' : 150,
             'hideDelayLong' : 500,
+            'autoHideDelay' : 2500,
             'requestDelay' : 300,
             'adaptiveFrom' : 768,
             'screenTablet' : 1024,
@@ -8695,9 +8696,11 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         if(!cm.isEmpty(that.params['name'])){
             that.nodes['content']['input'].setAttribute('name', that.params['name']);
         }
-        if(!cm.isEmpty(that.params['value']) && that.params['setHiddenValue']){
+        if(!cm.isEmpty(that.params['value']) && !that.params['rawValue'] && that.params['setHiddenValue']){
             if(that.params['isOptionValue']){
                 value = that.params['value']['value'];
+            }else if(cm.isObject(that.params['value']) || cm.isArray(that.params['value'])){
+                value = cm.stringifyJSON(that.params['value']);
             }else{
                 value = that.params['value'];
             }
@@ -8711,7 +8714,12 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             }
         }
         if(!cm.isEmpty(that.params['dataValue'])){
-            that.nodes['content']['input'].setAttribute('data-value', JSON.stringify(that.params['dataValue']));
+            if(cm.isObject(that.params['dataValue']) || cm.isArray(that.params['dataValue'])){
+                value = cm.stringifyJSON(that.params['dataValue']);
+            }else{
+                value = that.params['dataValue'];
+            }
+            that.nodes['content']['input'].setAttribute('data-value', value);
         }
         if(!cm.isEmpty(that.params['placeholder']) && !that.params['showPlaceholderAbove']){
             that.nodes['content']['input'].setAttribute('placeholder', that.params['placeholder']);
@@ -25487,9 +25495,11 @@ cm.define('Com.Tooltip', {
         'target' : cm.node('div'),
         'targetEvent' : 'hover',                        // hover | click | none
         'hideOnReClick' : false,                        // Hide tooltip when re-clicking on the target, requires setting value 'targetEvent' : 'click'
-        'hideOnSelfClick' : false,
-        'hideOnOut' : true,
-        'hold' : false,
+        'hideOnSelfClick' : false,                      // Hide tooltip when clicked on own content
+        'hideOnOut' : true,                             // Hide content when clicked / mouseover outside own content
+        'autoHide' : false,
+        'autoHideDelay' : 'cm._config.autoHideDelay',
+        'hold' : false,                                 // After close hold content in specified node from 'holdTarget' parameter
         'holdTarget' : false,
         'preventClickEvent' : false,                    // Prevent default click event on the target, requires setting value 'targetEvent' : 'click'
         'positionTarget' : false,                       // Override target node for calculation position and dimensions
@@ -25529,6 +25539,7 @@ function(params){
     that.animation = null;
     that.delayInterval = null;
     that.resizeInterval = null;
+    that.autoHideInterval = null;
 
     that.isDestructed = false;
     that.isHideProcess = false;
@@ -25671,6 +25682,7 @@ function(params){
             setWindowEvent();
             // Show Handler
             clearDelayInterval();
+            clearAutoHideInterval();
             if(immediately){
                 showHandler(immediately);
             }else if(that.params['delay'] && !that.isHideProcess){
@@ -25707,6 +25719,7 @@ function(params){
         that.isShow = true;
         that.isShowProcess = false;
         that.isHideProcess = false;
+        autoHideHandler();
         that.triggerEvent('onShow');
         that.triggerEvent('onShowEnd');
     };
@@ -25716,6 +25729,7 @@ function(params){
             that.isHideProcess = true;
             // Hide Handler
             clearDelayInterval();
+            clearAutoHideInterval();
             if(immediately){
                 hideHandler(immediately);
             }else if(that.params['delay'] && !that.isShowProcess){
@@ -25757,6 +25771,13 @@ function(params){
         that.isHideProcess = false;
         that.triggerEvent('onHide');
         that.triggerEvent('onHideEnd');
+    };
+
+    var autoHideHandler = function(){
+        if(that.params['autoHide']){
+            clearAutoHideInterval();
+            that.autoHideInterval = setTimeout(hide, that.params['autoHideDelay']);
+        }
     };
 
     var resizeHelper = function(){
@@ -25950,6 +25971,11 @@ function(params){
     var clearDelayInterval = function(){
         that.delayInterval && clearTimeout(that.delayInterval);
         that.delayInterval = null;
+    };
+
+    var clearAutoHideInterval = function(){
+        that.autoHideInterval && clearTimeout(that.autoHideInterval);
+        that.autoHideInterval = null;
     };
 
     /* ******* MAIN ******* */

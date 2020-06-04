@@ -260,7 +260,7 @@
     border-radius: @CmBorder-Radius;
     text-align: center;
     font-size: @CmFont-Base-SizeSmall;
-    line-height: @CmCounter-Size;
+    line-height: @CmCounter-Size - (@CmCounter-Border * 2);
     color: @CmColor-Primary-DarkDefault;
     .mx__background-clip(border-box);
     .mx__transition(all, @CmUI-Transition-Duration);
