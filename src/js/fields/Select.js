@@ -674,6 +674,10 @@ function(params){
         return null;
     };
 
+    that.getSelectedOption = function(){
+        return that.getOption(active);
+    };
+
     that.getOptions = that.getOptionsAll = that.getAllOptions = function(){
         var result = [];
         cm.forEach(optionsList, function(item){

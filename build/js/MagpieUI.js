@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.38.20 (2020-06-04 21:32) ************ */
+/*! ************ MagpieUI v3.38.21 (2020-06-11 22:30) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.38.20',
+        '_version' : '3.38.21',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -8416,7 +8416,8 @@ cm.define('Com.AbstractFormField', {
         'renderError' : true,
         'renderErrorMessage' : true,
         'form' : false,
-        'rawValue' : false,
+        'outputValueType' : 'auto',      // 'auto' | 'raw' | 'text'
+        'inputValueType' : 'auto',       // 'auto' | 'unset'
         'value' : null,
         'defaultValue' : null,
         'dataValue' : null,
@@ -8696,7 +8697,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         if(!cm.isEmpty(that.params['name'])){
             that.nodes['content']['input'].setAttribute('name', that.params['name']);
         }
-        if(!cm.isEmpty(that.params['value']) && !that.params['rawValue'] && that.params['setHiddenValue']){
+        if(!cm.isEmpty(that.params['value']) && that.params['inputValueType'] !== 'unset'){
             if(that.params['isOptionValue']){
                 value = that.params['value']['value'];
             }else if(cm.isObject(that.params['value']) || cm.isArray(that.params['value'])){
@@ -8762,7 +8763,6 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         if(!that.isAjax || that.isPreloaded){
             that.renderController();
         }
-        return that;
     };
 
     classProto.renderController = function(){
@@ -8790,7 +8790,6 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.components['controller'].addEvent('onInput', that.inputEventHandler);
         that.components['controller'].addEvent('onChange', that.changeEventHandler);
         that.components['controller'].addEvent('onReset', that.resetEventHandler);
-        return that;
     };
 
     classProto.togglePlaceholder = function(){
@@ -8850,15 +8849,17 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         return that;
     };
 
-    classProto.get = function(){
-        var that = this,
-            value;
-        if(that.params['rawValue']){
-            value = that.getRaw();
-        }else{
-            value = that.components['controller'] && cm.isFunction(that.components['controller'].get) ? that.components['controller'].get() : null;
+    classProto.get = function(type){
+        var that = this;
+        type = !cm.isUndefined(type) ? type : that.params['outputValueType'];
+        switch(type){
+            case 'raw':
+                return that.getRaw();
+            case 'text':
+                return that.getText();
+            default:
+                return that.components['controller'] && cm.isFunction(that.components['controller'].get) ? that.components['controller'].get() : null;
         }
-        return value;
     };
 
     classProto.getRaw = function(){
@@ -25415,30 +25416,6 @@ function(params){
         return that;
     };
 
-    that.getField = that.getButton = function(name, groupName){
-        var item, group;
-        if((group = that.groups[groupName]) && (item = group.items[name])){
-            return item;
-        }
-        return null;
-    };
-
-    that.removeButton = function(name, groupName){
-        var item, group;
-        if(cm.isObject(arguments[0])){
-            item = name;
-            group = that.groups[item['group']];
-        }else if(group = that.groups[groupName]){
-            item = group.items[name];
-        }
-        if(item){
-            cm.remove(item['container']);
-            delete group.items[item['name']];
-        }
-        that.triggerEvent('onProcessEnd');
-        return that;
-    };
-
     that.enableButton = function(name, groupName){
         var item = that.getButton(name, groupName);
         if(item){
@@ -25469,6 +25446,63 @@ function(params){
             item['hidden'] = true;
             cm.addClass(item['container'], 'is-hidden');
         }
+    };
+
+    that.addLabel = function(item){
+        var group;
+        item = cm.merge({
+            'container' : cm.node('li', {'class' : 'label'}),
+            'node' : null,
+            'name' : '',
+            'label' : '',
+            'size' : null,
+            'hidden' : false,
+            'group' : null
+        }, item);
+        // Render
+        if((group = that.groups[item['group']]) && !group.items[item['name']]){
+            // Structure
+            item['node'] = cm.node('div', {'innerHTML' : item['label']});
+            // Styles
+            item['size'] && cm.addClass(item['container'], item['size']);
+            item['hidden'] && cm.addClass(item['container'], 'is-hidden');
+            // Embed
+            if(cm.isNode(item['node'])){
+                cm.appendChild(item['node'], item['container']);
+            }
+            cm.appendChild(item['container'], group['node']);
+            group.items[item['name']] = item;
+        }
+        that.triggerEvent('onProcessEnd');
+        return that;
+    };
+
+    that.getField = that.getButton = that.getLabel = function(name, groupName){
+        var item, group;
+        if((group = that.groups[groupName]) && (item = group.items[name])){
+            return item;
+        }
+        return null;
+    };
+
+    that.removeField = that.removeButton = that.removeLabel = function(name, groupName){
+        var item, group;
+        if(cm.isObject(arguments[0])){
+            item = name;
+            group = that.groups[item['group']];
+        }else if(group = that.groups[groupName]){
+            item = group.items[name];
+        }
+        if(item){
+            cm.remove(item['container']);
+            delete group.items[item['name']];
+        }
+        that.triggerEvent('onProcessEnd');
+        return that;
+    };
+
+    that.getNodes = function(key){
+        return that.nodes[key] || that.nodes;
     };
 
     init();
@@ -32319,6 +32353,10 @@ function(params){
             return options[value];
         }
         return null;
+    };
+
+    that.getSelectedOption = function(){
+        return that.getOption(active);
     };
 
     that.getOptions = that.getOptionsAll = that.getAllOptions = function(){

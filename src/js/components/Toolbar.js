@@ -224,30 +224,6 @@ function(params){
         return that;
     };
 
-    that.getField = that.getButton = function(name, groupName){
-        var item, group;
-        if((group = that.groups[groupName]) && (item = group.items[name])){
-            return item;
-        }
-        return null;
-    };
-
-    that.removeButton = function(name, groupName){
-        var item, group;
-        if(cm.isObject(arguments[0])){
-            item = name;
-            group = that.groups[item['group']];
-        }else if(group = that.groups[groupName]){
-            item = group.items[name];
-        }
-        if(item){
-            cm.remove(item['container']);
-            delete group.items[item['name']];
-        }
-        that.triggerEvent('onProcessEnd');
-        return that;
-    };
-
     that.enableButton = function(name, groupName){
         var item = that.getButton(name, groupName);
         if(item){
@@ -278,6 +254,63 @@ function(params){
             item['hidden'] = true;
             cm.addClass(item['container'], 'is-hidden');
         }
+    };
+
+    that.addLabel = function(item){
+        var group;
+        item = cm.merge({
+            'container' : cm.node('li', {'class' : 'label'}),
+            'node' : null,
+            'name' : '',
+            'label' : '',
+            'size' : null,
+            'hidden' : false,
+            'group' : null
+        }, item);
+        // Render
+        if((group = that.groups[item['group']]) && !group.items[item['name']]){
+            // Structure
+            item['node'] = cm.node('div', {'innerHTML' : item['label']});
+            // Styles
+            item['size'] && cm.addClass(item['container'], item['size']);
+            item['hidden'] && cm.addClass(item['container'], 'is-hidden');
+            // Embed
+            if(cm.isNode(item['node'])){
+                cm.appendChild(item['node'], item['container']);
+            }
+            cm.appendChild(item['container'], group['node']);
+            group.items[item['name']] = item;
+        }
+        that.triggerEvent('onProcessEnd');
+        return that;
+    };
+
+    that.getField = that.getButton = that.getLabel = function(name, groupName){
+        var item, group;
+        if((group = that.groups[groupName]) && (item = group.items[name])){
+            return item;
+        }
+        return null;
+    };
+
+    that.removeField = that.removeButton = that.removeLabel = function(name, groupName){
+        var item, group;
+        if(cm.isObject(arguments[0])){
+            item = name;
+            group = that.groups[item['group']];
+        }else if(group = that.groups[groupName]){
+            item = group.items[name];
+        }
+        if(item){
+            cm.remove(item['container']);
+            delete group.items[item['name']];
+        }
+        that.triggerEvent('onProcessEnd');
+        return that;
+    };
+
+    that.getNodes = function(key){
+        return that.nodes[key] || that.nodes;
     };
 
     init();

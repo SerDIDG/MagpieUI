@@ -26,7 +26,8 @@ cm.define('Com.AbstractFormField', {
         'renderError' : true,
         'renderErrorMessage' : true,
         'form' : false,
-        'rawValue' : false,
+        'outputValueType' : 'auto',      // 'auto' | 'raw' | 'text'
+        'inputValueType' : 'auto',       // 'auto' | 'unset'
         'value' : null,
         'defaultValue' : null,
         'dataValue' : null,
@@ -306,7 +307,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         if(!cm.isEmpty(that.params['name'])){
             that.nodes['content']['input'].setAttribute('name', that.params['name']);
         }
-        if(!cm.isEmpty(that.params['value']) && !that.params['rawValue'] && that.params['setHiddenValue']){
+        if(!cm.isEmpty(that.params['value']) && that.params['inputValueType'] !== 'unset'){
             if(that.params['isOptionValue']){
                 value = that.params['value']['value'];
             }else if(cm.isObject(that.params['value']) || cm.isArray(that.params['value'])){
@@ -372,7 +373,6 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         if(!that.isAjax || that.isPreloaded){
             that.renderController();
         }
-        return that;
     };
 
     classProto.renderController = function(){
@@ -400,7 +400,6 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.components['controller'].addEvent('onInput', that.inputEventHandler);
         that.components['controller'].addEvent('onChange', that.changeEventHandler);
         that.components['controller'].addEvent('onReset', that.resetEventHandler);
-        return that;
     };
 
     classProto.togglePlaceholder = function(){
@@ -460,15 +459,17 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         return that;
     };
 
-    classProto.get = function(){
-        var that = this,
-            value;
-        if(that.params['rawValue']){
-            value = that.getRaw();
-        }else{
-            value = that.components['controller'] && cm.isFunction(that.components['controller'].get) ? that.components['controller'].get() : null;
+    classProto.get = function(type){
+        var that = this;
+        type = !cm.isUndefined(type) ? type : that.params['outputValueType'];
+        switch(type){
+            case 'raw':
+                return that.getRaw();
+            case 'text':
+                return that.getText();
+            default:
+                return that.components['controller'] && cm.isFunction(that.components['controller'].get) ? that.components['controller'].get() : null;
         }
-        return value;
     };
 
     classProto.getRaw = function(){
