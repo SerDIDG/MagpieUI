@@ -310,7 +310,9 @@ function(params){
                         },
                         'onPageRenderEnd' : function(pagination, data){
                             that.redraw();
-                            that.triggerEvent('onLoadEnd');
+                            that.triggerEvent('onLoadEnd', {
+                                'page' : data
+                            });
                         },
                         'onSetCount' : function(pagination, count){
                             that.params['showCounter'] && renderCounter(count);
@@ -359,7 +361,8 @@ function(params){
         // API onRenderStart event
         that.triggerEvent('onRenderStart', {
             'container' : container,
-            'page' : page
+            'page' : page,
+            'data' : data
         });
         // Reset table
         resetTable();
@@ -386,6 +389,7 @@ function(params){
         that.triggerEvent('onRenderEnd', {
             'container' : container,
             'page' : page,
+            'data' : data,
             'rows' : that.rows
         });
     };

@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.38.21 (2020-06-11 22:30) ************ */
+/*! ************ MagpieUI v3.38.22 (2020-06-12 21:20) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.38.21',
+        '_version' : '3.38.22',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -17981,7 +17981,9 @@ function(params){
                         },
                         'onPageRenderEnd' : function(pagination, data){
                             that.redraw();
-                            that.triggerEvent('onLoadEnd');
+                            that.triggerEvent('onLoadEnd', {
+                                'page' : data
+                            });
                         },
                         'onSetCount' : function(pagination, count){
                             that.params['showCounter'] && renderCounter(count);
@@ -18030,7 +18032,8 @@ function(params){
         // API onRenderStart event
         that.triggerEvent('onRenderStart', {
             'container' : container,
-            'page' : page
+            'page' : page,
+            'data' : data
         });
         // Reset table
         resetTable();
@@ -18057,6 +18060,7 @@ function(params){
         that.triggerEvent('onRenderEnd', {
             'container' : container,
             'page' : page,
+            'data' : data,
             'rows' : that.rows
         });
     };
@@ -20568,7 +20572,7 @@ cm.define('Com.Pagination', {
         'embedStructure' : 'append',
         'scrollNode' : window,
         'data' : [],                                                // Static data
-        'count' : 0,
+        'count' : 0,                                                // Total items
         'perPage' : 0,                                              // 0 - render all data in one page
         'startPage' : 1,                                            // Start page
         'startPageToken' : '',
@@ -20880,6 +20884,7 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
             'pages' : that.nodes['pages'],
             'container' : cm.node(that.params['pageTag']),
             'data' : data,
+            'total' : that.getCount(),
             'isVisible' : true,
             'isRendered' : true,
             'isError' : !data
@@ -21219,6 +21224,11 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
             that.triggerEvent('onSetCount', count);
         }
         return that;
+    };
+
+    classProto.getCount = function(){
+        var that = this;
+        return that.params['count'];
     };
 
     classProto.setAction = function(o, mode, update){

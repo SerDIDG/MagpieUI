@@ -18,7 +18,7 @@ cm.define('Com.Pagination', {
         'embedStructure' : 'append',
         'scrollNode' : window,
         'data' : [],                                                // Static data
-        'count' : 0,
+        'count' : 0,                                                // Total items
         'perPage' : 0,                                              // 0 - render all data in one page
         'startPage' : 1,                                            // Start page
         'startPageToken' : '',
@@ -330,6 +330,7 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
             'pages' : that.nodes['pages'],
             'container' : cm.node(that.params['pageTag']),
             'data' : data,
+            'total' : that.getCount(),
             'isVisible' : true,
             'isRendered' : true,
             'isError' : !data
@@ -669,6 +670,11 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
             that.triggerEvent('onSetCount', count);
         }
         return that;
+    };
+
+    classProto.getCount = function(){
+        var that = this;
+        return that.params['count'];
     };
 
     classProto.setAction = function(o, mode, update){
