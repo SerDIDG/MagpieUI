@@ -92,7 +92,7 @@ function(params){
         // Structure
         nodes['container'] = cm.node('div', {'class' : 'com__tags-input'},
             nodes['hidden'] = cm.node('input', {'type' : 'hidden'}),
-            nodes['inner'] = cm.node('div', {'class' : 'inner'},
+            nodes['inner'] = cm.node('div', {'class' : 'inner input'},
                 nodes['tags'] = cm.node('div', {'class' : 'tags'})
             )
         );
@@ -149,10 +149,12 @@ function(params){
         });
         cm.addEvent(nodes['input'], 'focus', function(){
             cm.addClass(nodes['container'], 'active');
+            cm.addClass(nodes['inner'], 'input-focus');
         });
         cm.addEvent(nodes['input'], 'blur', function(){
             addAdderTags(true);
             cm.removeClass(nodes['container'], 'active');
+            cm.removeClass(nodes['inner'], 'input-focus');
         });
     };
 

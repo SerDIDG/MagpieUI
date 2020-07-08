@@ -56,7 +56,7 @@ var cm = {
             'hideDelay' : 250,
             'hideDelayShort' : 150,
             'hideDelayLong' : 500,
-            'autoHideDelay' : 2500,
+            'autoHideDelay' : 2000,
             'requestDelay' : 300,
             'adaptiveFrom' : 768,
             'screenTablet' : 1024,

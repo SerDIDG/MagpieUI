@@ -2,7 +2,6 @@
 
 .com__tags-input {
     > .inner {
-        .input;
         height: auto;
         padding: 0;
 
@@ -50,12 +49,11 @@
             .input.input-transparent;
             margin: -@CmInput-BorderWidth;
             clear: both;
-        }
-    }
 
-    &.active {
-        > .inner {
-            .input.input-focus;
+            &:hover,
+            &:focus {
+                .input.input-transparent;
+            }
         }
     }
 }

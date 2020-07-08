@@ -20,6 +20,7 @@ cm.define('Com.Form', {
         'onSendStart',
         'onSend',
         'onSendEnd',
+        'onSet',
         'onChange',
         'onInput',
         'onClear',
@@ -41,6 +42,7 @@ cm.define('Com.Form', {
         'showNotifications' : true,
         'showSuccessNotification' : false,
         'showValidationNotification' : false,
+        'showValidationMessages' : true,
         'responseKey': 'data',
         'responseErrorsKey': 'errors',
         'responseMessageKey' : 'message',
@@ -186,7 +188,8 @@ function(params){
             'validate' : false,
             'options' : [],
             'container' : that.nodes['fields'],
-            'renderName' : null
+            'renderName' : null,
+            'renderErrorMessage' : that.params['showValidationMessages']
         }, params);
         params = cm.merge(cm.clone(field, true), params);
         // Validate
@@ -733,6 +736,7 @@ function(params){
                 that.fields[name]['controller'].set(setValue, triggerEvents);
             }
         });
+        that.triggerEvent('onSet');
         return that;
     };
 

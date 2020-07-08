@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.38.22 (2020-06-12 21:20) ************ */
+/*! ************ MagpieUI v3.38.23 (2020-07-08 23:02) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.38.22',
+        '_version' : '3.38.23',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -1655,7 +1655,7 @@ var cm = {
             'hideDelay' : 250,
             'hideDelayShort' : 150,
             'hideDelayLong' : 500,
-            'autoHideDelay' : 2500,
+            'autoHideDelay' : 2000,
             'requestDelay' : 300,
             'adaptiveFrom' : 768,
             'screenTablet' : 1024,
@@ -9773,6 +9773,7 @@ cm.define('Com.Form', {
         'onSendStart',
         'onSend',
         'onSendEnd',
+        'onSet',
         'onChange',
         'onInput',
         'onClear',
@@ -9794,6 +9795,7 @@ cm.define('Com.Form', {
         'showNotifications' : true,
         'showSuccessNotification' : false,
         'showValidationNotification' : false,
+        'showValidationMessages' : true,
         'responseKey': 'data',
         'responseErrorsKey': 'errors',
         'responseMessageKey' : 'message',
@@ -9939,7 +9941,8 @@ function(params){
             'validate' : false,
             'options' : [],
             'container' : that.nodes['fields'],
-            'renderName' : null
+            'renderName' : null,
+            'renderErrorMessage' : that.params['showValidationMessages']
         }, params);
         params = cm.merge(cm.clone(field, true), params);
         // Validate
@@ -10486,6 +10489,7 @@ function(params){
                 that.fields[name]['controller'].set(setValue, triggerEvents);
             }
         });
+        that.triggerEvent('onSet');
         return that;
     };
 
@@ -32704,7 +32708,7 @@ function(params){
         // Structure
         nodes['container'] = cm.node('div', {'class' : 'com__tags-input'},
             nodes['hidden'] = cm.node('input', {'type' : 'hidden'}),
-            nodes['inner'] = cm.node('div', {'class' : 'inner'},
+            nodes['inner'] = cm.node('div', {'class' : 'inner input'},
                 nodes['tags'] = cm.node('div', {'class' : 'tags'})
             )
         );
@@ -32761,10 +32765,12 @@ function(params){
         });
         cm.addEvent(nodes['input'], 'focus', function(){
             cm.addClass(nodes['container'], 'active');
+            cm.addClass(nodes['inner'], 'input-focus');
         });
         cm.addEvent(nodes['input'], 'blur', function(){
             addAdderTags(true);
             cm.removeClass(nodes['container'], 'active');
+            cm.removeClass(nodes['inner'], 'input-focus');
         });
     };
 
