@@ -23,7 +23,7 @@
     "grunt-contrib-imagemin": "^4.0.0",
     "grunt-contrib-jshint": "^2.0.0",
     "grunt-contrib-less": "^2.0.0",
-    "grunt-contrib-uglify": "^4.0.1",
+    "grunt-contrib-uglify": "^5.0.0",
     "grunt-contrib-watch": "~1.1.0",
     "grunt-less-imports": "^1.1.0",
     "grunt-lessvars": "^0.3.1",
