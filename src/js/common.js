@@ -3597,7 +3597,7 @@ cm.cookieDate = function(days){
 cm.ajax = function(o){
     var config = cm.merge({
             'debug' : true,
-            'type' : 'json',                                         // text | xml | json | jsonp
+            'type' : 'json',                                         // text | document | json | jsonp | blob
             'method' : 'POST',                                       // POST | GET | PUT | PATCH | DELETE
             'paramsType' : 'uri',                                    // uri | json
             'params' : '',
@@ -3620,7 +3620,6 @@ cm.ajax = function(o){
             'handler' : false
         }, o),
         vars = cm._getVariables(),
-        responseType,
         response,
         callbackName,
         callbackSuccessName,
@@ -3644,7 +3643,6 @@ cm.ajax = function(o){
     var validate = function(){
         config['httpRequestObject'] = cm.createXmlHttpRequestObject();
         config['type'] = config['type'].toLowerCase();
-        responseType =  /text|json/.test(config['type']) ? 'responseText' : 'responseXML';
         config['method'] = config['method'].toUpperCase();
         // Convert params object to URI string
         if(config['params'] instanceof FormData) {
@@ -3678,6 +3676,7 @@ cm.ajax = function(o){
 
     var send = function(){
         config['httpRequestObject'].open(config['method'], config['url'], config['async']);
+        config['httpRequestObject'].responseType = config['type'];
         // Set Headers
         if('withCredentials' in config['httpRequestObject']){
             config['httpRequestObject'].withCredentials = config['withCredentials'];
@@ -3702,10 +3701,7 @@ cm.ajax = function(o){
 
     var loadHandler = function(e){
         if(config['httpRequestObject'].readyState === 4){
-            response = config['httpRequestObject'][responseType];
-            if(config['type'] === 'json'){
-                response = cm.parseJSON(response);
-            }
+            response = config['httpRequestObject'].response;
             if(config['httpRequestObject'].status === 200){
                 config['onSuccess'](response, e);
             }else{

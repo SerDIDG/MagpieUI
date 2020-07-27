@@ -642,7 +642,11 @@ function(params){
     /*** CELLS BY TYPES ***/
 
     var renderCellDefault = function(config, row, item){
-        item['nodes']['inner'].innerHTML = item['text'];
+        if(cm.isNode(item['text'])){
+            cm.appendChild(item['text'], item['nodes']['inner']);
+        }else{
+            item['nodes']['inner'].innerHTML = item['text'];
+        }
     };
 
     var renderCellNumber = function(config, row, item){
