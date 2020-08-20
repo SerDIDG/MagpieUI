@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.38.24 (2020-07-27 21:30) ************ */
+/*! ************ MagpieUI v3.38.25 (2020-08-20 21:53) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.38.24',
+        '_version' : '3.38.25',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -3762,6 +3762,7 @@ cm.parseDate = function(str, format){
             '%Y' : 'YYYY',
             '%m' : 'mm',
             '%d' : 'dd',
+            '%h' : 'hh',
             '%H' : 'HH',
             '%i' : 'ii',
             '%s' : 'ss',
@@ -3777,6 +3778,9 @@ cm.parseDate = function(str, format){
             },
             'dd' : function(value){
                 return (value !== '00') ? value : date.getDate();
+            },
+            'hh' : function(value){
+                return value;
             },
             'HH' : function(value){
                 return value;
@@ -3798,6 +3802,7 @@ cm.parseDate = function(str, format){
             'YYYY' : '0000',
             'mm' : '00',
             'dd' : '00',
+            'hh' : '00',
             'HH' : '00',
             'ii' : '00',
             'ss' : '00',
@@ -6206,6 +6211,10 @@ Mod['Langs'] = {
         langStr = cm.strReplace(langStr, vars);
         return langStr;
     },
+    'msg' : function() {
+        var that = this;
+        return that.lang.apply(that, arguments);
+    },
     'langObject' : function(str){
         var that = this,
             o = that.lang(str);
@@ -6606,6 +6615,7 @@ Mod['Structure'] = {
         return that;
     }
 };
+
 Part['Menu'] = (function(){
     var processedNodes = [],
         pageSize;

@@ -2163,6 +2163,7 @@ cm.parseDate = function(str, format){
             '%Y' : 'YYYY',
             '%m' : 'mm',
             '%d' : 'dd',
+            '%h' : 'hh',
             '%H' : 'HH',
             '%i' : 'ii',
             '%s' : 'ss',
@@ -2178,6 +2179,9 @@ cm.parseDate = function(str, format){
             },
             'dd' : function(value){
                 return (value !== '00') ? value : date.getDate();
+            },
+            'hh' : function(value){
+                return value;
             },
             'HH' : function(value){
                 return value;
@@ -2199,6 +2203,7 @@ cm.parseDate = function(str, format){
             'YYYY' : '0000',
             'mm' : '00',
             'dd' : '00',
+            'hh' : '00',
             'HH' : '00',
             'ii' : '00',
             'ss' : '00',

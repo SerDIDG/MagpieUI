@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.38.24 (2020-07-27 21:30) ************ */
+/*! ************ MagpieUI v3.38.25 (2020-08-20 21:53) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.0
@@ -4396,8 +4396,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.38.24');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.38.24') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.38.24') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.38.24') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.38.24#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.38.25');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.38.25') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.38.25') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.38.25') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.38.25#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;

@@ -402,6 +402,10 @@ Mod['Langs'] = {
         langStr = cm.strReplace(langStr, vars);
         return langStr;
     },
+    'msg' : function() {
+        var that = this;
+        return that.lang.apply(that, arguments);
+    },
     'langObject' : function(str){
         var that = this,
             o = that.lang(str);
