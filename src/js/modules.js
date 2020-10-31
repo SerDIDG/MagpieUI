@@ -378,7 +378,7 @@ Mod['Langs'] = {
         var that = this;
         that.strings = cm.merge(that.strings, that.params['langs']);
     },
-    'lang' : function(str, vars){
+    'lang' : function(str, vars, plural){
         var that = this,
             langStr;
         if(cm.isUndefined(str) || cm.isEmpty(str)){
@@ -399,7 +399,15 @@ Mod['Langs'] = {
             langStr = str;
         }
         // Process variable
-        langStr = cm.strReplace(langStr, vars);
+        if(cm.isObject(langStr) || cm.isArray(langStr)){
+            langStr = cm.objectReplace(langStr, vars);
+        }else{
+            langStr = cm.strReplace(langStr, vars);
+        }
+        // Plural
+        if(!cm.isUndefined(plural) && cm.isArray(langStr)){
+            langStr = cm.plural(plural, langStr);
+        }
         return langStr;
     },
     'msg' : function() {

@@ -2030,10 +2030,12 @@ cm.addLeadZero = function(x){
 };
 
 cm.plural = cm.getNumberDeclension = function(number, titles /* ['найдена', 'найдено', 'найдены'] */){
-    var cases = [2, 0, 1, 1, 1, 2];
-    return titles[
-        (number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]
-    ];
+    if(!cm.isArray(titles)){
+        return titles;
+    }
+    var cases = [2, 0, 1, 1, 1, 2],
+        i = (number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5];
+    return titles[i] || titles[i - 1] || titles[0];
 };
 
 cm.toRadians = function(degrees) {

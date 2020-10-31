@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.38.25 (2020-08-20 21:53) ************ */
+/*! ************ MagpieUI v3.38.26 (2020-10-31 12:15) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.38.25',
+        '_version' : '3.38.26',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -3629,10 +3629,12 @@ cm.addLeadZero = function(x){
 };
 
 cm.plural = cm.getNumberDeclension = function(number, titles /* ['найдена', 'найдено', 'найдены'] */){
-    var cases = [2, 0, 1, 1, 1, 2];
-    return titles[
-        (number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]
-    ];
+    if(!cm.isArray(titles)){
+        return titles;
+    }
+    var cases = [2, 0, 1, 1, 1, 2],
+        i = (number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5];
+    return titles[i] || titles[i - 1] || titles[0];
 };
 
 cm.toRadians = function(degrees) {
@@ -5807,6 +5809,7 @@ cm.getStrings = function(className, o){
     });
     return data;
 };
+
 /* ******* EXTEND ******* */
 
 Mod['Extend'] = {
@@ -6187,7 +6190,7 @@ Mod['Langs'] = {
         var that = this;
         that.strings = cm.merge(that.strings, that.params['langs']);
     },
-    'lang' : function(str, vars){
+    'lang' : function(str, vars, plural){
         var that = this,
             langStr;
         if(cm.isUndefined(str) || cm.isEmpty(str)){
@@ -6208,7 +6211,15 @@ Mod['Langs'] = {
             langStr = str;
         }
         // Process variable
-        langStr = cm.strReplace(langStr, vars);
+        if(cm.isObject(langStr) || cm.isArray(langStr)){
+            langStr = cm.objectReplace(langStr, vars);
+        }else{
+            langStr = cm.strReplace(langStr, vars);
+        }
+        // Plural
+        if(!cm.isUndefined(plural) && cm.isArray(langStr)){
+            langStr = cm.plural(plural, langStr);
+        }
         return langStr;
     },
     'msg' : function() {
