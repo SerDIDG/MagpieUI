@@ -134,7 +134,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.attributeName = that.params['formName'] + '[' + that.params['name'] + ']';
         // Validate
         if(that.params['required'] && that.params['requiredAsterisk'] && !cm.isEmpty(that.params['placeholder'])){
-            that.params['placeholder'] += ' *';
+            that.params['placeholder'] = [that.params['placeholder'], that.lang('*')].join(' ');
         }
         // Constructor params
         that.params['constructorParams']['id'] = that.params['id'];

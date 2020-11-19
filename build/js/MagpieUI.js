@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.38.27 (2020-11-01 14:58) ************ */
+/*! ************ MagpieUI v3.38.28 (2020-11-19 20:10) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.38.27',
+        '_version' : '3.38.28',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -8541,7 +8541,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.attributeName = that.params['formName'] + '[' + that.params['name'] + ']';
         // Validate
         if(that.params['required'] && that.params['requiredAsterisk'] && !cm.isEmpty(that.params['placeholder'])){
-            that.params['placeholder'] += ' *';
+            that.params['placeholder'] = [that.params['placeholder'], that.lang('*')].join(' ');
         }
         // Constructor params
         that.params['constructorParams']['id'] = that.params['id'];
@@ -9218,6 +9218,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.triggerEvent('onRequestAbort');
     };
 });
+
 cm.define('Com.AbstractInputContainer', {
     'extend' : 'Com.AbstractController',
     'events' : [
