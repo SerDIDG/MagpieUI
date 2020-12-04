@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.38.28 (2020-11-19 20:10) ************ */
+/*! ************ MagpieUI v3.38.29 (2020-12-04 22:00) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.38.28',
+        '_version' : '3.38.29',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -8996,17 +8996,26 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
 
     /******* MESSAGES *******/
 
-    classProto.renderHint = function(message){
-        var that = this;
+    classProto.renderHint = function(message, params){
+        var that = this,
+            messageNode;
+        params = cm.merge({
+            'className' : null
+        },params);
+
         that.clearHint();
         that.nodes['hints'] = cm.node('ul', {'class' : 'pt__field__hint'},
-            cm.node('li', {'innerHTML' : message})
+            messageNode = cm.node('li', {'innerHTML' : message})
         );
+        if(!cm.isEmpty(params['className'])){
+            cm.addClass(messageNode, params['className']);
+        }
         if(that.params['renderError'] && that.nodes['errors'] && cm.inDOM(that.nodes['errors'])){
             cm.insertBefore(that.nodes['hints'], that.nodes['errors']);
         }else{
             cm.appendChild(that.nodes['hints'], that.nodes['messages']);
         }
+
         return that;
     };
 
@@ -9016,18 +9025,29 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         return that;
     };
 
-    classProto.renderError = function(message){
-        var that = this;
+    classProto.renderError = function(message, params){
+        var that = this,
+            messageNode;
+        params = cm.merge({
+            'className' : 'error'
+        },params);
+
         that.clearError();
-        if(that.params['renderError']){
-            cm.addClass(that.nodes['container'], 'error');
-            if(that.params['renderErrorMessage'] && !cm.isEmpty(message)){
-                that.nodes['errors'] = cm.node('ul', {'class' : 'pt__field__error pt__field__hint'},
-                    cm.node('li', {'class' : 'error', 'innerHTML' : message})
-                );
-                cm.insertLast(that.nodes['errors'], that.nodes['messages']);
-            }
+        if(!that.params['renderError']){
+            return that;
         }
+
+        cm.addClass(that.nodes['container'], 'error');
+        if(that.params['renderErrorMessage'] && !cm.isEmpty(message)){
+            that.nodes['errors'] = cm.node('ul', {'class' : 'pt__field__error pt__field__hint'},
+                messageNode = cm.node('li', {'innerHTML' : message})
+            );
+            if(!cm.isEmpty(params['className'])){
+                cm.addClass(messageNode, params['className']);
+            }
+            cm.insertLast(that.nodes['errors'], that.nodes['messages']);
+        }
+
         return that;
     };
 
