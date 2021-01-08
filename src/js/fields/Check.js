@@ -13,9 +13,7 @@ function(params){
     Com.AbstractInput.apply(that, arguments);
 });
 
-cm.getConstructor('Com.Check', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
+cm.getConstructor('Com.Check', function(classConstructor, className, classProto, classInherit){
     classProto.onConstructStart = function(){
         var that = this;
         // Variables
@@ -27,7 +25,20 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto)
 
     classProto.onValidateParamsProcess = function(){
         var that = this;
-        that.params['multiple'] = !cm.isEmpty(that.params['options']) && that.params['type'] === 'checkbox';
+        if(!cm.isEmpty(that.params['options'])){
+            that.params['multiple'] = that.params['type'] === 'checkbox';
+            // Convert option values
+            cm.forEach(that.params['options'], function(item){
+                if(!cm.isEmpty(item['value']) && (item['checked'] || item['selected'])){
+                    if(cm.isEmpty(that.params['value'])){
+                        that.params['value'] = [];
+                    }else if(cm.isString(that.params['value']) || cm.isNumber(that.params['value'])){
+                        that.params['value'] = [that.params['value']];
+                    }
+                    cm.arrayAdd(that.params['value'], item['value']);
+                }
+            });
+        }
     };
 
     /*** VIEW MODEL ***/
@@ -65,7 +76,7 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto)
         item['input'] = nodes['input'];
         // Attributes
         if(!cm.isEmpty(item['value'])){
-            item['input'] .value = item['value'];
+            item['input'].value = item['value'];
         }
         if(!cm.isEmpty(that.params['name'])){
             item['input'].setAttribute('name', that.params['name']);
@@ -95,7 +106,7 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto)
                 inputContainer = that.renderInput(option);
                 cm.appendChild(inputContainer, nodes['container']);
             });
-        }else{
+        }else if(!cm.isEmpty(that.params['placeholder'])){
             inputContainer = that.renderInput({'text' : that.params['placeholder']});
             cm.appendChild(inputContainer, nodes['container']);
         }
