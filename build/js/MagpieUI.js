@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.38.30 (2021-01-08 20:07) ************ */
+/*! ************ MagpieUI v3.38.31 (2021-01-11 20:10) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.38.30',
+        '_version' : '3.38.31',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -3929,6 +3929,8 @@ cm.getPageSize = function(key){
             'winHeight' : de.clientHeight,
             'winWidth' : de.clientWidth
         };
+    o['scrollTop'] = cm.getBodyScrollTop();
+    o['scrollLeft'] = cm.getBodyScrollLeft();
     o['scrollHeight'] = o['height'] - o['winHeight'];
     o['scrollWidth'] = o['width'] - o['winWidth'];
     return o[key] || o;
@@ -4033,6 +4035,19 @@ cm.getRect = function(node){
         'width' : 0,
         'height' : 0
     };
+};
+
+cm.getOffsetRect = function(node){
+    var rect = cm.getRect(node),
+        topOffset = cm.getBodyScrollTop(),
+        leftOffset = cm.getBodyScrollLeft();
+    rect.offset = {
+        'top' : rect.top + topOffset,
+        'right' : rect.right +  leftOffset,
+        'bottom' : rect.bottom +  topOffset,
+        'left' : rect.left + leftOffset
+    }
+    return rect;
 };
 
 cm.getFullRect = function(node, styleObject){
@@ -4728,7 +4743,7 @@ cm.setCSSTransitionDuration = (function(){
 })();
 
 cm.inRange = function(a1, b1, a2, b2){
-    return a1 >= a2 && a1 <= b2 || b1 >= a2 && b1 <= b2 || a2 >= a1 && a2 <= b1
+    return a1 >= a2 && a1 <= b2 || b1 >= a2 && b1 <= b2 || a2 >= a1 && a2 <= b1;
 };
 
 cm.CSSValuesToArray = function(value){
@@ -11096,7 +11111,7 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
         });
         return that;
     };
-    
+
     /******* TABS *******/
 
     classProto.processTab = function(tab, label){
@@ -11233,7 +11248,7 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
         }
         return that;
     };
-    
+
     /*** SET / UNSET ***/
 
     classProto.setTab = function(id){
@@ -11632,6 +11647,7 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
         return that;
     };
 });
+
 cm.define('Com.ScrollPagination', {
     'extend' : 'Com.AbstractController',
     'events' : [

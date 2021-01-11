@@ -148,7 +148,7 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
         });
         return that;
     };
-    
+
     /******* TABS *******/
 
     classProto.processTab = function(tab, label){
@@ -285,7 +285,7 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
         }
         return that;
     };
-    
+
     /*** SET / UNSET ***/
 
     classProto.setTab = function(id){

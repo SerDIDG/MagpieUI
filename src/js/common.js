@@ -2330,6 +2330,8 @@ cm.getPageSize = function(key){
             'winHeight' : de.clientHeight,
             'winWidth' : de.clientWidth
         };
+    o['scrollTop'] = cm.getBodyScrollTop();
+    o['scrollLeft'] = cm.getBodyScrollLeft();
     o['scrollHeight'] = o['height'] - o['winHeight'];
     o['scrollWidth'] = o['width'] - o['winWidth'];
     return o[key] || o;
@@ -2434,6 +2436,19 @@ cm.getRect = function(node){
         'width' : 0,
         'height' : 0
     };
+};
+
+cm.getOffsetRect = function(node){
+    var rect = cm.getRect(node),
+        topOffset = cm.getBodyScrollTop(),
+        leftOffset = cm.getBodyScrollLeft();
+    rect.offset = {
+        'top' : rect.top + topOffset,
+        'right' : rect.right +  leftOffset,
+        'bottom' : rect.bottom +  topOffset,
+        'left' : rect.left + leftOffset
+    }
+    return rect;
 };
 
 cm.getFullRect = function(node, styleObject){
@@ -3129,7 +3144,7 @@ cm.setCSSTransitionDuration = (function(){
 })();
 
 cm.inRange = function(a1, b1, a2, b2){
-    return a1 >= a2 && a1 <= b2 || b1 >= a2 && b1 <= b2 || a2 >= a1 && a2 <= b1
+    return a1 >= a2 && a1 <= b2 || b1 >= a2 && b1 <= b2 || a2 >= a1 && a2 <= b1;
 };
 
 cm.CSSValuesToArray = function(value){
