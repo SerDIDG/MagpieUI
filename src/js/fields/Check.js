@@ -106,7 +106,7 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
                 inputContainer = that.renderInput(option);
                 cm.appendChild(inputContainer, nodes['container']);
             });
-        }else if(!cm.isEmpty(that.params['placeholder'])){
+        }else{
             inputContainer = that.renderInput({'text' : that.params['placeholder']});
             cm.appendChild(inputContainer, nodes['container']);
         }
