@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.38.32 (2021-02-06 05:57) ************ */
+/*! ************ MagpieUI v3.38.32 (2021-03-03 22:55) ************ */
 
 @charset "UTF-8";
 /*!
@@ -13227,7 +13227,6 @@ ul.pt__field__hint {
     border-color: @PtMenu-BorderColor;
     list-style: none;
     touch-action: none;
-    .mx__transition(all, @CmUI-Transition-Duration);
 
     > li {
         position: relative;
@@ -13286,16 +13285,15 @@ ul.pt__field__hint {
             z-index: 2;
 
             > ul {
-                .pt__menu-dropdown--active;
+                .pt__menu-dropdown--show;
             }
         }
     }
 }
 
 .pt__menu-dropdown--position {
-    visibility: hidden;
+    .pt__menu-dropdown--hide;
     position: absolute;
-    opacity: 0;
     .mx__position(100%, auto, auto, 0);
 
     > li {
@@ -13335,10 +13333,17 @@ ul.pt__field__hint {
     .pt__box--clear;
 }
 
+.pt__menu-dropdown--hide {
+    visibility: hidden;
+    opacity: 0;
+    .mx__transition(all, @CmUI-Transition-Duration);
+}
+
+.pt__menu-dropdown--show,
 .pt__menu-dropdown--active {
     visibility: visible;
     opacity: 1;
-    .mx__transition(visibility opacity, @CmUI-Transition-DurationReverse);
+    .mx__transition(all, @CmUI-Transition-DurationReverse);
 }
 
 .pt__menu-dropdown--embed {
@@ -13349,11 +13354,17 @@ ul.pt__field__hint {
 .pt__menu {
     touch-action: none;
 
+    &.is-hide {
+        > .pt__menu-dropdown {
+            .pt__menu-dropdown--hide;
+        }
+    }
+
     &:hover,
     &:active,
     &.is-show {
         > .pt__menu-dropdown {
-            .pt__menu-dropdown--active;
+            .pt__menu-dropdown--show;
         }
     }
 }
@@ -13388,6 +13399,7 @@ ul.pt__field__hint {
         }
     }
 }
+
 /* ******* PARTS: OVERLAY ******* */
 
 .pt__overlay {
@@ -19092,14 +19104,15 @@ ul.pt__field__hint {
 }
 
 .com__tabset__head-menu {
-    width: @ComTabset-Tabs-Height;
     height: @ComTabset-Tabs-Height;
     position: absolute;
-    .mx__position(@ComTabset-BorderWidth, @ComTabset-BorderWidth, @ComTabset-BorderWidth, auto);
+    .mx__position(@ComTabset-BorderWidth, @ComTabset-BorderWidth, @ComTabset-BorderWidth, @ComTabset-BorderWidth);
 
     .icon {
         width: @ComTabset-Tabs-Height;
         height: @ComTabset-Tabs-Height;
+        position: absolute;
+        .mx__position(0, 0, 0, auto);
 
         &.default {
             .icon.medium.menu;
@@ -19109,14 +19122,10 @@ ul.pt__field__hint {
     .pt__menu-dropdown {
         .pt__menu-dropdown--base;
         .pt__menu-dropdown--position;
-        .pt__menu-dropdown--position.pull-right;
+        .pt__menu-dropdown--position.pull-justify;
 
-        &.pull-left,
-        &.pull-right {
-            .pt__menu-dropdown--position.pull-right;
-            left: auto;
-            right: -@ComTabset-BorderWidth;
-        }
+        right: -@ComTabset-BorderWidth;
+        left: -@ComTabset-BorderWidth;
     }
 }
 

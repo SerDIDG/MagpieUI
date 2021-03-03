@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.38.32 (2021-02-06 05:57) ************ */
+/*! ************ MagpieUI v3.38.32 (2021-03-03 22:55) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.0
@@ -10210,11 +10210,11 @@ button.is-hidden {
   border-color: hsl(0, 0%, 80%);
   list-style: none;
   touch-action: none;
+  visibility: hidden;
+  opacity: 0;
   -webkit-transition: all 250ms ease-in-out 0ms;
   transition: all 250ms ease-in-out 0ms;
-  visibility: hidden;
   position: absolute;
-  opacity: 0;
   top: 100%;
   right: auto;
   left: 0;
@@ -10330,8 +10330,8 @@ button.is-hidden {
 .pt__editable.is-editable > .menu .pt__menu-dropdown > li:hover > ul {
   visibility: visible;
   opacity: 1;
-  -webkit-transition: visibility 100ms ease-in-out 0ms, opacity 100ms ease-in-out 0ms;
-  transition: visibility 100ms ease-in-out 0ms, opacity 100ms ease-in-out 0ms;
+  -webkit-transition: all 100ms ease-in-out 0ms;
+  transition: all 100ms ease-in-out 0ms;
 }
 .pt__editable.is-editable > .menu .pt__menu-dropdown > li > ul {
   top: -5px;
@@ -10402,8 +10402,8 @@ button.is-hidden {
 .pt__editable.is-editable > .menu.is-show .pt__menu-dropdown {
   visibility: visible;
   opacity: 1;
-  -webkit-transition: visibility 100ms ease-in-out 0ms, opacity 100ms ease-in-out 0ms;
-  transition: visibility 100ms ease-in-out 0ms, opacity 100ms ease-in-out 0ms;
+  -webkit-transition: all 100ms ease-in-out 0ms;
+  transition: all 100ms ease-in-out 0ms;
   -webkit-transition-delay: 0ms;
   transition-delay: 0ms;
 }
@@ -14557,8 +14557,6 @@ ul.pt__field__hint li:before {
   border-color: hsl(0, 0%, 80%);
   list-style: none;
   touch-action: none;
-  -webkit-transition: all 250ms ease-in-out 0ms;
-  transition: all 250ms ease-in-out 0ms;
 }
 .pt__menu-dropdown--base > li {
   position: relative;
@@ -14664,13 +14662,15 @@ ul.pt__field__hint li:before {
 .pt__menu-dropdown--base > li:hover > ul {
   visibility: visible;
   opacity: 1;
-  -webkit-transition: visibility 100ms ease-in-out 0ms, opacity 100ms ease-in-out 0ms;
-  transition: visibility 100ms ease-in-out 0ms, opacity 100ms ease-in-out 0ms;
+  -webkit-transition: all 100ms ease-in-out 0ms;
+  transition: all 100ms ease-in-out 0ms;
 }
 .pt__menu-dropdown--position {
   visibility: hidden;
-  position: absolute;
   opacity: 0;
+  -webkit-transition: all 250ms ease-in-out 0ms;
+  transition: all 250ms ease-in-out 0ms;
+  position: absolute;
   top: 100%;
   right: auto;
   bottom: auto;
@@ -14736,23 +14736,36 @@ ul.pt__field__hint li:before {
 .pt__menu-dropdown--clear:last-child {
   margin-bottom: 0;
 }
+.pt__menu-dropdown--hide {
+  visibility: hidden;
+  opacity: 0;
+  -webkit-transition: all 250ms ease-in-out 0ms;
+  transition: all 250ms ease-in-out 0ms;
+}
+.pt__menu-dropdown--show,
 .pt__menu-dropdown--active {
   visibility: visible;
   opacity: 1;
-  -webkit-transition: visibility 100ms ease-in-out 0ms, opacity 100ms ease-in-out 0ms;
-  transition: visibility 100ms ease-in-out 0ms, opacity 100ms ease-in-out 0ms;
+  -webkit-transition: all 100ms ease-in-out 0ms;
+  transition: all 100ms ease-in-out 0ms;
 }
 /* *** MENU *** */
 .pt__menu {
   touch-action: none;
+}
+.pt__menu.is-hide > .pt__menu-dropdown {
+  visibility: hidden;
+  opacity: 0;
+  -webkit-transition: all 250ms ease-in-out 0ms;
+  transition: all 250ms ease-in-out 0ms;
 }
 .pt__menu:hover > .pt__menu-dropdown,
 .pt__menu:active > .pt__menu-dropdown,
 .pt__menu.is-show > .pt__menu-dropdown {
   visibility: visible;
   opacity: 1;
-  -webkit-transition: visibility 100ms ease-in-out 0ms, opacity 100ms ease-in-out 0ms;
-  transition: visibility 100ms ease-in-out 0ms, opacity 100ms ease-in-out 0ms;
+  -webkit-transition: all 100ms ease-in-out 0ms;
+  transition: all 100ms ease-in-out 0ms;
 }
 .pt__menu__item--icon > a {
   display: -webkit-flex;
@@ -19428,11 +19441,11 @@ ul.pt__field__hint li:before {
   border-color: hsl(0, 0%, 80%);
   list-style: none;
   touch-action: none;
-  -webkit-transition: all 250ms ease-in-out 0ms, visibility 100ms ease-in-out 0ms, opacity 100ms ease-in-out 0ms;
-  transition: all 250ms ease-in-out 0ms, visibility 100ms ease-in-out 0ms, opacity 100ms ease-in-out 0ms;
   visibility: hidden;
-  position: absolute;
   opacity: 0;
+  -webkit-transition: all 250ms ease-in-out 0ms, all 100ms ease-in-out 0ms;
+  transition: all 250ms ease-in-out 0ms, all 100ms ease-in-out 0ms;
+  position: absolute;
   top: 100%;
   right: auto;
   bottom: auto;
@@ -19545,8 +19558,8 @@ ul.pt__field__hint li:before {
 .com__tooltip.com__menu-tooltip .pt__menu .pt__menu-dropdown > li:hover > ul {
   visibility: visible;
   opacity: 1;
-  -webkit-transition: visibility 100ms ease-in-out 0ms, opacity 100ms ease-in-out 0ms;
-  transition: visibility 100ms ease-in-out 0ms, opacity 100ms ease-in-out 0ms;
+  -webkit-transition: all 100ms ease-in-out 0ms;
+  transition: all 100ms ease-in-out 0ms;
 }
 .com__tooltip.com__menu-tooltip .pt__menu .pt__menu-dropdown > li > ul {
   top: -5px;
@@ -21469,17 +21482,21 @@ html.ie9 .com__palette .b-range {
   color: #666666;
 }
 .com__tabset__head-menu {
-  width: 32px;
   height: 32px;
   position: absolute;
   top: 1px;
   right: 1px;
   bottom: 1px;
-  left: auto;
+  left: 1px;
 }
 .com__tabset__head-menu .icon {
   width: 32px;
   height: 32px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: auto;
 }
 .com__tabset__head-menu .icon.default {
   background-image: url("../img/icons/medium/menu.png");
@@ -21500,17 +21517,18 @@ html.ie9 .com__palette .b-range {
   border-color: hsl(0, 0%, 80%);
   list-style: none;
   touch-action: none;
+  visibility: hidden;
+  opacity: 0;
   -webkit-transition: all 250ms ease-in-out 0ms;
   transition: all 250ms ease-in-out 0ms;
-  visibility: hidden;
   position: absolute;
-  opacity: 0;
   right: auto;
-  left: 0;
   top: 100%;
   right: 0;
   bottom: auto;
-  left: auto;
+  left: 0;
+  right: -1px;
+  left: -1px;
 }
 .com__tabset__head-menu .pt__menu-dropdown > li {
   position: relative;
@@ -21616,8 +21634,8 @@ html.ie9 .com__palette .b-range {
 .com__tabset__head-menu .pt__menu-dropdown > li:hover > ul {
   visibility: visible;
   opacity: 1;
-  -webkit-transition: visibility 100ms ease-in-out 0ms, opacity 100ms ease-in-out 0ms;
-  transition: visibility 100ms ease-in-out 0ms, opacity 100ms ease-in-out 0ms;
+  -webkit-transition: all 100ms ease-in-out 0ms;
+  transition: all 100ms ease-in-out 0ms;
 }
 .com__tabset__head-menu .pt__menu-dropdown > li > ul {
   top: -5px;
@@ -21663,14 +21681,6 @@ html.ie9 .com__palette .b-range {
   right: 0;
   bottom: auto;
   left: 0;
-}
-.com__tabset__head-menu .pt__menu-dropdown.pull-left,
-.com__tabset__head-menu .pt__menu-dropdown.pull-right {
-  top: 100%;
-  right: 0;
-  bottom: auto;
-  left: auto;
-  right: -1px;
 }
 /* *** TABS *** */
 .com__tabset__head-tabs {

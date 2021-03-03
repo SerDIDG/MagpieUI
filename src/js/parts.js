@@ -84,7 +84,7 @@ Part['Menu'] = (function(){
             items = [],
             item;
         cm.forEach(menus, function(node){
-            if(!cm.inArray(processedNodes, node)){
+            if(!cm.inArray(processedNodes, node) && !cm.hasClass(node, 'is-manual')){
                 item = {
                     'node' : node,
                     'drop' : cm.getByClass('pt__menu-dropdown', node)[0]

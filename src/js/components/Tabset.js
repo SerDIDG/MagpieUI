@@ -68,6 +68,7 @@ function(params){
     that.isInitial = null;
     that.isProcess = false;
     that.isDestructed = false;
+    that.isMenuShown = false;
 
     var init = function(){
         getLESSVariables();
@@ -115,8 +116,8 @@ function(params){
         );
         that.nodes['headerTitle'] = cm.Node('div', {'class' : 'com__tabset__head-title'},
             that.nodes['headerTitleText'] = cm.Node('div', {'class' : 'com__tabset__head-text'}),
-            cm.Node('div', {'class' : 'com__tabset__head-menu pt__menu'},
-                cm.Node('div', {'class' : that.params['icons']['menu']}),
+            that.nodes['headerMenu'] = cm.Node('div', {'class' : 'com__tabset__head-menu pt__menu is-manual is-hide'},
+                that.nodes['headerMenuButton'] = cm.Node('div', {'class' : that.params['icons']['menu']}),
                 that.nodes['headerMenuUL'] = cm.Node('ul', {'class' : 'pt__menu-dropdown'})
             )
         );
@@ -129,6 +130,7 @@ function(params){
         if(that.params['animateSwitch']){
             cm.addClass(that.nodes['content'], 'is-animated');
         }
+        cm.addEvent(that.nodes['headerMenuButton'], 'click', toggleHeaderMenu);
         // Set Tabs Width
         if(/left|right/.test(that.params['tabsPosition'])){
             that.nodes['headerTabs'].style.width = that.params['tabsWidth'];
@@ -175,6 +177,7 @@ function(params){
         /* *** EVENTS *** */
         Part.Menu && Part.Menu();
         cm.addEvent(window, 'resize', resizeHandler);
+        cm.addEvent(window, 'click', clickHandler);
         that.addToStack(that.nodes['container']);
         if(that.params['customEvents']){
             cm.customEvent.add(that.nodes['container'], 'destruct', that.destruct);
@@ -321,6 +324,7 @@ function(params){
             }
             // Show
             switchTabHandler(item);
+            hideHeaderMenu();
         }
     };
 
@@ -378,6 +382,24 @@ function(params){
             that.isProcess = false;
         }
     };
+
+    var toggleHeaderMenu = function(){
+        if(that.isMenuShown){
+            hideHeaderMenu();
+        }else{
+            showHeaderMenu();
+        }
+    };
+
+    var showHeaderMenu = function(){
+        that.isMenuShown = true;
+        cm.replaceClass(that.nodes['headerMenu'], 'is-hide', 'is-show');
+    }
+
+    var hideHeaderMenu = function(){
+        that.isMenuShown = false;
+        cm.replaceClass(that.nodes['headerMenu'], 'is-show', 'is-hide');
+    }
 
     /* *** HELPERS *** */
 
@@ -459,6 +481,13 @@ function(params){
         // Recalculate slider height
         if(that.params['calculateMaxHeight']){
             calculateMaxHeight();
+        }
+    };
+
+    var clickHandler = function(e){
+        var target = cm.getEventTarget(e);
+        if(!cm.isParent(that.nodes['headerMenu'], target, true)){
+            hideHeaderMenu();
         }
     };
 
@@ -567,6 +596,7 @@ function(params){
     that.remove = function(){
         cm.removeEvent(window, 'hashchange', hashHandler);
         cm.removeEvent(window, 'resize', resizeHandler);
+        cm.removeEvent(window, 'click', clickHandler);
         hashInterval && clearInterval(hashInterval);
         resizeInterval && clearInterval(resizeInterval);
         cm.remove(that.nodes['container']);

@@ -26,14 +26,15 @@
 }
 
 .com__tabset__head-menu {
-    width: @ComTabset-Tabs-Height;
     height: @ComTabset-Tabs-Height;
     position: absolute;
-    .mx__position(@ComTabset-BorderWidth, @ComTabset-BorderWidth, @ComTabset-BorderWidth, auto);
+    .mx__position(@ComTabset-BorderWidth, @ComTabset-BorderWidth, @ComTabset-BorderWidth, @ComTabset-BorderWidth);
 
     .icon {
         width: @ComTabset-Tabs-Height;
         height: @ComTabset-Tabs-Height;
+        position: absolute;
+        .mx__position(0, 0, 0, auto);
 
         &.default {
             .icon.medium.menu;
@@ -43,14 +44,10 @@
     .pt__menu-dropdown {
         .pt__menu-dropdown--base;
         .pt__menu-dropdown--position;
-        .pt__menu-dropdown--position.pull-right;
+        .pt__menu-dropdown--position.pull-justify;
 
-        &.pull-left,
-        &.pull-right {
-            .pt__menu-dropdown--position.pull-right;
-            left: auto;
-            right: -@ComTabset-BorderWidth;
-        }
+        right: -@ComTabset-BorderWidth;
+        left: -@ComTabset-BorderWidth;
     }
 }
 
