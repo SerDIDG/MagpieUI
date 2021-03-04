@@ -141,14 +141,19 @@
 .pt__menu {
     touch-action: none;
 
+    &:hover,
+    &:active {
+        > .pt__menu-dropdown {
+            .pt__menu-dropdown--show;
+        }
+    }
+
     &.is-hide {
         > .pt__menu-dropdown {
             .pt__menu-dropdown--hide;
         }
     }
 
-    &:hover,
-    &:active,
     &.is-show {
         > .pt__menu-dropdown {
             .pt__menu-dropdown--show;

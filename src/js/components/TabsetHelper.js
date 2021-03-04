@@ -61,9 +61,7 @@ function(params){
     Com.AbstractController.apply(that, arguments);
 });
 
-cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
+cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, classProto, classInherit){
     /*** SYSTEM ***/
 
     classProto.construct = function(){
@@ -86,7 +84,7 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
         // Binds
         that.hashChangeHandler = that.hashChange.bind(that);
         // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
+        classInherit.prototype.construct.apply(that, arguments);
     };
 
     classProto.validateParams = function(){
@@ -133,7 +131,7 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
     classProto.renderViewModel = function(){
         var that = this;
         // Call parent method
-        _inherit.prototype.renderViewModel.apply(that, arguments);
+        classInherit.prototype.renderViewModel.apply(that, arguments);
         // Process tabs
         that.processTabs(that.nodes['tabs'], that.nodes['labels']);
         // Process tabs in parameters

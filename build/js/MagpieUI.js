@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.38.33 (2021-03-03 22:59) ************ */
+/*! ************ MagpieUI v3.38.34 (2021-03-04 21:03) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.38.33',
+        '_version' : '3.38.34',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -11025,9 +11025,7 @@ function(params){
     Com.AbstractController.apply(that, arguments);
 });
 
-cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
+cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, classProto, classInherit){
     /*** SYSTEM ***/
 
     classProto.construct = function(){
@@ -11050,7 +11048,7 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
         // Binds
         that.hashChangeHandler = that.hashChange.bind(that);
         // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
+        classInherit.prototype.construct.apply(that, arguments);
     };
 
     classProto.validateParams = function(){
@@ -11097,7 +11095,7 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
     classProto.renderViewModel = function(){
         var that = this;
         // Call parent method
-        _inherit.prototype.renderViewModel.apply(that, arguments);
+        classInherit.prototype.renderViewModel.apply(that, arguments);
         // Process tabs
         that.processTabs(that.nodes['tabs'], that.nodes['labels']);
         // Process tabs in parameters
@@ -24721,6 +24719,7 @@ cm.define('Com.Tabset2', {
         'removeOnDestruct' : true,
         'toggleOnHashChange' : true,                                // URL hash change handler
         'targetEvent' : 'click',                                    // click | hover | none
+        'clickNode' : window,
 
         /* TABS */
 
@@ -24778,8 +24777,13 @@ function(params){
     Com.TabsetHelper.apply(that, arguments);
 });
 
-cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
+cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProto, classInherit){
+    classProto.onConstructStart = function(){
+        var that = this;
+        that.isMenuShown = false;
+        that.toggleMenuHandler = that.toggleMenu.bind(that);
+        that.windowClickHandler = that.windowClick.bind(that);
+    };
 
     classProto.onGetLESSVariablesProcess = function(){
         var that = this;
@@ -24796,6 +24800,11 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
         return that;
     };
 
+    classProto.onDestructStart = function(){
+        var that = this;
+        cm.removeEvent(that.params['clickNode'], 'click', that.windowClickHandler);
+    };
+
     classProto.renderView = function(){
         var that = this;
         // Structure
@@ -24806,8 +24815,8 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
         );
         that.nodes['headerTitle'] = cm.node('div', {'class' : 'com__tabset__head-title'},
             that.nodes['headerTitleText'] = cm.node('div', {'class' : 'com__tabset__head-text'}),
-            cm.node('div', {'class' : 'com__tabset__head-menu pt__menu'},
-                cm.node('div', {'class' : that.params['icons']['menu']}),
+            that.nodes['headerMenu'] = cm.node('div', {'class' : 'com__tabset__head-menu pt__menu is-manual is-hide'},
+                that.nodes['headerMenuButton'] = cm.node('div', {'class' : that.params['icons']['menu']}),
                 that.nodes['headerMenuUL'] = cm.node('ul', {'class' : 'pt__menu-dropdown'})
             )
         );
@@ -24859,8 +24868,9 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
 
     classProto.renderViewModel = function(){
         var that = this;
+        cm.addEvent(that.nodes['headerMenuButton'], 'click', that.toggleMenuHandler);
         // Call parent method - renderViewModel
-        _inherit.prototype.renderViewModel.apply(that, arguments);
+        classInherit.prototype.renderViewModel.apply(that, arguments);
     };
 
     /******* TABS *******/
@@ -24927,7 +24937,38 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
         return nodes;
     };
 
+    /*** MENU ***/
+
+    classProto.toggleMenu = function(){
+        var that = this;
+        if(that.isMenuShown){
+            that.hideMenu();
+        }else{
+            that.showMenu();
+        }
+    };
+
+    classProto.showMenu = function(){
+        var that = this;
+        if(!that.isMenuShown){
+            that.isMenuShown = true;
+            cm.replaceClass(that.nodes['headerMenu'], 'is-hide', 'is-show');
+        }
+    };
+
+    classProto.hideMenu = function(){
+        var that = this;
+        if(that.isMenuShown){
+            that.isMenuShown = false;
+            cm.replaceClass(that.nodes['headerMenu'], 'is-show', 'is-hide');
+        }
+    }
+
     /*** TOGGLE ***/
+
+    classProto.onTabShowStart = function(that, item){
+        that.hideMenu();
+    };
 
     classProto.onTabShowProcess = function(that, item){
         clearTimeout(item['switchInt']);
@@ -24949,6 +24990,16 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
         }
     };
 
+    /*** SERVICE ***/
+
+    classProto.windowClick = function(e){
+        var that = this,
+            target = cm.getEventTarget(e);
+        if(!cm.isParent(that.nodes['headerMenu'], target, true)){
+            that.hideMenu();
+        }
+    };
+
     /******* PUBLIC *******/
 
     classProto.reset = function(){
@@ -24957,6 +25008,7 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
         return that;
     };
 });
+
 cm.define('Com.Timer', {
     'modules' : [
         'Params',
