@@ -29,6 +29,7 @@ cm.define('Com.Overlay', {
         'autoClose' : false,                // ToDo: implement
         'removeOnClose' : true,
         'destructOnRemove' : false,
+        'transition' : 'ease',
         'duration' : 'cm._config.animDurationLong'
     }
 },
@@ -71,6 +72,7 @@ function(params){
         );
         // CSS Class
         cm.addClass(that.nodes['container'], that.params['className']);
+        cm.addClass(that.nodes['container'], ['transition', that.params['transition']].join('-'));
         // Set position
         that.nodes['container'].style.position = that.params['position'];
         // Show spinner
@@ -149,15 +151,15 @@ function(params){
 
     /* ******* MAIN ******* */
 
-    that.open = function(isImmediately){
+    that.open = function(isImmediately, callback){
         if(!that.isOpen){
             if(that.params['lazy'] && !isImmediately){
                 that.delayInterval && clearTimeout(that.delayInterval);
                 that.delayInterval = setTimeout(function(){
-                    openProcess(isImmediately);
+                    openProcess(isImmediately, callback);
                 }, that.params['delay']);
             }else{
-                openProcess(isImmediately);
+                openProcess(isImmediately, callback);
             }
         }
         return that;
@@ -171,7 +173,7 @@ function(params){
         }
         return that;
     };
-    
+
     that.toggle = function(){
         if(that.isOpen){
             that.hide();
@@ -232,10 +234,14 @@ function(params){
         return that;
     };
 
-    that.embed = function(node){
+    that.embed = function(node, appendMode){
+        appendMode = !cm.isUndefined(appendMode) ? appendMode : that.params['appendMode'];
         if(cm.isNode(node)){
             that.params['container'] = node;
-            //cm[that.params['appendMode']](that.nodes['container'], that.params['container']);
+            that.params['appendMode'] = appendMode;
+            if(cm.inDOM(that.nodes['container'])){
+                cm[that.params['appendMode']](that.nodes['container'], that.params['container']);
+            }
         }
         return that;
     };

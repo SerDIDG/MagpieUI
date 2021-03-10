@@ -175,7 +175,6 @@ function(params){
         /* *** INSERT INTO DOM *** */
         that.embedStructure(that.nodes['container']);
         /* *** EVENTS *** */
-        Part.Menu && Part.Menu();
         cm.addEvent(window, 'resize', resizeHandler);
         cm.addEvent(window, 'click', clickHandler);
         that.addToStack(that.nodes['container']);
@@ -260,6 +259,7 @@ function(params){
                     set(tab['id']);
                 }
             }
+            hideHeaderMenu();
         });
         return item;
     };
@@ -324,7 +324,6 @@ function(params){
             }
             // Show
             switchTabHandler(item);
-            hideHeaderMenu();
         }
     };
 
@@ -394,12 +393,12 @@ function(params){
     var showHeaderMenu = function(){
         that.isMenuShown = true;
         cm.replaceClass(that.nodes['headerMenu'], 'is-hide', 'is-show');
-    }
+    };
 
     var hideHeaderMenu = function(){
         that.isMenuShown = false;
         cm.replaceClass(that.nodes['headerMenu'], 'is-show', 'is-hide');
-    }
+    };
 
     /* *** HELPERS *** */
 

@@ -419,6 +419,10 @@ Mod['Langs'] = {
             o = that.lang(str);
         return cm.isObject(o) || cm.isArray(o) ? o : {};
     },
+    'msgObject' : function() {
+        var that = this;
+        return that.langObject.apply(that, arguments);
+    },
     'setLangs' : function(o){
         var that = this;
         if(cm.isObject(o)){

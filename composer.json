@@ -1,6 +1,7 @@
 {
     "name": "SerDIDG/MagpieUI",
-    "version": "3.38.34",
+    "version": "3.38.35",
+    "description": "Collection of JavaScript and CSS snippets.",
     "license": "MIT",
     "type": "library",
     "homepage": "http://serdidg.github.io/MagpieUI/",

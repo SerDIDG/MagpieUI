@@ -3,7 +3,7 @@
 .pt__overlay {
     visibility: hidden;
     position: absolute;
-    z-index: 1003;
+    z-index: @PtOverlay-ZIndex;
     opacity: 0;
     .mx__position(0, 0, 0, 0);
     .mx__transition(all, @PtOverlay-Duration);
@@ -46,6 +46,14 @@
 
     &.theme-dark {
         background-color: @PtOverlay-Dark;
+    }
+
+    &.transition-ease {
+        transition-timing-function: ease-in-out;
+    }
+
+    &.transition-linear {
+        transition-timing-function: linear;
     }
 
     &.is-immediately {

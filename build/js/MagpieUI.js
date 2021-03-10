@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.38.34 (2021-03-04 21:03) ************ */
+/*! ************ MagpieUI v3.38.35 (2021-03-11 01:45) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.38.34',
+        '_version' : '3.38.35',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -6245,6 +6245,10 @@ Mod['Langs'] = {
         var that = this,
             o = that.lang(str);
         return cm.isObject(o) || cm.isArray(o) ? o : {};
+    },
+    'msgObject' : function() {
+        var that = this;
+        return that.langObject.apply(that, arguments);
     },
     'setLangs' : function(o){
         var that = this;
@@ -20387,6 +20391,7 @@ cm.define('Com.Overlay', {
         'autoClose' : false,                // ToDo: implement
         'removeOnClose' : true,
         'destructOnRemove' : false,
+        'transition' : 'ease',
         'duration' : 'cm._config.animDurationLong'
     }
 },
@@ -20429,6 +20434,7 @@ function(params){
         );
         // CSS Class
         cm.addClass(that.nodes['container'], that.params['className']);
+        cm.addClass(that.nodes['container'], ['transition', that.params['transition']].join('-'));
         // Set position
         that.nodes['container'].style.position = that.params['position'];
         // Show spinner
@@ -20507,15 +20513,15 @@ function(params){
 
     /* ******* MAIN ******* */
 
-    that.open = function(isImmediately){
+    that.open = function(isImmediately, callback){
         if(!that.isOpen){
             if(that.params['lazy'] && !isImmediately){
                 that.delayInterval && clearTimeout(that.delayInterval);
                 that.delayInterval = setTimeout(function(){
-                    openProcess(isImmediately);
+                    openProcess(isImmediately, callback);
                 }, that.params['delay']);
             }else{
-                openProcess(isImmediately);
+                openProcess(isImmediately, callback);
             }
         }
         return that;
@@ -20529,7 +20535,7 @@ function(params){
         }
         return that;
     };
-    
+
     that.toggle = function(){
         if(that.isOpen){
             that.hide();
@@ -20590,10 +20596,14 @@ function(params){
         return that;
     };
 
-    that.embed = function(node){
+    that.embed = function(node, appendMode){
+        appendMode = !cm.isUndefined(appendMode) ? appendMode : that.params['appendMode'];
         if(cm.isNode(node)){
             that.params['container'] = node;
-            //cm[that.params['appendMode']](that.nodes['container'], that.params['container']);
+            that.params['appendMode'] = appendMode;
+            if(cm.inDOM(that.nodes['container'])){
+                cm[that.params['appendMode']](that.nodes['container'], that.params['container']);
+            }
         }
         return that;
     };
@@ -20613,6 +20623,7 @@ function(params){
 
     init();
 });
+
 cm.define('Com.Pagination', {
     'extend' : 'Com.AbstractController',
     'events' : [
@@ -24270,7 +24281,6 @@ function(params){
         /* *** INSERT INTO DOM *** */
         that.embedStructure(that.nodes['container']);
         /* *** EVENTS *** */
-        Part.Menu && Part.Menu();
         cm.addEvent(window, 'resize', resizeHandler);
         cm.addEvent(window, 'click', clickHandler);
         that.addToStack(that.nodes['container']);
@@ -24355,6 +24365,7 @@ function(params){
                     set(tab['id']);
                 }
             }
+            hideHeaderMenu();
         });
         return item;
     };
@@ -24419,7 +24430,6 @@ function(params){
             }
             // Show
             switchTabHandler(item);
-            hideHeaderMenu();
         }
     };
 
@@ -24489,12 +24499,12 @@ function(params){
     var showHeaderMenu = function(){
         that.isMenuShown = true;
         cm.replaceClass(that.nodes['headerMenu'], 'is-hide', 'is-show');
-    }
+    };
 
     var hideHeaderMenu = function(){
         that.isMenuShown = false;
         cm.replaceClass(that.nodes['headerMenu'], 'is-show', 'is-hide');
-    }
+    };
 
     /* *** HELPERS *** */
 
@@ -24719,7 +24729,7 @@ cm.define('Com.Tabset2', {
         'removeOnDestruct' : true,
         'toggleOnHashChange' : true,                                // URL hash change handler
         'targetEvent' : 'click',                                    // click | hover | none
-        'clickNode' : window,
+        'documentNode' : window,
 
         /* TABS */
 
@@ -24800,9 +24810,14 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
         return that;
     };
 
-    classProto.onDestructStart = function(){
+    classProto.onSetEvents = function(){
         var that = this;
-        cm.removeEvent(that.params['clickNode'], 'click', that.windowClickHandler);
+        cm.addEvent(that.params['documentNode'], 'click', that.windowClickHandler);
+    };
+
+    classProto.onUnsetEvents = function(){
+        var that = this;
+        cm.removeEvent(that.params['documentNode'], 'click', that.windowClickHandler);
     };
 
     classProto.renderView = function(){
@@ -24966,7 +24981,7 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
 
     /*** TOGGLE ***/
 
-    classProto.onTabShowStart = function(that, item){
+    classProto.onLabelTarget = function(that, item){
         that.hideMenu();
     };
 

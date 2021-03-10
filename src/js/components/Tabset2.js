@@ -12,7 +12,7 @@ cm.define('Com.Tabset2', {
         'removeOnDestruct' : true,
         'toggleOnHashChange' : true,                                // URL hash change handler
         'targetEvent' : 'click',                                    // click | hover | none
-        'clickNode' : window,
+        'documentNode' : window,
 
         /* TABS */
 
@@ -93,9 +93,14 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
         return that;
     };
 
-    classProto.onDestructStart = function(){
+    classProto.onSetEvents = function(){
         var that = this;
-        cm.removeEvent(that.params['clickNode'], 'click', that.windowClickHandler);
+        cm.addEvent(that.params['documentNode'], 'click', that.windowClickHandler);
+    };
+
+    classProto.onUnsetEvents = function(){
+        var that = this;
+        cm.removeEvent(that.params['documentNode'], 'click', that.windowClickHandler);
     };
 
     classProto.renderView = function(){
@@ -259,7 +264,7 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
 
     /*** TOGGLE ***/
 
-    classProto.onTabShowStart = function(that, item){
+    classProto.onLabelTarget = function(that, item){
         that.hideMenu();
     };
 

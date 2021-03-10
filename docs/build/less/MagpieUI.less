@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.38.34 (2021-03-04 21:03) ************ */
+/*! ************ MagpieUI v3.38.35 (2021-03-11 01:45) ************ */
 
 @charset "UTF-8";
 /*!
@@ -4585,7 +4585,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.38.34';
+@CmVersion: '3.38.35';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -5268,6 +5268,7 @@ span.CodeMirror-selectedtext { background: none; }
 @PtOverlay-Dark: @CmUI-Overlay-Dark;
 @PtOverlay-Duration: @CmUI-Overlay-Duration;
 @PtOverlay-Spinner-Size: @CmSize-Large;
+@PtOverlay-ZIndex: 1003;
 
 // /* ************************************************ */
 // /* ******* LAYOUTS ******* */
@@ -10565,7 +10566,7 @@ button {
                 }
 
                 .pt__menu-dropdown {
-                    .pt__menu-dropdown--active;
+                    .pt__menu-dropdown--show;
                     .mx__transition-delay(0ms);
                 }
             }
@@ -10648,6 +10649,7 @@ button {
         .pt__editable__bundle > .is-immediately;
     }
 }
+
 /* ******* PARTS: FIELD ******* */
 
 .pt__field {
@@ -13410,7 +13412,7 @@ ul.pt__field__hint {
 .pt__overlay {
     visibility: hidden;
     position: absolute;
-    z-index: 1003;
+    z-index: @PtOverlay-ZIndex;
     opacity: 0;
     .mx__position(0, 0, 0, 0);
     .mx__transition(all, @PtOverlay-Duration);
@@ -13455,6 +13457,14 @@ ul.pt__field__hint {
         background-color: @PtOverlay-Dark;
     }
 
+    &.transition-ease {
+        transition-timing-function: ease-in-out;
+    }
+
+    &.transition-linear {
+        transition-timing-function: linear;
+    }
+
     &.is-immediately {
         .cm__transition-none;
     }
@@ -13464,6 +13474,7 @@ ul.pt__field__hint {
         opacity: 1;
     }
 }
+
 /* ******* PARTS: PROGRESS BAR ******* */
 
 .pt__progress-bar {
@@ -17667,12 +17678,13 @@ ul.pt__field__hint {
             .pt__menu-dropdown {
                 .pt__menu-dropdown--base;
                 .pt__menu-dropdown--position;
-                .pt__menu-dropdown--active;
+                .pt__menu-dropdown--show;
                 position: static;
             }
         }
     }
 }
+
 /* ******* COMPONENTS: MULTI FIELD  ******* */
 
 .com__multifield {
