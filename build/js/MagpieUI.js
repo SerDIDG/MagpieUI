@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.38.35 (2021-03-11 01:45) ************ */
+/*! ************ MagpieUI v3.38.36 (2021-03-24 20:53) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.38.35',
+        '_version' : '3.38.36',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -22440,6 +22440,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         }
         if(redirectTo){
             that.redirect(redirectTo, route.hash, {
+                'urlParams' : route['urlParams'],
                 'captures' : route['captures'],
                 'data' : route['data']
             });
@@ -22637,6 +22638,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
                 'href' : null,
                 'redirectTo' : null,
                 'data' : {},
+                'urlParams' : {},
                 //'pushState' : true,
                 //'replaceState' : false,
                 'constructor' : false,
@@ -22660,7 +22662,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         that.routes[route] = item;
         return that;
     };
-    
+
     classProto.get = function(route){
         var that = this;
         if(that.routesBinds[route]){
@@ -22782,7 +22784,8 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
 
     classProto.redirect = function(route, hash, params){
         var that = this,
-            href = that.getURL(route, hash, params['captures']);
+            urlParams = !cm.isEmpty(params['urlParams']) ? params['urlParams'] : params['captures'],
+            href = that.getURL(route, hash, urlParams);
         // Important to override push / replace state params in this case
         params = cm.merge(params, {
             'pushState' : false,
@@ -22807,6 +22810,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         return that;
     };
 });
+
 Com['Scroll'] = function(o){
     var that = this,
         config = cm.merge({

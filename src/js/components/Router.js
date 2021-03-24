@@ -203,6 +203,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         }
         if(redirectTo){
             that.redirect(redirectTo, route.hash, {
+                'urlParams' : route['urlParams'],
                 'captures' : route['captures'],
                 'data' : route['data']
             });
@@ -400,6 +401,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
                 'href' : null,
                 'redirectTo' : null,
                 'data' : {},
+                'urlParams' : {},
                 //'pushState' : true,
                 //'replaceState' : false,
                 'constructor' : false,
@@ -423,7 +425,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         that.routes[route] = item;
         return that;
     };
-    
+
     classProto.get = function(route){
         var that = this;
         if(that.routesBinds[route]){
@@ -545,7 +547,8 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
 
     classProto.redirect = function(route, hash, params){
         var that = this,
-            href = that.getURL(route, hash, params['captures']);
+            urlParams = !cm.isEmpty(params['urlParams']) ? params['urlParams'] : params['captures'],
+            href = that.getURL(route, hash, urlParams);
         // Important to override push / replace state params in this case
         params = cm.merge(params, {
             'pushState' : false,
