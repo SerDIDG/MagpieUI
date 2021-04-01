@@ -85,7 +85,8 @@
 }
 
 .textarea {
-    @padding: max(ceil((@CmForm-FieldHeight - @CmFont-Base-LineHeight - @CmBorder-Width * 2) / 2), @CmInput-Padding);
+    @padding_calc: (@CmForm-FieldHeight - @CmFont-Base-LineHeight - @CmBorder-Width * 2) / 2;
+    @padding: max(ceil((@padding_calc)), @CmInput-Padding);
 
     height: @CmTextarea-Height;
     min-height: @CmForm-FieldHeight;
@@ -111,11 +112,12 @@
 }
 
 .input--size-helper (@height, @padding, @border, @lineHeight) {
-    @padding_calc: max(ceil((@height - @lineHeight - @border * 2) / 2), 0px);
-    @padding_x: max(ceil((@height - @lineHeight - @border * 2) / 2), @padding);
+    @padding_calc: (@height - @lineHeight - @border * 2) / 2;
+    @padding_y: max(ceil((@padding_calc)), 0px);
+    @padding_x: max(ceil((@padding_calc)), @padding);
 
     height: @height;
-    padding: @padding_calc @padding_x;
+    padding: @padding_y @padding_x;
     border-width: @border;
 }
 

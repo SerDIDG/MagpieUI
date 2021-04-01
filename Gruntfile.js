@@ -237,6 +237,10 @@ module.exports = function(grunt) {
         },
 
         less : {
+            options: {
+                strictMath: false,
+                strictUnits: false
+            },
             build : {
                 src : ['<%= paths.build %>/less/<%= pkg.name %>.less'],
                 dest : '<%= paths.build %>/css/<%= pkg.name %>.css'

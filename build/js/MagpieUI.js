@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.38.36 (2021-03-24 20:53) ************ */
+/*! ************ MagpieUI v3.39.0 (2021-04-01 23:57) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.38.36',
+        '_version' : '3.39.0',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -1681,8 +1681,12 @@ var cm = {
             '%version%' : 'cm._version'
         },
         '_strings' : {
+            'common' : {
+                'server_error' : 'An unexpected error has occurred. Please try again later.'
+            },
             'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-            'days' : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+            'days' : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+            'daysAbbr' : ['S', 'M', 'T', 'W', 'T', 'F', 'S']
         }
     },
     Mod = {},
@@ -10013,7 +10017,7 @@ function(params){
             renderFieldController(params);
         }
     };
-    
+
     var renderFieldController = function(params){
         cm.getConstructor(params['fieldConstructor'], function(classConstructor){
             params['fieldController'] = params['controller'] = new classConstructor(params);
@@ -10270,8 +10274,8 @@ function(params){
         var errors,
             data;
         if(!cm.isEmpty(response)){
-            errors = cm.objectSelector(that.params['responseErrorsKey'], response);
-            data = cm.objectSelector(that.params['responseKey'], response);
+            errors = cm.reducePath(that.params['responseErrorsKey'], response);
+            data = cm.reducePath(that.params['responseKey'], response);
             if(!cm.isEmpty(errors)){
                 that.callbacks.error(that, config, response);
             }else{
@@ -10287,9 +10291,9 @@ function(params){
             message,
             code;
         if(!cm.isEmpty(response)){
-            errors = cm.objectSelector(that.params['responseErrorsKey'], response);
-            message = cm.objectSelector(that.params['responseMessageKey'], response);
-            code = cm.objectSelector(that.params['responseCodeKey'], response);
+            errors = cm.reducePath(that.params['responseErrorsKey'], response);
+            message = cm.reducePath(that.params['responseMessageKey'], response);
+            code = cm.reducePath(that.params['responseCodeKey'], response);
         }
         that.callbacks.renderError(that, errors, message);
         that.triggerEvent('onError', {
@@ -10966,6 +10970,7 @@ Com.FormFields.add('buttons', {
         }
     }
 });
+
 cm.define('Com.TabsetHelper', {
     'extend' : 'Com.AbstractController',
     'events' : [

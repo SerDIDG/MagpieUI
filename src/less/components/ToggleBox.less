@@ -31,7 +31,8 @@
         }
 
         .title {
-            @padding: max(round((@ComToggleBox-Size - @CmFont-UI-H1-LineHeight) / 2), 0px);
+            @padding_calc: (@ComToggleBox-Size - @CmFont-UI-H1-LineHeight) / 2;
+            @padding: max(round((@padding_calc)), 0px);
 
             .cm__font--ui-h1;
             .cm__text-nowrap;
@@ -136,7 +137,8 @@
             }
 
             .title {
-                @padding: max(round((@ComToggleBox-SizeMedium - @CmFont-UI-H4-LineHeight) / 2), 0px);
+                @padding_calc: (@ComToggleBox-SizeMedium - @CmFont-UI-H4-LineHeight) / 2;
+                @padding: max(round((@padding_calc)), 0px);
 
                 .cm__font--ui-h4;
                 padding: @padding 0;
@@ -153,7 +155,8 @@
             }
 
             .title {
-                @padding: max(round((@ComToggleBox-SizeBase - @CmFont-Base-LineHeight) / 2), 0px);
+                @padding_calc: (@ComToggleBox-SizeBase - @CmFont-Base-LineHeight) / 2;
+                @padding: max(round((@padding_calc)), 0px);
 
                 .cm__text-wrap;
                 .cm__font;
@@ -173,7 +176,8 @@
             }
 
             .title {
-                @padding: max(round((@ComToggleBox-SizeUI - @CmFont-UI-LineHeight) / 2), 0px);
+                @padding_calc: (@ComToggleBox-SizeUI - @CmFont-UI-LineHeight) / 2;
+                @padding: max(round((@padding_calc)), 0px);
 
                 .cm__font--ui;
                 font-weight: @CmFont-UI-BoldWeight;

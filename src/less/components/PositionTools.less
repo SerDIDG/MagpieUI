@@ -1,7 +1,7 @@
 /* ******* COMPONENTS: POSITION TOOLS ******* */
 
 .com__position-tools__content {
-    @half_indent: @ComPositionTools-Item-Indent / 2;
+    @half_indent: (@ComPositionTools-Item-Indent / 2);
 
     > .inner {
         .display-flex;
@@ -56,7 +56,7 @@
     }
 
     &.size-large {
-        @half_indent: @ComPositionTools-Item-Large-Indent / 2;
+        @half_indent: (@ComPositionTools-Item-Large-Indent / 2);
 
         > .inner {
             width: (@ComPositionTools-Item-Large-Size + @ComPositionTools-Item-Large-Indent) * 3;

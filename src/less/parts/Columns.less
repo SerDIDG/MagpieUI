@@ -125,7 +125,7 @@
 }
 
 .pt__columns__indent (@value : @PtColumns-Indent) {
-    @half: round(@value / 2);
+    @half: max(round((@value / 2)), 0px);
 
     > .inner {
         margin-right: -@half;

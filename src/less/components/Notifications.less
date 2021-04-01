@@ -45,7 +45,9 @@
                 margin: 0 0 0 @CmIndent-XSmall;
 
                 &.small {
-                    margin-top: round((@CmFont-Base-LineHeight - @CmSize-Small) / 2);
+                    @margin_calc: (@CmFont-Base-LineHeight - @CmSize-Small) / 2;
+                    @margin: max(round((@margin_calc)), 0px);
+                    margin-top: @margin;
                 }
             }
 

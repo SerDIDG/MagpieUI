@@ -298,7 +298,8 @@
     }
 
     .checkbox {
-        @margin: floor((@CmForm-FieldHeight - 13px) / 2);
+        @margin_calc: (@CmForm-FieldHeight - 13px) / 2;
+        @margin: max(floor((@margin_calc)), 0px);
 
         margin: @margin 0 @margin 0;
         vertical-align: top;
@@ -315,7 +316,8 @@
     }
 
     label {
-        @padding: round((@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2);
+        @padding_calc: (@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2;
+        @padding: max(round((@padding_calc)), 0px);
         padding: @padding @CmIndent-Medium @padding @CmForm-FieldInnerIndent;
         cursor: pointer;
         vertical-align: baseline;
@@ -445,7 +447,7 @@
         .loop((@counter - 1));
 
         @name: extract(@CmForm-Cols-Names, @counter);
-        @size: (100% - ((@counter - 1) * @CmForm-Cols-Indent)) / @counter;
+        @size: ((100% - ((@counter - 1) * @CmForm-Cols-Indent)) / @counter);
 
         &.@{name} .col {
             width: @size;
@@ -789,7 +791,8 @@
 
 .files-list {
     ul {
-        max-height: (@CmForm-FilesList-Count * (@CmForm-FieldInnerIndent + @CmForm-FieldHeight)) - @CmForm-FieldInnerIndent;
+        @maxHeight: ((@CmForm-FilesList-Count * (@CmForm-FieldInnerIndent + @CmForm-FieldHeight)) - @CmForm-FieldInnerIndent);
+        max-height: @maxHeight;
         overflow-y: auto;
         overflow-x: hidden;
         padding: 0;

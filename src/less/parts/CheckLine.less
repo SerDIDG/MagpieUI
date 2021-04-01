@@ -3,7 +3,8 @@
     line-height: @CmForm-FieldHeight;
 
     label {
-        @padding: floor((@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2);
+        @padding_calc: (@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2;
+        @padding: max(floor((@padding_calc)), 0px);
         margin-right: @CmIndent-Medium;
         padding: @padding 0;
         cursor: pointer;
@@ -22,7 +23,8 @@
 
     input[type="radio"],
     input[type="checkbox"] {
-        @margin: floor((@CmFont-Base-LineHeight - 13px) / 2);
+        @margin_calc: (@CmFont-Base-LineHeight - 13px) / 2;
+        @margin: max(floor((@margin_calc)), 0px);
 
         margin: @margin @CmForm-FieldInnerIndent @margin 0;
         vertical-align: top;
@@ -59,7 +61,8 @@
         }
 
         .label {
-            @padding: round((@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2);
+            @padding_calc: (@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2;
+            @padding: max(round((@padding_calc)), 0px);
             display: inline-block;
             padding: @padding 0 @padding 0;
         }
@@ -73,7 +76,8 @@
     &.has-fields-box {
         input[type="radio"],
         input[type="checkbox"] {
-            @margin: floor((@CmForm-FieldHeight - 13px) / 2);
+            @margin_calc: (@CmForm-FieldHeight - 13px) / 2;
+            @margin: max(floor((@margin_calc)), 0px);
             margin-top: @margin;
             margin-bottom: @margin;
         }

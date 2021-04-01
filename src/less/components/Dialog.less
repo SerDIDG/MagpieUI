@@ -418,12 +418,15 @@
 }
 
 .com__dialog__title-height (@height, @icon_size: @ComDialog-IconSize) {
-    @indent: round((@height - @CmFont-UI-H1-LineHeight) / 2);
+    @indent_calc: (@height - @CmFont-UI-H1-LineHeight) / 2;
+    @indent: max(round((@indent_calc)), 0px);
 
     > .icon {
+        @top_calc: (@height - @icon_size) / 2;
+        @top: max(round((@top_calc)), 0px);
         width: @icon_size;
         height: @icon_size;
-        top: round((@height - @icon_size) / 2);
+        top: @top;
     }
 
     > .inner {

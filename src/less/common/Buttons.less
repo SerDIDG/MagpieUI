@@ -1,7 +1,8 @@
 /* ******* COMMON: BUTTONS ******* */
 
 .button {
-    @padding: max(ceil((@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2), 0px);
+    @padding_calc: (@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2;
+    @padding: max(ceil((@padding_calc)), 0px);
 
     .cm__text-nowrap;
     min-height: @CmForm-FieldHeight;
@@ -335,19 +336,22 @@
     // /* *** SIZES *** */
 
     &.button--large {
-        @padding: max(ceil((@CmSize-Large - @CmFont-Base-LineHeight) / 2), 0px);
+        @padding_calc: (@CmSize-Large - @CmFont-Base-LineHeight) / 2;
+        @padding: max(ceil((@padding_calc)), 0px);
         min-height: @CmSize-Large;
         padding: @padding @CmIndent-Medium;
     }
 
     &.button--xlarge {
-        @padding: max(ceil((@CmSize-XLarge - @CmFont-Base-LineHeight) / 2), 0px);
+        @padding_calc: (@CmSize-XLarge - @CmFont-Base-LineHeight) / 2;
+        @padding: max(ceil((@padding_calc)), 0px);
         min-height: @CmSize-XLarge;
         padding: @padding @CmIndent-Large;
     }
 
     &.button--xxlarge {
-        @padding: max(ceil((@CmSize-XXLarge - @CmFont-Base-LineHeight) / 2), 0px);
+        @padding_calc: (@CmSize-XXLarge - @CmFont-Base-LineHeight) / 2;
+        @padding: max(ceil((@padding_calc)), 0px);
         min-height: @CmSize-XXLarge;
         padding: @padding @CmIndent-Large;
     }
@@ -402,7 +406,8 @@
 
     &.has-icon-small {
         .icon {
-            @margin: round((@CmFont-Base-LineHeight - @CmSize-Small) / 2);
+            @margin_calc: (@CmFont-Base-LineHeight - @CmSize-Small) / 2;
+            @margin: max(round((@margin_calc)), 0px);
             margin-top: @margin;
             margin-bottom: @margin;
         }
@@ -410,7 +415,8 @@
 
     &.has-icon-medium {
         .icon {
-            @margin: round((@CmFont-Base-LineHeight - @CmSize-Medium) / 2);
+            @margin_calc: (@CmFont-Base-LineHeight - @CmSize-Medium) / 2;
+            @margin: max(round((@margin_calc)), 0px);
             margin-top: @margin;
             margin-bottom: @margin;
         }
@@ -418,7 +424,8 @@
 
     &.has-icon-large {
         .icon {
-            @margin: round((@CmFont-Base-LineHeight - @CmSize-Large) / 2);
+            @margin_calc: (@CmFont-Base-LineHeight - @CmSize-Large) / 2;
+            @margin: max(round((@margin_calc)), 0px);
             margin-top: @margin;
             margin-bottom: @margin;
         }
@@ -484,7 +491,8 @@
 /* *** MIXINS *** */
 
 .button--size (@height, @lineHeight: @CmFont-Base-LineHeight, @border: 0px) {
-    @padding: max(ceil((@height - @lineHeight - (@border * 2)) / 2), 0px);
+    @padding_calc: (@height - @lineHeight - (@border * 2)) / 2;
+    @padding: max(ceil((@padding_calc)), 0px);
     min-height: @height;
     padding-top: @padding;
     padding-bottom: @padding;

@@ -153,9 +153,10 @@
                 border-radius: 0 0 @CmBorder-Radius @CmBorder-Radius;
 
                 &.default {
+                    @padding: ((@CmSize-XXLarge - @CmSize-XLarge) / 2);
                     .cm-i__b-size(@CmSize-XXLarge);
                     .cm-i__size(@CmSize-XLarge);
-                    padding: (@CmSize-XXLarge - @CmSize-XLarge) / 2;
+                    padding: @padding;
                     color: @CmColor-Font-Opposite;
 
                     &.zoom {

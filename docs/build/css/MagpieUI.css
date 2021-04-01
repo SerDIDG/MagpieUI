@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.38.36 (2021-03-24 20:53) ************ */
+/*! ************ MagpieUI v3.39.0 (2021-04-01 23:57) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.0
@@ -4367,8 +4367,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.38.36');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.38.36') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.38.36') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.38.36') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.38.36#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.39.0');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.39.0') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.39.0') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.39.0') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.39.0#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -7114,16 +7114,16 @@ input[type="button"].has-icon-medium .icon,
 input[type="submit"].has-icon-medium .icon,
 input[type="reset"].has-icon-medium .icon,
 button.has-icon-medium .icon {
-  margin-top: -3px;
-  margin-bottom: -3px;
+  margin-top: 0px;
+  margin-bottom: 0px;
 }
 .button.has-icon-large .icon,
 input[type="button"].has-icon-large .icon,
 input[type="submit"].has-icon-large .icon,
 input[type="reset"].has-icon-large .icon,
 button.has-icon-large .icon {
-  margin-top: -7px;
-  margin-bottom: -7px;
+  margin-top: 0px;
+  margin-bottom: 0px;
 }
 .button.button-spinner .label,
 .button.button-spinner .icon,
@@ -10725,7 +10725,7 @@ button.is-hidden {
 }
 ul.pt__field__hint {
   margin: 0;
-  padding: 0 0;
+  padding: 0px 0;
   display: block;
   list-style: none;
 }
@@ -15456,10 +15456,10 @@ ul.pt__field__hint li:before {
 .pt__toolbar .group > li:last-child {
   margin-right: 0;
 }
-.pt__toolbar.item-indent-1 .group > li {
-  margin-right: 1;
+.pt__toolbar.item-indent-0px .group > li {
+  margin-right: 0px;
 }
-.pt__toolbar.item-indent-1 .group > li:last-child {
+.pt__toolbar.item-indent-0px .group > li:last-child {
   margin-right: 0;
 }
 .pt__toolbar.item-indent-2px .group > li {
@@ -15468,34 +15468,10 @@ ul.pt__field__hint li:before {
 .pt__toolbar.item-indent-2px .group > li:last-child {
   margin-right: 0;
 }
-.pt__toolbar.item-indent-3px .group > li {
-  margin-right: 3px;
-}
-.pt__toolbar.item-indent-3px .group > li:last-child {
-  margin-right: 0;
-}
 .pt__toolbar.item-indent-4px .group > li {
   margin-right: 4px;
 }
 .pt__toolbar.item-indent-4px .group > li:last-child {
-  margin-right: 0;
-}
-.pt__toolbar.item-indent-5px .group > li {
-  margin-right: 5px;
-}
-.pt__toolbar.item-indent-5px .group > li:last-child {
-  margin-right: 0;
-}
-.pt__toolbar.item-indent-6px .group > li {
-  margin-right: 6px;
-}
-.pt__toolbar.item-indent-6px .group > li:last-child {
-  margin-right: 0;
-}
-.pt__toolbar.item-indent-7px .group > li {
-  margin-right: 7px;
-}
-.pt__toolbar.item-indent-7px .group > li:last-child {
   margin-right: 0;
 }
 .pt__toolbar.item-indent-8px .group > li {
@@ -15504,46 +15480,10 @@ ul.pt__field__hint li:before {
 .pt__toolbar.item-indent-8px .group > li:last-child {
   margin-right: 0;
 }
-.pt__toolbar.item-indent-9px .group > li {
-  margin-right: 9px;
-}
-.pt__toolbar.item-indent-9px .group > li:last-child {
-  margin-right: 0;
-}
-.pt__toolbar.item-indent-10px .group > li {
-  margin-right: 10px;
-}
-.pt__toolbar.item-indent-10px .group > li:last-child {
-  margin-right: 0;
-}
-.pt__toolbar.item-indent-11px .group > li {
-  margin-right: 11px;
-}
-.pt__toolbar.item-indent-11px .group > li:last-child {
-  margin-right: 0;
-}
 .pt__toolbar.item-indent-12px .group > li {
   margin-right: 12px;
 }
 .pt__toolbar.item-indent-12px .group > li:last-child {
-  margin-right: 0;
-}
-.pt__toolbar.item-indent-13px .group > li {
-  margin-right: 13px;
-}
-.pt__toolbar.item-indent-13px .group > li:last-child {
-  margin-right: 0;
-}
-.pt__toolbar.item-indent-14px .group > li {
-  margin-right: 14px;
-}
-.pt__toolbar.item-indent-14px .group > li:last-child {
-  margin-right: 0;
-}
-.pt__toolbar.item-indent-15px .group > li {
-  margin-right: 15px;
-}
-.pt__toolbar.item-indent-15px .group > li:last-child {
   margin-right: 0;
 }
 .pt__toolbar.item-indent-16px .group > li {
@@ -15552,52 +15492,34 @@ ul.pt__field__hint li:before {
 .pt__toolbar.item-indent-16px .group > li:last-child {
   margin-right: 0;
 }
-.pt__toolbar.item-indent-17px .group > li {
-  margin-right: 17px;
-}
-.pt__toolbar.item-indent-17px .group > li:last-child {
-  margin-right: 0;
-}
-.pt__toolbar.item-indent-18px .group > li {
-  margin-right: 18px;
-}
-.pt__toolbar.item-indent-18px .group > li:last-child {
-  margin-right: 0;
-}
-.pt__toolbar.item-indent-19px .group > li {
-  margin-right: 19px;
-}
-.pt__toolbar.item-indent-19px .group > li:last-child {
-  margin-right: 0;
-}
-.pt__toolbar.item-indent-20px .group > li {
-  margin-right: 20px;
-}
-.pt__toolbar.item-indent-20px .group > li:last-child {
-  margin-right: 0;
-}
-.pt__toolbar.item-indent-21px .group > li {
-  margin-right: 21px;
-}
-.pt__toolbar.item-indent-21px .group > li:last-child {
-  margin-right: 0;
-}
-.pt__toolbar.item-indent-22px .group > li {
-  margin-right: 22px;
-}
-.pt__toolbar.item-indent-22px .group > li:last-child {
-  margin-right: 0;
-}
-.pt__toolbar.item-indent-23px .group > li {
-  margin-right: 23px;
-}
-.pt__toolbar.item-indent-23px .group > li:last-child {
-  margin-right: 0;
-}
 .pt__toolbar.item-indent-24px .group > li {
   margin-right: 24px;
 }
 .pt__toolbar.item-indent-24px .group > li:last-child {
+  margin-right: 0;
+}
+.pt__toolbar.item-indent-32px .group > li {
+  margin-right: 32px;
+}
+.pt__toolbar.item-indent-32px .group > li:last-child {
+  margin-right: 0;
+}
+.pt__toolbar.item-indent-48px .group > li {
+  margin-right: 48px;
+}
+.pt__toolbar.item-indent-48px .group > li:last-child {
+  margin-right: 0;
+}
+.pt__toolbar.item-indent-64px .group > li {
+  margin-right: 64px;
+}
+.pt__toolbar.item-indent-64px .group > li:last-child {
+  margin-right: 0;
+}
+.pt__toolbar.item-indent-96px .group > li {
+  margin-right: 96px;
+}
+.pt__toolbar.item-indent-96px .group > li:last-child {
   margin-right: 0;
 }
 /* ******* PARTS: TOOLBAR: MIXINS ********** */
@@ -17132,7 +17054,7 @@ ul.pt__field__hint li:before {
   border-color: hsl(0, 0%, 86%);
 }
 .com__calendar table td.today div {
-  background-color: '';
+  background-color: transparent;
   border-color: hsl(210, 75%, 52%);
 }
 .com__calendar table td.today div:hover {
@@ -20324,12 +20246,12 @@ ul.pt__field__hint li:before {
   margin-bottom: 1px;
 }
 .com__pagination__bar ul li a.has-icon-medium .icon {
-  margin-top: -3px;
-  margin-bottom: -3px;
+  margin-top: 0px;
+  margin-bottom: 0px;
 }
 .com__pagination__bar ul li a.has-icon-large .icon {
-  margin-top: -7px;
-  margin-bottom: -7px;
+  margin-top: 0px;
+  margin-bottom: 0px;
 }
 .com__pagination__bar ul li a.button-spinner .label,
 .com__pagination__bar ul li a.button-spinner .icon {

@@ -286,7 +286,7 @@
 /* ******* PARTS: GRID: MIXINS ******* */
 
 .pt__grid__col (@count: 1) {
-    @size: 100% / @count;
+    @size: (100% / @count);
 
     > ul > li {
         width: @size;
@@ -294,7 +294,7 @@
 }
 
 .pt__grid__size (@count: 1) {
-    @size: round(1280px / @count);
+    @size: round((1280px / @count));
 
     > ul {
         grid-template-columns: ~'repeat(auto-fill, minmax(@{size}, 1fr))';
@@ -316,7 +316,7 @@
 }
 
 .pt__grid__indent (@indent: @PtGrid-Indent) when (@indent > 0) {
-    @half__indent: @indent / 2;
+    @half__indent: (@indent / 2);
 
     &.has-outer-page-indent {
         > ul {

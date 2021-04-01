@@ -9,7 +9,7 @@
 }
 
 .com__box-tools__content {
-    @linkSizeHalf: @ComBoxTools-LinkSize / 2 ;
+    @linkSizeHalf: (@ComBoxTools-LinkSize / 2);
 
     .b-line {
         .display-flex;
@@ -85,7 +85,7 @@
 
 .com__box-tools--radius {
     .com__box-tools__content {
-        @linkIndentHalf: ceil(@ComBoxTools-LinkIndent / 2);
+        @linkIndentHalf: unit(ceil((@ComBoxTools-LinkIndent / 2)), px);
 
         .b-container {
             width: calc(~"50% - @{linkIndentHalf}");

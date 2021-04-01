@@ -1,6 +1,6 @@
 {
   "name": "MagpieUI",
-  "version": "3.38.36",
+  "version": "3.39.0",
   "description": "Collection of JavaScript and CSS snippets.",
   "license": "MIT",
   "author": {
@@ -9,12 +9,11 @@
     "url": "https://github.com/SerDIDG"
   },
   "repository": "SerDIDG/MagpieUI",
-  "dependencies": {},
   "devDependencies": {
     "@lodder/time-grunt": "^4.0.0",
     "animate.css": "^4.0.0",
     "codemirror": "^5.53.2",
-    "grunt": "^1.1.0",
+    "grunt": "^1.3.0",
     "grunt-cli": "^1.3.2",
     "grunt-contrib-clean": "^2.0.0",
     "grunt-contrib-concat": "~1.0.1",

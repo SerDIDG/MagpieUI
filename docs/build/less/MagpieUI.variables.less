@@ -39,7 +39,7 @@
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.38.36';
+@CmVersion: '3.39.0';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -496,7 +496,7 @@
 @CmForm-FieldIndent: @CmIndent-Small;
 @CmForm-FieldTitleWidth: 156px;
 @CmForm-FieldTitleWidthSpaceless: 128px;
-@CmForm-FieldInnerIndent: @CmForm-FieldIndent / 2;
+@CmForm-FieldInnerIndent: (@CmForm-FieldIndent / 2);
 @CmForm-FieldSmallWidth: 210px;
 @CmForm-ButtonsIndent: @CmIndent-XSmall;
 @CmForm-IconsIndent: @CmIndent-XXSmall;
@@ -504,6 +504,7 @@
 @CmForm-Cols-Names: one two three four five six seven eight nine ten;
 @CmForm-Cols-Indent: 2%;
 @CmForm-FilesList-Count: 3;
+@CmForm-FieldPlaceholder-Scale: 0.75;
 
 // /* ******* COUNTER ******* */
 
@@ -607,7 +608,7 @@
 
 @PtToolbar-GroupIndent: @CmIndent-Small;
 @PtToolbar-ItemIndent: @CmIndent-XXXSmall;
-@PtToolbar-ItemIndents: @CmUI-ColumnIndent;
+@PtToolbar-ItemIndents: @CmIndents;
 @PtToolbar-XXXSmall: 32px;
 @PtToolbar-XXSmall: 56px;
 @PtToolbar-XSmall: 76px;
@@ -782,7 +783,7 @@
 @ComCalendar-Weekend-Border: @CmColor-Secondary-LightActive;
 @ComCalendar-Weekend-BorderHover: @CmColor-Secondary-LightActiveHover;
 
-@ComCalendar-Today-Background: '';
+@ComCalendar-Today-Background: transparent;
 @ComCalendar-Today-BackgroundHover: @CmColor-Primary-LightActiveHover;
 @ComCalendar-Today-BorderSize: 2px;
 @ComCalendar-Today-Border: @CmColor-Primary-DarkDefault;

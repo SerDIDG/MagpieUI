@@ -202,7 +202,7 @@ function(params){
             renderFieldController(params);
         }
     };
-    
+
     var renderFieldController = function(params){
         cm.getConstructor(params['fieldConstructor'], function(classConstructor){
             params['fieldController'] = params['controller'] = new classConstructor(params);
@@ -459,8 +459,8 @@ function(params){
         var errors,
             data;
         if(!cm.isEmpty(response)){
-            errors = cm.objectSelector(that.params['responseErrorsKey'], response);
-            data = cm.objectSelector(that.params['responseKey'], response);
+            errors = cm.reducePath(that.params['responseErrorsKey'], response);
+            data = cm.reducePath(that.params['responseKey'], response);
             if(!cm.isEmpty(errors)){
                 that.callbacks.error(that, config, response);
             }else{
@@ -476,9 +476,9 @@ function(params){
             message,
             code;
         if(!cm.isEmpty(response)){
-            errors = cm.objectSelector(that.params['responseErrorsKey'], response);
-            message = cm.objectSelector(that.params['responseMessageKey'], response);
-            code = cm.objectSelector(that.params['responseCodeKey'], response);
+            errors = cm.reducePath(that.params['responseErrorsKey'], response);
+            message = cm.reducePath(that.params['responseMessageKey'], response);
+            code = cm.reducePath(that.params['responseCodeKey'], response);
         }
         that.callbacks.renderError(that, errors, message);
         that.triggerEvent('onError', {
