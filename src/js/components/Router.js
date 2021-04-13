@@ -157,52 +157,63 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
 
     classProto.processRoute = function(state){
         var that = this,
-            isMatch,
-            hasAccess,
-            matchItem,
-            matchCaptures,
             route,
-            redirectTo;
+            matchRouteRedirect,
+            matchRouteData,
+            matchRoutesData = [];
         // Destruct old route
         that.destructRoute(that.current);
         // Match route
-        cm.forEach(that.routes, function(routeItem){
-            isMatch = state['route'].match(routeItem['regexp']);
+        cm.forEach(that.routes, function(item, route){
+            var isMatch = state['route'].match(item['regexp']),
+                hasAccess = that.checkRoleAccess(item['access']),
+                routeData;
             if(isMatch){
-                hasAccess = that.checkRoleAccess(routeItem['access']);
+                item = cm.clone(item);
+                routeData = {
+                    'hasAccess' : hasAccess,
+                    'roure': route,
+                    'item' : item,
+                    'captures' : isMatch
+                };
                 if(hasAccess){
-                    matchCaptures = isMatch;
-                    matchItem = routeItem;
+                    matchRouteData = routeData;
                 }else{
-                    state['match'].push(
-                        cm.clone(routeItem)
-                    );
+                    matchRoutesData.push(routeData);
+                    state['match'].push(item);
                 }
             }
         });
-        if(!matchItem){
-            matchItem = that.get('error');
+        // Try to find route redirects if exists
+        if(!matchRouteData){
+            cm.forEach(matchRoutesData, function(routeData){
+                var redirect = that.getRouteRedirect(routeData.item);
+                if(redirect){
+                    matchRouteData = routeData;
+                    matchRouteRedirect = redirect;
+                }
+            });
+        }else{
+            matchRouteRedirect = that.getRouteRedirect(matchRouteData.item);
         }
-        route = cm.merge(matchItem, state);
-        route['state'] = state;
-        // Get captures
-        if(matchCaptures){
-            route['captures'] = that.mapCaptures(route['map'], matchCaptures);
+        // If routes and redirects does not found - process error route
+        if(!matchRouteData){
+            matchRouteData = {
+                'hasAccess' : true,
+                'route' : 'error',
+                'item' : that.get('error')
+            };
         }
-        // Handle redirect
-        if(!cm.isEmpty(route['redirectTo'])){
-            if(cm.isObject(route['redirectTo'])){
-                cm.forEach(route['redirectTo'], function(item, key){
-                    if(that.checkRoleAccess(key)){
-                        redirectTo = item;
-                    }
-                });
-            }else{
-                redirectTo = route['redirectTo'];
-            }
+        // Process route
+        route = cm.merge(matchRouteData.item, state);
+        route.state = state;
+        // Map found captures
+        if(matchRouteData.captures){
+            route.captures = that.mapCaptures(route.map, matchRouteData.captures);
         }
-        if(redirectTo){
-            that.redirect(redirectTo, route.hash, {
+        // Handle route redirect or route
+        if(matchRouteRedirect){
+            that.redirect(matchRouteRedirect, route.hash, {
                 'urlParams' : route['urlParams'],
                 'captures' : route['captures'],
                 'data' : route['data']
@@ -269,6 +280,23 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         }
         that.triggerEvent('onChange', route);
         return that;
+    };
+
+    classProto.getRouteRedirect = function(route){
+        var that = this,
+            routeRedirect;
+        if(!cm.isEmpty(route.redirectTo)){
+            if(cm.isObject(route.redirectTo)){
+                cm.forEach(route.redirectTo, function(item, route){
+                    if(that.checkRoleAccess(route)){
+                        routeRedirect = item;
+                    }
+                });
+            }else{
+                routeRedirect = route.redirectTo;
+            }
+        }
+        return routeRedirect;
     };
 
     /* *** HELPERS *** */
@@ -355,6 +383,12 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
             });
         }
         return route;
+    };
+
+    classProto.checkRouteAccess = function(route){
+        var that = this,
+            item = that.get(route);
+        return item ? that.checkRoleAccess(item['access']) : false;
     };
 
     classProto.checkRoleAccess = function(role){
@@ -470,6 +504,16 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         return that.prepareHref(that.getURL(route, hash, urlParams, data));
     };
 
+    classProto.getRedirect = function(route){
+        var that = this,
+            item = that.get(route),
+            redirect;
+        if(item){
+            redirect = that.getRouteRedirect(item);
+        }
+        return redirect;
+    };
+
     classProto.getCurrent = function(){
         var that = this;
         return that.current;
@@ -508,7 +552,8 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         if(that.routesBinds[route]){
             route = that.routesBinds[route];
         }
-        if(item = that.routes[route]){
+        if(that.routes[route]){
+            item = that.routes[route];
             // Process state
             state = cm.clone(item);
             state['params'] = cm.merge(state['params'], params);
@@ -526,7 +571,8 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         if(that.routesBinds[route]){
             route = that.routesBinds[route];
         }
-        if(item = that.routes[route]){
+        if(that.routes[route]){
+            item = that.routes[route];
             if(cm.isString(item['name'])){
                 delete that.routesBinds[item['name']];
             }else if(cm.isArray(item['name'])){

@@ -113,12 +113,14 @@ cm.getConstructor('Com.ImageBox', function(classConstructor, className, classPro
     classProto.animSet = function(){
         var that = this;
         that.isProcessed = true;
-        cm.addClass(that.params['node'], ['animated', that.params['effect']].join(' '));
+        cm.addClass(that.params['node'], 'animate__animated');
+        cm.addClass(that.params['node'], ['animate', that.params['effect']].join('__'));
     };
 
     classProto.animRestore = function(){
         var that = this;
         that.isProcessed = false;
-        cm.removeClass(that.params['node'], ['animated', that.params['effect']].join(' '));
+        cm.removeClass(that.params['node'], 'animate__animated');
+        cm.removeClass(that.params['node'], ['animate', that.params['effect']].join('__'));
     };
 });

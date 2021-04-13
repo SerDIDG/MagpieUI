@@ -695,51 +695,52 @@ function(params){
     };
 
     var renderCellLinks = function(config, row, item){
-        item['nodes']['links'] = [];
-        item['nodes']['inner'].appendChild(
-            item['nodes']['node'] = cm.node('div', {'class' : ['pt__links', config['class']].join(' ')},
-                item['nodes']['linksList'] = cm.node('ul')
-            )
-        );
-        cm.forEach(config['links'], function(actionItem){
-            var actionNode;
-            actionItem = cm.merge({
-                'label' : '',
-                'attr' : {},
-                'events' : {}
-            }, actionItem);
-            cm.forEach(row['data'], function(itemValue, itemKey){
-                actionItem['attr'] = cm.replaceDeep(actionItem['attr'], new RegExp([cm.strWrap(itemKey, '%'), cm.strWrap(itemKey, '%25')].join('|'), 'g'), itemValue);
-            });
-            item['nodes']['linksList'].appendChild(
-                cm.node('li',
-                    actionNode = cm.node('a', actionItem['attr'], actionItem['label'])
-                )
-            );
-            cm.forEach(actionItem['events'], function(actionEventHandler, actionEventName){
-                cm.addEvent(actionNode, actionEventName, actionEventHandler);
-            });
-            item['nodes']['links'].push(actionNode);
-        });
+        // Structure
+        item['nodes']['items'] = item['nodes']['links'] = [];
+        item['nodes']['node'] = cm.node('div', {'class' : ['pt__links', config['class']].join(' ')},
+            item['nodes']['itemsList'] = item['nodes']['linksList'] = cm.node('ul')
+        )
+        // Items
+        renderCellActionItems(config, row, item, 'links');
+        // Embed
+        if(item['nodes']['links'].length){
+            cm.appendChild(item['nodes']['node'], item['nodes']['inner']);
+        }
     };
 
     var renderCellActions = function(config, row, item){
-        var isInArray, isEmpty;
         // Structure
-        item['nodes']['actions'] = [];
+        item['nodes']['items'] = item['nodes']['actions'] = [];
         item['nodes']['node'] = cm.node('div', {'class' : ['pt__links', 'pull-right', config['class']].join(' ')},
             cm.node('ul',
                 item['nodes']['componentNode'] = cm.node('li', {'class' : 'com__menu', 'data-node' : 'ComMenu:{}:button'},
                     cm.node('a', {'class' : 'label'}, that.lang('actions')),
                     cm.node('span', {'class' : 'cm-i__chevron-down xx-small inline'}),
                     cm.node('div', {'class' : 'pt__menu', 'data-node' : 'ComMenu.target'},
-                        item['nodes']['actionsList'] = cm.node('ul', {'class' : 'pt__menu-dropdown'})
+                        item['nodes']['itemsList'] = item['nodes']['actionsList'] = cm.node('ul', {'class' : 'pt__menu-dropdown'})
                     )
                 )
             )
         );
         // Items
-        cm.forEach(config['actions'], function(actionItem){
+        renderCellActionItems(config, row, item, 'actions');
+        // Embed
+        if(item['nodes']['actions'].length){
+            cm.appendChild(item['nodes']['node'], item['nodes']['inner']);
+            // Render menu component
+            cm.getConstructor('Com.Menu', function(classConstructor, className){
+                item['component'] = new classConstructor(
+                    cm.merge(that.params[className], {
+                        'node' : item['nodes']['componentNode']
+                    })
+                );
+            });
+        }
+    };
+
+    var renderCellActionItems = function(config, row, item, list){
+        var isInArray, isEmpty;
+        cm.forEach(config[list], function(actionItem){
             actionItem = cm.merge({
                 'name' : '',
                 'label' : '',
@@ -759,30 +760,22 @@ function(params){
                 renderCellActionItem(config, row, item, actionItem);
             }
         });
-        // Embed
-        if(item['nodes']['actions'].length){
-            cm.appendChild(item['nodes']['node'], item['nodes']['inner']);
-        }
-    };
+    }
 
     var renderCellActionItem = function(config, row, item, actionItem){
         // WTF is that? - that is attribute bindings, for example - href
         cm.forEach(row['data'], function(itemValue, itemKey){
-            actionItem['attr'] = cm.replaceDeep(actionItem['attr'], new RegExp([cm.strWrap(itemKey, '%'), cm.strWrap(itemKey, '%25')].join('|'), 'g'), itemValue);
+            actionItem['attr'] = cm.replaceDeep(
+                actionItem['attr'],
+                new RegExp([cm.strWrap(itemKey, '%'), cm.strWrap(itemKey, '%25')].join('|'), 'g'),
+                itemValue
+            );
         });
-        item['nodes']['actionsList'].appendChild(
+        item['nodes']['itemsList'].appendChild(
             cm.node('li',
                 actionItem['node'] = cm.node('a', actionItem['attr'], actionItem['label'])
             )
         );
-        // Render menu component
-        cm.getConstructor('Com.Menu', function(classConstructor, className){
-            item['component'] = new classConstructor(
-                cm.merge(that.params[className], {
-                    'node' : item['nodes']['componentNode']
-                })
-            );
-        });
         if(actionItem['constructor']){
             cm.getConstructor(actionItem['constructor'], function(classConstructor){
                 actionItem['controller'] = new classConstructor(
@@ -795,7 +788,7 @@ function(params){
                     })
                 );
                 actionItem['controller'].addEvent('onRenderControllerEnd', function(){
-                    item['component'].hide(false);
+                    item['component'] && item['component'].hide(false);
                 });
             });
         }else{
@@ -805,7 +798,7 @@ function(params){
                 actionItem['callback'](e, actionItem, row);
             });
         }
-        item['nodes']['actions'].push(actionItem['node']);
+        item['nodes']['items'].push(actionItem['node']);
     };
 
     /*** HELPING FUNCTIONS ***/

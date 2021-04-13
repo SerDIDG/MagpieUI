@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.39.0 (2021-04-01 23:57) ************ */
+/*! ************ MagpieUI v3.39.1 (2021-04-13 19:59) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.39.0',
+        '_version' : '3.39.1',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -18432,51 +18432,52 @@ function(params){
     };
 
     var renderCellLinks = function(config, row, item){
-        item['nodes']['links'] = [];
-        item['nodes']['inner'].appendChild(
-            item['nodes']['node'] = cm.node('div', {'class' : ['pt__links', config['class']].join(' ')},
-                item['nodes']['linksList'] = cm.node('ul')
-            )
-        );
-        cm.forEach(config['links'], function(actionItem){
-            var actionNode;
-            actionItem = cm.merge({
-                'label' : '',
-                'attr' : {},
-                'events' : {}
-            }, actionItem);
-            cm.forEach(row['data'], function(itemValue, itemKey){
-                actionItem['attr'] = cm.replaceDeep(actionItem['attr'], new RegExp([cm.strWrap(itemKey, '%'), cm.strWrap(itemKey, '%25')].join('|'), 'g'), itemValue);
-            });
-            item['nodes']['linksList'].appendChild(
-                cm.node('li',
-                    actionNode = cm.node('a', actionItem['attr'], actionItem['label'])
-                )
-            );
-            cm.forEach(actionItem['events'], function(actionEventHandler, actionEventName){
-                cm.addEvent(actionNode, actionEventName, actionEventHandler);
-            });
-            item['nodes']['links'].push(actionNode);
-        });
+        // Structure
+        item['nodes']['items'] = item['nodes']['links'] = [];
+        item['nodes']['node'] = cm.node('div', {'class' : ['pt__links', config['class']].join(' ')},
+            item['nodes']['itemsList'] = item['nodes']['linksList'] = cm.node('ul')
+        )
+        // Items
+        renderCellActionItems(config, row, item, 'links');
+        // Embed
+        if(item['nodes']['links'].length){
+            cm.appendChild(item['nodes']['node'], item['nodes']['inner']);
+        }
     };
 
     var renderCellActions = function(config, row, item){
-        var isInArray, isEmpty;
         // Structure
-        item['nodes']['actions'] = [];
+        item['nodes']['items'] = item['nodes']['actions'] = [];
         item['nodes']['node'] = cm.node('div', {'class' : ['pt__links', 'pull-right', config['class']].join(' ')},
             cm.node('ul',
                 item['nodes']['componentNode'] = cm.node('li', {'class' : 'com__menu', 'data-node' : 'ComMenu:{}:button'},
                     cm.node('a', {'class' : 'label'}, that.lang('actions')),
                     cm.node('span', {'class' : 'cm-i__chevron-down xx-small inline'}),
                     cm.node('div', {'class' : 'pt__menu', 'data-node' : 'ComMenu.target'},
-                        item['nodes']['actionsList'] = cm.node('ul', {'class' : 'pt__menu-dropdown'})
+                        item['nodes']['itemsList'] = item['nodes']['actionsList'] = cm.node('ul', {'class' : 'pt__menu-dropdown'})
                     )
                 )
             )
         );
         // Items
-        cm.forEach(config['actions'], function(actionItem){
+        renderCellActionItems(config, row, item, 'actions');
+        // Embed
+        if(item['nodes']['actions'].length){
+            cm.appendChild(item['nodes']['node'], item['nodes']['inner']);
+            // Render menu component
+            cm.getConstructor('Com.Menu', function(classConstructor, className){
+                item['component'] = new classConstructor(
+                    cm.merge(that.params[className], {
+                        'node' : item['nodes']['componentNode']
+                    })
+                );
+            });
+        }
+    };
+
+    var renderCellActionItems = function(config, row, item, list){
+        var isInArray, isEmpty;
+        cm.forEach(config[list], function(actionItem){
             actionItem = cm.merge({
                 'name' : '',
                 'label' : '',
@@ -18496,30 +18497,22 @@ function(params){
                 renderCellActionItem(config, row, item, actionItem);
             }
         });
-        // Embed
-        if(item['nodes']['actions'].length){
-            cm.appendChild(item['nodes']['node'], item['nodes']['inner']);
-        }
-    };
+    }
 
     var renderCellActionItem = function(config, row, item, actionItem){
         // WTF is that? - that is attribute bindings, for example - href
         cm.forEach(row['data'], function(itemValue, itemKey){
-            actionItem['attr'] = cm.replaceDeep(actionItem['attr'], new RegExp([cm.strWrap(itemKey, '%'), cm.strWrap(itemKey, '%25')].join('|'), 'g'), itemValue);
+            actionItem['attr'] = cm.replaceDeep(
+                actionItem['attr'],
+                new RegExp([cm.strWrap(itemKey, '%'), cm.strWrap(itemKey, '%25')].join('|'), 'g'),
+                itemValue
+            );
         });
-        item['nodes']['actionsList'].appendChild(
+        item['nodes']['itemsList'].appendChild(
             cm.node('li',
                 actionItem['node'] = cm.node('a', actionItem['attr'], actionItem['label'])
             )
         );
-        // Render menu component
-        cm.getConstructor('Com.Menu', function(classConstructor, className){
-            item['component'] = new classConstructor(
-                cm.merge(that.params[className], {
-                    'node' : item['nodes']['componentNode']
-                })
-            );
-        });
         if(actionItem['constructor']){
             cm.getConstructor(actionItem['constructor'], function(classConstructor){
                 actionItem['controller'] = new classConstructor(
@@ -18532,7 +18525,7 @@ function(params){
                     })
                 );
                 actionItem['controller'].addEvent('onRenderControllerEnd', function(){
-                    item['component'].hide(false);
+                    item['component'] && item['component'].hide(false);
                 });
             });
         }else{
@@ -18542,7 +18535,7 @@ function(params){
                 actionItem['callback'](e, actionItem, row);
             });
         }
-        item['nodes']['actions'].push(actionItem['node']);
+        item['nodes']['items'].push(actionItem['node']);
     };
 
     /*** HELPING FUNCTIONS ***/
@@ -18821,6 +18814,7 @@ function(params){
 
     init();
 });
+
 cm.define('Com.GridlistFilter', {
     'extend' : 'Com.AbstractController',
     'events' : [
@@ -19325,15 +19319,18 @@ cm.getConstructor('Com.ImageBox', function(classConstructor, className, classPro
     classProto.animSet = function(){
         var that = this;
         that.isProcessed = true;
-        cm.addClass(that.params['node'], ['animated', that.params['effect']].join(' '));
+        cm.addClass(that.params['node'], 'animate__animated');
+        cm.addClass(that.params['node'], ['animate', that.params['effect']].join('__'));
     };
 
     classProto.animRestore = function(){
         var that = this;
         that.isProcessed = false;
-        cm.removeClass(that.params['node'], ['animated', that.params['effect']].join(' '));
+        cm.removeClass(that.params['node'], 'animate__animated');
+        cm.removeClass(that.params['node'], ['animate', that.params['effect']].join('__'));
     };
 });
+
 cm.define('Com.ImagePreviewContainer', {
     'extend' : 'Com.AbstractContainer',
     'params' : {
@@ -22399,52 +22396,63 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
 
     classProto.processRoute = function(state){
         var that = this,
-            isMatch,
-            hasAccess,
-            matchItem,
-            matchCaptures,
             route,
-            redirectTo;
+            matchRouteRedirect,
+            matchRouteData,
+            matchRoutesData = [];
         // Destruct old route
         that.destructRoute(that.current);
         // Match route
-        cm.forEach(that.routes, function(routeItem){
-            isMatch = state['route'].match(routeItem['regexp']);
+        cm.forEach(that.routes, function(item, route){
+            var isMatch = state['route'].match(item['regexp']),
+                hasAccess = that.checkRoleAccess(item['access']),
+                routeData;
             if(isMatch){
-                hasAccess = that.checkRoleAccess(routeItem['access']);
+                item = cm.clone(item);
+                routeData = {
+                    'hasAccess' : hasAccess,
+                    'roure': route,
+                    'item' : item,
+                    'captures' : isMatch
+                };
                 if(hasAccess){
-                    matchCaptures = isMatch;
-                    matchItem = routeItem;
+                    matchRouteData = routeData;
                 }else{
-                    state['match'].push(
-                        cm.clone(routeItem)
-                    );
+                    matchRoutesData.push(routeData);
+                    state['match'].push(item);
                 }
             }
         });
-        if(!matchItem){
-            matchItem = that.get('error');
+        // Try to find route redirects if exists
+        if(!matchRouteData){
+            cm.forEach(matchRoutesData, function(routeData){
+                var redirect = that.getRouteRedirect(routeData.item);
+                if(redirect){
+                    matchRouteData = routeData;
+                    matchRouteRedirect = redirect;
+                }
+            });
+        }else{
+            matchRouteRedirect = that.getRouteRedirect(matchRouteData.item);
         }
-        route = cm.merge(matchItem, state);
-        route['state'] = state;
-        // Get captures
-        if(matchCaptures){
-            route['captures'] = that.mapCaptures(route['map'], matchCaptures);
+        // If routes and redirects does not found - process error route
+        if(!matchRouteData){
+            matchRouteData = {
+                'hasAccess' : true,
+                'route' : 'error',
+                'item' : that.get('error')
+            };
         }
-        // Handle redirect
-        if(!cm.isEmpty(route['redirectTo'])){
-            if(cm.isObject(route['redirectTo'])){
-                cm.forEach(route['redirectTo'], function(item, key){
-                    if(that.checkRoleAccess(key)){
-                        redirectTo = item;
-                    }
-                });
-            }else{
-                redirectTo = route['redirectTo'];
-            }
+        // Process route
+        route = cm.merge(matchRouteData.item, state);
+        route.state = state;
+        // Map found captures
+        if(matchRouteData.captures){
+            route.captures = that.mapCaptures(route.map, matchRouteData.captures);
         }
-        if(redirectTo){
-            that.redirect(redirectTo, route.hash, {
+        // Handle route redirect or route
+        if(matchRouteRedirect){
+            that.redirect(matchRouteRedirect, route.hash, {
                 'urlParams' : route['urlParams'],
                 'captures' : route['captures'],
                 'data' : route['data']
@@ -22511,6 +22519,23 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         }
         that.triggerEvent('onChange', route);
         return that;
+    };
+
+    classProto.getRouteRedirect = function(route){
+        var that = this,
+            routeRedirect;
+        if(!cm.isEmpty(route.redirectTo)){
+            if(cm.isObject(route.redirectTo)){
+                cm.forEach(route.redirectTo, function(item, route){
+                    if(that.checkRoleAccess(route)){
+                        routeRedirect = item;
+                    }
+                });
+            }else{
+                routeRedirect = route.redirectTo;
+            }
+        }
+        return routeRedirect;
     };
 
     /* *** HELPERS *** */
@@ -22597,6 +22622,12 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
             });
         }
         return route;
+    };
+
+    classProto.checkRouteAccess = function(route){
+        var that = this,
+            item = that.get(route);
+        return item ? that.checkRoleAccess(item['access']) : false;
     };
 
     classProto.checkRoleAccess = function(role){
@@ -22712,6 +22743,16 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         return that.prepareHref(that.getURL(route, hash, urlParams, data));
     };
 
+    classProto.getRedirect = function(route){
+        var that = this,
+            item = that.get(route),
+            redirect;
+        if(item){
+            redirect = that.getRouteRedirect(item);
+        }
+        return redirect;
+    };
+
     classProto.getCurrent = function(){
         var that = this;
         return that.current;
@@ -22750,7 +22791,8 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         if(that.routesBinds[route]){
             route = that.routesBinds[route];
         }
-        if(item = that.routes[route]){
+        if(that.routes[route]){
+            item = that.routes[route];
             // Process state
             state = cm.clone(item);
             state['params'] = cm.merge(state['params'], params);
@@ -22768,7 +22810,8 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         if(that.routesBinds[route]){
             route = that.routesBinds[route];
         }
-        if(item = that.routes[route]){
+        if(that.routes[route]){
+            item = that.routes[route];
             if(cm.isString(item['name'])){
                 delete that.routesBinds[item['name']];
             }else if(cm.isArray(item['name'])){
