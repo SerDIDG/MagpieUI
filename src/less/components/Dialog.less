@@ -473,16 +473,14 @@
         }
     }
 
-    &:not(.is-title-reserve){
-        &.has-no-title {
-            > .icon {
-                &.default {
-                    right: -(@icon_indent + @icon_size);
-                }
+    &.has-no-title {
+        > .icon {
+            &.default {
+                right: -(@icon_indent + @icon_size);
+            }
 
-                &.help {
-                    right: -(@icon_indent + @icon_size) * 2;
-                }
+            &.help {
+                right: -(@icon_indent + @icon_size) * 2;
             }
         }
     }

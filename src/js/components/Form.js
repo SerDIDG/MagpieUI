@@ -570,6 +570,12 @@ function(params){
                     messages.push(fieldMessage);
                     field && field['controller'].renderError(fieldMessage);
                 }
+            }else if(cm.isArray(item)){
+                cm.forEach(item, function(messageItem){
+                    fieldMessage = that.lang(messageItem);
+                    messages.push(fieldMessage);
+                    field && field['controller'].renderError(fieldMessage);
+                });
             }else if(!cm.isEmpty(item)){
                 fieldMessage = that.lang(item);
                 messages.push(fieldMessage);
@@ -660,7 +666,7 @@ function(params){
         return that;
     };
 
-    that.get = function(type){
+    that.get = function(type, merged){
         var o = {},
             handler,
             pathHandler,
@@ -668,6 +674,7 @@ function(params){
             path;
         // Validate
         type = cm.inArray(['all', 'fields', 'send', 'sendPath', 'system'], type) ? type : 'fields';
+        merged = cm.isUndefined(merged) ? false : merged;
         // Handler
         handler = function(field, name){
             value = field['controller'].get();
@@ -720,6 +727,9 @@ function(params){
                     break;
             }
         });
+        if(merged){
+            o = cm.merge(that.params['data'], o);
+        }
         return o;
     };
 

@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.39.1 (2021-04-13 19:59) ************ */
+/*! ************ MagpieUI v3.39.2 (2021-04-15 20:59) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.0
@@ -4367,8 +4367,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.39.1');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.39.1') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.39.1') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.39.1') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.39.1#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.39.2');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.39.2') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.39.2') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.39.2') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.39.2#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -10584,6 +10584,10 @@ button.is-hidden {
 .pt__field.is-no-label > dd,
 .pt__field.is-no-label > .field__descr {
   margin-left: 0;
+}
+.pt__field.is-hidden-label > dt,
+.pt__field.is-hidden-label > .field__title {
+  visibility: hidden;
 }
 .pt__field.is-check-line {
   display: -webkit-flex;
@@ -17815,16 +17819,16 @@ ul.pt__field__hint li:before {
 .com__dialog__window.theme-compact.has-close-inside > .inner > .title {
   padding-right: 60px;
 }
-.com__dialog__window.theme-default:not(.is-title-reserve).has-no-title > .icon.default,
-.com__dialog__window.theme-black:not(.is-title-reserve).has-no-title > .icon.default,
-.com__dialog__window.theme-light:not(.is-title-reserve).has-no-title > .icon.default,
-.com__dialog__window.theme-compact:not(.is-title-reserve).has-no-title > .icon.default {
+.com__dialog__window.theme-default.has-no-title > .icon.default,
+.com__dialog__window.theme-black.has-no-title > .icon.default,
+.com__dialog__window.theme-light.has-no-title > .icon.default,
+.com__dialog__window.theme-compact.has-no-title > .icon.default {
   right: -36px;
 }
-.com__dialog__window.theme-default:not(.is-title-reserve).has-no-title > .icon.help,
-.com__dialog__window.theme-black:not(.is-title-reserve).has-no-title > .icon.help,
-.com__dialog__window.theme-light:not(.is-title-reserve).has-no-title > .icon.help,
-.com__dialog__window.theme-compact:not(.is-title-reserve).has-no-title > .icon.help {
+.com__dialog__window.theme-default.has-no-title > .icon.help,
+.com__dialog__window.theme-black.has-no-title > .icon.help,
+.com__dialog__window.theme-light.has-no-title > .icon.help,
+.com__dialog__window.theme-compact.has-no-title > .icon.help {
   right: -72px;
 }
 .com__dialog__window.theme-default > .inner > .descr .com__dialog__inner,
@@ -17961,12 +17965,12 @@ ul.pt__field__hint li:before {
 .com__dialog__window.theme-compact.has-close-inside > .inner > .title {
   padding-right: 48px;
 }
-.com__dialog__window.theme-light:not(.is-title-reserve).has-no-title > .icon.default,
-.com__dialog__window.theme-compact:not(.is-title-reserve).has-no-title > .icon.default {
+.com__dialog__window.theme-light.has-no-title > .icon.default,
+.com__dialog__window.theme-compact.has-no-title > .icon.default {
   right: -36px;
 }
-.com__dialog__window.theme-light:not(.is-title-reserve).has-no-title > .icon.help,
-.com__dialog__window.theme-compact:not(.is-title-reserve).has-no-title > .icon.help {
+.com__dialog__window.theme-light.has-no-title > .icon.help,
+.com__dialog__window.theme-compact.has-no-title > .icon.help {
   right: -72px;
 }
 .com__dialog__window.theme-light > .inner > .descr .com__dialog__inner,
@@ -18021,10 +18025,10 @@ ul.pt__field__hint li:before {
 .com__dialog__window.theme-compact.has-close-inside > .inner > .title {
   padding-right: 44px;
 }
-.com__dialog__window.theme-compact:not(.is-title-reserve).has-no-title > .icon.default {
+.com__dialog__window.theme-compact.has-no-title > .icon.default {
   right: -32px;
 }
-.com__dialog__window.theme-compact:not(.is-title-reserve).has-no-title > .icon.help {
+.com__dialog__window.theme-compact.has-no-title > .icon.help {
   right: -64px;
 }
 .com__dialog__window.theme-compact > .inner > .descr .com__dialog__inner {

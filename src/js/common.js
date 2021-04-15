@@ -3645,6 +3645,7 @@ cm.ajax = function(o){
             'onAbort' : function(){},
             'handler' : false
         }, o),
+        successStatuses = [200, 201, 202, 204],
         vars = cm._getVariables(),
         response,
         callbackName,
@@ -3728,7 +3729,7 @@ cm.ajax = function(o){
     var loadHandler = function(e){
         if(config['httpRequestObject'].readyState === 4){
             response = config['httpRequestObject'].response;
-            if(config['httpRequestObject'].status === 200){
+            if(cm.inArray(successStatuses, config['httpRequestObject'].status)){
                 config['onSuccess'](response, e);
             }else{
                 config['onError'](response, e);

@@ -77,7 +77,7 @@ cm.define('Com.Autocomplete', {
 },
 function(params){
     var that = this;
-    
+
     that.components = {};
 
     that.isDestructed = false;
@@ -198,7 +198,6 @@ function(params){
                 break;
             // Arrow Down
             case 40:
-                cm.log(that.registeredItems);
                 listLength = that.registeredItems.length;
                 if(listLength){
                     if(that.selectedItemIndex === null){

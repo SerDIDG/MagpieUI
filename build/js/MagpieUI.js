@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.39.1 (2021-04-13 19:59) ************ */
+/*! ************ MagpieUI v3.39.2 (2021-04-15 20:59) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.39.1',
+        '_version' : '3.39.2',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -5244,6 +5244,7 @@ cm.ajax = function(o){
             'onAbort' : function(){},
             'handler' : false
         }, o),
+        successStatuses = [200, 201, 202, 204],
         vars = cm._getVariables(),
         response,
         callbackName,
@@ -5327,7 +5328,7 @@ cm.ajax = function(o){
     var loadHandler = function(e){
         if(config['httpRequestObject'].readyState === 4){
             response = config['httpRequestObject'].response;
-            if(config['httpRequestObject'].status === 200){
+            if(cm.inArray(successStatuses, config['httpRequestObject'].status)){
                 config['onSuccess'](response, e);
             }else{
                 config['onError'](response, e);
@@ -10385,6 +10386,12 @@ function(params){
                     messages.push(fieldMessage);
                     field && field['controller'].renderError(fieldMessage);
                 }
+            }else if(cm.isArray(item)){
+                cm.forEach(item, function(messageItem){
+                    fieldMessage = that.lang(messageItem);
+                    messages.push(fieldMessage);
+                    field && field['controller'].renderError(fieldMessage);
+                });
             }else if(!cm.isEmpty(item)){
                 fieldMessage = that.lang(item);
                 messages.push(fieldMessage);
@@ -10475,7 +10482,7 @@ function(params){
         return that;
     };
 
-    that.get = function(type){
+    that.get = function(type, merged){
         var o = {},
             handler,
             pathHandler,
@@ -10483,6 +10490,7 @@ function(params){
             path;
         // Validate
         type = cm.inArray(['all', 'fields', 'send', 'sendPath', 'system'], type) ? type : 'fields';
+        merged = cm.isUndefined(merged) ? false : merged;
         // Handler
         handler = function(field, name){
             value = field['controller'].get();
@@ -10535,6 +10543,9 @@ function(params){
                     break;
             }
         });
+        if(merged){
+            o = cm.merge(that.params['data'], o);
+        }
         return o;
     };
 
@@ -27461,7 +27472,7 @@ cm.define('Com.Autocomplete', {
 },
 function(params){
     var that = this;
-    
+
     that.components = {};
 
     that.isDestructed = false;
@@ -27582,7 +27593,6 @@ function(params){
                 break;
             // Arrow Down
             case 40:
-                cm.log(that.registeredItems);
                 listLength = that.registeredItems.length;
                 if(listLength){
                     if(that.selectedItemIndex === null){
@@ -28207,6 +28217,7 @@ Com.FormFields.add('autocomplete', {
     'fieldConstructor' : 'Com.AbstractFormField',
     'constructor' : 'Com.Autocomplete'
 });
+
 cm.define('Com.AutocompleteField', {
     'extend' : 'Com.AbstractInput',
     'params' : {
