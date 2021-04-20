@@ -19,7 +19,7 @@ function(params){
 });
 
 cm.getConstructor('Com.Router', function(classConstructor, className, classProto, classInherit){
-    classProto.onConstructStart = function(){
+    classProto.construct = function(){
         var that = this;
         // Variables
         that.routes = {};
@@ -31,6 +31,8 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         that.windowClickEventHandler = that.windowClickEvent.bind(that);
         that.popstateEventHandler = that.popstateEvent.bind(that);
         that.hashchangeEventHandler = that.hashchangeEvent.bind(that);
+        // Call parent method
+        classInherit.prototype.construct.apply(that, arguments);
     };
 
     classProto.onSetEvents = function(){
@@ -376,13 +378,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
     };
 
     classProto.fillCaptures = function(route, params){
-        // Set url params
-        if(cm.isObject(params)){
-            route = route.replace(/{(\w+)}/g, function(math, p1){
-                return params[p1] || '';
-            });
-        }
-        return route;
+        return cm.fillVariables(route, params);
     };
 
     classProto.checkRouteAccess = function(route){

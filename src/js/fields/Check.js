@@ -107,7 +107,10 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
                 cm.appendChild(inputContainer, nodes['container']);
             });
         }else{
-            inputContainer = that.renderInput({'text' : that.params['placeholder']});
+            inputContainer = that.renderInput({
+                'text' : that.params['placeholder'],
+                'value' : that.params['value']
+            });
             cm.appendChild(inputContainer, nodes['container']);
         }
         that.triggerEvent('onRenderContentEnd');
@@ -122,7 +125,7 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
             'nodes' : nodes,
             'text' : '',
             'value' : null
-        },item);
+        }, item);
         // Structure
         nodes['container'] = cm.node('label',
             nodes['input'] = cm.node('input', {'type' : that.params['type']}),
@@ -168,7 +171,11 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
                 value = item['value'];
             }
         }else{
-            value = item['input'].checked;
+            if(item['input'].checked){
+                value = !cm.isEmpty(item['value']) ? item['value'] : true;
+            }else{
+                value = false;
+            }
         }
         that.set(value, triggerEvents);
         return that;

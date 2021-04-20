@@ -692,7 +692,7 @@ function(params){
             }
             if(!cm.isUndefined(value) && (that.params['sendEmptyFields'] || !cm.isEmpty(value))){
                 if(!cm.isEmpty(field['sendPath'])){
-                    path = cm.objectFormPath(field['sendPath'], value);
+                    path = cm.objectFormPath(field['sendPath'], value, '');
                     o = cm.merge(o, path);
                 }else{
                     o[name] = value;

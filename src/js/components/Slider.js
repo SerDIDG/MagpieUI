@@ -4,6 +4,7 @@ cm.define('Com.Slider', {
         'Events',
         'DataConfig',
         'DataNodes',
+        'Structure',
         'Stack'
     ],
     'events' : [
@@ -19,6 +20,8 @@ cm.define('Com.Slider', {
     ],
     'params' : {
         'node' : cm.node('div'),
+        'container' : false,
+        'className' : null,
         'name' : '',
         'customEvents' : true,
         'renderStructure' : false,
@@ -50,7 +53,7 @@ function(params){
         components = {},
         slideshowInterval,
         minHeightDimension;
-    
+
     that.nodes = {
         'container' : cm.Node('div'),
         'inner' : cm.Node('div'),
@@ -125,8 +128,11 @@ function(params){
         if(that.params['renderStructure']){
             renderView();
         }
+        cm.addClass(that.nodes['container'], that.params['className']);
         // Collect items
         cm.forEach(that.nodes['items'], collectItem);
+        // Collect items from config
+        cm.forEach(that.params['items'], collectItem);
         // Arrows
         if(that.params['arrows']){
             cm.addEvent(that.nodes['next'], 'click', that.next);
@@ -173,7 +179,29 @@ function(params){
     };
 
     var renderView = function(){
-
+        that.nodes['container'] = cm.node('div', {'class' : 'com__slider'},
+            that.nodes['inner'] = cm.node('div', {'class' : 'inner'},
+                that.nodes['size'] = cm.node('div', {'class' : 'size'}),
+                that.nodes['slides'] = cm.node('div', {'class' : 'slides'},
+                    that.nodes['slidesInner'] = cm.node('ul')
+                ),
+                cm.node('div', {'class' : 'com__gallery-controls is-partial'},
+                    cm.node('div', {'class' : 'inner'},
+                        that.nodes['prev'] = cm.node('div', {'class' : 'bar-arrow prev'},
+                            cm.node('div', {'class' : 'icon default prev'})
+                        ),
+                        that.nodes['next'] = cm.node('div', {'class' : 'bar-arrow next'},
+                            cm.node('div', {'class' : 'icon default next'})
+                        ),
+                        cm.node('div', {'class' : 'bar-buttons'},
+                            that.nodes['buttons'] = cm.node('ul')
+                        )
+                    )
+                )
+            )
+        );
+        // Embed
+        that.embedStructure(that.nodes['container']);
     };
 
     var setEvents = function(){
@@ -263,15 +291,15 @@ function(params){
         }
     };
 
-    var collectItem = function(item, i){
+    var collectItem = function(item){
         // Configuration
         item = {
-            'index' : i,
+            'index' : that.items.length,
             'nodes' : item
         };
         // Bar
         if(that.params['hasBar']){
-            item['bar'] = that.nodes['bar-items'][i];
+            item['bar'] = that.nodes['bar-items'][item['index']];
             item['bar']['title'] = item['bar']['link']? item['bar']['link'].getAttribute('title') || '' : '';
             item['bar']['src'] = item['bar']['link']? item['bar']['link'].getAttribute('href') || '' : '';
         }
@@ -288,6 +316,10 @@ function(params){
                 'inner' : null
             }
         }, item);
+        // Embed
+        if(!cm.hasParentNode(item['nodes']['container'])){
+            cm.appendChild(item['nodes']['container'], that.nodes['slidesInner']);
+        }
         // Bar
         if(that.params['hasBar']){
             // Set image on thumb click

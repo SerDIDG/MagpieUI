@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.39.2 (2021-04-15 20:59) ************ */
+/*! ************ MagpieUI v3.39.3 (2021-04-20 19:38) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.39.2',
+        '_version' : '3.39.3',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -2172,14 +2172,16 @@ cm.isUndefined = function(value){
     return typeof value === 'undefined' || value === undefined || value === null;
 };
 
-cm.objectFormPath = function(name, apply){
+cm.objectFormPath = function(name, value, defaultValue){
     var newO = {},
         tempO = newO,
         nameO = name.toString().split('.'),
         nameL = nameO.length;
+    defaultValue = !cm.isUndefined(defaultValue) ? defaultValue : {};
+    value = !cm.isEmpty(value) ? value : defaultValue;
     nameO.map(function(item, i){
-        if(apply && (nameL === i + 1)){
-            tempO[item] = apply;
+        if(nameL === i + 1){
+            tempO[item] = value;
         }else{
             tempO = tempO[item] = {};
         }
@@ -2228,6 +2230,25 @@ cm.reducePath = function(name, obj){
     return name.reduce(function(object, property){
         return cm.isUndefined(object) ? undefined : object[property];
     }, obj);
+};
+
+cm.fillDataMask = function(mask, data){
+    var item = {},
+        value;
+    cm.forEach(mask, function(id, key){
+        value = cm.reducePath(id, data);
+        if(!cm.isEmpty(value)){
+            item[key] = value;
+        }
+    });
+    return item;
+};
+
+cm.fillVariables = function(value, data){
+    value = value.replace(/[{%](\w+)[%}]/g, function(math, p1){
+        return data[p1] || data['%' + p1 + '%'] || data['{' + p1 + '}'] || '';
+    });
+    return value;
 };
 
 cm.sort = function(o, dir){
@@ -5287,7 +5308,7 @@ cm.ajax = function(o){
         }
         // Build request link
         if(!cm.isEmpty(config['modifier']) && !cm.isEmpty(config['modifierParams'])){
-            config['modifier'] = cm.strReplace(config['modifier'], config['modifierParams']);
+            config['modifier'] = cm.fillVariables(config['modifier'], config['modifierParams']);
             config['url'] += config['modifier'];
         }else{
             delete config['modifier'];
@@ -10508,7 +10529,7 @@ function(params){
             }
             if(!cm.isUndefined(value) && (that.params['sendEmptyFields'] || !cm.isEmpty(value))){
                 if(!cm.isEmpty(field['sendPath'])){
-                    path = cm.objectFormPath(field['sendPath'], value);
+                    path = cm.objectFormPath(field['sendPath'], value, '');
                     o = cm.merge(o, path);
                 }else{
                     o[name] = value;
@@ -22269,7 +22290,7 @@ function(params){
 });
 
 cm.getConstructor('Com.Router', function(classConstructor, className, classProto, classInherit){
-    classProto.onConstructStart = function(){
+    classProto.construct = function(){
         var that = this;
         // Variables
         that.routes = {};
@@ -22281,6 +22302,8 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         that.windowClickEventHandler = that.windowClickEvent.bind(that);
         that.popstateEventHandler = that.popstateEvent.bind(that);
         that.hashchangeEventHandler = that.hashchangeEvent.bind(that);
+        // Call parent method
+        classInherit.prototype.construct.apply(that, arguments);
     };
 
     classProto.onSetEvents = function(){
@@ -22626,13 +22649,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
     };
 
     classProto.fillCaptures = function(route, params){
-        // Set url params
-        if(cm.isObject(params)){
-            route = route.replace(/{(\w+)}/g, function(math, p1){
-                return params[p1] || '';
-            });
-        }
-        return route;
+        return cm.fillVariables(route, params);
     };
 
     classProto.checkRouteAccess = function(route){
@@ -23039,6 +23056,7 @@ cm.define('Com.Slider', {
         'Events',
         'DataConfig',
         'DataNodes',
+        'Structure',
         'Stack'
     ],
     'events' : [
@@ -23054,6 +23072,8 @@ cm.define('Com.Slider', {
     ],
     'params' : {
         'node' : cm.node('div'),
+        'container' : false,
+        'className' : null,
         'name' : '',
         'customEvents' : true,
         'renderStructure' : false,
@@ -23085,7 +23105,7 @@ function(params){
         components = {},
         slideshowInterval,
         minHeightDimension;
-    
+
     that.nodes = {
         'container' : cm.Node('div'),
         'inner' : cm.Node('div'),
@@ -23160,8 +23180,11 @@ function(params){
         if(that.params['renderStructure']){
             renderView();
         }
+        cm.addClass(that.nodes['container'], that.params['className']);
         // Collect items
         cm.forEach(that.nodes['items'], collectItem);
+        // Collect items from config
+        cm.forEach(that.params['items'], collectItem);
         // Arrows
         if(that.params['arrows']){
             cm.addEvent(that.nodes['next'], 'click', that.next);
@@ -23208,7 +23231,29 @@ function(params){
     };
 
     var renderView = function(){
-
+        that.nodes['container'] = cm.node('div', {'class' : 'com__slider'},
+            that.nodes['inner'] = cm.node('div', {'class' : 'inner'},
+                that.nodes['size'] = cm.node('div', {'class' : 'size'}),
+                that.nodes['slides'] = cm.node('div', {'class' : 'slides'},
+                    that.nodes['slidesInner'] = cm.node('ul')
+                ),
+                cm.node('div', {'class' : 'com__gallery-controls is-partial'},
+                    cm.node('div', {'class' : 'inner'},
+                        that.nodes['prev'] = cm.node('div', {'class' : 'bar-arrow prev'},
+                            cm.node('div', {'class' : 'icon default prev'})
+                        ),
+                        that.nodes['next'] = cm.node('div', {'class' : 'bar-arrow next'},
+                            cm.node('div', {'class' : 'icon default next'})
+                        ),
+                        cm.node('div', {'class' : 'bar-buttons'},
+                            that.nodes['buttons'] = cm.node('ul')
+                        )
+                    )
+                )
+            )
+        );
+        // Embed
+        that.embedStructure(that.nodes['container']);
     };
 
     var setEvents = function(){
@@ -23298,15 +23343,15 @@ function(params){
         }
     };
 
-    var collectItem = function(item, i){
+    var collectItem = function(item){
         // Configuration
         item = {
-            'index' : i,
+            'index' : that.items.length,
             'nodes' : item
         };
         // Bar
         if(that.params['hasBar']){
-            item['bar'] = that.nodes['bar-items'][i];
+            item['bar'] = that.nodes['bar-items'][item['index']];
             item['bar']['title'] = item['bar']['link']? item['bar']['link'].getAttribute('title') || '' : '';
             item['bar']['src'] = item['bar']['link']? item['bar']['link'].getAttribute('href') || '' : '';
         }
@@ -23323,6 +23368,10 @@ function(params){
                 'inner' : null
             }
         }, item);
+        // Embed
+        if(!cm.hasParentNode(item['nodes']['container'])){
+            cm.appendChild(item['nodes']['container'], that.nodes['slidesInner']);
+        }
         // Bar
         if(that.params['hasBar']){
             // Set image on thumb click
@@ -23845,6 +23894,7 @@ Com.SliderEffects['custom'] = function(slider, current, previous, callback){
         callback();
     }
 };
+
 cm.define('Com.Sortable', {
     'modules' : [
         'Params',
@@ -25424,6 +25474,7 @@ function(params){
 
     init();
 });
+
 cm.define('Com.Toolbar', {
     'modules' : [
         'Params',
@@ -28502,7 +28553,10 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
                 cm.appendChild(inputContainer, nodes['container']);
             });
         }else{
-            inputContainer = that.renderInput({'text' : that.params['placeholder']});
+            inputContainer = that.renderInput({
+                'text' : that.params['placeholder'],
+                'value' : that.params['value']
+            });
             cm.appendChild(inputContainer, nodes['container']);
         }
         that.triggerEvent('onRenderContentEnd');
@@ -28517,7 +28571,7 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
             'nodes' : nodes,
             'text' : '',
             'value' : null
-        },item);
+        }, item);
         // Structure
         nodes['container'] = cm.node('label',
             nodes['input'] = cm.node('input', {'type' : that.params['type']}),
@@ -28563,7 +28617,11 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
                 value = item['value'];
             }
         }else{
-            value = item['input'].checked;
+            if(item['input'].checked){
+                value = !cm.isEmpty(item['value']) ? item['value'] : true;
+            }else{
+                value = false;
+            }
         }
         that.set(value, triggerEvents);
         return that;

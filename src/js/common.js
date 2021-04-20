@@ -573,14 +573,16 @@ cm.isUndefined = function(value){
     return typeof value === 'undefined' || value === undefined || value === null;
 };
 
-cm.objectFormPath = function(name, apply){
+cm.objectFormPath = function(name, value, defaultValue){
     var newO = {},
         tempO = newO,
         nameO = name.toString().split('.'),
         nameL = nameO.length;
+    defaultValue = !cm.isUndefined(defaultValue) ? defaultValue : {};
+    value = !cm.isEmpty(value) ? value : defaultValue;
     nameO.map(function(item, i){
-        if(apply && (nameL === i + 1)){
-            tempO[item] = apply;
+        if(nameL === i + 1){
+            tempO[item] = value;
         }else{
             tempO = tempO[item] = {};
         }
@@ -629,6 +631,25 @@ cm.reducePath = function(name, obj){
     return name.reduce(function(object, property){
         return cm.isUndefined(object) ? undefined : object[property];
     }, obj);
+};
+
+cm.fillDataMask = function(mask, data){
+    var item = {},
+        value;
+    cm.forEach(mask, function(id, key){
+        value = cm.reducePath(id, data);
+        if(!cm.isEmpty(value)){
+            item[key] = value;
+        }
+    });
+    return item;
+};
+
+cm.fillVariables = function(value, data){
+    value = value.replace(/[{%](\w+)[%}]/g, function(math, p1){
+        return data[p1] || data['%' + p1 + '%'] || data['{' + p1 + '}'] || '';
+    });
+    return value;
 };
 
 cm.sort = function(o, dir){
@@ -3688,7 +3709,7 @@ cm.ajax = function(o){
         }
         // Build request link
         if(!cm.isEmpty(config['modifier']) && !cm.isEmpty(config['modifierParams'])){
-            config['modifier'] = cm.strReplace(config['modifier'], config['modifierParams']);
+            config['modifier'] = cm.fillVariables(config['modifier'], config['modifierParams']);
             config['url'] += config['modifier'];
         }else{
             delete config['modifier'];
