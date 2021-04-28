@@ -1,0 +1,15 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: weekly
+    time: "03:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: grunt-contrib-cssmin
+    versions:
+    - 4.0.0
+  - dependency-name: less
+    versions:
+    - 4.1.0
