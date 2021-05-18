@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.39.3 (2021-04-20 19:38) ************ */
+/*! ************ MagpieUI v3.39.4 (2021-05-18 20:09) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.39.3',
+        '_version' : '3.39.4',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -2134,13 +2134,22 @@ cm.arrayToObject = function(a){
     return o;
 };
 
-cm.objectReplace = function(o, vars){
-    var newO = cm.clone(o);
-    cm.forEach(newO, function(value, key){
+cm.objectReplace = function(o, map, replaceKeys){
+    var newO = {},
+        newKey;
+    replaceKeys = !cm.isUndefined(replaceKeys) ? replaceKeys : true;
+    cm.forEach(o, function(value, key){
+        if(cm.isString(key)){
+            newKey = replaceKeys ? cm.strReplace(key, map) : key;
+        }else{
+            newKey = key;
+        }
         if(cm.isObject(value)){
-            newO[key] = cm.objectReplace(value, vars);
+            newO[newKey] = cm.objectReplace(value, map);
         }else if(cm.isString(value)){
-            newO[key] = cm.strReplace(value, vars);
+            newO[newKey] = cm.strReplace(value, map);
+        }else{
+            newO[newKey] = value;
         }
     });
     return newO;
@@ -2189,20 +2198,6 @@ cm.objectFormPath = function(name, value, defaultValue){
     return newO;
 };
 
-cm.objectPath = function(name, obj){
-    if(cm.isUndefined(obj) || cm.isUndefined(name)){
-        return obj;
-    }
-    name = name.toString().split('.');
-    var findObj = obj;
-    cm.forEach(name, function(item){
-        if(findObj){
-            findObj = findObj[item];
-        }
-    });
-    return findObj;
-};
-
 cm.objectSelector = function(name, obj, apply){
     if(cm.isUndefined(obj) || cm.isUndefined(name)){
         return obj;
@@ -2222,7 +2217,7 @@ cm.objectSelector = function(name, obj, apply){
     return findObj;
 };
 
-cm.reducePath = function(name, obj){
+cm.reducePath = cm.objectPath = function(name, obj){
     if(cm.isUndefined(obj) || cm.isUndefined(name)){
         return obj;
     }
@@ -2232,23 +2227,28 @@ cm.reducePath = function(name, obj){
     }, obj);
 };
 
-cm.fillDataMask = function(mask, data){
-    var item = {},
+cm.fillDataMap = function(map, data){
+    var items = {},
         value;
-    cm.forEach(mask, function(id, key){
+    cm.forEach(map, function(id, key){
         value = cm.reducePath(id, data);
+        if(cm.isEmpty(value) && /[{%]\w+[%}]/.test(id)){
+            value = cm.fillVariables(id, data);
+        }
         if(!cm.isEmpty(value)){
-            item[key] = value;
+            items[key] = value;
         }
     });
-    return item;
+    return items;
 };
 
 cm.fillVariables = function(value, data){
-    value = value.replace(/[{%](\w+)[%}]/g, function(math, p1){
-        return data[p1] || data['%' + p1 + '%'] || data['{' + p1 + '}'] || '';
+    return value.replace(/[{%](\w+)[%}]/g, function(math, p1){
+        return cm.reducePath(p1, data)
+            || cm.reducePath('%' + p1 + '%', data)
+            || cm.reducePath('{' + p1 + '}', data)
+            || '';
     });
-    return value;
 };
 
 cm.sort = function(o, dir){
@@ -2306,12 +2306,25 @@ cm.errorLog = function(o){
                 'common' : 'Common'
             }
         }, o),
-        str = [
+        data = [
             config['langs'][config['type']],
             config['name'],
             config['message']
-        ];
-    cm.log(str.join(' > '));
+        ],
+        str = data.join(' > ');
+    switch(config['type']){
+        case 'error':
+            console.error(str);
+            break;
+        case 'attention':
+            console.warn(str);
+            break;
+        case 'common':
+        case 'success':
+        default:
+            console.info(str);
+            break;
+    }
 };
 
 cm.getEvent = function(e){
@@ -2710,14 +2723,25 @@ cm.fileFromDataTransfer = function(e, callback){
 };
 
 cm.dataURItoBlob = function(dataURI){
-    var byteString = atob(dataURI.split(',')[1]);
-    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-    var ab = new ArrayBuffer(byteString.length);
-    var ia = new Uint8Array(ab);
+    var byteString = atob(dataURI.split(',')[1]),
+        mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0],
+        ab = new ArrayBuffer(byteString.length),
+        ia = new Uint8Array(ab);
     for (var i = 0; i < byteString.length; i++) {
         ia[i] = byteString.charCodeAt(i);
     }
     return new Blob([ab], {'type': mimeString});
+};
+
+cm.bufferToHEX = function(arrayBuffer){
+    var byteArray = new Uint8Array(arrayBuffer),
+        hexParts = [];
+    for(var i = 0; i < byteArray.length; i++){
+        var hex = byteArray[i].toString(16),
+            paddedHex = ('00' + hex).slice(-2);
+        hexParts.push(paddedHex);
+    }
+    return hexParts.join('');
 };
 
 /* ******* NODES ******* */
@@ -3578,10 +3602,10 @@ cm.strWrap = function(str, symbol){
     return ['', str, ''].join(symbol);
 };
 
-cm.strReplace = function(str, vars){
-    if(vars && cm.isObject(vars)){
+cm.strReplace = function(str, map){
+    if(map && cm.isObject(map)){
         str = str.toString();
-        cm.forEach(vars, function(item, key){
+        cm.forEach(map, function(item, key){
             if(cm.isObject(item)){
                 item = JSON.stringify(item);
             }
@@ -5245,12 +5269,12 @@ cm.ajax = function(o){
             'debug' : true,
             'type' : 'json',                                         // text | document | json | jsonp | blob
             'method' : 'POST',                                       // POST | GET | PUT | PATCH | DELETE
-            'paramsType' : 'uri',                                    // uri | json
+            'paramsType' : 'uri',                                    // uri | json | form-data
             'params' : '',
             'url' : '',
             'modifier' : '',
             'modifierParams' : {},
-            'formData'  : false,
+            'formData'  : false,                                     // TODO: Deprecated, use paramsType: 'form-data'
             'headers' : {
                 'Content-Type' : 'application/x-www-form-urlencoded',
                 'X-Requested-With' : 'XMLHttpRequest'
@@ -5302,6 +5326,9 @@ cm.ajax = function(o){
             if(config['paramsType'] === 'json'){
                 config['headers']['Content-Type'] = 'application/json';
                 config['params'] = cm.stringifyJSON(config['params']);
+            }else if(config['paramsType'] === 'form-data'){
+                config['params'] = cm.obj2FormData(config['params']);
+                delete config['headers']['Content-Type'];
             }else{
                 config['params'] = cm.obj2URI(config['params']);
             }
@@ -5829,13 +5856,13 @@ cm.setParams = function(className, params){
     });
 };
 
-cm.setStrings = function(className, strings){
+cm.setMessages = cm.setStrings = function(className, strings){
     cm.getConstructor(className, function(classConstructor, className, classProto){
         classProto.setLangs(strings);
     });
 };
 
-cm.getString = function(className, str){
+cm.getMessage = cm.getString = function(className, str){
     var data;
     cm.getConstructor(className, function(classConstructor, className, classProto){
         data = classProto.lang(str);
@@ -5843,7 +5870,7 @@ cm.getString = function(className, str){
     return data;
 };
 
-cm.getStrings = function(className, o){
+cm.getMessages = cm.getStrings = function(className, o){
     var data;
     cm.getConstructor(className, function(classConstructor, className, classProto){
         data = classProto.langObject(o);
@@ -6635,30 +6662,31 @@ Mod['Structure'] = {
             that.build['params']['embedStructure'] = 'append';
         }
     },
-    'embedStructure' : function(node){
+    'embedStructure' : function(node, container){
         var that = this;
         switch(that.params['embedStructure']){
             case 'replace':
                 that.replaceStructure(node);
                 break;
             case 'append':
-                that.appendStructure(node, 'insertLast');
+                that.appendStructure(node, 'insertLast', container);
                 break;
             case 'first':
-                that.appendStructure(node, 'insertFirst');
+                that.appendStructure(node, 'insertFirst', container);
                 break;
         }
         return that;
     },
-    'appendStructure' : function(node, type){
+    'appendStructure' : function(node, type, container){
         var that = this;
-        var container = that.params['container'] || that.params['node'];
+        container = container || that.params['container'] || that.params['node'];
         container && cm[type](node, container);
         return that;
     },
-    'replaceStructure' : function(node){
+    'replaceStructure' : function(node, container){
         var that = this;
-        if(that.params['container']){
+        container = container || that.params['container'];
+        if(container){
             if(that.params['container'] === that.params['node']){
                 cm.insertBefore(node, that.params['node']);
             }else{
@@ -8490,6 +8518,7 @@ cm.define('Com.AbstractFormField', {
         'maxLength' : 0,
         'min' : 0,
         'max' : 0,
+        'multiple' : false,
         'type' : false,
         'label' : '',
         'help' : null,
@@ -8515,8 +8544,7 @@ cm.define('Com.AbstractFormField', {
         'validate' : false,
         'constructor' : false,
         'constructorParams' : {
-            'removeOnDestruct' : false,
-            'formData' : true
+            'removeOnDestruct' : false
         },
         'preload' : false,
         'responseKey' : 'data',
@@ -8604,6 +8632,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.params['constructorParams']['maxLength'] = that.params['maxLength'];
         that.params['constructorParams']['min'] = that.params['min'];
         that.params['constructorParams']['max'] = that.params['max'];
+        that.params['constructorParams']['multiple'] = that.params['multiple'];
         that.params['constructorParams']['placeholder'] = !that.params['showPlaceholderAbove'] ? that.params['placeholder'] : '';
         that.params['constructorParams']['autocomplete'] = that.params['autocomplete'];
         that.params['constructorParams']['title'] = that.params['title'];
@@ -8691,8 +8720,8 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             cm.appendChild(that.nodes['labelText'], that.nodes['label']);
         }
         // Required
+        that.nodes['required'] = cm.node('span', {'class' : 'required'}, that.lang('*'));
         if(that.params['required'] && that.params['requiredAsterisk']){
-            that.nodes['required'] = cm.node('span', {'class' : 'required'}, that.lang('*'));
             cm.appendChild(that.nodes['required'], that.nodes['label']);
         }
         // Hints
@@ -8799,6 +8828,9 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         }
         if(that.params['disabled']){
             that.nodes['content']['input'].setAttribute('disabled', 'disabled');
+        }
+        if(that.params['multiple']){
+            that.nodes['content']['input'].setAttribute('multiple', 'multiple');
         }
         // Classes
         if(!that.params['visible']){
@@ -9155,12 +9187,16 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.setRequired = function(){
         var that = this;
         that.params['required'] = true;
+        if(that.params['requiredAsterisk']){
+            cm.appendChild(that.nodes['required'], that.nodes['label']);
+        }
         return that;
     };
 
     classProto.unsetRequired = function(){
         var that = this;
         that.params['required'] = false;
+        cm.remove(that.nodes['required']);
         return that;
     };
 
@@ -9893,7 +9929,7 @@ cm.define('Com.Form', {
         'ajax' : {
             'type' : 'json',
             'method' : 'post',
-            'formData' : true,
+            'paramsType' : 'json',
             'url' : '',                                             // Request URL. Variables: %baseUrl%, %callback% for JSONP.
             'params' : ''                                           // Params object. %baseUrl%, %callback% for JSONP.
         },
@@ -10013,16 +10049,18 @@ function(params){
         var field = Com.FormFields.get(type);
         // Merge params
         params = cm.merge({
-            'originValue' : null,
             'form' : that,
             'formName' : that.params['name'],
             'system' : false,
-            'send' : true,
             'name' : '',
-            'sendPath' : null,
+            'dataName' : null,
             'label' : '',
+            'originValue' : null,
             'required' : false,
             'validate' : false,
+            'send' : true,
+            'sendEmpty' : true,
+            'sendPath' : null,
             'options' : [],
             'container' : that.nodes['fields'],
             'renderName' : null,
@@ -10513,22 +10551,18 @@ function(params){
         type = cm.inArray(['all', 'fields', 'send', 'sendPath', 'system'], type) ? type : 'fields';
         merged = cm.isUndefined(merged) ? false : merged;
         // Handler
-        handler = function(field, name){
+        handler = function(field, name, sendPath){
+            sendPath = !cm.isUndefined(sendPath) ? sendPath : false;
             value = field['controller'].get();
             if(that.params['sendOnlyChangedFields']){
                 value = cm.getDiffCompare(field['originValue'], value);
             }
-            if(!cm.isUndefined(value) && (that.params['sendEmptyFields'] || !cm.isEmpty(value))){
-                o[name] = value;
-            }
-        };
-        pathHandler = function(field, name){
-            value = field['controller'].get();
-            if(that.params['sendOnlyChangedFields']){
-                value = cm.getDiffCompare(field['originValue'], value);
-            }
-            if(!cm.isUndefined(value) && (that.params['sendEmptyFields'] || !cm.isEmpty(value))){
-                if(!cm.isEmpty(field['sendPath'])){
+            if(
+                !cm.isUndefined(value)
+                && (that.params['sendEmptyFields'] || !that.params['sendEmptyFields'] && !cm.isEmpty(value))
+                && (field['sendEmpty'] || !field['sendEmpty'] && !cm.isEmpty(value))
+            ){
+                if(sendPath && !cm.isEmpty(field['sendPath'])){
                     path = cm.objectFormPath(field['sendPath'], value, '');
                     o = cm.merge(o, path);
                 }else{
@@ -10554,7 +10588,7 @@ function(params){
                     break;
                 case 'sendPath':
                     if(field['send'] && !field['system']){
-                        pathHandler(field, name);
+                        handler(field, name, true);
                     }
                     break;
                 case 'system':
@@ -10773,9 +10807,7 @@ cm.define('Com.FormField', {
         'options' : [],
         'className' : '',                   // is-box
         'constructor' : false,
-        'constructorParams' : {
-            'formData' : true
-        },
+        'constructorParams' : {},
         'Com.HelpBubble' : {
             'renderStructure' : true
         }
@@ -16080,7 +16112,10 @@ cm.define('Com.FileDropzone', {
         'max' : 0,                                  // 0 - infinity
         '_height' : 128,
         '_duration' : 'cm._config.animDuration',
-        'Com.FileReader' : {}
+        'fileReaderConstructor' : 'Com.FileReader',
+        'fileReaderParams' : {
+            'readValueType' : 'base64'
+        }
     },
     'strings' : {
         'drop_single' : 'drop file here',
@@ -16218,7 +16253,7 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
         that.hide();
         that.hideDropzone();
     };
-    
+
     classProto.processFiles = function(files){
         var that = this,
             data = [],
@@ -16300,6 +16335,7 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
         }
     };
 });
+
 cm.define('Com.FileReader', {
     'modules' : [
         'Params',
@@ -16313,6 +16349,7 @@ cm.define('Com.FileReader', {
         'onValidateParams',
         'onRenderStart',
         'onRender',
+        'onRenderEnd',
         'onReadStart',
         'onReadProcess',
         'onReadSuccess',
@@ -16320,7 +16357,9 @@ cm.define('Com.FileReader', {
         'onReadEnd'
     ],
     'params' : {
-        'file' : null
+        'file' : null,
+        'readOnRender' : true,
+        'readValueType' : 'base64'         // base64 | binary | text | hex
     }
 },
 function(params){
@@ -16342,40 +16381,147 @@ cm.getConstructor('Com.FileReader', function(classConstructor, className, classP
         that.render();
         that.triggerEvent('onConstruct');
         that.triggerEvent('onConstructEnd');
-        return that;
     };
 
     classProto.render = function(){
         var that = this;
         that.triggerEvent('onRenderStart');
-        that.read(that.params['file']);
+        if(that.params['readOnRender']){
+            that.read(that.params['file']);
+        }
         that.triggerEvent('onRender');
+        that.triggerEvent('onRenderEnd');
+    };
+
+    classProto.readAsBase64 = function(file, callback){
+        var that = this,
+            item,
+            reader;
+        that.triggerEvent('onReadStart', file);
+        // Config
+        item = that.validate(file);
+        that.triggerEvent('onReadProcess', item);
+        // Read File
+        reader = new FileReader();
+        cm.addEvent(reader, 'load', function(e){
+            that.afterSuccess(e.target.result, item, callback);
+        });
+        cm.addEvent(reader, 'error', function(e){
+            that.afterError(e, item, callback);
+        });
+        reader.readAsDataURL(file);
         return that;
     };
+
+    classProto.readAsBinary = function(file, callback){
+        var that = this,
+            item,
+            reader;
+        that.triggerEvent('onReadStart', file);
+        // Config
+        item = that.validate(file);
+        that.triggerEvent('onReadProcess', item);
+        // Read File
+        reader = new FileReader();
+        cm.addEvent(reader, 'load', function(e){
+            that.afterSuccess(e.target.result, item, callback);
+        });
+        cm.addEvent(reader, 'error', function(e){
+            that.afterError(e, item, callback);
+        });
+        reader.readAsBinaryString(file);
+        return that;
+    };
+
+    classProto.readAsHEX = function(file, callback){
+        var that = this,
+            value,
+            item,
+            reader;
+        that.triggerEvent('onReadStart', file);
+        // Config
+        item = that.validate(file);
+        that.triggerEvent('onReadProcess', item);
+        // Read File
+        reader = new FileReader();
+        cm.addEvent(reader, 'load', function(e){
+            try{
+                value = cm.bufferToHEX(e.target.result);
+            }catch(e){
+                that.afterError(e, item, callback);
+            }finally{
+                that.afterSuccess(value, item, callback);
+            }
+        });
+        cm.addEvent(reader, 'error', function(e){
+            that.afterError(e, item, callback);
+        });
+        reader.readAsArrayBuffer(file);
+        return that;
+    };
+
+    classProto.readAsText = function(file, callback){
+        var that = this,
+            item,
+            reader;
+        that.triggerEvent('onReadStart', file);
+        // Config
+        item = that.validate(file);
+        that.triggerEvent('onReadProcess', item);
+        // Read File
+        reader = new FileReader();
+        cm.addEvent(reader, 'load', function(e){
+            that.afterSuccess(e.target.result, item, callback);
+        });
+        cm.addEvent(reader, 'error', function(e){
+            that.afterError(e, item, callback);
+        });
+        reader.readAsText(file);
+        return that;
+    };
+
+    /******* HELPERS *******/
+
+    classProto.afterSuccess = function(value, item, callback){
+        var that = this;
+        item['value'] = value;
+        callback(item);
+        that.triggerEvent('onReadSuccess', item);
+        that.triggerEvent('onReadEnd', item);
+        return item;
+    };
+
+    classProto.afterError = function(e, item, callback){
+        var that = this;
+        item['error'] = e;
+        callback && callback(item);
+        that.triggerEvent('onReadError', item);
+        that.triggerEvent('onReadEnd', item);
+        return item;
+    };
+
+    /******* PUBLIC *******/
 
     classProto.read = function(file, callback){
         var that = this;
         callback = cm.isFunction(callback) ? callback : function(){};
-        if(cm.isFileReader && cm.isFile(file)){
-            that.triggerEvent('onReadStart', file);
-            // Config
-            var item = that.validate(file);
-            that.triggerEvent('onReadProcess', item);
-            // Read File
-            var reader = new FileReader();
-            cm.addEvent(reader, 'load', function(e){
-                item['value'] = e.target.result;
-                callback(item);
-                that.triggerEvent('onReadSuccess', item);
-                that.triggerEvent('onReadEnd', item);
-            });
-            cm.addEvent(reader, 'error', function(e){
-                item['error'] = e;
-                callback(item);
-                that.triggerEvent('onReadError', item);
-                that.triggerEvent('onReadEnd', item);
-            });
-            reader.readAsDataURL(file);
+        if(cm.isFileReader && cm.isFile(file)) {
+            switch (that.params['readValueType']) {
+                case 'binary':
+                    that.readAsBinary(file, callback);
+                    break;
+                case 'hex':
+                    that.readAsHEX(file, callback);
+                    break;
+                case 'text':
+                    that.readAsText(file, callback);
+                    break;
+                case 'base64':
+                default:
+                    that.readAsBase64(file, callback);
+                    break;
+
+            }
         }
         return that;
     };
@@ -16415,6 +16561,7 @@ cm.getConstructor('Com.FileReader', function(classConstructor, className, classP
         return item;
     };
 });
+
 cm.define('Com.FileStats', {
     'extend' : 'Com.AbstractController',
     'params' : {
@@ -17787,6 +17934,8 @@ cm.define('Com.Gridlist', {
         'onRenderStart',
         'onRenderEnd',
         'onLoadEnd',
+        'onRenderTitleItem',
+        'onRenderFilterItem',
         'onColumnsChange',
         'onColumnsResize'
     ],
@@ -17820,15 +17969,18 @@ cm.define('Com.Gridlist', {
         'visibleDateFormat' : 'cm._config.dateTimeFormat',          // Render date format
 
         // Pagination and ajax data request
+        'renderFilter' : false,
+        'divideTableHeader' : false,
         'pagination' : true,
         'perPage' : 25,
         'responseKey' : 'data',                                     // Response data response key
+        'responseErrorsKey' : 'errors',
         'responseCountKey' : 'count',                               // Response data count response key
         'ajax' : {
             'type' : 'json',
             'method' : 'get',
-            'url' : '',                                             // Request URL. Variables: %orderBy%, %sortBy%, %page%, %offset%, %perPage%, %limit%, %callback% for JSONP.
-            'params' : ''                                           // Params object. Variables: %orderBy%, %sortBy%, %page%, %offset%, %perPage%, %limit%, %callback% for JSONP.
+            'url' : '',                                             // Request URL. Variables: %orderBy%, %orderByLower%, %sortBy%, %page%, %offset%, %perPage%, %limit%, %callback% for JSONP.
+            'params' : ''                                           // Params object. Variables: %orderBy%, %orderByLower%, %sortBy%, %page%, %offset%, %perPage%, %limit%, %callback% for JSONP.
         },
 
         // Columns manipulation
@@ -17912,8 +18064,9 @@ function(params){
             that.isAjax = true;
             that.params['pagination'] = true;
             that.params['Com.Pagination']['ajax'] = that.params['ajax'];
-            that.params['Com.Pagination']['responseCountKey'] = that.params['responseCountKey'];
             that.params['Com.Pagination']['responseKey'] = that.params['responseKey'];
+            that.params['Com.Pagination']['responseCountKey'] = that.params['responseCountKey'];
+            that.params['Com.Pagination']['responseErrorsKey'] = that.params['responseErrorsKey'];
         }else{
             that.params['Com.Pagination']['count'] = that.params['data'].length;
         }
@@ -17947,16 +18100,19 @@ function(params){
     };
 
     var renderInitialTable = function(){
+        if(that.params['divideTableHeader']){
+            renderTableHeader(that.nodes['container']);
+        }
         if(that.isAjax){
             // Render dynamic pagination
             renderPagination();
         }else if(!cm.isEmpty(that.params['data'])){
+            // Sort data array for first time
+            that.params['sort'] && arraySort();
             // Counter
             if(that.params['showCounter']){
                 renderCounter(that.params['data'].length);
             }
-            // Sort data array for first time
-            that.params['sort'] && arraySort();
             if(that.params['pagination']){
                 // Render static pagination
                 renderPagination();
@@ -18101,7 +18257,10 @@ function(params){
             if(!cm.isEmpty(data['data'])){
                 renderTable(data['page'], data['data'], data['container']);
             }else{
-                renderEmptiness(data['container']);
+                if(that.params['renderEmptyTable']){
+                    renderTable(data['page'], data['data'], data['container']);
+                }
+                renderEmptiness(data['container'], data['errors']);
             }
         }else{
             startIndex = that.params['perPage'] * (data['page'] - 1);
@@ -18121,10 +18280,38 @@ function(params){
         });
     };
 
-    var renderEmptiness = function(container){
-        that.nodes['empty'] = cm.node('div', {'class' : 'cm__empty'}, that.lang('empty'));
+    var renderEmptiness = function(container, errors){
+        errors = !cm.isEmpty(errors) ? errors : that.lang('empty');
+        that.nodes['empty'] = cm.node('div', {'class' : 'cm__empty'}, errors);
         cm.appendChild(that.nodes['empty'], container);
     };
+
+    var renderTableHeader = function(container){
+        var nodes = {};
+        that.nodes['header'] = nodes;
+        // Render Table
+        nodes['container'] = cm.node('div', {'class' : 'pt__gridlist pt__gridlist--header'},
+            nodes['table'] = cm.node('table',
+                nodes['head'] = cm.node('thead',
+                    nodes['title'] = cm.node('tr')
+                )
+            )
+        );
+        // Render Table Title
+        cm.forEach(that.params['cols'], function(item, i){
+            renderTitleItem(item, i, nodes['title']);
+        });
+        // Render Table Filter
+        if(that.params['renderFilter']){
+            nodes['filter'] = cm.node('tr');
+            cm.forEach(that.params['cols'], function(item, i){
+                renderFilterItem(item, i, nodes['filter']);
+            });
+            cm.appendChild(nodes['filter'], nodes['head']);
+        }
+        // Append
+        cm.appendChild(nodes['container'], container);
+    }
 
     var renderTable = function(page, data, container){
         // API onRenderStart event
@@ -18137,15 +18324,33 @@ function(params){
         resetTable();
         // Render Table
         that.nodes['table'] = cm.node('div', {'class' : 'pt__gridlist'},
-            cm.node('table',
-                cm.node('thead',
+            that.nodes['tableInner'] = cm.node('table',
+                that.nodes['head'] = cm.node('thead',
                     that.nodes['title'] = cm.node('tr')
                 ),
                 that.nodes['content'] = cm.node('tbody')
             )
         );
-        // Render Table Title
-        cm.forEach(that.params['cols'], renderTh);
+        if(!that.params['divideTableHeader']) {
+            // Render Table Title
+            cm.forEach(that.params['cols'], function(item, i){
+                renderTitleItem(item, i, that.nodes['title']);
+            });
+            // Render Table Filter
+            if(that.params['renderFilter']) {
+                that.nodes['filter'] = cm.node('tr');
+                cm.forEach(that.params['cols'], function(item, i){
+                    renderFilterItem(item, i, that.nodes['filter']);
+                });
+                cm.appendChild(that.nodes['filter'], that.nodes['head']);
+            }
+        }else{
+            // Render Table Title Placeholder
+            cm.forEach(that.params['cols'], function(item, i){
+                renderTitleItemPlaceholder(item, i, that.nodes['title']);
+            });
+            cm.addClass(that.nodes['head'], 'is-hidden');
+        }
         // Render Table Row
         cm.forEach(data, function(item, i){
             renderRow(that.rows, item, (i + (page -1)));
@@ -18188,18 +18393,19 @@ function(params){
         }
     };
 
-    var renderTh = function(item, i){
+    var renderTitleItem = function(item, i, container){
         // Merge cell parameters
         item = that.params['cols'][i] = cm.merge({
             '_component' : null,            // System attribute
             'width' : 'auto',               // number | % | auto
             'access' : true,                // Render column if is accessible
-            'type' : 'text',		        // text | number | url | date | html | icon | checkbox | empty | actions | links
+            'type' : 'text',		            // text | number | url | date | html | icon | checkbox | empty | actions | links
             'key' : '',                     // Data array key
             'title' : '',                   // Table th title
             'sort' : that.params['sort'],   // Sort this column or not
             'sortKey' : '',                 // Sort key
-            'class' : '',		            // Icon css class, for type="icon"
+            'filterKey' : null,
+            'class' : '',		                // Icon css class, for type="icon"
             'target' : '_blank',            // Link target, for type="url"
             'rel' : '',                     // Link rel, for type="url"
             'textOverflow' : null,          // Overflow long text to single line
@@ -18220,10 +18426,8 @@ function(params){
         // Check access
         if(item['access']){
             // Structure
-            that.nodes['title'].appendChild(
-                item['nodes']['container'] = cm.node('th',
-                    item['nodes']['inner'] = cm.node('div', {'class' : 'inner'})
-                )
+            item['nodes']['container'] = cm.node('th',
+                item['nodes']['inner'] = cm.node('div', {'class' : 'inner'})
             );
             // Set column width
             if(/%|px|auto/.test(item['width'])){
@@ -18231,6 +18435,8 @@ function(params){
             }else{
                 item['nodes']['container'].style.width = parseFloat(item['width']) + 'px';
             }
+            // Embed
+            cm.appendChild(item['nodes']['container'], container);
             // Insert specific specified content in th
             switch(item['type']){
                 case 'checkbox' :
@@ -18257,17 +18463,15 @@ function(params){
             }
             // Render sort arrow and set function on click to th
             if(item['sort'] && !/icon|empty|actions|links|checkbox/.test(item['type'])){
-                cm.addClass(item['nodes']['container'], 'sort');
-                if(item['sortKey'] === that.sortBy || item['key'] === that.sortBy){
-                    item['nodes']['inner'].appendChild(
-                        cm.node('div', {'class' : that.params['icons']['arrow'][that.orderBy.toLowerCase()]})
-                    );
-                }
+                setTableHeaderItemSort(item, i);
                 cm.addEvent(item['nodes']['inner'], 'click', function(){
                     that.sortBy = !cm.isEmpty(item['sortKey']) ? item['sortKey'] : item['key'];
                     that.orderBy = that.orderBy === 'ASC' ? 'DESC' : 'ASC';
                     if(!that.isAjax){
                         arraySort();
+                    }
+                    if(that.params['divideTableHeader']){
+                        cm.forEach(that.params['cols'], setTableHeaderItemSort);
                     }
                     if(that.params['pagination']){
                         that.components['pagination'].rebuild();
@@ -18276,6 +18480,64 @@ function(params){
                     }
                 });
             }
+            // Trigger event
+            that.triggerEvent('onRenderTitleItem', {
+                'nodes' : item['nodes'],
+                'item' : item,
+                'i' : i
+            });
+        }
+    };
+
+    var setTableHeaderItemSort = function(item, i){
+        if(!item['access'] || /icon|empty|actions|links|checkbox/.test(item['type'])){
+            return;
+        }
+        cm.removeClass(item['nodes']['container'], 'sort');
+        if(item['sort']){
+            cm.addClass(item['nodes']['container'], 'sort');
+            cm.remove(item['nodes']['sort']);
+            if(item['sortKey'] === that.sortBy || item['key'] === that.sortBy){
+                item['nodes']['sort'] = cm.node('div', {'class' : that.params['icons']['arrow'][that.orderBy.toLowerCase()]});
+                cm.appendChild(item['nodes']['sort'], item['nodes']['inner']);
+            }
+        }
+    };
+
+    var renderTitleItemPlaceholder = function(item, i, container){
+        item['nodes']['placeholder'] = {};
+        // Check access
+        if(item['access']){
+            // Structure
+            item['nodes']['placeholder']['container'] = cm.node('th',
+                item['nodes']['placeholder']['inner'] = cm.node('div', {'class' : 'inner'})
+            )
+            // Set column width
+            if(/%|px|auto/.test(item['width'])){
+                item['nodes']['placeholder']['container'].style.width = item['width'];
+            }else{
+                item['nodes']['placeholder']['container'].style.width = parseFloat(item['width']) + 'px';
+            }
+            // Embed
+            cm.appendChild(item['nodes']['placeholder']['container'], container);
+        }
+    };
+
+    var renderFilterItem = function(item, i, container){
+        item['nodes']['filter'] = {};
+        // Check access
+        if(item['access']){
+            // Structure
+            item['nodes']['filter']['container'] = cm.node('td',
+                item['nodes']['filter']['inner'] = cm.node('div', {'class' : 'inner'})
+            )
+            cm.appendChild(item['nodes']['filter']['container'], container);
+            // Trigger event
+            that.triggerEvent('onRenderFilterItem', {
+                'nodes' : item['nodes']['filter'],
+                'item' : item,
+                'i' : i
+            });
         }
     };
 
@@ -18705,11 +18967,13 @@ function(params){
     that.callbacks.paginationAfterPrepare = function(that, pagination, config){
         config['url'] = cm.strReplace(config['url'], {
             '%sortBy%' : that.sortBy,
-            '%orderBy%' : that.orderBy
+            '%orderBy%' : that.orderBy,
+            '%orderByLower%' : that.orderBy.toLowerCase()
         });
         config['params'] = cm.objectReplace(config['params'], {
             '%sortBy%' : that.sortBy,
-            '%orderBy%' : that.orderBy
+            '%orderBy%' : that.orderBy,
+            '%orderByLower%' : that.orderBy.toLowerCase()
         });
         return config;
     };
@@ -20896,8 +21160,8 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
                 'onSuccess' : function(response){
                     that.callbacks.response(that, config, response);
                 },
-                'onError' : function(){
-                    that.callbacks.error(that, config);
+                'onError' : function(response){
+                    that.callbacks.error(that, config, response);
                 },
                 'onAbort' : function(){
                     that.callbacks.abort(that, config);
@@ -20911,9 +21175,9 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
 
     classProto.callbacks.filter = function(that, config, response){
         var data = [],
-            errorsItem = cm.objectPath(that.params['responseErrorsKey'], response),
-            dataItem = cm.objectPath(that.params['responseKey'], response),
-            countItem = cm.objectPath(that.params['responseCountKey'], response);
+            errorsItem = cm.reducePath(that.params['responseErrorsKey'], response),
+            dataItem = cm.reducePath(that.params['responseKey'], response),
+            countItem = cm.reducePath(that.params['responseCountKey'], response);
         if(cm.isEmpty(errorsItem)){
             if(!cm.isEmpty(dataItem)){
                 data = dataItem;
@@ -20925,19 +21189,26 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
         return data;
     };
 
-    classProto.callbacks.response = function(that, config, response){
+    classProto.callbacks.response = function(that, config, response, errors){
         // Set next page
         that.setPage();
         // Response
         if(response){
             response = that.callbacks.filter(that, config, response);
         }
-        that.callbacks.render(that, response);
+        that.callbacks.render(that, response, errors);
     };
 
-    classProto.callbacks.error = function(that, config){
-        that.triggerEvent('onError');
-        that.callbacks.response(that, config);
+    classProto.callbacks.error = function(that, config, response){
+        var errors;
+        if(!cm.isEmpty(response)){
+            errors = cm.reducePath(that.params['responseErrorsKey'], response);
+        }
+        that.triggerEvent('onError', {
+            'response' : response,
+            'errors' : errors
+        });
+        that.callbacks.response(that, config, null, errors);
     };
 
     classProto.callbacks.abort = function(that, config){
@@ -20982,7 +21253,7 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
         return cm.node(that.params['pageTag'], that.params['pageAttributes']);
     };
 
-    classProto.callbacks.render = function(that, data){
+    classProto.callbacks.render = function(that, data, errors){
         that.isRendering = true;
         var page = {
             'page' : that.page,
@@ -20990,6 +21261,7 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
             'pages' : that.nodes['pages'],
             'container' : cm.node(that.params['pageTag']),
             'data' : data,
+            'errors' : errors,
             'total' : that.getCount(),
             'isVisible' : true,
             'isRendered' : true,
@@ -21388,6 +21660,7 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
         return cm.isParent(that.nodes['container'], node, flag);
     };
 });
+
 cm.define('Com.Palette', {
     'modules' : [
         'Params',
@@ -21817,8 +22090,7 @@ cm.define('Com.Request', {
             'type' : 'json',
             'method' : 'get',
             'url' : '',                                 // Request URL. Variables: %baseUrl%, %callback%.
-            'params' : '',                              // Params object. Variables: %baseUrl%, %callback%.
-            'formData' : false
+            'params' : ''                              // Params object. Variables: %baseUrl%, %callback%.
         },
         'variables' : {},
         'showOverlay' : true,
@@ -21932,7 +22204,7 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         );
         return that;
     };
-    
+
     classProto.setAttributes = function(){
         var that = this;
         // CSS Class
@@ -22056,15 +22328,15 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
 
     classProto.filter = function(){
         var that = this,
-            errorsItem = cm.objectPath(that.params['responseErrorsKey'], that.responceData),
-            dataFiltered = cm.objectPath(that.params['responseKey'], that.responceData),
-            dataStatus = cm.objectPath(that.params['responseStatusKey'], that.responceData),
+            errorsItem = cm.reducePath(that.params['responseErrorsKey'], that.responceData),
+            dataFiltered = cm.reducePath(that.params['responseKey'], that.responceData),
+            dataStatus = cm.reducePath(that.params['responseStatusKey'], that.responceData),
             dataHTML;
         if(cm.isEmpty(errorsItem)){
             if(cm.isEmpty(that.params['responseHTMLKey'])){
-                dataHTML = cm.objectPath(that.params['responseKey'], that.responceData);
+                dataHTML = cm.reducePath(that.params['responseKey'], that.responceData);
             }else{
-                dataHTML = cm.objectPath(that.params['responseHTMLKey'], that.responceData);
+                dataHTML = cm.reducePath(that.params['responseHTMLKey'], that.responceData);
             }
             that.responceDataFiltered = !cm.isEmpty(dataFiltered) ? dataFiltered : [];
             that.responceDataHTML = !cm.isEmpty(dataHTML) ? dataHTML : '';
@@ -22092,14 +22364,15 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
             code;
         that.isError = true;
         if(!cm.isEmpty(that.responceData)){
-            errors = cm.objectSelector(that.params['responseErrorsKey'], that.responceData);
-            message = cm.objectSelector(that.params['responseMessageKey'], that.responceData);
-            code = cm.objectSelector(that.params['responseCodeKey'], that.responceData);
+            errors = cm.reducePath(that.params['responseErrorsKey'], that.responceData);
+            message = cm.reducePath(that.params['responseMessageKey'], that.responceData);
+            code = cm.reducePath(that.params['responseCodeKey'], that.responceData);
         }
         that.renderError();
         that.triggerEvent('onError', {
             'response' : that.responceData,
             'status' : that.responceDataStatus,
+            'data' : that.responceDataFiltered,
             'filtered' : that.responceDataFiltered,
             'html' : that.responceDataHTML,
             'errors' : errors,
@@ -22118,6 +22391,7 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         that.triggerEvent('onSuccess', {
             'response' : that.responceData,
             'status' : that.responceDataStatus,
+            'data' : that.responceDataFiltered,
             'filtered' : that.responceDataFiltered,
             'html' : that.responceDataHTML
         });
@@ -22269,6 +22543,7 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         return that;
     };
 });
+
 cm.define('Com.Router', {
     'extend' : 'Com.AbstractController',
     'events' : [
@@ -27802,14 +28077,6 @@ function(params){
         return params['config'];
     };
 
-    that.callbacks.beforePrepare = function(that, params){
-        return params['config'];
-    };
-
-    that.callbacks.afterPrepare = function(that, params){
-        return params['config'];
-    };
-
     that.callbacks.request = function(that, params){
         params = cm.merge({
             'response' : null,
@@ -28059,8 +28326,17 @@ function(params){
     init();
 });
 
-cm.getConstructor('Com.Autocomplete', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
+cm.getConstructor('Com.Autocomplete', function(classConstructor, className, classProto, classInherit){
+
+    /*** AJAX ***/
+
+    classProto.callbacks.beforePrepare = function(that, params){
+        return params['config'];
+    };
+
+    classProto.callbacks.afterPrepare = function(that, params){
+        return params['config'];
+    };
 
     /*** DATA ***/
 
@@ -30088,7 +30364,8 @@ cm.define('Com.FileInput', {
         'showFilename' : true,
         'autoOpen' : false,
         'placeholder' : null,
-        'formData' : false,
+        'readValueType' : 'base64',         // base64 | binary
+        'outputValueType' : 'object',         // file | object
         'local' : true,
         'fileManager' : false,
         'fileManagerConstructor' : 'Com.AbstractFileManagerContainer',
@@ -30111,7 +30388,8 @@ cm.define('Com.FileInput', {
             'max' : 1,
             'rollover' : true
         },
-        'Com.FileReader' : {}
+        'fileReaderConstructor' : 'Com.FileReader',
+        'fileReaderParams' : {}
     },
     'strings' : {
         'browse' : 'Browse',
@@ -30133,14 +30411,14 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         // Bind context to methods
         that.browseActionHandler = that.browseAction.bind(that);
         that.processFilesHandler = that.processFiles.bind(that);
-        // Call parent method
+        // Call parent methods
         classInherit.prototype.construct.apply(that, arguments);
     };
 
     classProto.onInitComponentsStart = function(){
         var that = this;
-        cm.getConstructor('Com.FileReader', function(classObject){
-            that.components['validator'] = new classObject();
+        cm.getConstructor(that.params['fileReaderConstructor'], function(classObject){
+            that.components['validator'] = new classObject(that.params['fileReaderParams']);
         });
     };
 
@@ -30158,6 +30436,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         that.params['fileUploaderParams']['params']['local'] = that.params['local'];
         that.params['fileUploaderParams']['params']['fileManager'] = that.params['fileManager'];
         // Other
+        that.params['fileReaderParams']['readValueType'] = that.params['readValueType'];
         that.params['local'] = that.params['fileUploader'] ? false : that.params['local'];
         that.params['fileManagerParams']['openOnConstruct'] = that.params['autoOpen'];
         that.params['fileManager'] = that.params['fileUploader'] ? false : that.params['fileManager'];
@@ -30182,8 +30461,8 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         // Call parent method - renderViewModel
         classInherit.prototype.renderViewModel.apply(that, arguments);
         // Init FilerReader
-        cm.getConstructor('Com.FileReader', function(classObject, className){
-            that.components['reader'] = new classObject(that.params[className]);
+        cm.getConstructor(that.params['fileReaderConstructor'], function(classObject){
+            that.components['reader'] = new classObject(that.params['fileReaderParams']);
             that.components['reader'].addEvent('onReadSuccess', function(my, item){
                 that.set(item, true);
             });
@@ -30314,7 +30593,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
     classProto.get = function(){
         var that = this,
             value;
-        if(that.params['formData']){
+        if(that.params['outputValueType'] === 'file'){
             value = that.value['file'] || that.value['value'] || that.value['value']   || '';
         }else{
             value = that.value  || '';
@@ -30380,6 +30659,7 @@ Com.FormFields.add('file', {
     'fieldConstructor' : 'Com.AbstractFormField',
     'constructor' : 'Com.FileInput'
 });
+
 cm.define('Com.HiddenStoreField', {
     'extend' : 'Com.AbstractInputContainer',
     'params' : {
@@ -32345,6 +32625,7 @@ function(params){
         // Config
         item = cm.merge({
             'hidden' : false,
+            'select' : false,       // select option on add
             'selected' : false,
             'disabled' : false,
             'value' : '',
@@ -32380,6 +32661,10 @@ function(params){
         // Push
         optionsList.push(options[item['value']] = item);
         optionsLength = optionsList.length;
+        // Select
+        if(item['select']){
+            set(item, false);
+        }
         return true;
     };
 
@@ -32732,6 +33017,7 @@ Com.FormFields.add('select', {
     'fieldConstructor' : 'Com.AbstractFormField',
     'constructor' : 'Com.Select'
 });
+
 cm.define('Com.SelectFieldTrigger', {
     'extend' : 'Com.AbstractController',
     'params' : {

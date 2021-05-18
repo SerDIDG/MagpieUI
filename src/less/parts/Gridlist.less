@@ -130,6 +130,21 @@
         }
     }
 
+    thead {
+        &.is-hidden {
+            visibility: hidden;
+
+            th {
+                padding-top: 0;
+                padding-bottom: 0;
+
+                .inner {
+                    display: none;
+                }
+            }
+        }
+    }
+
     &.has-background {
         .pt__gridlist__has-background;
     }
@@ -163,6 +178,10 @@
             }
         }
     }
+}
+
+.pt__gridlist--header {
+    margin: 0;
 }
 
 .pt__gridlist__counter {
@@ -327,6 +346,16 @@
 
     html.is-adaptive {
         .pt__gridlist {
+            .cm__scroll--auto;
+
+            table {
+                width: auto;
+                min-width: 100%;
+                max-width: none;
+            }
+        }
+
+        .pt__gridlist.is-adaptive {
             .pt__gridlist__has-background;
 
             tr {

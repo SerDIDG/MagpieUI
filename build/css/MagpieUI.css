@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.39.3 (2021-04-20 19:39) ************ */
+/*! ************ MagpieUI v3.39.4 (2021-05-18 20:09) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.0
@@ -4367,8 +4367,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.39.3');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.39.3') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.39.3') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.39.3') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.39.3#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.39.4');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.39.4') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.39.4') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.39.4') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.39.4#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -7929,7 +7929,7 @@ button.is-hidden {
   text-align: center;
 }
 .check-line .checkbox {
-  margin: 9px 0 9px 0;
+  margin: 9px 0;
   vertical-align: top;
   padding: 0;
   cursor: pointer;
@@ -7954,7 +7954,7 @@ button.is-hidden {
 }
 .check-line input[type="radio"],
 .check-line input[type="checkbox"] {
-  margin: 9px 0 9px 0;
+  margin: 9px 0;
   vertical-align: top;
   padding: 0;
   cursor: pointer;
@@ -8038,7 +8038,7 @@ button.is-hidden {
   width: 50%;
 }
 .form dd > input[type="checkbox"] {
-  margin: 9px 0 9px 0;
+  margin: 9px 0;
   vertical-align: top;
   padding: 0;
   cursor: pointer;
@@ -11631,6 +11631,16 @@ ul.pt__field__hint li:before {
 .pt__gridlist thead:first-child tr:first-child th {
   border: none;
 }
+.pt__gridlist thead.is-hidden {
+  visibility: hidden;
+}
+.pt__gridlist thead.is-hidden th {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.pt__gridlist thead.is-hidden th .inner {
+  display: none;
+}
 .pt__gridlist.has-background th {
   background-color: transparent;
 }
@@ -11709,6 +11719,9 @@ ul.pt__field__hint li:before {
 .pt__gridlist.is-editable.is-chassis-visible > .com__columns__chassis {
   opacity: 1;
 }
+.pt__gridlist--header {
+  margin: 0;
+}
 .pt__gridlist__counter {
   margin-bottom: 24px;
 }
@@ -11742,94 +11755,103 @@ ul.pt__field__hint li:before {
 }
 /* ******* PARTS: GRIDLIST: ADAPTIVE ******* */
 @media only screen and (max-width: 768px) {
-  html.is-adaptive .pt__gridlist th {
+  html.is-adaptive .pt__gridlist {
+    -webkit-overflow-scrolling: touch;
+    overflow: auto;
+  }
+  html.is-adaptive .pt__gridlist table {
+    width: auto;
+    min-width: 100%;
+    max-width: none;
+  }
+  html.is-adaptive .pt__gridlist.is-adaptive th {
     background-color: transparent;
   }
-  html.is-adaptive .pt__gridlist th.sort:hover {
+  html.is-adaptive .pt__gridlist.is-adaptive th.sort:hover {
     background-color: hsl(210, 70%, 95%);
     -webkit-transition: background-color 100ms ease-in-out 0ms;
     transition: background-color 100ms ease-in-out 0ms;
   }
-  html.is-adaptive .pt__gridlist th.sort:active {
+  html.is-adaptive .pt__gridlist.is-adaptive th.sort:active {
     background-color: hsl(210, 70%, 91%);
   }
-  html.is-adaptive .pt__gridlist tr td {
+  html.is-adaptive .pt__gridlist.is-adaptive tr td {
     background-color: transparent;
   }
-  html.is-adaptive .pt__gridlist tr:hover td {
+  html.is-adaptive .pt__gridlist.is-adaptive tr:hover td {
     background-color: hsl(210, 70%, 95%);
   }
-  html.is-adaptive .pt__gridlist tr:active td {
+  html.is-adaptive .pt__gridlist.is-adaptive tr:active td {
     background-color: hsl(210, 70%, 91%);
   }
-  html.is-adaptive .pt__gridlist tr.success td,
-  html.is-adaptive .pt__gridlist tr.valid td {
+  html.is-adaptive .pt__gridlist.is-adaptive tr.success td,
+  html.is-adaptive .pt__gridlist.is-adaptive tr.valid td {
     background-color: hsl(120, 60%, 91%);
   }
-  html.is-adaptive .pt__gridlist tr.success:hover td,
-  html.is-adaptive .pt__gridlist tr.valid:hover td {
+  html.is-adaptive .pt__gridlist.is-adaptive tr.success:hover td,
+  html.is-adaptive .pt__gridlist.is-adaptive tr.valid:hover td {
     background-color: hsl(120, 60%, 86%);
   }
-  html.is-adaptive .pt__gridlist tr.danger td,
-  html.is-adaptive .pt__gridlist tr.invalid td {
+  html.is-adaptive .pt__gridlist.is-adaptive tr.danger td,
+  html.is-adaptive .pt__gridlist.is-adaptive tr.invalid td {
     background-color: hsl(0, 65%, 91%);
   }
-  html.is-adaptive .pt__gridlist tr.danger:hover td,
-  html.is-adaptive .pt__gridlist tr.invalid:hover td {
+  html.is-adaptive .pt__gridlist.is-adaptive tr.danger:hover td,
+  html.is-adaptive .pt__gridlist.is-adaptive tr.invalid:hover td {
     background-color: hsl(0, 65%, 86%);
   }
-  html.is-adaptive .pt__gridlist tr.warning td {
+  html.is-adaptive .pt__gridlist.is-adaptive tr.warning td {
     background-color: hsl(38, 70%, 91%);
   }
-  html.is-adaptive .pt__gridlist tr.warning:hover td {
+  html.is-adaptive .pt__gridlist.is-adaptive tr.warning:hover td {
     background-color: hsl(38, 70%, 86%);
   }
-  html.is-adaptive .pt__gridlist tr.active td {
+  html.is-adaptive .pt__gridlist.is-adaptive tr.active td {
     background-color: hsl(210, 70%, 91%);
   }
-  html.is-adaptive .pt__gridlist tr.active:hover td {
+  html.is-adaptive .pt__gridlist.is-adaptive tr.active:hover td {
     background-color: hsl(210, 70%, 86%);
   }
-  html.is-adaptive .pt__gridlist th {
+  html.is-adaptive .pt__gridlist.is-adaptive th {
     background-color: hsl(0, 0%, 98%);
   }
-  html.is-adaptive .pt__gridlist th.sort:hover {
+  html.is-adaptive .pt__gridlist.is-adaptive th.sort:hover {
     background-color: hsl(0, 0%, 95%);
   }
-  html.is-adaptive .pt__gridlist tr td {
+  html.is-adaptive .pt__gridlist.is-adaptive tr td {
     background-color: hsl(0, 0%, 98%);
   }
-  html.is-adaptive .pt__gridlist tr:hover td {
+  html.is-adaptive .pt__gridlist.is-adaptive tr:hover td {
     background-color: hsl(0, 0%, 95%);
   }
-  html.is-adaptive .pt__gridlist tr:active td {
+  html.is-adaptive .pt__gridlist.is-adaptive tr:active td {
     background-color: hsl(0, 0%, 91%);
   }
-  html.is-adaptive .pt__gridlist tr td,
-  html.is-adaptive .pt__gridlist tr th {
+  html.is-adaptive .pt__gridlist.is-adaptive tr td,
+  html.is-adaptive .pt__gridlist.is-adaptive tr th {
     width: auto !important;
     display: block;
   }
-  html.is-adaptive .pt__gridlist tr th {
+  html.is-adaptive .pt__gridlist.is-adaptive tr th {
     text-align: left !important;
   }
-  html.is-adaptive .pt__gridlist tr td:first-child,
-  html.is-adaptive .pt__gridlist tr th:first-child {
+  html.is-adaptive .pt__gridlist.is-adaptive tr td:first-child,
+  html.is-adaptive .pt__gridlist.is-adaptive tr th:first-child {
     border-top: 8px solid transparent;
   }
-  html.is-adaptive .pt__gridlist tbody:first-child tr:first-child td,
-  html.is-adaptive .pt__gridlist thead:first-child tr:first-child td,
-  html.is-adaptive .pt__gridlist tbody:first-child tr:first-child th,
-  html.is-adaptive .pt__gridlist thead:first-child tr:first-child th {
+  html.is-adaptive .pt__gridlist.is-adaptive tbody:first-child tr:first-child td,
+  html.is-adaptive .pt__gridlist.is-adaptive thead:first-child tr:first-child td,
+  html.is-adaptive .pt__gridlist.is-adaptive tbody:first-child tr:first-child th,
+  html.is-adaptive .pt__gridlist.is-adaptive thead:first-child tr:first-child th {
     border-top: 1px solid transparent;
   }
-  html.is-adaptive .pt__gridlist tbody:first-child tr:first-child td:first-child,
-  html.is-adaptive .pt__gridlist thead:first-child tr:first-child td:first-child,
-  html.is-adaptive .pt__gridlist tbody:first-child tr:first-child th:first-child,
-  html.is-adaptive .pt__gridlist thead:first-child tr:first-child th:first-child {
+  html.is-adaptive .pt__gridlist.is-adaptive tbody:first-child tr:first-child td:first-child,
+  html.is-adaptive .pt__gridlist.is-adaptive thead:first-child tr:first-child td:first-child,
+  html.is-adaptive .pt__gridlist.is-adaptive tbody:first-child tr:first-child th:first-child,
+  html.is-adaptive .pt__gridlist.is-adaptive thead:first-child tr:first-child th:first-child {
     border: none;
   }
-  html.is-adaptive .pt__gridlist > .com__columns__chassis {
+  html.is-adaptive .pt__gridlist.is-adaptive > .com__columns__chassis {
     display: none;
   }
 }
@@ -19007,6 +19029,9 @@ ul.pt__field__hint li:before {
 .com__gridlist .com__pagination__container:last-child {
   margin-bottom: 0;
 }
+.com__gridlist .pt__gridlist--header {
+  margin: 0;
+}
 .com__gridlist.has-background .pt__gridlist th {
   background-color: transparent;
 }
@@ -19078,14 +19103,19 @@ ul.pt__field__hint li:before {
 .com__gridlist__container:last-child {
   margin-bottom: 0;
 }
+.com__gridlist__toolbar,
 .com__gridlist__filter {
   margin-bottom: 24px;
 }
+.com__gridlist__toolbar.bottom,
 .com__gridlist__filter.bottom,
+.com__gridlist__toolbar.is-last,
 .com__gridlist__filter.is-last,
+.com__gridlist__toolbar:last-child,
 .com__gridlist__filter:last-child {
   margin-bottom: 0;
 }
+.com__gridlist__toolbar.is-hidden,
 .com__gridlist__filter.is-hidden {
   display: none;
 }
@@ -19155,7 +19185,6 @@ ul.pt__field__hint li:before {
   display: none;
 }
 .com__image-input.size-default .com__image-input__content .input__holder .input__buttons {
-  border-left: none;
   -webkit-flex: 1;
   -ms-flex: 1;
   flex: 1;
@@ -19172,7 +19201,6 @@ ul.pt__field__hint li:before {
   display: none;
 }
 .com__image-input.size-wide .com__image-input__content .input__holder .input__buttons {
-  border-left: none;
   -webkit-flex: 1;
   -ms-flex: 1;
   flex: 1;
@@ -19185,11 +19213,15 @@ ul.pt__field__hint li:before {
   height: 128px;
   background-size: contain;
 }
+.com__image-input.size-full .com__image-input__content .input__holder .input__buttons {
+  width: 100px;
+  max-width: 100%;
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+}
 .com__image-input.size-custom .com__image-input__content .input__holder .input__label {
   display: none;
 }
 .com__image-input.size-custom .com__image-input__content .input__holder .input__buttons {
-  border-left: none;
   -webkit-flex: 1;
   -ms-flex: 1;
   flex: 1;
@@ -19266,7 +19298,6 @@ ul.pt__field__hint li:before {
   display: flex;
   -ms-flex-pack: center;
   padding: 2px;
-  border-left: 1px solid rgba(255, 255, 255, 0.3);
   -webkit-flex-flow: column nowrap;
   -ms-flex-flow: column nowrap;
   flex-flow: column nowrap;
@@ -19334,10 +19365,14 @@ ul.pt__field__hint li:before {
   display: none;
 }
 .com__image-input__content--default .input__holder .input__buttons {
-  border-left: none;
   -webkit-flex: 1;
   -ms-flex: 1;
   flex: 1;
+}
+.com__image-input__content--full .input__holder .input__buttons {
+  width: 100px;
+  max-width: 100%;
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
 }
 /* *** MIXINS *** */
 /* ******* COMPONENTS: MENU ******* */

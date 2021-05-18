@@ -56,7 +56,7 @@ cm.define('Com.Form', {
         'ajax' : {
             'type' : 'json',
             'method' : 'post',
-            'formData' : true,
+            'paramsType' : 'json',
             'url' : '',                                             // Request URL. Variables: %baseUrl%, %callback% for JSONP.
             'params' : ''                                           // Params object. %baseUrl%, %callback% for JSONP.
         },
@@ -176,16 +176,18 @@ function(params){
         var field = Com.FormFields.get(type);
         // Merge params
         params = cm.merge({
-            'originValue' : null,
             'form' : that,
             'formName' : that.params['name'],
             'system' : false,
-            'send' : true,
             'name' : '',
-            'sendPath' : null,
+            'dataName' : null,
             'label' : '',
+            'originValue' : null,
             'required' : false,
             'validate' : false,
+            'send' : true,
+            'sendEmpty' : true,
+            'sendPath' : null,
             'options' : [],
             'container' : that.nodes['fields'],
             'renderName' : null,
@@ -676,22 +678,18 @@ function(params){
         type = cm.inArray(['all', 'fields', 'send', 'sendPath', 'system'], type) ? type : 'fields';
         merged = cm.isUndefined(merged) ? false : merged;
         // Handler
-        handler = function(field, name){
+        handler = function(field, name, sendPath){
+            sendPath = !cm.isUndefined(sendPath) ? sendPath : false;
             value = field['controller'].get();
             if(that.params['sendOnlyChangedFields']){
                 value = cm.getDiffCompare(field['originValue'], value);
             }
-            if(!cm.isUndefined(value) && (that.params['sendEmptyFields'] || !cm.isEmpty(value))){
-                o[name] = value;
-            }
-        };
-        pathHandler = function(field, name){
-            value = field['controller'].get();
-            if(that.params['sendOnlyChangedFields']){
-                value = cm.getDiffCompare(field['originValue'], value);
-            }
-            if(!cm.isUndefined(value) && (that.params['sendEmptyFields'] || !cm.isEmpty(value))){
-                if(!cm.isEmpty(field['sendPath'])){
+            if(
+                !cm.isUndefined(value)
+                && (that.params['sendEmptyFields'] || !that.params['sendEmptyFields'] && !cm.isEmpty(value))
+                && (field['sendEmpty'] || !field['sendEmpty'] && !cm.isEmpty(value))
+            ){
+                if(sendPath && !cm.isEmpty(field['sendPath'])){
                     path = cm.objectFormPath(field['sendPath'], value, '');
                     o = cm.merge(o, path);
                 }else{
@@ -717,7 +715,7 @@ function(params){
                     break;
                 case 'sendPath':
                     if(field['send'] && !field['system']){
-                        pathHandler(field, name);
+                        handler(field, name, true);
                     }
                     break;
                 case 'system':
@@ -936,9 +934,7 @@ cm.define('Com.FormField', {
         'options' : [],
         'className' : '',                   // is-box
         'constructor' : false,
-        'constructorParams' : {
-            'formData' : true
-        },
+        'constructorParams' : {},
         'Com.HelpBubble' : {
             'renderStructure' : true
         }

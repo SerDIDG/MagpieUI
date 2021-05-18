@@ -18,6 +18,8 @@ cm.define('Com.Gridlist', {
         'onRenderStart',
         'onRenderEnd',
         'onLoadEnd',
+        'onRenderTitleItem',
+        'onRenderFilterItem',
         'onColumnsChange',
         'onColumnsResize'
     ],
@@ -51,15 +53,18 @@ cm.define('Com.Gridlist', {
         'visibleDateFormat' : 'cm._config.dateTimeFormat',          // Render date format
 
         // Pagination and ajax data request
+        'renderFilter' : false,
+        'divideTableHeader' : false,
         'pagination' : true,
         'perPage' : 25,
         'responseKey' : 'data',                                     // Response data response key
+        'responseErrorsKey' : 'errors',
         'responseCountKey' : 'count',                               // Response data count response key
         'ajax' : {
             'type' : 'json',
             'method' : 'get',
-            'url' : '',                                             // Request URL. Variables: %orderBy%, %sortBy%, %page%, %offset%, %perPage%, %limit%, %callback% for JSONP.
-            'params' : ''                                           // Params object. Variables: %orderBy%, %sortBy%, %page%, %offset%, %perPage%, %limit%, %callback% for JSONP.
+            'url' : '',                                             // Request URL. Variables: %orderBy%, %orderByLower%, %sortBy%, %page%, %offset%, %perPage%, %limit%, %callback% for JSONP.
+            'params' : ''                                           // Params object. Variables: %orderBy%, %orderByLower%, %sortBy%, %page%, %offset%, %perPage%, %limit%, %callback% for JSONP.
         },
 
         // Columns manipulation
@@ -143,8 +148,9 @@ function(params){
             that.isAjax = true;
             that.params['pagination'] = true;
             that.params['Com.Pagination']['ajax'] = that.params['ajax'];
-            that.params['Com.Pagination']['responseCountKey'] = that.params['responseCountKey'];
             that.params['Com.Pagination']['responseKey'] = that.params['responseKey'];
+            that.params['Com.Pagination']['responseCountKey'] = that.params['responseCountKey'];
+            that.params['Com.Pagination']['responseErrorsKey'] = that.params['responseErrorsKey'];
         }else{
             that.params['Com.Pagination']['count'] = that.params['data'].length;
         }
@@ -178,16 +184,19 @@ function(params){
     };
 
     var renderInitialTable = function(){
+        if(that.params['divideTableHeader']){
+            renderTableHeader(that.nodes['container']);
+        }
         if(that.isAjax){
             // Render dynamic pagination
             renderPagination();
         }else if(!cm.isEmpty(that.params['data'])){
+            // Sort data array for first time
+            that.params['sort'] && arraySort();
             // Counter
             if(that.params['showCounter']){
                 renderCounter(that.params['data'].length);
             }
-            // Sort data array for first time
-            that.params['sort'] && arraySort();
             if(that.params['pagination']){
                 // Render static pagination
                 renderPagination();
@@ -332,7 +341,10 @@ function(params){
             if(!cm.isEmpty(data['data'])){
                 renderTable(data['page'], data['data'], data['container']);
             }else{
-                renderEmptiness(data['container']);
+                if(that.params['renderEmptyTable']){
+                    renderTable(data['page'], data['data'], data['container']);
+                }
+                renderEmptiness(data['container'], data['errors']);
             }
         }else{
             startIndex = that.params['perPage'] * (data['page'] - 1);
@@ -352,10 +364,38 @@ function(params){
         });
     };
 
-    var renderEmptiness = function(container){
-        that.nodes['empty'] = cm.node('div', {'class' : 'cm__empty'}, that.lang('empty'));
+    var renderEmptiness = function(container, errors){
+        errors = !cm.isEmpty(errors) ? errors : that.lang('empty');
+        that.nodes['empty'] = cm.node('div', {'class' : 'cm__empty'}, errors);
         cm.appendChild(that.nodes['empty'], container);
     };
+
+    var renderTableHeader = function(container){
+        var nodes = {};
+        that.nodes['header'] = nodes;
+        // Render Table
+        nodes['container'] = cm.node('div', {'class' : 'pt__gridlist pt__gridlist--header'},
+            nodes['table'] = cm.node('table',
+                nodes['head'] = cm.node('thead',
+                    nodes['title'] = cm.node('tr')
+                )
+            )
+        );
+        // Render Table Title
+        cm.forEach(that.params['cols'], function(item, i){
+            renderTitleItem(item, i, nodes['title']);
+        });
+        // Render Table Filter
+        if(that.params['renderFilter']){
+            nodes['filter'] = cm.node('tr');
+            cm.forEach(that.params['cols'], function(item, i){
+                renderFilterItem(item, i, nodes['filter']);
+            });
+            cm.appendChild(nodes['filter'], nodes['head']);
+        }
+        // Append
+        cm.appendChild(nodes['container'], container);
+    }
 
     var renderTable = function(page, data, container){
         // API onRenderStart event
@@ -368,15 +408,33 @@ function(params){
         resetTable();
         // Render Table
         that.nodes['table'] = cm.node('div', {'class' : 'pt__gridlist'},
-            cm.node('table',
-                cm.node('thead',
+            that.nodes['tableInner'] = cm.node('table',
+                that.nodes['head'] = cm.node('thead',
                     that.nodes['title'] = cm.node('tr')
                 ),
                 that.nodes['content'] = cm.node('tbody')
             )
         );
-        // Render Table Title
-        cm.forEach(that.params['cols'], renderTh);
+        if(!that.params['divideTableHeader']) {
+            // Render Table Title
+            cm.forEach(that.params['cols'], function(item, i){
+                renderTitleItem(item, i, that.nodes['title']);
+            });
+            // Render Table Filter
+            if(that.params['renderFilter']) {
+                that.nodes['filter'] = cm.node('tr');
+                cm.forEach(that.params['cols'], function(item, i){
+                    renderFilterItem(item, i, that.nodes['filter']);
+                });
+                cm.appendChild(that.nodes['filter'], that.nodes['head']);
+            }
+        }else{
+            // Render Table Title Placeholder
+            cm.forEach(that.params['cols'], function(item, i){
+                renderTitleItemPlaceholder(item, i, that.nodes['title']);
+            });
+            cm.addClass(that.nodes['head'], 'is-hidden');
+        }
         // Render Table Row
         cm.forEach(data, function(item, i){
             renderRow(that.rows, item, (i + (page -1)));
@@ -419,18 +477,19 @@ function(params){
         }
     };
 
-    var renderTh = function(item, i){
+    var renderTitleItem = function(item, i, container){
         // Merge cell parameters
         item = that.params['cols'][i] = cm.merge({
             '_component' : null,            // System attribute
             'width' : 'auto',               // number | % | auto
             'access' : true,                // Render column if is accessible
-            'type' : 'text',		        // text | number | url | date | html | icon | checkbox | empty | actions | links
+            'type' : 'text',		            // text | number | url | date | html | icon | checkbox | empty | actions | links
             'key' : '',                     // Data array key
             'title' : '',                   // Table th title
             'sort' : that.params['sort'],   // Sort this column or not
             'sortKey' : '',                 // Sort key
-            'class' : '',		            // Icon css class, for type="icon"
+            'filterKey' : null,
+            'class' : '',		                // Icon css class, for type="icon"
             'target' : '_blank',            // Link target, for type="url"
             'rel' : '',                     // Link rel, for type="url"
             'textOverflow' : null,          // Overflow long text to single line
@@ -451,10 +510,8 @@ function(params){
         // Check access
         if(item['access']){
             // Structure
-            that.nodes['title'].appendChild(
-                item['nodes']['container'] = cm.node('th',
-                    item['nodes']['inner'] = cm.node('div', {'class' : 'inner'})
-                )
+            item['nodes']['container'] = cm.node('th',
+                item['nodes']['inner'] = cm.node('div', {'class' : 'inner'})
             );
             // Set column width
             if(/%|px|auto/.test(item['width'])){
@@ -462,6 +519,8 @@ function(params){
             }else{
                 item['nodes']['container'].style.width = parseFloat(item['width']) + 'px';
             }
+            // Embed
+            cm.appendChild(item['nodes']['container'], container);
             // Insert specific specified content in th
             switch(item['type']){
                 case 'checkbox' :
@@ -488,17 +547,15 @@ function(params){
             }
             // Render sort arrow and set function on click to th
             if(item['sort'] && !/icon|empty|actions|links|checkbox/.test(item['type'])){
-                cm.addClass(item['nodes']['container'], 'sort');
-                if(item['sortKey'] === that.sortBy || item['key'] === that.sortBy){
-                    item['nodes']['inner'].appendChild(
-                        cm.node('div', {'class' : that.params['icons']['arrow'][that.orderBy.toLowerCase()]})
-                    );
-                }
+                setTableHeaderItemSort(item, i);
                 cm.addEvent(item['nodes']['inner'], 'click', function(){
                     that.sortBy = !cm.isEmpty(item['sortKey']) ? item['sortKey'] : item['key'];
                     that.orderBy = that.orderBy === 'ASC' ? 'DESC' : 'ASC';
                     if(!that.isAjax){
                         arraySort();
+                    }
+                    if(that.params['divideTableHeader']){
+                        cm.forEach(that.params['cols'], setTableHeaderItemSort);
                     }
                     if(that.params['pagination']){
                         that.components['pagination'].rebuild();
@@ -507,6 +564,64 @@ function(params){
                     }
                 });
             }
+            // Trigger event
+            that.triggerEvent('onRenderTitleItem', {
+                'nodes' : item['nodes'],
+                'item' : item,
+                'i' : i
+            });
+        }
+    };
+
+    var setTableHeaderItemSort = function(item, i){
+        if(!item['access'] || /icon|empty|actions|links|checkbox/.test(item['type'])){
+            return;
+        }
+        cm.removeClass(item['nodes']['container'], 'sort');
+        if(item['sort']){
+            cm.addClass(item['nodes']['container'], 'sort');
+            cm.remove(item['nodes']['sort']);
+            if(item['sortKey'] === that.sortBy || item['key'] === that.sortBy){
+                item['nodes']['sort'] = cm.node('div', {'class' : that.params['icons']['arrow'][that.orderBy.toLowerCase()]});
+                cm.appendChild(item['nodes']['sort'], item['nodes']['inner']);
+            }
+        }
+    };
+
+    var renderTitleItemPlaceholder = function(item, i, container){
+        item['nodes']['placeholder'] = {};
+        // Check access
+        if(item['access']){
+            // Structure
+            item['nodes']['placeholder']['container'] = cm.node('th',
+                item['nodes']['placeholder']['inner'] = cm.node('div', {'class' : 'inner'})
+            )
+            // Set column width
+            if(/%|px|auto/.test(item['width'])){
+                item['nodes']['placeholder']['container'].style.width = item['width'];
+            }else{
+                item['nodes']['placeholder']['container'].style.width = parseFloat(item['width']) + 'px';
+            }
+            // Embed
+            cm.appendChild(item['nodes']['placeholder']['container'], container);
+        }
+    };
+
+    var renderFilterItem = function(item, i, container){
+        item['nodes']['filter'] = {};
+        // Check access
+        if(item['access']){
+            // Structure
+            item['nodes']['filter']['container'] = cm.node('td',
+                item['nodes']['filter']['inner'] = cm.node('div', {'class' : 'inner'})
+            )
+            cm.appendChild(item['nodes']['filter']['container'], container);
+            // Trigger event
+            that.triggerEvent('onRenderFilterItem', {
+                'nodes' : item['nodes']['filter'],
+                'item' : item,
+                'i' : i
+            });
         }
     };
 
@@ -936,11 +1051,13 @@ function(params){
     that.callbacks.paginationAfterPrepare = function(that, pagination, config){
         config['url'] = cm.strReplace(config['url'], {
             '%sortBy%' : that.sortBy,
-            '%orderBy%' : that.orderBy
+            '%orderBy%' : that.orderBy,
+            '%orderByLower%' : that.orderBy.toLowerCase()
         });
         config['params'] = cm.objectReplace(config['params'], {
             '%sortBy%' : that.sortBy,
-            '%orderBy%' : that.orderBy
+            '%orderBy%' : that.orderBy,
+            '%orderByLower%' : that.orderBy.toLowerCase()
         });
         return config;
     };

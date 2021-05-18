@@ -535,13 +535,22 @@ cm.arrayToObject = function(a){
     return o;
 };
 
-cm.objectReplace = function(o, vars){
-    var newO = cm.clone(o);
-    cm.forEach(newO, function(value, key){
+cm.objectReplace = function(o, map, replaceKeys){
+    var newO = {},
+        newKey;
+    replaceKeys = !cm.isUndefined(replaceKeys) ? replaceKeys : true;
+    cm.forEach(o, function(value, key){
+        if(cm.isString(key)){
+            newKey = replaceKeys ? cm.strReplace(key, map) : key;
+        }else{
+            newKey = key;
+        }
         if(cm.isObject(value)){
-            newO[key] = cm.objectReplace(value, vars);
+            newO[newKey] = cm.objectReplace(value, map);
         }else if(cm.isString(value)){
-            newO[key] = cm.strReplace(value, vars);
+            newO[newKey] = cm.strReplace(value, map);
+        }else{
+            newO[newKey] = value;
         }
     });
     return newO;
@@ -590,20 +599,6 @@ cm.objectFormPath = function(name, value, defaultValue){
     return newO;
 };
 
-cm.objectPath = function(name, obj){
-    if(cm.isUndefined(obj) || cm.isUndefined(name)){
-        return obj;
-    }
-    name = name.toString().split('.');
-    var findObj = obj;
-    cm.forEach(name, function(item){
-        if(findObj){
-            findObj = findObj[item];
-        }
-    });
-    return findObj;
-};
-
 cm.objectSelector = function(name, obj, apply){
     if(cm.isUndefined(obj) || cm.isUndefined(name)){
         return obj;
@@ -623,7 +618,7 @@ cm.objectSelector = function(name, obj, apply){
     return findObj;
 };
 
-cm.reducePath = function(name, obj){
+cm.reducePath = cm.objectPath = function(name, obj){
     if(cm.isUndefined(obj) || cm.isUndefined(name)){
         return obj;
     }
@@ -633,23 +628,28 @@ cm.reducePath = function(name, obj){
     }, obj);
 };
 
-cm.fillDataMask = function(mask, data){
-    var item = {},
+cm.fillDataMap = function(map, data){
+    var items = {},
         value;
-    cm.forEach(mask, function(id, key){
+    cm.forEach(map, function(id, key){
         value = cm.reducePath(id, data);
+        if(cm.isEmpty(value) && /[{%]\w+[%}]/.test(id)){
+            value = cm.fillVariables(id, data);
+        }
         if(!cm.isEmpty(value)){
-            item[key] = value;
+            items[key] = value;
         }
     });
-    return item;
+    return items;
 };
 
 cm.fillVariables = function(value, data){
-    value = value.replace(/[{%](\w+)[%}]/g, function(math, p1){
-        return data[p1] || data['%' + p1 + '%'] || data['{' + p1 + '}'] || '';
+    return value.replace(/[{%](\w+)[%}]/g, function(math, p1){
+        return cm.reducePath(p1, data)
+            || cm.reducePath('%' + p1 + '%', data)
+            || cm.reducePath('{' + p1 + '}', data)
+            || '';
     });
-    return value;
 };
 
 cm.sort = function(o, dir){
@@ -707,12 +707,25 @@ cm.errorLog = function(o){
                 'common' : 'Common'
             }
         }, o),
-        str = [
+        data = [
             config['langs'][config['type']],
             config['name'],
             config['message']
-        ];
-    cm.log(str.join(' > '));
+        ],
+        str = data.join(' > ');
+    switch(config['type']){
+        case 'error':
+            console.error(str);
+            break;
+        case 'attention':
+            console.warn(str);
+            break;
+        case 'common':
+        case 'success':
+        default:
+            console.info(str);
+            break;
+    }
 };
 
 cm.getEvent = function(e){
@@ -1111,14 +1124,25 @@ cm.fileFromDataTransfer = function(e, callback){
 };
 
 cm.dataURItoBlob = function(dataURI){
-    var byteString = atob(dataURI.split(',')[1]);
-    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-    var ab = new ArrayBuffer(byteString.length);
-    var ia = new Uint8Array(ab);
+    var byteString = atob(dataURI.split(',')[1]),
+        mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0],
+        ab = new ArrayBuffer(byteString.length),
+        ia = new Uint8Array(ab);
     for (var i = 0; i < byteString.length; i++) {
         ia[i] = byteString.charCodeAt(i);
     }
     return new Blob([ab], {'type': mimeString});
+};
+
+cm.bufferToHEX = function(arrayBuffer){
+    var byteArray = new Uint8Array(arrayBuffer),
+        hexParts = [];
+    for(var i = 0; i < byteArray.length; i++){
+        var hex = byteArray[i].toString(16),
+            paddedHex = ('00' + hex).slice(-2);
+        hexParts.push(paddedHex);
+    }
+    return hexParts.join('');
 };
 
 /* ******* NODES ******* */
@@ -1979,10 +2003,10 @@ cm.strWrap = function(str, symbol){
     return ['', str, ''].join(symbol);
 };
 
-cm.strReplace = function(str, vars){
-    if(vars && cm.isObject(vars)){
+cm.strReplace = function(str, map){
+    if(map && cm.isObject(map)){
         str = str.toString();
-        cm.forEach(vars, function(item, key){
+        cm.forEach(map, function(item, key){
             if(cm.isObject(item)){
                 item = JSON.stringify(item);
             }
@@ -3646,12 +3670,12 @@ cm.ajax = function(o){
             'debug' : true,
             'type' : 'json',                                         // text | document | json | jsonp | blob
             'method' : 'POST',                                       // POST | GET | PUT | PATCH | DELETE
-            'paramsType' : 'uri',                                    // uri | json
+            'paramsType' : 'uri',                                    // uri | json | form-data
             'params' : '',
             'url' : '',
             'modifier' : '',
             'modifierParams' : {},
-            'formData'  : false,
+            'formData'  : false,                                     // TODO: Deprecated, use paramsType: 'form-data'
             'headers' : {
                 'Content-Type' : 'application/x-www-form-urlencoded',
                 'X-Requested-With' : 'XMLHttpRequest'
@@ -3703,6 +3727,9 @@ cm.ajax = function(o){
             if(config['paramsType'] === 'json'){
                 config['headers']['Content-Type'] = 'application/json';
                 config['params'] = cm.stringifyJSON(config['params']);
+            }else if(config['paramsType'] === 'form-data'){
+                config['params'] = cm.obj2FormData(config['params']);
+                delete config['headers']['Content-Type'];
             }else{
                 config['params'] = cm.obj2URI(config['params']);
             }
@@ -4230,13 +4257,13 @@ cm.setParams = function(className, params){
     });
 };
 
-cm.setStrings = function(className, strings){
+cm.setMessages = cm.setStrings = function(className, strings){
     cm.getConstructor(className, function(classConstructor, className, classProto){
         classProto.setLangs(strings);
     });
 };
 
-cm.getString = function(className, str){
+cm.getMessage = cm.getString = function(className, str){
     var data;
     cm.getConstructor(className, function(classConstructor, className, classProto){
         data = classProto.lang(str);
@@ -4244,7 +4271,7 @@ cm.getString = function(className, str){
     return data;
 };
 
-cm.getStrings = function(className, o){
+cm.getMessages = cm.getStrings = function(className, o){
     var data;
     cm.getConstructor(className, function(classConstructor, className, classProto){
         data = classProto.langObject(o);

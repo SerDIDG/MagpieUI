@@ -782,30 +782,31 @@ Mod['Structure'] = {
             that.build['params']['embedStructure'] = 'append';
         }
     },
-    'embedStructure' : function(node){
+    'embedStructure' : function(node, container){
         var that = this;
         switch(that.params['embedStructure']){
             case 'replace':
                 that.replaceStructure(node);
                 break;
             case 'append':
-                that.appendStructure(node, 'insertLast');
+                that.appendStructure(node, 'insertLast', container);
                 break;
             case 'first':
-                that.appendStructure(node, 'insertFirst');
+                that.appendStructure(node, 'insertFirst', container);
                 break;
         }
         return that;
     },
-    'appendStructure' : function(node, type){
+    'appendStructure' : function(node, type, container){
         var that = this;
-        var container = that.params['container'] || that.params['node'];
+        container = container || that.params['container'] || that.params['node'];
         container && cm[type](node, container);
         return that;
     },
-    'replaceStructure' : function(node){
+    'replaceStructure' : function(node, container){
         var that = this;
-        if(that.params['container']){
+        container = container || that.params['container'];
+        if(container){
             if(that.params['container'] === that.params['node']){
                 cm.insertBefore(node, that.params['node']);
             }else{

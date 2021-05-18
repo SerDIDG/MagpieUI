@@ -37,6 +37,7 @@ cm.define('Com.AbstractFormField', {
         'maxLength' : 0,
         'min' : 0,
         'max' : 0,
+        'multiple' : false,
         'type' : false,
         'label' : '',
         'help' : null,
@@ -62,8 +63,7 @@ cm.define('Com.AbstractFormField', {
         'validate' : false,
         'constructor' : false,
         'constructorParams' : {
-            'removeOnDestruct' : false,
-            'formData' : true
+            'removeOnDestruct' : false
         },
         'preload' : false,
         'responseKey' : 'data',
@@ -151,6 +151,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.params['constructorParams']['maxLength'] = that.params['maxLength'];
         that.params['constructorParams']['min'] = that.params['min'];
         that.params['constructorParams']['max'] = that.params['max'];
+        that.params['constructorParams']['multiple'] = that.params['multiple'];
         that.params['constructorParams']['placeholder'] = !that.params['showPlaceholderAbove'] ? that.params['placeholder'] : '';
         that.params['constructorParams']['autocomplete'] = that.params['autocomplete'];
         that.params['constructorParams']['title'] = that.params['title'];
@@ -238,8 +239,8 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             cm.appendChild(that.nodes['labelText'], that.nodes['label']);
         }
         // Required
+        that.nodes['required'] = cm.node('span', {'class' : 'required'}, that.lang('*'));
         if(that.params['required'] && that.params['requiredAsterisk']){
-            that.nodes['required'] = cm.node('span', {'class' : 'required'}, that.lang('*'));
             cm.appendChild(that.nodes['required'], that.nodes['label']);
         }
         // Hints
@@ -346,6 +347,9 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         }
         if(that.params['disabled']){
             that.nodes['content']['input'].setAttribute('disabled', 'disabled');
+        }
+        if(that.params['multiple']){
+            that.nodes['content']['input'].setAttribute('multiple', 'multiple');
         }
         // Classes
         if(!that.params['visible']){
@@ -702,12 +706,16 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.setRequired = function(){
         var that = this;
         that.params['required'] = true;
+        if(that.params['requiredAsterisk']){
+            cm.appendChild(that.nodes['required'], that.nodes['label']);
+        }
         return that;
     };
 
     classProto.unsetRequired = function(){
         var that = this;
         that.params['required'] = false;
+        cm.remove(that.nodes['required']);
         return that;
     };
 

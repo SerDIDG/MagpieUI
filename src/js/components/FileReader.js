@@ -11,6 +11,7 @@ cm.define('Com.FileReader', {
         'onValidateParams',
         'onRenderStart',
         'onRender',
+        'onRenderEnd',
         'onReadStart',
         'onReadProcess',
         'onReadSuccess',
@@ -18,7 +19,9 @@ cm.define('Com.FileReader', {
         'onReadEnd'
     ],
     'params' : {
-        'file' : null
+        'file' : null,
+        'readOnRender' : true,
+        'readValueType' : 'base64'         // base64 | binary | text | hex
     }
 },
 function(params){
@@ -40,40 +43,147 @@ cm.getConstructor('Com.FileReader', function(classConstructor, className, classP
         that.render();
         that.triggerEvent('onConstruct');
         that.triggerEvent('onConstructEnd');
-        return that;
     };
 
     classProto.render = function(){
         var that = this;
         that.triggerEvent('onRenderStart');
-        that.read(that.params['file']);
+        if(that.params['readOnRender']){
+            that.read(that.params['file']);
+        }
         that.triggerEvent('onRender');
+        that.triggerEvent('onRenderEnd');
+    };
+
+    classProto.readAsBase64 = function(file, callback){
+        var that = this,
+            item,
+            reader;
+        that.triggerEvent('onReadStart', file);
+        // Config
+        item = that.validate(file);
+        that.triggerEvent('onReadProcess', item);
+        // Read File
+        reader = new FileReader();
+        cm.addEvent(reader, 'load', function(e){
+            that.afterSuccess(e.target.result, item, callback);
+        });
+        cm.addEvent(reader, 'error', function(e){
+            that.afterError(e, item, callback);
+        });
+        reader.readAsDataURL(file);
         return that;
     };
+
+    classProto.readAsBinary = function(file, callback){
+        var that = this,
+            item,
+            reader;
+        that.triggerEvent('onReadStart', file);
+        // Config
+        item = that.validate(file);
+        that.triggerEvent('onReadProcess', item);
+        // Read File
+        reader = new FileReader();
+        cm.addEvent(reader, 'load', function(e){
+            that.afterSuccess(e.target.result, item, callback);
+        });
+        cm.addEvent(reader, 'error', function(e){
+            that.afterError(e, item, callback);
+        });
+        reader.readAsBinaryString(file);
+        return that;
+    };
+
+    classProto.readAsHEX = function(file, callback){
+        var that = this,
+            value,
+            item,
+            reader;
+        that.triggerEvent('onReadStart', file);
+        // Config
+        item = that.validate(file);
+        that.triggerEvent('onReadProcess', item);
+        // Read File
+        reader = new FileReader();
+        cm.addEvent(reader, 'load', function(e){
+            try{
+                value = cm.bufferToHEX(e.target.result);
+            }catch(e){
+                that.afterError(e, item, callback);
+            }finally{
+                that.afterSuccess(value, item, callback);
+            }
+        });
+        cm.addEvent(reader, 'error', function(e){
+            that.afterError(e, item, callback);
+        });
+        reader.readAsArrayBuffer(file);
+        return that;
+    };
+
+    classProto.readAsText = function(file, callback){
+        var that = this,
+            item,
+            reader;
+        that.triggerEvent('onReadStart', file);
+        // Config
+        item = that.validate(file);
+        that.triggerEvent('onReadProcess', item);
+        // Read File
+        reader = new FileReader();
+        cm.addEvent(reader, 'load', function(e){
+            that.afterSuccess(e.target.result, item, callback);
+        });
+        cm.addEvent(reader, 'error', function(e){
+            that.afterError(e, item, callback);
+        });
+        reader.readAsText(file);
+        return that;
+    };
+
+    /******* HELPERS *******/
+
+    classProto.afterSuccess = function(value, item, callback){
+        var that = this;
+        item['value'] = value;
+        callback(item);
+        that.triggerEvent('onReadSuccess', item);
+        that.triggerEvent('onReadEnd', item);
+        return item;
+    };
+
+    classProto.afterError = function(e, item, callback){
+        var that = this;
+        item['error'] = e;
+        callback && callback(item);
+        that.triggerEvent('onReadError', item);
+        that.triggerEvent('onReadEnd', item);
+        return item;
+    };
+
+    /******* PUBLIC *******/
 
     classProto.read = function(file, callback){
         var that = this;
         callback = cm.isFunction(callback) ? callback : function(){};
-        if(cm.isFileReader && cm.isFile(file)){
-            that.triggerEvent('onReadStart', file);
-            // Config
-            var item = that.validate(file);
-            that.triggerEvent('onReadProcess', item);
-            // Read File
-            var reader = new FileReader();
-            cm.addEvent(reader, 'load', function(e){
-                item['value'] = e.target.result;
-                callback(item);
-                that.triggerEvent('onReadSuccess', item);
-                that.triggerEvent('onReadEnd', item);
-            });
-            cm.addEvent(reader, 'error', function(e){
-                item['error'] = e;
-                callback(item);
-                that.triggerEvent('onReadError', item);
-                that.triggerEvent('onReadEnd', item);
-            });
-            reader.readAsDataURL(file);
+        if(cm.isFileReader && cm.isFile(file)) {
+            switch (that.params['readValueType']) {
+                case 'binary':
+                    that.readAsBinary(file, callback);
+                    break;
+                case 'hex':
+                    that.readAsHEX(file, callback);
+                    break;
+                case 'text':
+                    that.readAsText(file, callback);
+                    break;
+                case 'base64':
+                default:
+                    that.readAsBase64(file, callback);
+                    break;
+
+            }
         }
         return that;
     };

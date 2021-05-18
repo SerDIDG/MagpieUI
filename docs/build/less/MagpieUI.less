@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.39.3 (2021-04-20 19:39) ************ */
+/*! ************ MagpieUI v3.39.4 (2021-05-18 20:09) ************ */
 
 @charset "UTF-8";
 /*!
@@ -4585,7 +4585,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.39.3';
+@CmVersion: '3.39.4';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -8578,7 +8578,7 @@ button {
         @margin_calc: (@CmForm-FieldHeight - 13px) / 2;
         @margin: max(floor((@margin_calc)), 0px);
 
-        margin: @margin 0 @margin 0;
+        margin: @margin 0;
         vertical-align: top;
         padding: 0;
         cursor: pointer;
@@ -11570,6 +11570,21 @@ ul.pt__field__hint {
         }
     }
 
+    thead {
+        &.is-hidden {
+            visibility: hidden;
+
+            th {
+                padding-top: 0;
+                padding-bottom: 0;
+
+                .inner {
+                    display: none;
+                }
+            }
+        }
+    }
+
     &.has-background {
         .pt__gridlist__has-background;
     }
@@ -11603,6 +11618,10 @@ ul.pt__field__hint {
             }
         }
     }
+}
+
+.pt__gridlist--header {
+    margin: 0;
 }
 
 .pt__gridlist__counter {
@@ -11767,6 +11786,16 @@ ul.pt__field__hint {
 
     html.is-adaptive {
         .pt__gridlist {
+            .cm__scroll--auto;
+
+            table {
+                width: auto;
+                min-width: 100%;
+                max-width: none;
+            }
+        }
+
+        .pt__gridlist.is-adaptive {
             .pt__gridlist__has-background;
 
             tr {
@@ -11809,6 +11838,7 @@ ul.pt__field__hint {
     }
 
 }
+
 /* ******* PART: IMAGE BOX ******* */
 
 .pt__image {
@@ -17452,6 +17482,10 @@ ul.pt__field__hint {
         .cm__box;
     }
 
+    .pt__gridlist--header {
+        margin: 0;
+    }
+
     &.has-background {
         .pt__gridlist {
             .pt__gridlist__has-background;
@@ -17463,6 +17497,7 @@ ul.pt__field__hint {
     .cm__box;
 }
 
+.com__gridlist__toolbar,
 .com__gridlist__filter {
     .cm__box;
 
@@ -17470,6 +17505,7 @@ ul.pt__field__hint {
         display: none;
     }
 }
+
 .com__help-bubble {
     margin: 0 @CmIndent-XXXSmall;
     display: inline-block;
@@ -17559,6 +17595,10 @@ ul.pt__field__hint {
     &.size-full {
         .com__image-input--size(@ComImageInput-Height, @ComImageInput-Height, contain);
         max-width: none;
+
+        .com__image-input__content {
+            .com__image-input__content--full;
+        }
     }
 
     &.size-custom {
@@ -17627,7 +17667,6 @@ ul.pt__field__hint {
         .input__buttons {
             .display-flex;
             padding: @half_buttons_indent;
-            border-left: 1px solid rgba(255, 255, 255, 0.30);
             .mx__flex-flow(column nowrap);
 
             .button-alike {
@@ -17671,8 +17710,17 @@ ul.pt__field__hint {
         }
 
         .input__buttons {
-            border-left: none;
             .mx__flex(1);
+        }
+    }
+}
+
+.com__image-input__content--full {
+    .input__holder {
+        .input__buttons {
+            width: 100px;
+            max-width: 100%;
+            border-left: 1px solid rgba(255, 255, 255, 0.30);
         }
     }
 }

@@ -11,7 +11,10 @@ cm.define('Com.FileDropzone', {
         'max' : 0,                                  // 0 - infinity
         '_height' : 128,
         '_duration' : 'cm._config.animDuration',
-        'Com.FileReader' : {}
+        'fileReaderConstructor' : 'Com.FileReader',
+        'fileReaderParams' : {
+            'readValueType' : 'base64'
+        }
     },
     'strings' : {
         'drop_single' : 'drop file here',
@@ -149,7 +152,7 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
         that.hide();
         that.hideDropzone();
     };
-    
+
     classProto.processFiles = function(files){
         var that = this,
             data = [],

@@ -40,8 +40,7 @@ cm.define('Com.Request', {
             'type' : 'json',
             'method' : 'get',
             'url' : '',                                 // Request URL. Variables: %baseUrl%, %callback%.
-            'params' : '',                              // Params object. Variables: %baseUrl%, %callback%.
-            'formData' : false
+            'params' : ''                              // Params object. Variables: %baseUrl%, %callback%.
         },
         'variables' : {},
         'showOverlay' : true,
@@ -155,7 +154,7 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         );
         return that;
     };
-    
+
     classProto.setAttributes = function(){
         var that = this;
         // CSS Class
@@ -279,15 +278,15 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
 
     classProto.filter = function(){
         var that = this,
-            errorsItem = cm.objectPath(that.params['responseErrorsKey'], that.responceData),
-            dataFiltered = cm.objectPath(that.params['responseKey'], that.responceData),
-            dataStatus = cm.objectPath(that.params['responseStatusKey'], that.responceData),
+            errorsItem = cm.reducePath(that.params['responseErrorsKey'], that.responceData),
+            dataFiltered = cm.reducePath(that.params['responseKey'], that.responceData),
+            dataStatus = cm.reducePath(that.params['responseStatusKey'], that.responceData),
             dataHTML;
         if(cm.isEmpty(errorsItem)){
             if(cm.isEmpty(that.params['responseHTMLKey'])){
-                dataHTML = cm.objectPath(that.params['responseKey'], that.responceData);
+                dataHTML = cm.reducePath(that.params['responseKey'], that.responceData);
             }else{
-                dataHTML = cm.objectPath(that.params['responseHTMLKey'], that.responceData);
+                dataHTML = cm.reducePath(that.params['responseHTMLKey'], that.responceData);
             }
             that.responceDataFiltered = !cm.isEmpty(dataFiltered) ? dataFiltered : [];
             that.responceDataHTML = !cm.isEmpty(dataHTML) ? dataHTML : '';
@@ -315,14 +314,15 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
             code;
         that.isError = true;
         if(!cm.isEmpty(that.responceData)){
-            errors = cm.objectSelector(that.params['responseErrorsKey'], that.responceData);
-            message = cm.objectSelector(that.params['responseMessageKey'], that.responceData);
-            code = cm.objectSelector(that.params['responseCodeKey'], that.responceData);
+            errors = cm.reducePath(that.params['responseErrorsKey'], that.responceData);
+            message = cm.reducePath(that.params['responseMessageKey'], that.responceData);
+            code = cm.reducePath(that.params['responseCodeKey'], that.responceData);
         }
         that.renderError();
         that.triggerEvent('onError', {
             'response' : that.responceData,
             'status' : that.responceDataStatus,
+            'data' : that.responceDataFiltered,
             'filtered' : that.responceDataFiltered,
             'html' : that.responceDataHTML,
             'errors' : errors,
@@ -341,6 +341,7 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         that.triggerEvent('onSuccess', {
             'response' : that.responceData,
             'status' : that.responceDataStatus,
+            'data' : that.responceDataFiltered,
             'filtered' : that.responceDataFiltered,
             'html' : that.responceDataHTML
         });

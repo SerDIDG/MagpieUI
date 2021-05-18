@@ -236,8 +236,8 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
                 'onSuccess' : function(response){
                     that.callbacks.response(that, config, response);
                 },
-                'onError' : function(){
-                    that.callbacks.error(that, config);
+                'onError' : function(response){
+                    that.callbacks.error(that, config, response);
                 },
                 'onAbort' : function(){
                     that.callbacks.abort(that, config);
@@ -251,9 +251,9 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
 
     classProto.callbacks.filter = function(that, config, response){
         var data = [],
-            errorsItem = cm.objectPath(that.params['responseErrorsKey'], response),
-            dataItem = cm.objectPath(that.params['responseKey'], response),
-            countItem = cm.objectPath(that.params['responseCountKey'], response);
+            errorsItem = cm.reducePath(that.params['responseErrorsKey'], response),
+            dataItem = cm.reducePath(that.params['responseKey'], response),
+            countItem = cm.reducePath(that.params['responseCountKey'], response);
         if(cm.isEmpty(errorsItem)){
             if(!cm.isEmpty(dataItem)){
                 data = dataItem;
@@ -265,19 +265,26 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
         return data;
     };
 
-    classProto.callbacks.response = function(that, config, response){
+    classProto.callbacks.response = function(that, config, response, errors){
         // Set next page
         that.setPage();
         // Response
         if(response){
             response = that.callbacks.filter(that, config, response);
         }
-        that.callbacks.render(that, response);
+        that.callbacks.render(that, response, errors);
     };
 
-    classProto.callbacks.error = function(that, config){
-        that.triggerEvent('onError');
-        that.callbacks.response(that, config);
+    classProto.callbacks.error = function(that, config, response){
+        var errors;
+        if(!cm.isEmpty(response)){
+            errors = cm.reducePath(that.params['responseErrorsKey'], response);
+        }
+        that.triggerEvent('onError', {
+            'response' : response,
+            'errors' : errors
+        });
+        that.callbacks.response(that, config, null, errors);
     };
 
     classProto.callbacks.abort = function(that, config){
@@ -322,7 +329,7 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
         return cm.node(that.params['pageTag'], that.params['pageAttributes']);
     };
 
-    classProto.callbacks.render = function(that, data){
+    classProto.callbacks.render = function(that, data, errors){
         that.isRendering = true;
         var page = {
             'page' : that.page,
@@ -330,6 +337,7 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
             'pages' : that.nodes['pages'],
             'container' : cm.node(that.params['pageTag']),
             'data' : data,
+            'errors' : errors,
             'total' : that.getCount(),
             'isVisible' : true,
             'isRendered' : true,

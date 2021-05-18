@@ -21,6 +21,10 @@
     &.size-full {
         .com__image-input--size(@ComImageInput-Height, @ComImageInput-Height, contain);
         max-width: none;
+
+        .com__image-input__content {
+            .com__image-input__content--full;
+        }
     }
 
     &.size-custom {
@@ -89,7 +93,6 @@
         .input__buttons {
             .display-flex;
             padding: @half_buttons_indent;
-            border-left: 1px solid rgba(255, 255, 255, 0.30);
             .mx__flex-flow(column nowrap);
 
             .button-alike {
@@ -133,8 +136,17 @@
         }
 
         .input__buttons {
-            border-left: none;
             .mx__flex(1);
+        }
+    }
+}
+
+.com__image-input__content--full {
+    .input__holder {
+        .input__buttons {
+            width: 100px;
+            max-width: 100%;
+            border-left: 1px solid rgba(255, 255, 255, 0.30);
         }
     }
 }

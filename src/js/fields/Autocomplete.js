@@ -356,14 +356,6 @@ function(params){
         return params['config'];
     };
 
-    that.callbacks.beforePrepare = function(that, params){
-        return params['config'];
-    };
-
-    that.callbacks.afterPrepare = function(that, params){
-        return params['config'];
-    };
-
     that.callbacks.request = function(that, params){
         params = cm.merge({
             'response' : null,
@@ -613,8 +605,17 @@ function(params){
     init();
 });
 
-cm.getConstructor('Com.Autocomplete', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
+cm.getConstructor('Com.Autocomplete', function(classConstructor, className, classProto, classInherit){
+
+    /*** AJAX ***/
+
+    classProto.callbacks.beforePrepare = function(that, params){
+        return params['config'];
+    };
+
+    classProto.callbacks.afterPrepare = function(that, params){
+        return params['config'];
+    };
 
     /*** DATA ***/
 

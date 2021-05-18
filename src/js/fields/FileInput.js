@@ -11,7 +11,8 @@ cm.define('Com.FileInput', {
         'showFilename' : true,
         'autoOpen' : false,
         'placeholder' : null,
-        'formData' : false,
+        'readValueType' : 'base64',         // base64 | binary
+        'outputValueType' : 'object',         // file | object
         'local' : true,
         'fileManager' : false,
         'fileManagerConstructor' : 'Com.AbstractFileManagerContainer',
@@ -34,7 +35,8 @@ cm.define('Com.FileInput', {
             'max' : 1,
             'rollover' : true
         },
-        'Com.FileReader' : {}
+        'fileReaderConstructor' : 'Com.FileReader',
+        'fileReaderParams' : {}
     },
     'strings' : {
         'browse' : 'Browse',
@@ -56,14 +58,14 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         // Bind context to methods
         that.browseActionHandler = that.browseAction.bind(that);
         that.processFilesHandler = that.processFiles.bind(that);
-        // Call parent method
+        // Call parent methods
         classInherit.prototype.construct.apply(that, arguments);
     };
 
     classProto.onInitComponentsStart = function(){
         var that = this;
-        cm.getConstructor('Com.FileReader', function(classObject){
-            that.components['validator'] = new classObject();
+        cm.getConstructor(that.params['fileReaderConstructor'], function(classObject){
+            that.components['validator'] = new classObject(that.params['fileReaderParams']);
         });
     };
 
@@ -81,6 +83,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         that.params['fileUploaderParams']['params']['local'] = that.params['local'];
         that.params['fileUploaderParams']['params']['fileManager'] = that.params['fileManager'];
         // Other
+        that.params['fileReaderParams']['readValueType'] = that.params['readValueType'];
         that.params['local'] = that.params['fileUploader'] ? false : that.params['local'];
         that.params['fileManagerParams']['openOnConstruct'] = that.params['autoOpen'];
         that.params['fileManager'] = that.params['fileUploader'] ? false : that.params['fileManager'];
@@ -105,8 +108,8 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         // Call parent method - renderViewModel
         classInherit.prototype.renderViewModel.apply(that, arguments);
         // Init FilerReader
-        cm.getConstructor('Com.FileReader', function(classObject, className){
-            that.components['reader'] = new classObject(that.params[className]);
+        cm.getConstructor(that.params['fileReaderConstructor'], function(classObject){
+            that.components['reader'] = new classObject(that.params['fileReaderParams']);
             that.components['reader'].addEvent('onReadSuccess', function(my, item){
                 that.set(item, true);
             });
@@ -237,7 +240,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
     classProto.get = function(){
         var that = this,
             value;
-        if(that.params['formData']){
+        if(that.params['outputValueType'] === 'file'){
             value = that.value['file'] || that.value['value'] || that.value['value']   || '';
         }else{
             value = that.value  || '';

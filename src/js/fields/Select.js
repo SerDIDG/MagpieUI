@@ -360,6 +360,7 @@ function(params){
         // Config
         item = cm.merge({
             'hidden' : false,
+            'select' : false,       // select option on add
             'selected' : false,
             'disabled' : false,
             'value' : '',
@@ -395,6 +396,10 @@ function(params){
         // Push
         optionsList.push(options[item['value']] = item);
         optionsLength = optionsList.length;
+        // Select
+        if(item['select']){
+            set(item, false);
+        }
         return true;
     };
 
