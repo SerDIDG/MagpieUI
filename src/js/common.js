@@ -536,7 +536,7 @@ cm.arrayToObject = function(a){
 };
 
 cm.objectReplace = function(o, map, replaceKeys){
-    var newO = {},
+    var newO = cm.isArray(o) ? [] : {},
         newKey;
     replaceKeys = !cm.isUndefined(replaceKeys) ? replaceKeys : true;
     cm.forEach(o, function(value, key){

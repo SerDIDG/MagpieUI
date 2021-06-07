@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.39.4 (2021-05-18 20:09) ************ */
+/*! ************ MagpieUI v3.39.5 (2021-06-07 17:18) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1629,7 +1629,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.39.4',
+        '_version' : '3.39.5',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -2135,7 +2135,7 @@ cm.arrayToObject = function(a){
 };
 
 cm.objectReplace = function(o, map, replaceKeys){
-    var newO = {},
+    var newO = cm.isArray(o) ? [] : {},
         newKey;
     replaceKeys = !cm.isUndefined(replaceKeys) ? replaceKeys : true;
     cm.forEach(o, function(value, key){
